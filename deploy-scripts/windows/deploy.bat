@@ -1,9 +1,22 @@
-REM Version: 1.0056
+REM Version: 1.0057
 @echo off
 REM KCY Ecosystem - Windows Deploy Script (Batch)
-REM Simple version using pscp.exe (PuTTY)
+REM WARNING: This simple version may upload ALL files including node_modules!
+REM For proper exclusions, use deploy.ps1 (PowerShell version) instead!
 
 setlocal enabledelayedexpansion
+
+echo ========================================
+echo   KCY Ecosystem - Deploy to Server
+echo ========================================
+echo.
+echo [WARNING] This batch script uploads ALL files!
+echo For proper exclusions (node_modules, .git, .env),
+echo please use PowerShell version: deploy.ps1
+echo.
+echo Press Ctrl+C to cancel, or
+pause
+echo.
 
 REM Configuration
 set SERVER=alsec.strangled.net

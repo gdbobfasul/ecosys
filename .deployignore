@@ -1,0 +1,69 @@
+# Version: 1.0057
+# KCY Ecosystem - Deploy Ignore File
+# Files and directories that should NOT be uploaded to server
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build artifacts
+dist/
+build/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Private keys
+*.pem
+*.key
+*.p12
+service-account-key.json
+
+# Hardhat
+cache/
+artifacts/
+typechain/
+typechain-types/
+
+# Local development
+.cache/
+.local/
+
+# Archives
+*.zip
+*.tar
+*.gz
+*.rar
