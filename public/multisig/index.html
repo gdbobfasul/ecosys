@@ -1,0 +1,193 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Multi-Sig Wallet - Secure cryptocurrency management with multiple signatures">
+    <title>Multi-Sig Wallet - KCY Ecosystem</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .multisig-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+        }
+        .multisig-hero h1 { font-size: 3.5em; margin-bottom: 20px; }
+        .how-it-works { margin: 80px 0; }
+        .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .step { text-align: center; padding: 30px; }
+        .step-number { width: 60px; height: 60px; background: #667eea; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em; font-weight: bold; margin: 0 auto 20px; }
+        .benefits { background: #f8f9fa; padding: 80px 20px; margin: 50px 0; }
+    </style>
+</head>
+<body>
+    <div class="multisig-hero">
+        <h1>🔐 Multi-Sig Wallet</h1>
+        <p style="font-size: 1.3em; margin-bottom: 30px;">Secure Fund Management with Multiple Signatures</p>
+        <div>
+            <a href="#how-it-works" class="btn" style="margin: 10px;">How It Works</a>
+            <a href="#benefits" class="btn btn-secondary" style="margin: 10px;">Benefits</a>
+            <a href="admin/" class="btn btn-admin" style="margin: 10px;">Admin Panel</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Key Stats -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin: 50px auto; max-width: 1200px;">
+            <div class="card" style="text-align: center;">
+                <h3 style="font-size: 3em; color: #667eea; margin-bottom: 10px;">5</h3>
+                <p style="color: #666;">Total Owners</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h3 style="font-size: 3em; color: #667eea; margin-bottom: 10px;">3</h3>
+                <p style="color: #666;">Required Signatures</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h3 style="font-size: 3em; color: #667eea; margin-bottom: 10px;">∞</h3>
+                <p style="color: #666;">Transaction Types</p>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div id="how-it-works" class="how-it-works">
+            <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 50px; color: #333;">How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Propose</h3>
+                    <p style="color: #666;">Any owner can propose a transaction with destination, value, and data</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Confirm</h3>
+                    <p style="color: #666;">Other owners review and confirm the transaction (minimum 3 required)</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Execute</h3>
+                    <p style="color: #666;">Once 3+ confirmations, any owner can execute the transaction</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Complete</h3>
+                    <p style="color: #666;">Transaction is executed on-chain and funds are transferred</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div style="margin: 80px 0;">
+            <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 50px; color: #333;">Key Features</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <div class="card">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.5em;">🔒 Multi-Signature Security</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        Requires 3 out of 5 owners to approve any transaction. No single point of failure.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.5em;">📝 Transaction Proposals</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        Any owner can propose transactions with full transparency and audit trail.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.5em;">✅ Confirmation System</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        Clear confirmation tracking with ability to revoke before execution.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.5em;">🔓 Unlock Capabilities</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        Special functions to unlock token features (exempt slots, DEX, liquidity pairs).
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.5em;">💰 Native & Token Support</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        Manage both native BNB and ERC-20 tokens securely.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.5em;">📊 Full Transparency</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        All transactions and confirmations visible on-chain with complete history.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits -->
+        <div id="benefits" class="benefits">
+            <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 50px; color: #333;">Why Use Multi-Sig?</h2>
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">🛡️ Enhanced Security</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        Protects against single point of failure. Even if one key is compromised, funds remain secure.
+                    </p>
+                </div>
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">👥 Shared Responsibility</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        Perfect for teams, DAOs, and organizations where decisions should be made collectively.
+                    </p>
+                </div>
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">🔍 Transparency & Audit</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        Every transaction is proposed, reviewed, and approved on-chain with full audit trail.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">⚡ Flexibility</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        Can execute any transaction type - transfers, contract interactions, admin operations.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Access -->
+        <div style="margin: 80px 0;">
+            <div class="card" style="text-align: center; padding: 50px;">
+                <h2 style="color: #667eea; margin-bottom: 20px;">Multi-Sig Admin</h2>
+                <p style="font-size: 1.2em; color: #666; margin-bottom: 30px;">
+                    Manage proposals, confirmations, and executions
+                </p>
+                <div>
+                    <a href="admin/" class="btn btn-admin" style="margin: 10px; font-size: 1.1em;">
+                        🔐 Open Admin Panel
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Projects -->
+        <div style="margin: 80px 0;">
+            <h2 style="text-align: center; font-size: 2em; margin-bottom: 40px; color: #333;">Ecosystem Projects</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 3em; margin-bottom: 15px;">🪙</h3>
+                    <h3 style="color: #667eea; margin-bottom: 15px;">KCY Token</h3>
+                    <p style="color: #666; margin-bottom: 20px;">Управлявай KCY токени чрез Multi-Sig</p>
+                    <a href="/token/" class="btn">Learn More →</a>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 3em; margin-bottom: 15px;">💬</h3>
+                    <h3 style="color: #667eea; margin-bottom: 15px;">AMS Chat</h3>
+                    <p style="color: #666; margin-bottom: 20px;">Координирай с екипа си</p>
+                    <a href="/chat/" class="btn">Open Chat →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/shared/js/config.js"></script>
+    <script src="/shared/js/navigation.js"></script>
+</body>
+</html>

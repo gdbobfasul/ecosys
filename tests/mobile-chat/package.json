@@ -1,0 +1,20 @@
+{
+  "name": "ams-chat-web-tests",
+  "version": "001.00003",
+  "description": "Test suite for AMS Chat Web App v4.3",
+  "scripts": {
+    "test": "mocha *.test.js --timeout 10000",
+    "test:old": "mocha web.test.js --timeout 10000",
+    "test:v4.3": "mocha v4.3-features.test.js --timeout 10000",
+    "test:all": "mocha web.test.js v4.3-features.test.js --timeout 10000",
+    "test:watch": "mocha *.test.js --watch --timeout 10000"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "chai": "^4.3.10"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.2.2",
+    "uuid": "^9.0.1"
+  }
+}

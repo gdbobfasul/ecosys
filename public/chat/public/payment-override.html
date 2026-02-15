@@ -1,0 +1,168 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Override - Admin</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 20px; }
+    h1 { color: #333; }
+    .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+    .section { border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 8px; }
+    input, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; }
+    button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+    button:hover { background: #0056b3; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background: #f5f5f5; font-weight: 600; }
+    .hidden { display: none; }
+    .badge-active { background: #d4edda; color: #155724; padding: 4px 10px; border-radius: 12px; }
+    .badge-expired { background: #f8d7da; color: #721c24; padding: 4px 10px; border-radius: 12px; }
+  </style>
+</head>
+<body>
+  <a href="/admin.html">← Back to Admin Panel</a>
+  <h1>💳 Payment Override</h1>
+  
+  <div class="warning">
+    <strong>⚠️ Warning:</strong> Extends database dates only. Does NOT affect blockchain/Stripe.
+  </div>
+  
+  <!-- Find User -->
+  <div class="section">
+    <h3>1. Find User</h3>
+    <input type="text" id="phone" placeholder="Phone number">
+    <button onclick="findUser()">Find</button>
+  </div>
+  
+  <!-- User Info -->
+  <div id="userInfo" class="section hidden">
+    <h3>2. User Info</h3>
+    <table>
+      <tr><td>Phone:</td><td id="u_phone"></td></tr>
+      <tr><td>Name:</td><td id="u_name"></td></tr>
+      <tr><td>Login:</td><td id="u_login"></td></tr>
+      <tr><td>Paid Until:</td><td id="u_paid"></td></tr>
+      <tr><td>Emergency:</td><td id="u_emerg"></td></tr>
+    </table>
+  </div>
+  
+  <!-- Actions -->
+  <div id="actions" class="section hidden">
+    <h3>3. Apply Override</h3>
+    <div style="margin: 15px 0;">
+      <h4>🔓 Login Access</h4>
+      <input type="number" id="loginDays" value="30" min="1" max="365" style="width: 100px;"> days
+      <button onclick="apply('login')">Apply</button>
+    </div>
+    <div style="margin: 15px 0;">
+      <h4>🚨 Emergency Button</h4>
+      <input type="number" id="emergDays" value="30" min="1" max="365" style="width: 100px;"> days
+      <button onclick="apply('emergency')">Apply</button>
+    </div>
+    <textarea id="reason" rows="3" placeholder="Reason (min 10 chars)"></textarea>
+  </div>
+  
+  <!-- History -->
+  <div class="section">
+    <h3>📜 History</h3>
+    <table id="history">
+      <thead><tr><th>Date</th><th>Phone</th><th>Action</th><th>Days</th><th>Reason</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    let userId = null;
+
+    async function findUser() {
+      const phone = document.getElementById('phone').value.trim();
+      if (!phone) return alert('Enter phone');
+      
+      const res = await fetch(`/api/admin/payment-override/user/${phone}`);
+      const data = await res.json();
+      
+      if (!res.ok) return alert(data.error);
+      
+      userId = data.id;
+      document.getElementById('u_phone').textContent = data.phone;
+      document.getElementById('u_name').textContent = data.full_name || 'N/A';
+      
+      const now = new Date();
+      const paid = data.paid_until ? new Date(data.paid_until) : null;
+      const loginOk = data.subscription_active && paid && paid > now;
+      
+      document.getElementById('u_login').innerHTML = loginOk ? 
+        '<span class="badge-active">Active</span>' : 
+        '<span class="badge-expired">Expired</span>';
+      document.getElementById('u_paid').textContent = paid ? paid.toLocaleString() : 'Never';
+      
+      const emerg = data.emergency_active_until ? new Date(data.emergency_active_until) : null;
+      const emergOk = data.emergency_active && emerg && emerg > now;
+      
+      document.getElementById('u_emerg').innerHTML = emergOk ? 
+        '<span class="badge-active">Active</span>' : 
+        '<span class="badge-expired">Inactive</span>';
+      
+      document.getElementById('userInfo').classList.remove('hidden');
+      document.getElementById('actions').classList.remove('hidden');
+    }
+
+    async function apply(action) {
+      if (!userId) return alert('Find user first');
+      
+      const reason = document.getElementById('reason').value.trim();
+      if (!reason || reason.length < 10) return alert('Reason required (10+ chars)');
+      
+      const days = action === 'login' ? 
+        document.getElementById('loginDays').value : 
+        document.getElementById('emergDays').value;
+      
+      const res = await fetch('/api/admin/payment-override/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, action, days: parseInt(days), reason })
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok) {
+        alert('✅ Override applied!');
+        document.getElementById('reason').value = '';
+        loadHistory();
+        findUser(); // Refresh
+      } else {
+        alert(data.error);
+      }
+    }
+
+    async function loadHistory() {
+      const res = await fetch('/api/admin/payment-override/history');
+      const data = await res.json();
+      
+      const tbody = document.querySelector('#history tbody');
+      tbody.innerHTML = '';
+      
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: #999;">No history</td></tr>';
+        return;
+      }
+      
+      data.forEach(r => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${new Date(r.created_at).toLocaleString()}</td>
+            <td>${r.phone}</td>
+            <td>${r.action === 'login' ? '🔓 Login' : '🚨 Emerg'}</td>
+            <td>${r.days}d</td>
+            <td>${r.reason}</td>
+          </tr>
+        `;
+      });
+    }
+
+    loadHistory();
+  </script>
+</body>
+</html>

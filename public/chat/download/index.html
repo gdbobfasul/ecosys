@@ -1,0 +1,459 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Свали AMS Chat приложението за Android и iOS">
+    <title>Download AMS Chat - Mobile App</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .download-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+        }
+        .download-hero h1 { font-size: 3.5em; margin-bottom: 20px; }
+        .download-hero p { font-size: 1.3em; opacity: 0.95; margin-bottom: 40px; }
+        
+        .app-preview {
+            max-width: 300px;
+            margin: 0 auto 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .download-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 50px 0;
+        }
+        
+        .store-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 30px;
+            background: white;
+            color: #333;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            min-width: 200px;
+        }
+        
+        .store-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .store-btn.android {
+            background: #3DDC84;
+            color: white;
+        }
+        
+        .store-btn.ios {
+            background: #000;
+            color: white;
+        }
+        
+        .store-btn.apk {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .store-btn .icon {
+            font-size: 2em;
+        }
+        
+        .store-btn .text {
+            text-align: left;
+        }
+        
+        .store-btn .text small {
+            display: block;
+            font-size: 0.7em;
+            opacity: 0.8;
+            font-weight: normal;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 50px auto;
+            max-width: 1200px;
+        }
+        
+        .feature-box {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .feature-box .icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .feature-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .qr-section {
+            background: #f8f9fa;
+            padding: 60px 20px;
+            margin: 50px 0;
+        }
+        
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .qr-box {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: #e0e0e0;
+            margin: 0 auto 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+        }
+        
+        .platforms {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin: 50px 0;
+        }
+        
+        .platform-card {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .platform-card .icon {
+            font-size: 5em;
+            margin-bottom: 10px;
+        }
+        
+        .coming-soon {
+            opacity: 0.6;
+            filter: grayscale(100%);
+        }
+        
+        .coming-soon::after {
+            content: "Coming Soon";
+            display: block;
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .download-hero h1 { font-size: 2.5em; }
+            .store-btn { min-width: 160px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="download-hero">
+        <h1>📱 Download AMS Chat</h1>
+        <p>Свали мобилното приложение за Android и iOS</p>
+        
+        <!-- App preview (ако имаш screenshot) -->
+        <!-- <img src="/images/app-preview.png" alt="AMS Chat App" class="app-preview"> -->
+    </div>
+
+    <div class="container">
+        <!-- Download Buttons -->
+        <div class="download-buttons">
+            <!-- Google Play -->
+            <a href="#" class="store-btn android" id="play-store-btn">
+                <span class="icon">📱</span>
+                <span class="text">
+                    <small>GET IT ON</small>
+                    <strong>Google Play</strong>
+                </span>
+            </a>
+            
+            <!-- App Store -->
+            <a href="#" class="store-btn ios" id="app-store-btn">
+                <span class="icon">🍎</span>
+                <span class="text">
+                    <small>Download on the</small>
+                    <strong>App Store</strong>
+                </span>
+            </a>
+            
+            <!-- Direct APK -->
+            <a href="#" class="store-btn apk" id="apk-download-btn">
+                <span class="icon">📦</span>
+                <span class="text">
+                    <small>Direct Download</small>
+                    <strong>APK File</strong>
+                </span>
+            </a>
+        </div>
+
+        <!-- App Info -->
+        <div style="max-width: 800px; margin: 50px auto; text-align: center;">
+            <h2 style="color: #667eea; margin-bottom: 20px; font-size: 2em;">За Приложението</h2>
+            <p style="font-size: 1.1em; color: #666; line-height: 1.8;">
+                <strong>AMS Chat</strong> е криптирано мобилно приложение за сигурна комуникация. 
+                Поддържа Android (версия 8.0+) и iOS (версия 13.4+). Безплатно за сваляне с опция 
+                за subscription на 300 KCY токена или €5/месец за premium функции.
+            </p>
+        </div>
+
+        <!-- Features -->
+        <h2 style="text-align: center; margin: 80px 0 50px; font-size: 2.5em; color: #333;">Функции</h2>
+        <div class="features-grid">
+            <div class="feature-box">
+                <div class="icon">🔐</div>
+                <h3>End-to-End Encryption</h3>
+                <p style="color: #666;">Всички съобщения са напълно криптирани</p>
+            </div>
+            
+            <div class="feature-box">
+                <div class="icon">📸</div>
+                <h3>Мултимедия</h3>
+                <p style="color: #666;">Споделяй снимки, видео и глас</p>
+            </div>
+            
+            <div class="feature-box">
+                <div class="icon">👥</div>
+                <h3>Групи</h3>
+                <p style="color: #666;">Създавай криптирани групови чатове</p>
+            </div>
+            
+            <div class="feature-box">
+                <div class="icon">📍</div>
+                <h3>Локация</h3>
+                <p style="color: #666;">Намери хора и услуги наблизо</p>
+            </div>
+            
+            <div class="feature-box">
+                <div class="icon">💰</div>
+                <h3>Crypto Payments</h3>
+                <p style="color: #666;">Плащай с KCY токени</p>
+            </div>
+            
+            <div class="feature-box">
+                <div class="icon">🚫</div>
+                <h3>Без Реклами</h3>
+                <p style="color: #666;">Чиста комуникация без реклами</p>
+            </div>
+        </div>
+
+        <!-- QR Codes Section -->
+        <div class="qr-section">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: 50px; font-size: 2em;">Scan QR Code</h2>
+                <div class="qr-grid">
+                    <div class="qr-box">
+                        <div class="qr-code" id="android-qr">📱</div>
+                        <h3 style="color: #3DDC84; margin-bottom: 10px;">Android</h3>
+                        <p style="color: #666; font-size: 0.9em;">Scan за Google Play</p>
+                    </div>
+                    
+                    <div class="qr-box">
+                        <div class="qr-code" id="ios-qr">🍎</div>
+                        <h3 style="color: #000; margin-bottom: 10px;">iOS</h3>
+                        <p style="color: #666; font-size: 0.9em;">Scan за App Store</p>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 30px; color: #888;">
+                    <small>QR кодовете ще бъдат добавени след публикуване в stores</small>
+                </p>
+            </div>
+        </div>
+
+        <!-- All Platforms -->
+        <h2 style="text-align: center; margin: 80px 0 50px; font-size: 2em;">Всички Платформи</h2>
+        <div class="platforms">
+            <div class="platform-card">
+                <div class="icon">📱</div>
+                <h3 style="color: #3DDC84;">Google Play</h3>
+                <p style="color: #666;">Android 8.0+</p>
+            </div>
+            
+            <div class="platform-card">
+                <div class="icon">🍎</div>
+                <h3>App Store</h3>
+                <p style="color: #666;">iOS 13.4+</p>
+            </div>
+            
+            <div class="platform-card">
+                <div class="icon">📦</div>
+                <h3 style="color: #6c757d;">Direct APK</h3>
+                <p style="color: #666;">Side-load</p>
+            </div>
+            
+            <div class="platform-card coming-soon">
+                <div class="icon">🐦</div>
+                <h3 style="color: #1DA1F2;">F-Droid</h3>
+                <p style="color: #666;">Open Source</p>
+            </div>
+            
+            <div class="platform-card coming-soon">
+                <div class="icon">📱</div>
+                <h3>Galaxy Store</h3>
+                <p style="color: #666;">Samsung</p>
+            </div>
+            
+            <div class="platform-card coming-soon">
+                <div class="icon">🌸</div>
+                <h3 style="color: #E4002B;">AppGallery</h3>
+                <p style="color: #666;">Huawei</p>
+            </div>
+        </div>
+
+        <!-- Installation Guide -->
+        <div style="max-width: 800px; margin: 80px auto;">
+            <h2 style="text-align: center; margin-bottom: 40px; font-size: 2em;">Как да инсталираш?</h2>
+            
+            <div class="card" style="margin-bottom: 30px;">
+                <h3 style="color: #3DDC84; margin-bottom: 15px;">📱 Android (Google Play)</h3>
+                <ol style="color: #666; line-height: 2; padding-left: 20px;">
+                    <li>Натисни бутона "Google Play" по-горе</li>
+                    <li>Ще бъдеш пренасочен към Google Play Store</li>
+                    <li>Натисни "Install"</li>
+                    <li>Приложението ще се свали и инсталира автоматично</li>
+                </ol>
+            </div>
+            
+            <div class="card" style="margin-bottom: 30px;">
+                <h3 style="color: #000; margin-bottom: 15px;">🍎 iOS (App Store)</h3>
+                <ol style="color: #666; line-height: 2; padding-left: 20px;">
+                    <li>Натисни бутона "App Store" по-горе</li>
+                    <li>Ще бъдеш пренасочен към Apple App Store</li>
+                    <li>Натисни "GET"</li>
+                    <li>Потвърди с Touch ID / Face ID</li>
+                </ol>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #6c757d; margin-bottom: 15px;">📦 Direct APK (Android)</h3>
+                <ol style="color: #666; line-height: 2; padding-left: 20px;">
+                    <li>Натисни бутона "APK File"</li>
+                    <li>Файлът ще започне да се сваля</li>
+                    <li>Отвори файла след download</li>
+                    <li>Разреши "Unknown Sources" ако се иска</li>
+                    <li>Натисни "Install"</li>
+                </ol>
+                <div class="alert alert-warning" style="margin-top: 15px;">
+                    <strong>⚠️ Внимание:</strong> Сваляй APK файла само от този официален сайт!
+                </div>
+            </div>
+        </div>
+
+        <!-- System Requirements -->
+        <div style="background: #f8f9fa; padding: 60px 20px; margin: 80px -20px; border-radius: 30px;">
+            <h2 style="text-align: center; margin-bottom: 40px; font-size: 2em;">Системни Изисквания</h2>
+            <div style="max-width: 600px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div class="card">
+                    <h3 style="color: #3DDC84; margin-bottom: 15px;">Android</h3>
+                    <ul style="list-style: none; padding: 0; color: #666;">
+                        <li>✓ Android 8.0 или по-нова</li>
+                        <li>✓ 100MB свободно място</li>
+                        <li>✓ Интернет връзка</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: #000; margin-bottom: 15px;">iOS</h3>
+                    <ul style="list-style: none; padding: 0; color: #666;">
+                        <li>✓ iOS 13.4 или по-нова</li>
+                        <li>✓ 100MB свободно място</li>
+                        <li>✓ Интернет връзка</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support -->
+        <div style="text-align: center; margin: 80px 0;">
+            <h2 style="color: #667eea; margin-bottom: 20px;">Нужна е помощ?</h2>
+            <p style="color: #666; font-size: 1.1em; margin-bottom: 30px;">
+                Свържи се с нас или посети документацията
+            </p>
+            <div>
+                <a href="https://t.me/kcy_ecosystem" class="btn" style="margin: 10px;" target="_blank">💬 Telegram</a>
+                <a href="https://discord.gg/kcy" class="btn btn-secondary" style="margin: 10px;" target="_blank">💬 Discord</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/shared/js/config.js"></script>
+    <script src="/shared/js/navigation.js"></script>
+    <script>
+        // Load app links from config
+        document.addEventListener('DOMContentLoaded', function() {
+            const playStoreBtn = document.getElementById('play-store-btn');
+            const appStoreBtn = document.getElementById('app-store-btn');
+            const apkBtn = document.getElementById('apk-download-btn');
+            
+            // Get links from config
+            const android = KCY_CONFIG.mobileApp.android;
+            const ios = KCY_CONFIG.mobileApp.ios;
+            
+            // Set hrefs
+            if (android.playStore) {
+                playStoreBtn.href = android.playStore;
+            } else {
+                playStoreBtn.style.opacity = '0.5';
+                playStoreBtn.style.cursor = 'not-allowed';
+                playStoreBtn.onclick = (e) => {
+                    e.preventDefault();
+                    alert('Google Play link coming soon!');
+                };
+            }
+            
+            if (ios.appStore) {
+                appStoreBtn.href = ios.appStore;
+            } else {
+                appStoreBtn.style.opacity = '0.5';
+                appStoreBtn.style.cursor = 'not-allowed';
+                appStoreBtn.onclick = (e) => {
+                    e.preventDefault();
+                    alert('App Store link coming soon!');
+                };
+            }
+            
+            if (android.apkDirect) {
+                apkBtn.href = android.apkDirect;
+            } else {
+                apkBtn.style.opacity = '0.5';
+                apkBtn.style.cursor = 'not-allowed';
+                apkBtn.onclick = (e) => {
+                    e.preventDefault();
+                    alert('APK download coming soon!');
+                };
+            }
+        });
+    </script>
+</body>
+</html>

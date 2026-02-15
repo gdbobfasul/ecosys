@@ -1,0 +1,599 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подай сигнал - AMS Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .limit-info {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        select, input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .photo-upload {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .photo-upload:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .photo-upload.has-image {
+            border-color: #4caf50;
+            background: #f1f8f4;
+        }
+        
+        .photo-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 15px;
+            border-radius: 10px;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .location-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .location-coords {
+            font-family: monospace;
+            color: #1976d2;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c62828;
+        }
+        
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚨 Подай сигнал</h1>
+        <p class="subtitle">
+            Помогни на общността като подадеш сигнал за обект, услуга или произшествие. 
+            След одобрение от администратор получаваш <strong>1 безплатен ден</strong> достъп до платформата!
+        </p>
+        
+        <div class="limit-info">
+            ⚠️ <strong>Важно:</strong> Можеш да подадеш само <strong>един сигнал на ден</strong>. 
+            Фалшивите сигнали няма да бъдат одобрени.
+        </div>
+        
+        <div id="message"></div>
+        
+        <form id="signalForm">
+            <div class="form-group">
+                <label for="signalType">Тип на сигнала *</label>
+                <select id="signalType" required>
+                    <option value="">Избери тип...</option>
+                    <optgroup label="Места и обекти">
+                        <option value="Pharmacy">Аптека</option>
+                        <option value="Optician/Eyewear">Оптика/Изработване на очила</option>
+                        <option value="Computer Repair">Компютърен сервиз</option>
+                        <option value="Computer Store">Компютърен магазин</option>
+                        <option value="Shopping Center/Market">Търговски център/Пазар</option>
+                        <option value="Building Materials Store">Строителен магазин</option>
+                        <option value="Construction Exchange">Строителна борса</option>
+                        <option value="Beauty/Hair Salon">Козметичен/Фризьорски салон</option>
+                        <option value="Massage">Масаж</option>
+                        <option value="Sauna">Сауна</option>
+                        <option value="Swimming Pool">Плувен басейн</option>
+                        <option value="Gym">Спортна зала</option>
+                        <option value="Clothing Store">Магазин за дрехи</option>
+                        <option value="Gift Shop">Магазин за подаръци</option>
+                        <option value="Flower Shop">Цветарски магазин</option>
+                        <option value="GSM Repair">GSM сервиз</option>
+                        <option value="Appliance Repair">Сервиз бяла техника</option>
+                        <option value="Appliance Store">Магазин бяла техника</option>
+                        <option value="Bar">Бар</option>
+                        <option value="Coffee/Sweets">Кафе/Сладкарница</option>
+                        <option value="Fast Food">Бързо хранене</option>
+                        <option value="Hi Class Food">Ресторант</option>
+                    </optgroup>
+                    <optgroup label="Произшествия">
+                        <option value="Accident">Авария</option>
+                        <option value="Person Needing Help">Човек нуждаещ се от помощ</option>
+                    </optgroup>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="title">Заглавие/Име на обекта * (макс. 100 символа)</label>
+                <input type="text" id="title" maxlength="100" required placeholder="напр. Аптека 'Здраве', Ресторант 'Черната дупка'">
+                <div class="char-count"><span id="titleCount">0</span>/100</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="workingHours">Работно време (макс. 50 символа)</label>
+                <input type="text" id="workingHours" maxlength="50" placeholder="напр. Денонощно, 09:00-18:00, Почивен: Неделя">
+                <div class="char-count"><span id="hoursCount">0</span>/50</div>
+            </div>
+            
+            <div class="form-group">
+                <label>Снимка *</label>
+                <div class="photo-upload" id="photoUpload" onclick="document.getElementById('fileInput').click()">
+                    <div id="uploadText">
+                        📷 Кликни за добавяне на снимка<br>
+                        <small>Препоръчително: снимка на обекта/мястото</small>
+                    </div>
+                    <img id="photoPreview" class="photo-preview" style="display:none;">
+                </div>
+                <input type="file" id="fileInput" accept="image/*" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Местоположение *</label>
+                <button type="button" class="btn btn-secondary" id="getLocationBtn">
+                    📍 Вземи текущата ми локация
+                </button>
+                <div id="locationInfo" class="location-info" style="display:none;">
+                    ✅ Локацията е заснета!
+                    <div class="location-coords" id="locationCoords"></div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                Подай сигнал
+            </button>
+            
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='chat.html'">
+                Отказ
+            </button>
+        </form>
+    </div>
+    
+    <script>
+        const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+        let latitude = null;
+        let longitude = null;
+        let selectedFile = null;
+        
+        // AUTO-CAPTURE LOCATION ON PAGE LOAD
+        window.addEventListener('DOMContentLoaded', () => {
+            checkEligibility();
+            autoGetLocation();
+        });
+        
+        // Check if user can submit signal today
+        async function checkEligibility() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/signals/can-submit`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (!data.canSubmit) {
+                    showError('Вече си подал сигнал днес. Опитай отново утре!');
+                    document.getElementById('signalForm').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error checking eligibility:', error);
+            }
+        }
+        
+        // Character counters
+        document.getElementById('title').addEventListener('input', (e) => {
+            document.getElementById('titleCount').textContent = e.target.value.length;
+        });
+        
+        document.getElementById('workingHours').addEventListener('input', (e) => {
+            document.getElementById('hoursCount').textContent = e.target.value.length;
+        });
+        
+        // Photo upload
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                selectedFile = file;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('photoPreview').src = e.target.result;
+                    document.getElementById('photoPreview').style.display = 'block';
+                    document.getElementById('uploadText').style.display = 'none';
+                    document.getElementById('photoUpload').classList.add('has-image');
+                    checkFormComplete();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // AUTO GET LOCATION ON PAGE LOAD
+        function autoGetLocation() {
+            if (!navigator.geolocation) {
+                return;
+            }
+            
+            document.getElementById('getLocationBtn').innerHTML = '⏳ Получаване на локация...';
+            document.getElementById('getLocationBtn').disabled = true;
+            
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    latitude = position.coords.latitude;
+                    longitude = position.coords.longitude;
+                    
+                    document.getElementById('locationInfo').style.display = 'block';
+                    document.getElementById('locationCoords').textContent = 
+                        `Координати: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+                    
+                    document.getElementById('getLocationBtn').innerHTML = '✅ Локацията е заснета';
+                    
+                    // CHECK NEARBY SIGNALS (100m radius, first 5)
+                    await checkNearbySignals(latitude, longitude);
+                    
+                    checkFormComplete();
+                },
+                (error) => {
+                    document.getElementById('getLocationBtn').innerHTML = '📍 Вземи текущата ми локация';
+                    document.getElementById('getLocationBtn').disabled = false;
+                }
+            );
+        }
+        
+        // Check for nearby signals within 100m
+        async function checkNearbySignals(lat, lng) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(
+                    `${API_URL}/api/signals/nearby?latitude=${lat}&longitude=${lng}&radius=100&limit=5`,
+                    {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }
+                );
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.objects && data.objects.length > 0) {
+                        showNearbyWarning(data.objects);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking nearby signals:', error);
+            }
+        }
+        
+        // Show nearby objects list with full details
+        function showNearbyWarning(objects) {
+            const objectsHTML = objects.map(obj => `
+                <div style="border: 1px solid #ffc107; border-radius: 8px; padding: 15px; margin: 10px 0; background: white;">
+                    <div style="display: flex; gap: 15px;">
+                        ${obj.photoUrl ? `
+                            <img src="${obj.photoUrl}" alt="${obj.title}" 
+                                 style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+                        ` : `
+                            <div style="width: 80px; height: 80px; background: #f0f0f0; border-radius: 8px; 
+                                        display: flex; align-items: center; justify-content: center; font-size: 40px;">
+                                📍
+                            </div>
+                        `}
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0 0 5px 0; color: #333;">${obj.title}</h4>
+                            <p style="margin: 0; color: #666; font-size: 14px;">${obj.type}</p>
+                            ${obj.workingHours ? `
+                                <p style="margin: 5px 0 0 0; color: #666; font-size: 13px;">⏰ ${obj.workingHours}</p>
+                            ` : ''}
+                            <p style="margin: 5px 0 0 0; color: #999; font-size: 12px; font-family: monospace;">
+                                📍 ${obj.latitude.toFixed(6)}, ${obj.longitude.toFixed(6)}
+                            </p>
+                            <p style="margin: 5px 0 0 0; color: #ff6b6b; font-weight: bold; font-size: 14px;">
+                                📏 ${obj.distance}м
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            const warningHTML = `
+                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 5px;">
+                    <h3 style="color: #856404; margin: 0 0 15px 0;">⚠️ Намерени ${objects.length} близки обекта (100м):</h3>
+                    ${objectsHTML}
+                    <div style="background: #dc3545; color: white; padding: 15px; border-radius: 5px; margin-top: 15px;">
+                        <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 16px;">
+                            ⚠️ Ако виждате обекта, който искате да декларирате, или имате съмнения че вече е деклариран:
+                        </p>
+                        <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.8;">
+                            <li><strong>Убедете се</strong>, че обекта не е деклариран вече.</li>
+                            <li><strong>Проверете декларацията</strong> на обекта дали е правилна - може да подадете сигнал и за грешно деклариран обект.</li>
+                            <li><strong>⛔ Повторно деклариране на обект води до загуба от ЕДИН ДЕН използване на услугите на чата!</strong></li>
+                            <li><strong>За целта можете да направите отделно търсене</strong> в района, в който се намирате, за да се убедите, че обекта, който искате да декларирате, го няма все още в нашата база данни.</li>
+                        </ul>
+                    </div>
+                    <div style="background: #e7f3ff; padding: 15px; border-radius: 5px; margin-top: 15px;">
+                        <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 16px; color: #333;">
+                            🔍 Провери дали обектът съществува:
+                        </p>
+                        <a href="search.html" style="display: block; background: #007bff; color: white; padding: 12px; border-radius: 8px; text-decoration: none; text-align: center; margin: 8px 0; font-weight: bold;">
+                            📍 Търсене по разстояние
+                        </a>
+                        <a href="search.html" style="display: block; background: #007bff; color: white; padding: 12px; border-radius: 8px; text-decoration: none; text-align: center; margin: 8px 0; font-weight: bold;">
+                            🔎 Търсене по нужда
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            const form = document.getElementById('signalForm');
+            const existingWarning = document.getElementById('nearbyWarning');
+            if (existingWarning) {
+                existingWarning.remove();
+            }
+            
+            const warningDiv = document.createElement('div');
+            warningDiv.id = 'nearbyWarning';
+            warningDiv.innerHTML = warningHTML;
+            form.insertBefore(warningDiv, form.firstChild);
+        }
+        
+        // Get location
+        document.getElementById('getLocationBtn').addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                showError('Браузърът не поддържа геолокация!');
+                return;
+            }
+            
+            document.getElementById('getLocationBtn').innerHTML = '⏳ Получаване на локация...';
+            document.getElementById('getLocationBtn').disabled = true;
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    latitude = position.coords.latitude;
+                    longitude = position.coords.longitude;
+                    
+                    document.getElementById('locationInfo').style.display = 'block';
+                    document.getElementById('locationCoords').textContent = 
+                        `Координати: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+                    
+                    document.getElementById('getLocationBtn').innerHTML = '✅ Локацията е заснета';
+                    checkFormComplete();
+                },
+                (error) => {
+                    showError('Не можах да получа локацията. Моля, разреши достъп до местоположението.');
+                    document.getElementById('getLocationBtn').innerHTML = '📍 Опитай отново';
+                    document.getElementById('getLocationBtn').disabled = false;
+                }
+            );
+        });
+        
+        // Check if form is complete
+        function checkFormComplete() {
+            const signalType = document.getElementById('signalType').value;
+            const title = document.getElementById('title').value;
+            const hasPhoto = selectedFile !== null;
+            const hasLocation = latitude !== null && longitude !== null;
+            
+            document.getElementById('submitBtn').disabled = !(signalType && title && hasPhoto && hasLocation);
+        }
+        
+        // Monitor form changes
+        document.getElementById('signalType').addEventListener('change', checkFormComplete);
+        document.getElementById('title').addEventListener('input', checkFormComplete);
+        
+        // Submit form
+        document.getElementById('signalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '⏳ Подаване...';
+            
+            const formData = new FormData();
+            formData.append('signal_type', document.getElementById('signalType').value);
+            formData.append('title', document.getElementById('title').value);
+            formData.append('working_hours', document.getElementById('workingHours').value);
+            formData.append('latitude', latitude);
+            formData.append('longitude', longitude);
+            formData.append('photo', selectedFile);
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/signals/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showSuccess('✅ Сигналът е подаден успешно! Ще бъде прегледан от администратор.');
+                    setTimeout(() => {
+                        window.location.href = 'chat.html';
+                    }, 2000);
+                } else {
+                    showError(data.error || 'Грешка при подаване на сигнал');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Подай сигнал';
+                }
+            } catch (error) {
+                console.error('Error submitting signal:', error);
+                showError('Грешка при подаване на сигнал. Опитай отново.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Подай сигнал';
+            }
+        });
+        
+        function showError(message) {
+            document.getElementById('message').innerHTML = `<div class="error">${message}</div>`;
+        }
+        
+        function showSuccess(message) {
+            document.getElementById('message').innerHTML = `<div class="success">${message}</div>`;
+        }
+        
+        // Check eligibility on load
+        checkEligibility();
+    </script>
+</body>
+</html>

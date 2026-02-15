@@ -1,0 +1,706 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KCY1 Multi-Sig Control</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .status-box {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        
+        .status-box.info { background: #e3f2fd; color: #1976d2; }
+        .status-box.success { background: #e8f5e9; color: #388e3c; }
+        .status-box.warning { background: #fff3e0; color: #f57c00; }
+        .status-box.error { background: #ffebee; color: #d32f2f; }
+        
+        .section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        
+        .section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 5px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .transaction-list {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .transaction-item {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .transaction-item h4 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .transaction-item p {
+            color: #666;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        
+        .confirmations {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .pending {
+            background: #ff9800;
+        }
+        
+        .owners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .owner-card {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            word-break: break-all;
+        }
+        
+        .connected {
+            color: #4caf50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 KCY1 Multi-Sig Control</h1>
+            <p>3-of-5 Multi-Signature Wallet</p>
+            <p>Trezor • Tangem • MetaMask</p>
+        </div>
+        
+        <div class="content">
+            <!-- Status -->
+            <div id="status" class="status-box info">
+                Not connected. Click "Connect Wallet" to start.
+            </div>
+            
+            <!-- Connection -->
+            <div class="section">
+                <h2>🔗 Connection</h2>
+                <button id="connectBtn" onclick="connect()">Connect Wallet</button>
+                <button onclick="disconnect()" style="background: #666;">Disconnect</button>
+                
+                <div id="walletInfo" style="display:none; margin-top: 15px;">
+                    <p><strong>Connected:</strong> <span id="connectedAddress"></span></p>
+                    <p><strong>Network:</strong> <span id="networkName"></span></p>
+                    <p><strong>Multi-Sig Owner:</strong> <span id="isOwner"></span></p>
+                </div>
+            </div>
+            
+            <!-- Owners -->
+            <div class="section">
+                <h2>👥 Multi-Sig Owners (3-of-5 required)</h2>
+                <div id="ownersList" class="owners-grid">
+                    Loading...
+                </div>
+            </div>
+            
+            <!-- Pending Transactions -->
+            <div class="section">
+                <h2>📋 Pending Transactions</h2>
+                <button onclick="loadPendingTxs()">🔄 Refresh</button>
+                <div id="pendingTxs" class="transaction-list">
+                    No pending transactions
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="section">
+                <h2>⚡ Quick Actions</h2>
+                
+                <button onclick="showAction('pause')">⏸️ Pause Trading</button>
+                <button onclick="showAction('blacklist')">🚫 Blacklist Address</button>
+                <button onclick="showAction('mint')">💰 Propose Mint</button>
+                <button onclick="showAction('lock')">🔒 Lock Functions</button>
+                
+                <div id="actionPanel" style="display:none; margin-top: 20px; background: white; padding: 15px; border-radius: 8px;">
+                    <!-- Dynamic action forms will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // ====================================================================
+        // CONFIGURATION - UPDATE THESE!
+        // ====================================================================
+        
+        const MULTISIG_ADDRESS = "0xYOUR_MULTISIG_ADDRESS";  // Update after deployment
+        const TOKEN_ADDRESS = "0xYOUR_TOKEN_ADDRESS";        // Update after deployment
+        
+        const BSC_MAINNET_ID = 56;
+        const BSC_TESTNET_ID = 97;
+        
+        // ====================================================================
+        // STATE
+        // ====================================================================
+        
+        let web3;
+        let multiSigContract;
+        let tokenContract;
+        let currentAccount;
+        
+        // ====================================================================
+        // ABIs (Minimal - only functions we need)
+        // ====================================================================
+        
+        const MULTISIG_ABI = [
+            {"inputs":[{"name":"to","type":"address"},{"name":"data","type":"bytes"}],"name":"submitTransaction","outputs":[{"type":"uint256"}],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"name":"txId","type":"uint256"}],"name":"confirmTransaction","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"name":"txId","type":"uint256"}],"name":"executeTransaction","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"getOwners","outputs":[{"type":"address[5]"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"getPendingTransactions","outputs":[{"type":"uint256[]"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"name":"txId","type":"uint256"}],"name":"getTransaction","outputs":[{"name":"to","type":"address"},{"name":"data","type":"bytes"},{"name":"executed","type":"bool"},{"name":"confirmationCount","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"name":"txId","type":"uint256"},{"name":"owner","type":"address"}],"name":"hasConfirmed","outputs":[{"type":"bool"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"name":"account","type":"address"}],"name":"isOwner","outputs":[{"type":"bool"}],"stateMutability":"view","type":"function"}
+        ];
+        
+        const TOKEN_ABI = [
+            {"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"name":"account","type":"address"},{"name":"status","type":"bool"}],"name":"blacklist","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"name":"amount","type":"uint256"}],"name":"proposeMint","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"lockDEXAddresses","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"lockExemptSlots","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"lockLiquidityPairs","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"unlockDEXAddresses","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"unlockExemptSlots","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"unlockLiquidityPairs","outputs":[],"stateMutability":"nonpayable","type":"function"}
+        ];
+        
+        // ====================================================================
+        // CONNECTION
+        // ====================================================================
+        
+        async function connect() {
+            try {
+                if (typeof window.ethereum === 'undefined') {
+                    showStatus('MetaMask is not installed! Please install MetaMask or use Tangem/Trezor through WalletConnect.', 'error');
+                    return;
+                }
+                
+                showStatus('Connecting...', 'info');
+                
+                const accounts = await window.ethereum.request({ 
+                    method: 'eth_requestAccounts' 
+                });
+                
+                currentAccount = accounts[0];
+                web3 = new Web3(window.ethereum);
+                
+                // Check network
+                const chainId = await web3.eth.getChainId();
+                if (chainId !== BSC_MAINNET_ID && chainId !== BSC_TESTNET_ID) {
+                    showStatus('⚠️ Please switch to BSC network!', 'warning');
+                    return;
+                }
+                
+                // Initialize contracts
+                multiSigContract = new web3.eth.Contract(MULTISIG_ABI, MULTISIG_ADDRESS);
+                tokenContract = new web3.eth.Contract(TOKEN_ABI, TOKEN_ADDRESS);
+                
+                // Check if owner
+                const isOwner = await multiSigContract.methods.isOwner(currentAccount).call();
+                
+                // Update UI
+                document.getElementById('connectedAddress').textContent = 
+                    currentAccount.substring(0, 10) + '...' + currentAccount.substring(36);
+                document.getElementById('networkName').textContent = 
+                    chainId === BSC_MAINNET_ID ? 'BSC Mainnet' : 'BSC Testnet';
+                document.getElementById('isOwner').textContent = isOwner ? '✅ Yes' : '❌ No';
+                document.getElementById('isOwner').className = isOwner ? 'connected' : '';
+                
+                document.getElementById('walletInfo').style.display = 'block';
+                document.getElementById('connectBtn').disabled = true;
+                
+                if (isOwner) {
+                    showStatus('✅ Connected as Multi-Sig Owner!', 'success');
+                } else {
+                    showStatus('⚠️ Connected but NOT a Multi-Sig owner', 'warning');
+                }
+                
+                // Load data
+                await loadOwners();
+                await loadPendingTxs();
+                
+            } catch (error) {
+                console.error(error);
+                showStatus('Connection failed: ' + error.message, 'error');
+            }
+        }
+        
+        function disconnect() {
+            currentAccount = null;
+            document.getElementById('walletInfo').style.display = 'none';
+            document.getElementById('connectBtn').disabled = false;
+            showStatus('Disconnected', 'info');
+        }
+        
+        // ====================================================================
+        // LOAD DATA
+        // ====================================================================
+        
+        async function loadOwners() {
+            try {
+                const owners = await multiSigContract.methods.getOwners().call();
+                const ownersHtml = owners.map((addr, i) => {
+                    const isConnected = addr.toLowerCase() === currentAccount.toLowerCase();
+                    return `
+                        <div class="owner-card">
+                            <strong>${['Trezor 1', 'Trezor 2', 'Tangem 1', 'Tangem 2', 'MetaMask'][i]}</strong>
+                            <div style="margin-top: 5px;">${addr}</div>
+                            ${isConnected ? '<div class="connected" style="margin-top: 5px;">YOU</div>' : ''}
+                        </div>
+                    `;
+                }).join('');
+                
+                document.getElementById('ownersList').innerHTML = ownersHtml;
+            } catch (error) {
+                console.error(error);
+                document.getElementById('ownersList').innerHTML = 'Error loading owners';
+            }
+        }
+        
+        async function loadPendingTxs() {
+            try {
+                showStatus('Loading pending transactions...', 'info');
+                
+                const pendingIds = await multiSigContract.methods.getPendingTransactions().call();
+                
+                if (pendingIds.length === 0) {
+                    document.getElementById('pendingTxs').innerHTML = '<p style="color: #666;">No pending transactions</p>';
+                    showStatus('No pending transactions', 'info');
+                    return;
+                }
+                
+                let html = '';
+                
+                for (const txId of pendingIds) {
+                    const tx = await multiSigContract.methods.getTransaction(txId).call();
+                    const hasConfirmed = await multiSigContract.methods.hasConfirmed(txId, currentAccount).call();
+                    
+                    // Decode function name from data
+                    let functionName = 'Unknown';
+                    if (tx.data.startsWith('0x8456cb59')) functionName = 'pause()';
+                    else if (tx.data.startsWith('0xf9f92be4')) functionName = 'blacklist()';
+                    else if (tx.data.startsWith('0x7b1a4909')) functionName = 'proposeMint()';
+                    
+                    html += `
+                        <div class="transaction-item">
+                            <h4>Transaction #${txId}</h4>
+                            <p><strong>Function:</strong> ${functionName}</p>
+                            <p><strong>Target:</strong> ${tx.to}</p>
+                            <p><strong>Confirmations:</strong> 
+                                <span class="confirmations ${tx.confirmationCount >= 3 ? '' : 'pending'}">
+                                    ${tx.confirmationCount}/3
+                                </span>
+                            </p>
+                            ${hasConfirmed ? 
+                                '<p style="color: #4caf50;">✅ You confirmed this</p>' : 
+                                `<button onclick="confirmTx(${txId})">✅ Confirm Transaction</button>`
+                            }
+                            ${tx.confirmationCount >= 3 ? 
+                                `<button onclick="executeTx(${txId})">🚀 Execute Now</button>` : 
+                                ''
+                            }
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('pendingTxs').innerHTML = html;
+                showStatus(`Found ${pendingIds.length} pending transaction(s)`, 'info');
+                
+            } catch (error) {
+                console.error(error);
+                document.getElementById('pendingTxs').innerHTML = 'Error loading transactions';
+                showStatus('Error loading transactions: ' + error.message, 'error');
+            }
+        }
+        
+        // ====================================================================
+        // ACTIONS
+        // ====================================================================
+        
+        function showAction(action) {
+            const panel = document.getElementById('actionPanel');
+            panel.style.display = 'block';
+            
+            let html = '';
+            
+            if (action === 'pause') {
+                html = `
+                    <h3>⏸️ Pause Trading</h3>
+                    <p>Pause trading for 48 hours (emergency only)</p>
+                    <button onclick="submitPause()">Submit Transaction</button>
+                `;
+            } else if (action === 'blacklist') {
+                html = `
+                    <h3>🚫 Blacklist Address</h3>
+                    <input type="text" id="blacklistAddr" placeholder="0x...">
+                    <button onclick="submitBlacklist()">Submit Transaction</button>
+                `;
+            } else if (action === 'mint') {
+                html = `
+                    <h3>💰 Propose Mint</h3>
+                    <input type="number" id="mintAmount" placeholder="Amount (tokens)">
+                    <p style="color: #666; font-size: 14px;">Max: 500,000 tokens (0.5% of supply)</p>
+                    <button onclick="submitMint()">Submit Transaction</button>
+                `;
+            } else if (action === 'lock') {
+                html = `
+                    <h3>🔒 Lock / Unlock Functions (Multi-Sig Only!)</h3>
+                    <p style="color: #666; margin-bottom: 15px;">
+                        ⚠️ These functions require 3-of-5 multi-sig signatures<br>
+                        ⚠️ Cannot be called directly by owner or exempt slots
+                    </p>
+                    
+                    <h4 style="color: #333; margin-top: 20px;">🔒 Lock (Restrict Changes)</h4>
+                    <button onclick="submitLock('dex')">Lock DEX Addresses</button>
+                    <button onclick="submitLock('slots')">Lock Exempt Slots</button>
+                    <button onclick="submitLock('pairs')">Lock Liquidity Pairs</button>
+                    
+                    <h4 style="color: #333; margin-top: 20px;">🔓 Unlock (Allow Changes)</h4>
+                    <button onclick="submitUnlock('dex')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">Unlock DEX Addresses</button>
+                    <button onclick="submitUnlock('slots')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">Unlock Exempt Slots</button>
+                    <button onclick="submitUnlock('pairs')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">Unlock Liquidity Pairs</button>
+                    
+                    <p style="color: #d32f2f; margin-top: 15px; font-size: 14px;">
+                        ⚠️ WARNING: Lock functions are reversible in v39!<br>
+                        Lock/Unlock require multi-sig approval (3-of-5 signatures)
+                    </p>
+                `;
+            }
+            
+            panel.innerHTML = html;
+        }
+        
+        async function submitPause() {
+            try {
+                showStatus('Encoding transaction...', 'info');
+                
+                // Encode pause() function call
+                const data = tokenContract.methods.pause().encodeABI();
+                
+                showStatus('Submitting to multi-sig...', 'info');
+                
+                const tx = await multiSigContract.methods.submitTransaction(
+                    TOKEN_ADDRESS,
+                    data
+                ).send({
+                    from: currentAccount,
+                    gas: 200000
+                });
+                
+                showStatus('✅ Transaction submitted! TX: ' + tx.transactionHash, 'success');
+                
+                // Reload pending
+                setTimeout(loadPendingTxs, 2000);
+                
+            } catch (error) {
+                console.error(error);
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        async function submitBlacklist() {
+            try {
+                const addr = document.getElementById('blacklistAddr').value;
+                
+                if (!web3.utils.isAddress(addr)) {
+                    showStatus('Invalid address!', 'error');
+                    return;
+                }
+                
+                const data = tokenContract.methods.blacklist(addr, true).encodeABI();
+                
+                showStatus('Submitting to multi-sig...', 'info');
+                
+                const tx = await multiSigContract.methods.submitTransaction(
+                    TOKEN_ADDRESS,
+                    data
+                ).send({
+                    from: currentAccount,
+                    gas: 200000
+                });
+                
+                showStatus('✅ Blacklist transaction submitted!', 'success');
+                setTimeout(loadPendingTxs, 2000);
+                
+            } catch (error) {
+                console.error(error);
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        async function submitMint() {
+            try {
+                const amount = document.getElementById('mintAmount').value;
+                
+                if (!amount || isNaN(amount)) {
+                    showStatus('Invalid amount!', 'error');
+                    return;
+                }
+                
+                const amountWei = web3.utils.toWei(amount, 'ether');
+                const data = tokenContract.methods.proposeMint(amountWei).encodeABI();
+                
+                showStatus('Submitting to multi-sig...', 'info');
+                
+                const tx = await multiSigContract.methods.submitTransaction(
+                    TOKEN_ADDRESS,
+                    data
+                ).send({
+                    from: currentAccount,
+                    gas: 200000
+                });
+                
+                showStatus('✅ Mint transaction submitted!', 'success');
+                setTimeout(loadPendingTxs, 2000);
+                
+            } catch (error) {
+                console.error(error);
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        async function submitLock(type) {
+            if (!confirm(`Lock ${type} via multi-sig? Requires 3 confirmations.`)) {
+                return;
+            }
+            
+            try {
+                let data;
+                if (type === 'dex') {
+                    data = tokenContract.methods.lockDEXAddresses().encodeABI();
+                } else if (type === 'slots') {
+                    data = tokenContract.methods.lockExemptSlots().encodeABI();
+                } else if (type === 'pairs') {
+                    data = tokenContract.methods.lockLiquidityPairs().encodeABI();
+                }
+                
+                showStatus('Submitting to multi-sig...', 'info');
+                
+                const tx = await multiSigContract.methods.submitTransaction(
+                    TOKEN_ADDRESS,
+                    data
+                ).send({
+                    from: currentAccount,
+                    gas: 200000
+                });
+                
+                showStatus(`✅ Lock ${type} transaction submitted!`, 'success');
+                setTimeout(loadPendingTxs, 2000);
+                
+            } catch (error) {
+                console.error(error);
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        async function submitUnlock(type) {
+            if (!confirm(`Unlock ${type} via multi-sig? Requires 3 confirmations. This will allow changes to ${type}.`)) {
+                return;
+            }
+            
+            try {
+                let data;
+                if (type === 'dex') {
+                    data = tokenContract.methods.unlockDEXAddresses().encodeABI();
+                } else if (type === 'slots') {
+                    data = tokenContract.methods.unlockExemptSlots().encodeABI();
+                } else if (type === 'pairs') {
+                    data = tokenContract.methods.unlockLiquidityPairs().encodeABI();
+                }
+                
+                showStatus('Submitting to multi-sig...', 'info');
+                
+                const tx = await multiSigContract.methods.submitTransaction(
+                    TOKEN_ADDRESS,
+                    data
+                ).send({
+                    from: currentAccount,
+                    gas: 200000
+                });
+                
+                showStatus(`✅ Unlock ${type} transaction submitted!`, 'success');
+                setTimeout(loadPendingTxs, 2000);
+                
+            } catch (error) {
+                console.error(error);
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        async function confirmTx(txId) {
+            try {
+                showStatus(`Confirming transaction #${txId}...`, 'info');
+                
+                const tx = await multiSigContract.methods.confirmTransaction(txId).send({
+                    from: currentAccount,
+                    gas: 150000
+                });
+                
+                showStatus(`✅ Transaction #${txId} confirmed!`, 'success');
+                setTimeout(loadPendingTxs, 2000);
+                
+            } catch (error) {
+                console.error(error);
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        async function executeTx(txId) {
+            try {
+                showStatus(`Executing transaction #${txId}...`, 'info');
+                
+                const tx = await multiSigContract.methods.executeTransaction(txId).send({
+                    from: currentAccount,
+                    gas: 300000
+                });
+                
+                showStatus(`✅ Transaction #${txId} executed!`, 'success');
+                setTimeout(loadPendingTxs, 2000);
+                
+            } catch (error) {
+                console.error(error);
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // ====================================================================
+        // HELPERS
+        // ====================================================================
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-box ${type}`;
+        }
+        
+        // Auto-refresh pending transactions every 30 seconds
+        setInterval(() => {
+            if (currentAccount) {
+                loadPendingTxs();
+            }
+        }, 30000);
+    </script>
+    <script src="/shared/js/navigation.js"></script>
+</body>
+</html>

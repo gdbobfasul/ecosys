@@ -1,0 +1,32 @@
+{
+  "name": "2025-12-24-multi-sig",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kucybobfasul/multisig.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kucybobfasul/multisig/issues"
+  },
+  "homepage": "https://github.com/kucybobfasul/multisig#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "ethers": "^6.8.1",
+    "hardhat": "^2.22.17"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  }
+}
