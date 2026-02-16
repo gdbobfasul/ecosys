@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 describe('🧩 Mobile App - Components Tests', () => {
-  const APP_ROOT = path.join(__dirname, '..');
+  const APP_ROOT = path.join(__dirname, '..', '..', 'private', 'mobile-chat');
   
   it('should have common components', () => {
     const components = ['Button', 'Input', 'Card', 'Header', 'Loading'];

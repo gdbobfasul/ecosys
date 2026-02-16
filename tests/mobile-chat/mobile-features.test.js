@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 describe('⚡ Mobile App - Features Tests', () => {
-  const APP_ROOT = path.join(__dirname, '..');
+  const APP_ROOT = path.join(__dirname, '..', '..', 'private', 'mobile-chat');
 
   describe('📦 Package Configuration', () => {
     it('should have package.json', () => {

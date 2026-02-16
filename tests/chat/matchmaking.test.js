@@ -1,4 +1,4 @@
-// Version: 1.0056
+// Version: 1.0077
 // Matchmaking System Tests
 // Tests для AI-powered dating/matchmaking feature
 
@@ -398,8 +398,8 @@ describe('Matchmaking System Tests', () => {
 
     // Verify dislikes saved
     const savedDislikes = db.prepare(
-      'SELECT * FROM matchmaking_dislikes WHERE user_id = ? AND blocked_user_id = ?'
-    ).all(userId1, userId3);
+      'SELECT * FROM matchmaking_dislikes WHERE user_id = ? AND disliked_attribute IN (?, ?, ?)'
+    ).all(userId1, 'height_cm', 'age', 'smoking');
     expect(savedDislikes.length).toBe(3);
   });
 
@@ -430,7 +430,10 @@ describe('Matchmaking System Tests', () => {
   // TEST 10: Dislike Limit (500 max)
   // ================================================================
   test('Should not exceed 500 dislikes limit', async () => {
-    // Add 500 dislikes
+    // Clear existing dislikes for clean test
+    db.prepare('DELETE FROM matchmaking_dislikes WHERE user_id = ?').run(userId1);
+
+    // Add exactly 500 dislikes
     const stmt = db.prepare(`
       INSERT INTO matchmaking_dislikes (user_id, disliked_attribute, disliked_value)
       VALUES (?, ?, ?)

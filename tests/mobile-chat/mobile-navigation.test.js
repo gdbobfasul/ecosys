@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 describe('📱 Mobile App - Navigation Tests', () => {
-  const APP_ROOT = path.join(__dirname, '..');
+  const APP_ROOT = path.join(__dirname, '..', '..', 'private', 'mobile-chat');
   
   it('should have navigation structure', () => {
     const exists = fs.existsSync(path.join(APP_ROOT, 'src', 'navigation'));

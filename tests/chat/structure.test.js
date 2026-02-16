@@ -1,6 +1,14 @@
-// Version: 1.0073
+// Version: 1.0078
 // Project Structure Validation Tests - kcy-ecosystem
 // Run: npm test structure.test.js
+//
+// ============================================
+// ИНСТАЛИРАНЕ НА ТЕСТОВАТА СРЕДА (Windows):
+// ============================================
+// rm -rf node_modules package-lock.json
+// npm install --legacy-peer-deps
+// npm test
+// ============================================
 
 const fs = require('fs');
 const path = require('path');
