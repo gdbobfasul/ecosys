@@ -3,6 +3,7 @@
 // Uses: from_user_id/to_user_id, text (not content), NO conversations table
 
 const assert = require('assert');
+const { DB_SCHEMA_PATH } = require('./test-helper');
 const Database = require('better-sqlite3');
 const fs = require('fs');
 const path = require('path');
@@ -18,7 +19,7 @@ describe('💬 Messaging System Tests', () => {
     }
     
     db = new Database(TEST_DB);
-    const schema = fs.readFileSync(path.join(__dirname, '../database/db_setup.sql'), 'utf8');
+    const schema = fs.readFileSync(DB_SCHEMA_PATH, 'utf8');
     db.exec(schema);
     
     // Create test users

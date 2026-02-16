@@ -47,19 +47,47 @@ describe('Matchmaking System Tests', () => {
         hair_color TEXT,
         eye_color TEXT,
         body_type TEXT,
+        ethnicity TEXT,
         smoking TEXT,
         drinking TEXT,
+        diet TEXT,
         exercise TEXT,
+        pets TEXT,
         children TEXT,
-        education TEXT,
+        living_situation TEXT,
         employment TEXT,
+        education TEXT,
+        religion TEXT,
         personality TEXT,
-        communication_style TEXT,
-        relationship_goals TEXT,
         interests TEXT,
+        music_taste TEXT,
+        movies_taste TEXT,
+        hobbies TEXT,
+        political_views TEXT,
+        travel_frequency TEXT,
+        night_owl_or_early_bird TEXT,
+        introvert_or_extrovert TEXT,
+        communication_style TEXT,
+        conflict_resolution TEXT,
+        love_language TEXT,
+        humor_type TEXT,
+        relationship_goals TEXT,
+        deal_breakers TEXT,
         country TEXT,
         city TEXT,
         distance_km INTEGER,
+        willing_to_relocate TEXT,
+        language_spoken TEXT,
+        income_range TEXT,
+        financial_goals TEXT,
+        car_ownership TEXT,
+        tech_savviness TEXT,
+        social_media_usage TEXT,
+        family_values TEXT,
+        jealousy_level TEXT,
+        independence_level TEXT,
+        future_plans TEXT,
+        commitment_level TEXT,
         created_at TEXT DEFAULT (datetime('now')),
         updated_at TEXT DEFAULT (datetime('now')),
         FOREIGN KEY (user_id) REFERENCES users(id),
@@ -69,12 +97,10 @@ describe('Matchmaking System Tests', () => {
       CREATE TABLE matchmaking_dislikes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
-        dislike_field TEXT NOT NULL,
-        dislike_value TEXT NOT NULL,
-        blocked_user_id INTEGER,
+        disliked_attribute TEXT NOT NULL,
+        disliked_value TEXT NOT NULL,
         created_at TEXT DEFAULT (datetime('now')),
-        FOREIGN KEY (user_id) REFERENCES users(id),
-        FOREIGN KEY (blocked_user_id) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES users(id)
       );
 
       CREATE TABLE matchmaking_invitations (
@@ -152,6 +178,7 @@ describe('Matchmaking System Tests', () => {
       if (!token) return res.status(401).json({ error: 'No token' });
       try {
         const decoded = jwt.verify(token, 'test-secret');
+        req.userId = decoded.userId;  // ✓ FIX: Set req.userId!
         req.user = decoded;
         next();
       } catch (err) {
@@ -189,6 +216,10 @@ describe('Matchmaking System Tests', () => {
       .post('/api/matchmaking/criteria')
       .set('Authorization', `Bearer ${token1}`)
       .send(criteria);
+
+    if (response.status !== 200) {
+      console.log('❌ ERROR:', response.status, response.body);
+    }
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
@@ -378,7 +409,7 @@ describe('Matchmaking System Tests', () => {
   test('Should filter invitations based on dislikes', async () => {
     // User has dislike for height 175cm
     db.prepare(`
-      INSERT INTO matchmaking_dislikes (user_id, dislike_field, dislike_value)
+      INSERT INTO matchmaking_dislikes (user_id, disliked_attribute, disliked_value)
       VALUES (?, 'height_cm', '175')
     `).run(userId2);
 
@@ -401,7 +432,7 @@ describe('Matchmaking System Tests', () => {
   test('Should not exceed 500 dislikes limit', async () => {
     // Add 500 dislikes
     const stmt = db.prepare(`
-      INSERT INTO matchmaking_dislikes (user_id, dislike_field, dislike_value)
+      INSERT INTO matchmaking_dislikes (user_id, disliked_attribute, disliked_value)
       VALUES (?, ?, ?)
     `);
 

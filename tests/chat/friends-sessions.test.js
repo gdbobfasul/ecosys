@@ -1,6 +1,7 @@
 // Version: 1.0056
 // Friends & Sessions Tests
 const assert = require('assert');
+const { DB_SCHEMA_PATH } = require('./test-helper');
 const Database = require('better-sqlite3');
 const fs = require('fs');
 const path = require('path');
@@ -12,7 +13,7 @@ describe('👥 Friends & Sessions Tests', () => {
   before(() => {
     if (fs.existsSync(TEST_DB)) fs.unlinkSync(TEST_DB);
     db = new Database(TEST_DB);
-    const schema = fs.readFileSync(path.join(__dirname, '../database/db_setup.sql'), 'utf8');
+    const schema = fs.readFileSync(DB_SCHEMA_PATH, 'utf8');
     db.exec(schema);
     db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age) VALUES (?, ?, ?, ?, ?)`).run('+359888111111', 'hash', 'User 1', 'male', 25);
     db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age) VALUES (?, ?, ?, ?, ?)`).run('+359888222222', 'hash', 'User 2', 'female', 28);

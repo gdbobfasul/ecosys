@@ -1,7 +1,8 @@
-// Version: 1.0056
+// Version: 1.0072
 module.exports = {
   testEnvironment: 'node',
-  testMatch: ['**/tests/chat/**/*.test.js'],
+  rootDir: '.',
+  testMatch: ['<rootDir>/tests/chat/**/*.test.js'],
   coverageDirectory: 'coverage',
   collectCoverageFrom: [
     'private/chat/**/*.js',
@@ -13,5 +14,7 @@ module.exports = {
   forceExit: true,
   clearMocks: true,
   resetMocks: true,
-  restoreMocks: true
+  restoreMocks: true,
+  modulePathIgnorePatterns: ['<rootDir>/tests/chat/package.json', '<rootDir>/tests/mobile-chat/package.json'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js']
 };

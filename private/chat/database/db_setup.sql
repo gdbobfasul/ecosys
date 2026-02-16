@@ -327,3 +327,119 @@ VALUES ('admin', '$2b$10$rBV2kHaW7RvJhWxGg0KhJeqGJ0Y9mYvH7K8KZxBqWqP4qOa8Jz0Ny')
 INSERT OR IGNORE INTO critical_words (word) VALUES 
 ('drugs'), ('weapon'), ('illegal'), ('bomb'), ('terror'),
 ('kill'), ('murder'), ('kidnap'), ('ransom'), ('threat');
+
+-- ================================================================
+-- MATCHMAKING TABLES
+-- ================================================================
+
+-- Matchmaking criteria (50 fields for partner preferences)
+CREATE TABLE IF NOT EXISTS matchmaking_criteria (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL UNIQUE,
+  height_min INTEGER,
+  height_max INTEGER,
+  weight_min INTEGER,
+  weight_max INTEGER,
+  age_min INTEGER,
+  age_max INTEGER,
+  hair_color TEXT,
+  eye_color TEXT,
+  body_type TEXT,
+  ethnicity TEXT,
+  smoking TEXT,
+  drinking TEXT,
+  diet TEXT,
+  exercise TEXT,
+  pets TEXT,
+  children TEXT,
+  living_situation TEXT,
+  employment TEXT,
+  education TEXT,
+  religion TEXT,
+  personality TEXT,
+  interests TEXT,
+  music_taste TEXT,
+  movies_taste TEXT,
+  hobbies TEXT,
+  political_views TEXT,
+  travel_frequency TEXT,
+  night_owl_or_early_bird TEXT,
+  introvert_or_extrovert TEXT,
+  communication_style TEXT,
+  conflict_resolution TEXT,
+  love_language TEXT,
+  humor_type TEXT,
+  relationship_goals TEXT,
+  deal_breakers TEXT,
+  country TEXT,
+  city TEXT,
+  distance_km INTEGER,
+  willing_to_relocate TEXT,
+  language_spoken TEXT,
+  income_range TEXT,
+  financial_goals TEXT,
+  car_ownership TEXT,
+  tech_savviness TEXT,
+  social_media_usage TEXT,
+  family_values TEXT,
+  jealousy_level TEXT,
+  independence_level TEXT,
+  future_plans TEXT,
+  commitment_level TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Matchmaking invitations
+CREATE TABLE IF NOT EXISTS matchmaking_invitations (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  sender_id INTEGER NOT NULL,
+  receiver_id INTEGER NOT NULL,
+  status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'accepted', 'rejected')),
+  created_at TEXT DEFAULT (datetime('now')),
+  responded_at TEXT,
+  FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Matchmaking dislikes (up to 500 per user)
+CREATE TABLE IF NOT EXISTS matchmaking_dislikes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  disliked_attribute TEXT NOT NULL,
+  disliked_value TEXT NOT NULL,
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Matchmaking searches (payment tracking - 5 EUR per search)
+CREATE TABLE IF NOT EXISTS matchmaking_searches (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  amount_charged REAL DEFAULT 5.0,
+  matches_found INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Matchmaking monthly subscriptions
+CREATE TABLE IF NOT EXISTS matchmaking_subscriptions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  amount_charged REAL DEFAULT 9.99,
+  month_year TEXT NOT NULL,
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  UNIQUE(user_id, month_year)
+);
+
+-- Matchmaking indexes
+CREATE INDEX IF NOT EXISTS idx_matchmaking_criteria_user ON matchmaking_criteria(user_id);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_invitations_sender ON matchmaking_invitations(sender_id);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_invitations_receiver ON matchmaking_invitations(receiver_id);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_invitations_status ON matchmaking_invitations(status);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_dislikes_user ON matchmaking_dislikes(user_id);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_searches_user ON matchmaking_searches(user_id);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_subscriptions_user ON matchmaking_subscriptions(user_id);
+

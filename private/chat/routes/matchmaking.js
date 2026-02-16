@@ -5,14 +5,17 @@ const { authenticateToken } = require('../middleware/auth');
 
 function createMatchmakingRoutes(db) {
   const router = express.Router();
+  
+  // Create auth middleware instance with db
+  const auth = authenticateToken(db);
 
   // ================================================================
   // SAVE CRITERIA - Save user's 50 criteria
   // POST /api/matchmaking/criteria
   // ================================================================
-  router.post('/criteria', authenticateToken, async (req, res) => {
+  router.post('/criteria', auth, async (req, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
       const criteria = req.body;
 
       // Check if user already has criteria
@@ -113,9 +116,9 @@ function createMatchmakingRoutes(db) {
   // GET CRITERIA - Get user's saved criteria
   // GET /api/matchmaking/criteria
   // ================================================================
-  router.get('/criteria', authenticateToken, async (req, res) => {
+  router.get('/criteria', auth, async (req, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
 
       const criteria = db.prepare(
         'SELECT * FROM matchmaking_criteria WHERE user_id = ?'
@@ -136,9 +139,9 @@ function createMatchmakingRoutes(db) {
   // FIND MATCHES - Find matches based on criteria ($5 charge)
   // POST /api/matchmaking/find
   // ================================================================
-  router.post('/find', authenticateToken, async (req, res) => {
+  router.post('/find', auth, async (req, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
 
       // Get user's payment info
       const user = db.prepare(
@@ -187,7 +190,7 @@ function createMatchmakingRoutes(db) {
 
       // Get user's dislikes
       const dislikes = db.prepare(
-        'SELECT dislike_field, dislike_value FROM matchmaking_dislikes WHERE user_id = ?'
+        'SELECT disliked_attribute, dislike_value FROM matchmaking_dislikes WHERE user_id = ?'
       ).all(userId);
 
       // Get blocked users
@@ -258,10 +261,10 @@ function createMatchmakingRoutes(db) {
       // Apply dislikes filter
       for (const dislike of dislikes) {
         // This is simplified - in production you'd have a more sophisticated system
-        if (dislike.dislike_field === 'height_cm') {
+        if (dislike.disliked_attribute === 'height_cm') {
           query += ` AND u.height_cm != ?`;
           params.push(parseInt(dislike.dislike_value));
-        } else if (dislike.dislike_field === 'age') {
+        } else if (dislike.disliked_attribute === 'age') {
           query += ` AND u.age != ?`;
           params.push(parseInt(dislike.dislike_value));
         }
@@ -308,9 +311,9 @@ function createMatchmakingRoutes(db) {
   // SEND INVITATION - Send chat invitation to a match
   // POST /api/matchmaking/invite
   // ================================================================
-  router.post('/invite', authenticateToken, async (req, res) => {
+  router.post('/invite', auth, async (req, res) => {
     try {
-      const senderId = req.user.userId;
+      const senderId = req.userId;
       const { receiverId } = req.body;
 
       if (!receiverId) {
@@ -364,13 +367,13 @@ function createMatchmakingRoutes(db) {
   // GET RECEIVED INVITATIONS - Get invitations sent to this user
   // GET /api/matchmaking/invitations/received
   // ================================================================
-  router.get('/invitations/received', authenticateToken, async (req, res) => {
+  router.get('/invitations/received', auth, async (req, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
 
       // Get user's criteria to filter out mismatches based on dislikes
       const dislikes = db.prepare(
-        'SELECT dislike_field, dislike_value FROM matchmaking_dislikes WHERE user_id = ?'
+        'SELECT disliked_attribute, dislike_value FROM matchmaking_dislikes WHERE user_id = ?'
       ).all(userId);
 
       // Get all pending invitations with sender details
@@ -391,10 +394,10 @@ function createMatchmakingRoutes(db) {
       // Filter out users that match dislikes
       invitations = invitations.filter(inv => {
         for (const dislike of dislikes) {
-          if (dislike.dislike_field === 'height_cm' && inv.height_cm === parseInt(dislike.dislike_value)) {
+          if (dislike.disliked_attribute === 'height_cm' && inv.height_cm === parseInt(dislike.dislike_value)) {
             return false;
           }
-          if (dislike.dislike_field === 'age' && inv.age === parseInt(dislike.dislike_value)) {
+          if (dislike.disliked_attribute === 'age' && inv.age === parseInt(dislike.dislike_value)) {
             return false;
           }
           // Add more dislike filters
@@ -418,9 +421,9 @@ function createMatchmakingRoutes(db) {
   // GET SENT INVITATIONS - Get invitations sent by this user
   // GET /api/matchmaking/invitations/sent
   // ================================================================
-  router.get('/invitations/sent', authenticateToken, async (req, res) => {
+  router.get('/invitations/sent', auth, async (req, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
 
       const invitations = db.prepare(`
         SELECT 
@@ -448,9 +451,9 @@ function createMatchmakingRoutes(db) {
   // ACCEPT INVITATION - Accept a chat invitation
   // POST /api/matchmaking/invitations/:id/accept
   // ================================================================
-  router.post('/invitations/:id/accept', authenticateToken, async (req, res) => {
+  router.post('/invitations/:id/accept', auth, async (req, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
       const invitationId = req.params.id;
 
       // Get invitation
@@ -501,9 +504,9 @@ function createMatchmakingRoutes(db) {
   // BLOCK USER - Block a user and specify what you didn't like
   // POST /api/matchmaking/block
   // ================================================================
-  router.post('/block', authenticateToken, async (req, res) => {
+  router.post('/block', auth, async (req, res) => {
     try {
-      const blockerId = req.user.userId;
+      const blockerId = req.userId;
       const { blockedId, dislikes } = req.body;
 
       if (!blockedId) {
@@ -528,8 +531,8 @@ function createMatchmakingRoutes(db) {
       // Save dislikes if provided
       if (dislikes && Array.isArray(dislikes)) {
         const stmt = db.prepare(`
-          INSERT INTO matchmaking_dislikes (user_id, dislike_field, dislike_value, blocked_user_id)
-          VALUES (?, ?, ?, ?)
+          INSERT INTO matchmaking_dislikes (user_id, disliked_attribute, disliked_value)
+          VALUES (?, ?, ?)
         `);
 
         for (const dislike of dislikes) {
@@ -542,7 +545,7 @@ function createMatchmakingRoutes(db) {
             break; // Stop adding if limit reached
           }
 
-          stmt.run(blockerId, dislike.field, dislike.value, blockedId);
+          stmt.run(blockerId, dislike.field, dislike.value);
         }
       }
 
@@ -569,15 +572,15 @@ function createMatchmakingRoutes(db) {
   // GET DISLIKES - Get user's learned dislikes
   // GET /api/matchmaking/dislikes
   // ================================================================
-  router.get('/dislikes', authenticateToken, async (req, res) => {
+  router.get('/dislikes', auth, async (req, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
 
       const dislikes = db.prepare(`
-        SELECT dislike_field, dislike_value, COUNT(*) as count
+        SELECT disliked_attribute, dislike_value, COUNT(*) as count
         FROM matchmaking_dislikes
         WHERE user_id = ?
-        GROUP BY dislike_field, dislike_value
+        GROUP BY disliked_attribute, dislike_value
         ORDER BY count DESC
       `).all(userId);
 
@@ -602,12 +605,12 @@ function createMatchmakingRoutes(db) {
   // ADMIN: CHECK MATCHES - Admin checks matches for any user (FREE)
   // POST /api/matchmaking/admin/check
   // ================================================================
-  router.post('/admin/check', authenticateToken, async (req, res) => {
+  router.post('/admin/check', auth, async (req, res) => {
     try {
       // Check if user is admin
       const adminUser = db.prepare(
         'SELECT is_admin FROM users WHERE id = ?'
-      ).get(req.user.userId);
+      ).get(req.userId);
 
       if (!adminUser || !adminUser.is_admin) {
         return res.status(403).json({ error: 'Admin access required' });
@@ -632,7 +635,7 @@ function createMatchmakingRoutes(db) {
 
       // Get user's dislikes
       const dislikes = db.prepare(
-        'SELECT dislike_field, dislike_value FROM matchmaking_dislikes WHERE user_id = ?'
+        'SELECT disliked_attribute, dislike_value FROM matchmaking_dislikes WHERE user_id = ?'
       ).all(userId);
 
       // Run same matching algorithm as regular search but FREE

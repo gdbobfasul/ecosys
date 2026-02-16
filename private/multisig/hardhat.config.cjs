@@ -37,6 +37,13 @@ module.exports = {
     },
   },
 
+  paths: {
+    sources: "./contracts",
+    tests: "../../tests/multisig",
+    cache: "./cache",
+    artifacts: "./artifacts"
+  },
+
   mocha: {
     timeout: 200000,
   },

@@ -3,6 +3,7 @@
 // Run: npm test
 
 const assert = require('assert');
+const { DB_SCHEMA_PATH } = require('./test-helper');
 const Database = require('better-sqlite3');
 const fs = require('fs');
 const path = require('path');
@@ -15,7 +16,7 @@ describe('🧪 AMS Chat - Version 00013 Tests', () => {
     db = new Database(':memory:');
     
     // Run schema
-    const schema = fs.readFileSync(path.join(__dirname, '../database/db_setup.sql'), 'utf8');
+    const schema = fs.readFileSync(DB_SCHEMA_PATH, 'utf8');
     db.exec(schema);
     
     console.log('✅ Test database created');
@@ -409,7 +410,7 @@ describe('🧪 AMS Chat - Version 00013 Tests', () => {
   
   describe('⚙️ Configuration', () => {
     it('should have valid crypto config', () => {
-      const config = require('../public/config.js');
+      const config = require('../../public/shared/js/config.js');
       
       assert(config.CRYPTO_CONFIG, 'CRYPTO_CONFIG should exist');
       assert(config.CRYPTO_CONFIG.TREASURY_WALLETS, 'TREASURY_WALLETS should exist');
@@ -428,7 +429,7 @@ describe('🧪 AMS Chat - Version 00013 Tests', () => {
     });
 
     it('should have valid app config', () => {
-      const config = require('../public/config.js');
+      const config = require('../../public/shared/js/config.js');
       
       assert(config.APP_CONFIG, 'APP_CONFIG should exist');
       assert.strictEqual(config.APP_CONFIG.MIN_AGE, 18);

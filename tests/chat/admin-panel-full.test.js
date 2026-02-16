@@ -1,6 +1,7 @@
 // Version: 1.0056
 // Admin Panel - Full Workflow Tests
 const assert = require('assert');
+const { DB_SCHEMA_PATH } = require('./test-helper');
 const Database = require('better-sqlite3');
 const fs = require('fs');
 const path = require('path');
@@ -13,7 +14,7 @@ describe('👨‍💼 Admin Panel - Full Workflow', () => {
   before(() => {
     if (fs.existsSync(TEST_DB)) fs.unlinkSync(TEST_DB);
     db = new Database(TEST_DB);
-    const schema = fs.readFileSync(path.join(__dirname, '../database/db_setup.sql'), 'utf8');
+    const schema = fs.readFileSync(DB_SCHEMA_PATH, 'utf8');
     db.exec(schema);
     
     // Check if admin exists before inserting

@@ -49,4 +49,8 @@ function authenticateAdmin(db) {
   };
 }
 
-module.exports = { authenticate, authenticateAdmin };
+module.exports = { 
+  authenticate, 
+  authenticateAdmin,
+  authenticateToken: authenticate  // Alias for backward compatibility
+};

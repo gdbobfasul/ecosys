@@ -8,7 +8,7 @@ describe('🔌 WebSocket Real-Time Tests', () => {
   const PORT = 3001;
 
   before(function(done) {
-    this.timeout(5000);
+    jest.setTimeout(5000);
     // Mock WebSocket server
     try {
       server = new WebSocket.Server({ port: PORT });

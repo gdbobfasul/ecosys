@@ -40,8 +40,8 @@ module.exports = {
   },
   
   paths: {
-    sources: "./private",
-    tests: "./tests",
+    sources: "./private/token/contracts",
+    tests: "./tests/token",
     cache: "./cache",
     artifacts: "./artifacts"
   },

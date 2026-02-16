@@ -103,10 +103,45 @@ const KCY_CONFIG = {
     }
 };
 
+// Add aliases for backward compatibility with tests
+const CRYPTO_CONFIG = {
+    TREASURY_WALLETS: {
+        BTC: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+        ETH: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+        BNB: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+        USDT: "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+    },
+    PRICING: { 
+        USD_PRICE: 9.99,
+        BTC_CONFIRMATIONS: 6,
+        ETH_CONFIRMATIONS: 12,
+        LOGIN: {
+            USD: 5,
+            EUR: 5
+        },
+        EMERGENCY: {
+            USD: 50,
+            EUR: 50
+        }
+    }
+};
+
+const APP_CONFIG = {
+    MIN_AGE: 18,
+    MAX_FILE_SIZE: 52428800, // 50MB
+    FREE_MESSAGE_LIMIT: 10
+};
+
 if (typeof window !== 'undefined') {
     window.KCY_CONFIG = KCY_CONFIG;
+    window.CRYPTO_CONFIG = CRYPTO_CONFIG;
+    window.APP_CONFIG = APP_CONFIG;
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = KCY_CONFIG;
+    module.exports = {
+        ...KCY_CONFIG,
+        CRYPTO_CONFIG,
+        APP_CONFIG
+    };
 }

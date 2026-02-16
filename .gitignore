@@ -1,0 +1,90 @@
+# Environment & Secrets
+.env
+.env.local
+.env.production
+configs/.env
+configs/.env.local
+configs/.env.production
+
+# Version tracking files (INCLUDE in Git)
+# *.version files are tracked
+
+# Database
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Uploads & User Data
+uploads/*
+!uploads/.gitkeep
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pm2-*.log
+
+# Testing
+coverage/
+.nyc_output/
+test-*.db
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*~
+
+# Build outputs
+dist/
+build/
+out/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Mobile specific (if using React Native)
+android/
+ios/
+*.xcworkspace
+*.xcodeproj
+
+# Sensitive files
+*.pem
+*.key
+*.cert
+id_rsa*
+credentials.json
+service-account.json
+
+# Old files backup (temporary)
+/old
+old/

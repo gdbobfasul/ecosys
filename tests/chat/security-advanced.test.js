@@ -3,6 +3,7 @@
 // Tests XSS, CSRF, rate limiting, session security
 
 const assert = require('assert');
+const { DB_SCHEMA_PATH } = require('./test-helper');
 const Database = require('better-sqlite3');
 const fs = require('fs');
 const path = require('path');
@@ -15,7 +16,7 @@ describe('🔒 Advanced Security Tests', () => {
   before(() => {
     if (fs.existsSync(TEST_DB)) fs.unlinkSync(TEST_DB);
     db = new Database(TEST_DB);
-    const schema = fs.readFileSync(path.join(__dirname, '../database/db_setup.sql'), 'utf8');
+    const schema = fs.readFileSync(DB_SCHEMA_PATH, 'utf8');
     db.exec(schema);
     console.log('✅ Security test database created');
   });

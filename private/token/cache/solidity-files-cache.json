@@ -1,0 +1,155 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "E:\\wrk\\2026-02-13-toks\\private\\token\\contracts\\Addresses.sol": {
+      "lastModificationDate": 1771230772578,
+      "contentHash": "ef7d31da8ae79507f2e57cca4279e993",
+      "sourceName": "contracts/Addresses.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "cancun",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Addresses"
+      ]
+    },
+    "E:\\wrk\\2026-02-13-toks\\private\\token\\contracts\\kcy-meme-1.sol": {
+      "lastModificationDate": 1771230772578,
+      "contentHash": "6c4bce42f4d5bddf5e017d23175c86a5",
+      "sourceName": "contracts/kcy-meme-1.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "cancun",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Addresses.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IERC20",
+        "IPancakeFactory",
+        "KCY1Token",
+        "ReentrancyGuard"
+      ]
+    },
+    "E:\\wrk\\2026-02-13-toks\\private\\token\\contracts\\MockKCY1Distribution.sol": {
+      "lastModificationDate": 1771230772580,
+      "contentHash": "677067c56f1bc6062b2d4903539cee23",
+      "sourceName": "contracts/MockKCY1Distribution.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "cancun",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IERC20",
+        "MockKCY1Distribution"
+      ]
+    },
+    "E:\\wrk\\2026-02-13-toks\\private\\token\\contracts\\SimpleMultiSig.sol": {
+      "lastModificationDate": 1771230772579,
+      "contentHash": "6e469f14a13a352b8a447ab8ddaa08f8",
+      "sourceName": "contracts/SimpleMultiSig.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "cancun",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "SimpleMultiSig"
+      ]
+    }
+  }
+}

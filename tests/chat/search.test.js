@@ -3,6 +3,7 @@
 // Tests search by distance, search by need, GPS, Haversine
 
 const assert = require('assert');
+const { DB_SCHEMA_PATH } = require('./test-helper');
 const Database = require('better-sqlite3');
 const fs = require('fs');
 const path = require('path');
@@ -34,7 +35,7 @@ describe('🔍 Search Functionality Tests', () => {
     db = new Database(TEST_DB);
     
     // Load schema
-    const schema = fs.readFileSync(path.join(__dirname, '../database/db_setup.sql'), 'utf8');
+    const schema = fs.readFileSync(DB_SCHEMA_PATH, 'utf8');
     db.exec(schema);
     
     // Create test users with GPS coordinates
