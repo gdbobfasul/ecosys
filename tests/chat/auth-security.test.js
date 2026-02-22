@@ -30,7 +30,6 @@ describe('🔐 Authentication & Security Tests', () => {
     const schema = fs.readFileSync(DB_SCHEMA_PATH, 'utf8');
     db.exec(schema);
     
-    console.log('✅ Test database created for authentication tests');
   });
 
   after(() => {
@@ -54,7 +53,6 @@ describe('🔐 Authentication & Security Tests', () => {
         assert(error.message.includes('NOT NULL'), 'Should enforce NOT NULL on phone');
       }
       
-      console.log('   ✅ Rejects missing required fields');
     });
 
     it('should enforce unique phone numbers', () => {
@@ -77,11 +75,9 @@ describe('🔐 Authentication & Security Tests', () => {
           VALUES (?, ?, ?, ?, ?)
         `).run(phone, 'hash2', 'User 2', 'female', 30);
         // If no error, UNIQUE not enforced (schema issue)
-        console.log('   ⚠️  Schema does NOT enforce UNIQUE on phone (should be added)');
       } catch (error) {
         if (error.message.includes('UNIQUE')) {
           uniqueEnforced = true;
-          console.log('   ✅ Enforces unique phone numbers');
         } else {
           throw error;
         }
@@ -106,7 +102,6 @@ describe('🔐 Authentication & Security Tests', () => {
         assert(!phone.startsWith('+359') || phone.length < 13, 'Invalid phone detected');
       });
       
-      console.log('   ✅ Phone format validation works');
     });
 
     it('should hash passwords with bcrypt', async () => {
@@ -121,7 +116,6 @@ describe('🔐 Authentication & Security Tests', () => {
       const isValid = await bcrypt.compare(plainPassword, hashedPassword);
       assert(isValid, 'Hashed password should match original');
       
-      console.log('   ✅ Passwords hashed with bcrypt');
     });
 
     it('should enforce password strength (min 8 chars, 1 number)', () => {
@@ -140,7 +134,6 @@ describe('🔐 Authentication & Security Tests', () => {
         assert(validatePassword(pwd), `Strong password should pass: ${pwd}`);
       });
       
-      console.log('   ✅ Password strength validation works');
     });
 
     it('should store user with default unpaid status', () => {
@@ -155,7 +148,6 @@ describe('🔐 Authentication & Security Tests', () => {
       assert.strictEqual(user.subscription_active, 0, 'Should be unpaid by default');
       assert(user.paid_until, 'Should have paid_until date');
       
-      console.log('   ✅ New users are unpaid by default');
     });
 
     it('should validate gender (male, female, other)', () => {
@@ -181,7 +173,6 @@ describe('🔐 Authentication & Security Tests', () => {
         assert(error.message.includes('CHECK'), 'Should enforce gender CHECK constraint');
       }
       
-      console.log('   ✅ Gender validation enforced');
     });
 
     it('should validate age range (must be >= 18)', () => {
@@ -199,7 +190,6 @@ describe('🔐 Authentication & Security Tests', () => {
         assert(!validateAge(age), `Age ${age} should be invalid`);
       });
       
-      console.log('   ✅ Age validation (18+) works');
     });
   });
 
@@ -221,7 +211,6 @@ describe('🔐 Authentication & Security Tests', () => {
       const isValid = await bcrypt.compare('TestPass123', user.password_hash);
       assert(isValid, 'Password should match');
       
-      console.log('   ✅ Valid credentials accepted');
     });
 
     it('should reject invalid password', async () => {
@@ -230,14 +219,12 @@ describe('🔐 Authentication & Security Tests', () => {
       const isValid = await bcrypt.compare('WrongPassword', user.password_hash);
       assert(!isValid, 'Wrong password should be rejected');
       
-      console.log('   ✅ Invalid password rejected');
     });
 
     it('should reject non-existent phone', () => {
       const user = db.prepare('SELECT * FROM users WHERE phone = ?').get('+359888999999');
       assert(!user, 'Non-existent user should return null');
       
-      console.log('   ✅ Non-existent phone rejected');
     });
 
     it('should track failed login attempts', () => {
@@ -249,7 +236,6 @@ describe('🔐 Authentication & Security Tests', () => {
       const user = db.prepare('SELECT failed_login_attempts FROM users WHERE id = ?').get(userId);
       assert(user.failed_login_attempts >= 1, 'Should track failed attempts');
       
-      console.log('   ✅ Failed login attempts tracked');
     });
 
     it('should reset failed attempts on successful login', () => {
@@ -264,7 +250,6 @@ describe('🔐 Authentication & Security Tests', () => {
       const user = db.prepare('SELECT failed_login_attempts FROM users WHERE id = ?').get(userId);
       assert.strictEqual(user.failed_login_attempts, 0, 'Should reset failed attempts');
       
-      console.log('   ✅ Failed attempts reset on success');
     });
 
     it('should block user after 5 failed attempts', () => {
@@ -285,7 +270,6 @@ describe('🔐 Authentication & Security Tests', () => {
       
       assert(shouldBlock, 'User should be blocked after 5 attempts');
       
-      console.log('   ✅ Blocks after 5 failed attempts');
     });
 
     it('should update last_login timestamp', () => {
@@ -303,7 +287,6 @@ describe('🔐 Authentication & Security Tests', () => {
       assert(afterLogin, 'last_login should be set');
       assert(afterLogin !== beforeLogin, 'last_login should be updated');
       
-      console.log('   ✅ last_login timestamp updated');
     });
   });
 
@@ -315,7 +298,6 @@ describe('🔐 Authentication & Security Tests', () => {
       assert(user.password_hash.startsWith('$2b$'), 'Password should be bcrypt hash');
       assert(!user.password_hash.includes('TestPass'), 'Should not contain plain text');
       
-      console.log('   ✅ Passwords stored as hashes only');
     });
 
     it('should prevent SQL injection in phone lookup', () => {
@@ -326,7 +308,6 @@ describe('🔐 Authentication & Security Tests', () => {
       
       assert(!result, 'SQL injection should not return results');
       
-      console.log('   ✅ SQL injection prevented (prepared statements)');
     });
 
     it('should sanitize user input (XSS prevention)', () => {
@@ -342,7 +323,6 @@ describe('🔐 Authentication & Security Tests', () => {
       const sanitized = sanitize(maliciousName);
       assert(!sanitized.includes('<script>'), 'Should remove script tags');
       
-      console.log('   ✅ XSS prevention (input sanitization)');
     });
 
     it('should enforce blocked user cannot login', () => {
@@ -358,7 +338,6 @@ describe('🔐 Authentication & Security Tests', () => {
       
       assert.strictEqual(user.is_blocked, 1, 'User should be blocked');
       
-      console.log('   ✅ Blocked users cannot login');
     });
 
     it('should store blocked reason', () => {
@@ -370,7 +349,6 @@ describe('🔐 Authentication & Security Tests', () => {
       const user = db.prepare('SELECT blocked_reason FROM users WHERE id = ?').get(userId);
       assert.strictEqual(user.blocked_reason, reason, 'Should store block reason');
       
-      console.log('   ✅ Block reason stored');
     });
 
     it('should validate session token format', () => {
@@ -385,7 +363,6 @@ describe('🔐 Authentication & Security Tests', () => {
       assert(validateTokenFormat(validToken), 'Valid token should pass');
       assert(!validateTokenFormat(invalidToken), 'Invalid token should fail');
       
-      console.log('   ✅ Token format validation works');
     });
 
     it('should enforce HTTPS in production', () => {
@@ -400,7 +377,6 @@ describe('🔐 Authentication & Security Tests', () => {
         assert(isSecure, 'Production must use HTTPS');
       }
       
-      console.log('   ✅ HTTPS enforcement (production)');
     });
 
     it('should rate limit login attempts', () => {
@@ -436,7 +412,6 @@ describe('🔐 Authentication & Security Tests', () => {
       // 6th attempt should be rate limited
       assert(!checkRateLimit(testIp), '6th attempt should be blocked');
       
-      console.log('   ✅ Rate limiting works');
     });
 
     it('should validate CORS origins', () => {
@@ -449,7 +424,6 @@ describe('🔐 Authentication & Security Tests', () => {
       assert(validateOrigin('http://localhost:3000'), 'Allowed origin should pass');
       assert(!validateOrigin('http://malicious.com'), 'Unknown origin should fail');
       
-      console.log('   ✅ CORS validation works');
     });
 
     it('should enforce Content Security Policy (CSP)', () => {
@@ -460,7 +434,6 @@ describe('🔐 Authentication & Security Tests', () => {
       assert(cspHeaders['Content-Security-Policy'], 'CSP header should be set');
       assert(cspHeaders['Content-Security-Policy'].includes("'self'"), 'Should restrict to self');
       
-      console.log('   ✅ CSP headers configured');
     });
 
     it('should prevent clickjacking with X-Frame-Options', () => {
@@ -473,7 +446,6 @@ describe('🔐 Authentication & Security Tests', () => {
       assert(securityHeaders['X-Frame-Options'] === 'DENY', 'Should prevent iframe embedding');
       assert(securityHeaders['X-Content-Type-Options'] === 'nosniff', 'Should prevent MIME sniffing');
       
-      console.log('   ✅ Security headers configured');
     });
   });
 
@@ -488,7 +460,6 @@ describe('🔐 Authentication & Security Tests', () => {
       
       assert(costFactor >= 10, 'Cost factor should be >= 10 for security');
       
-      console.log('   ✅ Bcrypt cost factor adequate');
     });
 
     it('should reject weak passwords', () => {
@@ -509,7 +480,6 @@ describe('🔐 Authentication & Security Tests', () => {
         assert(isWeak(pwd), `${pwd} should be detected as weak`);
       });
       
-      console.log('   ✅ Weak passwords detected');
     });
 
     it('should never expose password hash in API responses', () => {
@@ -522,7 +492,6 @@ describe('🔐 Authentication & Security Tests', () => {
       assert(!userResponse.password_hash, 'password_hash should not be in API response');
       assert(userResponse.phone, 'Other fields should still exist');
       
-      console.log('   ✅ Password hash never exposed in API');
     });
 
     it('should support password reset (future feature)', () => {
@@ -540,7 +509,6 @@ describe('🔐 Authentication & Security Tests', () => {
       assert(token, 'Reset token should be generated');
       assert(resetTokens.has(token), 'Token should be stored');
       
-      console.log('   ✅ Password reset mechanism ready');
     });
   });
 });

@@ -149,13 +149,17 @@ if [ "$USE_RSYNC" = true ]; then
         --include='jest.config.js' \
         --include='jest.mobile.config.js' \
         --include='jest.setup.js' \
-        --include='00032.version' \
+        --include='*.version' \
         --include='.deployignore' \
         --exclude='*' \
         ./ "${USER}@${SERVER}:${STAGING}/" 2>/dev/null || true
 else
     for f in package.json package-lock.json hardhat.config.js jest.config.js \
-             jest.mobile.config.js jest.setup.js 00032.version .deployignore; do
+             jest.mobile.config.js jest.setup.js .deployignore; do
+        [ -f "$f" ] && scp ${SSH_OPTS} "$f" "${USER}@${SERVER}:${STAGING}/" 2>/dev/null || true
+    done
+    # Version file (dynamic name)
+    for f in *.version; do
         [ -f "$f" ] && scp ${SSH_OPTS} "$f" "${USER}@${SERVER}:${STAGING}/" 2>/dev/null || true
     done
 fi
@@ -170,7 +174,7 @@ ssh ${SSH_OPTS} "${USER}@${SERVER}" "
     echo '  docs/:            '$(ls ${STAGING}/docs/ 2>/dev/null | wc -l)' items'
     echo '  tests/:           '$(ls ${STAGING}/tests/ 2>/dev/null | wc -l)' items'
     echo '  root files:       '$(ls ${STAGING}/*.js ${STAGING}/*.json 2>/dev/null | wc -l)' files'
-    [ -f ${STAGING}/00032.version ] && echo '  version:          '$(cat ${STAGING}/00032.version)
+    ls ${STAGING}/*.version 2>/dev/null && echo '  version:          '$(cat ${STAGING}/*.version)
 "
 
 echo ""

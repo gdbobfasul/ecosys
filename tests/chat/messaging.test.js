@@ -33,7 +33,6 @@ describe('💬 Messaging System Tests', () => {
       VALUES (?, ?, ?, ?, ?, ?)
     `).run('+359888222222', 'hash2', 'User 2', 'female', 28, 0);
     
-    console.log('✅ Test database created for messaging tests');
   });
 
   after(() => {
@@ -61,7 +60,6 @@ describe('💬 Messaging System Tests', () => {
       assert.strictEqual(msg.from_user_id, user1, 'From user should match');
       assert.strictEqual(msg.to_user_id, user2, 'To user should match');
       
-      console.log('   ✅ Message sent');
     });
 
     it('should enforce NOT NULL on message text', () => {
@@ -74,10 +72,8 @@ describe('💬 Messaging System Tests', () => {
           VALUES (?, ?, ?)
         `).run(user1, user2, null);
         // Some versions allow NULL, so just verify it was inserted
-        console.log('   ✅ Message can have NULL text (schema allows)');
       } catch (error) {
         assert(error.message.includes('NOT NULL'), 'Should enforce NOT NULL if constraint exists');
-        console.log('   ✅ Empty messages rejected');
       }
     });
 
@@ -93,7 +89,6 @@ describe('💬 Messaging System Tests', () => {
       const msg = db.prepare('SELECT created_at FROM messages WHERE id = ?').get(msgId);
       assert(msg.created_at, 'Should have created_at timestamp');
       
-      console.log('   ✅ Timestamp stored');
     });
 
     it('should handle file attachments', () => {
@@ -109,7 +104,6 @@ describe('💬 Messaging System Tests', () => {
       assert.strictEqual(msg.file_name, 'document.pdf', 'File name should match');
       assert.strictEqual(msg.file_size, 12345, 'File size should match');
       
-      console.log('   ✅ File attachment stored');
     });
 
     it('should mark message as read', () => {
@@ -127,7 +121,6 @@ describe('💬 Messaging System Tests', () => {
       const msg = db.prepare('SELECT read_at FROM messages WHERE id = ?').get(msgId);
       assert(msg.read_at, 'Should have read_at timestamp');
       
-      console.log('   ✅ Message marked as read');
     });
   });
 
@@ -146,7 +139,6 @@ describe('💬 Messaging System Tests', () => {
       
       assert(Array.isArray(messages), 'Should return array');
       
-      console.log(`   ✅ Retrieved ${messages.length} messages`);
     });
 
     it('should order messages by timestamp', () => {
@@ -164,7 +156,6 @@ describe('💬 Messaging System Tests', () => {
           'Messages should be in chronological order');
       }
       
-      console.log('   ✅ Messages ordered by timestamp');
     });
 
     it('should count unread messages', () => {
@@ -177,7 +168,6 @@ describe('💬 Messaging System Tests', () => {
       
       assert(typeof unreadCount === 'number', 'Unread count should be number');
       
-      console.log(`   ✅ Unread count: ${unreadCount}`);
     });
 
     it('should retrieve messages for user', () => {
@@ -191,7 +181,6 @@ describe('💬 Messaging System Tests', () => {
       
       assert(Array.isArray(messages), 'Should return array');
       
-      console.log(`   ✅ Retrieved ${messages.length} messages for user`);
     });
   });
 
@@ -204,7 +193,6 @@ describe('💬 Messaging System Tests', () => {
       
       assert(tables.length === 1, 'critical_words table should exist');
       
-      console.log('   ✅ critical_words table exists');
     });
 
     it('should detect critical words in messages', () => {
@@ -219,7 +207,6 @@ describe('💬 Messaging System Tests', () => {
       assert(detectCriticalWords('He has a weapon'), 'Should detect "weapon"');
       assert(!detectCriticalWords('Hello, how are you?'), 'Should not detect normal message');
       
-      console.log('   ✅ Critical words detection works');
     });
 
     it('should have flagged_conversations table', () => {
@@ -229,7 +216,6 @@ describe('💬 Messaging System Tests', () => {
       
       assert(tables.length === 1, 'flagged_conversations table should exist');
       
-      console.log('   ✅ flagged_conversations table exists');
     });
   });
 
@@ -246,7 +232,6 @@ describe('💬 Messaging System Tests', () => {
       
       assert(typeof todayCount === 'number', 'Count should be number');
       
-      console.log(`   ✅ Daily message count: ${todayCount}`);
     });
 
     it('should enforce 10 messages/day for free users', () => {
@@ -262,9 +247,7 @@ describe('💬 Messaging System Tests', () => {
         
         const canSend = todayCount < MAX_FREE_MESSAGES;
         
-        console.log(`   ✅ Free user can send: ${canSend} (${todayCount}/${MAX_FREE_MESSAGES})`);
       } else {
-        console.log('   ✅ No free users to test');
       }
     });
 
@@ -276,7 +259,6 @@ describe('💬 Messaging System Tests', () => {
       const canSend = true; // Paid users have no limit
       assert(canSend, 'Paid users should have unlimited messages');
       
-      console.log('   ✅ Paid users have unlimited messages');
     });
 
     it('should reset message count daily', () => {
@@ -285,7 +267,6 @@ describe('💬 Messaging System Tests', () => {
       
       assert(today !== yesterday, 'Dates should be different');
       
-      console.log('   ✅ Daily reset works (date-based query)');
     });
   });
 
@@ -303,7 +284,6 @@ describe('💬 Messaging System Tests', () => {
       const msg = db.prepare('SELECT * FROM messages WHERE id = ?').get(msgId);
       assert.strictEqual(msg.file_id, 'abc123', 'File ID should match');
       
-      console.log('   ✅ File messages supported');
     });
 
     it('should retrieve file metadata', () => {
@@ -316,7 +296,6 @@ describe('💬 Messaging System Tests', () => {
         assert(msg.file_type, 'Should have file_type');
       });
       
-      console.log(`   ✅ Found ${messages.length} file messages`);
     });
   });
 
@@ -332,7 +311,6 @@ describe('💬 Messaging System Tests', () => {
       
       assert(typeof newMessages === 'number', 'Should return number');
       
-      console.log(`   ✅ User has ${newMessages} new messages`);
     });
 
     it('should mark all user messages as read', () => {
@@ -351,7 +329,6 @@ describe('💬 Messaging System Tests', () => {
       
       assert.strictEqual(unread, 0, 'All messages should be marked as read');
       
-      console.log('   ✅ Bulk mark as read works');
     });
   });
 });

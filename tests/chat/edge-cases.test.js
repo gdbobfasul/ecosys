@@ -16,7 +16,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
     db = new Database(TEST_DB);
     const schema = fs.readFileSync(DB_SCHEMA_PATH, 'utf8');
     db.exec(schema);
-    console.log('✅ Edge cases test database created');
   });
 
   after(() => { db.close(); if (fs.existsSync(TEST_DB)) fs.unlinkSync(TEST_DB); });
@@ -26,14 +25,12 @@ describe('⚠️ Edge Cases & Error Handling', () => {
       const userId = db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age) VALUES (?, ?, ?, ?, ?)`).run('+359888111111', 'hash', 'Test', 'male', null).lastInsertRowid;
       const user = db.prepare('SELECT age FROM users WHERE id = ?').get(userId);
       assert(user.age === null);
-      console.log('   ✅ NULL handled');
     });
 
     it('should handle empty strings', () => {
       const userId = db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age, city) VALUES (?, ?, ?, ?, ?, ?)`).run('+359888222222', 'hash', 'Test2', 'female', 25, '').lastInsertRowid;
       const user = db.prepare('SELECT city FROM users WHERE id = ?').get(userId);
       assert(user.city === '');
-      console.log('   ✅ Empty string handled');
     });
   });
 
@@ -42,14 +39,12 @@ describe('⚠️ Edge Cases & Error Handling', () => {
       const userId = db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age) VALUES (?, ?, ?, ?, ?)`).run('+359888333333', 'hash', 'Young', 'male', 18).lastInsertRowid;
       const user = db.prepare('SELECT age FROM users WHERE id = ?').get(userId);
       assert(user.age === 18);
-      console.log('   ✅ Min age accepted');
     });
 
     it('should handle maximum age', () => {
       const userId = db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age) VALUES (?, ?, ?, ?, ?)`).run('+359888444444', 'hash', 'Old', 'female', 100).lastInsertRowid;
       const user = db.prepare('SELECT age FROM users WHERE id = ?').get(userId);
       assert(user.age === 100);
-      console.log('   ✅ Max age accepted');
     });
 
     it('should handle very long text', () => {
@@ -57,7 +52,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
       const userId = db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age, offerings) VALUES (?, ?, ?, ?, ?, ?)`).run('+359888555555', 'hash', 'Long', 'male', 30, longText).lastInsertRowid;
       const user = db.prepare('SELECT offerings FROM users WHERE id = ?').get(userId);
       assert(user.offerings.length === 1000);
-      console.log('   ✅ Long text handled');
     });
 
     it('should handle GPS coordinates range', () => {
@@ -66,7 +60,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
       const userId = db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age, location_latitude, location_longitude) VALUES (?, ?, ?, ?, ?, ?, ?)`).run('+359888666666', 'hash', 'GPS', 'female', 25, lat, lon).lastInsertRowid;
       const user = db.prepare('SELECT location_latitude, location_longitude FROM users WHERE id = ?').get(userId);
       assert(user.location_latitude === 90.0);
-      console.log('   ✅ GPS coordinates valid');
     });
   });
 
@@ -76,7 +69,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
       const userId = db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age) VALUES (?, ?, ?, ?, ?)`).run('+359888777777', 'hash', name, 'male', 25).lastInsertRowid;
       const user = db.prepare('SELECT full_name FROM users WHERE id = ?').get(userId);
       assert(user.full_name === name);
-      console.log('   ✅ Unicode handled');
     });
 
     it('should handle special SQL characters', () => {
@@ -84,7 +76,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
       const userId = db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age) VALUES (?, ?, ?, ?, ?)`).run('+359888888888', 'hash', name, 'male', 25).lastInsertRowid;
       const user = db.prepare('SELECT full_name FROM users WHERE id = ?').get(userId);
       assert(user.full_name === name);
-      console.log('   ✅ SQL special chars handled');
     });
 
     it('should handle quotes in text', () => {
@@ -92,7 +83,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
       const userId = db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age, offerings) VALUES (?, ?, ?, ?, ?, ?)`).run('+359888999999', 'hash', 'Quote', 'female', 25, text).lastInsertRowid;
       const user = db.prepare('SELECT offerings FROM users WHERE id = ?').get(userId);
       assert(user.offerings.includes('"'));
-      console.log('   ✅ Quotes handled');
     });
   });
 
@@ -106,7 +96,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
         }));
       }
       Promise.all(promises).then(() => {
-        console.log('   ✅ Concurrent inserts handled');
       });
     });
 
@@ -118,7 +107,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
       db.prepare('UPDATE users SET failed_login_attempts = failed_login_attempts + 1 WHERE id = ?').run(userId);
       const user = db.prepare('SELECT failed_login_attempts FROM users WHERE id = ?').get(userId);
       assert(user.failed_login_attempts === 2);
-      console.log('   ✅ Race condition handled');
     });
   });
 
@@ -129,7 +117,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
         assert.fail('Should have thrown FK error');
       } catch (err) {
         assert(err.message.includes('FOREIGN KEY') || err.message.includes('constraint'));
-        console.log('   ✅ FK constraint enforced');
       }
     });
 
@@ -139,7 +126,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
         assert.fail('Should have thrown CHECK error');
       } catch (err) {
         assert(err.message.includes('CHECK') || err.message.includes('constraint'));
-        console.log('   ✅ CHECK constraint enforced');
       }
     });
 
@@ -152,7 +138,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
         assert.fail('Should have thrown UNIQUE error');
       } catch (err) {
         assert(err.message.includes('UNIQUE'));
-        console.log('   ✅ UNIQUE constraint enforced');
       }
     });
   });
@@ -162,21 +147,18 @@ describe('⚠️ Edge Cases & Error Handling', () => {
       const isValid = (phone) => /^\+359\d{9}$/.test(phone);
       assert(isValid('+359888123456'));
       assert(!isValid('invalid'));
-      console.log('   ✅ Phone validation');
     });
 
     it('should validate email format', () => {
       const isValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       assert(isValid('test@example.com'));
       assert(!isValid('invalid'));
-      console.log('   ✅ Email validation');
     });
 
     it('should validate GPS coordinates', () => {
       const isValid = (lat, lon) => lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180;
       assert(isValid(42.6977, 23.3219));
       assert(!isValid(100, 200));
-      console.log('   ✅ GPS validation');
     });
   });
 
@@ -188,7 +170,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
         db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age) VALUES (?, ?, ?, ?, ?)`).run('+359222222222', 'hash', 'TX2', 'female', 30); // Should fail UNIQUE
       } catch (err) {
         db.prepare('ROLLBACK').run();
-        console.log('   ✅ Transaction rolled back');
       }
     });
   });
@@ -201,7 +182,6 @@ describe('⚠️ Edge Cases & Error Handling', () => {
       db.prepare('DELETE FROM users WHERE id = ?').run(u1);
       const messages = db.prepare('SELECT * FROM messages WHERE from_user_id = ?').all(u1);
       assert(messages.length === 0);
-      console.log('   ✅ Cascade delete works');
     });
   });
 
@@ -212,14 +192,12 @@ describe('⚠️ Edge Cases & Error Handling', () => {
         db.prepare(`INSERT INTO users (phone, password_hash, full_name, gender, age) VALUES (?, ?, ?, ?, ?)`).run(`+35955500000${String(i).padStart(2, '0')}`, 'hash', `Bulk${i}`, 'male', 25);
       }
       const duration = Date.now() - start;
-      console.log(`   ✅ Bulk insert: ${duration}ms for 100 records`);
     });
 
     it('should use indexes effectively', () => {
       const start = Date.now();
       db.prepare('SELECT * FROM users WHERE phone = ?').get('+359888111111');
       const duration = Date.now() - start;
-      console.log(`   ✅ Indexed search: ${duration}ms`);
     });
   });
 });

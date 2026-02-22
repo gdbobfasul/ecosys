@@ -14,7 +14,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
   
   before(async () => {
     // Note: These tests require a running server with test database
-    console.log('⚠️  Tests require running server at', API_BASE);
   });
   
   describe('1. Auto-Location Capture', () => {
@@ -23,14 +22,12 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       // Test: signal.html calls autoGetLocation() on DOMContentLoaded
       const hasAutoLocationCall = true; // Verified in signal.html line 310
       assert.strictEqual(hasAutoLocationCall, true, 'Auto-location not triggered on load');
-      console.log('   ✅ Web: Auto-location triggers on page load');
     });
     
     it('should trigger location capture on mount (Mobile)', () => {
       // Test: SignalScreen.js calls autoGetLocation() in useEffect
       const hasAutoLocationCall = true; // Verified in SignalScreen.js
       assert.strictEqual(hasAutoLocationCall, true, 'Auto-location not triggered on mount');
-      console.log('   ✅ Mobile: Auto-location triggers on mount');
     });
     
     it('should display coordinates after capture', () => {
@@ -40,7 +37,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       const displayText = `📍 ${mockLat.toFixed(6)}, ${mockLng.toFixed(6)}`;
       
       assert.match(displayText, /📍 \d+\.\d{6}, \d+\.\d{6}/);
-      console.log('   ✅ Coordinates displayed correctly');
     });
   });
   
@@ -54,7 +50,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       // Verified in routes/signals.js
       assert(endpoint, 'Endpoint missing');
       assert(requiredParams.length === 2, 'Missing required params');
-      console.log('   ✅ Nearby endpoint configured');
     });
     
     it('should return 400 if latitude or longitude missing', () => {
@@ -63,19 +58,16 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       // Validation exists in routes/signals.js line ~10
       const validationExists = true; // Verified in code
       assert(validationExists, 'Validation missing in routes/signals.js');
-      console.log('   ✅ Validates required coordinates (code review)');
     });
     
     it('should search within 100m radius by default', () => {
       const defaultRadius = 100;
       assert.strictEqual(defaultRadius, 100, 'Wrong default radius');
-      console.log('   ✅ Default radius: 100m');
     });
     
     it('should limit to 5 objects by default', () => {
       const defaultLimit = 5;
       assert.strictEqual(defaultLimit, 5, 'Wrong default limit');
-      console.log('   ✅ Default limit: 5 objects');
     });
     
     it('should search both signals and static objects', () => {
@@ -85,7 +77,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       
       assert(searchesPendingSignals, 'Not searching pending signals');
       assert(searchesStaticObjects, 'Not searching static objects');
-      console.log('   ✅ Searches signals AND static objects');
     });
     
     it('should calculate distance using Haversine formula', () => {
@@ -103,7 +94,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       const distance = R * c;
       
       assert(distance > 0 && distance < 100, 'Haversine calculation error');
-      console.log('   ✅ Haversine formula works correctly');
     });
     
     it('should return objects with all required fields', () => {
@@ -125,7 +115,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       assert(mockObject.latitude, 'Missing latitude');
       assert(mockObject.longitude, 'Missing longitude');
       assert(mockObject.distance !== undefined, 'Missing distance');
-      console.log('   ✅ Returns all required fields');
     });
   });
   
@@ -137,13 +126,11 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       const showModal = nearbySignals.length > 0;
       
       assert.strictEqual(showModal, true, 'Modal not triggered');
-      console.log('   ✅ Modal shows when objects found');
     });
     
     it('should display warning text in modal', () => {
       const warningText = 'Ако виждате обекта, който искате да декларирате';
       assert(warningText.length > 0, 'Warning text missing');
-      console.log('   ✅ Warning text present');
     });
     
     it('should show links to search tools', () => {
@@ -152,13 +139,11 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       
       assert(hasDistanceSearch, 'Distance search link missing');
       assert(hasNeedSearch, 'Need search link missing');
-      console.log('   ✅ Search tool links present');
     });
     
     it('should have close button', () => {
       const hasCloseButton = true; // "Затвори" button
       assert(hasCloseButton, 'Close button missing');
-      console.log('   ✅ Close button present');
     });
     
     it('should show object list after modal close', () => {
@@ -168,7 +153,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       const showList = !showWarningModal && nearbySignals.length > 0;
       
       assert(showList, 'List not shown after modal close');
-      console.log('   ✅ Object list shows after modal close');
     });
   });
   
@@ -177,13 +161,11 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
     it('should show inline warning with objects', () => {
       const hasNearbyWarning = true; // nearbyWarning div
       assert(hasNearbyWarning, 'Warning div missing');
-      console.log('   ✅ Inline warning displays');
     });
     
     it('should display 5 objects with photos', () => {
       const mockObjects = Array(5).fill({ photoUrl: '/test.jpg' });
       assert.strictEqual(mockObjects.length, 5, 'Not showing 5 objects');
-      console.log('   ✅ Shows up to 5 objects');
     });
     
     it('should show photo or placeholder', () => {
@@ -195,7 +177,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       
       assert(hasPhoto, 'Photo not shown');
       assert(hasPlaceholder, 'Placeholder not shown');
-      console.log('   ✅ Shows photo or 📍 placeholder');
     });
     
     it('should display object details', () => {
@@ -213,7 +194,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       assert(obj.workingHours, 'Working hours missing');
       assert(obj.latitude && obj.longitude, 'Coordinates missing');
       assert(obj.distance, 'Distance missing');
-      console.log('   ✅ All object details displayed');
     });
     
     it('should show red warning section', () => {
@@ -222,13 +202,11 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       
       assert(hasRedWarning, 'Red warning section missing');
       assert(warningText.includes('ЕДИН ДЕН'), 'Penalty text missing');
-      console.log('   ✅ Red warning section present');
     });
     
     it('should show search links', () => {
       const hasSearchLinks = true; // Blue section with links
       assert(hasSearchLinks, 'Search links missing');
-      console.log('   ✅ Search links present');
     });
   });
   
@@ -237,19 +215,16 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
     it('should show title correctly', () => {
       const title = 'Аптека Чочо';
       assert(title.length > 0, 'Title empty');
-      console.log('   ✅ Title: "Аптека Чочо"');
     });
     
     it('should show type correctly', () => {
       const type = 'Pharmacy';
       assert(type.length > 0, 'Type empty');
-      console.log('   ✅ Type: "Pharmacy"');
     });
     
     it('should show working hours with icon', () => {
       const workingHours = '⏰ Денонощно';
       assert(workingHours.includes('⏰'), 'Clock icon missing');
-      console.log('   ✅ Working hours: "⏰ Денонощно"');
     });
     
     it('should show coordinates with 6 decimals', () => {
@@ -259,7 +234,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       
       assert(formatted.includes('42.697700'), 'Lat format wrong');
       assert(formatted.includes('23.321900'), 'Lng format wrong');
-      console.log('   ✅ Coords: "📍 42.697700, 23.321900"');
     });
     
     it('should show distance in meters', () => {
@@ -267,7 +241,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       const formatted = `📏 ${distance}м`;
       
       assert(formatted.includes('54м'), 'Distance format wrong');
-      console.log('   ✅ Distance: "📏 54м"');
     });
   });
   
@@ -284,7 +257,6 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       ];
       
       assert.strictEqual(steps.length, 6, 'Missing steps');
-      console.log('   ✅ Flow executes in correct order');
     });
     
     it('should handle no nearby objects gracefully', () => {
@@ -292,21 +264,9 @@ describe('🚨 Signal Submission - Auto-Location & Nearby Check', () => {
       const showWarning = nearbyObjects.length > 0;
       
       assert.strictEqual(showWarning, false, 'Warning shown when no objects');
-      console.log('   ✅ No warning if no nearby objects');
     });
   });
   
   after(() => {
-    console.log('\n========================================');
-    console.log('✅ SIGNAL SUBMISSION TESTS COMPLETE!');
-    console.log('========================================');
-    console.log('Tested:');
-    console.log('  - Auto-location capture');
-    console.log('  - Nearby objects API');
-    console.log('  - Warning modal (mobile)');
-    console.log('  - Warning inline (web)');
-    console.log('  - Object display format');
-    console.log('  - Integration flow');
-    console.log('========================================\n');
   });
 });

@@ -134,7 +134,7 @@ Choice [1/2]: _
 5. **Set permissions**
    ```bash
    chmod 644 ams_db.sqlite
-   chown www-data:www-data ams_db.sqlite
+   chown kcy:kcy ams_db.sqlite
    ```
 
 ---
@@ -243,7 +243,7 @@ sudo ./01-setup-database.sh --help
 
 ### SQLite:
 - ✅ File permissions (644)
-- ✅ Owned by www-data
+- ✅ Owned by kcy
 - ⚠️ No password (file-based)
 
 ---

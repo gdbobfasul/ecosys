@@ -21,10 +21,8 @@ describe('🔌 WebSocket Real-Time Tests', () => {
         });
       });
       
-      console.log('✅ Mock WS server started');
       done();
     } catch (err) {
-      console.log('⚠️ WS server not available, skipping tests');
       this.skip();
     }
   });
@@ -93,7 +91,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
     assert(reconnect(1));
     assert(reconnect(3));
     assert(!reconnect(4));
-    console.log('   ✅ Reconnect logic works');
   });
 
   it('should show online status', () => {
@@ -102,7 +99,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
     users.set(2, { online: false, lastSeen: new Date() });
     assert(users.get(1).online);
     assert(!users.get(2).online);
-    console.log('   ✅ Online status tracked');
   });
 
   it('should emit typing indicator', (done) => {
@@ -119,7 +115,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
     clients.forEach(id => {
       assert(id);
     });
-    console.log('   ✅ Broadcast works');
   });
 
   it('should handle heartbeat/ping', (done) => {
@@ -138,7 +133,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
     connections.set('token1', { userId: 1, ws: {} });
     connections.set('token2', { userId: 2, ws: {} });
     assert.strictEqual(connections.size, 2);
-    console.log('   ✅ Active connections tracked');
   });
 
   it('should cleanup on disconnect', () => {
@@ -146,7 +140,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
     connections.set('token1', { userId: 1 });
     connections.delete('token1');
     assert.strictEqual(connections.size, 0);
-    console.log('   ✅ Cleanup works');
   });
 
   it('should handle message queue', () => {
@@ -154,14 +147,12 @@ describe('🔌 WebSocket Real-Time Tests', () => {
     queue.push({ to: 2, text: 'msg1' });
     queue.push({ to: 3, text: 'msg2' });
     assert.strictEqual(queue.length, 2);
-    console.log('   ✅ Message queue works');
   });
 
   it('should deliver queued messages on reconnect', () => {
     const queue = [{ id: 1, text: 'pending' }];
     const delivered = queue.filter(msg => msg.id === 1);
     assert(delivered.length > 0);
-    console.log('   ✅ Queued messages delivered');
   });
 
   it('should handle binary messages', (done) => {
@@ -178,7 +169,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
     const maxSize = 5 * 1024; // 5KB
     const message = 'a'.repeat(6000);
     assert(Buffer.byteLength(message) < maxSize || Buffer.byteLength(message) > maxSize);
-    console.log('   ✅ Message size check');
   });
 
   it('should handle concurrent messages', () => {
@@ -187,7 +177,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       messages.push({ id: i, text: `msg${i}` });
     }
     assert.strictEqual(messages.length, 10);
-    console.log('   ✅ Concurrent messages handled');
   });
 
   it('should track message delivery status', () => {
@@ -196,7 +185,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
     statuses.set(2, 'delivered');
     statuses.set(3, 'read');
     assert(statuses.has(1));
-    console.log('   ✅ Delivery status tracked');
   });
 
   it('should handle connection errors gracefully', () => {
@@ -208,7 +196,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
     } catch (err) {
       assert(err);
     }
-    console.log('   ✅ Connection errors handled');
   });
 
   it('should implement rate limiting', () => {
@@ -220,6 +207,5 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       return true;
     };
     assert(checkRate(1));
-    console.log('   ✅ Rate limiting works');
   });
 });

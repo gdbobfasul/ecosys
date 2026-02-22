@@ -74,7 +74,6 @@ describe('🔍 Search Functionality Tests', () => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 1)
     `).run('+359888666666', 'hash', 'Restaurant Sofia', 'male', 0, 42.6990, 23.3250, 'Restaurant');
     
-    console.log('✅ Test database created with GPS locations');
   });
 
   after(() => {
@@ -100,7 +99,6 @@ describe('🔍 Search Functionality Tests', () => {
         assert(!isValidLat(lat), `Latitude ${lat} should be invalid`);
       });
       
-      console.log('   ✅ Latitude validation works');
     });
 
     it('should validate longitude range (-180 to 180)', () => {
@@ -117,7 +115,6 @@ describe('🔍 Search Functionality Tests', () => {
         assert(!isValidLon(lon), `Longitude ${lon} should be invalid`);
       });
       
-      console.log('   ✅ Longitude validation works');
     });
 
     it('should store GPS coordinates with precision', () => {
@@ -127,7 +124,6 @@ describe('🔍 Search Functionality Tests', () => {
       assert.strictEqual(user.location_latitude, 42.6977, 'Latitude should match');
       assert.strictEqual(user.location_longitude, 23.3219, 'Longitude should match');
       
-      console.log('   ✅ GPS coordinates stored with precision');
     });
 
     it('should retrieve users with GPS coordinates', () => {
@@ -139,7 +135,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(usersWithGPS > 0, 'Should have users with GPS');
       
-      console.log(`   ✅ Found ${usersWithGPS} users with GPS`);
     });
 
     it('should handle users without GPS (NULL)', () => {
@@ -155,7 +150,6 @@ describe('🔍 Search Functionality Tests', () => {
       assert.strictEqual(user.location_latitude, null, 'Latitude should be NULL');
       assert.strictEqual(user.location_longitude, null, 'Longitude should be NULL');
       
-      console.log('   ✅ NULL GPS coordinates handled');
     });
   });
 
@@ -169,7 +163,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(distance >= 130 && distance <= 150, `Distance should be ~132-145km, got ${distance.toFixed(2)}km`);
       
-      console.log(`   ✅ Sofia-Plovdiv distance: ${distance.toFixed(2)}km`);
     });
 
     it('should calculate distance between Sofia and Varna (~385km)', () => {
@@ -180,7 +173,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(distance >= 375 && distance <= 390, `Distance should be ~378-385km, got ${distance.toFixed(2)}km`);
       
-      console.log(`   ✅ Sofia-Varna distance: ${distance.toFixed(2)}km`);
     });
 
     it('should return 0 for same location', () => {
@@ -190,7 +182,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(distance === 0, 'Same location should have 0 distance');
       
-      console.log('   ✅ Same location = 0 distance');
     });
 
     it('should calculate small distances accurately (< 1km)', () => {
@@ -201,7 +192,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(distance < 1, `Distance should be < 1km, got ${distance.toFixed(3)}km`);
       
-      console.log(`   ✅ Small distance: ${(distance * 1000).toFixed(0)}m`);
     });
 
     it('should handle maximum Earth distance (~20,000km)', () => {
@@ -212,7 +202,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(distance > 19000 && distance < 21000, 'Should be ~20,000km');
       
-      console.log(`   ✅ Max Earth distance: ${distance.toFixed(0)}km`);
     });
   });
 
@@ -236,7 +225,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(nearby.length >= 2, 'Should find nearby users in Sofia');
       
-      console.log(`   ✅ Found ${nearby.length} users within 5km`);
     });
 
     it('should find users within 50km radius', () => {
@@ -257,7 +245,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(nearby.length >= 2, 'Should find users within 50km');
       
-      console.log(`   ✅ Found ${nearby.length} users within 50km`);
     });
 
     it('should exclude users beyond max distance', () => {
@@ -283,7 +270,6 @@ describe('🔍 Search Functionality Tests', () => {
       assert(!plovdivUser, 'Plovdiv should be excluded (145km > 100km)');
       assert(!varnaUser, 'Varna should be excluded (385km > 100km)');
       
-      console.log('   ✅ Far users excluded');
     });
 
     it('should support maximum distance of 40,000km (worldwide)', () => {
@@ -297,7 +283,6 @@ describe('🔍 Search Functionality Tests', () => {
       // All users should be within 40,000km (worldwide search)
       assert(allUsers >= 0, 'Worldwide search should work');
       
-      console.log(`   ✅ Worldwide search: ${allUsers} users`);
     });
 
     it('should sort results by distance (nearest first)', () => {
@@ -323,7 +308,6 @@ describe('🔍 Search Functionality Tests', () => {
           'Should be sorted by distance');
       }
       
-      console.log('   ✅ Results sorted by distance');
     });
 
     it('should exclude users without GPS coordinates', () => {
@@ -335,7 +319,6 @@ describe('🔍 Search Functionality Tests', () => {
       // These should NOT appear in distance search
       assert(usersWithoutGPS >= 1, 'Should have user without GPS for testing');
       
-      console.log(`   ✅ ${usersWithoutGPS} users without GPS excluded`);
     });
 
     it('should exclude unpaid users from search', () => {
@@ -358,7 +341,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(paidOnly < total, 'Unpaid users should be excluded');
       
-      console.log(`   ✅ Unpaid users excluded: ${total - paidOnly}`);
     });
 
     it('should exclude blocked users from search', () => {
@@ -378,7 +360,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(nonBlocked < total, 'Blocked users should be excluded');
       
-      console.log(`   ✅ Blocked users excluded: ${total - nonBlocked}`);
     });
   });
 
@@ -393,7 +374,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(pharmacies.length > 0, 'Should find pharmacies');
       
-      console.log(`   ✅ Found ${pharmacies.length} pharmacies`);
     });
 
     it('should search within 50km max for "by need"', () => {
@@ -415,7 +395,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(nearby.length > 0, 'Should find static objects within 50km');
       
-      console.log(`   ✅ Found ${nearby.length} objects within 50km`);
     });
 
     it('should filter by offering type (Pharmacy, Restaurant, etc)', () => {
@@ -428,7 +407,6 @@ describe('🔍 Search Functionality Tests', () => {
           AND is_static_object = 1
         `).get(`%${type}%`).count;
         
-        console.log(`   ✅ Found ${results} ${type}(s)`);
       });
     });
 
@@ -441,7 +419,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert.strictEqual(results.length, 0, 'Should return empty for non-existent offering');
       
-      console.log('   ✅ Empty results for non-existent offering');
     });
 
     it('should combine offering + distance filters', () => {
@@ -465,7 +442,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(Array.isArray(nearby), 'Should return array');
       
-      console.log(`   ✅ Combined search: ${nearby.length} pharmacies within 50km`);
     });
   });
 
@@ -487,7 +463,6 @@ describe('🔍 Search Functionality Tests', () => {
       assert(males > 0, 'Should have male users');
       assert(females > 0, 'Should have female users');
       
-      console.log(`   ✅ Gender filter: ${males} males, ${females} females`);
     });
 
     it('should filter by age range', () => {
@@ -502,7 +477,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(inRange > 0, 'Should find users in age range');
       
-      console.log(`   ✅ Age filter: ${inRange} users aged ${minAge}-${maxAge}`);
     });
 
     it('should filter by city', () => {
@@ -515,7 +489,6 @@ describe('🔍 Search Functionality Tests', () => {
           AND subscription_active = 1
         `).get(city).count;
         
-        console.log(`   ✅ City ${city}: ${count} users`);
       });
     });
 
@@ -537,7 +510,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(typeof results === 'number', 'Should return count');
       
-      console.log(`   ✅ Combined filters: ${results} users`);
     });
   });
 
@@ -554,7 +526,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(results.length <= limit, `Should return max ${limit} results`);
       
-      console.log(`   ✅ Limited to ${results.length} results`);
     });
 
     it('should support pagination (LIMIT + OFFSET)', () => {
@@ -578,7 +549,6 @@ describe('🔍 Search Functionality Tests', () => {
         assert(page1[0].id !== page2[0].id, 'Pages should have different results');
       }
       
-      console.log(`   ✅ Pagination works (page1: ${page1.length}, page2: ${page2.length})`);
     });
 
     it('should count total results before pagination', () => {
@@ -591,7 +561,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert(totalPages >= 1, 'Should have at least 1 page');
       
-      console.log(`   ✅ Total: ${totalCount} users, ${totalPages} pages`);
     });
   });
 
@@ -607,7 +576,6 @@ describe('🔍 Search Functionality Tests', () => {
       
       assert.strictEqual(results.length, 0, 'SQL injection should return 0 results');
       
-      console.log('   ✅ SQL injection prevented');
     });
 
     it('should sanitize search input', () => {
@@ -620,7 +588,6 @@ describe('🔍 Search Functionality Tests', () => {
       const sanitized = sanitize(maliciousInput);
       assert(!sanitized.includes('<script>'), 'Should remove HTML tags');
       
-      console.log('   ✅ Input sanitization works');
     });
   });
 });

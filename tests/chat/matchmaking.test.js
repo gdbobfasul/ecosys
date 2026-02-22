@@ -218,7 +218,6 @@ describe('Matchmaking System Tests', () => {
       .send(criteria);
 
     if (response.status !== 200) {
-      console.log('❌ ERROR:', response.status, response.body);
     }
 
     expect(response.status).toBe(200);

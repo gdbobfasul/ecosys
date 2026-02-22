@@ -126,7 +126,7 @@ tests/
 ```
 kcy-complete-v3.0-matchmaking/
 │
-├── 00032.version              ← Version file (ecosystem-wide)
+├── 00033.version              ← Version file (ecosystem-wide)
 │
 ├── docs/                      ← Global documentation
 │

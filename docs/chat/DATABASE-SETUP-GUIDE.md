@@ -191,7 +191,7 @@ DATABASE_PATH=/var/www/kcy-ecosystem/private/chat/database/ams_db.sqlite
 ### 6. Permissions
 ```bash
 chmod 644 ams_db.sqlite
-chown www-data:www-data ams_db.sqlite
+chown kcy:kcy ams_db.sqlite
 ```
 
 ---
@@ -288,7 +288,7 @@ rm -f database/ams_db.sqlite
 
 ### SQLite:
 - ✅ File permissions (644 for read)
-- ✅ Owned by www-data user
+- ✅ Owned by kcy user
 - ⚠️ No password protection (file-based)
 - ⚠️ Secure server access important
 

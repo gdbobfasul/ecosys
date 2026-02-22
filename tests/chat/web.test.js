@@ -57,7 +57,6 @@ describe('AMS Chat Web App - Test Suite', () => {
         assert(tableNames.includes(table), `Missing table: ${table}`);
       });
 
-      console.log(`   ✅ All ${required.length} core tables exist`);
     });
 
   });
@@ -69,7 +68,6 @@ describe('AMS Chat Web App - Test Suite', () => {
     it('should have server.js', () => {
       const serverPath = path.join(CHAT_PRIVATE, 'server.js');
       assert(fs.existsSync(serverPath), 'Missing server.js');
-      console.log(`   ✅ server.js exists`);
     });
 
     it('should have database folder with SQL files', () => {
@@ -80,7 +78,6 @@ describe('AMS Chat Web App - Test Suite', () => {
       const sqlFiles = files.filter(f => f.endsWith('.sql'));
       assert(sqlFiles.length > 0, 'No SQL files in database folder');
 
-      console.log(`   ✅ Database has ${sqlFiles.length} SQL files`);
     });
 
     it('should have PWA files in public/chat/assets', () => {
@@ -92,13 +89,11 @@ describe('AMS Chat Web App - Test Suite', () => {
       const missing = required.filter(f => !files.includes(f));
 
       assert.strictEqual(missing.length, 0, `Missing: ${missing.join(', ')}`);
-      console.log(`   ✅ All PWA assets exist`);
     });
 
     it('should have configs folder', () => {
       const configsPath = path.join(CHAT_PRIVATE, 'configs');
       assert(fs.existsSync(configsPath), 'Missing configs folder');
-      console.log(`   ✅ Configs folder exists`);
     });
 
   });
@@ -116,7 +111,6 @@ describe('AMS Chat Web App - Test Suite', () => {
       const result = stmt.run('+359888123456', 'hashedpassword', 'Test User', 'male', 25);
       assert(result.lastInsertRowid > 0, 'Failed to insert user');
 
-      console.log(`   ✅ User created with ID: ${result.lastInsertRowid}`);
     });
 
     it('should retrieve user by phone', () => {
@@ -125,7 +119,6 @@ describe('AMS Chat Web App - Test Suite', () => {
 
       assert(user, 'User not found');
       assert.strictEqual(user.phone, '+359888123456');
-      console.log(`   ✅ User retrieved successfully`);
     });
 
   });
@@ -154,7 +147,6 @@ describe('AMS Chat Web App - Test Suite', () => {
       const result = stmt.run(sessionId, userId, token);
       assert(result.changes > 0, 'Failed to create session');
 
-      console.log(`   ✅ Session created`);
     });
 
     it('should validate session token format', () => {
@@ -166,13 +158,11 @@ describe('AMS Chat Web App - Test Suite', () => {
         assert(s.token.length > 10, 'Session token too short');
       });
 
-      console.log(`   ✅ Session tokens valid`);
     });
 
   });
 
   // ==================== CLEANUP ====================
 
-  console.log(`\n   ✅ All web app tests completed successfully!`);
 
 });

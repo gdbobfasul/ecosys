@@ -251,8 +251,12 @@ done
 
 # Root config files
 for f in package.json package-lock.json hardhat.config.js jest.config.js \
-         jest.mobile.config.js jest.setup.js 00032.version .deployignore; do
+         jest.mobile.config.js jest.setup.js .deployignore; do
     [ -f "$STAGING/$f" ] && cp "$STAGING/$f" "$PROJECT_DIR/$f"
+done
+# Version file (dynamic name)
+for f in "$STAGING"/*.version; do
+    [ -f "$f" ] && cp "$f" "$PROJECT_DIR/"
 done
 echo -e "  ${GREEN}✓ Root config files copied${NC}"
 

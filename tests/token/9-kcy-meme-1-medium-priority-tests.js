@@ -101,7 +101,6 @@ describe("KCY1 Token v33 - MEDIUM PRIORITY TESTS (NEW)", function() {
                 const endTime = Date.now();
                 const duration = endTime - startTime;
                 
-                console.log(`      ⏱️  100 transfers completed in ${duration}ms`);
                 
                 // Verify balances
                 // addrs[0-7] get 10 transfers each with fees: 1000 + 10*99.92 = 1999.2
@@ -148,12 +147,10 @@ describe("KCY1 Token v33 - MEDIUM PRIORITY TESTS (NEW)", function() {
                         successfulTransfers++;
                     } catch (error) {
                         // Unexpected for exempt users
-                        console.log(`Transfer ${i} failed: ${error.message}`);
                     }
                 }
                 
                 const endTime = Date.now();
-                console.log(`      ⏱️  ${successfulTransfers}/50 transfers succeeded in ${endTime - startTime}ms`);
                 
                 // Most/all should succeed since exempt
                 expect(successfulTransfers).to.be.gte(45); // At least 90% should succeed
@@ -196,7 +193,6 @@ describe("KCY1 Token v33 - MEDIUM PRIORITY TESTS (NEW)", function() {
                 const successful = results.filter(r => r.status === 'fulfilled').length;
                 const failed = results.filter(r => r.status === 'rejected').length;
                 
-                console.log(`      📊 Concurrent transfers: ${successful} succeeded, ${failed} failed`);
                 
                 // All should succeed since exempt
                 expect(successful).to.equal(4);
@@ -245,7 +241,6 @@ describe("KCY1 Token v33 - MEDIUM PRIORITY TESTS (NEW)", function() {
                 }
                 
                 const endTime = Date.now();
-                console.log(`      ⏱️  Distribution to 10 addresses: ${endTime - startTime}ms`);
                 
                 // Verify all received tokens (exempt→exempt, no fees)
                 for (let i = 0; i < 10; i++) {
@@ -297,7 +292,6 @@ describe("KCY1 Token v33 - MEDIUM PRIORITY TESTS (NEW)", function() {
                 // Supply should only decrease (burns), never increase
                 expect(finalSupply).to.be.lte(initialSupply);
                 
-                console.log(`      📊 Supply change: -${ethers.formatEther(initialSupply - finalSupply)} tokens burned`);
             });
         });
     });
@@ -376,7 +370,6 @@ describe("KCY1 Token v33 - MEDIUM PRIORITY TESTS (NEW)", function() {
                 
                 // For sandwich attack: attacker pays 0.08% × 2 = 0.16% total
                 // This makes small price movements unprofitable
-                console.log(`      📊 Fee paid: ${ethers.formatEther(feePaid)} (${Number(feePaid * 10000n / amount) / 100}%)`);
             });
         });
         
@@ -596,7 +589,6 @@ describe("KCY1 Token v33 - MEDIUM PRIORITY TESTS (NEW)", function() {
             expect(addr1Balance).to.be.lt(ethers.parseEther("100000"));
             expect(addr1Balance).to.be.gt(ethers.parseEther("80000")); // ~90k minus fees
             
-            console.log(`      📊 After 10 days: ${ethers.formatEther(addr1Balance)} tokens remaining`);
         });
         
         it("Should maintain correct state after many cooldown cycles", async function() {
@@ -628,9 +620,6 @@ describe("KCY1 Token v33 - MEDIUM PRIORITY TESTS (NEW)", function() {
             expect(balance1).to.be.gt(ethers.parseEther("2500"));
             expect(balance2).to.be.gt(ethers.parseEther("2500"));
             
-            console.log(`      📊 After 10 cycles:`);
-            console.log(`         Addr1: ${ethers.formatEther(balance1)}`);
-            console.log(`         Addr2: ${ethers.formatEther(balance2)}`);
         });
     });
 });

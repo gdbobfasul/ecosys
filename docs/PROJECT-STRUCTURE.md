@@ -25,7 +25,7 @@
 ```
 kcy-complete-v3.0-matchmaking/
 │
-├── 00032.version                  ← VERSION FILE (1.0057)
+├── 00033.version                  ← VERSION FILE (1.0057)
 │
 ├── docs/                          ← Global documentation
 │   ├── PROJECT-STRUCTURE.md       ← Този файл
@@ -50,7 +50,7 @@ kcy-complete-v3.0-matchmaking/
 ```
 kcy-complete-v3.0-matchmaking/
 │
-├── 00032.version                  ← VERSION FILE (САМО ТУК!)
+├── 00033.version                  ← VERSION FILE (САМО ТУК!)
 │
 ├── docs/                          ← Global documentation
 │   ├── DOCUMENTATION-INDEX.md
@@ -167,7 +167,7 @@ kcy-complete-v3.0-matchmaking/
 
 ### 1. Version File - САМО ЕДНО място
 ```
-00032.version  ← Root directory САМО!
+00033.version  ← Root directory САМО!
 ```
 
 **Правило:** Един version файл за ЦЯЛАТА екосистема!

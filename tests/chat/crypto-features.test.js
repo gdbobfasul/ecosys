@@ -19,12 +19,10 @@ describe('🧪 AMS Chat - Version 00013 Tests', () => {
     const schema = fs.readFileSync(DB_SCHEMA_PATH, 'utf8');
     db.exec(schema);
     
-    console.log('✅ Test database created');
   });
 
   after(() => {
     db.close();
-    console.log('✅ Test database closed');
   });
 
   // ============================================
@@ -439,4 +437,3 @@ describe('🧪 AMS Chat - Version 00013 Tests', () => {
   });
 });
 
-console.log('\n🧪 Running AMS Chat Tests...\n');

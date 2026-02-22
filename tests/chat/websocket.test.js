@@ -9,14 +9,12 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       const mockConnect = () => ({ connected: true, socket: { readyState: 1 } });
       const ws = mockConnect();
       assert(ws.connected);
-      console.log('   ✅ Connection established');
     });
 
     it('should handle connection failure', () => {
       const mockConnect = () => ({ connected: false, error: 'Connection refused' });
       const ws = mockConnect();
       assert(!ws.connected);
-      console.log('   ✅ Connection failure handled');
     });
 
     it('should reconnect on disconnect', () => {
@@ -24,21 +22,18 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       const reconnect = () => { reconnectCount++; return true; };
       reconnect();
       assert(reconnectCount === 1);
-      console.log('   ✅ Reconnection works');
     });
 
     it('should use exponential backoff', () => {
       const backoff = (attempt) => Math.min(1000 * Math.pow(2, attempt), 30000);
       assert(backoff(0) === 1000);
       assert(backoff(5) === 30000);
-      console.log('   ✅ Exponential backoff');
     });
 
     it('should validate session token', () => {
       const validate = (token) => token && token.length > 20;
       assert(validate('valid_token_123456789012345'));
       assert(!validate('short'));
-      console.log('   ✅ Token validation');
     });
   });
 
@@ -48,7 +43,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       const emit = (event, data) => { if (event === 'message') messages.push(data); };
       emit('message', { text: 'Hello', from: 1, to: 2 });
       assert(messages.length === 1);
-      console.log('   ✅ Message emitted');
     });
 
     it('should receive message event', () => {
@@ -58,7 +52,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       const msg = { text: 'Hello' };
       handlers.message(msg);
       assert(msg.received);
-      console.log('   ✅ Message received');
     });
 
     it('should broadcast to specific user', () => {
@@ -67,7 +60,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       rooms.set(2, { socket: 'socket2' });
       const broadcast = (userId, data) => rooms.get(userId) ? true : false;
       assert(broadcast(1, { text: 'Hi' }));
-      console.log('   ✅ User-specific broadcast');
     });
 
     it('should handle offline users', () => {
@@ -75,7 +67,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       const isOnline = (userId) => online.has(userId);
       assert(isOnline(1));
       assert(!isOnline(2));
-      console.log('   ✅ Offline handling');
     });
 
     it('should queue messages for offline users', () => {
@@ -87,7 +78,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       queueMessage(2, { text: 'Message 1' });
       queueMessage(2, { text: 'Message 2' });
       assert(queue.get(2).length === 2);
-      console.log('   ✅ Message queuing');
     });
   });
 
@@ -96,21 +86,18 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       const online = new Set();
       online.add(1);
       assert(online.has(1));
-      console.log('   ✅ Online status tracked');
     });
 
     it('should update last seen', () => {
       const lastSeen = new Map();
       lastSeen.set(1, Date.now());
       assert(lastSeen.get(1) > 0);
-      console.log('   ✅ Last seen updated');
     });
 
     it('should emit typing indicator', () => {
       const typing = new Map();
       typing.set(1, { to: 2, typing: true });
       assert(typing.get(1).typing);
-      console.log('   ✅ Typing indicator');
     });
 
     it('should clear typing after timeout', () => {
@@ -121,7 +108,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
         return data && (Date.now() - data.timestamp < 3000);
       };
       assert(!isTyping(1));
-      console.log('   ✅ Typing timeout');
     });
 
     it('should emit presence events', () => {
@@ -130,7 +116,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       emit('user:online', 1);
       emit('user:offline', 2);
       assert(events.length === 2);
-      console.log('   ✅ Presence events');
     });
   });
 
@@ -140,14 +125,12 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       const confirm = (msgId) => delivered.add(msgId);
       confirm('msg_123');
       assert(delivered.has('msg_123'));
-      console.log('   ✅ Delivery confirmation');
     });
 
     it('should track read receipts', () => {
       const read = new Map();
       read.set('msg_123', { readBy: 2, at: Date.now() });
       assert(read.has('msg_123'));
-      console.log('   ✅ Read receipts');
     });
 
     it('should handle message acknowledgment', () => {
@@ -155,7 +138,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
       const ack = (msgId) => pending.delete(msgId);
       ack('msg_1');
       assert(pending.size === 1);
-      console.log('   ✅ Message ACK');
     });
   });
 
@@ -169,7 +151,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
         }
       };
       assert(parse('invalid') === null);
-      console.log('   ✅ Malformed message handling');
     });
 
     it('should rate limit messages', () => {
@@ -181,7 +162,6 @@ describe('🔌 WebSocket Real-Time Tests', () => {
         return true;
       };
       assert(checkLimit(1));
-      console.log('   ✅ Rate limiting');
     });
   });
 });

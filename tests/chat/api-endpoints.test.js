@@ -11,7 +11,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       assert(validate({ phone: '+359888111111', password: 'pass123', full_name: 'Test', gender: 'male', age: 25 }));
       assert(!validate({ phone: '+359888111111' }));
-      console.log('   ✅ Register validation');
     });
 
     it('POST /api/login - should return token on success', () => {
@@ -23,7 +22,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const result = mockLogin('+359888111111', 'correct');
       assert(result.token);
-      console.log('   ✅ Login returns token');
     });
 
     it('POST /api/logout - should invalidate session', () => {
@@ -31,7 +29,6 @@ describe('🌐 API Endpoints Tests', () => {
       sessions.set('token123', { user_id: 1 });
       sessions.delete('token123');
       assert(!sessions.has('token123'));
-      console.log('   ✅ Logout invalidates session');
     });
   });
 
@@ -43,21 +40,18 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const profile = mockGetProfile(1);
       assert(profile.full_name);
-      console.log('   ✅ Get profile works');
     });
 
     it('PUT /api/profile - should update user data', () => {
       const user = { id: 1, full_name: 'Old Name' };
       user.full_name = 'New Name';
       assert(user.full_name === 'New Name');
-      console.log('   ✅ Update profile works');
     });
 
     it('POST /api/profile/photo - should accept image upload', () => {
       const validateImage = (mimetype) => ['image/jpeg', 'image/png', 'image/gif'].includes(mimetype);
       assert(validateImage('image/jpeg'));
       assert(!validateImage('text/plain'));
-      console.log('   ✅ Photo upload validated');
     });
   });
 
@@ -69,20 +63,17 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const msg = sendMessage(1, 2, 'Hello');
       assert(msg.id);
-      console.log('   ✅ Send message works');
     });
 
     it('GET /api/messages/:conversationId - should retrieve messages', () => {
       const messages = [{ id: 1, text: 'Hi' }, { id: 2, text: 'Hello' }];
       assert(messages.length === 2);
-      console.log('   ✅ Get messages works');
     });
 
     it('PUT /api/messages/:id/read - should mark as read', () => {
       const msg = { id: 1, read_at: null };
       msg.read_at = new Date().toISOString();
       assert(msg.read_at);
-      console.log('   ✅ Mark read works');
     });
   });
 
@@ -93,7 +84,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const results = search({ distance: 50 });
       assert(results.length > 0);
-      console.log('   ✅ Search works');
     });
 
     it('GET /api/search/by-need - should search by offering', () => {
@@ -103,7 +93,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const results = searchByNeed('Web Dev');
       assert(results.length > 0);
-      console.log('   ✅ Search by need works');
     });
   });
 
@@ -115,7 +104,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const signal = submit({ photo: 'photo.jpg', location: { lat: 42, lon: 23 } });
       assert(signal.status === 'pending');
-      console.log('   ✅ Submit signal works');
     });
 
     it('GET /api/signals/can-submit - should check daily limit', () => {
@@ -125,7 +113,6 @@ describe('🌐 API Endpoints Tests', () => {
         return today.length === 0;
       };
       assert(canSubmit(1, '2024-01-01'));
-      console.log('   ✅ Can submit check works');
     });
   });
 
@@ -136,7 +123,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const intent = createIntent(999);
       assert(intent.id);
-      console.log('   ✅ Stripe intent created');
     });
 
     it('POST /api/payment/crypto - should generate wallet address', () => {
@@ -149,7 +135,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const address = generateAddress('BTC');
       assert(address.startsWith('1'));
-      console.log('   ✅ Crypto address generated');
     });
   });
 
@@ -161,7 +146,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const result = upload({ size: 1024 });
       assert(result.id);
-      console.log('   ✅ File upload works');
     });
 
     it('GET /api/files/:id/download - should download file', () => {
@@ -170,7 +154,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const file = download('file123');
       assert(file.downloaded);
-      console.log('   ✅ File download works');
     });
   });
 
@@ -184,7 +167,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const result = login('admin', 'secret');
       assert(result.token);
-      console.log('   ✅ Admin login works');
     });
 
     it('GET /api/admin/users - should list users', () => {
@@ -193,7 +175,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const result = listUsers(1, 20);
       assert(result.total === 100);
-      console.log('   ✅ List users works');
     });
 
     it('POST /api/admin/block-user - should block user', () => {
@@ -202,7 +183,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const result = block(1, 'Spam');
       assert(result.blocked);
-      console.log('   ✅ Block user works');
     });
   });
 
@@ -213,7 +193,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const help = triggerHelp(1, { lat: 42, lon: 23 });
       assert(help.status === 'active');
-      console.log('   ✅ Help request triggered');
     });
 
     it('GET /api/emergency/contacts - should get emergency contacts', () => {
@@ -225,7 +204,6 @@ describe('🌐 API Endpoints Tests', () => {
       };
       const contacts = getContacts('BG');
       assert(contacts.length > 0);
-      console.log('   ✅ Emergency contacts retrieved');
     });
   });
 });

@@ -282,7 +282,6 @@ describe("KCY1 Token v33 - HIGH PRIORITY TESTS (NEW)", function() {
             );
             const receipt = await tx.wait();
             
-            console.log(`      📊 Normal transfer gas: ${receipt.gasUsed}`);
             
             // Gas should be reasonable (< 135k for normal transfer)
             expect(receipt.gasUsed).to.be.lt(135000n);
@@ -296,7 +295,6 @@ describe("KCY1 Token v33 - HIGH PRIORITY TESTS (NEW)", function() {
             const tx = await token.transfer(addr1.address, ethers.parseEther("1000"));
             const receipt = await tx.wait();
             
-            console.log(`      📊 Exempt transfer gas: ${receipt.gasUsed}`);
             
             // Exempt transfers should be cheaper (< 90k)
             expect(receipt.gasUsed).to.be.lt(90000n);
@@ -313,7 +311,6 @@ describe("KCY1 Token v33 - HIGH PRIORITY TESTS (NEW)", function() {
             );
             const receipt = await tx.wait();
             
-            console.log(`      📊 Approve gas: ${receipt.gasUsed}`);
             
             // Approve should be very cheap (< 50k)
             expect(receipt.gasUsed).to.be.lt(50000n);
@@ -337,7 +334,6 @@ describe("KCY1 Token v33 - HIGH PRIORITY TESTS (NEW)", function() {
             );
             const receipt = await tx.wait();
             
-            console.log(`      📊 TransferFrom gas: ${receipt.gasUsed}`);
             
             // TransferFrom is most expensive but should still be reasonable (< 140k)
             expect(receipt.gasUsed).to.be.lt(140000n);
@@ -352,7 +348,6 @@ describe("KCY1 Token v33 - HIGH PRIORITY TESTS (NEW)", function() {
 			await time.increase(AFTER_ADMIN_LOCK);
             const receipt = await tx.wait();
             
-            console.log(`      📊 UpdateExemptSlots gas: ${receipt.gasUsed}`);
             
             // Admin function, should be reasonably efficient
             expect(receipt.gasUsed).to.be.lt(150000n);
@@ -381,10 +376,6 @@ describe("KCY1 Token v33 - HIGH PRIORITY TESTS (NEW)", function() {
             );
             const receipt2 = await tx2.wait();
             
-            console.log(`      📊 Gas comparison:`);
-            console.log(`         Exempt:  ${receipt1.gasUsed}`);
-            console.log(`         Normal:  ${receipt2.gasUsed}`);
-            console.log(`         Diff:    ${receipt2.gasUsed - receipt1.gasUsed} (${Math.round(Number(receipt2.gasUsed - receipt1.gasUsed) / Number(receipt1.gasUsed) * 100)}% more)`);
             
             // Normal should use more gas than exempt
             expect(receipt2.gasUsed).to.be.gt(receipt1.gasUsed);

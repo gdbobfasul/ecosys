@@ -9,7 +9,6 @@ describe('📱 Mobile App - Navigation Tests', () => {
   
   it('should have navigation structure', () => {
     const exists = fs.existsSync(path.join(APP_ROOT, 'src', 'navigation'));
-    console.log(`   ${exists ? '✅' : '⚠️'} Navigation folder`);
   });
 
   it('should have main screens', () => {
@@ -18,7 +17,6 @@ describe('📱 Mobile App - Navigation Tests', () => {
     screens.forEach(screen => {
       const exists = fs.existsSync(path.join(APP_ROOT, 'src', 'screens', `${screen}.js`));
       if (exists) found++;
-      console.log(`   ${exists ? '✅' : '⚠️'} ${screen}`);
     });
     assert(found > 0, 'Should have at least some screens');
   });
@@ -27,7 +25,6 @@ describe('📱 Mobile App - Navigation Tests', () => {
     const searchScreens = ['SearchByDistanceScreen', 'SearchByNeedScreen'];
     searchScreens.forEach(screen => {
       const exists = fs.existsSync(path.join(APP_ROOT, 'src', 'screens', `${screen}.js`));
-      console.log(`   ${exists ? '✅' : '⚠️'} ${screen}`);
     });
   });
 
@@ -35,7 +32,6 @@ describe('📱 Mobile App - Navigation Tests', () => {
     const paymentScreens = ['StripePaymentScreen', 'CryptoPaymentScreen'];
     paymentScreens.forEach(screen => {
       const exists = fs.existsSync(path.join(APP_ROOT, 'src', 'screens', `${screen}.js`));
-      console.log(`   ${exists ? '✅' : '⚠️'} ${screen}`);
     });
   });
 });

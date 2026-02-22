@@ -11,21 +11,18 @@ describe('🖼️ Image Processing Tests', () => {
       const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
       assert(allowed.includes('image/jpeg'));
       assert(!allowed.includes('text/plain'));
-      console.log('   ✅ File type validation');
     });
 
     it('should check file size', () => {
       const maxSize = 5 * 1024 * 1024; // 5MB
       const fileSize = 3 * 1024 * 1024;
       assert(fileSize < maxSize);
-      console.log('   ✅ Size validation');
     });
 
     it('should generate unique filename', () => {
       const generate = () => Date.now() + '_' + Math.random().toString(36).substring(7) + '.jpg';
       const filename = generate();
       assert(filename.endsWith('.jpg'));
-      console.log('   ✅ Unique filename');
     });
 
     it('should create upload directory', () => {
@@ -34,7 +31,6 @@ describe('🖼️ Image Processing Tests', () => {
         fs.mkdirSync(dir, { recursive: true });
       }
       assert(fs.existsSync(dir));
-      console.log('   ✅ Upload directory');
     });
   });
 
@@ -50,7 +46,6 @@ describe('🖼️ Image Processing Tests', () => {
       const result = resize(2000, 1500, 800);
       assert(result.width === 800);
       assert(result.height === 600);
-      console.log('   ✅ Image resize');
     });
 
     it('should maintain aspect ratio', () => {
@@ -60,7 +55,6 @@ describe('🖼️ Image Processing Tests', () => {
       };
       const newHeight = maintainRatio(1600, 1200, 800);
       assert(newHeight === 600);
-      console.log('   ✅ Aspect ratio');
     });
 
     it('should create thumbnail', () => {
@@ -71,7 +65,6 @@ describe('🖼️ Image Processing Tests', () => {
       };
       const thumb = createThumb(800, 600);
       assert(thumb.width <= 150);
-      console.log('   ✅ Thumbnail creation');
     });
 
     it('should compress image', () => {
@@ -81,7 +74,6 @@ describe('🖼️ Image Processing Tests', () => {
       };
       const result = compress(80);
       assert(result === 80);
-      console.log('   ✅ Image compression');
     });
 
     it('should convert image format', () => {
@@ -90,7 +82,6 @@ describe('🖼️ Image Processing Tests', () => {
         return supported.includes(to);
       };
       assert(convert('png', 'jpg'));
-      console.log('   ✅ Format conversion');
     });
   });
 
@@ -99,27 +90,23 @@ describe('🖼️ Image Processing Tests', () => {
       const sanitize = (name) => name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const safe = sanitize('image<script>.jpg');
       assert(!safe.includes('<'));
-      console.log('   ✅ Filename sanitization');
     });
 
     it('should prevent path traversal', () => {
       const checkPath = (path) => !path.includes('../');
       assert(checkPath('uploads/image.jpg'));
       assert(!checkPath('../../../etc/passwd'));
-      console.log('   ✅ Path traversal prevention');
     });
 
     it('should validate image content', () => {
       const validate = (mimetype) => mimetype.startsWith('image/');
       assert(validate('image/jpeg'));
       assert(!validate('application/pdf'));
-      console.log('   ✅ Content validation');
     });
 
     it('should strip EXIF data', () => {
       const stripEXIF = (hasEXIF) => !hasEXIF;
       assert(stripEXIF(true) === false); // After stripping
-      console.log('   ✅ EXIF stripping');
     });
   });
 
@@ -131,20 +118,17 @@ describe('🖼️ Image Processing Tests', () => {
         return '/uploads/';
       };
       assert(getPath('profile') === '/uploads/profiles/');
-      console.log('   ✅ Directory structure');
     });
 
     it('should generate storage path', () => {
       const generate = (userId, filename) => `/uploads/${userId}/${filename}`;
       const path = generate(1, 'photo.jpg');
       assert(path.includes('/uploads/1/'));
-      console.log('   ✅ Storage path');
     });
 
     it('should cleanup old files', () => {
       const cleanup = (age, maxAge) => age > maxAge;
       assert(cleanup(90, 30)); // 90 days > 30 days
-      console.log('   ✅ File cleanup');
     });
   });
 });
