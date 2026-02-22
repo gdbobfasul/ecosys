@@ -1,4 +1,4 @@
-// Version: 1.0078
+// Version: 1.0085
 // Project Structure Validation Tests - kcy-ecosystem
 // Run: npm test structure.test.js
 //
@@ -26,6 +26,8 @@ const CHAT_PUBLIC = path.join(PUBLIC_DIR, 'chat');
 const TOKEN_PRIVATE = path.join(PRIVATE_DIR, 'token');
 const MULTISIG_PRIVATE = path.join(PRIVATE_DIR, 'multisig');
 const MOBILE_PRIVATE = path.join(PRIVATE_DIR, 'mobile-chat');
+const ECO3_PRIVATE = path.join(PRIVATE_DIR, 'eco-3');
+const ECO3_PUBLIC = path.join(PUBLIC_DIR, 'eco-3');
 
 describe('📁 kcy-ecosystem Structure Validation', () => {
   
@@ -82,7 +84,7 @@ describe('📁 kcy-ecosystem Structure Validation', () => {
   describe('🔒 Private Directory', () => {
     
     it('MUST have all projects', () => {
-      const required = ['token', 'multisig', 'chat', 'mobile-chat'];
+      const required = ['token', 'multisig', 'chat', 'mobile-chat', 'eco-3'];
       const existing = fs.readdirSync(PRIVATE_DIR);
       const missing = required.filter(p => !existing.includes(p));
       
@@ -91,7 +93,7 @@ describe('📁 kcy-ecosystem Structure Validation', () => {
     });
     
     it('Each project MUST have package.json', () => {
-      const projects = ['token', 'multisig', 'chat', 'mobile-chat'];
+      const projects = ['token', 'multisig', 'chat', 'mobile-chat', 'eco-3'];
       const missing = projects.filter(p => 
         !fs.existsSync(path.join(PRIVATE_DIR, p, 'package.json'))
       );
@@ -138,6 +140,12 @@ describe('📁 kcy-ecosystem Structure Validation', () => {
       assert(fs.existsSync(appPath), 'Missing App.js');
       console.log(`   ✅ Mobile-chat has App.js`);
     });
+
+    it('ECO-3 MUST have server.js', () => {
+      const serverPath = path.join(ECO3_PRIVATE, 'server.js');
+      assert(fs.existsSync(serverPath), 'Missing eco-3/server.js');
+      console.log(`   ✅ ECO-3 has server.js`);
+    });
     
   });
   
@@ -146,7 +154,7 @@ describe('📁 kcy-ecosystem Structure Validation', () => {
   describe('🌐 Public Directory', () => {
     
     it('MUST have project folders', () => {
-      const required = ['token', 'multisig', 'chat', 'shared'];
+      const required = ['token', 'multisig', 'chat', 'eco-3', 'shared'];
       const existing = fs.readdirSync(PUBLIC_DIR);
       const missing = required.filter(p => !existing.includes(p));
       
@@ -228,6 +236,69 @@ describe('📁 kcy-ecosystem Structure Validation', () => {
     
   });
   
+  // ==================== GLOBAL CONFIG ====================
+  
+  describe('⚙️ Global Configuration', () => {
+
+    it('MUST have private/configs/ directory', () => {
+      assert(fs.existsSync(path.join(PRIVATE_DIR, 'configs')), 
+        'Missing private/configs/ — .env lives here');
+      console.log(`   ✅ private/configs/ exists`);
+    });
+
+    it('.env MUST NOT exist anywhere except private/configs/', () => {
+      const found = [];
+      
+      // Check each project dir for stray .env files
+      const projectDirs = ['chat', 'eco-3', 'token', 'multisig', 'mobile-chat'];
+      for (const proj of projectDirs) {
+        const projRoot = path.join(PRIVATE_DIR, proj, '.env');
+        if (fs.existsSync(projRoot) && !fs.lstatSync(projRoot).isSymbolicLink()) {
+          found.push(`private/${proj}/.env`);
+        }
+      }
+      
+      // Check root
+      const rootEnv = path.join(ECOSYSTEM_ROOT, '.env');
+      if (fs.existsSync(rootEnv)) {
+        found.push('.env (root)');
+      }
+      
+      // Check public
+      const publicEnv = path.join(PUBLIC_DIR, '.env');
+      if (fs.existsSync(publicEnv)) {
+        found.push('public/.env');
+      }
+      
+      assert.strictEqual(found.length, 0, 
+        `.env found in wrong locations: ${found.join(', ')} — must ONLY be in private/configs/.env`);
+      console.log(`   ✅ No stray .env files found`);
+    });
+
+    it('Project configs/.env MUST be symlink to global (if exists)', () => {
+      const checked = [];
+      for (const proj of ['chat', 'eco-3']) {
+        const envPath = path.join(PRIVATE_DIR, proj, 'configs', '.env');
+        if (fs.existsSync(envPath)) {
+          if (fs.lstatSync(envPath).isSymbolicLink()) {
+            const target = fs.readlinkSync(envPath);
+            assert(target.includes('configs/.env'), 
+              `${proj}/configs/.env symlink points to wrong target: ${target}`);
+            checked.push(proj);
+          } else {
+            assert.fail(`${proj}/configs/.env exists but is NOT a symlink — must point to ../../configs/.env`);
+          }
+        }
+      }
+      if (checked.length > 0) {
+        console.log(`   ✅ Symlinks OK: ${checked.join(', ')}`);
+      } else {
+        console.log(`   ⚠️  No configs/.env symlinks found (OK if running locally)`);
+      }
+    });
+    
+  });
+
   // ==================== NO node_modules IN SUBDIRS ====================
   
   describe('📦 node_modules Structure', () => {
@@ -240,7 +311,7 @@ describe('📁 kcy-ecosystem Structure Validation', () => {
     });
 
     it('MUST NOT have node_modules in private projects', () => {
-      const projects = ['token', 'multisig', 'chat', 'mobile-chat'];
+      const projects = ['token', 'multisig', 'chat', 'mobile-chat', 'eco-3'];
       const found = projects.filter(p => 
         fs.existsSync(path.join(PRIVATE_DIR, p, 'node_modules'))
       );

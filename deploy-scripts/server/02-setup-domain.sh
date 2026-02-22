@@ -179,6 +179,22 @@ server {
         proxy_read_timeout 86400;
     }
 
+    # ECO-3 API Backend (reverse proxy to Node.js)
+    location /api/eco3/ {
+        proxy_pass http://localhost:3001/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Longer timeout for AI generation
+        proxy_read_timeout 120;
+    }
+
     # Shared resources CORS
     location /shared/ {
         add_header Access-Control-Allow-Origin "*";
@@ -319,6 +335,44 @@ else
     echo -e "${YELLOW}  Check logs: journalctl -u kcy-chat.service${NC}"
 fi
 
+# Create ECO-3 systemd service
+cat > /etc/systemd/system/kcy-eco3.service << 'ECO3EOF'
+[Unit]
+Description=KCY ECO-3 AI Studio Node.js Application
+Documentation=https://alsec.strangled.net/eco-3/
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/kcy-ecosystem/eco-3
+Environment=NODE_ENV=production
+EnvironmentFile=/var/www/kcy-ecosystem/eco-3/configs/.env
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kcy-eco3
+
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+ECO3EOF
+
+systemctl daemon-reload
+systemctl enable kcy-eco3.service
+systemctl start kcy-eco3.service
+
+if systemctl is-active --quiet kcy-eco3.service; then
+    echo -e "${GREEN}  ✓ ECO-3 service started${NC}"
+else
+    echo -e "${YELLOW}  ! ECO-3 service failed to start${NC}"
+    echo -e "${YELLOW}  Check logs: journalctl -u kcy-eco3.service${NC}"
+fi
+
 echo ""
 echo -e "${GREEN}[8/10] Setting up PM2 for additional services...${NC}"
 
@@ -360,6 +414,9 @@ echo ""
 echo "Services:"
 systemctl status kcy-chat.service --no-pager -l | head -3
 echo ""
+echo "ECO-3:"
+systemctl status kcy-eco3.service --no-pager -l | head -3
+echo ""
 echo "Nginx:"
 systemctl status nginx --no-pager | head -3
 echo ""
@@ -381,6 +438,7 @@ cat > /usr/local/bin/kcy-restart << 'RESTARTEOF'
 #!/bin/bash
 echo "Restarting KCY services..."
 systemctl restart kcy-chat.service
+systemctl restart kcy-eco3.service
 systemctl reload nginx
 echo "✓ Services restarted"
 RESTARTEOF
@@ -403,6 +461,7 @@ echo -e "  Domain: ${GREEN}https://$DOMAIN${NC}"
 echo -e "  Web Root: $WEB_ROOT"
 echo -e "  Project: $PROJECT_DIR"
 echo -e "  Chat Service: $(systemctl is-active kcy-chat.service)"
+echo -e "  ECO-3 Service: $(systemctl is-active kcy-eco3.service)"
 echo -e "  Nginx: $(systemctl is-active nginx)"
 echo -e "  PostgreSQL: $(systemctl is-active postgresql)"
 echo ""
@@ -425,6 +484,7 @@ Deployed: $(date)
 
 Services:
 - Chat API: http://localhost:$CHAT_PORT (proxied via Nginx)
+- ECO-3 API: http://localhost:3001 (proxied via Nginx)
 - Web: https://$DOMAIN
 
 Directories:

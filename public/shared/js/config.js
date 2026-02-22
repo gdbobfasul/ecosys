@@ -1,4 +1,4 @@
-// Version: 1.0056
+// Version: 1.0084
 /**
  * KCY Ecosystem - Централна Конфигурация
  * 
@@ -40,7 +40,9 @@ const KCY_CONFIG = {
         multisigAdmin: "/multisig/admin/",
         chat: "/chat/",
         chatDownload: "/chat/download/",
-        chatAdmin: "/chat/admin/"
+        chatAdmin: "/chat/admin/",
+        eco3: "/eco-3/",
+        eco3Admin: "/eco-3/admin/"
     },
     
     // 📱 Mobile App Download Links
@@ -65,7 +67,8 @@ const KCY_CONFIG = {
     api: {
         token: "/api/token/",
         multisig: "/api/multisig/",
-        chat: "/api/chat/"
+        chat: "/api/chat/",
+        eco3: "/api/eco3/"
     },
     
     social: {
@@ -122,6 +125,12 @@ const CRYPTO_CONFIG = {
         EMERGENCY: {
             USD: 50,
             EUR: 50
+        },
+        ECO3: {
+            BASIC: { USD: 2.99, EUR: 2.99 },
+            STANDARD: { USD: 4.99, EUR: 4.99 },
+            PREMIUM: { USD: 9.99, EUR: 9.99 },
+            PER_MINUTE: { USD: 0.15, EUR: 0.15 }
         }
     }
 };

@@ -1,12 +1,13 @@
 {
   "name": "kcy-ecosystem",
-  "version": "1.0062",
-  "description": "KCY Ecosystem - Token, Multi-Sig, and Chat unified structure",
+  "version": "1.0084",
+  "description": "KCY Ecosystem - Token, Multi-Sig, Chat, and ECO-3 AI unified structure",
   "workspaces": [
     "private/token",
     "private/multisig",
     "private/chat",
-    "private/mobile-chat"
+    "private/mobile-chat",
+    "private/eco-3"
   ],
   "scripts": {
     "test": "npm run test:token && npm run test:multisig && npm run test:chat && npm run test:mobile",
@@ -17,7 +18,10 @@
     "deploy:token": "cd private/token && npx hardhat run scripts/deploy.js --network bscMainnet",
     "deploy:multisig": "cd private/multisig && npx hardhat run scripts/deploy-multisig.js --network bscMainnet",
     "start:chat": "cd private/chat && node server.js",
-    "start:chat:dev": "cd private/chat && nodemon server.js"
+    "start:chat:dev": "cd private/chat && nodemon server.js",
+    "start:eco3": "cd private/eco-3 && node server.js",
+    "start:eco3:dev": "cd private/eco-3 && nodemon server.js",
+    "start:all": "npm run start:chat & npm run start:eco3"
   },
   "keywords": [
     "blockchain",

@@ -30,6 +30,7 @@ CHAT_DIR="$PROJECT_DIR/private/chat"
 TOKEN_DIR="$PROJECT_DIR/private/token"
 MULTISIG_DIR="$PROJECT_DIR/private/multisig"
 MOBILE_DIR="$PROJECT_DIR/private/mobile-chat"
+ECO3_DIR="$PROJECT_DIR/private/eco-3"
 
 CURRENT_STEP=0
 TOTAL_STEPS=7
@@ -512,7 +513,7 @@ step_start_services() {
     echo ""
     
     # Install dependencies for each project
-    for project_path in "$CHAT_DIR" "$TOKEN_DIR" "$MULTISIG_DIR" "$MOBILE_DIR"; do
+    for project_path in "$CHAT_DIR" "$TOKEN_DIR" "$MULTISIG_DIR" "$MOBILE_DIR" "$ECO3_DIR"; do
         if [ -f "$project_path/package.json" ]; then
             project_name=$(basename "$project_path")
             echo -e "${YELLOW}Installing dependencies for $project_name...${NC}"
@@ -532,6 +533,13 @@ step_start_services() {
         cd "$CHAT_DIR"
         pm2 start server.js --name kcy-chat || pm2 restart kcy-chat
         echo -e "${GREEN}✓ Chat service started${NC}"
+    fi
+    
+    # ECO-3 service
+    if [ -f "$ECO3_DIR/server.js" ]; then
+        cd "$ECO3_DIR"
+        pm2 start server.js --name kcy-eco3 || pm2 restart kcy-eco3
+        echo -e "${GREEN}✓ ECO-3 service started${NC}"
     fi
     
     # Save PM2 configuration
@@ -580,6 +588,7 @@ step_summary() {
     
     echo -e "${CYAN}Important files:${NC}"
     echo "  • Chat .env: $CHAT_DIR/.env"
+    echo "  • ECO-3 .env: $ECO3_DIR/configs/.env"
     echo "  • Database credentials: $PROJECT_DIR/database-credentials.txt"
     echo "  • PM2 config: ~/.pm2"
     echo ""

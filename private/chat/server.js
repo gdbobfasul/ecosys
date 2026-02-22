@@ -312,7 +312,7 @@ cron.schedule('0 4 * * *', () => {
   timezone: "UTC"
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.CHAT_PORT || 3000;
 
 // Start server with database initialization
 (async () => {

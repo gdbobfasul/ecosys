@@ -1,4 +1,4 @@
-// Version: 1.0056
+// Version: 1.0084
 /**
  * KCY Ecosystem - Navigation System
  */
@@ -8,7 +8,8 @@ const KCY_NAV = {
         home: { name: "Home", url: "/", icon: "🏠" },
         token: { name: "KCY Token", url: "/token/", admin: "/token/admin/scripts.html", icon: "🪙" },
         multisig: { name: "Multi-Sig", url: "/multisig/", admin: "/multisig/admin/", icon: "🔐" },
-        chat: { name: "AMS Chat", url: "/chat/", admin: "/chat/admin/", icon: "💬" }
+        chat: { name: "AMS Chat", url: "/chat/", admin: "/chat/admin/", icon: "💬" },
+        eco3: { name: "ECO-3", url: "/eco-3/", admin: "/eco-3/admin/", icon: "🤖" }
     },
     
     injectNav: function() {
@@ -27,6 +28,7 @@ const KCY_NAV = {
                     <a href="/token/">🪙 Token</a>
                     <a href="/multisig/">🔐 Multi-Sig</a>
                     <a href="/chat/">💬 Chat</a>
+                    <a href="/eco-3/">🤖 ECO-3</a>
                 </div>
                 <div class="nav-admin">
                     <select onchange="if(this.value) window.location.href=this.value">
@@ -34,6 +36,7 @@ const KCY_NAV = {
                         <option value="/token/admin/scripts.html">Token Admin</option>
                         <option value="/multisig/admin/">Multi-Sig Admin</option>
                         <option value="/chat/admin/">Chat Admin</option>
+                        <option value="/eco-3/admin/">ECO-3 Admin</option>
                     </select>
                 </div>
             </div>
