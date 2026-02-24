@@ -12,10 +12,7 @@ yarn.lock
 .env.*
 !.env.example
 
-# Git
-.git/
-.gitignore
-.gitattributes
+# Git (запазваме .git/ за git pull на сървъра)
 
 # IDE
 .vscode/

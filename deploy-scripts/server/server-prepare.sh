@@ -1,21 +1,20 @@
 #!/bin/bash
-# Version: 1.0084
+# Version: 1.0085
 ##############################################################################
 # KCY Ecosystem - First-Time Server Preparation
 # Пуска се ВЕДНЪЖ като root за да подготви сървъра
 #
 # Какво прави:
-#   1. Създава /var/www/deploy/ (staging) с права за deploy потребителя
-#   2. Създава системен потребител kcy
-#   3. Създава нужните директории
+#   1. Създава deploy потребител (само качва)
+#   2. Създава kcy-admin потребител (инсталира, sudo)
+#   3. Създава системни потребители kcy-chat, kcy-eco3
+#   4. Създава нужните директории с правилни права
 #
-# Usage: sudo bash server-prepare.sh [deploy_username]
+# Usage: sudo bash server-prepare.sh
 ##############################################################################
 
-DEPLOY_USER="${1:-deploy}"
-
 if [ "$EUID" -ne 0 ]; then
-    echo "ERROR: sudo bash $0 [$DEPLOY_USER]"
+    echo "ERROR: sudo bash $0"
     exit 1
 fi
 
@@ -23,35 +22,77 @@ echo "KCY Ecosystem - Server Preparation"
 echo "==================================="
 echo ""
 
-# 1. Create kcy system user
-if id "kcy" &>/dev/null; then
-    echo "✓ User 'kcy' already exists"
+# 1. Create kcy group
+if getent group "kcy" &>/dev/null; then
+    echo "✓ Group 'kcy' already exists"
 else
-    useradd --system --no-create-home --shell /usr/sbin/nologin --comment "KCY Ecosystem" kcy
-    echo "✓ User 'kcy' created"
+    groupadd --system kcy
+    echo "✓ Group 'kcy' created"
 fi
 
-# 2. Create staging directory for deploy user
+# 2. Create deploy user (само качване, БЕЗ sudo)
+if id "deploy" &>/dev/null; then
+    echo "✓ User 'deploy' already exists"
+else
+    useradd -m -s /bin/bash -c "KCY Deploy (upload only)" deploy
+    passwd -l deploy
+    echo "✓ User 'deploy' created (password locked, SSH key only)"
+fi
+
+# 3. Create kcy-admin user (инсталация, sudo)
+if id "kcy-admin" &>/dev/null; then
+    echo "✓ User 'kcy-admin' already exists"
+else
+    useradd -m -s /bin/bash -c "KCY Admin (install/manage)" kcy-admin
+    usermod -aG sudo kcy-admin
+    echo "✓ User 'kcy-admin' created (с sudo)"
+    echo "  Set password:"
+    passwd kcy-admin
+fi
+
+# 4. Create service users (system, no login, no password)
+for SVC_USER in kcy-chat kcy-eco3; do
+    if id "$SVC_USER" &>/dev/null; then
+        echo "✓ User '$SVC_USER' already exists"
+    else
+        useradd --system --no-create-home --shell /usr/sbin/nologin --gid kcy --comment "KCY Service" "$SVC_USER"
+        echo "✓ User '$SVC_USER' created (system, no login)"
+    fi
+done
+
+# 5. Create staging directory (deploy owns it)
 mkdir -p /var/www/deploy
-chown "${DEPLOY_USER}:${DEPLOY_USER}" /var/www/deploy
+chown deploy:deploy /var/www/deploy
 chmod 755 /var/www/deploy
-echo "✓ /var/www/deploy/ → owned by ${DEPLOY_USER}"
+echo "✓ /var/www/deploy/ → deploy:deploy"
 
-# 3. Create final directories
+# 6. Create final directories
 mkdir -p /var/www/html
-mkdir -p /var/www/kcy-ecosystem
-chown -R kcy:kcy /var/www/html /var/www/kcy-ecosystem
-echo "✓ /var/www/html/ → owned by kcy"
-echo "✓ /var/www/kcy-ecosystem/ → owned by kcy"
+mkdir -p /var/www/kcy-ecosystem/private/chat
+mkdir -p /var/www/kcy-ecosystem/private/eco-3
+chown root:kcy /var/www/html /var/www/kcy-ecosystem
+chown -R kcy-chat:kcy /var/www/kcy-ecosystem/private/chat
+chown -R kcy-eco3:kcy /var/www/kcy-ecosystem/private/eco-3
+echo "✓ /var/www/html/ → root:kcy"
+echo "✓ private/chat/ → kcy-chat:kcy"
+echo "✓ private/eco-3/ → kcy-eco3:kcy"
 
-# 4. Allow deploy user to run server-install.sh with sudo
-echo "✓ Done!"
 echo ""
-echo "Сега от Windows/Mac машината пускай:"
-echo "  ./deploy.sh alsec.strangled.net ${DEPLOY_USER}"
+echo "═══════════════════════════════════════════════"
+echo "  ✓ Подготовката завърши!"
+echo "═══════════════════════════════════════════════"
 echo ""
-echo "След quality на сървъра:"
-echo "  ssh ${DEPLOY_USER}@alsec.strangled.net"
-echo "  cd /var/www/deploy/deploy-scripts/server"
-echo "  sudo bash server-install.sh"
+echo "Потребители:"
+echo "  deploy     — качва файлове (БЕЗ sudo)"
+echo "  kcy-admin  — инсталира (sudo, премахва се след инсталация)"
+echo "  kcy-chat   — Chat сървис (system, no login)"
+echo "  kcy-eco3   — ECO-3 сървис (system, no login)"
+echo ""
+echo "Следващи стъпки:"
+echo "  1. От Windows: ssh-copy-id deploy@$(hostname)"
+echo "  2. От Windows: ssh-copy-id kcy-admin@$(hostname)"
+echo "  3. От Windows: ./deploy.sh"
+echo "  4. ssh kcy-admin@$(hostname)"
+echo "     cd /var/www/deploy/deploy-scripts/server"
+echo "     sudo bash server-install.sh"
 echo ""

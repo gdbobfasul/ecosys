@@ -385,7 +385,7 @@ HBAEOF
     grep -q "^JWT_SECRET=" "$GLOBAL_ENV" 2>/dev/null || set_env_var "JWT_SECRET" "$(openssl rand -hex 32)"
     grep -q "^SESSION_SECRET=" "$GLOBAL_ENV" 2>/dev/null || set_env_var "SESSION_SECRET" "$(openssl rand -hex 32)"
 
-    chown kcy:kcy "$GLOBAL_ENV"
+    chown root:kcy "$GLOBAL_ENV"
     chmod 600 "$GLOBAL_ENV"
     echo -e "${GREEN}  ✓ .env updated (existing settings preserved)${NC}"
 
@@ -453,7 +453,7 @@ EOF
     fi
 
     chmod 644 "$SQLITE_DB"
-    chown kcy:kcy "$SQLITE_DB"
+    chown kcy-chat:kcy "$SQLITE_DB"
 
     # Install driver
     echo -e "${GREEN}[2/3] SQLite driver...${NC}"
@@ -471,7 +471,7 @@ EOF
     grep -q "^JWT_SECRET=" "$GLOBAL_ENV" 2>/dev/null || set_env_var "JWT_SECRET" "$(openssl rand -hex 32)"
     grep -q "^SESSION_SECRET=" "$GLOBAL_ENV" 2>/dev/null || set_env_var "SESSION_SECRET" "$(openssl rand -hex 32)"
 
-    chown kcy:kcy "$GLOBAL_ENV"
+    chown root:kcy "$GLOBAL_ENV"
     chmod 600 "$GLOBAL_ENV"
     echo -e "${GREEN}  ✓ .env updated (existing settings preserved)${NC}"
 

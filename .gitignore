@@ -63,6 +63,12 @@ dist/
 build/
 out/
 
+# Hardhat
+private/token/cache/
+private/multisig/cache/
+private/token/artifacts/
+private/multisig/artifacts/
+
 # Temporary files
 tmp/
 temp/
