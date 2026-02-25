@@ -46,7 +46,19 @@ Usage:  ./deploy.sh [server] [user] [port]
 Default: alsec.strangled.net deploy 22
 
 Архивира проекта → качва 1 файл → разархивира на сървъра.
-Всичко се логва в deploy.log.
+Логва в ~/kcy-deploy.log.
+
+Преди първо ползване:
+  1. Генерирай SSH ключ (PowerShell):
+     ssh-keygen -t ed25519
+
+  2. Копирай ключа на сървъра (PowerShell):
+     type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh -p 22
+     deploy@alsec.strangled.net "mkdir -p ~/.ssh &&
+     cat >> ~/.ssh/authorized_keys &&
+     chmod 600 ~/.ssh/authorized_keys"
+
+  3. Пусни: ./deploy.sh
 EOF
     exit 0
 fi
@@ -134,20 +146,81 @@ private/token/artifacts/
 private/multisig/artifacts/
 IGN
 
+# ═══ SSH KEY CHECK ═══
+log ""
+log "${YELLOW}[debug] Проверка на SSH ключ...${NC}"
+
+# Търси ключ на стандартните места
+SSH_KEY=""
+for key in "$HOME/.ssh/id_ed25519" "$HOME/.ssh/id_rsa" "$HOME/.ssh/id_ecdsa"; do
+    if [ -f "$key" ]; then
+        SSH_KEY="$key"
+        break
+    fi
+done
+
+if [ -n "$SSH_KEY" ]; then
+    log "  ${GREEN}✓ SSH ключ: ${SSH_KEY}${NC}"
+    if [ -f "${SSH_KEY}.pub" ]; then
+        log "  ${GREEN}✓ Публичен: ${SSH_KEY}.pub${NC}"
+    fi
+else
+    log ""
+    log "  ${RED}╔══════════════════════════════════════════════════════════════╗${NC}"
+    log "  ${RED}║  SSH КЛЮЧ НЕ Е НАМЕРЕН!                                    ║${NC}"
+    log "  ${RED}╠══════════════════════════════════════════════════════════════╣${NC}"
+    log "  ${RED}║${NC}                                                              ${RED}║${NC}"
+    log "  ${RED}║${NC}  Без SSH ключ deploy няма да работи.                         ${RED}║${NC}"
+    log "  ${RED}║${NC}                                                              ${RED}║${NC}"
+    log "  ${RED}║${NC}  ${CYAN}Стъпка 1: Генерирай ключ${NC}                                   ${RED}║${NC}"
+    log "  ${RED}║${NC}  Отвори PowerShell и пусни:                                  ${RED}║${NC}"
+    log "  ${RED}║${NC}  ${GREEN}ssh-keygen -t ed25519${NC}                                       ${RED}║${NC}"
+    log "  ${RED}║${NC}  Натисни Enter 3 пъти за defaults.                            ${RED}║${NC}"
+    log "  ${RED}║${NC}                                                              ${RED}║${NC}"
+    log "  ${RED}║${NC}  ${CYAN}Стъпка 2: Копирай ключа на сървъра${NC}                          ${RED}║${NC}"
+    log "  ${RED}║${NC}  От PowerShell:                                              ${RED}║${NC}"
+    log "  ${RED}║${NC}  ${GREEN}type \$env:USERPROFILE\\.ssh\\id_ed25519.pub | ssh -p ${PORT}${NC}  ${RED}║${NC}"
+    log "  ${RED}║${NC}  ${GREEN}${USER}@${SERVER} \"mkdir -p ~/.ssh &&${NC}              ${RED}║${NC}"
+    log "  ${RED}║${NC}  ${GREEN}cat >> ~/.ssh/authorized_keys &&${NC}                            ${RED}║${NC}"
+    log "  ${RED}║${NC}  ${GREEN}chmod 600 ~/.ssh/authorized_keys\"${NC}                           ${RED}║${NC}"
+    log "  ${RED}║${NC}                                                              ${RED}║${NC}"
+    log "  ${RED}║${NC}  ${CYAN}Стъпка 3: Пусни deploy.sh отново${NC}                            ${RED}║${NC}"
+    log "  ${RED}║${NC}                                                              ${RED}║${NC}"
+    log "  ${RED}╚══════════════════════════════════════════════════════════════╝${NC}"
+    log ""
+    die "SSH ключ не е намерен в ~/.ssh/"
+fi
+
 # ═══ STEP 0: CONNECT ═══
 log ""
 log "${GREEN}[0/4] Connecting to ${SERVER}...${NC}"
 log "  ${YELLOW}[debug] ssh ${SSH_OPTS} ${USER}@${SERVER}${NC}"
 
-ssh ${SSH_OPTS} "${USER}@${SERVER}" 'echo "  ✓ Connected as $(whoami) on $(hostname)"' || {
-    die "Не мога да се свържа с ${USER}@${SERVER}:${PORT}
+ssh ${SSH_OPTS} "${USER}@${SERVER}" 'echo "  ✓ Connected as $(whoami) on $(hostname)"'
+SSH_OK=$?
+if [ $SSH_OK -ne 0 ]; then
+    log "  ${YELLOW}Първият опит неуспешен. Опит 2/3 след 5 секунди...${NC}"
+    sleep 5
+    ssh ${SSH_OPTS} "${USER}@${SERVER}" 'echo "  ✓ Connected as $(whoami) on $(hostname)"'
+    SSH_OK=$?
+fi
+if [ $SSH_OK -ne 0 ]; then
+    log "  ${YELLOW}Опит 3/3 след 5 секунди...${NC}"
+    sleep 5
+    ssh ${SSH_OPTS} "${USER}@${SERVER}" 'echo "  ✓ Connected as $(whoami) on $(hostname)"' || {
+        die "Не мога да се свържа с ${USER}@${SERVER}:${PORT} след 3 опита
 
   Провери:
-    1. SSH ключ: ssh-copy-id -p ${PORT} ${USER}@${SERVER}
-    2. Парола: потребител '${USER}' има ли парола?
+    1. SSH ключ копиран ли е на сървъра? От PowerShell:
+       type \$env:USERPROFILE\\.ssh\\id_ed25519.pub | ssh -p ${PORT}
+       ${USER}@${SERVER} \"mkdir -p ~/.ssh &&
+       cat >> ~/.ssh/authorized_keys &&
+       chmod 600 ~/.ssh/authorized_keys\"
+    2. Мрежа: ping ${SERVER}
     3. Порт: правилен ли е ${PORT}?
-    4. Мрежа: ping ${SERVER}"
-}
+    4. Потребител: ${USER} съществува ли на сървъра?"
+    }
+fi
 
 # ═══ STEP 1: CREATE LOCAL ARCHIVE ═══
 log ""
@@ -297,11 +370,14 @@ log ""
 log "  ${RED}РЪЧНО${NC} — създай преди първата инсталация:"
 log ""
 log "  ${CYAN}deploy${NC} — само качва файлове, без sudo"
-log "     Парола: НЕ — само SSH ключ"
+log "     Парола: по избор — може и SSH ключ, може и парола"
 log "     sudo:   НЕ"
 log "     ${GREEN}useradd -m -s /bin/bash deploy${NC}"
-log "     ${GREEN}passwd -l deploy${NC}"
-log "     ${GREEN}ssh-copy-id -p ${PORT} deploy@${SERVER}${NC}"
+log "     ${GREEN}passwd deploy${NC}"
+log "     SSH ключ от PowerShell:"
+log "     ${GREEN}type \$env:USERPROFILE\\.ssh\\id_ed25519.pub | ssh -p ${PORT}${NC}"
+log "     ${GREEN}deploy@${SERVER} \"mkdir -p ~/.ssh &&${NC}"
+log "     ${GREEN}cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys\"${NC}"
 log ""
 log "  ${CYAN}kcy-admin${NC} — инсталира и управлява production"
 log "     Парола: ДА — за sudo"
@@ -333,6 +409,49 @@ log "  ${CYAN}ssh -p ${PORT} deploy@${SERVER}${NC}"
 log "  ${CYAN}cd ${STAGING} && git pull${NC}"
 log "  ${CYAN}su - kcy-admin${NC}"
 log "  ${CYAN}sudo bash ${STAGING}/deploy-scripts/server/server-install.sh${NC}"
+log ""
+log "${YELLOW}═══════════════════════════════════════════════════${NC}"
+log "${YELLOW}  .env КОНФИГУРАЦИЯ                                ${NC}"
+log "${YELLOW}═══════════════════════════════════════════════════${NC}"
+log ""
+log "  .env НЕ се качва с deploy — тайните не пътуват по мрежата."
+log "  Трябва да съществува на сървъра преди инсталация."
+log ""
+log "  ${CYAN}Шаблон:${NC}  docs/ENV-EXAMPLE.env"
+log "  ${CYAN}Реален:${NC}  ${STAGING}/private/configs/.env"
+log "  server-install.sh го копира автоматично на правилното място."
+log ""
+log "  ${CYAN}Как:${NC}"
+log "  1. Влез на сървъра: ${GREEN}ssh -p ${PORT} deploy@${SERVER}${NC}"
+log "  2. Копирай шаблона: ${GREEN}cp ${STAGING}/docs/ENV-EXAMPLE.env ${STAGING}/private/configs/.env${NC}"
+log "  3. Попълни:         ${GREEN}nano ${STAGING}/private/configs/.env${NC}"
+log "  4. Пусни инсталация"
+log ""
+
+# ═══ Покажи съдържанието на шаблона ═══
+if [ -f "docs/ENV-EXAMPLE.env" ]; then
+    log "  ${CYAN}Съдържание на docs/ENV-EXAMPLE.env:${NC}"
+    log ""
+    while IFS= read -r line; do
+        log "  ${GREEN}${line}${NC}"
+    done < "docs/ENV-EXAMPLE.env"
+    log ""
+
+    # ═══ Питай дали да копира на сървъра ═══
+    read -p "  Да копирам шаблона на сървъра като .env? [y/N]: " CREATE_ENV
+    if [ "$CREATE_ENV" = "y" ] || [ "$CREATE_ENV" = "Y" ]; then
+        scp ${SCP_OPTS} "docs/ENV-EXAMPLE.env" "${USER}@${SERVER}:${STAGING}/private/configs/.env" && \
+            log "  ${GREEN}✓ Копиран: ${STAGING}/private/configs/.env${NC}" && \
+            log "" && \
+            log "  ${YELLOW}Влез и попълни стойностите:${NC}" && \
+            log "    ${CYAN}ssh -p ${PORT} deploy@${SERVER}${NC}" && \
+            log "    ${CYAN}nano ${STAGING}/private/configs/.env${NC}" || \
+            log "  ${RED}✗ Не успя да копира${NC}"
+    fi
+else
+    log "  ${RED}✗ docs/ENV-EXAMPLE.env не е намерен!${NC}"
+fi
+
 log ""
 log "${YELLOW}═══════════════════════════════════════════════════${NC}"
 log "${YELLOW}  СИГУРНОСТ: Забрани root SSH достъп               ${NC}"

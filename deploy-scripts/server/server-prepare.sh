@@ -35,8 +35,8 @@ if id "deploy" &>/dev/null; then
     echo "✓ User 'deploy' already exists"
 else
     useradd -m -s /bin/bash -c "KCY Deploy (upload only)" deploy
-    passwd -l deploy
-    echo "✓ User 'deploy' created (password locked, SSH key only)"
+    passwd deploy
+    echo "✓ User 'deploy' created"
 fi
 
 # 3. Create kcy-admin user (инсталация, sudo)
@@ -89,10 +89,13 @@ echo "  kcy-chat   — Chat сървис (system, no login)"
 echo "  kcy-eco3   — ECO-3 сървис (system, no login)"
 echo ""
 echo "Следващи стъпки:"
-echo "  1. От Windows: ssh-copy-id deploy@$(hostname)"
-echo "  2. От Windows: ssh-copy-id kcy-admin@$(hostname)"
-echo "  3. От Windows: ./deploy.sh"
-echo "  4. ssh kcy-admin@$(hostname)"
+echo "  1. От Windows PowerShell копирай SSH ключа:"
+echo "     type \$env:USERPROFILE\.ssh\id_ed25519.pub | ssh deploy@$(hostname)"
+echo "     \"mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys\""
+echo ""
+echo "  2. Пусни deploy: ./deploy.sh"
+echo "  3. ssh deploy@$(hostname)"
+echo "     su - kcy-admin"
 echo "     cd /var/www/deploy/deploy-scripts/server"
 echo "     sudo bash server-install.sh"
 echo ""

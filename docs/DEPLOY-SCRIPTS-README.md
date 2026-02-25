@@ -196,7 +196,7 @@ cat /home/deploy/.ssh/authorized_keys
 ### Копиране на ключа (еднократно):
 
 ```bash
-ssh-copy-id deploy@alsec.strangled.net
+# От PowerShell: type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh deploy@alsec.strangled.net "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
 ```
 
 Ще пита за паролата на `deploy` **последен път**, после вече ще влиза с ключ.
