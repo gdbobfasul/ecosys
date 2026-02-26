@@ -1,0 +1,334 @@
+<!-- Version: 1.0085 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KCY Ecosystem — System Status</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1117; color: #e1e4e8; line-height: 1.5;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1e2e 0%, #0d1117 100%);
+            border-bottom: 1px solid #30363d;
+            padding: 20px 30px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .header h1 { font-size: 1.4em; color: #58a6ff; }
+        .header .meta { color: #8b949e; font-size: 0.85em; }
+        .refresh-btn {
+            background: #21262d; border: 1px solid #30363d; color: #58a6ff;
+            padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85em;
+        }
+        .refresh-btn:hover { background: #30363d; }
+        .auto-label { color: #8b949e; font-size: 0.75em; margin-left: 8px; }
+
+        .grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); 
+            gap: 16px; padding: 20px 30px; max-width: 1400px; margin: 0 auto;
+        }
+        .card {
+            background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+            padding: 20px; transition: border-color 0.2s;
+        }
+        .card:hover { border-color: #58a6ff; }
+        .card h2 { 
+            font-size: 1em; color: #8b949e; text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #21262d;
+        }
+        .card.full-width { grid-column: 1 / -1; }
+
+        .status-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 0; border-bottom: 1px solid #21262d;
+        }
+        .status-row:last-child { border-bottom: none; }
+        .status-row .label { color: #8b949e; font-size: 0.9em; }
+        .status-row .value { font-weight: 500; font-size: 0.9em; }
+
+        .badge {
+            display: inline-block; padding: 2px 10px; border-radius: 12px;
+            font-size: 0.8em; font-weight: 600;
+        }
+        .badge-ok { background: #0d3320; color: #3fb950; border: 1px solid #238636; }
+        .badge-warn { background: #341a04; color: #d29922; border: 1px solid #9e6a03; }
+        .badge-error { background: #3d1014; color: #f85149; border: 1px solid #da3633; }
+        .badge-info { background: #0c2d6b; color: #58a6ff; border: 1px solid #1f6feb; }
+        .badge-off { background: #21262d; color: #8b949e; border: 1px solid #30363d; }
+
+        .big-status {
+            text-align: center; padding: 16px 0;
+        }
+        .big-status .icon { font-size: 2.5em; margin-bottom: 6px; }
+        .big-status .name { font-size: 1.1em; font-weight: 600; }
+        .big-status .detail { color: #8b949e; font-size: 0.8em; margin-top: 4px; }
+
+        .services-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .table-list { font-size: 0.8em; color: #8b949e; line-height: 1.8; }
+        .table-list span { 
+            display: inline-block; background: #21262d; padding: 2px 8px; 
+            border-radius: 4px; margin: 2px; 
+        }
+
+        .path-row { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 0.8em; }
+        .path-row .path { color: #79c0ff; word-break: break-all; }
+
+        .loading { text-align: center; padding: 60px; color: #8b949e; }
+        .loading .spinner {
+            width: 40px; height: 40px; border: 3px solid #21262d;
+            border-top-color: #58a6ff; border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-box {
+            background: #3d1014; border: 1px solid #da3633; border-radius: 8px;
+            padding: 16px; text-align: center; color: #f85149;
+        }
+
+        .back-links {
+            padding: 10px 30px; display: flex; gap: 12px; flex-wrap: wrap;
+        }
+        .back-links a {
+            color: #58a6ff; text-decoration: none; font-size: 0.85em;
+            padding: 4px 12px; background: #21262d; border-radius: 6px;
+        }
+        .back-links a:hover { background: #30363d; }
+
+        .uptime { font-family: 'SFMono-Regular', Consolas, monospace; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>🔧 KCY Ecosystem — System Status</h1>
+            <div class="meta" id="lastUpdate">Loading...</div>
+        </div>
+        <div>
+            <button class="refresh-btn" onclick="loadStatus()">⟳ Refresh</button>
+            <span class="auto-label">auto: 30s</span>
+        </div>
+    </div>
+
+    <div class="back-links">
+        <a href="/">🏠 Home</a>
+        <a href="/chat/admin/">💬 Chat Admin</a>
+        <a href="/eco-3/admin/">🤖 ECO-3 Admin</a>
+    </div>
+
+    <div id="content">
+        <div class="loading">
+            <div class="spinner"></div>
+            <div>Зареждане на статуса...</div>
+        </div>
+    </div>
+
+    <script src="/shared/js/config.js"></script>
+    <script>
+    const API_BASE = window.location.origin + '/api';
+
+    function formatUptime(seconds) {
+        if (!seconds) return '-';
+        const d = Math.floor(seconds / 86400);
+        const h = Math.floor((seconds % 86400) / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        let parts = [];
+        if (d > 0) parts.push(d + 'd');
+        if (h > 0) parts.push(h + 'h');
+        if (m > 0) parts.push(m + 'm');
+        parts.push(s + 's');
+        return parts.join(' ');
+    }
+
+    function badge(status, text) {
+        const cls = {
+            'running': 'badge-ok', 'connected': 'badge-ok', 'active': 'badge-ok', 'valid': 'badge-ok',
+            'stopped': 'badge-error', 'error': 'badge-error', 'expired': 'badge-error',
+            'warning': 'badge-warn', 'not found': 'badge-warn', 'not set': 'badge-warn',
+            'unknown': 'badge-off', 'info': 'badge-info'
+        };
+        return `<span class="badge ${cls[status] || 'badge-off'}">${text || status}</span>`;
+    }
+
+    function svcIcon(status) {
+        return status === 'running' ? '🟢' : status === 'stopped' ? '🔴' : '🟡';
+    }
+
+    function renderStatus(data) {
+        const svc = data.services || {};
+        const db = data.database || {};
+        const sys = data.system || {};
+        const ng = data.nginx || {};
+        const cfg = data.config || {};
+        const paths = data.paths || {};
+
+        let html = '<div class="grid">';
+
+        // ── Services Overview ──
+        html += `<div class="card full-width"><h2>⚡ Services</h2><div class="services-grid">`;
+
+        // Chat
+        html += `<div class="big-status">
+            <div class="icon">${svcIcon(svc.chat?.status)}</div>
+            <div class="name">Chat</div>
+            <div>${badge(svc.chat?.status)}</div>
+            <div class="detail">:${svc.chat?.port || '?'} · PID ${svc.chat?.pid || '?'}</div>
+            <div class="detail uptime">${formatUptime(svc.chat?.uptime)}</div>
+        </div>`;
+
+        // ECO-3
+        html += `<div class="big-status">
+            <div class="icon">${svcIcon(svc.eco3?.status)}</div>
+            <div class="name">ECO-3</div>
+            <div>${badge(svc.eco3?.status)}</div>
+            <div class="detail">:${svc.eco3?.port || '?'} · v${svc.eco3?.version || '?'}</div>
+            <div class="detail uptime">${formatUptime(svc.eco3?.uptime)}</div>
+        </div>`;
+
+        // Nginx
+        html += `<div class="big-status">
+            <div class="icon">${ng.status === 'active' ? '🟢' : '🔴'}</div>
+            <div class="name">Nginx</div>
+            <div>${badge(ng.status === 'active' ? 'running' : ng.status)}</div>
+            <div class="detail">${(ng.enabledSites || []).join(', ') || 'no sites'}</div>
+        </div>`;
+
+        // Anthropic
+        const anthOk = svc.anthropic?.configured;
+        html += `<div class="big-status">
+            <div class="icon">${anthOk ? '🟢' : '🟡'}</div>
+            <div class="name">Anthropic API</div>
+            <div>${badge(anthOk ? 'running' : 'warning', anthOk ? 'configured' : 'not configured')}</div>
+            <div class="detail">${svc.anthropic?.model || '-'}</div>
+        </div>`;
+
+        // SSL
+        const sslOk = ng.ssl?.status === 'valid';
+        html += `<div class="big-status">
+            <div class="icon">${sslOk ? '🟢' : ng.ssl?.status === 'expired' ? '🔴' : '🟡'}</div>
+            <div class="name">SSL Certificate</div>
+            <div>${badge(ng.ssl?.status || 'unknown')}</div>
+            <div class="detail">${ng.ssl?.daysLeft != null ? ng.ssl.daysLeft + ' дни до изтичане' : ng.ssl?.expires || '-'}</div>
+        </div>`;
+
+        html += `</div></div>`;
+
+        // ── Database ──
+        html += `<div class="card"><h2>🗄️ Chat Database</h2>`;
+        html += `<div class="status-row"><span class="label">Статус</span><span class="value">${badge(db.chat?.status)}</span></div>`;
+        html += `<div class="status-row"><span class="label">Тип</span><span class="value">${db.chat?.type || '-'}</span></div>`;
+        html += `<div class="status-row"><span class="label">Потребители</span><span class="value">${db.chat?.users ?? '-'}</span></div>`;
+        html += `<div class="status-row"><span class="label">Активни сесии</span><span class="value">${db.chat?.activeSessions ?? '-'}</span></div>`;
+        html += `<div class="status-row"><span class="label">Таблици</span><span class="value">${db.tableCount || 0}</span></div>`;
+        if (db.tables && db.tables.length > 0) {
+            html += `<div class="table-list" style="margin-top:10px;">${db.tables.map(t => `<span>${t}</span>`).join('')}</div>`;
+        }
+        html += `</div>`;
+
+        // ── ECO-3 Database ──
+        const eco3db = data.eco3db || {};
+        html += `<div class="card"><h2>🗄️ ECO-3 Database</h2>`;
+        html += `<div class="status-row"><span class="label">Статус</span><span class="value">${badge(eco3db.connected ? 'connected' : 'error')}</span></div>`;
+        html += `<div class="status-row"><span class="label">Тип</span><span class="value">SQLite</span></div>`;
+        html += `<div class="status-row"><span class="label">Път</span><span class="value" style="font-family:monospace;font-size:.8em">${eco3db.path || '-'}</span></div>`;
+        if (eco3db.tables) {
+            for (const [tbl, cnt] of Object.entries(eco3db.tables)) {
+                html += `<div class="status-row"><span class="label" style="font-family:monospace">${tbl}</span><span class="value">${cnt} rows</span></div>`;
+            }
+        }
+        html += `</div>`;
+
+        // ── System ──
+        html += `<div class="card"><h2>💻 System</h2>`;
+        html += `<div class="status-row"><span class="label">Node.js</span><span class="value">${sys.nodeVersion || '-'}</span></div>`;
+        html += `<div class="status-row"><span class="label">Hostname</span><span class="value">${sys.hostname || '-'}</span></div>`;
+        html += `<div class="status-row"><span class="label">RAM</span><span class="value">${sys.memory?.usage || '-'} (${sys.memory?.free || '?'} free / ${sys.memory?.total || '?'})</span></div>`;
+        html += `<div class="status-row"><span class="label">Disk</span><span class="value">${sys.disk?.usage || '-'} (${sys.disk?.available || '?'} free / ${sys.disk?.total || '?'})</span></div>`;
+        html += `</div>`;
+
+        // ── Config (.env) ──
+        html += `<div class="card"><h2>⚙️ Configuration (.env)</h2>`;
+        for (const [key, val] of Object.entries(cfg)) {
+            const isSet = val.startsWith('✓');
+            html += `<div class="status-row">
+                <span class="label" style="font-family:monospace;font-size:0.85em">${key}</span>
+                <span class="value">${isSet ? badge('running', val) : badge('not set', val)}</span>
+            </div>`;
+        }
+        html += `</div>`;
+
+        // ── Paths ──
+        html += `<div class="card full-width"><h2>📁 Paths</h2>`;
+        for (const [key, info] of Object.entries(paths)) {
+            html += `<div class="status-row path-row">
+                <span class="label">${key}</span>
+                <span class="value">
+                    <span class="path">${info.path}</span>
+                    ${info.exists ? badge('running', '✓') : badge('error', '✗ missing')}
+                </span>
+            </div>`;
+        }
+        html += `</div>`;
+
+        html += '</div>';
+        return html;
+    }
+
+    async function loadStatus() {
+        const content = document.getElementById('content');
+        try {
+            const res = await fetch(API_BASE + '/admin/ecosystem-status');
+            if (res.status === 403) {
+                content.innerHTML = `<div style="padding:40px"><div class="error-box">
+                    ⛔ Достъпът е отказан (IP не е в ADMIN_ALLOWED_IPS)<br>
+                    <small style="color:#8b949e">Твоят IP не е в списъка с разрешени адреси.<br>
+                    Добави го в .env: ADMIN_ALLOWED_IPS=127.0.0.1,::1,YOUR_IP</small>
+                </div></div>`;
+                return;
+            }
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            
+            // Also fetch ECO-3 database status
+            try {
+                const eco3Res = await fetch(API_BASE.replace('/chat', '/eco3') + '/admin/db-status');
+                if (eco3Res.ok) data.eco3db = await eco3Res.json();
+            } catch { data.eco3db = { connected: false }; }
+            // Fallback: try ECO-3 health if db-status blocked by IP
+            if (!data.eco3db || !data.eco3db.connected) {
+                try {
+                    const hRes = await fetch(API_BASE.replace('/chat', '/eco3') + '/health');
+                    if (hRes.ok) { const h = await hRes.json(); data.eco3db = h.database || { connected: false }; }
+                } catch {}
+            }
+            
+            content.innerHTML = renderStatus(data);
+            document.getElementById('lastUpdate').textContent = 
+                'Updated: ' + new Date().toLocaleTimeString('bg-BG');
+        } catch (err) {
+            content.innerHTML = `<div style="padding:40px"><div class="error-box">
+                ❌ Не може да се свърже с Chat API<br>
+                <small style="color:#8b949e">${err.message}<br><br>
+                Възможни причини:<br>
+                • kcy-chat не работи (sudo systemctl status kcy-chat)<br>
+                • Nginx не пропуска /api/chat/ (проверете конфигурацията)<br>
+                • .env файлът липсва или не е линкнат</small>
+            </div></div>`;
+        }
+    }
+
+    // Load immediately + auto-refresh every 30s
+    loadStatus();
+    setInterval(loadStatus, 30000);
+    </script>
+</body>
+</html>

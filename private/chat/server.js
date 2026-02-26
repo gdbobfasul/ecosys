@@ -7,7 +7,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
-require('dotenv').config({ path: './configs/.env' });
+require('dotenv').config({ path: require('path').join(__dirname, '..', 'configs', '.env') });
 
 const { authenticate } = require('./middleware/auth');
 const { checkCriticalWords } = require('./middleware/monitoring');
@@ -27,6 +27,9 @@ const wss = new WebSocket.Server({ server });
 
 // Database configuration with automatic fallback
 const { initializeDatabase, getDatabaseType, checkDatabaseHealth, fallbackToSQLite } = require('./utils/database');
+
+const TEST_MODE = process.env.TEST_MODE === 'true';
+const DB_FILE = process.env.TEST_DB || 'database/amschat.db';
 
 let db;
 

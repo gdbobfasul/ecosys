@@ -67,7 +67,7 @@ const KCY_CONFIG = {
     api: {
         token: "/api/token/",
         multisig: "/api/multisig/",
-        chat: "/api/chat/",
+        chat: "/api/",
         eco3: "/api/eco3/"
     },
     

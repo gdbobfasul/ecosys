@@ -1,13 +1,16 @@
 {
   "name": "kcy-eco3",
-  "version": "1.0084",
+  "version": "1.0085",
   "description": "ECO-3 AI Studio - Backend API proxy for Anthropic and Stripe",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "db:init": "node database/init.js",
+    "setup": "npm install && node database/init.js"
   },
   "dependencies": {
+    "better-sqlite3": "^11.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.18.2",

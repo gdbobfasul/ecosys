@@ -1180,6 +1180,178 @@ function createAdminRoutes(db) {
     }
   });
 
+  // ══════════════════════════════════════════════════
+  // ECOSYSTEM STATUS — Проверка на всички сървиси
+  // ══════════════════════════════════════════════════
+  router.get('/ecosystem-status', async (req, res) => {
+    const status = {
+      timestamp: new Date().toISOString(),
+      services: {},
+      database: {},
+      system: {},
+      config: {},
+      nginx: {}
+    };
+
+    // ── Chat service ──
+    try {
+      const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get();
+      const sessionCount = db.prepare('SELECT COUNT(*) as count FROM sessions').get();
+      status.services.chat = {
+        status: 'running',
+        port: process.env.CHAT_PORT || 3000,
+        uptime: Math.floor(process.uptime()),
+        pid: process.pid
+      };
+      status.database.chat = {
+        status: 'connected',
+        type: 'sqlite',
+        users: userCount.count,
+        activeSessions: sessionCount.count
+      };
+    } catch (err) {
+      status.services.chat = { status: 'error', error: err.message };
+      status.database.chat = { status: 'error', error: err.message };
+    }
+
+    // ── Database tables check ──
+    try {
+      const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all();
+      status.database.tables = tables.map(t => t.name);
+      status.database.tableCount = tables.length;
+    } catch (err) {
+      status.database.tables = [];
+      status.database.tableCount = 0;
+      status.database.tablesError = err.message;
+    }
+
+    // ── ECO-3 service ──
+    const eco3Port = process.env.ECO3_PORT || 3001;
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 3000);
+      const eco3Res = await fetch(`http://127.0.0.1:${eco3Port}/health`, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (eco3Res.ok) {
+        const eco3Data = await eco3Res.json();
+        status.services.eco3 = {
+          status: 'running',
+          port: eco3Port,
+          uptime: Math.floor(eco3Data.uptime || 0),
+          version: eco3Data.version || 'unknown'
+        };
+      } else {
+        status.services.eco3 = { status: 'error', httpCode: eco3Res.status };
+      }
+    } catch (err) {
+      status.services.eco3 = { 
+        status: 'stopped', 
+        port: eco3Port,
+        error: err.code === 'ECONNREFUSED' ? 'Service not running' : err.message 
+      };
+    }
+
+    // ── ECO-3 Anthropic API ──
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 3000);
+      const anthRes = await fetch(`http://127.0.0.1:${eco3Port}/anthropic-status`, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (anthRes.ok) {
+        status.services.anthropic = await anthRes.json();
+      }
+    } catch {
+      status.services.anthropic = { configured: false, error: 'eco-3 not reachable' };
+    }
+
+    // ── System info ──
+    const os = require('os');
+    const { execSync } = require('child_process');
+
+    status.system.nodeVersion = process.version;
+    status.system.platform = os.platform();
+    status.system.hostname = os.hostname();
+    status.system.memory = {
+      total: Math.round(os.totalmem() / 1024 / 1024) + ' MB',
+      free: Math.round(os.freemem() / 1024 / 1024) + ' MB',
+      usage: Math.round((1 - os.freemem() / os.totalmem()) * 100) + '%'
+    };
+
+    try {
+      const df = execSync("df -h /var/www 2>/dev/null | tail -1 | awk '{print $2,$3,$4,$5}'").toString().trim();
+      const [total, used, available, percent] = df.split(' ');
+      status.system.disk = { total, used, available, usage: percent };
+    } catch {
+      status.system.disk = { error: 'Cannot read disk info' };
+    }
+
+    // ── Nginx ──
+    try {
+      const nginxActive = execSync('systemctl is-active nginx 2>/dev/null').toString().trim();
+      status.nginx.status = nginxActive;
+    } catch {
+      status.nginx.status = 'unknown';
+    }
+
+    try {
+      const confFiles = execSync('ls /etc/nginx/sites-enabled/ 2>/dev/null').toString().trim().split('\n').filter(Boolean);
+      status.nginx.enabledSites = confFiles;
+    } catch {
+      status.nginx.enabledSites = [];
+    }
+
+    // ── SSL ──
+    try {
+      const certExpiry = execSync(
+        'openssl x509 -enddate -noout -in /etc/letsencrypt/live/*/fullchain.pem 2>/dev/null | head -1 | cut -d= -f2'
+      ).toString().trim();
+      if (certExpiry) {
+        const expDate = new Date(certExpiry);
+        const daysLeft = Math.floor((expDate - new Date()) / (1000 * 60 * 60 * 24));
+        status.nginx.ssl = { 
+          status: daysLeft > 0 ? 'valid' : 'expired',
+          expires: certExpiry,
+          daysLeft
+        };
+      } else {
+        status.nginx.ssl = { status: 'not found' };
+      }
+    } catch {
+      status.nginx.ssl = { status: 'not found' };
+    }
+
+    // ── .env config check ──
+    const envVars = ['CHAT_PORT', 'ECO3_PORT', 'DB_TYPE', 'NODE_ENV', 'ALLOWED_ORIGINS', 
+                     'STRIPE_SECRET_KEY', 'STRIPE_PUBLISHABLE_KEY', 'ANTHROPIC_API_KEY'];
+    envVars.forEach(v => {
+      const val = process.env[v];
+      if (!val) {
+        status.config[v] = '✗ not set';
+      } else if (v.includes('KEY') || v.includes('SECRET')) {
+        status.config[v] = '✓ set (' + val.substring(0, 6) + '...)';
+      } else {
+        status.config[v] = '✓ ' + val;
+      }
+    });
+
+    // ── Paths ──
+    const fs = require('fs');
+    const paths = {
+      webRoot: '/var/www/html',
+      privateDir: '/var/www/kcy-ecosystem/private',
+      globalEnv: '/var/www/kcy-ecosystem/private/configs/.env',
+      chatDb: '/var/www/kcy-ecosystem/private/chat/database/amschat.db',
+      uploads: '/var/www/kcy-ecosystem/private/chat/uploads',
+      installLog: '/var/log/kcy-ecosystem/install.log'
+    };
+    status.paths = {};
+    for (const [key, p] of Object.entries(paths)) {
+      status.paths[key] = { path: p, exists: fs.existsSync(p) };
+    }
+
+    res.json(status);
+  });
+
   return router;
 }
 

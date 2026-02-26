@@ -33,7 +33,7 @@ function initializeSQLite() {
   
   const DB_FILE = TEST_MODE
     ? (process.env.TEST_DB || 'database/amschat_test.db')
-    : 'database/amschat.db';
+    : (process.env.SQLITE_DB_FILE || 'database/amschat.db');
   
   console.log(`📦 Initializing SQLite database: ${DB_FILE}`);
   

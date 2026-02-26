@@ -19,7 +19,16 @@
 
 LOG_FILE="/var/log/kcy-ecosystem/install.log"
 mkdir -p "$(dirname "$LOG_FILE")"
+
+# Save original stdin before tee redirect (tee can interfere with read)
+exec 3<&0
 exec > >(tee -a "$LOG_FILE") 2>&1
+
+# Safe exit — let tee flush before dying
+safe_exit() {
+    sleep 0.2
+    exit ${1:-0}
+}
 
 echo ""
 echo "═══════════════════════════════════════════════════════"
@@ -29,7 +38,7 @@ echo "════════════════════════�
 if [ "$EUID" -ne 0 ]; then
     echo "ГРЕШКА: Стартирай с root права!"
     echo "  sudo bash $0"
-    exit 1
+    safe_exit 1
 fi
 
 # ═══ CONFIG ═══
@@ -45,7 +54,7 @@ DOMAIN="alsec.strangled.net"
 EMAIL="admin@alsec.strangled.net"
 CHAT_PORT=3000
 ECO3_PORT=3001
-SQLITE_DB="$PRIVATE_DIR/chat/database/ams_db.sqlite"
+SQLITE_DB="$PRIVATE_DIR/chat/database/amschat.db"
 DB_SCHEMA="$STAGING/private/chat/database/db_setup.sql"
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
@@ -95,9 +104,13 @@ done
 # ── Nginx ──
 if systemctl is-active --quiet nginx 2>/dev/null; then
     echo -e "    ${GREEN}●${NC} nginx — ${GREEN}работи${NC}"
-    if [ -f /etc/nginx/sites-available/kcy-ecosystem ]; then
-        echo -e "      kcy-ecosystem конфиг: ${GREEN}има${NC}"
-    fi
+    # Find any config for our domain
+    for f in /etc/nginx/sites-available/*; do
+        [ -f "$f" ] || continue
+        if grep -q "server_name.*${DOMAIN}" "$f" 2>/dev/null; then
+            echo -e "      конфиг: ${GREEN}$(basename $f)${NC}"
+        fi
+    done
 else
     echo -e "    ${RED}✗${NC} nginx — не работи"
 fi
@@ -124,16 +137,25 @@ fi
 # ── .env ──
 if [ -f "$GLOBAL_ENV" ]; then
     ENV_VARS=$(grep -c "=" "$GLOBAL_ENV" 2>/dev/null || echo 0)
-    echo -e "    ${GREEN}●${NC} .env — ${ENV_VARS} променливи"
+    echo -e "    ${GREEN}●${NC} .env — ${ENV_VARS} променливи (production: ${GLOBAL_ENV})"
+elif [ -f "$STAGING/private/configs/.env" ]; then
+    ENV_VARS=$(grep -c "=" "$STAGING/private/configs/.env" 2>/dev/null || echo 0)
+    echo -e "    ${YELLOW}○${NC} .env — ${ENV_VARS} променливи (staging, ще се копира при инсталация)"
 else
-    echo -e "    ${RED}✗${NC} .env — няма"
+    echo -e "    ${RED}✗${NC} .env — няма нито в production нито в staging"
 fi
 
 # ── Node.js ──
 echo ""
 echo -e "  ${CYAN}Node.js:${NC}"
 if command -v node &>/dev/null; then
-    echo -e "    ${GREEN}●${NC} node $(node -v)"
+    NODE_VER=$(node -v)
+    NODE_MAJOR=$(echo "$NODE_VER" | grep -oP '(?<=v)\d+')
+    if [ "$NODE_MAJOR" -lt 20 ]; then
+        echo -e "    ${YELLOW}●${NC} node ${NODE_VER} — ${YELLOW}стара версия, ще се обнови на v20${NC}"
+    else
+        echo -e "    ${GREEN}●${NC} node ${NODE_VER}"
+    fi
 else
     echo -e "    ${RED}✗${NC} node — не е инсталиран"
 fi
@@ -205,11 +227,12 @@ if [ "$ANYTHING_INSTALLED" = true ]; then
     echo -e "  ${GREEN}1)${NC} Нова инсталация (спиране → зачистване → инсталиране)"
     echo -e "  ${GREEN}2)${NC} Отказ"
     echo ""
-    read -p "  Избор [1/2]: " INSTALL_CHOICE
+    read -p "  Избор [1/2]: " INSTALL_CHOICE <&3
+    INSTALL_CHOICE=$(echo "$INSTALL_CHOICE" | tr -d '\r\n ')
 
     if [ "$INSTALL_CHOICE" != "1" ]; then
         echo -e "  ${YELLOW}Отменено.${NC}"
-        exit 0
+        safe_exit 0
     fi
 
     echo ""
@@ -219,10 +242,11 @@ if [ "$ANYTHING_INSTALLED" = true ]; then
     echo -e "${RED}    • Инсталира наново от staging${NC}"
     echo -e "${YELLOW}    • Базата данни НЕ се трие автоматично${NC}"
     echo ""
-    read -p "  Потвърди с 'yes': " CONFIRM
+    read -p "  Потвърди с 'yes': " CONFIRM <&3
+    CONFIRM=$(echo "$CONFIRM" | tr -d '\r\n ')
     if [ "$CONFIRM" != "yes" ]; then
         echo "  Отменено."
-        exit 0
+        safe_exit 0
     fi
 
     # ── Спиране на сървиси ──
@@ -266,20 +290,31 @@ fi
 ##############################################################################
 print_step "СТЪПКА 3: Проверка на staging"
 
-echo -e "  ${YELLOW}[debug] ${STAGING}/${NC}"
 if [ ! -d "$STAGING/public" ] || [ ! -d "$STAGING/private" ]; then
     echo -e "${RED}  ✗ Staging е празен! Първо пусни deploy.sh${NC}"
-    echo -e "${YELLOW}  [debug] Съдържание:${NC}"
     ls -la "$STAGING/" 2>&1 || echo "    (директорията не съществува)"
-    exit 1
+    safe_exit 1
 fi
 STAGING_FILES=$(find "$STAGING" -type f | wc -l)
 echo -e "  ${GREEN}✓ Staging: ${STAGING_FILES} файла${NC}"
 
 # ═══ Domain override ═══
-read -p "  Domain [$DOMAIN]: " NEW_DOMAIN
+# Detect current domain from any existing nginx config
+for f in /etc/nginx/sites-available/*; do
+    [ -f "$f" ] || continue
+    DETECTED_DOMAIN=$(grep -m1 'server_name' "$f" 2>/dev/null | awk '{print $2}' | tr -d ';')
+    if [ -n "$DETECTED_DOMAIN" ] && [ "$DETECTED_DOMAIN" != "_" ] && [ "$DETECTED_DOMAIN" != "localhost" ]; then
+        DOMAIN="$DETECTED_DOMAIN"
+        echo -e "  ${GREEN}✓ Текущ домейн от nginx: ${DOMAIN} ($(basename $f))${NC}"
+        break
+    fi
+done
+echo -e "  ${YELLOW}(Enter = запази ${DOMAIN})${NC}"
+read -p "  Domain [$DOMAIN]: " NEW_DOMAIN <&3
+NEW_DOMAIN=$(echo "$NEW_DOMAIN" | tr -d '\r\n ')
 [ -n "$NEW_DOMAIN" ] && DOMAIN="$NEW_DOMAIN"
-read -p "  Email for SSL [$EMAIL]: " NEW_EMAIL
+read -p "  Email for SSL [$EMAIL]: " NEW_EMAIL <&3
+NEW_EMAIL=$(echo "$NEW_EMAIL" | tr -d '\r\n ')
 [ -n "$NEW_EMAIL" ] && EMAIL="$NEW_EMAIL"
 
 ##############################################################################
@@ -323,42 +358,80 @@ usermod -aG "$SVC_GROUP" kcy-admin 2>/dev/null || true
 print_step "СТЪПКА 5: Конфигурация (.env)"
 
 STAGING_ENV="$STAGING/private/configs/.env"
+ENV_EXAMPLE="$STAGING/docs/ENV-EXAMPLE.env"
 
 if [ -f "$GLOBAL_ENV" ]; then
     echo -e "  ${GREEN}✓ .env вече е на сървъра: ${GLOBAL_ENV}${NC}"
 elif [ -f "$STAGING_ENV" ]; then
     mkdir -p "$(dirname "$GLOBAL_ENV")"
     cp "$STAGING_ENV" "$GLOBAL_ENV"
-    chmod 600 "$GLOBAL_ENV"
+    chmod 640 "$GLOBAL_ENV"
+    chown root:$SVC_GROUP "$GLOBAL_ENV"
     echo -e "  ${GREEN}✓ .env копиран от staging${NC}"
 else
     echo -e "  ${YELLOW}! .env НЯМА в staging и няма на сървъра${NC}"
     echo ""
-    echo -e "    ${GREEN}1)${NC} Подай път до .env файл"
-    echo -e "    ${GREEN}2)${NC} Пропусни (ще го създадеш ръчно)"
-    echo ""
-    read -p "  Избор [1/2]: " ENV_CHOICE
-    case "$ENV_CHOICE" in
-        1)
-            read -p "  Път: " ENV_PATH
-            if [ -f "$ENV_PATH" ]; then
+    if [ -f "$ENV_EXAMPLE" ]; then
+        echo -e "    ${GREEN}1)${NC} Копирай от docs/ENV-EXAMPLE.env (ще трябва да попълниш стойностите)"
+        echo -e "    ${GREEN}2)${NC} Подай път до готов .env файл"
+        echo -e "    ${GREEN}3)${NC} Пропусни (ще го създадеш ръчно)"
+        echo ""
+        read -p "  Избор [1/2/3]: " ENV_CHOICE <&3
+        case "$ENV_CHOICE" in
+            1)
                 mkdir -p "$(dirname "$GLOBAL_ENV")"
-                cp "$ENV_PATH" "$GLOBAL_ENV"
-                chmod 600 "$GLOBAL_ENV"
-                echo -e "  ${GREEN}✓ Копиран от ${ENV_PATH}${NC}"
-            elif [ -f "$ENV_PATH/.env" ]; then
-                mkdir -p "$(dirname "$GLOBAL_ENV")"
-                cp "$ENV_PATH/.env" "$GLOBAL_ENV"
-                chmod 600 "$GLOBAL_ENV"
-                echo -e "  ${GREEN}✓ Копиран от ${ENV_PATH}/.env${NC}"
-            else
-                echo -e "  ${RED}✗ Не е намерен: ${ENV_PATH}${NC}"
-            fi
-            ;;
-        *)
-            echo -e "  ${YELLOW}Пропуснато. Създай ръчно: nano ${GLOBAL_ENV}${NC}"
-            ;;
-    esac
+                cp "$ENV_EXAMPLE" "$GLOBAL_ENV"
+                chmod 640 "$GLOBAL_ENV"
+                chown root:$SVC_GROUP "$GLOBAL_ENV"
+                echo -e "  ${GREEN}✓ Копиран от docs/ENV-EXAMPLE.env${NC}"
+                echo -e "  ${RED}! ВАЖНО: Попълни реалните стойности след инсталацията:${NC}"
+                echo -e "    ${CYAN}nano ${GLOBAL_ENV}${NC}"
+                ;;
+            2)
+                read -p "  Път: " ENV_PATH <&3
+                if [ -f "$ENV_PATH" ]; then
+                    mkdir -p "$(dirname "$GLOBAL_ENV")"
+                    cp "$ENV_PATH" "$GLOBAL_ENV"
+                    chmod 640 "$GLOBAL_ENV"
+                    chown root:$SVC_GROUP "$GLOBAL_ENV"
+                    echo -e "  ${GREEN}✓ Копиран от ${ENV_PATH}${NC}"
+                elif [ -f "$ENV_PATH/.env" ]; then
+                    mkdir -p "$(dirname "$GLOBAL_ENV")"
+                    cp "$ENV_PATH/.env" "$GLOBAL_ENV"
+                    chmod 640 "$GLOBAL_ENV"
+                    chown root:$SVC_GROUP "$GLOBAL_ENV"
+                    echo -e "  ${GREEN}✓ Копиран от ${ENV_PATH}/.env${NC}"
+                else
+                    echo -e "  ${RED}✗ Не е намерен: ${ENV_PATH}${NC}"
+                fi
+                ;;
+            *)
+                echo -e "  ${YELLOW}Пропуснато. Създай ръчно: nano ${GLOBAL_ENV}${NC}"
+                ;;
+        esac
+    else
+        echo -e "    ${GREEN}1)${NC} Подай път до .env файл"
+        echo -e "    ${GREEN}2)${NC} Пропусни (ще го създадеш ръчно)"
+        echo ""
+        read -p "  Избор [1/2]: " ENV_CHOICE <&3
+        case "$ENV_CHOICE" in
+            1)
+                read -p "  Път: " ENV_PATH <&3
+                if [ -f "$ENV_PATH" ]; then
+                    mkdir -p "$(dirname "$GLOBAL_ENV")"
+                    cp "$ENV_PATH" "$GLOBAL_ENV"
+                    chmod 640 "$GLOBAL_ENV"
+                    chown root:$SVC_GROUP "$GLOBAL_ENV"
+                    echo -e "  ${GREEN}✓ Копиран от ${ENV_PATH}${NC}"
+                else
+                    echo -e "  ${RED}✗ Не е намерен${NC}"
+                fi
+                ;;
+            *)
+                echo -e "  ${YELLOW}Пропуснато. Създай ръчно: nano ${GLOBAL_ENV}${NC}"
+                ;;
+        esac
+    fi
 fi
 
 ##############################################################################
@@ -386,15 +459,18 @@ rsync -a \
 PRIV_COUNT=$(find "$PRIVATE_DIR" -type f | wc -l)
 echo -e "  ${GREEN}✓ private/: ${PRIV_COUNT} файла${NC}"
 
-# .env symlinks
-for svc in chat eco-3; do
-    svc_configs="$PRIVATE_DIR/$svc/configs"
-    mkdir -p "$svc_configs"
-    [ -f "$svc_configs/.env" ] && [ ! -L "$svc_configs/.env" ] && \
-        mv "$svc_configs/.env" "$svc_configs/.env.old.$(date +%s)"
-    ln -sf "../../configs/.env" "$svc_configs/.env"
-    echo -e "  ${GREEN}✓ $svc/configs/.env → ../../configs/.env${NC}"
-done
+# Chat и ECO-3 четат директно от private/configs/.env (без symlink)
+echo -e "  ${GREEN}✓ .env: $GLOBAL_ENV (chat + eco-3 четат директно)${NC}"
+
+# Прочети ключови стойности от .env за използване в следващите стъпки
+if [ -f "$GLOBAL_ENV" ]; then
+    _env_val() { grep "^$1=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '\r'; }
+    ENV_DB_TYPE=$(_env_val DB_TYPE)
+    ENV_DB_FILE=$(_env_val SQLITE_DB_FILE)
+    [ -n "$ENV_DB_TYPE" ] && DB_TYPE="$ENV_DB_TYPE" || DB_TYPE="sqlite"
+    [ -n "$ENV_DB_FILE" ] && SQLITE_DB="$PRIVATE_DIR/chat/$ENV_DB_FILE"
+    echo -e "  ${GREEN}✓ .env: DB_TYPE=${DB_TYPE}, SQLITE_DB_FILE=${ENV_DB_FILE:-amschat.db}${NC}"
+fi
 
 # deploy-scripts/, docs/, tests/
 for dir in deploy-scripts docs tests; do
@@ -431,7 +507,19 @@ echo -e "  ${GREEN}✓ Permissions: kcy-chat владее chat/, kcy-eco3 вла
 ##############################################################################
 print_step "СТЪПКА 7: Node.js dependencies"
 
+NEED_NODE_INSTALL=false
 if ! command -v node &>/dev/null; then
+    NEED_NODE_INSTALL=true
+    echo -e "  ${YELLOW}Node.js не е инсталиран${NC}"
+else
+    NODE_MAJOR=$(node -v | grep -oP '(?<=v)\d+')
+    if [ "$NODE_MAJOR" -lt 20 ]; then
+        NEED_NODE_INSTALL=true
+        echo -e "  ${YELLOW}Node.js $(node -v) е стара версия — нужна е v20+${NC}"
+    fi
+fi
+
+if [ "$NEED_NODE_INSTALL" = true ]; then
     echo -e "  ${YELLOW}Инсталиране на Node.js 20 LTS...${NC}"
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - 2>/dev/null
     apt-get install -y nodejs 2>/dev/null
@@ -535,7 +623,7 @@ if [ "$DB_TYPE" = "sqlite" ] && [ -f "$SQLITE_DB" ] && command -v sqlite3 &>/dev
         echo -e "    ${GREEN}2)${NC} Остави както е (всичко е актуално)"
     fi
     echo ""
-    read -p "  Избор [1/2]: " DB_CHOICE
+    read -p "  Избор [1/2]: " DB_CHOICE <&3
 
     if [ "$DB_CHOICE" = "1" ]; then
         echo -e "  ${RED}  Изтриване на старата база...${NC}"
@@ -584,7 +672,7 @@ elif [ "$DB_TYPE" = "postgresql" ]; then
     echo -e "    ${GREEN}1)${NC} Изтрий и създай наново (ИЗТРИВА всички данни!)"
     echo -e "    ${GREEN}2)${NC} Остави както е"
     echo ""
-    read -p "  Избор [1/2]: " DB_CHOICE
+    read -p "  Избор [1/2]: " DB_CHOICE <&3
 
     if [ "$DB_CHOICE" = "1" ]; then
         echo -e "  ${YELLOW}Пресъздаване на PostgreSQL база...${NC}"
@@ -605,7 +693,7 @@ else
     echo -e "    ${GREEN}2)${NC} PostgreSQL (по-мощно, за продукция)"
     echo -e "    ${GREEN}3)${NC} Пропусни (ще настроиш после с 01-setup-database.sh)"
     echo ""
-    read -p "  Избор [1/2/3]: " NEW_DB_CHOICE
+    read -p "  Избор [1/2/3]: " NEW_DB_CHOICE <&3
 
     case "$NEW_DB_CHOICE" in
         1)
@@ -639,6 +727,42 @@ else
     esac
 fi
 
+# ── ECO-3 Database (SQLite) ──
+echo ""
+echo -e "  ${CYAN}── ECO-3 Database ──${NC}"
+ECO3_DB_DIR="$PRIVATE_DIR/eco-3/database"
+ECO3_DB="$ECO3_DB_DIR/eco3.db"
+ECO3_SCHEMA="$ECO3_DB_DIR/schema.sql"
+
+if [ -f "$ECO3_SCHEMA" ]; then
+    if [ -f "$ECO3_DB" ]; then
+        ECO3_TABLES=$(sqlite3 "$ECO3_DB" ".tables" 2>/dev/null | tr -s ' ' '\n' | grep -c '\S' || true)
+        echo -e "  ${GREEN}✓ ECO-3 DB съществува: ${ECO3_DB} (${ECO3_TABLES} таблици)${NC}"
+    else
+        echo -e "  ${YELLOW}Създаване на ECO-3 база данни...${NC}"
+        if command -v sqlite3 &>/dev/null; then
+            sqlite3 "$ECO3_DB" < "$ECO3_SCHEMA" 2>/dev/null
+            chown $ECO3_USER:$SVC_GROUP "$ECO3_DB" 2>/dev/null || true
+            chmod 664 "$ECO3_DB" 2>/dev/null || true
+            echo -e "  ${GREEN}✓ ECO-3 DB създадена: ${ECO3_DB}${NC}"
+        elif command -v node &>/dev/null && [ -f "$PRIVATE_DIR/eco-3/database/init.js" ]; then
+            cd "$PRIVATE_DIR/eco-3"
+            node database/init.js 2>&1 | sed 's/^/  /'
+            chown $ECO3_USER:$SVC_GROUP "$ECO3_DB" 2>/dev/null || true
+            echo -e "  ${GREEN}✓ ECO-3 DB създадена чрез Node.js${NC}"
+        else
+            echo -e "  ${YELLOW}! Нито sqlite3 нито node са налични — ECO-3 DB ще се създаде при старт${NC}"
+        fi
+    fi
+else
+    echo -e "  ${YELLOW}! ECO-3 schema.sql не е намерен${NC}"
+fi
+
+# ECO-3 logs + database dirs
+mkdir -p "$PRIVATE_DIR/eco-3/logs" 2>/dev/null
+chown -R $ECO3_USER:$SVC_GROUP "$PRIVATE_DIR/eco-3/logs" 2>/dev/null || true
+chown -R $ECO3_USER:$SVC_GROUP "$PRIVATE_DIR/eco-3/database" 2>/dev/null || true
+
 ##############################################################################
 # STEP 9: NGINX
 ##############################################################################
@@ -649,24 +773,103 @@ if ! command -v nginx &>/dev/null; then
     apt-get update -qq && apt-get install -y -qq nginx 2>/dev/null
 fi
 
-# Backup old default
+# ── Конфиг файл = домейн (съвместимо с certbot) ──
+NGINX_CONF="/etc/nginx/sites-available/${DOMAIN}"
+NGINX_LINK="/etc/nginx/sites-enabled/${DOMAIN}"
+
+# ── Намиране на ВСИЧКИ конфиги за този домейн ──
+EXISTING_CONFS=()
+for f in /etc/nginx/sites-available/*; do
+    [ -f "$f" ] || continue
+    if grep -q "server_name.*${DOMAIN}" "$f" 2>/dev/null; then
+        EXISTING_CONFS+=("$f")
+    fi
+done
+
+# ── Проверка за съществуващ работещ конфиг ──
+SKIP_NGINX=false
+
+if [ ${#EXISTING_CONFS[@]} -gt 0 ] && nginx -t 2>/dev/null; then
+    echo -e "  ${GREEN}✓ Nginx конфигурация за ${DOMAIN} вече съществува:${NC}"
+    for f in "${EXISTING_CONFS[@]}"; do
+        echo -e "    ${CYAN}$(basename $f)${NC}"
+    done
+    echo ""
+    echo -e "  ${GREEN}1)${NC} Запази текущата конфигурация (препоръчително)"
+    echo -e "  ${GREEN}2)${NC} Презапиши с нова конфигурация"
+    echo ""
+    read -p "  Избор [1/2]: " NGINX_CHOICE <&3
+    NGINX_CHOICE=$(echo "$NGINX_CHOICE" | tr -d '\r\n ')
+    if [ "$NGINX_CHOICE" != "2" ]; then
+        SKIP_NGINX=true
+        echo -e "  ${GREEN}✓ Nginx — запазена текущата конфигурация${NC}"
+    fi
+fi
+
+if [ "$SKIP_NGINX" = false ]; then
+
+# ── Backup и почистване на стари конфиги ──
+for f in "${EXISTING_CONFS[@]}"; do
+    cp "$f" "${f}.bak.$(date +%s)"
+    echo -e "  ${YELLOW}Backup: $(basename ${f}).bak.*${NC}"
+done
+
+# Махни всички стари enabled линкове за този домейн
+for f in /etc/nginx/sites-enabled/*; do
+    [ -f "$f" ] || continue
+    if grep -q "server_name.*${DOMAIN}" "$f" 2>/dev/null; then
+        rm -f "$f"
+    fi
+done
+
+# Махни default ако е останал
 [ -f /etc/nginx/sites-enabled/default ] && \
     mv /etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/default.bak 2>/dev/null || true
 
-cat > /etc/nginx/sites-available/kcy-ecosystem << NGINXEOF
+# ── SSL пътища ──
+SSL_CERT=""
+SSL_KEY=""
+if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
+    SSL_CERT="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
+    SSL_KEY="/etc/letsencrypt/live/$DOMAIN/privkey.pem"
+    echo -e "  ${GREEN}✓ Let's Encrypt сертификат: $DOMAIN${NC}"
+elif [ -f /etc/nginx/ssl/selfsigned.crt ]; then
+    SSL_CERT="/etc/nginx/ssl/selfsigned.crt"
+    SSL_KEY="/etc/nginx/ssl/selfsigned.key"
+    echo -e "  ${YELLOW}● Self-signed SSL${NC}"
+else
+    echo -e "  ${YELLOW}! SSL не е намерен — генериране на временен self-signed${NC}"
+    mkdir -p /etc/nginx/ssl
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout /etc/nginx/ssl/selfsigned.key \
+        -out /etc/nginx/ssl/selfsigned.crt \
+        -subj "/CN=$DOMAIN" 2>/dev/null
+    SSL_CERT="/etc/nginx/ssl/selfsigned.crt"
+    SSL_KEY="/etc/nginx/ssl/selfsigned.key"
+fi
+
+# ── Генериране на нов конфиг ──
+cat > "$NGINX_CONF" << NGINXEOF
+# KCY Ecosystem — generated by server-install.sh
+# $(date '+%Y-%m-%d %H:%M:%S')
+
+# HTTP → HTTPS redirect
 server {
     listen 80;
     listen [::]:80;
     server_name ${DOMAIN};
     location /.well-known/acme-challenge/ { root ${WEB_ROOT}; }
-    location / { return 301 https://\$server_name\$request_uri; }
+    location / { return 301 https://\$host\$request_uri; }
 }
 
+# HTTPS
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
     server_name ${DOMAIN};
 
+    ssl_certificate ${SSL_CERT};
+    ssl_certificate_key ${SSL_KEY};
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
     ssl_prefer_server_ciphers on;
@@ -683,21 +886,11 @@ server {
     index index.html;
     client_max_body_size 100M;
 
-    location / { try_files \$uri \$uri/ =404; }
+    # Frontend
+    location / { try_files \$uri \$uri/ /index.html; }
 
-    location /api/chat/ {
-        proxy_pass http://127.0.0.1:${CHAT_PORT}/;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_cache_bypass \$http_upgrade;
-        proxy_read_timeout 86400;
-    }
-
+    # ECO-3 API (по-специфичен — ПРЕДИ /api/)
+    # /api/eco3/health → http://127.0.0.1:3001/health
     location /api/eco3/ {
         proxy_pass http://127.0.0.1:${ECO3_PORT}/;
         proxy_http_version 1.1;
@@ -711,15 +904,43 @@ server {
         proxy_read_timeout 120;
     }
 
+    # Chat API (хваща всичко останало под /api/)
+    # /api/admin/login → http://127.0.0.1:3000/api/admin/login
+    location /api/ {
+        proxy_pass http://127.0.0.1:${CHAT_PORT};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_cache_bypass \$http_upgrade;
+        proxy_read_timeout 86400;
+    }
+
+    # WebSocket
+    location /socket.io/ {
+        proxy_pass http://127.0.0.1:${CHAT_PORT};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+    }
+
+    # Shared assets (CORS)
     location /shared/ {
         add_header Access-Control-Allow-Origin "*";
         add_header Access-Control-Allow-Methods "GET, OPTIONS";
         if (\$request_method = 'OPTIONS') { return 204; }
     }
 
+    # Security
     location ~ /\. { deny all; }
     location ~ \.(env|sql|sqlite|db)$ { deny all; }
 
+    # Cache static
     location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2)$ {
         expires 30d;
         add_header Cache-Control "public, immutable";
@@ -727,9 +948,30 @@ server {
 }
 NGINXEOF
 
-ln -sf /etc/nginx/sites-available/kcy-ecosystem /etc/nginx/sites-enabled/
-nginx -t && systemctl reload nginx
-echo -e "  ${GREEN}✓ Nginx configured${NC}"
+# Махни стари available файлове с друго име за същия домейн
+for f in "${EXISTING_CONFS[@]}"; do
+    if [ "$f" != "$NGINX_CONF" ]; then
+        rm -f "$f"
+        echo -e "  ${YELLOW}Премахнат стар конфиг: $(basename $f)${NC}"
+    fi
+done
+
+ln -sf "$NGINX_CONF" "$NGINX_LINK"
+if nginx -t 2>/dev/null; then
+    systemctl reload nginx
+    echo -e "  ${GREEN}✓ Nginx configured — ${DOMAIN}${NC}"
+else
+    echo -e "  ${RED}✗ nginx -t FAILED! Провери: sudo nginx -t${NC}"
+    # Възстанови от backup ако има
+    LATEST_BAK=$(ls -t ${NGINX_CONF}.bak.* 2>/dev/null | head -1)
+    if [ -n "$LATEST_BAK" ]; then
+        cp "$LATEST_BAK" "$NGINX_CONF"
+        nginx -t 2>/dev/null && systemctl reload nginx
+        echo -e "  ${YELLOW}Възстановен backup: $(basename $LATEST_BAK)${NC}"
+    fi
+fi
+
+fi  # end SKIP_NGINX
 
 ##############################################################################
 # STEP 10: SYSTEMD SERVICES + SSL + FIREWALL
@@ -782,7 +1024,7 @@ StandardError=journal
 SyslogIdentifier=kcy-eco3
 NoNewPrivileges=true
 ProtectSystem=strict
-ReadWritePaths=/var/log/kcy-ecosystem
+ReadWritePaths=/var/log/kcy-ecosystem ${PRIVATE_DIR}/eco-3/database ${PRIVATE_DIR}/eco-3/logs
 
 [Install]
 WantedBy=multi-user.target
@@ -808,7 +1050,14 @@ else
 fi
 
 # ── SSL ──
-if command -v certbot &>/dev/null || apt-get install -y -qq certbot python3-certbot-nginx 2>/dev/null; then
+if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
+    CERT_EXPIRY=$(openssl x509 -enddate -noout -in "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" 2>/dev/null | cut -d= -f2)
+    echo -e "  ${GREEN}✓ SSL сертификат наличен ($DOMAIN)${NC}"
+    [ -n "$CERT_EXPIRY" ] && echo -e "  ${GREEN}  Изтича: ${CERT_EXPIRY}${NC}"
+    # Deploy сертификата в nginx конфига (certbot добавя ssl_ редовете ако липсват)
+    certbot install --nginx -d "$DOMAIN" --non-interactive 2>/dev/null || true
+    systemctl enable certbot.timer 2>/dev/null || true
+elif command -v certbot &>/dev/null || apt-get install -y -qq certbot python3-certbot-nginx 2>/dev/null; then
     if host "$DOMAIN" > /dev/null 2>&1; then
         echo -e "  ${YELLOW}SSL сертификат...${NC}"
         certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos -m "$EMAIL" 2>/dev/null || {
@@ -817,6 +1066,8 @@ if command -v certbot &>/dev/null || apt-get install -y -qq certbot python3-cert
         systemctl enable certbot.timer 2>/dev/null || true
     fi
 fi
+# Reload nginx след SSL промени
+nginx -t 2>/dev/null && systemctl reload nginx 2>/dev/null || true
 
 # ── Firewall ──
 if command -v ufw &>/dev/null; then
@@ -863,19 +1114,68 @@ echo -e "  Chat:     $(systemctl is-active kcy-chat.service 2>/dev/null || echo 
 echo -e "  ECO-3:    $(systemctl is-active kcy-eco3.service 2>/dev/null || echo 'n/a') → :${ECO3_PORT} (user: ${ECO3_USER})"
 echo -e "  Nginx:    $(systemctl is-active nginx 2>/dev/null || echo 'n/a')"
 echo ""
-echo -e "${CYAN}Полезни команди:${NC}"
-echo -e "  kcy-status                       Статус на всичко"
-echo -e "  kcy-restart                      Рестарт на всичко"
-echo -e "  journalctl -u kcy-chat -f        Chat логове (live)"
-echo -e "  journalctl -u kcy-eco3 -f        ECO-3 логове (live)"
-echo -e "  nano ${GLOBAL_ENV}               Редактирай .env"
+
+echo -e "${CYAN}─── Пътища ───${NC}"
+echo -e "  Главна страница:  ${GREEN}${WEB_ROOT}/${NC}"
+echo -e "  Backend (private): ${GREEN}${PRIVATE_DIR}/${NC}"
+echo -e "  .env конфиг:       ${GREEN}${GLOBAL_ENV}${NC}"
+echo -e "  База данни:        ${GREEN}${SQLITE_DB}${NC}"
 echo ""
-echo -e "${YELLOW}DB Reset (отделно от инсталацията):${NC}"
-echo -e "  cd ${PROJECT_DIR}/deploy-scripts/server"
-echo -e "  sudo bash 01-setup-database.sh --reset ?    Покажи help"
-echo -e "  sudo bash 01-setup-database.sh --reset      Reset на цялата база"
+
+echo -e "${CYAN}─── Nginx ───${NC}"
+NGINX_ACTIVE=$(ls /etc/nginx/sites-enabled/ 2>/dev/null | head -5)
+echo -e "  Конфигурация:     ${GREEN}/etc/nginx/sites-available/${DOMAIN}${NC}"
+echo -e "  Enabled:          ${GREEN}/etc/nginx/sites-enabled/${DOMAIN}${NC}"
+echo -e "  Логове:           /var/log/nginx/kcy-access.log"
+echo -e "                    /var/log/nginx/kcy-error.log"
+echo -e "  Провери конфиг:   ${CYAN}sudo nginx -t${NC}"
+echo -e "  Презареди:        ${CYAN}sudo nginx -t && sudo systemctl reload nginx${NC}"
 echo ""
-echo -e "  ${YELLOW}Пълен лог: ${LOG_FILE}${NC}"
+
+echo -e "${CYAN}─── SSL сертификат ───${NC}"
+if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
+    CERT_EXPIRY=$(openssl x509 -enddate -noout -in "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" 2>/dev/null | cut -d= -f2)
+    echo -e "  Сертификат:  ${GREEN}/etc/letsencrypt/live/${DOMAIN}/fullchain.pem${NC}"
+    echo -e "  Ключ:        ${GREEN}/etc/letsencrypt/live/${DOMAIN}/privkey.pem${NC}"
+    [ -n "$CERT_EXPIRY" ] && echo -e "  Изтича:      ${GREEN}${CERT_EXPIRY}${NC}"
+    echo -e "  Автоматично подновяване: ${GREEN}certbot.timer (активен)${NC}"
+else
+    echo -e "  ${YELLOW}! Няма Let's Encrypt сертификат${NC}"
+fi
+echo -e "  Ръчно deploy:    ${CYAN}sudo certbot --nginx -d ${DOMAIN}${NC}"
+echo -e "  Провери подновяване: ${CYAN}sudo certbot renew --dry-run${NC}"
+echo ""
+
+echo -e "${CYAN}─── Полезни команди ───${NC}"
+echo -e "  ${CYAN}kcy-status${NC}                       Статус на всичко"
+echo -e "  ${CYAN}kcy-restart${NC}                      Рестарт на всичко"
+echo -e "  ${CYAN}journalctl -u kcy-chat -f${NC}        Chat логове (live)"
+echo -e "  ${CYAN}journalctl -u kcy-eco3 -f${NC}        ECO-3 логове (live)"
+echo -e "  ${CYAN}nano ${GLOBAL_ENV}${NC}    Редактирай .env"
+echo ""
+echo -e "${CYAN}─── DB Reset (отделно от инсталацията) ───${NC}"
+echo -e "  ${CYAN}cd ${PROJECT_DIR}/deploy-scripts/server${NC}"
+echo -e "  ${CYAN}sudo bash 01-setup-database.sh --reset ?${NC}    Покажи help"
+echo -e "  ${CYAN}sudo bash 01-setup-database.sh --reset${NC}      Reset на цялата база"
+echo ""
+echo -e "  Пълен лог: ${YELLOW}${LOG_FILE}${NC}"
+echo ""
+
+echo -e "${CYAN}─── Статус страница ───${NC}"
+echo -e "  Отвори в браузъра за преглед на всички сървиси:"
+echo ""
+echo -e "  ${GREEN}https://${DOMAIN}/shared/admin-status.html${NC}"
+echo ""
+echo -e "  Показва:"
+echo -e "    • Статус на Chat и ECO-3 backend"
+echo -e "    • Бази данни (Chat SQLite + ECO-3 SQLite)"
+echo -e "    • Nginx, SSL сертификат"
+echo -e "    • Stripe и Anthropic конфигурация"
+echo -e "    • PM2 процеси"
+echo ""
+echo -e "  ECO-3 Admin:"
+echo -e "  ${GREEN}https://${DOMAIN}/eco-3/admin/${NC}"
+echo -e "  (достъпен от IP-тата в ADMIN_ALLOWED_IPS)"
 echo ""
 
 # ═══ SUDO REVOKE ═══
@@ -890,7 +1190,7 @@ echo ""
 echo -e "    ${GREEN}1)${NC} Да, премахни sudo на kcy-admin"
 echo -e "    ${GREEN}2)${NC} Не, остави sudo (ще го направя ръчно после)"
 echo ""
-read -p "  Избор [1/2]: " SUDO_CHOICE
+read -p "  Избор [1/2]: " SUDO_CHOICE <&3
 
 if [ "$SUDO_CHOICE" = "1" ]; then
     if id "kcy-admin" &>/dev/null; then
