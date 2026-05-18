@@ -1,0 +1,207 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Access Level</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      max-width: 600px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      padding: 40px;
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    
+    .success-icon {
+      font-size: 48px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .warning-box {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 20px;
+      margin: 25px 0;
+      border-radius: 4px;
+    }
+    
+    .feature-list {
+      margin: 20px 0;
+    }
+    
+    .feature-list h3 {
+      color: #333;
+      margin: 20px 0 10px 0;
+    }
+    
+    .feature-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .feature-list li {
+      padding: 8px 0;
+      padding-left: 25px;
+      position: relative;
+    }
+    
+    .feature-list li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 12px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+    
+    .feature-list .allowed:before {
+      background: #10b981;
+      content: "✓";
+      color: white;
+      font-size: 12px;
+      line-height: 16px;
+      text-align: center;
+    }
+    
+    .feature-list .blocked:before {
+      background: #ef4444;
+      content: "✗";
+      color: white;
+      font-size: 12px;
+      line-height: 16px;
+      text-align: center;
+    }
+    
+    .pricing {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .pricing h4 {
+      margin: 10px 0;
+      color: #555;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    button {
+      flex: 1;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-pay {
+      background: #10b981;
+      color: white;
+    }
+    
+    .btn-pay:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-free {
+      background: #6b7280;
+      color: white;
+    }
+    
+    .btn-free:hover {
+      background: #4b5563;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="success-icon">✅</div>
+    <h1 style="text-align: center;">Registration Complete!</h1>
+    
+    <div class="warning-box">
+      <h3 style="margin-top: 0;">⚠️ Limited Chat Access</h3>
+      <p>You can use basic chat features for <strong>FREE</strong>, but many features are restricted.</p>
+    </div>
+    
+    <div class="feature-list">
+      <h3>Free (Limited) Chat:</h3>
+      <ul>
+        <li class="allowed">Basic messaging (10 messages/day)</li>
+        <li class="blocked">No file sharing</li>
+        <li class="blocked">No location sharing</li>
+        <li class="blocked">No emergency button</li>
+        <li class="blocked">Limited search (4 types only)</li>
+      </ul>
+      
+      <h3>Full Access ($5/month):</h3>
+      <ul>
+        <li class="allowed">Unlimited messaging</li>
+        <li class="allowed">File sharing (50MB)</li>
+        <li class="allowed">Location sharing</li>
+        <li class="allowed">Advanced search filters</li>
+        <li class="allowed">Custom contact names</li>
+      </ul>
+      
+      <h3>Full + Emergency ($55 total):</h3>
+      <ul>
+        <li class="allowed">Everything above +</li>
+        <li class="allowed">Emergency help button (30 days)</li>
+      </ul>
+    </div>
+    
+    <div class="pricing">
+      <h4>💳 Pricing:</h4>
+      <p><strong>Login Access:</strong> $5 or €5 / month</p>
+      <p><strong>Emergency Button:</strong> $50 or €50 / 30 days</p>
+    </div>
+    
+    <div class="button-group">
+      <button class="btn-pay" onclick="goToPayment()">
+        💳 Pay for Full Access
+      </button>
+      <button class="btn-free" onclick="goToChat()">
+        Continue with Free Chat
+      </button>
+    </div>
+  </div>
+  
+  <script>
+    function goToPayment() {
+      window.location.href = '/payment.html';
+    }
+    
+    function goToChat() {
+      window.location.href = '/chat.html';
+    }
+  </script>
+</body>
+</html>

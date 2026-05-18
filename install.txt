@@ -1,0 +1,84 @@
+npm install
+npm install --legacy-peer-deps
+
+Стъпки за Windows:
+
+**Бързо (просто преинсталация):**
+1. Control Panel → Programs → деинсталирай Node.js v24
+2. Свали Node 22 LTS от https://nodejs.org/en/download (изберѝ "LTS")
+3. Инсталирай с default settings
+4. Затвори и пусни нов PowerShell (за да обнови PATH-а)
+5. Провери: `node --version` → трябва да покаже `v22.x.x`
+6. В папката на проекта:
+   ```powershell
+   rmdir /s /q node_modules
+   npm install
+   ```
+
+npm run test:portals:smoke
+# или директно
+bash tests/portals/smoke-db.sh
+
+npm install        # за better-sqlite3
+npm run test:portals
+
+Имаш няколко нива на тестване — от най-бързо към най-задълбочено:
+1. Compile (sanity check, 30 сек)
+powershell
+npm run compile:brch1
+
+2. Тестваш на вече deploy-нат testnet контракт чрез admin panel (най-практично)
+В private/brch1/deployment-bscTestnet.json имаш живо deployment на testnet:
+
+Token: 0x7f6D0C3E8b815E87f460D0B75AC9AaA1d2C2412F
+Pair: 0x16bBBC92DaA3D4fBFA7aC0F3d2448611ad33149e
+
+Какво да направиш:
+
+Стартирай сайта (или просто отвори public/brch1/admin/index.html локално в браузъра)
+Сложи ?adm=bgmasters-set в URL-а
+Свържи MetaMask към BSC Testnet
+Постави token address-а → Refresh
+Виж дали статистиките се зареждат правилно (supply, pool, цена, claimable, halve status)
+Като owner — пробвай setTaxExempt или setCooldown с тестови стойности
+Купи малко BRCH1 от PancakeSwap testnet → провери че admin показва промяна в pool
+
+3. Fresh testnet deploy (ако искаш да тестваш целия deploy flow)
+powershell
+npm run deploy:brch1:testnet
+Изисква testnet BNB в deployer wallet-а (безплатно от https://testnet.bnbchain.org/faucet-smart). Wizard-ът те води стъпка по стъпка.
+
+Token:        0x90C343a012C7DA01CB1F810C35b2680c6167c9a7
+Pair:         0x2A7Ca652617c8C63aE194D2E7B9ef4BFbf5B4391
+Owner:        0x567c1c5e9026E04078F9b92DcF295A58355f60c7
+
+BscScan:      https://testnet.bscscan.com/token/0x90C343a012C7DA01CB1F810C35b2680c6167c9a7
+Pair info:    https://testnet.bscscan.com/address/0x2A7Ca652617c8C63aE194D2E7B9ef4BFbf5B4391
+Pancake URL:  https://pancakeswap.finance/swap?outputCurrency=0x90C343a012C7DA01CB1F810C35b2680c6167c9a7
+
+
+
+4. Hardhat unit tests (липсват в момента)
+В private/brch1/ няма test/ папка. Ако искаш — мога да напиша набор от unit тестове които покриват:
+
+deploy с правилни параметри
+maxTx / maxWallet ограничения
+launch anti-snipe + decay tax (99% → 50% → 15% → 6%)
+mintToPool (включително cap check)
+claimCreatorMint с time travel
+halveAnnually с time travel
+tax exempt / limit exempt
+cooldown logic
+burnFromCreator
+
+git init
+
+
+
+
+
+bash deploy.sh
+
+deploy-scripts\windows\deploy.bat
+
+

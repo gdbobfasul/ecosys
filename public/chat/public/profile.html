@@ -1,0 +1,605 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Настройки на профил - AMS Chat</title>
+  <link rel="manifest" href="../assets/manifest.json">
+  <link rel="icon" type="image/png" href="../assets/icon-192.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+  
+  <div class="container mx-auto px-4 py-8 max-w-2xl">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <button onclick="window.location.href='chat.html'" class="text-blue-400 hover:text-blue-300">
+        ← Назад към чата
+      </button>
+      <h1 class="text-2xl font-bold">⚙️ Настройки</h1>
+      <button onclick="logout()" class="text-red-400 hover:text-red-300">
+        Изход
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading" class="text-center py-8">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+      <p class="mt-4 text-gray-400">Зареждане...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div id="content" class="hidden space-y-6">
+
+      <!-- Basic Info Section -->
+      <div class="bg-gray-800 rounded-lg p-6">
+        <h2 class="text-xl font-bold mb-4 flex items-center justify-between">
+          👤 Основна информация
+          <span id="editLimitInfo" class="text-sm text-gray-400"></span>
+        </h2>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Пълно име</label>
+            <input type="text" id="fullName" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Телефон (международен формат)</label>
+            <input type="tel" id="phone" placeholder="+359888123456" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Дата на раждане</label>
+            <input type="date" id="birthDate" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Град</label>
+            <input type="text" id="city" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
+          </div>
+
+          <button onclick="updateProfile()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-3 font-semibold">
+            Запази промени (1 път/месец)
+          </button>
+        </div>
+      </div>
+
+      <!-- Privacy Settings -->
+      <div class="bg-gray-800 rounded-lg p-6">
+        <h2 class="text-xl font-bold mb-4">🔒 Поверителност</h2>
+        
+        <div class="space-y-4">
+          <label class="flex items-center justify-between cursor-pointer">
+            <span>Скрий телефонен номер</span>
+            <input type="checkbox" id="hidePhone" onchange="toggleHidePhone()" class="w-6 h-6" />
+          </label>
+
+          <label class="flex items-center justify-between cursor-pointer">
+            <span>Скрий имена</span>
+            <input type="checkbox" id="hideNames" onchange="toggleHideNames()" class="w-6 h-6" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Security Section -->
+      <div class="bg-gray-800 rounded-lg p-6">
+        <h2 class="text-xl font-bold mb-4">🔐 Сигурност</h2>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Кодова дума (за точно търсене)</label>
+            <input type="text" id="codeWord" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
+            <p class="text-xs text-gray-500 mt-1">Други потребители трябва да знаят тази дума, за да те намерят точно</p>
+          </div>
+
+          <button onclick="updateCodeWord()" class="w-full bg-green-600 hover:bg-green-700 rounded py-2">
+            Обнови кодова дума
+          </button>
+
+          <hr class="border-gray-700" />
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Email адрес</label>
+            <input type="email" id="email" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
+          </div>
+
+          <button onclick="updateEmail()" class="w-full bg-green-600 hover:bg-green-700 rounded py-2">
+            Обнови email
+          </button>
+
+          <hr class="border-gray-700" />
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Текуща парола</label>
+            <input type="password" id="currentPassword" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Нова парола</label>
+            <input type="password" id="newPassword" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
+          </div>
+
+          <button onclick="updatePassword()" class="w-full bg-green-600 hover:bg-green-700 rounded py-2">
+            Смени парола
+          </button>
+        </div>
+      </div>
+
+      <!-- Current Need Section -->
+      <div class="bg-gray-800 rounded-lg p-6">
+        <h2 class="text-xl font-bold mb-4">🔍 Текуща нужда</h2>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">От какво имам нужда сега?</label>
+            <select id="needCategory" onchange="updateNeedSubcategories()" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+              <option value="">-- Избери категория --</option>
+            </select>
+          </div>
+
+          <div id="needSubcategoryContainer" class="hidden">
+            <label class="block text-sm text-gray-400 mb-2">Точна нужда</label>
+            <select id="needSubcategory" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+              <option value="">-- Избери --</option>
+            </select>
+          </div>
+
+          <button onclick="updateNeed()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-2">
+            Обнови нужда
+          </button>
+        </div>
+      </div>
+
+      <!-- Offerings Section -->
+      <div class="bg-gray-800 rounded-lg p-6">
+        <h2 class="text-xl font-bold mb-4">💼 Какво предлагам (макс 3)</h2>
+        
+        <div id="verifiedLock" class="hidden bg-yellow-900 border border-yellow-600 rounded p-4 mb-4">
+          <p class="text-yellow-300">🔒 Вашият профил е верифициран. Полето "Предлагам" е заключено.</p>
+          <p class="text-sm text-yellow-400 mt-2">За промени: <a href="mailto:admin@amschat.com" class="underline">admin@amschat.com</a></p>
+        </div>
+
+        <div id="offeringsForm" class="space-y-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Услуга 1</label>
+            <select id="offering1Category" onchange="updateOfferingSubcategories(1)" class="w-full bg-gray-700 rounded px-4 py-2 text-white mb-2">
+              <option value="">-- Избери категория --</option>
+            </select>
+            <select id="offering1" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+              <option value="">-- Избери услуга --</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Услуга 2 (опционално)</label>
+            <select id="offering2Category" onchange="updateOfferingSubcategories(2)" class="w-full bg-gray-700 rounded px-4 py-2 text-white mb-2">
+              <option value="">-- Избери категория --</option>
+            </select>
+            <select id="offering2" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+              <option value="">-- Избери услуга --</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Услуга 3 (опционално)</label>
+            <select id="offering3Category" onchange="updateOfferingSubcategories(3)" class="w-full bg-gray-700 rounded px-4 py-2 text-white mb-2">
+              <option value="">-- Избери категория --</option>
+            </select>
+            <select id="offering3" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+              <option value="">-- Избери услуга --</option>
+            </select>
+          </div>
+
+          <div class="bg-blue-900 border border-blue-600 rounded p-4">
+            <p class="text-blue-300 text-sm">ℹ️ За спешни услуги (Доктор, Болница, Бърза помощ, Полиция) изпрати документи на:</p>
+            <p class="text-blue-200 mt-1"><a href="mailto:admin@amschat.com" class="underline font-semibold">admin@amschat.com</a></p>
+          </div>
+
+          <button onclick="updateOfferings()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-2">
+            Запази предлагания
+          </button>
+        </div>
+      </div>
+
+      <!-- Payment Section -->
+      <div class="bg-gray-800 rounded-lg p-6">
+        <h2 class="text-xl font-bold mb-4">💳 Абонамент</h2>
+        
+        <div id="subscriptionInfo" class="space-y-3">
+          <div class="flex justify-between">
+            <span class="text-gray-400">Статус:</span>
+            <span id="subscriptionStatus" class="font-semibold"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Валиден до:</span>
+            <span id="paidUntil" class="font-semibold"></span>
+          </div>
+        </div>
+
+        <button onclick="window.location.href='payment.html'" class="w-full bg-green-600 hover:bg-green-700 rounded py-3 mt-4 font-semibold">
+          💰 Плати абонамент
+        </button>
+      </div>
+
+      <!-- Emergency Help Button -->
+      <div class="bg-red-900 border border-red-600 rounded-lg p-6">
+        <h2 class="text-xl font-bold mb-4">🆘 Спешна помощ</h2>
+        
+        <div id="helpButtonInfo" class="space-y-3 mb-4 text-sm">
+          <p>Бутонът изпраща вашата точна локация до администратора.</p>
+          <p><strong>Цена:</strong> <span id="helpCost"></span></p>
+          <p><strong>Ефект:</strong> Отнема 15 дни от абонамента</p>
+          <p><strong>Лимит:</strong> 1 използване на месец</p>
+        </div>
+
+        <button id="helpButton" onclick="sendEmergencyHelp()" class="w-full bg-red-600 hover:bg-red-700 rounded py-4 font-bold text-lg disabled:bg-gray-600 disabled:cursor-not-allowed">
+          🚨 ИЗПРАТИ СПЕШНА ПОМОЩ
+        </button>
+
+        <p id="helpUsageInfo" class="text-xs text-gray-400 mt-2 text-center"></p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/configs/config.js"></script>
+  <script>
+    let serviceCategories = {};
+    let profileData = {};
+
+    // Load profile on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadServiceCategories();
+      await loadProfile();
+      await checkHelpButtonAvailability();
+    });
+
+    async function loadServiceCategories() {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_URL}/profile/service-categories`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        serviceCategories = data.all;
+        
+        // Populate need category dropdown
+        const needCat = document.getElementById('needCategory');
+        Object.keys(serviceCategories).forEach(key => {
+          const opt = document.createElement('option');
+          opt.value = key;
+          opt.textContent = serviceCategories[key].label;
+          needCat.appendChild(opt);
+        });
+
+        // Populate offering category dropdowns (exclude EMERGENCY)
+        [1, 2, 3].forEach(i => {
+          const offeringCat = document.getElementById(`offering${i}Category`);
+          Object.keys(serviceCategories).forEach(key => {
+            if (key !== 'EMERGENCY') { // Can't select emergency services
+              const opt = document.createElement('option');
+              opt.value = key;
+              opt.textContent = serviceCategories[key].label;
+              offeringCat.appendChild(opt);
+            }
+          });
+        });
+        
+      } catch (err) {
+        console.error('Load categories error:', err);
+      }
+    }
+
+    async function loadProfile() {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_URL}/profile`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (!res.ok) throw new Error('Failed to load profile');
+        
+        profileData = await res.json();
+        
+        // Fill form
+        document.getElementById('fullName').value = profileData.full_name || '';
+        document.getElementById('phone').value = profileData.phone || '';
+        document.getElementById('birthDate').value = profileData.birth_date || '';
+        document.getElementById('city').value = profileData.city || '';
+        document.getElementById('codeWord').value = profileData.code_word || '';
+        document.getElementById('email').value = profileData.email || '';
+        document.getElementById('hidePhone').checked = profileData.hide_phone === 1;
+        document.getElementById('hideNames').checked = profileData.hide_names === 1;
+
+        // Subscription info
+        const paidUntil = new Date(profileData.paid_until);
+        const isActive = paidUntil > new Date();
+        document.getElementById('subscriptionStatus').textContent = isActive ? '✅ Активен' : '❌ Изтекъл';
+        document.getElementById('subscriptionStatus').className = isActive ? 'text-green-400 font-semibold' : 'text-red-400 font-semibold';
+        document.getElementById('paidUntil').textContent = paidUntil.toLocaleDateString('bg-BG');
+
+        // Offerings
+        if (profileData.is_verified === 1) {
+          document.getElementById('verifiedLock').classList.remove('hidden');
+          document.getElementById('offeringsForm').classList.add('hidden');
+        } else {
+          if (profileData.offerings) {
+            const offerings = profileData.offerings.split(',').map(s => s.trim());
+            offerings.forEach((offering, idx) => {
+              if (idx < 3) {
+                document.getElementById(`offering${idx + 1}`).value = offering;
+              }
+            });
+          }
+        }
+
+        // Current need
+        if (profileData.current_need) {
+          // Find which category this need belongs to
+          for (const [catKey, catData] of Object.entries(serviceCategories)) {
+            if (catData.subcategories.includes(profileData.current_need)) {
+              document.getElementById('needCategory').value = catKey;
+              updateNeedSubcategories();
+              document.getElementById('needSubcategory').value = profileData.current_need;
+              break;
+            }
+          }
+        }
+
+        // Edit limit info
+        const editsRemaining = 1 - (profileData.profile_edits_this_month || 0);
+        document.getElementById('editLimitInfo').textContent = `Редакции останали: ${editsRemaining}/1`;
+
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('content').classList.remove('hidden');
+        
+      } catch (err) {
+        console.error('Load profile error:', err);
+        alert('Грешка при зареждане на профила');
+      }
+    }
+
+    function updateNeedSubcategories() {
+      const category = document.getElementById('needCategory').value;
+      const container = document.getElementById('needSubcategoryContainer');
+      const select = document.getElementById('needSubcategory');
+      
+      if (!category) {
+        container.classList.add('hidden');
+        return;
+      }
+      
+      container.classList.remove('hidden');
+      select.innerHTML = '<option value="">-- Избери --</option>';
+      
+      serviceCategories[category].subcategories.forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub;
+        opt.textContent = sub;
+        select.appendChild(opt);
+      });
+    }
+
+    function updateOfferingSubcategories(num) {
+      const category = document.getElementById(`offering${num}Category`).value;
+      const select = document.getElementById(`offering${num}`);
+      
+      select.innerHTML = '<option value="">-- Избери услуга --</option>';
+      
+      if (!category) return;
+      
+      serviceCategories[category].subcategories.forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub;
+        opt.textContent = sub;
+        select.appendChild(opt);
+      });
+    }
+
+    async function updateProfile() {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_URL}/profile`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            full_name: document.getElementById('fullName').value,
+            phone: document.getElementById('phone').value,
+            birth_date: document.getElementById('birthDate').value,
+            city: document.getElementById('city').value
+          })
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) {
+          alert(data.error || 'Грешка при обновяване');
+          return;
+        }
+        
+        alert('✅ Профилът е обновен успешно!');
+        await loadProfile();
+        
+      } catch (err) {
+        console.error('Update profile error:', err);
+        alert('Грешка при обновяване на профила');
+      }
+    }
+
+    async function toggleHidePhone() {
+      const hide = document.getElementById('hidePhone').checked;
+      await updateSetting('/profile/hide-phone', { hide_phone: hide });
+    }
+
+    async function toggleHideNames() {
+      const hide = document.getElementById('hideNames').checked;
+      await updateSetting('/profile/hide-names', { hide_names: hide });
+    }
+
+    async function updateCodeWord() {
+      const codeWord = document.getElementById('codeWord').value;
+      if (!codeWord || codeWord.length < 3) {
+        alert('Кодовата дума трябва да е поне 3 символа');
+        return;
+      }
+      await updateSetting('/profile/code-word', { code_word: codeWord }, 'Кодовата дума е обновена');
+    }
+
+    async function updateEmail() {
+      const email = document.getElementById('email').value;
+      await updateSetting('/profile/email', { email }, 'Email-ът е обновен');
+    }
+
+    async function updatePassword() {
+      const current = document.getElementById('currentPassword').value;
+      const newPass = document.getElementById('newPassword').value;
+      
+      if (!current || !newPass) {
+        alert('Попълнете и двете полета');
+        return;
+      }
+      
+      await updateSetting('/profile/password', {
+        current_password: current,
+        new_password: newPass
+      }, 'Паролата е сменена успешно');
+      
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+    }
+
+    async function updateNeed() {
+      const need = document.getElementById('needSubcategory').value;
+      await updateSetting('/profile/need', { current_need: need }, 'Нуждата е обновена');
+    }
+
+    async function updateOfferings() {
+      const offerings = [
+        document.getElementById('offering1').value,
+        document.getElementById('offering2').value,
+        document.getElementById('offering3').value
+      ].filter(Boolean).join(',');
+      
+      await updateSetting('/profile/offerings', { offerings }, 'Предлаганията са обновени');
+    }
+
+    async function updateSetting(endpoint, body, successMsg = 'Обновено успешно') {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_URL}${endpoint}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) {
+          alert(data.error || 'Грешка');
+          return;
+        }
+        
+        alert('✅ ' + successMsg);
+        
+      } catch (err) {
+        console.error('Update error:', err);
+        alert('Грешка при обновяване');
+      }
+    }
+
+    async function checkHelpButtonAvailability() {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_URL}/help/availability`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await res.json();
+        
+        document.getElementById('helpCost').textContent = `${data.charge.currency.toUpperCase()} ${data.charge.amount}`;
+        
+        const button = document.getElementById('helpButton');
+        button.disabled = !data.available;
+        
+        if (!data.available) {
+          let reason = '';
+          if (!data.has_subscription) reason = 'Нямате активен абонамент';
+          else if (data.uses_this_month >= 1) reason = `Вече е използван този месец. Следващо използване: ${new Date(data.next_reset).toLocaleDateString('bg-BG')}`;
+          
+          document.getElementById('helpUsageInfo').textContent = reason;
+        } else {
+          document.getElementById('helpUsageInfo').textContent = `Остават: ${data.remaining_uses} използвания`;
+        }
+        
+      } catch (err) {
+        console.error('Check help availability error:', err);
+      }
+    }
+
+    async function sendEmergencyHelp() {
+      if (!confirm('⚠️ ВНИМАНИЕ!\n\nТова ще изпрати вашата точна локация до администратора и ще ви струва €50/$50 (15 дни от абонамента).\n\nПродължавате?')) {
+        return;
+      }
+      
+      // Get GPS location
+      if (!navigator.geolocation) {
+        alert('Вашият браузър не поддържа геолокация');
+        return;
+      }
+      
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        try {
+          const token = localStorage.getItem('token');
+          const res = await fetch(`${API_URL}/help/emergency`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            })
+          });
+          
+          const data = await res.json();
+          
+          if (!res.ok) {
+            alert(data.error || 'Грешка');
+            return;
+          }
+          
+          alert(`✅ Спешна помощ изпратена!\n\nАдминистраторът е уведомен с вашата локация.\n\nИД на заявката: ${data.request_id}`);
+          
+          await loadProfile();
+          await checkHelpButtonAvailability();
+          
+        } catch (err) {
+          console.error('Emergency help error:', err);
+          alert('Грешка при изпращане на помощ');
+        }
+      }, (error) => {
+        alert('Не може да се получи локация: ' + error.message);
+      }, {
+        enableHighAccuracy: true,
+        timeout: 10000
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'index.html';
+    }
+  </script>
+
+</body>
+</html>

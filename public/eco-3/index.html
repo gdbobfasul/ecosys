@@ -1,0 +1,102 @@
+<!-- Version: 1.0085 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ECO-3 AI Studio - Интерактивно медийно съдържание с 3 AI агента">
+    <title>ECO-3 AI Studio - KCY Ecosystem</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <!-- React CDN for standalone deployment -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX transformation (dev) - replace with build step for production -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Google Fonts used by ECO-3 -->
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ECO-3 uses dark theme - override body for this page */
+        body { background: #0a0a0f; margin: 0; }
+        /* Keep ecosystem nav light */
+        .kcy-nav { background: white !important; }
+        /* Loading state */
+        #eco3-loading {
+            display: flex; justify-content: center; align-items: center;
+            min-height: 80vh; color: rgba(255,255,255,.5);
+            font-family: 'JetBrains Mono', monospace; font-size: 14px;
+        }
+        #eco3-loading .spinner {
+            width: 40px; height: 40px; border: 3px solid rgba(0,255,136,.15);
+            border-top-color: #00ff88; border-radius: 50%;
+            animation: spin 1s linear infinite; margin-right: 15px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <!-- ECO-3 App Mount Point -->
+    <div id="eco3-root">
+        <div id="eco3-loading">
+            <div class="spinner"></div>
+            <span>ECO-3 AI Studio зарежда...</span>
+        </div>
+    </div>
+
+    <!-- Shared Ecosystem Config (Stripe keys, URLs, pricing) -->
+    <script src="/shared/js/config.js"></script>
+    <script src="/shared/js/navigation.js"></script>
+
+    <!-- ECO-3 Ecosystem Bridge: connects to shared Stripe & API -->
+    <script>
+        // ECO-3 gets Stripe and API config from the shared ecosystem config
+        window.ECO3_CONFIG = {
+            // API endpoint (proxied through nginx to private/eco-3/server.js)
+            API_BASE: (window.KCY_CONFIG ? window.KCY_CONFIG.api.eco3 : '/api/eco3/'),
+            
+            // Stripe (same keys as Chat - from server-side .env)
+            STRIPE_PUBLISHABLE_KEY: null, // Loaded from /api/eco3/stripe-key
+            
+            // Pricing from shared config
+            PRICING: window.CRYPTO_CONFIG ? window.CRYPTO_CONFIG.PRICING.ECO3 : {
+                BASIC: { USD: 2.99, EUR: 2.99 },
+                STANDARD: { USD: 4.99, EUR: 4.99 },
+                PREMIUM: { USD: 9.99, EUR: 9.99 },
+                PER_MINUTE: { USD: 0.15, EUR: 0.15 }
+            },
+            
+            // Crypto payment wallets (same treasury as Chat)
+            CRYPTO_WALLETS: window.CRYPTO_CONFIG ? window.CRYPTO_CONFIG.TREASURY_WALLETS : {},
+            
+            // Ecosystem base URL
+            BASE_URL: window.KCY_CONFIG ? window.KCY_CONFIG.BASE_URL : '',
+            
+            // Version
+            VERSION: '1.0085'
+        };
+
+        // Fetch Stripe publishable key from backend
+        fetch(window.ECO3_CONFIG.API_BASE + 'stripe-key')
+            .then(r => r.json())
+            .then(d => { window.ECO3_CONFIG.STRIPE_PUBLISHABLE_KEY = d.publishableKey; })
+            .catch(() => console.warn('ECO-3: Stripe key not available (server not running?)'));
+    </script>
+
+    <!-- ECO-3 React Application -->
+    <script type="text/babel" src="app.jsx"></script>
+
+    <!-- Mount ECO-3 -->
+    <script type="text/babel">
+        // Mount ECO-3 when app.jsx is loaded
+        const checkAndMount = () => {
+            if (typeof ECO3 !== 'undefined') {
+                const root = ReactDOM.createRoot(document.getElementById('eco3-root'));
+                root.render(React.createElement(ECO3));
+            } else {
+                setTimeout(checkAndMount, 100);
+            }
+        };
+        // Wait for Babel to compile app.jsx
+        setTimeout(checkAndMount, 500);
+    </script>
+</body>
+</html>

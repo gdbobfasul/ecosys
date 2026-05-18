@@ -1,0 +1,87 @@
+<!-- Version: 1.0086 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — KCY Portals</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .auth-wrap { max-width: 480px; margin: 60px auto; padding: 40px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.12); }
+        .auth-wrap h1 { color: var(--primary-color); margin-bottom: 8px; font-size: 1.8em; }
+        .auth-wrap p.lead { color: #666; margin-bottom: 22px; }
+        .auth-wrap label { display: block; margin: 14px 0 6px; font-weight: 600; color: #333; }
+        .auth-wrap input[readonly] { background: #f6f6f6; color: #888; }
+        .auth-wrap input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1em; }
+        .auth-wrap .btn-primary { width: 100%; margin-top: 22px; padding: 14px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-size: 1.05em; cursor: pointer; }
+        .auth-wrap .msg { margin-top: 14px; padding: 10px; border-radius: 8px; display: none; }
+        .auth-wrap .msg.err { background: #fee; color: #c00; display: block; }
+        .auth-wrap .msg.ok { background: #efe; color: #070; display: block; }
+        .group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .hint { font-size: .85em; color: #888; margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <div class="auth-wrap">
+        <h1>📝 Регистрация</h1>
+        <p class="lead">Създай акаунт за достъп до портала за игри и портала за услуги.</p>
+
+        <label>Потребител</label>
+        <input id="username" type="text" maxlength="32" autocomplete="username">
+
+        <label>Парола</label>
+        <input id="password" type="password" autocomplete="new-password">
+        <div class="hint">Минимум 4 символа.</div>
+
+        <label>Сума платена през Stripe (USD)</label>
+        <input type="text" value="0.00 USD" readonly>
+        <div class="hint">Попълва се автоматично след първото Stripe плащане.</div>
+
+        <div class="group">
+            <div>
+                <label>Платено в BTC</label>
+                <input type="text" value="0.00000000" readonly>
+            </div>
+            <div>
+                <label>Платено в ETH</label>
+                <input type="text" value="0.00000000" readonly>
+            </div>
+        </div>
+        <label>Платено в BNB</label>
+        <input type="text" value="0.00000000" readonly>
+
+        <button id="btn-register" class="btn-primary">Регистрирай ме</button>
+        <div id="msg" class="msg"></div>
+
+        <p style="margin-top: 18px; text-align: center; color: #666;">
+            Вече имаш акаунт? <a href="./login.html">Вход</a>
+        </p>
+    </div>
+
+    <script>
+        const msg = document.getElementById('msg');
+        function showMsg(t, k) { msg.textContent = t; msg.className = 'msg ' + (k || 'err'); }
+
+        async function doRegister() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            if (!username || !password) { showMsg('Попълни потребител и парола.'); return; }
+            try {
+                const r = await fetch('/api/portals/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await r.json();
+                if (!r.ok) { showMsg(data.message || 'Грешка при регистрация.'); return; }
+                showMsg(data.is_first_user ? 'Създаден е админ акаунтът. Пренасочване…' : 'Регистриран успешно. Пренасочване към billing…', 'ok');
+                setTimeout(() => { location.href = '/portals/billing.html'; }, 600);
+            } catch (e) {
+                showMsg('Мрежова грешка: ' + e.message);
+            }
+        }
+
+        document.getElementById('btn-register').addEventListener('click', doRegister);
+    </script>
+</body>
+</html>

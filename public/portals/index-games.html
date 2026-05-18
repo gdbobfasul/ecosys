@@ -1,0 +1,61 @@
+<!-- Version: 1.0086 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Портал за игри — KCY</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .portal-head { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; padding: 40px 20px; text-align: center; }
+        .portal-head h1 { font-size: 2.4em; margin-bottom: 10px; }
+        .portal-head .back { display: inline-block; margin-top: 14px; padding: 8px 16px; background: rgba(255,255,255,.2); color: #fff; border-radius: 8px; text-decoration: none; }
+        .games-grid { max-width: 1200px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+        .game-card { background: #fff; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.1); overflow: hidden; transition: transform .2s; cursor: pointer; text-decoration: none; color: #333; }
+        .game-card:hover { transform: translateY(-4px); }
+        .game-thumb { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 5em; }
+        .game-thumb.t-plane { background: linear-gradient(135deg, #6ec1e4, #2a86d8); }
+        .game-thumb.t-car   { background: linear-gradient(135deg, #ff9966, #ff5e62); }
+        .game-thumb.t-hero  { background: linear-gradient(135deg, #a770ef, #cf8bf3); }
+        .game-body { padding: 18px; }
+        .game-body h3 { margin: 0 0 6px; color: var(--primary-color); }
+        .game-body p { margin: 0; color: #666; font-size: .92em; }
+    </style>
+</head>
+<body>
+    <div class="portal-head">
+        <h1>🎮 Портал за игри</h1>
+        <p>Прости аркадни игри — безплатни, без регистрация за игра.</p>
+        <a class="back" href="/">← KCY Ecosystem</a>
+        &nbsp;
+        <a class="back" href="/portals/services/">🛠️ Портал за услуги →</a>
+    </div>
+
+    <div id="games-grid" class="games-grid"></div>
+
+    <script>
+        function themeClass(hero) {
+            if (hero === 'самолет') return 't-plane';
+            if (hero === 'кола') return 't-car';
+            return 't-hero';
+        }
+
+        async function load() {
+            const r = await fetch('/api/portals/games/list');
+            if (r.status === 401) { location.href = '/portals/login.html?next=/portals/games/'; return; }
+            if (r.status === 402) { location.href = '/portals/billing.html'; return; }
+            const { games } = await r.json();
+            document.getElementById('games-grid').innerHTML = games.map(g => `
+                <a href="${g.file}" class="game-card">
+                    <div class="game-thumb ${themeClass(g.hero)}">${g.emoji}</div>
+                    <div class="game-body">
+                        <h3>${g.title}</h3>
+                        <p>Герой: ${g.hero}</p>
+                    </div>
+                </a>
+            `).join('');
+        }
+        load();
+    </script>
+</body>
+</html>

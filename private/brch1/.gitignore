@@ -1,0 +1,23 @@
+# Чувствителни файлове - НИКОГА не качвай в git!
+.env
+.env.local
+*.key
+secrets/
+
+# Hardhat артефакти
+node_modules/
+cache/
+artifacts/
+typechain/
+typechain-types/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Деплоймент логове
+deployments/
+deployment-*.json

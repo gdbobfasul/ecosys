@@ -1,0 +1,121 @@
+<!-- Version: 1.0086 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing — KCY Portals</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .bill-wrap { max-width: 620px; margin: 50px auto; padding: 36px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.12); }
+        h1 { color: var(--primary-color); margin-bottom: 6px; }
+        .status { padding: 14px; border-radius: 10px; margin: 18px 0; }
+        .status.paid { background: #e7f5e7; color: #1a5; }
+        .status.unpaid { background: #fff3cd; color: #8a6d3b; }
+        .fees-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 12px; }
+        .fee-card { padding: 14px; background: #f8f9fa; border-radius: 10px; text-align: center; }
+        .fee-card .amt { font-size: 1.2em; font-weight: 700; color: var(--primary-color); }
+        .fee-card .cur { font-size: .85em; color: #666; }
+        .declare-form { margin-top: 24px; padding: 20px; background: #f8f9fa; border-radius: 10px; }
+        .declare-form label { display: block; margin: 10px 0 4px; font-weight: 600; font-size: .9em; }
+        .declare-form select, .declare-form input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        .btn { display: inline-block; padding: 12px 20px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; text-decoration: none; }
+        .btn-row { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+        .msg { margin-top: 12px; padding: 10px; border-radius: 8px; display: none; }
+        .msg.ok { background: #efe; color: #070; display: block; }
+        .msg.err { background: #fee; color: #c00; display: block; }
+    </style>
+</head>
+<body>
+    <div class="bill-wrap">
+        <h1>💳 Месечна такса</h1>
+        <p>Порталите изискват активно плащане за текущия месец.</p>
+
+        <div id="status" class="status unpaid">Зарежда се…</div>
+
+        <h3>Цени за текущия месец</h3>
+        <div id="fees" class="fees-grid"></div>
+
+        <div class="declare-form">
+            <h3 style="margin-bottom: 10px;">Декларирай плащане</h3>
+            <label>Метод</label>
+            <select id="method">
+                <option value="stripe">Stripe (USD)</option>
+                <option value="btc">BTC</option>
+                <option value="eth">ETH</option>
+                <option value="bnb">BNB</option>
+            </select>
+            <label>Сума</label>
+            <input id="amount" type="text" placeholder="напр. 5 или 0.000064">
+            <label>Tx reference (крипто tx hash / Stripe session id) — по желание</label>
+            <input id="tx_ref" type="text">
+            <div class="btn-row">
+                <button class="btn" id="btn-declare">Записвай плащане</button>
+                <a class="btn" style="background:#888" href="/">Отказ</a>
+            </div>
+            <div id="msg" class="msg"></div>
+        </div>
+
+        <div class="btn-row" style="margin-top: 20px;">
+            <a class="btn" href="/portals/games/">🎮 Портал за игри</a>
+            <a class="btn" href="/portals/services/">🛠️ Портал за услуги</a>
+            <button class="btn" style="background: #aaa" id="btn-logout">Изход</button>
+        </div>
+    </div>
+
+    <script>
+        const msg = document.getElementById('msg');
+        function showMsg(t, k) { msg.textContent = t; msg.className = 'msg ' + (k || 'err'); }
+
+        async function loadStatus() {
+            try {
+                const r = await fetch('/api/portals/billing/status');
+                if (r.status === 401) { location.href = '/portals/login.html?next=/portals/billing.html'; return; }
+                const data = await r.json();
+                const s = document.getElementById('status');
+                if (data.paid_this_month) {
+                    s.className = 'status paid';
+                    s.innerHTML = `✅ Платено за <b>${data.current_month}</b> (метод: ${data.payment.method}, сума: ${data.payment.amount}).`;
+                } else {
+                    s.className = 'status unpaid';
+                    s.innerHTML = `⚠️ Неплатено за <b>${data.current_month}</b>. Декларирай плащане по-долу.`;
+                }
+                const fees = data.fees;
+                document.getElementById('fees').innerHTML = Object.entries(fees)
+                    .map(([cur, amt]) => `<div class="fee-card"><div class="amt">${amt}</div><div class="cur">${cur}</div></div>`)
+                    .join('');
+            } catch (e) {
+                showMsg('Грешка: ' + e.message);
+            }
+        }
+
+        async function declare() {
+            const method = document.getElementById('method').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const tx_reference = document.getElementById('tx_ref').value.trim() || null;
+            if (!Number.isFinite(amount) || amount <= 0) { showMsg('Невалидна сума.'); return; }
+            try {
+                const r = await fetch('/api/portals/billing/declare', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ method, amount, tx_reference })
+                });
+                const data = await r.json();
+                if (!r.ok) { showMsg(data.message || JSON.stringify(data)); return; }
+                showMsg('✅ Плащане записано. Зарежда се…', 'ok');
+                setTimeout(loadStatus, 500);
+            } catch (e) {
+                showMsg('Мрежова грешка: ' + e.message);
+            }
+        }
+
+        document.getElementById('btn-declare').addEventListener('click', declare);
+        document.getElementById('btn-logout').addEventListener('click', async () => {
+            await fetch('/api/portals/logout', { method: 'POST' });
+            location.href = '/';
+        });
+
+        loadStatus();
+    </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KCY-meme-1 Token - Advanced DeFi token with multi-sig security">
+    <title>KCY-meme-1 Token</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .token-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+        }
+        .token-hero h1 { font-size: 3.5em; margin-bottom: 20px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin: 50px auto; max-width: 1200px; }
+        .stat-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        .stat-card h3 { color: #667eea; font-size: 2.5em; margin-bottom: 10px; }
+        .stat-card p { color: #666; font-size: 1.1em; }
+        .features-section { background: #f8f9fa; padding: 80px 20px; margin: 50px 0; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto; }
+        .feature-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .feature-box h3 { color: #667eea; margin-bottom: 15px; font-size: 1.5em; }
+        .feature-box ul { list-style: none; padding: 0; }
+        .feature-box li { padding: 8px 0; color: #555; }
+        .feature-box li::before { content: "✓ "; color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="token-hero">
+        <h1>🪙 KCY-meme-1 Token</h1>
+        <p style="font-size: 1.3em; margin-bottom: 30px;">Advanced DeFi Token with Multi-Sig Security</p>
+        <div>
+            <a href="#tokenomics" class="btn" style="margin: 10px;">Tokenomics</a>
+            <a href="#features" class="btn btn-secondary" style="margin: 10px;">Features</a>
+            <a href="admin/scripts.html" class="btn btn-admin" style="margin: 10px;">Admin Panel</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3>100M</h3>
+                <p>Total Supply</p>
+            </div>
+            <div class="stat-card">
+                <h3>10</h3>
+                <p>Exempt Slots</p>
+            </div>
+            <div class="stat-card">
+                <h3>5M</h3>
+                <p>Max Mint</p>
+            </div>
+            <div class="stat-card">
+                <h3>48h</h3>
+                <p>Pause Duration</p>
+            </div>
+        </div>
+
+        <!-- Tokenomics -->
+        <div id="tokenomics" style="margin: 80px 0;">
+            <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 50px; color: #333;">Tokenomics</h2>
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="card">
+                    <h3 style="color: #667eea; margin-bottom: 20px;">Token Distribution</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 15px; border-bottom: 1px solid #eee;">
+                            <strong>Total Supply:</strong> 100,000,000 KCY1
+                        </li>
+                        <li style="padding: 15px; border-bottom: 1px solid #eee;">
+                            <strong>Initial Allocation:</strong> Via distributeInitialAllocations()
+                        </li>
+                        <li style="padding: 15px; border-bottom: 1px solid #eee;">
+                            <strong>Mint Cap:</strong> 5,000,000 tokens per proposal
+                        </li>
+                        <li style="padding: 15px;">
+                            <strong>Burn Mechanism:</strong> Available to reduce supply
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div id="features" class="features-section">
+            <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 50px; color: #333;">Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-box">
+                    <h3>🔐 Multi-Sig Security</h3>
+                    <ul>
+                        <li>5 owner addresses</li>
+                        <li>3-of-5 signatures required</li>
+                        <li>Critical operations protected</li>
+                        <li>Unlock capabilities</li>
+                    </ul>
+                </div>
+
+                <div class="feature-box">
+                    <h3>🔧 Exempt Slots (10)</h3>
+                    <ul>
+                        <li>Slot 1: Owner (permanent)</li>
+                        <li>Slots 2-5: Multi-Sig only</li>
+                        <li>Slots 6-10: Any admin</li>
+                        <li>Lock forever option</li>
+                    </ul>
+                </div>
+
+                <div class="feature-box">
+                    <h3>⏸️ Pause Control</h3>
+                    <ul>
+                        <li>48-hour pause duration</li>
+                        <li>Exempt addresses unaffected</li>
+                        <li>Auto-unpause after 48h</li>
+                        <li>Emergency protection</li>
+                    </ul>
+                </div>
+
+                <div class="feature-box">
+                    <h3>🚫 Blacklist System</h3>
+                    <ul>
+                        <li>Ban malicious addresses</li>
+                        <li>Batch operations available</li>
+                        <li>Multi-Sig removal only</li>
+                        <li>Permanent protection</li>
+                    </ul>
+                </div>
+
+                <div class="feature-box">
+                    <h3>💧 Liquidity Management</h3>
+                    <ul>
+                        <li>Exempt liquidity pairs</li>
+                        <li>Batch add/remove</li>
+                        <li>Lock forever option</li>
+                        <li>48h cooldown</li>
+                    </ul>
+                </div>
+
+                <div class="feature-box">
+                    <h3>🌱 Mint Operations</h3>
+                    <ul>
+                        <li>Propose → Wait 1 day → Execute</li>
+                        <li>Max 5M per mint</li>
+                        <li>1 week cooldown</li>
+                        <li>Transparent process</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Access -->
+        <div style="margin: 80px 0;">
+            <div class="card" style="text-align: center; padding: 50px;">
+                <h2 style="color: #667eea; margin-bottom: 20px;">Admin Access</h2>
+                <p style="font-size: 1.2em; color: #666; margin-bottom: 30px;">
+                    Управлявай токена чрез нашия advanced admin panel
+                </p>
+                <div>
+                    <a href="admin/scripts.html" class="btn btn-admin" style="margin: 10px; font-size: 1.1em;">
+                        🔐 Open Admin Panel
+                    </a>
+                </div>
+                <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #eee;">
+                    <p style="color: #888;">Available Admin Functions:</p>
+                    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 15px;">
+                        <span style="background: #f0f0f0; padding: 8px 15px; border-radius: 20px;">Status Check</span>
+                        <span style="background: #f0f0f0; padding: 8px 15px; border-radius: 20px;">Pause Control</span>
+                        <span style="background: #f0f0f0; padding: 8px 15px; border-radius: 20px;">Blacklist</span>
+                        <span style="background: #f0f0f0; padding: 8px 15px; border-radius: 20px;">Exempt Slots</span>
+                        <span style="background: #f0f0f0; padding: 8px 15px; border-radius: 20px;">Liquidity</span>
+                        <span style="background: #f0f0f0; padding: 8px 15px; border-radius: 20px;">Mint</span>
+                        <span style="background: #f0f0f0; padding: 8px 15px; border-radius: 20px;">Token Ops</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Projects -->
+        <div style="margin: 80px 0;">
+            <h2 style="text-align: center; font-size: 2em; margin-bottom: 40px; color: #333;">Related Services</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 3em; margin-bottom: 15px;">🔐</h3>
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Multi-Sig Wallet</h3>
+                    <p style="color: #666; margin-bottom: 20px;">Използвай Multi-Sig за сигурни транзакции</p>
+                    <a href="/multisig/" class="btn">Learn More →</a>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 3em; margin-bottom: 15px;">💬</h3>
+                    <h3 style="color: #667eea; margin-bottom: 15px;">AMS Chat</h3>
+                    <p style="color: #666; margin-bottom: 20px;">Използвай KCY токени за subscription (300 KCY/месец)</p>
+                    <a href="/chat/" class="btn">Open Chat →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/shared/js/config.js"></script>
+    <script src="/shared/js/navigation.js"></script>
+</body>
+</html>

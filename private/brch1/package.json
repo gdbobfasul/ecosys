@@ -1,0 +1,20 @@
+{
+  "name": "berich1-token",
+  "version": "1.0.0",
+  "description": "BeRicH 1 (BRCH1) BEP-20 token deployment package",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy:testnet": "hardhat run scripts/deploy.js --network bscTestnet",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network bsc",
+    "verify:testnet": "hardhat run scripts/verify.js --network bscTestnet",
+    "verify:mainnet": "hardhat run scripts/verify.js --network bsc"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.0",
+    "dotenv": "^16.4.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2"
+  }
+}

@@ -1,0 +1,370 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - AMS Chat</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center">
+        <div class="bg-gray-800 rounded-lg p-8 max-w-md w-full">
+            <h2 class="text-3xl font-bold mb-6">Admin Login</h2>
+            <form id="loginForm" class="space-y-4">
+                <input type="text" id="username" placeholder="Username" class="w-full p-3 bg-gray-700 rounded" required>
+                <input type="password" id="password" placeholder="Password" class="w-full p-3 bg-gray-700 rounded" required>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded font-bold">Login</button>
+            </form>
+            <div id="loginMessage" class="mt-4 text-center"></div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="hidden min-h-screen p-6">
+        <!-- Navigation -->
+        <div class="mb-6 flex gap-4">
+            <button onclick="loadPage('flagged')" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Page 1: Flagged Users</button>
+            <button onclick="loadPage('all')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Page 2: All Users</button>
+            <button onclick="loadPage('messages')" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Page 4: Users + Messages</button>
+            <a href="/payment-override.html" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-white" style="text-decoration: none;">💳 Payment Override</a>
+            <button onclick="logout()" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded ml-auto">Logout</button>
+        </div>
+
+        <!-- Search Filters -->
+        <div class="bg-gray-800 rounded-lg p-4 mb-6">
+            <h3 class="text-lg font-bold mb-3">Search Filters</h3>
+            <div class="grid grid-cols-4 gap-3">
+                <input type="text" id="filterSearch" placeholder="Name or Phone" class="p-2 bg-gray-700 rounded">
+                <select id="filterGender" class="p-2 bg-gray-700 rounded">
+                    <option value="">All Genders</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+                <input type="text" id="filterCountry" placeholder="Country" class="p-2 bg-gray-700 rounded">
+                <input type="text" id="filterCity" placeholder="City" class="p-2 bg-gray-700 rounded">
+                <input type="number" id="filterHeightMin" placeholder="Height Min" class="p-2 bg-gray-700 rounded">
+                <input type="number" id="filterHeightMax" placeholder="Height Max" class="p-2 bg-gray-700 rounded">
+                <input type="number" id="filterWeightMin" placeholder="Weight Min" class="p-2 bg-gray-700 rounded">
+                <input type="number" id="filterWeightMax" placeholder="Weight Max" class="p-2 bg-gray-700 rounded">
+                <select id="filterBlocked" class="p-2 bg-gray-700 rounded">
+                    <option value="">All Status</option>
+                    <option value="false">Not Blocked</option>
+                    <option value="true">Blocked</option>
+                </select>
+                <button onclick="applyFilters()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded col-span-3">Apply Filters</button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div id="contentArea" class="bg-gray-800 rounded-lg p-6"></div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin + '/api';
+        let adminToken = null;
+        let currentPage = 'messages';
+        let currentFilters = {};
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const msg = document.getElementById('loginMessage');
+
+            try {
+                const res = await fetch(`${API_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    adminToken = data.token;
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('adminPanel').classList.remove('hidden');
+                    loadPage('messages');
+                } else {
+                    msg.innerHTML = '<p class="text-red-400">Invalid credentials</p>';
+                }
+            } catch (err) {
+                msg.innerHTML = '<p class="text-red-400">Connection error</p>';
+            }
+        });
+
+        // Logout
+        function logout() {
+            adminToken = null;
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+        }
+
+        // Apply filters
+        function applyFilters() {
+            currentFilters = {
+                search: document.getElementById('filterSearch').value,
+                gender: document.getElementById('filterGender').value,
+                country: document.getElementById('filterCountry').value,
+                city: document.getElementById('filterCity').value,
+                heightMin: document.getElementById('filterHeightMin').value,
+                heightMax: document.getElementById('filterHeightMax').value,
+                weightMin: document.getElementById('filterWeightMin').value,
+                weightMax: document.getElementById('filterWeightMax').value,
+                isBlocked: document.getElementById('filterBlocked').value
+            };
+            loadPage(currentPage);
+        }
+
+        // Load page
+        async function loadPage(page) {
+            currentPage = page;
+            const content = document.getElementById('contentArea');
+            content.innerHTML = '<p class="text-center">Loading...</p>';
+
+            const params = new URLSearchParams(currentFilters);
+            let endpoint = '';
+
+            if (page === 'flagged') endpoint = '/admin/flagged-users';
+            else if (page === 'all') endpoint = '/admin/all-users';
+            else if (page === 'messages') endpoint = '/admin/users-with-messages';
+
+            try {
+                const res = await fetch(`${API_URL}${endpoint}?${params}`);
+                const data = await res.json();
+
+                if (page === 'messages') {
+                    renderPage4(data.users);
+                } else {
+                    renderBasicTable(data.users);
+                }
+            } catch (err) {
+                content.innerHTML = '<p class="text-red-400">Error loading data</p>';
+            }
+        }
+
+        // Render Page 4 (Users + Messages + Location + Flagged)
+        function renderPage4(users) {
+            const content = document.getElementById('contentArea');
+            
+            if (!users || users.length === 0) {
+                content.innerHTML = '<p class="text-gray-400">No users found</p>';
+                return;
+            }
+
+            content.innerHTML = `
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="p-2 text-left">Phone</th>
+                                <th class="p-2 text-left">Name</th>
+                                <th class="p-2 text-left">Gender</th>
+                                <th class="p-2 text-left">Is Flagged</th>
+                                <th class="p-2 text-left">Location</th>
+                                <th class="p-2 text-left">Location Data</th>
+                                <th class="p-2 text-left">Messages</th>
+                                <th class="p-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${users.map(u => `
+                                <tr class="border-b border-gray-700 hover:bg-gray-700">
+                                    <td class="p-2">${u.phone}</td>
+                                    <td class="p-2">${u.full_name}</td>
+                                    <td class="p-2">${u.gender}</td>
+                                    <td class="p-2">
+                                        ${u.isFlagged 
+                                            ? `<span class="text-red-400">🔴 Yes (${u.flaggedCount})</span>` 
+                                            : '<span class="text-green-400">🟢 No</span>'
+                                        }
+                                    </td>
+                                    <td class="p-2">
+                                        <button onclick="captureLocation(${u.id}, '${u.phone}')" 
+                                                class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-xs">
+                                            📍 Capture
+                                        </button>
+                                    </td>
+                                    <td class="p-2 text-xs">
+                                        ${u.hasLocation ? `
+                                            <div class="max-w-xs">
+                                                ${u.location_country ? `${u.location_country}, ` : ''}${u.location_city || ''}${u.location_village ? `, ${u.location_village}` : ''}<br>
+                                                ${u.location_street ? `${u.location_street} ${u.location_number || ''}` : ''}<br>
+                                                GPS: ${u.location_latitude?.toFixed(4)}, ${u.location_longitude?.toFixed(4)}<br>
+                                                IP: ${u.location_ip || 'N/A'}<br>
+                                                <span class="text-gray-400">${new Date(u.location_captured_at).toLocaleString()}</span>
+                                            </div>
+                                        ` : '<span class="text-gray-400">No location</span>'}
+                                    </td>
+                                    <td class="p-2">
+                                        <div class="max-w-md max-h-20 overflow-y-auto text-xs bg-gray-900 p-2 rounded">
+                                            ${u.allMessages ? u.allMessages.substring(0, 200) + '...' : 'No messages'}
+                                        </div>
+                                    </td>
+                                    <td class="p-2">
+                                        <button onclick="viewDetails(${u.id})" 
+                                                class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs mb-1">
+                                            🔍 Details
+                                        </button>
+                                        <button onclick="blockUser(${u.id}, '${u.phone}')" 
+                                                class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs">
+                                            🚫 Block
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // Render basic table (Page 1 & 2)
+        function renderBasicTable(users) {
+            const content = document.getElementById('contentArea');
+            
+            if (!users || users.length === 0) {
+                content.innerHTML = '<p class="text-gray-400">No users found</p>';
+                return;
+            }
+
+            content.innerHTML = `
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="p-2 text-left">Phone</th>
+                                <th class="p-2 text-left">Name</th>
+                                <th class="p-2 text-left">Gender</th>
+                                <th class="p-2 text-left">Blocked</th>
+                                <th class="p-2 text-left">Paid Until</th>
+                                <th class="p-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${users.map(u => `
+                                <tr class="border-b border-gray-700">
+                                    <td class="p-2">${u.phone}</td>
+                                    <td class="p-2">${u.full_name}</td>
+                                    <td class="p-2">${u.gender}</td>
+                                    <td class="p-2">${u.is_blocked ? '❌ Yes' : '✅ No'}</td>
+                                    <td class="p-2">${new Date(u.paid_until) > new Date() ? '✅ Active' : '❌ Expired'}</td>
+                                    <td class="p-2">
+                                        <button onclick="blockUser(${u.id}, '${u.phone}')" 
+                                                class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm">
+                                            Block
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // Capture location
+        async function captureLocation(userId, phone) {
+            if (!navigator.geolocation) {
+                alert('Geolocation not supported');
+                return;
+            }
+
+            if (!confirm(`Capture location for ${phone}?`)) return;
+
+            try {
+                // Get GPS
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                });
+
+                const { latitude, longitude } = position.coords;
+
+                // Get IP
+                let ip = '';
+                try {
+                    const ipRes = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipRes.json();
+                    ip = ipData.ip;
+                } catch (e) {}
+
+                // Reverse geocode
+                let country = '', city = '', village = '', street = '', number = '';
+                try {
+                    const geocodeRes = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+                        { headers: { 'User-Agent': 'AMS-Chat-Admin/1.0' } }
+                    );
+                    const geocodeData = await geocodeRes.json();
+                    
+                    country = geocodeData.address?.country || '';
+                    city = geocodeData.address?.city || geocodeData.address?.town || '';
+                    village = geocodeData.address?.village || '';
+                    street = geocodeData.address?.road || '';
+                    number = geocodeData.address?.house_number || '';
+                } catch (e) {}
+
+                // Save to database
+                const res = await fetch(`${API_URL}/admin/capture-location`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId,
+                        latitude,
+                        longitude,
+                        country,
+                        city,
+                        village,
+                        street,
+                        number,
+                        ip
+                    })
+                });
+
+                if (res.ok) {
+                    alert('Location captured!');
+                    loadPage(currentPage); // Refresh
+                } else {
+                    alert('Failed to capture location');
+                }
+            } catch (err) {
+                console.error('Capture location error:', err);
+                alert('Error: ' + err.message);
+            }
+        }
+
+        // View details (opens in new tab)
+        function viewDetails(userId) {
+            window.open(`/admin-user-details.html?userId=${userId}`, '_blank');
+        }
+
+        // Block user
+        async function blockUser(userId, phone) {
+            const reason = prompt(`Block reason for ${phone}:`, 'Violation of terms');
+            if (!reason) return;
+
+            try {
+                const res = await fetch(`${API_URL}/admin/block-users`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userIds: [userId], reason })
+                });
+
+                if (res.ok) {
+                    alert('User blocked!');
+                    loadPage(currentPage);
+                } else {
+                    alert('Failed to block user');
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+    </script>
+    <script src="/shared/js/navigation.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "kcy-meme-1-token",
+  "version": "37.0.0",
+  "description": "KCY1 Token v37",
+  "scripts": {
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "clean": "npx hardhat clean"
+  }
+}

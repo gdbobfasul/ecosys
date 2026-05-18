@@ -1,0 +1,209 @@
+<!-- Version: 1.0084 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECO-3 Admin - KCY Ecosystem</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .admin-container { max-width: 1200px; margin: 30px auto; padding: 20px; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .admin-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .admin-card h3 { color: var(--primary-color); margin-bottom: 15px; font-size: 1.3em; }
+        .stat-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+        .stat-label { color: #666; }
+        .stat-value { font-weight: 600; color: #333; }
+        .status-ok { color: var(--success-color); }
+        .status-err { color: var(--danger-color); }
+        .config-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .config-table td { padding: 8px 12px; border-bottom: 1px solid #f0f0f0; font-size: 0.9em; }
+        .config-table td:first-child { color: #666; width: 40%; }
+        .config-table td:last-child { font-family: monospace; color: #333; word-break: break-all; }
+        .btn-sm { padding: 8px 16px; font-size: 0.85em; }
+        #api-status, #stripe-status, #log-output { font-family: monospace; font-size: 13px; }
+        #log-output { background: #1a1a2e; color: #00ff88; padding: 15px; border-radius: 8px; 
+            max-height: 300px; overflow-y: auto; white-space: pre-wrap; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1 style="margin-bottom: 10px;">🤖 ECO-3 Admin Panel</h1>
+        <p style="color: #666; margin-bottom: 30px;">Управление на ECO-3 AI Studio • KCY Ecosystem</p>
+
+        <div style="margin-bottom: 20px;">
+            <a href="/shared/admin-status.html" class="btn" style="background: #667eea; color: white; text-decoration: none;">
+                🔧 System Status (всички сървиси)
+            </a>
+        </div>
+
+        <div class="admin-grid">
+            <!-- Service Status -->
+            <div class="admin-card">
+                <h3>📊 Статус на услугите</h3>
+                <div class="stat-row">
+                    <span class="stat-label">ECO-3 API Backend</span>
+                    <span id="api-status" class="stat-value">Проверка...</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Stripe Integration</span>
+                    <span id="stripe-status" class="stat-value">Проверка...</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Anthropic API</span>
+                    <span id="anthropic-status" class="stat-value">Проверка...</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Ecosystem Config</span>
+                    <span id="config-status" class="stat-value">Проверка...</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button class="btn btn-sm" onclick="checkAll()">🔄 Провери отново</button>
+                </div>
+            </div>
+
+            <!-- Ecosystem Config -->
+            <div class="admin-card">
+                <h3>⚙️ Споделени настройки</h3>
+                <table class="config-table" id="config-table">
+                    <tr><td>Base URL</td><td id="cfg-base">—</td></tr>
+                    <tr><td>ECO-3 API</td><td id="cfg-api">—</td></tr>
+                    <tr><td>ECO-3 URL</td><td id="cfg-url">—</td></tr>
+                    <tr><td>Stripe Key</td><td id="cfg-stripe">—</td></tr>
+                    <tr><td>Basic Price</td><td id="cfg-price-basic">—</td></tr>
+                    <tr><td>Standard Price</td><td id="cfg-price-std">—</td></tr>
+                    <tr><td>Premium Price</td><td id="cfg-price-prem">—</td></tr>
+                </table>
+            </div>
+
+            <!-- Usage Stats -->
+            <div class="admin-card">
+                <h3>📈 Употреба (последни 24ч)</h3>
+                <div class="stat-row">
+                    <span class="stat-label">Общо заявки</span>
+                    <span id="stat-total" class="stat-value">—</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Успешни генерации</span>
+                    <span id="stat-success" class="stat-value">—</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Приходи</span>
+                    <span id="stat-revenue" class="stat-value">—</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">API разходи (Anthropic)</span>
+                    <span id="stat-costs" class="stat-value">—</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button class="btn btn-sm" onclick="fetchStats()">📊 Обнови</button>
+                </div>
+            </div>
+
+            <!-- Logs -->
+            <div class="admin-card" style="grid-column: 1 / -1;">
+                <h3>📝 Логове</h3>
+                <div id="log-output">Зареждане на логове...</div>
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-sm" onclick="fetchLogs()">🔄 Обнови</button>
+                    <button class="btn btn-sm btn-danger" onclick="clearLogs()">🗑️ Изчисти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/shared/js/config.js"></script>
+    <script src="/shared/js/navigation.js"></script>
+    <script>
+        const API = (window.KCY_CONFIG ? window.KCY_CONFIG.api.eco3 : '/api/eco3/');
+
+        function setStatus(id, ok, text) {
+            const el = document.getElementById(id);
+            el.textContent = text;
+            el.className = 'stat-value ' + (ok ? 'status-ok' : 'status-err');
+        }
+
+        async function checkAll() {
+            // Config check
+            if (window.KCY_CONFIG) {
+                setStatus('config-status', true, '✓ Заредена');
+                document.getElementById('cfg-base').textContent = KCY_CONFIG.BASE_URL;
+                document.getElementById('cfg-api').textContent = KCY_CONFIG.api.eco3 || '—';
+                document.getElementById('cfg-url').textContent = KCY_CONFIG.urls.eco3 || '—';
+            } else {
+                setStatus('config-status', false, '✗ Не е заредена');
+            }
+
+            // Pricing
+            if (window.CRYPTO_CONFIG && CRYPTO_CONFIG.PRICING.ECO3) {
+                const p = CRYPTO_CONFIG.PRICING.ECO3;
+                document.getElementById('cfg-price-basic').textContent = `€${p.BASIC.EUR}`;
+                document.getElementById('cfg-price-std').textContent = `€${p.STANDARD.EUR}`;
+                document.getElementById('cfg-price-prem').textContent = `€${p.PREMIUM.EUR}`;
+            }
+
+            // API check
+            try {
+                const r = await fetch(API + 'health');
+                const d = await r.json();
+                setStatus('api-status', d.ok, d.ok ? '✓ Работи' : '✗ Грешка');
+            } catch (e) {
+                setStatus('api-status', false, '✗ Не е достъпен');
+            }
+
+            // Stripe check
+            try {
+                const r = await fetch(API + 'stripe-key');
+                const d = await r.json();
+                const hasKey = !!d.publishableKey;
+                setStatus('stripe-status', hasKey, hasKey ? '✓ Конфигуриран' : '✗ Няма ключ');
+                document.getElementById('cfg-stripe').textContent = hasKey ? d.publishableKey.substring(0, 20) + '...' : '—';
+            } catch (e) {
+                setStatus('stripe-status', false, '✗ Не е достъпен');
+            }
+
+            // Anthropic check
+            try {
+                const r = await fetch(API + 'anthropic-status');
+                const d = await r.json();
+                setStatus('anthropic-status', d.configured, d.configured ? '✓ Конфигуриран' : '✗ Няма API ключ');
+            } catch (e) {
+                setStatus('anthropic-status', false, '✗ Не е достъпен');
+            }
+        }
+
+        async function fetchStats() {
+            try {
+                const r = await fetch(API + 'admin/stats');
+                const d = await r.json();
+                document.getElementById('stat-total').textContent = d.totalRequests || 0;
+                document.getElementById('stat-success').textContent = d.successfulGenerations || 0;
+                document.getElementById('stat-revenue').textContent = d.revenue ? `€${d.revenue}` : '€0';
+                document.getElementById('stat-costs').textContent = d.apiCosts ? `$${d.apiCosts}` : '$0';
+            } catch (e) {
+                document.getElementById('stat-total').textContent = 'Сървърът не е достъпен';
+            }
+        }
+
+        async function fetchLogs() {
+            try {
+                const r = await fetch(API + 'admin/logs');
+                const d = await r.json();
+                document.getElementById('log-output').textContent = d.logs || 'Няма логове';
+            } catch (e) {
+                document.getElementById('log-output').textContent = 'ECO-3 API сървърът не е стартиран.\nСтартирай с: cd /var/www/kcy-ecosystem/eco-3 && node server.js\nИли: pm2 start server.js --name kcy-eco3';
+            }
+        }
+
+        async function clearLogs() {
+            if (!confirm('Изчисти всички логове?')) return;
+            try { await fetch(API + 'admin/logs', { method: 'DELETE' }); fetchLogs(); } catch(e) {}
+        }
+
+        // Initial check
+        checkAll();
+        fetchStats();
+        fetchLogs();
+    </script>
+</body>
+</html>

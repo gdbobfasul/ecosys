@@ -1,0 +1,10 @@
+{
+  "name": "kcy-multisig",
+  "version": "1.0087",
+  "description": "KCY SimpleMultiSig wallet",
+  "scripts": {
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "clean": "npx hardhat clean"
+  }
+}

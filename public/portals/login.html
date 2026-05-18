@@ -1,0 +1,75 @@
+<!-- Version: 1.0086 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — KCY Portals</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .auth-wrap { max-width: 440px; margin: 60px auto; padding: 40px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.12); }
+        .auth-wrap h1 { color: var(--primary-color); margin-bottom: 8px; font-size: 1.8em; }
+        .auth-wrap p.lead { color: #666; margin-bottom: 24px; }
+        .auth-wrap label { display: block; margin: 14px 0 6px; font-weight: 600; color: #333; }
+        .auth-wrap input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1em; }
+        .auth-wrap .btn-primary { width: 100%; margin-top: 22px; padding: 14px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-size: 1.05em; cursor: pointer; }
+        .auth-wrap .btn-primary:hover { background: var(--secondary-color); }
+        .auth-wrap .btn-register-big { display: block; margin-top: 28px; padding: 18px; background: var(--success-color); color: #fff; text-align: center; border-radius: 10px; font-size: 1.1em; font-weight: 700; text-decoration: none; }
+        .auth-wrap .btn-register-big:hover { opacity: .9; }
+        .auth-wrap .msg { margin-top: 14px; padding: 10px; border-radius: 8px; display: none; }
+        .auth-wrap .msg.err { background: #fee; color: #c00; display: block; }
+        .auth-wrap .msg.ok { background: #efe; color: #070; display: block; }
+        .back { display: inline-block; margin-top: 20px; color: #888; text-decoration: none; font-size: .9em; }
+    </style>
+</head>
+<body>
+    <div class="auth-wrap">
+        <h1>🔑 Вход</h1>
+        <p class="lead">Единен login за портала за игри и портала за услуги.</p>
+
+        <label for="username">Потребител</label>
+        <input id="username" type="text" autocomplete="username" maxlength="32">
+
+        <label for="password">Парола</label>
+        <input id="password" type="password" autocomplete="current-password">
+
+        <button id="btn-login" class="btn-primary">Вход</button>
+
+        <div id="msg" class="msg"></div>
+
+        <a href="./register.html" class="btn-register-big">📝 Нямам акаунт — Регистрация</a>
+
+        <a class="back" href="/">← обратно към KCY Ecosystem</a>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(location.search);
+        const nextUrl = params.get('next') || '/portals/games/';
+        const msg = document.getElementById('msg');
+
+        function showMsg(text, kind) { msg.textContent = text; msg.className = 'msg ' + (kind || 'err'); }
+
+        async function doLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            if (!username || !password) { showMsg('Попълни потребител и парола.'); return; }
+            try {
+                const r = await fetch('/api/portals/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await r.json();
+                if (!r.ok) { showMsg(data.message || 'Грешка при вход.'); return; }
+                showMsg('Успешен вход — пренасочване…', 'ok');
+                setTimeout(() => { location.href = nextUrl; }, 400);
+            } catch (e) {
+                showMsg('Мрежова грешка: ' + e.message);
+            }
+        }
+
+        document.getElementById('btn-login').addEventListener('click', doLogin);
+        document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    </script>
+</body>
+</html>

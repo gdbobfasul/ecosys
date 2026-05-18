@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "AMS Chat",
+    "slug": "ams-chat",
+    "version": "2.0.0",
+    "orientation": "portrait",
+    "icon": "../../public/assets/mobile-chat/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "../../public/assets/mobile-chat/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#3B82F6"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.amschat.app",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "AMS Chat needs camera access to send photos.",
+        "NSMicrophoneUsageDescription": "AMS Chat needs microphone access for voice messages.",
+        "NSPhotoLibraryUsageDescription": "AMS Chat needs photo library access to send images."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "../../public/assets/mobile-chat/adaptive-icon.png",
+        "backgroundColor": "#3B82F6"
+      },
+      "package": "com.amschat.app",
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "../../public/assets/mobile-chat/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34,
+            "buildToolsVersion": "34.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "13.4"
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    }
+  }
+}

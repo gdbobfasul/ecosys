@@ -1,0 +1,70 @@
+<!-- Version: 1.0086 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🏃 Hero Run</title>
+<link rel="stylesheet" href="/shared/css/common.css">
+<style>
+body{background:#1a1a2a;color:#fff;margin:0;font-family:system-ui}
+.wrap{max-width:560px;margin:20px auto;text-align:center}
+canvas{background:linear-gradient(180deg,#ff9a56,#ffc371);border-radius:12px;display:block;margin:0 auto;max-width:100%}
+.hud{padding:14px;display:flex;justify-content:space-between;font-size:1.1em}
+.btn{display:inline-block;margin:10px 6px;padding:10px 18px;background:#fff;color:#1a1a2a;border-radius:8px;text-decoration:none;border:none;cursor:pointer;font-weight:600}
+#msg{margin-top:10px;min-height:28px}
+</style></head>
+<body>
+<div class="wrap">
+<div class="hud"><span>🏃 Hero Run</span><span>Точки: <b id="pts">0</b> | Ниво: <b id="lvl">1</b></span></div>
+<canvas id="cv" width="500" height="400"></canvas>
+<div id="msg">Space/клик = скачай. Геройът бяга и трябва да прескача препятствията — силата расте с нивото!</div>
+<a class="btn" href="/portals/games/">← Игри</a>
+<button class="btn" id="r">🔁 Рестарт</button>
+</div>
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const GROUND=320;
+let hero,obs,points,level,running,tick;
+function reset(){hero={x:80,y:GROUND,vy:0};obs=[];points=0;level=1;tick=0;running=true;document.getElementById('pts').textContent=0;document.getElementById('lvl').textContent=1;document.getElementById('msg').textContent='Бягай!';loop();}
+function jump(){if(hero.y>=GROUND-1)hero.vy=-14-level*.3;}
+document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();jump();}});
+cv.addEventListener('click',jump);
+document.getElementById('r').onclick=reset;
+function spawn(){obs.push({x:520,w:20+Math.random()*30,h:30+Math.random()*30,s:5+level*.5});}
+function loop(){
+  if(!running)return;tick++;
+  if(tick%(Math.max(40,90-level*5))===0)spawn();
+  ctx.clearRect(0,0,500,400);
+  // земя
+  ctx.fillStyle='#633';ctx.fillRect(0,GROUND+15,500,100);
+  // слънце
+  ctx.fillStyle='#ff4';ctx.beginPath();ctx.arc(430,60,35,0,7);ctx.fill();
+  // hero физика
+  hero.vy+=.7;hero.y+=hero.vy;
+  if(hero.y>GROUND){hero.y=GROUND;hero.vy=0;}
+  // обявайки
+  ctx.fillStyle='#553';
+  for(const o of obs){
+    o.x-=o.s;
+    ctx.fillRect(o.x,GROUND+15-o.h,o.w,o.h);
+    if(hero.x+15>o.x&&hero.x-15<o.x+o.w&&hero.y+20>GROUND+15-o.h){
+      running=false;document.getElementById('msg').innerHTML=`💥 Спънат! Точки: <b>${points}</b>`;submitScore();return;
+    }
+  }
+  for(let i=obs.length-1;i>=0;i--)if(obs[i].x+obs[i].w<0){obs.splice(i,1);points++;document.getElementById('pts').textContent=points;if(points%8===0){level++;document.getElementById('lvl').textContent=level;document.getElementById('msg').innerHTML=`🎉 Ниво ${level}! Точки: <b>${points}</b>`;}}
+  // герой със "силови способности" - светещ ореол
+  ctx.save();ctx.translate(hero.x,hero.y);
+  ctx.fillStyle='rgba(255,255,100,'+(.2+.15*Math.sin(tick*.2))+')';ctx.beginPath();ctx.arc(0,-5,30,0,7);ctx.fill();
+  // тяло
+  ctx.fillStyle='#fcd';ctx.beginPath();ctx.arc(0,-25,10,0,7);ctx.fill();
+  ctx.fillStyle='#e22';ctx.fillRect(-10,-15,20,25);
+  ctx.fillStyle='#33f';ctx.fillRect(-10,10,20,12);
+  // ръце/крака - lauflike
+  const swing=Math.sin(tick*.4)*8;
+  ctx.fillStyle='#fcd';ctx.fillRect(-14,-5+swing,4,10);ctx.fillRect(10,-5-swing,4,10);
+  ctx.restore();
+  requestAnimationFrame(loop);
+}
+async function submitScore(){try{await fetch('/api/portals/games/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game_slug:'hero-run',score:points,level})});}catch(e){}}
+reset();
+</script></body></html>

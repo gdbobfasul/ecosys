@@ -1,0 +1,658 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление на потребители - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .user-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .user-id {
+            background: #f5f5f5;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .static-badge {
+            background: #ff9800;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .info-item {
+            font-size: 14px;
+        }
+        
+        .info-label {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .user-photo {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn-edit {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            flex: 1;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #f5f5f5;
+            color: #333;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .locked-field {
+            background: #fff3cd !important;
+            border-color: #ffc107 !important;
+        }
+        
+        .locked-info {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+    </style>
+    <link rel="stylesheet" href="/shared/css/common.css">
+</head>
+<body>
+    <a href="admin.html" class="back-btn">← Назад към админ панел</a>
+    
+    <div class="header">
+        <h1>👥 Управление на потребители</h1>
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('static')">Статични обекти</button>
+            <button class="tab" onclick="switchTab('all')">Всички потребители</button>
+        </div>
+    </div>
+    
+    <div class="search-box">
+        <input type="text" class="search-input" id="searchInput" placeholder="Търси по име, телефон, offerings...">
+    </div>
+    
+    <div id="message"></div>
+    <div id="usersContainer"></div>
+    
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">✏️ Редактиране на потребител</div>
+            
+            <div id="editForm">
+                <div class="locked-info" id="lockedInfo" style="display:none;">
+                    🔒 <strong>Статичен обект:</strong> Някои полета не могат да се променят от собственика
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">ID</label>
+                    <input type="text" class="form-input" id="editId" disabled>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Телефон (Login)</label>
+                    <input type="text" class="form-input" id="editPhone">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Парола (остави празно за да не се променя)</label>
+                    <input type="password" class="form-input" id="editPassword" placeholder="Нова парола">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Име</label>
+                    <input type="text" class="form-input" id="editName">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Offerings</label>
+                    <input type="text" class="form-input" id="editOfferings">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Работно време</label>
+                    <input type="text" class="form-input" id="editWorkingHours" maxlength="50">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Latitude (локация)</label>
+                    <input type="text" class="form-input" id="editLatitude">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Longitude (локация)</label>
+                    <input type="text" class="form-input" id="editLongitude">
+                </div>
+                
+                <div class="modal-buttons">
+                    <button class="btn btn-primary" onclick="saveUser()">💾 Запази</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Отказ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+        let currentTab = 'static';
+        let allUsers = [];
+        let currentEditUserId = null;
+        
+        async function loadUsers() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            document.getElementById('usersContainer').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/users`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load users');
+                }
+                
+                const data = await response.json();
+                allUsers = data.users;
+                
+                displayUsers();
+            } catch (error) {
+                console.error('Error loading users:', error);
+                document.getElementById('usersContainer').innerHTML = `
+                    <div class="message error">Грешка при зареждане на потребителите</div>
+                `;
+            }
+        }
+        
+        function displayUsers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filtered = allUsers.filter(user => {
+                if (currentTab === 'static' && !user.is_static_object) return false;
+                
+                if (searchTerm) {
+                    return (
+                        user.full_name.toLowerCase().includes(searchTerm) ||
+                        user.phone.toLowerCase().includes(searchTerm) ||
+                        (user.offerings && user.offerings.toLowerCase().includes(searchTerm))
+                    );
+                }
+                
+                return true;
+            });
+            
+            if (filtered.length === 0) {
+                document.getElementById('usersContainer').innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 20px;">🔍</div>
+                        <h2>Няма намерени потребители</h2>
+                    </div>
+                `;
+                return;
+            }
+            
+            const html = filtered.map(user => `
+                <div class="user-card">
+                    <div class="user-header">
+                        <div class="user-id">ID: ${user.id}</div>
+                        ${user.is_static_object ? '<div class="static-badge">Статичен обект</div>' : ''}
+                    </div>
+                    
+                    ${user.profile_photo_url ? `
+                        <img src="${user.profile_photo_url}" class="user-photo" alt="Photo">
+                    ` : ''}
+                    
+                    <div class="user-info">
+                        <div class="info-item">
+                            <div class="info-label">Име</div>
+                            <div class="info-value">${escapeHtml(user.full_name)}</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Телефон</div>
+                            <div class="info-value">${escapeHtml(user.phone)}</div>
+                        </div>
+                        
+                        ${user.offerings ? `
+                            <div class="info-item">
+                                <div class="info-label">Offerings</div>
+                                <div class="info-value">${escapeHtml(user.offerings)}</div>
+                            </div>
+                        ` : ''}
+                        
+                        ${user.working_hours ? `
+                            <div class="info-item">
+                                <div class="info-label">Работно време</div>
+                                <div class="info-value">${escapeHtml(user.working_hours)}</div>
+                            </div>
+                        ` : ''}
+                        
+                        ${user.latitude && user.longitude ? `
+                            <div class="info-item">
+                                <div class="info-label">Локация</div>
+                                <div class="info-value">${user.latitude.toFixed(6)}, ${user.longitude.toFixed(6)}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="buttons">
+                        <button class="btn btn-edit" onclick="editUser(${user.id})">
+                            ✏️ Редактирай
+                        </button>
+                        <button class="btn btn-delete" onclick="deleteUser(${user.id}, '${escapeHtml(user.full_name)}')">
+                            🗑️ Изтрий
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('usersContainer').innerHTML = html;
+        }
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            displayUsers();
+        }
+        
+        function editUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            currentEditUserId = userId;
+            
+            document.getElementById('editId').value = user.id;
+            document.getElementById('editPhone').value = user.phone;
+            document.getElementById('editPassword').value = '';
+            document.getElementById('editName').value = user.full_name;
+            document.getElementById('editOfferings').value = user.offerings || '';
+            document.getElementById('editWorkingHours').value = user.working_hours || '';
+            document.getElementById('editLatitude').value = user.latitude || '';
+            document.getElementById('editLongitude').value = user.longitude || '';
+            
+            // If static object, mark locked fields
+            if (user.is_static_object) {
+                document.getElementById('lockedInfo').style.display = 'block';
+                document.getElementById('editName').classList.add('locked-field');
+                document.getElementById('editLatitude').classList.add('locked-field');
+                document.getElementById('editLongitude').classList.add('locked-field');
+            } else {
+                document.getElementById('lockedInfo').style.display = 'none';
+                document.getElementById('editName').classList.remove('locked-field');
+                document.getElementById('editLatitude').classList.remove('locked-field');
+                document.getElementById('editLongitude').classList.remove('locked-field');
+            }
+            
+            document.getElementById('editModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('active');
+            currentEditUserId = null;
+        }
+        
+        async function saveUser() {
+            if (!currentEditUserId) return;
+            
+            const data = {
+                phone: document.getElementById('editPhone').value,
+                full_name: document.getElementById('editName').value,
+                offerings: document.getElementById('editOfferings').value,
+                working_hours: document.getElementById('editWorkingHours').value,
+                latitude: parseFloat(document.getElementById('editLatitude').value) || null,
+                longitude: parseFloat(document.getElementById('editLongitude').value) || null
+            };
+            
+            const password = document.getElementById('editPassword').value;
+            if (password) {
+                data.password = password;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/admin/users/${currentEditUserId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    showMessage('success', '✅ Потребителят е обновен успешно');
+                    closeModal();
+                    loadUsers();
+                } else {
+                    const error = await response.json();
+                    showMessage('error', error.error || 'Грешка при запазване');
+                }
+            } catch (error) {
+                console.error('Error saving user:', error);
+                showMessage('error', 'Грешка при запазване');
+            }
+        }
+        
+        async function deleteUser(userId, userName) {
+            if (!confirm(`Сигурен ли си, че искаш да изтриеш:\n\n${userName}\n\nТова действие е необратимо!`)) {
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/admin/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    showMessage('success', '✅ Потребителят е изтрит успешно');
+                    loadUsers();
+                } else {
+                    const error = await response.json();
+                    showMessage('error', error.error || 'Грешка при триене');
+                }
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                showMessage('error', 'Грешка при триене');
+            }
+        }
+        
+        function showMessage(type, text) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 5000);
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', displayUsers);
+        
+        // Load users on page load
+        loadUsers();
+    </script>
+    <script src="/shared/js/navigation.js"></script>
+</body>
+</html>

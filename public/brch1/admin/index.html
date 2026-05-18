@@ -1,0 +1,879 @@
+<!-- Version: 1.0087 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRCH1 Admin — KCY Ecosystem</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <link rel="icon" type="image/svg+xml" href="/brch1/assets/brch1-icon.svg">
+    <script src="https://cdn.jsdelivr.net/npm/web3@4.5.0/dist/web3.min.js"></script>
+    <style>
+        body { background: linear-gradient(135deg, #b8860b 0%, #2a1a00 100%); min-height: 100vh; padding: 20px; }
+        .wrap { max-width: 1400px; margin: 0 auto; }
+        .topbar { background: white; border-radius: 14px; padding: 24px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.2); }
+        .topbar h1 { color: #b8860b; display: flex; align-items: center; gap: 12px; font-size: 1.8em; }
+        .topbar h1 img { width: 40px; height: 40px; }
+        .topbar .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+        .topbar input[type="text"] { flex: 1; min-width: 280px; padding: 10px 14px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Courier New', monospace; font-size: .95em; }
+        .topbar input[type="text"]:focus { outline: none; border-color: #b8860b; }
+        .topbar .net-pill { padding: 6px 12px; background: #f8f9fa; border-radius: 20px; font-size: .9em; color: #555; }
+        .topbar .net-pill.testnet { background: #fff4d4; color: #8a6508; }
+        .topbar .net-pill.mainnet { background: #d4edda; color: #155724; }
+        .topbar .net-pill.error { background: #f8d7da; color: #721c24; }
+        .btn-gold { background: linear-gradient(135deg, #e8a317, #b8860b); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: transform .15s; }
+        .btn-gold:hover { transform: translateY(-1px); }
+        .btn-gold:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; }
+        .panel { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,.15); }
+        .panel h2 { color: #b8860b; font-size: 1.2em; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #f7c948; display: flex; align-items: center; gap: 8px; }
+        .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: .92em; }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-row .label { color: #666; }
+        .stat-row .value { font-family: 'Courier New', monospace; color: #222; font-weight: 600; }
+        .stat-row .value.addr { font-size: .82em; word-break: break-all; max-width: 60%; text-align: right; }
+        .stat-row .value.green { color: #28a745; }
+        .stat-row .value.red { color: #dc3545; }
+        .form-row { margin: 10px 0; }
+        .form-row label { display: block; font-size: .85em; color: #666; margin-bottom: 4px; }
+        .form-row input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Courier New', monospace; font-size: .92em; }
+        .form-row input:focus { outline: none; border-color: #b8860b; }
+        .btn-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .btn-sm { padding: 8px 14px; border-radius: 6px; border: none; cursor: pointer; font-size: .88em; font-weight: 600; }
+        .btn-primary { background: #b8860b; color: white; }
+        .btn-primary:hover { background: #8a6508; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary:hover { background: #545b62; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-warn { background: #fd7e14; color: white; }
+        .btn-warn:hover { background: #e8590c; }
+        .btn-sm:disabled { opacity: .5; cursor: not-allowed; }
+        .console-out { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: .82em; min-height: 80px; max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+        .console-out .ok { color: #4ec9b0; }
+        .console-out .err { color: #f48771; }
+        .console-out .warn { color: #dcdcaa; }
+        .chart-wrap { background: #fafaf5; border-radius: 10px; padding: 16px; }
+        .chart-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: .85em; color: #666; }
+        .chart-meta .latest { font-weight: 600; color: #222; }
+        .empty-state { text-align: center; padding: 30px 10px; color: #999; }
+        .empty-state p { margin-bottom: 12px; }
+        .danger-zone { border: 2px solid #fff4d4; }
+        .danger-zone h2 { color: #fd7e14; border-bottom-color: #fd7e14; }
+        .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: .75em; font-weight: 600; margin-left: 6px; }
+        .pill-perm { background: #e3f2fd; color: #1565c0; }
+        .pill-owner { background: #fff4d4; color: #8a6508; }
+        .pill-setup { background: #ffe0e0; color: #c82333; }
+        .full-width { grid-column: 1 / -1; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    <!-- ========== TOP BAR ========== -->
+    <div class="topbar">
+        <h1>
+            <img src="/brch1/assets/brch1-icon.svg" alt="BRCH1">
+            BRCH1 Admin Panel
+        </h1>
+        <div class="row">
+            <input type="text" id="tokenAddr" placeholder="0x... (token адрес)">
+            <span class="net-pill" id="netPill">Не свързан</span>
+            <button class="btn-gold" id="connectBtn" onclick="connectWallet()">🔗 Свържи MetaMask</button>
+            <button class="btn-gold" id="refreshBtn" onclick="refreshAll()" disabled>🔄 Refresh</button>
+        </div>
+        <div class="row" style="font-size: .85em; color: #666;">
+            <span>Account: <span id="accountDisplay" style="font-family: monospace;">—</span></span>
+            <span>Owner: <span id="ownerDisplay" style="font-family: monospace;">—</span></span>
+            <span id="ownerWarning" style="color: #dc3545; font-weight: 600; display: none;">⚠ Не си owner — owner функциите ще revert-нат!</span>
+        </div>
+    </div>
+
+    <div class="grid">
+
+        <!-- ========== STATS ========== -->
+        <div class="panel">
+            <h2>📊 Token Stats</h2>
+            <div class="stat-row"><span class="label">Token Address</span><span class="value addr" id="s-addr">—</span></div>
+            <div class="stat-row"><span class="label">Pair Address</span><span class="value addr" id="s-pair">—</span></div>
+            <div class="stat-row"><span class="label">Owner</span><span class="value addr" id="s-owner">—</span></div>
+            <div class="stat-row"><span class="label">Creator wallet</span><span class="value addr" id="s-creator">—</span></div>
+            <div class="stat-row"><span class="label">Total supply</span><span class="value" id="s-supply">—</span></div>
+            <div class="stat-row"><span class="label">Max supply</span><span class="value">1,000,000 BRCH1</span></div>
+            <div class="stat-row"><span class="label">Launched</span><span class="value" id="s-launched">—</span></div>
+            <div class="stat-row"><span class="label">Trade cooldown</span><span class="value" id="s-cooldown">—</span></div>
+        </div>
+
+        <!-- ========== PRICE & HOLDINGS ========== -->
+        <div class="panel">
+            <h2>💰 Price & Holdings</h2>
+            <div class="stat-row"><span class="label">Текуща цена (BNB)</span><span class="value" id="p-price-bnb">—</span></div>
+            <div class="stat-row"><span class="label">Текуща цена (USD)</span><span class="value" id="p-price-usd">—</span></div>
+            <div class="stat-row"><span class="label">Pool: BRCH1</span><span class="value" id="p-pool-brch">—</span></div>
+            <div class="stat-row"><span class="label">Pool: BNB</span><span class="value" id="p-pool-bnb">—</span></div>
+            <div class="stat-row"><span class="label">Liquidity (USD)</span><span class="value" id="p-liq-usd">—</span></div>
+            <div class="stat-row"><span class="label">Купени (out of pool)</span><span class="value green" id="p-bought">—</span></div>
+            <div class="stat-row"><span class="label">Creator balance</span><span class="value" id="p-creator-bal">—</span></div>
+            <div class="stat-row"><span class="label">In circulation</span><span class="value" id="p-circ">—</span></div>
+        </div>
+
+        <!-- ========== CREATOR MINT ========== -->
+        <div class="panel">
+            <h2>🌱 Creator Mint <span class="pill pill-perm">permissionless</span></h2>
+            <div class="stat-row"><span class="label">Claimable now</span><span class="value green" id="m-claimable">—</span></div>
+            <div class="stat-row"><span class="label">Minted to date</span><span class="value" id="m-minted">—</span></div>
+            <div class="stat-row"><span class="label">Lifetime cap remaining</span><span class="value" id="m-remaining">—</span></div>
+            <div class="stat-row"><span class="label">Rate</span><span class="value">2,000 / 30 дни</span></div>
+            <div class="btn-row">
+                <button class="btn-sm btn-primary" onclick="callClaimCreatorMint()">📥 claimCreatorMint()</button>
+            </div>
+            <div style="font-size: .8em; color: #999; margin-top: 8px;">Всеки може да го извика; tokens винаги отиват в creator wallet.</div>
+        </div>
+
+        <!-- ========== HALVING ========== -->
+        <div class="panel">
+            <h2>🔥 Annual Halving <span class="pill pill-perm">permissionless</span></h2>
+            <div class="stat-row"><span class="label">Може ли да се извика?</span><span class="value" id="h-can">—</span></div>
+            <div class="stat-row"><span class="label">Last halve</span><span class="value" id="h-last">—</span></div>
+            <div class="stat-row"><span class="label">Next halve</span><span class="value" id="h-next">—</span></div>
+            <div class="btn-row">
+                <button class="btn-sm btn-warn" onclick="callHalveAnnually()">🔥 halveAnnually()</button>
+            </div>
+            <div style="font-size: .8em; color: #999; margin-top: 8px;">Burn-ва 50% от pool. Цената се удвоява. Веднъж на 365 дни.</div>
+        </div>
+
+        <!-- ========== MINT TO POOL ========== -->
+        <div class="panel">
+            <h2>💧 Mint to Pool <span class="pill pill-owner">owner only</span></h2>
+            <p style="font-size: .85em; color: #666; margin-bottom: 12px;">Mint нови tokens в LP pair. Sync → цената пада.</p>
+            <div class="form-row">
+                <label>Количество (BRCH1)</label>
+                <input type="number" id="mintToPoolAmount" placeholder="1000" step="100" min="1">
+            </div>
+            <div class="btn-row">
+                <button class="btn-sm btn-primary" onclick="callMintToPool()">💧 mintToPool()</button>
+                <button class="btn-sm btn-secondary" onclick="setMintToPoolAmount(1000)">+1k</button>
+                <button class="btn-sm btn-secondary" onclick="setMintToPoolAmount(10000)">+10k</button>
+            </div>
+        </div>
+
+        <!-- ========== BURN ========== -->
+        <div class="panel">
+            <h2>🔥 Burn from Creator <span class="pill pill-owner">owner only</span></h2>
+            <p style="font-size: .85em; color: #666; margin-bottom: 12px;">Burn от creator wallet (deflationary signal).</p>
+            <div class="form-row">
+                <label>Количество (BRCH1)</label>
+                <input type="number" id="burnAmount" placeholder="500" step="100" min="1">
+            </div>
+            <div class="btn-row">
+                <button class="btn-sm btn-danger" onclick="callBurnFromCreator()">🔥 burnFromCreator()</button>
+            </div>
+        </div>
+
+        <!-- ========== EXEMPT FLAGS ========== -->
+        <div class="panel">
+            <h2>⚙️ Exempt Flags <span class="pill pill-owner">owner only</span></h2>
+            <div class="form-row">
+                <label>Адрес</label>
+                <input type="text" id="exemptAddr" placeholder="0x...">
+            </div>
+            <div class="form-row">
+                <label>Tax exempt</label>
+                <select id="taxExemptVal" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
+                    <option value="true">true (не плаща tax)</option>
+                    <option value="false">false (плаща tax)</option>
+                </select>
+            </div>
+            <div class="btn-row">
+                <button class="btn-sm btn-primary" onclick="callSetTaxExempt()">setTaxExempt()</button>
+                <button class="btn-sm btn-secondary" onclick="checkExempt()">🔍 check</button>
+            </div>
+            <div class="form-row" style="margin-top: 14px;">
+                <label>Limit exempt</label>
+                <select id="limitExemptVal" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
+                    <option value="true">true (без maxTx/maxWallet)</option>
+                    <option value="false">false</option>
+                </select>
+            </div>
+            <div class="btn-row">
+                <button class="btn-sm btn-primary" onclick="callSetLimitExempt()">setLimitExempt()</button>
+            </div>
+        </div>
+
+        <!-- ========== COOLDOWN ========== -->
+        <div class="panel">
+            <h2>⏱ Trade Cooldown <span class="pill pill-owner">owner only</span></h2>
+            <p style="font-size: .85em; color: #666; margin-bottom: 12px;">Секунди между buy от същ wallet (max 300).</p>
+            <div class="form-row">
+                <label>Секунди</label>
+                <input type="number" id="cooldownVal" placeholder="30" min="0" max="300">
+            </div>
+            <div class="btn-row">
+                <button class="btn-sm btn-primary" onclick="callSetCooldown()">setCooldown()</button>
+            </div>
+        </div>
+
+        <!-- ========== ONE-TIME SETUP ========== -->
+        <div class="panel danger-zone">
+            <h2>⚠ One-time Setup <span class="pill pill-setup">само ако още не е</span></h2>
+            <p style="font-size: .85em; color: #666; margin-bottom: 12px;">Тези функции работят само веднъж. След deploy script-а обикновено вече са извикани.</p>
+            <div class="form-row">
+                <label>setPancakePair (pair address)</label>
+                <input type="text" id="setPairVal" placeholder="0x...">
+            </div>
+            <div class="btn-row">
+                <button class="btn-sm btn-warn" onclick="callSetPancakePair()">setPancakePair()</button>
+            </div>
+            <div class="form-row" style="margin-top: 14px;">
+                <label>setLaunched (anti-snipe секунди, max 3600)</label>
+                <input type="number" id="setLaunchedVal" placeholder="90" min="0" max="3600">
+            </div>
+            <div class="btn-row">
+                <button class="btn-sm btn-warn" onclick="callSetLaunched()">setLaunched()</button>
+            </div>
+        </div>
+
+        <!-- ========== PRICE CHART ========== -->
+        <div class="panel full-width">
+            <h2>📈 Цена във времето (последна година)</h2>
+            <div class="chart-meta">
+                <span>Snapshots: <span id="snapCount">0</span> &middot; Период: <span id="snapPeriod">—</span></span>
+                <span class="latest">Latest: <span id="snapLatest">—</span></span>
+            </div>
+            <div class="chart-wrap">
+                <div id="chartContainer" style="position: relative; width: 100%; height: 280px;">
+                    <svg id="priceChart" width="100%" height="100%" viewBox="0 0 1200 280" preserveAspectRatio="none"></svg>
+                </div>
+            </div>
+            <div class="btn-row" style="margin-top: 12px;">
+                <button class="btn-sm btn-primary" onclick="takeSnapshot()">📸 Snapshot сега</button>
+                <button class="btn-sm btn-secondary" onclick="exportSnapshots()">⬇ Export JSON</button>
+                <button class="btn-sm btn-secondary" onclick="document.getElementById('importFile').click()">⬆ Import JSON</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importSnapshots(this.files[0])">
+                <button class="btn-sm btn-danger" onclick="clearSnapshots()">🗑 Изчисти</button>
+            </div>
+            <div style="font-size: .8em; color: #999; margin-top: 10px;">
+                💡 Historia се натрупва когато си отворил admin страницата (auto-snapshot веднъж дневно). За пълна непрекъсната история — препоръчвам server-side cron, който всеки ден чете <code>getReserves()</code> и пише в DB. Export-ваш JSON и import-ваш на друга машина за прехвърляне.
+            </div>
+        </div>
+
+        <!-- ========== CONSOLE ========== -->
+        <div class="panel full-width">
+            <h2>💻 Console Output</h2>
+            <div class="console-out" id="console">Готов. Свържи MetaMask и въведи token адрес.\n</div>
+            <div class="btn-row" style="margin-top: 8px;">
+                <button class="btn-sm btn-secondary" onclick="clearConsole()">Изчисти</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="abi.js"></script>
+<script src="/shared/js/config.js"></script>
+<script src="/shared/js/navigation.js"></script>
+<script>
+'use strict';
+
+// ============================================================
+// State
+// ============================================================
+let web3 = null;
+let account = null;
+let token = null;
+let pair = null;
+let tokenAddr = null;
+let pairAddr = null;
+let pairWbnbIsToken0 = null;
+let chainId = null;
+let bnbUsdPrice = null;
+let ownerAddr = null;
+
+const STORAGE_KEY_ADDR = 'brch1-token-addr';
+const STORAGE_KEY_SNAPS = 'brch1-price-snapshots';
+
+// ============================================================
+// Helpers
+// ============================================================
+function log(msg, cls) {
+    const el = document.getElementById('console');
+    const time = new Date().toTimeString().slice(0, 8);
+    const span = cls ? `<span class="${cls}">${msg}</span>` : msg;
+    el.innerHTML += `[${time}] ${span}\n`;
+    el.scrollTop = el.scrollHeight;
+}
+function logOk(m)   { log(m, 'ok'); }
+function logErr(m)  { log(m, 'err'); }
+function logWarn(m) { log(m, 'warn'); }
+function clearConsole() { document.getElementById('console').innerHTML = ''; }
+
+function fmtBRCH(weiStr) {
+    const n = Number(BigInt(weiStr) / 10n**14n) / 10000;
+    return n.toLocaleString('en-US', { maximumFractionDigits: 4 }) + ' BRCH1';
+}
+function fmtBNB(weiStr) {
+    const n = Number(BigInt(weiStr) / 10n**12n) / 1000000;
+    return n.toLocaleString('en-US', { maximumFractionDigits: 6 }) + ' BNB';
+}
+function shortAddr(a) {
+    if (!a) return '—';
+    return a.slice(0, 6) + '...' + a.slice(-4);
+}
+function fmtDate(ts) {
+    if (!ts || ts === 0) return '—';
+    return new Date(ts * 1000).toLocaleString('bg-BG');
+}
+
+async function fetchBnbPrice() {
+    try {
+        const r = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT', { signal: AbortSignal.timeout(5000) });
+        const j = await r.json();
+        bnbUsdPrice = parseFloat(j.price);
+        return bnbUsdPrice;
+    } catch (e) {
+        return null;
+    }
+}
+
+// ============================================================
+// Connect / setup
+// ============================================================
+async function connectWallet() {
+    if (typeof window.ethereum === 'undefined') {
+        alert('MetaMask не е намерен. Инсталирай го от metamask.io');
+        return;
+    }
+    try {
+        web3 = new Web3(window.ethereum);
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        account = accounts[0];
+        chainId = await web3.eth.getChainId();
+        chainId = Number(chainId);
+
+        document.getElementById('accountDisplay').textContent = shortAddr(account);
+
+        const pill = document.getElementById('netPill');
+        if (chainId === 56) {
+            pill.textContent = 'BSC Mainnet ✓';
+            pill.className = 'net-pill mainnet';
+        } else if (chainId === 97) {
+            pill.textContent = 'BSC Testnet ✓';
+            pill.className = 'net-pill testnet';
+        } else {
+            pill.textContent = `⚠ Грешна мрежа (${chainId})`;
+            pill.className = 'net-pill error';
+        }
+
+        logOk(`✓ Свързан: ${shortAddr(account)} (chainId ${chainId})`);
+        document.getElementById('refreshBtn').disabled = false;
+
+        // Auto-load saved address
+        const saved = localStorage.getItem(STORAGE_KEY_ADDR);
+        if (saved) {
+            document.getElementById('tokenAddr').value = saved;
+            await refreshAll();
+        }
+
+        window.ethereum.on('accountsChanged', () => location.reload());
+        window.ethereum.on('chainChanged', () => location.reload());
+    } catch (err) {
+        logErr(`✗ Connect failed: ${err.message}`);
+    }
+}
+
+async function setupContracts(addr) {
+    if (!web3) { alert('Connect MetaMask first!'); return false; }
+    if (!web3.utils.isAddress(addr)) { logErr(`✗ Невалиден адрес: ${addr}`); return false; }
+
+    token = new web3.eth.Contract(window.BRCH1_ABI, addr);
+    tokenAddr = addr;
+    localStorage.setItem(STORAGE_KEY_ADDR, addr);
+
+    try {
+        pairAddr = await token.methods.pancakePair().call();
+        if (pairAddr && pairAddr !== '0x0000000000000000000000000000000000000000') {
+            pair = new web3.eth.Contract(window.PANCAKE_PAIR_ABI, pairAddr);
+            // determine which side is WBNB
+            const t0 = (await pair.methods.token0().call()).toLowerCase();
+            pairWbnbIsToken0 = (t0 !== addr.toLowerCase());
+        } else {
+            pair = null;
+            pairAddr = null;
+        }
+        return true;
+    } catch (err) {
+        logErr(`✗ Setup failed: ${err.message}`);
+        return false;
+    }
+}
+
+// ============================================================
+// Refresh all data
+// ============================================================
+async function refreshAll() {
+    const addr = document.getElementById('tokenAddr').value.trim();
+    if (!addr) { logWarn('⚠ Въведи token адрес'); return; }
+    if (!web3) { logErr('✗ Не си свързан'); return; }
+
+    log(`→ Refresh: ${addr}`);
+    const ok = await setupContracts(addr);
+    if (!ok) return;
+
+    // Fetch BNB price in parallel
+    fetchBnbPrice();
+
+    try {
+        await Promise.all([
+            loadTokenStats(),
+            loadPriceAndHoldings(),
+            loadCreatorMint(),
+            loadHalveStatus(),
+        ]);
+        await maybeAutoSnapshot();
+        renderChart();
+        logOk('✓ Refresh complete');
+    } catch (err) {
+        logErr(`✗ Refresh failed: ${err.message}`);
+    }
+}
+
+async function loadTokenStats() {
+    const [ownerR, creatorR, supply, launched, cooldown] = await Promise.all([
+        token.methods.owner().call(),
+        token.methods.creatorWallet().call(),
+        token.methods.totalSupply().call(),
+        token.methods.launched().call(),
+        token.methods.tradeCooldown().call(),
+    ]);
+    ownerAddr = ownerR;
+
+    document.getElementById('s-addr').textContent = shortAddr(tokenAddr);
+    document.getElementById('s-addr').title = tokenAddr;
+    document.getElementById('s-pair').textContent = pairAddr ? shortAddr(pairAddr) : '(not set)';
+    if (pairAddr) document.getElementById('s-pair').title = pairAddr;
+    document.getElementById('s-owner').textContent = shortAddr(ownerR);
+    document.getElementById('s-owner').title = ownerR;
+    document.getElementById('s-creator').textContent = shortAddr(creatorR);
+    document.getElementById('s-creator').title = creatorR;
+    document.getElementById('s-supply').textContent = fmtBRCH(supply);
+    document.getElementById('s-launched').textContent = launched ? '✓ launched' : '✗ not launched';
+    document.getElementById('s-launched').className = launched ? 'value green' : 'value red';
+    document.getElementById('s-cooldown').textContent = cooldown + 's';
+
+    document.getElementById('ownerDisplay').textContent = shortAddr(ownerR);
+    document.getElementById('ownerDisplay').title = ownerR;
+    const isOwner = ownerR.toLowerCase() === account.toLowerCase();
+    document.getElementById('ownerWarning').style.display = isOwner ? 'none' : 'inline';
+}
+
+async function loadPriceAndHoldings() {
+    const supply = BigInt(await token.methods.totalSupply().call());
+    const creatorAddr = await token.methods.creatorWallet().call();
+    const creatorBal = BigInt(await token.methods.balanceOf(creatorAddr).call());
+
+    let poolBrch = 0n;
+    let poolBnb = 0n;
+    let pricePerBrchBnb = 0;
+
+    if (pair) {
+        const reserves = await pair.methods.getReserves().call();
+        const r0 = BigInt(reserves._reserve0 || reserves[0]);
+        const r1 = BigInt(reserves._reserve1 || reserves[1]);
+        if (pairWbnbIsToken0) {
+            poolBnb = r0;
+            poolBrch = r1;
+        } else {
+            poolBrch = r0;
+            poolBnb = r1;
+        }
+        if (poolBrch > 0n) {
+            // price = poolBnb / poolBrch  (both 18 decimals)
+            pricePerBrchBnb = Number(poolBnb) / Number(poolBrch);
+        }
+        document.getElementById('p-pool-brch').textContent = fmtBRCH(poolBrch.toString());
+        document.getElementById('p-pool-bnb').textContent = fmtBNB(poolBnb.toString());
+
+        // "Bought" = (initial 100k - current pool BRCH). If pool > 100k (mintToPool was used), shows negative.
+        const INITIAL_LP_BRCH = 100000n * 10n**18n;
+        const bought = INITIAL_LP_BRCH - poolBrch;
+        const boughtEl = document.getElementById('p-bought');
+        if (bought > 0n) {
+            boughtEl.textContent = fmtBRCH(bought.toString()) + ' (купени)';
+            boughtEl.className = 'value green';
+        } else if (bought < 0n) {
+            boughtEl.textContent = fmtBRCH((-bought).toString()) + ' (добавени)';
+            boughtEl.className = 'value';
+        } else {
+            boughtEl.textContent = '0 (без активност)';
+            boughtEl.className = 'value';
+        }
+    } else {
+        document.getElementById('p-pool-brch').textContent = '(no pair)';
+        document.getElementById('p-pool-bnb').textContent = '(no pair)';
+        document.getElementById('p-bought').textContent = '—';
+    }
+
+    const priceBnbEl = document.getElementById('p-price-bnb');
+    const priceUsdEl = document.getElementById('p-price-usd');
+    const liqUsdEl = document.getElementById('p-liq-usd');
+    if (pricePerBrchBnb > 0) {
+        priceBnbEl.textContent = pricePerBrchBnb.toExponential(4) + ' BNB';
+        if (bnbUsdPrice) {
+            priceUsdEl.textContent = '$' + (pricePerBrchBnb * bnbUsdPrice).toFixed(6);
+            const liqBnb = Number(poolBnb) / 1e18;
+            liqUsdEl.textContent = '$' + (liqBnb * bnbUsdPrice * 2).toFixed(2);
+        } else {
+            priceUsdEl.textContent = '(no BNB price)';
+            liqUsdEl.textContent = '—';
+        }
+    } else {
+        priceBnbEl.textContent = '—';
+        priceUsdEl.textContent = '—';
+        liqUsdEl.textContent = '—';
+    }
+
+    document.getElementById('p-creator-bal').textContent = fmtBRCH(creatorBal.toString());
+    const circ = supply - creatorBal - poolBrch;
+    document.getElementById('p-circ').textContent = fmtBRCH((circ > 0n ? circ : 0n).toString());
+}
+
+async function loadCreatorMint() {
+    const [claimable, minted] = await Promise.all([
+        token.methods.creatorMintClaimable().call(),
+        token.methods.creatorMintedTotal().call(),
+    ]);
+    const CAP = 200000n * 10n**18n;
+    const remaining = CAP - BigInt(minted);
+
+    document.getElementById('m-claimable').textContent = fmtBRCH(claimable);
+    document.getElementById('m-minted').textContent = fmtBRCH(minted);
+    document.getElementById('m-remaining').textContent = fmtBRCH(remaining.toString());
+}
+
+async function loadHalveStatus() {
+    const [canH, lastH] = await Promise.all([
+        token.methods.canHalve().call(),
+        token.methods.lastHalveTime().call(),
+    ]);
+    const HALVE_INTERVAL = 365 * 24 * 3600;
+    const lastTs = Number(lastH);
+    const nextTs = lastTs + HALVE_INTERVAL;
+
+    const canEl = document.getElementById('h-can');
+    canEl.textContent = canH ? '✓ ДА' : '✗ не още';
+    canEl.className = canH ? 'value green' : 'value red';
+    document.getElementById('h-last').textContent = fmtDate(lastTs);
+    document.getElementById('h-next').textContent = fmtDate(nextTs);
+}
+
+// ============================================================
+// Owner / permissionless function calls
+// ============================================================
+async function sendTx(label, methodCall) {
+    if (!web3 || !account) { alert('Connect MetaMask first!'); return; }
+    log(`→ ${label}...`);
+    try {
+        const gas = await methodCall.estimateGas({ from: account });
+        const tx = await methodCall.send({ from: account, gas: Math.ceil(Number(gas) * 1.2) });
+        logOk(`✓ ${label} → tx: ${tx.transactionHash || tx.hash || '?'}`);
+        setTimeout(refreshAll, 2000);
+    } catch (err) {
+        logErr(`✗ ${label} failed: ${err.message.split('\n')[0]}`);
+    }
+}
+
+function callClaimCreatorMint() {
+    if (!token) { alert('Зареди token първо'); return; }
+    sendTx('claimCreatorMint', token.methods.claimCreatorMint());
+}
+
+function callHalveAnnually() {
+    if (!token) { alert('Зареди token първо'); return; }
+    if (!confirm('halveAnnually ще burn-не 50% от pool tokens. Сигурен ли си?')) return;
+    sendTx('halveAnnually', token.methods.halveAnnually());
+}
+
+function callMintToPool() {
+    if (!token) return alert('Зареди token');
+    const amt = parseFloat(document.getElementById('mintToPoolAmount').value);
+    if (!amt || amt <= 0) return alert('Невалидно количество');
+    const wei = web3.utils.toWei(amt.toString(), 'ether');
+    sendTx(`mintToPool(${amt})`, token.methods.mintToPool(wei));
+}
+function setMintToPoolAmount(v) { document.getElementById('mintToPoolAmount').value = v; }
+
+function callBurnFromCreator() {
+    if (!token) return alert('Зареди token');
+    const amt = parseFloat(document.getElementById('burnAmount').value);
+    if (!amt || amt <= 0) return alert('Невалидно количество');
+    if (!confirm(`Burn ${amt} BRCH1 от creator wallet?`)) return;
+    const wei = web3.utils.toWei(amt.toString(), 'ether');
+    sendTx(`burnFromCreator(${amt})`, token.methods.burnFromCreator(wei));
+}
+
+function callSetTaxExempt() {
+    if (!token) return alert('Зареди token');
+    const a = document.getElementById('exemptAddr').value.trim();
+    const v = document.getElementById('taxExemptVal').value === 'true';
+    if (!web3.utils.isAddress(a)) return alert('Невалиден адрес');
+    sendTx(`setTaxExempt(${shortAddr(a)}, ${v})`, token.methods.setTaxExempt(a, v));
+}
+
+function callSetLimitExempt() {
+    if (!token) return alert('Зареди token');
+    const a = document.getElementById('exemptAddr').value.trim();
+    const v = document.getElementById('limitExemptVal').value === 'true';
+    if (!web3.utils.isAddress(a)) return alert('Невалиден адрес');
+    sendTx(`setLimitExempt(${shortAddr(a)}, ${v})`, token.methods.setLimitExempt(a, v));
+}
+
+async function checkExempt() {
+    if (!token) return alert('Зареди token');
+    const a = document.getElementById('exemptAddr').value.trim();
+    if (!web3.utils.isAddress(a)) return alert('Невалиден адрес');
+    try {
+        const [tax, lim] = await Promise.all([
+            token.methods.isTaxExempt(a).call(),
+            token.methods.isLimitExempt(a).call(),
+        ]);
+        log(`  ${shortAddr(a)} → tax: ${tax}, limit: ${lim}`);
+    } catch (err) { logErr(`✗ ${err.message}`); }
+}
+
+function callSetCooldown() {
+    if (!token) return alert('Зареди token');
+    const s = parseInt(document.getElementById('cooldownVal').value);
+    if (isNaN(s) || s < 0 || s > 300) return alert('0–300 секунди');
+    sendTx(`setCooldown(${s})`, token.methods.setCooldown(s));
+}
+
+function callSetPancakePair() {
+    if (!token) return alert('Зареди token');
+    const a = document.getElementById('setPairVal').value.trim();
+    if (!web3.utils.isAddress(a)) return alert('Невалиден адрес');
+    if (!confirm('setPancakePair работи САМО ВЕДНЪЖ. Сигурен ли си?')) return;
+    sendTx(`setPancakePair(${shortAddr(a)})`, token.methods.setPancakePair(a));
+}
+
+function callSetLaunched() {
+    if (!token) return alert('Зареди token');
+    const s = parseInt(document.getElementById('setLaunchedVal').value);
+    if (isNaN(s) || s < 0 || s > 3600) return alert('0–3600 секунди');
+    if (!confirm(`setLaunched(${s}) — стартира trading. Сигурен ли си?`)) return;
+    sendTx(`setLaunched(${s})`, token.methods.setLaunched(s));
+}
+
+// ============================================================
+// Price snapshots & chart
+// ============================================================
+function loadSnapshots() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY_SNAPS);
+        if (!raw) return [];
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
+    } catch { return []; }
+}
+
+function saveSnapshots(snaps) {
+    localStorage.setItem(STORAGE_KEY_SNAPS, JSON.stringify(snaps));
+}
+
+async function takeSnapshot() {
+    if (!pair) { logWarn('⚠ Няма pair — snapshot невъзможен'); return; }
+    try {
+        const reserves = await pair.methods.getReserves().call();
+        const r0 = BigInt(reserves._reserve0 || reserves[0]);
+        const r1 = BigInt(reserves._reserve1 || reserves[1]);
+        let poolBrch, poolBnb;
+        if (pairWbnbIsToken0) { poolBnb = r0; poolBrch = r1; }
+        else                  { poolBrch = r0; poolBnb = r1; }
+        if (poolBrch === 0n) { logWarn('⚠ Pool е празен'); return; }
+
+        const priceBnb = Number(poolBnb) / Number(poolBrch);
+        const priceUsd = bnbUsdPrice ? priceBnb * bnbUsdPrice : null;
+        const snap = {
+            t: Math.floor(Date.now() / 1000),
+            priceBnb,
+            priceUsd,
+            poolBrch: poolBrch.toString(),
+            poolBnb: poolBnb.toString(),
+        };
+
+        const snaps = loadSnapshots();
+        snaps.push(snap);
+        // Keep only last 400 days worth (~ 400 entries if daily)
+        const cutoff = Math.floor(Date.now() / 1000) - 400 * 24 * 3600;
+        const filtered = snaps.filter(s => s.t >= cutoff);
+        saveSnapshots(filtered);
+        logOk(`📸 Snapshot: ${priceBnb.toExponential(3)} BNB${priceUsd ? ` ($${priceUsd.toFixed(6)})` : ''}`);
+        renderChart();
+    } catch (err) {
+        logErr(`✗ Snapshot failed: ${err.message}`);
+    }
+}
+
+async function maybeAutoSnapshot() {
+    if (!pair) return;
+    const snaps = loadSnapshots();
+    if (snaps.length === 0) { await takeSnapshot(); return; }
+    const last = snaps[snaps.length - 1];
+    const hoursSince = (Date.now() / 1000 - last.t) / 3600;
+    if (hoursSince >= 20) {  // ~daily
+        await takeSnapshot();
+    }
+}
+
+function renderChart() {
+    const snaps = loadSnapshots();
+    const svg = document.getElementById('priceChart');
+    svg.innerHTML = '';
+
+    document.getElementById('snapCount').textContent = snaps.length;
+
+    if (snaps.length === 0) {
+        svg.innerHTML = `<text x="600" y="140" text-anchor="middle" fill="#999" font-family="sans-serif" font-size="16">Все още няма snapshots. Натисни "Snapshot сега" или ще се добави автоматично.</text>`;
+        document.getElementById('snapPeriod').textContent = '—';
+        document.getElementById('snapLatest').textContent = '—';
+        return;
+    }
+
+    // Restrict to last 365 days
+    const now = Math.floor(Date.now() / 1000);
+    const yearAgo = now - 365 * 24 * 3600;
+    const data = snaps.filter(s => s.t >= yearAgo);
+
+    if (data.length === 0) {
+        svg.innerHTML = `<text x="600" y="140" text-anchor="middle" fill="#999" font-family="sans-serif" font-size="16">Няма snapshots в последната година.</text>`;
+        return;
+    }
+
+    const first = data[0];
+    const last = data[data.length - 1];
+    document.getElementById('snapPeriod').textContent =
+        new Date(first.t * 1000).toLocaleDateString('bg-BG') + ' → ' + new Date(last.t * 1000).toLocaleDateString('bg-BG');
+    document.getElementById('snapLatest').textContent =
+        last.priceUsd ? `$${last.priceUsd.toFixed(6)}` : `${last.priceBnb.toExponential(3)} BNB`;
+
+    const W = 1200, H = 280, padL = 80, padR = 20, padT = 20, padB = 40;
+
+    const prices = data.map(d => d.priceBnb);
+    const minP = Math.min(...prices);
+    const maxP = Math.max(...prices);
+    const range = maxP - minP || maxP * 0.1 || 1e-18;
+    const minPaddedP = minP - range * 0.1;
+    const maxPaddedP = maxP + range * 0.1;
+
+    const tMin = data[0].t;
+    const tMax = data[data.length - 1].t;
+    const tRange = (tMax - tMin) || 1;
+
+    const x = t => padL + ((t - tMin) / tRange) * (W - padL - padR);
+    const y = p => padT + (1 - (p - minPaddedP) / (maxPaddedP - minPaddedP)) * (H - padT - padB);
+
+    // Grid + Y-axis labels (5 lines)
+    let gridSvg = '';
+    for (let i = 0; i <= 4; i++) {
+        const yPos = padT + i * (H - padT - padB) / 4;
+        const priceAtLine = maxPaddedP - i * (maxPaddedP - minPaddedP) / 4;
+        gridSvg += `<line x1="${padL}" y1="${yPos}" x2="${W - padR}" y2="${yPos}" stroke="#e5e0d0" stroke-width="1"/>`;
+        const label = bnbUsdPrice && data[0].priceUsd
+            ? '$' + (priceAtLine * bnbUsdPrice).toExponential(2)
+            : priceAtLine.toExponential(2);
+        gridSvg += `<text x="${padL - 8}" y="${yPos + 4}" text-anchor="end" fill="#888" font-family="sans-serif" font-size="11">${label}</text>`;
+    }
+
+    // X-axis labels (start, middle, end)
+    let xLabels = '';
+    [0, Math.floor(data.length / 2), data.length - 1].forEach(idx => {
+        const d = data[idx];
+        const xPos = x(d.t);
+        const dateStr = new Date(d.t * 1000).toLocaleDateString('bg-BG', { day: '2-digit', month: '2-digit', year: '2-digit' });
+        xLabels += `<text x="${xPos}" y="${H - 15}" text-anchor="middle" fill="#888" font-family="sans-serif" font-size="11">${dateStr}</text>`;
+        xLabels += `<line x1="${xPos}" y1="${padT}" x2="${xPos}" y2="${H - padB}" stroke="#e5e0d0" stroke-width="1" stroke-dasharray="2,3"/>`;
+    });
+
+    // Line path
+    const path = data.map((d, i) => (i === 0 ? 'M' : 'L') + x(d.t).toFixed(2) + ',' + y(d.priceBnb).toFixed(2)).join(' ');
+
+    // Area fill (path closed to baseline)
+    const areaPath = path + ` L${x(data[data.length - 1].t).toFixed(2)},${H - padB} L${x(data[0].t).toFixed(2)},${H - padB} Z`;
+
+    // Dots (only if data is sparse)
+    let dots = '';
+    if (data.length <= 60) {
+        data.forEach(d => {
+            dots += `<circle cx="${x(d.t).toFixed(2)}" cy="${y(d.priceBnb).toFixed(2)}" r="3" fill="#b8860b"/>`;
+        });
+    }
+
+    svg.innerHTML = `
+        <defs>
+            <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#e8a317" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#e8a317" stop-opacity="0.05"/>
+            </linearGradient>
+        </defs>
+        ${gridSvg}
+        ${xLabels}
+        <path d="${areaPath}" fill="url(#areaGrad)" stroke="none"/>
+        <path d="${path}" fill="none" stroke="#b8860b" stroke-width="2.5"/>
+        ${dots}
+    `;
+}
+
+function exportSnapshots() {
+    const snaps = loadSnapshots();
+    const blob = new Blob([JSON.stringify(snaps, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `brch1-snapshots-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    logOk(`⬇ Export: ${snaps.length} snapshots`);
+}
+
+async function importSnapshots(file) {
+    if (!file) return;
+    try {
+        const text = await file.text();
+        const arr = JSON.parse(text);
+        if (!Array.isArray(arr)) throw new Error('Невалиден формат');
+        // Merge with existing, dedupe by timestamp
+        const existing = loadSnapshots();
+        const byT = new Map();
+        [...existing, ...arr].forEach(s => { if (s && s.t) byT.set(s.t, s); });
+        const merged = [...byT.values()].sort((a, b) => a.t - b.t);
+        saveSnapshots(merged);
+        logOk(`⬆ Import: ${arr.length} → merged ${merged.length}`);
+        renderChart();
+    } catch (err) {
+        logErr(`✗ Import failed: ${err.message}`);
+    }
+}
+
+function clearSnapshots() {
+    if (!confirm('Изтриване на всички snapshots?')) return;
+    localStorage.removeItem(STORAGE_KEY_SNAPS);
+    logWarn('🗑 Snapshots изчистени');
+    renderChart();
+}
+
+// ============================================================
+// Init
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+    // Pre-fill from KCY_CONFIG if available
+    if (window.KCY_CONFIG && window.KCY_CONFIG.contracts && window.KCY_CONFIG.contracts.brch1
+        && window.KCY_CONFIG.contracts.brch1.startsWith('0x') && window.KCY_CONFIG.contracts.brch1.length === 42) {
+        document.getElementById('tokenAddr').value = window.KCY_CONFIG.contracts.brch1;
+    } else {
+        const saved = localStorage.getItem(STORAGE_KEY_ADDR);
+        if (saved) document.getElementById('tokenAddr').value = saved;
+    }
+    renderChart();
+});
+</script>
+</body>
+</html>

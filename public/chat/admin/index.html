@@ -1,0 +1,104 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AMS Chat Admin Panel">
+    <title>AMS Chat - Admin Panel</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .admin-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+        }
+        .admin-hero h1 { font-size: 3em; margin-bottom: 20px; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin: 50px auto; max-width: 1200px; padding: 20px; }
+        .admin-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; transition: all 0.3s; }
+        .admin-card:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .admin-card h2 { color: #667eea; margin-bottom: 15px; font-size: 1.8em; }
+        .admin-card p { color: #666; margin-bottom: 25px; }
+        .admin-icon { font-size: 4em; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="admin-hero">
+        <h1>💬 AMS Chat Admin</h1>
+        <p style="font-size: 1.2em;">Управление на AMS Chat платформата</p>
+    </div>
+
+    <div class="admin-grid">
+        <!-- System Status -->
+        <div class="admin-card" style="border: 2px solid #667eea;">
+            <div class="admin-icon">🔧</div>
+            <h2>System Status</h2>
+            <p>Статус на всички сървиси, база данни, nginx, SSL и системни ресурси</p>
+            <a href="/shared/admin-status.html" class="btn" style="background:#667eea;color:white;">System Status</a>
+        </div>
+
+        <!-- Main Admin Panel -->
+        <div class="admin-card">
+            <div class="admin-icon">👥</div>
+            <h2>Main Admin</h2>
+            <p>Управление на потребители, съобщения и системни настройки</p>
+            <a href="admin.html" class="btn">Open Admin Panel</a>
+        </div>
+
+        <!-- Signals Admin -->
+        <div class="admin-card">
+            <div class="admin-icon">📊</div>
+            <h2>Signals Management</h2>
+            <p>Управление на trading сигнали и анализи</p>
+            <a href="admin-signals.html" class="btn">Manage Signals</a>
+        </div>
+
+        <!-- Static Objects Admin -->
+        <div class="admin-card">
+            <div class="admin-icon">📄</div>
+            <h2>Static Objects</h2>
+            <p>Управление на статично съдържание и файлове</p>
+            <a href="admin-static-objects.html" class="btn">Manage Objects</a>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="container" style="max-width: 800px; margin: 50px auto;">
+        <div class="card" style="text-align: center; padding: 40px;">
+            <h2 style="color: #667eea; margin-bottom: 20px;">💡 KCY Token Integration</h2>
+            <p style="color: #666; margin-bottom: 25px; font-size: 1.1em;">
+                AMS Chat използва <strong>KCY-meme-1 токени</strong> за subscription плащания. 
+                Потребителите могат да платят с 300 KCY токена месечно.
+            </p>
+            <div style="margin-top: 30px;">
+                <a href="/token/" class="btn" style="margin: 5px;">🪙 View KCY Token</a>
+                <a href="/token/admin/scripts.html" class="btn btn-admin" style="margin: 5px;">Token Admin</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Projects -->
+    <div class="container" style="max-width: 1000px; margin: 50px auto 80px;">
+        <h2 style="text-align: center; margin-bottom: 40px; font-size: 2em;">Other Admin Panels</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+            <div class="card" style="text-align: center;">
+                <h3 style="font-size: 3em; margin-bottom: 15px;">🪙</h3>
+                <h3 style="color: #667eea; margin-bottom: 15px;">Token Admin</h3>
+                <p style="color: #666; margin-bottom: 20px;">Управление на KCY-meme-1 token</p>
+                <a href="/token/admin/scripts.html" class="btn">Open →</a>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h3 style="font-size: 3em; margin-bottom: 15px;">🔐</h3>
+                <h3 style="color: #667eea; margin-bottom: 15px;">Multi-Sig Admin</h3>
+                <p style="color: #666; margin-bottom: 20px;">Управление на Multi-Sig wallet</p>
+                <a href="/multisig/admin/" class="btn">Open →</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/shared/js/config.js"></script>
+    <script src="/shared/js/navigation.js"></script>
+</body>
+</html>

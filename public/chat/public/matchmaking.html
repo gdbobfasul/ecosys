@@ -1,0 +1,1047 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Намери половинката си - AMS Chat</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            color: #667eea;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .result-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .result-card h3 {
+            margin: 0 0 10px 0;
+            color: #667eea;
+        }
+
+        .result-card p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .result-actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-invite {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-invite:hover {
+            background: #5568d3;
+        }
+
+        .btn-block {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-block:hover {
+            background: #ee5a52;
+        }
+
+        .invitations-list {
+            margin-top: 20px;
+        }
+
+        .invitation-item {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .invitation-info {
+            flex: 1;
+        }
+
+        .invitation-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #667eea;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .dislike-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .dislike-option {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .dislike-option:hover {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+
+        .dislike-option.selected {
+            border-color: #ff6b6b;
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-box h3 {
+            margin: 0 0 10px 0;
+            color: #856404;
+        }
+
+        .warning-box p {
+            margin: 5px 0;
+            color: #856404;
+        }
+
+        .warning-box strong {
+            font-size: 1.2em;
+            color: #d39e00;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-box h4 {
+            margin: 0 0 5px 0;
+            font-size: 2em;
+        }
+
+        .stat-box p {
+            margin: 0;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>💕 Намери половинката си</h1>
+            <p>Попълни критериите и открий своята идеална половинка с AI технология</p>
+        </div>
+
+        <!-- User Stats -->
+        <div class="stats" id="statsSection">
+            <div class="stat-box">
+                <h4 id="balanceAmount">--</h4>
+                <p>Баланс</p>
+            </div>
+            <div class="stat-box">
+                <h4 id="totalSearches">0</h4>
+                <p>Търсения</p>
+            </div>
+            <div class="stat-box">
+                <h4 id="pendingInvitations">0</h4>
+                <p>Покани</p>
+            </div>
+        </div>
+
+        <!-- Criteria Form -->
+        <div class="section" id="criteriaSection">
+            <h2>📋 Моите Критерии</h2>
+            
+            <!-- Physical Criteria -->
+            <h3>Физически характеристики</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Мин. Ръст (cm):</label>
+                    <input type="number" id="height_min" placeholder="например 160">
+                </div>
+                <div class="form-group">
+                    <label>Макс. Ръст (cm):</label>
+                    <input type="number" id="height_max" placeholder="например 190">
+                </div>
+                <div class="form-group">
+                    <label>Мин. Тегло (kg):</label>
+                    <input type="number" id="weight_min" placeholder="например 50">
+                </div>
+                <div class="form-group">
+                    <label>Макс. Тегло (kg):</label>
+                    <input type="number" id="weight_max" placeholder="например 90">
+                </div>
+                <div class="form-group">
+                    <label>Мин. Възраст:</label>
+                    <input type="number" id="age_min" placeholder="например 25">
+                </div>
+                <div class="form-group">
+                    <label>Макс. Възраст:</label>
+                    <input type="number" id="age_max" placeholder="например 40">
+                </div>
+                <div class="form-group">
+                    <label>Цвят на косата:</label>
+                    <select id="hair_color">
+                        <option value="">Без предпочитание</option>
+                        <option value="blonde">Руса</option>
+                        <option value="brunette">Кестенява</option>
+                        <option value="black">Черна</option>
+                        <option value="red">Червена</option>
+                        <option value="gray">Сива</option>
+                        <option value="other">Друго</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Цвят на очите:</label>
+                    <select id="eye_color">
+                        <option value="">Без предпочитание</option>
+                        <option value="blue">Сини</option>
+                        <option value="green">Зелени</option>
+                        <option value="brown">Кафяви</option>
+                        <option value="hazel">Лешникови</option>
+                        <option value="gray">Сиви</option>
+                        <option value="other">Друго</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Тип фигура:</label>
+                    <select id="body_type">
+                        <option value="">Без предпочитание</option>
+                        <option value="slim">Слаба</option>
+                        <option value="athletic">Атлетична</option>
+                        <option value="average">Средна</option>
+                        <option value="curvy">Извита</option>
+                        <option value="plus-size">Plus-size</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Lifestyle Criteria -->
+            <h3>Начин на живот</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Тютюнопушене:</label>
+                    <select id="smoking">
+                        <option value="">Без предпочитание</option>
+                        <option value="never">Никога</option>
+                        <option value="occasionally">Понякога</option>
+                        <option value="regularly">Редовно</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Алкохол:</label>
+                    <select id="drinking">
+                        <option value="">Без предпочитание</option>
+                        <option value="never">Никога</option>
+                        <option value="socially">Социално</option>
+                        <option value="regularly">Редовно</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Спорт:</label>
+                    <select id="exercise">
+                        <option value="">Без предпочитание</option>
+                        <option value="never">Никога</option>
+                        <option value="occasionally">Понякога</option>
+                        <option value="regularly">Редовно</option>
+                        <option value="athlete">Атлет</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Деца:</label>
+                    <select id="children">
+                        <option value="">Без предпочитание</option>
+                        <option value="has-children">Има деца</option>
+                        <option value="wants-children">Иска деца</option>
+                        <option value="no-children">Без деца</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Образование:</label>
+                    <select id="education">
+                        <option value="">Без предпочитание</option>
+                        <option value="high-school">Средно</option>
+                        <option value="bachelor">Бакалавър</option>
+                        <option value="master">Магистър</option>
+                        <option value="phd">PhD</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Работа:</label>
+                    <select id="employment">
+                        <option value="">Без предпочитание</option>
+                        <option value="employed">Работещ</option>
+                        <option value="self-employed">Самонает</option>
+                        <option value="student">Студент</option>
+                        <option value="unemployed">Безработен</option>
+                        <option value="retired">Пенсионер</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Personality & Interests -->
+            <h3>Личност и интереси</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Тип личност:</label>
+                    <select id="personality">
+                        <option value="">Без предпочитание</option>
+                        <option value="introvert">Интроверт</option>
+                        <option value="extrovert">Екстроверт</option>
+                        <option value="ambivert">Амбиверт</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Стил на комуникация:</label>
+                    <select id="communication_style">
+                        <option value="">Без предпочитание</option>
+                        <option value="direct">Директен</option>
+                        <option value="indirect">Индиректен</option>
+                        <option value="emotional">Емоционален</option>
+                        <option value="logical">Логичен</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Цели в отношенията:</label>
+                    <select id="relationship_goals">
+                        <option value="">Без предпочитание</option>
+                        <option value="casual">Casual</option>
+                        <option value="serious">Сериозни</option>
+                        <option value="marriage">Брак</option>
+                        <option value="friendship">Приятелство</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Интереси (разделени със запетая):</label>
+                    <input type="text" id="interests" placeholder="музика, спорт, пътуване...">
+                </div>
+            </div>
+
+            <!-- Location -->
+            <h3>Локация</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Държава:</label>
+                    <input type="text" id="country" placeholder="например България">
+                </div>
+                <div class="form-group">
+                    <label>Град:</label>
+                    <input type="text" id="city" placeholder="например София">
+                </div>
+                <div class="form-group">
+                    <label>Макс. разстояние (km):</label>
+                    <input type="number" id="distance_km" placeholder="например 50">
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="window.location.href='chat.html'">◀ Назад към чат</button>
+                <button class="btn btn-primary" onclick="saveCriteria()">💾 Запази критерии</button>
+                <button class="btn btn-primary" onclick="showFindWarning()">🔍 Намери (5€)</button>
+            </div>
+        </div>
+
+        <!-- Search Results Section -->
+        <div class="section hidden" id="resultsSection">
+            <h2>🎯 Резултати от търсенето</h2>
+            <div id="resultsContent"></div>
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="hideResults()">◀ Назад</button>
+                <button class="btn btn-primary" onclick="showFindWarning()">🔍 Ново търсене (5€)</button>
+            </div>
+        </div>
+
+        <!-- Received Invitations Section -->
+        <div class="section" id="invitationsSection">
+            <h2>📬 Получени покани</h2>
+            <p>Хора, които са те поканили за чат</p>
+            <div id="invitationsContent">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Зареждане на покани...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Modal -->
+    <div class="modal" id="findWarningModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚠️ Внимание!</h3>
+                <button class="close-btn" onclick="closeFindWarning()">&times;</button>
+            </div>
+            <div class="warning-box">
+                <h3>Условия за търсене</h3>
+                <p>Тук ще намерите съвпадение по вашите критерии на вашата идеална половинка.</p>
+                <p>Резултатите, които ще ви представим са 5 на брой.</p>
+                <p><strong>При всяко натискане на бутона от платежният ви баланс ще бъдат взети 5 долара/евро.</strong></p>
+                <p style="margin-top: 15px;">Текущ баланс: <strong id="warningBalance">--</strong></p>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="closeFindWarning()">Отказ</button>
+                <button class="btn btn-primary" onclick="findMatches()">💳 Плати 5€ и търси</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Block User Modal -->
+    <div class="modal" id="blockModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>❌ Блокиране на потребител</h3>
+                <button class="close-btn" onclick="closeBlockModal()">&times;</button>
+            </div>
+            <p>Какво не ти хареса?</p>
+            <div class="dislike-options" id="dislikeOptions"></div>
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="closeBlockModal()">Отказ</button>
+                <button class="btn btn-primary" onclick="confirmBlock()">✅ Блокирай</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/shared/js/config.js"></script>
+    <script>
+        const API_URL = window.APP_CONFIG.BASE_URL + '/api';
+        let currentUser = null;
+        let selectedDislikes = [];
+        let userToBlock = null;
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const userId = localStorage.getItem('userId');
+            
+            if (!token || !userId) {
+                alert('Моля, влезте в профила си!');
+                window.location.href = 'index.html';
+                return false;
+            }
+
+            currentUser = { token, userId: parseInt(userId) };
+            return true;
+        }
+
+        // Load user stats and data
+        async function loadUserData() {
+            try {
+                // Load user balance
+                const userResponse = await fetch(`${API_URL}/profile/me`, {
+                    headers: { 'Authorization': `Bearer ${currentUser.token}` }
+                });
+                const userData = await userResponse.json();
+                
+                if (userData.user) {
+                    document.getElementById('balanceAmount').textContent = 
+                        `${userData.user.payment_amount} ${userData.user.payment_currency}`;
+                }
+
+                // Load criteria
+                const criteriaResponse = await fetch(`${API_URL}/matchmaking/criteria`, {
+                    headers: { 'Authorization': `Bearer ${currentUser.token}` }
+                });
+                const criteriaData = await criteriaResponse.json();
+
+                if (criteriaData.hasCriteria) {
+                    fillCriteriaForm(criteriaData.criteria);
+                }
+
+                // Load invitations
+                loadInvitations();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // Fill criteria form
+        function fillCriteriaForm(criteria) {
+            const fields = [
+                'height_min', 'height_max', 'weight_min', 'weight_max',
+                'age_min', 'age_max', 'hair_color', 'eye_color', 'body_type',
+                'smoking', 'drinking', 'exercise', 'children', 'education',
+                'employment', 'personality', 'communication_style', 
+                'relationship_goals', 'interests', 'country', 'city', 'distance_km'
+            ];
+
+            fields.forEach(field => {
+                const element = document.getElementById(field);
+                if (element && criteria[field]) {
+                    element.value = criteria[field];
+                }
+            });
+        }
+
+        // Save criteria
+        async function saveCriteria() {
+            try {
+                const criteria = {
+                    height_min: document.getElementById('height_min').value || null,
+                    height_max: document.getElementById('height_max').value || null,
+                    weight_min: document.getElementById('weight_min').value || null,
+                    weight_max: document.getElementById('weight_max').value || null,
+                    age_min: document.getElementById('age_min').value || null,
+                    age_max: document.getElementById('age_max').value || null,
+                    hair_color: document.getElementById('hair_color').value || null,
+                    eye_color: document.getElementById('eye_color').value || null,
+                    body_type: document.getElementById('body_type').value || null,
+                    smoking: document.getElementById('smoking').value || null,
+                    drinking: document.getElementById('drinking').value || null,
+                    exercise: document.getElementById('exercise').value || null,
+                    children: document.getElementById('children').value || null,
+                    education: document.getElementById('education').value || null,
+                    employment: document.getElementById('employment').value || null,
+                    personality: document.getElementById('personality').value || null,
+                    communication_style: document.getElementById('communication_style').value || null,
+                    relationship_goals: document.getElementById('relationship_goals').value || null,
+                    interests: document.getElementById('interests').value || null,
+                    country: document.getElementById('country').value || null,
+                    city: document.getElementById('city').value || null,
+                    distance_km: document.getElementById('distance_km').value || null
+                };
+
+                const response = await fetch(`${API_URL}/matchmaking/criteria`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(criteria)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Критериите са запазени успешно!');
+                } else {
+                    alert('❌ Грешка: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                alert('❌ Грешка при запазване!');
+            }
+        }
+
+        // Show find warning
+        function showFindWarning() {
+            document.getElementById('findWarningModal').classList.add('active');
+            document.getElementById('warningBalance').textContent = 
+                document.getElementById('balanceAmount').textContent;
+        }
+
+        function closeFindWarning() {
+            document.getElementById('findWarningModal').classList.remove('active');
+        }
+
+        // Find matches
+        async function findMatches() {
+            closeFindWarning();
+
+            try {
+                const response = await fetch(`${API_URL}/matchmaking/find`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert('❌ ' + (data.message || data.error));
+                    return;
+                }
+
+                if (data.success) {
+                    displayResults(data.matches);
+                    document.getElementById('balanceAmount').textContent = 
+                        `${data.newBalance} ${data.currency}`;
+                    document.getElementById('totalSearches').textContent = 
+                        (parseInt(document.getElementById('totalSearches').textContent) + 1);
+                }
+            } catch (error) {
+                console.error('Find error:', error);
+                alert('❌ Грешка при търсене!');
+            }
+        }
+
+        // Display results
+        function displayResults(matches) {
+            const resultsContent = document.getElementById('resultsContent');
+            
+            if (matches.length === 0) {
+                resultsContent.innerHTML = '<p style="text-align:center; color:#999;">Няма намерени резултати. Опитайте с други критерии.</p>';
+            } else {
+                resultsContent.innerHTML = `
+                    <div class="results-grid">
+                        ${matches.map(match => `
+                            <div class="result-card">
+                                <h3>${match.full_name}</h3>
+                                <p>👤 Възраст: ${match.age || 'N/A'}</p>
+                                <p>📏 Ръст: ${match.height_cm || 'N/A'} cm</p>
+                                <p>⚖️ Тегло: ${match.weight_kg || 'N/A'} kg</p>
+                                <p>📍 ${match.city || 'N/A'}, ${match.country || 'N/A'}</p>
+                                <div class="result-actions">
+                                    <button class="btn-invite" onclick="sendInvitation(${match.id})">💌 Покана</button>
+                                    <button class="btn-block" onclick="showBlockModal(${match.id}, '${match.full_name}')">❌ Блокирай</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            document.getElementById('criteriaSection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function hideResults() {
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('criteriaSection').classList.remove('hidden');
+        }
+
+        // Send invitation
+        async function sendInvitation(receiverId) {
+            if (!confirm('Сигурен ли си, че искаш да изпратиш покана?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/matchmaking/invite`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ receiverId })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Поканата е изпратена успешно!');
+                } else {
+                    alert('❌ ' + data.error);
+                }
+            } catch (error) {
+                console.error('Invite error:', error);
+                alert('❌ Грешка при изпращане!');
+            }
+        }
+
+        // Show block modal
+        function showBlockModal(userId, userName) {
+            userToBlock = { id: userId, name: userName };
+            selectedDislikes = [];
+            
+            // Build dislike options (simplified version)
+            const dislikeFields = [
+                { field: 'height_cm', label: 'Ръст' },
+                { field: 'weight_kg', label: 'Тегло' },
+                { field: 'age', label: 'Възраст' },
+                { field: 'hair_color', label: 'Цвят коса' },
+                { field: 'smoking', label: 'Тютюнопушене' },
+                { field: 'drinking', label: 'Алкохол' }
+            ];
+
+            const optionsHTML = dislikeFields.map(field => `
+                <div class="dislike-option" onclick="toggleDislike('${field.field}', '${field.label}')">
+                    <input type="checkbox" id="dislike_${field.field}" style="display:none;">
+                    <div>${field.label}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('dislikeOptions').innerHTML = optionsHTML;
+            document.getElementById('blockModal').classList.add('active');
+        }
+
+        function closeBlockModal() {
+            document.getElementById('blockModal').classList.remove('active');
+            userToBlock = null;
+            selectedDislikes = [];
+        }
+
+        function toggleDislike(field, label) {
+            const checkbox = document.getElementById(`dislike_${field}`);
+            const option = checkbox.parentElement;
+            
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                option.classList.add('selected');
+                selectedDislikes.push({ field, value: label });
+            } else {
+                option.classList.remove('selected');
+                selectedDislikes = selectedDislikes.filter(d => d.field !== field);
+            }
+        }
+
+        // Confirm block
+        async function confirmBlock() {
+            if (!userToBlock) return;
+
+            try {
+                const response = await fetch(`${API_URL}/matchmaking/block`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        blockedId: userToBlock.id,
+                        dislikes: selectedDislikes
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Потребителят е блокиран!');
+                    closeBlockModal();
+                    loadInvitations(); // Refresh invitations
+                } else {
+                    alert('❌ ' + data.error);
+                }
+            } catch (error) {
+                console.error('Block error:', error);
+                alert('❌ Грешка при блокиране!');
+            }
+        }
+
+        // Load invitations
+        async function loadInvitations() {
+            try {
+                const response = await fetch(`${API_URL}/matchmaking/invitations/received`, {
+                    headers: { 'Authorization': `Bearer ${currentUser.token}` }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('pendingInvitations').textContent = data.count;
+                    displayInvitations(data.invitations);
+                }
+            } catch (error) {
+                console.error('Load invitations error:', error);
+            }
+        }
+
+        // Display invitations
+        function displayInvitations(invitations) {
+            const content = document.getElementById('invitationsContent');
+
+            if (invitations.length === 0) {
+                content.innerHTML = '<p style="text-align:center; color:#999;">Нямате покани в момента.</p>';
+                return;
+            }
+
+            content.innerHTML = invitations.map(inv => `
+                <div class="invitation-item">
+                    <div class="invitation-info">
+                        <strong>${inv.full_name}</strong>
+                        <span class="badge badge-warning">Покана</span>
+                        <p style="margin:5px 0 0 0; color:#666;">
+                            ${inv.age || 'N/A'} год., ${inv.city || 'N/A'}
+                        </p>
+                    </div>
+                    <div class="invitation-actions">
+                        <button class="btn-invite" onclick="acceptInvitation(${inv.id})">✅ Приеми</button>
+                        <button class="btn-block" onclick="showBlockModal(${inv.sender_id}, '${inv.full_name}')">❌ Блокирай</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Accept invitation
+        async function acceptInvitation(invitationId) {
+            if (!confirm('Приемаш поканата? Ще можете да чатите с този човек.')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/matchmaking/invitations/${invitationId}/accept`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Поканата е приета! Вече можете да чатите.');
+                    loadInvitations();
+                } else {
+                    alert('❌ ' + data.error);
+                }
+            } catch (error) {
+                console.error('Accept error:', error);
+                alert('❌ Грешка!');
+            }
+        }
+
+        // Initialize on page load
+        if (checkAuth()) {
+            loadUserData();
+        }
+    </script>
+</body>
+</html>

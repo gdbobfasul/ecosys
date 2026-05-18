@@ -1,0 +1,105 @@
+<!-- Version: 1.0086 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕸️ Web скрапер</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .wrap { max-width: 880px; margin: 30px auto; padding: 30px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.1); }
+        h1 { color: var(--primary-color); margin-bottom: 6px; }
+        label { display: block; margin: 12px 0 4px; font-weight: 600; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 1em; }
+        .btn { padding: 12px 22px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; margin-top: 18px; }
+        .btn:disabled { opacity: .5; }
+        .hint { color: #888; font-size: .87em; }
+        .status { margin-top: 14px; padding: 10px; border-radius: 8px; background: #f8f9fa; display: none; }
+        .status.on { display: block; }
+        .results { margin-top: 20px; }
+        .result-item { padding: 14px; background: #f8f9fa; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--primary-color); }
+        .result-item h4 { margin: 0 0 6px; color: var(--primary-color); }
+        .result-item a { color: #567; font-size: .88em; word-break: break-all; }
+        .result-item .excerpt { margin-top: 8px; color: #333; font-size: .92em; line-height: 1.5; }
+        .result-item.err { border-left-color: #c44; }
+        .stats { color: #888; font-size: .88em; margin-top: 14px; padding-top: 14px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <a href="/portals/services/" style="color:#888;text-decoration:none">← обратно към услуги</a>
+        <h1>🕸️ Web скрапер</h1>
+        <p class="hint">Три заявки за търсене + едно поле "какво да се извлече". Работи до 5 минути и връща намерените извадки.</p>
+
+        <label>Заявка за търсене 1</label>
+        <input id="q1" placeholder="напр.: цена на соларни панели България 2026">
+
+        <label>Заявка за търсене 2</label>
+        <input id="q2" placeholder="напр.: инсталация соларни панели цена">
+
+        <label>Заявка за търсене 3</label>
+        <input id="q3" placeholder="напр.: соларни панели субсидии България">
+
+        <label>Какво да се извлича от страниците</label>
+        <textarea id="hint" rows="2" placeholder="напр.: цена, гаранция, лева, евро, KWp, инсталация"></textarea>
+
+        <button class="btn" id="go">▶️ Скрап</button>
+        <div class="hint">Макс. 5 минути. Можеш да напуснеш страницата, но тогава работата ще се прекрати.</div>
+
+        <div id="status" class="status"></div>
+        <div id="results" class="results"></div>
+        <div id="stats" class="stats" style="display:none"></div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('go');
+        const st = document.getElementById('status');
+        const res = document.getElementById('results');
+        const stats = document.getElementById('stats');
+
+        btn.addEventListener('click', async () => {
+            const payload = {
+                query1: document.getElementById('q1').value,
+                query2: document.getElementById('q2').value,
+                query3: document.getElementById('q3').value,
+                hint:   document.getElementById('hint').value,
+            };
+            if (![payload.query1, payload.query2, payload.query3].some(q => q.trim())) {
+                st.className = 'status on'; st.textContent = 'Попълни поне едно поле за търсене.'; return;
+            }
+            if (!payload.hint.trim()) {
+                st.className = 'status on'; st.textContent = 'Попълни "какво да се скрапва".'; return;
+            }
+            btn.disabled = true;
+            st.className = 'status on';
+            st.innerHTML = '⏳ Скрапам страници… (максимум 5 минути)';
+            res.innerHTML = '';
+            stats.style.display = 'none';
+
+            try {
+                const r = await fetch('/api/portals/services/scraper', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await r.json();
+                if (r.status === 401) { location.href = '/portals/login.html?next=' + location.pathname; return; }
+                if (r.status === 402) { location.href = '/portals/billing.html'; return; }
+                if (!r.ok) { st.textContent = '❌ ' + (data.message || JSON.stringify(data)); return; }
+
+                st.innerHTML = `✅ Готово. ${data.stats.pages_fetched} страници за ${(data.stats.duration_ms/1000).toFixed(1)}с${data.stats.aborted ? ' (достигнат лимит)' : ''}.`;
+                res.innerHTML = data.pages.map(p => p.error
+                    ? `<div class="result-item err"><h4>❌ ${p.url}</h4><div class="excerpt">${p.error}</div></div>`
+                    : `<div class="result-item"><h4>${p.title || '(без заглавие)'}</h4><a href="${p.url}" target="_blank" rel="noopener">${p.url}</a><div class="excerpt">${(p.excerpt || '').slice(0, 900)}${p.excerpt && p.excerpt.length > 900 ? '…' : ''}</div><div class="hint" style="margin-top:6px">Съвпадения: ${p.matches || 0} · източник: "${p.source_query || ''}"</div></div>`
+                ).join('');
+                stats.style.display = 'block';
+                stats.textContent = `Заявки: ${data.stats.queries_used.join(' · ')} · hint: ${data.stats.hint || ''} · job #${data.job_id || '-'}`;
+            } catch (e) {
+                st.textContent = '❌ Грешка: ' + e.message;
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

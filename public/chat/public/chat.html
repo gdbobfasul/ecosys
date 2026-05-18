@@ -1,0 +1,436 @@
+<!-- Version: 1.0056 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - AMS Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="flex h-screen">
+        <!-- Sidebar - Contacts -->
+        <div class="w-1/4 bg-gray-800 border-r border-gray-700">
+            <div class="p-4 border-b border-gray-700">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-xl font-bold">Contacts</h2>
+                    <div class="flex gap-2">
+                        <button onclick="window.location.href='search.html'" class="text-purple-400 hover:text-purple-300" title="Търсачки">
+                            🔍
+                        </button>
+                        <button onclick="window.location.href='matchmaking.html'" class="text-pink-400 hover:text-pink-300" title="Намери половинката си">
+                            💕
+                        </button>
+                        <button onclick="window.location.href='profile.html'" class="text-blue-400 hover:text-blue-300" title="Настройки">
+                            ⚙️
+                        </button>
+                        <button onclick="logout()" class="text-red-400 hover:text-red-300" title="Изход">
+                            🚪
+                        </button>
+                    </div>
+                </div>
+                <button onclick="showAddContact()" class="mt-2 w-full bg-blue-600 hover:bg-blue-700 py-2 rounded">
+                    + Add Contact
+                </button>
+            </div>
+            <div id="contactsList" class="overflow-y-auto h-full"></div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="flex-1 flex flex-col">
+            <!-- Chat Header -->
+            <div class="bg-gray-800 p-4 border-b border-gray-700">
+                <h3 id="chatHeader" class="text-lg font-bold">Select a contact</h3>
+            </div>
+
+            <!-- Messages -->
+            <div id="messagesArea" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+
+            <!-- Input Area -->
+            <div class="bg-gray-800 p-4 border-t border-gray-700">
+                <div class="flex gap-2">
+                    <button onclick="sendLocation()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded" title="Send Location">
+                        📍
+                    </button>
+                    <button onclick="document.getElementById('fileInput').click()" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded" title="Send File">
+                        📎
+                    </button>
+                    <input type="file" id="fileInput" class="hidden" onchange="sendFile(this.files[0])">
+                    <input 
+                        type="text" 
+                        id="messageInput" 
+                        placeholder="Type a message..." 
+                        class="flex-1 bg-gray-700 rounded px-4 py-2"
+                        onkeypress="if(event.key==='Enter') sendMessage()"
+                    >
+                    <button onclick="sendMessage()" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Contact Modal -->
+    <div id="addContactModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full">
+            <h3 class="text-xl font-bold mb-4">Add Contact</h3>
+            
+            <div class="space-y-3">
+                <input type="tel" id="searchPhone" placeholder="Phone number" class="w-full p-3 bg-gray-700 rounded">
+                <input type="text" id="searchCountry" placeholder="Country (optional)" class="w-full p-3 bg-gray-700 rounded">
+                <select id="searchGender" class="w-full p-3 bg-gray-700 rounded">
+                    <option value="">Gender (optional)</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+                <input type="number" id="searchHeight" placeholder="Height in cm (optional)" class="w-full p-3 bg-gray-700 rounded">
+                <input type="number" id="searchWeight" placeholder="Weight in kg (optional)" class="w-full p-3 bg-gray-700 rounded">
+            </div>
+
+            <div id="searchResults" class="mt-4 max-h-60 overflow-y-auto"></div>
+
+            <div class="flex gap-2 mt-4">
+                <button onclick="searchUsers()" class="flex-1 bg-blue-600 hover:bg-blue-700 py-2 rounded">Search</button>
+                <button onclick="hideAddContact()" class="flex-1 bg-gray-600 hover:bg-gray-700 py-2 rounded">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin + '/api';
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+        let currentContactId = null;
+        let ws = null;
+
+        if (!token || !userId) {
+            window.location.href = '/';
+        }
+
+        // WebSocket connection
+        function connectWebSocket() {
+            ws = new WebSocket(`ws://${window.location.hostname}:3001`);
+            
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+                ws.send(JSON.stringify({ type: 'auth', token, userId }));
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'message' && data.fromUserId === currentContactId) {
+                    appendMessage(data.text, false);
+                }
+            };
+
+            ws.onerror = (error) => console.error('WebSocket error:', error);
+            ws.onclose = () => setTimeout(connectWebSocket, 3000);
+        }
+
+        connectWebSocket();
+
+        // Load contacts
+        async function loadContacts() {
+            try {
+                const res = await fetch(`${API_URL}/friends`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                const list = document.getElementById('contactsList');
+                list.innerHTML = data.friends.map(f => `
+                    <div onclick="openChat(${f.userId}, '${f.fullName || f.phone}')" 
+                         class="p-4 hover:bg-gray-700 cursor-pointer border-b border-gray-700">
+                        <div class="font-bold">${f.customName || f.fullName || f.phone}</div>
+                        <div class="text-sm text-gray-400">${f.phone}</div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Load contacts error:', err);
+            }
+        }
+
+        // Open chat
+        async function openChat(contactId, contactName) {
+            currentContactId = contactId;
+            document.getElementById('chatHeader').textContent = contactName;
+            document.getElementById('messagesArea').innerHTML = '';
+
+            try {
+                const res = await fetch(`${API_URL}/messages/${contactId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                data.messages.forEach(msg => {
+                    appendMessage(msg.text, msg.sent);
+                });
+            } catch (err) {
+                console.error('Load messages error:', err);
+            }
+        }
+
+        // Append message
+        function appendMessage(text, isSent) {
+            const area = document.getElementById('messagesArea');
+            const div = document.createElement('div');
+            div.className = `flex ${isSent ? 'justify-end' : 'justify-start'}`;
+            div.innerHTML = `
+                <div class="max-w-xs px-4 py-2 rounded-lg ${isSent ? 'bg-blue-600' : 'bg-gray-700'}" style="white-space: pre-wrap;">
+                    ${escapeHtml(text)}
+                </div>
+            `;
+            area.appendChild(div);
+            area.scrollTop = area.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (!text || !currentContactId) return;
+
+            try {
+                const res = await fetch(`${API_URL}/messages/${currentContactId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text })
+                });
+
+                if (res.ok) {
+                    appendMessage(text, true);
+                    input.value = '';
+                }
+            } catch (err) {
+                console.error('Send message error:', err);
+            }
+        }
+
+        // Send location
+        async function sendLocation() {
+            if (!currentContactId) {
+                alert('Select a contact first!');
+                return;
+            }
+
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser');
+                return;
+            }
+
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳';
+
+            try {
+                // Get GPS coordinates
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                });
+
+                const { latitude, longitude } = position.coords;
+
+                // Get IP address
+                let ip = '';
+                try {
+                    const ipRes = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipRes.json();
+                    ip = ipData.ip;
+                } catch (e) {
+                    console.error('IP fetch error:', e);
+                }
+
+                // Reverse geocode (GPS → Address)
+                let country = '', city = '', village = '', street = '', number = '';
+                try {
+                    const geocodeRes = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+                        { headers: { 'User-Agent': 'AMS-Chat/1.0' } }
+                    );
+                    const geocodeData = await geocodeRes.json();
+                    
+                    country = geocodeData.address?.country || '';
+                    city = geocodeData.address?.city || geocodeData.address?.town || '';
+                    village = geocodeData.address?.village || '';
+                    street = geocodeData.address?.road || '';
+                    number = geocodeData.address?.house_number || '';
+                } catch (e) {
+                    console.error('Geocode error:', e);
+                }
+
+                // Send location to friend
+                const res = await fetch(`${API_URL}/messages/send-location/${currentContactId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        latitude,
+                        longitude,
+                        country,
+                        city,
+                        village,
+                        street,
+                        number,
+                        ip
+                    })
+                });
+
+                if (res.ok) {
+                    // Show sent location in chat
+                    const locationText = `📍 Местоположение:\n` +
+                        (country ? `Държава: ${country}\n` : '') +
+                        (city ? `Град: ${city}\n` : '') +
+                        (village ? `Село: ${village}\n` : '') +
+                        (street ? `Улица: ${street}\n` : '') +
+                        (number ? `Номер: ${number}\n` : '') +
+                        `\nGPS: ${latitude}, ${longitude}\n` +
+                        (ip ? `IP: ${ip}\n` : '') +
+                        `\n🗺️ Карти:\n` +
+                        `Google Maps: https://www.google.com/maps?q=${latitude},${longitude}\n` +
+                        `2GIS: https://2gis.com/?m=${longitude},${latitude}/16\n` +
+                        `Yandex: https://yandex.com/maps/?ll=${longitude},${latitude}&z=16`;
+                    
+                    appendMessage(locationText, true);
+                    alert('Location sent!');
+                } else {
+                    alert('Failed to send location');
+                }
+            } catch (err) {
+                console.error('Location error:', err);
+                if (err.code === 1) {
+                    alert('Location permission denied. Please enable location access in your browser settings.');
+                } else {
+                    alert('Failed to get location: ' + err.message);
+                }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📍';
+            }
+        }
+
+        // Send file
+        async function sendFile(file) {
+            if (!file || !currentContactId) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch(`${API_URL}/messages/${currentContactId}/file`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    appendMessage(`📎 File sent: ${file.name}`, true);
+                }
+            } catch (err) {
+                console.error('Send file error:', err);
+            }
+        }
+
+        // Add contact modal
+        function showAddContact() {
+            document.getElementById('addContactModal').classList.remove('hidden');
+        }
+
+        function hideAddContact() {
+            document.getElementById('addContactModal').classList.add('hidden');
+            document.getElementById('searchResults').innerHTML = '';
+        }
+
+        // Search users
+        async function searchUsers() {
+            const phone = document.getElementById('searchPhone').value;
+            const country = document.getElementById('searchCountry').value;
+            const gender = document.getElementById('searchGender').value;
+            const height = document.getElementById('searchHeight').value;
+            const weight = document.getElementById('searchWeight').value;
+
+            if (!phone && !country && !gender && !height && !weight) {
+                alert('Enter at least one search criteria');
+                return;
+            }
+
+            try {
+                const params = new URLSearchParams();
+                if (phone) params.append('phone', phone);
+                if (country) params.append('country', country);
+                if (gender) params.append('gender', gender);
+                if (height) params.append('height', height);
+                if (weight) params.append('weight', weight);
+
+                const res = await fetch(`${API_URL}/friends/search?${params}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+
+                const results = document.getElementById('searchResults');
+                if (data.users.length === 0) {
+                    results.innerHTML = '<p class="text-gray-400">No users found</p>';
+                } else {
+                    results.innerHTML = data.users.map(u => `
+                        <div class="bg-gray-700 p-3 rounded mb-2">
+                            <div class="font-bold">${u.full_name}</div>
+                            <div class="text-sm text-gray-400">${u.phone} • ${u.gender} • ${u.height_cm}cm • ${u.weight_kg}kg</div>
+                            <div class="text-sm text-gray-400">${u.country}, ${u.city}</div>
+                            <button onclick="addFriend(${u.id}, '${u.full_name}')" 
+                                    class="mt-2 bg-green-600 hover:bg-green-700 px-4 py-1 rounded text-sm">
+                                Add
+                            </button>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Search error:', err);
+            }
+        }
+
+        // Add friend
+        async function addFriend(friendUserId, name) {
+            try {
+                const res = await fetch(`${API_URL}/friends/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ friendUserId })
+                });
+
+                if (res.ok) {
+                    alert(`${name} added!`);
+                    hideAddContact();
+                    loadContacts();
+                }
+            } catch (err) {
+                console.error('Add friend error:', err);
+            }
+        }
+
+        function logout() {
+            if (confirm('Сигурни ли сте, че искате да излезете?')) {
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Load contacts on start
+        loadContacts();
+    </script>
+</body>
+</html>

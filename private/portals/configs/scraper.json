@@ -1,0 +1,12 @@
+{
+  "_comment": "Конфигурация на портала за услуги → скрапер.",
+  "version": "1.0086",
+  "max_duration_seconds": 300,
+  "max_pages_per_query": 5,
+  "max_total_pages": 15,
+  "request_timeout_ms": 12000,
+  "user_agent": "Mozilla/5.0 (compatible; KCYPortalsBot/1.0; +https://kcy-ecosystem.local)",
+  "search_engines": {
+    "duckduckgo_html": "https://html.duckduckgo.com/html/?q="
+  }
+}

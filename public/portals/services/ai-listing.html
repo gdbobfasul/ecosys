@@ -1,0 +1,83 @@
+<!-- Version: 1.0086 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏠 AI обява за имот</title>
+    <link rel="stylesheet" href="/shared/css/common.css">
+    <style>
+        .wrap { max-width: 780px; margin: 30px auto; padding: 30px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.1); }
+        h1 { color: var(--primary-color); margin-bottom: 6px; }
+        label { display: block; margin: 14px 0 6px; font-weight: 600; }
+        textarea, input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 1em; }
+        textarea { min-height: 110px; resize: vertical; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn { padding: 12px 20px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; margin-top: 18px; }
+        .btn:disabled { opacity: .5; cursor: not-allowed; }
+        #output { white-space: pre-wrap; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid var(--primary-color); min-height: 40px; }
+        .hint { color: #888; font-size: .88em; }
+        .meta { color: #888; font-size: .85em; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <a href="/portals/services/" style="color:#888;text-decoration:none">← обратно към услуги</a>
+        <h1>🏠 AI обява за имот</h1>
+        <p class="hint">По няколко ключови думи AI ще напише готова обява за продажба.</p>
+
+        <label>Ключови думи / детайли за имота</label>
+        <textarea id="keywords" placeholder="напр.: 3-стаен апартамент, Лозенец, 85кв, обзаведен, 2 тераси, паркомясто, сграда 2018г"></textarea>
+
+        <div class="row">
+            <div>
+                <label>Език</label>
+                <select id="language"><option value="bg">Български</option><option value="en">English</option></select>
+            </div>
+            <div>
+                <label>Тон</label>
+                <select id="tone"><option value="professional">Професионален</option><option value="friendly">Приятелски</option><option value="luxury">Луксозен</option></select>
+            </div>
+        </div>
+
+        <button class="btn" id="gen">✨ Генерирай обява</button>
+        <div id="output">Тук ще се появи готовата обява…</div>
+        <div id="meta" class="meta"></div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('gen');
+        const out = document.getElementById('output');
+        const meta = document.getElementById('meta');
+
+        btn.addEventListener('click', async () => {
+            const keywords = document.getElementById('keywords').value.trim();
+            if (keywords.length < 3) { out.textContent = 'Попълни поне няколко ключови думи.'; return; }
+            btn.disabled = true;
+            out.textContent = '⏳ Генерирам с Claude AI…';
+            meta.textContent = '';
+            try {
+                const r = await fetch('/api/portals/services/ai-listing', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        keywords,
+                        language: document.getElementById('language').value,
+                        tone: document.getElementById('tone').value,
+                    })
+                });
+                const data = await r.json();
+                if (r.status === 401) { location.href = '/portals/login.html?next=' + location.pathname; return; }
+                if (r.status === 402) { location.href = '/portals/billing.html'; return; }
+                if (!r.ok) { out.textContent = '❌ ' + (data.message || JSON.stringify(data)); return; }
+                out.textContent = data.text;
+                meta.textContent = `Модел: ${data.model} · тоkens in/out: ${data.input_tokens}/${data.output_tokens} · job #${data.job_id || '-'}`;
+            } catch (e) {
+                out.textContent = '❌ Мрежова грешка: ' + e.message;
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
