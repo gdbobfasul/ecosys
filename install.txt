@@ -106,11 +106,35 @@ sudo bash server-prepare.sh
 sudo bash setup-wizard.sh
 
 >>> Git Bash
+ssh-copy-id -p 2222 -i ~/.ssh/id_ed25519.pub deploy@alsec.strangled.net
 bash deploy.sh
-ssh deploy@alsec.strangled.net
+
+на Уиндоус, за да поддържа жива връзката със сървера:nano ~/.ssh/config
+mkdir -p ~/.ssh
+cat >> ~/.ssh/config << 'EOF'
+
+Host *
+    ServerAliveInterval 30
+    ServerAliveCountMax 3
+    TCPKeepAlive yes
+EOF
+chmod 600 ~/.ssh/config
+
+
+ssh -p 2222 deploy@alsec.strangled.net
+
+
+bash:
+su root
+# От root (или admin user):
+sudo bash /var/www/deploy/deploy-scripts/server/kcy-admin-sudo.sh
+
+echo 'deploy ALL=(ALL) NOPASSWD: /var/www/deploy/deploy-scripts/server/server-install.sh' | sudo tee /etc/sudoers.d/kcy-deploy
+sudo chmod 0440 /etc/sudoers.d/kcy-deploy
+
+
 sudo bash /var/www/deploy/deploy-scripts/server/server-install.sh
 
 
-deploy-scripts\windows\deploy.bat
 
 

@@ -48,15 +48,18 @@ Default: alsec.strangled.net deploy 2222
 Архивира проекта → качва 1 файл → разархивира на сървъра.
 Логва в ~/kcy-deploy.log.
 
+Между всяка стъпка скриптът прави пауза — натискаш Enter да продължиш,
+или 'q' за да изключиш паузите за останалата част на този run.
+
+За пълно изключване на паузите (CI / scripted runs):
+  DEPLOY_NO_PAUSE=1 ./deploy.sh
+
 Преди първо ползване:
-  1. Генерирай SSH ключ (PowerShell):
+  1. Генерирай SSH ключ (Git Bash):
      ssh-keygen -t ed25519
 
-  2. Копирай ключа на сървъра (PowerShell):
-     type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh -p 22
-     deploy@alsec.strangled.net "mkdir -p ~/.ssh &&
-     cat >> ~/.ssh/authorized_keys &&
-     chmod 600 ~/.ssh/authorized_keys"
+  2. Копирай ключа на сървъра:
+     ssh-copy-id -p 2222 -i ~/.ssh/id_ed25519.pub deploy@alsec.strangled.net
 
   3. Пусни: ./deploy.sh
 EOF
@@ -72,6 +75,23 @@ die() {
     log "${YELLOW}Логът е в: ${LOG_FILE}${NC}"
     log ""
     exit 1
+}
+
+# Пауза между стъпки — натисни Enter за следваща, или 'q' за изключване на паузите.
+# Може да бъде изключена с DEPLOY_NO_PAUSE=1 (за CI/автоматизирани runs).
+pause_for_user() {
+    [ "${DEPLOY_NO_PAUSE:-0}" = "1" ] && return
+    [ ! -t 0 ] && return  # няма TTY (pipe-нат stdin) — пропусни
+    echo ""
+    echo -en "  ${CYAN}--- Натисни Space/Enter да продължиш (или 'q' за пропускане на бъдещи паузи) ---${NC} "
+    local REPLY
+    # -n 1 = един клавиш, без Enter (приема Space, Enter, всякакъв клавиш)
+    read -n 1 -r REPLY </dev/tty 2>/dev/null || return
+    echo ""  # нов ред след single-char read
+    if [ "$REPLY" = "q" ] || [ "$REPLY" = "Q" ]; then
+        export DEPLOY_NO_PAUSE=1
+        log "  ${YELLOW}(паузи изключени за останалата част)${NC}"
+    fi
 }
 
 log "${CYAN}╔═══════════════════════════════════════════╗${NC}"
@@ -191,24 +211,30 @@ else
     die "SSH ключ не е намерен в ~/.ssh/"
 fi
 
+pause_for_user
+
 # ═══ STEP 0: CONNECT ═══
 log ""
 log "${GREEN}[0/4] Connecting to ${SERVER}...${NC}"
 log "  ${YELLOW}[debug] ssh ${SSH_OPTS} ${USER}@${SERVER}${NC}"
 
-ssh ${SSH_OPTS} "${USER}@${SERVER}" 'echo "  ✓ Connected as $(whoami) on $(hostname)"'
-SSH_OK=$?
-if [ $SSH_OK -ne 0 ]; then
-    log "  ${YELLOW}Първият опит неуспешен. Опит 2/3 след 5 секунди...${NC}"
-    sleep 5
+MAX_SSH_ATTEMPTS=4
+SSH_OK=1
+for ATTEMPT in $(seq 1 ${MAX_SSH_ATTEMPTS}); do
+    if [ $ATTEMPT -gt 1 ]; then
+        log "  ${YELLOW}Опит ${ATTEMPT}/${MAX_SSH_ATTEMPTS} след 5 секунди...${NC}"
+        sleep 5
+    fi
     ssh ${SSH_OPTS} "${USER}@${SERVER}" 'echo "  ✓ Connected as $(whoami) on $(hostname)"'
     SSH_OK=$?
-fi
+    if [ $SSH_OK -eq 0 ]; then break; fi
+    if [ $ATTEMPT -eq 1 ]; then
+        log "  ${YELLOW}Първият опит неуспешен.${NC}"
+    fi
+done
+
 if [ $SSH_OK -ne 0 ]; then
-    log "  ${YELLOW}Опит 3/3 след 5 секунди...${NC}"
-    sleep 5
-    ssh ${SSH_OPTS} "${USER}@${SERVER}" 'echo "  ✓ Connected as $(whoami) on $(hostname)"' || {
-        die "Не мога да се свържа с ${USER}@${SERVER}:${PORT} след 3 опита
+    die "Не мога да се свържа с ${USER}@${SERVER}:${PORT} след ${MAX_SSH_ATTEMPTS} опита
 
   Провери:
     1. SSH ключ копиран ли е на сървъра? От PowerShell:
@@ -219,8 +245,9 @@ if [ $SSH_OK -ne 0 ]; then
     2. Мрежа: ping ${SERVER}
     3. Порт: правилен ли е ${PORT}?
     4. Потребител: ${USER} съществува ли на сървъра?"
-    }
 fi
+
+pause_for_user
 
 # ═══ STEP 1: CREATE LOCAL ARCHIVE ═══
 log ""
@@ -264,6 +291,8 @@ ARCHIVE_SIZE=$(du -h "$ARCHIVE_NAME" | cut -f1)
 TAR_TIME=$((SECONDS - START_TIME))
 log "  ${GREEN}✓ ${ARCHIVE_NAME} (${ARCHIVE_SIZE}) — ${TAR_TIME}s${NC}"
 
+pause_for_user
+
 # ═══ STEP 2: UPLOAD ARCHIVE ═══
 log ""
 log "${GREEN}[2/4] Качване на архива на сървъра...${NC}"
@@ -271,31 +300,33 @@ log "  ${YELLOW}[debug] scp ${SCP_OPTS} ${ARCHIVE_NAME} → ${STAGING}/${NC}"
 
 # Ensure staging dir exists
 # Ensure staging dir exists (with retry)
-for ATTEMPT in 1 2 3; do
+for ATTEMPT in 1 2 3 4; do
     ssh ${SSH_OPTS} "${USER}@${SERVER}" "mkdir -p ${STAGING}" && break
-    [ "$ATTEMPT" -lt 3 ] && sleep 5
+    [ "$ATTEMPT" -lt 4 ] && sleep 5
 done || die "Не мога да създам ${STAGING}"
 
 START_TIME=$SECONDS
 SCP_OK=false
-for ATTEMPT in 1 2 3; do
-    log "  ${YELLOW}[опит ${ATTEMPT}/3]${NC}"
+for ATTEMPT in 1 2 3 4; do
+    log "  ${YELLOW}[опит ${ATTEMPT}/4]${NC}"
     if scp ${SCP_OPTS} "$ARCHIVE_NAME" "${USER}@${SERVER}:${STAGING}/"; then
         SCP_OK=true
         break
     else
         log "  ${RED}  ✗ Неуспешно${NC}"
-        if [ "$ATTEMPT" -lt 3 ]; then
+        if [ "$ATTEMPT" -lt 4 ]; then
             log "  ${YELLOW}  Изчакване 5 секунди...${NC}"
             sleep 5
         fi
     fi
 done
 if [ "$SCP_OK" = false ]; then
-    die "scp не успя след 3 опита"
+    die "scp не успя след 4 опита"
 fi
 UPLOAD_TIME=$((SECONDS - START_TIME))
 log "  ${GREEN}✓ Качен за ${UPLOAD_TIME}s${NC}"
+
+pause_for_user
 
 # ═══ STEP 3: EXTRACT ON SERVER ═══
 log ""
@@ -316,6 +347,8 @@ ssh ${SSH_OPTS} "${USER}@${SERVER}" "
 " || die "Разархивирането на сървъра не успя"
 
 log "  ${GREEN}✓ Разархивирано${NC}"
+
+pause_for_user
 
 # ═══ STEP 4: VERIFY ═══
 log ""
