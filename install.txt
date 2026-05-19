@@ -95,6 +95,13 @@ type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh -p 2222 root@143.198.212.195 "mk
 ssh -p 2222 root@143.198.212.195
 
 
+git status
+git add .
+git push -u origin master
+git commit -m "ecosys: "
+git push
+
+
 sudo bash server-prepare.sh
 sudo bash setup-wizard.sh
 
