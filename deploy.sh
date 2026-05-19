@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0087
+# Version: 1.0088
 ##############################################################################
 # KCY Ecosystem - Deploy Script (Client-side)
 #
@@ -17,7 +17,7 @@ trap 'echo ""; echo "Натисни Enter за затваряне..."; read DUMM
 
 SERVER="${1:-alsec.strangled.net}"
 USER="${2:-deploy}"
-PORT="${3:-22}"
+PORT="${3:-2222}"
 STAGING="/var/www/deploy"
 LOG_FILE="${HOME}/kcy-deploy.log"
 
@@ -40,10 +40,10 @@ log "═════════════════════════
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     cat << 'EOF'
-KCY Ecosystem - Deploy v1.0087
+KCY Ecosystem - Deploy v1.0088
 
 Usage:  ./deploy.sh [server] [user] [port]
-Default: alsec.strangled.net deploy 22
+Default: alsec.strangled.net deploy 2222
 
 Архивира проекта → качва 1 файл → разархивира на сървъра.
 Логва в ~/kcy-deploy.log.
@@ -75,7 +75,7 @@ die() {
 }
 
 log "${CYAN}╔═══════════════════════════════════════════╗${NC}"
-log "${CYAN}║     KCY Ecosystem - Deploy v1.0087        ║${NC}"
+log "${CYAN}║     KCY Ecosystem - Deploy v1.0088        ║${NC}"
 log "${CYAN}╚═══════════════════════════════════════════╝${NC}"
 log ""
 log "  Server:  ${GREEN}${SERVER}${NC}"

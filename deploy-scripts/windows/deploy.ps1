@@ -5,7 +5,7 @@
 param(
     [string]$Server = "alsec.strangled.net",
     [string]$User = "deploy",
-    [int]$Port = 22,
+    [int]$Port = 2222,
     [switch]$Help
 )
 

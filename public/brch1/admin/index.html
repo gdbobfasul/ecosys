@@ -65,6 +65,27 @@
         .pill-owner { background: #fff4d4; color: #8a6508; }
         .pill-setup { background: #ffe0e0; color: #c82333; }
         .full-width { grid-column: 1 / -1; }
+
+        /* Section headers (split owner vs permissionless) */
+        .section-header {
+            grid-column: 1 / -1;
+            padding: 20px 26px;
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(0,0,0,.18);
+            margin-top: 8px;
+        }
+        .section-header h2 { font-size: 1.4em; margin: 0 0 6px 0; border: none; padding: 0; }
+        .section-header p  { margin: 0; opacity: .9; font-size: .92em; }
+        .section-header.section-perm {
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            color: white;
+        }
+        .section-header.section-perm h2 { color: white; }
+        .section-header.section-owner {
+            background: linear-gradient(135deg, #8a6508, #e8a317);
+            color: white;
+        }
+        .section-header.section-owner h2 { color: white; }
     </style>
 </head>
 <body>
@@ -117,6 +138,12 @@
             <div class="stat-row"><span class="label">In circulation</span><span class="value" id="p-circ">—</span></div>
         </div>
 
+        <!-- ════════ PERMISSIONLESS SECTION ════════ -->
+        <div class="section-header section-perm">
+            <h2>🌍 PERMISSIONLESS — всеки може да ги извика</h2>
+            <p>Тези функции не изискват owner. Резултатът обаче винаги отива на правилните адреси (creator wallet, pool burn) — затова е безопасно да са отворени.</p>
+        </div>
+
         <!-- ========== CREATOR MINT ========== -->
         <div class="panel">
             <h2>🌱 Creator Mint <span class="pill pill-perm">permissionless</span></h2>
@@ -140,6 +167,12 @@
                 <button class="btn-sm btn-warn" onclick="callHalveAnnually()">🔥 halveAnnually()</button>
             </div>
             <div style="font-size: .8em; color: #999; margin-top: 8px;">Burn-ва 50% от pool. Цената се удвоява. Веднъж на 365 дни.</div>
+        </div>
+
+        <!-- ════════ OWNER-ONLY SECTION ════════ -->
+        <div class="section-header section-owner">
+            <h2>🔒 OWNER-ONLY — само от owner wallet-а</h2>
+            <p>Свържи MetaMask с owner адреса. Тези функции ще revert-нат ако не си owner.</p>
         </div>
 
         <!-- ========== MINT TO POOL ========== -->
