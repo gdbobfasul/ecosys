@@ -45,13 +45,15 @@ KCY Ecosystem - Deploy v1.0088
 Usage:  ./deploy.sh [server] [user] [port]
 Default: alsec.strangled.net deploy 2222
 
-Архивира проекта → качва 1 файл → разархивира на сървъра.
+Архивира проекта → качва 1 файл → разархивира на сървъра →
+автоматично извиква server-install.sh.
 Логва в ~/kcy-deploy.log.
 
-Между всяка стъпка скриптът прави пауза — натискаш Enter да продължиш,
-или 'q' за да изключиш паузите за останалата част на този run.
+По default НЕ показва съдържанието на docs/ENV-EXAMPLE.env.
+За да го изпише и да попита дали да го копира на сървъра:
+  DEPLOY_SHOW_ENV=1 ./deploy.sh
 
-За пълно изключване на паузите (CI / scripted runs):
+За изключване на финалното питане "Pусни server-install.sh?" (CI):
   DEPLOY_NO_PAUSE=1 ./deploy.sh
 
 Преди първо ползване:
@@ -79,19 +81,23 @@ die() {
 
 # Пауза между стъпки — натисни Enter за следваща, или 'q' за изключване на паузите.
 # Може да бъде изключена с DEPLOY_NO_PAUSE=1 (за CI/автоматизирани runs).
-pause_for_user() {
-    [ "${DEPLOY_NO_PAUSE:-0}" = "1" ] && return
-    [ ! -t 0 ] && return  # няма TTY (pipe-нат stdin) — пропусни
+# Питане дали да покаже дълъг блок текст. Натискаш 'q' да го пропуснеш,
+# всякакъв друг клавиш за да го изпишеш.
+# Връща 0 (show) ако трябва да изпише, 1 (skip) ако да пропусне.
+ask_show_block() {
+    local prompt="${1:-Натисни клавиш да покажеш блока, q за пропускане...}"
+    [ "${DEPLOY_NO_PAUSE:-0}" = "1" ] && return 0  # show by default in no-pause mode
+    [ ! -t 0 ] && return 0  # няма TTY → show
     echo ""
-    echo -en "  ${CYAN}--- Натисни Space/Enter да продължиш (или 'q' за пропускане на бъдещи паузи) ---${NC} "
+    echo -en "  ${CYAN}${prompt}${NC} "
     local REPLY
-    # -n 1 = един клавиш, без Enter (приема Space, Enter, всякакъв клавиш)
-    read -n 1 -r REPLY </dev/tty 2>/dev/null || return
-    echo ""  # нов ред след single-char read
+    read -n 1 -r REPLY </dev/tty 2>/dev/null || return 0
+    echo ""
     if [ "$REPLY" = "q" ] || [ "$REPLY" = "Q" ]; then
-        export DEPLOY_NO_PAUSE=1
-        log "  ${YELLOW}(паузи изключени за останалата част)${NC}"
+        log "  ${YELLOW}(блокът пропуснат)${NC}"
+        return 1
     fi
+    return 0
 }
 
 log "${CYAN}╔═══════════════════════════════════════════╗${NC}"
@@ -211,11 +217,9 @@ else
     die "SSH ключ не е намерен в ~/.ssh/"
 fi
 
-pause_for_user
-
 # ═══ STEP 0: CONNECT ═══
 log ""
-log "${GREEN}[0/4] Connecting to ${SERVER}...${NC}"
+log "${GREEN}[0/5] Connecting to ${SERVER}...${NC}"
 log "  ${YELLOW}[debug] ssh ${SSH_OPTS} ${USER}@${SERVER}${NC}"
 
 MAX_SSH_ATTEMPTS=4
@@ -247,11 +251,9 @@ if [ $SSH_OK -ne 0 ]; then
     4. Потребител: ${USER} съществува ли на сървъра?"
 fi
 
-pause_for_user
-
 # ═══ STEP 1: CREATE LOCAL ARCHIVE ═══
 log ""
-log "${GREEN}[1/4] Архивиране на проекта...${NC}"
+log "${GREEN}[1/5] Архивиране на проекта...${NC}"
 ARCHIVE_NAME="${HOME}/kcy-deploy-$(date +%Y%m%d-%H%M%S).tar.gz"
 
 log "  ${YELLOW}[debug] Изключени: node_modules, .env, кеш, логове (.git ВКЛЮЧЕН)${NC}"
@@ -291,11 +293,9 @@ ARCHIVE_SIZE=$(du -h "$ARCHIVE_NAME" | cut -f1)
 TAR_TIME=$((SECONDS - START_TIME))
 log "  ${GREEN}✓ ${ARCHIVE_NAME} (${ARCHIVE_SIZE}) — ${TAR_TIME}s${NC}"
 
-pause_for_user
-
 # ═══ STEP 2: UPLOAD ARCHIVE ═══
 log ""
-log "${GREEN}[2/4] Качване на архива на сървъра...${NC}"
+log "${GREEN}[2/5] Качване на архива на сървъра...${NC}"
 log "  ${YELLOW}[debug] scp ${SCP_OPTS} ${ARCHIVE_NAME} → ${STAGING}/${NC}"
 
 # Ensure staging dir exists
@@ -326,11 +326,9 @@ fi
 UPLOAD_TIME=$((SECONDS - START_TIME))
 log "  ${GREEN}✓ Качен за ${UPLOAD_TIME}s${NC}"
 
-pause_for_user
-
 # ═══ STEP 3: EXTRACT ON SERVER ═══
 log ""
-log "${GREEN}[3/4] Разархивиране на сървъра...${NC}"
+log "${GREEN}[3/5] Разархивиране на сървъра...${NC}"
 log "  ${YELLOW}[debug] Изтриване на старите файлове в ${STAGING} и разархивиране...${NC}"
 
 ARCHIVE_BASENAME=$(basename "$ARCHIVE_NAME")
@@ -342,17 +340,30 @@ ssh ${SSH_OPTS} "${USER}@${SERVER}" "
     echo '  [server] Разархивиране (strip top dir)...'
     tar -xzf ${ARCHIVE_BASENAME} --strip-components=1 2>&1
     rm -f ${ARCHIVE_BASENAME}
+
+    # Safety net: нормализирай line endings (за случай че някой файл е CRLF).
+    # Bash на Linux чупи скриптове с \r\n → '\$\\r': command not found.
+    if command -v dos2unix >/dev/null 2>&1; then
+        echo '  [server] Нормализиране на line endings в .sh файлове...'
+        find ${STAGING}/deploy-scripts -name '*.sh' -exec dos2unix -q {} + 2>/dev/null || true
+        echo '  [server] ✓ Готово'
+    else
+        # fallback със sed (по-бавен но винаги работи)
+        echo '  [server] Нормализиране на line endings (sed fallback)...'
+        find ${STAGING}/deploy-scripts -name '*.sh' -exec sed -i 's/\\r\$//' {} + 2>/dev/null || true
+    fi
+    # Направи всички shell скриптове изпълними
+    find ${STAGING}/deploy-scripts -name '*.sh' -exec chmod +x {} + 2>/dev/null || true
+
     echo \"  [server] .git: \$([ -d .git ] && echo 'ДА — git pull е възможен' || echo 'НЯМА')\"
     echo '  [server] Готово.'
 " || die "Разархивирането на сървъра не успя"
 
 log "  ${GREEN}✓ Разархивирано${NC}"
 
-pause_for_user
-
 # ═══ STEP 4: VERIFY ═══
 log ""
-log "${GREEN}[4/4] Проверка на сървъра...${NC}"
+log "${GREEN}[4/5] Проверка на сървъра...${NC}"
 ssh ${SSH_OPTS} "${USER}@${SERVER}" "
     echo ''
     echo '  Съдържание на ${STAGING}/:'
@@ -376,6 +387,55 @@ ssh ${SSH_OPTS} "${USER}@${SERVER}" "
     echo ''
 "
 
+# ═══ STEP 5: RUN SERVER-INSTALL ═══
+log ""
+log "${GREEN}[5/5] Активиране — изпълнение на server-install.sh...${NC}"
+log ""
+
+# Питай дали да run-ва автоматично (default: yes)
+RUN_INSTALL="y"
+if [ -t 0 ] && [ "${DEPLOY_NO_PAUSE:-0}" != "1" ]; then
+    read -p "  Pусни server-install.sh автоматично сега? [Y/n]: " RUN_INSTALL
+    RUN_INSTALL="${RUN_INSTALL:-y}"
+fi
+
+if [ "$RUN_INSTALL" = "y" ] || [ "$RUN_INSTALL" = "Y" ]; then
+    INSTALL_PATH="${STAGING}/deploy-scripts/server/server-install.sh"
+    log "  ${CYAN}[debug] ssh → sudo ${INSTALL_PATH}${NC}"
+    log ""
+
+    # Първо chmod +x за да гарантираме изпълнимост
+    ssh ${SSH_OPTS} "${USER}@${SERVER}" "chmod +x ${INSTALL_PATH}" 2>/dev/null
+
+    # Run-ни server-install.sh през sudo (без bash prefix — match-ва sudoers entry)
+    # -t флагът заделя TTY за интерактивни прозорци (ако скриптът пита)
+    if ssh -t ${SSH_OPTS} "${USER}@${SERVER}" "sudo ${INSTALL_PATH}"; then
+        log ""
+        log "${GREEN}═══════════════════════════════════════════════════${NC}"
+        log "${GREEN}  ✓ INSTALL COMPLETE${NC}"
+        log "${GREEN}═══════════════════════════════════════════════════${NC}"
+    else
+        EXIT_CODE=$?
+        log ""
+        log "${RED}═══════════════════════════════════════════════════${NC}"
+        log "${RED}  ✗ server-install.sh завърши с грешка (exit ${EXIT_CODE})${NC}"
+        log "${RED}═══════════════════════════════════════════════════${NC}"
+        log ""
+        log "${YELLOW}Възможни причини:${NC}"
+        log "  1. ${USER} още няма limited sudo за server-install.sh"
+        log "     → Run-ни като root: ${CYAN}sudo bash ${STAGING}/deploy-scripts/server/kcy-admin-sudo.sh${NC}"
+        log "  2. server-install.sh падна по време на изпълнение"
+        log "     → SSH-ни и пусни ръчно за да видиш грешката:"
+        log "        ${CYAN}ssh -p ${PORT} ${USER}@${SERVER}${NC}"
+        log "        ${CYAN}sudo ${INSTALL_PATH}${NC}"
+        log ""
+    fi
+else
+    log "  ${YELLOW}Пропуснато. Активирай ръчно:${NC}"
+    log "    ${CYAN}ssh -p ${PORT} ${USER}@${SERVER}${NC}"
+    log "    ${CYAN}sudo ${STAGING}/deploy-scripts/server/server-install.sh${NC}"
+fi
+
 # ═══ CLEANUP LOCAL ═══
 rm -f "$ARCHIVE_NAME"
 log "  ${GREEN}✓ Локалният архив изтрит${NC}"
@@ -386,17 +446,6 @@ log ""
 log "${GREEN}═══════════════════════════════════════════════════${NC}"
 log "${GREEN}  ✓ DEPLOY COMPLETE (${TOTAL_TIME}s)${NC}"
 log "${GREEN}═══════════════════════════════════════════════════${NC}"
-log ""
-log "${YELLOW}═══════════════════════════════════════════════════${NC}"
-log "${YELLOW}  СЛЕДВАЩА СТЪПКА: Инсталация на сървъра${NC}"
-log "${YELLOW}═══════════════════════════════════════════════════${NC}"
-log ""
-log "  Влез като ${GREEN}deploy${NC}, превключи на ${GREEN}kcy-admin${NC}:"
-log ""
-log "  ${CYAN}ssh -p ${PORT} deploy@${SERVER}${NC}"
-log "  ${CYAN}su - kcy-admin${NC}"
-log "  ${CYAN}cd ${STAGING}/deploy-scripts/server${NC}"
-log "  ${CYAN}sudo bash server-install.sh${NC}"
 log ""
 log "${YELLOW}═══════════════════════════════════════════════════${NC}"
 log "${YELLOW}  НЕОБХОДИМИ ПОТРЕБИТЕЛИ НА СЪРВЪРА               ${NC}"
@@ -463,8 +512,9 @@ log "  3. Попълни:         ${GREEN}nano ${STAGING}/private/configs/.env${
 log "  4. Пусни инсталация"
 log ""
 
-# ═══ Покажи съдържанието на шаблона ═══
-if [ -f "docs/ENV-EXAMPLE.env" ]; then
+# ═══ ENV шаблон — опционално показване и копиране ═══
+# По default: пропуска. Активирай с DEPLOY_SHOW_ENV=1 за да покаже + питай.
+if [ -f "docs/ENV-EXAMPLE.env" ] && [ "${DEPLOY_SHOW_ENV:-0}" = "1" ]; then
     log "  ${CYAN}Съдържание на docs/ENV-EXAMPLE.env:${NC}"
     log ""
     while IFS= read -r line; do
@@ -472,7 +522,6 @@ if [ -f "docs/ENV-EXAMPLE.env" ]; then
     done < "docs/ENV-EXAMPLE.env"
     log ""
 
-    # ═══ Питай дали да копира на сървъра ═══
     read -p "  Да копирам шаблона на сървъра като .env? [y/N]: " CREATE_ENV
     if [ "$CREATE_ENV" = "y" ] || [ "$CREATE_ENV" = "Y" ]; then
         scp ${SCP_OPTS} "docs/ENV-EXAMPLE.env" "${USER}@${SERVER}:${STAGING}/private/configs/.env" && \
@@ -483,8 +532,10 @@ if [ -f "docs/ENV-EXAMPLE.env" ]; then
             log "    ${CYAN}nano ${STAGING}/private/configs/.env${NC}" || \
             log "  ${RED}✗ Не успя да копира${NC}"
     fi
-else
+elif [ ! -f "docs/ENV-EXAMPLE.env" ]; then
     log "  ${RED}✗ docs/ENV-EXAMPLE.env не е намерен!${NC}"
+else
+    log "  ${YELLOW}(прескочено — за показване на шаблона: DEPLOY_SHOW_ENV=1 ./deploy.sh)${NC}"
 fi
 
 log ""

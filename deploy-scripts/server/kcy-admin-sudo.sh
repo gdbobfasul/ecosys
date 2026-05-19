@@ -55,12 +55,32 @@ cat > "$TMP_FILE" << 'SUDOERS_EOF'
 # KCY Ecosystem — limited sudo за deploy потребителя
 # Файлът е управляван от kcy-admin-sudo.sh — не редактирай ръчно.
 
-# Install / setup скриптове
+# Install / setup скриптове - приема и двата начина на извикване:
+#   sudo /path/to/script.sh     (директно, ако е executable)
+#   sudo bash /path/to/script.sh (с bash prefix - често по навик)
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/server-install.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/server-install.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/server-install.sh
+
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/setup-wizard.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/setup-wizard.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/setup-wizard.sh
+
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/01-setup-database.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/01-setup-database.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/01-setup-database.sh
+
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/02-setup-domain.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/02-setup-domain.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/02-setup-domain.sh
+
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/server-prepare.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/server-prepare.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/server-prepare.sh
+
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/kcy-admin-sudo.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/kcy-admin-sudo.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/kcy-admin-sudo.sh
 
 # Systemd service management (само за KCY services)
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat

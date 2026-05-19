@@ -1,0 +1,49 @@
+# Гарантира че всички text файлове в repo-то са с LF (Unix) line endings.
+# Това решава "$'\r': command not found" грешките на Linux сървъра.
+#
+# Auto-detect text vs binary, и нормализирай text файлове в LF.
+* text=auto eol=lf
+
+# Bash и Linux скриптове — задължително LF (CRLF чупи bash на Linux)
+*.sh   text eol=lf
+*.bash text eol=lf
+
+# Конфиг файлове на сървъра — LF
+*.env       text eol=lf
+.env*       text eol=lf
+.npmrc      text eol=lf
+.gitignore  text eol=lf
+.gitattributes text eol=lf
+
+# Web/JS — LF
+*.js   text eol=lf
+*.jsx  text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.css  text eol=lf
+*.md   text eol=lf
+*.sql  text eol=lf
+*.sol  text eol=lf
+*.version text eol=lf
+
+# Windows batch и PowerShell — CRLF (Windows очаква го)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Бинарни — не пипай
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.tar binary
+*.gz binary
+*.rar binary
+*.7z  binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.eot  binary
