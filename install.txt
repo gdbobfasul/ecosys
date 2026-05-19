@@ -123,14 +123,23 @@ chmod 600 ~/.ssh/config
 
 ssh -p 2222 deploy@alsec.strangled.net
 
-
 bash:
 su root
+sudo apt-get install -y tmux
+tmux
+tmux attach
+tmux ls
+tmux attach -t 0
+
+
 # От root (или admin user):
 sudo bash /var/www/deploy/deploy-scripts/server/kcy-admin-sudo.sh
 
+ИЛИ
+===================================
 echo 'deploy ALL=(ALL) NOPASSWD: /var/www/deploy/deploy-scripts/server/server-install.sh' | sudo tee /etc/sudoers.d/kcy-deploy
 sudo chmod 0440 /etc/sudoers.d/kcy-deploy
+===================================
 
 
 sudo bash /var/www/deploy/deploy-scripts/server/server-install.sh
