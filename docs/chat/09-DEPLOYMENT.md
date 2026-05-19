@@ -3,7 +3,7 @@
 
 > **⚠️ KCY Ecosystem:** Deployment вече е автоматизиран.
 > Виж `docs/DEPLOY-SCRIPTS-README.md` за пълната процедура:
-> `deploy.sh` → `server-install.sh` → `01-setup-database.sh` → `kcy-restart`
+> `04-deploy.sh` → `05-server-install.sh` → `07-setup-database.sh` → `kcy-restart`
 
 ## 🚀 Deploy ALSEC to Production
 

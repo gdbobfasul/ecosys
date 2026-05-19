@@ -21,9 +21,9 @@
 ### Нов Smart Database Setup Script
 
 ```bash
-sudo ./01-setup-database.sh              # Auto-detect
-sudo ./01-setup-database.sh --force-sqlite        # SQLite
-sudo ./01-setup-database.sh --force-postgresql    # PostgreSQL
+sudo ./07-setup-database.sh              # Auto-detect
+sudo ./07-setup-database.sh --force-sqlite        # SQLite
+sudo ./07-setup-database.sh --force-postgresql    # PostgreSQL
 ```
 
 ---
@@ -177,7 +177,7 @@ Choice [1/2]: _
 ### Стъпка 1: Development (SQLite)
 ```bash
 # На локална машина
-sudo ./01-setup-database.sh --force-sqlite
+sudo ./07-setup-database.sh --force-sqlite
 
 # Develop с SQLite
 npm run dev
@@ -189,7 +189,7 @@ npm test
 ### Стъпка 2: Production (PostgreSQL)
 ```bash
 # На production сървър
-sudo ./01-setup-database.sh --force-postgresql
+sudo ./07-setup-database.sh --force-postgresql
 
 # Скриптът автоматично:
 # 1. Инсталира PostgreSQL
@@ -205,21 +205,21 @@ sudo ./01-setup-database.sh --force-postgresql
 
 ### Auto режим:
 ```bash
-sudo ./01-setup-database.sh
+sudo ./07-setup-database.sh
 ```
 - Проверява PostgreSQL
 - Пита потребителя ако липсва
 
 ### Force SQLite:
 ```bash
-sudo ./01-setup-database.sh --force-sqlite
+sudo ./07-setup-database.sh --force-sqlite
 ```
 - Директно SQLite (без да пита)
 - Бързо setup за testing
 
 ### Force PostgreSQL:
 ```bash
-sudo ./01-setup-database.sh --force-postgresql
+sudo ./07-setup-database.sh --force-postgresql
 ```
 - Директно PostgreSQL (инсталира ако липсва)
 - Не пита потребителя
@@ -227,7 +227,7 @@ sudo ./01-setup-database.sh --force-postgresql
 
 ### Help:
 ```bash
-sudo ./01-setup-database.sh --help
+sudo ./07-setup-database.sh --help
 ```
 - Показва всички опции
 
@@ -251,12 +251,12 @@ sudo ./01-setup-database.sh --help
 ## 📁 СЪЗДАДЕНИ ФАЙЛОВЕ
 
 ### Нови файлове:
-- `deploy-scripts/server/01-setup-database.sh` - Smart script
+- `deploy-scripts/server/07-setup-database.sh` - Smart script
 - `deploy-scripts/server/DATABASE-SETUP-GUIDE.md` - Пълна документация
 - `deploy-scripts/README.md` - Обновена документация
 
 ### Backup:
-- `deploy-scripts/server/01-setup-database.sh.old` - Стар скрипт (backup)
+- `deploy-scripts/server/07-setup-database.sh.old` - Стар скрипт (backup)
 
 ### При PostgreSQL:
 - `/var/www/kcy-ecosystem/database-credentials.txt` - Credentials
@@ -273,7 +273,7 @@ sudo ./01-setup-database.sh --help
 
 ### Example 1: First time setup (auto)
 ```bash
-sudo ./01-setup-database.sh
+sudo ./07-setup-database.sh
 
 # Output:
 [1/9] Detecting database...
@@ -294,7 +294,7 @@ Choice [1/2]: 2
 
 ### Example 2: Production deployment
 ```bash
-sudo ./01-setup-database.sh --force-postgresql
+sudo ./07-setup-database.sh --force-postgresql
 
 # Output:
 Mode: Force PostgreSQL
@@ -309,7 +309,7 @@ Credentials: /var/www/.../database-credentials.txt
 
 ### Example 3: Quick testing
 ```bash
-sudo ./01-setup-database.sh --force-sqlite
+sudo ./07-setup-database.sh --force-sqlite
 npm test
 rm -f database/ams_db.sqlite  # Cleanup
 ```

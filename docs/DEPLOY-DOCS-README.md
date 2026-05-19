@@ -9,8 +9,8 @@ scripts/
 │   ├── deploy.ps1    ← PowerShell скрипт (препоръчително)
 │   └── deploy.bat    ← Batch скрипт (прост)
 └── server/            ← Linux server setup скриптове
-    ├── 01-setup-database.sh   ← PostgreSQL setup
-    └── 02-setup-domain.sh     ← Nginx, SSL, services
+    ├── 07-setup-database.sh   ← PostgreSQL setup
+    └── 08-setup-domain.sh     ← Nginx, SSL, services
 ```
 
 ---
@@ -76,7 +76,7 @@ chmod +x *.sh
 ### Step 1: Database Setup
 
 ```bash
-sudo ./01-setup-database.sh
+sudo ./07-setup-database.sh
 ```
 
 **What it does:**
@@ -102,7 +102,7 @@ sudo ./01-setup-database.sh
 ### Step 2: Domain & Services Setup
 
 ```bash
-sudo ./02-setup-domain.sh
+sudo ./08-setup-domain.sh
 ```
 
 **What it does:**
@@ -378,8 +378,8 @@ find /var/www/html -type f -exec chmod 644 {} \;
 # 3. SSH: ssh root@alsec.strangled.net
 # 4. Run: cd /var/www/kcy-ecosystem/deploy-scripts/server
 # 5. Run: chmod +x *.sh
-# 6. Run: ./01-setup-database.sh
-# 7. Run: ./02-setup-domain.sh
+# 6. Run: ./07-setup-database.sh
+# 7. Run: ./08-setup-domain.sh
 
 # === Done! ===
 # Visit: https://alsec.strangled.net

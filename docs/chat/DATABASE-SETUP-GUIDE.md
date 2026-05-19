@@ -1,7 +1,7 @@
 # 🗄️ Smart Database Setup - Documentation
 
 **Version:** 1.0058  
-**Script:** `01-setup-database.sh`
+**Script:** `07-setup-database.sh`
 
 ---
 
@@ -26,7 +26,7 @@ PostgreSQL намерен?
 ### 1️⃣ AUTO режим (default)
 
 ```bash
-sudo ./01-setup-database.sh
+sudo ./07-setup-database.sh
 ```
 
 **Какво се случва:**
@@ -48,7 +48,7 @@ Choice [1/2]: _
 ### 2️⃣ FORCE SQLite режим
 
 ```bash
-sudo ./01-setup-database.sh --force-sqlite
+sudo ./07-setup-database.sh --force-sqlite
 ```
 
 **Използвай когато:**
@@ -68,7 +68,7 @@ sudo ./01-setup-database.sh --force-sqlite
 ### 3️⃣ FORCE PostgreSQL режим
 
 ```bash
-sudo ./01-setup-database.sh --force-postgresql
+sudo ./07-setup-database.sh --force-postgresql
 ```
 
 **Използвай когато:**
@@ -237,13 +237,13 @@ chown kcy:kcy ams_db.sqlite
 
 **Step 1: Development (SQLite)**
 ```bash
-sudo ./01-setup-database.sh --force-sqlite
+sudo ./07-setup-database.sh --force-sqlite
 # Develop your app with SQLite
 ```
 
 **Step 2: Production (PostgreSQL)**
 ```bash
-sudo ./01-setup-database.sh --force-postgresql
+sudo ./07-setup-database.sh --force-postgresql
 # Script automatically migrates data from SQLite!
 ```
 
@@ -254,9 +254,9 @@ sudo ./01-setup-database.sh --force-postgresql
 ```bash
 # In your deploy script
 if [ "$ENVIRONMENT" = "production" ]; then
-    ./01-setup-database.sh --force-postgresql
+    ./07-setup-database.sh --force-postgresql
 else
-    ./01-setup-database.sh --force-sqlite
+    ./07-setup-database.sh --force-sqlite
 fi
 ```
 
@@ -266,7 +266,7 @@ fi
 
 ```bash
 # Fast setup for testing
-sudo ./01-setup-database.sh --force-sqlite
+sudo ./07-setup-database.sh --force-sqlite
 
 # Test your app
 npm test
@@ -305,7 +305,7 @@ rm -f database/ams_db.sqlite
 ### "Permission denied"
 ```bash
 # Run as root
-sudo ./01-setup-database.sh
+sudo ./07-setup-database.sh
 ```
 
 ### "Database already exists"
@@ -389,4 +389,4 @@ Run script multiple times with different names, or manually create additional da
 
 **Version:** 1.0058  
 **Updated:** February 15, 2026  
-**Script:** `deploy-scripts/server/01-setup-database.sh`
+**Script:** `deploy-scripts/server/07-setup-database.sh`

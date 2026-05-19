@@ -153,8 +153,8 @@ docs/
 ### Без промени:
 Deployment process е същият:
 1. Windows: `.\deploy-scripts\windows\deploy.ps1`
-2. Server: `./01-setup-database.sh`
-3. Server: `./02-setup-domain.sh`
+2. Server: `./07-setup-database.sh`
+3. Server: `./08-setup-domain.sh`
 
 ### Ново за Mobile:
 ```bash

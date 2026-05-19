@@ -71,11 +71,11 @@ BACKUP & RESTORE:
   --reset -restore            Interactive restore from backup
 
 EXAMPLES:
-  sudo ./01-setup-database.sh --reset
-  sudo ./01-setup-database.sh --reset delete -users
-  sudo ./01-setup-database.sh --reset -users -payments
-  sudo ./01-setup-database.sh --reset -backup
-  sudo ./01-setup-database.sh --reset -restore
+  sudo ./07-setup-database.sh --reset
+  sudo ./07-setup-database.sh --reset delete -users
+  sudo ./07-setup-database.sh --reset -users -payments
+  sudo ./07-setup-database.sh --reset -backup
+  sudo ./07-setup-database.sh --reset -restore
 
 EOF
       exit 0 ;;

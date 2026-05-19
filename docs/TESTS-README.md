@@ -10,7 +10,7 @@
 
 ```bash
 # На локална машина
-./deploy.sh
+./04-deploy.sh
 ```
 
 ### 2. SSH и пускане на тестовете
@@ -88,7 +88,7 @@ Passed: 20 | Failed: 0
 ## ⚠️ Prerequisites
 
 Преди тестове:
-1. Database setup: `sudo ./deploy-scripts/server/01-setup-database.sh`
+1. Database setup: `sudo ./deploy-scripts/server/07-setup-database.sh`
 2. SQLite инсталиран: `apt-get install sqlite3`
 
 ---

@@ -24,8 +24,8 @@ kcy-complete/
 │   │   ├── deploy.ps1           ← PowerShell deploy
 │   │   └── deploy.bat           ← Batch deploy
 │   └── server/
-│       ├── 01-setup-database.sh ← PostgreSQL setup
-│       └── 02-setup-domain.sh   ← Nginx + SSL + services
+│       ├── 07-setup-database.sh ← PostgreSQL setup
+│       └── 08-setup-domain.sh   ← Nginx + SSL + services
 │
 ├── public/                      ← WEB FILES (→ /var/www/html/)
 │   ├── index.html               ← Landing page
@@ -211,12 +211,12 @@ cd kcy-complete
 ssh root@alsec.strangled.net
 cd /var/www/kcy-ecosystem/deploy-scripts/server
 chmod +x *.sh
-./01-setup-database.sh
+./07-setup-database.sh
 ```
 
 #### 3. Domain & Services
 ```bash
-./02-setup-domain.sh
+./08-setup-domain.sh
 ```
 
 **Total time:** ~30 минути  

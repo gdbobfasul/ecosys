@@ -15,9 +15,10 @@
         .feature-item h3 { color: var(--primary-color); margin: 15px 0; font-size: 1.3em; }
         .feature-icon { font-size: 3em; margin-bottom: 15px; }
         /* top-right auth buttons */
-        .top-auth { position: absolute; top: 18px; right: 20px; z-index: 10; display: flex; gap: 10px; }
+        .top-auth { position: absolute; top: 18px; right: 20px; z-index: 10; display: flex; gap: 10px; align-items: center; }
         .top-auth a { padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .95em; transition: opacity .15s; }
         .top-auth a:hover { opacity: .85; }
+        .top-auth .portal-label { color: rgba(255,255,255,.7); font-size: .85em; font-weight: 500; padding-right: 6px; border-right: 1px solid rgba(255,255,255,.25); }
         .top-auth .login { background: rgba(255,255,255,.22); color: #fff; border: 1px solid rgba(255,255,255,.4); }
         .top-auth .register { background: #fff; color: var(--primary-color); }
         .top-auth .user { color: #fff; padding: 8px 0; font-size: .95em; }
@@ -46,6 +47,7 @@
 <body>
     <div class="hero">
         <div class="top-auth" id="top-auth">
+            <span class="portal-label">🌐 Портал:</span>
             <a href="/portals/login.html" class="login">🔑 Логин</a>
             <a href="/portals/register.html" class="register">📝 Регистрация</a>
         </div>
@@ -62,8 +64,12 @@
             </a>
         </div>
         <div class="portals-row">
+            <div style="font-size: .9em; opacity: .85; margin-bottom: 10px;">
+                🔒 Изисква се регистрация и месечна такса $5 / €5 (или crypto)
+            </div>
             <a href="/portals/games/" class="btn" style="margin: 10px;">🎮 Портал за игри</a>
             <a href="/portals/services/" class="btn" style="margin: 10px;">🛠️ Портал за услуги</a>
+            <a href="/portals/register.html" class="btn" style="margin: 10px; background: linear-gradient(135deg, #ff6b6b, #ee5a6f); border: none;">✨ Регистрирай се</a>
         </div>
     </div>
 
@@ -133,6 +139,44 @@
                 </div>
             </div>
         </div>
+
+        <!-- Admin Tools — видимо само с ?adm=bgmasters-set -->
+        <div id="kcy-admin-tools" style="display: none; margin-top: 40px;">
+            <h2 style="text-align: center; color: white; margin-bottom: 30px;">🔧 Admin Tools</h2>
+            <div class="projects-grid">
+                <div class="project-card" style="border: 2px solid #f7c948;">
+                    <h2>🩺 System Status</h2>
+                    <p>Статус на всички services (chat, eco-3, nginx, sqlite, redis...). Виж кое работи, кое е паднало, последни logs.</p>
+                    <div style="margin-top: 20px;">
+                        <a href="/shared/admin-status.html" class="btn btn-admin">Отвори System Status</a>
+                    </div>
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                        <small style="color: #666;">✅ Service health<br>✅ Uptime<br>✅ Logs preview</small>
+                    </div>
+                </div>
+
+                <div class="project-card" style="border: 2px solid #f7c948;">
+                    <h2>⚙️ Всички admin панели</h2>
+                    <p>Бърз достъп до admin страниците на всеки проект.</p>
+                    <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 6px;">
+                        <a href="/token/admin/scripts.html" class="btn btn-admin">🪙 KCY Token Admin</a>
+                        <a href="/brch1/admin/" class="btn btn-admin">💰 BRCH1 Admin</a>
+                        <a href="/multisig/admin/" class="btn btn-admin">🔐 Multi-Sig Admin</a>
+                        <a href="/chat/admin/" class="btn btn-admin">💬 Chat Admin</a>
+                        <a href="/eco-3/admin/" class="btn btn-admin">🤖 ECO-3 Admin</a>
+                    </div>
+                </div>
+
+                <div class="project-card" style="border: 2px solid #f7c948;">
+                    <h2>🌐 Portal Admin</h2>
+                    <p>Управление на портал потребителите, плащания и игрови резултати.</p>
+                    <div style="margin-top: 20px;">
+                        <a href="/portals/login.html" class="btn">Portal Login</a>
+                        <a href="/portals/billing.html" class="btn btn-admin">Billing</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="features">
@@ -191,6 +235,14 @@
                     location.reload();
                 };
             } catch (e) { /* portals service not running — leave static buttons */ }
+        })();
+
+        // Покажи Admin Tools секцията само ако ?adm=bgmasters-set (или session)
+        (function() {
+            if (window.KCY_NAV && window.KCY_NAV.isAdmin && window.KCY_NAV.isAdmin()) {
+                const el = document.getElementById('kcy-admin-tools');
+                if (el) el.style.display = 'block';
+            }
         })();
     </script>
 </body>

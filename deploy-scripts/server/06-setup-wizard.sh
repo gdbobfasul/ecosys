@@ -10,7 +10,7 @@
 # - Setup на база данни
 # - Конфигуриране на .env файлове
 #
-# Usage: sudo ./setup-wizard.sh
+# Usage: sudo ./06-setup-wizard.sh
 ##############################################################################
 
 set -e
@@ -146,8 +146,8 @@ step_file_upload() {
     echo -e "     Command: ${YELLOW}.\deploy.ps1${NC}"
     echo ""
     echo -e "  ${GREEN}B)${NC} Upload from Linux/Mac"
-    echo -e "     Script: ${YELLOW}deploy-scripts/deploy.sh${NC}"
-    echo -e "     Command: ${YELLOW}./deploy.sh${NC}"
+    echo -e "     Script: ${YELLOW}deploy-scripts/04-deploy.sh${NC}"
+    echo -e "     Command: ${YELLOW}./04-deploy.sh${NC}"
     echo ""
     echo -e "  ${GREEN}C)${NC} Manual upload (SCP/SFTP)"
     echo -e "     Example: ${YELLOW}scp -r ./kcy-ecosystem root@server:/var/www/${NC}"
@@ -174,7 +174,7 @@ step_file_upload() {
             echo ""
             echo -e "${CYAN}On your Linux/Mac machine, run:${NC}"
             echo -e "${YELLOW}  cd deploy-scripts${NC}"
-            echo -e "${YELLOW}  ./deploy.sh${NC}"
+            echo -e "${YELLOW}  ./04-deploy.sh${NC}"
             echo ""
             echo "The script will:"
             echo "  • Use rsync for efficient upload"
@@ -408,29 +408,29 @@ step_database() {
             echo ""
             echo -e "${GREEN}Running database setup script...${NC}"
             cd "$PROJECT_DIR/deploy-scripts/server"
-            chmod +x 01-setup-database.sh
-            ./01-setup-database.sh
+            chmod +x 07-setup-database.sh
+            ./07-setup-database.sh
             ;;
         2)
             echo ""
             echo -e "${GREEN}Setting up PostgreSQL...${NC}"
             cd "$PROJECT_DIR/deploy-scripts/server"
-            chmod +x 01-setup-database.sh
-            ./01-setup-database.sh --force-postgresql
+            chmod +x 07-setup-database.sh
+            ./07-setup-database.sh --force-postgresql
             ;;
         3)
             echo ""
             echo -e "${GREEN}Setting up SQLite...${NC}"
             cd "$PROJECT_DIR/deploy-scripts/server"
-            chmod +x 01-setup-database.sh
-            ./01-setup-database.sh --force-sqlite
+            chmod +x 07-setup-database.sh
+            ./07-setup-database.sh --force-sqlite
             ;;
         4)
             echo ""
             echo -e "${RED}⚠️  RESET MODE - This will DELETE all data!${NC}"
             cd "$PROJECT_DIR/deploy-scripts/server"
-            chmod +x 01-setup-database.sh
-            ./01-setup-database.sh --reset
+            chmod +x 07-setup-database.sh
+            ./07-setup-database.sh --reset
             ;;
         5)
             echo ""
@@ -580,7 +580,7 @@ step_summary() {
     echo -e "     ${YELLOW}pm2 logs kcy-chat${NC}"
     echo ""
     echo "  4. Configure domain (if not done):"
-    echo -e "     ${YELLOW}./02-setup-domain.sh${NC}"
+    echo -e "     ${YELLOW}./08-setup-domain.sh${NC}"
     echo ""
     echo "  5. Setup SSL certificate:"
     echo -e "     ${YELLOW}certbot --nginx -d alsec.strangled.net${NC}"

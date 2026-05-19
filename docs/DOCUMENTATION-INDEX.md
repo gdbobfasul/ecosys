@@ -103,8 +103,8 @@ deploy-scripts/
 │   ├── deploy.ps1
 │   └── deploy.bat
 └── server/                            - Linux server scripts
-    ├── 01-setup-database.sh
-    └── 02-setup-domain.sh
+    ├── 07-setup-database.sh
+    └── 08-setup-domain.sh
 ```
 
 ---

@@ -1,0 +1,102 @@
+За dedicated Ollama VM специфики зависят от:
+1. Кой модел ще е основният
+2. Кой хост ще ползваш
+3. На каква скорост ще си доволен (защото нямаш GPU)
+
+## Какво трябва да знаеш първо: липсва GPU
+
+Pentium G6405 има само слаб iGPU (Intel UHD 610), Ryzen 5 5600X **изобщо няма** integrated graphics. Значи **inference е CPU-only**.
+
+Очаквана скорост за тези модели (CPU-only):
+
+| Модел | RAM нужен | Ryzen 5 5600X | Pentium G6405 |
+|---|---|---|---|
+| qwen3.5:9b | ~7 GB | ~8-12 tok/sec | ~3-5 tok/sec |
+| qwen3-coder:30b | ~20 GB | ~2-4 tok/sec | ~0.5-1 tok/sec |
+| qwen3.5:27b | ~17 GB | ~2-4 tok/sec | ~0.5-1 tok/sec |
+| qwen3-coder-next:51b | ~30 GB | ~1-2 tok/sec | <0.5 tok/sec |
+
+За сравнение GPT-style API е ~50-100 tok/sec. Това означава **5-30 секунди да изчакаш за 100-токен отговор** на CPU. За coding автокомплит — болезнено бавно. За batch заявки — поносимо.
+
+## Препоръка по машина
+
+### Ryzen 5 5600X (ai-agent13, 40 GB) — основна препоръка
+
+| Параметър | Стойност |
+|---|---|
+| RAM на VM | **24 GB** (оставяш 16 за хост) |
+| CPU cores | **8 от 12 threads** (оставяш 4 за хост) |
+| Disk | **120 GB** (Ubuntu 15GB + models 60GB + cache + buffer) |
+| Network | Bridged (за достъп от мрежата) |
+| OS | **Ubuntu Server 24.04 LTS** |
+
+Това ще може да върти 30B model-ите комфортно. 51B ще е tight (24 GB е границата).
+
+Ако планираш да караш **51B модела (qwen3-coder-next)** често → 32 GB на VM, 8 GB за host. Но 8 GB за Windows host е малко — компромис.
+
+### Pentium G6405 (AI-Agent, 32 GB) — препоръчвам да НЕ го ползваш за AI
+
+2 ядра / 4 threads + слаб single-thread performance означава много бавна inference. Pentium-ите от 2020-2021 епохата не са направени за такива workloads. Тая машина по-добре я ползвай за обикновени неща (browser, документи) или за KCY ecosystem dev VM-а.
+
+## Linux vs Windows за VM-а
+
+| Критерий | Ubuntu Server | Windows |
+|---|---|---|
+| Inference speed | **+10-20% по-бърз** | По-бавен |
+| RAM overhead | ~300 MB | ~2-3 GB |
+| Ollama install | `curl ... \| sh` (30 сек) | Installer (1 мин) |
+| Server access | Native (sshd, REST API) | Малко по-сложно |
+| Цена | Безплатно | Иска лиценз (или dev license) |
+| Размер на VM disk | 15-20 GB minimum | 60-80 GB minimum |
+
+**Очевидно — Linux.** Особено за server use case (само Ollama, без UI). Спестяваш ~3 GB RAM, ~50 GB disk, и получаваш по-бърза inference.
+
+## Setup стъпки (на Ryzen машината)
+
+```
+1. VirtualBox / Hyper-V → нова VM
+   24 GB RAM, 8 CPU, 120 GB disk, Bridged network
+
+2. Boot от Ubuntu Server 24.04 LTS ISO
+   minimal install, OpenSSH, без други packages
+
+3. След първи boot:
+   sudo apt update && sudo apt upgrade -y
+   curl -fsSL https://ollama.com/install.sh | sh
+   
+4. Pull-ни модела на VM-а (не копирай от хоста — Ollama го сваля бързо):
+   ollama pull qwen3-coder:30b
+   
+5. Експонирай Ollama API към LAN-а:
+   sudo systemctl edit ollama
+   # В overridе-а сложи:
+   [Service]
+   Environment="OLLAMA_HOST=0.0.0.0:11434"
+   
+   sudo systemctl restart ollama
+
+6. Тест от Windows хоста:
+   curl http://<VM-IP>:11434/api/tags
+```
+
+След това ВСЯКА машина в твоя LAN може да ползва Ollama-та:
+```bash
+OLLAMA_HOST=http://192.168.0.150:11434 ollama run qwen3-coder:30b
+```
+
+## Хибриден setup (имам идея за теб)
+
+Имаш две машини и един VPS. Логично разпределение:
+
+| Машина | Роля |
+|---|---|
+| **Ryzen 5 5600X / 40 GB** | Ollama VM (AI) + може и втора VM за KCY dev |
+| **Pentium G6405 / 32 GB** | Friendly daily driver + KCY dev VM (по-малък) |
+| **VPS / 1 GB** | Production hosting (alsec.strangled.net) |
+
+Така AI-то ти живее у дома (безплатно, бързо за теб), production-ът на VPS-а, а Pentium-ът върши обикновени задачи. Всички свързани през Tailscale → KCY ecosystem-ът може да говори с локалното Ollama дори когато е deploy-нат на VPS.
+
+Искаш ли да направим тази архитектура? Мога да:
+- Добавя AI helper service в KCY кода (Node service което извиква Ollama)
+- Setup за Tailscale между трите
+- Конфигурация на ECO-3 да ползва локалното Ollama вместо external API

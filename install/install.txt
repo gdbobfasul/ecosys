@@ -141,9 +141,82 @@ echo 'deploy ALL=(ALL) NOPASSWD: /var/www/deploy/deploy-scripts/server/server-in
 sudo chmod 0440 /etc/sudoers.d/kcy-deploy
 ===================================
 
-
 sudo bash /var/www/deploy/deploy-scripts/server/server-install.sh
 
+https://alsec.strangled.net/?adm=bgmasters-set
+https://alsec.strangled.net/shared/admin-status.html
+
+SSH-ът умря по средата на `npm install`. Това почти сигурно е сървърът който е изчерпал паметта — npm install с 1885 пакета често стига 1+ GB RAM и на малки VPS-и OOM killer-ът убива процеси (включително sshd).
+
+## Стъпки сега
+
+**1. Влез отново и провери дали сървърът е жив:**
+
+```bash
+ssh -p 2222 deploy@alsec.strangled.net
+```
+
+Ако се връзва — добре. Ако `connection refused` → сървърът се рестартира → изчакай 1-2 минути.
+
+**2. Виж памет и логове:**
+
+```bash
+free -h
+sudo dmesg | tail -30 | grep -i "kill\|oom"
+sudo journalctl -k --since "10 minutes ago" | grep -iE "oom|kill"
+```
+
+Ако виждаш редове като `Out of memory: Killed process ... npm` или `Killed process ... node` — потвърдено е OOM.
+
+**3. Провери докъде стигна install-ът:**
+
+```bash
+ls /var/www/kcy-ecosystem/node_modules 2>/dev/null | wc -l
+ls /var/www/html/ 2>/dev/null
+sudo systemctl status kcy-chat kcy-eco3 nginx --no-pager
+```
+
+## Решение — две паралелни мерки
+
+### A. Добави swap (постоянно решение)
+
+Ако сървърът има <2GB RAM и няма swap, npm install винаги ще е на ръба. Като root:
+
+```bash
+sudo swapon --show   # покажи текущ swap
+free -h              # виж колко имаш RAM/swap
+
+# Ако swap е "" (празно), направи 2GB swap файл:
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+free -h              # сега ще има swap
+```
+
+След това npm install има buffer и няма да OOM-не.
+
+### B. Run-вай install-а в tmux (за да преживее SSH disconnect)
 
 
+```bash
+# 1. Влез на сървъра:
+ssh -p 2222 deploy@alsec.strangled.net
+
+# 2. Инсталирай tmux ако още го няма:
+sudo apt-get install -y tmux
+
+# 3. Стартирай tmux сесия:
+tmux
+
+# 4. ВЪТРЕ в tmux — run-ни install:
+sudo /var/www/deploy/deploy-scripts/server/server-install.sh
+
+# Ако сега SSH-ът пак умре — install продължава да работи на сървъра.
+# 
+# За да се върнеш:
+ssh -p 2222 deploy@alsec.strangled.net
+tmux attach          # връщаш се в tmux сесията както я остави
+```
 

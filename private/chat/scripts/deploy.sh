@@ -2,7 +2,7 @@
 #!/bin/bash
 
 # KCY Chat Deployment Script
-# Usage: ./deploy.sh [server_ip] [ssh_user]
+# Usage: ./04-deploy.sh [server_ip] [ssh_user]
 
 set -e
 
@@ -14,7 +14,7 @@ REPO_URL="YOUR_GIT_REPO_URL"  # Update this!
 
 if [ -z "$SERVER_IP" ]; then
     echo "❌ Error: Server IP required"
-    echo "Usage: ./deploy.sh [server_ip] [ssh_user]"
+    echo "Usage: ./04-deploy.sh [server_ip] [ssh_user]"
     exit 1
 fi
 

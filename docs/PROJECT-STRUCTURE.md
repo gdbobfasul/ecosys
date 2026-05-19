@@ -69,8 +69,8 @@ kcy-complete-v3.0-matchmaking/
 │   │   ├── deploy.ps1
 │   │   └── deploy.bat
 │   └── server/
-│       ├── 01-setup-database.sh
-│       └── 02-setup-domain.sh
+│       ├── 07-setup-database.sh
+│       └── 08-setup-domain.sh
 │
 ├── public/                        ← Frontend (Web files)
 │   ├── index.html                 ← Main landing page

@@ -79,7 +79,7 @@
 │   └── signals.js          ← Signals system routes
 │
 ├── /scripts                ← Deployment & utility scripts
-│   ├── deploy.sh
+│   ├── 04-deploy.sh
 │   ├── dev.sh
 │   ├── migrate-database.sh ← Universal migration script
 │   ├── run-tests.sh

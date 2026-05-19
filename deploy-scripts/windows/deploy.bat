@@ -1,12 +1,12 @@
 @echo off
-REM KCY Ecosystem - Deploy v1.0084
-REM Wrapper за Git Bash
+REM KCY Ecosystem - Deploy v1.0088
+REM Wrapper за Git Bash. 04-deploy.sh е в parent директорията (deploy-scripts/).
 
 REM Try Git Bash first
 where bash >nul 2>&1
 if %ERRORLEVEL% equ 0 (
     echo Using Git Bash...
-    bash ../deploy.sh %*
+    bash "%~dp0..\04-deploy.sh" %*
     pause
     exit /b
 )

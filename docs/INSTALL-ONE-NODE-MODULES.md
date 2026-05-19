@@ -88,7 +88,7 @@ npm install --legacy-peer-deps
 npm test
 
 # 3. Deploy
-./deploy.sh
+./04-deploy.sh
 ```
 
 ---
@@ -160,7 +160,7 @@ npm run test:mobile
 # Deploy
 npm run deploy:token
 npm run deploy:multisig
-./deploy.sh
+./04-deploy.sh
 ```
 
 ---

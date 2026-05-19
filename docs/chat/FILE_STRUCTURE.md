@@ -18,7 +18,7 @@
 │   └── emergency_contacts_seed.sql     ← Sample emergency contacts
 │
 ├── /scripts                            ← 🔧 DEPLOYMENT & UTILITY SCRIPTS
-│   ├── deploy.sh                       ← Production deployment
+│   ├── 04-deploy.sh                       ← Production deployment
 │   ├── dev.sh                          ← Development server
 │   ├── run-tests.sh                    ← Test runner
 │   ├── verify-features.sh              ← Feature verification

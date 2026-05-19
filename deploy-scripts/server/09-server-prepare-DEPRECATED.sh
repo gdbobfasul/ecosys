@@ -10,7 +10,7 @@
 #   3. Създава системни потребители kcy-chat, kcy-eco3
 #   4. Създава нужните директории с правилни права
 #
-# Usage: sudo bash server-prepare.sh
+# Usage: sudo bash 09-server-prepare-DEPRECATED.sh
 ##############################################################################
 
 if [ "$EUID" -ne 0 ]; then
@@ -93,9 +93,9 @@ echo "  1. От Windows PowerShell копирай SSH ключа:"
 echo "     type \$env:USERPROFILE\.ssh\id_ed25519.pub | ssh deploy@$(hostname)"
 echo "     \"mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys\""
 echo ""
-echo "  2. Пусни deploy: ./deploy.sh"
+echo "  2. Пусни deploy: ./04-deploy.sh"
 echo "  3. ssh deploy@$(hostname)"
 echo "     su - kcy-admin"
 echo "     cd /var/www/deploy/deploy-scripts/server"
-echo "     sudo bash server-install.sh"
+echo "     sudo bash 05-server-install.sh"
 echo ""

@@ -63,7 +63,7 @@ tests/
 ```bash
 # На локалната машина (Windows/Linux)
 cd /path/to/kcy-ecosystem
-./deploy.sh
+./04-deploy.sh
 ```
 
 Това качва **ВСИЧКО** на сървъра, включително `tests/` директорията.
@@ -246,8 +246,8 @@ sudo ./database/test-functionality.sh
 3. **Пусни setup отново:**
    ```bash
    cd /var/www/kcy-ecosystem/deploy-scripts/server
-   sudo ./01-setup-database.sh --reset
-   sudo ./01-setup-database.sh
+   sudo ./07-setup-database.sh --reset
+   sudo ./07-setup-database.sh
    ```
 
 ---
@@ -269,9 +269,9 @@ sudo ./database/test-functionality.sh
 
 ```bash
 # Изтрий test data
-sudo ./01-setup-database.sh --reset delete -users
+sudo ./07-setup-database.sh --reset delete -users
 # или
-sudo ./01-setup-database.sh --reset
+sudo ./07-setup-database.sh --reset
 ```
 
 ### 3. Prerequisites
@@ -281,7 +281,7 @@ sudo ./01-setup-database.sh --reset
 ```bash
 # Database трябва да е setup
 cd /var/www/kcy-ecosystem/deploy-scripts/server
-sudo ./01-setup-database.sh
+sudo ./07-setup-database.sh
 
 # SQLite трябва да е инсталиран
 apt-get install -y sqlite3
@@ -308,14 +308,14 @@ sudo apt-get install -y sqlite3
 ### "No such file or directory: /var/www/kcy-ecosystem"
 ```bash
 # Deploy екосистемата първо
-./deploy.sh
+./04-deploy.sh
 ```
 
 ### "Database not found"
 ```bash
 # Setup database първо
 cd /var/www/kcy-ecosystem/deploy-scripts/server
-sudo ./01-setup-database.sh
+sudo ./07-setup-database.sh
 ```
 
 ---
@@ -324,7 +324,7 @@ sudo ./01-setup-database.sh
 
 Виж:
 - `tests/README.md` - Detailed test documentation
-- `deploy-scripts/server/01-setup-database.sh --reset ?` - Reset help
+- `deploy-scripts/server/07-setup-database.sh --reset ?` - Reset help
 
 ---
 

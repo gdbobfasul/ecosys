@@ -1,0 +1,26 @@
+# Custom deploy targets — override defaults в deploy.sh
+#
+# Преименувай това на ".deploy-targets" (без .example) за да активираш.
+# .deploy-targets е в .gitignore — не се качва на сървъра.
+#
+# Формат: TARGET_<name>_(SERVER|USER|PORT|LABEL)
+
+# Production VPS
+TARGET_prod_SERVER="alsec.strangled.net"
+TARGET_prod_USER="deploy"
+TARGET_prod_PORT="2222"
+TARGET_prod_LABEL="Production (VPS)"
+
+# Локална Linux VM (промени IP-то според твоето!)
+TARGET_vm_SERVER="192.168.0.150"
+TARGET_vm_USER="deploy"
+TARGET_vm_PORT="22"
+TARGET_vm_LABEL="Local VM (dev)"
+
+# Може да добавиш и още targets — напр. staging, друг сървър:
+# TARGET_staging_SERVER="staging.example.com"
+# TARGET_staging_USER="deploy"
+# TARGET_staging_PORT="22"
+# TARGET_staging_LABEL="Staging"
+#
+# После: ./deploy.sh staging

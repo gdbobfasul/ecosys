@@ -94,3 +94,4 @@ service-account.json
 # Old files backup (temporary)
 /old
 old/
+.deploy-targets

@@ -341,7 +341,7 @@ pm2 logs ams-chat
 /scripts
   ├── verify-features.sh       ← Feature verification
   ├── run-tests.sh             ← Test runner
-  ├── deploy.sh                ← Production deploy
+  ├── 04-deploy.sh                ← Production deploy
   └── dev.sh                   ← Development server
 ```
 

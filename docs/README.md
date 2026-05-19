@@ -16,8 +16,8 @@
 ```bash
 cd /var/www/kcy-ecosystem/deploy-scripts/server
 chmod +x *.sh
-./01-setup-database.sh
-./02-setup-domain.sh
+./07-setup-database.sh
+./08-setup-domain.sh
 ```
 
 **See `deploy-deploy-scripts/README.md` for detailed instructions**
@@ -40,8 +40,8 @@ kcy-ecosystem/
 │   │   ├── deploy.ps1     ← PowerShell deploy
 │   │   └── deploy.bat     ← Batch deploy
 │   └── server/
-│       ├── 01-setup-database.sh    ← PostgreSQL setup
-│       └── 02-setup-domain.sh      ← Nginx + SSL
+│       ├── 07-setup-database.sh    ← PostgreSQL setup
+│       └── 08-setup-domain.sh      ← Nginx + SSL
 │
 ├── tests/                 ← ВСИЧКИ ТЕСТОВЕ ТУК
 │   ├── token/             ← Token tests (10 файла)

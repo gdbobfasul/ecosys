@@ -9,7 +9,7 @@
   - `emergency_contacts_seed.sql` - Sample data
 
 - **Created `/scripts` folder** - All shell scripts moved here
-  - `deploy.sh` - Production deployment
+  - `04-deploy.sh` - Production deployment
   - `dev.sh` - Development server
   - `run-tests.sh` - Test runner
   - `verify-features.sh` - Feature verification

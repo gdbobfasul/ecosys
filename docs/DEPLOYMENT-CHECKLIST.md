@@ -43,8 +43,8 @@ kcy-unified/
 │   │   ├── deploy.ps1      ← Deploy script
 │   │   └── deploy.bat
 │   └── server/
-│       ├── 01-setup-database.sh
-│       └── 02-setup-domain.sh
+│       ├── 07-setup-database.sh
+│       └── 08-setup-domain.sh
 └── README.md
 ```
 
@@ -98,7 +98,7 @@ cd /var/www/kcy-ecosystem/deploy-scripts/server
 chmod +x *.sh
 
 # Run database setup
-./01-setup-database.sh
+./07-setup-database.sh
 ```
 
 ### What it does:
@@ -133,7 +133,7 @@ rm /var/www/kcy-ecosystem/database-credentials.txt
 
 ```bash
 # Still on server
-./02-setup-domain.sh
+./08-setup-domain.sh
 ```
 
 ### Interactive prompts:

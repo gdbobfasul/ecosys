@@ -36,7 +36,7 @@ coverage/
 ... (и още)
 ```
 
-### 2. Нов Linux/Mac deploy скрипт (`deploy.sh`)
+### 2. Нов Linux/Mac deploy скрипт (`04-deploy.sh`)
 ```bash
 #!/bin/bash
 # Използва rsync с --exclude-from='.deployignore'
@@ -194,7 +194,7 @@ npm test
 
 # 2. Deploy - Linux/Mac
 cd deploy-scripts
-./deploy.sh
+./04-deploy.sh
 
 # 2. Deploy - Windows
 cd deploy-scripts
@@ -214,8 +214,8 @@ nano .env  # Добави production secrets
 # Run setup scripts
 cd deploy-scripts/server
 chmod +x *.sh
-./01-setup-database.sh
-./02-setup-domain.sh
+./07-setup-database.sh
+./08-setup-domain.sh
 
 # Start services
 pm2 restart all
@@ -227,7 +227,7 @@ pm2 restart all
 
 **Създадени:**
 - `.deployignore` - списък на изключените файлове
-- `deploy-scripts/deploy.sh` - Linux/Mac deploy скрипт
+- `deploy-scripts/04-deploy.sh` - Linux/Mac deploy скрипт
 - `deploy-scripts/README.md` - пълна документация
 
 **Обновени:**
@@ -244,7 +244,7 @@ pm2 restart all
 ```bash
 # Linux/Mac
 cd deploy-scripts
-./deploy.sh --help  # Виж exclude списъка
+./04-deploy.sh --help  # Виж exclude списъка
 
 # Test dry-run
 rsync --dry-run -av --exclude-from='../.deployignore' \
@@ -287,7 +287,7 @@ ls -la /var/www/kcy-ecosystem/ | grep .git
 
 **Промени:**
 - ✅ `.deployignore` file създаден
-- ✅ Linux/Mac deploy скрипт (`deploy.sh`)
+- ✅ Linux/Mac deploy скрипт (`04-deploy.sh`)
 - ✅ Windows PowerShell скрипт обновен
 - ✅ Batch скрипт с warning
 - ✅ Comprehensive README

@@ -11,7 +11,7 @@
 # - Настройва PM2 за Node.js apps
 # - Конфигурира permissions
 #
-# Usage: sudo ./02-setup-domain.sh
+# Usage: sudo ./08-setup-domain.sh
 ##############################################################################
 
 set -e  # Exit on error

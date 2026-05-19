@@ -14,7 +14,7 @@ if ($Help) {
     Write-Host "Usage: .\deploy.ps1 [-Server host] [-User deploy] [-Port 22]"
     Write-Host ""
     Write-Host "Uploads to /var/www/deploy/ on server."
-    Write-Host "Then run: sudo bash server-install.sh"
+    Write-Host "Then run: sudo bash 05-server-install.sh"
     exit
 }
 
@@ -69,7 +69,7 @@ Write-Host ""
 Write-Host "  Next:" -ForegroundColor Cyan
 Write-Host "    ssh -p $Port ${User}@${Server}" -ForegroundColor Yellow
 Write-Host "    cd ${Staging}/deploy-scripts/server" -ForegroundColor Yellow
-Write-Host "    sudo bash server-install.sh" -ForegroundColor Yellow
+Write-Host "    sudo bash 05-server-install.sh" -ForegroundColor Yellow
 Write-Host ""
 
 Read-Host "Press Enter to close"

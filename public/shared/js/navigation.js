@@ -51,12 +51,13 @@ const KCY_NAV = {
                 ${adm ? `<div class="nav-admin">
                     <select onchange="if(this.value) window.location.href=this.value">
                         <option value="">⚙️ Admin ▼</option>
-                        <option value="/token/admin/scripts.html">Token Admin</option>
-                        <option value="/brch1/admin/">BRCH1 Admin</option>
-                        <option value="/multisig/admin/">Multi-Sig Admin</option>
-                        <option value="/chat/admin/">Chat Admin</option>
-                        <option value="/eco-3/admin/">ECO-3 Admin</option>
-                        <option value="/shared/admin-status.html">System Status</option>
+                        <option value="/shared/admin-status.html">🩺 System Status</option>
+                        <option value="" disabled>──────────────</option>
+                        <option value="/token/admin/scripts.html">🪙 Token Admin</option>
+                        <option value="/brch1/admin/">💰 BRCH1 Admin</option>
+                        <option value="/multisig/admin/">🔐 Multi-Sig Admin</option>
+                        <option value="/chat/admin/">💬 Chat Admin</option>
+                        <option value="/eco-3/admin/">🤖 ECO-3 Admin</option>
                     </select>
                 </div>` : ''}
             </div>

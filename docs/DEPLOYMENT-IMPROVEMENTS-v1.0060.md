@@ -11,7 +11,7 @@
 ### 1️⃣ Database Setup: --reset опция ⚠️
 
 ```bash
-sudo ./01-setup-database.sh --reset
+sudo ./07-setup-database.sh --reset
 ```
 
 **Какво прави:**
@@ -91,7 +91,7 @@ C:\Users\peshо\kcy-ecosystem\
 
 **Нов скрипт:**
 ```bash
-sudo ./setup-wizard.sh
+sudo ./06-setup-wizard.sh
 ```
 
 **Интерактивен guide през целия setup процес!**
@@ -110,8 +110,8 @@ Choose your deployment method:
      Command: .\deploy.ps1
 
   B) Upload from Linux/Mac
-     Script: deploy-scripts/deploy.sh
-     Command: ./deploy.sh
+     Script: deploy-scripts/04-deploy.sh
+     Command: ./04-deploy.sh
 
   C) Manual upload (SCP/SFTP)
      Example: scp -r ./kcy-ecosystem root@server:/var/www/
@@ -287,7 +287,7 @@ Next steps:
      pm2 logs kcy-chat
 
   4. Configure domain (if not done):
-     ./02-setup-domain.sh
+     ./08-setup-domain.sh
 
   5. Setup SSL certificate:
      certbot --nginx -d alsec.strangled.net
@@ -313,7 +313,7 @@ apt install nginx postgresql nodejs npm
 npm install -g pm2
 
 # 3. Setup database (manual)
-./01-setup-database.sh
+./07-setup-database.sh
 
 # 4. Edit .env files (manual)
 nano /var/www/.../chat/.env
@@ -333,7 +333,7 @@ Total time: ~30-45 minutes
 
 ### Сега (Setup Wizard):
 ```bash
-sudo ./setup-wizard.sh
+sudo ./06-setup-wizard.sh
 
 # Interactive guide:
 # - Upload options shown
@@ -356,25 +356,25 @@ Total time: ~10-15 minutes
 ```bash
 # 1. Upload files (from local machine)
 .\deploy.ps1  # Windows
-./deploy.sh   # Linux
+./04-deploy.sh   # Linux
 
 # 2. Run wizard on server
 ssh root@server
 cd /var/www/kcy-ecosystem/deploy-scripts/server
-sudo ./setup-wizard.sh
+sudo ./06-setup-wizard.sh
 ```
 
 ### Clean Reinstall:
 ```bash
 # Delete all data and start fresh
-sudo ./01-setup-database.sh --reset
-sudo ./setup-wizard.sh
+sudo ./07-setup-database.sh --reset
+sudo ./06-setup-wizard.sh
 ```
 
 ### Partial Update:
 ```bash
 # Just update .env files
-sudo ./setup-wizard.sh
+sudo ./06-setup-wizard.sh
 # Choose option 5 (skip) for steps 1-4
 # Edit .env in step 5
 ```
@@ -398,7 +398,7 @@ Enter project root directory: C:\Users\peshо\kcy-ecosystem
 ### Problem: Database errors
 **Solution:** Use `--reset` to clean slate:
 ```bash
-sudo ./01-setup-database.sh --reset
+sudo ./07-setup-database.sh --reset
 ```
 
 ---
@@ -406,8 +406,8 @@ sudo ./01-setup-database.sh --reset
 ## 📁 НОВИСОЗДАННЫЕ ФАЙЛОВЕ
 
 **Нови скриптове:**
-- `deploy-scripts/server/setup-wizard.sh` - Interactive wizard
-- `deploy-scripts/server/01-setup-database.sh` - Updated with --reset
+- `deploy-scripts/server/06-setup-wizard.sh` - Interactive wizard
+- `deploy-scripts/server/07-setup-database.sh` - Updated with --reset
 
 **Обновени:**
 - `deploy-scripts/windows/deploy.ps1` - Interactive directory prompt
@@ -423,7 +423,7 @@ sudo ./01-setup-database.sh --reset
 ### For Production:
 ```bash
 # 1. Use wizard for guided setup
-sudo ./setup-wizard.sh
+sudo ./06-setup-wizard.sh
 
 # 2. Always use PostgreSQL
 # (Choose option 2 in database step)
@@ -439,7 +439,7 @@ curl http://localhost:3000
 ### For Development:
 ```bash
 # 1. Use SQLite for speed
-sudo ./01-setup-database.sh --force-sqlite
+sudo ./07-setup-database.sh --force-sqlite
 
 # 2. Skip wizard, use direct commands
 npm install
@@ -449,7 +449,7 @@ npm run dev
 ### For Testing/CI:
 ```bash
 # Clean slate every time
-sudo ./01-setup-database.sh --reset --force-sqlite
+sudo ./07-setup-database.sh --reset --force-sqlite
 npm test
 ```
 
