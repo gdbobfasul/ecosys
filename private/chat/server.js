@@ -1,4 +1,4 @@
-// Version: 1.0056
+// Version: 1.0091
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -8,6 +8,20 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
 require('dotenv').config({ path: require('path').join(__dirname, '..', 'configs', '.env') });
+
+// Debug helper — за глобални stage логове (виждат се в journalctl)
+let debug;
+try {
+    debug = require('../shared/debug-helper').create('chat');
+} catch (e) {
+    // Fallback ако helper-ът не е там
+    debug = { stage: (...a) => console.log('[chat]', ...a), info: console.log, error: console.error, warn: console.warn };
+}
+
+debug.stage('starting chat service');
+debug.stage('node version:', process.version);
+debug.stage('cwd:', process.cwd());
+debug.stage('env file:', require('path').join(__dirname, '..', 'configs', '.env'), fs.existsSync(require('path').join(__dirname, '..', 'configs', '.env')) ? '✓ exists' : '✗ MISSING');
 
 const { authenticate } = require('./middleware/auth');
 const { checkCriticalWords } = require('./middleware/monitoring');
@@ -35,16 +49,21 @@ let db;
 
 // Initialize database with fallback logic
 async function setupDatabase() {
+  debug.stage('initializing database');
   try {
     db = await initializeDatabase();
+    debug.stage('database initialized, type:', getDatabaseType());
+
     const health = await checkDatabaseHealth();
-    
+    debug.stage('database health:', health.healthy ? '✓ ok' : '✗ failed', health.error || '');
+
     if (!health.healthy) {
       console.error(`❌ ${health.type.toUpperCase()} health check failed:`, health.error);
-      
+
       if (health.type === 'postgresql') {
-        console.log('🔄 Attempting fallback to SQLite...');
+        debug.stage('attempting SQLite fallback');
         db = await fallbackToSQLite();
+        debug.stage('SQLite fallback ✓');
       } else {
         throw new Error('SQLite health check failed - cannot start server');
       }
@@ -344,7 +363,9 @@ const PORT = process.env.CHAT_PORT || 3000;
     }
     
     // Start server
+    debug.stage('starting HTTP server on port', PORT);
     server.listen(PORT, () => {
+      debug.stage('✓ listening on port', PORT);
       const dbType = getDatabaseType().toUpperCase();
       const dbInfo = dbType === 'SQLITE' ? 'SQLite (amschat.db)' : `PostgreSQL (${process.env.PG_DATABASE || 'amschat'})`;
       

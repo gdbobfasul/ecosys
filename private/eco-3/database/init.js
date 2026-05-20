@@ -7,6 +7,12 @@ const Database = require('better-sqlite3');
 const fs = require('fs');
 const path = require('path');
 
+// Debug logging
+let debug;
+try { debug = require('../../shared/debug-helper').create('eco3'); }
+catch (e) { debug = { stage: console.log, info: console.log, error: console.error }; }
+debug.stage('eco-3/database/init.js: starting');
+
 const DB_PATH = process.env.ECO3_DB_PATH || path.join(__dirname, 'eco3.db');
 const SCHEMA = path.join(__dirname, 'schema.sql');
 

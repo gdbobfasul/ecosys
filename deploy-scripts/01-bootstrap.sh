@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0090
+# Version: 1.0091
 ##############################################################################
 # KCY Ecosystem — Bootstrap launcher (от Windows Git Bash)
 #
@@ -295,8 +295,16 @@ echo ""
 echo -e "${CYAN}[3/7] Тест SSH ключ${NC}"
 
 # Порта вече е открит в [0/7]. Тук само проверявам дали ключът работи без парола.
+# ВАЖНО: -i forces specific identity file, IdentitiesOnly=yes игнорира всички
+# други ключове в ssh-agent (за да не trial-error-ваме и да не активираме fail2ban).
 KEY_ALREADY_THERE=0
-if ssh -o BatchMode=yes -o ConnectTimeout=3 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no \
+if ssh -o BatchMode=yes \
+       -o ConnectTimeout=3 \
+       -o ServerAliveInterval=30 \
+       -o StrictHostKeyChecking=no \
+       -o IdentitiesOnly=yes \
+       -o PreferredAuthentications=publickey \
+       -i "$KEY_PATH" \
        -p "$PORT" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
     KEY_ALREADY_THERE=1
     echo -e "  ${GREEN}✓${NC} SSH ключ вече работи на порт ${PORT} — пропускам ssh-copy-id"

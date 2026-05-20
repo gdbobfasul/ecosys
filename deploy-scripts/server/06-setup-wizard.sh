@@ -24,6 +24,20 @@ BLUE=$'\033[0;34m'
 MAGENTA=$'\033[0;35m'
 NC=$'\033[0m'
 
+# ── diag_log: append кратък ред в /var/www/html/last-errors/<log>
+DIAG_LOG_DIR="/var/www/html/last-errors"
+diag_log() {
+    [ -d "$DIAG_LOG_DIR" ] || return 0
+    # Respect scripts flag
+    if [ -f /var/lib/kcy/debug-flags.json ] && grep -q '"scripts"[[:space:]]*:[[:space:]]*false' /var/lib/kcy/debug-flags.json; then
+        return 0
+    fi
+    local logfile="$1"; shift
+    local ts=$(date '+%Y-%m-%dT%H:%M:%S')
+    echo "[$ts] [WIZARD] $*" >> "${DIAG_LOG_DIR}/${logfile}" 2>/dev/null
+}
+diag_log services-errors.log "wizard: started"
+
 # Configuration
 PROJECT_DIR="/var/www/kcy-ecosystem"
 CHAT_DIR="$PROJECT_DIR/private/chat"

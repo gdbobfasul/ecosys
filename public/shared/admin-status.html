@@ -1,4 +1,4 @@
-<!-- Version: 1.0085 -->
+<!-- Version: 1.0091 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -131,7 +131,246 @@
         </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- LAST ERRORS section — on-demand regen via /api/diag/regen       -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="last-errors-section" style="padding:0 30px 40px;">
+        <h2 style="color:#58a6ff; font-size:1.2em; margin:30px 0 16px; border-bottom:1px solid #30363d; padding-bottom:8px;">
+            📋 Last Errors
+            <span style="font-size:0.7em; color:#8b949e; font-weight:normal;">— регенерира се при отваряне на тази страница</span>
+            <button onclick="regenAndLoad()" style="float:right; background:#21262d; border:1px solid #30363d; color:#58a6ff; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.7em;">⟳ Regenerate</button>
+        </h2>
+        <div id="last-errors-status" style="margin-bottom:16px; color:#8b949e; font-size:0.85em;">Зареждане...</div>
+
+        <!-- DEBUG toggles per service -->
+        <div style="background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px; margin-bottom:16px;">
+            <div style="font-weight:600; color:#e1e4e8; font-size:0.9em; margin-bottom:8px;">🐛 DEBUG режим (глобални stage логове)</div>
+            <div id="debug-toggles" style="display:flex; gap:16px; flex-wrap:wrap; font-size:0.85em;"></div>
+            <div style="font-size:0.7em; color:#8b949e; margin-top:8px;">След промяна — restart на service за да се приложи. Default: всички ON.</div>
+        </div>
+
+        <!-- Services status mini-grid -->
+        <div id="services-mini" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:24px;"></div>
+
+        <!-- Log download buttons -->
+        <h3 style="color:#8b949e; font-size:0.9em; margin:20px 0 12px;">⬇ Download logs</h3>
+        <div id="logs-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:8px;">
+            <!-- Populated by JS -->
+        </div>
+
+        <!-- Inline log viewer -->
+        <div id="log-viewer" style="display:none; margin-top:20px; background:#0d1117; border:1px solid #30363d; border-radius:6px; padding:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div id="log-viewer-title" style="color:#58a6ff; font-weight:600;"></div>
+                <button onclick="document.getElementById('log-viewer').style.display='none'" style="background:none; border:none; color:#8b949e; cursor:pointer; font-size:1.2em;">✕</button>
+            </div>
+            <pre id="log-viewer-content" style="background:#010409; padding:12px; border-radius:4px; max-height:500px; overflow:auto; font-family:'SF Mono', Monaco, Consolas, monospace; font-size:0.8em; color:#c9d1d9; white-space:pre-wrap; word-break:break-word;"></pre>
+        </div>
+    </div>
+
     <script src="/shared/js/config.js"></script>
+    <script>
+    const LOGS = [
+        { file: 'chat-errors.log',     label: '💬 chat',        desc: 'kcy-chat journalctl' },
+        { file: 'eco3-errors.log',     label: '🤖 eco-3',       desc: 'kcy-eco3 journalctl' },
+        { file: 'portal-errors.log',   label: '🌐 portal',      desc: 'kcy-portals journalctl' },
+        { file: 'web-errors.log',      label: '🌍 nginx',       desc: 'nginx error.log' },
+        { file: 'services-errors.log', label: '⚙️ всички services', desc: 'systemctl status + restarts' },
+        { file: 'memory-errors.log',   label: '🧠 memory',      desc: 'RAM/swap/OOM kills' },
+        { file: 'token-errors.log',    label: '🪙 KCY token',   desc: 'deploy log' },
+        { file: 'berich1-errors.log',  label: '💎 BRCH1',       desc: 'deploy log' },
+        { file: 'multisig-errors.log', label: '🔐 Multi-Sig',   desc: 'deploy log' },
+    ];
+
+    const DEBUG_SERVICES = ['chat', 'eco3', 'portals', 'scripts'];
+
+    function statusColor(active) {
+        if (active === 'active') return '#3fb950';
+        if (active === 'activating') return '#d29922';
+        if (active === 'failed') return '#f85149';
+        if (active === 'not-found') return '#6e7681';
+        return '#f85149';
+    }
+
+    function statusIcon(active) {
+        if (active === 'active') return '●';
+        if (active === 'activating') return '◐';
+        if (active === 'failed') return '✗';
+        if (active === 'not-found') return '?';
+        return '○';
+    }
+
+    function renderServiceCard(name, info) {
+        const color = statusColor(info.active);
+        const icon = statusIcon(info.active);
+        const memMb = info.memory_kb ? Math.round(info.memory_kb / 1024 / 1024) : 0;
+        return `
+            <div style="background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <div>
+                        <div style="font-weight:600; color:#e1e4e8; font-size:0.9em;">${name}</div>
+                        <div style="font-size:0.75em; color:#8b949e; margin-top:2px;">
+                            ${info.enabled} · restarts: ${info.restarts}${memMb ? ' · ' + memMb + 'MB' : ''}
+                        </div>
+                    </div>
+                    <div style="color:${color}; font-size:1.3em; line-height:1;">${icon}</div>
+                </div>
+                <div style="margin-top:6px; color:${color}; font-size:0.8em; font-weight:600;">${info.active}</div>
+            </div>
+        `;
+    }
+
+    function renderLogButton(log) {
+        return `
+            <div style="display:flex; align-items:center; gap:8px; background:#161b22; border:1px solid #30363d; border-radius:6px; padding:10px;">
+                <div style="flex:1; min-width:0;">
+                    <div style="font-size:0.9em; color:#e1e4e8; font-weight:500;">${log.label}</div>
+                    <div style="font-size:0.7em; color:#8b949e;">${log.desc}</div>
+                </div>
+                <button onclick="viewLog('${log.file}', '${log.label}')" title="Покажи inline"
+                    style="background:#21262d; border:1px solid #30363d; color:#58a6ff; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.75em;">👁</button>
+                <a href="/last-errors/${log.file}" download
+                    style="background:#21262d; border:1px solid #30363d; color:#58a6ff; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.75em; text-decoration:none; display:inline-block;">⬇ E</a>
+            </div>
+        `;
+    }
+
+    async function viewLog(file, label) {
+        const viewer = document.getElementById('log-viewer');
+        const title = document.getElementById('log-viewer-title');
+        const content = document.getElementById('log-viewer-content');
+        title.textContent = label + ' — ' + file;
+        content.textContent = 'Зареждане...';
+        viewer.style.display = 'block';
+        viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        try {
+            const res = await fetch('/last-errors/' + file + '?t=' + Date.now());
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            content.textContent = await res.text();
+        } catch (err) {
+            content.textContent = '✗ Грешка: ' + err.message;
+        }
+    }
+
+    async function regenLogs() {
+        const status = document.getElementById('last-errors-status');
+        status.innerHTML = '⟳ Регенерирам логове...';
+        try {
+            const res = await fetch('/api/diag/regen', { method: 'POST' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            return data;
+        } catch (err) {
+            status.innerHTML = `<span style="color:#f85149">✗ Не мога да regenerate: ${err.message}</span><br>
+                <small>Проверка: <code>sudo systemctl status kcy-diag</code></small>`;
+            return null;
+        }
+    }
+
+    async function loadDebugFlags() {
+        const toggles = document.getElementById('debug-toggles');
+        try {
+            const res = await fetch('/api/diag/debug-flags');
+            const flags = await res.json();
+            toggles.innerHTML = DEBUG_SERVICES.map(svc => {
+                const enabled = flags[svc] !== false;
+                return `
+                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none;">
+                        <input type="checkbox" ${enabled ? 'checked' : ''}
+                               onchange="toggleDebug('${svc}', this.checked)"
+                               style="cursor:pointer;">
+                        <span style="color:${enabled ? '#3fb950' : '#8b949e'}; font-weight:500;">${svc}</span>
+                    </label>
+                `;
+            }).join('');
+        } catch (err) {
+            toggles.innerHTML = `<span style="color:#f85149">✗ Не мога да заредя debug flags</span>`;
+        }
+    }
+
+    async function toggleDebug(service, enabled) {
+        try {
+            await fetch('/api/diag/debug-flags', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ service, enabled })
+            });
+            loadDebugFlags(); // reload UI
+        } catch (err) {
+            alert('Грешка при toggle: ' + err.message);
+        }
+    }
+
+    async function loadStatusJson() {
+        const status = document.getElementById('last-errors-status');
+        const services = document.getElementById('services-mini');
+        try {
+            const res = await fetch('/last-errors/status.json?t=' + Date.now());
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+
+            status.innerHTML = `Generated: <code>${data.generated}</code> · uptime: ${data.uptime || '-'} · errors last 10min: <strong style="color:${data.recent_errors_count > 0 ? '#d29922' : '#3fb950'}">${data.recent_errors_count || 0}</strong>`;
+
+            services.innerHTML = Object.entries(data.services || {})
+                .map(([name, info]) => renderServiceCard(name, info))
+                .join('');
+
+            if (data.memory) {
+                const memPct = Math.round((data.memory.ram_used_mb / data.memory.ram_total_mb) * 100);
+                const swapPct = data.memory.swap_total_mb ? Math.round((data.memory.swap_used_mb / data.memory.swap_total_mb) * 100) : 0;
+                services.innerHTML += `
+                    <div style="background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px;">
+                        <div style="font-weight:600; color:#e1e4e8; font-size:0.9em;">🧠 Memory</div>
+                        <div style="font-size:0.75em; color:#8b949e; margin-top:2px;">
+                            RAM: ${data.memory.ram_used_mb}/${data.memory.ram_total_mb}MB (${memPct}%)<br>
+                            Swap: ${data.memory.swap_used_mb}/${data.memory.swap_total_mb}MB (${swapPct}%)
+                        </div>
+                    </div>
+                `;
+            }
+            if (data.disk) {
+                services.innerHTML += `
+                    <div style="background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px;">
+                        <div style="font-weight:600; color:#e1e4e8; font-size:0.9em;">💾 Disk</div>
+                        <div style="font-size:0.75em; color:#8b949e; margin-top:2px;">
+                            ${data.disk.used} / ${data.disk.total} (${data.disk.percent}%)<br>Free: ${data.disk.free}
+                        </div>
+                    </div>
+                `;
+            }
+            if (data.checks) {
+                const cb = (ok, label) => `<span style="color:${ok ? '#3fb950' : '#f85149'}">${ok ? '✓' : '✗'}</span> ${label}`;
+                services.innerHTML += `
+                    <div style="background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px; grid-column: span 2;">
+                        <div style="font-weight:600; color:#e1e4e8; font-size:0.9em; margin-bottom:6px;">📦 File checks</div>
+                        <div style="font-size:0.75em; color:#8b949e; line-height:1.6;">
+                            ${cb(data.checks.env_file, '.env')} ·
+                            ${cb(data.checks.chat_node_modules, 'chat/node_modules')} ·
+                            ${cb(data.checks.eco3_node_modules, 'eco-3/node_modules')} ·
+                            ${cb(data.checks.portals_node_modules, 'portals/node_modules')} ·
+                            ${cb(data.checks.portal_db, 'portal.db')} ·
+                            ${cb(data.checks.nginx_config_valid, 'nginx config')}
+                        </div>
+                    </div>
+                `;
+            }
+        } catch (err) {
+            status.innerHTML = `<span style="color:#f85149">✗ Не мога да заредя status.json: ${err.message}</span>`;
+            services.innerHTML = '';
+        }
+    }
+
+    async function regenAndLoad() {
+        document.getElementById('logs-grid').innerHTML = LOGS.map(renderLogButton).join('');
+        await regenLogs();
+        await loadStatusJson();
+        await loadDebugFlags();
+    }
+
+    // Load on page open (one-shot, не auto-refresh-ва)
+    regenAndLoad();
+    </script>
+
     <script>
     const API_BASE = window.location.origin + '/api';
 

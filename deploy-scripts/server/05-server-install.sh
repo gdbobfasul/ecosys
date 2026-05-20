@@ -60,11 +60,53 @@ DB_SCHEMA="$STAGING/private/chat/database/db_setup.sql"
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
 CYAN=$'\033[0;36m'; NC=$'\033[0m'
 
+# ── diag_log: append кратък ред в /var/www/html/last-errors/<log>
+# Проверява флаг "scripts" в /var/lib/kcy/debug-flags.json — ако е false → не пише.
+# Това позволява от admin-status страницата да изключиш script-side логване.
+# Снапшотите от page reload не са засегнати.
+DIAG_LOG_DIR="/var/www/html/last-errors"
+DIAG_FLAGS_FILE="/var/lib/kcy/debug-flags.json"
+
+scripts_logging_enabled() {
+    # Default ON. Изключено САМО ако флагът explicitly е false.
+    if [ -f "$DIAG_FLAGS_FILE" ]; then
+        grep -q '"scripts"[[:space:]]*:[[:space:]]*false' "$DIAG_FLAGS_FILE" && return 1
+    fi
+    return 0
+}
+
+diag_log() {
+    scripts_logging_enabled || return 0
+    local logfile="$1"; shift
+    mkdir -p "$DIAG_LOG_DIR" 2>/dev/null
+    local ts=$(date '+%Y-%m-%dT%H:%M:%S')
+    echo "[$ts] [INSTALL] $*" >> "${DIAG_LOG_DIR}/${logfile}"
+    if [ "$(wc -l < "${DIAG_LOG_DIR}/${logfile}" 2>/dev/null || echo 0)" -gt 200 ]; then
+        tail -n 200 "${DIAG_LOG_DIR}/${logfile}" > "${DIAG_LOG_DIR}/${logfile}.tmp" \
+            && mv "${DIAG_LOG_DIR}/${logfile}.tmp" "${DIAG_LOG_DIR}/${logfile}"
+    fi
+}
+
+# ── PHASE 3: Premestat bootstrap log files към финалното им място ──
+# Bootstrap-ът пише в /root/.kcy-logs/, mediator-ът премести в /var/www/deploy/.kcy-logs/
+# Тук премествам в /var/www/html/last-errors/ (final destination).
+if [ -d /var/www/deploy/.kcy-logs ]; then
+    mkdir -p "$DIAG_LOG_DIR"
+    for f in /var/www/deploy/.kcy-logs/*.log; do
+        [ -f "$f" ] || continue
+        # Append (не overwrite) към съществуващите файлове
+        cat "$f" >> "${DIAG_LOG_DIR}/$(basename $f)"
+    done
+    rm -rf /var/www/deploy/.kcy-logs
+fi
+# /root/.kcy-logs/ остава като raw backup на bootstrap output-а
+
 print_step() {
     echo ""
     echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "${GREEN}  $1${NC}"
     echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    diag_log services-errors.log "install: $1"
 }
 
 echo -e "${CYAN}╔═══════════════════════════════════════════════════╗${NC}"
@@ -320,54 +362,126 @@ if [ -f /tmp/deploy_target_info ]; then
     rm -f /tmp/deploy_target_info
 fi
 
-# Изчисли default стойностите
-T_IP="${TARGET_SERVER:-$DOMAIN}"
+# T_IP — реалният IP адрес на тази машина (за nginx server_name)
+# Ако TARGET_SERVER е IP → ползвай го директно
+# Ако е hostname → resolve чрез DNS или вземи от hostname -I
+T_IP=""
+if [[ "$TARGET_SERVER" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    # Вече е IP
+    T_IP="$TARGET_SERVER"
+else
+    # Hostname → опитай резолване
+    if command -v dig >/dev/null 2>&1; then
+        T_IP=$(dig +short "$TARGET_SERVER" A 2>/dev/null | grep -E "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$" | head -1)
+    fi
+    if [ -z "$T_IP" ] && command -v host >/dev/null 2>&1; then
+        T_IP=$(host "$TARGET_SERVER" 2>/dev/null | awk '/has address/ {print $4; exit}')
+    fi
+    if [ -z "$T_IP" ] && command -v getent >/dev/null 2>&1; then
+        T_IP=$(getent hosts "$TARGET_SERVER" 2>/dev/null | awk '{print $1}' | head -1)
+    fi
+    # Final fallback — публичен IP на сървъра
+    if [ -z "$T_IP" ]; then
+        # Вземи първия не-loopback не-private IP
+        T_IP=$(hostname -I 2>/dev/null | tr ' ' '\n' | grep -vE "^(127\.|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)" | head -1)
+    fi
+    # Ако пак нищо — fallback на първия hostname -I
+    if [ -z "$T_IP" ]; then
+        T_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+    fi
+fi
+
 T_DOMAIN="${TARGET_PROD_DOMAIN:-alsec.strangled.net}"
 
-# Определи кой е default-ният избор:
-#  - VM target → препоръчвам опция 3 (и двете) за бъдещ failover
-#  - prod target → препоръчвам опция 2 (само домейн)
-#  - друго → опция 4 (запази текущото)
-if [ "$TARGET_NAME" = "vm" ]; then
-    DEFAULT_CHOICE=3
-elif [ "$TARGET_NAME" = "prod" ]; then
-    DEFAULT_CHOICE=2
-else
-    DEFAULT_CHOICE=4
+# Дали T_IP реално прилича на IP?
+IS_IP=false
+if [[ "$T_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    IS_IP=true
+fi
+
+# Дали T_IP и T_DOMAIN са едно и също? (типичен production случай)
+SAME=false
+if [ "$T_IP" = "$T_DOMAIN" ]; then
+    SAME=true
 fi
 
 echo ""
 echo "  Какъв server_name да сложа в nginx?"
-echo "    1) IP адрес:        ${T_IP}"
-echo "    2) Домейн:          ${T_DOMAIN}"
-echo "    3) И двете:         ${T_IP} ${T_DOMAIN}"
-if [ -n "$DETECTED_DOMAIN" ]; then
-    echo "    4) Запази текущо:   ${DETECTED_DOMAIN}"
+
+# Динамично меню — само опциите които правят смисъл
+OPT_NUM=1
+OPT_VALUES=()
+OPT_LABELS=()
+
+if $SAME; then
+    # T_IP == T_DOMAIN → една опция за двете
+    echo "    ${OPT_NUM}) Домейн:          ${T_DOMAIN}"
+    OPT_VALUES+=("$T_DOMAIN")
+    OPT_LABELS+=("Домейн")
+    OPT_NUM=$((OPT_NUM+1))
 else
-    echo "    4) Запази текущо:   (няма — default ще е опция ${DEFAULT_CHOICE})"
+    if $IS_IP; then
+        echo "    ${OPT_NUM}) IP адрес:        ${T_IP}"
+        OPT_VALUES+=("$T_IP")
+        OPT_LABELS+=("IP")
+        OPT_NUM=$((OPT_NUM+1))
+    fi
+
+    echo "    ${OPT_NUM}) Домейн:          ${T_DOMAIN}"
+    OPT_VALUES+=("$T_DOMAIN")
+    OPT_LABELS+=("Домейн")
+    OPT_NUM=$((OPT_NUM+1))
+
+    if $IS_IP; then
+        echo "    ${OPT_NUM}) И двете:         ${T_IP} ${T_DOMAIN}"
+        OPT_VALUES+=("$T_IP $T_DOMAIN")
+        OPT_LABELS+=("И двете")
+        OPT_NUM=$((OPT_NUM+1))
+    fi
 fi
+
+# Запази текущо (винаги последна опция, ако има различен текущ)
+KEEP_OPT_NUM=0
+if [ -n "$DETECTED_DOMAIN" ]; then
+    # Покажи "запази" САМО ако е различно от вече показаните опции
+    SHOW_KEEP=true
+    for v in "${OPT_VALUES[@]}"; do
+        [ "$v" = "$DETECTED_DOMAIN" ] && SHOW_KEEP=false
+    done
+    if $SHOW_KEEP; then
+        echo "    ${OPT_NUM}) Запази текущо:   ${DETECTED_DOMAIN}"
+        OPT_VALUES+=("$DETECTED_DOMAIN")
+        OPT_LABELS+=("Запази текущо")
+        KEEP_OPT_NUM=$OPT_NUM
+        OPT_NUM=$((OPT_NUM+1))
+    fi
+fi
+
+# Default избор
+if [ "$TARGET_NAME" = "vm" ]; then
+    # VM → "И двете" ако е налично, иначе IP, иначе домейн
+    DEFAULT_CHOICE=$(echo "${OPT_LABELS[@]}" | tr ' ' '\n' | grep -n "И$\|двете" | head -1 | cut -d: -f1)
+    [ -z "$DEFAULT_CHOICE" ] && DEFAULT_CHOICE=1
+elif [ "$TARGET_NAME" = "prod" ]; then
+    # Production → домейн
+    DEFAULT_CHOICE=$(echo "${OPT_LABELS[@]}" | tr ' ' '\n' | grep -n "^Домейн" | head -1 | cut -d: -f1)
+    [ -z "$DEFAULT_CHOICE" ] && DEFAULT_CHOICE=1
+else
+    # Custom → запази текущо ако има, иначе първа опция
+    [ "$KEEP_OPT_NUM" -gt 0 ] && DEFAULT_CHOICE="$KEEP_OPT_NUM" || DEFAULT_CHOICE=1
+fi
+
+MAX_OPT=$((OPT_NUM-1))
 echo ""
-read -p "  Избери [1-4, default=${DEFAULT_CHOICE}]: " DOMAIN_CHOICE <&3
+read -p "  Избери [1-${MAX_OPT}, default=${DEFAULT_CHOICE}]: " DOMAIN_CHOICE <&3
 DOMAIN_CHOICE="${DOMAIN_CHOICE:-$DEFAULT_CHOICE}"
 
-case "$DOMAIN_CHOICE" in
-    1) DOMAIN="$T_IP" ;;
-    2) DOMAIN="$T_DOMAIN" ;;
-    3) DOMAIN="$T_IP $T_DOMAIN" ;;
-    4)
-        if [ -n "$DETECTED_DOMAIN" ]; then
-            DOMAIN="$DETECTED_DOMAIN"
-        else
-            # Няма текущ — fallback на default-а
-            case "$DEFAULT_CHOICE" in
-                1) DOMAIN="$T_IP" ;;
-                2) DOMAIN="$T_DOMAIN" ;;
-                3) DOMAIN="$T_IP $T_DOMAIN" ;;
-            esac
-        fi
-        ;;
-    *) DOMAIN="${DETECTED_DOMAIN:-$T_IP}" ;;
-esac
+# Валидирай и вземи стойност
+if [[ "$DOMAIN_CHOICE" =~ ^[0-9]+$ ]] && [ "$DOMAIN_CHOICE" -ge 1 ] && [ "$DOMAIN_CHOICE" -le "$MAX_OPT" ]; then
+    DOMAIN="${OPT_VALUES[$((DOMAIN_CHOICE-1))]}"
+else
+    DOMAIN="${OPT_VALUES[$((DEFAULT_CHOICE-1))]}"
+fi
 
 echo -e "  ${GREEN}✓ server_name = ${DOMAIN}${NC}"
 echo ""
@@ -587,9 +701,20 @@ echo -e "  ${GREEN}✓ Node: $(node -v)${NC}"
 echo -e "  ${GREEN}✓ NPM:  $(npm -v)${NC}"
 
 cd "$PROJECT_DIR"
-echo -e "  ${YELLOW}npm install (може да отнеме няколко минути)...${NC}"
+echo -e "  ${YELLOW}npm install (root, може да отнеме няколко минути)...${NC}"
 npm install --legacy-peer-deps 2>&1 | tail -5
-echo -e "  ${GREEN}✓ node_modules инсталирани${NC}"
+echo -e "  ${GREEN}✓ Root node_modules инсталирани${NC}"
+
+# Инсталирай dependencies във всяка под-директория с собствен package.json
+for sub in private/chat private/eco-3 private/portals; do
+    if [ -f "$PROJECT_DIR/$sub/package.json" ]; then
+        echo -e "  ${YELLOW}npm install за $sub ...${NC}"
+        ( cd "$PROJECT_DIR/$sub" && npm install --legacy-peer-deps --omit=dev 2>&1 | tail -3 ) || {
+            echo -e "  ${RED}✗ npm install failed за $sub${NC}"
+        }
+        echo -e "  ${GREEN}✓ $sub/node_modules инсталирани${NC}"
+    fi
+done
 
 ##############################################################################
 # STEP 7.5: PORTAL DATABASE (отделна SQLite, винаги)
@@ -876,12 +1001,20 @@ if [ ${#EXISTING_CONFS[@]} -gt 0 ] && nginx -t 2>/dev/null; then
     for f in "${EXISTING_CONFS[@]}"; do
         echo -e "    ${CYAN}$(basename $f)${NC}"
     done
-    echo ""
-    echo -e "  ${GREEN}1)${NC} Запази текущата конфигурация (препоръчително)"
-    echo -e "  ${GREEN}2)${NC} Презапиши с нова конфигурация"
-    echo ""
-    read -p "  Избор [1/2]: " NGINX_CHOICE <&3
-    NGINX_CHOICE=$(echo "$NGINX_CHOICE" | tr -d '\r\n ')
+
+    # Ако сме full reinstall (от bootstrap) → автоматично презаписвай без питане
+    if [ -f /tmp/deploy_full_reinstall ]; then
+        echo -e "  ${YELLOW}► Full reinstall mode — презаписвам автоматично${NC}"
+        NGINX_CHOICE="2"
+    else
+        echo ""
+        echo -e "  ${GREEN}1)${NC} Запази текущата конфигурация (препоръчително)"
+        echo -e "  ${GREEN}2)${NC} Презапиши с нова конфигурация"
+        echo ""
+        read -p "  Избор [1/2]: " NGINX_CHOICE <&3
+        NGINX_CHOICE=$(echo "$NGINX_CHOICE" | tr -d '\r\n ')
+    fi
+
     if [ "$NGINX_CHOICE" != "2" ]; then
         SKIP_NGINX=true
         echo -e "  ${GREEN}✓ Nginx — запазена текущата конфигурация${NC}"
@@ -891,10 +1024,18 @@ fi
 if [ "$SKIP_NGINX" = false ]; then
 
 # ── Backup и почистване на стари конфиги ──
-for f in "${EXISTING_CONFS[@]}"; do
-    cp "$f" "${f}.bak.$(date +%s)"
-    echo -e "  ${YELLOW}Backup: $(basename ${f}).bak.*${NC}"
-done
+# При full reinstall — изтрий без backup (cleanup-ът вече беше направен в bootstrap)
+if [ -f /tmp/deploy_full_reinstall ]; then
+    for f in "${EXISTING_CONFS[@]}"; do
+        rm -f "$f"
+        echo -e "  ${YELLOW}Изтрит (full reinstall): $(basename $f)${NC}"
+    done
+else
+    for f in "${EXISTING_CONFS[@]}"; do
+        cp "$f" "${f}.bak.$(date +%s)"
+        echo -e "  ${YELLOW}Backup: $(basename ${f}).bak.*${NC}"
+    done
+fi
 
 # Махни всички стари enabled линкове за този домейн
 for f in /etc/nginx/sites-enabled/*; do
@@ -1254,6 +1395,146 @@ except Exception:
             fi
         fi
     fi
+fi
+
+##############################################################################
+# DIAGNOSTICS SETUP (on-demand log regen via kcy-diag helper service)
+##############################################################################
+print_step "Diagnostics: kcy-diag helper service"
+
+# 1. Копирай диагностичния shell script
+DIAG_SCRIPT_SRC="${STAGING}/deploy-scripts/server/kcy-diagnostics.sh"
+DIAG_SCRIPT="/usr/local/bin/kcy-diagnostics.sh"
+if [ -f "$DIAG_SCRIPT_SRC" ]; then
+    cp "$DIAG_SCRIPT_SRC" "$DIAG_SCRIPT"
+    chmod +x "$DIAG_SCRIPT"
+    echo -e "  ${GREEN}✓${NC} Diagnostics script: $DIAG_SCRIPT"
+fi
+
+# 2. Premaхни стария cron, ако още го има
+rm -f /etc/cron.d/kcy-diagnostics
+systemctl restart cron 2>/dev/null || true
+
+# 3. Подготви директорията за debug flags
+mkdir -p /var/lib/kcy
+chown root:kcy /var/lib/kcy 2>/dev/null || true
+chmod 775 /var/lib/kcy
+if [ ! -f /var/lib/kcy/debug-flags.json ]; then
+    cat > /var/lib/kcy/debug-flags.json << 'JSON_EOF'
+{"chat":true,"eco3":true,"portals":true,"scripts":true}
+JSON_EOF
+    chmod 664 /var/lib/kcy/debug-flags.json
+fi
+
+# 4. Systemd unit за kcy-diag helper
+cat > /etc/systemd/system/kcy-diag.service << EOF
+[Unit]
+Description=KCY Ecosystem — Diagnostics Helper
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=kcy
+WorkingDirectory=${PROJECT_DIR}/private/diag
+ExecStart=/usr/bin/node server.js
+Environment=DIAG_PORT=4400
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl enable kcy-diag.service 2>/dev/null || true
+systemctl restart kcy-diag.service 2>/dev/null || true
+echo -e "  ${GREEN}✓${NC} kcy-diag.service инсталиран и стартиран"
+
+# 5. nginx — proxy /api/diag/ → 127.0.0.1:4400
+NGINX_DIAG_SNIPPET="/etc/nginx/snippets/kcy-diag-proxy.conf"
+ADMIN_IPS_LIST=""
+if [ -f "$ENV_FILE" ]; then
+    ADMIN_IPS_LIST=$(grep "^ADMIN_ALLOWED_IPS=" "$ENV_FILE" | cut -d= -f2- | tr -d '"' | tr ',' ' ')
+fi
+ALLOW_BLOCK=""
+if [ -n "$ADMIN_IPS_LIST" ]; then
+    for ip in $ADMIN_IPS_LIST; do
+        [ -n "$ip" ] && ALLOW_BLOCK="${ALLOW_BLOCK}    allow ${ip};\n"
+    done
+    ALLOW_BLOCK="${ALLOW_BLOCK}    deny all;"
+else
+    ALLOW_BLOCK="    allow 127.0.0.1;\n    allow ::1;\n    deny all;"
+fi
+cat > "$NGINX_DIAG_SNIPPET" << EOF
+# KCY diag helper proxy — IP restricted
+location /api/diag/ {
+$(echo -e "$ALLOW_BLOCK")
+    proxy_pass http://127.0.0.1:4400/;
+    proxy_http_version 1.1;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_read_timeout 60s;
+}
+
+# Last errors static directory — IP restricted
+location /last-errors/ {
+    alias /var/www/html/last-errors/;
+    autoindex on;
+    default_type text/plain;
+$(echo -e "$ALLOW_BLOCK")
+}
+EOF
+
+# Bundle URL — PUBLIC ако PUBLIC_DIAG_BUNDLE=true в .env, иначе IP restricted
+PUBLIC_BUNDLE=$(grep "^PUBLIC_DIAG_BUNDLE=" "$ENV_FILE" 2>/dev/null | cut -d= -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
+if [ "$PUBLIC_BUNDLE" = "true" ]; then
+    cat >> "$NGINX_DIAG_SNIPPET" << EOF
+
+# Public diagnostics bundle (без IP restriction)
+location = /last-errors-bundle {
+    proxy_pass http://127.0.0.1:4400/bundle;
+    proxy_http_version 1.1;
+    proxy_read_timeout 30s;
+}
+EOF
+    echo -e "  ${GREEN}✓${NC} Bundle URL ПУБЛИЧЕН: https://${DOMAIN%% *}/last-errors-bundle"
+else
+    cat >> "$NGINX_DIAG_SNIPPET" << EOF
+
+# Bundle URL — IP restricted (PUBLIC_DIAG_BUNDLE != true)
+location = /last-errors-bundle {
+$(echo -e "$ALLOW_BLOCK")
+    proxy_pass http://127.0.0.1:4400/bundle;
+    proxy_http_version 1.1;
+    proxy_read_timeout 30s;
+}
+EOF
+    echo -e "  ${YELLOW}↷${NC} Bundle URL IP-restricted (за public: PUBLIC_DIAG_BUNDLE=true в .env)"
+fi
+echo -e "  ${GREEN}✓${NC} nginx snippet: $NGINX_DIAG_SNIPPET"
+
+# 6. Include snippet-а в site config
+SITE_FILE="/etc/nginx/sites-enabled/${DOMAIN%% *}"
+if [ -f "$SITE_FILE" ] && ! grep -q "kcy-diag-proxy.conf" "$SITE_FILE"; then
+    sed -i '0,/^}/{/^}/i\    include /etc/nginx/snippets/kcy-diag-proxy.conf;
+}' "$SITE_FILE" 2>/dev/null || true
+fi
+
+# Махни стария kcy-last-errors.conf snippet ако го има
+rm -f /etc/nginx/snippets/kcy-last-errors.conf
+sed -i '/kcy-last-errors\.conf/d' "$SITE_FILE" 2>/dev/null || true
+
+# 7. Изпълни diagnostics веднъж сега за initial generation
+mkdir -p /var/www/html/last-errors
+chown root:www-data /var/www/html/last-errors
+bash "$DIAG_SCRIPT" 2>/dev/null || true
+echo -e "  ${GREEN}✓${NC} Initial logs генерирани в /var/www/html/last-errors/"
+
+if nginx -t 2>/dev/null; then
+    systemctl reload nginx
+    echo -e "  ${GREEN}✓${NC} nginx reloaded"
 fi
 
 ##############################################################################

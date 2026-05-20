@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0090
+# Version: 1.0091
 ##############################################################################
 # KCY Ecosystem - Bootstrap on fresh server
 #
@@ -37,11 +37,30 @@ set -e
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'
 YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 
+# ── diag_log: append кратък ред в bootstrap log файлове
+# Phase 1 (bootstrap): пише в /root/.kcy-logs/ (защото /var/www/ още не съществува)
+# Накрая на bootstrap-а: премества към /var/www/deploy/.kcy-logs/ (deploy root)
+# 05-server-install.sh ги мига към /var/www/html/last-errors/ (final)
+BOOTSTRAP_LOG_DIR="/root/.kcy-logs"
+mkdir -p "$BOOTSTRAP_LOG_DIR" 2>/dev/null
+
+diag_log() {
+    local logfile="$1"; shift
+    local ts=$(date '+%Y-%m-%dT%H:%M:%S')
+    echo "[$ts] [BOOTSTRAP] $*" >> "${BOOTSTRAP_LOG_DIR}/${logfile}"
+    # Trim — keep last 200 lines
+    if [ "$(wc -l < "${BOOTSTRAP_LOG_DIR}/${logfile}" 2>/dev/null || echo 0)" -gt 200 ]; then
+        tail -n 200 "${BOOTSTRAP_LOG_DIR}/${logfile}" > "${BOOTSTRAP_LOG_DIR}/${logfile}.tmp" \
+            && mv "${BOOTSTRAP_LOG_DIR}/${logfile}.tmp" "${BOOTSTRAP_LOG_DIR}/${logfile}"
+    fi
+}
+
 print_step() {
     echo ""
     echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
     echo -e "${CYAN}  $1${NC}"
     echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+    diag_log services-errors.log "$1"
 }
 
 print_ok() { echo -e "  ${GREEN}✓${NC} $1"; }
@@ -139,6 +158,47 @@ case "$INSTALL_MODE" in
     skip)      echo -e "  ${CYAN}► Mode: ПРОПУСНИ ПРЕИНСТАЛАЦИЯ (само config)${NC}" ;;
 esac
 echo ""
+
+# ═══ FULL MODE: Изчисти стари backup файлове ═══
+# При пълна преинсталация → автоматично трие стари .bak файлове.
+# Сигнализира на 05-server-install.sh че сме във full mode (за nginx site override).
+if [ "$INSTALL_MODE" = "full" ]; then
+    touch /tmp/deploy_full_reinstall
+    print_step "Cleanup: изтриване на стари backup файлове"
+
+    DELETED=0
+    # nginx конфигурационни backup-и
+    for f in /etc/nginx/sites-available/*.bak.* \
+             /etc/nginx/sites-enabled/*.bak.* \
+             /etc/nginx/sites-available/*.backup.* \
+             /etc/nginx/sites-enabled/*.backup.*; do
+        [ -f "$f" ] && rm -f "$f" && DELETED=$((DELETED+1))
+    done
+
+    # sshd_config backup-и
+    for f in /etc/ssh/sshd_config.bak.* /etc/ssh/sshd_config.bak-*; do
+        [ -f "$f" ] && rm -f "$f" && DELETED=$((DELETED+1))
+    done
+
+    # sudoers backup-и
+    for f in /etc/sudoers.d/*.bak* /etc/sudoers.d/*.backup*; do
+        [ -f "$f" ] && rm -f "$f" && DELETED=$((DELETED+1))
+    done
+
+    # nginx failover backup директории
+    for d in /var/backups/nginx-pre-failover-*; do
+        [ -d "$d" ] && rm -rf "$d" && DELETED=$((DELETED+1))
+    done
+
+    if [ $DELETED -gt 0 ]; then
+        print_ok "Изтрити $DELETED backup файла/директории"
+    else
+        print_skip "Няма стари backups за изтриване"
+    fi
+else
+    # Не сме full — създай flag че НЕ е full (за консистентност в 05-server-install.sh)
+    rm -f /tmp/deploy_full_reinstall 2>/dev/null
+fi
 
 # ═══ STEP 0.5: ENSURE SWAP (за малки сървъри) ═══
 # Машини с < 2GB RAM имат риск от OOM kill по време на apt операции.
@@ -646,10 +706,44 @@ fi
 if [ "$INSTALL_MODE" != "skip" ]; then
     print_step "STEP 9: Tailscale VPN"
 
+    TS_ACTIVE=false
     if command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
+        TS_ACTIVE=true
+    fi
+
+    if $TS_ACTIVE; then
         TS_IP=$(tailscale ip -4 2>/dev/null | head -1)
-        print_skip "Tailscale вече активен (IP: ${TS_IP})"
+        TS_HOSTNAME=$(tailscale status --json 2>/dev/null | python3 -c "
+import json, sys
+try:
+    d = json.load(sys.stdin)
+    print(d.get('Self', {}).get('HostName', '?'))
+except: print('?')
+" 2>/dev/null || echo "?")
+
+        echo "  ${GREEN}✓${NC} Tailscale е активен:"
+        echo "      Hostname:  ${TS_HOSTNAME}"
+        echo "      IP:        ${TS_IP}"
+
+        if [ "$INSTALL_MODE" = "full" ]; then
+            echo ""
+            read -p "  Запази текущата Tailscale конфигурация? [Y/n]: " KEEP_TS
+            KEEP_TS="${KEEP_TS:-y}"
+            if [ "$KEEP_TS" = "y" ] || [ "$KEEP_TS" = "Y" ]; then
+                print_skip "Tailscale остава непроменен"
+            else
+                echo "  Reauthenticating Tailscale (logout + new login)..."
+                tailscale logout 2>/dev/null
+                tailscale up --accept-routes --ssh
+                TS_IP=$(tailscale ip -4 2>/dev/null | head -1)
+                print_ok "Tailscale reauthorized. Нов IP: ${TS_IP}"
+            fi
+        else
+            # selective/skip — не пипам
+            print_skip "Tailscale активен — оставям както е"
+        fi
     else
+        # Не е инсталиран или не е свързан
         if ! command -v tailscale >/dev/null 2>&1; then
             echo "  Инсталирам Tailscale..."
             curl -fsSL https://tailscale.com/install.sh | sh >/dev/null 2>&1
@@ -671,11 +765,8 @@ if [ "$INSTALL_MODE" != "skip" ]; then
         sleep 3
 
         if [ -n "$TAILSCALE_AUTH_KEY" ]; then
-            # Non-interactive с auth key (за CI)
             tailscale up --auth-key="$TAILSCALE_AUTH_KEY" --accept-routes --ssh
         else
-            # Interactive — без timeout. Чакаме потребителят да направи auth.
-            # Ctrl+C прекъсва и продължава bootstrap-а без Tailscale.
             tailscale up --accept-routes --ssh || {
                 echo ""
                 echo "  ${YELLOW}!${NC} Tailscale auth прекъснат или провален. Продължавам без него."
@@ -729,6 +820,16 @@ if [ "$NEW_SSH_PORT" != "$CURRENT_SSH_PORT" ]; then
         cp "/etc/ssh/sshd_config.bak."* /etc/ssh/sshd_config 2>/dev/null
         NEW_SSH_PORT="$CURRENT_SSH_PORT"
     fi
+fi
+
+# ═══ PHASE 2: Премести bootstrap логовете към deploy root ═══
+# /root/.kcy-logs/ → /var/www/deploy/.kcy-logs/ (за да ги вземе 05-server-install.sh)
+diag_log services-errors.log "bootstrap: завършен, преместване logs към deploy root"
+if [ -d "$BOOTSTRAP_LOG_DIR" ]; then
+    mkdir -p /var/www/deploy/.kcy-logs 2>/dev/null
+    cp -f "$BOOTSTRAP_LOG_DIR"/* /var/www/deploy/.kcy-logs/ 2>/dev/null
+    chown -R deploy:kcy /var/www/deploy/.kcy-logs 2>/dev/null || true
+    # Запазваме /root/.kcy-logs/ като backup (не trie-м)
 fi
 
 # ═══ DONE ═══

@@ -1,4 +1,4 @@
-// Version: 1.0085
+// Version: 1.0091
 // ECO-3 AI Studio — Backend Server
 // Database: SQLite · Proxy: Anthropic API · Payments: Stripe
 // Admin: IP whitelist from .env
@@ -6,6 +6,13 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+
+// Debug helper за глобални stage логове
+let debug;
+try { debug = require('../shared/debug-helper').create('eco3'); }
+catch (e) { debug = { stage: console.log, info: console.log, error: console.error, warn: console.warn }; }
+debug.stage('starting eco-3 service');
+debug.stage('node version:', process.version, 'cwd:', process.cwd());
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
@@ -451,7 +458,9 @@ app.delete('/admin/logs', adminCheck, (req, res) => {
 const dbOk = initDatabase();
 dailyCleanup(); // Run on start
 
+debug.stage('starting HTTP server on port', PORT);
 app.listen(PORT, () => {
+    debug.stage('✓ listening on port', PORT);
     const mode = process.env.ECO3_MODE || 'test';
     console.log(`\n🤖 ECO-3 AI Studio Backend v1.0085`);
     console.log(`   Port:      ${PORT}`);

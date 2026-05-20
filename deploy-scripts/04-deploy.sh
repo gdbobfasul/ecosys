@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0090
+# Version: 1.0091
 ##############################################################################
 # KCY Ecosystem - Deploy Script (Client-side)
 #
@@ -131,7 +131,7 @@ log "═════════════════════════
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     cat << 'EOF'
-KCY Ecosystem - Deploy v1.0090
+KCY Ecosystem - Deploy v1.0091
 
 Usage:
   ./deploy-scripts/04-deploy.sh                              # пита кой target (prod/vm)
@@ -199,7 +199,7 @@ ask_show_block() {
 }
 
 log "${CYAN}╔═══════════════════════════════════════════╗${NC}"
-log "${CYAN}║     KCY Ecosystem - Deploy v1.0090        ║${NC}"
+log "${CYAN}║     KCY Ecosystem - Deploy v1.0091        ║${NC}"
 log "${CYAN}╚═══════════════════════════════════════════╝${NC}"
 log ""
 log "  Target:  ${GREEN}${TARGET_LABEL}${NC}"
@@ -218,9 +218,8 @@ detect_ssh_port() {
     local user="$2"
     local configured_port="$3"
 
-    # Тествай конфигурирания порт първо
-    if ssh -o BatchMode=yes -o ConnectTimeout=3 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no \
-           -p "$configured_port" "${user}@${server}" 'echo ok' 2>/dev/null | grep -q ok; then
+    # Тествай конфигурирания порт първо чрез прост TCP test (bypass-ва SSH auth)
+    if timeout 3 bash -c "exec 3<>/dev/tcp/${server}/${configured_port}" 2>/dev/null; then
         echo "$configured_port"
         return 0
     fi
@@ -240,8 +239,7 @@ detect_ssh_port() {
         [[ " $tried " == *" $p "* ]] && continue
         tried="$tried $p"
 
-        if ssh -o BatchMode=yes -o ConnectTimeout=3 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no \
-               -p "$p" "${user}@${server}" 'echo ok' 2>/dev/null | grep -q ok; then
+        if timeout 3 bash -c "exec 3<>/dev/tcp/${server}/${p}" 2>/dev/null; then
             echo "$p"
             return 0
         fi

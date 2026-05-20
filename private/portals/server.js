@@ -1,5 +1,5 @@
 // KCY Portals — Main Server
-// Version: 1.0086
+// Version: 1.0091
 //
 // Разпределя:
 //   GET  /portals/*            — статични HTML (login, register, billing, games list, services list, 6 игри, 2 услуги)
@@ -20,6 +20,13 @@ const fs = require('fs');
 const Database = require('better-sqlite3');
 
 require('dotenv').config({ path: path.join(__dirname, '..', 'configs', '.env') });
+
+// Debug helper за глобални stage логове
+let debug;
+try { debug = require('../shared/debug-helper').create('portals'); }
+catch (e) { debug = { stage: console.log, info: console.log, error: console.error, warn: console.warn }; }
+debug.stage('starting portals service');
+debug.stage('env file:', path.join(__dirname, '..', 'configs', '.env'), fs.existsSync(path.join(__dirname, '..', 'configs', '.env')) ? '✓' : '✗ MISSING');
 
 const { requirePortalAccess } = require('./middleware/access-control');
 const authRouter = require('./routes/auth');
@@ -109,7 +116,10 @@ app.use((req, res) => {
 });
 
 // ── Start ──────────────────────────────────────────────────────
+debug.stage('starting HTTP server on port', PORT);
+debug.stage('DB path:', DB_PATH, fs.existsSync(DB_PATH) ? '✓' : '✗ NOT FOUND');
 app.listen(PORT, () => {
+    debug.stage('✓ listening on port', PORT);
     console.log(`🎮 KCY Portals running on http://localhost:${PORT}`);
     console.log(`   DB:   ${DB_PATH}`);
     console.log(`   Public: ${PUBLIC_DIR}`);

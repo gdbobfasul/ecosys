@@ -1,8 +1,14 @@
 #!/usr/bin/env node
 // KCY Portals — Database init
-// Version: 1.0086
+// Version: 1.0091
 
 const Database = require('better-sqlite3');
+
+// Debug logging
+let debug;
+try { debug = require('../../shared/debug-helper').create('portals'); }
+catch (e) { debug = { stage: console.log, info: console.log, error: console.error }; }
+debug.stage('portals/database/init.js: starting');
 const fs = require('fs');
 const path = require('path');
 
