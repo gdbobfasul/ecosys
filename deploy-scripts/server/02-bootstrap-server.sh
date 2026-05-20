@@ -22,7 +22,7 @@
 #   5. Директории и permissions
 #   6. Limited sudo за deploy (за да може да run-ва 05-server-install.sh)
 #   7. Firewall (ufw) с базови правила
-#   8. SSH hardening (опционално — disable password auth)
+#   8. SSH порт промяна (накрая, ако е нужно)
 #
 # Потребители които съществуват СЛЕД скрипта (и НИЩО ПОВЕЧЕ):
 #   • deploy    — качва файлове, run-ва install скриптовете (limited sudo)
@@ -79,38 +79,52 @@ echo "  Date:     $(date)"
 echo ""
 
 # ═══ MODE SELECTION ═══
-# Smart (default) = пропуска вече инсталираните неща
-# Force reinstall = форсира reinstall на всичко
 echo ""
 echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
 echo -e "${CYAN}  Bootstrap mode?${NC}"
 echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
 echo ""
-echo "  1) ${GREEN}Smart${NC} (по default) — пропуска вече инсталираните"
-echo "     Прави САМО това което липсва. Безопасно при повторно изпълнение."
+echo "  1) ${YELLOW}ПЪЛНА ПРЕИНСТАЛАЦИЯ${NC} — преинсталира всичко без питане"
+echo "     apt --reinstall на ВСИЧКИ packages, Node, PostgreSQL, certbot."
+echo "     Без интерактивни въпроси за packages. SSH key/firewall/sudoers"
+echo "     се пренаписват."
 echo ""
-echo "  2) ${YELLOW}Reinstall всичко отначало${NC} — форсира преинсталация"
-echo "     ⚠ Reinstall-ва packages, resetва sudoers и firewall."
-echo "     Системни потребители (deploy, kcy-chat, kcy-eco3) НЕ се изтриват"
-echo "     (защото services могат да работят). Само правилата им се обновяват."
+echo "  2) ${GREEN}ИЗБОР ПО ПАКЕТИ${NC} — пита за всяка група дали да преинсталира"
+echo "     Минава през base packages, Node, PostgreSQL, certbot — за всяка"
+echo "     пита 'reinstall? y/N'. Удобно за частичен update."
 echo ""
-read -p "  Избери [1-2, default=1]: " MODE_CHOICE
-MODE_CHOICE="${MODE_CHOICE:-1}"
+echo "  3) ${CYAN}ПРОПУСНИ ПРЕИНСТАЛАЦИЯ${NC} — само config промени"
+echo "     Не пипа packages изобщо. Прави: SSH key copy, потребители,"
+echo "     директории, sudoers, firewall, SSH порт промяна."
+echo ""
+read -p "  Избери [1-3, default=2]: " MODE_CHOICE
+MODE_CHOICE="${MODE_CHOICE:-2}"
 
-FORCE_REINSTALL=false
-if [ "$MODE_CHOICE" = "2" ]; then
-    FORCE_REINSTALL=true
-    echo ""
-    echo -e "  ${YELLOW}⚠ FORCE REINSTALL mode активен${NC}"
-    echo -e "  ${YELLOW}   Ще премина през всички стъпки с reinstall, дори ако вече са направени.${NC}"
-fi
+case "$MODE_CHOICE" in
+    1) INSTALL_MODE="full" ;;
+    2) INSTALL_MODE="selective" ;;
+    3) INSTALL_MODE="skip" ;;
+    *) INSTALL_MODE="selective" ;;
+esac
+
+echo ""
+case "$INSTALL_MODE" in
+    full)      echo -e "  ${YELLOW}► Mode: ПЪЛНА ПРЕИНСТАЛАЦИЯ${NC}" ;;
+    selective) echo -e "  ${GREEN}► Mode: ИЗБОР ПО ПАКЕТИ${NC}" ;;
+    skip)      echo -e "  ${CYAN}► Mode: ПРОПУСНИ ПРЕИНСТАЛАЦИЯ (само config)${NC}" ;;
+esac
 echo ""
 
 # ═══ STEP 1: SYSTEM UPDATE ═══
 print_step "STEP 1: System update"
-apt-get update -qq
-apt-get upgrade -y -qq
-print_ok "Системата е up-to-date"
+if [ "$INSTALL_MODE" = "skip" ]; then
+    apt-get update -qq
+    print_skip "Update само на apt cache. Без upgrade (skip mode)."
+else
+    apt-get update -qq
+    apt-get upgrade -y -qq
+    print_ok "Системата е up-to-date"
+fi
 
 # Определи дали ще променяме SSH порта
 # /tmp/desired_ssh_port се поставя от 01-bootstrap.sh launcher-а на Windows.
@@ -147,76 +161,99 @@ PACKAGES=(
     ca-certificates
 )
 
-if $FORCE_REINSTALL; then
-    echo "  ${YELLOW}Force reinstall — преинсталирам всички packages${NC}"
-    apt-get install -y -qq --reinstall "${PACKAGES[@]}" >/dev/null
-    print_ok "Всички packages преинсталирани"
-else
-    # Smart mode — намери само липсващите
-    MISSING=()
-    for pkg in "${PACKAGES[@]}"; do
-        if ! dpkg -l "$pkg" 2>/dev/null | grep -q "^ii"; then
-            MISSING+=("$pkg")
-        fi
-    done
+case "$INSTALL_MODE" in
+    full)
+        echo "  Преинсталирам всички ${#PACKAGES[@]} packages..."
+        apt-get install -y -qq --reinstall "${PACKAGES[@]}" >/dev/null
+        print_ok "Всички packages преинсталирани"
 
-    if [ ${#MISSING[@]} -eq 0 ]; then
-        print_skip "Всички packages вече са инсталирани (${#PACKAGES[@]})"
-    else
-        echo "  Липсват: ${MISSING[*]}"
-        apt-get install -y -qq "${MISSING[@]}" >/dev/null
-        print_ok "Инсталирани ${#MISSING[@]} липсващи packages"
-    fi
-fi
-
-# Опционално PostgreSQL — питай
-PG_INSTALLED=false
-if dpkg -l postgresql 2>/dev/null | grep -q "^ii"; then PG_INSTALLED=true; fi
-
-if $PG_INSTALLED && ! $FORCE_REINSTALL; then
-    print_skip "PostgreSQL вече инсталиран"
-else
-    echo ""
-    if $PG_INSTALLED && $FORCE_REINSTALL; then
-        read -p "  PostgreSQL вече инсталиран. Преинсталирай? [y/N]: " INSTALL_PG
-    else
-        read -p "  Да инсталирам PostgreSQL? [y/N]: " INSTALL_PG
-    fi
-    if [ "$INSTALL_PG" = "y" ] || [ "$INSTALL_PG" = "Y" ]; then
-        if $FORCE_REINSTALL; then
-            apt-get install -y -qq --reinstall postgresql postgresql-contrib >/dev/null
-        else
-            apt-get install -y -qq postgresql postgresql-contrib >/dev/null
-        fi
+        echo "  Инсталирам PostgreSQL..."
+        apt-get install -y -qq --reinstall postgresql postgresql-contrib >/dev/null
         print_ok "PostgreSQL инсталиран"
-    else
-        print_skip "PostgreSQL пропуснат"
-    fi
-fi
 
-# Опционално certbot
-CB_INSTALLED=false
-if dpkg -l certbot 2>/dev/null | grep -q "^ii"; then CB_INSTALLED=true; fi
-
-if $CB_INSTALLED && ! $FORCE_REINSTALL; then
-    print_skip "certbot вече инсталиран"
-else
-    echo ""
-    if $CB_INSTALLED && $FORCE_REINSTALL; then
-        read -p "  certbot вече инсталиран. Преинсталирай? [y/N]: " INSTALL_CB
-    else
-        read -p "  Да инсталирам certbot (за Let's Encrypt SSL)? [Y/n]: " INSTALL_CB
-        INSTALL_CB="${INSTALL_CB:-y}"
-    fi
-    if [ "$INSTALL_CB" = "y" ] || [ "$INSTALL_CB" = "Y" ]; then
-        if $FORCE_REINSTALL; then
-            apt-get install -y -qq --reinstall certbot python3-certbot-nginx >/dev/null
-        else
-            apt-get install -y -qq certbot python3-certbot-nginx >/dev/null
-        fi
+        echo "  Инсталирам certbot..."
+        apt-get install -y -qq --reinstall certbot python3-certbot-nginx >/dev/null
         print_ok "certbot инсталиран"
-    fi
-fi
+        ;;
+
+    selective)
+        # Питай за base packages
+        BASE_INSTALLED=true
+        for pkg in "${PACKAGES[@]}"; do
+            if ! dpkg -l "$pkg" 2>/dev/null | grep -q "^ii"; then
+                BASE_INSTALLED=false
+                break
+            fi
+        done
+
+        if $BASE_INSTALLED; then
+            echo ""
+            read -p "  Base packages са инсталирани. Преинсталирай? [y/N]: " R
+            if [ "$R" = "y" ] || [ "$R" = "Y" ]; then
+                apt-get install -y -qq --reinstall "${PACKAGES[@]}" >/dev/null
+                print_ok "Base packages преинсталирани"
+            else
+                print_skip "Base packages пропуснати"
+            fi
+        else
+            # Намери липсващите
+            MISSING=()
+            for pkg in "${PACKAGES[@]}"; do
+                dpkg -l "$pkg" 2>/dev/null | grep -q "^ii" || MISSING+=("$pkg")
+            done
+            echo "  Липсват: ${MISSING[*]}"
+            apt-get install -y -qq "${MISSING[@]}" >/dev/null
+            print_ok "Инсталирани ${#MISSING[@]} липсващи packages"
+        fi
+
+        # PostgreSQL
+        if dpkg -l postgresql 2>/dev/null | grep -q "^ii"; then
+            echo ""
+            read -p "  PostgreSQL е инсталиран. Преинсталирай? [y/N]: " R
+            if [ "$R" = "y" ] || [ "$R" = "Y" ]; then
+                apt-get install -y -qq --reinstall postgresql postgresql-contrib >/dev/null
+                print_ok "PostgreSQL преинсталиран"
+            else
+                print_skip "PostgreSQL остава"
+            fi
+        else
+            echo ""
+            read -p "  PostgreSQL не е инсталиран. Инсталирай? [y/N]: " R
+            if [ "$R" = "y" ] || [ "$R" = "Y" ]; then
+                apt-get install -y -qq postgresql postgresql-contrib >/dev/null
+                print_ok "PostgreSQL инсталиран"
+            else
+                print_skip "PostgreSQL пропуснат"
+            fi
+        fi
+
+        # certbot
+        if dpkg -l certbot 2>/dev/null | grep -q "^ii"; then
+            echo ""
+            read -p "  certbot е инсталиран. Преинсталирай? [y/N]: " R
+            if [ "$R" = "y" ] || [ "$R" = "Y" ]; then
+                apt-get install -y -qq --reinstall certbot python3-certbot-nginx >/dev/null
+                print_ok "certbot преинсталиран"
+            else
+                print_skip "certbot остава"
+            fi
+        else
+            echo ""
+            read -p "  certbot не е инсталиран. Инсталирай? [Y/n]: " R
+            R="${R:-y}"
+            if [ "$R" = "y" ] || [ "$R" = "Y" ]; then
+                apt-get install -y -qq certbot python3-certbot-nginx >/dev/null
+                print_ok "certbot инсталиран"
+            else
+                print_skip "certbot пропуснат"
+            fi
+        fi
+        ;;
+
+    skip)
+        print_skip "Skip mode — не пипам packages изобщо"
+        ;;
+esac
 
 # ═══ STEP 3: NODE.JS 20 LTS ═══
 print_step "STEP 3: Node.js 20 LTS"
@@ -226,22 +263,41 @@ if command -v node >/dev/null 2>&1; then
     CURRENT_NODE_MAJOR=$(node -v | sed 's/v//' | cut -d. -f1)
 fi
 
-if [ "$CURRENT_NODE_MAJOR" -ge 20 ] && ! $FORCE_REINSTALL; then
-    print_skip "Node $(node -v) — вече подходящ (skip)"
-else
-    if [ "$CURRENT_NODE_MAJOR" -ge 20 ] && $FORCE_REINSTALL; then
-        echo "  ${YELLOW}Force reinstall на Node.js дори че вече е v${CURRENT_NODE_MAJOR}${NC}"
-    fi
-    echo "  Добавям NodeSource repo..."
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - >/dev/null 2>&1
-    if $FORCE_REINSTALL; then
+case "$INSTALL_MODE" in
+    full)
+        echo "  Преинсталирам Node.js 20 LTS..."
+        curl -fsSL https://deb.nodesource.com/setup_20.x | bash - >/dev/null 2>&1
         apt-get install -y -qq --reinstall nodejs >/dev/null
-    else
-        apt-get install -y -qq nodejs >/dev/null
-    fi
-    print_ok "Node $(node -v) инсталиран"
-fi
-print_ok "NPM $(npm -v)"
+        print_ok "Node $(node -v) преинсталиран"
+        ;;
+    selective)
+        if [ "$CURRENT_NODE_MAJOR" -ge 20 ]; then
+            echo ""
+            read -p "  Node $(node -v) е инсталиран. Преинсталирай? [y/N]: " R
+            if [ "$R" = "y" ] || [ "$R" = "Y" ]; then
+                curl -fsSL https://deb.nodesource.com/setup_20.x | bash - >/dev/null 2>&1
+                apt-get install -y -qq --reinstall nodejs >/dev/null
+                print_ok "Node $(node -v) преинсталиран"
+            else
+                print_skip "Node $(node -v) остава"
+            fi
+        else
+            echo "  Node липсва или е стар (v${CURRENT_NODE_MAJOR}). Добавям NodeSource repo..."
+            curl -fsSL https://deb.nodesource.com/setup_20.x | bash - >/dev/null 2>&1
+            apt-get install -y -qq nodejs >/dev/null
+            print_ok "Node $(node -v) инсталиран"
+        fi
+        ;;
+    skip)
+        if [ "$CURRENT_NODE_MAJOR" -ge 20 ]; then
+            print_skip "Node $(node -v) — skip mode"
+        else
+            print_err "Node не е >=20, но si в skip mode. Деплоят ще се счупи!"
+        fi
+        ;;
+esac
+
+command -v node >/dev/null && print_ok "NPM $(npm -v)"
 
 # ═══ STEP 4: GROUP AND USERS ═══
 print_step "STEP 4: Users and group"
@@ -369,7 +425,7 @@ print_step "STEP 7: Limited sudo за deploy"
 SUDOERS_FILE="/etc/sudoers.d/kcy-deploy"
 
 # В smart mode: ако файлът съществува и е валиден, пропусни
-if [ -f "$SUDOERS_FILE" ] && ! $FORCE_REINSTALL; then
+if [ -f "$SUDOERS_FILE" ] && [ "$INSTALL_MODE" != "full" ]; then
     if visudo -c -f "$SUDOERS_FILE" >/dev/null 2>&1; then
         print_skip "Sudoers entry вече инсталиран и валиден ($SUDOERS_FILE)"
         SKIP_SUDOERS=true
@@ -404,6 +460,10 @@ deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/07-s
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/08-setup-domain.sh
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/08-setup-domain.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/08-setup-domain.sh
+
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/10-disable-ssh-password.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/10-disable-ssh-password.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/10-disable-ssh-password.sh
 
 # Systemd service management
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
@@ -451,7 +511,7 @@ if ufw status 2>/dev/null | grep -qE "^${CURRENT_SSH_PORT}/tcp|^80/tcp|^443/tcp"
     UFW_HAS_RULES=true
 fi
 
-if $FORCE_REINSTALL || ! $UFW_HAS_RULES; then
+if [ "$INSTALL_MODE" = "full" ] || ! $UFW_HAS_RULES; then
     if $UFW_HAS_RULES; then
         echo "  ${YELLOW}Force reset на firewall правилата${NC}"
     fi
@@ -489,29 +549,8 @@ else
     print_ok "Допълнени липсващи правила (ако имаше)"
 fi
 
-# ═══ STEP 9: SSH HARDENING (опционално) ═══
-print_step "STEP 9: SSH hardening"
-
-if [ -s "$DEPLOY_SSH/authorized_keys" ]; then
-    echo ""
-    echo "  deploy вече има SSH ключ. Може да изключим парола за SSH?"
-    echo "  ${YELLOW}ВАЖНО: преди да изключиш, тествай ssh от друга машина за да си сигурен!${NC}"
-    read -p "  Изключи password authentication за SSH? [y/N]: " DISABLE_PW
-    if [ "$DISABLE_PW" = "y" ] || [ "$DISABLE_PW" = "Y" ]; then
-        cp /etc/ssh/sshd_config "/etc/ssh/sshd_config.bak.$(date +%s)"
-        sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
-        sed -i 's/^#*PermitRootLogin.*/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
-        systemctl reload ssh 2>/dev/null || systemctl reload sshd
-        print_ok "Password auth изключен. Само SSH ключове."
-    else
-        print_skip "Password auth остава активен"
-    fi
-else
-    print_skip "deploy няма SSH ключ — оставям password auth активен"
-fi
-
-# ═══ STEP 10: ENABLE SERVICES ═══
-print_step "STEP 10: Enable & start services"
+# ═══ STEP 9: ENABLE SERVICES ═══
+print_step "STEP 9: Enable & start services"
 systemctl enable --now nginx >/dev/null 2>&1
 print_ok "nginx стартиран"
 systemctl enable --now fail2ban >/dev/null 2>&1
@@ -521,9 +560,9 @@ if systemctl list-unit-files | grep -q "^postgresql"; then
     print_ok "PostgreSQL стартиран"
 fi
 
-# ═══ STEP 11: SSH PORT CHANGE (ако е нужно) ═══
+# ═══ STEP 10: SSH PORT CHANGE (ако е нужно) ═══
 if [ "$NEW_SSH_PORT" != "$CURRENT_SSH_PORT" ]; then
-    print_step "STEP 11: Промяна на SSH порт ${CURRENT_SSH_PORT} → ${NEW_SSH_PORT}"
+    print_step "STEP 10: Промяна на SSH порт ${CURRENT_SSH_PORT} → ${NEW_SSH_PORT}"
 
     # Backup на sshd_config
     cp /etc/ssh/sshd_config "/etc/ssh/sshd_config.bak.$(date +%s)"

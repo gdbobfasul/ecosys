@@ -51,9 +51,9 @@ show_menu() {
     echo ""
     echo -e "${BOLD}${CYAN}━━━ DEPLOY ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
-    item " 1" "Bootstrap нов сървър" \
+    item " 1" "Bootstrap нов сървър + deploy" \
         "Изпълнява се ЕДИН път при нов VPS/VM. Генерира SSH ключ на Windows," \
-        "копира го на сървъра, инсталира пакети, създава потребители, firewall."
+        "копира го на сървъра, инсталира пакети, накрая пита да направи deploy."
     item " 2" "Deploy проекта" \
         "Архивира кода, качва на сървъра, разархивира, активира на production място." \
         "Извиква се при всяка промяна. След избор пита за target: vm / prod / custom."
@@ -166,9 +166,15 @@ show_menu() {
         "Дава SSH команда за 'journalctl -u kcy-chat -u kcy-eco3 -f' (live следене)." \
         "Полезно когато правиш deploy и искаш да видиш как се стартират."
 
+    echo -e "${BOLD}${RED}━━━ DANGEROUS (внимание!) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    item "32" "Disable SSH password auth" \
+        "⚠ ОПАСНО! Изключва парола за SSH login (само ключ). Препоръчвам само за" \
+        "сървъри с recovery console (DigitalOcean). НЕ за локалната VM!"
+
     echo -e "${BOLD}${CYAN}━━━ INFO ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
-    item "32" "Status & info" \
+    item "33" "Status & info" \
         "Показва: версия на проекта, Node + npm версии, OS, deploy targets," \
         "локални DB файлове с размер, дали node_modules е инсталиран."
 
@@ -441,8 +447,22 @@ run_choice() {
             press_enter
             ;;
 
-        # ── INFO ──
+        # ── DANGEROUS ──
         32)
+            echo ""
+            echo -e "  ${RED}⚠ Тази операция изключва парола за SSH login.${NC}"
+            echo -e "  ${RED}   Препоръчвам САМО за сървъри с recovery console (DigitalOcean).${NC}"
+            echo ""
+            echo "  Изпълни на сървъра:"
+            echo -e "  ${CYAN}ssh deploy@SERVER${NC}"
+            echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/10-disable-ssh-password.sh${NC}"
+            echo ""
+            echo "  Скриптът има многократни safety проверки преди да изпълни промяната."
+            press_enter
+            ;;
+
+        # ── INFO ──
+        33)
             clear
             echo -e "${BOLD}${CYAN}── Status & Info ──${NC}"
             echo ""
@@ -488,6 +508,6 @@ run_choice() {
 # === MAIN LOOP ===
 while true; do
     show_menu
-    read -p "Избери [1-32, q]: " choice
+    read -p "Избери [1-33, q]: " choice
     run_choice "$choice"
 done

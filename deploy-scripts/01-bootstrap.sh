@@ -67,18 +67,53 @@ echo -e "${GREEN}╚════════════════════
 echo ""
 echo "  Server:  ${GREEN}${SERVER}${NC}"
 echo "  User:    ${GREEN}${USER}${NC}"
-echo "  Port:    ${GREEN}${PORT}${NC} (текущ)"
+echo "  Port:    ${GREEN}${PORT}${NC} (зададен)"
 echo ""
 
-# ═══ STEP 0: ИЗБОР НА НОВ SSH ПОРТ ═══
-echo -e "${CYAN}[0/6] SSH порт след bootstrap${NC}"
+# ═══ STEP 0: ОТКРИЙ ТЕКУЩИЯ SSH ПОРТ НА СЪРВЪРА ═══
+echo -e "${CYAN}[0/7] Откриване на текущия SSH порт${NC}"
+echo "  Тествам кой порт работи (без авторизация)..."
+
+DETECTED_PORT=""
+for try_port in "$PORT" 22 2222; do
+    [ -z "$try_port" ] && continue
+    # Опит без autz — само провери дали SSH banner отговаря (Permission denied = порт работи)
+    if ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+           -o PreferredAuthentications=none \
+           -o NumberOfPasswordPrompts=0 \
+           -p "$try_port" "${USER}@${SERVER}" 'echo' 2>&1 | \
+           grep -qE "Permission denied|authentication method"; then
+        DETECTED_PORT="$try_port"
+        break
+    fi
+    # Или ако ключ работи и връща нещо
+    if ssh -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+           -p "$try_port" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
+        DETECTED_PORT="$try_port"
+        break
+    fi
+done
+
+if [ -z "$DETECTED_PORT" ]; then
+    echo -e "  ${RED}✗${NC} Не мога да достигна ${SERVER} на нито един от: ${PORT}, 22, 2222"
+    echo "    Проверки:"
+    echo "      • Сървърът включен ли е?           ping ${SERVER}"
+    echo "      • Правилен ли е USER (${USER})?"
+    exit 1
+fi
+
+PORT="$DETECTED_PORT"
+echo -e "  ${GREEN}✓${NC} Текущ SSH порт на сървъра: ${GREEN}${PORT}${NC}"
+echo ""
+
+# ═══ STEP 1: ИЗБОР НА НОВ SSH ПОРТ ═══
+echo -e "${CYAN}[1/7] SSH порт след bootstrap${NC}"
 
 NEW_SSH_PORT=""
 if [ "$PORT" = "2222" ]; then
-    echo -e "  SSH вече е на 2222 — оставям както е."
+    echo -e "  ${GREEN}✓${NC} SSH вече е на 2222 — оставям както е."
     NEW_SSH_PORT="$PORT"
 else
-    echo "  Текущ SSH порт: ${PORT}"
     echo "  Опции:"
     echo "    1) Промени на ${GREEN}2222${NC} (препоръчвано — стандарт за non-default SSH)"
     echo "    2) Custom порт"
@@ -110,7 +145,7 @@ fi
 echo ""
 
 # ═══ STEP 1: SSH KEY НА WINDOWS ═══
-echo -e "${CYAN}[1/6] SSH ключ${NC}"
+echo -e "${CYAN}[2/7] SSH ключ${NC}"
 
 KEY_PATH="$HOME/.ssh/id_ed25519"
 PUB_PATH="${KEY_PATH}.pub"
@@ -131,60 +166,23 @@ echo "  Public key:"
 echo -e "  ${YELLOW}$(cat "$PUB_PATH")${NC}"
 echo ""
 
-# ═══ STEP 2: ТЕСТ SSH ═══
-echo -e "${CYAN}[2/6] Тест SSH връзка (auto-detect на порт)${NC}"
+# ═══ STEP 3: ТЕСТ ДАЛИ SSH КЛЮЧ ВЕЧЕ РАБОТИ ═══
+echo -e "${CYAN}[3/7] Тест SSH ключ${NC}"
 
-# Опитай конфигурирания порт първо
+# Порта вече е открит в [0/7]. Тук само проверявам дали ключът работи без парола.
 KEY_ALREADY_THERE=0
-DETECTED_PORT=""
-
-for try_port in "$PORT" 22 2222; do
-    [ -z "$try_port" ] && continue
-    # Първо с ключ
-    if ssh -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
-           -p "$try_port" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
-        DETECTED_PORT="$try_port"
-        KEY_ALREADY_THERE=1
-        break
-    fi
-done
-
-# Ако ключ не работи — провери дали порт изобщо отговаря (за password auth)
-if [ -z "$DETECTED_PORT" ]; then
-    for try_port in "$PORT" 22 2222; do
-        [ -z "$try_port" ] && continue
-        if ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
-               -o PreferredAuthentications=password,publickey \
-               -o NumberOfPasswordPrompts=0 \
-               -p "$try_port" "${USER}@${SERVER}" 'echo OK' 2>&1 | grep -qE "Permission denied|OK"; then
-            DETECTED_PORT="$try_port"
-            KEY_ALREADY_THERE=0
-            break
-        fi
-    done
-fi
-
-if [ -z "$DETECTED_PORT" ]; then
-    echo -e "  ${RED}✗${NC} Не мога да достигна ${SERVER} на нито един порт (${PORT}, 22, 2222)."
-    echo "    Провери дали сървърът е включен: ping ${SERVER}"
-    exit 1
-fi
-
-if [ "$DETECTED_PORT" != "$PORT" ]; then
-    echo -e "  ${YELLOW}⚠${NC} Конфигуриран порт ${PORT} не работи. Намерих че порт ${DETECTED_PORT} отговаря."
-    PORT="$DETECTED_PORT"
-fi
-
-if [ "$KEY_ALREADY_THERE" -eq 1 ]; then
+if ssh -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+       -p "$PORT" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
+    KEY_ALREADY_THERE=1
     echo -e "  ${GREEN}✓${NC} SSH ключ вече работи на порт ${PORT} — пропускам ssh-copy-id"
 else
-    echo -e "  ${YELLOW}!${NC} Сървърът отговаря на порт ${PORT}, но ключ още не работи — ще го копирам с парола"
+    echo -e "  ${YELLOW}!${NC} SSH ключ още не работи на порт ${PORT} — ще го копирам с парола"
 fi
 echo ""
 
 # ═══ STEP 3: COPY KEY (ако нужно) ═══
 if [ "$KEY_ALREADY_THERE" -eq 0 ]; then
-    echo -e "${CYAN}[3/6] Копиране на ключа на сървъра${NC}"
+    echo -e "${CYAN}[4/7] Копиране на ключа на сървъра${NC}"
     echo "  Ще ви попита паролата на ${USER}@${SERVER} (само ВЕДНЪЖ)..."
     echo ""
 
@@ -204,12 +202,12 @@ if [ "$KEY_ALREADY_THERE" -eq 0 ]; then
         exit 1
     fi
 else
-    echo -e "${CYAN}[3/6] Skip — ключът вече е там${NC}"
+    echo -e "${CYAN}[4/7] Skip — ключът вече е там${NC}"
 fi
 echo ""
 
 # ═══ STEP 4: НАМЕРИ И КАЧИ BOOTSTRAP-SERVER.SH ═══
-echo -e "${CYAN}[4/6] Качване на 02-bootstrap-server.sh${NC}"
+echo -e "${CYAN}[5/7] Качване на 02-bootstrap-server.sh${NC}"
 
 # Намери скрипта
 BOOTSTRAP_SH=""
@@ -261,7 +259,7 @@ ssh -p "$PORT" "${USER}@${SERVER}" "
 echo ""
 
 # ═══ STEP 5: RUN BOOTSTRAP-SERVER.SH НА СЪРВЪРА ═══
-echo -e "${CYAN}[5/6] Изпълнение на 02-bootstrap-server.sh${NC}"
+echo -e "${CYAN}[6/7] Изпълнение на 02-bootstrap-server.sh${NC}"
 echo "  Ще те пита паролата на ${USER} за sudo (ако не сте sudo NOPASSWD)..."
 echo ""
 
@@ -324,12 +322,49 @@ echo -e "${GREEN}╔════════════════════
 echo -e "${GREEN}║  ✓ BOOTSTRAP COMPLETE                             ║${NC}"
 echo -e "${GREEN}╚═══════════════════════════════════════════════════╝${NC}"
 echo ""
-echo -e "${CYAN}СЛЕДВАЩА СТЪПКА:${NC}"
-echo ""
 echo "  SSH на сървъра вече е на порт ${GREEN}${NEW_SSH_PORT}${NC}"
 echo ""
-echo "  Първи deploy от Windows:"
-echo "    ${CYAN}./deploy-scripts/04-deploy.sh vm${NC}"
-echo ""
-echo "  Това ще качи проекта и автоматично ще извика 05-server-install.sh."
+
+# ═══ AUTO-DEPLOY (опционално) ═══
+# Bootstrap-ът подготви сървъра, но проектът още не е качен.
+# Логично е сега да деплойнем.
+DEPLOY_SCRIPT="${PROJECT_ROOT}/deploy-scripts/04-deploy.sh"
+if [ -f "$DEPLOY_SCRIPT" ]; then
+    echo ""
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+    echo -e "${CYAN}  Bootstrap-ът само подготви сървъра — проектът още${NC}"
+    echo -e "${CYAN}  не е качен. Да направя ли deploy сега?${NC}"
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+    echo ""
+
+    # Намери target по име от SERVER (за да викаме ./04-deploy.sh vm/prod)
+    DEPLOY_TARGET="vm"
+    if [ "$SERVER" = "alsec.strangled.net" ]; then
+        DEPLOY_TARGET="prod"
+    fi
+
+    read -p "  Изпълни './deploy-scripts/04-deploy.sh ${DEPLOY_TARGET}' сега? [Y/n]: " DO_DEPLOY
+    DO_DEPLOY="${DO_DEPLOY:-y}"
+
+    if [ "$DO_DEPLOY" = "y" ] || [ "$DO_DEPLOY" = "Y" ]; then
+        echo ""
+        echo -e "${YELLOW}► Стартирам deploy...${NC}"
+        echo ""
+        bash "$DEPLOY_SCRIPT" "$DEPLOY_TARGET"
+        DEPLOY_RC=$?
+        echo ""
+        if [ $DEPLOY_RC -eq 0 ]; then
+            echo -e "${GREEN}✓ Deploy успешен — сървърът е готов!${NC}"
+        else
+            echo -e "${YELLOW}⚠ Deploy завърши с код ${DEPLOY_RC}.${NC}"
+            echo "  Можеш да опиташ ръчно: ./deploy-scripts/04-deploy.sh ${DEPLOY_TARGET}"
+        fi
+    else
+        echo ""
+        echo -e "${CYAN}СЛЕДВАЩА СТЪПКА:${NC}"
+        echo "  ${CYAN}./deploy-scripts/04-deploy.sh ${DEPLOY_TARGET}${NC}"
+        echo ""
+        echo "  Това ще качи проекта и автоматично ще извика 05-server-install.sh."
+    fi
+fi
 echo ""
