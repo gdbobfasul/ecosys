@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0088
+# Version: 1.0089
 ##############################################################################
 # KCY Ecosystem - Bootstrap on fresh server
 #
@@ -482,6 +482,18 @@ deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/10-disable-ssh
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/10-disable-ssh-password.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/10-disable-ssh-password.sh
 
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/11-setup-tailscale.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/11-setup-tailscale.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/11-setup-tailscale.sh
+
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/12-setup-failover.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/12-setup-failover.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/12-setup-failover.sh
+
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/13-kcy-admin-sudo-toggle.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/13-kcy-admin-sudo-toggle.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/13-kcy-admin-sudo-toggle.sh
+
 # Systemd service management
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3
@@ -566,8 +578,56 @@ else
     print_ok "Допълнени липсващи правила (ако имаше)"
 fi
 
-# ═══ STEP 9: ENABLE SERVICES ═══
-print_step "STEP 9: Enable & start services"
+# ═══ STEP 9: TAILSCALE (за failover между VPS и VM) ═══
+if [ "$INSTALL_MODE" != "skip" ]; then
+    print_step "STEP 9: Tailscale VPN"
+
+    if command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
+        TS_IP=$(tailscale ip -4 2>/dev/null | head -1)
+        print_skip "Tailscale вече активен (IP: ${TS_IP})"
+    else
+        if ! command -v tailscale >/dev/null 2>&1; then
+            echo "  Инсталирам Tailscale..."
+            curl -fsSL https://tailscale.com/install.sh | sh >/dev/null 2>&1
+            print_ok "Tailscale инсталиран"
+        fi
+
+        echo ""
+        echo "  ${YELLOW}Tailscale auth — какво се случва сега:${NC}"
+        echo ""
+        echo "    1) tailscale ще покаже URL в следващите 5 секунди"
+        echo "    2) Отвори URL-а в browser на твоя Windows"
+        echo "    3) Логни се с Google/GitHub/email"
+        echo "    4) ${RED}ВАЖНО:${NC} ползвай същия Tailscale акаунт за VPS и VM!"
+        echo "    5) Тази машина се появява в мрежата → продължава bootstrap-ът"
+        echo ""
+        echo "  ${YELLOW}Ако искаш да пропуснеш сега (без failover):${NC} натисни Ctrl+C → пропусни"
+        echo "  ${YELLOW}Можеш да го направиш по-късно с:${NC} sudo tailscale up"
+        echo ""
+        sleep 3
+
+        if [ -n "$TAILSCALE_AUTH_KEY" ]; then
+            # Non-interactive с auth key (за CI)
+            tailscale up --auth-key="$TAILSCALE_AUTH_KEY" --accept-routes --ssh
+        else
+            # Interactive — без timeout. Чакаме потребителят да направи auth.
+            # Ctrl+C прекъсва и продължава bootstrap-а без Tailscale.
+            tailscale up --accept-routes --ssh || {
+                echo ""
+                echo "  ${YELLOW}!${NC} Tailscale auth прекъснат или провален. Продължавам без него."
+                echo "  ${YELLOW}!${NC} Failover няма да работи докато не пуснеш: sudo tailscale up"
+            }
+        fi
+
+        if tailscale status >/dev/null 2>&1; then
+            TS_IP=$(tailscale ip -4 2>/dev/null | head -1)
+            print_ok "Tailscale свързан. IP: ${TS_IP}"
+        fi
+    fi
+fi
+
+# ═══ STEP 10: ENABLE SERVICES ═══
+print_step "STEP 10: Enable & start services"
 systemctl enable --now nginx >/dev/null 2>&1
 print_ok "nginx стартиран"
 systemctl enable --now fail2ban >/dev/null 2>&1
@@ -579,7 +639,7 @@ fi
 
 # ═══ STEP 10: SSH PORT CHANGE (ако е нужно) ═══
 if [ "$NEW_SSH_PORT" != "$CURRENT_SSH_PORT" ]; then
-    print_step "STEP 10: Промяна на SSH порт ${CURRENT_SSH_PORT} → ${NEW_SSH_PORT}"
+    print_step "STEP 11: Промяна на SSH порт ${CURRENT_SSH_PORT} → ${NEW_SSH_PORT}"
 
     # Backup на sshd_config
     cp /etc/ssh/sshd_config "/etc/ssh/sshd_config.bak.$(date +%s)"

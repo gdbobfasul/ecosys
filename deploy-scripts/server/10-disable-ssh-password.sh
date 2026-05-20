@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0088
+# Version: 1.0089
 ##############################################################################
 # KCY Ecosystem — Disable SSH password authentication
 #
@@ -109,17 +109,26 @@ if [ "$TESTED" != "y" ] && [ "$TESTED" != "Y" ]; then
     exit 1
 fi
 
-# 4. Последна потвърждение
+# 4. Двойно потвърждение
 echo ""
 echo -e "${RED}════════════════════════════════════════════════════════════════${NC}"
-echo -e "${RED}  Финално потвърждение${NC}"
+echo -e "${RED}  ДВОЙНО ПОТВЪРЖДЕНИЕ${NC}"
 echo -e "${RED}════════════════════════════════════════════════════════════════${NC}"
 echo ""
-echo "  Напиши 'DISABLE-PASSWORD' за да потвърдиш:"
-read -p "  > " CONF
-if [ "$CONF" != "DISABLE-PASSWORD" ]; then
-    echo ""
-    echo "Отказано. Нищо не е променено."
+echo -e "${YELLOW}Стъпка 1 от 2:${NC}"
+read -p "  Сигурен ли си? Напиши 'yes': " CONF1
+if [ "$CONF1" != "yes" ]; then
+    echo "Отказано (стъпка 1). Нищо не е променено."
+    exit 0
+fi
+
+echo ""
+echo -e "${YELLOW}Стъпка 2 от 2 (anti-typo защита):${NC}"
+echo "  Сега напиши 'no' — да, NO — за финално потвърждение."
+echo "  (Това е double-check срещу случайно натискане.)"
+read -p "  Напиши 'no': " CONF2
+if [ "$CONF2" != "no" ]; then
+    echo "Отказано (стъпка 2). Нищо не е променено."
     exit 0
 fi
 

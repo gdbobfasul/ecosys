@@ -1184,6 +1184,79 @@ HELPEREOF
 chmod +x /usr/local/bin/kcy-restart
 
 ##############################################################################
+# AUTO FAILOVER (само на production VPS)
+##############################################################################
+# Ако сме на production target И Tailscale е инсталиран → пита да настрои failover.
+# На VM → не прави нищо (VM-ът е primary, не reverse proxy).
+
+if [ "$TARGET_NAME" = "prod" ] && command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
+    # Намери VM Tailscale IP — peer който НЕ е този VPS, и е online
+    MY_TS_IP=$(tailscale ip -4 2>/dev/null | head -1)
+    VM_TS_IP=$(tailscale status --json 2>/dev/null | python3 -c "
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    peers = data.get('Peer', {})
+    # Намери първи online peer (не нас) с Tailscale IPv4
+    for k, p in peers.items():
+        if not p.get('Online'):
+            continue
+        ips = [ip for ip in (p.get('TailscaleIPs') or []) if '.' in ip]
+        if ips:
+            print(ips[0])
+            sys.exit(0)
+except Exception:
+    pass
+" 2>/dev/null)
+
+    # Fallback ако python3 не е там
+    if [ -z "$VM_TS_IP" ]; then
+        VM_TS_IP=$(tailscale status 2>/dev/null | awk -v me="$MY_TS_IP" '
+            /^100\./ && $1 != me && /(active|idle)/ { print $1; exit }
+        ')
+    fi
+
+    if [ -n "$VM_TS_IP" ]; then
+        # Provери дали failover вече е настроен
+        if [ ! -f /etc/nginx/sites-enabled/kcy-failover ]; then
+            echo ""
+            echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
+            echo -e "${CYAN}  AUTO-FAILOVER detected${NC}"
+            echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
+            echo ""
+            echo "  Tailscale е активен и намерих VM peer: ${VM_TS_IP}"
+            echo "  Това позволява настройка на failover: VPS reverse proxy → VM (primary)"
+            echo "  → ако VM падне, VPS пое автоматично."
+            echo ""
+            read -p "  Да настроя failover сега? [Y/n]: " DO_FAILOVER <&3 2>/dev/null || DO_FAILOVER="n"
+            DO_FAILOVER="${DO_FAILOVER:-y}"
+
+            if [ "$DO_FAILOVER" = "y" ] || [ "$DO_FAILOVER" = "Y" ]; then
+                FAILOVER_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/12-setup-failover.sh"
+                if [ -f "$FAILOVER_SCRIPT" ]; then
+                    bash "$FAILOVER_SCRIPT" "$VM_TS_IP"
+                else
+                    echo -e "  ${YELLOW}!${NC} Failover скриптът не намерен на $FAILOVER_SCRIPT"
+                fi
+            fi
+        else
+            # Failover вече настроен — обнови VM IP-то ако се е сменил
+            CURRENT_VM_IP=$(grep -oP "server \K100\.[0-9.]+" /etc/nginx/sites-available/kcy-failover 2>/dev/null | head -1)
+            if [ -n "$CURRENT_VM_IP" ] && [ "$CURRENT_VM_IP" != "$VM_TS_IP" ]; then
+                echo ""
+                echo "  ${YELLOW}!${NC} VM Tailscale IP се е променил: ${CURRENT_VM_IP} → ${VM_TS_IP}"
+                sed -i "s|server ${CURRENT_VM_IP}:80|server ${VM_TS_IP}:80|" /etc/nginx/sites-available/kcy-failover
+                nginx -t && systemctl reload nginx
+                echo "  ${GREEN}✓${NC} Failover обновен с новия VM IP"
+            else
+                echo ""
+                echo "  ${GREEN}✓${NC} Failover вече активен (VM: ${VM_TS_IP})"
+            fi
+        fi
+    fi
+fi
+
+##############################################################################
 # ФИНАЛЕН СТАТУС
 ##############################################################################
 echo ""
@@ -1260,32 +1333,5 @@ echo -e "  ${GREEN}https://${DOMAIN}/eco-3/admin/${NC}"
 echo -e "  (достъпен от IP-тата в ADMIN_ALLOWED_IPS)"
 echo ""
 
-# ═══ SUDO REVOKE ═══
-echo -e "${YELLOW}═══════════════════════════════════════════════════════${NC}"
-echo -e "${YELLOW}  СИГУРНОСТ: sudo права на kcy-admin${NC}"
-echo -e "${YELLOW}═══════════════════════════════════════════════════════${NC}"
-echo ""
-echo -e "  Инсталацията завърши. За по-голяма сигурност можеш"
-echo -e "  да премахнеш sudo правата на kcy-admin."
-echo -e "  (Можеш да ги върнеш по-късно с root достъп)"
-echo ""
-echo -e "    ${GREEN}1)${NC} Да, премахни sudo на kcy-admin"
-echo -e "    ${GREEN}2)${NC} Не, остави sudo (ще го направя ръчно после)"
-echo ""
-read -p "  Избор [1/2]: " SUDO_CHOICE <&3
-
-if [ "$SUDO_CHOICE" = "1" ]; then
-    if id "kcy-admin" &>/dev/null; then
-        gpasswd -d kcy-admin sudo 2>/dev/null || true
-        echo -e "  ${GREEN}✓ sudo премахнат от kcy-admin${NC}"
-        echo -e "  ${YELLOW}За да го върнеш:${NC}"
-        echo -e "    ${CYAN}(като root) usermod -aG sudo kcy-admin${NC}"
-        echo -e "    или: ${CYAN}sudo bash 03-kcy-admin-sudo.sh grant${NC}"
-    else
-        echo -e "  ${YELLOW}kcy-admin не съществува — пропускам${NC}"
-    fi
-else
-    echo -e "  ${YELLOW}sudo остава. Премахни ръчно когато решиш:${NC}"
-    echo -e "    ${CYAN}sudo bash 03-kcy-admin-sudo.sh revoke${NC}"
-fi
-echo ""
+# kcy-admin sudo управление — премахнато от инсталацията.
+# Достъпно като отделна меню опция (с double-confirm) в DANGEROUS секцията.

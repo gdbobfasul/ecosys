@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0088
+# Version: 1.0089
 ##############################################################################
 # KCY Ecosystem — Start Menu
 # Един menu item = един реален скрипт. Параметрите се питат след избор.
@@ -166,15 +166,27 @@ show_menu() {
         "Дава SSH команда за 'journalctl -u kcy-chat -u kcy-eco3 -f' (live следене)." \
         "Полезно когато правиш deploy и искаш да видиш как се стартират."
 
-    echo -e "${BOLD}${RED}━━━ DANGEROUS (внимание!) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BOLD}${CYAN}━━━ FAILOVER (VPS ↔ VM) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
-    item "32" "Disable SSH password auth" \
+    item "32" "Setup Tailscale VPN" \
+        "Инсталира Tailscale на сървъра (VPS или VM) — нужно за failover." \
+        "Безплатно за лична употреба. Минава през SSH command."
+    item "33" "Setup failover proxy (VPS)" \
+        "На production VPS: превръща nginx в reverse proxy към VM." \
+        "Ако VM падне → VPS автоматично пое. Изисква Tailscale на двете машини."
+
+    echo -e "${BOLD}${RED}━━━ DANGEROUS (двойно потвърждение) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    item "34" "Disable SSH password auth" \
         "⚠ ОПАСНО! Изключва парола за SSH login (само ключ). Препоръчвам само за" \
         "сървъри с recovery console (DigitalOcean). НЕ за локалната VM!"
+    item "35" "Toggle kcy-admin sudo" \
+        "⚠ ОПАСНО! Добавя/премахва kcy-admin от sudo групата. Влияе на root достъп." \
+        "Двойно потвърждение (yes → no) за защита от случайно натискане."
 
     echo -e "${BOLD}${CYAN}━━━ INFO ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
-    item "33" "Status & info" \
+    item "36" "Status & info" \
         "Показва: версия на проекта, Node + npm версии, OS, deploy targets," \
         "локални DB файлове с размер, дали node_modules е инсталиран."
 
@@ -447,8 +459,42 @@ run_choice() {
             press_enter
             ;;
 
-        # ── DANGEROUS ──
+        # ── FAILOVER ──
         32)
+            echo ""
+            target=$(ask_choice "На коя машина?" "VPS (alsec.strangled.net)" "VM (192.168.0.108)")
+            case "$target" in
+                "VPS (alsec.strangled.net)")
+                    echo ""
+                    echo "  Изпълни на VPS-а:"
+                    echo -e "  ${CYAN}ssh deploy@alsec.strangled.net -p 2222${NC}"
+                    echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/11-setup-tailscale.sh${NC}"
+                    ;;
+                "VM (192.168.0.108)")
+                    echo ""
+                    echo "  Изпълни на VM-а:"
+                    echo -e "  ${CYAN}ssh deploy@192.168.0.108${NC}"
+                    echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/11-setup-tailscale.sh${NC}"
+                    ;;
+                *) echo "Отказано" ;;
+            esac
+            press_enter
+            ;;
+        33)
+            echo ""
+            echo "  Failover се настройва САМО на production VPS-а"
+            echo "  (VPS-ът става reverse proxy, VM остава primary)."
+            echo ""
+            echo "  Изпълни на VPS-а:"
+            echo -e "  ${CYAN}ssh deploy@alsec.strangled.net -p 2222${NC}"
+            echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/12-setup-failover.sh${NC}"
+            echo ""
+            echo "  Скриптът сам намира VM Tailscale IP-то и настройва nginx."
+            press_enter
+            ;;
+
+        # ── DANGEROUS ──
+        34)
             echo ""
             echo -e "  ${RED}⚠ Тази операция изключва парола за SSH login.${NC}"
             echo -e "  ${RED}   Препоръчвам САМО за сървъри с recovery console (DigitalOcean).${NC}"
@@ -457,12 +503,24 @@ run_choice() {
             echo -e "  ${CYAN}ssh deploy@SERVER${NC}"
             echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/10-disable-ssh-password.sh${NC}"
             echo ""
-            echo "  Скриптът има многократни safety проверки преди да изпълни промяната."
+            echo "  Скриптът има double-confirm защита (yes → no)."
+            press_enter
+            ;;
+        35)
+            echo ""
+            echo -e "  ${RED}⚠ Тази операция променя sudo правата на kcy-admin.${NC}"
+            echo -e "  ${RED}   Влияе на root достъпа към сървъра.${NC}"
+            echo ""
+            echo "  Изпълни на сървъра:"
+            echo -e "  ${CYAN}ssh deploy@SERVER${NC}"
+            echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/13-kcy-admin-sudo-toggle.sh${NC}"
+            echo ""
+            echo "  Скриптът има double-confirm защита (yes → no)."
             press_enter
             ;;
 
         # ── INFO ──
-        33)
+        36)
             clear
             echo -e "${BOLD}${CYAN}── Status & Info ──${NC}"
             echo ""
@@ -508,6 +566,6 @@ run_choice() {
 # === MAIN LOOP ===
 while true; do
     show_menu
-    read -p "Избери [1-33, q]: " choice
+    read -p "Избери [1-36, q]: " choice
     run_choice "$choice"
 done
