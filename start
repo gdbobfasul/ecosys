@@ -1,0 +1,5 @@
+#!/bin/bash
+# Shortcut за стартиране на admin меню.
+# Eкзекутирай с:
+#   ./start
+exec "$(dirname "$0")/deploy-scripts/00-menu.sh" "$@"

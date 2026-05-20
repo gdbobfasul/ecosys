@@ -4,7 +4,7 @@
 
 set -e
 
-GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[1;33m'; NC='\033[0m'
+GREEN=$'\033[0;32m'; RED=$'\033[0;31m'; YELLOW=$'\033[1;33m'; NC=$'\033[0m'
 
 DB_SCRIPT="../../deploy-scripts/server/07-setup-database.sh"
 SQLITE_DB="/var/www/kcy-ecosystem/private/chat/database/ams_db.sqlite"

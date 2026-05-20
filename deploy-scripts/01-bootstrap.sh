@@ -34,8 +34,8 @@ SERVER="${1:-192.168.0.108}"
 USER="${2:-kcyecosys}"
 PORT="${3:-22}"
 
-RED='\033[0;31m'; GREEN='\033[0;32m'
-YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
+RED=$'\033[0;31m'; GREEN=$'\033[0;32m'
+YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 
 # ═══ HELP ═══
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -132,15 +132,53 @@ echo -e "  ${YELLOW}$(cat "$PUB_PATH")${NC}"
 echo ""
 
 # ═══ STEP 2: ТЕСТ SSH ═══
-echo -e "${CYAN}[2/6] Тест SSH връзка${NC}"
+echo -e "${CYAN}[2/6] Тест SSH връзка (auto-detect на порт)${NC}"
 
-# Първо опитай с ключ — ако работи, ssh-copy-id не е нужен
-if ssh -o BatchMode=yes -o ConnectTimeout=5 -p "$PORT" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
-    echo -e "  ${GREEN}✓${NC} SSH ключ вече работи — пропускам ssh-copy-id"
-    KEY_ALREADY_THERE=1
+# Опитай конфигурирания порт първо
+KEY_ALREADY_THERE=0
+DETECTED_PORT=""
+
+for try_port in "$PORT" 22 2222; do
+    [ -z "$try_port" ] && continue
+    # Първо с ключ
+    if ssh -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+           -p "$try_port" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
+        DETECTED_PORT="$try_port"
+        KEY_ALREADY_THERE=1
+        break
+    fi
+done
+
+# Ако ключ не работи — провери дали порт изобщо отговаря (за password auth)
+if [ -z "$DETECTED_PORT" ]; then
+    for try_port in "$PORT" 22 2222; do
+        [ -z "$try_port" ] && continue
+        if ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+               -o PreferredAuthentications=password,publickey \
+               -o NumberOfPasswordPrompts=0 \
+               -p "$try_port" "${USER}@${SERVER}" 'echo OK' 2>&1 | grep -qE "Permission denied|OK"; then
+            DETECTED_PORT="$try_port"
+            KEY_ALREADY_THERE=0
+            break
+        fi
+    done
+fi
+
+if [ -z "$DETECTED_PORT" ]; then
+    echo -e "  ${RED}✗${NC} Не мога да достигна ${SERVER} на нито един порт (${PORT}, 22, 2222)."
+    echo "    Провери дали сървърът е включен: ping ${SERVER}"
+    exit 1
+fi
+
+if [ "$DETECTED_PORT" != "$PORT" ]; then
+    echo -e "  ${YELLOW}⚠${NC} Конфигуриран порт ${PORT} не работи. Намерих че порт ${DETECTED_PORT} отговаря."
+    PORT="$DETECTED_PORT"
+fi
+
+if [ "$KEY_ALREADY_THERE" -eq 1 ]; then
+    echo -e "  ${GREEN}✓${NC} SSH ключ вече работи на порт ${PORT} — пропускам ssh-copy-id"
 else
-    echo -e "  ${YELLOW}!${NC} SSH ключ още не работи — ще го копирам с парола"
-    KEY_ALREADY_THERE=0
+    echo -e "  ${YELLOW}!${NC} Сървърът отговаря на порт ${PORT}, но ключ още не работи — ще го копирам с парола"
 fi
 echo ""
 

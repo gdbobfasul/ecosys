@@ -1,6 +1,9 @@
 npm install
 npm install --legacy-peer-deps
 
+
+./start
+
 Стъпки за Windows:
 
 **Бързо (просто преинсталация):**

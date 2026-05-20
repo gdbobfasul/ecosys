@@ -4,7 +4,7 @@
 
 set -e
 
-GREEN='\033[0;32m'; RED='\033[0;31m'; CYAN='\033[0;36m'; NC='\033[0m'
+GREEN=$'\033[0;32m'; RED=$'\033[0;31m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 
 echo -e "${CYAN}╔═══════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║   KCY Ecosystem - Test Suite         ║${NC}"

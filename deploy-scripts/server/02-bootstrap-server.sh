@@ -34,8 +34,8 @@
 set -e
 
 # ═══ COLORS ═══
-RED='\033[0;31m'; GREEN='\033[0;32m'
-YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
+RED=$'\033[0;31m'; GREEN=$'\033[0;32m'
+YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 
 print_step() {
     echo ""
@@ -76,6 +76,34 @@ echo "  OS:       $PRETTY_NAME"
 echo "  Kernel:   $(uname -r)"
 echo "  Hostname: $(hostname)"
 echo "  Date:     $(date)"
+echo ""
+
+# ═══ MODE SELECTION ═══
+# Smart (default) = пропуска вече инсталираните неща
+# Force reinstall = форсира reinstall на всичко
+echo ""
+echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+echo -e "${CYAN}  Bootstrap mode?${NC}"
+echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+echo ""
+echo "  1) ${GREEN}Smart${NC} (по default) — пропуска вече инсталираните"
+echo "     Прави САМО това което липсва. Безопасно при повторно изпълнение."
+echo ""
+echo "  2) ${YELLOW}Reinstall всичко отначало${NC} — форсира преинсталация"
+echo "     ⚠ Reinstall-ва packages, resetва sudoers и firewall."
+echo "     Системни потребители (deploy, kcy-chat, kcy-eco3) НЕ се изтриват"
+echo "     (защото services могат да работят). Само правилата им се обновяват."
+echo ""
+read -p "  Избери [1-2, default=1]: " MODE_CHOICE
+MODE_CHOICE="${MODE_CHOICE:-1}"
+
+FORCE_REINSTALL=false
+if [ "$MODE_CHOICE" = "2" ]; then
+    FORCE_REINSTALL=true
+    echo ""
+    echo -e "  ${YELLOW}⚠ FORCE REINSTALL mode активен${NC}"
+    echo -e "  ${YELLOW}   Ще премина през всички стъпки с reinstall, дори ако вече са направени.${NC}"
+fi
 echo ""
 
 # ═══ STEP 1: SYSTEM UPDATE ═══
@@ -119,27 +147,75 @@ PACKAGES=(
     ca-certificates
 )
 
-echo "  Инсталирам: ${PACKAGES[*]}"
-apt-get install -y -qq "${PACKAGES[@]}" >/dev/null
-print_ok "Base packages инсталирани"
-
-# Опционално PostgreSQL — питай
-echo ""
-read -p "  Да инсталирам PostgreSQL? [y/N]: " INSTALL_PG
-if [ "$INSTALL_PG" = "y" ] || [ "$INSTALL_PG" = "Y" ]; then
-    apt-get install -y -qq postgresql postgresql-contrib >/dev/null
-    print_ok "PostgreSQL инсталиран"
+if $FORCE_REINSTALL; then
+    echo "  ${YELLOW}Force reinstall — преинсталирам всички packages${NC}"
+    apt-get install -y -qq --reinstall "${PACKAGES[@]}" >/dev/null
+    print_ok "Всички packages преинсталирани"
 else
-    print_skip "PostgreSQL пропуснат (SQLite-only setup)"
+    # Smart mode — намери само липсващите
+    MISSING=()
+    for pkg in "${PACKAGES[@]}"; do
+        if ! dpkg -l "$pkg" 2>/dev/null | grep -q "^ii"; then
+            MISSING+=("$pkg")
+        fi
+    done
+
+    if [ ${#MISSING[@]} -eq 0 ]; then
+        print_skip "Всички packages вече са инсталирани (${#PACKAGES[@]})"
+    else
+        echo "  Липсват: ${MISSING[*]}"
+        apt-get install -y -qq "${MISSING[@]}" >/dev/null
+        print_ok "Инсталирани ${#MISSING[@]} липсващи packages"
+    fi
 fi
 
-# Опционално certbot (за SSL) — питай
-echo ""
-read -p "  Да инсталирам certbot (за Let's Encrypt SSL)? [Y/n]: " INSTALL_CB
-INSTALL_CB="${INSTALL_CB:-y}"
-if [ "$INSTALL_CB" = "y" ] || [ "$INSTALL_CB" = "Y" ]; then
-    apt-get install -y -qq certbot python3-certbot-nginx >/dev/null
-    print_ok "certbot инсталиран"
+# Опционално PostgreSQL — питай
+PG_INSTALLED=false
+if dpkg -l postgresql 2>/dev/null | grep -q "^ii"; then PG_INSTALLED=true; fi
+
+if $PG_INSTALLED && ! $FORCE_REINSTALL; then
+    print_skip "PostgreSQL вече инсталиран"
+else
+    echo ""
+    if $PG_INSTALLED && $FORCE_REINSTALL; then
+        read -p "  PostgreSQL вече инсталиран. Преинсталирай? [y/N]: " INSTALL_PG
+    else
+        read -p "  Да инсталирам PostgreSQL? [y/N]: " INSTALL_PG
+    fi
+    if [ "$INSTALL_PG" = "y" ] || [ "$INSTALL_PG" = "Y" ]; then
+        if $FORCE_REINSTALL; then
+            apt-get install -y -qq --reinstall postgresql postgresql-contrib >/dev/null
+        else
+            apt-get install -y -qq postgresql postgresql-contrib >/dev/null
+        fi
+        print_ok "PostgreSQL инсталиран"
+    else
+        print_skip "PostgreSQL пропуснат"
+    fi
+fi
+
+# Опционално certbot
+CB_INSTALLED=false
+if dpkg -l certbot 2>/dev/null | grep -q "^ii"; then CB_INSTALLED=true; fi
+
+if $CB_INSTALLED && ! $FORCE_REINSTALL; then
+    print_skip "certbot вече инсталиран"
+else
+    echo ""
+    if $CB_INSTALLED && $FORCE_REINSTALL; then
+        read -p "  certbot вече инсталиран. Преинсталирай? [y/N]: " INSTALL_CB
+    else
+        read -p "  Да инсталирам certbot (за Let's Encrypt SSL)? [Y/n]: " INSTALL_CB
+        INSTALL_CB="${INSTALL_CB:-y}"
+    fi
+    if [ "$INSTALL_CB" = "y" ] || [ "$INSTALL_CB" = "Y" ]; then
+        if $FORCE_REINSTALL; then
+            apt-get install -y -qq --reinstall certbot python3-certbot-nginx >/dev/null
+        else
+            apt-get install -y -qq certbot python3-certbot-nginx >/dev/null
+        fi
+        print_ok "certbot инсталиран"
+    fi
 fi
 
 # ═══ STEP 3: NODE.JS 20 LTS ═══
@@ -150,12 +226,19 @@ if command -v node >/dev/null 2>&1; then
     CURRENT_NODE_MAJOR=$(node -v | sed 's/v//' | cut -d. -f1)
 fi
 
-if [ "$CURRENT_NODE_MAJOR" -ge 20 ]; then
-    print_ok "Node $(node -v) — вече подходящ"
+if [ "$CURRENT_NODE_MAJOR" -ge 20 ] && ! $FORCE_REINSTALL; then
+    print_skip "Node $(node -v) — вече подходящ (skip)"
 else
+    if [ "$CURRENT_NODE_MAJOR" -ge 20 ] && $FORCE_REINSTALL; then
+        echo "  ${YELLOW}Force reinstall на Node.js дори че вече е v${CURRENT_NODE_MAJOR}${NC}"
+    fi
     echo "  Добавям NodeSource repo..."
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - >/dev/null 2>&1
-    apt-get install -y -qq nodejs >/dev/null
+    if $FORCE_REINSTALL; then
+        apt-get install -y -qq --reinstall nodejs >/dev/null
+    else
+        apt-get install -y -qq nodejs >/dev/null
+    fi
     print_ok "Node $(node -v) инсталиран"
 fi
 print_ok "NPM $(npm -v)"
@@ -284,9 +367,24 @@ print_ok "/var/www/kcy-ecosystem (owner: deploy:kcy)"
 print_step "STEP 7: Limited sudo за deploy"
 
 SUDOERS_FILE="/etc/sudoers.d/kcy-deploy"
-TMP_SUDOERS="$(mktemp)"
 
-cat > "$TMP_SUDOERS" << 'SUDO_EOF'
+# В smart mode: ако файлът съществува и е валиден, пропусни
+if [ -f "$SUDOERS_FILE" ] && ! $FORCE_REINSTALL; then
+    if visudo -c -f "$SUDOERS_FILE" >/dev/null 2>&1; then
+        print_skip "Sudoers entry вече инсталиран и валиден ($SUDOERS_FILE)"
+        SKIP_SUDOERS=true
+    else
+        echo "  ${YELLOW}Sudoers entry съществува но е invalid — преинсталирам${NC}"
+        SKIP_SUDOERS=false
+    fi
+else
+    SKIP_SUDOERS=false
+fi
+
+if ! $SKIP_SUDOERS; then
+    TMP_SUDOERS="$(mktemp)"
+
+    cat > "$TMP_SUDOERS" << 'SUDO_EOF'
 # KCY Ecosystem — limited sudo за deploy user.
 # Управлява се от 02-bootstrap-server.sh + 03-kcy-admin-sudo.sh. Не редактирай ръчно.
 
@@ -326,13 +424,15 @@ deploy ALL=(root) NOPASSWD: /usr/bin/journalctl -u kcy-eco3 *
 Defaults:deploy !requiretty
 SUDO_EOF
 
-if visudo -c -f "$TMP_SUDOERS" >/dev/null 2>&1; then
-    install -m 0440 -o root -g root "$TMP_SUDOERS" "$SUDOERS_FILE"
-    rm -f "$TMP_SUDOERS"
-    print_ok "Sudoers entry инсталиран в $SUDOERS_FILE"
-else
-    print_err "Sudoers syntax error — пропускам"
-    rm -f "$TMP_SUDOERS"
+    if visudo -c -f "$TMP_SUDOERS" >/dev/null 2>&1; then
+        [ -f "$SUDOERS_FILE" ] && cp "$SUDOERS_FILE" "${SUDOERS_FILE}.bak-$(date +%s)"
+        install -m 0440 -o root -g root "$TMP_SUDOERS" "$SUDOERS_FILE"
+        rm -f "$TMP_SUDOERS"
+        print_ok "Sudoers entry инсталиран в $SUDOERS_FILE"
+    else
+        print_err "Sudoers syntax error — пропускам"
+        rm -f "$TMP_SUDOERS"
+    fi
 fi
 
 # Финална проверка
@@ -345,28 +445,49 @@ fi
 # ═══ STEP 8: FIREWALL ═══
 print_step "STEP 8: Firewall (ufw)"
 
-ufw --force reset >/dev/null 2>&1
-ufw default deny incoming >/dev/null
-ufw default allow outgoing >/dev/null
-
-# Текущ SSH порт (за да не загубим връзката по време на bootstrap-а)
-ufw allow "$CURRENT_SSH_PORT/tcp" comment "SSH (current)" >/dev/null
-print_ok "SSH порт $CURRENT_SSH_PORT отворен (текущ)"
-
-# Ако ще променяме SSH порт — отвори и новия
-if [ "$NEW_SSH_PORT" != "$CURRENT_SSH_PORT" ]; then
-    ufw allow "$NEW_SSH_PORT/tcp" comment "SSH (new)" >/dev/null
-    print_ok "SSH порт $NEW_SSH_PORT отворен (нов)"
+# Проверка дали ufw вече има конфигурирани правила
+UFW_HAS_RULES=false
+if ufw status 2>/dev/null | grep -qE "^${CURRENT_SSH_PORT}/tcp|^80/tcp|^443/tcp"; then
+    UFW_HAS_RULES=true
 fi
 
-# HTTP / HTTPS
-ufw allow 80/tcp comment "HTTP" >/dev/null
-ufw allow 443/tcp comment "HTTPS" >/dev/null
-print_ok "HTTP (80) / HTTPS (443) отворени"
+if $FORCE_REINSTALL || ! $UFW_HAS_RULES; then
+    if $UFW_HAS_RULES; then
+        echo "  ${YELLOW}Force reset на firewall правилата${NC}"
+    fi
+    ufw --force reset >/dev/null 2>&1
+    ufw default deny incoming >/dev/null
+    ufw default allow outgoing >/dev/null
 
-# Активирай
-ufw --force enable >/dev/null
-print_ok "Firewall активиран"
+    # Текущ SSH порт (за да не загубим връзката по време на bootstrap-а)
+    ufw allow "$CURRENT_SSH_PORT/tcp" comment "SSH (current)" >/dev/null
+    print_ok "SSH порт $CURRENT_SSH_PORT отворен (текущ)"
+
+    # Ако ще променяме SSH порт — отвори и новия
+    if [ "$NEW_SSH_PORT" != "$CURRENT_SSH_PORT" ]; then
+        ufw allow "$NEW_SSH_PORT/tcp" comment "SSH (new)" >/dev/null
+        print_ok "SSH порт $NEW_SSH_PORT отворен (нов)"
+    fi
+
+    # HTTP / HTTPS
+    ufw allow 80/tcp comment "HTTP" >/dev/null
+    ufw allow 443/tcp comment "HTTPS" >/dev/null
+    print_ok "HTTP (80) / HTTPS (443) отворени"
+
+    # Активирай
+    ufw --force enable >/dev/null
+    print_ok "Firewall активиран"
+else
+    print_skip "Firewall вече има правила (skip reset). За пълен reset → mode 2."
+    # Все пак гарантирай че нужните портове са отворени
+    ufw allow "$CURRENT_SSH_PORT/tcp" comment "SSH (current)" >/dev/null 2>&1
+    [ "$NEW_SSH_PORT" != "$CURRENT_SSH_PORT" ] && ufw allow "$NEW_SSH_PORT/tcp" comment "SSH (new)" >/dev/null 2>&1
+    ufw allow 80/tcp comment "HTTP" >/dev/null 2>&1
+    ufw allow 443/tcp comment "HTTPS" >/dev/null 2>&1
+    # Гарантирай активиран
+    ufw --force enable >/dev/null 2>&1
+    print_ok "Допълнени липсващи правила (ако имаше)"
+fi
 
 # ═══ STEP 9: SSH HARDENING (опционално) ═══
 print_step "STEP 9: SSH hardening"
