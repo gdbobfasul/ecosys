@@ -310,7 +310,8 @@ log ""
 
 # ═══ SSH CONFIG ═══
 # SSH keepalive — пази връзката жива при дълги операции (apt install, rsync, и т.н.)
-SSH_KEEPALIVE="-o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o TCPKeepAlive=yes"
+# ConnectTimeout=15 — ако сървърът не отговори за 15 сек, fail-ва вместо да виси безкрайно
+SSH_KEEPALIVE="-o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o TCPKeepAlive=yes -o ConnectTimeout=15"
 
 # Windows (Git Bash/MSYS) doesn't support Unix sockets for ControlMaster
 if [ -n "$MSYSTEM" ] || [ -n "$WINDIR" ]; then
