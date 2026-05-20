@@ -546,14 +546,42 @@ print_step "СТЪПКА 5: Конфигурация (.env)"
 STAGING_ENV="$STAGING/private/configs/.env"
 ENV_EXAMPLE="$STAGING/docs/ENV-EXAMPLE.env"
 
-if [ -f "$GLOBAL_ENV" ]; then
+if [ -f "$GLOBAL_ENV" ] && [ -f "$STAGING_ENV" ]; then
+    # И двата съществуват — сравни ги
+    if cmp -s "$GLOBAL_ENV" "$STAGING_ENV"; then
+        echo -e "  ${GREEN}✓ .env на сървъра е идентичен с архива${NC}"
+    else
+        echo -e "  ${YELLOW}! .env на сървъра се различава от архивния (private/configs/.env)${NC}"
+        echo ""
+        echo -e "    ${GREEN}1)${NC} Ползвай .env от архива ${CYAN}(private/configs/.env — ПО ПОДРАЗБИРАНЕ)${NC}"
+        echo -e "    ${GREEN}2)${NC} Запази .env който вече е на сървъра"
+        echo ""
+        ENV_PICK=""
+        if [ -t 0 ]; then
+            read -p "  Избор [1/2, Enter = 1 архивния]: " ENV_PICK
+        elif [ -e /dev/fd/3 ]; then
+            read -p "  Избор [1/2, Enter = 1 архивния]: " ENV_PICK <&3 2>/dev/null || ENV_PICK=""
+        fi
+        ENV_PICK="${ENV_PICK:-1}"
+        if [ "$ENV_PICK" = "2" ]; then
+            echo -e "  ${GREEN}✓ Запазвам сървърния .env${NC}"
+        else
+            # Backup на стария преди замяна
+            cp "$GLOBAL_ENV" "${GLOBAL_ENV}.replaced-$(date +%s)" 2>/dev/null || true
+            cp "$STAGING_ENV" "$GLOBAL_ENV"
+            chmod 640 "$GLOBAL_ENV"
+            chown root:$SVC_GROUP "$GLOBAL_ENV"
+            echo -e "  ${GREEN}✓ .env заменен с архивния (старият → .env.replaced-*)${NC}"
+        fi
+    fi
+elif [ -f "$GLOBAL_ENV" ]; then
     echo -e "  ${GREEN}✓ .env вече е на сървъра: ${GLOBAL_ENV}${NC}"
 elif [ -f "$STAGING_ENV" ]; then
     mkdir -p "$(dirname "$GLOBAL_ENV")"
     cp "$STAGING_ENV" "$GLOBAL_ENV"
     chmod 640 "$GLOBAL_ENV"
     chown root:$SVC_GROUP "$GLOBAL_ENV"
-    echo -e "  ${GREEN}✓ .env копиран от staging${NC}"
+    echo -e "  ${GREEN}✓ .env копиран от архива (private/configs/.env)${NC}"
 else
     echo -e "  ${YELLOW}! .env НЯМА в staging и няма на сървъра${NC}"
     echo ""
