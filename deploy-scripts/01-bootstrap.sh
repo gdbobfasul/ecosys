@@ -194,33 +194,35 @@ if [ "$DEPLOY_FREEZE_TARGETS" = "1" ]; then
     # Freeze режим — доверяваме се на стойностите от .deploy-targets
     echo -e "  ${YELLOW}↷${NC} Auto-detection пропуснат (freeze targets). Ползвам порт ${GREEN}${PORT}${NC}"
 else
-    echo "  Тествам кой порт работи (без авторизация)..."
+    echo "  Тествам кой TCP порт е отворен..."
 
     DETECTED_PORT=""
+    # Опитай зададения порт + стандартните fallback-и
     for try_port in "$PORT" 22 2222; do
         [ -z "$try_port" ] && continue
-        # Опит без autz — само провери дали SSH banner отговаря (Permission denied = порт работи)
-        if ssh -o ConnectTimeout=3 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no \
-               -o PreferredAuthentications=none \
-               -o NumberOfPasswordPrompts=0 \
-               -p "$try_port" "${USER}@${SERVER}" 'echo' 2>&1 | \
-               grep -qE "Permission denied|authentication method"; then
+        # Прост TCP test — отваря ли се сокет на този порт?
+        # /dev/tcp е bash builtin, не нужни външни инструменти.
+        if timeout 3 bash -c "exec 3<>/dev/tcp/${SERVER}/${try_port}" 2>/dev/null; then
             DETECTED_PORT="$try_port"
+            echo "  ${GREEN}✓${NC} Порт ${try_port} отговаря (TCP)"
             break
-        fi
-        # Или ако ключ работи и връща нещо
-        if ssh -o BatchMode=yes -o ConnectTimeout=3 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no \
-               -p "$try_port" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
-            DETECTED_PORT="$try_port"
-            break
+        else
+            echo "  ${YELLOW}-${NC} Порт ${try_port} не отговаря"
         fi
     done
 
     if [ -z "$DETECTED_PORT" ]; then
+        echo ""
         echo -e "  ${RED}✗${NC} Не мога да достигна ${SERVER} на нито един от: ${PORT}, 22, 2222"
-        echo "    Проверки:"
-        echo "      • Сървърът включен ли е?           ping ${SERVER}"
-        echo "      • Правилен ли е USER (${USER})?"
+        echo ""
+        echo "  Възможни причини:"
+        echo "    • Сървърът е изключен          → ping ${SERVER}"
+        echo "    • Грешен hostname/IP            → провери .deploy-targets"
+        echo "    • Local firewall блокира        → провери Windows firewall"
+        echo "    • Fail2ban те е банвал          → провери от друга мрежа"
+        echo "    • SSH е на различен порт        → ръчно: ssh -p XXXX user@server"
+        echo ""
+        echo "  Тест ръчно: ${CYAN}ssh -p ${PORT} ${USER}@${SERVER}${NC}"
         exit 1
     fi
 
