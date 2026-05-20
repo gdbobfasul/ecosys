@@ -718,19 +718,58 @@ echo -e "  ${GREEN}✓ Node: $(node -v)${NC}"
 echo -e "  ${GREEN}✓ NPM:  $(npm -v)${NC}"
 
 cd "$PROJECT_DIR"
+
+# Изчисти стари node_modules за clean install (избягва ENOTEMPTY грешки)
+if [ -d "$PROJECT_DIR/node_modules" ]; then
+    echo -e "  ${YELLOW}Премахвам стари node_modules...${NC}"
+    rm -rf "$PROJECT_DIR/node_modules"
+fi
+
 echo -e "  ${YELLOW}npm install (root, може да отнеме няколко минути)...${NC}"
-npm install --legacy-peer-deps 2>&1 | tail -5
+if ! npm install --legacy-peer-deps 2>&1 | tail -10; then
+    echo -e "  ${RED}✗ npm install failed (root)${NC}"
+    diag_log services-errors.log "install: npm install ROOT FAILED"
+    safe_exit 1
+fi
+# Sanity: root трябва да има express (chat зависи от него чрез root)
+if [ ! -d "$PROJECT_DIR/node_modules/express" ]; then
+    echo -e "  ${RED}✗ node_modules/express липсва след root npm install${NC}"
+    diag_log services-errors.log "install: express липсва в root node_modules"
+    safe_exit 1
+fi
 echo -e "  ${GREEN}✓ Root node_modules инсталирани${NC}"
 
-# Инсталирай dependencies във всяка под-директория с собствен package.json
+# Помощна функция — проверява дали package.json има dependencies
+has_deps() {
+    [ -f "$1" ] && grep -q '"dependencies"' "$1" && \
+        ! grep -A1 '"dependencies"' "$1" | grep -q '"dependencies"[[:space:]]*:[[:space:]]*{[[:space:]]*}'
+}
+
+# Инсталирай dependencies в sub-директориите КОИТО ИМАТ собствени dependencies.
+# Chat няма свои deps (взима от root workspace), затова го прескачаме.
 for sub in private/chat private/eco-3 private/portals; do
-    if [ -f "$PROJECT_DIR/$sub/package.json" ]; then
-        echo -e "  ${YELLOW}npm install за $sub ...${NC}"
-        ( cd "$PROJECT_DIR/$sub" && npm install --legacy-peer-deps --omit=dev 2>&1 | tail -3 ) || {
-            echo -e "  ${RED}✗ npm install failed за $sub${NC}"
-        }
-        echo -e "  ${GREEN}✓ $sub/node_modules инсталирани${NC}"
+    PKG="$PROJECT_DIR/$sub/package.json"
+    if [ ! -f "$PKG" ]; then
+        continue
     fi
+    if ! has_deps "$PKG"; then
+        echo -e "  ${CYAN}↷ $sub — няма собствени dependencies (използва root)${NC}"
+        continue
+    fi
+    if [ -d "$PROJECT_DIR/$sub/node_modules" ]; then
+        rm -rf "$PROJECT_DIR/$sub/node_modules"
+    fi
+    echo -e "  ${YELLOW}npm install за $sub ...${NC}"
+    if ! ( cd "$PROJECT_DIR/$sub" && npm install --legacy-peer-deps --omit=dev 2>&1 | tail -5 ); then
+        echo -e "  ${RED}✗ npm install failed за $sub${NC}"
+        diag_log services-errors.log "install: npm install $sub FAILED"
+        safe_exit 1
+    fi
+    if [ ! -d "$PROJECT_DIR/$sub/node_modules" ]; then
+        echo -e "  ${RED}✗ $sub/node_modules не съществува след install${NC}"
+        safe_exit 1
+    fi
+    echo -e "  ${GREEN}✓ $sub/node_modules инсталирани${NC}"
 done
 
 ##############################################################################

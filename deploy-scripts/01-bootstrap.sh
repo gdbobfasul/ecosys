@@ -467,9 +467,6 @@ EOF
             fi
 
             # Update само секцията за конкретния target (не overwrite всичко)
-            BACKUP="${TARGETS_FILE}.bak-$(date +%s)"
-            cp "$TARGETS_FILE" "$BACKUP"
-
             # Sed замени само редовете за DETECTED_TARGET
             sed -i \
                 -e "s|^TARGET_${DETECTED_TARGET}_SERVER=.*|TARGET_${DETECTED_TARGET}_SERVER=\"${SERVER}\"|" \
@@ -489,7 +486,6 @@ EOF
             fi
 
             echo -e "  ${GREEN}✓${NC} .deploy-targets обновен (${DETECTED_TARGET}: ${SERVER}:${NEW_SSH_PORT})"
-            echo -e "    Backup: ${BACKUP}"
         fi
     fi
 else
