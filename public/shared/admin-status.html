@@ -176,6 +176,8 @@
         { file: 'portal-errors.log',   label: '🌐 portal',      desc: 'kcy-portals journalctl' },
         { file: 'web-errors.log',      label: '🌍 nginx',       desc: 'nginx error.log' },
         { file: 'services-errors.log', label: '⚙️ всички services', desc: 'systemctl status + restarts' },
+        { file: 'health-errors.log',   label: '🔌 health',      desc: 'портове + API endpoints' },
+        { file: 'modules-errors.log',  label: '📦 модули',      desc: 'липсващи node модули' },
         { file: 'memory-errors.log',   label: '🧠 memory',      desc: 'RAM/swap/OOM kills' },
         { file: 'token-errors.log',    label: '🪙 KCY token',   desc: 'deploy log' },
         { file: 'berich1-errors.log',  label: '💎 BRCH1',       desc: 'deploy log' },
@@ -338,19 +340,43 @@
                     </div>
                 `;
             }
-            if (data.checks) {
-                const cb = (ok, label) => `<span style="color:${ok ? '#3fb950' : '#f85149'}">${ok ? '✓' : '✗'}</span> ${label}`;
+            if (data.endpoints) {
+                const dot = (v) => {
+                    if (v === 'yes' || v === '200') return '<span style="color:#3fb950">✓</span>';
+                    if (v === 'no' || v === 'down') return '<span style="color:#f85149">✗</span>';
+                    return '<span style="color:#d29922">⚠ ' + v + '</span>';
+                };
+                const ep = data.endpoints;
                 services.innerHTML += `
                     <div style="background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px; grid-column: span 2;">
-                        <div style="font-weight:600; color:#e1e4e8; font-size:0.9em; margin-bottom:6px;">📦 File checks</div>
+                        <div style="font-weight:600; color:#e1e4e8; font-size:0.9em; margin-bottom:6px;">🔌 Портове & Health endpoints</div>
+                        <div style="font-size:0.75em; color:#8b949e; line-height:1.7;">
+                            <strong>chat</strong> :3000 ${dot(ep.chat.port_3000)} · health ${dot(ep.chat.health)}<br>
+                            <strong>eco-3</strong> :3001 ${dot(ep.eco3.port_3001)} · health ${dot(ep.eco3.health)}<br>
+                            <strong>portals</strong> :3002 ${dot(ep.portals.port_3002)} · health ${dot(ep.portals.health)}<br>
+                            <strong>diag</strong> :4400 ${dot(ep.diag.port_4400)} · health ${dot(ep.diag.health)}
+                        </div>
+                    </div>
+                `;
+            }
+            if (data.checks) {
+                const cb = (ok, label) => `<span style="color:${ok ? '#3fb950' : '#f85149'}">${ok ? '✓' : '✗'}</span> ${label}`;
+                // missing_modules: true = ЛОШО (затова обърнато)
+                const mm = data.checks.missing_modules;
+                services.innerHTML += `
+                    <div style="background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px; grid-column: span 2;">
+                        <div style="font-weight:600; color:#e1e4e8; font-size:0.9em; margin-bottom:6px;">📦 Checks</div>
                         <div style="font-size:0.75em; color:#8b949e; line-height:1.6;">
                             ${cb(data.checks.env_file, '.env')} ·
-                            ${cb(data.checks.chat_node_modules, 'chat/node_modules')} ·
-                            ${cb(data.checks.eco3_node_modules, 'eco-3/node_modules')} ·
-                            ${cb(data.checks.portals_node_modules, 'portals/node_modules')} ·
+                            ${cb(data.checks.root_node_modules, 'node_modules')} ·
+                            ${cb(data.checks.express, 'express')} ·
+                            ${cb(data.checks.sharp, 'sharp')} ·
+                            ${cb(data.checks.better_sqlite3, 'better-sqlite3')} ·
                             ${cb(data.checks.portal_db, 'portal.db')} ·
-                            ${cb(data.checks.nginx_config_valid, 'nginx config')}
+                            ${cb(data.checks.nginx_config_valid, 'nginx config')} ·
+                            <span style="color:${mm ? '#f85149' : '#3fb950'}">${mm ? '✗ ЛИПСВАТ МОДУЛИ' : '✓ всички модули'}</span>
                         </div>
+                        ${mm ? '<div style="font-size:0.72em; color:#f85149; margin-top:6px;">⚠ Виж modules-errors.log за подробности</div>' : ''}
                     </div>
                 `;
             }
