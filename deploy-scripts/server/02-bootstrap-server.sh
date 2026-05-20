@@ -362,45 +362,62 @@ print_step "STEP 5: SSH ключ за deploy"
 
 DEPLOY_SSH="/home/deploy/.ssh"
 mkdir -p "$DEPLOY_SSH"
+touch "$DEPLOY_SSH/authorized_keys"
 
-if [ -s "$DEPLOY_SSH/authorized_keys" ]; then
-    print_skip "deploy вече има authorized_keys ($(wc -l < $DEPLOY_SSH/authorized_keys) ключа)"
+# Прочети ключа който се опитваме да добавим
+NEW_KEY=""
+if [ -s /tmp/deploy_pubkey ]; then
+    NEW_KEY=$(cat /tmp/deploy_pubkey)
+    rm -f /tmp/deploy_pubkey
+elif [ ! -s "$DEPLOY_SSH/authorized_keys" ]; then
+    # Файлът е празен и няма pubkey за зареждане — питай интерактивно
     echo ""
-    read -p "  Да добавя нов ключ отгоре? [y/N]: " ADD_KEY
-    APPEND_MODE="$ADD_KEY"
-else
-    APPEND_MODE="y"
+    echo "  Постави съдържанието на твоя public key (id_ed25519.pub или id_rsa.pub):"
+    echo "  Започва с 'ssh-ed25519' или 'ssh-rsa'. След paste — Enter + Ctrl+D:"
+    echo ""
+    NEW_KEY=$(cat)
 fi
 
-if [ "$APPEND_MODE" = "y" ] || [ "$APPEND_MODE" = "Y" ]; then
-    NEW_KEY=""
+# Дедупликирай съществуващи ключове по type+body (без коментара)
+# Така ключ с различен коментар (mucy@home vs mucy@laptop) се разпознава като дубликат.
+if [ -s "$DEPLOY_SSH/authorized_keys" ]; then
+    BEFORE=$(grep -c "^ssh-" "$DEPLOY_SSH/authorized_keys" 2>/dev/null || echo 0)
 
-    # Non-interactive mode — pubkey се чете от /tmp/deploy_pubkey
-    # (използва се от 01-bootstrap.sh launcher-а на Windows)
-    if [ -s /tmp/deploy_pubkey ]; then
-        NEW_KEY=$(cat /tmp/deploy_pubkey)
-        rm -f /tmp/deploy_pubkey
-        print_ok "Public key прочетен от /tmp/deploy_pubkey"
-    else
-        # Interactive prompt
-        echo ""
-        echo "  Постави съдържанието на твоя public key (id_ed25519.pub или id_rsa.pub):"
-        echo "  Започва с 'ssh-ed25519' или 'ssh-rsa', завършва с email/коментар."
-        echo "  След като paste-неш — натисни Enter, после Ctrl+D:"
-        echo ""
-        NEW_KEY=$(cat)
+    # awk: ключ за дедуп = type + body (първите 2 полета); пази целия ред (с коментара)
+    awk '
+        /^[[:space:]]*$/ { next }                    # skip празни редове
+        /^#/ { print; next }                         # запази коментари (ако случайно има)
+        {
+            fp = $1 " " $2                           # fingerprint = type + key body
+            if (!seen[fp]++) print                   # първото срещане — печатай
+        }
+    ' "$DEPLOY_SSH/authorized_keys" > "$DEPLOY_SSH/authorized_keys.new"
+    mv "$DEPLOY_SSH/authorized_keys.new" "$DEPLOY_SSH/authorized_keys"
+
+    AFTER=$(grep -c "^ssh-" "$DEPLOY_SSH/authorized_keys" 2>/dev/null || echo 0)
+    if [ "$BEFORE" != "$AFTER" ]; then
+        print_ok "Премахнати $((BEFORE - AFTER)) дубликата от authorized_keys (имаше $BEFORE, остават $AFTER)"
     fi
+fi
 
-    if [ -n "$NEW_KEY" ]; then
+# Добави новия ключ САМО ако още не съществува
+if [ -n "$NEW_KEY" ]; then
+    # Извлечи "fingerprint" частта (key type + key body, без коментара)
+    NEW_KEY_BODY=$(echo "$NEW_KEY" | awk '{print $1" "$2}')
+
+    if [ -s "$DEPLOY_SSH/authorized_keys" ] && grep -qF "$NEW_KEY_BODY" "$DEPLOY_SSH/authorized_keys"; then
+        print_skip "Ключът вече съществува в authorized_keys (skip)"
+    else
         echo "$NEW_KEY" >> "$DEPLOY_SSH/authorized_keys"
-        print_ok "Ключ добавен"
-    else
-        print_skip "Не въведе ключ. Можеш да го добавиш по-късно в $DEPLOY_SSH/authorized_keys"
+        print_ok "Нов ключ добавен"
     fi
 fi
+
+KEY_COUNT=$(grep -c "^ssh-" "$DEPLOY_SSH/authorized_keys" 2>/dev/null || echo 0)
+print_ok "deploy има ${KEY_COUNT} SSH ключ(а)"
 
 chmod 700 "$DEPLOY_SSH"
-[ -f "$DEPLOY_SSH/authorized_keys" ] && chmod 600 "$DEPLOY_SSH/authorized_keys"
+chmod 600 "$DEPLOY_SSH/authorized_keys"
 chown -R deploy:deploy "$DEPLOY_SSH"
 print_ok "Permissions на $DEPLOY_SSH настроени"
 
