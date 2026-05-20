@@ -280,8 +280,21 @@ elif command -v psql &> /dev/null; then
     echo -e "${GREEN}PostgreSQL detected — using PostgreSQL${NC}"
     USE_POSTGRESQL=true
 else
-    echo -e "${YELLOW}PostgreSQL not found — using SQLite${NC}"
-    USE_POSTGRESQL=false
+    # PostgreSQL не е инсталиран — питай (default = PostgreSQL, инсталира го)
+    echo -e "${YELLOW}PostgreSQL не е инсталиран.${NC}"
+    echo ""
+    echo -e "  ${GREEN}1)${NC} Инсталирай PostgreSQL (production) ${CYAN}[ПО ПОДРАЗБИРАНЕ]${NC}"
+    echo -e "  ${GREEN}2)${NC} Използвай SQLite (development)"
+    echo ""
+    read -p "  Избор [1-2, Enter = 1 PostgreSQL]: " DB_PICK
+    DB_PICK="${DB_PICK:-1}"
+    if [ "$DB_PICK" = "2" ]; then
+        echo -e "${YELLOW}Mode: SQLite${NC}"
+        USE_POSTGRESQL=false
+    else
+        echo -e "${GREEN}Mode: PostgreSQL (ще се инсталира)${NC}"
+        USE_POSTGRESQL=true
+    fi
 fi
 
 ##############################################################################

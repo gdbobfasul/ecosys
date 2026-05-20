@@ -8,7 +8,8 @@
     "private/chat",
     "private/mobile-chat",
     "private/eco-3",
-    "private/brch1"
+    "private/brch1",
+    "private/portals"
   ],
   "scripts": {
     "test": "npm run test:token && npm run test:multisig && npm run test:chat && npm run test:mobile",

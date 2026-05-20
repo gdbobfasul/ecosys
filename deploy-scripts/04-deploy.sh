@@ -168,7 +168,7 @@ Targets (промени в началото на 04-deploy.sh, или в .deploy
 За да го изпише и да попита дали да го копира на сървъра:
   DEPLOY_SHOW_ENV=1 ./deploy-scripts/04-deploy.sh
 
-За изключване на финалното питане "Pусни 05-server-install.sh?" (CI):
+За изключване на финалното питане "Пусни 05-server-install.sh?" (CI):
   DEPLOY_NO_PAUSE=1 ./deploy-scripts/04-deploy.sh
 
 Преди първо ползване:
@@ -595,7 +595,7 @@ log ""
 # Питай дали да run-ва автоматично (default: yes)
 RUN_INSTALL="y"
 if [ -t 0 ] && [ "${DEPLOY_NO_PAUSE:-0}" != "1" ]; then
-    read -p "  Pусни 05-server-install.sh автоматично сега? [Y/n]: " RUN_INSTALL
+    read -p "  Пусни 05-server-install.sh автоматично сега? [Y/n]: " RUN_INSTALL
     RUN_INSTALL="${RUN_INSTALL:-y}"
 fi
 
@@ -683,16 +683,16 @@ log "     Достъп: ${CYAN}ssh deploy@... → su - kcy-admin${NC}"
 log ""
 log "  ${GREEN}АВТОМАТИЧНО${NC} — 05-server-install.sh ги създава сам:"
 log ""
-log "  ${CYAN}kcy-chat${NC} — изпълнява Chat сървиса"
-log "     Парола: НЕ, system user, без login"
-log "     Владее: private/chat/ — database, uploads, logs"
+log "  ${CYAN}kcy-chat${NC} — system user за chat сървиса"
+log "     Тип: system user, без shell login"
+log "     Пише в: private/chat/database/, private/chat/uploads/, /var/log/kcy-ecosystem/"
 log ""
-log "  ${CYAN}kcy-eco3${NC} — изпълнява ECO-3 сървиса"
-log "     Парола: НЕ, system user, без login"
-log "     Владее: private/eco-3/ — само logs"
-log "     ${RED}Изолиран${NC} — не може да чете chat/database/"
+log "  ${CYAN}kcy-eco3${NC} — system user за ECO-3 и Portals сървисите"
+log "     Тип: system user, без shell login"
+log "     Пише в: private/eco-3/database/, private/portals/database/, /var/log/kcy-ecosystem/"
+log "     Не може да чете /private/chat/database/ (изолация)"
 log ""
-log "  ${CYAN}Група kcy${NC} — обща, .env е root:kcy 640"
+log "  ${CYAN}Група kcy${NC} — обща група, .env е root:kcy с mode 640 (read-only за services)"
 log ""
 log "  sudo управление:"
 log "     ${GREEN}sudo bash 03-kcy-admin-sudo.sh grant${NC}   — дай sudo"

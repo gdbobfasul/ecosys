@@ -409,13 +409,14 @@ step_database() {
     echo -e "${CYAN}Database setup options:${NC}"
     echo ""
     echo -e "  ${GREEN}1)${NC} Run database setup script (automatic)"
-    echo -e "  ${GREEN}2)${NC} Use PostgreSQL (production)"
+    echo -e "  ${GREEN}2)${NC} Use PostgreSQL (production) ${CYAN}[ПО ПОДРАЗБИРАНЕ]${NC}"
     echo -e "  ${GREEN}3)${NC} Use SQLite (development)"
     echo -e "  ${GREEN}4)${NC} Reset database (DELETE all data)"
     echo -e "  ${GREEN}5)${NC} Skip (database already configured)"
     echo ""
     
-    read -p "Your choice [1-5]: " db_choice
+    read -p "Your choice [1-5, Enter = 2 PostgreSQL]: " db_choice
+    db_choice="${db_choice:-2}"
     
     case $db_choice in
         1)

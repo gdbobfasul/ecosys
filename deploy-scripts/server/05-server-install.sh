@@ -683,14 +683,38 @@ chown -R root:$SVC_GROUP "$PROJECT_DIR"
 chown -R root:$SVC_GROUP "$WEB_ROOT"
 chown -R $CHAT_USER:$SVC_GROUP "$PRIVATE_DIR/chat"
 chown -R $ECO3_USER:$SVC_GROUP "$PRIVATE_DIR/eco-3"
+chown -R $ECO3_USER:$SVC_GROUP "$PRIVATE_DIR/portals"
 chmod -R 755 "$WEB_ROOT"
 chmod -R 750 "$PRIVATE_DIR"
 [ -f "$GLOBAL_ENV" ] && chown root:$SVC_GROUP "$GLOBAL_ENV" && chmod 640 "$GLOBAL_ENV"
 
-# Uploads & database — само chat потребителят пише
+# ── ИСТИНСКА ИЗОЛАЦИЯ на sensitive директории ──
+# Mode 700 = само owner има достъп, group и others = нищо.
+# Така kcy-eco3 НЕ може да чете chat-овата база (и обратно), дори да е в kcy групата.
+
+# Chat sensitive — само kcy-chat
 mkdir -p "$PRIVATE_DIR/chat/uploads" "$PRIVATE_DIR/chat/database"
-chown $CHAT_USER:$SVC_GROUP "$PRIVATE_DIR/chat/uploads" "$PRIVATE_DIR/chat/database"
-echo -e "  ${GREEN}✓ Permissions: kcy-chat владее chat/, kcy-eco3 владее eco-3/${NC}"
+chown -R $CHAT_USER:$CHAT_USER "$PRIVATE_DIR/chat/uploads" "$PRIVATE_DIR/chat/database"
+chmod 700 "$PRIVATE_DIR/chat/uploads" "$PRIVATE_DIR/chat/database"
+find "$PRIVATE_DIR/chat/database" -type f -exec chmod 600 {} \; 2>/dev/null
+find "$PRIVATE_DIR/chat/uploads" -type f -exec chmod 600 {} \; 2>/dev/null
+echo -e "  ${GREEN}✓${NC} chat/database/ и chat/uploads/ → mode 700 (само ${CHAT_USER})"
+
+# ECO-3 sensitive — само kcy-eco3
+mkdir -p "$PRIVATE_DIR/eco-3/database" "$PRIVATE_DIR/eco-3/logs"
+chown -R $ECO3_USER:$ECO3_USER "$PRIVATE_DIR/eco-3/database" "$PRIVATE_DIR/eco-3/logs"
+chmod 700 "$PRIVATE_DIR/eco-3/database" "$PRIVATE_DIR/eco-3/logs"
+find "$PRIVATE_DIR/eco-3/database" -type f -exec chmod 600 {} \; 2>/dev/null
+echo -e "  ${GREEN}✓${NC} eco-3/database/ и eco-3/logs/ → mode 700 (само ${ECO3_USER})"
+
+# Portals sensitive — също kcy-eco3 (portals service runs as kcy-eco3)
+mkdir -p "$PRIVATE_DIR/portals/database"
+chown -R $ECO3_USER:$ECO3_USER "$PRIVATE_DIR/portals/database"
+chmod 700 "$PRIVATE_DIR/portals/database"
+find "$PRIVATE_DIR/portals/database" -type f -exec chmod 600 {} \; 2>/dev/null
+echo -e "  ${GREEN}✓${NC} portals/database/ → mode 700 (само ${ECO3_USER})"
+
+echo -e "  ${CYAN}✓ Изолация: chat НЕ може да чете eco-3/portals databases; и обратно${NC}"
 
 ##############################################################################
 # STEP 7: NODE.JS DEPENDENCIES
@@ -719,58 +743,28 @@ echo -e "  ${GREEN}✓ NPM:  $(npm -v)${NC}"
 
 cd "$PROJECT_DIR"
 
-# Изчисти стари node_modules за clean install (избягва ENOTEMPTY грешки)
-if [ -d "$PROJECT_DIR/node_modules" ]; then
-    echo -e "  ${YELLOW}Премахвам стари node_modules...${NC}"
-    rm -rf "$PROJECT_DIR/node_modules"
-fi
-
-echo -e "  ${YELLOW}npm install (root, може да отнеме няколко минути)...${NC}"
-if ! npm install --legacy-peer-deps 2>&1 | tail -10; then
-    echo -e "  ${RED}✗ npm install failed (root)${NC}"
-    diag_log services-errors.log "install: npm install ROOT FAILED"
-    safe_exit 1
-fi
-# Sanity: root трябва да има express (chat зависи от него чрез root)
-if [ ! -d "$PROJECT_DIR/node_modules/express" ]; then
-    echo -e "  ${RED}✗ node_modules/express липсва след root npm install${NC}"
-    diag_log services-errors.log "install: express липсва в root node_modules"
-    safe_exit 1
-fi
-echo -e "  ${GREEN}✓ Root node_modules инсталирани${NC}"
-
-# Помощна функция — проверява дали package.json има dependencies
-has_deps() {
-    [ -f "$1" ] && grep -q '"dependencies"' "$1" && \
-        ! grep -A1 '"dependencies"' "$1" | grep -q '"dependencies"[[:space:]]*:[[:space:]]*{[[:space:]]*}'
-}
-
-# Инсталирай dependencies в sub-директориите КОИТО ИМАТ собствени dependencies.
-# Chat няма свои deps (взима от root workspace), затова го прескачаме.
-for sub in private/chat private/eco-3 private/portals; do
-    PKG="$PROJECT_DIR/$sub/package.json"
-    if [ ! -f "$PKG" ]; then
-        continue
-    fi
-    if ! has_deps "$PKG"; then
-        echo -e "  ${CYAN}↷ $sub — няма собствени dependencies (използва root)${NC}"
-        continue
-    fi
-    if [ -d "$PROJECT_DIR/$sub/node_modules" ]; then
-        rm -rf "$PROJECT_DIR/$sub/node_modules"
-    fi
-    echo -e "  ${YELLOW}npm install за $sub ...${NC}"
-    if ! ( cd "$PROJECT_DIR/$sub" && npm install --legacy-peer-deps --omit=dev 2>&1 | tail -5 ); then
-        echo -e "  ${RED}✗ npm install failed за $sub${NC}"
-        diag_log services-errors.log "install: npm install $sub FAILED"
-        safe_exit 1
-    fi
-    if [ ! -d "$PROJECT_DIR/$sub/node_modules" ]; then
-        echo -e "  ${RED}✗ $sub/node_modules не съществува след install${NC}"
-        safe_exit 1
-    fi
-    echo -e "  ${GREEN}✓ $sub/node_modules инсталирани${NC}"
+# Clean install — премахни стари node_modules за да избегнем ENOTEMPTY
+echo -e "  ${YELLOW}Премахвам стари node_modules (root + workspaces)...${NC}"
+rm -rf "$PROJECT_DIR/node_modules"
+for sub in private/chat private/eco-3 private/portals private/token private/multisig private/brch1 private/mobile-chat; do
+    [ -d "$PROJECT_DIR/$sub/node_modules" ] && rm -rf "$PROJECT_DIR/$sub/node_modules"
 done
+
+echo -e "  ${YELLOW}npm install (root + всички workspaces, може да отнеме няколко минути)...${NC}"
+if ! npm install --legacy-peer-deps 2>&1 | tail -10; then
+    echo -e "  ${RED}✗ npm install failed${NC}"
+    diag_log services-errors.log "install: npm install FAILED"
+    safe_exit 1
+fi
+
+# Sanity check — express е критична зависимост за chat/eco-3/portals
+if [ ! -d "$PROJECT_DIR/node_modules/express" ]; then
+    echo -e "  ${RED}✗ node_modules/express липсва след npm install${NC}"
+    diag_log services-errors.log "install: express липсва"
+    safe_exit 1
+fi
+echo -e "  ${GREEN}✓ Всички node_modules инсталирани в root (workspaces hoisted)${NC}"
+echo -e "  ${CYAN}  Chat/ECO-3/Portals — всички използват /var/www/kcy-ecosystem/node_modules${NC}"
 
 ##############################################################################
 # STEP 7.5: PORTAL DATABASE (отделна SQLite, винаги)
@@ -953,10 +947,16 @@ else
     echo ""
     echo -e "  ${CYAN}Какъв тип база да създам?${NC}"
     echo -e "    ${GREEN}1)${NC} SQLite (по-просто, без допълнителна инсталация)"
-    echo -e "    ${GREEN}2)${NC} PostgreSQL (по-мощно, за продукция)"
+    echo -e "    ${GREEN}2)${NC} PostgreSQL (по-мощно, за продукция) ${CYAN}[ПО ПОДРАЗБИРАНЕ]${NC}"
     echo -e "    ${GREEN}3)${NC} Пропусни (ще настроиш после с 07-setup-database.sh)"
     echo ""
-    read -p "  Избор [1/2/3]: " NEW_DB_CHOICE <&3
+    NEW_DB_CHOICE=""
+    if [ -t 0 ]; then
+        read -p "  Избор [1/2/3, Enter = 2 PostgreSQL]: " NEW_DB_CHOICE
+    elif [ -e /dev/fd/3 ]; then
+        read -p "  Избор [1/2/3, Enter = 2 PostgreSQL]: " NEW_DB_CHOICE <&3 2>/dev/null || NEW_DB_CHOICE=""
+    fi
+    NEW_DB_CHOICE="${NEW_DB_CHOICE:-2}"
 
     case "$NEW_DB_CHOICE" in
         1)
@@ -1021,10 +1021,12 @@ else
     echo -e "  ${YELLOW}! ECO-3 schema.sql не е намерен${NC}"
 fi
 
-# ECO-3 logs + database dirs
+# ECO-3 logs + database dirs — изолирани (mode 700, само eco3 user)
 mkdir -p "$PRIVATE_DIR/eco-3/logs" 2>/dev/null
-chown -R $ECO3_USER:$SVC_GROUP "$PRIVATE_DIR/eco-3/logs" 2>/dev/null || true
-chown -R $ECO3_USER:$SVC_GROUP "$PRIVATE_DIR/eco-3/database" 2>/dev/null || true
+chown -R $ECO3_USER:$ECO3_USER "$PRIVATE_DIR/eco-3/logs" 2>/dev/null || true
+chown -R $ECO3_USER:$ECO3_USER "$PRIVATE_DIR/eco-3/database" 2>/dev/null || true
+chmod 700 "$PRIVATE_DIR/eco-3/logs" "$PRIVATE_DIR/eco-3/database" 2>/dev/null || true
+find "$PRIVATE_DIR/eco-3/database" -type f -exec chmod 600 {} \; 2>/dev/null || true
 
 ##############################################################################
 # STEP 9: NGINX
@@ -1253,7 +1255,18 @@ NGINXEOF
 for f in "${EXISTING_CONFS[@]}"; do
     if [ "$f" != "$NGINX_CONF" ]; then
         rm -f "$f"
+        # Премахни и съответния symlink в sites-enabled (ако има)
+        rm -f "/etc/nginx/sites-enabled/$(basename $f)"
         echo -e "  ${YELLOW}Премахнат стар конфиг: $(basename $f)${NC}"
+    fi
+done
+
+# Почисти ВСИЧКИ счупени symlinks в sites-enabled (failsafe)
+# Счупен symlink → nginx -t fail-ва с "open() failed"
+for link in /etc/nginx/sites-enabled/*; do
+    if [ -L "$link" ] && [ ! -e "$link" ]; then
+        echo -e "  ${YELLOW}Премахнат счупен symlink: $(basename $link)${NC}"
+        rm -f "$link"
     fi
 done
 
@@ -1479,11 +1492,19 @@ except Exception:
             echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
             echo ""
             echo "  Tailscale е активен и намерих VM peer: ${VM_TS_IP}"
-            echo "  Това позволява настройка на failover: VPS reverse proxy → VM (primary)"
-            echo "  → ако VM падне, VPS пое автоматично."
+            echo "  Tailscale остава активен — въпросът е само за failover (nginx proxy)."
+            echo "  Failover: ако VM падне, VPS поема автоматично."
             echo ""
-            read -p "  Да настроя failover сега? [Y/n]: " DO_FAILOVER <&3 2>/dev/null || DO_FAILOVER="n"
-            DO_FAILOVER="${DO_FAILOVER:-y}"
+            echo -e "  ${YELLOW}>>>${NC} Да настроя failover сега?"
+            echo -e "  ${YELLOW}>>>${NC} (default: ${RED}N${NC} = не пипа; натисни ${GREEN}y${NC} + Enter ако искаш да настроя)"
+            echo ""
+            DO_FAILOVER=""
+            if [ -t 0 ]; then
+                read -p "  Избор [y/N]: " DO_FAILOVER
+            elif [ -e /dev/fd/3 ]; then
+                read -p "  Избор [y/N]: " DO_FAILOVER <&3 2>/dev/null || DO_FAILOVER=""
+            fi
+            DO_FAILOVER="${DO_FAILOVER:-n}"
 
             if [ "$DO_FAILOVER" = "y" ] || [ "$DO_FAILOVER" = "Y" ]; then
                 FAILOVER_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/12-setup-failover.sh"
@@ -1492,6 +1513,8 @@ except Exception:
                 else
                     echo -e "  ${YELLOW}!${NC} Failover скриптът не намерен на $FAILOVER_SCRIPT"
                 fi
+            else
+                echo -e "  ${CYAN}↷${NC} Failover пропуснат (Tailscale остава активен)"
             fi
         else
             # Failover вече настроен — обнови VM IP-то ако се е сменил
