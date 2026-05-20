@@ -1038,6 +1038,29 @@ if ! command -v nginx &>/dev/null; then
     apt-get update -qq && apt-get install -y -qq nginx 2>/dev/null
 fi
 
+# ── Почисти стар failover (ако install се пуска върху failover-нат сървър) ──
+# Install винаги връща чист самостоятелен сайт. Failover се добавя ПОСЛЕ
+# (отделно, с 12-setup-failover.sh) ако потребителят го иска.
+if [ -f /etc/nginx/sites-available/kcy-failover ] || [ -f /etc/nginx/sites-available/kcy-backup ]; then
+    echo -e "  ${YELLOW}Открит стар failover — почиствам за чиста инсталация...${NC}"
+    rm -f /etc/nginx/sites-enabled/kcy-failover /etc/nginx/sites-available/kcy-failover
+    rm -f /etc/nginx/sites-enabled/kcy-backup /etc/nginx/sites-available/kcy-backup
+    # Възстанови портове ако failover ги е сменил на 8080/8443
+    for f in /etc/nginx/sites-available/*; do
+        [ -f "$f" ] || continue
+        if grep -q "listen 127.0.0.1:8080\|listen 127.0.0.1:8443" "$f" 2>/dev/null; then
+            sed -i -E \
+                -e 's/listen 127\.0\.0\.1:8080;/listen 80;/' \
+                -e 's/listen \[::1\]:8080;/listen [::]:80;/' \
+                -e 's/listen 127\.0\.0\.1:8443 ssl;/listen 443 ssl http2;/' \
+                -e 's/listen \[::1\]:8443 ssl;/listen [::]:443 ssl http2;/' \
+                "$f"
+            echo -e "  ${GREEN}✓${NC} Възстановени портове 80/443 в $(basename $f)"
+        fi
+    done
+    diag_log services-errors.log "install: стар failover почистен"
+fi
+
 # ── Конфиг файл = домейн (съвместимо с certbot) ──
 NGINX_CONF="/etc/nginx/sites-available/${DOMAIN}"
 NGINX_LINK="/etc/nginx/sites-enabled/${DOMAIN}"
@@ -1453,83 +1476,64 @@ chmod +x /usr/local/bin/kcy-restart
 ##############################################################################
 # AUTO FAILOVER (само на production VPS)
 ##############################################################################
-# Ако сме на production target И Tailscale е инсталиран → пита да настрои failover.
-# На VM → не прави нищо (VM-ът е primary, не reverse proxy).
+# Ако сме на production + Tailscale активен + има VM peer → пита за failover.
+# Ползва поправения 12-setup-failover.sh (без redirect loop):
+#   SSL терминация на VPS:443, upstream → VM:8080 (plain) + 127.0.0.1:8080 backup.
 
 if [ "$TARGET_NAME" = "prod" ] && command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
-    # Намери VM Tailscale IP — peer който НЕ е този VPS, и е online
     MY_TS_IP=$(tailscale ip -4 2>/dev/null | head -1)
     VM_TS_IP=$(tailscale status --json 2>/dev/null | python3 -c "
 import json, sys
 try:
     data = json.load(sys.stdin)
-    peers = data.get('Peer', {})
-    # Намери първи online peer (не нас) с Tailscale IPv4
-    for k, p in peers.items():
+    for k, p in data.get('Peer', {}).items():
         if not p.get('Online'):
             continue
         ips = [ip for ip in (p.get('TailscaleIPs') or []) if '.' in ip]
         if ips:
-            print(ips[0])
-            sys.exit(0)
+            print(ips[0]); sys.exit(0)
 except Exception:
     pass
 " 2>/dev/null)
-
-    # Fallback ако python3 не е там
     if [ -z "$VM_TS_IP" ]; then
         VM_TS_IP=$(tailscale status 2>/dev/null | awk -v me="$MY_TS_IP" '
-            /^100\./ && $1 != me && /(active|idle)/ { print $1; exit }
-        ')
+            /^100\./ && $1 != me && /(active|idle)/ { print $1; exit }')
     fi
 
+    echo ""
+    echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
+    echo -e "${CYAN}  FAILOVER (по избор)${NC}"
+    echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
+    echo ""
     if [ -n "$VM_TS_IP" ]; then
-        # Provери дали failover вече е настроен
-        if [ ! -f /etc/nginx/sites-enabled/kcy-failover ]; then
-            echo ""
-            echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
-            echo -e "${CYAN}  AUTO-FAILOVER detected${NC}"
-            echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
-            echo ""
-            echo "  Tailscale е активен и намерих VM peer: ${VM_TS_IP}"
-            echo "  Tailscale остава активен — въпросът е само за failover (nginx proxy)."
-            echo "  Failover: ако VM падне, VPS поема автоматично."
-            echo ""
-            echo -e "  ${YELLOW}>>>${NC} Да настроя failover сега?"
-            echo -e "  ${YELLOW}>>>${NC} (default: ${RED}N${NC} = не пипа; натисни ${GREEN}y${NC} + Enter ако искаш да настроя)"
-            echo ""
-            DO_FAILOVER=""
-            if [ -t 0 ]; then
-                read -p "  Избор [y/N]: " DO_FAILOVER
-            elif [ -e /dev/fd/3 ]; then
-                read -p "  Избор [y/N]: " DO_FAILOVER <&3 2>/dev/null || DO_FAILOVER=""
-            fi
-            DO_FAILOVER="${DO_FAILOVER:-n}"
+        echo "  Tailscale активен, намерих VM peer: ${VM_TS_IP}"
+        echo "  Failover: VPS:443 (SSL) → primary VM:8080 + backup local:8080"
+    else
+        echo "  Tailscale активен, но няма online VM peer."
+        echo "  Failover ще работи само с локален backup (без VM primary)."
+    fi
+    echo "  Ако VM падне → VPS поема. Без VM → VPS сам сервира."
+    echo ""
+    echo -e "  ${YELLOW}>>>${NC} Да настроя failover сега? (default: ${RED}N${NC})"
+    echo ""
+    DO_FAILOVER=""
+    if [ -t 0 ]; then
+        read -p "  Избор [y/N]: " DO_FAILOVER
+    elif [ -e /dev/fd/3 ]; then
+        read -p "  Избор [y/N]: " DO_FAILOVER <&3 2>/dev/null || DO_FAILOVER=""
+    fi
+    DO_FAILOVER="${DO_FAILOVER:-n}"
 
-            if [ "$DO_FAILOVER" = "y" ] || [ "$DO_FAILOVER" = "Y" ]; then
-                FAILOVER_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/12-setup-failover.sh"
-                if [ -f "$FAILOVER_SCRIPT" ]; then
-                    bash "$FAILOVER_SCRIPT" "$VM_TS_IP"
-                else
-                    echo -e "  ${YELLOW}!${NC} Failover скриптът не намерен на $FAILOVER_SCRIPT"
-                fi
-            else
-                echo -e "  ${CYAN}↷${NC} Failover пропуснат (Tailscale остава активен)"
-            fi
+    if [ "$DO_FAILOVER" = "y" ] || [ "$DO_FAILOVER" = "Y" ]; then
+        FAILOVER_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/12-setup-failover.sh"
+        if [ -f "$FAILOVER_SCRIPT" ]; then
+            # VM_TS_IP като аргумент (ако празно — само backup)
+            bash "$FAILOVER_SCRIPT" "$VM_TS_IP"
         else
-            # Failover вече настроен — обнови VM IP-то ако се е сменил
-            CURRENT_VM_IP=$(grep -oP "server \K100\.[0-9.]+" /etc/nginx/sites-available/kcy-failover 2>/dev/null | head -1)
-            if [ -n "$CURRENT_VM_IP" ] && [ "$CURRENT_VM_IP" != "$VM_TS_IP" ]; then
-                echo ""
-                echo "  ${YELLOW}!${NC} VM Tailscale IP се е променил: ${CURRENT_VM_IP} → ${VM_TS_IP}"
-                sed -i "s|server ${CURRENT_VM_IP}:80|server ${VM_TS_IP}:80|" /etc/nginx/sites-available/kcy-failover
-                nginx -t && systemctl reload nginx
-                echo "  ${GREEN}✓${NC} Failover обновен с новия VM IP"
-            else
-                echo ""
-                echo "  ${GREEN}✓${NC} Failover вече активен (VM: ${VM_TS_IP})"
-            fi
+            echo -e "  ${YELLOW}!${NC} Failover скриптът липсва: $FAILOVER_SCRIPT"
         fi
+    else
+        echo -e "  ${CYAN}↷${NC} Failover пропуснат — сайтът работи самостоятелно"
     fi
 fi
 

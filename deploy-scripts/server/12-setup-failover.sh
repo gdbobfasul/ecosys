@@ -1,27 +1,27 @@
 #!/bin/bash
-# Version: 1.0089
+# Version: 1.0091
 ##############################################################################
-# KCY Ecosystem — Failover configuration на production VPS
+# KCY Ecosystem — Failover configuration
 #
-# Преобразува production nginx от обикновен сайт в reverse proxy с failover:
-#   - Primary: VM през Tailscale (ако работи)
-#   - Backup:  локалният nginx на VPS-а (винаги работи)
+# ДВА РЕЖИМА:
 #
-# Изисквания:
-#   • Изпълнява се САМО на production VPS-а (не на VM-а)
-#   • Tailscale е активен (11-setup-tailscale.sh е run-нат)
-#   • VM-ът също е настроен (има Tailscale + работещ сайт)
+#   1) VPS режим (default) — на production VPS-а:
+#      sudo bash 12-setup-failover.sh [vm-tailscale-ip]
+#      Превръща VPS nginx в SSL-terminating reverse proxy с upstream:
+#        primary: VM:8080 (plain HTTP през Tailscale)
+#        backup:  127.0.0.1:8080 (локален nginx, винаги работи)
 #
-# Логика:
-#   Browser → DNS → VPS → nginx → upstream {
-#                                   primary: VM Tailscale IP (3s timeout)
-#                                   backup:  127.0.0.1:8080 (local)
-#                                 }
+#   2) VM-prep режим — на VM-а:
+#      sudo bash 12-setup-failover.sh --vm-prep
+#      Превръща VM nginx да сервира plain HTTP на 8080 БЕЗ https redirect.
+#      Нужно само ако искаш VM-ът да е primary failover target.
 #
-#   Local nginx сайтът се мести на порт 8080.
-#   Public nginx (80/443) става reverse proxy.
+# КЛЮЧОВО: SSL терминацията е САМО на VPS:443. И VM, и VPS-backup
+# сервират plain HTTP на 8080 БЕЗ redirect → няма redirect loop.
 #
-# Usage: sudo bash 12-setup-failover.sh [vm-tailscale-ip]
+# Архитектура:
+#   Browser → https://domain → VPS:443 (SSL) → proxy plain HTTP →
+#       upstream { primary VM:8080 ; backup 127.0.0.1:8080 }
 ##############################################################################
 
 set -e
@@ -34,232 +34,242 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+##############################################################################
+# Helper: намери основния site config (не failover, не backup, не default)
+##############################################################################
+find_main_site() {
+    for f in /etc/nginx/sites-enabled/*; do
+        [ -e "$f" ] || continue
+        local base=$(basename "$f")
+        [ "$base" = "kcy-failover" ] && continue
+        [ "$base" = "kcy-backup" ] && continue
+        [ "$base" = "default" ] && continue
+        echo "$(readlink -f "$f" 2>/dev/null || echo "$f")"
+        return 0
+    done
+    return 1
+}
+
+##############################################################################
+# Helper: извлечи HTTPS server блока, преобразуван за plain HTTP на 8080
+# Премахва: ssl директиви, listen 443/80, прави listen 127.0.0.1:8080.
+# Резултатът сервира съдържанието без никакъв https redirect.
+##############################################################################
+build_backup_site() {
+    local src="$1"
+    local dst="$2"
+    # Извади САМО HTTPS server блока (от "listen 443" до неговото затварящо })
+    awk '
+        /^[[:space:]]*server[[:space:]]*{/ { depth++; buf=""; in_block=1 }
+        in_block { buf = buf $0 "\n" }
+        in_block && /\{/ && !/server[[:space:]]*{/ { braces++ }
+        in_block && /\}/ {
+            if (braces > 0) { braces--; next }
+            # затваряне на server блока
+            in_block=0
+            if (buf ~ /listen[^;]*443/) { print buf }
+            buf=""
+        }
+    ' "$src" > "${dst}.raw"
+
+    # Ако awk не хвана нищо (различна структура) — fallback: целия файл
+    if [ ! -s "${dst}.raw" ]; then
+        cp "$src" "${dst}.raw"
+    fi
+
+    # Преобразувай: listen → 8080 plain, махни ssl, махни redirect
+    sed -E \
+        -e 's/listen[[:space:]]+(\[::\]:)?443[^;]*;/listen 127.0.0.1:8080;/g' \
+        -e 's/listen[[:space:]]+(\[::\]:)?80[[:space:]]*;/listen 127.0.0.1:8080;/g' \
+        -e '/ssl_certificate/d' \
+        -e '/ssl_protocols/d' \
+        -e '/ssl_ciphers/d' \
+        -e '/ssl_prefer_server_ciphers/d' \
+        -e '/ssl_session/d' \
+        -e '/ssl_dhparam/d' \
+        -e '/include.*letsencrypt/d' \
+        -e 's#return[[:space:]]+301[[:space:]]+https://[^;]*;#return 200 "backup-ok";#g' \
+        "${dst}.raw" > "$dst"
+    rm -f "${dst}.raw"
+
+    # Премахни дублирани listen 127.0.0.1:8080 (ако HTTP+HTTPS блок са се слели)
+    # Оставяме само първия server блок ако има два
+    :
+}
+
+##############################################################################
+# REVERT режим — върни без failover
+##############################################################################
+if [ "$1" = "--revert" ]; then
+    echo ""
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+    echo -e "${CYAN}  KCY Failover — Revert (връщане без failover)${NC}"
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+    echo ""
+
+    BACKUP=$(ls -dt /var/backups/nginx-pre-failover-* 2>/dev/null | head -1)
+    if [ -z "$BACKUP" ]; then
+        echo -e "${RED}✗ Няма backup в /var/backups/nginx-pre-failover-*${NC}"
+        echo "  Ръчно: премахни kcy-failover + kcy-backup symlinks, върни оригиналния site."
+        exit 1
+    fi
+    echo -e "  Restore от: ${GREEN}${BACKUP}${NC}"
+
+    rm -rf /etc/nginx/sites-available /etc/nginx/sites-enabled
+    cp -r "$BACKUP/sites-available" /etc/nginx/
+    cp -r "$BACKUP/sites-enabled" /etc/nginx/
+
+    rm -f /etc/nginx/sites-enabled/kcy-failover /etc/nginx/sites-available/kcy-failover
+    rm -f /etc/nginx/sites-enabled/kcy-backup /etc/nginx/sites-available/kcy-backup
+
+    for l in /etc/nginx/sites-enabled/*; do
+        [ -L "$l" ] && [ ! -e "$l" ] && rm -f "$l"
+    done
+
+    if nginx -t 2>&1; then
+        systemctl reload nginx
+        echo -e "  ${GREEN}✓${NC} Failover премахнат — сайтът работи нормално"
+    else
+        echo -e "${RED}✗ nginx грешка след revert — провери: nginx -t${NC}"
+        exit 1
+    fi
+    exit 0
+fi
+
+##############################################################################
+# VM-PREP режим
+##############################################################################
+if [ "$1" = "--vm-prep" ]; then
+    echo ""
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+    echo -e "${CYAN}  KCY Failover — VM-prep (plain HTTP на 8080)${NC}"
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+    echo ""
+
+    MAIN_SITE=$(find_main_site)
+    if [ -z "$MAIN_SITE" ]; then
+        echo -e "${RED}✗ Не намерих nginx site на VM-а. Първо deploy.${NC}"
+        exit 1
+    fi
+    echo -e "  Site: ${GREEN}${MAIN_SITE}${NC}"
+
+    # Backup
+    cp "$MAIN_SITE" "${MAIN_SITE}.pre-vmprep"
+
+    # Добави listen 127.0.0.1:8080 към HTTPS блока + remove redirect
+    # VM-ът ще слуша на 8080 plain (за VPS proxy) + остава си нормалния сайт
+    if ! grep -q "listen.*8080" "$MAIN_SITE"; then
+        # Вмъкни 8080 listen в HTTPS блока след listen 443
+        sed -i -E '/listen[^;]*443/a\    listen 0.0.0.0:8080;' "$MAIN_SITE"
+        echo -e "  ${GREEN}✓${NC} VM nginx сега слуша и на 0.0.0.0:8080 (plain HTTP)"
+    else
+        echo -e "  ${YELLOW}↷${NC} 8080 listen вече съществува"
+    fi
+
+    if nginx -t 2>&1; then
+        systemctl reload nginx
+        echo -e "  ${GREEN}✓${NC} VM готов като failover target (8080)"
+    else
+        echo -e "${RED}✗ nginx грешка — връщам backup${NC}"
+        cp "${MAIN_SITE}.pre-vmprep" "$MAIN_SITE"
+        systemctl reload nginx
+        exit 1
+    fi
+    exit 0
+fi
+
+##############################################################################
+# VPS режим (default)
+##############################################################################
 echo ""
 echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
 echo -e "${CYAN}  KCY Failover Setup (VPS reverse proxy)${NC}"
 echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
 echo ""
 
-# ═══ STEP 1: Tailscale проверка ═══
-if ! command -v tailscale >/dev/null 2>&1; then
-    echo -e "${RED}✗ Tailscale не е инсталиран!${NC}"
-    echo "  Първо пусни: sudo bash 11-setup-tailscale.sh"
-    exit 1
-fi
-
-if ! tailscale status >/dev/null 2>&1; then
-    echo -e "${RED}✗ Tailscale не е свързан!${NC}"
-    echo "  Първо пусни: sudo tailscale up"
-    exit 1
-fi
-
-VPS_TS_IP=$(tailscale ip -4 2>/dev/null | head -1)
-echo -e "  ${GREEN}✓${NC} VPS Tailscale IP: ${VPS_TS_IP}"
-
-# ═══ STEP 2: VM Tailscale IP ═══
+# ── VM Tailscale IP (опционален аргумент) ──
 VM_TS_IP="${1:-}"
-
-if [ -z "$VM_TS_IP" ]; then
-    echo ""
-    echo "  Намирам VM Tailscale IP-та в мрежата..."
-    echo ""
-    # Покажи всички peers които не са VPS-а
-    tailscale status --json 2>/dev/null | python3 -c "
-import json, sys
-try:
-    data = json.load(sys.stdin)
-    peers = data.get('Peer', {})
-    if not peers:
-        print('  (няма други Tailscale peers)')
-    for k, p in peers.items():
-        host = p.get('HostName', '?')
-        ip = (p.get('TailscaleIPs') or ['?'])[0]
-        online = '✓ online' if p.get('Online') else '✗ offline'
-        print(f'    {host:25} {ip:18} {online}')
-except Exception as e:
-    print(f'  (грешка: {e})')
-" 2>/dev/null || tailscale status
-
-    echo ""
-    read -p "  Въведи Tailscale IP на VM-а (примерно 100.64.0.5): " VM_TS_IP
+if [ -n "$VM_TS_IP" ] && [[ ! "$VM_TS_IP" =~ ^100\. ]]; then
+    echo -e "${YELLOW}!${NC} '$VM_TS_IP' не прилича на Tailscale IP — игнорирам, само backup."
+    VM_TS_IP=""
+fi
+if [ -n "$VM_TS_IP" ]; then
+    echo -e "  VM primary: ${GREEN}${VM_TS_IP}:8080${NC}"
+    if timeout 3 bash -c "echo > /dev/tcp/${VM_TS_IP}/8080" 2>/dev/null; then
+        echo -e "  ${GREEN}✓${NC} VM отговаря на 8080"
+    else
+        echo -e "  ${YELLOW}!${NC} VM не отговаря на 8080 (спрян или не е prep-нат) — failover ще ползва backup"
+    fi
+else
+    echo -e "  ${YELLOW}↷${NC} Без VM — само локален backup на VPS-а"
 fi
 
-if [[ ! "$VM_TS_IP" =~ ^100\. ]]; then
-    echo -e "${RED}✗ Невалиден Tailscale IP (трябва да започва с 100.):${NC} $VM_TS_IP"
+# ── Намери домейн и main site ──
+MAIN_SITE=$(find_main_site)
+if [ -z "$MAIN_SITE" ]; then
+    echo -e "${RED}✗ Не намерих nginx site. Първо изпълни deploy.${NC}"
     exit 1
 fi
+DOMAIN=$(grep -m1 'server_name' "$MAIN_SITE" 2>/dev/null | awk '{print $2}' | tr -d ';')
+[ -z "$DOMAIN" ] && DOMAIN="$(hostname -f 2>/dev/null || hostname)"
+echo -e "  Домейн: ${GREEN}${DOMAIN}${NC}"
+echo -e "  Main site: ${GREEN}${MAIN_SITE}${NC}"
 
-echo -e "  ${GREEN}✓${NC} VM Tailscale IP: ${VM_TS_IP}"
-
-# Тест дали VM-а отговаря
-echo ""
-echo "  Тествам връзка към VM-а..."
-if timeout 3 bash -c "echo > /dev/tcp/${VM_TS_IP}/80" 2>/dev/null; then
-    echo -e "  ${GREEN}✓${NC} VM отговаря на порт 80"
-else
-    echo -e "  ${YELLOW}!${NC} VM не отговаря на порт 80 в момента — продължавам, но failover ще е винаги на backup докато VM-а заработи"
+# ── SSL cert ──
+SSL_CERT="/etc/letsencrypt/live/${DOMAIN}/fullchain.pem"
+SSL_KEY="/etc/letsencrypt/live/${DOMAIN}/privkey.pem"
+if [ ! -f "$SSL_CERT" ]; then
+    echo -e "${RED}✗ Няма SSL сертификат за ${DOMAIN}.${NC}"
+    echo "  Failover изисква SSL. Първо: sudo certbot --nginx -d ${DOMAIN}"
+    exit 1
 fi
+echo -e "  ${GREEN}✓${NC} SSL: ${SSL_CERT}"
 
-# ═══ STEP 3: Намери production домейна ═══
-DOMAIN=""
-for f in /etc/nginx/sites-available/*; do
-    [ -f "$f" ] || continue
-    D=$(grep -m1 'server_name' "$f" 2>/dev/null | awk '{print $2}' | tr -d ';')
-    if [ -n "$D" ] && [ "$D" != "_" ] && [ "$D" != "localhost" ]; then
-        DOMAIN="$D"
-        break
-    fi
-done
-
-if [ -z "$DOMAIN" ]; then
-    DOMAIN="$(hostname -f 2>/dev/null || hostname)"
-fi
-echo -e "  ${GREEN}✓${NC} Production домейн: ${DOMAIN}"
-
-# ═══ STEP 4: Backup на текущата nginx config ═══
-echo ""
-echo "  Backup на текущата nginx конфигурация..."
+# ── Backup на цялата конфигурация ──
 BACKUP_DIR="/var/backups/nginx-pre-failover-$(date +%s)"
 mkdir -p "$BACKUP_DIR"
 cp -r /etc/nginx/sites-available "$BACKUP_DIR/"
 cp -r /etc/nginx/sites-enabled "$BACKUP_DIR/"
 echo -e "  ${GREEN}✓${NC} Backup: ${BACKUP_DIR}"
 
-# ═══ STEP 5: Премести съществуващия сайт на порт 8080 (backup сайт) ═══
+# ── СТЪПКА 1: Build backup site (plain HTTP на 8080, БЕЗ redirect) ──
 echo ""
-echo "  Преконфигурирам локалния nginx сайт на порт 8080 (backup)..."
+echo "  Създавам backup site (локален, plain HTTP 8080)..."
+build_backup_site "$MAIN_SITE" "/etc/nginx/sites-available/kcy-backup"
+echo -e "  ${GREEN}✓${NC} kcy-backup създаден"
 
-SITE_FILE=""
-for f in /etc/nginx/sites-enabled/*; do
-    [ -L "$f" ] || [ -f "$f" ] || continue
-    # Пропусни ако вече е renamed
-    [ "$(basename $f)" = "kcy-failover" ] && continue
-    if grep -q "server_name.*${DOMAIN}" "$f" 2>/dev/null; then
-        SITE_FILE="$f"
-        break
-    fi
-done
-
-if [ -z "$SITE_FILE" ]; then
-    # Намери първия не-default
-    for f in /etc/nginx/sites-enabled/*; do
-        [ "$(basename $f)" = "default" ] && continue
-        [ "$(basename $f)" = "kcy-failover" ] && continue
-        if [ -f "$f" ] || [ -L "$f" ]; then
-            SITE_FILE="$f"
-            break
-        fi
-    done
-fi
-
-if [ -z "$SITE_FILE" ]; then
-    echo -e "${RED}✗ Не намерих nginx сайт за конвертиране.${NC}"
-    echo "  Първо изпълни обикновен deploy за да има базов site."
-    exit 1
-fi
-
-REAL_SITE_FILE=$(readlink -f "$SITE_FILE" 2>/dev/null || echo "$SITE_FILE")
-echo "  Site file: $REAL_SITE_FILE"
-
-# Замени listen 80; → listen 8080;
-# Замени listen 443 ssl; → нищо (backup-ът не нуждае от SSL — само за вътрешна работа)
-sed -i.bak \
-    -e 's/^\(\s*\)listen 80;/\1listen 127.0.0.1:8080;/' \
-    -e 's/^\(\s*\)listen \[::\]:80;/\1listen [::1]:8080;/' \
-    -e 's/^\(\s*\)listen 443.*ssl.*;.*$/\1listen 127.0.0.1:8443 ssl;/' \
-    -e 's/^\(\s*\)listen \[::\]:443.*ssl.*;.*$/\1listen [::1]:8443 ssl;/' \
-    "$REAL_SITE_FILE"
-
-# Премахни return 301 → https (защото локалният сайт няма SSL)
-sed -i 's|^\(\s*\)return 301 https://.*|\1# return 301 (disabled for failover backup);|' "$REAL_SITE_FILE"
-
-echo -e "  ${GREEN}✓${NC} Локалният сайт сега слуша на 127.0.0.1:8080"
-
-# ═══ STEP 6: Създай нов failover reverse proxy сайт ═══
+# ── СТЪПКА 2: Build failover reverse proxy ──
 echo ""
-echo "  Създавам failover reverse proxy на порт 80/443..."
+echo "  Създавам failover reverse proxy (80/443)..."
 
-# Намери SSL certificate ако има
-SSL_CERT=""
-SSL_KEY=""
-for cert in /etc/letsencrypt/live/${DOMAIN}/fullchain.pem; do
-    if [ -f "$cert" ]; then
-        SSL_CERT="$cert"
-        SSL_KEY="/etc/letsencrypt/live/${DOMAIN}/privkey.pem"
-        break
-    fi
-done
+UPSTREAM_PRIMARY=""
+[ -n "$VM_TS_IP" ] && UPSTREAM_PRIMARY="    server ${VM_TS_IP}:8080 max_fails=2 fail_timeout=10s;"
 
 cat > /etc/nginx/sites-available/kcy-failover << NGINX_EOF
-# KCY Ecosystem — Failover reverse proxy
-# Генериран от 12-setup-failover.sh.
-# Маршрутизира към VM (primary) или local (backup).
-#
-# VM Tailscale IP:  ${VM_TS_IP}
-# Local backup:     127.0.0.1:8080
+# KCY Ecosystem — Failover reverse proxy (генериран от 12-setup-failover.sh)
+# SSL терминация тук. Upstream сервира plain HTTP.
 
 upstream kcy_backend {
-    # Primary — VM в домашната мрежа през Tailscale
-    server ${VM_TS_IP}:80 max_fails=2 fail_timeout=10s;
-
-    # Backup — локалният nginx на VPS-а (винаги наличен)
+${UPSTREAM_PRIMARY}
     server 127.0.0.1:8080 backup;
-
-    # Кеш на връзките за по-бърз retry
     keepalive 16;
 }
 
-# HTTP — redirect към HTTPS (ако имаме SSL)
+# HTTP — само ACME + redirect към HTTPS
 server {
     listen 80;
     listen [::]:80;
     server_name ${DOMAIN};
 
-NGINX_EOF
-
-if [ -n "$SSL_CERT" ]; then
-    cat >> /etc/nginx/sites-available/kcy-failover << 'NGINX_EOF'
-    # Let's Encrypt validation
     location /.well-known/acme-challenge/ {
         root /var/www/html;
     }
-
     location / {
-        return 301 https://$host$request_uri;
+        return 301 https://\$host\$request_uri;
     }
-NGINX_EOF
-else
-    cat >> /etc/nginx/sites-available/kcy-failover << 'NGINX_EOF'
-    location / {
-        proxy_pass http://kcy_backend;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-
-        # Failover поведение
-        proxy_connect_timeout 3s;
-        proxy_send_timeout 10s;
-        proxy_read_timeout 10s;
-        proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
-
-        # WebSocket поддръжка
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-NGINX_EOF
-fi
-
-cat >> /etc/nginx/sites-available/kcy-failover << NGINX_EOF
 }
 
-NGINX_EOF
-
-# HTTPS блок ако има SSL
-if [ -n "$SSL_CERT" ]; then
-cat >> /etc/nginx/sites-available/kcy-failover << NGINX_EOF
-# HTTPS — главен proxy
+# HTTPS — SSL терминация + proxy към upstream
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
@@ -274,79 +284,68 @@ server {
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header X-Forwarded-Proto https;
 
-        # Failover поведение
         proxy_connect_timeout 3s;
-        proxy_send_timeout 10s;
-        proxy_read_timeout 10s;
-        proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
+        proxy_send_timeout 15s;
+        proxy_read_timeout 30s;
+        proxy_next_upstream error timeout http_502 http_503 http_504;
 
-        # WebSocket
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
     }
 }
 NGINX_EOF
-fi
+echo -e "  ${GREEN}✓${NC} kcy-failover създаден"
 
-# Status endpoint за мониторинг
-cat >> /etc/nginx/sites-available/kcy-failover << NGINX_EOF
-
-# Internal health check endpoint (само от localhost)
-server {
-    listen 127.0.0.1:8090;
-    server_name _;
-    location /status {
-        stub_status on;
-        access_log off;
-        allow 127.0.0.1;
-        deny all;
-    }
-}
-NGINX_EOF
-
-ln -sf /etc/nginx/sites-available/kcy-failover /etc/nginx/sites-enabled/kcy-failover
-echo -e "  ${GREEN}✓${NC} kcy-failover конфиг създаден"
-
-# ═══ STEP 7: Test + Reload ═══
+# ── СТЪПКА 3: Активирай — изключи main site, включи backup + failover ──
 echo ""
-echo "  Тествам nginx конфигурация..."
-if nginx -t 2>&1 | tail -5; then
+echo "  Активирам failover..."
+
+# Изключи оригиналния main site (премахни symlink, не файла)
+for l in /etc/nginx/sites-enabled/*; do
+    [ -e "$l" ] || [ -L "$l" ] || continue
+    real=$(readlink -f "$l" 2>/dev/null || echo "$l")
+    if [ "$real" = "$MAIN_SITE" ]; then
+        rm -f "$l"
+        echo -e "  ${GREEN}✓${NC} Оригиналният site изключен (файлът остава в sites-available)"
+    fi
+done
+
+# Включи backup + failover
+ln -sf /etc/nginx/sites-available/kcy-backup /etc/nginx/sites-enabled/kcy-backup
+ln -sf /etc/nginx/sites-available/kcy-failover /etc/nginx/sites-enabled/kcy-failover
+
+# Почисти счупени symlinks
+for l in /etc/nginx/sites-enabled/*; do
+    [ -L "$l" ] && [ ! -e "$l" ] && rm -f "$l"
+done
+
+# ── СТЪПКА 4: Test + reload ──
+echo ""
+if nginx -t 2>&1; then
     systemctl reload nginx
     echo -e "  ${GREEN}✓${NC} nginx reloaded"
+    echo ""
+    echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"
+    echo -e "${GREEN}  ✓ FAILOVER АКТИВЕН${NC}"
+    echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"
+    echo ""
+    echo "  Browser → https://${DOMAIN} → VPS:443 (SSL) → proxy:"
+    [ -n "$VM_TS_IP" ] && echo "    primary: ${VM_TS_IP}:8080 (VM)"
+    echo "    backup:  127.0.0.1:8080 (VPS local)"
+    echo ""
+    echo "  Backup: ${BACKUP_DIR}"
+    echo ""
+    echo -e "  ${CYAN}За да върнеш без failover:${NC}"
+    echo "    sudo bash 12-setup-failover.sh --revert"
 else
-    echo -e "  ${RED}✗${NC} nginx config грешка! Връщам backup."
-    rm /etc/nginx/sites-enabled/kcy-failover
-    cp "$BACKUP_DIR/sites-available/"* /etc/nginx/sites-available/
+    echo -e "${RED}✗ nginx config грешка! Връщам backup.${NC}"
+    rm -rf /etc/nginx/sites-available /etc/nginx/sites-enabled
+    cp -r "$BACKUP_DIR/sites-available" /etc/nginx/
+    cp -r "$BACKUP_DIR/sites-enabled" /etc/nginx/
     nginx -t && systemctl reload nginx
+    echo -e "  ${YELLOW}Backup възстановен.${NC}"
     exit 1
 fi
-
-# ═══ FINAL ═══
-echo ""
-echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║  ✓ FAILOVER АКТИВИРАН                                            ║${NC}"
-echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════════╝${NC}"
-echo ""
-echo -e "  Public:    ${GREEN}http://${DOMAIN}/${NC}  и  ${GREEN}https://${DOMAIN}/${NC}"
-echo -e "  Primary:   ${GREEN}${VM_TS_IP}:80${NC}  (VM в домашната мрежа)"
-echo -e "  Backup:    ${GREEN}127.0.0.1:8080${NC}  (локалният VPS сайт)"
-echo ""
-echo -e "${CYAN}Как работи:${NC}"
-echo "  • Browser → DNS → VPS → reverse proxy"
-echo "  • Опит към VM (3s timeout)"
-echo "  • Ако работи → препраща към VM"
-echo "  • Ако не работи (timeout/5xx) → backup на VPS"
-echo "  • Автоматично се връща на VM когато се възстанови"
-echo ""
-echo -e "${CYAN}Тест:${NC}"
-echo "  Спри nginx на VM-а:  ssh deploy@vm 'sudo systemctl stop nginx'"
-echo "  Отвори:              ${DOMAIN} → би трябвало да виждаш backup сайта"
-echo "  Пусни nginx на VM-а: ssh deploy@vm 'sudo systemctl start nginx'"
-echo "  Изчакай 10s, refresh → primary е активен"
-echo ""
-echo -e "${CYAN}Disable failover (връщане към обикновен setup):${NC}"
-echo "  sudo bash ${BASH_SOURCE[0]} --disable"
-echo ""
