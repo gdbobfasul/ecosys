@@ -269,8 +269,9 @@ if [ "$ANYTHING_INSTALLED" = true ]; then
     echo -e "  ${GREEN}1)${NC} Нова инсталация (спиране → зачистване → инсталиране)"
     echo -e "  ${GREEN}2)${NC} Отказ"
     echo ""
-    read -p "  Избор [1/2]: " INSTALL_CHOICE <&3
+    read -p "  Избор [1/2, Enter = 1 Нова инсталация]: " INSTALL_CHOICE <&3
     INSTALL_CHOICE=$(echo "$INSTALL_CHOICE" | tr -d '\r\n ')
+    INSTALL_CHOICE="${INSTALL_CHOICE:-1}"
 
     if [ "$INSTALL_CHOICE" != "1" ]; then
         echo -e "  ${YELLOW}Отменено.${NC}"
@@ -278,24 +279,18 @@ if [ "$ANYTHING_INSTALLED" = true ]; then
     fi
 
     echo ""
-    echo -e "${RED}  Това ще:${NC}"
-    echo -e "${RED}    • Спре kcy-chat и kcy-eco3${NC}"
-    echo -e "${RED}    • Изтрие ${WEB_ROOT}/ и ${PROJECT_DIR}/${NC}"
-    echo -e "${RED}    • Инсталира наново от staging${NC}"
-    echo -e "${YELLOW}    • Базата данни НЕ се трие автоматично${NC}"
+    echo -e "${YELLOW}  Нова инсталация — следва:${NC}"
+    echo -e "    • Спиране на kcy-chat, kcy-eco3, kcy-portals"
+    echo -e "    • Зачистване на ${WEB_ROOT}/ и ${PROJECT_DIR}/"
+    echo -e "    • Инсталиране наново от staging"
+    echo -e "    ${GREEN}• Базата данни СЕ ЗАПАЗВА (не се трие)${NC}"
     echo ""
-    read -p "  Потвърди с 'yes': " CONFIRM <&3
-    CONFIRM=$(echo "$CONFIRM" | tr -d '\r\n ')
-    if [ "$CONFIRM" != "yes" ]; then
-        echo "  Отменено."
-        safe_exit 0
-    fi
 
     # ── Спиране на сървиси ──
-    echo ""
     echo -e "  ${YELLOW}Спиране на сървиси...${NC}"
     systemctl stop kcy-chat.service 2>/dev/null && echo -e "    ${GREEN}✓ kcy-chat спрян${NC}" || true
     systemctl stop kcy-eco3.service 2>/dev/null && echo -e "    ${GREEN}✓ kcy-eco3 спрян${NC}" || true
+    systemctl stop kcy-portals.service 2>/dev/null && echo -e "    ${GREEN}✓ kcy-portals спрян${NC}" || true
 
     # ── Зачистване (без DB и .env) ──
     echo -e "  ${YELLOW}Зачистване...${NC}"
@@ -1474,70 +1469,6 @@ HELPEREOF
 chmod +x /usr/local/bin/kcy-restart
 
 ##############################################################################
-# AUTO FAILOVER (само на production VPS)
-##############################################################################
-# Ако сме на production + Tailscale активен + има VM peer → пита за failover.
-# Ползва поправения 12-setup-failover.sh (без redirect loop):
-#   SSL терминация на VPS:443, upstream → VM:8080 (plain) + 127.0.0.1:8080 backup.
-
-if [ "$TARGET_NAME" = "prod" ] && command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
-    MY_TS_IP=$(tailscale ip -4 2>/dev/null | head -1)
-    VM_TS_IP=$(tailscale status --json 2>/dev/null | python3 -c "
-import json, sys
-try:
-    data = json.load(sys.stdin)
-    for k, p in data.get('Peer', {}).items():
-        if not p.get('Online'):
-            continue
-        ips = [ip for ip in (p.get('TailscaleIPs') or []) if '.' in ip]
-        if ips:
-            print(ips[0]); sys.exit(0)
-except Exception:
-    pass
-" 2>/dev/null)
-    if [ -z "$VM_TS_IP" ]; then
-        VM_TS_IP=$(tailscale status 2>/dev/null | awk -v me="$MY_TS_IP" '
-            /^100\./ && $1 != me && /(active|idle)/ { print $1; exit }')
-    fi
-
-    echo ""
-    echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}  FAILOVER (по избор)${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
-    echo ""
-    if [ -n "$VM_TS_IP" ]; then
-        echo "  Tailscale активен, намерих VM peer: ${VM_TS_IP}"
-        echo "  Failover: VPS:443 (SSL) → primary VM:8080 + backup local:8080"
-    else
-        echo "  Tailscale активен, но няма online VM peer."
-        echo "  Failover ще работи само с локален backup (без VM primary)."
-    fi
-    echo "  Ако VM падне → VPS поема. Без VM → VPS сам сервира."
-    echo ""
-    echo -e "  ${YELLOW}>>>${NC} Да настроя failover сега? (default: ${RED}N${NC})"
-    echo ""
-    DO_FAILOVER=""
-    if [ -t 0 ]; then
-        read -p "  Избор [y/N]: " DO_FAILOVER
-    elif [ -e /dev/fd/3 ]; then
-        read -p "  Избор [y/N]: " DO_FAILOVER <&3 2>/dev/null || DO_FAILOVER=""
-    fi
-    DO_FAILOVER="${DO_FAILOVER:-n}"
-
-    if [ "$DO_FAILOVER" = "y" ] || [ "$DO_FAILOVER" = "Y" ]; then
-        FAILOVER_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/12-setup-failover.sh"
-        if [ -f "$FAILOVER_SCRIPT" ]; then
-            # VM_TS_IP като аргумент (ако празно — само backup)
-            bash "$FAILOVER_SCRIPT" "$VM_TS_IP"
-        else
-            echo -e "  ${YELLOW}!${NC} Failover скриптът липсва: $FAILOVER_SCRIPT"
-        fi
-    else
-        echo -e "  ${CYAN}↷${NC} Failover пропуснат — сайтът работи самостоятелно"
-    fi
-fi
-
-##############################################################################
 # DIAGNOSTICS SETUP (on-demand log regen via kcy-diag helper service)
 ##############################################################################
 print_step "Diagnostics: kcy-diag helper service"
@@ -1688,6 +1619,70 @@ echo -e "  ${GREEN}✓${NC} Initial logs генерирани в /var/www/html/l
 if nginx -t 2>/dev/null; then
     systemctl reload nginx
     echo -e "  ${GREEN}✓${NC} nginx reloaded"
+fi
+
+##############################################################################
+# AUTO FAILOVER (само на production VPS)
+##############################################################################
+# Ако сме на production + Tailscale активен + има VM peer → пита за failover.
+# Ползва поправения 12-setup-failover.sh (без redirect loop):
+#   SSL терминация на VPS:443, upstream → VM:8080 (plain) + 127.0.0.1:8080 backup.
+
+if [ "$TARGET_NAME" = "prod" ] && command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
+    MY_TS_IP=$(tailscale ip -4 2>/dev/null | head -1)
+    VM_TS_IP=$(tailscale status --json 2>/dev/null | python3 -c "
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    for k, p in data.get('Peer', {}).items():
+        if not p.get('Online'):
+            continue
+        ips = [ip for ip in (p.get('TailscaleIPs') or []) if '.' in ip]
+        if ips:
+            print(ips[0]); sys.exit(0)
+except Exception:
+    pass
+" 2>/dev/null)
+    if [ -z "$VM_TS_IP" ]; then
+        VM_TS_IP=$(tailscale status 2>/dev/null | awk -v me="$MY_TS_IP" '
+            /^100\./ && $1 != me && /(active|idle)/ { print $1; exit }')
+    fi
+
+    echo ""
+    echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
+    echo -e "${CYAN}  FAILOVER (по избор)${NC}"
+    echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
+    echo ""
+    if [ -n "$VM_TS_IP" ]; then
+        echo "  Tailscale активен, намерих VM peer: ${VM_TS_IP}"
+        echo "  Failover: VPS:443 (SSL) → primary VM:8080 + backup local:8080"
+    else
+        echo "  Tailscale активен, но няма online VM peer."
+        echo "  Failover ще работи само с локален backup (без VM primary)."
+    fi
+    echo "  Ако VM падне → VPS поема. Без VM → VPS сам сервира."
+    echo ""
+    echo -e "  ${YELLOW}>>>${NC} Да настроя failover сега? (default: ${RED}N${NC})"
+    echo ""
+    DO_FAILOVER=""
+    if [ -t 0 ]; then
+        read -p "  Избор [y/N]: " DO_FAILOVER
+    elif [ -e /dev/fd/3 ]; then
+        read -p "  Избор [y/N]: " DO_FAILOVER <&3 2>/dev/null || DO_FAILOVER=""
+    fi
+    DO_FAILOVER="${DO_FAILOVER:-n}"
+
+    if [ "$DO_FAILOVER" = "y" ] || [ "$DO_FAILOVER" = "Y" ]; then
+        FAILOVER_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/12-setup-failover.sh"
+        if [ -f "$FAILOVER_SCRIPT" ]; then
+            # VM_TS_IP като аргумент (ако празно — само backup)
+            bash "$FAILOVER_SCRIPT" "$VM_TS_IP"
+        else
+            echo -e "  ${YELLOW}!${NC} Failover скриптът липсва: $FAILOVER_SCRIPT"
+        fi
+    else
+        echo -e "  ${CYAN}↷${NC} Failover пропуснат — сайтът работи самостоятелно"
+    fi
 fi
 
 ##############################################################################
