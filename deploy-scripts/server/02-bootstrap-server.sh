@@ -140,6 +140,38 @@ case "$INSTALL_MODE" in
 esac
 echo ""
 
+# ═══ STEP 0.5: ENSURE SWAP (за малки сървъри) ═══
+# Машини с < 2GB RAM имат риск от OOM kill по време на apt операции.
+# Ако няма swap → създава 2GB swap файл.
+TOTAL_RAM_MB=$(free -m | awk '/^Mem:/ {print $2}')
+HAS_SWAP=$(swapon --noheadings --show=NAME 2>/dev/null | wc -l)
+
+if [ "$TOTAL_RAM_MB" -lt 2048 ] && [ "$HAS_SWAP" -eq 0 ]; then
+    print_step "STEP 0.5: Swap creation (RAM = ${TOTAL_RAM_MB}MB, под 2GB)"
+    echo "  Без swap apt може да OOM при install. Създавам 2GB swap..."
+
+    if [ ! -f /swapfile ]; then
+        fallocate -l 2G /swapfile 2>/dev/null || dd if=/dev/zero of=/swapfile bs=1M count=2048
+        chmod 600 /swapfile
+        mkswap /swapfile >/dev/null 2>&1
+    fi
+    swapon /swapfile 2>/dev/null
+
+    # Persist в /etc/fstab ако не е там
+    if ! grep -q "/swapfile" /etc/fstab; then
+        echo '/swapfile none swap sw 0 0' >> /etc/fstab
+    fi
+
+    # Намали swappiness за да не суапва прекомерно
+    sysctl -w vm.swappiness=20 >/dev/null 2>&1
+    grep -q "vm.swappiness" /etc/sysctl.conf || echo 'vm.swappiness=20' >> /etc/sysctl.conf
+
+    print_ok "Swap създаден ($(swapon --show=SIZE --bytes --noheadings 2>/dev/null | head -1 | awk '{printf "%.1fGB\n", $1/1073741824}'))"
+elif [ "$HAS_SWAP" -gt 0 ]; then
+    SWAP_SIZE=$(free -h | awk '/^Swap:/ {print $2}')
+    print_skip "Swap вече активен (${SWAP_SIZE})"
+fi
+
 # ═══ STEP 1: SYSTEM UPDATE ═══
 print_step "STEP 1: System update"
 if [ "$INSTALL_MODE" = "skip" ]; then

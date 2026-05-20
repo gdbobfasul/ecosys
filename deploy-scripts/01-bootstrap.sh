@@ -32,6 +32,9 @@ cd "$PROJECT_ROOT"
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'
 YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 
+# SSH keepalive — пази връзката жива при дълги операции (apt install и т.н.)
+SSH_KEEPALIVE="-o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o TCPKeepAlive=yes"
+
 # ═══ FREEZE флаг — да не пипаме .deploy-targets ═══
 # Set to 1 ако потребителят казва "използвай .deploy-targets както е".
 # Тогава auto-detection и auto-update на файла се пропускат.
@@ -197,7 +200,7 @@ else
     for try_port in "$PORT" 22 2222; do
         [ -z "$try_port" ] && continue
         # Опит без autz — само провери дали SSH banner отговаря (Permission denied = порт работи)
-        if ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+        if ssh -o ConnectTimeout=3 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no \
                -o PreferredAuthentications=none \
                -o NumberOfPasswordPrompts=0 \
                -p "$try_port" "${USER}@${SERVER}" 'echo' 2>&1 | \
@@ -206,7 +209,7 @@ else
             break
         fi
         # Или ако ключ работи и връща нещо
-        if ssh -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+        if ssh -o BatchMode=yes -o ConnectTimeout=3 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no \
                -p "$try_port" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
             DETECTED_PORT="$try_port"
             break
@@ -291,7 +294,7 @@ echo -e "${CYAN}[3/7] Тест SSH ключ${NC}"
 
 # Порта вече е открит в [0/7]. Тук само проверявам дали ключът работи без парола.
 KEY_ALREADY_THERE=0
-if ssh -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+if ssh -o BatchMode=yes -o ConnectTimeout=3 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no \
        -p "$PORT" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
     KEY_ALREADY_THERE=1
     echo -e "  ${GREEN}✓${NC} SSH ключ вече работи на порт ${PORT} — пропускам ssh-copy-id"
@@ -307,15 +310,15 @@ if [ "$KEY_ALREADY_THERE" -eq 0 ]; then
     echo ""
 
     if command -v ssh-copy-id >/dev/null 2>&1; then
-        ssh-copy-id -p "$PORT" -i "$PUB_PATH" "${USER}@${SERVER}"
+        ssh-copy-id -o "ServerAliveInterval=30" -o "ServerAliveCountMax=3" -p "$PORT" -i "$PUB_PATH" "${USER}@${SERVER}"
     else
         # fallback ако ssh-copy-id липсва
-        cat "$PUB_PATH" | ssh -p "$PORT" "${USER}@${SERVER}" \
+        cat "$PUB_PATH" | ssh $SSH_KEEPALIVE -p "$PORT" "${USER}@${SERVER}" \
             "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
     fi
 
     # Provери че работи
-    if ssh -o BatchMode=yes -o ConnectTimeout=5 -p "$PORT" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
+    if ssh -o BatchMode=yes -o ConnectTimeout=5 -o ServerAliveInterval=30 -p "$PORT" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
         echo -e "  ${GREEN}✓${NC} Ключ копиран, SSH вече работи без парола"
     else
         echo -e "  ${RED}✗${NC} SSH ключът не работи. Спирам тук."
@@ -360,15 +363,15 @@ if command -v dos2unix >/dev/null 2>&1; then
 fi
 
 # Качи скрипта
-scp -P "$PORT" -q "$BOOTSTRAP_SH" "${USER}@${SERVER}:/tmp/02-bootstrap-server.sh"
+scp $SSH_KEEPALIVE -P "$PORT" -q "$BOOTSTRAP_SH" "${USER}@${SERVER}:/tmp/02-bootstrap-server.sh"
 echo -e "  ${GREEN}✓${NC} Качен в /tmp/02-bootstrap-server.sh"
 
 # Качи и pubkey-я като отделен файл (02-bootstrap-server.sh го чете автоматично)
-scp -P "$PORT" -q "$PUB_PATH" "${USER}@${SERVER}:/tmp/deploy_pubkey"
+scp $SSH_KEEPALIVE -P "$PORT" -q "$PUB_PATH" "${USER}@${SERVER}:/tmp/deploy_pubkey"
 echo -e "  ${GREEN}✓${NC} Public key качен в /tmp/deploy_pubkey"
 
 # Качи и желания SSH порт (02-bootstrap-server.sh ще го прочете и приложи)
-echo "$NEW_SSH_PORT" | ssh -p "$PORT" "${USER}@${SERVER}" "cat > /tmp/desired_ssh_port" 2>/dev/null
+echo "$NEW_SSH_PORT" | ssh $SSH_KEEPALIVE -p "$PORT" "${USER}@${SERVER}" "cat > /tmp/desired_ssh_port" 2>/dev/null
 echo -e "  ${GREEN}✓${NC} Желан SSH порт (${NEW_SSH_PORT}) подаден на сървъра"
 
 # Подай target info — за да знае 02-bootstrap-server.sh дали е VM или prod
@@ -380,7 +383,7 @@ if [ "$SERVER" = "192.168.0.108" ] || [[ "$SERVER" =~ ^192\.168\.|^10\.|^172\.16
 elif [ "$SERVER" = "alsec.strangled.net" ]; then
     DETECTED_TARGET="prod"
 fi
-ssh -p "$PORT" "${USER}@${SERVER}" "cat > /tmp/deploy_target_info << TARGETINFO
+ssh $SSH_KEEPALIVE -p "$PORT" "${USER}@${SERVER}" "cat > /tmp/deploy_target_info << TARGETINFO
 TARGET_NAME=${DETECTED_TARGET}
 TARGET_SERVER=${SERVER}
 TARGETINFO
@@ -388,7 +391,7 @@ TARGETINFO
 echo -e "  ${GREEN}✓${NC} Target info (${DETECTED_TARGET}) подаден"
 
 # Нормализирай и на сървъра (за всеки случай)
-ssh -p "$PORT" "${USER}@${SERVER}" "
+ssh $SSH_KEEPALIVE -p "$PORT" "${USER}@${SERVER}" "
     command -v dos2unix >/dev/null 2>&1 && dos2unix -q /tmp/02-bootstrap-server.sh 2>/dev/null || sed -i 's/\\r\$//' /tmp/02-bootstrap-server.sh
     chmod +x /tmp/02-bootstrap-server.sh
 " 2>/dev/null || true
@@ -400,7 +403,7 @@ echo "  Ще те пита паролата на ${USER} за sudo (ако не 
 echo ""
 
 # -t = интерактивен TTY (за да виждаш цветовете и да можеш да отговаряш на промптовете)
-ssh -t -p "$PORT" "${USER}@${SERVER}" "sudo bash /tmp/02-bootstrap-server.sh" || {
+ssh $SSH_KEEPALIVE -t -p "$PORT" "${USER}@${SERVER}" "sudo bash /tmp/02-bootstrap-server.sh" || {
     echo ""
     echo -e "${RED}✗ Bootstrap се провали${NC}"
     echo ""
@@ -422,7 +425,7 @@ echo -e "${CYAN}Финален тест: SSH като deploy на порт ${NEW
 # Може да отнеме малко време за sshd да рестартира на новия порт
 sleep 2
 
-if ssh -o BatchMode=yes -o ConnectTimeout=5 -p "$NEW_SSH_PORT" "deploy@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
+if ssh -o BatchMode=yes -o ConnectTimeout=5 -o ServerAliveInterval=30 -p "$NEW_SSH_PORT" "deploy@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
     echo -e "  ${GREEN}✓${NC} 'deploy' user работи с SSH ключ на порт ${NEW_SSH_PORT}"
 
     # Update .deploy-targets автоматично

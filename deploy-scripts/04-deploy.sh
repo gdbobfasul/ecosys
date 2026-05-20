@@ -219,7 +219,7 @@ detect_ssh_port() {
     local configured_port="$3"
 
     # Тествай конфигурирания порт първо
-    if ssh -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+    if ssh -o BatchMode=yes -o ConnectTimeout=3 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no \
            -p "$configured_port" "${user}@${server}" 'echo ok' 2>/dev/null | grep -q ok; then
         echo "$configured_port"
         return 0
@@ -240,7 +240,7 @@ detect_ssh_port() {
         [[ " $tried " == *" $p "* ]] && continue
         tried="$tried $p"
 
-        if ssh -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+        if ssh -o BatchMode=yes -o ConnectTimeout=3 -o ServerAliveInterval=30 -o StrictHostKeyChecking=no \
                -p "$p" "${user}@${server}" 'echo ok' 2>/dev/null | grep -q ok; then
             echo "$p"
             return 0
@@ -294,16 +294,19 @@ fi
 log ""
 
 # ═══ SSH CONFIG ═══
+# SSH keepalive — пази връзката жива при дълги операции (apt install, rsync, и т.н.)
+SSH_KEEPALIVE="-o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o TCPKeepAlive=yes"
+
 # Windows (Git Bash/MSYS) doesn't support Unix sockets for ControlMaster
 if [ -n "$MSYSTEM" ] || [ -n "$WINDIR" ]; then
-    SSH_OPTS="-p ${PORT}"
-    SCP_OPTS="-P ${PORT}"
+    SSH_OPTS="$SSH_KEEPALIVE -p ${PORT}"
+    SCP_OPTS="$SSH_KEEPALIVE -P ${PORT}"
     log "  ${YELLOW}[debug] Windows detected — SSH без ControlMaster${NC}"
 else
     SOCK_DIR=$(mktemp -d 2>/dev/null || echo "/tmp")
     SSH_SOCK="${SOCK_DIR}/kcy-deploy-$$"
-    SSH_OPTS="-o ControlMaster=auto -o ControlPath=${SSH_SOCK} -o ControlPersist=120 -p ${PORT}"
-    SCP_OPTS="-o ControlMaster=auto -o ControlPath=${SSH_SOCK} -o ControlPersist=120 -P ${PORT}"
+    SSH_OPTS="$SSH_KEEPALIVE -o ControlMaster=auto -o ControlPath=${SSH_SOCK} -o ControlPersist=120 -p ${PORT}"
+    SCP_OPTS="$SSH_KEEPALIVE -o ControlMaster=auto -o ControlPath=${SSH_SOCK} -o ControlPersist=120 -P ${PORT}"
     log "  ${YELLOW}[debug] Linux/Mac — SSH с ControlMaster${NC}"
     trap "ssh -O exit -o ControlPath=\"${SSH_SOCK}\" \"${USER}@${SERVER}\" 2>/dev/null; rm -f \"${SSH_SOCK}\" 2>/dev/null; rmdir \"${SOCK_DIR}\" 2>/dev/null; echo ''; echo 'Натисни Enter за затваряне...'; read DUMMY" EXIT
 fi
