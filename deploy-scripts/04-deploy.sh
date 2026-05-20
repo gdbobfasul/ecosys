@@ -41,29 +41,36 @@ if [ -f ".deploy-targets" ]; then
     source ".deploy-targets"
 fi
 
-# Първи аргумент може да бъде име на target (prod / vm), а не сървър директно.
-# Ако match-не предефиниран target — използвай неговите стойности.
+# Първи аргумент може да бъде име на target от .deploy-targets.
+# Преди беше hardcoded prod|vm. Сега приема всяко име което съществува във файла.
 TARGET_NAME=""
 if [ -n "$1" ]; then
-    case "$1" in
-        prod|vm)
-            TARGET_NAME="$1"
-            ;;
-    esac
+    if [ -f .deploy-targets ] && grep -q "^TARGET_${1}_SERVER=" .deploy-targets; then
+        TARGET_NAME="$1"
+    elif [ "$1" = "prod" ] || [ "$1" = "vm" ]; then
+        # Backward compat — приемаме prod/vm дори без .deploy-targets
+        TARGET_NAME="$1"
+    fi
 fi
 
 # ═══ FREEZE флаг — пропуска auto-detection и не пипа .deploy-targets ═══
 DEPLOY_FREEZE_TARGETS=0
+
+# Helper — извлича всички target имена от .deploy-targets
+list_targets() {
+    [ -f .deploy-targets ] || return
+    grep -oE "^TARGET_[a-zA-Z0-9_]+_SERVER" .deploy-targets | sed -E 's/^TARGET_(.+)_SERVER$/\1/' | sort -u
+}
 
 # Ако няма таргет нито от аргумент, нито от env — попитай (interactive)
 if [ -z "$TARGET_NAME" ] && [ -z "$1" ] && [ -t 0 ] && [ "${DEPLOY_NO_PAUSE:-0}" != "1" ]; then
     TARGETS_FILE_DEPLOY=".deploy-targets"
 
     if [ -f "$TARGETS_FILE_DEPLOY" ]; then
-        # Има .deploy-targets — питай дали да го пипаме
+        AVAILABLE=$(list_targets)
         echo ""
         echo "  Намерих .deploy-targets:"
-        for t in $(grep -oE "^TARGET_[a-zA-Z0-9_]+_SERVER" "$TARGETS_FILE_DEPLOY" | sed -E 's/^TARGET_(.+)_SERVER$/\1/' | sort -u); do
+        for t in $AVAILABLE; do
             s_var="TARGET_${t}_SERVER"; u_var="TARGET_${t}_USER"; p_var="TARGET_${t}_PORT"
             echo "    • $t → ${!u_var}@${!s_var}:${!p_var}"
         done
@@ -76,20 +83,30 @@ if [ -z "$TARGET_NAME" ] && [ -z "$1" ] && [ -t 0 ] && [ "${DEPLOY_NO_PAUSE:-0}"
         fi
     fi
 
+    # Изброй динамично всички targets от файла
     echo ""
     echo "  Избери deploy target:"
-    echo "    1) prod  — ${TARGET_prod_LABEL} (${TARGET_prod_SERVER}:${TARGET_prod_PORT})"
-    echo "    2) vm    — ${TARGET_vm_LABEL} (${TARGET_vm_SERVER}:${TARGET_vm_PORT})"
-    echo "    3) custom — ръчно server/user/port"
+    IDX=1
+    declare -a TARGET_ARR=()
+    for t in $(list_targets); do
+        s_var="TARGET_${t}_SERVER"; p_var="TARGET_${t}_PORT"; l_var="TARGET_${t}_LABEL"
+        echo "    $IDX) $t — ${!l_var:-$t} (${!s_var}:${!p_var})"
+        TARGET_ARR[$IDX]="$t"
+        IDX=$((IDX+1))
+    done
+    echo "    $IDX) custom — ръчно server/user/port"
+    CUSTOM_IDX=$IDX
     echo ""
-    read -p "  [1-3, default=1]: " CHOICE
+    read -p "  [1-${IDX}, default=1]: " CHOICE
     CHOICE="${CHOICE:-1}"
-    case "$CHOICE" in
-        1) TARGET_NAME="prod" ;;
-        2) TARGET_NAME="vm" ;;
-        3) TARGET_NAME="" ;;  # използва $1 $2 $3 или питай
-        *) TARGET_NAME="prod" ;;
-    esac
+    if [ "$CHOICE" = "$CUSTOM_IDX" ]; then
+        TARGET_NAME=""  # custom — ще пита по-долу
+    elif [ -n "${TARGET_ARR[$CHOICE]}" ]; then
+        TARGET_NAME="${TARGET_ARR[$CHOICE]}"
+    else
+        # Невалиден избор — fallback на първия target
+        TARGET_NAME="${TARGET_ARR[1]:-prod}"
+    fi
 fi
 
 # Зареди стойностите от избрания target

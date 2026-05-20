@@ -621,18 +621,28 @@ deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/13-k
 # Systemd service management
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3
+deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-portals
+deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-diag
 deploy ALL=(root) NOPASSWD: /bin/systemctl start kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl start kcy-eco3
+deploy ALL=(root) NOPASSWD: /bin/systemctl start kcy-portals
+deploy ALL=(root) NOPASSWD: /bin/systemctl start kcy-diag
 deploy ALL=(root) NOPASSWD: /bin/systemctl stop kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl stop kcy-eco3
+deploy ALL=(root) NOPASSWD: /bin/systemctl stop kcy-portals
+deploy ALL=(root) NOPASSWD: /bin/systemctl stop kcy-diag
 deploy ALL=(root) NOPASSWD: /bin/systemctl status kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl status kcy-eco3
+deploy ALL=(root) NOPASSWD: /bin/systemctl status kcy-portals
+deploy ALL=(root) NOPASSWD: /bin/systemctl status kcy-diag
 deploy ALL=(root) NOPASSWD: /bin/systemctl reload nginx
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart nginx
 deploy ALL=(root) NOPASSWD: /bin/systemctl status nginx
 deploy ALL=(root) NOPASSWD: /usr/sbin/nginx -t
 deploy ALL=(root) NOPASSWD: /usr/bin/journalctl -u kcy-chat *
 deploy ALL=(root) NOPASSWD: /usr/bin/journalctl -u kcy-eco3 *
+deploy ALL=(root) NOPASSWD: /usr/bin/journalctl -u kcy-portals *
+deploy ALL=(root) NOPASSWD: /usr/bin/journalctl -u kcy-diag *
 
 Defaults:deploy !requiretty
 SUDO_EOF

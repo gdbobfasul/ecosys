@@ -610,24 +610,33 @@ fi
 ##############################################################################
 # STEP 6: КОПИРАНЕ НА ФАЙЛОВЕ
 ##############################################################################
-print_step "СТЪПКА 6: Копиране на файлове от staging"
+print_step "СТЪПКА 6: Копиране на файлове от staging (rsync --delete)"
 
 mkdir -p "$WEB_ROOT" "$PROJECT_DIR" "$PRIVATE_DIR" /var/log/kcy-ecosystem
 
 # public/ → /var/www/html/
-echo -e "  ${YELLOW}public/ → ${WEB_ROOT}${NC}"
-rsync -a "$STAGING/public/" "$WEB_ROOT/" || { echo -e "${RED}  ✗ rsync public/ FAILED${NC}"; }
+# --delete премахва файлове в destination които вече ги няма в source
+# --exclude='last-errors/' пази runtime генерираните логове
+echo -e "  ${YELLOW}public/ → ${WEB_ROOT} (with --delete)${NC}"
+rsync -a --delete \
+    --exclude='last-errors/' \
+    "$STAGING/public/" "$WEB_ROOT/" || { echo -e "${RED}  ✗ rsync public/ FAILED${NC}"; }
 PUB_COUNT=$(find "$WEB_ROOT" -type f | wc -l)
 echo -e "  ${GREEN}✓ public/: ${PUB_COUNT} файла${NC}"
 
 # private/ → project/private/
-echo -e "  ${YELLOW}private/ → ${PRIVATE_DIR}${NC}"
-rsync -a \
+# --delete с excludes за runtime data (node_modules, databases, uploads, logs, .env)
+echo -e "  ${YELLOW}private/ → ${PRIVATE_DIR} (with --delete)${NC}"
+rsync -a --delete \
     --exclude='node_modules/' \
     --exclude='database/*.sqlite' \
     --exclude='database/*.db' \
-    --exclude='uploads/*' \
-    --exclude='logs/*.log' \
+    --exclude='database/amschat.db' \
+    --exclude='database/portals.db' \
+    --exclude='database/eco3.db' \
+    --exclude='configs/.env' \
+    --exclude='uploads/' \
+    --exclude='logs/' \
     "$STAGING/private/" "$PRIVATE_DIR/" || { echo -e "${RED}  ✗ rsync private/ FAILED${NC}"; }
 PRIV_COUNT=$(find "$PRIVATE_DIR" -type f | wc -l)
 echo -e "  ${GREEN}✓ private/: ${PRIV_COUNT} файла${NC}"
@@ -645,16 +654,24 @@ if [ -f "$GLOBAL_ENV" ]; then
     echo -e "  ${GREEN}✓ .env: DB_TYPE=${DB_TYPE}, SQLITE_DB_FILE=${ENV_DB_FILE:-amschat.db}${NC}"
 fi
 
-# deploy-scripts/, docs/, tests/
+# deploy-scripts/, docs/, tests/ — пълен sync с --delete (нямат runtime data)
 for dir in deploy-scripts docs tests; do
     if [ -d "$STAGING/$dir" ]; then
-        rsync -a "$STAGING/$dir/" "$PROJECT_DIR/$dir/" 2>/dev/null
+        rsync -a --delete "$STAGING/$dir/" "$PROJECT_DIR/$dir/" 2>/dev/null
         DIR_COUNT=$(find "$PROJECT_DIR/$dir" -type f | wc -l)
-        echo -e "  ${GREEN}✓ $dir/: ${DIR_COUNT} файла${NC}"
+        echo -e "  ${GREEN}✓ $dir/: ${DIR_COUNT} файла (with --delete)${NC}"
+    else
+        # Ако директорията липсва в staging, изтрий я и от project (full clean)
+        if [ -d "$PROJECT_DIR/$dir" ]; then
+            rm -rf "$PROJECT_DIR/$dir"
+            echo -e "  ${YELLOW}↷ $dir/ премахнат (липсва в staging)${NC}"
+        fi
     fi
 done
 
 # Root configs (package.json, jest.config.js, etc.)
+# Премахни всички root configs първо, после копирай новите
+find "$PROJECT_DIR" -maxdepth 1 -type f \( -name "*.json" -o -name "*.js" -o -name "*.version" \) -delete 2>/dev/null
 for f in "$STAGING"/*.json "$STAGING"/*.js "$STAGING"/*.version; do
     [ -f "$f" ] && cp "$f" "$PROJECT_DIR/" 2>/dev/null
 done
@@ -1127,6 +1144,28 @@ server {
         proxy_read_timeout 120;
     }
 
+    # Portals API (по-специфичен — ПРЕДИ /api/)
+    # /api/portals/register → http://127.0.0.1:3002/api/portals/register
+    location /api/portals/ {
+        proxy_pass http://127.0.0.1:3002;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_read_timeout 60;
+    }
+
+    # Portal static pages — login, register, billing, games, services
+    location /portals/ {
+        proxy_pass http://127.0.0.1:3002;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
     # Chat API (хваща всичко останало под /api/)
     # /api/admin/login → http://127.0.0.1:3000/api/admin/login
     location /api/ {
@@ -1253,8 +1292,35 @@ ReadWritePaths=/var/log/kcy-ecosystem ${PRIVATE_DIR}/eco-3/database ${PRIVATE_DI
 WantedBy=multi-user.target
 SVCEOF
 
+# ── Portals service ──
+# Използва "kcy" user като group, тъй като portal-ът обслужва обща public директория
+cat > /etc/systemd/system/kcy-portals.service << SVCEOF
+[Unit]
+Description=KCY Portals Backend
+After=network.target
+
+[Service]
+Type=simple
+User=${ECO3_USER}
+Group=${SVC_GROUP}
+WorkingDirectory=${PRIVATE_DIR}/portals
+EnvironmentFile=${GLOBAL_ENV}
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kcy-portals
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=${PRIVATE_DIR}/portals/database /var/log/kcy-ecosystem /var/www/html/last-errors
+
+[Install]
+WantedBy=multi-user.target
+SVCEOF
+
 systemctl daemon-reload
-systemctl enable kcy-chat.service kcy-eco3.service
+systemctl enable kcy-chat.service kcy-eco3.service kcy-portals.service
 
 echo -e "  ${YELLOW}Стартиране на kcy-chat...${NC}"
 systemctl restart kcy-chat.service 2>/dev/null || true
@@ -1270,6 +1336,14 @@ if systemctl is-active --quiet kcy-eco3.service; then
     echo -e "  ${GREEN}✓ kcy-eco3 работи${NC}"
 else
     echo -e "  ${YELLOW}! kcy-eco3 не тръгна — journalctl -u kcy-eco3 -n 20${NC}"
+fi
+
+echo -e "  ${YELLOW}Стартиране на kcy-portals...${NC}"
+systemctl restart kcy-portals.service 2>/dev/null || true
+if systemctl is-active --quiet kcy-portals.service; then
+    echo -e "  ${GREEN}✓ kcy-portals работи${NC}"
+else
+    echo -e "  ${YELLOW}! kcy-portals не тръгна — journalctl -u kcy-portals -n 20${NC}"
 fi
 
 # ── SSL ──
@@ -1535,6 +1609,24 @@ echo -e "  ${GREEN}✓${NC} Initial logs генерирани в /var/www/html/l
 if nginx -t 2>/dev/null; then
     systemctl reload nginx
     echo -e "  ${GREEN}✓${NC} nginx reloaded"
+fi
+
+##############################################################################
+# STAGING CLEANUP — премахни /var/www/deploy/ след успешна инсталация
+##############################################################################
+echo ""
+echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${GREEN}  Зачистване на staging${NC}"
+echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+
+if [ -d "$STAGING" ]; then
+    # Запази само .kcy-logs/ ако още не са преместени (failsafe)
+    STAGING_SIZE_BEFORE=$(du -sh "$STAGING" 2>/dev/null | awk '{print $1}')
+    rm -rf "$STAGING"/*
+    rm -rf "$STAGING"/.[!.]* 2>/dev/null  # hidden files (без . и ..)
+    STAGING_SIZE_AFTER=$(du -sh "$STAGING" 2>/dev/null | awk '{print $1}')
+    echo -e "  ${GREEN}✓${NC} ${STAGING}/ изчистен (${STAGING_SIZE_BEFORE} → ${STAGING_SIZE_AFTER:-0})"
+    diag_log services-errors.log "install: staging директорията изчистена"
 fi
 
 ##############################################################################
