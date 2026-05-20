@@ -596,7 +596,7 @@ log ""
 # Питай дали да run-ва автоматично (default: yes)
 RUN_INSTALL="y"
 if [ -t 0 ] && [ "${DEPLOY_NO_PAUSE:-0}" != "1" ]; then
-    read -p "  Пусни 05-server-install.sh автоматично сега? [Y/n]: " RUN_INSTALL
+    read -p "  Пусни 05-server-install.sh автоматично сега? [Y/n, Enter = Да]: " RUN_INSTALL
     RUN_INSTALL="${RUN_INSTALL:-y}"
 fi
 

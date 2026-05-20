@@ -78,9 +78,11 @@ build_backup_site() {
     fi
 
     # Преобразувай: listen → 8080 plain, махни ssl, махни redirect
+    # IPv6 listen редове се трият (за локален backup стига един IPv4 listen).
     sed -E \
-        -e 's/listen[[:space:]]+(\[::\]:)?443[^;]*;/listen 127.0.0.1:8080;/g' \
-        -e 's/listen[[:space:]]+(\[::\]:)?80[[:space:]]*;/listen 127.0.0.1:8080;/g' \
+        -e '/listen[[:space:]]+\[::\]:(443|80)/d' \
+        -e 's/listen[[:space:]]+443[^;]*;/listen 127.0.0.1:8080;/g' \
+        -e 's/listen[[:space:]]+80[[:space:]]*;/listen 127.0.0.1:8080;/g' \
         -e '/ssl_certificate/d' \
         -e '/ssl_protocols/d' \
         -e '/ssl_ciphers/d' \
@@ -89,8 +91,17 @@ build_backup_site() {
         -e '/ssl_dhparam/d' \
         -e '/include.*letsencrypt/d' \
         -e 's#return[[:space:]]+301[[:space:]]+https://[^;]*;#return 200 "backup-ok";#g' \
-        "${dst}.raw" > "$dst"
-    rm -f "${dst}.raw"
+        "${dst}.raw" > "${dst}.step1"
+
+    # Премахни дублирани "listen 127.0.0.1:8080;" — остави само първия
+    awk '
+        /listen 127\.0\.0\.1:8080;/ {
+            if (seen) next
+            seen=1
+        }
+        { print }
+    ' "${dst}.step1" > "$dst"
+    rm -f "${dst}.raw" "${dst}.step1"
 
     # Премахни дублирани listen 127.0.0.1:8080 (ако HTTP+HTTPS блок са се слели)
     # Оставяме само първия server блок ако има два
@@ -242,16 +253,23 @@ echo -e "  ${GREEN}✓${NC} kcy-backup създаден"
 echo ""
 echo "  Създавам failover reverse proxy (80/443)..."
 
-UPSTREAM_PRIMARY=""
-[ -n "$VM_TS_IP" ] && UPSTREAM_PRIMARY="    server ${VM_TS_IP}:8080 max_fails=2 fail_timeout=10s;"
+# Build upstream блока.
+# nginx НЕ приема upstream само от "backup" сървъри — трябва поне един primary.
+if [ -n "$VM_TS_IP" ]; then
+    # VM е primary, локалният е backup
+    UPSTREAM_SERVERS="    server ${VM_TS_IP}:8080 max_fails=2 fail_timeout=10s;
+    server 127.0.0.1:8080 backup;"
+else
+    # Няма VM — локалният е единственият (без 'backup' keyword)
+    UPSTREAM_SERVERS="    server 127.0.0.1:8080;"
+fi
 
 cat > /etc/nginx/sites-available/kcy-failover << NGINX_EOF
 # KCY Ecosystem — Failover reverse proxy (генериран от 12-setup-failover.sh)
 # SSL терминация тук. Upstream сервира plain HTTP.
 
 upstream kcy_backend {
-${UPSTREAM_PRIMARY}
-    server 127.0.0.1:8080 backup;
+${UPSTREAM_SERVERS}
     keepalive 16;
 }
 
