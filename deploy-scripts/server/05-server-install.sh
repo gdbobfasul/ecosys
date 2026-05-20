@@ -1591,8 +1591,8 @@ echo -e "  ${GREEN}✓${NC} kcy-diag.service инсталиран и старт�
 # 5. nginx — proxy /api/diag/ → 127.0.0.1:4400
 NGINX_DIAG_SNIPPET="/etc/nginx/snippets/kcy-diag-proxy.conf"
 ADMIN_IPS_LIST=""
-if [ -f "$ENV_FILE" ]; then
-    ADMIN_IPS_LIST=$(grep "^ADMIN_ALLOWED_IPS=" "$ENV_FILE" | cut -d= -f2- | tr -d '"' | tr ',' ' ')
+if [ -f "$GLOBAL_ENV" ]; then
+    ADMIN_IPS_LIST=$(grep "^ADMIN_ALLOWED_IPS=" "$GLOBAL_ENV" | cut -d= -f2- | tr -d '"' | tr ',' ' ')
 fi
 ALLOW_BLOCK=""
 if [ -n "$ADMIN_IPS_LIST" ]; then
@@ -1624,7 +1624,7 @@ $(echo -e "$ALLOW_BLOCK")
 EOF
 
 # Bundle URL — PUBLIC ако PUBLIC_DIAG_BUNDLE=true в .env, иначе IP restricted
-PUBLIC_BUNDLE=$(grep "^PUBLIC_DIAG_BUNDLE=" "$ENV_FILE" 2>/dev/null | cut -d= -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
+PUBLIC_BUNDLE=$(grep "^PUBLIC_DIAG_BUNDLE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2 | tr -d '"' | tr -d '\r' | tr '[:upper:]' '[:lower:]')
 if [ "$PUBLIC_BUNDLE" = "true" ]; then
     cat >> "$NGINX_DIAG_SNIPPET" << EOF
 
@@ -1651,16 +1651,29 @@ EOF
 fi
 echo -e "  ${GREEN}✓${NC} nginx snippet: $NGINX_DIAG_SNIPPET"
 
-# 6. Include snippet-а в site config
+# 6. Include snippet-а в HTTPS (443) server блока — НЕ в HTTP блока!
 SITE_FILE="/etc/nginx/sites-enabled/${DOMAIN%% *}"
-if [ -f "$SITE_FILE" ] && ! grep -q "kcy-diag-proxy.conf" "$SITE_FILE"; then
-    sed -i '0,/^}/{/^}/i\    include /etc/nginx/snippets/kcy-diag-proxy.conf;
-}' "$SITE_FILE" 2>/dev/null || true
+if [ -f "$SITE_FILE" ]; then
+    # Премахни всички стари include-ове (може да са в грешен блок от предишен install)
+    sed -i '/kcy-diag-proxy\.conf/d' "$SITE_FILE"
+    sed -i '/kcy-last-errors\.conf/d' "$SITE_FILE"
+
+    # Вкарай include-а в server блока който има "listen 443" — след server_name реда
+    awk '
+        /listen[^;]*443/ { in443=1 }
+        in443 && /server_name/ && !done {
+            print
+            print "    include /etc/nginx/snippets/kcy-diag-proxy.conf;"
+            done=1
+            next
+        }
+        { print }
+    ' "$SITE_FILE" > "${SITE_FILE}.tmp" && mv "${SITE_FILE}.tmp" "$SITE_FILE"
+    echo -e "  ${GREEN}✓${NC} Snippet include добавен в HTTPS (443) блока"
 fi
 
 # Махни стария kcy-last-errors.conf snippet ако го има
 rm -f /etc/nginx/snippets/kcy-last-errors.conf
-sed -i '/kcy-last-errors\.conf/d' "$SITE_FILE" 2>/dev/null || true
 
 # 7. Изпълни diagnostics веднъж сега за initial generation
 mkdir -p /var/www/html/last-errors
