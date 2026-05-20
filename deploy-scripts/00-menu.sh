@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0089
+# Version: 1.0090
 ##############################################################################
 # KCY Ecosystem — Start Menu
 # Един menu item = един реален скрипт. Параметрите се питат след избор.
@@ -197,7 +197,26 @@ show_menu() {
 run_choice() {
     case "$1" in
         # ── DEPLOY ──
-        1) run_cmd ./deploy-scripts/01-bootstrap.sh ;;
+        1)
+            target=$(ask_choice "Каква машина да bootstrap-неш?" \
+                "vm (локална VM — 192.168.0.108)" \
+                "prod (production VPS — alsec.strangled.net)" \
+                "custom (ще те пита server/user/port)")
+            case "$target" in
+                "vm (локална VM — 192.168.0.108)")
+                    run_cmd ./deploy-scripts/01-bootstrap.sh 192.168.0.108 kcyecosys 22 ;;
+                "prod (production VPS — alsec.strangled.net)")
+                    run_cmd ./deploy-scripts/01-bootstrap.sh alsec.strangled.net root 2222 ;;
+                "custom (ще те пита server/user/port)")
+                    echo ""
+                    read -p "  Server (IP или hostname): " S
+                    read -p "  Username: " U
+                    read -p "  SSH port: " P
+                    run_cmd ./deploy-scripts/01-bootstrap.sh "$S" "$U" "$P"
+                    ;;
+                *) echo "Отказано"; press_enter ;;
+            esac
+            ;;
         2)
             target=$(ask_choice "Target?" "vm" "prod" "custom (interactive)")
             case "$target" in

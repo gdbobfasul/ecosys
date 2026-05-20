@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0089
+# Version: 1.0090
 ##############################################################################
 # KCY Ecosystem - Deploy Script (Client-side)
 #
@@ -52,8 +52,30 @@ if [ -n "$1" ]; then
     esac
 fi
 
+# ═══ FREEZE флаг — пропуска auto-detection и не пипа .deploy-targets ═══
+DEPLOY_FREEZE_TARGETS=0
+
 # Ако няма таргет нито от аргумент, нито от env — попитай (interactive)
 if [ -z "$TARGET_NAME" ] && [ -z "$1" ] && [ -t 0 ] && [ "${DEPLOY_NO_PAUSE:-0}" != "1" ]; then
+    TARGETS_FILE_DEPLOY=".deploy-targets"
+
+    if [ -f "$TARGETS_FILE_DEPLOY" ]; then
+        # Има .deploy-targets — питай дали да го пипаме
+        echo ""
+        echo "  Намерих .deploy-targets:"
+        for t in $(grep -oE "^TARGET_[a-zA-Z0-9_]+_SERVER" "$TARGETS_FILE_DEPLOY" | sed -E 's/^TARGET_(.+)_SERVER$/\1/' | sort -u); do
+            s_var="TARGET_${t}_SERVER"; u_var="TARGET_${t}_USER"; p_var="TARGET_${t}_PORT"
+            echo "    • $t → ${!u_var}@${!s_var}:${!p_var}"
+        done
+        echo ""
+        read -p "  Ще променяме ли .deploy-targets? [y/N]: " CHANGE_TARGETS
+        CHANGE_TARGETS="${CHANGE_TARGETS:-n}"
+        if [ "$CHANGE_TARGETS" != "y" ] && [ "$CHANGE_TARGETS" != "Y" ]; then
+            DEPLOY_FREEZE_TARGETS=1
+            echo "  ${GREEN}✓${NC} Ползвам .deploy-targets без промени (auto-detection изключен)"
+        fi
+    fi
+
     echo ""
     echo "  Избери deploy target:"
     echo "    1) prod  — ${TARGET_prod_LABEL} (${TARGET_prod_SERVER}:${TARGET_prod_PORT})"
@@ -109,7 +131,7 @@ log "═════════════════════════
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     cat << 'EOF'
-KCY Ecosystem - Deploy v1.0089
+KCY Ecosystem - Deploy v1.0090
 
 Usage:
   ./deploy-scripts/04-deploy.sh                              # пита кой target (prod/vm)
@@ -177,7 +199,7 @@ ask_show_block() {
 }
 
 log "${CYAN}╔═══════════════════════════════════════════╗${NC}"
-log "${CYAN}║     KCY Ecosystem - Deploy v1.0089        ║${NC}"
+log "${CYAN}║     KCY Ecosystem - Deploy v1.0090        ║${NC}"
 log "${CYAN}╚═══════════════════════════════════════════╝${NC}"
 log ""
 log "  Target:  ${GREEN}${TARGET_LABEL}${NC}"
@@ -229,41 +251,45 @@ detect_ssh_port() {
 }
 
 # Намери работещ порт
-log "  ${YELLOW}Auto-detect на SSH порт...${NC}"
-DETECTED_PORT=$(detect_ssh_port "$SERVER" "$USER" "$PORT")
+if [ "$DEPLOY_FREEZE_TARGETS" = "1" ]; then
+    log "  ${YELLOW}↷${NC} Auto-detect на порт пропуснат (freeze targets). Ползвам ${PORT}"
+else
+    log "  ${YELLOW}Auto-detect на SSH порт...${NC}"
+    DETECTED_PORT=$(detect_ssh_port "$SERVER" "$USER" "$PORT")
 
-if [ -z "$DETECTED_PORT" ]; then
-    log "  ${RED}✗ Нито един порт не работи. Опитах: ${PORT}, 22, 2222${NC}"
-    log "  ${YELLOW}Проверки:${NC}"
-    log "    • Сървърът включен ли е?           ping ${SERVER}"
-    log "    • SSH ключът работи ли?            ssh -p ${PORT} ${USER}@${SERVER}"
-    log "    • Правилен ли е USER (${USER})?"
-    die "Не мога да открия работещ SSH порт"
-fi
+    if [ -z "$DETECTED_PORT" ]; then
+        log "  ${RED}✗ Нито един порт не работи. Опитах: ${PORT}, 22, 2222${NC}"
+        log "  ${YELLOW}Проверки:${NC}"
+        log "    • Сървърът включен ли е?           ping ${SERVER}"
+        log "    • SSH ключът работи ли?            ssh -p ${PORT} ${USER}@${SERVER}"
+        log "    • Правилен ли е USER (${USER})?"
+        die "Не мога да открия работещ SSH порт"
+    fi
 
-if [ "$DETECTED_PORT" != "$PORT" ]; then
-    log "  ${YELLOW}⚠ Конфигуриран порт ${PORT} НЕ работи. Намерих че порт ${DETECTED_PORT} работи.${NC}"
-    PORT="$DETECTED_PORT"
+    if [ "$DETECTED_PORT" != "$PORT" ]; then
+        log "  ${YELLOW}⚠ Конфигуриран порт ${PORT} НЕ работи. Намерих че порт ${DETECTED_PORT} работи.${NC}"
+        PORT="$DETECTED_PORT"
 
-    # Auto-update .deploy-targets ако target името е известно
-    if [ -n "$TARGET_NAME" ] && [ -f .deploy-targets ]; then
-        BACKUP=".deploy-targets.bak-$(date +%s)"
-        cp .deploy-targets "$BACKUP"
-        sed -i "s|^TARGET_${TARGET_NAME}_PORT=.*|TARGET_${TARGET_NAME}_PORT=\"${PORT}\"|" .deploy-targets
-        log "  ${GREEN}✓${NC} .deploy-targets обновен (TARGET_${TARGET_NAME}_PORT=${PORT}). Backup: ${BACKUP}"
-    elif [ -n "$TARGET_NAME" ] && [ ! -f .deploy-targets ]; then
-        # Няма .deploy-targets — създай го
-        cat > .deploy-targets << EOF
+        # Auto-update .deploy-targets ако target името е известно
+        if [ -n "$TARGET_NAME" ] && [ -f .deploy-targets ]; then
+            BACKUP=".deploy-targets.bak-$(date +%s)"
+            cp .deploy-targets "$BACKUP"
+            sed -i "s|^TARGET_${TARGET_NAME}_PORT=.*|TARGET_${TARGET_NAME}_PORT=\"${PORT}\"|" .deploy-targets
+            log "  ${GREEN}✓${NC} .deploy-targets обновен (TARGET_${TARGET_NAME}_PORT=${PORT}). Backup: ${BACKUP}"
+        elif [ -n "$TARGET_NAME" ] && [ ! -f .deploy-targets ]; then
+            # Няма .deploy-targets — създай го
+            cat > .deploy-targets << EOF
 # Auto-generated by 04-deploy.sh port detection on $(date)
 TARGET_${TARGET_NAME}_SERVER="${SERVER}"
 TARGET_${TARGET_NAME}_USER="${USER}"
 TARGET_${TARGET_NAME}_PORT="${PORT}"
 TARGET_${TARGET_NAME}_LABEL="Auto-detected"
 EOF
-        log "  ${GREEN}✓${NC} Създаден .deploy-targets с порт ${PORT}"
+            log "  ${GREEN}✓${NC} Създаден .deploy-targets с порт ${PORT}"
+        fi
+    else
+        log "  ${GREEN}✓${NC} Конфигуриран порт ${PORT} работи"
     fi
-else
-    log "  ${GREEN}✓${NC} Конфигуриран порт ${PORT} работи"
 fi
 log ""
 

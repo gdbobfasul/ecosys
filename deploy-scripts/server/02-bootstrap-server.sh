@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0089
+# Version: 1.0090
 ##############################################################################
 # KCY Ecosystem - Bootstrap on fresh server
 #
@@ -76,6 +76,31 @@ echo "  OS:       $PRETTY_NAME"
 echo "  Kernel:   $(uname -r)"
 echo "  Hostname: $(hostname)"
 echo "  Date:     $(date)"
+echo ""
+
+# ═══ TARGET INFO (от 01-bootstrap.sh) ═══
+TARGET_NAME=""
+TARGET_SERVER=""
+if [ -f /tmp/deploy_target_info ]; then
+    . /tmp/deploy_target_info
+    # НЕ изтриваме файла — 05-server-install.sh също го ползва
+fi
+
+# Fallback: auto-detect ако bootstrap.sh не е подал info (за директен sudo bash)
+if [ -z "$TARGET_NAME" ]; then
+    MY_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+    if [[ "$MY_IP" =~ ^192\.168\.|^10\.|^172\.16\.|^172\.17\.|^172\.18\.|^172\.19\.|^172\.2[0-9]\.|^172\.3[0-1]\. ]]; then
+        TARGET_NAME="vm"
+    else
+        TARGET_NAME="prod"
+    fi
+fi
+
+case "$TARGET_NAME" in
+    vm)   echo -e "  ${CYAN}► Target: VM (локална, private IP)${NC}" ;;
+    prod) echo -e "  ${CYAN}► Target: Production (public сървър)${NC}" ;;
+    *)    echo -e "  ${CYAN}► Target: ${TARGET_NAME}${NC}" ;;
+esac
 echo ""
 
 # ═══ MODE SELECTION ═══
@@ -171,9 +196,14 @@ case "$INSTALL_MODE" in
         apt-get install -y -qq --reinstall postgresql postgresql-contrib >/dev/null
         print_ok "PostgreSQL инсталиран"
 
-        echo "  Инсталирам certbot..."
-        apt-get install -y -qq --reinstall certbot python3-certbot-nginx >/dev/null
-        print_ok "certbot инсталиран"
+        # certbot — само за production (VM-овете с private IP нямат смисъл от Let's Encrypt)
+        if [ "$TARGET_NAME" = "vm" ]; then
+            print_skip "certbot пропуснат (VM target — private IP, без публичен SSL)"
+        else
+            echo "  Инсталирам certbot..."
+            apt-get install -y -qq --reinstall certbot python3-certbot-nginx >/dev/null
+            print_ok "certbot инсталиран"
+        fi
         ;;
 
     selective)
@@ -227,8 +257,10 @@ case "$INSTALL_MODE" in
             fi
         fi
 
-        # certbot
-        if dpkg -l certbot 2>/dev/null | grep -q "^ii"; then
+        # certbot — само за production
+        if [ "$TARGET_NAME" = "vm" ]; then
+            print_skip "certbot пропуснат (VM — private IP)"
+        elif dpkg -l certbot 2>/dev/null | grep -q "^ii"; then
             echo ""
             read -p "  certbot е инсталиран. Преинсталирай? [y/N]: " R
             if [ "$R" = "y" ] || [ "$R" = "Y" ]; then

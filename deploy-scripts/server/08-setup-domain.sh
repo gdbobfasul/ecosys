@@ -42,6 +42,36 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Target awareness: ако сме на VM (private IP), Let's Encrypt НЕ работи.
+TARGET_NAME=""
+[ -f /tmp/deploy_target_info ] && . /tmp/deploy_target_info
+if [ -z "$TARGET_NAME" ]; then
+    MY_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+    if [[ "$MY_IP" =~ ^192\.168\.|^10\.|^172\.16\.|^172\.17\.|^172\.18\.|^172\.19\.|^172\.2[0-9]\.|^172\.3[0-1]\. ]]; then
+        TARGET_NAME="vm"
+    fi
+fi
+
+if [ "$TARGET_NAME" = "vm" ]; then
+    echo ""
+    echo -e "${YELLOW}═══════════════════════════════════════════════════${NC}"
+    echo -e "${YELLOW}  ⚠ Тази машина изглежда VM с private IP${NC}"
+    echo -e "${YELLOW}═══════════════════════════════════════════════════${NC}"
+    echo ""
+    echo "  Let's Encrypt НЕ може да издаде сертификат за private IP."
+    echo "  Този скрипт е предназначен за production сървъри с публичен домейн."
+    echo ""
+    echo "  За VM:"
+    echo "    • Достъп през HTTP (http://192.168.X.X/) — работи без SSL"
+    echo "    • Failover архитектура — SSL остава на production VPS"
+    echo ""
+    read -p "  Сигурен ли си че искаш да продължиш? [y/N]: " CONT
+    if [ "$CONT" != "y" ] && [ "$CONT" != "Y" ]; then
+        echo "Отказано."
+        exit 0
+    fi
+fi
+
 # Prompt for domain (allow override)
 echo -e "${YELLOW}Current domain: $DOMAIN${NC}"
 read -p "Press Enter to use this domain, or type new domain: " NEW_DOMAIN

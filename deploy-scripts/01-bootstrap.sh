@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0089
+# Version: 1.0090
 ##############################################################################
 # KCY Ecosystem — Bootstrap launcher (от Windows Git Bash)
 #
@@ -29,13 +29,127 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
-# ═══ ARGS ═══
-SERVER="${1:-192.168.0.108}"
-USER="${2:-kcyecosys}"
-PORT="${3:-22}"
-
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'
 YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
+
+# ═══ FREEZE флаг — да не пипаме .deploy-targets ═══
+# Set to 1 ако потребителят казва "използвай .deploy-targets както е".
+# Тогава auto-detection и auto-update на файла се пропускат.
+DEPLOY_FREEZE_TARGETS=0
+
+# ═══ ARGS ═══
+# Логика:
+#   1) Ако са подадени аргументи на CLI — ползваме ги директно
+#   2) Иначе ако има .deploy-targets — питаме "да го пипам ли?"
+#       a) НЕ → питаме само "кой target?" и взимаме стойностите от файла без промени
+#       b) ДА → питаме vm/prod/custom (стария поток) — auto-detection ще може да обнови файла
+#   3) Иначе → vm/prod/custom default
+TARGETS_FILE="${PROJECT_ROOT}/.deploy-targets"
+
+load_target_from_file() {
+    # Зарежда стойностите от .deploy-targets за зададено име
+    local name="$1"
+    [ -f "$TARGETS_FILE" ] || return 1
+    # Source-вай файла в subshell за да хванем стойностите
+    . "$TARGETS_FILE"
+    local s_var="TARGET_${name}_SERVER"
+    local u_var="TARGET_${name}_USER"
+    local p_var="TARGET_${name}_PORT"
+    SERVER="${!s_var}"
+    USER="${!u_var}"
+    PORT="${!p_var}"
+    [ -n "$SERVER" ] && [ -n "$USER" ] && [ -n "$PORT" ]
+}
+
+list_targets_in_file() {
+    [ -f "$TARGETS_FILE" ] || return
+    grep -oE "^TARGET_[a-zA-Z0-9_]+_SERVER" "$TARGETS_FILE" | sed -E 's/^TARGET_(.+)_SERVER$/\1/' | sort -u
+}
+
+if [ -n "$1" ]; then
+    # CLI args mode
+    SERVER="$1"
+    USER="${2:-kcyecosys}"
+    PORT="${3:-22}"
+
+elif [ -t 0 ] && [ -f "$TARGETS_FILE" ]; then
+    # .deploy-targets съществува — питай дали да го пипаме
+    AVAILABLE=$(list_targets_in_file)
+    echo ""
+    echo "Намерих .deploy-targets с следните targets:"
+    for t in $AVAILABLE; do
+        . "$TARGETS_FILE"
+        s_var="TARGET_${t}_SERVER"; u_var="TARGET_${t}_USER"; p_var="TARGET_${t}_PORT"
+        echo "  • ${GREEN}${t}${NC} → ${!u_var}@${!s_var}:${!p_var}"
+    done
+    echo ""
+    read -p "Ще променяме ли .deploy-targets? [y/N]: " CHANGE_TARGETS
+    CHANGE_TARGETS="${CHANGE_TARGETS:-n}"
+
+    if [ "$CHANGE_TARGETS" != "y" ] && [ "$CHANGE_TARGETS" != "Y" ]; then
+        # ─── ПОЛЗВАЙ КАКТО Е ───
+        DEPLOY_FREEZE_TARGETS=1
+        echo ""
+        echo "  ${GREEN}✓${NC} Ползвам .deploy-targets без промени (auto-detection изключен)"
+        echo ""
+        echo "Кой target?"
+        IDX=1
+        TARGETS_ARR=()
+        for t in $AVAILABLE; do
+            echo "  $IDX) $t"
+            TARGETS_ARR+=("$t")
+            IDX=$((IDX+1))
+        done
+        echo ""
+        read -p "Избери [1-${#TARGETS_ARR[@]}]: " PICK
+        if [[ "$PICK" =~ ^[0-9]+$ ]] && [ "$PICK" -ge 1 ] && [ "$PICK" -le ${#TARGETS_ARR[@]} ]; then
+            CHOSEN="${TARGETS_ARR[$((PICK-1))]}"
+            if ! load_target_from_file "$CHOSEN"; then
+                echo -e "  ${RED}✗${NC} Грешка при зареждане на target '$CHOSEN'"
+                exit 1
+            fi
+        else
+            echo "Невалиден избор."
+            exit 1
+        fi
+    else
+        # ─── РЕЖИМ "ще променяме" — стария интерактивен flow ───
+        echo ""
+        echo "Каква машина да bootstrap-неш?"
+        echo "  1) vm     — локална VM (192.168.0.108)"
+        echo "  2) prod   — production VPS (alsec.strangled.net)"
+        echo "  3) custom — ще те питам server/user/port"
+        echo ""
+        read -p "Избери [1-3, default=1]: " TARGET_PICK
+        TARGET_PICK="${TARGET_PICK:-1}"
+        case "$TARGET_PICK" in
+            1) SERVER="192.168.0.108"; USER="kcyecosys"; PORT="22" ;;
+            2) SERVER="alsec.strangled.net"; USER="root"; PORT="2222" ;;
+            3) read -p "  Server: " SERVER; read -p "  User: " USER; read -p "  Port: " PORT ;;
+            *) SERVER="192.168.0.108"; USER="kcyecosys"; PORT="22" ;;
+        esac
+    fi
+
+elif [ -t 0 ]; then
+    # Няма .deploy-targets — стандартен interactive prompt
+    echo ""
+    echo "Каква машина да bootstrap-неш?"
+    echo "  1) vm     — локална VM (192.168.0.108)"
+    echo "  2) prod   — production VPS (alsec.strangled.net)"
+    echo "  3) custom — ще те питам server/user/port"
+    echo ""
+    read -p "Избери [1-3, default=1]: " TARGET_PICK
+    TARGET_PICK="${TARGET_PICK:-1}"
+    case "$TARGET_PICK" in
+        1) SERVER="192.168.0.108"; USER="kcyecosys"; PORT="22" ;;
+        2) SERVER="alsec.strangled.net"; USER="root"; PORT="2222" ;;
+        3) read -p "  Server: " SERVER; read -p "  User: " USER; read -p "  Port: " PORT ;;
+        *) SERVER="192.168.0.108"; USER="kcyecosys"; PORT="22" ;;
+    esac
+else
+    # Non-interactive без args — defaults
+    SERVER="192.168.0.108"; USER="kcyecosys"; PORT="22"
+fi
 
 # ═══ HELP ═══
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -71,39 +185,45 @@ echo "  Port:    ${GREEN}${PORT}${NC} (зададен)"
 echo ""
 
 # ═══ STEP 0: ОТКРИЙ ТЕКУЩИЯ SSH ПОРТ НА СЪРВЪРА ═══
-echo -e "${CYAN}[0/7] Откриване на текущия SSH порт${NC}"
-echo "  Тествам кой порт работи (без авторизация)..."
+echo -e "${CYAN}[0/7] SSH порт${NC}"
 
-DETECTED_PORT=""
-for try_port in "$PORT" 22 2222; do
-    [ -z "$try_port" ] && continue
-    # Опит без autz — само провери дали SSH banner отговаря (Permission denied = порт работи)
-    if ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
-           -o PreferredAuthentications=none \
-           -o NumberOfPasswordPrompts=0 \
-           -p "$try_port" "${USER}@${SERVER}" 'echo' 2>&1 | \
-           grep -qE "Permission denied|authentication method"; then
-        DETECTED_PORT="$try_port"
-        break
-    fi
-    # Или ако ключ работи и връща нещо
-    if ssh -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
-           -p "$try_port" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
-        DETECTED_PORT="$try_port"
-        break
-    fi
-done
+if [ "$DEPLOY_FREEZE_TARGETS" = "1" ]; then
+    # Freeze режим — доверяваме се на стойностите от .deploy-targets
+    echo -e "  ${YELLOW}↷${NC} Auto-detection пропуснат (freeze targets). Ползвам порт ${GREEN}${PORT}${NC}"
+else
+    echo "  Тествам кой порт работи (без авторизация)..."
 
-if [ -z "$DETECTED_PORT" ]; then
-    echo -e "  ${RED}✗${NC} Не мога да достигна ${SERVER} на нито един от: ${PORT}, 22, 2222"
-    echo "    Проверки:"
-    echo "      • Сървърът включен ли е?           ping ${SERVER}"
-    echo "      • Правилен ли е USER (${USER})?"
-    exit 1
+    DETECTED_PORT=""
+    for try_port in "$PORT" 22 2222; do
+        [ -z "$try_port" ] && continue
+        # Опит без autz — само провери дали SSH banner отговаря (Permission denied = порт работи)
+        if ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+               -o PreferredAuthentications=none \
+               -o NumberOfPasswordPrompts=0 \
+               -p "$try_port" "${USER}@${SERVER}" 'echo' 2>&1 | \
+               grep -qE "Permission denied|authentication method"; then
+            DETECTED_PORT="$try_port"
+            break
+        fi
+        # Или ако ключ работи и връща нещо
+        if ssh -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no \
+               -p "$try_port" "${USER}@${SERVER}" 'echo OK' 2>/dev/null | grep -q OK; then
+            DETECTED_PORT="$try_port"
+            break
+        fi
+    done
+
+    if [ -z "$DETECTED_PORT" ]; then
+        echo -e "  ${RED}✗${NC} Не мога да достигна ${SERVER} на нито един от: ${PORT}, 22, 2222"
+        echo "    Проверки:"
+        echo "      • Сървърът включен ли е?           ping ${SERVER}"
+        echo "      • Правилен ли е USER (${USER})?"
+        exit 1
+    fi
+
+    PORT="$DETECTED_PORT"
+    echo -e "  ${GREEN}✓${NC} Текущ SSH порт на сървъра: ${GREEN}${PORT}${NC}"
 fi
-
-PORT="$DETECTED_PORT"
-echo -e "  ${GREEN}✓${NC} Текущ SSH порт на сървъра: ${GREEN}${PORT}${NC}"
 echo ""
 
 # ═══ STEP 1: ИЗБОР НА НОВ SSH ПОРТ ═══
@@ -251,6 +371,22 @@ echo -e "  ${GREEN}✓${NC} Public key качен в /tmp/deploy_pubkey"
 echo "$NEW_SSH_PORT" | ssh -p "$PORT" "${USER}@${SERVER}" "cat > /tmp/desired_ssh_port" 2>/dev/null
 echo -e "  ${GREEN}✓${NC} Желан SSH порт (${NEW_SSH_PORT}) подаден на сървъра"
 
+# Подай target info — за да знае 02-bootstrap-server.sh дали е VM или prod
+# (важно за: certbot prompt, SSL логика, и т.н.)
+# Откриваме target името от SERVER
+DETECTED_TARGET="custom"
+if [ "$SERVER" = "192.168.0.108" ] || [[ "$SERVER" =~ ^192\.168\.|^10\.|^172\.16\.|^172\.17\.|^172\.18\.|^172\.19\.|^172\.2[0-9]\.|^172\.3[0-1]\. ]]; then
+    DETECTED_TARGET="vm"
+elif [ "$SERVER" = "alsec.strangled.net" ]; then
+    DETECTED_TARGET="prod"
+fi
+ssh -p "$PORT" "${USER}@${SERVER}" "cat > /tmp/deploy_target_info << TARGETINFO
+TARGET_NAME=${DETECTED_TARGET}
+TARGET_SERVER=${SERVER}
+TARGETINFO
+" 2>/dev/null
+echo -e "  ${GREEN}✓${NC} Target info (${DETECTED_TARGET}) подаден"
+
 # Нормализирай и на сървъра (за всеки случай)
 ssh -p "$PORT" "${USER}@${SERVER}" "
     command -v dos2unix >/dev/null 2>&1 && dos2unix -q /tmp/02-bootstrap-server.sh 2>/dev/null || sed -i 's/\\r\$//' /tmp/02-bootstrap-server.sh
@@ -293,11 +429,15 @@ if ssh -o BatchMode=yes -o ConnectTimeout=5 -p "$NEW_SSH_PORT" "deploy@${SERVER}
     # След като сме cd-нати в PROJECT_ROOT, .deploy-targets е тук
     TARGETS_FILE="${PROJECT_ROOT}/.deploy-targets"
 
-    echo ""
-    read -p "  Да обновя .deploy-targets с този сървър като 'vm'? [Y/n]: " UPDATE_TARGETS
-    UPDATE_TARGETS="${UPDATE_TARGETS:-y}"
-    if [ "$UPDATE_TARGETS" = "y" ] || [ "$UPDATE_TARGETS" = "Y" ]; then
-        cat > "$TARGETS_FILE" << EOF
+    if [ "$DEPLOY_FREEZE_TARGETS" = "1" ]; then
+        echo ""
+        echo -e "  ${YELLOW}↷${NC} .deploy-targets НЕ се обновява (freeze targets режим)"
+    else
+        echo ""
+        read -p "  Да обновя .deploy-targets с този сървър като 'vm'? [Y/n]: " UPDATE_TARGETS
+        UPDATE_TARGETS="${UPDATE_TARGETS:-y}"
+        if [ "$UPDATE_TARGETS" = "y" ] || [ "$UPDATE_TARGETS" = "Y" ]; then
+            cat > "$TARGETS_FILE" << EOF
 # Auto-generated by 01-bootstrap.sh on $(date)
 TARGET_prod_SERVER="alsec.strangled.net"
 TARGET_prod_USER="deploy"
@@ -309,7 +449,8 @@ TARGET_vm_USER="deploy"
 TARGET_vm_PORT="${NEW_SSH_PORT}"
 TARGET_vm_LABEL="Local VM (${SERVER})"
 EOF
-        echo -e "  ${GREEN}✓${NC} .deploy-targets обновен (порт: ${NEW_SSH_PORT})"
+            echo -e "  ${GREEN}✓${NC} .deploy-targets обновен (порт: ${NEW_SSH_PORT})"
+        fi
     fi
 else
     echo -e "  ${YELLOW}!${NC} 'deploy' SSH тестът на порт ${NEW_SSH_PORT} не мина."
