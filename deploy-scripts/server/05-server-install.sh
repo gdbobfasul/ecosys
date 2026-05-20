@@ -298,21 +298,80 @@ fi
 STAGING_FILES=$(find "$STAGING" -type f | wc -l)
 echo -e "  ${GREEN}✓ Staging: ${STAGING_FILES} файла${NC}"
 
-# ═══ Domain override ═══
+# ═══ Domain choice ═══
 # Detect current domain from any existing nginx config
+DETECTED_DOMAIN=""
 for f in /etc/nginx/sites-available/*; do
     [ -f "$f" ] || continue
-    DETECTED_DOMAIN=$(grep -m1 'server_name' "$f" 2>/dev/null | awk '{print $2}' | tr -d ';')
-    if [ -n "$DETECTED_DOMAIN" ] && [ "$DETECTED_DOMAIN" != "_" ] && [ "$DETECTED_DOMAIN" != "localhost" ]; then
-        DOMAIN="$DETECTED_DOMAIN"
-        echo -e "  ${GREEN}✓ Текущ домейн от nginx: ${DOMAIN} ($(basename $f))${NC}"
+    D=$(grep -m1 'server_name' "$f" 2>/dev/null | awk '{print $2}' | tr -d ';')
+    if [ -n "$D" ] && [ "$D" != "_" ] && [ "$D" != "localhost" ]; then
+        DETECTED_DOMAIN="$D"
+        echo -e "  ${GREEN}✓ Текущ домейн от nginx: ${DETECTED_DOMAIN} ($(basename $f))${NC}"
         break
     fi
 done
-echo -e "  ${YELLOW}(Enter = запази ${DOMAIN})${NC}"
-read -p "  Domain [$DOMAIN]: " NEW_DOMAIN <&3
-NEW_DOMAIN=$(echo "$NEW_DOMAIN" | tr -d '\r\n ')
-[ -n "$NEW_DOMAIN" ] && DOMAIN="$NEW_DOMAIN"
+
+# Прочети target info от deploy.sh (target IP + production domain)
+TARGET_NAME=""
+TARGET_SERVER=""
+TARGET_PROD_DOMAIN=""
+if [ -f /tmp/deploy_target_info ]; then
+    . /tmp/deploy_target_info
+    rm -f /tmp/deploy_target_info
+fi
+
+# Изчисли default стойностите
+T_IP="${TARGET_SERVER:-$DOMAIN}"
+T_DOMAIN="${TARGET_PROD_DOMAIN:-alsec.strangled.net}"
+
+# Определи кой е default-ният избор:
+#  - VM target → препоръчвам опция 3 (и двете) за бъдещ failover
+#  - prod target → препоръчвам опция 2 (само домейн)
+#  - друго → опция 4 (запази текущото)
+if [ "$TARGET_NAME" = "vm" ]; then
+    DEFAULT_CHOICE=3
+elif [ "$TARGET_NAME" = "prod" ]; then
+    DEFAULT_CHOICE=2
+else
+    DEFAULT_CHOICE=4
+fi
+
+echo ""
+echo "  Какъв server_name да сложа в nginx?"
+echo "    1) IP адрес:        ${T_IP}"
+echo "    2) Домейн:          ${T_DOMAIN}"
+echo "    3) И двете:         ${T_IP} ${T_DOMAIN}"
+if [ -n "$DETECTED_DOMAIN" ]; then
+    echo "    4) Запази текущо:   ${DETECTED_DOMAIN}"
+else
+    echo "    4) Запази текущо:   (няма — default ще е опция ${DEFAULT_CHOICE})"
+fi
+echo ""
+read -p "  Избери [1-4, default=${DEFAULT_CHOICE}]: " DOMAIN_CHOICE <&3
+DOMAIN_CHOICE="${DOMAIN_CHOICE:-$DEFAULT_CHOICE}"
+
+case "$DOMAIN_CHOICE" in
+    1) DOMAIN="$T_IP" ;;
+    2) DOMAIN="$T_DOMAIN" ;;
+    3) DOMAIN="$T_IP $T_DOMAIN" ;;
+    4)
+        if [ -n "$DETECTED_DOMAIN" ]; then
+            DOMAIN="$DETECTED_DOMAIN"
+        else
+            # Няма текущ — fallback на default-а
+            case "$DEFAULT_CHOICE" in
+                1) DOMAIN="$T_IP" ;;
+                2) DOMAIN="$T_DOMAIN" ;;
+                3) DOMAIN="$T_IP $T_DOMAIN" ;;
+            esac
+        fi
+        ;;
+    *) DOMAIN="${DETECTED_DOMAIN:-$T_IP}" ;;
+esac
+
+echo -e "  ${GREEN}✓ server_name = ${DOMAIN}${NC}"
+echo ""
+
 read -p "  Email for SSL [$EMAIL]: " NEW_EMAIL <&3
 NEW_EMAIL=$(echo "$NEW_EMAIL" | tr -d '\r\n ')
 [ -n "$NEW_EMAIL" ] && EMAIL="$NEW_EMAIL"

@@ -563,6 +563,16 @@ if [ "$RUN_INSTALL" = "y" ] || [ "$RUN_INSTALL" = "Y" ]; then
     # Първо chmod +x за да гарантираме изпълнимост
     ssh ${SSH_OPTS} "${USER}@${SERVER}" "chmod +x ${INSTALL_PATH}" 2>/dev/null
 
+    # Запиши target info в hint файл, който 05-server-install.sh ще прочете
+    # за да направи правилни предложения (server_name = IP/domain/both)
+    PROD_DOMAIN="${TARGET_prod_SERVER:-alsec.strangled.net}"
+    ssh ${SSH_OPTS} "${USER}@${SERVER}" "cat > /tmp/deploy_target_info << TARGETINFO
+TARGET_NAME=${TARGET_NAME:-custom}
+TARGET_SERVER=${SERVER}
+TARGET_PROD_DOMAIN=${PROD_DOMAIN}
+TARGETINFO
+" 2>/dev/null
+
     # Run-ни 05-server-install.sh през sudo (без bash prefix — match-ва sudoers entry)
     # -t флагът заделя TTY за интерактивни прозорци (ако скриптът пита)
     if ssh -t ${SSH_OPTS} "${USER}@${SERVER}" "sudo ${INSTALL_PATH}"; then
