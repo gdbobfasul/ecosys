@@ -57,6 +57,24 @@ ECO3_PORT=3001
 SQLITE_DB="$PRIVATE_DIR/chat/database/amschat.db"
 DB_SCHEMA="$STAGING/private/chat/database/db_setup.sql"
 
+# PG database/user имена — четат се от .env (server или staging).
+# Извиква се преди всяко ползване (refresh — .env може да се копира по-късно).
+PG_DB_NAME="ams_chat_db"
+PG_DB_USER="ams_chat_user"
+refresh_pg_names() {
+    local envf=""
+    [ -f "$GLOBAL_ENV" ] && envf="$GLOBAL_ENV"
+    [ -z "$envf" ] && [ -f "$STAGING/private/configs/.env" ] && envf="$STAGING/private/configs/.env"
+    if [ -n "$envf" ]; then
+        local d u
+        d=$(grep "^PG_DATABASE=" "$envf" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+        u=$(grep "^PG_USER=" "$envf" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+        [ -n "$d" ] && PG_DB_NAME="$d"
+        [ -n "$u" ] && PG_DB_USER="$u"
+    fi
+}
+refresh_pg_names
+
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
 CYAN=$'\033[0;36m'; NC=$'\033[0m'
 
@@ -221,13 +239,13 @@ if [ -f "$SQLITE_DB" ]; then
     ANYTHING_INSTALLED=true
 fi
 if command -v psql &>/dev/null; then
-    if sudo -u postgres psql -lqt 2>/dev/null | cut -d \| -f 1 | grep -qw ams_chat_db; then
-        echo -e "    ${GREEN}●${NC} PostgreSQL: ams_chat_db"
+    if sudo -u postgres psql -lqt 2>/dev/null | cut -d \| -f 1 | grep -qw "${PG_DB_NAME}"; then
+        echo -e "    ${GREEN}●${NC} PostgreSQL: ${PG_DB_NAME}"
         DB_EXISTS=true
         DB_TYPE="postgresql"
         ANYTHING_INSTALLED=true
     else
-        echo -e "    ${YELLOW}○${NC} PostgreSQL инсталиран, но няма ams_chat_db"
+        echo -e "    ${YELLOW}○${NC} PostgreSQL инсталиран, но няма ${PG_DB_NAME}"
     fi
 else
     echo -e "    ${RED}✗${NC} PostgreSQL — не е инсталиран"
@@ -789,6 +807,9 @@ fi
 ##############################################################################
 print_step "СТЪПКА 8: База данни"
 
+# Обнови PG имената (.env вече е копиран в СТЪПКА 5)
+refresh_pg_names
+
 # Извлечи очакваните таблици от db_setup.sql
 if [ -f "$DB_SCHEMA" ]; then
     EXPECTED_TABLES=$(grep -oP '(?<=CREATE TABLE IF NOT EXISTS )\w+' "$DB_SCHEMA" | sort)
@@ -891,9 +912,9 @@ if [ "$DB_TYPE" = "sqlite" ] && [ -f "$SQLITE_DB" ] && command -v sqlite3 &>/dev
 
 elif [ "$DB_TYPE" = "postgresql" ]; then
     echo ""
-    echo -e "  ${CYAN}Проверка на PostgreSQL база: ams_chat_db${NC}"
+    echo -e "  ${CYAN}Проверка на PostgreSQL база: ${PG_DB_NAME}${NC}"
 
-    EXISTING_TABLES=$(sudo -u postgres psql -d ams_chat_db -t -c \
+    EXISTING_TABLES=$(sudo -u postgres psql -d ${PG_DB_NAME} -t -c \
         "SELECT tablename FROM pg_tables WHERE schemaname='public';" 2>/dev/null | tr -d ' ' | grep '\S' | sort)
     EXISTING_COUNT=$(echo "$EXISTING_TABLES" | grep -c '\S' || true)
     echo -e "  Съществуващи таблици: ${EXISTING_COUNT}"
@@ -928,9 +949,9 @@ elif [ "$DB_TYPE" = "postgresql" ]; then
 
     if [ "$DB_CHOICE" = "1" ]; then
         echo -e "  ${YELLOW}Пресъздаване на PostgreSQL база...${NC}"
-        sudo -u postgres psql -c "DROP DATABASE IF EXISTS ams_chat_db;" 2>/dev/null
-        sudo -u postgres psql -c "CREATE DATABASE ams_chat_db OWNER ams_chat_user;" 2>/dev/null
-        sudo -u postgres psql -d ams_chat_db -f "$DB_SCHEMA" 2>/dev/null
+        sudo -u postgres psql -c "DROP DATABASE IF EXISTS ${PG_DB_NAME};" 2>/dev/null
+        sudo -u postgres psql -c "CREATE DATABASE ${PG_DB_NAME} OWNER ${PG_DB_USER};" 2>/dev/null
+        sudo -u postgres psql -d ${PG_DB_NAME} -f "$DB_SCHEMA" 2>/dev/null
         echo -e "  ${GREEN}✓ PostgreSQL база пресъздадена${NC}"
     else
         echo -e "  ${GREEN}✓ Базата остава${NC}"
@@ -976,8 +997,14 @@ else
             fi
             ;;
         2)
-            echo -e "  ${YELLOW}За PostgreSQL пусни отделно:${NC}"
-            echo -e "  ${CYAN}sudo bash ${PROJECT_DIR}/deploy-scripts/server/07-setup-database.sh --force-postgresql${NC}"
+            echo -e "  ${YELLOW}Настройка на PostgreSQL...${NC}"
+            DB_SETUP_SCRIPT="$STAGING/deploy-scripts/server/07-setup-database.sh"
+            [ -f "$DB_SETUP_SCRIPT" ] || DB_SETUP_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/07-setup-database.sh"
+            if [ -f "$DB_SETUP_SCRIPT" ]; then
+                bash "$DB_SETUP_SCRIPT" --force-postgresql
+            else
+                echo -e "  ${RED}✗ 07-setup-database.sh не намерен${NC}"
+            fi
             ;;
         3)
             echo -e "  ${YELLOW}Пропуснато.${NC}"
@@ -1441,8 +1468,15 @@ if command -v ufw &>/dev/null; then
     ufw allow 22/tcp 2>/dev/null
     ufw allow 80/tcp 2>/dev/null
     ufw allow 443/tcp 2>/dev/null
+    # На VM — позволи diag порт 4400 САМО от Tailscale мрежата (100.64.0.0/10),
+    # за да може VPS-ът да чете VM логовете. Не се отваря публично.
+    if [ "$TARGET_NAME" = "vm" ]; then
+        ufw allow from 100.64.0.0/10 to any port 4400 proto tcp 2>/dev/null
+        echo -e "  ${GREEN}✓ Firewall: 22, 80, 443 + 4400 (само от Tailscale)${NC}"
+    else
+        echo -e "  ${GREEN}✓ Firewall: 22, 80, 443${NC}"
+    fi
     echo "y" | ufw enable 2>/dev/null || true
-    echo -e "  ${GREEN}✓ Firewall: 22, 80, 443${NC}"
 fi
 
 # ── Helper scripts ──
@@ -1498,6 +1532,14 @@ JSON_EOF
 fi
 
 # 4. Systemd unit за kcy-diag helper
+# DIAG_HOST: на VM = 0.0.0.0 (за да може VPS да чете логовете през Tailscale),
+#            на VPS = 127.0.0.1 (само локално — VPS има публичен IP).
+if [ "$TARGET_NAME" = "vm" ]; then
+    DIAG_HOST_VAL="0.0.0.0"
+    echo -e "  ${CYAN}VM target — diag ще слуша на 0.0.0.0:4400 (Tailscale достъп)${NC}"
+else
+    DIAG_HOST_VAL="127.0.0.1"
+fi
 cat > /etc/systemd/system/kcy-diag.service << EOF
 [Unit]
 Description=KCY Ecosystem — Diagnostics Helper
@@ -1510,6 +1552,7 @@ Group=kcy
 WorkingDirectory=${PROJECT_DIR}/private/diag
 ExecStart=/usr/bin/node server.js
 Environment=DIAG_PORT=4400
+Environment=DIAG_HOST=${DIAG_HOST_VAL}
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal
@@ -1585,6 +1628,40 @@ EOF
     echo -e "  ${YELLOW}↷${NC} Bundle URL IP-restricted (за public: PUBLIC_DIAG_BUNDLE=true в .env)"
 fi
 echo -e "  ${GREEN}✓${NC} nginx snippet: $NGINX_DIAG_SNIPPET"
+
+# ── /last-errors-bundle-vm — proxy към VM-а през Tailscale ──
+# Само на production VPS, ако има online VM peer. Така от един публичен
+# домейн виждаш и VPS логовете (/last-errors-bundle) и VM логовете (-vm).
+if [ "$TARGET_NAME" = "prod" ] && command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
+    VM_DIAG_IP=$(tailscale status --json 2>/dev/null | python3 -c "
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    for k, p in data.get('Peer', {}).items():
+        if not p.get('Online'):
+            continue
+        ips = [ip for ip in (p.get('TailscaleIPs') or []) if '.' in ip]
+        if ips:
+            print(ips[0]); sys.exit(0)
+except Exception:
+    pass
+" 2>/dev/null)
+    if [ -n "$VM_DIAG_IP" ]; then
+        cat >> "$NGINX_DIAG_SNIPPET" << EOF
+
+# VM diagnostics bundle — proxy към VM-а през Tailscale
+location = /last-errors-bundle-vm {
+    proxy_pass http://${VM_DIAG_IP}:4400/bundle;
+    proxy_http_version 1.1;
+    proxy_connect_timeout 4s;
+    proxy_read_timeout 30s;
+}
+EOF
+        echo -e "  ${GREEN}✓${NC} VM bundle URL: https://${DOMAIN%% *}/last-errors-bundle-vm (→ ${VM_DIAG_IP}:4400)"
+    else
+        echo -e "  ${CYAN}↷${NC} Няма online VM peer — /last-errors-bundle-vm пропуснат"
+    fi
+fi
 
 # 6. Include snippet-а в HTTPS (443) server блока — НЕ в HTTP блока!
 SITE_FILE="/etc/nginx/sites-enabled/${DOMAIN%% *}"

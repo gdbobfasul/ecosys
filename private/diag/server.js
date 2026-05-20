@@ -20,6 +20,8 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.DIAG_PORT || 4400;
+// DIAG_HOST: 127.0.0.1 на VPS (само локално), 0.0.0.0 на VM (за Tailscale достъп от VPS).
+const HOST = process.env.DIAG_HOST || '127.0.0.1';
 const FLAGS_FILE = '/var/lib/kcy/debug-flags.json';
 const DIAG_SCRIPT = '/usr/local/bin/kcy-diagnostics.sh';
 
@@ -132,8 +134,8 @@ const server = http.createServer(async (req, res) => {
     }
 });
 
-server.listen(PORT, '127.0.0.1', () => {
-    console.log(`[kcy-diag] listening on 127.0.0.1:${PORT}`);
+server.listen(PORT, HOST, () => {
+    console.log(`[kcy-diag] listening on ${HOST}:${PORT}`);
     console.log(`[kcy-diag] flags file: ${FLAGS_FILE}`);
     console.log(`[kcy-diag] diag script: ${DIAG_SCRIPT}`);
 });

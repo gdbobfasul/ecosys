@@ -304,6 +304,23 @@ fi
 if [ "$USE_POSTGRESQL" = true ]; then
     echo -e "\n${CYAN}======== PostgreSQL Setup ========${NC}\n"
 
+    # ── .env е source of truth — прочети PG настройките оттам ако ги има ──
+    # Така PG потребителят/базата се създават С ТОЧНО тези имена/парола,
+    # които chat сървисът после ще ползва за връзка. Без разминаване.
+    if [ -f "$GLOBAL_ENV" ]; then
+        ENV_DB=$(grep "^PG_DATABASE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+        ENV_USER=$(grep "^PG_USER=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+        ENV_PASS=$(grep "^PG_PASSWORD=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+        [ -n "$ENV_DB" ]   && DB_NAME="$ENV_DB"
+        [ -n "$ENV_USER" ] && DB_USER="$ENV_USER"
+        [ -n "$ENV_PASS" ] && DB_PASSWORD="$ENV_PASS"
+        if [ -n "$ENV_USER" ]; then
+            echo -e "${CYAN}  Ползвам PG настройки от .env: ${DB_USER}@${DB_NAME}${NC}"
+        else
+            echo -e "${YELLOW}  .env няма PG настройки — генерирам нови${NC}"
+        fi
+    fi
+
     # Install if needed
     if ! command -v psql &> /dev/null; then
         echo -e "${GREEN}[1/6] Installing PostgreSQL...${NC}"

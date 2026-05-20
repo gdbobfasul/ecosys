@@ -264,6 +264,16 @@ else
     UPSTREAM_SERVERS="    server 127.0.0.1:8080;"
 fi
 
+# Diag snippet include — само ако файлът съществува (иначе nginx -t fail-ва).
+# Diagnostics URL-ите ще се сервират директно от VPS-а, не през upstream.
+DIAG_INCLUDE=""
+if [ -f /etc/nginx/snippets/kcy-diag-proxy.conf ]; then
+    DIAG_INCLUDE="    include /etc/nginx/snippets/kcy-diag-proxy.conf;"
+    echo -e "  ${GREEN}✓${NC} Diag snippet ще се включи в failover (bundle URL директно от VPS)"
+else
+    echo -e "  ${YELLOW}!${NC} Diag snippet липсва — bundle URL ще минава през upstream"
+fi
+
 cat > /etc/nginx/sites-available/kcy-failover << NGINX_EOF
 # KCY Ecosystem — Failover reverse proxy (генериран от 12-setup-failover.sh)
 # SSL терминация тук. Upstream сервира plain HTTP.
@@ -296,6 +306,10 @@ server {
     ssl_certificate ${SSL_CERT};
     ssl_certificate_key ${SSL_KEY};
     ssl_protocols TLSv1.2 TLSv1.3;
+
+    # Diagnostics URL-ите се сервират ДИРЕКТНО от VPS-а (не през upstream).
+    # Така /last-errors-bundle винаги показва VPS-а, дори трафикът да отива на VM.
+${DIAG_INCLUDE}
 
     location / {
         proxy_pass http://kcy_backend;

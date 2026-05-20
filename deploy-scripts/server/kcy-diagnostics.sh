@@ -49,7 +49,8 @@ fi
 # ─── services-errors.log — статус на услугите ───
 SVC_STATUS=""
 for svc in nginx kcy-chat kcy-eco3 kcy-portals kcy-diag postgresql; do
-    active=$(systemctl is-active "$svc" 2>/dev/null || echo "n/a")
+    active=$(systemctl is-active "$svc" 2>/dev/null | head -1 | tr -d "\r\n")
+    [ -z "$active" ] && active="n/a"
     SVC_STATUS="${SVC_STATUS}${svc}:${active} "
 done
 append_log services-errors.log "$SVC_STATUS"
@@ -161,10 +162,10 @@ P_ECO3=$(port_listening 3001)
 P_PORTALS=$(port_listening 3002)
 P_DIAG=$(port_listening 4400)
 
-# API health endpoints (локално)
+# API health endpoints (локално) — всеки сървис има различен път
 H_CHAT=$(http_check "http://127.0.0.1:3000/api/health")
 H_ECO3=$(http_check "http://127.0.0.1:3001/health")
-H_PORTALS=$(http_check "http://127.0.0.1:3002/health")
+H_PORTALS=$(http_check "http://127.0.0.1:3002/api/portals/health")
 H_DIAG=$(http_check "http://127.0.0.1:4400/health")
 
 {
@@ -193,11 +194,49 @@ H_DIAG=$(http_check "http://127.0.0.1:4400/health")
     else
         echo "[$TS]   ⚠ nginx config НЕВАЛИДЕН — виж: nginx -t"
     fi
-    if [ -f /etc/nginx/sites-enabled/kcy-failover ]; then
-        echo "[$TS]   failover: АКТИВЕН"
+
+    # ── Failover + bundle URL верига ──
+    FAILOVER_ON="no"
+    [ -f /etc/nginx/sites-enabled/kcy-failover ] && FAILOVER_ON="yes"
+    if [ "$FAILOVER_ON" = "yes" ]; then
+        echo "[$TS]   failover: АКТИВЕН (443 → kcy-failover → upstream)"
+        # kcy-backup има ли diag include?
+        if [ -f /etc/nginx/sites-available/kcy-backup ]; then
+            if grep -q "kcy-diag-proxy" /etc/nginx/sites-available/kcy-backup 2>/dev/null; then
+                echo "[$TS]   kcy-backup: има diag include ✓"
+            else
+                echo "[$TS]   ⚠ kcy-backup НЯМА diag include — bundle URL ще върне index.html!"
+            fi
+        else
+            echo "[$TS]   ⚠ kcy-backup конфиг липсва"
+        fi
+        # Локален тест 8080 (backup site)
+        P8080=$(port_listening 8080)
+        echo "[$TS]   port 8080 (backup): $P8080"
     else
-        echo "[$TS]   failover: неактивен (сайтът се сервира директно)"
+        echo "[$TS]   failover: неактивен (443 → директно сайта)"
     fi
+
+    # nginx snippet за diag
+    if [ -f /etc/nginx/snippets/kcy-diag-proxy.conf ]; then
+        if grep -q "last-errors-bundle" /etc/nginx/snippets/kcy-diag-proxy.conf 2>/dev/null; then
+            echo "[$TS]   diag snippet: има bundle location ✓"
+        else
+            echo "[$TS]   ⚠ diag snippet НЯМА bundle location"
+        fi
+    else
+        echo "[$TS]   ⚠ diag snippet файл липсва"
+    fi
+
+    # Тест на цялата bundle верига — публичен URL
+    BUNDLE_LOCAL=$(curl -s -o /dev/null -w "%{http_code}" --max-time 4 "http://127.0.0.1:4400/bundle" 2>/dev/null)
+    BUNDLE_CT=$(curl -s -o /dev/null -w "%{content_type}" --max-time 5 "https://127.0.0.1/last-errors-bundle" -k -H "Host: $(hostname -f 2>/dev/null || hostname)" 2>/dev/null)
+    echo "[$TS]   bundle 4400 директно: HTTP ${BUNDLE_LOCAL:-down}"
+    case "$BUNDLE_CT" in
+        text/plain*) echo "[$TS]   bundle публичен URL: OK (text/plain) ✓" ;;
+        text/html*)  echo "[$TS]   ⚠ bundle публичен URL връща HTML вместо text/plain — веригата е счупена" ;;
+        *)           echo "[$TS]   bundle публичен URL: content-type=${BUNDLE_CT:-неизвестен}" ;;
+    esac
 } > "$HEALTHLOG"
 if [ "$(wc -l < "$HEALTHLOG" 2>/dev/null)" -gt "$MAX_LINES" ]; then
     tail -n "$MAX_LINES" "$HEALTHLOG" > "${HEALTHLOG}.tmp" && mv "${HEALTHLOG}.tmp" "$HEALTHLOG"
@@ -216,14 +255,17 @@ ENDPOINT_JSON="\"endpoints\": {
     echo "{"
     echo "  \"generated\": \"$TS\","
     echo "  \"hostname\": \"$(hostname)\","
-    echo "  \"uptime\": \"$(uptime -p 2>/dev/null || echo '-')\","
+    UPTIME_CLEAN=$(uptime -p 2>/dev/null | tr -d '\r\n' | sed 's/"/\\"/g')
+    echo "  \"uptime\": \"${UPTIME_CLEAN:--}\","
     echo "  \"memory\": {\"ram_used_mb\":$RAM_USED,\"ram_total_mb\":$RAM_TOTAL,\"swap_used_mb\":${SWAP_USED:-0},\"swap_total_mb\":${SWAP_TOTAL:-0}},"
     echo "  \"disk\": \"$DISK\","
     echo "  \"services\": {"
     first=true
     for svc in nginx kcy-chat kcy-eco3 kcy-portals kcy-diag postgresql; do
-        active=$(systemctl is-active "$svc" 2>/dev/null || echo "n/a")
-        enabled=$(systemctl is-enabled "$svc" 2>/dev/null || echo "n/a")
+        active=$(systemctl is-active "$svc" 2>/dev/null | head -1 | tr -d "\r\n")
+        [ -z "$active" ] && active="n/a"
+        enabled=$(systemctl is-enabled "$svc" 2>/dev/null | head -1 | tr -d "\r\n")
+        [ -z "$enabled" ] && enabled="n/a"
         restarts=$(systemctl show "$svc" --property=NRestarts --value 2>/dev/null || echo "0")
         $first || echo ","
         first=false
