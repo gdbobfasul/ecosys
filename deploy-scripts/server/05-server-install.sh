@@ -1218,6 +1218,9 @@ User=${ECO3_USER}
 Group=${SVC_GROUP}
 WorkingDirectory=${PRIVATE_DIR}/portals
 EnvironmentFile=${GLOBAL_ENV}
+# public/ се копира в ${WEB_ROOT} (СТЪПКА 6), не в ${PROJECT_DIR}/public.
+# portals по подразбиране търси ../../public — затова явно сочим WEB_ROOT.
+Environment=PORTALS_PUBLIC_DIR=${WEB_ROOT}
 ExecStart=/usr/bin/node server.js
 Restart=always
 RestartSec=10
@@ -1226,7 +1229,10 @@ StandardError=journal
 SyslogIdentifier=kcy-portals
 NoNewPrivileges=true
 ProtectSystem=strict
+# portals чете статичните HTML от ${WEB_ROOT} → трябва read достъп.
+# ReadWritePaths дава и четене, и писане; ${WEB_ROOT} тук е заради статиките.
 ReadWritePaths=${PRIVATE_DIR}/portals/database /var/log/kcy-ecosystem /var/www/html/last-errors
+ReadOnlyPaths=${WEB_ROOT}
 
 [Install]
 WantedBy=multi-user.target
