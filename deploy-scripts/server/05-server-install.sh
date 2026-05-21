@@ -757,214 +757,37 @@ fi
 ##############################################################################
 # STEP 8: БАЗА ДАННИ — ПРОВЕРКА НА СХЕМАТА
 ##############################################################################
-print_step "СТЪПКА 8: База данни"
+print_step "СТЪПКА 8: База данни (chat)"
 
-# Обнови PG имената (.env вече е копиран в СТЪПКА 5)
-refresh_pg_names
+# Цялата chat DB логика е делегирана на 07-setup-database.sh.
+# Той чете DB_TYPE от .env и прави всичко автоматично:
+#   PostgreSQL → създава потребител+база (от .env), зарежда 19-те таблици
+#   SQLite     → създава файла, зарежда схемата
+# Без интерактивни въпроси. Без ръчна намеса.
+DB_SETUP_SCRIPT="$STAGING/deploy-scripts/server/07-setup-database.sh"
+[ -f "$DB_SETUP_SCRIPT" ] || DB_SETUP_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/07-setup-database.sh"
 
-# Извлечи очакваните таблици от db_setup.sql
-if [ -f "$DB_SCHEMA" ]; then
-    EXPECTED_TABLES=$(grep -oP '(?<=CREATE TABLE IF NOT EXISTS )\w+' "$DB_SCHEMA" | sort)
-    EXPECTED_COUNT=$(echo "$EXPECTED_TABLES" | wc -l)
-    echo -e "  ${CYAN}Очаквани таблици (от db_setup.sql): ${EXPECTED_COUNT}${NC}"
+# Определи типа от .env (за --force флага)
+DB_TYPE_ENV=$(grep "^DB_TYPE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r' | tr '[:upper:]' '[:lower:]')
+DB_TYPE_ENV="${DB_TYPE_ENV:-sqlite}"
+
+if [ -f "$DB_SETUP_SCRIPT" ]; then
+    echo -e "  ${CYAN}DB_TYPE от .env: ${DB_TYPE_ENV} — пускам 07-setup-database.sh${NC}"
+    if [ "$DB_TYPE_ENV" = "postgresql" ]; then
+        bash "$DB_SETUP_SCRIPT" --force-postgresql
+    else
+        bash "$DB_SETUP_SCRIPT" --force-sqlite
+    fi
+    DB_RC=$?
+    if [ "$DB_RC" -eq 0 ]; then
+        echo -e "  ${GREEN}✓ Базата данни на chat е готова${NC}"
+    else
+        echo -e "  ${RED}✗ 07-setup-database.sh върна грешка (код $DB_RC)${NC}"
+        diag_log services-errors.log "install: 07-setup-database.sh fail rc=$DB_RC"
+    fi
 else
-    echo -e "  ${YELLOW}! db_setup.sql не е намерен в staging${NC}"
-    EXPECTED_TABLES=""
-    EXPECTED_COUNT=0
-fi
-
-# Проверка на съществуваща DB
-if [ "$DB_TYPE" = "sqlite" ] && [ -f "$SQLITE_DB" ] && command -v sqlite3 &>/dev/null; then
-    echo ""
-    echo -e "  ${CYAN}Проверка на SQLite база: ${SQLITE_DB}${NC}"
-
-    EXISTING_TABLES=$(sqlite3 "$SQLITE_DB" ".tables" 2>/dev/null | tr -s ' ' '\n' | sort)
-    EXISTING_COUNT=$(echo "$EXISTING_TABLES" | grep -c '\S' || true)
-    echo -e "  Съществуващи таблици: ${EXISTING_COUNT}"
-
-    # Намери разлики
-    MISSING_TABLES=""
-    EXTRA_TABLES=""
-    COLUMN_DIFFS=""
-
-    for tbl in $EXPECTED_TABLES; do
-        if ! echo "$EXISTING_TABLES" | grep -qw "$tbl"; then
-            MISSING_TABLES="$MISSING_TABLES $tbl"
-        else
-            # Сравни колони
-            EXPECTED_COLS=$(grep -A 200 "CREATE TABLE IF NOT EXISTS $tbl" "$DB_SCHEMA" | \
-                grep -oP '^\s+\K\w+(?=\s+[A-Z])' | grep -v 'UNIQUE\|FOREIGN\|CHECK\|PRIMARY\|CREATE\|INSERT' | sort)
-            EXISTING_COLS=$(sqlite3 "$SQLITE_DB" "PRAGMA table_info($tbl);" 2>/dev/null | cut -d'|' -f2 | sort)
-
-            NEW_COLS=$(comm -23 <(echo "$EXPECTED_COLS") <(echo "$EXISTING_COLS") 2>/dev/null | tr '\n' ', ' | sed 's/,$//')
-            if [ -n "$NEW_COLS" ]; then
-                COLUMN_DIFFS="$COLUMN_DIFFS\n    $tbl: липсват колони → $NEW_COLS"
-            fi
-        fi
-    done
-
-    for tbl in $EXISTING_TABLES; do
-        if [ -n "$tbl" ] && ! echo "$EXPECTED_TABLES" | grep -qw "$tbl"; then
-            EXTRA_TABLES="$EXTRA_TABLES $tbl"
-        fi
-    done
-
-    # Покажи резултат
-    HAS_DIFFS=false
-    if [ -n "$MISSING_TABLES" ] || [ -n "$COLUMN_DIFFS" ]; then
-        HAS_DIFFS=true
-        echo ""
-        echo -e "  ${RED}╔══════════════════════════════════════════════════════╗${NC}"
-        echo -e "  ${RED}║  БАЗАТА ДАННИ НЕ Е АКТУАЛНА!                        ║${NC}"
-        echo -e "  ${RED}╠══════════════════════════════════════════════════════╣${NC}"
-        if [ -n "$MISSING_TABLES" ]; then
-            echo -e "  ${RED}║${NC}  ${YELLOW}Липсващи таблици:${NC}"
-            for tbl in $MISSING_TABLES; do
-                echo -e "  ${RED}║${NC}    ${RED}✗${NC} $tbl"
-            done
-        fi
-        if [ -n "$COLUMN_DIFFS" ]; then
-            echo -e "  ${RED}║${NC}  ${YELLOW}Непълни таблици:${NC}"
-            echo -e "$COLUMN_DIFFS"
-        fi
-        if [ -n "$EXTRA_TABLES" ]; then
-            echo -e "  ${RED}║${NC}  ${CYAN}Допълнителни таблици (няма ги в новата схема):${NC}"
-            for tbl in $EXTRA_TABLES; do
-                echo -e "  ${RED}║${NC}    ${CYAN}?${NC} $tbl"
-            done
-        fi
-        echo -e "  ${RED}╚══════════════════════════════════════════════════════╝${NC}"
-    else
-        echo -e "  ${GREEN}✓ Всички таблици и колони съвпадат${NC}"
-    fi
-
-    echo ""
-    echo -e "  ${CYAN}Какво да направя с базата данни?${NC}"
-    if [ "$HAS_DIFFS" = true ]; then
-        echo -e "    ${GREEN}1)${NC} Изтрий и създай наново (ИЗТРИВА всички данни!)"
-        echo -e "    ${GREEN}2)${NC} Остави както е (с разликите)"
-    else
-        echo -e "    ${GREEN}1)${NC} Изтрий и създай наново (ИЗТРИВА всички данни!)"
-        echo -e "    ${GREEN}2)${NC} Остави както е (всичко е актуално)"
-    fi
-    echo ""
-    read -p "  Избор [1/2]: " DB_CHOICE <&3
-
-    if [ "$DB_CHOICE" = "1" ]; then
-        echo -e "  ${RED}  Изтриване на старата база...${NC}"
-        rm -f "$SQLITE_DB"
-        sqlite3 "$SQLITE_DB" < "$DB_SCHEMA" 2>&1
-        chown "$CHAT_USER:$SVC_GROUP" "$SQLITE_DB"
-        chmod 660 "$SQLITE_DB"
-        NEW_TABLES=$(sqlite3 "$SQLITE_DB" ".tables" 2>/dev/null | wc -w)
-        echo -e "  ${GREEN}✓ Нова SQLite база: ${NEW_TABLES} таблици${NC}"
-    else
-        echo -e "  ${GREEN}✓ Базата остава${NC}"
-    fi
-
-elif [ "$DB_TYPE" = "postgresql" ]; then
-    echo ""
-    echo -e "  ${CYAN}Проверка на PostgreSQL база: ${PG_DB_NAME}${NC}"
-
-    EXISTING_TABLES=$(sudo -u postgres psql -d ${PG_DB_NAME} -t -c \
-        "SELECT tablename FROM pg_tables WHERE schemaname='public';" 2>/dev/null | tr -d ' ' | grep '\S' | sort)
-    EXISTING_COUNT=$(echo "$EXISTING_TABLES" | grep -c '\S' || true)
-    echo -e "  Съществуващи таблици: ${EXISTING_COUNT}"
-
-    MISSING_TABLES=""
-    for tbl in $EXPECTED_TABLES; do
-        if ! echo "$EXISTING_TABLES" | grep -qw "$tbl"; then
-            MISSING_TABLES="$MISSING_TABLES $tbl"
-        fi
-    done
-
-    if [ -n "$MISSING_TABLES" ]; then
-        echo ""
-        echo -e "  ${RED}╔══════════════════════════════════════════════════════╗${NC}"
-        echo -e "  ${RED}║  PostgreSQL БАЗАТА НЕ Е АКТУАЛНА!                   ║${NC}"
-        echo -e "  ${RED}╠══════════════════════════════════════════════════════╣${NC}"
-        echo -e "  ${RED}║${NC}  ${YELLOW}Липсващи таблици:${NC}"
-        for tbl in $MISSING_TABLES; do
-            echo -e "  ${RED}║${NC}    ${RED}✗${NC} $tbl"
-        done
-        echo -e "  ${RED}╚══════════════════════════════════════════════════════╝${NC}"
-    else
-        echo -e "  ${GREEN}✓ Всички таблици съществуват${NC}"
-    fi
-
-    echo ""
-    echo -e "  ${CYAN}Какво да направя?${NC}"
-    echo -e "    ${GREEN}1)${NC} Изтрий и създай наново (ИЗТРИВА всички данни!)"
-    echo -e "    ${GREEN}2)${NC} Остави както е"
-    echo ""
-    read -p "  Избор [1/2]: " DB_CHOICE <&3
-
-    if [ "$DB_CHOICE" = "1" ]; then
-        echo -e "  ${YELLOW}Пресъздаване на PostgreSQL база чрез 07-setup-database.sh...${NC}"
-        DB_SETUP_SCRIPT="$STAGING/deploy-scripts/server/07-setup-database.sh"
-        [ -f "$DB_SETUP_SCRIPT" ] || DB_SETUP_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/07-setup-database.sh"
-        if [ -f "$DB_SETUP_SCRIPT" ]; then
-            bash "$DB_SETUP_SCRIPT" --force-postgresql
-        else
-            echo -e "  ${RED}✗ 07-setup-database.sh не намерен${NC}"
-        fi
-    else
-        echo -e "  ${GREEN}✓ Базата остава${NC}"
-    fi
-
-else
-    # Няма база — създай нова
-    echo -e "  ${YELLOW}Няма съществуваща база данни.${NC}"
-    echo ""
-    echo -e "  ${CYAN}Какъв тип база да създам?${NC}"
-    echo -e "    ${GREEN}1)${NC} SQLite (по-просто, без допълнителна инсталация)"
-    echo -e "    ${GREEN}2)${NC} PostgreSQL (по-мощно, за продукция) ${CYAN}[ПО ПОДРАЗБИРАНЕ]${NC}"
-    echo -e "    ${GREEN}3)${NC} Пропусни (ще настроиш после с 07-setup-database.sh)"
-    echo ""
-    NEW_DB_CHOICE=""
-    if [ -t 0 ]; then
-        read -p "  Избор [1/2/3, Enter = 2 PostgreSQL]: " NEW_DB_CHOICE
-    elif [ -e /dev/fd/3 ]; then
-        read -p "  Избор [1/2/3, Enter = 2 PostgreSQL]: " NEW_DB_CHOICE <&3 2>/dev/null || NEW_DB_CHOICE=""
-    fi
-    NEW_DB_CHOICE="${NEW_DB_CHOICE:-2}"
-
-    case "$NEW_DB_CHOICE" in
-        1)
-            if [ -f "$DB_SCHEMA" ]; then
-                mkdir -p "$(dirname "$SQLITE_DB")"
-                sqlite3 "$SQLITE_DB" < "$DB_SCHEMA" 2>&1
-                chown "$CHAT_USER:$SVC_GROUP" "$SQLITE_DB"
-                chmod 660 "$SQLITE_DB"
-                NEW_TABLES=$(sqlite3 "$SQLITE_DB" ".tables" 2>/dev/null | wc -w)
-                echo -e "  ${GREEN}✓ SQLite база създадена: ${NEW_TABLES} таблици${NC}"
-
-                # Запиши DB_TYPE в .env
-                if [ -f "$GLOBAL_ENV" ]; then
-                    if grep -q "DB_TYPE=" "$GLOBAL_ENV"; then
-                        sed -i 's/DB_TYPE=.*/DB_TYPE=sqlite/' "$GLOBAL_ENV"
-                    else
-                        echo "DB_TYPE=sqlite" >> "$GLOBAL_ENV"
-                    fi
-                fi
-            else
-                echo -e "  ${RED}✗ db_setup.sql липсва!${NC}"
-            fi
-            ;;
-        2)
-            echo -e "  ${YELLOW}Настройка на PostgreSQL...${NC}"
-            DB_SETUP_SCRIPT="$STAGING/deploy-scripts/server/07-setup-database.sh"
-            [ -f "$DB_SETUP_SCRIPT" ] || DB_SETUP_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/07-setup-database.sh"
-            if [ -f "$DB_SETUP_SCRIPT" ]; then
-                bash "$DB_SETUP_SCRIPT" --force-postgresql
-            else
-                echo -e "  ${RED}✗ 07-setup-database.sh не намерен${NC}"
-            fi
-            ;;
-        3)
-            echo -e "  ${YELLOW}Пропуснато.${NC}"
-            ;;
-    esac
+    echo -e "  ${RED}✗ 07-setup-database.sh не намерен — базата не е настроена${NC}"
+    diag_log services-errors.log "install: 07-setup-database.sh липсва"
 fi
 
 # ── ECO-3 Database (SQLite) ──

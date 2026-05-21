@@ -17,8 +17,9 @@ CYAN=$'\033[0;36m'; BLUE=$'\033[0;34m'; NC=$'\033[0m'
 PROJECT_DIR="/var/www/kcy-ecosystem"
 CHAT_DIR="$PROJECT_DIR/private/chat"
 GLOBAL_ENV="$PROJECT_DIR/private/configs/.env"
-DB_NAME="ams_chat_db"; DB_USER="ams_chat_user"
-DB_PASSWORD="$(openssl rand -base64 32)"
+# DB настройките се четат ИЗЦЯЛО от .env. Няма default-и, няма случайни пароли.
+# Ако .env не ги дефинира → FATAL ERROR.
+DB_NAME=""; DB_USER=""; DB_PASSWORD=""
 BACKUP_DIR="$PROJECT_DIR/backups"
 SQLITE_DB="$CHAT_DIR/database/ams_db.sqlite"
 
@@ -267,35 +268,43 @@ echo -e "${CYAN}========================================${NC}\n"
 echo -e "  Global .env: ${GREEN}${GLOBAL_ENV}${NC}"
 echo ""
 
-# Determine database type
+# ── Типът на базата се определя ИЗЦЯЛО от DB_TYPE в .env ──
+# Няма detection по psql, няма въпроси. .env казва — .env командва.
+#   DB_TYPE=postgresql → PostgreSQL път (всичко друго се прескача)
+#   DB_TYPE=sqlite     → SQLite път
+#   липсва/невалиден   → FATAL ERROR
 USE_POSTGRESQL=false
 
-if [ "$FORCE_SQLITE" = true ]; then
-    echo -e "${YELLOW}Mode: Force SQLite${NC}"
-    USE_POSTGRESQL=false
-elif [ "$FORCE_POSTGRESQL" = true ]; then
-    echo -e "${YELLOW}Mode: Force PostgreSQL${NC}"
-    USE_POSTGRESQL=true
-elif command -v psql &> /dev/null; then
-    echo -e "${GREEN}PostgreSQL detected — using PostgreSQL${NC}"
-    USE_POSTGRESQL=true
-else
-    # PostgreSQL не е инсталиран — питай (default = PostgreSQL, инсталира го)
-    echo -e "${YELLOW}PostgreSQL не е инсталиран.${NC}"
-    echo ""
-    echo -e "  ${GREEN}1)${NC} Инсталирай PostgreSQL (production) ${CYAN}[ПО ПОДРАЗБИРАНЕ]${NC}"
-    echo -e "  ${GREEN}2)${NC} Използвай SQLite (development)"
-    echo ""
-    read -p "  Избор [1-2, Enter = 1 PostgreSQL]: " DB_PICK
-    DB_PICK="${DB_PICK:-1}"
-    if [ "$DB_PICK" = "2" ]; then
-        echo -e "${YELLOW}Mode: SQLite${NC}"
-        USE_POSTGRESQL=false
-    else
-        echo -e "${GREEN}Mode: PostgreSQL (ще се инсталира)${NC}"
-        USE_POSTGRESQL=true
-    fi
+if [ ! -f "$GLOBAL_ENV" ]; then
+    echo -e "${RED}✗ FATAL: .env не е намерен: $GLOBAL_ENV${NC}"
+    exit 1
 fi
+
+ENV_DB_TYPE=$(grep "^DB_TYPE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r' | tr '[:upper:]' '[:lower:]' | xargs)
+
+# --force флаговете могат да override-нат (за ръчно ползване), иначе .env решава
+if [ "$FORCE_SQLITE" = true ]; then
+    ENV_DB_TYPE="sqlite"
+elif [ "$FORCE_POSTGRESQL" = true ]; then
+    ENV_DB_TYPE="postgresql"
+fi
+
+case "$ENV_DB_TYPE" in
+    postgresql)
+        echo -e "${GREEN}DB_TYPE=postgresql → PostgreSQL${NC}"
+        USE_POSTGRESQL=true
+        ;;
+    sqlite)
+        echo -e "${GREEN}DB_TYPE=sqlite → SQLite${NC}"
+        USE_POSTGRESQL=false
+        ;;
+    *)
+        echo -e "${RED}✗ FATAL: DB_TYPE в .env е невалиден или липсва${NC}"
+        echo -e "${RED}  Намерено: DB_TYPE='${ENV_DB_TYPE}'${NC}"
+        echo -e "${YELLOW}  Допустими стойности: postgresql или sqlite${NC}"
+        exit 1
+        ;;
+esac
 
 ##############################################################################
 # PostgreSQL Setup
@@ -304,22 +313,27 @@ fi
 if [ "$USE_POSTGRESQL" = true ]; then
     echo -e "\n${CYAN}======== PostgreSQL Setup ========${NC}\n"
 
-    # ── .env е source of truth — прочети PG настройките оттам ако ги има ──
-    # Така PG потребителят/базата се създават С ТОЧНО тези имена/парола,
+    # ── .env е source of truth — прочети PG настройките оттам ──
+    # Потребителят/базата се създават С ТОЧНО тези имена/парола от .env,
     # които chat сървисът после ще ползва за връзка. Без разминаване.
-    if [ -f "$GLOBAL_ENV" ]; then
-        ENV_DB=$(grep "^PG_DATABASE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
-        ENV_USER=$(grep "^PG_USER=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
-        ENV_PASS=$(grep "^PG_PASSWORD=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
-        [ -n "$ENV_DB" ]   && DB_NAME="$ENV_DB"
-        [ -n "$ENV_USER" ] && DB_USER="$ENV_USER"
-        [ -n "$ENV_PASS" ] && DB_PASSWORD="$ENV_PASS"
-        if [ -n "$ENV_USER" ]; then
-            echo -e "${CYAN}  Ползвам PG настройки от .env: ${DB_USER}@${DB_NAME}${NC}"
-        else
-            echo -e "${YELLOW}  .env няма PG настройки — генерирам нови${NC}"
-        fi
+    if [ ! -f "$GLOBAL_ENV" ]; then
+        echo -e "${RED}✗ .env не е намерен: $GLOBAL_ENV${NC}"
+        echo -e "${RED}  PostgreSQL не може да се настрои без PG настройки от .env${NC}"
+        exit 1
     fi
+    ENV_DB=$(grep "^PG_DATABASE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+    ENV_USER=$(grep "^PG_USER=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+    ENV_PASS=$(grep "^PG_PASSWORD=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+    if [ -z "$ENV_DB" ] || [ -z "$ENV_USER" ] || [ -z "$ENV_PASS" ]; then
+        echo -e "${RED}✗ .env няма пълни PG настройки${NC}"
+        echo -e "${RED}  Нужни: PG_DATABASE, PG_USER, PG_PASSWORD${NC}"
+        echo -e "${YELLOW}  PG_DATABASE='${ENV_DB}' PG_USER='${ENV_USER}' PG_PASSWORD=$([ -n "$ENV_PASS" ] && echo SET || echo ПРАЗНА)${NC}"
+        exit 1
+    fi
+    DB_NAME="$ENV_DB"
+    DB_USER="$ENV_USER"
+    DB_PASSWORD="$ENV_PASS"
+    echo -e "${CYAN}  PG настройки от .env: ${DB_USER}@${DB_NAME}${NC}"
 
     # Install if needed
     if ! command -v psql &> /dev/null; then
@@ -374,30 +388,23 @@ if [ "$USE_POSTGRESQL" = true ]; then
              ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO \"$DB_USER\";" 2>&1 | tail -1
         TBL_COUNT=$(sudo -u postgres psql -d "$DB_NAME" -tAc "SELECT count(*) FROM pg_tables WHERE schemaname='public'" 2>/dev/null)
         echo -e "${GREEN}  ✓ Schema loaded — ${TBL_COUNT:-0} таблици (${SCHEMA_FILE##*/})${NC}"
+        # Лог към диагностиката (вижда се в bundle URL → services-errors.log)
+        if [ -d /var/www/html/last-errors ]; then
+            echo "[$(date '+%Y-%m-%dT%H:%M:%S')] [07-setup-database] PostgreSQL схема: ${TBL_COUNT:-0} таблици заредени в $DB_NAME" \
+                >> /var/www/html/last-errors/services-errors.log 2>/dev/null || true
+        fi
+        if [ "${TBL_COUNT:-0}" -lt 19 ] 2>/dev/null; then
+            echo -e "${RED}  ⚠ ОЧАКВАХА СЕ 19 таблици, заредени са ${TBL_COUNT:-0}${NC}"
+        fi
     else
         echo -e "${RED}  ✗ Schema файл не е намерен${NC}"
     fi
 
-    # Migrate from SQLite
-    echo -e "${GREEN}[5/6] Checking SQLite migration...${NC}"
-    if [ -f "$SQLITE_DB" ]; then
-        echo -e "${CYAN}  Migrating from SQLite...${NC}"
-        if ! command -v pgloader &> /dev/null; then
-            apt-get install -y pgloader
-        fi
-        cat > /tmp/migration.load << LOADEOF
-LOAD DATABASE
-    FROM sqlite://$SQLITE_DB
-    INTO postgresql://$DB_USER:$DB_PASSWORD@localhost/$DB_NAME
-WITH include drop, create tables, create indexes, reset sequences
-SET work_mem to '16MB', maintenance_work_mem to '512 MB';
-LOADEOF
-        pgloader /tmp/migration.load 2>&1 || echo -e "${YELLOW}  ! Check migration${NC}"
-        cp "$SQLITE_DB" "$SQLITE_DB.backup.$(date +%Y%m%d_%H%M%S)"
-        echo -e "${GREEN}  ✓ Migrated & backed up${NC}"
-    else
-        echo -e "${YELLOW}  ! No SQLite DB to migrate${NC}"
-    fi
+    # [5/6] — миграцията от SQLite е ПРЕМАХНАТА.
+    # Схемата вече се зарежда чиста от postgresql_setup.sql в [4/6].
+    # Старият pgloader с "include drop" ТРИЕШЕ заредените таблици и ги
+    # пресъздаваше от SQLite — деструктивно, оставяше базата с грешна/празна схема.
+    echo -e "${GREEN}[5/6] Схема готова (миграция от SQLite не се прави)${NC}"
 
     # Install pg driver
     echo -e "${GREEN}[6/6] pg driver...${NC}"
@@ -417,41 +424,12 @@ host    $DB_NAME    $DB_USER    127.0.0.1/32    scram-sha-256
 HBAEOF
     systemctl reload postgresql
 
-    # ── Write to global .env ──
+    # ── .env НЕ се пипа ──
+    # .env е source of truth. 07-setup-database.sh само ЧЕТЕ от него (в началото
+    # на PostgreSQL секцията) и създава потребител/база С тези стойности.
+    # Никакъв set_env_var — за да не презапише .env със случайни/грешни стойности.
     echo ""
-    echo -e "${GREEN}Writing database config to ${GLOBAL_ENV}...${NC}"
-    set_env_var "DB_TYPE" "postgresql"
-    set_env_var "PG_HOST" "localhost"
-    set_env_var "PG_PORT" "5432"
-    set_env_var "PG_DATABASE" "$DB_NAME"
-    set_env_var "PG_USER" "$DB_USER"
-    set_env_var "PG_PASSWORD" "$DB_PASSWORD"
-
-    # Generate secrets if missing
-    grep -q "^JWT_SECRET=" "$GLOBAL_ENV" 2>/dev/null || set_env_var "JWT_SECRET" "$(openssl rand -hex 32)"
-    grep -q "^SESSION_SECRET=" "$GLOBAL_ENV" 2>/dev/null || set_env_var "SESSION_SECRET" "$(openssl rand -hex 32)"
-
-    chown root:kcy "$GLOBAL_ENV"
-    chmod 600 "$GLOBAL_ENV"
-    echo -e "${GREEN}  ✓ .env updated (existing settings preserved)${NC}"
-
-    # Save credentials separately
-    CREDS_FILE="$PROJECT_DIR/database-credentials.txt"
-    cat > "$CREDS_FILE" << CREDSEOF
-PostgreSQL Credentials
-======================
-DB: $DB_NAME
-User: $DB_USER
-Pass: $DB_PASSWORD
-Host: localhost
-Port: 5432
-Connection: postgresql://$DB_USER:$DB_PASSWORD@localhost:5432/$DB_NAME
-
-⚠️  KEEP SECURE! Delete after saving.
-CREDSEOF
-    chmod 600 "$CREDS_FILE"
-
-    echo ""
+    echo -e "${CYAN}  .env не се променя — PG настройките се четат оттам.${NC}"
     echo -e "${CYAN}========================================${NC}"
     echo -e "${GREEN}  ✓ PostgreSQL READY!${NC}"
     echo -e "${CYAN}========================================${NC}\n"
@@ -465,8 +443,26 @@ CREDSEOF
 else
     echo -e "\n${CYAN}======== SQLite Setup ========${NC}\n"
 
+    # SQLITE_DB_FILE се чете от .env. Без него → FATAL ERROR.
+    if [ ! -f "$GLOBAL_ENV" ]; then
+        echo -e "${RED}✗ .env не е намерен: $GLOBAL_ENV${NC}"
+        exit 1
+    fi
+    ENV_SQLITE=$(grep "^SQLITE_DB_FILE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+    if [ -z "$ENV_SQLITE" ]; then
+        echo -e "${RED}✗ .env няма SQLITE_DB_FILE${NC}"
+        echo -e "${RED}  SQLite не може да се настрои без зададен път${NC}"
+        exit 1
+    fi
+    # Пътят в .env е относителен спрямо chat (database/amschat.db) → пълен път
+    case "$ENV_SQLITE" in
+        /*) SQLITE_DB="$ENV_SQLITE" ;;
+        *)  SQLITE_DB="$CHAT_DIR/$ENV_SQLITE" ;;
+    esac
+    echo -e "${CYAN}  SQLite файл от .env: ${SQLITE_DB}${NC}"
+
     echo -e "${GREEN}[1/3] Creating SQLite DB...${NC}"
-    mkdir -p "$CHAT_DIR/database"
+    mkdir -p "$(dirname "$SQLITE_DB")"
 
     if [ -f "$SQLITE_DB" ]; then
         echo -e "${YELLOW}  ! DB exists, backing up...${NC}"
@@ -509,17 +505,10 @@ EOF
         echo -e "${GREEN}  ✓ better-sqlite3 installed${NC}"
     fi
 
-    # ── Write to global .env ──
-    echo -e "${GREEN}[3/3] Writing database config to ${GLOBAL_ENV}...${NC}"
-    set_env_var "DB_TYPE" "sqlite"
-
-    # Generate secrets if missing
-    grep -q "^JWT_SECRET=" "$GLOBAL_ENV" 2>/dev/null || set_env_var "JWT_SECRET" "$(openssl rand -hex 32)"
-    grep -q "^SESSION_SECRET=" "$GLOBAL_ENV" 2>/dev/null || set_env_var "SESSION_SECRET" "$(openssl rand -hex 32)"
-
-    chown root:kcy "$GLOBAL_ENV"
-    chmod 600 "$GLOBAL_ENV"
-    echo -e "${GREEN}  ✓ .env updated (existing settings preserved)${NC}"
+    # ── .env НЕ се пипа ──
+    # DB_TYPE, SQLITE_DB_FILE, JWT_SECRET, SESSION_SECRET — всичко идва от .env.
+    # 07-setup-database.sh само ЧЕТЕ. Ако нещо липсва → беше FATAL ERROR по-горе.
+    echo -e "${CYAN}[3/3] .env не се променя — настройките се четат оттам.${NC}"
 
     echo ""
     echo -e "${CYAN}========================================${NC}"
