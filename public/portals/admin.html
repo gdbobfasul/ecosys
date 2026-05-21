@@ -48,6 +48,7 @@
     <input id="q" type="text" placeholder="Търси по име, рекламен линк или описание на дейност…">
     <button onclick="doSearch()">🔍 Търси</button>
     <button class="sec" onclick="clearSearch()">Изчисти</button>
+    <button class="sec" style="background:#5a3a1f;color:#ffce8a" onclick="cleanupTest()">🧹 Изчисти тестови (__diagtest/__sessn)</button>
   </div>
   <div class="meta" id="meta"></div>
   <div id="content"><div class="loading">Зареждам…</div></div>
@@ -153,6 +154,17 @@ function del(id, name){
     })
     .then(function(){ load(); })
     .catch(function(e){ alert('Грешка при триене: '+e.message); });
+}
+
+function cleanupTest(){
+  if(!confirm('Изтриване на ВСИЧКИ тестови потребители (__diagtest..., __sessn_...)?\nТова е боклук от диагностиката — безопасно е.')) return;
+  fetch(api('/cleanup-test'), { method:'POST' })
+    .then(function(r){
+      if(!r.ok) return r.text().then(function(b){ throw new Error('HTTP '+r.status+' — '+b.slice(0,150)); });
+      return r.json();
+    })
+    .then(function(d){ alert('Изтрити '+d.removed+' тестови потребителя.'); state.page=1; load(); })
+    .catch(function(e){ alert('Грешка: '+e.message); });
 }
 
 document.getElementById('q').addEventListener('keydown', function(e){ if(e.key==='Enter') doSearch(); });

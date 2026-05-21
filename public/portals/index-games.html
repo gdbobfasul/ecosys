@@ -128,7 +128,6 @@ function loadGames(){
       var pr=game.progress||{best_level:1,best_score:0};
       var a=document.createElement('a');
       a.className='game'; a.href=game.slug+'.html';
-      a.innerHTML=
       var icon = ICONS[game.slug] || ICONS[ICON_FALLBACK[game.theme]] || '';
       a.innerHTML=
         '<div class="thumb '+game.theme+'">'+icon+'</div>'+

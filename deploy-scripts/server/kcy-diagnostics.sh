@@ -301,19 +301,16 @@ H_DIAG=$(http_check "http://127.0.0.1:4400/health")
     echo "[$TS]   billing/status СЪС сесия (nginx HTTPS): $BILLING_NGINX"
     rm -f "$CJAR" "$CJAR2" 2>/dev/null || true
 
-    # Почисти тестовите потребители които този тест създаде — иначе portal_users
-    # се пълни с боклук (__diagtest__, __sessn_...) при всяко пускане на диагностиката.
+    # Почисти тестовите потребители (__diagtest%, __sess%) — иначе portal_users
+    # се пълни с боклук при всяко пускане. Ползваме sqlite3 CLI ако е наличен,
+    # иначе пропускаме тихо (cleanup-ът не е критичен).
     PORTAL_DB_FILE="/var/www/kcy-ecosystem/private/portals/database/portals.db"
-    if [ -f "$PORTAL_DB_FILE" ]; then
-        node -e "
-          try {
-            const D = require('/var/www/kcy-ecosystem/private/portals/node_modules/better-sqlite3');
-            const db = new D('$PORTAL_DB_FILE');
-            const r = db.prepare(\"DELETE FROM portal_users WHERE username LIKE '__diagtest%' OR username LIKE '__sess%'\").run();
-            db.close();
-            console.log('diag cleanup: изтрити ' + r.changes + ' тестови потребителя');
-          } catch (e) { console.log('diag cleanup пропуснат: ' + e.message); }
-        " 2>/dev/null | sed "s/^/[$TS]   /" || true
+    if [ -f "$PORTAL_DB_FILE" ] && command -v sqlite3 >/dev/null 2>&1; then
+        DEL=$(sqlite3 "$PORTAL_DB_FILE" \
+            "DELETE FROM portal_users WHERE username LIKE '__diagtest%' OR username LIKE '__sess%'; SELECT changes();" 2>/dev/null)
+        echo "[$TS]   diag cleanup: изтрити ${DEL:-0} тестови потребителя"
+    else
+        echo "[$TS]   diag cleanup: пропуснат (sqlite3 CLI липсва)"
     fi
 
     # 6. Portal games/services страници — тест директно на 3002

@@ -108,4 +108,27 @@ router.delete('/users/:id', requireAdmin, (req, res) => {
     log('изход 2 -> 200 OK');
 });
 
+// POST /api/portals/adm/cleanup-test — трие всички тестови потребители наведнъж
+// (__diagtest..., __sessn_..., __sess_...) — боклук от диагностиката
+router.post('/cleanup-test', requireAdmin, (req, res) => {
+    const log = debug.scoped(req, 'adm/cleanup-test');
+    log('старт');
+    const db = req.app.locals.db;
+    // намери ID-тата на тестовите потребители
+    const ids = db.prepare(
+        "SELECT id FROM portal_users WHERE username LIKE '__diagtest%' OR username LIKE '__sess%'"
+    ).all().map(function (r) { return r.id; });
+    let removed = 0;
+    ids.forEach(function (id) {
+        try { db.prepare("DELETE FROM portal_game_scores WHERE user_id = ?").run(id); } catch (e) {}
+        try { db.prepare("DELETE FROM portal_game_progress WHERE user_id = ?").run(id); } catch (e) {}
+        try { db.prepare("DELETE FROM portal_monthly_payments WHERE user_id = ?").run(id); } catch (e) {}
+        const info = db.prepare("DELETE FROM portal_users WHERE id = ?").run(id);
+        removed += info.changes;
+    });
+    log('1 — изтрити ' + removed + ' тестови потребителя');
+    res.json({ ok: true, removed: removed });
+    log('изход 1 -> 200 OK');
+});
+
 module.exports = router;
