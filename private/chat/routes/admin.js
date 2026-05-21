@@ -1,6 +1,7 @@
-// Version: 1.0056
+// Version: 1.0092
 const express = require('express');
 const { hashPassword, verifyPassword } = require('../utils/password');
+const { getDatabaseType } = require('../utils/database');
 
 function createAdminRoutes(db) {
   const router = express.Router();
@@ -1194,9 +1195,12 @@ function createAdminRoutes(db) {
     };
 
     // ── Chat service ──
+    // await работи и за SQLite (sync — await на не-Promise връща стойността)
+    // и за PostgreSQL (wrapper-ът връща Promise).
+    const dbType = getDatabaseType();
     try {
-      const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get();
-      const sessionCount = db.prepare('SELECT COUNT(*) as count FROM sessions').get();
+      const userCount = await db.prepare('SELECT COUNT(*) as count FROM users').get();
+      const sessionCount = await db.prepare('SELECT COUNT(*) as count FROM sessions').get();
       status.services.chat = {
         status: 'running',
         port: process.env.CHAT_PORT || 3000,
@@ -1205,18 +1209,21 @@ function createAdminRoutes(db) {
       };
       status.database.chat = {
         status: 'connected',
-        type: 'sqlite',
-        users: userCount.count,
-        activeSessions: sessionCount.count
+        type: dbType,
+        users: userCount ? userCount.count : 0,
+        activeSessions: sessionCount ? sessionCount.count : 0
       };
     } catch (err) {
       status.services.chat = { status: 'error', error: err.message };
       status.database.chat = { status: 'error', error: err.message };
     }
 
-    // ── Database tables check ──
+    // ── Database tables check (DB-agnostic) ──
     try {
-      const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all();
+      const tablesQuery = dbType === 'postgresql'
+        ? "SELECT tablename AS name FROM pg_tables WHERE schemaname='public' ORDER BY tablename"
+        : "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
+      const tables = await db.prepare(tablesQuery).all();
       status.database.tables = tables.map(t => t.name);
       status.database.tableCount = tables.length;
     } catch (err) {
