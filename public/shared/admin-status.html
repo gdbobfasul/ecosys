@@ -332,11 +332,20 @@
                 `;
             }
             if (data.disk) {
+                // disk може да е стринг "11G/24G (44%)" ИЛИ обект {used,total,percent}
+                var diskText;
+                if (typeof data.disk === 'string') {
+                    diskText = data.disk;
+                } else {
+                    diskText = (data.disk.used || '?') + ' / ' + (data.disk.total || '?') +
+                               ' (' + (data.disk.percent || '?') + '%)' +
+                               (data.disk.free ? '<br>Free: ' + data.disk.free : '');
+                }
                 services.innerHTML += `
                     <div style="background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px;">
                         <div style="font-weight:600; color:#e1e4e8; font-size:0.9em;">💾 Disk</div>
                         <div style="font-size:0.75em; color:#8b949e; margin-top:2px;">
-                            ${data.disk.used} / ${data.disk.total} (${data.disk.percent}%)<br>Free: ${data.disk.free}
+                            ${diskText}
                         </div>
                     </div>
                 `;
@@ -345,17 +354,24 @@
                 const dot = (v) => {
                     if (v === 'yes' || v === '200') return '<span style="color:#3fb950">✓</span>';
                     if (v === 'no' || v === 'down') return '<span style="color:#f85149">✗</span>';
+                    if (v == null) return '<span style="color:#8b949e">—</span>';
                     return '<span style="color:#d29922">⚠ ' + v + '</span>';
                 };
                 const ep = data.endpoints;
+                // устойчиво — ако някой сервис липсва, не гърми
+                const epRow = (label, svc, portKey) => {
+                    const s = ep[svc] || {};
+                    return '<strong>' + label + '</strong> ' + dot(s[portKey]) +
+                           ' · health ' + dot(s.health) + '<br>';
+                };
                 services.innerHTML += `
                     <div style="background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px; grid-column: span 2;">
                         <div style="font-weight:600; color:#e1e4e8; font-size:0.9em; margin-bottom:6px;">🔌 Портове & Health endpoints</div>
                         <div style="font-size:0.75em; color:#8b949e; line-height:1.7;">
-                            <strong>chat</strong> :3000 ${dot(ep.chat.port_3000)} · health ${dot(ep.chat.health)}<br>
-                            <strong>eco-3</strong> :3001 ${dot(ep.eco3.port_3001)} · health ${dot(ep.eco3.health)}<br>
-                            <strong>portals</strong> :3002 ${dot(ep.portals.port_3002)} · health ${dot(ep.portals.health)}<br>
-                            <strong>diag</strong> :4400 ${dot(ep.diag.port_4400)} · health ${dot(ep.diag.health)}
+                            ${epRow('chat :3000', 'chat', 'port_3000')}
+                            ${epRow('eco-3 :3001', 'eco3', 'port_3001')}
+                            ${epRow('portals :3002', 'portals', 'port_3002')}
+                            ${epRow('diag :4400', 'diag', 'port_4400')}
                         </div>
                     </div>
                 `;
@@ -498,6 +514,13 @@
         if (db.tables && db.tables.length > 0) {
             html += `<div class="table-list" style="margin-top:10px;">${db.tables.map(t => `<span>${t}</span>`).join('')}</div>`;
         }
+        // покажи реалната грешка, ако има
+        if (db.chat?.error) {
+            html += `<div style="margin-top:10px; padding:8px; background:#3a1c1c; border:1px solid #6b2b2b; border-radius:6px; font-size:0.78em; color:#f0883e; word-break:break-all;">⚠ DB грешка: ${String(db.chat.error).replace(/</g,'&lt;')}</div>`;
+        }
+        if (db.tablesError) {
+            html += `<div style="margin-top:6px; padding:8px; background:#3a1c1c; border:1px solid #6b2b2b; border-radius:6px; font-size:0.78em; color:#f0883e; word-break:break-all;">⚠ Таблици грешка: ${String(db.tablesError).replace(/</g,'&lt;')}</div>`;
+        }
         html += `</div>`;
 
         // ── ECO-3 Database ──
@@ -551,8 +574,10 @@
 
     async function loadStatus() {
         const content = document.getElementById('content');
+        let stage = 'fetch';
         try {
             const res = await fetch(API_BASE + '/admin/ecosystem-status');
+            stage = 'http-check (HTTP ' + res.status + ')';
             if (res.status === 403) {
                 content.innerHTML = `<div style="padding:40px"><div class="error-box">
                     ⛔ Достъпът е отказан (IP не е в ADMIN_ALLOWED_IPS)<br>
@@ -561,34 +586,51 @@
                 </div></div>`;
                 return;
             }
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const data = await res.json();
-            
-            // Also fetch ECO-3 database status
+            if (!res.ok) {
+                let body = '';
+                try { body = await res.text(); } catch (e) {}
+                throw new Error('HTTP ' + res.status + (body ? ' — ' + body.slice(0, 300) : ''));
+            }
+            stage = 'parse-json';
+            const raw = await res.text();
+            let data;
             try {
-                const eco3Res = await fetch(API_BASE.replace('/chat', '/eco3') + '/admin/db-status');
+                data = JSON.parse(raw);
+            } catch (e) {
+                throw new Error('Отговорът не е валиден JSON. Първите символи: ' + raw.slice(0, 200));
+            }
+
+            stage = 'fetch-eco3';
+            // eco-3 е на /api/eco3/ (nginx proxy към :3001)
+            const ECO3_BASE = window.location.origin + '/api/eco3';
+            try {
+                const eco3Res = await fetch(ECO3_BASE + '/admin/db-status');
                 if (eco3Res.ok) data.eco3db = await eco3Res.json();
             } catch { data.eco3db = { connected: false }; }
-            // Fallback: try ECO-3 health if db-status blocked by IP
             if (!data.eco3db || !data.eco3db.connected) {
                 try {
-                    const hRes = await fetch(API_BASE.replace('/chat', '/eco3') + '/health');
+                    const hRes = await fetch(ECO3_BASE + '/health');
                     if (hRes.ok) { const h = await hRes.json(); data.eco3db = h.database || { connected: false }; }
                 } catch {}
             }
-            
+
+            stage = 'render';
             content.innerHTML = renderStatus(data);
-            document.getElementById('lastUpdate').textContent = 
+            document.getElementById('lastUpdate').textContent =
                 'Updated: ' + new Date().toLocaleTimeString('bg-BG');
         } catch (err) {
             content.innerHTML = `<div style="padding:40px"><div class="error-box">
-                ❌ Не може да се свърже с Chat API<br>
-                <small style="color:#8b949e">${err.message}<br><br>
+                ❌ Грешка при зареждане на статуса<br>
+                <small style="color:#f0883e">Етап: <strong>${stage}</strong></small><br>
+                <small style="color:#8b949e; word-break:break-all">
+                ${String(err.message).replace(/</g,'&lt;')}<br><br>
                 Възможни причини:<br>
-                • kcy-chat не работи (sudo systemctl status kcy-chat)<br>
-                • Nginx не пропуска /api/chat/ (проверете конфигурацията)<br>
-                • .env файлът липсва или не е линкнат</small>
+                • ако етапът е <b>fetch</b> — kcy-chat не работи или nginx не пропуска /api/<br>
+                • ако е <b>http-check</b> — route-ът върна не-200 (виж текста горе)<br>
+                • ако е <b>parse-json</b> — route-ът върна HTML/празно вместо JSON<br>
+                • ако е <b>render</b> — структурата на отговора е различна от очакваната</small>
             </div></div>`;
+            console.error('[admin-status] loadStatus гръмна на етап:', stage, err);
         }
     }
 

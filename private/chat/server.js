@@ -344,6 +344,8 @@ const PORT = process.env.CHAT_PORT || 3000;
   try {
     // Initialize database first
     await setupDatabase();
+    // Сложи db в app.locals — за route-ове монтирани преди db да е готов
+    app.locals.db = db;
     
     // Load emergency contacts seed data (only if table is empty)
     if (getDatabaseType() === 'sqlite') {

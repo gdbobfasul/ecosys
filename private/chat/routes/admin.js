@@ -3,8 +3,22 @@ const express = require('express');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const { getDatabaseType } = require('../utils/database');
 
+// Debug helper — логва старта/изхода на ecosystem-status за диагностика
+let debug;
+try { debug = require('../../shared/debug-helper').create('chat'); }
+catch (e) { debug = { scoped: () => () => {}, error: () => {} }; }
+
 function createAdminRoutes(db) {
   const router = express.Router();
+
+  // db от аргумента може да е undefined (този route се монтира в server.js
+  // ПРЕДИ setupDatabase() да е приключил). Затова при всяка заявка взимаме
+  // живия db от app.locals (server.js го слага там след init).
+  // Преназначаването на closure-променливата 'db' оправя ВСИЧКИ заявки наведнъж.
+  router.use((req, res, next) => {
+    if (req.app.locals.db) db = req.app.locals.db;
+    next();
+  });
 
   // Middleware: Check admin IP
   router.use((req, res, next) => {
@@ -1185,6 +1199,8 @@ function createAdminRoutes(db) {
   // ECOSYSTEM STATUS — Проверка на всички сървиси
   // ══════════════════════════════════════════════════
   router.get('/ecosystem-status', async (req, res) => {
+    const log = debug.scoped(req, 'ecosystem-status');
+    log('старт');
     const status = {
       timestamp: new Date().toISOString(),
       services: {},
@@ -1214,6 +1230,7 @@ function createAdminRoutes(db) {
         activeSessions: sessionCount ? sessionCount.count : 0
       };
     } catch (err) {
+      log('ГРЕШКА chat DB: ' + err.message);
       status.services.chat = { status: 'error', error: err.message };
       status.database.chat = { status: 'error', error: err.message };
     }
@@ -1227,6 +1244,7 @@ function createAdminRoutes(db) {
       status.database.tables = tables.map(t => t.name);
       status.database.tableCount = tables.length;
     } catch (err) {
+      log('ГРЕШКА tables заявка: ' + err.message);
       status.database.tables = [];
       status.database.tableCount = 0;
       status.database.tablesError = err.message;
@@ -1356,6 +1374,7 @@ function createAdminRoutes(db) {
       status.paths[key] = { path: p, exists: fs.existsSync(p) };
     }
 
+    log('изход 1 → 200 OK');
     res.json(status);
   });
 
