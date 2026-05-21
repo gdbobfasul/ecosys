@@ -34,10 +34,10 @@ const GAMES = [
       controls: 'Space или ↑ за скок.', levels: 10 },
     { slug: 'battle-team', title: 'Битка на терен — 3 срещу 3', theme: 'battle',
       goal: 'Походова битка. 3 произволни героя срещу 3 вражески. Изтреби вражеския отбор.',
-      controls: 'Клавиши 1 / 2 за удари. Скрита 4-клавишна комбинация за специален удар.', levels: 10 },
+      controls: 'Клавиши V / B за удари. Скрита 4-буквена комбинация (други букви) за специален удар.', levels: 10 },
     { slug: 'battle-duel', title: 'Дуел на ринга — 1 срещу 1', theme: 'battle',
       goal: 'Походов дуел. Твой произволен герой срещу противник. Победи го.',
-      controls: 'Клавиши 1 / 2 за удари. Скрита 4-клавишна комбинация за специален удар.', levels: 10 },
+      controls: 'Клавиши V / B за удари. Скрита 4-буквена комбинация (други букви) за специален удар.', levels: 10 },
 ];
 
 function currentMonth() {
@@ -144,10 +144,11 @@ router.get('/leaderboard/:slug', requirePortalAccessAPI, (req, res) => {
     log('изход 1 -> 200 OK (' + rows.length + ' резултата)');
 });
 
-// GET /api/portal-games/ranking — ОБЩА МЕСЕЧНА ранг листа (сбор от 6-те игри)
+// GET /api/portal-games/ranking — ОБЩА МЕСЕЧНА ранг листа (сбор от игрите)
 // Нулира се всеки месец автоматично — брои само резултати от текущия месец.
 // Топ 5 получават рекламно място (описание + линк от регистрацията).
-router.get('/ranking', requirePortalAccessAPI, (req, res) => {
+// ПУБЛИЧНА — класацията се вижда от всеки, без плащане/login (това е реклама).
+router.get('/ranking', (req, res) => {
     const log = debug.scoped(req, 'portal-games/ranking');
     log('старт');
     const db = req.app.locals.db;

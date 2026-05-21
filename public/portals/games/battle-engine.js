@@ -16,7 +16,11 @@
 (function (global) {
 'use strict';
 
-var COMBO_KEYS = ['1', '2', '3', '4'];
+// Клавиши за обикновени удари — v / b
+var MOVE_KEYS = ['v', 'b'];
+// Клавиши за скритата 4-буквена комбинация за специален удар.
+// Нарочно НЕ включват v/b (за да не се бъркат с обикновените удари).
+var COMBO_KEYS = ['q', 'w', 'e', 'r', 'a', 's', 'd', 'f'];
 
 function pickRandom(arr, n) {
     var copy = arr.slice(), out = [];
@@ -42,7 +46,6 @@ function BattleEngine(opts) {
     this.score = 0;
     this.bestLevel = 1;
     this.bestScore = 0;
-    this.combo = [];
     this.comboInput = [];
     this.turnOrder = [];
     this.turnIdx = 0;
@@ -51,7 +54,33 @@ function BattleEngine(opts) {
     this.anim = null;       // текуща анимация на удар
     this.msg = '';
     this.particles = [];
+
+    // admin режим — ?adm=bgmasters-set в URL-а
+    this.isAdmin = /[?&]adm=bgmasters-set/.test(global.location ? global.location.search : '');
+
+    // Комбинациите се конфигурират ВЕДНЪЖ при зареждане на страницата.
+    // Не се сменят между нивата — откриваш ги докато играеш.
+    this.genCombos();
 }
+
+// генерира скритите 4-буквени комбинации — по 1 или 2 на герой (= specials.length)
+BattleEngine.prototype.genCombos = function () {
+    this.heroCombos = {};   // { heroId: [ ['q','w','e','r'], ... ] }
+    var self = this;
+    this.heroPool.forEach(function (def) {
+        var n = (def.specials || []).length;
+        var combos = [];
+        for (var s = 0; s < n; s++) {
+            var pool = COMBO_KEYS.slice();
+            var c = [];
+            for (var i = 0; i < 4 && pool.length; i++) {
+                c.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+            }
+            combos.push(c);
+        }
+        self.heroCombos[def.id] = combos;
+    });
+};
 
 BattleEngine.prototype.start = function () {
     var self = this;
@@ -78,8 +107,8 @@ BattleEngine.prototype.bind = function () {
         if (self.state !== 'playing' || self.anim) return;
         var actor = self.turnOrder[self.turnIdx];
         if (!actor || actor.side !== 'ally' || !actor.alive) return;
-        var k = e.key;
-        if (COMBO_KEYS.indexOf(k) > -1) self.handleKey(actor, k);
+        var k = (e.key || '').toLowerCase();
+        if (MOVE_KEYS.indexOf(k) > -1 || COMBO_KEYS.indexOf(k) > -1) self.handleKey(actor, k);
     });
     this.canvas.addEventListener('touchstart', function (e) {
         e.preventDefault();
@@ -96,6 +125,8 @@ BattleEngine.prototype.bind = function () {
 BattleEngine.prototype.startGame = function () {
     this.level = 1;
     this.score = 0;
+    // Комбинациите НЕ се пипат — конфигурирани са веднъж в конструктора
+    // (genCombos). Остават същите за цялата игра.
     this.setupLevel();
 };
 
@@ -106,9 +137,7 @@ BattleEngine.prototype.nextLevel = function () {
 };
 
 BattleEngine.prototype.setupLevel = function () {
-    // нова скрита комбинация при всеки старт на ниво
-    this.combo = [];
-    for (var i = 0; i < 4; i++) this.combo.push(COMBO_KEYS[Math.floor(Math.random() * COMBO_KEYS.length)]);
+    // Комбинациите НЕ се пипат тук — генерирани са веднъж в startGame.
     this.comboInput = [];
 
     // произволни герои за двата отбора
@@ -202,31 +231,35 @@ BattleEngine.prototype.advanceTurn = function (first) {
 };
 
 BattleEngine.prototype.handleKey = function (actor, key) {
-    // натрупване за комбо
-    this.comboInput.push(key);
-    if (this.comboInput.length > 4) this.comboInput.shift();
-    // проверка за специален (точна 4-клавишна последователност)
-    if (actor.def.special && this.comboInput.length === 4 &&
-        this.comboInput.join('') === this.combo.join('')) {
-        this.comboInput = [];
-        this.doSpecial(actor);
+    // v / b → обикновен удар
+    if (MOVE_KEYS.indexOf(key) > -1) {
+        var move = actor.def.moves.find(function (m) { return m.key === key; });
+        if (move) {
+            this.comboInput = [];
+            this.doMove(actor, move);
+        }
         return;
     }
-    // иначе — обикновен удар по клавиша (ако героят има такъв ход)
-    var move = actor.def.moves.find(function (m) { return m.key === key; });
-    if (move) {
-        this.comboInput = [];
-        this.doMove(actor, move);
-    } else {
-        // клавишът е само част от комбо опит — покажи прогрес
-        this.render();
+    // combo клавиш — трупай за скритите комбинации
+    this.comboInput.push(key);
+    if (this.comboInput.length > 4) this.comboInput.shift();
+    // провери срещу ВСЯКА комбинация на героя (някои имат 2)
+    if (this.comboInput.length === 4) {
+        var combos = this.heroCombos[actor.def.id] || [];
+        for (var i = 0; i < combos.length; i++) {
+            if (this.comboInput.join('') === combos[i].join('')) {
+                this.comboInput = [];
+                this.doSpecial(actor, i);   // i = индекс на специала
+                return;
+            }
+        }
     }
+    this.render();
 };
 
 BattleEngine.prototype.handleTouch = function (x, y) {
     var actor = this.turnOrder[this.turnIdx];
     if (this.state !== 'playing' || this.anim || !actor || actor.side !== 'ally') return;
-    // екранните бутони са в долната лента — изчисли кой
     var btns = this._buttons || [];
     for (var i = 0; i < btns.length; i++) {
         var b = btns[i];
@@ -242,60 +275,103 @@ BattleEngine.prototype.targetsFor = function (actor) {
     return pool.filter(function (u) { return u.alive; });
 };
 
+// Damage по процент от МАКС HP на целта
+//   melee  → 0-10%   ·   magic → 10-20%   ·   special → 30-40%
+function rollDamage(target, kind) {
+    var lo, hi;
+    if (kind === 'melee') { lo = 0.00; hi = 0.10; }
+    else if (kind === 'magic') { lo = 0.10; hi = 0.20; }
+    else { lo = 0.30; hi = 0.40; }   // special
+    var pct = lo + Math.random() * (hi - lo);
+    return Math.max(1, Math.round(target.maxHp * pct));
+}
+
 BattleEngine.prototype.doMove = function (actor, move) {
     var targets = this.targetsFor(actor);
     if (!targets.length) return;
     var target = targets[Math.floor(Math.random() * targets.length)];
-    this.playAttack(actor, target, function () {
-        target.hp -= move.dmg;
-        this.burst(target.x, target.y, '#ff6644', 18);
-        if (actor.side === 'ally') this.score += move.dmg;
-        this.afterHit(actor.name + ' → ' + move.name + ' (' + move.dmg + ' щети)');
-    }.bind(this));
+    var self = this;
+    this.playAttack(actor, target, move.anim, false, function () {
+        var dmg = rollDamage(target, move.type);
+        target.hp -= dmg;
+        self.burst(target.x, target.y, move.type === 'magic' ? '#7fb4ff' : '#ff6644', 20);
+        if (actor.side === 'ally') self.score += dmg;
+        self.afterHit(actor.name + ' → ' + move.name + ' (' + dmg + ' щети)');
+    });
 };
 
-BattleEngine.prototype.doSpecial = function (actor) {
-    var sp = actor.def.special;
+BattleEngine.prototype.doSpecial = function (actor, idx) {
+    var sp = actor.def.specials[idx || 0];
+    if (!sp) return;
     var foes = this.targetsFor(actor);
     if (!foes.length) return;
-    this.playAttack(actor, foes[0], function () {
-        sp.apply(this, actor, foes);
-        if (actor.side === 'ally') this.score += 120;
-        this.afterHit('СПЕЦИАЛЕН! ' + actor.name + ' → ' + sp.name);
-    }.bind(this));
+    var self = this;
+    var multi = sp.target === 'all';
+    this.playAttack(actor, foes[0], sp.anim, true, function () {
+        var hitList = multi ? foes : [foes[0]];
+        hitList.forEach(function (f) {
+            if (sp.executeAt && (f.hp / f.maxHp) <= sp.executeAt) {
+                // мечоносец — нарязва на салата: цел на ≤30% умира директно
+                f.hp = 0;
+                self.burst(f.x, f.y, '#ff3322', 34);
+            } else {
+                var dmg = rollDamage(f, 'special');
+                f.hp -= dmg;
+                self.burst(f.x, f.y, sp.color || '#ffd24a', 26);
+            }
+            if (sp.freeze) f.frozen = true;
+        });
+        if (actor.side === 'ally') self.score += 150;
+        self.afterHit('СПЕЦИАЛЕН! ' + actor.name + ' → ' + sp.name);
+    });
 };
 
 BattleEngine.prototype.foeAct = function (actor) {
     // прост AI — 30% специален ако има, иначе случаен ход
-    if (actor.def.special && Math.random() < 0.3) {
-        this.doSpecial(actor);
+    var specs = actor.def.specials || [];
+    if (specs.length && Math.random() < 0.3) {
+        this.doSpecial(actor, Math.floor(Math.random() * specs.length));
     } else {
         var mv = actor.def.moves[Math.floor(Math.random() * actor.def.moves.length)];
         this.doMove(actor, mv);
     }
 };
 
-BattleEngine.prototype.playAttack = function (actor, target, onHit) {
+// Бавна анимация на удар: ~4 сек същинско действие + ~1 сек връщане.
+// melee герои се приближават до целта; дистанционни (fire/magic) остават
+// на място и пускат снаряд към целта.
+BattleEngine.prototype.playAttack = function (actor, target, animKind, isSpecial, onHit) {
     var self = this;
-    this.anim = { actor: actor, target: target, t: 0, onHit: onHit, hitDone: false };
+    var ranged = /fire|ball|orb|snake|quake|root|light/.test(animKind || '');
+    this.anim = {
+        actor: actor, target: target, kind: animKind, special: isSpecial,
+        ranged: ranged, t: 0, onHit: onHit, hitDone: false,
+        startMs: performance.now(), durMs: 5000,
+    };
     var step = function () {
         if (!self.anim) return;
         var a = self.anim;
-        a.t += 0.06;
-        // приближаване (0→0.5), удар, връщане (0.5→1)
-        var dir = a.actor.side === 'ally' ? 1 : -1;
-        var reach = (target.x - actor.baseX) * 0.62;
-        if (a.t < 0.5) {
-            actor.x = actor.baseX + reach * (a.t / 0.5);
+        a.t = Math.min(1, (performance.now() - a.startMs) / a.durMs);
+        if (ranged) {
+            var lean = Math.sin(Math.min(a.t, 0.3) / 0.3 * Math.PI) * 14;
+            actor.x = actor.baseX + (actor.side === 'ally' ? lean : -lean);
+            if (a.t >= 0.72 && !a.hitDone) { a.hitDone = true; a.onHit(); self.shake = a.special ? 18 : 10; }
         } else {
-            if (!a.hitDone) { a.hitDone = true; a.onHit(); self.shake = 12; }
-            actor.x = actor.baseX + reach * (1 - (a.t - 0.5) / 0.5);
+            var reach = (target.x - actor.baseX) * 0.62;
+            if (a.t < 0.45) {
+                actor.x = actor.baseX + reach * (a.t / 0.45);
+            } else if (a.t < 0.6) {
+                actor.x = actor.baseX + reach;
+                if (!a.hitDone) { a.hitDone = true; a.onHit(); self.shake = a.special ? 18 : 12; }
+            } else {
+                actor.x = actor.baseX + reach * (1 - (a.t - 0.6) / 0.4);
+            }
         }
         self.render();
         if (a.t >= 1) {
             actor.x = actor.baseX;
             self.anim = null;
-            setTimeout(function () { self.advanceTurn(false); }, 500);
+            setTimeout(function () { self.advanceTurn(false); }, 450);
         } else {
             global.requestAnimationFrame(step);
         }
@@ -379,6 +455,36 @@ BattleEngine.prototype.render = function () {
     this.drawUnits(ctx, this.foe);
     this.drawUnits(ctx, this.ally);
 
+    // летящ снаряд при дистанционна атака (огън/сфери/змии)
+    if (this.anim && this.anim.ranged) {
+        var an = this.anim;
+        // снарядът лети от 0.30 до 0.72 от анимацията
+        var fp = (an.t - 0.30) / 0.42;
+        if (fp > 0 && fp < 1.05) {
+            var sx = an.actor.x + (an.actor.side === 'ally' ? 22 : -22);
+            var sy = an.actor.y - 6;
+            var ex = an.target.x, ey = an.target.y - 6;
+            var px = sx + (ex - sx) * Math.min(1, fp);
+            var py = sy + (ey - sy) * Math.min(1, fp);
+            var col = (an.kind && /fire/.test(an.kind)) ? '#ff7b2a'
+                    : (an.kind && /orb|light/.test(an.kind)) ? '#5b9bff'
+                    : (an.kind && /snake/.test(an.kind)) ? '#3ad07a'
+                    : (an.kind && /root/.test(an.kind)) ? '#6a8a3a' : '#ffd24a';
+            ctx.save();
+            ctx.shadowColor = col; ctx.shadowBlur = 18;
+            ctx.fillStyle = col;
+            var r = an.special ? 13 : 9;
+            ctx.beginPath(); ctx.arc(px, py, r, 0, 7); ctx.fill();
+            // ядро
+            ctx.fillStyle = '#fff'; ctx.shadowBlur = 6;
+            ctx.beginPath(); ctx.arc(px, py, r * 0.4, 0, 7); ctx.fill();
+            ctx.restore();
+            // следа
+            this.particles.push({ x: px, y: py, vx: (Math.random()-0.5)*1.5, vy: (Math.random()-0.5)*1.5,
+                life: 0.8, color: col, size: 3 + Math.random()*3 });
+        }
+    }
+
     // HUD горе
     ctx.fillStyle = 'rgba(8,8,14,.8)';
     ctx.fillRect(0, 0, this.W, 34);
@@ -432,28 +538,45 @@ BattleEngine.prototype.drawUnits = function (ctx, list) {
 };
 
 BattleEngine.prototype.drawControls = function (ctx, actor) {
-    var y = this.H - 86, h = 40, pad = 8;
+    var y = this.H - 86, h = 44, pad = 8;
     var moves = actor.def.moves;
     var n = moves.length;
     var bw = (this.W - pad * (n + 1)) / n;
-    ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'center';
+    ctx.textAlign = 'center';
     for (var i = 0; i < n; i++) {
         var bx = pad + i * (bw + pad);
+        // бутон
         ctx.fillStyle = '#2c4055';
         rr(ctx, bx, y, bw, h, 8); ctx.fill();
+        // иконка на клавиатурен клавиш (с релеф)
+        var keySize = 26, kx = bx + 10, ky = y + (h - keySize) / 2;
+        ctx.fillStyle = '#11181f';
+        rr(ctx, kx + 2, ky + 3, keySize, keySize, 5); ctx.fill();   // сянка
+        ctx.fillStyle = '#e8edf2';
+        rr(ctx, kx, ky, keySize, keySize, 5); ctx.fill();
+        ctx.fillStyle = '#c4ccd4';
+        rr(ctx, kx + 2, ky + keySize - 7, keySize - 4, 5, 2); ctx.fill();  // долен ръб
+        ctx.fillStyle = '#1c2733';
+        ctx.font = 'bold 14px system-ui';
+        ctx.fillText(moves[i].key.toUpperCase(), kx + keySize / 2, ky + keySize / 2 + 5);
+        // име на удара
         ctx.fillStyle = '#fff';
-        ctx.fillText('[' + moves[i].key + '] ' + moves[i].name, bx + bw / 2, y + h / 2 + 4);
+        ctx.font = 'bold 12px system-ui';
+        ctx.fillText(moves[i].name, bx + (keySize + 14) + (bw - keySize - 18) / 2, y + h / 2 + 4);
         this._buttons.push({ x: bx, y: y, w: bw, h: h, key: moves[i].key });
     }
     // ред с комбо подсказка
-    var cy = this.H - 34;
-    if (actor.def.special) {
+    var cy = this.H - 32;
+    var specs = actor.def.specials || [];
+    if (specs.length) {
         ctx.fillStyle = '#1a2330';
-        rr(ctx, pad, cy - 14, this.W - 2 * pad, 28, 7); ctx.fill();
-        ctx.fillStyle = '#ffd24a'; ctx.font = '11px system-ui';
-        var prog = this.comboInput.join(' ');
-        ctx.fillText('Специален (' + actor.def.special.name + '): скрита комбинация от 4 клавиша 1-4   ·   твой вход: ' + (prog || '—'),
-            this.W / 2, cy + 3);
+        rr(ctx, pad, cy - 13, this.W - 2 * pad, 26, 7); ctx.fill();
+        ctx.fillStyle = '#ffd24a'; ctx.font = '10px system-ui'; ctx.textAlign = 'center';
+        var prog = this.comboInput.map(function (k) { return k.toUpperCase(); }).join(' ');
+        var label = specs.length > 1
+            ? actor.name + ' има ' + specs.length + ' скрити 4-буквени комбинации'
+            : 'Специален: скрита 4-буквена комбинация';
+        ctx.fillText(label + ' (букви, не V/B)  ·  твой вход: ' + (prog || '—'), this.W / 2, cy + 2);
     }
 };
 
@@ -491,17 +614,31 @@ BattleEngine.prototype._panel = function (lines, accent) {
 
 BattleEngine.prototype.drawMenu = function () {
     var a = '#ff7b54';
-    this._panel([
+    var rows = [
         { text: this.title, font: 'bold 26px system-ui', color: a, gap: 28 },
         { text: 'ПРАВИЛА', font: 'bold 13px system-ui', color: '#ffd24a', gap: 20 },
         { text: 'Походова битка. Героите ти излизат ПРОИЗВОЛНО на всяко ниво — не ги избираш.', font: '13px system-ui', color: '#dfe7ee', lh: 18, gap: 22 },
-        { text: 'На твой ход избираш удар с клавиш [1] / [2]. Героите се приближават само за удара и се връщат.', font: '13px system-ui', color: '#dfe7ee', lh: 18, gap: 22 },
-        { text: 'СПЕЦИАЛЕН УДАР: всеки герой (освен рицар и джудже) има скрита комбинация от 4 клавиша (1-4). Тя се СМЕНЯ при всеки старт.', font: '13px system-ui', color: '#ffd24a', lh: 18, gap: 22 },
-        { text: 'Уцелиш ли я почти винаги — минаваш всички нива с много точки. Ако не — слабо представяне.', font: '13px system-ui', color: '#dfe7ee', lh: 18, gap: 22 },
-        { text: 'Един герой може да удари максимум 2 пъти подред. Редът е произволен.', font: '13px system-ui', color: '#dfe7ee', lh: 18, gap: 26 },
+        { text: 'ОБИКНОВЕНИ УДАРИ: на твой ход натискаш клавиш V или B. Удар = 0-10% щети, магия = 10-20% от здравето на целта.', font: '13px system-ui', color: '#dfe7ee', lh: 18, gap: 22 },
+        { text: 'СПЕЦИАЛЕН УДАР: скрита 4-БУКВЕНА комбинация (букви, не V/B). Някои герои имат по 2. Прави 30-40% щети. Конфигурира се при зареждане и НЕ се сменя цяла игра.', font: '13px system-ui', color: '#ffd24a', lh: 18, gap: 22 },
+        { text: 'Трикът е да откриеш комбинациите докато играеш. Уцелиш ли ги — помиташ враговете.', font: '13px system-ui', color: '#dfe7ee', lh: 18, gap: 26 },
         { text: this.maxLevels + ' нива · рекорд: ниво ' + this.bestLevel + ', ' + this.bestScore + ' т.', font: '12px system-ui', color: '#8ba0b2', gap: 30 },
-        { text: '▶  SPACE / тап за старт', font: 'bold 16px system-ui', color: a, gap: 0 },
-    ], a);
+    ];
+    // ADMIN — показва скритите комбинации за тестване
+    if (this.isAdmin) {
+        rows.push({ text: '🔧 ADMIN — скрити комбинации (видими само за теб):', font: 'bold 12px system-ui', color: '#46c8ff', gap: 18 });
+        var self = this;
+        this.heroPool.forEach(function (def) {
+            var combos = self.heroCombos[def.id] || [];
+            if (!combos.length) return;
+            var txt = def.name + ': ' + combos.map(function (c) {
+                return c.map(function (k) { return k.toUpperCase(); }).join('-');
+            }).join('   |   ');
+            rows.push({ text: txt, font: '12px monospace', color: '#9fd8ff', lh: 16, gap: 16 });
+        });
+        rows.push({ text: '', font: '1px system-ui', gap: 10 });
+    }
+    rows.push({ text: '▶  SPACE / тап за старт', font: 'bold 16px system-ui', color: a, gap: 0 });
+    this._panel(rows, a);
 };
 
 BattleEngine.prototype.drawLevelUp = function () {

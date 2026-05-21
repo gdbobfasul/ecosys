@@ -214,83 +214,79 @@ function dmgAll(eng, foes, amount, color) {
     });
 }
 
+/* ── ДЕФИНИЦИИ ──
+   Damage система (battle-engine смята реалните щети):
+     type 'melee' → обикновен удар, 0-10% от макс HP на целта
+     type 'magic' → магия, 10-20% от макс HP на целта
+     специални    → 30-40% от макс HP на целта
+   specials: масив — някои герои имат по 2 (всеки със своя 4-буквена комбинация).
+*/
+
 var DRAGON = {
     id: 'dragon', name: 'Дракон', hp: 110, draw: drawDragon,
     moves: [
-        { key: '1', name: 'Нокти', dmg: 22, type: 'melee' },
-        { key: '2', name: 'Захапка', dmg: 28, type: 'melee' },
+        { key: 'v', name: 'Огън', type: 'magic', target: 'one', anim: 'fire' },
+        { key: 'b', name: 'Захапка', type: 'melee', target: 'one', anim: 'bite' },
     ],
-    special: {
-        name: 'Огнен дъх по всички',
-        apply: function (eng, atk, foes) { dmgAll(eng, foes, 34, '#ff7b2a'); },
-    },
+    specials: [
+        { name: 'Огнен дъх по всички', target: 'all', anim: 'fire-all', color: '#ff7b2a' },
+    ],
 };
 var MAGE = {
     id: 'mage', name: 'Магьосник', hp: 80, draw: drawMage,
     moves: [
-        { key: '1', name: 'Огнено кълбо', dmg: 26, type: 'magic' },
-        { key: '2', name: 'Корени', dmg: 20, type: 'magic' },
+        { key: 'v', name: 'Огнено кълбо', type: 'magic', target: 'one', anim: 'fireball' },
+        { key: 'b', name: 'Корени', type: 'magic', target: 'one', anim: 'roots' },
     ],
-    special: {
-        name: 'Вледеняване',
-        apply: function (eng, atk, foes) {
-            // вледенява всички — изпускат следващия си ход + малки щети
-            foes.forEach(function (f) { f.frozen = true; f.hp -= 14; eng.burst(f.x, f.y, '#7fd8ff', 16); });
-        },
-    },
+    specials: [
+        { name: 'Вледеняване на всички', target: 'all', anim: 'freeze-all', color: '#7fd8ff', freeze: true },
+        { name: 'Електрически сфери', target: 'all', anim: 'orbs-all', color: '#5b9bff' },
+    ],
 };
 var DWARF = {
     id: 'dwarf', name: 'Джудже', hp: 95, draw: drawDwarf,
     moves: [
-        { key: '1', name: 'Удар с брадва', dmg: 24, type: 'melee' },
+        { key: 'v', name: 'Удар с брадва', type: 'melee', target: 'one', anim: 'axe' },
     ],
-    special: null,
+    specials: [],
 };
 var KNIGHT = {
     id: 'knight', name: 'Рицар', hp: 105, draw: drawKnight,
     moves: [
-        { key: '1', name: 'Меч', dmg: 23, type: 'melee' },
+        { key: 'v', name: 'Меч', type: 'melee', target: 'one', anim: 'sword' },
     ],
-    special: null,
+    specials: [],
 };
 var SWORDSMAN = {
     id: 'swordsman', name: 'Мечоносец', hp: 100, draw: drawSwordsman,
     moves: [
-        { key: '1', name: 'Ръгане', dmg: 24, type: 'melee' },
-        { key: '2', name: 'Посичане', dmg: 30, type: 'melee' },
+        { key: 'v', name: 'Ръгане', type: 'melee', target: 'one', anim: 'thrust' },
+        { key: 'b', name: 'Посичане', type: 'melee', target: 'one', anim: 'slash' },
     ],
-    special: {
-        name: 'Меле — нарязва на салата',
-        apply: function (eng, atk, foes) {
-            // ако противник е под 50% здраве → убива го; иначе голяма щета
-            foes.forEach(function (f) {
-                if (f.hp / f.maxHp < 0.5) { f.hp = 0; eng.burst(f.x, f.y, '#ff3322', 30); }
-                else { f.hp -= 38; eng.burst(f.x, f.y, '#ff5544', 20); }
-            });
-        },
-    },
+    specials: [
+        // нарязва на салата — убива целта ако е на ≤30% от макс HP
+        { name: 'Меле — нарязва на салата', target: 'one', anim: 'mince', color: '#ff3322', executeAt: 0.30 },
+    ],
 };
 var SNAKEWOMAN = {
     id: 'snakewoman', name: 'Змийска жена', hp: 88, draw: drawSnakeWoman,
     moves: [
-        { key: '1', name: 'Удар + ухапване', dmg: 25, type: 'melee' },
-        { key: '2', name: 'Камшичен удар', dmg: 21, type: 'melee' },
+        { key: 'v', name: 'Удар + ухапване', type: 'melee', target: 'one', anim: 'snakebite' },
+        { key: 'b', name: 'Камшичен удар', type: 'melee', target: 'one', anim: 'whip' },
     ],
-    special: {
-        name: 'Хвърля всички змии',
-        apply: function (eng, atk, foes) { dmgAll(eng, foes, 32, '#3ad07a'); },
-    },
+    specials: [
+        { name: 'Хвърля всички змии', target: 'all', anim: 'snakes-all', color: '#3ad07a' },
+    ],
 };
 var HAMMERMAN = {
     id: 'hammerman', name: 'Чукар', hp: 115, draw: drawHammerman,
     moves: [
-        { key: '1', name: 'Замах', dmg: 26, type: 'melee' },
-        { key: '2', name: 'Смазващ удар', dmg: 32, type: 'melee' },
+        { key: 'v', name: 'Замах', type: 'melee', target: 'one', anim: 'swing' },
+        { key: 'b', name: 'Смазващ удар', type: 'melee', target: 'one', anim: 'crush' },
     ],
-    special: {
-        name: 'Разцепва земята — щети по всички',
-        apply: function (eng, atk, foes) { dmgAll(eng, foes, 36, '#caa45a'); },
-    },
+    specials: [
+        { name: 'Разцепва земята', target: 'all', anim: 'quake-all', color: '#caa45a' },
+    ],
 };
 
 global.BATTLE_HEROES = {
