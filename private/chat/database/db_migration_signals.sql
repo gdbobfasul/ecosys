@@ -1,4 +1,4 @@
--- Version: 1.0056
+-- Version: 1.0093
 -- Migration: Add Signals System
 -- Date: 2026-01-30
 -- Description: Add user-submitted signals with photo, location, and admin approval

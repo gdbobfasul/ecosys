@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 🔒 ПРЕПОРЪКА ЗА SSL:
 Self-signed certificate е OK за тестване, НО:
 За production използвай Let's Encrypt (безплатно):

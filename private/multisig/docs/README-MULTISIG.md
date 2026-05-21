@@ -1,6 +1,6 @@
 # 🔐 KCY1 Multi-Sig Setup Guide
 
-**Version 1.0056**
+**Version 1.0093**
 
 **Най-простият 3-of-5 multi-signature контрол за KCY1 token**
 

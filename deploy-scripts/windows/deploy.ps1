@@ -1,4 +1,4 @@
-# Version: 1.0084
+# Version: 1.0093
 ## KCY Ecosystem - Windows Deploy Script
 ## Качва в staging: /var/www/deploy/
 
@@ -10,7 +10,7 @@ param(
 )
 
 if ($Help) {
-    Write-Host "KCY Deploy v1.0084"
+    Write-Host "KCY Deploy v1.0093"
     Write-Host "Usage: .\deploy.ps1 [-Server host] [-User deploy] [-Port 22]"
     Write-Host ""
     Write-Host "Uploads to /var/www/deploy/ on server."
@@ -21,7 +21,7 @@ if ($Help) {
 $Staging = "/var/www/deploy"
 
 Write-Host ""
-Write-Host "  KCY Ecosystem - Deploy v1.0084" -ForegroundColor Cyan
+Write-Host "  KCY Ecosystem - Deploy v1.0093" -ForegroundColor Cyan
 Write-Host "  Server: $Server  User: $User  Staging: $Staging" -ForegroundColor Gray
 Write-Host ""
 

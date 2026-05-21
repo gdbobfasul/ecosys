@@ -1,0 +1,193 @@
+<!-- Version: 1.0093 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калкулатори | KCY услуги</title>
+<style>
+  :root { --pri:#2a86d8; --sec:#6ec1e4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:#f0f4f8; color:#222; }
+  .head { background:linear-gradient(135deg,var(--pri),var(--sec)); color:#fff; padding:28px 20px; text-align:center; }
+  .head h1 { font-size:1.7em; margin-bottom:6px; }
+  .head a { color:#fff; text-decoration:none; background:rgba(255,255,255,.2); padding:6px 14px; border-radius:8px; display:inline-block; margin-top:10px; font-size:.9em; }
+  .wrap { max-width:680px; margin:24px auto; padding:0 16px; }
+  .tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+  .tab { padding:9px 14px; border:none; border-radius:8px; background:#dde6ef; color:#456; cursor:pointer; font-weight:600; font-size:.9em; }
+  .tab.active { background:var(--pri); color:#fff; }
+  .card { background:#fff; border-radius:12px; padding:22px; box-shadow:0 4px 16px rgba(0,0,0,.08); }
+  .panel { display:none; } .panel.active { display:block; }
+  label { display:block; font-weight:600; margin:12px 0 5px; font-size:.9em; }
+  input,select { width:100%; padding:10px; border:1px solid #cdd7e1; border-radius:8px; font-size:1em; }
+  .btn { background:var(--pri); color:#fff; border:none; padding:11px 20px; border-radius:8px; font-size:1em; cursor:pointer; margin-top:14px; font-weight:600; }
+  .out { margin-top:16px; padding:16px; background:#eef6ff; border-radius:10px; }
+  .out .line { display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed #cdd7e1; }
+  .out .line:last-child { border:none; font-weight:700; color:var(--pri); font-size:1.1em; }
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>Калкулатори</h1>
+  <p>Заем, ДДС, лихва, проценти — по държава</p>
+  <a href="/portals/services/">← Всички услуги</a>
+</div>
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="tab('loan')">Заем</button>
+    <button class="tab" onclick="tab('vat')">ДДС</button>
+    <button class="tab" onclick="tab('interest')">Лихва</button>
+    <button class="tab" onclick="tab('pct')">Проценти</button>
+  </div>
+
+  <!-- ЗАЕМ -->
+  <div id="loan" class="panel active card">
+    <label>Сума на заема</label>
+    <input type="number" id="lAmount" value="10000">
+    <label>Годишен лихвен процент (%)</label>
+    <input type="number" id="lRate" value="8" step="0.01">
+    <label>Срок (месеци)</label>
+    <input type="number" id="lMonths" value="60">
+    <button class="btn" onclick="calcLoan()">Изчисли</button>
+    <div class="out" id="loanOut" style="display:none"></div>
+  </div>
+
+  <!-- ДДС -->
+  <div id="vat" class="panel card">
+    <label>Държава (ставка ДДС)</label>
+    <select id="vCountry" onchange="vatRate()">
+      <option value="20">България — 20%</option>
+      <option value="19">Германия — 19%</option>
+      <option value="21">Нидерландия — 21%</option>
+      <option value="22">Италия — 22%</option>
+      <option value="21">Испания — 21%</option>
+      <option value="20">Австрия — 20%</option>
+      <option value="24">Гърция — 24%</option>
+      <option value="25">Швеция — 25%</option>
+      <option value="0">Друга / ръчно</option>
+    </select>
+    <label>ДДС ставка (%)</label>
+    <input type="number" id="vRate" value="20" step="0.1">
+    <label>Сума</label>
+    <input type="number" id="vAmount" value="100">
+    <label>Сумата е:</label>
+    <select id="vMode">
+      <option value="net">Без ДДС (добави ДДС)</option>
+      <option value="gross">С ДДС (извади ДДС)</option>
+    </select>
+    <button class="btn" onclick="calcVat()">Изчисли</button>
+    <div class="out" id="vatOut" style="display:none"></div>
+  </div>
+
+  <!-- ЛИХВА -->
+  <div id="interest" class="panel card">
+    <label>Главница</label>
+    <input type="number" id="iPrincipal" value="5000">
+    <label>Годишен лихвен процент (%)</label>
+    <input type="number" id="iRate" value="5" step="0.01">
+    <label>Срок (години)</label>
+    <input type="number" id="iYears" value="3" step="0.1">
+    <label>Вид лихва</label>
+    <select id="iType">
+      <option value="compound">Сложна (капитализира се годишно)</option>
+      <option value="simple">Проста</option>
+    </select>
+    <button class="btn" onclick="calcInterest()">Изчисли</button>
+    <div class="out" id="intOut" style="display:none"></div>
+  </div>
+
+  <!-- ПРОЦЕНТИ -->
+  <div id="pct" class="panel card">
+    <label>Изчисление</label>
+    <select id="pMode" onchange="pctLabels()">
+      <option value="of">X% от Y</option>
+      <option value="iswhat">X е колко % от Y</option>
+      <option value="change">Промяна от X до Y (%)</option>
+    </select>
+    <label id="pL1">Процент X</label>
+    <input type="number" id="pX" value="15">
+    <label id="pL2">Стойност Y</label>
+    <input type="number" id="pY" value="200">
+    <button class="btn" onclick="calcPct()">Изчисли</button>
+    <div class="out" id="pctOut" style="display:none"></div>
+  </div>
+</div>
+<script>
+function tab(id){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+function money(n){ return n.toLocaleString('bg-BG',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+function calcLoan(){
+  var P=parseFloat(document.getElementById('lAmount').value)||0;
+  var r=(parseFloat(document.getElementById('lRate').value)||0)/100/12;
+  var n=parseInt(document.getElementById('lMonths').value,10)||1;
+  var m=r>0 ? P*r/(1-Math.pow(1+r,-n)) : P/n;
+  var total=m*n, interest=total-P;
+  document.getElementById('loanOut').style.display='block';
+  document.getElementById('loanOut').innerHTML=
+    '<div class="line"><span>Месечна вноска</span><span>'+money(m)+'</span></div>'+
+    '<div class="line"><span>Обща лихва</span><span>'+money(interest)+'</span></div>'+
+    '<div class="line"><span>Общо за връщане</span><span>'+money(total)+'</span></div>';
+}
+function vatRate(){
+  var v=document.getElementById('vCountry').value;
+  if(v!=='0') document.getElementById('vRate').value=v;
+}
+function calcVat(){
+  var rate=(parseFloat(document.getElementById('vRate').value)||0)/100;
+  var amt=parseFloat(document.getElementById('vAmount').value)||0;
+  var mode=document.getElementById('vMode').value;
+  var net,vat,gross;
+  if(mode==='net'){ net=amt; vat=amt*rate; gross=net+vat; }
+  else { gross=amt; net=amt/(1+rate); vat=gross-net; }
+  document.getElementById('vatOut').style.display='block';
+  document.getElementById('vatOut').innerHTML=
+    '<div class="line"><span>Без ДДС</span><span>'+money(net)+'</span></div>'+
+    '<div class="line"><span>ДДС</span><span>'+money(vat)+'</span></div>'+
+    '<div class="line"><span>С ДДС</span><span>'+money(gross)+'</span></div>';
+}
+function calcInterest(){
+  var P=parseFloat(document.getElementById('iPrincipal').value)||0;
+  var r=(parseFloat(document.getElementById('iRate').value)||0)/100;
+  var y=parseFloat(document.getElementById('iYears').value)||0;
+  var type=document.getElementById('iType').value;
+  var total= type==='compound' ? P*Math.pow(1+r,y) : P*(1+r*y);
+  var interest=total-P;
+  document.getElementById('intOut').style.display='block';
+  document.getElementById('intOut').innerHTML=
+    '<div class="line"><span>Главница</span><span>'+money(P)+'</span></div>'+
+    '<div class="line"><span>Натрупана лихва</span><span>'+money(interest)+'</span></div>'+
+    '<div class="line"><span>Крайна сума</span><span>'+money(total)+'</span></div>';
+}
+function pctLabels(){
+  var m=document.getElementById('pMode').value;
+  var l1=document.getElementById('pL1'), l2=document.getElementById('pL2');
+  if(m==='of'){ l1.textContent='Процент X'; l2.textContent='Стойност Y'; }
+  else if(m==='iswhat'){ l1.textContent='Стойност X'; l2.textContent='Стойност Y (цялото)'; }
+  else { l1.textContent='Начална стойност X'; l2.textContent='Крайна стойност Y'; }
+}
+function calcPct(){
+  var X=parseFloat(document.getElementById('pX').value)||0;
+  var Y=parseFloat(document.getElementById('pY').value)||0;
+  var m=document.getElementById('pMode').value, res, label;
+  if(m==='of'){ res=X/100*Y; label=X+'% от '+Y+' ='; }
+  else if(m==='iswhat'){ res=Y!==0?(X/Y*100):0; label=X+' е '; res=res.toFixed(2)+'% от '+Y; 
+    document.getElementById('pctOut').style.display='block';
+    document.getElementById('pctOut').innerHTML='<div class="line"><span>'+label+'</span><span>'+res+'</span></div>';
+    return;
+  }
+  else { res=X!==0?((Y-X)/X*100):0; label='Промяна от '+X+' до '+Y+' ='; res=res.toFixed(2)+'%';
+    document.getElementById('pctOut').style.display='block';
+    document.getElementById('pctOut').innerHTML='<div class="line"><span>'+label+'</span><span>'+res+'</span></div>';
+    return;
+  }
+  document.getElementById('pctOut').style.display='block';
+  document.getElementById('pctOut').innerHTML='<div class="line"><span>'+label+'</span><span>'+money(res)+'</span></div>';
+}
+</script>
+</body>
+</html>

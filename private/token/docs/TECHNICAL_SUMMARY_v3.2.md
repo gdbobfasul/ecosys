@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 # KCY1 Token v3.2 - Technical Summary
 
 ## Version 3.2: Full Exempt Privileges

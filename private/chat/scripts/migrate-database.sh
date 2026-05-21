@@ -1,8 +1,8 @@
-# Version: 1.0056
+# Version: 1.0093
 #!/bin/bash
 
 # 🔄 AMS Chat - Automated Database Migration Script
-# Version: 1.0056
+# Version: 1.0093
 # Purpose: Migrate production database with automatic verification
 # Usage: ./migrate-database.sh [migration_file.sql]
 

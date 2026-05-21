@@ -1,4 +1,4 @@
-// Version: 1.0056
+// Version: 1.0093
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { AuthProvider } from './src/context/AuthContext';

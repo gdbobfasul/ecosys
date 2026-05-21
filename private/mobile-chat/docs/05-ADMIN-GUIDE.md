@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 # 05 - Admin Guide (Администраторско ръководство)
 
 ## 🔐 Admin Panel

@@ -1,4 +1,4 @@
-// Version: 1.0056
+// Version: 1.0093
 function validatePhone(phone) {
   return /^\+?\d{10,15}$/.test(phone);
 }

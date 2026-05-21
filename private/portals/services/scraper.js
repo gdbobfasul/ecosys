@@ -1,5 +1,5 @@
 // KCY Portals — Web scraper service
-// Version: 1.0086
+// Version: 1.0093
 //
 // Flow:
 //   1. 3 search-query низа → DuckDuckGo HTML search → списък URL-ове

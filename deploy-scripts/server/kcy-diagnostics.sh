@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0091
+# Version: 1.0093
 ##############################################################################
 # KCY Ecosystem — Diagnostics log appender
 #
@@ -300,6 +300,19 @@ H_DIAG=$(http_check "http://127.0.0.1:4400/health")
         -H "Host: $(hostname -f 2>/dev/null || hostname)" 2>/dev/null | head -c 250 | tr '\n' ' ')
     echo "[$TS]   billing/status СЪС сесия (nginx HTTPS): $BILLING_NGINX"
     rm -f "$CJAR" "$CJAR2" 2>/dev/null || true
+
+    # 6. Portal games/services страници — тест директно на 3002
+    for page in "games" "services"; do
+        P_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 6 \
+            "http://127.0.0.1:3002/portals/$page/" 2>/dev/null)
+        echo "[$TS]   /portals/$page/ (3002): HTTP ${P_CODE:-TIMEOUT}"
+        if [ -f "/var/www/html/portals/index-$page.html" ]; then
+            SZ=$(wc -c < "/var/www/html/portals/index-$page.html")
+            echo "[$TS]     index-$page.html: $SZ байта"
+        else
+            echo "[$TS]     index-$page.html: ЛИПСВА"
+        fi
+    done
 
     # portals последни 8 реда лог — хваща crash грешката
     echo "[$TS] ── portals journal (последни грешки) ──"

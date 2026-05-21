@@ -1,4 +1,4 @@
-// Version: 1.0056
+// Version: 1.0093
 function authenticate(db) {
   return (req, res, next) => {
     const token = req.headers.authorization?.replace('Bearer ', '');

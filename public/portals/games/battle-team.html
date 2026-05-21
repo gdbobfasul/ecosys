@@ -1,0 +1,35 @@
+<!-- Version: 1.0093 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Битка на терен — отбори | KCY игри</title>
+<style>
+  body{margin:0;background:#0a1018;color:#fff;font-family:system-ui;text-align:center}
+  .top{padding:12px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+  .top a{background:#1d2b3a;color:#9cc4e0;text-decoration:none;padding:8px 14px;border-radius:8px;font-size:.9em}
+  canvas{display:block;margin:0 auto;border-radius:12px;max-width:100%;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+</style>
+</head>
+<body>
+<div class="top">
+  <a href="/portals/games/">← Всички игри</a>
+  <a href="/portals/games/?rank=1">🏆 Ранг листа</a>
+</div>
+<canvas id="cv" width="480" height="640"></canvas>
+<script src="/portals/games/battle-heroes.js"></script>
+<script src="/portals/games/battle-engine.js"></script>
+<script>
+var eng = new BattleEngine({
+  canvas: document.getElementById('cv'),
+  slug: 'battle-team',
+  title: 'Битка на терен — 3 срещу 3',
+  levels: 10,
+  teamSize: 3,
+  heroPool: BATTLE_HEROES.team   // дракон, магьосник, джудже, рицар
+});
+eng.start();
+</script>
+</body>
+</html>

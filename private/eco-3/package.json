@@ -1,6 +1,6 @@
 {
   "name": "kcy-eco3",
-  "version": "1.0085",
+  "version": "1.0093",
   "description": "ECO-3 AI Studio - Backend API proxy for Anthropic and Stripe",
   "main": "server.js",
   "scripts": {

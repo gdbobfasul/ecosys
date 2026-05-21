@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 # 🚀 KCY1 CRYPTO PAYMENT INTEGRATION - MASTER GUIDE
 
 ## 📋 ЩО ПОЛУЧАВАШ?

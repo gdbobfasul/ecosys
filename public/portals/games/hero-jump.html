@@ -1,64 +1,151 @@
-<!-- Version: 1.0086 -->
+<!-- Version: 1.0093 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🦸 Hero Jump</title>
-<link rel="stylesheet" href="/shared/css/common.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Герой — Скачане | KCY игри</title>
 <style>
-body{background:#2a1a4a;color:#fff;margin:0;font-family:system-ui}
-.wrap{max-width:560px;margin:20px auto;text-align:center}
-canvas{background:linear-gradient(180deg,#a770ef,#cf8bf3);border-radius:12px;display:block;margin:0 auto;max-width:100%}
-.hud{padding:14px;display:flex;justify-content:space-between;font-size:1.1em}
-.btn{display:inline-block;margin:10px 6px;padding:10px 18px;background:#fff;color:#2a1a4a;border-radius:8px;text-decoration:none;border:none;cursor:pointer;font-weight:600}
-#msg{margin-top:10px;min-height:28px}
-</style></head>
+  body{margin:0;background:#0a1018;color:#fff;font-family:system-ui;text-align:center}
+  .top{padding:12px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+  .top a{background:#1d2b3a;color:#9cc4e0;text-decoration:none;padding:8px 14px;border-radius:8px;font-size:.9em}
+  canvas{display:block;margin:0 auto;border-radius:12px;max-width:100%;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+</style>
+</head>
 <body>
-<div class="wrap">
-<div class="hud"><span>🦸 Hero Jump</span><span>Точки: <b id="pts">0</b> | Ниво: <b id="lvl">1</b></span></div>
-<canvas id="cv" width="500" height="600"></canvas>
-<div id="msg">Space/клик = скок. Не падай в пропастите! Герой с необичайни възможности — двоен скок!</div>
-<a class="btn" href="/portals/games/">← Игри</a>
-<button class="btn" id="r">🔁 Рестарт</button>
+<div class="top">
+  <a href="/portals/games/">← Всички игри</a>
+  <a href="/portals/games/?rank=1">🏆 Ранг листа</a>
 </div>
+<canvas id="cv" width="440" height="600"></canvas>
+<script src="/portals/games/game-engine.js"></script>
 <script>
-const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
-let hero,platforms,points,level,running,jumps;
-function reset(){hero={x:80,y:400,vy:0,onGround:false};platforms=[];for(let i=0;i<5;i++)platforms.push({x:i*120+20,y:500,w:100,gap:false});points=0;level=1;jumps=2;running=true;document.getElementById('pts').textContent=0;document.getElementById('lvl').textContent=1;document.getElementById('msg').textContent='Играй!';loop();}
-function jump(){if(jumps>0){hero.vy=-11;jumps--;}}
-document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();jump();}});
-cv.addEventListener('click',jump);
-document.getElementById('r').onclick=reset;
-function loop(){
-  if(!running)return;
-  ctx.clearRect(0,0,500,600);
-  // slънце
-  ctx.fillStyle='rgba(255,255,180,.6)';ctx.beginPath();ctx.arc(450,70,35,0,7);ctx.fill();
-  // гравитация
-  hero.vy+=.5;hero.y+=hero.vy;
-  // движим платформите наляво
-  const speed=3+level*.3;
-  for(const p of platforms)p.x-=speed;
-  // премахни извън екран, добави нови
-  while(platforms.length&&platforms[0].x+platforms[0].w<0){platforms.shift();points++;document.getElementById('pts').textContent=points;if(points%7===0){level++;document.getElementById('lvl').textContent=level;document.getElementById('msg').innerHTML=`🎉 Ниво ${level}! Точки: <b>${points}</b>`;}}
-  while(platforms[platforms.length-1].x<400){const prev=platforms[platforms.length-1];platforms.push({x:prev.x+prev.w+40+Math.random()*80,y:450+Math.random()*80,w:70+Math.random()*60,gap:false});}
-  // колизии
-  hero.onGround=false;
-  for(const p of platforms){
-    if(hero.x+20>p.x&&hero.x-20<p.x+p.w&&hero.y+30>=p.y&&hero.y+30<=p.y+15&&hero.vy>=0){
-      hero.y=p.y-30;hero.vy=0;hero.onGround=true;jumps=2;
-    }
-    ctx.fillStyle='#7a3';ctx.fillRect(p.x,p.y,p.w,20);
+var hero, plats, climbed, camY;
+
+function init(eng, level){
+  hero={x:eng.W/2-16,y:eng.H-140,w:32,h:38,vx:0,vy:0,onGround:false,face:1};
+  plats=[];
+  camY=0; climbed=0;
+  // начална платформа
+  plats.push({x:eng.W/2-50,y:eng.H-90,w:100,h:16});
+  var gap=86-level*2;
+  for(var i=1;i<60;i++){
+    plats.push({x:Math.random()*(eng.W-90),y:eng.H-90-i*gap,w:70+Math.random()*40,h:15});
   }
-  if(hero.y>620){running=false;document.getElementById('msg').innerHTML=`💀 Падна! Точки: <b>${points}</b>`;submitScore();return;}
-  // герой с "необичайни възможности" - плащ
-  ctx.save();ctx.translate(hero.x,hero.y);
-  ctx.fillStyle='#e22';ctx.beginPath();ctx.moveTo(-5,-25);ctx.lineTo(-25,10);ctx.lineTo(5,5);ctx.closePath();ctx.fill();
-  ctx.fillStyle='#fcd';ctx.beginPath();ctx.arc(0,-10,12,0,7);ctx.fill();
-  ctx.fillStyle='#33f';ctx.fillRect(-10,2,20,22);
-  ctx.restore();
-  requestAnimationFrame(loop);
+  eng._gap=gap;
+  eng._need=18+level*2;     // платформи за изкачване
 }
-async function submitScore(){try{await fetch('/api/portals/games/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game_slug:'hero-jump',score:points,level})});}catch(e){}}
-reset();
-</script></body></html>
+
+function update(eng,dt){
+  var acc=0;
+  if(eng.keys['ArrowLeft']||eng.keys['KeyA']){acc=-0.7;hero.face=-1;}
+  if(eng.keys['ArrowRight']||eng.keys['KeyD']){acc=0.7;hero.face=1;}
+  hero.vx+=acc*dt; hero.vx*=0.86;
+  hero.x+=hero.vx*dt;
+  if(hero.x<-hero.w) hero.x=eng.W;
+  if(hero.x>eng.W) hero.x=-hero.w;
+
+  // скок
+  if((eng.keys['Space']||eng.keys['ArrowUp'])&&hero.onGround){
+    hero.vy=-13; hero.onGround=false;
+  }
+  hero.vy+=0.55*dt;
+  hero.y+=hero.vy*dt;
+
+  // кацане на платформа (само при падане)
+  hero.onGround=false;
+  if(hero.vy>0){
+    for(var i=0;i<plats.length;i++){
+      var p=plats[i];
+      if(hero.x+hero.w>p.x && hero.x<p.x+p.w &&
+         hero.y+hero.h>p.y && hero.y+hero.h<p.y+p.h+hero.vy*dt+2){
+        hero.y=p.y-hero.h; hero.vy=0; hero.onGround=true;
+        if(!p.used){ p.used=true; climbed++; eng.score+=30; eng.burst(hero.x+hero.w/2,hero.y+hero.h,'#5cd97a',8); }
+      }
+    }
+  }
+
+  // камера следва нагоре
+  var want=hero.y-eng.H*0.55;
+  if(want<camY) camY=want;
+
+  // падане долу = смърт
+  if(hero.y-camY>eng.H+40) return 'dead';
+  if(climbed>=eng._need) return 'next';
+  return null;
+}
+
+function background(eng,ctx){
+  var g=ctx.createLinearGradient(0,0,0,eng.H);
+  g.addColorStop(0,'#2c1a4d'); g.addColorStop(1,'#6b4ba0');
+  ctx.fillStyle=g; ctx.fillRect(0,0,eng.W,eng.H);
+  // звезди (паралакс спрямо камерата)
+  ctx.fillStyle='rgba(255,255,255,.5)';
+  for(var i=0;i<30;i++){
+    var sx=(i*71)%eng.W;
+    var sy=((i*123 - camY*0.3)%eng.H+eng.H)%eng.H;
+    ctx.fillRect(sx,sy,2,2);
+  }
+}
+
+function draw(eng,ctx){
+  ctx.save();
+  ctx.translate(0,-camY);
+  // платформи
+  for(var i=0;i<plats.length;i++){
+    var p=plats[i];
+    if(p.y-camY<-30||p.y-camY>eng.H+30) continue;
+    ctx.fillStyle='rgba(0,0,0,.25)';
+    rr(ctx,p.x+2,p.y+3,p.w,p.h,6); ctx.fill();
+    var g=ctx.createLinearGradient(0,p.y,0,p.y+p.h);
+    g.addColorStop(0, p.used?'#7de89a':'#9be8ad'); g.addColorStop(1,'#3a9d57');
+    ctx.fillStyle=g;
+    rr(ctx,p.x,p.y,p.w,p.h,6); ctx.fill();
+  }
+  // герой
+  drawHero(ctx,hero);
+  ctx.restore();
+}
+
+function drawHero(ctx,h){
+  var cx=h.x+h.w/2, cy=h.y+h.h/2;
+  ctx.save(); ctx.translate(cx,cy);
+  if(h.face<0) ctx.scale(-1,1);
+  // тяло
+  ctx.fillStyle='#3aa0ff';
+  rr(ctx,-9,-4,18,18,5); ctx.fill();
+  // глава
+  ctx.fillStyle='#ffd9a8';
+  ctx.beginPath(); ctx.arc(0,-13,9,0,7); ctx.fill();
+  // коса
+  ctx.fillStyle='#5a3a22';
+  ctx.beginPath(); ctx.arc(0,-15,9,Math.PI,0); ctx.fill();
+  // око
+  ctx.fillStyle='#222'; ctx.beginPath(); ctx.arc(4,-13,1.6,0,7); ctx.fill();
+  // крака
+  ctx.fillStyle='#2c3e50';
+  ctx.fillRect(-7,13,5,8); ctx.fillRect(3,13,5,8);
+  // ръце
+  ctx.fillStyle='#3aa0ff';
+  ctx.fillRect(-13,-2,4,11); ctx.fillRect(9,-2,4,11);
+  ctx.restore();
+}
+function rr(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+
+var eng = new GameEngine({
+  canvas: document.getElementById('cv'),
+  slug: 'hero-jump',
+  title: 'Герой — Скачане',
+  goal: 'Скачай от платформа на платформа нагоре. Не падай долу. Изкачи нужния брой платформи за да минеш нивото.',
+  controls: 'Стрелки наляво/надясно или A / D движение, SPACE или ↑ скок. На телефон — тапни половината + автоскок.',
+  levels: 10, lives: 3,
+  init: init, update: update, draw: draw, background: background
+});
+eng.start();
+</script>
+</body>
+</html>

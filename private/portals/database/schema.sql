@@ -1,5 +1,5 @@
 -- KCY Portals — Database Schema
--- Version: 1.0086
+-- Version: 1.0093
 -- Engine: SQLite (better-sqlite3)
 
 -- ═══════════════════════════════════════════

@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 # 11 - API Reference
 
 ## 📡 Пълен API справочник

@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 # 1. Редактирай конфигурацията
 sudo nano /etc/nginx/sites-available/ams-chat
 

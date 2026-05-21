@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 # 🚀 AMS Chat - Upgrade to Version 00014
 
 ## 📋 Table of Contents

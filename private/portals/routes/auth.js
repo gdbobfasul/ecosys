@@ -1,5 +1,5 @@
 // KCY Portals — Auth routes
-// Version: 1.0086
+// Version: 1.0093
 
 const express = require('express');
 const bcrypt = require('bcryptjs');
@@ -23,6 +23,11 @@ router.post('/register', async (req, res) => {
     const log = debug.scoped(req, 'register');
     const db = req.app.locals.db;
     const { username, password } = req.body || {};
+    // Рекламни полета (по избор) — за топ 5 в месечната ранг листа
+    const bizDesc = (typeof req.body.business_description === 'string')
+        ? req.body.business_description.trim().slice(0, 200) : '';
+    const adLink = (typeof req.body.ad_link === 'string')
+        ? req.body.ad_link.trim().slice(0, 300) : '';
     log(`старт (username=${username})`);
 
     if (typeof username !== 'string' || username.length < 3 || username.length > 32) {
@@ -44,9 +49,12 @@ router.post('/register', async (req, res) => {
 
     const hash = await bcrypt.hash(password, 10);
     debug.db(req, `INSERT portal_users (username='${username}', password_hash=<hash>)`);
+    // Гарантирай рекламните колони (idempotent — ако вече ги има, ALTER гърми тихо)
+    try { db.exec("ALTER TABLE portal_users ADD COLUMN business_description TEXT DEFAULT ''"); } catch (e) {}
+    try { db.exec("ALTER TABLE portal_users ADD COLUMN ad_link TEXT DEFAULT ''"); } catch (e) {}
     const info = db.prepare(
-        "INSERT INTO portal_users (username, password_hash) VALUES (?, ?)"
-    ).run(username, hash);
+        "INSERT INTO portal_users (username, password_hash, business_description, ad_link) VALUES (?, ?, ?, ?)"
+    ).run(username, hash, bizDesc, adLink);
     log(`2 — записан в базата (id=${info.lastInsertRowid})`);
 
     req.session.userId = info.lastInsertRowid;

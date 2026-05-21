@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0085
+# Version: 1.0093
 ##############################################################################
 # KCY Ecosystem - Server Install Script
 # sudo bash 05-server-install.sh
@@ -128,7 +128,7 @@ print_step() {
 }
 
 echo -e "${CYAN}╔═══════════════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║   KCY Ecosystem - Server Install v1.0085          ║${NC}"
+echo -e "${CYAN}║   KCY Ecosystem - Server Install v1.0093          ║${NC}"
 echo -e "${CYAN}╚═══════════════════════════════════════════════════╝${NC}"
 echo ""
 echo -e "  Chat user:    ${GREEN}${CHAT_USER}${NC}"

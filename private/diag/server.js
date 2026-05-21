@@ -1,4 +1,4 @@
-// Version: 1.0091
+// Version: 1.0093
 // KCY Ecosystem — Diag Helper Service
 //
 // Малка standalone услуга която:

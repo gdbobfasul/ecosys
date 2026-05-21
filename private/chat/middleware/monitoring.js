@@ -1,4 +1,4 @@
-// Version: 1.0056
+// Version: 1.0093
 const Database = require('better-sqlite3');
 
 function checkCriticalWords(db, message, fromPhone, toPhone) {

@@ -1,6 +1,6 @@
 {
   "_comment": "Конфигурация на портала за услуги → скрапер.",
-  "version": "1.0086",
+  "version": "1.0093",
   "max_duration_seconds": 300,
   "max_pages_per_query": 5,
   "max_total_pages": 15,

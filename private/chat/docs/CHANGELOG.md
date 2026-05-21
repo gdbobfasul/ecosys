@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 # CHANGELOG - AMS Chat System
 
 ## Version 00017 (January 29, 2026) - Clean File Structure

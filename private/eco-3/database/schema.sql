@@ -1,5 +1,5 @@
 -- ECO-3 AI Studio — Database Schema
--- Version: 1.0085
+-- Version: 1.0093
 -- Engine: SQLite (better-sqlite3)
 
 -- ═══════════════════════════════════════════

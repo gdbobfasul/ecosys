@@ -1,5 +1,5 @@
 // KCY Portals — Main Server
-// Version: 1.0091
+// Version: 1.0093
 //
 // Разпределя:
 //   GET  /portals/*            — статични HTML (login, register, billing, games list, services list, 6 игри, 2 услуги)
@@ -87,28 +87,64 @@ app.use('/api/portals', authRouter);
 app.use('/api/portals/billing', billingRouter);
 app.use('/api/portals/games', gamesRouter);
 app.use('/api/portals/services', servicesRouter);
+// НОВО — 7-те услуги без AI (отделен файл portal_services.js)
+const portalServicesRouter = require('./routes/portal_services');
+app.use('/api/portal-services', portalServicesRouter);
+// НОВО — игрите с нива/точки/прогрес (отделен файл portal_games.js)
+const portalGamesRouter = require('./routes/portal_games');
+app.use('/api/portal-games', portalGamesRouter);
 
 // ── Портал-защитени HTML ───────────────────────────────────────
 // /portals/games/  → /public/portals/index-games.html (зад login+paid)
 app.get('/portals/games/', requirePortalAccess, (req, res) => {
-    res.sendFile(path.join(PUBLIC_DIR, 'portals', 'index-games.html'));
+    const log = debug.scoped(req, 'GET /portals/games/');
+    const full = path.join(PUBLIC_DIR, 'portals', 'index-games.html');
+    log(`старт — sendFile ${full}`);
+    if (!fs.existsSync(full)) {
+        log('изход 1 → 404 (index-games.html липсва)');
+        return res.status(404).send('Games page not found');
+    }
+    res.sendFile(full, (err) => {
+        if (err) { log(`изход 2 → ГРЕШКА sendFile: ${err.message}`); if (!res.headersSent) res.status(500).send('error'); }
+        else log('изход 3 → 200 OK');
+    });
 });
 app.get('/portals/services/', requirePortalAccess, (req, res) => {
-    res.sendFile(path.join(PUBLIC_DIR, 'portals', 'index-services.html'));
+    const log = debug.scoped(req, 'GET /portals/services/');
+    const full = path.join(PUBLIC_DIR, 'portals', 'index-services.html');
+    log(`старт — sendFile ${full}`);
+    if (!fs.existsSync(full)) {
+        log('изход 1 → 404 (index-services.html липсва)');
+        return res.status(404).send('Services page not found');
+    }
+    res.sendFile(full, (err) => {
+        if (err) { log(`изход 2 → ГРЕШКА sendFile: ${err.message}`); if (!res.headersSent) res.status(500).send('error'); }
+        else log('изход 3 → 200 OK');
+    });
 });
 
 // Самите игри и услуги — също зад access control
 app.get('/portals/games/:file', requirePortalAccess, (req, res, next) => {
+    const log = debug.scoped(req, 'GET /portals/games/:file');
     const f = path.basename(req.params.file);
     const full = path.join(PUBLIC_DIR, 'portals', 'games', f);
-    if (!fs.existsSync(full)) return next();
-    res.sendFile(full);
+    log(`старт — игра '${f}'`);
+    if (!fs.existsSync(full)) { log('изход 1 → next (файл липсва)'); return next(); }
+    res.sendFile(full, (err) => {
+        if (err) { log(`изход 2 → ГРЕШКА: ${err.message}`); if (!res.headersSent) res.status(500).send('error'); }
+        else log('изход 3 → 200 OK');
+    });
 });
 app.get('/portals/services/:file', requirePortalAccess, (req, res, next) => {
+    const log = debug.scoped(req, 'GET /portals/services/:file');
     const f = path.basename(req.params.file);
     const full = path.join(PUBLIC_DIR, 'portals', 'services', f);
-    if (!fs.existsSync(full)) return next();
-    res.sendFile(full);
+    log(`старт — услуга '${f}'`);
+    if (!fs.existsSync(full)) { log('изход 1 → next (файл липсва)'); return next(); }
+    res.sendFile(full, (err) => {
+        if (err) { log(`изход 2 → ГРЕШКА: ${err.message}`); if (!res.headersSent) res.status(500).send('error'); }
+        else log('изход 3 → 200 OK');
+    });
 });
 
 // Публични HTML страници (login, register, billing) — без защита
@@ -124,7 +160,7 @@ app.get('/', (req, res) => {
 
 // ── Health ─────────────────────────────────────────────────────
 app.get('/api/portals/health', (req, res) => {
-    res.json({ ok: true, version: '1.0086', port: PORT, now: new Date().toISOString() });
+    res.json({ ok: true, version: '1.0093', port: PORT, now: new Date().toISOString() });
 });
 
 // ── 404 ────────────────────────────────────────────────────────

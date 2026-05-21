@@ -1,5 +1,5 @@
 {
   "_comment": "Портали — IP whitelist за bypass на monthly fee. Допълва ADMIN_ALLOWED_IPS от .env. Ако искаш централизирано, остави масива празен — ще се ползва само .env.",
-  "version": "1.0086",
+  "version": "1.0093",
   "portal_ips": []
 }

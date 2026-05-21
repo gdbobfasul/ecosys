@@ -1,62 +1,146 @@
-<!-- Version: 1.0086 -->
+<!-- Version: 1.0093 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>✈️ Plane Dodge</title>
-<link rel="stylesheet" href="/shared/css/common.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Самолет — Избягвай | KCY игри</title>
 <style>
-body{background:#0a1930;color:#fff;margin:0;font-family:system-ui}
-.wrap{max-width:560px;margin:20px auto;text-align:center}
-canvas{background:linear-gradient(180deg,#6ec1e4,#2a86d8);border-radius:12px;display:block;margin:0 auto;max-width:100%}
-.hud{padding:14px;display:flex;justify-content:space-between;font-size:1.1em}
-.btn{display:inline-block;margin:10px 6px;padding:10px 18px;background:#fff;color:#0a1930;border-radius:8px;text-decoration:none;border:none;cursor:pointer;font-weight:600}
-#msg{margin-top:10px;min-height:28px;font-size:1.1em}
-</style></head>
+  body{margin:0;background:#0a1018;color:#fff;font-family:system-ui;text-align:center}
+  .top{padding:12px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+  .top a{background:#1d2b3a;color:#9cc4e0;text-decoration:none;padding:8px 14px;border-radius:8px;font-size:.9em}
+  canvas{display:block;margin:0 auto;border-radius:12px;max-width:100%;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+</style>
+</head>
 <body>
-<div class="wrap">
-<div class="hud"><span>✈️ Plane Dodge</span><span>Точки: <b id="pts">0</b> | Ниво: <b id="lvl">1</b></span></div>
-<canvas id="cv" width="500" height="600"></canvas>
-<div id="msg">Клик / Space = скок наляво-надясно. Избягвай облаците!</div>
-<a class="btn" href="/portals/games/">← Игри</a>
-<button class="btn" id="r">🔁 Рестарт</button>
+<div class="top">
+  <a href="/portals/games/">← Всички игри</a>
+  <a href="/portals/games/?rank=1">🏆 Ранг листа</a>
 </div>
+<canvas id="cv" width="440" height="600"></canvas>
+<script src="/portals/games/game-engine.js"></script>
 <script>
-const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
-let plane,obs,points,level,running,tick;
-function reset(){plane={x:250,y:500,w:40,h:30,dir:0};obs=[];points=0;level=1;tick=0;running=true;document.getElementById('pts').textContent=0;document.getElementById('lvl').textContent=1;document.getElementById('msg').textContent='Играй!';loop();}
-function spawn(){obs.push({x:Math.random()*460+20,y:-20,r:18+Math.random()*10,s:2+level*.4});}
-function toggle(){plane.dir=plane.dir===0?1:0;}
-document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();toggle();}});
-cv.addEventListener('click',toggle);
-document.getElementById('r').onclick=reset;
-function loop(){
-  if(!running)return;
-  tick++;
-  if(tick%30===0)spawn();
-  ctx.clearRect(0,0,500,600);
-  // fon - облачета в backgound
-  ctx.fillStyle='rgba(255,255,255,.15)';for(let i=0;i<6;i++){ctx.beginPath();ctx.arc((tick*.3+i*90)%500,80+i*60,25,0,7);ctx.fill();}
-  // obstacles
-  ctx.fillStyle='#fff';
-  for(const o of obs){
-    o.y+=o.s;
-    ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,7);ctx.fill();
-    // collision
-    if(Math.hypot(o.x-plane.x,o.y-plane.y)<o.r+18){
-      running=false;document.getElementById('msg').innerHTML=`💥 Край! Точки: <b>${points}</b>`;submitScore();return;
-    }
-  }
-  for(let i=obs.length-1;i>=0;i--)if(obs[i].y>650){obs.splice(i,1);points++;document.getElementById('pts').textContent=points;if(points>0&&points%10===0){level++;document.getElementById('lvl').textContent=level;document.getElementById('msg').innerHTML=`🎉 Ниво ${level}! Точки: <b>${points}</b>`;}}
-  // plane movement
-  const tgt=plane.dir?150:350;plane.x+=(tgt-plane.x)*.15;
-  // draw plane
-  ctx.save();ctx.translate(plane.x,plane.y);
-  ctx.fillStyle='#ffcc00';
-  ctx.beginPath();ctx.moveTo(0,-20);ctx.lineTo(-18,15);ctx.lineTo(0,8);ctx.lineTo(18,15);ctx.closePath();ctx.fill();
-  ctx.restore();
-  requestAnimationFrame(loop);
+var plane, clouds, scroll;
+
+function init(eng, level){
+  plane = { x: eng.W/2-24, y: eng.H-110, w: 48, h: 40, vx: 0, tilt: 0 };
+  clouds = [];
+  scroll = 0;
+  var count = 4 + level;
+  for (var i=0;i<count;i++) spawnCloud(eng, -Math.random()*eng.H);
+  eng._levelDist = 0;
+  eng._target = 1400 + level*400;   // дистанция за завършване на нивото
+  eng._speed = 2.3 + level*0.45;
 }
-async function submitScore(){try{await fetch('/api/portals/games/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game_slug:'plane-dodge',score:points,level})});}catch(e){}}
-reset();
-</script></body></html>
+
+function spawnCloud(eng, y){
+  var r = 26 + Math.random()*30;
+  clouds.push({ x: r + Math.random()*(eng.W-2*r), y: y, r: r, drift:(Math.random()-0.5)*0.6 });
+}
+
+function update(eng, dt){
+  // движение
+  var acc = 0;
+  if (eng.keys['ArrowLeft']||eng.keys['KeyA']) acc = -0.7;
+  if (eng.keys['ArrowRight']||eng.keys['KeyD']) acc = 0.7;
+  plane.vx += acc*dt;
+  plane.vx *= 0.92;
+  plane.x += plane.vx*dt;
+  plane.tilt += ((plane.vx*0.04) - plane.tilt)*0.2;
+  if (plane.x < 4){ plane.x = 4; plane.vx = 0; }
+  if (plane.x > eng.W-plane.w-4){ plane.x = eng.W-plane.w-4; plane.vx = 0; }
+
+  // изгорели газове
+  eng.trail(plane.x+plane.w/2, plane.y+plane.h, '#ffae42');
+
+  // облаци падат
+  scroll += eng._speed*dt;
+  eng._levelDist += eng._speed*dt;
+  for (var i=clouds.length-1;i>=0;i--){
+    var c = clouds[i];
+    c.y += eng._speed*dt;
+    c.x += c.drift*dt;
+    if (c.y - c.r > eng.H){ clouds.splice(i,1); spawnCloud(eng, -40); eng.score += 5; }
+    // сблъсък (кръг-правоъгълник, опростено)
+    var cx = Math.max(plane.x, Math.min(c.x, plane.x+plane.w));
+    var cy = Math.max(plane.y, Math.min(c.y, plane.y+plane.h));
+    var dx = c.x-cx, dy = c.y-cy;
+    if (dx*dx+dy*dy < (c.r*0.78)*(c.r*0.78)) return 'dead';
+  }
+  if (eng._levelDist >= eng._target) return 'next';
+  return null;
+}
+
+function background(eng, ctx){
+  var g = ctx.createLinearGradient(0,0,0,eng.H);
+  g.addColorStop(0,'#1b3a5c'); g.addColorStop(0.5,'#2a86d8'); g.addColorStop(1,'#7ec8ec');
+  ctx.fillStyle = g; ctx.fillRect(0,0,eng.W,eng.H);
+  // далечни звезди/паралакс точки
+  ctx.fillStyle = 'rgba(255,255,255,.25)';
+  for (var i=0;i<24;i++){
+    var y = ((i*97 + scroll*0.3) % eng.H);
+    ctx.fillRect((i*53)%eng.W, y, 2, 2);
+  }
+}
+
+function draw(eng, ctx){
+  // облаци — с мека сянка
+  for (var i=0;i<clouds.length;i++){
+    var c = clouds[i];
+    ctx.fillStyle = 'rgba(0,0,0,.12)';
+    puff(ctx, c.x+4, c.y+6, c.r);
+    ctx.fillStyle = '#f4f8fb';
+    puff(ctx, c.x, c.y, c.r);
+    ctx.fillStyle = '#dde7ee';
+    puff(ctx, c.x, c.y+c.r*0.35, c.r*0.7);
+  }
+  // самолет
+  ctx.save();
+  ctx.translate(plane.x+plane.w/2, plane.y+plane.h/2);
+  ctx.rotate(plane.tilt);
+  drawPlane(ctx, plane.w, plane.h);
+  ctx.restore();
+}
+
+function puff(ctx,x,y,r){
+  ctx.beginPath();
+  ctx.arc(x-r*0.6,y,r*0.6,0,7); ctx.arc(x,y-r*0.3,r*0.75,0,7);
+  ctx.arc(x+r*0.6,y,r*0.6,0,7); ctx.arc(x,y+r*0.15,r*0.7,0,7);
+  ctx.fill();
+}
+
+function drawPlane(ctx,w,h){
+  // крила
+  ctx.fillStyle = '#c0392b';
+  ctx.beginPath();
+  ctx.moveTo(-w/2,4); ctx.lineTo(0,-2); ctx.lineTo(w/2,4);
+  ctx.lineTo(w/2-6,12); ctx.lineTo(-w/2+6,12); ctx.closePath(); ctx.fill();
+  // корпус
+  var g = ctx.createLinearGradient(-8,0,8,0);
+  g.addColorStop(0,'#e8eef2'); g.addColorStop(.5,'#fff'); g.addColorStop(1,'#aeb9c2');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(0,-h/2); ctx.quadraticCurveTo(9,-6,8,h/2-6);
+  ctx.lineTo(-8,h/2-6); ctx.quadraticCurveTo(-9,-6,0,-h/2); ctx.fill();
+  // опашка
+  ctx.fillStyle = '#c0392b';
+  ctx.beginPath();
+  ctx.moveTo(0,h/2-12); ctx.lineTo(8,h/2+2); ctx.lineTo(-8,h/2+2); ctx.fill();
+  // кокпит
+  ctx.fillStyle = '#2c3e50';
+  ctx.beginPath(); ctx.ellipse(0,-h/4,4,7,0,0,7); ctx.fill();
+}
+
+var eng = new GameEngine({
+  canvas: document.getElementById('cv'),
+  slug: 'plane-dodge',
+  title: 'Самолет — Избягвай',
+  goal: 'Управлявай самолета и избягвай облаците. Стигни края на всяко ниво — с всяко ниво облаците са повече и по-бързи.',
+  controls: 'Стрелки наляво/надясно или A / D. На телефон — тапни лявата или дясната половина.',
+  levels: 10, lives: 3,
+  init: init, update: update, draw: draw, background: background
+});
+eng.start();
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-# Version: 1.0056
+# Version: 1.0093
 #!/bin/bash
 # Version 00013 - Test Runner
 # Tests all new crypto payment and free chat features

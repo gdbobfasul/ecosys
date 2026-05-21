@@ -1,4 +1,4 @@
-// Version: 1.0086
+// Version: 1.0093
 /**
  * @version v38
  * Чете адреси директно от private/shared/contracts/Addresses.sol

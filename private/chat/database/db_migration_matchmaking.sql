@@ -1,6 +1,6 @@
 -- ================================================================
 -- MATCHMAKING SYSTEM DATABASE MIGRATION
--- Version: 1.0056
+-- Version: 1.0093
 -- Date: February 14, 2026
 -- Description: AI-powered matchmaking with criteria, invitations, blocks
 -- ================================================================

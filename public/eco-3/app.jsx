@@ -1,4 +1,4 @@
-// ECO-3 AI Studio v1.0085 — Full Application
+// ECO-3 AI Studio v1.0093 — Full Application
 // 3 AI агента · 3 режима · 19 езика · 4 бюджета
 // NO DEMO MODE — connects to real backend API + SQLite DB
 const { useState, useRef, useEffect, useCallback } = React;

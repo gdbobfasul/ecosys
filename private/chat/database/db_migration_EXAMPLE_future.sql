@@ -1,4 +1,4 @@
--- Version: 1.0056
+-- Version: 1.0093
 -- Example Future Migration
 -- This shows how to add NEW fields in the future
 -- Date: 2026-XX-XX

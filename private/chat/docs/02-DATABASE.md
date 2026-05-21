@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 # 📊 AMS Chat - Database Documentation v00021
 
 ## 🗄️ Database Overview

@@ -1,55 +1,137 @@
-<!-- Version: 1.0086 -->
+<!-- Version: 1.0093 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🏎️ Car Race</title>
-<link rel="stylesheet" href="/shared/css/common.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Кола — Надбягване | KCY игри</title>
 <style>
-body{background:#111;color:#fff;margin:0;font-family:system-ui}
-.wrap{max-width:560px;margin:20px auto;text-align:center}
-canvas{background:#333;border-radius:12px;display:block;margin:0 auto;max-width:100%}
-.hud{padding:14px;display:flex;justify-content:space-between;font-size:1.1em}
-.btn{display:inline-block;margin:10px 6px;padding:10px 18px;background:#fff;color:#111;border-radius:8px;text-decoration:none;border:none;cursor:pointer;font-weight:600}
-#msg{margin-top:10px;min-height:28px}
-</style></head>
+  body{margin:0;background:#0a1018;color:#fff;font-family:system-ui;text-align:center}
+  .top{padding:12px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+  .top a{background:#1d2b3a;color:#9cc4e0;text-decoration:none;padding:8px 14px;border-radius:8px;font-size:.9em}
+  canvas{display:block;margin:0 auto;border-radius:12px;max-width:100%;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+</style>
+</head>
 <body>
-<div class="wrap">
-<div class="hud"><span>🏎️ Car Race</span><span>Точки: <b id="pts">0</b> | Ниво: <b id="lvl">1</b></span></div>
-<canvas id="cv" width="500" height="600"></canvas>
-<div id="msg">←/→ стрелки или клик (ляво/дясно половина). Избягвай насрещните коли!</div>
-<a class="btn" href="/portals/games/">← Игри</a>
-<button class="btn" id="r">🔁 Рестарт</button>
+<div class="top">
+  <a href="/portals/games/">← Всички игри</a>
+  <a href="/portals/games/?rank=1">🏆 Ранг листа</a>
 </div>
+<canvas id="cv" width="440" height="600"></canvas>
+<script src="/portals/games/game-engine.js"></script>
 <script>
-const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
-const LANES=[120,250,380];
-let car,enemies,points,level,running,tick,laneIdx;
-function reset(){laneIdx=1;car={x:LANES[1],y:500,w:38,h:60};enemies=[];points=0;level=1;tick=0;running=true;document.getElementById('pts').textContent=0;document.getElementById('lvl').textContent=1;document.getElementById('msg').textContent='Карай!';loop();}
-function move(d){laneIdx=Math.max(0,Math.min(2,laneIdx+d));}
-document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1);});
-cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect();const x=(e.clientX-r.left)*(500/r.width);move(x<250?-1:1);});
-document.getElementById('r').onclick=reset;
-function spawn(){enemies.push({lane:Math.floor(Math.random()*3),y:-80,s:3+level*.5});}
-function loop(){
-  if(!running)return;tick++;if(tick%(Math.max(20,60-level*3))===0)spawn();
-  ctx.clearRect(0,0,500,600);
-  // пътни линии
-  ctx.strokeStyle='#ffb';ctx.setLineDash([20,20]);ctx.lineWidth=3;ctx.lineDashOffset=-tick*4;
-  ctx.beginPath();ctx.moveTo(170,0);ctx.lineTo(170,600);ctx.moveTo(330,0);ctx.lineTo(330,600);ctx.stroke();
-  ctx.setLineDash([]);
-  // врагове
-  for(const en of enemies){
-    en.y+=en.s;
-    drawCar(LANES[en.lane],en.y,'#e33');
-    if(en.lane===laneIdx && Math.abs(en.y-car.y)<55){running=false;document.getElementById('msg').innerHTML=`💥 Край! Точки: <b>${points}</b>`;submitScore();return;}
-  }
-  for(let i=enemies.length-1;i>=0;i--)if(enemies[i].y>650){enemies.splice(i,1);points++;document.getElementById('pts').textContent=points;if(points>0&&points%8===0){level++;document.getElementById('lvl').textContent=level;document.getElementById('msg').innerHTML=`🎉 Ниво ${level}! Точки: <b>${points}</b>`;}}
-  car.x+=(LANES[laneIdx]-car.x)*.25;
-  drawCar(car.x,car.y,'#4cf');
-  requestAnimationFrame(loop);
+var LANES, car, foes, dash, roadX, roadW;
+
+function laneX(i){ return roadX + roadW/LANES*i + roadW/LANES/2; }
+
+function init(eng, level){
+  LANES = 3;
+  roadW = 300; roadX = (eng.W-roadW)/2;
+  car = { lane:1, x:laneX(1), y:eng.H-110, w:42, h:74 };
+  foes = []; dash = 0;
+  eng._dist = 0;
+  eng._target = 2200 + level*500;
+  eng._speed = 4 + level*0.7;
+  eng._spawnCd = 40;
+  eng._spawnEvery = Math.max(28, 70 - level*4);
 }
-function drawCar(x,y,c){ctx.save();ctx.translate(x,y);ctx.fillStyle=c;ctx.fillRect(-18,-30,36,58);ctx.fillStyle='#111';ctx.fillRect(-14,-24,28,18);ctx.fillRect(-18,-32,8,8);ctx.fillRect(10,-32,8,8);ctx.restore();}
-async function submitScore(){try{await fetch('/api/portals/games/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game_slug:'car-race',score:points,level})});}catch(e){}}
-reset();
-</script></body></html>
+
+function update(eng, dt){
+  // смяна на лента
+  if ((eng.keys['ArrowLeft']||eng.keys['KeyA']) && !car._moved){ car.lane=Math.max(0,car.lane-1); car._moved=true; }
+  else if ((eng.keys['ArrowRight']||eng.keys['KeyD']) && !car._moved){ car.lane=Math.min(LANES-1,car.lane+1); car._moved=true; }
+  if (!eng.keys['ArrowLeft']&&!eng.keys['ArrowRight']&&!eng.keys['KeyA']&&!eng.keys['KeyD']) car._moved=false;
+  var tx = laneX(car.lane);
+  car.x += (tx-car.x)*0.25*dt;
+
+  dash += eng._speed*dt;
+  eng._dist += eng._speed*dt;
+  eng.score += Math.round(eng._speed*dt*0.3);
+
+  eng._spawnCd -= dt;
+  if (eng._spawnCd<=0){
+    var ln = Math.floor(Math.random()*LANES);
+    foes.push({lane:ln,x:laneX(ln),y:-90,w:42,h:74,color:['#e74c3c','#f39c12','#16a085','#8e44ad'][Math.floor(Math.random()*4)]});
+    eng._spawnCd = eng._spawnEvery;
+  }
+  for (var i=foes.length-1;i>=0;i--){
+    var f=foes[i];
+    f.y += eng._speed*dt;
+    var a={x:car.x-car.w/2,y:car.y-car.h/2,w:car.w,h:car.h};
+    var b={x:f.x-f.w/2,y:f.y-f.h/2,w:f.w,h:f.h};
+    if (eng.rectHit(a,b)) return 'dead';
+    if (f.y>eng.H+90){ foes.splice(i,1); eng.score+=20; }
+  }
+  if (eng._dist>=eng._target) return 'next';
+  return null;
+}
+
+function background(eng, ctx){
+  // трева
+  ctx.fillStyle='#1e6b3a'; ctx.fillRect(0,0,eng.W,eng.H);
+  ctx.fillStyle='#175c30';
+  for (var i=0;i<20;i++){ var y=((i*80+dash)%eng.H); ctx.fillRect(8,y,14,40); ctx.fillRect(eng.W-22,y,14,40); }
+  // път
+  ctx.fillStyle='#2c2c34'; ctx.fillRect(roadX,0,roadW,eng.H);
+  // банкет
+  ctx.fillStyle='#d0d0d0'; ctx.fillRect(roadX-4,0,4,eng.H); ctx.fillRect(roadX+roadW,0,4,eng.H);
+  // лентови линии
+  ctx.fillStyle='#f5d23a';
+  for (var l=1;l<LANES;l++){
+    var lx=roadX+roadW/LANES*l;
+    for (var d=0;d<14;d++){ var yy=((d*60+dash)%eng.H)-30; ctx.fillRect(lx-3,yy,6,32); }
+  }
+}
+
+function draw(eng, ctx){
+  for (var i=0;i<foes.length;i++) drawCar(ctx,foes[i],foes[i].color,true);
+  drawCar(ctx,car,'#2980ff',false);
+}
+
+function drawCar(ctx,c,color,flip){
+  ctx.save();
+  ctx.translate(c.x,c.y);
+  // сянка
+  ctx.fillStyle='rgba(0,0,0,.3)';
+  rr(ctx,-c.w/2+3,-c.h/2+5,c.w,c.h,8); ctx.fill();
+  // корпус
+  var g=ctx.createLinearGradient(-c.w/2,0,c.w/2,0);
+  g.addColorStop(0,shade(color,-30)); g.addColorStop(.5,color); g.addColorStop(1,shade(color,-30));
+  ctx.fillStyle=g;
+  rr(ctx,-c.w/2,-c.h/2,c.w,c.h,9); ctx.fill();
+  // прозорци
+  ctx.fillStyle='#1c2733';
+  rr(ctx,-c.w/2+6,-c.h/2+10,c.w-12,16,4); ctx.fill();
+  rr(ctx,-c.w/2+6,c.h/2-26,c.w-12,16,4); ctx.fill();
+  // фарове
+  ctx.fillStyle= flip?'#ff5555':'#fff3b0';
+  var fy = flip? c.h/2-6 : -c.h/2+2;
+  ctx.fillRect(-c.w/2+5,fy,8,5); ctx.fillRect(c.w/2-13,fy,8,5);
+  ctx.restore();
+}
+function rr(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+function shade(hex,amt){
+  var n=parseInt(hex.slice(1),16);
+  var r=Math.max(0,Math.min(255,(n>>16)+amt));
+  var g=Math.max(0,Math.min(255,((n>>8)&255)+amt));
+  var b=Math.max(0,Math.min(255,(n&255)+amt));
+  return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+}
+
+var eng = new GameEngine({
+  canvas: document.getElementById('cv'),
+  slug: 'car-race',
+  title: 'Кола — Надбягване',
+  goal: 'Карай по магистралата и избягвай другите коли. Стигни края на дистанцията — всяко ниво е по-дълго и по-бързо.',
+  controls: 'Стрелки наляво/надясно или A / D за смяна на лента. На телефон — тапни лявата/дясната половина.',
+  levels: 10, lives: 3,
+  init: init, update: update, draw: draw, background: background
+});
+eng.start();
+</script>
+</body>
+</html>

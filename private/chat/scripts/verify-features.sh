@@ -1,4 +1,4 @@
-# Version: 1.0056
+# Version: 1.0093
 #!/bin/bash
 # Quick Verification - Version 00013
 # Checks that all new features are present

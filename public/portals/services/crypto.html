@@ -1,0 +1,141 @@
+<!-- Version: 1.0093 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Валутен конвертор | KCY услуги</title>
+<style>
+  :root { --pri:#2a86d8; --sec:#6ec1e4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:#f0f4f8; color:#222; }
+  .head { background:linear-gradient(135deg,var(--pri),var(--sec)); color:#fff; padding:28px 20px; text-align:center; }
+  .head h1 { font-size:1.7em; margin-bottom:6px; }
+  .head a { color:#fff; text-decoration:none; background:rgba(255,255,255,.2); padding:6px 14px; border-radius:8px; display:inline-block; margin-top:10px; font-size:.9em; }
+  .wrap { max-width:680px; margin:24px auto; padding:0 16px; }
+  .card { background:#fff; border-radius:12px; padding:22px; box-shadow:0 4px 16px rgba(0,0,0,.08); }
+  label { display:block; font-weight:600; margin:14px 0 6px; font-size:.92em; }
+  input,select { width:100%; padding:11px; border:1px solid #cdd7e1; border-radius:8px; font-size:1em; }
+  .row { display:flex; gap:12px; align-items:flex-end; }
+  .row > div { flex:1; }
+  .swap { flex:0 0 auto; }
+  .swapbtn { background:#5a6b7d; color:#fff; border:none; width:42px; height:42px; border-radius:8px; font-size:1.2em; cursor:pointer; }
+  .out { margin-top:20px; padding:18px; background:#eef6ff; border-radius:10px; text-align:center; }
+  .out .big { font-size:1.8em; font-weight:700; color:var(--pri); }
+  .note { font-size:.8em; color:#789; margin-top:14px; text-align:center; }
+  .loading { text-align:center; color:#789; padding:20px; }
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>Валутен конвертор</h1>
+  <p>Криптовалути и фиатни валути</p>
+  <a href="/portals/services/">← Всички услуги</a>
+</div>
+<div class="wrap">
+  <div class="card">
+    <div id="loading" class="loading">Зареждам курсове…</div>
+    <div id="tool" style="display:none">
+      <label>Сума</label>
+      <input type="number" id="amount" value="1" min="0" step="any" oninput="convert()">
+      <div class="row" style="margin-top:8px">
+        <div>
+          <label>От</label>
+          <select id="from" onchange="convert()"></select>
+        </div>
+        <div class="swap">
+          <label>&nbsp;</label>
+          <button class="swapbtn" onclick="swap()" title="Размени">⇅</button>
+        </div>
+        <div>
+          <label>Към</label>
+          <select id="to" onchange="convert()"></select>
+        </div>
+      </div>
+      <div class="out">
+        <div class="big" id="result">—</div>
+        <div id="rate" style="color:#567;font-size:.9em;margin-top:6px"></div>
+      </div>
+      <div class="note" id="note"></div>
+    </div>
+  </div>
+</div>
+<script>
+var RATES={};  // символ -> стойност в USD (1 единица = X USD)
+var META={};   // символ -> {name, type}
+
+function loadRates(){
+  fetch('/api/portal-services/rates')
+    .then(function(r){ if(!r.ok) throw new Error('rates'); return r.json(); })
+    .then(function(d){
+      // крипто: usd цена директно
+      d.crypto.forEach(function(c){
+        RATES[c.symbol]=c.usd;
+        META[c.symbol]={name:c.name,type:'крипто'};
+      });
+      // фиат: er-api дава 1 USD = X валута → 1 валута = 1/X USD
+      Object.keys(d.fiat).forEach(function(code){
+        var perUsd=d.fiat[code];
+        if(perUsd>0){
+          RATES[code]=1/perUsd;
+          META[code]={name:code,type:'валута'};
+        }
+      });
+      RATES['USD']=1; META['USD']={name:'US Dollar',type:'валута'};
+      buildSelects();
+      document.getElementById('loading').style.display='none';
+      document.getElementById('tool').style.display='block';
+      document.getElementById('note').textContent=
+        'Курсове по данни на CoinGecko (крипто) и ER-API (фиат). Обновени: '+
+        new Date(d.updated).toLocaleString('bg-BG');
+      convert();
+    })
+    .catch(function(){
+      document.getElementById('loading').innerHTML=
+        '<span style="color:#d9534f">Курсовете не можаха да се заредят. Опитай по-късно.</span>';
+    });
+}
+
+function buildSelects(){
+  var syms=Object.keys(RATES).sort(function(a,b){
+    var ta=META[a].type,tb=META[b].type;
+    if(ta!==tb) return ta==='крипто'?-1:1;
+    return a<b?-1:1;
+  });
+  var opts=syms.map(function(s){
+    return '<option value="'+s+'">'+s+' — '+META[s].name+' ('+META[s].type+')</option>';
+  }).join('');
+  var f=document.getElementById('from'), t=document.getElementById('to');
+  f.innerHTML=opts; t.innerHTML=opts;
+  f.value='BTC'; t.value='USD';
+}
+
+function convert(){
+  var amt=parseFloat(document.getElementById('amount').value)||0;
+  var from=document.getElementById('from').value;
+  var to=document.getElementById('to').value;
+  if(!RATES[from]||!RATES[to]) return;
+  var usd=amt*RATES[from];
+  var res=usd/RATES[to];
+  document.getElementById('result').textContent=
+    fmt(res)+' '+to;
+  var one=RATES[from]/RATES[to];
+  document.getElementById('rate').textContent=
+    '1 '+from+' = '+fmt(one)+' '+to;
+}
+function fmt(n){
+  if(n===0) return '0';
+  if(n<0.0001) return n.toExponential(4);
+  if(n<1) return n.toFixed(6);
+  if(n<1000) return n.toFixed(4);
+  return n.toLocaleString('en-US',{maximumFractionDigits:2});
+}
+function swap(){
+  var f=document.getElementById('from'), t=document.getElementById('to');
+  var tmp=f.value; f.value=t.value; t.value=tmp;
+  convert();
+}
+loadRates();
+</script>
+</body>
+</html>

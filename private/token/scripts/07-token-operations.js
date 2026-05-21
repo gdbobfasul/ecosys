@@ -1,4 +1,4 @@
-// Version: 1.0056
+// Version: 1.0093
 /**
  * СКРИПТ 7: Token операции
  * Цел: Burn, withdraw и emergency операции

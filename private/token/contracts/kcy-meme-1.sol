@@ -1,11 +1,11 @@
-// Version: 1.0056
+// Version: 1.0093
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "../../shared/contracts/Addresses.sol";
 
 /**
- * @notice v1.0056 - Router exception for Max 100 check (buyFromDEX compatibility)
+ * @notice v1.0093 - Router exception for Max 100 check (buyFromDEX compatibility)
  * @dev onlyAdmin = owner OR exempt slots (can call most functions)
  *      onlyMultiSig = ONLY multi-sig (unlock functions + removeFromBlacklist)
  *      First 5 exempt slots changeable ONLY by multi-sig

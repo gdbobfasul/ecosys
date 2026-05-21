@@ -1,4 +1,4 @@
-// Version: 1.0056
+// Version: 1.0093
 /**
  * СКРИПТ 5: Liquidity Pairs управление
  * Цел: Добавяне/управление на liquidity pairs

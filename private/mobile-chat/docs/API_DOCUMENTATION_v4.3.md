@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 # AMS Chat System - API Documentation v4.3
 
 ## 🆕 NEW FEATURES (Version 4.3)

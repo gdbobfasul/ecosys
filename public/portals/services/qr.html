@@ -1,0 +1,190 @@
+<!-- Version: 1.0093 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR код — генератор и четец | KCY услуги</title>
+<style>
+  :root { --pri:#2a86d8; --sec:#6ec1e4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:#f0f4f8; color:#222; }
+  .head { background:linear-gradient(135deg,var(--pri),var(--sec)); color:#fff; padding:28px 20px; text-align:center; }
+  .head h1 { font-size:1.7em; margin-bottom:6px; }
+  .head a { color:#fff; text-decoration:none; background:rgba(255,255,255,.2); padding:6px 14px; border-radius:8px; display:inline-block; margin-top:10px; font-size:.9em; }
+  .wrap { max-width:760px; margin:24px auto; padding:0 16px; }
+  .tabs { display:flex; gap:8px; margin-bottom:18px; }
+  .tab { flex:1; padding:12px; border:none; border-radius:10px 10px 0 0; background:#dde6ef; color:#456; font-size:1em; cursor:pointer; font-weight:600; }
+  .tab.active { background:#fff; color:var(--pri); box-shadow:0 -3px 8px rgba(0,0,0,.06); }
+  .card { background:#fff; border-radius:0 10px 10px 10px; padding:22px; box-shadow:0 4px 16px rgba(0,0,0,.08); }
+  .panel { display:none; } .panel.active { display:block; }
+  label { display:block; font-weight:600; margin:14px 0 6px; font-size:.92em; }
+  textarea,input[type=text],select { width:100%; padding:10px; border:1px solid #cdd7e1; border-radius:8px; font-size:1em; font-family:inherit; }
+  textarea { min-height:90px; resize:vertical; }
+  .btn { background:var(--pri); color:#fff; border:none; padding:11px 20px; border-radius:8px; font-size:1em; cursor:pointer; margin-top:14px; font-weight:600; }
+  .btn:hover { background:#1f6cb0; }
+  .btn.sec { background:#5a6b7d; }
+  .row { display:flex; gap:12px; flex-wrap:wrap; }
+  .row > div { flex:1; min-width:140px; }
+  .result { margin-top:18px; text-align:center; }
+  #qrout { display:inline-block; padding:14px; background:#fff; border:1px solid #e0e6ec; border-radius:10px; }
+  .readout { margin-top:16px; padding:14px; background:#eef6ff; border-left:4px solid var(--pri); border-radius:6px; word-break:break-all; }
+  .readout.empty { background:#fbecec; border-color:#d9534f; }
+  .hint { font-size:.85em; color:#789; margin-top:6px; }
+  video { width:100%; max-width:340px; border-radius:10px; background:#000; }
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>QR код</h1>
+  <p>Генерирай QR код или разчети съществуващ</p>
+  <a href="/portals/services/">← Всички услуги</a>
+</div>
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('gen')">Генерирай QR</button>
+    <button class="tab" onclick="showTab('read')">Разчети QR</button>
+  </div>
+
+  <!-- ГЕНЕРАТОР -->
+  <div id="gen" class="panel active card">
+    <label>Текст или URL за кодиране</label>
+    <textarea id="gentext" placeholder="https://example.com или произволен текст"></textarea>
+    <div class="row">
+      <div>
+        <label>Размер</label>
+        <select id="gensize">
+          <option value="200">Малък (200px)</option>
+          <option value="300" selected>Среден (300px)</option>
+          <option value="500">Голям (500px)</option>
+        </select>
+      </div>
+      <div>
+        <label>Корекция на грешки</label>
+        <select id="genecc">
+          <option value="L">Ниска (L)</option>
+          <option value="M" selected>Средна (M)</option>
+          <option value="Q">Висока (Q)</option>
+          <option value="H">Максимална (H)</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" onclick="genQR()">Генерирай</button>
+    <div class="result" id="genresult"></div>
+  </div>
+
+  <!-- ЧЕТЕЦ -->
+  <div id="read" class="panel card">
+    <p style="color:#567;font-size:.92em">Качи снимка на QR код или използвай камерата — приложението ще разчете и покаже текста/линка.</p>
+    <label>Качи изображение с QR код</label>
+    <input type="file" id="readfile" accept="image/*">
+    <div style="margin:14px 0">
+      <button class="btn sec" onclick="startCam()">Сканирай с камера</button>
+      <button class="btn sec" onclick="stopCam()">Спри камерата</button>
+    </div>
+    <div id="camwrap" style="text-align:center;display:none"><video id="cam" playsinline></video></div>
+    <div id="readout" class="readout" style="display:none"></div>
+  </div>
+</div>
+
+<!-- QR библиотеки: qrcode (генериране), jsQR (четене) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+<script>
+function showTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  if(id!=='read') stopCam();
+}
+
+// ---- ГЕНЕРИРАНЕ ----
+function genQR(){
+  var txt=document.getElementById('gentext').value.trim();
+  var box=document.getElementById('genresult');
+  if(!txt){ box.innerHTML='<p style="color:#d9534f">Въведи текст или URL.</p>'; return; }
+  var size=parseInt(document.getElementById('gensize').value,10);
+  var ecc=document.getElementById('genecc').value;
+  box.innerHTML='<div id="qrout"></div><br><button class="btn" onclick="dlQR()">Свали PNG</button>';
+  var lvl={L:0,M:1,Q:2,H:3}[ecc];
+  new QRCode(document.getElementById('qrout'),{
+    text:txt,width:size,height:size,
+    correctLevel:lvl
+  });
+}
+function dlQR(){
+  var img=document.querySelector('#qrout img')||document.querySelector('#qrout canvas');
+  if(!img) return;
+  var a=document.createElement('a');
+  a.download='qr-code.png';
+  a.href=img.tagName==='IMG'?img.src:img.toDataURL();
+  a.click();
+}
+
+// ---- ЧЕТЕНЕ ОТ ФАЙЛ ----
+document.getElementById('readfile').addEventListener('change',function(e){
+  var f=e.target.files[0]; if(!f) return;
+  var img=new Image();
+  img.onload=function(){
+    var c=document.createElement('canvas');
+    c.width=img.width; c.height=img.height;
+    var ctx=c.getContext('2d');
+    ctx.drawImage(img,0,0);
+    var d=ctx.getImageData(0,0,c.width,c.height);
+    var code=jsQR(d.data,d.width,d.height);
+    showReadout(code?code.data:null);
+  };
+  img.src=URL.createObjectURL(f);
+});
+
+// ---- ЧЕТЕНЕ ОТ КАМЕРА ----
+var camStream=null, camRAF=null;
+function startCam(){
+  var v=document.getElementById('cam');
+  document.getElementById('camwrap').style.display='block';
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
+    .then(function(s){
+      camStream=s; v.srcObject=s; v.play();
+      scanLoop();
+    })
+    .catch(function(){ alert('Камерата не е достъпна.'); });
+}
+function stopCam(){
+  if(camRAF) cancelAnimationFrame(camRAF);
+  if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; }
+  document.getElementById('camwrap').style.display='none';
+}
+function scanLoop(){
+  var v=document.getElementById('cam');
+  if(!camStream) return;
+  if(v.readyState===v.HAVE_ENOUGH_DATA){
+    var c=document.createElement('canvas');
+    c.width=v.videoWidth; c.height=v.videoHeight;
+    var ctx=c.getContext('2d');
+    ctx.drawImage(v,0,0,c.width,c.height);
+    var d=ctx.getImageData(0,0,c.width,c.height);
+    var code=jsQR(d.data,d.width,d.height);
+    if(code){ showReadout(code.data); stopCam(); return; }
+  }
+  camRAF=requestAnimationFrame(scanLoop);
+}
+
+function showReadout(data){
+  var box=document.getElementById('readout');
+  box.style.display='block';
+  if(!data){
+    box.className='readout empty';
+    box.innerHTML='Не е разпознат QR код в изображението.';
+    return;
+  }
+  box.className='readout';
+  var isUrl=/^https?:\/\//i.test(data);
+  var safe=data.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  box.innerHTML='<strong>Съдържание на QR кода:</strong><br>'+
+    (isUrl?('<a href="'+safe+'" target="_blank" rel="noopener">'+safe+'</a><br><span class="hint">Това е линк — кликни за отваряне.</span>')
+          :('<span>'+safe+'</span><br><span class="hint">Това е текст.</span>'));
+}
+</script>
+</body>
+</html>

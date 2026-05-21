@@ -1,4 +1,4 @@
--- Version: 1.0092
+-- Version: 1.0093
 -- PostgreSQL Schema for AMS Chat — конвертирана от db_setup.sql
 -- AMS Chat Database Schema v4.3
 -- Shared between Web & Mobile App

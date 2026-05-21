@@ -1,0 +1,169 @@
+<!-- Version: 1.0093 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF инструменти | KCY услуги</title>
+<style>
+  :root { --pri:#2a86d8; --sec:#6ec1e4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:#f0f4f8; color:#222; }
+  .head { background:linear-gradient(135deg,var(--pri),var(--sec)); color:#fff; padding:28px 20px; text-align:center; }
+  .head h1 { font-size:1.7em; margin-bottom:6px; }
+  .head a { color:#fff; text-decoration:none; background:rgba(255,255,255,.2); padding:6px 14px; border-radius:8px; display:inline-block; margin-top:10px; font-size:.9em; }
+  .wrap { max-width:680px; margin:24px auto; padding:0 16px; }
+  .tabs { display:flex; gap:6px; margin-bottom:14px; }
+  .tab { flex:1; padding:10px; border:none; border-radius:8px; background:#dde6ef; color:#456; cursor:pointer; font-weight:600; font-size:.9em; }
+  .tab.active { background:var(--pri); color:#fff; }
+  .card { background:#fff; border-radius:12px; padding:22px; box-shadow:0 4px 16px rgba(0,0,0,.08); }
+  .panel { display:none; } .panel.active { display:block; }
+  label { display:block; font-weight:600; margin:12px 0 5px; font-size:.9em; }
+  input { width:100%; padding:10px; border:1px solid #cdd7e1; border-radius:8px; font-size:1em; }
+  .btn { background:var(--pri); color:#fff; border:none; padding:11px 20px; border-radius:8px; font-size:1em; cursor:pointer; margin-top:14px; font-weight:600; }
+  .btn:disabled { background:#aaa; cursor:not-allowed; }
+  .hint { font-size:.84em; color:#789; margin-top:4px; }
+  .status { margin-top:14px; padding:12px; border-radius:8px; display:none; }
+  .status.ok { background:#eaf6ea; color:#2d662d; display:block; }
+  .status.err { background:#fbecec; color:#a33; display:block; }
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>PDF инструменти</h1>
+  <p>Сливане, разделяне, воден знак</p>
+  <a href="/portals/services/">← Всички услуги</a>
+</div>
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="tab('merge')">Сливане</button>
+    <button class="tab" onclick="tab('split')">Разделяне</button>
+    <button class="tab" onclick="tab('wm')">Воден знак</button>
+  </div>
+
+  <!-- СЛИВАНЕ -->
+  <div id="merge" class="panel active card">
+    <label>Избери няколко PDF файла (в реда за сливане)</label>
+    <input type="file" id="mFiles" accept="application/pdf" multiple>
+    <p class="hint">Файловете се сливат в един PDF в реда на избиране.</p>
+    <button class="btn" onclick="doMerge()">Слей PDF</button>
+    <div class="status" id="mStatus"></div>
+  </div>
+
+  <!-- РАЗДЕЛЯНЕ -->
+  <div id="split" class="panel card">
+    <label>Избери PDF файл</label>
+    <input type="file" id="sFile" accept="application/pdf">
+    <label>Страници за извличане (напр. 1-3,5,8)</label>
+    <input type="text" id="sRange" placeholder="1-3,5,8" value="1">
+    <p class="hint">Извлича посочените страници в нов PDF.</p>
+    <button class="btn" onclick="doSplit()">Извлечи страници</button>
+    <div class="status" id="sStatus"></div>
+  </div>
+
+  <!-- ВОДЕН ЗНАК -->
+  <div id="wm" class="panel card">
+    <label>Избери PDF файл</label>
+    <input type="file" id="wFile" accept="application/pdf">
+    <label>Текст на водния знак</label>
+    <input type="text" id="wText" placeholder="ПОВЕРИТЕЛНО" value="ПОВЕРИТЕЛНО">
+    <p class="hint">Добавя диагонален полупрозрачен текст на всяка страница.</p>
+    <button class="btn" onclick="doWatermark()">Добави воден знак</button>
+    <div class="status" id="wStatus"></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script>
+var PDFLib=window.PDFLib;
+function tab(id){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+function status(el,ok,msg){
+  var s=document.getElementById(el);
+  s.className='status '+(ok?'ok':'err');
+  s.textContent=msg;
+}
+function save(bytes,name){
+  var blob=new Blob([bytes],{type:'application/pdf'});
+  var a=document.createElement('a');
+  a.download=name; a.href=URL.createObjectURL(blob); a.click();
+}
+function parseRange(str,max){
+  var pages=[];
+  str.split(',').forEach(function(part){
+    part=part.trim();
+    if(part.indexOf('-')>-1){
+      var ab=part.split('-');
+      var a=parseInt(ab[0],10), b=parseInt(ab[1],10);
+      for(var i=a;i<=b;i++) if(i>=1&&i<=max) pages.push(i-1);
+    } else {
+      var n=parseInt(part,10);
+      if(n>=1&&n<=max) pages.push(n-1);
+    }
+  });
+  return pages;
+}
+
+async function doMerge(){
+  var files=document.getElementById('mFiles').files;
+  if(files.length<2){ status('mStatus',false,'Избери поне 2 PDF файла.'); return; }
+  try{
+    var out=await PDFLib.PDFDocument.create();
+    for(var i=0;i<files.length;i++){
+      var buf=await files[i].arrayBuffer();
+      var doc=await PDFLib.PDFDocument.load(buf);
+      var pages=await out.copyPages(doc,doc.getPageIndices());
+      pages.forEach(function(p){ out.addPage(p); });
+    }
+    var bytes=await out.save();
+    save(bytes,'merged.pdf');
+    status('mStatus',true,'Готово — '+files.length+' файла слети.');
+  }catch(e){ status('mStatus',false,'Грешка: '+e.message); }
+}
+
+async function doSplit(){
+  var f=document.getElementById('sFile').files[0];
+  if(!f){ status('sStatus',false,'Избери PDF файл.'); return; }
+  try{
+    var buf=await f.arrayBuffer();
+    var doc=await PDFLib.PDFDocument.load(buf);
+    var idx=parseRange(document.getElementById('sRange').value,doc.getPageCount());
+    if(!idx.length){ status('sStatus',false,'Невалиден диапазон страници.'); return; }
+    var out=await PDFLib.PDFDocument.create();
+    var pages=await out.copyPages(doc,idx);
+    pages.forEach(function(p){ out.addPage(p); });
+    var bytes=await out.save();
+    save(bytes,'extracted.pdf');
+    status('sStatus',true,'Готово — '+idx.length+' страници извлечени.');
+  }catch(e){ status('sStatus',false,'Грешка: '+e.message); }
+}
+
+async function doWatermark(){
+  var f=document.getElementById('wFile').files[0];
+  if(!f){ status('wStatus',false,'Избери PDF файл.'); return; }
+  var text=document.getElementById('wText').value||'ПОВЕРИТЕЛНО';
+  try{
+    var buf=await f.arrayBuffer();
+    var doc=await PDFLib.PDFDocument.load(buf);
+    var font=await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+    var pages=doc.getPages();
+    pages.forEach(function(page){
+      var w=page.getWidth(), h=page.getHeight();
+      page.drawText(text,{
+        x:w/2-text.length*9, y:h/2,
+        size:42, font:font,
+        color:PDFLib.rgb(0.6,0.6,0.6),
+        opacity:0.35, rotate:PDFLib.degrees(45)
+      });
+    });
+    var bytes=await doc.save();
+    save(bytes,'watermarked.pdf');
+    status('wStatus',true,'Готово — воден знак добавен на '+pages.length+' страници.');
+  }catch(e){ status('wStatus',false,'Грешка: '+e.message); }
+}
+</script>
+</body>
+</html>

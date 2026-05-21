@@ -1,61 +1,152 @@
-<!-- Version: 1.0086 -->
+<!-- Version: 1.0093 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎮 Портал за игри — KCY</title>
-    <link rel="stylesheet" href="/shared/css/common.css">
-    <style>
-        .portal-head { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; padding: 40px 20px; text-align: center; }
-        .portal-head h1 { font-size: 2.4em; margin-bottom: 10px; }
-        .portal-head .back { display: inline-block; margin-top: 14px; padding: 8px 16px; background: rgba(255,255,255,.2); color: #fff; border-radius: 8px; text-decoration: none; }
-        .games-grid { max-width: 1200px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-        .game-card { background: #fff; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.1); overflow: hidden; transition: transform .2s; cursor: pointer; text-decoration: none; color: #333; }
-        .game-card:hover { transform: translateY(-4px); }
-        .game-thumb { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 5em; }
-        .game-thumb.t-plane { background: linear-gradient(135deg, #6ec1e4, #2a86d8); }
-        .game-thumb.t-car   { background: linear-gradient(135deg, #ff9966, #ff5e62); }
-        .game-thumb.t-hero  { background: linear-gradient(135deg, #a770ef, #cf8bf3); }
-        .game-body { padding: 18px; }
-        .game-body h3 { margin: 0 0 6px; color: var(--primary-color); }
-        .game-body p { margin: 0; color: #666; font-size: .92em; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Портал за игри — KCY</title>
+<style>
+  :root { --pri:#2a86d8; --sec:#6ec1e4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:#0e1620; color:#eef3f8; }
+  .head { background:linear-gradient(135deg,#1b3a5c,var(--pri)); color:#fff; padding:38px 20px; text-align:center; }
+  .head h1 { font-size:2.2em; margin-bottom:8px; }
+  .head a { color:#fff; text-decoration:none; background:rgba(255,255,255,.18); padding:8px 16px; border-radius:8px; display:inline-block; margin-top:12px; font-size:.9em; }
+  .tabs { max-width:1100px; margin:22px auto 0; padding:0 20px; display:flex; gap:8px; }
+  .tab { flex:1; padding:13px; border:none; border-radius:10px 10px 0 0; background:#1a2735; color:#9fb4c6; font-size:1em; font-weight:600; cursor:pointer; }
+  .tab.active { background:#22323f; color:#fff; }
+  .panel { max-width:1100px; margin:0 auto; padding:24px 20px; display:none; }
+  .panel.active { display:block; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px; }
+  .game { background:#22323f; border-radius:14px; overflow:hidden; text-decoration:none; color:#eef3f8; transition:transform .15s; box-shadow:0 6px 20px rgba(0,0,0,.35); }
+  .game:hover { transform:translateY(-5px); }
+  .thumb { height:130px; display:flex; align-items:center; justify-content:center; position:relative; }
+  .thumb.plane { background:linear-gradient(135deg,#2a86d8,#6ec1e4); }
+  .thumb.car   { background:linear-gradient(135deg,#ff6b5a,#ffb199); }
+  .thumb.hero  { background:linear-gradient(135deg,#a770ef,#cf8bf3); }
+  .thumb.battle{ background:linear-gradient(135deg,#c0392b,#e8612c); }
+  .thumb svg { width:80px; height:80px; }
+  .gbody { padding:16px; }
+  .gbody h3 { color:#fff; margin-bottom:6px; font-size:1.05em; }
+  .gbody p { color:#9fb4c6; font-size:.86em; line-height:1.4; }
+  .prog { margin-top:10px; font-size:.82em; color:#ffd24a; }
+  .loading { text-align:center; padding:50px; color:#7d93a6; }
+  /* ранг листа */
+  .rank-info { background:#22323f; border-radius:12px; padding:16px; margin-bottom:18px; font-size:.9em; color:#9fb4c6; }
+  .rank-info b { color:#ffd24a; }
+  .winner { background:linear-gradient(135deg,#2c3e50,#34516b); border:1px solid #ffd24a; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; gap:14px; align-items:center; }
+  .winner .medal { font-size:2em; flex:0 0 auto; }
+  .winner .info { flex:1; }
+  .winner .name { font-weight:700; color:#fff; font-size:1.1em; }
+  .winner .pts { color:#ffd24a; font-size:.9em; }
+  .winner .biz { color:#bcd; font-size:.88em; margin-top:4px; }
+  .winner .adlink { display:inline-block; margin-top:6px; color:#6ec1e4; font-size:.86em; text-decoration:none; }
+  .winner .adlink:hover { text-decoration:underline; }
+  .rrow { display:flex; gap:14px; padding:11px 14px; background:#1c2935; border-radius:9px; margin-bottom:7px; align-items:center; }
+  .rrow .rk { color:#7d93a6; font-weight:700; width:34px; }
+  .rrow .nm { flex:1; color:#dfe7ee; }
+  .rrow .pt { color:#ffd24a; font-weight:600; }
+</style>
 </head>
 <body>
-    <div class="portal-head">
-        <h1>🎮 Портал за игри</h1>
-        <p>Прости аркадни игри — безплатни, без регистрация за игра.</p>
-        <a class="back" href="/">← KCY Ecosystem</a>
-        &nbsp;
-        <a class="back" href="/portals/services/">🛠️ Портал за услуги →</a>
-    </div>
+<div class="head">
+  <h1>🎮 Портал за игри</h1>
+  <p>6 аркадни игри · нива · точки · месечна класация с награди</p>
+  <a href="/">← KCY Ecosystem</a> &nbsp;
+  <a href="/portals/services/">Портал за услуги →</a>
+</div>
 
-    <div id="games-grid" class="games-grid"></div>
+<div class="tabs">
+  <button class="tab active" id="tabGames" onclick="showTab('games')">Игри</button>
+  <button class="tab" id="tabRank" onclick="showTab('rank')">🏆 Месечна класация</button>
+</div>
 
-    <script>
-        function themeClass(hero) {
-            if (hero === 'самолет') return 't-plane';
-            if (hero === 'кола') return 't-car';
-            return 't-hero';
+<div id="panelGames" class="panel active">
+  <div id="grid" class="grid"><div class="loading">Зареждам игрите…</div></div>
+</div>
+
+<div id="panelRank" class="panel">
+  <div class="rank-info">
+    Класацията събира точките от <b>всичките 6 игри</b> за текущия месец.
+    <b>Нулира се всеки месец</b> — играй, за да си в топ 5!<br>
+    Топ 5 печелят <b>рекламно място</b> — описанието и линкът от регистрацията се показват тук.
+  </div>
+  <div id="ranklist"><div class="loading">Зареждам класацията…</div></div>
+</div>
+
+<script>
+var ICONS={
+  plane:'<svg viewBox="0 0 100 100"><path d="M50 12 L58 45 L88 60 L58 58 L54 86 L50 66 L46 86 L42 58 L12 60 L42 45 Z" fill="#fff" stroke="#1b3a5c" stroke-width="2"/></svg>',
+  car:'<svg viewBox="0 0 100 100"><rect x="26" y="20" width="48" height="62" rx="12" fill="#fff" stroke="#7d2b20" stroke-width="2"/><rect x="33" y="30" width="34" height="16" rx="3" fill="#1c2733"/><rect x="33" y="56" width="34" height="16" rx="3" fill="#1c2733"/><circle cx="34" cy="24" r="4" fill="#ffe"/><circle cx="66" cy="24" r="4" fill="#ffe"/></svg>',
+  hero:'<svg viewBox="0 0 100 100"><circle cx="50" cy="32" r="16" fill="#ffd9a8"/><path d="M34 30 a16 16 0 0 1 32 0 Z" fill="#5a3a22"/><rect x="38" y="46" width="24" height="30" rx="7" fill="#fff"/><rect x="40" y="74" width="8" height="14" fill="#2c3e50"/><rect x="52" y="74" width="8" height="14" fill="#2c3e50"/></svg>',
+  battle:'<svg viewBox="0 0 100 100"><path d="M30 72 L62 24 L70 30 L38 78 Z" fill="#d8dee4" stroke="#1c2733" stroke-width="2"/><path d="M70 72 L38 24 L30 30 L62 78 Z" fill="#d8dee4" stroke="#1c2733" stroke-width="2"/><circle cx="50" cy="50" r="7" fill="#ffd24a"/></svg>'
+};
+
+function showTab(t){
+  document.getElementById('panelGames').classList.toggle('active',t==='games');
+  document.getElementById('panelRank').classList.toggle('active',t==='rank');
+  document.getElementById('tabGames').classList.toggle('active',t==='games');
+  document.getElementById('tabRank').classList.toggle('active',t==='rank');
+  if(t==='rank') loadRanking();
+}
+
+function authGuard(r){
+  if(r.status===401){ location.href='/portals/login.html?next='+encodeURIComponent('/portals/games/'); throw 0; }
+  if(r.status===402){ location.href='/portals/billing.html'; throw 0; }
+  if(!r.ok) throw new Error('fail');
+  return r.json();
+}
+
+function loadGames(){
+  fetch('/api/portal-games/list').then(authGuard).then(function(d){
+    var g=document.getElementById('grid'); g.innerHTML='';
+    d.games.forEach(function(game){
+      var pr=game.progress||{best_level:1,best_score:0};
+      var a=document.createElement('a');
+      a.className='game'; a.href=game.slug+'.html';
+      a.innerHTML=
+        '<div class="thumb '+game.theme+'">'+ICONS[game.theme]+'</div>'+
+        '<div class="gbody"><h3>'+game.title+'</h3>'+
+        '<p>'+game.goal+'</p>'+
+        '<div class="prog">Рекорд: ниво '+pr.best_level+' · '+pr.best_score+' точки</div></div>';
+      g.appendChild(a);
+    });
+  }).catch(function(e){ if(e!==0) document.getElementById('grid').innerHTML='<div class="loading">Грешка при зареждане.</div>'; });
+}
+
+function loadRanking(){
+  fetch('/api/portal-games/ranking').then(authGuard).then(function(d){
+    var box=document.getElementById('ranklist'); box.innerHTML='';
+    if(!d.ranking.length){ box.innerHTML='<div class="loading">Още няма резултати този месец. Бъди първи!</div>'; return; }
+    var medals=['🥇','🥈','🥉','🏅','🏅'];
+    d.ranking.forEach(function(r){
+      if(r.is_winner){
+        var w=document.createElement('div'); w.className='winner';
+        var ad='';
+        if(r.ad_link){
+          var safe=r.ad_link.replace(/"/g,'');
+          ad='<a class="adlink" href="'+safe+'" target="_blank" rel="noopener">'+safe+'</a>';
         }
+        w.innerHTML='<div class="medal">'+(medals[r.rank-1]||'🏅')+'</div>'+
+          '<div class="info"><div class="name">#'+r.rank+' '+esc(r.username)+'</div>'+
+          '<div class="pts">'+r.total+' точки</div>'+
+          (r.business_description?'<div class="biz">'+esc(r.business_description)+'</div>':'')+
+          ad+'</div>';
+        box.appendChild(w);
+      } else {
+        var row=document.createElement('div'); row.className='rrow';
+        row.innerHTML='<span class="rk">#'+r.rank+'</span>'+
+          '<span class="nm">'+esc(r.username)+'</span>'+
+          '<span class="pt">'+r.total+' т.</span>';
+        box.appendChild(row);
+      }
+    });
+  }).catch(function(e){ if(e!==0) document.getElementById('ranklist').innerHTML='<div class="loading">Грешка при зареждане.</div>'; });
+}
+function esc(s){ return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-        async function load() {
-            const r = await fetch('/api/portals/games/list');
-            if (r.status === 401) { location.href = '/portals/login.html?next=/portals/games/'; return; }
-            if (r.status === 402) { location.href = '/portals/billing.html'; return; }
-            const { games } = await r.json();
-            document.getElementById('games-grid').innerHTML = games.map(g => `
-                <a href="${g.file}" class="game-card">
-                    <div class="game-thumb ${themeClass(g.hero)}">${g.emoji}</div>
-                    <div class="game-body">
-                        <h3>${g.title}</h3>
-                        <p>Герой: ${g.hero}</p>
-                    </div>
-                </a>
-            `).join('');
-        }
-        load();
-    </script>
+loadGames();
+if(location.search.indexOf('rank=1')>-1) showTab('rank');
+</script>
 </body>
 </html>

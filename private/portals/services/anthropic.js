@@ -1,5 +1,5 @@
 // KCY Portals — Anthropic AI service
-// Version: 1.0086
+// Version: 1.0093
 //
 // Генерира обява за продажба на имот по зададени няколко думи.
 // Използва ANTHROPIC_API_KEY от private/configs/.env

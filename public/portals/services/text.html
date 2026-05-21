@@ -1,0 +1,93 @@
+<!-- Version: 1.0093 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Текстови инструменти | KCY услуги</title>
+<style>
+  :root { --pri:#2a86d8; --sec:#6ec1e4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:#f0f4f8; color:#222; }
+  .head { background:linear-gradient(135deg,var(--pri),var(--sec)); color:#fff; padding:28px 20px; text-align:center; }
+  .head h1 { font-size:1.7em; margin-bottom:6px; }
+  .head a { color:#fff; text-decoration:none; background:rgba(255,255,255,.2); padding:6px 14px; border-radius:8px; display:inline-block; margin-top:10px; font-size:.9em; }
+  .wrap { max-width:760px; margin:24px auto; padding:0 16px; }
+  .card { background:#fff; border-radius:12px; padding:22px; box-shadow:0 4px 16px rgba(0,0,0,.08); }
+  textarea { width:100%; min-height:160px; padding:12px; border:1px solid #cdd7e1; border-radius:8px; font-size:1em; font-family:inherit; resize:vertical; }
+  .stats { display:flex; flex-wrap:wrap; gap:10px; margin:14px 0; }
+  .stat { flex:1; min-width:90px; background:#eef6ff; border-radius:8px; padding:10px; text-align:center; }
+  .stat .n { font-size:1.5em; font-weight:700; color:var(--pri); }
+  .stat .l { font-size:.78em; color:#678; }
+  .tools { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .tools button { background:#5a6b7d; color:#fff; border:none; padding:9px 13px; border-radius:7px; cursor:pointer; font-size:.88em; }
+  .tools button:hover { background:#445; }
+  .tools button.pri { background:var(--pri); }
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>Текстови инструменти</h1>
+  <p>Брояч, форматиране, Base64</p>
+  <a href="/portals/services/">← Всички услуги</a>
+</div>
+<div class="wrap">
+  <div class="card">
+    <textarea id="txt" placeholder="Постави или въведи текст тук…" oninput="count()"></textarea>
+    <div class="stats">
+      <div class="stat"><div class="n" id="cWords">0</div><div class="l">думи</div></div>
+      <div class="stat"><div class="n" id="cChars">0</div><div class="l">символи</div></div>
+      <div class="stat"><div class="n" id="cCharsNS">0</div><div class="l">без интервали</div></div>
+      <div class="stat"><div class="n" id="cLines">0</div><div class="l">редове</div></div>
+      <div class="stat"><div class="n" id="cSent">0</div><div class="l">изречения</div></div>
+      <div class="stat"><div class="n" id="cRead">0</div><div class="l">мин. четене</div></div>
+    </div>
+    <div class="tools">
+      <button class="pri" onclick="apply('upper')">ГЛАВНИ</button>
+      <button class="pri" onclick="apply('lower')">малки</button>
+      <button class="pri" onclick="apply('title')">Първа Главна</button>
+      <button class="pri" onclick="apply('sentence')">Изречения</button>
+      <button onclick="apply('trim')">Премахни празни редове</button>
+      <button onclick="apply('spaces')">Сбий интервалите</button>
+      <button onclick="apply('reverse')">Обърни текста</button>
+      <button onclick="apply('b64enc')">Base64 кодирай</button>
+      <button onclick="apply('b64dec')">Base64 декодирай</button>
+      <button onclick="copyTxt()">Копирай</button>
+    </div>
+  </div>
+</div>
+<script>
+function count(){
+  var t=document.getElementById('txt').value;
+  var words=(t.trim().match(/\S+/g)||[]).length;
+  document.getElementById('cWords').textContent=words;
+  document.getElementById('cChars').textContent=t.length;
+  document.getElementById('cCharsNS').textContent=t.replace(/\s/g,'').length;
+  document.getElementById('cLines').textContent=t?t.split(/\n/).length:0;
+  document.getElementById('cSent').textContent=(t.match(/[.!?]+/g)||[]).length;
+  document.getElementById('cRead').textContent=Math.max(1,Math.ceil(words/200));
+}
+function apply(op){
+  var el=document.getElementById('txt');
+  var t=el.value;
+  try{
+    if(op==='upper') t=t.toUpperCase();
+    else if(op==='lower') t=t.toLowerCase();
+    else if(op==='title') t=t.replace(/\S+/g,function(w){return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();});
+    else if(op==='sentence') t=t.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g,function(c){return c.toUpperCase();});
+    else if(op==='trim') t=t.split(/\n/).filter(function(l){return l.trim();}).join('\n');
+    else if(op==='spaces') t=t.replace(/[ \t]+/g,' ').replace(/ *\n */g,'\n');
+    else if(op==='reverse') t=t.split('').reverse().join('');
+    else if(op==='b64enc') t=btoa(unescape(encodeURIComponent(t)));
+    else if(op==='b64dec') t=decodeURIComponent(escape(atob(t.trim())));
+  }catch(e){ alert('Грешка: невалиден вход за тази операция.'); return; }
+  el.value=t; count();
+}
+function copyTxt(){
+  var t=document.getElementById('txt').value;
+  if(t) navigator.clipboard.writeText(t);
+}
+count();
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
--- Version: 1.0056
+-- Version: 1.0093
 -- Migration: Add crypto payments and subscription tracking
 -- Run this on existing databases to add new fields
 

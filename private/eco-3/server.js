@@ -1,4 +1,4 @@
-// Version: 1.0091
+// Version: 1.0093
 // ECO-3 AI Studio — Backend Server
 // Database: SQLite · Proxy: Anthropic API · Payments: Stripe
 // Admin: IP whitelist from .env
@@ -132,7 +132,7 @@ app.get('/health', (req, res) => {
     res.json({
         ok: true,
         service: 'eco-3',
-        version: '1.0085',
+        version: '1.0093',
         mode: process.env.ECO3_MODE || 'test',
         uptime: process.uptime(),
         database: { connected: dbOk, tables: dbTables, path: DB_PATH },
@@ -462,7 +462,7 @@ debug.stage('starting HTTP server on port', PORT);
 app.listen(PORT, () => {
     debug.stage('✓ listening on port', PORT);
     const mode = process.env.ECO3_MODE || 'test';
-    console.log(`\n🤖 ECO-3 AI Studio Backend v1.0085`);
+    console.log(`\n🤖 ECO-3 AI Studio Backend v1.0093`);
     console.log(`   Port:      ${PORT}`);
     console.log(`   Mode:      ${mode === 'test' ? '🧪 TEST (безплатно, mock данни)' : '🚀 PRODUCTION (реален API, плаща се)'}`);
     console.log(`   Database:  ${dbOk ? '✓ ' + DB_PATH : '✗ not connected'}`);
@@ -473,7 +473,7 @@ app.listen(PORT, () => {
     console.log(`   Log:       ${logFile}`);
     if (mode === 'test') console.log(`\n   💡 За реални заявки: смени ECO3_MODE=production в .env`);
     console.log('');
-    logRequest('START', `ECO-3 v1.0085 on port ${PORT}`);
+    logRequest('START', `ECO-3 v1.0093 on port ${PORT}`);
 });
 
 module.exports = app;

@@ -1,4 +1,4 @@
-// Version: 1.0086
+// Version: 1.0093
 /**
  * Admin Configuration File
  * Централизирани адреси за всички admin скриптове

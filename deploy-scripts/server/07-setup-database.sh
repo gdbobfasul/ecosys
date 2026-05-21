@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0085
+# Version: 1.0093
 ##############################################################################
 # KCY Database Setup with Advanced Reset
 # Пише database настройките в глобалния .env:

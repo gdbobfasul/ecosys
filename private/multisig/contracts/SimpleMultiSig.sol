@@ -1,11 +1,11 @@
-// Version: 1.0086
+// Version: 1.0093
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 /**
  * @title SimpleMultiSig
  * @notice Minimal 3-of-5 multi-sig wallet for controlling KCY1 token
- * @dev v1.0086 - план addresses1: 1 Trezor + 1 Tangem + 3 Ledger
+ * @dev v1.0093 - план addresses1: 1 Trezor + 1 Tangem + 3 Ledger
  */
 contract SimpleMultiSig {
     

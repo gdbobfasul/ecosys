@@ -1,6 +1,6 @@
 {
   "name": "kcy-portals",
-  "version": "1.0086",
+  "version": "1.0093",
   "description": "KCY Portals — Games & Services portal backend with auth + monthly fee + 4-variant access control",
   "main": "server.js",
   "scripts": {

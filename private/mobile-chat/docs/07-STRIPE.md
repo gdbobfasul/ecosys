@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 # 07 - Stripe Payments
 
 ## 💳 Stripe Integration

@@ -1,4 +1,4 @@
--- Version: 1.0056
+-- Version: 1.0093
 -- AMS Chat Database Schema v4.3
 -- Shared between Web & Mobile App
 -- Added: crypto wallets, subscription tracking, payment overrides, test mode support

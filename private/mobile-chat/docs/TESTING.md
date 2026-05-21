@@ -1,4 +1,4 @@
-<!-- Version: 1.0056 -->
+<!-- Version: 1.0093 -->
 # 🧪 AMS Chat Testing Guide - Version 00018
 
 ## Quick Verification

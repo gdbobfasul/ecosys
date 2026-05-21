@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0091
+# Version: 1.0093
 ##############################################################################
 # KCY Ecosystem - Deploy Script (Client-side)
 #
@@ -148,7 +148,7 @@ log "═════════════════════════
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     cat << 'EOF'
-KCY Ecosystem - Deploy v1.0091
+KCY Ecosystem - Deploy v1.0093
 
 Usage:
   ./deploy-scripts/04-deploy.sh                              # пита кой target (prod/vm)
@@ -216,7 +216,7 @@ ask_show_block() {
 }
 
 log "${CYAN}╔═══════════════════════════════════════════╗${NC}"
-log "${CYAN}║     KCY Ecosystem - Deploy v1.0091        ║${NC}"
+log "${CYAN}║     KCY Ecosystem - Deploy v1.0093        ║${NC}"
 log "${CYAN}╚═══════════════════════════════════════════╝${NC}"
 log ""
 log "  Target:  ${GREEN}${TARGET_LABEL}${NC}"

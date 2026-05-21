@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // KCY Portals — Database init
-// Version: 1.0091
+// Version: 1.0093
 
 const Database = require('better-sqlite3');
 
