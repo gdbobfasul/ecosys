@@ -1,227 +1,448 @@
--- Version: 1.0056
--- PostgreSQL Schema for AMS Chat
--- Equivalent to SQLite db_setup.sql
--- Version: 1.0056
+-- Version: 1.0092
+-- PostgreSQL Schema for AMS Chat — конвертирана от db_setup.sql
+-- AMS Chat Database Schema v4.3
+-- Shared between Web & Mobile App
+-- Added: crypto wallets, subscription tracking, payment overrides, test mode support
 
--- Enable UUID extension for potential future use
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- Users table
+-- Users table - phone is NOT unique! phone + password_hash combination is unique
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
-  phone VARCHAR(20) UNIQUE NOT NULL,
+  phone TEXT NOT NULL,
   password_hash TEXT NOT NULL,
-  full_name VARCHAR(100) NOT NULL,
-  gender VARCHAR(10) CHECK (gender IN ('male', 'female', 'other')),
+  full_name TEXT NOT NULL,
+  gender TEXT NOT NULL CHECK(gender IN ('male', 'female')),
   age INTEGER,
   height_cm INTEGER,
   weight_kg INTEGER,
-  country VARCHAR(100),
-  city VARCHAR(100),
-  village VARCHAR(100),
-  street VARCHAR(200),
-  workplace VARCHAR(200),
-  paid_until TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  payment_amount DECIMAL(10, 2) NOT NULL DEFAULT 0,
-  payment_currency VARCHAR(10) NOT NULL DEFAULT 'BGN',
-  country_code VARCHAR(5),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_login TIMESTAMP,
+  country TEXT,
+  city TEXT,
+  village TEXT,
+  street TEXT,
+  workplace TEXT,
+  paid_until TEXT NOT NULL DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  payment_amount REAL NOT NULL DEFAULT 0,
+  payment_currency TEXT NOT NULL DEFAULT 'BGN',
+  country_code TEXT,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  last_login TEXT,
   failed_login_attempts INTEGER DEFAULT 0,
   is_blocked INTEGER DEFAULT 0,
   blocked_reason TEXT,
   is_reported INTEGER DEFAULT 0,
-  reported_count INTEGER DEFAULT 0,
-  is_admin INTEGER DEFAULT 0,
+  report_count INTEGER DEFAULT 0,
+  -- New fields for enhanced functionality
+  code_word TEXT,                          -- Secret code for exact user search
+  current_need TEXT,                       -- Current need/requirement (unlimited changes)
+  offerings TEXT,                          -- What user offers (max 3, comma-separated, unlimited changes)
+  is_verified INTEGER DEFAULT 0,           -- 1 = verified profile, offerings field is READ-ONLY
+  email TEXT,                              -- Email for emergency contacts
+  hide_phone INTEGER DEFAULT 0,            -- Hide phone number (show +359123...)
+  hide_names INTEGER DEFAULT 0,            -- Hide names (show "Иван...")
+  last_profile_update TEXT,                -- Last time profile was edited
+  profile_edits_this_month INTEGER DEFAULT 0,  -- Count of edits this month
+  profile_edit_reset_date TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),  -- When to reset edit counter
+  help_button_uses INTEGER DEFAULT 0,      -- Number of help button uses this month
+  help_button_reset_date TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),  -- When to reset help counter
+  -- Location fields (admin captured)
+  location_country TEXT,
+  location_city TEXT,
+  location_village TEXT,
+  location_street TEXT,
+  location_number TEXT,
+  location_latitude REAL,
+  location_longitude REAL,
+  location_ip TEXT,
+  location_captured_at TEXT,
   
-  -- Location
-  location_latitude DECIMAL(10, 8),
-  location_longitude DECIMAL(11, 8),
-  
-  -- Profile
-  profile_photo_url TEXT,
-  offerings TEXT,
-  working_hours VARCHAR(100),
-  
-  -- Search preferences
-  search_preference VARCHAR(20) DEFAULT 'distance' CHECK (search_preference IN ('distance', 'need')),
-  max_search_distance_km INTEGER DEFAULT 50,
-  
-  -- Crypto wallets
-  crypto_wallet_btc VARCHAR(100),
-  crypto_wallet_eth VARCHAR(100),
-  crypto_wallet_usdt VARCHAR(100),
-  crypto_wallet_kcy_meme VARCHAR(100),
-  crypto_wallet_kcy_ams VARCHAR(100),
+  -- Crypto wallet addresses
+  crypto_wallet_btc TEXT,
+  crypto_wallet_eth TEXT,
+  crypto_wallet_bnb TEXT,
+  crypto_wallet_kcy_meme TEXT,
+  crypto_wallet_kcy_ams TEXT,
   
   -- Subscription tracking
   subscription_active INTEGER DEFAULT 0,
-  last_payment_check TIMESTAMP,
+  last_payment_check TEXT,
   
   -- Emergency button tracking
   emergency_active INTEGER DEFAULT 0,
-  emergency_active_until TIMESTAMP,
+  emergency_active_until TEXT,
   
-  -- Message customization
-  message_font_family VARCHAR(50) DEFAULT 'Arial',
-  message_font_size INTEGER DEFAULT 14,
-  message_text_color VARCHAR(7) DEFAULT '#000000',
-  message_bg_color VARCHAR(7) DEFAULT '#FFFFFF',
+  -- Manual activation (admin override)
+  manually_activated INTEGER DEFAULT 0,
+  activation_reason TEXT,
+  activated_by_admin_id INTEGER,
   
-  -- Static object (from approved signals)
-  is_static_object INTEGER DEFAULT 0,
-  static_object_locked INTEGER DEFAULT 0,
+  -- Session tracking
+  session_expires_at TEXT,
   
-  -- Signals tracking
-  last_signal_date DATE,
-  signals_submitted INTEGER DEFAULT 0,
-  signals_approved INTEGER DEFAULT 0,
-  free_days_earned INTEGER DEFAULT 0
+  -- Signals system fields
+  is_static_object INTEGER DEFAULT 0,          -- 1 = created from approved signal (location locked)
+  created_from_signal_id INTEGER,              -- Reference to signal that created this object
+  profile_photo_url TEXT,                      -- Profile photo (or object photo for static objects)
+  working_hours TEXT CHECK(working_hours IS NULL OR length(working_hours) <= 50),  -- Working hours (50 chars max)
+  last_signal_date TEXT,                       -- Last date user submitted a signal
+  free_days_earned INTEGER DEFAULT 0,          -- Count of free days earned from approved signals
+  
+  UNIQUE(phone, password_hash)
 );
 
--- Conversations table
-CREATE TABLE IF NOT EXISTS conversations (
-  id SERIAL PRIMARY KEY,
-  user1_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  user2_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_message_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(user1_id, user2_id)
+-- Sessions table (now links to user id, not phone)
+CREATE TABLE IF NOT EXISTS sessions (
+  id TEXT PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  token TEXT UNIQUE NOT NULL,
+  expires_at TEXT NOT NULL,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  device_type TEXT,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Messages table
+-- Friends table (now uses user_id instead of phone)
+CREATE TABLE IF NOT EXISTS friends (
+  user_id1 INTEGER NOT NULL,
+  user_id2 INTEGER NOT NULL,
+  custom_name_by_user1 TEXT,
+  custom_name_by_user2 TEXT,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  PRIMARY KEY (user_id1, user_id2),
+  CHECK (user_id1 < user_id2),
+  FOREIGN KEY (user_id1) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Messages table (uses user_id)
 CREATE TABLE IF NOT EXISTS messages (
   id SERIAL PRIMARY KEY,
-  conversation_id INTEGER NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
-  sender_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  receiver_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  content TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  is_read INTEGER DEFAULT 0,
-  is_flagged INTEGER DEFAULT 0
+  from_user_id INTEGER NOT NULL,
+  to_user_id INTEGER NOT NULL,
+  text TEXT,
+  file_id TEXT,
+  file_name TEXT,
+  file_size INTEGER,
+  file_type TEXT,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  read_at TEXT,
+  flagged INTEGER DEFAULT 0,
+  edited_by_admin INTEGER DEFAULT 0,
+  original_text TEXT,
+  FOREIGN KEY (from_user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Emergency contacts table
-CREATE TABLE IF NOT EXISTS emergency_contacts (
+-- Temp files table
+CREATE TABLE IF NOT EXISTS temp_files (
+  id TEXT PRIMARY KEY,
+  from_user_id INTEGER NOT NULL,
+  to_user_id INTEGER NOT NULL,
+  file_name TEXT NOT NULL,
+  file_size INTEGER NOT NULL,
+  file_type TEXT NOT NULL,
+  file_path TEXT NOT NULL,
+  uploaded_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  expires_at TEXT NOT NULL,
+  downloaded INTEGER DEFAULT 0,
+  FOREIGN KEY (from_user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Payment logs
+CREATE TABLE IF NOT EXISTS payment_logs (
   id SERIAL PRIMARY KEY,
-  category VARCHAR(50) NOT NULL,
-  service_name VARCHAR(100) NOT NULL,
-  phone_number VARCHAR(20) NOT NULL,
-  description TEXT,
-  country_code VARCHAR(5) DEFAULT 'BG',
-  is_active INTEGER DEFAULT 1,
-  display_order INTEGER DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  user_id INTEGER NOT NULL,
+  phone TEXT NOT NULL,
+  amount REAL NOT NULL,
+  currency TEXT NOT NULL,
+  stripe_payment_id TEXT,
+  status TEXT NOT NULL,
+  country_code TEXT,
+  ip_address TEXT,
+  payment_type TEXT DEFAULT 'new',
+  months INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Payments table
-CREATE TABLE IF NOT EXISTS payments (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  amount DECIMAL(10, 2) NOT NULL,
-  currency VARCHAR(10) NOT NULL,
-  payment_method VARCHAR(50) NOT NULL,
-  status VARCHAR(20) NOT NULL DEFAULT 'pending',
-  transaction_id VARCHAR(100) UNIQUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  completed_at TIMESTAMP,
-  days_purchased INTEGER DEFAULT 1,
-  
-  -- Crypto payment details
-  crypto_currency VARCHAR(20),
-  crypto_amount DECIMAL(20, 8),
-  crypto_address VARCHAR(100),
-  crypto_tx_hash VARCHAR(100),
-  crypto_confirmation_count INTEGER DEFAULT 0,
-  
-  -- Stripe details
-  stripe_payment_intent_id VARCHAR(100),
-  stripe_charge_id VARCHAR(100)
-);
-
--- Flagged conversations table
-CREATE TABLE IF NOT EXISTS flagged_conversations (
-  id SERIAL PRIMARY KEY,
-  conversation_id INTEGER NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
-  flagged_by_user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  reason TEXT,
-  flagged_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  reviewed INTEGER DEFAULT 0,
-  reviewed_by_admin_id INTEGER REFERENCES users(id),
-  reviewed_at TIMESTAMP,
-  action_taken TEXT
-);
-
--- Admin users table (for web admin panel)
-CREATE TABLE IF NOT EXISTS admin_users (
-  id SERIAL PRIMARY KEY,
-  username VARCHAR(50) UNIQUE NOT NULL,
-  password_hash TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_login TIMESTAMP
-);
-
--- Critical words table
+-- Critical words for monitoring (admin)
 CREATE TABLE IF NOT EXISTS critical_words (
   id SERIAL PRIMARY KEY,
-  word VARCHAR(100) UNIQUE NOT NULL,
-  severity VARCHAR(20) DEFAULT 'medium',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  word TEXT NOT NULL UNIQUE,
+  added_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  added_by TEXT DEFAULT 'admin'
 );
+
+-- Flagged conversations (admin monitoring)
+CREATE TABLE IF NOT EXISTS flagged_conversations (
+  id SERIAL PRIMARY KEY,
+  user_id1 INTEGER NOT NULL,
+  user_id2 INTEGER NOT NULL,
+  matched_word TEXT NOT NULL,
+  message_id INTEGER NOT NULL,
+  message_text TEXT NOT NULL,
+  conversation_context TEXT,
+  flagged_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  reviewed INTEGER DEFAULT 0,
+  FOREIGN KEY (user_id1) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE
+);
+
+-- Reports table (when users report each other)
+CREATE TABLE IF NOT EXISTS reports (
+  id SERIAL PRIMARY KEY,
+  reporter_user_id INTEGER NOT NULL,
+  reported_user_id INTEGER NOT NULL,
+  reason TEXT,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  FOREIGN KEY (reporter_user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (reported_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Admin users
+CREATE TABLE IF NOT EXISTS admin_users (
+  id SERIAL PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  last_login TEXT
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_users_phone ON users(phone);
+CREATE INDEX IF NOT EXISTS idx_users_paid ON users(paid_until);
+CREATE INDEX IF NOT EXISTS idx_users_blocked ON users(is_blocked);
+CREATE INDEX IF NOT EXISTS idx_users_reported ON users(is_reported);
+CREATE INDEX IF NOT EXISTS idx_users_name ON users(full_name);
+CREATE INDEX IF NOT EXISTS idx_users_country ON users(country);
+CREATE INDEX IF NOT EXISTS idx_users_city ON users(city);
+CREATE INDEX IF NOT EXISTS idx_users_gender ON users(gender);
+CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(token);
+CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_messages_from_to ON messages(from_user_id, to_user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_messages_flagged ON messages(flagged) WHERE flagged = 1;
+CREATE INDEX IF NOT EXISTS idx_temp_files_expires ON temp_files(expires_at);
+
+-- Emergency contacts table (police, ambulance, hospitals by country)
+CREATE TABLE IF NOT EXISTS emergency_contacts (
+  id SERIAL PRIMARY KEY,
+  country_code TEXT NOT NULL,              -- 'BG', 'RU', 'LT', etc
+  service_type TEXT NOT NULL,              -- 'police', 'ambulance', 'hospital', 'fire'
+  service_name TEXT,                       -- e.g., "4th Police Station", "Pirogov Hospital"
+  phone_international TEXT NOT NULL,       -- +359-2-982-1111
+  phone_local TEXT,                        -- 166, 112, etc
+  email TEXT,                              -- Contact email
+  address TEXT,                            -- Full address
+  latitude REAL,                           -- GPS coordinates
+  longitude REAL,
+  city TEXT,
+  is_active INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS')
+);
+
+-- Help button requests (emergency assistance)
+CREATE TABLE IF NOT EXISTS help_requests (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  phone TEXT NOT NULL,
+  full_name TEXT NOT NULL,
+  email TEXT,
+  gender TEXT,
+  age INTEGER,
+  country TEXT,
+  city TEXT,
+  street TEXT,
+  street_number TEXT,
+  latitude REAL NOT NULL,
+  longitude REAL NOT NULL,
+  request_time TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  resolved INTEGER DEFAULT 0,
+  resolved_at TEXT,
+  admin_notes TEXT,
+  charge_amount REAL,                      -- €50 or $50
+  charge_currency TEXT,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Payment overrides table (admin manual activation)
+CREATE TABLE IF NOT EXISTS payment_overrides (
+  id SERIAL PRIMARY KEY,
+  admin_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  action TEXT NOT NULL,                    -- 'login' or 'emergency'
+  days INTEGER NOT NULL,
+  reason TEXT NOT NULL,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  FOREIGN KEY (admin_id) REFERENCES admin_users(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Indexes for new tables
+CREATE INDEX IF NOT EXISTS idx_emergency_country ON emergency_contacts(country_code);
+CREATE INDEX IF NOT EXISTS idx_emergency_service ON emergency_contacts(service_type);
+CREATE INDEX IF NOT EXISTS idx_emergency_location ON emergency_contacts(latitude, longitude);
+CREATE INDEX IF NOT EXISTS idx_help_requests_user ON help_requests(user_id);
+CREATE INDEX IF NOT EXISTS idx_help_requests_resolved ON help_requests(resolved);
+CREATE INDEX IF NOT EXISTS idx_help_requests_time ON help_requests(request_time);
+CREATE INDEX IF NOT EXISTS idx_users_offerings ON users(offerings);
+CREATE INDEX IF NOT EXISTS idx_users_need ON users(current_need);
+CREATE INDEX IF NOT EXISTS idx_friends_user1 ON friends(user_id1);
+CREATE INDEX IF NOT EXISTS idx_friends_user2 ON friends(user_id2);
+CREATE INDEX IF NOT EXISTS idx_flagged_conv_reviewed ON flagged_conversations(reviewed);
+CREATE INDEX IF NOT EXISTS idx_critical_words_word ON critical_words(word);
+
+-- Signals system index for users
+CREATE INDEX IF NOT EXISTS idx_users_static_object ON users(is_static_object);
 
 -- Signals table
 CREATE TABLE IF NOT EXISTS signals (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  signal_type VARCHAR(100) NOT NULL,
-  title VARCHAR(100) NOT NULL CHECK (LENGTH(title) <= 100),
-  working_hours VARCHAR(50) CHECK (LENGTH(working_hours) <= 50),
-  latitude DECIMAL(10, 8) NOT NULL,
-  longitude DECIMAL(11, 8) NOT NULL,
+  user_id INTEGER NOT NULL,
+  signal_type TEXT NOT NULL,
+  title TEXT NOT NULL CHECK(length(title) <= 100),
+  working_hours TEXT CHECK(working_hours IS NULL OR length(working_hours) <= 50),
+  latitude REAL NOT NULL,
+  longitude REAL NOT NULL,
   photo_url TEXT,
-  status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
-  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  processed_at TIMESTAMP,
-  processed_by_admin_id INTEGER REFERENCES users(id),
-  created_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
-  rejection_reason TEXT
+  status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'approved', 'rejected')),
+  submitted_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  processed_at TEXT,
+  processed_by_admin_id INTEGER,
+  created_user_id INTEGER,
+  rejection_reason TEXT,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (processed_by_admin_id) REFERENCES users(id),
+  FOREIGN KEY (created_user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- Indexes for performance
-CREATE INDEX IF NOT EXISTS idx_users_phone ON users(phone);
-CREATE INDEX IF NOT EXISTS idx_users_paid ON users(paid_until);
-CREATE INDEX IF NOT EXISTS idx_users_location ON users(location_latitude, location_longitude);
-CREATE INDEX IF NOT EXISTS idx_users_static_object ON users(is_static_object);
-
-CREATE INDEX IF NOT EXISTS idx_conversations_users ON conversations(user1_id, user2_id);
-CREATE INDEX IF NOT EXISTS idx_conversations_last_msg ON conversations(last_message_at);
-
-CREATE INDEX IF NOT EXISTS idx_messages_conversation ON messages(conversation_id);
-CREATE INDEX IF NOT EXISTS idx_messages_sender ON messages(sender_id);
-CREATE INDEX IF NOT EXISTS idx_messages_receiver ON messages(receiver_id);
-CREATE INDEX IF NOT EXISTS idx_messages_created ON messages(created_at);
-
-CREATE INDEX IF NOT EXISTS idx_payments_user ON payments(user_id);
-CREATE INDEX IF NOT EXISTS idx_payments_status ON payments(status);
-CREATE INDEX IF NOT EXISTS idx_payments_created ON payments(created_at);
-
-CREATE INDEX IF NOT EXISTS idx_flagged_conv_id ON flagged_conversations(conversation_id);
-CREATE INDEX IF NOT EXISTS idx_flagged_conv_reviewed ON flagged_conversations(reviewed);
-
-CREATE INDEX IF NOT EXISTS idx_critical_words_word ON critical_words(word);
-
+-- Signals table indexes
 CREATE INDEX IF NOT EXISTS idx_signals_status ON signals(status);
 CREATE INDEX IF NOT EXISTS idx_signals_user ON signals(user_id);
 CREATE INDEX IF NOT EXISTS idx_signals_created_user ON signals(created_user_id);
 
 -- Insert default admin (password: admin123 - CHANGE THIS!)
--- Password hash generated with bcrypt cost 10
-INSERT INTO admin_users (username, password_hash) 
+INSERT INTO admin_users (username, password_hash)
 VALUES ('admin', '$2b$10$rBV2kHaW7RvJhWxGg0KhJeqGJ0Y9mYvH7K8KZxBqWqP4qOa8Jz0Ny')
 ON CONFLICT (username) DO NOTHING;
 
 -- Insert some default critical words
-INSERT INTO critical_words (word) VALUES 
+INSERT INTO critical_words (word) VALUES
 ('drugs'), ('weapon'), ('illegal'), ('bomb'), ('terror'),
 ('kill'), ('murder'), ('kidnap'), ('ransom'), ('threat')
 ON CONFLICT (word) DO NOTHING;
+
+-- ================================================================
+-- MATCHMAKING TABLES
+-- ================================================================
+
+-- Matchmaking criteria (50 fields for partner preferences)
+CREATE TABLE IF NOT EXISTS matchmaking_criteria (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL UNIQUE,
+  height_min INTEGER,
+  height_max INTEGER,
+  weight_min INTEGER,
+  weight_max INTEGER,
+  age_min INTEGER,
+  age_max INTEGER,
+  hair_color TEXT,
+  eye_color TEXT,
+  body_type TEXT,
+  ethnicity TEXT,
+  smoking TEXT,
+  drinking TEXT,
+  diet TEXT,
+  exercise TEXT,
+  pets TEXT,
+  children TEXT,
+  living_situation TEXT,
+  employment TEXT,
+  education TEXT,
+  religion TEXT,
+  personality TEXT,
+  interests TEXT,
+  music_taste TEXT,
+  movies_taste TEXT,
+  hobbies TEXT,
+  political_views TEXT,
+  travel_frequency TEXT,
+  night_owl_or_early_bird TEXT,
+  introvert_or_extrovert TEXT,
+  communication_style TEXT,
+  conflict_resolution TEXT,
+  love_language TEXT,
+  humor_type TEXT,
+  relationship_goals TEXT,
+  deal_breakers TEXT,
+  country TEXT,
+  city TEXT,
+  distance_km INTEGER,
+  willing_to_relocate TEXT,
+  language_spoken TEXT,
+  income_range TEXT,
+  financial_goals TEXT,
+  car_ownership TEXT,
+  tech_savviness TEXT,
+  social_media_usage TEXT,
+  family_values TEXT,
+  jealousy_level TEXT,
+  independence_level TEXT,
+  future_plans TEXT,
+  commitment_level TEXT,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  updated_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Matchmaking invitations
+CREATE TABLE IF NOT EXISTS matchmaking_invitations (
+  id SERIAL PRIMARY KEY,
+  sender_id INTEGER NOT NULL,
+  receiver_id INTEGER NOT NULL,
+  status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'accepted', 'rejected')),
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  responded_at TEXT,
+  FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Matchmaking dislikes (up to 500 per user)
+CREATE TABLE IF NOT EXISTS matchmaking_dislikes (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  disliked_attribute TEXT NOT NULL,
+  disliked_value TEXT NOT NULL,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Matchmaking searches (payment tracking - 5 EUR per search)
+CREATE TABLE IF NOT EXISTS matchmaking_searches (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  amount_charged REAL DEFAULT 5.0,
+  matches_found INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Matchmaking monthly subscriptions
+CREATE TABLE IF NOT EXISTS matchmaking_subscriptions (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  amount_charged REAL DEFAULT 9.99,
+  month_year TEXT NOT NULL,
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  UNIQUE(user_id, month_year)
+);
+
+-- Matchmaking indexes
+CREATE INDEX IF NOT EXISTS idx_matchmaking_criteria_user ON matchmaking_criteria(user_id);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_invitations_sender ON matchmaking_invitations(sender_id);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_invitations_receiver ON matchmaking_invitations(receiver_id);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_invitations_status ON matchmaking_invitations(status);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_dislikes_user ON matchmaking_dislikes(user_id);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_searches_user ON matchmaking_searches(user_id);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_subscriptions_user ON matchmaking_subscriptions(user_id);
+

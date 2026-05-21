@@ -335,31 +335,47 @@ if [ "$USE_POSTGRESQL" = true ]; then
     systemctl start postgresql
     systemctl enable postgresql
 
-    # Create DB
-    echo -e "${GREEN}[3/6] Creating database...${NC}"
-    sudo -u postgres psql << EOF
-DROP DATABASE IF EXISTS $DB_NAME;
-DROP USER IF EXISTS $DB_USER;
-CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD';
-CREATE DATABASE $DB_NAME OWNER $DB_USER;
-GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;
-\c $DB_NAME
-GRANT ALL ON SCHEMA public TO $DB_USER;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO $DB_USER;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO $DB_USER;
-EOF
+    # Create DB + User — РОБУСТНО (потребител: създай или смени паролата)
+    echo -e "${GREEN}[3/6] Creating database + user...${NC}"
+
+    # Потребител: ако съществува → смени паролата; иначе → създай
+    USER_EXISTS=$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'" 2>/dev/null)
+    if [ "$USER_EXISTS" = "1" ]; then
+        sudo -u postgres psql -c "ALTER USER \"$DB_USER\" WITH LOGIN PASSWORD '$DB_PASSWORD';" 2>&1 | tail -1
+        echo -e "${CYAN}  ↻ Потребител $DB_USER — паролата обновена${NC}"
+    else
+        sudo -u postgres psql -c "CREATE USER \"$DB_USER\" WITH LOGIN PASSWORD '$DB_PASSWORD';" 2>&1 | tail -1
+        echo -e "${GREEN}  + Потребител $DB_USER създаден${NC}"
+    fi
+
+    # База: изтрий и създай наново (чиста схема)
+    sudo -u postgres psql -c "DROP DATABASE IF EXISTS \"$DB_NAME\";" 2>&1 | tail -1
+    sudo -u postgres psql -c "CREATE DATABASE \"$DB_NAME\" OWNER \"$DB_USER\";" 2>&1 | tail -1
+    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE \"$DB_NAME\" TO \"$DB_USER\";" 2>&1 | tail -1
+    sudo -u postgres psql -d "$DB_NAME" -c "GRANT ALL ON SCHEMA public TO \"$DB_USER\";" 2>&1 | tail -1
     echo -e "${GREEN}  ✓ DB: $DB_NAME / User: $DB_USER${NC}"
 
-    # Schema
+    # Schema — четем файла през stdin (root го чете; psql не пипа файла директно).
+    # Така private/ с chmod 700 не дава "Permission denied" за postgres потребителя.
     echo -e "${GREEN}[4/6] Loading schema...${NC}"
+    SCHEMA_FILE=""
     if [ -f "$CHAT_DIR/database/postgresql_setup.sql" ]; then
-        sudo -u postgres psql -d $DB_NAME -f "$CHAT_DIR/database/postgresql_setup.sql"
-        echo -e "${GREEN}  ✓ Schema loaded${NC}"
+        SCHEMA_FILE="$CHAT_DIR/database/postgresql_setup.sql"
     elif [ -f "$CHAT_DIR/database/db_setup.sql" ]; then
-        sudo -u postgres psql -d $DB_NAME -f "$CHAT_DIR/database/db_setup.sql"
-        echo -e "${GREEN}  ✓ Schema loaded${NC}"
+        SCHEMA_FILE="$CHAT_DIR/database/db_setup.sql"
+    fi
+    if [ -n "$SCHEMA_FILE" ]; then
+        cat "$SCHEMA_FILE" | sudo -u postgres psql -d "$DB_NAME" 2>&1 | tail -3
+        # Права върху всички създадени таблици/sequences за потребителя
+        sudo -u postgres psql -d "$DB_NAME" -c \
+            "GRANT ALL ON ALL TABLES IN SCHEMA public TO \"$DB_USER\";
+             GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO \"$DB_USER\";
+             ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO \"$DB_USER\";
+             ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO \"$DB_USER\";" 2>&1 | tail -1
+        TBL_COUNT=$(sudo -u postgres psql -d "$DB_NAME" -tAc "SELECT count(*) FROM pg_tables WHERE schemaname='public'" 2>/dev/null)
+        echo -e "${GREEN}  ✓ Schema loaded — ${TBL_COUNT:-0} таблици (${SCHEMA_FILE##*/})${NC}"
     else
-        echo -e "${YELLOW}  ! No schema file found${NC}"
+        echo -e "${RED}  ✗ Schema файл не е намерен${NC}"
     fi
 
     # Migrate from SQLite

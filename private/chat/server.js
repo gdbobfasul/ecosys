@@ -36,6 +36,9 @@ const createSearchRoutes = require('./routes/search');
 const createMatchmakingRoutes = require('./routes/matchmaking');
 
 const app = express();
+// Зад nginx reverse proxy — Express трябва да вярва на X-Forwarded-* хедърите,
+// иначе express-rate-limit не разпознава реалните IP-та коректно.
+app.set('trust proxy', 1);
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 

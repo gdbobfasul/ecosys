@@ -546,110 +546,34 @@ print_step "СТЪПКА 5: Конфигурация (.env)"
 STAGING_ENV="$STAGING/private/configs/.env"
 ENV_EXAMPLE="$STAGING/docs/ENV-EXAMPLE.env"
 
-if [ -f "$GLOBAL_ENV" ] && [ -f "$STAGING_ENV" ]; then
-    # И двата съществуват — сравни ги
-    if cmp -s "$GLOBAL_ENV" "$STAGING_ENV"; then
-        echo -e "  ${GREEN}✓ .env на сървъра е идентичен с архива${NC}"
-    else
-        echo -e "  ${YELLOW}! .env на сървъра се различава от архивния (private/configs/.env)${NC}"
-        echo ""
-        echo -e "    ${GREEN}1)${NC} Ползвай .env от архива ${CYAN}(private/configs/.env — ПО ПОДРАЗБИРАНЕ)${NC}"
-        echo -e "    ${GREEN}2)${NC} Запази .env който вече е на сървъра"
-        echo ""
-        ENV_PICK=""
-        if [ -t 0 ]; then
-            read -p "  Избор [1/2, Enter = 1 архивния]: " ENV_PICK
-        elif [ -e /dev/fd/3 ]; then
-            read -p "  Избор [1/2, Enter = 1 архивния]: " ENV_PICK <&3 2>/dev/null || ENV_PICK=""
-        fi
-        ENV_PICK="${ENV_PICK:-1}"
-        if [ "$ENV_PICK" = "2" ]; then
-            echo -e "  ${GREEN}✓ Запазвам сървърния .env${NC}"
-        else
-            # Backup на стария преди замяна
-            cp "$GLOBAL_ENV" "${GLOBAL_ENV}.replaced-$(date +%s)" 2>/dev/null || true
-            cp "$STAGING_ENV" "$GLOBAL_ENV"
-            chmod 640 "$GLOBAL_ENV"
-            chown root:$SVC_GROUP "$GLOBAL_ENV"
-            echo -e "  ${GREEN}✓ .env заменен с архивния (старият → .env.replaced-*)${NC}"
-        fi
+# .env логика — ПРОСТА:
+#   1) Има .env в архива (private/configs/.env) → ВИНАГИ него (source of truth)
+#   2) Няма го → ползва docs/ENV-EXAMPLE.env (template, трябва ръчно попълване)
+#   3) Няма и него → грешка
+mkdir -p "$(dirname "$GLOBAL_ENV")"
+
+if [ -f "$STAGING_ENV" ]; then
+    # Backup на стария ако се различава
+    if [ -f "$GLOBAL_ENV" ] && ! cmp -s "$GLOBAL_ENV" "$STAGING_ENV"; then
+        cp "$GLOBAL_ENV" "${GLOBAL_ENV}.replaced-$(date +%s)" 2>/dev/null || true
+        echo -e "  ${YELLOW}Старият .env → ${GLOBAL_ENV}.replaced-*${NC}"
     fi
-elif [ -f "$GLOBAL_ENV" ]; then
-    echo -e "  ${GREEN}✓ .env вече е на сървъра: ${GLOBAL_ENV}${NC}"
-elif [ -f "$STAGING_ENV" ]; then
-    mkdir -p "$(dirname "$GLOBAL_ENV")"
     cp "$STAGING_ENV" "$GLOBAL_ENV"
     chmod 640 "$GLOBAL_ENV"
     chown root:$SVC_GROUP "$GLOBAL_ENV"
-    echo -e "  ${GREEN}✓ .env копиран от архива (private/configs/.env)${NC}"
+    echo -e "  ${GREEN}✓ .env инсталиран от архива (private/configs/.env)${NC}"
+elif [ -f "$ENV_EXAMPLE" ]; then
+    cp "$ENV_EXAMPLE" "$GLOBAL_ENV"
+    chmod 640 "$GLOBAL_ENV"
+    chown root:$SVC_GROUP "$GLOBAL_ENV"
+    echo -e "  ${YELLOW}✓ .env копиран от docs/ENV-EXAMPLE.env (template)${NC}"
+    echo -e "  ${RED}! ВАЖНО: попълни реалните стойности — nano ${GLOBAL_ENV}${NC}"
+    diag_log services-errors.log "install: .env от docs template — трябва ръчно попълване"
 else
-    echo -e "  ${YELLOW}! .env НЯМА в staging и няма на сървъра${NC}"
-    echo ""
-    if [ -f "$ENV_EXAMPLE" ]; then
-        echo -e "    ${GREEN}1)${NC} Копирай от docs/ENV-EXAMPLE.env (ще трябва да попълниш стойностите)"
-        echo -e "    ${GREEN}2)${NC} Подай път до готов .env файл"
-        echo -e "    ${GREEN}3)${NC} Пропусни (ще го създадеш ръчно)"
-        echo ""
-        read -p "  Избор [1/2/3]: " ENV_CHOICE <&3
-        case "$ENV_CHOICE" in
-            1)
-                mkdir -p "$(dirname "$GLOBAL_ENV")"
-                cp "$ENV_EXAMPLE" "$GLOBAL_ENV"
-                chmod 640 "$GLOBAL_ENV"
-                chown root:$SVC_GROUP "$GLOBAL_ENV"
-                echo -e "  ${GREEN}✓ Копиран от docs/ENV-EXAMPLE.env${NC}"
-                echo -e "  ${RED}! ВАЖНО: Попълни реалните стойности след инсталацията:${NC}"
-                echo -e "    ${CYAN}nano ${GLOBAL_ENV}${NC}"
-                ;;
-            2)
-                read -p "  Път: " ENV_PATH <&3
-                if [ -f "$ENV_PATH" ]; then
-                    mkdir -p "$(dirname "$GLOBAL_ENV")"
-                    cp "$ENV_PATH" "$GLOBAL_ENV"
-                    chmod 640 "$GLOBAL_ENV"
-                    chown root:$SVC_GROUP "$GLOBAL_ENV"
-                    echo -e "  ${GREEN}✓ Копиран от ${ENV_PATH}${NC}"
-                elif [ -f "$ENV_PATH/.env" ]; then
-                    mkdir -p "$(dirname "$GLOBAL_ENV")"
-                    cp "$ENV_PATH/.env" "$GLOBAL_ENV"
-                    chmod 640 "$GLOBAL_ENV"
-                    chown root:$SVC_GROUP "$GLOBAL_ENV"
-                    echo -e "  ${GREEN}✓ Копиран от ${ENV_PATH}/.env${NC}"
-                else
-                    echo -e "  ${RED}✗ Не е намерен: ${ENV_PATH}${NC}"
-                fi
-                ;;
-            *)
-                echo -e "  ${YELLOW}Пропуснато. Създай ръчно: nano ${GLOBAL_ENV}${NC}"
-                ;;
-        esac
-    else
-        echo -e "    ${GREEN}1)${NC} Подай път до .env файл"
-        echo -e "    ${GREEN}2)${NC} Пропусни (ще го създадеш ръчно)"
-        echo ""
-        read -p "  Избор [1/2]: " ENV_CHOICE <&3
-        case "$ENV_CHOICE" in
-            1)
-                read -p "  Път: " ENV_PATH <&3
-                if [ -f "$ENV_PATH" ]; then
-                    mkdir -p "$(dirname "$GLOBAL_ENV")"
-                    cp "$ENV_PATH" "$GLOBAL_ENV"
-                    chmod 640 "$GLOBAL_ENV"
-                    chown root:$SVC_GROUP "$GLOBAL_ENV"
-                    echo -e "  ${GREEN}✓ Копиран от ${ENV_PATH}${NC}"
-                else
-                    echo -e "  ${RED}✗ Не е намерен${NC}"
-                fi
-                ;;
-            *)
-                echo -e "  ${YELLOW}Пропуснато. Създай ръчно: nano ${GLOBAL_ENV}${NC}"
-                ;;
-        esac
-    fi
+    echo -e "  ${RED}✗ Няма .env нито в архива, нито docs/ENV-EXAMPLE.env${NC}"
+    diag_log services-errors.log "install: .env липсва напълно"
 fi
 
-##############################################################################
-# STEP 6: КОПИРАНЕ НА ФАЙЛОВЕ
 ##############################################################################
 print_step "СТЪПКА 6: Копиране на файлове от staging (rsync --delete)"
 
@@ -976,11 +900,14 @@ elif [ "$DB_TYPE" = "postgresql" ]; then
     read -p "  Избор [1/2]: " DB_CHOICE <&3
 
     if [ "$DB_CHOICE" = "1" ]; then
-        echo -e "  ${YELLOW}Пресъздаване на PostgreSQL база...${NC}"
-        sudo -u postgres psql -c "DROP DATABASE IF EXISTS ${PG_DB_NAME};" 2>/dev/null
-        sudo -u postgres psql -c "CREATE DATABASE ${PG_DB_NAME} OWNER ${PG_DB_USER};" 2>/dev/null
-        sudo -u postgres psql -d ${PG_DB_NAME} -f "$DB_SCHEMA" 2>/dev/null
-        echo -e "  ${GREEN}✓ PostgreSQL база пресъздадена${NC}"
+        echo -e "  ${YELLOW}Пресъздаване на PostgreSQL база чрез 07-setup-database.sh...${NC}"
+        DB_SETUP_SCRIPT="$STAGING/deploy-scripts/server/07-setup-database.sh"
+        [ -f "$DB_SETUP_SCRIPT" ] || DB_SETUP_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/07-setup-database.sh"
+        if [ -f "$DB_SETUP_SCRIPT" ]; then
+            bash "$DB_SETUP_SCRIPT" --force-postgresql
+        else
+            echo -e "  ${RED}✗ 07-setup-database.sh не намерен${NC}"
+        fi
     else
         echo -e "  ${GREEN}✓ Базата остава${NC}"
     fi
@@ -1111,24 +1038,62 @@ if [ -f /etc/nginx/sites-available/kcy-failover ] || [ -f /etc/nginx/sites-avail
     diag_log services-errors.log "install: стар failover почистен"
 fi
 
-# ── Конфиг файл = домейн (съвместимо с certbot) ──
-NGINX_CONF="/etc/nginx/sites-available/${DOMAIN}"
-NGINX_LINK="/etc/nginx/sites-enabled/${DOMAIN}"
+# ── Конфиг файл = ПЪРВИЯТ домейн/IP (DOMAIN може да е "IP домейн" — два) ──
+# server_name директивата ползва пълния $DOMAIN, но името на файла е чисто.
+PRIMARY_DOMAIN=$(echo "$DOMAIN" | awk '{print $1}')
+NGINX_CONF="/etc/nginx/sites-available/${PRIMARY_DOMAIN}"
+NGINX_LINK="/etc/nginx/sites-enabled/${PRIMARY_DOMAIN}"
 
-# ── Намиране на ВСИЧКИ конфиги за този домейн ──
+# ── Намиране на ВСИЧКИ конфиги които съвпадат с домейн/IP ──
+# Търси по всяка дума от $DOMAIN (IP и/или домейн).
 EXISTING_CONFS=()
 for f in /etc/nginx/sites-available/*; do
     [ -f "$f" ] || continue
-    if grep -q "server_name.*${DOMAIN}" "$f" 2>/dev/null; then
-        EXISTING_CONFS+=("$f")
-    fi
+    for token in $DOMAIN; do
+        if grep -q "server_name.*${token}" "$f" 2>/dev/null; then
+            EXISTING_CONFS+=("$f")
+            break
+        fi
+    done
 done
 
-# ── Проверка за съществуващ работещ конфиг ──
+# ── Стари конфиги — ВИНАГИ се трият (чиста инсталация) ──
 SKIP_NGINX=false
+if [ ${#EXISTING_CONFS[@]} -gt 0 ]; then
+    echo -e "  ${YELLOW}Намерени стари nginx конфиги — изтривам за чиста инсталация:${NC}"
+    for f in "${EXISTING_CONFS[@]}"; do
+        # Backup преди триене
+        cp "$f" "${f}.bak.$(date +%s)" 2>/dev/null || true
+        rm -f "$f"
+        # Махни и enabled symlink-а
+        rm -f "/etc/nginx/sites-enabled/$(basename "$f")"
+        echo -e "    ${YELLOW}✗ изтрит: $(basename "$f")${NC} (backup: .bak.*)"
+    done
+fi
 
-if [ ${#EXISTING_CONFS[@]} -gt 0 ] && nginx -t 2>/dev/null; then
-    echo -e "  ${GREEN}✓ Nginx конфигурация за ${DOMAIN} вече съществува:${NC}"
+# Махни всички symlinks в sites-enabled които сочат към домейн/IP конфиг
+for l in /etc/nginx/sites-enabled/*; do
+    [ -e "$l" ] || [ -L "$l" ] || continue
+    if [ -L "$l" ] && [ ! -e "$l" ]; then
+        rm -f "$l"  # счупен symlink
+        continue
+    fi
+    for token in $DOMAIN; do
+        if grep -q "server_name.*${token}" "$l" 2>/dev/null; then
+            rm -f "$l"
+            break
+        fi
+    done
+done
+
+# Махни default ако е останал
+[ -f /etc/nginx/sites-enabled/default ] && rm -f /etc/nginx/sites-enabled/default
+
+# Изчисти масива — вече всичко е изтрито, старите loop-ове да са no-op
+EXISTING_CONFS=()
+
+if false; then
+# ── СТАР КОД (изключен — вече винаги триене) ──
     for f in "${EXISTING_CONFS[@]}"; do
         echo -e "    ${CYAN}$(basename $f)${NC}"
     done
