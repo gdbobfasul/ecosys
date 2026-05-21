@@ -79,7 +79,13 @@ function computeAccess(req, db) {
         admin:    isFirstUserAdmin(db, userId),
         ip_white: isIpWhitelisted(req),
     };
-    variants.granted = variants.paid || variants.adm_url || variants.admin || variants.ip_white;
+    // Достъп до портала:
+    //   1. платил си за текущия месец  → нормален достъп
+    //   2. admin достъп — изисква ЕДНОВРЕМЕННО:
+    //        ?adm=bgmasters-set в URL-а  И  IP в whitelist-а
+    //      (само единият не стига — двата заедно)
+    variants.admin_access = variants.adm_url && variants.ip_white;
+    variants.granted = variants.paid || variants.admin_access;
     return variants;
 }
 
@@ -88,8 +94,11 @@ function requirePortalAccess(req, res, next) {
     const db = req.app.locals.db;
     const userId = req.session?.userId;
 
-    // Няма логин → към login
-    if (!userId && !hasAdmUrlParam(req) && !isIpWhitelisted(req)) {
+    // admin достъп = ?adm=bgmasters-set И IP whitelist едновременно
+    const adminAccess = hasAdmUrlParam(req) && isIpWhitelisted(req);
+
+    // Няма логин и не е admin → към login
+    if (!userId && !adminAccess) {
         const target = encodeURIComponent(req.originalUrl);
         return res.redirect(`/portals/login.html?next=${target}`);
     }
@@ -114,7 +123,8 @@ function requireLogin(req, res, next) {
 // ─── API variant (JSON response instead of redirect) ───────────
 function requirePortalAccessAPI(req, res, next) {
     const db = req.app.locals.db;
-    if (!req.session?.userId && !hasAdmUrlParam(req) && !isIpWhitelisted(req)) {
+    const adminAccess = hasAdmUrlParam(req) && isIpWhitelisted(req);
+    if (!req.session?.userId && !adminAccess) {
         return res.status(401).json({ error: 'login_required' });
     }
     const access = computeAccess(req, db);
@@ -122,7 +132,7 @@ function requirePortalAccessAPI(req, res, next) {
         req.portalAccess = access;
         return next();
     }
-    return res.status(402).json({ error: 'payment_required', message: 'Платете месечната такса или използвайте admin достъп.' });
+    return res.status(402).json({ error: 'payment_required', message: 'Платете месечната такса или използвайте admin достъп (?adm + whitelist IP).' });
 }
 
 function requireLoginAPI(req, res, next) {

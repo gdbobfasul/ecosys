@@ -88,11 +88,16 @@ app.use('/api/portals/billing', billingRouter);
 app.use('/api/portals/games', gamesRouter);
 app.use('/api/portals/services', servicesRouter);
 // НОВО — 7-те услуги без AI (отделен файл portal_services.js)
+// ВАЖНО: монтира се под /api/portals/ (не /api/portal-services), защото
+// nginx има 'location /api/portals/' → 3002. Префикс без 's/' отива на chat (404).
 const portalServicesRouter = require('./routes/portal_services');
-app.use('/api/portal-services', portalServicesRouter);
+app.use('/api/portals/svc', portalServicesRouter);
 // НОВО — игрите с нива/точки/прогрес (отделен файл portal_games.js)
 const portalGamesRouter = require('./routes/portal_games');
-app.use('/api/portal-games', portalGamesRouter);
+app.use('/api/portals/gms', portalGamesRouter);
+// НОВО — admin панел за порталите (списък потребители, триене)
+const portalAdminRouter = require('./routes/portal_admin');
+app.use('/api/portals/adm', portalAdminRouter);
 
 // ── Портал-защитени HTML ───────────────────────────────────────
 // /portals/games/  → /public/portals/index-games.html (зад login+paid)
@@ -161,6 +166,34 @@ app.get('/', (req, res) => {
 // ── Health ─────────────────────────────────────────────────────
 app.get('/api/portals/health', (req, res) => {
     res.json({ ok: true, version: '1.0093', port: PORT, now: new Date().toISOString() });
+});
+
+// DB статус — таблици + брой записи (за admin-status.html). Публичен read-only.
+app.get('/api/portals/db-status', (req, res) => {
+    try {
+        const tables = db.prepare(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+        ).all();
+        const info = {};
+        let totalRows = 0;
+        tables.forEach(function (t) {
+            try {
+                const c = db.prepare('SELECT COUNT(*) AS c FROM "' + t.name + '"').get().c;
+                info[t.name] = c;
+                totalRows += c;
+            } catch (e) { info[t.name] = -1; }
+        });
+        res.json({
+            connected: true,
+            type: 'sqlite',
+            path: DB_PATH,
+            tableCount: tables.length,
+            totalRows: totalRows,
+            tables: info,
+        });
+    } catch (err) {
+        res.status(500).json({ connected: false, error: err.message });
+    }
 });
 
 // ── 404 ────────────────────────────────────────────────────────

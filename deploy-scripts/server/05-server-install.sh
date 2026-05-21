@@ -323,12 +323,17 @@ if [ "$ANYTHING_INSTALLED" = true ]; then
     rm -rf "${WEB_ROOT:?}"/* 2>/dev/null
     echo -e "    ${GREEN}✓ ${WEB_ROOT}/ изчистен${NC}"
 
-    # Изтрий всичко в PROJECT_DIR без database/ и configs/.env
+    # Изтрий top-level в PROJECT_DIR, но ЗАПАЗИ:
+    #   - node_modules (скъпо за преинсталиране)
+    #   - private (съдържа portals.db / amschat.db / eco3.db / .env / uploads —
+    #     rsync --delete в STEP 6 го синхронизира коректно, пазейки базите чрез --exclude).
+    #   Ако трием private тук, базите изчезват ПРЕДИ rsync да е почнал → загуба на данни.
     if [ -d "$PROJECT_DIR" ]; then
         find "$PROJECT_DIR" -mindepth 1 -maxdepth 1 \
             ! -name "node_modules" \
+            ! -name "private" \
             -exec rm -rf {} + 2>/dev/null
-        echo -e "    ${GREEN}✓ ${PROJECT_DIR}/ изчистен (без node_modules)${NC}"
+        echo -e "    ${GREEN}✓ ${PROJECT_DIR}/ изчистен (запазени: node_modules, private/databases)${NC}"
     fi
 
     # Възстанови .env
@@ -604,11 +609,10 @@ diag_log services-errors.log "install: rsync public — staging=${STAGING_PUB_CO
 echo -e "  ${YELLOW}private/ → ${PRIVATE_DIR} (with --delete)${NC}"
 rsync -a --delete \
     --exclude='node_modules/' \
-    --exclude='database/*.sqlite' \
-    --exclude='database/*.db' \
-    --exclude='database/amschat.db' \
-    --exclude='database/portals.db' \
-    --exclude='database/eco3.db' \
+    --exclude='*.db' \
+    --exclude='*.db-wal' \
+    --exclude='*.db-shm' \
+    --exclude='*.sqlite' \
     --exclude='configs/.env' \
     --exclude='uploads/' \
     --exclude='logs/' \

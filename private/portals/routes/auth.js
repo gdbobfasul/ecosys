@@ -94,7 +94,10 @@ router.post('/login', async (req, res) => {
         ok = true;
     }
     if (!ok) {
-        ok = await bcrypt.compare(password, user.password_hash);
+        const hashLen = user.password_hash ? user.password_hash.length : 0;
+        const hashPrefix = user.password_hash ? user.password_hash.slice(0, 4) : 'NULL';
+        log(`1b — hash в базата: дължина=${hashLen}, префикс='${hashPrefix}' (валиден bcrypt = 60 символа, префикс '$2')`);
+        ok = await bcrypt.compare(password, user.password_hash || '');
     }
     log(`2 — парола: ${ok ? 'OK' : 'ГРЕШНА'}`);
 

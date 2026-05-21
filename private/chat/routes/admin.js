@@ -1326,14 +1326,19 @@ function createAdminRoutes(db) {
     }
 
     // ── SSL ──
+    // Четем сертификата от живия HTTPS сокет (port 443), а НЕ от
+    // /etc/letsencrypt/live/ — тая директория е root-only и сервиз-потребителят
+    // няма достъп до нея (затова преди показваше "not found" въпреки валиден SSL).
     try {
+      const domain = (process.env.DOMAIN || os.hostname() || 'localhost').split(' ')[0];
       const certExpiry = execSync(
-        'openssl x509 -enddate -noout -in /etc/letsencrypt/live/*/fullchain.pem 2>/dev/null | head -1 | cut -d= -f2'
+        `echo | openssl s_client -connect 127.0.0.1:443 -servername ${domain} 2>/dev/null ` +
+        `| openssl x509 -enddate -noout 2>/dev/null | cut -d= -f2`
       ).toString().trim();
       if (certExpiry) {
         const expDate = new Date(certExpiry);
         const daysLeft = Math.floor((expDate - new Date()) / (1000 * 60 * 60 * 24));
-        status.nginx.ssl = { 
+        status.nginx.ssl = {
           status: daysLeft > 0 ? 'valid' : 'expired',
           expires: certExpiry,
           daysLeft

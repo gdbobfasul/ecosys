@@ -301,6 +301,21 @@ H_DIAG=$(http_check "http://127.0.0.1:4400/health")
     echo "[$TS]   billing/status СЪС сесия (nginx HTTPS): $BILLING_NGINX"
     rm -f "$CJAR" "$CJAR2" 2>/dev/null || true
 
+    # Почисти тестовите потребители които този тест създаде — иначе portal_users
+    # се пълни с боклук (__diagtest__, __sessn_...) при всяко пускане на диагностиката.
+    PORTAL_DB_FILE="/var/www/kcy-ecosystem/private/portals/database/portals.db"
+    if [ -f "$PORTAL_DB_FILE" ]; then
+        node -e "
+          try {
+            const D = require('/var/www/kcy-ecosystem/private/portals/node_modules/better-sqlite3');
+            const db = new D('$PORTAL_DB_FILE');
+            const r = db.prepare(\"DELETE FROM portal_users WHERE username LIKE '__diagtest%' OR username LIKE '__sess%'\").run();
+            db.close();
+            console.log('diag cleanup: изтрити ' + r.changes + ' тестови потребителя');
+          } catch (e) { console.log('diag cleanup пропуснат: ' + e.message); }
+        " 2>/dev/null | sed "s/^/[$TS]   /" || true
+    fi
+
     # 6. Portal games/services страници — тест директно на 3002
     for page in "games" "services"; do
         P_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 6 \

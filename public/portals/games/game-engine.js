@@ -72,7 +72,7 @@ GameEngine.prototype.bind = function () {
 
 GameEngine.prototype.loadProgress = function () {
     var self = this;
-    fetch('/api/portal-games/progress/' + this.slug)
+    fetch('/api/portals/gms/progress/' + this.slug)
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (d) {
             if (d) { self.bestLevel = d.best_level || 1; self.bestScore = d.best_score || 0; }
@@ -138,7 +138,7 @@ GameEngine.prototype.win = function () {
 
 GameEngine.prototype.saveScore = function () {
     var self = this;
-    fetch('/api/portal-games/score', {
+    fetch('/api/portals/gms/score', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ game_slug: this.slug, score: this.score, level: this.level })

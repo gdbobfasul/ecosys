@@ -536,6 +536,23 @@
         }
         html += `</div>`;
 
+        // ── Portals Database ──
+        const pdb = data.portalsdb || {};
+        html += `<div class="card"><h2>🎮 Portals Database</h2>`;
+        html += `<div class="status-row"><span class="label">Статус</span><span class="value">${badge(pdb.connected ? 'connected' : 'error')}</span></div>`;
+        html += `<div class="status-row"><span class="label">Тип</span><span class="value">${pdb.type || 'SQLite'}</span></div>`;
+        html += `<div class="status-row"><span class="label">Таблици</span><span class="value">${pdb.tableCount ?? '-'}</span></div>`;
+        html += `<div class="status-row"><span class="label">Общо записи</span><span class="value">${pdb.totalRows ?? '-'}</span></div>`;
+        if (pdb.tables) {
+            for (const [tbl, cnt] of Object.entries(pdb.tables)) {
+                html += `<div class="status-row"><span class="label" style="font-family:monospace">${tbl}</span><span class="value">${cnt} rows</span></div>`;
+            }
+        }
+        if (pdb.error) {
+            html += `<div style="margin-top:8px; padding:8px; background:#3a1c1c; border:1px solid #6b2b2b; border-radius:6px; font-size:0.78em; color:#f0883e;">⚠ ${String(pdb.error).replace(/</g,'&lt;')}</div>`;
+        }
+        html += `</div>`;
+
         // ── System ──
         html += `<div class="card"><h2>💻 System</h2>`;
         html += `<div class="status-row"><span class="label">Node.js</span><span class="value">${sys.nodeVersion || '-'}</span></div>`;
@@ -613,6 +630,14 @@
                     if (hRes.ok) { const h = await hRes.json(); data.eco3db = h.database || { connected: false }; }
                 } catch {}
             }
+
+            stage = 'fetch-portals';
+            // portals db-status — таблици + брой записи
+            try {
+                const pRes = await fetch(window.location.origin + '/api/portals/db-status');
+                if (pRes.ok) data.portalsdb = await pRes.json();
+                else data.portalsdb = { connected: false, error: 'HTTP ' + pRes.status };
+            } catch (e) { data.portalsdb = { connected: false, error: String(e.message) }; }
 
             stage = 'render';
             content.innerHTML = renderStatus(data);

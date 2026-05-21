@@ -1,0 +1,162 @@
+<!-- Version: 1.0093 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portals — Admin панел</title>
+<style>
+  :root { --pri:#2a86d8; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:#0e1620; color:#e6edf3; }
+  .head { background:linear-gradient(135deg,#1b3a5c,var(--pri)); padding:26px 20px; }
+  .head h1 { font-size:1.6em; }
+  .head p { color:#bcd; font-size:.9em; margin-top:4px; }
+  .wrap { max-width:1400px; margin:0 auto; padding:20px; }
+  .bar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+  .bar input { flex:1; min-width:220px; padding:11px 14px; border:1px solid #30363d; border-radius:8px; background:#161b22; color:#e6edf3; font-size:.95em; }
+  .bar button { padding:11px 18px; border:none; border-radius:8px; background:var(--pri); color:#fff; cursor:pointer; font-size:.95em; }
+  .bar button.sec { background:#30363d; }
+  .meta { color:#8b949e; font-size:.85em; margin-bottom:10px; }
+  .tbl { width:100%; border-collapse:collapse; background:#161b22; border-radius:10px; overflow:hidden; }
+  .tbl th, .tbl td { padding:9px 10px; text-align:left; font-size:.82em; border-bottom:1px solid #21262d; vertical-align:top; }
+  .tbl th { background:#1c2530; color:#9fb4c6; font-weight:600; white-space:nowrap; }
+  .tbl tr:hover td { background:#1a222c; }
+  .hash { font-family:monospace; font-size:.78em; color:#8b949e; word-break:break-all; max-width:220px; }
+  .desc { max-width:200px; color:#bcd; }
+  .adlink { color:#58a6ff; font-size:.8em; word-break:break-all; max-width:170px; display:inline-block; }
+  .games { display:flex; flex-wrap:wrap; gap:3px; max-width:260px; }
+  .gchip { background:#21303f; border-radius:4px; padding:2px 6px; font-size:.72em; color:#9fd0e0; white-space:nowrap; }
+  .gchip b { color:#ffd24a; }
+  .del { background:#5a1f1f; border:1px solid #8a3030; color:#ff9a9a; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:.78em; white-space:nowrap; }
+  .del:hover { background:#7a2a2a; }
+  .pager { display:flex; gap:8px; justify-content:center; margin-top:16px; align-items:center; }
+  .pager button { padding:8px 14px; border:1px solid #30363d; background:#161b22; color:#e6edf3; border-radius:7px; cursor:pointer; }
+  .pager button:disabled { opacity:.4; cursor:default; }
+  .loading { text-align:center; padding:40px; color:#8b949e; }
+  .err { background:#3a1c1c; border:1px solid #6b2b2b; color:#f0883e; padding:12px; border-radius:8px; }
+  .total-pts { color:#ffd24a; font-weight:700; }
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>🎮 Portals — Admin панел</h1>
+  <p>Потребители · точки по игри · реклама · триене</p>
+</div>
+<div class="wrap">
+  <div class="bar">
+    <input id="q" type="text" placeholder="Търси по име, рекламен линк или описание на дейност…">
+    <button onclick="doSearch()">🔍 Търси</button>
+    <button class="sec" onclick="clearSearch()">Изчисти</button>
+  </div>
+  <div class="meta" id="meta"></div>
+  <div id="content"><div class="loading">Зареждам…</div></div>
+  <div class="pager" id="pager"></div>
+</div>
+
+<script>
+var state = { page: 1, q: '', gameSlugs: [] };
+
+function admParam(){
+  var m = location.search.match(/[?&]adm=([^&]+)/);
+  return m ? '?adm=' + m[1] : '';
+}
+function api(path){
+  var base = '/api/portals/adm' + path;
+  var p = admParam();
+  if(!p) return base;
+  return base + (base.indexOf('?')>-1 ? '&' : '?') + p.slice(1);
+}
+
+function esc(s){ return String(s==null?'':s).replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+var GAME_NAMES = {
+  'plane-dodge':'Самолет-избягвай','plane-shoot':'Самолет-стрелба',
+  'car-race':'Кола-надбягване','car-drift':'Кола-дрифт',
+  'hero-jump':'Герой-скок','hero-run':'Герой-бяг',
+  'battle-team':'Битка 3v3','battle-duel':'Дуел'
+};
+
+function load(){
+  document.getElementById('content').innerHTML='<div class="loading">Зареждам…</div>';
+  fetch(api('/users?q='+encodeURIComponent(state.q)+'&page='+state.page))
+    .then(function(r){
+      if(!r.ok) return r.text().then(function(b){ throw new Error('HTTP '+r.status+' — '+b.slice(0,200)); });
+      return r.json();
+    })
+    .then(render)
+    .catch(function(e){
+      document.getElementById('content').innerHTML='<div class="err">Грешка: '+esc(e.message)+'</div>';
+      document.getElementById('pager').innerHTML='';
+      document.getElementById('meta').textContent='';
+    });
+}
+
+function render(d){
+  state.gameSlugs = d.gameSlugs;
+  document.getElementById('meta').textContent =
+    'Намерени: '+d.total+' потребителя'+(d.query?' (търсене: "'+d.query+'")':'')+
+    ' · страница '+d.page+' от '+(d.totalPages||1);
+
+  if(!d.users.length){
+    document.getElementById('content').innerHTML='<div class="loading">Няма потребители.</div>';
+    document.getElementById('pager').innerHTML='';
+    return;
+  }
+
+  var h='<table class="tbl"><thead><tr>'+
+    '<th>№</th><th>Потребител</th><th>Парола (хеш)</th>'+
+    '<th>Рекламен линк</th><th>Описание на дейност</th>'+
+    '<th>Общо точки</th><th>Игри — ниво / точки</th><th>Действие</th>'+
+    '</tr></thead><tbody>';
+
+  d.users.forEach(function(u){
+    var games='<div class="games">';
+    d.gameSlugs.forEach(function(slug){
+      var g=u.games[slug]||{level:0,score:0};
+      games+='<span class="gchip">'+(GAME_NAMES[slug]||slug)+': <b>ниво '+g.level+'</b> / '+g.score+'т.</span>';
+    });
+    games+='</div>';
+
+    h+='<tr>'+
+      '<td>'+u.id+'</td>'+
+      '<td><b>'+esc(u.username)+'</b><br><span style="color:#8b949e;font-size:.9em">'+esc(u.created_at||'')+'</span></td>'+
+      '<td class="hash">'+esc(u.password_hash||'—')+'</td>'+
+      '<td>'+(u.ad_link?'<a class="adlink" href="'+esc(u.ad_link)+'" target="_blank" rel="noopener">'+esc(u.ad_link)+'</a>':'<span style="color:#555">—</span>')+'</td>'+
+      '<td class="desc">'+(u.business_description?esc(u.business_description):'<span style="color:#555">—</span>')+'</td>'+
+      '<td class="total-pts">'+u.total_score+'</td>'+
+      '<td>'+games+'</td>'+
+      '<td><button class="del" onclick="del('+u.id+',\''+esc(u.username).replace(/'/g,"")+'\')">🗑 Изтрий</button></td>'+
+      '</tr>';
+  });
+  h+='</tbody></table>';
+  document.getElementById('content').innerHTML=h;
+
+  // пейджър
+  var pg='';
+  pg+='<button '+(d.page<=1?'disabled':'')+' onclick="goPage('+(d.page-1)+')">← Предишна</button>';
+  pg+='<span style="color:#8b949e">страница '+d.page+' / '+(d.totalPages||1)+'</span>';
+  pg+='<button '+(d.page>=d.totalPages?'disabled':'')+' onclick="goPage('+(d.page+1)+')">Следваща →</button>';
+  document.getElementById('pager').innerHTML=pg;
+}
+
+function goPage(p){ state.page=p; load(); }
+function doSearch(){ state.q=document.getElementById('q').value.trim(); state.page=1; load(); }
+function clearSearch(){ document.getElementById('q').value=''; state.q=''; state.page=1; load(); }
+
+function del(id, name){
+  if(!confirm('Изтриване на потребител #'+id+' ('+name+')?\nЩе се изтрият и резултатите/прогресът/плащанията му.')) return;
+  fetch(api('/users/'+id), { method:'DELETE' })
+    .then(function(r){
+      if(!r.ok) return r.text().then(function(b){ throw new Error('HTTP '+r.status+' — '+b.slice(0,150)); });
+      return r.json();
+    })
+    .then(function(){ load(); })
+    .catch(function(e){ alert('Грешка при триене: '+e.message); });
+}
+
+document.getElementById('q').addEventListener('keydown', function(e){ if(e.key==='Enter') doSearch(); });
+load();
+</script>
+</body>
+</html>

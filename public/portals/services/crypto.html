@@ -65,7 +65,7 @@ var RATES={};  // символ -> стойност в USD (1 единица = X 
 var META={};   // символ -> {name, type}
 
 function loadRates(){
-  fetch('/api/portal-services/rates')
+  fetch('/api/portals/svc/rates')
     .then(function(r){ if(!r.ok) throw new Error('rates'); return r.json(); })
     .then(function(d){
       // крипто: usd цена директно
