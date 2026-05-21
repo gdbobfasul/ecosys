@@ -237,6 +237,73 @@ H_DIAG=$(http_check "http://127.0.0.1:4400/health")
         text/html*)  echo "[$TS]   ⚠ bundle публичен URL връща HTML вместо text/plain — веригата е счупена" ;;
         *)           echo "[$TS]   bundle публичен URL: content-type=${BUNDLE_CT:-неизвестен}" ;;
     esac
+
+    # ── nginx — кои конфиги са активни + техните location блокове ──
+    # Това показва ТОЧНО защо /portals/ или /last-errors-bundle падат на index.html.
+    echo "[$TS] ── nginx активни конфиги ──"
+    for f in /etc/nginx/sites-enabled/*; do
+        [ -e "$f" ] || continue
+        echo "[$TS]   enabled: $(basename "$f")"
+    done
+    echo "[$TS] ── nginx location блокове (server_name + location + proxy_pass + root) ──"
+    grep -hE "^\s*(server_name|listen|location|proxy_pass|root|include)" /etc/nginx/sites-enabled/* 2>/dev/null \
+        | sed "s/^/[$TS]   /" | head -60
+
+    # ── Portals register.html — тест на цялата верига ──
+    echo "[$TS] ── Portals static тест ──"
+    # 1. Файлът на диска
+    for d in /var/www/html/portals /var/www/kcy-ecosystem/public/portals; do
+        if [ -f "$d/register.html" ]; then
+            echo "[$TS]   файл: $d/register.html съществува ($(wc -c < "$d/register.html") байта)"
+        else
+            echo "[$TS]   файл: $d/register.html ЛИПСВА"
+        fi
+    done
+    # 2. portals сървис директно (3002)
+    R_PORT=$(curl -s -o /dev/null -w "%{http_code}" --max-time 4 "http://127.0.0.1:3002/portals/register.html" 2>/dev/null)
+    echo "[$TS]   3002 директно /portals/register.html: HTTP ${R_PORT:-down}"
+    # 3. през nginx (публично)
+    R_NGINX=$(curl -sk -o /dev/null -w "%{http_code}" --max-time 5 "https://127.0.0.1/portals/register.html" -H "Host: $(hostname -f 2>/dev/null || hostname)" 2>/dev/null)
+    echo "[$TS]   nginx /portals/register.html: HTTP ${R_NGINX:-down}"
+    # 4. POST към registration API — статус + content-type + ТЯЛО (за 502 debug)
+    REG_BODY=$(curl -s --max-time 5 \
+        -X POST "http://127.0.0.1:3002/api/portals/register" \
+        -H "Content-Type: application/json" \
+        -d '{"username":"__diagtest__","password":"diagpass"}' 2>&1)
+    REG_PORT=$(curl -s -o /dev/null -w "%{http_code} %{content_type}" --max-time 4 \
+        -X POST "http://127.0.0.1:3002/api/portals/register" \
+        -H "Content-Type: application/json" \
+        -d '{"username":"__diagtest2__","password":"diagpass"}' 2>/dev/null)
+    echo "[$TS]   POST register (3002): $REG_PORT"
+    echo "[$TS]   POST register тяло: $(echo "$REG_BODY" | head -c 300 | tr '\n' ' ')"
+
+    # 5. Session тест — регистрирай → пази cookie → провери billing/status със същата сесия
+    CJAR=$(mktemp)
+    UNAME="__sess_$(date +%s)__"
+    curl -s --max-time 5 -c "$CJAR" \
+        -X POST "http://127.0.0.1:3002/api/portals/register" \
+        -H "Content-Type: application/json" \
+        -d "{\"username\":\"$UNAME\",\"password\":\"diagpass123\"}" >/dev/null 2>&1
+    BILLING_SESS=$(curl -s --max-time 4 -b "$CJAR" -w " [HTTP %{http_code}]" \
+        "http://127.0.0.1:3002/api/portals/billing/status" 2>/dev/null | head -c 250 | tr '\n' ' ')
+    echo "[$TS]   billing/status СЪС сесия (3002): $BILLING_SESS"
+    # Същото през nginx (HTTPS) — проверява дали trust proxy + secure cookie работят
+    CJAR2=$(mktemp)
+    UNAME2="__sessn_$(date +%s)__"
+    curl -sk --max-time 5 -c "$CJAR2" \
+        -X POST "https://127.0.0.1/api/portals/register" \
+        -H "Host: $(hostname -f 2>/dev/null || hostname)" \
+        -H "Content-Type: application/json" \
+        -d "{\"username\":\"$UNAME2\",\"password\":\"diagpass123\"}" >/dev/null 2>&1
+    BILLING_NGINX=$(curl -sk --max-time 5 -b "$CJAR2" -w " [HTTP %{http_code}]" \
+        "https://127.0.0.1/api/portals/billing/status" \
+        -H "Host: $(hostname -f 2>/dev/null || hostname)" 2>/dev/null | head -c 250 | tr '\n' ' ')
+    echo "[$TS]   billing/status СЪС сесия (nginx HTTPS): $BILLING_NGINX"
+    rm -f "$CJAR" "$CJAR2" 2>/dev/null || true
+
+    # portals последни 8 реда лог — хваща crash грешката
+    echo "[$TS] ── portals journal (последни грешки) ──"
+    journalctl -u kcy-portals -n 12 --no-pager 2>/dev/null | tail -12 | sed "s/^/[$TS]   /"
 } > "$HEALTHLOG"
 if [ "$(wc -l < "$HEALTHLOG" 2>/dev/null)" -gt "$MAX_LINES" ]; then
     tail -n "$MAX_LINES" "$HEALTHLOG" > "${HEALTHLOG}.tmp" && mv "${HEALTHLOG}.tmp" "$HEALTHLOG"

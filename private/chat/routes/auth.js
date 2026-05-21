@@ -93,11 +93,22 @@ function createAuthRoutes(db) {
       const token = crypto.randomBytes(32).toString('hex');
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 30);
-      
+
+      // CLIENT_TYPE идва от глобалната константа на клиента (req.body.client).
+      // device_type — стойността която ще влезе в базата.
+      // Проверка: трябва да са 'web' или 'mobile'. Различни/невалидни → FATAL ERROR.
+      const CLIENT_TYPE = req.body.client;
+      const device_type = CLIENT_TYPE;
+      if ((CLIENT_TYPE !== 'web' && CLIENT_TYPE !== 'mobile') || CLIENT_TYPE !== device_type) {
+        debug.error(`login: FATAL — невалиден/несъответстващ CLIENT_TYPE: '${CLIENT_TYPE}'`);
+        return res.status(500).json({ error: 'client_type_mismatch' });
+      }
+
+      // login route записва device_type в базата
       db.prepare(`
         INSERT INTO sessions (id, user_id, token, expires_at, device_type)
         VALUES (?, ?, ?, ?, ?)
-      `).run(uuidv4(), matchedUser.id, token, expiresAt.toISOString(), 'web');
+      `).run(uuidv4(), matchedUser.id, token, expiresAt.toISOString(), device_type);
 
       db.prepare('UPDATE users SET last_login = datetime("now") WHERE id = ?').run(matchedUser.id);
 

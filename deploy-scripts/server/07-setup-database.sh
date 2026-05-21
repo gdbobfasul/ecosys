@@ -406,13 +406,11 @@ if [ "$USE_POSTGRESQL" = true ]; then
     # пресъздаваше от SQLite — деструктивно, оставяше базата с грешна/празна схема.
     echo -e "${GREEN}[5/6] Схема готова (миграция от SQLite не се прави)${NC}"
 
-    # Install pg driver
-    echo -e "${GREEN}[6/6] pg driver...${NC}"
-    cd "$CHAT_DIR"
-    if [ -f "package.json" ]; then
-        npm install pg --save --production 2>&1 | grep -v "npm WARN" || true
-        echo -e "${GREEN}  ✓ pg installed${NC}"
-    fi
+    # [6/6] — pg драйверът се инсталира от СТЪПКА 7 на install-а
+    # (root npm install --legacy-peer-deps, pg е в root package.json).
+    # Тук НЕ правим отделен npm install — би гръмнал с ERESOLVE заради
+    # peer конфликти в други workspaces (react-native).
+    echo -e "${GREEN}[6/6] pg драйвер — инсталиран от root npm install${NC}"
 
     # Configure pg_hba
     cp /etc/postgresql/*/main/pg_hba.conf /etc/postgresql/*/main/pg_hba.conf.bak 2>/dev/null || true
@@ -497,13 +495,9 @@ EOF
     chmod 644 "$SQLITE_DB"
     chown kcy-chat:kcy "$SQLITE_DB"
 
-    # Install driver
-    echo -e "${GREEN}[2/3] SQLite driver...${NC}"
-    cd "$CHAT_DIR"
-    if [ -f "package.json" ]; then
-        npm install better-sqlite3 --save --production 2>&1 | grep -v "npm WARN" || true
-        echo -e "${GREEN}  ✓ better-sqlite3 installed${NC}"
-    fi
+    # [2/3] — better-sqlite3 драйверът се инсталира от СТЪПКА 7 на install-а
+    # (root npm install --legacy-peer-deps, better-sqlite3 е в root package.json).
+    echo -e "${GREEN}[2/3] better-sqlite3 драйвер — инсталиран от root npm install${NC}"
 
     # ── .env НЕ се пипа ──
     # DB_TYPE, SQLITE_DB_FILE, JWT_SECRET, SESSION_SECRET — всичко идва от .env.

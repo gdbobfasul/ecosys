@@ -8,7 +8,7 @@ function authenticate(db) {
     }
 
     const session = db.prepare(`
-      SELECT user_id FROM sessions 
+      SELECT user_id, device_type FROM sessions 
       WHERE token = ? AND expires_at > datetime('now')
     `).get(token);
     
@@ -25,6 +25,10 @@ function authenticate(db) {
 
     req.userId = user.id;
     req.user = user;
+    // CLIENT_TYPE на сесията — 'web' или 'mobile'. Закача се тук веднъж,
+    // достъпно е във ВСЕКИ route като req.clientType. Логовете го ползват
+    // за да решат в кой файл да пишат (chat-web-* / chat-mobile-*).
+    req.clientType = (session.device_type === 'mobile') ? 'mobile' : 'web';
     next();
   };
 }

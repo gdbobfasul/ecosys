@@ -35,6 +35,11 @@ const gamesRouter = require('./routes/games');
 const servicesRouter = require('./routes/services');
 
 const app = express();
+// Зад nginx reverse proxy — Express трябва да вярва на X-Forwarded-* хедърите.
+// Без това express-session със secure cookie не работи (nginx терминира SSL и
+// proxy-ва plain HTTP → portals мисли че връзката е HTTP → secure cookie се губи
+// → сесията не се пази → потребителят постоянно е "разлогнат").
+app.set('trust proxy', 1);
 const PORT = process.env.PORTALS_PORT || 3002;
 const PUBLIC_DIR = process.env.PORTALS_PUBLIC_DIR || path.resolve(__dirname, '..', '..', 'public');
 
@@ -63,6 +68,19 @@ app.use(session({
         secure: process.env.NODE_ENV === 'production',
     },
 }));
+
+// ── ГЛОБАЛЕН ЛОГ НА ЗАЯВКИТЕ ───────────────────────────────────
+// Логва ВСЯКА заявка: вход (метод+път+сесия) и изход (статус+време).
+// Едно място — покрива всички routes автоматично.
+app.use((req, res, next) => {
+    const t0 = Date.now();
+    const sid = req.session?.userId ? `user#${req.session.userId}` : 'без сесия';
+    debug.stage(`→ ${req.method} ${req.originalUrl} [${sid}]`);
+    res.on('finish', () => {
+        debug.stage(`← ${req.method} ${req.originalUrl} → HTTP ${res.statusCode} (${Date.now() - t0}ms)`);
+    });
+    next();
+});
 
 // ── API routes ─────────────────────────────────────────────────
 app.use('/api/portals', authRouter);
@@ -109,10 +127,21 @@ app.get('/api/portals/health', (req, res) => {
     res.json({ ok: true, version: '1.0086', port: PORT, now: new Date().toISOString() });
 });
 
-// ── 404 / error ────────────────────────────────────────────────
+// ── 404 ────────────────────────────────────────────────────────
 app.use((req, res) => {
+    debug.stage(`404 ... ${req.method} ${req.originalUrl} — няма такъв route`);
     if (req.path.startsWith('/api/')) return res.status(404).json({ error: 'not_found', path: req.path });
     res.status(404).send('Not found');
+});
+
+// ── ГЛОБАЛЕН ERROR HANDLER ─────────────────────────────────────
+// Хваща ВСЯКА грешка хвърлена от route — иначе процесът крашва тихо.
+// Логва пълната грешка в portal-errors.log и връща чист JSON, не HTML.
+app.use((err, req, res, next) => {
+    debug.error(`ГРЕШКА ... ${req.method} ${req.originalUrl}: ${err.message}`);
+    debug.error(`stack: ${(err.stack || '').split('\n').slice(0, 4).join(' | ')}`);
+    if (res.headersSent) return next(err);
+    res.status(500).json({ error: 'server_error', message: err.message });
 });
 
 // ── Start ──────────────────────────────────────────────────────

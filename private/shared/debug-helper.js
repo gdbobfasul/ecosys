@@ -55,6 +55,8 @@ function fmt(args) {
 
 function create(serviceName) {
     const logFile = SERVICE_LOG[serviceName] || `${serviceName}-errors.log`;
+    // DB лог per-service: db-chat.log, db-portals.log, db-eco3.log
+    const dbLogFile = `db-${serviceName}.log`;
 
     return {
         stage(...args) {
@@ -63,6 +65,67 @@ function create(serviceName) {
             console.log(`[${ts} DEBUG/${serviceName}]`, ...args);
             const isoTs = new Date().toISOString();
             appendLog(logFile, `[${isoTs}] [DEBUG] ${fmt(args)}`);
+        },
+        // ── избор на файл: само ако е МОБИЛНО приложение → префикс 'mobile-' ──
+        // Има само 1 приложение (chat mobile). Всичко друго е уеб → файлът е както е,
+        // без да повтаряме 'web' навсякъде.
+        // clientFromReq: ако подадеш req, чете req.clientType ('mobile' за приложението).
+        // pickFile: връща 'mobile-<file>' за приложението, иначе самия <file>.
+
+        // action() — КЛЮЧОВИ действия (старт на route, важни събития).
+        // Отива в per-service лога И в action-flow.log.
+        // Подай req като ПЪРВИ аргумент (за да се разпознае мобилно/уеб).
+        action(...args) {
+            if (!isEnabled(serviceName)) return;
+            let clientType = '';
+            if (args[0] && typeof args[0] === 'object' && args[0].headers !== undefined) {
+                clientType = (args.shift().clientType) || '';
+            }
+            const isMobile = clientType === 'mobile';
+            const targetLog = isMobile ? `mobile-${logFile}` : logFile;
+            const tag = isMobile ? '[mobile] ' : '';
+            const ts = new Date().toISOString().slice(11, 19);
+            const isoTs = new Date().toISOString();
+            const line = tag + fmt(args);
+            console.log(`[${ts} ACTION/${serviceName}]`, line);
+            appendLog(targetLog, `[${isoTs}] [ACTION] ${line}`);
+            appendLog('action-flow.log', `[${isoTs}] [${serviceName}] ${line}`);
+        },
+        // db() — кратък лог на DB операция: КАКВО се изпълнява + параметри (не резултата).
+        // Подай req като ПЪРВИ аргумент. Мобилно → 'mobile-db-<service>.log'.
+        db(...args) {
+            if (!isEnabled(serviceName)) return;
+            let clientType = '';
+            if (args[0] && typeof args[0] === 'object' && args[0].headers !== undefined) {
+                clientType = (args.shift().clientType) || '';
+            }
+            const isMobile = clientType === 'mobile';
+            const targetDbLog = isMobile ? `mobile-${dbLogFile}` : dbLogFile;
+            const ts = new Date().toISOString().slice(11, 19);
+            const isoTs = new Date().toISOString();
+            console.log(`[${ts} DB/${serviceName}]`, ...args);
+            appendLog(targetDbLog, `[${isoTs}] ${fmt(args)}`);
+        },
+        // scoped(req, routeName) — връща ЕДНА лог-функция вързана за заявката.
+        // Route-ът я вика веднъж: const log = debug.scoped(req, 'register');
+        // После само log('старт'), log('1'), log('изход 4') — функцията сама знае
+        // файла (мобилно → mobile- префикс, иначе както е) и слага името на route-а.
+        scoped(req, routeName) {
+            const isMobile = !!(req && req.clientType === 'mobile');
+            const targetLog = isMobile ? `mobile-${logFile}` : logFile;
+            const tag = isMobile ? '[mobile] ' : '';
+            return (...args) => {
+                if (!isEnabled(serviceName)) return;
+                const ts = new Date().toISOString().slice(11, 19);
+                const isoTs = new Date().toISOString();
+                const text = fmt(args);
+                const line = `${tag}${routeName}: ${text}`;
+                console.log(`[${ts} ${serviceName}]`, line);
+                appendLog(targetLog, `[${isoTs}] ${line}`);
+                if (/^старт/i.test(text)) {
+                    appendLog('action-flow.log', `[${isoTs}] [${serviceName}] ${line}`);
+                }
+            };
         },
         info(...args) {
             const ts = new Date().toISOString().slice(11, 19);

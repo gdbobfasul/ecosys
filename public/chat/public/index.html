@@ -153,6 +153,10 @@
     </div>
 
     <script>
+        // Глобална константа — тази страница е УЕБ чатът.
+        // Мобилното приложение няма index.html, затова там е 'mobile'.
+        const CLIENT_TYPE = 'web';
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const phone = document.getElementById('phone').value;
@@ -165,7 +169,7 @@
                 const response = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone, password })
+                    body: JSON.stringify({ phone, password, client: CLIENT_TYPE })
                 });
 
                 const data = await response.json();

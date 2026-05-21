@@ -583,11 +583,21 @@ mkdir -p "$WEB_ROOT" "$PROJECT_DIR" "$PRIVATE_DIR" /var/log/kcy-ecosystem
 # --delete премахва файлове в destination които вече ги няма в source
 # --exclude='last-errors/' пази runtime генерираните логове
 echo -e "  ${YELLOW}public/ → ${WEB_ROOT} (with --delete)${NC}"
-rsync -a --delete \
-    --exclude='last-errors/' \
-    "$STAGING/public/" "$WEB_ROOT/" || { echo -e "${RED}  ✗ rsync public/ FAILED${NC}"; }
-PUB_COUNT=$(find "$WEB_ROOT" -type f | wc -l)
-echo -e "  ${GREEN}✓ public/: ${PUB_COUNT} файла${NC}"
+if [ ! -d "$STAGING/public" ]; then
+    echo -e "  ${RED}✗ FATAL: $STAGING/public НЕ СЪЩЕСТВУВА — архивът не е разархивиран правилно${NC}"
+    diag_log services-errors.log "install: STAGING/public липсва"
+    safe_exit 1
+fi
+STAGING_PUB_COUNT=$(find "$STAGING/public" -type f 2>/dev/null | wc -l)
+echo -e "  ${CYAN}  Staging public/: ${STAGING_PUB_COUNT} файла за копиране${NC}"
+if ! rsync -av --delete --exclude='last-errors/' "$STAGING/public/" "$WEB_ROOT/" 2>&1 | tail -5; then
+    echo -e "  ${RED}✗ FATAL: rsync public/ се провали${NC}"
+    diag_log services-errors.log "install: rsync public FAILED"
+    safe_exit 1
+fi
+PUB_COUNT=$(find "$WEB_ROOT" -type f 2>/dev/null | wc -l)
+echo -e "  ${GREEN}✓ public/: ${PUB_COUNT} файла в ${WEB_ROOT}${NC}"
+diag_log services-errors.log "install: rsync public — staging=${STAGING_PUB_COUNT} → web_root=${PUB_COUNT}"
 
 # private/ → project/private/
 # --delete с excludes за runtime data (node_modules, databases, uploads, logs, .env)
@@ -708,28 +718,42 @@ echo -e "  ${GREEN}✓ NPM:  $(npm -v)${NC}"
 
 cd "$PROJECT_DIR"
 
-# Clean install — премахни стари node_modules за да избегнем ENOTEMPTY
-echo -e "  ${YELLOW}Премахвам стари node_modules (root + workspaces)...${NC}"
-rm -rf "$PROJECT_DIR/node_modules"
-for sub in private/chat private/eco-3 private/portals private/token private/multisig private/brch1 private/mobile-chat; do
-    [ -d "$PROJECT_DIR/$sub/node_modules" ] && rm -rf "$PROJECT_DIR/$sub/node_modules"
-done
-
-echo -e "  ${YELLOW}npm install (root + всички workspaces, може да отнеме няколко минути)...${NC}"
-if ! npm install --legacy-peer-deps 2>&1 | tail -10; then
-    echo -e "  ${RED}✗ npm install failed${NC}"
-    diag_log services-errors.log "install: npm install FAILED"
-    safe_exit 1
+# ── npm install — пита Не/Да, дефолт Не ──
+NPM_PICK=""
+if [ -t 0 ]; then
+    read -p "  Да пребилдвам ли npm modules? [y/N, Enter = Не]: " NPM_PICK
+elif [ -e /dev/fd/3 ]; then
+    read -p "  Да пребилдвам ли npm modules? [y/N, Enter = Не]: " NPM_PICK <&3 2>/dev/null || NPM_PICK=""
 fi
 
-# Sanity check — express е критична зависимост за chat/eco-3/portals
-if [ ! -d "$PROJECT_DIR/node_modules/express" ]; then
-    echo -e "  ${RED}✗ node_modules/express липсва след npm install${NC}"
-    diag_log services-errors.log "install: express липсва"
-    safe_exit 1
-fi
-echo -e "  ${GREEN}✓ Всички node_modules инсталирани в root (workspaces hoisted)${NC}"
-echo -e "  ${CYAN}  Chat/ECO-3/Portals — всички използват /var/www/kcy-ecosystem/node_modules${NC}"
+case "${NPM_PICK,,}" in
+    y|yes|да)
+        # Clean install — премахни стари node_modules за да избегнем ENOTEMPTY
+        echo -e "  ${YELLOW}Премахвам стари node_modules (root + workspaces)...${NC}"
+        rm -rf "$PROJECT_DIR/node_modules"
+        for sub in private/chat private/eco-3 private/portals private/token private/multisig private/brch1 private/mobile-chat; do
+            [ -d "$PROJECT_DIR/$sub/node_modules" ] && rm -rf "$PROJECT_DIR/$sub/node_modules"
+        done
+
+        echo -e "  ${YELLOW}npm install (root + всички workspaces, може да отнеме няколко минути)...${NC}"
+        if ! npm install --legacy-peer-deps 2>&1 | tail -10; then
+            echo -e "  ${RED}✗ npm install failed${NC}"
+            diag_log services-errors.log "install: npm install FAILED"
+            safe_exit 1
+        fi
+
+        # Sanity check — express е критична зависимост за chat/eco-3/portals
+        if [ ! -d "$PROJECT_DIR/node_modules/express" ]; then
+            echo -e "  ${RED}✗ node_modules/express липсва след npm install${NC}"
+            diag_log services-errors.log "install: express липсва"
+            safe_exit 1
+        fi
+        echo -e "  ${GREEN}✓ Всички node_modules инсталирани в root (workspaces hoisted)${NC}"
+        ;;
+    *)
+        echo -e "  ${CYAN}Пропускам npm install — ползвам съществуващите node_modules${NC}"
+        ;;
+esac
 
 ##############################################################################
 # STEP 7.5: PORTAL DATABASE (отделна SQLite, винаги)
@@ -744,12 +768,20 @@ if [ -f "$PORTAL_INIT" ]; then
         echo -e "  ${GREEN}✓ Portal DB вече съществува: ${PORTAL_DB}${NC}"
         echo -e "  ${YELLOW}(re-running init.js — безопасно, schema е idempotent с CREATE IF NOT EXISTS)${NC}"
     fi
-    if ( cd "$PORTAL_DIR" && node database/init.js ); then
-        echo -e "  ${GREEN}✓ Portal DB инициализиран${NC}"
+    # init.js трябва да се пусне КАТО kcy-eco3 (потребителят на kcy-portals.service),
+    # за да е базата собственост на него. Иначе init.js (като root) създава
+    # root-owned DB → portals не може да пише → SqliteError: readonly → crash.
+    if ( cd "$PORTAL_DIR" && sudo -u "$ECO3_USER" node database/init.js ); then
+        echo -e "  ${GREEN}✓ Portal DB инициализиран (като ${ECO3_USER})${NC}"
     else
         echo -e "  ${RED}✗ Portal DB init се провали${NC}"
         echo -e "  ${YELLOW}(не е критично — portal-ът ще откаже да работи, но другите services са OK)${NC}"
     fi
+    # Гарантирай правата СЛЕД init.js — директория + всички файлове (.db, .db-wal, .db-shm)
+    chown -R "$ECO3_USER:$ECO3_USER" "$PORTAL_DIR/database"
+    chmod 700 "$PORTAL_DIR/database"
+    find "$PORTAL_DIR/database" -type f -exec chmod 600 {} \; 2>/dev/null || true
+    echo -e "  ${GREEN}✓ portals/database/ права → ${ECO3_USER} (rw)${NC}"
 else
     echo -e "  ${YELLOW}! ${PORTAL_INIT} не е намерен — пропускам portal DB init${NC}"
 fi
@@ -868,10 +900,11 @@ NGINX_CONF="/etc/nginx/sites-available/${PRIMARY_DOMAIN}"
 NGINX_LINK="/etc/nginx/sites-enabled/${PRIMARY_DOMAIN}"
 
 # ── Намиране на ВСИЧКИ конфиги които съвпадат с домейн/IP ──
-# Търси по всяка дума от $DOMAIN (IP и/или домейн).
+# Търси по всяка дума от $DOMAIN (IP и/или домейн). .bak файлове се ПРОПУСКАТ.
 EXISTING_CONFS=()
 for f in /etc/nginx/sites-available/*; do
     [ -f "$f" ] || continue
+    case "$f" in *.bak*) continue ;; esac   # не пипай стари backup-и
     for token in $DOMAIN; do
         if grep -q "server_name.*${token}" "$f" 2>/dev/null; then
             EXISTING_CONFS+=("$f")
@@ -885,13 +918,22 @@ SKIP_NGINX=false
 if [ ${#EXISTING_CONFS[@]} -gt 0 ]; then
     echo -e "  ${YELLOW}Намерени стари nginx конфиги — изтривам за чиста инсталация:${NC}"
     for f in "${EXISTING_CONFS[@]}"; do
-        # Backup преди триене
+        # Изтрий старите .bak на този конфиг (без трупане .bak.X.bak.Y)
+        rm -f "${f}".bak.* 2>/dev/null || true
+        # Един свеж backup
         cp "$f" "${f}.bak.$(date +%s)" 2>/dev/null || true
         rm -f "$f"
         # Махни и enabled symlink-а
         rm -f "/etc/nginx/sites-enabled/$(basename "$f")"
-        echo -e "    ${YELLOW}✗ изтрит: $(basename "$f")${NC} (backup: .bak.*)"
+        echo -e "    ${YELLOW}✗ изтрит: $(basename "$f")${NC} (1 свеж backup .bak)"
     done
+fi
+
+# Изчисти трупаните стари backup-и от предишни deploy-и (.bak.X.bak.Y.bak.Z...)
+OLD_BAKS=$(find /etc/nginx/sites-available -name "*.bak.*.bak.*" 2>/dev/null)
+if [ -n "$OLD_BAKS" ]; then
+    echo "$OLD_BAKS" | xargs rm -f 2>/dev/null || true
+    echo -e "  ${CYAN}✓ Изчистени натрупани стари .bak.*.bak.* файлове${NC}"
 fi
 
 # Махни всички symlinks в sites-enabled които сочат към домейн/IP конфиг
@@ -901,6 +943,7 @@ for l in /etc/nginx/sites-enabled/*; do
         rm -f "$l"  # счупен symlink
         continue
     fi
+    case "$l" in *.bak*) rm -f "$l"; continue ;; esac   # .bak не трябва да е enabled
     for token in $DOMAIN; do
         if grep -q "server_name.*${token}" "$l" 2>/dev/null; then
             rm -f "$l"
@@ -1298,7 +1341,7 @@ if command -v ufw &>/dev/null; then
     else
         echo -e "  ${GREEN}✓ Firewall: 22, 80, 443${NC}"
     fi
-    echo "y" | ufw enable 2>/dev/null || true
+    ufw --force enable 2>/dev/null || true
 fi
 
 # ── Helper scripts ──

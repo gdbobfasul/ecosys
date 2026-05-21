@@ -4,6 +4,10 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert 
 import { AuthProvider } from './src/context/AuthContext';
 import { API_URL } from './src/config';
 
+// Глобална константа — това е МОБИЛНОТО приложение.
+// Уеб чатът има index.html и там е 'web'. Приложението няма index.html.
+const CLIENT_TYPE = 'mobile';
+
 export default function App() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +23,7 @@ export default function App() {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, password })
+        body: JSON.stringify({ phone, password, client: CLIENT_TYPE })
       });
 
       const data = await response.json();
