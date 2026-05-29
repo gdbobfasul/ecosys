@@ -1,4 +1,4 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0094 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -6,10 +6,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <title>Дуел на ринга | KCY игри</title>
 <style>
-  body{margin:0;background:#0a1018;color:#fff;font-family:system-ui;text-align:center}
+  body{margin:0;background:#06060a;color:#e8d6a5;font-family:"Cormorant Garamond",Georgia,serif;text-align:center;min-height:100vh;}
   .top{padding:12px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-  .top a{background:#1d2b3a;color:#9cc4e0;text-decoration:none;padding:8px 14px;border-radius:8px;font-size:.9em}
-  canvas{display:block;margin:0 auto;border-radius:12px;max-width:100%;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+  .top a{background:linear-gradient(180deg,#2a1a10,#100808);color:#c9a35d;text-decoration:none;padding:8px 14px;border-radius:6px;font-size:.9em;border:1px solid #5a3a1e;letter-spacing:1px;}
+  .top a:hover{background:linear-gradient(180deg,#4a2a18,#1a0e08);color:#f8c450;}
+  #arena{width:100%;max-width:1280px;margin:14px auto 0;height:calc(100vh - 80px);max-height:960px;}
 </style>
 </head>
 <body>
@@ -17,17 +18,21 @@
   <a href="/portals/games/">← Всички игри</a>
   <a href="/portals/games/?rank=1">🏆 Ранг листа</a>
 </div>
-<canvas id="cv" width="480" height="640"></canvas>
-<script src="/portals/games/battle-heroes.js"></script>
-<script src="/portals/games/battle-engine.js"></script>
+<div id="arena"></div>
+<script src="/portals/games/battle-heroes-v2.js"></script>
+<script src="/portals/games/battle-engine-v2.js"></script>
 <script>
 var eng = new BattleEngine({
-  canvas: document.getElementById('cv'),
+  container: document.getElementById('arena'),
   slug: 'battle-duel',
   title: 'Дуел на ринга — 1 срещу 1',
   levels: 10,
   teamSize: 1,
-  heroPool: BATTLE_HEROES.duel   // мечоносец, магьосник, змийска жена, чукар
+  heroPool: BATTLE_HEROES.duel,
+  fieldWidth: 1280,
+  fieldHeight: 960,
+  mode: 'Duel',
+  assetsPath: '/assets/animations/'
 });
 eng.start();
 </script>

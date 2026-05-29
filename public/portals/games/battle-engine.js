@@ -47,6 +47,7 @@ function BattleEngine(opts) {
     this.bestLevel = 1;
     this.bestScore = 0;
     this.comboInput = [];
+    this.pressedCombo = {};   // едновременно държани combo клавиши { key: true }
     this.turnOrder = [];
     this.turnIdx = 0;
     this.lastActor = null;
@@ -108,7 +109,13 @@ BattleEngine.prototype.bind = function () {
         var actor = self.turnOrder[self.turnIdx];
         if (!actor || actor.side !== 'ally' || !actor.alive) return;
         var k = (e.key || '').toLowerCase();
+        if (e.repeat) return;   // игнорирай auto-repeat при задържане
         if (MOVE_KEYS.indexOf(k) > -1 || COMBO_KEYS.indexOf(k) > -1) self.handleKey(actor, k);
+    });
+    // keyup — маха клавиша от едновременно държаните (за комбинациите)
+    global.addEventListener('keyup', function (e) {
+        var k = (e.key || '').toLowerCase();
+        if (self.pressedCombo) delete self.pressedCombo[k];
     });
     this.canvas.addEventListener('touchstart', function (e) {
         e.preventDefault();
@@ -240,14 +247,20 @@ BattleEngine.prototype.handleKey = function (actor, key) {
         }
         return;
     }
-    // combo клавиш — трупай за скритите комбинации
-    this.comboInput.push(key);
-    if (this.comboInput.length > 4) this.comboInput.shift();
-    // провери срещу ВСЯКА комбинация на героя (някои имат 2)
-    if (this.comboInput.length === 4) {
+    // combo клавиш — добавя към ЕДНОВРЕМЕННО държаните
+    this.pressedCombo[key] = true;
+    // взимаме само валидните combo клавиши които са натиснати в момента
+    var held = Object.keys(this.pressedCombo).filter(function (k) {
+        return COMBO_KEYS.indexOf(k) > -1;
+    });
+    // признава се САМО ако държиш ТОЧНО 4 (нито 3, нито 5) и те съвпадат с комбинация.
+    // Така натискане на всичко наведнъж не сработва (5+ държани = невалидно).
+    if (held.length === 4) {
+        var heldSorted = held.slice().sort().join('');
         var combos = this.heroCombos[actor.def.id] || [];
         for (var i = 0; i < combos.length; i++) {
-            if (this.comboInput.join('') === combos[i].join('')) {
+            if (combos[i].slice().sort().join('') === heldSorted) {
+                this.pressedCombo = {};
                 this.comboInput = [];
                 this.doSpecial(actor, i);   // i = индекс на специала
                 return;
@@ -619,8 +632,8 @@ BattleEngine.prototype.drawMenu = function () {
         { text: 'ПРАВИЛА', font: 'bold 13px system-ui', color: '#ffd24a', gap: 20 },
         { text: 'Походова битка. Героите ти излизат ПРОИЗВОЛНО на всяко ниво — не ги избираш.', font: '13px system-ui', color: '#dfe7ee', lh: 18, gap: 22 },
         { text: 'ОБИКНОВЕНИ УДАРИ: на твой ход натискаш клавиш V или B. Удар = 0-10% щети, магия = 10-20% от здравето на целта.', font: '13px system-ui', color: '#dfe7ee', lh: 18, gap: 22 },
-        { text: 'СПЕЦИАЛЕН УДАР: скрита 4-БУКВЕНА комбинация (букви, не V/B). Някои герои имат по 2. Прави 30-40% щети. Конфигурира се при зареждане и НЕ се сменя цяла игра.', font: '13px system-ui', color: '#ffd24a', lh: 18, gap: 22 },
-        { text: 'Трикът е да откриеш комбинациите докато играеш. Уцелиш ли ги — помиташ враговете.', font: '13px system-ui', color: '#dfe7ee', lh: 18, gap: 26 },
+        { text: 'СПЕЦИАЛЕН УДАР: скрита 4-БУКВЕНА комбинация (букви, не V/B). Натисни и задръж ТОЧНО тези 4 клавиша ЕДНОВРЕМЕННО. Натиснеш ли 5 (дори 4 верни + 1 излишен) — не се признава. Някои герои имат по 2 комбинации. Прави 30-40% щети.', font: '13px system-ui', color: '#ffd24a', lh: 18, gap: 22 },
+        { text: 'Трикът е да откриеш кои 4 клавиша са комбинацията докато играеш. Уцелиш ли ги — помиташ враговете до края или докато умреш/рестартираш.', font: '13px system-ui', color: '#dfe7ee', lh: 18, gap: 26 },
         { text: this.maxLevels + ' нива · рекорд: ниво ' + this.bestLevel + ', ' + this.bestScore + ' т.', font: '12px system-ui', color: '#8ba0b2', gap: 30 },
     ];
     // ADMIN — показва скритите комбинации за тестване
