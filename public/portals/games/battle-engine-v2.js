@@ -29,7 +29,9 @@
 'use strict';
 
 var MOVE_KEYS = ['v', 'b'];
-var COMBO_KEYS = ['q', 'w', 'e', 'r', 'a', 's', 'd', 'f'];
+// щети, които ОБЕЗДВИЖВАТ целта за следващия ѝ ход (корени/лед/ток)
+var IMMOBILIZE = ['roots', 'iceblocks', 'electricity'];
+var COMBO_KEYS = ['q', 'w', 'e', 'r', 'a', 's'];
 
 function pickRandom(arr, n) {
     var copy = arr.slice(), out = [];
@@ -312,15 +314,18 @@ BattleEngine.prototype.setupLevel = function () {
 };
 
 BattleEngine.prototype._slotPositions = function () {
-    // Duel: ляв в (320, 720), десен в (960, 720)
-    // HMM: 2 колони, 3 слота един над друг
+    // Duel: ляв в (0.25W, 0.66H), десен в (0.75W, 0.66H)
+    // HMM: 2 колони по 3 слота — изместени НАДОЛУ, за да не ги застъпват
+    //      контролите/бутоните най-горе.
     if (this.teamSize === 1) {
-        return { left: [{ x: this.W * 0.25, y: this.H * 0.65 }],
-                 right: [{ x: this.W * 0.75, y: this.H * 0.65 }] };
+        return { left: [{ x: this.W * 0.25, y: this.H * 0.80 }],
+                 right: [{ x: this.W * 0.75, y: this.H * 0.80 }] };
     }
     var left = [], right = [];
+    var top = 0.46, bottom = 0.92;  // зоната за героите (под панела с бутони)
     for (var i = 0; i < this.teamSize; i++) {
-        var t = (i + 1) / (this.teamSize + 1);  // равномерно
+        var t = this.teamSize > 1 ? top + (bottom - top) * (i / (this.teamSize - 1))
+                                  : (top + bottom) / 2;
         var y = this.H * t;
         left.push({ x: this.W * 0.25, y: y });
         right.push({ x: this.W * 0.75, y: y });
@@ -329,15 +334,19 @@ BattleEngine.prototype._slotPositions = function () {
 };
 
 BattleEngine.prototype._makeUnit = function (def, side, pos, hpScale) {
+    // широки герои (дракон) се изместват към противника, за да не се крият зад своите
+    var shift = (def.slotShiftX || 0) * (side === 'ally' ? 1 : -1);
+    var px = pos.x + shift;
     var unit = {
         def: def, side: side, name: def.name, id: def.id,
-        x: pos.x, y: pos.y, baseX: pos.x, baseY: pos.y,
+        x: px, y: pos.y, baseX: px, baseY: pos.y,
         hp: Math.round(def.hp * hpScale),
         maxHp: Math.round(def.hp * hpScale),
         alive: true, frozen: false,
         videoSide: side === 'ally' ? 'left' : 'right',
         animHistory: [],   // последни изпълнени анимации (за debug)
         diesPlayed: false, // die анимацията се пуска точно веднъж
+        locked: false,     // в момента изпълнява движение/атака/реакция — да не се idle-ва
     };
     unit.dom = this._buildHeroDOM(unit);
     this._setHeroState(unit, 'idle');
@@ -535,7 +544,7 @@ BattleEngine.prototype.advanceTurn = function (first) {
     // замразен пропуска
     if (actor.frozen) {
         actor.frozen = false;
-        this.msg = actor.name + ' е замразен — пропуска хода';
+        this.msg = actor.name + ' е обездвижен — пропуска хода';
         this._renderHUD();
         setTimeout(function () { self.advanceTurn(false); }, 1200);
         return;
@@ -654,6 +663,10 @@ BattleEngine.prototype.doMove = function (actor, move) {
             var dmg = rollDamage(t, kind);
             t.hp = Math.max(0, t.hp - dmg);
             if (t.hp <= 0) t.alive = false;
+            else if (IMMOBILIZE.indexOf(dtype) > -1) {
+                t.frozen = true;
+                if (self.debug) self._log(t.name + ' обездвижен (' + dtype + ')');
+            }
         });
         self.afterHit();
     });
@@ -683,7 +696,10 @@ BattleEngine.prototype.doSpecial = function (actor, idx) {
                 t.hp = Math.max(0, t.hp - dmg);
                 if (t.hp <= 0) t.alive = false;
             }
-            if (sp.freeze) t.frozen = true;
+            if (t.alive && (sp.freeze || IMMOBILIZE.indexOf(dtype) > -1)) {
+                t.frozen = true;
+                if (self.debug) self._log(t.name + ' обездвижен (' + dtype + ')');
+            }
         });
         self.afterHit();
     });
@@ -708,6 +724,7 @@ BattleEngine.prototype._shuffle = function (arr) {
 BattleEngine.prototype.playAttack = function (actor, targets, animName, dtype, kind, isSpecial, onHit) {
     var self = this;
     this.anim = { actor: actor, targets: targets };
+    actor.locked = true;  // докато тича→удря→връща се: да не го idle-ва watchdog-ът
     this._renderTargetArrow();  // скрива стрелката докато тече анимация
     if (this.debug) this._log((actor.side === 'ally' ? '▶' : '◀') + ' ' + actor.name +
         (isSpecial ? ' СПЕЦИАЛЕН' : ' ' + kind) + ' → ' + targets.map(function (t) { return t.name; }).join(', '));
@@ -747,9 +764,11 @@ BattleEngine.prototype.playAttack = function (actor, targets, animName, dtype, k
         setTimeout(function () {
             targets.forEach(function (t) {
                 if (!t.alive) return;
+                t.locked = true;  // показва реакцията си, не idle, докато трае ударът
                 // type-реакция (-inFire/-snakes/-dragon...), после общата "hit" ако я има
                 self._setHeroState(t, 'react:' + dtype, { onEnd: function () {
                     if (t.alive && !t.diesPlayed) self._reactHitFollow(t);
+                    else t.locked = false;
                 }});
             });
             onHit();
@@ -780,6 +799,7 @@ BattleEngine.prototype.playAttack = function (actor, targets, animName, dtype, k
             }
         });
         self._setHeroState(actor, 'idle');
+        actor.locked = false;  // вкъщи е и приключи — вече може да idle-ва
         self.anim = null;
         self._renderTargetArrow();
         setTimeout(function () { self.advanceTurn(false); }, 400);
@@ -809,9 +829,13 @@ BattleEngine.prototype._startIdleWatch = function () {
         var all = (self.ally || []).concat(self.foe || []);
         var actor = self.turnOrder[self.turnIdx];
         all.forEach(function (u) {
-            if (!u.alive || u.diesPlayed) return;
+            if (!u.alive || u.diesPlayed || u.locked) return;
             if (self.anim && (self.anim.actor === u || self.anim.targets.indexOf(u) > -1)) return;
             if (u === actor) return;
+            // само ако стои на мястото си (не е изместен напред)
+            var homeLeft = u.baseX - (u.def.video.size.width / 2);
+            var curLeft = parseFloat(u.dom.box.style.left || '0');
+            if (Math.abs(curLeft - homeLeft) > 3) return;
             var v = u.dom['vid' + u.dom.activeVid.toUpperCase()];
             // ако клипът е свършил (не е loop) — върни го в idle
             if (v && (v.ended || v.paused)) self._setHeroState(u, 'idle');
@@ -827,26 +851,33 @@ BattleEngine.prototype._stopIdleWatch = function () {
    иначе се връща в idle. Не прекъсва, ако междувременно е умрял. */
 BattleEngine.prototype._reactHitFollow = function (t) {
     var self = this;
-    if (!t.alive || t.diesPlayed) return;
+    if (!t.alive || t.diesPlayed) { t.locked = false; return; }
+    var done = function () { if (t.alive && !t.diesPlayed) self._setHeroState(t, 'idle'); t.locked = false; };
     // ако type-реакцията вече е била самата "hit" — не я повтаряй
-    if (/-hit\.webm$/i.test(t.animHistory[0] || '')) {
-        this._setHeroState(t, 'idle'); return;
-    }
-    this._setHeroState(t, 'react:hit', { onEnd: function () {
-        if (t.alive && !t.diesPlayed) self._setHeroState(t, 'idle');
-    }});
+    if (/-hit\.webm$/i.test(t.animHistory[0] || '')) { done(); return; }
+    this._setHeroState(t, 'react:hit', { onEnd: done });
 };
 
 /* ── debug панел (само админ) ── */
 BattleEngine.prototype._renderDebug = function () {
     if (!this.debug || !this.dbg) return;
+    var self = this;
     var rows = function (arr) {
         return (arr || []).map(function (u) {
             var hist = (u.animHistory || []).slice(1, 5).join(' · ') || '—';
+            var combos = self.heroCombos[u.id] || [];
+            var comboHtml = '';
+            if (combos.length) {
+                comboHtml = '<div class="kbb-dbg-combo">' + combos.map(function (c, ci) {
+                    var sp = (u.def.specials || [])[ci] || {};
+                    return '⌨ ' + c.join('-').toUpperCase() + ' <i>' + (sp.name || ('спец' + (ci + 1))) + '</i>';
+                }).join('<br>') + '</div>';
+            }
             return '<div class="kbb-dbg-hero' + (u.alive ? '' : ' dead') + '">' +
                    '<div class="kbb-dbg-name">' + u.name + (u.alive ? '' : ' ☠') + '</div>' +
                    '<div class="kbb-dbg-cur">▶ ' + (u.curAnim || '—') + '</div>' +
-                   '<div class="kbb-dbg-hist">' + hist + '</div></div>';
+                   '<div class="kbb-dbg-hist">' + hist + '</div>' +
+                   comboHtml + '</div>';
         }).join('');
     };
     this.dbg.left.innerHTML = rows(this.ally);
@@ -987,7 +1018,7 @@ BattleEngine.prototype.drawMenu = function () {
         '  <p class="kbb-rules">' +
         '   Походова битка. Героите ти излизат <b>произволно</b> на всяко ниво.<br>' +
         '   Обикновени удари: <kbd>V</kbd> или <kbd>B</kbd> (0–20% щета).<br>' +
-        '   Специален: скрита <b>4-буквена комбинация</b> (от Q W E R A S D F). 30–40% щета.<br>' +
+        '   Специален: скрита <b>4-буквена комбинация</b> (от Q W E R A S). 30–40% щета.<br>' +
         '   Откриваш комбинациите чрез опити. Не се сменят цяла игра.<br>' +
         '  </p>' +
         '  <p class="kbb-best">Рекорд: ниво ' + this.bestLevel + ' / ' + this.bestScore + ' т.</p>' +
@@ -1030,9 +1061,9 @@ var BATTLE_CSS = [
 '.kbb-wrap{position:relative;width:100%;max-width:1280px;margin:0 auto;background:radial-gradient(ellipse at center,#241a1a 0%,#0a0708 80%);border:2px solid #5a3a1e;border-radius:8px;box-shadow:0 0 60px rgba(0,0,0,.8),inset 0 0 80px rgba(0,0,0,.6);overflow:hidden;}',
 '.kbb-hmm{max-width:720px;}',  // portrait по-малък на screen
 '.kbb-stage{position:absolute;left:50%;top:50%;transform-origin:center center;}',
-'.kbb-bg{position:absolute;inset:0;background:linear-gradient(180deg,#0e0d12 0%,#1a1418 60%,#2a1f1a 100%);}',
-'.kbb-bg::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center bottom,rgba(180,120,60,.15),transparent 70%);}',
-'.kbb-bg::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);}',
+'.kbb-bg{position:absolute;inset:0;background:#001834;}',
+'.kbb-bg::before{content:none;}',
+'.kbb-bg::after{content:none;}',
 '.kbb-heroes,.kbb-fx,.kbb-hud{position:absolute;inset:0;}',
 '.kbb-hero{position:absolute;transition:left .8s ease-out,top .8s ease-out,opacity .6s;}',
 /* foe видеата са already right-* (вече гледат наляво), не трябва flip */
@@ -1060,14 +1091,14 @@ var BATTLE_CSS = [
 '.kbb-target-arrow{position:absolute;color:#3aa0ff;font-size:90px;line-height:1;text-shadow:0 0 18px rgba(58,160,255,.9),0 0 4px #000;pointer-events:none;z-index:41;animation:kbbArrow 0.8s ease-in-out infinite;}',
 '@keyframes kbbArrow{0%,100%{transform:translateX(0)}50%{transform:translateX(18px)}}',
 '.kbb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,5,8,.85);backdrop-filter:blur(6px);z-index:50;}',
-'.kbb-card{max-width:80%;background:linear-gradient(180deg,#1a1208,#0a0608);border:2px solid #6a4a2a;border-radius:12px;padding:36px 44px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.9),inset 0 0 40px rgba(0,0,0,.5);}',
-'.kbb-card h1{font-family:"Cinzel",serif;font-weight:900;font-size:42px;color:#f8c450;letter-spacing:3px;margin:0 0 16px;text-shadow:2px 2px 0 #000,0 0 30px rgba(248,196,80,.4);}',
-'.kbb-card h2{font-family:"Cinzel",serif;font-weight:700;font-size:32px;color:#f0d896;letter-spacing:2px;margin:0 0 16px;}',
-'.kbb-card p{font-size:16px;line-height:1.6;color:#d8c08c;margin:8px 0;font-style:italic;}',
+'.kbb-card{max-width:88%;background:linear-gradient(180deg,#1a1208,#0a0608);border:6px solid #6a4a2a;border-radius:32px;padding:130px 150px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.9),inset 0 0 40px rgba(0,0,0,.5);}',
+'.kbb-card h1{font-family:"Cinzel",serif;font-weight:900;font-size:168px;color:#f8c450;letter-spacing:6px;margin:0 0 56px;text-shadow:4px 4px 0 #000,0 0 30px rgba(248,196,80,.4);}',
+'.kbb-card h2{font-family:"Cinzel",serif;font-weight:700;font-size:128px;color:#f0d896;letter-spacing:4px;margin:0 0 56px;}',
+'.kbb-card p{font-size:62px;line-height:1.55;color:#d8c08c;margin:30px 0;font-style:italic;}',
 '.kbb-rules{font-style:normal !important;text-align:left;}',
-'.kbb-rules kbd{font-family:"Cinzel",serif;background:#1a0e06;border:1px solid #8a5a2a;padding:2px 8px;border-radius:3px;color:#f8c450;font-size:13px;}',
-'.kbb-best{color:#c9a35d;font-family:"Cinzel",serif;letter-spacing:1px;margin-top:18px !important;}',
-'.kbb-go{background:linear-gradient(180deg,#7a3a1a,#3a1a08);color:#f8e0a8;border:1.5px solid #b88a4a;border-radius:8px;padding:14px 30px;font-family:"Cinzel",serif;font-size:18px;font-weight:700;letter-spacing:2px;cursor:pointer;margin-top:18px;text-shadow:1px 1px 0 #000;box-shadow:0 4px 0 #000,inset 0 1px 0 rgba(255,220,160,.3);}',
+'.kbb-rules kbd{font-family:"Cinzel",serif;background:#1a0e06;border:3px solid #8a5a2a;padding:6px 26px;border-radius:10px;color:#f8c450;font-size:50px;}',
+'.kbb-best{color:#c9a35d;font-family:"Cinzel",serif;letter-spacing:2px;margin-top:64px !important;}',
+'.kbb-go{background:linear-gradient(180deg,#7a3a1a,#3a1a08);color:#f8e0a8;border:5px solid #b88a4a;border-radius:22px;padding:50px 110px;font-family:"Cinzel",serif;font-size:70px;font-weight:700;letter-spacing:4px;cursor:pointer;margin-top:64px;text-shadow:2px 2px 0 #000;box-shadow:0 12px 0 #000,inset 0 1px 0 rgba(255,220,160,.3);}',
 '.kbb-go:hover{background:linear-gradient(180deg,#9a4a20,#5a2a10);}',
 '.kbb-go:active{transform:translateY(2px);box-shadow:0 2px 0 #000;}',
 '@keyframes kbbShake{0%,100%{transform:translate(-50%,-50%) scale(var(--s,1))}25%{transform:translate(calc(-50% - 8px),calc(-50% - 4px)) scale(var(--s,1))}50%{transform:translate(calc(-50% + 6px),calc(-50% + 6px)) scale(var(--s,1))}75%{transform:translate(calc(-50% - 4px),calc(-50% - 6px)) scale(var(--s,1))}}',
@@ -1086,6 +1117,8 @@ var BATTLE_DBG_CSS = [
 '.kbb-dbg-name{color:#f0d896;font-weight:700;}',
 '.kbb-dbg-cur{color:#7fe0a0;word-break:break-all;}',
 '.kbb-dbg-hist{color:#789;font-size:10px;word-break:break-all;margin-top:2px;}',
+'.kbb-dbg-combo{color:#f8c450;font-size:11px;margin-top:4px;border-top:1px dashed #443;padding-top:3px;}',
+'.kbb-dbg-combo i{color:#9a8862;font-style:normal;font-size:10px;}',
 ].join('\n');
 
 global.BattleEngine = BattleEngine;

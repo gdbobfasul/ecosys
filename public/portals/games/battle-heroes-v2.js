@@ -23,6 +23,7 @@
 /* ── ДРАКОН (само в team/HMM) ── */
 var DRAGON = {
     id: 'dragon', name: 'Дракон', hp: 110, mode: 'HMM',
+    slotShiftX: 200,  // широка картинка — измества се към противника да не се крие зад своите
     moves: [
         { key: 'v', name: 'Огън', type: 'magic', target: 'one',
           attackAnim: ['attack3', 'attack4', 'attack231', 'attack244', 'attack233', 'spits'],
@@ -75,10 +76,10 @@ var MAGE = {
     ],
     specials: [
         { name: 'Вледеняване на всички', target: 'all',
-          attackAnim: ['special1', 'freezesAll', 'freezeAll', 'specialIce'],
+          attackAnim: ['freezesAll', 'freezeAll', 'specialIce'],
           damageType: 'iceblocks', projectile: 'ice', color: '#7fd8ff', freeze: true },
         { name: 'Електрически вълни', target: 'all',
-          attackAnim: ['special2', 'electricAll', 'specialElectricity'],
+          attackAnim: ['electricAll', 'specialElectricity'],
           damageType: 'electricity', projectile: 'lightning', color: '#5b9bff' },
     ],
     video: {
