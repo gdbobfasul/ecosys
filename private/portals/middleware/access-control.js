@@ -38,6 +38,9 @@ function isIpWhitelisted(req) {
     const envIPs = (process.env.ADMIN_ALLOWED_IPS || '127.0.0.1,::1').split(',').map(s => s.trim()).filter(Boolean);
     const portalIPs = loadPortalIPs();
     const allowed = [...envIPs, ...portalIPs];
+    // Allow-all CIDR — '0.0.0.0/0' или '::/0' разрешава всеки IP.
+    // ВНИМАНИЕ: ползвай само за временно тестване. Маха IP защитата.
+    if (allowed.some(ip => ip === '0.0.0.0/0' || ip === '::/0')) return true;
     const clientIP = getClientIP(req);
     return allowed.some(ip => clientIP.includes(ip));
 }

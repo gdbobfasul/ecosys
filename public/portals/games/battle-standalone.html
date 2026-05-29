@@ -1,0 +1,51 @@
+<!-- Standalone demo (без KCY ecosystem ranking) -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Битки — standalone демо</title>
+<style>
+  body{margin:0;background:#06060a;color:#e8d6a5;font-family:"Cormorant Garamond",Georgia,serif;text-align:center;min-height:100vh;}
+  .top{padding:12px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+  .top button{background:linear-gradient(180deg,#2a1a10,#100808);color:#c9a35d;border:1px solid #5a3a1e;border-radius:6px;font-size:.95em;letter-spacing:1px;padding:8px 14px;cursor:pointer;}
+  .top button.active{background:linear-gradient(180deg,#6a3a18,#2a1a08);color:#f8c450;}
+  #arena{width:100%;max-width:1280px;margin:14px auto 0;height:calc(100vh - 80px);max-height:960px;}
+  #arena.hmm{max-width:720px;max-height:none;}
+</style>
+</head>
+<body>
+<div class="top">
+  <button id="btn-duel" class="active">⚔ Дуел (Duel)</button>
+  <button id="btn-hmm">⚔⚔ Битка на терен (HMM)</button>
+</div>
+<div id="arena"></div>
+<script src="battle-heroes-v2.js"></script>
+<script src="battle-engine-v2.js"></script>
+<script>
+function launch(mode) {
+  var arena = document.getElementById('arena');
+  arena.className = mode === 'HMM' ? 'hmm' : '';
+  document.getElementById('btn-duel').classList.toggle('active', mode === 'Duel');
+  document.getElementById('btn-hmm').classList.toggle('active', mode === 'HMM');
+  var cfg = mode === 'Duel' ? {
+    title: 'Дуел на ринга — 1 срещу 1',
+    teamSize: 1, heroPool: BATTLE_HEROES.duel,
+    fieldWidth: 1280, fieldHeight: 960, mode: 'Duel',
+  } : {
+    title: 'Битка на терен — 3 срещу 3',
+    teamSize: 3, heroPool: BATTLE_HEROES.team,
+    fieldWidth: 1920, fieldHeight: 2560, mode: 'HMM',
+  };
+  cfg.container = arena;
+  cfg.levels = 10;
+  cfg.standalone = true;
+  cfg.assetsPath = "/assets/animations/";
+  new BattleEngine(cfg).start();
+}
+document.getElementById('btn-duel').onclick = function () { launch('Duel'); };
+document.getElementById('btn-hmm').onclick = function () { launch('HMM'); };
+launch('Duel');
+</script>
+</body>
+</html>
