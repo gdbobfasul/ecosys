@@ -18,6 +18,7 @@
 - **DEPLOYMENT-CHECKLIST.md** - Deployment checklist
 - **WHATS-NEW-v2.0.md** - Промени във версия 2.0
 - **MATCHMAKING-IMPLEMENTATION-SUMMARY.md** - Matchmaking имплементация (v3.0)
+- **ADMIN-PAGES-ACCESS.md** - Достъп до админ страниците (IP whitelist + URL параметър)
 
 ### 🪙 Token Project (`/private/token/docs/`)
 
@@ -177,6 +178,7 @@ Deployment Docs:      1 file
 - **Payment integration?** → `/private/chat/docs/STRIPE_PAYMENT_GUIDE.md`
 - **Testing guide?** → `/private/chat/docs/COMPLETE-TESTING-GUIDE.md`
 - **Nginx config?** → `/private/chat/docs/configs.server/nginx1.md`
+- **Достъп до админ страниците (404/billing redirect)?** → `/docs/ADMIN-PAGES-ACCESS.md`
 
 ---
 
