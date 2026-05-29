@@ -1,0 +1,1092 @@
+/* KCY Portals — Battle Engine v2 (DOM + WebM с alpha)
+   Version: 1.0094
+
+   Походова битка с реални видео анимации (вместо canvas рисуване).
+
+   Конфигурация:
+     container     — DIV елементът, в който се рендерира играта (вместо canvas)
+     slug          — за integrirana ranking система (ако липсва: standalone)
+     title         — заглавие
+     levels        — брой нива (default 10)
+     teamSize      — 1 (дуел) или 3 (отбор)
+     heroPool      — масив дефиниции (от BATTLE_HEROES)
+     fieldWidth    — вътрешна координатна ширина (1280 за Duel, 1920 за HMM)
+     fieldHeight   — вътрешна координатна височина (960 за Duel, 2560 за HMM)
+     mode          — 'Duel' или 'HMM' (определя пътя към анимациите)
+     assetsPath    — relative path към animations папката (default 'assets/animations/')
+     standalone    — true → без API заявки за ranking
+
+   Скалирането: вътрешното поле е с фиксирани размери; CSS transform: scale()
+   го напасва в контейнера, запазвайки aspect ratio (letterbox).
+
+   Правилата:
+     V/B — обикновени удари (melee=0-10%, magic=10-20% от макс HP)
+     Скрита 4-буквена комбинация (от q w e r a s d f) — специален удар (30-40%)
+     Магьосникът има 2 комбинации (2 specials)
+     Комбинациите се генерират ВЕДНЪЖ при старт на играта (не на ниво)
+*/
+(function (global) {
+'use strict';
+
+var MOVE_KEYS = ['v', 'b'];
+var COMBO_KEYS = ['q', 'w', 'e', 'r', 'a', 's', 'd', 'f'];
+
+function pickRandom(arr, n) {
+    var copy = arr.slice(), out = [];
+    for (var i = 0; i < n && copy.length; i++) {
+        out.push(copy.splice(Math.floor(Math.random() * copy.length), 1)[0]);
+    }
+    return out;
+}
+
+function rollDamage(target, kind) {
+    var pct;
+    if (kind === 'special') pct = 0.30 + Math.random() * 0.10;       // 30-40%
+    else if (kind === 'magic') pct = 0.10 + Math.random() * 0.10;    // 10-20%
+    else pct = 0.00 + Math.random() * 0.10;                          // 0-10% (melee)
+    return Math.max(1, Math.round(target.maxHp * pct));
+}
+
+/* ── BattleEngine ── */
+function BattleEngine(opts) {
+    this.container = opts.container;
+    this.slug = opts.slug || null;
+    this.standalone = opts.standalone || !this.slug;
+    this.title = opts.title || 'Битка';
+    this.maxLevels = opts.levels || 10;
+    this.teamSize = opts.teamSize || 1;
+    this.heroPool = opts.heroPool;
+    this.W = opts.fieldWidth || 1280;
+    this.H = opts.fieldHeight || 960;
+    this.mode = opts.mode || (this.teamSize === 1 ? 'Duel' : 'HMM');
+    this.assetsPath = (opts.assetsPath || 'assets/animations/').replace(/\/+$/, '') + '/';
+
+    this.state = 'menu';   // menu | playing | levelup | over
+    this.level = 1;
+    this.score = 0;
+    this.bestLevel = 1;
+    this.bestScore = 0;
+    this.heroCombos = {};  // { heroId: [['q','w','e','r'], ...] }
+    this.comboInput = [];
+    this.turnOrder = [];
+    this.turnIdx = 0;
+    this.anim = null;
+    this.msg = '';
+    this.selTarget = 0;     // индекс на избрания противник (между живите)
+    this._idleTimer = null;
+
+    // admin debug: показва се само при ?adm=bgmasters-set или ?debug=1 (или opts.debug)
+    this.debug = !!opts.debug || /[?&](adm=bgmasters-set|debug=1)\b/.test(
+        (global.location && global.location.search) || '');
+    this._logLines = [];
+
+    this._buildDOM();
+    this._fitArena();
+    var self = this;
+    global.addEventListener('resize', function () { self._fitArena(); });
+}
+
+/* ── DOM конструкция ── */
+BattleEngine.prototype._buildDOM = function () {
+    var c = this.container;
+    c.innerHTML = '';
+    c.classList.add('kcy-battle');
+
+    // Inject CSS once
+    if (!document.getElementById('kcy-battle-css')) {
+        var css = document.createElement('style');
+        css.id = 'kcy-battle-css';
+        css.textContent = BATTLE_CSS;
+        document.head.appendChild(css);
+    }
+
+    // wrapper за aspect ratio
+    var wrap = document.createElement('div');
+    wrap.className = 'kbb-wrap kbb-' + this.mode.toLowerCase();
+    wrap.style.aspectRatio = this.W + '/' + this.H;
+    c.appendChild(wrap);
+
+    var stage = document.createElement('div');
+    stage.className = 'kbb-stage';
+    stage.style.width = this.W + 'px';
+    stage.style.height = this.H + 'px';
+    wrap.appendChild(stage);
+
+    // ground gradient + future background slot
+    var bg = document.createElement('div');
+    bg.className = 'kbb-bg';
+    stage.appendChild(bg);
+
+    // героите слой
+    var heroes = document.createElement('div');
+    heroes.className = 'kbb-heroes';
+    stage.appendChild(heroes);
+
+    // ефекти слой (projectiles, частици)
+    var fx = document.createElement('div');
+    fx.className = 'kbb-fx';
+    stage.appendChild(fx);
+
+    // HUD слой
+    var hud = document.createElement('div');
+    hud.className = 'kbb-hud';
+    stage.appendChild(hud);
+
+    // съобщения
+    var msg = document.createElement('div');
+    msg.className = 'kbb-msg';
+    stage.appendChild(msg);
+
+    // ляв горен индикатор (ниво / точки)
+    var info = document.createElement('div');
+    info.className = 'kbb-info';
+    stage.appendChild(info);
+
+    // контроли долу (V/B + комбо клавиши)
+    var ctrl = document.createElement('div');
+    ctrl.className = 'kbb-ctrl';
+    stage.appendChild(ctrl);
+
+    // комбо индикатор (показва натиснатите букви)
+    var combo = document.createElement('div');
+    combo.className = 'kbb-combo';
+    stage.appendChild(combo);
+
+    // синя стрелка за избор на цел
+    var arrow = document.createElement('div');
+    arrow.className = 'kbb-target-arrow';
+    arrow.style.display = 'none';
+    arrow.innerHTML = '\u25B6';
+    fx.appendChild(arrow);
+
+    // overlay за menu/levelup/over
+    var ov = document.createElement('div');
+    ov.className = 'kbb-overlay';
+    stage.appendChild(ov);
+
+    this.els = {
+        wrap: wrap, stage: stage, bg: bg, heroes: heroes, fx: fx,
+        hud: hud, msg: msg, info: info, ctrl: ctrl, combo: combo, ov: ov,
+        arrow: arrow
+    };
+
+    // ── admin debug панели ИЗВЪН полето (отляво=съюзници, отдясно=врагове) ──
+    if (this.debug) {
+        if (!document.getElementById('kbb-dbg-css')) {
+            var dcss = document.createElement('style');
+            dcss.id = 'kbb-dbg-css';
+            dcss.textContent = BATTLE_DBG_CSS;
+            document.head.appendChild(dcss);
+        }
+        var mkDbg = function (cls, title) {
+            var d = document.createElement('div');
+            d.className = 'kbb-dbg ' + cls;
+            d.innerHTML = '<div class="kbb-dbg-title">' + title + '</div><div class="kbb-dbg-body"></div>';
+            document.body.appendChild(d);
+            return d;
+        };
+        var dl = mkDbg('kbb-dbg-left', 'DEBUG · съюзници');
+        var dr = mkDbg('kbb-dbg-right', 'DEBUG · врагове');
+        var dlog = document.createElement('div');
+        dlog.className = 'kbb-dbg kbb-dbg-log';
+        dlog.innerHTML = '<div class="kbb-dbg-title">LOG</div><div class="kbb-dbg-body"></div>';
+        document.body.appendChild(dlog);
+        this.dbg = { left: dl.querySelector('.kbb-dbg-body'),
+                     right: dr.querySelector('.kbb-dbg-body'),
+                     log: dlog.querySelector('.kbb-dbg-body') };
+    }
+};
+
+/* ── скалиране на полето в контейнера ── */
+BattleEngine.prototype._fitArena = function () {
+    var w = this.els.wrap.clientWidth;
+    var h = this.els.wrap.clientHeight;
+    if (!w || !h) return;
+    var s = Math.min(w / this.W, h / this.H);
+    this.els.stage.style.setProperty('--s', s); this.els.stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+};
+
+/* ── входни събития ── */
+BattleEngine.prototype._bind = function () {
+    var self = this;
+    if (this._bound) return;
+    this._bound = true;
+    document.addEventListener('keydown', function (e) {
+        if (self.state === 'menu' || self.state === 'over') {
+            if (e.code === 'Space' || e.code === 'Enter') self.startGame();
+            return;
+        }
+        if (self.state === 'levelup') {
+            if (e.code === 'Space' || e.code === 'Enter') self.nextLevel();
+            return;
+        }
+        if (self.state !== 'playing' || self.anim) return;
+        var actor = self.turnOrder[self.turnIdx];
+        if (!actor || actor.side !== 'ally' || !actor.alive) return;
+        if (e.code === 'ArrowUp' || e.code === 'ArrowDown') {
+            self._cycleTarget(e.code === 'ArrowUp' ? -1 : 1);
+            e.preventDefault();
+            return;
+        }
+        var k = (e.key || '').toLowerCase();
+        if (MOVE_KEYS.indexOf(k) > -1 || COMBO_KEYS.indexOf(k) > -1) self.handleKey(actor, k);
+    });
+};
+
+/* ── комбинации ── */
+BattleEngine.prototype.genCombos = function () {
+    this.heroCombos = {};
+    var pool = this.heroPool;
+    for (var i = 0; i < pool.length; i++) {
+        var def = pool[i];
+        var n = (def.specials || []).length;
+        var combos = [];
+        for (var s = 0; s < n; s++) {
+            var poolCopy = COMBO_KEYS.slice();
+            var c = [];
+            for (var k = 0; k < 4 && poolCopy.length; k++) {
+                c.push(poolCopy.splice(Math.floor(Math.random() * poolCopy.length), 1)[0]);
+            }
+            combos.push(c);
+        }
+        this.heroCombos[def.id] = combos;
+    }
+};
+
+/* ── lifecycle ── */
+BattleEngine.prototype.start = function () {
+    var self = this;
+    this._bind();
+    this.genCombos();
+    if (this.standalone) {
+        this.drawMenu();
+        return;
+    }
+    fetch('/api/portals/gms/progress/' + this.slug)
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+            if (d) { self.bestLevel = d.best_level || 1; self.bestScore = d.best_score || 0; }
+            self.drawMenu();
+        }).catch(function () { self.drawMenu(); });
+};
+
+BattleEngine.prototype.startGame = function () {
+    this.level = 1; this.score = 0;
+    this.setupLevel();
+};
+
+BattleEngine.prototype.nextLevel = function () {
+    this.level++;
+    if (this.level > this.maxLevels) { this.win(); return; }
+    this.setupLevel();
+};
+
+BattleEngine.prototype.setupLevel = function () {
+    this.comboInput = [];
+    var hpScale = 1 + (this.level - 1) * 0.18;
+    var allyDefs = pickRandom(this.heroPool, this.teamSize);
+    var foeDefs = pickRandom(this.heroPool, this.teamSize);
+
+    // координати по teamSize
+    var slots = this._slotPositions();
+    this.ally = [];
+    this.foe = [];
+    for (var a = 0; a < allyDefs.length; a++) {
+        this.ally.push(this._makeUnit(allyDefs[a], 'ally', slots.left[a], hpScale));
+    }
+    for (var f = 0; f < foeDefs.length; f++) {
+        this.foe.push(this._makeUnit(foeDefs[f], 'foe', slots.right[f], hpScale));
+    }
+
+    this.rebuildTurnOrder();
+    this.turnIdx = 0;
+    this.anim = null;
+    this.selTarget = 0;
+    this.msg = 'Ниво ' + this.level + ' — битката започва!';
+    this.state = 'playing';
+    this._renderAll();
+    this._startIdleWatch();
+    if (this.debug) { this._renderDebug(); this._log('— ниво ' + this.level + ' старт —'); }
+    var self = this;
+    setTimeout(function () { self.advanceTurn(true); }, 600);
+};
+
+BattleEngine.prototype._slotPositions = function () {
+    // Duel: ляв в (320, 720), десен в (960, 720)
+    // HMM: 2 колони, 3 слота един над друг
+    if (this.teamSize === 1) {
+        return { left: [{ x: this.W * 0.25, y: this.H * 0.65 }],
+                 right: [{ x: this.W * 0.75, y: this.H * 0.65 }] };
+    }
+    var left = [], right = [];
+    for (var i = 0; i < this.teamSize; i++) {
+        var t = (i + 1) / (this.teamSize + 1);  // равномерно
+        var y = this.H * t;
+        left.push({ x: this.W * 0.25, y: y });
+        right.push({ x: this.W * 0.75, y: y });
+    }
+    return { left: left, right: right };
+};
+
+BattleEngine.prototype._makeUnit = function (def, side, pos, hpScale) {
+    var unit = {
+        def: def, side: side, name: def.name, id: def.id,
+        x: pos.x, y: pos.y, baseX: pos.x, baseY: pos.y,
+        hp: Math.round(def.hp * hpScale),
+        maxHp: Math.round(def.hp * hpScale),
+        alive: true, frozen: false,
+        videoSide: side === 'ally' ? 'left' : 'right',
+        animHistory: [],   // последни изпълнени анимации (за debug)
+        diesPlayed: false, // die анимацията се пуска точно веднъж
+    };
+    unit.dom = this._buildHeroDOM(unit);
+    this._setHeroState(unit, 'idle');
+    return unit;
+};
+
+/* ── DOM за герой ── */
+BattleEngine.prototype._buildHeroDOM = function (unit) {
+    var w = unit.def.video.size.width;
+    var h = unit.def.video.size.height;
+
+    var box = document.createElement('div');
+    box.className = 'kbb-hero kbb-' + unit.side;
+    box.style.width = w + 'px';
+    box.style.height = h + 'px';
+    box.style.left = (unit.x - w / 2) + 'px';
+    box.style.top = (unit.y - h) + 'px';  // вертикално закотвен по подметката
+    box.dataset.heroId = unit.def.id;
+
+    // два <video> елемента: единият тече, другият зарежда следващото
+    var v1 = document.createElement('video');
+    v1.className = 'kbb-vid kbb-vid-a';
+    v1.muted = true; v1.playsInline = true; v1.preload = 'auto';
+    box.appendChild(v1);
+
+    var v2 = document.createElement('video');
+    v2.className = 'kbb-vid kbb-vid-b';
+    v2.muted = true; v2.playsInline = true; v2.preload = 'auto';
+    v2.style.opacity = '0';
+    box.appendChild(v2);
+
+    // HP бар над героя
+    var hp = document.createElement('div');
+    hp.className = 'kbb-hpbar';
+    hp.innerHTML = '<span class="kbb-hpfill"></span><span class="kbb-hpname">' + unit.def.name + '</span>';
+    box.appendChild(hp);
+
+    this.els.heroes.appendChild(box);
+
+    return { box: box, vidA: v1, vidB: v2, hp: hp, activeVid: 'a' };
+};
+
+/* ── разрешаване на видео файл ── */
+BattleEngine.prototype._resolveVideoUrl = function (unit, action) {
+    // action: 'idle' | 'walks' | 'attack:<animName>' | 'react:<damageType>'
+    var def = unit.def;
+    var v = def.video;
+    var side = unit.videoSide;
+    var prefix = side === 'left' ? 'left' : 'right';
+
+    // папка
+    var folder;
+    if (action.indexOf('react:') === 0) {
+        // damage folder — може да зависи от страната (snakewoman)
+        if (typeof v.damageFolder === 'object') {
+            folder = v.damageFolder[side] || v.damageFolder.left;
+        } else {
+            folder = v.damageFolder;
+        }
+    } else {
+        // attack folder — може да зависи от страната (mage left/right)
+        if (typeof v.attackFolder === 'object') {
+            var key = side + (this.mode === 'HMM' ? '_HMM' : '');
+            folder = v.attackFolder[key] || v.attackFolder[side] || v.attackFolder.left;
+        } else {
+            folder = v.attackFolder;
+        }
+    }
+    folder = folder.replace('{side}', prefix);
+
+    // file base name (може да е различен за damage)
+    var fileBase;
+    if (action.indexOf('react:') === 0 && typeof v.damageFileBase === 'object') {
+        fileBase = v.damageFileBase[side] || v.damageFileBase.left;
+    } else {
+        fileBase = v.fileBase.replace('{side}', prefix);
+    }
+
+    // име на анимацията
+    var candidates;
+    if (action === 'idle') candidates = v.states.idle;
+    else if (action === 'walks') candidates = v.states.walks;
+    else if (action.indexOf('attack:') === 0) {
+        // може да носи няколко имена (a|b|c) — опитват се по ред (fallback)
+        candidates = action.slice(7).split('|');
+    } else if (action.indexOf('react:') === 0) {
+        var dtype = action.slice(6);
+        var reactList = (dtype === 'hit') ? ['hit'] : (v.reactions[dtype] || ['bleeds']);
+        candidates = reactList;
+    } else {
+        candidates = [action];
+    }
+
+    // предпазна мрежа: idle/walks никога да не остане празно (иначе героят е „невидим")
+    if (action === 'idle' || action === 'walks') {
+        var fm = def.moves && def.moves[0];
+        if (fm) candidates = candidates.concat(this._resolveAttackAnim(fm.attackAnim, side));
+    }
+
+    // върни първия URL — fallback логика се хвърля при error event
+    var mode = this.mode;
+    var basePath = this.assetsPath;
+
+    // "strange" анимациите се опитват ПОСЛЕДНИ — само ако липсва нормалната
+    candidates = candidates.slice().sort(function (a, b) {
+        return (a.indexOf('strange') > -1 ? 1 : 0) - (b.indexOf('strange') > -1 ? 1 : 0);
+    });
+
+    var urls = candidates.map(function (name) {
+        var topFolder = action.indexOf('react:') === 0 ? 'die-Damage' : 'Closes-Attacks';
+        return basePath + topFolder + '/' + mode + '/' + folder + '/' + fileBase + '-' + name + '.webm';
+    });
+
+    return urls;  // масив, опитваме по ред
+};
+
+/* ── смяна на видео състояние ── */
+BattleEngine.prototype._setHeroState = function (unit, action, opts) {
+    opts = opts || {};
+    var self = this;
+    var urls = this._resolveVideoUrl(unit, action);
+    var dom = unit.dom;
+
+    // избор на следващото видео element (a/b switch)
+    var activeKey = dom.activeVid;
+    var nextKey = activeKey === 'a' ? 'b' : 'a';
+    var curVid = dom['vid' + activeKey.toUpperCase()];
+    var nextVid = dom['vid' + nextKey.toUpperCase()];
+
+    // обърни ако е дясна страна (видеата са насочени към източника на спрайта,
+    // а ние позиционираме left/right; правилни видеа са вече side-specific,
+    // така че НЕ обръщаме)
+    // (left- видеата гледат надясно, right- гледат наляво — точно както трябва)
+
+    nextVid.loop = (action === 'idle' || action === 'walks');
+    nextVid.muted = true;
+
+    var tryIdx = 0;
+    var tryNext = function () {
+        if (tryIdx >= urls.length) {
+            // fallback: остави старото видео
+            if (opts.onEnd) opts.onEnd();
+            return;
+        }
+        var url = urls[tryIdx++];
+        nextVid.onerror = function () { tryNext(); };
+        nextVid.oncanplay = function () {
+            nextVid.oncanplay = null;
+            nextVid.onerror = null;
+            // crossfade
+            nextVid.style.opacity = '1';
+            curVid.style.opacity = '0';
+            dom.activeVid = nextKey;
+
+            // запиши в историята (за debug панела)
+            var base = url.split('/').pop();
+            unit.animHistory.unshift(base);
+            if (unit.animHistory.length > 5) unit.animHistory.length = 5;
+            unit.curAnim = base;
+            if (self.debug) self._renderDebug();
+
+            if (opts.onPlay) opts.onPlay(nextVid);
+
+            if (!nextVid.loop && opts.onEnd) {
+                nextVid.onended = function () { opts.onEnd(); };
+            }
+        };
+        nextVid.src = url;
+        nextVid.play().catch(function () { /* autoplay може да гръмне първия път */ });
+    };
+    tryNext();
+};
+
+/* ── ред на ходовете ── */
+BattleEngine.prototype.rebuildTurnOrder = function () {
+    var all = this.ally.concat(this.foe).filter(function (u) { return u.alive; });
+    for (var i = all.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = all[i]; all[i] = all[j]; all[j] = t;
+    }
+    this.turnOrder = all;
+};
+
+BattleEngine.prototype.advanceTurn = function (first) {
+    var self = this;
+    if (this.checkEnd()) return;
+    if (!first) this.turnIdx++;
+    if (this.turnIdx >= this.turnOrder.length) {
+        this.rebuildTurnOrder();
+        this.turnIdx = 0;
+    }
+    var actor = this.turnOrder[this.turnIdx];
+    if (!actor || !actor.alive) { this.advanceTurn(false); return; }
+
+    // замразен пропуска
+    if (actor.frozen) {
+        actor.frozen = false;
+        this.msg = actor.name + ' е замразен — пропуска хода';
+        this._renderHUD();
+        setTimeout(function () { self.advanceTurn(false); }, 1200);
+        return;
+    }
+
+    this.comboInput = [];
+    this._renderHUD();
+
+    if (actor.side === 'foe') {
+        // AI: случайно избира ход (V/B) или special с 25% шанс
+        setTimeout(function () { self.foeAct(actor); }, 600);
+    }
+};
+
+/* ── обработка на натискания ── */
+BattleEngine.prototype.handleKey = function (actor, key) {
+    if (MOVE_KEYS.indexOf(key) > -1) {
+        var move = null;
+        for (var i = 0; i < actor.def.moves.length; i++) {
+            if (actor.def.moves[i].key === key) { move = actor.def.moves[i]; break; }
+        }
+        if (move) { this.doMove(actor, move); }
+        return;
+    }
+    // combo
+    this.comboInput.push(key);
+    var combos = this.heroCombos[actor.id] || [];
+    // проверка дали последните 4 съвпадат с някоя комбинация
+    if (this.comboInput.length >= 4) {
+        var last4 = this.comboInput.slice(-4).join('');
+        for (var c = 0; c < combos.length; c++) {
+            if (combos[c].join('') === last4) {
+                this.comboInput = [];
+                this.doSpecial(actor, c);
+                this._renderHUD();
+                return;
+            }
+        }
+        // ограничи буфера
+        if (this.comboInput.length > 12) this.comboInput = this.comboInput.slice(-12);
+    }
+    this._renderHUD();
+};
+
+/* ── избор на цел ── */
+BattleEngine.prototype.targetsFor = function (actor, all) {
+    var pool = actor.side === 'ally' ? this.foe : this.ally;
+    var alive = pool.filter(function (u) { return u.alive; });
+    if (all) return alive;
+    if (!alive.length) return [];
+    if (actor.side === 'ally') {
+        var idx = Math.max(0, Math.min(this.selTarget, alive.length - 1));
+        return [alive[idx]];
+    }
+    return [alive[Math.floor(Math.random() * alive.length)]];
+};
+
+BattleEngine.prototype._aliveFoes = function () {
+    return (this.foe || []).filter(function (u) { return u.alive; });
+};
+
+/* смяна на избрана цел (стрелки нагоре/надолу) */
+BattleEngine.prototype._cycleTarget = function (dir) {
+    var foes = this._aliveFoes();
+    if (foes.length < 2) { this._renderTargetArrow(); return; }
+    this.selTarget = (this.selTarget + dir + foes.length) % foes.length;
+    this._renderTargetArrow();
+};
+
+/* синя стрелка пред избрания противник */
+BattleEngine.prototype._renderTargetArrow = function () {
+    var a = this.els.arrow;
+    if (!a) return;
+    var actor = this.turnOrder[this.turnIdx];
+    var foes = this._aliveFoes();
+    var showable = this.state === 'playing' && !this.anim &&
+                   actor && actor.side === 'ally' && foes.length > 0;
+    if (!showable) { a.style.display = 'none'; return; }
+    if (this.selTarget >= foes.length) this.selTarget = 0;
+    var t = foes[this.selTarget];
+    var w = t.def.video.size.width, h = t.def.video.size.height;
+    // пред противника = откъм страната на съюзника (вляво от врага)
+    a.style.display = '';
+    a.style.left = (t.x - w / 2 - 64) + 'px';
+    a.style.top = (t.y - h / 2 - 28) + 'px';
+};
+
+/* ── ход на враг ── */
+BattleEngine.prototype.foeAct = function (actor) {
+    var combos = this.heroCombos[actor.id] || [];
+    if (combos.length && Math.random() < 0.25) {
+        this.doSpecial(actor, Math.floor(Math.random() * combos.length));
+        return;
+    }
+    var move = actor.def.moves[Math.floor(Math.random() * actor.def.moves.length)];
+    this.doMove(actor, move);
+};
+
+/* ── изпълняване на ход ── */
+BattleEngine.prototype.doMove = function (actor, move) {
+    var self = this;
+    var targets = this.targetsFor(actor, move.target === 'all');
+    if (!targets.length) { this.advanceTurn(false); return; }
+
+    var animList = this._shuffle(this._resolveAttackAnim(move.attackAnim, actor.videoSide));
+    var animName = animList.join('|');  // целият списък — опитва се по ред (fallback)
+
+    // damageType може да е обект (зависим от страната, за магьосника)
+    var dtype = move.damageType;
+    if (typeof dtype === 'object') dtype = dtype[actor.videoSide] || dtype.left;
+
+    var kind = move.type === 'magic' ? 'magic' : 'melee';
+
+    this.playAttack(actor, targets, animName, dtype, kind, false, function () {
+        targets.forEach(function (t) {
+            var dmg = rollDamage(t, kind);
+            t.hp = Math.max(0, t.hp - dmg);
+            if (t.hp <= 0) t.alive = false;
+        });
+        self.afterHit();
+    });
+};
+
+/* ── специален удар ── */
+BattleEngine.prototype.doSpecial = function (actor, idx) {
+    var self = this;
+    var sp = (actor.def.specials || [])[idx];
+    if (!sp) { this.advanceTurn(false); return; }
+
+    var targets = this.targetsFor(actor, sp.target === 'all');
+    if (!targets.length) { this.advanceTurn(false); return; }
+
+    var animList = this._shuffle(this._resolveAttackAnim(sp.attackAnim, actor.videoSide));
+    var animName = animList.join('|');  // целият списък — опитва се по ред (fallback)
+
+    var dtype = sp.damageType;
+    if (typeof dtype === 'object') dtype = dtype[actor.videoSide] || dtype.left;
+
+    this.playAttack(actor, targets, animName, dtype, 'special', true, function () {
+        targets.forEach(function (t) {
+            if (sp.executeAt && t.hp / t.maxHp <= sp.executeAt) {
+                t.hp = 0; t.alive = false;
+            } else {
+                var dmg = rollDamage(t, 'special');
+                t.hp = Math.max(0, t.hp - dmg);
+                if (t.hp <= 0) t.alive = false;
+            }
+            if (sp.freeze) t.frozen = true;
+        });
+        self.afterHit();
+    });
+};
+
+BattleEngine.prototype._resolveAttackAnim = function (animDef, side) {
+    if (Array.isArray(animDef)) return animDef;
+    if (typeof animDef === 'object') return animDef[side] || animDef.left || [];
+    return [animDef];
+};
+
+BattleEngine.prototype._shuffle = function (arr) {
+    var a = (arr || []).slice();
+    for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+};
+
+/* ── изпълняване на анимация на удар (DOM + video) ── */
+BattleEngine.prototype.playAttack = function (actor, targets, animName, dtype, kind, isSpecial, onHit) {
+    var self = this;
+    this.anim = { actor: actor, targets: targets };
+    this._renderTargetArrow();  // скрива стрелката докато тече анимация
+    if (this.debug) this._log((actor.side === 'ally' ? '▶' : '◀') + ' ' + actor.name +
+        (isSpecial ? ' СПЕЦИАЛЕН' : ' ' + kind) + ' → ' + targets.map(function (t) { return t.name; }).join(', '));
+
+    var primary = targets[0];
+    var isAll = targets.length > 1;
+
+    var attackDuration = 3000;  // ms (резерв ако видеото няма onended)
+    var moveDuration = 800;
+    var hitMoment = attackDuration * 0.45;
+
+    // всеки герой ПЪРВО тича/върви към противника (по-близо до центъра), после удря
+    var approach = function (cb) {
+        var aw = actor.dom.box.offsetWidth, ah = actor.dom.box.offsetHeight;
+        var tx, ty;
+        if (isAll) {
+            // масова атака — застава към центъра, леко към враговете
+            tx = self.W * (actor.side === 'ally' ? 0.42 : 0.58);
+            ty = actor.baseY;
+        } else {
+            var gap = (primary.dom.box.offsetWidth / 2) + aw / 2 + 24;
+            tx = primary.baseX + (actor.side === 'ally' ? -gap : gap);
+            ty = primary.baseY;
+        }
+        actor.dom.box.style.transition = 'left ' + moveDuration + 'ms ease-out, top ' + moveDuration + 'ms ease-out';
+        actor.dom.box.style.left = (tx - aw / 2) + 'px';
+        actor.dom.box.style.top = (ty - ah) + 'px';
+        self._setHeroState(actor, 'walks');
+        setTimeout(cb, moveDuration);
+    };
+
+    var doAttackAnim = function (cb) {
+        var ended = false;
+        var finish = function () { if (!ended) { ended = true; cb(); } };
+        self._setHeroState(actor, 'attack:' + animName, { onEnd: finish });
+        setTimeout(finish, attackDuration);  // предпазител
+        setTimeout(function () {
+            targets.forEach(function (t) {
+                if (!t.alive) return;
+                // type-реакция (-inFire/-snakes/-dragon...), после общата "hit" ако я има
+                self._setHeroState(t, 'react:' + dtype, { onEnd: function () {
+                    if (t.alive && !t.diesPlayed) self._reactHitFollow(t);
+                }});
+            });
+            onHit();
+            self._renderHUD();
+            self._screenShake(isSpecial ? 18 : 10);
+        }, hitMoment);
+    };
+
+    var goBack = function (cb) {
+        actor.dom.box.style.left = (actor.baseX - actor.dom.box.offsetWidth / 2) + 'px';
+        actor.dom.box.style.top = (actor.baseY - actor.dom.box.offsetHeight) + 'px';
+        self._setHeroState(actor, 'walks');
+        setTimeout(cb, moveDuration);
+    };
+
+    var finishUp = function () {
+        // die анимация САМО ако героят наистина е умрял — и точно веднъж.
+        // Живите цели НЕ ги връщаме в idle тук — оставяме react→hit веригата
+        // да си изтече; idle watchdog ще ги прибере след края на клипа.
+        targets.forEach(function (t) {
+            if (!t.alive && !t.diesPlayed) {
+                t.diesPlayed = true;
+                if (self.debug) self._log('\u2620 ' + t.name + ' умира');
+                self._setHeroState(t, 'react:dies', { onEnd: function () {
+                    t.dom.box.style.transition = 'opacity 600ms';
+                    t.dom.box.style.opacity = '0';
+                }});
+            }
+        });
+        self._setHeroState(actor, 'idle');
+        self.anim = null;
+        self._renderTargetArrow();
+        setTimeout(function () { self.advanceTurn(false); }, 400);
+    };
+
+    approach(function () {
+        doAttackAnim(function () {
+            goBack(function () {
+                finishUp();
+            });
+        });
+    });
+};
+
+BattleEngine.prototype._screenShake = function (mag) {
+    var s = this.els.stage;
+    s.style.animation = 'kbbShake ' + (mag > 14 ? 400 : 250) + 'ms';
+    setTimeout(function () { s.style.animation = ''; }, 500);
+};
+
+/* ── idle watchdog: героите, които стоят, пускат idle от време на време ── */
+BattleEngine.prototype._startIdleWatch = function () {
+    var self = this;
+    this._stopIdleWatch();
+    this._idleTimer = setInterval(function () {
+        if (self.state !== 'playing') return;
+        var all = (self.ally || []).concat(self.foe || []);
+        var actor = self.turnOrder[self.turnIdx];
+        all.forEach(function (u) {
+            if (!u.alive || u.diesPlayed) return;
+            if (self.anim && (self.anim.actor === u || self.anim.targets.indexOf(u) > -1)) return;
+            if (u === actor) return;
+            var v = u.dom['vid' + u.dom.activeVid.toUpperCase()];
+            // ако клипът е свършил (не е loop) — върни го в idle
+            if (v && (v.ended || v.paused)) self._setHeroState(u, 'idle');
+        });
+    }, 1600);
+};
+
+BattleEngine.prototype._stopIdleWatch = function () {
+    if (this._idleTimer) { clearInterval(this._idleTimer); this._idleTimer = null; }
+};
+
+/* след type-реакцията — пусни общата "hit" анимация (ако героят я има),
+   иначе се връща в idle. Не прекъсва, ако междувременно е умрял. */
+BattleEngine.prototype._reactHitFollow = function (t) {
+    var self = this;
+    if (!t.alive || t.diesPlayed) return;
+    // ако type-реакцията вече е била самата "hit" — не я повтаряй
+    if (/-hit\.webm$/i.test(t.animHistory[0] || '')) {
+        this._setHeroState(t, 'idle'); return;
+    }
+    this._setHeroState(t, 'react:hit', { onEnd: function () {
+        if (t.alive && !t.diesPlayed) self._setHeroState(t, 'idle');
+    }});
+};
+
+/* ── debug панел (само админ) ── */
+BattleEngine.prototype._renderDebug = function () {
+    if (!this.debug || !this.dbg) return;
+    var rows = function (arr) {
+        return (arr || []).map(function (u) {
+            var hist = (u.animHistory || []).slice(1, 5).join(' · ') || '—';
+            return '<div class="kbb-dbg-hero' + (u.alive ? '' : ' dead') + '">' +
+                   '<div class="kbb-dbg-name">' + u.name + (u.alive ? '' : ' ☠') + '</div>' +
+                   '<div class="kbb-dbg-cur">▶ ' + (u.curAnim || '—') + '</div>' +
+                   '<div class="kbb-dbg-hist">' + hist + '</div></div>';
+        }).join('');
+    };
+    this.dbg.left.innerHTML = rows(this.ally);
+    this.dbg.right.innerHTML = rows(this.foe);
+};
+
+BattleEngine.prototype._log = function (line) {
+    if (!this.debug) return;
+    this._logLines.unshift('· ' + line);
+    if (this._logLines.length > 12) this._logLines.length = 12;
+    if (this.dbg) this.dbg.log.innerHTML = this._logLines.join('<br>');
+};
+
+BattleEngine.prototype.afterHit = function () {
+    this.ally.forEach(function (u) { if (u.hp <= 0) u.alive = false; });
+    this.foe.forEach(function (u) { if (u.hp <= 0) u.alive = false; });
+    this._renderHUD();
+};
+
+/* ── проверка край ── */
+BattleEngine.prototype.checkEnd = function () {
+    var allyAlive = this.ally && this.ally.some(function (u) { return u.alive; });
+    var foeAlive = this.foe && this.foe.some(function (u) { return u.alive; });
+    if (!this.ally) return false;
+    if (!foeAlive) {
+        this._stopIdleWatch();
+        if (this.els.arrow) this.els.arrow.style.display = 'none';
+        this.score += 200 * this.level;
+        if (this.level >= this.maxLevels) { this.win(); }
+        else { this.state = 'levelup'; this.saveScore(); this.drawLevelUp(); }
+        return true;
+    }
+    if (!allyAlive) {
+        this._stopIdleWatch();
+        if (this.els.arrow) this.els.arrow.style.display = 'none';
+        this.state = 'over'; this.saveScore(); this.drawOver(false);
+        return true;
+    }
+    return false;
+};
+
+BattleEngine.prototype.win = function () {
+    this.state = 'over'; this.saveScore(); this.drawOver(true);
+};
+
+BattleEngine.prototype.saveScore = function () {
+    if (this.standalone) return;
+    var self = this;
+    fetch('/api/portals/gms/score', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ game_slug: this.slug, score: this.score, level: this.level })
+    }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d) { self.bestLevel = d.best_level; self.bestScore = d.best_score; } })
+      .catch(function () {});
+};
+
+/* ── рендериране ── */
+BattleEngine.prototype._renderAll = function () {
+    this._renderHUD();
+    this.els.ov.style.display = 'none';
+};
+
+BattleEngine.prototype._renderHUD = function () {
+    // HP barove на всеки герой
+    var all = (this.ally || []).concat(this.foe || []);
+    for (var i = 0; i < all.length; i++) {
+        var u = all[i];
+        if (!u.dom) continue;
+        var pct = Math.max(0, u.hp / u.maxHp);
+        var fill = u.dom.hp.querySelector('.kbb-hpfill');
+        fill.style.width = (pct * 100) + '%';
+        if (pct < 0.3) fill.classList.add('low');
+        else fill.classList.remove('low');
+    }
+    // info
+    this.els.info.innerHTML =
+      '<span>Ниво ' + this.level + '/' + this.maxLevels + '</span>' +
+      '<span>Точки: ' + this.score + '</span>';
+    // msg
+    this.els.msg.textContent = this.msg || '';
+    // controls — за текущия actor
+    var actor = this.turnOrder[this.turnIdx];
+    if (actor && actor.side === 'ally' && this.state === 'playing') {
+        this._renderControls(actor);
+    } else {
+        this.els.ctrl.innerHTML = '';
+        this.els.combo.innerHTML = '';
+    }
+    this._renderTargetArrow();
+    if (this.debug) this._renderDebug();
+};
+
+BattleEngine.prototype._renderControls = function (actor) {
+    var ctrl = this.els.ctrl;
+    var foes = this._aliveFoes();
+    var tgt = foes[Math.min(this.selTarget, foes.length - 1)];
+    var html = '<div class="kbb-actor">Твой ход: <b>' + actor.name + '</b></div>';
+    if (foes.length) {
+        html += '<div class="kbb-target">🎯 Цел: <b>' + (tgt ? tgt.name : '—') + '</b>' +
+                (foes.length > 1 ? ' <span class="kbb-hint">(↑/↓ смяна)</span>' : '') + '</div>';
+    }
+    html += '<div class="kbb-btns">';
+    for (var i = 0; i < actor.def.moves.length; i++) {
+        var m = actor.def.moves[i];
+        html += '<button data-k="' + m.key + '" class="kbb-btn"><b>' + m.key.toUpperCase() + '</b> ' + m.name + '</button>';
+    }
+    html += '</div>';
+    var hasSpecials = (actor.def.specials || []).length > 0;
+    if (hasSpecials) {
+        html += '<div class="kbb-comborow">';
+        for (var k = 0; k < COMBO_KEYS.length; k++) {
+            html += '<button data-k="' + COMBO_KEYS[k] + '" class="kbb-ck">' + COMBO_KEYS[k].toUpperCase() + '</button>';
+        }
+        html += '</div>';
+    }
+    ctrl.innerHTML = html;
+    var self = this;
+    ctrl.querySelectorAll('button').forEach(function (b) {
+        b.addEventListener('click', function () {
+            if (self.anim || self.state !== 'playing') return;
+            self.handleKey(actor, b.dataset.k);
+        });
+    });
+    // combo display
+    if (this.comboInput.length) {
+        this.els.combo.textContent = 'Комбо: ' + this.comboInput.slice(-6).map(function (k) { return k.toUpperCase(); }).join(' · ');
+    } else {
+        this.els.combo.textContent = '';
+    }
+};
+
+/* ── overlay screens ── */
+BattleEngine.prototype.drawMenu = function () {
+    this.els.ov.style.display = '';
+    this.els.ov.innerHTML =
+        '<div class="kbb-card">' +
+        '  <h1>' + this.title + '</h1>' +
+        '  <p class="kbb-rules">' +
+        '   Походова битка. Героите ти излизат <b>произволно</b> на всяко ниво.<br>' +
+        '   Обикновени удари: <kbd>V</kbd> или <kbd>B</kbd> (0–20% щета).<br>' +
+        '   Специален: скрита <b>4-буквена комбинация</b> (от Q W E R A S D F). 30–40% щета.<br>' +
+        '   Откриваш комбинациите чрез опити. Не се сменят цяла игра.<br>' +
+        '  </p>' +
+        '  <p class="kbb-best">Рекорд: ниво ' + this.bestLevel + ' / ' + this.bestScore + ' т.</p>' +
+        '  <button class="kbb-go">Започни (Space)</button>' +
+        '</div>';
+    var self = this;
+    this.els.ov.querySelector('.kbb-go').onclick = function () { self.startGame(); };
+};
+
+BattleEngine.prototype.drawLevelUp = function () {
+    this.els.ov.style.display = '';
+    this.els.ov.innerHTML =
+        '<div class="kbb-card">' +
+        '  <h2>Ниво ' + this.level + ' преминато!</h2>' +
+        '  <p>Точки: ' + this.score + '</p>' +
+        '  <button class="kbb-go">Към ниво ' + (this.level + 1) + ' (Space)</button>' +
+        '</div>';
+    var self = this;
+    this.els.ov.querySelector('.kbb-go').onclick = function () { self.nextLevel(); };
+};
+
+BattleEngine.prototype.drawOver = function (won) {
+    this.els.ov.style.display = '';
+    this.els.ov.innerHTML =
+        '<div class="kbb-card">' +
+        '  <h1>' + (won ? '🏆 ПОБЕДА!' : 'Загуба') + '</h1>' +
+        '  <p>Стигна до ниво ' + this.level + '</p>' +
+        '  <p>Точки: <b>' + this.score + '</b></p>' +
+        '  <p class="kbb-best">Рекорд: ниво ' + this.bestLevel + ' / ' + this.bestScore + ' т.</p>' +
+        '  <button class="kbb-go">Нова игра (Space)</button>' +
+        '</div>';
+    var self = this;
+    this.els.ov.querySelector('.kbb-go').onclick = function () { self.startGame(); };
+};
+
+/* ── CSS ── */
+var BATTLE_CSS = [
+'@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap");',
+'.kcy-battle{font-family:"Cormorant Garamond",Georgia,serif;color:#e8d6a5;}',
+'.kbb-wrap{position:relative;width:100%;max-width:1280px;margin:0 auto;background:radial-gradient(ellipse at center,#241a1a 0%,#0a0708 80%);border:2px solid #5a3a1e;border-radius:8px;box-shadow:0 0 60px rgba(0,0,0,.8),inset 0 0 80px rgba(0,0,0,.6);overflow:hidden;}',
+'.kbb-hmm{max-width:720px;}',  // portrait по-малък на screen
+'.kbb-stage{position:absolute;left:50%;top:50%;transform-origin:center center;}',
+'.kbb-bg{position:absolute;inset:0;background:linear-gradient(180deg,#0e0d12 0%,#1a1418 60%,#2a1f1a 100%);}',
+'.kbb-bg::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center bottom,rgba(180,120,60,.15),transparent 70%);}',
+'.kbb-bg::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);}',
+'.kbb-heroes,.kbb-fx,.kbb-hud{position:absolute;inset:0;}',
+'.kbb-hero{position:absolute;transition:left .8s ease-out,top .8s ease-out,opacity .6s;}',
+/* foe видеата са already right-* (вече гледат наляво), не трябва flip */
+'.kbb-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .25s;}',
+'.kbb-hpbar{position:absolute;top:-30px;left:10%;right:10%;height:14px;background:#1a1218;border:1.5px solid #6a4a2a;border-radius:6px;overflow:hidden;box-shadow:0 0 6px rgba(0,0,0,.7);}',
+'.kbb-hpfill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(180deg,#9a3030,#5a1a1a);transition:width .4s;}',
+'.kbb-hpfill.low{background:linear-gradient(180deg,#c97030,#7a3010);}',
+'.kbb-hpname{position:absolute;inset:0;text-align:center;color:#f0d896;font-family:"Cinzel",serif;font-weight:600;font-size:10px;letter-spacing:1px;line-height:14px;text-shadow:1px 1px 1px #000;}',
+'.kbb-info{position:absolute;top:18px;left:18px;display:flex;gap:18px;font-family:"Cinzel",serif;font-size:18px;color:#c9a35d;text-shadow:1px 1px 0 #000;letter-spacing:2px;}',
+'.kbb-msg{position:absolute;top:60px;left:50%;transform:translateX(-50%);font-family:"Cinzel",serif;font-size:22px;color:#e8d6a5;text-shadow:2px 2px 0 #000,0 0 12px rgba(0,0,0,.8);letter-spacing:1px;}',
+'.kbb-ctrl{position:absolute;top:96px;bottom:auto;left:50%;transform:translateX(-50%);text-align:center;color:#d8c08c;background:rgba(10,8,10,.88);border:3px solid #6a4a2a;border-radius:18px;padding:28px 40px;backdrop-filter:blur(4px);max-width:94%;z-index:42;}',
+'.kbb-actor{font-family:"Cinzel",serif;font-size:40px;letter-spacing:2px;margin-bottom:14px;color:#f0d896;}',
+'.kbb-target{font-family:"Cinzel",serif;font-size:34px;color:#8fd0ff;margin-bottom:18px;letter-spacing:1px;}',
+'.kbb-target b{color:#cfe9ff;}',
+'.kbb-hint{font-size:24px;color:#7a90a4;}',
+'.kbb-btns{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}',
+'.kbb-btn{background:linear-gradient(180deg,#3a2a1a,#1a1208);color:#e8d6a5;border:3px solid #6a4a2a;border-radius:14px;padding:26px 40px;font-family:"Cinzel",serif;font-size:40px;letter-spacing:1.5px;cursor:pointer;box-shadow:0 5px 0 #000,inset 0 1px 0 rgba(255,200,120,.2);transition:transform .1s,background .2s;}',
+'.kbb-btn b{color:#f8c450;display:inline-block;background:#1a0e06;border:2px solid #8a5a2a;padding:2px 16px;border-radius:8px;margin-right:14px;font-family:"Cinzel",serif;}',
+'.kbb-btn:hover{background:linear-gradient(180deg,#5a3a22,#2a1810);}',
+'.kbb-btn:active{transform:translateY(2px);}',
+'.kbb-comborow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}',
+'.kbb-ck{background:#1a1208;color:#9a8862;border:2px solid #3a2a1a;border-radius:12px;width:92px;height:92px;font-family:"Cinzel",serif;font-size:36px;cursor:pointer;letter-spacing:1px;}',
+'.kbb-ck:hover{background:#2a1810;color:#e8d6a5;border-color:#6a4a2a;}',
+'.kbb-combo{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-family:"Cinzel",serif;font-size:30px;color:#f8c450;letter-spacing:4px;text-shadow:0 0 8px rgba(248,196,80,.5);min-height:24px;}',
+'.kbb-target-arrow{position:absolute;color:#3aa0ff;font-size:90px;line-height:1;text-shadow:0 0 18px rgba(58,160,255,.9),0 0 4px #000;pointer-events:none;z-index:41;animation:kbbArrow 0.8s ease-in-out infinite;}',
+'@keyframes kbbArrow{0%,100%{transform:translateX(0)}50%{transform:translateX(18px)}}',
+'.kbb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,5,8,.85);backdrop-filter:blur(6px);z-index:50;}',
+'.kbb-card{max-width:80%;background:linear-gradient(180deg,#1a1208,#0a0608);border:2px solid #6a4a2a;border-radius:12px;padding:36px 44px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.9),inset 0 0 40px rgba(0,0,0,.5);}',
+'.kbb-card h1{font-family:"Cinzel",serif;font-weight:900;font-size:42px;color:#f8c450;letter-spacing:3px;margin:0 0 16px;text-shadow:2px 2px 0 #000,0 0 30px rgba(248,196,80,.4);}',
+'.kbb-card h2{font-family:"Cinzel",serif;font-weight:700;font-size:32px;color:#f0d896;letter-spacing:2px;margin:0 0 16px;}',
+'.kbb-card p{font-size:16px;line-height:1.6;color:#d8c08c;margin:8px 0;font-style:italic;}',
+'.kbb-rules{font-style:normal !important;text-align:left;}',
+'.kbb-rules kbd{font-family:"Cinzel",serif;background:#1a0e06;border:1px solid #8a5a2a;padding:2px 8px;border-radius:3px;color:#f8c450;font-size:13px;}',
+'.kbb-best{color:#c9a35d;font-family:"Cinzel",serif;letter-spacing:1px;margin-top:18px !important;}',
+'.kbb-go{background:linear-gradient(180deg,#7a3a1a,#3a1a08);color:#f8e0a8;border:1.5px solid #b88a4a;border-radius:8px;padding:14px 30px;font-family:"Cinzel",serif;font-size:18px;font-weight:700;letter-spacing:2px;cursor:pointer;margin-top:18px;text-shadow:1px 1px 0 #000;box-shadow:0 4px 0 #000,inset 0 1px 0 rgba(255,220,160,.3);}',
+'.kbb-go:hover{background:linear-gradient(180deg,#9a4a20,#5a2a10);}',
+'.kbb-go:active{transform:translateY(2px);box-shadow:0 2px 0 #000;}',
+'@keyframes kbbShake{0%,100%{transform:translate(-50%,-50%) scale(var(--s,1))}25%{transform:translate(calc(-50% - 8px),calc(-50% - 4px)) scale(var(--s,1))}50%{transform:translate(calc(-50% + 6px),calc(-50% + 6px)) scale(var(--s,1))}75%{transform:translate(calc(-50% - 4px),calc(-50% - 6px)) scale(var(--s,1))}}',
+].join('\n');
+
+/* ── debug панел CSS (само админ) ── */
+var BATTLE_DBG_CSS = [
+'.kbb-dbg{position:fixed;top:80px;width:230px;max-height:46vh;overflow:auto;background:rgba(6,8,12,.92);border:1px solid #2a4a6a;border-radius:8px;padding:8px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#bcd;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.6);}',
+'.kbb-dbg-left{left:8px;}',
+'.kbb-dbg-right{right:8px;}',
+'.kbb-dbg-log{left:8px;bottom:8px;top:auto;width:340px;max-height:24vh;border-color:#4a3a1e;color:#d8c08c;}',
+'.kbb-dbg-title{font-weight:700;color:#5fb0ff;letter-spacing:1px;margin-bottom:6px;border-bottom:1px solid #234;padding-bottom:4px;}',
+'.kbb-dbg-log .kbb-dbg-title{color:#f8c450;border-color:#432;}',
+'.kbb-dbg-hero{margin-bottom:8px;padding:5px 6px;background:rgba(255,255,255,.03);border-radius:5px;border-left:3px solid #2a6;}',
+'.kbb-dbg-hero.dead{border-left-color:#a33;opacity:.6;}',
+'.kbb-dbg-name{color:#f0d896;font-weight:700;}',
+'.kbb-dbg-cur{color:#7fe0a0;word-break:break-all;}',
+'.kbb-dbg-hist{color:#789;font-size:10px;word-break:break-all;margin-top:2px;}',
+].join('\n');
+
+global.BattleEngine = BattleEngine;
+})(window);
