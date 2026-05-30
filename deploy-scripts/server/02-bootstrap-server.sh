@@ -97,12 +97,26 @@ echo "  Hostname: $(hostname)"
 echo "  Date:     $(date)"
 echo ""
 
+# ═══ Източник на helper файловете (от 01-bootstrap.sh) ═══
+# 01-bootstrap.sh вече ги качва в ~/.kcy-bootstrap на deploy потребителя (не в /tmp,
+# защото /tmp може да съдържа чужди файлове → Permission denied при презапис).
+# Скриптът се намира в същата папка като тези файлове. Пазим /tmp като fallback
+# за стари инсталации.
+BOOTSTRAP_SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# find_sidecar <basename> → принтва пълния път, ако файлът съществува (нова папка → /tmp)
+find_sidecar() {
+    if [ -f "${BOOTSTRAP_SRC_DIR}/$1" ]; then echo "${BOOTSTRAP_SRC_DIR}/$1";
+    elif [ -f "/tmp/$1" ]; then echo "/tmp/$1"; fi
+}
+
 # ═══ TARGET INFO (от 01-bootstrap.sh) ═══
 TARGET_NAME=""
 TARGET_SERVER=""
-if [ -f /tmp/deploy_target_info ]; then
-    . /tmp/deploy_target_info
-    # НЕ изтриваме файла — 05-server-install.sh също го ползва
+_TI="$(find_sidecar deploy_target_info)"
+if [ -n "$_TI" ]; then
+    . "$_TI"
+    # 05-server-install.sh чете deploy_target_info от /tmp — подсигури копие там.
+    [ "$_TI" != "/tmp/deploy_target_info" ] && cp -f "$_TI" /tmp/deploy_target_info 2>/dev/null || true
 fi
 
 # Fallback: auto-detect ако bootstrap.sh не е подал info (за директен sudo bash)
@@ -250,11 +264,12 @@ CURRENT_SSH_PORT=$(grep -E "^Port\s" /etc/ssh/sshd_config 2>/dev/null | awk '{pr
 CURRENT_SSH_PORT="${CURRENT_SSH_PORT:-22}"
 
 NEW_SSH_PORT="$CURRENT_SSH_PORT"
-if [ -s /tmp/desired_ssh_port ]; then
-    REQUESTED_PORT=$(cat /tmp/desired_ssh_port | tr -d '[:space:]')
+_PORTF="$(find_sidecar desired_ssh_port)"
+if [ -n "$_PORTF" ] && [ -s "$_PORTF" ]; then
+    REQUESTED_PORT=$(cat "$_PORTF" | tr -d '[:space:]')
     if [[ "$REQUESTED_PORT" =~ ^[0-9]+$ ]] && [ "$REQUESTED_PORT" -ge 1 ] && [ "$REQUESTED_PORT" -le 65535 ]; then
         NEW_SSH_PORT="$REQUESTED_PORT"
-        rm -f /tmp/desired_ssh_port
+        rm -f "$_PORTF"
         if [ "$NEW_SSH_PORT" != "$CURRENT_SSH_PORT" ]; then
             print_ok "Ще променя SSH порт ${CURRENT_SSH_PORT} → ${NEW_SSH_PORT} (накрая на bootstrap-а)"
         else
@@ -490,9 +505,10 @@ touch "$DEPLOY_SSH/authorized_keys"
 
 # Прочети ключа който се опитваме да добавим
 NEW_KEY=""
-if [ -s /tmp/deploy_pubkey ]; then
-    NEW_KEY=$(cat /tmp/deploy_pubkey)
-    rm -f /tmp/deploy_pubkey
+_PUBF="$(find_sidecar deploy_pubkey)"
+if [ -n "$_PUBF" ] && [ -s "$_PUBF" ]; then
+    NEW_KEY=$(cat "$_PUBF")
+    rm -f "$_PUBF"
 elif [ ! -s "$DEPLOY_SSH/authorized_keys" ]; then
     # Файлът е празен и няма pubkey за зареждане — питай интерактивно
     echo ""
