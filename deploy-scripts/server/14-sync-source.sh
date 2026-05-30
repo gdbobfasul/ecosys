@@ -23,12 +23,19 @@ GREEN=$'\033[0;32m'; RED=$'\033[0;31m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'
 
 [ -n "$TARBALL" ] && [ -f "$TARBALL" ] || { echo -e "${RED}Няма архив: $TARBALL${NC}"; exit 1; }
 
-# разархивирай В STAGING (както Deploy), strip водещата папка
+# разархивирай В STAGING. Архивът от опция 3 НЯМА водеща папка (tar ... public private ...),
+# затова БЕЗ --strip-components (то би изтрило самите public/private).
 SRC="$STAGING/_sync_src"
 rm -rf "$SRC"; mkdir -p "$SRC"
 echo -e "${YELLOW}Разархивиране в staging...${NC}"
-tar -xzf "$TARBALL" --strip-components=1 -C "$SRC" 2>/dev/null || tar -xzf "$TARBALL" -C "$SRC"
+tar -xzf "$TARBALL" -C "$SRC"
 rm -f "$TARBALL"
+
+# ако все пак има единична водеща папка (стар формат), слез в нея
+if [ ! -d "$SRC/public" ] && [ ! -d "$SRC/private" ]; then
+    inner="$(find "$SRC" -mindepth 1 -maxdepth 1 -type d | head -1)"
+    [ -n "$inner" ] && [ -d "$inner/public" -o -d "$inner/private" ] && SRC="$inner"
+fi
 
 # public сорс (assets изключени в архива) -> web root, БЕЗ --delete
 if [ -d "$SRC/public" ]; then
