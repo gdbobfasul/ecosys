@@ -648,7 +648,77 @@ for dir in deploy-scripts docs tests; do
     fi
 done
 
-# Root configs (package.json, jest.config.js, etc.)
+# ── Преприложи limited-sudo whitelist-а за deploy (включва 14/15 sync скриптовете) ──
+# Това гарантира, че при ВСЕКИ Deploy правата се обновяват — без нужда от bootstrap/root.
+SUDOERS_FILE="/etc/sudoers.d/kcy-deploy"
+TMP_SUDOERS="$(mktemp)"
+cat > "$TMP_SUDOERS" << 'SUDO_EOF'
+# KCY Ecosystem — limited sudo за deploy user.
+# Управлява се от 02-bootstrap-server.sh + 05-server-install.sh. Не редактирай ръчно.
+
+# Install / setup скриптове (директно + bash варианти)
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/05-server-install.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/05-server-install.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/05-server-install.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/06-setup-wizard.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/06-setup-wizard.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/06-setup-wizard.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/07-setup-database.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/07-setup-database.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/07-setup-database.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/08-setup-domain.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/08-setup-domain.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/08-setup-domain.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/10-disable-ssh-password.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/10-disable-ssh-password.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/10-disable-ssh-password.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/11-setup-tailscale.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/11-setup-tailscale.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/11-setup-tailscale.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/12-setup-failover.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/12-setup-failover.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/12-setup-failover.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/13-kcy-admin-sudo-toggle.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/13-kcy-admin-sudo-toggle.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/13-kcy-admin-sudo-toggle.sh
+
+# Леки трансфери (sync само сорс / само асети) — overlay, без full install.
+# Завършващото "" = позволено с КАКВИТО И ДА Е аргументи (пътя до архива).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/14-sync-source.sh ""
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/14-sync-source.sh ""
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/14-sync-source.sh ""
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/15-sync-assets.sh ""
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/15-sync-assets.sh ""
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/15-sync-assets.sh ""
+
+# Systemd service management
+deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
+deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3
+deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-portals
+deploy ALL=(root) NOPASSWD: /bin/systemctl start kcy-chat
+deploy ALL=(root) NOPASSWD: /bin/systemctl start kcy-eco3
+deploy ALL=(root) NOPASSWD: /bin/systemctl start kcy-portals
+deploy ALL=(root) NOPASSWD: /bin/systemctl stop kcy-chat
+deploy ALL=(root) NOPASSWD: /bin/systemctl stop kcy-eco3
+deploy ALL=(root) NOPASSWD: /bin/systemctl stop kcy-portals
+deploy ALL=(root) NOPASSWD: /bin/systemctl status kcy-chat
+deploy ALL=(root) NOPASSWD: /bin/systemctl status kcy-eco3
+deploy ALL=(root) NOPASSWD: /bin/systemctl status kcy-portals
+deploy ALL=(root) NOPASSWD: /bin/systemctl reload nginx
+deploy ALL=(root) NOPASSWD: /bin/systemctl restart nginx
+deploy ALL=(root) NOPASSWD: /bin/systemctl status nginx
+deploy ALL=(root) NOPASSWD: /usr/sbin/nginx -t
+deploy ALL=(root) NOPASSWD: /usr/bin/journalctl -u kcy-chat *
+deploy ALL=(root) NOPASSWD: /usr/bin/journalctl -u kcy-eco3 *
+Defaults:deploy !requiretty
+SUDO_EOF
+if visudo -c -f "$TMP_SUDOERS" >/dev/null 2>&1; then
+    install -m 0440 -o root -g root "$TMP_SUDOERS" "$SUDOERS_FILE"
+    echo -e "  ${GREEN}✓ deploy sudoers whitelist обновен (вкл. 14/15 sync)${NC}"
+else
+    echo -e "  ${YELLOW}↷ sudoers whitelist НЕ е обновен (visudo validation fail) — оставям стария${NC}"
+fi
+rm -f "$TMP_SUDOERS"
 # Премахни всички root configs първо, после копирай новите
 find "$PROJECT_DIR" -maxdepth 1 -type f \( -name "*.json" -o -name "*.js" -o -name "*.version" \) -delete 2>/dev/null
 for f in "$STAGING"/*.json "$STAGING"/*.js "$STAGING"/*.version; do
