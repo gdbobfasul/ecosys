@@ -55,7 +55,7 @@ echo ""; echo -e "  Target:  ${GREEN}${USER}@${SERVER}:${PORT}${NC}"
 echo -e "  Режим:   ${GREEN}само СОРС${NC} (без assets/данни), overlay + рестарт"
 echo ""
 
-# ── архив само със сорс (БЕЗ public/assets, node_modules, .env, бази, uploads) ──
+# ── архив само със сорс (БЕЗ public/assets...), С водеща папка — точно като Deploy (04) ──
 TAR="${HOME}/kcy-source-$(date +%Y%m%d-%H%M%S).tar.gz"
 echo -e "${YELLOW}[1/3] Архивиране на сорса...${NC}"
 tar -czf "$TAR" \
@@ -69,7 +69,7 @@ tar -czf "$TAR" \
     --exclude='private/configs/.env' \
     --exclude='*/uploads' --exclude='*/logs' \
     --exclude='private/*/cache' --exclude='private/*/artifacts' \
-    public private deploy-scripts docs tests $(ls *.js *.json 2>/dev/null) 2>/dev/null \
+    -C "$(dirname "$PROJECT_ROOT")" "$(basename "$PROJECT_ROOT")" 2>/dev/null \
     || { echo -e "${RED}tar се провали${NC}"; exit 1; }
 echo -e "  ${GREEN}✓ $(du -h "$TAR" | cut -f1)${NC}"
 
