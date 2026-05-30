@@ -1,5 +1,5 @@
 /* KCY Portals — Battle Engine v2 (DOM + WebM с alpha)
-   Version: 1.0095
+   Version: 1.009566
 
    Походова битка с реални видео анимации (вместо canvas рисуване).
 

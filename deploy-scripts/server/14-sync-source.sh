@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0094
+# Version: 1.0095
 ##############################################################################
 # KCY — Sync ONLY сорс код (без assets, без данни/uploads/.env/node_modules).
 # Разархивира подадения архив В STAGING (както прави Deploy), после прави
@@ -9,7 +9,9 @@
 # Пуска се КАТО root (през sudo) от STAGING пътя — същия като 05-server-install.sh:
 #   sudo /var/www/deploy/deploy-scripts/server/14-sync-source.sh <tarball>
 ##############################################################################
-set -e
+# Не ползваме `set -e` — една дребна грешка (chown на липсваща папка) не бива да
+# убива целия sync тихо. Вместо това проверяваме критичните стъпки явно.
+
 TARBALL="$1"
 STAGING="/var/www/deploy"
 WEB_ROOT="/var/www/html"
@@ -21,20 +23,33 @@ ECO3_USER="kcy-eco3"
 
 GREEN=$'\033[0;32m'; RED=$'\033[0;31m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 
+echo -e "${CYAN}>>> 14-sync-source.sh v1.0095 | tarball: $1${NC}"
 [ -n "$TARBALL" ] && [ -f "$TARBALL" ] || { echo -e "${RED}Няма архив: $TARBALL${NC}"; exit 1; }
 
-# разархивирай В STAGING. Архивът (от опция 3) има водеща папка — точно като Deploy,
-# затова --strip-components=1 я маха и оставя public/private/... в корена на $SRC.
+# разархивирай В STAGING. Поддържаме И двата формата на архив:
+#  - с водеща папка (Deploy / новата опция 3): 2026-05-30-toks/public/...
+#  - без водеща папка (стар формат): public/...
 SRC="$STAGING/_sync_src"
 rm -rf "$SRC"; mkdir -p "$SRC"
-echo -e "${YELLOW}Разархивиране в staging...${NC}"
-tar -xzf "$TARBALL" --strip-components=1 -C "$SRC"
+echo -e "${YELLOW}Разархивиране в staging ($SRC)...${NC}"
+tar -xzf "$TARBALL" -C "$SRC" || { echo -e "${RED}tar се провали${NC}"; exit 1; }
 rm -f "$TARBALL"
+
+# намери къде са public/private (в корена или в единична водеща папка)
+if [ ! -d "$SRC/public" ] && [ ! -d "$SRC/private" ]; then
+    inner="$(find "$SRC" -mindepth 1 -maxdepth 1 -type d | head -1)"
+    if [ -n "$inner" ] && { [ -d "$inner/public" ] || [ -d "$inner/private" ]; }; then
+        SRC="$inner"
+    fi
+fi
+echo -e "${CYAN}  намерено: public=$([ -d "$SRC/public" ] && echo ДА || echo НЕ) private=$([ -d "$SRC/private" ] && echo ДА || echo НЕ) (в $SRC)${NC}"
 
 # public сорс (assets изключени в архива) -> web root, БЕЗ --delete
 if [ -d "$SRC/public" ]; then
     echo -e "${YELLOW}public/ -> ${WEB_ROOT}/ (overlay)${NC}"
-    rsync -a "$SRC/public/" "$WEB_ROOT/"
+    rsync -a "$SRC/public/" "$WEB_ROOT/" && echo -e "  ${GREEN}✓ public копиран${NC}" || echo -e "  ${RED}✗ rsync public се провали${NC}"
+else
+    echo -e "  ${RED}✗ НЯМА public в архива — играта няма да се обнови!${NC}"
 fi
 
 # private сорс -> PRIVATE_DIR, БЕЗ --delete, без runtime данни
