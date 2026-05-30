@@ -83,7 +83,7 @@ echo -e "  ${GREEN}✓ Качено${NC}"
 
 # ── активиране (sudo, само 14-sync-source.sh — без full install) ──
 echo -e "${YELLOW}[3/3] Прилагане на сървъра (overlay + рестарт)...${NC}"
-$SSH "${USER}@${SERVER}" "chmod +x ${REMOTE_SCRIPT} 2>/dev/null; sudo ${REMOTE_SCRIPT} ${REMOTE_TAR}"
+ssh -t -o ConnectTimeout=15 -p ${PORT} "${USER}@${SERVER}" "chmod +x ${REMOTE_SCRIPT} 2>/dev/null; sudo ${REMOTE_SCRIPT} ${REMOTE_TAR}"
 RC=$?
 rm -f "$TAR"
 echo ""
@@ -91,5 +91,21 @@ if [ $RC -eq 0 ]; then
     echo -e "${GREEN}✓ ГОТОВО — сорсът е прехвърлен и сървисите рестартирани.${NC}"
 else
     echo -e "${RED}✗ Сървърната стъпка върна грешка (${RC}).${NC}"
-    echo -e "${YELLOW}  Ако е заради sudo — пусни опцията за update на sudoers и опитай пак.${NC}"
+    echo ""
+    echo -e "${YELLOW}═══════════════════════════════════════════════════════════════════${NC}"
+    echo -e "${YELLOW}  Ако грешката е 'sudo: a password is required' — нормално е${NC}"
+    echo -e "${YELLOW}  при ПЪРВО ползване. Този скрипт (14-sync-source.sh) още не е${NC}"
+    echo -e "${YELLOW}  разрешен без парола на сървъра. Направи това ВЕДНЪЖ:${NC}"
+    echo -e "${YELLOW}═══════════════════════════════════════════════════════════════════${NC}"
+    echo ""
+    echo -e "  ${CYAN}1)${NC} Пусни ${GREEN}2) Deploy проекта → prod${NC}"
+    echo -e "     Това качва новите deploy-scripts/ на сървъра"
+    echo -e "     (вкл. 14-sync-source.sh, 15-sync-assets.sh и обновения"
+    echo -e "      03-kcy-admin-sudo.sh)."
+    echo ""
+    echo -e "  ${CYAN}2)${NC} После пусни ${GREEN}update на sudoers на сървъра${NC}"
+    echo -e "     (в СТАРТ менюто е № ${GREEN}28${NC} — „Update sudoers на сървъра\")."
+    echo ""
+    echo -e "  ${CYAN}3)${NC} След това пусни пак ${GREEN}3) Прехвърли само СОРС${NC} — вече без парола."
+    echo ""
 fi

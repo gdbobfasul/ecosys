@@ -372,16 +372,22 @@ if command -v dos2unix >/dev/null 2>&1; then
     dos2unix -q "$BOOTSTRAP_SH" 2>/dev/null || true
 fi
 
+# Качваме в ЛИЧНАТА папка на потребителя (~/.kcy-bootstrap), а НЕ в споделения /tmp.
+# /tmp/02-bootstrap-server.sh може вече да съществува, собственост на друг user
+# (root/предишен deploy) → "Permission denied" при презапис. Домашната папка винаги е наша.
+REMOTE_DIR=".kcy-bootstrap"
+ssh $SSH_KEEPALIVE -p "$PORT" "${USER}@${SERVER}" "rm -rf ~/${REMOTE_DIR}; mkdir -p ~/${REMOTE_DIR}" 2>/dev/null
+
 # Качи скрипта
-scp $SSH_KEEPALIVE -P "$PORT" -q "$BOOTSTRAP_SH" "${USER}@${SERVER}:/tmp/02-bootstrap-server.sh"
-echo -e "  ${GREEN}✓${NC} Качен в /tmp/02-bootstrap-server.sh"
+scp $SSH_KEEPALIVE -P "$PORT" -q "$BOOTSTRAP_SH" "${USER}@${SERVER}:${REMOTE_DIR}/02-bootstrap-server.sh"
+echo -e "  ${GREEN}✓${NC} Качен в ~/${REMOTE_DIR}/02-bootstrap-server.sh"
 
 # Качи и pubkey-я като отделен файл (02-bootstrap-server.sh го чете автоматично)
-scp $SSH_KEEPALIVE -P "$PORT" -q "$PUB_PATH" "${USER}@${SERVER}:/tmp/deploy_pubkey"
-echo -e "  ${GREEN}✓${NC} Public key качен в /tmp/deploy_pubkey"
+scp $SSH_KEEPALIVE -P "$PORT" -q "$PUB_PATH" "${USER}@${SERVER}:${REMOTE_DIR}/deploy_pubkey"
+echo -e "  ${GREEN}✓${NC} Public key качен в ~/${REMOTE_DIR}/deploy_pubkey"
 
 # Качи и желания SSH порт (02-bootstrap-server.sh ще го прочете и приложи)
-echo "$NEW_SSH_PORT" | ssh $SSH_KEEPALIVE -p "$PORT" "${USER}@${SERVER}" "cat > /tmp/desired_ssh_port" 2>/dev/null
+echo "$NEW_SSH_PORT" | ssh $SSH_KEEPALIVE -p "$PORT" "${USER}@${SERVER}" "cat > ~/${REMOTE_DIR}/desired_ssh_port" 2>/dev/null
 echo -e "  ${GREEN}✓${NC} Желан SSH порт (${NEW_SSH_PORT}) подаден на сървъра"
 
 # Подай target info — за да знае 02-bootstrap-server.sh дали е VM или prod
@@ -393,7 +399,7 @@ if [ "$SERVER" = "192.168.0.108" ] || [[ "$SERVER" =~ ^192\.168\.|^10\.|^172\.16
 elif [ "$SERVER" = "alsec.strangled.net" ]; then
     DETECTED_TARGET="prod"
 fi
-ssh $SSH_KEEPALIVE -p "$PORT" "${USER}@${SERVER}" "cat > /tmp/deploy_target_info << TARGETINFO
+ssh $SSH_KEEPALIVE -p "$PORT" "${USER}@${SERVER}" "cat > ~/${REMOTE_DIR}/deploy_target_info << TARGETINFO
 TARGET_NAME=${DETECTED_TARGET}
 TARGET_SERVER=${SERVER}
 TARGETINFO
@@ -402,8 +408,8 @@ echo -e "  ${GREEN}✓${NC} Target info (${DETECTED_TARGET}) подаден"
 
 # Нормализирай и на сървъра (за всеки случай)
 ssh $SSH_KEEPALIVE -p "$PORT" "${USER}@${SERVER}" "
-    command -v dos2unix >/dev/null 2>&1 && dos2unix -q /tmp/02-bootstrap-server.sh 2>/dev/null || sed -i 's/\\r\$//' /tmp/02-bootstrap-server.sh
-    chmod +x /tmp/02-bootstrap-server.sh
+    command -v dos2unix >/dev/null 2>&1 && dos2unix -q ~/${REMOTE_DIR}/02-bootstrap-server.sh 2>/dev/null || sed -i 's/\\r\$//' ~/${REMOTE_DIR}/02-bootstrap-server.sh
+    chmod +x ~/${REMOTE_DIR}/02-bootstrap-server.sh
 " 2>/dev/null || true
 echo ""
 
@@ -413,18 +419,29 @@ echo "  Ще те пита паролата на ${USER} за sudo (ако не 
 echo ""
 
 # -t = интерактивен TTY (за да виждаш цветовете и да можеш да отговаряш на промптовете)
-ssh $SSH_KEEPALIVE -t -p "$PORT" "${USER}@${SERVER}" "sudo bash /tmp/02-bootstrap-server.sh" || {
+# sudo с абсолютен път към ~/.kcy-bootstrap (sudo нулира $HOME, затова подаваме пътя явно)
+ssh $SSH_KEEPALIVE -t -p "$PORT" "${USER}@${SERVER}" "sudo bash \"\$HOME/${REMOTE_DIR}/02-bootstrap-server.sh\"" || {
     echo ""
     echo -e "${RED}✗ Bootstrap се провали${NC}"
     echo ""
-    echo "  Възможни причини:"
-    echo "    • ${USER} не е sudoer на сървъра"
-    echo "    • Подадена грешна парола"
-    echo "    • Бъг в самия 02-bootstrap-server.sh"
+    echo -e "${YELLOW}  Ако видя 'user ${USER} is not allowed to execute ... 02-bootstrap-server.sh':${NC}"
+    echo -e "${YELLOW}  Сървърът ВЕЧЕ Е bootstrap-нат и ${USER} е с ОГРАНИЧЕН sudo (само white-list).${NC}"
+    echo -e "${YELLOW}  Това е НОРМАЛНО — bootstrap (опция 1) е само за НОВ сървър.${NC}"
     echo ""
-    echo "  За дебъгване — SSH-ни ръчно и виж:"
+    echo -e "  За вече работещ сървър ${GREEN}НЕ ти трябва bootstrap${NC}. Вместо това:"
+    echo -e "    ${CYAN}• Обновяване на код:${NC}  опция 2 (Deploy) или опция 3 (само сорс)"
+    echo -e "    ${CYAN}• Обновяване на асети:${NC} опция 4 (само видеа/картинки)"
+    echo -e "    ${CYAN}• Нови sudo права:${NC}    опция 28 (Update sudoers) — пуска се без парола,"
+    echo -e "      защото 03-kcy-admin-sudo.sh е whitelist-нат за ${USER}:"
+    echo -e "        ${GREEN}ssh -p $PORT ${USER}@${SERVER}${NC}"
+    echo -e "        ${GREEN}sudo /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh${NC}"
+    echo ""
+    echo -e "  ${YELLOW}Истински нов сървър?${NC} Тогава ${USER} трябва да е пълен sudoer (в групата sudo),"
+    echo -e "  а не ограничен. Провери на сървъра: ${GREEN}groups ${USER}${NC}"
+    echo ""
+    echo "  За ръчно дебъгване:"
     echo "    ssh -p $PORT ${USER}@${SERVER}"
-    echo "    sudo bash /tmp/02-bootstrap-server.sh"
+    echo "    sudo bash ~/${REMOTE_DIR}/02-bootstrap-server.sh"
     exit 1
 }
 echo ""
