@@ -243,17 +243,28 @@ run_choice() {
         2)
             # Динамичен списък от .deploy-targets за deploy
             echo ""
-            echo "  Target?"
+            echo -e "${BOLD}${CYAN}  ПЪЛЕН DEPLOY — на кой сървър?${NC}"
+            echo "  (Качва целия проект, разархивира, пуска 05-server-install:"
+            echo "   npm install + реконфигурация + рестарт. Ползвай при голяма промяна"
+            echo "   или нов пакет. За само код → опция 3, за само видеа → опция 4.)"
+            echo ""
             IDX=1
             declare -a DT_ARR=()
             if [ -f .deploy-targets ]; then
                 for t in $(grep -oE "^TARGET_[a-zA-Z0-9_]+_SERVER" .deploy-targets | sed -E 's/^TARGET_(.+)_SERVER$/\1/' | sort -u); do
-                    echo "    $IDX) $t"
+                    s_var="TARGET_${t}_SERVER"; p_var="TARGET_${t}_PORT"; l_var="TARGET_${t}_LABEL"
+                    case "$t" in
+                        prod) DESC="истинският production сървър (живият сайт, който виждат хората)";;
+                        vm)   DESC="локална тестова виртуална машина (за проба преди prod)";;
+                        *)    DESC="${!l_var:-$t}";;
+                    esac
+                    echo -e "    $IDX) ${GREEN}$t${NC} — $DESC"
+                    echo "        ${!s_var}:${!p_var}"
                     DT_ARR[$IDX]="$t"
                     IDX=$((IDX+1))
                 done
             fi
-            echo "    $IDX) custom (interactive)"
+            echo -e "    $IDX) ${GREEN}custom${NC} — ръчно въвеждаш server/user/port (друг сървър)"
             CUSTOM_IDX=$IDX
             echo ""
             read -p "  Избери [1-${IDX}]: " PICK

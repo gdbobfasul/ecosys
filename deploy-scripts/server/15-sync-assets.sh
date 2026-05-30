@@ -32,8 +32,10 @@ echo -e "${CYAN}  намерено public/assets: ${ASRC:-НЕ}${NC}"
 [ -n "$ASRC" ] && [ -d "$ASRC" ] || { echo -e "${RED}✗ В архива няма public/assets${NC}"; rm -rf "$SRC"; exit 1; }
 
 mkdir -p "$WEB_ROOT/assets"
-echo -e "${YELLOW}rsync assets -> ${WEB_ROOT}/assets (overlay, без --delete)${NC}"
-if rsync -a "$ASRC/" "$WEB_ROOT/assets/"; then
+echo -e "${YELLOW}rsync assets -> ${WEB_ROOT}/assets (overlay, --checksum)${NC}"
+# --checksum: сравнява СЪДЪРЖАНИЕТО, не размер/време. Иначе файл със същия размер
+# (но друго съдържание/движение) НЕ се презаписва — точно този бъг.
+if rsync -a --checksum "$ASRC/" "$WEB_ROOT/assets/"; then
     echo -e "  ${GREEN}✓ assets копирани${NC}"
 else
     echo -e "  ${RED}✗ rsync assets се провали${NC}"; rm -rf "$SRC"; exit 1

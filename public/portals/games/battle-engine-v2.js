@@ -28,6 +28,10 @@
 (function (global) {
 'use strict';
 
+// Cache-busting за анимациите. Смяна на тази стойност = браузърите теглят
+// видеата наново (без нужда от hard refresh). Бутай я при всяко ново качване на assets.
+var ASSET_V = '?v=20260530b';
+
 var MOVE_KEYS = ['v', 'b'];
 // щети, които ОБЕЗДВИЖВАТ целта за следващия ѝ ход (корени/лед/ток)
 var IMMOBILIZE = ['roots', 'iceblocks', 'electricity'];
@@ -520,7 +524,9 @@ BattleEngine.prototype._resolveVideoUrl = function (unit, action) {
 
     var urls = candidates.map(function (name) {
         var topFolder = action.indexOf('react:') === 0 ? 'die-Damage' : 'Closes-Attacks';
-        return basePath + topFolder + '/' + mode + '/' + folder + '/' + fileBase + '-' + name + '.webm';
+        // ?v=ASSET_VERSION — cache-busting: при ново качване сменяш ASSET_VERSION
+        // и браузърът тегли видеата наново (иначе кешира стари и refresh не помага).
+        return basePath + topFolder + '/' + mode + '/' + folder + '/' + fileBase + '-' + name + '.webm' + ASSET_V;
     });
 
     return urls;  // масив, опитваме по ред
