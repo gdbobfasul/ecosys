@@ -1,5 +1,5 @@
 /* KCY Portals — Battle Engine v2 (DOM + WebM с alpha)
-   Version: 1.0094
+   Version: 1.0095
 
    Походова битка с реални видео анимации (вместо canvas рисуване).
 
@@ -308,7 +308,7 @@ BattleEngine.prototype.start = function () {
     this._loadKeyLabels();
     this.genCombos();
     try {
-        console.log('%cKCY Battle v2 (1.0094) — всеки герой: свои 6 клавиша, комбо 4 от тях (произволен ред)',
+        console.log('%cKCY Battle v2 (1.0095) — всеки герой: свои 6 клавиша, комбо 4 от тях (произволен ред)',
                     'color:#f8c450;font-weight:bold');
         var cs = {};
         for (var id in this.heroCombos) {
@@ -712,7 +712,8 @@ BattleEngine.prototype._renderTargetArrow = function () {
     var actor = this.turnOrder[this.turnIdx];
     var foes = this._aliveFoes();
     var showable = this.state === 'playing' && !this.anim &&
-                   actor && actor.side === 'ally' && foes.length > 0;
+                   actor && actor.side === 'ally' && foes.length > 1;
+    // стрелка има смисъл само при избор между 2+ цели; при 1 враг (Дуел) няма какво да избираш
     if (!showable) { a.style.display = 'none'; return; }
     if (this.selTarget >= foes.length) this.selTarget = 0;
     var t = foes[this.selTarget];
