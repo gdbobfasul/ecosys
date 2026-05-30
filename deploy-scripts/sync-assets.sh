@@ -14,7 +14,7 @@ cd "$PROJECT_ROOT"
 
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 STAGING="/var/www/deploy"
-REMOTE_SCRIPT="/var/www/kcy-ecosystem/deploy-scripts/server/15-sync-assets.sh"
+REMOTE_SCRIPT="${STAGING}/deploy-scripts/server/15-sync-assets.sh"
 
 [ -d public/assets ] || { echo -e "${RED}Няма public/assets в проекта${NC}"; exit 1; }
 
@@ -55,10 +55,10 @@ echo ""; echo -e "  Target:  ${GREEN}${USER}@${SERVER}:${PORT}${NC}"
 echo -e "  Режим:   ${GREEN}само АСЕТИ${NC} (public/assets), overlay, без рестарт"
 echo ""
 
-# ── архив само с public/assets ──
+# ── архив с public/assets + deploy-scripts (последното е малко, нужно за staging на 15) ──
 TAR="${HOME}/kcy-assets-$(date +%Y%m%d-%H%M%S).tar.gz"
 echo -e "${YELLOW}[1/3] Архивиране на public/assets ($(du -sh public/assets | cut -f1))...${NC}"
-tar -czf "$TAR" public/assets || { echo -e "${RED}tar се провали${NC}"; exit 1; }
+tar -czf "$TAR" public/assets deploy-scripts || { echo -e "${RED}tar се провали${NC}"; exit 1; }
 echo -e "  ${GREEN}✓ $(du -h "$TAR" | cut -f1)${NC}"
 
 # ── качване ──
@@ -70,9 +70,21 @@ for a in 1 2 3 4; do $SCP "$TAR" "${USER}@${SERVER}:${REMOTE_TAR}" && { OK=true;
 $OK || { echo -e "${RED}scp се провали${NC}"; rm -f "$TAR"; exit 1; }
 echo -e "  ${GREEN}✓ Качено${NC}"
 
-# ── активиране (sudo, само 15-sync-assets.sh) ──
+# ── активиране ──
+# deploy owns /var/www/deploy → разархивираме deploy-scripts там БЕЗ sudo (за да е наличен
+# 15-sync-assets.sh — staging пътя, който е whitelist-нат). После го пускаме със sudo.
 echo -e "${YELLOW}[3/3] Прилагане на сървъра (overlay в /var/www/html/assets)...${NC}"
-ssh -t -o ConnectTimeout=15 -p ${PORT} "${USER}@${SERVER}" "chmod +x ${REMOTE_SCRIPT} 2>/dev/null; sudo ${REMOTE_SCRIPT} ${REMOTE_TAR}"
+ssh -t -o ConnectTimeout=15 -p ${PORT} "${USER}@${SERVER}" "
+    set -e
+    cd ${STAGING}
+    rm -rf _extract; mkdir -p _extract
+    tar -xzf '${REMOTE_TAR}' -C _extract deploy-scripts 2>/dev/null || true
+    [ -d _extract/deploy-scripts ] && { rm -rf deploy-scripts; mv _extract/deploy-scripts deploy-scripts; }
+    rm -rf _extract
+    find deploy-scripts -name '*.sh' -exec sed -i 's/\r\$//' {} + 2>/dev/null || true
+    chmod +x deploy-scripts/server/*.sh 2>/dev/null || true
+    sudo ${REMOTE_SCRIPT} '${REMOTE_TAR}'
+"
 RC=$?
 rm -f "$TAR"
 echo ""
