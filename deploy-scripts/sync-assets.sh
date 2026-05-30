@@ -56,10 +56,10 @@ echo ""; echo -e "  Target:  ${GREEN}${USER}@${SERVER}:${PORT}${NC}"
 echo -e "  Режим:   ${GREEN}само АСЕТИ${NC} (public/assets), overlay, без рестарт"
 echo ""
 
-# ── архив само с public/assets ──
+# ── архив само с public/assets (БЕЗ raw оригиналите — те са source, не за сървъра) ──
 TAR="${HOME}/kcy-assets-$(date +%Y%m%d-%H%M%S).tar.gz"
-echo -e "${YELLOW}[1/3] Архивиране на public/assets ($(du -sh public/assets | cut -f1))...${NC}"
-tar -czf "$TAR" public/assets || { echo -e "${RED}tar се провали${NC}"; exit 1; }
+echo -e "${YELLOW}[1/3] Архивиране на public/assets (без raw)...${NC}"
+tar -czf "$TAR" --exclude='public/assets/animations/raw' public/assets || { echo -e "${RED}tar се провали${NC}"; exit 1; }
 echo -e "  ${GREEN}✓ $(du -h "$TAR" | cut -f1)${NC}"
 
 # ── качване ──
