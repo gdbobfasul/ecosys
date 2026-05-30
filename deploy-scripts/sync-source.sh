@@ -14,7 +14,8 @@ cd "$PROJECT_ROOT"
 
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 STAGING="/var/www/deploy"
-REMOTE_SCRIPT="${STAGING}/deploy-scripts/server/14-sync-source.sh"
+PROJECT_DIR="/var/www/kcy-ecosystem"
+REMOTE_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/14-sync-source.sh"
 
 # ── избор на target ──
 [ -f .deploy-targets ] && source .deploy-targets
@@ -82,21 +83,10 @@ $OK || { echo -e "${RED}scp се провали${NC}"; rm -f "$TAR"; exit 1; }
 echo -e "  ${GREEN}✓ Качено${NC}"
 
 # ── активиране ──
-# deploy owns /var/www/deploy → разархивираме deploy-scripts там БЕЗ sudo, за да е
-# наличен 14-sync-source.sh (същия staging път, който е whitelist-нат, както при Deploy/05).
-# После го пускаме със sudo и му подаваме архива (той сам прави overlay-а към живите папки).
+# 14-sync-source.sh вече е инсталиран на сървъра (Deploy го слага в kcy-ecosystem)
+# и е whitelist-нат. Просто му подаваме качения архив — той сам разархивира и прави overlay.
 echo -e "${YELLOW}[3/3] Прилагане на сървъра (overlay + рестарт)...${NC}"
-ssh -t -o ConnectTimeout=15 -p ${PORT} "${USER}@${SERVER}" "
-    set -e
-    cd ${STAGING}
-    rm -rf _extract; mkdir -p _extract
-    tar -xzf '${REMOTE_TAR}' --strip-components=1 -C _extract deploy-scripts 2>/dev/null || tar -xzf '${REMOTE_TAR}' -C _extract
-    rm -rf deploy-scripts && mv _extract/deploy-scripts deploy-scripts 2>/dev/null || cp -r _extract/*/deploy-scripts deploy-scripts 2>/dev/null || true
-    rm -rf _extract
-    find deploy-scripts -name '*.sh' -exec sed -i 's/\r\$//' {} + 2>/dev/null || true
-    chmod +x deploy-scripts/server/*.sh 2>/dev/null || true
-    sudo ${REMOTE_SCRIPT} '${REMOTE_TAR}'
-"
+ssh -t -o ConnectTimeout=15 -p ${PORT} "${USER}@${SERVER}" "sudo ${REMOTE_SCRIPT} '${REMOTE_TAR}'"
 RC=$?
 rm -f "$TAR"
 echo ""
