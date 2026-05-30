@@ -81,16 +81,20 @@ deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/09-s
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh
+deploy ALL=(root) NOPASSWD: /var/www/kcy-ecosystem/deploy-scripts/server/03-kcy-admin-sudo.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/03-kcy-admin-sudo.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/03-kcy-admin-sudo.sh
 
 # Леки трансфери (sync само сорс / само асети) — overlay, без full install
+# Скриптовете живеят в ИНСТАЛИРАНАТА папка (/var/www/kcy-ecosystem), не в staging.
 # Завършващото "" означава: позволено с КАКВИТО И ДА Е аргументи (пътя до архива).
-deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/14-sync-source.sh ""
-deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/14-sync-source.sh ""
-deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/14-sync-source.sh ""
+deploy ALL=(root) NOPASSWD: /var/www/kcy-ecosystem/deploy-scripts/server/14-sync-source.sh ""
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/14-sync-source.sh ""
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/14-sync-source.sh ""
 
-deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/15-sync-assets.sh ""
-deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/15-sync-assets.sh ""
-deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/15-sync-assets.sh ""
+deploy ALL=(root) NOPASSWD: /var/www/kcy-ecosystem/deploy-scripts/server/15-sync-assets.sh ""
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/15-sync-assets.sh ""
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/15-sync-assets.sh ""
 
 # Systemd service management (само за KCY services)
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat

@@ -4,7 +4,7 @@
 # KCY — Sync ONLY assets (public/assets) към живия web root.
 # Без --delete (не трие нищо), без рестарт (nginx сервира статично).
 # Изпълнява се КАТО root (през sudo). Аргумент: път до качения tar.gz.
-#   sudo /var/www/deploy/deploy-scripts/server/15-sync-assets.sh <tarball>
+#   sudo /var/www/kcy-ecosystem/deploy-scripts/server/15-sync-assets.sh <tarball>
 ##############################################################################
 set -e
 TARBALL="$1"
