@@ -82,11 +82,22 @@ deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/03-kcy-admin-s
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh
 
+# Леки трансфери (sync само сорс / само асети) — overlay, без full install
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/14-sync-source.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/14-sync-source.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/14-sync-source.sh
+
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/15-sync-assets.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/15-sync-assets.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/15-sync-assets.sh
+
 # Systemd service management (само за KCY services)
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3
+deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-portals
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat.service
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3.service
+deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-portals.service
 deploy ALL=(root) NOPASSWD: /bin/systemctl status kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl status kcy-eco3
 deploy ALL=(root) NOPASSWD: /bin/systemctl start kcy-chat
