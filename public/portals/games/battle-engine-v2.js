@@ -21,7 +21,7 @@
 
    Правилата:
      V/B — обикновени удари (melee=0-10%, magic=10-20% от макс HP)
-     Скрита 4-буквена комбинация (от q w e r a s d f) — специален удар (30-40%)
+     Скрита 4-буквена комбинация (от q w e r a s) — специален удар (30-40%)
      Магьосникът има 2 комбинации (2 specials)
      Комбинациите се генерират ВЕДНЪЖ при старт на играта (не на ниво)
 */
@@ -31,7 +31,13 @@
 var MOVE_KEYS = ['v', 'b'];
 // щети, които ОБЕЗДВИЖВАТ целта за следващия ѝ ход (корени/лед/ток)
 var IMMOBILIZE = ['roots', 'iceblocks', 'electricity'];
-var COMBO_KEYS = ['q', 'w', 'e', 'r', 'a', 's'];
+// 9 възможни клавиша; всеки герой получава СВОИ 6 (различни), а комбото е 4 от тях
+var COMBO_ALPHABET = ['q', 'w', 'e', 'r', 't', 'a', 's', 'd', 'f'];
+var KEYS_PER_HERO = 6;
+// физически клавиши → буква (за да работи при кирилица и всяка подредба)
+var CODE_MAP = { KeyV: 'v', KeyB: 'b', KeyQ: 'q', KeyW: 'w', KeyE: 'e', KeyR: 'r', KeyT: 't', KeyA: 'a', KeyS: 's', KeyD: 'd', KeyF: 'f' };
+// обратното — за да питаме коя буква стои на физическия клавиш в подредбата на играча
+var LETTER_TO_CODE = { v: 'KeyV', b: 'KeyB', q: 'KeyQ', w: 'KeyW', e: 'KeyE', r: 'KeyR', t: 'KeyT', a: 'KeyA', s: 'KeyS', d: 'KeyD', f: 'KeyF' };
 
 function pickRandom(arr, n) {
     var copy = arr.slice(), out = [];
@@ -69,7 +75,9 @@ function BattleEngine(opts) {
     this.bestLevel = 1;
     this.bestScore = 0;
     this.heroCombos = {};  // { heroId: [['q','w','e','r'], ...] }
+    this.heroKeys = {};    // { heroId: [6 клавиша] } — различни за всеки герой
     this.comboInput = [];
+    this.discovered = {};  // { heroId: {0:true} } — открити комбинации → бутони за спец удар
     this.turnOrder = [];
     this.turnIdx = 0;
     this.anim = null;
@@ -81,6 +89,8 @@ function BattleEngine(opts) {
     this.debug = !!opts.debug || /[?&](adm=bgmasters-set|debug=1)\b/.test(
         (global.location && global.location.search) || '');
     this._logLines = [];
+    this._idleLogged = {};   // idle файлове логнати веднъж за играта
+    this._lastLogged = null; // последно логнат файл (за дедуп на последователни)
 
     this._buildDOM();
     this._fitArena();
@@ -208,6 +218,27 @@ BattleEngine.prototype._fitArena = function () {
     this.els.stage.style.setProperty('--s', s); this.els.stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
 };
 
+/* ── етикети на клавишите спрямо подредбата на играча (кирилица/китайска и т.н.) ── */
+BattleEngine.prototype._loadKeyLabels = function () {
+    var self = this;
+    this.keyLabels = this.keyLabels || {};
+    try {
+        if (navigator.keyboard && navigator.keyboard.getLayoutMap) {
+            navigator.keyboard.getLayoutMap().then(function (map) {
+                for (var letter in LETTER_TO_CODE) {
+                    var lbl = map.get(LETTER_TO_CODE[letter]);
+                    if (lbl) self.keyLabels[letter] = ('' + lbl).toUpperCase();
+                }
+                if (self.state === 'playing') self._renderHUD();
+            }).catch(function () {});
+        }
+    } catch (e) {}
+};
+// какво да ПОКАЖЕМ на играча за даден вътрешен клавиш (спрямо неговата клавиатура)
+BattleEngine.prototype._keyLabel = function (letter) {
+    return (this.keyLabels && this.keyLabels[letter]) || letter.toUpperCase();
+};
+
 /* ── входни събития ── */
 BattleEngine.prototype._bind = function () {
     var self = this;
@@ -230,25 +261,40 @@ BattleEngine.prototype._bind = function () {
             e.preventDefault();
             return;
         }
-        var k = (e.key || '').toLowerCase();
-        if (MOVE_KEYS.indexOf(k) > -1 || COMBO_KEYS.indexOf(k) > -1) self.handleKey(actor, k);
+        var k = CODE_MAP[e.code] || (e.key || '').toLowerCase();
+        if (MOVE_KEYS.indexOf(k) > -1 || COMBO_ALPHABET.indexOf(k) > -1) self.handleKey(actor, k);
     });
 };
 
 /* ── комбинации ── */
 BattleEngine.prototype.genCombos = function () {
     this.heroCombos = {};
+    this.heroKeys = {};
+    this.discovered = {};  // нова игра — нищо още не е открито
     var pool = this.heroPool;
+    var usedPools = {};
+    function pickN(arr, n) {
+        var cp = arr.slice(), out = [];
+        for (var i = 0; i < n && cp.length; i++) out.push(cp.splice(Math.floor(Math.random() * cp.length), 1)[0]);
+        return out;
+    }
     for (var i = 0; i < pool.length; i++) {
         var def = pool[i];
+        if (this.heroKeys[def.id]) continue;  // същият герой и в двата pool-а — едни и същи клавиши
+        // 6 клавиша за този герой — различни от другите герои
+        var keys, pk, tries = 0;
+        do { keys = pickN(COMBO_ALPHABET, KEYS_PER_HERO).sort(); pk = keys.join(''); }
+        while (usedPools[pk] && ++tries < 60);
+        usedPools[pk] = true;
+        this.heroKeys[def.id] = keys;
+        // комбинации = 4 от тези 6, различни помежду си
         var n = (def.specials || []).length;
-        var combos = [];
+        var combos = [], used = {};
         for (var s = 0; s < n; s++) {
-            var poolCopy = COMBO_KEYS.slice();
-            var c = [];
-            for (var k = 0; k < 4 && poolCopy.length; k++) {
-                c.push(poolCopy.splice(Math.floor(Math.random() * poolCopy.length), 1)[0]);
-            }
+            var c, ck, t2 = 0;
+            do { c = pickN(keys, 4).sort(); ck = c.join(''); }
+            while (used[ck] && ++t2 < 60);
+            used[ck] = true;
             combos.push(c);
         }
         this.heroCombos[def.id] = combos;
@@ -259,7 +305,20 @@ BattleEngine.prototype.genCombos = function () {
 BattleEngine.prototype.start = function () {
     var self = this;
     this._bind();
+    this._loadKeyLabels();
     this.genCombos();
+    try {
+        console.log('%cKCY Battle v2 (1.0094) — всеки герой: свои 6 клавиша, комбо 4 от тях (произволен ред)',
+                    'color:#f8c450;font-weight:bold');
+        var cs = {};
+        for (var id in this.heroCombos) {
+            cs[id] = {
+                клавиши: (this.heroKeys[id] || []).join('').toUpperCase(),
+                комбо: this.heroCombos[id].map(function (c) { return c.join('').toUpperCase(); })
+            };
+        }
+        console.table ? console.table(cs) : console.log('Клавиши/комбинации:', cs);
+    } catch (e) {}
     if (this.standalone) {
         this.drawMenu();
         return;
@@ -285,6 +344,8 @@ BattleEngine.prototype.nextLevel = function () {
 
 BattleEngine.prototype.setupLevel = function () {
     this.comboInput = [];
+    this._stopIdleWatch();                 // спри стария watchdog (сочи към изтрити герои)
+    if (this.els.heroes) this.els.heroes.innerHTML = '';  // махни DOM-а на героите от предишното ниво
     var hpScale = 1 + (this.level - 1) * 0.18;
     var allyDefs = pickRandom(this.heroPool, this.teamSize);
     var foeDefs = pickRandom(this.heroPool, this.teamSize);
@@ -362,8 +423,10 @@ BattleEngine.prototype._buildHeroDOM = function (unit) {
     box.className = 'kbb-hero kbb-' + unit.side;
     box.style.width = w + 'px';
     box.style.height = h + 'px';
-    box.style.left = (unit.x - w / 2) + 'px';
-    box.style.top = (unit.y - h) + 'px';  // вертикално закотвен по подметката
+    unit.homeLeft = unit.x - w / 2;
+    unit.homeTop = unit.y - h;  // закотвен по подметката
+    box.style.left = unit.homeLeft + 'px';
+    box.style.top = unit.homeTop + 'px';
     box.dataset.heroId = unit.def.id;
 
     // два <video> елемента: единият тече, другият зарежда следващото
@@ -506,7 +569,20 @@ BattleEngine.prototype._setHeroState = function (unit, action, opts) {
             unit.animHistory.unshift(base);
             if (unit.animHistory.length > 5) unit.animHistory.length = 5;
             unit.curAnim = base;
-            if (self.debug) self._renderDebug();
+            // ЛОГ на реалния видео файл, който се изпълнява
+            if (self.debug) {
+                self._idleLogged = self._idleLogged || {};
+                var isIdle = (action === 'idle');
+                if (isIdle) {
+                    // idle — само ВЕДНЪЖ за цялата игра, за всеки уникален файл
+                    if (!self._idleLogged[base]) { self._idleLogged[base] = true; self._log(base); }
+                } else if (self._lastLogged !== base) {
+                    // останалите — без последователни дубли на същия файл
+                    self._log(base);
+                }
+                if (!isIdle) self._lastLogged = base;
+                self._renderDebug();
+            }
 
             if (opts.onPlay) opts.onPlay(nextVid);
 
@@ -551,6 +627,7 @@ BattleEngine.prototype.advanceTurn = function (first) {
     }
 
     this.comboInput = [];
+    this._comboMiss = false;
     this._renderHUD();
 
     if (actor.side === 'foe') {
@@ -569,20 +646,34 @@ BattleEngine.prototype.handleKey = function (actor, key) {
         if (move) { this.doMove(actor, move); }
         return;
     }
-    // combo
+    // combo — броим само клавишите от 6-те на този герой
+    var myKeys = this.heroKeys[actor.id] || COMBO_ALPHABET;
+    if (myKeys.indexOf(key) === -1) return;  // клавиш извън 6-те на героя — игнор
     this.comboInput.push(key);
     var combos = this.heroCombos[actor.id] || [];
+    try {
+        console.log('combo клавиш:', key.toUpperCase(),
+                    '| буфер(посл.4):', this.comboInput.slice(-4).join('').toUpperCase(),
+                    '| цел за', actor.name + ':', combos.map(function (c) { return c.join('').toUpperCase(); }).join(' или '));
+    } catch (e) {}
     // проверка дали последните 4 съвпадат с някоя комбинация
     if (this.comboInput.length >= 4) {
-        var last4 = this.comboInput.slice(-4).join('');
+        // редът на натискане НЯМА значение — сравняваме наборите (азбучно подредени)
+        var last4 = this.comboInput.slice(-4).slice().sort().join('');
         for (var c = 0; c < combos.length; c++) {
-            if (combos[c].join('') === last4) {
+            if (combos[c].slice().sort().join('') === last4) {
                 this.comboInput = [];
-                this.doSpecial(actor, c);
+                this._comboMiss = false;
+                var first = !(this.discovered[actor.id] && this.discovered[actor.id][c]);
+                (this.discovered[actor.id] = this.discovered[actor.id] || {})[c] = true;
+                this._comboJustFound = c + 1;  // за съобщението долу
+                try { console.log('%c✓ КОМБО ОТКРИТО! Спец ' + (c + 1) + ' — натисни бутона, за да удариш', 'color:#6ad06a;font-weight:bold'); } catch (e) {}
+                // НЕ пускаме удара и НЕ крием менюто — само показваме бутона „⚡ Спец N"
                 this._renderHUD();
                 return;
             }
         }
+        this._comboMiss = true;  // последните 4 не съвпадат — показва се в лентата
         // ограничи буфера
         if (this.comboInput.length > 12) this.comboInput = this.comboInput.slice(-12);
     }
@@ -665,7 +756,6 @@ BattleEngine.prototype.doMove = function (actor, move) {
             if (t.hp <= 0) t.alive = false;
             else if (IMMOBILIZE.indexOf(dtype) > -1) {
                 t.frozen = true;
-                if (self.debug) self._log(t.name + ' обездвижен (' + dtype + ')');
             }
         });
         self.afterHit();
@@ -698,7 +788,6 @@ BattleEngine.prototype.doSpecial = function (actor, idx) {
             }
             if (t.alive && (sp.freeze || IMMOBILIZE.indexOf(dtype) > -1)) {
                 t.frozen = true;
-                if (self.debug) self._log(t.name + ' обездвижен (' + dtype + ')');
             }
         });
         self.afterHit();
@@ -725,16 +814,15 @@ BattleEngine.prototype.playAttack = function (actor, targets, animName, dtype, k
     var self = this;
     this.anim = { actor: actor, targets: targets };
     actor.locked = true;  // докато тича→удря→връща се: да не го idle-ва watchdog-ът
+    this.els.ctrl.innerHTML = '';      // скрий панела „избор на удар" докато тече анимацията
+    this.els.combo.textContent = '';
     this._renderTargetArrow();  // скрива стрелката докато тече анимация
-    if (this.debug) this._log((actor.side === 'ally' ? '▶' : '◀') + ' ' + actor.name +
-        (isSpecial ? ' СПЕЦИАЛЕН' : ' ' + kind) + ' → ' + targets.map(function (t) { return t.name; }).join(', '));
 
     var primary = targets[0];
     var isAll = targets.length > 1;
 
     var attackDuration = 3000;  // ms (резерв ако видеото няма onended)
     var moveDuration = 800;
-    var hitMoment = attackDuration * 0.45;
 
     // всеки герой ПЪРВО тича/върви към противника (по-близо до центъра), после удря
     var approach = function (cb) {
@@ -749,49 +837,65 @@ BattleEngine.prototype.playAttack = function (actor, targets, animName, dtype, k
             tx = primary.baseX + (actor.side === 'ally' ? -gap : gap);
             ty = primary.baseY;
         }
+        // walk-анимацията тръгва ЕДНОВРЕМЕННО с движението
+        self._setHeroState(actor, 'walks');
         actor.dom.box.style.transition = 'left ' + moveDuration + 'ms ease-out, top ' + moveDuration + 'ms ease-out';
         actor.dom.box.style.left = (tx - aw / 2) + 'px';
         actor.dom.box.style.top = (ty - ah) + 'px';
-        self._setHeroState(actor, 'walks');
         setTimeout(cb, moveDuration);
     };
 
-    var doAttackAnim = function (cb) {
+    var stationary = !!actor.def.stationary;  // магьосници: не сменят позиция
+
+    // координатор: връщане/завършване СЛЕД като и атаката, и реакцията на целта свършат
+    var attackEnded = false, hitDone = false, reactsLeft = 0, proceeded = false;
+    var proceed = function () {
+        if (proceeded || !attackEnded || !hitDone || reactsLeft > 0) return;
+        proceeded = true;
+        if (stationary) finishUp();        // магът не е мърдал — направо приключва
+        else goBack(finishUp);             // движещият се връща обратно
+    };
+
+    var doAttackAnim = function () {
         var ended = false;
-        var finish = function () { if (!ended) { ended = true; cb(); } };
-        self._setHeroState(actor, 'attack:' + animName, { onEnd: finish });
-        setTimeout(finish, attackDuration);  // предпазител
-        setTimeout(function () {
+        // когато анимацията на АТАКУВАЩИЯ свърши → чак тогава пускаме реакцията на целта
+        var onAtkEnd = function () {
+            if (ended) return;
+            ended = true; attackEnded = true;
+            // прилагаме щетите и пускаме реакцията СЛЕД края на атаката
             targets.forEach(function (t) {
                 if (!t.alive) return;
-                t.locked = true;  // показва реакцията си, не idle, докато трае ударът
-                // type-реакция (-inFire/-snakes/-dragon...), после общата "hit" ако я има
+                t.locked = true; reactsLeft++;
                 self._setHeroState(t, 'react:' + dtype, { onEnd: function () {
-                    if (t.alive && !t.diesPlayed) self._reactHitFollow(t);
-                    else t.locked = false;
+                    var after = function () { reactsLeft--; proceed(); };
+                    if (t.alive && !t.diesPlayed) self._reactHitFollow(t, after);
+                    else { t.locked = false; after(); }
                 }});
             });
             onHit();
             self._renderHUD();
             self._screenShake(isSpecial ? 18 : 10);
-        }, hitMoment);
+            hitDone = true;
+            proceed();
+        };
+        self._setHeroState(actor, 'attack:' + animName, { onEnd: onAtkEnd });
+        setTimeout(onAtkEnd, attackDuration);  // предпазител, ако onended не гръмне
     };
 
     var goBack = function (cb) {
-        actor.dom.box.style.left = (actor.baseX - actor.dom.box.offsetWidth / 2) + 'px';
-        actor.dom.box.style.top = (actor.baseY - actor.dom.box.offsetHeight) + 'px';
+        // walk-анимацията тръгва едновременно с връщането, точно до home
         self._setHeroState(actor, 'walks');
+        actor.dom.box.style.transition = 'left ' + moveDuration + 'ms ease-out, top ' + moveDuration + 'ms ease-out';
+        actor.dom.box.style.left = actor.homeLeft + 'px';
+        actor.dom.box.style.top = actor.homeTop + 'px';
         setTimeout(cb, moveDuration);
     };
 
     var finishUp = function () {
         // die анимация САМО ако героят наистина е умрял — и точно веднъж.
-        // Живите цели НЕ ги връщаме в idle тук — оставяме react→hit веригата
-        // да си изтече; idle watchdog ще ги прибере след края на клипа.
         targets.forEach(function (t) {
             if (!t.alive && !t.diesPlayed) {
                 t.diesPlayed = true;
-                if (self.debug) self._log('\u2620 ' + t.name + ' умира');
                 self._setHeroState(t, 'react:dies', { onEnd: function () {
                     t.dom.box.style.transition = 'opacity 600ms';
                     t.dom.box.style.opacity = '0';
@@ -799,19 +903,18 @@ BattleEngine.prototype.playAttack = function (actor, targets, animName, dtype, k
             }
         });
         self._setHeroState(actor, 'idle');
-        actor.locked = false;  // вкъщи е и приключи — вече може да idle-ва
+        // закотви точно вкъщи и махни transition — да не „пълзи" в idle
+        actor.dom.box.style.transition = 'none';
+        actor.dom.box.style.left = actor.homeLeft + 'px';
+        actor.dom.box.style.top = actor.homeTop + 'px';
+        actor.locked = false;
         self.anim = null;
         self._renderTargetArrow();
         setTimeout(function () { self.advanceTurn(false); }, 400);
     };
 
-    approach(function () {
-        doAttackAnim(function () {
-            goBack(function () {
-                finishUp();
-            });
-        });
-    });
+    if (stationary) doAttackAnim();              // маг: удря на място
+    else approach(function () { doAttackAnim(); }); // останалите: тичат, удрят, после се връщат
 };
 
 BattleEngine.prototype._screenShake = function (mag) {
@@ -832,10 +935,16 @@ BattleEngine.prototype._startIdleWatch = function () {
             if (!u.alive || u.diesPlayed || u.locked) return;
             if (self.anim && (self.anim.actor === u || self.anim.targets.indexOf(u) > -1)) return;
             if (u === actor) return;
-            // само ако стои на мястото си (не е изместен напред)
-            var homeLeft = u.baseX - (u.def.video.size.width / 2);
-            var curLeft = parseFloat(u.dom.box.style.left || '0');
-            if (Math.abs(curLeft - homeLeft) > 3) return;
+            // bystander: трябва да е вкъщи. ако по някаква причина е изместен — върни го моментално
+            var hl = (typeof u.homeLeft === 'number') ? u.homeLeft : (u.baseX - u.def.video.size.width / 2);
+            var ht = (typeof u.homeTop === 'number') ? u.homeTop : (u.baseY - u.def.video.size.height);
+            var cl = parseFloat(u.dom.box.style.left || '0');
+            var ct = parseFloat(u.dom.box.style.top || '0');
+            if (Math.abs(cl - hl) > 3 || Math.abs(ct - ht) > 3) {
+                u.dom.box.style.transition = 'none';
+                u.dom.box.style.left = hl + 'px';
+                u.dom.box.style.top = ht + 'px';
+            }
             var v = u.dom['vid' + u.dom.activeVid.toUpperCase()];
             // ако клипът е свършил (не е loop) — върни го в idle
             if (v && (v.ended || v.paused)) self._setHeroState(u, 'idle');
@@ -849,10 +958,14 @@ BattleEngine.prototype._stopIdleWatch = function () {
 
 /* след type-реакцията — пусни общата "hit" анимация (ако героят я има),
    иначе се връща в idle. Не прекъсва, ако междувременно е умрял. */
-BattleEngine.prototype._reactHitFollow = function (t) {
+BattleEngine.prototype._reactHitFollow = function (t, onDone) {
     var self = this;
-    if (!t.alive || t.diesPlayed) { t.locked = false; return; }
-    var done = function () { if (t.alive && !t.diesPlayed) self._setHeroState(t, 'idle'); t.locked = false; };
+    onDone = onDone || function () {};
+    if (!t.alive || t.diesPlayed) { t.locked = false; onDone(); return; }
+    var done = function () {
+        if (t.alive && !t.diesPlayed) self._setHeroState(t, 'idle');
+        t.locked = false; onDone();
+    };
     // ако type-реакцията вече е била самата "hit" — не я повтаряй
     if (/-hit\.webm$/i.test(t.animHistory[0] || '')) { done(); return; }
     this._setHeroState(t, 'react:hit', { onEnd: done });
@@ -866,9 +979,10 @@ BattleEngine.prototype._renderDebug = function () {
         return (arr || []).map(function (u) {
             var hist = (u.animHistory || []).slice(1, 5).join(' · ') || '—';
             var combos = self.heroCombos[u.id] || [];
+            var hkeys = (self.heroKeys[u.id] || []).join(' ').toUpperCase();
             var comboHtml = '';
             if (combos.length) {
-                comboHtml = '<div class="kbb-dbg-combo">' + combos.map(function (c, ci) {
+                comboHtml = '<div class="kbb-dbg-combo">клавиши: ' + hkeys + '<br>' + combos.map(function (c, ci) {
                     var sp = (u.def.specials || [])[ci] || {};
                     return '⌨ ' + c.join('-').toUpperCase() + ' <i>' + (sp.name || ('спец' + (ci + 1))) + '</i>';
                 }).join('<br>') + '</div>';
@@ -887,7 +1001,7 @@ BattleEngine.prototype._renderDebug = function () {
 BattleEngine.prototype._log = function (line) {
     if (!this.debug) return;
     this._logLines.unshift('· ' + line);
-    if (this._logLines.length > 12) this._logLines.length = 12;
+    if (this._logLines.length > 20) this._logLines.length = 20;
     if (this.dbg) this.dbg.log.innerHTML = this._logLines.join('<br>');
 };
 
@@ -960,7 +1074,7 @@ BattleEngine.prototype._renderHUD = function () {
     this.els.msg.textContent = this.msg || '';
     // controls — за текущия actor
     var actor = this.turnOrder[this.turnIdx];
-    if (actor && actor.side === 'ally' && this.state === 'playing') {
+    if (actor && actor.side === 'ally' && this.state === 'playing' && !this.anim) {
         this._renderControls(actor);
     } else {
         this.els.ctrl.innerHTML = '';
@@ -972,6 +1086,7 @@ BattleEngine.prototype._renderHUD = function () {
 
 BattleEngine.prototype._renderControls = function (actor) {
     var ctrl = this.els.ctrl;
+    ctrl.className = 'kbb-ctrl' + (this.mode === 'Duel' ? ' kbb-ctrl-duel' : '');
     var foes = this._aliveFoes();
     var tgt = foes[Math.min(this.selTarget, foes.length - 1)];
     var html = '<div class="kbb-actor">Твой ход: <b>' + actor.name + '</b></div>';
@@ -982,14 +1097,27 @@ BattleEngine.prototype._renderControls = function (actor) {
     html += '<div class="kbb-btns">';
     for (var i = 0; i < actor.def.moves.length; i++) {
         var m = actor.def.moves[i];
-        html += '<button data-k="' + m.key + '" class="kbb-btn"><b>' + m.key.toUpperCase() + '</b> ' + m.name + '</button>';
+        html += '<button data-k="' + m.key + '" class="kbb-btn"><b>' + this._keyLabel(m.key) + '</b> ' + m.name + '</button>';
     }
     html += '</div>';
     var hasSpecials = (actor.def.specials || []).length > 0;
     if (hasSpecials) {
+        // открити специални → бутони „⚡ Спец N"
+        var disc = this.discovered[actor.id] || {};
+        var specials = actor.def.specials || [];
+        var anyDisc = false;
+        for (var d = 0; d < specials.length; d++) { if (disc[d]) { anyDisc = true; break; } }
+        if (anyDisc) {
+            html += '<div class="kbb-specrow">';
+            for (var s = 0; s < specials.length; s++) {
+                if (disc[s]) html += '<button data-sp="' + s + '" class="kbb-sp">⚡ Спец ' + (s + 1) + ': ' + specials[s].name + '</button>';
+            }
+            html += '</div>';
+        }
         html += '<div class="kbb-comborow">';
-        for (var k = 0; k < COMBO_KEYS.length; k++) {
-            html += '<button data-k="' + COMBO_KEYS[k] + '" class="kbb-ck">' + COMBO_KEYS[k].toUpperCase() + '</button>';
+        var myKeys = this.heroKeys[actor.id] || COMBO_ALPHABET;
+        for (var k = 0; k < myKeys.length; k++) {
+            html += '<button data-k="' + myKeys[k] + '" class="kbb-ck">' + this._keyLabel(myKeys[k]) + '</button>';
         }
         html += '</div>';
     }
@@ -998,14 +1126,23 @@ BattleEngine.prototype._renderControls = function (actor) {
     ctrl.querySelectorAll('button').forEach(function (b) {
         b.addEventListener('click', function () {
             if (self.anim || self.state !== 'playing') return;
-            self.handleKey(actor, b.dataset.k);
+            if (b.dataset.sp != null) { self.doSpecial(actor, parseInt(b.dataset.sp, 10)); self._renderHUD(); }
+            else self.handleKey(actor, b.dataset.k);
         });
     });
-    // combo display
-    if (this.comboInput.length) {
-        this.els.combo.textContent = 'Комбо: ' + this.comboInput.slice(-6).map(function (k) { return k.toUpperCase(); }).join(' · ');
+    // combo display — показва натиснатите клавиши + дали съвпадат
+    if (this._comboJustFound) {
+        this.els.combo.textContent = '✓ Спец ' + this._comboJustFound + ' открит! Натисни зеления бутон, за да удариш';
+        this._comboJustFound = 0;
+    } else if (this.comboInput.length) {
+        var self2 = this;
+        var shown = this.comboInput.slice(-4).map(function (k) { return self2._keyLabel(k); }).join(' · ');
+        var tail = (this.comboInput.length >= 4 && this._comboMiss) ? '   ✗ не съвпада' : '';
+        this.els.combo.textContent = 'Комбо: ' + shown + tail;
     } else {
-        this.els.combo.textContent = '';
+        var self3 = this;
+        var hk = (this.heroKeys[actor.id] || COMBO_ALPHABET).map(function (x) { return self3._keyLabel(x); }).join(' ');
+        this.els.combo.textContent = 'Спец: познай 4 от тези 6 на героя — ' + hk + ' (в произволен ред)';
     }
 };
 
@@ -1013,12 +1150,12 @@ BattleEngine.prototype._renderControls = function (actor) {
 BattleEngine.prototype.drawMenu = function () {
     this.els.ov.style.display = '';
     this.els.ov.innerHTML =
-        '<div class="kbb-card">' +
+        '<div class="kbb-card' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
         '  <h1>' + this.title + '</h1>' +
         '  <p class="kbb-rules">' +
         '   Походова битка. Героите ти излизат <b>произволно</b> на всяко ниво.<br>' +
         '   Обикновени удари: <kbd>V</kbd> или <kbd>B</kbd> (0–20% щета).<br>' +
-        '   Специален: скрита <b>4-буквена комбинация</b> (от Q W E R A S). 30–40% щета.<br>' +
+        '   Специален: всеки герой има <b>свои 6 клавиша</b>; познай скритата <b>комбинация от 4</b> (произволен ред). 30–40% щета.<br>' +
         '   Откриваш комбинациите чрез опити. Не се сменят цяла игра.<br>' +
         '  </p>' +
         '  <p class="kbb-best">Рекорд: ниво ' + this.bestLevel + ' / ' + this.bestScore + ' т.</p>' +
@@ -1031,7 +1168,7 @@ BattleEngine.prototype.drawMenu = function () {
 BattleEngine.prototype.drawLevelUp = function () {
     this.els.ov.style.display = '';
     this.els.ov.innerHTML =
-        '<div class="kbb-card">' +
+        '<div class="kbb-card' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
         '  <h2>Ниво ' + this.level + ' преминато!</h2>' +
         '  <p>Точки: ' + this.score + '</p>' +
         '  <button class="kbb-go">Към ниво ' + (this.level + 1) + ' (Space)</button>' +
@@ -1043,7 +1180,7 @@ BattleEngine.prototype.drawLevelUp = function () {
 BattleEngine.prototype.drawOver = function (won) {
     this.els.ov.style.display = '';
     this.els.ov.innerHTML =
-        '<div class="kbb-card">' +
+        '<div class="kbb-card' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
         '  <h1>' + (won ? '🏆 ПОБЕДА!' : 'Загуба') + '</h1>' +
         '  <p>Стигна до ниво ' + this.level + '</p>' +
         '  <p>Точки: <b>' + this.score + '</b></p>' +
@@ -1061,7 +1198,7 @@ var BATTLE_CSS = [
 '.kbb-wrap{position:relative;width:100%;max-width:1280px;margin:0 auto;background:radial-gradient(ellipse at center,#241a1a 0%,#0a0708 80%);border:2px solid #5a3a1e;border-radius:8px;box-shadow:0 0 60px rgba(0,0,0,.8),inset 0 0 80px rgba(0,0,0,.6);overflow:hidden;}',
 '.kbb-hmm{max-width:720px;}',  // portrait по-малък на screen
 '.kbb-stage{position:absolute;left:50%;top:50%;transform-origin:center center;}',
-'.kbb-bg{position:absolute;inset:0;background:#001834;}',
+'.kbb-bg{position:absolute;inset:0;background:#00ad34;}',
 '.kbb-bg::before{content:none;}',
 '.kbb-bg::after{content:none;}',
 '.kbb-heroes,.kbb-fx,.kbb-hud{position:absolute;inset:0;}',
@@ -1075,6 +1212,7 @@ var BATTLE_CSS = [
 '.kbb-info{position:absolute;top:18px;left:18px;display:flex;gap:18px;font-family:"Cinzel",serif;font-size:18px;color:#c9a35d;text-shadow:1px 1px 0 #000;letter-spacing:2px;}',
 '.kbb-msg{position:absolute;top:60px;left:50%;transform:translateX(-50%);font-family:"Cinzel",serif;font-size:22px;color:#e8d6a5;text-shadow:2px 2px 0 #000,0 0 12px rgba(0,0,0,.8);letter-spacing:1px;}',
 '.kbb-ctrl{position:absolute;top:96px;bottom:auto;left:50%;transform:translateX(-50%);text-align:center;color:#d8c08c;background:rgba(10,8,10,.88);border:3px solid #6a4a2a;border-radius:18px;padding:28px 40px;backdrop-filter:blur(4px);max-width:94%;z-index:42;}',
+'.kbb-ctrl-duel{transform:translateX(-50%) scale(0.4);transform-origin:top center;}',
 '.kbb-actor{font-family:"Cinzel",serif;font-size:40px;letter-spacing:2px;margin-bottom:14px;color:#f0d896;}',
 '.kbb-target{font-family:"Cinzel",serif;font-size:34px;color:#8fd0ff;margin-bottom:18px;letter-spacing:1px;}',
 '.kbb-target b{color:#cfe9ff;}',
@@ -1085,20 +1223,25 @@ var BATTLE_CSS = [
 '.kbb-btn:hover{background:linear-gradient(180deg,#5a3a22,#2a1810);}',
 '.kbb-btn:active{transform:translateY(2px);}',
 '.kbb-comborow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}',
+'.kbb-specrow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}',
+'.kbb-sp{background:linear-gradient(180deg,#2a5a2a,#103010);color:#d8ffd8;border:3px solid #6ad06a;border-radius:14px;padding:16px 28px;font-family:"Cinzel",serif;font-size:34px;font-weight:700;cursor:pointer;letter-spacing:1px;box-shadow:0 4px 0 #000,0 0 18px rgba(120,255,120,.35);}',
+'.kbb-sp:hover{background:linear-gradient(180deg,#357035,#154015);}',
+'.kbb-sp:active{transform:translateY(2px);box-shadow:0 2px 0 #000;}',
 '.kbb-ck{background:#1a1208;color:#9a8862;border:2px solid #3a2a1a;border-radius:12px;width:92px;height:92px;font-family:"Cinzel",serif;font-size:36px;cursor:pointer;letter-spacing:1px;}',
 '.kbb-ck:hover{background:#2a1810;color:#e8d6a5;border-color:#6a4a2a;}',
 '.kbb-combo{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-family:"Cinzel",serif;font-size:30px;color:#f8c450;letter-spacing:4px;text-shadow:0 0 8px rgba(248,196,80,.5);min-height:24px;}',
 '.kbb-target-arrow{position:absolute;color:#3aa0ff;font-size:90px;line-height:1;text-shadow:0 0 18px rgba(58,160,255,.9),0 0 4px #000;pointer-events:none;z-index:41;animation:kbbArrow 0.8s ease-in-out infinite;}',
 '@keyframes kbbArrow{0%,100%{transform:translateX(0)}50%{transform:translateX(18px)}}',
 '.kbb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,5,8,.85);backdrop-filter:blur(6px);z-index:50;}',
-'.kbb-card{max-width:88%;background:linear-gradient(180deg,#1a1208,#0a0608);border:6px solid #6a4a2a;border-radius:32px;padding:130px 150px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.9),inset 0 0 40px rgba(0,0,0,.5);}',
-'.kbb-card h1{font-family:"Cinzel",serif;font-weight:900;font-size:168px;color:#f8c450;letter-spacing:6px;margin:0 0 56px;text-shadow:4px 4px 0 #000,0 0 30px rgba(248,196,80,.4);}',
-'.kbb-card h2{font-family:"Cinzel",serif;font-weight:700;font-size:128px;color:#f0d896;letter-spacing:4px;margin:0 0 56px;}',
-'.kbb-card p{font-size:62px;line-height:1.55;color:#d8c08c;margin:30px 0;font-style:italic;}',
+'.kbb-card{max-width:80%;transform:translateY(-400px);background:linear-gradient(180deg,#1a1208,#0a0608);border:3px solid #6a4a2a;border-radius:16px;padding:65px 75px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.9),inset 0 0 40px rgba(0,0,0,.5);}',
+'.kbb-card-duel{transform:translateY(-150px) scale(0.4);}',
+'.kbb-card h1{font-family:"Cinzel",serif;font-weight:900;font-size:84px;color:#f8c450;letter-spacing:3px;margin:0 0 28px;text-shadow:2px 2px 0 #000,0 0 30px rgba(248,196,80,.4);}',
+'.kbb-card h2{font-family:"Cinzel",serif;font-weight:700;font-size:64px;color:#f0d896;letter-spacing:2px;margin:0 0 28px;}',
+'.kbb-card p{font-size:31px;line-height:1.55;color:#d8c08c;margin:15px 0;font-style:italic;}',
 '.kbb-rules{font-style:normal !important;text-align:left;}',
-'.kbb-rules kbd{font-family:"Cinzel",serif;background:#1a0e06;border:3px solid #8a5a2a;padding:6px 26px;border-radius:10px;color:#f8c450;font-size:50px;}',
-'.kbb-best{color:#c9a35d;font-family:"Cinzel",serif;letter-spacing:2px;margin-top:64px !important;}',
-'.kbb-go{background:linear-gradient(180deg,#7a3a1a,#3a1a08);color:#f8e0a8;border:5px solid #b88a4a;border-radius:22px;padding:50px 110px;font-family:"Cinzel",serif;font-size:70px;font-weight:700;letter-spacing:4px;cursor:pointer;margin-top:64px;text-shadow:2px 2px 0 #000;box-shadow:0 12px 0 #000,inset 0 1px 0 rgba(255,220,160,.3);}',
+'.kbb-rules kbd{font-family:"Cinzel",serif;background:#1a0e06;border:1.5px solid #8a5a2a;padding:3px 13px;border-radius:5px;color:#f8c450;font-size:25px;}',
+'.kbb-best{color:#c9a35d;font-family:"Cinzel",serif;letter-spacing:1px;margin-top:32px !important;}',
+'.kbb-go{background:linear-gradient(180deg,#7a3a1a,#3a1a08);color:#f8e0a8;border:2.5px solid #b88a4a;border-radius:11px;padding:25px 55px;font-family:"Cinzel",serif;font-size:35px;font-weight:700;letter-spacing:2px;cursor:pointer;margin-top:32px;text-shadow:1px 1px 0 #000;box-shadow:0 6px 0 #000,inset 0 1px 0 rgba(255,220,160,.3);}',
 '.kbb-go:hover{background:linear-gradient(180deg,#9a4a20,#5a2a10);}',
 '.kbb-go:active{transform:translateY(2px);box-shadow:0 2px 0 #000;}',
 '@keyframes kbbShake{0%,100%{transform:translate(-50%,-50%) scale(var(--s,1))}25%{transform:translate(calc(-50% - 8px),calc(-50% - 4px)) scale(var(--s,1))}50%{transform:translate(calc(-50% + 6px),calc(-50% + 6px)) scale(var(--s,1))}75%{transform:translate(calc(-50% - 4px),calc(-50% - 6px)) scale(var(--s,1))}}',
@@ -1109,7 +1252,7 @@ var BATTLE_DBG_CSS = [
 '.kbb-dbg{position:fixed;top:80px;width:230px;max-height:46vh;overflow:auto;background:rgba(6,8,12,.92);border:1px solid #2a4a6a;border-radius:8px;padding:8px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#bcd;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.6);}',
 '.kbb-dbg-left{left:8px;}',
 '.kbb-dbg-right{right:8px;}',
-'.kbb-dbg-log{left:8px;bottom:8px;top:auto;width:340px;max-height:24vh;border-color:#4a3a1e;color:#d8c08c;}',
+'.kbb-dbg-log{left:8px;bottom:8px;top:auto;width:420px;max-height:48vh;border-color:#4a3a1e;color:#d8c08c;line-height:1.5;}',
 '.kbb-dbg-title{font-weight:700;color:#5fb0ff;letter-spacing:1px;margin-bottom:6px;border-bottom:1px solid #234;padding-bottom:4px;}',
 '.kbb-dbg-log .kbb-dbg-title{color:#f8c450;border-color:#432;}',
 '.kbb-dbg-hero{margin-bottom:8px;padding:5px 6px;background:rgba(255,255,255,.03);border-radius:5px;border-left:3px solid #2a6;}',

@@ -23,7 +23,7 @@
 /* ── ДРАКОН (само в team/HMM) ── */
 var DRAGON = {
     id: 'dragon', name: 'Дракон', hp: 110, mode: 'HMM',
-    slotShiftX: 200,  // широка картинка — измества се към противника да не се крие зад своите
+    slotShiftX: 350,  // широка картинка — измества се към противника да не се крие зад своите
     moves: [
         { key: 'v', name: 'Огън', type: 'magic', target: 'one',
           attackAnim: ['attack3', 'attack4', 'attack231', 'attack244', 'attack233', 'spits'],
@@ -64,7 +64,7 @@ var DRAGON = {
 
 /* ── МАГЬОСНИК (и в двете игри, но с различни папки) ── */
 var MAGE = {
-    id: 'mage', name: 'Магьосник', hp: 80,
+    id: 'mage', name: 'Магьосник', hp: 80, stationary: true,  // маг: каства от място, не се движи
     moves: [
         { key: 'v', name: 'Огнено кълбо', type: 'magic', target: 'one',
           attackAnim: { left: ['fires-smallFireball', 'fires-bigFireball', 'fires', 'attack1'],
