@@ -5,7 +5,7 @@
 # към живите папки. Без --delete (overlay — не трие работещото).
 # БЕЗ npm install, БЕЗ реконфигурация. Накрая рестартира node сървисите.
 # Изпълнява се КАТО root (през sudo). Аргумент: път до качения tar.gz.
-#   sudo /var/www/deploy/deploy-scripts/server/14-sync-source.sh <tarball>
+#   sudo /var/www/kcy-ecosystem/deploy-scripts/server/14-sync-source.sh <tarball>
 ##############################################################################
 set -e
 TARBALL="$1"

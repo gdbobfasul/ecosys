@@ -470,11 +470,7 @@ run_choice() {
 
         # ── REMOTE ──
         28)
-            echo ""
-            echo "  Изпълни на сървъра:"
-            echo -e "  ${CYAN}ssh deploy@SERVER${NC}"
-            echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh${NC}"
-            press_enter
+            run_cmd ./deploy-scripts/update-sudoers.sh
             ;;
         29)
             echo ""
