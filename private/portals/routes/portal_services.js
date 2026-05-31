@@ -1,5 +1,5 @@
 // KCY Portals — Portal Services routes (НОВ файл — не пипа services.js)
-// Version: 1.0093
+// Version: 1.0098
 // 7 услуги БЕЗ изкуствен интелект. Повечето работят изцяло в браузъра.
 // Само "crypto" има нужда от backend — за валутните курсове.
 
@@ -21,6 +21,8 @@ const PORTAL_SERVICES = [
     { slug: 'password', title: 'Генератор на пароли', icon: 'KEY',  file: '/portals/services/password.html', description: 'Силни пароли — няколко метода на генериране.' },
     { slug: 'calc',     title: 'Калкулатори',         icon: 'CALC', file: '/portals/services/calc.html',     description: 'Заем, лихва, ДДС, проценти — по държава.' },
     { slug: 'text',     title: 'Текстови инструменти', icon: 'TXT', file: '/portals/services/text.html',     description: 'Брояч на думи, форматиране, Base64.' },
+    { slug: 'pdf-compress', title: 'Свиване на PDF',   icon: 'ZIP',  file: '/portals/services/pdf-compress.html', description: 'Намали размера на голям PDF (сканирани страници, големи снимки).' },
+    { slug: 'charts',   title: 'Финансови графики',   icon: 'CHRT', file: '/portals/services/charts.html',   description: 'BTC RSI, Fibonacci, liquidation heatmap, S&P 500, индекси, BTC/ETH по периоди.' },
 ];
 
 // GET /api/portal-services/list — списък на услугите

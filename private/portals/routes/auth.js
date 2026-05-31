@@ -1,5 +1,5 @@
 // KCY Portals — Auth routes
-// Version: 1.0093
+// Version: 1.0098
 
 const express = require('express');
 const bcrypt = require('bcryptjs');

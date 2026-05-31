@@ -1,4 +1,4 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0098 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -40,6 +40,7 @@
     <button class="tab active" onclick="tab('merge')">Сливане</button>
     <button class="tab" onclick="tab('split')">Разделяне</button>
     <button class="tab" onclick="tab('wm')">Воден знак</button>
+    <button class="tab" onclick="tab('sign')">Визуален подпис</button>
   </div>
 
   <!-- СЛИВАНЕ -->
@@ -72,9 +73,44 @@
     <button class="btn" onclick="doWatermark()">Добави воден знак</button>
     <div class="status" id="wStatus"></div>
   </div>
+  <!-- ВИЗУАЛЕН ПОДПИС -->
+  <div id="sign" class="panel card">
+    <p class="hint" style="background:#fff3cd;color:#8a6d3b;padding:10px;border-radius:8px;">
+      ⚠️ Това е <b>визуален</b> подпис (образ на подписа като картинка). НЕ е електронен/криптографски подпис —
+      правно не е валиден е-подпис, а само визуално поставяне на изображение върху PDF.
+    </p>
+
+    <h3 style="margin:16px 0 8px;font-size:1.05em;">Стъпка 1 — Извлечи подпис от документ</h3>
+    <label>PDF с подпис (визуалния образ)</label>
+    <input type="file" id="sigSrc" accept="application/pdf">
+    <label>Страница, на която е подписът</label>
+    <input type="number" id="sigPage" value="1" min="1" style="width:90px;">
+    <button class="btn sec" onclick="loadSigPage()">Покажи страницата</button>
+    <p class="hint">След като се покаже страницата, очертай с мишката правоъгълник около подписа, за да го изрежеш.</p>
+    <div id="sigCanvasWrap" style="position:relative;display:none;overflow:auto;border:1px solid #ccc;border-radius:8px;margin-top:10px;">
+      <canvas id="sigCanvas" style="display:block;max-width:100%;"></canvas>
+      <div id="sigSel" style="position:absolute;border:2px dashed #d9534f;background:rgba(217,83,79,.15);display:none;pointer-events:none;"></div>
+    </div>
+    <button class="btn" id="cropBtn" onclick="cropSig()" style="display:none;margin-top:10px;">Изрежи подписа</button>
+    <div id="sigPreview" style="margin-top:10px;"></div>
+
+    <h3 style="margin:22px 0 8px;font-size:1.05em;">Стъпка 2 — Постави подписа на друг PDF</h3>
+    <label>PDF за подписване</label>
+    <input type="file" id="tgtPdf" accept="application/pdf">
+    <label>Страница (1 = първа, -1 = последна)</label>
+    <input type="number" id="tgtPage" value="-1" style="width:90px;">
+    <label>Размер на подписа (% от ширината на страницата)</label>
+    <input type="number" id="sigScale" value="25" min="5" max="100" style="width:90px;">
+    <p class="hint">Подписът се поставя долу вдясно. Първо изрежи подпис в Стъпка 1.</p>
+    <button class="btn" onclick="applySig()">Постави подписа</button>
+    <div class="status" id="signStatus"></div>
+  </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fontkit/1.1.1/fontkit.umd.min.js"></script>
 <script>
+if(window.pdfjsLib){ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }
 var PDFLib=window.PDFLib;
 function tab(id){
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
@@ -142,6 +178,26 @@ async function doSplit(){
   }catch(e){ status('sStatus',false,'Грешка: '+e.message); }
 }
 
+// Зарежда кирилски Unicode шрифт (кешира го). pdf-lib StandardFonts (WinAnsi)
+// не могат кирилица — затова вграждаме TTF чрез fontkit.
+var _cyrFontBytes=null;
+async function getCyrFont(){
+  if(_cyrFontBytes) return _cyrFontBytes;
+  // Шрифтове с кирилица от публични CDN (само TTF/OTF — fontkit не вгражда woff в PDF)
+  var urls=[
+    'https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSans-Bold.ttf',
+    'https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSans.ttf',
+    'https://raw.githubusercontent.com/google/fonts/main/apache/roboto/static/Roboto-Bold.ttf'
+  ];
+  for(var i=0;i<urls.length;i++){
+    try{
+      var r=await fetch(urls[i]);
+      if(r.ok){ _cyrFontBytes=await r.arrayBuffer(); return _cyrFontBytes; }
+    }catch(e){}
+  }
+  throw new Error('Не успях да заредя кирилски шрифт (мрежа?).');
+}
+
 async function doWatermark(){
   var f=document.getElementById('wFile').files[0];
   if(!f){ status('wStatus',false,'Избери PDF файл.'); return; }
@@ -149,12 +205,16 @@ async function doWatermark(){
   try{
     var buf=await f.arrayBuffer();
     var doc=await PDFLib.PDFDocument.load(buf);
-    var font=await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+    // вграждаме Unicode шрифт (за кирилица) чрез fontkit
+    doc.registerFontkit(window.fontkit);
+    var fontBytes=await getCyrFont();
+    var font=await doc.embedFont(fontBytes,{subset:true});
     var pages=doc.getPages();
     pages.forEach(function(page){
       var w=page.getWidth(), h=page.getHeight();
+      var tw=font.widthOfTextAtSize(text,42);
       page.drawText(text,{
-        x:w/2-text.length*9, y:h/2,
+        x:w/2-tw/2, y:h/2,
         size:42, font:font,
         color:PDFLib.rgb(0.6,0.6,0.6),
         opacity:0.35, rotate:PDFLib.degrees(45)
@@ -164,6 +224,93 @@ async function doWatermark(){
     save(bytes,'watermarked.pdf');
     status('wStatus',true,'Готово — воден знак добавен на '+pages.length+' страници.');
   }catch(e){ status('wStatus',false,'Грешка: '+e.message); }
+}
+
+// ============ ВИЗУАЛЕН ПОДПИС ============
+var sigRenderScale=1, sigCroppedDataURL=null, selStart=null;
+
+async function loadSigPage(){
+  var f=document.getElementById('sigSrc').files[0];
+  if(!f){ status('signStatus',false,'Избери PDF с подписа.'); return; }
+  if(!window.pdfjsLib){ status('signStatus',false,'pdf.js не е зареден.'); return; }
+  try{
+    var buf=await f.arrayBuffer();
+    var pdf=await pdfjsLib.getDocument({data:buf}).promise;
+    var pageNum=Math.min(Math.max(parseInt(document.getElementById('sigPage').value,10)||1,1),pdf.numPages);
+    var page=await pdf.getPage(pageNum);
+    var vp=page.getViewport({scale:2}); sigRenderScale=2;
+    var canvas=document.getElementById('sigCanvas');
+    canvas.width=vp.width; canvas.height=vp.height;
+    var ctx=canvas.getContext('2d');
+    await page.render({canvasContext:ctx,viewport:vp}).promise;
+    document.getElementById('sigCanvasWrap').style.display='block';
+    document.getElementById('cropBtn').style.display='inline-block';
+    setupSelection();
+    status('signStatus',true,'Страницата е заредена. Очертай правоъгълник около подписа.');
+  }catch(e){ status('signStatus',false,'Грешка: '+e.message); }
+}
+
+function setupSelection(){
+  var canvas=document.getElementById('sigCanvas');
+  var sel=document.getElementById('sigSel');
+  var wrap=document.getElementById('sigCanvasWrap');
+  function pos(e){
+    var r=canvas.getBoundingClientRect();
+    var cx=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+    var cy=(e.touches?e.touches[0].clientY:e.clientY)-r.top;
+    return {x:cx*(canvas.width/r.width), y:cy*(canvas.height/r.height), dx:cx, dy:cy};
+  }
+  function down(e){ e.preventDefault(); selStart=pos(e); sel.style.display='block'; }
+  function move(e){
+    if(!selStart) return; e.preventDefault();
+    var p=pos(e);
+    var x=Math.min(selStart.dx,p.dx), y=Math.min(selStart.dy,p.dy);
+    var w=Math.abs(p.dx-selStart.dx), h=Math.abs(p.dy-selStart.dy);
+    sel.style.left=x+'px'; sel.style.top=y+'px'; sel.style.width=w+'px'; sel.style.height=h+'px';
+    sel._rect={x:Math.min(selStart.x,p.x),y:Math.min(selStart.y,p.y),w:Math.abs(p.x-selStart.x),h:Math.abs(p.y-selStart.y)};
+  }
+  function up(){ selStart=null; }
+  canvas.onmousedown=down; canvas.onmousemove=move; window.addEventListener('mouseup',up);
+  canvas.ontouchstart=down; canvas.ontouchmove=move; window.addEventListener('touchend',up);
+}
+
+function cropSig(){
+  var sel=document.getElementById('sigSel');
+  var r=sel._rect;
+  if(!r||r.w<5||r.h<5){ status('signStatus',false,'Очертай първо правоъгълник около подписа.'); return; }
+  var src=document.getElementById('sigCanvas');
+  var c=document.createElement('canvas');
+  c.width=Math.round(r.w); c.height=Math.round(r.h);
+  c.getContext('2d').drawImage(src, r.x, r.y, r.w, r.h, 0, 0, r.w, r.h);
+  sigCroppedDataURL=c.toDataURL('image/png');
+  document.getElementById('sigPreview').innerHTML=
+    '<p class="hint">Изрязан подпис:</p><img src="'+sigCroppedDataURL+'" style="max-width:260px;border:1px solid #ccc;border-radius:6px;background:#fff;">';
+  status('signStatus',true,'Подписът е изрязан. Сега мини на Стъпка 2.');
+}
+
+async function applySig(){
+  if(!sigCroppedDataURL){ status('signStatus',false,'Първо изрежи подпис в Стъпка 1.'); return; }
+  var f=document.getElementById('tgtPdf').files[0];
+  if(!f){ status('signStatus',false,'Избери PDF за подписване.'); return; }
+  try{
+    var buf=await f.arrayBuffer();
+    var doc=await PDFLib.PDFDocument.load(buf);
+    var pngBytes=await (await fetch(sigCroppedDataURL)).arrayBuffer();
+    var png=await doc.embedPng(pngBytes);
+    var pages=doc.getPages();
+    var idx=parseInt(document.getElementById('tgtPage').value,10);
+    if(idx===-1||idx>pages.length) idx=pages.length;
+    if(idx<1) idx=1;
+    var page=pages[idx-1];
+    var pw=page.getWidth(), ph=page.getHeight();
+    var scalePct=Math.min(Math.max(parseInt(document.getElementById('sigScale').value,10)||25,5),100)/100;
+    var imgW=pw*scalePct;
+    var imgH=imgW*(png.height/png.width);
+    page.drawImage(png,{ x: pw-imgW-40, y: 40, width: imgW, height: imgH });
+    var bytes=await doc.save();
+    save(bytes,'signed.pdf');
+    status('signStatus',true,'Готово — визуалният подпис е поставен на страница '+idx+'.');
+  }catch(e){ status('signStatus',false,'Грешка: '+e.message); }
 }
 </script>
     <script src="/shared/js/navigation.js?v=1.0095"></script>

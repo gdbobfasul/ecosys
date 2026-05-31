@@ -1,4 +1,4 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0098 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -77,7 +77,12 @@ function apply(op){
     else if(op==='title') t=t.replace(/\S+/g,function(w){return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();});
     else if(op==='sentence') t=t.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g,function(c){return c.toUpperCase();});
     else if(op==='trim') t=t.split(/\n/).filter(function(l){return l.trim();}).join('\n');
-    else if(op==='spaces') t=t.replace(/[ \t]+/g,' ').replace(/ *\n */g,'\n');
+    else if(op==='spaces'){
+      // сбива ВСякакви хоризонтални интервали (обикновен, таб, nbsp, Unicode spaces) в един
+      t=t.replace(/[ \t\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]+/g,' ')
+         .replace(/ *\n */g,'\n')   // маха интервали около нови редове
+         .replace(/[ \t]+$/gm,'');   // маха крайни интервали на всеки ред
+    }
     else if(op==='reverse') t=t.split('').reverse().join('');
     else if(op==='b64enc') t=btoa(unescape(encodeURIComponent(t)));
     else if(op==='b64dec') t=decodeURIComponent(escape(atob(t.trim())));

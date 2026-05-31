@@ -1,0 +1,210 @@
+<!-- Version: 1.0098 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Финансови графики | KCY услуги</title>
+<style>
+  :root { --pri:#2a86d8; --sec:#6ec1e4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:#0e1117; color:#e6e9ef; }
+  .head { background:linear-gradient(135deg,#12141c,#1c2030); color:#fff; padding:24px 20px; text-align:center; border-bottom:2px solid #2a2d3a; }
+  .head h1 { font-size:1.6em; margin-bottom:6px; }
+  .head a { color:#ffd166; text-decoration:none; background:rgba(255,255,255,.08); padding:6px 14px; border-radius:8px; display:inline-block; margin-top:10px; font-size:.9em; }
+  .wrap { max-width:1500px; margin:18px auto; padding:0 14px; }
+  .secttl { font-size:1.15em; font-weight:700; margin:26px 0 10px; color:#ffd166; border-left:4px solid #ffd166; padding-left:10px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(440px,1fr)); gap:16px; }
+  .panel { background:#161a23; border:1px solid #262b38; border-radius:12px; overflow:hidden; }
+  .panel h3 { font-size:.95em; padding:10px 14px; background:#1c2030; color:#cfd4e0; border-bottom:1px solid #262b38; }
+  .panel .body { height:380px; }
+  .panel .body.tall { height:480px; }
+  iframe { width:100%; height:100%; border:0; display:block; }
+  .tv { width:100%; height:100%; }
+  .note { color:#8a92a6; font-size:.82em; margin:8px 0 0; }
+  /* таблици BTC/ETH периоди */
+  .tabs { display:flex; gap:6px; flex-wrap:wrap; margin:6px 0 14px; }
+  .tab { padding:8px 13px; border:1px solid #2a2d3a; border-radius:8px; background:#161a23; color:#cfd4e0; cursor:pointer; font-weight:600; font-size:.85em; }
+  .tab.active { background:#ffd166; color:#12141c; border-color:#ffd166; }
+  .tf { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+  .tf button { padding:6px 11px; border:1px solid #2a2d3a; border-radius:7px; background:#161a23; color:#aeb6c6; cursor:pointer; font-size:.8em; }
+  .tf button.active { background:#2a86d8; color:#fff; border-color:#2a86d8; }
+</style>
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0097">
+</head>
+<body>
+<div class="head">
+  <h1>Финансови графики</h1>
+  <p>Крипто и борсови пазари — на живо (данни: TradingView, Coinglass)</p>
+  <a href="/portals/services/">← Всички услуги</a>
+</div>
+<div class="wrap">
+
+  <!-- ── BTC RSI ── -->
+  <div class="secttl">Bitcoin RSI (седмично / месечно)</div>
+  <div class="grid">
+    <div class="panel"><h3>BTC RSI — седмично (1W)</h3>
+      <div class="body"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+        {"symbol":"BINANCE:BTCUSDT","interval":"W","theme":"dark","style":"1","locale":"bg","studies":["STD;RSI"],"autosize":true,"hide_side_toolbar":true}
+        </script></div></div>
+    </div>
+    <div class="panel"><h3>BTC RSI — месечно (1M)</h3>
+      <div class="body"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+        {"symbol":"BINANCE:BTCUSDT","interval":"M","theme":"dark","style":"1","locale":"bg","studies":["STD;RSI"],"autosize":true,"hide_side_toolbar":true}
+        </script></div></div>
+    </div>
+  </div>
+
+  <!-- ── Fibonacci ── -->
+  <div class="secttl">Bitcoin — Fibonacci нива</div>
+  <div class="grid">
+    <div class="panel"><h3>BTC/USDT — с инструмент за Fibonacci (избери от лентата ↗ "Fib Retracement"); цена дясно, време долу</h3>
+      <div class="body tall"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+        {"symbol":"BINANCE:BTCUSDT","interval":"D","theme":"dark","style":"1","locale":"bg","withdateranges":true,"allow_symbol_change":true,"autosize":true}
+        </script></div></div>
+    </div>
+  </div>
+  <p class="note">За Fibonacci нива: отвори графиката, от лявата лента с инструменти избери „Fib Retracement" и очертай между връх и дъно. Цената е по дясната ос, времето (дни/месеци) по долната.</p>
+
+  <!-- ── Liquidation heatmap ── -->
+  <div class="secttl">Bitcoin — Liquidation Heatmap (дни / месеци)</div>
+  <div class="grid">
+    <div class="panel"><h3>BTC Liquidation Heatmap (Coinglass)</h3>
+      <div class="body tall"><iframe src="https://www.coinglass.com/pro/futures/LiquidationHeatMap" loading="lazy" referrerpolicy="no-referrer"></iframe></div>
+    </div>
+  </div>
+  <p class="note">Liquidation heatmap идва от Coinglass. Ако не се зареди вградено (някои страници блокират iframe), отвори директно: <a href="https://www.coinglass.com/pro/futures/LiquidationHeatMap" target="_blank" rel="noopener" style="color:#ffd166;">coinglass.com</a>. Периодът (дни/месеци) се избира в самата графика.</p>
+
+  <!-- ── S&P 500 ── -->
+  <div class="secttl">S&amp;P 500 (часове / дни / месеци)</div>
+  <div class="grid">
+    <div class="panel"><h3>S&amp;P 500 — изберете период (час/ден/месец) от графиката</h3>
+      <div class="body"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+        {"symbol":"SP:SPX","interval":"D","theme":"dark","style":"1","locale":"bg","withdateranges":true,"autosize":true}
+        </script></div></div>
+    </div>
+  </div>
+
+  <!-- ── Борсови индекси ── -->
+  <div class="secttl">Борсови индекси</div>
+  <div class="grid">
+    <div class="panel"><h3>Световни индекси (преглед)</h3>
+      <div class="body tall"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+        {"colorTheme":"dark","dateRange":"12M","locale":"bg","showChart":true,"isTransparent":true,"width":"100%","height":"100%","tabs":[{"title":"Индекси","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"FOREXCOM:NSXUSD","d":"Nasdaq 100"},{"s":"FOREXCOM:DJI","d":"Dow 30"},{"s":"INDEX:DAX","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]}]}
+        </script></div></div>
+    </div>
+  </div>
+
+  <!-- ── BTC таблици по период ── -->
+  <div class="secttl">Bitcoin — текущо състояние и до 4 години назад</div>
+  <div class="tabs" id="btcTabs">
+    <button class="tab active" data-pair="USDC">BTC / USDC</button>
+    <button class="tab" data-pair="USDT">BTC / USDT</button>
+  </div>
+  <div class="tf" id="btcTf">
+    <span class="note" style="margin-right:6px;">Текущо:</span>
+    <button data-int="15" class="active">15 мин</button>
+    <button data-int="60">час</button>
+    <button data-int="D">ден</button>
+    <button data-int="W">седмица</button>
+    <button data-int="M">месец</button>
+  </div>
+  <div class="grid" id="btcGrid"></div>
+  <p class="note">Текущата графика поддържа 15мин/час/ден/седмица/месец. Графиките „X години назад" показват седмичен/месечен изглед за съответния период.</p>
+
+  <!-- ── ETH таблици по период ── -->
+  <div class="secttl">Ethereum — текущо състояние и до 4 години назад</div>
+  <div class="tabs" id="ethTabs">
+    <button class="tab active" data-pair="USDC">ETH / USDC</button>
+    <button class="tab" data-pair="USDT">ETH / USDT</button>
+  </div>
+  <div class="tf" id="ethTf">
+    <span class="note" style="margin-right:6px;">Текущо:</span>
+    <button data-int="15" class="active">15 мин</button>
+    <button data-int="60">час</button>
+    <button data-int="D">ден</button>
+    <button data-int="W">седмица</button>
+    <button data-int="M">месец</button>
+  </div>
+  <div class="grid" id="ethGrid"></div>
+
+</div>
+
+<script>
+// Изгражда мини-графики за крипто двойка: текуща (избран интервал) + 1-4 г назад (W/M)
+function tvChart(symbol, interval){
+  var cfg={symbol:symbol,interval:interval,theme:'dark',style:'1',locale:'bg',autosize:true,hide_side_toolbar:true,withdateranges:true};
+  var wrap=document.createElement('div');
+  wrap.className='tradingview-widget-container tv';
+  var inner=document.createElement('div');
+  inner.className='tradingview-widget-container__widget';
+  wrap.appendChild(inner);
+  var s=document.createElement('script');
+  s.type='text/javascript';
+  s.async=true;
+  s.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  s.text=JSON.stringify(cfg);
+  wrap.appendChild(s);
+  return wrap;
+}
+
+function buildGrid(gridId, base, pair, curInt){
+  var grid=document.getElementById(gridId);
+  grid.innerHTML='';
+  var symbol='BINANCE:'+base+pair; // напр BINANCE:BTCUSDC
+  // панелите: текущо + 1г + 2г + 3г + 4г назад (общо 5)
+  var panels=[
+    {title:'Текущо ('+labelInt(curInt)+')', interval:curInt},
+    {title:'1 година назад (седмично)', interval:'W'},
+    {title:'2 години назад (месечно)', interval:'M'},
+    {title:'3 години назад (месечно)', interval:'M'},
+    {title:'4 години назад (месечно)', interval:'M'}
+  ];
+  panels.forEach(function(p){
+    var panel=document.createElement('div'); panel.className='panel';
+    var h=document.createElement('h3'); h.textContent=base+'/'+pair+' — '+p.title;
+    var body=document.createElement('div'); body.className='body';
+    body.appendChild(tvChart(symbol, p.interval));
+    panel.appendChild(h); panel.appendChild(body); grid.appendChild(panel);
+  });
+}
+function labelInt(i){
+  return {'15':'15 мин','60':'час','D':'ден','W':'седмица','M':'месец'}[i]||i;
+}
+
+// състояние за BTC и ETH
+var state={ btc:{pair:'USDC',int:'15'}, eth:{pair:'USDC',int:'15'} };
+
+function wire(prefix, base, key){
+  var tabs=document.getElementById(prefix+'Tabs');
+  var tf=document.getElementById(prefix+'Tf');
+  tabs.querySelectorAll('.tab').forEach(function(b){
+    b.onclick=function(){
+      tabs.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      state[key].pair=b.getAttribute('data-pair');
+      buildGrid(prefix+'Grid', base, state[key].pair, state[key].int);
+    };
+  });
+  tf.querySelectorAll('button').forEach(function(b){
+    b.onclick=function(){
+      tf.querySelectorAll('button').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      state[key].int=b.getAttribute('data-int');
+      buildGrid(prefix+'Grid', base, state[key].pair, state[key].int);
+    };
+  });
+  buildGrid(prefix+'Grid', base, state[key].pair, state[key].int);
+}
+
+wire('btc','BTC','btc');
+wire('eth','ETH','eth');
+</script>
+    <script src="/shared/js/navigation.js?v=1.0097"></script>
+</body>
+</html>

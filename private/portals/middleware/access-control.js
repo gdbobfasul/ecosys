@@ -1,5 +1,5 @@
 // KCY Portals — Access Control Middleware
-// Version: 1.0093
+// Version: 1.0098
 //
 // 4 варианта за достъп до порталите (GAMES + SERVICES):
 //   1. Платил си за текущия месец (запис в portal_monthly_payments)

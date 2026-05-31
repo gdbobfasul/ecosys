@@ -1,0 +1,135 @@
+<!-- Version: 1.0098 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Свиване на PDF | KCY услуги</title>
+<style>
+  :root { --pri:#2a86d8; --sec:#6ec1e4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:#f0f4f8; color:#222; }
+  .head { background:linear-gradient(135deg,var(--pri),var(--sec)); color:#fff; padding:28px 20px; text-align:center; }
+  .head h1 { font-size:1.7em; margin-bottom:6px; }
+  .head a { color:#fff; text-decoration:none; background:rgba(255,255,255,.2); padding:6px 14px; border-radius:8px; display:inline-block; margin-top:10px; font-size:.9em; }
+  .wrap { max-width:680px; margin:24px auto; padding:0 16px; }
+  .card { background:#fff; border-radius:12px; padding:22px; box-shadow:0 4px 16px rgba(0,0,0,.08); }
+  label { display:block; font-weight:600; margin:12px 0 5px; font-size:.9em; }
+  input,select { width:100%; padding:10px; border:1px solid #cdd7e1; border-radius:8px; font-size:1em; }
+  .hint { color:#567; font-size:.88em; margin:6px 0; }
+  .btn { background:var(--pri); color:#fff; border:none; padding:11px 20px; border-radius:8px; font-size:1em; cursor:pointer; margin-top:14px; font-weight:600; }
+  .btn:disabled { opacity:.5; cursor:not-allowed; }
+  .status { margin-top:16px; padding:12px; border-radius:8px; font-size:.92em; }
+  .status.ok { background:#e6f5e9; color:#256b34; }
+  .status.err { background:#fbe6e6; color:#a12727; }
+  .status.work { background:#eef6ff; color:#2a86d8; }
+  .bar { height:8px; background:#dde6ef; border-radius:4px; overflow:hidden; margin-top:8px; }
+  .bar > div { height:100%; background:var(--pri); width:0%; transition:width .2s; }
+</style>
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0097">
+</head>
+<body>
+<div class="head">
+  <h1>Свиване на PDF</h1>
+  <p>Намали размера на голям PDF (особено със сканирани страници/големи снимки)</p>
+  <a href="/portals/services/">← Всички услуги</a>
+</div>
+<div class="wrap">
+  <div class="card">
+    <label>Избери PDF файл</label>
+    <input type="file" id="pdfFile" accept="application/pdf">
+
+    <label>Ниво на свиване</label>
+    <select id="level">
+      <option value="high">Силно (най-малък размер, по-ниско качество)</option>
+      <option value="medium" selected>Средно (баланс)</option>
+      <option value="low">Леко (по-добро качество)</option>
+    </select>
+    <p class="hint">
+      Всяка страница се преобразува в изображение с намалена резолюция и качество, после се сглобява нов PDF.
+      Работи най-добре за сканирани документи и PDF-и с големи снимки. Текстът става неизбираем (растеризира се).
+    </p>
+
+    <button class="btn" id="goBtn" onclick="compress()">Свий PDF</button>
+    <div class="bar" id="barWrap" style="display:none;"><div id="bar"></div></div>
+    <div class="status" id="status" style="display:none;"></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+if(window.pdfjsLib){ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }
+var PDFLib=window.PDFLib;
+
+function setStatus(cls,msg){
+  var s=document.getElementById('status');
+  s.style.display='block'; s.className='status '+cls; s.textContent=msg;
+}
+function fmt(bytes){
+  if(bytes<1024) return bytes+' B';
+  if(bytes<1048576) return (bytes/1024).toFixed(1)+' KB';
+  return (bytes/1048576).toFixed(2)+' MB';
+}
+
+// настройки по ниво: scale = резолюция, quality = JPEG качество
+var LEVELS = {
+  high:   { scale: 1.0, quality: 0.5 },
+  medium: { scale: 1.3, quality: 0.65 },
+  low:    { scale: 1.7, quality: 0.8 }
+};
+
+async function compress(){
+  var f=document.getElementById('pdfFile').files[0];
+  if(!f){ setStatus('err','Избери PDF файл.'); return; }
+  if(!window.pdfjsLib){ setStatus('err','pdf.js не е зареден (мрежа?).'); return; }
+  var cfg=LEVELS[document.getElementById('level').value]||LEVELS.medium;
+  var origSize=f.size;
+  var btn=document.getElementById('goBtn'); btn.disabled=true;
+  document.getElementById('barWrap').style.display='block';
+  var bar=document.getElementById('bar');
+  setStatus('work','Обработва се… (за големи файлове може да отнеме време)');
+  try{
+    var buf=await f.arrayBuffer();
+    var src=await pdfjsLib.getDocument({data:buf}).promise;
+    var out=await PDFLib.PDFDocument.create();
+    var n=src.numPages;
+    for(var i=1;i<=n;i++){
+      var page=await src.getPage(i);
+      var vp=page.getViewport({scale:cfg.scale});
+      var canvas=document.createElement('canvas');
+      canvas.width=Math.floor(vp.width); canvas.height=Math.floor(vp.height);
+      var ctx=canvas.getContext('2d');
+      // бял фон (за прозрачни PDF-и)
+      ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      await page.render({canvasContext:ctx,viewport:vp}).promise;
+      var jpgDataUrl=canvas.toDataURL('image/jpeg',cfg.quality);
+      var jpgBytes=await (await fetch(jpgDataUrl)).arrayBuffer();
+      var img=await out.embedJpg(jpgBytes);
+      var p=out.addPage([canvas.width,canvas.height]);
+      p.drawImage(img,{x:0,y:0,width:canvas.width,height:canvas.height});
+      bar.style.width=Math.round(i/n*100)+'%';
+    }
+    var bytes=await out.save();
+    var newSize=bytes.length;
+    // ако компресията НЕ е намалила (рядко при вече оптимизирани PDF), предупреди
+    var blob=new Blob([bytes],{type:'application/pdf'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=(f.name.replace(/\.pdf$/i,'')||'document')+'-compressed.pdf';
+    a.click();
+    var pct=Math.round((1-newSize/origSize)*100);
+    if(newSize<origSize){
+      setStatus('ok','Готово! '+fmt(origSize)+' → '+fmt(newSize)+' (−'+pct+'%). Файлът е свален.');
+    }else{
+      setStatus('ok','Готово: '+fmt(origSize)+' → '+fmt(newSize)+'. Този PDF вече е оптимизиран — свиването не помогна много. Файлът е свален.');
+    }
+  }catch(e){
+    setStatus('err','Грешка: '+e.message);
+  }finally{
+    btn.disabled=false;
+  }
+}
+</script>
+    <script src="/shared/js/navigation.js?v=1.0097"></script>
+</body>
+</html>

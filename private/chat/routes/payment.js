@@ -1,4 +1,4 @@
-// Version: 1.0094
+// Version: 1.0097
 const express = require('express');
 const { resolveStripeConfig } = require('../../configs/stripe-config');
 const STRIPE_CFG = resolveStripeConfig(process.env);
