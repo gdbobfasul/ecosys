@@ -9,6 +9,13 @@ const fs = require('fs');
 const path = require('path');
 const { requireLoginAPI, currentMonth, isFirstUserAdmin } = require('../middleware/access-control');
 
+// Stripe — инициализира се само ако има ключ в .env (иначе картовите endpoint-и връщат 503)
+let stripe = null;
+if (process.env.STRIPE_SECRET_KEY) {
+    try { stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); }
+    catch (e) { stripe = null; }
+}
+
 let debug;
 try { debug = require('../../shared/debug-helper').create('portals'); }
 catch (e) { debug = { stage: () => {}, info: () => {}, error: () => {}, warn: () => {} }; }
@@ -19,6 +26,18 @@ function loadFees() {
     const p = path.join(__dirname, '..', 'configs', 'fees.json');
     return JSON.parse(fs.readFileSync(p, 'utf8'));
 }
+
+// ─── GET /api/portals/billing/wallets ──────────────────────────
+// Връща крипто адресите за порталите (от централния crypto_addresses.js).
+// Единствен източник на адресите — billing.html ги чете оттук.
+router.get('/wallets', (req, res) => {
+    try {
+        const CA = require('../configs/crypto_addresses.js');
+        res.json(CA.PROJECTS.portals.wallets); // { BTC, ETH, BNB }
+    } catch (e) {
+        res.status(500).json({ error: 'wallets_unavailable' });
+    }
+});
 
 // ─── GET /api/portals/billing/fees ─────────────────────────────
 router.get('/fees', (req, res) => {
@@ -135,6 +154,99 @@ router.post('/admin-grant', requireLoginAPI, (req, res) => {
         return res.status(500).json({ error: 'db_error' });
     }
     res.json({ ok: true, target_user_id: tid, month: m });
+});
+
+// ─── GET /api/portals/billing/stripe-config ────────────────────
+// Връща дали картовото плащане е активно (има ли Stripe ключ).
+router.get('/stripe-config', (req, res) => {
+    res.json({
+        enabled: !!stripe,
+        publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || null,
+        paymentLink: process.env.STRIPE_PAYMENT_LINK_PORTALS || null
+    });
+});
+
+// ─── POST /api/portals/billing/create-checkout ─────────────────
+// Създава Stripe Checkout сесия и връща URL за пренасочване.
+// Клиентът отива на сигурната Stripe страница, въвежда картата там.
+router.post('/create-checkout', requireLoginAPI, async (req, res) => {
+    const log = debug.scoped(req, 'billing/create-checkout');
+    if (!stripe) {
+        log('изход → 503 stripe_not_configured');
+        return res.status(503).json({ error: 'stripe_not_configured',
+            message: 'Картовите плащания не са настроени (липсва STRIPE_SECRET_KEY).' });
+    }
+    const userId = req.session.userId;
+    const month = currentMonth();
+    const fees = loadFees().monthly_fee;
+    const usd = Number(fees.USD);
+    const origin = `${req.protocol}://${req.get('host')}`;
+
+    try {
+        const session = await stripe.checkout.sessions.create({
+            mode: 'payment',
+            payment_method_types: ['card'],
+            line_items: [{
+                price_data: {
+                    currency: 'usd',
+                    product_data: { name: `KCY Портали — месечен достъп (${month})` },
+                    unit_amount: Math.round(usd * 100), // в центове
+                },
+                quantity: 1,
+            }],
+            metadata: { userId: String(userId), month, kind: 'portal_monthly' },
+            success_url: `${origin}/portals/billing.html?stripe=success&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${origin}/portals/billing.html?stripe=cancel`,
+        });
+        log(`1 — checkout сесия създадена ${session.id}`);
+        res.json({ url: session.url, sessionId: session.id });
+    } catch (err) {
+        log(`изход → 500 ${err.message}`);
+        res.status(500).json({ error: 'stripe_error', message: err.message });
+    }
+});
+
+// ─── POST /api/portals/billing/confirm-checkout ────────────────
+// След връщане от Stripe — проверява дали сесията е платена и записва.
+router.post('/confirm-checkout', requireLoginAPI, async (req, res) => {
+    const log = debug.scoped(req, 'billing/confirm-checkout');
+    if (!stripe) return res.status(503).json({ error: 'stripe_not_configured' });
+    const db = req.app.locals.db;
+    const userId = req.session.userId;
+    const { session_id } = req.body || {};
+    if (!session_id) return res.status(400).json({ error: 'missing_session_id' });
+
+    try {
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+        // сигурност: сесията трябва да е платена И да е за ТОЗИ потребител
+        if (session.payment_status !== 'paid') {
+            log(`изход → 402 не е платена (${session.payment_status})`);
+            return res.status(402).json({ error: 'not_paid', status: session.payment_status });
+        }
+        if (String(session.metadata.userId) !== String(userId)) {
+            log('изход → 403 чужда сесия');
+            return res.status(403).json({ error: 'session_user_mismatch' });
+        }
+        const month = session.metadata.month || currentMonth();
+        const amt = session.amount_total / 100;
+        try {
+            db.prepare(
+                "INSERT INTO portal_monthly_payments (user_id, month, method, amount, tx_reference) VALUES (?, ?, 'stripe', ?, ?)"
+            ).run(userId, month, amt, session.id);
+            db.prepare("UPDATE portal_users SET stripe_paid_total_usd = stripe_paid_total_usd + ? WHERE id = ?").run(amt, userId);
+        } catch (err) {
+            if (String(err.message).includes('UNIQUE')) {
+                log('вече записано — OK');
+                return res.json({ ok: true, already: true, month });
+            }
+            throw err;
+        }
+        log(`1 — Stripe плащане потвърдено за ${month} (${amt} USD)`);
+        res.json({ ok: true, month, amount: amt });
+    } catch (err) {
+        log(`изход → 500 ${err.message}`);
+        res.status(500).json({ error: 'stripe_error', message: err.message });
+    }
 });
 
 module.exports = router;

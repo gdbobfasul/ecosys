@@ -1,62 +1,119 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0094 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Billing — KCY Portals</title>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0093">
+    <title>Плащане — KCY Portals</title>
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0094">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        .bill-wrap { max-width: 620px; margin: 50px auto; padding: 36px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.12); }
+        .bill-wrap { max-width: 660px; margin: 40px auto; padding: 36px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.12); }
         h1 { color: var(--primary-color); margin-bottom: 6px; }
+        h3 { margin: 22px 0 10px; }
         .status { padding: 14px; border-radius: 10px; margin: 18px 0; }
         .status.paid { background: #e7f5e7; color: #1a5; }
         .status.unpaid { background: #fff3cd; color: #8a6d3b; }
-        .fees-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 12px; }
+        .fees-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 12px; }
         .fee-card { padding: 14px; background: #f8f9fa; border-radius: 10px; text-align: center; }
-        .fee-card .amt { font-size: 1.2em; font-weight: 700; color: var(--primary-color); }
+        .fee-card .amt { font-size: 1.15em; font-weight: 700; color: var(--primary-color); }
         .fee-card .cur { font-size: .85em; color: #666; }
-        .declare-form { margin-top: 24px; padding: 20px; background: #f8f9fa; border-radius: 10px; }
-        .declare-form label { display: block; margin: 10px 0 4px; font-weight: 600; font-size: .9em; }
-        .declare-form select, .declare-form input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        .pay-method { margin-top: 18px; padding: 20px; background: #f8f9fa; border-radius: 10px; border: 1px solid #eee; }
+        .pay-method h4 { margin: 0 0 8px; font-size: 1.05em; }
+        .pay-method p.hint { font-size: .88em; color: #666; margin: 4px 0 12px; }
         .btn { display: inline-block; padding: 12px 20px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; text-decoration: none; }
+        .btn.card { background: #635bff; font-weight: 600; width: 100%; }
+        .btn.card:hover { background: #4b45c6; }
         .btn-row { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+        .crypto-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+        .crypto-tab { padding: 8px 16px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; font-weight: 600; }
+        .crypto-tab.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        .crypto-pane { display: none; text-align: center; }
+        .crypto-pane.active { display: block; }
+        .qr-box { display: inline-block; padding: 12px; background: #fff; border: 1px solid #eee; border-radius: 10px; margin: 8px auto; }
+        .addr { font-family: monospace; font-size: .82em; word-break: break-all; background: #fff; padding: 10px; border: 1px dashed #bbb; border-radius: 8px; margin: 10px 0; }
+        .copy-btn { padding: 6px 12px; font-size: .85em; background: #555; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        .amt-needed { font-weight: 700; color: var(--primary-color); }
+        .declare-form label { display: block; margin: 10px 0 4px; font-weight: 600; font-size: .9em; }
+        .declare-form select, .declare-form input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         .msg { margin-top: 12px; padding: 10px; border-radius: 8px; display: none; }
         .msg.ok { background: #efe; color: #070; display: block; }
         .msg.err { background: #fee; color: #c00; display: block; }
+        details { margin-top: 18px; }
+        summary { cursor: pointer; color: #666; font-size: .9em; }
     </style>
 </head>
 <body>
     <div class="bill-wrap">
-        <h1>💳 Месечна такса</h1>
-        <p>Порталите изискват активно плащане за текущия месец.</p>
+        <h1>💳 Месечен достъп до порталите</h1>
+        <p>За да ползваш Портала за игри и Портала за услуги, е нужно активно плащане за текущия месец.</p>
 
         <div id="status" class="status unpaid">Зарежда се…</div>
 
-        <h3>Цени за текущия месец</h3>
+        <h3>Цена за текущия месец</h3>
         <div id="fees" class="fees-grid"></div>
 
-        <div class="declare-form">
-            <h3 style="margin-bottom: 10px;">Декларирай плащане</h3>
-            <label>Метод</label>
-            <select id="method">
-                <option value="stripe">Stripe (USD)</option>
-                <option value="btc">BTC</option>
-                <option value="eth">ETH</option>
-                <option value="bnb">BNB</option>
-            </select>
-            <label>Сума</label>
-            <input id="amount" type="text" placeholder="напр. 5 или 0.000064">
-            <label>Tx reference (крипто tx hash / Stripe session id) — по желание</label>
-            <input id="tx_ref" type="text">
-            <div class="btn-row">
-                <button class="btn" id="btn-declare">Записвай плащане</button>
-                <a class="btn" style="background:#888" href="/">Отказ</a>
-            </div>
-            <div id="msg" class="msg"></div>
+        <!-- ─── ВИД 1: КАРТА (Stripe) ─── -->
+        <div class="pay-method" id="card-method">
+            <h4>💳 Плащане с карта</h4>
+            <p class="hint">Сигурно плащане през Stripe. Не е нужен Stripe акаунт — въвеждаш само картата си на защитената страница на Stripe.</p>
+            <button class="btn card" id="btn-card">Плати с карта (автоматично) →</button>
+            <p class="hint" style="margin-top:10px;">Или плати през готовия линк (ако бутонът не работи). След плащане се върни и потвърди по-долу.</p>
+            <a class="btn" id="link-card" style="background:#635bff;display:none;" target="_blank" rel="noopener">Плати през Stripe линк ↗</a>
+            <div id="card-msg" class="msg"></div>
         </div>
 
-        <div class="btn-row" style="margin-top: 20px;">
+        <!-- ─── ВИД 2: КРИПТО (QR + адрес) ─── -->
+        <div class="pay-method">
+            <h4>₿ Плащане с криптовалута</h4>
+            <p class="hint">Преведи точната сума към адреса по-долу. Сканирай QR кода с твоя портфейл или копирай адреса. След превода въведи tx hash в полето за потвърждение най-долу.</p>
+            <div class="crypto-tabs">
+                <button class="crypto-tab active" data-c="btc">BTC</button>
+                <button class="crypto-tab" data-c="eth">ETH</button>
+                <button class="crypto-tab" data-c="bnb">BNB</button>
+            </div>
+            <div class="crypto-pane active" id="pane-btc">
+                <div>Преведи <span class="amt-needed" id="amt-btc">—</span> BTC</div>
+                <div class="qr-box" id="qr-btc"></div>
+                <div class="addr" id="addr-btc"></div>
+                <button class="copy-btn" data-copy="btc">📋 Копирай адреса</button>
+            </div>
+            <div class="crypto-pane" id="pane-eth">
+                <div>Преведи <span class="amt-needed" id="amt-eth">—</span> ETH</div>
+                <div class="qr-box" id="qr-eth"></div>
+                <div class="addr" id="addr-eth"></div>
+                <button class="copy-btn" data-copy="eth">📋 Копирай адреса</button>
+            </div>
+            <div class="crypto-pane" id="pane-bnb">
+                <div>Преведи <span class="amt-needed" id="amt-bnb">—</span> BNB (BEP20)</div>
+                <div class="qr-box" id="qr-bnb"></div>
+                <div class="addr" id="addr-bnb"></div>
+                <button class="copy-btn" data-copy="bnb">📋 Копирай адреса</button>
+            </div>
+        </div>
+
+        <!-- ─── Потвърждение на крипто плащане ─── -->
+        <details>
+            <summary>Платих с крипто — потвърди превода</summary>
+            <div class="declare-form" style="margin-top:12px;">
+                <label>Валута</label>
+                <select id="method">
+                    <option value="btc">BTC</option>
+                    <option value="eth">ETH</option>
+                    <option value="bnb">BNB</option>
+                </select>
+                <label>Преведена сума</label>
+                <input id="amount" type="text" placeholder="напр. 0.000064">
+                <label>Tx hash (хеш на транзакцията)</label>
+                <input id="tx_ref" type="text" placeholder="0x... или btc tx id">
+                <div class="btn-row">
+                    <button class="btn" id="btn-declare">Потвърди плащането</button>
+                </div>
+                <div id="msg" class="msg"></div>
+            </div>
+        </details>
+
+        <div class="btn-row" style="margin-top: 24px;">
             <a class="btn" href="/portals/games/">🎮 Портал за игри</a>
             <a class="btn" href="/portals/services/">🛠️ Портал за услуги</a>
             <button class="btn" style="background: #aaa" id="btn-logout">Изход</button>
@@ -64,58 +121,167 @@
     </div>
 
     <script>
-        const msg = document.getElementById('msg');
+        var WALLETS = { btc: '', eth: '', bnb: '' };
+        var FEES = {};
+        var msg = document.getElementById('msg');
         function showMsg(t, k) { msg.textContent = t; msg.className = 'msg ' + (k || 'err'); }
+        function cardMsg(t, k) { var m = document.getElementById('card-msg'); m.textContent = t; m.className = 'msg ' + (k || 'err'); }
 
         async function loadStatus() {
             try {
-                const r = await fetch('/api/portals/billing/status');
+                var r = await fetch('/api/portals/billing/status');
                 if (r.status === 401) { location.href = '/portals/login.html?next=/portals/billing.html'; return; }
-                const data = await r.json();
-                const s = document.getElementById('status');
+                var data = await r.json();
+                var s = document.getElementById('status');
                 if (data.paid_this_month) {
                     s.className = 'status paid';
-                    s.innerHTML = `✅ Платено за <b>${data.current_month}</b> (метод: ${data.payment.method}, сума: ${data.payment.amount}).`;
+                    s.innerHTML = '✅ Платено за <b>' + data.current_month + '</b> (метод: ' + data.payment.method + ', сума: ' + data.payment.amount + ').';
                 } else {
                     s.className = 'status unpaid';
-                    s.innerHTML = `⚠️ Неплатено за <b>${data.current_month}</b>. Декларирай плащане по-долу.`;
+                    s.innerHTML = '⚠️ Неплатено за <b>' + data.current_month + '</b>. Избери начин на плащане по-долу.';
                 }
-                const fees = data.fees;
-                document.getElementById('fees').innerHTML = Object.entries(fees)
-                    .map(([cur, amt]) => `<div class="fee-card"><div class="amt">${amt}</div><div class="cur">${cur}</div></div>`)
+                FEES = data.fees;
+                document.getElementById('fees').innerHTML = Object.entries(FEES)
+                    .map(function (e) { return '<div class="fee-card"><div class="amt">' + e[1] + '</div><div class="cur">' + e[0] + '</div></div>'; })
                     .join('');
-            } catch (e) {
-                showMsg('Грешка: ' + e.message);
-            }
+                // попълни крипто сумите
+                if (FEES.BTC) document.getElementById('amt-btc').textContent = FEES.BTC;
+                if (FEES.ETH) document.getElementById('amt-eth').textContent = FEES.ETH;
+                if (FEES.BNB) document.getElementById('amt-bnb').textContent = FEES.BNB;
+            } catch (e) { showMsg('Грешка: ' + e.message); }
         }
 
-        async function declare() {
-            const method = document.getElementById('method').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-            const tx_reference = document.getElementById('tx_ref').value.trim() || null;
-            if (!Number.isFinite(amount) || amount <= 0) { showMsg('Невалидна сума.'); return; }
+        // ── зареди крипто адресите от централния източник (crypto_addresses.js) ──
+        async function loadWallets() {
             try {
-                const r = await fetch('/api/portals/billing/declare', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ method, amount, tx_reference })
-                });
-                const data = await r.json();
-                if (!r.ok) { showMsg(data.message || JSON.stringify(data)); return; }
-                showMsg('✅ Плащане записано. Зарежда се…', 'ok');
-                setTimeout(loadStatus, 500);
-            } catch (e) {
-                showMsg('Мрежова грешка: ' + e.message);
+                var r = await fetch('/api/portals/billing/wallets');
+                if (r.ok) {
+                    var w = await r.json();
+                    WALLETS.btc = w.BTC || '';
+                    WALLETS.eth = w.ETH || '';
+                    WALLETS.bnb = w.BNB || '';
+                    renderCrypto();
+                }
+            } catch (e) { /* ignore */ }
+        }
+
+        function renderCrypto() {
+            ['btc', 'eth', 'bnb'].forEach(function (c) {
+                var addr = WALLETS[c];
+                if (!addr) return;
+                document.getElementById('addr-' + c).textContent = addr;
+                var box = document.getElementById('qr-' + c);
+                box.innerHTML = '';
+                new QRCode(box, { text: addr, width: 160, height: 160 });
+            });
+        }
+
+        // ── Stripe карта ──
+        document.getElementById('btn-card').addEventListener('click', async function () {
+            cardMsg('Създава се сигурна сесия…', 'ok');
+            try {
+                var r = await fetch('/api/portals/billing/create-checkout', { method: 'POST' });
+                var data = await r.json();
+                if (!r.ok) {
+                    cardMsg(data.message || data.error || 'Грешка при Stripe.');
+                    return;
+                }
+                location.href = data.url; // пренасочване към Stripe Checkout
+            } catch (e) { cardMsg('Мрежова грешка: ' + e.message); }
+        });
+
+        // ── при връщане от Stripe ──
+        async function handleStripeReturn() {
+            var p = new URLSearchParams(location.search);
+            if (p.get('stripe') === 'success' && p.get('session_id')) {
+                // Checkout бутон (Вариант 2) — авто-потвърждение със session_id
+                cardMsg('Потвърждава се плащането…', 'ok');
+                try {
+                    var r = await fetch('/api/portals/billing/confirm-checkout', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ session_id: p.get('session_id') })
+                    });
+                    var data = await r.json();
+                    if (r.ok) { cardMsg('✅ Плащането е успешно! Достъпът е активиран.', 'ok'); loadStatus(); }
+                    else cardMsg(data.message || 'Плащането не е потвърдено.');
+                } catch (e) { cardMsg('Грешка: ' + e.message); }
+                history.replaceState({}, '', '/portals/billing.html');
+            } else if (p.get('stripe') === 'success') {
+                // Payment Link (Вариант 1) — няма session_id, искаме ръчно потвърждение
+                cardMsg('✅ Благодарим за плащането! Натисни „Потвърди плащането" по-долу, за да активираш достъпа.', 'ok');
+                history.replaceState({}, '', '/portals/billing.html');
+            } else if (p.get('stripe') === 'cancel') {
+                cardMsg('Плащането е отказано.');
+                history.replaceState({}, '', '/portals/billing.html');
             }
         }
 
+        // ── крипто табове ──
+        document.querySelectorAll('.crypto-tab').forEach(function (t) {
+            t.addEventListener('click', function () {
+                document.querySelectorAll('.crypto-tab').forEach(function (x) { x.classList.remove('active'); });
+                document.querySelectorAll('.crypto-pane').forEach(function (x) { x.classList.remove('active'); });
+                t.classList.add('active');
+                document.getElementById('pane-' + t.dataset.c).classList.add('active');
+            });
+        });
+        // копиране на адрес
+        document.querySelectorAll('.copy-btn').forEach(function (b) {
+            b.addEventListener('click', function () {
+                navigator.clipboard.writeText(WALLETS[b.dataset.copy]);
+                b.textContent = '✓ Копирано';
+                setTimeout(function () { b.textContent = '📋 Копирай адреса'; }, 1500);
+            });
+        });
+
+        // ── деклариране на крипто плащане ──
+        async function declare() {
+            var method = document.getElementById('method').value;
+            var amount = parseFloat(document.getElementById('amount').value);
+            var tx_reference = document.getElementById('tx_ref').value.trim() || null;
+            if (!Number.isFinite(amount) || amount <= 0) { showMsg('Невалидна сума.'); return; }
+            if (!tx_reference) { showMsg('Моля въведи tx hash на транзакцията.'); return; }
+            try {
+                var r = await fetch('/api/portals/billing/declare', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ method: method, amount: amount, tx_reference: tx_reference })
+                });
+                var data = await r.json();
+                if (!r.ok) { showMsg(data.message || JSON.stringify(data)); return; }
+                showMsg('✅ Плащане записано.', 'ok');
+                setTimeout(loadStatus, 500);
+            } catch (e) { showMsg('Мрежова грешка: ' + e.message); }
+        }
         document.getElementById('btn-declare').addEventListener('click', declare);
-        document.getElementById('btn-logout').addEventListener('click', async () => {
+        document.getElementById('btn-logout').addEventListener('click', async function () {
             await fetch('/api/portals/logout', { method: 'POST' });
             location.href = '/';
         });
 
+        // ── Stripe активен ли е изобщо + покажи линка ──
+        async function checkStripe() {
+            try {
+                var r = await fetch('/api/portals/billing/stripe-config');
+                var d = await r.json();
+                if (!d.enabled) {
+                    document.getElementById('btn-card').disabled = true;
+                    document.getElementById('btn-card').style.opacity = '.5';
+                    cardMsg('Автоматичното картово плащане не е настроено — ползвай линка по-долу.', 'err');
+                }
+                // покажи готовия Payment Link (Вариант 1)
+                if (d.paymentLink) {
+                    var lk = document.getElementById('link-card');
+                    lk.href = d.paymentLink;
+                    lk.style.display = 'inline-block';
+                }
+            } catch (e) {}
+        }
+
         loadStatus();
+        loadWallets();
+        checkStripe();
+        handleStripeReturn();
     </script>
+    <script src="/shared/js/navigation.js?v=1.0094"></script>
 </body>
 </html>

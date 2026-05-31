@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "../../shared/contracts/Addresses.sol";
+import "../../configs/Addresses.sol";
 
 /**
  * @notice v1.0093 - Router exception for Max 100 check (buyFromDEX compatibility)

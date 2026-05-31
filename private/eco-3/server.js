@@ -160,6 +160,17 @@ app.get('/stripe-key', (req, res) => {
     res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || null });
 });
 
+// Готови Stripe Payment Links по ниво (Вариант 1 — фиксирани линкове).
+// Цени: economy 5€ / standard 10€ / premium 15€ / enterprise 75€
+app.get('/payment-links', (req, res) => {
+    res.json({
+        economy:    process.env.STRIPE_PAYMENT_LINK_ECO3_ECONOMY || null,
+        standard:   process.env.STRIPE_PAYMENT_LINK_ECO3_STANDARD || null,
+        premium:    process.env.STRIPE_PAYMENT_LINK_ECO3_PREMIUM || null,
+        enterprise: process.env.STRIPE_PAYMENT_LINK_ECO3_ENTERPRISE || null
+    });
+});
+
 app.post('/create-payment', async (req, res) => {
     if (!stripe) return res.status(503).json({ error: 'Stripe not configured' });
     try {

@@ -96,7 +96,10 @@ service-account.json
 old/
 .deploy-targets
 
-# Animations archive
+# Raw зелени анимации — оригинали (огромни, само за локална обработка, НЕ в git/GitHub)
 public/assets/animations/raw/
 *.rar
-
+# големи видеа архиви
+assets-update.zip
+green-originals*.zip
+green-videos*.zip

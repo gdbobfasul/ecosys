@@ -108,6 +108,30 @@ body {
     color: white;
 }
 
+/* ── ТЪМЕН вариант на менюто (за игри/портали с тъмен фон) ── */
+.kcy-nav.dark {
+    background: #12141c;
+    border-bottom: 2px solid #2a2d3a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+}
+.kcy-nav.dark .nav-logo {
+    background: linear-gradient(135deg, #ffd166, #f5a623);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.kcy-nav.dark .nav-links a { color: #c5c8d4; }
+.kcy-nav.dark .nav-links a:hover { color: #ffd166; }
+.kcy-nav.dark .nav-links a.active { color: #ffd166; }
+.kcy-nav.dark .nav-links a.active::after { background: #ffd166; }
+.kcy-nav.dark .nav-admin select {
+    background: #1c1f2b;
+    border-color: #ffd166;
+    color: #ffd166;
+}
+.kcy-nav.dark .nav-admin select:hover { background: #ffd166; color: #12141c; }
+
+
 /* Buttons */
 .btn {
     display: inline-block;

@@ -98,6 +98,20 @@ function ECO3() {
   var _d = useState("none"), audience = _d[0], setAudience = _d[1];
   var _e = useState("original"), tone = _e[0], setTone = _e[1];
   var _f = useState("economy"), budget = _f[0], setBudget = _f[1];
+  // ── ECO3 плащане на заявка: кой режим е платен (заключва другите) ──
+  var _pt = useState(null), paidTier = _pt[0], setPaidTier = _pt[1];
+  // Stripe Payment Links по ниво (зареждат се от backend /payment-links)
+  var _pl = useState({}), payLinks = _pl[0], setPayLinks = _pl[1];
+  useEffect(function() {
+    // при връщане от Stripe: ?eco3_paid=economy|standard|premium|enterprise → заключи на платения
+    try {
+      var p = new URLSearchParams(window.location.search);
+      var paid = p.get("eco3_paid");
+      if (paid && BUDGETS[paid]) { setPaidTier(paid); setBudget(paid); }
+    } catch (e) {}
+    // зареди линковете по ниво
+    apiGet("payment-links").then(function(d) { setPayLinks(d || {}); }).catch(function(){});
+  }, []);
   var _g = useState("bg"), lang = _g[0], setLang = _g[1];
   var _h = useState(10), duration = _h[0], setDuration = _h[1];
   var _i = useState("setup"), phase = _i[0], setPhase = _i[1];
@@ -339,7 +353,14 @@ function ECO3() {
       // Budget
       React.createElement("div",{style:S.cd},
         React.createElement("div",{style:S.lb},"Бюджет"),
-        React.createElement("div",{style:S.rw},Object.keys(BUDGETS).map(function(k){return React.createElement("span",{key:k,onClick:function(){setBudget(k);},style:pill(budget===k,"#ffe66d")},BUDGETS[k].l);})),
+        React.createElement("div",{style:S.rw},Object.keys(BUDGETS).map(function(k){
+          var locked = paidTier && paidTier !== k; // ако има платен режим, другите са заключени
+          return React.createElement("span",{key:k,
+            onClick:function(){ if(!locked) setBudget(k); },
+            title: locked ? "Платен е друг режим ("+BUDGETS[paidTier].l+") — заключено" : "",
+            style:Object.assign({}, pill(budget===k,"#ffe66d"), locked?{opacity:.35,cursor:"not-allowed",textDecoration:"line-through"}:{})
+          }, BUDGETS[k].l + (paidTier===k?" ✓":""));
+        })),
         React.createElement("div",{style:{fontSize:10,color:"rgba(255,255,255,.3)",marginTop:6}},B.desc+" · €"+B.base+" + €"+B.pm+"/мин · "+B.src+" източника"),
         React.createElement("div",{style:{fontSize:10,color:"rgba(255,255,255,.25)",marginTop:2}},"Уникалност: "+uniqCount+"/"+B.uniq+" днес")
       ),
@@ -362,8 +383,19 @@ function ECO3() {
 
       // Start
       React.createElement("div",{style:{textAlign:"center",marginTop:20}},
-        React.createElement("button",{style:btn(canSearch),onClick:canSearch?startSearch:undefined},
-          audience==="none"?"🔒 Изберете аудитория":topic?"🚀 Старт — "+cat.icon+" "+cat.name:"Въведете тема")
+        React.createElement("button",{style:btn(canSearch),onClick:canSearch?function(){
+          // ако избраният режим е платен → прави заявката
+          if (paidTier === budget) { startSearch(); return; }
+          // иначе → отвори Stripe плащане за този режим (връща се с ?eco3_paid=режим)
+          var link = payLinks[budget];
+          if (link) {
+            var ret = encodeURIComponent(location.origin + location.pathname + "?eco3_paid=" + budget);
+            window.location.href = link + (link.indexOf("?")>-1?"&":"?") + "redirect=" + ret;
+          } else {
+            alert("Stripe линкът за този режим не е наличен.");
+          }
+        }:undefined},
+          audience==="none"?"🔒 Изберете аудитория":(!topic?"Въведете тема":(paidTier===budget?"🚀 Старт — "+cat.icon+" "+cat.name:"💳 Плати "+BUDGETS[budget].l+" — €"+(B.base+duration*B.pm).toFixed(2))))
       )
     )
   );

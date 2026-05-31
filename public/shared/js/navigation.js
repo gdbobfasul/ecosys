@@ -34,6 +34,12 @@ const KCY_NAV = {
         const adm = this.isAdmin();
         const nav = document.createElement('nav');
         nav.className = 'kcy-nav';
+        // тъмен вариант: ако body има data-nav-theme="dark" ИЛИ сме в игрите/порталните под-страници
+        var darkAttr = document.body.getAttribute('data-nav-theme');
+        var path = window.location.pathname;
+        if (darkAttr === 'dark' || /\/portals\/(games|services)\//.test(path)) {
+            nav.className = 'kcy-nav dark';
+        }
         nav.innerHTML = `
             <div class="nav-container">
                 <a href="/" class="nav-logo">
@@ -47,6 +53,9 @@ const KCY_NAV = {
                     <a href="/multisig/">🔐 Multi-Sig</a>
                     <a href="/chat/">💬 Chat</a>
                     <a href="/eco-3/">🤖 ECO-3</a>
+                    <a href="/portals/games/">🎮 Игри</a>
+                    <a href="/portals/services/">🛠️ Услуги</a>
+                    <a href="/portals/billing.html">💳 Плащане</a>
                 </div>
                 ${adm ? `<div class="nav-admin">
                     <select onchange="if(this.value) window.location.href=this.value + (location.search.indexOf('adm=')>-1 ? (this.value.indexOf('?')>-1?'&':'?')+'adm=bgmasters-set' : '')">
