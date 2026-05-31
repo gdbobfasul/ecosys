@@ -1,4 +1,4 @@
-<!-- Version: 1.0099 -->
+<!-- Version: 1.0102 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -84,7 +84,7 @@
     <div class="panel"><h3>S&amp;P 500 — изберете период (час/ден/месец) от графиката</h3>
       <div class="body"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-        {"symbol":"SP:SPX","interval":"D","theme":"dark","style":"1","locale":"bg","withdateranges":true,"autosize":true}
+        {"symbol":"FOREXCOM:SPXUSD","interval":"D","theme":"dark","style":"1","locale":"bg","withdateranges":true,"autosize":true}
         </script></div></div>
     </div>
   </div>
@@ -95,7 +95,7 @@
     <div class="panel"><h3>Световни индекси (преглед)</h3>
       <div class="body tall"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-        {"colorTheme":"dark","dateRange":"12M","locale":"bg","showChart":true,"isTransparent":true,"width":"100%","height":"100%","tabs":[{"title":"Индекси","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"FOREXCOM:NSXUSD","d":"Nasdaq 100"},{"s":"FOREXCOM:DJI","d":"Dow 30"},{"s":"INDEX:DAX","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]}]}
+        {"colorTheme":"dark","dateRange":"12M","locale":"bg","showChart":true,"isTransparent":true,"width":"100%","height":"100%","tabs":[{"title":"Индекси","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"FOREXCOM:NSXUSD","d":"Nasdaq 100"},{"s":"FOREXCOM:DJI","d":"Dow 30"},{"s":"FOREXCOM:DEUIDXEUR","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]}]}
         </script></div></div>
     </div>
   </div>
@@ -135,7 +135,7 @@
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightweight-charts/4.1.3/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <script>
 // ── Текущата графика = TradingView widget (както досега) ──
 function tvChart(symbol, interval){
@@ -174,17 +174,29 @@ async function fetchKlines(symbol, interval, startMs, endMs){
   });
 }
 
-async function histChart(container, symbol, targetDate){
-  // период: ±30 дни около целевата дата
+// интервал → колко дни обхват около датата (за да има смислен брой свещи)
+var HIST_INTERVALS={
+  '1d':{label:'ден', spanDays:30},
+  '1w':{label:'седмица', spanDays:180},
+  '1M':{label:'месец', spanDays:540}
+};
+
+async function histChart(container, symbol, targetDate, interval){
+  interval=interval||'1d';
+  if(typeof LightweightCharts==='undefined'){
+    container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Графичната библиотека не се зареди (мрежа/CDN). Опресни страницата.</div>';
+    return;
+  }
+  var span=(HIST_INTERVALS[interval]||HIST_INTERVALS['1d']).spanDays;
   var t=targetDate.getTime();
-  var start=t - 30*86400000;
-  var end=t + 30*86400000;
+  var start=t - span*86400000;
+  var end=t + span*86400000;
   var now=Date.now();
   if(end>now) end=now;
   container.innerHTML='<div style="padding:20px;color:#8a92a6;font-size:.85em;">Зареждам данни…</div>';
   try{
-    var data=await fetchKlines(symbol,'1d',start,end);
-    if(!data.length){ container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Няма данни за този период (двойката може да не е съществувала тогава).</div>'; return; }
+    var data=await fetchKlines(symbol,interval,start,end);
+    if(!data.length){ container.innerHTML='<div style="padding:20px;color:#8a92a6;font-size:.85em;">Няма данни за '+symbol+' за този период (двойката вероятно не е била листната тогава — пробвай USDT таба).</div>'; return; }
     container.innerHTML='';
     var chart=LightweightCharts.createChart(container,{
       layout:{ background:{color:'#161a23'}, textColor:'#cfd4e0' },
@@ -198,21 +210,46 @@ async function histChart(container, symbol, targetDate){
       wickUpColor:'#26a69a', wickDownColor:'#ef5350'
     });
     series.setData(data);
-    // вертикална линия-маркер точно на целевата дата
+
+    // ── АВТОМАТИЧЕН FIBONACCI RETRACEMENT ──
+    // Намираме swing high (най-висок) и swing low (най-нисък) за периода.
+    // Чертаем хоризонтални линии на нивата — зони на съпротива/поддръжка.
+    var hi=Math.max.apply(null,data.map(function(d){return d.high;}));
+    var lo=Math.min.apply(null,data.map(function(d){return d.low;}));
+    var diff=hi-lo;
+    var fibs=[
+      {r:0,    c:'#787b86', t:'0%'},
+      {r:0.236,c:'#26a69a', t:'23.6%'},
+      {r:0.382,c:'#42a5f5', t:'38.2%'},
+      {r:0.5,  c:'#ffd166', t:'50%'},
+      {r:0.618,c:'#ef9a3d', t:'61.8% (златно)'},
+      {r:0.786,c:'#ab47bc', t:'78.6%'},
+      {r:1,    c:'#787b86', t:'100%'}
+    ];
+    fibs.forEach(function(f){
+      // retracement отгоре надолу: 0% = връх, 100% = дъно
+      var price=hi-diff*f.r;
+      series.createPriceLine({
+        price:price, color:f.c, lineWidth:1, lineStyle:2,
+        axisLabelVisible:true, title:f.t
+      });
+    });
+
+    // маркер на целевата дата
     var targetSec=Math.floor(t/1000);
     var closest=data.reduce(function(a,b){ return Math.abs(b.time-targetSec)<Math.abs(a.time-targetSec)?b:a; });
     series.setMarkers([{ time:closest.time, position:'aboveBar', color:'#ffd166', shape:'arrowDown', text:'таргет' }]);
     chart.timeScale().fitContent();
   }catch(e){
-    container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Грешка: '+e.message+'. (Двойката '+symbol+' може да не е била листната тогава — пробвай USDT.)</div>';
+    container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Грешка при зареждане: '+e.message+'</div>';
   }
 }
 
 function buildGrid(gridId, base, pair, curInt){
   var grid=document.getElementById(gridId);
   grid.innerHTML='';
-  var tvSymbol='BINANCE:'+base+pair;       // за текущата (TradingView)
-  var binSymbol=base+pair;                  // за историческите (Binance API)
+  var tvSymbol='BINANCE:'+base+pair;
+  var binSymbol=base+pair;
   var now=new Date();
 
   // 1) Текущо — TradingView widget
@@ -224,17 +261,33 @@ function buildGrid(gridId, base, pair, curInt){
     panel.appendChild(h); panel.appendChild(body); grid.appendChild(panel);
   })();
 
-  // 2-5) 1/2/3/4 години назад — реални данни от Binance, центрирани на 1 юни [година]
+  // 2-5) 1/2/3/4 години назад — реални данни + auto-Fibonacci + смяна на интервал
   for(var y=1;y<=4;y++){
     (function(yearsBack){
       var d=new Date(now.getFullYear()-yearsBack, now.getMonth(), now.getDate());
       var panel=document.createElement('div'); panel.className='panel';
       var h=document.createElement('h3');
       h.textContent=base+'/'+pair+' — преди '+yearsBack+' г. ('+
-        d.toLocaleDateString('bg-BG',{day:'numeric',month:'long',year:'numeric'})+', ±30 дни)';
+        d.toLocaleDateString('bg-BG',{day:'numeric',month:'long',year:'numeric'})+')';
+      // лента с бутони за интервал
+      var ctrl=document.createElement('div'); ctrl.style.cssText='display:flex;gap:5px;padding:6px 10px;background:#1c2030;border-bottom:1px solid #262b38;';
       var body=document.createElement('div'); body.className='body';
-      panel.appendChild(h); panel.appendChild(body); grid.appendChild(panel);
-      histChart(body, binSymbol, d);
+      var curHistInt='1d';
+      ['1d','1w','1M'].forEach(function(iv){
+        var b=document.createElement('button');
+        b.textContent=HIST_INTERVALS[iv].label;
+        b.style.cssText='padding:4px 10px;border:1px solid #2a2d3a;border-radius:6px;background:#161a23;color:#aeb6c6;cursor:pointer;font-size:.78em;';
+        if(iv===curHistInt){ b.style.background='#2a86d8'; b.style.color='#fff'; }
+        b.onclick=function(){
+          curHistInt=iv;
+          ctrl.querySelectorAll('button').forEach(function(x){ x.style.background='#161a23'; x.style.color='#aeb6c6'; });
+          b.style.background='#2a86d8'; b.style.color='#fff';
+          histChart(body, binSymbol, d, iv);
+        };
+        ctrl.appendChild(b);
+      });
+      panel.appendChild(h); panel.appendChild(ctrl); panel.appendChild(body); grid.appendChild(panel);
+      histChart(body, binSymbol, d, curHistInt);
     })(y);
   }
 }
