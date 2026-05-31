@@ -1,4 +1,4 @@
-<!-- Version: 1.0098 -->
+<!-- Version: 1.0099 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -135,8 +135,9 @@
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightweight-charts/4.1.3/lightweight-charts.standalone.production.js"></script>
 <script>
-// Изгражда мини-графики за крипто двойка: текуща (избран интервал) + 1-4 г назад (W/M)
+// ── Текущата графика = TradingView widget (както досега) ──
 function tvChart(symbol, interval){
   var cfg={symbol:symbol,interval:interval,theme:'dark',style:'1',locale:'bg',autosize:true,hide_side_toolbar:true,withdateranges:true};
   var wrap=document.createElement('div');
@@ -145,39 +146,99 @@ function tvChart(symbol, interval){
   inner.className='tradingview-widget-container__widget';
   wrap.appendChild(inner);
   var s=document.createElement('script');
-  s.type='text/javascript';
-  s.async=true;
+  s.type='text/javascript'; s.async=true;
   s.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
   s.text=JSON.stringify(cfg);
   wrap.appendChild(s);
   return wrap;
 }
-
-function buildGrid(gridId, base, pair, curInt){
-  var grid=document.getElementById(gridId);
-  grid.innerHTML='';
-  var symbol='BINANCE:'+base+pair; // напр BINANCE:BTCUSDC
-  // панелите: текущо + 1г + 2г + 3г + 4г назад (общо 5)
-  var panels=[
-    {title:'Текущо ('+labelInt(curInt)+')', interval:curInt},
-    {title:'1 година назад (седмично)', interval:'W'},
-    {title:'2 години назад (месечно)', interval:'M'},
-    {title:'3 години назад (месечно)', interval:'M'},
-    {title:'4 години назад (месечно)', interval:'M'}
-  ];
-  panels.forEach(function(p){
-    var panel=document.createElement('div'); panel.className='panel';
-    var h=document.createElement('h3'); h.textContent=base+'/'+pair+' — '+p.title;
-    var body=document.createElement('div'); body.className='body';
-    body.appendChild(tvChart(symbol, p.interval));
-    panel.appendChild(h); panel.appendChild(body); grid.appendChild(panel);
-  });
-}
 function labelInt(i){
   return {'15':'15 мин','60':'час','D':'ден','W':'седмица','M':'месец'}[i]||i;
 }
 
-// състояние за BTC и ETH
+// ── Исторически графики (1-4 г назад) = реални данни от Binance, центрирани на датата ──
+// Binance public API (без ключ, CORS позволен): data-api.binance.vision/api/v3/klines
+function binanceInterval(yearsBack){
+  // 1 г назад → дневни свещи (фин изглед на тенденцията); 2-4 г → дневни също
+  return '1d';
+}
+async function fetchKlines(symbol, interval, startMs, endMs){
+  var url='https://data-api.binance.vision/api/v3/klines?symbol='+symbol+
+          '&interval='+interval+'&startTime='+startMs+'&endTime='+endMs+'&limit=1000';
+  var r=await fetch(url);
+  if(!r.ok) throw new Error('Binance '+r.status);
+  var raw=await r.json();
+  // [openTime, open, high, low, close, volume, ...]
+  return raw.map(function(k){
+    return { time: Math.floor(k[0]/1000), open:+k[1], high:+k[2], low:+k[3], close:+k[4] };
+  });
+}
+
+async function histChart(container, symbol, targetDate){
+  // период: ±30 дни около целевата дата
+  var t=targetDate.getTime();
+  var start=t - 30*86400000;
+  var end=t + 30*86400000;
+  var now=Date.now();
+  if(end>now) end=now;
+  container.innerHTML='<div style="padding:20px;color:#8a92a6;font-size:.85em;">Зареждам данни…</div>';
+  try{
+    var data=await fetchKlines(symbol,'1d',start,end);
+    if(!data.length){ container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Няма данни за този период (двойката може да не е съществувала тогава).</div>'; return; }
+    container.innerHTML='';
+    var chart=LightweightCharts.createChart(container,{
+      layout:{ background:{color:'#161a23'}, textColor:'#cfd4e0' },
+      grid:{ vertLines:{color:'#222734'}, horzLines:{color:'#222734'} },
+      rightPriceScale:{ borderColor:'#2a2d3a' },
+      timeScale:{ borderColor:'#2a2d3a', timeVisible:false },
+      autoSize:true
+    });
+    var series=chart.addCandlestickSeries({
+      upColor:'#26a69a', downColor:'#ef5350', borderVisible:false,
+      wickUpColor:'#26a69a', wickDownColor:'#ef5350'
+    });
+    series.setData(data);
+    // вертикална линия-маркер точно на целевата дата
+    var targetSec=Math.floor(t/1000);
+    var closest=data.reduce(function(a,b){ return Math.abs(b.time-targetSec)<Math.abs(a.time-targetSec)?b:a; });
+    series.setMarkers([{ time:closest.time, position:'aboveBar', color:'#ffd166', shape:'arrowDown', text:'таргет' }]);
+    chart.timeScale().fitContent();
+  }catch(e){
+    container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Грешка: '+e.message+'. (Двойката '+symbol+' може да не е била листната тогава — пробвай USDT.)</div>';
+  }
+}
+
+function buildGrid(gridId, base, pair, curInt){
+  var grid=document.getElementById(gridId);
+  grid.innerHTML='';
+  var tvSymbol='BINANCE:'+base+pair;       // за текущата (TradingView)
+  var binSymbol=base+pair;                  // за историческите (Binance API)
+  var now=new Date();
+
+  // 1) Текущо — TradingView widget
+  (function(){
+    var panel=document.createElement('div'); panel.className='panel';
+    var h=document.createElement('h3'); h.textContent=base+'/'+pair+' — Текущо ('+labelInt(curInt)+')';
+    var body=document.createElement('div'); body.className='body';
+    body.appendChild(tvChart(tvSymbol, curInt));
+    panel.appendChild(h); panel.appendChild(body); grid.appendChild(panel);
+  })();
+
+  // 2-5) 1/2/3/4 години назад — реални данни от Binance, центрирани на 1 юни [година]
+  for(var y=1;y<=4;y++){
+    (function(yearsBack){
+      var d=new Date(now.getFullYear()-yearsBack, now.getMonth(), now.getDate());
+      var panel=document.createElement('div'); panel.className='panel';
+      var h=document.createElement('h3');
+      h.textContent=base+'/'+pair+' — преди '+yearsBack+' г. ('+
+        d.toLocaleDateString('bg-BG',{day:'numeric',month:'long',year:'numeric'})+', ±30 дни)';
+      var body=document.createElement('div'); body.className='body';
+      panel.appendChild(h); panel.appendChild(body); grid.appendChild(panel);
+      histChart(body, binSymbol, d);
+    })(y);
+  }
+}
+
 var state={ btc:{pair:'USDC',int:'15'}, eth:{pair:'USDC',int:'15'} };
 
 function wire(prefix, base, key){
