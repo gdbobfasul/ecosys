@@ -95,3 +95,8 @@ service-account.json
 /old
 old/
 .deploy-targets
+
+# Animations archive
+public/assets/animations/raw/
+*.rar
+
