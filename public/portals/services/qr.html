@@ -33,6 +33,7 @@
   .hint { font-size:.85em; color:#789; margin-top:6px; }
   video { width:100%; max-width:340px; border-radius:10px; background:#000; }
 </style>
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
 </head>
 <body>
 <div class="head">
@@ -78,6 +79,7 @@
     <p style="color:#567;font-size:.92em">Качи снимка на QR код или използвай камерата — приложението ще разчете и покаже текста/линка.</p>
     <label>Качи изображение с QR код</label>
     <input type="file" id="readfile" accept="image/*">
+    <button class="btn" id="decodeBtn" onclick="decodeFile()" style="display:none;">Разчети прикачения файл</button>
     <div style="margin:14px 0">
       <button class="btn sec" onclick="startCam()">Сканирай с камера</button>
       <button class="btn sec" onclick="stopCam()">Спри камерата</button>
@@ -95,23 +97,36 @@ function showTab(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  event.target.classList.add('active');
+  if(window.event&&window.event.target) window.event.target.classList.add('active');
   if(id!=='read') stopCam();
 }
 
 // ---- ГЕНЕРИРАНЕ ----
 function genQR(){
-  var txt=document.getElementById('gentext').value.trim();
+  var txt=document.getElementById('gentext').value;
   var box=document.getElementById('genresult');
-  if(!txt){ box.innerHTML='<p style="color:#d9534f">Въведи текст или URL.</p>'; return; }
-  var size=parseInt(document.getElementById('gensize').value,10);
+  if(!txt||!txt.trim()){ box.innerHTML='<p style="color:#d9534f">Въведи текст или URL.</p>'; return; }
+  var size=parseInt(document.getElementById('gensize').value,10)||256;
   var ecc=document.getElementById('genecc').value;
-  box.innerHTML='<div id="qrout"></div><br><button class="btn" onclick="dlQR()">Свали PNG</button>';
   var lvl={L:0,M:1,Q:2,H:3}[ecc];
-  new QRCode(document.getElementById('qrout'),{
-    text:txt,width:size,height:size,
-    correctLevel:lvl
-  });
+  if(lvl===undefined) lvl=1;
+  box.innerHTML='<div id="qrout"></div>';
+  try{
+    new QRCode(document.getElementById('qrout'),{
+      text:txt,width:size,height:size,
+      correctLevel:lvl
+    });
+    // бутон за сваляне след успешно генериране
+    var dl=document.createElement('button');
+    dl.className='btn'; dl.style.marginTop='14px'; dl.textContent='Свали PNG';
+    dl.onclick=dlQR;
+    box.appendChild(document.createElement('br'));
+    box.appendChild(dl);
+  }catch(err){
+    // qrcodejs гърми ако текстът е твърде дълъг за избрания размер/ECC
+    box.innerHTML='<p style="color:#d9534f">Текстът е твърде дълъг за този размер/ниво на корекция. '+
+      'Опитай по-голям размер, ниво на корекция "L", или по-кратък текст.</p>';
+  }
 }
 function dlQR(){
   var img=document.querySelector('#qrout img')||document.querySelector('#qrout canvas');
@@ -123,8 +138,14 @@ function dlQR(){
 }
 
 // ---- ЧЕТЕНЕ ОТ ФАЙЛ ----
+var pendingFile=null;
 document.getElementById('readfile').addEventListener('change',function(e){
-  var f=e.target.files[0]; if(!f) return;
+  pendingFile=e.target.files[0]||null;
+  var b=document.getElementById('decodeBtn');
+  if(b) b.style.display=pendingFile?'inline-block':'none';
+});
+function decodeFile(){
+  if(!pendingFile){ showReadout(null); return; }
   var img=new Image();
   img.onload=function(){
     var c=document.createElement('canvas');
@@ -135,8 +156,9 @@ document.getElementById('readfile').addEventListener('change',function(e){
     var code=jsQR(d.data,d.width,d.height);
     showReadout(code?code.data:null);
   };
-  img.src=URL.createObjectURL(f);
-});
+  img.onerror=function(){ showReadout(null); };
+  img.src=URL.createObjectURL(pendingFile);
+}
 
 // ---- ЧЕТЕНЕ ОТ КАМЕРА ----
 var camStream=null, camRAF=null;
@@ -186,5 +208,6 @@ function showReadout(data){
           :('<span>'+safe+'</span><br><span class="hint">Това е текст.</span>'));
 }
 </script>
+    <script src="/shared/js/navigation.js?v=1.0095"></script>
 </body>
 </html>

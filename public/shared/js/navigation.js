@@ -34,10 +34,11 @@ const KCY_NAV = {
         const adm = this.isAdmin();
         const nav = document.createElement('nav');
         nav.className = 'kcy-nav';
-        // тъмен вариант: ако body има data-nav-theme="dark" ИЛИ сме в игрите/порталните под-страници
+        // тъмен вариант: ако body има data-nav-theme="dark" ИЛИ сме в игрите (тъмен фон).
+        // Услугите имат светъл фон → светло меню (както billing/начало).
         var darkAttr = document.body.getAttribute('data-nav-theme');
         var path = window.location.pathname;
-        if (darkAttr === 'dark' || /\/portals\/(games|services)\//.test(path)) {
+        if (darkAttr === 'dark' || /\/portals\/games\//.test(path)) {
             nav.className = 'kcy-nav dark';
         }
         nav.innerHTML = `
@@ -55,12 +56,12 @@ const KCY_NAV = {
                     <a href="/eco-3/">🤖 ECO-3</a>
                     <a href="/portals/games/">🎮 Игри</a>
                     <a href="/portals/services/">🛠️ Услуги</a>
-                    <a href="/portals/billing.html">💳 Плащане</a>
+                    <a href="/portals/billing.html" class="nav-login-only" style="display:none;">💳 Плащане</a>
                 </div>
-                ${adm ? `<div class="nav-admin">
+                <div class="nav-admin" id="kcy-nav-admin" style="display:none;">
                     <span class="nav-adm-badge" id="kcy-adm-badge">🔴 ЛОГНАТ АДМИН</span>
                     <button class="nav-adm-toggle" id="kcy-guest-toggle" title="Превключи между админ изглед и изглед като обикновен посетител">изключи</button>
-                    <select onchange="if(this.value) window.location.href=this.value + (location.search.indexOf('adm=')>-1 ? (this.value.indexOf('?')>-1?'&':'?')+'adm=bgmasters-set' : '')">
+                    <select onchange="if(this.value) window.location.href=this.value">
                         <option value="">⚙️ Admin ▼</option>
                         <option value="/shared/admin-status.html">🩺 System Status</option>
                         <option value="" disabled>──────────────</option>
@@ -71,7 +72,7 @@ const KCY_NAV = {
                         <option value="/eco-3/admin/">🤖 ECO-3 Admin</option>
                         <option value="/portals/admin.html">🎮 Portals Admin</option>
                     </select>
-                </div>` : ''}
+                </div>
             </div>
         `;
         
@@ -81,6 +82,46 @@ const KCY_NAV = {
             document.body.appendChild(nav);
         }
         this.setupGuestToggle();
+        this.revealLoginOnly();
+        this.checkIpAdmin();
+    },
+
+    // ── Показва "ЛОГНАТ АДМИН" бутоните САМО ако сървърът третира IP-то като админ ──
+    // Зависи изцяло от IP whitelist на сървъра (вкл. 0.0.0.0/0), НЕ от URL параметри.
+    checkIpAdmin: function() {
+        var block = document.getElementById('kcy-nav-admin');
+        if (!block) return;
+        fetch('/api/portals/ip-admin', { credentials: 'same-origin' })
+            .then(function(r){ return r.ok ? r.json() : null; })
+            .then(function(d){
+                if (d && d.ip_admin) {
+                    block.style.display = '';
+                    // запомни админ статуса за тази сесия (за isAdmin() на други места)
+                    try { sessionStorage.setItem('kcy-adm', 'bgmasters-set'); } catch (e) {}
+                }
+            })
+            .catch(function(){ /* не е админ IP — остава скрит */ });
+    },
+
+    // ── Показва линкове само за логнати (напр. "Плащане") ──
+    // Пита /api/portals/me. Ако е логнат (или админ без guest-mode) → показва ги.
+    revealLoginOnly: function() {
+        var self = this;
+        var loginOnly = document.querySelectorAll('.nav-login-only');
+        if (!loginOnly.length) return;
+        function show(){ loginOnly.forEach(function(el){ el.style.display = ''; }); }
+        // 1) логнат потребител → показва
+        fetch('/api/portals/me', { credentials: 'same-origin' })
+            .then(function(r){ return r.ok ? r.json() : null; })
+            .then(function(d){ if (d && d.logged_in) show(); })
+            .catch(function(){});
+        // 2) админ по IP (whitelisted, без guest-mode) → също показва
+        if (!self.isGuestMode()) {
+            fetch('/api/portals/ip-admin', { credentials: 'same-origin' })
+                .then(function(r){ return r.ok ? r.json() : null; })
+                .then(function(d){ if (d && d.ip_admin) show(); })
+                .catch(function(){});
+        }
     },
 
     // ── Guest-mode toggle (само за админ) ──────────────────────

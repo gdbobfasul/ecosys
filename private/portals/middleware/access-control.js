@@ -104,7 +104,14 @@ function requirePortalAccess(req, res, next) {
     const db = req.app.locals.db;
     const userId = req.session?.userId;
 
-    // admin достъп = ?adm=bgmasters-set И IP whitelist едновременно
+    // Admin достъп по IP whitelist (вкл. 0.0.0.0/0) — НЕ изисква URL параметър, нито логин.
+    // Ако сървърът третира IP-то като админско, пускаме директно (както при ?adm).
+    // (guest-mode cookie вече прави isIpWhitelisted=false, за симулация на гост)
+    if (isIpWhitelisted(req)) {
+        return next();
+    }
+
+    // Иначе — стандартно: admin URL param + IP, или логин + плащане.
     const adminAccess = hasAdmUrlParam(req) && isIpWhitelisted(req);
 
     // Няма логин и не е admin → към login

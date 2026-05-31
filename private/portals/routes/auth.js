@@ -14,6 +14,7 @@ const {
     isFirstUserAdmin,
     currentMonth,
     hasPaidCurrentMonth,
+    isIpWhitelisted,
 } = require('../middleware/access-control');
 
 const router = express.Router();
@@ -158,6 +159,14 @@ router.get('/me', (req, res) => {
         current_month: currentMonth(),
     });
     log('изход 3 → 200 {logged_in:true}');
+});
+
+// ─── GET /api/portals/ip-admin ─────────────────────────────────
+// Връща дали сървърът третира този клиент като админ по IP whitelist
+// (вкл. allow-all 0.0.0.0/0). Менюто го пита, за да реши дали да покаже
+// бутоните "ЛОГНАТ АДМИН". Зависи САМО от IP whitelist-а, не от URL параметри.
+router.get('/ip-admin', (req, res) => {
+    res.json({ ip_admin: isIpWhitelisted(req) });
 });
 
 module.exports = router;
