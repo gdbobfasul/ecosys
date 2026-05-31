@@ -58,6 +58,8 @@ const KCY_NAV = {
                     <a href="/portals/billing.html">💳 Плащане</a>
                 </div>
                 ${adm ? `<div class="nav-admin">
+                    <span class="nav-adm-badge" id="kcy-adm-badge">🔴 ЛОГНАТ АДМИН</span>
+                    <button class="nav-adm-toggle" id="kcy-guest-toggle" title="Превключи между админ изглед и изглед като обикновен посетител">изключи</button>
                     <select onchange="if(this.value) window.location.href=this.value + (location.search.indexOf('adm=')>-1 ? (this.value.indexOf('?')>-1?'&':'?')+'adm=bgmasters-set' : '')">
                         <option value="">⚙️ Admin ▼</option>
                         <option value="/shared/admin-status.html">🩺 System Status</option>
@@ -78,6 +80,39 @@ const KCY_NAV = {
         } else {
             document.body.appendChild(nav);
         }
+        this.setupGuestToggle();
+    },
+
+    // ── Guest-mode toggle (само за админ) ──────────────────────
+    // Слага/маха cookie kcy-guest-mode=1. Когато е сложено, сървърът третира
+    // админа като обикновен посетител (редиректи към billing). Чисто клиентско —
+    // не пипа .env/сървърни настройки. Засяга само този браузър.
+    isGuestMode: function() {
+        return /(?:^|;\s*)kcy-guest-mode=1(?:;|$)/.test(document.cookie);
+    },
+    setupGuestToggle: function() {
+        var btn = document.getElementById('kcy-guest-toggle');
+        var badge = document.getElementById('kcy-adm-badge');
+        if (!btn) return;
+        var guest = this.isGuestMode();
+        // отрази текущото състояние
+        if (guest) {
+            btn.textContent = 'включи';
+            if (badge) { badge.textContent = '⚪ АДМИН ИЗКЛЮЧЕН (изглед като гост)'; badge.style.opacity = '.6'; }
+        } else {
+            btn.textContent = 'изключи';
+            if (badge) { badge.textContent = '🔴 ЛОГНАТ АДМИН'; badge.style.opacity = '1'; }
+        }
+        btn.addEventListener('click', function() {
+            if (/(?:^|;\s*)kcy-guest-mode=1(?:;|$)/.test(document.cookie)) {
+                // включи админ обратно — изтрий cookie
+                document.cookie = 'kcy-guest-mode=; path=/; max-age=0';
+            } else {
+                // изключи админ — симулирай гост
+                document.cookie = 'kcy-guest-mode=1; path=/; max-age=86400';
+            }
+            location.reload();
+        });
     },
     
     highlightCurrent: function() {

@@ -1,6 +1,8 @@
-// Version: 1.0093
+// Version: 1.0094
 const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { resolveStripeConfig } = require('../../configs/stripe-config');
+const STRIPE_CFG = resolveStripeConfig(process.env);
+const stripe = require('stripe')(STRIPE_CFG.secretKey);
 const geoip = require('geoip-lite');
 
 function getPriceForIP(ip) {
@@ -18,7 +20,7 @@ function createPaymentRoutes(db) {
 
   // Get Stripe publishable key
   router.get('/stripe-key', (req, res) => {
-    res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
+    res.json({ publishableKey: STRIPE_CFG.publishableKey });
   });
 
   // Get pricing for user's location

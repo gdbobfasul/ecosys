@@ -35,6 +35,13 @@ function loadPortalIPs() {
 }
 
 function isIpWhitelisted(req) {
+    // "Guest mode" toggle: ако админът е натиснал бутона "изключи админ достъп"
+    // (cookie kcy-guest-mode=1), преструваме се че IP-то НЕ е позволено — така
+    // админът вижда сайта като обикновен гост (редиректи към billing/login).
+    // Само за неговия браузър (cookie); не пипа .env, не засяга други посетители.
+    if (req.headers.cookie && /(?:^|;\s*)kcy-guest-mode=1(?:;|$)/.test(req.headers.cookie)) {
+        return false;
+    }
     const envIPs = (process.env.ADMIN_ALLOWED_IPS || '127.0.0.1,::1').split(',').map(s => s.trim()).filter(Boolean);
     const portalIPs = loadPortalIPs();
     const allowed = [...envIPs, ...portalIPs];

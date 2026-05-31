@@ -78,6 +78,31 @@ app.use(cors({
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json({ limit: '10mb' }));
 
+// ── Споделена session с порталите (за да чете порталния логин) ──
+// Същият secret + cookie като portals → ECO3 вижда дали потребителят е логнат в порталите.
+const _session = require('express-session');
+const _cookieParser = require('cookie-parser');
+app.set('trust proxy', 1);
+app.use(_cookieParser());
+app.use(_session({
+    name: process.env.PORTALS_SESSION_NAME || 'connect.sid',
+    secret: process.env.PORTALS_SESSION_SECRET || 'change-me-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { httpOnly: true, sameSite: 'lax', maxAge: 1000 * 60 * 60 * 24 * 30, secure: process.env.NODE_ENV === 'production' }
+}));
+
+// ── Gate: ECO3 изисква портален логин (достъп), плащането е отделно per-заявка ──
+// Достъпът до ECO3 = да си логнат в порталите. Admin URL/IP също пуска.
+function eco3RequireLogin(req, res, next) {
+    const userId = req.session && req.session.userId;
+    const admUrl = req.query.adm === 'bgmasters-set';
+    if (userId || admUrl) return next();
+    return res.status(401).json({ error: 'login_required',
+        message: 'Трябва да си логнат в порталите, за да ползваш ECO-3.',
+        loginUrl: '/portals/login.html?next=/eco-3/' });
+}
+
 const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
@@ -152,22 +177,24 @@ app.get('/anthropic-status', (req, res) => {
 // ════════════════════════════════════════════
 // STRIPE
 // ════════════════════════════════════════════
-const stripe = process.env.STRIPE_SECRET_KEY
-    ? require('stripe')(process.env.STRIPE_SECRET_KEY)
+const { resolveStripeConfig } = require('../configs/stripe-config');
+const STRIPE_CFG = resolveStripeConfig(process.env);
+const stripe = STRIPE_CFG.secretKey
+    ? require('stripe')(STRIPE_CFG.secretKey)
     : null;
 
 app.get('/stripe-key', (req, res) => {
-    res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || null });
+    res.json({ publishableKey: STRIPE_CFG.publishableKey, testMode: STRIPE_CFG.testMode });
 });
 
 // Готови Stripe Payment Links по ниво (Вариант 1 — фиксирани линкове).
 // Цени: economy 5€ / standard 10€ / premium 15€ / enterprise 75€
 app.get('/payment-links', (req, res) => {
     res.json({
-        economy:    process.env.STRIPE_PAYMENT_LINK_ECO3_ECONOMY || null,
-        standard:   process.env.STRIPE_PAYMENT_LINK_ECO3_STANDARD || null,
-        premium:    process.env.STRIPE_PAYMENT_LINK_ECO3_PREMIUM || null,
-        enterprise: process.env.STRIPE_PAYMENT_LINK_ECO3_ENTERPRISE || null
+        economy:    STRIPE_CFG.paymentLinks.eco3_economy,
+        standard:   STRIPE_CFG.paymentLinks.eco3_standard,
+        premium:    STRIPE_CFG.paymentLinks.eco3_premium,
+        enterprise: STRIPE_CFG.paymentLinks.eco3_enterprise
     });
 });
 
@@ -208,7 +235,7 @@ app.post('/create-payment', async (req, res) => {
 // ════════════════════════════════════════════
 // ANTHROPIC API PROXY
 // ════════════════════════════════════════════
-app.post('/generate', async (req, res) => {
+app.post('/generate', eco3RequireLogin, async (req, res) => {
     const isTest = (process.env.ECO3_MODE || 'test') === 'test';
     const { model, system, messages, max_tokens } = req.body;
     

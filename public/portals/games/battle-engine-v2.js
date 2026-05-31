@@ -30,7 +30,7 @@
 
 // Cache-busting за анимациите. Смяна на тази стойност = браузърите теглят
 // видеата наново (без нужда от hard refresh). Бутай я при всяко ново качване на assets.
-var ASSET_V = '?v=20260531a';
+var ASSET_V = '?v=20260531b';
 
 var MOVE_KEYS = ['v', 'b'];
 // щети, които ОБЕЗДВИЖВАТ целта за следващия ѝ ход (корени/лед/ток)
@@ -522,6 +522,17 @@ BattleEngine.prototype._resolveVideoUrl = function (unit, action) {
         return (a.indexOf('strange') > -1 ? 1 : 0) - (b.indexOf('strange') > -1 ? 1 : 0);
     });
 
+    // ── РЕДУВАНЕ НА ВАРИАНТИ (70% основна / 30% случаен вариант) ──
+    // Ако има повече от един вариант (без strange), от време на време пускаме
+    // не основната, а друг вариант — за да не е монотонно.
+    if (candidates.length > 1) {
+        var nonStrange = candidates.filter(function (c) { return c.indexOf('strange') === -1; });
+        if (nonStrange.length > 1 && Math.random() < 0.30) {
+            var chosen = nonStrange[Math.floor(Math.random() * nonStrange.length)];
+            candidates = [chosen].concat(candidates.filter(function (c) { return c !== chosen; }));
+        }
+    }
+
     var urls = candidates.map(function (name) {
         var topFolder = action.indexOf('react:') === 0 ? 'die-Damage' : 'Closes-Attacks';
         // ?v=ASSET_VERSION — cache-busting: при ново качване сменяш ASSET_VERSION
@@ -579,14 +590,18 @@ BattleEngine.prototype._setHeroState = function (unit, action, opts) {
             if (self.debug) {
                 self._idleLogged = self._idleLogged || {};
                 var isIdle = (action === 'idle');
+                var isWalk = (action === 'walks');
                 if (isIdle) {
                     // idle — само ВЕДНЪЖ за цялата игра, за всеки уникален файл
                     if (!self._idleLogged[base]) { self._idleLogged[base] = true; self._log(base); }
+                } else if (isWalk) {
+                    // придвижване — логва се ВИНАГИ (на 100%, без дедуп), с маркер 🚶
+                    self._log('🚶 ' + base);
                 } else if (self._lastLogged !== base) {
                     // останалите — без последователни дубли на същия файл
                     self._log(base);
                 }
-                if (!isIdle) self._lastLogged = base;
+                if (!isIdle && !isWalk) self._lastLogged = base;
                 self._renderDebug();
             }
 
@@ -604,18 +619,31 @@ BattleEngine.prototype._setHeroState = function (unit, action, opts) {
 
 /* ── ред на ходовете ── */
 BattleEngine.prototype.rebuildTurnOrder = function () {
-    var all = this.ally.concat(this.foe).filter(function (u) { return u.alive; });
-    for (var i = all.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var t = all[i]; all[i] = all[j]; all[j] = t;
+    // Разбъркваме всеки отбор поотделно, после ГИ ПРЕПЛИТАМЕ (ally, foe, ally, foe…),
+    // за да не играе един и същи отбор два пъти подред (причина за "double turn" бъга).
+    function shuffle(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+        }
+        return arr;
     }
-    this.turnOrder = all;
+    var allies = shuffle(this.ally.filter(function (u) { return u.alive; }));
+    var foes = shuffle(this.foe.filter(function (u) { return u.alive; }));
+    var order = [];
+    var maxLen = Math.max(allies.length, foes.length);
+    for (var k = 0; k < maxLen; k++) {
+        if (k < allies.length) order.push(allies[k]);
+        if (k < foes.length) order.push(foes[k]);
+    }
+    this.turnOrder = order;
 };
 
 BattleEngine.prototype.advanceTurn = function (first) {
     var self = this;
     if (this.checkEnd()) return;
     if (!first) this.turnIdx++;
+    this._turnCounter = (this._turnCounter || 0) + 1; // глобален брояч на ходовете (за special cooldown)
     if (this.turnIdx >= this.turnOrder.length) {
         this.rebuildTurnOrder();
         this.turnIdx = 0;
@@ -774,6 +802,18 @@ BattleEngine.prototype.doSpecial = function (actor, idx) {
     var self = this;
     var sp = (actor.def.specials || [])[idx];
     if (!sp) { this.advanceTurn(false); return; }
+
+    // ── Специалната атака не може 2 пъти ПОДРЕД от същия герой (а през ход) ──
+    // Пазим брояча на хода, в който героят последно е ползвал special.
+    // Ако се опита пак на следващия си ход — отказваме (прави обикновен ход).
+    if (typeof actor._lastSpecialTurn === 'number' &&
+        (this._turnCounter || 0) - actor._lastSpecialTurn < 2) {
+        // твърде скоро — пропусни специалната, направи обикновен ход вместо това
+        var mv = actor.def.moves && actor.def.moves[Math.floor(Math.random() * actor.def.moves.length)];
+        if (mv) { this.doMove(actor, mv); return; }
+        this.advanceTurn(false); return;
+    }
+    actor._lastSpecialTurn = (this._turnCounter || 0);
 
     var targets = this.targetsFor(actor, sp.target === 'all');
     if (!targets.length) { this.advanceTurn(false); return; }
@@ -1259,7 +1299,7 @@ var BATTLE_DBG_CSS = [
 '.kbb-dbg{position:fixed;top:80px;width:230px;max-height:46vh;overflow:auto;background:rgba(6,8,12,.92);border:1px solid #2a4a6a;border-radius:8px;padding:8px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#bcd;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.6);}',
 '.kbb-dbg-left{left:8px;}',
 '.kbb-dbg-right{right:8px;}',
-'.kbb-dbg-log{left:8px;bottom:8px;top:auto;width:420px;max-height:48vh;border-color:#4a3a1e;color:#d8c08c;line-height:1.5;}',
+'.kbb-dbg-log{left:8px;bottom:8px;top:auto;width:240px;max-height:26vh;border-color:#4a3a1e;color:#d8c08c;line-height:1.4;font-size:.78em;}',
 '.kbb-dbg-title{font-weight:700;color:#5fb0ff;letter-spacing:1px;margin-bottom:6px;border-bottom:1px solid #234;padding-bottom:4px;}',
 '.kbb-dbg-log .kbb-dbg-title{color:#f8c450;border-color:#432;}',
 '.kbb-dbg-hero{margin-bottom:8px;padding:5px 6px;background:rgba(255,255,255,.03);border-radius:5px;border-left:3px solid #2a6;}',

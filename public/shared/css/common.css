@@ -131,6 +131,31 @@ body {
 }
 .kcy-nav.dark .nav-admin select:hover { background: #ffd166; color: #12141c; }
 
+/* ── ЛОГНАТ АДМИН надпис + toggle бутон ── */
+.nav-adm-badge {
+    font-weight: 800;
+    font-size: 0.82em;
+    color: #e01010;
+    letter-spacing: 0.5px;
+    margin-right: 8px;
+    white-space: nowrap;
+}
+.kcy-nav.dark .nav-adm-badge { color: #ff4d4d; }
+.nav-adm-toggle {
+    padding: 5px 12px;
+    margin-right: 8px;
+    border: 2px solid #e01010;
+    background: #e01010;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: 700;
+}
+.nav-adm-toggle:hover { background: #fff; color: #e01010; }
+.kcy-nav.dark .nav-adm-toggle { border-color: #ff4d4d; background: #ff4d4d; }
+.kcy-nav.dark .nav-adm-toggle:hover { background: #12141c; color: #ff4d4d; }
+
 
 /* Buttons */
 .btn {

@@ -9,10 +9,12 @@ const fs = require('fs');
 const path = require('path');
 const { requireLoginAPI, currentMonth, isFirstUserAdmin } = require('../middleware/access-control');
 
-// Stripe — инициализира се само ако има ключ в .env (иначе картовите endpoint-и връщат 503)
+// Stripe — избира LIVE или TEST ключове според STRIPE_TEST_MODE (резолвер)
+const { resolveStripeConfig } = require('../../configs/stripe-config');
+const STRIPE_CFG = resolveStripeConfig(process.env);
 let stripe = null;
-if (process.env.STRIPE_SECRET_KEY) {
-    try { stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); }
+if (STRIPE_CFG.secretKey) {
+    try { stripe = require('stripe')(STRIPE_CFG.secretKey); }
     catch (e) { stripe = null; }
 }
 
@@ -161,8 +163,9 @@ router.post('/admin-grant', requireLoginAPI, (req, res) => {
 router.get('/stripe-config', (req, res) => {
     res.json({
         enabled: !!stripe,
-        publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || null,
-        paymentLink: process.env.STRIPE_PAYMENT_LINK_PORTALS || null
+        testMode: STRIPE_CFG.testMode,
+        publishableKey: STRIPE_CFG.publishableKey,
+        paymentLink: STRIPE_CFG.paymentLinks.portals
     });
 });
 
