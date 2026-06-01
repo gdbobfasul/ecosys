@@ -1,4 +1,4 @@
-<!-- Version: 1.0098 -->
+<!-- Version: 1.0117 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -26,31 +26,31 @@
   .bar { height:8px; background:#dde6ef; border-radius:4px; overflow:hidden; margin-top:8px; }
   .bar > div { height:100%; background:var(--pri); width:0%; transition:width .2s; }
 </style>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0097">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
 <body>
 <div class="head">
-  <h1>Свиване на PDF</h1>
-  <p>Намали размера на голям PDF (особено със сканирани страници/големи снимки)</p>
+  <h1 data-i18n="pdfc.title">Свиване на PDF</h1>
+  <p data-i18n="pdfc.subtitle">Намали размера на голям PDF (особено със сканирани страници/големи снимки)</p>
   <a href="/portals/services/">← Всички услуги</a>
 </div>
 <div class="wrap">
   <div class="card">
-    <label>Избери PDF файл</label>
+    <label data-i18n="pdfc.choose">Избери PDF файл</label>
     <input type="file" id="pdfFile" accept="application/pdf">
 
-    <label>Ниво на свиване</label>
+    <label data-i18n="pdfc.level">Ниво на свиване</label>
     <select id="level">
-      <option value="high">Силно (най-малък размер, по-ниско качество)</option>
-      <option value="medium" selected>Средно (баланс)</option>
-      <option value="low">Леко (по-добро качество)</option>
+      <option value="high" data-i18n="pdfc.high">Силно (най-малък размер, по-ниско качество)</option>
+      <option value="medium" selected data-i18n="pdfc.medium">Средно (баланс)</option>
+      <option value="low" data-i18n="pdfc.low">Леко (по-добро качество)</option>
     </select>
     <p class="hint">
       Всяка страница се преобразува в изображение с намалена резолюция и качество, после се сглобява нов PDF.
       Работи най-добре за сканирани документи и PDF-и с големи снимки. Текстът става неизбираем (растеризира се).
     </p>
 
-    <button class="btn" id="goBtn" onclick="compress()">Свий PDF</button>
+    <button class="btn" id="goBtn" onclick="compress()" data-i18n="pdfc.compress">Свий PDF</button>
     <div class="bar" id="barWrap" style="display:none;"><div id="bar"></div></div>
     <div class="status" id="status" style="display:none;"></div>
   </div>
@@ -130,6 +130,6 @@ async function compress(){
   }
 }
 </script>
-    <script src="/shared/js/navigation.js?v=1.0097"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

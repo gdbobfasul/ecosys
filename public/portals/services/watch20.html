@@ -1,6 +1,6 @@
-<!-- Version: 1.0114 -->
+<!-- Version: 1.0116 -->
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,13 +45,13 @@
   .modal .add { background:var(--pri); color:#fff; border:none; padding:9px 16px; border-radius:8px; cursor:pointer; font-weight:600; margin-top:6px; }
   .modal .close { background:#5a6b7d; color:#fff; border:none; padding:9px 16px; border-radius:8px; cursor:pointer; margin-top:6px; margin-left:8px; }
 </style>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0111">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
 <body>
 <div class="head">
-  <h1>Наблюдавай 20 валути и криптовалути</h1>
-  <p>Избери до 20 двойки спрямо USD/USDC · прагове с известие и звук</p>
-  <a href="/portals/services/">← Всички услуги</a>
+  <h1 data-i18n="watch20.title">Наблюдавай 20 валути и криптовалути</h1>
+  <p data-i18n="watch20.subtitle">Избери до 20 двойки спрямо USD/USDC · прагове с известие и звук</p>
+  <a href="/portals/services/"data-i18n="common.all_services">← Всички услуги</a>
 </div>
 <div class="wrap">
   <div style="background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.82em;color:#3a4a5a;">
@@ -64,8 +64,8 @@
     Данните са с информативна цел и не представляват финансов съвет.
   </div>
   <div class="toolbar">
-    <button onclick="saveAll()">💾 Запази</button>
-    <button onclick="requestNotify()">🔔 Разреши известия</button>
+    <button onclick="saveAll()"data-i18n="watch20.save">💾 Запази</button>
+    <button onclick="requestNotify()"data-i18n="watch20.allow_notify">🔔 Разреши известия</button>
     <span class="muted" id="status"></span>
   </div>
   <div class="grid" id="grid"></div>
@@ -74,14 +74,14 @@
 <!-- модал за прагове (камбанка) -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
-    <h3>Прагове за известие — слот <span id="mNum"></span></h3>
-    <p class="hint">Добави до 20 стойности. Когато курсът достигне точно някоя от тях, ще получиш известие на браузъра + звук, а кутийката ще светне.</p>
+    <h3><span data-i18n="watch20.thresholds">Прагове за известие — слот</span> <span id="mNum"></span></h3>
+    <p class="hint" data-i18n="watch20.thresholds_hint">Добави до 20 стойности. Когато курсът достигне точно някоя от тях, ще получиш известие на браузъра + звук, а кутийката ще светне.</p>
     <div id="thrList"></div>
     <div class="thr">
-      <input type="number" id="thrVal" step="any" placeholder="стойност (напр. 0.92)">
+      <input type="number" id="thrVal" step="any" placeholder="стойност (напр. 0.92)" data-i18n-attr="placeholder:watch20.value_placeholder">
     </div>
-    <button class="add" onclick="addThr()">+ Добави стойност</button>
-    <button class="close" onclick="closeModal()">Затвори</button>
+    <button class="add" onclick="addThr()" data-i18n="watch20.add_value">+ Добави стойност</button>
+    <button class="close" onclick="closeModal()" data-i18n="common.close">Затвори</button>
   </div>
 </div>
 
@@ -326,6 +326,6 @@ async function refreshAll(){
   setInterval(refreshAll, 600000);
 })();
 </script>
-    <script src="/shared/js/navigation.js?v=1.0111"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

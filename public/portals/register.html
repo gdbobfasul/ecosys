@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация — KCY Portals</title>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <style>
         .auth-wrap { max-width: 480px; margin: 60px auto; padding: 40px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.12); }
         .auth-wrap h1 { color: var(--primary-color); margin-bottom: 8px; font-size: 1.8em; }
@@ -24,7 +24,7 @@
 <body>
     <div class="auth-wrap">
         <h1>📝 Регистрация</h1>
-        <p class="lead">Създай акаунт за достъп до портала за игри и портала за услуги.</p>
+        <p class="lead" data-i18n="reg.subtitle">Създай акаунт за достъп до портала за игри и портала за услуги.</p>
 
         <div style="background:#fff8e1;border:1px solid #ffd24a;border-radius:8px;padding:12px 14px;margin-bottom:18px;font-size:.88em;color:#7a5c00;line-height:1.5">
             <strong>🏆 Реклама за победителите:</strong> играй игрите — точките от всичките игри
@@ -33,20 +33,20 @@
             видно място в класацията. Класацията се нулира всеки месец.
         </div>
 
-        <label>Потребител</label>
+        <label data-i18n="reg.user">Потребител</label>
         <input id="username" type="text" maxlength="32" autocomplete="username">
 
-        <label>Парола</label>
+        <label data-i18n="reg.pass">Парола</label>
         <input id="password" type="password" autocomplete="new-password">
-        <div class="hint">Минимум 4 символа.</div>
+        <div class="hint" data-i18n="reg.passhint">Минимум 4 символа.</div>
 
-        <label>Описание на твоята дейност (по избор)</label>
+        <label data-i18n="reg.desc">Описание на твоята дейност (по избор)</label>
         <input id="bizdesc" type="text" maxlength="200" placeholder="напр. Цветарски магазин в София">
-        <div class="hint">Ако влезеш в топ 5 на месечната ранг листа за игрите — това описание + линкът ти ще се показват като реклама.</div>
+        <div class="hint" data-i18n="reg.desc_hint">Ако влезеш в топ 5 на месечната ранг листа за игрите — това описание + линкът ти ще се показват като реклама.</div>
 
-        <label>Рекламен линк (по избор)</label>
+        <label data-i18n="reg.adlink">Рекламен линк (по избор)</label>
         <input id="adlink" type="text" maxlength="300" placeholder="https://твоя-сайт.com">
-        <div class="hint">Линк към твоята дейност/сайт. Показва се само за топ 5 в месечната класация.</div>
+        <div class="hint" data-i18n="reg.adlink_hint">Линк към твоята дейност/сайт. Показва се само за топ 5 в месечната класация.</div>
 
         <label>Сума платена през Stripe (USD)</label>
         <input type="text" value="0.00 USD" readonly>
@@ -65,11 +65,11 @@
         <label>Платено в BNB</label>
         <input type="text" value="0.00000000" readonly>
 
-        <button id="btn-register" class="btn-primary">Регистрирай ме</button>
+        <button id="btn-register" class="btn-primary" data-i18n="reg.submit">Регистрирай ме</button>
         <div id="msg" class="msg"></div>
 
         <p style="margin-top: 18px; text-align: center; color: #666;">
-            Вече имаш акаунт? <a href="./login.html">Вход</a>
+            Вече имаш акаунт? <a href="./login.html" data-i18n="reg.login">Вход</a>
         </p>
     </div>
 

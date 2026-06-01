@@ -1,4 +1,4 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0118 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -25,37 +25,37 @@
   .out .line { display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed #cdd7e1; }
   .out .line:last-child { border:none; font-weight:700; color:var(--pri); font-size:1.1em; }
 </style>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
 <body>
 <div class="head">
-  <h1>Калкулатори</h1>
-  <p>Заем, ДДС, лихва, проценти — по държава</p>
+  <h1 data-i18n="calc.title">Калкулатори</h1>
+  <p data-i18n="calc.subtitle">Заем, ДДС, лихва, проценти — по държава</p>
   <a href="/portals/services/">← Всички услуги</a>
 </div>
 <div class="wrap">
   <div class="tabs">
-    <button class="tab active" onclick="tab('loan')">Заем</button>
-    <button class="tab" onclick="tab('vat')">ДДС</button>
-    <button class="tab" onclick="tab('interest')">Лихва</button>
-    <button class="tab" onclick="tab('pct')">Проценти</button>
+    <button class="tab active" onclick="tab('loan')" data-i18n="calc.loan">Заем</button>
+    <button class="tab" onclick="tab('vat')" data-i18n="calc.vat">ДДС</button>
+    <button class="tab" onclick="tab('interest')" data-i18n="calc.interest">Лихва</button>
+    <button class="tab" onclick="tab('pct')" data-i18n="calc.percent">Проценти</button>
   </div>
 
   <!-- ЗАЕМ -->
   <div id="loan" class="panel active card">
-    <label>Сума на заема</label>
+    <label data-i18n="calc.loan_amount">Сума на заема</label>
     <input type="number" id="lAmount" value="10000">
-    <label>Годишен лихвен процент (%)</label>
+    <label data-i18n="calc.annual_rate">Годишен лихвен процент (%)</label>
     <input type="number" id="lRate" value="8" step="0.01">
-    <label>Срок (месеци)</label>
+    <label data-i18n="calc.term_months">Срок (месеци)</label>
     <input type="number" id="lMonths" value="60">
-    <button class="btn" onclick="calcLoan()">Изчисли</button>
+    <button class="btn" onclick="calcLoan()" data-i18n="calc.calculate">Изчисли</button>
     <div class="out" id="loanOut" style="display:none"></div>
   </div>
 
   <!-- ДДС -->
   <div id="vat" class="panel card">
-    <label>Държава (ставка ДДС)</label>
+    <label data-i18n="calc.country_vat">Държава (ставка ДДС)</label>
     <select id="vCountry" onchange="vatRate()">
       <option value="20">България — 20%</option>
       <option value="19">Германия — 19%</option>
@@ -65,16 +65,16 @@
       <option value="20">Австрия — 20%</option>
       <option value="24">Гърция — 24%</option>
       <option value="25">Швеция — 25%</option>
-      <option value="0">Друга / ръчно</option>
+      <option value="0" data-i18n="calc.other_manual">Друга / ръчно</option>
     </select>
-    <label>ДДС ставка (%)</label>
+    <label data-i18n="calc.vat_rate">ДДС ставка (%)</label>
     <input type="number" id="vRate" value="20" step="0.1">
-    <label>Сума</label>
+    <label data-i18n="calc.amount">Сума</label>
     <input type="number" id="vAmount" value="100">
     <label>Сумата е:</label>
     <select id="vMode">
-      <option value="net">Без ДДС (добави ДДС)</option>
-      <option value="gross">С ДДС (извади ДДС)</option>
+      <option value="net" data-i18n="calc.add_vat">Без ДДС (добави ДДС)</option>
+      <option value="gross" data-i18n="calc.remove_vat">С ДДС (извади ДДС)</option>
     </select>
     <button class="btn" onclick="calcVat()">Изчисли</button>
     <div class="out" id="vatOut" style="display:none"></div>
@@ -82,16 +82,16 @@
 
   <!-- ЛИХВА -->
   <div id="interest" class="panel card">
-    <label>Главница</label>
+    <label data-i18n="calc.principal">Главница</label>
     <input type="number" id="iPrincipal" value="5000">
     <label>Годишен лихвен процент (%)</label>
     <input type="number" id="iRate" value="5" step="0.01">
-    <label>Срок (години)</label>
+    <label data-i18n="calc.term_years">Срок (години)</label>
     <input type="number" id="iYears" value="3" step="0.1">
-    <label>Вид лихва</label>
+    <label data-i18n="calc.interest_type">Вид лихва</label>
     <select id="iType">
-      <option value="compound">Сложна (капитализира се годишно)</option>
-      <option value="simple">Проста</option>
+      <option value="compound" data-i18n="calc.compound">Сложна (капитализира се годишно)</option>
+      <option value="simple" data-i18n="calc.simple">Проста</option>
     </select>
     <button class="btn" onclick="calcInterest()">Изчисли</button>
     <div class="out" id="intOut" style="display:none"></div>
@@ -99,15 +99,15 @@
 
   <!-- ПРОЦЕНТИ -->
   <div id="pct" class="panel card">
-    <label>Изчисление</label>
+    <label data-i18n="calc.calculation">Изчисление</label>
     <select id="pMode" onchange="pctLabels()">
       <option value="of">X% от Y</option>
       <option value="iswhat">X е колко % от Y</option>
-      <option value="change">Промяна от X до Y (%)</option>
+      <option value="change" data-i18n="calc.change_xy">Промяна от X до Y (%)</option>
     </select>
-    <label id="pL1">Процент X</label>
+    <label id="pL1" data-i18n="calc.percent_x">Процент X</label>
     <input type="number" id="pX" value="15">
-    <label id="pL2">Стойност Y</label>
+    <label id="pL2" data-i18n="calc.value_y">Стойност Y</label>
     <input type="number" id="pY" value="200">
     <button class="btn" onclick="calcPct()">Изчисли</button>
     <div class="out" id="pctOut" style="display:none"></div>
@@ -130,9 +130,9 @@ function calcLoan(){
   var total=m*n, interest=total-P;
   document.getElementById('loanOut').style.display='block';
   document.getElementById('loanOut').innerHTML=
-    '<div class="line"><span>Месечна вноска</span><span>'+money(m)+'</span></div>'+
-    '<div class="line"><span>Обща лихва</span><span>'+money(interest)+'</span></div>'+
-    '<div class="line"><span>Общо за връщане</span><span>'+money(total)+'</span></div>';
+    '<div class="line"><span data-i18n="calc.monthly">Месечна вноска</span><span>'+money(m)+'</span></div>'+
+    '<div class="line"><span data-i18n="calc.total_interest">Обща лихва</span><span>'+money(interest)+'</span></div>'+
+    '<div class="line"><span data-i18n="calc.total_repay">Общо за връщане</span><span>'+money(total)+'</span></div>';
 }
 function vatRate(){
   var v=document.getElementById('vCountry').value;
@@ -147,9 +147,9 @@ function calcVat(){
   else { gross=amt; net=amt/(1+rate); vat=gross-net; }
   document.getElementById('vatOut').style.display='block';
   document.getElementById('vatOut').innerHTML=
-    '<div class="line"><span>Без ДДС</span><span>'+money(net)+'</span></div>'+
+    '<div class="line"><span data-i18n="calc.without_vat">Без ДДС</span><span>'+money(net)+'</span></div>'+
     '<div class="line"><span>ДДС</span><span>'+money(vat)+'</span></div>'+
-    '<div class="line"><span>С ДДС</span><span>'+money(gross)+'</span></div>';
+    '<div class="line"><span data-i18n="calc.with_vat">С ДДС</span><span>'+money(gross)+'</span></div>';
 }
 function calcInterest(){
   var P=parseFloat(document.getElementById('iPrincipal').value)||0;
@@ -161,8 +161,8 @@ function calcInterest(){
   document.getElementById('intOut').style.display='block';
   document.getElementById('intOut').innerHTML=
     '<div class="line"><span>Главница</span><span>'+money(P)+'</span></div>'+
-    '<div class="line"><span>Натрупана лихва</span><span>'+money(interest)+'</span></div>'+
-    '<div class="line"><span>Крайна сума</span><span>'+money(total)+'</span></div>';
+    '<div class="line"><span data-i18n="calc.accrued">Натрупана лихва</span><span>'+money(interest)+'</span></div>'+
+    '<div class="line"><span data-i18n="calc.final_amount">Крайна сума</span><span>'+money(total)+'</span></div>';
 }
 function pctLabels(){
   var m=document.getElementById('pMode').value;
@@ -190,6 +190,6 @@ function calcPct(){
   document.getElementById('pctOut').innerHTML='<div class="line"><span>'+label+'</span><span>'+money(res)+'</span></div>';
 }
 </script>
-    <script src="/shared/js/navigation.js?v=1.0095"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

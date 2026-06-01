@@ -1,11 +1,11 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0117 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏠 AI обява за имот</title>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <style>
         .wrap { max-width: 780px; margin: 30px auto; padding: 30px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.1); }
         h1 { color: var(--primary-color); margin-bottom: 6px; }
@@ -31,12 +31,12 @@
 
         <div class="row">
             <div>
-                <label>Език</label>
+                <label data-i18n="ail.lang">Език</label>
                 <select id="language"><option value="bg">Български</option><option value="en">English</option></select>
             </div>
             <div>
-                <label>Тон</label>
-                <select id="tone"><option value="professional">Професионален</option><option value="friendly">Приятелски</option><option value="luxury">Луксозен</option></select>
+                <label data-i18n="ail.tone">Тон</label>
+                <select id="tone"><option value="professional" data-i18n="ail.t_pro">Професионален</option><option value="friendly" data-i18n="ail.t_friendly">Приятелски</option><option value="luxury" data-i18n="ail.t_lux">Луксозен</option></select>
             </div>
         </div>
 
@@ -79,6 +79,6 @@
             }
         });
     </script>
-    <script src="/shared/js/navigation.js?v=1.0095"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

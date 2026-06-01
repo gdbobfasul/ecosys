@@ -1,4 +1,4 @@
-<!-- Version: 1.0106 -->
+<!-- Version: 1.0119 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -27,39 +27,39 @@
   .status.ok { background:#eaf6ea; color:#2d662d; display:block; }
   .status.err { background:#fbecec; color:#a33; display:block; }
 </style>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
 <body>
 <div class="head">
   <h1>PDF инструменти</h1>
-  <p>Сливане, разделяне, воден знак</p>
+  <p data-i18n="pdf.subtitle">Сливане, разделяне, воден знак</p>
   <a href="/portals/services/">← Всички услуги</a>
 </div>
 <div class="wrap">
   <div class="tabs">
-    <button class="tab active" onclick="tab('merge')">Сливане</button>
-    <button class="tab" onclick="tab('split')">Разделяне</button>
-    <button class="tab" onclick="tab('wm')">Воден знак</button>
-    <button class="tab" onclick="tab('sign')">Визуален подпис</button>
+    <button class="tab active" onclick="tab('merge')" data-i18n="pdf.merge">Сливане</button>
+    <button class="tab" onclick="tab('split')" data-i18n="pdf.split">Разделяне</button>
+    <button class="tab" onclick="tab('wm')" data-i18n="pdf.watermark">Воден знак</button>
+    <button class="tab" onclick="tab('sign')" data-i18n="pdf.visual_sign">Визуален подпис</button>
   </div>
 
   <!-- СЛИВАНЕ -->
   <div id="merge" class="panel active card">
-    <label>Избери няколко PDF файла (в реда за сливане)</label>
+    <label data-i18n="pdf.merge_choose">Избери няколко PDF файла (в реда за сливане)</label>
     <input type="file" id="mFiles" accept="application/pdf" multiple>
-    <p class="hint">Файловете се сливат в един PDF в реда на избиране.</p>
-    <button class="btn" onclick="doMerge()">Слей PDF</button>
+    <p class="hint" data-i18n="pdf.merge_note">Файловете се сливат в един PDF в реда на избиране.</p>
+    <button class="btn" onclick="doMerge()" data-i18n="pdf.merge_btn">Слей PDF</button>
     <div class="status" id="mStatus"></div>
   </div>
 
   <!-- РАЗДЕЛЯНЕ -->
   <div id="split" class="panel card">
-    <label>Избери PDF файл</label>
+    <label data-i18n="pdf.choose">Избери PDF файл</label>
     <input type="file" id="sFile" accept="application/pdf">
-    <label>Страници за извличане (напр. 1-3,5,8)</label>
+    <label data-i18n="pdf.split_pages">Страници за извличане (напр. 1-3,5,8)</label>
     <input type="text" id="sRange" placeholder="1-3,5,8" value="1">
-    <p class="hint">Извлича посочените страници в нов PDF.</p>
-    <button class="btn" onclick="doSplit()">Извлечи страници</button>
+    <p class="hint" data-i18n="pdf.split_note">Извлича посочените страници в нов PDF.</p>
+    <button class="btn" onclick="doSplit()" data-i18n="pdf.split_btn">Извлечи страници</button>
     <div class="status" id="sStatus"></div>
   </div>
 
@@ -67,10 +67,10 @@
   <div id="wm" class="panel card">
     <label>Избери PDF файл</label>
     <input type="file" id="wFile" accept="application/pdf">
-    <label>Текст на водния знак</label>
+    <label data-i18n="pdf.wm_text">Текст на водния знак</label>
     <input type="text" id="wText" placeholder="ПОВЕРИТЕЛНО" value="ПОВЕРИТЕЛНО">
-    <p class="hint">Добавя диагонален полупрозрачен текст на всяка страница.</p>
-    <button class="btn" onclick="doWatermark()">Добави воден знак</button>
+    <p class="hint" data-i18n="pdf.wm_note">Добавя диагонален полупрозрачен текст на всяка страница.</p>
+    <button class="btn" onclick="doWatermark()" data-i18n="pdf.wm_btn">Добави воден знак</button>
     <div class="status" id="wStatus"></div>
   </div>
   <!-- ВИЗУАЛЕН ПОДПИС -->
@@ -80,29 +80,29 @@
       правно не е валиден е-подпис, а само визуално поставяне на изображение върху PDF.
     </p>
 
-    <h3 style="margin:16px 0 8px;font-size:1.05em;">Стъпка 1 — Извлечи подпис от документ</h3>
+    <h3 style="margin:16px 0 8px;font-size:1.05em;" data-i18n="pdf.sign_step1">Стъпка 1 — Извлечи подпис от документ</h3>
     <label>PDF с подпис (визуалния образ)</label>
     <input type="file" id="sigSrc" accept="application/pdf">
-    <label>Страница, на която е подписът</label>
+    <label data-i18n="pdf.sign_page">Страница, на която е подписът</label>
     <input type="number" id="sigPage" value="1" min="1" style="width:90px;">
-    <button class="btn sec" onclick="loadSigPage()">Покажи страницата</button>
-    <p class="hint">След като се покаже страницата, очертай с мишката правоъгълник около подписа, за да го изрежеш.</p>
+    <button class="btn sec" onclick="loadSigPage()" data-i18n="pdf.sign_show">Покажи страницата</button>
+    <p class="hint" data-i18n="pdf.sign_hint1">След като се покаже страницата, очертай с мишката правоъгълник около подписа, за да го изрежеш.</p>
     <div id="sigCanvasWrap" style="position:relative;display:none;overflow:auto;border:1px solid #ccc;border-radius:8px;margin-top:10px;">
       <canvas id="sigCanvas" style="display:block;max-width:100%;"></canvas>
       <div id="sigSel" style="position:absolute;border:2px dashed #d9534f;background:rgba(217,83,79,.15);display:none;pointer-events:none;"></div>
     </div>
-    <button class="btn" id="cropBtn" onclick="cropSig()" style="display:none;margin-top:10px;">Изрежи подписа</button>
+    <button class="btn" id="cropBtn" onclick="cropSig()" style="display:none;margin-top:10px;" data-i18n="pdf.sign_crop">Изрежи подписа</button>
     <div id="sigPreview" style="margin-top:10px;"></div>
 
-    <h3 style="margin:22px 0 8px;font-size:1.05em;">Стъпка 2 — Постави подписа на друг PDF</h3>
+    <h3 style="margin:22px 0 8px;font-size:1.05em;" data-i18n="pdf.sign_step2">Стъпка 2 — Постави подписа на друг PDF</h3>
     <label>PDF за подписване</label>
     <input type="file" id="tgtPdf" accept="application/pdf">
-    <label>Страница (1 = първа, -1 = последна)</label>
+    <label data-i18n="pdf.sign_target_page">Страница (1 = първа, -1 = последна)</label>
     <input type="number" id="tgtPage" value="-1" style="width:90px;">
-    <label>Размер на подписа (% от ширината на страницата)</label>
+    <label data-i18n="pdf.sign_size">Размер на подписа (% от ширината на страницата)</label>
     <input type="number" id="sigScale" value="25" min="5" max="100" style="width:90px;">
-    <p class="hint">Подписът се поставя долу вдясно. Първо изрежи подпис в Стъпка 1.</p>
-    <button class="btn" onclick="applySig()">Постави подписа</button>
+    <p class="hint" data-i18n="pdf.sign_hint2">Подписът се поставя долу вдясно. Първо изрежи подпис в Стъпка 1.</p>
+    <button class="btn" onclick="applySig()" data-i18n="pdf.sign_apply">Постави подписа</button>
     <div class="status" id="signStatus"></div>
   </div>
 </div>
@@ -285,7 +285,7 @@ function cropSig(){
   c.getContext('2d').drawImage(src, r.x, r.y, r.w, r.h, 0, 0, r.w, r.h);
   sigCroppedDataURL=c.toDataURL('image/png');
   document.getElementById('sigPreview').innerHTML=
-    '<p class="hint">Изрязан подпис:</p><img src="'+sigCroppedDataURL+'" style="max-width:260px;border:1px solid #ccc;border-radius:6px;background:#fff;">';
+    '<p class="hint" data-i18n="pdf.sign_cropped">Изрязан подпис:</p><img src="'+sigCroppedDataURL+'" style="max-width:260px;border:1px solid #ccc;border-radius:6px;background:#fff;">';
   status('signStatus',true,'Подписът е изрязан. Сега мини на Стъпка 2.');
 }
 
@@ -314,6 +314,6 @@ async function applySig(){
   }catch(e){ status('signStatus',false,'Грешка: '+e.message); }
 }
 </script>
-    <script src="/shared/js/navigation.js?v=1.0095"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

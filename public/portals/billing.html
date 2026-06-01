@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Плащане — KCY Portals</title>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         .bill-wrap { max-width: 660px; margin: 40px auto; padding: 36px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.12); }
@@ -46,27 +46,27 @@
 <body>
     <div class="bill-wrap">
         <h1>💳 Месечен достъп до порталите</h1>
-        <p>За да ползваш Портала за игри и Портала за услуги, е нужно активно плащане за текущия месец.</p>
+        <p data-i18n="billing.intro">За да ползваш Портала за игри и Портала за услуги, е нужно активно плащане за текущия месец.</p>
 
-        <div id="status" class="status unpaid">Зарежда се…</div>
+        <div id="status" class="status unpaid" data-i18n="billing.loading">Зарежда се…</div>
 
-        <h3>Цена за текущия месец</h3>
+        <h3 data-i18n="billing.price">Цена за текущия месец</h3>
         <div id="fees" class="fees-grid"></div>
 
         <!-- ─── ВИД 1: КАРТА (Stripe) ─── -->
         <div class="pay-method" id="card-method">
             <h4>💳 Плащане с карта</h4>
-            <p class="hint">Сигурно плащане през Stripe. Не е нужен Stripe акаунт — въвеждаш само картата си на защитената страница на Stripe.</p>
-            <button class="btn card" id="btn-card">Плати с карта (автоматично) →</button>
+            <p class="hint" data-i18n="billing.stripe_note">Сигурно плащане през Stripe. Не е нужен Stripe акаунт — въвеждаш само картата си на защитената страница на Stripe.</p>
+            <button class="btn card" id="btn-card" data-i18n="billing.pay_card">Плати с карта (автоматично) →</button>
             <p class="hint" style="margin-top:10px;">Или плати през готовия линк (ако бутонът не работи). След плащане се върни и потвърди по-долу.</p>
-            <a class="btn" id="link-card" style="background:#635bff;display:none;" target="_blank" rel="noopener">Плати през Stripe линк ↗</a>
+            <a class="btn" id="link-card" style="background:#635bff;display:none;" target="_blank" rel="noopener" data-i18n="billing.pay_link">Плати през Stripe линк ↗</a>
             <div id="card-msg" class="msg"></div>
         </div>
 
         <!-- ─── ВИД 2: КРИПТО (QR + адрес) ─── -->
         <div class="pay-method">
             <h4>₿ Плащане с криптовалута</h4>
-            <p class="hint">Преведи точната сума към адреса по-долу. Сканирай QR кода с твоя портфейл или копирай адреса. След превода въведи tx hash в полето за потвърждение най-долу.</p>
+            <p class="hint" data-i18n="billing.crypto_note">Преведи точната сума към адреса по-долу. Сканирай QR кода с твоя портфейл или копирай адреса. След превода въведи tx hash в полето за потвърждение най-долу.</p>
             <div class="crypto-tabs">
                 <button class="crypto-tab active" data-c="btc">BTC</button>
                 <button class="crypto-tab" data-c="eth">ETH</button>
@@ -94,20 +94,20 @@
 
         <!-- ─── Потвърждение на крипто плащане ─── -->
         <details>
-            <summary>Платих с крипто — потвърди превода</summary>
+            <summary data-i18n="billing.crypto_confirm">Платих с крипто — потвърди превода</summary>
             <div class="declare-form" style="margin-top:12px;">
-                <label>Валута</label>
+                <label data-i18n="billing.currency">Валута</label>
                 <select id="method">
                     <option value="btc">BTC</option>
                     <option value="eth">ETH</option>
                     <option value="bnb">BNB</option>
                 </select>
-                <label>Преведена сума</label>
+                <label data-i18n="billing.sent_amount">Преведена сума</label>
                 <input id="amount" type="text" placeholder="напр. 0.000064">
                 <label>Tx hash (хеш на транзакцията)</label>
                 <input id="tx_ref" type="text" placeholder="0x... или btc tx id">
                 <div class="btn-row">
-                    <button class="btn" id="btn-declare">Потвърди плащането</button>
+                    <button class="btn" id="btn-declare" data-i18n="billing.confirm">Потвърди плащането</button>
                 </div>
                 <div id="msg" class="msg"></div>
             </div>
@@ -116,7 +116,7 @@
         <div class="btn-row" style="margin-top: 24px;">
             <a class="btn" href="/portals/games/">🎮 Портал за игри</a>
             <a class="btn" href="/portals/services/">🛠️ Портал за услуги</a>
-            <button class="btn" style="background: #aaa" id="btn-logout">Изход</button>
+            <button class="btn" style="background: #aaa" id="btn-logout" data-i18n="billing.logout">Изход</button>
         </div>
     </div>
 
@@ -282,6 +282,6 @@
         checkStripe();
         handleStripeReturn();
     </script>
-    <script src="/shared/js/navigation.js?v=1.0095"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-// Version: 1.0098
+// Version: 1.0121
 /**
  * KCY Ecosystem - Navigation System
  * Admin dropdown visible ONLY with ?adm=bgmasters-set
@@ -48,15 +48,18 @@ const KCY_NAV = {
                     <span>KCY Ecosystem</span>
                 </a>
                 <div class="nav-links">
-                    <a href="/">Home</a>
-                    <a href="/token/">🪙 Token</a>
+                    <a href="/" data-i18n="nav.home">Home</a>
+                    <a href="/token/" data-i18n="nav.token">🪙 Token</a>
                     <a href="/brch1/" class="nav-brch1"><img src="/brch1/assets/brch1-icon.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:4px;">BRCH1</a>
-                    <a href="/multisig/">🔐 Multi-Sig</a>
-                    <a href="/chat/">💬 Chat</a>
-                    <a href="/eco-3/">🤖 ECO-3</a>
-                    <a href="/portals/games/">🎮 Игри</a>
-                    <a href="/portals/services/">🛠️ Услуги</a>
-                    <a href="/portals/billing.html" class="nav-login-only" style="display:none;">💳 Плащане</a>
+                    <a href="/multisig/" data-i18n="nav.multisig">🔐 Multi-Sig</a>
+                    <a href="/chat/" data-i18n="nav.chat">💬 Chat</a>
+                    <a href="/eco-3/" data-i18n="nav.eco3">🤖 ECO-3</a>
+                    <a href="/portals/games/" data-i18n="nav.games">🎮 Игри</a>
+                    <a href="/portals/services/" data-i18n="nav.services">🛠️ Услуги</a>
+                    <a href="/portals/billing.html" class="nav-login-only" data-i18n="nav.payment" style="display:none;">💳 Плащане</a>
+                </div>
+                <div class="nav-lang">
+                    <select id="kcy-lang-select" onchange="if(window.KCY_I18N) KCY_I18N.set(this.value)" title="Language / Език"></select>
                 </div>
                 <div class="nav-admin" id="kcy-nav-admin" style="display:none;">
                     <span class="nav-adm-badge" id="kcy-adm-badge">🔴 ЛОГНАТ АДМИН</span>
@@ -84,6 +87,23 @@ const KCY_NAV = {
         this.setupGuestToggle();
         this.revealLoginOnly();
         this.checkIpAdmin();
+        this.setupLangSelect();
+    },
+
+    // Попълва език дропдауна + слуша за смяна на език
+    setupLangSelect: function() {
+        var sel = document.getElementById('kcy-lang-select');
+        if (!sel || !window.KCY_I18N) return;
+        sel.innerHTML = '';
+        KCY_I18N.supported.forEach(function(l) {
+            var o = document.createElement('option');
+            o.value = l.code; o.textContent = l.name;
+            sel.appendChild(o);
+        });
+        sel.value = KCY_I18N.lang;
+        // когато i18n е готов/сменен — синхронизирай селектора + преведи nav-а
+        document.addEventListener('kcy-lang-ready', function(e){ sel.value = e.detail.lang; });
+        document.addEventListener('kcy-lang-changed', function(e){ sel.value = e.detail.lang; });
     },
 
     // ── Показва "ЛОГНАТ АДМИН" бутоните САМО ако сървърът третира IP-то като админ ──
@@ -180,6 +200,25 @@ const KCY_NAV = {
         this.injectNav();
         this.highlightCurrent();
         this.hideAdminButtons();
+        this.ensureI18n();
+    },
+
+    // Зарежда i18n.js (ако още го няма) и прилага превода върху nav-а
+    ensureI18n: function() {
+        function applyNow(){
+            if (window.KCY_I18N) {
+                // ако вече е зареден речник — преведи; иначе init ще го направи
+                if (window.KCY_I18N.dict && Object.keys(window.KCY_I18N.dict).length) {
+                    window.KCY_I18N.apply();
+                }
+                KCY_NAV.setupLangSelect();
+            }
+        }
+        if (window.KCY_I18N) { applyNow(); return; }
+        var s = document.createElement('script');
+        s.src = '/shared/js/i18n.js?v=1.0115';
+        s.onload = applyNow;
+        document.head.appendChild(s);
     }
 };
 

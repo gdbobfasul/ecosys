@@ -217,7 +217,7 @@
         </p>
         
         <div class="limit-info">
-            ⚠️ <strong>Важно:</strong> Можеш да подадеш само <strong>един сигнал на ден</strong>. 
+            ⚠️ <strong data-i18n="sig.important">Важно:</strong> Можеш да подадеш само <strong data-i18n="sig.one_per_day">един сигнал на ден</strong>. 
             Фалшивите сигнали няма да бъдат одобрени.
         </div>
         
@@ -225,58 +225,58 @@
         
         <form id="signalForm">
             <div class="form-group">
-                <label for="signalType">Тип на сигнала *</label>
+                <label for="signalType" data-i18n="sig.type">Тип на сигнала *</label>
                 <select id="signalType" required>
-                    <option value="">Избери тип...</option>
+                    <option value="" data-i18n="sig.choose_type">Избери тип...</option>
                     <optgroup label="Места и обекти">
-                        <option value="Pharmacy">Аптека</option>
-                        <option value="Optician/Eyewear">Оптика/Изработване на очила</option>
-                        <option value="Computer Repair">Компютърен сервиз</option>
-                        <option value="Computer Store">Компютърен магазин</option>
-                        <option value="Shopping Center/Market">Търговски център/Пазар</option>
-                        <option value="Building Materials Store">Строителен магазин</option>
-                        <option value="Construction Exchange">Строителна борса</option>
-                        <option value="Beauty/Hair Salon">Козметичен/Фризьорски салон</option>
-                        <option value="Massage">Масаж</option>
-                        <option value="Sauna">Сауна</option>
-                        <option value="Swimming Pool">Плувен басейн</option>
-                        <option value="Gym">Спортна зала</option>
-                        <option value="Clothing Store">Магазин за дрехи</option>
-                        <option value="Gift Shop">Магазин за подаръци</option>
-                        <option value="Flower Shop">Цветарски магазин</option>
+                        <option value="Pharmacy" data-i18n="sig.t_pharmacy">Аптека</option>
+                        <option value="Optician/Eyewear" data-i18n="sig.t_optics">Оптика/Изработване на очила</option>
+                        <option value="Computer Repair" data-i18n="sig.t_compservice">Компютърен сервиз</option>
+                        <option value="Computer Store" data-i18n="sig.t_compshop">Компютърен магазин</option>
+                        <option value="Shopping Center/Market" data-i18n="sig.t_mall">Търговски център/Пазар</option>
+                        <option value="Building Materials Store" data-i18n="sig.t_buildshop">Строителен магазин</option>
+                        <option value="Construction Exchange" data-i18n="sig.t_buildmarket">Строителна борса</option>
+                        <option value="Beauty/Hair Salon" data-i18n="sig.t_salon">Козметичен/Фризьорски салон</option>
+                        <option value="Massage" data-i18n="sig.t_massage">Масаж</option>
+                        <option value="Sauna" data-i18n="sig.t_sauna">Сауна</option>
+                        <option value="Swimming Pool" data-i18n="sig.t_pool">Плувен басейн</option>
+                        <option value="Gym" data-i18n="sig.t_gym">Спортна зала</option>
+                        <option value="Clothing Store" data-i18n="sig.t_clothes">Магазин за дрехи</option>
+                        <option value="Gift Shop" data-i18n="sig.t_gifts">Магазин за подаръци</option>
+                        <option value="Flower Shop" data-i18n="sig.t_florist">Цветарски магазин</option>
                         <option value="GSM Repair">GSM сервиз</option>
-                        <option value="Appliance Repair">Сервиз бяла техника</option>
-                        <option value="Appliance Store">Магазин бяла техника</option>
-                        <option value="Bar">Бар</option>
-                        <option value="Coffee/Sweets">Кафе/Сладкарница</option>
-                        <option value="Fast Food">Бързо хранене</option>
-                        <option value="Hi Class Food">Ресторант</option>
+                        <option value="Appliance Repair" data-i18n="sig.t_appliance_service">Сервиз бяла техника</option>
+                        <option value="Appliance Store" data-i18n="sig.t_appliances">Магазин бяла техника</option>
+                        <option value="Bar" data-i18n="sig.t_bar">Бар</option>
+                        <option value="Coffee/Sweets" data-i18n="sig.t_cafe">Кафе/Сладкарница</option>
+                        <option value="Fast Food" data-i18n="sig.t_fastfood">Бързо хранене</option>
+                        <option value="Hi Class Food" data-i18n="sig.t_restaurant">Ресторант</option>
                     </optgroup>
                     <optgroup label="Произшествия">
-                        <option value="Accident">Авария</option>
-                        <option value="Person Needing Help">Човек нуждаещ се от помощ</option>
+                        <option value="Accident" data-i18n="sig.t_emergency">Авария</option>
+                        <option value="Person Needing Help" data-i18n="sig.t_person_help">Човек нуждаещ се от помощ</option>
                     </optgroup>
                 </select>
             </div>
             
             <div class="form-group">
-                <label for="title">Заглавие/Име на обекта * (макс. 100 символа)</label>
+                <label for="title" data-i18n="sig.title_field">Заглавие/Име на обекта * (макс. 100 символа)</label>
                 <input type="text" id="title" maxlength="100" required placeholder="напр. Аптека 'Здраве', Ресторант 'Черната дупка'">
                 <div class="char-count"><span id="titleCount">0</span>/100</div>
             </div>
             
             <div class="form-group">
-                <label for="workingHours">Работно време (макс. 50 символа)</label>
+                <label for="workingHours" data-i18n="sig.hours">Работно време (макс. 50 символа)</label>
                 <input type="text" id="workingHours" maxlength="50" placeholder="напр. Денонощно, 09:00-18:00, Почивен: Неделя">
                 <div class="char-count"><span id="hoursCount">0</span>/50</div>
             </div>
             
             <div class="form-group">
-                <label>Снимка *</label>
+                <label data-i18n="sig.photo">Снимка *</label>
                 <div class="photo-upload" id="photoUpload" onclick="document.getElementById('fileInput').click()">
                     <div id="uploadText">
                         📷 Кликни за добавяне на снимка<br>
-                        <small>Препоръчително: снимка на обекта/мястото</small>
+                        <small data-i18n="sig.photo_rec">Препоръчително: снимка на обекта/мястото</small>
                     </div>
                     <img id="photoPreview" class="photo-preview" style="display:none;">
                 </div>
@@ -284,7 +284,7 @@
             </div>
             
             <div class="form-group">
-                <label>Местоположение *</label>
+                <label data-i18n="sig.location">Местоположение *</label>
                 <button type="button" class="btn btn-secondary" id="getLocationBtn">
                     📍 Вземи текущата ми локация
                 </button>
@@ -462,10 +462,10 @@
                             ⚠️ Ако виждате обекта, който искате да декларирате, или имате съмнения че вече е деклариран:
                         </p>
                         <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.8;">
-                            <li><strong>Убедете се</strong>, че обекта не е деклариран вече.</li>
-                            <li><strong>Проверете декларацията</strong> на обекта дали е правилна - може да подадете сигнал и за грешно деклариран обект.</li>
+                            <li><strong data-i18n="sig.make_sure">Убедете се</strong>, че обекта не е деклариран вече.</li>
+                            <li><strong data-i18n="sig.check_decl">Проверете декларацията</strong> на обекта дали е правилна - може да подадете сигнал и за грешно деклариран обект.</li>
                             <li><strong>⛔ Повторно деклариране на обект води до загуба от ЕДИН ДЕН използване на услугите на чата!</strong></li>
-                            <li><strong>За целта можете да направите отделно търсене</strong> в района, в който се намирате, за да се убедите, че обекта, който искате да декларирате, го няма все още в нашата база данни.</li>
+                            <li><strong data-i18n="sig.separate_search">За целта можете да направите отделно търсене</strong> в района, в който се намирате, за да се убедите, че обекта, който искате да декларирате, го няма все още в нашата база данни.</li>
                         </ul>
                     </div>
                     <div style="background: #e7f3ff; padding: 15px; border-radius: 5px; margin-top: 15px;">
@@ -595,5 +595,6 @@
         // Check eligibility on load
         checkEligibility();
     </script>
+    <script src="/shared/js/i18n.js?v=1.0126"></script>
 </body>
 </html>

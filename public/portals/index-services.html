@@ -20,17 +20,17 @@
   .svc p { color:#667; font-size:.9em; line-height:1.45; }
   .loading,.err { text-align:center; padding:40px; color:#789; }
 </style>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
 <body>
 <div class="head">
-  <h1>Портал за услуги</h1>
-  <p>Полезни инструменти — бързи, безплатни, без изкуствен интелект</p>
+  <h1 data-i18n="services.heading">Портал за услуги</h1>
+  <p data-i18n="services.subtitle">Полезни инструменти — бързи, безплатни, без изкуствен интелект</p>
   <a href="/">← KCY Ecosystem</a>
   &nbsp;
-  <a href="/portals/games/">Портал за игри →</a>
+  <a href="/portals/games/" data-i18n="services.to_games">Портал за игри →</a>
 </div>
-<div id="grid" class="grid"><div class="loading">Зареждам услугите…</div></div>
+<div id="grid" class="grid"><div class="loading" data-i18n="services.loading">Зареждам услугите…</div></div>
 <script>
 function apiUrl(path){
   var m = location.search.match(/[?&]adm=([^&]+)/);
@@ -61,6 +61,6 @@ fetch(apiUrl('/api/portals/svc/list'))
       String(e && e.message ? e.message : e).replace(/</g,'&lt;')+'</div>';
   });
 </script>
-    <script src="/shared/js/navigation.js?v=1.0095"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

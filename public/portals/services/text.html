@@ -1,4 +1,4 @@
-<!-- Version: 1.0110 -->
+<!-- Version: 1.0126 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -27,7 +27,7 @@
   .tools button:hover { background:#445; }
   .tools button.pri { background:var(--pri); }
 </style>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
 <body>
 <div class="head">
@@ -40,24 +40,24 @@
     <div id="msg" style="display:none;margin-bottom:10px;padding:10px 12px;background:#e6f5e9;color:#256b34;border-radius:8px;font-size:.9em;"></div>
     <textarea id="txt" placeholder="Постави или въведи текст тук…" oninput="count()"></textarea>
     <div class="stats">
-      <div class="stat"><div class="n" id="cWords">0</div><div class="l">думи</div></div>
-      <div class="stat"><div class="n" id="cChars">0</div><div class="l">символи</div></div>
-      <div class="stat"><div class="n" id="cCharsNS">0</div><div class="l">без интервали</div></div>
-      <div class="stat"><div class="n" id="cLines">0</div><div class="l">редове</div></div>
-      <div class="stat"><div class="n" id="cSent">0</div><div class="l">изречения</div></div>
-      <div class="stat"><div class="n" id="cRead">0</div><div class="l">мин. четене</div></div>
+      <div class="stat"><div class="n" id="cWords">0</div><div class="l" data-i18n="text.words">думи</div></div>
+      <div class="stat"><div class="n" id="cChars">0</div><div class="l" data-i18n="text.chars">символи</div></div>
+      <div class="stat"><div class="n" id="cCharsNS">0</div><div class="l" data-i18n="text.chars_ns">без интервали</div></div>
+      <div class="stat"><div class="n" id="cLines">0</div><div class="l" data-i18n="text.lines">редове</div></div>
+      <div class="stat"><div class="n" id="cSent">0</div><div class="l" data-i18n="text.sentences">изречения</div></div>
+      <div class="stat"><div class="n" id="cRead">0</div><div class="l" data-i18n="text.read">мин. четене</div></div>
     </div>
     <div class="tools">
-      <button class="pri" onclick="apply('upper')">ГЛАВНИ</button>
-      <button class="pri" onclick="apply('lower')">малки</button>
-      <button class="pri" onclick="apply('title')">Първа Главна</button>
-      <button class="pri" onclick="apply('sentence')">Изречения</button>
-      <button onclick="apply('trim')">Премахни празни редове</button>
-      <button onclick="apply('spaces')">Сбий интервалите</button>
+      <button class="pri" onclick="apply('upper')" data-i18n="text.upper">ГЛАВНИ</button>
+      <button class="pri" onclick="apply('lower')" data-i18n="text.lower">малки</button>
+      <button class="pri" onclick="apply('title')" data-i18n="text.title_case">Първа Главна</button>
+      <button class="pri" onclick="apply('sentence')" data-i18n="text.sentence_case">Изречения</button>
+      <button onclick="apply('trim')" data-i18n="text.remove_blank">Премахни празни редове</button>
+      <button onclick="apply('spaces')" data-i18n="text.collapse_spaces">Сбий интервалите</button>
       <button onclick="apply('reverse')">Обърни текста</button>
       <button onclick="apply('b64enc')">Base64 кодирай</button>
       <button onclick="apply('b64dec')">Base64 декодирай</button>
-      <button onclick="copyTxt()">Копирай</button>
+      <button onclick="copyTxt()" data-i18n="text.copy">Копирай</button>
     </div>
   </div>
 </div>
@@ -109,6 +109,6 @@ function copyTxt(){
 }
 count();
 </script>
-    <script src="/shared/js/navigation.js?v=1.0095"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

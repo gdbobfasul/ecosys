@@ -15,16 +15,16 @@
                 <div class="flex justify-between items-center mb-2">
                     <h2 class="text-xl font-bold">Contacts</h2>
                     <div class="flex gap-2">
-                        <button onclick="window.location.href='search.html'" class="text-purple-400 hover:text-purple-300" title="Търсачки">
+                        <button onclick="window.location.href='search.html'" class="text-purple-400 hover:text-purple-300" title="Търсачки" data-i18n-attr="title:cs.title">
                             🔍
                         </button>
-                        <button onclick="window.location.href='matchmaking.html'" class="text-pink-400 hover:text-pink-300" title="Намери половинката си">
+                        <button onclick="window.location.href='matchmaking.html'" class="text-pink-400 hover:text-pink-300" title="Намери половинката си" data-i18n-attr="title:mm.title">
                             💕
                         </button>
-                        <button onclick="window.location.href='profile.html'" class="text-blue-400 hover:text-blue-300" title="Настройки">
+                        <button onclick="window.location.href='profile.html'" class="text-blue-400 hover:text-blue-300" title="Настройки" data-i18n-attr="title:chat.settings">
                             ⚙️
                         </button>
-                        <button onclick="logout()" class="text-red-400 hover:text-red-300" title="Изход">
+                        <button onclick="logout()" class="text-red-400 hover:text-red-300" title="Изход" data-i18n-attr="title:billing.logout">
                             🚪
                         </button>
                     </div>
@@ -432,5 +432,6 @@
         // Load contacts on start
         loadContacts();
     </script>
+    <script src="/shared/js/i18n.js?v=1.0126"></script>
 </body>
 </html>

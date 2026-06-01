@@ -1,11 +1,11 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0118 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🕸️ Web скрапер</title>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <style>
         .wrap { max-width: 880px; margin: 30px auto; padding: 30px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.1); }
         h1 { color: var(--primary-color); margin-bottom: 6px; }
@@ -29,22 +29,22 @@
     <div class="wrap">
         <a href="/portals/services/" style="color:#888;text-decoration:none">← обратно към услуги</a>
         <h1>🕸️ Web скрапер</h1>
-        <p class="hint">Три заявки за търсене + едно поле "какво да се извлече". Работи до 5 минути и връща намерените извадки.</p>
+        <p class="hint" data-i18n="scraper.intro">Три заявки за търсене + едно поле "какво да се извлече". Работи до 5 минути и връща намерените извадки.</p>
 
-        <label>Заявка за търсене 1</label>
+        <label data-i18n="scraper.q1">Заявка за търсене 1</label>
         <input id="q1" placeholder="напр.: цена на соларни панели България 2026">
 
-        <label>Заявка за търсене 2</label>
+        <label data-i18n="scraper.q2">Заявка за търсене 2</label>
         <input id="q2" placeholder="напр.: инсталация соларни панели цена">
 
-        <label>Заявка за търсене 3</label>
+        <label data-i18n="scraper.q3">Заявка за търсене 3</label>
         <input id="q3" placeholder="напр.: соларни панели субсидии България">
 
-        <label>Какво да се извлича от страниците</label>
+        <label data-i18n="scraper.extract">Какво да се извлича от страниците</label>
         <textarea id="hint" rows="2" placeholder="напр.: цена, гаранция, лева, евро, KWp, инсталация"></textarea>
 
         <button class="btn" id="go">▶️ Скрап</button>
-        <div class="hint">Макс. 5 минути. Можеш да напуснеш страницата, но тогава работата ще се прекрати.</div>
+        <div class="hint" data-i18n="scraper.note">Макс. 5 минути. Можеш да напуснеш страницата, но тогава работата ще се прекрати.</div>
 
         <div id="status" class="status"></div>
         <div id="results" class="results"></div>
@@ -101,6 +101,6 @@
             }
         });
     </script>
-    <script src="/shared/js/navigation.js?v=1.0095"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

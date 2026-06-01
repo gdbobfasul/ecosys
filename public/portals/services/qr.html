@@ -1,4 +1,4 @@
-<!-- Version: 1.0107 -->
+<!-- Version: 1.0118 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -33,56 +33,56 @@
   .hint { font-size:.85em; color:#789; margin-top:6px; }
   video { width:100%; max-width:340px; border-radius:10px; background:#000; }
 </style>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
 <body>
 <div class="head">
   <h1>QR код</h1>
-  <p>Генерирай QR код или разчети съществуващ</p>
+  <p data-i18n="qr.subtitle">Генерирай QR код или разчети съществуващ</p>
   <a href="/portals/services/">← Всички услуги</a>
 </div>
 <div class="wrap">
   <div class="tabs">
-    <button class="tab active" onclick="showTab('gen')">Генерирай QR</button>
-    <button class="tab" onclick="showTab('read')">Разчети QR</button>
+    <button class="tab active" onclick="showTab('gen')" data-i18n="qr.generate_tab">Генерирай QR</button>
+    <button class="tab" onclick="showTab('read')" data-i18n="qr.read_tab">Разчети QR</button>
   </div>
 
   <!-- ГЕНЕРАТОР -->
   <div id="gen" class="panel active card">
-    <label>Текст или URL за кодиране</label>
+    <label data-i18n="qr.text_label">Текст или URL за кодиране</label>
     <textarea id="gentext" placeholder="https://example.com или произволен текст"></textarea>
     <div class="row">
       <div>
-        <label>Размер</label>
+        <label data-i18n="qr.size">Размер</label>
         <select id="gensize">
-          <option value="200">Малък (200px)</option>
-          <option value="300" selected>Среден (300px)</option>
-          <option value="500">Голям (500px)</option>
+          <option value="200" data-i18n="qr.size_s">Малък (200px)</option>
+          <option value="300" selected data-i18n="qr.size_m">Среден (300px)</option>
+          <option value="500" data-i18n="qr.size_l">Голям (500px)</option>
         </select>
       </div>
       <div>
-        <label>Корекция на грешки</label>
+        <label data-i18n="qr.ecc">Корекция на грешки</label>
         <select id="genecc">
-          <option value="L">Ниска (L)</option>
-          <option value="M" selected>Средна (M)</option>
-          <option value="Q">Висока (Q)</option>
-          <option value="H">Максимална (H)</option>
+          <option value="L" data-i18n="qr.ecc_l">Ниска (L)</option>
+          <option value="M" selected data-i18n="qr.ecc_m">Средна (M)</option>
+          <option value="Q" data-i18n="qr.ecc_q">Висока (Q)</option>
+          <option value="H" data-i18n="qr.ecc_h">Максимална (H)</option>
         </select>
       </div>
     </div>
-    <button class="btn" onclick="genQR()">Генерирай</button>
+    <button class="btn" onclick="genQR()" data-i18n="qr.generate">Генерирай</button>
     <div class="result" id="genresult"></div>
   </div>
 
   <!-- ЧЕТЕЦ -->
   <div id="read" class="panel card">
-    <p style="color:#567;font-size:.92em">Качи снимка на QR код или използвай камерата — приложението ще разчете и покаже текста/линка.</p>
-    <label>Качи изображение с QR код</label>
+    <p style="color:#567;font-size:.92em" data-i18n="qr.read_hint">Качи снимка на QR код или използвай камерата — приложението ще разчете и покаже текста/линка.</p>
+    <label data-i18n="qr.upload_label">Качи изображение с QR код</label>
     <input type="file" id="readfile" accept="image/*">
-    <button class="btn" id="decodeBtn" onclick="decodeFile()">Разчети</button>
+    <button class="btn" id="decodeBtn" onclick="decodeFile()" data-i18n="qr.decode">Разчети</button>
     <div style="margin:14px 0">
-      <button class="btn sec" onclick="startCam()">Сканирай с камера</button>
-      <button class="btn sec" onclick="stopCam()">Спри камерата</button>
+      <button class="btn sec" onclick="startCam()" data-i18n="qr.scan_camera">Сканирай с камера</button>
+      <button class="btn sec" onclick="stopCam()" data-i18n="qr.stop_camera">Спри камерата</button>
     </div>
     <div id="camwrap" style="text-align:center;display:none"><video id="cam" playsinline></video></div>
     <div id="readout" class="readout" style="display:none"></div>
@@ -222,6 +222,6 @@ function showReadout(data, customEmpty){
           :('<span>'+safe+'</span><br><span class="hint">Това е текст.</span>'));
 }
 </script>
-    <script src="/shared/js/navigation.js?v=1.0095"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
-<!-- Version: 1.0114 -->
+<!-- Version: 1.0126 -->
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,11 +33,11 @@
   .tf button { padding:6px 11px; border:1px solid #2a2d3a; border-radius:7px; background:#161a23; color:#aeb6c6; cursor:pointer; font-size:.8em; }
   .tf button.active { background:#2a86d8; color:#fff; border-color:#2a86d8; }
 </style>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0097">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
 <body>
 <div class="head">
-  <h1>Финансови графики</h1>
+  <h1 data-i18n="charts.title">Финансови графики</h1>
   <p>Крипто и борсови пазари — на живо (данни: TradingView, Coinglass)</p>
   <a href="/portals/services/">← Всички услуги</a>
 </div>
@@ -54,7 +54,7 @@
   </div>
 
   <!-- ── BTC RSI ── -->
-  <div class="secttl">Bitcoin RSI (седмично / месечно)</div>
+  <div class="secttl" data-i18n="charts.s_rsi">Bitcoin RSI (седмично / месечно)</div>
   <div class="grid">
     <div class="panel"><h3>BTC RSI — седмично (1W)</h3>
       <div class="body"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
@@ -71,7 +71,7 @@
   </div>
 
   <!-- ── Fibonacci ── -->
-  <div class="secttl">Bitcoin — Fibonacci нива (автоматични)</div>
+  <div class="secttl" data-i18n="charts.s_fib">Bitcoin — Fibonacci нива (автоматични)</div>
   <div class="grid">
     <div class="panel">
       <h3>BTC/USDT — автоматичен Fibonacci (нива на съпротива/поддръжка); цена дясно, време долу</h3>
@@ -86,7 +86,7 @@
   <p class="note">Fibonacci нивата (0%, 23.6%, 38.2%, 50%, 61.8★, 78.6%, 100%) се чертаят автоматично между най-високата и най-ниската точка за периода. 61.8% (★) е „златното" ниво — често силна зона на съпротива/поддръжка. Смени периода с бутоните горе.</p>
 
   <!-- ── Liquidation heatmap ── -->
-  <div class="secttl">Bitcoin — Liquidation Heatmap (дни / месеци)</div>
+  <div class="secttl" data-i18n="charts.s_liq">Bitcoin — Liquidation Heatmap (дни / месеци)</div>
   <div class="grid">
     <div class="panel"><h3>BTC Liquidation Heatmap (Coinglass)</h3>
       <div class="body tall"><iframe src="https://www.coinglass.com/pro/futures/LiquidationHeatMap" loading="lazy" referrerpolicy="no-referrer"></iframe></div>
@@ -106,9 +106,9 @@
   </div>
 
   <!-- ── Борсови индекси ── -->
-  <div class="secttl">Борсови индекси</div>
+  <div class="secttl" data-i18n="charts.s_indices">Борсови индекси</div>
   <div class="grid">
-    <div class="panel"><h3>Световни индекси (преглед)</h3>
+    <div class="panel"><h3 data-i18n="charts.world_indices">Световни индекси (преглед)</h3>
       <div class="body tall"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
         {"colorTheme":"dark","dateRange":"12M","locale":"bg","showChart":true,"isTransparent":true,"width":"100%","height":"100%","tabs":[{"title":"Индекси","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"FOREXCOM:NSXUSD","d":"Nasdaq 100"},{"s":"FOREXCOM:DJI","d":"Dow 30"},{"s":"FOREXCOM:DEUIDXEUR","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]}]}
@@ -117,13 +117,13 @@
   </div>
 
   <!-- ── BTC таблици по период ── -->
-  <div class="secttl">Bitcoin — текущо състояние и до 4 години назад</div>
+  <div class="secttl" data-i18n="charts.s_btc">Bitcoin — текущо състояние и до 4 години назад</div>
   <div class="tabs" id="btcTabs">
     <button class="tab active" data-pair="USDC">BTC / USDC</button>
     <button class="tab" data-pair="USDT">BTC / USDT</button>
   </div>
   <div class="tf" id="btcTf">
-    <span class="note" style="margin-right:6px;">Текущо:</span>
+    <span class="note" style="margin-right:6px;" data-i18n="charts.current">Текущо:</span>
     <button data-int="15" class="active">15 мин</button>
     <button data-int="60">час</button>
     <button data-int="D">ден</button>
@@ -134,7 +134,7 @@
   <p class="note">Текущата графика поддържа 15мин/час/ден/седмица/месец. Графиките „X години назад" показват седмичен/месечен изглед за съответния период.</p>
 
   <!-- ── ETH таблици по период ── -->
-  <div class="secttl">Ethereum — текущо състояние и до 4 години назад</div>
+  <div class="secttl" data-i18n="charts.s_eth">Ethereum — текущо състояние и до 4 години назад</div>
   <div class="tabs" id="ethTabs">
     <button class="tab active" data-pair="USDC">ETH / USDC</button>
     <button class="tab" data-pair="USDT">ETH / USDT</button>
@@ -403,6 +403,6 @@ wire('eth','ETH','eth');
   load('1d');
 })();
 </script>
-    <script src="/shared/js/navigation.js?v=1.0097"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

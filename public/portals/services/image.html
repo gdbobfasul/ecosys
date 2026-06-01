@@ -1,4 +1,4 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0126 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -25,7 +25,7 @@
   .save { text-align:center; margin-top:8px; font-size:1.05em; color:#5cb85c; font-weight:700; }
   .hint { font-size:.84em; color:#789; margin-top:4px; }
 </style>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
 <body>
 <div class="head">
@@ -35,11 +35,11 @@
 </div>
 <div class="wrap">
   <div class="card">
-    <label>Избери изображение</label>
+    <label data-i18n="image.choose">Избери изображение</label>
     <input type="file" id="file" accept="image/jpeg,image/png,image/webp" onchange="loadImg()">
     <label>Качество <span id="qval">75%</span></label>
     <input type="range" id="quality" min="10" max="100" value="75" oninput="document.getElementById('qval').textContent=this.value+'%'">
-    <label>Изходен формат</label>
+    <label data-i18n="image.format">Изходен формат</label>
     <select id="format">
       <option value="image/jpeg">JPEG — най-малък размер</option>
       <option value="image/webp">WebP — модерен, добро качество</option>
@@ -48,16 +48,16 @@
     <label>Максимална ширина (px, 0 = запази оригинала)</label>
     <input type="number" id="maxw" value="0" min="0">
     <p class="hint">Компресията се прави изцяло в браузъра — снимката не се качва никъде.</p>
-    <button class="btn" onclick="compress()">Компресирай</button>
+    <button class="btn" onclick="compress()" data-i18n="image.compress">Компресирай</button>
     <div class="cmp" id="cmp" style="display:none">
       <div>
-        <div>Оригинал</div>
+        <div data-i18n="image.original">Оригинал</div>
         <img id="origImg"><div class="sz" id="origSz"></div>
       </div>
       <div>
-        <div>Компресирано</div>
+        <div data-i18n="image.compressed">Компресирано</div>
         <img id="compImg"><div class="sz" id="compSz"></div>
-        <button class="btn" onclick="dl()">Свали</button>
+        <button class="btn" onclick="dl()" data-i18n="common.download">Свали</button>
       </div>
     </div>
     <div class="save" id="save"></div>
@@ -111,6 +111,6 @@ function dl(){
   a.click();
 }
 </script>
-    <script src="/shared/js/navigation.js?v=1.0095"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

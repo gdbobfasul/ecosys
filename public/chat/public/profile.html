@@ -27,7 +27,7 @@
     <!-- Loading State -->
     <div id="loading" class="text-center py-8">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-      <p class="mt-4 text-gray-400">Зареждане...</p>
+      <p class="mt-4 text-gray-400" data-i18n="chat.loading">Зареждане...</p>
     </div>
 
     <!-- Main Content -->
@@ -42,22 +42,22 @@
         
         <div class="space-y-4">
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Пълно име</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.fullname">Пълно име</label>
             <input type="text" id="fullName" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
           </div>
 
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Телефон (международен формат)</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.phone_intl">Телефон (международен формат)</label>
             <input type="tel" id="phone" placeholder="+359888123456" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
           </div>
 
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Дата на раждане</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.dob">Дата на раждане</label>
             <input type="date" id="birthDate" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
           </div>
 
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Град</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.city">Град</label>
             <input type="text" id="city" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
           </div>
 
@@ -73,12 +73,12 @@
         
         <div class="space-y-4">
           <label class="flex items-center justify-between cursor-pointer">
-            <span>Скрий телефонен номер</span>
+            <span data-i18n="cp.hide_phone">Скрий телефонен номер</span>
             <input type="checkbox" id="hidePhone" onchange="toggleHidePhone()" class="w-6 h-6" />
           </label>
 
           <label class="flex items-center justify-between cursor-pointer">
-            <span>Скрий имена</span>
+            <span data-i18n="cp.hide_names">Скрий имена</span>
             <input type="checkbox" id="hideNames" onchange="toggleHideNames()" class="w-6 h-6" />
           </label>
         </div>
@@ -90,9 +90,9 @@
         
         <div class="space-y-4">
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Кодова дума (за точно търсене)</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.codeword">Кодова дума (за точно търсене)</label>
             <input type="text" id="codeWord" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
-            <p class="text-xs text-gray-500 mt-1">Други потребители трябва да знаят тази дума, за да те намерят точно</p>
+            <p class="text-xs text-gray-500 mt-1" data-i18n="cp.codeword_hint">Други потребители трябва да знаят тази дума, за да те намерят точно</p>
           </div>
 
           <button onclick="updateCodeWord()" class="w-full bg-green-600 hover:bg-green-700 rounded py-2">
@@ -113,12 +113,12 @@
           <hr class="border-gray-700" />
 
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Текуща парола</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.curpass">Текуща парола</label>
             <input type="password" id="currentPassword" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
           </div>
 
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Нова парола</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.newpass">Нова парола</label>
             <input type="password" id="newPassword" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
           </div>
 
@@ -134,14 +134,14 @@
         
         <div class="space-y-4">
           <div>
-            <label class="block text-sm text-gray-400 mb-2">От какво имам нужда сега?</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.need_now">От какво имам нужда сега?</label>
             <select id="needCategory" onchange="updateNeedSubcategories()" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
               <option value="">-- Избери категория --</option>
             </select>
           </div>
 
           <div id="needSubcategoryContainer" class="hidden">
-            <label class="block text-sm text-gray-400 mb-2">Точна нужда</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.exact_need">Точна нужда</label>
             <select id="needSubcategory" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
               <option value="">-- Избери --</option>
             </select>
@@ -164,7 +164,7 @@
 
         <div id="offeringsForm" class="space-y-4">
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Услуга 1</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.service1">Услуга 1</label>
             <select id="offering1Category" onchange="updateOfferingSubcategories(1)" class="w-full bg-gray-700 rounded px-4 py-2 text-white mb-2">
               <option value="">-- Избери категория --</option>
             </select>
@@ -174,7 +174,7 @@
           </div>
 
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Услуга 2 (опционално)</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.service2">Услуга 2 (опционално)</label>
             <select id="offering2Category" onchange="updateOfferingSubcategories(2)" class="w-full bg-gray-700 rounded px-4 py-2 text-white mb-2">
               <option value="">-- Избери категория --</option>
             </select>
@@ -184,7 +184,7 @@
           </div>
 
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Услуга 3 (опционално)</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.service3">Услуга 3 (опционално)</label>
             <select id="offering3Category" onchange="updateOfferingSubcategories(3)" class="w-full bg-gray-700 rounded px-4 py-2 text-white mb-2">
               <option value="">-- Избери категория --</option>
             </select>
@@ -229,7 +229,7 @@
         <h2 class="text-xl font-bold mb-4">🆘 Спешна помощ</h2>
         
         <div id="helpButtonInfo" class="space-y-3 mb-4 text-sm">
-          <p>Бутонът изпраща вашата точна локация до администратора.</p>
+          <p data-i18n="cp.loc_btn_note">Бутонът изпраща вашата точна локация до администратора.</p>
           <p><strong>Цена:</strong> <span id="helpCost"></span></p>
           <p><strong>Ефект:</strong> Отнема 15 дни от абонамента</p>
           <p><strong>Лимит:</strong> 1 използване на месец</p>
@@ -601,5 +601,6 @@
     }
   </script>
 
+    <script src="/shared/js/i18n.js?v=1.0126"></script>
 </body>
 </html>

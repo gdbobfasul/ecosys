@@ -15,7 +15,7 @@
         <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold mb-2">💳 Плащане</h1>
-            <p class="text-gray-400">Избери метод на плащане</p>
+            <p class="text-gray-400" data-i18n="cpay.choose_method">Избери метод на плащане</p>
         </div>
 
         <!-- Payment Options -->
@@ -25,7 +25,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <h3 class="text-xl font-bold text-purple-400">🪙 Crypto Плащане</h3>
-                        <p class="text-sm text-gray-400">Плати с KCY1 токен</p>
+                        <p class="text-sm text-gray-400" data-i18n="cpay.pay_kcy">Плати с KCY1 токен</p>
                     </div>
                     <div class="text-right">
                         <div class="text-2xl font-bold text-purple-300" id="cryptoAmount">300 KCY</div>
@@ -41,7 +41,7 @@
                             class="w-full bg-purple-600 hover:bg-purple-700 py-3 rounded font-bold flex items-center justify-center gap-2"
                         >
                             <span>🦊</span>
-                            <span>Свържи MetaMask</span>
+                            <span data-i18n="cpay.connect_mm">Свържи MetaMask</span>
                         </button>
                         <p class="text-xs text-gray-500 text-center">
                             Ще ти трябва MetaMask wallet с <span id="networkName">BSC Mainnet</span>
@@ -51,13 +51,13 @@
                     <!-- Connected -->
                     <div id="connected" class="hidden space-y-3">
                         <div class="bg-gray-900/50 rounded p-3 text-sm">
-                            <div class="text-gray-400 mb-1">Свързан портфейл:</div>
+                            <div class="text-gray-400 mb-1" data-i18n="cpay.connected_wallet">Свързан портфейл:</div>
                             <div id="walletAddress" class="font-mono text-green-400"></div>
                         </div>
 
                         <div class="bg-gray-900/50 rounded p-3 text-sm">
-                            <div class="text-gray-400 mb-1">Баланс:</div>
-                            <div id="tokenBalance" class="font-bold text-yellow-400">Зареждане...</div>
+                            <div class="text-gray-400 mb-1" data-i18n="cpay.balance">Баланс:</div>
+                            <div id="tokenBalance" class="font-bold text-yellow-400" data-i18n="chat.loading">Зареждане...</div>
                         </div>
 
                         <button 
@@ -416,5 +416,6 @@
             });
         }
     </script>
+    <script src="/shared/js/i18n.js?v=1.0126"></script>
 </body>
 </html>

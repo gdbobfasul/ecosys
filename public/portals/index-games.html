@@ -47,32 +47,32 @@
   .rrow .nm { flex:1; color:#dfe7ee; }
   .rrow .pt { color:#ffd24a; font-weight:600; }
 </style>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
 <body>
 <div class="head">
   <h1>🎮 Портал за игри</h1>
   <p>6 аркадни игри · нива · точки · месечна класация с награди</p>
   <a href="/">← KCY Ecosystem</a> &nbsp;
-  <a href="/portals/services/">Портал за услуги →</a>
+  <a href="/portals/services/" data-i18n="games.to_services">Портал за услуги →</a>
 </div>
 
 <div class="tabs">
-  <button class="tab active" id="tabGames" onclick="showTab('games')">Игри</button>
+  <button class="tab active" id="tabGames" onclick="showTab('games')" data-i18n="games.title">Игри</button>
   <button class="tab" id="tabRank" onclick="showTab('rank')">🏆 Месечна класация</button>
 </div>
 
 <div id="panelGames" class="panel active">
-  <div id="grid" class="grid"><div class="loading">Зареждам игрите…</div></div>
+  <div id="grid" class="grid"><div class="loading" data-i18n="games.loading">Зареждам игрите…</div></div>
 </div>
 
 <div id="panelRank" class="panel">
   <div class="rank-info">
     Класацията събира точките от <b>всичките 6 игри</b> за текущия месец.
-    <b>Нулира се всеки месец</b> — играй, за да си в топ 5!<br>
-    Топ 5 печелят <b>рекламно място</b> — описанието и линкът от регистрацията се показват тук.
+    <b data-i18n="games.monthly_reset">Нулира се всеки месец</b> — играй, за да си в топ 5!<br>
+    Топ 5 печелят <b data-i18n="games.ad_slot">рекламно място</b> — описанието и линкът от регистрацията се показват тук.
   </div>
-  <div id="ranklist"><div class="loading">Зареждам класацията…</div></div>
+  <div id="ranklist"><div class="loading" data-i18n="games.loading_board">Зареждам класацията…</div></div>
 </div>
 
 <script>
@@ -143,7 +143,7 @@ function loadGames(){
 function loadRanking(){
   fetch(apiUrl('/api/portals/gms/ranking')).then(authGuard).then(function(d){
     var box=document.getElementById('ranklist'); box.innerHTML='';
-    if(!d.ranking.length){ box.innerHTML='<div class="loading">Още няма резултати този месец. Бъди първи!</div>'; return; }
+    if(!d.ranking.length){ box.innerHTML='<div class="loading" data-i18n="games.no_results">Още няма резултати този месец. Бъди първи!</div>'; return; }
     var medals=['🥇','🥈','🥉','🏅','🏅'];
     d.ranking.forEach(function(r){
       if(r.is_winner){
@@ -174,6 +174,6 @@ function esc(s){ return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 loadGames();
 if(location.search.indexOf('rank=1')>-1) showTab('rank');
 </script>
-    <script src="/shared/js/navigation.js?v=1.0095"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

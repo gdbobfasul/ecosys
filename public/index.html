@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="KCY Ecosystem - Децентрализирана платформа за криптовалути и комуникация">
     <title>KCY Ecosystem - Crypto Platform</title>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0093">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <style>
         .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; max-width: 1400px; margin: 50px auto; padding: 20px; }
         .features { background: #f8f9fa; padding: 60px 20px; margin-top: 50px; }
@@ -52,7 +52,7 @@
             <a href="/portals/register.html" class="register">📝 Регистрация</a>
         </div>
         <h1>🚀 KCY Ecosystem</h1>
-        <p>Децентрализирана платформа за криптовалути и комуникация</p>
+        <p data-i18n="home.tagline">Децентрализирана платформа за криптовалути и комуникация</p>
         <div style="margin-top: 30px;">
             <a href="/token/" class="btn" style="margin: 10px;">🪙 Explore Token</a>
             <a href="/multisig/" class="btn" style="margin: 10px;">🔐 Multi-Sig Wallet</a>
@@ -78,7 +78,7 @@
         <div class="projects">
             <div class="project-card">
                 <h2>🪙 KCY-meme-1 Token</h2>
-                <p>Нативен токен за екосистемата с advanced функции</p>
+                <p data-i18n="home.token_desc">Нативен токен за екосистемата с advanced функции</p>
                 <div style="margin-top: 20px;">
                     <a href="/token/" class="btn">Learn More</a>
                     <a href="/token/admin/scripts.html" class="btn btn-admin">Admin Panel</a>
@@ -105,7 +105,7 @@
 
             <div class="project-card">
                 <h2>🔐 Multi-Sig Wallet</h2>
-                <p>Защитена система с множество подписи</p>
+                <p data-i18n="home.multisig_desc">Защитена система с множество подписи</p>
                 <div style="margin-top: 20px;">
                     <a href="/multisig/" class="btn">Learn More</a>
                     <a href="/multisig/admin/" class="btn btn-admin">Admin Panel</a>
@@ -117,7 +117,7 @@
 
             <div class="project-card">
                 <h2>💬 AMS Chat</h2>
-                <p>Криптирана чат платформа</p>
+                <p data-i18n="home.chat_desc">Криптирана чат платформа</p>
                 <div style="margin-top: 20px;">
                     <a href="/chat/" class="btn">Open Chat</a>
                     <a href="/chat/admin/" class="btn btn-admin">Admin Panel</a>
@@ -129,7 +129,7 @@
 
             <div class="project-card">
                 <h2>🤖 ECO-3 AI Studio</h2>
-                <p>Интерактивно медийно съдържание с 3 AI агента</p>
+                <p data-i18n="home.eco3_desc">Интерактивно медийно съдържание с 3 AI агента</p>
                 <div style="margin-top: 20px;">
                     <a href="/eco-3/" class="btn">Launch ECO-3</a>
                     <a href="/eco-3/admin/" class="btn btn-admin">Admin Panel</a>
@@ -184,11 +184,11 @@
             <h2 style="text-align: center; margin-bottom: 50px; font-size: 2.5em;">Why KCY Ecosystem?</h2>
             <div class="features-grid">
                 <div class="feature-item"><div class="feature-icon">🔒</div><h3>Security First</h3><p>Multi-signature wallets и advanced security</p></div>
-                <div class="feature-item"><div class="feature-icon">⚡</div><h3>Fast</h3><p>Бързи транзакции на BSC</p></div>
-                <div class="feature-item"><div class="feature-icon">🌐</div><h3>Decentralized</h3><p>Пълна децентрализация</p></div>
-                <div class="feature-item"><div class="feature-icon">💬</div><h3>Private</h3><p>Криптирана комуникация</p></div>
+                <div class="feature-item"><div class="feature-icon">⚡</div><h3>Fast</h3><p data-i18n="home.f_fast">Бързи транзакции на BSC</p></div>
+                <div class="feature-item"><div class="feature-icon">🌐</div><h3>Decentralized</h3><p data-i18n="home.f_decentral">Пълна децентрализация</p></div>
+                <div class="feature-item"><div class="feature-icon">💬</div><h3>Private</h3><p data-i18n="home.f_encrypted">Криптирана комуникация</p></div>
                 <div class="feature-item"><div class="feature-icon">🔧</div><h3>Easy</h3><p>Интуитивни admin панели</p></div>
-                <div class="feature-item"><div class="feature-icon">🚀</div><h3>Growing</h3><p>Постоянно развитие</p></div>
+                <div class="feature-item"><div class="feature-icon">🚀</div><h3>Growing</h3><p data-i18n="home.f_dev">Постоянно развитие</p></div>
             </div>
         </div>
     </div>
@@ -196,7 +196,7 @@
     <div class="container" style="margin: 60px auto;">
         <div class="card" style="text-align: center; padding: 50px;">
             <h2 style="color: var(--primary-color); margin-bottom: 20px;">Ready to Start?</h2>
-            <p style="font-size: 1.2em; color: #666; margin-bottom: 30px;">Присъедини се към KCY Ecosystem</p>
+            <p style="font-size: 1.2em; color: #666; margin-bottom: 30px;" data-i18n="home.join">Присъедини се към KCY Ecosystem</p>
             <div>
                 <a href="/token/" class="btn" style="margin: 10px;">Get Tokens</a>
                 <a href="/chat/" class="btn btn-secondary" style="margin: 10px;">Join Chat</a>
@@ -215,7 +215,7 @@
     </div>
 
     <script src="/shared/js/config.js?v=1.0093"></script>
-    <script src="/shared/js/navigation.js?v=1.0093"></script>
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
     <script>
         // Обновяване на top-right auth бутоните според login статуса
         (async () => {

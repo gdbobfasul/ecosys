@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Намери половинката си - AMS Chat</title>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0093">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <style>
         .container {
             max-width: 900px;
@@ -386,22 +386,22 @@
         <!-- Header -->
         <div class="header">
             <h1>💕 Намери половинката си</h1>
-            <p>Попълни критериите и открий своята идеална половинка с AI технология</p>
+            <p data-i18n="mm.subtitle">Попълни критериите и открий своята идеална половинка с AI технология</p>
         </div>
 
         <!-- User Stats -->
         <div class="stats" id="statsSection">
             <div class="stat-box">
                 <h4 id="balanceAmount">--</h4>
-                <p>Баланс</p>
+                <p data-i18n="mm.balance">Баланс</p>
             </div>
             <div class="stat-box">
                 <h4 id="totalSearches">0</h4>
-                <p>Търсения</p>
+                <p data-i18n="mm.searches">Търсения</p>
             </div>
             <div class="stat-box">
                 <h4 id="pendingInvitations">0</h4>
-                <p>Покани</p>
+                <p data-i18n="mm.invites">Покани</p>
             </div>
         </div>
 
@@ -410,183 +410,183 @@
             <h2>📋 Моите Критерии</h2>
             
             <!-- Physical Criteria -->
-            <h3>Физически характеристики</h3>
+            <h3 data-i18n="mm.physical">Физически характеристики</h3>
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Мин. Ръст (cm):</label>
+                    <label data-i18n="mm.min_h">Мин. Ръст (cm):</label>
                     <input type="number" id="height_min" placeholder="например 160">
                 </div>
                 <div class="form-group">
-                    <label>Макс. Ръст (cm):</label>
+                    <label data-i18n="mm.max_h">Макс. Ръст (cm):</label>
                     <input type="number" id="height_max" placeholder="например 190">
                 </div>
                 <div class="form-group">
-                    <label>Мин. Тегло (kg):</label>
+                    <label data-i18n="mm.min_w">Мин. Тегло (kg):</label>
                     <input type="number" id="weight_min" placeholder="например 50">
                 </div>
                 <div class="form-group">
-                    <label>Макс. Тегло (kg):</label>
+                    <label data-i18n="mm.max_w">Макс. Тегло (kg):</label>
                     <input type="number" id="weight_max" placeholder="например 90">
                 </div>
                 <div class="form-group">
-                    <label>Мин. Възраст:</label>
+                    <label data-i18n="mm.min_age">Мин. Възраст:</label>
                     <input type="number" id="age_min" placeholder="например 25">
                 </div>
                 <div class="form-group">
-                    <label>Макс. Възраст:</label>
+                    <label data-i18n="mm.max_age">Макс. Възраст:</label>
                     <input type="number" id="age_max" placeholder="например 40">
                 </div>
                 <div class="form-group">
-                    <label>Цвят на косата:</label>
+                    <label data-i18n="mm.hair">Цвят на косата:</label>
                     <select id="hair_color">
-                        <option value="">Без предпочитание</option>
-                        <option value="blonde">Руса</option>
-                        <option value="brunette">Кестенява</option>
-                        <option value="black">Черна</option>
-                        <option value="red">Червена</option>
-                        <option value="gray">Сива</option>
-                        <option value="other">Друго</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
+                        <option value="blonde" data-i18n="mm.blonde">Руса</option>
+                        <option value="brunette" data-i18n="mm.brown_h">Кестенява</option>
+                        <option value="black" data-i18n="mm.black_h">Черна</option>
+                        <option value="red" data-i18n="mm.red_h">Червена</option>
+                        <option value="gray" data-i18n="mm.grey_h">Сива</option>
+                        <option value="other" data-i18n="mm.other">Друго</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Цвят на очите:</label>
+                    <label data-i18n="mm.eyes">Цвят на очите:</label>
                     <select id="eye_color">
                         <option value="">Без предпочитание</option>
-                        <option value="blue">Сини</option>
-                        <option value="green">Зелени</option>
-                        <option value="brown">Кафяви</option>
-                        <option value="hazel">Лешникови</option>
-                        <option value="gray">Сиви</option>
+                        <option value="blue" data-i18n="mm.blue_e">Сини</option>
+                        <option value="green" data-i18n="mm.green_e">Зелени</option>
+                        <option value="brown" data-i18n="mm.brown_e">Кафяви</option>
+                        <option value="hazel" data-i18n="mm.hazel_e">Лешникови</option>
+                        <option value="gray" data-i18n="mm.grey_e">Сиви</option>
                         <option value="other">Друго</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Тип фигура:</label>
+                    <label data-i18n="mm.body_type">Тип фигура:</label>
                     <select id="body_type">
                         <option value="">Без предпочитание</option>
-                        <option value="slim">Слаба</option>
-                        <option value="athletic">Атлетична</option>
-                        <option value="average">Средна</option>
-                        <option value="curvy">Извита</option>
+                        <option value="slim" data-i18n="mm.slim">Слаба</option>
+                        <option value="athletic" data-i18n="mm.athletic_f">Атлетична</option>
+                        <option value="average" data-i18n="mm.medium_f">Средна</option>
+                        <option value="curvy" data-i18n="mm.curvy">Извита</option>
                         <option value="plus-size">Plus-size</option>
                     </select>
                 </div>
             </div>
 
             <!-- Lifestyle Criteria -->
-            <h3>Начин на живот</h3>
+            <h3 data-i18n="mm.lifestyle">Начин на живот</h3>
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Тютюнопушене:</label>
+                    <label data-i18n="mm.smoking">Тютюнопушене:</label>
                     <select id="smoking">
                         <option value="">Без предпочитание</option>
-                        <option value="never">Никога</option>
-                        <option value="occasionally">Понякога</option>
-                        <option value="regularly">Редовно</option>
+                        <option value="never" data-i18n="mm.never">Никога</option>
+                        <option value="occasionally" data-i18n="mm.sometimes">Понякога</option>
+                        <option value="regularly" data-i18n="mm.regularly">Редовно</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Алкохол:</label>
+                    <label data-i18n="mm.alcohol">Алкохол:</label>
                     <select id="drinking">
                         <option value="">Без предпочитание</option>
                         <option value="never">Никога</option>
-                        <option value="socially">Социално</option>
+                        <option value="socially" data-i18n="mm.socially">Социално</option>
                         <option value="regularly">Редовно</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Спорт:</label>
+                    <label data-i18n="mm.sport">Спорт:</label>
                     <select id="exercise">
                         <option value="">Без предпочитание</option>
                         <option value="never">Никога</option>
                         <option value="occasionally">Понякога</option>
                         <option value="regularly">Редовно</option>
-                        <option value="athlete">Атлет</option>
+                        <option value="athlete" data-i18n="mm.athlete">Атлет</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Деца:</label>
+                    <label data-i18n="mm.children">Деца:</label>
                     <select id="children">
                         <option value="">Без предпочитание</option>
-                        <option value="has-children">Има деца</option>
-                        <option value="wants-children">Иска деца</option>
-                        <option value="no-children">Без деца</option>
+                        <option value="has-children" data-i18n="mm.has_kids">Има деца</option>
+                        <option value="wants-children" data-i18n="mm.wants_kids">Иска деца</option>
+                        <option value="no-children" data-i18n="mm.no_kids">Без деца</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Образование:</label>
+                    <label data-i18n="mm.education">Образование:</label>
                     <select id="education">
                         <option value="">Без предпочитание</option>
-                        <option value="high-school">Средно</option>
-                        <option value="bachelor">Бакалавър</option>
-                        <option value="master">Магистър</option>
+                        <option value="high-school" data-i18n="mm.secondary">Средно</option>
+                        <option value="bachelor" data-i18n="mm.bachelor">Бакалавър</option>
+                        <option value="master" data-i18n="mm.master">Магистър</option>
                         <option value="phd">PhD</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Работа:</label>
+                    <label data-i18n="mm.work">Работа:</label>
                     <select id="employment">
                         <option value="">Без предпочитание</option>
-                        <option value="employed">Работещ</option>
-                        <option value="self-employed">Самонает</option>
-                        <option value="student">Студент</option>
-                        <option value="unemployed">Безработен</option>
-                        <option value="retired">Пенсионер</option>
+                        <option value="employed" data-i18n="mm.employed">Работещ</option>
+                        <option value="self-employed" data-i18n="mm.selfemployed">Самонает</option>
+                        <option value="student" data-i18n="mm.student">Студент</option>
+                        <option value="unemployed" data-i18n="mm.unemployed">Безработен</option>
+                        <option value="retired" data-i18n="mm.retired">Пенсионер</option>
                     </select>
                 </div>
             </div>
 
             <!-- Personality & Interests -->
-            <h3>Личност и интереси</h3>
+            <h3 data-i18n="mm.personality">Личност и интереси</h3>
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Тип личност:</label>
+                    <label data-i18n="mm.pers_type">Тип личност:</label>
                     <select id="personality">
                         <option value="">Без предпочитание</option>
-                        <option value="introvert">Интроверт</option>
-                        <option value="extrovert">Екстроверт</option>
-                        <option value="ambivert">Амбиверт</option>
+                        <option value="introvert" data-i18n="mm.introvert">Интроверт</option>
+                        <option value="extrovert" data-i18n="mm.extrovert">Екстроверт</option>
+                        <option value="ambivert" data-i18n="mm.ambivert">Амбиверт</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Стил на комуникация:</label>
+                    <label data-i18n="mm.comm_style">Стил на комуникация:</label>
                     <select id="communication_style">
                         <option value="">Без предпочитание</option>
-                        <option value="direct">Директен</option>
-                        <option value="indirect">Индиректен</option>
-                        <option value="emotional">Емоционален</option>
-                        <option value="logical">Логичен</option>
+                        <option value="direct" data-i18n="mm.direct">Директен</option>
+                        <option value="indirect" data-i18n="mm.indirect">Индиректен</option>
+                        <option value="emotional" data-i18n="mm.emotional">Емоционален</option>
+                        <option value="logical" data-i18n="mm.logical">Логичен</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Цели в отношенията:</label>
+                    <label data-i18n="mm.goals">Цели в отношенията:</label>
                     <select id="relationship_goals">
                         <option value="">Без предпочитание</option>
                         <option value="casual">Casual</option>
-                        <option value="serious">Сериозни</option>
-                        <option value="marriage">Брак</option>
-                        <option value="friendship">Приятелство</option>
+                        <option value="serious" data-i18n="mm.serious">Сериозни</option>
+                        <option value="marriage" data-i18n="mm.marriage">Брак</option>
+                        <option value="friendship" data-i18n="mm.friendship">Приятелство</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Интереси (разделени със запетая):</label>
+                    <label data-i18n="mm.interests">Интереси (разделени със запетая):</label>
                     <input type="text" id="interests" placeholder="музика, спорт, пътуване...">
                 </div>
             </div>
 
             <!-- Location -->
-            <h3>Локация</h3>
+            <h3 data-i18n="mm.location">Локация</h3>
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Държава:</label>
+                    <label data-i18n="mm.country">Държава:</label>
                     <input type="text" id="country" placeholder="например България">
                 </div>
                 <div class="form-group">
-                    <label>Град:</label>
+                    <label data-i18n="mm.city">Град:</label>
                     <input type="text" id="city" placeholder="например София">
                 </div>
                 <div class="form-group">
-                    <label>Макс. разстояние (km):</label>
+                    <label data-i18n="mm.max_dist">Макс. разстояние (km):</label>
                     <input type="number" id="distance_km" placeholder="например 50">
                 </div>
             </div>
@@ -612,11 +612,11 @@
         <!-- Received Invitations Section -->
         <div class="section" id="invitationsSection">
             <h2>📬 Получени покани</h2>
-            <p>Хора, които са те поканили за чат</p>
+            <p data-i18n="mm.invited_you">Хора, които са те поканили за чат</p>
             <div id="invitationsContent">
                 <div class="loading">
                     <div class="spinner"></div>
-                    <p>Зареждане на покани...</p>
+                    <p data-i18n="mm.loading_invites">Зареждане на покани...</p>
                 </div>
             </div>
         </div>
@@ -630,14 +630,14 @@
                 <button class="close-btn" onclick="closeFindWarning()">&times;</button>
             </div>
             <div class="warning-box">
-                <h3>Условия за търсене</h3>
+                <h3 data-i18n="mm.criteria">Условия за търсене</h3>
                 <p>Тук ще намерите съвпадение по вашите критерии на вашата идеална половинка.</p>
-                <p>Резултатите, които ще ви представим са 5 на брой.</p>
-                <p><strong>При всяко натискане на бутона от платежният ви баланс ще бъдат взети 5 долара/евро.</strong></p>
-                <p style="margin-top: 15px;">Текущ баланс: <strong id="warningBalance">--</strong></p>
+                <p data-i18n="mm.results_count">Резултатите, които ще ви представим са 5 на брой.</p>
+                <p><strong data-i18n="mm.charge_note">При всяко натискане на бутона от платежният ви баланс ще бъдат взети 5 долара/евро.</strong></p>
+                <p style="margin-top: 15px;" data-i18n="mm.current_balance">Текущ баланс: <strong id="warningBalance">--</strong></p>
             </div>
             <div class="button-group">
-                <button class="btn btn-secondary" onclick="closeFindWarning()">Отказ</button>
+                <button class="btn btn-secondary" onclick="closeFindWarning()" data-i18n="mm.cancel">Отказ</button>
                 <button class="btn btn-primary" onclick="findMatches()">💳 Плати 5€ и търси</button>
             </div>
         </div>
@@ -650,7 +650,7 @@
                 <h3>❌ Блокиране на потребител</h3>
                 <button class="close-btn" onclick="closeBlockModal()">&times;</button>
             </div>
-            <p>Какво не ти хареса?</p>
+            <p data-i18n="mm.what_disliked">Какво не ти хареса?</p>
             <div class="dislike-options" id="dislikeOptions"></div>
             <div class="button-group">
                 <button class="btn btn-secondary" onclick="closeBlockModal()">Отказ</button>
@@ -830,7 +830,7 @@
             const resultsContent = document.getElementById('resultsContent');
             
             if (matches.length === 0) {
-                resultsContent.innerHTML = '<p style="text-align:center; color:#999;">Няма намерени резултати. Опитайте с други критерии.</p>';
+                resultsContent.innerHTML = '<p style="text-align:center; color:#999;" data-i18n="mm.no_results">Няма намерени резултати. Опитайте с други критерии.</p>';
             } else {
                 resultsContent.innerHTML = `
                     <div class="results-grid">
@@ -990,7 +990,7 @@
             const content = document.getElementById('invitationsContent');
 
             if (invitations.length === 0) {
-                content.innerHTML = '<p style="text-align:center; color:#999;">Нямате покани в момента.</p>';
+                content.innerHTML = '<p style="text-align:center; color:#999;" data-i18n="mm.no_invites">Нямате покани в момента.</p>';
                 return;
             }
 
@@ -998,7 +998,7 @@
                 <div class="invitation-item">
                     <div class="invitation-info">
                         <strong>${inv.full_name}</strong>
-                        <span class="badge badge-warning">Покана</span>
+                        <span class="badge badge-warning" data-i18n="mm.invite">Покана</span>
                         <p style="margin:5px 0 0 0; color:#666;">
                             ${inv.age || 'N/A'} год., ${inv.city || 'N/A'}
                         </p>
@@ -1043,5 +1043,6 @@
             loadUserData();
         }
     </script>
+    <script src="/shared/js/i18n.js?v=1.0126"></script>
 </body>
 </html>

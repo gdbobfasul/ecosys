@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход — KCY Portals</title>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0095">
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <style>
         .auth-wrap { max-width: 440px; margin: 60px auto; padding: 40px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.12); }
         .auth-wrap h1 { color: var(--primary-color); margin-bottom: 8px; font-size: 1.8em; }
@@ -25,15 +25,15 @@
 <body>
     <div class="auth-wrap">
         <h1>🔑 Вход</h1>
-        <p class="lead">Единен login за портала за игри и портала за услуги.</p>
+        <p class="lead" data-i18n="login.subtitle">Единен login за портала за игри и портала за услуги.</p>
 
-        <label for="username">Потребител</label>
+        <label for="username" data-i18n="login.user">Потребител</label>
         <input id="username" type="text" autocomplete="username" maxlength="32">
 
-        <label for="password">Парола</label>
+        <label for="password" data-i18n="login.pass">Парола</label>
         <input id="password" type="password" autocomplete="current-password">
 
-        <button id="btn-login" class="btn-primary">Вход</button>
+        <button id="btn-login" class="btn-primary" data-i18n="login.title">Вход</button>
 
         <div id="msg" class="msg"></div>
 
