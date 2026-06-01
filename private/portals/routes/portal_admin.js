@@ -1,5 +1,5 @@
 // KCY Portals — Admin routes (НОВ файл)
-// Version: 1.0093
+// Version: 1.0105
 // Списък потребители + точки/нива по игри + триене.
 // Достъп: ?adm=bgmasters-set И IP whitelist (както изисква access-control).
 
@@ -18,10 +18,11 @@ const GAME_SLUGS = [
     'hero-jump', 'hero-run', 'battle-team', 'battle-duel',
 ];
 
-// ── Admin gate: ?adm=bgmasters-set И IP whitelist едновременно ──
+// ── Admin gate: само IP whitelist (вкл. 0.0.0.0/0) — без URL параметър ──
+// (guest-mode cookie прави isIpWhitelisted=false, за симулация на гост)
 function requireAdmin(req, res, next) {
-    if (hasAdmUrlParam(req) && isIpWhitelisted(req)) return next();
-    return res.status(403).json({ error: 'forbidden', message: 'Изисква ?adm=bgmasters-set + whitelist IP.' });
+    if (isIpWhitelisted(req)) return next();
+    return res.status(403).json({ error: 'forbidden', message: 'Само за админ (IP whitelist).' });
 }
 
 // GET /api/portals/adm/users?q=&page=  — списък потребители (по 50)

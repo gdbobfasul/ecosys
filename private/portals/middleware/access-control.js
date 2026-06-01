@@ -1,5 +1,5 @@
 // KCY Portals — Access Control Middleware
-// Version: 1.0098
+// Version: 1.0105
 //
 // 4 варианта за достъп до порталите (GAMES + SERVICES):
 //   1. Платил си за текущия месец (запис в portal_monthly_payments)
@@ -91,10 +91,8 @@ function computeAccess(req, db) {
     };
     // Достъп до портала:
     //   1. платил си за текущия месец  → нормален достъп
-    //   2. admin достъп — изисква ЕДНОВРЕМЕННО:
-    //        ?adm=bgmasters-set в URL-а  И  IP в whitelist-а
-    //      (само единият не стига — двата заедно)
-    variants.admin_access = variants.adm_url && variants.ip_white;
+    //   2. admin достъп — само IP whitelist (вкл. 0.0.0.0/0), без URL параметър
+    variants.admin_access = variants.ip_white;
     variants.granted = variants.paid || variants.admin_access;
     return variants;
 }
@@ -140,6 +138,10 @@ function requireLogin(req, res, next) {
 // ─── API variant (JSON response instead of redirect) ───────────
 function requirePortalAccessAPI(req, res, next) {
     const db = req.app.locals.db;
+    // Admin по IP whitelist (вкл. 0.0.0.0/0) — пуска директно, без URL param/логин.
+    if (isIpWhitelisted(req)) {
+        return next();
+    }
     const adminAccess = hasAdmUrlParam(req) && isIpWhitelisted(req);
     if (!req.session?.userId && !adminAccess) {
         return res.status(401).json({ error: 'login_required' });

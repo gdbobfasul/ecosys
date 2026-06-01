@@ -1,5 +1,5 @@
 // KCY Portals — Billing routes
-// Version: 1.0097
+// Version: 1.0105
 //
 // Месечна такса, декларация на плащане (Stripe webhook или crypto tx hash),
 // admin grant (за първия потребител).
@@ -34,7 +34,7 @@ function loadFees() {
 // Единствен източник на адресите — billing.html ги чете оттук.
 router.get('/wallets', (req, res) => {
     try {
-        const CA = require('../configs/crypto_addresses.js');
+        const CA = require('../../configs/crypto_addresses.js');
         res.json(CA.PROJECTS.portals.wallets); // { BTC, ETH, BNB }
     } catch (e) {
         res.status(500).json({ error: 'wallets_unavailable' });
