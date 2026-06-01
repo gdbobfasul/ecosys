@@ -23,7 +23,6 @@ ECO3_USER="kcy-eco3"
 
 GREEN=$'\033[0;32m'; RED=$'\033[0;31m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 
-echo -e "${CYAN}>>> 14-sync-source.sh v1.0095 | tarball: $1${NC}"
 [ -n "$TARBALL" ] && [ -f "$TARBALL" ] || { echo -e "${RED}Няма архив: $TARBALL${NC}"; exit 1; }
 
 # разархивирай В STAGING. Поддържаме И двата формата на архив:
