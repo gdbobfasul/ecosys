@@ -1,0 +1,30 @@
+{
+  "_коментар": "Конфигурируеми стойности за 'Подреди своя дом'. Праговете и лимитите СА ТУК, не в кода (правило от brief-а). Сменяй свободно.",
+
+  "limits": {
+    "maxFloors": 3,
+    "minFloors": 1,
+    "maxRoomsPerFloor": 8,
+    "maxUploadImages": 100,
+    "maxUploadImageKB": 300
+  },
+
+  "ranking": {
+    "topListSize": 1000,
+    "_коментар": "Топ класацията листи най-харесваните N проекта (функция 4 от brief-а)."
+  },
+
+  "monetization": {
+    "_коментар": "Чисто приложение, без крипто. Абонаментът минава през билинга на магазина. Стойностите тук са примерни и се променят свободно.",
+    "subscriptionUSDPerMonth": 0
+  },
+
+  "defaults": {
+    "footprint": "square",
+    "roof": "gabled",
+    "floors": 2,
+    "wallColor": "#e8d9c0",
+    "roofColor": "#8a4b3b",
+    "accentColor": "#3b6ea5"
+  }
+}

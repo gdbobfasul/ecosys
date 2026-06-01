@@ -1,0 +1,56 @@
+{
+  "_about": "House-Look-Book (Подреди своя дом) — всички прагове, срокове и тарифи. Променяй ТУК, не в кода. Стойностите се четат при старт на сървъра.",
+
+  "app": {
+    "name": "House-Look-Book",
+    "displayKey": "app.name",
+    "defaultLang": "en",
+    "rtlLangs": ["ar"],
+    "languages": ["ru", "zh", "en", "bg", "ja", "de", "fr", "es", "it", "pt", "es-MX", "hi", "ar", "tr"],
+    "_languages_note": "14 езика. 'es-MX'=мексикански испански, 'hi'=индийски (хинди по подразбиране), 'zh'=китайски опростен. UI-ят е МАКСИМАЛНО иконен — минимум текст."
+  },
+
+  "subscription": {
+    "_note": "Един и същ абонамент дава И гледане, И предлагане — няма разлика. Плаща се през билинга на магазина ($1/мес). За прототипа е заглушка (флаг в базата).",
+    "priceUsdPerMonth": 1.0,
+    "requiredToView": true,
+    "requiredToPropose": true
+  },
+
+  "proposals": {
+    "_note": "Едно предложение = къща, която потребител регистрира в базата.",
+    "maxPerUser": 5,
+    "maxDescriptionChars": 4000,
+    "requiredExteriorViews": 4,
+    "maxDetailImages": 100,
+    "thumbnailMaxWidthPx": 1024,
+    "thumbnailQuality": 72
+  },
+
+  "editWindow": {
+    "_note": "Идея: дай време за МНОГО корекции, преди някой изобщо да види предложението. Модерация се прави ЧАК след като прозорецът изтече.",
+    "initialDays": 7,
+    "perEditDays": 2,
+    "_flow": "създаване → 7 дни свободно качване/редакции → прозорецът изтича → 'за модерация' → одобрено (публично). Всяка следваща редакция (дори на одобрено) отваря нов прозорец от 2 дни и пак минава модерация."
+  },
+
+  "ranking": {
+    "_note": "Лайк = глас 'едно от най-добрите' (тук е истинско харесване). Класация по брой лайкове.",
+    "topListSize": 1000,
+    "oneLikePerUserPerProposal": true
+  },
+
+  "reports": {
+    "_note": "Докладване само за НЕРЕАЛНО/неуместно (напр. магаре вместо къща). НЕ може 'не ми харесва къщата'.",
+    "oneReportPerUserPerProposal": true,
+    "validReportBansProposer": true,
+    "maxBaselessReportsBeforeReporterBan": 2,
+    "_baseless_note": "Над 2 неоснователни доклада → модератор МОЖЕ да банне докладващия. Модераторът решава кое е основателно."
+  },
+
+  "moderation": {
+    "_note": "Всичко минава през модератор. Нищо не е публично преди 'approved'.",
+    "autoFlipExpiredEditingMinutes": 30,
+    "_autoflip_note": "На колко минути фонов процес да прехвърля изтекли 'editing' → 'pending_moderation'."
+  }
+}
