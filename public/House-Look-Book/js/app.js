@@ -87,6 +87,37 @@
     // Бутони
     $('#btnRandom').onclick = randomize;
     $('#btnPdf').onclick = exportPdf;
+    $('#btnSave').onclick = saveToGallery;
+  }
+
+  // Запазва текущата конструирана къща като предложение в галерията (през API).
+  // composer_params = целият state, за да може галерията да я пре-рендира.
+  async function saveToGallery() {
+    if (typeof HLB === 'undefined') return;
+    const fpName = (HouseRender.FOOTPRINTS.find(f => f.id === state.footprint) || {}).name || state.footprint;
+    const title = prompt('Заглавие на къщата:', `${fpName} къща`);
+    if (title === null) return; // отказ
+    const params = {
+      footprint: state.footprint, roof: state.roof, floors: state.floors,
+      wallColor: state.wallColor, roofColor: state.roofColor, accentColor: state.accentColor,
+      windowsPerFloor: state.windowsPerFloor, extras: state.extras,
+    };
+    try {
+      await HLB.api('/proposals', { method: 'POST', body: { title: title.trim() || fpName, composer_params: params } });
+      showSaveMsg('✓ Запазено! Има 7 дни за корекции, после минава модерация и влиза в галерията.', true);
+    } catch (e) {
+      if (e.status === 401) { showSaveMsg('Влез в профила си, за да запазваш.', false); setTimeout(() => location.href = 'login.html', 900); }
+      else if (e.status === 402) showSaveMsg('Нужен е абонамент, за да предлагаш.', false);
+      else showSaveMsg(e.message, false);
+    }
+  }
+
+  function showSaveMsg(text, ok) {
+    const el = $('#saveMsg');
+    if (!el) return;
+    el.textContent = text;
+    el.className = 'msg ' + (ok ? 'ok' : 'err');
+    el.style.display = '';
   }
 
   function bindColor(sel, key) {
@@ -172,6 +203,7 @@
       console.warn('config.json не е зареден, ползвам фолбек лимити', e);
     }
     Object.assign(state, CONFIG.defaults || {});
+    if (typeof HLB !== 'undefined') { try { await HLB.mountNav('build'); } catch (_) {} }
     buildControls();
     drawPreview();
   }

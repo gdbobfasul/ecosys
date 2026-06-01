@@ -82,3 +82,66 @@ button:hover { filter: brightness(1.05); }
   border-radius: 8px;
   padding: 10px 12px;
 }
+
+/* ── Навигация ─────────────────────────────────────────────── */
+.hlb-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--accent); color: #fff; padding: 8px 16px; gap: 12px;
+}
+.hlb-nav .nav-left, .hlb-nav .nav-right { display: flex; align-items: center; gap: 6px; }
+.hlb-nav .nav-link {
+  color: #fff; text-decoration: none; font-size: 14px;
+  padding: 6px 10px; border-radius: 6px;
+}
+.hlb-nav .nav-link:hover { background: rgba(255,255,255,.15); }
+.hlb-nav .nav-link.on { background: rgba(255,255,255,.25); font-weight: 600; }
+.hlb-nav .nav-user { font-size: 13px; opacity: .9; }
+
+/* ── Съобщения ─────────────────────────────────────────────── */
+.msg { font-size: 13px; padding: 9px 11px; border-radius: 8px; }
+.msg.ok { background: #e7f6ec; border: 1px solid #b7e0c4; color: #1d6b39; }
+.msg.err { background: #fdeaea; border: 1px solid #f2c3c3; color: #9b2c2c; }
+
+/* ── Auth екран ────────────────────────────────────────────── */
+.auth-wrap { max-width: 420px; margin: 28px auto; padding: 0 16px; }
+.auth-card .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+.tab {
+  flex: 1; background: #eef2f7; color: var(--ink); border: 1px solid var(--line);
+  border-radius: 8px; padding: 9px; cursor: pointer; font-size: 14px;
+}
+.tab.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.auth-card .field input { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; }
+
+/* ── Галерия (карти) ───────────────────────────────────────── */
+.gallery-wrap { max-width: 1000px; margin: 0 auto; padding: 18px; }
+.notice { margin-bottom: 16px; font-size: 14px; color: var(--muted); }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.house-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+.house-card-svg { background: #eaf3fb; }
+.house-card-svg svg { width: 100%; height: auto; display: block; }
+.no-svg { padding: 40px 10px; text-align: center; color: var(--muted); font-size: 13px; }
+.house-card-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+.house-card-title { font-weight: 600; font-size: 14px; }
+.house-card-meta { font-size: 12px; color: var(--muted); }
+.like-btn {
+  margin-top: 6px; align-self: flex-start; flex: 0 0 auto;
+  background: #fff; color: var(--ink); border: 1px solid var(--line);
+  border-radius: 20px; padding: 5px 12px; font-size: 14px; cursor: pointer;
+}
+.like-btn.on { border-color: #e0708a; }
+.load-more { text-align: center; margin: 20px 0; }
+.load-more button { flex: 0 0 auto; padding: 10px 24px; }
+
+/* ── Класация ──────────────────────────────────────────────── */
+.rank-list { display: flex; flex-direction: column; gap: 10px; }
+.rank-row {
+  display: grid; grid-template-columns: 50px 110px 1fr auto; align-items: center; gap: 12px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 14px;
+}
+.rank-num { font-size: 18px; font-weight: 700; color: var(--accent); text-align: center; }
+.rank-svg { background: #eaf3fb; border-radius: 8px; overflow: hidden; }
+.rank-svg svg { width: 100%; height: auto; display: block; }
+.rank-likes { font-size: 15px; font-weight: 600; white-space: nowrap; }
+@media (max-width: 560px) {
+  .rank-row { grid-template-columns: 40px 80px 1fr auto; }
+}

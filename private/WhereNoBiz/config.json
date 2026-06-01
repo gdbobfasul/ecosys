@@ -1,0 +1,59 @@
+{
+  "_about": "WhereNoBiz („Намери ми бизнес, който го няма\") — всички прагове, срокове и тарифи. Променяй ТУК, не в кода (правило от brief-а). Стойностите се четат при старт на сървъра.",
+
+  "app": {
+    "name": "WhereNoBiz",
+    "defaultLang": "en",
+    "rtlLangs": ["ar"],
+    "_markets": "Цел: Google Play + App Store, пазари САЩ и Индия. Чисто приложение — без крипто, без линкове към KCY."
+  },
+
+  "subscription": {
+    "_note": "Гледане В ПРИЛОЖЕНИЕТО = $1/месец (билинг на магазина). В приложението САМО се гледа. За прототипа е флаг в базата.",
+    "viewPriceUsdPerMonth": 1.0,
+    "requiredToView": true
+  },
+
+  "fees": {
+    "_note": "Плащанията са на СОБСТВЕНИЯ сайт на приложението (НЕ KCY). За прототипа са заглушки/флагове.",
+    "postUsd": 20.0,
+    "_postUsd_note": "Постване на нов 'липсващ бизнес' струва $20.",
+    "viewPhoneUsd": 20.0,
+    "_viewPhone_note": "Друг плаща $20, за да види телефона на постващия.",
+    "revealOwnPhoneUsd": 100.0,
+    "_revealOwnPhone_note": "Постващият плаща $100, за да си покаже телефона — позволено само при достигнат праг лайкове."
+  },
+
+  "post": {
+    "_note": "Един пост = един 'липсващ бизнес' за една страна.",
+    "maxDescriptionChars": 3000,
+    "maxImages": 30,
+    "maxLinks": 20,
+    "thumbnailMaxWidthPx": 1024,
+    "thumbnailQuality": 72,
+    "maxActivePostsPerUserPerCountry": 1
+  },
+
+  "ranking": {
+    "_note": "Лайк = ПОТВЪРЖДЕНИЕ, че такъв бизнес НЯМА (не 'харесва ми'). Класация по брой потвърждения, ЗА СТРАНА.",
+    "votesForRank1": 1000,
+    "minVotesToList": 1000,
+    "votesToAllowPhoneReveal": 1500,
+    "requireZeroUnlikesForPhone": true,
+    "oneConfirmationPerUserPerPost": true
+  },
+
+  "confirmation": {
+    "_note": "Лайкът ИЗИСКВА обосновка: къде би могъл да се развие бизнесът + защо лайкващият знае, че го няма.",
+    "requireWhereItCouldDevelop": true,
+    "requireWhyItIsMissing": true,
+    "minReasonChars": 20
+  },
+
+  "moderation": {
+    "_note": "Всеки пост минава модерация ПРЕДИ да е публичен. Червен флаг = Google връща сайт от тази страна, който предлага бизнеса (контакти/телефон/градове) → пост се отказва/сваля.",
+    "requireApprovalBeforePublic": true,
+    "oneReportTakesDown": true,
+    "_oneReport_note": "Дори ЕДИН доклад с доказателство може да свали поста (решава модератор)."
+  }
+}

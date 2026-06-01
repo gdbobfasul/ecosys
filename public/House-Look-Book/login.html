@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Подреди своя дом — Вход</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>🏠 Подреди своя дом</h1>
+    <p>Влез или се регистрирай, за да запазваш къщи в галерията, да лайкваш и да предлагаш.</p>
+  </header>
+
+  <div class="auth-wrap">
+    <div class="panel auth-card">
+      <div class="tabs">
+        <button id="tabLogin" class="tab on">Вход</button>
+        <button id="tabRegister" class="tab">Регистрация</button>
+      </div>
+
+      <div id="msg" class="msg" style="display:none"></div>
+
+      <div class="field">
+        <label for="email">Имейл</label>
+        <input type="email" id="email" autocomplete="email" placeholder="ti@example.com">
+      </div>
+      <div class="field">
+        <label for="password">Парола</label>
+        <input type="password" id="password" autocomplete="current-password" placeholder="поне 6 символа">
+      </div>
+      <div class="field" id="nameField" style="display:none">
+        <label for="display_name">Име (по избор)</label>
+        <input type="text" id="display_name" placeholder="как да те виждат другите">
+      </div>
+
+      <div class="actions">
+        <button id="btnSubmit">Вход</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/hlb-common.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
