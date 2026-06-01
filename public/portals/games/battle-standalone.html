@@ -17,8 +17,8 @@
 </head>
 <body>
 <div class="top">
-  <button id="btn-duel" class="active">⚔ Дуел (Duel)</button>
-  <button id="btn-hmm">⚔⚔ Битка на терен (HMM)</button>
+  <button id="btn-duel" class="active" data-i18n="g.duel_btn">⚔ Дуел (Duel)</button>
+  <button id="btn-hmm" data-i18n="g.team_btn">⚔⚔ Битка на терен (HMM)</button>
 </div>
 <div id="arena"></div>
 <script src="battle-heroes-v2.js"></script>
@@ -30,11 +30,11 @@ function launch(mode) {
   document.getElementById('btn-duel').classList.toggle('active', mode === 'Duel');
   document.getElementById('btn-hmm').classList.toggle('active', mode === 'HMM');
   var cfg = mode === 'Duel' ? {
-    title: 'Дуел на ринга — 1 срещу 1',
+    title: (window.KCY_I18N?KCY_I18N.t('g.battle_duel_t'):'Дуел на ринга — 1 срещу 1'),
     teamSize: 1, heroPool: BATTLE_HEROES.duel,
     fieldWidth: 1280, fieldHeight: 960, mode: 'Duel',
   } : {
-    title: 'Битка на терен — 3 срещу 3',
+    title: (window.KCY_I18N?KCY_I18N.t('g.battle_team_t'):'Битка на терен — 3 срещу 3'),
     teamSize: 3, heroPool: BATTLE_HEROES.team,
     fieldWidth: 1920, fieldHeight: 2560, mode: 'HMM',
   };

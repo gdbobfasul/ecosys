@@ -385,7 +385,7 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>💕 Намери половинката си</h1>
+            <h1 data-i18n="mm.title_h">💕 Намери половинката си</h1>
             <p data-i18n="mm.subtitle">Попълни критериите и открий своята идеална половинка с AI технология</p>
         </div>
 
@@ -407,7 +407,7 @@
 
         <!-- Criteria Form -->
         <div class="section" id="criteriaSection">
-            <h2>📋 Моите Критерии</h2>
+            <h2 data-i18n="mm.my_criteria">📋 Моите Критерии</h2>
             
             <!-- Physical Criteria -->
             <h3 data-i18n="mm.physical">Физически характеристики</h3>
@@ -451,19 +451,19 @@
                 <div class="form-group">
                     <label data-i18n="mm.eyes">Цвят на очите:</label>
                     <select id="eye_color">
-                        <option value="">Без предпочитание</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
                         <option value="blue" data-i18n="mm.blue_e">Сини</option>
                         <option value="green" data-i18n="mm.green_e">Зелени</option>
                         <option value="brown" data-i18n="mm.brown_e">Кафяви</option>
                         <option value="hazel" data-i18n="mm.hazel_e">Лешникови</option>
                         <option value="gray" data-i18n="mm.grey_e">Сиви</option>
-                        <option value="other">Друго</option>
+                        <option value="other" data-i18n="mm.other">Друго</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label data-i18n="mm.body_type">Тип фигура:</label>
                     <select id="body_type">
-                        <option value="">Без предпочитание</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
                         <option value="slim" data-i18n="mm.slim">Слаба</option>
                         <option value="athletic" data-i18n="mm.athletic_f">Атлетична</option>
                         <option value="average" data-i18n="mm.medium_f">Средна</option>
@@ -479,7 +479,7 @@
                 <div class="form-group">
                     <label data-i18n="mm.smoking">Тютюнопушене:</label>
                     <select id="smoking">
-                        <option value="">Без предпочитание</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
                         <option value="never" data-i18n="mm.never">Никога</option>
                         <option value="occasionally" data-i18n="mm.sometimes">Понякога</option>
                         <option value="regularly" data-i18n="mm.regularly">Редовно</option>
@@ -488,26 +488,26 @@
                 <div class="form-group">
                     <label data-i18n="mm.alcohol">Алкохол:</label>
                     <select id="drinking">
-                        <option value="">Без предпочитание</option>
-                        <option value="never">Никога</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
+                        <option value="never" data-i18n="mm.never">Никога</option>
                         <option value="socially" data-i18n="mm.socially">Социално</option>
-                        <option value="regularly">Редовно</option>
+                        <option value="regularly" data-i18n="mm.regularly">Редовно</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label data-i18n="mm.sport">Спорт:</label>
                     <select id="exercise">
-                        <option value="">Без предпочитание</option>
-                        <option value="never">Никога</option>
-                        <option value="occasionally">Понякога</option>
-                        <option value="regularly">Редовно</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
+                        <option value="never" data-i18n="mm.never">Никога</option>
+                        <option value="occasionally" data-i18n="mm.sometimes">Понякога</option>
+                        <option value="regularly" data-i18n="mm.regularly">Редовно</option>
                         <option value="athlete" data-i18n="mm.athlete">Атлет</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label data-i18n="mm.children">Деца:</label>
                     <select id="children">
-                        <option value="">Без предпочитание</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
                         <option value="has-children" data-i18n="mm.has_kids">Има деца</option>
                         <option value="wants-children" data-i18n="mm.wants_kids">Иска деца</option>
                         <option value="no-children" data-i18n="mm.no_kids">Без деца</option>
@@ -516,7 +516,7 @@
                 <div class="form-group">
                     <label data-i18n="mm.education">Образование:</label>
                     <select id="education">
-                        <option value="">Без предпочитание</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
                         <option value="high-school" data-i18n="mm.secondary">Средно</option>
                         <option value="bachelor" data-i18n="mm.bachelor">Бакалавър</option>
                         <option value="master" data-i18n="mm.master">Магистър</option>
@@ -526,7 +526,7 @@
                 <div class="form-group">
                     <label data-i18n="mm.work">Работа:</label>
                     <select id="employment">
-                        <option value="">Без предпочитание</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
                         <option value="employed" data-i18n="mm.employed">Работещ</option>
                         <option value="self-employed" data-i18n="mm.selfemployed">Самонает</option>
                         <option value="student" data-i18n="mm.student">Студент</option>
@@ -542,7 +542,7 @@
                 <div class="form-group">
                     <label data-i18n="mm.pers_type">Тип личност:</label>
                     <select id="personality">
-                        <option value="">Без предпочитание</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
                         <option value="introvert" data-i18n="mm.introvert">Интроверт</option>
                         <option value="extrovert" data-i18n="mm.extrovert">Екстроверт</option>
                         <option value="ambivert" data-i18n="mm.ambivert">Амбиверт</option>
@@ -551,7 +551,7 @@
                 <div class="form-group">
                     <label data-i18n="mm.comm_style">Стил на комуникация:</label>
                     <select id="communication_style">
-                        <option value="">Без предпочитание</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
                         <option value="direct" data-i18n="mm.direct">Директен</option>
                         <option value="indirect" data-i18n="mm.indirect">Индиректен</option>
                         <option value="emotional" data-i18n="mm.emotional">Емоционален</option>
@@ -561,7 +561,7 @@
                 <div class="form-group">
                     <label data-i18n="mm.goals">Цели в отношенията:</label>
                     <select id="relationship_goals">
-                        <option value="">Без предпочитание</option>
+                        <option value="" data-i18n="mm.no_pref">Без предпочитание</option>
                         <option value="casual">Casual</option>
                         <option value="serious" data-i18n="mm.serious">Сериозни</option>
                         <option value="marriage" data-i18n="mm.marriage">Брак</option>
@@ -593,25 +593,25 @@
 
             <!-- Save Button -->
             <div class="button-group">
-                <button class="btn btn-secondary" onclick="window.location.href='chat.html'">◀ Назад към чат</button>
-                <button class="btn btn-primary" onclick="saveCriteria()">💾 Запази критерии</button>
-                <button class="btn btn-primary" onclick="showFindWarning()">🔍 Намери (5€)</button>
+                <button class="btn btn-secondary" onclick="window.location.href='chat.html'" data-i18n="mm.back_chat">◀ Назад към чат</button>
+                <button class="btn btn-primary" onclick="saveCriteria()" data-i18n="mm.save_criteria">💾 Запази критерии</button>
+                <button class="btn btn-primary" onclick="showFindWarning()" data-i18n="mm.find_5">🔍 Намери (5€)</button>
             </div>
         </div>
 
         <!-- Search Results Section -->
         <div class="section hidden" id="resultsSection">
-            <h2>🎯 Резултати от търсенето</h2>
+            <h2 data-i18n="mm.results_h">🎯 Резултати от търсенето</h2>
             <div id="resultsContent"></div>
             <div class="button-group">
-                <button class="btn btn-secondary" onclick="hideResults()">◀ Назад</button>
-                <button class="btn btn-primary" onclick="showFindWarning()">🔍 Ново търсене (5€)</button>
+                <button class="btn btn-secondary" onclick="hideResults()" data-i18n="mm.back">◀ Назад</button>
+                <button class="btn btn-primary" onclick="showFindWarning()" data-i18n="mm.new_search">🔍 Ново търсене (5€)</button>
             </div>
         </div>
 
         <!-- Received Invitations Section -->
         <div class="section" id="invitationsSection">
-            <h2>📬 Получени покани</h2>
+            <h2 data-i18n="mm.received_invites">📬 Получени покани</h2>
             <p data-i18n="mm.invited_you">Хора, които са те поканили за чат</p>
             <div id="invitationsContent">
                 <div class="loading">
@@ -626,19 +626,19 @@
     <div class="modal" id="findWarningModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>⚠️ Внимание!</h3>
+                <h3 data-i18n="mm.warning">⚠️ Внимание!</h3>
                 <button class="close-btn" onclick="closeFindWarning()">&times;</button>
             </div>
             <div class="warning-box">
                 <h3 data-i18n="mm.criteria">Условия за търсене</h3>
-                <p>Тук ще намерите съвпадение по вашите критерии на вашата идеална половинка.</p>
+                <p data-i18n="mm.here_match">Тук ще намерите съвпадение по вашите критерии на вашата идеална половинка.</p>
                 <p data-i18n="mm.results_count">Резултатите, които ще ви представим са 5 на брой.</p>
                 <p><strong data-i18n="mm.charge_note">При всяко натискане на бутона от платежният ви баланс ще бъдат взети 5 долара/евро.</strong></p>
                 <p style="margin-top: 15px;" data-i18n="mm.current_balance">Текущ баланс: <strong id="warningBalance">--</strong></p>
             </div>
             <div class="button-group">
                 <button class="btn btn-secondary" onclick="closeFindWarning()" data-i18n="mm.cancel">Отказ</button>
-                <button class="btn btn-primary" onclick="findMatches()">💳 Плати 5€ и търси</button>
+                <button class="btn btn-primary" onclick="findMatches()" data-i18n="mm.pay_search">💳 Плати 5€ и търси</button>
             </div>
         </div>
     </div>
@@ -647,14 +647,14 @@
     <div class="modal" id="blockModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>❌ Блокиране на потребител</h3>
+                <h3 data-i18n="mm.block_user">❌ Блокиране на потребител</h3>
                 <button class="close-btn" onclick="closeBlockModal()">&times;</button>
             </div>
             <p data-i18n="mm.what_disliked">Какво не ти хареса?</p>
             <div class="dislike-options" id="dislikeOptions"></div>
             <div class="button-group">
-                <button class="btn btn-secondary" onclick="closeBlockModal()">Отказ</button>
-                <button class="btn btn-primary" onclick="confirmBlock()">✅ Блокирай</button>
+                <button class="btn btn-secondary" onclick="closeBlockModal()" data-i18n="mm.cancel">Отказ</button>
+                <button class="btn btn-primary" onclick="confirmBlock()" data-i18n="mm.block">✅ Блокирай</button>
             </div>
         </div>
     </div>
@@ -672,7 +672,7 @@
             const userId = localStorage.getItem('userId');
             
             if (!token || !userId) {
-                alert('Моля, влезте в профила си!');
+                alert(KCY_I18N.t('mm.please_login'));
                 window.location.href = 'index.html';
                 return false;
             }
@@ -863,7 +863,7 @@
 
         // Send invitation
         async function sendInvitation(receiverId) {
-            if (!confirm('Сигурен ли си, че искаш да изпратиш покана?')) return;
+            if (!confirm(KCY_I18N.t('mm.confirm_invite'))) return;
 
             try {
                 const response = await fetch(`${API_URL}/matchmaking/invite`, {
@@ -895,12 +895,12 @@
             
             // Build dislike options (simplified version)
             const dislikeFields = [
-                { field: 'height_cm', label: 'Ръст' },
-                { field: 'weight_kg', label: 'Тегло' },
-                { field: 'age', label: 'Възраст' },
-                { field: 'hair_color', label: 'Цвят коса' },
-                { field: 'smoking', label: 'Тютюнопушене' },
-                { field: 'drinking', label: 'Алкохол' }
+                { field: 'height_cm', label: KCY_I18N.t('mm.height') },
+                { field: 'weight_kg', label: KCY_I18N.t('mm.weight') },
+                { field: 'age', label: KCY_I18N.t('mm.age') },
+                { field: 'hair_color', label: KCY_I18N.t('mm.hair_short') },
+                { field: 'smoking', label: KCY_I18N.t('mm.smoking_short') },
+                { field: 'drinking', label: KCY_I18N.t('mm.alcohol_short') }
             ];
 
             const optionsHTML = dislikeFields.map(field => `
@@ -1013,7 +1013,7 @@
 
         // Accept invitation
         async function acceptInvitation(invitationId) {
-            if (!confirm('Приемаш поканата? Ще можете да чатите с този човек.')) return;
+            if (!confirm(KCY_I18N.t('mm.accept_invite'))) return;
 
             try {
                 const response = await fetch(`${API_URL}/matchmaking/invitations/${invitationId}/accept`, {

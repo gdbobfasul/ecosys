@@ -15,11 +15,11 @@
     
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
-      <button onclick="window.location.href='chat.html'" class="text-blue-400 hover:text-blue-300">
+      <button onclick="window.location.href='chat.html'" class="text-blue-400 hover:text-blue-300" data-i18n="r.108">
         ← Назад към чата
       </button>
-      <h1 class="text-2xl font-bold">⚙️ Настройки</h1>
-      <button onclick="logout()" class="text-red-400 hover:text-red-300">
+      <h1 class="text-2xl font-bold" data-i18n="cp.settings_h">⚙️ Настройки</h1>
+      <button onclick="logout()" class="text-red-400 hover:text-red-300" data-i18n="r.38">
         Изход
       </button>
     </div>
@@ -36,7 +36,7 @@
       <!-- Basic Info Section -->
       <div class="bg-gray-800 rounded-lg p-6">
         <h2 class="text-xl font-bold mb-4 flex items-center justify-between">
-          👤 Основна информация
+          <span data-i18n="cp.basic_info">👤 Основна информация</span>
           <span id="editLimitInfo" class="text-sm text-gray-400"></span>
         </h2>
         
@@ -61,7 +61,7 @@
             <input type="text" id="city" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
           </div>
 
-          <button onclick="updateProfile()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-3 font-semibold">
+          <button onclick="updateProfile()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-3 font-semibold" data-i18n="r.33">
             Запази промени (1 път/месец)
           </button>
         </div>
@@ -69,7 +69,7 @@
 
       <!-- Privacy Settings -->
       <div class="bg-gray-800 rounded-lg p-6">
-        <h2 class="text-xl font-bold mb-4">🔒 Поверителност</h2>
+        <h2 class="text-xl font-bold mb-4" data-i18n="cp.privacy">🔒 Поверителност</h2>
         
         <div class="space-y-4">
           <label class="flex items-center justify-between cursor-pointer">
@@ -86,7 +86,7 @@
 
       <!-- Security Section -->
       <div class="bg-gray-800 rounded-lg p-6">
-        <h2 class="text-xl font-bold mb-4">🔐 Сигурност</h2>
+        <h2 class="text-xl font-bold mb-4" data-i18n="cp.security">🔐 Сигурност</h2>
         
         <div class="space-y-4">
           <div>
@@ -95,18 +95,18 @@
             <p class="text-xs text-gray-500 mt-1" data-i18n="cp.codeword_hint">Други потребители трябва да знаят тази дума, за да те намерят точно</p>
           </div>
 
-          <button onclick="updateCodeWord()" class="w-full bg-green-600 hover:bg-green-700 rounded py-2">
+          <button onclick="updateCodeWord()" class="w-full bg-green-600 hover:bg-green-700 rounded py-2" data-i18n="r.50">
             Обнови кодова дума
           </button>
 
           <hr class="border-gray-700" />
 
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Email адрес</label>
+            <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.email">Email адрес</label>
             <input type="email" id="email" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
           </div>
 
-          <button onclick="updateEmail()" class="w-full bg-green-600 hover:bg-green-700 rounded py-2">
+          <button onclick="updateEmail()" class="w-full bg-green-600 hover:bg-green-700 rounded py-2" data-i18n="r.49">
             Обнови email
           </button>
 
@@ -122,7 +122,7 @@
             <input type="password" id="newPassword" class="w-full bg-gray-700 rounded px-4 py-2 text-white" />
           </div>
 
-          <button onclick="updatePassword()" class="w-full bg-green-600 hover:bg-green-700 rounded py-2">
+          <button onclick="updatePassword()" class="w-full bg-green-600 hover:bg-green-700 rounded py-2" data-i18n="r.65">
             Смени парола
           </button>
         </div>
@@ -130,24 +130,24 @@
 
       <!-- Current Need Section -->
       <div class="bg-gray-800 rounded-lg p-6">
-        <h2 class="text-xl font-bold mb-4">🔍 Текуща нужда</h2>
+        <h2 class="text-xl font-bold mb-4" data-i18n="cp.current_need">🔍 Текуща нужда</h2>
         
         <div class="space-y-4">
           <div>
             <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.need_now">От какво имам нужда сега?</label>
             <select id="needCategory" onchange="updateNeedSubcategories()" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
-              <option value="">-- Избери категория --</option>
+              <option value="" data-i18n="cp.select_cat">-- Избери категория --</option>
             </select>
           </div>
 
           <div id="needSubcategoryContainer" class="hidden">
             <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.exact_need">Точна нужда</label>
             <select id="needSubcategory" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
-              <option value="">-- Избери --</option>
+              <option value="" data-i18n="cp.select">-- Избери --</option>
             </select>
           </div>
 
-          <button onclick="updateNeed()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-2">
+          <button onclick="updateNeed()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-2" data-i18n="r.51">
             Обнови нужда
           </button>
         </div>
@@ -155,50 +155,50 @@
 
       <!-- Offerings Section -->
       <div class="bg-gray-800 rounded-lg p-6">
-        <h2 class="text-xl font-bold mb-4">💼 Какво предлагам (макс 3)</h2>
+        <h2 class="text-xl font-bold mb-4" data-i18n="cp.what_offer">💼 Какво предлагам (макс 3)</h2>
         
         <div id="verifiedLock" class="hidden bg-yellow-900 border border-yellow-600 rounded p-4 mb-4">
-          <p class="text-yellow-300">🔒 Вашият профил е верифициран. Полето "Предлагам" е заключено.</p>
-          <p class="text-sm text-yellow-400 mt-2">За промени: <a href="mailto:admin@amschat.com" class="underline">admin@amschat.com</a></p>
+          <p class="text-yellow-300" data-i18n="r.139">🔒 Вашият профил е верифициран. Полето KCY_I18N.t('cp.offer') е заключено.</p>
+          <p class="text-sm text-yellow-400 mt-2"><span data-i18n="cp.for_changes">За промени:</span> <a href="mailto:admin@amschat.com" class="underline">admin@amschat.com</a></p>
         </div>
 
         <div id="offeringsForm" class="space-y-4">
           <div>
             <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.service1">Услуга 1</label>
             <select id="offering1Category" onchange="updateOfferingSubcategories(1)" class="w-full bg-gray-700 rounded px-4 py-2 text-white mb-2">
-              <option value="">-- Избери категория --</option>
+              <option value="" data-i18n="cp.select_cat">-- Избери категория --</option>
             </select>
             <select id="offering1" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
-              <option value="">-- Избери услуга --</option>
+              <option value="" data-i18n="cp.select_service">-- Избери услуга --</option>
             </select>
           </div>
 
           <div>
             <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.service2">Услуга 2 (опционално)</label>
             <select id="offering2Category" onchange="updateOfferingSubcategories(2)" class="w-full bg-gray-700 rounded px-4 py-2 text-white mb-2">
-              <option value="">-- Избери категория --</option>
+              <option value="" data-i18n="cp.select_cat">-- Избери категория --</option>
             </select>
             <select id="offering2" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
-              <option value="">-- Избери услуга --</option>
+              <option value="" data-i18n="cp.select_service">-- Избери услуга --</option>
             </select>
           </div>
 
           <div>
             <label class="block text-sm text-gray-400 mb-2" data-i18n="cp.service3">Услуга 3 (опционално)</label>
             <select id="offering3Category" onchange="updateOfferingSubcategories(3)" class="w-full bg-gray-700 rounded px-4 py-2 text-white mb-2">
-              <option value="">-- Избери категория --</option>
+              <option value="" data-i18n="cp.select_cat">-- Избери категория --</option>
             </select>
             <select id="offering3" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
-              <option value="">-- Избери услуга --</option>
+              <option value="" data-i18n="cp.select_service">-- Избери услуга --</option>
             </select>
           </div>
 
           <div class="bg-blue-900 border border-blue-600 rounded p-4">
-            <p class="text-blue-300 text-sm">ℹ️ За спешни услуги (Доктор, Болница, Бърза помощ, Полиция) изпрати документи на:</p>
+            <p class="text-blue-300 text-sm" data-i18n="r.104">ℹ️ За спешни услуги (Доктор, Болница, Бърза помощ, Полиция) изпрати документи на:</p>
             <p class="text-blue-200 mt-1"><a href="mailto:admin@amschat.com" class="underline font-semibold">admin@amschat.com</a></p>
           </div>
 
-          <button onclick="updateOfferings()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-2">
+          <button onclick="updateOfferings()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-2" data-i18n="r.32">
             Запази предлагания
           </button>
         </div>
@@ -206,36 +206,36 @@
 
       <!-- Payment Section -->
       <div class="bg-gray-800 rounded-lg p-6">
-        <h2 class="text-xl font-bold mb-4">💳 Абонамент</h2>
+        <h2 class="text-xl font-bold mb-4" data-i18n="cp.subscription">💳 Абонамент</h2>
         
         <div id="subscriptionInfo" class="space-y-3">
           <div class="flex justify-between">
-            <span class="text-gray-400">Статус:</span>
+            <span class="text-gray-400" data-i18n="cp.status">Статус:</span>
             <span id="subscriptionStatus" class="font-semibold"></span>
           </div>
           <div class="flex justify-between">
-            <span class="text-gray-400">Валиден до:</span>
+            <span class="text-gray-400" data-i18n="cp.valid_until">Валиден до:</span>
             <span id="paidUntil" class="font-semibold"></span>
           </div>
         </div>
 
-        <button onclick="window.location.href='payment.html'" class="w-full bg-green-600 hover:bg-green-700 rounded py-3 mt-4 font-semibold">
+        <button onclick="window.location.href='payment.html'" class="w-full bg-green-600 hover:bg-green-700 rounded py-3 mt-4 font-semibold" data-i18n="r.125">
           💰 Плати абонамент
         </button>
       </div>
 
       <!-- Emergency Help Button -->
       <div class="bg-red-900 border border-red-600 rounded-lg p-6">
-        <h2 class="text-xl font-bold mb-4">🆘 Спешна помощ</h2>
+        <h2 class="text-xl font-bold mb-4" data-i18n="cp.emergency">🆘 Спешна помощ</h2>
         
         <div id="helpButtonInfo" class="space-y-3 mb-4 text-sm">
           <p data-i18n="cp.loc_btn_note">Бутонът изпраща вашата точна локация до администратора.</p>
-          <p><strong>Цена:</strong> <span id="helpCost"></span></p>
-          <p><strong>Ефект:</strong> Отнема 15 дни от абонамента</p>
-          <p><strong>Лимит:</strong> 1 използване на месец</p>
+          <p><strong data-i18n="cp.price">Цена:</strong> <span id="helpCost"></span></p>
+          <p><strong data-i18n="cp.effect">Ефект:</strong> <span data-i18n="cp.takes_15">Отнема 15 дни от абонамента</span></p>
+          <p><strong data-i18n="cp.limit">Лимит:</strong> <span data-i18n="cp.1_month">1 използване на месец</span></p>
         </div>
 
-        <button id="helpButton" onclick="sendEmergencyHelp()" class="w-full bg-red-600 hover:bg-red-700 rounded py-4 font-bold text-lg disabled:bg-gray-600 disabled:cursor-not-allowed">
+        <button id="helpButton" onclick="sendEmergencyHelp()" class="w-full bg-red-600 hover:bg-red-700 rounded py-4 font-bold text-lg disabled:bg-gray-600 disabled:cursor-not-allowed" data-i18n="r.142">
           🚨 ИЗПРАТИ СПЕШНА ПОМОЩ
         </button>
 
@@ -358,7 +358,7 @@
         
       } catch (err) {
         console.error('Load profile error:', err);
-        alert('Грешка при зареждане на профила');
+        alert(KCY_I18N.t('cp.err_load'));
       }
     }
 
@@ -373,7 +373,7 @@
       }
       
       container.classList.remove('hidden');
-      select.innerHTML = '<option value="">-- Избери --</option>';
+      select.innerHTML = '<option value="" data-i18n="cp.select">-- Избери --</option>';
       
       serviceCategories[category].subcategories.forEach(sub => {
         const opt = document.createElement('option');
@@ -387,7 +387,7 @@
       const category = document.getElementById(`offering${num}Category`).value;
       const select = document.getElementById(`offering${num}`);
       
-      select.innerHTML = '<option value="">-- Избери услуга --</option>';
+      select.innerHTML = '<option value="" data-i18n="cp.select_service">-- Избери услуга --</option>';
       
       if (!category) return;
       
@@ -419,7 +419,7 @@
         const data = await res.json();
         
         if (!res.ok) {
-          alert(data.error || 'Грешка при обновяване');
+          alert(data.error || KCY_I18N.t('cp.err_update'));
           return;
         }
         
@@ -428,7 +428,7 @@
         
       } catch (err) {
         console.error('Update profile error:', err);
-        alert('Грешка при обновяване на профила');
+        alert(KCY_I18N.t('cp.err_update_profile'));
       }
     }
 
@@ -445,10 +445,10 @@
     async function updateCodeWord() {
       const codeWord = document.getElementById('codeWord').value;
       if (!codeWord || codeWord.length < 3) {
-        alert('Кодовата дума трябва да е поне 3 символа');
+        alert(KCY_I18N.t('cp.codeword_min'));
         return;
       }
-      await updateSetting('/profile/code-word', { code_word: codeWord }, 'Кодовата дума е обновена');
+      await updateSetting('/profile/code-word', { code_word: codeWord }, KCY_I18N.t('cp.codeword_updated'));
     }
 
     async function updateEmail() {
@@ -461,14 +461,14 @@
       const newPass = document.getElementById('newPassword').value;
       
       if (!current || !newPass) {
-        alert('Попълнете и двете полета');
+        alert(KCY_I18N.t('cp.fill_both'));
         return;
       }
       
       await updateSetting('/profile/password', {
         current_password: current,
         new_password: newPass
-      }, 'Паролата е сменена успешно');
+      }, KCY_I18N.t('cp.pass_changed'));
       
       document.getElementById('currentPassword').value = '';
       document.getElementById('newPassword').value = '';
@@ -476,7 +476,7 @@
 
     async function updateNeed() {
       const need = document.getElementById('needSubcategory').value;
-      await updateSetting('/profile/need', { current_need: need }, 'Нуждата е обновена');
+      await updateSetting('/profile/need', { current_need: need }, KCY_I18N.t('cp.need_updated'));
     }
 
     async function updateOfferings() {
@@ -486,10 +486,10 @@
         document.getElementById('offering3').value
       ].filter(Boolean).join(',');
       
-      await updateSetting('/profile/offerings', { offerings }, 'Предлаганията са обновени');
+      await updateSetting('/profile/offerings', { offerings }, KCY_I18N.t('cp.offers_updated'));
     }
 
-    async function updateSetting(endpoint, body, successMsg = 'Обновено успешно') {
+    async function updateSetting(endpoint, body, successMsg = KCY_I18N.t('cp.updated_ok')) {
       try {
         const token = localStorage.getItem('token');
         const res = await fetch(`${API_URL}${endpoint}`, {
@@ -504,7 +504,7 @@
         const data = await res.json();
         
         if (!res.ok) {
-          alert(data.error || 'Грешка');
+          alert(data.error || KCY_I18N.t('common.error'));
           return;
         }
         
@@ -512,7 +512,7 @@
         
       } catch (err) {
         console.error('Update error:', err);
-        alert('Грешка при обновяване');
+        alert(KCY_I18N.t('cp.err_update'));
       }
     }
 
@@ -532,7 +532,7 @@
         
         if (!data.available) {
           let reason = '';
-          if (!data.has_subscription) reason = 'Нямате активен абонамент';
+          if (!data.has_subscription) reason = KCY_I18N.t('cp.no_sub');
           else if (data.uses_this_month >= 1) reason = `Вече е използван този месец. Следващо използване: ${new Date(data.next_reset).toLocaleDateString('bg-BG')}`;
           
           document.getElementById('helpUsageInfo').textContent = reason;
@@ -552,7 +552,7 @@
       
       // Get GPS location
       if (!navigator.geolocation) {
-        alert('Вашият браузър не поддържа геолокация');
+        alert(KCY_I18N.t('cp.no_geo'));
         return;
       }
       
@@ -574,7 +574,7 @@
           const data = await res.json();
           
           if (!res.ok) {
-            alert(data.error || 'Грешка');
+            alert(data.error || KCY_I18N.t('common.error'));
             return;
           }
           
@@ -585,10 +585,10 @@
           
         } catch (err) {
           console.error('Emergency help error:', err);
-          alert('Грешка при изпращане на помощ');
+          alert(KCY_I18N.t('cp.err_help'));
         }
       }, (error) => {
-        alert('Не може да се получи локация: ' + error.message);
+        alert(KCY_I18N.t('cp.no_loc')+': ' + error.message);
       }, {
         enableHighAccuracy: true,
         timeout: 10000

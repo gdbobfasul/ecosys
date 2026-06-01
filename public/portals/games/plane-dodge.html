@@ -15,8 +15,8 @@
 </head>
 <body>
 <div class="top">
-  <a href="/portals/games/">← Всички игри</a>
-  <a href="/portals/games/?rank=1">🏆 Ранг листа</a>
+  <a href="/portals/games/" data-i18n="g.all_games">← Всички игри</a>
+  <a href="/portals/games/?rank=1" data-i18n="g.leaderboard">🏆 Ранг листа</a>
 </div>
 <canvas id="cv" width="440" height="600"></canvas>
 <script src="/portals/games/game-engine.js"></script>
@@ -135,9 +135,9 @@ function drawPlane(ctx,w,h){
 var eng = new GameEngine({
   canvas: document.getElementById('cv'),
   slug: 'plane-dodge',
-  title: 'Самолет — Избягвай',
-  goal: 'Управлявай самолета и избягвай облаците. Стигни края на всяко ниво — с всяко ниво облаците са повече и по-бързи.',
-  controls: 'Стрелки наляво/надясно или A / D. На телефон — тапни лявата или дясната половина.',
+  title: (window.KCY_I18N?KCY_I18N.t('g.plane_dodge_t'):'Самолет — Избягвай'),
+  goal: (window.KCY_I18N?KCY_I18N.t('g.plane_dodge_g'):'Избягвай облаците...'),
+  controls: (window.KCY_I18N?KCY_I18N.t('g.ctrl_lr'):'Стрелки наляво/надясно.'),
   levels: 10, lives: 3,
   init: init, update: update, draw: draw, background: background
 });

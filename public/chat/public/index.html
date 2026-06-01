@@ -11,31 +11,31 @@
     <div class="min-h-screen flex">
         <!-- Left: Marketing -->
         <div class="hidden lg:block lg:w-1/2 bg-gradient-to-br from-blue-900 to-purple-900 p-12">
-            <h1 class="text-4xl font-bold mb-4">📱 Анонимен Чат</h1>
-            <p class="text-xl mb-8">€5 / $5 на месец</p>
+            <h1 class="text-4xl font-bold mb-4" data-i18n="chat.app_name_e">📱 Анонимен Чат</h1>
+            <p class="text-xl mb-8" data-i18n="chat.price_month">€5 / $5 на месец</p>
             
             <div class="space-y-6">
                 <div>
-                    <h3 class="text-xl font-bold text-green-400 mb-2">✅ Можеш:</h3>
+                    <h3 class="text-xl font-bold text-green-400 mb-2" data-i18n="chat.can">✅ Можеш:</h3>
                     <ul class="space-y-1 text-sm">
-                        <li>📞 Познати: Телефон → чат</li>
-                        <li>💕 Запознанства: Търси по пол/ръст/тегло/държава</li>
-                        <li>📁 Файлове до 100MB (трият се след сваляне)</li>
-                        <li>🔄 История: 5KB (старото се трие)</li>
+                        <li data-i18n="chat.feat_known">📞 Познати: Телефон → чат</li>
+                        <li data-i18n="chat.feat_dating">💕 Запознанства: Търси по пол/ръст/тегло/държава</li>
+                        <li data-i18n="chat.feat_files">📁 Файлове до 100MB (трият се след сваляне)</li>
+                        <li data-i18n="chat.feat_history">🔄 История: 5KB (старото се трие)</li>
                     </ul>
                 </div>
 
                 <div>
-                    <h3 class="text-xl font-bold text-red-400 mb-2">❌ НЕ можеш:</h3>
+                    <h3 class="text-xl font-bold text-red-400 mb-2" data-i18n="chat.cannot">❌ НЕ можеш:</h3>
                     <ul class="space-y-1 text-sm">
-                        <li>🕵️ Търсене по име/град/улица/работа</li>
-                        <li>🔍 "Намери Юлия от О'шипка" - детективско бюро</li>
-                        <li>📝 Дългосрочна история</li>
+                        <li data-i18n="chat.no_namesearch">🕵️ Търсене по име/град/улица/работа</li>
+                        <li data-i18n="chat.no_detective">🔍 "Намери Юлия от О'шипка" - детективско бюро</li>
+                        <li data-i18n="chat.no_longhistory">📝 Дългосрочна история</li>
                     </ul>
                 </div>
 
-                <div class="text-sm opacity-75">
-                    🔒 Без SMS • 📧 Без Email • 🗑️ Файлове се трият
+                <div class="text-sm opacity-75" data-i18n="r.138">
+                    <span data-i18n="chat.no_sms">🔒 Без SMS • 📧 Без Email • 🗑️ Файлове се трият</span>
                 </div>
             </div>
         </div>
@@ -51,14 +51,14 @@
                 </div>
                 <!-- Mobile Marketing -->
                 <div class="lg:hidden mb-8 text-center">
-                    <h1 class="text-3xl font-bold mb-2">📱 Анонимен Чат</h1>
-                    <p class="text-gray-400">€5 / $5 на месец</p>
+                    <h1 class="text-3xl font-bold mb-2" data-i18n="r.132">📱 Анонимен Чат</h1>
+                    <p class="text-gray-400" data-i18n="r.102">€5 / $5 на месец</p>
                 </div>
 
                 <!-- How It Works Link -->
                 <div class="mb-6 text-center">
-                    <button onclick="toggleHowItWorks()" class="text-blue-400 hover:text-blue-300 underline text-sm">
-                        ℹ️ Как работи чата?
+                    <button onclick="toggleHowItWorks()" class="text-blue-400 hover:text-blue-300 underline text-sm" data-i18n="r.105">
+                        <span data-i18n="chat.how_link">ℹ️ Как работи чата?</span>
                     </button>
                 </div>
 
@@ -66,57 +66,57 @@
                 <div id="howItWorksModal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
                     <div class="bg-gray-800 rounded-lg p-6 max-w-2xl max-h-screen overflow-y-auto">
                         <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-2xl font-bold">🎭 Как работи анонимният чат?</h2>
+                            <h2 class="text-2xl font-bold" data-i18n="chat.how_title">🎭 Как работи анонимният чат?</h2>
                             <button onclick="toggleHowItWorks()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
                         </div>
 
                         <div class="space-y-4 text-sm">
                             <div class="bg-gray-700 rounded p-4">
-                                <h3 class="font-bold text-green-400 mb-2">🔒 СИГУРНОСТ</h3>
+                                <h3 class="font-bold text-green-400 mb-2" data-i18n="chat.sec_h">🔒 СИГУРНОСТ</h3>
                                 <ul class="space-y-1 text-gray-300">
-                                    <li>• Лица под 18г <strong>НЕ излизат</strong> в търсачките</li>
-                                    <li>• Чатиш само с потребители, на които знаеш <strong>ПЪЛНИТЕ данни + кодова парола</strong></li>
-                                    <li>• Телефон и имена може да са <strong>СКРИТИ</strong> (+359123...)</li>
+                                    <li><span data-i18n="chat.sec_minors">• Лица под 18г</span> <strong data-i18n="chat.not_shown">НЕ излизат</strong> <span data-i18n="chat.in_search">в търсачките</span></li>
+                                    <li><span data-i18n="chat.sec_known">• Чатиш само с потребители, на които знаеш</span> <strong data-i18n="chat.full_data">ПЪЛНИТЕ данни + кодова парола</strong></li>
+                                    <li><span data-i18n="chat.sec_phone">• Телефон и имена може да са</span> <strong data-i18n="chat.hidden">СКРИТИ</strong> (+359123...)</li>
                                 </ul>
                             </div>
 
                             <div class="bg-gray-700 rounded p-4">
-                                <h3 class="font-bold text-blue-400 mb-2">💳 ПЛАЩАНЕ</h3>
+                                <h3 class="font-bold text-blue-400 mb-2" data-i18n="chat.pay_h">💳 ПЛАЩАНЕ</h3>
                                 <ul class="space-y-1 text-gray-300">
-                                    <li>• Месечна такса: <strong>€5 (EUR)</strong> или <strong>$5 (USD)</strong></li>
-                                    <li>• Приемаме: <strong>Visa/Mastercard</strong> ИЛИ <strong>Crypto</strong> (<a href="/token/" style="color: #667eea; text-decoration: underline;">300 KCY токени</a>)</li>
-                                    <li>• Без абонамент: Чатиш <strong>САМО</strong> с добавени контакти</li>
+                                    <li><span data-i18n="chat.pay_fee">• Месечна такса:</span> <strong>€5 (EUR)</strong> <span data-i18n="r.81">или</span> <strong>$5 (USD)</strong></li>
+                                    <li><span data-i18n="chat.pay_accept">• Приемаме:</span> <strong>Visa/Mastercard</strong> <span data-i18n="r.36">ИЛИ</span> <strong>Crypto</strong> (<a href="/token/" style="color: #667eea; text-decoration: underline;" data-i18n="chat.pay_kcy">300 KCY токени</a>)</li>
+                                    <li><span data-i18n="chat.pay_nosub">• Без абонамент: Чатиш</span> <strong data-i18n="chat.only">САМО</strong> <span data-i18n="chat.with_contacts">с добавени контакти</span></li>
                                 </ul>
                             </div>
 
                             <div class="bg-gray-700 rounded p-4">
-                                <h3 class="font-bold text-purple-400 mb-2">🔍 ТЪРСАЧКИ</h3>
+                                <h3 class="font-bold text-purple-400 mb-2" data-i18n="chat.search_h">🔍 ТЪРСАЧКИ</h3>
                                 <ul class="space-y-1 text-gray-300">
-                                    <li>• <strong>Основна:</strong> По възраст, пол, ръст, град</li>
-                                    <li>• <strong>По разстояние:</strong> Намери хора до 40,000км от теб</li>
-                                    <li>• <strong>По нужда:</strong> Намери помощ/услуги до 50км (доктор, електротехник, преводач...)</li>
+                                    <li>• <strong data-i18n="chat.basic">Основна:</strong> <span data-i18n="chat.search_basic">По възраст, пол, ръст, град</span></li>
+                                    <li>• <strong data-i18n="chat.by_distance">По разстояние:</strong> <span data-i18n="chat.search_dist">Намери хора до 40,000км от теб</span></li>
+                                    <li>• <strong data-i18n="chat.by_need">По нужда:</strong> <span data-i18n="chat.search_need">Намери помощ/услуги до 50км (доктор, електротехник, преводач...)</span></li>
                                 </ul>
                             </div>
 
                             <div class="bg-gray-700 rounded p-4">
-                                <h3 class="font-bold text-yellow-400 mb-2">📍 ЛОКАЦИЯ</h3>
+                                <h3 class="font-bold text-yellow-400 mb-2" data-i18n="chat.loc_h">📍 ЛОКАЦИЯ</h3>
                                 <ul class="space-y-1 text-gray-300">
-                                    <li>• Споделяш <strong data-i18n="chat.only_when">само когато искаш</strong></li>
-                                    <li>• Виждат <strong>"~30km от теб"</strong> (НЕ точен адрес)</li>
+                                    <li><span data-i18n="chat.loc_share">• Споделяш</span> <strong data-i18n="chat.only_when">само когато искаш</strong></li>
+                                    <li><span data-i18n="chat.loc_see">• Виждат</span> <strong data-i18n="r.0">"~30km от теб"</strong> <span data-i18n="chat.loc_notexact">(НЕ точен адрес)</span></li>
                                 </ul>
                             </div>
 
                             <div class="bg-red-900 border border-red-600 rounded p-4">
-                                <h3 class="font-bold text-red-300 mb-2">🆘 БУТОН "ПОМОЩ"</h3>
+                                <h3 class="font-bold text-red-300 mb-2" data-i18n="chat.help_h">🆘 БУТОН "ПОМОЩ"</h3>
                                 <ul class="space-y-1 text-gray-300">
-                                    <li>• Изпраща <strong data-i18n="chat.exact_location">точна локация</strong> до администратор</li>
-                                    <li>• Такса: <strong>10× месечната</strong> (€50 или $50)</li>
-                                    <li>• <strong>1 използване/месец</strong></li>
+                                    <li><span data-i18n="chat.help_send">• Изпраща</span> <strong data-i18n="chat.exact_location">точна локация</strong> <span data-i18n="chat.help_admin">до администратор</span></li>
+                                    <li><span data-i18n="chat.help_fee">• Такса:</span> <strong data-i18n="chat.help_10x">10× месечната</strong> <span data-i18n="chat.help_amt">(€50 или $50)</span></li>
+                                    <li>• <strong data-i18n="chat.help_1month">1 използване/месец</strong></li>
                                 </ul>
                             </div>
                         </div>
 
-                        <button onclick="toggleHowItWorks()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-3 mt-6 font-semibold">
+                        <button onclick="toggleHowItWorks()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-3 mt-6 font-semibold" data-i18n="r.61">
                             Разбрах, затвори
                         </button>
                     </div>
@@ -151,8 +151,8 @@
 
                 <!-- Mobile Marketing Details -->
                 <div class="lg:hidden mt-6 text-sm text-gray-400 text-center">
-                    <p>✅ Познати • Запознанства • Файлове</p>
-                    <p>❌ Без търсене по име/град</p>
+                    <p data-i18n="chat.foot_can">✅ Познати • Запознанства • Файлове</p>
+                    <p data-i18n="chat.foot_cannot">❌ Без търсене по име/град</p>
                 </div>
             </div>
         </div>
@@ -196,7 +196,7 @@
                     localStorage.setItem('userId', data.userId);
                     window.location.href = '/chat.html';
                 } else {
-                    messageDiv.innerHTML = `<p class="text-red-400">${data.error || 'Грешка'}</p>`;
+                    messageDiv.innerHTML = `<p class="text-red-400">${data.error || KCY_I18N.t('common.error')}</p>`;
                 }
             } catch (err) {
                 console.error(err);

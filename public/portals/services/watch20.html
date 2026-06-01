@@ -1,4 +1,4 @@
-<!-- Version: 1.0116 -->
+<!-- Version: 1.0129 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,13 +55,13 @@
 </div>
 <div class="wrap">
   <div style="background:#eef4fb;border:1px solid #cfe0f2;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.82em;color:#3a4a5a;">
-    Тази информация ви предоставяме с любезното съдействие на
+    <span data-i18n="r.86">Тази информация ви предоставяме с любезното съдействие на</span>
     <a href="https://www.binance.com" target="_blank" rel="noopener" style="color:#2a86d8;">Binance</a>
-    (криптовалути) и
+    <span data-i18n="r.crypto_lbl">(криптовалути) и</span>
     <a href="https://github.com/fawazahmed0/exchange-api" target="_blank" rel="noopener" style="color:#2a86d8;">Exchange API</a>
-    (валути). Виж също <a href="https://coinmarketcap.com" target="_blank" rel="noopener" style="color:#2a86d8;">CoinMarketCap</a> и
+    <span data-i18n="r.fiat_lbl">(валути). Виж също</span> <a href="https://coinmarketcap.com" target="_blank" rel="noopener" style="color:#2a86d8;">CoinMarketCap</a> и
     <a href="https://www.coingecko.com" target="_blank" rel="noopener" style="color:#2a86d8;">CoinGecko</a>.
-    Данните са с информативна цел и не представляват финансов съвет.
+    <span data-i18n="r.data_disc">Данните са с информативна цел и не представляват финансов съвет.</span>
   </div>
   <div class="toolbar">
     <button onclick="saveAll()"data-i18n="watch20.save">💾 Запази</button>
@@ -172,7 +172,7 @@ function render(){
       slot.innerHTML=
         '<div class="num">#'+(idx+1)+'</div>'+
         '<div class="val">'+(rate!=null?fmtRate(rate):'—')+'</div>'+
-        '<div class="pair">'+(s.sel?selLabel(s.sel):'не е избрана')+'</div>'+
+        '<div class="pair">'+(s.sel?selLabel(s.sel):KCY_I18N.t('watch20.not_selected'))+'</div>'+
         '<div class="dd">'+
           '<input type="text" placeholder="търси валута/крипто…" value="'+(s.sel?s.sel.split(":")[1]:"")+'" '+
             'oninput="filterList('+idx+',this.value)" onfocus="openList('+idx+')">'+
@@ -202,7 +202,7 @@ function filterList(idx, q){
   }).join('');
   box.classList.add('open');
 }
-function selLabelType(c){ return c.type==='fiat'?'валута / USD':'крипто / USDC'; }
+function selLabelType(c){ return c.type==='fiat'?KCY_I18N.t('watch20.fiat_usd'):KCY_I18N.t('watch20.crypto_usdc'); }
 function pick(idx, key){
   slots[idx].sel=key;
   document.getElementById('list'+idx).classList.remove('open');
@@ -223,7 +223,7 @@ function closeModal(){ document.getElementById('modalBg').classList.remove('open
 function renderThrList(){
   var s=slots[openModalIdx];
   var box=document.getElementById('thrList');
-  if(!s.alerts||!s.alerts.length){ box.innerHTML='<p class="hint">Няма зададени прагове.</p>'; return; }
+  if(!s.alerts||!s.alerts.length){ box.innerHTML='<p class="hint" data-i18n="watch20.no_thresholds">Няма зададени прагове.</p>'; return; }
   box.innerHTML=s.alerts.map(function(a,i){
     return '<div class="thr"><span style="flex:1">= '+a.val+'</span>'+
            '<button onclick="delThr('+i+')">✕</button></div>';
@@ -243,9 +243,9 @@ function delThr(i){ slots[openModalIdx].alerts.splice(i,1); renderThrList(); }
 
 // ── известия + звук ──
 function requestNotify(){
-  if(!('Notification' in window)){ alert('Браузърът не поддържа известия.'); return; }
+  if(!('Notification' in window)){ alert(KCY_I18N.t('watch20.no_notify')); return; }
   Notification.requestPermission().then(function(p){
-    setStatus(p==='granted'?'Известията са разрешени.':'Известията са отказани.');
+    setStatus(p==='granted'?KCY_I18N.t('watch20.notify_on'):KCY_I18N.t('watch20.notify_off'));
   });
 }
 function notify(idx, rate, a){
@@ -287,8 +287,8 @@ function saveAll(){
   try{
     var data=slots.map(function(s){ return { sel:s.sel||null, alerts:s.alerts||[] }; });
     localStorage.setItem(STORE_KEY, JSON.stringify(data));
-    setStatus('Запазено ✓');
-  }catch(e){ setStatus('Грешка при запазване: '+e.message); }
+    setStatus(KCY_I18N.t('watch20.saved'));
+  }catch(e){ setStatus(KCY_I18N.t('watch20.save_error')+e.message); }
 }
 function loadSaved(){
   try{
@@ -308,11 +308,11 @@ function setStatus(t){ document.getElementById('status').textContent=t; }
 
 // ── refresh цикъл ──
 async function refreshAll(){
-  setStatus('Опресняване…');
+  setStatus(KCY_I18N.t('watch20.refreshing'));
   await fetchRates();
   checkAlerts();
   render();
-  setStatus('Обновено: '+new Date().toLocaleTimeString('bg-BG'));
+  setStatus(KCY_I18N.t('watch20.updated')+new Date().toLocaleTimeString('bg-BG'));
 }
 
 // ── старт ──
@@ -320,7 +320,7 @@ async function refreshAll(){
   loadSaved();
   render();
   currencies=await loadCurrencyList();
-  setStatus('Заредени '+currencies.length+' валути/крипто.');
+  setStatus(KCY_I18N.t('watch20.loaded')+currencies.length+' валути/крипто.');
   await refreshAll();
   // авторефреш на всеки 10 минути
   setInterval(refreshAll, 600000);

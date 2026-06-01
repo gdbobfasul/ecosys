@@ -1,4 +1,4 @@
-<!-- Version: 1.0126 -->
+<!-- Version: 1.0130 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,31 +38,31 @@
 <body>
 <div class="head">
   <h1 data-i18n="charts.title">Финансови графики</h1>
-  <p>Крипто и борсови пазари — на живо (данни: TradingView, Coinglass)</p>
-  <a href="/portals/services/">← Всички услуги</a>
+  <p data-i18n="charts.subtitle2">Крипто и борсови пазари — на живо (данни: TradingView, Coinglass)</p>
+  <a href="/portals/services/" data-i18n="common.all_services">← Всички услуги</a>
 </div>
 <div class="wrap">
 
   <div style="background:#1c2030;border:1px solid #2a2d3a;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.82em;color:#aeb6c6;">
-    Тази информация ви предоставяме с любезното съдействие на
+    <span data-i18n="r.86">Тази информация ви предоставяме с любезното съдействие на</span>
     <a href="https://www.tradingview.com" target="_blank" rel="noopener" style="color:#ffd166;">TradingView</a>,
     <a href="https://www.binance.com" target="_blank" rel="noopener" style="color:#ffd166;">Binance</a> и
     <a href="https://www.coinglass.com" target="_blank" rel="noopener" style="color:#ffd166;">Coinglass</a>.
-    Виж също <a href="https://coinmarketcap.com" target="_blank" rel="noopener" style="color:#ffd166;">CoinMarketCap</a> и
+    <span data-i18n="charts.see_also">Виж също</span> <a href="https://coinmarketcap.com" target="_blank" rel="noopener" style="color:#ffd166;">CoinMarketCap</a> и
     <a href="https://www.coingecko.com" target="_blank" rel="noopener" style="color:#ffd166;">CoinGecko</a>.
-    Всички данни са с информативна цел и не представляват финансов съвет.
+    <span data-i18n="charts.disclaimer">Всички данни са с информативна цел и не представляват финансов съвет.</span>
   </div>
 
   <!-- ── BTC RSI ── -->
   <div class="secttl" data-i18n="charts.s_rsi">Bitcoin RSI (седмично / месечно)</div>
   <div class="grid">
-    <div class="panel"><h3>BTC RSI — седмично (1W)</h3>
+    <div class="panel"><h3 data-i18n="r.13">BTC RSI — седмично (1W)</h3>
       <div class="body"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
         {"symbol":"BINANCE:BTCUSDT","interval":"W","theme":"dark","style":"1","locale":"bg","studies":["STD;RSI"],"autosize":true,"hide_side_toolbar":true}
         </script></div></div>
     </div>
-    <div class="panel"><h3>BTC RSI — месечно (1M)</h3>
+    <div class="panel"><h3 data-i18n="r.12">BTC RSI — месечно (1M)</h3>
       <div class="body"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
         {"symbol":"BINANCE:BTCUSDT","interval":"M","theme":"dark","style":"1","locale":"bg","studies":["STD;RSI"],"autosize":true,"hide_side_toolbar":true}
@@ -74,16 +74,16 @@
   <div class="secttl" data-i18n="charts.s_fib">Bitcoin — Fibonacci нива (автоматични)</div>
   <div class="grid">
     <div class="panel">
-      <h3>BTC/USDT — автоматичен Fibonacci (нива на съпротива/поддръжка); цена дясно, време долу</h3>
+      <h3 data-i18n="r.14">BTC/USDT — автоматичен Fibonacci (нива на съпротива/поддръжка); цена дясно, време долу</h3>
       <div class="tf" style="padding:6px 10px;background:#1c2030;border-bottom:1px solid #262b38;margin:0;" id="fibTf">
-        <button data-iv="1d" class="active">ден</button>
-        <button data-iv="1w">седмица</button>
-        <button data-iv="1M">месец</button>
+        <button data-iv="1d" class="active" data-i18n="r.75">ден</button>
+        <button data-iv="1w" data-i18n="r.87">седмица</button>
+        <button data-iv="1M" data-i18n="r.83">месец</button>
       </div>
       <div class="body tall" id="fibChart"></div>
     </div>
   </div>
-  <p class="note">Fibonacci нивата (0%, 23.6%, 38.2%, 50%, 61.8★, 78.6%, 100%) се чертаят автоматично между най-високата и най-ниската точка за периода. 61.8% (★) е „златното" ниво — често силна зона на съпротива/поддръжка. Смени периода с бутоните горе.</p>
+  <p class="note" data-i18n="r.16">Fibonacci нивата (0%, 23.6%, 38.2%, 50%, 61.8★, 78.6%, 100%) се чертаят автоматично между най-високата и най-ниската точка за периода. 61.8% (★) е „златното" ниво — често силна зона на съпротива/поддръжка. Смени периода с бутоните горе.</p>
 
   <!-- ── Liquidation heatmap ── -->
   <div class="secttl" data-i18n="charts.s_liq">Bitcoin — Liquidation Heatmap (дни / месеци)</div>
@@ -92,12 +92,12 @@
       <div class="body tall"><iframe src="https://www.coinglass.com/pro/futures/LiquidationHeatMap" loading="lazy" referrerpolicy="no-referrer"></iframe></div>
     </div>
   </div>
-  <p class="note">Liquidation heatmap идва от Coinglass. Ако не се зареди вградено (някои страници блокират iframe), отвори директно: <a href="https://www.coinglass.com/pro/futures/LiquidationHeatMap" target="_blank" rel="noopener" style="color:#ffd166;">coinglass.com</a>. Периодът (дни/месеци) се избира в самата графика.</p>
+  <p class="note"><span data-i18n="r.17">Liquidation heatmap идва от Coinglass. Ако не се зареди вградено (някои страници блокират iframe), отвори директно:</span> <a href="https://www.coinglass.com/pro/futures/LiquidationHeatMap" target="_blank" rel="noopener" style="color:#ffd166;">coinglass.com</a><span data-i18n="charts.period_note">. Периодът (дни/месеци) се избира в самата графика.</span></p>
 
   <!-- ── S&P 500 ── -->
-  <div class="secttl">S&amp;P 500 (часове / дни / месеци)</div>
+  <div class="secttl" data-i18n="r.19">S&amp;P 500 (часове / дни / месеци)</div>
   <div class="grid">
-    <div class="panel"><h3>S&amp;P 500 — изберете период (час/ден/месец) от графиката</h3>
+    <div class="panel"><h3 data-i18n="r.20">S&amp;P 500 — изберете период (час/ден/месец) от графиката</h3>
       <div class="body"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
         {"symbol":"FOREXCOM:SPXUSD","interval":"D","theme":"dark","style":"1","locale":"bg","withdateranges":true,"autosize":true}
@@ -111,7 +111,7 @@
     <div class="panel"><h3 data-i18n="charts.world_indices">Световни индекси (преглед)</h3>
       <div class="body tall"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-        {"colorTheme":"dark","dateRange":"12M","locale":"bg","showChart":true,"isTransparent":true,"width":"100%","height":"100%","tabs":[{"title":"Индекси","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"FOREXCOM:NSXUSD","d":"Nasdaq 100"},{"s":"FOREXCOM:DJI","d":"Dow 30"},{"s":"FOREXCOM:DEUIDXEUR","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]}]}
+        {"colorTheme":"dark","dateRange":"12M","locale":"bg","showChart":true,"isTransparent":true,"width":"100%","height":"100%","tabs":[{"title":KCY_I18N.t('charts.indices'),"symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"FOREXCOM:NSXUSD","d":"Nasdaq 100"},{"s":"FOREXCOM:DJI","d":"Dow 30"},{"s":"FOREXCOM:DEUIDXEUR","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]}]}
         </script></div></div>
     </div>
   </div>
@@ -124,14 +124,14 @@
   </div>
   <div class="tf" id="btcTf">
     <span class="note" style="margin-right:6px;" data-i18n="charts.current">Текущо:</span>
-    <button data-int="15" class="active">15 мин</button>
-    <button data-int="60">час</button>
-    <button data-int="D">ден</button>
-    <button data-int="W">седмица</button>
-    <button data-int="M">месец</button>
+    <button data-int="15" class="active" data-i18n="r.8">15 мин</button>
+    <button data-int="60" data-i18n="charts.hour">час</button>
+    <button data-int="D" data-i18n="r.75">ден</button>
+    <button data-int="W" data-i18n="r.87">седмица</button>
+    <button data-int="M" data-i18n="r.83">месец</button>
   </div>
   <div class="grid" id="btcGrid"></div>
-  <p class="note">Текущата графика поддържа 15мин/час/ден/седмица/месец. Графиките „X години назад" показват седмичен/месечен изглед за съответния период.</p>
+  <p class="note" data-i18n="r.68">Текущата графика поддържа 15мин/час/ден/седмица/месец. Графиките „X години назад" показват седмичен/месечен изглед за съответния период.</p>
 
   <!-- ── ETH таблици по период ── -->
   <div class="secttl" data-i18n="charts.s_eth">Ethereum — текущо състояние и до 4 години назад</div>
@@ -140,12 +140,12 @@
     <button class="tab" data-pair="USDT">ETH / USDT</button>
   </div>
   <div class="tf" id="ethTf">
-    <span class="note" style="margin-right:6px;">Текущо:</span>
-    <button data-int="15" class="active">15 мин</button>
-    <button data-int="60">час</button>
-    <button data-int="D">ден</button>
-    <button data-int="W">седмица</button>
-    <button data-int="M">месец</button>
+    <span class="note" style="margin-right:6px;" data-i18n="r.69">Текущо:</span>
+    <button data-int="15" class="active" data-i18n="r.8">15 мин</button>
+    <button data-int="60" data-i18n="r.89">час</button>
+    <button data-int="D" data-i18n="r.75">ден</button>
+    <button data-int="W" data-i18n="r.87">седмица</button>
+    <button data-int="M" data-i18n="r.83">месец</button>
   </div>
   <div class="grid" id="ethGrid"></div>
 
@@ -169,7 +169,7 @@ function tvChart(symbol, interval){
   return wrap;
 }
 function labelInt(i){
-  return {'15':'15 мин','60':'час','D':'ден','W':'седмица','M':'месец'}[i]||i;
+  return {'15':'15 мин','60':KCY_I18N.t('charts.hour'),'D':KCY_I18N.t('charts.day'),'W':KCY_I18N.t('charts.week'),'M':KCY_I18N.t('charts.month')}[i]||i;
 }
 
 // ── Исторически графики (1-4 г назад) = реални данни от Binance, центрирани на датата ──
@@ -192,9 +192,9 @@ async function fetchKlines(symbol, interval, startMs, endMs){
 
 // интервал → колко дни обхват около датата (за да има смислен брой свещи)
 var HIST_INTERVALS={
-  '1d':{label:'ден', spanDays:30},
-  '1w':{label:'седмица', spanDays:180},
-  '1M':{label:'месец', spanDays:540}
+  '1d':{label:KCY_I18N.t('charts.day'), spanDays:30},
+  '1w':{label:KCY_I18N.t('charts.week'), spanDays:180},
+  '1M':{label:KCY_I18N.t('charts.month'), spanDays:540}
 };
 
 async function histChart(container, symbol, targetDate, interval){
@@ -258,7 +258,7 @@ async function histChart(container, symbol, targetDate, interval){
     // маркер на целевата дата
     var targetSec=Math.floor(t/1000);
     var closest=data.reduce(function(a,b){ return Math.abs(b.time-targetSec)<Math.abs(a.time-targetSec)?b:a; });
-    series.setMarkers([{ time:closest.time, position:'aboveBar', color:'#ffd166', shape:'arrowDown', text:'таргет' }]);
+    series.setMarkers([{ time:closest.time, position:'aboveBar', color:'#ffd166', shape:'arrowDown', text:KCY_I18N.t('charts.target') }]);
     chart.timeScale().fitContent();
   }catch(e){
     container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Грешка при зареждане: '+e.message+'</div>';

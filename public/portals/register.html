@@ -23,14 +23,13 @@
 </head>
 <body>
     <div class="auth-wrap">
-        <h1>📝 Регистрация</h1>
+        <h1 data-i18n="r.131">📝 Регистрация</h1>
         <p class="lead" data-i18n="reg.subtitle">Създай акаунт за достъп до портала за игри и портала за услуги.</p>
 
         <div style="background:#fff8e1;border:1px solid #ffd24a;border-radius:8px;padding:12px 14px;margin-bottom:18px;font-size:.88em;color:#7a5c00;line-height:1.5">
-            <strong>🏆 Реклама за победителите:</strong> играй игрите — точките от всичките игри
-            се събират в месечна класация. <strong>Топ 5 всеки месец</strong> печелят рекламно
-            място: описанието на дейността и линкът, които попълниш по-долу, се показват на
-            видно място в класацията. Класацията се нулира всеки месец.
+            <strong data-i18n="r.122">🏆 Реклама за победителите:</strong> <span data-i18n="r.80">играй игрите — точките от всичките игри</span> <strong data-i18n="reg.top5">Топ 5 всеки месец</strong> <span data-i18n="r.84">печелят рекламно</span>
+            <span data-i18n="r.84b">място: описанието на дейността и линкът, които попълниш по-долу, се показват на</span>
+            <span data-i18n="reg.ad_note">видно място в класацията. Класацията се нулира всеки месец.</span>
         </div>
 
         <label data-i18n="reg.user">Потребител</label>
@@ -48,28 +47,28 @@
         <input id="adlink" type="text" maxlength="300" placeholder="https://твоя-сайт.com">
         <div class="hint" data-i18n="reg.adlink_hint">Линк към твоята дейност/сайт. Показва се само за топ 5 в месечната класация.</div>
 
-        <label>Сума платена през Stripe (USD)</label>
+        <label data-i18n="reg.stripe_paid">Сума платена през Stripe (USD)</label>
         <input type="text" value="0.00 USD" readonly>
-        <div class="hint">Попълва се автоматично след първото Stripe плащане.</div>
+        <div class="hint" data-i18n="reg.stripe_auto">Попълва се автоматично след първото Stripe плащане.</div>
 
         <div class="group">
             <div>
-                <label>Платено в BTC</label>
+                <label data-i18n="reg.paid_btc">Платено в BTC</label>
                 <input type="text" value="0.00000000" readonly>
             </div>
             <div>
-                <label>Платено в ETH</label>
+                <label data-i18n="reg.paid_eth">Платено в ETH</label>
                 <input type="text" value="0.00000000" readonly>
             </div>
         </div>
-        <label>Платено в BNB</label>
+        <label data-i18n="reg.paid_bnb">Платено в BNB</label>
         <input type="text" value="0.00000000" readonly>
 
         <button id="btn-register" class="btn-primary" data-i18n="reg.submit">Регистрирай ме</button>
         <div id="msg" class="msg"></div>
 
         <p style="margin-top: 18px; text-align: center; color: #666;">
-            Вече имаш акаунт? <a href="./login.html" data-i18n="reg.login">Вход</a>
+            <span data-i18n="r.24">Вече имаш акаунт?</span> <a href="./login.html" data-i18n="reg.login">Вход</a>
         </p>
     </div>
 
@@ -82,7 +81,7 @@
             const password = document.getElementById('password').value;
             const business_description = document.getElementById('bizdesc').value.trim();
             const ad_link = document.getElementById('adlink').value.trim();
-            if (!username || !password) { showMsg('Попълни потребител и парола.'); return; }
+            if (!username || !password) { showMsg(KCY_I18N.t('reg.fill_userpass')); return; }
             try {
                 const r = await fetch('/api/portals/register', {
                     method: 'POST',
@@ -90,11 +89,11 @@
                     body: JSON.stringify({ username, password, business_description, ad_link })
                 });
                 const data = await r.json();
-                if (!r.ok) { showMsg(data.message || 'Грешка при регистрация.'); return; }
-                showMsg(data.is_first_user ? 'Създаден е админ акаунтът. Пренасочване…' : 'Регистриран успешно. Пренасочване към billing…', 'ok');
+                if (!r.ok) { showMsg(data.message || KCY_I18N.t('reg.err')); return; }
+                showMsg(data.is_first_user ? KCY_I18N.t('reg.admin_created') : KCY_I18N.t('reg.success'), 'ok');
                 setTimeout(() => { location.href = '/portals/billing.html'; }, 600);
             } catch (e) {
-                showMsg('Мрежова грешка: ' + e.message);
+                showMsg(KCY_I18N.t('common.net_err')+': ' + e.message);
             }
         }
 

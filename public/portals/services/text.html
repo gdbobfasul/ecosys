@@ -1,4 +1,4 @@
-<!-- Version: 1.0126 -->
+<!-- Version: 1.0128 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -31,9 +31,9 @@
 </head>
 <body>
 <div class="head">
-  <h1>Текстови инструменти</h1>
-  <p>Брояч, форматиране, Base64</p>
-  <a href="/portals/services/">← Всички услуги</a>
+  <h1 data-i18n="text.title">Текстови инструменти</h1>
+  <p data-i18n="text.subtitle">Брояч, форматиране, Base64</p>
+  <a href="/portals/services/" data-i18n="common.all_services">← Всички услуги</a>
 </div>
 <div class="wrap">
   <div class="card">
@@ -54,9 +54,9 @@
       <button class="pri" onclick="apply('sentence')" data-i18n="text.sentence_case">Изречения</button>
       <button onclick="apply('trim')" data-i18n="text.remove_blank">Премахни празни редове</button>
       <button onclick="apply('spaces')" data-i18n="text.collapse_spaces">Сбий интервалите</button>
-      <button onclick="apply('reverse')">Обърни текста</button>
-      <button onclick="apply('b64enc')">Base64 кодирай</button>
-      <button onclick="apply('b64dec')">Base64 декодирай</button>
+      <button onclick="apply('reverse')" data-i18n="text.reverse">Обърни текста</button>
+      <button onclick="apply('b64enc')" data-i18n="text.b64enc">Base64 кодирай</button>
+      <button onclick="apply('b64dec')" data-i18n="text.b64dec">Base64 декодирай</button>
       <button onclick="copyTxt()" data-i18n="text.copy">Копирай</button>
     </div>
   </div>
@@ -89,18 +89,18 @@ function apply(op){
     else if(op==='lower') t=t.toLowerCase();
     else if(op==='title') t=t.replace(/\S+/g,function(w){return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();});
     else if(op==='sentence') t=t.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g,function(c){return c.toUpperCase();});
-    else if(op==='trim'){ t=t.split(/\n/).filter(function(l){return l.trim();}).join('\n'); showMsg('Премахнати празните редове — маха повече от 1 последователен празен ред.'); }
+    else if(op==='trim'){ t=t.split(/\n/).filter(function(l){return l.trim();}).join('\n'); showMsg(KCY_I18N.t('text.msg_blank')); }
     else if(op==='spaces'){
       // сбива ВСякакви хоризонтални интервали (обикновен, таб, nbsp, Unicode spaces) в един
       t=t.replace(/[ \t\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]+/g,' ')
          .replace(/ *\n */g,'\n')   // маха интервали около нови редове
          .replace(/[ \t]+$/gm,'');   // маха крайни интервали на всеки ред
-      showMsg('Сбити интервалите — премахва повече от 1 последователен интервал.');
+      showMsg(KCY_I18N.t('text.msg_spaces'));
     }
     else if(op==='reverse') t=t.split('').reverse().join('');
     else if(op==='b64enc') t=btoa(unescape(encodeURIComponent(t)));
     else if(op==='b64dec') t=decodeURIComponent(escape(atob(t.trim())));
-  }catch(e){ alert('Грешка: невалиден вход за тази операция.'); return; }
+  }catch(e){ alert(KCY_I18N.t('text.msg_error')); return; }
   el.value=t; count();
 }
 function copyTxt(){

@@ -1,10 +1,10 @@
-<!-- Version: 1.0117 -->
+<!-- Version: 1.0128 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏠 AI обява за имот</title>
+    <title data-i18n="ail.title">🏠 AI обява за имот</title>
     <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <style>
         .wrap { max-width: 780px; margin: 30px auto; padding: 30px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.1); }
@@ -22,17 +22,17 @@
 </head>
 <body>
     <div class="wrap">
-        <a href="/portals/services/" style="color:#888;text-decoration:none">← обратно към услуги</a>
-        <h1>🏠 AI обява за имот</h1>
-        <p class="hint">По няколко ключови думи AI ще напише готова обява за продажба.</p>
+        <a href="/portals/services/" style="color:#888;text-decoration:none" data-i18n="common.back_services">← обратно към услуги</a>
+        <h1 data-i18n="r.123">🏠 AI обява за имот</h1>
+        <p class="hint" data-i18n="r.57">По няколко ключови думи AI ще напише готова обява за продажба.</p>
 
-        <label>Ключови думи / детайли за имота</label>
+        <label data-i18n="r.43">Ключови думи / детайли за имота</label>
         <textarea id="keywords" placeholder="напр.: 3-стаен апартамент, Лозенец, 85кв, обзаведен, 2 тераси, паркомясто, сграда 2018г"></textarea>
 
         <div class="row">
             <div>
                 <label data-i18n="ail.lang">Език</label>
-                <select id="language"><option value="bg">Български</option><option value="en">English</option></select>
+                <select id="language"><option value="bg" data-i18n="ail.bulgarian">Български</option><option value="en">English</option></select>
             </div>
             <div>
                 <label data-i18n="ail.tone">Тон</label>
@@ -40,8 +40,8 @@
             </div>
         </div>
 
-        <button class="btn" id="gen">✨ Генерирай обява</button>
-        <div id="output">Тук ще се появи готовата обява…</div>
+        <button class="btn" id="gen" data-i18n="ail.generate">✨ Генерирай обява</button>
+        <div id="output" data-i18n="ail.result_placeholder">Тук ще се появи готовата обява…</div>
         <div id="meta" class="meta"></div>
     </div>
 
@@ -52,7 +52,7 @@
 
         btn.addEventListener('click', async () => {
             const keywords = document.getElementById('keywords').value.trim();
-            if (keywords.length < 3) { out.textContent = 'Попълни поне няколко ключови думи.'; return; }
+            if (keywords.length < 3) { out.textContent = KCY_I18N.t('ail.fill_keywords'); return; }
             btn.disabled = true;
             out.textContent = '⏳ Генерирам с Claude AI…';
             meta.textContent = '';

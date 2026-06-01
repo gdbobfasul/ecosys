@@ -15,10 +15,10 @@
     
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
-      <button onclick="window.location.href='chat.html'" class="text-blue-400 hover:text-blue-300">
+      <button onclick="window.location.href='chat.html'" class="text-blue-400 hover:text-blue-300" data-i18n="r.108">
         ← Назад към чата
       </button>
-      <h1 class="text-2xl font-bold">🔍 Търсачки</h1>
+      <h1 class="text-2xl font-bold" data-i18n="cs.title_h">🔍 Търсачки</h1>
       <div class="w-32"></div> <!-- Spacer -->
     </div>
 
@@ -28,14 +28,14 @@
         id="tabDistance"
         onclick="showTab('distance')"
         class="flex-1 py-3 rounded font-semibold transition-colors bg-blue-600 text-white"
-      >
+       data-i18n="r.118">
         🌍 По разстояние
       </button>
       <button
         id="tabNeed"
         onclick="showTab('need')"
         class="flex-1 py-3 rounded font-semibold transition-colors bg-gray-700 text-gray-300"
-      >
+       data-i18n="r.134">
         🔍 По нужда
       </button>
     </div>
@@ -43,7 +43,7 @@
     <!-- Search by Distance -->
     <div id="distanceSearch" class="space-y-6">
       <div class="bg-gray-800 rounded-lg p-6">
-        <h2 class="text-xl font-bold mb-4">🌍 Търсене по разстояние (0-40,000км)</h2>
+        <h2 class="text-xl font-bold mb-4" data-i18n="cs.dist_search">🌍 Търсене по разстояние (0-40,000км)</h2>
 
         <!-- Location Status -->
         <div id="distanceLocation" class="bg-gray-700 rounded p-4 mb-6 text-center">
@@ -103,14 +103,14 @@
           </div>
         </div>
 
-        <button onclick="searchByDistance()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-3 font-semibold">
+        <button onclick="searchByDistance()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-3 font-semibold" data-i18n="r.135">
           🔍 Търси
         </button>
       </div>
 
       <!-- Distance Results -->
       <div id="distanceResults" class="hidden">
-        <h3 class="text-lg font-bold mb-4">Резултати: <span id="distanceCount">0</span></h3>
+        <h3 class="text-lg font-bold mb-4"><span data-i18n="cs.results">Резултати:</span> <span id="distanceCount">0</span></h3>
         <div id="distanceResultsList" class="space-y-4"></div>
       </div>
     </div>
@@ -118,18 +118,18 @@
     <!-- Search by Need -->
     <div id="needSearch" class="hidden space-y-6">
       <div class="bg-gray-800 rounded-lg p-6">
-        <h2 class="text-xl font-bold mb-4">🔍 Търсене по нужда (макс 50км)</h2>
+        <h2 class="text-xl font-bold mb-4" data-i18n="cs.need_search">🔍 Търсене по нужда (макс 50км)</h2>
 
         <div class="bg-blue-900 border border-blue-600 rounded p-4 mb-6">
           <p class="text-blue-300 text-sm">
-            ℹ️ Търси хора, които <strong data-i18n="cs.they_offer">ПРЕДЛАГАТ</strong> това, от което <strong data-i18n="cs.you_need">ИМАШ НУЖДА</strong>
+            <span data-i18n="r.106">ℹ️ Търси хора, които</span> <strong data-i18n="cs.they_offer">ПРЕДЛАГАТ</strong> <span data-i18n="r.88">това, от което</span> <strong data-i18n="cs.you_need">ИМАШ НУЖДА</strong>
           </p>
-          <p class="text-blue-300 text-sm mt-2">📍 Максимум 50км радиус (фиксиран)</p>
+          <p class="text-blue-300 text-sm mt-2" data-i18n="cs.max50">📍 Максимум 50км радиус (фиксиран)</p>
         </div>
 
         <!-- Location Status -->
         <div id="needLocation" class="bg-gray-700 rounded p-4 mb-6 text-center">
-          <p class="text-gray-400">Получаване на локация...</p>
+          <p class="text-gray-400" data-i18n="cs.getting_loc">Получаване на локация...</p>
         </div>
 
         <!-- Need Selection -->
@@ -137,10 +137,10 @@
           <label class="block text-sm text-gray-400 mb-2" data-i18n="cs.what_need">От какво имам нужда?</label>
           <select id="needCategory" onchange="updateNeedSubcategories()"
             class="w-full bg-gray-700 rounded px-4 py-2 text-white mb-2">
-            <option value="">-- Избери категория --</option>
+            <option value="" data-i18n="cp.select_cat">-- Избери категория --</option>
           </select>
           <select id="needSubcategory" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
-            <option value="">-- Избери нужда --</option>
+            <option value="" data-i18n="cs.select_need">-- Избери нужда --</option>
           </select>
         </div>
 
@@ -162,9 +162,9 @@
           <div>
             <label class="block text-sm text-gray-400 mb-2" data-i18n="cs.gender_opt">Пол (опц.)</label>
             <select id="needGender" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
-              <option value="">Всички</option>
-              <option value="male">Мъж</option>
-              <option value="female">Жена</option>
+              <option value="" data-i18n="cs.all">Всички</option>
+              <option value="male" data-i18n="cs.male">Мъж</option>
+              <option value="female" data-i18n="cs.female">Жена</option>
             </select>
           </div>
           <div>
@@ -187,14 +187,14 @@
           </div>
         </div>
 
-        <button onclick="searchByNeed()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-3 font-semibold">
+        <button onclick="searchByNeed()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-3 font-semibold" data-i18n="r.135">
           🔍 Търси
         </button>
       </div>
 
       <!-- Need Results -->
       <div id="needResults" class="hidden">
-        <h3 class="text-lg font-bold mb-4">Резултати: <span id="needCount">0</span> (макс 50км)</h3>
+        <h3 class="text-lg font-bold mb-4"><span data-i18n="cs.results">Резултати:</span> <span id="needCount">0</span> <span data-i18n="r.2">(макс 50км)</span></h3>
         <div id="needResultsList" class="space-y-4"></div>
       </div>
     </div>
@@ -272,7 +272,7 @@
       const category = document.getElementById('needCategory').value;
       const select = document.getElementById('needSubcategory');
       
-      select.innerHTML = '<option value="">-- Избери нужда --</option>';
+      select.innerHTML = '<option value="" data-i18n="cs.select_need">-- Избери нужда --</option>';
       
       if (!category) return;
       
@@ -287,7 +287,7 @@
     // Search by distance
     async function searchByDistance() {
       if (!distanceLocation) {
-        alert('Моля, разрешете достъп до локация');
+        alert(KCY_I18N.t('cs.allow_loc'));
         return;
       }
 
@@ -315,14 +315,14 @@
         const data = await res.json();
 
         if (!res.ok) {
-          alert(data.error || 'Грешка при търсене');
+          alert(data.error || KCY_I18N.t('cs.err_search'));
           return;
         }
 
         displayDistanceResults(data.results);
       } catch (err) {
         console.error('Search error:', err);
-        alert('Грешка при търсене');
+        alert(KCY_I18N.t('cs.err_search'));
       }
     }
 
@@ -358,13 +358,13 @@
     // Search by need
     async function searchByNeed() {
       if (!needLocation) {
-        alert('Моля, разрешете достъп до локация');
+        alert(KCY_I18N.t('cs.allow_loc'));
         return;
       }
 
       const need = document.getElementById('needSubcategory').value;
       if (!need) {
-        alert('Моля, изберете нужда');
+        alert(KCY_I18N.t('cs.choose_need'));
         return;
       }
 
@@ -392,14 +392,14 @@
         const data = await res.json();
 
         if (!res.ok) {
-          alert(data.error || 'Грешка при търсене');
+          alert(data.error || KCY_I18N.t('cs.err_search'));
           return;
         }
 
         displayNeedResults(data.results);
       } catch (err) {
         console.error('Search error:', err);
-        alert('Грешка при търсене');
+        alert(KCY_I18N.t('cs.err_search'));
       }
     }
 
@@ -411,7 +411,7 @@
       countSpan.textContent = results.length;
 
       if (results.length === 0) {
-        listDiv.innerHTML = '<p class="text-gray-400 text-center py-8">Не са намерени резултати в радиус 50км</p>';
+        listDiv.innerHTML = '<p class="text-gray-400 text-center py-8" data-i18n="cs.no_results_50">Не са намерени резултати в радиус 50км</p>';
       } else {
         listDiv.innerHTML = results.map(user => `
           <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">

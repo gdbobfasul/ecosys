@@ -47,9 +47,9 @@
 <body>
     <div class="hero">
         <div class="top-auth" id="top-auth">
-            <span class="portal-label">🌐 Портал:</span>
-            <a href="/portals/login.html" class="login">🔑 Логин</a>
-            <a href="/portals/register.html" class="register">📝 Регистрация</a>
+            <span class="portal-label" data-i18n="r.119">🌐 Портал:</span>
+            <a href="/portals/login.html" class="login" data-i18n="r.137">🔑 Логин</a>
+            <a href="/portals/register.html" class="register" data-i18n="r.131">📝 Регистрация</a>
         </div>
         <h1>🚀 KCY Ecosystem</h1>
         <p data-i18n="home.tagline">Децентрализирана платформа за криптовалути и комуникация</p>
@@ -64,12 +64,12 @@
             </a>
         </div>
         <div class="portals-row">
-            <div style="font-size: .9em; opacity: .85; margin-bottom: 10px;">
+            <div style="font-size: .9em; opacity: .85; margin-bottom: 10px;" data-i18n="r.140">
                 🔒 Изисква се регистрация и месечна такса $5 / €5 (или crypto)
             </div>
-            <a href="/portals/games/" class="btn" style="margin: 10px;">🎮 Портал за игри</a>
-            <a href="/portals/services/" class="btn" style="margin: 10px;">🛠️ Портал за услуги</a>
-            <a href="/portals/register.html" class="btn" style="margin: 10px; background: linear-gradient(135deg, #ff6b6b, #ee5a6f); border: none;">✨ Регистрирай се</a>
+            <a href="/portals/games/" class="btn" style="margin: 10px;" data-i18n="r.120">🎮 Портал за игри</a>
+            <a href="/portals/services/" class="btn" style="margin: 10px;" data-i18n="r.143">🛠️ Портал за услуги</a>
+            <a href="/portals/register.html" class="btn" style="margin: 10px; background: linear-gradient(135deg, #ff6b6b, #ee5a6f); border: none;" data-i18n="r.117">✨ Регистрирай се</a>
         </div>
     </div>
 
@@ -93,7 +93,7 @@
                     <img src="/brch1/assets/brch1-icon.svg" alt="BRCH1" style="width: 40px; height: 40px;">
                     BeRicH 1 (BRCH1)
                 </h2>
-                <p>Deflationary BEP-20 токен с halving, anti-snipe и creator mint</p>
+                <p data-i18n="r.28b">Deflationary BEP-20 токен с halving, anti-snipe и creator mint</p>
                 <div style="margin-top: 20px;">
                     <a href="/brch1/" class="btn">Learn More</a>
                     <a href="/brch1/admin/" class="btn btn-admin">Admin Panel</a>
@@ -228,7 +228,7 @@
                 const paidBadge = data.paid_this_month ? ' ✅' : '';
                 box.innerHTML = `
                     <span class="user">👤 ${data.user.username}${paidBadge}${data.is_admin ? ' (admin)' : ''}</span>
-                    <button class="logout" id="logout-btn">Изход</button>
+                    <button class="logout" id="logout-btn" data-i18n="billing.logout">Изход</button>
                 `;
                 document.getElementById('logout-btn').onclick = async () => {
                     await fetch('/api/portals/logout', { method: 'POST' });

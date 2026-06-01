@@ -1,4 +1,4 @@
-<!-- Version: 1.0117 -->
+<!-- Version: 1.0130 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -32,7 +32,7 @@
 <div class="head">
   <h1 data-i18n="pdfc.title">Свиване на PDF</h1>
   <p data-i18n="pdfc.subtitle">Намали размера на голям PDF (особено със сканирани страници/големи снимки)</p>
-  <a href="/portals/services/">← Всички услуги</a>
+  <a href="/portals/services/" data-i18n="common.all_services">← Всички услуги</a>
 </div>
 <div class="wrap">
   <div class="card">
@@ -45,7 +45,7 @@
       <option value="medium" selected data-i18n="pdfc.medium">Средно (баланс)</option>
       <option value="low" data-i18n="pdfc.low">Леко (по-добро качество)</option>
     </select>
-    <p class="hint">
+    <p class="hint" data-i18n="r.26">
       Всяка страница се преобразува в изображение с намалена резолюция и качество, после се сглобява нов PDF.
       Работи най-добре за сканирани документи и PDF-и с големи снимки. Текстът става неизбираем (растеризира се).
     </p>
@@ -80,14 +80,14 @@ var LEVELS = {
 
 async function compress(){
   var f=document.getElementById('pdfFile').files[0];
-  if(!f){ setStatus('err','Избери PDF файл.'); return; }
+  if(!f){ setStatus('err',KCY_I18N.t('pdfc.choose_msg')); return; }
   if(!window.pdfjsLib){ setStatus('err','pdf.js не е зареден (мрежа?).'); return; }
   var cfg=LEVELS[document.getElementById('level').value]||LEVELS.medium;
   var origSize=f.size;
   var btn=document.getElementById('goBtn'); btn.disabled=true;
   document.getElementById('barWrap').style.display='block';
   var bar=document.getElementById('bar');
-  setStatus('work','Обработва се… (за големи файлове може да отнеме време)');
+  setStatus('work',KCY_I18N.t('pdfc.processing'));
   try{
     var buf=await f.arrayBuffer();
     var src=await pdfjsLib.getDocument({data:buf}).promise;
@@ -119,12 +119,12 @@ async function compress(){
     a.click();
     var pct=Math.round((1-newSize/origSize)*100);
     if(newSize<origSize){
-      setStatus('ok','Готово! '+fmt(origSize)+' → '+fmt(newSize)+' (−'+pct+'%). Файлът е свален.');
+      setStatus('ok',KCY_I18N.t('pdfc.done1')+fmt(origSize)+' → '+fmt(newSize)+' (−'+pct+'%). Файлът е свален.');
     }else{
-      setStatus('ok','Готово: '+fmt(origSize)+' → '+fmt(newSize)+'. Този PDF вече е оптимизиран — свиването не помогна много. Файлът е свален.');
+      setStatus('ok',KCY_I18N.t('pdfc.done2')+fmt(origSize)+' → '+fmt(newSize)+'. Този PDF вече е оптимизиран — свиването не помогна много. Файлът е свален.');
     }
   }catch(e){
-    setStatus('err','Грешка: '+e.message);
+    setStatus('err',KCY_I18N.t('common.error')+': '+e.message);
   }finally{
     btn.disabled=false;
   }

@@ -1,4 +1,4 @@
-<!-- Version: 1.0126 -->
+<!-- Version: 1.0128 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -29,25 +29,25 @@
 </head>
 <body>
 <div class="head">
-  <h1>Компресор на снимки</h1>
-  <p>Намали размера на JPEG / PNG / WebP</p>
-  <a href="/portals/services/">← Всички услуги</a>
+  <h1 data-i18n="image.title">Компресор на снимки</h1>
+  <p data-i18n="image.subtitle">Намали размера на JPEG / PNG / WebP</p>
+  <a href="/portals/services/" data-i18n="common.all_services">← Всички услуги</a>
 </div>
 <div class="wrap">
   <div class="card">
     <label data-i18n="image.choose">Избери изображение</label>
     <input type="file" id="file" accept="image/jpeg,image/png,image/webp" onchange="loadImg()">
-    <label>Качество <span id="qval">75%</span></label>
+    <label><span data-i18n="image.quality">Качество</span> <span id="qval">75%</span></label>
     <input type="range" id="quality" min="10" max="100" value="75" oninput="document.getElementById('qval').textContent=this.value+'%'">
     <label data-i18n="image.format">Изходен формат</label>
     <select id="format">
-      <option value="image/jpeg">JPEG — най-малък размер</option>
-      <option value="image/webp">WebP — модерен, добро качество</option>
-      <option value="image/png">PNG — без загуба (за графики)</option>
+      <option value="image/jpeg" data-i18n="image.fmt_jpeg">JPEG — най-малък размер</option>
+      <option value="image/webp" data-i18n="image.fmt_webp">WebP — модерен, добро качество</option>
+      <option value="image/png" data-i18n="image.fmt_png">PNG — без загуба (за графики)</option>
     </select>
-    <label>Максимална ширина (px, 0 = запази оригинала)</label>
+    <label data-i18n="image.maxwidth">Максимална ширина (px, 0 = запази оригинала)</label>
     <input type="number" id="maxw" value="0" min="0">
-    <p class="hint">Компресията се прави изцяло в браузъра — снимката не се качва никъде.</p>
+    <p class="hint" data-i18n="r.44">Компресията се прави изцяло в браузъра — снимката не се качва никъде.</p>
     <button class="btn" onclick="compress()" data-i18n="image.compress">Компресирай</button>
     <div class="cmp" id="cmp" style="display:none">
       <div>
@@ -76,7 +76,7 @@ function loadImg(){
   origFile=f;
 }
 function compress(){
-  if(!origFile){ alert('Първо избери изображение.'); return; }
+  if(!origFile){ alert(KCY_I18N.t('image.choose_first')); return; }
   var img=new Image();
   img.onload=function(){
     var maxw=parseInt(document.getElementById('maxw').value,10)||0;
@@ -96,8 +96,8 @@ function compress(){
       document.getElementById('compSz').textContent=fmtSize(blob.size);
       var saved=100-Math.round(blob.size/origFile.size*100);
       document.getElementById('save').textContent=
-        saved>0 ? ('Спестени '+saved+'% от размера') :
-                  'Файлът не намаля — пробвай по-ниско качество или JPEG.';
+        saved>0 ? (KCY_I18N.t('image.saved')+saved+'% от размера') :
+                  KCY_I18N.t('image.no_reduce');
     }, fmt, q);
   };
   img.src=URL.createObjectURL(origFile);

@@ -1,4 +1,4 @@
-<!-- Version: 1.0118 -->
+<!-- Version: 1.0128 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -31,7 +31,7 @@
 <div class="head">
   <h1 data-i18n="calc.title">Калкулатори</h1>
   <p data-i18n="calc.subtitle">Заем, ДДС, лихва, проценти — по държава</p>
-  <a href="/portals/services/">← Всички услуги</a>
+  <a href="/portals/services/" data-i18n="common.all_services">← Всички услуги</a>
 </div>
 <div class="wrap">
   <div class="tabs">
@@ -71,12 +71,12 @@
     <input type="number" id="vRate" value="20" step="0.1">
     <label data-i18n="calc.amount">Сума</label>
     <input type="number" id="vAmount" value="100">
-    <label>Сумата е:</label>
+    <label data-i18n="r.66">Сумата е:</label>
     <select id="vMode">
       <option value="net" data-i18n="calc.add_vat">Без ДДС (добави ДДС)</option>
       <option value="gross" data-i18n="calc.remove_vat">С ДДС (извади ДДС)</option>
     </select>
-    <button class="btn" onclick="calcVat()">Изчисли</button>
+    <button class="btn" onclick="calcVat()" data-i18n="r.39">Изчисли</button>
     <div class="out" id="vatOut" style="display:none"></div>
   </div>
 
@@ -84,7 +84,7 @@
   <div id="interest" class="panel card">
     <label data-i18n="calc.principal">Главница</label>
     <input type="number" id="iPrincipal" value="5000">
-    <label>Годишен лихвен процент (%)</label>
+    <label data-i18n="r.27">Годишен лихвен процент (%)</label>
     <input type="number" id="iRate" value="5" step="0.01">
     <label data-i18n="calc.term_years">Срок (години)</label>
     <input type="number" id="iYears" value="3" step="0.1">
@@ -93,7 +93,7 @@
       <option value="compound" data-i18n="calc.compound">Сложна (капитализира се годишно)</option>
       <option value="simple" data-i18n="calc.simple">Проста</option>
     </select>
-    <button class="btn" onclick="calcInterest()">Изчисли</button>
+    <button class="btn" onclick="calcInterest()" data-i18n="r.39">Изчисли</button>
     <div class="out" id="intOut" style="display:none"></div>
   </div>
 
@@ -101,15 +101,15 @@
   <div id="pct" class="panel card">
     <label data-i18n="calc.calculation">Изчисление</label>
     <select id="pMode" onchange="pctLabels()">
-      <option value="of">X% от Y</option>
-      <option value="iswhat">X е колко % от Y</option>
+      <option value="of" data-i18n="calc.x_of_y">X% от Y</option>
+      <option value="iswhat" data-i18n="calc.x_pct_of_y">X е колко % от Y</option>
       <option value="change" data-i18n="calc.change_xy">Промяна от X до Y (%)</option>
     </select>
     <label id="pL1" data-i18n="calc.percent_x">Процент X</label>
     <input type="number" id="pX" value="15">
     <label id="pL2" data-i18n="calc.value_y">Стойност Y</label>
     <input type="number" id="pY" value="200">
-    <button class="btn" onclick="calcPct()">Изчисли</button>
+    <button class="btn" onclick="calcPct()" data-i18n="r.39">Изчисли</button>
     <div class="out" id="pctOut" style="display:none"></div>
   </div>
 </div>
@@ -167,9 +167,9 @@ function calcInterest(){
 function pctLabels(){
   var m=document.getElementById('pMode').value;
   var l1=document.getElementById('pL1'), l2=document.getElementById('pL2');
-  if(m==='of'){ l1.textContent='Процент X'; l2.textContent='Стойност Y'; }
-  else if(m==='iswhat'){ l1.textContent='Стойност X'; l2.textContent='Стойност Y (цялото)'; }
-  else { l1.textContent='Начална стойност X'; l2.textContent='Крайна стойност Y'; }
+  if(m==='of'){ l1.textContent=KCY_I18N.t('calc.percent_x'); l2.textContent=KCY_I18N.t('calc.value_y'); }
+  else if(m==='iswhat'){ l1.textContent=KCY_I18N.t('calc.value_x'); l2.textContent=KCY_I18N.t('calc.value_y_total'); }
+  else { l1.textContent=KCY_I18N.t('calc.start_x'); l2.textContent=KCY_I18N.t('calc.end_y'); }
 }
 function calcPct(){
   var X=parseFloat(document.getElementById('pX').value)||0;
@@ -181,7 +181,7 @@ function calcPct(){
     document.getElementById('pctOut').innerHTML='<div class="line"><span>'+label+'</span><span>'+res+'</span></div>';
     return;
   }
-  else { res=X!==0?((Y-X)/X*100):0; label='Промяна от '+X+' до '+Y+' ='; res=res.toFixed(2)+'%';
+  else { res=X!==0?((Y-X)/X*100):0; label=KCY_I18N.t('calc.change_from')+X+' до '+Y+' ='; res=res.toFixed(2)+'%';
     document.getElementById('pctOut').style.display='block';
     document.getElementById('pctOut').innerHTML='<div class="line"><span>'+label+'</span><span>'+res+'</span></div>';
     return;

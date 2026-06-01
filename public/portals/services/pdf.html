@@ -1,4 +1,4 @@
-<!-- Version: 1.0119 -->
+<!-- Version: 1.0129 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -31,9 +31,9 @@
 </head>
 <body>
 <div class="head">
-  <h1>PDF инструменти</h1>
+  <h1 data-i18n="pdf.title">PDF инструменти</h1>
   <p data-i18n="pdf.subtitle">Сливане, разделяне, воден знак</p>
-  <a href="/portals/services/">← Всички услуги</a>
+  <a href="/portals/services/" data-i18n="common.all_services">← Всички услуги</a>
 </div>
 <div class="wrap">
   <div class="tabs">
@@ -65,7 +65,7 @@
 
   <!-- ВОДЕН ЗНАК -->
   <div id="wm" class="panel card">
-    <label>Избери PDF файл</label>
+    <label data-i18n="pdf.choose">Избери PDF файл</label>
     <input type="file" id="wFile" accept="application/pdf">
     <label data-i18n="pdf.wm_text">Текст на водния знак</label>
     <input type="text" id="wText" placeholder="ПОВЕРИТЕЛНО" value="ПОВЕРИТЕЛНО">
@@ -76,12 +76,12 @@
   <!-- ВИЗУАЛЕН ПОДПИС -->
   <div id="sign" class="panel card">
     <p class="hint" style="background:#fff3cd;color:#8a6d3b;padding:10px;border-radius:8px;">
-      ⚠️ Това е <b>визуален</b> подпис (образ на подписа като картинка). НЕ е електронен/криптографски подпис —
-      правно не е валиден е-подпис, а само визуално поставяне на изображение върху PDF.
+      <span data-i18n="r.111">⚠️ Това е</span> <b data-i18n="r.73">визуален</b> <span data-i18n="r.85">подпис (образ на подписа като картинка). НЕ е електронен/криптографски подпис —</span>
+      <span data-i18n="pdf.legal_note">правно не е валиден е-подпис, а само визуално поставяне на изображение върху PDF.</span>
     </p>
 
     <h3 style="margin:16px 0 8px;font-size:1.05em;" data-i18n="pdf.sign_step1">Стъпка 1 — Извлечи подпис от документ</h3>
-    <label>PDF с подпис (визуалния образ)</label>
+    <label data-i18n="pdf.sig_source">PDF с подпис (визуалния образ)</label>
     <input type="file" id="sigSrc" accept="application/pdf">
     <label data-i18n="pdf.sign_page">Страница, на която е подписът</label>
     <input type="number" id="sigPage" value="1" min="1" style="width:90px;">
@@ -95,7 +95,7 @@
     <div id="sigPreview" style="margin-top:10px;"></div>
 
     <h3 style="margin:22px 0 8px;font-size:1.05em;" data-i18n="pdf.sign_step2">Стъпка 2 — Постави подписа на друг PDF</h3>
-    <label>PDF за подписване</label>
+    <label data-i18n="pdf.sig_target">PDF за подписване</label>
     <input type="file" id="tgtPdf" accept="application/pdf">
     <label data-i18n="pdf.sign_target_page">Страница (1 = първа, -1 = последна)</label>
     <input type="number" id="tgtPage" value="-1" style="width:90px;">
@@ -146,7 +146,7 @@ function parseRange(str,max){
 
 async function doMerge(){
   var files=document.getElementById('mFiles').files;
-  if(files.length<2){ status('mStatus',false,'Избери поне 2 PDF файла.'); return; }
+  if(files.length<2){ status('mStatus',false,KCY_I18N.t('pdf.need2')); return; }
   try{
     var out=await PDFLib.PDFDocument.create();
     for(var i=0;i<files.length;i++){
@@ -157,25 +157,25 @@ async function doMerge(){
     }
     var bytes=await out.save();
     save(bytes,'merged.pdf');
-    status('mStatus',true,'Готово — '+files.length+' файла слети.');
-  }catch(e){ status('mStatus',false,'Грешка: '+e.message); }
+    status('mStatus',true,KCY_I18N.t('pdf.done')+files.length+' файла слети.');
+  }catch(e){ status('mStatus',false,KCY_I18N.t('common.error')+': '+e.message); }
 }
 
 async function doSplit(){
   var f=document.getElementById('sFile').files[0];
-  if(!f){ status('sStatus',false,'Избери PDF файл.'); return; }
+  if(!f){ status('sStatus',false,KCY_I18N.t('pdf.choose_msg')); return; }
   try{
     var buf=await f.arrayBuffer();
     var doc=await PDFLib.PDFDocument.load(buf);
     var idx=parseRange(document.getElementById('sRange').value,doc.getPageCount());
-    if(!idx.length){ status('sStatus',false,'Невалиден диапазон страници.'); return; }
+    if(!idx.length){ status('sStatus',false,KCY_I18N.t('pdf.bad_range')); return; }
     var out=await PDFLib.PDFDocument.create();
     var pages=await out.copyPages(doc,idx);
     pages.forEach(function(p){ out.addPage(p); });
     var bytes=await out.save();
     save(bytes,'extracted.pdf');
-    status('sStatus',true,'Готово — '+idx.length+' страници извлечени.');
-  }catch(e){ status('sStatus',false,'Грешка: '+e.message); }
+    status('sStatus',true,KCY_I18N.t('pdf.done')+idx.length+' страници извлечени.');
+  }catch(e){ status('sStatus',false,KCY_I18N.t('common.error')+': '+e.message); }
 }
 
 // Зарежда кирилски Unicode шрифт (кешира го). pdf-lib StandardFonts (WinAnsi)
@@ -195,12 +195,12 @@ async function getCyrFont(){
       if(r.ok){ _cyrFontBytes=await r.arrayBuffer(); return _cyrFontBytes; }
     }catch(e){}
   }
-  throw new Error('Не успях да заредя кирилски шрифт (мрежа?).');
+  throw new Error(KCY_I18N.t('pdf.font_fail'));
 }
 
 async function doWatermark(){
   var f=document.getElementById('wFile').files[0];
-  if(!f){ status('wStatus',false,'Избери PDF файл.'); return; }
+  if(!f){ status('wStatus',false,KCY_I18N.t('pdf.choose_msg')); return; }
   var text=document.getElementById('wText').value||'ПОВЕРИТЕЛНО';
   try{
     var buf=await f.arrayBuffer();
@@ -223,8 +223,8 @@ async function doWatermark(){
     });
     var bytes=await doc.save();
     save(bytes,'watermarked.pdf');
-    status('wStatus',true,'Готово — воден знак добавен на '+pages.length+' страници.');
-  }catch(e){ status('wStatus',false,'Грешка: '+e.message); }
+    status('wStatus',true,KCY_I18N.t('pdf.wm_done')+pages.length+' страници.');
+  }catch(e){ status('wStatus',false,KCY_I18N.t('common.error')+': '+e.message); }
 }
 
 // ============ ВИЗУАЛЕН ПОДПИС ============
@@ -232,7 +232,7 @@ var sigRenderScale=1, sigCroppedDataURL=null, selStart=null;
 
 async function loadSigPage(){
   var f=document.getElementById('sigSrc').files[0];
-  if(!f){ status('signStatus',false,'Избери PDF с подписа.'); return; }
+  if(!f){ status('signStatus',false,KCY_I18N.t('pdf.choose_sig')); return; }
   if(!window.pdfjsLib){ status('signStatus',false,'pdf.js не е зареден.'); return; }
   try{
     var buf=await f.arrayBuffer();
@@ -247,8 +247,8 @@ async function loadSigPage(){
     document.getElementById('sigCanvasWrap').style.display='block';
     document.getElementById('cropBtn').style.display='inline-block';
     setupSelection();
-    status('signStatus',true,'Страницата е заредена. Очертай правоъгълник около подписа.');
-  }catch(e){ status('signStatus',false,'Грешка: '+e.message); }
+    status('signStatus',true,KCY_I18N.t('pdf.page_loaded'));
+  }catch(e){ status('signStatus',false,KCY_I18N.t('common.error')+': '+e.message); }
 }
 
 function setupSelection(){
@@ -278,7 +278,7 @@ function setupSelection(){
 function cropSig(){
   var sel=document.getElementById('sigSel');
   var r=sel._rect;
-  if(!r||r.w<5||r.h<5){ status('signStatus',false,'Очертай първо правоъгълник около подписа.'); return; }
+  if(!r||r.w<5||r.h<5){ status('signStatus',false,KCY_I18N.t('pdf.draw_first')); return; }
   var src=document.getElementById('sigCanvas');
   var c=document.createElement('canvas');
   c.width=Math.round(r.w); c.height=Math.round(r.h);
@@ -286,13 +286,13 @@ function cropSig(){
   sigCroppedDataURL=c.toDataURL('image/png');
   document.getElementById('sigPreview').innerHTML=
     '<p class="hint" data-i18n="pdf.sign_cropped">Изрязан подпис:</p><img src="'+sigCroppedDataURL+'" style="max-width:260px;border:1px solid #ccc;border-radius:6px;background:#fff;">';
-  status('signStatus',true,'Подписът е изрязан. Сега мини на Стъпка 2.');
+  status('signStatus',true,KCY_I18N.t('pdf.sig_cropped_msg'));
 }
 
 async function applySig(){
-  if(!sigCroppedDataURL){ status('signStatus',false,'Първо изрежи подпис в Стъпка 1.'); return; }
+  if(!sigCroppedDataURL){ status('signStatus',false,KCY_I18N.t('pdf.crop_first')); return; }
   var f=document.getElementById('tgtPdf').files[0];
-  if(!f){ status('signStatus',false,'Избери PDF за подписване.'); return; }
+  if(!f){ status('signStatus',false,KCY_I18N.t('pdf.choose_sign')); return; }
   try{
     var buf=await f.arrayBuffer();
     var doc=await PDFLib.PDFDocument.load(buf);
@@ -310,8 +310,8 @@ async function applySig(){
     page.drawImage(png,{ x: pw-imgW-40, y: 40, width: imgW, height: imgH });
     var bytes=await doc.save();
     save(bytes,'signed.pdf');
-    status('signStatus',true,'Готово — визуалният подпис е поставен на страница '+idx+'.');
-  }catch(e){ status('signStatus',false,'Грешка: '+e.message); }
+    status('signStatus',true,KCY_I18N.t('pdf.sign_done')+idx+'.');
+  }catch(e){ status('signStatus',false,KCY_I18N.t('common.error')+': '+e.message); }
 }
 </script>
     <script src="/shared/js/navigation.js?v=1.0115"></script>

@@ -16,8 +16,8 @@
 </head>
 <body>
 <div class="top">
-  <a href="/portals/games/">← Всички игри</a>
-  <a href="/portals/games/?rank=1">🏆 Ранг листа</a>
+  <a href="/portals/games/" data-i18n="g.all_games">← Всички игри</a>
+  <a href="/portals/games/?rank=1" data-i18n="g.leaderboard">🏆 Ранг листа</a>
 </div>
 <div id="arena"></div>
 <script src="/portals/games/battle-heroes-v2.js"></script>
@@ -26,7 +26,7 @@
 var eng = new BattleEngine({
   container: document.getElementById('arena'),
   slug: 'battle-duel',
-  title: 'Дуел на ринга — 1 срещу 1',
+  title: (window.KCY_I18N?KCY_I18N.t('g.battle_duel_t'):'Дуел на ринга — 1 срещу 1'),
   levels: 10,
   teamSize: 1,
   heroPool: BATTLE_HEROES.duel,

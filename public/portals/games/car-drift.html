@@ -15,8 +15,8 @@
 </head>
 <body>
 <div class="top">
-  <a href="/portals/games/">← Всички игри</a>
-  <a href="/portals/games/?rank=1">🏆 Ранг листа</a>
+  <a href="/portals/games/" data-i18n="g.all_games">← Всички игри</a>
+  <a href="/portals/games/?rank=1" data-i18n="g.leaderboard">🏆 Ранг листа</a>
 </div>
 <canvas id="cv" width="440" height="600"></canvas>
 <script src="/portals/games/game-engine.js"></script>
@@ -127,9 +127,9 @@ function rr(ctx,x,y,w,h,r){
 var eng = new GameEngine({
   canvas: document.getElementById('cv'),
   slug: 'car-drift',
-  title: 'Кола — Дрифт',
-  goal: 'Събирай златните монети по пътя и избягвай оранжевите конуси. Събери нужния брой монети за да минеш нивото.',
-  controls: 'Стрелки наляво/надясно или A / D. На телефон — тапни лявата/дясната половина.',
+  title: (window.KCY_I18N?KCY_I18N.t('g.car_drift_t'):'Кола — Дрифт'),
+  goal: (window.KCY_I18N?KCY_I18N.t('g.car_drift_g'):'Събирай златните монети...'),
+  controls: (window.KCY_I18N?KCY_I18N.t('g.ctrl_lr'):'Стрелки наляво/надясно или A / D.'),
   levels: 10, lives: 3,
   init: init, update: update, draw: draw, background: background
 });

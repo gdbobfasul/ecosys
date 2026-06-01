@@ -51,15 +51,15 @@
 </head>
 <body>
 <div class="head">
-  <h1>🎮 Портал за игри</h1>
-  <p>6 аркадни игри · нива · точки · месечна класация с награди</p>
+  <h1 data-i18n="r.120">🎮 Портал за игри</h1>
+  <p data-i18n="r.9">6 аркадни игри · нива · точки · месечна класация с награди</p>
   <a href="/">← KCY Ecosystem</a> &nbsp;
   <a href="/portals/services/" data-i18n="games.to_services">Портал за услуги →</a>
 </div>
 
 <div class="tabs">
   <button class="tab active" id="tabGames" onclick="showTab('games')" data-i18n="games.title">Игри</button>
-  <button class="tab" id="tabRank" onclick="showTab('rank')">🏆 Месечна класация</button>
+  <button class="tab" id="tabRank" onclick="showTab('rank')" data-i18n="r.121">🏆 Месечна класация</button>
 </div>
 
 <div id="panelGames" class="panel active">
@@ -68,9 +68,9 @@
 
 <div id="panelRank" class="panel">
   <div class="rank-info">
-    Класацията събира точките от <b>всичките 6 игри</b> за текущия месец.
-    <b data-i18n="games.monthly_reset">Нулира се всеки месец</b> — играй, за да си в топ 5!<br>
-    Топ 5 печелят <b data-i18n="games.ad_slot">рекламно място</b> — описанието и линкът от регистрацията се показват тук.
+    <span data-i18n="r.42">Класацията събира точките от</span> <b data-i18n="r.74">всичките 6 игри</b> <span data-i18n="r.79">за текущия месец.</span>
+    <b data-i18n="games.monthly_reset">Нулира се всеки месец</b> <span data-i18n="r.90">— играй, за да си в топ 5!</span><br>
+    <span data-i18n="r.70">Топ 5 печелят</span> <b data-i18n="games.ad_slot">рекламно място</b> <span data-i18n="r.91">— описанието и линкът от регистрацията се показват тук.</span>
   </div>
   <div id="ranklist"><div class="loading" data-i18n="games.loading_board">Зареждам класацията…</div></div>
 </div>

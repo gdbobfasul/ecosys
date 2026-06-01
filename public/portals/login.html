@@ -24,7 +24,7 @@
 </head>
 <body>
     <div class="auth-wrap">
-        <h1>🔑 Вход</h1>
+        <h1 data-i18n="r.136">🔑 Вход</h1>
         <p class="lead" data-i18n="login.subtitle">Единен login за портала за игри и портала за услуги.</p>
 
         <label for="username" data-i18n="login.user">Потребител</label>
@@ -37,9 +37,9 @@
 
         <div id="msg" class="msg"></div>
 
-        <a href="./register.html" class="btn-register-big">📝 Нямам акаунт — Регистрация</a>
+        <a href="./register.html" class="btn-register-big" data-i18n="r.130">📝 Нямам акаунт — Регистрация</a>
 
-        <a class="back" href="/">← обратно към KCY Ecosystem</a>
+        <a class="back" href="/" data-i18n="r.109">← обратно към KCY Ecosystem</a>
     </div>
 
     <script>
@@ -52,7 +52,7 @@
         async function doLogin() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
-            if (!username || !password) { showMsg('Попълни потребител и парола.'); return; }
+            if (!username || !password) { showMsg(KCY_I18N.t('reg.fill_userpass')); return; }
             try {
                 const r = await fetch('/api/portals/login', {
                     method: 'POST',
@@ -60,11 +60,11 @@
                     body: JSON.stringify({ username, password })
                 });
                 const data = await r.json();
-                if (!r.ok) { showMsg(data.message || 'Грешка при вход.'); return; }
-                showMsg('Успешен вход — пренасочване…', 'ok');
+                if (!r.ok) { showMsg(data.message || KCY_I18N.t('login.err')); return; }
+                showMsg(KCY_I18N.t('login.success'), 'ok');
                 setTimeout(() => { location.href = nextUrl; }, 400);
             } catch (e) {
-                showMsg('Мрежова грешка: ' + e.message);
+                showMsg(KCY_I18N.t('common.net_err')+': ' + e.message);
             }
         }
 

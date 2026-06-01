@@ -423,7 +423,7 @@
         }
 
         function logout() {
-            if (confirm('Сигурни ли сте, че искате да излезете?')) {
+            if (confirm(KCY_I18N.t('chat.confirm_logout'))) {
                 localStorage.removeItem('token');
                 window.location.href = 'index.html';
             }

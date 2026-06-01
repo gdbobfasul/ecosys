@@ -15,8 +15,8 @@
 </head>
 <body>
 <div class="top">
-  <a href="/portals/games/">← Всички игри</a>
-  <a href="/portals/games/?rank=1">🏆 Ранг листа</a>
+  <a href="/portals/games/" data-i18n="g.all_games">← Всички игри</a>
+  <a href="/portals/games/?rank=1" data-i18n="g.leaderboard">🏆 Ранг листа</a>
 </div>
 <canvas id="cv" width="440" height="600"></canvas>
 <script src="/portals/games/game-engine.js"></script>
@@ -151,9 +151,9 @@ function drawFoe(ctx,f){
 var eng = new GameEngine({
   canvas: document.getElementById('cv'),
   slug: 'plane-shoot',
-  title: 'Самолет — Стрелба',
-  goal: 'Стреляй по вражеските самолети. Свали определен брой за да минеш нивото — с всяко ниво враговете са повече и по-бързи.',
-  controls: 'Стрелки наляво/надясно или A / D движение, SPACE или ↑ стрелба. На телефон — тап движи и стреля.',
+  title: (window.KCY_I18N?KCY_I18N.t('g.plane_shoot_t'):'Самолет — Стрелба'),
+  goal: (window.KCY_I18N?KCY_I18N.t('g.plane_shoot_g'):'Стреляй по враговете...'),
+  controls: (window.KCY_I18N?KCY_I18N.t('g.ctrl_shoot'):'Движение + SPACE стрелба.'),
   levels: 10, lives: 3,
   init: init, update: update, draw: draw, background: background
 });

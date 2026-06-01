@@ -1,10 +1,10 @@
-<!-- Version: 1.0118 -->
+<!-- Version: 1.0130 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🕸️ Web скрапер</title>
+    <title data-i18n="scraper.title">🕸️ Web скрапер</title>
     <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <style>
         .wrap { max-width: 880px; margin: 30px auto; padding: 30px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.1); }
@@ -27,8 +27,8 @@
 </head>
 <body>
     <div class="wrap">
-        <a href="/portals/services/" style="color:#888;text-decoration:none">← обратно към услуги</a>
-        <h1>🕸️ Web скрапер</h1>
+        <a href="/portals/services/" style="color:#888;text-decoration:none" data-i18n="common.back_services">← обратно към услуги</a>
+        <h1 data-i18n="r.141">🕸️ Web скрапер</h1>
         <p class="hint" data-i18n="scraper.intro">Три заявки за търсене + едно поле "какво да се извлече". Работи до 5 минути и връща намерените извадки.</p>
 
         <label data-i18n="scraper.q1">Заявка за търсене 1</label>
@@ -43,7 +43,7 @@
         <label data-i18n="scraper.extract">Какво да се извлича от страниците</label>
         <textarea id="hint" rows="2" placeholder="напр.: цена, гаранция, лева, евро, KWp, инсталация"></textarea>
 
-        <button class="btn" id="go">▶️ Скрап</button>
+        <button class="btn" id="go" data-i18n="scraper.run">▶️ Скрап</button>
         <div class="hint" data-i18n="scraper.note">Макс. 5 минути. Можеш да напуснеш страницата, но тогава работата ще се прекрати.</div>
 
         <div id="status" class="status"></div>
@@ -65,10 +65,10 @@
                 hint:   document.getElementById('hint').value,
             };
             if (![payload.query1, payload.query2, payload.query3].some(q => q.trim())) {
-                st.className = 'status on'; st.textContent = 'Попълни поне едно поле за търсене.'; return;
+                st.className = 'status on'; st.textContent = KCY_I18N.t('scraper.fill_query'); return;
             }
             if (!payload.hint.trim()) {
-                st.className = 'status on'; st.textContent = 'Попълни "какво да се скрапва".'; return;
+                st.className = 'status on'; st.textContent = KCY_I18N.t('scraper.fill_extract'); return;
             }
             btn.disabled = true;
             st.className = 'status on';

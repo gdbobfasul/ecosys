@@ -14,7 +14,7 @@
     <div class="max-w-md w-full">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold mb-2">💳 Плащане</h1>
+            <h1 class="text-3xl font-bold mb-2" data-i18n="cpay.title_h">💳 Плащане</h1>
             <p class="text-gray-400" data-i18n="cpay.choose_method">Избери метод на плащане</p>
         </div>
 
@@ -24,7 +24,7 @@
             <div class="border border-purple-500 rounded-lg p-6 bg-gradient-to-br from-purple-900/20 to-blue-900/20">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h3 class="text-xl font-bold text-purple-400">🪙 Crypto Плащане</h3>
+                        <h3 class="text-xl font-bold text-purple-400" data-i18n="cpay.crypto_h">🪙 Crypto Плащане</h3>
                         <p class="text-sm text-gray-400" data-i18n="cpay.pay_kcy">Плати с KCY1 токен</p>
                     </div>
                     <div class="text-right">
@@ -44,7 +44,7 @@
                             <span data-i18n="cpay.connect_mm">Свържи MetaMask</span>
                         </button>
                         <p class="text-xs text-gray-500 text-center">
-                            Ще ти трябва MetaMask wallet с <span id="networkName">BSC Mainnet</span>
+                            <span data-i18n="r.71">Ще ти трябва MetaMask wallet с</span> <span id="networkName">BSC Mainnet</span>
                         </p>
                     </div>
 
@@ -65,19 +65,19 @@
                             class="w-full bg-green-600 hover:bg-green-700 py-3 rounded font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled
                         >
-                            Плати <span id="paymentAmount">300 KCY</span>
+                            <span data-i18n="cpay.pay">Плати</span> <span id="paymentAmount">300 KCY</span>
                         </button>
 
                         <button 
                             id="disconnectBtn"
                             class="w-full bg-gray-700 hover:bg-gray-600 py-2 rounded text-sm"
-                        >
+                         data-i18n="r.37">
                             Изключи портфейл
                         </button>
                     </div>
                 </div>
 
-                <div class="mt-4 text-xs text-gray-500">
+                <div class="mt-4 text-xs text-gray-500" data-i18n="r.4">
                     * При цена $0.000088 (30x). Актуалната цена зависи от пазара.
                 </div>
             </div>
@@ -88,7 +88,7 @@
                     <div class="w-full border-t border-gray-700"></div>
                 </div>
                 <div class="relative flex justify-center text-sm">
-                    <span class="px-2 bg-gray-800 text-gray-400">ИЛИ</span>
+                    <span class="px-2 bg-gray-800 text-gray-400" data-i18n="cpay.or">ИЛИ</span>
                 </div>
             </div>
 
@@ -96,20 +96,20 @@
             <div class="border border-blue-500 rounded-lg p-6 bg-gradient-to-br from-blue-900/20 to-cyan-900/20">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h3 class="text-xl font-bold text-blue-400">💳 Карта</h3>
+                        <h3 class="text-xl font-bold text-blue-400" data-i18n="cpay.card">💳 Карта</h3>
                         <p class="text-sm text-gray-400">Visa/Mastercard</p>
                     </div>
                     <div class="text-right">
                         <div class="text-2xl font-bold text-blue-300" id="cardPrice">€5</div>
-                        <div class="text-sm text-gray-400">или $5</div>
+                        <div class="text-sm text-gray-400" data-i18n="r.82">или $5</div>
                     </div>
                 </div>
 
                 <button 
                     id="payWithCardBtn"
                     class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded font-bold"
-                >
-                    Плати с карта
+                 data-i18n="r.55">
+                    <span data-i18n="cpay.pay_card">Плати с карта</span>
                 </button>
             </div>
         </div>
@@ -123,7 +123,7 @@
 
         <!-- Back to Login -->
         <div class="mt-6 text-center">
-            <a href="/index.html" class="text-gray-400 hover:text-white text-sm">
+            <a href="/index.html" class="text-gray-400 hover:text-white text-sm" data-i18n="r.107">
                 ← Назад към вход
             </a>
         </div>
@@ -269,7 +269,7 @@
 
             } catch (error) {
                 console.error('Balance error:', error);
-                document.getElementById('tokenBalance').textContent = 'Грешка при зареждане';
+                document.getElementById('tokenBalance').textContent = KCY_I18N.t('cpay.err_load');
             }
         }
 
@@ -330,9 +330,9 @@
             } catch (error) {
                 console.error('Payment error:', error);
                 
-                let errorMsg = 'Грешка при плащането';
+                let errorMsg = KCY_I18N.t('cpay.err_pay');
                 if (error.code === 4001) {
-                    errorMsg = 'Транзакцията беше отказана';
+                    errorMsg = KCY_I18N.t('cpay.tx_declined');
                 } else if (error.message) {
                     errorMsg = error.message;
                 }
@@ -371,7 +371,7 @@
                         window.location.href = '/chat.html';
                     }, 2000);
                 } else {
-                    showStatus('⚠️ ' + (data.error || 'Грешка при потвърждение'), 'warning');
+                    showStatus('⚠️ ' + (data.error || KCY_I18N.t('cpay.err_confirm')), 'warning');
                 }
             } catch (error) {
                 console.error('Backend notify error:', error);

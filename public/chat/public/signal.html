@@ -210,15 +210,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>🚨 Подай сигнал</h1>
+        <h1 data-i18n="sig.title_h">🚨 Подай сигнал</h1>
         <p class="subtitle">
-            Помогни на общността като подадеш сигнал за обект, услуга или произшествие. 
-            След одобрение от администратор получаваш <strong>1 безплатен ден</strong> достъп до платформата!
+            <span data-i18n="r.59">Помогни на общността като подадеш сигнал за обект, услуга или произшествие.</span> <strong data-i18n="sig.free_day">1 безплатен ден</strong> <span data-i18n="r.77">достъп до платформата!</span>
         </p>
         
         <div class="limit-info">
-            ⚠️ <strong data-i18n="sig.important">Важно:</strong> Можеш да подадеш само <strong data-i18n="sig.one_per_day">един сигнал на ден</strong>. 
-            Фалшивите сигнали няма да бъдат одобрени.
+            ⚠️ <strong data-i18n="sig.important">Важно:</strong> <span data-i18n="r.45">Можеш да подадеш само</span> <strong data-i18n="sig.one_per_day">един сигнал на ден</strong>. 
+            <span data-i18n="sig.fake_note">Фалшивите сигнали няма да бъдат одобрени.</span>
         </div>
         
         <div id="message"></div>
@@ -228,7 +227,7 @@
                 <label for="signalType" data-i18n="sig.type">Тип на сигнала *</label>
                 <select id="signalType" required>
                     <option value="" data-i18n="sig.choose_type">Избери тип...</option>
-                    <optgroup label="Места и обекти">
+                    <optgroup label=KCY_I18N.t('sig.cat_places')>
                         <option value="Pharmacy" data-i18n="sig.t_pharmacy">Аптека</option>
                         <option value="Optician/Eyewear" data-i18n="sig.t_optics">Оптика/Изработване на очила</option>
                         <option value="Computer Repair" data-i18n="sig.t_compservice">Компютърен сервиз</option>
@@ -244,7 +243,7 @@
                         <option value="Clothing Store" data-i18n="sig.t_clothes">Магазин за дрехи</option>
                         <option value="Gift Shop" data-i18n="sig.t_gifts">Магазин за подаръци</option>
                         <option value="Flower Shop" data-i18n="sig.t_florist">Цветарски магазин</option>
-                        <option value="GSM Repair">GSM сервиз</option>
+                        <option value="GSM Repair" data-i18n="sig.t_gsm">GSM сервиз</option>
                         <option value="Appliance Repair" data-i18n="sig.t_appliance_service">Сервиз бяла техника</option>
                         <option value="Appliance Store" data-i18n="sig.t_appliances">Магазин бяла техника</option>
                         <option value="Bar" data-i18n="sig.t_bar">Бар</option>
@@ -252,7 +251,7 @@
                         <option value="Fast Food" data-i18n="sig.t_fastfood">Бързо хранене</option>
                         <option value="Hi Class Food" data-i18n="sig.t_restaurant">Ресторант</option>
                     </optgroup>
-                    <optgroup label="Произшествия">
+                    <optgroup label=KCY_I18N.t('sig.cat_incidents')>
                         <option value="Accident" data-i18n="sig.t_emergency">Авария</option>
                         <option value="Person Needing Help" data-i18n="sig.t_person_help">Човек нуждаещ се от помощ</option>
                     </optgroup>
@@ -275,7 +274,7 @@
                 <label data-i18n="sig.photo">Снимка *</label>
                 <div class="photo-upload" id="photoUpload" onclick="document.getElementById('fileInput').click()">
                     <div id="uploadText">
-                        📷 Кликни за добавяне на снимка<br>
+                        <span data-i18n="sig.add_photo">📷 Кликни за добавяне на снимка</span><br>
                         <small data-i18n="sig.photo_rec">Препоръчително: снимка на обекта/мястото</small>
                     </div>
                     <img id="photoPreview" class="photo-preview" style="display:none;">
@@ -285,20 +284,20 @@
             
             <div class="form-group">
                 <label data-i18n="sig.location">Местоположение *</label>
-                <button type="button" class="btn btn-secondary" id="getLocationBtn">
+                <button type="button" class="btn btn-secondary" id="getLocationBtn" data-i18n="r.129">
                     📍 Вземи текущата ми локация
                 </button>
                 <div id="locationInfo" class="location-info" style="display:none;">
-                    ✅ Локацията е заснета!
+                    <span data-i18n="sig.loc_captured">✅ Локацията е заснета!</span>
                     <div class="location-coords" id="locationCoords"></div>
                 </div>
             </div>
             
-            <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+            <button type="submit" class="btn btn-primary" id="submitBtn" disabled data-i18n="r.58">
                 Подай сигнал
             </button>
             
-            <button type="button" class="btn btn-secondary" onclick="window.location.href='chat.html'">
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='chat.html'" data-i18n="r.52">
                 Отказ
             </button>
         </form>
@@ -334,7 +333,7 @@
                 const data = await response.json();
                 
                 if (!data.canSubmit) {
-                    showError('Вече си подал сигнал днес. Опитай отново утре!');
+                    showError(KCY_I18N.t('sig.already_today'));
                     document.getElementById('signalForm').style.display = 'none';
                 }
             } catch (error) {
@@ -497,7 +496,7 @@
         // Get location
         document.getElementById('getLocationBtn').addEventListener('click', () => {
             if (!navigator.geolocation) {
-                showError('Браузърът не поддържа геолокация!');
+                showError(KCY_I18N.t('sig.no_geo'));
                 return;
             }
             
@@ -517,7 +516,7 @@
                     checkFormComplete();
                 },
                 (error) => {
-                    showError('Не можах да получа локацията. Моля, разреши достъп до местоположението.');
+                    showError(KCY_I18N.t('sig.no_loc'));
                     document.getElementById('getLocationBtn').innerHTML = '📍 Опитай отново';
                     document.getElementById('getLocationBtn').disabled = false;
                 }
@@ -572,15 +571,15 @@
                         window.location.href = 'chat.html';
                     }, 2000);
                 } else {
-                    showError(data.error || 'Грешка при подаване на сигнал');
+                    showError(data.error || KCY_I18N.t('sig.err'));
                     submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Подай сигнал';
+                    submitBtn.innerHTML = KCY_I18N.t('sig.submit');
                 }
             } catch (error) {
                 console.error('Error submitting signal:', error);
-                showError('Грешка при подаване на сигнал. Опитай отново.');
+                showError(KCY_I18N.t('sig.err_retry'));
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Подай сигнал';
+                submitBtn.innerHTML = KCY_I18N.t('sig.submit');
             }
         });
         

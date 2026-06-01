@@ -1,4 +1,4 @@
-<!-- Version: 1.0118 -->
+<!-- Version: 1.0128 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -37,9 +37,9 @@
 </head>
 <body>
 <div class="head">
-  <h1>QR код</h1>
+  <h1 data-i18n="qr.title">QR код</h1>
   <p data-i18n="qr.subtitle">Генерирай QR код или разчети съществуващ</p>
-  <a href="/portals/services/">← Всички услуги</a>
+  <a href="/portals/services/" data-i18n="common.all_services">← Всички услуги</a>
 </div>
 <div class="wrap">
   <div class="tabs">
@@ -105,7 +105,7 @@ function showTab(id){
 function genQR(){
   var txt=document.getElementById('gentext').value;
   var box=document.getElementById('genresult');
-  if(!txt||!txt.trim()){ box.innerHTML='<p style="color:#d9534f">Въведи текст или URL.</p>'; return; }
+  if(!txt||!txt.trim()){ box.innerHTML='<p style="color:#d9534f" data-i18n="qr.enter_text">Въведи текст или URL.</p>'; return; }
   var size=parseInt(document.getElementById('gensize').value,10)||256;
   var ecc=document.getElementById('genecc').value;
   var lvl={L:0,M:1,Q:2,H:3}[ecc];
@@ -118,7 +118,7 @@ function genQR(){
     });
     // бутон за сваляне след успешно генериране
     var dl=document.createElement('button');
-    dl.className='btn'; dl.style.marginTop='14px'; dl.textContent='Свали PNG';
+    dl.className='btn'; dl.style.marginTop='14px'; dl.textContent=KCY_I18N.t('qr.download_png');
     dl.onclick=dlQR;
     box.appendChild(document.createElement('br'));
     box.appendChild(dl);
@@ -152,9 +152,9 @@ function qrText(code){
 function decodeFile(){
   var inp=document.getElementById('readfile');
   var f=(inp&&inp.files&&inp.files[0])||null;
-  if(!f){ showReadout(null, 'Първо прикачи изображение с QR код.'); return; }
-  if(typeof jsQR==='undefined'){ showReadout(null, 'Библиотеката за разчитане не се зареди (мрежа?). Опресни страницата.'); return; }
-  showReadout(null, 'Разчитам…');
+  if(!f){ showReadout(null, KCY_I18N.t('qr.attach_first')); return; }
+  if(typeof jsQR==='undefined'){ showReadout(null, KCY_I18N.t('qr.lib_fail')); return; }
+  showReadout(null, KCY_I18N.t('qr.decoding'));
   var img=new Image();
   img.onload=function(){
     try{
@@ -166,10 +166,10 @@ function decodeFile(){
       var code=jsQR(d.data,d.width,d.height);
       showReadout(code?qrText(code):null);
     }catch(err){
-      showReadout(null, 'Грешка при разчитане: '+err.message);
+      showReadout(null, KCY_I18N.t('qr.decode_error')+err.message);
     }
   };
-  img.onerror=function(){ showReadout(null, 'Изображението не можа да се зареди.'); };
+  img.onerror=function(){ showReadout(null, KCY_I18N.t('qr.img_fail')); };
   img.src=URL.createObjectURL(f);
 }
 
@@ -183,7 +183,7 @@ function startCam(){
       camStream=s; v.srcObject=s; v.play();
       scanLoop();
     })
-    .catch(function(){ alert('Камерата не е достъпна.'); });
+    .catch(function(){ alert(KCY_I18N.t('qr.cam_fail')); });
 }
 function stopCam(){
   if(camRAF) cancelAnimationFrame(camRAF);
@@ -211,15 +211,15 @@ function showReadout(data, customEmpty){
   box.scrollIntoView({behavior:'smooth',block:'nearest'});
   if(!data){
     box.className='readout empty';
-    box.innerHTML=customEmpty||'Не е разпознат QR код в изображението.';
+    box.innerHTML=customEmpty||KCY_I18N.t('qr.not_recognized');
     return;
   }
   box.className='readout';
   var isUrl=/^https?:\/\//i.test(data);
   var safe=data.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  box.innerHTML='<strong>Съдържание на QR кода:</strong><br>'+
-    (isUrl?('<a href="'+safe+'" target="_blank" rel="noopener">'+safe+'</a><br><span class="hint">Това е линк — кликни за отваряне.</span>')
-          :('<span>'+safe+'</span><br><span class="hint">Това е текст.</span>'));
+  box.innerHTML='<strong data-i18n="qr.content">Съдържание на QR кода:</strong><br>'+
+    (isUrl?('<a href="'+safe+'" target="_blank" rel="noopener">'+safe+'</a><br><span class="hint" data-i18n="qr.is_link">Това е линк — кликни за отваряне.</span>')
+          :('<span>'+safe+'</span><br><span class="hint" data-i18n="qr.is_text">Това е текст.</span>'));
 }
 </script>
     <script src="/shared/js/navigation.js?v=1.0115"></script>
