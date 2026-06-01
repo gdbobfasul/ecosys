@@ -1,9 +1,12 @@
-<!-- Version: 1.0102 -->
+<!-- Version: 1.0104 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Финансови графики | KCY услуги</title>
 <style>
   :root { --pri:#2a86d8; --sec:#6ec1e4; }
@@ -58,16 +61,19 @@
   </div>
 
   <!-- ── Fibonacci ── -->
-  <div class="secttl">Bitcoin — Fibonacci нива</div>
+  <div class="secttl">Bitcoin — Fibonacci нива (автоматични)</div>
   <div class="grid">
-    <div class="panel"><h3>BTC/USDT — с инструмент за Fibonacci (избери от лентата ↗ "Fib Retracement"); цена дясно, време долу</h3>
-      <div class="body tall"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-        {"symbol":"BINANCE:BTCUSDT","interval":"D","theme":"dark","style":"1","locale":"bg","withdateranges":true,"allow_symbol_change":true,"autosize":true}
-        </script></div></div>
+    <div class="panel">
+      <h3>BTC/USDT — автоматичен Fibonacci (нива на съпротива/поддръжка); цена дясно, време долу</h3>
+      <div class="tf" style="padding:6px 10px;background:#1c2030;border-bottom:1px solid #262b38;margin:0;" id="fibTf">
+        <button data-iv="1d" class="active">ден</button>
+        <button data-iv="1w">седмица</button>
+        <button data-iv="1M">месец</button>
+      </div>
+      <div class="body tall" id="fibChart"></div>
     </div>
   </div>
-  <p class="note">За Fibonacci нива: отвори графиката, от лявата лента с инструменти избери „Fib Retracement" и очертай между връх и дъно. Цената е по дясната ос, времето (дни/месеци) по долната.</p>
+  <p class="note">Fibonacci нивата (0%, 23.6%, 38.2%, 50%, 61.8★, 78.6%, 100%) се чертаят автоматично между най-високата и най-ниската точка за периода. 61.8% (★) е „златното" ниво — често силна зона на съпротива/поддръжка. Смени периода с бутоните горе.</p>
 
   <!-- ── Liquidation heatmap ── -->
   <div class="secttl">Bitcoin — Liquidation Heatmap (дни / месеци)</div>
@@ -212,28 +218,32 @@ async function histChart(container, symbol, targetDate, interval){
     series.setData(data);
 
     // ── АВТОМАТИЧЕН FIBONACCI RETRACEMENT ──
-    // Намираме swing high (най-висок) и swing low (най-нисък) за периода.
-    // Чертаем хоризонтални линии на нивата — зони на съпротива/поддръжка.
+    // swing high (връх) и swing low (дъно) за периода → нива на съпротива/поддръжка
     var hi=Math.max.apply(null,data.map(function(d){return d.high;}));
     var lo=Math.min.apply(null,data.map(function(d){return d.low;}));
     var diff=hi-lo;
-    var fibs=[
-      {r:0,    c:'#787b86', t:'0%'},
-      {r:0.236,c:'#26a69a', t:'23.6%'},
-      {r:0.382,c:'#42a5f5', t:'38.2%'},
-      {r:0.5,  c:'#ffd166', t:'50%'},
-      {r:0.618,c:'#ef9a3d', t:'61.8% (златно)'},
-      {r:0.786,c:'#ab47bc', t:'78.6%'},
-      {r:1,    c:'#787b86', t:'100%'}
-    ];
-    fibs.forEach(function(f){
-      // retracement отгоре надолу: 0% = връх, 100% = дъно
-      var price=hi-diff*f.r;
-      series.createPriceLine({
-        price:price, color:f.c, lineWidth:1, lineStyle:2,
-        axisLabelVisible:true, title:f.t
+    if(diff>0){
+      var fibs=[
+        {r:0,    c:'#9598a1', t:'0%'},
+        {r:0.236,c:'#26a69a', t:'23.6'},
+        {r:0.382,c:'#42a5f5', t:'38.2'},
+        {r:0.5,  c:'#ffd166', t:'50'},
+        {r:0.618,c:'#ff9800', t:'61.8★'},
+        {r:0.786,c:'#ab47bc', t:'78.6'},
+        {r:1,    c:'#9598a1', t:'100%'}
+      ];
+      fibs.forEach(function(f){
+        var price=hi-diff*f.r;
+        series.createPriceLine({
+          price:price,
+          color:f.c,
+          lineWidth:2,
+          lineStyle:0,
+          axisLabelVisible:true,
+          title:f.t
+        });
       });
-    });
+    }
 
     // маркер на целевата дата
     var targetSec=Math.floor(t/1000);
@@ -242,6 +252,54 @@ async function histChart(container, symbol, targetDate, interval){
     chart.timeScale().fitContent();
   }catch(e){
     container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Грешка при зареждане: '+e.message+'</div>';
+  }
+}
+
+// ── Live Fibonacci графика (текущ период до днес) — за BTC/USDT секцията ──
+async function liveFib(container, symbol, interval){
+  interval=interval||'1d';
+  if(typeof LightweightCharts==='undefined'){
+    container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Графичната библиотека не се зареди. Опресни.</div>';
+    return;
+  }
+  var span=(HIST_INTERVALS[interval]||HIST_INTERVALS['1d']).spanDays;
+  var end=Date.now();
+  var start=end - span*86400000;
+  container.innerHTML='<div style="padding:20px;color:#8a92a6;font-size:.85em;">Зареждам данни…</div>';
+  try{
+    var data=await fetchKlines(symbol,interval,start,end);
+    if(!data.length){ container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Няма данни.</div>'; return; }
+    container.innerHTML='';
+    var chart=LightweightCharts.createChart(container,{
+      layout:{ background:{color:'#161a23'}, textColor:'#cfd4e0' },
+      grid:{ vertLines:{color:'#222734'}, horzLines:{color:'#222734'} },
+      rightPriceScale:{ borderColor:'#2a2d3a' },
+      timeScale:{ borderColor:'#2a2d3a', timeVisible:false },
+      autoSize:true
+    });
+    var series=chart.addCandlestickSeries({
+      upColor:'#26a69a', downColor:'#ef5350', borderVisible:false,
+      wickUpColor:'#26a69a', wickDownColor:'#ef5350'
+    });
+    series.setData(data);
+    // авто-Fibonacci
+    var hi=Math.max.apply(null,data.map(function(d){return d.high;}));
+    var lo=Math.min.apply(null,data.map(function(d){return d.low;}));
+    var diff=hi-lo;
+    if(diff>0){
+      var fibs=[
+        {r:0,c:'#9598a1',t:'0%'},{r:0.236,c:'#26a69a',t:'23.6'},
+        {r:0.382,c:'#42a5f5',t:'38.2'},{r:0.5,c:'#ffd166',t:'50'},
+        {r:0.618,c:'#ff9800',t:'61.8★'},{r:0.786,c:'#ab47bc',t:'78.6'},
+        {r:1,c:'#9598a1',t:'100%'}
+      ];
+      fibs.forEach(function(f){
+        series.createPriceLine({ price:hi-diff*f.r, color:f.c, lineWidth:2, lineStyle:0, axisLabelVisible:true, title:f.t });
+      });
+    }
+    chart.timeScale().fitContent();
+  }catch(e){
+    container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Грешка: '+e.message+'</div>';
   }
 }
 
@@ -318,6 +376,22 @@ function wire(prefix, base, key){
 
 wire('btc','BTC','btc');
 wire('eth','ETH','eth');
+
+// ── Live Fibonacci секция (BTC/USDT) ──
+(function(){
+  var tf=document.getElementById('fibTf');
+  var chart=document.getElementById('fibChart');
+  if(!tf||!chart) return;
+  function load(iv){ liveFib(chart,'BTCUSDT',iv); }
+  tf.querySelectorAll('button').forEach(function(b){
+    b.onclick=function(){
+      tf.querySelectorAll('button').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      load(b.getAttribute('data-iv'));
+    };
+  });
+  load('1d');
+})();
 </script>
     <script src="/shared/js/navigation.js?v=1.0097"></script>
 </body>
