@@ -23,6 +23,7 @@ const PORTAL_SERVICES = [
     { slug: 'text',     title: 'Текстови инструменти', icon: 'TXT', file: '/portals/services/text.html',     description: 'Брояч на думи, форматиране, Base64.' },
     { slug: 'pdf-compress', title: 'Свиване на PDF',   icon: 'ZIP',  file: '/portals/services/pdf-compress.html', description: 'Намали размера на голям PDF (сканирани страници, големи снимки).' },
     { slug: 'charts',   title: 'Финансови графики',   icon: 'CHRT', file: '/portals/services/charts.html',   description: 'BTC RSI, Fibonacci, liquidation heatmap, S&P 500, индекси, BTC/ETH по периоди.' },
+    { slug: 'watch20',  title: 'Наблюдавай 20 валути', icon: 'WTCH', file: '/portals/services/watch20.html',  description: '20 валути/крипто спрямо USD/USDC, прагове с известие и звук.' },
 ];
 
 // GET /api/portal-services/list — списък на услугите

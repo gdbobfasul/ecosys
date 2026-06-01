@@ -1,4 +1,4 @@
-<!-- Version: 1.0109 -->
+<!-- Version: 1.0110 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -37,6 +37,7 @@
 </div>
 <div class="wrap">
   <div class="card">
+    <div id="msg" style="display:none;margin-bottom:10px;padding:10px 12px;background:#e6f5e9;color:#256b34;border-radius:8px;font-size:.9em;"></div>
     <textarea id="txt" placeholder="Постави или въведи текст тук…" oninput="count()"></textarea>
     <div class="stats">
       <div class="stat"><div class="n" id="cWords">0</div><div class="l">думи</div></div>
@@ -71,6 +72,15 @@ function count(){
   document.getElementById('cSent').textContent=(t.match(/[.!?]+/g)||[]).length;
   document.getElementById('cRead').textContent=Math.max(1,Math.ceil(words/200));
 }
+function showMsg(text){
+  var m=document.getElementById('msg');
+  if(!m) return;
+  m.textContent=text;
+  m.style.display='block';
+  clearTimeout(window._msgTimer);
+  window._msgTimer=setTimeout(function(){ m.style.display='none'; }, 4000);
+}
+
 function apply(op){
   var el=document.getElementById('txt');
   var t=el.value;
@@ -79,12 +89,13 @@ function apply(op){
     else if(op==='lower') t=t.toLowerCase();
     else if(op==='title') t=t.replace(/\S+/g,function(w){return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();});
     else if(op==='sentence') t=t.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g,function(c){return c.toUpperCase();});
-    else if(op==='trim') t=t.split(/\n/).filter(function(l){return l.trim();}).join('\n');
+    else if(op==='trim'){ t=t.split(/\n/).filter(function(l){return l.trim();}).join('\n'); showMsg('Премахнати празните редове — маха повече от 1 последователен празен ред.'); }
     else if(op==='spaces'){
       // сбива ВСякакви хоризонтални интервали (обикновен, таб, nbsp, Unicode spaces) в един
       t=t.replace(/[ \t\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]+/g,' ')
          .replace(/ *\n */g,'\n')   // маха интервали около нови редове
          .replace(/[ \t]+$/gm,'');   // маха крайни интервали на всеки ред
+      showMsg('Сбити интервалите — премахва повече от 1 последователен интервал.');
     }
     else if(op==='reverse') t=t.split('').reverse().join('');
     else if(op==='b64enc') t=btoa(unescape(encodeURIComponent(t)));
