@@ -1,6 +1,6 @@
 {
   "name": "kcy-ecosystem",
-  "version": "1.0105",
+  "version": "1.0106",
   "description": "KCY Ecosystem - Token, Multi-Sig, Chat, ECO-3 AI, and BRCH1 unified structure",
   "workspaces": [
     "private/token",

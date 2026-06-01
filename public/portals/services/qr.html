@@ -1,4 +1,4 @@
-<!-- Version: 1.0098 -->
+<!-- Version: 1.0106 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -153,17 +153,23 @@ function decodeFile(){
   var inp=document.getElementById('readfile');
   var f=(inp&&inp.files&&inp.files[0])||null;
   if(!f){ showReadout(null, 'Първо прикачи изображение с QR код.'); return; }
+  if(typeof jsQR==='undefined'){ showReadout(null, 'Библиотеката за разчитане не се зареди (мрежа?). Опресни страницата.'); return; }
+  showReadout(null, 'Разчитам…');
   var img=new Image();
   img.onload=function(){
-    var c=document.createElement('canvas');
-    c.width=img.width; c.height=img.height;
-    var ctx=c.getContext('2d');
-    ctx.drawImage(img,0,0);
-    var d=ctx.getImageData(0,0,c.width,c.height);
-    var code=jsQR(d.data,d.width,d.height);
-    showReadout(code?qrText(code):null);
+    try{
+      var c=document.createElement('canvas');
+      c.width=img.width; c.height=img.height;
+      var ctx=c.getContext('2d');
+      ctx.drawImage(img,0,0);
+      var d=ctx.getImageData(0,0,c.width,c.height);
+      var code=jsQR(d.data,d.width,d.height);
+      showReadout(code?qrText(code):null);
+    }catch(err){
+      showReadout(null, 'Грешка при разчитане: '+err.message);
+    }
   };
-  img.onerror=function(){ showReadout(null); };
+  img.onerror=function(){ showReadout(null, 'Изображението не можа да се зареди.'); };
   img.src=URL.createObjectURL(f);
 }
 
@@ -202,6 +208,7 @@ function scanLoop(){
 function showReadout(data, customEmpty){
   var box=document.getElementById('readout');
   box.style.display='block';
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
   if(!data){
     box.className='readout empty';
     box.innerHTML=customEmpty||'Не е разпознат QR код в изображението.';
