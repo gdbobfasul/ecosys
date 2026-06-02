@@ -1,11 +1,11 @@
 // KCY Portals — Portal Services routes (НОВ файл — не пипа services.js)
-// Version: 1.0099
+// Version: 1.0100
 // 7 услуги БЕЗ изкуствен интелект. Повечето работят изцяло в браузъра.
 // Само "crypto" има нужда от backend — за валутните курсове.
 
 const express = require('express');
 const https = require('https');
-const { requirePortalAccessAPI } = require('../middleware/access-control');
+const { requirePortalAccessAPI, requireLoginAPI } = require('../middleware/access-control');
 
 let debug;
 try { debug = require('../../shared/debug-helper').create('portals'); }
@@ -97,7 +97,9 @@ const WATCH_MAX_SLOTS = 20;
 const WATCH_MAX_ALERTS = 20;
 
 // GET /api/portals/svc/watch20/prefs — върни 20-те слота + техните прагове
-router.get('/watch20/prefs', requirePortalAccessAPI, (req, res) => {
+// requireLoginAPI (НЕ requirePortalAccessAPI): тук трябва само ЛОГИН — без плащане
+// и БЕЗ IP-whitelist bypass (иначе admin по IP минава без сесия → user_id празно).
+router.get('/watch20/prefs', requireLoginAPI, (req, res) => {
     const log = debug.scoped(req, 'watch20/prefs GET');
     const db = req.app.locals.db;
     const userId = req.session.userId;
@@ -122,7 +124,8 @@ router.get('/watch20/prefs', requirePortalAccessAPI, (req, res) => {
 
 // POST /api/portals/svc/watch20/prefs — замени ВСИЧКИ слотове + прагове на потребителя
 // body: { slots: [ { sel: "FIAT:USD"|null, alerts: [число, …] }, … ] }
-router.post('/watch20/prefs', requirePortalAccessAPI, (req, res) => {
+// requireLoginAPI: само логин (без плащане / без IP bypass) — нужен е валиден user_id.
+router.post('/watch20/prefs', requireLoginAPI, (req, res) => {
     const log = debug.scoped(req, 'watch20/prefs POST');
     const db = req.app.locals.db;
     const userId = req.session.userId;

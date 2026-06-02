@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0139
+# Version: 1.0140
 ##############################################################################
 # KCY — Setup за WhereHNoBiz базата данни (отделна PostgreSQL база)
 #
@@ -116,9 +116,9 @@ setup_wherenobiz() {
   DB_EXISTS=$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'" 2>/dev/null)
 
   if [ "$RESET_MODE" = true ] && [ "$DB_EXISTS" = "1" ]; then
-    echo -e "${RED}  [--reset] Това ще ИЗТРИЕ всички данни в '$DB_NAME'.${NC}"
-    read -p "  Напиши 'DELETE' за потвърждение: " confirm
-    [ "$confirm" != "DELETE" ] && echo "Отказано" && return
+    # --reset вече е потвърждението (зададено съзнателно / избрано "да" в менюто).
+    # Без втори въпрос — не повтаряме същото потвърждение.
+    echo -e "${RED}  [--reset] ИЗТРИВАМ всички данни в '$DB_NAME'…${NC}"
     sudo -u postgres psql -c "DROP DATABASE \"$DB_NAME\";" 2>&1 | tail -1
     DB_EXISTS=""
   fi

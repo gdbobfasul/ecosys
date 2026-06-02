@@ -1,4 +1,4 @@
-<!-- Version: 1.0140 -->
+<!-- Version: 1.0141 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -175,7 +175,7 @@ function render(){
         '<div class="val">'+(rate!=null?fmtRate(rate):'—')+'</div>'+
         '<div class="pair">'+(s.sel?selLabel(s.sel):(window.KCY_I18N?KCY_I18N.t('watch20.not_selected'):'не е избрана'))+'</div>'+
         '<div class="dd">'+
-          '<input type="text" placeholder="търси валута/крипто…" value="'+(s.sel?s.sel.split(":")[1]:"")+'" '+
+          '<input type="text" placeholder="'+(window.KCY_I18N?KCY_I18N.t('watch20.search_placeholder'):'търси валута/крипто…')+'" value="'+(s.sel?s.sel.split(":")[1]:"")+'" '+
             'oninput="filterList('+idx+',this.value)" onfocus="openList('+idx+')">'+
           '<button class="bell'+(s.alerts&&s.alerts.length?' on':'')+'" onclick="openBell('+idx+')" title="Прагове за известие">🔔</button>'+
           '<div class="list" id="list'+idx+'"></div>'+

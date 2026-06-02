@@ -107,7 +107,7 @@ else
     echo -e "      03-kcy-admin-sudo.sh)."
     echo ""
     echo -e "  ${CYAN}2)${NC} После пусни ${GREEN}update на sudoers на сървъра${NC}"
-    echo -e "     (в СТАРТ менюто е № ${GREEN}28${NC} — „Update sudoers на сървъра\")."
+    echo -e "     (в СТАРТ менюто е № ${GREEN}30${NC} — „Update sudoers на сървъра\")."
     echo ""
     echo -e "  ${CYAN}3)${NC} След това пусни пак ${GREEN}3) Прехвърли само СОРС${NC} — вече без парола."
     echo ""

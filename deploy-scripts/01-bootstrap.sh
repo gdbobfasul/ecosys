@@ -431,7 +431,7 @@ ssh $SSH_KEEPALIVE -t -p "$PORT" "${USER}@${SERVER}" "sudo bash \"\$HOME/${REMOT
     echo -e "  За вече работещ сървър ${GREEN}НЕ ти трябва bootstrap${NC}. Вместо това:"
     echo -e "    ${CYAN}• Обновяване на код:${NC}  опция 2 (Deploy) или опция 3 (само сорс)"
     echo -e "    ${CYAN}• Обновяване на асети:${NC} опция 4 (само видеа/картинки)"
-    echo -e "    ${CYAN}• Нови sudo права:${NC}    опция 28 (Update sudoers) — пуска се без парола,"
+    echo -e "    ${CYAN}• Нови sudo права:${NC}    опция 30 (Update sudoers) — пуска се без парола,"
     echo -e "      защото 03-kcy-admin-sudo.sh е whitelist-нат за ${USER}:"
     echo -e "        ${GREEN}ssh -p $PORT ${USER}@${SERVER}${NC}"
     echo -e "        ${GREEN}sudo /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh${NC}"
