@@ -1,65 +1,10 @@
-// Version: 1.0093
+// Version: 1.0139
 // ============================================
 // 🌐 GLOBAL CONFIGURATION - MOBILE VERSION
 // ============================================
-
-// ============================================
-// 🪙 CRYPTO CONFIGURATION
-// ============================================
-export const CRYPTO_CONFIG = {
-  // Treasury wallets - план addresses1.txt, от tangem
-  TREASURY_WALLETS: {
-    BTC: 'bc1qe9drdtvqzat4k98w8lavsk3856zett8c7vw46u',
-    ETH: '0x58ec63d31b8e4D6624B5c88338027a54Be1AE28A',
-    BNB: '0x58ec63d31b8e4D6624B5c88338027a54Be1AE28A',
-    KCY_MEME: '0x58ec63d31b8e4D6624B5c88338027a54Be1AE28A',
-    KCY_AMS: '0x58ec63d31b8e4D6624B5c88338027a54Be1AE28A'
-  },
-  
-  // Token contracts
-  TOKEN_ADDRESSES: {
-    KCY_MEME: '0xYOUR_KCY_MEME_TOKEN_CONTRACT',
-    KCY_AMS: '0xYOUR_KCY_AMS_TOKEN_CONTRACT'
-  },
-  
-  // Pricing
-  PRICING: {
-    LOGIN: {
-      USD: 5,
-      EUR: 5,
-      BTC: 0.0001,
-      ETH: 0.002,
-      BNB: 0.01,
-      KCY_MEME: 1000,
-      KCY_AMS: 500
-    },
-    EMERGENCY: {
-      USD: 50,
-      EUR: 50,
-      BTC: 0.001,
-      ETH: 0.02,
-      BNB: 0.1,
-      KCY_MEME: 10000,
-      KCY_AMS: 5000
-    }
-  },
-  
-  // Network
-  NETWORK: {
-    CHAIN_ID: '0x38',
-    CHAIN_NAME: 'BSC Mainnet',
-    RPC_URL: 'https://bsc-dataseed.binance.org/'
-  },
-  
-  // Rules
-  RULES: {
-    EXACT_AMOUNTS_ONLY: true,
-    NO_PARTIAL_PAYMENTS: true,
-    NO_REFUNDS_UNDER: 50,
-    SUBSCRIPTION_DAYS: 30,
-    PAYMENT_LOOKBACK_DAYS: 30
-  }
-};
+// Приложението е „чисто" за магазините (Google Play / App Store):
+//  • Само плащане с карта (Stripe) — без алтернативни платежни методи и адреси.
+//  • Без линкове към външния уеб сайт — само заявки към сървърната база през API.
 
 // ============================================
 // 📊 APP CONFIGURATION
@@ -70,4 +15,21 @@ export const APP_CONFIG = {
   FREE_MESSAGE_LIMIT: 10,
   SESSION_HOURS: 24,
   AUTO_LOGOUT_UTC: '04:00'
+};
+
+// ============================================
+// 🚦 FEATURE FLAGS
+// ============================================
+export const FEATURES = {
+  STRIPE_PAYMENTS: true, // плащане с карта (единственият метод в приложението)
+};
+
+// ============================================
+// 💳 PAYMENT OPTIONS (UI метаданни)
+// ============================================
+export const PAYMENT_OPTIONS = {
+  CARD: {
+    ICON: '💳',
+    DISPLAY_NAME: 'Card',
+  },
 };
