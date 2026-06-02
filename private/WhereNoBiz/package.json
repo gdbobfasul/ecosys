@@ -2,7 +2,7 @@
   "name": "where-no-biz-server",
   "version": "1.0139",
   "private": true,
-  "description": "WhereNoBiz (Намери ми бизнес, който го няма) — самостоятелен бекенд (Express + PostgreSQL). Без крипто, без линкове към KCY.",
+  "description": "WhereNoBiz (Намери ми бизнес, който го няма) — самостоятелен бекенд (Express + PostgreSQL). Чисто, без външни зависимости.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

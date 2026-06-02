@@ -1,5 +1,5 @@
 // House-Look-Book — регистрация / вход / изход / профил.
-// Сесия-базиран вход, пароли с bcrypt. Без крипто.
+// Сесия-базиран вход, пароли с bcrypt.
 
 const express = require('express');
 const bcrypt = require('bcryptjs');

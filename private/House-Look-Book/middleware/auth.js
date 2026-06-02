@@ -1,5 +1,5 @@
 // House-Look-Book — middleware за достъп.
-// Сесия-базиран (express-session), по модела на portals. Без крипто, без JWT.
+// Сесия-базиран (express-session), по модела на portals (без JWT).
 
 const { one } = require('../db');
 

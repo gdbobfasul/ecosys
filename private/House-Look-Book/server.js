@@ -1,5 +1,5 @@
 // House-Look-Book („Подреди своя дом") — самостоятелен сървър.
-// Express + PostgreSQL. БЕЗ крипто, БЕЗ линкове към KCY (правило от brief-а).
+// Express + PostgreSQL. Самостоятелно, чисто (правило от brief-а).
 // Моделът копира private/portals/server.js, но базата е pg.Pool (db.js).
 //
 // API под /api/hlb/* ; статичният фронтенд е public/House-Look-Book.

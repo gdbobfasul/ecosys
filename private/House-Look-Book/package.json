@@ -2,7 +2,7 @@
   "name": "house-look-book-server",
   "version": "1.0139",
   "private": true,
-  "description": "House-Look-Book (Подреди своя дом) — самостоятелен бекенд (Express + PostgreSQL). Без крипто, без линкове към KCY.",
+  "description": "House-Look-Book (Подреди своя дом) — самостоятелен бекенд (Express + PostgreSQL). Чисто, без външни зависимости.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

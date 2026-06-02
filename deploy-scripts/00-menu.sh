@@ -714,6 +714,6 @@ run_choice() {
 # === MAIN LOOP ===
 while true; do
     show_menu
-    read -p "Избери [1-38, q]: " choice
+    read -p "Избери [1-40, q]: " choice
     run_choice "$choice"
 done
