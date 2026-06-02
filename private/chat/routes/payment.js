@@ -162,137 +162,17 @@ function createPaymentRoutes(db) {
   });
 
   // ============================================
-  // CRYPTO PAYMENT ROUTES
+  // КРИПТО ПЛАЩАНИЯ — ПРЕМАХНАТИ (работен ред, стъпка 3)
   // ============================================
-
-  // Verify crypto payment (check blockchain for last 30 days)
-  router.post('/verify-crypto', async (req, res) => {
-    try {
-      const { userId, cryptoType, service } = req.body;
-      // service: 'login' or 'emergency'
-      
-      if (!userId || !cryptoType || !service) {
-        return res.status(400).json({ 
-          error: 'Missing required fields: userId, cryptoType, service' 
-        });
-      }
-
-      // Get user
-      const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
-      
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-
-      // Get user's wallet for this crypto
-      const walletField = `crypto_wallet_${cryptoType.toLowerCase()}`;
-      const userWallet = user[walletField];
-      
-      if (!userWallet) {
-        return res.status(400).json({ 
-          error: `No ${cryptoType} wallet registered. Please add wallet in profile.` 
-        });
-      }
-
-      // Load config
-      const config = require('../public/config.js');
-      const treasuryWallet = config.CRYPTO_CONFIG.TREASURY_WALLETS[cryptoType];
-      const requiredAmount = config.CRYPTO_CONFIG.PRICING[service.toUpperCase()][cryptoType];
-      
-      if (!treasuryWallet || !requiredAmount) {
-        return res.status(400).json({ 
-          error: `${cryptoType} not supported for ${service}` 
-        });
-      }
-
-      // Check blockchain (placeholder - implement actual blockchain check)
-      const paymentFound = await checkBlockchainPayment(
-        cryptoType,
-        userWallet,
-        treasuryWallet,
-        requiredAmount
-      );
-
-      if (paymentFound.found) {
-        // Payment verified! Update user
-        if (service === 'login') {
-          const paidUntil = new Date();
-          paidUntil.setDate(paidUntil.getDate() + 30); // +30 days
-          
-          db.prepare(`
-            UPDATE users 
-            SET subscription_active = 1,
-                paid_until = ?,
-                last_payment_check = datetime('now')
-            WHERE id = ?
-          `).run(paidUntil.toISOString(), userId);
-          
-          // Log payment
-          db.prepare(`
-            INSERT INTO payment_logs 
-            (user_id, phone, amount, currency, stripe_payment_id, status, payment_type)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-          `).run(
-            userId,
-            user.phone,
-            paymentFound.amount,
-            cryptoType,
-            paymentFound.txHash,
-            'succeeded',
-            'crypto_login'
-          );
-          
-          return res.json({
-            success: true,
-            message: 'Login access activated for 30 days',
-            paidUntil: paidUntil.toISOString(),
-            txHash: paymentFound.txHash
-          });
-        }
-        
-        if (service === 'emergency') {
-          const activeUntil = new Date();
-          activeUntil.setDate(activeUntil.getDate() + 30);
-          
-          db.prepare(`
-            UPDATE users 
-            SET emergency_active = 1,
-                emergency_active_until = ?
-            WHERE id = ?
-          `).run(activeUntil.toISOString(), userId);
-          
-          // Log payment
-          db.prepare(`
-            INSERT INTO payment_logs 
-            (user_id, phone, amount, currency, stripe_payment_id, status, payment_type)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-          `).run(
-            userId,
-            user.phone,
-            paymentFound.amount,
-            cryptoType,
-            paymentFound.txHash,
-            'succeeded',
-            'crypto_emergency'
-          );
-          
-          return res.json({
-            success: true,
-            message: 'Emergency button activated for 30 days',
-            activeUntil: activeUntil.toISOString(),
-            txHash: paymentFound.txHash
-          });
-        }
-      } else {
-        return res.json({
-          success: false,
-          message: 'No payment detected. Please ensure you sent the exact amount to the correct address and wait 1-2 minutes for confirmation.'
-        });
-      }
-    } catch (err) {
-      console.error('Crypto verify error:', err);
-      res.status(500).json({ error: err.message });
-    }
+  // По решение на автора чатът остава ЧИСТ — крипто плащанията се махат.
+  // Stripe ($5/€5 fiat абонамент) остава. Старият /verify-crypto път е изключен.
+  // Кодът е премахнат, а не закоментиран; крипто адресите в config НЕ са пипани.
+  // Връщаме 410 Gone, ако стар клиент още удря endpoint-а.
+  router.post('/verify-crypto', (req, res) => {
+    res.status(410).json({
+      error: 'crypto_payments_removed',
+      message: 'Крипто плащанията са премахнати. Използвай плащане с карта (Stripe).'
+    });
   });
 
   // Get payment status
@@ -334,29 +214,10 @@ function createPaymentRoutes(db) {
 }
 
 // ============================================
-// BLOCKCHAIN VERIFICATION (Placeholder)
+// BLOCKCHAIN VERIFICATION — ПРЕМАХНАТО (работен ред, стъпка 3)
 // ============================================
-async function checkBlockchainPayment(cryptoType, fromWallet, toWallet, requiredAmount) {
-  // TODO: Implement actual blockchain API calls
-  // For now, return mock data
-  
-  console.log(`Checking ${cryptoType} payment:`, {
-    from: fromWallet,
-    to: toWallet,
-    required: requiredAmount
-  });
-
-  // In production, implement:
-  // - BSCScan API for BNB/KCY tokens
-  // - Etherscan API for ETH
-  // - Blockchain.info API for BTC
-  
-  // Mock response
-  return {
-    found: false,
-    amount: 0,
-    txHash: null
-  };
-}
+// Крипто плащанията са махнати; функцията за проверка в блокчейн вече не се
+// използва. Оставена като изключена заглушка, за да не гръмне евентуален стар
+// reference. Чатът използва само Stripe (fiat).
 
 module.exports = createPaymentRoutes;

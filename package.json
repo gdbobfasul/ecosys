@@ -1,6 +1,6 @@
 {
   "name": "kcy-ecosystem",
-  "version": "1.0138",
+  "version": "1.0139",
   "description": "KCY Ecosystem - Token, Multi-Sig, Chat, ECO-3 AI, and BRCH1 unified structure",
   "workspaces": [
     "private/token",
@@ -9,7 +9,9 @@
     "private/mobile-chat",
     "private/eco-3",
     "private/brch1",
-    "private/portals"
+    "private/portals",
+    "private/House-Look-Book",
+    "private/WhereNoBiz"
   ],
   "scripts": {
     "test": "npm run test:token && npm run test:multisig && npm run test:chat && npm run test:mobile",
@@ -32,6 +34,10 @@
     "start:chat:dev": "cd private/chat && nodemon server.js",
     "start:eco3": "cd private/eco-3 && node server.js",
     "start:eco3:dev": "cd private/eco-3 && nodemon server.js",
+    "start:hlb": "cd private/House-Look-Book && node server.js",
+    "start:hlb:dev": "cd private/House-Look-Book && nodemon server.js",
+    "start:wnb": "cd private/WhereNoBiz && node server.js",
+    "start:wnb:dev": "cd private/WhereNoBiz && nodemon server.js",
     "start:all": "npm run start:chat & npm run start:eco3"
   },
   "keywords": [
