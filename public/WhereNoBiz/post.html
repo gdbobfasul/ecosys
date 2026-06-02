@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WhereNoBiz — Липсващ бизнес</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="post-wrap">
+    <a href="#" id="backLink" class="back">← Назад</a>
+    <div id="post" class="panel post-card"><div class="loading">Зареждам…</div></div>
+
+    <!-- Потвърждение „такъв бизнес НЯМА" (изисква обосновка) -->
+    <div id="confirmBox" class="panel" style="display:none">
+      <h3>✅ Потвърди: такъв бизнес НЯМА</h3>
+      <p class="hint">Това НЕ е „харесва ми". Потвърждаваш, че бизнесът липсва — затова обясни:</p>
+      <div class="field">
+        <label>Къде би могъл да се развие? (градове, места)</label>
+        <textarea id="where" rows="2" placeholder="напр. в крайбрежните градове, където има туризъм…"></textarea>
+      </div>
+      <div class="field">
+        <label>Защо знаеш, че го няма? (причини)</label>
+        <textarea id="why" rows="2" placeholder="напр. бедна страна, малко инвеститори, климат…"></textarea>
+      </div>
+      <div class="actions">
+        <button id="btnConfirm">Потвърждавам, че НЯМА</button>
+        <button id="btnDispute" class="ghost">Не съм съгласен (има го)</button>
+      </div>
+      <div id="confirmMsg" class="msg" style="display:none"></div>
+    </div>
+
+    <!-- Доклад -->
+    <div id="reportBox" class="panel" style="display:none">
+      <h3>🚩 Докладвай фалшив/нелогичен пост</h3>
+      <div class="field"><label>Причина</label><input id="repReason" placeholder="напр. в Google има 10 такива фирми в тази страна"></div>
+      <div class="field"><label>Доказателство (URL, по избор)</label><input id="repEvidence" placeholder="https://…"></div>
+      <div class="actions"><button id="btnReport" class="ghost">Подай доклад</button></div>
+      <div id="reportMsg" class="msg" style="display:none"></div>
+    </div>
+  </main>
+
+  <script src="js/wnb-common.js"></script>
+  <script src="js/post.js"></script>
+</body>
+</html>
