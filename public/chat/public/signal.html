@@ -333,7 +333,7 @@
                 const data = await response.json();
                 
                 if (!data.canSubmit) {
-                    showError(KCY_I18N.t('sig.already_today'));
+                    showError(window.KCY_I18N?KCY_I18N.t('sig.already_today'):'Вече си подал сигнал днес. Опитай отново утре!');
                     document.getElementById('signalForm').style.display = 'none';
                 }
             } catch (error) {

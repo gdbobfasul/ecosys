@@ -1,4 +1,4 @@
-<!-- Version: 1.0129 -->
+<!-- Version: 1.0139 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -172,7 +172,7 @@ function render(){
       slot.innerHTML=
         '<div class="num">#'+(idx+1)+'</div>'+
         '<div class="val">'+(rate!=null?fmtRate(rate):'—')+'</div>'+
-        '<div class="pair">'+(s.sel?selLabel(s.sel):KCY_I18N.t('watch20.not_selected'))+'</div>'+
+        '<div class="pair">'+(s.sel?selLabel(s.sel):(window.KCY_I18N?KCY_I18N.t('watch20.not_selected'):'не е избрана'))+'</div>'+
         '<div class="dd">'+
           '<input type="text" placeholder="търси валута/крипто…" value="'+(s.sel?s.sel.split(":")[1]:"")+'" '+
             'oninput="filterList('+idx+',this.value)" onfocus="openList('+idx+')">'+
@@ -202,7 +202,7 @@ function filterList(idx, q){
   }).join('');
   box.classList.add('open');
 }
-function selLabelType(c){ return c.type==='fiat'?KCY_I18N.t('watch20.fiat_usd'):KCY_I18N.t('watch20.crypto_usdc'); }
+function selLabelType(c){ return c.type==='fiat'?(window.KCY_I18N?KCY_I18N.t('watch20.fiat_usd'):'валута / USD'):(window.KCY_I18N?KCY_I18N.t('watch20.crypto_usdc'):'крипто / USDC'); }
 function pick(idx, key){
   slots[idx].sel=key;
   document.getElementById('list'+idx).classList.remove('open');
@@ -243,9 +243,9 @@ function delThr(i){ slots[openModalIdx].alerts.splice(i,1); renderThrList(); }
 
 // ── известия + звук ──
 function requestNotify(){
-  if(!('Notification' in window)){ alert(KCY_I18N.t('watch20.no_notify')); return; }
+  if(!('Notification' in window)){ alert((window.KCY_I18N?KCY_I18N.t('watch20.no_notify'):'Браузърът не поддържа известия.')); return; }
   Notification.requestPermission().then(function(p){
-    setStatus(p==='granted'?KCY_I18N.t('watch20.notify_on'):KCY_I18N.t('watch20.notify_off'));
+    setStatus(p==='granted'?(window.KCY_I18N?KCY_I18N.t('watch20.notify_on'):'Известията са разрешени.'):(window.KCY_I18N?KCY_I18N.t('watch20.notify_off'):'Известията са отказани.'));
   });
 }
 function notify(idx, rate, a){
@@ -287,8 +287,8 @@ function saveAll(){
   try{
     var data=slots.map(function(s){ return { sel:s.sel||null, alerts:s.alerts||[] }; });
     localStorage.setItem(STORE_KEY, JSON.stringify(data));
-    setStatus(KCY_I18N.t('watch20.saved'));
-  }catch(e){ setStatus(KCY_I18N.t('watch20.save_error')+e.message); }
+    setStatus((window.KCY_I18N?KCY_I18N.t('watch20.saved'):'Запазено ✓'));
+  }catch(e){ setStatus((window.KCY_I18N?KCY_I18N.t('watch20.save_error'):'Грешка при запазване: ')+e.message); }
 }
 function loadSaved(){
   try{
@@ -308,11 +308,11 @@ function setStatus(t){ document.getElementById('status').textContent=t; }
 
 // ── refresh цикъл ──
 async function refreshAll(){
-  setStatus(KCY_I18N.t('watch20.refreshing'));
+  setStatus((window.KCY_I18N?KCY_I18N.t('watch20.refreshing'):'Опресняване…'));
   await fetchRates();
   checkAlerts();
   render();
-  setStatus(KCY_I18N.t('watch20.updated')+new Date().toLocaleTimeString('bg-BG'));
+  setStatus((window.KCY_I18N?KCY_I18N.t('watch20.updated'):'Обновено: ')+new Date().toLocaleTimeString('bg-BG'));
 }
 
 // ── старт ──
@@ -320,11 +320,14 @@ async function refreshAll(){
   loadSaved();
   render();
   currencies=await loadCurrencyList();
-  setStatus(KCY_I18N.t('watch20.loaded')+currencies.length+' валути/крипто.');
+  setStatus((window.KCY_I18N?KCY_I18N.t('watch20.loaded'):'Заредени ')+currencies.length+' валути/крипто.');
   await refreshAll();
   // авторефреш на всеки 10 минути
   setInterval(refreshAll, 600000);
 })();
+// пре-рендиране след зареждане на езика (i18n.js се зарежда асинхронно)
+document.addEventListener('kcy-lang-ready', function(){ render(); });
+document.addEventListener('kcy-lang-changed', function(){ render(); });
 </script>
     <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
