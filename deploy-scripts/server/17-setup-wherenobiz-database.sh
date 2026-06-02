@@ -118,7 +118,7 @@ setup_wherenobiz() {
   if [ "$RESET_MODE" = true ] && [ "$DB_EXISTS" = "1" ]; then
     # --reset вече е потвърждението (зададено съзнателно / избрано "да" в менюто).
     # Без втори въпрос — не повтаряме същото потвърждение.
-    echo -e "${RED}  [--reset] ИЗТРИВАМ всички данни в '$DB_NAME'…${NC}"
+    echo -e "${YELLOW}  [--reset] ИЗТРИВАМ всички данни в '$DB_NAME'…${NC}"
     sudo -u postgres psql -c "DROP DATABASE \"$DB_NAME\";" 2>&1 | tail -1
     DB_EXISTS=""
   fi

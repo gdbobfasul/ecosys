@@ -457,7 +457,7 @@ log ""
 log "${GREEN}[1/5] Архивиране на проекта...${NC}"
 ARCHIVE_NAME="${HOME}/kcy-deploy-$(date +%Y%m%d-%H%M%S).tar.gz"
 
-log "  ${YELLOW}[debug] Изключени: node_modules, .git, кеш, логове (.env ВКЛЮЧЕН)${NC}"
+log "  ${YELLOW}[debug] Изключени: node_modules, .git, public/assets (→ опция 4), кеш, логове (.env ВКЛЮЧЕН)${NC}"
 log "  ${YELLOW}[debug] Създаване на ${ARCHIVE_NAME}...${NC}"
 
 START_TIME=$SECONDS
@@ -467,6 +467,7 @@ START_TIME=$SECONDS
 tar -czf "$ARCHIVE_NAME" \
     --exclude='node_modules' \
     --exclude='.git' \
+    --exclude='public/assets' \
     --exclude='*.log' \
     --exclude='coverage' \
     --exclude='dist' \
