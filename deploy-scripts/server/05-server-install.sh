@@ -660,6 +660,10 @@ cat > "$TMP_SUDOERS" << 'SUDO_EOF'
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/05-server-install.sh
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/05-server-install.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/05-server-install.sh
+# 03 — нужно за опция 30 (update-sudoers). Без него всеки deploy отрязва sudo 03 и 30 спира.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/06-setup-wizard.sh
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/06-setup-wizard.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/06-setup-wizard.sh
@@ -690,6 +694,23 @@ deploy ALL=(root) NOPASSWD: /bin/bash /var/www/kcy-ecosystem/deploy-scripts/serv
 deploy ALL=(root) NOPASSWD: /var/www/kcy-ecosystem/deploy-scripts/server/15-sync-assets.sh *
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/15-sync-assets.sh *
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/15-sync-assets.sh *
+
+# Нови приложения — setup на отделните PostgreSQL бази (House-Look-Book / WhereNoBiz).
+# Менюто (опции 5/6) ги вика от /var/www/deploy. 16 приема аргумент, 17 е без (или --reset).
+# Затова има и bare форма (без аргумент), и форма с "*" (с аргументи).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh *
+
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh *
 
 # Systemd service management
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat

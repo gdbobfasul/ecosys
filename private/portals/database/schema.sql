@@ -1,5 +1,5 @@
 -- KCY Portals — Database Schema
--- Version: 1.0093
+-- Version: 1.0094
 -- Engine: SQLite (better-sqlite3)
 
 -- ═══════════════════════════════════════════
@@ -68,3 +68,30 @@ CREATE TABLE IF NOT EXISTS portal_service_jobs (
 );
 CREATE INDEX IF NOT EXISTS idx_portal_jobs_user ON portal_service_jobs(user_id);
 CREATE INDEX IF NOT EXISTS idx_portal_jobs_service ON portal_service_jobs(service);
+
+-- ═══════════════════════════════════════════
+-- 5. Watch20 — предпочитания на услугата "Наблюдавай 20 валути"
+-- Пазят се per акаунт (не в браузъра/localStorage), за да следват потребителя
+-- между устройства. Един ред = един от 20-те слота; sel е "FIAT:USD"/"CRYPTO:BTC".
+-- ═══════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS portal_watch_slots (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    slot_index INTEGER NOT NULL,          -- 0..19
+    sel TEXT,                             -- "FIAT:USD" / "CRYPTO:BTC", NULL = празен слот
+    updated_at TEXT DEFAULT (datetime('now')),
+    UNIQUE(user_id, slot_index),
+    FOREIGN KEY (user_id) REFERENCES portal_users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_portal_watch_slots_user ON portal_watch_slots(user_id);
+
+-- Алерти (ценови прагове) — много на слот. threshold = стойността за известие.
+CREATE TABLE IF NOT EXISTS portal_watch_alerts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    slot_index INTEGER NOT NULL,          -- 0..19
+    threshold REAL NOT NULL,
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (user_id) REFERENCES portal_users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_portal_watch_alerts_user ON portal_watch_alerts(user_id);

@@ -97,6 +97,23 @@ deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/15-sync-assets
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/15-sync-assets.sh *
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/15-sync-assets.sh *
 
+# Нови приложения — setup на отделните PostgreSQL бази (House-Look-Book / WhereNoBiz).
+# 16 приема аргумент (houselookbook|wherenobiz|all [--reset]); 17 е без аргумент (или --reset).
+# Затова има и bare форма (без аргумент), и форма с "*" (с аргументи).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh *
+
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh *
+
 # Systemd service management (само за KCY services)
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3

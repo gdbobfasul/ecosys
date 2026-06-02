@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0094
+# Version: 1.0098
 ##############################################################################
 # KCY Ecosystem — Start Menu
 # Един menu item = един реален скрипт. Параметрите се питат след избор.
@@ -24,6 +24,8 @@ run_cmd()     { echo ""; echo -e "${YELLOW}► $*${NC}"; echo ""; "$@"; press_en
 # При успех сетва PICK_SRV / PICK_USER / PICK_PORT и връща 0; при отказ връща 1.
 pick_target() {
     PICK_SRV=""; PICK_USER=""; PICK_PORT=""
+    # Зареди TARGET_* променливите — иначе ${!s_var} indirect expansion връща празно.
+    [ -f .deploy-targets ] && . .deploy-targets
     local IDX=1; local -a DT=()
     if [ -f .deploy-targets ]; then
         for t in $(grep -oE "^TARGET_[a-zA-Z0-9_]+_SERVER" .deploy-targets | sed -E 's/^TARGET_(.+)_SERVER$/\1/' | sort -u); do
@@ -338,12 +340,26 @@ run_choice() {
             echo -e "${BOLD}${CYAN}  DEPLOY House-Look-Book база — на кой сървър?${NC}"
             echo ""
             if pick_target; then
-                read -p "  Reset? (⚠ трие данните) напиши 'reset' или Enter: " RM
-                RST=""; [ "$RM" = "reset" ] && RST=" --reset"
                 echo ""
-                echo "  Изпълни на сървъра (качи проекта с опция 2/3 първо):"
-                echo -e "  ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
-                echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh houselookbook${RST}${NC}"
+                read -p "  Reset? Enter = НЕ трий (само създай/обнови)  |  напиши 'да' = ТРИЙ всичко (DROP): " RM
+                RST=""; case "$RM" in да|Да|ДА|reset|RESET|yes|YES|y|Y) RST=" --reset";; esac
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh houselookbook${RST}"
+                echo ""
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                echo ""
+                echo "  → Резултат: създава база houselookbook + потребителя (HLB_PG_USER от .env) и зарежда схемата."
+                echo ""
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — база houselookbook е настроена на ${PICK_SRV}${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
             else echo "  Отказано"; fi
             press_enter
             ;;
@@ -352,12 +368,26 @@ run_choice() {
             echo -e "${BOLD}${CYAN}  DEPLOY WhereNoBiz база — на кой сървър?${NC}"
             echo ""
             if pick_target; then
-                read -p "  Reset? (⚠ трие данните) напиши 'reset' или Enter: " RM
-                RST=""; [ "$RM" = "reset" ] && RST=" --reset"
                 echo ""
-                echo "  Изпълни на сървъра (качи проекта с опция 2/3 първо):"
-                echo -e "  ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
-                echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh${RST}${NC}"
+                read -p "  Reset? Enter = НЕ трий (само създай/обнови)  |  напиши 'да' = ТРИЙ всичко (DROP): " RM
+                RST=""; case "$RM" in да|Да|ДА|reset|RESET|yes|YES|y|Y) RST=" --reset";; esac
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh${RST}"
+                echo ""
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                echo ""
+                echo "  → Резултат: създава база wherenobiz + потребителя (WNB_PG_USER от .env) и зарежда схемата."
+                echo ""
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — база wherenobiz е настроена на ${PICK_SRV}${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
             else echo "  Отказано"; fi
             press_enter
             ;;

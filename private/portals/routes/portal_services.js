@@ -1,5 +1,5 @@
 // KCY Portals — Portal Services routes (НОВ файл — не пипа services.js)
-// Version: 1.0098
+// Version: 1.0099
 // 7 услуги БЕЗ изкуствен интелект. Повечето работят изцяло в браузъра.
 // Само "crypto" има нужда от backend — за валутните курсове.
 
@@ -85,6 +85,82 @@ router.get('/rates', requirePortalAccessAPI, async (req, res) => {
     } catch (err) {
         log('изход 3 -> 500 ' + err.message);
         res.status(500).json({ error: 'rates_failed', message: err.message });
+    }
+});
+
+// ═══════════════════════════════════════════
+// watch20 — потребителски предпочитания (20 слота + ценови прагове)
+// Пазят се per акаунт (req.session.userId), не в браузъра. Две таблици:
+// portal_watch_slots (избрана валута) + portal_watch_alerts (прагове).
+// ═══════════════════════════════════════════
+const WATCH_MAX_SLOTS = 20;
+const WATCH_MAX_ALERTS = 20;
+
+// GET /api/portals/svc/watch20/prefs — върни 20-те слота + техните прагове
+router.get('/watch20/prefs', requirePortalAccessAPI, (req, res) => {
+    const log = debug.scoped(req, 'watch20/prefs GET');
+    const db = req.app.locals.db;
+    const userId = req.session.userId;
+    log(`старт (user#${userId})`);
+
+    const slotRows = db.prepare(
+        "SELECT slot_index, sel FROM portal_watch_slots WHERE user_id = ? ORDER BY slot_index"
+    ).all(userId);
+    const alertRows = db.prepare(
+        "SELECT slot_index, threshold FROM portal_watch_alerts WHERE user_id = ? ORDER BY slot_index, id"
+    ).all(userId);
+
+    const slots = [];
+    for (let i = 0; i < WATCH_MAX_SLOTS; i++) {
+        const row = slotRows.find((r) => r.slot_index === i);
+        const alerts = alertRows.filter((a) => a.slot_index === i).map((a) => a.threshold);
+        slots.push({ slot_index: i, sel: row ? row.sel : null, alerts });
+    }
+    res.json({ slots });
+    log('изход 1 -> 200 OK');
+});
+
+// POST /api/portals/svc/watch20/prefs — замени ВСИЧКИ слотове + прагове на потребителя
+// body: { slots: [ { sel: "FIAT:USD"|null, alerts: [число, …] }, … ] }
+router.post('/watch20/prefs', requirePortalAccessAPI, (req, res) => {
+    const log = debug.scoped(req, 'watch20/prefs POST');
+    const db = req.app.locals.db;
+    const userId = req.session.userId;
+    const incoming = (req.body && Array.isArray(req.body.slots)) ? req.body.slots : null;
+    if (!incoming) {
+        log('изход 1 -> 400 (липсва slots[])');
+        return res.status(400).json({ error: 'bad_request', message: 'slots[] е задължителен' });
+    }
+
+    const delSlots = db.prepare("DELETE FROM portal_watch_slots WHERE user_id = ?");
+    const delAlerts = db.prepare("DELETE FROM portal_watch_alerts WHERE user_id = ?");
+    const insSlot = db.prepare("INSERT INTO portal_watch_slots (user_id, slot_index, sel) VALUES (?, ?, ?)");
+    const insAlert = db.prepare("INSERT INTO portal_watch_alerts (user_id, slot_index, threshold) VALUES (?, ?, ?)");
+
+    const save = db.transaction((rows) => {
+        delSlots.run(userId);
+        delAlerts.run(userId);
+        const n = Math.min(rows.length, WATCH_MAX_SLOTS);
+        for (let i = 0; i < n; i++) {
+            const s = rows[i] || {};
+            const sel = (typeof s.sel === 'string' && s.sel) ? s.sel : null;
+            insSlot.run(userId, i, sel);
+            const alerts = Array.isArray(s.alerts) ? s.alerts.slice(0, WATCH_MAX_ALERTS) : [];
+            for (const a of alerts) {
+                const val = Number(a);
+                if (Number.isFinite(val)) insAlert.run(userId, i, val);
+            }
+        }
+        return n;
+    });
+
+    try {
+        const n = save(incoming);
+        log(`изход 2 -> 200 OK (запазени ${n} слота)`);
+        res.json({ ok: true });
+    } catch (err) {
+        log('изход 3 -> 500 ' + err.message);
+        res.status(500).json({ error: 'save_failed', message: err.message });
     }
 });
 

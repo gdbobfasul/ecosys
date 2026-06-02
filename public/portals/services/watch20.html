@@ -1,4 +1,4 @@
-<!-- Version: 1.0139 -->
+<!-- Version: 1.0140 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,7 +89,8 @@
 
 <script>
 var SLOTS=20;
-var STORE_KEY='kcy-watch-20';
+var PREFS_URL='/api/portals/svc/watch20/prefs';
+function gotoLogin(){ location.href='/portals/login.html?next='+encodeURIComponent(location.pathname); }
 var rates={};          // символ → стойност спрямо USD/USDC
 var currencies=[];     // списък { code, name, type:'fiat'|'crypto', symbolForApi }
 var slots=[];          // [{ sel:'EUR', alerts:[{dir,val,fired}] }]
@@ -282,26 +283,39 @@ function checkAlerts(){
   });
 }
 
-// ── запазване (localStorage) ──
+// ── запазване (портал база данни, per акаунт) ──
 function saveAll(){
-  try{
-    var data=slots.map(function(s){ return { sel:s.sel||null, alerts:s.alerts||[] }; });
-    localStorage.setItem(STORE_KEY, JSON.stringify(data));
-    setStatus((window.KCY_I18N?KCY_I18N.t('watch20.saved'):'Запазено ✓'));
-  }catch(e){ setStatus((window.KCY_I18N?KCY_I18N.t('watch20.save_error'):'Грешка при запазване: ')+e.message); }
+  // алертите се пращат само като стойности (числа); fired е временно състояние
+  var data=slots.map(function(s){
+    return { sel:s.sel||null, alerts:(s.alerts||[]).map(function(a){ return a.val; }) };
+  });
+  fetch(PREFS_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    credentials:'same-origin',
+    body:JSON.stringify({ slots:data })
+  }).then(function(r){
+    if(r.status===401){ gotoLogin(); return null; }
+    return r.json();
+  }).then(function(j){
+    if(!j) return;
+    if(j.ok) setStatus((window.KCY_I18N?KCY_I18N.t('watch20.saved'):'Запазено ✓'));
+    else setStatus((window.KCY_I18N?KCY_I18N.t('watch20.save_error'):'Грешка при запазване: ')+(j.message||''));
+  }).catch(function(e){ setStatus((window.KCY_I18N?KCY_I18N.t('watch20.save_error'):'Грешка при запазване: ')+e.message); });
 }
-function loadSaved(){
+async function loadSaved(){
+  for(var k=0;k<SLOTS;k++) slots[k]={ sel:null, alerts:[] };
   try{
-    var raw=localStorage.getItem(STORE_KEY);
-    if(raw){
-      var data=JSON.parse(raw);
-      for(var i=0;i<SLOTS;i++){
-        slots[i]={ sel:(data[i]&&data[i].sel)||null, alerts:(data[i]&&data[i].alerts)||[] };
-      }
-      return;
+    var r=await fetch(PREFS_URL,{ credentials:'same-origin' });
+    if(r.status===401){ gotoLogin(); return; }
+    var j=await r.json();
+    var data=(j&&j.slots)||[];
+    for(var i=0;i<SLOTS;i++){
+      var d=data[i];
+      var alerts=((d&&d.alerts)||[]).map(function(v){ return { val:v, fired:false }; });
+      slots[i]={ sel:(d&&d.sel)||null, alerts:alerts };
     }
-  }catch(e){}
-  for(var j=0;j<SLOTS;j++) slots[j]={ sel:null, alerts:[] };
+  }catch(e){ setStatus((window.KCY_I18N?KCY_I18N.t('watch20.save_error'):'Грешка при зареждане: ')+e.message); }
 }
 
 function setStatus(t){ document.getElementById('status').textContent=t; }
@@ -317,7 +331,7 @@ async function refreshAll(){
 
 // ── старт ──
 (async function init(){
-  loadSaved();
+  await loadSaved();
   render();
   currencies=await loadCurrencyList();
   setStatus((window.KCY_I18N?KCY_I18N.t('watch20.loaded'):'Заредени ')+currencies.length+' валути/крипто.');
