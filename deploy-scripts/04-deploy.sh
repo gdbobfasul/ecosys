@@ -457,7 +457,7 @@ log ""
 log "${GREEN}[1/5] Архивиране на проекта...${NC}"
 ARCHIVE_NAME="${HOME}/kcy-deploy-$(date +%Y%m%d-%H%M%S).tar.gz"
 
-log "  ${YELLOW}[debug] Изключени: node_modules, кеш, логове (.env И .git ВКЛЮЧЕНИ)${NC}"
+log "  ${YELLOW}[debug] Изключени: node_modules, .git, кеш, логове (.env ВКЛЮЧЕН)${NC}"
 log "  ${YELLOW}[debug] Създаване на ${ARCHIVE_NAME}...${NC}"
 
 START_TIME=$SECONDS
@@ -466,6 +466,7 @@ START_TIME=$SECONDS
 # Архивът пътува криптирано по SSH до твоя сървър, не отива публично.
 tar -czf "$ARCHIVE_NAME" \
     --exclude='node_modules' \
+    --exclude='.git' \
     --exclude='*.log' \
     --exclude='coverage' \
     --exclude='dist' \

@@ -1,4 +1,4 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0094 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -49,10 +49,14 @@
 
         function showMsg(text, kind) { msg.textContent = text; msg.className = 'msg ' + (kind || 'err'); }
 
+        // Защитен превод — i18n.js се зарежда асинхронно (или липсва на тази страница),
+        // затова не извикваме KCY_I18N директно (иначе ReferenceError → login виси).
+        function T(key, fb) { return (window.KCY_I18N && KCY_I18N.t) ? KCY_I18N.t(key) : fb; }
+
         async function doLogin() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
-            if (!username || !password) { showMsg(KCY_I18N.t('reg.fill_userpass')); return; }
+            if (!username || !password) { showMsg(T('reg.fill_userpass', 'Попълни потребител и парола.')); return; }
             try {
                 const r = await fetch('/api/portals/login', {
                     method: 'POST',
@@ -60,11 +64,11 @@
                     body: JSON.stringify({ username, password })
                 });
                 const data = await r.json();
-                if (!r.ok) { showMsg(data.message || KCY_I18N.t('login.err')); return; }
-                showMsg(KCY_I18N.t('login.success'), 'ok');
+                if (!r.ok) { showMsg(data.message || T('login.err', 'Грешка при вход.')); return; }
+                showMsg(T('login.success', 'Успешен вход — пренасочване…'), 'ok');
                 setTimeout(() => { location.href = nextUrl; }, 400);
             } catch (e) {
-                showMsg(KCY_I18N.t('common.net_err')+': ' + e.message);
+                showMsg(T('common.net_err', 'Мрежова грешка')+': ' + e.message);
             }
         }
 
