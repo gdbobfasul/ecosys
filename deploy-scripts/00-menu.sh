@@ -103,14 +103,8 @@ show_menu() {
         "Качва само public/assets към живия web root. Пита кой сървър." \
         "Без рестарт, без реконфигурация — nginx сервира статично."
 
-    echo -e "${BOLD}${CYAN}━━━ DATABASES (нови приложения → сървър) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo ""
-    item " 5" "Deploy House-Look-Book база → сървър" \
-        "Качва/настройва PostgreSQL базата на House-Look-Book на избран сървър (prod/vm/custom)." \
-        "Изпълнява 16-setup-app-databases.sh houselookbook (база houselookbook + потребител hlb_app)."
-    item " 6" "Deploy WhereNoBiz база → сървър" \
-        "Качва/настройва PostgreSQL базата на WhereNoBiz на избран сървър (prod/vm/custom)." \
-        "Копие на точка 5, но за базата wherenobiz (17-setup-wherenobiz-database.sh)."
+    # (Новите приложения House-Look-Book / WhereNoBiz са преместени на 41–44 по-долу.
+    #  Точки 5 и 6 остават свободни.)
 
     echo -e "${BOLD}${CYAN}━━━ DATABASES (локални) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
@@ -244,6 +238,21 @@ show_menu() {
         "Показва: версия на проекта, Node + npm версии, OS, deploy targets," \
         "локални DB файлове с размер, дали node_modules е инсталиран."
 
+    echo -e "${BOLD}${CYAN}━━━ НОВИ ПРИЛОЖЕНИЯ (House-Look-Book / WhereNoBiz → сървър) ━━━━━━━━━━━${NC}"
+    echo ""
+    item "41" "Deploy House-Look-Book БАЗА → сървър" \
+        "Настройва PostgreSQL базата houselookbook (потребител hlb_app) на избран сървър." \
+        "Изпълнява 16-setup-app-databases.sh houselookbook. Базата е на localhost."
+    item "42" "Deploy WhereNoBiz БАЗА → сървър" \
+        "Настройва PostgreSQL базата wherenobiz (потребител wnb_app) на избран сървър." \
+        "Изпълнява 17-setup-wherenobiz-database.sh. Базата е на localhost."
+    item "43" "Deploy House-Look-Book УСЛУГА (systemd+nginx) → сървър" \
+        "Вдига kcy-hlb услугата (node :3010) + nginx /houselookbook/, /api/hlb/." \
+        "Отделен скрипт 18 — не пипа chat/eco3/portals. nginx маршрутът идва с опция 2."
+    item "44" "Deploy WhereNoBiz УСЛУГА (systemd+nginx) → сървър" \
+        "Вдига kcy-wnb услугата (node :3011) + nginx /wherenobiz/, /api/wnb/." \
+        "Отделен скрипт 19 — не пипа chat/eco3/portals. nginx маршрутът идва с опция 2."
+
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
 }
@@ -334,8 +343,8 @@ run_choice() {
             run_cmd ./deploy-scripts/sync-assets.sh
             ;;
 
-        # ── DATABASES ──
-        5)
+        # ── НОВИ ПРИЛОЖЕНИЯ (бази + услуги) — точки 5/6 са свободни, всичко е на 41–44 ──
+        41)
             echo ""
             echo -e "${BOLD}${CYAN}  DEPLOY House-Look-Book база — на кой сървър?${NC}"
             echo ""
@@ -363,7 +372,7 @@ run_choice() {
             else echo "  Отказано"; fi
             press_enter
             ;;
-        6)
+        42)
             echo ""
             echo -e "${BOLD}${CYAN}  DEPLOY WhereNoBiz база — на кой сървър?${NC}"
             echo ""
@@ -385,6 +394,56 @@ run_choice() {
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — база wherenobiz е настроена на ${PICK_SRV}${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        43)
+            echo ""
+            echo -e "${BOLD}${CYAN}  DEPLOY House-Look-Book УСЛУГА (systemd+nginx) — на кой сървър?${NC}"
+            echo ""
+            if pick_target; then
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/18-setup-houselookbook-service.sh"
+                echo ""
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                echo ""
+                echo "  → Резултат: вдига kcy-hlb (node :3010) + nginx /houselookbook/, /api/hlb/."
+                echo "    (nginx маршрутът се активира напълно след опция 2 — пълен деплой.)"
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-hlb услугата е настроена на ${PICK_SRV}${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        44)
+            echo ""
+            echo -e "${BOLD}${CYAN}  DEPLOY WhereNoBiz УСЛУГА (systemd+nginx) — на кой сървър?${NC}"
+            echo ""
+            if pick_target; then
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh"
+                echo ""
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                echo ""
+                echo "  → Резултат: вдига kcy-wnb (node :3011) + nginx /wherenobiz/, /api/wnb/."
+                echo "    (nginx маршрутът се активира напълно след опция 2 — пълен деплой.)"
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-wnb услугата е настроена на ${PICK_SRV}${NC}"
                 else
                     echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
                 fi

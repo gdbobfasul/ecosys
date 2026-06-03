@@ -114,6 +114,22 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh *
 
+# Нови приложения — setup на УСЛУГИТЕ (systemd + nginx) за House-Look-Book / WhereNoBiz.
+# 18/19 нямат позиционни аргументи (само опц. --status); пак даваме bare + "*" форми.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/18-setup-houselookbook-service.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/18-setup-houselookbook-service.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/18-setup-houselookbook-service.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/18-setup-houselookbook-service.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/18-setup-houselookbook-service.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/18-setup-houselookbook-service.sh *
+
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh *
+
 # Systemd service management (само за KCY services)
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3
