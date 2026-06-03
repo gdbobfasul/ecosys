@@ -1,4 +1,4 @@
-<!-- Version: 1.0155 -->
+<!-- Version: 1.0158 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -24,6 +24,7 @@
         .top-auth .user { color: #fff; padding: 8px 0; font-size: .95em; }
         .top-auth .logout { background: rgba(255,255,255,.22); color: #fff; border: 1px solid rgba(255,255,255,.4); cursor: pointer; font-family: inherit; font-size: .95em; }
         .hero { position: relative; padding-top: 5px; }
+        .hero h1 { margin-bottom: 5px; }
         /* portal buttons row */
         .portals-row { margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.2); }
         .portals-row .btn { background: linear-gradient(135deg, #11998e, #38ef7d); border: none; }
@@ -48,7 +49,7 @@
     <div class="hero">
         <h1>🚀 KCY Ecosystem</h1>
         <p data-i18n="home.tagline">Децентрализирана платформа за криптовалути и комуникация</p>
-        <div style="margin-top: 10px;">
+        <div style="margin-top: 5px;">
             <a href="/token/" class="btn" style="margin: 10px;">🪙 Explore Token</a>
             <a href="/multisig/" class="btn" style="margin: 10px;">🔐 Multi-Sig Wallet</a>
             <a href="/chat/" class="btn" style="margin: 10px;">💬 AMS Chat</a>
@@ -140,6 +141,30 @@
                     <small style="color: #666;">✅ 3 AI Agents<br>✅ Analytic Mode<br>✅ Stripe & Crypto Pay</small>
                 </div>
             </div>
+
+            <div class="project-card">
+                <h2>🏠 House-Look-Book</h2>
+                <p>Подреди своя дом — сглоби къща по форма, покрив, етажи, стаи и цвят; PDF с изгледи.</p>
+                <div style="margin-top: 20px;">
+                    <a href="/houselookbook/" class="btn">Отвори</a>
+                    <a href="/houselookbook/admin.html" class="btn btn-admin">Admin Panel</a>
+                </div>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                    <small style="color: #666;">✅ Конструктор + стаи/форми<br>✅ Галерия + класация<br>✅ Генератор + форма по снимка</small>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h2>🌍 WhereNoBiz</h2>
+                <p>Намери ми бизнес, който го няма — постове по държави за липсващи бизнеси, потвърждения и класация.</p>
+                <div style="margin-top: 20px;">
+                    <a href="/wherenobiz/" class="btn">Отвори</a>
+                    <a href="/wherenobiz/admin.html" class="btn btn-admin">Admin Panel</a>
+                </div>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                    <small style="color: #666;">✅ По държави<br>✅ Потвърждения/несъгласия<br>✅ Модерация + бан</small>
+                </div>
+            </div>
         </div>
 
         <!-- Admin Tools — видимо само с ?adm=bgmasters-set -->
@@ -166,6 +191,8 @@
                         <a href="/multisig/admin/" class="btn btn-admin">🔐 Multi-Sig Admin</a>
                         <a href="/chat/admin/" class="btn btn-admin">💬 Chat Admin</a>
                         <a href="/eco-3/admin/" class="btn btn-admin">🤖 ECO-3 Admin</a>
+                        <a href="/houselookbook/admin.html" class="btn btn-admin">🏠 House-Look-Book Admin</a>
+                        <a href="/wherenobiz/admin.html" class="btn btn-admin">🌍 WhereNoBiz Admin</a>
                     </div>
                 </div>
 
