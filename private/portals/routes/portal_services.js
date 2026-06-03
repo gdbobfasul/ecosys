@@ -1,5 +1,5 @@
 // KCY Portals — Portal Services routes (НОВ файл — не пипа services.js)
-// Version: 1.0100
+// Version: 1.0156
 // 7 услуги БЕЗ изкуствен интелект. Повечето работят изцяло в браузъра.
 // Само "crypto" има нужда от backend — за валутните курсове.
 
@@ -85,6 +85,49 @@ router.get('/rates', requirePortalAccessAPI, async (req, res) => {
     } catch (err) {
         log('изход 3 -> 500 ' + err.message);
         res.status(500).json({ error: 'rates_failed', message: err.message });
+    }
+});
+
+// ── CoinMarketCap ранг (ТОЧНИТЕ номера от CMC). Кеш 15 мин. ──
+// Ключ: process.env.CMC_API_KEY (Basic план — безплатно). БЕЗ ключ → връща празно
+// (watch20 не показва бадж, вместо да лъже с друг източник).
+let cmcCache = { map: null, ts: 0 };
+function fetchCMC(apiKey) {
+    return new Promise((resolve, reject) => {
+        const opts = {
+            host: 'pro-api.coinmarketcap.com',
+            path: '/v1/cryptocurrency/listings/latest?limit=300&sort=market_cap',
+            headers: { 'X-CMC_PRO_API_KEY': apiKey, 'Accept': 'application/json', 'User-Agent': 'KCY-Portals' },
+        };
+        https.get(opts, (r) => {
+            let body = '';
+            r.on('data', (c) => { body += c; });
+            r.on('end', () => { try { resolve(JSON.parse(body)); } catch (e) { reject(new Error('invalid_json')); } });
+        }).on('error', reject);
+    });
+}
+
+// GET /api/portals/svc/crypto-ranks → { ranks: { BTC:1, ETH:2, ... }, source }
+// Точните номера от CoinMarketCap (символ → cmc_rank). Нужен е CMC_API_KEY в .env.
+router.get('/crypto-ranks', requireLoginAPI, async (req, res) => {
+    const log = debug.scoped(req, 'portal-services/crypto-ranks');
+    const key = process.env.CMC_API_KEY;
+    if (!key) { log('няма CMC_API_KEY'); return res.json({ ranks: {}, source: 'none', message: 'CMC_API_KEY липсва в .env' }); }
+    const now = Date.now();
+    if (cmcCache.map && (now - cmcCache.ts) < 900000) {
+        return res.json({ ranks: cmcCache.map, source: 'CoinMarketCap', cached: true });
+    }
+    try {
+        const j = await fetchCMC(key);
+        const list = (j && Array.isArray(j.data)) ? j.data : [];
+        const ranks = {};
+        list.forEach((c) => { const s = (c.symbol || '').toUpperCase(); if (s && c.cmc_rank && ranks[s] == null) ranks[s] = c.cmc_rank; });
+        cmcCache = { map: ranks, ts: now };
+        log('CMC ранг ок (' + Object.keys(ranks).length + ' символа)');
+        res.json({ ranks: ranks, source: 'CoinMarketCap', cached: false });
+    } catch (err) {
+        log('CMC грешка: ' + err.message);
+        res.status(502).json({ ranks: {}, source: 'CoinMarketCap', error: err.message });
     }
 });
 
