@@ -1,4 +1,4 @@
-<!-- Version: 1.0141 -->
+<!-- Version: 1.0142 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,7 +75,7 @@
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h3><span data-i18n="watch20.thresholds">Прагове за известие — слот</span> <span id="mNum"></span></h3>
-    <p class="hint" data-i18n="watch20.thresholds_hint">Добави до 20 стойности. Когато курсът достигне точно някоя от тях, ще получиш известие на браузъра + звук, а кутийката ще светне.</p>
+    <p class="hint" data-i18n="watch20.thresholds_hint">Добави до 20 стойности. Когато курсът ПРЕМИНЕ някоя от тях (нагоре или надолу — дори при прескочена граница между две проверки), ще получиш известие на браузъра + мелодия, а кутийката ще светне.</p>
     <div id="thrList"></div>
     <div class="thr">
       <input type="number" id="thrVal" step="any" placeholder="стойност (напр. 0.92)" data-i18n-attr="placeholder:watch20.value_placeholder">
@@ -85,6 +85,15 @@
   </div>
 </div>
 
+<!-- Мелодия за известие при пресичане на праг.
+     Постави СВОЙ файл в /public/assets/crypto-watch/ с име alert.mp3 (или .mp4/.ogg/.wav).
+     Браузърът избира първия наличен и поддържан източник; ако няма — пада към краткия beep. -->
+<audio id="melody" preload="auto">
+  <source src="/assets/crypto-watch/alert.mp3" type="audio/mpeg">
+  <source src="/assets/crypto-watch/alert.ogg" type="audio/ogg">
+  <source src="/assets/crypto-watch/alert.wav" type="audio/wav">
+  <source src="/assets/crypto-watch/alert.mp4" type="audio/mp4">
+</audio>
 <audio id="beep" preload="auto" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="></audio>
 
 <script>
@@ -244,43 +253,83 @@ function delThr(i){ slots[openModalIdx].alerts.splice(i,1); renderThrList(); }
 
 // ── известия + звук ──
 function requestNotify(){
+  unlockAudio(); // потребителски жест — отключва аудиото за авто-известията после
   if(!('Notification' in window)){ alert((window.KCY_I18N?KCY_I18N.t('watch20.no_notify'):'Браузърът не поддържа известия.')); return; }
   Notification.requestPermission().then(function(p){
     setStatus(p==='granted'?(window.KCY_I18N?KCY_I18N.t('watch20.notify_on'):'Известията са разрешени.'):(window.KCY_I18N?KCY_I18N.t('watch20.notify_off'):'Известията са отказани.'));
   });
 }
-function notify(idx, rate, a){
-  var label=selLabel(slots[idx].sel);
-  var msg='Слот #'+(idx+1)+' ('+label+') достигна '+a.val+' — текущо '+fmtRate(rate);
+
+// Браузърите блокират авто-звук без потребителски жест. При първо кликане
+// „отключваме" аудиото (кратко тихо пускане), за да свири после при известие.
+var _audioUnlocked=false;
+function unlockAudio(){
+  if(_audioUnlocked) return;
+  ['melody','beep'].forEach(function(id){
+    try{
+      var el=document.getElementById(id); if(!el) return;
+      var v=el.volume; el.volume=0; var p=el.play();
+      if(p&&p.then){ p.then(function(){ el.pause(); el.currentTime=0; el.volume=v; }).catch(function(){ el.volume=v; }); }
+      else { el.pause(); el.currentTime=0; el.volume=v; }
+    }catch(e){}
+  });
+  _audioUnlocked=true;
+}
+document.addEventListener('click', unlockAudio, { once:true });
+
+// Свири мелодията ВЕДНЪЖ на цикъл (не се застъпва при няколко пресичания наведнъж).
+// Ако мелодията липсва/не може да свири → пада към краткия beep.
+function playMelody(){
+  var m=document.getElementById('melody');
   try{
-    if('Notification' in window && Notification.permission==='granted'){
-      new Notification('KCY — праг достигнат', { body: msg });
+    if(m && m.querySelector('source')){
+      m.pause(); m.currentTime=0;
+      var p=m.play();
+      if(p&&p.catch) p.catch(function(){ playBeep(); });
+      return;
     }
   }catch(e){}
-  try{ var b=document.getElementById('beep'); b.currentTime=0; b.play(); }catch(e){}
+  playBeep();
+}
+function playBeep(){ try{ var b=document.getElementById('beep'); b.currentTime=0; b.play(); }catch(e){} }
+
+function notify(idx, rate, a, up){
+  var label=selLabel(slots[idx].sel);
+  var dir = up ? (window.KCY_I18N?KCY_I18N.t('watch20.crossed_up'):'▲ нагоре над ')
+               : (window.KCY_I18N?KCY_I18N.t('watch20.crossed_down'):'▼ надолу под ');
+  var msg='Слот #'+(idx+1)+' ('+label+') '+dir+fmtRate(a.val)+' — текущо '+fmtRate(rate);
+  try{
+    if('Notification' in window && Notification.permission==='granted'){
+      new Notification('KCY — праг пресечен', { body: msg });
+    }
+  }catch(e){}
   setStatus(msg);
 }
 
-// ── проверка на прагове (РАВНА стойност / пресичане) ──
+// ── проверка на прагове: праг МЕЖДУ последната и текущата стойност (двупосочно) ──
+// Понеже периодът е 10 мин, курсът може да ПРЕСКОЧИ няколко прага наведнъж —
+// затова за всеки праг гледаме дали попада между предишната и сегашната стойност,
+// без значение посоката (нагоре или надолу). Връща броя задействани известия.
 function checkAlerts(){
+  var totalHits=0;
   slots.forEach(function(s,idx){
-    if(!s.sel||!s.alerts||!s.alerts.length) return;
+    if(!s.sel||!s.alerts||!s.alerts.length){ return; }
     var rate=rateOf(s.sel);
     if(rate==null) return;
     var prev=s._prevRate;
-    var hit=false;
+    if(prev==null){ s._prevRate=rate; return; }   // първо засичане — само запомняме, без известие
+    if(rate===prev){ return; }
+    var up=rate>prev, hit=false;
     s.alerts.forEach(function(a){
-      // "достигане" на точна стойност: курсът е много близо ИЛИ е пресякъл нивото
-      var tol=Math.abs(a.val)*0.0005 || 1e-8; // 0.05% толеранс
-      var near=Math.abs(rate-a.val)<=tol;
-      var crossed=(prev!=null) && ((prev< a.val && rate>=a.val) || (prev> a.val && rate<=a.val));
-      if((near||crossed) && !a.fired){ a.fired=true; hit=true; notify(idx,rate,a); }
-      // ресет когато курсът се отдалечи достатъчно (за да може пак да задейства)
-      if(!near && !crossed && Math.abs(rate-a.val)>tol*4) a.fired=false;
+      // прагът е строго между prev и rate (в коя да е посока),
+      // ИЛИ текущата стойност пада точно върху прага (а предишната не е била).
+      var crossed = ((prev-a.val)*(rate-a.val) < 0) || (rate===a.val && prev!==a.val);
+      if(crossed){ hit=true; totalHits++; notify(idx, rate, a, up); }
     });
     s._prevRate=rate;
     if(hit) s._alerted=true;
   });
+  return totalHits;
 }
 
 // ── запазване (портал база данни, per акаунт) ──
@@ -324,8 +373,9 @@ function setStatus(t){ document.getElementById('status').textContent=t; }
 async function refreshAll(){
   setStatus((window.KCY_I18N?KCY_I18N.t('watch20.refreshing'):'Опресняване…'));
   await fetchRates();
-  checkAlerts();
+  var hits=checkAlerts();
   render();
+  if(hits>0) playMelody();   // мелодия веднъж, ако има пресечени прагове
   setStatus((window.KCY_I18N?KCY_I18N.t('watch20.updated'):'Обновено: ')+new Date().toLocaleTimeString('bg-BG'));
 }
 

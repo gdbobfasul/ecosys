@@ -1757,13 +1757,17 @@ echo -e "${GREEN}  Зачистване на staging${NC}"
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 if [ -d "$STAGING" ]; then
-    # Запази само .kcy-logs/ ако още не са преместени (failsafe)
     STAGING_SIZE_BEFORE=$(du -sh "$STAGING" 2>/dev/null | awk '{print $1}')
-    rm -rf "$STAGING"/*
-    rm -rf "$STAGING"/.[!.]* 2>/dev/null  # hidden files (без . и ..)
+    # ВАЖНО: ЗАПАЗИ deploy-scripts/ — СТАРТ менюто вика server скриптовете оттам
+    # СЛЕД деплой (sudo /var/www/deploy/deploy-scripts/server/NN-*.sh). Ако ги изтрием,
+    # опции 41–44 (и др.) дават "command not found". Трием само едрите неща
+    # (public/private/node_modules/docs/tests…), не самите скриптове.
+    find "$STAGING" -mindepth 1 -maxdepth 1 ! -name 'deploy-scripts' -exec rm -rf {} + 2>/dev/null || true
+    # дръж скриптовете изпълними (менюто ги вика директно)
+    find "$STAGING/deploy-scripts" -name '*.sh' -exec chmod +x {} + 2>/dev/null || true
     STAGING_SIZE_AFTER=$(du -sh "$STAGING" 2>/dev/null | awk '{print $1}')
-    echo -e "  ${GREEN}✓${NC} ${STAGING}/ изчистен (${STAGING_SIZE_BEFORE} → ${STAGING_SIZE_AFTER:-0})"
-    diag_log services-errors.log "install: staging директорията изчистена"
+    echo -e "  ${GREEN}✓${NC} ${STAGING}/ изчистен, запазен deploy-scripts/ (${STAGING_SIZE_BEFORE} → ${STAGING_SIZE_AFTER:-0})"
+    diag_log services-errors.log "install: staging изчистен (deploy-scripts запазен)"
 fi
 
 ##############################################################################
