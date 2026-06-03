@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WhereNoBiz — Поствай свободна ниша</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title data-i18n="new.title">WhereNoBiz — Поствай свободна ниша</title>
+  <link rel="stylesheet" href="css/style.css?v=1.0163">
 </head>
 <body>
   <header class="hero small">
-    <h1>💡 Поствай свободна ниша</h1>
-    <p>Опиши <b>какъв бизнес още го няма</b> в избрана страна. Постът минава <b>модерация</b> преди да е публичен.</p>
+    <h1 data-i18n="new.h1">💡 Поствай свободна ниша</h1>
+    <p data-i18n-html="new.tagline">Опиши <b>какъв бизнес още го няма</b> в избрана страна. Постът минава <b>модерация</b> преди да е публичен.</p>
   </header>
 
   <main class="form-wrap">
-    <div id="needLogin" class="panel notice" style="display:none">
+    <div id="needLogin" class="panel notice" style="display:none" data-i18n-html="new.needlogin">
       За да постваш, <a href="login.html">влез в профила си</a>.
     </div>
 
-    <div class="panel warn-box" id="langWarn" style="display:none">
+    <div class="panel warn-box" id="langWarn" style="display:none" data-i18n-html="new.langwarn">
       ⚠️ <b>Внимание:</b> постване на език, различен от официалния за съответната страна,
       може да доведе до <b>бан на акаунта</b>. Очаква се за липсващите бизнеси да постват
       само <b>местни</b> — няма логика да постваш за страна, чийто език не владееш.
@@ -25,42 +25,43 @@
 
     <form id="postForm" class="panel" style="display:none">
       <div class="field">
-        <label for="country">Страна</label>
+        <label for="country" data-i18n="new.label_country">Страна</label>
         <select id="country"></select>
       </div>
       <label class="ack">
         <input type="checkbox" id="ackLang">
-        Разбирам: ще пиша на официалния език на избраната страна, иначе акаунтът ми може да бъде баннат.
+        <span data-i18n="new.ack">Разбирам: ще пиша на официалния език на избраната страна, иначе акаунтът ми може да бъде баннат.</span>
       </label>
       <div class="field">
-        <label for="title">Какъв бизнес няма? (кратко име)</label>
-        <input id="title" maxlength="160" placeholder="напр. подводен парашутизъм">
+        <label for="title" data-i18n="new.label_title">Какъв бизнес няма? (кратко име)</label>
+        <input id="title" maxlength="160" placeholder="напр. подводен парашутизъм" data-i18n-attr="placeholder:new.ph_title">
       </div>
       <div class="field">
-        <label for="desc">Описание <span class="counter"><span id="cnt">0</span>/<span id="cntMax">3000</span></span></label>
-        <textarea id="desc" rows="6" placeholder="Защо го няма, къде би работило, как изглежда подобен бизнес другаде…"></textarea>
+        <label for="desc"><span data-i18n="new.label_desc">Описание</span> <span class="counter"><span id="cnt">0</span>/<span id="cntMax">3000</span></span></label>
+        <textarea id="desc" rows="6" placeholder="Защо го няма, къде би работило, как изглежда подобен бизнес другаде…" data-i18n-attr="placeholder:new.ph_desc"></textarea>
       </div>
       <div class="field">
-        <label for="links">Линкове към подобни сайтове в ДРУГИ страни (по един на ред)</label>
+        <label for="links" data-i18n="new.label_links">Линкове към подобни сайтове в ДРУГИ страни (по един на ред)</label>
         <textarea id="links" rows="3" placeholder="https://example.com&#10;https://another.com"></textarea>
       </div>
       <div class="fee-note" id="feeNote"></div>
-      <div class="actions"><button id="btnSubmit" type="submit">Поствай (минава модерация)</button></div>
+      <div class="actions"><button id="btnSubmit" type="submit" data-i18n="new.btn_submit">Поствай (минава модерация)</button></div>
       <div id="formMsg" class="msg" style="display:none"></div>
     </form>
 
     <!-- След създаване: качване на снимки -->
     <div id="imagesBox" class="panel" style="display:none">
-      <h3>📷 Добави снимки (по избор, до <span id="imgMax">30</span>)</h3>
+      <h3 id="imagesH3">📷 Добави снимки (по избор, до 30)</h3>
       <input type="file" id="imgInput" accept="image/*">
-      <div class="actions"><button id="btnUpload" class="ghost">Качи снимка</button></div>
+      <div class="actions"><button id="btnUpload" class="ghost" data-i18n="new.btn_upload">Качи снимка</button></div>
       <div id="imgThumbs" class="img-grid"></div>
       <div id="imgMsg" class="msg" style="display:none"></div>
-      <div class="actions" style="margin-top:10px"><a id="goPost" class="cta cta-primary" href="#">Готово — виж поста</a></div>
+      <div class="actions" style="margin-top:10px"><a id="goPost" class="cta cta-primary" href="#" data-i18n="new.go_post">Готово — виж поста</a></div>
     </div>
   </main>
 
-  <script src="js/wnb-common.js"></script>
-  <script src="js/new.js"></script>
+  <script src="js/i18n.js?v=1.0163"></script>
+  <script src="js/wnb-common.js?v=1.0163"></script>
+  <script src="js/new.js?v=1.0163"></script>
 </body>
 </html>

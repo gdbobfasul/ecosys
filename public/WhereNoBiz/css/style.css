@@ -24,6 +24,11 @@ body { margin: 0; font-family: system-ui, "Segoe UI", Arial, sans-serif; backgro
 .wnb-nav .nav-link:hover { background: rgba(255,255,255,.14); }
 .wnb-nav .nav-link.on { background: rgba(255,255,255,.24); font-weight: 600; }
 .wnb-nav .nav-user { font-size: 13px; opacity: .85; }
+.wnb-nav .wnb-lang {
+  background: rgba(255,255,255,.14); color: #fff; border: 1px solid rgba(255,255,255,.25);
+  font-size: 13px; padding: 5px 8px; border-radius: 6px; cursor: pointer; margin-right: 4px;
+}
+.wnb-nav .wnb-lang option { color: #111; }
 
 /* ── Hero / заглавия ───────────────────────────────────────── */
 .hero { background: linear-gradient(160deg, var(--bg) 0%, var(--bg2) 100%); color: #fff; padding: 30px 20px; text-align: center; }

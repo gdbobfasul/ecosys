@@ -4,6 +4,7 @@
 (function () {
   'use strict';
   const $ = s => document.querySelector(s);
+  const T = (k, v) => (window.WNB_I18N ? WNB_I18N.t(k, v) : k);
   let createdPostId = null;
   let imgCount = 0;
   let maxImages = 30;
@@ -20,7 +21,7 @@
     WNB.CONTINENTS.forEach(cont => {
       if (!byCont[cont]) return;
       const og = document.createElement('optgroup');
-      og.label = (WNB.CONTINENT_BG[cont] || cont);
+      og.label = WNB.continentName(cont);
       byCont[cont].forEach(c => {
         const o = new Option(`${WNB.flag(c.code)} ${c.name}`, c.code);
         og.appendChild(o);
@@ -36,13 +37,13 @@
     const title = $('#title').value.trim();
     const description = $('#desc').value;
     const links = $('#links').value.split('\n').map(s => s.trim()).filter(Boolean);
-    if (!country_code) { msg($('#formMsg'), 'Избери страна.', false); return; }
-    if (!$('#ackLang').checked) { msg($('#formMsg'), 'Потвърди, че ще пишеш на официалния език на страната (иначе — бан).', false); return; }
-    if (!title) { msg($('#formMsg'), 'Назови липсващия бизнес.', false); return; }
+    if (!country_code) { msg($('#formMsg'), T('new.choose_country'), false); return; }
+    if (!$('#ackLang').checked) { msg($('#formMsg'), T('new.ack_required'), false); return; }
+    if (!title) { msg($('#formMsg'), T('new.name_required'), false); return; }
     try {
       const r = await WNB.api('/posts', { method: 'POST', body: { country_code, title, description, links } });
       createdPostId = r.post.id;
-      msg($('#formMsg'), `Постнато! Такса за постване: $${r.fee} (заглушка). Постът чака модерация.`, true);
+      msg($('#formMsg'), T('new.posted', { fee: r.fee }), true);
       $('#postForm').style.display = 'none';
       $('#imagesBox').style.display = '';
       $('#goPost').href = 'post.html?id=' + createdPostId;
@@ -54,8 +55,8 @@
 
   async function upload() {
     const f = $('#imgInput').files[0];
-    if (!f) { msg($('#imgMsg'), 'Избери снимка.', false); return; }
-    if (imgCount >= maxImages) { msg($('#imgMsg'), `Лимит ${maxImages} снимки.`, false); return; }
+    if (!f) { msg($('#imgMsg'), T('new.choose_image'), false); return; }
+    if (imgCount >= maxImages) { msg($('#imgMsg'), T('new.img_limit', { n: maxImages }), false); return; }
     const fd = new FormData();
     fd.append('image', f);
     try {
@@ -65,7 +66,7 @@
       img.src = r.image.url;
       $('#imgThumbs').appendChild(img);
       $('#imgInput').value = '';
-      msg($('#imgMsg'), `Качено (${imgCount}/${maxImages}).`, true);
+      msg($('#imgMsg'), T('new.uploaded', { n: imgCount, max: maxImages }), true);
     } catch (e) {
       msg($('#imgMsg'), e.message, false);
     }
@@ -85,9 +86,9 @@
         $('#cntMax').textContent = cfg.post.maxDescriptionChars;
         $('#desc').maxLength = cfg.post.maxDescriptionChars;
         maxImages = cfg.post.maxImages;
-        $('#imgMax').textContent = maxImages;
       }
-      if (cfg && cfg.fees) $('#feeNote').textContent = `Постването струва $${cfg.fees.postUsd} (на сайта). За прототипа е заглушка.`;
+      $('#imagesH3').textContent = T('new.images_h3', { n: maxImages });
+      if (cfg && cfg.fees) $('#feeNote').textContent = T('new.fee_note', { fee: cfg.fees.postUsd });
     } catch (_) {}
 
     const pre = new URLSearchParams(location.search).get('country');

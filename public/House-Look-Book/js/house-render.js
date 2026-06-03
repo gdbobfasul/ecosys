@@ -59,7 +59,47 @@ const HouseRender = (function () {
     { id: 'diamond',  name: 'Ромб',        key: 'shape.diamond' },
     { id: 'triangle', name: 'Триъгълна',   key: 'shape.triangle' },
     { id: 'hex',      name: 'Шестоъгълна', key: 'shape.hex' },
+    { id: 'trapezoid',name: 'Трапец',      key: 'shape.trapezoid' },
   ];
+  // Брой стени (= брой странични изгледи) според формата.
+  // Многоъгълник → колкото му са страните; заоблена форма → 4 (по посоки).
+  const SHAPE_WALLS = { rect: 4, rounded: 4, circle: 4, oval: 4, crescent: 4, diamond: 4, triangle: 3, hex: 6, trapezoid: 4 };
+  function wallsForShape(shape) { return SHAPE_WALLS[shape] || 4; }
+
+  // Каталог мебели/уреди. def = подразбиращо се място ('center'|'wall') — може да се сменя.
+  // rooms = за кои типове стаи се предлага първо (но всичко може да се добави навсякъде).
+  const FURNITURE = [
+    { id: 'bed',        name: 'Легло',            key: 'fn.bed',        def: 'center', rooms: ['bedroom', 'kids'] },
+    { id: 'sofa',       name: 'Диван',            key: 'fn.sofa',       def: 'center', rooms: ['living'] },
+    { id: 'sofaset',    name: 'Холна гарнитура',  key: 'fn.sofaset',    def: 'center', rooms: ['living'] },
+    { id: 'armchair',   name: 'Фотьойл',          key: 'fn.armchair',   def: 'center', rooms: ['living'] },
+    { id: 'coffee',     name: 'Холна маса',       key: 'fn.coffee',     def: 'center', rooms: ['living'] },
+    { id: 'table',      name: 'Маса',             key: 'fn.table',      def: 'center', rooms: ['dining', 'kitchen', 'living'] },
+    { id: 'chair',      name: 'Стол',             key: 'fn.chair',      def: 'center', rooms: ['dining', 'kitchen', 'office', 'kids'] },
+    { id: 'desk',       name: 'Бюро',             key: 'fn.desk',       def: 'center', rooms: ['office', 'kids'] },
+    { id: 'toilet',     name: 'Тоалетна чиния',   key: 'fn.toilet',     def: 'center', rooms: ['bathroom', 'toilet'] },
+    { id: 'bathtub',    name: 'Вана',             key: 'fn.bathtub',    def: 'center', rooms: ['bathroom'] },
+    { id: 'island',     name: 'Кухненски остров', key: 'fn.island',     def: 'center', rooms: ['kitchen'] },
+    { id: 'tvstand',    name: 'ТВ шкаф',          key: 'fn.tvstand',    def: 'wall',   rooms: ['living', 'bedroom'] },
+    { id: 'wardrobe',   name: 'Гардероб',         key: 'fn.wardrobe',   def: 'wall',   rooms: ['bedroom', 'kids', 'hall'] },
+    { id: 'cabinet',    name: 'Вграден шкаф',     key: 'fn.cabinet',    def: 'wall',   rooms: [] },
+    { id: 'shelves',    name: 'Рафтове',          key: 'fn.shelves',    def: 'wall',   rooms: ['living', 'office', 'kids'] },
+    { id: 'nightstand', name: 'Нощно шкафче',     key: 'fn.nightstand', def: 'wall',   rooms: ['bedroom'] },
+    { id: 'dresser',    name: 'Скрин',            key: 'fn.dresser',    def: 'wall',   rooms: ['bedroom'] },
+    { id: 'sink',       name: 'Мивка',            key: 'fn.sink',       def: 'wall',   rooms: ['kitchen', 'bathroom', 'toilet'] },
+    { id: 'stove',      name: 'Готварска печка',  key: 'fn.stove',      def: 'wall',   rooms: ['kitchen'] },
+    { id: 'oven',       name: 'Вградена фурна',   key: 'fn.oven',       def: 'wall',   rooms: ['kitchen'] },
+    { id: 'fridge',     name: 'Хладилник',        key: 'fn.fridge',     def: 'wall',   rooms: ['kitchen'] },
+    { id: 'dishwasher', name: 'Съдомиялна',       key: 'fn.dishwasher', def: 'wall',   rooms: ['kitchen'] },
+    { id: 'hood',       name: 'Аспиратор',        key: 'fn.hood',       def: 'wall',   rooms: ['kitchen'] },
+    { id: 'shower',     name: 'Душ-кабина',       key: 'fn.shower',     def: 'wall',   rooms: ['bathroom'] },
+    { id: 'washer',     name: 'Пералня',          key: 'fn.washer',     def: 'wall',   rooms: ['bathroom'] },
+    { id: 'boiler',     name: 'Бойлер',           key: 'fn.boiler',     def: 'wall',   rooms: ['bathroom', 'kitchen'] },
+    { id: 'shoecab',    name: 'Шкаф за обувки',   key: 'fn.shoecab',    def: 'wall',   rooms: ['hall'] },
+    { id: 'coatrack',   name: 'Закачалка',        key: 'fn.coatrack',   def: 'wall',   rooms: ['hall'] },
+  ];
+  function furnitureItem(id) { return FURNITURE.find(f => f.id === id); }
+  const WALL_MAX = 3, CENTER_MAX = 10;
   // Рисува стая с дадена форма в правоъгълника (x,y,w,h), запълнена с fill.
   function roomShapeSvg(shape, x, y, w, h, fill) {
     const st = 'stroke="#778" stroke-width="1.5"';
@@ -72,6 +112,7 @@ const HouseRender = (function () {
       case 'diamond':  return `<polygon points="${cx},${y} ${x + w},${cy} ${cx},${y + h} ${x},${cy}" fill="${fill}" ${st}/>`;
       case 'triangle': return `<polygon points="${cx},${y} ${x + w},${y + h} ${x},${y + h}" fill="${fill}" ${st}/>`;
       case 'hex': { const q = w * 0.25; return `<polygon points="${x + q},${y} ${x + w - q},${y} ${x + w},${cy} ${x + w - q},${y + h} ${x + q},${y + h} ${x},${cy}" fill="${fill}" ${st}/>`; }
+      case 'trapezoid': return `<polygon points="${x + w * 0.2},${y} ${x + w * 0.8},${y} ${x + w},${y + h} ${x},${y + h}" fill="${fill}" ${st}/>`;
       case 'rect':
       default:         return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" ${st}/>`;
     }
@@ -266,6 +307,96 @@ const HouseRender = (function () {
     return svgFrame(inner);
   }
 
+  // ── детайлен план на ЕДНА стая (отгоре) ──────────────────────────
+  // Стени = N сегмента от периметъра (N = страните на формата). По стените:
+  // врати (кафяв процеп) + прозорци (синя чертичка) + мебели „до стена". В центъра — мебели.
+  function roomDetailPlan(room) {
+    const RX = 55, RY = 40, RW = 290, RH = 230;
+    const n = wallsForShape(room && room.shape);
+    const walls = (room && room.walls) || [];
+    const items = (room && room.items) || [];
+    const edges = [
+      { ax: RX, ay: RY, bx: RX + RW, by: RY, len: RW, nx: 0, ny: 1 },
+      { ax: RX + RW, ay: RY, bx: RX + RW, by: RY + RH, len: RH, nx: -1, ny: 0 },
+      { ax: RX + RW, ay: RY + RH, bx: RX, by: RY + RH, len: RW, nx: 0, ny: -1 },
+      { ax: RX, ay: RY + RH, bx: RX, by: RY, len: RH, nx: 1, ny: 0 },
+    ];
+    const total = 2 * (RW + RH), segLen = total / n;
+    function ptAt(d) {
+      d = ((d % total) + total) % total;
+      for (const e of edges) { if (d <= e.len) { const t = d / e.len; return { x: e.ax + (e.bx - e.ax) * t, y: e.ay + (e.by - e.ay) * t, nx: e.nx, ny: e.ny }; } d -= e.len; }
+      return { x: RX, y: RY, nx: 0, ny: 1 };
+    }
+    let inner = `<rect x="0" y="0" width="${W}" height="${H}" fill="#f4f7f9"/>`;
+    inner += `<rect x="${RX}" y="${RY}" width="${RW}" height="${RH}" fill="#fff" stroke="#778" stroke-width="2"/>`;
+    for (let i = 0; i < n; i++) {
+      const m = ptAt(i * segLen + segLen / 2);
+      const w = walls[i] || {};
+      inner += `<text x="${m.x + m.nx * 13}" y="${m.y + m.ny * 13 + 3}" text-anchor="middle" font-size="11" fill="#9aa" font-family="system-ui,Arial">${i + 1}</text>`;
+      const doors = Math.max(0, +w.doors || 0), windows = Math.max(0, +w.windows || 0), tot = doors + windows;
+      for (let k = 0; k < tot; k++) {
+        const p = ptAt(i * segLen + segLen * ((k + 1) / (tot + 1)));
+        const isDoor = k < doors, ln = 11, ox = -p.ny, oy = p.nx;
+        inner += `<line x1="${p.x - ox * ln}" y1="${p.y - oy * ln}" x2="${p.x + ox * ln}" y2="${p.y + oy * ln}" stroke="${isDoor ? '#b5651d' : '#2a86d8'}" stroke-width="${isDoor ? 5 : 3}"/>`;
+      }
+      items.filter(it => it.place === 'wall' && (it.wall || 0) === i).slice(0, 3).forEach((it, j) => {
+        const fi = furnitureItem(it.type) || { name: it.type, key: '' };
+        const off = 22 + j * 25, fx = m.x + m.nx * off, fy = m.y + m.ny * off;
+        inner += `<g><rect x="${fx - 17}" y="${fy - 9}" width="34" height="18" rx="3" fill="#e8eef5" stroke="#9ab"/><text x="${fx}" y="${fy + 4}" text-anchor="middle" font-size="8" fill="#345" font-family="system-ui,Arial">${esc((fi.key ? T(fi.key) : fi.name).slice(0, 7))}</text></g>`;
+      });
+    }
+    const center = items.filter(it => it.place === 'center');
+    const cols = Math.max(1, Math.ceil(Math.sqrt(center.length || 1)));
+    center.forEach((it, j) => {
+      const fi = furnitureItem(it.type) || { name: it.type, key: '' };
+      const cx = RX + RW / 2 + ((j % cols) - (cols - 1) / 2) * 44;
+      const cy = RY + RH / 2 + (Math.floor(j / cols) - (Math.ceil(center.length / cols) - 1) / 2) * 26;
+      inner += `<g><rect x="${cx - 20}" y="${cy - 9}" width="40" height="18" rx="3" fill="#fff3df" stroke="#d9b36a"/><text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="8" fill="#7a5a20" font-family="system-ui,Arial">${esc((fi.key ? T(fi.key) : fi.name).slice(0, 8))}</text></g>`;
+    });
+    const rt = roomType(room && room.type);
+    inner += label((rt ? T(rt.key) : (room && room.type) || '') + ' — ' + T('floorplan.room'));
+    return svgFrame(inner);
+  }
+
+  // Груба височина на мебел (дял от стената) за страничните изгледи.
+  function furnitureHeight(id) {
+    if (['wardrobe', 'fridge', 'shelves', 'cabinet', 'shower', 'boiler', 'coatrack'].indexOf(id) > -1) return 0.82;
+    if (['nightstand'].indexOf(id) > -1) return 0.36;
+    return 0.52;
+  }
+
+  // ── страничен изглед на ЕДНА стена (отвътре) ─────────────────────
+  // Показва вратите/прозорците на стената + мебелите „до тази стена".
+  function wallElevation(room, w) {
+    const walls = (room && room.walls) || [], items = (room && room.items) || [];
+    const ww = walls[w] || { doors: 0, windows: 0 };
+    const WX = 34, WY = 60, WW = W - 68, WH = 210, floorY = WY + WH;
+    let inner = `<rect x="0" y="0" width="${W}" height="${H}" fill="#eef3f7"/>`;
+    inner += `<rect x="${WX}" y="${WY}" width="${WW}" height="${WH}" fill="#f7f3ea" stroke="#778" stroke-width="2"/>`;
+    inner += `<line x1="${WX - 6}" y1="${floorY}" x2="${WX + WW + 6}" y2="${floorY}" stroke="#556" stroke-width="3"/>`;
+    const doors = Math.max(0, +ww.doors || 0), windows = Math.max(0, +ww.windows || 0), openings = doors + windows;
+    for (let k = 0; k < openings; k++) {
+      const cx = WX + WW * ((k + 1) / (openings + 1));
+      if (k < doors) {
+        const dw = 36, dh = WH * 0.82;
+        inner += `<rect x="${cx - dw / 2}" y="${floorY - dh}" width="${dw}" height="${dh}" rx="2" fill="#e7d3bf" stroke="#b5651d" stroke-width="2"/><circle cx="${cx + dw / 2 - 6}" cy="${floorY - dh / 2}" r="2.5" fill="#8a5a1d"/>`;
+      } else {
+        const wn = 46, wh = 46, wy = WY + WH * 0.26;
+        inner += `<rect x="${cx - wn / 2}" y="${wy}" width="${wn}" height="${wh}" fill="#dff1ff" stroke="#2a86d8" stroke-width="2"/><line x1="${cx}" y1="${wy}" x2="${cx}" y2="${wy + wh}" stroke="#2a86d8"/><line x1="${cx - wn / 2}" y1="${wy + wh / 2}" x2="${cx + wn / 2}" y2="${wy + wh / 2}" stroke="#2a86d8"/>`;
+      }
+    }
+    const wallItems = items.filter(it => it.place === 'wall' && (it.wall || 0) === w);
+    const slotW = WW / Math.max(wallItems.length, 1);
+    wallItems.forEach((it, j) => {
+      const fi = furnitureItem(it.type) || { name: it.type, key: '' };
+      const fh = WH * furnitureHeight(it.type), fw = Math.min(slotW * 0.72, 74), cx = WX + slotW * (j + 0.5);
+      inner += `<g><rect x="${cx - fw / 2}" y="${floorY - fh}" width="${fw}" height="${fh}" rx="3" fill="#cde0ef" stroke="#5a7a95" stroke-width="1.5"/><text x="${cx}" y="${floorY - fh / 2 + 3}" text-anchor="middle" font-size="9" fill="#234" font-family="system-ui,Arial">${esc((fi.key ? T(fi.key) : fi.name).slice(0, 8))}</text></g>`;
+    });
+    const rt = roomType(room && room.type);
+    inner += label((rt ? T(rt.key) : '') + ' — ' + T('wall.label', { n: w + 1 }));
+    return svgFrame(inner);
+  }
+
   // ── рамки/общи ───────────────────────────────────────────────────
   function svgFrame(inner) {
     return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">${inner}</svg>`;
@@ -284,7 +415,7 @@ const HouseRender = (function () {
       : ({ front: 'Отпред', back: 'Отзад', left: 'Отляво', right: 'Отдясно' }[side] || side));
   }
 
-  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, ROOM_SHAPES, elevation, roofPlan, floorPlan };
+  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, ROOM_SHAPES, FURNITURE, wallsForShape, furnitureItem, WALL_MAX, CENTER_MAX, elevation, roofPlan, floorPlan, roomDetailPlan, wallElevation };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = HouseRender;

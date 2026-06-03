@@ -4,6 +4,7 @@
 (function () {
   'use strict';
   const $ = s => document.querySelector(s);
+  const T = (k, v) => (window.WNB_I18N ? WNB_I18N.t(k, v) : k);
   const params = new URLSearchParams(location.search);
   const continent = params.get('continent');
 
@@ -16,14 +17,14 @@
 
     body = document.createElement('div');
     body.className = 'country-posts';
-    body.innerHTML = '<div class="loading">Зареждам…</div>';
+    body.innerHTML = `<div class="loading">${WNB.esc(T('browse.loading'))}</div>`;
     row.appendChild(body);
     try {
       const r = await WNB.api('/posts?country=' + encodeURIComponent(code));
       const posts = r.posts || [];
       if (!posts.length) {
-        body.innerHTML = `<div class="empty-line">Още няма обяви за ${WNB.esc(name)}.
-          <a href="new.html?country=${code}">Поствай първата ниша</a>.</div>`;
+        body.innerHTML = `<div class="empty-line">${WNB.esc(T('browse.no_posts', { name: name }))}
+          <a href="new.html?country=${code}">${WNB.esc(T('browse.post_first'))}</a>.</div>`;
         return;
       }
       body.innerHTML = posts.map((p, i) => `
@@ -33,7 +34,7 @@
           <span class="biz-votes">✅ ${p.confirm_count}</span>
         </a>`).join('');
     } catch (e) {
-      body.innerHTML = `<div class="empty-line">Грешка: ${WNB.esc(e.message)}</div>`;
+      body.innerHTML = `<div class="empty-line">${WNB.esc(T('browse.err', { msg: e.message }))}</div>`;
     }
   }
 
@@ -44,7 +45,7 @@
       <button class="country-head">
         <span class="flag">${WNB.flag(c.code)}</span>
         <span class="cname">${WNB.esc(c.name)}</span>
-        <span class="cbadge">${c.postCount ? c.postCount + ' липсващи' : 'няма обяви'}</span>
+        <span class="cbadge">${WNB.esc(c.postCount ? T('browse.missing', { n: c.postCount }) : T('browse.no_listings'))}</span>
         <span class="chev">▾</span>
       </button>`;
     row.querySelector('.country-head').onclick = () => toggleCountry(row, c.code, c.name);
@@ -52,16 +53,16 @@
   }
 
   async function showCountries() {
-    $('#title').textContent = '🔎 ' + (WNB.CONTINENT_BG[continent] || continent);
-    $('#subtitle').textContent = 'Избери държава, за да видиш какви бизнеси още ги няма там.';
+    $('#title').textContent = '🔎 ' + WNB.continentName(continent);
+    $('#subtitle').textContent = T('browse.subtitle_country');
     try {
       const r = await WNB.api('/countries?continent=' + encodeURIComponent(continent));
       const list = r.countries || [];
       const wrap = $('#countryList');
-      if (!list.length) { $('#empty').textContent = 'Няма държави в този континент.'; $('#empty').style.display = ''; return; }
+      if (!list.length) { $('#empty').textContent = T('browse.no_countries'); $('#empty').style.display = ''; return; }
       list.forEach(c => wrap.appendChild(countryRow(c)));
     } catch (e) {
-      $('#empty').textContent = 'Грешка при зареждане: ' + e.message;
+      $('#empty').textContent = T('browse.load_err', { msg: e.message });
       $('#empty').style.display = '';
     }
   }

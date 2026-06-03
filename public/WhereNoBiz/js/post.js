@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   const $ = s => document.querySelector(s);
+  const T = (k, v) => (window.WNB_I18N ? WNB_I18N.t(k, v) : k);
   const id = new URLSearchParams(location.search).get('id');
   let user = null;
   let data = null;
@@ -19,21 +20,21 @@
     if (data.phoneAvailable) {
       phoneHtml = data.phone
         ? `<div class="phone-box">📞 <b>${WNB.esc(data.phone)}</b></div>`
-        : `<div class="phone-box">📞 Телефонът е разкрит. <button id="btnBuyPhone" class="ghost">Виж телефона (плати $${data.viewPhoneFee})</button></div>`;
+        : `<div class="phone-box">📞 ${WNB.esc(T('post.phone_revealed'))} <button id="btnBuyPhone" class="ghost">${WNB.esc(T('post.view_phone', { fee: data.viewPhoneFee }))}</button></div>`;
     }
 
     $('#post').innerHTML = `
       <div class="post-country">${WNB.flag(p.country_code)} ${WNB.esc(p.country_code)}</div>
       <h1 class="post-title">${WNB.esc(p.title)}</h1>
-      <div class="post-meta">от ${WNB.esc(p.owner_name || 'анонимен')} · ✅ ${p.confirm_count} потвърждения · ✋ ${p.unlike_count} несъгласия</div>
-      ${p.status !== 'approved' ? `<div class="status-badge">статус: ${WNB.esc(p.status)}</div>` : ''}
-      <p class="post-desc">${WNB.esc(p.description) || '<i>без описание</i>'}</p>
-      ${links ? `<div class="post-section"><h4>Подобни сайтове в други страни</h4><ul class="link-list">${links}</ul></div>` : ''}
-      ${imgs ? `<div class="post-section"><h4>Снимки</h4><div class="img-grid">${imgs}</div></div>` : ''}
+      <div class="post-meta">${WNB.esc(T('post.by', { name: p.owner_name || T('post.anon') }))} · ✅ ${WNB.esc(T('post.confirmations', { n: p.confirm_count }))} · ✋ ${WNB.esc(T('post.disagreements', { n: p.unlike_count }))}</div>
+      ${p.status !== 'approved' ? `<div class="status-badge">${WNB.esc(T('post.status', { s: p.status }))}</div>` : ''}
+      <p class="post-desc">${WNB.esc(p.description) || ('<i>' + WNB.esc(T('post.no_desc')) + '</i>')}</p>
+      ${links ? `<div class="post-section"><h4>${WNB.esc(T('post.similar_sites'))}</h4><ul class="link-list">${links}</ul></div>` : ''}
+      ${imgs ? `<div class="post-section"><h4>${WNB.esc(T('post.photos'))}</h4><div class="img-grid">${imgs}</div></div>` : ''}
       ${phoneHtml}
       <div class="post-actions">
-        <button id="actConfirm">✅ Потвърди / Гласувай</button>
-        <button id="actReport" class="ghost">🚩 Докладвай</button>
+        <button id="actConfirm">${WNB.esc(T('post.act_confirm'))}</button>
+        <button id="actReport" class="ghost">${WNB.esc(T('post.act_report'))}</button>
       </div>`;
 
     const buy = $('#btnBuyPhone');
@@ -52,7 +53,7 @@
   async function buyPhone() {
     try {
       const r = await WNB.api(`/posts/${id}/buy-phone`, { method: 'POST' });
-      alert('Телефон: ' + (r.phone || '—'));
+      alert(T('post.phone_alert', { phone: r.phone || '—' }));
       load();
     } catch (e) {
       if (e.status === 401) location.href = 'login.html';
@@ -69,22 +70,22 @@
     try {
       const r = await WNB.api(`/posts/${id}/confirm`, { method: 'POST', body });
       msg($('#confirmMsg'), stance === 'confirm'
-        ? `Записано! Вече ✅ ${r.confirm_count} потвърждения.`
-        : `Записано несъгласие. ✋ ${r.unlike_count}.`, true);
+        ? T('post.confirm_saved', { n: r.confirm_count })
+        : T('post.dispute_saved', { n: r.unlike_count }), true);
       setTimeout(load, 700);
     } catch (e) {
       if (e.status === 401) location.href = 'login.html';
-      else if (e.status === 402) msg($('#confirmMsg'), 'Нужен е абонамент ($1/мес), за да гласуваш.', false);
+      else if (e.status === 402) msg($('#confirmMsg'), T('post.need_sub'), false);
       else msg($('#confirmMsg'), e.message, false);
     }
   }
 
   async function sendReport() {
     const body = { reason: $('#repReason').value.trim(), evidence_url: $('#repEvidence').value.trim() || undefined };
-    if (!body.reason) { msg($('#reportMsg'), 'Опиши причината.', false); return; }
+    if (!body.reason) { msg($('#reportMsg'), T('post.report_reason_required'), false); return; }
     try {
       await WNB.api(`/posts/${id}/report`, { method: 'POST', body });
-      msg($('#reportMsg'), 'Докладът е подаден и чака модератор.', true);
+      msg($('#reportMsg'), T('post.report_sent'), true);
     } catch (e) {
       if (e.status === 401) location.href = 'login.html';
       else msg($('#reportMsg'), e.message, false);
@@ -96,7 +97,7 @@
       data = await WNB.api('/posts/' + id);
       renderPost();
     } catch (e) {
-      $('#post').innerHTML = `<div class="empty-line">Грешка: ${WNB.esc(e.message)}</div>`;
+      $('#post').innerHTML = `<div class="empty-line">${WNB.esc(T('browse.err', { msg: e.message }))}</div>`;
     }
   }
 
@@ -106,7 +107,7 @@
     $('#btnConfirm').onclick = () => sendConfirm('confirm');
     $('#btnDispute').onclick = () => sendConfirm('dispute');
     $('#btnReport').onclick = sendReport;
-    if (!id) { $('#post').innerHTML = '<div class="empty-line">Няма пост.</div>'; return; }
+    if (!id) { $('#post').innerHTML = `<div class="empty-line">${WNB.esc(T('post.no_post'))}</div>`; return; }
     load();
   });
 })();

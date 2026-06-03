@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   const $ = s => document.querySelector(s);
+  const T = (k, v) => (window.WNB_I18N ? WNB_I18N.t(k, v) : k);
   let mode = 'login';
 
   function setMode(m) {
@@ -10,7 +11,7 @@
     $('#tabRegister').classList.toggle('on', m === 'register');
     $('#nameField').style.display = m === 'register' ? '' : 'none';
     $('#phoneField').style.display = m === 'register' ? '' : 'none';
-    $('#btnSubmit').textContent = m === 'register' ? 'Създай профил' : 'Вход';
+    $('#btnSubmit').textContent = m === 'register' ? T('btn.submit_register') : T('btn.submit_login');
     hideMsg();
   }
   function showMsg(t, ok) { const e = $('#msg'); e.textContent = t; e.className = 'msg ' + (ok ? 'ok' : 'err'); e.style.display = ''; }
@@ -19,7 +20,7 @@
   async function submit() {
     const email = $('#email').value.trim();
     const password = $('#password').value;
-    if (!email || !password) { showMsg('Попълни имейл и парола.', false); return; }
+    if (!email || !password) { showMsg(T('js.fill_login'), false); return; }
     try {
       if (mode === 'register') {
         await WNB.api('/register', { method: 'POST', body: {

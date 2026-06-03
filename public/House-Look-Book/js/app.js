@@ -22,6 +22,7 @@
 
   const $ = sel => document.querySelector(sel);
   const T = (k, v) => (window.HLB_I18N ? HLB_I18N.t(k, v) : k);
+  const esc = s => (window.HLB ? HLB.esc(s) : String(s == null ? '' : s));
 
   // Параметрите, които подаваме на рендера (+ лимитите от config).
   function renderParams() {
@@ -54,15 +55,64 @@
   function ensureRooms() {
     if (!Array.isArray(state.rooms)) state.rooms = [];
     const n = Math.max(1, state.floors || 1);
-    state.rooms = state.rooms.map(fl => Array.isArray(fl) ? fl.filter(r => r && r.type).map(r => ({ type: r.type, shape: r.shape || 'rect' })) : []);
+    state.rooms = state.rooms.map(fl => Array.isArray(fl) ? fl.filter(r => r && r.type).map(normalizeRoom) : []);
     while (state.rooms.length < n) state.rooms.push([]);
     if (state.rooms.length > n) state.rooms.length = n;
+  }
+  // Нормализира стая: стени според формата + мебели с място/стена.
+  function normalizeRoom(r) {
+    const shape = r.shape || 'rect';
+    const nw = HouseRender.wallsForShape(shape);
+    let walls = Array.isArray(r.walls) ? r.walls.slice(0, nw) : [];
+    while (walls.length < nw) walls.push({ doors: 0, windows: 0 });
+    walls = walls.map(w => ({ doors: Math.max(0, +(w && w.doors) || 0), windows: Math.max(0, +(w && w.windows) || 0) }));
+    const items = (Array.isArray(r.items) ? r.items : []).filter(it => it && it.type).map(it => {
+      const place = it.place === 'wall' ? 'wall' : 'center';
+      const wall = place === 'wall' ? Math.min(nw - 1, Math.max(0, +it.wall || 0)) : 0;
+      return { type: it.type, place, wall };
+    });
+    return { type: r.type, shape, walls, items };
   }
   function roomOptions(sel) {
     return HouseRender.ROOM_TYPES.map(rt => `<option value="${rt.id}"${rt.id === sel ? ' selected' : ''}>${T(rt.key)}</option>`).join('');
   }
   function shapeOptions(sel) {
     return HouseRender.ROOM_SHAPES.map(sh => `<option value="${sh.id}"${sh.id === sel ? ' selected' : ''}>${T(sh.key)}</option>`).join('');
+  }
+  function furnitureAddOptions(roomType) {
+    const list = HouseRender.FURNITURE.slice().sort((a, b) => (a.rooms.includes(roomType) ? 0 : 1) - (b.rooms.includes(roomType) ? 0 : 1));
+    return list.map(fi => `<option value="${fi.id}">${T(fi.key)}</option>`).join('');
+  }
+  const expandedRooms = new Set();   // "f:i" → разгъната стая
+  function roomDetailsHtml(f, i, r) {
+    const HR = HouseRender, nw = HR.wallsForShape(r.shape);
+    const wallCount = {}; let centerCount = 0;
+    r.items.forEach(it => { if (it.place === 'wall') wallCount[it.wall] = (wallCount[it.wall] || 0) + 1; else centerCount++; });
+    let wallsHtml = '';
+    for (let w = 0; w < nw; w++) {
+      const ww = r.walls[w] || {};
+      wallsHtml += `<div class="wall-row"><span class="wlabel">${T('wall.label', { n: w + 1 })}</span>` +
+        `<label>${T('wall.doors')} <input type="number" min="0" max="4" class="w-doors" data-f="${f}" data-i="${i}" data-w="${w}" value="${ww.doors || 0}"></label>` +
+        `<label>${T('wall.windows')} <input type="number" min="0" max="6" class="w-win" data-f="${f}" data-i="${i}" data-w="${w}" value="${ww.windows || 0}"></label></div>`;
+    }
+    const placeOptions = (it) => {
+      let o = `<option value="center"${it.place === 'center' ? ' selected' : ''}${(centerCount >= HR.CENTER_MAX && it.place !== 'center') ? ' disabled' : ''}>${T('wall.center')}</option>`;
+      for (let w = 0; w < nw; w++) {
+        const sel = it.place === 'wall' && it.wall === w, full = (wallCount[w] || 0) >= HR.WALL_MAX && !sel;
+        o += `<option value="w${w}"${sel ? ' selected' : ''}${full ? ' disabled' : ''}>${T('wall.label', { n: w + 1 })}${full ? ' ' + T('rooms.full') : ''}</option>`;
+      }
+      return o;
+    };
+    const itemsHtml = r.items.map((it, idx) => {
+      const fi = HR.furnitureItem(it.type) || { name: it.type, key: '' };
+      return `<div class="item-row"><span class="iname">${esc(fi.key ? T(fi.key) : fi.name)}</span>` +
+        `<select class="i-place" data-f="${f}" data-i="${i}" data-idx="${idx}">${placeOptions(it)}</select>` +
+        `<button type="button" class="del-item" data-f="${f}" data-i="${i}" data-idx="${idx}">✕</button></div>`;
+    }).join('');
+    return `<div class="room-details">` +
+      `<div class="rd-walls">${wallsHtml}</div>` +
+      `<div class="rd-items">${itemsHtml}<div class="add-item-row"><select class="add-item-sel" data-f="${f}" data-i="${i}"><option value="">${T('rooms.add_item')}…</option>${furnitureAddOptions(r.type)}</select></div></div>` +
+      `<div class="rd-preview">${HR.roomDetailPlan(r)}<div class="rd-wviews">${Array.from({ length: nw }).map((_, w) => HR.wallElevation(r, w)).join('')}</div></div></div>`;
   }
   function buildRoomsUI() {
     ensureRooms();
@@ -73,17 +123,44 @@
       const rooms = state.rooms[f];
       const block = document.createElement('div');
       block.className = 'floor-block';
-      block.innerHTML =
-        `<div class="floor-head"><b>${T('rooms.floor', { n: f + 1 })}</b> <button type="button" class="add-room" data-f="${f}">${T('rooms.add')}</button></div>` +
-        (rooms.length
-          ? rooms.map((r, i) => `<div class="room-row"><select class="r-type" data-f="${f}" data-i="${i}">${roomOptions(r.type)}</select><select class="r-shape" data-f="${f}" data-i="${i}" title="Форма">${shapeOptions(r.shape)}</select><button type="button" class="del-room" data-f="${f}" data-i="${i}" title="Премахни">✕</button></div>`).join('')
-          : `<div class="room-empty">${T('rooms.none')}</div>`);
+      let html = `<div class="floor-head"><b>${T('rooms.floor', { n: f + 1 })}</b> <button type="button" class="add-room" data-f="${f}">${T('rooms.add')}</button></div>`;
+      if (!rooms.length) html += `<div class="room-empty">${T('rooms.none')}</div>`;
+      rooms.forEach((r, i) => {
+        const open = expandedRooms.has(f + ':' + i);
+        html += `<div class="room-row">` +
+          `<select class="r-type" data-f="${f}" data-i="${i}">${roomOptions(r.type)}</select>` +
+          `<select class="r-shape" data-f="${f}" data-i="${i}" title="Форма">${shapeOptions(r.shape)}</select>` +
+          `<button type="button" class="r-details${open ? ' on' : ''}" data-f="${f}" data-i="${i}">${T('rooms.details')} ${open ? '▴' : '▾'}</button>` +
+          `<button type="button" class="del-room" data-f="${f}" data-i="${i}" title="Премахни">✕</button></div>`;
+        if (open) html += roomDetailsHtml(f, i, r);
+      });
+      block.innerHTML = html;
       box.appendChild(block);
     }
-    box.querySelectorAll('.add-room').forEach(b => b.onclick = () => { state.rooms[+b.dataset.f].push({ type: 'living', shape: 'rect' }); buildRoomsUI(); drawPreview(); });
-    box.querySelectorAll('.del-room').forEach(b => b.onclick = () => { state.rooms[+b.dataset.f].splice(+b.dataset.i, 1); buildRoomsUI(); drawPreview(); });
-    box.querySelectorAll('.r-type').forEach(s => s.onchange = () => { state.rooms[+s.dataset.f][+s.dataset.i].type = s.value; drawPreview(); });
-    box.querySelectorAll('.r-shape').forEach(s => s.onchange = () => { state.rooms[+s.dataset.f][+s.dataset.i].shape = s.value; drawPreview(); });
+    bindRoomsUI(box);
+  }
+  function bindRoomsUI(box) {
+    const rebuild = () => { buildRoomsUI(); drawPreview(); };
+    box.querySelectorAll('.add-room').forEach(b => b.onclick = () => { state.rooms[+b.dataset.f].push({ type: 'living', shape: 'rect', walls: [], items: [] }); rebuild(); });
+    box.querySelectorAll('.del-room').forEach(b => b.onclick = () => { expandedRooms.delete(b.dataset.f + ':' + b.dataset.i); state.rooms[+b.dataset.f].splice(+b.dataset.i, 1); rebuild(); });
+    box.querySelectorAll('.r-type').forEach(s => s.onchange = () => { state.rooms[+s.dataset.f][+s.dataset.i].type = s.value; rebuild(); });
+    box.querySelectorAll('.r-shape').forEach(s => s.onchange = () => { state.rooms[+s.dataset.f][+s.dataset.i].shape = s.value; rebuild(); });
+    box.querySelectorAll('.r-details').forEach(b => b.onclick = () => { const k = b.dataset.f + ':' + b.dataset.i; expandedRooms.has(k) ? expandedRooms.delete(k) : expandedRooms.add(k); buildRoomsUI(); });
+    box.querySelectorAll('.w-doors').forEach(p => p.onchange = () => { state.rooms[+p.dataset.f][+p.dataset.i].walls[+p.dataset.w].doors = Math.max(0, +p.value || 0); rebuild(); });
+    box.querySelectorAll('.w-win').forEach(p => p.onchange = () => { state.rooms[+p.dataset.f][+p.dataset.i].walls[+p.dataset.w].windows = Math.max(0, +p.value || 0); rebuild(); });
+    box.querySelectorAll('.i-place').forEach(s => s.onchange = () => { const it = state.rooms[+s.dataset.f][+s.dataset.i].items[+s.dataset.idx]; if (s.value === 'center') { it.place = 'center'; it.wall = 0; } else { it.place = 'wall'; it.wall = +s.value.slice(1); } rebuild(); });
+    box.querySelectorAll('.del-item').forEach(b => b.onclick = () => { state.rooms[+b.dataset.f][+b.dataset.i].items.splice(+b.dataset.idx, 1); rebuild(); });
+    box.querySelectorAll('.add-item-sel').forEach(s => s.onchange = () => { if (s.value) { addItemToRoom(+s.dataset.f, +s.dataset.i, s.value); rebuild(); } });
+  }
+  function addItemToRoom(f, i, typeId) {
+    const HR = HouseRender, r = state.rooms[f][i], nw = HR.wallsForShape(r.shape);
+    const fi = HR.furnitureItem(typeId) || { def: 'center' };
+    const wallCount = {}; let centerCount = 0;
+    r.items.forEach(it => { if (it.place === 'wall') wallCount[it.wall] = (wallCount[it.wall] || 0) + 1; else centerCount++; });
+    if (fi.def === 'center' && centerCount < HR.CENTER_MAX) { r.items.push({ type: typeId, place: 'center', wall: 0 }); return; }
+    for (let w = 0; w < nw; w++) if ((wallCount[w] || 0) < HR.WALL_MAX) { r.items.push({ type: typeId, place: 'wall', wall: w }); return; }
+    if (centerCount < HR.CENTER_MAX) { r.items.push({ type: typeId, place: 'center', wall: 0 }); return; }
+    alert(T('rooms.full'));
   }
 
   function drawAllSides() {
@@ -262,6 +339,13 @@
     const rfName = rfO.key ? T(rfO.key) : (rfO.name || p.roof);
     const exList = Object.entries(state.extras).filter(([, v]) => v).map(([k]) => T('extra.' + k)).join(', ') || T('pdf.none');
 
+    // Стаи: за всяка — план отгоре + изглед на всяка стена.
+    const roomsHtml = (p.rooms || []).map(fl => (fl || []).map(r => {
+      const nw = HouseRender.wallsForShape(r.shape);
+      const views = Array.from({ length: nw }).map((_, w) => `<div class="cell">${HouseRender.wallElevation(r, w)}</div>`).join('');
+      return `<div class="cell">${HouseRender.roomDetailPlan(r)}</div>${views}`;
+    }).join('')).join('');
+
     const sheet = `<!doctype html><html lang="${window.HLB_I18N ? HLB_I18N.lang : 'bg'}"><head><meta charset="utf-8">
       <title>${T('pdf.title')}</title>
       <style>
@@ -284,6 +368,7 @@
         <div class="cell">${HouseRender.roofPlan(p)}</div>
         ${Array.from({ length: p.floors || 0 }).map((_, f) => `<div class="cell">${HouseRender.floorPlan(p, f)}</div>`).join('')}
       </div>
+      ${roomsHtml ? `<h1 style="font-size:16px;margin:18px 0 6px">${T('rooms.detail_pdf')}</h1><div class="grid">${roomsHtml}</div>` : ''}
       <script>window.onload = function(){ setTimeout(function(){ window.print(); }, 300); };<\/script>
       </body></html>`;
 
