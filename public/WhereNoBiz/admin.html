@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WhereNoBiz — Админ</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Админ частта НЕ се превежда — само български. */
+    .admin-wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .admin-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .atab { padding: 8px 14px; border: 1px solid #cdd7e1; background: #fff; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 14px; }
+    .atab.on { background: #2a6f5b; color: #fff; border-color: #2a6f5b; }
+    .admin-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; font-size: 14px; }
+    .admin-filters select, .admin-filters button { padding: 6px 10px; border-radius: 6px; border: 1px solid #cdd7e1; font-family: inherit; }
+    .arow { display: flex; gap: 12px; align-items: flex-start; border: 1px solid #e3e8ee; border-radius: 10px; padding: 10px; margin-bottom: 10px; background: #fff; }
+    .arow .info { flex: 1; min-width: 0; }
+    .arow .ttl { font-weight: 700; }
+    .arow .meta { font-size: 13px; color: #667; margin: 4px 0; }
+    .badge { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: #eef2f6; color: #445; margin-right: 6px; }
+    .badge.approved { background: #e6f5ec; color: #1d7a44; }
+    .badge.pending_moderation { background: #fff4e0; color: #9a6b00; }
+    .badge.rejected { background: #fde8e6; color: #b3261e; }
+    .badge.removed { background: #eceff1; color: #667; }
+    .arow .acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .arow .acts button { font-size: 13px; padding: 5px 10px; border-radius: 6px; border: 1px solid #cdd7e1; background: #fff; cursor: pointer; font-family: inherit; }
+    .arow .acts .ok { border-color: #1d7a44; color: #1d7a44; }
+    .arow .acts .warn { border-color: #9a6b00; color: #9a6b00; }
+    .arow .acts .danger { border-color: #b3261e; color: #b3261e; }
+    .arow .acts button:hover { opacity: .8; }
+    .empty-note { color: #778; padding: 12px 0; }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <h1>🛠️ Админ — WhereNoBiz</h1>
+    <p>Само за модератори/админи. Тази част е само на български (не се превежда).</p>
+  </header>
+
+  <main class="admin-wrap">
+    <div id="noAccess" class="panel notice" style="display:none">Нямаш достъп до тази част.</div>
+    <div id="adminBody" style="display:none">
+      <nav class="admin-tabs">
+        <button class="atab on" data-tab="pending">⏳ Чакащи модерация (<span id="cntPending">0</span>)</button>
+        <button class="atab" data-tab="reports">🚩 Доклади (<span id="cntReports">0</span>)</button>
+        <button class="atab" data-tab="all">💡 Всички ниши</button>
+        <button class="atab" data-tab="users">👥 Банати</button>
+      </nav>
+
+      <section id="tab-pending" class="atab-panel"></section>
+      <section id="tab-reports" class="atab-panel" style="display:none"></section>
+
+      <section id="tab-all" class="atab-panel" style="display:none">
+        <div class="admin-filters">
+          <span>Сортирай:</span>
+          <select id="allSort">
+            <option value="confirm">по потвърждения (харесвани)</option>
+            <option value="unlike">по несъгласия (нехаресвани)</option>
+            <option value="new">по дата</option>
+          </select>
+          <select id="allOrder"><option value="desc">намаляващо</option><option value="asc">нарастващо</option></select>
+          <span>Статус:</span>
+          <select id="allStatus">
+            <option value="">всички</option>
+            <option value="approved">одобрени</option>
+            <option value="pending_moderation">чакащи</option>
+            <option value="rejected">отказани</option>
+            <option value="removed">свалени</option>
+          </select>
+          <button id="allReload">Обнови</button>
+        </div>
+        <div id="allList"></div>
+      </section>
+
+      <section id="tab-users" class="atab-panel" style="display:none">
+        <div id="usersList"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/wnb-common.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

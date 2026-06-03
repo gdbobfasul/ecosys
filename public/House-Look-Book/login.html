@@ -3,44 +3,45 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Подреди своя дом — Вход</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title data-i18n="login.title">Подреди своя дом — Вход</title>
+  <link rel="stylesheet" href="css/style.css?v=1.0154">
 </head>
 <body>
   <header>
-    <h1>🏠 Подреди своя дом</h1>
-    <p>Влез или се регистрирай, за да запазваш къщи в галерията, да лайкваш и да предлагаш.</p>
+    <h1 data-i18n="index.h1">🏠 Подреди своя дом</h1>
+    <p data-i18n="login.tagline">Влез или се регистрирай, за да запазваш къщи в галерията, да лайкваш и да предлагаш.</p>
   </header>
 
   <div class="auth-wrap">
     <div class="panel auth-card">
       <div class="tabs">
-        <button id="tabLogin" class="tab on">Вход</button>
-        <button id="tabRegister" class="tab">Регистрация</button>
+        <button id="tabLogin" class="tab on" data-i18n="tab.login">Вход</button>
+        <button id="tabRegister" class="tab" data-i18n="tab.register">Регистрация</button>
       </div>
 
       <div id="msg" class="msg" style="display:none"></div>
 
       <div class="field">
-        <label for="email">Имейл</label>
-        <input type="email" id="email" autocomplete="email" placeholder="ti@example.com">
+        <label for="email" data-i18n="label.email">Имейл</label>
+        <input type="email" id="email" autocomplete="email" placeholder="ti@example.com" data-i18n-attr="placeholder:ph.email">
       </div>
       <div class="field">
-        <label for="password">Парола</label>
-        <input type="password" id="password" autocomplete="current-password" placeholder="поне 6 символа">
+        <label for="password" data-i18n="label.password">Парола</label>
+        <input type="password" id="password" autocomplete="current-password" placeholder="поне 6 символа" data-i18n-attr="placeholder:ph.password">
       </div>
       <div class="field" id="nameField" style="display:none">
-        <label for="display_name">Име (по избор)</label>
-        <input type="text" id="display_name" placeholder="как да те виждат другите">
+        <label for="display_name" data-i18n="label.name">Име (по избор)</label>
+        <input type="text" id="display_name" placeholder="как да те виждат другите" data-i18n-attr="placeholder:ph.name">
       </div>
 
       <div class="actions">
-        <button id="btnSubmit">Вход</button>
+        <button id="btnSubmit" data-i18n="btn.submit_login">Вход</button>
       </div>
     </div>
   </div>
 
-  <script src="js/hlb-common.js"></script>
-  <script src="js/auth.js"></script>
+  <script src="js/i18n.js?v=1.0154"></script>
+  <script src="js/hlb-common.js?v=1.0154"></script>
+  <script src="js/auth.js?v=1.0154"></script>
 </body>
 </html>

@@ -149,14 +149,14 @@ cat > "$NGINX_INC" << NGXEOF
 # Включва се чрез: include /etc/nginx/kcy-apps/*.conf;  (в 05-server-install.sh)
 
 # Статичен frontend (релативни пътища) — директно от WEB_ROOT
-location /wherenobiz/ {
+location ^~ /wherenobiz/ {
     alias ${PUBLIC_SUBDIR}/;
     try_files \$uri \$uri/ /wherenobiz/index.html;
 }
 location = /wherenobiz { return 301 /wherenobiz/; }
 
 # API → node :${PORT}  (по-специфичен от общия /api/ → има предимство)
-location /api/wnb/ {
+location ^~ /api/wnb/ {
     proxy_pass http://127.0.0.1:${PORT};
     proxy_http_version 1.1;
     proxy_set_header Host \$host;
@@ -167,7 +167,7 @@ location /api/wnb/ {
 }
 
 # Качени картинки → node :${PORT}
-location /uploads/posts/ {
+location ^~ /uploads/posts/ {
     proxy_pass http://127.0.0.1:${PORT};
     proxy_http_version 1.1;
     proxy_set_header Host \$host;

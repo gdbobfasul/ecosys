@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   const $ = s => document.querySelector(s);
+  const T = (k, v) => (window.HLB_I18N ? HLB_I18N.t(k, v) : k);
   let mode = 'login'; // 'login' | 'register'
 
   function setMode(m) {
@@ -9,7 +10,7 @@
     $('#tabLogin').classList.toggle('on', m === 'login');
     $('#tabRegister').classList.toggle('on', m === 'register');
     $('#nameField').style.display = m === 'register' ? '' : 'none';
-    $('#btnSubmit').textContent = m === 'register' ? 'Създай профил' : 'Вход';
+    $('#btnSubmit').textContent = m === 'register' ? T('btn.submit_register') : T('btn.submit_login');
     $('#password').setAttribute('autocomplete', m === 'register' ? 'new-password' : 'current-password');
     hideMsg();
   }
@@ -25,7 +26,7 @@
   async function submit() {
     const email = $('#email').value.trim();
     const password = $('#password').value;
-    if (!email || !password) { showMsg('Попълни имейл и парола.', false); return; }
+    if (!email || !password) { showMsg(T('js.fill_login'), false); return; }
     try {
       if (mode === 'register') {
         await HLB.api('/register', { method: 'POST', body: { email, password, display_name: $('#display_name').value.trim() || undefined } });

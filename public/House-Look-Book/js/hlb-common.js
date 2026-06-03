@@ -19,7 +19,7 @@ const HLB = (function () {
     let data = null;
     try { data = await res.json(); } catch (_) { /* празен отговор */ }
     if (!res.ok) {
-      const err = new Error((data && data.message) || (data && data.error) || `Грешка ${res.status}`);
+      const err = new Error((data && data.message) || (data && data.error) || (window.HLB_I18N ? HLB_I18N.t('err.http', { status: res.status }) : `Грешка ${res.status}`));
       err.status = res.status;
       err.data = data;
       throw err;
@@ -35,25 +35,48 @@ const HLB = (function () {
 
   // Навигация — еднаква на всички страници. Без линкове извън приложението.
   async function mountNav(active) {
+    if (window.HLB_I18N && HLB_I18N.ready) { try { await HLB_I18N.ready; } catch (_) {} }
+    const T = k => (window.HLB_I18N ? HLB_I18N.t(k) : k);
     const user = await me();
     const links = [
-      { href: 'index.html',   key: 'build',   label: '🏠 Конструктор' },
-      { href: 'gallery.html', key: 'gallery', label: '🖼️ Галерия' },
-      { href: 'ranking.html', key: 'rank',    label: '⭐ Класация' },
+      { href: 'index.html',   key: 'build',   i18n: 'nav.build' },
+      { href: 'gallery.html', key: 'gallery', i18n: 'nav.gallery' },
+      { href: 'ranking.html', key: 'rank',    i18n: 'nav.rank' },
     ];
     const right = user
-      ? `<span class="nav-user">${esc(user.display_name || user.email)}</span>
-         <a href="#" id="navLogout" class="nav-link">Изход</a>`
-      : `<a href="login.html" class="nav-link${active === 'login' ? ' on' : ''}">Вход</a>`;
+      ? `<a href="profile.html" class="nav-link nav-user${active === 'profile' ? ' on' : ''}" title="${esc(T('nav.profile'))}">👤 ${esc(user.display_name || user.email)}</a>
+         <a href="#" id="navLogout" class="nav-link">${esc(T('nav.logout'))}</a>`
+      : `<a href="login.html" class="nav-link${active === 'login' ? ' on' : ''}">${esc(T('nav.login'))}</a>`;
+
+    // Езиков селектор — самостоятелен за приложението, най-отпред в nav-а.
+    let langSelectHtml = '';
+    if (window.HLB_I18N) {
+      const opts = HLB_I18N.supported.map(l =>
+        `<option value="${l.code}"${l.code === HLB_I18N.lang ? ' selected' : ''}>${esc(l.name)}</option>`).join('');
+      langSelectHtml = `<select id="hlbLang" class="hlb-lang" title="Language / Език">${opts}</select>`;
+    }
+
+    // Админ линк — само за модератор/админ.
+    const adminLink = (user && (user.role === 'moderator' || user.role === 'admin'))
+      ? `<a href="admin.html" class="nav-link${active === 'admin' ? ' on' : ''}">${esc(T('nav.admin'))}</a>` : '';
 
     const nav = document.createElement('nav');
     nav.className = 'hlb-nav';
     nav.innerHTML = `
       <div class="nav-left">
-        ${links.map(l => `<a href="${l.href}" class="nav-link${active === l.key ? ' on' : ''}">${l.label}</a>`).join('')}
+        ${langSelectHtml}
+        ${links.map(l => `<a href="${l.href}" class="nav-link${active === l.key ? ' on' : ''}">${esc(T(l.i18n))}</a>`).join('')}
+        ${adminLink}
       </div>
       <div class="nav-right">${right}</div>`;
     document.body.insertBefore(nav, document.body.firstChild);
+
+    // Смяна на език → запомни избора и презареди (надеждно пре-рендиране на всичко).
+    const langSel = document.getElementById('hlbLang');
+    if (langSel) langSel.onchange = function () {
+      try { localStorage.setItem('kcy-lang', this.value); } catch (e) {}
+      location.reload();
+    };
 
     const logout = document.getElementById('navLogout');
     if (logout) logout.onclick = async (e) => {

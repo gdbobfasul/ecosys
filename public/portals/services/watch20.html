@@ -1,4 +1,4 @@
-<!-- Version: 1.0142 -->
+<!-- Version: 1.0150 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,6 +104,7 @@ var rates={};          // символ → стойност спрямо USD/USD
 var currencies=[];     // списък { code, name, type:'fiat'|'crypto', symbolForApi }
 var slots=[];          // [{ sel:'EUR', alerts:[{dir,val,fired}] }]
 var openModalIdx=-1;
+var cryptoRanks={};    // символ → ранг по пазарна капитализация (CoinGecko = като CoinMarketCap)
 
 // ── списък валути + крипто ──
 async function loadCurrencyList(){
@@ -161,6 +162,27 @@ async function fetchRates(){
   }
 }
 
+// Ранг по пазарна капитализация на ВСИЧКИ криптовалути (CoinGecko, безплатно, без ключ).
+// Същата класация като CoinMarketCap (BTC = #1). Пазим символ → най-добрия (най-малкия) ранг.
+async function loadCryptoRanks(){
+  for(var page=1; page<=2; page++){
+    try{
+      var r=await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page='+page);
+      if(!r.ok) break;
+      var arr=await r.json();
+      arr.forEach(function(c){
+        var sym=(c.symbol||'').toUpperCase(), rank=c.market_cap_rank;
+        if(sym && rank && (cryptoRanks[sym]==null || rank<cryptoRanks[sym])) cryptoRanks[sym]=rank;
+      });
+    }catch(e){ break; }
+  }
+}
+// Ранг за избран слот (само за крипто). null = непознато/не е крипто.
+function cryptoRankOf(sel){
+  if(!sel || sel.indexOf('CRYPTO:')!==0) return null;
+  return cryptoRanks[sel.split(':')[1]] || null;
+}
+
 function curKey(c){ return (c.type==='fiat'?'FIAT:':'CRYPTO:')+c.code; }
 function rateOf(sel){ return rates[sel]; }
 function selLabel(sel){
@@ -179,10 +201,12 @@ function render(){
       var slot=document.createElement('div');
       slot.className='slot'+(s._alerted?' alerted':'');
       var rate=s.sel?rateOf(s.sel):null;
+      var rk=cryptoRankOf(s.sel);
+      var rankBadge=rk?('<span class="cmc-rank" style="color:#e0a800;font-weight:700;margin-right:6px" title="'+(window.KCY_I18N?KCY_I18N.t('watch20.cmc_rank_hint'):'Ранг по пазарна капитализация (като CoinMarketCap) — напр. BTC = #1')+'">🏆 #'+rk+'</span>'):'';
       slot.innerHTML=
         '<div class="num">#'+(idx+1)+'</div>'+
         '<div class="val">'+(rate!=null?fmtRate(rate):'—')+'</div>'+
-        '<div class="pair">'+(s.sel?selLabel(s.sel):(window.KCY_I18N?KCY_I18N.t('watch20.not_selected'):'не е избрана'))+'</div>'+
+        '<div class="pair">'+rankBadge+(s.sel?selLabel(s.sel):(window.KCY_I18N?KCY_I18N.t('watch20.not_selected'):'не е избрана'))+'</div>'+
         '<div class="dd">'+
           '<input type="text" placeholder="'+(window.KCY_I18N?KCY_I18N.t('watch20.search_placeholder'):'търси валута/крипто…')+'" value="'+(s.sel?s.sel.split(":")[1]:"")+'" '+
             'oninput="filterList('+idx+',this.value)" onfocus="openList('+idx+')">'+
@@ -384,6 +408,7 @@ async function refreshAll(){
   await loadSaved();
   render();
   currencies=await loadCurrencyList();
+  await loadCryptoRanks();   // CoinGecko ранг (като CMC) — за крипто баджовете
   setStatus((window.KCY_I18N?KCY_I18N.t('watch20.loaded'):'Заредени ')+currencies.length+' валути/крипто.');
   await refreshAll();
   // авторефреш на всеки 10 минути

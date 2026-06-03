@@ -242,4 +242,32 @@ router.post('/:id/submit', requireAuth, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+// ── Форма от снимка (силует) ─────────────────────────────────────────
+// POST /api/hlb/proposals/shape-from-image  (multipart "image") → { pts }
+// Изважда силует (контур по редове) от качена снимка → нормализирани точки 0..1.
+// Ползва се от КЛИЕНТА (конструктора) и от админа. Не записва нищо — само връща формата.
+router.post('/shape-from-image', requireAuth, upload.single('image'), async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'no_file', message: 'Качи изображение.' });
+    let raw;
+    try { raw = await sharp(req.file.buffer).resize(48, 48, { fit: 'fill' }).grayscale().raw().toBuffer({ resolveWithObject: true }); }
+    catch (e) { return res.status(400).json({ error: 'bad_image', message: 'Не мога да обработя изображението.' }); }
+    const data = raw.data, Wd = raw.info.width, Hd = raw.info.height;
+    let sum = 0; for (let i = 0; i < Wd * Hd; i++) sum += data[i];
+    const mean = sum / (Wd * Hd);
+    const left = [], right = [];
+    for (let y = 0; y < Hd; y++) {
+      let l = -1, r = -1;
+      for (let x = 0; x < Wd; x++) { if (data[y * Wd + x] < mean) { if (l < 0) l = x; r = x; } }
+      if (l >= 0) { left.push([l, y]); right.push([r, y]); }
+    }
+    if (left.length < 4) return res.status(422).json({ error: 'no_shape', message: 'Не успях да извлека форма от тази снимка.' });
+    const step = Math.max(1, Math.floor(left.length / 14));
+    const pts = [];
+    for (let i = 0; i < left.length; i += step) pts.push(left[i]);
+    for (let i = right.length - 1; i >= 0; i -= step) pts.push(right[i]);
+    res.json({ pts: pts.map(p => [+(p[0] / (Wd - 1)).toFixed(3), +(p[1] / (Hd - 1)).toFixed(3)]) });
+  } catch (e) { next(e); }
+});
+
 module.exports = router;

@@ -137,4 +137,54 @@ router.post('/users/:id/ban', async (req, res, next) => {
   finally { client.release(); }
 });
 
+// GET /api/wnb/moderation/posts?status=&sort=confirm|unlike|new&order=asc|desc&limit=&offset=
+//   Списък на ВСИЧКИ постове (админ: най-/най-малко потвърждавани, несъгласия, трий).
+router.get('/posts', async (req, res, next) => {
+  try {
+    const sortMap = { confirm: 'p.confirm_count', unlike: 'p.unlike_count', new: 'p.created_at' };
+    const sort = sortMap[req.query.sort] || 'p.confirm_count';
+    const order = (req.query.order === 'asc') ? 'ASC' : 'DESC';
+    const limit = Math.min(parseInt(req.query.limit || '50', 10) || 50, 200);
+    const offset = Math.max(parseInt(req.query.offset || '0', 10) || 0, 0);
+    const cols = `p.id, p.title, p.status, p.country_code, p.confirm_count, p.unlike_count,
+                  p.report_count, p.created_at, p.owner_id, u.email AS owner_email,
+                  u.display_name AS owner_name, u.is_banned AS owner_banned`;
+    const tail = `ORDER BY ${sort} ${order}, p.id DESC LIMIT ${limit} OFFSET ${offset}`;
+    const rows = req.query.status
+      ? await all(`SELECT ${cols} FROM posts p JOIN users u ON u.id = p.owner_id WHERE p.status = $1 ${tail}`, [req.query.status])
+      : await all(`SELECT ${cols} FROM posts p JOIN users u ON u.id = p.owner_id ${tail}`);
+    res.json({ posts: rows });
+  } catch (e) { next(e); }
+});
+
+// GET /api/wnb/moderation/users?banned=1
+router.get('/users', async (req, res, next) => {
+  try {
+    const onlyBanned = req.query.banned === '1';
+    const rows = await all(
+      `SELECT id, email, display_name, role, is_banned, ban_reason, created_at
+       FROM users ${onlyBanned ? 'WHERE is_banned = TRUE' : ''}
+       ORDER BY is_banned DESC, created_at DESC LIMIT 200`
+    );
+    res.json({ users: rows });
+  } catch (e) { next(e); }
+});
+
+// POST /api/wnb/moderation/users/:id/unban
+router.post('/users/:id/unban', async (req, res, next) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const updated = await client.query(
+      `UPDATE users SET is_banned = FALSE, ban_reason = NULL, banned_at = NULL WHERE id = $1
+       RETURNING id, email, is_banned`, [req.params.id]
+    );
+    if (!updated.rows[0]) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'not_found' }); }
+    await logAction(client, { target_user: req.params.id, actor_id: req.user.id, action: 'unban', note: null });
+    await client.query('COMMIT');
+    res.json({ user: updated.rows[0] });
+  } catch (e) { try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
+  finally { client.release(); }
+});
+
 module.exports = router;

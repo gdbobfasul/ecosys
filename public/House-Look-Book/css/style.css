@@ -96,6 +96,37 @@ button:hover { filter: brightness(1.05); }
 .hlb-nav .nav-link:hover { background: rgba(255,255,255,.15); }
 .hlb-nav .nav-link.on { background: rgba(255,255,255,.25); font-weight: 600; }
 .hlb-nav .nav-user { font-size: 13px; opacity: .9; }
+.hlb-nav .hlb-lang {
+  background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.35);
+  border-radius: 6px; padding: 5px 8px; font-size: 13px; cursor: pointer; margin-right: 4px;
+}
+.hlb-nav .hlb-lang option { color: #222; }
+.hlb-nav .nav-user { font-weight: 600; }
+
+/* Профил — действия по картите */
+.profile-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.btn-sm {
+  display: inline-block; font-size: 13px; padding: 5px 10px; border-radius: 6px;
+  border: 1px solid var(--accent, #3b6ea5); background: #fff; color: var(--accent, #3b6ea5);
+  text-decoration: none; cursor: pointer; font-family: inherit;
+}
+.btn-sm:hover { background: var(--accent, #3b6ea5); color: #fff; }
+.btn-sm.submit { border-color: #2e8b57; color: #2e8b57; }
+.btn-sm.submit:hover { background: #2e8b57; color: #fff; }
+.btn-sm.danger { border-color: #c0392b; color: #c0392b; }
+.btn-sm.danger:hover { background: #c0392b; color: #fff; }
+
+/* Стаи по етажи (редактор) */
+.rooms-by-floor { display: flex; flex-direction: column; gap: 8px; }
+.floor-block { border: 1px solid #e3e8ee; border-radius: 8px; padding: 8px; background: #fafbfc; }
+.floor-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; font-size: 14px; }
+.add-room { font-size: 12px; padding: 3px 8px; border: 1px solid var(--accent, #3b6ea5); color: var(--accent, #3b6ea5); background: #fff; border-radius: 6px; cursor: pointer; font-family: inherit; }
+.add-room:hover { background: var(--accent, #3b6ea5); color: #fff; }
+.room-row { display: flex; gap: 6px; align-items: center; margin: 4px 0; }
+.room-row select { flex: 1; padding: 5px 8px; border: 1px solid #cdd7e1; border-radius: 6px; font-family: inherit; }
+.del-room { border: 1px solid #c0392b; color: #c0392b; background: #fff; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-family: inherit; }
+.del-room:hover { background: #c0392b; color: #fff; }
+.room-empty { font-size: 13px; color: #889; }
 
 /* ── Съобщения ─────────────────────────────────────────────── */
 .msg { font-size: 13px; padding: 9px 11px; border-radius: 8px; }

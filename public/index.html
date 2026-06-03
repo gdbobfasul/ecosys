@@ -1,4 +1,4 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0147 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -46,11 +46,6 @@
 </head>
 <body>
     <div class="hero">
-        <div class="top-auth" id="top-auth">
-            <span class="portal-label" data-i18n="r.119">🌐 Портал:</span>
-            <a href="/portals/login.html" class="login" data-i18n="r.137">🔑 Логин</a>
-            <a href="/portals/register.html" class="register" data-i18n="r.131">📝 Регистрация</a>
-        </div>
         <h1>🚀 KCY Ecosystem</h1>
         <p data-i18n="home.tagline">Децентрализирана платформа за криптовалути и комуникация</p>
         <div style="margin-top: 30px;">
@@ -70,6 +65,13 @@
             <a href="/portals/games/" class="btn" style="margin: 10px;" data-i18n="r.120">🎮 Портал за игри</a>
             <a href="/portals/services/" class="btn" style="margin: 10px;" data-i18n="r.143">🛠️ Портал за услуги</a>
             <a href="/portals/register.html" class="btn" style="margin: 10px; background: linear-gradient(135deg, #ff6b6b, #ee5a6f); border: none;" data-i18n="r.117">✨ Регистрирай се</a>
+        </div>
+        <div class="portals-row">
+            <div style="font-size: .9em; opacity: .85; margin-bottom: 10px;">🆕 Нови приложения</div>
+            <a href="/houselookbook/" class="btn" style="margin: 10px;">🏠 House-Look-Book — уеб</a>
+            <span class="btn" style="margin: 10px; opacity: .5; cursor: default;" title="Очаквайте в Google Play / App Store">📱 House-Look-Book — приложение (скоро)</span>
+            <a href="/wherenobiz/" class="btn" style="margin: 10px;">🌍 WhereNoBiz — уеб</a>
+            <span class="btn" style="margin: 10px; opacity: .5; cursor: default;" title="Очаквайте в Google Play / App Store">📱 WhereNoBiz — приложение (скоро)</span>
         </div>
     </div>
 
@@ -215,28 +217,8 @@
     </div>
 
     <script src="/shared/js/config.js?v=1.0093"></script>
-    <script src="/shared/js/navigation.js?v=1.0115"></script>
+    <script src="/shared/js/navigation.js?v=1.0146"></script>
     <script>
-        // Обновяване на top-right auth бутоните според login статуса
-        (async () => {
-            try {
-                const r = await fetch('/api/portals/me');
-                if (!r.ok) return;
-                const data = await r.json();
-                if (!data.logged_in) return;
-                const box = document.getElementById('top-auth');
-                const paidBadge = data.paid_this_month ? ' ✅' : '';
-                box.innerHTML = `
-                    <span class="user">👤 ${data.user.username}${paidBadge}${data.is_admin ? ' (admin)' : ''}</span>
-                    <button class="logout" id="logout-btn" data-i18n="billing.logout">Изход</button>
-                `;
-                document.getElementById('logout-btn').onclick = async () => {
-                    await fetch('/api/portals/logout', { method: 'POST' });
-                    location.reload();
-                };
-            } catch (e) { /* portals service not running — leave static buttons */ }
-        })();
-
         // Покажи Admin Tools секцията само ако ?adm=bgmasters-set (или session)
         (function() {
             if (window.KCY_NAV && window.KCY_NAV.isAdmin && window.KCY_NAV.isAdmin()) {

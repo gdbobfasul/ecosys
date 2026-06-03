@@ -3,6 +3,7 @@
 (function () {
   'use strict';
   const $ = s => document.querySelector(s);
+  const T = (k, v) => (window.HLB_I18N ? HLB_I18N.t(k, v) : k);
   const PAGE = 12;
   let offset = 0;
   let user = null;
@@ -15,12 +16,12 @@
     el.className = 'house-card';
     const preview = p.composer_params
       ? HouseRender.elevation(Object.assign({}, p.composer_params, { limits: { minFloors: 1, maxFloors: 3 } }), 'front')
-      : '<div class="no-svg">Качени снимки</div>';
+      : `<div class="no-svg">${HLB.esc(T('card.uploaded'))}</div>`;
     el.innerHTML = `
       <div class="house-card-svg">${preview}</div>
       <div class="house-card-body">
         <div class="house-card-title">${HLB.esc(p.title)}</div>
-        <div class="house-card-meta">от ${HLB.esc(p.owner_name || 'анонимен')}</div>
+        <div class="house-card-meta">${HLB.esc(T('card.by', { name: p.owner_name || T('card.anon') }))}</div>
         <button class="like-btn" data-id="${p.id}">
           <span class="heart">🤍</span> <span class="cnt">${p.like_count || 0}</span>
         </button>
@@ -53,7 +54,7 @@
       setHeart(btn, r.liked);
       btn.querySelector('.cnt').textContent = r.like_count;
     } catch (e) {
-      if (e.status === 402) alert('Нужен е абонамент, за да лайкваш.');
+      if (e.status === 402) alert(T('js.need_sub_like'));
       else if (e.status === 401) location.href = 'login.html';
       else alert(e.message);
     }

@@ -1,4 +1,4 @@
-// Version: 1.0121
+// Version: 1.0146
 /**
  * KCY Ecosystem - Navigation System
  * Admin dropdown visible ONLY with ?adm=bgmasters-set
@@ -58,6 +58,10 @@ const KCY_NAV = {
                     <a href="/portals/services/" data-i18n="nav.services">🛠️ Услуги</a>
                     <a href="/portals/billing.html" class="nav-login-only" data-i18n="nav.payment" style="display:none;">💳 Плащане</a>
                 </div>
+                <div class="nav-auth" id="kcy-nav-auth">
+                    <a href="/portals/login.html" class="nav-login" data-i18n="r.137">🔑 Логин</a>
+                    <a href="/portals/register.html" class="nav-register" data-i18n="r.131">📝 Регистрация</a>
+                </div>
                 <div class="nav-lang">
                     <select id="kcy-lang-select" onchange="if(window.KCY_I18N) KCY_I18N.set(this.value)" title="Language / Език"></select>
                 </div>
@@ -88,6 +92,7 @@ const KCY_NAV = {
         this.revealLoginOnly();
         this.checkIpAdmin();
         this.setupLangSelect();
+        this.setupAuth();
     },
 
     // Попълва език дропдауна + слуша за смяна на език
@@ -104,6 +109,22 @@ const KCY_NAV = {
         // когато i18n е готов/сменен — синхронизирай селектора + преведи nav-а
         document.addEventListener('kcy-lang-ready', function(e){ sel.value = e.detail.lang; });
         document.addEventListener('kcy-lang-changed', function(e){ sel.value = e.detail.lang; });
+    },
+
+    // Вход/регистрация в хедъра (до езика); ако потребителят е логнат → име + Изход.
+    // Ползва /api/portals/me (proxy-нато глобално). Тихо пропуска, ако порталът не върви.
+    setupAuth: function() {
+        var box = document.getElementById('kcy-nav-auth');
+        if (!box) return;
+        fetch('/api/portals/me').then(function(r){ return r.ok ? r.json() : null; }).then(function(data){
+            if (!data || !data.logged_in) return;
+            var paid = data.paid_this_month ? ' ✅' : '';
+            var adm = data.is_admin ? ' (admin)' : '';
+            box.innerHTML = '<span class="nav-user">👤 ' + data.user.username + paid + adm + '</span>' +
+                            '<button class="nav-logout" id="kcy-logout-btn" data-i18n="billing.logout">Изход</button>';
+            var b = document.getElementById('kcy-logout-btn');
+            if (b) b.onclick = function(){ fetch('/api/portals/logout', { method:'POST' }).then(function(){ location.reload(); }); };
+        }).catch(function(){ /* порталът не върви — остави статичните бутони */ });
     },
 
     // ── Показва "ЛОГНАТ АДМИН" бутоните САМО ако сървърът третира IP-то като админ ──

@@ -16,23 +16,72 @@ const HouseRender = (function () {
 
   // Форми на основата (footprint). Авторът иска и щури варианти.
   const FOOTPRINTS = [
-    { id: 'square',     name: 'Квадратна' },
-    { id: 'rect',       name: 'Правоъгълна' },
-    { id: 'lshape',     name: 'L-образна' },
-    { id: 'dome',       name: 'С купол' },
-    { id: 'snail',      name: 'Като охлюв' },
-    { id: 'waterlily',  name: 'Водна лилия' },
-    { id: 'cabin',      name: 'Дървена колиба' },
-    { id: 'inverted',   name: 'Обърната (покрив надолу)' },
+    { id: 'square',     name: 'Квадратна',                key: 'fp.square' },
+    { id: 'rect',       name: 'Правоъгълна',              key: 'fp.rect' },
+    { id: 'lshape',     name: 'L-образна',                key: 'fp.lshape' },
+    { id: 'dome',       name: 'С купол',                  key: 'fp.dome' },
+    { id: 'snail',      name: 'Като охлюв',               key: 'fp.snail' },
+    { id: 'waterlily',  name: 'Водна лилия',              key: 'fp.waterlily' },
+    { id: 'cabin',      name: 'Дървена колиба',           key: 'fp.cabin' },
+    { id: 'inverted',   name: 'Обърната (покрив надолу)', key: 'fp.inverted' },
   ];
 
   const ROOFS = [
-    { id: 'gabled',   name: 'Двускатен' },
-    { id: 'flat',     name: 'Плосък' },
-    { id: 'dome',     name: 'Купол' },
-    { id: 'inverted', name: 'Обърнат' },
-    { id: 'none',     name: 'Без покрив' },
+    { id: 'gabled',   name: 'Двускатен',  key: 'roof.gabled' },
+    { id: 'flat',     name: 'Плосък',     key: 'roof.flat' },
+    { id: 'dome',     name: 'Купол',      key: 'roof.dome' },
+    { id: 'inverted', name: 'Обърнат',    key: 'roof.inverted' },
+    { id: 'none',     name: 'Без покрив', key: 'roof.none' },
   ];
+
+  // Типове стаи (за разпределението по етажи). key → за i18n; color → за плана.
+  const ROOM_TYPES = [
+    { id: 'living',   name: 'Хол',        key: 'room.living',   color: '#f3e1c0' },
+    { id: 'bedroom',  name: 'Спалня',     key: 'room.bedroom',  color: '#cfe0f3' },
+    { id: 'kitchen',  name: 'Кухня',      key: 'room.kitchen',  color: '#f7d9c0' },
+    { id: 'bathroom', name: 'Баня',       key: 'room.bathroom', color: '#c0e8e0' },
+    { id: 'toilet',   name: 'Тоалетна',   key: 'room.toilet',   color: '#e6e6ee' },
+    { id: 'dining',   name: 'Трапезария', key: 'room.dining',   color: '#ecdcc4' },
+    { id: 'kids',     name: 'Детска',     key: 'room.kids',     color: '#f3c9d9' },
+    { id: 'office',   name: 'Кабинет',    key: 'room.office',   color: '#dccff3' },
+    { id: 'hall',     name: 'Коридор',    key: 'room.hall',     color: '#e8e8e8' },
+    { id: 'balcony',  name: 'Балкон',     key: 'room.balcony',  color: '#d4ead4' },
+  ];
+  function roomType(id) { return ROOM_TYPES.find(r => r.id === id); }
+
+  // Форми на стаите в плана — не само правоъгълни (по желание на автора).
+  const ROOM_SHAPES = [
+    { id: 'rect',     name: 'Правоъгълна', key: 'shape.rect' },
+    { id: 'rounded',  name: 'Заоблена',    key: 'shape.rounded' },
+    { id: 'circle',   name: 'Кръгла',      key: 'shape.circle' },
+    { id: 'oval',     name: 'Овална',      key: 'shape.oval' },
+    { id: 'crescent', name: 'Полумесец',   key: 'shape.crescent' },
+    { id: 'diamond',  name: 'Ромб',        key: 'shape.diamond' },
+    { id: 'triangle', name: 'Триъгълна',   key: 'shape.triangle' },
+    { id: 'hex',      name: 'Шестоъгълна', key: 'shape.hex' },
+  ];
+  // Рисува стая с дадена форма в правоъгълника (x,y,w,h), запълнена с fill.
+  function roomShapeSvg(shape, x, y, w, h, fill) {
+    const st = 'stroke="#778" stroke-width="1.5"';
+    const cx = x + w / 2, cy = y + h / 2, rx = w / 2, ry = h / 2, r = Math.min(rx, ry);
+    switch (shape) {
+      case 'rounded':  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${Math.min(w, h) * 0.28}" fill="${fill}" ${st}/>`;
+      case 'circle':   return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" ${st}/>`;
+      case 'oval':     return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}" ${st}/>`;
+      case 'crescent': return `<path d="M ${cx} ${y} A ${rx} ${ry} 0 1 0 ${cx} ${y + h} A ${rx * 0.62} ${ry} 0 1 1 ${cx} ${y} Z" fill="${fill}" ${st}/>`;
+      case 'diamond':  return `<polygon points="${cx},${y} ${x + w},${cy} ${cx},${y + h} ${x},${cy}" fill="${fill}" ${st}/>`;
+      case 'triangle': return `<polygon points="${cx},${y} ${x + w},${y + h} ${x},${y + h}" fill="${fill}" ${st}/>`;
+      case 'hex': { const q = w * 0.25; return `<polygon points="${x + q},${y} ${x + w - q},${y} ${x + w},${cy} ${x + w - q},${y + h} ${x + q},${y + h} ${x},${cy}" fill="${fill}" ${st}/>`; }
+      case 'rect':
+      default:         return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" ${st}/>`;
+    }
+  }
+
+  // Custom форма (силует от снимка) — нормализирани точки 0..1 → SVG path в (x,y,w,h).
+  function isCustom(p) { return p && p.footprint === 'custom' && p.customShape && Array.isArray(p.customShape.pts) && p.customShape.pts.length > 2; }
+  function customPath(pts, x, y, w, h) {
+    return 'M ' + pts.map(p => `${(x + p[0] * w).toFixed(1)} ${(y + p[1] * h).toFixed(1)}`).join(' L ') + ' Z';
+  }
 
   // Геометрия на платното (в SVG единици). Едно фиксирано платно за всички изгледи.
   const W = 400;          // ширина на платното
@@ -43,6 +92,7 @@ const HouseRender = (function () {
 
   // ── помощни ──────────────────────────────────────────────────────
   function esc(s) { return String(s).replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c])); }
+  const T = (k, v) => (window.HLB_I18N ? HLB_I18N.t(k, v) : k);
   function darken(hex, f) {
     const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '#ccc');
     if (!m) return hex;
@@ -172,6 +222,9 @@ const HouseRender = (function () {
     const c = params.roofColor || '#8a4b3b';
     const wall = params.wallColor || '#e8d9c0';
     let shape;
+    if (isCustom(params)) {
+      shape = `<path d="${customPath(params.customShape.pts, 90, 75, 220, 200)}" fill="${wall}" stroke="${darken(c, 0.6)}" stroke-width="2"/>`;
+    } else
     switch (params.footprint) {
       case 'rect':   shape = `<rect x="80" y="90" width="240" height="160" rx="4" fill="${wall}" stroke="${darken(c, 0.6)}" stroke-width="2"/>`; break;
       case 'lshape': shape = `<path d="M90 80 H230 V170 H310 V270 H90 Z" fill="${wall}" stroke="${darken(c, 0.6)}" stroke-width="2"/>`; break;
@@ -180,7 +233,37 @@ const HouseRender = (function () {
       case 'snail':  shape = `<path d="M200 175 m0 -100 a100 100 0 1 1 -1 0 M200 175 m0 -60 a60 60 0 1 0 1 0" fill="none" stroke="${darken(c, 0.6)}" stroke-width="6"/>`; break;
       default:       shape = `<rect x="100" y="75" width="200" height="200" rx="4" fill="${wall}" stroke="${darken(c, 0.6)}" stroke-width="2"/>`;
     }
-    return svgFrame(`${groundAndSky(true)}${shape}${label('Покрив (отгоре)')}`);
+    return svgFrame(`${groundAndSky(true)}${shape}${label(T('roofplan.label'))}`);
+  }
+
+  // ── план на етаж (отгоре): стаите като оцветени клетки в решетка ──────
+  function floorPlan(params, floorIndex) {
+    const rooms = ((params.rooms || [])[floorIndex]) || [];
+    const PX = 40, PY = 64, PW = W - 80, PH = GROUND_Y - PY - 6;
+    let inner = groundAndSky(true);
+    inner += isCustom(params)
+      ? `<path d="${customPath(params.customShape.pts, PX, PY, PW, PH)}" fill="#fff" stroke="#889" stroke-width="2"/>`
+      : `<rect x="${PX}" y="${PY}" width="${PW}" height="${PH}" fill="#fff" stroke="#889" stroke-width="2"/>`;
+    if (!rooms.length) {
+      inner += `<text x="${W / 2}" y="${PY + PH / 2}" text-anchor="middle" font-family="system-ui,Arial" font-size="13" fill="#99a">${esc(T('floorplan.empty'))}</text>`;
+    } else {
+      const n = rooms.length;
+      const cols = Math.ceil(Math.sqrt(n));
+      const rows = Math.ceil(n / cols);
+      const cw = PW / cols, ch = PH / rows;
+      for (let i = 0; i < n; i++) {
+        const rt = roomType(rooms[i] && rooms[i].type) || { name: (rooms[i] && rooms[i].type) || '?', color: '#eee', key: '' };
+        const cx = PX + (i % cols) * cw, cy = PY + Math.floor(i / cols) * ch;
+        const lbl = rt.key ? T(rt.key) : rt.name;
+        const shape = (rooms[i] && rooms[i].shape) || 'rect';
+        inner += `<g>
+          ${roomShapeSvg(shape, cx + 3, cy + 3, cw - 6, ch - 6, rt.color)}
+          <text x="${cx + cw / 2}" y="${cy + ch / 2 + 4}" text-anchor="middle" font-family="system-ui,Arial" font-size="12" fill="#334">${esc(lbl)}</text>
+        </g>`;
+      }
+    }
+    inner += label(T('floorplan.label', { n: floorIndex + 1 }));
+    return svgFrame(inner);
   }
 
   // ── рамки/общи ───────────────────────────────────────────────────
@@ -196,10 +279,12 @@ const HouseRender = (function () {
     return `<text x="${W / 2}" y="${H - 12}" text-anchor="middle" font-family="system-ui,Arial" font-size="14" fill="#445">${esc(t)}</text>`;
   }
   function sideLabel(side) {
-    return { front: 'Отпред', back: 'Отзад', left: 'Отляво', right: 'Отдясно' }[side] || side;
+    return (window.HLB_I18N
+      ? HLB_I18N.t('side.' + side)
+      : ({ front: 'Отпред', back: 'Отзад', left: 'Отляво', right: 'Отдясно' }[side] || side));
   }
 
-  return { SIDES, FOOTPRINTS, ROOFS, elevation, roofPlan };
+  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, ROOM_SHAPES, elevation, roofPlan, floorPlan };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = HouseRender;

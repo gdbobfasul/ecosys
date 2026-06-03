@@ -150,3 +150,12 @@ CREATE TABLE IF NOT EXISTS moderation_log (
     created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS idx_modlog_proposal ON moderation_log(proposal_id);
+
+-- ═══════════════════════════════════════════════════════════════
+-- 7. Дневен брояч на Google Custom Search заявки (предпазител от такси)
+--    Сървърът спира под безплатния лимит (100/ден) — виж moderation.js.
+-- ═══════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS google_usage (
+    day    DATE PRIMARY KEY,
+    count  INTEGER NOT NULL DEFAULT 0
+);
