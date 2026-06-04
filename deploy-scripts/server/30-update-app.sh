@@ -45,13 +45,8 @@ case "$APP" in
     restart_one kcy-chat
     ;;
   eco3)
-    echo -e "${CYAN}ECO-3 — създава/обновява своите админи/модератори от .env (eco3_admins), после рестарт:${NC}"
-    if sudo -u kcy-eco3 bash -c "cd /var/www/kcy-ecosystem/private/eco-3 && node admins.js"; then
-      echo -e "${GREEN}  ✓ ECO-3 админи/модератори от .env${NC}"
-    else
-      echo -e "${YELLOW}  ! ECO-3 попълване пропуснато (виж изхода по-горе)${NC}"
-    fi
-    restart_one kcy-eco3
+    # ECO-3: създава базата (PG/SQLite по ECO3_DB_TYPE) → попълва админи/модератори от .env → рестарт.
+    bash "$DIR/20-setup-eco3-database.sh"
     ;;
   *)
     echo "Употреба: $0 <hlb|wnb|portals|chat|eco3>"

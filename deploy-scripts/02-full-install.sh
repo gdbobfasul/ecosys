@@ -119,10 +119,12 @@ rstep "WNB база (wherenobiz)"     "sudo ${REMOTE_BASE}/17-setup-wherenobiz-d
 # от .env. Това е работа с БАЗАТА (тук, не при старта на услугата). Извиквам директно
 # съществуващата попълваща логика на всяко приложение — нищо не се копира като файл.
 # HLB/WNB (PostgreSQL) → db.seedAdminsAndMods през node -e (като root, само DB достъп).
-# ECO-3 (SQLite eco3.db, готова от стъпка 1) → admins.js като kcy-eco3 (за правата на файла).
 rstep "HLB админи/модератори от .env" "cd ${PROJECT_DIR}/private/House-Look-Book && sudo node -e 'require(\"./db\").seedAdminsAndMods().then(()=>{console.log(\"HLB админи/модератори готови\");process.exit(0)}).catch(e=>{console.error(e.message);process.exit(1)})'"
 rstep "WNB админи/модератори от .env" "cd ${PROJECT_DIR}/private/WhereNoBiz && sudo node -e 'require(\"./db\").seedAdminsAndMods().then(()=>{console.log(\"WNB админи/модератори готови\");process.exit(0)}).catch(e=>{console.error(e.message);process.exit(1)})'"
-rstep "ECO-3 админи/модератори от .env" "cd ${PROJECT_DIR}/private/eco-3 && sudo -u kcy-eco3 node admins.js"
+
+# ECO-3 (поддържа SQLite И PostgreSQL по ECO3_DB_TYPE) — един скрипт прави трите неща в ред:
+# създава базата → попълва админи/модератори от .env → стартира kcy-eco3.
+rstep "ECO-3 база + админи/модератори + услуга" "sudo ${REMOTE_BASE}/20-setup-eco3-database.sh${RESET}"
 
 # ══ 3/4  УСЛУГИ House-Look-Book + WhereNoBiz ══
 step "3/4  Услуги House-Look-Book + WhereNoBiz (systemd + nginx)"
