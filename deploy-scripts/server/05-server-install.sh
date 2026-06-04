@@ -881,6 +881,10 @@ PORTAL_DB="$PORTAL_DIR/database/portals.db"
 
 if [ -f "$PORTAL_INIT" ]; then
     print_step "СТЪПКА 7.5: Portal database (SQLite)"
+    if [ "${DROP_DB:-0}" = "1" ] && [ -f "$PORTAL_DB" ]; then
+        echo -e "  ${YELLOW}► Drop Databases — трия стария portals.db (създава се наново)${NC}"
+        rm -f "$PORTAL_DB" "${PORTAL_DB}-wal" "${PORTAL_DB}-shm"
+    fi
     if [ -f "$PORTAL_DB" ]; then
         echo -e "  ${GREEN}✓ Portal DB вече съществува: ${PORTAL_DB}${NC}"
         echo -e "  ${YELLOW}(re-running init.js — безопасно, schema е idempotent с CREATE IF NOT EXISTS)${NC}"
@@ -922,10 +926,15 @@ DB_TYPE_ENV="${DB_TYPE_ENV:-sqlite}"
 
 if [ -f "$DB_SETUP_SCRIPT" ]; then
     echo -e "  ${CYAN}DB_TYPE от .env: ${DB_TYPE_ENV} — пускам 07-setup-database.sh${NC}"
+    RESET_FLAG=""
+    if [ "${DROP_DB:-0}" = "1" ]; then
+        RESET_FLAG="--reset"
+        echo -e "  ${YELLOW}► Drop Databases — chat базата се пресъздава от 0 (--reset)${NC}"
+    fi
     if [ "$DB_TYPE_ENV" = "postgresql" ]; then
-        bash "$DB_SETUP_SCRIPT" --force-postgresql
+        bash "$DB_SETUP_SCRIPT" $RESET_FLAG --force-postgresql
     else
-        bash "$DB_SETUP_SCRIPT" --force-sqlite
+        bash "$DB_SETUP_SCRIPT" $RESET_FLAG --force-sqlite
     fi
     DB_RC=$?
     if [ "$DB_RC" -eq 0 ]; then
@@ -946,6 +955,10 @@ ECO3_DB_DIR="$PRIVATE_DIR/eco-3/database"
 ECO3_DB="$ECO3_DB_DIR/eco3.db"
 ECO3_SCHEMA="$ECO3_DB_DIR/schema.sql"
 
+if [ "${DROP_DB:-0}" = "1" ] && [ -f "$ECO3_DB" ]; then
+    echo -e "  ${YELLOW}► Drop Databases — трия стария eco3.db (създава се наново)${NC}"
+    rm -f "$ECO3_DB" "${ECO3_DB}-wal" "${ECO3_DB}-shm"
+fi
 if [ -f "$ECO3_SCHEMA" ]; then
     if [ -f "$ECO3_DB" ]; then
         ECO3_TABLES=$(sqlite3 "$ECO3_DB" ".tables" 2>/dev/null | tr -s ' ' '\n' | grep -c '\S' || true)
