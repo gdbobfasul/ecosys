@@ -31,10 +31,10 @@ const WNB = (function () {
     return String.fromCodePoint(A + (code.charCodeAt(0) - 65), A + (code.charCodeAt(1) - 65));
   }
 
-  const CONTINENTS = ['Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'];
+  const CONTINENTS = ['Africa', 'Asia', 'Europe', 'Russia', 'North America', 'South America', 'Oceania'];
   // Запазено като fallback (ако i18n не е зареден). Преводът минава през continentName().
   const CONTINENT_BG = {
-    'Africa': '🌍 Африка', 'Asia': '🌏 Азия', 'Europe': '🌍 Европа',
+    'Africa': '🌍 Африка', 'Asia': '🌏 Азия', 'Europe': '🌍 Европа', 'Russia': '🇷🇺 Русия',
     'North America': '🌎 Северна Америка', 'South America': '🌎 Южна Америка', 'Oceania': '🌏 Океания',
   };
   // Преведено име на континент (или BG fallback).

@@ -146,7 +146,7 @@ const COUNTRIES = [
   { code: 'PL', name: 'Poland', continent: 'Europe' },
   { code: 'PT', name: 'Portugal', continent: 'Europe' },
   { code: 'RO', name: 'Romania', continent: 'Europe' },
-  { code: 'RU', name: 'Russia', continent: 'Europe' },
+  { code: 'RU', name: 'Russia', continent: 'Russia' },
   { code: 'SM', name: 'San Marino', continent: 'Europe' },
   { code: 'RS', name: 'Serbia', continent: 'Europe' },
   { code: 'SK', name: 'Slovakia', continent: 'Europe' },
@@ -214,6 +214,7 @@ const COUNTRIES = [
   { code: 'VU', name: 'Vanuatu', continent: 'Oceania' },
 ];
 
-const CONTINENTS = ['Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'];
+// Русия е отделен „континент" (тя е на 2 континента) — листва се самостоятелно.
+const CONTINENTS = ['Africa', 'Asia', 'Europe', 'Russia', 'North America', 'South America', 'Oceania'];
 
 module.exports = { COUNTRIES, CONTINENTS };
