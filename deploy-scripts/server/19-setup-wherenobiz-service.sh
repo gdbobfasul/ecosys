@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0001
+# Version: 1.0171
 ##############################################################################
 # KCY — Setup на УСЛУГАТА за WhereNoBiz (systemd + nginx)
 #
@@ -92,8 +92,11 @@ if ! id "$SVC_USER" &>/dev/null; then
   SVC_USER="root"
 fi
 if ! getent group "$SVC_GROUP" >/dev/null; then SVC_GROUP="$SVC_USER"; fi
-mkdir -p "$LOG_DIR" "$APP_DIR/uploads"
+mkdir -p "$LOG_DIR" "$APP_DIR/uploads/posts"
 chown -R "$SVC_USER":"$SVC_GROUP" "$APP_DIR/uploads" 2>/dev/null || true
+# setgid + групово писане → новите качени файлове наследяват групата kcy и групата
+# може да пише (издържа дори ако пълен деплой създаде нещо като root).
+chmod -R 2775 "$APP_DIR/uploads" 2>/dev/null || true
 
 ##############################################################################
 # 1) systemd услуга
@@ -113,6 +116,10 @@ WorkingDirectory=${APP_DIR}
 EnvironmentFile=${GLOBAL_ENV}
 Environment=NODE_ENV=production
 Environment=WNB_PUBLIC_DIR=${PUBLIC_SUBDIR}
+# Само-лечение на правата при ВСЕКИ старт (изпълнява се като root заради префикса '+',
+# независимо от User=) → качените снимки в uploads/posts винаги са записваеми.
+ExecStartPre=+/bin/mkdir -p ${APP_DIR}/uploads/posts
+ExecStartPre=+/bin/chown -R ${SVC_USER}:${SVC_GROUP} ${APP_DIR}/uploads
 ExecStart=/usr/bin/node server.js
 Restart=always
 RestartSec=10

@@ -1,3 +1,4 @@
+/* Version: 1.0171 */
 /* WhereNoBiz — стилове. Чисто, иконно. Минимум текст. */
 :root {
   --bg: #0f1b2d;
@@ -86,6 +87,14 @@ body { margin: 0; font-family: system-ui, "Segoe UI", Arial, sans-serif; backgro
 .biz-rank { color: var(--accent); font-weight: 700; min-width: 32px; }
 .biz-title { flex: 1; }
 .biz-votes { font-size: 13px; color: var(--muted); white-space: nowrap; }
+/* Секция „моите публикации" (вкл. чакащи) */
+.mine-head { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .03em; padding: 8px 8px 4px; }
+.biz-mine { background: #fbfdff; border-left: 3px solid var(--accent); }
+.biz-status { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+.biz-status.st-pending_moderation { background: #fff3cd; color: #8a6d00; }
+.biz-status.st-approved { background: #d6f3e3; color: #1d7a4d; }
+.biz-status.st-rejected { background: #fde2e2; color: #b3261e; }
+.biz-status.st-removed { background: #e9ecef; color: #555; }
 
 /* ── Панели/форми ──────────────────────────────────────────── */
 .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }

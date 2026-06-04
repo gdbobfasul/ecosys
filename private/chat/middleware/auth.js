@@ -1,4 +1,6 @@
-// Version: 1.0093
+// Version: 1.0171
+const { isStaff } = require('../roles');
+
 function authenticate(db) {
   return (req, res, next) => {
     const token = req.headers.authorization?.replace('Bearer ', '');
@@ -43,9 +45,14 @@ function authenticateAdmin(db) {
 
     // Simple admin token check (in production, use proper sessions)
     const adminSession = db.prepare('SELECT username FROM admin_users WHERE password_hash = ?').get(token);
-    
+
     if (!adminSession) {
       return res.status(401).json({ error: 'Admin authentication failed' });
+    }
+
+    // Авторитетът е .env (roles.js): username-ът трябва да е в CHAT_ADMIN_USER / CHAT_MOD1..5.
+    if (!isStaff(adminSession.username)) {
+      return res.status(403).json({ error: 'Not authorized (not in .env admin/moderator list)' });
     }
 
     req.adminUser = adminSession.username;

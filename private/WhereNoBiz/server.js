@@ -1,3 +1,4 @@
+// Version: 1.0171
 // WhereNoBiz („Намери ми бизнес, който го няма") — самостоятелен сървър.
 // Express + PostgreSQL. Самостоятелно, чисто (правило от brief-а).
 //
@@ -13,7 +14,7 @@ const path = require('path');
 
 require('dotenv').config({ path: path.join(__dirname, '..', 'configs', '.env') });
 
-const { pool, applySchema, seedCountries, checkHealth, q } = require('./db');
+const { pool, applySchema, seedCountries, seedAdminsAndMods, checkHealth, q } = require('./db');
 
 const authRouter = require('./routes/auth');
 const countriesRouter = require('./routes/countries');
@@ -89,6 +90,10 @@ async function start() {
     catch (e) { console.error('⚠️  WNB applySchema пропуснат:', e.message); }
     try { await seedCountries(); console.log('✅ WNB страни заредени'); }
     catch (e) { console.error('⚠️  WNB seedCountries пропуснат:', e.message); }
+    // Всяко приложение попълва САМО своите админи/модератори от .env, при собствения
+    // си старт (идемпотентно — безвредно по всяко време). Виж roles.js.
+    try { await seedAdminsAndMods(); console.log('✅ WNB админи/модератори попълнени от .env'); }
+    catch (e) { console.error('⚠️  WNB попълване на админи пропуснато:', e.message); }
   }
   const h = await checkHealth();
   if (!h.healthy) console.error('⚠️  WNB няма връзка с PostgreSQL:', h.error);

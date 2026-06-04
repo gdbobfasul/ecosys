@@ -1,3 +1,4 @@
+// Version: 1.0171
 // WhereNoBiz — листване: континент → държави → липсващи бизнеси.
 // Без континент в URL → показваме картата за избор.
 // С континент → списък държави; всяка се разтваря и показва постовете (ранкнати).
@@ -7,6 +8,31 @@
   const T = (k, v) => (window.WNB_I18N ? WNB_I18N.t(k, v) : k);
   const params = new URLSearchParams(location.search);
   const continent = params.get('continent');
+
+  // Моите постове (всички статуси) — зареждат се веднъж и се кешират.
+  let _minePromise;
+  function getMine() {
+    if (_minePromise === undefined) {
+      _minePromise = WNB.api('/posts/mine/list').then(r => r.posts || []).catch(() => null);
+    }
+    return _minePromise;
+  }
+  function statusLabel(s) { return T('mystatus.' + s); }
+
+  // Секция „Твоите публикации (вкл. чакащи)" за дадена страна. '' ако няма/не е логнат.
+  async function mineSection(code) {
+    const mine = await getMine();
+    if (!mine || !mine.length) return '';
+    const ours = mine.filter(p => p.country_code === code);
+    if (!ours.length) return '';
+    const rows = ours.map(p => `
+      <a class="biz-row biz-mine" href="post.html?id=${p.id}">
+        <span class="biz-title">${WNB.esc(p.title)}</span>
+        <span class="biz-status st-${WNB.esc(p.status)}">${WNB.esc(statusLabel(p.status))}</span>
+        <span class="biz-votes">✅ ${p.confirm_count}</span>
+      </a>`).join('');
+    return `<div class="mine-head">${WNB.esc(T('browse.mine'))}</div>${rows}`;
+  }
 
   // Разтваряне на държава → зарежда постовете ѝ веднъж.
   async function toggleCountry(row, code, name) {
@@ -20,19 +46,25 @@
     body.innerHTML = `<div class="loading">${WNB.esc(T('browse.loading'))}</div>`;
     row.appendChild(body);
     try {
-      const r = await WNB.api('/posts?country=' + encodeURIComponent(code));
+      // Публичните (одобрени, ранкнати) + моите (всички статуси, вкл. чакащи) — паралелно.
+      const [r, mineHtml] = await Promise.all([
+        WNB.api('/posts?country=' + encodeURIComponent(code)),
+        mineSection(code),
+      ]);
       const posts = r.posts || [];
+      let html = mineHtml;
       if (!posts.length) {
-        body.innerHTML = `<div class="empty-line">${WNB.esc(T('browse.no_posts', { name: name }))}
+        html += `<div class="empty-line">${WNB.esc(T('browse.no_posts', { name: name }))}
           <a href="new.html?country=${code}">${WNB.esc(T('browse.post_first'))}</a>.</div>`;
-        return;
+      } else {
+        html += posts.map((p, i) => `
+          <a class="biz-row" href="post.html?id=${p.id}">
+            <span class="biz-rank">#${i + 1}</span>
+            <span class="biz-title">${WNB.esc(p.title)}</span>
+            <span class="biz-votes">✅ ${p.confirm_count}</span>
+          </a>`).join('');
       }
-      body.innerHTML = posts.map((p, i) => `
-        <a class="biz-row" href="post.html?id=${p.id}">
-          <span class="biz-rank">#${i + 1}</span>
-          <span class="biz-title">${WNB.esc(p.title)}</span>
-          <span class="biz-votes">✅ ${p.confirm_count}</span>
-        </a>`).join('');
+      body.innerHTML = html;
     } catch (e) {
       body.innerHTML = `<div class="empty-line">${WNB.esc(T('browse.err', { msg: e.message }))}</div>`;
     }

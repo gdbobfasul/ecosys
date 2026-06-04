@@ -1,3 +1,4 @@
+// Version: 1.0171
 // House-Look-Book („Подреди своя дом") — самостоятелен сървър.
 // Express + PostgreSQL. Самостоятелно, чисто (правило от brief-а).
 // Моделът копира private/portals/server.js, но базата е pg.Pool (db.js).
@@ -14,7 +15,7 @@ const cron = require('node-cron');
 
 require('dotenv').config({ path: path.join(__dirname, '..', 'configs', '.env') });
 
-const { pool, applySchema, checkHealth, q } = require('./db');
+const { pool, applySchema, seedAdminsAndMods, checkHealth, q } = require('./db');
 const { load } = require('./config-loader');
 
 const authRouter = require('./routes/auth');
@@ -127,6 +128,10 @@ async function start() {
   if (process.env.HLB_APPLY_SCHEMA !== 'false') {
     try { await applySchema(); console.log('✅ HLB схема приложена/проверена'); }
     catch (e) { console.error('⚠️  HLB applySchema пропуснат:', e.message); }
+    // Всяко приложение попълва САМО своите админи/модератори от .env, при собствения
+    // си старт (идемпотентно — безвредно по всяко време). Виж roles.js.
+    try { await seedAdminsAndMods(); console.log('✅ HLB админи/модератори попълнени от .env'); }
+    catch (e) { console.error('⚠️  HLB попълване на админи пропуснато:', e.message); }
   }
   const h = await checkHealth();
   if (!h.healthy) console.error('⚠️  HLB няма връзка с PostgreSQL:', h.error);

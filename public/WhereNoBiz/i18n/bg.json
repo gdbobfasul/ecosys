@@ -37,6 +37,11 @@
   "browse.post_first": "Поствай първата ниша",
   "browse.missing": "{n} липсващи",
   "browse.no_listings": "няма обяви",
+  "browse.mine": "Твои публикации (вкл. чакащи одобрение):",
+  "mystatus.pending_moderation": "чака одобрение",
+  "mystatus.approved": "одобрен",
+  "mystatus.rejected": "отхвърлен",
+  "mystatus.removed": "свален",
   "browse.err": "Грешка: {msg}",
 
   "new.title": "WhereNoBiz — Поствай свободна ниша",

@@ -1,0 +1,86 @@
+<!-- Version: 1.0171 -->
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Token Monitor</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 16px; background: #0e1726; color: #e6edf3; }
+    h1 { font-size: 20px; } h2 { font-size: 16px; margin-top: 22px; color: #79c0ff; }
+    .card { background: #161f31; border: 1px solid #24304a; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+    .stat { background: #11192a; border: 1px solid #24304a; border-radius: 8px; padding: 12px; }
+    .stat .n { font-size: 22px; font-weight: 700; color: #58d68d; } .stat .l { font-size: 12px; color: #8b98a9; }
+    input, button { padding: 8px 10px; border-radius: 6px; border: 1px solid #2c3a57; background: #0e1726; color: #e6edf3; font-family: inherit; }
+    button { cursor: pointer; background: #1f6feb; border-color: #1f6feb; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { border: 1px solid #24304a; padding: 5px 8px; text-align: left; white-space: nowrap; }
+    th { background: #11192a; }
+    .alert.warning { color: #f0c674; } .alert.critical, .alert.error { color: #ff7b72; }
+    .muted { color: #8b98a9; font-size: 13px; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: #24304a; }
+  </style>
+</head>
+<body>
+  <h1>🛡️ Token Monitor — <span id="tname">…</span> <span id="depl" class="pill"></span></h1>
+
+  <div id="loginCard" class="card" style="display:none">
+    <h2>Вход (админ/модератор от .env)</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <input id="u" placeholder="потребител"><input id="p" type="password" placeholder="парола">
+      <button id="loginBtn">Влез</button>
+    </div>
+    <div id="loginMsg" class="muted"></div>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="muted">Влязъл: <b id="who"></b> · <button id="logoutBtn">Изход</button> · <button id="refresh">↻ Обнови</button></div>
+
+    <h2>Статистика</h2>
+    <div class="card"><div id="stats" class="grid"></div></div>
+
+    <h2>Аларми</h2>
+    <div class="card"><div id="alerts"></div></div>
+
+    <h2>Holders (топ 500)</h2>
+    <div class="card" style="overflow-x:auto"><div id="holders"></div></div>
+  </div>
+
+  <script src="monitor-config.js"></script>
+  <script>
+    const KEY = window.TOK_KEY, B = '/api/tok/' + KEY;
+    const $ = s => document.querySelector(s);
+    const esc = s => String(s==null?'':s).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+    async function api(path, opts){ const r = await fetch(B+path, Object.assign({credentials:'same-origin',headers:{'Content-Type':'application/json'}}, opts)); const d = await r.json().catch(()=>({})); if(!r.ok) throw Object.assign(new Error(d.message||d.error||r.status),{status:r.status}); return d; }
+
+    $('#tname').textContent = window.TOK_NAME || KEY;
+
+    async function loadAll(){
+      try {
+        const s = await api('/stats');
+        $('#depl').textContent = s.deployed ? 'деплойнат' : 'НЕ е деплойнат (чака)';
+        $('#stats').innerHTML = [
+          ['Притежатели', s.holders],['Купувачи (mint)', s.buyersFromMint],['Трансфери', s.transfers],
+          ['Нови holders 24ч', s.newHolders24h],['Трансфери 24ч', s.tx24h],['Автопауза', s.autopause?'ВКЛ':'изкл'],
+        ].map(([l,n])=>`<div class="stat"><div class="n">${esc(n)}</div><div class="l">${l}</div></div>`).join('');
+        const a = await api('/alerts');
+        $('#alerts').innerHTML = a.alerts.length ? a.alerts.map(x=>`<div class="alert ${esc(x.level)}">[${new Date(x.ts*1000).toLocaleString('bg-BG')}] <b>${esc(x.kind)}</b> — ${esc(x.message)}</div>`).join('') : '<div class="muted">Няма аларми.</div>';
+        const h = await api('/holders');
+        $('#holders').innerHTML = h.holders.length ? '<table><thead><tr><th>Адрес</th><th>Баланс</th><th>Последно</th></tr></thead><tbody>'+h.holders.map(x=>`<tr><td>${esc(x.addr)}</td><td>${esc(x.balance)}</td><td>${x.last_seen?new Date(x.last_seen*1000).toLocaleString('bg-BG'):''}</td></tr>`).join('')+'</tbody></table>' : '<div class="muted">Няма holders (токенът не е деплойнат или няма трансфери).</div>';
+      } catch(e){ if(e.status===403){ showLogin(); } else { $('#alerts').innerHTML = '<div class="alert error">Грешка: '+esc(e.message)+'</div>'; } }
+    }
+    function showLogin(){ $('#app').style.display='none'; $('#loginCard').style.display=''; }
+    async function showApp(user){ $('#who').textContent=user; $('#loginCard').style.display='none'; $('#app').style.display=''; loadAll(); }
+
+    $('#loginBtn').onclick = async () => {
+      try { const d = await api('/login',{method:'POST',body:JSON.stringify({username:$('#u').value,password:$('#p').value})}); showApp(d.user); }
+      catch(e){ $('#loginMsg').textContent = e.message; }
+    };
+    $('#logoutBtn').onclick = async () => { await api('/logout',{method:'POST'}); showLogin(); };
+    $('#refresh').onclick = loadAll;
+
+    (async ()=>{ try { const me = await api('/me'); if(me.user && me.role!=='user') showApp(me.user); else showLogin(); } catch(_){ showLogin(); } })();
+  </script>
+</body>
+</html>

@@ -31,7 +31,7 @@
     "maxLinks": 20,
     "thumbnailMaxWidthPx": 1024,
     "thumbnailQuality": 72,
-    "maxActivePostsPerUserPerCountry": 1
+    "maxActivePostsPerUserPerCountry": 5
   },
 
   "ranking": {

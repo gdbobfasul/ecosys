@@ -1,5 +1,5 @@
 // KCY Portals — Access Control Middleware
-// Version: 1.0105
+// Version: 1.0171
 //
 // 4 варианта за достъп до порталите (GAMES + SERVICES):
 //   1. Платил си за текущия месец (запис в portal_monthly_payments)
@@ -12,10 +12,11 @@
 
 const fs = require('fs');
 const path = require('path');
+const { roleForUsername } = require('../roles');
 
 const ADM_URL_TOKEN = 'bgmasters-set';
 const HARDCODED_ADMIN_USERNAME = 'admin';
-const HARDCODED_ADMIN_PASSWORD = 'admin123';  // валидно САМО ако user.id === 1
+const HARDCODED_ADMIN_PASSWORD = 'admin123';  // legacy — вече НЕ се ползва за вход (виж roles.js)
 
 // ─── IP whitelist ──────────────────────────────────────────────
 function getClientIP(req) {
@@ -71,14 +72,16 @@ function hasAdmUrlParam(req) {
     return req.query.adm === ADM_URL_TOKEN;
 }
 
-function isFirstUserAdmin(db, userId) {
-    if (!userId) return false;
-    // Hardcoded admin/admin123 е валиден САМО ако user с id=1 е username='admin'
-    // (т.е. първият регистриран user е с username='admin')
-    const first = db.prepare("SELECT id, username FROM portal_users ORDER BY id ASC LIMIT 1").get();
-    if (!first) return false;
-    return first.id === userId && first.username === HARDCODED_ADMIN_USERNAME;
+// Роля от .env (roles.js) по username на логнатия потребител: admin/moderator/user.
+function userRole(db, userId) {
+    if (!userId) return 'user';
+    const u = db.prepare("SELECT username FROM portal_users WHERE id = ?").get(userId);
+    return u ? roleForUsername(u.username) : 'user';
 }
+// Запазено име (ползва се в computeAccess / login response). Вече = .env админ.
+function isFirstUserAdmin(db, userId) { return userRole(db, userId) === 'admin'; }
+// Админ ИЛИ модератор от .env.
+function isEnvStaff(db, userId) { return userRole(db, userId) !== 'user'; }
 
 // ─── Compute granted variants for the request ──────────────────
 function computeAccess(req, db) {
@@ -91,8 +94,8 @@ function computeAccess(req, db) {
     };
     // Достъп до портала:
     //   1. платил си за текущия месец  → нормален достъп
-    //   2. admin достъп — само IP whitelist (вкл. 0.0.0.0/0), без URL параметър
-    variants.admin_access = variants.ip_white;
+    //   2. admin достъп — IP whitelist (вкл. 0.0.0.0/0) ИЛИ логнат като .env админ/модератор
+    variants.admin_access = variants.ip_white || isEnvStaff(db, userId);
     variants.granted = variants.paid || variants.admin_access;
     return variants;
 }
@@ -168,6 +171,8 @@ module.exports = {
     hasPaidCurrentMonth,
     hasAdmUrlParam,
     isFirstUserAdmin,
+    userRole,
+    isEnvStaff,
     isIpWhitelisted,
     computeAccess,
     requirePortalAccess,

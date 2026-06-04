@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0093
+# Version: 1.0171
 ##############################################################################
 # KCY Ecosystem - Server Install Script
 # sudo bash 05-server-install.sh
@@ -67,8 +67,11 @@ refresh_pg_names() {
     [ -z "$envf" ] && [ -f "$STAGING/private/configs/.env" ] && envf="$STAGING/private/configs/.env"
     if [ -n "$envf" ]; then
         local d u
-        d=$(grep "^PG_DATABASE=" "$envf" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
-        u=$(grep "^PG_USER=" "$envf" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+        # Правилните имена са CHAT_PG_* ; fallback към старите PG_* (преди миграция на .env).
+        d=$(grep "^CHAT_PG_DATABASE=" "$envf" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+        [ -z "$d" ] && d=$(grep "^PG_DATABASE=" "$envf" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+        u=$(grep "^CHAT_PG_USER=" "$envf" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+        [ -z "$u" ] && u=$(grep "^PG_USER=" "$envf" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
         [ -n "$d" ] && PG_DB_NAME="$d"
         [ -n "$u" ] && PG_DB_USER="$u"
     fi

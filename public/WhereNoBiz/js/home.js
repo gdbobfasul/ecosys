@@ -1,3 +1,4 @@
+// Version: 1.0171
 // WhereNoBiz — начален екран: карта по континенти + двата бутона.
 (function () {
   'use strict';
@@ -12,7 +13,7 @@
     } catch (_) {}
 
     const box = document.getElementById('mapBox');
-    box.innerHTML = WorldMap.svg(counts, '1.0165');
+    box.innerHTML = WorldMap.svg(counts, '1.0171');
     // Клик на континент → листване на държавите в него.
     WorldMap.bind(box, (continent) => {
       location.href = 'browse.html?continent=' + encodeURIComponent(continent);

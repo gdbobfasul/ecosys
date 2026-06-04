@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0140
+# Version: 1.0171
 ##############################################################################
 # KCY — Setup за WhereHNoBiz базата данни (отделна PostgreSQL база)
 #
@@ -148,7 +148,7 @@ setup_wherenobiz() {
   TBL_COUNT=$(sudo -u postgres psql -d "$DB_NAME" -tAc "SELECT count(*) FROM pg_tables WHERE schemaname='public'" 2>/dev/null)
   echo -e "${GREEN}  ✓ Схема заредена — ${TBL_COUNT:-0} таблици${NC}"
 
-  # ── Seed на държавите ТУК (гаранция) — не разчитай само на старта на услугата.
+  # ── Попълване на държавите ТУК (гаранция) — не разчитай само на старта на услугата.
   #    Празна countries → всеки пост дава FK грешка posts_country_code_fkey.
   #    Източник: private/WhereNoBiz/data/countries.js (същият като валидацията/seedCountries).
   local COUNTRIES_FILE="$PROJECT_DIR/private/WhereNoBiz/data/countries.js"
@@ -159,9 +159,9 @@ setup_wherenobiz() {
       echo "$SEED_SQL" | sudo -u postgres psql -d "$DB_NAME" 2>&1 | tail -1
       local CN
       CN=$(sudo -u postgres psql -d "$DB_NAME" -tAc "SELECT count(*) FROM countries" 2>/dev/null)
-      echo -e "${GREEN}  ✓ Държави seed-нати — ${CN:-0}${NC}"
+      echo -e "${GREEN}  ✓ Държави попълнени — ${CN:-0}${NC}"
     else
-      echo -e "${YELLOW}  ⚠ Seed на държави пропуснат (node грешка) — ще се заредят при старт на услугата.${NC}"
+      echo -e "${YELLOW}  ⚠ Попълването на държави пропуснато (node грешка) — ще се заредят при старт на услугата.${NC}"
     fi
   else
     echo -e "${YELLOW}  ⚠ countries.js/node липсва — държавите ще се заредят при старт на услугата.${NC}"
@@ -193,8 +193,16 @@ HBAEOF
 ##############################################################################
 setup_wherenobiz
 
+# Рестарт на услугата — за да хване новата база И да попълни своите админи/модератори
+# от .env при старта си (WNB сам си попълва акаунтите в server.js — идемпотентно).
+echo ""
+if systemctl restart kcy-wnb 2>/dev/null; then
+  echo -e "${GREEN}  ✓ kcy-wnb рестартиран (при старта си попълва WNB админи/модератори от .env)${NC}"
+else
+  echo -e "${YELLOW}  ! kcy-wnb не е рестартиран (услугата може да липсва)${NC}"
+fi
+
 echo ""
 echo -e "${YELLOW}══════════════════════════════════════════════════════${NC}"
 echo -e "${GREEN}  Готово. .env не е променян — настройките се четат оттам.${NC}"
-echo -e "${YELLOW}  Следва: рестарт на WhereNoBiz сървиса да хване базата.${NC}"
 echo -e "${YELLOW}══════════════════════════════════════════════════════${NC}"

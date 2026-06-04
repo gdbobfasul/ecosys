@@ -1,4 +1,4 @@
-// Version: 1.0093
+// Version: 1.0171
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -73,6 +73,23 @@ async function setupDatabase() {
     }
     
     console.log(`✅ Database ready: ${getDatabaseType().toUpperCase()}`);
+
+    // Всяко приложение попълва САМО своите админи/модератори от .env при собствения си
+    // старт (идемпотентно). Чатът пази паролите в admin_users; кой е админ → roles.js.
+    try {
+      const { hashPassword } = require('./utils/password');
+      const { envAccounts } = require('./roles');
+      let n = 0;
+      for (const a of envAccounts()) {
+        const hash = await hashPassword(a.pass);
+        const ex = db.prepare('SELECT id FROM admin_users WHERE username = ?').get(a.user);
+        if (ex) db.prepare('UPDATE admin_users SET password_hash = ? WHERE username = ?').run(hash, a.user);
+        else db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)').run(a.user, hash);
+        n++;
+      }
+      if (n) console.log(`✅ chat админи/модератори попълнени в admin_users от .env (${n})`);
+    } catch (e) { console.error('⚠️  chat попълване на админи пропуснато:', e.message); }
+
     return db;
   } catch (error) {
     console.error('❌ Database initialization failed:', error);
@@ -372,7 +389,7 @@ const PORT = process.env.CHAT_PORT || 3000;
     server.listen(PORT, () => {
       debug.stage('✓ listening on port', PORT);
       const dbType = getDatabaseType().toUpperCase();
-      const dbInfo = dbType === 'SQLITE' ? 'SQLite (amschat.db)' : `PostgreSQL (${process.env.PG_DATABASE || 'amschat'})`;
+      const dbInfo = dbType === 'SQLITE' ? 'SQLite (amschat.db)' : `PostgreSQL (${process.env.CHAT_PG_DATABASE || process.env.PG_DATABASE || 'amschat'})`;
       
       console.log(`
 ╔════════════════════════════════════════╗

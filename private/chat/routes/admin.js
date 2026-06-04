@@ -1,7 +1,8 @@
-// Version: 1.0093
+// Version: 1.0171
 const express = require('express');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const { getDatabaseType } = require('../utils/database');
+const { isStaff } = require('../roles');
 
 // Debug helper — логва старта/изхода на ecosystem-status за диагностика
 let debug;
@@ -53,6 +54,12 @@ function createAdminRoutes(db) {
 
       if (!passwordMatch) {
         return res.status(401).json({ error: 'Invalid credentials' });
+      }
+
+      // Авторитетът е .env (roles.js), не базата: дори да има ред в admin_users,
+      // ако username-ът не е в .env (CHAT_ADMIN_USER / CHAT_MOD1..5) → не е админ.
+      if (!isStaff(username)) {
+        return res.status(403).json({ error: 'Not authorized (not in .env admin/moderator list)' });
       }
 
       db.prepare('UPDATE admin_users SET last_login = datetime("now") WHERE username = ?').run(username);

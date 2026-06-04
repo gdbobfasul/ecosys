@@ -1,0 +1,21 @@
+{
+  "name": "kcy-token-monitor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Per-token read-only индексатор/аналитика/аларми + env админ модел. Стартира се с аргумент token|brch1|multisig.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:token": "node server.js token",
+    "start:brch1": "node server.js brch1",
+    "start:multisig": "node server.js multisig"
+  },
+  "dependencies": {
+    "bcryptjs": "*",
+    "better-sqlite3": "*",
+    "cookie-parser": "*",
+    "ethers": "*",
+    "express": "*",
+    "express-session": "*"
+  }
+}

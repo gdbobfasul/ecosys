@@ -1,5 +1,5 @@
 // KCY Portals — Auth routes
-// Version: 1.0098
+// Version: 1.0171
 
 const express = require('express');
 const bcrypt = require('bcryptjs');
@@ -90,16 +90,12 @@ router.post('/login', async (req, res) => {
         return res.status(401).json({ error: 'bad_credentials', message: 'Грешно потребителско име или парола.' });
     }
 
-    let ok = false;
-    if (user.username === HARDCODED_ADMIN_USERNAME && user.id === 1 && password === HARDCODED_ADMIN_PASSWORD) {
-        ok = true;
-    }
-    if (!ok) {
-        const hashLen = user.password_hash ? user.password_hash.length : 0;
-        const hashPrefix = user.password_hash ? user.password_hash.slice(0, 4) : 'NULL';
-        log(`1b — hash в базата: дължина=${hashLen}, префикс='${hashPrefix}' (валиден bcrypt = 60 символа, префикс '$2')`);
-        ok = await bcrypt.compare(password, user.password_hash || '');
-    }
+    // Вход само с bcrypt. Backdoor-ът admin/admin123 е премахнат — админ/модератор
+    // се определя от .env username (виж roles.js / access-control.js).
+    const hashLen = user.password_hash ? user.password_hash.length : 0;
+    const hashPrefix = user.password_hash ? user.password_hash.slice(0, 4) : 'NULL';
+    log(`1b — hash в базата: дължина=${hashLen}, префикс='${hashPrefix}' (валиден bcrypt = 60 символа, префикс '$2')`);
+    const ok = await bcrypt.compare(password, user.password_hash || '');
     log(`2 — парола: ${ok ? 'OK' : 'ГРЕШНА'}`);
 
     if (!ok) {

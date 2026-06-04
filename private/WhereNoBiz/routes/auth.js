@@ -1,3 +1,4 @@
+// Version: 1.0171
 // WhereNoBiz — регистрация / вход / изход / профил.
 // Регистрацията/личните данни концептуално са „на сайта" (server-client модел от brief 4).
 
@@ -5,6 +6,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { one } = require('../db');
 const { requireAuth } = require('../middleware/auth');
+const { roleForEmail } = require('../roles');
 
 const router = express.Router();
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -21,9 +23,10 @@ router.post('/register', async (req, res, next) => {
     const user = await one(
       `INSERT INTO users (email, password_hash, display_name, lang, phone, is_subscribed)
        VALUES ($1, $2, $3, $4, $5, TRUE)
-       RETURNING id, email, display_name, lang, role, is_subscribed`,
+       RETURNING id, email, display_name, lang, is_subscribed`,
       [email.toLowerCase(), hash, display_name || null, lang || 'en', phone || null]
     );
+    user.role = roleForEmail(user.email);
     req.session.userId = user.id;
     res.status(201).json({ user });
   } catch (e) { next(e); }
@@ -40,7 +43,7 @@ router.post('/login', async (req, res, next) => {
     }
     if (user.is_banned) return res.status(403).json({ error: 'banned', message: 'Акаунтът е блокиран.' });
     req.session.userId = user.id;
-    res.json({ user: { id: user.id, email: user.email, display_name: user.display_name, lang: user.lang, role: user.role, is_subscribed: user.is_subscribed } });
+    res.json({ user: { id: user.id, email: user.email, display_name: user.display_name, lang: user.lang, role: roleForEmail(user.email), is_subscribed: user.is_subscribed } });
   } catch (e) { next(e); }
 });
 

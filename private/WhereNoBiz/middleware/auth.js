@@ -1,6 +1,8 @@
+// Version: 1.0171
 // WhereNoBiz — middleware за достъп (сесия-базиран, по модела на portals/HLB).
 
 const { one } = require('../db');
+const { roleForEmail } = require('../roles');
 
 async function requireAuth(req, res, next) {
   if (!req.session || !req.session.userId) {
@@ -8,11 +10,13 @@ async function requireAuth(req, res, next) {
   }
   try {
     const user = await one(
-      'SELECT id, email, display_name, lang, role, phone, is_subscribed, subscription_until, is_banned FROM users WHERE id = $1',
+      'SELECT id, email, display_name, lang, phone, is_subscribed, subscription_until, is_banned FROM users WHERE id = $1',
       [req.session.userId]
     );
     if (!user) { req.session.destroy(() => {}); return res.status(401).json({ error: 'not_authenticated' }); }
     if (user.is_banned) return res.status(403).json({ error: 'banned', message: 'Акаунтът е блокиран.' });
+    // Ролята идва от .env (roles.js), не от базата.
+    user.role = roleForEmail(user.email);
     req.user = user;
     next();
   } catch (e) { next(e); }

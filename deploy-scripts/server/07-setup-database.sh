@@ -1,12 +1,12 @@
 #!/bin/bash
-# Version: 1.0093
+# Version: 1.0171
 ##############################################################################
 # KCY Database Setup with Advanced Reset
 # Пише database настройките в глобалния .env:
 #   /var/www/kcy-ecosystem/configs/.env
 #
 # Използва имената, които кодът чете:
-#   DB_TYPE, PG_HOST, PG_PORT, PG_DATABASE, PG_USER, PG_PASSWORD
+#   DB_TYPE, CHAT_PG_HOST, CHAT_PG_PORT, CHAT_PG_DATABASE, CHAT_PG_USER, CHAT_PG_PASSWORD
 ##############################################################################
 
 set -e
@@ -321,13 +321,15 @@ if [ "$USE_POSTGRESQL" = true ]; then
         echo -e "${RED}  PostgreSQL не може да се настрои без PG настройки от .env${NC}"
         exit 1
     fi
-    ENV_DB=$(grep "^PG_DATABASE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
-    ENV_USER=$(grep "^PG_USER=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
-    ENV_PASS=$(grep "^PG_PASSWORD=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+    # Правилните имена са CHAT_PG_* ; fallback към старите PG_* (преди миграция на .env).
+    _envval() { grep "^$1=" "$GLOBAL_ENV" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' | tr -d '\r'; }
+    ENV_DB=$(_envval CHAT_PG_DATABASE);   [ -z "$ENV_DB" ]   && ENV_DB=$(_envval PG_DATABASE)
+    ENV_USER=$(_envval CHAT_PG_USER);     [ -z "$ENV_USER" ] && ENV_USER=$(_envval PG_USER)
+    ENV_PASS=$(_envval CHAT_PG_PASSWORD); [ -z "$ENV_PASS" ] && ENV_PASS=$(_envval PG_PASSWORD)
     if [ -z "$ENV_DB" ] || [ -z "$ENV_USER" ] || [ -z "$ENV_PASS" ]; then
         echo -e "${RED}✗ .env няма пълни PG настройки${NC}"
-        echo -e "${RED}  Нужни: PG_DATABASE, PG_USER, PG_PASSWORD${NC}"
-        echo -e "${YELLOW}  PG_DATABASE='${ENV_DB}' PG_USER='${ENV_USER}' PG_PASSWORD=$([ -n "$ENV_PASS" ] && echo SET || echo ПРАЗНА)${NC}"
+        echo -e "${RED}  Нужни: CHAT_PG_DATABASE, CHAT_PG_USER, CHAT_PG_PASSWORD${NC}"
+        echo -e "${YELLOW}  CHAT_PG_DATABASE='${ENV_DB}' CHAT_PG_USER='${ENV_USER}' CHAT_PG_PASSWORD=$([ -n "$ENV_PASS" ] && echo SET || echo ПРАЗНА)${NC}"
         exit 1
     fi
     DB_NAME="$ENV_DB"

@@ -1,3 +1,4 @@
+// Version: 1.0171
 // House-Look-Book — връзка с PostgreSQL.
 // Чете HLB_PG_* от глобалния .env (private/configs/.env) — СЪЩИЯТ файл, който
 // чете и деплой скриптът 16-setup-app-databases.sh. .env е source of truth:
@@ -60,4 +61,20 @@ async function checkHealth() {
   }
 }
 
-module.exports = { pool, q, one, all, applySchema, checkHealth };
+// Seed/синхронизира админ + модератори от .env (виж roles.js). Идемпотентно — при
+// всеки старт обновява паролите към тези в .env. Правата идват от roles.js, не оттук.
+async function seedAdminsAndMods() {
+  const bcrypt = require('bcryptjs');
+  const { envAccounts } = require('./roles');
+  for (const a of envAccounts()) {
+    const hash = await bcrypt.hash(a.pass, 10);
+    await pool.query(
+      `INSERT INTO users (email, password_hash, display_name, is_subscribed)
+       VALUES ($1, $2, $3, TRUE)
+       ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, is_banned = FALSE`,
+      [a.email, hash, a.kind === 'admin' ? 'Admin' : 'Moderator']
+    );
+  }
+}
+
+module.exports = { pool, q, one, all, applySchema, seedAdminsAndMods, checkHealth };

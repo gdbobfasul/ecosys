@@ -1,3 +1,4 @@
+// Version: 1.0171
 // House-Look-Book — модерация (само moderator/admin).
 // Нищо не е публично преди 'approved'. Праговете идват от config.json.
 //
@@ -14,6 +15,7 @@ const sharp = require('sharp');
 const { q, one, all, pool } = require('../db');
 const { requireAuth, requireRole } = require('../middleware/auth');
 const { load } = require('../config-loader');
+const { roleForEmail } = require('../roles');
 
 const router = express.Router();
 
@@ -217,11 +219,12 @@ router.get('/users', async (req, res, next) => {
   try {
     const onlyBanned = req.query.banned === '1';
     const rows = await all(
-      `SELECT id, email, display_name, role, is_banned, ban_reason, baseless_report_count, created_at
+      `SELECT id, email, display_name, is_banned, ban_reason, baseless_report_count, created_at
        FROM users ${onlyBanned ? 'WHERE is_banned = TRUE' : ''}
        ORDER BY is_banned DESC, created_at DESC LIMIT 200`
     );
-    res.json({ users: rows });
+    // Ролята идва от .env (roles.js), не от базата.
+    res.json({ users: rows.map(r => ({ ...r, role: roleForEmail(r.email) })) });
   } catch (e) { next(e); }
 });
 
@@ -399,6 +402,32 @@ router.post('/generate-from-google', async (req, res, next) => {
       res.json({ ok: true, created: ids.length, found: items.length });
     } catch (e) { try { await client.query('ROLLBACK'); } catch (_) {} throw e; }
     finally { client.release(); }
+  } catch (e) { next(e); }
+});
+
+// GET /api/hlb/moderation/db — суров read-only изглед на всички таблици (за db.html).
+// Admin/moderator (рутерът е зад requireRole). Паролните хешове се маскират.
+router.get('/db', async (req, res, next) => {
+  try {
+    const tnames = await all("SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename");
+    const tables = [];
+    for (const t of tnames) {
+      const name = t.tablename;
+      const rows = await all(`SELECT * FROM "${name}" ORDER BY 1 LIMIT 2000`);
+      const totalRow = await one(`SELECT count(*)::int AS c FROM "${name}"`);
+      const safe = rows.map(r => {
+        const o = { ...r };
+        if ('password_hash' in o) o.password_hash = '***';
+        return o;
+      });
+      tables.push({
+        name,
+        total: totalRow ? totalRow.c : rows.length,
+        columns: rows.length ? Object.keys(rows[0]) : [],
+        rows: safe,
+      });
+    }
+    res.json({ tables });
   } catch (e) { next(e); }
 });
 

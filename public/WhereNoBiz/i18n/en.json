@@ -37,6 +37,11 @@
   "browse.post_first": "Post the first niche",
   "browse.missing": "{n} missing",
   "browse.no_listings": "no listings",
+  "browse.mine": "Your listings (incl. pending):",
+  "mystatus.pending_moderation": "awaiting approval",
+  "mystatus.approved": "approved",
+  "mystatus.rejected": "rejected",
+  "mystatus.removed": "removed",
   "browse.err": "Error: {msg}",
 
   "new.title": "WhereNoBiz — Post a free niche",

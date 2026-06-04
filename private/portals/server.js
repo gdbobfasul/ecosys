@@ -1,5 +1,5 @@
 // KCY Portals — Main Server
-// Version: 1.0093
+// Version: 1.0171
 //
 // Разпределя:
 //   GET  /portals/*            — статични HTML (login, register, billing, games list, services list, 6 игри, 2 услуги)
@@ -53,6 +53,25 @@ db.pragma('foreign_keys = ON');
 const schemaSql = fs.readFileSync(path.join(__dirname, 'database', 'schema.sql'), 'utf8');
 db.exec(schemaSql);
 app.locals.db = db;
+
+// Всяко приложение попълва САМО своите админи/модератори от .env при собствения си
+// старт (идемпотентно — безвредно по всяко време). Кой е админ се решава от roles.js.
+(async () => {
+  try {
+    const bcrypt = require('bcryptjs');
+    const { envAccounts } = require('./roles');
+    const sel = db.prepare('SELECT id FROM portal_users WHERE username = ?');
+    const upd = db.prepare('UPDATE portal_users SET password_hash = ? WHERE username = ?');
+    const ins = db.prepare('INSERT INTO portal_users (username, password_hash) VALUES (?, ?)');
+    let n = 0;
+    for (const a of envAccounts()) {
+      const hash = await bcrypt.hash(a.pass, 10);
+      if (sel.get(a.user)) upd.run(hash, a.user); else ins.run(a.user, hash);
+      n++;
+    }
+    if (n) console.log(`✅ portals админи/модератори попълнени от .env (${n})`);
+  } catch (e) { console.error('⚠️  portals попълване на админи пропуснато:', e.message); }
+})();
 
 // ── Middleware ─────────────────────────────────────────────────
 app.use(express.json({ limit: '1mb' }));

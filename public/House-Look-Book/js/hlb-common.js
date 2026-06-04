@@ -1,3 +1,4 @@
+// Version: 1.0171
 // House-Look-Book — общи помощници за фронтенда: API + навигация + сесия.
 // Без външни зависимости. Всичко върви срещу собствения бекенд /api/hlb.
 
@@ -33,10 +34,17 @@ const HLB = (function () {
     catch (e) { return null; }
   }
 
+  // Български етикети за навигацията на страниците БЕЗ i18n (админ частите —
+  // admin.html / db.html не зареждат i18n.js и НЕ се превеждат).
+  const NAV_BG = {
+    'nav.build': '🏠 Конструктор', 'nav.gallery': '🖼️ Галерия', 'nav.rank': '⭐ Класация',
+    'nav.login': 'Вход', 'nav.logout': 'Изход', 'nav.profile': 'Моят профил', 'nav.admin': '🛠️ Админ',
+  };
+
   // Навигация — еднаква на всички страници. Без линкове извън приложението.
   async function mountNav(active) {
     if (window.HLB_I18N && HLB_I18N.ready) { try { await HLB_I18N.ready; } catch (_) {} }
-    const T = k => (window.HLB_I18N ? HLB_I18N.t(k) : k);
+    const T = k => (window.HLB_I18N ? HLB_I18N.t(k) : (NAV_BG[k] || k));
     const user = await me();
     const links = [
       { href: 'index.html',   key: 'build',   i18n: 'nav.build' },

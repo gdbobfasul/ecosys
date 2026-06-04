@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0095
+# Version: 1.0171
 ##############################################################################
 # KCY — Sync ONLY сорс код (без assets, без данни/uploads/.env/node_modules).
 # Разархивира подадения архив В STAGING (както прави Deploy), после прави
@@ -84,6 +84,21 @@ chown -R "$ECO3_USER":"$SVC_GROUP" "$PRIVATE_DIR/portals" 2>/dev/null || true
 chown -R "$CHAT_USER":"$CHAT_USER" "$PRIVATE_DIR/chat/uploads" "$PRIVATE_DIR/chat/database" 2>/dev/null || true
 chown -R "$ECO3_USER":"$ECO3_USER" "$PRIVATE_DIR/eco-3/database" "$PRIVATE_DIR/eco-3/logs" 2>/dev/null || true
 chown -R "$ECO3_USER":"$ECO3_USER" "$PRIVATE_DIR/portals/database" 2>/dev/null || true
+
+# Качени файлове на новите апове (HLB/WNB). Услугите kcy-hlb/kcy-wnb се въртят като
+# $ECO3_USER, но при пълен деплой папките uploads остават собственост на root →
+# записът на качена снимка дава „Permission denied". Гарантираме права тук (на всеки sync):
+#  - създаваме под-папките (posts/proposals), за да съществуват с верен собственик;
+#  - chown към service потребителя; chmod 2775 (setgid) → новите файлове наследяват
+#    групата kcy и групата може да пише (издържа и ако root създаде нещо после).
+for _app in WhereNoBiz House-Look-Book; do
+  _up="$PRIVATE_DIR/$_app/uploads"
+  if [ -d "$PRIVATE_DIR/$_app" ]; then
+    mkdir -p "$_up/posts" "$_up/proposals" 2>/dev/null || true
+    chown -R "$ECO3_USER":"$SVC_GROUP" "$_up" 2>/dev/null || true
+    chmod -R 2775 "$_up" 2>/dev/null || true
+  fi
+done
 
 rm -rf "$SRC"
 

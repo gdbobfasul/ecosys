@@ -1,3 +1,4 @@
+// Version: 1.0171
 // House-Look-Book — предложения (къщи).
 // Машина на състоянията (виж schema.sql):
 //   editing → pending_moderation → approved/rejected ; removed.
@@ -11,6 +12,7 @@ const sharp = require('sharp');
 const { q, one, all, pool } = require('../db');
 const { requireAuth, requireSubscribed } = require('../middleware/auth');
 const { load } = require('../config-loader');
+const { roleForEmail } = require('../roles');
 
 const router = express.Router();
 
@@ -126,8 +128,8 @@ router.get('/:id', async (req, res, next) => {
     const isOwner = viewerId && viewerId === p.owner_id;
     let isStaff = false;
     if (viewerId) {
-      const v = await one('SELECT role FROM users WHERE id = $1', [viewerId]);
-      isStaff = v && (v.role === 'moderator' || v.role === 'admin');
+      const v = await one('SELECT email FROM users WHERE id = $1', [viewerId]);
+      isStaff = v && roleForEmail(v.email) !== 'user';
     }
     if (p.status !== 'approved' && !isOwner && !isStaff) {
       return res.status(403).json({ error: 'not_visible', message: 'Това предложение още не е одобрено.' });

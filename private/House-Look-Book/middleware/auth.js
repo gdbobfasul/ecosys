@@ -1,16 +1,18 @@
+// Version: 1.0171
 // House-Look-Book — middleware за достъп.
 // Сесия-базиран (express-session), по модела на portals (без JWT).
 
 const { one } = require('../db');
+const { roleForEmail } = require('../roles');
 
-// Изисква логнат потребител. Зарежда го от базата (за роля/бан/абонамент).
+// Изисква логнат потребител. Зарежда го от базата (бан/абонамент); ролята идва от .env.
 async function requireAuth(req, res, next) {
   if (!req.session || !req.session.userId) {
     return res.status(401).json({ error: 'not_authenticated', message: 'Влез в профила си.' });
   }
   try {
     const user = await one(
-      'SELECT id, email, display_name, lang, role, is_subscribed, subscription_until, is_banned FROM users WHERE id = $1',
+      'SELECT id, email, display_name, lang, is_subscribed, subscription_until, is_banned FROM users WHERE id = $1',
       [req.session.userId]
     );
     if (!user) {
@@ -20,6 +22,8 @@ async function requireAuth(req, res, next) {
     if (user.is_banned) {
       return res.status(403).json({ error: 'banned', message: 'Акаунтът е блокиран.' });
     }
+    // Ролята идва от .env (roles.js), не от базата.
+    user.role = roleForEmail(user.email);
     req.user = user;
     next();
   } catch (e) {

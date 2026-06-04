@@ -1,3 +1,4 @@
+// Version: 1.0171
 // WhereNoBiz — връзка с PostgreSQL.
 // Чете WNB_PG_* от глобалния .env (private/configs/.env) — СЪЩИЯТ файл, който
 // чете деплой скриптът 16-setup-app-databases.sh. .env е source of truth.
@@ -43,9 +44,26 @@ async function seedCountries() {
   }
 }
 
+// Seed/синхронизира админ + модератори от .env (виж roles.js). Идемпотентно:
+// при всеки старт обновява паролите към тези в .env (компрометиран админ → смяна
+// за 2 мин: редакция на .env + рестарт). Правата НЕ идват оттук, а от roles.js.
+async function seedAdminsAndMods() {
+  const bcrypt = require('bcryptjs');
+  const { envAccounts } = require('./roles');
+  for (const a of envAccounts()) {
+    const hash = await bcrypt.hash(a.pass, 10);
+    await pool.query(
+      `INSERT INTO users (email, password_hash, display_name, is_subscribed)
+       VALUES ($1, $2, $3, TRUE)
+       ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, is_banned = FALSE`,
+      [a.email, hash, a.kind === 'admin' ? 'Admin' : 'Moderator']
+    );
+  }
+}
+
 async function checkHealth() {
   try { await pool.query('SELECT 1'); return { healthy: true }; }
   catch (e) { return { healthy: false, error: e.message }; }
 }
 
-module.exports = { pool, q, one, all, applySchema, seedCountries, checkHealth };
+module.exports = { pool, q, one, all, applySchema, seedCountries, seedAdminsAndMods, checkHealth };

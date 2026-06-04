@@ -1,3 +1,4 @@
+// Version: 1.0171
 // WhereNoBiz — общи помощници: API + навигация + знаме-emoji + континенти.
 // Без външни зависимости. Всичко върви срещу собствения бекенд /api/wnb.
 
@@ -42,9 +43,14 @@ const WNB = (function () {
     return window.WNB_I18N ? WNB_I18N.t('continent.' + cont) : (CONTINENT_BG[cont] || cont);
   }
 
+  // Български етикети за навигацията на страниците БЕЗ i18n (админ частите —
+    // admin.html / db.html не зареждат i18n.js и НЕ се превеждат). Без това T()
+    // връщаше суровия ключ (nav.home…) и навигацията изглеждаше счупена.
+  const NAV_BG = { 'nav.home': 'Начало', 'nav.browse': 'Разгледай', 'nav.new': 'Публикувай', 'nav.login': 'Вход', 'nav.logout': 'Изход' };
+
   async function mountNav(active) {
     if (window.WNB_I18N && WNB_I18N.ready) { try { await WNB_I18N.ready; } catch (_) {} }
-    const T = k => (window.WNB_I18N ? WNB_I18N.t(k) : k);
+    const T = k => (window.WNB_I18N ? WNB_I18N.t(k) : (NAV_BG[k] || k));
     const user = await me();
     const links = [
       { href: 'index.html',  key: 'home',   i18n: 'nav.home' },

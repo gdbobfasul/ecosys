@@ -1,3 +1,4 @@
+-- Version: 1.0171
 -- WhereNoBiz („Намери ми бизнес, който го няма") — PostgreSQL схема
 -- ИЗЦЯЛО НОВА база (напр. wherenobiz), отделна от чата и всичко друго.
 -- Числа/срокове/тарифи НЕ са тук — те са в config.json.
@@ -5,7 +6,8 @@
 
 -- ═══════════════════════════════════════════════════════════════
 -- 1. Потребители
---    role: 'user' | 'moderator' | 'admin'
+--    Админ/модератор НЕ се пази тук — определя се от .env (виж roles.js):
+--    имейл == WNB_ADMIN_USER → админ; имейл ∈ WNB_MOD1..5_USER → модератор.
 --    Абонаментът ($1/мес) дава ГЛЕДАНЕ в приложението (флаг за прототипа).
 -- ═══════════════════════════════════════════════════════════════
 CREATE TABLE IF NOT EXISTS users (
@@ -14,8 +16,6 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash         TEXT NOT NULL,
     display_name          TEXT,
     lang                  TEXT NOT NULL DEFAULT 'en',
-    role                  TEXT NOT NULL DEFAULT 'user'
-                          CHECK (role IN ('user','moderator','admin')),
 
     -- Контактен телефон (показва се на други само при платено разкриване — виж posts).
     phone                 TEXT,
@@ -30,6 +30,9 @@ CREATE TABLE IF NOT EXISTS users (
     created_at            TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS idx_wnb_users_email ON users(email);
+-- Премахваме старата role колона (ако още съществува от предишна схема) — ролите
+-- вече идват от .env (roles.js), не от базата. Идемпотентно.
+ALTER TABLE users DROP COLUMN IF EXISTS role;
 
 -- ═══════════════════════════════════════════════════════════════
 -- 2. Страни — списък от всички страни на земята.

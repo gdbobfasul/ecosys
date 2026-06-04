@@ -1,0 +1,56 @@
+<!-- Version: 1.0171 -->
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WhereNoBiz — База данни</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Само за админ — не се превежда. Read-only изглед: табове + търсене + странициране. */
+    .db-wrap { max-width: 1200px; margin: 0 auto; padding: 16px; }
+    .db-top { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+    .db-top a { color: #2a6f5b; text-decoration: none; font-size: 14px; }
+    .db-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .dtab { padding: 7px 12px; border: 1px solid #cdd7e1; background: #fff; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 13px; }
+    .dtab.on { background: #2a6f5b; color: #fff; border-color: #2a6f5b; }
+    .dtab .n { opacity: .7; font-size: 12px; }
+    .db-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+    #dbSearch { flex: 1; min-width: 200px; max-width: 420px; padding: 7px 10px; border: 1px solid #cdd7e1; border-radius: 8px; font-family: inherit; font-size: 14px; }
+    .db-info { font-size: 13px; color: #667; }
+    .tbl-wrap { overflow-x: auto; border: 1px solid #e3e8ee; border-radius: 8px; background: #fff; }
+    table.dbtbl { border-collapse: collapse; width: 100%; font-size: 12px; }
+    table.dbtbl th, table.dbtbl td { border: 1px solid #eef2f6; padding: 5px 8px; text-align: left; vertical-align: top; white-space: nowrap; max-width: 340px; overflow: hidden; text-overflow: ellipsis; }
+    table.dbtbl th { background: #f4f7f9; font-weight: 700; color: #445; }
+    table.dbtbl tr:nth-child(even) td { background: #fbfdff; }
+    .db-pager { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+    .db-pager button { padding: 6px 12px; border: 1px solid #cdd7e1; background: #fff; border-radius: 8px; cursor: pointer; font-family: inherit; }
+    .db-pager button[disabled] { opacity: .45; cursor: default; }
+    .db-pager .pinfo { font-size: 13px; color: #667; }
+    .empty-note { color: #778; padding: 12px 0; }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <h1>📊 База данни — WhereNoBiz</h1>
+    <p>Само за админ. Read-only (паролите са скрити). До 2000 реда на таблица.</p>
+  </header>
+
+  <main class="db-wrap">
+    <div class="db-top"><a href="admin.html">← Към админ панела</a> <button id="reload" class="dtab">↻ Обнови</button></div>
+    <div id="noAccess" class="panel notice" style="display:none">Нямаш достъп до тази част.</div>
+    <div id="dbMain" style="display:none">
+      <div id="dbTabs" class="db-tabs"></div>
+      <div class="db-controls">
+        <input id="dbSearch" type="search" placeholder="🔎 търси в таблицата…" autocomplete="off">
+        <span id="dbInfo" class="db-info"></span>
+      </div>
+      <div id="dbTable"></div>
+      <div id="dbPager" class="db-pager"></div>
+    </div>
+  </main>
+
+  <script src="js/wnb-common.js?v=1.0171"></script>
+  <script src="js/db.js?v=1.0171"></script>
+</body>
+</html>

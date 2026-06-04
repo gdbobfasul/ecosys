@@ -1,4 +1,4 @@
-// Version: 1.0093
+// Version: 1.0171
 // Database Adapter - Supports both SQLite and PostgreSQL
 // Switches based on DB_TYPE environment variable
 
@@ -62,18 +62,28 @@ function initializeSQLite() {
 function initializePostgreSQL() {
   const { Pool } = require('pg');
   
+  // Правилните константи са с префикс CHAT_ (CHAT_PG_*). Преходен fallback към
+  // старите PG_* — за да не се счупи chat, ако сървърният .env още не е обновен
+  // (.env се носи само от пълен деплой/опция 2, не от sync/опция 3). Махни fallback-а
+  // след като .env на сървъра е мигриран към CHAT_PG_*.
+  const PG_HOST = process.env.CHAT_PG_HOST || process.env.PG_HOST || 'localhost';
+  const PG_PORT = process.env.CHAT_PG_PORT || process.env.PG_PORT || 5432;
+  const PG_DATABASE = process.env.CHAT_PG_DATABASE || process.env.PG_DATABASE || 'amschat';
+  const PG_USER = process.env.CHAT_PG_USER || process.env.PG_USER || 'postgres';
+  const PG_PASSWORD = process.env.CHAT_PG_PASSWORD || process.env.PG_PASSWORD;
+
   const pool = new Pool({
-    host: process.env.PG_HOST || 'localhost',
-    port: process.env.PG_PORT || 5432,
-    database: process.env.PG_DATABASE || 'amschat',
-    user: process.env.PG_USER || 'postgres',
-    password: process.env.PG_PASSWORD,
+    host: PG_HOST,
+    port: PG_PORT,
+    database: PG_DATABASE,
+    user: PG_USER,
+    password: PG_PASSWORD,
     max: 20, // Maximum connections in pool
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
   });
-  
-  console.log(`🐘 Initializing PostgreSQL database: ${process.env.PG_DATABASE || 'amschat'}`);
+
+  console.log(`🐘 Initializing PostgreSQL database: ${PG_DATABASE}`);
   
   // Wrap pool to match SQLite API
   db = {

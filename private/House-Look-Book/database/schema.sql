@@ -1,3 +1,4 @@
+-- Version: 1.0171
 -- House-Look-Book (Подреди своя дом) — PostgreSQL схема
 -- ИЗЦЯЛО НОВА база (напр. houselookbook), отделна от чата и всичко друго.
 -- Числа/срокове/тарифи НЕ са тук — те са в config.json.
@@ -6,7 +7,8 @@
 -- ═══════════════════════════════════════════════════════════════
 -- 1. Потребители
 --    Един и същ абонамент дава И гледане, И предлагане (няма разлика).
---    role: 'user' | 'moderator' | 'admin'
+--    Админ/модератор НЕ се пази тук — определя се от .env (виж roles.js):
+--    имейл == HLB_ADMIN_USER → админ; имейл ∈ HLB_MOD1..5_USER → модератор.
 -- ═══════════════════════════════════════════════════════════════
 CREATE TABLE IF NOT EXISTS users (
     id                    BIGSERIAL PRIMARY KEY,
@@ -14,8 +16,6 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash         TEXT NOT NULL,
     display_name          TEXT,
     lang                  TEXT NOT NULL DEFAULT 'en',
-    role                  TEXT NOT NULL DEFAULT 'user'
-                          CHECK (role IN ('user','moderator','admin')),
 
     -- Абонамент (за прототипа е флаг; реалният Stripe идва по-късно)
     is_subscribed         BOOLEAN NOT NULL DEFAULT FALSE,
@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS users (
     created_at            TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+-- Премахваме старата role колона (ролите идват от .env, roles.js). Идемпотентно.
+ALTER TABLE users DROP COLUMN IF EXISTS role;
 
 -- ═══════════════════════════════════════════════════════════════
 -- 2. Предложения (къщи)

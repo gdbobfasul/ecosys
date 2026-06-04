@@ -1,3 +1,4 @@
+// Version: 1.0171
 // WhereNoBiz — постове („какъв бизнес НЯМА" за дадена страна).
 // Постване концептуално е „на сайта" (server-client модел) и струва config.fees.postUsd
 // (за прототипа плащането е заглушка). Гледането е „в приложението".
@@ -12,6 +13,7 @@ const { q, one, all } = require('../db');
 const { requireAuth, requireSubscribed } = require('../middleware/auth');
 const { load } = require('../config-loader');
 const { COUNTRIES } = require('../data/countries');
+const { roleForEmail } = require('../roles');
 
 const router = express.Router();
 const VALID_CODES = new Set(COUNTRIES.map(c => c.code));
@@ -99,8 +101,8 @@ router.get('/:id', async (req, res, next) => {
     const isOwner = viewerId && viewerId === p.owner_id;
     let isStaff = false;
     if (viewerId) {
-      const v = await one('SELECT role FROM users WHERE id = $1', [viewerId]);
-      isStaff = v && (v.role === 'moderator' || v.role === 'admin');
+      const v = await one('SELECT email FROM users WHERE id = $1', [viewerId]);
+      isStaff = v && roleForEmail(v.email) !== 'user';
     }
     if (p.status !== 'approved' && !isOwner && !isStaff) {
       return res.status(403).json({ error: 'not_visible', message: 'Този пост още не е одобрен.' });

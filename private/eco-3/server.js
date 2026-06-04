@@ -1,4 +1,4 @@
-// Version: 1.0097
+// Version: 1.0171
 // ECO-3 AI Studio — Backend Server
 // Database: SQLite · Proxy: Anthropic API · Payments: Stripe
 // Admin: IP whitelist from .env
@@ -137,13 +137,19 @@ function adminCheck(req, res, next) {
     
     // In development allow all
     if (process.env.NODE_ENV !== 'production') return next();
-    
+
+    // Логнат portals потребител, чийто username е в .env (ECO3_ADMIN_USER / ECO3_MOD1..5) → админ.
+    try {
+        const { roleForUsername } = require('./roles');
+        if (req.session && req.session.username && roleForUsername(req.session.username) !== 'user') return next();
+    } catch (_) {}
+
     // Check IP
     const allowed = allowedIPs.some(ip => clientIP.includes(ip));
     if (allowed) return next();
-    
+
     logRequest('ADMIN', `Blocked: ${clientIP} (allowed: ${allowedIPs.join(',')})`);
-    res.status(403).json({ error: 'Forbidden', yourIP: clientIP, hint: 'Add your IP to ADMIN_ALLOWED_IPS in .env' });
+    res.status(403).json({ error: 'Forbidden', yourIP: clientIP, hint: 'Add your IP to ADMIN_ALLOWED_IPS, или влез в porталите с админ username' });
 }
 
 // ════════════════════════════════════════════

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0098
+# Version: 1.0171
 ##############################################################################
 # KCY Ecosystem — Start Menu
 # Един menu item = един реален скрипт. Параметрите се питат след избор.
@@ -75,10 +75,11 @@ ask_choice() {
 
 # Print one menu item with 2-line description
 item() {
-    local num="$1"; local title="$2"; local desc1="$3"; local desc2="$4"
+    local num="$1"; local title="$2"; local desc1="$3"; local desc2="$4"; local note="$5"
     printf "  ${BOLD}%2s${NC})  %s\n" "$num" "$title"
     [ -n "$desc1" ] && echo -e "         ${GRAY}${desc1}${NC}"
     [ -n "$desc2" ] && echo -e "         ${GRAY}${desc2}${NC}"
+    [ -n "$note" ] && echo -e "         ${YELLOW}${note}${NC}"
     echo ""
 }
 
@@ -95,7 +96,8 @@ show_menu() {
         "копира го на сървъра, инсталира пакети, накрая пита да направи deploy."
     item " 2" "Deploy проекта" \
         "Архивира кода, качва на сървъра, разархивира, активира на production място." \
-        "Извиква се при всяка промяна. След избор пита за target: vm / prod / custom."
+        "Извиква се при всяка промяна. След избор пита за target: vm / prod / custom." \
+        "Презаписва стария .env."
     item " 3" "Прехвърли само СОРС (бърз)" \
         "Качва само кода (без видеа/картинки, без npm/реконфигурация) и рестартира" \
         "node сървисите. Пита кой сървър. Не трие работещото — overlay."
@@ -223,35 +225,63 @@ show_menu() {
         "На production VPS: превръща nginx в reverse proxy към VM." \
         "Ако VM падне → VPS автоматично пое. Изисква Tailscale на двете машини."
 
-    echo -e "${BOLD}${RED}━━━ DANGEROUS (двойно потвърждение) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo ""
-    item "38" "Disable SSH password auth" \
-        "⚠ ОПАСНО! Изключва парола за SSH login (само ключ). Препоръчвам само за" \
-        "сървъри с recovery console (DigitalOcean). НЕ за локалната VM!"
-    item "39" "Toggle kcy-admin sudo" \
-        "⚠ ОПАСНО! Добавя/премахва kcy-admin от sudo групата. Влияе на root достъп." \
-        "Двойно потвърждение (yes → no) за защита от случайно натискане."
-
     echo -e "${BOLD}${CYAN}━━━ INFO ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     item "40" "Status & info" \
         "Показва: версия на проекта, Node + npm версии, OS, deploy targets," \
         "локални DB файлове с размер, дали node_modules е инсталиран."
 
-    echo -e "${BOLD}${CYAN}━━━ НОВИ ПРИЛОЖЕНИЯ (House-Look-Book / WhereNoBiz → сървър) ━━━━━━━━━━━${NC}"
+    echo -e "${BOLD}${CYAN}━━━ НОВИ ПРИЛОЖЕНИЯ — УСЛУГИ (systemd+nginx, първа настройка) ━━━━━━━━${NC}"
     echo ""
-    item "41" "Deploy House-Look-Book БАЗА → сървър" \
-        "Настройва PostgreSQL базата houselookbook (потребител hlb_app) на избран сървър." \
-        "Изпълнява 16-setup-app-databases.sh houselookbook. Базата е на localhost."
-    item "42" "Deploy WhereNoBiz БАЗА → сървър" \
-        "Настройва PostgreSQL базата wherenobiz (потребител wnb_app) на избран сървър." \
-        "Изпълнява 17-setup-wherenobiz-database.sh. Базата е на localhost."
     item "43" "Deploy House-Look-Book УСЛУГА (systemd+nginx) → сървър" \
         "Вдига kcy-hlb услугата (node :3010) + nginx /houselookbook/, /api/hlb/." \
         "Отделен скрипт 18 — не пипа chat/eco3/portals. nginx маршрутът идва с опция 2."
     item "44" "Deploy WhereNoBiz УСЛУГА (systemd+nginx) → сървър" \
         "Вдига kcy-wnb услугата (node :3011) + nginx /wherenobiz/, /api/wnb/." \
         "Отделен скрипт 19 — не пипа chat/eco3/portals. nginx маршрутът идва с опция 2."
+
+    echo -e "${BOLD}${CYAN}━━━ ПО ПРИЛОЖЕНИЕ — обнови (база + админи/модератори от .env + рестарт) ━${NC}"
+    echo ""
+    item "45" "House-Look-Book — обнови" \
+        "Обновява HLB базата, попълва HLB админите/модераторите от .env и рестартира kcy-hlb." \
+        "Самостоятелно — пипа САМО HLB. (.env идва с опция 2.)"
+    item "46" "WhereNoBiz — обнови" \
+        "Обновява WNB базата, попълва WNB админите/модераторите от .env и рестартира kcy-wnb." \
+        "Самостоятелно — пипа САМО WNB."
+    item "47" "Portals — обнови" \
+        "Рестартира kcy-portals — при старта прилага схемата и попълва portals админите от .env." \
+        "Самостоятелно — пипа САМО portals."
+    item "48" "Chat — обнови" \
+        "Рестартира kcy-chat — при старта попълва chat админите от .env (таблица admin_users)." \
+        "Самостоятелно — пипа САМО chat."
+    item "49" "ECO-3 — обнови" \
+        "Рестартира kcy-eco3 — прилага схемата. Админ = portals потребител (без попълване)." \
+        "Самостоятелно — пипа САМО eco3."
+
+    echo -e "${BOLD}${RED}━━━ ОПАСНИ (двойно потвърждение) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    item "50" "Disable SSH password auth" \
+        "⚠ ОПАСНО! Изключва парола за SSH login (само ключ). Препоръчвам само за" \
+        "сървъри с recovery console (DigitalOcean). НЕ за локалната VM!"
+    item "51" "Toggle kcy-admin sudo" \
+        "⚠ ОПАСНО! Добавя/премахва kcy-admin от sudo групата. Влияе на root достъп." \
+        "Двойно потвърждение (yes → no) за защита от случайно натискане."
+
+    echo -e "${BOLD}${CYAN}━━━ ТОКЕН МОНИТОРИ (read-only индексатор/аналитика/аларми) ━━━━━━━━━━━━${NC}"
+    echo ""
+    item "52" "Token Monitor — настрой услуга (избери токен)" \
+        "Вдига kcy-tokmon-<токен> (индексатор + dashboard + аларми) + nginx /tokmon/<токен>/." \
+        "Отделно за всеки: token / brch1 / multisig. Чете on-chain, БЕЗ ключове (read-only)." \
+        "Изисква npm install (ethers) — опция 28. Бездейства, докато не впишеш адреса след деплой."
+
+    echo -e "${BOLD}${GRAY}━━━ СВОБОДНИ НОМЕРА ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    item " 5" "СВОБОДЕН"
+    item " 6" "СВОБОДЕН"
+    item "38" "СВОБОДЕН"
+    item "39" "СВОБОДЕН"
+    item "41" "СВОБОДЕН"
+    item "42" "СВОБОДЕН"
 
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -447,6 +477,66 @@ run_choice() {
                 else
                     echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
                 fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        45|46|47|48|49)
+            case "$choice" in
+              45) UAPP=hlb;     ULABEL="House-Look-Book" ;;
+              46) UAPP=wnb;     ULABEL="WhereNoBiz" ;;
+              47) UAPP=portals; ULABEL="Portals" ;;
+              48) UAPP=chat;    ULABEL="Chat" ;;
+              49) UAPP=eco3;    ULABEL="ECO-3" ;;
+            esac
+            echo ""
+            echo -e "${BOLD}${CYAN}  ОБНОВИ ${ULABEL} (база + админи/модератори от .env + рестарт) — на кой сървър?${NC}"
+            echo ""
+            if pick_target; then
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/30-update-app.sh ${UAPP}"
+                echo ""
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (.env идва с опция 2):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                echo ""
+                echo "  → Резултат: обновява САМО ${ULABEL} (база + неговите админи/модератори + рестарт)."
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — ${ULABEL} обновено на ${PICK_SRV}${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        52)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Token Monitor — за кой токен?${NC}"
+            echo "    1) token (KCY-meme-1)"
+            echo "    2) brch1 (BeRicH 1)"
+            echo "    3) multisig"
+            echo "    4) ВСИЧКИ"
+            read -p "  Избери [1-4, Enter = ВСИЧКИ]: " TSEL
+            case "$TSEL" in
+                1) TLIST="token" ;;
+                2) TLIST="brch1" ;;
+                3) TLIST="multisig" ;;
+                ""|4) TLIST="token brch1 multisig" ;;
+                *) TLIST="" ;;
+            esac
+            if [ -n "$TLIST" ] && pick_target; then
+                for TKN in $TLIST; do
+                    REMOTE="sudo /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh ${TKN}"
+                    echo ""
+                    echo -e "  ${BOLD}${CYAN}→ ${TKN}${NC}"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} ${REMOTE}${NC}"
+                    ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                    RC=$?
+                    [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ kcy-tokmon-${TKN} настроен${NC}" || echo -e "  ${RED}✗ ${TKN}: грешка (exit ${RC})${NC}"
+                done
+            elif [ -z "$TLIST" ]; then echo "  Невалиден избор — отказано"
             else echo "  Отказано"; fi
             press_enter
             ;;
@@ -731,7 +821,7 @@ run_choice() {
             ;;
 
         # ── DANGEROUS ──
-        38)
+        50)
             echo ""
             echo -e "  ${RED}⚠ Тази операция изключва парола за SSH login.${NC}"
             echo -e "  ${RED}   Препоръчвам САМО за сървъри с recovery console (DigitalOcean).${NC}"
@@ -743,7 +833,7 @@ run_choice() {
             echo "  Скриптът има double-confirm защита (yes → no)."
             press_enter
             ;;
-        39)
+        51)
             echo ""
             echo -e "  ${RED}⚠ Тази операция променя sudo правата на kcy-admin.${NC}"
             echo -e "  ${RED}   Влияе на root достъпа към сървъра.${NC}"
@@ -803,6 +893,6 @@ run_choice() {
 # === MAIN LOOP ===
 while true; do
     show_menu
-    read -p "Избери [1-40, q]: " choice
+    read -p "Избери [1-52, q]: " choice
     run_choice "$choice"
 done

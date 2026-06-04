@@ -1,3 +1,4 @@
+// Version: 1.0171
 // House-Look-Book — регистрация / вход / изход / профил.
 // Сесия-базиран вход, пароли с bcrypt.
 
@@ -5,6 +6,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { one } = require('../db');
 const { requireAuth } = require('../middleware/auth');
+const { roleForEmail } = require('../roles');
 
 const router = express.Router();
 
@@ -28,9 +30,10 @@ router.post('/register', async (req, res, next) => {
     const user = await one(
       `INSERT INTO users (email, password_hash, display_name, lang, is_subscribed)
        VALUES ($1, $2, $3, $4, TRUE)
-       RETURNING id, email, display_name, lang, role, is_subscribed`,
+       RETURNING id, email, display_name, lang, is_subscribed`,
       [email.toLowerCase(), hash, display_name || null, lang || 'en']
     );
+    user.role = roleForEmail(user.email);
     // Прототип: новият потребител е „абониран" по подразбиране (билингът на магазина идва после).
     req.session.userId = user.id;
     res.status(201).json({ user });
@@ -55,7 +58,7 @@ router.post('/login', async (req, res, next) => {
     res.json({
       user: {
         id: user.id, email: user.email, display_name: user.display_name,
-        lang: user.lang, role: user.role, is_subscribed: user.is_subscribed,
+        lang: user.lang, role: roleForEmail(user.email), is_subscribed: user.is_subscribed,
       },
     });
   } catch (e) { next(e); }
