@@ -104,7 +104,7 @@ rm -rf "$SRC"
 
 # рестарт на node сървисите (nginx НЕ се пипа)
 echo -e "${YELLOW}Рестарт на node сървисите...${NC}"
-for svc in kcy-chat kcy-eco3 kcy-portals kcy-hlb kcy-wnb; do
+for svc in kcy-chat kcy-eco3 kcy-portals kcy-hlb kcy-wnb kcy-diag; do
     if systemctl restart "$svc" 2>/dev/null; then
         echo -e "  ${GREEN}OK ${svc} рестартиран${NC}"
     else

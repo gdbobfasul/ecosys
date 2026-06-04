@@ -290,7 +290,7 @@ if [ "$ANYTHING_INSTALLED" = true ]; then
     echo -e "  ${GREEN}1)${NC} Нова инсталация (спиране → зачистване → инсталиране)"
     echo -e "  ${GREEN}2)${NC} Отказ"
     echo ""
-    read -p "  Избор [1/2, Enter = 1 Нова инсталация]: " INSTALL_CHOICE <&3
+    if [ "${AUTO_DEFAULTS:-0}" = "1" ]; then INSTALL_CHOICE=1; echo "  ► Пълна инсталация — нова инсталация (авто, без питане)"; else read -p "  Избор [1/2, Enter = 1 Нова инсталация]: " INSTALL_CHOICE <&3; fi
     INSTALL_CHOICE=$(echo "$INSTALL_CHOICE" | tr -d '\r\n ')
     INSTALL_CHOICE="${INSTALL_CHOICE:-1}"
 
@@ -494,7 +494,7 @@ fi
 
 MAX_OPT=$((OPT_NUM-1))
 echo ""
-read -p "  Избери [1-${MAX_OPT}, default=${DEFAULT_CHOICE}]: " DOMAIN_CHOICE <&3
+if [ "${AUTO_DEFAULTS:-0}" = "1" ]; then DOMAIN_CHOICE="$DEFAULT_CHOICE"; echo "  ► server_name (авто, без питане): опция ${DEFAULT_CHOICE}"; else read -p "  Избери [1-${MAX_OPT}, default=${DEFAULT_CHOICE}]: " DOMAIN_CHOICE <&3; fi
 DOMAIN_CHOICE="${DOMAIN_CHOICE:-$DEFAULT_CHOICE}"
 
 # Валидирай и вземи стойност
@@ -507,7 +507,7 @@ fi
 echo -e "  ${GREEN}✓ server_name = ${DOMAIN}${NC}"
 echo ""
 
-read -p "  Email for SSL [$EMAIL]: " NEW_EMAIL <&3
+if [ "${AUTO_DEFAULTS:-0}" = "1" ]; then NEW_EMAIL=""; echo "  ► SSL email (авто, без питане): $EMAIL"; else read -p "  Email for SSL [$EMAIL]: " NEW_EMAIL <&3; fi
 NEW_EMAIL=$(echo "$NEW_EMAIL" | tr -d '\r\n ')
 [ -n "$NEW_EMAIL" ] && EMAIL="$NEW_EMAIL"
 
