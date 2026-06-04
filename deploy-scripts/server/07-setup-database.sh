@@ -248,16 +248,20 @@ if [ "$RESET_MODE" = true ]; then
     echo -e "${GREEN}✓ SQLite deleted${NC}"
   fi
 
-  if command -v psql &> /dev/null; then
-    sudo -u postgres psql << EOF
-DROP DATABASE IF EXISTS $DB_NAME;
-DROP USER IF EXISTS $DB_USER;
-EOF
-    echo -e "${GREEN}✓ PostgreSQL dropped${NC}"
+  # PG drop — прочети РЕАЛНИТЕ имена от .env (иначе DROP е с празно име → нищо не трие).
+  if command -v psql &> /dev/null && [ -f "$GLOBAL_ENV" ]; then
+    _rv() { grep "^$1=" "$GLOBAL_ENV" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' | tr -d '\r'; }
+    R_DB=$(_rv CHAT_PG_DATABASE);   [ -z "$R_DB" ]   && R_DB=$(_rv PG_DATABASE)
+    R_USER=$(_rv CHAT_PG_USER);     [ -z "$R_USER" ] && R_USER=$(_rv PG_USER)
+    [ -n "$R_DB" ]   && sudo -u postgres psql -c "DROP DATABASE IF EXISTS \"$R_DB\";" 2>&1 | tail -1
+    [ -n "$R_USER" ] && sudo -u postgres psql -c "DROP USER IF EXISTS \"$R_USER\";" 2>&1 | tail -1
+    echo -e "${GREEN}✓ PostgreSQL dropped (${R_USER:-?}@${R_DB:-?})${NC}"
   fi
 
-  echo -e "${GREEN}✓ Full reset complete. Run setup again.${NC}"
-  exit 0
+  # БЕЗ exit — продължаваме към Normal Setup, който ПРЕСЪЗДАВА базата + потребителя
+  # с паролата от .env. Иначе chat не може да се свърже (28P01) → 502.
+  echo -e "${GREEN}✓ Drop готов — пресъздавам наново...${NC}"
+  RESET_MODE=false
 fi
 
 ##############################################################################
