@@ -212,15 +212,26 @@ esac
 echo ""
 restart_svc() {
   if systemctl restart "$1" 2>/dev/null; then
-    echo -e "${GREEN}  ✓ $1 рестартиран (при старта си попълва своите админи/модератори от .env)${NC}"
+    echo -e "${GREEN}  ✓ $1 рестартиран${NC}"
   else
     echo -e "${YELLOW}  ! $1 не е рестартиран (услугата може да липсва)${NC}"
   fi
 }
+# Изрично попълване на админи/модератори от .env ВЕДНАГА след създаване на базата
+# (като root — този скрипт вече върви като root; db.js чете .env + PG паролата).
+seed_app() {  # $1 = поддиректория в private/ ; $2 = етикет
+  if command -v node &>/dev/null && [ -f "$PROJECT_DIR/private/$1/db.js" ]; then
+    if ( cd "$PROJECT_DIR/private/$1" && node -e 'require("./db").seedAdminsAndMods().then(()=>process.exit(0)).catch(function(e){console.error(e.message);process.exit(1)})' ); then
+      echo -e "${GREEN}  ✓ $2 админи/модератори от .env${NC}"
+    else
+      echo -e "${YELLOW}  ! $2 попълване пропуснато (виж изхода)${NC}"
+    fi
+  fi
+}
 case "$APP" in
-  houselookbook) restart_svc kcy-hlb ;;
-  wherenobiz)    restart_svc kcy-wnb ;;
-  all)           restart_svc kcy-hlb; restart_svc kcy-wnb ;;
+  houselookbook) seed_app "House-Look-Book" "HLB"; restart_svc kcy-hlb ;;
+  wherenobiz)    seed_app "WhereNoBiz" "WNB"; restart_svc kcy-wnb ;;
+  all)           seed_app "House-Look-Book" "HLB"; restart_svc kcy-hlb; seed_app "WhereNoBiz" "WNB"; restart_svc kcy-wnb ;;
 esac
 
 echo ""

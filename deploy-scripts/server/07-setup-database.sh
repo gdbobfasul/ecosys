@@ -234,11 +234,14 @@ if [ "$RESET_MODE" = true ]; then
     exit 0
   fi
 
-  # Full reset
-  echo -e "${RED}[FULL RESET]${NC}"
-  echo "This will DELETE ALL DATA!"
-  read -p "Type 'DELETE' to confirm: " confirm
-  [ "$confirm" != "DELETE" ] && echo "Cancelled" && exit 0
+  # Full reset. Потвърждение САМО при директно/интерактивно пускане на този скрипт.
+  # От точка 2 (подава KCY_DROP_YES=1) или без TTY → БЕЗ въпрос: вече е потвърдено
+  # с „Drop Databases?" в началото на точка 2. Така скриптът работи и самостоятелно.
+  echo -e "${YELLOW}► Drop Databases${NC}"
+  if [ "${KCY_DROP_YES:-0}" != "1" ] && [ -t 0 ]; then
+    read -p "  Drop Databases (y/N)? default No - Enter: " confirm
+    case "${confirm,,}" in y|yes|да|д) ;; *) echo "Cancelled"; exit 0 ;; esac
+  fi
 
   if [ -f "$SQLITE_DB" ]; then
     rm -f "$SQLITE_DB"

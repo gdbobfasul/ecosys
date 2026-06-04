@@ -130,6 +130,22 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh *
 
+# ECO-3 база данни (SQLite/PostgreSQL) + админи/модератори + рестарт (точка 2 / точка 49).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh *
+
+# Токен монитори (точка 52 / точка 2) — приема token|brch1|multisig.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh *
+
 # Systemd service management (само за KCY services)
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3

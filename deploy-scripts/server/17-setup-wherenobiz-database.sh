@@ -193,11 +193,21 @@ HBAEOF
 ##############################################################################
 setup_wherenobiz
 
-# Рестарт на услугата — за да хване новата база И да попълни своите админи/модератори
-# от .env при старта си (WNB сам си попълва акаунтите в server.js — идемпотентно).
+# Изрично попълване на WNB админи/модератори от .env ВЕДНАГА след създаване на базата
+# (като root — този скрипт вече върви като root; db.js чете .env + PG паролата).
+echo ""
+if command -v node &>/dev/null && [ -f "$PROJECT_DIR/private/WhereNoBiz/db.js" ]; then
+  if ( cd "$PROJECT_DIR/private/WhereNoBiz" && node -e 'require("./db").seedAdminsAndMods().then(()=>process.exit(0)).catch(function(e){console.error(e.message);process.exit(1)})' ); then
+    echo -e "${GREEN}  ✓ WNB админи/модератори от .env${NC}"
+  else
+    echo -e "${YELLOW}  ! WNB попълване пропуснато (виж изхода)${NC}"
+  fi
+fi
+
+# Рестарт на услугата — за да хване новата база.
 echo ""
 if systemctl restart kcy-wnb 2>/dev/null; then
-  echo -e "${GREEN}  ✓ kcy-wnb рестартиран (при старта си попълва WNB админи/модератори от .env)${NC}"
+  echo -e "${GREEN}  ✓ kcy-wnb рестартиран${NC}"
 else
   echo -e "${YELLOW}  ! kcy-wnb не е рестартиран (услугата може да липсва)${NC}"
 fi

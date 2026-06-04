@@ -730,6 +730,22 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh *
 
+# ECO-3 база данни (SQLite/PostgreSQL) + админи/модератори + рестарт (точка 2 / точка 49).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh *
+
+# Токен монитори (точка 52 / точка 2) — приема token|brch1|multisig.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh *
+
 # Systemd service management
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3
@@ -882,7 +898,7 @@ PORTAL_DB="$PORTAL_DIR/database/portals.db"
 if [ -f "$PORTAL_INIT" ]; then
     print_step "СТЪПКА 7.5: Portal database (SQLite)"
     if [ "${DROP_DB:-0}" = "1" ] && [ -f "$PORTAL_DB" ]; then
-        echo -e "  ${YELLOW}► Drop Databases — трия стария portals.db (създава се наново)${NC}"
+        echo -e "  ${YELLOW}► Drop Databases${NC}"
         rm -f "$PORTAL_DB" "${PORTAL_DB}-wal" "${PORTAL_DB}-shm"
     fi
     if [ -f "$PORTAL_DB" ]; then
@@ -929,7 +945,8 @@ if [ -f "$DB_SETUP_SCRIPT" ]; then
     RESET_FLAG=""
     if [ "${DROP_DB:-0}" = "1" ]; then
         RESET_FLAG="--reset"
-        echo -e "  ${YELLOW}► Drop Databases — chat базата се пресъздава от 0 (--reset)${NC}"
+        export KCY_DROP_YES=1   # вече е потвърдено с „Drop Databases?" в началото на точка 2 → 07 да не пита пак
+        echo -e "  ${YELLOW}► Drop Databases${NC}"
     fi
     if [ "$DB_TYPE_ENV" = "postgresql" ]; then
         bash "$DB_SETUP_SCRIPT" $RESET_FLAG --force-postgresql
@@ -956,7 +973,7 @@ ECO3_DB="$ECO3_DB_DIR/eco3.db"
 ECO3_SCHEMA="$ECO3_DB_DIR/schema.sql"
 
 if [ "${DROP_DB:-0}" = "1" ] && [ -f "$ECO3_DB" ]; then
-    echo -e "  ${YELLOW}► Drop Databases — трия стария eco3.db (създава се наново)${NC}"
+    echo -e "  ${YELLOW}► Drop Databases${NC}"
     rm -f "$ECO3_DB" "${ECO3_DB}-wal" "${ECO3_DB}-shm"
 fi
 if [ -f "$ECO3_SCHEMA" ]; then

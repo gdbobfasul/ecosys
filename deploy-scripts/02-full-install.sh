@@ -85,7 +85,9 @@ WITH_ASSETS=0; case "${A_ASSETS,,}" in y|yes|да|д) WITH_ASSETS=1;; esac
 DROP_DB=0; RESET=""; case "${A_DROP,,}" in y|yes|да|д) DROP_DB=1; RESET=" --reset";; esac
 
 echo ""
-echo -e "  ${YELLOW}Асети: $([ "$WITH_ASSETS" = 1 ] && echo 'ДА (качват се с кода)' || echo 'не')   ·   Drop бази: $([ "$DROP_DB" = 1 ] && echo 'ДА (всички, от 0)' || echo 'НЕ (запазва данните)')${NC}"
+A_LBL="не"; [ "$WITH_ASSETS" = 1 ] && A_LBL="ДА (качват се с кода)"
+D_LBL="НЕ (запазва данните)"; [ "$DROP_DB" = 1 ] && D_LBL="ДА (всички, от 0)"
+echo -e "  ${YELLOW}Асети: ${A_LBL}   ·   Drop бази: ${D_LBL}${NC}"
 
 SSH_OPTS="-o ConnectTimeout=15 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -p ${PRT}"
 REMOTE_BASE="/var/www/deploy/deploy-scripts/server"
@@ -115,12 +117,9 @@ step "2/4  Бази House-Look-Book + WhereNoBiz${RESET:+   (DROP — създа
 rstep "HLB база (houselookbook)" "sudo ${REMOTE_BASE}/16-setup-app-databases.sh houselookbook${RESET}"
 rstep "WNB база (wherenobiz)"     "sudo ${REMOTE_BASE}/17-setup-wherenobiz-database.sh${RESET}"
 
-# Веднага щом базите + таблиците са готови → СЪЗДАВАМ/ОБНОВЯВАМ админите и модераторите
-# от .env. Това е работа с БАЗАТА (тук, не при старта на услугата). Извиквам директно
-# съществуващата попълваща логика на всяко приложение — нищо не се копира като файл.
-# HLB/WNB (PostgreSQL) → db.seedAdminsAndMods през node -e (като root, само DB достъп).
-rstep "HLB админи/модератори от .env" "cd ${PROJECT_DIR}/private/House-Look-Book && sudo node -e 'require(\"./db\").seedAdminsAndMods().then(()=>{console.log(\"HLB админи/модератори готови\");process.exit(0)}).catch(e=>{console.error(e.message);process.exit(1)})'"
-rstep "WNB админи/модератори от .env" "cd ${PROJECT_DIR}/private/WhereNoBiz && sudo node -e 'require(\"./db\").seedAdminsAndMods().then(()=>{console.log(\"WNB админи/модератори готови\");process.exit(0)}).catch(e=>{console.error(e.message);process.exit(1)})'"
+# Админите/модераторите от .env се попълват ВЪТРЕ в DB-скриптовете 16/17 (които вече
+# вървят като root → не искат отделен `sudo node`, който не може да се whitelist-не безопасно).
+# 16 houselookbook → HLB; 17 → WNB. Затова тук НЯМА отделни редове за HLB/WNB админи.
 
 # ECO-3 (поддържа SQLite И PostgreSQL по ECO3_DB_TYPE) — един скрипт прави трите неща в ред:
 # създава базата → попълва админи/модератори от .env → стартира kcy-eco3.
