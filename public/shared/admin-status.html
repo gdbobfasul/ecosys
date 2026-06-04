@@ -120,6 +120,7 @@
 
     <div class="back-links">
         <a href="/last-errors-bundle" target="_blank">🧾 Логове (грешки + дебъг)</a>
+        <a href="#" onclick="clearErrorLog(event)" title="Изпразва всички лог файлове (грешки + дебъг)" style="background:#3d1014; color:#f0883e;">🧹 Изчисти лога</a>
         <a href="/">🏠 Home</a>
         <a href="/chat/admin/">💬 Chat Admin</a>
         <a href="/eco-3/admin/">🤖 ECO-3 Admin</a>
@@ -409,6 +410,20 @@
         await regenLogs();
         await loadStatusJson();
         await loadDebugFlags();
+    }
+
+    // Изчисти лога — изпразва всички .log файлове (грешки + дебъг). Същите, които
+    // показва /last-errors-bundle и секцията „Last Errors".
+    async function clearErrorLog(e) {
+        if (e) e.preventDefault();
+        if (!confirm('Да изчистя ли ВСИЧКИ лог файлове (грешки + дебъг)?\nТова важи и за /last-errors-bundle.')) return;
+        try {
+            const r = await fetch('/api/diag/clear', { method: 'POST' });
+            const d = await r.json().catch(() => ({}));
+            if (!r.ok) { alert('Грешка при изчистване: ' + (d.error || r.status)); return; }
+            alert('✓ Изчистени ' + (d.cleared || 0) + ' лог файла.');
+            try { await loadStatusJson(); } catch (_) {}
+        } catch (err) { alert('Грешка: ' + err.message); }
     }
 
     // Load on page open (one-shot, не auto-refresh-ва)

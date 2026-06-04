@@ -1,4 +1,4 @@
-// Version: 1.0093
+// Version: 1.0172
 // KCY Ecosystem — Diag Helper Service
 //
 // Малка standalone услуга която:
@@ -109,6 +109,21 @@ const server = http.createServer(async (req, res) => {
                 sendJSON(res, 200, { ok: true, duration_ms: duration });
             });
             return;
+        }
+
+        // POST /clear — изпразва (truncate) всички .log файлове в /var/www/html/last-errors/
+        if (req.method === 'POST' && route === '/clear') {
+            const LOG_DIR = '/var/www/html/last-errors';
+            try {
+                const files = fs.readdirSync(LOG_DIR).filter(f => f.endsWith('.log'));
+                let cleared = 0;
+                for (const f of files) {
+                    try { fs.writeFileSync(path.join(LOG_DIR, f), ''); cleared++; } catch (e) {}
+                }
+                return sendJSON(res, 200, { ok: true, cleared });
+            } catch (e) {
+                return sendJSON(res, 500, { ok: false, error: e.message });
+            }
         }
 
         // GET /debug-flags
