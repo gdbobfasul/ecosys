@@ -143,8 +143,9 @@ function adminCheck(req, res, next) {
         if (req.session && req.session.username && roleForUsername(req.session.username) !== 'user') return next();
     } catch (_) {}
 
-    // Check IP
-    const allowed = allowedIPs.some(ip => clientIP.includes(ip));
+    // Check IP — allow-all CIDR ('0.0.0.0/0' / '::/0') пуска всеки IP (като при порталите).
+    const allowAll = allowedIPs.some(ip => ip === '0.0.0.0/0' || ip === '::/0');
+    const allowed = allowAll || allowedIPs.some(ip => ip && clientIP.includes(ip));
     if (allowed) return next();
 
     logRequest('ADMIN', `Blocked: ${clientIP} (allowed: ${allowedIPs.join(',')})`);

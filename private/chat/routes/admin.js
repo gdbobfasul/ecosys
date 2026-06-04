@@ -24,13 +24,17 @@ function createAdminRoutes(db) {
   // Middleware: Check admin IP
   router.use(async (req, res, next) => {
     const clientIP = (req.headers['x-forwarded-for'] || req.connection.remoteAddress || '').split(',')[0].trim();
-    const allowedIPs = (process.env.ADMIN_ALLOWED_IPS || '127.0.0.1,::1').split(',').map(ip => ip.trim());
-    
-    if (!allowedIPs.includes(clientIP)) {
+    const allowedIPs = (process.env.ADMIN_ALLOWED_IPS || '127.0.0.1,::1').split(',').map(ip => ip.trim()).filter(Boolean);
+
+    // Allow-all CIDR ('0.0.0.0/0' или '::/0') → пуска всеки IP (като при порталите).
+    // Иначе точно съвпадение, с толеранс към IPv4-mapped IPv6 (::ffff:1.2.3.4).
+    const allowAll = allowedIPs.some(ip => ip === '0.0.0.0/0' || ip === '::/0');
+    const ipBare = clientIP.replace(/^::ffff:/, '');
+    if (!allowAll && !allowedIPs.includes(clientIP) && !allowedIPs.includes(ipBare)) {
       console.log(`❌ Admin access denied for IP: ${clientIP}`);
       return res.status(403).json({ error: 'Access denied' });
     }
-    
+
     console.log(`✅ Admin access granted for IP: ${clientIP}`);
     next();
   });
