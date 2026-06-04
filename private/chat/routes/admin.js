@@ -1,4 +1,4 @@
-// Version: 1.0171
+// Version: 1.0172
 const express = require('express');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const { getDatabaseType } = require('../utils/database');
@@ -16,13 +16,13 @@ function createAdminRoutes(db) {
   // ПРЕДИ setupDatabase() да е приключил). Затова при всяка заявка взимаме
   // живия db от app.locals (server.js го слага там след init).
   // Преназначаването на closure-променливата 'db' оправя ВСИЧКИ заявки наведнъж.
-  router.use((req, res, next) => {
+  router.use(async (req, res, next) => {
     if (req.app.locals.db) db = req.app.locals.db;
     next();
   });
 
   // Middleware: Check admin IP
-  router.use((req, res, next) => {
+  router.use(async (req, res, next) => {
     const clientIP = (req.headers['x-forwarded-for'] || req.connection.remoteAddress || '').split(',')[0].trim();
     const allowedIPs = (process.env.ADMIN_ALLOWED_IPS || '127.0.0.1,::1').split(',').map(ip => ip.trim());
     
@@ -44,7 +44,7 @@ function createAdminRoutes(db) {
         return res.status(400).json({ error: 'Username and password required' });
       }
 
-      const admin = db.prepare('SELECT username, password_hash FROM admin_users WHERE username = ?').get(username);
+      const admin = await db.prepare('SELECT username, password_hash FROM admin_users WHERE username = ?').get(username);
 
       if (!admin) {
         return res.status(401).json({ error: 'Invalid credentials' });
@@ -62,7 +62,7 @@ function createAdminRoutes(db) {
         return res.status(403).json({ error: 'Not authorized (not in .env admin/moderator list)' });
       }
 
-      db.prepare('UPDATE admin_users SET last_login = datetime("now") WHERE username = ?').run(username);
+      await db.prepare('UPDATE admin_users SET last_login = datetime("now") WHERE username = ?').run(username);
 
       const crypto = require('crypto');
       const token = crypto.randomBytes(32).toString('hex');
@@ -79,7 +79,7 @@ function createAdminRoutes(db) {
   });
 
   // Page 1: Flagged users (критични думи) с ПЪЛНА търсачка
-  router.get('/flagged-users', (req, res) => {
+  router.get('/flagged-users', async (req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = 10;
@@ -164,7 +164,7 @@ function createAdminRoutes(db) {
       query += ` GROUP BY u.id ORDER BY flagged_count DESC LIMIT ? OFFSET ?`;
       params.push(limit, offset);
 
-      const users = db.prepare(query).all(...params);
+      const users = await db.prepare(query).all(...params);
 
       // Count total
       let countQuery = `
@@ -174,7 +174,7 @@ function createAdminRoutes(db) {
         WHERE fc.reviewed = 0
       `;
       const countParams = params.slice(0, -2); // Remove limit and offset
-      const total = db.prepare(countQuery).get(...countParams)?.count || 0;
+      const total = (await db.prepare(countQuery).get(...countParams))?.count || 0;
 
       res.json({
         users,
@@ -192,7 +192,7 @@ function createAdminRoutes(db) {
   });
 
   // Page 2: All users с ПЪЛНА търсачка
-  router.get('/all-users', (req, res) => {
+  router.get('/all-users', async (req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = 50;
@@ -273,7 +273,7 @@ function createAdminRoutes(db) {
       query += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`;
       params.push(limit, offset);
 
-      const users = db.prepare(query).all(...params);
+      const users = await db.prepare(query).all(...params);
 
       // Count total
       let countQuery = 'SELECT COUNT(*) as count FROM users WHERE 1=1';
@@ -293,7 +293,7 @@ function createAdminRoutes(db) {
       if (weightMin) { countQuery += ' AND weight_kg >= ?'; countIndex++; }
       if (weightMax) { countQuery += ' AND weight_kg <= ?'; countIndex++; }
 
-      const total = db.prepare(countQuery).get(...countParams)?.count || 0;
+      const total = (await db.prepare(countQuery).get(...countParams))?.count || 0;
 
       res.json({
         users,
@@ -311,7 +311,7 @@ function createAdminRoutes(db) {
   });
 
   // Page 4: Users table with messages + ПЪЛНА търсачка
-  router.get('/users-with-messages', (req, res) => {
+  router.get('/users-with-messages', async (req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = 20;
@@ -393,18 +393,18 @@ function createAdminRoutes(db) {
       query += ` ORDER BY full_name LIMIT ? OFFSET ?`;
       params.push(limit, offset);
 
-      const users = db.prepare(query).all(...params);
+      const users = await db.prepare(query).all(...params);
 
       // For each user, get all their conversations + check if flagged
-      const usersWithMessages = users.map(user => {
+      const usersWithMessages = await Promise.all(users.map(async user => {
         // Check if user has flagged conversations
-        const flaggedCount = db.prepare(`
-          SELECT COUNT(*) as count FROM flagged_conversations 
+        const flaggedCount = (await db.prepare(`
+          SELECT COUNT(*) as count FROM flagged_conversations
           WHERE (user_id1 = ? OR user_id2 = ?) AND reviewed = 0
-        `).get(user.id, user.id)?.count || 0;
+        `).get(user.id, user.id))?.count || 0;
 
-        const conversations = db.prepare(`
-          SELECT 
+        const conversations = await db.prepare(`
+          SELECT
             CASE WHEN from_user_id = ? THEN to_user_id ELSE from_user_id END as contact_id,
             GROUP_CONCAT(text, '\n') as messages
           FROM messages
@@ -412,10 +412,10 @@ function createAdminRoutes(db) {
           GROUP BY contact_id
         `).all(user.id, user.id, user.id);
 
-        const allMessages = conversations.map(c => {
-          const contact = db.prepare('SELECT phone FROM users WHERE id = ?').get(c.contact_id);
+        const allMessages = (await Promise.all(conversations.map(async c => {
+          const contact = await db.prepare('SELECT phone FROM users WHERE id = ?').get(c.contact_id);
           return `━━━ With ${contact?.phone || 'Unknown'} ━━━\n${c.messages}`;
-        }).join('\n\n');
+        }))).join('\n\n');
 
         return {
           ...user,
@@ -424,7 +424,7 @@ function createAdminRoutes(db) {
           allMessages,
           hasLocation: !!(user.location_latitude && user.location_longitude)
         };
-      });
+      }));
 
       // Count total (same filters)
       let countQuery = 'SELECT COUNT(*) as count FROM users WHERE 1=1';
@@ -442,7 +442,7 @@ function createAdminRoutes(db) {
       if (weightMin) countQuery += ' AND weight_kg >= ?';
       if (weightMax) countQuery += ' AND weight_kg <= ?';
 
-      const total = db.prepare(countQuery).get(...countParams)?.count || 0;
+      const total = (await db.prepare(countQuery).get(...countParams))?.count || 0;
 
       res.json({
         users: usersWithMessages,
@@ -460,12 +460,12 @@ function createAdminRoutes(db) {
   });
 
   // Page 5: User details (from Page 4 edit button)
-  router.get('/user-details/:userId', (req, res) => {
+  router.get('/user-details/:userId', async (req, res) => {
     try {
       const { userId } = req.params;
 
       // Get main user details
-      const user = db.prepare(`
+      const user = await db.prepare(`
         SELECT id, phone, full_name, gender, height_cm, weight_kg, 
                country, city, village, street, workplace,
                paid_until, is_blocked, blocked_reason, created_at, last_login
@@ -477,7 +477,7 @@ function createAdminRoutes(db) {
       }
 
       // Check if has flagged conversations
-      const flaggedCount = db.prepare(`
+      const flaggedCount = await db.prepare(`
         SELECT COUNT(*) as count FROM flagged_conversations 
         WHERE (user_id1 = ? OR user_id2 = ?) AND reviewed = 0
       `).get(userId, userId)?.count || 0;
@@ -486,7 +486,7 @@ function createAdminRoutes(db) {
       user.flaggedCount = flaggedCount;
 
       // Get all contacts with details
-      const contacts = db.prepare(`
+      const contacts = await db.prepare(`
         SELECT DISTINCT
           CASE WHEN user_id1 = ? THEN user_id2 ELSE user_id1 END as contact_id,
           CASE WHEN user_id1 = ? THEN custom_name_by_user1 ELSE custom_name_by_user2 END as custom_name
@@ -494,15 +494,15 @@ function createAdminRoutes(db) {
         WHERE user_id1 = ? OR user_id2 = ?
       `).all(userId, userId, userId, userId);
 
-      const contactDetails = contacts.map(contact => {
+      const contactDetails = await Promise.all(contacts.map(async contact => {
         // Get contact user details
-        const contactUser = db.prepare(`
+        const contactUser = await db.prepare(`
           SELECT full_name, gender, country, city, village, street, paid_until, is_blocked
           FROM users WHERE id = ?
         `).get(contact.contact_id);
 
         // Get conversation - CAN BE EDITED!
-        const messages = db.prepare(`
+        const messages = await db.prepare(`
           SELECT id, from_user_id, text, created_at
           FROM messages
           WHERE ((from_user_id = ? AND to_user_id = ?) OR (from_user_id = ? AND to_user_id = ?))
@@ -533,7 +533,7 @@ function createAdminRoutes(db) {
           isBlocked: contactUser?.is_blocked || false,
           conversation
         };
-      });
+      }));
 
       res.json({
         user,
@@ -546,7 +546,7 @@ function createAdminRoutes(db) {
   });
 
   // Edit message text (Page 5)
-  router.post('/edit-message', (req, res) => {
+  router.post('/edit-message', async (req, res) => {
     try {
       const { messageId, newText } = req.body;
 
@@ -555,7 +555,7 @@ function createAdminRoutes(db) {
       }
 
       // Simply update the text - NO original_text saved!
-      db.prepare('UPDATE messages SET text = ? WHERE id = ?').run(newText, messageId);
+      await db.prepare('UPDATE messages SET text = ? WHERE id = ?').run(newText, messageId);
 
       res.json({ success: true });
     } catch (err) {
@@ -565,7 +565,7 @@ function createAdminRoutes(db) {
   });
 
   // Block user(s)
-  router.post('/block-users', (req, res) => {
+  router.post('/block-users', async (req, res) => {
     try {
       const { userIds, reason } = req.body;
 
@@ -574,7 +574,7 @@ function createAdminRoutes(db) {
       }
 
       const placeholders = userIds.map(() => '?').join(',');
-      db.prepare(`UPDATE users SET is_blocked = 1, blocked_reason = ? WHERE id IN (${placeholders})`)
+      await db.prepare(`UPDATE users SET is_blocked = 1, blocked_reason = ? WHERE id IN (${placeholders})`)
         .run(reason || 'Admin blocked', ...userIds);
 
       res.json({ success: true, blocked: userIds.length });
@@ -585,7 +585,7 @@ function createAdminRoutes(db) {
   });
 
   // Unblock user
-  router.post('/unblock-user', (req, res) => {
+  router.post('/unblock-user', async (req, res) => {
     try {
       const { userId } = req.body;
 
@@ -593,7 +593,7 @@ function createAdminRoutes(db) {
         return res.status(400).json({ error: 'User ID required' });
       }
 
-      db.prepare(`
+      await db.prepare(`
         UPDATE users 
         SET is_blocked = 0, blocked_reason = NULL, failed_login_attempts = 0 
         WHERE id = ?
@@ -607,7 +607,7 @@ function createAdminRoutes(db) {
   });
 
   // Update user payment (admin can change paid_until)
-  router.post('/update-payment', (req, res) => {
+  router.post('/update-payment', async (req, res) => {
     try {
       const { userId, months } = req.body;
 
@@ -615,7 +615,7 @@ function createAdminRoutes(db) {
         return res.status(400).json({ error: 'User ID and months required' });
       }
 
-      const user = db.prepare('SELECT paid_until FROM users WHERE id = ?').get(userId);
+      const user = await db.prepare('SELECT paid_until FROM users WHERE id = ?').get(userId);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -626,10 +626,10 @@ function createAdminRoutes(db) {
       }
       paidUntil.setMonth(paidUntil.getMonth() + parseInt(months));
 
-      db.prepare('UPDATE users SET paid_until = ? WHERE id = ?')
+      await db.prepare('UPDATE users SET paid_until = ? WHERE id = ?')
         .run(paidUntil.toISOString(), userId);
 
-      db.prepare(`
+      await db.prepare(`
         INSERT INTO payment_logs (user_id, phone, amount, currency, status, payment_type, months)
         VALUES (?, (SELECT phone FROM users WHERE id = ?), 0, 'MANUAL', 'succeeded', 'admin_manual', ?)
       `).run(userId, userId, months);
@@ -642,7 +642,7 @@ function createAdminRoutes(db) {
   });
 
   // Mark as unpaid
-  router.post('/mark-unpaid', (req, res) => {
+  router.post('/mark-unpaid', async (req, res) => {
     try {
       const { userId } = req.body;
 
@@ -651,7 +651,7 @@ function createAdminRoutes(db) {
       }
 
       const pastDate = new Date('2000-01-01').toISOString();
-      db.prepare('UPDATE users SET paid_until = ? WHERE id = ?').run(pastDate, userId);
+      await db.prepare('UPDATE users SET paid_until = ? WHERE id = ?').run(pastDate, userId);
 
       res.json({ success: true });
     } catch (err) {
@@ -670,7 +670,7 @@ function createAdminRoutes(db) {
       }
 
       // Update user location
-      db.prepare(`
+      await db.prepare(`
         UPDATE users 
         SET location_country = ?, location_city = ?, location_village = ?, 
             location_street = ?, location_number = ?, location_latitude = ?, 
@@ -679,7 +679,7 @@ function createAdminRoutes(db) {
       `).run(country, city, village, street, number, latitude, longitude, ip, userId);
 
       // Return updated location
-      const user = db.prepare(`
+      const user = await db.prepare(`
         SELECT location_country, location_city, location_village, location_street, 
                location_number, location_latitude, location_longitude, location_ip, location_captured_at
         FROM users WHERE id = ?
@@ -693,9 +693,9 @@ function createAdminRoutes(db) {
   });
 
   // Critical words management
-  router.get('/critical-words', (req, res) => {
+  router.get('/critical-words', async (req, res) => {
     try {
-      const words = db.prepare('SELECT * FROM critical_words ORDER BY word').all();
+      const words = await db.prepare('SELECT * FROM critical_words ORDER BY word').all();
       res.json({ words });
     } catch (err) {
       console.error('Get words error:', err);
@@ -703,7 +703,7 @@ function createAdminRoutes(db) {
     }
   });
 
-  router.post('/critical-words', (req, res) => {
+  router.post('/critical-words', async (req, res) => {
     try {
       const { word } = req.body;
 
@@ -711,7 +711,7 @@ function createAdminRoutes(db) {
         return res.status(400).json({ error: 'Word required (max 30 chars)' });
       }
 
-      db.prepare('INSERT OR IGNORE INTO critical_words (word) VALUES (?)').run(word.toLowerCase());
+      await db.prepare('INSERT OR IGNORE INTO critical_words (word) VALUES (?)').run(word.toLowerCase());
 
       res.json({ success: true });
     } catch (err) {
@@ -720,10 +720,10 @@ function createAdminRoutes(db) {
     }
   });
 
-  router.delete('/critical-words/:id', (req, res) => {
+  router.delete('/critical-words/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      db.prepare('DELETE FROM critical_words WHERE id = ?').run(id);
+      await db.prepare('DELETE FROM critical_words WHERE id = ?').run(id);
       res.json({ success: true });
     } catch (err) {
       console.error('Delete word error:', err);
@@ -732,17 +732,17 @@ function createAdminRoutes(db) {
   });
 
   // Stats
-  router.get('/stats', (req, res) => {
+  router.get('/stats', async (req, res) => {
     try {
       const stats = {
-        totalUsers: db.prepare('SELECT COUNT(*) as count FROM users').get()?.count || 0,
-        activeUsers: db.prepare('SELECT COUNT(*) as count FROM users WHERE paid_until > datetime("now")').get()?.count || 0,
-        blockedUsers: db.prepare('SELECT COUNT(*) as count FROM users WHERE is_blocked = 1').get()?.count || 0,
-        totalMessages: db.prepare('SELECT COUNT(*) as count FROM messages').get()?.count || 0,
-        flaggedConversations: db.prepare('SELECT COUNT(*) as count FROM flagged_conversations WHERE reviewed = 0').get()?.count || 0,
-        criticalWords: db.prepare('SELECT COUNT(*) as count FROM critical_words').get()?.count || 0,
-        totalRevenue: db.prepare('SELECT SUM(amount) as total FROM payment_logs WHERE status = "succeeded"').get()?.total || 0,
-        helpRequests: db.prepare('SELECT COUNT(*) as count FROM help_requests WHERE resolved = 0').get()?.count || 0
+        totalUsers: (await db.prepare('SELECT COUNT(*) as count FROM users').get())?.count || 0,
+        activeUsers: (await db.prepare('SELECT COUNT(*) as count FROM users WHERE paid_until > datetime("now")').get())?.count || 0,
+        blockedUsers: (await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_blocked = 1').get())?.count || 0,
+        totalMessages: (await db.prepare('SELECT COUNT(*) as count FROM messages').get())?.count || 0,
+        flaggedConversations: (await db.prepare('SELECT COUNT(*) as count FROM flagged_conversations WHERE reviewed = 0').get())?.count || 0,
+        criticalWords: (await db.prepare('SELECT COUNT(*) as count FROM critical_words').get())?.count || 0,
+        totalRevenue: (await db.prepare('SELECT SUM(amount) as total FROM payment_logs WHERE status = "succeeded"').get())?.total || 0,
+        helpRequests: (await db.prepare('SELECT COUNT(*) as count FROM help_requests WHERE resolved = 0').get())?.count || 0
       };
 
       res.json(stats);
@@ -753,7 +753,7 @@ function createAdminRoutes(db) {
   });
 
   // Get all help requests (emergency assistance)
-  router.get('/help-requests', (req, res) => {
+  router.get('/help-requests', async (req, res) => {
     try {
       const { resolved } = req.query;
       
@@ -767,11 +767,11 @@ function createAdminRoutes(db) {
       
       query += ' ORDER BY request_time DESC LIMIT 100';
       
-      const requests = db.prepare(query).all(...params);
+      const requests = await db.prepare(query).all(...params);
       
       // Get emergency contacts for each request's country
-      const results = requests.map(request => {
-        const contacts = db.prepare(`
+      const results = await Promise.all(requests.map(async request => {
+        const contacts = await db.prepare(`
           SELECT service_type, service_name, phone_international, phone_local, email
           FROM emergency_contacts
           WHERE country_code = (
@@ -780,12 +780,12 @@ function createAdminRoutes(db) {
           AND service_type IN ('police', 'ambulance', 'hospital', 'emergency')
           AND is_active = 1
         `).all(request.user_id);
-        
+
         return {
           ...request,
           emergency_contacts: contacts
         };
-      });
+      }));
       
       res.json({
         total: results.length,
@@ -799,12 +799,12 @@ function createAdminRoutes(db) {
   });
 
   // Find nearby emergency services for a help request
-  router.get('/help-requests/:id/nearby-services', (req, res) => {
+  router.get('/help-requests/:id/nearby-services', async (req, res) => {
     try {
       const requestId = req.params.id;
       
       // Get help request
-      const request = db.prepare('SELECT * FROM help_requests WHERE id = ?').get(requestId);
+      const request = await db.prepare('SELECT * FROM help_requests WHERE id = ?').get(requestId);
       
       if (!request) {
         return res.status(404).json({ error: 'Help request not found' });
@@ -824,7 +824,7 @@ function createAdminRoutes(db) {
       };
       
       // Find emergency contacts in database with coordinates
-      const emergencyContacts = db.prepare(`
+      const emergencyContacts = await db.prepare(`
         SELECT * FROM emergency_contacts
         WHERE country_code = (SELECT country_code FROM users WHERE id = ?)
         AND service_type IN ('police', 'ambulance', 'hospital', 'fire')
@@ -834,7 +834,7 @@ function createAdminRoutes(db) {
       `).all(request.user_id);
       
       // Find users who offer emergency services within 50km
-      const emergencyUsers = db.prepare(`
+      const emergencyUsers = await db.prepare(`
         SELECT 
           id, full_name, phone, email, gender, offerings,
           city, street, location_latitude, location_longitude
@@ -909,12 +909,12 @@ function createAdminRoutes(db) {
   });
 
   // Resolve help request
-  router.put('/help-requests/:id/resolve', (req, res) => {
+  router.put('/help-requests/:id/resolve', async (req, res) => {
     try {
       const requestId = req.params.id;
       const { admin_notes } = req.body;
       
-      db.prepare(`
+      await db.prepare(`
         UPDATE help_requests 
         SET resolved = 1, resolved_at = datetime('now'), admin_notes = ?
         WHERE id = ?
@@ -929,7 +929,7 @@ function createAdminRoutes(db) {
   });
 
   // Verify user and set offerings (admin only)
-  router.put('/users/:id/verify', (req, res) => {
+  router.put('/users/:id/verify', async (req, res) => {
     try {
       const userId = req.params.id;
       const { offerings } = req.body;
@@ -945,7 +945,7 @@ function createAdminRoutes(db) {
       }
       
       // Update user
-      db.prepare(`
+      await db.prepare(`
         UPDATE users 
         SET offerings = ?, is_verified = 1
         WHERE id = ?
@@ -960,11 +960,11 @@ function createAdminRoutes(db) {
   });
 
   // Remove verification from user
-  router.put('/users/:id/unverify', (req, res) => {
+  router.put('/users/:id/unverify', async (req, res) => {
     try {
       const userId = req.params.id;
       
-      db.prepare(`
+      await db.prepare(`
         UPDATE users 
         SET is_verified = 0
         WHERE id = ?
@@ -979,7 +979,7 @@ function createAdminRoutes(db) {
   });
 
   // Update verified user offerings (admin only)
-  router.put('/users/:id/offerings', (req, res) => {
+  router.put('/users/:id/offerings', async (req, res) => {
     try {
       const userId = req.params.id;
       const { offerings } = req.body;
@@ -990,7 +990,7 @@ function createAdminRoutes(db) {
         return res.status(400).json({ error: 'Maximum 3 offerings allowed' });
       }
       
-      db.prepare('UPDATE users SET offerings = ? WHERE id = ?').run(offerings || null, userId);
+      await db.prepare('UPDATE users SET offerings = ? WHERE id = ?').run(offerings || null, userId);
       
       res.json({ success: true });
       
@@ -1005,9 +1005,9 @@ function createAdminRoutes(db) {
   // ============================================
 
   // Get user for payment override
-  router.get('/payment-override/user/:phone', (req, res) => {
+  router.get('/payment-override/user/:phone', async (req, res) => {
     try {
-      const user = db.prepare(`
+      const user = await db.prepare(`
         SELECT id, phone, full_name, subscription_active, 
                paid_until, emergency_active, emergency_active_until
         FROM users 
@@ -1026,7 +1026,7 @@ function createAdminRoutes(db) {
   });
 
   // Apply payment override
-  router.post('/payment-override/apply', (req, res) => {
+  router.post('/payment-override/apply', async (req, res) => {
     try {
       const { userId, action, days, reason } = req.body;
       
@@ -1046,7 +1046,7 @@ function createAdminRoutes(db) {
       newDate.setDate(newDate.getDate() + parseInt(days));
       
       if (action === 'login') {
-        db.prepare(`
+        await db.prepare(`
           UPDATE users 
           SET subscription_active = 1,
               paid_until = ?,
@@ -1056,7 +1056,7 @@ function createAdminRoutes(db) {
           WHERE id = ?
         `).run(newDate.toISOString(), reason, userId);
       } else if (action === 'emergency') {
-        db.prepare(`
+        await db.prepare(`
           UPDATE users 
           SET emergency_active = 1,
               emergency_active_until = ?,
@@ -1070,7 +1070,7 @@ function createAdminRoutes(db) {
       }
       
       // Log override
-      db.prepare(`
+      await db.prepare(`
         INSERT INTO payment_overrides 
         (admin_id, user_id, action, days, reason, created_at)
         VALUES (1, ?, ?, ?, ?, datetime('now'))
@@ -1085,9 +1085,9 @@ function createAdminRoutes(db) {
   });
 
   // Get override history
-  router.get('/payment-override/history', (req, res) => {
+  router.get('/payment-override/history', async (req, res) => {
     try {
-      const history = db.prepare(`
+      const history = await db.prepare(`
         SELECT 
           po.created_at,
           u.phone,
@@ -1111,7 +1111,7 @@ function createAdminRoutes(db) {
   // Get all users (for static objects management)
   router.get('/users', async (req, res) => {
     try {
-      const users = db.prepare(`
+      const users = await db.prepare(`
         SELECT id, phone, full_name, offerings, working_hours,
                latitude, longitude, is_static_object, profile_photo_url,
                created_from_signal_id, created_at
@@ -1179,7 +1179,7 @@ function createAdminRoutes(db) {
       values.push(userId);
       
       const sql = `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`;
-      db.prepare(sql).run(...values);
+      await db.prepare(sql).run(...values);
       
       res.json({ success: true, message: 'User updated' });
     } catch (err) {
@@ -1193,7 +1193,7 @@ function createAdminRoutes(db) {
     try {
       const { userId } = req.params;
       
-      db.prepare('DELETE FROM users WHERE id = ?').run(userId);
+      await db.prepare('DELETE FROM users WHERE id = ?').run(userId);
       
       res.json({ success: true, message: 'User deleted' });
     } catch (err) {
@@ -1222,8 +1222,8 @@ function createAdminRoutes(db) {
     // и за PostgreSQL (wrapper-ът връща Promise).
     const dbType = getDatabaseType();
     try {
-      const userCount = await db.prepare('SELECT COUNT(*) as count FROM users').get();
-      const sessionCount = await db.prepare('SELECT COUNT(*) as count FROM sessions').get();
+      const userCount = await await db.prepare('SELECT COUNT(*) as count FROM users').get();
+      const sessionCount = await await db.prepare('SELECT COUNT(*) as count FROM sessions').get();
       status.services.chat = {
         status: 'running',
         port: process.env.CHAT_PORT || 3000,
@@ -1247,7 +1247,7 @@ function createAdminRoutes(db) {
       const tablesQuery = dbType === 'postgresql'
         ? "SELECT tablename AS name FROM pg_tables WHERE schemaname='public' ORDER BY tablename"
         : "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
-      const tables = await db.prepare(tablesQuery).all();
+      const tables = await await db.prepare(tablesQuery).all();
       status.database.tables = tables.map(t => t.name);
       status.database.tableCount = tables.length;
     } catch (err) {

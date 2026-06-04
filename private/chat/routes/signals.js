@@ -1,4 +1,4 @@
-// Version: 1.0093
+// Version: 1.0172
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
@@ -44,14 +44,14 @@ const upload = multer({
 });
 
 // Middleware to check authentication
-const requireAuth = (req, res, next) => {
+const requireAuth = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
     return res.status(401).json({ error: 'Not authenticated' });
   }
   
   try {
-    const session = db.prepare('SELECT user_id FROM sessions WHERE token = ? AND expires_at > datetime("now")').get(token);
+    const session = await db.prepare('SELECT user_id FROM sessions WHERE token = ? AND expires_at > datetime("now")').get(token);
     if (!session) {
       return res.status(401).json({ error: 'Invalid or expired session' });
     }
@@ -64,9 +64,9 @@ const requireAuth = (req, res, next) => {
 };
 
 // Check if user can submit signal (1 per day limit)
-router.get('/can-submit', requireAuth, (req, res) => {
+router.get('/can-submit', requireAuth, async (req, res) => {
   try {
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT last_signal_date 
       FROM users 
       WHERE id = ?
@@ -109,7 +109,7 @@ router.post('/submit', requireAuth, upload.single('photo'), async (req, res) => 
     }
     
     // Check if user already submitted today
-    const user = db.prepare('SELECT last_signal_date FROM users WHERE id = ?').get(req.userId);
+    const user = await db.prepare('SELECT last_signal_date FROM users WHERE id = ?').get(req.userId);
     const today = new Date().toISOString().split('T')[0];
     
     if (user.last_signal_date === today) {
@@ -141,13 +141,13 @@ router.post('/submit', requireAuth, upload.single('photo'), async (req, res) => 
     }
     
     // Insert signal
-    const result = db.prepare(`
+    const result = await db.prepare(`
       INSERT INTO signals (user_id, signal_type, title, working_hours, latitude, longitude, photo_url)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).run(req.userId, signal_type, title, working_hours || null, parseFloat(latitude), parseFloat(longitude), photoUrl);
     
     // Update user's last signal date
-    db.prepare('UPDATE users SET last_signal_date = ? WHERE id = ?').run(today, req.userId);
+    await db.prepare('UPDATE users SET last_signal_date = ? WHERE id = ?').run(today, req.userId);
     
     res.json({
       success: true,
@@ -161,9 +161,9 @@ router.post('/submit', requireAuth, upload.single('photo'), async (req, res) => 
 });
 
 // Get user's signals history
-router.get('/my-signals', requireAuth, (req, res) => {
+router.get('/my-signals', requireAuth, async (req, res) => {
   try {
-    const signals = db.prepare(`
+    const signals = await db.prepare(`
       SELECT id, signal_type, title, working_hours, latitude, longitude, 
              photo_url, status, submitted_at, processed_at, rejection_reason
       FROM signals
@@ -179,15 +179,15 @@ router.get('/my-signals', requireAuth, (req, res) => {
 });
 
 // Admin: Get pending signals
-router.get('/admin/pending', requireAuth, (req, res) => {
+router.get('/admin/pending', requireAuth, async (req, res) => {
   try {
     // Check if user is admin (you need to define admin logic)
-    const user = db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
+    const user = await db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
     if (!user) {
       return res.status(403).json({ error: 'Admin access required' });
     }
     
-    const signals = db.prepare(`
+    const signals = await db.prepare(`
       SELECT s.id, s.user_id, s.signal_type, s.title, s.working_hours,
              s.latitude, s.longitude, s.photo_url, s.submitted_at,
              u.phone, u.full_name
@@ -198,9 +198,9 @@ router.get('/admin/pending', requireAuth, (req, res) => {
     `).all();
     
     // For each signal, check for nearby duplicates (5m radius)
-    const signalsWithDuplicates = signals.map(signal => {
+    const signalsWithDuplicates = await Promise.all(signals.map(async signal => {
       // Simple distance check (approximate, for exact use Haversine formula)
-      const nearby = db.prepare(`
+      const nearby = await db.prepare(`
         SELECT COUNT(*) as count
         FROM signals
         WHERE id != ?
@@ -209,12 +209,12 @@ router.get('/admin/pending', requireAuth, (req, res) => {
           AND ABS(latitude - ?) < 0.00005
           AND ABS(longitude - ?) < 0.00005
       `).get(signal.id, signal.signal_type, signal.latitude, signal.longitude);
-      
+
       return {
         ...signal,
-        hasDuplicatesNearby: nearby.count > 0
+        hasDuplicatesNearby: Number(nearby.count) > 0
       };
-    });
+    }));
     
     res.json({ signals: signalsWithDuplicates });
   } catch (error) {
@@ -224,15 +224,15 @@ router.get('/admin/pending', requireAuth, (req, res) => {
 });
 
 // Admin: Approve signal
-router.post('/admin/approve/:signalId', requireAuth, (req, res) => {
+router.post('/admin/approve/:signalId', requireAuth, async (req, res) => {
   try {
     // Check if user is admin
-    const admin = db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
+    const admin = await db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
     if (!admin) {
       return res.status(403).json({ error: 'Admin access required' });
     }
     
-    const signal = db.prepare(`
+    const signal = await db.prepare(`
       SELECT id, user_id, signal_type, title, working_hours, latitude, longitude, photo_url, status 
       FROM signals WHERE id = ?
     `).get(req.params.signalId);
@@ -255,7 +255,7 @@ router.post('/admin/approve/:signalId', requireAuth, (req, res) => {
     const fullName = signal.title.substring(0, 50);
     
     // Create static object user
-    const newUser = db.prepare(`
+    const newUser = await db.prepare(`
       INSERT INTO users (
         phone, password_hash, full_name, gender, birth_date,
         country, city, latitude, longitude,
@@ -279,7 +279,7 @@ router.post('/admin/approve/:signalId', requireAuth, (req, res) => {
     const createdUserId = newUser.lastInsertRowid;
     
     // Update signal status
-    db.prepare(`
+    await db.prepare(`
       UPDATE signals 
       SET status = 'approved', 
           processed_at = datetime('now'), 
@@ -289,7 +289,7 @@ router.post('/admin/approve/:signalId', requireAuth, (req, res) => {
     `).run(req.userId, createdUserId, req.params.signalId);
     
     // Grant submitter 1 free day
-    db.prepare(`
+    await db.prepare(`
       UPDATE users
       SET paid_until = datetime(MAX(paid_until, datetime('now')), '+1 day'),
           free_days_earned = free_days_earned + 1
@@ -313,17 +313,17 @@ router.post('/admin/approve/:signalId', requireAuth, (req, res) => {
 });
 
 // Admin: Reject signal
-router.post('/admin/reject/:signalId', requireAuth, (req, res) => {
+router.post('/admin/reject/:signalId', requireAuth, async (req, res) => {
   try {
     const { reason } = req.body;
     
     // Check if user is admin
-    const admin = db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
+    const admin = await db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
     if (!admin) {
       return res.status(403).json({ error: 'Admin access required' });
     }
     
-    const signal = db.prepare('SELECT user_id, status FROM signals WHERE id = ?').get(req.params.signalId);
+    const signal = await db.prepare('SELECT user_id, status FROM signals WHERE id = ?').get(req.params.signalId);
     if (!signal) {
       return res.status(404).json({ error: 'Signal not found' });
     }
@@ -333,7 +333,7 @@ router.post('/admin/reject/:signalId', requireAuth, (req, res) => {
     }
     
     // Reject signal
-    db.prepare(`
+    await db.prepare(`
       UPDATE signals 
       SET status = 'rejected', processed_at = datetime('now'), 
           processed_by_admin_id = ?, rejection_reason = ?
@@ -341,7 +341,7 @@ router.post('/admin/reject/:signalId', requireAuth, (req, res) => {
     `).run(req.userId, reason || 'Duplicate or invalid', req.params.signalId);
     
     // Reset user's last_signal_date so they can submit again today
-    db.prepare(`
+    await db.prepare(`
       UPDATE users
       SET last_signal_date = NULL
       WHERE id = ?
@@ -358,15 +358,15 @@ router.post('/admin/reject/:signalId', requireAuth, (req, res) => {
 });
 
 // Admin: Mark as obsolete and delete matching static object
-router.post('/admin/obsolete/:signalId', requireAuth, (req, res) => {
+router.post('/admin/obsolete/:signalId', requireAuth, async (req, res) => {
   try {
     // Check if user is admin
-    const admin = db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
+    const admin = await db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
     if (!admin) {
       return res.status(403).json({ error: 'Admin access required' });
     }
     
-    const signal = db.prepare(`
+    const signal = await db.prepare(`
       SELECT id, signal_type, title, working_hours, latitude, longitude, status
       FROM signals WHERE id = ?
     `).get(req.params.signalId);
@@ -380,7 +380,7 @@ router.post('/admin/obsolete/:signalId', requireAuth, (req, res) => {
     }
     
     // Find matching static objects (same type, similar name, close location)
-    const matchingObjects = db.prepare(`
+    const matchingObjects = await db.prepare(`
       SELECT id, phone, full_name, offerings, latitude, longitude
       FROM users
       WHERE is_static_object = 1
@@ -407,10 +407,10 @@ router.post('/admin/obsolete/:signalId', requireAuth, (req, res) => {
     
     // Delete the matching object
     const objectId = matchingObjects[0].id;
-    db.prepare('DELETE FROM users WHERE id = ?').run(objectId);
+    await db.prepare('DELETE FROM users WHERE id = ?').run(objectId);
     
     // Mark signal as rejected with reason
-    db.prepare(`
+    await db.prepare(`
       UPDATE signals
       SET status = 'rejected',
           processed_at = datetime('now'),
@@ -431,7 +431,7 @@ router.post('/admin/obsolete/:signalId', requireAuth, (req, res) => {
 });
 
 // Get nearby signals (for duplicate checking)
-router.get('/nearby', requireAuth, (req, res) => {
+router.get('/nearby', requireAuth, async (req, res) => {
   try {
     const { latitude, longitude, radius = 100, limit = 5 } = req.query;
     
@@ -445,7 +445,7 @@ router.get('/nearby', requireAuth, (req, res) => {
     const limitNum = parseInt(limit);
     
     // Get all pending signals AND static objects
-    const signals = db.prepare(`
+    const signals = await db.prepare(`
       SELECT 
         s.id, s.signal_type, s.title, s.working_hours, s.latitude, s.longitude, 
         s.photo_url, s.submitted_at, s.status

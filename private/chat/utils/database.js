@@ -1,4 +1,4 @@
-// Version: 1.0171
+// Version: 1.0172
 // Database Adapter - Supports both SQLite and PostgreSQL
 // Switches based on DB_TYPE environment variable
 
@@ -85,50 +85,54 @@ function initializePostgreSQL() {
 
   console.log(`🐘 Initializing PostgreSQL database: ${PG_DATABASE}`);
   
-  // Wrap pool to match SQLite API
+  // Превръща SQLite-синтаксиса (с който е писан кодът на chat) към PostgreSQL:
+  //   ?  →  $1, $2, …            (PG не разбира ? плейсхолдъри → иначе 42601 syntax error)
+  //   datetime('now') → now()  ·  date('now') → current_date
+  const pgify = (sql) => {
+    let s = String(sql);
+    const orIgnore = /insert\s+or\s+(ignore|replace)\s+into/i.test(s);
+    s = s
+      .replace(/insert\s+or\s+(?:ignore|replace)\s+into/gi, 'INSERT INTO')
+      // GROUP_CONCAT(x, sep) → string_agg(x, sep) ; GROUP_CONCAT(x) → string_agg(x, ',')
+      .replace(/GROUP_CONCAT\(\s*([^,()]+?)\s*,\s*('[^']*'|"[^"]*")\s*\)/gi, 'string_agg($1, $2)')
+      .replace(/GROUP_CONCAT\(\s*([^,()]+?)\s*\)/gi, "string_agg($1, ',')")
+      // datetime/date — и с единични, и с двойни кавички ('now' / "now")
+      .replace(/datetime\(\s*['"]now['"]\s*,\s*['"]-\s*(\d+)\s+hours?['"]\s*\)/gi, "(now() - interval '$1 hours')")
+      .replace(/datetime\(\s*['"]now['"]\s*,\s*['"]-\s*(\d+)\s+days?['"]\s*\)/gi, "(now() - interval '$1 days')")
+      .replace(/datetime\(\s*['"]now['"]\s*\)/gi, 'now()')
+      .replace(/date\(\s*['"]now['"]\s*\)/gi, 'current_date');
+    if (orIgnore && !/on\s+conflict/i.test(s)) s = s.replace(/;?\s*$/, '') + ' ON CONFLICT DO NOTHING';
+    let i = 0;
+    s = s.replace(/\?/g, () => `$${++i}`);  // ПОСЛЕДНО: ? → $1, $2 …
+    return s;
+  };
+
+  // Wrap pool to match SQLite API (? и датите се превръщат за PG)
   db = {
     pool,
-    
+
     // Execute single query (like SQLite exec)
-    exec: async (sql) => {
-      const client = await pool.connect();
-      try {
-        await client.query(sql);
-      } finally {
-        client.release();
-      }
-    },
-    
+    exec: async (sql) => { await pool.query(pgify(sql)); },
+
     // Prepare statement (like SQLite prepare)
     prepare: (sql) => {
+      const q = pgify(sql);
       return {
         run: async (...params) => {
-          const client = await pool.connect();
+          // INSERT → добави RETURNING id (за lastInsertRowid като SQLite).
+          let qq = q;
+          const plainInsert = /^\s*insert\s+into/i.test(qq) && !/returning/i.test(qq) && !/on\s+conflict/i.test(qq);
+          if (plainInsert) qq = qq.replace(/;?\s*$/, '') + ' RETURNING id';
           try {
-            const result = await client.query(sql, params);
-            return { changes: result.rowCount, lastInsertRowid: result.rows[0]?.id };
-          } finally {
-            client.release();
+            const result = await pool.query(qq, params);
+            return { changes: result.rowCount, lastInsertRowid: result.rows[0] && result.rows[0].id };
+          } catch (e) {
+            if (qq !== q) { const r = await pool.query(q, params); return { changes: r.rowCount }; } // таблица без "id"
+            throw e;
           }
         },
-        get: async (...params) => {
-          const client = await pool.connect();
-          try {
-            const result = await client.query(sql, params);
-            return result.rows[0];
-          } finally {
-            client.release();
-          }
-        },
-        all: async (...params) => {
-          const client = await pool.connect();
-          try {
-            const result = await client.query(sql, params);
-            return result.rows;
-          } finally {
-            client.release();
-          }
-        }
+        get: async (...params) => { const result = await pool.query(q, params); return result.rows[0]; },
+        all: async (...params) => { const result = await pool.query(q, params); return result.rows; },
       };
     },
     

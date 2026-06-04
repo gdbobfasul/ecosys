@@ -16,13 +16,13 @@ function createMatchmakingRoutes(db) {
       const criteria = req.body;
 
       // Check if user already has criteria
-      const existing = db.prepare(
+      const existing = await db.prepare(
         'SELECT id FROM matchmaking_criteria WHERE user_id = ?'
       ).get(userId);
 
       if (existing) {
         // Update existing criteria
-        const updateStmt = db.prepare(`
+        const updateStmt = await db.prepare(`
           UPDATE matchmaking_criteria SET
             height_min = ?, height_max = ?, weight_min = ?, weight_max = ?,
             age_min = ?, age_max = ?, hair_color = ?, eye_color = ?,
@@ -65,7 +65,7 @@ function createMatchmakingRoutes(db) {
         res.json({ success: true, message: 'Criteria updated successfully' });
       } else {
         // Insert new criteria
-        const insertStmt = db.prepare(`
+        const insertStmt = await db.prepare(`
           INSERT INTO matchmaking_criteria (
             user_id, height_min, height_max, weight_min, weight_max,
             age_min, age_max, hair_color, eye_color, body_type, ethnicity,
@@ -117,7 +117,7 @@ function createMatchmakingRoutes(db) {
     try {
       const userId = req.userId;
 
-      const criteria = db.prepare(
+      const criteria = await db.prepare(
         'SELECT * FROM matchmaking_criteria WHERE user_id = ?'
       ).get(userId);
 
@@ -141,7 +141,7 @@ function createMatchmakingRoutes(db) {
       const userId = req.userId;
 
       // Get user's payment info
-      const user = db.prepare(
+      const user = await db.prepare(
         'SELECT payment_amount, payment_currency, paid_until FROM users WHERE id = ?'
       ).get(userId);
 
@@ -174,7 +174,7 @@ function createMatchmakingRoutes(db) {
       }
 
       // Get user's criteria
-      const criteria = db.prepare(
+      const criteria = await db.prepare(
         'SELECT * FROM matchmaking_criteria WHERE user_id = ?'
       ).get(userId);
 
@@ -186,12 +186,12 @@ function createMatchmakingRoutes(db) {
       }
 
       // Get user's dislikes
-      const dislikes = db.prepare(
+      const dislikes = await db.prepare(
         'SELECT disliked_attribute, disliked_value FROM matchmaking_dislikes WHERE user_id = ?'
       ).all(userId);
 
       // Get blocked users
-      const blockedUsers = db.prepare(`
+      const blockedUsers = await db.prepare(`
         SELECT blocked_id FROM matchmaking_blocks WHERE blocker_id = ?
         UNION
         SELECT blocker_id FROM matchmaking_blocks WHERE blocked_id = ?
@@ -271,21 +271,21 @@ function createMatchmakingRoutes(db) {
       query += ` ORDER BY RANDOM() LIMIT 5`;
 
       // Execute search
-      const matches = db.prepare(query).all(...params);
+      const matches = await db.prepare(query).all(...params);
 
       // Deduct $5 from user's balance
-      db.prepare(
+      await db.prepare(
         'UPDATE users SET payment_amount = payment_amount - ? WHERE id = ?'
       ).run(searchCost, userId);
 
       // Log the search
-      db.prepare(`
+      await db.prepare(`
         INSERT INTO matchmaking_searches (user_id, search_cost, currency, results_count)
         VALUES (?, ?, ?, ?)
       `).run(userId, searchCost, user.payment_currency, matches.length);
 
       // Get updated balance
-      const updatedUser = db.prepare(
+      const updatedUser = await db.prepare(
         'SELECT payment_amount FROM users WHERE id = ?'
       ).get(userId);
 
@@ -318,13 +318,13 @@ function createMatchmakingRoutes(db) {
       }
 
       // Check if receiver exists
-      const receiver = db.prepare('SELECT id FROM users WHERE id = ?').get(receiverId);
+      const receiver = await db.prepare('SELECT id FROM users WHERE id = ?').get(receiverId);
       if (!receiver) {
         return res.status(404).json({ error: 'User not found' });
       }
 
       // Check if already invited
-      const existing = db.prepare(
+      const existing = await db.prepare(
         'SELECT id FROM matchmaking_invitations WHERE sender_id = ? AND receiver_id = ?'
       ).get(senderId, receiverId);
 
@@ -333,7 +333,7 @@ function createMatchmakingRoutes(db) {
       }
 
       // Check if blocked
-      const blocked = db.prepare(`
+      const blocked = await db.prepare(`
         SELECT id FROM matchmaking_blocks 
         WHERE (blocker_id = ? AND blocked_id = ?) 
            OR (blocker_id = ? AND blocked_id = ?)
@@ -344,7 +344,7 @@ function createMatchmakingRoutes(db) {
       }
 
       // Create invitation
-      db.prepare(`
+      await db.prepare(`
         INSERT INTO matchmaking_invitations (sender_id, receiver_id, status)
         VALUES (?, ?, 'pending')
       `).run(senderId, receiverId);
@@ -369,12 +369,12 @@ function createMatchmakingRoutes(db) {
       const userId = req.userId;
 
       // Get user's criteria to filter out mismatches based on dislikes
-      const dislikes = db.prepare(
+      const dislikes = await db.prepare(
         'SELECT disliked_attribute, disliked_value FROM matchmaking_dislikes WHERE user_id = ?'
       ).all(userId);
 
       // Get all pending invitations with sender details
-      let invitations = db.prepare(`
+      let invitations = await db.prepare(`
         SELECT 
           i.id, i.sender_id, i.created_at,
           u.full_name, u.age, u.gender, u.height_cm, u.weight_kg,
@@ -422,7 +422,7 @@ function createMatchmakingRoutes(db) {
     try {
       const userId = req.userId;
 
-      const invitations = db.prepare(`
+      const invitations = await db.prepare(`
         SELECT 
           i.id, i.receiver_id, i.status, i.created_at, i.responded_at,
           u.full_name, u.age, u.city
@@ -454,7 +454,7 @@ function createMatchmakingRoutes(db) {
       const invitationId = req.params.id;
 
       // Get invitation
-      const invitation = db.prepare(
+      const invitation = await db.prepare(
         'SELECT * FROM matchmaking_invitations WHERE id = ? AND receiver_id = ?'
       ).get(invitationId, userId);
 
@@ -467,7 +467,7 @@ function createMatchmakingRoutes(db) {
       }
 
       // Update invitation status
-      db.prepare(`
+      await db.prepare(`
         UPDATE matchmaking_invitations 
         SET status = 'accepted', responded_at = datetime('now')
         WHERE id = ?
@@ -475,12 +475,12 @@ function createMatchmakingRoutes(db) {
 
       // Add to friends (so they can chat)
       // Check if friendship already exists
-      const existingFriend = db.prepare(
+      const existingFriend = await db.prepare(
         'SELECT id FROM friends WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)'
       ).get(userId, invitation.sender_id, invitation.sender_id, userId);
 
       if (!existingFriend) {
-        db.prepare(
+        await db.prepare(
           'INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)'
         ).run(userId, invitation.sender_id, 'accepted');
       }
@@ -511,7 +511,7 @@ function createMatchmakingRoutes(db) {
       }
 
       // Check if already blocked
-      const existing = db.prepare(
+      const existing = await db.prepare(
         'SELECT id FROM matchmaking_blocks WHERE blocker_id = ? AND blocked_id = ?'
       ).get(blockerId, blockedId);
 
@@ -520,21 +520,21 @@ function createMatchmakingRoutes(db) {
       }
 
       // Create block
-      db.prepare(`
+      await db.prepare(`
         INSERT INTO matchmaking_blocks (blocker_id, blocked_id)
         VALUES (?, ?)
       `).run(blockerId, blockedId);
 
       // Save dislikes if provided
       if (dislikes && Array.isArray(dislikes)) {
-        const stmt = db.prepare(`
+        const stmt = await db.prepare(`
           INSERT INTO matchmaking_dislikes (user_id, disliked_attribute, disliked_value)
           VALUES (?, ?, ?)
         `);
 
         for (const dislike of dislikes) {
           // Check dislike count limit (500 max)
-          const count = db.prepare(
+          const count = await db.prepare(
             'SELECT COUNT(*) as count FROM matchmaking_dislikes WHERE user_id = ?'
           ).get(blockerId);
 
@@ -547,7 +547,7 @@ function createMatchmakingRoutes(db) {
       }
 
       // Update any pending invitations to blocked status
-      db.prepare(`
+      await db.prepare(`
         UPDATE matchmaking_invitations 
         SET status = 'blocked', responded_at = datetime('now')
         WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)
@@ -573,7 +573,7 @@ function createMatchmakingRoutes(db) {
     try {
       const userId = req.userId;
 
-      const dislikes = db.prepare(`
+      const dislikes = await db.prepare(`
         SELECT disliked_attribute, disliked_value, COUNT(*) as count
         FROM matchmaking_dislikes
         WHERE user_id = ?
@@ -581,7 +581,7 @@ function createMatchmakingRoutes(db) {
         ORDER BY count DESC
       `).all(userId);
 
-      const total = db.prepare(
+      const total = await db.prepare(
         'SELECT COUNT(*) as count FROM matchmaking_dislikes WHERE user_id = ?'
       ).get(userId);
 
@@ -605,7 +605,7 @@ function createMatchmakingRoutes(db) {
   router.post('/admin/check', async (req, res) => {
     try {
       // Check if user is admin
-      const adminUser = db.prepare(
+      const adminUser = await db.prepare(
         'SELECT is_admin FROM users WHERE id = ?'
       ).get(req.userId);
 
@@ -620,7 +620,7 @@ function createMatchmakingRoutes(db) {
       }
 
       // Get user's criteria
-      const criteria = db.prepare(
+      const criteria = await db.prepare(
         'SELECT * FROM matchmaking_criteria WHERE user_id = ?'
       ).get(userId);
 
@@ -631,12 +631,12 @@ function createMatchmakingRoutes(db) {
       }
 
       // Get user's dislikes
-      const dislikes = db.prepare(
+      const dislikes = await db.prepare(
         'SELECT disliked_attribute, disliked_value FROM matchmaking_dislikes WHERE user_id = ?'
       ).all(userId);
 
       // Run same matching algorithm as regular search but FREE
-      const blockedUsers = db.prepare(`
+      const blockedUsers = await db.prepare(`
         SELECT blocked_id FROM matchmaking_blocks WHERE blocker_id = ?
         UNION
         SELECT blocker_id FROM matchmaking_blocks WHERE blocked_id = ?
@@ -667,7 +667,7 @@ function createMatchmakingRoutes(db) {
 
       query += ` ORDER BY RANDOM() LIMIT 50`;
 
-      const matches = db.prepare(query).all(...params);
+      const matches = await db.prepare(query).all(...params);
 
       res.json({
         success: true,

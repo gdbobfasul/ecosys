@@ -20,7 +20,7 @@ function createSearchRoutes(db) {
   // ============================================
   // FREE CHAT SEARCH (4 types)
   // ============================================
-  router.post('/free', (req, res) => {
+  router.post('/free', async (req, res) => {
     try {
       const user = req.user;
       
@@ -37,7 +37,7 @@ function createSearchRoutes(db) {
       
       // Type 1: EXACT SEARCH (all 5 fields required)
       if (phone && fullName && city && age && codeWord) {
-        const result = db.prepare(`
+        const result = await db.prepare(`
           SELECT id, phone, full_name, city, age, gender
           FROM users
           WHERE phone = ? 
@@ -58,7 +58,7 @@ function createSearchRoutes(db) {
       
       // Type 2: BY CITY (only city filled)
       if (city && !phone && !fullName && !age && !codeWord) {
-        const results = db.prepare(`
+        const results = await db.prepare(`
           SELECT id, phone, full_name, city, age, gender
           FROM users
           WHERE city = ? 
@@ -81,7 +81,7 @@ function createSearchRoutes(db) {
           return res.status(400).json({ error: 'Minimum age is 18' });
         }
         
-        const results = db.prepare(`
+        const results = await db.prepare(`
           SELECT id, phone, full_name, city, age, gender
           FROM users
           WHERE age = ? 
@@ -100,7 +100,7 @@ function createSearchRoutes(db) {
       
       // Type 4: RANDOM WORLDWIDE (nothing filled)
       if (!phone && !fullName && !city && !age && !codeWord) {
-        const results = db.prepare(`
+        const results = await db.prepare(`
           SELECT id, phone, full_name, city, age, gender
           FROM users
           WHERE age >= 18
@@ -131,7 +131,7 @@ function createSearchRoutes(db) {
   // ============================================
 
   // Search #2: By distance
-  router.post('/by-distance', (req, res) => {
+  router.post('/by-distance', async (req, res) => {
     try {
       const userId = req.user.id;
       const { 
@@ -186,7 +186,7 @@ function createSearchRoutes(db) {
       }
       
       // Get all matching users
-      const users = db.prepare(query).all(...params);
+      const users = await db.prepare(query).all(...params);
       
       // Calculate distance and filter
       const results = users
@@ -259,7 +259,7 @@ function createSearchRoutes(db) {
   });
 
   // Search #3: By need (max 50km radius)
-  router.post('/by-need', (req, res) => {
+  router.post('/by-need', async (req, res) => {
     try {
       const userId = req.user.id;
       const { 
@@ -345,7 +345,7 @@ function createSearchRoutes(db) {
       }
       
       // Get all matching users
-      const users = db.prepare(query).all(...params);
+      const users = await db.prepare(query).all(...params);
       
       // Calculate distance and filter by 50km max
       const results = users

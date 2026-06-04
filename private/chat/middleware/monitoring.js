@@ -1,15 +1,15 @@
-// Version: 1.0093
+// Version: 1.0172
 const Database = require('better-sqlite3');
 
-function checkCriticalWords(db, message, fromPhone, toPhone) {
+async function checkCriticalWords(db, message, fromPhone, toPhone) {
   try {
-    const words = db.prepare('SELECT word FROM critical_words').all();
+    const words = await db.prepare('SELECT word FROM critical_words').all();
     const text = message.toLowerCase();
     
     for (const { word } of words) {
       if (text.includes(word.toLowerCase())) {
         // Get last 5KB of conversation context
-        const context = db.prepare(`
+        const context = await db.prepare(`
           SELECT text FROM messages 
           WHERE (from_phone = ? AND to_phone = ?) OR (from_phone = ? AND to_phone = ?)
           ORDER BY created_at DESC LIMIT 50
@@ -18,7 +18,7 @@ function checkCriticalWords(db, message, fromPhone, toPhone) {
         const contextText = context.map(m => m.text).reverse().join('\n').slice(-5120); // 5KB
         
         // Flag the conversation
-        db.prepare(`
+        await db.prepare(`
           INSERT INTO flagged_conversations 
           (phone1, phone2, matched_word, message_id, message_text, conversation_context)
           VALUES (?, ?, ?, ?, ?, ?)

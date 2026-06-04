@@ -1,26 +1,27 @@
-// Version: 1.0171
+// Version: 1.0172
 const { isStaff } = require('../roles');
 
 function authenticate(db) {
-  return (req, res, next) => {
+  return async (req, res, next) => {
+   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
-    
+
     if (!token) {
       return res.status(401).json({ error: 'Authentication required' });
     }
 
-    const session = db.prepare(`
-      SELECT user_id, device_type FROM sessions 
+    const session = await db.prepare(`
+      SELECT user_id, device_type FROM sessions
       WHERE token = ? AND expires_at > datetime('now')
     `).get(token);
-    
+
     if (!session) {
       return res.status(401).json({ error: 'Invalid or expired token' });
     }
 
     // Get user details
-    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(session.user_id);
-    
+    const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(session.user_id);
+
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }
@@ -32,19 +33,21 @@ function authenticate(db) {
     // за да решат в кой файл да пишат (chat-web-* / chat-mobile-*).
     req.clientType = (session.device_type === 'mobile') ? 'mobile' : 'web';
     next();
+   } catch (e) { console.error('authenticate error:', e.message); return res.status(401).json({ error: 'Authentication error' }); }
   };
 }
 
 function authenticateAdmin(db) {
-  return (req, res, next) => {
+  return async (req, res, next) => {
+   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
-    
+
     if (!token) {
       return res.status(401).json({ error: 'Admin authentication required' });
     }
 
     // Simple admin token check (in production, use proper sessions)
-    const adminSession = db.prepare('SELECT username FROM admin_users WHERE password_hash = ?').get(token);
+    const adminSession = await db.prepare('SELECT username FROM admin_users WHERE password_hash = ?').get(token);
 
     if (!adminSession) {
       return res.status(401).json({ error: 'Admin authentication failed' });
@@ -57,6 +60,7 @@ function authenticateAdmin(db) {
 
     req.adminUser = adminSession.username;
     next();
+   } catch (e) { console.error('authenticateAdmin error:', e.message); return res.status(401).json({ error: 'Admin authentication error' }); }
   };
 }
 

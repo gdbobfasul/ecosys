@@ -6,7 +6,7 @@ function createFriendsRoutes(db) {
   const router = express.Router();
 
   // Search users to add as friends - САМО по: country, phone, gender, height, weight
-  router.get('/search', (req, res) => {
+  router.get('/search', async (req, res) => {
     try {
       const { phone, country, gender, height, weight } = req.query;
 
@@ -51,7 +51,7 @@ function createFriendsRoutes(db) {
       query += ` AND id != ? LIMIT 50`;
       params.push(req.userId);
 
-      const users = db.prepare(query).all(...params);
+      const users = await db.prepare(query).all(...params);
 
       res.json({ users });
     } catch (err) {
@@ -61,9 +61,9 @@ function createFriendsRoutes(db) {
   });
 
   // Get friends list
-  router.get('/', (req, res) => {
+  router.get('/', async (req, res) => {
     try {
-      const friends = db.prepare(`
+      const friends = await db.prepare(`
         SELECT 
           CASE WHEN phone1 = ? THEN phone2 ELSE phone1 END as phone,
           CASE 
@@ -108,7 +108,7 @@ function createFriendsRoutes(db) {
   });
 
   // Add friend
-  router.post('/', (req, res) => {
+  router.post('/', async (req, res) => {
     try {
       const { friendPhone } = req.body;
 
@@ -121,7 +121,7 @@ function createFriendsRoutes(db) {
       }
 
       // Check if friend exists and is paid
-      const friend = db.prepare('SELECT phone, paid_until FROM users WHERE phone = ?').get(friendPhone);
+      const friend = await db.prepare('SELECT phone, paid_until FROM users WHERE phone = ?').get(friendPhone);
 
       if (!friend) {
         return res.status(404).json({ error: 'User not found' });
@@ -135,7 +135,7 @@ function createFriendsRoutes(db) {
       const [phone1, phone2] = [req.phone, friendPhone].sort();
       
       try {
-        db.prepare('INSERT INTO friends (phone1, phone2) VALUES (?, ?)').run(phone1, phone2);
+        await db.prepare('INSERT INTO friends (phone1, phone2) VALUES (?, ?)').run(phone1, phone2);
       } catch (err) {
         if (!err.message.includes('UNIQUE')) throw err;
       }
@@ -148,7 +148,7 @@ function createFriendsRoutes(db) {
   });
 
   // Set custom name for friend
-  router.put('/custom-name', (req, res) => {
+  router.put('/custom-name', async (req, res) => {
     try {
       const { friendPhone, customName } = req.body;
 
@@ -165,7 +165,7 @@ function createFriendsRoutes(db) {
       // Determine which custom_name field to update
       const field = req.phone === phone1 ? 'custom_name_by_phone1' : 'custom_name_by_phone2';
       
-      db.prepare(`UPDATE friends SET ${field} = ? WHERE phone1 = ? AND phone2 = ?`)
+      await db.prepare(`UPDATE friends SET ${field} = ? WHERE phone1 = ? AND phone2 = ?`)
         .run(customName || null, phone1, phone2);
 
       res.json({ success: true, customName });

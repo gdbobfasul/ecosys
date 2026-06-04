@@ -1,4 +1,4 @@
-// Version: 1.0093
+// Version: 1.0172
 const express = require('express');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
@@ -22,7 +22,7 @@ function createMessagesRoutes(db, uploadDir) {
       const { latitude, longitude, country, city, village, street, number, ip } = req.body;
 
       // Check friendship
-      const friendship = db.prepare(`
+      const friendship = await db.prepare(`
         SELECT 1 FROM friends 
         WHERE (user_id1 = ? AND user_id2 = ?) OR (user_id1 = ? AND user_id2 = ?)
       `).get(req.userId, friendUserId, friendUserId, req.userId);
@@ -50,7 +50,7 @@ function createMessagesRoutes(db, uploadDir) {
         `Yandex: ${yandexMapsLink}`;
 
       // Insert message
-      db.prepare(`
+      await db.prepare(`
         INSERT INTO messages (from_user_id, to_user_id, text)
         VALUES (?, ?, ?)
       `).run(req.userId, friendUserId, locationText);
@@ -63,7 +63,7 @@ function createMessagesRoutes(db, uploadDir) {
   });
 
   // Get messages with a friend
-  router.get('/:friendPhone', (req, res) => {
+  router.get('/:friendPhone', async (req, res) => {
     try {
       const { friendPhone } = req.params;
 
@@ -73,14 +73,14 @@ function createMessagesRoutes(db, uploadDir) {
 
       // Check friendship
       const [phone1, phone2] = [req.phone, friendPhone].sort();
-      const friendCheck = db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
+      const friendCheck = await db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
 
       if (!friendCheck) {
         return res.status(403).json({ error: 'Not friends' });
       }
 
       // Get last 5KB of messages (approximately 100 messages)
-      const messages = db.prepare(`
+      const messages = await db.prepare(`
         SELECT id, from_phone, text, file_id, file_name, file_size, file_type, created_at, read_at
         FROM messages
         WHERE (from_phone = ? AND to_phone = ?) OR (from_phone = ? AND to_phone = ?)
@@ -88,7 +88,7 @@ function createMessagesRoutes(db, uploadDir) {
       `).all(req.phone, friendPhone, friendPhone, req.phone);
 
       // Mark as read
-      db.prepare('UPDATE messages SET read_at = datetime("now") WHERE to_phone = ? AND from_phone = ? AND read_at IS NULL')
+      await db.prepare('UPDATE messages SET read_at = datetime("now") WHERE to_phone = ? AND from_phone = ? AND read_at IS NULL')
         .run(req.phone, friendPhone);
 
       const result = messages.reverse().map(row => ({
@@ -111,7 +111,7 @@ function createMessagesRoutes(db, uploadDir) {
   });
 
   // Send text message (WebSocket will also handle this, but REST endpoint for fallback)
-  router.post('/send', (req, res) => {
+  router.post('/send', async (req, res) => {
     try {
       const { to, text } = req.body;
 
@@ -131,7 +131,7 @@ function createMessagesRoutes(db, uploadDir) {
         
         // Free user - check daily message limit
         const today = new Date().toISOString().split('T')[0];
-        const msgCount = db.prepare(`
+        const msgCount = await db.prepare(`
           SELECT COUNT(*) as count 
           FROM messages 
           WHERE from_user_id = ? 
@@ -148,7 +148,7 @@ function createMessagesRoutes(db, uploadDir) {
 
       // Check friendship
       const [phone1, phone2] = [req.phone, to].sort();
-      const friendCheck = db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
+      const friendCheck = await db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
 
       if (!friendCheck) {
         return res.status(403).json({ error: 'Not friends' });
@@ -157,15 +157,15 @@ function createMessagesRoutes(db, uploadDir) {
       const sanitizedText = text.trim();
 
       // Check for critical words BEFORE saving
-      const flagged = checkCriticalWords(db, sanitizedText, req.phone, to);
+      const flagged = await checkCriticalWords(db, sanitizedText, req.phone, to);
 
       // Save message
-      const stmt = db.prepare('INSERT INTO messages (from_phone, to_phone, text, flagged) VALUES (?, ?, ?, ?)');
+      const stmt = await db.prepare('INSERT INTO messages (from_phone, to_phone, text, flagged) VALUES (?, ?, ?, ?)');
       const result = stmt.run(req.phone, to, sanitizedText, flagged ? 1 : 0);
 
       // Update flagged_conversations with actual message_id
       if (flagged) {
-        db.prepare(`
+        await db.prepare(`
           UPDATE flagged_conversations 
           SET message_id = ? 
           WHERE phone1 = ? AND phone2 = ? AND message_id = 0
@@ -185,7 +185,7 @@ function createMessagesRoutes(db, uploadDir) {
   });
 
   // Upload file
-  router.post('/upload', upload.single('file'), (req, res) => {
+  router.post('/upload', upload.single('file'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
@@ -214,7 +214,7 @@ function createMessagesRoutes(db, uploadDir) {
 
       // Check friendship
       const [phone1, phone2] = [req.phone, to].sort();
-      const friendCheck = db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
+      const friendCheck = await db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
 
       if (!friendCheck) {
         fs.unlinkSync(req.file.path);
@@ -226,13 +226,13 @@ function createMessagesRoutes(db, uploadDir) {
       expiresAt.setHours(expiresAt.getHours() + 24); // 24h expiry
 
       // Store file info
-      db.prepare(`
+      await db.prepare(`
         INSERT INTO temp_files (id, from_phone, to_phone, file_name, file_size, file_type, file_path, expires_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `).run(fileId, req.phone, to, req.file.originalname, req.file.size, req.file.mimetype, req.file.path, expiresAt.toISOString());
 
       // Save message reference
-      db.prepare(`
+      await db.prepare(`
         INSERT INTO messages (from_phone, to_phone, file_id, file_name, file_size, file_type)
         VALUES (?, ?, ?, ?, ?, ?)
       `).run(req.phone, to, fileId, req.file.originalname, req.file.size, req.file.mimetype);
@@ -252,11 +252,11 @@ function createMessagesRoutes(db, uploadDir) {
   });
 
   // Download file
-  router.get('/download/:fileId', (req, res) => {
+  router.get('/download/:fileId', async (req, res) => {
     try {
       const { fileId } = req.params;
 
-      const file = db.prepare(`
+      const file = await db.prepare(`
         SELECT * FROM temp_files 
         WHERE id = ? AND to_phone = ? AND expires_at > datetime("now")
       `).get(fileId, req.phone);
@@ -266,27 +266,27 @@ function createMessagesRoutes(db, uploadDir) {
       }
 
       if (!fs.existsSync(file.file_path)) {
-        db.prepare('DELETE FROM temp_files WHERE id = ?').run(fileId);
+        await db.prepare('DELETE FROM temp_files WHERE id = ?').run(fileId);
         return res.status(404).json({ error: 'File not found on server' });
       }
 
       // Send file
-      res.download(file.file_path, file.file_name, (err) => {
+      res.download(file.file_path, file.file_name, async (err) => {
         if (err) {
           console.error('Download error:', err);
           return;
         }
 
         // Mark as downloaded
-        db.prepare('UPDATE temp_files SET downloaded = 1 WHERE id = ?').run(fileId);
+        await db.prepare('UPDATE temp_files SET downloaded = 1 WHERE id = ?').run(fileId);
 
         // Delete file after successful download
-        setTimeout(() => {
+        setTimeout(async () => {
           try {
             if (fs.existsSync(file.file_path)) {
               fs.unlinkSync(file.file_path);
             }
-            db.prepare('DELETE FROM temp_files WHERE id = ?').run(fileId);
+            await db.prepare('DELETE FROM temp_files WHERE id = ?').run(fileId);
             console.log(`✅ Deleted file: ${file.file_name}`);
           } catch (err) {
             console.error('Failed to delete file:', err);

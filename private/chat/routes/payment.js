@@ -19,12 +19,12 @@ function createPaymentRoutes(db) {
   const router = express.Router();
 
   // Get Stripe publishable key
-  router.get('/stripe-key', (req, res) => {
+  router.get('/stripe-key', async (req, res) => {
     res.json({ publishableKey: STRIPE_CFG.publishableKey });
   });
 
   // Get pricing for user's location
-  router.get('/pricing', (req, res) => {
+  router.get('/pricing', async (req, res) => {
     const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const pricing = getPriceForIP(clientIP);
     
@@ -92,7 +92,7 @@ function createPaymentRoutes(db) {
       }
 
       const pricing = getPriceForIP(clientIP);
-      const user = db.prepare('SELECT phone, paid_until, is_blocked FROM users WHERE phone = ?').get(phone);
+      const user = await db.prepare('SELECT phone, paid_until, is_blocked FROM users WHERE phone = ?').get(phone);
 
       // Calculate new paid_until date
       let paidUntil = new Date();
@@ -106,7 +106,7 @@ function createPaymentRoutes(db) {
 
       if (user) {
         // Update existing user
-        db.prepare(`
+        await db.prepare(`
           UPDATE users 
           SET paid_until = ?, 
               last_login = datetime("now"),
@@ -123,7 +123,7 @@ function createPaymentRoutes(db) {
       }
 
       // Log payment
-      db.prepare(`
+      await db.prepare(`
         INSERT INTO payment_logs (phone, amount, currency, stripe_payment_id, status, country_code, ip_address, payment_type)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
@@ -144,7 +144,7 @@ function createPaymentRoutes(db) {
       expiresAt.setDate(expiresAt.getDate() + 30);
       
       const { v4: uuidv4 } = require('uuid');
-      db.prepare(`
+      await db.prepare(`
         INSERT INTO sessions (id, phone, token, expires_at, device_type)
         VALUES (?, ?, ?, ?, ?)
       `).run(uuidv4(), phone, token, expiresAt.toISOString(), 'web');
@@ -168,7 +168,7 @@ function createPaymentRoutes(db) {
   // Stripe ($5/€5 fiat абонамент) остава. Старият /verify-crypto път е изключен.
   // Кодът е премахнат, а не закоментиран; крипто адресите в config НЕ са пипани.
   // Връщаме 410 Gone, ако стар клиент още удря endpoint-а.
-  router.post('/verify-crypto', (req, res) => {
+  router.post('/verify-crypto', async (req, res) => {
     res.status(410).json({
       error: 'crypto_payments_removed',
       message: 'Крипто плащанията са премахнати. Използвай плащане с карта (Stripe).'
@@ -176,9 +176,9 @@ function createPaymentRoutes(db) {
   });
 
   // Get payment status
-  router.get('/status/:userId', (req, res) => {
+  router.get('/status/:userId', async (req, res) => {
     try {
-      const user = db.prepare(`
+      const user = await db.prepare(`
         SELECT subscription_active, paid_until, 
                emergency_active, emergency_active_until
         FROM users 

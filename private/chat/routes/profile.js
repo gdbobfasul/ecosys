@@ -7,11 +7,11 @@ function createProfileRoutes(db) {
   const router = express.Router();
 
   // Get user profile
-  router.get('/', (req, res) => {
+  router.get('/', async (req, res) => {
     try {
       const userId = req.user.id;
       
-      const user = db.prepare(`
+      const user = await db.prepare(`
         SELECT 
           id, phone, full_name, gender, birth_date, height_cm, weight_kg,
           country, city, village, street, workplace,
@@ -48,13 +48,13 @@ function createProfileRoutes(db) {
   });
 
   // Update profile (limited to once per month for certain fields)
-  router.put('/', (req, res) => {
+  router.put('/', async (req, res) => {
     try {
       const userId = req.user.id;
       const { full_name, phone, birth_date, city, location_latitude, location_longitude, profile_photo_url, working_hours } = req.body;
       
       // Get current user data
-      const user = db.prepare(`
+      const user = await db.prepare(`
         SELECT profile_edits_this_month, profile_edit_reset_date, is_static_object
         FROM users WHERE id = ?
       `).get(userId);
@@ -63,7 +63,7 @@ function createProfileRoutes(db) {
       if (user.is_static_object) {
         if (working_hours !== undefined) {
           // Only allow working hours update for static objects
-          db.prepare(`
+          await db.prepare(`
             UPDATE users 
             SET working_hours = ?
             WHERE id = ?
@@ -111,7 +111,7 @@ function createProfileRoutes(db) {
       }
       
       // Update profile (normal users)
-      db.prepare(`
+      await db.prepare(`
         UPDATE users 
         SET 
           full_name = COALESCE(?, full_name),
@@ -155,7 +155,7 @@ function createProfileRoutes(db) {
       }
       
       // Get current password hash
-      const user = db.prepare('SELECT password_hash FROM users WHERE id = ?').get(userId);
+      const user = await db.prepare('SELECT password_hash FROM users WHERE id = ?').get(userId);
       
       // Verify current password
       const validPassword = await bcrypt.compare(current_password, user.password_hash);
@@ -167,7 +167,7 @@ function createProfileRoutes(db) {
       const newHash = await bcrypt.hash(new_password, 10);
       
       // Update password
-      db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(newHash, userId);
+      await db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(newHash, userId);
       
       res.json({ success: true });
       
@@ -178,7 +178,7 @@ function createProfileRoutes(db) {
   });
 
   // Update code word (unlimited)
-  router.put('/code-word', (req, res) => {
+  router.put('/code-word', async (req, res) => {
     try {
       const userId = req.user.id;
       const { code_word } = req.body;
@@ -187,7 +187,7 @@ function createProfileRoutes(db) {
         return res.status(400).json({ error: 'Code word must be at least 3 characters' });
       }
       
-      db.prepare('UPDATE users SET code_word = ? WHERE id = ?').run(code_word, userId);
+      await db.prepare('UPDATE users SET code_word = ? WHERE id = ?').run(code_word, userId);
       
       res.json({ success: true });
       
@@ -198,7 +198,7 @@ function createProfileRoutes(db) {
   });
 
   // Update current need (unlimited)
-  router.put('/need', (req, res) => {
+  router.put('/need', async (req, res) => {
     try {
       const userId = req.user.id;
       const { current_need } = req.body;
@@ -212,7 +212,7 @@ function createProfileRoutes(db) {
         }
       }
       
-      db.prepare('UPDATE users SET current_need = ? WHERE id = ?').run(current_need || null, userId);
+      await db.prepare('UPDATE users SET current_need = ? WHERE id = ?').run(current_need || null, userId);
       
       res.json({ success: true });
       
@@ -223,13 +223,13 @@ function createProfileRoutes(db) {
   });
 
   // Update offerings (unlimited for non-verified users, forbidden for verified)
-  router.put('/offerings', (req, res) => {
+  router.put('/offerings', async (req, res) => {
     try {
       const userId = req.user.id;
       const { offerings } = req.body;
       
       // Get user verification status
-      const user = db.prepare('SELECT is_verified FROM users WHERE id = ?').get(userId);
+      const user = await db.prepare('SELECT is_verified FROM users WHERE id = ?').get(userId);
       
       // Check if user is verified
       if (user.is_verified === 1) {
@@ -246,7 +246,7 @@ function createProfileRoutes(db) {
         return res.status(400).json({ error: validation.error });
       }
       
-      db.prepare('UPDATE users SET offerings = ? WHERE id = ?').run(offerings || null, userId);
+      await db.prepare('UPDATE users SET offerings = ? WHERE id = ?').run(offerings || null, userId);
       
       res.json({ success: true });
       
@@ -257,7 +257,7 @@ function createProfileRoutes(db) {
   });
 
   // Update email (unlimited)
-  router.put('/email', (req, res) => {
+  router.put('/email', async (req, res) => {
     try {
       const userId = req.user.id;
       const { email } = req.body;
@@ -267,7 +267,7 @@ function createProfileRoutes(db) {
         return res.status(400).json({ error: 'Invalid email format' });
       }
       
-      db.prepare('UPDATE users SET email = ? WHERE id = ?').run(email || null, userId);
+      await db.prepare('UPDATE users SET email = ? WHERE id = ?').run(email || null, userId);
       
       res.json({ success: true });
       
@@ -278,12 +278,12 @@ function createProfileRoutes(db) {
   });
 
   // Toggle hide phone
-  router.put('/hide-phone', (req, res) => {
+  router.put('/hide-phone', async (req, res) => {
     try {
       const userId = req.user.id;
       const { hide_phone } = req.body;
       
-      db.prepare('UPDATE users SET hide_phone = ? WHERE id = ?').run(hide_phone ? 1 : 0, userId);
+      await db.prepare('UPDATE users SET hide_phone = ? WHERE id = ?').run(hide_phone ? 1 : 0, userId);
       
       res.json({ success: true });
       
@@ -294,12 +294,12 @@ function createProfileRoutes(db) {
   });
 
   // Toggle hide names
-  router.put('/hide-names', (req, res) => {
+  router.put('/hide-names', async (req, res) => {
     try {
       const userId = req.user.id;
       const { hide_names } = req.body;
       
-      db.prepare('UPDATE users SET hide_names = ? WHERE id = ?').run(hide_names ? 1 : 0, userId);
+      await db.prepare('UPDATE users SET hide_names = ? WHERE id = ?').run(hide_names ? 1 : 0, userId);
       
       res.json({ success: true });
       
@@ -310,7 +310,7 @@ function createProfileRoutes(db) {
   });
 
   // Get service categories (for dropdowns)
-  router.get('/service-categories', (req, res) => {
+  router.get('/service-categories', async (req, res) => {
     res.json({
       all: SERVICE_CATEGORIES,
       public_offerings: PUBLIC_OFFERING_SERVICES

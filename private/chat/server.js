@@ -1,4 +1,4 @@
-// Version: 1.0171
+// Version: 1.0172
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -82,9 +82,9 @@ async function setupDatabase() {
       let n = 0;
       for (const a of envAccounts()) {
         const hash = await hashPassword(a.pass);
-        const ex = db.prepare('SELECT id FROM admin_users WHERE username = ?').get(a.user);
-        if (ex) db.prepare('UPDATE admin_users SET password_hash = ? WHERE username = ?').run(hash, a.user);
-        else db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)').run(a.user, hash);
+        const ex = await db.prepare('SELECT id FROM admin_users WHERE username = ?').get(a.user);
+        if (ex) await db.prepare('UPDATE admin_users SET password_hash = ? WHERE username = ?').run(hash, a.user);
+        else await db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)').run(a.user, hash);
         n++;
       }
       if (n) console.log(`✅ chat админи/модератори попълнени в admin_users от .env (${n})`);
@@ -173,8 +173,8 @@ function testModeOverride(req, res, next) {
 const clients = new Map();
 
 // Cleanup expired files every hour
-setInterval(() => {
-  const expired = db.prepare("SELECT * FROM temp_files WHERE expires_at < datetime('now')").all();
+setInterval(async () => {
+  const expired = await db.prepare("SELECT * FROM temp_files WHERE expires_at < datetime('now')").all();
   
   expired.forEach(file => {
     try {
@@ -186,7 +186,7 @@ setInterval(() => {
     }
   });
   
-  db.prepare("DELETE FROM temp_files WHERE expires_at < datetime('now')").run();
+  await db.prepare("DELETE FROM temp_files WHERE expires_at < datetime('now')").run();
   console.log(`🧹 Cleaned up ${expired.length} expired files`);
 }, 60 * 60 * 1000);
 
@@ -200,7 +200,7 @@ wss.on('connection', async (ws, req) => {
     return;
   }
 
-  const session = db.prepare(`
+  const session = await db.prepare(`
     SELECT phone FROM sessions 
     WHERE token = ? AND expires_at > datetime('now')
   `).get(token);
@@ -226,7 +226,7 @@ wss.on('connection', async (ws, req) => {
 
         // Check friendship
         const [phone1, phone2] = [phone, data.to].sort();
-        const friendCheck = db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
+        const friendCheck = await db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
 
         if (!friendCheck) {
           ws.send(JSON.stringify({ type: 'error', message: 'Not friends' }));
@@ -236,15 +236,15 @@ wss.on('connection', async (ws, req) => {
         const sanitizedText = data.text.trim();
 
         // Check for critical words
-        const flagged = checkCriticalWords(db, sanitizedText, phone, data.to);
+        const flagged = await checkCriticalWords(db, sanitizedText, phone, data.to);
 
         // Save message
-        const stmt = db.prepare('INSERT INTO messages (from_phone, to_phone, text, flagged) VALUES (?, ?, ?, ?)');
+        const stmt = await db.prepare('INSERT INTO messages (from_phone, to_phone, text, flagged) VALUES (?, ?, ?, ?)');
         const result = stmt.run(phone, data.to, sanitizedText, flagged ? 1 : 0);
 
         // Update flagged_conversations with actual message_id
         if (flagged) {
-          db.prepare(`
+          await db.prepare(`
             UPDATE flagged_conversations 
             SET message_id = ? 
             WHERE phone1 = ? AND phone2 = ? AND message_id = 0
@@ -336,15 +336,15 @@ app.use((err, req, res, next) => {
 const cron = require('node-cron');
 
 // Auto logout all users at 04:00 UTC daily
-cron.schedule('0 4 * * *', () => {
+cron.schedule('0 4 * * *', async () => {
   console.log('🔒 Auto logout - 04:00 UTC');
   
   try {
     // Delete all sessions
-    db.prepare('DELETE FROM sessions').run();
+    await db.prepare('DELETE FROM sessions').run();
     
     // Clear session expires
-    db.prepare('UPDATE users SET session_expires_at = NULL').run();
+    await db.prepare('UPDATE users SET session_expires_at = NULL').run();
     
     console.log('✅ All users logged out');
   } catch (err) {
@@ -366,7 +366,7 @@ const PORT = process.env.CHAT_PORT || 3000;
     
     // Load emergency contacts seed data (only if table is empty)
     if (getDatabaseType() === 'sqlite') {
-      const contactsCount = db.prepare('SELECT COUNT(*) as count FROM emergency_contacts').get();
+      const contactsCount = await db.prepare('SELECT COUNT(*) as count FROM emergency_contacts').get();
       if (contactsCount.count === 0) {
         console.log('📞 Loading emergency contacts seed data...');
         const seedData = fs.readFileSync('database/emergency_contacts_seed.sql', 'utf8');

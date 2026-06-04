@@ -22,7 +22,7 @@ function createAuthRoutes(db) {
       }
 
       // Get ALL users with this phone number
-      const users = db.prepare('SELECT * FROM users WHERE phone = ?').all(phone);
+      const users = await db.prepare('SELECT * FROM users WHERE phone = ?').all(phone);
 
       if (users.length === 0) {
         // No user with this phone exists
@@ -46,14 +46,14 @@ function createAuthRoutes(db) {
       if (!matchedUser) {
         // Phone exists but wrong password - could be different account
         // Increment failed attempts for all accounts with this phone
-        db.prepare('UPDATE users SET failed_login_attempts = failed_login_attempts + 1 WHERE phone = ?').run(phone);
+        await db.prepare('UPDATE users SET failed_login_attempts = failed_login_attempts + 1 WHERE phone = ?').run(phone);
         
         // Check if any account hit 3 attempts
-        const toBlock = db.prepare('SELECT id FROM users WHERE phone = ? AND failed_login_attempts >= 3').all(phone);
+        const toBlock = await db.prepare('SELECT id FROM users WHERE phone = ? AND failed_login_attempts >= 3').all(phone);
         if (toBlock.length > 0) {
           const ids = toBlock.map(u => u.id);
           const placeholders = ids.map(() => '?').join(',');
-          db.prepare(`UPDATE users SET is_blocked = 1, blocked_reason = 'Failed login attempts' WHERE id IN (${placeholders})`).run(...ids);
+          await db.prepare(`UPDATE users SET is_blocked = 1, blocked_reason = 'Failed login attempts' WHERE id IN (${placeholders})`).run(...ids);
         }
 
         return res.status(401).json({ 
@@ -73,7 +73,7 @@ function createAuthRoutes(db) {
       }
 
       // Reset failed attempts on successful login
-      db.prepare('UPDATE users SET failed_login_attempts = 0 WHERE id = ?').run(matchedUser.id);
+      await db.prepare('UPDATE users SET failed_login_attempts = 0 WHERE id = ?').run(matchedUser.id);
 
       // Check if paid
       const paidUntil = new Date(matchedUser.paid_until);
@@ -105,12 +105,12 @@ function createAuthRoutes(db) {
       }
 
       // login route записва device_type в базата
-      db.prepare(`
+      await db.prepare(`
         INSERT INTO sessions (id, user_id, token, expires_at, device_type)
         VALUES (?, ?, ?, ?, ?)
       `).run(uuidv4(), matchedUser.id, token, expiresAt.toISOString(), device_type);
 
-      db.prepare('UPDATE users SET last_login = datetime("now") WHERE id = ?').run(matchedUser.id);
+      await db.prepare('UPDATE users SET last_login = datetime("now") WHERE id = ?').run(matchedUser.id);
 
       res.json({ 
         success: true,
@@ -151,7 +151,7 @@ function createAuthRoutes(db) {
       const passwordHash = await hashPassword(password);
 
       // Check if THIS phone + password combo exists
-      const existing = db.prepare('SELECT id FROM users WHERE phone = ? AND password_hash = ?').get(phone, passwordHash);
+      const existing = await db.prepare('SELECT id FROM users WHERE phone = ? AND password_hash = ?').get(phone, passwordHash);
       if (existing) {
         return res.status(400).json({ error: 'This phone + password combination already exists' });
       }
@@ -159,7 +159,7 @@ function createAuthRoutes(db) {
       // Create user (unpaid initially)
       const paidUntil = new Date('2000-01-01').toISOString();
       
-      const result = db.prepare(`
+      const result = await db.prepare(`
         INSERT INTO users (phone, password_hash, full_name, gender, height_cm, weight_kg, country, city, village, street, workplace, paid_until, payment_amount, payment_currency)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'EUR')
       `).run(phone, passwordHash, fullName, gender, heightCm || null, weightKg || null, country || null, city || null, village || null, street || null, workplace || null, paidUntil);
@@ -177,11 +177,11 @@ function createAuthRoutes(db) {
   });
 
   // Logout
-  router.post('/logout', (req, res) => {
+  router.post('/logout', async (req, res) => {
     try {
       const token = req.headers.authorization?.replace('Bearer ', '');
       if (token) {
-        db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
+        await db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
       }
       res.json({ success: true });
     } catch (err) {

@@ -16,7 +16,7 @@
 # Всяка команда проверяваме ръчно
 
 # Прозорецът ВИНАГИ остава отворен
-trap 'echo ""; echo "Натисни Enter за затваряне..."; read DUMMY' EXIT
+trap '[ "${DEPLOY_NO_PAUSE:-0}" = "1" ] || { echo ""; echo "Натисни Enter за затваряне..."; read DUMMY; }' EXIT
 
 # Cd към root-а на проекта (parent на deploy-scripts/)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -324,7 +324,7 @@ else
     SSH_OPTS="$SSH_KEEPALIVE -o ControlMaster=auto -o ControlPath=${SSH_SOCK} -o ControlPersist=120 -p ${PORT}"
     SCP_OPTS="$SSH_KEEPALIVE -o ControlMaster=auto -o ControlPath=${SSH_SOCK} -o ControlPersist=120 -P ${PORT}"
     log "  ${YELLOW}[debug] Linux/Mac — SSH с ControlMaster${NC}"
-    trap "ssh -O exit -o ControlPath=\"${SSH_SOCK}\" \"${USER}@${SERVER}\" 2>/dev/null; rm -f \"${SSH_SOCK}\" 2>/dev/null; rmdir \"${SOCK_DIR}\" 2>/dev/null; echo ''; echo 'Натисни Enter за затваряне...'; read DUMMY" EXIT
+    trap "ssh -O exit -o ControlPath=\"${SSH_SOCK}\" \"${USER}@${SERVER}\" 2>/dev/null; rm -f \"${SSH_SOCK}\" 2>/dev/null; rmdir \"${SOCK_DIR}\" 2>/dev/null; [ \"\${DEPLOY_NO_PAUSE:-0}\" = \"1\" ] || { echo ''; echo 'Натисни Enter за затваряне...'; read DUMMY; }" EXIT
 fi
 
 # ═══ CHECK TOOLS ═══

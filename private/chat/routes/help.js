@@ -15,7 +15,7 @@ function createHelpRoutes(db) {
       }
       
       // Get user data
-      const user = db.prepare(`
+      const user = await db.prepare(`
         SELECT 
           id, phone, full_name, email, gender, birth_date,
           country, city, street, 
@@ -81,7 +81,7 @@ function createHelpRoutes(db) {
       const streetAddress = user.street || 'Unknown';
       
       // Create help request
-      const helpRequest = db.prepare(`
+      const helpRequest = await db.prepare(`
         INSERT INTO help_requests (
           user_id, phone, full_name, email, gender, age,
           country, city, street, street_number,
@@ -110,7 +110,7 @@ function createHelpRoutes(db) {
       paidUntil.setDate(paidUntil.getDate() - 15); // Subtract 15 days
       
       // Update user record
-      db.prepare(`
+      await db.prepare(`
         UPDATE users 
         SET 
           paid_until = ?,
@@ -145,19 +145,19 @@ function createHelpRoutes(db) {
   });
 
   // Get emergency contacts for user's country
-  router.get('/emergency-contacts', (req, res) => {
+  router.get('/emergency-contacts', async (req, res) => {
     try {
       const userId = req.user.id;
       
       // Get user's country
-      const user = db.prepare('SELECT country_code, country FROM users WHERE id = ?').get(userId);
+      const user = await db.prepare('SELECT country_code, country FROM users WHERE id = ?').get(userId);
       
       if (!user || !user.country_code) {
         return res.status(404).json({ error: 'Country not found in profile' });
       }
       
       // Get emergency contacts for this country
-      const contacts = db.prepare(`
+      const contacts = await db.prepare(`
         SELECT 
           service_type, service_name, 
           phone_international, phone_local,
@@ -188,11 +188,11 @@ function createHelpRoutes(db) {
   });
 
   // Check help button availability
-  router.get('/availability', (req, res) => {
+  router.get('/availability', async (req, res) => {
     try {
       const userId = req.user.id;
       
-      const user = db.prepare(`
+      const user = await db.prepare(`
         SELECT 
           help_button_uses, help_button_reset_date, 
           paid_until, payment_amount, payment_currency
