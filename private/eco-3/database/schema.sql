@@ -78,3 +78,13 @@ CREATE TABLE IF NOT EXISTS eco3_stats (
 );
 CREATE INDEX IF NOT EXISTS idx_stats_type ON eco3_stats(event_type);
 CREATE INDEX IF NOT EXISTS idx_stats_date ON eco3_stats(created_at);
+
+-- ═══════════════════════════════════════════
+-- 5. Google Search дневен брояч
+-- Реалните търсения минават през Google Custom Search (безплатно под 100/ден).
+-- Пазим брой повиквания на ден, за да спрем под безплатния таван (без такси).
+-- ═══════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS eco3_google_usage (
+    date  TEXT PRIMARY KEY DEFAULT (date('now')),
+    calls INTEGER NOT NULL DEFAULT 0
+);

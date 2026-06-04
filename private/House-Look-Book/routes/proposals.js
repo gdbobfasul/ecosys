@@ -270,4 +270,26 @@ router.post('/shape-from-image', requireAuth, upload.single('image'), async (req
   } catch (e) { next(e); }
 });
 
+// ── Снимка на мебел (вариант на стандартна) ──────────────────────────
+// POST /api/hlb/proposals/furniture-image  (multipart "image") → { url }
+// Качва се от КЛИЕНТА в конструктора за конкретна мебел. Записва нормализирана
+// PNG в uploads/proposals и връща URL — слага се в composer_params.rooms[].items[].img.
+// Не променя базата (URL живее в JSONB на предложението).
+router.post('/furniture-image', requireAuth, upload.single('image'), async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'no_file', message: 'Качи изображение.' });
+    const fname = `furn_u${req.user.id}_${Date.now()}.png`;
+    const fpath = path.join(UPLOAD_DIR, fname);
+    try {
+      await sharp(req.file.buffer)
+        .resize({ width: 256, height: 256, fit: 'inside', withoutEnlargement: true })
+        .png({ quality: 82 })
+        .toFile(fpath);
+    } catch (e) {
+      return res.status(400).json({ error: 'bad_image', message: 'Не мога да обработя изображението.' });
+    }
+    res.status(201).json({ url: `/uploads/proposals/${fname}` });
+  } catch (e) { next(e); }
+});
+
 module.exports = router;

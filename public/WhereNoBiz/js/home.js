@@ -12,7 +12,7 @@
     } catch (_) {}
 
     const box = document.getElementById('mapBox');
-    box.innerHTML = WorldMap.svg(counts);
+    box.innerHTML = WorldMap.svg(counts, '1.0164');
     // Клик на континент → листване на държавите в него.
     WorldMap.bind(box, (continent) => {
       location.href = 'browse.html?continent=' + encodeURIComponent(continent);

@@ -83,8 +83,12 @@ app.use((err, req, res, next) => {
 // ── Старт ──────────────────────────────────────────────────────
 async function start() {
   if (process.env.WNB_APPLY_SCHEMA !== 'false') {
-    try { await applySchema(); await seedCountries(); console.log('✅ WNB схема + страни заредени'); }
-    catch (e) { console.error('⚠️  WNB applySchema/seed пропуснат:', e.message); }
+    // Разделени: ако applySchema гръмне (напр. права/локов), seedCountries ВСЕ ПАК да тече —
+    // иначе countries остава празна и всяко вкарване на пост дава FK грешка.
+    try { await applySchema(); console.log('✅ WNB схема приложена'); }
+    catch (e) { console.error('⚠️  WNB applySchema пропуснат:', e.message); }
+    try { await seedCountries(); console.log('✅ WNB страни заредени'); }
+    catch (e) { console.error('⚠️  WNB seedCountries пропуснат:', e.message); }
   }
   const h = await checkHealth();
   if (!h.healthy) console.error('⚠️  WNB няма връзка с PostgreSQL:', h.error);

@@ -310,6 +310,37 @@ const HouseRender = (function () {
   // ── детайлен план на ЕДНА стая (отгоре) ──────────────────────────
   // Стени = N сегмента от периметъра (N = страните на формата). По стените:
   // врати (кафяв процеп) + прозорци (синя чертичка) + мебели „до стена". В центъра — мебели.
+  // Стандартен отпечатък на мебел в план (px спрямо стая 290×230) — за да са
+  // КАЧЕНИТЕ снимки оразмерени правилно СПРЯМО стандартните (легло > нощно шкафче).
+  function furnitureSize(id) {
+    const S = {
+      bed:[54,40], sofa:[56,26], sofaset:[64,40], armchair:[26,26], coffee:[30,18],
+      table:[40,28], chair:[16,16], desk:[38,20], toilet:[18,24], bathtub:[46,22], island:[46,26],
+      tvstand:[40,14], wardrobe:[40,18], cabinet:[30,16], shelves:[34,14], nightstand:[16,14], dresser:[32,16],
+      sink:[18,16], stove:[22,22], oven:[18,18], fridge:[24,26], dishwasher:[20,20], hood:[24,10],
+      shower:[26,26], washer:[22,22], boiler:[16,20], shoecab:[26,14], coatrack:[14,22]
+    };
+    return S[id] || [28, 18];
+  }
+  function hashStr(s) { s = String(s); let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return h; }
+  // Рисува една мебел в плана, центрирана в (cx,cy). Качена снимка → <image> с
+  // отрязване по отпечатъка; иначе цветна кутийка. Размерът = стандартен × scale.
+  function furnPlan(it, cx, cy, fillBox) {
+    const fi = furnitureItem(it.type) || { name: it.type, key: '' };
+    const sc = (it.scale && +it.scale > 0) ? Math.min(+it.scale, 2.5) : 1;
+    const sz = furnitureSize(it.type), w = sz[0] * sc, h = sz[1] * sc, x = cx - w / 2, y = cy - h / 2;
+    const nm = esc((fi.key ? T(fi.key) : fi.name).slice(0, 9));
+    if (it.img) {
+      const cid = 'fp' + Math.abs(hashStr(it.img + cx + 'x' + cy));
+      return `<g><clipPath id="${cid}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3"/></clipPath>` +
+        `<image href="${esc(it.img)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${cid})"/>` +
+        `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="none" stroke="#7a8aa0" stroke-width="1.2"/>` +
+        `<text x="${cx}" y="${y + h + 9}" text-anchor="middle" font-size="8" fill="#345" font-family="system-ui,Arial">${nm}</text></g>`;
+    }
+    return `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="${fillBox}" stroke="#9ab"/>` +
+      `<text x="${cx}" y="${cy + 3}" text-anchor="middle" font-size="8" fill="#345" font-family="system-ui,Arial">${nm}</text></g>`;
+  }
+
   function roomDetailPlan(room) {
     const RX = 55, RY = 40, RW = 290, RH = 230;
     const n = wallsForShape(room && room.shape);
@@ -340,18 +371,16 @@ const HouseRender = (function () {
         inner += `<line x1="${p.x - ox * ln}" y1="${p.y - oy * ln}" x2="${p.x + ox * ln}" y2="${p.y + oy * ln}" stroke="${isDoor ? '#b5651d' : '#2a86d8'}" stroke-width="${isDoor ? 5 : 3}"/>`;
       }
       items.filter(it => it.place === 'wall' && (it.wall || 0) === i).slice(0, 3).forEach((it, j) => {
-        const fi = furnitureItem(it.type) || { name: it.type, key: '' };
-        const off = 22 + j * 25, fx = m.x + m.nx * off, fy = m.y + m.ny * off;
-        inner += `<g><rect x="${fx - 17}" y="${fy - 9}" width="34" height="18" rx="3" fill="#e8eef5" stroke="#9ab"/><text x="${fx}" y="${fy + 4}" text-anchor="middle" font-size="8" fill="#345" font-family="system-ui,Arial">${esc((fi.key ? T(fi.key) : fi.name).slice(0, 7))}</text></g>`;
+        const off = 26 + j * 30, fx = m.x + m.nx * off, fy = m.y + m.ny * off;
+        inner += furnPlan(it, fx, fy, '#e8eef5');
       });
     }
     const center = items.filter(it => it.place === 'center');
     const cols = Math.max(1, Math.ceil(Math.sqrt(center.length || 1)));
     center.forEach((it, j) => {
-      const fi = furnitureItem(it.type) || { name: it.type, key: '' };
-      const cx = RX + RW / 2 + ((j % cols) - (cols - 1) / 2) * 44;
-      const cy = RY + RH / 2 + (Math.floor(j / cols) - (Math.ceil(center.length / cols) - 1) / 2) * 26;
-      inner += `<g><rect x="${cx - 20}" y="${cy - 9}" width="40" height="18" rx="3" fill="#fff3df" stroke="#d9b36a"/><text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="8" fill="#7a5a20" font-family="system-ui,Arial">${esc((fi.key ? T(fi.key) : fi.name).slice(0, 8))}</text></g>`;
+      const cx = RX + RW / 2 + ((j % cols) - (cols - 1) / 2) * 64;
+      const cy = RY + RH / 2 + (Math.floor(j / cols) - (Math.ceil(center.length / cols) - 1) / 2) * 50;
+      inner += furnPlan(it, cx, cy, '#fff3df');
     });
     const rt = roomType(room && room.type);
     inner += label((rt ? T(rt.key) : (room && room.type) || '') + ' — ' + T('floorplan.room'));
@@ -389,8 +418,19 @@ const HouseRender = (function () {
     const slotW = WW / Math.max(wallItems.length, 1);
     wallItems.forEach((it, j) => {
       const fi = furnitureItem(it.type) || { name: it.type, key: '' };
-      const fh = WH * furnitureHeight(it.type), fw = Math.min(slotW * 0.72, 74), cx = WX + slotW * (j + 0.5);
-      inner += `<g><rect x="${cx - fw / 2}" y="${floorY - fh}" width="${fw}" height="${fh}" rx="3" fill="#cde0ef" stroke="#5a7a95" stroke-width="1.5"/><text x="${cx}" y="${floorY - fh / 2 + 3}" text-anchor="middle" font-size="9" fill="#234" font-family="system-ui,Arial">${esc((fi.key ? T(fi.key) : fi.name).slice(0, 8))}</text></g>`;
+      const sc = (it.scale && +it.scale > 0) ? Math.min(+it.scale, 2.5) : 1;
+      const fh = Math.min(WH * furnitureHeight(it.type) * sc, WH * 0.95);
+      const fw = Math.min(Math.max(furnitureSize(it.type)[0] * sc, 28), slotW * 0.82, 90), cx = WX + slotW * (j + 0.5);
+      const x = cx - fw / 2, y = floorY - fh, nm = esc((fi.key ? T(fi.key) : fi.name).slice(0, 8));
+      if (it.img) {
+        const cid = 'fe' + Math.abs(hashStr(it.img + cx + 'w' + w + j));
+        inner += `<g><clipPath id="${cid}"><rect x="${x}" y="${y}" width="${fw}" height="${fh}" rx="3"/></clipPath>` +
+          `<image href="${esc(it.img)}" x="${x}" y="${y}" width="${fw}" height="${fh}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${cid})"/>` +
+          `<rect x="${x}" y="${y}" width="${fw}" height="${fh}" rx="3" fill="none" stroke="#5a7a95" stroke-width="1.5"/>` +
+          `<text x="${cx}" y="${y - 3}" text-anchor="middle" font-size="9" fill="#234" font-family="system-ui,Arial">${nm}</text></g>`;
+      } else {
+        inner += `<g><rect x="${x}" y="${y}" width="${fw}" height="${fh}" rx="3" fill="#cde0ef" stroke="#5a7a95" stroke-width="1.5"/><text x="${cx}" y="${floorY - fh / 2 + 3}" text-anchor="middle" font-size="9" fill="#234" font-family="system-ui,Arial">${nm}</text></g>`;
+      }
     });
     const rt = roomType(room && room.type);
     inner += label((rt ? T(rt.key) : '') + ' — ' + T('wall.label', { n: w + 1 }));

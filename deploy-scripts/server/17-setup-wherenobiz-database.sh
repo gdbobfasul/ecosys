@@ -147,7 +147,25 @@ setup_wherenobiz() {
   local TBL_COUNT
   TBL_COUNT=$(sudo -u postgres psql -d "$DB_NAME" -tAc "SELECT count(*) FROM pg_tables WHERE schemaname='public'" 2>/dev/null)
   echo -e "${GREEN}  ✓ Схема заредена — ${TBL_COUNT:-0} таблици${NC}"
-  echo -e "${YELLOW}  (Държавите се зареждат автоматично при старт на WhereNoBiz сървъра — seedCountries.)${NC}"
+
+  # ── Seed на държавите ТУК (гаранция) — не разчитай само на старта на услугата.
+  #    Празна countries → всеки пост дава FK грешка posts_country_code_fkey.
+  #    Източник: private/WhereNoBiz/data/countries.js (същият като валидацията/seedCountries).
+  local COUNTRIES_FILE="$PROJECT_DIR/private/WhereNoBiz/data/countries.js"
+  if [ -f "$COUNTRIES_FILE" ] && command -v node &>/dev/null; then
+    local SEED_SQL
+    SEED_SQL=$(node -e 'var C=require(process.argv[1]).COUNTRIES;var q=String.fromCharCode(39);var rows=C.map(function(c){var n=String(c.name).split(q).join(q+q);return "("+q+c.code+q+","+q+n+q+")";}).join(",");process.stdout.write("INSERT INTO countries (code,name) VALUES "+rows+" ON CONFLICT (code) DO NOTHING;");' "$COUNTRIES_FILE" 2>/dev/null)
+    if [ -n "$SEED_SQL" ]; then
+      echo "$SEED_SQL" | sudo -u postgres psql -d "$DB_NAME" 2>&1 | tail -1
+      local CN
+      CN=$(sudo -u postgres psql -d "$DB_NAME" -tAc "SELECT count(*) FROM countries" 2>/dev/null)
+      echo -e "${GREEN}  ✓ Държави seed-нати — ${CN:-0}${NC}"
+    else
+      echo -e "${YELLOW}  ⚠ Seed на държави пропуснат (node грешка) — ще се заредят при старт на услугата.${NC}"
+    fi
+  else
+    echo -e "${YELLOW}  ⚠ countries.js/node липсва — държавите ще се заредят при старт на услугата.${NC}"
+  fi
 
   # ── pg_hba: само локален достъп за този потребител към тази база ──
   echo -e "${GREEN}[5/5] pg_hba (локален достъп)...${NC}"

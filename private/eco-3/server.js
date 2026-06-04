@@ -233,6 +233,139 @@ app.post('/create-payment', async (req, res) => {
 });
 
 // ════════════════════════════════════════════
+// РЕАЛНО ТЪРСЕНЕ — Google Custom Search JSON API
+// Икономичните търсения минават през Google (безплатно под дневния таван),
+// за да НЕ плащаме Claude за всяко търсене. Claude се ползва само за по-високите
+// нива (стандарт/премиум/ентърпрайз) — там реалните резултати се структурират.
+// Ключ: ECO3_GOOGLE_API_KEY/ECO3_GOOGLE_CX, иначе fallback към HLB_GOOGLE_* (същия акаунт).
+// ════════════════════════════════════════════
+const GOOGLE_KEY = process.env.ECO3_GOOGLE_API_KEY || process.env.HLB_GOOGLE_API_KEY || '';
+const GOOGLE_CX  = process.env.ECO3_GOOGLE_CX || process.env.HLB_GOOGLE_CX || '';
+const GOOGLE_DAILY_CAP = parseInt(process.env.ECO3_GOOGLE_DAILY_CAP || '90', 10); // под безплатните 100/ден
+
+function googleUsageToday() {
+    if (!db) return 0;
+    try {
+        const today = new Date().toISOString().slice(0, 10);
+        const row = db.prepare("SELECT COALESCE(SUM(calls),0) AS c FROM eco3_google_usage WHERE date = ?").get(today);
+        return row ? row.c : 0;
+    } catch { return 0; }
+}
+function googleUsageInc() {
+    if (!db) return;
+    try {
+        const today = new Date().toISOString().slice(0, 10);
+        db.prepare("INSERT INTO eco3_google_usage (date, calls) VALUES (?, 1) ON CONFLICT(date) DO UPDATE SET calls = calls + 1").run(today);
+    } catch {}
+}
+// ISO език → Google `lr` (ограничава резултатите до езика на клиента; икон./стандарт)
+function googleLangRestrict(lang) {
+    const map = { bg:'lang_bg', ru:'lang_ru', en:'lang_en', it:'lang_it', es:'lang_es', pt:'lang_pt',
+        mx:'lang_es', zh:'lang_zh-CN', ja:'lang_ja', fr:'lang_fr', de:'lang_de', tr:'lang_tr',
+        ku:'lang_ku', kk:'lang_kk', az:'lang_az', ka:'lang_ka', ny:'lang_en', mn:'lang_mn', ky:'lang_ky' };
+    return map[lang] || null;
+}
+async function googleSearch(query, num, lang) {
+    if (!GOOGLE_KEY || !GOOGLE_CX) return { results: [], error: 'google_not_configured' };
+    if (googleUsageToday() >= GOOGLE_DAILY_CAP) return { results: [], error: 'google_quota_reached' };
+    const n = Math.min(Math.max(parseInt(num || 5, 10), 1), 10); // Google: макс 10 на заявка
+    const params = new URLSearchParams({ key: GOOGLE_KEY, cx: GOOGLE_CX, q: query, num: String(n) });
+    const lr = googleLangRestrict(lang);
+    if (lr) params.set('lr', lr);
+    try {
+        const r = await fetch('https://www.googleapis.com/customsearch/v1?' + params.toString());
+        googleUsageInc();
+        if (!r.ok) {
+            const e = await r.json().catch(() => ({}));
+            logRequest('SEARCH', `Google ${r.status}: ${JSON.stringify(e.error?.message || e)}`);
+            return { results: [], error: 'google_error_' + r.status };
+        }
+        const data = await r.json();
+        const results = (data.items || []).map(it => ({
+            title: it.title || '', snippet: it.snippet || '', link: it.link || '', source: it.displayLink || ''
+        }));
+        return { results, quota: { used: googleUsageToday(), cap: GOOGLE_DAILY_CAP } };
+    } catch (err) {
+        logRequest('ERROR', `Google search: ${err.message}`);
+        return { results: [], error: err.message };
+    }
+}
+
+// ── РЕЗЕРВА: Claude Search (web_search tool) ──
+// Включва се САМО за икономичния вариант и САМО когато Google е изчерпан/недостъпен.
+// Google е безплатен → винаги пръв; Claude Search струва пари → резерва, за да не спира услугата.
+const ANTHROPIC_KEY_S = process.env.ANTHROPIC_API_KEY || '';
+const ANTHROPIC_MODEL_S = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+const CLAUDE_SEARCH_MAX = parseInt(process.env.ECO3_CLAUDE_SEARCH_MAX_USES || '3', 10);
+
+async function claudeSearch(query, num, lang) {
+    if (!ANTHROPIC_KEY_S) return { results: [], error: 'claude_not_configured' };
+    const n = Math.min(Math.max(parseInt(num || 5, 10), 1), 10);
+    try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY_S, 'anthropic-version': '2023-06-01' },
+            body: JSON.stringify({
+                model: ANTHROPIC_MODEL_S,
+                max_tokens: 1500,
+                tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: CLAUDE_SEARCH_MAX }],
+                system: 'You are a web search engine. Use the web_search tool to find real results for the query, then output ONLY a JSON array of up to ' + n +
+                    ' objects with keys: title, snippet, link, source. JSON only — no prose, no markdown.',
+                messages: [{ role: 'user', content: 'Search the web for: ' + query + (lang ? (' (prefer results in language: ' + lang + ')') : '') }]
+            })
+        });
+        if (!response.ok) {
+            const e = await response.json().catch(() => ({}));
+            logRequest('SEARCH', `Claude search ${response.status}: ${JSON.stringify(e.error?.message || e)}`);
+            return { results: [], error: 'claude_error_' + response.status };
+        }
+        const data = await response.json();
+        const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text || '').join('\n');
+        let results = [];
+        try { const m = text.match(/\[[\s\S]*\]/); if (m) results = JSON.parse(m[0]); } catch {}
+        results = (results || []).slice(0, n).map(r => ({
+            title: r.title || '', snippet: r.snippet || '', link: r.link || r.url || '', source: r.source || ''
+        })).filter(r => r.link || r.title);
+        if (db) { try { db.prepare("INSERT INTO eco3_stats (event_type, details) VALUES (?, ?)").run('search_claude', `${results.length} results`); } catch {} }
+        return { results, provider: 'claude' };
+    } catch (err) {
+        logRequest('ERROR', `Claude search: ${err.message}`);
+        return { results: [], error: err.message };
+    }
+}
+
+// Реално търсене (фронтендът го вика преди агентите). Google пръв (безплатно под тавана);
+// при изчерпан Google + икономичен вариант → резерва Claude Search (да не спира услугата).
+app.post('/search', eco3RequireLogin, async (req, res) => {
+    const { query, lang, num, tier } = req.body || {};
+    if (!query || !String(query).trim()) return res.status(400).json({ error: 'query_required' });
+    const q = String(query).trim();
+    const isProd = (process.env.ECO3_MODE || 'test') === 'production';
+
+    let out = await googleSearch(q, num, lang);
+    let provider = out.results.length ? 'google' : null;
+
+    // Резерва Claude Search: само икономичен вариант, само ако Google не върна резултати.
+    if (!out.results.length && tier === 'economy' && ANTHROPIC_KEY_S && isProd) {
+        const reason = out.error || 'no_results';
+        const c = await claudeSearch(q, num, lang);
+        if (c.results.length) { out = c; provider = 'claude'; logRequest('SEARCH', `Google изчерпан (${reason}) → Claude Search резерва: ${c.results.length}`); }
+        else out.claudeError = c.error;
+    }
+    out.provider = provider;
+    logRequest('SEARCH', `q="${q.slice(0, 60)}" lang=${lang || '-'} tier=${tier || '-'} → ${out.results.length} via ${provider || 'none'} (google ${googleUsageToday()}/${GOOGLE_DAILY_CAP})`);
+    res.json(out);
+});
+
+// Статус на търсачката (за UI/админ)
+app.get('/search-status', (req, res) => {
+    res.json({
+        google: { configured: !!(GOOGLE_KEY && GOOGLE_CX), usedToday: googleUsageToday(), dailyCap: GOOGLE_DAILY_CAP },
+        claudeFallback: { configured: !!ANTHROPIC_KEY_S, scope: 'economy-only', activeWhen: 'google_exhausted+production' }
+    });
+});
+
+// ════════════════════════════════════════════
 // ANTHROPIC API PROXY
 // ════════════════════════════════════════════
 app.post('/generate', eco3RequireLogin, async (req, res) => {

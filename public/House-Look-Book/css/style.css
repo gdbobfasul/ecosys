@@ -140,6 +140,12 @@ button:hover { filter: brightness(1.05); }
 .item-row .iname { flex: 1; }
 .item-row select { padding: 3px 6px; border: 1px solid #cdd7e1; border-radius: 5px; font-family: inherit; }
 .item-row .del-item { border: 1px solid #c0392b; color: #c0392b; background: #fff; border-radius: 5px; padding: 2px 7px; cursor: pointer; }
+/* Собствена снимка на мебел: качване / миниатюра / размер / премахване */
+.item-row .i-img-btn { border: 1px solid var(--accent,#3b6ea5); border-radius: 5px; padding: 2px 6px; cursor: pointer; background: #fff; line-height: 1; }
+.item-row .i-thumb { width: 26px; height: 26px; object-fit: cover; border-radius: 4px; border: 1px solid #9ab; }
+.item-row .i-scale { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; color: #557; }
+.item-row .i-scale-r { width: 64px; }
+.item-row .i-img-del { border: 1px solid #c98; background: #fff; border-radius: 5px; padding: 2px 5px; cursor: pointer; line-height: 1; }
 .add-item-row select { width: 100%; padding: 5px; border: 1px solid var(--accent,#3b6ea5); border-radius: 6px; font-family: inherit; color: var(--accent,#3b6ea5); }
 .rd-preview svg { width: 100%; height: auto; border: 1px solid #e3e8ee; border-radius: 6px; margin-top: 4px; }
 .rd-wviews { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 6px; }

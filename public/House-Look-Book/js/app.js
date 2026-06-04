@@ -69,7 +69,11 @@
     const items = (Array.isArray(r.items) ? r.items : []).filter(it => it && it.type).map(it => {
       const place = it.place === 'wall' ? 'wall' : 'center';
       const wall = place === 'wall' ? Math.min(nw - 1, Math.max(0, +it.wall || 0)) : 0;
-      return { type: it.type, place, wall };
+      const out = { type: it.type, place, wall };
+      // Собствена снимка на мебел (вариант на стандартната) + оразмеряване спрямо стандартните.
+      if (typeof it.img === 'string' && it.img) out.img = it.img;
+      if (it.scale && +it.scale > 0) out.scale = Math.min(+it.scale, 2.5);
+      return out;
     });
     return { type: r.type, shape, walls, items };
   }
@@ -105,8 +109,17 @@
     };
     const itemsHtml = r.items.map((it, idx) => {
       const fi = HR.furnitureItem(it.type) || { name: it.type, key: '' };
+      const hasImg = typeof it.img === 'string' && it.img;
+      const sc = (it.scale && +it.scale > 0) ? +it.scale : 1;
+      // Собствена снимка: качи вариант + оразмери спрямо стандартните мебели.
+      const imgCtrl = hasImg
+        ? `<img class="i-thumb" src="${esc(it.img)}" alt="" />` +
+          `<label class="i-scale" title="${T('rooms.item_scale') || 'Размер'}">⤢<input type="range" min="0.5" max="2.5" step="0.1" value="${sc}" class="i-scale-r" data-f="${f}" data-i="${i}" data-idx="${idx}"></label>` +
+          `<button type="button" class="i-img-del" data-f="${f}" data-i="${i}" data-idx="${idx}" title="${T('rooms.item_img_del') || 'Премахни снимката'}">🚫</button>`
+        : `<label class="i-img-btn" title="${T('rooms.item_img') || 'Качи своя снимка'}">📷<input type="file" accept="image/*" class="i-img" data-f="${f}" data-i="${i}" data-idx="${idx}" style="display:none"></label>`;
       return `<div class="item-row"><span class="iname">${esc(fi.key ? T(fi.key) : fi.name)}</span>` +
         `<select class="i-place" data-f="${f}" data-i="${i}" data-idx="${idx}">${placeOptions(it)}</select>` +
+        imgCtrl +
         `<button type="button" class="del-item" data-f="${f}" data-i="${i}" data-idx="${idx}">✕</button></div>`;
     }).join('');
     return `<div class="room-details">` +
@@ -151,6 +164,16 @@
     box.querySelectorAll('.i-place').forEach(s => s.onchange = () => { const it = state.rooms[+s.dataset.f][+s.dataset.i].items[+s.dataset.idx]; if (s.value === 'center') { it.place = 'center'; it.wall = 0; } else { it.place = 'wall'; it.wall = +s.value.slice(1); } rebuild(); });
     box.querySelectorAll('.del-item').forEach(b => b.onclick = () => { state.rooms[+b.dataset.f][+b.dataset.i].items.splice(+b.dataset.idx, 1); rebuild(); });
     box.querySelectorAll('.add-item-sel').forEach(s => s.onchange = () => { if (s.value) { addItemToRoom(+s.dataset.f, +s.dataset.i, s.value); rebuild(); } });
+    // Качване на собствена снимка за конкретна мебел (вариант на стандартната).
+    box.querySelectorAll('.i-img').forEach(inp => inp.onchange = () => {
+      if (inp.files && inp.files[0]) uploadFurnitureImage(+inp.dataset.f, +inp.dataset.i, +inp.dataset.idx, inp.files[0]);
+    });
+    box.querySelectorAll('.i-img-del').forEach(b => b.onclick = () => {
+      const it = state.rooms[+b.dataset.f][+b.dataset.i].items[+b.dataset.idx]; delete it.img; delete it.scale; rebuild();
+    });
+    box.querySelectorAll('.i-scale-r').forEach(r => r.onchange = () => {
+      const it = state.rooms[+r.dataset.f][+r.dataset.i].items[+r.dataset.idx]; it.scale = Math.min(2.5, Math.max(0.5, +r.value || 1)); rebuild();
+    });
   }
   function addItemToRoom(f, i, typeId) {
     const HR = HouseRender, r = state.rooms[f][i], nw = HR.wallsForShape(r.shape);
@@ -176,6 +199,21 @@
     roofCell.className = 'thumb';
     roofCell.innerHTML = HouseRender.roofPlan(renderParams());
     grid.appendChild(roofCell);
+
+    // Изгледи на СТАИТЕ (план + всяка стена) до изгледите на цялата къща —
+    // за да се вижда какви мебели е сложил човекът (вкл. собствените снимки).
+    ensureRooms();
+    (state.rooms || []).forEach((rooms) => {
+      (rooms || []).forEach((r) => {
+        const plan = document.createElement('div'); plan.className = 'thumb';
+        plan.innerHTML = HouseRender.roomDetailPlan(r); grid.appendChild(plan);
+        const nw = HouseRender.wallsForShape(r.shape);
+        for (let w = 0; w < nw; w++) {
+          const c = document.createElement('div'); c.className = 'thumb';
+          c.innerHTML = HouseRender.wallElevation(r, w); grid.appendChild(c);
+        }
+      });
+    });
   }
 
   // ── контроли ────────────────────────────────────────────────────
@@ -245,6 +283,21 @@
       } else if (msg) { msg.className = 'msg err'; msg.textContent = T('shapeimg.fail'); }
     } catch (e) {
       if (msg) { msg.className = 'msg err'; msg.textContent = (e.status === 401 ? T('js.need_login_save') : e.message); }
+    }
+  }
+
+  // Качва собствена снимка за мебел → връща URL → записва в item.img (вариант на стандартната).
+  async function uploadFurnitureImage(f, i, idx, file) {
+    if (!file || typeof HLB === 'undefined') return;
+    const it = state.rooms[f] && state.rooms[f][i] && state.rooms[f][i].items[idx];
+    if (!it) return;
+    const fd = new FormData(); fd.append('image', file);
+    try {
+      const r = await HLB.api('/proposals/furniture-image', { method: 'POST', formData: fd });
+      if (r && r.url) { it.img = r.url; if (!it.scale) it.scale = 1; buildRoomsUI(); drawPreview(); }
+      else alert(T('rooms.item_img_fail') || 'Не успях да кача снимката.');
+    } catch (e) {
+      alert(e.status === 401 ? (T('js.need_login_save') || 'Влез, за да качваш.') : (e.message || 'Грешка при качване.'));
     }
   }
 

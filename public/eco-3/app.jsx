@@ -165,79 +165,114 @@ function ECO3() {
     }).catch(function(err) { setError("Грешка при зареждане: " + err.message); });
   }
 
-  // ── REAL SEARCH — 3 agents via Anthropic API ──
+  // ── РЕАЛНО ТЪРСЕНЕ — Google (реални резултати) + Claude за по-високите нива ──
+  // Икономичен = само Google (безплатно, без Claude). Стандарт/Премиум/Ентърпрайз =
+  // реалните Google резултати се подават на Claude за структуриране/синтез.
   function startSearch() {
     if (!canSearch) return;
     setPhase("running"); setLogs([]); setResult(null); setError(null);
     var searchTopic = B.mix ? mixWords(topic, B.mix) : topic;
     var sLangs = getSearchLangs(budget, lang);
     var langLabel = "Bulgarian"; LANGS.forEach(function(l) { if (l.v === lang) langLabel = l.f; });
+    var useClaude = budget !== "economy"; // икономичен = само Google (без Claude)
 
     addLog("system", "Режим: "+cat.icon+" "+cat.name+" · "+B.l+" · Езици: "+sLangs.join(",")+" · "+duration+"м");
     if (B.mix && searchTopic !== topic) addLog("system", "Word-mix: \""+topic+"\" → \""+searchTopic+"\"");
+    addLog("system", useClaude ? "Източник: Google търсене + Claude синтез" : "Източник: Google търсене (икономичен — без Claude, безплатно)");
 
     // Save to history (server DB)
     apiPost("history", { topic:topic, category:cat.id, language:lang, budget_tier:budget,
       duration_min:duration, audience:audience, tone:tone }).catch(function(){});
 
-    // ── DIRECTOR ──
-    addLog("director", "Търся информация и планирам структурата...");
-    apiPost("generate", {
-      system: "You are the DIRECTOR agent of ECO-3. Mode: "+cat.id+". Topic: \""+searchTopic+"\". Duration: "+duration+" min. Languages to search: "+sLangs.join(",")+". Plan the structure: how many parts, what sources, what regions. Respond in "+langLabel+". Be concise.",
-      messages: [{role:"user", content:"Plan: \""+searchTopic+"\" ("+duration+" min, "+cat.name+" mode)"}],
-      max_tokens: 2000
-    }).then(function(d) {
-      if (d.error) throw new Error(d.error);
-      var dirText = (d.content||[]).map(function(b){return b.text||"";}).join("") || "No response";
-      addLog("director", dirText.substring(0, 500));
+    // Брой реални резултати + брой езици според нивото
+    var wantN = budget==="economy"?5 : budget==="standard"?8 : 10;
+    var nLangs = budget==="enterprise"?6 : (budget==="premium"?3 : 1);
+    var queries = sLangs.slice(0, nLangs).map(function(lg){ return { q:searchTopic, lang:lg }; });
 
-      // ── ARCHITECT ──
-      addLog("architect", "Разпределям задачите и времената...");
-      return apiPost("generate", {
-        system: "You are the ARCHITECT agent of ECO-3. Based on the director's plan, create detailed executable tasks with time allocation, quotas per country/source, and presentation format. Respond in "+langLabel+". Be specific.",
-        messages: [{role:"user", content:"Director plan:\n"+dirText+"\n\nCreate detailed tasks for the executor."}],
-        max_tokens: 2000
-      }).then(function(d2) {
-        if (d2.error) throw new Error(d2.error);
-        var archText = (d2.content||[]).map(function(b){return b.text||"";}).join("");
-        addLog("architect", archText.substring(0, 500));
-
-        // ── EXECUTOR ──
-        addLog("executor", "Изпълнявам задачите...");
-        var tp = cat.id === "generative" && tone !== "original" ? "Apply tone: "+tone+". " : "";
-        return apiPost("generate", {
-          system: "You are the EXECUTOR agent of ECO-3. "+tp+"Execute the architect's tasks and produce the FINAL content for the audience. Duration target: "+duration+" min reading time. Present as structured, readable text with sections. Respond ENTIRELY in "+langLabel+". Do NOT include English if the language is not English.",
-          messages: [{role:"user", content:"Architect tasks:\n"+archText+"\n\nExecute all tasks and produce final content."}],
-          max_tokens: 4000
-        }).then(function(d3) {
-          if (d3.error) throw new Error(d3.error);
-          var execText = (d3.content||[]).map(function(b){return b.text||"";}).join("");
-          addLog("executor", "✅ Готово!");
-
-          var filtered = filterContent(execText, audience);
-          var entry = { topic:topic, cat:cat.id, catName:cat.name, lang:lang, budget:budget, duration:duration,
-            dirResult:dirText, archResult:archText, execResult:filtered, time:Date.now() };
-
-          // Save result to server DB
-          apiPost("results", {
-            topic:topic, category:cat.id, director_output:dirText, architect_output:archText,
-            executor_output:filtered, language:lang, budget_tier:budget, duration_min:duration,
-            audience:audience, tone:tone
-          }).catch(function(){});
-
-          // Update uniqueness
-          apiPost("uniqueness/add", { title:topic, source:"eco3-search" }).then(function(d) {
-            setUniqCount(d.todayCount || 0);
-          }).catch(function(){});
-
-          setResult(entry); setPhase("result");
+    // ── ДИРЕКТОР: реално търсене в Google ──
+    addLog("director", "Търся реални резултати в Google за \""+searchTopic+"\"...");
+    Promise.all(queries.map(function(qq){
+      return apiPost("search", { query:qq.q, lang:qq.lang, num:wantN, tier:budget }).catch(function(){ return {results:[]}; });
+    })).then(function(parts){
+      var sources = [], seen = {}, usedClaudeFallback = false;
+      parts.forEach(function(p){
+        if (p && p.provider === "claude") usedClaudeFallback = true;
+        (p.results||[]).forEach(function(it){
+          if (it.link && !seen[it.link]) { seen[it.link]=1; sources.push(it); }
         });
       });
-    }).catch(function(err) {
+      if (usedClaudeFallback) addLog("system", "Google е изчерпан днес — продължих с резервата Claude Search.");
+
+      if (!sources.length) {
+        var reason = (parts[0] && parts[0].error) || "няма резултати";
+        throw new Error("Google търсенето не върна резултати ("+reason+"). Провери ключа/квотата или опитай друга тема.");
+      }
+      addLog("director", "Намерени "+sources.length+" реални източника: "+
+        sources.slice(0,4).map(function(s){return s.source;}).join(", ")+(sources.length>4?"…":""));
+      var dirText = "Тема: "+topic+"\nНамерени "+sources.length+" реални източника чрез Google:\n"+
+        sources.map(function(s,i){ return (i+1)+". "+s.title+" — "+s.source; }).join("\n");
+
+      // ── ИКОНОМИЧЕН: сглоби директно от реалните резултати (без Claude) ──
+      if (!useClaude) {
+        addLog("architect", "Подреждам реалните резултати (икономичен — без структуриране)...");
+        var archEco = "Подредба: "+sources.length+" реални резултата в "+langLabel+", без допълнително структуриране (икономичен режим).";
+        addLog("executor", "Съставям съдържанието от реалните източници...");
+        var execEco = buildEconomyContent(topic, sources);
+        addLog("executor", "✅ Готово (безплатно — само Google)!");
+        finishSearch(dirText, archEco, filterContent(execEco, audience), sources);
+        return;
+      }
+
+      // ── СТАНДАРТ/ПРЕМИУМ/ЕНТЪРПРАЙЗ: Claude структурира реалните резултати ──
+      var srcBlock = sources.map(function(s,i){
+        return "["+(i+1)+"] "+s.title+"\n"+s.snippet+"\nИзточник: "+s.source+" ("+s.link+")";
+      }).join("\n\n");
+      var tp = cat.id === "generative" && tone !== "original" ? "Apply tone: "+tone+". " : "";
+      addLog("architect", "Изпращам "+sources.length+" реални източника към Claude за структуриране...");
+      return apiPost("generate", {
+        system: "You are the ARCHITECT+EXECUTOR of ECO-3. You are given REAL web search results. "+tp+
+          "Organize them into a structured, readable "+duration+"-minute script in "+langLabel+". "+
+          "Use ONLY the provided real results — do NOT invent facts. Cite sources by name. "+
+          "Respond ENTIRELY in "+langLabel+". Do NOT include English if the language is not English.",
+        messages: [{role:"user", content:"Topic: \""+topic+"\"\nReal search results:\n\n"+srcBlock+"\n\nProduce the final structured content."}],
+        max_tokens: 4000
+      }).then(function(d2){
+        if (d2.error) throw new Error(d2.error);
+        var execText = (d2.content||[]).map(function(b){return b.text||"";}).join("");
+        addLog("executor", "✅ Готово!");
+        var archText = "Claude структурира "+sources.length+" реални източника в "+langLabel+".";
+        finishSearch(dirText, archText, filterContent(execText, audience), sources);
+      });
+    }).catch(function(err){
       addLog("error", "❌ "+err.message);
       setError(err.message);
-      // Stay on running phase so user can see logs + error
+      // Оставаме на running фазата, за да се виждат логовете + грешката
     });
+  }
+
+  // Икономичен режим: чете се направо от реалните Google резултати (без Claude).
+  function buildEconomyContent(topic, sources) {
+    var out = "▸ "+topic+"\n\nРеални резултати от търсенето (икономичен режим):\n\n";
+    sources.forEach(function(s,i){
+      out += (i+1)+". "+s.title+"\n"+(s.snippet?s.snippet+"\n":"")+"Източник: "+s.source+"\n"+s.link+"\n\n";
+    });
+    out += "— Съставено от "+sources.length+" реални източника чрез Google търсене.";
+    return out;
+  }
+
+  // Обща финална стъпка: запис в DB, уникалност, показване.
+  function finishSearch(dirText, archText, execText, sources) {
+    var entry = { topic:topic, cat:cat.id, catName:cat.name, lang:lang, budget:budget, duration:duration,
+      dirResult:dirText, archResult:archText, execResult:execText, sources:sources, time:Date.now() };
+    apiPost("results", {
+      topic:topic, category:cat.id, director_output:dirText, architect_output:archText,
+      executor_output:execText, language:lang, budget_tier:budget, duration_min:duration,
+      audience:audience, tone:tone
+    }).catch(function(){});
+    apiPost("uniqueness/add", { title:topic, source:"eco3-search" }).then(function(d){
+      setUniqCount(d.todayCount || 0);
+    }).catch(function(){});
+    setResult(entry); setPhase("result");
   }
 
   // ── TTS ──
