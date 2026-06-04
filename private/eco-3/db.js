@@ -23,7 +23,7 @@ function toPg(sql) {
     .replace(/datetime\('now',\s*'-\s*(\d+)\s+hours?'\)/gi, "(now() - interval '$1 hours')")
     .replace(/datetime\('now',\s*'-\s*(\d+)\s+days?'\)/gi, "(now() - interval '$1 days')")
     .replace(/datetime\('now'\)/gi, 'now()')
-    .replace(/date\('now'\)/gi, 'current_date')
+    .replace(/date\('now'\)/gi, "to_char(now(), 'YYYY-MM-DD')")
     .replace(/INTEGER\s+PRIMARY\s+KEY\s+AUTOINCREMENT/gi, 'SERIAL PRIMARY KEY')
     .replace(/\bAUTOINCREMENT\b/gi, '');
   return s;

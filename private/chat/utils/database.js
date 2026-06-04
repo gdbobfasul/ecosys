@@ -100,7 +100,7 @@ function initializePostgreSQL() {
       .replace(/datetime\(\s*['"]now['"]\s*,\s*['"]-\s*(\d+)\s+hours?['"]\s*\)/gi, "(now() - interval '$1 hours')")
       .replace(/datetime\(\s*['"]now['"]\s*,\s*['"]-\s*(\d+)\s+days?['"]\s*\)/gi, "(now() - interval '$1 days')")
       .replace(/datetime\(\s*['"]now['"]\s*\)/gi, 'now()')
-      .replace(/date\(\s*['"]now['"]\s*\)/gi, 'current_date');
+      .replace(/date\(\s*['"]now['"]\s*\)/gi, "to_char(now(), 'YYYY-MM-DD')");
     if (orIgnore && !/on\s+conflict/i.test(s)) s = s.replace(/;?\s*$/, '') + ' ON CONFLICT DO NOTHING';
     let i = 0;
     s = s.replace(/\?/g, () => `$${++i}`);  // ПОСЛЕДНО: ? → $1, $2 …

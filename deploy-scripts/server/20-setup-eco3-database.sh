@@ -99,6 +99,17 @@ if [ "$DB_TYPE" = "postgresql" ] || [ "$DB_TYPE" = "postgres" ] || [ "$DB_TYPE" 
      GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO \"$DB_USER\";
      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO \"$DB_USER\";
      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO \"$DB_USER\";" 2>&1 | tail -1
+
+  # Прехвърли СОБСТВЕНОСТТА на таблиците/секвенциите към eco3_kcy_user — иначе ECO-3
+  # сървърът (този потребител) не може да прави CREATE INDEX при старта ("must be owner").
+  sudo -u postgres psql -d "$DB_NAME" -tAc \
+    "SELECT 'ALTER TABLE \"'||tablename||'\" OWNER TO \"$DB_USER\";' FROM pg_tables WHERE schemaname='public'" \
+    | sudo -u postgres psql -d "$DB_NAME" 2>&1 | tail -1
+  sudo -u postgres psql -d "$DB_NAME" -tAc \
+    "SELECT 'ALTER SEQUENCE \"'||sequence_name||'\" OWNER TO \"$DB_USER\";' FROM information_schema.sequences WHERE sequence_schema='public'" \
+    | sudo -u postgres psql -d "$DB_NAME" 2>&1 | tail -1
+  echo -e "${GREEN}  ✓ Собственост на таблиците → ${DB_USER}${NC}"
+
   TBL_COUNT=$(sudo -u postgres psql -d "$DB_NAME" -tAc "SELECT count(*) FROM pg_tables WHERE schemaname='public'" 2>/dev/null)
   echo -e "${GREEN}  ✓ Схема заредена — ${TBL_COUNT:-0} таблици${NC}"
 
