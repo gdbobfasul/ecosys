@@ -89,6 +89,7 @@ echo -e "  ${YELLOW}Асети: $([ "$WITH_ASSETS" = 1 ] && echo 'ДА (качв
 
 SSH_OPTS="-o ConnectTimeout=15 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -p ${PRT}"
 REMOTE_BASE="/var/www/deploy/deploy-scripts/server"
+PROJECT_DIR="/var/www/kcy-ecosystem"
 
 step()  { echo ""; echo -e "${BOLD}${CYAN}━━━ $* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"; echo ""; }
 rstep() { # дистанционна стъпка с проверка на изхода
@@ -113,6 +114,15 @@ fi
 step "2/4  Бази House-Look-Book + WhereNoBiz${RESET:+   (DROP — създава от 0)}"
 rstep "HLB база (houselookbook)" "sudo ${REMOTE_BASE}/16-setup-app-databases.sh houselookbook${RESET}"
 rstep "WNB база (wherenobiz)"     "sudo ${REMOTE_BASE}/17-setup-wherenobiz-database.sh${RESET}"
+
+# Веднага щом базите + таблиците са готови → СЪЗДАВАМ/ОБНОВЯВАМ админите и модераторите
+# от .env. Това е работа с БАЗАТА (тук, не при старта на услугата). Извиквам директно
+# съществуващата попълваща логика на всяко приложение — нищо не се копира като файл.
+# HLB/WNB (PostgreSQL) → db.seedAdminsAndMods през node -e (като root, само DB достъп).
+# ECO-3 (SQLite eco3.db, готова от стъпка 1) → admins.js като kcy-eco3 (за правата на файла).
+rstep "HLB админи/модератори от .env" "cd ${PROJECT_DIR}/private/House-Look-Book && sudo node -e 'require(\"./db\").seedAdminsAndMods().then(()=>{console.log(\"HLB админи/модератори готови\");process.exit(0)}).catch(e=>{console.error(e.message);process.exit(1)})'"
+rstep "WNB админи/модератори от .env" "cd ${PROJECT_DIR}/private/WhereNoBiz && sudo node -e 'require(\"./db\").seedAdminsAndMods().then(()=>{console.log(\"WNB админи/модератори готови\");process.exit(0)}).catch(e=>{console.error(e.message);process.exit(1)})'"
+rstep "ECO-3 админи/модератори от .env" "cd ${PROJECT_DIR}/private/eco-3 && sudo -u kcy-eco3 node admins.js"
 
 # ══ 3/4  УСЛУГИ House-Look-Book + WhereNoBiz ══
 step "3/4  Услуги House-Look-Book + WhereNoBiz (systemd + nginx)"

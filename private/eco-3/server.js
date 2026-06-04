@@ -1,4 +1,4 @@
-// Version: 1.0171
+// Version: 1.0172
 // ECO-3 AI Studio — Backend Server
 // Database: SQLite · Proxy: Anthropic API · Payments: Stripe
 // Admin: IP whitelist from .env
@@ -138,9 +138,11 @@ function adminCheck(req, res, next) {
     // In development allow all
     if (process.env.NODE_ENV !== 'production') return next();
 
-    // Логнат portals потребител, чийто username е в .env (ECO3_ADMIN_USER / ECO3_MOD1..5) → админ.
+    // ECO-3 собствен админ вход (eco3_admins, попълнени от .env) ИЛИ логнат portals
+    // потребител, чийто username е в .env (ECO3_ADMIN_USER / ECO3_MOD1..5) → админ.
     try {
         const { roleForUsername } = require('./roles');
+        if (req.session && req.session.eco3AdminUser && roleForUsername(req.session.eco3AdminUser) !== 'user') return next();
         if (req.session && req.session.username && roleForUsername(req.session.username) !== 'user') return next();
     } catch (_) {}
 
@@ -149,8 +151,31 @@ function adminCheck(req, res, next) {
     if (allowed) return next();
 
     logRequest('ADMIN', `Blocked: ${clientIP} (allowed: ${allowedIPs.join(',')})`);
-    res.status(403).json({ error: 'Forbidden', yourIP: clientIP, hint: 'Add your IP to ADMIN_ALLOWED_IPS, или влез в porталите с админ username' });
+    res.status(403).json({ error: 'Forbidden', yourIP: clientIP, hint: 'Add your IP to ADMIN_ALLOWED_IPS, или влез в админ секцията с потребител/парола' });
 }
+
+// ════════════════════════════════════════════
+// ECO-3 СОБСТВЕН АДМИН ВХОД (eco3_admins, попълнени от .env при създаване на базата)
+// ════════════════════════════════════════════
+app.post('/admin/login', (req, res) => {
+    try {
+        const { verifyLogin } = require('./admins');
+        const { roleForUsername } = require('./roles');
+        const user = verifyLogin((req.body || {}).username, (req.body || {}).password);
+        if (!user) return res.status(401).json({ error: 'bad_credentials', message: 'Грешен потребител или парола (или не си в .env списъка).' });
+        req.session.eco3AdminUser = user;
+        res.json({ ok: true, user, role: roleForUsername(user) });
+    } catch (e) {
+        logRequest('ERROR', `admin/login: ${e.message}`);
+        res.status(500).json({ error: 'server', message: e.message });
+    }
+});
+app.post('/admin/logout', (req, res) => { if (req.session) req.session.eco3AdminUser = null; res.json({ ok: true }); });
+app.get('/admin/me', (req, res) => {
+    const { roleForUsername } = require('./roles');
+    const u = req.session && req.session.eco3AdminUser;
+    res.json({ user: u || null, role: u ? roleForUsername(u) : 'user' });
+});
 
 // ════════════════════════════════════════════
 // HEALTH & STATUS
@@ -219,7 +244,13 @@ app.post('/create-payment', async (req, res) => {
         
         const paymentIntent = await stripe.paymentIntents.create({
             amount, currency: 'eur',
-            metadata: { service: 'eco-3', budget: budget || 'standard', duration: String(duration || 10), topic: (topic || '').substring(0, 200) },
+            metadata: {
+                service: 'eco-3',
+                budget: budget || 'standard',
+                duration: String(duration || 10),
+                topic: (topic || '').substring(0, 200),
+                user: String((req.session && (req.session.username || req.session.userId)) || '').substring(0, 100)
+            },
             automatic_payment_methods: { enabled: true }
         });
         
@@ -627,6 +658,42 @@ app.get('/admin/logs', adminCheck, (req, res) => {
 
 app.delete('/admin/logs', adminCheck, (req, res) => {
     try { fs.writeFileSync(logFile, ''); res.json({ ok: true }); } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ── Плащания (ЖИВО от Stripe — източникът на истината: кой, колко, статус/проблем) ──
+// Не пази в нашата база → работи еднакво за SQLite и PostgreSQL. Филтрира по metadata.service='eco-3'.
+app.get('/admin/payments', adminCheck, async (req, res) => {
+    if (!stripe) return res.status(503).json({ error: 'stripe_off', message: 'Stripe не е конфигуриран (няма STRIPE_SECRET_KEY).' });
+    try {
+        const limit = Math.min(parseInt(req.query.limit || '100', 10) || 100, 100);
+        const list = await stripe.paymentIntents.list({ limit });
+        const payments = (list.data || [])
+            .filter(pi => pi.metadata && pi.metadata.service === 'eco-3')
+            .map(pi => ({
+                id: pi.id,
+                amount: (pi.amount || 0) / 100,
+                currency: (pi.currency || 'eur').toUpperCase(),
+                status: pi.status,                 // succeeded / processing / requires_payment_method / canceled ...
+                created: pi.created,               // unix секунди
+                user: (pi.metadata && pi.metadata.user) || '',
+                budget: (pi.metadata && pi.metadata.budget) || '',
+                duration: (pi.metadata && pi.metadata.duration) || '',
+                topic: (pi.metadata && pi.metadata.topic) || '',
+                problem: pi.last_payment_error ? (pi.last_payment_error.message || pi.last_payment_error.code || 'грешка') : ''
+            }));
+        const paid = payments.filter(p => p.status === 'succeeded');
+        const problems = payments.filter(p => p.status !== 'succeeded' && p.status !== 'processing');
+        res.json({
+            count: payments.length,
+            paidCount: paid.length,
+            paidTotal: paid.reduce((s, p) => s + p.amount, 0).toFixed(2),
+            problemsCount: problems.length,
+            payments
+        });
+    } catch (err) {
+        logRequest('ERROR', `admin/payments: ${err.message}`);
+        res.status(500).json({ error: 'stripe_error', message: err.message });
+    }
 });
 
 // ════════════════════════════════════════════

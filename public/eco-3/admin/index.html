@@ -1,4 +1,4 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0172 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -35,6 +35,16 @@
             <a href="/shared/admin-status.html" class="btn" style="background: #667eea; color: white; text-decoration: none;">
                 🔧 System Status (всички сървиси)
             </a>
+        </div>
+
+        <div id="loginCard" class="admin-card" style="display:none; max-width:440px; margin-bottom:20px;">
+            <h3>🔐 Вход (админ/модератор от .env)</h3>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+                <input id="lg-user" placeholder="потребител" style="padding:8px; flex:1; min-width:130px;">
+                <input id="lg-pass" type="password" placeholder="парола" style="padding:8px; flex:1; min-width:130px;">
+                <button class="btn" onclick="doLogin()">Влез</button>
+            </div>
+            <div id="lg-msg" style="color:#c0392b; margin-top:8px; font-size:13px;"></div>
         </div>
 
         <div class="admin-grid">
@@ -107,6 +117,26 @@
                 <div style="margin-top: 10px;">
                     <button class="btn btn-sm" onclick="fetchLogs()">🔄 Обнови</button>
                     <button class="btn btn-sm btn-danger" onclick="clearLogs()">🗑️ Изчисти</button>
+                </div>
+            </div>
+
+            <!-- Payments -->
+            <div class="admin-card" style="grid-column: 1 / -1;">
+                <h3>💳 Плащания (ECO-3, живо от Stripe)</h3>
+                <div id="pay-summary" style="margin-bottom: 10px; color: #444;">Зареждане...</div>
+                <div style="overflow-x: auto;">
+                    <table class="config-table" id="pay-table" style="font-size: 0.85em;">
+                        <thead>
+                            <tr style="text-align: left; color:#666;">
+                                <th>Дата</th><th>Потребител</th><th>Сума</th><th>Статус</th>
+                                <th>Ниво/мин</th><th>Проблем</th><th>Payment ID</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pay-rows"></tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-sm" onclick="fetchPayments()">🔄 Обнови плащания</button>
                 </div>
             </div>
         </div>
@@ -200,10 +230,64 @@
             try { await fetch(API + 'admin/logs', { method: 'DELETE' }); fetchLogs(); } catch(e) {}
         }
 
-        // Initial check
-        checkAll();
-        fetchStats();
-        fetchLogs();
+        async function fetchPayments() {
+            const sum = document.getElementById('pay-summary');
+            const rows = document.getElementById('pay-rows');
+            const esc = s => String(s == null ? '' : s).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+            const stColor = st => st === 'succeeded' ? '#27ae60' : (st === 'processing' ? '#f39c12' : '#c0392b');
+            try {
+                const r = await fetch(API + 'admin/payments');
+                if (!r.ok) {
+                    const e = await r.json().catch(() => ({}));
+                    sum.textContent = e.message || 'Грешка при зареждане на плащанията.';
+                    rows.innerHTML = ''; return;
+                }
+                const d = await r.json();
+                sum.innerHTML = `Платени: <b>${d.paidCount}</b> (€${d.paidTotal}) &nbsp;·&nbsp; Общо записи: ${d.count} &nbsp;·&nbsp; <span style="color:#c0392b;">Проблеми: ${d.problemsCount}</span>`;
+                rows.innerHTML = (d.payments || []).map(p => {
+                    const dt = new Date(p.created * 1000).toLocaleString('bg-BG');
+                    return `<tr>
+                        <td>${esc(dt)}</td>
+                        <td>${esc(p.user) || '—'}</td>
+                        <td>€${esc(p.amount)} ${esc(p.currency)}</td>
+                        <td style="color:${stColor(p.status)}; font-weight:600;">${esc(p.status)}</td>
+                        <td>${esc(p.budget)}/${esc(p.duration)}мин</td>
+                        <td style="color:#c0392b;">${esc(p.problem)}</td>
+                        <td style="font-family:monospace;">${esc(p.id)}</td>
+                    </tr>`;
+                }).join('') || '<tr><td colspan="7" style="color:#888;">Няма ECO-3 плащания.</td></tr>';
+            } catch (e) {
+                sum.textContent = 'Сървърът не е достъпен.'; rows.innerHTML = '';
+            }
+        }
+
+        // ── Гейт: ECO-3 собствен админ вход (eco3_admins, попълнени от .env) ──
+        function showDash() {
+            document.getElementById('loginCard').style.display = 'none';
+            checkAll(); fetchStats(); fetchLogs(); fetchPayments();
+        }
+        function showLogin() { document.getElementById('loginCard').style.display = ''; }
+        async function doLogin() {
+            const msg = document.getElementById('lg-msg'); msg.textContent = '';
+            try {
+                const r = await fetch(API + 'admin/login', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('lg-user').value,
+                        password: document.getElementById('lg-pass').value
+                    })
+                });
+                const d = await r.json().catch(() => ({}));
+                if (!r.ok) { msg.textContent = d.message || 'Грешка при вход.'; return; }
+                showDash();
+            } catch (e) { msg.textContent = 'Сървърът не е достъпен.'; }
+        }
+        // Влязъл с ECO-3 вход? Или вече има достъп (portals сесия / IP)? Иначе → форма за вход.
+        (async function gate() {
+            try { const me = await (await fetch(API + 'admin/me')).json(); if (me && me.user) return showDash(); } catch (e) {}
+            try { const r = await fetch(API + 'admin/stats'); if (r.ok) return showDash(); } catch (e) {}
+            showLogin();
+        })();
     </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 -- ECO-3 AI Studio — Database Schema
--- Version: 1.0093
+-- Version: 1.0172
 -- Engine: SQLite (better-sqlite3)
 
 -- ═══════════════════════════════════════════
@@ -87,4 +87,18 @@ CREATE INDEX IF NOT EXISTS idx_stats_date ON eco3_stats(created_at);
 CREATE TABLE IF NOT EXISTS eco3_google_usage (
     date  TEXT PRIMARY KEY DEFAULT (date('now')),
     calls INTEGER NOT NULL DEFAULT 0
+);
+
+-- ═══════════════════════════════════════════
+-- 6. Админи / модератори (СВОИ за ECO-3)
+-- Попълват се от .env (ECO3_ADMIN_USER/PASS, ECO3_MOD1..5_USER/PASS) при СЪЗДАВАНЕ
+-- на базата (точка 2 деплой и точка 49 обнови) — НЕ при старт на услугата.
+-- Кой има права се решава live от roles.js спрямо .env; тук пазим само паролите.
+-- ═══════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS eco3_admins (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    username      TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    created_at    TEXT DEFAULT (datetime('now')),
+    last_login    TEXT
 );

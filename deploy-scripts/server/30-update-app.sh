@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0171
+# Version: 1.0172
 ##############################################################################
 # KCY — Обнови ЕДНО приложение (самостоятелно):
 #   • базата данни (схема/настройка)
@@ -45,7 +45,12 @@ case "$APP" in
     restart_one kcy-chat
     ;;
   eco3)
-    echo -e "${CYAN}ECO-3 — рестарт (схемата се прилага при старта; админ = portals потребител, без попълване):${NC}"
+    echo -e "${CYAN}ECO-3 — създава/обновява своите админи/модератори от .env (eco3_admins), после рестарт:${NC}"
+    if sudo -u kcy-eco3 bash -c "cd /var/www/kcy-ecosystem/private/eco-3 && node admins.js"; then
+      echo -e "${GREEN}  ✓ ECO-3 админи/модератори от .env${NC}"
+    else
+      echo -e "${YELLOW}  ! ECO-3 попълване пропуснато (виж изхода по-горе)${NC}"
+    fi
     restart_one kcy-eco3
     ;;
   *)
