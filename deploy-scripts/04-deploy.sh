@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0093
+# Version: 1.0172
 ##############################################################################
 # KCY Ecosystem - Deploy Script (Client-side)
 #
@@ -457,7 +457,14 @@ log ""
 log "${GREEN}[1/5] Архивиране на проекта...${NC}"
 ARCHIVE_NAME="${HOME}/kcy-deploy-$(date +%Y%m%d-%H%M%S).tar.gz"
 
-log "  ${YELLOW}[debug] Изключени: node_modules, .git, public/assets (→ опция 4), кеш, логове (.env ВКЛЮЧЕН)${NC}"
+# KCY_WITH_ASSETS=1 (от пълната инсталация) → НЕ изключвай public/assets, качи ги с кода.
+ASSET_EXCLUDE="--exclude=public/assets"
+if [ "${KCY_WITH_ASSETS:-0}" = "1" ]; then
+    ASSET_EXCLUDE=""
+    log "  ${YELLOW}[debug] Изключени: node_modules, .git, кеш, логове — АСЕТИ ВКЛЮЧЕНИ (.env ВКЛЮЧЕН)${NC}"
+else
+    log "  ${YELLOW}[debug] Изключени: node_modules, .git, public/assets (→ опция 6), кеш, логове (.env ВКЛЮЧЕН)${NC}"
+fi
 log "  ${YELLOW}[debug] Създаване на ${ARCHIVE_NAME}...${NC}"
 
 START_TIME=$SECONDS
@@ -467,7 +474,7 @@ START_TIME=$SECONDS
 tar -czf "$ARCHIVE_NAME" \
     --exclude='node_modules' \
     --exclude='.git' \
-    --exclude='public/assets' \
+    ${ASSET_EXCLUDE} \
     --exclude='*.log' \
     --exclude='coverage' \
     --exclude='dist' \
@@ -615,6 +622,7 @@ if [ "$RUN_INSTALL" = "y" ] || [ "$RUN_INSTALL" = "Y" ]; then
 TARGET_NAME=${TARGET_NAME:-custom}
 TARGET_SERVER=${SERVER}
 TARGET_PROD_DOMAIN=${PROD_DOMAIN}
+AUTO_NPM=${KCY_AUTO_NPM:-0}
 TARGETINFO
 " 2>/dev/null
 

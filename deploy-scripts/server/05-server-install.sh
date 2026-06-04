@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0171
+# Version: 1.0172
 ##############################################################################
 # KCY Ecosystem - Server Install Script
 # sudo bash 05-server-install.sh
@@ -831,9 +831,13 @@ echo -e "  ${GREEN}✓ NPM:  $(npm -v)${NC}"
 
 cd "$PROJECT_DIR"
 
-# ── npm install — пита Не/Да, дефолт Не ──
+# ── npm install — пита Не/Да, дефолт Не.
+#    AUTO_NPM=1 (от /tmp/deploy_target_info при ПЪЛНА ИНСТАЛАЦИЯ) → автоматично, без питане. ──
 NPM_PICK=""
-if [ -t 0 ]; then
+if [ "${AUTO_NPM:-0}" = "1" ]; then
+    NPM_PICK="y"
+    echo -e "  ${CYAN}► Пълна инсталация — npm install автоматично (без питане)${NC}"
+elif [ -t 0 ]; then
     read -p "  Да пребилдвам ли npm modules? [y/N, Enter = Не]: " NPM_PICK
 elif [ -e /dev/fd/3 ]; then
     read -p "  Да пребилдвам ли npm modules? [y/N, Enter = Не]: " NPM_PICK <&3 2>/dev/null || NPM_PICK=""
