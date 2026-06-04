@@ -1,4 +1,4 @@
-<!-- Version: 1.0094 -->
+<!-- Version: 1.0172 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -75,5 +75,8 @@
         document.getElementById('btn-login').addEventListener('click', doLogin);
         document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
     </script>
+
+    <!-- Хедър/меню — както в останалите портал-страници (navigation.js сам го инжектира най-отгоре). -->
+    <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>
