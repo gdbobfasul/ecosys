@@ -213,11 +213,10 @@ wss.on('connection', async (ws, req) => {
   }
 
   const session = await db.prepare(`
-    SELECT phone FROM sessions 
-    WHERE token = ? AND expires_at > datetime('now')
+    SELECT phone, expires_at FROM sessions WHERE token = ?
   `).get(token);
 
-  if (!session) {
+  if (!session || new Date(session.expires_at) <= new Date()) {
     ws.close(1008, 'Invalid or expired token');
     return;
   }

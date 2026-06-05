@@ -65,8 +65,20 @@
         <button id="runBtn" class="run">▶ Пусни робота</button>
         <span id="stPill" class="status st-idle">бездейства</span>
       </div>
-      <div class="hint">prod е само четене (без писане/форми). Тежкият браузър ползва памет — на малкия сървър пускай по едно.</div>
+      <div class="hint">prod е само четене (без писане/форми). Тежкият браузър ползва памет — на малкия сървър пускай по едно.<br>
+        „vm" от бутона минава през <b>Tailscale</b> (сървърът не достига 192.168.x директно) — VM трябва да е онлайн. При офлайн VM избери <b>prod</b> (препраща към VM).</div>
       <pre id="tail" class="tail" style="display:none"></pre>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
+        <div>
+          <strong>🌳 Дърво на екосистемата</strong>
+          <div class="hint" style="margin-top:4px">Пусни: <code>node tree-gen.js</code> — регенерира <a href="/tree" target="_blank">/tree</a> от реалните файлове.</div>
+        </div>
+        <button id="treeBtn" class="run" style="background:#1f6feb">▶ Регенерирай дървото</button>
+      </div>
+      <span id="treeMsg" class="hint" style="display:none;margin-top:8px"></span>
     </div>
 
     <div class="card">
@@ -129,6 +141,20 @@ document.getElementById('runBtn').addEventListener('click', () => {
       startPolling();
     })
     .catch(e => { elTail().textContent = '✗ ' + e.message; setRunning(false); });
+});
+
+// 🌳 Регенерирай дървото (node tree-gen.js на сървъра)
+document.getElementById('treeBtn').addEventListener('click', () => {
+  const btn = document.getElementById('treeBtn');
+  const msg = document.getElementById('treeMsg');
+  btn.disabled = true; msg.style.display = ''; msg.textContent = '⟳ регенерирам…';
+  fetch(API + '/robot/tree-regen', { method: 'POST' })
+    .then(r => r.json())
+    .then(d => {
+      msg.textContent = d.ok ? ('✓ ' + (d.out || 'готово') + ' — виж /tree') : ('✗ ' + (d.error || 'грешка'));
+    })
+    .catch(e => { msg.textContent = '✗ ' + e.message; })
+    .finally(() => { btn.disabled = false; });
 });
 
 function startPolling(){ if (poll) clearInterval(poll); poll = setInterval(loadStatus, 2000); loadStatus(); }

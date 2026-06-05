@@ -89,6 +89,7 @@ async function runStep(step, page, ctx, base, navTimeout) {
     const url = base + resolve(a.path, ctx);
     const opts = { timeout: navTimeout };
     if (a.json !== undefined) opts.data = resolve(a.json, ctx);
+    if (a.headers) opts.headers = resolve(a.headers, ctx);   // напр. Authorization: Bearer <токен>
     const method = (a.method || 'GET').toLowerCase();
     const res = await page.request[method](url, opts);
     const status = res.status();

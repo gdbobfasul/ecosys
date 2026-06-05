@@ -1,16 +1,20 @@
 // Version: 1.0173
-// Чат — работни сценарии „като човек". Анти-бот проверката (client_type) се
-// изключва от .env (CHAT_DISABLE_CLIENT_CHECK=true), затова роботът може да мине
-// пълния поток: входна форма → регистрация → вход → проверка с токена.
-// (Чатът е token-базиран Bearer; не оставя cleanup API → тестовият потребител остава.)
+// Чат — ПЪЛЕН работен поток „като човек":
+//   входна форма → регистрация → (админ маркира платен) → вход с токен →
+//   профил → matchmaking критерии → сигнали → изход.
+// Анти-бот проверката се изключва от .env (CHAT_DISABLE_CLIENT_CHECK). authLimiter
+// може да върне 429 при чести тестове — третираме го като „rate-limited", не бъг.
 'use strict';
+
+const auth = (c) => ({ Authorization: 'Bearer ' + (c.token || '') });
+const skip = (c) => c.rateLimited || !c.token; // няма смисъл без токен
 
 module.exports = {
   app: 'chat',
-  label: 'Чат (регистрация, вход, токен)',
+  label: 'Чат (пълен поток: регистрация → плащане → токен → действия)',
   writes: true,
   setup(ctx) {
-    ctx.phone = '+9' + String(1000000000 + (ctx.runNum % 800000000)); // ~11 цифри (валидно 10-15)
+    ctx.phone = '+9' + String(1000000000 + (ctx.runNum % 800000000)); // ~11 цифри
     ctx.pass = 'Robot12345!';
   },
   scenarios: [
@@ -30,36 +34,78 @@ module.exports = {
             phone: c.phone, password: c.pass, fullName: 'Робот Тест', gender: 'male',
             heightCm: 180, weightKg: 80, country: 'България', city: 'София',
           } });
-          if (r.status() === 429) { c.rateLimited = true; return; } // rate limit (чести тестове) — не е бъг
-          const b = await r.json().catch(() => ({}));
-          if (!(b.success || b.userId)) throw new Error(`register HTTP ${r.status()} ${b.error || ''}`);
-        } },
-      ],
-    },
-    {
-      name: 'Вход (API) — анти-бот изключена',
-      steps: [
-        { label: 'вход (токен или payment wall за неплатен)', run: async (page, c, h) => {
-          if (c.rateLimited) return; // регистрацията беше rate-limited → няма какво да влиза
-          const r = await page.request.post(h.base + '/api/auth/login', { data: { phone: c.phone, password: c.pass, client: 'web' } });
           if (r.status() === 429) { c.rateLimited = true; return; } // rate limit — не е бъг
           const b = await r.json().catch(() => ({}));
-          if (r.status() >= 500) throw new Error(`login HTTP ${r.status()} ${b.error || ''}`);
-          if (b.token) c.token = b.token;                      // платен → токен
-          else if (b.exists || b.needsPayment) c.paymentWall = b.message || 'нужно плащане'; // неплатен → коректно
-          else throw new Error(`неочакван login отговор: ${JSON.stringify(b).slice(0, 100)}`);
+          if (!(b.success || b.userId)) throw new Error(`register HTTP ${r.status()} ${b.error || ''}`);
+          c.userId = b.userId;
         } },
       ],
     },
     {
-      name: 'Достъп с токена (или payment wall, ако неплатен)',
+      name: 'Админ маркира потребителя платен',
       steps: [
-        { label: 'профил с токена / иначе payment wall (очаквано)', run: async (page, c, h) => {
-          if (c.token) {
-            const r = await page.request.get(h.base + '/api/profile', { headers: { Authorization: 'Bearer ' + c.token } });
-            if (!r.ok()) throw new Error('profile HTTP ' + r.status());
-          }
-          // неплатен → login коректно върна „нужно плащане"; това НЕ е грешка
+        { label: 'POST /api/admin/update-payment', run: async (page, c, h) => {
+          if (c.rateLimited || !c.userId) return;
+          const r = await page.request.post(h.base + '/api/admin/update-payment', { data: { userId: c.userId, months: 1 } });
+          if (!r.ok()) throw new Error(`update-payment HTTP ${r.status()}`);
+        } },
+      ],
+    },
+    {
+      name: 'Вход → токен (вече платен)',
+      steps: [
+        { label: 'вход и вземи токен', run: async (page, c, h) => {
+          if (c.rateLimited) return;
+          const r = await page.request.post(h.base + '/api/auth/login', { data: { phone: c.phone, password: c.pass, client: 'web' } });
+          if (r.status() === 429) { c.rateLimited = true; return; }
+          const b = await r.json().catch(() => ({}));
+          if (r.status() >= 500) throw new Error(`login HTTP ${r.status()} ${b.error || ''}`);
+          if (b.token) c.token = b.token;
+          else throw new Error(`няма токен след плащане: ${JSON.stringify(b).slice(0, 100)}`);
+        } },
+      ],
+    },
+    {
+      name: 'Профил с токена (GET)',
+      steps: [
+        { label: 'GET /api/profile', run: async (page, c, h) => {
+          if (skip(c)) return;
+          const r = await page.request.get(h.base + '/api/profile', { headers: auth(c) });
+          if (!r.ok()) throw new Error('profile HTTP ' + r.status());
+        } },
+      ],
+    },
+    {
+      name: 'Matchmaking — критерии (GET + запази)',
+      steps: [
+        { label: 'GET критерии', run: async (page, c, h) => {
+          if (skip(c)) return;
+          const r = await page.request.get(h.base + '/api/matchmaking/criteria', { headers: auth(c) });
+          if (!r.ok()) throw new Error('criteria GET HTTP ' + r.status());
+        } },
+        { label: 'POST критерии', run: async (page, c, h) => {
+          if (skip(c)) return;
+          const r = await page.request.post(h.base + '/api/matchmaking/criteria', { headers: auth(c), data: { height_min: 160, height_max: 200, age_min: 18, age_max: 99 } });
+          if (!r.ok()) throw new Error('criteria POST HTTP ' + r.status());
+        } },
+      ],
+    },
+    {
+      name: 'Сигнали — мога ли да подам',
+      steps: [
+        { label: 'GET /api/signals/can-submit', run: async (page, c, h) => {
+          if (skip(c)) return;
+          const r = await page.request.get(h.base + '/api/signals/can-submit', { headers: auth(c) });
+          if (!r.ok()) throw new Error('signals can-submit HTTP ' + r.status());
+        } },
+      ],
+    },
+    {
+      name: 'Изход',
+      steps: [
+        { label: 'POST /api/auth/logout', run: async (page, c, h) => {
+          if (skip(c)) return;
+          await page.request.post(h.base + '/api/auth/logout', { headers: auth(c) });
         } },
       ],
     },

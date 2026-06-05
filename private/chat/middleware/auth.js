@@ -10,12 +10,13 @@ function authenticate(db) {
       return res.status(401).json({ error: 'Authentication required' });
     }
 
+    // Сравнението на изтичането е в JS (а не в SQL), за да работи И на SQLite, И на
+    // PostgreSQL: expires_at се пази като TEXT (ISO), а `text > datetime()` гърми на PG.
     const session = await db.prepare(`
-      SELECT user_id, device_type FROM sessions
-      WHERE token = ? AND expires_at > datetime('now')
+      SELECT user_id, device_type, expires_at FROM sessions WHERE token = ?
     `).get(token);
 
-    if (!session) {
+    if (!session || new Date(session.expires_at) <= new Date()) {
       return res.status(401).json({ error: 'Invalid or expired token' });
     }
 

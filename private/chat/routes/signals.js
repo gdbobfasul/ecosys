@@ -5,12 +5,18 @@ const multer = require('multer');
 const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
-const Database = require('better-sqlite3');
-
-const DB_FILE = process.env.TEST_MODE === 'true' 
-  ? (process.env.TEST_DB || 'database/amschat_test.db') 
-  : 'database/amschat.db';
-const db = new Database(DB_FILE);
+// НЕ създавай собствена SQLite база — ползвай СПОДЕЛЕНАТА (SQLite ИЛИ PostgreSQL),
+// иначе на PG signals удря празен/несъществуващ .db файл → 500. Lazy proxy, защото
+// db се инициализира асинхронно при старта (както в server.js).
+const { getDatabase } = require('../utils/database');
+const db = new Proxy({}, {
+  get(_t, prop) {
+    const d = getDatabase();
+    if (!d) throw new Error('DB не е готова още');
+    const v = d[prop];
+    return typeof v === 'function' ? v.bind(d) : v;
+  },
+});
 
 // Configure multer for photo uploads
 const storage = multer.diskStorage({
@@ -51,8 +57,9 @@ const requireAuth = async (req, res, next) => {
   }
   
   try {
-    const session = await db.prepare('SELECT user_id FROM sessions WHERE token = ? AND expires_at > datetime("now")').get(token);
-    if (!session) {
+    // изтичането се сравнява в JS (работи и на SQLite, и на PostgreSQL — expires_at е TEXT)
+    const session = await db.prepare('SELECT user_id, expires_at FROM sessions WHERE token = ?').get(token);
+    if (!session || new Date(session.expires_at) <= new Date()) {
       return res.status(401).json({ error: 'Invalid or expired session' });
     }
     req.userId = session.user_id;

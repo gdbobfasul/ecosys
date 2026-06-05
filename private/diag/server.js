@@ -15,9 +15,27 @@
 //   POST /debug-flags            → задава flag (body: {"service":"chat","enabled":true})
 
 const http = require('http');
-const { exec, spawn } = require('child_process');
+const { exec, spawn, execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+
+// VPS-ът НЕ достига частния LAN адрес на VM (192.168.x) — стига до него само през
+// Tailscale. Затова, когато роботът върви ТУК (на сървъра) и целта е VM, му подаваме
+// Tailscale IP-то на онлайн peer-а. Връща https://<100.x.x.x> или null.
+function vmTailscaleUrl() {
+    try {
+        const out = execSync('tailscale status --json', { timeout: 5000 }).toString();
+        const st = JSON.parse(out);
+        for (const k of Object.keys(st.Peer || {})) {
+            const p = st.Peer[k];
+            if (p.Online && Array.isArray(p.TailscaleIPs)) {
+                const ip4 = p.TailscaleIPs.find((x) => x.includes('.'));
+                if (ip4) return 'https://' + ip4;
+            }
+        }
+    } catch (e) { /* tailscale липсва/не върви */ }
+    return null;
+}
 
 const PORT = process.env.DIAG_PORT || 4400;
 // DIAG_HOST: 127.0.0.1 на VPS (само локално), 0.0.0.0 на VM (за Tailscale достъп от VPS).
@@ -171,11 +189,17 @@ const server = http.createServer(async (req, res) => {
             if (mode === 'all') args.push('--all');
             else if (mode === 'crawl') args.push('--crawl');
             else if (mode === 'fuzz') args.push('--fuzz');
+            const env = { ...process.env, ROBOT_NO_SANDBOX: '1', ROBOT_REPORTS_DIR: ROBOT_REPORTS, ROBOT_LOG_DIR: ROBOT_LOGS };
+            if (target === 'vm') {
+                // Сървърът не достига 192.168.x — само през Tailscale.
+                const vmUrl = vmTailscaleUrl();
+                if (!vmUrl) {
+                    return sendJSON(res, 400, { ok: false, error: 'VM не е достъпно от сървъра (няма онлайн Tailscale peer). За VM пусни робота локално, или избери prod (препраща към VM при онлайн VM).' });
+                }
+                env.ROBOT_VM_URL = vmUrl;
+            }
             robot = { running: true, runId, target, mode, startedAt: new Date().toISOString(), exitCode: null, reportDir: null, tail: [] };
-            const child = spawn('node', args, {
-                cwd: ROBOT_DIR,
-                env: { ...process.env, ROBOT_NO_SANDBOX: '1', ROBOT_REPORTS_DIR: ROBOT_REPORTS, ROBOT_LOG_DIR: ROBOT_LOGS },
-            });
+            const child = spawn('node', args, { cwd: ROBOT_DIR, env });
             const onData = (buf) => String(buf).split(/\r?\n/).forEach((l) => {
                 if (!l.trim()) return;
                 pushTail(l);
@@ -196,6 +220,19 @@ const server = http.createServer(async (req, res) => {
                 startedAt: robot.startedAt, exitCode: robot.exitCode, reportDir: robot.reportDir,
                 tail: robot.tail.slice(-25),
             });
+        }
+
+        // POST /robot/tree-regen — регенерира дървото /tree (node tree-gen.js, PUBLIC_DIR=web root)
+        if (req.method === 'POST' && route === '/robot/tree-regen') {
+            const treeGen = path.join(ROBOT_DIR, 'tree-gen.js');
+            if (!fs.existsSync(treeGen)) {
+                return sendJSON(res, 500, { ok: false, error: `tree-gen.js липсва (${treeGen})` });
+            }
+            exec(`node "${treeGen}"`, { env: { ...process.env, PUBLIC_DIR: '/var/www/html' }, timeout: 30000 }, (err, stdout, stderr) => {
+                if (err) return sendJSON(res, 500, { ok: false, error: err.message, stderr: String(stderr).slice(-300) });
+                sendJSON(res, 200, { ok: true, out: String(stdout).trim().slice(-300) });
+            });
+            return;
         }
 
         // POST /robot-logs/clear — изпразва 9-те робот лога (фази 1-4 + 5 приложения)

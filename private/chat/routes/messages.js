@@ -257,11 +257,10 @@ function createMessagesRoutes(db, uploadDir) {
       const { fileId } = req.params;
 
       const file = await db.prepare(`
-        SELECT * FROM temp_files 
-        WHERE id = ? AND to_phone = ? AND expires_at > datetime("now")
+        SELECT * FROM temp_files WHERE id = ? AND to_phone = ?
       `).get(fileId, req.phone);
 
-      if (!file) {
+      if (!file || new Date(file.expires_at) <= new Date()) {
         return res.status(404).json({ error: 'File not found or expired' });
       }
 

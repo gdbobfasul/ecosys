@@ -922,9 +922,26 @@ run_choice() {
     esac
 }
 
+# Ясен лилав банер — маркира откъде започва да се изпълнява избраният скрипт.
+print_start_banner() {
+    local opt="$1"
+    local PURPLE=$'\033[1;35m'
+    local RULE="════════════════════════════════════════════════════════════════════════════════"
+    echo ""
+    echo -e "${PURPLE}${RULE}${NC}"
+    echo -e "${PURPLE}${BOLD}                              ▶  СТАРТИРА СКРИПТ — опция ${opt}${NC}"
+    echo -e "${PURPLE}${RULE}${NC}"
+    echo ""
+}
+
 # === MAIN LOOP ===
 while true; do
     show_menu
     read -p "Избери [1-52, q]: " choice
+    # банер само за реалните опции (не за изход/празен ред)
+    case "$choice" in
+        ''|q|Q|quit|exit|изход) : ;;
+        *) print_start_banner "$choice" ;;
+    esac
     run_choice "$choice"
 done
