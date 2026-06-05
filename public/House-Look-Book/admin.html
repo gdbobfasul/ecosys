@@ -50,6 +50,7 @@
         <button class="atab" data-tab="reports">🚩 Доклади (<span id="cntReports">0</span>)</button>
         <button class="atab" data-tab="all">🏠 Всички къщи</button>
         <button class="atab" data-tab="gen">⚙️ Генератор</button>
+        <button class="atab" data-tab="allusers">👤 Всички потребители</button>
         <button class="atab" data-tab="users">👥 Банати</button>
       </nav>
 
@@ -104,6 +105,9 @@
       <section id="tab-users" class="atab-panel" style="display:none">
         <div id="usersList"></div>
       </section>
+      <section id="tab-allusers" class="atab-panel" style="display:none">
+        <div id="allUsersList"></div>
+      </section>
     </div>
   </main>
 
@@ -111,5 +115,7 @@
   <script src="js/house-render.js?v=1.0171"></script>
   <script src="js/hlb-common.js?v=1.0171"></script>
   <script src="js/admin.js?v=1.0171"></script>
+  <!-- KCY ecosystem nav + админ дропдаун (показва всички админ панели при админ IP) -->
+  <script src="/shared/js/navigation.js?v=1.0173"></script>
 </body>
 </html>

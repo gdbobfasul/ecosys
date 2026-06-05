@@ -131,12 +131,39 @@
     } catch (e) { box.innerHTML = '<div class="empty-note">Грешка: ' + esc(e.message) + '</div>'; }
   }
 
+  // Всички потребители (отделно от банатите) — само за админ/модератор.
+  async function loadAllUsers() {
+    const box = $('#allUsersList');
+    box.innerHTML = '<div class="empty-note">Зареждам…</div>';
+    try {
+      const r = await WNB.api('/moderation/users'); // без ?banned=1 → ВСИЧКИ
+      const list = r.users || [];
+      if (!list.length) { box.innerHTML = '<div class="empty-note">Няма потребители.</div>'; return; }
+      box.innerHTML = `<div class="meta" style="margin-bottom:8px">Общо: ${list.length}</div>`;
+      list.forEach(u => {
+        const banned = u.is_banned;
+        const el = document.createElement('div'); el.className = 'arow';
+        el.innerHTML = `
+          <div class="info">
+            <div class="ttl">${esc(u.display_name || u.email)} ${banned ? '<span class="badge rejected">БАНАТ</span>' : ''}</div>
+            <div class="meta">${esc(u.email)} · роля: ${esc(u.role)} · регистриран: ${esc((u.created_at || '').slice(0, 10))}${banned ? ' · причина: ' + esc(u.ban_reason || '—') : ''}</div>
+            <div class="acts">${banned ? '<button class="ok">↩️ Раз-банни</button>' : '<button class="warn">🚫 Банни</button>'}</div>
+          </div>`;
+        const btn = el.querySelector('button');
+        if (banned) btn.onclick = async () => { if (await act(`/moderation/users/${u.id}/unban`, { method: 'POST', body: {} })) loadAllUsers(); };
+        else btn.onclick = async () => { if (!confirm('Да банниш ли този потребител?')) return; const reason = prompt('Причина за бан:', '') ?? ''; if (await act(`/moderation/users/${u.id}/ban`, { method: 'POST', body: { reason } })) loadAllUsers(); };
+        box.appendChild(el);
+      });
+    } catch (e) { box.innerHTML = '<div class="empty-note">Грешка: ' + esc(e.message) + '</div>'; }
+  }
+
   function switchTab(name) {
     document.querySelectorAll('.atab').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
     document.querySelectorAll('.atab-panel').forEach(p => p.style.display = (p.id === 'tab-' + name) ? '' : 'none');
     if (name === 'pending') loadPending();
     else if (name === 'reports') loadReports();
     else if (name === 'all') loadAll();
+    else if (name === 'allusers') loadAllUsers();
     else if (name === 'users') loadUsers();
   }
 
