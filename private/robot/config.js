@@ -28,6 +28,8 @@ module.exports = {
   reportsDir: process.env.ROBOT_REPORTS_DIR || path.join(__dirname, 'reports'),
   // 9-те робот лога (фази 1-4 + 5 приложения) — на сървъра: /var/www/html/last-errors/robot-logs/
   robotLogDir: process.env.ROBOT_LOG_DIR || path.join(__dirname, 'robot-logs'),
-  treeJson: path.join(__dirname, '..', '..', 'public', 'tree', 'tree.json'),
+  // tree.json: локално е в repo/public/tree; на сървъра tree-gen го пише в web root
+  // (/var/www/html/tree) → diag подава ROBOT_TREE_JSON натам.
+  treeJson: process.env.ROBOT_TREE_JSON || path.join(__dirname, '..', '..', 'public', 'tree', 'tree.json'),
   headless: process.env.ROBOT_HEADED ? false : true,
 };

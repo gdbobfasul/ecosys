@@ -189,7 +189,7 @@ const server = http.createServer(async (req, res) => {
             if (mode === 'all') args.push('--all');
             else if (mode === 'crawl') args.push('--crawl');
             else if (mode === 'fuzz') args.push('--fuzz');
-            const env = { ...process.env, ROBOT_NO_SANDBOX: '1', ROBOT_REPORTS_DIR: ROBOT_REPORTS, ROBOT_LOG_DIR: ROBOT_LOGS };
+            const env = { ...process.env, ROBOT_NO_SANDBOX: '1', ROBOT_REPORTS_DIR: ROBOT_REPORTS, ROBOT_LOG_DIR: ROBOT_LOGS, ROBOT_TREE_JSON: '/var/www/html/tree/tree.json' };
             if (target === 'vm') {
                 // Сървърът не достига 192.168.x — само през Tailscale.
                 const vmUrl = vmTailscaleUrl();

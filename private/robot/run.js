@@ -73,9 +73,14 @@ if (journeyMode) {
 
 // ── списък сценарии ──────────────────────────────────────────────────────────
 function scenariosFromTree(includeAdmin) {
-  let tree;
-  try { tree = JSON.parse(fs.readFileSync(cfg.treeJson, 'utf8')); }
-  catch (e) { console.error(`Не мога да чета tree.json (${cfg.treeJson}). Пусни: node tree-gen.js`); return null; }
+  // Пробвай няколко места: ROBOT_TREE_JSON/cfg, после web root (tree-gen пише там на
+  // сървъра), после repo public. Така работи и локално, и от prod без env промяна.
+  const candidates = [cfg.treeJson, '/var/www/html/tree/tree.json', path.join(__dirname, '..', '..', 'public', 'tree', 'tree.json')];
+  let tree = null;
+  for (const f of candidates) {
+    try { tree = JSON.parse(fs.readFileSync(f, 'utf8')); break; } catch (e) { /* пробвай следващия */ }
+  }
+  if (!tree) { console.error(`Не мога да чета tree.json (пробвах: ${candidates.join(', ')}). Пусни: node tree-gen.js`); return null; }
   const out = [];
   for (const g of tree.groups) {
     const paths = g.pages
@@ -109,7 +114,7 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   fs.mkdirSync(shotsDir, { recursive: true });
 
   console.log(`\n🤖 KCY робот — цел: ${targetName} (${target.base})`);
-  const modeLabel = journeyMode ? `работни сценарии: ${journeyArg}` : crawlMode ? `crawler (BFS, макс ${maxPages}, дълбочина ${maxDepth})` : has('--all') ? 'пълно обхождане (дървото)' : 'критични пътища';
+  const modeLabel = journeyMode ? `работни сценарии: ${journeyArg}` : fuzzMode ? `fuzz (само VM, seed ${seed})` : crawlMode ? `crawler (BFS, макс ${maxPages}, дълбочина ${maxDepth})` : has('--all') ? 'пълно обхождане (дървото)' : 'критични пътища';
   console.log(`   ${journeyMode ? `журита: ${selectedJourneys.length}` : crawlMode ? 'crawler' : `сценарии: ${scenarios.length}`}${onlyApp ? ` (само ${onlyApp})` : ''}  ·  режим: ${modeLabel}\n`);
 
   // Памет-безопасни флагове при пускане като root на сървъра (kcy-diag) —
