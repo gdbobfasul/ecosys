@@ -1,0 +1,15 @@
+{
+  "name": "token-creator",
+  "version": "1.0173",
+  "private": true,
+  "description": "Оркестратор за създаване на токен (deploy + PancakeSwap ликвидност) през ethers — testnet първо.",
+  "main": "create-token.js",
+  "scripts": {
+    "create": "node create-token.js",
+    "dry": "node create-token.js --dry-run",
+    "create:mainnet": "node create-token.js --network bscMainnet --i-understand-mainnet"
+  },
+  "dependencies": {
+    "ethers": "^6.0.0"
+  }
+}

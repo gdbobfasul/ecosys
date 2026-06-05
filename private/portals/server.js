@@ -52,6 +52,10 @@ db.pragma('foreign_keys = ON');
 // Apply schema on startup if tables missing
 const schemaSql = fs.readFileSync(path.join(__dirname, 'database', 'schema.sql'), 'utf8');
 db.exec(schemaSql);
+// Игрите имат отделна схема (portal_game_progress / portal_game_scores). Прилагаме я
+// ТУК при старт — иначе админ страницата я заявява преди games route да я е създал → 500.
+try { db.exec(fs.readFileSync(path.join(__dirname, 'database', 'schema_games.sql'), 'utf8')); }
+catch (e) { console.error('⚠️  portals games schema:', e.message); }
 app.locals.db = db;
 
 // Всяко приложение попълва САМО своите админи/модератори от .env при собствения си

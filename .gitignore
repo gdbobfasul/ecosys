@@ -111,3 +111,11 @@ public/assets/animations/raw/
 assets-update.zip
 green-originals*.zip
 green-videos*.zip
+
+# token-creator — деплой записи + локални модули
+private/token-creator/deployments/
+private/token-creator/node_modules/
+
+# token-protector — аларми + локални модули
+private/token-protector/alerts/
+private/token-protector/node_modules/

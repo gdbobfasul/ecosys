@@ -29,7 +29,10 @@ db.pragma('foreign_keys = ON');
 
 try {
     db.exec(fs.readFileSync(SCHEMA, 'utf8'));
-    console.log('✅ Schema applied');
+    // Игрите имат отделна схема (portal_game_progress / portal_game_scores) — прилагаме я също.
+    const gamesSchema = path.join(__dirname, 'schema_games.sql');
+    if (fs.existsSync(gamesSchema)) db.exec(fs.readFileSync(gamesSchema, 'utf8'));
+    console.log('✅ Schema applied (вкл. games)');
 } catch (err) {
     console.error('❌ Schema error:', err.message);
     process.exit(1);

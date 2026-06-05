@@ -79,6 +79,8 @@ const KCY_NAV = {
                         <option value="/chat/admin/index.html">💬 Chat Admin</option>
                         <option value="/eco-3/admin/">🤖 ECO-3 Admin</option>
                         <option value="/portals/admin.html">🎮 Portals Admin</option>
+                        <option value="/houselookbook/admin.html">🏠 House-Look-Book Admin</option>
+                        <option value="/wherenobiz/admin.html">🌍 WhereNoBiz Admin</option>
                     </select>
                 </div>
             </div>

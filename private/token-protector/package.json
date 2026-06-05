@@ -1,0 +1,14 @@
+{
+  "name": "token-protector",
+  "version": "1.0173",
+  "private": true,
+  "description": "Наблюдава токена on-chain и реагира при зловредни модели. Аларма винаги · авто-pause по избор · БЕЗ авто-blacklist.",
+  "main": "protector.js",
+  "scripts": {
+    "watch": "node protector.js",
+    "once": "node protector.js --once"
+  },
+  "dependencies": {
+    "ethers": "^6.0.0"
+  }
+}
