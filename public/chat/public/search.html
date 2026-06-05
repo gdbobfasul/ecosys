@@ -454,6 +454,8 @@
 
     // Init
     document.addEventListener('DOMContentLoaded', () => {
+      // без вход → към входа (не дърпай категории/локация анонимно)
+      if (!localStorage.getItem('token')) { window.location.href = 'index.html'; return; }
       getLocation('distance');
       getLocation('need');
       loadServiceCategories();
