@@ -176,19 +176,33 @@ const server = http.createServer(async (req, res) => {
             if (robot.running) return sendJSON(res, 409, { ok: false, error: 'Роботът вече върви', runId: robot.runId });
             const body = await readBody(req);
             const target = (body.target === 'vm') ? 'vm' : 'prod';
-            const mode = ['all', 'crawl', 'fuzz'].includes(body.mode) ? body.mode : 'critical';
-            if (mode === 'fuzz' && target !== 'vm') {
-                return sendJSON(res, 400, { ok: false, error: 'Fuzz е разрушителен — позволен е САМО срещу VM.' });
+            // Режими: critical/all/crawl/fuzz (линкове/заявки) ИЛИ journey:<app> (работни
+            // сценарии „като човек" — регистрация/вход/създай/админ модерация).
+            const JOURNEY_APPS = ['portals', 'chat', 'eco3', 'hlb', 'wnb', 'all'];
+            const raw = String(body.mode || 'critical');
+            const args = ['run.js', '--target', target];
+            let mode = 'critical';
+            if (raw.startsWith('journey:')) {
+                const appj = raw.slice(8);
+                if (!JOURNEY_APPS.includes(appj)) {
+                    return sendJSON(res, 400, { ok: false, error: 'Непознато журито: ' + appj });
+                }
+                mode = raw; args.push('--journey', appj);
+            } else if (['all', 'crawl', 'fuzz'].includes(raw)) {
+                mode = raw;
+                if (mode === 'fuzz' && target !== 'vm') {
+                    return sendJSON(res, 400, { ok: false, error: 'Fuzz е разрушителен — позволен е САМО срещу VM.' });
+                }
+                if (mode === 'all') args.push('--all');
+                else if (mode === 'crawl') args.push('--crawl');
+                else if (mode === 'fuzz') args.push('--fuzz');
             }
+            // иначе остава critical (без допълнителни аргументи)
             if (!fs.existsSync(path.join(ROBOT_DIR, 'run.js'))) {
                 return sendJSON(res, 500, { ok: false, error: `Роботът не е инсталиран (${ROBOT_DIR}). Пусни 32-setup-robot.sh.` });
             }
             try { fs.mkdirSync(ROBOT_REPORTS, { recursive: true }); } catch (e) {}
             const runId = new Date().toISOString().replace(/[:.]/g, '-');
-            const args = ['run.js', '--target', target];
-            if (mode === 'all') args.push('--all');
-            else if (mode === 'crawl') args.push('--crawl');
-            else if (mode === 'fuzz') args.push('--fuzz');
             const env = { ...process.env, ROBOT_NO_SANDBOX: '1', ROBOT_REPORTS_DIR: ROBOT_REPORTS, ROBOT_LOG_DIR: ROBOT_LOGS, ROBOT_TREE_JSON: '/var/www/html/tree/tree.json' };
             if (target === 'vm') {
                 // Сървърът не достига 192.168.x — само през Tailscale.

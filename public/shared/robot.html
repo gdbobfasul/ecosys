@@ -56,10 +56,20 @@
         <div>
           <label>Обхват</label>
           <select id="mode">
-            <option value="critical">Критични пътища (бързо)</option>
-            <option value="all">Всички страници от дървото (пълно)</option>
-            <option value="crawl">Crawler — следва линковете (най-дълбоко)</option>
-            <option value="fuzz">Fuzz — попълва/изпраща форми (само VM!)</option>
+            <optgroup label="Обхождане (линкове/заявки)">
+              <option value="critical">Критични пътища (бързо)</option>
+              <option value="all">Всички страници от дървото (пълно)</option>
+              <option value="crawl">Crawler — следва линковете (най-дълбоко)</option>
+              <option value="fuzz">Fuzz — попълва/изпраща форми (само VM!)</option>
+            </optgroup>
+            <optgroup label="Работни сценарии „като човек" (per site)">
+              <option value="journey:all">🧑 ВСИЧКИ приложения</option>
+              <option value="journey:portals">🧑 Портали (регистрация/вход/услуга)</option>
+              <option value="journey:chat">🧑 Чат (регистрация→плащане→токен)</option>
+              <option value="journey:eco3">🧑 ECO-3 (достъп + админ)</option>
+              <option value="journey:hlb">🧑 House-Look-Book (създай→админ одобри)</option>
+              <option value="journey:wnb">🧑 WhereNoBiz (създай→админ одобри)</option>
+            </optgroup>
           </select>
         </div>
         <button id="runBtn" class="run">▶ Пусни робота</button>
