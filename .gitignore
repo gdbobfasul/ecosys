@@ -96,8 +96,9 @@ service-account.json
 old/
 .deploy-targets
 
-# Тест робот — репорти и локални node_modules (не в git)
+# Тест робот — репорти, логове и локални node_modules (не в git)
 private/robot/reports/
+private/robot/robot-logs/
 private/robot/node_modules/
 
 # Анимации/видеа — огромни (~610 MB), стоят само локално на диска и се деплойват

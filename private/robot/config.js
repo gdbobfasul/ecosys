@@ -26,6 +26,8 @@ module.exports = {
   settleMs: Number(process.env.ROBOT_SETTLE_MS || 1500), // изчакване след зареждане за да изскочат console грешки
   bundlePath: '/last-errors-bundle',                     // сървърен лог за корелация (kcy-diag :4400)
   reportsDir: process.env.ROBOT_REPORTS_DIR || path.join(__dirname, 'reports'),
+  // 9-те робот лога (фази 1-4 + 5 приложения) — на сървъра: /var/www/html/last-errors/robot-logs/
+  robotLogDir: process.env.ROBOT_LOG_DIR || path.join(__dirname, 'robot-logs'),
   treeJson: path.join(__dirname, '..', '..', 'public', 'tree', 'tree.json'),
   headless: process.env.ROBOT_HEADED ? false : true,
 };

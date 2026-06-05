@@ -94,14 +94,20 @@ function createAuthRoutes(db) {
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 30);
 
-      // CLIENT_TYPE идва от глобалната константа на клиента (req.body.client).
-      // device_type — стойността която ще влезе в базата.
-      // Проверка: трябва да са 'web' или 'mobile'. Различни/невалидни → FATAL ERROR.
+      // CLIENT_TYPE идва от клиента (req.body.client) — трябва да е 'web' или 'mobile'.
+      // Това е анти-бот защита. За ТЕСТВАНЕ (робот) може да се ИЗКЛЮЧИ от .env:
+      //   CHAT_DISABLE_CLIENT_CHECK=true  → невалиден/липсващ client се приема като 'web'.
       const CLIENT_TYPE = req.body.client;
-      const device_type = CLIENT_TYPE;
-      if ((CLIENT_TYPE !== 'web' && CLIENT_TYPE !== 'mobile') || CLIENT_TYPE !== device_type) {
-        debug.error(`login: FATAL — невалиден/несъответстващ CLIENT_TYPE: '${CLIENT_TYPE}'`);
-        return res.status(500).json({ error: 'client_type_mismatch' });
+      const BYPASS_CLIENT_CHECK = ['true', '1', 'yes'].includes(String(process.env.CHAT_DISABLE_CLIENT_CHECK || '').toLowerCase());
+      let device_type = CLIENT_TYPE;
+      if (CLIENT_TYPE !== 'web' && CLIENT_TYPE !== 'mobile') {
+        if (BYPASS_CLIENT_CHECK) {
+          device_type = 'web';
+          console.warn("[chat] CHAT_DISABLE_CLIENT_CHECK=on → приемам невалиден client като 'web' (само за тестване!)");
+        } else {
+          console.error(`login: невалиден CLIENT_TYPE: '${CLIENT_TYPE}'`);
+          return res.status(500).json({ error: 'client_type_mismatch' });
+        }
       }
 
       // login route записва device_type в базата

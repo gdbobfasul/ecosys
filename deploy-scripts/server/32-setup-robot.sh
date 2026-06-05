@@ -44,10 +44,10 @@ else
   echo -e "  ${YELLOW}! playwright install върна грешка — провери изхода по-горе${NC}"
 fi
 
-echo -e "${GREEN}[3/4] Папка за репорти: $REPORTS_DIR${NC}"
-mkdir -p "$REPORTS_DIR"
-chown -R root:www-data "$REPORTS_DIR" 2>/dev/null || true
-chmod -R 2775 "$REPORTS_DIR" 2>/dev/null || true
+echo -e "${GREEN}[3/4] Папки за репорти + робот логове${NC}"
+mkdir -p "$REPORTS_DIR" "$REPORTS_DIR/../robot-logs"
+chown -R root:www-data "$REPORTS_DIR" "$REPORTS_DIR/../robot-logs" 2>/dev/null || true
+chmod -R 2775 "$REPORTS_DIR" "$REPORTS_DIR/../robot-logs" 2>/dev/null || true
 
 echo -e "${GREEN}[4/4] Рестарт на kcy-diag (новите /robot/* ендпойнти)...${NC}"
 if systemctl restart kcy-diag 2>/dev/null; then

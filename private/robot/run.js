@@ -25,9 +25,19 @@ const cfg = require('./config');
 const baseScenarios = require('./scenarios');
 const { attachMonitor } = require('./lib/monitor');
 const { fetchBundle, scanBundle } = require('./lib/server-log');
-const { writeReport, stamp } = require('./lib/report');
+const { writeReport, stamp, appendRobotLogs } = require('./lib/report');
 const { extractLinksAndForms } = require('./lib/crawler');
 const { makeRng, fuzzForms } = require('./lib/fuzz');
+const { runJourney, loadEnv } = require('./lib/journey');
+
+// Журита „като човек" — по едно на приложение (Фази 5+).
+const JOURNEYS = {
+  portals: require('./journeys/portals'),
+  chat: require('./journeys/chat'),
+  eco3: require('./journeys/eco3'),
+  hlb: require('./journeys/hlb'),
+  wnb: require('./journeys/wnb'),
+};
 
 // ── аргументи ───────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
@@ -41,6 +51,7 @@ const onlyApp = val('--app', null);
 const headed = has('--headed');
 const crawlMode = has('--crawl');                 // Фаза 2: следва линковете (BFS)
 const fuzzMode = has('--fuzz');                   // Фаза 3: попълва+изпраща форми (само VM)
+const journeyArg = val('--journey', null);        // Фази 5+: работни сценарии по приложение (app|all)
 const maxPages = Number(val('--max', 120));       // таван страници за crawl/fuzz
 const maxDepth = Number(val('--depth', 3));       // дълбочина на crawl
 const seed = Number(val('--seed', 0)) || (Date.now() & 0x7fffffff); // fuzz seed (възпроизводимост)
@@ -49,6 +60,15 @@ const seed = Number(val('--seed', 0)) || (Date.now() & 0x7fffffff); // fuzz seed
 if (fuzzMode && !target.allowFuzz) {
   console.error(`\n✗ Fuzz е позволен САМО срещу VM (--target vm). Целта „${targetName}" е защитена (само четене).\n`);
   process.exit(2);
+}
+
+// Валидация на --journey (app|all). Журитата СЪЗДАВАТ данни (регистрации/постове/модерация).
+const journeyMode = !!journeyArg;
+let selectedJourneys = [];
+if (journeyMode) {
+  if (journeyArg === 'all') selectedJourneys = Object.values(JOURNEYS);
+  else if (JOURNEYS[journeyArg]) selectedJourneys = [JOURNEYS[journeyArg]];
+  else { console.error(`Непознато журито: ${journeyArg}. Налични: ${Object.keys(JOURNEYS).join(', ')}, all`); process.exit(2); }
 }
 
 // ── списък сценарии ──────────────────────────────────────────────────────────
@@ -89,8 +109,8 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   fs.mkdirSync(shotsDir, { recursive: true });
 
   console.log(`\n🤖 KCY робот — цел: ${targetName} (${target.base})`);
-  const modeLabel = crawlMode ? `crawler (BFS, макс ${maxPages}, дълбочина ${maxDepth})` : has('--all') ? 'пълно обхождане (дървото)' : 'критични пътища';
-  console.log(`   ${crawlMode ? 'crawler' : `сценарии: ${scenarios.length}`}${onlyApp ? ` (само ${onlyApp})` : ''}  ·  режим: ${modeLabel}\n`);
+  const modeLabel = journeyMode ? `работни сценарии: ${journeyArg}` : crawlMode ? `crawler (BFS, макс ${maxPages}, дълбочина ${maxDepth})` : has('--all') ? 'пълно обхождане (дървото)' : 'критични пътища';
+  console.log(`   ${journeyMode ? `журита: ${selectedJourneys.length}` : crawlMode ? 'crawler' : `сценарии: ${scenarios.length}`}${onlyApp ? ` (само ${onlyApp})` : ''}  ·  режим: ${modeLabel}\n`);
 
   // Памет-безопасни флагове при пускане като root на сървъра (kcy-diag) —
   // ROBOT_NO_SANDBOX=1 ги включва: без sandbox (root), пести RAM на малък сървър.
@@ -104,6 +124,7 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   const findings = [];
   const forms = [];
   let fuzzData = null;
+  let journeysData = null;
   let urlsChecked = 0;
 
   // Посещава един адрес: навигира, проверява статус + съдържание, прави снимка при грешка.
@@ -134,7 +155,26 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
     return status;
   }
 
-  if (fuzzMode) {
+  if (journeyMode) {
+    // ── Фази 5+: работни сценарии „като човек" по приложение ──
+    const env = loadEnv();
+    const runToken = startedAt.getTime().toString(36);
+    journeysData = [];
+    for (const jr of selectedJourneys) {
+      await context.clearCookies().catch(() => {}); // чисто между приложенията
+      const ctx = { runToken, runNum: startedAt.getTime() % 100000000 };
+      if (jr.setup) jr.setup(ctx, env);
+      console.log(`\n   ▣ ${jr.label}`);
+      const page = await context.newPage();
+      const ctxLabel = { app: jr.app, scenario: jr.label, targetUrl: null };
+      const sink = attachMonitor(page, () => ctxLabel);
+      const results = await runJourney(jr, page, ctx, target.base, cfg.navTimeoutMs, sink, (m) => console.log(m));
+      findings.push(...sink);
+      await page.close();
+      journeysData.push({ app: jr.app, label: jr.label, scenarios: results });
+      urlsChecked += results.reduce((s, r) => s + r.steps.length, 0);
+    }
+  } else if (fuzzMode) {
     // ── Фаза 3: fuzz (само VM) — попълва и изпраща формите с гранични/зловредни стойности ──
     const rng = makeRng(seed);
     const fuzzLog = [];
@@ -219,12 +259,13 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   };
   const data = {
     target: targetName, base: target.base, runId,
-    mode: fuzzMode ? 'fuzz' : crawlMode ? 'crawl' : has('--all') ? 'all' : 'critical',
+    mode: journeyMode ? `journey:${journeyArg}` : fuzzMode ? 'fuzz' : crawlMode ? 'crawl' : has('--all') ? 'all' : 'critical',
     startedAt: startedAt.toISOString(), durationMs: Date.now() - startedAt.getTime(),
     scenarios: scenarios.length, urlsChecked, counts, findings, serverLog,
-    forms, fuzz: fuzzData,
+    forms, fuzz: fuzzData, journeys: journeysData,
   };
   writeReport(reportDir, data);
+  appendRobotLogs(data, cfg.robotLogDir); // 9-те робот лога (фази 1-4 + 5 приложения)
 
   // ── обобщение в конзолата ─────────────────────────────────────────────────
   console.log('\n' + '─'.repeat(60));

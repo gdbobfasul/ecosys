@@ -4,6 +4,13 @@
 'use strict';
 
 async function fetchBundle(base, bundlePath) {
+  // Първо поискай свежа диагностика (хваща пресните грешки в journalctl), после
+  // дръпни bundle-а. regen е админ-защитен; ако се провали — продължаваме тихо.
+  try {
+    await fetch(base + '/api/diag/regen', { method: 'POST' });
+    await new Promise((r) => setTimeout(r, 3000));
+  } catch (_) { /* няма достъп до diag — продължи без regen */ }
+
   const url = base + bundlePath;
   try {
     const res = await fetch(url, { redirect: 'follow' });

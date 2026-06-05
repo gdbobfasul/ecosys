@@ -30,6 +30,7 @@ const DIAG_SCRIPT = '/usr/local/bin/kcy-diagnostics.sh';
 // /var/www/html/last-errors/robot/ (виждат се на /last-errors/robot/, IP-защитено).
 const ROBOT_DIR = process.env.ROBOT_DIR || '/var/www/kcy-ecosystem/private/robot';
 const ROBOT_REPORTS = '/var/www/html/last-errors/robot';
+const ROBOT_LOGS = '/var/www/html/last-errors/robot-logs'; // 9-те робот лога (фази 1-4 + 5 приложения)
 // Състояние на текущото пускане (едно в даден момент).
 let robot = { running: false, runId: null, target: null, mode: null, startedAt: null, exitCode: null, reportDir: null, tail: [] };
 const pushTail = (line) => { robot.tail.push(line); if (robot.tail.length > 60) robot.tail.shift(); };
@@ -173,7 +174,7 @@ const server = http.createServer(async (req, res) => {
             robot = { running: true, runId, target, mode, startedAt: new Date().toISOString(), exitCode: null, reportDir: null, tail: [] };
             const child = spawn('node', args, {
                 cwd: ROBOT_DIR,
-                env: { ...process.env, ROBOT_NO_SANDBOX: '1', ROBOT_REPORTS_DIR: ROBOT_REPORTS },
+                env: { ...process.env, ROBOT_NO_SANDBOX: '1', ROBOT_REPORTS_DIR: ROBOT_REPORTS, ROBOT_LOG_DIR: ROBOT_LOGS },
             });
             const onData = (buf) => String(buf).split(/\r?\n/).forEach((l) => {
                 if (!l.trim()) return;
@@ -195,6 +196,22 @@ const server = http.createServer(async (req, res) => {
                 startedAt: robot.startedAt, exitCode: robot.exitCode, reportDir: robot.reportDir,
                 tail: robot.tail.slice(-25),
             });
+        }
+
+        // POST /robot-logs/clear — изпразва 9-те робот лога (фази 1-4 + 5 приложения)
+        if (req.method === 'POST' && route === '/robot-logs/clear') {
+            try {
+                let cleared = 0;
+                if (fs.existsSync(ROBOT_LOGS)) {
+                    for (const f of fs.readdirSync(ROBOT_LOGS)) {
+                        if (!f.endsWith('.log')) continue;
+                        try { fs.writeFileSync(path.join(ROBOT_LOGS, f), ''); cleared++; } catch (e) {}
+                    }
+                }
+                return sendJSON(res, 200, { ok: true, cleared });
+            } catch (e) {
+                return sendJSON(res, 500, { ok: false, error: e.message });
+            }
         }
 
         // GET /robot/reports — списък минали репорти (от report.json)

@@ -50,6 +50,18 @@ const DB_FILE = process.env.TEST_DB || 'database/amschat.db';
 
 let db;
 
+// `db` се инициализира АСИНХРОННО (await setupDatabase()), а route-овете се монтират
+// по-долу СИНХРОННО — т.е. преди db да е готов. Затова подаваме „жив" proxy, който при
+// всяка заявка чете ТЕКУЩИЯ db. Иначе route factory-тата хващат db=undefined завинаги
+// (→ „Cannot read properties of undefined (reading 'prepare')" на PostgreSQL).
+const dbProxy = new Proxy({}, {
+  get(_t, prop) {
+    if (!db) throw new Error('DB не е готова още');
+    const v = db[prop];
+    return typeof v === 'function' ? v.bind(db) : v;
+  },
+});
+
 // Initialize database with fallback logic
 async function setupDatabase() {
   debug.stage('initializing database');
@@ -306,23 +318,23 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Auth routes (no authentication required)
-app.use('/api/auth', authLimiter, createAuthRoutes(db));
+// Auth routes (no authentication required) — ползват dbProxy (жив db, не undefined)
+app.use('/api/auth', authLimiter, createAuthRoutes(dbProxy));
 
 // Payment routes (no authentication required for pricing)
-app.use('/api/payment', createPaymentRoutes(db));
+app.use('/api/payment', createPaymentRoutes(dbProxy));
 
 // Protected routes (require authentication)
-app.use('/api/friends', authenticate(db), testModeOverride, createFriendsRoutes(db));
-app.use('/api/messages', authenticate(db), testModeOverride, createMessagesRoutes(db, uploadDir));
-app.use('/api/profile', authenticate(db), testModeOverride, createProfileRoutes(db));
-app.use('/api/help', authenticate(db), testModeOverride, createHelpRoutes(db));
-app.use('/api/search', authenticate(db), testModeOverride, createSearchRoutes(db));
-app.use('/api/matchmaking', authenticate(db), testModeOverride, createMatchmakingRoutes(db));
+app.use('/api/friends', authenticate(dbProxy), testModeOverride, createFriendsRoutes(dbProxy));
+app.use('/api/messages', authenticate(dbProxy), testModeOverride, createMessagesRoutes(dbProxy, uploadDir));
+app.use('/api/profile', authenticate(dbProxy), testModeOverride, createProfileRoutes(dbProxy));
+app.use('/api/help', authenticate(dbProxy), testModeOverride, createHelpRoutes(dbProxy));
+app.use('/api/search', authenticate(dbProxy), testModeOverride, createSearchRoutes(dbProxy));
+app.use('/api/matchmaking', authenticate(dbProxy), testModeOverride, createMatchmakingRoutes(dbProxy));
 app.use('/api/signals', require('./routes/signals'));  // Signals route (handles auth internally)
 
 // Admin routes (separate authentication)
-app.use('/api/admin', createAdminRoutes(db));
+app.use('/api/admin', createAdminRoutes(dbProxy));
 
 // Error handler
 app.use((err, req, res, next) => {

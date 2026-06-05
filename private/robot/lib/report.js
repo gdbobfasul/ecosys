@@ -52,6 +52,22 @@ function renderMd(data) {
       L.push(`| ${(f.page || '').replace(/\|/g, '')} | ${f.method} | ${(f.action || '').replace(/\|/g, '')} | ${(f.fields || []).join(', ').slice(0, 120)} |`);
     }
   }
+  if (data.journeys && data.journeys.length) {
+    L.push('');
+    L.push('## Работни сценарии (като човек)');
+    for (const j of data.journeys) {
+      const okN = j.scenarios.filter((s) => s.ok).length;
+      L.push('');
+      L.push(`### ${j.label} — ${okN}/${j.scenarios.length} минали`);
+      for (const s of j.scenarios) {
+        L.push(`- ${s.ok ? '✅' : '🔴'} **${s.name}**`);
+        for (const st of s.steps) {
+          if (st.ok) continue; // показвай само провалените/пропуснатите стъпки
+          L.push(`    - ${st.skipped ? '⏭️ (пропусната)' : '🔴 ' + (st.error || '')} ${st.step}`);
+        }
+      }
+    }
+  }
   if (data.fuzz) {
     L.push('');
     L.push(`## Fuzz (срещу VM) — seed ${data.fuzz.seed}`);
@@ -91,4 +107,40 @@ function writeReport(dir, data) {
   return dir;
 }
 
-module.exports = { writeReport, stamp };
+// Допълва 9-те „робот лога" (фази 1-4 + 5 приложения) — четат се на admin-status.html.
+// За журитата пише пълната верига от действия (стъпки); за фазите — грешки + къде са станали.
+function appendRobotLogs(data, logDir) {
+  try { fs.mkdirSync(logDir, { recursive: true }); } catch (_) {}
+  const ts = data.startedAt;
+  const hdr = (extra) => `\n═══ [${ts}] target=${data.target} · 🔴${data.counts.error} 🟡${data.counts.warn}${extra ? ' · ' + extra : ''} ═══\n`;
+
+  if (data.journeys && data.journeys.length) {
+    for (const j of data.journeys) {
+      let out = hdr('работни сценарии (като човек)');
+      for (const s of j.scenarios) {
+        out += `▶ ${s.ok ? '✓' : '✗'} ${s.name}\n`;
+        for (const st of s.steps) {
+          if (st.skipped) out += `    ⏭️ ${st.step}\n`;
+          else if (st.ok) out += `    · ${st.step}\n`;
+          else out += `    ✗ ${st.step} — ${st.error || ''}\n`;
+        }
+      }
+      try { fs.appendFileSync(path.join(logDir, `robot-app-${j.app}.log`), out, 'utf8'); } catch (_) {}
+    }
+    return;
+  }
+
+  // Фазов режим (critical|all|crawl|fuzz)
+  const mode = (data.mode || 'critical').replace(/[^a-z]/gi, '');
+  let out = hdr(`${data.urlsChecked} адреса`);
+  const errs = data.findings.filter((f) => f.severity === 'error');
+  if (errs.length) {
+    out += 'грешки и при какво действие (адрес) са станали:\n';
+    for (const f of errs) out += `  🔴 [${f.app || ''}] ${f.kind} ${f.status || ''} ${f.targetUrl || f.resourceUrl || ''} — ${(f.detail || '').slice(0, 200)}\n`;
+  } else {
+    out += '(без грешки)\n';
+  }
+  try { fs.appendFileSync(path.join(logDir, `robot-phase-${mode}.log`), out, 'utf8'); } catch (_) {}
+}
+
+module.exports = { writeReport, stamp, appendRobotLogs };

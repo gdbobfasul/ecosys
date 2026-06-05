@@ -160,6 +160,16 @@
             <!-- Populated by JS -->
         </div>
 
+        <!-- Robot Logs — 9 секции: фази 1-4 + 5 приложения (генерирани от тест робота) -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin:26px 0 12px;">
+            <h3 style="color:#8b949e; font-size:0.9em; margin:0;">🤖 Robot Logs</h3>
+            <button onclick="clearRobotLogs(event)" title="Изтрива ВСИЧКИ робот логове (9-те секции)"
+                style="background:#3d1014; color:#f0883e; border:1px solid #5a1a1f; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.78em;">🧹 Изчисти Robot логовете</button>
+        </div>
+        <div id="robot-logs-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:8px;">
+            <!-- Populated by JS -->
+        </div>
+
         <!-- Inline log viewer -->
         <div id="log-viewer" style="display:none; margin-top:20px; background:#0d1117; border:1px solid #30363d; border-radius:6px; padding:16px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -240,7 +250,8 @@
         `;
     }
 
-    async function viewLog(file, label) {
+    async function viewLog(file, label, dir) {
+        dir = dir || '';
         const viewer = document.getElementById('log-viewer');
         const title = document.getElementById('log-viewer-title');
         const content = document.getElementById('log-viewer-content');
@@ -249,12 +260,51 @@
         viewer.style.display = 'block';
         viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         try {
-            const res = await fetch('/last-errors/' + file + '?t=' + Date.now());
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            content.textContent = await res.text();
+            const res = await fetch('/last-errors/' + dir + file + '?t=' + Date.now());
+            if (!res.ok) throw new Error(res.status === 404 ? 'празно (още няма такъв лог)' : 'HTTP ' + res.status);
+            content.textContent = (await res.text()) || '(празно)';
         } catch (err) {
-            content.textContent = '✗ Грешка: ' + err.message;
+            content.textContent = '✗ ' + err.message;
         }
+    }
+
+    // ── Robot Logs: 9 секции (фази 1-4 + 5 приложения). Файловете са в /last-errors/robot-logs/.
+    const ROBOT_LOGS = [
+        { file: 'robot-phase-critical.log', label: '①  Фаза 1 — критични пътища', desc: 'действия + грешки от критичните пътища' },
+        { file: 'robot-phase-all.log',      label: '②  Фаза — пълно (дървото)',   desc: 'обхождане на всички страници' },
+        { file: 'robot-phase-crawl.log',    label: '③  Фаза 2 — crawler',          desc: 'следване на линковете (BFS)' },
+        { file: 'robot-phase-fuzz.log',     label: '④  Фаза 3 — fuzz (VM)',        desc: 'форми с гранични стойности' },
+        { file: 'robot-app-portals.log',    label: '⑤  Портали',                   desc: 'регистрация/вход/услуга' },
+        { file: 'robot-app-chat.log',       label: '⑥  Чат',                       desc: 'вход/регистрация' },
+        { file: 'robot-app-eco3.log',       label: '⑦  ECO-3',                     desc: 'достъп + админ' },
+        { file: 'robot-app-hlb.log',        label: '⑧  House-Look-Book',           desc: 'създай къща → админ модерация' },
+        { file: 'robot-app-wnb.log',        label: '⑨  WhereNoBiz',                desc: 'създай пост → админ модерация' },
+    ];
+
+    function renderRobotLogButton(log) {
+        return `
+            <div style="display:flex; align-items:center; gap:8px; background:#161b22; border:1px solid #30363d; border-radius:6px; padding:10px;">
+                <div style="flex:1; min-width:0;">
+                    <div style="font-size:0.9em; color:#e1e4e8; font-weight:500;">${log.label}</div>
+                    <div style="font-size:0.7em; color:#8b949e;">${log.desc}</div>
+                </div>
+                <button onclick="viewLog('${log.file}', '${log.label}', 'robot-logs/')" title="Покажи inline"
+                    style="background:#21262d; border:1px solid #30363d; color:#58a6ff; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.75em;">👁</button>
+                <a href="/last-errors/robot-logs/${log.file}" download
+                    style="background:#21262d; border:1px solid #30363d; color:#58a6ff; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.75em; text-decoration:none; display:inline-block;">⬇</a>
+            </div>
+        `;
+    }
+
+    async function clearRobotLogs(e) {
+        if (e) e.preventDefault();
+        if (!confirm('Да изтрия ли ВСИЧКИ робот логове (9-те секции)?')) return;
+        try {
+            const r = await fetch('/api/diag/robot-logs/clear', { method: 'POST' });
+            const d = await r.json().catch(() => ({}));
+            if (!r.ok) { alert('Грешка: ' + (d.error || r.status)); return; }
+            alert('✓ Изчистени ' + (d.cleared || 0) + ' робот лога.');
+        } catch (err) { alert('Грешка: ' + err.message); }
     }
 
     async function regenLogs() {
@@ -407,6 +457,7 @@
 
     async function regenAndLoad() {
         document.getElementById('logs-grid').innerHTML = LOGS.map(renderLogButton).join('');
+        document.getElementById('robot-logs-grid').innerHTML = ROBOT_LOGS.map(renderRobotLogButton).join('');
         await regenLogs();
         await loadStatusJson();
         await loadDebugFlags();
