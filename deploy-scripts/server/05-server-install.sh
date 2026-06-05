@@ -278,6 +278,18 @@ if ls "$STAGING"/*.version 1>/dev/null 2>&1; then
     echo -e "  ${CYAN}Нова версия (staging):${NC} $(basename $STAGING_VER) → $(cat $STAGING_VER)"
 fi
 
+# Прочети target info от deploy.sh (target IP + production domain + авто-флаговете
+# AUTO_DEFAULTS/AUTO_NPM/DROP_DB). ВАЖНО: чете се ТУК — преди първия въпрос
+# („Нова инсталация" по-долу) — за да минават автоматично ВСИЧКИ питания при
+# ПЪЛНА ИНСТАЛАЦИЯ (точка 2 от менюто).
+TARGET_NAME=""
+TARGET_SERVER=""
+TARGET_PROD_DOMAIN=""
+if [ -f /tmp/deploy_target_info ]; then
+    . /tmp/deploy_target_info
+    rm -f /tmp/deploy_target_info
+fi
+
 ##############################################################################
 # STEP 2: РЕШЕНИЕ — НОВА ИНСТАЛАЦИЯ ИЛИ ОТКАЗ
 ##############################################################################
@@ -374,14 +386,7 @@ for f in /etc/nginx/sites-available/*; do
     fi
 done
 
-# Прочети target info от deploy.sh (target IP + production domain)
-TARGET_NAME=""
-TARGET_SERVER=""
-TARGET_PROD_DOMAIN=""
-if [ -f /tmp/deploy_target_info ]; then
-    . /tmp/deploy_target_info
-    rm -f /tmp/deploy_target_info
-fi
+# (target info вече е прочетен по-горе, преди „СТЪПКА 2" — вкл. авто-флаговете)
 
 # T_IP — реалният IP адрес на тази машина (за nginx server_name)
 # Ако TARGET_SERVER е IP → ползвай го директно
@@ -1765,7 +1770,9 @@ except Exception:
     echo -e "  ${YELLOW}>>>${NC} Да настроя failover сега? (default: ${RED}N${NC})"
     echo ""
     DO_FAILOVER=""
-    if [ -t 0 ]; then
+    if [ "${AUTO_DEFAULTS:-0}" = "1" ]; then
+        DO_FAILOVER="n"; echo -e "  ${CYAN}► Пълна инсталация — failover пропуснат (авто, без питане; настрой го по-късно при нужда)${NC}"
+    elif [ -t 0 ]; then
         read -p "  Избор [y/N]: " DO_FAILOVER
     elif [ -e /dev/fd/3 ]; then
         read -p "  Избор [y/N]: " DO_FAILOVER <&3 2>/dev/null || DO_FAILOVER=""

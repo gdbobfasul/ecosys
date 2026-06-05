@@ -87,7 +87,7 @@ function initializePostgreSQL() {
   
   // Превръща SQLite-синтаксиса (с който е писан кодът на chat) към PostgreSQL:
   //   ?  →  $1, $2, …            (PG не разбира ? плейсхолдъри → иначе 42601 syntax error)
-  //   datetime('now') → now()  ·  date('now') → current_date
+  //   datetime('now') → now()  ·  date('now') → to_char(now(),'YYYY-MM-DD')
   const pgify = (sql) => {
     let s = String(sql);
     const orIgnore = /insert\s+or\s+(ignore|replace)\s+into/i.test(s);
