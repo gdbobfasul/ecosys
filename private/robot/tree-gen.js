@@ -72,7 +72,7 @@ const PARAM_NOTES = {
 
 // Кои адреси да се третират като АДМИН (заключени/чувствителни).
 const isAdmin = (url) =>
-  /\/admin(\/|\.html|$)/.test(url) || /admin-status/.test(url) || /\/scripts\.html$/.test(url);
+  /\/admin(\/|\.html|$)/.test(url) || /admin-status/.test(url) || /\/scripts\.html$/.test(url) || /\/robot\.html$/.test(url);
 
 // ── помощни ────────────────────────────────────────────────────────────────
 function walkHtml(dir, acc = []) {

@@ -283,6 +283,14 @@ show_menu() {
         "Отделно за всеки: token / brch1 / multisig. Чете on-chain, БЕЗ ключове (read-only)." \
         "Нужен е ethers на сървъра (опция 2 пълна инсталация го слага). Бездейства, докато не впишеш адреса."
 
+    echo ""
+    echo -e "${BOLD}${CYAN}━━━ ТЕСТ РОБОТ (Playwright обхождане + лов на грешки) ━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    item "53" "Тест робот — инсталирай (Playwright + Chromium)" \
+        "npm install + сваля Chromium на сървъра, прави папка за репорти, рестартира kcy-diag." \
+        "После пускаш робота от админ менюто на сайта: 🤖 Робот (/shared/robot.html)." \
+        "Chromium яде RAM — на малък сървър пускай по едно обхождане."
+
     echo -e "${BOLD}${GRAY}━━━ СВОБОДНИ НОМЕРА ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     item " 3" "СВОБОДЕН"
@@ -549,6 +557,18 @@ run_choice() {
                     [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ kcy-tokmon-${TKN} настроен${NC}" || echo -e "  ${RED}✗ ${TKN}: грешка (exit ${RC})${NC}"
                 done
             elif [ -z "$TLIST" ]; then echo "  Невалиден избор — отказано"
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        53)
+            echo ""
+            echo -e "${BOLD}${CYAN}  Тест робот — инсталиране (Playwright + Chromium)${NC}"
+            if pick_target; then
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/32-setup-robot.sh"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} ${REMOTE}${NC}"
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Роботът е инсталиран — пусни го от 🤖 Робот в админ менюто${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
             else echo "  Отказано"; fi
             press_enter
             ;;

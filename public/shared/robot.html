@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🤖 Тест робот — KCY Админ</title>
+<!-- Version: 1.0173 -->
+<style>
+  :root{--bg:#0d1117;--card:#161b22;--bd:#30363d;--fg:#c9d1d9;--mut:#8b949e;--ac:#58a6ff;--ok:#3fb950;--warn:#d29922;--err:#f85149;--adm:#f0883e;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;padding:24px}
+  .wrap{max-width:1000px;margin:0 auto}
+  h1{font-size:1.5em;margin:0 0 4px}
+  .sub{color:var(--mut);font-size:.86em;margin-bottom:18px}
+  .card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:18px;margin-bottom:18px}
+  label{display:block;color:var(--mut);font-size:.82em;margin:0 0 4px}
+  select,button{font:inherit}
+  select{background:#0d1117;border:1px solid var(--bd);color:var(--fg);padding:8px 10px;border-radius:8px;min-width:170px}
+  .controls{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end}
+  .run{background:var(--ok);border:0;color:#04260f;font-weight:700;padding:10px 20px;border-radius:8px;cursor:pointer}
+  .run:disabled{opacity:.5;cursor:not-allowed}
+  .hint{color:var(--mut);font-size:.8em;margin-top:8px}
+  pre.tail{background:#010409;border:1px solid var(--bd);border-radius:8px;padding:12px;max-height:300px;overflow:auto;font-size:.82em;white-space:pre-wrap;margin:12px 0 0}
+  .status{display:inline-block;padding:2px 10px;border-radius:10px;font-size:.8em;font-weight:600}
+  .st-run{background:#1c2d12;color:var(--ok)} .st-idle{background:#21262d;color:var(--mut)}
+  table{width:100%;border-collapse:collapse;font-size:.88em}
+  th,td{text-align:left;padding:7px 8px;border-bottom:1px solid #21262d}
+  th{color:var(--mut);font-weight:600}
+  a{color:var(--ac);text-decoration:none} a:hover{text-decoration:underline}
+  .pill{font-size:.85em;padding:1px 7px;border-radius:8px;margin-right:3px}
+  .e{color:var(--err)} .w{color:var(--warn)} .i{color:var(--mut)}
+  .deny{background:#3d1014;border:1px solid #5a1a1f;color:#ff9b9b;padding:20px;border-radius:10px;text-align:center}
+  .links{margin-top:18px;display:flex;gap:14px;flex-wrap:wrap}
+  .links a{background:var(--card);border:1px solid var(--bd);padding:7px 12px;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🤖 Тест робот</h1>
+  <div class="sub">Обхожда сайта с Playwright, лови грешки и корелира със сървърния лог. Само за админи.</div>
+
+  <div id="gate-denied" class="deny" style="display:none">
+    ⛔ Достъпът е отказан (IP-то не е в админ списъка).
+  </div>
+
+  <div id="panel" style="display:none">
+    <div class="card">
+      <div class="controls">
+        <div>
+          <label>Цел</label>
+          <select id="target">
+            <option value="prod">prod — alsec.strangled.net (само четене)</option>
+            <option value="vm">vm — 192.168.0.108</option>
+          </select>
+        </div>
+        <div>
+          <label>Обхват</label>
+          <select id="mode">
+            <option value="critical">Критични пътища (бързо)</option>
+            <option value="all">Всички страници от дървото (пълно)</option>
+            <option value="crawl">Crawler — следва линковете (най-дълбоко)</option>
+            <option value="fuzz">Fuzz — попълва/изпраща форми (само VM!)</option>
+          </select>
+        </div>
+        <button id="runBtn" class="run">▶ Пусни робота</button>
+        <span id="stPill" class="status st-idle">бездейства</span>
+      </div>
+      <div class="hint">prod е само четене (без писане/форми). Тежкият браузър ползва памет — на малкия сървър пускай по едно.</div>
+      <pre id="tail" class="tail" style="display:none"></pre>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <strong>Минали репорти</strong>
+        <button onclick="loadReports()" style="background:#21262d;border:1px solid var(--bd);color:var(--fg);padding:5px 10px;border-radius:7px;cursor:pointer">⟳ Опресни</button>
+      </div>
+      <table>
+        <thead><tr><th>Кога</th><th>Цел</th><th>Обхват</th><th>Резултат</th><th>Адреси</th><th>Репорт</th></tr></thead>
+        <tbody id="reports"><tr><td colspan="6" style="color:var(--mut)">Зареждане…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="links">
+    <a href="/">🏠 Начало</a>
+    <a href="/shared/admin-status.html">🩺 System Status</a>
+    <a href="/tree" target="_blank">🌳 Дърво</a>
+    <a href="/last-errors-bundle" target="_blank">🧾 Логове</a>
+  </div>
+</div>
+
+<script>
+const API = '/api/diag';
+let poll = null;
+
+// ── Админ гейт (както admin-status.html) ─────────────────────────────────
+fetch('/api/portals/ip-admin', { credentials:'same-origin' })
+  .then(r => r.ok ? r.json() : null)
+  .then(d => {
+    if (d && d.ip_admin) { document.getElementById('panel').style.display=''; loadReports(); loadStatus(); }
+    else document.getElementById('gate-denied').style.display='';
+  })
+  .catch(() => { document.getElementById('gate-denied').style.display=''; });
+
+const elTail = () => document.getElementById('tail');
+const elPill = () => document.getElementById('stPill');
+const elBtn  = () => document.getElementById('runBtn');
+
+function setRunning(on){
+  elBtn().disabled = on;
+  elPill().textContent = on ? '⟳ върви…' : 'бездейства';
+  elPill().className = 'status ' + (on ? 'st-run' : 'st-idle');
+}
+
+// Fuzz е само срещу VM → при избор сменяме целта на vm.
+document.getElementById('mode').addEventListener('change', function(){
+  if (this.value === 'fuzz') document.getElementById('target').value = 'vm';
+});
+
+document.getElementById('runBtn').addEventListener('click', () => {
+  const target = document.getElementById('target').value;
+  const mode = document.getElementById('mode').value;
+  setRunning(true);
+  elTail().style.display=''; elTail().textContent = '⟳ стартирам…';
+  fetch(API + '/robot/run', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({target, mode}) })
+    .then(r => r.json())
+    .then(d => {
+      if (!d.ok) { elTail().textContent = '✗ ' + (d.error || 'грешка'); setRunning(false); return; }
+      startPolling();
+    })
+    .catch(e => { elTail().textContent = '✗ ' + e.message; setRunning(false); });
+});
+
+function startPolling(){ if (poll) clearInterval(poll); poll = setInterval(loadStatus, 2000); loadStatus(); }
+
+function loadStatus(){
+  fetch(API + '/robot/status').then(r=>r.json()).then(d=>{
+    setRunning(d.running);
+    if (d.tail && d.tail.length){ elTail().style.display=''; elTail().textContent = d.tail.join('\n'); elTail().scrollTop = elTail().scrollHeight; }
+    if (!d.running){
+      if (poll) { clearInterval(poll); poll = null; }
+      if (d.exitCode !== null && d.runId) loadReports();
+    }
+  }).catch(()=>{});
+}
+
+function badge(c){
+  if (!c) return '';
+  return `<span class="pill e">🔴 ${c.error||0}</span><span class="pill w">🟡 ${c.warn||0}</span><span class="pill i">ℹ️ ${c.info||0}</span>`;
+}
+
+function loadReports(){
+  fetch(API + '/robot/reports').then(r=>r.json()).then(d=>{
+    const tb = document.getElementById('reports');
+    if (!d.reports || !d.reports.length){ tb.innerHTML = '<tr><td colspan="6" style="color:var(--mut)">Още няма репорти.</td></tr>'; return; }
+    tb.innerHTML = d.reports.map(r => {
+      const when = r.startedAt ? new Date(r.startedAt).toLocaleString('bg-BG') : r.id;
+      const base = '/last-errors/robot/' + encodeURIComponent(r.id) + '/';
+      return `<tr>
+        <td>${when}</td><td>${r.target||''}</td><td>${r.mode||''}</td>
+        <td>${badge(r.counts)}</td><td>${r.urlsChecked||''}</td>
+        <td><a href="${base}report.md" target="_blank">md</a> · <a href="${base}report.json" target="_blank">json</a></td>
+      </tr>`;
+    }).join('');
+  }).catch(()=>{});
+}
+</script>
+</body>
+</html>

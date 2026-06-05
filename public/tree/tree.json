@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-05T08:40:14.409Z",
-  "totalPages": 80,
+  "generatedAt": "2026-06-05T09:23:49.739Z",
+  "totalPages": 81,
   "health": [
     {
       "app": "chat",
@@ -601,6 +601,12 @@
         {
           "url": "/shared/admin-status.html",
           "title": "KCY Ecosystem — System Status",
+          "type": "admin",
+          "params": []
+        },
+        {
+          "url": "/shared/robot.html",
+          "title": "🤖 Тест робот — KCY Админ",
           "type": "admin",
           "params": []
         }

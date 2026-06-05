@@ -1,4 +1,4 @@
-// Version: 1.0146
+// Version: 1.0173
 /**
  * KCY Ecosystem - Navigation System
  * Admin dropdown visible ONLY with ?adm=bgmasters-set
@@ -71,6 +71,7 @@ const KCY_NAV = {
                     <select onchange="if(this.value) window.location.href=this.value">
                         <option value="">⚙️ Admin ▼</option>
                         <option value="/shared/admin-status.html">🩺 System Status</option>
+                        <option value="/shared/robot.html">🤖 Робот (тест)</option>
                         <option value="" disabled>──────────────</option>
                         <option value="/token/admin/scripts.html">🪙 Token Admin</option>
                         <option value="/brch1/admin/">💰 BRCH1 Admin</option>

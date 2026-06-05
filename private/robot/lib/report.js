@@ -42,6 +42,28 @@ function renderMd(data) {
     L.push('');
     L.push('</details>');
   }
+  if (data.forms && data.forms.length) {
+    L.push('');
+    L.push(`## Открити форми (${data.forms.length}) — за Фаза 3 (fuzz срещу VM)`);
+    L.push('');
+    L.push('| Страница | Метод | Action | Полета |');
+    L.push('|---|---|---|---|');
+    for (const f of data.forms.slice(0, 80)) {
+      L.push(`| ${(f.page || '').replace(/\|/g, '')} | ${f.method} | ${(f.action || '').replace(/\|/g, '')} | ${(f.fields || []).join(', ').slice(0, 120)} |`);
+    }
+  }
+  if (data.fuzz) {
+    L.push('');
+    L.push(`## Fuzz (срещу VM) — seed ${data.fuzz.seed}`);
+    L.push('');
+    L.push(`Повторение на същата последователност: \`node run.js --target vm --fuzz --seed ${data.fuzz.seed}\``);
+    L.push('');
+    L.push(`Fuzz-нати страници с форми: ${data.fuzz.pages.length}`);
+    for (const p of data.fuzz.pages.slice(0, 40)) {
+      const submits = p.actions.filter((a) => a.action === 'submit').length;
+      L.push(`- \`${p.url}\` — ${p.actions.length} действия, ${submits} изпращания`);
+    }
+  }
   L.push('');
   L.push('## Сървърен лог (корелация)');
   L.push('');

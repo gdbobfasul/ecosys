@@ -111,7 +111,7 @@
     <div class="panel"><h3 data-i18n="charts.world_indices">Световни индекси (преглед)</h3>
       <div class="body tall"><div class="tradingview-widget-container tv"><div class="tradingview-widget-container__widget"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-        {"colorTheme":"dark","dateRange":"12M","locale":"bg","showChart":true,"isTransparent":true,"width":"100%","height":"100%","tabs":[{"title":KCY_I18N.t('charts.indices'),"symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"FOREXCOM:NSXUSD","d":"Nasdaq 100"},{"s":"FOREXCOM:DJI","d":"Dow 30"},{"s":"FOREXCOM:DEUIDXEUR","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]}]}
+        {"colorTheme":"dark","dateRange":"12M","locale":"bg","showChart":true,"isTransparent":true,"width":"100%","height":"100%","tabs":[{"title":"Индекси","symbols":[{"s":"FOREXCOM:SPXUSD","d":"S&P 500"},{"s":"FOREXCOM:NSXUSD","d":"Nasdaq 100"},{"s":"FOREXCOM:DJI","d":"Dow 30"},{"s":"FOREXCOM:DEUIDXEUR","d":"DAX"},{"s":"FOREXCOM:UKXGBP","d":"FTSE 100"}]}]}
         </script></div></div>
     </div>
   </div>
@@ -169,7 +169,7 @@ function tvChart(symbol, interval){
   return wrap;
 }
 function labelInt(i){
-  return {'15':'15 мин','60':KCY_I18N.t('charts.hour'),'D':KCY_I18N.t('charts.day'),'W':KCY_I18N.t('charts.week'),'M':KCY_I18N.t('charts.month')}[i]||i;
+  return {'15':'15 мин','60':(window.KCY_I18N?KCY_I18N.t('charts.hour'):'час'),'D':(window.KCY_I18N?KCY_I18N.t('charts.day'):'ден'),'W':(window.KCY_I18N?KCY_I18N.t('charts.week'):'седмица'),'M':(window.KCY_I18N?KCY_I18N.t('charts.month'):'месец')}[i]||i;
 }
 
 // ── Исторически графики (1-4 г назад) = реални данни от Binance, центрирани на датата ──
@@ -192,9 +192,9 @@ async function fetchKlines(symbol, interval, startMs, endMs){
 
 // интервал → колко дни обхват около датата (за да има смислен брой свещи)
 var HIST_INTERVALS={
-  '1d':{label:KCY_I18N.t('charts.day'), spanDays:30},
-  '1w':{label:KCY_I18N.t('charts.week'), spanDays:180},
-  '1M':{label:KCY_I18N.t('charts.month'), spanDays:540}
+  '1d':{label:(window.KCY_I18N?KCY_I18N.t('charts.day'):'ден'), spanDays:30},
+  '1w':{label:(window.KCY_I18N?KCY_I18N.t('charts.week'):'седмица'), spanDays:180},
+  '1M':{label:(window.KCY_I18N?KCY_I18N.t('charts.month'):'месец'), spanDays:540}
 };
 
 async function histChart(container, symbol, targetDate, interval){
@@ -258,7 +258,7 @@ async function histChart(container, symbol, targetDate, interval){
     // маркер на целевата дата
     var targetSec=Math.floor(t/1000);
     var closest=data.reduce(function(a,b){ return Math.abs(b.time-targetSec)<Math.abs(a.time-targetSec)?b:a; });
-    series.setMarkers([{ time:closest.time, position:'aboveBar', color:'#ffd166', shape:'arrowDown', text:KCY_I18N.t('charts.target') }]);
+    series.setMarkers([{ time:closest.time, position:'aboveBar', color:'#ffd166', shape:'arrowDown', text:(window.KCY_I18N?KCY_I18N.t('charts.target'):'таргет') }]);
     chart.timeScale().fitContent();
   }catch(e){
     container.innerHTML='<div style="padding:20px;color:#c66;font-size:.85em;">Грешка при зареждане: '+e.message+'</div>';

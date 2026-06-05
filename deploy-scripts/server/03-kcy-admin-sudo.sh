@@ -146,6 +146,14 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh *
 
+# Тест робот (точка 53) — инсталира Playwright+Chromium за робота.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/32-setup-robot.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/32-setup-robot.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/32-setup-robot.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/32-setup-robot.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/32-setup-robot.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/32-setup-robot.sh *
+
 # Systemd service management (само за KCY services)
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3

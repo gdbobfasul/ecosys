@@ -29,15 +29,34 @@ npx playwright install chromium      # сваля браузъра (еднокр
 ## Пускане
 
 ```bash
-node run.js                  # prod, критични пътища (read-only)
-node run.js --target vm      # срещу VM
-node run.js --all            # ВСИЧКИ публични страници от дървото
-node run.js --include-admin  # включи и админ страниците
-node run.js --app portals    # само едно приложение
-node run.js --headed         # с видим браузър
+node run.js                          # prod, критични пътища (read-only)
+node run.js --target vm              # срещу VM
+node run.js --all                    # ВСИЧКИ публични страници от дървото
+node run.js --crawl                  # Фаза 2: crawler (следва линковете, BFS)
+node run.js --crawl --max 200 --depth 4   # по-дълбоко
+node run.js --target vm --fuzz       # Фаза 3: fuzz форми (САМО VM!)
+node run.js --target vm --fuzz --seed 12345   # повтори същата последователност
+node run.js --include-admin          # включи и админ страниците
+node run.js --app portals            # само едно приложение (критични)
+node run.js --headed                 # с видим браузър
 ```
 
 Репортите се пишат в `private/robot/reports/<време>/`.
+
+## Режими (фази)
+
+| Режим | Флаг | Цел | Какво прави |
+|---|---|---|---|
+| Критични пътища | (по подразбиране) | prod/vm | по 1 сценарий на приложение + health |
+| Пълно (дървото) | `--all` | prod/vm | всички публични страници от `tree.json` |
+| **Crawler** | `--crawl` | prod/vm | следва откритите линкове (BFS), отбелязва форми |
+| **Fuzz** | `--fuzz` | **само VM** | попълва и изпраща форми с гранични/зловредни стойности; `--seed` за повторение |
+
+## Пускане от сайта (админ)
+
+Хедър меню (само админ IP) → **🤖 Робот** → `/shared/robot.html`. Избираш цел/режим, натискаш ▶,
+гледаш на живо, разглеждаш миналите репорти. Това върви през kcy-diag на сървъра — нужна е
+инсталация веднъж: **меню точка 53** (или `sudo 32-setup-robot.sh`).
 
 ## Дървото на екосистемата (`/tree`)
 
