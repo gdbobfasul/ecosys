@@ -130,7 +130,7 @@
             ws.onclose = () => setTimeout(connectWebSocket, 3000);
         }
 
-        connectWebSocket();
+        if (token && userId) connectWebSocket(); // не пускай WebSocket анонимно (без вход → redirect горе)
 
         // Load contacts
         async function loadContacts() {
@@ -431,8 +431,8 @@
             }
         }
 
-        // Load contacts on start
-        loadContacts();
+        // Load contacts on start (само ако си логнат — иначе горе вече пренасочваме към входа)
+        if (token && userId) loadContacts();
     </script>
     <script src="/shared/js/i18n.js?v=1.0126"></script>
 </body>

@@ -253,6 +253,8 @@
 
     // Load profile on page load
     document.addEventListener('DOMContentLoaded', async () => {
+      // без вход → към входа (не дърпай профил/категории анонимно)
+      if (!localStorage.getItem('token')) { window.location.href = 'index.html'; return; }
       await loadServiceCategories();
       await loadProfile();
       await checkHelpButtonAvailability();
