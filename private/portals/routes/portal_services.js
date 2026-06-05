@@ -83,8 +83,13 @@ router.get('/rates', requirePortalAccessAPI, async (req, res) => {
         log('изход 2 -> 200 OK (свежи курсове, ' + crypto.length + ' крипто)');
         res.json(Object.assign({}, data, { cached: false }));
     } catch (err) {
-        log('изход 3 -> 500 ' + err.message);
-        res.status(500).json({ error: 'rates_failed', message: err.message });
+        // Външен API (CoinGecko/ER-API) може да лимитира/падне. Не чупим с 500 —
+        // връщаме последните успешни курсове (остарели), а ако няма кеш → празно с 200.
+        log('изход 3 -> външен срив: ' + err.message);
+        if (ratesCache.data) {
+            return res.json(Object.assign({}, ratesCache.data, { cached: true, stale: true }));
+        }
+        res.json({ updated: new Date().toISOString(), source: 'недостъпен', crypto: [], fiat: {}, degraded: true, message: err.message });
     }
 });
 
