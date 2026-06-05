@@ -191,7 +191,7 @@ app.get('/health', async (req, res) => {
         uptime: process.uptime(),
         database: { connected: dbOk, type: db ? db.type : null, tables: dbTables, path: DB_PATH },
         anthropic: { configured: !!process.env.ANTHROPIC_API_KEY },
-        stripe: { configured: !!process.env.STRIPE_SECRET_KEY },
+        stripe: { configured: !!(STRIPE_CFG && STRIPE_CFG.secretKey), mode: STRIPE_CFG && STRIPE_CFG.testMode ? 'test' : 'live' },
         timestamp: new Date().toISOString()
     });
 });

@@ -1362,8 +1362,7 @@ function createAdminRoutes(db) {
     }
 
     // ── .env config check ──
-    const envVars = ['CHAT_PORT', 'ECO3_PORT', 'DB_TYPE', 'NODE_ENV', 'ALLOWED_ORIGINS', 
-                     'STRIPE_SECRET_KEY', 'STRIPE_PUBLISHABLE_KEY', 'ANTHROPIC_API_KEY'];
+    const envVars = ['CHAT_PORT', 'ECO3_PORT', 'DB_TYPE', 'NODE_ENV', 'ALLOWED_ORIGINS', 'ANTHROPIC_API_KEY'];
     envVars.forEach(v => {
       const val = process.env[v];
       if (!val) {
@@ -1374,6 +1373,18 @@ function createAdminRoutes(db) {
         status.config[v] = '✓ ' + val;
       }
     });
+
+    // Stripe — ключовете са с суфикс _LIVE/_TEST (избор по STRIPE_TEST_MODE). Проверяваме
+    // ИСТИНСКИ резолвнатия ключ (stripe-config), не голото STRIPE_SECRET_KEY (което е празно).
+    try {
+      const { resolveStripeConfig } = require('../../configs/stripe-config');
+      const scfg = resolveStripeConfig(process.env);
+      const tag = scfg.testMode ? ' [TEST]' : ' [LIVE]';
+      status.config['STRIPE_SECRET_KEY'] = scfg.secretKey ? ('✓ set (' + scfg.secretKey.substring(0, 8) + '...)' + tag) : '✗ not set';
+      status.config['STRIPE_PUBLISHABLE_KEY'] = scfg.publishableKey ? ('✓ set' + tag) : '✗ not set';
+    } catch (e) {
+      status.config['STRIPE_SECRET_KEY'] = '? (stripe-config грешка: ' + e.message + ')';
+    }
 
     // ── Paths ──
     const fs = require('fs');

@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT NOT NULL,
   full_name TEXT NOT NULL,
   gender TEXT NOT NULL CHECK(gender IN ('male', 'female')),
+  birth_date TEXT,
   age INTEGER,
   height_cm INTEGER,
   weight_kg INTEGER,
@@ -87,6 +88,9 @@ CREATE TABLE IF NOT EXISTS users (
   
   UNIQUE(phone, password_hash)
 );
+
+-- Идемпотентно: добавя birth_date към СЪЩЕСТВУВАЩИ бази (profile.js я заявява, иначе 42703).
+ALTER TABLE users ADD COLUMN IF NOT EXISTS birth_date TEXT;
 
 -- Sessions table (now links to user id, not phone)
 CREATE TABLE IF NOT EXISTS sessions (
