@@ -86,6 +86,17 @@ async function setupDatabase() {
     
     console.log(`✅ Database ready: ${getDatabaseType().toUpperCase()}`);
 
+    // На PostgreSQL прилагаме схемата при ВСЕКИ старт (както SQLite пътят прави с db_setup.sql).
+    // Схемата е идемпотентна (CREATE TABLE IF NOT EXISTS + ALTER ADD COLUMN IF NOT EXISTS +
+    // INSERT ON CONFLICT) → кърпи дрейфнали стари бази (липсващи колони → 42703) при всеки рестарт.
+    if (getDatabaseType() === 'postgresql') {
+      try {
+        const pgSchema = fs.readFileSync(path.join(__dirname, 'database', 'postgresql_setup.sql'), 'utf8');
+        await db.exec(pgSchema);
+        debug.stage('PG схема приложена (идемпотентно — колоните са синхронизирани)');
+      } catch (e) { console.error('⚠️  PG схема не се приложи напълно:', e.message); }
+    }
+
     // Всяко приложение попълва САМО своите админи/модератори от .env при собствения си
     // старт (идемпотентно). Чатът пази паролите в admin_users; кой е админ → roles.js.
     try {

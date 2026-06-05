@@ -89,8 +89,16 @@ CREATE TABLE IF NOT EXISTS users (
   UNIQUE(phone, password_hash)
 );
 
--- Идемпотентно: добавя birth_date към СЪЩЕСТВУВАЩИ бази (profile.js я заявява, иначе 42703).
+-- Идемпотентни миграции: добавят липсващи колони към СЪЩЕСТВУВАЩИ бази (стари бази, в
+-- които CREATE TABLE IF NOT EXISTS не е добавил новите колони → иначе 42703 при заявка).
 ALTER TABLE users ADD COLUMN IF NOT EXISTS birth_date TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS working_hours TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS latitude REAL;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS longitude REAL;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS is_static_object INTEGER DEFAULT 0;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_photo_url TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS created_from_signal_id INTEGER;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS manually_activated INTEGER DEFAULT 0;
 
 -- Sessions table (now links to user id, not phone)
 CREATE TABLE IF NOT EXISTS sessions (

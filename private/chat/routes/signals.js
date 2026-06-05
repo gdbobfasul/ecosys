@@ -59,11 +59,15 @@ const requireAuth = async (req, res, next) => {
   try {
     // изтичането се сравнява в JS (работи и на SQLite, и на PostgreSQL — expires_at е TEXT)
     const session = await db.prepare('SELECT user_id, expires_at FROM sessions WHERE token = ?').get(token);
-    if (!session || new Date(session.expires_at) <= new Date()) {
-      return res.status(401).json({ error: 'Invalid or expired session' });
+    if (session && new Date(session.expires_at) > new Date()) {
+      req.userId = session.user_id;
+      return next();
     }
-    req.userId = session.user_id;
-    next();
+    // Приеми и админ token-а от админ панела (/api/admin/login → admin_users.password_hash).
+    // Така „Manage Signals" в админ панела работи (staff admin), не само manually_activated user.
+    const staff = await db.prepare('SELECT username FROM admin_users WHERE password_hash = ?').get(token);
+    if (staff) { req.isStaffAdmin = true; req.staffUsername = staff.username; return next(); }
+    return res.status(401).json({ error: 'Invalid or expired session' });
   } catch (error) {
     console.error('Auth error:', error);
     res.status(500).json({ error: 'Authentication failed' });
@@ -190,7 +194,7 @@ router.get('/admin/pending', requireAuth, async (req, res) => {
   try {
     // Check if user is admin (you need to define admin logic)
     const user = await db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
-    if (!user) {
+    if (!req.isStaffAdmin && !user) {
       return res.status(403).json({ error: 'Admin access required' });
     }
     
@@ -235,7 +239,7 @@ router.post('/admin/approve/:signalId', requireAuth, async (req, res) => {
   try {
     // Check if user is admin
     const admin = await db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
-    if (!admin) {
+    if (!req.isStaffAdmin && !admin) {
       return res.status(403).json({ error: 'Admin access required' });
     }
     
@@ -326,7 +330,7 @@ router.post('/admin/reject/:signalId', requireAuth, async (req, res) => {
     
     // Check if user is admin
     const admin = await db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
-    if (!admin) {
+    if (!req.isStaffAdmin && !admin) {
       return res.status(403).json({ error: 'Admin access required' });
     }
     
@@ -369,7 +373,7 @@ router.post('/admin/obsolete/:signalId', requireAuth, async (req, res) => {
   try {
     // Check if user is admin
     const admin = await db.prepare('SELECT id FROM users WHERE id = ? AND manually_activated = 1').get(req.userId);
-    if (!admin) {
+    if (!req.isStaffAdmin && !admin) {
       return res.status(403).json({ error: 'Admin access required' });
     }
     
