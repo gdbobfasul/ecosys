@@ -102,6 +102,17 @@ done
 
 rm -rf "$SRC"
 
+# Регенерирай дървото на екосистемата (/tree) — отразява актуалните страници.
+TREE_GEN="$PRIVATE_DIR/robot/tree-gen.js"
+if [ -f "$TREE_GEN" ] && command -v node >/dev/null 2>&1; then
+    if PUBLIC_DIR="$WEB_ROOT" node "$TREE_GEN" >/dev/null 2>&1; then
+        chmod -R a+rX "$WEB_ROOT/tree" 2>/dev/null || true
+        echo -e "  ${GREEN}OK дървото /tree регенерирано${NC}"
+    else
+        echo -e "  ${YELLOW}- /tree не е регенерирано (tree-gen.js гръмна)${NC}"
+    fi
+fi
+
 # рестарт на node сървисите (nginx НЕ се пипа)
 echo -e "${YELLOW}Рестарт на node сървисите...${NC}"
 for svc in kcy-chat kcy-eco3 kcy-portals kcy-hlb kcy-wnb kcy-diag; do

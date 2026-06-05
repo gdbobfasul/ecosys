@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дърво на екосистемата — KCY</title>
+<style>
+  :root{--bg:#0d1117;--card:#161b22;--bd:#30363d;--fg:#c9d1d9;--mut:#8b949e;--ac:#58a6ff;--adm:#f0883e;--api:#3fb950;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;padding:24px}
+  header{max-width:1000px;margin:0 auto 18px}
+  h1{font-size:1.5em;margin:0 0 6px}
+  .meta{color:var(--mut);font-size:.85em}
+  .tools{max-width:1000px;margin:0 auto 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  input[type=search]{flex:1;min-width:220px;background:var(--card);border:1px solid var(--bd);color:var(--fg);padding:9px 12px;border-radius:8px}
+  .filterbtn{background:var(--card);border:1px solid var(--bd);color:var(--fg);padding:7px 12px;border-radius:8px;cursor:pointer}
+  .filterbtn.on{border-color:var(--ac);color:var(--ac)}
+  main{max-width:1000px;margin:0 auto}
+  .grp{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px 18px;margin-bottom:16px}
+  .grp h2{font-size:1.05em;color:var(--ac);margin:0 0 10px;border-bottom:1px solid var(--bd);padding-bottom:8px}
+  .cnt{color:var(--mut);font-size:.8em;font-weight:400}
+  ul{list-style:none;margin:0;padding:0}
+  .row{padding:7px 0;border-bottom:1px dashed #21262d}
+  .row:last-child{border-bottom:0}
+  .link{color:var(--fg);text-decoration:none;font-weight:600}
+  .link:hover{color:var(--ac);text-decoration:underline}
+  .url{color:var(--mut);font-size:.8em;margin-left:8px}
+  .b{font-size:.72em;padding:1px 7px;border-radius:10px;margin-left:6px;vertical-align:middle}
+  .b.adm{background:#3d1d10;color:var(--adm);border:1px solid #5a2e16}
+  .b.api{background:#102a17;color:var(--api);border:1px solid #1c4429}
+  .note{color:var(--mut);font-size:.8em;margin-left:8px;font-style:italic}
+  .params{margin:5px 0 2px 14px}
+  .param{display:inline-block;background:#0d2438;border:1px solid #1d4a6e;color:#9ecbff;font-size:.78em;
+         padding:1px 8px;border-radius:6px;margin:2px 4px 0 0;text-decoration:none;font-family:monospace}
+  .param:hover{border-color:var(--ac)}
+  .hide{display:none}
+  footer{max-width:1000px;margin:18px auto;color:var(--mut);font-size:.8em}
+  a.home{color:var(--ac)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🌳 Дърво на екосистемата</h1>
+  <div class="meta">80 страници · генерирано: <span id="gen">2026-06-05T08:40:14.409Z</span> · <a class="home" href="/">🏠 към сайта</a> · <a class="home" href="/tree/tree.json" target="_blank">tree.json</a></div>
+</header>
+<div class="tools">
+  <input id="q" type="search" placeholder="🔎 търси страница или URL…" autocomplete="off">
+  <button class="filterbtn on" data-f="all">Всички</button>
+  <button class="filterbtn" data-f="admin">🔒 само админ</button>
+  <button class="filterbtn" data-f="page">само публични</button>
+</div>
+<main>
+  <section class="grp" data-app="">
+    <h2>Основен сайт <span class="cnt">1</span></h2>
+    <ul><li class="row page">
+    <a class="link" href="/" target="_blank">KCY Ecosystem - Crypto Platform</a>
+    <code class="url">/</code>  
+    
+  </li></ul>
+  </section>
+  <section class="grp" data-app="portals">
+    <h2>Портали (игри + услуги) <span class="cnt">28</span></h2>
+    <ul><li class="row api">
+    <a class="link" href="/api/portals/health" target="_blank">health (portals)</a>
+    <code class="url">/api/portals/health</code> <span class="b api">API</span> 
+    
+  </li><li class="row admin">
+    <a class="link" href="/portals/admin.html" target="_blank">Portals — Admin панел</a>
+    <code class="url">/portals/admin.html</code> <span class="b adm">🔒 админ</span> 
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/billing.html" target="_blank">Плащане — KCY Portals</a>
+    <code class="url">/portals/billing.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/games/battle-duel.html" target="_blank">Дуел на ринга | KCY игри</a>
+    <code class="url">/portals/games/battle-duel.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/games/battle-standalone.html" target="_blank">Битки — standalone демо</a>
+    <code class="url">/portals/games/battle-standalone.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/games/battle-team.html" target="_blank">Битка на терен — отбори | KCY игри</a>
+    <code class="url">/portals/games/battle-team.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/games/car-drift.html" target="_blank">Кола — Дрифт | KCY игри</a>
+    <code class="url">/portals/games/car-drift.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/games/car-race.html" target="_blank">Кола — Надбягване | KCY игри</a>
+    <code class="url">/portals/games/car-race.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/games/hero-jump.html" target="_blank">Герой — Скачане | KCY игри</a>
+    <code class="url">/portals/games/hero-jump.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/games/hero-run.html" target="_blank">Герой — Бягане | KCY игри</a>
+    <code class="url">/portals/games/hero-run.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/games/plane-dodge.html" target="_blank">Самолет — Избягвай | KCY игри</a>
+    <code class="url">/portals/games/plane-dodge.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/games/plane-shoot.html" target="_blank">Самолет — Стрелба | KCY игри</a>
+    <code class="url">/portals/games/plane-shoot.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/index-games.html" target="_blank">Портал за игри — KCY</a>
+    <code class="url">/portals/index-games.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/index-services.html" target="_blank">Портал за услуги — KCY</a>
+    <code class="url">/portals/index-services.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/login.html" target="_blank">Вход — KCY Portals</a>
+    <code class="url">/portals/login.html</code>  
+    <div class="params"><a class="param" href="/portals/login.html?next=1" target="_blank" title="пренасочване след вход">?next=&lt;URL&gt;</a></div>
+  </li><li class="row page">
+    <a class="link" href="/portals/register.html" target="_blank">Регистрация — KCY Portals</a>
+    <code class="url">/portals/register.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/ai-listing.html" target="_blank">🏠 AI обява за имот</a>
+    <code class="url">/portals/services/ai-listing.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/calc.html" target="_blank">Калкулатори | KCY услуги</a>
+    <code class="url">/portals/services/calc.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/charts.html" target="_blank">Финансови графики | KCY услуги</a>
+    <code class="url">/portals/services/charts.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/crypto.html" target="_blank">Валутен конвертор | KCY услуги</a>
+    <code class="url">/portals/services/crypto.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/image.html" target="_blank">Компресор на снимки | KCY услуги</a>
+    <code class="url">/portals/services/image.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/password.html" target="_blank">Генератор на пароли | KCY услуги</a>
+    <code class="url">/portals/services/password.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/pdf-compress.html" target="_blank">Свиване на PDF | KCY услуги</a>
+    <code class="url">/portals/services/pdf-compress.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/pdf.html" target="_blank">PDF инструменти | KCY услуги</a>
+    <code class="url">/portals/services/pdf.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/qr.html" target="_blank">QR код — генератор и четец | KCY услуги</a>
+    <code class="url">/portals/services/qr.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/scraper.html" target="_blank">🕸️ Web скрапер</a>
+    <code class="url">/portals/services/scraper.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/text.html" target="_blank">Текстови инструменти | KCY услуги</a>
+    <code class="url">/portals/services/text.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/portals/services/watch20.html" target="_blank">Наблюдавай 20 валути и криптовалути | KCY услуги</a>
+    <code class="url">/portals/services/watch20.html</code>  
+    
+  </li></ul>
+  </section>
+  <section class="grp" data-app="chat">
+    <h2>Чат <span class="cnt">17</span></h2>
+    <ul><li class="row api">
+    <a class="link" href="/api/health" target="_blank">health (chat)</a>
+    <code class="url">/api/health</code> <span class="b api">API</span> 
+    
+  </li><li class="row page">
+    <a class="link" href="/chat/" target="_blank">AMS Chat - KCY Ecosystem</a>
+    <code class="url">/chat/</code>  
+    
+  </li><li class="row admin">
+    <a class="link" href="/chat/admin/" target="_blank">AMS Chat - Admin Panel</a>
+    <code class="url">/chat/admin/</code> <span class="b adm">🔒 админ</span> 
+    
+  </li><li class="row admin">
+    <a class="link" href="/chat/admin/admin-matchmaking.html" target="_blank">Admin - Matchmaking Checker</a>
+    <code class="url">/chat/admin/admin-matchmaking.html</code> <span class="b adm">🔒 админ</span> 
+    
+  </li><li class="row admin">
+    <a class="link" href="/chat/admin/admin-signals.html" target="_blank">Одобрение на сигнали - Admin</a>
+    <code class="url">/chat/admin/admin-signals.html</code> <span class="b adm">🔒 админ</span> 
+    
+  </li><li class="row admin">
+    <a class="link" href="/chat/admin/admin-static-objects.html" target="_blank">Управление на потребители - Admin</a>
+    <code class="url">/chat/admin/admin-static-objects.html</code> <span class="b adm">🔒 админ</span> 
+    
+  </li><li class="row admin">
+    <a class="link" href="/chat/admin/admin.html" target="_blank">Admin Panel - AMS Chat</a>
+    <code class="url">/chat/admin/admin.html</code> <span class="b adm">🔒 админ</span> 
+    
+  </li><li class="row page">
+    <a class="link" href="/chat/download/" target="_blank">Download AMS Chat - Mobile App</a>
+    <code class="url">/chat/download/</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/chat/public/" target="_blank">Анонимен Чат</a>
+    <code class="url">/chat/public/</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/chat/public/chat.html" target="_blank">Chat - AMS Chat</a>
+    <code class="url">/chat/public/chat.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/chat/public/matchmaking.html" target="_blank">Намери половинката си - AMS Chat</a>
+    <code class="url">/chat/public/matchmaking.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/chat/public/payment-override.html" target="_blank">Payment Override - Admin</a>
+    <code class="url">/chat/public/payment-override.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/chat/public/payment.html" target="_blank">Плащане - Анонимен Чат</a>
+    <code class="url">/chat/public/payment.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/chat/public/profile.html" target="_blank">Настройки на профил - AMS Chat</a>
+    <code class="url">/chat/public/profile.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/chat/public/search.html" target="_blank">Търсачки - AMS Chat</a>
+    <code class="url">/chat/public/search.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/chat/public/signal.html" target="_blank">Подай сигнал - AMS Chat</a>
+    <code class="url">/chat/public/signal.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/chat/public/warning.html" target="_blank">Choose Access Level</a>
+    <code class="url">/chat/public/warning.html</code>  
+    
+  </li></ul>
+  </section>
+  <section class="grp" data-app="eco-3">
+    <h2>ECO-3 — AI студио <span class="cnt">3</span></h2>
+    <ul><li class="row api">
+    <a class="link" href="/api/eco3/health" target="_blank">health (eco-3)</a>
+    <code class="url">/api/eco3/health</code> <span class="b api">API</span> 
+    
+  </li><li class="row page">
+    <a class="link" href="/eco-3/" target="_blank">ECO-3 AI Studio - KCY Ecosystem</a>
+    <code class="url">/eco-3/</code>  
+    
+  </li><li class="row admin">
+    <a class="link" href="/eco-3/admin/" target="_blank">ECO-3 Admin - KCY Ecosystem</a>
+    <code class="url">/eco-3/admin/</code> <span class="b adm">🔒 админ</span> 
+    
+  </li></ul>
+  </section>
+  <section class="grp" data-app="House-Look-Book">
+    <h2>House-Look-Book <span class="cnt">8</span></h2>
+    <ul><li class="row api">
+    <a class="link" href="/api/hlb/health" target="_blank">health (HLB)</a>
+    <code class="url">/api/hlb/health</code> <span class="b api">API</span> 
+    
+  </li><li class="row page">
+    <a class="link" href="/houselookbook/" target="_blank">Подреди своя дом</a>
+    <code class="url">/houselookbook/</code>  
+    <div class="params"><a class="param" href="/houselookbook/?edit=1" target="_blank" title="редакция на къща (собственик/админ)">?edit=&lt;ID&gt;</a></div>
+  </li><li class="row admin">
+    <a class="link" href="/houselookbook/admin.html" target="_blank">Подреди своя дом — Админ</a>
+    <code class="url">/houselookbook/admin.html</code> <span class="b adm">🔒 админ</span> 
+    <div class="params"><a class="param" href="/houselookbook/admin.html?tab=pending" target="_blank" title="таб: pending|reports|all|banned|generate">?tab=pending</a></div>
+  </li><li class="row page">
+    <a class="link" href="/houselookbook/db.html" target="_blank">House-Look-Book — База данни</a>
+    <code class="url">/houselookbook/db.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/houselookbook/gallery.html" target="_blank">Подреди своя дом — Галерия</a>
+    <code class="url">/houselookbook/gallery.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/houselookbook/login.html" target="_blank">Подреди своя дом — Вход</a>
+    <code class="url">/houselookbook/login.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/houselookbook/profile.html" target="_blank">Подреди своя дом — Моят профил</a>
+    <code class="url">/houselookbook/profile.html</code>  
+    <div class="params"><a class="param" href="/houselookbook/profile.html?edit=1" target="_blank" title="редакция на публикуваното">?edit=&lt;ID&gt;</a></div>
+  </li><li class="row page">
+    <a class="link" href="/houselookbook/ranking.html" target="_blank">Подреди своя дом — Класация</a>
+    <code class="url">/houselookbook/ranking.html</code>  
+    
+  </li></ul>
+  </section>
+  <section class="grp" data-app="WhereNoBiz">
+    <h2>WhereNoBiz <span class="cnt">8</span></h2>
+    <ul><li class="row api">
+    <a class="link" href="/api/wnb/health" target="_blank">health (WNB)</a>
+    <code class="url">/api/wnb/health</code> <span class="b api">API</span> 
+    
+  </li><li class="row page">
+    <a class="link" href="/wherenobiz/" target="_blank">WhereNoBiz — Къде да започна нов бизнес?</a>
+    <code class="url">/wherenobiz/</code>  
+    
+  </li><li class="row admin">
+    <a class="link" href="/wherenobiz/admin.html" target="_blank">WhereNoBiz — Админ</a>
+    <code class="url">/wherenobiz/admin.html</code> <span class="b adm">🔒 админ</span> 
+    <div class="params"><a class="param" href="/wherenobiz/admin.html?tab=pending" target="_blank" title="таб: pending|reports|all|banned">?tab=pending</a></div>
+  </li><li class="row page">
+    <a class="link" href="/wherenobiz/browse.html" target="_blank">WhereNoBiz — Листвай</a>
+    <code class="url">/wherenobiz/browse.html</code>  
+    <div class="params"><a class="param" href="/wherenobiz/browse.html?country=1" target="_blank" title="филтър по държава (напр. BG)">?country=&lt;КОД&gt;</a></div>
+  </li><li class="row page">
+    <a class="link" href="/wherenobiz/db.html" target="_blank">WhereNoBiz — База данни</a>
+    <code class="url">/wherenobiz/db.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/wherenobiz/login.html" target="_blank">WhereNoBiz — Вход</a>
+    <code class="url">/wherenobiz/login.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/wherenobiz/new.html" target="_blank">WhereNoBiz — Поствай свободна ниша</a>
+    <code class="url">/wherenobiz/new.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/wherenobiz/post.html" target="_blank">WhereNoBiz — Липсващ бизнес</a>
+    <code class="url">/wherenobiz/post.html</code>  
+    <div class="params"><a class="param" href="/wherenobiz/post.html?id=1" target="_blank" title="преглед на конкретна публикация">?id=&lt;ID&gt;</a></div>
+  </li></ul>
+  </section>
+  <section class="grp" data-app="token">
+    <h2>Token — KCY-meme-1 <span class="cnt">6</span></h2>
+    <ul><li class="row page">
+    <a class="link" href="/token/" target="_blank">KCY-meme-1 Token</a>
+    <code class="url">/token/</code>  
+    
+  </li><li class="row admin">
+    <a class="link" href="/token/admin/scripts.html" target="_blank">KCY1 Token - Admin Interface</a>
+    <code class="url">/token/admin/scripts.html</code> <span class="b adm">🔒 админ</span> 
+    
+  </li><li class="row page">
+    <a class="link" href="/token/website/" target="_blank">KCY1 Token - KCY-meme-1 | Official Documentation v1.0093</a>
+    <code class="url">/token/website/</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/token/website/kcy1_documentation.html" target="_blank">KCY1 Token - Пълна Документация</a>
+    <code class="url">/token/website/kcy1_documentation.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/token/website/kcy1_website_index.html" target="_blank">KCY1 Token - Official Site</a>
+    <code class="url">/token/website/kcy1_website_index.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/token/website/kcy1_website_setup_guide.html" target="_blank">KCY1 Website - Ръководство за настройка</a>
+    <code class="url">/token/website/kcy1_website_setup_guide.html</code>  
+    
+  </li></ul>
+  </section>
+  <section class="grp" data-app="multisig">
+    <h2>Multisig портфейл <span class="cnt">4</span></h2>
+    <ul><li class="row page">
+    <a class="link" href="/multisig/" target="_blank">Multi-Sig Wallet - KCY Ecosystem</a>
+    <code class="url">/multisig/</code>  
+    
+  </li><li class="row admin">
+    <a class="link" href="/multisig/admin/" target="_blank">KCY1 Multi-Sig Control</a>
+    <code class="url">/multisig/admin/</code> <span class="b adm">🔒 админ</span> 
+    
+  </li><li class="row page">
+    <a class="link" href="/multisig/kcy1-website.html" target="_blank">KCY1 Token - KCY-meme-1 | Official Documentation v1.0093</a>
+    <code class="url">/multisig/kcy1-website.html</code>  
+    
+  </li><li class="row page">
+    <a class="link" href="/multisig/multisig-control.html" target="_blank">KCY1 Multi-Sig Control</a>
+    <code class="url">/multisig/multisig-control.html</code>  
+    
+  </li></ul>
+  </section>
+  <section class="grp" data-app="brch1">
+    <h2>BeRich1 <span class="cnt">2</span></h2>
+    <ul><li class="row page">
+    <a class="link" href="/brch1/" target="_blank">BeRicH 1 (BRCH1) — KCY Ecosystem</a>
+    <code class="url">/brch1/</code>  
+    
+  </li><li class="row admin">
+    <a class="link" href="/brch1/admin/" target="_blank">BRCH1 Admin — KCY Ecosystem</a>
+    <code class="url">/brch1/admin/</code> <span class="b adm">🔒 админ</span> 
+    
+  </li></ul>
+  </section>
+  <section class="grp" data-app="shared">
+    <h2>Споделени / Диагностика <span class="cnt">3</span></h2>
+    <ul><li class="row admin">
+    <a class="link" href="/last-errors-bundle" target="_blank">Логове (грешки + дебъг) — слети</a>
+    <code class="url">/last-errors-bundle</code> <span class="b adm">🔒 админ</span> <span class="note">kcy-diag :4400</span>
+    
+  </li><li class="row admin">
+    <a class="link" href="/last-errors-bundle-vm" target="_blank">Логове от VM</a>
+    <code class="url">/last-errors-bundle-vm</code> <span class="b adm">🔒 админ</span> <span class="note">само ако VM е вдигнат</span>
+    
+  </li><li class="row admin">
+    <a class="link" href="/shared/admin-status.html" target="_blank">KCY Ecosystem — System Status</a>
+    <code class="url">/shared/admin-status.html</code> <span class="b adm">🔒 админ</span> 
+    
+  </li></ul>
+  </section></main>
+<footer>Генерира се автоматично от <code>private/robot/tree-gen.js</code> — отразява реалните файлове в <code>public/</code>.</footer>
+<script>
+  const rows = [...document.querySelectorAll('.row')];
+  const q = document.getElementById('q');
+  let mode = 'all';
+  function apply(){
+    const t = q.value.trim().toLowerCase();
+    rows.forEach(r=>{
+      const txt = r.textContent.toLowerCase();
+      const okText = !t || txt.includes(t);
+      const okMode = mode==='all' || r.classList.contains(mode);
+      r.classList.toggle('hide', !(okText && okMode));
+    });
+    document.querySelectorAll('.grp').forEach(g=>{
+      const any = [...g.querySelectorAll('.row')].some(r=>!r.classList.contains('hide'));
+      g.classList.toggle('hide', !any);
+    });
+  }
+  q.addEventListener('input', apply);
+  document.querySelectorAll('.filterbtn').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.filterbtn').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); mode=b.dataset.f; apply();
+  }));
+  // покажи локалното време четимо
+  try{ document.getElementById('gen').textContent = new Date('2026-06-05T08:40:14.409Z').toLocaleString('bg-BG'); }catch(e){}
+</script>
+</body>
+</html>

@@ -1,0 +1,610 @@
+{
+  "generatedAt": "2026-06-05T08:40:14.409Z",
+  "totalPages": 80,
+  "health": [
+    {
+      "app": "chat",
+      "url": "/api/health"
+    },
+    {
+      "app": "eco-3",
+      "url": "/api/eco3/health"
+    },
+    {
+      "app": "portals",
+      "url": "/api/portals/health"
+    },
+    {
+      "app": "House-Look-Book",
+      "url": "/api/hlb/health"
+    },
+    {
+      "app": "WhereNoBiz",
+      "url": "/api/wnb/health"
+    }
+  ],
+  "groups": [
+    {
+      "app": "",
+      "label": "Основен сайт",
+      "pages": [
+        {
+          "url": "/",
+          "title": "KCY Ecosystem - Crypto Platform",
+          "type": "page",
+          "params": []
+        }
+      ]
+    },
+    {
+      "app": "portals",
+      "label": "Портали (игри + услуги)",
+      "pages": [
+        {
+          "url": "/api/portals/health",
+          "title": "health (portals)",
+          "type": "api",
+          "note": "",
+          "params": []
+        },
+        {
+          "url": "/portals/admin.html",
+          "title": "Portals — Admin панел",
+          "type": "admin",
+          "params": []
+        },
+        {
+          "url": "/portals/billing.html",
+          "title": "Плащане — KCY Portals",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/games/battle-duel.html",
+          "title": "Дуел на ринга | KCY игри",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/games/battle-standalone.html",
+          "title": "Битки — standalone демо",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/games/battle-team.html",
+          "title": "Битка на терен — отбори | KCY игри",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/games/car-drift.html",
+          "title": "Кола — Дрифт | KCY игри",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/games/car-race.html",
+          "title": "Кола — Надбягване | KCY игри",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/games/hero-jump.html",
+          "title": "Герой — Скачане | KCY игри",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/games/hero-run.html",
+          "title": "Герой — Бягане | KCY игри",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/games/plane-dodge.html",
+          "title": "Самолет — Избягвай | KCY игри",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/games/plane-shoot.html",
+          "title": "Самолет — Стрелба | KCY игри",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/index-games.html",
+          "title": "Портал за игри — KCY",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/index-services.html",
+          "title": "Портал за услуги — KCY",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/login.html",
+          "title": "Вход — KCY Portals",
+          "type": "page",
+          "params": [
+            {
+              "q": "?next=<URL>",
+              "note": "пренасочване след вход"
+            }
+          ]
+        },
+        {
+          "url": "/portals/register.html",
+          "title": "Регистрация — KCY Portals",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/ai-listing.html",
+          "title": "🏠 AI обява за имот",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/calc.html",
+          "title": "Калкулатори | KCY услуги",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/charts.html",
+          "title": "Финансови графики | KCY услуги",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/crypto.html",
+          "title": "Валутен конвертор | KCY услуги",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/image.html",
+          "title": "Компресор на снимки | KCY услуги",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/password.html",
+          "title": "Генератор на пароли | KCY услуги",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/pdf-compress.html",
+          "title": "Свиване на PDF | KCY услуги",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/pdf.html",
+          "title": "PDF инструменти | KCY услуги",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/qr.html",
+          "title": "QR код — генератор и четец | KCY услуги",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/scraper.html",
+          "title": "🕸️ Web скрапер",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/text.html",
+          "title": "Текстови инструменти | KCY услуги",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/services/watch20.html",
+          "title": "Наблюдавай 20 валути и криптовалути | KCY услуги",
+          "type": "page",
+          "params": []
+        }
+      ]
+    },
+    {
+      "app": "chat",
+      "label": "Чат",
+      "pages": [
+        {
+          "url": "/api/health",
+          "title": "health (chat)",
+          "type": "api",
+          "note": "",
+          "params": []
+        },
+        {
+          "url": "/chat/",
+          "title": "AMS Chat - KCY Ecosystem",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/chat/admin/",
+          "title": "AMS Chat - Admin Panel",
+          "type": "admin",
+          "params": []
+        },
+        {
+          "url": "/chat/admin/admin-matchmaking.html",
+          "title": "Admin - Matchmaking Checker",
+          "type": "admin",
+          "params": []
+        },
+        {
+          "url": "/chat/admin/admin-signals.html",
+          "title": "Одобрение на сигнали - Admin",
+          "type": "admin",
+          "params": []
+        },
+        {
+          "url": "/chat/admin/admin-static-objects.html",
+          "title": "Управление на потребители - Admin",
+          "type": "admin",
+          "params": []
+        },
+        {
+          "url": "/chat/admin/admin.html",
+          "title": "Admin Panel - AMS Chat",
+          "type": "admin",
+          "params": []
+        },
+        {
+          "url": "/chat/download/",
+          "title": "Download AMS Chat - Mobile App",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/chat/public/",
+          "title": "Анонимен Чат",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/chat/public/chat.html",
+          "title": "Chat - AMS Chat",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/chat/public/matchmaking.html",
+          "title": "Намери половинката си - AMS Chat",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/chat/public/payment-override.html",
+          "title": "Payment Override - Admin",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/chat/public/payment.html",
+          "title": "Плащане - Анонимен Чат",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/chat/public/profile.html",
+          "title": "Настройки на профил - AMS Chat",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/chat/public/search.html",
+          "title": "Търсачки - AMS Chat",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/chat/public/signal.html",
+          "title": "Подай сигнал - AMS Chat",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/chat/public/warning.html",
+          "title": "Choose Access Level",
+          "type": "page",
+          "params": []
+        }
+      ]
+    },
+    {
+      "app": "eco-3",
+      "label": "ECO-3 — AI студио",
+      "pages": [
+        {
+          "url": "/api/eco3/health",
+          "title": "health (eco-3)",
+          "type": "api",
+          "note": "",
+          "params": []
+        },
+        {
+          "url": "/eco-3/",
+          "title": "ECO-3 AI Studio - KCY Ecosystem",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/eco-3/admin/",
+          "title": "ECO-3 Admin - KCY Ecosystem",
+          "type": "admin",
+          "params": []
+        }
+      ]
+    },
+    {
+      "app": "House-Look-Book",
+      "label": "House-Look-Book",
+      "pages": [
+        {
+          "url": "/api/hlb/health",
+          "title": "health (HLB)",
+          "type": "api",
+          "note": "",
+          "params": []
+        },
+        {
+          "url": "/houselookbook/",
+          "title": "Подреди своя дом",
+          "type": "page",
+          "params": [
+            {
+              "q": "?edit=<ID>",
+              "note": "редакция на къща (собственик/админ)"
+            }
+          ]
+        },
+        {
+          "url": "/houselookbook/admin.html",
+          "title": "Подреди своя дом — Админ",
+          "type": "admin",
+          "params": [
+            {
+              "q": "?tab=pending",
+              "note": "таб: pending|reports|all|banned|generate"
+            }
+          ]
+        },
+        {
+          "url": "/houselookbook/db.html",
+          "title": "House-Look-Book — База данни",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/houselookbook/gallery.html",
+          "title": "Подреди своя дом — Галерия",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/houselookbook/login.html",
+          "title": "Подреди своя дом — Вход",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/houselookbook/profile.html",
+          "title": "Подреди своя дом — Моят профил",
+          "type": "page",
+          "params": [
+            {
+              "q": "?edit=<ID>",
+              "note": "редакция на публикуваното"
+            }
+          ]
+        },
+        {
+          "url": "/houselookbook/ranking.html",
+          "title": "Подреди своя дом — Класация",
+          "type": "page",
+          "params": []
+        }
+      ]
+    },
+    {
+      "app": "WhereNoBiz",
+      "label": "WhereNoBiz",
+      "pages": [
+        {
+          "url": "/api/wnb/health",
+          "title": "health (WNB)",
+          "type": "api",
+          "note": "",
+          "params": []
+        },
+        {
+          "url": "/wherenobiz/",
+          "title": "WhereNoBiz — Къде да започна нов бизнес?",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/wherenobiz/admin.html",
+          "title": "WhereNoBiz — Админ",
+          "type": "admin",
+          "params": [
+            {
+              "q": "?tab=pending",
+              "note": "таб: pending|reports|all|banned"
+            }
+          ]
+        },
+        {
+          "url": "/wherenobiz/browse.html",
+          "title": "WhereNoBiz — Листвай",
+          "type": "page",
+          "params": [
+            {
+              "q": "?country=<КОД>",
+              "note": "филтър по държава (напр. BG)"
+            }
+          ]
+        },
+        {
+          "url": "/wherenobiz/db.html",
+          "title": "WhereNoBiz — База данни",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/wherenobiz/login.html",
+          "title": "WhereNoBiz — Вход",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/wherenobiz/new.html",
+          "title": "WhereNoBiz — Поствай свободна ниша",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/wherenobiz/post.html",
+          "title": "WhereNoBiz — Липсващ бизнес",
+          "type": "page",
+          "params": [
+            {
+              "q": "?id=<ID>",
+              "note": "преглед на конкретна публикация"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "app": "token",
+      "label": "Token — KCY-meme-1",
+      "pages": [
+        {
+          "url": "/token/",
+          "title": "KCY-meme-1 Token",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/token/admin/scripts.html",
+          "title": "KCY1 Token - Admin Interface",
+          "type": "admin",
+          "params": []
+        },
+        {
+          "url": "/token/website/",
+          "title": "KCY1 Token - KCY-meme-1 | Official Documentation v1.0093",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/token/website/kcy1_documentation.html",
+          "title": "KCY1 Token - Пълна Документация",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/token/website/kcy1_website_index.html",
+          "title": "KCY1 Token - Official Site",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/token/website/kcy1_website_setup_guide.html",
+          "title": "KCY1 Website - Ръководство за настройка",
+          "type": "page",
+          "params": []
+        }
+      ]
+    },
+    {
+      "app": "multisig",
+      "label": "Multisig портфейл",
+      "pages": [
+        {
+          "url": "/multisig/",
+          "title": "Multi-Sig Wallet - KCY Ecosystem",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/multisig/admin/",
+          "title": "KCY1 Multi-Sig Control",
+          "type": "admin",
+          "params": []
+        },
+        {
+          "url": "/multisig/kcy1-website.html",
+          "title": "KCY1 Token - KCY-meme-1 | Official Documentation v1.0093",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/multisig/multisig-control.html",
+          "title": "KCY1 Multi-Sig Control",
+          "type": "page",
+          "params": []
+        }
+      ]
+    },
+    {
+      "app": "brch1",
+      "label": "BeRich1",
+      "pages": [
+        {
+          "url": "/brch1/",
+          "title": "BeRicH 1 (BRCH1) — KCY Ecosystem",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/brch1/admin/",
+          "title": "BRCH1 Admin — KCY Ecosystem",
+          "type": "admin",
+          "params": []
+        }
+      ]
+    },
+    {
+      "app": "shared",
+      "label": "Споделени / Диагностика",
+      "pages": [
+        {
+          "url": "/last-errors-bundle",
+          "title": "Логове (грешки + дебъг) — слети",
+          "type": "admin",
+          "note": "kcy-diag :4400",
+          "params": []
+        },
+        {
+          "url": "/last-errors-bundle-vm",
+          "title": "Логове от VM",
+          "type": "admin",
+          "note": "само ако VM е вдигнат",
+          "params": []
+        },
+        {
+          "url": "/shared/admin-status.html",
+          "title": "KCY Ecosystem — System Status",
+          "type": "admin",
+          "params": []
+        }
+      ]
+    }
+  ]
+}
