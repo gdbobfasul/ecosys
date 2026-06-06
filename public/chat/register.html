@@ -1,0 +1,113 @@
+<!-- Version: 1.0176 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — Анонимен Чат</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-gray-800 rounded-lg p-8">
+        <h1 class="text-3xl font-bold mb-1">📝 Регистрация</h1>
+        <p class="text-gray-400 mb-6">Анонимен Чат · €5 / $5 на месец</p>
+
+        <form id="regForm" class="space-y-4">
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Телефон *</label>
+                <input type="tel" id="phone" placeholder="+359..." required
+                    class="w-full p-3 bg-gray-700 rounded text-white">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Парола * (6–50 символа)</label>
+                <input type="password" id="password" placeholder="Парола" required minlength="6" maxlength="50"
+                    class="w-full p-3 bg-gray-700 rounded text-white">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Име * (2–50 символа)</label>
+                <input type="text" id="fullName" placeholder="Твоето име" required minlength="2" maxlength="50"
+                    class="w-full p-3 bg-gray-700 rounded text-white">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Пол *</label>
+                <select id="gender" required class="w-full p-3 bg-gray-700 rounded text-white">
+                    <option value="">— избери —</option>
+                    <option value="male">Мъж</option>
+                    <option value="female">Жена</option>
+                </select>
+            </div>
+
+            <details class="text-sm">
+                <summary class="cursor-pointer text-blue-400 mb-2">Допълнителни данни (по избор) — за запознанства/търсене</summary>
+                <div class="grid grid-cols-2 gap-3 mt-2">
+                    <input type="number" id="heightCm" placeholder="Ръст (см)" class="p-3 bg-gray-700 rounded text-white">
+                    <input type="number" id="weightKg" placeholder="Тегло (кг)" class="p-3 bg-gray-700 rounded text-white">
+                    <input type="text" id="country" placeholder="Държава" class="p-3 bg-gray-700 rounded text-white">
+                    <input type="text" id="city" placeholder="Град" class="p-3 bg-gray-700 rounded text-white">
+                    <input type="text" id="village" placeholder="Село (по избор)" class="p-3 bg-gray-700 rounded text-white">
+                    <input type="text" id="street" placeholder="Улица (по избор)" class="p-3 bg-gray-700 rounded text-white">
+                    <input type="text" id="workplace" placeholder="Месторабота (по избор)" class="p-3 bg-gray-700 rounded text-white col-span-2">
+                </div>
+            </details>
+
+            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 py-4 rounded font-bold text-lg">
+                Регистрирай се →
+            </button>
+        </form>
+
+        <div id="message" class="mt-4 text-center"></div>
+        <div class="mt-6 text-center">
+            <a href="/chat/public/" class="text-blue-400 hover:text-blue-300 underline text-sm">← Вече имам акаунт (вход)</a>
+        </div>
+    </div>
+
+    <script>
+        // Попълни телефон/парола, ако идваме от login формата (?phone=...&password=...)
+        var p = new URLSearchParams(location.search);
+        if (p.get('phone')) document.getElementById('phone').value = p.get('phone');
+        if (p.get('password')) document.getElementById('password').value = p.get('password');
+
+        function val(id) { return document.getElementById(id).value.trim(); }
+        function num(id) { var v = document.getElementById(id).value.trim(); return v ? parseInt(v, 10) : null; }
+
+        document.getElementById('regForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            var msg = document.getElementById('message');
+            msg.innerHTML = '<p class="text-gray-400">Регистрирам…</p>';
+
+            var payload = {
+                phone: val('phone'),
+                password: val('password'),
+                fullName: val('fullName'),
+                gender: val('gender'),
+                heightCm: num('heightCm'),
+                weightKg: num('weightKg'),
+                country: val('country') || null,
+                city: val('city') || null,
+                village: val('village') || null,
+                street: val('street') || null,
+                workplace: val('workplace') || null
+            };
+
+            try {
+                var r = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                var data = await r.json();
+                if (r.ok && data.success) {
+                    // Регистрацията мина → към плащане (€5/$5)
+                    if (data.userId) localStorage.setItem('userId', data.userId);
+                    msg.innerHTML = '<p class="text-green-400">✅ Регистрацията е успешна! Към плащането…</p>';
+                    setTimeout(function () { location.href = '/chat/public/payment.html'; }, 900);
+                } else {
+                    msg.innerHTML = '<p class="text-red-400">' + (data.error || 'Грешка при регистрация') + '</p>';
+                }
+            } catch (err) {
+                msg.innerHTML = '<p class="text-red-400">Мрежова грешка: ' + err.message + '</p>';
+            }
+        });
+    </script>
+</body>
+</html>

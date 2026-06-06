@@ -111,17 +111,7 @@
             <h1>🛠️ Админ панел — AMS Chat</h1>
         </div>
 
-        <!-- Navigation -->
-        <div class="nav-row">
-            <button onclick="loadPage('flagged')" class="nav-btn flagged">Маркирани</button>
-            <button onclick="loadPage('all')" class="nav-btn all">Всички</button>
-            <button onclick="loadPage('messages')" class="nav-btn messages">Потребители + съобщения</button>
-            <a href="admin-signals.html" class="nav-btn signals">📊 Сигнали</a>
-            <a href="admin-matchmaking.html" class="nav-btn match">💞 Запознанства</a>
-            <a href="admin-static-objects.html" class="nav-btn static">📄 Статични обекти</a>
-            <a href="/chat/public/payment-override.html" class="nav-btn payment">💳 Плащане (ръчно)</a>
-            <button onclick="logout()" class="nav-btn logout">Изход</button>
-        </div>
+        <!-- Менюто се инжектира от admin-nav.js (същото на всички админ-страници). -->
 
         <!-- Search Filters -->
         <div class="filters">
@@ -215,7 +205,9 @@
                 adminToken = t;
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('adminPanel').classList.remove('hidden');
-                loadPage('messages');
+                // менюто (admin-nav.js) праща ?view=flagged|all|messages
+                const view = (new URLSearchParams(location.search)).get('view');
+                loadPage(['flagged', 'all', 'messages'].indexOf(view) > -1 ? view : 'messages');
             }
         });
 
@@ -465,5 +457,6 @@
         }
     </script>
     <script src="/shared/js/navigation.js?v=1.0174"></script>
+    <script src="/chat/admin/admin-nav.js?v=1.0176"></script>
 </body>
 </html>

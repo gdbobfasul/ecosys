@@ -95,3 +95,19 @@ CREATE TABLE IF NOT EXISTS portal_watch_alerts (
     FOREIGN KEY (user_id) REFERENCES portal_users(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_portal_watch_alerts_user ON portal_watch_alerts(user_id);
+
+-- ═══════════════════════════════════════════
+-- 7. Bug reports (докладвани грешки от потребители)
+-- 1 запис на потребител (UNIQUE user_id) — може да се редактира.
+-- Само заглавие + текст; БЕЗ снимки.
+-- ═══════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS portal_bug_reports (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL UNIQUE,
+    title TEXT NOT NULL,
+    body TEXT NOT NULL,
+    fixed INTEGER NOT NULL DEFAULT 0,     -- 0 = неоправена, 1 = оправена (маркира се от админ/модератор)
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (user_id) REFERENCES portal_users(id) ON DELETE CASCADE
+);

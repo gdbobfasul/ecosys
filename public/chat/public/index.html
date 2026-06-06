@@ -12,7 +12,10 @@
         <!-- Left: Marketing -->
         <div class="hidden lg:block lg:w-1/2 bg-gradient-to-br from-blue-900 to-purple-900 p-12">
             <h1 class="text-4xl font-bold mb-4" data-i18n="chat.app_name_e">📱 Анонимен Чат</h1>
-            <p class="text-xl mb-8" data-i18n="chat.price_month">€5 / $5 на месец</p>
+            <div class="flex items-center justify-between gap-4 mb-8">
+                <p class="text-xl" data-i18n="chat.price_month">€5 / $5 на месец</p>
+                <a href="/chat/register.html" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-5 rounded-lg whitespace-nowrap" data-i18n="chat.register_btn">📝 Регистрация</a>
+            </div>
             
             <div class="space-y-6">
                 <div>
@@ -119,6 +122,7 @@
                         <button onclick="toggleHowItWorks()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-3 mt-6 font-semibold" data-i18n="r.61">
                             Разбрах, затвори
                         </button>
+                        <a href="/chat/register.html" class="block text-center w-full bg-green-500 hover:bg-green-600 rounded py-3 mt-3 font-bold" data-i18n="chat.register_btn">📝 Регистрация</a>
                     </div>
                 </div>
 
@@ -181,20 +185,20 @@
                 const data = await response.json();
 
                 if (data.needsRegistration) {
-                    // User doesn't exist → Register
-                    window.location.href = `/register.html?phone=${encodeURIComponent(phone)}&password=${encodeURIComponent(password)}`;
+                    // User doesn't exist → Register (чат регистрация)
+                    window.location.href = `/chat/register.html?phone=${encodeURIComponent(phone)}&password=${encodeURIComponent(password)}`;
                 } else if (data.isBlocked) {
                     // Blocked → Духа супата
                     messageDiv.innerHTML = '<p class="text-red-400" data-i18n="chat.blocked">Акаунтът е блокиран</p>';
                 } else if (data.needsPayment) {
                     // Not paid → Payment page
                     localStorage.setItem('userId', data.userId);
-                    window.location.href = `/payment.html`;
+                    window.location.href = `/chat/public/payment.html`;
                 } else if (data.success) {
                     // Success → Chat
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('userId', data.userId);
-                    window.location.href = '/chat.html';
+                    window.location.href = '/chat/public/chat.html';
                 } else {
                     messageDiv.innerHTML = `<p class="text-red-400">${data.error || KCY_I18N.t('common.error')}</p>`;
                 }

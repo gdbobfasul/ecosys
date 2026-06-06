@@ -56,6 +56,8 @@ db.exec(schemaSql);
 // ТУК при старт — иначе админ страницата я заявява преди games route да я е създал → 500.
 try { db.exec(fs.readFileSync(path.join(__dirname, 'database', 'schema_games.sql'), 'utf8')); }
 catch (e) { console.error('⚠️  portals games schema:', e.message); }
+// миграция: добави колона `fixed` към докладите, ако базата е стара (без нея)
+try { db.exec("ALTER TABLE portal_bug_reports ADD COLUMN fixed INTEGER NOT NULL DEFAULT 0"); } catch (e) { /* вече съществува */ }
 app.locals.db = db;
 
 // Всяко приложение попълва САМО своите админи/модератори от .env при собствения си
@@ -121,6 +123,10 @@ app.use('/api/portals/gms', portalGamesRouter);
 // НОВО — admin панел за порталите (списък потребители, триене)
 const portalAdminRouter = require('./routes/portal_admin');
 app.use('/api/portals/adm', portalAdminRouter);
+
+// Докладвани грешки (1 на потребител, само текст+заглавие)
+const bugReportsRouter = require('./routes/bug_reports');
+app.use('/api/portals/bug-report', bugReportsRouter);
 
 // ── Портал-защитени HTML ───────────────────────────────────────
 // /portals/games/  → /public/portals/index-games.html (зад login+paid)

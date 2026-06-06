@@ -25,6 +25,20 @@
         .top-auth .logout { background: rgba(255,255,255,.22); color: #fff; border: 1px solid rgba(255,255,255,.4); cursor: pointer; font-family: inherit; font-size: .95em; }
         .hero { position: relative; padding-top: 5px; }
         .hero h1 { margin-bottom: 5px; }
+        /* „Докладвай грешка" — горе-вляво, голям като BRCH1, в цвят като „Регистрирай се" */
+        .report-bug-btn {
+            position: absolute; top: 18px; left: 20px; z-index: 10;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: #fff !important; text-decoration: none;
+            border-radius: 30px; font-weight: 700; font-size: 1.05em;
+            box-shadow: 0 4px 14px rgba(0,0,0,.22);
+            border: 2px solid rgba(255,255,255,.35);
+            transition: transform .15s, box-shadow .15s;
+        }
+        .report-bug-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,.3); }
+        @media (max-width: 760px) { .report-bug-btn { position: static; margin: 12px auto 0; } }
         /* portal buttons row */
         .portals-row { margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.2); }
         .portals-row .btn { background: linear-gradient(135deg, #11998e, #38ef7d); border: none; }
@@ -47,6 +61,7 @@
 </head>
 <body>
     <div class="hero">
+        <a href="/portals/report-bug.html" class="report-bug-btn" data-i18n="home.report_bug">🐞 Докладвай грешка</a>
         <h1>🚀 KCY Ecosystem</h1>
         <p data-i18n="home.tagline">Децентрализирана платформа за криптовалути и комуникация</p>
         <div style="margin-top: 5px;">

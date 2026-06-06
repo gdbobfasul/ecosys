@@ -1,0 +1,129 @@
+<!-- Version: 1.0176 -->
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Докладвани грешки — Admin</title>
+<link rel="stylesheet" href="/shared/css/common.css?v=1.0176">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, Segoe UI, Roboto, sans-serif; background: #0e1620; color: #e6edf3; }
+  .head { background: linear-gradient(135deg, #1b3a5c, #2a86d8); padding: 26px 20px; }
+  .head h1 { font-size: 1.5em; }
+  .head p { color: #bcd; font-size: .9em; margin-top: 4px; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 20px; }
+  .tabs { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+  .tab { padding: 11px 20px; border: 1px solid #30363d; background: #161b22; color: #9fb4c6;
+    border-radius: 10px; cursor: pointer; font-size: 1em; font-weight: 600; }
+  .tab.on { background: #2a86d8; color: #fff; border-color: #2a86d8; }
+  .tab .cnt { opacity: .8; font-weight: 400; }
+  .card { background: #161b22; border: 1px solid #21262d; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .card.fixed { border-color: #1d7a44; }
+  .card .ttl { font-weight: 700; font-size: 1.05em; color: #fff; }
+  .card .meta { color: #8b949e; font-size: .82em; margin: 5px 0 10px; }
+  .card .body { white-space: pre-wrap; color: #cdd9e5; font-size: .92em; background: #0d1117; padding: 12px; border-radius: 8px; }
+  .card .acts { margin-top: 12px; }
+  .btn { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: .9em; font-weight: 600; }
+  .btn.fix { background: #1d7a44; color: #fff; }
+  .btn.reopen { background: #9a6b00; color: #fff; }
+  .badge { display: inline-block; font-size: .75em; padding: 2px 10px; border-radius: 999px; margin-left: 8px; }
+  .badge.f { background: #0d3320; color: #3fb950; border: 1px solid #238636; }
+  .badge.n { background: #341a04; color: #d29922; border: 1px solid #9e6a03; }
+  .empty { color: #8b949e; text-align: center; padding: 40px; }
+  .links { margin-top: 16px; } .links a { color: #58a6ff; text-decoration: none; font-size: .9em; }
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>🐞 Докладвани грешки</h1>
+  <p>Грешки, подадени от регистрираните потребители. Админ — маркира оправено; модератор — само преглед.</p>
+</div>
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab on" data-fixed="0">🔧 Неоправени <span class="cnt" id="cnt0"></span></button>
+    <button class="tab" data-fixed="1">✅ Оправени <span class="cnt" id="cnt1"></span></button>
+  </div>
+  <div id="list"><div class="empty">Зареждам…</div></div>
+  <div class="links"><a href="/portals/admin.html">← Към админ панела</a></div>
+</div>
+
+<script>
+var IS_ADMIN = false;        // само админ може да маркира
+var current = 0;             // активен таб: 0 неоправени, 1 оправени
+
+function esc(s) { return String(s == null ? '' : s).replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+function load(fixed) {
+  current = fixed;
+  document.querySelectorAll('.tab').forEach(function (t) { t.classList.toggle('on', +t.dataset.fixed === fixed); });
+  var box = document.getElementById('list');
+  box.innerHTML = '<div class="empty">Зареждам…</div>';
+  fetch('/api/portals/bug-report/admin/list?fixed=' + fixed, { credentials: 'same-origin' })
+    .then(function (r) {
+      if (r.status === 403) { box.innerHTML = '<div class="empty">⛔ Нямаш достъп (само админ/модератор).</div>'; return null; }
+      return r.ok ? r.json() : null;
+    })
+    .then(function (d) {
+      if (!d) return;
+      var list = d.reports || [];
+      document.getElementById(fixed ? 'cnt1' : 'cnt0').textContent = '(' + list.length + ')';
+      if (!list.length) { box.innerHTML = '<div class="empty">Няма ' + (fixed ? 'оправени' : 'неоправени') + ' грешки.</div>'; return; }
+      box.innerHTML = '';
+      list.forEach(function (b) {
+        var el = document.createElement('div');
+        el.className = 'card' + (b.fixed ? ' fixed' : '');
+        var badge = b.fixed ? '<span class="badge f">оправена</span>' : '<span class="badge n">неоправена</span>';
+        var act = '';
+        if (IS_ADMIN) {
+          act = b.fixed
+            ? '<button class="btn reopen" data-id="' + b.id + '" data-to="0">↩️ Върни като неоправена</button>'
+            : '<button class="btn fix" data-id="' + b.id + '" data-to="1">✅ Маркирай оправена</button>';
+        }
+        el.innerHTML =
+          '<div class="ttl">' + esc(b.title) + badge + '</div>' +
+          '<div class="meta">от <b>' + esc(b.username) + '</b> · подадено: ' + esc((b.created_at || '').slice(0, 16)) +
+            (b.updated_at && b.updated_at !== b.created_at ? ' · промяна: ' + esc(b.updated_at.slice(0, 16)) : '') + '</div>' +
+          '<div class="body">' + esc(b.body) + '</div>' +
+          (act ? '<div class="acts">' + act + '</div>' : '');
+        box.appendChild(el);
+      });
+      box.querySelectorAll('.btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          btn.disabled = true;
+          fetch('/api/portals/bug-report/admin/' + btn.dataset.id + '/fixed', {
+            method: 'POST', credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fixed: +btn.dataset.to })
+          }).then(function (r) { return r.json(); })
+            .then(function () { load(current); refreshCounts(); })
+            .catch(function () { btn.disabled = false; alert('Грешка при запис.'); });
+        });
+      });
+    })
+    .catch(function () { box.innerHTML = '<div class="empty">Грешка при зареждане.</div>'; });
+}
+
+// обновява броячите и за двата таба
+function refreshCounts() {
+  [0, 1].forEach(function (f) {
+    fetch('/api/portals/bug-report/admin/list?fixed=' + f, { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d) document.getElementById(f ? 'cnt1' : 'cnt0').textContent = '(' + (d.reports || []).length + ')'; })
+      .catch(function () {});
+  });
+}
+
+document.querySelectorAll('.tab').forEach(function (t) {
+  t.addEventListener('click', function () { load(+t.dataset.fixed); });
+});
+
+// разбери дали си админ (за да покажем бутоните за маркиране)
+fetch('/api/portals/me', { credentials: 'same-origin' })
+  .then(function (r) { return r.ok ? r.json() : null; })
+  .then(function (d) { IS_ADMIN = !!(d && d.is_admin); })
+  .catch(function () {})
+  .then(function () { load(0); refreshCounts(); });
+</script>
+</body>
+</html>
