@@ -49,7 +49,7 @@
 
         <!-- Back to Login -->
         <div class="mt-6 text-center">
-            <a href="/index.html" class="text-gray-400 hover:text-white text-sm" data-i18n="r.107">
+            <a href="index.html" class="text-gray-400 hover:text-white text-sm" data-i18n="r.107">
                 ← Назад към вход
             </a>
         </div>
@@ -60,7 +60,7 @@
         const userId = localStorage.getItem('userId');
         const userPhone = localStorage.getItem('userPhone');
         if (!userId) {
-            window.location.href = '/index.html';
+            window.location.href = 'index.html';
         }
 
         // Показва реалната цена според локацията (бекенд: /api/payment/pricing).
