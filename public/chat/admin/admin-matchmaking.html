@@ -263,6 +263,13 @@
                     body: JSON.stringify({ userId: parseInt(userId) })
                 });
 
+                if (response.status === 401) {
+                    // Стар/невалиден token → изчисти и върни към вход за нов token.
+                    localStorage.removeItem('token');
+                    window.location.href = 'admin.html';
+                    return;
+                }
+
                 const data = await response.json();
 
                 if (!response.ok) {
@@ -405,5 +412,8 @@
             // Ready
         }
     </script>
+    <!-- ecosystem хедър най-горе + споделено админ меню (като admin.html) -->
+    <script src="/shared/js/navigation.js?v=1.0174"></script>
+    <script src="/chat/admin/admin-nav.js?v=1.0174"></script>
 </body>
 </html>

@@ -60,6 +60,7 @@
             <button class="btn card" id="btn-card" data-i18n="billing.pay_card">Плати с карта (автоматично) →</button>
             <p class="hint" style="margin-top:10px;" data-i18n="billing.link_note">Или плати през готовия линк (ако бутонът не работи). След плащане се върни и потвърди по-долу.</p>
             <a class="btn" id="link-card" style="background:#635bff;display:none;" target="_blank" rel="noopener" data-i18n="billing.pay_link">Плати през Stripe линк ↗</a>
+            <button class="btn card" id="btn-card-confirm" style="display:none;margin-top:10px;background:#16a34a;" data-i18n="billing.activate_access">✅ Активирай достъпа</button>
             <div id="card-msg" class="msg"></div>
         </div>
 
@@ -190,8 +191,28 @@
             } catch (e) { cardMsg(KCY_I18N.t('common.net_err')+': ' + e.message); }
         });
 
-        // ── при връщане от Stripe ──
-        async function handleStripeReturn() {
+        // ── ръчно потвърждение на картово плащане (Payment Link / Вариант 1) ──
+        document.getElementById('btn-card-confirm').addEventListener('click', async function () {
+            cardMsg(KCY_I18N.t('billing.confirming'), 'ok');
+            try {
+                var r = await fetch('/api/portals/billing/declare', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ method: 'stripe', amount: (FEES.USD || 5) })
+                });
+                var data = await r.json();
+                if (r.ok) {
+                    cardMsg('✅ Плащането е успешно! Достъпът е активиран.', 'ok');
+                    this.style.display = 'none';
+                    loadStatus();
+                } else if (data.error === 'already_paid_this_month') {
+                    cardMsg('✅ Вече имаш активен достъп за този месец.', 'ok');
+                    this.style.display = 'none';
+                    loadStatus();
+                } else {
+                    cardMsg(data.message || data.error || KCY_I18N.t('billing.not_confirmed'));
+                }
+            } catch (e) { cardMsg(KCY_I18N.t('common.net_err')+': ' + e.message); }
+        });
             var p = new URLSearchParams(location.search);
             if (p.get('stripe') === 'success' && p.get('session_id')) {
                 // Checkout бутон (Вариант 2) — авто-потвърждение със session_id
@@ -208,7 +229,9 @@
                 history.replaceState({}, '', '/portals/billing.html');
             } else if (p.get('stripe') === 'success') {
                 // Payment Link (Вариант 1) — няма session_id, искаме ръчно потвърждение
-                cardMsg('✅ Благодарим за плащането! Натисни „Потвърди плащането" по-долу, за да активираш достъпа.', 'ok');
+                cardMsg('✅ Благодарим за плащането! Натисни „Активирай достъпа" по-долу.', 'ok');
+                var cbtn = document.getElementById('btn-card-confirm');
+                if (cbtn) cbtn.style.display = 'inline-block';
                 history.replaceState({}, '', '/portals/billing.html');
             } else if (p.get('stripe') === 'cancel') {
                 cardMsg(KCY_I18N.t('billing.declined'));

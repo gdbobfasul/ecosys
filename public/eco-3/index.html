@@ -7,6 +7,20 @@
     <meta name="description" content="ECO-3 AI Studio - Интерактивно медийно съдържание с 3 AI агента">
     <title>ECO-3 AI Studio - KCY Ecosystem</title>
     <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
+    <!-- ЛОГИН guard: ECO-3 изисква портален логин. Ако не си логнат → към вход.
+         (Сървърът също пази /search и /generate, това е за самата страница.) -->
+    <script>
+    (function(){
+      fetch('/api/portals/me', { credentials: 'same-origin' })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(d){
+          if (!d || !d.logged_in) {
+            location.href = '/portals/login.html?next=' + encodeURIComponent('/eco-3/');
+          }
+        })
+        .catch(function(){ /* ако /me не отговаря — не блокирай твърдо */ });
+    })();
+    </script>
     <!-- React CDN for standalone deployment -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>

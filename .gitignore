@@ -23,6 +23,7 @@ yarn.lock
 # Uploads & User Data
 uploads/*
 !uploads/.gitkeep
+patch/*
 
 # Logs
 logs/
@@ -119,3 +120,6 @@ private/token-creator/node_modules/
 # token-protector — аларми + локални модули
 private/token-protector/alerts/
 private/token-protector/node_modules/
+
+# обща node_modules за роботите (token-creator/protector/robot) — не в git
+node_modules2/

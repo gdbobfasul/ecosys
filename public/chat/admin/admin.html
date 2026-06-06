@@ -1,68 +1,155 @@
-<!-- Version: 1.0093 -->
+<!-- Version: 1.0174 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - AMS Chat</title>
-    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0174">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+        /* Вход */
+        .login-screen { min-height: 70vh; display: flex; align-items: center; justify-content: center; }
+        .login-card {
+            background: #fff; border-radius: 10px; padding: 32px; max-width: 380px; width: 100%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .login-card h2 { color: #333; margin-bottom: 20px; }
+        .login-card input {
+            width: 100%; padding: 12px; margin-bottom: 12px;
+            border: 1px solid #d0d7de; border-radius: 8px; font-size: 15px; font-family: inherit;
+        }
+        .login-card button {
+            width: 100%; padding: 12px; border: none; border-radius: 8px;
+            background: #667eea; color: #fff; font-weight: 600; font-size: 15px; cursor: pointer;
+        }
+        .login-card button:hover { background: #556bd8; }
+        /* Хедър */
+        .header {
+            background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header h1 { color: #333; }
+        /* Навигация (бутони към подстраници) */
+        .nav-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 20px; }
+        .nav-btn {
+            padding: 10px 16px; border: none; border-radius: 8px; color: #fff;
+            cursor: pointer; font-size: 14px; font-weight: 600; text-decoration: none; display: inline-block;
+            transition: opacity .2s;
+        }
+        .nav-btn:hover { opacity: .85; }
+        .nav-btn.flagged   { background: #e53935; }
+        .nav-btn.all       { background: #1e88e5; }
+        .nav-btn.messages  { background: #43a047; }
+        .nav-btn.signals   { background: #00897b; }
+        .nav-btn.match     { background: #d81b60; }
+        .nav-btn.static    { background: #5e35b1; }
+        .nav-btn.payment   { background: #8e24aa; }
+        .nav-btn.logout    { background: #757575; margin-left: auto; }
+        /* Филтри */
+        .filters {
+            background: #fff; border-radius: 10px; padding: 18px; margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .filters h3 { color: #333; margin-bottom: 14px; font-size: 16px; }
+        .filters-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .filters input, .filters select {
+            padding: 10px; border: 1px solid #d0d7de; border-radius: 8px; font-size: 14px; font-family: inherit;
+        }
+        .filters .apply {
+            grid-column: span 3; padding: 10px; border: none; border-radius: 8px;
+            background: #1e88e5; color: #fff; font-weight: 600; cursor: pointer;
+        }
+        /* Съдържание / таблици */
+        .content {
+            background: #fff; border-radius: 10px; padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow-x: auto;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead tr { border-bottom: 2px solid #e0e0e0; }
+        th { text-align: left; padding: 10px; color: #555; font-weight: 600; }
+        td { padding: 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+        tbody tr:hover { background: #f8f9fa; }
+        .cell-box { max-width: 360px; max-height: 90px; overflow-y: auto; font-size: 12px; background: #f5f5f5; padding: 8px; border-radius: 6px; }
+        .btn-sm {
+            padding: 6px 10px; border: none; border-radius: 6px; color: #fff;
+            cursor: pointer; font-size: 12px; margin: 2px 0; display: inline-block;
+        }
+        .btn-sm.green  { background: #43a047; }
+        .btn-sm.blue   { background: #1e88e5; }
+        .btn-sm.red    { background: #e53935; }
+        .muted { color: #999; }
+        .yes { color: #2e7d32; }
+        .no  { color: #c62828; }
+        .hidden { display: none; }
+        @media (max-width: 700px) { .filters-grid { grid-template-columns: repeat(2, 1fr); } .filters .apply { grid-column: span 2; } }
+    </style>
 </head>
-<body class="bg-gray-900 text-white">
+<body>
     <!-- Login Screen -->
-    <div id="loginScreen" class="min-h-screen flex items-center justify-center">
-        <div class="bg-gray-800 rounded-lg p-8 max-w-md w-full">
-            <h2 class="text-3xl font-bold mb-6">Admin Login</h2>
-            <form id="loginForm" class="space-y-4">
-                <input type="text" id="username" placeholder="Username" class="w-full p-3 bg-gray-700 rounded" required>
-                <input type="password" id="password" placeholder="Password" class="w-full p-3 bg-gray-700 rounded" required>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded font-bold">Login</button>
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h2>🔐 Admin вход</h2>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Потребител" required>
+                <input type="password" id="password" placeholder="Парола" required>
+                <button type="submit">Вход</button>
             </form>
-            <div id="loginMessage" class="mt-4 text-center"></div>
+            <div id="loginMessage" style="margin-top:14px;text-align:center"></div>
         </div>
     </div>
 
     <!-- Admin Panel -->
-    <div id="adminPanel" class="hidden min-h-screen p-6">
+    <div id="adminPanel" class="hidden">
+        <div class="header">
+            <h1>🛠️ Админ панел — AMS Chat</h1>
+        </div>
+
         <!-- Navigation -->
-        <div class="mb-6 flex gap-4">
-            <button onclick="loadPage('flagged')" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Page 1: Flagged Users</button>
-            <button onclick="loadPage('all')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Page 2: All Users</button>
-            <button onclick="loadPage('messages')" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Page 4: Users + Messages</button>
-            <a href="admin-signals.html" class="bg-teal-600 hover:bg-teal-700 px-4 py-2 rounded text-white" style="text-decoration: none;">📊 Signals</a>
-            <a href="admin-matchmaking.html" class="bg-pink-600 hover:bg-pink-700 px-4 py-2 rounded text-white" style="text-decoration: none;">💞 Matchmaking</a>
-            <a href="admin-static-objects.html" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded text-white" style="text-decoration: none;">📄 Static Objects</a>
-            <a href="/chat/public/payment-override.html" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-white" style="text-decoration: none;">💳 Payment Override</a>
-            <button onclick="logout()" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded ml-auto">Logout</button>
+        <div class="nav-row">
+            <button onclick="loadPage('flagged')" class="nav-btn flagged">Маркирани</button>
+            <button onclick="loadPage('all')" class="nav-btn all">Всички</button>
+            <button onclick="loadPage('messages')" class="nav-btn messages">Потребители + съобщения</button>
+            <a href="admin-signals.html" class="nav-btn signals">📊 Сигнали</a>
+            <a href="admin-matchmaking.html" class="nav-btn match">💞 Запознанства</a>
+            <a href="admin-static-objects.html" class="nav-btn static">📄 Статични обекти</a>
+            <a href="/chat/public/payment-override.html" class="nav-btn payment">💳 Плащане (ръчно)</a>
+            <button onclick="logout()" class="nav-btn logout">Изход</button>
         </div>
 
         <!-- Search Filters -->
-        <div class="bg-gray-800 rounded-lg p-4 mb-6">
-            <h3 class="text-lg font-bold mb-3">Search Filters</h3>
-            <div class="grid grid-cols-4 gap-3">
-                <input type="text" id="filterSearch" placeholder="Name or Phone" class="p-2 bg-gray-700 rounded">
-                <select id="filterGender" class="p-2 bg-gray-700 rounded">
-                    <option value="">All Genders</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+        <div class="filters">
+            <h3>🔍 Филтри</h3>
+            <div class="filters-grid">
+                <input type="text" id="filterSearch" placeholder="Име или телефон">
+                <select id="filterGender">
+                    <option value="">Всички полове</option>
+                    <option value="male">Мъж</option>
+                    <option value="female">Жена</option>
                 </select>
-                <input type="text" id="filterCountry" placeholder="Country" class="p-2 bg-gray-700 rounded">
-                <input type="text" id="filterCity" placeholder="City" class="p-2 bg-gray-700 rounded">
-                <input type="number" id="filterHeightMin" placeholder="Height Min" class="p-2 bg-gray-700 rounded">
-                <input type="number" id="filterHeightMax" placeholder="Height Max" class="p-2 bg-gray-700 rounded">
-                <input type="number" id="filterWeightMin" placeholder="Weight Min" class="p-2 bg-gray-700 rounded">
-                <input type="number" id="filterWeightMax" placeholder="Weight Max" class="p-2 bg-gray-700 rounded">
-                <select id="filterBlocked" class="p-2 bg-gray-700 rounded">
-                    <option value="">All Status</option>
-                    <option value="false">Not Blocked</option>
-                    <option value="true">Blocked</option>
+                <input type="text" id="filterCountry" placeholder="Държава">
+                <input type="text" id="filterCity" placeholder="Град">
+                <input type="number" id="filterHeightMin" placeholder="Ръст мин">
+                <input type="number" id="filterHeightMax" placeholder="Ръст макс">
+                <input type="number" id="filterWeightMin" placeholder="Тегло мин">
+                <input type="number" id="filterWeightMax" placeholder="Тегло макс">
+                <select id="filterBlocked">
+                    <option value="">Всякакъв статус</option>
+                    <option value="false">Не е блокиран</option>
+                    <option value="true">Блокиран</option>
                 </select>
-                <button onclick="applyFilters()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded col-span-3">Apply Filters</button>
+                <button onclick="applyFilters()" class="apply">Приложи филтри</button>
             </div>
         </div>
 
         <!-- Content Area -->
-        <div id="contentArea" class="bg-gray-800 rounded-lg p-6"></div>
+        <div id="contentArea" class="content"></div>
     </div>
 
     <script>
@@ -98,10 +185,10 @@
                     document.getElementById('adminPanel').classList.remove('hidden');
                     loadPage('messages');
                 } else {
-                    msg.innerHTML = '<p class="text-red-400">Invalid credentials</p>';
+                    msg.innerHTML = '<p class="no">Невалидни данни</p>';
                 }
             } catch (err) {
-                msg.innerHTML = '<p class="text-red-400">Connection error</p>';
+                msg.innerHTML = '<p class="no">Грешка във връзката</p>';
             }
         });
 
@@ -146,7 +233,7 @@
         async function loadPage(page) {
             currentPage = page;
             const content = document.getElementById('contentArea');
-            content.innerHTML = '<p class="text-center">Loading...</p>';
+            content.innerHTML = '<p style="text-align:center;color:#999">Зареждам…</p>';
 
             const params = new URLSearchParams(currentFilters);
             let endpoint = '';
@@ -165,127 +252,111 @@
                     renderBasicTable(data.users);
                 }
             } catch (err) {
-                content.innerHTML = '<p class="text-red-400">Error loading data</p>';
+                content.innerHTML = '<p class="no">Грешка при зареждане</p>';
             }
         }
 
         // Render Page 4 (Users + Messages + Location + Flagged)
         function renderPage4(users) {
             const content = document.getElementById('contentArea');
-            
+
             if (!users || users.length === 0) {
-                content.innerHTML = '<p class="text-gray-400">No users found</p>';
+                content.innerHTML = '<p class="muted">Няма потребители</p>';
                 return;
             }
 
             content.innerHTML = `
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-700">
-                                <th class="p-2 text-left">Phone</th>
-                                <th class="p-2 text-left">Name</th>
-                                <th class="p-2 text-left">Gender</th>
-                                <th class="p-2 text-left">Is Flagged</th>
-                                <th class="p-2 text-left">Location</th>
-                                <th class="p-2 text-left">Location Data</th>
-                                <th class="p-2 text-left">Messages</th>
-                                <th class="p-2 text-left">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${users.map(u => `
-                                <tr class="border-b border-gray-700 hover:bg-gray-700">
-                                    <td class="p-2">${u.phone}</td>
-                                    <td class="p-2">${u.full_name}</td>
-                                    <td class="p-2">${u.gender}</td>
-                                    <td class="p-2">
-                                        ${u.isFlagged 
-                                            ? `<span class="text-red-400">🔴 Yes (${u.flaggedCount})</span>` 
-                                            : '<span class="text-green-400">🟢 No</span>'
-                                        }
-                                    </td>
-                                    <td class="p-2">
-                                        <button onclick="captureLocation(${u.id}, '${u.phone}')" 
-                                                class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-xs">
-                                            📍 Capture
-                                        </button>
-                                    </td>
-                                    <td class="p-2 text-xs">
-                                        ${u.hasLocation ? `
-                                            <div class="max-w-xs">
-                                                ${u.location_country ? `${u.location_country}, ` : ''}${u.location_city || ''}${u.location_village ? `, ${u.location_village}` : ''}<br>
-                                                ${u.location_street ? `${u.location_street} ${u.location_number || ''}` : ''}<br>
-                                                GPS: ${u.location_latitude?.toFixed(4)}, ${u.location_longitude?.toFixed(4)}<br>
-                                                IP: ${u.location_ip || 'N/A'}<br>
-                                                <span class="text-gray-400">${new Date(u.location_captured_at).toLocaleString()}</span>
-                                            </div>
-                                        ` : '<span class="text-gray-400">No location</span>'}
-                                    </td>
-                                    <td class="p-2">
-                                        <div class="max-w-md max-h-20 overflow-y-auto text-xs bg-gray-900 p-2 rounded">
-                                            ${u.allMessages ? u.allMessages.substring(0, 200) + '...' : 'No messages'}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Телефон</th>
+                            <th>Име</th>
+                            <th>Пол</th>
+                            <th>Маркиран</th>
+                            <th>Локация</th>
+                            <th>Данни за локация</th>
+                            <th>Съобщения</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(u => `
+                            <tr>
+                                <td>${u.phone}</td>
+                                <td>${u.full_name}</td>
+                                <td>${u.gender}</td>
+                                <td>
+                                    ${u.isFlagged
+                                        ? `<span class="no">🔴 Да (${u.flaggedCount})</span>`
+                                        : '<span class="yes">🟢 Не</span>'
+                                    }
+                                </td>
+                                <td>
+                                    <button onclick="captureLocation(${u.id}, '${u.phone}')" class="btn-sm green">📍 Запиши</button>
+                                </td>
+                                <td>
+                                    ${u.hasLocation ? `
+                                        <div class="cell-box">
+                                            ${u.location_country ? `${u.location_country}, ` : ''}${u.location_city || ''}${u.location_village ? `, ${u.location_village}` : ''}<br>
+                                            ${u.location_street ? `${u.location_street} ${u.location_number || ''}` : ''}<br>
+                                            GPS: ${u.location_latitude?.toFixed(4)}, ${u.location_longitude?.toFixed(4)}<br>
+                                            IP: ${u.location_ip || 'N/A'}<br>
+                                            <span class="muted">${new Date(u.location_captured_at).toLocaleString('bg-BG')}</span>
                                         </div>
-                                    </td>
-                                    <td class="p-2">
-                                        <button onclick="viewDetails(${u.id})" 
-                                                class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs mb-1">
-                                            🔍 Details
-                                        </button>
-                                        <button onclick="blockUser(${u.id}, '${u.phone}')" 
-                                                class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs">
-                                            🚫 Block
-                                        </button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
+                                    ` : '<span class="muted">Няма локация</span>'}
+                                </td>
+                                <td>
+                                    <div class="cell-box">
+                                        ${u.allMessages ? u.allMessages.substring(0, 200) + '...' : 'Няма съобщения'}
+                                    </div>
+                                </td>
+                                <td>
+                                    <button onclick="viewDetails(${u.id})" class="btn-sm blue">🔍 Детайли</button>
+                                    <button onclick="blockUser(${u.id}, '${u.phone}')" class="btn-sm red">🚫 Блокирай</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             `;
         }
 
         // Render basic table (Page 1 & 2)
         function renderBasicTable(users) {
             const content = document.getElementById('contentArea');
-            
+
             if (!users || users.length === 0) {
-                content.innerHTML = '<p class="text-gray-400">No users found</p>';
+                content.innerHTML = '<p class="muted">Няма потребители</p>';
                 return;
             }
 
             content.innerHTML = `
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border-b border-gray-700">
-                                <th class="p-2 text-left">Phone</th>
-                                <th class="p-2 text-left">Name</th>
-                                <th class="p-2 text-left">Gender</th>
-                                <th class="p-2 text-left">Blocked</th>
-                                <th class="p-2 text-left">Paid Until</th>
-                                <th class="p-2 text-left">Actions</th>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Телефон</th>
+                            <th>Име</th>
+                            <th>Пол</th>
+                            <th>Блокиран</th>
+                            <th>Платено до</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(u => `
+                            <tr>
+                                <td>${u.phone}</td>
+                                <td>${u.full_name}</td>
+                                <td>${u.gender}</td>
+                                <td>${u.is_blocked ? '<span class="no">❌ Да</span>' : '<span class="yes">✅ Не</span>'}</td>
+                                <td>${new Date(u.paid_until) > new Date() ? '<span class="yes">✅ Активен</span>' : '<span class="muted">❌ Изтекъл</span>'}</td>
+                                <td>
+                                    <button onclick="blockUser(${u.id}, '${u.phone}')" class="btn-sm red">Блокирай</button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            ${users.map(u => `
-                                <tr class="border-b border-gray-700">
-                                    <td class="p-2">${u.phone}</td>
-                                    <td class="p-2">${u.full_name}</td>
-                                    <td class="p-2">${u.gender}</td>
-                                    <td class="p-2">${u.is_blocked ? '❌ Yes' : '✅ No'}</td>
-                                    <td class="p-2">${new Date(u.paid_until) > new Date() ? '✅ Active' : '❌ Expired'}</td>
-                                    <td class="p-2">
-                                        <button onclick="blockUser(${u.id}, '${u.phone}')" 
-                                                class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm">
-                                            Block
-                                        </button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
+                        `).join('')}
+                    </tbody>
+                </table>
             `;
         }
 
@@ -322,7 +393,7 @@
                         { headers: { 'User-Agent': 'AMS-Chat-Admin/1.0' } }
                     );
                     const geocodeData = await geocodeRes.json();
-                    
+
                     country = geocodeData.address?.country || '';
                     city = geocodeData.address?.city || geocodeData.address?.town || '';
                     village = geocodeData.address?.village || '';
@@ -387,6 +458,6 @@
             }
         }
     </script>
-    <script src="/shared/js/navigation.js?v=1.0115"></script>
+    <script src="/shared/js/navigation.js?v=1.0174"></script>
 </body>
 </html>

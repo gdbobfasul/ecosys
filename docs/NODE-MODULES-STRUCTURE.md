@@ -1,6 +1,6 @@
 # 📦 КЪДЕ Е node_modules - СТРУКТУРА
 
-**Version:** 1.0063
+**Version:** 1.0174
 
 ---
 
@@ -197,20 +197,83 @@ node_modules/     ← ВСИЧКИ node_modules (root + mobile-chat)
 
 ---
 
+## 🤖 РОБОТИ — обща `node_modules2` в root (token-creator / token-protector / robot)
+
+Трите ЛОКАЛНИ инструмента **не са** в workspaces (не искаме да дърпат целия монорепо при
+`npm install`). Те споделят **една отделна папка `node_modules2/` в root** с точно 2 пакета:
+`ethers` (за token-creator/protector) и `playwright` (за robot).
+
+```
+kcy-ecosystem/
+├── node_modules2/                      ← обща за роботите (ethers + playwright, ~39 MB)
+└── private/
+    ├── token-creator/node_modules  → junction → ../../node_modules2
+    ├── token-protector/node_modules → junction → ../../node_modules2
+    └── robot/node_modules          → junction → ../../node_modules2
+```
+
+**Защо `node_modules2`, а не root `node_modules`?** Root `node_modules` е целият монорепо
+(hardhat, react-native, expo, sharp…) — `npm install` там дърпа стотици MB. Роботите искат само
+2 пакета, затова са отделно.
+
+**Защо junction-и, а не name `node_modules`?** Node намира зависимости само в папки на име
+`node_modules` (търси нагоре по дървото). `node_modules2` НЕ се разпознава автоматично, затова
+всеки робот има `node_modules` **junction** (Windows указател) към `node_modules2`. Така
+`require('ethers')` / `require('playwright')` работят прозрачно, без промяна в командите за пускане.
+
+### ⚙️ Възстановяване (след clean checkout / разархивиране / нов компютър)
+`node_modules2` и junction-ите са **gitignore-нати и се изключват от архивите** → пресъздават се с
+ЕДНА команда (НЕ с `npm install` — той прави отделни реални копия):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\setup-robot-deps.ps1
+```
+
+Скриптът: инсталира `ethers`+`playwright` в `node_modules2/` и пресъздава 3-те junction-а
+**спрямо текущата папка** (затова работи и при разархивиране на ново място — junction-ите пазят
+АБСОЛЮТЕН път, затова не разчитаме да оцелеят, а ги правим наново). За браузъра на робота при нужда:
+`cd private\robot ; npx playwright install chromium` (браузърите се пазят извън node_modules).
+
+### 📦 Архивиране (2 RAR архива, без големите папки) — `make-backup.ps1`
+Готов скрипт прави **два** архива (изисква WinRAR / `rar.exe`):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\make-backup.ps1
+#   → G:\wrk\YYYY-MM-DD-toks-vids.rar   (само public\assets)
+#   → G:\wrk\YYYY-MM-DD-toks.rar        (всичко друго, БЕЗ node_modules / node_modules2 / public\assets)
+# по избор: .\make-backup.ps1 -OutDir D:\backups
+```
+
+Junction-ите се **прескачат** автоматично (`-xnode_modules` без път важи за всяка папка) →
+`node_modules2` НЕ влиза 3 пъти. НЕ ползвай Explorer „Compress" (следва junction-и).
+Възстановяване: разархивирай **двата** на едно място → после `setup-robot-deps.ps1`.
+
+> Алтернатива без RAR: `robocopy . ..\kcy-clean /E /XJ /XD node_modules node_modules2 .git public\assets`
+> после `tar -czf ..\kcy-backup.tgz -C ..\kcy-clean .` (`/XJ` = не следвай junction-и).
+
+⚠️ Най-голямата папка изобщо е **`public/assets` (~600 MB видеа/анимации)** — тя НЕ е генерируема
+от `npm install` (съдържание, не пакети). Изключвай я само ако я пазиш отделно (тя е и каквото се
+качва с деплой опция 6). Сървърният деплой на робота не зависи от тук — `32-setup-robot.sh` прави
+свой `npm install` в `private/robot` на сървъра.
+
+---
+
 ## 🎯 ЗАКЛЮЧЕНИЕ
 
 **След пълна инсталация:**
 
 ```
 kcy-ecosystem/
-├── node_modules/              ← 1. ТУК (workspaces)
+├── node_modules/              ← 1. ТУК (workspaces: token, multisig, chat…)
+├── node_modules2/             ← 2. ТУК (роботи: ethers + playwright)
 └── private/
     └── mobile-chat/
-        └── node_modules/      ← 2. ТУК (отделно)
+        └── node_modules/      ← 3. ТУК (отделно)
 ```
 
-**2 node_modules общо:**
-- 1 споделен (root)
+**3 node_modules общо:**
+- 1 споделен монорепо (root `node_modules`)
+- 1 за роботите (root `node_modules2` + junction-и)
 - 1 отделен (mobile-chat)
 
 ---

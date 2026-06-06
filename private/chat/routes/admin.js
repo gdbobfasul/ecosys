@@ -68,8 +68,12 @@ function createAdminRoutes(db) {
 
       await db.prepare('UPDATE admin_users SET last_login = datetime("now") WHERE username = ?').run(username);
 
-      const crypto = require('crypto');
-      const token = crypto.randomBytes(32).toString('hex');
+      // Token за подстраниците (signals / matchmaking / static-objects):
+      // те се валидират чрез `WHERE password_hash = ?` (виж signals.js и
+      // middleware/auth.js authenticateAdmin). Затова token-ът Е самият
+      // password_hash. Случаен token никога не съвпада → даваше 401
+      // („Грешка при зареждане на сигналите"). Тестова система, без живи данни.
+      const token = admin.password_hash;
 
       res.json({
         success: true,

@@ -5,6 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portals — Admin панел</title>
+<!-- Стилове за KCY навигацията (иначе менюто излиза без оформление). -->
+<link rel="stylesheet" href="/shared/css/common.css?v=1.0174">
 <style>
   :root { --pri:#2a86d8; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -38,7 +40,7 @@
   .total-pts { color:#ffd24a; font-weight:700; }
 </style>
 </head>
-<body>
+<body data-nav-theme="dark">
 <div class="head">
   <h1>🎮 Portals — Admin панел</h1>
   <p>Потребители · точки по игри · реклама · триене</p>
@@ -171,6 +173,6 @@ document.getElementById('q').addEventListener('keydown', function(e){ if(e.key==
 load();
 </script>
 <!-- KCY ecosystem nav + админ дропдаун (показва всички админ панели при админ IP) -->
-<script src="/shared/js/navigation.js?v=1.0173"></script>
+<script src="/shared/js/navigation.js?v=1.0174"></script>
 </body>
 </html>

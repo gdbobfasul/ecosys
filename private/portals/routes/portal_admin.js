@@ -4,7 +4,7 @@
 // Достъп: ?adm=bgmasters-set И IP whitelist (както изисква access-control).
 
 const express = require('express');
-const { hasAdmUrlParam, isIpWhitelisted, isEnvStaff } = require('../middleware/access-control');
+const { isLoggedAdmin } = require('../middleware/access-control');
 
 let debug;
 try { debug = require('../../shared/debug-helper').create('portals'); }
@@ -18,11 +18,11 @@ const GAME_SLUGS = [
     'hero-jump', 'hero-run', 'battle-team', 'battle-duel',
 ];
 
-// ── Admin gate: само IP whitelist (вкл. 0.0.0.0/0) — без URL параметър ──
-// (guest-mode cookie прави isIpWhitelisted=false, за симулация на гост)
+// ── Admin gate: само ЛОГНАТ .env админ/модератор (НЕ по IP) ──
+// (guest-mode прави isLoggedAdmin=false, за симулация на гост)
 function requireAdmin(req, res, next) {
-    if (isIpWhitelisted(req) || isEnvStaff(req.app.locals.db, req.session?.userId)) return next();
-    return res.status(403).json({ error: 'forbidden', message: 'Само за админ.' });
+    if (isLoggedAdmin(req, req.app.locals.db)) return next();
+    return res.status(403).json({ error: 'forbidden', message: 'Само за логнат админ.' });
 }
 
 // GET /api/portals/adm/users?q=&page=  — списък потребители (по 50)

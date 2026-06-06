@@ -89,15 +89,22 @@ function BattleEngine(opts) {
     this.selTarget = 0;     // индекс на избрания противник (между живите)
     this._idleTimer = null;
 
-    // admin debug: показва се само при ?adm=bgmasters-set или ?debug=1 (или opts.debug)
+    // admin debug (логовете отляво/отдясно + LOG): показва се при ?adm=bgmasters-set,
+    // ?debug=1, opts.debug, ИЛИ когато сесията вече е разпозната като админска
+    // (sessionStorage kcy-adm — слага се от navigation.js при админ IP). Допълнително
+    // по-долу има async проверка по IP, която пали панелите дори без тези условия.
     this.debug = !!opts.debug || /[?&](adm=bgmasters-set|debug=1)\b/.test(
         (global.location && global.location.search) || '');
+    if (!this.debug) {
+        try { if (sessionStorage.getItem('kcy-adm') === 'bgmasters-set') this.debug = true; } catch (e) {}
+    }
     this._logLines = [];
     this._idleLogged = {};   // idle файлове логнати веднъж за играта
     this._lastLogged = null; // последно логнат файл (за дедуп на последователни)
 
     this._buildDOM();
     this._fitArena();
+    this._enableDebugIfAdmin(); // async: пали логовете за админ дори без URL параметър
     var self = this;
     global.addEventListener('resize', function () { self._fitArena(); });
 }
@@ -187,30 +194,53 @@ BattleEngine.prototype._buildDOM = function () {
     };
 
     // ── admin debug панели ИЗВЪН полето (отляво=съюзници, отдясно=врагове) ──
-    if (this.debug) {
-        if (!document.getElementById('kbb-dbg-css')) {
-            var dcss = document.createElement('style');
-            dcss.id = 'kbb-dbg-css';
-            dcss.textContent = BATTLE_DBG_CSS;
-            document.head.appendChild(dcss);
-        }
-        var mkDbg = function (cls, title) {
-            var d = document.createElement('div');
-            d.className = 'kbb-dbg ' + cls;
-            d.innerHTML = '<div class="kbb-dbg-title">' + title + '</div><div class="kbb-dbg-body"></div>';
-            document.body.appendChild(d);
-            return d;
-        };
-        var dl = mkDbg('kbb-dbg-left', 'DEBUG · съюзници');
-        var dr = mkDbg('kbb-dbg-right', 'DEBUG · врагове');
-        var dlog = document.createElement('div');
-        dlog.className = 'kbb-dbg kbb-dbg-log';
-        dlog.innerHTML = '<div class="kbb-dbg-title">LOG</div><div class="kbb-dbg-body"></div>';
-        document.body.appendChild(dlog);
-        this.dbg = { left: dl.querySelector('.kbb-dbg-body'),
-                     right: dr.querySelector('.kbb-dbg-body'),
-                     log: dlog.querySelector('.kbb-dbg-body') };
+    if (this.debug) this._buildDebugPanels();
+};
+
+// Строи debug панелите (съюзници/врагове/LOG). Изнесено, за да може да се пусне
+// и по-късно (когато async проверката по IP разпознае админ след старта).
+BattleEngine.prototype._buildDebugPanels = function () {
+    if (this.dbg) return; // вече построени
+    if (!document.getElementById('kbb-dbg-css')) {
+        var dcss = document.createElement('style');
+        dcss.id = 'kbb-dbg-css';
+        dcss.textContent = BATTLE_DBG_CSS;
+        document.head.appendChild(dcss);
     }
+    var mkDbg = function (cls, title) {
+        var d = document.createElement('div');
+        d.className = 'kbb-dbg ' + cls;
+        d.innerHTML = '<div class="kbb-dbg-title">' + title + '</div><div class="kbb-dbg-body"></div>';
+        document.body.appendChild(d);
+        return d;
+    };
+    var dl = mkDbg('kbb-dbg-left', 'DEBUG · съюзници');
+    var dr = mkDbg('kbb-dbg-right', 'DEBUG · врагове');
+    var dlog = document.createElement('div');
+    dlog.className = 'kbb-dbg kbb-dbg-log';
+    dlog.innerHTML = '<div class="kbb-dbg-title">LOG</div><div class="kbb-dbg-body"></div>';
+    document.body.appendChild(dlog);
+    this.dbg = { left: dl.querySelector('.kbb-dbg-body'),
+                 right: dr.querySelector('.kbb-dbg-body'),
+                 log: dlog.querySelector('.kbb-dbg-body') };
+};
+
+// Async: ако IP-то е админско (но debug още не е пуснат), пали панелите след старта.
+// Така логовете се виждат за админ БЕЗ да е нужен URL параметър — както беше преди.
+BattleEngine.prototype._enableDebugIfAdmin = function () {
+    if (this.debug) return;
+    var self = this;
+    fetch('/api/portals/ip-admin', { credentials: 'same-origin' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+            if (!d || !d.ip_admin) return;
+            try { sessionStorage.setItem('kcy-adm', 'bgmasters-set'); } catch (e) {}
+            self.debug = true;
+            self._buildDebugPanels();
+            self._renderDebug();
+            self._log('— админ режим (логове включени) —');
+        })
+        .catch(function () { /* не е админ — без логове */ });
 };
 
 /* ── скалиране на полето в контейнера ── */

@@ -253,8 +253,6 @@
     <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
 <body>
-    <a href="admin.html" class="back-btn">← Назад към админ панел</a>
-    
     <div class="header">
         <h1>🚨 Одобрение на сигнали</h1>
         <div class="stats">
@@ -287,6 +285,13 @@
                     }
                 });
                 
+                if (response.status === 401) {
+                    // Стар/невалиден token (напр. от вход отпреди ъпдейт) →
+                    // изчисти го и върни към вход, за да се вземе нов валиден token.
+                    localStorage.removeItem('token');
+                    window.location.href = 'admin.html';
+                    return;
+                }
                 if (!response.ok) {
                     throw new Error('Failed to load signals');
                 }
@@ -540,6 +545,7 @@
         // Refresh every 30 seconds
         setInterval(loadPendingSignals, 30000);
     </script>
-    <script src="/shared/js/navigation.js?v=1.0115"></script>
+    <script src="/shared/js/navigation.js?v=1.0174"></script>
+    <script src="/chat/admin/admin-nav.js?v=1.0174"></script>
 </body>
 </html>

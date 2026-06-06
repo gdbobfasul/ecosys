@@ -20,12 +20,20 @@
   .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px; }
   .game { background:#22323f; border-radius:14px; overflow:hidden; text-decoration:none; color:#eef3f8; transition:transform .15s; box-shadow:0 6px 20px rgba(0,0,0,.35); }
   .game:hover { transform:translateY(-5px); }
-  .thumb { height:130px; display:flex; align-items:center; justify-content:center; position:relative; }
+  /* картата-снимка е ПОРТРЕТНА (като подадените снимки ~430×510) → побира ги без изрязване */
+  .thumb { aspect-ratio:43/51; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
   .thumb.plane { background:linear-gradient(135deg,#2a86d8,#6ec1e4); }
   .thumb.car   { background:linear-gradient(135deg,#ff6b5a,#ffb199); }
   .thumb.hero  { background:linear-gradient(135deg,#a770ef,#cf8bf3); }
   .thumb.battle{ background:linear-gradient(135deg,#c0392b,#e8612c); }
   .thumb svg { width:80px; height:80px; }
+  /* реалната снимка на играта — пълни картата, изрязва се по нужда (object-fit:cover) */
+  .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  /* заглавие ВЪРХУ снимката — бял текст на тъмен градиент → чете се при всеки цвят */
+  .thumb .gtitle { position:absolute; left:0; right:0; bottom:0; padding:18px 14px 10px;
+    color:#fff; font-weight:700; font-size:1.08em; text-align:left;
+    text-shadow:0 1px 4px rgba(0,0,0,.95);
+    background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,.32) 55%, transparent); }
   .gbody { padding:16px; }
   .gbody h3 { color:#fff; margin-bottom:6px; font-size:1.05em; }
   .gbody p { color:#9fb4c6; font-size:.86em; line-height:1.4; }
@@ -90,6 +98,10 @@ var ICONS={
 var ICON_FALLBACK={
   plane:'plane-dodge', car:'car-race', hero:'hero-jump', battle:'battle-team'
 };
+// Игри с реална снимка в thumbs/. battle-team/battle-duel още нямат (текущ проблем).
+var THUMBS={
+  'plane-dodge':1,'plane-shoot':1,'car-race':1,'car-drift':1,'hero-jump':1,'hero-run':1
+};
 
 function showTab(t){
   document.getElementById('panelGames').classList.toggle('active',t==='games');
@@ -129,11 +141,15 @@ function loadGames(){
       var pr=game.progress||{best_level:1,best_score:0};
       var a=document.createElement('a');
       a.className='game'; a.href=game.slug+'.html';
-      var icon = ICONS[game.slug] || ICONS[ICON_FALLBACK[game.theme]] || '';
+      // Игрите с реална снимка (thumbs/<slug>.png). За battle-team/battle-duel още
+      // няма снимка (текущ проблем) → ползваме рисувания SVG icon.
+      var media = THUMBS[game.slug]
+        ? '<img src="thumbs/'+game.slug+'.png?v=1.0174" alt="'+esc(game.title)+'" loading="lazy">'
+        : (ICONS[game.slug] || ICONS[ICON_FALLBACK[game.theme]] || '');
       a.innerHTML=
-        '<div class="thumb '+game.theme+'">'+icon+'</div>'+
-        '<div class="gbody"><h3>'+game.title+'</h3>'+
-        '<p>'+game.goal+'</p>'+
+        '<div class="thumb '+game.theme+'">'+media+
+          '<span class="gtitle">'+esc(game.title)+'</span></div>'+
+        '<div class="gbody"><p>'+game.goal+'</p>'+
         '<div class="prog">Рекорд: ниво '+pr.best_level+' · '+pr.best_score+' точки</div></div>';
       g.appendChild(a);
     });

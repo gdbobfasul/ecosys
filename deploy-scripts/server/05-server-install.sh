@@ -595,7 +595,10 @@ mkdir -p "$WEB_ROOT" "$PROJECT_DIR" "$PRIVATE_DIR" /var/log/kcy-ecosystem
 # public/ → /var/www/html/
 # --delete премахва файлове в destination които вече ги няма в source
 # --exclude='last-errors/' пази runtime генерираните логове
-echo -e "  ${YELLOW}public/ → ${WEB_ROOT} (with --delete)${NC}"
+# --exclude='assets/' пази голямите асети (видеа/анимации) — те се качват ОТДЕЛНО
+#   с опция 6 (sync-assets) и НЕ са в source-а. Без този exclude, --delete ги триеше
+#   при всеки пълен деплой → игрите оставаха без видеа.
+echo -e "  ${YELLOW}public/ → ${WEB_ROOT} (with --delete, asset-safe)${NC}"
 if [ ! -d "$STAGING/public" ]; then
     echo -e "  ${RED}✗ FATAL: $STAGING/public НЕ СЪЩЕСТВУВА — архивът не е разархивиран правилно${NC}"
     diag_log services-errors.log "install: STAGING/public липсва"
@@ -603,7 +606,7 @@ if [ ! -d "$STAGING/public" ]; then
 fi
 STAGING_PUB_COUNT=$(find "$STAGING/public" -type f 2>/dev/null | wc -l)
 echo -e "  ${CYAN}  Staging public/: ${STAGING_PUB_COUNT} файла за копиране${NC}"
-if ! rsync -av --delete --exclude='last-errors/' "$STAGING/public/" "$WEB_ROOT/" 2>&1 | tail -5; then
+if ! rsync -av --delete --exclude='last-errors/' --exclude='assets/' "$STAGING/public/" "$WEB_ROOT/" 2>&1 | tail -5; then
     echo -e "  ${RED}✗ FATAL: rsync public/ се провали${NC}"
     diag_log services-errors.log "install: rsync public FAILED"
     safe_exit 1

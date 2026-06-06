@@ -55,9 +55,10 @@ for svc in nginx kcy-chat kcy-eco3 kcy-portals kcy-diag postgresql; do
 done
 append_log services-errors.log "$SVC_STATUS"
 
-# Recent failures
-FAILED=$(systemctl --failed --no-legend --no-pager 2>/dev/null | wc -l)
-[ "$FAILED" -gt 0 ] && append_log services-errors.log "⚠ $FAILED failed units (systemctl --failed)"
+# Recent failures — броим И изписваме ИМЕНАТА (иначе не се знае кой пада)
+FAILED_LIST=$(systemctl --failed --no-legend --no-pager 2>/dev/null | awk '{print $1}' | grep -v '^$' | tr '\n' ' ')
+FAILED=$(echo "$FAILED_LIST" | wc -w)
+[ "$FAILED" -gt 0 ] && append_log services-errors.log "⚠ $FAILED failed units: $FAILED_LIST"
 
 # ─── disk ───
 DISK=$(df -h / 2>/dev/null | awk 'NR==2 {print $3 "/" $2 " (" $5 ")"}')

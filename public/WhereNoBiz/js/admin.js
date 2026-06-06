@@ -175,7 +175,8 @@
     document.querySelectorAll('.atab').forEach(b => b.onclick = () => switchTab(b.dataset.tab));
     $('#allReload').onclick = loadAll;
     $('#allSort').onchange = loadAll; $('#allOrder').onchange = loadAll; $('#allStatus').onchange = loadAll;
-    loadPending();
-    loadReports();
+    loadPending();  // зарежда брояча #cntPending
+    loadReports();  // зарежда брояча #cntReports
+    switchTab('allusers'); // начален изглед: управление на ВСИЧКИ потребители
   });
 })();

@@ -1,4 +1,4 @@
-<!-- Version: 1.0171 -->
+<!-- Version: 1.0174 -->
 <!doctype html>
 <html lang="bg">
 <head>
@@ -46,15 +46,15 @@
     <div id="noAccess" class="panel notice" style="display:none">Нямаш достъп до тази част.</div>
     <div id="adminBody" style="display:none">
       <nav class="admin-tabs">
-        <button class="atab on" data-tab="pending">⏳ Чакащи модерация (<span id="cntPending">0</span>)</button>
+        <button class="atab on" data-tab="allusers">👤 Всички потребители</button>
+        <button class="atab" data-tab="users">👥 Банати</button>
+        <button class="atab" data-tab="pending">⏳ Чакащи модерация (<span id="cntPending">0</span>)</button>
         <button class="atab" data-tab="reports">🚩 Доклади (<span id="cntReports">0</span>)</button>
         <button class="atab" data-tab="all">🏠 Всички къщи</button>
         <button class="atab" data-tab="gen">⚙️ Генератор</button>
-        <button class="atab" data-tab="allusers">👤 Всички потребители</button>
-        <button class="atab" data-tab="users">👥 Банати</button>
       </nav>
 
-      <section id="tab-pending" class="atab-panel"></section>
+      <section id="tab-pending" class="atab-panel" style="display:none"></section>
       <section id="tab-reports" class="atab-panel" style="display:none"></section>
 
       <section id="tab-all" class="atab-panel" style="display:none">
@@ -105,7 +105,7 @@
       <section id="tab-users" class="atab-panel" style="display:none">
         <div id="usersList"></div>
       </section>
-      <section id="tab-allusers" class="atab-panel" style="display:none">
+      <section id="tab-allusers" class="atab-panel">
         <div id="allUsersList"></div>
       </section>
     </div>
@@ -114,8 +114,6 @@
   <!-- Без i18n.js — админ частта е само на български (не се превежда). -->
   <script src="js/house-render.js?v=1.0171"></script>
   <script src="js/hlb-common.js?v=1.0171"></script>
-  <script src="js/admin.js?v=1.0173"></script>
-  <!-- KCY ecosystem nav + админ дропдаун (показва всички админ панели при админ IP) -->
-  <script src="/shared/js/navigation.js?v=1.0173"></script>
+  <script src="js/admin.js?v=1.0174"></script>
 </body>
 </html>

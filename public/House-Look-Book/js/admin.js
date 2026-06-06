@@ -200,7 +200,8 @@
       try { const r = await HLB.api('/moderation/generate-from-google', { method: 'POST', body: { query: q, count: n } }); $('#gMsg').textContent = '✓ Създадени ' + r.created + ' модела от Google (намерени ' + (r.found || 0) + '). Виж ги в „🏠 Всички къщи".'; }
       catch (e) { $('#gMsg').textContent = 'Грешка: ' + e.message; }
     };
-    loadPending();
-    loadReports(); // зарежда брояча наобраз
+    loadPending();  // зарежда брояча #cntPending
+    loadReports();  // зарежда брояча #cntReports
+    switchTab('allusers'); // начален изглед: управление на ВСИЧКИ потребители
   });
 })();
