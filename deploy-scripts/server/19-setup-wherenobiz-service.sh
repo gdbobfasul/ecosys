@@ -17,7 +17,7 @@
 #
 # Базата остава на localhost — само node я докосва. Frontend-ът е изцяло
 # релативен → когато се купи отделен домейн, той сочи към СЪЩАТА поддиректория
-# и alsec не се вижда (виж паметта: kcy-mobile-apps-architecture).
+# и главния сайт не се вижда (виж паметта: kcy-mobile-apps-architecture).
 #
 # Употреба:
 #   sudo ./19-setup-wherenobiz-service.sh
@@ -39,6 +39,9 @@ WEB_ROOT="/var/www/html"
 APP_DIR="$PRIVATE_DIR/$APP_NAME"
 PUBLIC_SUBDIR="$WEB_ROOT/$APP_NAME"
 PORT_KEY="WNB_PORT"; PORT_DEFAULT="3011"
+# Единна конфигурация за домейни/директории/портове (private/configs/domains.conf).
+[ -f "$PRIVATE_DIR/configs/domains.conf" ] && . "$PRIVATE_DIR/configs/domains.conf"
+[ -n "${APP_wnb_PORT:-}" ] && PORT_DEFAULT="$APP_wnb_PORT"
 NGINX_INC_DIR="/etc/nginx/kcy-apps"
 NGINX_INC="$NGINX_INC_DIR/wherenobiz.conf"
 LOG_DIR="/var/log/kcy-ecosystem"

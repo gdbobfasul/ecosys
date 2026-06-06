@@ -166,7 +166,7 @@ expo build:android
 expo build:ios
 
 # Upload to server
-scp ams-chat.apk root@alsec.strangled.net:/var/www/html/downloads/
+scp ams-chat.apk root@${MAIN_DOMAIN}:/var/www/html/downloads/
 ```
 
 ---
@@ -206,7 +206,7 @@ scp ams-chat.apk root@alsec.strangled.net:/var/www/html/downloads/
 ## 🎯 ГОТОВО ЗА:
 
 ### Immediate:
-- ✅ Web deployment (alsec.strangled.net)
+- ✅ Web deployment (${MAIN_DOMAIN})
 - ✅ Mobile app testing (Expo Go)
 - ✅ Database setup (PostgreSQL)
 - ✅ SSL certificates (Let's Encrypt)

@@ -138,6 +138,8 @@ function loadGames(){
   fetch(apiUrl('/api/portals/gms/list')).then(authGuard).then(function(d){
     var g=document.getElementById('grid'); g.innerHTML='';
     d.games.forEach(function(game){
+      // battle-team и battle-duel се показват чрез рекламните банери най-долу — НЕ в грида
+      if (game.slug === 'battle-team' || game.slug === 'battle-duel') return;
       var pr=game.progress||{best_level:1,best_score:0};
       var a=document.createElement('a');
       a.className='game'; a.href=game.slug+'.html';
@@ -190,6 +192,19 @@ function esc(s){ return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 loadGames();
 if(location.search.indexOf('rank=1')>-1) showTab('rank');
 </script>
+    <!-- KCY входове на игрите — рекламни банери (анимирани, тръгват сами) -->
+    <section class="kcy-game-entries">
+      <iframe class="kcy-entry battle" src="/portals/games/ads/ad_battle.html" title="Битка на терен" loading="lazy" scrolling="no"></iframe>
+      <iframe class="kcy-entry duel"   src="/portals/games/ads/ad_duel.html"   title="Дуел"          loading="lazy" scrolling="no"></iframe>
+    </section>
+    <style>
+    .kcy-game-entries{display:flex;gap:20px;justify-content:center;align-items:flex-start;
+      flex-wrap:wrap;margin:40px auto;max-width:1200px;}
+    .kcy-entry{border:0;border-radius:12px;display:block;background:#0b0d0a;}
+    .kcy-entry.battle{width:min(360px,92vw);aspect-ratio:900/1200;height:auto;}
+    .kcy-entry.duel{width:min(560px,92vw);aspect-ratio:1000/750;height:auto;}
+    </style>
+
     <script src="/shared/js/navigation.js?v=1.0115"></script>
 </body>
 </html>

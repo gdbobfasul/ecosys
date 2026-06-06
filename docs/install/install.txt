@@ -109,7 +109,7 @@ sudo bash server-prepare.sh
 sudo bash setup-wizard.sh
 
 >>> Git Bash
-ssh-copy-id -p 2222 -i ~/.ssh/id_ed25519.pub deploy@alsec.strangled.net
+ssh-copy-id -p 2222 -i ~/.ssh/id_ed25519.pub deploy@${MAIN_DOMAIN}
 bash deploy.sh
 
 на Уиндоус, за да поддържа жива връзката със сървера:nano ~/.ssh/config
@@ -124,7 +124,7 @@ EOF
 chmod 600 ~/.ssh/config
 
 
-ssh -p 2222 deploy@alsec.strangled.net
+ssh -p 2222 deploy@${MAIN_DOMAIN}
 
 bash:
 su root
@@ -146,8 +146,8 @@ sudo chmod 0440 /etc/sudoers.d/kcy-deploy
 
 sudo bash /var/www/deploy/deploy-scripts/server/server-install.sh
 
-https://alsec.strangled.net/?adm=bgmasters-set
-https://alsec.strangled.net/shared/admin-status.html
+https://${MAIN_DOMAIN}/?adm=bgmasters-set
+https://${MAIN_DOMAIN}/shared/admin-status.html
 
 SSH-ът умря по средата на `npm install`. Това почти сигурно е сървърът който е изчерпал паметта — npm install с 1885 пакета често стига 1+ GB RAM и на малки VPS-и OOM killer-ът убива процеси (включително sshd).
 
@@ -156,7 +156,7 @@ SSH-ът умря по средата на `npm install`. Това почти с
 **1. Влез отново и провери дали сървърът е жив:**
 
 ```bash
-ssh -p 2222 deploy@alsec.strangled.net
+ssh -p 2222 deploy@${MAIN_DOMAIN}
 ```
 
 Ако се връзва — добре. Ако `connection refused` → сървърът се рестартира → изчакай 1-2 минути.
@@ -205,7 +205,7 @@ free -h              # сега ще има swap
 
 ```bash
 # 1. Влез на сървъра:
-ssh -p 2222 deploy@alsec.strangled.net
+ssh -p 2222 deploy@${MAIN_DOMAIN}
 
 # 2. Инсталирай tmux ако още го няма:
 sudo apt-get install -y tmux
@@ -219,7 +219,7 @@ sudo /var/www/deploy/deploy-scripts/server/server-install.sh
 # Ако сега SSH-ът пак умре — install продължава да работи на сървъра.
 # 
 # За да се върнеш:
-ssh -p 2222 deploy@alsec.strangled.net
+ssh -p 2222 deploy@${MAIN_DOMAIN}
 tmux attach          # връщаш се в tmux сесията както я остави
 ```
 

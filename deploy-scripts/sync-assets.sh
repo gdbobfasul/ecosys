@@ -63,7 +63,7 @@ TAR="${HOME}/kcy-assets-$(date +%Y%m%d-%H%M%S).tar.gz"
 echo -e "${YELLOW}[1/3] Архивиране на public/assets (без raw)...${NC}"
 echo -e "  ${CYAN}работна папка: $PROJECT_ROOT${NC}"
 # покажи примерен файл — за да видиш ТОЧНО какво се качва (размер = коя версия)
-_smpl="public/assets/animations/Closes-Attacks/Duel/right-swordsman-Walks-StrikeButcher-StrikeTop-Mellee/right-swordsman-idle.webm"
+_smpl="public/assets/animations/Duel/Closes-Attacks/right-swordsman-Walks-StrikeButcher-StrikeTop-Mellee/right-swordsman-idle.webm"
 [ -f "$_smpl" ] && echo -e "  ${CYAN}пример (right-swordsman-idle): $(du -h "$_smpl" | cut -f1) — $(date -r "$_smpl" '+%H:%M' 2>/dev/null)${NC}"
 tar -czf "$TAR" --exclude='public/assets/animations/raw' public/assets || { echo -e "${RED}tar се провали${NC}"; exit 1; }
 echo -e "  ${GREEN}✓ $(du -h "$TAR" | cut -f1)${NC}"

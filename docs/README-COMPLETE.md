@@ -3,7 +3,7 @@
 
 **Version:** 2.0.0 - Complete with Mobile App  
 **Date:** February 14, 2026  
-**Domain:** https://alsec.strangled.net
+**Domain:** https://${MAIN_DOMAIN}
 
 ---
 
@@ -208,7 +208,7 @@ cd kcy-complete
 
 #### 2. Database Setup
 ```bash
-ssh root@alsec.strangled.net
+ssh root@${MAIN_DOMAIN}
 cd /var/www/kcy-ecosystem/deploy-scripts/server
 chmod +x *.sh
 ./07-setup-database.sh
@@ -220,7 +220,7 @@ chmod +x *.sh
 ```
 
 **Total time:** ~30 минути  
-**Result:** https://alsec.strangled.net ✅
+**Result:** https://${MAIN_DOMAIN} ✅
 
 ---
 
@@ -244,10 +244,10 @@ eas build --platform ios
 ### Upload APK:
 ```bash
 # To server
-scp ams-chat.apk root@alsec.strangled.net:/var/www/html/downloads/
+scp ams-chat.apk root@${MAIN_DOMAIN}:/var/www/html/downloads/
 
 # Set permissions
-ssh root@alsec.strangled.net
+ssh root@${MAIN_DOMAIN}
 chmod 644 /var/www/html/downloads/ams-chat.apk
 ```
 
@@ -256,7 +256,7 @@ chmod 644 /var/www/html/downloads/ams-chat.apk
 nano /var/www/html/shared/js/config.js
 
 # Set:
-apkDirect: "https://alsec.strangled.net/downloads/ams-chat.apk"
+apkDirect: "https://${MAIN_DOMAIN}/downloads/ams-chat.apk"
 ```
 
 ### Publish to Stores:
@@ -281,7 +281,7 @@ apkDirect: "https://alsec.strangled.net/downloads/ams-chat.apk"
 **File:** `/public/shared/js/config.js`
 
 ```javascript
-BASE_URL: "https://alsec.strangled.net",
+BASE_URL: "https://${MAIN_DOMAIN}",
 
 contracts: {
     token: "0x...",      // Update after deploy
@@ -291,7 +291,7 @@ contracts: {
 mobileApp: {
     android: {
         playStore: "https://play.google.com/store/apps/...",
-        apkDirect: "https://alsec.strangled.net/downloads/ams-chat.apk"
+        apkDirect: "https://${MAIN_DOMAIN}/downloads/ams-chat.apk"
     },
     ios: {
         appStore: "https://apps.apple.com/app/..."
@@ -309,7 +309,7 @@ DATABASE_NAME=ams_chat_db
 DATABASE_USER=ams_chat_user
 DATABASE_PASSWORD=***
 JWT_SECRET=***
-BASE_URL=https://alsec.strangled.net
+BASE_URL=https://${MAIN_DOMAIN}
 ```
 
 ---
@@ -341,23 +341,23 @@ Total:     48 tests
 
 ---
 
-## 🌐 URLs (alsec.strangled.net):
+## 🌐 URLs (${MAIN_DOMAIN}):
 
 | Service | URL |
 |---------|-----|
-| **Landing** | https://alsec.strangled.net/ |
-| **Token** | https://alsec.strangled.net/token/ |
-| **Token Admin** | https://alsec.strangled.net/token/admin/scripts.html |
-| **Multi-Sig** | https://alsec.strangled.net/multisig/ |
-| **Multi-Sig Admin** | https://alsec.strangled.net/multisig/admin/ |
-| **Chat** | https://alsec.strangled.net/chat/ |
-| **Chat Download** | https://alsec.strangled.net/chat/download/ |
-| **Chat Web App** | https://alsec.strangled.net/chat/public/ |
-| **Chat Admin** | https://alsec.strangled.net/chat/admin/ |
-| **APK Download** | https://alsec.strangled.net/downloads/ams-chat.apk |
+| **Landing** | https://${MAIN_DOMAIN}/ |
+| **Token** | https://${MAIN_DOMAIN}/token/ |
+| **Token Admin** | https://${MAIN_DOMAIN}/token/admin/scripts.html |
+| **Multi-Sig** | https://${MAIN_DOMAIN}/multisig/ |
+| **Multi-Sig Admin** | https://${MAIN_DOMAIN}/multisig/admin/ |
+| **Chat** | https://${MAIN_DOMAIN}/chat/ |
+| **Chat Download** | https://${MAIN_DOMAIN}/chat/download/ |
+| **Chat Web App** | https://${MAIN_DOMAIN}/chat/public/ |
+| **Chat Admin** | https://${MAIN_DOMAIN}/chat/admin/ |
+| **APK Download** | https://${MAIN_DOMAIN}/downloads/ams-chat.apk |
 
 **API:**
-- Chat Backend: https://alsec.strangled.net/api/chat/
+- Chat Backend: https://${MAIN_DOMAIN}/api/chat/
 
 ---
 
@@ -486,7 +486,7 @@ systemctl restart kcy-chat.service
 
 ## 📞 CONTACTS:
 
-- **Website:** https://alsec.strangled.net
+- **Website:** https://${MAIN_DOMAIN}
 - **Support:** Check logs or documentation
 - **Updates:** Check CHANGELOG files in each project
 

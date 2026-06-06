@@ -1,7 +1,7 @@
 <!-- Version: 1.0056 -->
 # 📋 KCY ECOSYSTEM - COMPLETE DEPLOYMENT CHECKLIST
 
-**Domain:** https://alsec.strangled.net  
+**Domain:** https://${MAIN_DOMAIN}  
 **Deployment Time:** ~30 minutes  
 **Archive:** kcy-unified.zip (1.1MB)
 
@@ -65,14 +65,14 @@ deploy-scripts\windows\deploy.bat
 ### Option C: Manual SCP
 ```bash
 # Public files
-scp -r public/* root@alsec.strangled.net:/var/www/html/
+scp -r public/* root@${MAIN_DOMAIN}:/var/www/html/
 
 # Private files
-ssh root@alsec.strangled.net "mkdir -p /var/www/kcy-ecosystem"
-scp -r private/* root@alsec.strangled.net:/var/www/kcy-ecosystem/
+ssh root@${MAIN_DOMAIN} "mkdir -p /var/www/kcy-ecosystem"
+scp -r private/* root@${MAIN_DOMAIN}:/var/www/kcy-ecosystem/
 
 # Root files
-scp package.json hardhat.config.js jest.config.js root@alsec.strangled.net:/var/www/kcy-ecosystem/
+scp package.json hardhat.config.js jest.config.js root@${MAIN_DOMAIN}:/var/www/kcy-ecosystem/
 ```
 
 **Expected output:**
@@ -89,7 +89,7 @@ scp package.json hardhat.config.js jest.config.js root@alsec.strangled.net:/var/
 
 ```bash
 # SSH to server
-ssh root@alsec.strangled.net
+ssh root@${MAIN_DOMAIN}
 
 # Navigate to scripts
 cd /var/www/kcy-ecosystem/deploy-scripts/server
@@ -138,7 +138,7 @@ rm /var/www/kcy-ecosystem/database-credentials.txt
 
 ### Interactive prompts:
 ```
-Current domain: alsec.strangled.net
+Current domain: ${MAIN_DOMAIN}
 Press Enter to use this domain, or type new domain: [PRESS ENTER]
 
 Email for SSL certificates: your@email.com
@@ -190,18 +190,18 @@ SSL Certificates: Expiry Date: 2026-05-14
 ### 2. Test website:
 ```bash
 # From server
-curl -I https://alsec.strangled.net
+curl -I https://${MAIN_DOMAIN}
 
 # Expected: HTTP/2 200 OK
 ```
 
 ### 3. Open in browser:
 ```
-https://alsec.strangled.net/             ← Landing page
-https://alsec.strangled.net/token/       ← Token page
-https://alsec.strangled.net/multisig/    ← Multi-Sig page
-https://alsec.strangled.net/chat/        ← Chat page
-https://alsec.strangled.net/chat/download/ ← App download
+https://${MAIN_DOMAIN}/             ← Landing page
+https://${MAIN_DOMAIN}/token/       ← Token page
+https://${MAIN_DOMAIN}/multisig/    ← Multi-Sig page
+https://${MAIN_DOMAIN}/chat/        ← Chat page
+https://${MAIN_DOMAIN}/chat/download/ ← App download
 ```
 
 ### 4. Check logs:
@@ -227,7 +227,7 @@ nano /var/www/html/shared/js/config.js
 
 Change:
 ```javascript
-BASE_URL: "https://alsec.strangled.net",  // ✓ Already correct
+BASE_URL: "https://${MAIN_DOMAIN}",  // ✓ Already correct
 
 contracts: {
     token: "0xYOUR_REAL_TOKEN_ADDRESS",      // ← UPDATE THIS
@@ -237,7 +237,7 @@ contracts: {
 mobileApp: {
     android: {
         playStore: "https://play.google.com/store/apps/details?id=com.amschat.app", // ← UPDATE LATER
-        apkDirect: "https://alsec.strangled.net/downloads/ams-chat.apk"  // ✓ Correct
+        apkDirect: "https://${MAIN_DOMAIN}/downloads/ams-chat.apk"  // ✓ Correct
     },
     ios: {
         appStore: "https://apps.apple.com/app/ams-chat/idXXXXXXX" // ← UPDATE LATER
@@ -250,7 +250,7 @@ Save: `Ctrl+X, Y, Enter`
 ### 2. Test config update:
 ```bash
 # Clear browser cache
-# Open: https://alsec.strangled.net
+# Open: https://${MAIN_DOMAIN}
 # Press: Ctrl+F5
 ```
 
@@ -273,10 +273,10 @@ eas build --platform android
 ### Upload APK:
 ```bash
 # From Windows
-pscp.exe ams-chat.apk root@alsec.strangled.net:/var/www/html/downloads/
+pscp.exe ams-chat.apk root@${MAIN_DOMAIN}:/var/www/html/downloads/
 
 # Or from Linux
-scp ams-chat.apk root@alsec.strangled.net:/var/www/html/downloads/
+scp ams-chat.apk root@${MAIN_DOMAIN}:/var/www/html/downloads/
 ```
 
 ### Set permissions:
@@ -288,7 +288,7 @@ chown www-data:www-data /var/www/html/downloads/ams-chat.apk
 
 ### Test download:
 ```
-https://alsec.strangled.net/downloads/ams-chat.apk
+https://${MAIN_DOMAIN}/downloads/ams-chat.apk
 ```
 
 ### Update app links (after publishing to stores):
@@ -408,7 +408,7 @@ apt-get install -y htop iotop nethogs
 # Or better - install netdata
 bash <(curl -Ss https://my-netdata.io/kickstart.sh)
 
-# Access at: http://alsec.strangled.net:19999
+# Access at: http://${MAIN_DOMAIN}:19999
 ```
 
 ### 2. Set up log rotation:
@@ -441,16 +441,16 @@ EOF
 
 ### Frontend Tests:
 ```
-✓ https://alsec.strangled.net/                 → Landing page loads
-✓ https://alsec.strangled.net/token/           → Token info loads
-✓ https://alsec.strangled.net/token/admin/scripts.html → Admin page (with auth)
-✓ https://alsec.strangled.net/multisig/        → Multi-sig info loads
-✓ https://alsec.strangled.net/multisig/admin/  → Admin page (with auth)
-✓ https://alsec.strangled.net/chat/            → Chat info loads
-✓ https://alsec.strangled.net/chat/download/   → Download page loads
-✓ https://alsec.strangled.net/chat/public/     → Chat app loads
-✓ https://alsec.strangled.net/chat/admin/      → Admin hub (with auth)
-✓ https://alsec.strangled.net/shared/css/common.css → Shared resources
+✓ https://${MAIN_DOMAIN}/                 → Landing page loads
+✓ https://${MAIN_DOMAIN}/token/           → Token info loads
+✓ https://${MAIN_DOMAIN}/token/admin/scripts.html → Admin page (with auth)
+✓ https://${MAIN_DOMAIN}/multisig/        → Multi-sig info loads
+✓ https://${MAIN_DOMAIN}/multisig/admin/  → Admin page (with auth)
+✓ https://${MAIN_DOMAIN}/chat/            → Chat info loads
+✓ https://${MAIN_DOMAIN}/chat/download/   → Download page loads
+✓ https://${MAIN_DOMAIN}/chat/public/     → Chat app loads
+✓ https://${MAIN_DOMAIN}/chat/admin/      → Admin hub (with auth)
+✓ https://${MAIN_DOMAIN}/shared/css/common.css → Shared resources
 ```
 
 ### Backend Tests:
@@ -463,18 +463,18 @@ curl http://localhost:3000/api/health
 sudo -u postgres psql -d ams_chat_db -c "SELECT COUNT(*) FROM users;"
 
 # Test SSL certificate
-openssl s_client -connect alsec.strangled.net:443 -servername alsec.strangled.net
+openssl s_client -connect ${MAIN_DOMAIN}:443 -servername ${MAIN_DOMAIN}
 ```
 
 ### Performance Tests:
 ```bash
 # Test page load time
-curl -w "@-" -o /dev/null -s https://alsec.strangled.net/ << 'EOF'
+curl -w "@-" -o /dev/null -s https://${MAIN_DOMAIN}/ << 'EOF'
 time_total: %{time_total}s
 EOF
 
 # Test with ab (Apache Bench)
-ab -n 100 -c 10 https://alsec.strangled.net/
+ab -n 100 -c 10 https://${MAIN_DOMAIN}/
 ```
 
 ---
@@ -601,7 +601,7 @@ pm2 monit
 
 ## ✅ DEPLOYMENT COMPLETE!
 
-**Website:** https://alsec.strangled.net  
+**Website:** https://${MAIN_DOMAIN}  
 **Admin Tools:** kcy-status, kcy-restart  
 **Logs:** journalctl -u kcy-chat.service -f
 

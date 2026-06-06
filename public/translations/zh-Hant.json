@@ -892,5 +892,11 @@
   "r.84b": "位：你在下方填寫的業務說明與連結將顯示給",
   "charts.period_note": "。期間（天/月）在圖表中選擇。",
   "pdf.legal_note": "法律上非有效電子簽名，僅為在 PDF 上視覺放置圖像。",
-  "reg.ad_note": "排行榜上的顯著位置。排行榜每月重置。"
+  "reg.ad_note": "排行榜上的顯著位置。排行榜每月重置。",
+  "chat.register_btn": "📝 註冊",
+  "home.report_bug": "🐞 回報錯誤",
+  "cnav.brand": "匿名聊天",
+  "cnav.home": "🏠 首頁",
+  "cnav.tochat": "💬 前往聊天",
+  "cnav.logout": "🚪 登出"
 }

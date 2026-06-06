@@ -91,7 +91,7 @@ cat .env | grep STRIPE
 echo $STRIPE_WEBHOOK_SECRET
 
 # Test endpoint
-curl https://alsec.strangled.net/api/payment/webhook
+curl https://${MAIN_DOMAIN}/api/payment/webhook
 
 # Check Stripe dashboard:
 # https://dashboard.stripe.com/webhooks
@@ -460,7 +460,7 @@ curl -X POST http://localhost:3000/api/auth/login \
 2. **Check database:** `sqlite3 chat.db .tables`
 3. **Check .env:** `cat .env`
 4. **Restart:** `pm2 restart ams-chat`
-5. **Contact support:** support@alsec.strangled.net
+5. **Contact support:** support@${MAIN_DOMAIN}
 
 ---
 

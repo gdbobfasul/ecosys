@@ -30,7 +30,7 @@ STRIPE_PUBLISHABLE_KEY=pk_live_YOUR_REAL_KEY
 # CORS & SECURITY
 # ============================================
 # Add your domain(s) - comma separated
-ALLOWED_ORIGINS=https://alsec.strangled.net,https://www.alsec.strangled.net
+ALLOWED_ORIGINS=https://${MAIN_DOMAIN},https://www.${MAIN_DOMAIN}
 
 # ============================================
 # ADMIN ACCESS
@@ -93,7 +93,7 @@ STRIPE_PRICE_USD=500   # $5.00
 # ============================================
 # CORS
 # ============================================
-ALLOWED_ORIGINS=https://alsec.strangled.net,https://www.alsec.strangled.net
+ALLOWED_ORIGINS=https://${MAIN_DOMAIN},https://www.${MAIN_DOMAIN}
 
 # ============================================
 # FILE UPLOADS
@@ -139,7 +139,7 @@ MESSAGE_RETENTION_DAYS=30
 # ============================================
 # CORS (if using separate frontend)
 # ============================================
-CORS_ORIGIN=http://localhost:3000,https://alsec.strangled.net
+CORS_ORIGIN=http://localhost:3000,https://${MAIN_DOMAIN}
 
 # ============================================
 # LOGGING
@@ -171,7 +171,7 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your@email.com
 SMTP_PASS=your-app-password
-EMAIL_FROM=noreply@alsec.strangled.net
+EMAIL_FROM=noreply@${MAIN_DOMAIN}
 
 # ============================================
 # MOBILE APP (AMS-chat-app)

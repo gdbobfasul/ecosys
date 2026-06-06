@@ -10,7 +10,7 @@
 ## 🚀 Регистрация и Вход
 
 ### **Първо влизане:**
-1. Отвори https://alsec.strangled.net
+1. Отвори https://${MAIN_DOMAIN}
 2. Въведи телефонен номер
 3. Въведи парола
 4. Натисни "Влез"
@@ -141,7 +141,7 @@
 ## 📞 Подкрепа
 
 Ако имаш проблем:
-- Пиши на support@alsec.strangled.net
+- Пиши на support@${MAIN_DOMAIN}
 - Или провери [10-TROUBLESHOOTING.md](./10-TROUBLESHOOTING.md)
 
 ---

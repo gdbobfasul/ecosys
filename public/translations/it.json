@@ -892,5 +892,11 @@
   "r.84b": "spazio: la descrizione e il link inseriti sotto sono mostrati a",
   "charts.period_note": ". Il periodo (giorni/mesi) si seleziona nel grafico.",
   "pdf.legal_note": "legalmente non è una firma elettronica valida, solo un posizionamento visivo di un’immagine sul PDF.",
-  "reg.ad_note": "un posto visibile in classifica. La classifica si azzera ogni mese."
+  "reg.ad_note": "un posto visibile in classifica. La classifica si azzera ogni mese.",
+  "chat.register_btn": "📝 Registrati",
+  "home.report_bug": "🐞 Segnala un bug",
+  "cnav.brand": "Chat Anonima",
+  "cnav.home": "🏠 Home",
+  "cnav.tochat": "💬 Alla chat",
+  "cnav.logout": "🚪 Esci"
 }

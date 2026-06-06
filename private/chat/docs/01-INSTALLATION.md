@@ -134,7 +134,7 @@ PORT=3000
 NODE_ENV=production
 
 # CORS (добави твоя домейн!)
-ALLOWED_ORIGINS=https://alsec.strangled.net,https://www.alsec.strangled.net
+ALLOWED_ORIGINS=https://${MAIN_DOMAIN},https://www.${MAIN_DOMAIN}
 
 # Admin IP Protection (добави твоя IP!)
 # Намери IP: https://whatismyipaddress.com/
@@ -232,7 +232,7 @@ sudo nano /etc/nginx/sites-available/ams-chat
 ```nginx
 server {
     listen 80;
-    server_name alsec.strangled.net www.alsec.strangled.net;
+    server_name ${MAIN_DOMAIN} www.${MAIN_DOMAIN};
 
     # Web Frontend (Static Files)
     location / {
@@ -293,7 +293,7 @@ sudo systemctl restart nginx
 sudo apt-get install certbot python3-certbot-nginx
 
 # Get SSL certificate
-sudo certbot --nginx -d alsec.strangled.net -d www.alsec.strangled.net
+sudo certbot --nginx -d ${MAIN_DOMAIN} -d www.${MAIN_DOMAIN}
 
 # Follow prompts:
 # - Email: your@email.com
@@ -410,7 +410,7 @@ chmod 777 uploads
 - [ ] Nginx конфигуриран
 - [ ] SSL certificate installed (HTTPS)
 - [ ] Firewall ports open (80, 443, 22)
-- [ ] Test: https://alsec.strangled.net работи
+- [ ] Test: https://${MAIN_DOMAIN} работи
 
 ---
 

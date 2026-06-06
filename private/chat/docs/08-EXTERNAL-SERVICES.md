@@ -149,7 +149,7 @@ SMTP_PASS=your-app-password
 
 ```bash
 sudo apt install certbot
-sudo certbot certonly --standalone -d alsec.strangled.net
+sudo certbot certonly --standalone -d ${MAIN_DOMAIN}
 ```
 
 **Auto-renewal:**

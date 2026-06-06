@@ -1,543 +1,128 @@
-# Version: 1.0093
 #!/bin/bash
-
+# Version: 1.0177
 ##############################################################################
-# KCY Ecosystem - Domain & Services Setup
-# 
-# Този скрипт:
-# - Настройва Nginx
-# - Конфигурира SSL (Let's Encrypt)
-# - Създава systemd services
-# - Настройва PM2 за Node.js apps
-# - Конфигурира permissions
+# KCY — Отделните приложни домейни + SSL (чете private/configs/domains.conf).
 #
+# Главният домейн (take.offbitch.com) + неговият nginx/SSL се правят от
+# 05-server-install (опция 4/2). ТУК са САМО допълнителните домейни:
+#   find.jwork.ru → wnb · look.myhousesetup.com → hlb · kaji/gofor → chat
+# Всеки показва САМО своето приложение (другите пътища → 404) + по 1 SSL.
+#
+# НЕ пипа главния nginx конфиг и НЕ инсталира node/npm (за да не конфликтва).
 # Usage: sudo ./08-setup-domain.sh
 ##############################################################################
-
-set -e  # Exit on error
-
-# Colors
-RED=$'\033[0;31m'
-GREEN=$'\033[0;32m'
-YELLOW=$'\033[1;33m'
-CYAN=$'\033[0;36m'
-NC=$'\033[0m' # No Color
-
-# Configuration
-DOMAIN="alsec.strangled.net"
-EMAIL="admin@alsec.strangled.net"  # For Let's Encrypt
-PROJECT_DIR="/var/www/kcy-ecosystem"
-WEB_ROOT="/var/www/html"
-CHAT_DIR="$PROJECT_DIR/private/chat"
-CHAT_PORT=3000
+set -u
+RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 
 echo -e "${CYAN}========================================"
-echo "  KCY Ecosystem - Domain & Services"
+echo "  KCY — Приложни домейни + SSL"
 echo -e "========================================${NC}"
-echo ""
 
-# Check if running as root
-if [ "$EUID" -ne 0 ]; then 
-    echo -e "${RED}[ERROR] Please run as root (sudo)${NC}"
-    exit 1
+[ "$(id -u)" -eq 0 ] || { echo -e "${RED}Пусни като root (sudo).${NC}"; exit 1; }
+
+PROJECT_DIR="/var/www/kcy-ecosystem"
+DOMAINS_CONF="$PROJECT_DIR/private/configs/domains.conf"
+[ -f "$DOMAINS_CONF" ] || { echo -e "${RED}Липсва $DOMAINS_CONF — пусни деплой (опция 4) първо.${NC}"; exit 1; }
+. "$DOMAINS_CONF"
+EMAIL="${SSL_EMAIL:-admin@${MAIN_DOMAIN:-localhost}}"
+
+if [ -z "${APP_DOMAIN_MAP:-}" ]; then
+    echo -e "${YELLOW}Няма APP_DOMAIN_MAP в конфига — нищо за правене.${NC}"; exit 0
 fi
 
-# Target awareness: ако сме на VM (private IP), Let's Encrypt НЕ работи.
-TARGET_NAME=""
-[ -f /tmp/deploy_target_info ] && . /tmp/deploy_target_info
-if [ -z "$TARGET_NAME" ]; then
-    MY_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
-    if [[ "$MY_IP" =~ ^192\.168\.|^10\.|^172\.16\.|^172\.17\.|^172\.18\.|^172\.19\.|^172\.2[0-9]\.|^172\.3[0-1]\. ]]; then
-        TARGET_NAME="vm"
+echo -e "  Главен домейн (от 05): ${GREEN}${MAIN_DOMAIN}${NC}"
+echo -e "  Имейл за Let's Encrypt: ${GREEN}${EMAIL}${NC}"
+read -p "  Enter за този имейл, или нов: " NE
+[ -n "$NE" ] && EMAIL="$NE"
+
+# certbot + nginx plugin (БЕЗ node/npm — те конфликтват с NodeSource nodejs)
+if ! command -v certbot >/dev/null 2>&1; then
+    echo -e "${CYAN}Инсталирам certbot...${NC}"
+    apt-get update -qq && apt-get install -y certbot python3-certbot-nginx >/dev/null 2>&1 || true
+fi
+
+# ── Генерирай nginx блоковете за приложните домейни (отделен файл, НЕ главния конфиг) ──
+echo -e "${CYAN}Генерирам nginx блокове...${NC}"
+APP_CONF="/etc/nginx/sites-available/kcy-app-domains.conf"
+: > "$APP_CONF"
+printf '%s\n' "$APP_DOMAIN_MAP" | while read -r dom key; do
+    [ -z "$dom" ] && continue
+    DIR=$(eval "echo \${APP_${key}_DIR}")
+    PORT=$(eval "echo \${APP_${key}_PORT}")
+    API=$(eval "echo \${APP_${key}_API}")
+    if [ -z "$DIR" ] || [ -z "$PORT" ] || [ -z "$API" ]; then
+        echo -e "  ${YELLOW}! непознат ключ '$key' за $dom — пропускам${NC}"; continue
     fi
-fi
-
-if [ "$TARGET_NAME" = "vm" ]; then
-    echo ""
-    echo -e "${YELLOW}═══════════════════════════════════════════════════${NC}"
-    echo -e "${YELLOW}  ⚠ Тази машина изглежда VM с private IP${NC}"
-    echo -e "${YELLOW}═══════════════════════════════════════════════════${NC}"
-    echo ""
-    echo "  Let's Encrypt НЕ може да издаде сертификат за private IP."
-    echo "  Този скрипт е предназначен за production сървъри с публичен домейн."
-    echo ""
-    echo "  За VM:"
-    echo "    • Достъп през HTTP (http://192.168.X.X/) — работи без SSL"
-    echo "    • Failover архитектура — SSL остава на production VPS"
-    echo ""
-    read -p "  Сигурен ли си че искаш да продължиш? [y/N]: " CONT
-    if [ "$CONT" != "y" ] && [ "$CONT" != "Y" ]; then
-        echo "Отказано."
-        exit 0
-    fi
-fi
-
-# Prompt for domain (allow override)
-echo -e "${YELLOW}Current domain: $DOMAIN${NC}"
-read -p "Press Enter to use this domain, or type new domain: " NEW_DOMAIN
-if [ ! -z "$NEW_DOMAIN" ]; then
-    DOMAIN="$NEW_DOMAIN"
-    echo -e "${GREEN}  Using domain: $DOMAIN${NC}"
-fi
-
-# Prompt for email
-read -p "Email for SSL certificates [$EMAIL]: " NEW_EMAIL
-if [ ! -z "$NEW_EMAIL" ]; then
-    EMAIL="$NEW_EMAIL"
-fi
-
-echo ""
-echo -e "${GREEN}[1/10] Installing required packages...${NC}"
-
-apt-get update -qq
-apt-get install -y nginx certbot python3-certbot-nginx nodejs npm
-
-echo -e "${GREEN}  ✓ Packages installed${NC}"
-
-echo ""
-echo -e "${GREEN}[2/10] Installing PM2 (Node.js process manager)...${NC}"
-
-npm install -g pm2
-pm2 startup systemd -u www-data --hp /var/www
-echo -e "${GREEN}  ✓ PM2 installed${NC}"
-
-echo ""
-echo -e "${GREEN}[3/10] Setting up directories and permissions...${NC}"
-
-# Create necessary directories
-mkdir -p /var/www/html/downloads
-mkdir -p /var/log/kcy-ecosystem
-mkdir -p /var/run/kcy-ecosystem
-
-# Set ownership
-chown -R www-data:www-data /var/www/html
-chown -R www-data:www-data $PROJECT_DIR
-chown -R www-data:www-data /var/log/kcy-ecosystem
-
-# Set permissions
-find /var/www/html -type d -exec chmod 755 {} \;
-find /var/www/html -type f -exec chmod 644 {} \;
-find $PROJECT_DIR -type d -exec chmod 750 {} \;
-find $PROJECT_DIR -type f -exec chmod 640 {} \;
-
-# Make scripts executable
-find $PROJECT_DIR -type f -name "*.sh" -exec chmod 750 {} \;
-
-echo -e "${GREEN}  ✓ Permissions set${NC}"
-
-echo ""
-echo -e "${GREEN}[4/10] Configuring Nginx...${NC}"
-
-# Backup default config
-if [ -f /etc/nginx/sites-enabled/default ]; then
-    mv /etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/default.backup
-fi
-
-# Create Nginx config
-cat > /etc/nginx/sites-available/kcy-ecosystem << 'NGINXEOF'
-# KCY Ecosystem - Nginx Configuration
-
-# Redirect HTTP to HTTPS
+    SERVE="${DIR%public/}"            # chat: /chat/public/ → /chat/ ; wnb: /wherenobiz/
+    FS=$(eval "echo \${APP_${key}_FS}")   # ДИСКОВАТА папка (House-Look-Book, WhereNoBiz, chat/public…)
+    [ -z "$FS" ] && FS="${DIR#/}"         # резерва: URL пътят без водещ /
+    ROOTDIR="/var/www/html/${FS%/}"       # реалната папка на диска
+    # ВСИЧКИ апове се сервират на КОРЕНА (чист URL, без redirect). Чатът (вложен в
+    # /public/ + абсолютни /chat/ линкове) получава доп. локации: socket.io + /chat/.
+    case "$DIR" in */public/) NESTED=1 ;; *) NESTED=0 ;; esac
+    if [ "$NESTED" = "0" ]; then
+        cat >> "$APP_CONF" <<APPEOF
 server {
     listen 80;
-    listen [::]:80;
-    server_name DOMAIN_PLACEHOLDER;
-
-    # Let's Encrypt challenge
-    location /.well-known/acme-challenge/ {
-        root /var/www/html;
-    }
-
-    # Redirect all other traffic to HTTPS
-    location / {
-        return 301 https://$server_name$request_uri;
-    }
-}
-
-# HTTPS Server
-server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name DOMAIN_PLACEHOLDER;
-
-    # SSL Configuration (will be added by certbot)
-    # ssl_certificate /etc/letsencrypt/live/DOMAIN_PLACEHOLDER/fullchain.pem;
-    # ssl_certificate_key /etc/letsencrypt/live/DOMAIN_PLACEHOLDER/privkey.pem;
-
-    # SSL Settings
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-    ssl_prefer_server_ciphers on;
-    ssl_session_cache shared:SSL:10m;
-    ssl_session_timeout 10m;
-
-    # Security Headers
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-    add_header Referrer-Policy "no-referrer-when-downgrade" always;
-
-    # Logging
-    access_log /var/log/nginx/kcy-ecosystem-access.log;
-    error_log /var/log/nginx/kcy-ecosystem-error.log;
-
-    # Root directory for static files
-    root /var/www/html;
+    server_name $dom;
+    root $ROOTDIR;
     index index.html;
-
-    # Max upload size
-    client_max_body_size 100M;
-
-    # Static files (public directory)
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    # Chat API Backend (reverse proxy to Node.js)
-    location /api/chat/ {
-        proxy_pass http://localhost:CHAT_PORT_PLACEHOLDER/;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        
-        # WebSocket support
-        proxy_read_timeout 86400;
-    }
-
-    # ECO-3 API Backend (reverse proxy to Node.js)
-    location /api/eco3/ {
-        proxy_pass http://localhost:3001/;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        
-        # Longer timeout for AI generation
-        proxy_read_timeout 120;
-    }
-
-    # Shared resources CORS
-    location /shared/ {
-        add_header Access-Control-Allow-Origin "*";
-        add_header Access-Control-Allow-Methods "GET, OPTIONS";
-        add_header Access-Control-Allow-Headers "Content-Type";
-        
-        if ($request_method = 'OPTIONS') {
-            return 204;
-        }
-    }
-
-    # Downloads directory
-    location /downloads/ {
-        autoindex off;
-        add_header Content-Disposition 'attachment';
-    }
-
-    # Deny access to hidden files
-    location ~ /\. {
-        deny all;
-    }
-
-    # Deny access to sensitive files
-    location ~ \.(env|sql|sqlite|db|config\.js|config\.json)$ {
-        deny all;
-    }
-
-    # Cache static assets
-    location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2|ttf|eot)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
+    location ^~ /.well-known/acme-challenge/ { root /var/www/html; allow all; }
+    location ^~ $API { proxy_pass http://127.0.0.1:$PORT; proxy_http_version 1.1; proxy_set_header Upgrade \$http_upgrade; proxy_set_header Connection "upgrade"; proxy_set_header Host \$host; proxy_set_header X-Real-IP \$remote_addr; proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto \$scheme; proxy_read_timeout 86400; }
+    location ^~ /uploads/ { proxy_pass http://127.0.0.1:$PORT; proxy_set_header Host \$host; }
+    location ^~ /shared/  { root /var/www/html; }
+    location / { try_files \$uri \$uri/ /index.html; }
 }
-NGINXEOF
+APPEOF
+    else
+        cat >> "$APP_CONF" <<APPEOF
+server {
+    listen 80;
+    server_name $dom;
+    root $ROOTDIR;
+    index index.html;
+    location ^~ /.well-known/acme-challenge/ { root /var/www/html; allow all; }
+    location ^~ $API { proxy_pass http://127.0.0.1:$PORT; proxy_http_version 1.1; proxy_set_header Upgrade \$http_upgrade; proxy_set_header Connection "upgrade"; proxy_set_header Host \$host; proxy_set_header X-Real-IP \$remote_addr; proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto \$scheme; proxy_read_timeout 86400; }
+    location ^~ /socket.io/ { proxy_pass http://127.0.0.1:$PORT; proxy_http_version 1.1; proxy_set_header Upgrade \$http_upgrade; proxy_set_header Connection "upgrade"; proxy_set_header Host \$host; }
+    location ^~ /uploads/ { proxy_pass http://127.0.0.1:$PORT; proxy_set_header Host \$host; }
+    location ^~ $SERVE { root /var/www/html; }
+    location ^~ /shared/ { root /var/www/html; }
+    location / { try_files \$uri \$uri/ /index.html; }
+}
+APPEOF
+    fi
+    echo -e "  ${GREEN}✓ $dom → $key  (root=$ROOTDIR :$PORT)${NC}"
+done
+ln -sf "$APP_CONF" /etc/nginx/sites-enabled/kcy-app-domains.conf
 
-# Replace placeholders
-sed -i "s/DOMAIN_PLACEHOLDER/$DOMAIN/g" /etc/nginx/sites-available/kcy-ecosystem
-sed -i "s/CHAT_PORT_PLACEHOLDER/$CHAT_PORT/g" /etc/nginx/sites-available/kcy-ecosystem
-
-# Enable site
-ln -sf /etc/nginx/sites-available/kcy-ecosystem /etc/nginx/sites-enabled/
-
-# Test nginx config
-nginx -t
-
-# Reload nginx
-systemctl reload nginx
-
-echo -e "${GREEN}  ✓ Nginx configured${NC}"
-
-echo ""
-echo -e "${GREEN}[5/10] Installing SSL certificates...${NC}"
-
-# Check if domain resolves
-if host $DOMAIN > /dev/null 2>&1; then
-    echo -e "${CYAN}  Domain $DOMAIN resolves, installing SSL...${NC}"
-    
-    # Get SSL certificate
-    certbot --nginx -d $DOMAIN --non-interactive --agree-tos -m $EMAIL
-    
-    echo -e "${GREEN}  ✓ SSL certificate installed${NC}"
-    
-    # Set up auto-renewal
-    systemctl enable certbot.timer
-    systemctl start certbot.timer
-    
-    echo -e "${GREEN}  ✓ SSL auto-renewal enabled${NC}"
+if nginx -t 2>/dev/null; then
+    systemctl reload nginx
+    echo -e "  ${GREEN}✓ nginx презареден (HTTP блоковете са активни)${NC}"
 else
-    echo -e "${YELLOW}  ! Domain $DOMAIN does not resolve yet${NC}"
-    echo -e "${YELLOW}  ! SSL certificate installation skipped${NC}"
-    echo -e "${YELLOW}  ! Run this after DNS is configured:${NC}"
-    echo -e "${CYAN}    certbot --nginx -d $DOMAIN${NC}"
+    echo -e "  ${RED}✗ nginx -t се провали:${NC}"; nginx -t; exit 1
 fi
 
-echo ""
-echo -e "${GREEN}[6/10] Installing Node.js dependencies...${NC}"
-
-# Install chat dependencies
-if [ -f "$CHAT_DIR/package.json" ]; then
-    cd $CHAT_DIR
-    sudo -u www-data npm install --production
-    echo -e "${GREEN}  ✓ Chat dependencies installed${NC}"
-fi
-
-# Install root project dependencies
-if [ -f "$PROJECT_DIR/package.json" ]; then
-    cd $PROJECT_DIR
-    sudo -u www-data npm install
-    echo -e "${GREEN}  ✓ Root dependencies installed${NC}"
-fi
-
-echo ""
-echo -e "${GREEN}[7/10] Creating systemd service for Chat...${NC}"
-
-# Create systemd service
-cat > /etc/systemd/system/kcy-chat.service << 'SERVICEEOF'
-[Unit]
-Description=KCY AMS Chat Node.js Application
-Documentation=https://alsec.strangled.net/chat/
-After=network.target postgresql.service
-
-[Service]
-Type=simple
-User=www-data
-WorkingDirectory=/var/www/kcy-ecosystem/private/chat
-Environment=NODE_ENV=production
-EnvironmentFile=/var/www/kcy-ecosystem/private/chat/.env
-ExecStart=/usr/bin/node server.js
-Restart=always
-RestartSec=10
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=kcy-chat
-
-# Security
-NoNewPrivileges=true
-PrivateTmp=true
-ProtectSystem=strict
-ProtectHome=true
-ReadWritePaths=/var/www/kcy-ecosystem/private/chat/database /var/www/kcy-ecosystem/private/chat/uploads
-
-[Install]
-WantedBy=multi-user.target
-SERVICEEOF
-
-# Reload systemd
-systemctl daemon-reload
-
-# Enable and start service
-systemctl enable kcy-chat.service
-systemctl start kcy-chat.service
-
-# Check status
-if systemctl is-active --quiet kcy-chat.service; then
-    echo -e "${GREEN}  ✓ Chat service started${NC}"
-else
-    echo -e "${YELLOW}  ! Chat service failed to start${NC}"
-    echo -e "${YELLOW}  Check logs: journalctl -u kcy-chat.service${NC}"
-fi
-
-# Create ECO-3 systemd service
-cat > /etc/systemd/system/kcy-eco3.service << 'ECO3EOF'
-[Unit]
-Description=KCY ECO-3 AI Studio Node.js Application
-Documentation=https://alsec.strangled.net/eco-3/
-After=network.target
-
-[Service]
-Type=simple
-User=www-data
-WorkingDirectory=/var/www/kcy-ecosystem/eco-3
-Environment=NODE_ENV=production
-EnvironmentFile=/var/www/kcy-ecosystem/eco-3/configs/.env
-ExecStart=/usr/bin/node server.js
-Restart=always
-RestartSec=10
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=kcy-eco3
-
-NoNewPrivileges=true
-PrivateTmp=true
-
-[Install]
-WantedBy=multi-user.target
-ECO3EOF
-
-systemctl daemon-reload
-systemctl enable kcy-eco3.service
-systemctl start kcy-eco3.service
-
-if systemctl is-active --quiet kcy-eco3.service; then
-    echo -e "${GREEN}  ✓ ECO-3 service started${NC}"
-else
-    echo -e "${YELLOW}  ! ECO-3 service failed to start${NC}"
-    echo -e "${YELLOW}  Check logs: journalctl -u kcy-eco3.service${NC}"
-fi
+# ── SSL за всеки приложен домейн (certbot добавя 443 + redirect) ──
+echo -e "${CYAN}SSL сертификати...${NC}"
+printf '%s\n' "$APP_DOMAIN_MAP" | while read -r dom key; do
+    [ -z "$dom" ] && continue
+    if host "$dom" >/dev/null 2>&1; then
+        if certbot --nginx -d "$dom" --non-interactive --agree-tos -m "$EMAIL" --redirect; then
+            echo -e "  ${GREEN}✓ SSL $dom${NC}"
+        else
+            echo -e "  ${YELLOW}! SSL $dom не мина (провери DNS/порт 80)${NC}"
+        fi
+    else
+        echo -e "  ${YELLOW}! $dom не резолвва още — пусни пак след DNS${NC}"
+    fi
+done
+nginx -t 2>/dev/null && systemctl reload nginx
 
 echo ""
-echo -e "${GREEN}[8/10] Setting up PM2 for additional services...${NC}"
-
-# Save PM2 configuration
-sudo -u www-data pm2 save
-
-# Enable PM2 to start on boot
-systemctl enable pm2-www-data
-
-echo -e "${GREEN}  ✓ PM2 configured${NC}"
-
-echo ""
-echo -e "${GREEN}[9/10] Configuring firewall...${NC}"
-
-if command -v ufw &> /dev/null; then
-    # Allow SSH, HTTP, HTTPS
-    ufw allow 22/tcp
-    ufw allow 80/tcp
-    ufw allow 443/tcp
-    
-    # Enable firewall (if not already)
-    echo "y" | ufw enable || true
-    
-    echo -e "${GREEN}  ✓ Firewall configured${NC}"
-else
-    echo -e "${YELLOW}  ! UFW not installed, skipping firewall${NC}"
-fi
-
-echo ""
-echo -e "${GREEN}[10/10] Creating admin scripts...${NC}"
-
-# Create quick status check script
-cat > /usr/local/bin/kcy-status << 'STATUSEOF'
-#!/bin/bash
-echo "========================================="
-echo "  KCY Ecosystem - System Status"
-echo "========================================="
-echo ""
-echo "Services:"
-systemctl status kcy-chat.service --no-pager -l | head -3
-echo ""
-echo "ECO-3:"
-systemctl status kcy-eco3.service --no-pager -l | head -3
-echo ""
-echo "Nginx:"
-systemctl status nginx --no-pager | head -3
-echo ""
-echo "PostgreSQL:"
-systemctl status postgresql --no-pager | head -3
-echo ""
-echo "SSL Certificates:"
-certbot certificates 2>/dev/null | grep "Expiry Date" || echo "  No certificates found"
-echo ""
-echo "Disk Usage:"
-df -h /var/www | tail -1
-echo ""
-STATUSEOF
-
-chmod +x /usr/local/bin/kcy-status
-
-# Create restart script
-cat > /usr/local/bin/kcy-restart << 'RESTARTEOF'
-#!/bin/bash
-echo "Restarting KCY services..."
-systemctl restart kcy-chat.service
-systemctl restart kcy-eco3.service
-systemctl reload nginx
-echo "✓ Services restarted"
-RESTARTEOF
-
-chmod +x /usr/local/bin/kcy-restart
-
-echo -e "${GREEN}  ✓ Admin scripts created${NC}"
-echo -e "${CYAN}    - kcy-status  (check system status)${NC}"
-echo -e "${CYAN}    - kcy-restart (restart services)${NC}"
-
-echo ""
-echo -e "${CYAN}========================================${NC}"
-echo -e "${GREEN}  ✓ SETUP COMPLETE!${NC}"
-echo -e "${CYAN}========================================${NC}"
-echo ""
-
-# Final status
-echo -e "${CYAN}System Information:${NC}"
-echo -e "  Domain: ${GREEN}https://$DOMAIN${NC}"
-echo -e "  Web Root: $WEB_ROOT"
-echo -e "  Project: $PROJECT_DIR"
-echo -e "  Chat Service: $(systemctl is-active kcy-chat.service)"
-echo -e "  ECO-3 Service: $(systemctl is-active kcy-eco3.service)"
-echo -e "  Nginx: $(systemctl is-active nginx)"
-echo -e "  PostgreSQL: $(systemctl is-active postgresql)"
-echo ""
-
-echo -e "${YELLOW}Next steps:${NC}"
-echo -e "  1. Update config.js with correct contract addresses"
-echo -e "  2. Upload mobile app APK to /var/www/html/downloads/"
-echo -e "  3. Test website: ${GREEN}https://$DOMAIN${NC}"
-echo -e "  4. Check logs: ${CYAN}journalctl -u kcy-chat.service -f${NC}"
-echo -e "  5. Monitor status: ${CYAN}kcy-status${NC}"
-echo ""
-
-# Save configuration
-cat > "$PROJECT_DIR/deployment-info.txt" << INFOEOF
-KCY Ecosystem Deployment Information
-=====================================
-
-Domain: $DOMAIN
-Deployed: $(date)
-
-Services:
-- Chat API: http://localhost:$CHAT_PORT (proxied via Nginx)
-- ECO-3 API: http://localhost:3001 (proxied via Nginx)
-- Web: https://$DOMAIN
-
-Directories:
-- Web Root: $WEB_ROOT
-- Project: $PROJECT_DIR
-- Chat: $CHAT_DIR
-
-Admin Commands:
-- Check status: kcy-status
-- Restart services: kcy-restart
-- View chat logs: journalctl -u kcy-chat.service -f
-- View nginx logs: tail -f /var/log/nginx/kcy-ecosystem-error.log
-
-SSL Certificate:
-- Domain: $DOMAIN
-- Email: $EMAIL
-- Renewal: Automatic (certbot.timer)
-
-Database:
-- See: $PROJECT_DIR/database-credentials.txt
-
-=====================================
-INFOEOF
-
-echo -e "${GREEN}Deployment info saved to: $PROJECT_DIR/deployment-info.txt${NC}"
-echo ""
+echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"
+echo -e "${GREEN}  ✓ Приложните домейни са настроени${NC}"
+echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"
+printf '%s\n' "$APP_DOMAIN_MAP" | while read -r dom key; do
+    [ -n "$dom" ] && echo -e "  ${CYAN}https://$dom${NC} → $key (само това приложение)"
+done
+echo -e "  ${YELLOW}(главният ${MAIN_DOMAIN} е от 05 — не се пипа тук)${NC}"

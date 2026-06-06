@@ -6,7 +6,9 @@
 # Формат: TARGET_<name>_(SERVER|USER|PORT|LABEL)
 
 # Production VPS
-TARGET_prod_SERVER="alsec.strangled.net"
+# По подразбиране prod SSH хостът = MAIN_DOMAIN от private/configs/domains.conf.
+# Сложи стойност ТУК само ако SSH хостът е РАЗЛИЧЕН от домейна (напр. чист IP).
+TARGET_prod_SERVER="your-prod-host-or-ip"
 TARGET_prod_USER="deploy"
 TARGET_prod_PORT="2222"
 TARGET_prod_LABEL="Production (VPS)"

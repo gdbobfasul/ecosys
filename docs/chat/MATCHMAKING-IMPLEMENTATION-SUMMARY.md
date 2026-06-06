@@ -303,7 +303,7 @@ Time:        0.525s
 
 ### 1. Database Migration
 ```bash
-ssh root@alsec.strangled.net
+ssh root@${MAIN_DOMAIN}
 cd /var/www/kcy-ecosystem/private/chat
 sqlite3 chat.db < database/db_migration_matchmaking.sql
 ```
@@ -315,7 +315,7 @@ pm2 restart kcy-chat
 
 ### 3. Verify
 ```bash
-curl https://alsec.strangled.net/api/matchmaking/criteria \
+curl https://${MAIN_DOMAIN}/api/matchmaking/criteria \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -325,17 +325,17 @@ curl https://alsec.strangled.net/api/matchmaking/criteria \
 
 **User Interface:**
 ```
-https://alsec.strangled.net/chat/public/matchmaking.html
+https://${MAIN_DOMAIN}/chat/public/matchmaking.html
 ```
 
 **Admin Interface:**
 ```
-https://alsec.strangled.net/chat/admin/admin-matchmaking.html
+https://${MAIN_DOMAIN}/chat/admin/admin-matchmaking.html
 ```
 
 **API Endpoint:**
 ```
-https://alsec.strangled.net/api/matchmaking/
+https://${MAIN_DOMAIN}/api/matchmaking/
 ```
 
 ---

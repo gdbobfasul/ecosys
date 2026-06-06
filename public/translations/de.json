@@ -892,5 +892,11 @@
   "r.84b": "Platz: Die unten eingegebene Beschreibung und Link werden gezeigt",
   "charts.period_note": ". Die Periode (Tage/Monate) wird im Diagramm selbst gewählt.",
   "pdf.legal_note": "rechtlich keine gültige E-Signatur, nur eine visuelle Platzierung eines Bildes auf der PDF.",
-  "reg.ad_note": "einen sichtbaren Platz in der Rangliste. Die Rangliste wird monatlich zurückgesetzt."
+  "reg.ad_note": "einen sichtbaren Platz in der Rangliste. Die Rangliste wird monatlich zurückgesetzt.",
+  "chat.register_btn": "📝 Registrieren",
+  "home.report_bug": "🐞 Fehler melden",
+  "cnav.brand": "Anonymer Chat",
+  "cnav.home": "🏠 Start",
+  "cnav.tochat": "💬 Zum Chat",
+  "cnav.logout": "🚪 Abmelden"
 }

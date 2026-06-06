@@ -14,7 +14,7 @@ sudo nginx -t
 sudo systemctl reload nginx
 
 # 6. Test API
-curl https://alsec.strangled.net/api/health
+curl https://${MAIN_DOMAIN}/api/health
 # Трябва: {"status":"ok"}
 
 CONFIG:
@@ -25,7 +25,7 @@ CONFIG:
 server {
     listen 80;
     listen [::]:80;
-    server_name alsec.strangled.net;
+    server_name ${MAIN_DOMAIN};
     
     # Redirect all HTTP to HTTPS
     return 301 https://$host$request_uri;
@@ -35,11 +35,11 @@ server {
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name alsec.strangled.net;
+    server_name ${MAIN_DOMAIN};
     
     # SSL Configuration
-    ssl_certificate /etc/ssl/certs/alsec-selfsigned.crt;
-    ssl_certificate_key /etc/ssl/private/alsec-selfsigned.key;
+    ssl_certificate /etc/ssl/certs/selfsigned.crt;
+    ssl_certificate_key /etc/ssl/private/selfsigned.key;
     
     # SSL Security (optional but recommended)
     ssl_protocols TLSv1.2 TLSv1.3;

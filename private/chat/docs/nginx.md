@@ -6,7 +6,7 @@ sudo nano /etc/nginx/sites-available/ams-chat
 
 server {
     listen 80;
-    server_name alsec.strangled.net www.alsec.strangled.net;
+    server_name ${MAIN_DOMAIN} www.${MAIN_DOMAIN};
 
     # Frontend (Static files)
     location / {
@@ -52,14 +52,14 @@ sudo nginx -t
 sudo systemctl restart nginx
 
 # Отвори в браузър
-http://alsec.strangled.net
+http://${MAIN_DOMAIN}
 # Трябва да видиш login страница!
 
 # Инсталирай Certbot (ако го няма)
 sudo apt install certbot python3-certbot-nginx
 
 # Генерирай SSL certificate
-sudo certbot --nginx -d alsec.strangled.net -d www.alsec.strangled.net
+sudo certbot --nginx -d ${MAIN_DOMAIN} -d www.${MAIN_DOMAIN}
 
 # Следвай prompts:
 # Email: your@email.com
@@ -70,7 +70,7 @@ sudo certbot --nginx -d alsec.strangled.net -d www.alsec.strangled.net
 sudo certbot renew --dry-run
 
 # Отвори в браузър
-https://alsec.strangled.net
+https://${MAIN_DOMAIN}
 # Трябва да видиш зелен катинар! 🔒
 
 
@@ -96,11 +96,11 @@ sudo systemctl status nginx
 # Should show: active (running)
 
 # 3. SSL работи?
-curl -I https://alsec.strangled.net
+curl -I https://${MAIN_DOMAIN}
 # Should show: HTTP/2 200
 
 # 4. API работи?
-curl https://alsec.strangled.net/api/health
+curl https://${MAIN_DOMAIN}/api/health
 # Should show: {"status":"ok"}
 
 # 5. Version deployed?
@@ -114,7 +114,7 @@ cat /var/www/ams-chat-web/*.version
 
 **Отвори в браузър:**
 ```
-https://alsec.strangled.net
+https://${MAIN_DOMAIN}
 
 
 

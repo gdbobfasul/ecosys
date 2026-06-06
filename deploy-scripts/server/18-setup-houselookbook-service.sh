@@ -17,7 +17,7 @@
 #
 # Базата остава на localhost — само node я докосва. Frontend-ът е изцяло
 # релативен → когато се купи отделен домейн, той сочи към СЪЩАТА поддиректория
-# и alsec не се вижда (виж паметта: kcy-mobile-apps-architecture).
+# и главния сайт не се вижда (виж паметта: kcy-mobile-apps-architecture).
 #
 # Употреба:
 #   sudo ./18-setup-houselookbook-service.sh
@@ -39,6 +39,9 @@ WEB_ROOT="/var/www/html"
 APP_DIR="$PRIVATE_DIR/$APP_NAME"
 PUBLIC_SUBDIR="$WEB_ROOT/$APP_NAME"
 PORT_KEY="HLB_PORT"; PORT_DEFAULT="3010"
+# Единна конфигурация за домейни/директории/портове (private/configs/domains.conf).
+[ -f "$PRIVATE_DIR/configs/domains.conf" ] && . "$PRIVATE_DIR/configs/domains.conf"
+[ -n "${APP_hlb_PORT:-}" ] && PORT_DEFAULT="$APP_hlb_PORT"
 NGINX_INC_DIR="/etc/nginx/kcy-apps"
 NGINX_INC="$NGINX_INC_DIR/houselookbook.conf"
 LOG_DIR="/var/log/kcy-ecosystem"

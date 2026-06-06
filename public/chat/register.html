@@ -42,8 +42,12 @@
                 <div class="grid grid-cols-2 gap-3 mt-2">
                     <input type="number" id="heightCm" placeholder="Ръст (см)" class="p-3 bg-gray-700 rounded text-white">
                     <input type="number" id="weightKg" placeholder="Тегло (кг)" class="p-3 bg-gray-700 rounded text-white">
-                    <input type="text" id="country" placeholder="Държава" class="p-3 bg-gray-700 rounded text-white">
-                    <input type="text" id="city" placeholder="Град" class="p-3 bg-gray-700 rounded text-white">
+                    <select id="country" class="p-3 bg-gray-700 rounded text-white">
+                        <option value="">Държава…</option>
+                    </select>
+                    <select id="city" class="p-3 bg-gray-700 rounded text-white" disabled>
+                        <option value="">Първо избери държава</option>
+                    </select>
                     <input type="text" id="village" placeholder="Село (по избор)" class="p-3 bg-gray-700 rounded text-white">
                     <input type="text" id="street" placeholder="Улица (по избор)" class="p-3 bg-gray-700 rounded text-white">
                     <input type="text" id="workplace" placeholder="Месторабота (по избор)" class="p-3 bg-gray-700 rounded text-white col-span-2">
@@ -66,6 +70,55 @@
         var p = new URLSearchParams(location.search);
         if (p.get('phone')) document.getElementById('phone').value = p.get('phone');
         if (p.get('password')) document.getElementById('password').value = p.get('password');
+
+        // ── Държава → Град (каскадни падащи менюта) ──
+        // Държавите + градовете идват от НАШАТА локална база (статични JSON в
+        // /shared/geo/, генерирани с scripts/build-geo.js) — без външно API по време
+        // на работа. Градовете се зареждат СЛЕД избор на държава. Полетата са по избор.
+        var countrySel = document.getElementById('country');
+        var citySel = document.getElementById('city');
+
+        function opt(sel, value, label, slug) {
+            var o = document.createElement('option');
+            o.value = value; o.textContent = label || value;
+            if (slug) o.setAttribute('data-slug', slug);
+            sel.appendChild(o);
+        }
+
+        // 1) Държави от локалния индекс
+        fetch('/shared/geo/countries.json')
+            .then(function (r) { return r.json(); })
+            .then(function (list) {
+                (list || []).forEach(function (c) { opt(countrySel, c.name, c.name, c.slug); });
+            })
+            .catch(function () {
+                // Резерва: ако файловете липсват — позволи ръчно въвеждане.
+                countrySel.outerHTML = '<input type="text" id="country" placeholder="Държава (по избор)" class="p-3 bg-gray-700 rounded text-white">';
+                citySel.outerHTML = '<input type="text" id="city" placeholder="Град (по избор)" class="p-3 bg-gray-700 rounded text-white">';
+            });
+
+        // 2) При избор на държава → нейните градове от локалния файл
+        countrySel.addEventListener('change', function () {
+            citySel.innerHTML = '';
+            var selOpt = countrySel.options[countrySel.selectedIndex];
+            var sl = selOpt ? selOpt.getAttribute('data-slug') : '';
+            if (!countrySel.value || !sl) { opt(citySel, '', 'Първо избери държава'); citySel.disabled = true; return; }
+            opt(citySel, '', 'Зареждам градове…'); citySel.disabled = true;
+            fetch('/shared/geo/cities/' + sl + '.json')
+                .then(function (r) { return r.json(); })
+                .then(function (cities) {
+                    cities = cities || [];
+                    citySel.innerHTML = '';
+                    opt(citySel, '', cities.length ? 'Град…' : '(няма градове — пропусни)');
+                    cities.forEach(function (c) { opt(citySel, c); });
+                    citySel.disabled = cities.length === 0;
+                })
+                .catch(function () {
+                    citySel.innerHTML = '';
+                    opt(citySel, '', '(градовете не се заредиха — пропусни)');
+                    citySel.disabled = true;
+                });
+        });
 
         function val(id) { return document.getElementById(id).value.trim(); }
         function num(id) { var v = document.getElementById(id).value.trim(); return v ? parseInt(v, 10) : null; }

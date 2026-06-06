@@ -8,7 +8,18 @@
     <title>Плащане - Анонимен Чат</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+    <!-- Навигация (чат) -->
+    <nav class="bg-gray-800 border-b border-gray-700 px-4 py-3 flex items-center justify-between">
+        <a href="index.html" class="font-bold text-lg text-white">💬 <span data-i18n="cnav.brand">Анонимен Чат</span></a>
+        <div class="flex items-center gap-4 text-sm">
+            <a href="index.html" class="text-gray-300 hover:text-white" data-i18n="cnav.home">🏠 Начало</a>
+            <a href="chat.html" class="text-gray-300 hover:text-white" data-i18n="cnav.tochat">💬 Към чата</a>
+            <a href="index.html" onclick="try{localStorage.clear()}catch(e){}" class="text-red-400 hover:text-red-300" data-i18n="cnav.logout">🚪 Изход</a>
+        </div>
+    </nav>
+
+    <div class="flex-1 flex items-center justify-center p-4">
     <div class="max-w-md w-full">
         <!-- Header -->
         <div class="text-center mb-8">
@@ -53,6 +64,7 @@
                 ← Назад към вход
             </a>
         </div>
+    </div>
     </div>
 
     <script>

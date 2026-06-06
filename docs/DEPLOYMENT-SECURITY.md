@@ -149,7 +149,7 @@ private/chat/node_modules/     # ✅ Excluded
 ### Production .env файлове:
 ```bash
 # Създават се ДИРЕКТНО на сървъра
-ssh root@alsec.strangled.net
+ssh root@${MAIN_DOMAIN}
 cd /var/www/kcy-ecosystem/private/chat
 nano .env
 # Добави production secrets
@@ -201,7 +201,7 @@ cd deploy-scripts
 .\windows\deploy.ps1
 
 # 3. Server setup
-ssh root@alsec.strangled.net
+ssh root@${MAIN_DOMAIN}
 cd /var/www/kcy-ecosystem
 
 # Install dependencies (НА СЪРВЪРА)
@@ -256,7 +256,7 @@ rsync --dry-run -av --exclude-from='../.deployignore' \
 ### Провери deployed файлове на сървъра:
 
 ```bash
-ssh root@alsec.strangled.net
+ssh root@${MAIN_DOMAIN}
 
 # node_modules НЕ трябва да съществува преди npm install
 ls /var/www/kcy-ecosystem/private/chat/

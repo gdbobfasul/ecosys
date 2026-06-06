@@ -58,7 +58,7 @@ deploy-scripts\windows\deploy.bat
 
 1. SSH into server:
 ```bash
-ssh root@alsec.strangled.net
+ssh root@${MAIN_DOMAIN}
 ```
 
 2. Navigate to scripts:
@@ -107,7 +107,7 @@ sudo ./08-setup-domain.sh
 
 **What it does:**
 - ✅ Installs Nginx
-- ✅ Configures virtual host for alsec.strangled.net
+- ✅ Configures virtual host for ${MAIN_DOMAIN}
 - ✅ Installs SSL certificate (Let's Encrypt)
 - ✅ Sets up auto-renewal
 - ✅ Creates systemd service for chat
@@ -117,7 +117,7 @@ sudo ./08-setup-domain.sh
 - ✅ Creates admin scripts
 
 **Interactive prompts:**
-1. Domain name (default: alsec.strangled.net)
+1. Domain name (default: ${MAIN_DOMAIN})
 2. Email for SSL (for cert notifications)
 
 **Output:**
@@ -203,18 +203,18 @@ tail -f /var/log/nginx/kcy-ecosystem-access.log
 
 | Service | URL |
 |---------|-----|
-| **Landing** | https://alsec.strangled.net/ |
-| **Token** | https://alsec.strangled.net/token/ |
-| **Token Admin** | https://alsec.strangled.net/token/admin/scripts.html |
-| **Multi-Sig** | https://alsec.strangled.net/multisig/ |
-| **Multi-Sig Admin** | https://alsec.strangled.net/multisig/admin/ |
-| **Chat** | https://alsec.strangled.net/chat/ |
-| **Chat Download** | https://alsec.strangled.net/chat/download/ |
-| **Chat Web App** | https://alsec.strangled.net/chat/public/ |
-| **Chat Admin** | https://alsec.strangled.net/chat/admin/ |
+| **Landing** | https://${MAIN_DOMAIN}/ |
+| **Token** | https://${MAIN_DOMAIN}/token/ |
+| **Token Admin** | https://${MAIN_DOMAIN}/token/admin/scripts.html |
+| **Multi-Sig** | https://${MAIN_DOMAIN}/multisig/ |
+| **Multi-Sig Admin** | https://${MAIN_DOMAIN}/multisig/admin/ |
+| **Chat** | https://${MAIN_DOMAIN}/chat/ |
+| **Chat Download** | https://${MAIN_DOMAIN}/chat/download/ |
+| **Chat Web App** | https://${MAIN_DOMAIN}/chat/public/ |
+| **Chat Admin** | https://${MAIN_DOMAIN}/chat/admin/ |
 
 **API:**
-- Chat API: https://alsec.strangled.net/api/chat/
+- Chat API: https://${MAIN_DOMAIN}/api/chat/
 
 ---
 
@@ -266,7 +266,7 @@ nano /var/www/html/shared/js/config.js
 cd /var/www/html/downloads
 
 # Upload APK (from local machine)
-scp ams-chat.apk root@alsec.strangled.net:/var/www/html/downloads/
+scp ams-chat.apk root@${MAIN_DOMAIN}:/var/www/html/downloads/
 
 # Set permissions
 chmod 644 /var/www/html/downloads/ams-chat.apk
@@ -375,14 +375,14 @@ find /var/www/html -type f -exec chmod 644 {} \;
 # 2. Run: .\deploy-scripts\windows\deploy.ps1
 
 # === On Server ===
-# 3. SSH: ssh root@alsec.strangled.net
+# 3. SSH: ssh root@${MAIN_DOMAIN}
 # 4. Run: cd /var/www/kcy-ecosystem/deploy-scripts/server
 # 5. Run: chmod +x *.sh
 # 6. Run: ./07-setup-database.sh
 # 7. Run: ./08-setup-domain.sh
 
 # === Done! ===
-# Visit: https://alsec.strangled.net
+# Visit: https://${MAIN_DOMAIN}
 ```
 
 **Total time: ~15-30 minutes** ⚡

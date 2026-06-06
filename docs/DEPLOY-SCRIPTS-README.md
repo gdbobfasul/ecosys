@@ -19,7 +19,7 @@
 ### Еднократна подготовка (на сървъра като root):
 
 ```bash
-ssh root@alsec.strangled.net
+ssh root@${MAIN_DOMAIN}
 mkdir -p /var/www/deploy
 chown deploy:deploy /var/www/deploy
 ```
@@ -36,7 +36,7 @@ chown deploy:deploy /var/www/deploy
 ### Стъпка 2: `05-server-install.sh` — инсталация (на сървъра)
 
 ```bash
-ssh deploy@alsec.strangled.net
+ssh deploy@${MAIN_DOMAIN}
 cd /var/www/deploy/deploy-scripts/server
 sudo bash 05-server-install.sh
 ```
@@ -111,7 +111,7 @@ kcy-status
 ## Nginx routing
 
 ```
-https://alsec.strangled.net
+https://${MAIN_DOMAIN}
 ├── /              → /var/www/html/index.html
 ├── /token/        → /var/www/html/token/
 ├── /multisig/     → /var/www/html/multisig/
@@ -138,7 +138,7 @@ Chat и ECO-3 го четат чрез symlinks от `chat/configs/.env` и `eco
 NODE_ENV=production
 PORT=3000                          # Chat порт
 ECO3_PORT=3001                     # ECO-3 порт
-ALLOWED_ORIGINS=http://localhost,https://alsec.strangled.net
+ALLOWED_ORIGINS=http://localhost,https://${MAIN_DOMAIN}
 ADMIN_ALLOWED_IPS=127.0.0.1,::1
 
 # ── Database (Chat) ──
@@ -179,7 +179,7 @@ ls ~/.ssh/id_*.pub
 ### Проверка дали ключът работи за deploy:
 
 ```bash
-ssh -o PasswordAuthentication=no deploy@alsec.strangled.net "echo OK"
+ssh -o PasswordAuthentication=no deploy@${MAIN_DOMAIN} "echo OK"
 ```
 
 - `OK` — ключът е настроен, всичко е наред.
@@ -196,7 +196,7 @@ cat /home/deploy/.ssh/authorized_keys
 ### Копиране на ключа (еднократно):
 
 ```bash
-# От PowerShell: type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh deploy@alsec.strangled.net "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+# От PowerShell: type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh deploy@${MAIN_DOMAIN} "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
 ```
 
 Ще пита за паролата на `deploy` **последен път**, после вече ще влиза с ключ.
@@ -206,16 +206,16 @@ cat /home/deploy/.ssh/authorized_keys
 При първо свързване към hostname (дори ако IP-то е познато):
 
 ```
-The authenticity of host 'alsec.strangled.net (143.198.212.195)' can't be established.
+The authenticity of host '${MAIN_DOMAIN} (143.198.212.195)' can't be established.
 ```
 
-Провери: `nslookup alsec.strangled.net` → трябва да покаже `143.198.212.195`.
+Провери: `nslookup ${MAIN_DOMAIN}` → трябва да покаже `143.198.212.195`.
 Ако IP-то съвпада с `~/.ssh/known_hosts` → пиши `yes`.
 
 За да не пита повече:
 
 ```bash
-ssh-keyscan -H alsec.strangled.net >> ~/.ssh/known_hosts
+ssh-keyscan -H ${MAIN_DOMAIN} >> ~/.ssh/known_hosts
 ```
 
 ---

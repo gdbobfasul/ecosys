@@ -26,7 +26,7 @@ STRIPE_SECRET_KEY=sk_live_YOUR_KEY
 STRIPE_PUBLISHABLE_KEY=pk_live_YOUR_KEY
 
 # Домейн
-ALLOWED_ORIGINS=https://alsec.strangled.net,https://www.alsec.strangled.net
+ALLOWED_ORIGINS=https://${MAIN_DOMAIN},https://www.${MAIN_DOMAIN}
 
 # Твоя IP (намери на: https://whatismyipaddress.com/)
 ADMIN_ALLOWED_IPS=127.0.0.1,::1,YOUR_IP
@@ -74,11 +74,11 @@ curl http://localhost:3000/api/health
 sudo nano /etc/nginx/sites-available/ams-chat
 ```
 
-**Paste (ПРОМЕНИ alsec.strangled.net):**
+**Paste (ПРОМЕНИ ${MAIN_DOMAIN}):**
 ```nginx
 server {
     listen 80;
-    server_name alsec.strangled.net www.alsec.strangled.net;
+    server_name ${MAIN_DOMAIN} www.${MAIN_DOMAIN};
 
     # Frontend (Static files)
     location / {
@@ -129,7 +129,7 @@ sudo systemctl restart nginx
 **Test:**
 ```bash
 # Отвори в браузър
-http://alsec.strangled.net
+http://${MAIN_DOMAIN}
 # Трябва да видиш login страница!
 ```
 
@@ -142,7 +142,7 @@ http://alsec.strangled.net
 sudo apt install certbot python3-certbot-nginx
 
 # Генерирай SSL certificate
-sudo certbot --nginx -d alsec.strangled.net -d www.alsec.strangled.net
+sudo certbot --nginx -d ${MAIN_DOMAIN} -d www.${MAIN_DOMAIN}
 
 # Следвай prompts:
 # Email: your@email.com
@@ -156,7 +156,7 @@ sudo certbot renew --dry-run
 **Test:**
 ```bash
 # Отвори в браузър
-https://alsec.strangled.net
+https://${MAIN_DOMAIN}
 # Трябва да видиш зелен катинар! 🔒
 ```
 
@@ -191,11 +191,11 @@ sudo systemctl status nginx
 # Should show: active (running)
 
 # 3. SSL работи?
-curl -I https://alsec.strangled.net
+curl -I https://${MAIN_DOMAIN}
 # Should show: HTTP/2 200
 
 # 4. API работи?
-curl https://alsec.strangled.net/api/health
+curl https://${MAIN_DOMAIN}/api/health
 # Should show: {"status":"ok"}
 
 # 5. Version deployed?
@@ -209,7 +209,7 @@ cat /var/www/ams-chat-web/*.version
 
 **Отвори в браузър:**
 ```
-https://alsec.strangled.net
+https://${MAIN_DOMAIN}
 ```
 
 **Трябва да видиш:**

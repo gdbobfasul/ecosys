@@ -893,5 +893,11 @@
   "charts.period_note": ". The period (days/months) is selected in the chart itself.",
   "pdf.legal_note": "legally it is not a valid e-signature, only a visual placement of an image on the PDF.",
   "reg.ad_note": "a visible place in the leaderboard. The leaderboard resets every month.",
-  "billing.activate_access": "✅ Activate access"
+  "billing.activate_access": "✅ Activate access",
+  "chat.register_btn": "📝 Register",
+  "home.report_bug": "🐞 Report a bug",
+  "cnav.brand": "Anonymous Chat",
+  "cnav.home": "🏠 Home",
+  "cnav.tochat": "💬 To chat",
+  "cnav.logout": "🚪 Logout"
 }

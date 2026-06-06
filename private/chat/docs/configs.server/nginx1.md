@@ -14,7 +14,7 @@ sudo nginx -t
 sudo systemctl reload nginx
 
 # 6. Test API
-curl https://alsec.strangled.net/api/health
+curl https://${MAIN_DOMAIN}/api/health
 # Трябва: {"status":"ok"}
 
 CONFIG:
@@ -25,7 +25,7 @@ server {
     listen 80;
     listen [::]:80;
 
-    server_name alsec.strangled.net;
+    server_name ${MAIN_DOMAIN};
 
     # Redirect all HTTP requests to HTTPS
     return 301 https://$host$request_uri;
@@ -36,13 +36,13 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
 
-    server_name alsec.strangled.net;
+    server_name ${MAIN_DOMAIN};
 
     root /var/www/ams-chat-web/public/;
     index index.html index.htm;
 
-    ssl_certificate /etc/ssl/certs/alsec-selfsigned.crt;
-    ssl_certificate_key /etc/ssl/private/alsec-selfsigned.key;
+    ssl_certificate /etc/ssl/certs/selfsigned.crt;
+    ssl_certificate_key /etc/ssl/private/selfsigned.key;
 
     location / {
         try_files $uri $uri/ =404;

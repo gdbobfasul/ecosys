@@ -74,7 +74,7 @@
 
 ### Toggle от UI
 
-`https://alsec.strangled.net/?adm=bgmasters-set` → "Отвори System Status" → секция "🐛 DEBUG режим"
+`https://${MAIN_DOMAIN}/?adm=bgmasters-set` → "Отвори System Status" → секция "🐛 DEBUG режим"
 
 Per-service flags (chat/eco3/portals): услугата чете флага при всяко log call → instant effect.
 
@@ -83,7 +83,7 @@ Per-service flags (chat/eco3/portals): услугата чете флага пр
 ### Manual toggle (без UI)
 
 ```bash
-ssh deploy@alsec.strangled.net -p 2222
+ssh deploy@${MAIN_DOMAIN} -p 2222
 sudo nano /var/lib/kcy/debug-flags.json
 # Промени стойностите → save
 ```
@@ -93,13 +93,13 @@ sudo nano /var/lib/kcy/debug-flags.json
 ## Bundle URL — публично достъпен
 
 ```
-https://alsec.strangled.net/last-errors-bundle
+https://${MAIN_DOMAIN}/last-errors-bundle
 ```
 
 По default е **активиран** (за тест период). Връща `text/plain` с всички .log концатенирани в един отговор.
 
 Подходящо за:
-- `curl -o bundle.txt https://alsec.strangled.net/last-errors-bundle`
+- `curl -o bundle.txt https://${MAIN_DOMAIN}/last-errors-bundle`
 - `web_fetch` от Claude
 
 ### Изключване на bundle URL (production)
@@ -108,7 +108,7 @@ https://alsec.strangled.net/last-errors-bundle
 
 1. SSH до сървъра:
    ```bash
-   ssh deploy@alsec.strangled.net -p 2222
+   ssh deploy@${MAIN_DOMAIN} -p 2222
    ```
 2. Промени `.env`:
    ```bash
@@ -210,12 +210,12 @@ Phase 3: append към /var/www/html/last-errors/ (final destination)
 
 ## Workflow за дебъг с Claude
 
-1. Open `https://alsec.strangled.net/?adm=bgmasters-set` → "Отвори System Status"
+1. Open `https://${MAIN_DOMAIN}/?adm=bgmasters-set` → "Отвори System Status"
 2. На admin-status страницата → секция "📋 Last Errors" → виж widgets
 3. При нужда натисни ⟳ Regenerate
 4. Дай на Claude bundle URL:
    ```
-   https://alsec.strangled.net/last-errors-bundle
+   https://${MAIN_DOMAIN}/last-errors-bundle
    ```
 5. Claude прави `web_fetch` → получава всички логове наведнъж
 6. Claude анализира → казва какво е счупено

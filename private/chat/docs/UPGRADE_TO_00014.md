@@ -99,7 +99,7 @@ TEST_MODE=false
 TEST_DB=amschat_test.db
 
 # CORS
-ALLOWED_ORIGINS=https://alsec.strangled.net
+ALLOWED_ORIGINS=https://${MAIN_DOMAIN}
 
 # Admin IP Protection
 ADMIN_ALLOWED_IPS=127.0.0.1,::1,your_ip_address
@@ -321,7 +321,7 @@ TEST_MODE=false
 TEST_DB=amschat_test.db
 
 # CORS
-ALLOWED_ORIGINS=https://alsec.strangled.net
+ALLOWED_ORIGINS=https://${MAIN_DOMAIN}
 
 # Admin IP Protection
 ADMIN_ALLOWED_IPS=127.0.0.1,::1,your.actual.ip.address

@@ -71,7 +71,7 @@ cd /path/to/kcy-ecosystem
 ### Стъпка 2: SSH към сървъра
 
 ```bash
-ssh root@alsec.strangled.net
+ssh root@${MAIN_DOMAIN}
 ```
 
 ### Стъпка 3: Navigate to tests

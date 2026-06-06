@@ -1,13 +1,27 @@
 // Version: 1.0093
 /**
  * KCY Ecosystem - Централна Конфигурация
- * 
- * ⚙️ ВАЖНО: Промени BASE_URL ако сменяш домейна!
+ *
+ * ⚙️ Домейнът се взима ДИНАМИЧНО от текущия адрес — нищо не се хардкодва тук.
  */
 
+// Android package ID — изведен от домейна (обратна нотация) + ".chat",
+// както BASE_URL идва от origin. Нула хардкоднат идентификатор.
+// take.offbitch.com → com.offbitch.take.chat
+function kcyAndroidPackageId() {
+    var host = (typeof window !== 'undefined' && window.location && window.location.hostname)
+        ? window.location.hostname : '';
+    if (!host) return '';
+    return host.split('.').reverse().join('.') + '.chat';
+}
+
 const KCY_CONFIG = {
-    // 🌐 BASE URL - ПРОМЕНИ САМО ТУК АКО СМЕНЯШ ДОМЕЙНА!
-    BASE_URL: "https://alsec.strangled.net",
+    // 🌐 BASE URL — ДИНАМИЧЕН: = домейнът, на който се отваря страницата.
+    // Така всеки домейн сочи към СЕБЕ СИ (бекендите са proxy-нати на същия хост)
+    // — нула хардкоднат домейн.
+    BASE_URL: (typeof window !== 'undefined' && window.location && window.location.origin)
+        ? window.location.origin
+        : "",
     
     // Blockchain Network Configuration
     network: {
@@ -53,8 +67,8 @@ const KCY_CONFIG = {
     // ОБНОВИ ТЕЗИ ЛИНКОВЕ СЛЕД КАЧВАНЕ В APP STORES!
     mobileApp: {
         android: {
-            playStore: "https://play.google.com/store/apps/details?id=net.strangled.alsec.chat",
-            apkDirect: "https://alsec.strangled.net/downloads/ams-chat.apk",
+            playStore: "https://play.google.com/store/apps/details?id=" + kcyAndroidPackageId(),
+            apkDirect: "/downloads/ams-chat.apk",
             fdroid: null,
             galaxyStore: null
         },

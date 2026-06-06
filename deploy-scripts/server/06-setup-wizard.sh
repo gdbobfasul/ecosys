@@ -40,6 +40,8 @@ diag_log services-errors.log "wizard: started"
 
 # Configuration
 PROJECT_DIR="/var/www/kcy-ecosystem"
+# Домейн от ЕДИННАТА конфигурация (private/configs/domains.conf) — нищо хардкоднато.
+[ -f "$PROJECT_DIR/private/configs/domains.conf" ] && . "$PROJECT_DIR/private/configs/domains.conf"
 CHAT_DIR="$PROJECT_DIR/private/chat"
 TOKEN_DIR="$PROJECT_DIR/private/token"
 MULTISIG_DIR="$PROJECT_DIR/private/multisig"
@@ -230,10 +232,10 @@ step_domain_config() {
     echo ""
     
     echo -e "${CYAN}Current domain setup:${NC}"
-    echo "  • Main: alsec.strangled.net"
-    echo "  • Token: alsec.strangled.net/token"
-    echo "  • Chat: alsec.strangled.net/chat"
-    echo "  • Multisig: alsec.strangled.net/multisig"
+    echo "  • Main: ${MAIN_DOMAIN}"
+    echo "  • Token: ${MAIN_DOMAIN}/token"
+    echo "  • Chat: ${MAIN_DOMAIN}/chat"
+    echo "  • Multisig: ${MAIN_DOMAIN}/multisig"
     echo ""
     
     read -p "Do you want to change domains? (y/n): " change_domain
@@ -598,7 +600,7 @@ step_summary() {
     echo -e "     ${YELLOW}./08-setup-domain.sh${NC}"
     echo ""
     echo "  5. Setup SSL certificate:"
-    echo -e "     ${YELLOW}certbot --nginx -d alsec.strangled.net${NC}"
+    echo -e "     ${YELLOW}certbot --nginx -d ${MAIN_DOMAIN}${NC}"
     echo ""
     
     echo -e "${CYAN}Important files:${NC}"

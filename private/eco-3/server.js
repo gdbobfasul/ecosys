@@ -18,6 +18,17 @@ const path = require('path');
 const fs = require('fs');
 const { createDb } = require('./db');  // DB адаптер — SQLite или PostgreSQL по ECO3_DB_TYPE
 
+// Главният домейн от ЕДИННАТА конфигурация (private/configs/domains.conf) — нула хардкод.
+function readMainDomain() {
+    try {
+        const txt = fs.readFileSync(path.join(__dirname, '..', 'configs', 'domains.conf'), 'utf8');
+        const m = txt.match(/^\s*MAIN_DOMAIN="?([^"\n]+)"?/m);
+        if (m) return m[1].trim();
+    } catch (e) { /* конфигът липсва — пада на ENV/localhost */ }
+    return null;
+}
+const MAIN_DOMAIN = readMainDomain();
+
 // Load .env — единен файл: private/configs/.env
 require('dotenv').config({ path: path.join(__dirname, '..', 'configs', '.env') });
 
@@ -69,7 +80,11 @@ setInterval(dailyCleanup, 60 * 60 * 1000);
 // MIDDLEWARE
 // ════════════════════════════════════════════
 app.use(cors({
-    origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',').map(s => s.trim()) : ['http://localhost', 'https://alsec.strangled.net'],
+    // Origins от .env (ALLOWED_ORIGINS, със запетаи). Без хардкоднат домейн —
+    // fallback ползва главния домейн от domains.conf (+ localhost), не литерал.
+    origin: process.env.ALLOWED_ORIGINS
+        ? process.env.ALLOWED_ORIGINS.split(',').map(s => s.trim())
+        : (MAIN_DOMAIN ? ['http://localhost', 'https://' + MAIN_DOMAIN] : ['http://localhost']),
     credentials: true
 }));
 app.use(helmet({ contentSecurityPolicy: false }));

@@ -132,10 +132,10 @@ Your choice [A/B/C/D]: _
 
 ```
 Current domain setup:
-  • Main: alsec.strangled.net
-  • Token: alsec.strangled.net/token
-  • Chat: alsec.strangled.net/chat
-  • Multisig: alsec.strangled.net/multisig
+  • Main: ${MAIN_DOMAIN}
+  • Token: ${MAIN_DOMAIN}/token
+  • Chat: ${MAIN_DOMAIN}/chat
+  • Multisig: ${MAIN_DOMAIN}/multisig
 
 Do you want to change domains? (y/n): _
 ```
@@ -290,7 +290,7 @@ Next steps:
      ./08-setup-domain.sh
 
   5. Setup SSL certificate:
-     certbot --nginx -d alsec.strangled.net
+     certbot --nginx -d ${MAIN_DOMAIN}
 ```
 
 **Показва:**

@@ -1,5 +1,5 @@
 <!-- Version: 1.0056 -->
-alsec.strangled.net
+${MAIN_DOMAIN}
 143.198.212.195
 ALSEC ANONYMOUS LOCATION SEARCH ENGINE-CHAT
 

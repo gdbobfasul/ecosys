@@ -167,7 +167,7 @@ UPDATE admin_users SET password_hash = '<NEW_HASH>' WHERE username = 'admin';
 
 ```bash
 # Get certificate
-sudo certbot --nginx -d alsec.strangled.net -d www.alsec.strangled.net
+sudo certbot --nginx -d ${MAIN_DOMAIN} -d www.${MAIN_DOMAIN}
 
 # Auto-renewal
 sudo systemctl enable certbot.timer
@@ -192,16 +192,16 @@ sudo nano /etc/nginx/sites-available/ams-chat
 ```nginx
 server {
     listen 80;
-    server_name alsec.strangled.net www.alsec.strangled.net;
+    server_name ${MAIN_DOMAIN} www.${MAIN_DOMAIN};
     return 301 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name alsec.strangled.net www.alsec.strangled.net;
+    server_name ${MAIN_DOMAIN} www.${MAIN_DOMAIN};
 
-    ssl_certificate /etc/letsencrypt/live/alsec.strangled.net/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/alsec.strangled.net/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${MAIN_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${MAIN_DOMAIN}/privkey.pem;
 
     # Security headers
     add_header X-Frame-Options "SAMEORIGIN" always;
@@ -454,7 +454,7 @@ pm2 flush ams-chat
 ## ✅ Post-Deployment Checklist
 
 - [ ] Application running (`pm2 status`)
-- [ ] HTTPS working (https://alsec.strangled.net)
+- [ ] HTTPS working (https://${MAIN_DOMAIN})
 - [ ] Admin login working
 - [ ] Test payment (test mode first!)
 - [ ] Webhooks configured

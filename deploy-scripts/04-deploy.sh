@@ -23,10 +23,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
+# ═══ ДОМЕЙНИ ОТ ЕДИННАТА КОНФИГУРАЦИЯ (нищо хардкоднато) ═══
+[ -f "private/configs/domains.conf" ] && . "private/configs/domains.conf"
+
 # ═══ DEPLOY TARGETS ═══
 # Дефинирай таргетите тук. Може и от .deploy-targets файл (override).
 # Формат: TARGET_<name>_(SERVER|USER|PORT)
-TARGET_prod_SERVER="alsec.strangled.net"
+TARGET_prod_SERVER="${MAIN_DOMAIN}"
 TARGET_prod_USER="deploy"
 TARGET_prod_PORT="2222"
 TARGET_prod_LABEL="Production (VPS)"
@@ -120,7 +123,7 @@ if [ -n "$TARGET_NAME" ]; then
     PORT="${!port_var}"
     TARGET_LABEL="${!label_var}"
 else
-    SERVER="${1:-alsec.strangled.net}"
+    SERVER="${1:-${MAIN_DOMAIN}}"
     USER="${2:-deploy}"
     PORT="${3:-2222}"
     TARGET_LABEL="custom"
@@ -159,8 +162,8 @@ Usage:
   ./deploy-scripts/04-deploy.sh <server> <user> <port>       # custom
 
 Targets (промени в началото на 04-deploy.sh, или в .deploy-targets):
-  prod = alsec.strangled.net : 2222 (deploy)
-  vm   = 192.168.0.150       : 22   (deploy)
+  prod = $MAIN_DOMAIN : 2222 (deploy)        # от private/configs/domains.conf
+  vm   = $TARGET_vm_SERVER : 22 (deploy)     # от .deploy-targets
 
 Архивира проекта → качва 1 файл → разархивира на сървъра →
 автоматично извиква 05-server-install.sh.
@@ -178,7 +181,7 @@ Targets (промени в началото на 04-deploy.sh, или в .deploy
      ssh-keygen -t ed25519
 
   2. Копирай ключа на сървъра:
-     ssh-copy-id -p 2222 -i ~/.ssh/id_ed25519.pub deploy@alsec.strangled.net
+     ssh-copy-id -p 2222 -i ~/.ssh/id_ed25519.pub deploy@$MAIN_DOMAIN
 
   3. Пусни: ./deploy-scripts/04-deploy.sh
 EOF
@@ -619,7 +622,8 @@ if [ "$RUN_INSTALL" = "y" ] || [ "$RUN_INSTALL" = "Y" ]; then
 
     # Запиши target info в hint файл, който 05-server-install.sh ще прочете
     # за да направи правилни предложения (server_name = IP/domain/both)
-    PROD_DOMAIN="${TARGET_prod_SERVER:-alsec.strangled.net}"
+    # nginx server_name = главния домейн от domains.conf (НЕ SSH хоста).
+    PROD_DOMAIN="${MAIN_DOMAIN:-$TARGET_prod_SERVER}"
     ssh ${SSH_OPTS} "${USER}@${SERVER}" "cat > /tmp/deploy_target_info << TARGETINFO
 TARGET_NAME=${TARGET_NAME:-custom}
 TARGET_SERVER=${SERVER}
@@ -627,6 +631,7 @@ TARGET_PROD_DOMAIN=${PROD_DOMAIN}
 AUTO_NPM=${KCY_AUTO_NPM:-0}
 AUTO_DEFAULTS=${KCY_AUTO_DEFAULTS:-0}
 DROP_DB=${KCY_DROP_DB:-0}
+WITH_ASSETS=${KCY_WITH_ASSETS:-0}
 TARGETINFO
 " 2>/dev/null
 

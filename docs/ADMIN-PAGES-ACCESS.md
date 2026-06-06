@@ -19,7 +19,7 @@ adminAccess = hasAdmUrlParam && isIpWhitelisted
 
 Линк като:
 ```
-https://alsec.strangled.net/portals/games/?adm=bgmasters-set
+https://${MAIN_DOMAIN}/portals/games/?adm=bgmasters-set
 ```
 
 ще пренасочи към billing ако твоят IP не е в whitelist-а — дори с правилния `?adm=` параметър.
@@ -46,7 +46,7 @@ IP адресите могат да се сменят неочаквано:
 
 ### 1. Влез в сървъра по SSH
 ```bash
-ssh root@alsec.strangled.net -p 2222
+ssh root@${MAIN_DOMAIN} -p 2222
 ```
 
 ### 2. Отвори `.env` файла

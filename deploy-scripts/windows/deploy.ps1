@@ -3,11 +3,20 @@
 ## Качва в staging: /var/www/deploy/
 
 param(
-    [string]$Server = "alsec.strangled.net",
+    [string]$Server = "",
     [string]$User = "deploy",
     [int]$Port = 2222,
     [switch]$Help
 )
+
+# Сървърът/домейнът идва от ЕДИННАТА конфигурация (private/configs/domains.conf) — нищо хардкоднато.
+if (-not $Server) {
+    $domainsConf = Join-Path $PSScriptRoot "..\..\private\configs\domains.conf"
+    if (Test-Path $domainsConf) {
+        $m = Select-String -Path $domainsConf -Pattern '^\s*MAIN_DOMAIN="([^"]+)"' | Select-Object -First 1
+        if ($m) { $Server = $m.Matches[0].Groups[1].Value }
+    }
+}
 
 if ($Help) {
     Write-Host "KCY Deploy v1.0093"

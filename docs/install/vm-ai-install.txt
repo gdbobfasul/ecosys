@@ -94,7 +94,7 @@ OLLAMA_HOST=http://192.168.0.150:11434 ollama run qwen3-coder:30b
 |---|---|
 | **Ryzen 5 5600X / 40 GB** | Ollama VM (AI) + може и втора VM за KCY dev |
 | **Pentium G6405 / 32 GB** | Friendly daily driver + KCY dev VM (по-малък) |
-| **VPS / 1 GB** | Production hosting (alsec.strangled.net) |
+| **VPS / 1 GB** | Production hosting (${MAIN_DOMAIN}) |
 
 Така AI-то ти живее у дома (безплатно, бързо за теб), production-ът на VPS-а, а Pentium-ът върши обикновени задачи. Всички свързани през Tailscale → KCY ecosystem-ът може да говори с локалното Ollama дори когато е deploy-нат на VPS.
 

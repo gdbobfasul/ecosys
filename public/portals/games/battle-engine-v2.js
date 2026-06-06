@@ -30,7 +30,7 @@
 
 // Cache-busting за анимациите. Смяна на тази стойност = браузърите теглят
 // видеата наново (без нужда от hard refresh). Бутай я при всяко ново качване на assets.
-var ASSET_V = '?v=20260531b';
+var ASSET_V = '?v=20260607';
 
 var MOVE_KEYS = ['v', 'b'];
 // щети, които ОБЕЗДВИЖВАТ целта за следващия ѝ ход (корени/лед/ток)
@@ -72,6 +72,8 @@ function BattleEngine(opts) {
     this.H = opts.fieldHeight || 960;
     this.mode = opts.mode || (this.teamSize === 1 ? 'Duel' : 'HMM');
     this.assetsPath = (opts.assetsPath || 'assets/animations/').replace(/\/+$/, '') + '/';
+    this.bgImage = opts.bgImage || null;  // статичен JPEG постер на терена (instant + fallback)
+    this.bgScene = opts.bgScene || null;  // жив анимиран терен: 1 = гора (duel), 2 = на терен
 
     this.state = 'menu';   // menu | playing | levelup | over
     this.level = 1;
@@ -135,10 +137,27 @@ BattleEngine.prototype._buildDOM = function () {
     stage.style.height = this.H + 'px';
     wrap.appendChild(stage);
 
-    // ground gradient + future background slot
+    // ground gradient + background slot (painterly терен ако е подаден bgImage)
     var bg = document.createElement('div');
     bg.className = 'kbb-bg';
+    if (this.bgImage) {
+        bg.style.backgroundImage = "url('" + this.bgImage + "')";
+        bg.style.backgroundSize = 'cover';
+        bg.style.backgroundPosition = 'center';
+        bg.style.backgroundRepeat = 'no-repeat';
+    }
     stage.appendChild(bg);
+    // Жив анимиран терен (листа се движат + животни се скитат и изчезват в гората).
+    // Всяка игра зарежда своя модул (terrain-duel.js / terrain-fight.js), който
+    // излага window.startTerrainBg и пуска СВОЯТА сцена. Без статичен фон.
+    if (this.bgScene && typeof window !== 'undefined' && window.startTerrainBg) {
+        bg.style.background = '#1a241a';  // тъмна основа докато живият терен се дорисува
+        var bgCanvas = document.createElement('canvas');
+        bgCanvas.width = this.W; bgCanvas.height = this.H;
+        bgCanvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;';
+        bg.appendChild(bgCanvas);
+        try { window.startTerrainBg(bgCanvas); } catch (e) { /* остава тъмната основа */ }
+    }
 
     // героите слой
     var heroes = document.createElement('div');
@@ -567,7 +586,8 @@ BattleEngine.prototype._resolveVideoUrl = function (unit, action) {
         var topFolder = action.indexOf('react:') === 0 ? 'die-Damage' : 'Closes-Attacks';
         // ?v=ASSET_VERSION — cache-busting: при ново качване сменяш ASSET_VERSION
         // и браузърът тегли видеата наново (иначе кешира стари и refresh не помага).
-        return basePath + topFolder + '/' + mode + '/' + folder + '/' + fileBase + '-' + name + '.webm' + ASSET_V;
+        // Път: animations/<игра>/<действие>/<герой>/<файл>.webm  (игра ПРЕДИ действие)
+        return basePath + mode + '/' + topFolder + '/' + folder + '/' + fileBase + '-' + name + '.webm' + ASSET_V;
     });
 
     return urls;  // масив, опитваме по ред

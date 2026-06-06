@@ -10,6 +10,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
+# Домейни от ЕДИННАТА конфигурация (private/configs/domains.conf) — нищо хардкоднато.
+[ -f "private/configs/domains.conf" ] && . "private/configs/domains.conf"
+# Зареди deploy таргетите (адреси/портове) — за да се показват в пикерите (опция 3/4 и т.н.)
+[ -f .deploy-targets ] && . .deploy-targets
+
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'
 YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'
 MAGENTA=$'\033[0;35m'; GRAY=$'\033[0;37m'
@@ -330,7 +335,8 @@ run_choice() {
             echo "    $IDX) custom — ще те пита server/user/port"
             CUSTOM_IDX=$IDX
             echo ""
-            read -p "  Избери [1-${IDX}]: " PICK
+            read -p "  Избери [1-${IDX}, default=1]: " PICK
+            PICK="${PICK:-1}"
             if [ -z "$PICK" ]; then echo "Отказано"; press_enter
             elif [ "$PICK" = "$CUSTOM_IDX" ]; then
                 read -p "  Server (IP или hostname): " S
@@ -374,7 +380,8 @@ run_choice() {
             echo -e "    $IDX) ${GREEN}custom${NC} — ръчно въвеждаш server/user/port (друг сървър)"
             CUSTOM_IDX=$IDX
             echo ""
-            read -p "  Избери [1-${IDX}]: " PICK
+            read -p "  Избери [1-${IDX}, default=1]: " PICK
+            PICK="${PICK:-1}"
             if [ -z "$PICK" ]; then echo "Отказано"; press_enter
             elif [ "$PICK" = "$CUSTOM_IDX" ]; then
                 run_cmd ./deploy-scripts/04-deploy.sh
@@ -800,9 +807,14 @@ run_choice() {
             ;;
         33)
             echo ""
-            echo "  Изпълни на сървъра:"
-            echo -e "  ${CYAN}ssh deploy@SERVER${NC}"
-            echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/08-setup-domain.sh${NC}"
+            echo -e "${BOLD}${CYAN}  Домейн / SSL — nginx + Let's Encrypt (чете private/configs/domains.conf)${NC}"
+            if pick_target; then
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/08-setup-domain.sh"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} ${REMOTE}${NC}"
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Домейните/SSL са настроени${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+            else echo "  Отказано"; fi
             press_enter
             ;;
         34)
@@ -821,12 +833,12 @@ run_choice() {
         # ── FAILOVER ──
         36)
             echo ""
-            target=$(ask_choice "На коя машина?" "VPS (alsec.strangled.net)" "VM (192.168.0.108)")
+            target=$(ask_choice "На коя машина?" "VPS (${MAIN_DOMAIN})" "VM (192.168.0.108)")
             case "$target" in
-                "VPS (alsec.strangled.net)")
+                "VPS (${MAIN_DOMAIN})")
                     echo ""
                     echo "  Изпълни на VPS-а:"
-                    echo -e "  ${CYAN}ssh deploy@alsec.strangled.net -p 2222${NC}"
+                    echo -e "  ${CYAN}ssh deploy@${MAIN_DOMAIN} -p 2222${NC}"
                     echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/11-setup-tailscale.sh${NC}"
                     ;;
                 "VM (192.168.0.108)")
@@ -845,7 +857,7 @@ run_choice() {
             echo "  (VPS-ът става reverse proxy, VM остава primary)."
             echo ""
             echo "  Изпълни на VPS-а:"
-            echo -e "  ${CYAN}ssh deploy@alsec.strangled.net -p 2222${NC}"
+            echo -e "  ${CYAN}ssh deploy@${MAIN_DOMAIN} -p 2222${NC}"
             echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/12-setup-failover.sh${NC}"
             echo ""
             echo "  Скриптът сам намира VM Tailscale IP-то и настройва nginx."
@@ -892,7 +904,7 @@ run_choice() {
             if [ -f .deploy-targets ]; then
                 grep -E "^TARGET_.*_SERVER" .deploy-targets | sed 's/^/    /'
             else
-                echo "    (defaults — prod=alsec.strangled.net:2222, vm=192.168.0.108:22)"
+                echo "    (defaults — prod=${MAIN_DOMAIN}:2222, vm=192.168.0.108:22)"
             fi
             echo ""
             echo -e "  ${BOLD}Local databases:${NC}"

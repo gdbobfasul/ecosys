@@ -21,7 +21,8 @@
 </div>
 <div id="arena"></div>
 <script src="/portals/games/battle-heroes-v2.js?v=1.0174"></script>
-<script src="/portals/games/battle-engine-v2.js?v=1.0174"></script>
+<script src="/portals/games/terrain-fight.js?v=1.0182"></script>
+<script src="/portals/games/battle-engine-v2.js?v=1.0182"></script>
 <script>
 var eng = new BattleEngine({
   container: document.getElementById('arena'),
@@ -33,7 +34,8 @@ var eng = new BattleEngine({
   fieldWidth: 1920,
   fieldHeight: 2560,
   mode: 'HMM',
-  assetsPath: '/assets/animations/'
+  assetsPath: '/assets/animations/',
+  bgScene: 2
 });
 eng.start();
 </script>

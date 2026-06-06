@@ -2,13 +2,25 @@
 // Робот за тестване — конфигурация (чете от ENV с разумни подразбирания).
 'use strict';
 const path = require('path');
+const fs = require('fs');
+
+// Главният домейн идва от ЕДИННАТА конфигурация (private/configs/domains.conf) — нула хардкод.
+function mainDomain() {
+  try {
+    const txt = fs.readFileSync(path.join(__dirname, '..', 'configs', 'domains.conf'), 'utf8');
+    const m = txt.match(/^\s*MAIN_DOMAIN="?([^"\n]+)"?/m);
+    if (m) return m[1].trim();
+  } catch (e) { /* конфигът липсва — пада на ENV/localhost */ }
+  return null;
+}
+const MAIN_DOMAIN = mainDomain();
 
 // Цели за тестване. ВАЖНО (сигурност):
 //   prod → САМО критични пътища + read-only (без разрушителни действия).
 //   vm   → позволен е fuzz/random (идва в следваща фаза). Самоподписан TLS → ignore.
 const TARGETS = {
   prod: {
-    base: process.env.ROBOT_PROD_URL || 'https://alsec.strangled.net',
+    base: process.env.ROBOT_PROD_URL || (MAIN_DOMAIN ? 'https://' + MAIN_DOMAIN : 'http://localhost'),
     allowFuzz: false,
     ignoreHTTPSErrors: false,
   },

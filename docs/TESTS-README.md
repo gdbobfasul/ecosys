@@ -17,7 +17,7 @@
 
 ```bash
 # SSH
-ssh root@alsec.strangled.net
+ssh root@${MAIN_DOMAIN}
 
 # Navigate
 cd /var/www/kcy-ecosystem/tests

@@ -50,8 +50,12 @@ WEB_ROOT="/var/www/html"
 PROJECT_DIR="/var/www/kcy-ecosystem"
 PRIVATE_DIR="$PROJECT_DIR/private"
 GLOBAL_ENV="$PRIVATE_DIR/configs/.env"
-DOMAIN="alsec.strangled.net"
-EMAIL="admin@alsec.strangled.net"
+# Домейн/имейл от ЕДИННАТА конфигурация (private/configs/domains.conf) — нищо хардкоднато.
+for _dc in "$STAGING/private/configs/domains.conf" "$PRIVATE_DIR/configs/domains.conf"; do
+    [ -f "$_dc" ] && { . "$_dc"; break; }
+done
+DOMAIN="${MAIN_DOMAIN:-$(hostname -f 2>/dev/null || hostname)}"
+EMAIL="${SSL_EMAIL:-admin@${DOMAIN}}"
 CHAT_PORT=3000
 ECO3_PORT=3001
 SQLITE_DB="$PRIVATE_DIR/chat/database/amschat.db"
@@ -335,8 +339,11 @@ if [ "$ANYTHING_INSTALLED" = true ]; then
         echo -e "    ${GREEN}✓ .env запазен в паметта${NC}"
     fi
 
-    rm -rf "${WEB_ROOT:?}"/* 2>/dev/null
-    echo -e "    ${GREEN}✓ ${WEB_ROOT}/ изчистен${NC}"
+    # ЗАПАЗИ assets/ (видеа/анимации, качват се отделно с опция 6) и last-errors/ —
+    # rsync по-долу ги изключва, затова ако ги трием тук, изчезват до следващ опция 6.
+    find "${WEB_ROOT:?}" -mindepth 1 -maxdepth 1 ! -name 'assets' ! -name 'last-errors' \
+        -exec rm -rf {} + 2>/dev/null
+    echo -e "    ${GREEN}✓ ${WEB_ROOT}/ изчистен (запазени: assets, last-errors)${NC}"
 
     # Изтрий top-level в PROJECT_DIR, но ЗАПАЗИ:
     #   - node_modules (скъпо за преинсталиране)
@@ -417,7 +424,8 @@ else
     fi
 fi
 
-T_DOMAIN="${TARGET_PROD_DOMAIN:-alsec.strangled.net}"
+# Главен домейн по подразбиране: TARGET_PROD_DOMAIN (от 04) или MAIN_DOMAIN (domains.conf).
+T_DOMAIN="${TARGET_PROD_DOMAIN:-${MAIN_DOMAIN:-$DOMAIN}}"
 
 # Дали T_IP реално прилича на IP?
 IS_IP=false
@@ -606,7 +614,11 @@ if [ ! -d "$STAGING/public" ]; then
 fi
 STAGING_PUB_COUNT=$(find "$STAGING/public" -type f 2>/dev/null | wc -l)
 echo -e "  ${CYAN}  Staging public/: ${STAGING_PUB_COUNT} файла за копиране${NC}"
-if ! rsync -av --delete --exclude='last-errors/' --exclude='assets/' "$STAGING/public/" "$WEB_ROOT/" 2>&1 | tail -5; then
+# WITH_ASSETS=1 (пълна инсталация „с асети") → НЕ изключвай assets/ → копирай ги с кода.
+# Иначе (0) → изключи ги (качват се отделно с опция 6). Без интервали → unquoted split.
+EXCL_ASSETS="--exclude=assets/"
+[ "${WITH_ASSETS:-0}" = "1" ] && { EXCL_ASSETS=""; echo -e "  ${CYAN}  (WITH_ASSETS=1 → качвам и assets/ с кода)${NC}"; }
+if ! rsync -av --delete --exclude='last-errors/' $EXCL_ASSETS "$STAGING/public/" "$WEB_ROOT/" 2>&1 | tail -5; then
     echo -e "  ${RED}✗ FATAL: rsync public/ се провали${NC}"
     diag_log services-errors.log "install: rsync public FAILED"
     safe_exit 1
