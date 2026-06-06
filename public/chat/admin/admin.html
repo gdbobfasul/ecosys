@@ -89,6 +89,11 @@
 
                 if (data.success) {
                     adminToken = data.token;
+                    // Пази token-а в localStorage → подстраниците (signals/matchmaking/
+                    // static-objects) го четат оттам. Иначе остава само в паметта и те
+                    // искат пак login при навигация.
+                    localStorage.setItem('token', data.token);
+                    if (data.userId) localStorage.setItem('userId', data.userId);
                     document.getElementById('loginScreen').classList.add('hidden');
                     document.getElementById('adminPanel').classList.remove('hidden');
                     loadPage('messages');
@@ -103,9 +108,23 @@
         // Logout
         function logout() {
             adminToken = null;
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
             document.getElementById('adminPanel').classList.add('hidden');
             document.getElementById('loginScreen').classList.remove('hidden');
         }
+
+        // При зареждане: ако вече има token (от предишен вход) → покажи панела директно
+        // (и подстраниците работят, защото token-ът е в localStorage).
+        document.addEventListener('DOMContentLoaded', () => {
+            const t = localStorage.getItem('token');
+            if (t) {
+                adminToken = t;
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadPage('messages');
+            }
+        });
 
         // Apply filters
         function applyFilters() {
