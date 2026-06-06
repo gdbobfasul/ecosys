@@ -213,6 +213,9 @@
                 }
             } catch (e) { cardMsg(KCY_I18N.t('common.net_err')+': ' + e.message); }
         });
+
+        // ── при връщане от Stripe (потвърждение след плащане) ──
+        async function handleStripeReturn() {
             var p = new URLSearchParams(location.search);
             if (p.get('stripe') === 'success' && p.get('session_id')) {
                 // Checkout бутон (Вариант 2) — авто-потвърждение със session_id

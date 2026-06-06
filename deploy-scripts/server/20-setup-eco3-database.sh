@@ -77,8 +77,13 @@ if [ "$DB_TYPE" = "postgresql" ] || [ "$DB_TYPE" = "postgres" ] || [ "$DB_TYPE" 
   DB_EXISTS=$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'" 2>/dev/null)
   if [ "$RESET_MODE" = true ] && [ "$DB_EXISTS" = "1" ]; then
     echo -e "${YELLOW}  [--reset] ИЗТРИВАМ всички данни в '$DB_NAME'…${NC}"
-    sudo -u postgres psql -c "DROP DATABASE \"$DB_NAME\";" 2>&1 | tail -1
-    DB_EXISTS=""
+    # Прекъсни активните връзки — иначе DROP се проваля „being accessed by other
+    # users" (сервисът държи връзка), а данните НЕ се трият (после CREATE → already exists).
+    sudo -u postgres psql -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='$DB_NAME' AND pid <> pg_backend_pid();" >/dev/null 2>&1
+    sudo -u postgres psql -c "DROP DATABASE IF EXISTS \"$DB_NAME\" WITH (FORCE);" 2>/dev/null \
+      || sudo -u postgres psql -c "DROP DATABASE IF EXISTS \"$DB_NAME\";" 2>&1 | tail -1
+    # Пре-провери реалното състояние (не приемай наслуки, че DROP е минал)
+    DB_EXISTS=$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'" 2>/dev/null)
   fi
   if [ "$DB_EXISTS" = "1" ]; then
     echo -e "${CYAN}  ↻ База $DB_NAME вече съществува — схемата ще се приложи идемпотентно${NC}"

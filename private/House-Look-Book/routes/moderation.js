@@ -177,7 +177,7 @@ router.post('/reports/:id/resolve', async (req, res, next) => {
 });
 
 // POST /api/hlb/moderation/users/:id/ban  { reason? } — ръчен бан (напр. на докладващ над прага)
-router.post('/users/:id/ban', async (req, res, next) => {
+router.post('/users/:id/ban', requireRole('admin'), async (req, res, next) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -197,7 +197,7 @@ router.post('/users/:id/ban', async (req, res, next) => {
 // GET /api/hlb/moderation/proposals?status=&sort=likes|new&order=asc|desc&limit=&offset=
 //   Списък на ВСИЧКИ предложения (админ преглед: най-/най-малко харесвани, трий).
 //   sort/order са whitelist-нати; limit/offset са валидирани числа → безопасни за inline.
-router.get('/proposals', async (req, res, next) => {
+router.get('/proposals', requireRole('admin'), async (req, res, next) => {
   try {
     const sort = req.query.sort === 'new' ? 'p.created_at' : 'p.like_count';
     const order = (req.query.order === 'asc') ? 'ASC' : 'DESC';
@@ -215,7 +215,7 @@ router.get('/proposals', async (req, res, next) => {
 });
 
 // GET /api/hlb/moderation/users?banned=1 — потребители (за бан управление)
-router.get('/users', async (req, res, next) => {
+router.get('/users', requireRole('admin'), async (req, res, next) => {
   try {
     const onlyBanned = req.query.banned === '1';
     const rows = await all(
@@ -229,7 +229,7 @@ router.get('/users', async (req, res, next) => {
 });
 
 // POST /api/hlb/moderation/users/:id/unban — сваля бан
-router.post('/users/:id/unban', async (req, res, next) => {
+router.post('/users/:id/unban', requireRole('admin'), async (req, res, next) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -285,7 +285,7 @@ function genModel() {
 }
 
 // POST /api/hlb/moderation/generate  { count }
-router.post('/generate', async (req, res, next) => {
+router.post('/generate', requireRole('admin'), async (req, res, next) => {
   const client = await pool.connect();
   try {
     let count = parseInt(req.body && req.body.count, 10) || 10;
@@ -354,7 +354,7 @@ async function imageToShapePts(imgUrl) {
 }
 
 // POST /api/hlb/moderation/generate-from-google  { query, count }
-router.post('/generate-from-google', async (req, res, next) => {
+router.post('/generate-from-google', requireRole('admin'), async (req, res, next) => {
   try {
     const key = process.env.HLB_GOOGLE_API_KEY, cx = process.env.HLB_GOOGLE_CX;
     if (!key || !cx) return res.status(400).json({ error: 'no_google_config', message: 'Липсват HLB_GOOGLE_API_KEY и/или HLB_GOOGLE_CX в .env.' });
@@ -407,7 +407,7 @@ router.post('/generate-from-google', async (req, res, next) => {
 
 // GET /api/hlb/moderation/db — суров read-only изглед на всички таблици (за db.html).
 // Admin/moderator (рутерът е зад requireRole). Паролните хешове се маскират.
-router.get('/db', async (req, res, next) => {
+router.get('/db', requireRole('admin'), async (req, res, next) => {
   try {
     const tnames = await all("SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename");
     const tables = [];

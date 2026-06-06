@@ -127,6 +127,34 @@
       .catch(function () { /* не е админ IP — остава скрит */ });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build);
-  else build();
+  // ── ГАРД (точка 4): системните страници (Статус/Робот/Дърво) са достъпни
+  // САМО за ЛОГНАТ АДМИН (роля admin) И от позволен IP. Иначе — отказ/редирект.
+  function guardAdminPage() {
+    Promise.all([
+      fetch('/api/portals/me', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+      fetch('/api/portals/ip-admin', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+    ]).then(function (res) {
+      var me = res[0], ipa = res[1];
+      var loggedAdmin = !!(me && me.logged_in && me.is_admin); // is_admin = роля admin (не модератор)
+      var ipOk = !!(ipa && ipa.ip_admin);
+      if (loggedAdmin && ipOk) return; // достъп разрешен
+      if (!me || !me.logged_in) {
+        // не си логнат → към порталс-логин
+        location.href = '/portals/login.html?next=' + encodeURIComponent(location.pathname);
+        return;
+      }
+      // логнат, но не админ ИЛИ грешен IP → отказ (без redirect-цикъл)
+      document.body.innerHTML =
+        '<div style="font-family:system-ui,Segoe UI,Roboto,sans-serif;max-width:560px;margin:80px auto;padding:30px;text-align:center;color:#e6edf3;background:#16202b;border-radius:12px">' +
+        '<h2>🔒 Само за администратор</h2>' +
+        '<p>Тази страница е достъпна само за <b>логнат админ</b> и от <b>позволен IP адрес</b>.</p>' +
+        (!loggedAdmin ? '<p>⛔ Не си логнат с админ профил.</p>' : '') +
+        (!ipOk ? '<p>⛔ IP адресът ти не е в списъка.</p>' : '') +
+        '<p style="margin-top:18px"><a href="/portals/login.html" style="color:#4fc3f7">Вход</a> &nbsp;·&nbsp; <a href="/" style="color:#4fc3f7">Начало</a></p></div>';
+    });
+  }
+
+  function init() { guardAdminPage(); build(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();

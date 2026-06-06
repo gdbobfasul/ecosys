@@ -4,7 +4,7 @@
 // Достъп: ?adm=bgmasters-set И IP whitelist (както изисква access-control).
 
 const express = require('express');
-const { isLoggedAdmin } = require('../middleware/access-control');
+const { hasAdmUrlParam, isIpWhitelisted, isEnvStaff, userRole } = require('../middleware/access-control');
 
 let debug;
 try { debug = require('../../shared/debug-helper').create('portals'); }
@@ -18,11 +18,23 @@ const GAME_SLUGS = [
     'hero-jump', 'hero-run', 'battle-team', 'battle-duel',
 ];
 
-// ── Admin gate: само ЛОГНАТ .env админ/модератор (НЕ по IP) ──
-// (guest-mode прави isLoggedAdmin=false, за симулация на гост)
+// ── Преглед: IP whitelist (вкл. 0.0.0.0/0) ИЛИ логнат .env staff (админ ИЛИ модератор) ──
+// (guest-mode cookie прави isIpWhitelisted=false, за симулация на гост)
 function requireAdmin(req, res, next) {
-    if (isLoggedAdmin(req, req.app.locals.db)) return next();
-    return res.status(403).json({ error: 'forbidden', message: 'Само за логнат админ.' });
+    if (isIpWhitelisted(req) || isEnvStaff(req.app.locals.db, req.session?.userId)) return next();
+    return res.status(403).json({ error: 'forbidden', message: 'Само за админ.' });
+}
+
+// ── Запис (триене/изчистване): модераторите са САМО за преглед → блокирани.
+// Логнат МОДЕРАТОР → 403 (дори от позволен IP). Иначе минава админ (IP или .env admin).
+function requireAdminWrite(req, res, next) {
+    const db = req.app.locals.db;
+    const uid = req.session?.userId;
+    if (uid && userRole(db, uid) === 'moderator') {
+        return res.status(403).json({ error: 'forbidden', message: 'Модераторите имат само преглед — без редакция/триене.' });
+    }
+    if (isIpWhitelisted(req) || isEnvStaff(db, uid)) return next();
+    return res.status(403).json({ error: 'forbidden', message: 'Само за админ.' });
 }
 
 // GET /api/portals/adm/users?q=&page=  — списък потребители (по 50)
@@ -90,7 +102,7 @@ router.get('/users', requireAdmin, (req, res) => {
 });
 
 // DELETE /api/portals/adm/users/:id — трие потребител
-router.delete('/users/:id', requireAdmin, (req, res) => {
+router.delete('/users/:id', requireAdminWrite, (req, res) => {
     const log = debug.scoped(req, 'adm/delete-user');
     const db = req.app.locals.db;
     const id = parseInt(req.params.id);
@@ -111,7 +123,7 @@ router.delete('/users/:id', requireAdmin, (req, res) => {
 
 // POST /api/portals/adm/cleanup-test — трие всички тестови потребители наведнъж
 // (__diagtest..., __sessn_..., __sess_...) — боклук от диагностиката
-router.post('/cleanup-test', requireAdmin, (req, res) => {
+router.post('/cleanup-test', requireAdminWrite, (req, res) => {
     const log = debug.scoped(req, 'adm/cleanup-test');
     log('старт');
     const db = req.app.locals.db;

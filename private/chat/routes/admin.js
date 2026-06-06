@@ -2,7 +2,7 @@
 const express = require('express');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const { getDatabaseType } = require('../utils/database');
-const { isStaff } = require('../roles');
+const { isStaff, roleForUsername } = require('../roles');
 
 // Debug helper — логва старта/изхода на ecosystem-status за диагностика
 let debug;
@@ -78,7 +78,8 @@ function createAdminRoutes(db) {
       res.json({
         success: true,
         token,
-        username
+        username,
+        role: roleForUsername(username)   // 'admin' | 'moderator' — фронтендът дели правата
       });
     } catch (err) {
       console.error('Admin login error:', err);

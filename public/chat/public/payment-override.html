@@ -74,6 +74,8 @@
   </div>
 
   <script>
+    // Само за АДМИН — модераторите нямат достъп до ръчното плащане.
+    if (localStorage.getItem('role') === 'moderator') { window.location.href = '/chat/admin/admin-signals.html'; }
     let userId = null;
 
     async function findUser() {
@@ -167,6 +169,6 @@
     <script src="/shared/js/i18n.js?v=1.0126"></script>
     <!-- ecosystem хедър най-горе + споделено админ меню (като admin.html) -->
     <script src="/shared/js/navigation.js?v=1.0174"></script>
-    <script src="/chat/admin/admin-nav.js?v=1.0174"></script>
+    <script src="/chat/admin/admin-nav.js?v=1.0175"></script>
 </body>
 </html>

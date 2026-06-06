@@ -108,12 +108,10 @@ function computeAccess(req, db) {
         admin:    isFirstUserAdmin(db, userId),
         ip_white: isIpWhitelisted(req),
     };
-    // Достъп до портала (ЛОГИН Е ЗАДЪЛЖИТЕЛЕН — виж requirePortalAccess):
-    //   1. платил си за текущия месец            → нормален достъп
-    //   2. admin достъп — ЛОГНАТ като .env админ/модератор (НЕ по IP!)
-    // IP whitelist вече НЕ дава достъп самостоятелно — не можеш да си "логнат
-    // админ" без да си логнат. (variants.ip_white остава само за информация.)
-    variants.admin_access = isLoggedAdmin(req, db);
+    // Достъп до портала:
+    //   1. платил си за текущия месец  → нормален достъп
+    //   2. admin достъп — IP whitelist (вкл. 0.0.0.0/0) ИЛИ логнат като .env админ/модератор
+    variants.admin_access = variants.ip_white || isEnvStaff(db, userId);
     variants.granted = variants.paid || variants.admin_access;
     return variants;
 }
@@ -123,21 +121,29 @@ function requirePortalAccess(req, res, next) {
     const db = req.app.locals.db;
     const userId = req.session?.userId;
 
-    // ЛОГИНЪТ Е ЗАДЪЛЖИТЕЛЕН — без логин нямаш достъп, независимо от IP/админ.
-    // (Така "ЛОГНАТ АДМИН" има смисъл: админ се познава само след логин.)
-    if (!userId) {
+    // Admin достъп по IP whitelist (вкл. 0.0.0.0/0) — НЕ изисква URL параметър, нито логин.
+    // Ако сървърът третира IP-то като админско, пускаме директно (както при ?adm).
+    // (guest-mode cookie вече прави isIpWhitelisted=false, за симулация на гост)
+    if (isIpWhitelisted(req)) {
+        return next();
+    }
+
+    // Иначе — стандартно: admin URL param + IP, или логин + плащане.
+    const adminAccess = hasAdmUrlParam(req) && isIpWhitelisted(req);
+
+    // Няма логин и не е admin → към login
+    if (!userId && !adminAccess) {
         const target = encodeURIComponent(req.originalUrl);
         return res.redirect(`/portals/login.html?next=${target}`);
     }
 
-    // Логнат си: достъп ако си платил ИЛИ си логнат админ/модератор (.env).
     const access = computeAccess(req, db);
     if (access.granted) {
         req.portalAccess = access;
         return next();
     }
 
-    // Логнат, но обикновен и неплатил → billing page
+    // Логнат е, но не е платил → billing page
     return res.redirect('/portals/billing.html');
 }
 
@@ -151,8 +157,12 @@ function requireLogin(req, res, next) {
 // ─── API variant (JSON response instead of redirect) ───────────
 function requirePortalAccessAPI(req, res, next) {
     const db = req.app.locals.db;
-    // ЛОГИНЪТ Е ЗАДЪЛЖИТЕЛЕН — без логин 401, независимо от IP.
-    if (!req.session?.userId) {
+    // Admin по IP whitelist (вкл. 0.0.0.0/0) — пуска директно, без URL param/логин.
+    if (isIpWhitelisted(req)) {
+        return next();
+    }
+    const adminAccess = hasAdmUrlParam(req) && isIpWhitelisted(req);
+    if (!req.session?.userId && !adminAccess) {
         return res.status(401).json({ error: 'login_required' });
     }
     const access = computeAccess(req, db);
@@ -160,7 +170,7 @@ function requirePortalAccessAPI(req, res, next) {
         req.portalAccess = access;
         return next();
     }
-    return res.status(402).json({ error: 'payment_required', message: 'Платете месечната такса или влезте с админ/модератор акаунт (.env).' });
+    return res.status(402).json({ error: 'payment_required', message: 'Платете месечната такса или използвайте admin достъп (?adm + whitelist IP).' });
 }
 
 function requireLoginAPI(req, res, next) {

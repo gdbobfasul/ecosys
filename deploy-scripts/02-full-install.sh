@@ -72,6 +72,8 @@ fi
 [ -z "$USR" ] && USR=deploy
 [ -z "$PRT" ] && PRT=22
 [ -z "$SRV" ] && { echo "  Няма сървър."; exit 1; }
+# лилав завършващ надпис при успех (prod→production, vm→virtual machine, друго→IP/хоста)
+source "$(dirname "$0")/lib/banner.sh" 2>/dev/null && arm_done_banner "$t" "$SRV"
 
 echo ""
 echo -e "  Цел: ${GREEN}${USR}@${SRV}:${PRT}${NC}"
@@ -107,6 +109,7 @@ rstep() { # дистанционна стъпка с проверка на из�
 # ══ 1/4  DEPLOY (код+.env [+асети], npm ПИТА, бази chat/portals/eco3 [+DROP], chat/eco3/portals услуги) ══
 step "1/4  Deploy + npm + бази chat/portals/eco3${RESET:+ (DROP)} + услуги chat/eco3/portals"
 if ! KCY_AUTO_DEFAULTS=1 KCY_WITH_ASSETS=$WITH_ASSETS KCY_DROP_DB=$DROP_DB DEPLOY_NO_PAUSE=1 \
+        KCY_SUPPRESS_DONE=1 \
         bash ./deploy-scripts/04-deploy.sh "$SRV" "$USR" "$PRT"; then
     echo -e "${RED}✗ Deploy-ът се провали — спирам пълната инсталация.${NC}"
     exit 1

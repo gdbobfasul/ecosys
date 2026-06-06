@@ -180,7 +180,10 @@
                     // static-objects) го четат оттам. Иначе остава само в паметта и те
                     // искат пак login при навигация.
                     localStorage.setItem('token', data.token);
+                    localStorage.setItem('role', data.role || '');
                     if (data.userId) localStorage.setItem('userId', data.userId);
+                    // Модераторите НЕ управляват потребители → право към модерацията (сигнали).
+                    if (data.role === 'moderator') { window.location.href = 'admin-signals.html'; return; }
                     document.getElementById('loginScreen').classList.add('hidden');
                     document.getElementById('adminPanel').classList.remove('hidden');
                     loadPage('messages');
@@ -197,6 +200,7 @@
             adminToken = null;
             localStorage.removeItem('token');
             localStorage.removeItem('userId');
+            localStorage.removeItem('role');
             document.getElementById('adminPanel').classList.add('hidden');
             document.getElementById('loginScreen').classList.remove('hidden');
         }
@@ -206,6 +210,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             const t = localStorage.getItem('token');
             if (t) {
+                // Модератор → главният панел (управление на потребители) е само за админ.
+                if (localStorage.getItem('role') === 'moderator') { window.location.href = 'admin-signals.html'; return; }
                 adminToken = t;
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('adminPanel').classList.remove('hidden');

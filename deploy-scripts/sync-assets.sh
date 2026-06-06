@@ -45,6 +45,8 @@ if [ -n "$TNAME" ] && [ -z "$SERVER" ]; then
 fi
 [ -z "$SERVER" ] && { echo "Няма сървър"; exit 1; }
 USER="${USER:-deploy}"; PORT="${PORT:-2222}"
+# лилав завършващ надпис при успех (prod→production, vm→virtual machine, друго→IP/хоста)
+source "$(dirname "$0")/lib/banner.sh" 2>/dev/null && arm_done_banner "$TNAME" "$SERVER"
 
 if ! timeout 3 bash -c "exec 3<>/dev/tcp/${SERVER}/${PORT}" 2>/dev/null; then
     for p in 22 2222; do timeout 3 bash -c "exec 3<>/dev/tcp/${SERVER}/${p}" 2>/dev/null && { PORT="$p"; break; }; done

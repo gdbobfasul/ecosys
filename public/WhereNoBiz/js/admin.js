@@ -172,11 +172,19 @@
     if (!user) { location.href = 'login.html'; return; }
     if (user.role !== 'moderator' && user.role !== 'admin') { $('#noAccess').style.display = ''; return; }
     $('#adminBody').style.display = '';
+    // Роли: модератор вижда САМО модерация (чакащи + доклади); админ вижда всичко.
+    const isAdmin = user.role === 'admin';
+    if (!isAdmin) {
+      ['all', 'allusers', 'users'].forEach(t => {
+        const b = document.querySelector('.atab[data-tab="' + t + '"]');
+        if (b) b.style.display = 'none';
+      });
+    }
     document.querySelectorAll('.atab').forEach(b => b.onclick = () => switchTab(b.dataset.tab));
     $('#allReload').onclick = loadAll;
     $('#allSort').onchange = loadAll; $('#allOrder').onchange = loadAll; $('#allStatus').onchange = loadAll;
     loadPending();  // зарежда брояча #cntPending
     loadReports();  // зарежда брояча #cntReports
-    switchTab('allusers'); // начален изглед: управление на ВСИЧКИ потребители
+    switchTab(isAdmin ? 'allusers' : 'pending'); // админ → потребители; модератор → чакащи
   });
 })();

@@ -883,7 +883,7 @@ run_choice() {
             clear
             echo -e "${BOLD}${CYAN}── Status & Info ──${NC}"
             echo ""
-            [ -f 00039.version ] && echo -e "  ${BOLD}Version:${NC}     $(cat 00039.version)"
+            VERFILE=$(ls *.version 2>/dev/null | head -1); [ -n "$VERFILE" ] && echo -e "  ${BOLD}Version:${NC}     $(cat "$VERFILE")"
             command -v node >/dev/null && echo -e "  ${BOLD}Node.js:${NC}     $(node -v)"
             command -v npm  >/dev/null && echo -e "  ${BOLD}NPM:${NC}         $(npm -v)"
             echo -e "  ${BOLD}OS:${NC}          $(uname -s) $(uname -r)"

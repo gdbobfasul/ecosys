@@ -15,7 +15,6 @@ const {
     currentMonth,
     hasPaidCurrentMonth,
     isIpWhitelisted,
-    isLoggedAdmin,
 } = require('../middleware/access-control');
 
 const router = express.Router();
@@ -159,12 +158,11 @@ router.get('/me', (req, res) => {
 });
 
 // ─── GET /api/portals/ip-admin ─────────────────────────────────
-// "ЛОГНАТ АДМИН": true САМО ако клиентът е ЛОГНАТ с .env админ/модератор акаунт
-// (и не е в guest-mode). Менюто го пита, за да покаже баджа/дропдауна. Вече НЕ
-// зависи от IP — не можеш да си "логнат админ" без да си логнат. (Името на полето
-// остава ip_admin за съвместимост с navigation.js.)
+// Връща дали сървърът третира този клиент като админ по IP whitelist
+// (вкл. allow-all 0.0.0.0/0). Менюто го пита, за да реши дали да покаже
+// бутоните "ЛОГНАТ АДМИН". Зависи САМО от IP whitelist-а, не от URL параметри.
 router.get('/ip-admin', (req, res) => {
-    res.json({ ip_admin: isLoggedAdmin(req, req.app.locals.db) });
+    res.json({ ip_admin: isIpWhitelisted(req) });
 });
 
 module.exports = router;

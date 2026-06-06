@@ -253,7 +253,9 @@ if [ "$RESET_MODE" = true ]; then
     _rv() { grep "^$1=" "$GLOBAL_ENV" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' | tr -d '\r'; }
     R_DB=$(_rv CHAT_PG_DATABASE);   [ -z "$R_DB" ]   && R_DB=$(_rv PG_DATABASE)
     R_USER=$(_rv CHAT_PG_USER);     [ -z "$R_USER" ] && R_USER=$(_rv PG_USER)
-    [ -n "$R_DB" ]   && sudo -u postgres psql -c "DROP DATABASE IF EXISTS \"$R_DB\";" 2>&1 | tail -1
+    # прекъсни активните връзки (kcy-chat държи връзка) → иначе DROP се проваля „being accessed by other users"
+    [ -n "$R_DB" ]   && sudo -u postgres psql -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='$R_DB' AND pid <> pg_backend_pid();" >/dev/null 2>&1
+    [ -n "$R_DB" ]   && { sudo -u postgres psql -c "DROP DATABASE IF EXISTS \"$R_DB\" WITH (FORCE);" 2>/dev/null || sudo -u postgres psql -c "DROP DATABASE IF EXISTS \"$R_DB\";" 2>&1 | tail -1; }
     [ -n "$R_USER" ] && sudo -u postgres psql -c "DROP USER IF EXISTS \"$R_USER\";" 2>&1 | tail -1
     echo -e "${GREEN}✓ PostgreSQL dropped (${R_USER:-?}@${R_DB:-?})${NC}"
   fi
@@ -372,7 +374,10 @@ if [ "$USE_POSTGRESQL" = true ]; then
     fi
 
     # База: изтрий и създай наново (чиста схема)
-    sudo -u postgres psql -c "DROP DATABASE IF EXISTS \"$DB_NAME\";" 2>&1 | tail -1
+    # прекъсни активните връзки (kcy-chat държи връзка) → иначе DROP се проваля и CREATE дава „already exists"
+    sudo -u postgres psql -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='$DB_NAME' AND pid <> pg_backend_pid();" >/dev/null 2>&1
+    sudo -u postgres psql -c "DROP DATABASE IF EXISTS \"$DB_NAME\" WITH (FORCE);" 2>/dev/null \
+      || sudo -u postgres psql -c "DROP DATABASE IF EXISTS \"$DB_NAME\";" 2>&1 | tail -1
     sudo -u postgres psql -c "CREATE DATABASE \"$DB_NAME\" OWNER \"$DB_USER\";" 2>&1 | tail -1
     sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE \"$DB_NAME\" TO \"$DB_USER\";" 2>&1 | tail -1
     sudo -u postgres psql -d "$DB_NAME" -c "GRANT ALL ON SCHEMA public TO \"$DB_USER\";" 2>&1 | tail -1

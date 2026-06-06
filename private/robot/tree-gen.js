@@ -280,7 +280,7 @@ const html = `<!DOCTYPE html>
   try{ document.getElementById('gen').textContent = new Date('${esc(generatedAt)}').toLocaleString('bg-BG'); }catch(e){}
 </script>
 <!-- системно меню: Начало + връзки между Статус/Робот/Дърво + админ дропдаун + ЛОГНАТ АДМИН -->
-<script src="/shared/js/system-nav.js?v=1.0174"></script>
+<script src="/shared/js/system-nav.js?v=1.0175"></script>
 </body>
 </html>`;
 

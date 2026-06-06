@@ -7,8 +7,7 @@
     <meta name="description" content="ECO-3 AI Studio - Интерактивно медийно съдържание с 3 AI агента">
     <title>ECO-3 AI Studio - KCY Ecosystem</title>
     <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
-    <!-- ЛОГИН guard: ECO-3 изисква портален логин. Ако не си логнат → към вход.
-         (Сървърът също пази /search и /generate, това е за самата страница.) -->
+    <!-- ECO-3 изисква портален ЛОГИН (дори админ трябва да е логнат). Без логин → към порталс-логин. -->
     <script>
     (function(){
       fetch('/api/portals/me', { credentials: 'same-origin' })

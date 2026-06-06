@@ -89,9 +89,9 @@ app.use(_session({
     cookie: { httpOnly: true, sameSite: 'lax', maxAge: 1000 * 60 * 60 * 24 * 30, secure: process.env.NODE_ENV === 'production' }
 }));
 
-// ── Gate: ECO3 изисква портален ЛОГИН (достъп), плащането е отделно per-заявка ──
-// ЛОГИНЪТ Е ЗАДЪЛЖИТЕЛЕН — без логнат портален потребител няма достъп, независимо
-// от IP/админ. (URL параметърът ?adm вече НЕ пуска — не можеш да си админ без логин.)
+// ── Gate: ECO3 изисква портален ЛОГИН (задължителен дори за админ) ──
+// Без логнат портален потребител → 401. IP/?adm НЕ пускат — админ трябва да е
+// логнат така или иначе (плащането е отделно per-заявка).
 function eco3RequireLogin(req, res, next) {
     const userId = req.session && req.session.userId;
     if (userId) return next();

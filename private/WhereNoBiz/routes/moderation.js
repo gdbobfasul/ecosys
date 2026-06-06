@@ -123,7 +123,7 @@ router.post('/reports/:id/resolve', async (req, res, next) => {
 });
 
 // POST /api/wnb/moderation/users/:id/ban  { reason? }
-router.post('/users/:id/ban', async (req, res, next) => {
+router.post('/users/:id/ban', requireRole('admin'), async (req, res, next) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -141,7 +141,7 @@ router.post('/users/:id/ban', async (req, res, next) => {
 
 // GET /api/wnb/moderation/posts?status=&sort=confirm|unlike|new&order=asc|desc&limit=&offset=
 //   Списък на ВСИЧКИ постове (админ: най-/най-малко потвърждавани, несъгласия, трий).
-router.get('/posts', async (req, res, next) => {
+router.get('/posts', requireRole('admin'), async (req, res, next) => {
   try {
     const sortMap = { confirm: 'p.confirm_count', unlike: 'p.unlike_count', new: 'p.created_at' };
     const sort = sortMap[req.query.sort] || 'p.confirm_count';
@@ -160,7 +160,7 @@ router.get('/posts', async (req, res, next) => {
 });
 
 // GET /api/wnb/moderation/users?banned=1
-router.get('/users', async (req, res, next) => {
+router.get('/users', requireRole('admin'), async (req, res, next) => {
   try {
     const onlyBanned = req.query.banned === '1';
     const rows = await all(
@@ -174,7 +174,7 @@ router.get('/users', async (req, res, next) => {
 });
 
 // POST /api/wnb/moderation/users/:id/unban
-router.post('/users/:id/unban', async (req, res, next) => {
+router.post('/users/:id/unban', requireRole('admin'), async (req, res, next) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -192,7 +192,7 @@ router.post('/users/:id/unban', async (req, res, next) => {
 
 // GET /api/wnb/moderation/db — суров read-only изглед на всички таблици (за страница db.html).
 // Admin/moderator (рутерът вече е зад requireRole). Паролните хешове се маскират.
-router.get('/db', async (req, res, next) => {
+router.get('/db', requireRole('admin'), async (req, res, next) => {
   try {
     const tnames = await all("SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename");
     const tables = [];

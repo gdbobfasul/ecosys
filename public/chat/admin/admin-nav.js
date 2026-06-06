@@ -40,8 +40,13 @@
     var bar = document.createElement('nav');
     bar.className = 'ams-adminnav';
 
+    // Модераторите НЕ виждат „Админ панел" (управление на потребители) и „Плащане".
+    var isMod = false;
+    try { isMod = localStorage.getItem('role') === 'moderator'; } catch (e) {}
+    var adminOnly = { admin: 1, payment: 1 };
     var html = '';
     LINKS.forEach(function (l) {
+      if (isMod && adminOnly[l.cls]) return;
       var on = (l.href.replace(/\/+$/, '') === here) ? ' on' : '';
       html += '<a href="' + l.href + '" class="' + l.cls + on + '">' + l.label + '</a>';
     });

@@ -50,7 +50,7 @@
     <input id="q" type="text" placeholder="Търси по име, рекламен линк или описание на дейност…">
     <button onclick="doSearch()">🔍 Търси</button>
     <button class="sec" onclick="clearSearch()">Изчисти</button>
-    <button class="sec" style="background:#5a3a1f;color:#ffce8a" onclick="cleanupTest()">🧹 Изчисти тестови (__diagtest/__sessn)</button>
+    <button id="cleanupBtn" class="sec" style="background:#5a3a1f;color:#ffce8a" onclick="cleanupTest()">🧹 Изчисти тестови (__diagtest/__sessn)</button>
   </div>
   <div class="meta" id="meta"></div>
   <div id="content"><div class="loading">Зареждам…</div></div>
@@ -59,6 +59,7 @@
 
 <script>
 var state = { page: 1, q: '', gameSlugs: [] };
+var IS_MOD = false; // логнат модератор → само преглед (без триене/изчистване)
 
 function admParam(){
   var m = location.search.match(/[?&]adm=([^&]+)/);
@@ -129,7 +130,7 @@ function render(d){
       '<td class="desc">'+(u.business_description?esc(u.business_description):'<span style="color:#555">—</span>')+'</td>'+
       '<td class="total-pts">'+u.total_score+'</td>'+
       '<td>'+games+'</td>'+
-      '<td><button class="del" onclick="del('+u.id+',\''+esc(u.username).replace(/'/g,"")+'\')">🗑 Изтрий</button></td>'+
+      '<td>'+(IS_MOD ? '<span style="color:#555">само преглед</span>' : '<button class="del" onclick="del('+u.id+',\''+esc(u.username).replace(/'/g,"")+'\')">🗑 Изтрий</button>')+'</td>'+
       '</tr>';
   });
   h+='</tbody></table>';
@@ -170,7 +171,18 @@ function cleanupTest(){
 }
 
 document.getElementById('q').addEventListener('keydown', function(e){ if(e.key==='Enter') doSearch(); });
-load();
+
+// Роля: логнат МОДЕРАТОР → само преглед (крие „Изчисти" + бутоните за триене).
+fetch('/api/portals/me', { credentials:'same-origin' })
+  .then(function(r){ return r.ok ? r.json() : null; })
+  .then(function(d){
+    if (d && d.logged_in && !d.is_admin) {
+      IS_MOD = true;
+      var cb = document.getElementById('cleanupBtn'); if (cb) cb.style.display = 'none';
+    }
+  })
+  .catch(function(){})
+  .then(function(){ load(); });
 </script>
 <!-- KCY ecosystem nav + админ дропдаун (показва всички админ панели при админ IP) -->
 <script src="/shared/js/navigation.js?v=1.0174"></script>
