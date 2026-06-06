@@ -1,4 +1,4 @@
-# ─────────────────────────────────────────────────────────────────────────────
+﻿# ─────────────────────────────────────────────────────────────────────────────
 # Прави 2 RAR архива на проекта (име по дата, формат YYYY-MM-DD):
 #   1) YYYY-MM-DD-toks-vids.rar  — САМО public\assets (видеата/анимациите, ~600 MB)
 #   2) YYYY-MM-DD-toks.rar       — ВСИЧКО останало, БЕЗ големите папки:
@@ -68,3 +68,4 @@ Write-Host 'Възстановяване:' -ForegroundColor DarkGray
 Write-Host '   • разархивирай ДВАТА на едно място (project + assets се сливат)' -ForegroundColor DarkGray
 Write-Host '   • после:  .\setup-robot-deps.ps1   (връща node_modules2 + junction-ите)' -ForegroundColor DarkGray
 Write-Host '   • за приложенията (chat/portals/eco3…):  npm install в съответната папка' -ForegroundColor DarkGray
+

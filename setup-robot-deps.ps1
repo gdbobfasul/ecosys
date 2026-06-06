@@ -1,4 +1,4 @@
-# ─────────────────────────────────────────────────────────────────────────────
+﻿# ─────────────────────────────────────────────────────────────────────────────
 # Възстановява общата node_modules2 (ethers + playwright) + junction-ите за
 # трите робота-инструмента (token-creator, token-protector, robot).
 #
@@ -37,3 +37,4 @@ foreach ($t in @('token-creator','token-protector','robot')) {
 Write-Host ''
 Write-Host 'Готово ✓  node_modules2 + junction-ите са възстановени.' -ForegroundColor Green
 Write-Host 'За браузъра на робота (ако трябва):  cd private\robot ; npx playwright install chromium' -ForegroundColor DarkGray
+
