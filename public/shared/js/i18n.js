@@ -1,4 +1,4 @@
-// Version: 1.0116
+// Version: 1.0193
 // KCY i18n — лек преводен слой.
 // Текстовете се маркират с data-i18n="ключ" (за textContent) или
 // data-i18n-attr="placeholder:ключ" (за атрибути). Преводите се теглят от
@@ -66,7 +66,10 @@
       return key;
     },
 
-    // Прилага преводите върху целия документ
+    // Прилага преводите върху целия документ.
+    // ВАЖНО: ако преводът липсва (t() връща самия ключ), НЕ затриваме вградения
+    // текст — иначе при 404 на /translations/ цялата страница се сменя на ключове
+    // („chat.app_name" вместо „Анонимен Чат"), което изглежда като рефреш/редирект.
     apply: function (root) {
       root = root || document;
       var self = this;
@@ -74,14 +77,17 @@
       root.querySelectorAll('[data-i18n]').forEach(function (el) {
         var key = el.getAttribute('data-i18n');
         var val = self.t(key);
-        if (val != null) el.textContent = val;
+        if (val != null && val !== key) el.textContent = val;   // няма превод → запази вградения текст
       });
       // 2) атрибути: data-i18n-attr="placeholder:key;title:key2"
       root.querySelectorAll('[data-i18n-attr]').forEach(function (el) {
         var spec = el.getAttribute('data-i18n-attr');
         spec.split(';').forEach(function (pair) {
           var p = pair.split(':');
-          if (p.length === 2) el.setAttribute(p[0].trim(), self.t(p[1].trim()));
+          if (p.length === 2) {
+            var v = self.t(p[1].trim());
+            if (v !== p[1].trim()) el.setAttribute(p[0].trim(), v);   // няма превод → не пипай атрибута
+          }
         });
       });
       // посока на текста
