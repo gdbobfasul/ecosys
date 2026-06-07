@@ -11,14 +11,18 @@
     footprint: 'square',
     roof: 'gabled',
     floors: 2,
+    basements: 2,         // подземни етажи (мазета) — в rooms са ПЪРВИТЕ basements индекса
+    roofOff: false,       // покривът махнат → горният изглед показва всички етажи (т.8)
     wallColor: '#e8d9c0',
     roofColor: '#8a4b3b',
     accentColor: '#3b6ea5',
     windowsPerFloor: 2,
     extras: { pool: false, boat: false, pier: false },
-    rooms: [],   // rooms[етаж] = [{ type, shape }] — разпределение по етажи и стаи
+    rooms: [],   // rooms[индекс] = [{ type, shape }] — basements първи, после надземните
     customShape: null,  // форма по снимка (силует) → footprint='custom'
   };
+  // Общ брой етажи (мазета + надземни) и помощник за заглавие.
+  function totalFloors() { return (state.basements || 0) + Math.max(1, state.floors || 1); }
 
   const $ = sel => document.querySelector(sel);
   const T = (k, v) => (window.HLB_I18N ? HLB_I18N.t(k, v) : k);
@@ -30,31 +34,16 @@
   }
 
   // ── рисуване ────────────────────────────────────────────────────
+  // #preview (дублираше „отпред") и малките #floorPlans са МАХНАТИ (т.1,6).
   function drawPreview() {
-    $('#preview').innerHTML = HouseRender.elevation(renderParams(), 'front');
     drawAllSides();
-    drawFloorPlans();
-  }
-
-  // Планове по етажи (схема отгоре със стаите).
-  function drawFloorPlans() {
-    const wrap = $('#floorPlans');
-    if (!wrap) return;
-    ensureRooms();
-    wrap.innerHTML = '';
-    for (let f = 0; f < state.floors; f++) {
-      const cell = document.createElement('div');
-      cell.className = 'thumb';
-      cell.innerHTML = HouseRender.floorPlan(renderParams(), f);
-      wrap.appendChild(cell);
-    }
   }
 
   // ── стаи по етажи ────────────────────────────────────────────────
   // Поддържа state.rooms да има точно по един масив на етаж.
   function ensureRooms() {
     if (!Array.isArray(state.rooms)) state.rooms = [];
-    const n = Math.max(1, state.floors || 1);
+    const n = totalFloors();
     state.rooms = state.rooms.map(fl => Array.isArray(fl) ? fl.filter(r => r && r.type).map(normalizeRoom) : []);
     while (state.rooms.length < n) state.rooms.push([]);
     if (state.rooms.length > n) state.rooms.length = n;
@@ -134,18 +123,19 @@
     return `<div class="room-details">` +
       `<div class="rd-walls">${wallsHtml}</div>` +
       `<div class="rd-items">${itemsHtml}<div class="add-item-row"><select class="add-item-sel" data-f="${f}" data-i="${i}"><option value="">${T('rooms.add_item')}…</option>${furnitureAddOptions(r.type)}</select></div></div>` +
-      `<div class="rd-preview"><div class="rd-persp">${HR.roomPerspective(r)}</div>${HR.roomDetailPlan(r)}<div class="rd-wviews">${Array.from({ length: nw }).map((_, w) => HR.wallElevation(r, w)).join('')}</div></div></div>`;
+      `</div>`;   // малките изгледи (rd-preview) са МАХНАТИ от лявото меню (т.3) — големите са вдясно
   }
   function buildRoomsUI() {
     ensureRooms();
     const box = $('#roomsByFloor');
     if (!box) return;
     box.innerHTML = '';
-    for (let f = 0; f < state.floors; f++) {
+    const p = renderParams();
+    for (let f = 0; f < state.rooms.length; f++) {            // всички етажи (вкл. мазета)
       const rooms = state.rooms[f];
       const block = document.createElement('div');
-      block.className = 'floor-block';
-      let html = `<div class="floor-head"><b>${T('rooms.floor', { n: f + 1 })}</b> <button type="button" class="add-room" data-f="${f}">${T('rooms.add')}</button></div>`;
+      block.className = 'floor-block' + (f < (state.basements || 0) ? ' basement' : '');
+      let html = `<div class="floor-head"><b>${esc(HouseRender.floorTitle(p, f))}</b> <button type="button" class="add-room" data-f="${f}">${T('rooms.add')}</button></div>`;
       if (!rooms.length) html += `<div class="room-empty">${T('rooms.none')}</div>`;
       rooms.forEach((r, i) => {
         const open = expandedRooms.has(f + ':' + i);
@@ -208,33 +198,37 @@
   function drawAllSides() {
     const grid = $('#allSides');
     grid.innerHTML = '';
-    HouseRender.SIDES.forEach(side => {
-      const cell = document.createElement('div');
-      cell.className = 'thumb';
-      cell.innerHTML = HouseRender.elevation(renderParams(), side);
-      grid.appendChild(cell);
-    });
-    const roofCell = document.createElement('div');
-    roofCell.className = 'thumb';
-    roofCell.innerHTML = HouseRender.roofPlan(renderParams());
-    grid.appendChild(roofCell);
-
-    // Изгледи на СТАИТЕ — РЕДУВАТ се с плана на ЕТАЖА, за да си представя човек коя
-    // стая на кой етаж е. Подредба: план на ЕТАЖА → за всяка стая: план на стаята →
-    // 2D от всяка страна → 3D за всяка стена. Стаите са с ПО-ГОЛЯМА визия (room-big),
-    // колкото плана на етажа.
     ensureRooms();
     const p = renderParams();
     const cell = (cls, svg) => { const d = document.createElement('div'); d.className = cls; d.innerHTML = svg; grid.appendChild(d); };
-    (state.rooms || []).forEach((rooms, f) => {
-      const head = document.createElement('div'); head.className = 'views-floor-head';
-      head.textContent = T('rooms.floor', { n: f + 1 }); grid.appendChild(head);
-      cell('thumb floor-big', HouseRender.floorPlan(p, f));            // план на ЕТАЖА (голям)
-      (rooms || []).forEach((r) => {
+    const head = (txt, cls) => { const d = document.createElement('div'); d.className = 'views-floor-head' + (cls ? ' ' + cls : ''); d.textContent = txt; grid.appendChild(d); return d; };
+
+    // ── 4 фасади (preview-то отпред е махнато, за да не се дублира — т.6) ──
+    head(T('allsides.facades'));
+    HouseRender.SIDES.forEach(side => cell('thumb facade', HouseRender.elevation(p, side)));
+
+    // ── Покрив (отгоре) + бутон за махане. Махнат → всички етажи, коя стая под коя (т.8) ──
+    const rh = head(state.roofOff ? T('roof.removed') : T('roofplan.label'), 'roof-head');
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'roof-toggle';
+    btn.textContent = state.roofOff ? T('roof.show') : T('roof.hide');
+    btn.onclick = () => { state.roofOff = !state.roofOff; drawPreview(); };
+    rh.appendChild(btn);
+    cell('thumb floor-big', state.roofOff ? HouseRender.floorsStack(p) : HouseRender.roofPlan(p));
+
+    // ── По етажи ОТГОРЕ НАДОЛУ: най-горен надземен → партер → мазета ──
+    // Всеки етаж: ГОЛЯМ план на етажа (сам на ред) → плановете на стаите → изгледите на стаите (т.9-13).
+    const order = []; for (let f = state.rooms.length - 1; f >= 0; f--) order.push(f);
+    order.forEach((f) => {
+      const rooms = state.rooms[f] || [];
+      const adj = HouseRender.floorAdjacency(rooms);
+      head(HouseRender.floorTitle(p, f));
+      cell('thumb floor-big', HouseRender.floorPlan(p, f));                              // т.9 голям план на етажа, сам на ред
+      rooms.forEach((r, ri) => cell('thumb room-big', HouseRender.roomDetailPlan(r, adj[ri]))); // т.10,13 първо плановете на стаите
+      rooms.forEach((r) => {                                                             // т.11,13 после изгледите
         const nw = HouseRender.wallsForShape(r.shape);
-        cell('thumb room-big', HouseRender.roomDetailPlan(r));         // 1) план на стаята (голям)
-        for (let w = 0; w < nw; w++) cell('thumb', HouseRender.wallElevation(r, w));   // 2) 2D от всяка страна
-        for (let w = 0; w < nw; w++) cell('thumb room-big', HouseRender.roomPerspective(r, w)); // 3) 3D за всяка стена
+        for (let w = 0; w < nw; w++) cell('thumb', HouseRender.wallElevation(r, w));     // 2D от всяка страна
+        for (let w = 0; w < nw; w++) cell('thumb room-big', HouseRender.roomPerspective(r, w)); // 3D на всяка стена
       });
     });
   }
@@ -266,6 +260,20 @@
     wn.value = state.windowsPerFloor;
     $('#windowsVal').textContent = state.windowsPerFloor;
     wn.oninput = () => { state.windowsPerFloor = +wn.value; $('#windowsVal').textContent = state.windowsPerFloor; drawPreview(); };
+
+    // Подземни етажи (мазета) — добавяме/махаме ОТПРЕД, за да не разместваме надземните стаи
+    const bs = $('#basements');
+    if (bs) {
+      bs.value = state.basements;
+      $('#basementsVal').textContent = state.basements;
+      bs.oninput = () => {
+        const nb = +bs.value, ob = state.basements || 0;
+        if (nb > ob) for (let i = 0; i < nb - ob; i++) state.rooms.unshift([]);
+        else for (let i = 0; i < ob - nb; i++) state.rooms.shift();
+        state.basements = nb; $('#basementsVal').textContent = nb;
+        ensureRooms(); buildRoomsUI(); drawPreview();
+      };
+    }
 
     // Цветове
     bindColor('#wallColor', 'wallColor');
@@ -381,7 +389,8 @@
     state.accentColor = pick(['#3b6ea5', '#b5651d', '#2e8b57', '#8a3b6e']);
     state.extras = { pool: Math.random() < 0.4, boat: Math.random() < 0.3, pier: Math.random() < 0.3 };
     state.rooms = [];
-    for (let f = 0; f < state.floors; f++) {
+    const total = (state.basements || 0) + state.floors;   // мазета (първи) + надземни
+    for (let f = 0; f < total; f++) {
       const cnt = 1 + Math.floor(Math.random() * 4);
       const arr = [];
       for (let i = 0; i < cnt; i++) arr.push({ type: pick(HouseRender.ROOM_TYPES).id, shape: pick(HouseRender.ROOM_SHAPES).id });
@@ -396,6 +405,7 @@
     $('#footprint').value = state.footprint;
     $('#roof').value = state.roof;
     $('#floors').value = state.floors; $('#floorsVal').textContent = state.floors;
+    { const b = $('#basements'); if (b) { b.value = state.basements; $('#basementsVal').textContent = state.basements; } }
     $('#windows').value = state.windowsPerFloor; $('#windowsVal').textContent = state.windowsPerFloor;
     $('#wallColor').value = state.wallColor;
     $('#roofColor').value = state.roofColor;
@@ -415,18 +425,22 @@
     const rfName = rfO.key ? T(rfO.key) : (rfO.name || p.roof);
     const exList = Object.entries(state.extras).filter(([, v]) => v).map(([k]) => T('extra.' + k)).join(', ') || T('pdf.none');
 
-    // Подредба: план на ЕТАЖА → за всяка стая: план на стаята → 2D от всяка страна →
-    // 3D за всяка стена. Планът на етажа, планът на стаята и 3D изгледите са ГОЛЕМИ.
-    const roomsHtml = (p.rooms || []).map((fl, f) => {
-      const floorHead = `<h2 class="floorh">${T('rooms.floor', { n: f + 1 })}</h2>`;
+    // Подредба ОТГОРЕ НАДОЛУ: за всеки етаж → ГОЛЯМ план на етажа → първо плановете на
+    // стаите (с вътрешни/външни стени), после изгледите (2D от всяка страна + 3D на всяка стена).
+    const order = []; for (let f = (p.rooms || []).length - 1; f >= 0; f--) order.push(f);
+    const roomsHtml = order.map((f) => {
+      const fl = p.rooms[f] || [];
+      const adj = HouseRender.floorAdjacency(fl);
+      const floorHead = `<h2 class="floorh">${esc(HouseRender.floorTitle(p, f))}</h2>`;
       const floorPlan = `<div class="grid"><div class="cell big">${HouseRender.floorPlan(p, f)}</div></div>`;
-      const roomsCells = (fl || []).map(r => {
+      const plans = fl.map((r, ri) => `<div class="cell big">${HouseRender.roomDetailPlan(r, adj[ri])}</div>`).join('');
+      const views = fl.map(r => {
         const nw = HouseRender.wallsForShape(r.shape);
         const twoD = Array.from({ length: nw }).map((_, w) => `<div class="cell">${HouseRender.wallElevation(r, w)}</div>`).join('');
         const threeD = Array.from({ length: nw }).map((_, w) => `<div class="cell big">${HouseRender.roomPerspective(r, w)}</div>`).join('');
-        return `<div class="cell big">${HouseRender.roomDetailPlan(r)}</div>${twoD}${threeD}`;
+        return twoD + threeD;
       }).join('');
-      return floorHead + floorPlan + (roomsCells ? `<div class="grid">${roomsCells}</div>` : '');
+      return floorHead + floorPlan + (plans ? `<div class="grid">${plans}</div>` : '') + (views ? `<div class="grid">${views}</div>` : '');
     }).join('');
 
     const sheet = `<!doctype html><html lang="${window.HLB_I18N ? HLB_I18N.lang : 'bg'}"><head><meta charset="utf-8">
@@ -450,7 +464,7 @@
       <div class="noprint"><button onclick="window.print()">${T('js.print_pdf')}</button></div>
       <div class="grid">
         ${HouseRender.SIDES.map(s => `<div class="cell">${HouseRender.elevation(p, s)}</div>`).join('')}
-        <div class="cell">${HouseRender.roofPlan(p)}</div>
+        <div class="cell big">${state.roofOff ? HouseRender.floorsStack(p) : HouseRender.roofPlan(p)}</div>
       </div>
       ${roomsHtml ? `<h1 style="font-size:16px;margin:18px 0 6px">${T('rooms.detail_pdf')}</h1>${roomsHtml}` : ''}
       <script>window.onload = function(){ setTimeout(function(){ window.print(); }, 300); };<\/script>

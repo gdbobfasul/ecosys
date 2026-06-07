@@ -209,18 +209,27 @@ const HouseRender = (function () {
   }
 
   // ── основен изглед (една страна) ─────────────────────────────────
+  // Брой/вид отвори на всеки етаж = ВЪНШНИТЕ врати/прозорци на този етаж (т.4,5);
+  // мазетата се рисуват под земята (т.7); при params.roofOff покривът се маха (т.8).
   function elevation(params, side) {
     const floors = Math.min(params.limits?.maxFloors ?? 3, Math.max(params.limits?.minFloors ?? 1, params.floors || 1));
+    const base = Math.max(0, +params.basements || 0);
     const wall = params.wallColor || '#e8d9c0';
     const accent = params.accentColor || '#3b6ea5';
     const bodyW = bodyWidthFor(params, side);
     const bodyX = (W - bodyW) / 2;
     const bodyH = floors * FLOOR_H;
     const topY = GROUND_Y - bodyH;
+    const rooms = params.rooms || [];
+    const winsTop = (typeof params.windowsPerFloor === 'number') ? params.windowsPerFloor : 2;
+    // Външни отвори за етаж (по rooms индекс); ако няма стаи → fallback по слайдъра.
+    function ext(idx, fbW, fbD) {
+      const fr = rooms[idx];
+      if (fr && fr.length) { const e = floorExternals(fr); return { windows: e.windows, doors: e.doors }; }
+      return { windows: fbW, doors: fbD };
+    }
 
     let body = '';
-
-    // Обърната форма: тялото е трапец (по-тясно долу) — само визуален намек.
     if (params.footprint === 'inverted') {
       const inset = 34;
       body += `<path d="M${bodyX + inset} ${GROUND_Y} L${bodyX} ${topY} L${bodyX + bodyW} ${topY} L${bodyX + bodyW - inset} ${GROUND_Y} Z" fill="${wall}" stroke="${darken(wall, 0.7)}" stroke-width="2"/>`;
@@ -230,40 +239,68 @@ const HouseRender = (function () {
       body += `<rect x="${bodyX}" y="${topY}" width="${bodyW}" height="${bodyH}" fill="${wall}" stroke="${darken(wall, 0.7)}" stroke-width="2"/>`;
     }
 
-    // Етажни линии + прозорци/врата
-    const winsTop = (typeof params.windowsPerFloor === 'number') ? params.windowsPerFloor : 2;
     for (let f = 0; f < floors; f++) {
-      const fy = GROUND_Y - (f + 1) * FLOOR_H;     // горен ръб на етаж f
+      const fy = GROUND_Y - (f + 1) * FLOOR_H;
       if (f > 0) body += `<line x1="${bodyX}" y1="${GROUND_Y - f * FLOOR_H}" x2="${bodyX + bodyW}" y2="${GROUND_Y - f * FLOOR_H}" stroke="${darken(wall, 0.7)}" stroke-width="1.5"/>`;
-
-      const groundFloor = (f === 0);
-      const winCount = Math.max(1, winsTop);
-      const winW = 34, winH = 38;
-      const gap = (bodyW - winCount * winW) / (winCount + 1);
-
-      if (groundFloor && side === 'front') {
-        // Партер отпред: врата по средата + прозорци встрани
+      const e = ext(base + f, winsTop, f === 0 ? 1 : 0);
+      const winCount = Math.max(0, Math.min(6, e.windows));
+      const winW = 34, winH = 38, gap = winCount ? (bodyW - winCount * winW) / (winCount + 1) : 0;
+      const showDoor = (f === 0 && side === 'front' && e.doors > 0);
+      if (showDoor) {
         body += door(bodyX + bodyW / 2 - 18, GROUND_Y - 56, 36, 56, accent);
-        body += window_(bodyX + gap, fy + 14, winW, winH, accent);
+        if (winCount > 0) body += window_(bodyX + gap, fy + 14, winW, winH, accent);
         if (winCount > 1) body += window_(bodyX + bodyW - gap - winW, fy + 14, winW, winH, accent);
       } else {
-        for (let i = 0; i < winCount; i++) {
-          const wx = bodyX + gap + i * (winW + gap);
-          body += window_(wx, fy + 16, winW, winH, accent);
-        }
+        for (let i = 0; i < winCount; i++) body += window_(bodyX + gap + i * (winW + gap), fy + 16, winW, winH, accent);
       }
     }
 
-    // Покрив (без за обърната долна форма, тя сама е "покрив надолу")
-    const roof = params.footprint === 'inverted' ? '' : roofShape(params, bodyX, bodyW, topY);
+    // ── Мазета под земята (всяко с малки външни прозорчета) ──
+    const extraH = base * FLOOR_H;
+    let bsmt = '';
+    if (base > 0) {
+      bsmt += `<rect x="0" y="${GROUND_Y}" width="${W}" height="${(H - GROUND_Y) + extraH}" fill="#d8cbb0"/>`; // пръст
+      bsmt += `<rect x="${bodyX}" y="${GROUND_Y}" width="${bodyW}" height="${extraH}" fill="${darken(wall, 0.62)}" stroke="${darken(wall, 0.45)}" stroke-width="2"/>`;
+      for (let b = 0; b < base; b++) {
+        const by = GROUND_Y + b * FLOOR_H;                    // b=0 = точно под земята
+        if (b > 0) bsmt += `<line x1="${bodyX}" y1="${by}" x2="${bodyX + bodyW}" y2="${by}" stroke="${darken(wall, 0.4)}" stroke-width="1.5"/>`;
+        const e = ext(base - 1 - b, 1, 0);                    // rooms индекс на това мазе
+        const wc = Math.max(0, Math.min(5, e.windows)), ww = 22, wh = 16, g = wc ? (bodyW - wc * ww) / (wc + 1) : 0;
+        for (let i = 0; i < wc; i++) bsmt += `<rect x="${bodyX + g + i * (ww + g)}" y="${by + (FLOOR_H - wh) / 2}" width="${ww}" height="${wh}" fill="#cfe0ee" stroke="${accent}" stroke-width="1.5"/>`;
+        bsmt += `<text x="${bodyX + 6}" y="${by + FLOOR_H - 6}" font-size="9" fill="#fff" opacity="0.6" font-family="system-ui,Arial">${esc(floorTitle(params, base - 1 - b))}</text>`;
+      }
+    }
 
-    return svgFrame(`
-      ${groundAndSky()}
-      ${extras(params)}
-      ${body}
-      ${roof}
-      ${label(sideLabel(side))}
-    `);
+    const roof = (params.roofOff || params.footprint === 'inverted') ? '' : roofShape(params, bodyX, bodyW, topY);
+    const totalH = H + extraH;
+    return `<svg viewBox="0 0 ${W} ${totalH}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">` +
+      groundAndSky() + extras(params) + bsmt + body + roof +
+      `<text x="${W / 2}" y="${totalH - 12}" text-anchor="middle" font-family="system-ui,Arial" font-size="14" fill="#445">${esc(sideLabel(side))}</text></svg>`;
+  }
+
+  // ── „Всички етажи" (когато покривът е махнат) — коя стая под коя (т.8) ──
+  function floorsStack(params) {
+    const allFloors = params.rooms || [];
+    const PX = 36, PY = 48, PW = W - 72, PH = GROUND_Y - PY - 4;
+    let maxN = 1; allFloors.forEach(fl => { maxN = Math.max(maxN, (fl || []).length); });
+    const cols = Math.max(1, Math.ceil(Math.sqrt(maxN))), rows = Math.max(1, Math.ceil(maxN / cols));
+    const cw = PW / cols, ch = PH / rows;
+    let inner = groundAndSky(true) + `<rect x="${PX}" y="${PY}" width="${PW}" height="${PH}" fill="#fff" stroke="#889" stroke-width="2"/>`;
+    const order = []; for (let i = allFloors.length - 1; i >= 0; i--) order.push(i);  // отгоре надолу
+    for (let c = 0; c < maxN; c++) {
+      const cx = PX + (c % cols) * cw, cy = PY + Math.floor(c / cols) * ch;
+      inner += `<rect x="${cx + 2}" y="${cy + 2}" width="${cw - 4}" height="${ch - 4}" fill="#f3f6f9" stroke="#ccd"/>`;
+      let ty = cy + 13;
+      order.forEach(fi => {
+        const r = (allFloors[fi] || [])[c];
+        const rt = r && roomType(r.type);
+        const nm = r ? (rt ? T(rt.key) : r.type) : '—';
+        inner += `<text x="${cx + cw / 2}" y="${ty}" text-anchor="middle" font-size="9" fill="#456" font-family="system-ui,Arial">${esc(floorTitle(params, fi).slice(0, 7))}: ${esc(String(nm).slice(0, 10))}</text>`;
+        ty += 11;
+      });
+    }
+    inner += label(T('floorstack.label') || 'Всички етажи (без покрив) — коя стая под коя');
+    return svgFrame(inner);
   }
 
   // ── покривен план (отгоре) ───────────────────────────────────────
@@ -311,8 +348,53 @@ const HouseRender = (function () {
         </g>`;
       }
     }
-    inner += label(T('floorplan.label', { n: floorIndex + 1 }));
+    inner += label(floorTitle(params, floorIndex));
     return svgFrame(inner);
+  }
+
+  // Заглавие на етаж според разположението (мазета отдолу, надземни отгоре).
+  // params.basements = брой подземни етажи (индекси 0..basements-1 в rooms са мазета).
+  function floorTitle(params, idx) {
+    const b = +(params && params.basements) || 0;
+    const lvl = idx - b;
+    if (lvl < 0) return T('floor.basement', { n: b + lvl + 1 }) || ('Мазе ' + (b + lvl + 1));
+    return T('floorplan.label', { n: lvl + 1 });
+  }
+
+  // Съседство на стаите в плана (грид cols×rows като floorPlan). За всяка стая връща
+  // масив bool по стена: true = ВЪТРЕШНА (граничи с друга стая), false = ВЪНШНА.
+  // Мапва се само за 4-стенни форми; другите → всички външни. Стени: 0=горе,1=дясно,2=долу,3=ляво.
+  function floorAdjacency(rooms) {
+    rooms = rooms || [];
+    const n = rooms.length;
+    const cols = Math.max(1, Math.ceil(Math.sqrt(n)));
+    const out = [];
+    for (let i = 0; i < n; i++) {
+      const nw = wallsForShape(rooms[i] && rooms[i].shape);
+      if (nw !== 4) { out.push(new Array(nw).fill(false)); continue; }
+      const col = i % cols;
+      const up = i - cols >= 0;
+      const down = i + cols < n;
+      const left = col > 0;
+      const right = col < cols - 1 && i + 1 < n;
+      out.push([up, right, down, left]);   // 0=горе,1=дясно,2=долу,3=ляво
+    }
+    return out;
+  }
+
+  // Външни врати/прозорци на цял етаж (за фасадите) = сборът по ВЪНШНИТЕ стени.
+  function floorExternals(rooms) {
+    const adj = floorAdjacency(rooms);
+    let doors = 0, windows = 0;
+    (rooms || []).forEach((r, i) => {
+      const walls = (r && r.walls) || [], flags = adj[i] || [];
+      walls.forEach((w, wi) => {
+        if (flags[wi]) return;             // вътрешна стена → не е на фасадата
+        doors += Math.max(0, +(w && w.doors) || 0);
+        windows += Math.max(0, +(w && w.windows) || 0);
+      });
+    });
+    return { doors: doors, windows: windows };
   }
 
   // ── детайлен план на ЕДНА стая (отгоре) ──────────────────────────
@@ -349,7 +431,9 @@ const HouseRender = (function () {
       `<text x="${cx}" y="${cy + 3}" text-anchor="middle" font-size="8" fill="#345" font-family="system-ui,Arial">${nm}</text></g>`;
   }
 
-  function roomDetailPlan(room) {
+  // internal = bool[] по стена (true=вътрешна). Вътрешните врати/прозорци се рисуват
+  // сиви/пунктирани, външните — кафяво/синьо плътно (т.4,5).
+  function roomDetailPlan(room, internal) {
     const RX = 55, RY = 40, RW = 290, RH = 230;
     const n = wallsForShape(room && room.shape);
     const walls = (room && room.walls) || [];
@@ -371,12 +455,14 @@ const HouseRender = (function () {
     for (let i = 0; i < n; i++) {
       const m = ptAt(i * segLen + segLen / 2);
       const w = walls[i] || {};
-      inner += `<text x="${m.x + m.nx * 13}" y="${m.y + m.ny * 13 + 3}" text-anchor="middle" font-size="11" fill="#9aa" font-family="system-ui,Arial">${i + 1}</text>`;
+      const ext = !(internal && internal[i]);          // външна стена?
+      inner += `<text x="${m.x + m.nx * 13}" y="${m.y + m.ny * 13 + 3}" text-anchor="middle" font-size="11" fill="${ext ? '#9aa' : '#bbb'}" font-family="system-ui,Arial">${i + 1}${ext ? '' : '·в'}</text>`;
       const doors = Math.max(0, +w.doors || 0), windows = Math.max(0, +w.windows || 0), tot = doors + windows;
+      const dCol = ext ? '#b5651d' : '#9aa3ad', wCol = ext ? '#2a86d8' : '#9fb0bd', dash = ext ? '' : ' stroke-dasharray="3 2"';
       for (let k = 0; k < tot; k++) {
         const p = ptAt(i * segLen + segLen * ((k + 1) / (tot + 1)));
         const isDoor = k < doors, ln = 11, ox = -p.ny, oy = p.nx;
-        inner += `<line x1="${p.x - ox * ln}" y1="${p.y - oy * ln}" x2="${p.x + ox * ln}" y2="${p.y + oy * ln}" stroke="${isDoor ? '#b5651d' : '#2a86d8'}" stroke-width="${isDoor ? 5 : 3}"/>`;
+        inner += `<line x1="${p.x - ox * ln}" y1="${p.y - oy * ln}" x2="${p.x + ox * ln}" y2="${p.y + oy * ln}" stroke="${isDoor ? dCol : wCol}" stroke-width="${isDoor ? 5 : 3}"${dash}/>`;
       }
       items.filter(it => it.place === 'wall' && (it.wall || 0) === i).slice(0, 3).forEach((it, j) => {
         const off = 26 + j * 30, fx = m.x + m.nx * off, fy = m.y + m.ny * off;
@@ -491,9 +577,16 @@ const HouseRender = (function () {
 
     // Разпределение: мебели „до стена" → към задната стена; „в центъра" → решетка по пода.
     const placed = [];
-    // При фокус върху стена → само нейните „до стена" мебели до задната стена; иначе всички.
-    const wallIts = items.filter(it => it.place === 'wall' && (fw == null || (it.wall || 0) === fw));
-    wallIts.forEach((it, k) => { const u = wallIts.length > 1 ? 0.16 + 0.68 * (k / (wallIts.length - 1)) : 0.5; placed.push({ it, u, v: 0.9 }); });
+    // Мебелите на ФОКУСНАТА (задна) стена → покрай задната стена.
+    const backIts = items.filter(it => it.place === 'wall' && (fw == null || (it.wall || 0) === fw));
+    backIts.forEach((it, k) => { const u = backIts.length > 1 ? 0.16 + 0.68 * (k / (backIts.length - 1)) : 0.5; placed.push({ it, u, v: 0.9 }); });
+    // Мебелите на ДРУГИТЕ стени → покрай ЛЯВАТА и ДЯСНАТА стена (т.11 — и страничните с мебели).
+    if (fw != null) {
+      const others = items.filter(it => it.place === 'wall' && (it.wall || 0) !== fw);
+      const lefts = others.filter((_, i) => i % 2 === 0), rights = others.filter((_, i) => i % 2 === 1);
+      lefts.forEach((it, k) => placed.push({ it, u: 0.1, v: lefts.length > 1 ? 0.42 + 0.44 * (k / (lefts.length - 1)) : 0.55 }));
+      rights.forEach((it, k) => placed.push({ it, u: 0.9, v: rights.length > 1 ? 0.42 + 0.44 * (k / (rights.length - 1)) : 0.55 }));
+    }
     const cen = items.filter(it => it.place === 'center');
     const cols = Math.max(1, Math.ceil(Math.sqrt(cen.length || 1)));
     const rows = Math.max(1, Math.ceil((cen.length || 1) / cols));
@@ -574,7 +667,7 @@ const HouseRender = (function () {
       : ({ front: 'Отпред', back: 'Отзад', left: 'Отляво', right: 'Отдясно' }[side] || side));
   }
 
-  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, ROOM_SHAPES, FURNITURE, wallsForShape, furnitureItem, WALL_MAX, CENTER_MAX, elevation, roofPlan, floorPlan, roomDetailPlan, wallElevation, roomPerspective };
+  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, ROOM_SHAPES, FURNITURE, wallsForShape, furnitureItem, WALL_MAX, CENTER_MAX, elevation, roofPlan, floorPlan, roomDetailPlan, wallElevation, roomPerspective, floorsStack, floorAdjacency, floorExternals, floorTitle };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = HouseRender;

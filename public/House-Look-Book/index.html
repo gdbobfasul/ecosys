@@ -40,6 +40,11 @@
       </div>
 
       <div class="field">
+        <label for="basements"><span data-i18n="field.basements">Подземни етажи (мазе)</span> <span class="val" id="basementsVal">2</span></label>
+        <input type="range" id="basements" min="0" max="2" step="1">
+      </div>
+
+      <div class="field">
         <label for="windows"><span data-i18n="field.windows">Прозорци на етаж</span> <span class="val" id="windowsVal">2</span></label>
         <input type="range" id="windows" min="1" max="4" step="1">
       </div>
@@ -74,16 +79,10 @@
       <div id="saveMsg" class="msg" style="display:none;margin-top:8px"></div>
     </aside>
 
-    <!-- Преглед -->
+    <!-- Преглед (изгледите се движат независимо от лявото меню — т.2,14) -->
     <main class="panel">
-      <h2 data-i18n="preview">Преглед</h2>
-      <div id="preview"></div>
-
-      <div class="allSides-title" data-i18n="allsides">Изгледи от всички страни + покрив (влизат в PDF-а):</div>
+      <div class="allSides-title" data-i18n="allsides">Изгледи: фасади → покрив → по етажи (план на етажа, после стаите) — влизат в PDF-а:</div>
       <div id="allSides"></div>
-
-      <div class="allSides-title" data-i18n="rooms.plans_title">Планове по етажи (влизат в PDF-а):</div>
-      <div id="floorPlans"></div>
 
       <div class="future" data-i18n-html="future">
         <b>Следващи фази (по brief-а):</b> детайлни схеми на стаите (правоъгълна/квадрат, къде са прозорец/мивка/тоалетна),

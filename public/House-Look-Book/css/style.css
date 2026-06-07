@@ -24,12 +24,19 @@ header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
 
 .layout {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 340px 1fr;
   gap: 18px;
   padding: 18px;
   align-items: start;
+  /* Двете колони скролват НЕЗАВИСИМО под курсора (т.2,14): лявото меню „стои",
+     докато дясното с изгледите се движи, и обратно. */
+  height: calc(100vh - 78px);
 }
-@media (max-width: 820px) { .layout { grid-template-columns: 1fr; } }
+.layout > .panel { overflow-y: auto; max-height: 100%; }
+@media (max-width: 820px) {
+  .layout { grid-template-columns: 1fr; height: auto; }
+  .layout > .panel { overflow: visible; max-height: none; }
+}
 
 .panel {
   background: var(--panel);
@@ -75,8 +82,12 @@ button:hover { filter: brightness(1.05); }
 /* По-голяма визия: план на ЕТАЖА и стаите (план + 3D) са колкото целия ред. */
 #allSides .floor-big, #allSides .room-big { grid-column: 1 / -1; }
 #allSides .floor-big { box-shadow: 0 2px 10px rgba(0,0,0,.12); }
-#allSides .room-big svg { max-height: 560px; }
-#allSides .views-floor-head { grid-column: 1 / -1; font-weight: 700; font-size: 15px; margin: 14px 0 2px; padding-top: 10px; border-top: 2px solid var(--line); color: var(--accent, #3b6ea5); }
+#allSides .room-big svg { max-height: 600px; }
+#allSides .facade svg { max-height: 320px; }
+#allSides .views-floor-head { grid-column: 1 / -1; font-weight: 700; font-size: 15px; margin: 14px 0 2px; padding-top: 10px; border-top: 2px solid var(--line); color: var(--accent, #3b6ea5); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+#allSides .roof-toggle { flex: 0 0 auto; width: auto; font-size: 12px; padding: 5px 11px; }
+.floor-block.basement { background: #f0ece2; border-left: 3px solid #b9a77f; border-radius: 8px; padding: 6px 8px; }
+.floor-block.basement .floor-head b::before { content: "⛏ "; }
 
 .future {
   margin-top: 18px;

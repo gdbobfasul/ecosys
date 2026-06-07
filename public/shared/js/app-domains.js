@@ -4,10 +4,10 @@
   'use strict';
   var APPS = {
   "chat": {
-    "domain": "gofor.dateeasily.com",
+    "domain": "my.girl.place",
     "hosts": [
-      "kaji.kak.si",
-      "gofor.dateeasily.com"
+      "my.girl.place",
+      "kaji.kak.si"
     ],
     "prefixes": [
       "/chat/"
