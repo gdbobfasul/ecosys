@@ -9,6 +9,8 @@
   var SUPPORTED = [
     { code: 'en', name: 'English' },
     { code: 'ru', name: 'Русский' },
+    { code: 'ky', name: 'Кыргызча' },
+    { code: 'uk', name: 'Українська' },
     { code: 'zh-Hant', name: '繁體中文' },
     { code: 'hi', name: 'हिन्दी' },
     { code: 'ar', name: 'العربية' },

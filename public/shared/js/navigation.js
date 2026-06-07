@@ -253,7 +253,7 @@ const KCY_NAV = {
         }
         if (window.KCY_I18N) { applyNow(); return; }
         var s = document.createElement('script');
-        s.src = '/shared/js/i18n.js?v=1.0115';
+        s.src = '/shared/js/i18n.js?v=1.0193';
         s.onload = applyNow;
         document.head.appendChild(s);
     }

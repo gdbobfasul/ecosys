@@ -72,8 +72,9 @@
     });
     return { type: r.type, shape, walls, items };
   }
-  function roomOptions(sel) {
-    return HouseRender.ROOM_TYPES.map(rt => `<option value="${rt.id}"${rt.id === sel ? ' selected' : ''}>${T(rt.key)}</option>`).join('');
+  function roomOptions(sel, isBasement) {
+    const list = isBasement ? HouseRender.BASEMENT_ROOM_TYPES : HouseRender.ROOM_TYPES;
+    return list.map(rt => `<option value="${rt.id}"${rt.id === sel ? ' selected' : ''}>${T(rt.key)}</option>`).join('');
   }
   function shapeOptions(sel) {
     return HouseRender.ROOM_SHAPES.map(sh => `<option value="${sh.id}"${sh.id === sel ? ' selected' : ''}>${T(sh.key)}</option>`).join('');
@@ -140,7 +141,7 @@
       rooms.forEach((r, i) => {
         const open = expandedRooms.has(f + ':' + i);
         html += `<div class="room-row">` +
-          `<select class="r-type" data-f="${f}" data-i="${i}">${roomOptions(r.type)}</select>` +
+          `<select class="r-type" data-f="${f}" data-i="${i}">${roomOptions(r.type, f < (state.basements || 0))}</select>` +
           `<select class="r-shape" data-f="${f}" data-i="${i}" title="Форма">${shapeOptions(r.shape)}</select>` +
           `<button type="button" class="r-details${open ? ' on' : ''}" data-f="${f}" data-i="${i}">${T('rooms.details')} ${open ? '▴' : '▾'}</button>` +
           `<button type="button" class="del-room" data-f="${f}" data-i="${i}" title="Премахни">✕</button></div>`;
@@ -153,7 +154,7 @@
   }
   function bindRoomsUI(box) {
     const rebuild = () => { buildRoomsUI(); drawPreview(); };
-    box.querySelectorAll('.add-room').forEach(b => b.onclick = () => { state.rooms[+b.dataset.f].push({ type: 'living', shape: 'rect', walls: [], items: [] }); rebuild(); });
+    box.querySelectorAll('.add-room').forEach(b => b.onclick = () => { const isB = (+b.dataset.f) < (state.basements || 0); state.rooms[+b.dataset.f].push({ type: isB ? 'pantry1' : 'living', shape: 'rect', walls: [], items: [] }); rebuild(); });
     box.querySelectorAll('.del-room').forEach(b => b.onclick = () => { expandedRooms.delete(b.dataset.f + ':' + b.dataset.i); state.rooms[+b.dataset.f].splice(+b.dataset.i, 1); rebuild(); });
     box.querySelectorAll('.r-type').forEach(s => s.onchange = () => { state.rooms[+s.dataset.f][+s.dataset.i].type = s.value; rebuild(); });
     box.querySelectorAll('.r-shape').forEach(s => s.onchange = () => { state.rooms[+s.dataset.f][+s.dataset.i].shape = s.value; rebuild(); });
@@ -391,9 +392,10 @@
     state.rooms = [];
     const total = (state.basements || 0) + state.floors;   // мазета (първи) + надземни
     for (let f = 0; f < total; f++) {
+      const types = f < (state.basements || 0) ? HouseRender.BASEMENT_ROOM_TYPES : HouseRender.ROOM_TYPES;
       const cnt = 1 + Math.floor(Math.random() * 4);
       const arr = [];
-      for (let i = 0; i < cnt; i++) arr.push({ type: pick(HouseRender.ROOM_TYPES).id, shape: pick(HouseRender.ROOM_SHAPES).id });
+      for (let i = 0; i < cnt; i++) arr.push({ type: pick(types).id, shape: pick(HouseRender.ROOM_SHAPES).id });
       state.rooms.push(arr);
     }
     syncControls();

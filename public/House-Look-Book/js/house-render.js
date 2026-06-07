@@ -47,7 +47,20 @@ const HouseRender = (function () {
     { id: 'hall',     name: 'Коридор',    key: 'room.hall',     color: '#e8e8e8' },
     { id: 'balcony',  name: 'Балкон',     key: 'room.balcony',  color: '#d4ead4' },
   ];
-  function roomType(id) { return ROOM_TYPES.find(r => r.id === id); }
+  // Помещения за МАЗЕ (подземните етажи) — различни от надземните стаи (т.4).
+  const BASEMENT_ROOM_TYPES = [
+    { id: 'garage',    name: 'Гараж',                    key: 'broom.garage',    color: '#c9ccd2' },
+    { id: 'pantry1',   name: 'Килер 1',                  key: 'broom.pantry1',   color: '#dcd3c2' },
+    { id: 'pantry2',   name: 'Килер 2',                  key: 'broom.pantry2',   color: '#d3cbb8' },
+    { id: 'technical', name: 'Техническо помещение',     key: 'broom.technical', color: '#cdd6dc' },
+    { id: 'materials', name: 'Склад строит. материали',  key: 'broom.materials', color: '#d8c9b0' },
+    { id: 'tools',     name: 'Склад за инструменти',     key: 'broom.tools',     color: '#c7cdb8' },
+    { id: 'foodstore', name: 'Килер за храна',           key: 'broom.foodstore', color: '#e0d4b8' },
+    { id: 'pumproom',  name: 'Помпена станция',          key: 'broom.pumproom',  color: '#bcd2d8' },
+    { id: 'heating',   name: 'Локално отопление',        key: 'broom.heating',   color: '#e6c9bc' },
+    { id: 'heatpump',  name: 'Термопомпи',               key: 'broom.heatpump',  color: '#c2d6c8' },
+  ];
+  function roomType(id) { return ROOM_TYPES.find(r => r.id === id) || BASEMENT_ROOM_TYPES.find(r => r.id === id); }
 
   // Форми на стаите в плана — не само правоъгълни (по желание на автора).
   const ROOM_SHAPES = [
@@ -222,10 +235,10 @@ const HouseRender = (function () {
     const topY = GROUND_Y - bodyH;
     const rooms = params.rooms || [];
     const winsTop = (typeof params.windowsPerFloor === 'number') ? params.windowsPerFloor : 2;
-    // Външни отвори за етаж (по rooms индекс); ако няма стаи → fallback по слайдъра.
+    // Отвори за ТАЗИ ФАСАДА (страна) за даден етаж; ако няма стаи → fallback по слайдъра.
     function ext(idx, fbW, fbD) {
       const fr = rooms[idx];
-      if (fr && fr.length) { const e = floorExternals(fr); return { windows: e.windows, doors: e.doors }; }
+      if (fr && fr.length) { const e = facadeOpenings(fr, side); return { windows: e.windows, doors: e.doors }; }
       return { windows: fbW, doors: fbD };
     }
 
@@ -245,7 +258,8 @@ const HouseRender = (function () {
       const e = ext(base + f, winsTop, f === 0 ? 1 : 0);
       const winCount = Math.max(0, Math.min(6, e.windows));
       const winW = 34, winH = 38, gap = winCount ? (bodyW - winCount * winW) / (winCount + 1) : 0;
-      const showDoor = (f === 0 && side === 'front' && e.doors > 0);
+      // Вратата излиза на ФАСАДАТА, чиято стена има врата (не винаги отпред) — т.2.
+      const showDoor = (f === 0 && e.doors > 0);
       if (showDoor) {
         body += door(bodyX + bodyW / 2 - 18, GROUND_Y - 56, 36, 56, accent);
         if (winCount > 0) body += window_(bodyX + gap, fy + 14, winW, winH, accent);
@@ -280,26 +294,43 @@ const HouseRender = (function () {
 
   // ── „Всички етажи" (когато покривът е махнат) — коя стая под коя (т.8) ──
   function floorsStack(params) {
-    const allFloors = params.rooms || [];
-    const PX = 36, PY = 48, PW = W - 72, PH = GROUND_Y - PY - 4;
-    let maxN = 1; allFloors.forEach(fl => { maxN = Math.max(maxN, (fl || []).length); });
+    const all = params.rooms || [];
+    const order = []; for (let i = all.length - 1; i >= 0; i--) order.push(i);   // отгоре надолу
+    const PAL = ['#e57373', '#64b5f6', '#81c784', '#ffb74d', '#ba68c8', '#4db6ac', '#a1887f', '#90a4ae', '#f06292', '#9575cd'];
+    const colorFor = di => PAL[di % PAL.length];
+    let maxN = 1; all.forEach(fl => { maxN = Math.max(maxN, (fl || []).length); });
     const cols = Math.max(1, Math.ceil(Math.sqrt(maxN))), rows = Math.max(1, Math.ceil(maxN / cols));
-    const cw = PW / cols, ch = PH / rows;
-    let inner = groundAndSky(true) + `<rect x="${PX}" y="${PY}" width="${PW}" height="${PH}" fill="#fff" stroke="#889" stroke-width="2"/>`;
-    const order = []; for (let i = allFloors.length - 1; i >= 0; i--) order.push(i);  // отгоре надолу
+    // ляво: грид със стаите (всеки етаж = цветна лента, една НАД друга); дясно: легенда
+    const GX = 18, GY = 44, GW = 238, GH = GROUND_Y - GY - 6;
+    const cw = GW / cols, ch = GH / rows;
+    let inner = `<rect x="0" y="0" width="${W}" height="${H}" fill="#f4f7f9"/>`;
     for (let c = 0; c < maxN; c++) {
-      const cx = PX + (c % cols) * cw, cy = PY + Math.floor(c / cols) * ch;
-      inner += `<rect x="${cx + 2}" y="${cy + 2}" width="${cw - 4}" height="${ch - 4}" fill="#f3f6f9" stroke="#ccd"/>`;
-      let ty = cy + 13;
-      order.forEach(fi => {
-        const r = (allFloors[fi] || [])[c];
-        const rt = r && roomType(r.type);
-        const nm = r ? (rt ? T(rt.key) : r.type) : '—';
-        inner += `<text x="${cx + cw / 2}" y="${ty}" text-anchor="middle" font-size="9" fill="#456" font-family="system-ui,Arial">${esc(floorTitle(params, fi).slice(0, 7))}: ${esc(String(nm).slice(0, 10))}</text>`;
-        ty += 11;
+      const cx = GX + (c % cols) * cw, cy = GY + Math.floor(c / cols) * ch;
+      inner += `<rect x="${cx + 1}" y="${cy + 1}" width="${cw - 2}" height="${ch - 2}" fill="#fff" stroke="#ccd"/>`;
+      const bh = (ch - 4) / order.length;                  // лента за всеки етаж
+      order.forEach((fi, di) => {
+        const r = (all[fi] || [])[c];
+        const by = cy + 2 + di * bh, col = colorFor(di);
+        inner += `<rect x="${cx + 2}" y="${by}" width="${cw - 4}" height="${Math.max(2, bh - 1)}" fill="${r ? col : '#eee'}" opacity="${r ? 0.9 : 0.3}"/>`;
+        if (r && bh >= 9) {
+          const rt = roomType(r.type), nm = rt ? T(rt.key) : r.type;
+          inner += `<text x="${cx + cw / 2}" y="${by + bh / 2 + 3}" text-anchor="middle" font-size="${Math.min(9, bh * 0.55).toFixed(1)}" fill="#1a1a1a" font-family="system-ui,Arial">${esc(String(nm).slice(0, 9))}</text>`;
+        }
       });
     }
-    inner += label(T('floorstack.label') || 'Всички етажи (без покрив) — коя стая под коя');
+    // ── Легенда (дясно): цвят на етажа + имената на стаите в същия цвят ──
+    const LX = 266; let ly = GY + 6;
+    inner += `<text x="${LX}" y="${ly}" font-size="10.5" font-weight="bold" fill="#334" font-family="system-ui,Arial">Легенда (отгоре→долу)</text>`; ly += 16;
+    order.forEach((fi, di) => {
+      if (ly > GROUND_Y - 6) return;
+      const col = colorFor(di);
+      inner += `<rect x="${LX}" y="${ly - 9}" width="12" height="12" rx="2" fill="${col}"/>`;
+      inner += `<text x="${LX + 17}" y="${ly}" font-size="10" font-weight="bold" fill="#223" font-family="system-ui,Arial">${esc(floorTitle(params, fi))}</text>`; ly += 12;
+      const names = (all[fi] || []).map(r => { const rt = roomType(r.type); return rt ? T(rt.key) : r.type; });
+      const txt = names.length ? names.join(', ') : '—';
+      inner += `<text x="${LX + 17}" y="${ly}" font-size="8.5" fill="${col}" font-family="system-ui,Arial">${esc(txt.slice(0, 30))}</text>`; ly += 15;
+    });
+    inner += label(T('floorstack.label'));
     return svgFrame(inner);
   }
 
@@ -397,6 +428,25 @@ const HouseRender = (function () {
     return { doors: doors, windows: windows };
   }
 
+  // Отвори на ВЪНШНАТА стена на сградата за дадена страна (front/back/left/right).
+  // Връзка „стена на стая → фасада": wall0=отзад, wall1=дясно, wall2=отпред, wall3=ляво.
+  // При много стаи се броят само периметърните (външните) стени към тази посока (т.2).
+  function facadeOpenings(rooms, side) {
+    const wallIdx = { back: 0, right: 1, front: 2, left: 3 }[side];
+    if (wallIdx == null) return { doors: 0, windows: 0 };
+    const adj = floorAdjacency(rooms);
+    let doors = 0, windows = 0;
+    (rooms || []).forEach((r, i) => {
+      const nw = wallsForShape(r && r.shape);
+      if (wallIdx >= nw) return;                 // формата няма такава стена
+      if ((adj[i] || [])[wallIdx]) return;       // вътрешна стена → не е на фасадата
+      const w = (r.walls || [])[wallIdx] || {};
+      doors += Math.max(0, +w.doors || 0);
+      windows += Math.max(0, +w.windows || 0);
+    });
+    return { doors: doors, windows: windows };
+  }
+
   // ── детайлен план на ЕДНА стая (отгоре) ──────────────────────────
   // Стени = N сегмента от периметъра (N = страните на формата). По стените:
   // врати (кафяв процеп) + прозорци (синя чертичка) + мебели „до стена". В центъра — мебели.
@@ -464,9 +514,13 @@ const HouseRender = (function () {
         const isDoor = k < doors, ln = 11, ox = -p.ny, oy = p.nx;
         inner += `<line x1="${p.x - ox * ln}" y1="${p.y - oy * ln}" x2="${p.x + ox * ln}" y2="${p.y + oy * ln}" stroke="${isDoor ? dCol : wCol}" stroke-width="${isDoor ? 5 : 3}"${dash}/>`;
       }
-      items.filter(it => it.place === 'wall' && (it.wall || 0) === i).slice(0, 3).forEach((it, j) => {
-        const off = 26 + j * 30, fx = m.x + m.nx * off, fy = m.y + m.ny * off;
-        inner += furnPlan(it, fx, fy, '#e8eef5');
+      // Мебелите към стена i се редят ЕДИН ДО ДРУГ ПОКРАЙ стената (по дължината ѝ),
+      // на малко разстояние навътре — не се трупат един зад друг (т.1,3).
+      const wItems = items.filter(it => it.place === 'wall' && (it.wall || 0) === i).slice(0, 4);
+      wItems.forEach((it, j) => {
+        const p = ptAt(i * segLen + segLen * ((j + 1) / (wItems.length + 1)));   // точка ПО стената
+        const inOff = 20;                                                         // малко навътре от стената
+        inner += furnPlan(it, p.x + p.nx * inOff, p.y + p.ny * inOff, '#e8eef5');
       });
     }
     const center = items.filter(it => it.place === 'center');
@@ -667,7 +721,7 @@ const HouseRender = (function () {
       : ({ front: 'Отпред', back: 'Отзад', left: 'Отляво', right: 'Отдясно' }[side] || side));
   }
 
-  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, ROOM_SHAPES, FURNITURE, wallsForShape, furnitureItem, WALL_MAX, CENTER_MAX, elevation, roofPlan, floorPlan, roomDetailPlan, wallElevation, roomPerspective, floorsStack, floorAdjacency, floorExternals, floorTitle };
+  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, BASEMENT_ROOM_TYPES, ROOM_SHAPES, FURNITURE, wallsForShape, furnitureItem, WALL_MAX, CENTER_MAX, elevation, roofPlan, floorPlan, roomDetailPlan, wallElevation, roomPerspective, floorsStack, floorAdjacency, floorExternals, facadeOpenings, floorTitle };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = HouseRender;

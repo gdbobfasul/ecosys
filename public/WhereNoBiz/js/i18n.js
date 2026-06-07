@@ -11,6 +11,8 @@
     { code: 'en',      name: 'English' },
     { code: 'zh-Hant', name: '中文' },
     { code: 'ru',      name: 'Русский' },
+    { code: 'ky',      name: 'Кыргызча' },
+    { code: 'uk',      name: 'Українська' },
     { code: 'hi',      name: 'हिन्दी' },
     { code: 'fr',      name: 'Français' },
     { code: 'de',      name: 'Deutsch' },
