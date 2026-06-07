@@ -41,23 +41,45 @@ const KCY_NAV = {
         if (darkAttr === 'dark' || /\/portals\/games\//.test(path)) {
             nav.className = 'kcy-nav dark';
         }
+        // Крипто страницата (/crypto) показва крипто линкове/админи; навсякъде другаде те се махат.
+        // System Status / Робот / Дърво остават НАВСЯКЪДЕ (само препращат към същите страници).
+        var isCrypto = (path.indexOf('/crypto') === 0);
+        var navLinks = '<a href="/" data-i18n="nav.home">Home</a>';
+        if (isCrypto) {
+            navLinks += '<a href="/token/" data-i18n="nav.token">🪙 Token</a>'
+                + '<a href="/brch1/" class="nav-brch1"><img src="/brch1/assets/brch1-icon.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:4px;">BRCH1</a>'
+                + '<a href="/multisig/" data-i18n="nav.multisig">🔐 Multi-Sig</a>';
+        } else {
+            navLinks += '<a href="/chat/" data-i18n="nav.chat">💬 Chat</a>'
+                + '<a href="/eco-3/" data-i18n="nav.eco3">🤖 ECO-3</a>'
+                + '<a href="/portals/games/" data-i18n="nav.games">🎮 Игри</a>'
+                + '<a href="/portals/services/" data-i18n="nav.services">🛠️ Услуги</a>'
+                + '<a href="/portals/billing.html" class="nav-login-only" data-i18n="nav.payment" style="display:none;">💳 Плащане</a>';
+        }
+        // Админ дропдаун: общи инструменти НАВСЯКЪДЕ + крипто админи само на /crypto, останалите другаде.
+        var adminOpts = '<option value="">⚙️ Admin ▼</option>'
+            + '<option value="/shared/admin-status.html">🩺 System Status</option>'
+            + '<option value="/shared/robot.html">🤖 Робот (тест)</option>'
+            + '<option value="/tree/">🌳 Дърво</option>'
+            + '<option value="" disabled>──────────────</option>';
+        if (isCrypto) {
+            adminOpts += '<option value="/token/admin/scripts.html">🪙 Token Admin</option>'
+                + '<option value="/brch1/admin/">💰 BRCH1 Admin</option>'
+                + '<option value="/multisig/admin/">🔐 Multi-Sig Admin</option>';
+        } else {
+            adminOpts += '<option value="/chat/admin/index.html">💬 Chat Admin</option>'
+                + '<option value="/eco-3/admin/">🤖 ECO-3 Admin</option>'
+                + '<option value="/portals/admin.html">🎮 Portals Admin</option>'
+                + '<option value="/houselookbook/admin.html">🏠 House-Look-Book Admin</option>'
+                + '<option value="/wherenobiz/admin.html">🌍 WhereNoBiz Admin</option>';
+        }
         nav.innerHTML = `
             <div class="nav-container">
                 <a href="/" class="nav-logo">
                     <span>🚀</span>
                     <span>KCY Ecosystem</span>
                 </a>
-                <div class="nav-links">
-                    <a href="/" data-i18n="nav.home">Home</a>
-                    <a href="/token/" data-i18n="nav.token">🪙 Token</a>
-                    <a href="/brch1/" class="nav-brch1"><img src="/brch1/assets/brch1-icon.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:4px;">BRCH1</a>
-                    <a href="/multisig/" data-i18n="nav.multisig">🔐 Multi-Sig</a>
-                    <a href="/chat/" data-i18n="nav.chat">💬 Chat</a>
-                    <a href="/eco-3/" data-i18n="nav.eco3">🤖 ECO-3</a>
-                    <a href="/portals/games/" data-i18n="nav.games">🎮 Игри</a>
-                    <a href="/portals/services/" data-i18n="nav.services">🛠️ Услуги</a>
-                    <a href="/portals/billing.html" class="nav-login-only" data-i18n="nav.payment" style="display:none;">💳 Плащане</a>
-                </div>
+                <div class="nav-links">${navLinks}</div>
                 <div class="nav-auth" id="kcy-nav-auth">
                     <a href="/portals/login.html" class="nav-login" data-i18n="r.137">🔑 Логин</a>
                     <a href="/portals/register.html" class="nav-register" data-i18n="r.131">📝 Регистрация</a>
@@ -68,20 +90,7 @@ const KCY_NAV = {
                 <div class="nav-admin" id="kcy-nav-admin" style="display:none;">
                     <span class="nav-adm-badge" id="kcy-adm-badge">🔴 ЛОГНАТ АДМИН</span>
                     <button class="nav-adm-toggle" id="kcy-guest-toggle" title="Превключи между админ изглед и изглед като обикновен посетител">изключи</button>
-                    <select onchange="if(this.value) window.location.href=this.value">
-                        <option value="">⚙️ Admin ▼</option>
-                        <option value="/shared/admin-status.html">🩺 System Status</option>
-                        <option value="/shared/robot.html">🤖 Робот (тест)</option>
-                        <option value="" disabled>──────────────</option>
-                        <option value="/token/admin/scripts.html">🪙 Token Admin</option>
-                        <option value="/brch1/admin/">💰 BRCH1 Admin</option>
-                        <option value="/multisig/admin/">🔐 Multi-Sig Admin</option>
-                        <option value="/chat/admin/index.html">💬 Chat Admin</option>
-                        <option value="/eco-3/admin/">🤖 ECO-3 Admin</option>
-                        <option value="/portals/admin.html">🎮 Portals Admin</option>
-                        <option value="/houselookbook/admin.html">🏠 House-Look-Book Admin</option>
-                        <option value="/wherenobiz/admin.html">🌍 WhereNoBiz Admin</option>
-                    </select>
+                    <select onchange="if(this.value) window.location.href=this.value">${adminOpts}</select>
                 </div>
             </div>
         `;

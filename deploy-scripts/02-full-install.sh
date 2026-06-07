@@ -115,10 +115,11 @@ if ! KCY_AUTO_DEFAULTS=1 KCY_WITH_ASSETS=$WITH_ASSETS KCY_DROP_DB=$DROP_DB DEPLO
     exit 1
 fi
 
-# ══ 2/4  БАЗИ House-Look-Book + WhereNoBiz ══
-step "2/4  Бази House-Look-Book + WhereNoBiz${RESET:+   (DROP — създава от 0)}"
+# ══ 2/4  БАЗИ House-Look-Book + WhereNoBiz + Find Best Price ══
+step "2/4  Бази House-Look-Book + WhereNoBiz + Find Best Price${RESET:+   (DROP — създава от 0)}"
 rstep "HLB база (houselookbook)" "sudo ${REMOTE_BASE}/16-setup-app-databases.sh houselookbook${RESET}"
 rstep "WNB база (wherenobiz)"     "sudo ${REMOTE_BASE}/17-setup-wherenobiz-database.sh${RESET}"
+rstep "FBP база (findbestprice)"  "sudo ${REMOTE_BASE}/16-setup-app-databases.sh findbestprice${RESET}"
 
 # Админите/модераторите от .env се попълват ВЪТРЕ в DB-скриптовете 16/17 (които вече
 # вървят като root → не искат отделен `sudo node`, който не може да се whitelist-не безопасно).
@@ -128,10 +129,11 @@ rstep "WNB база (wherenobiz)"     "sudo ${REMOTE_BASE}/17-setup-wherenobiz-d
 # създава базата → попълва админи/модератори от .env → стартира kcy-eco3.
 rstep "ECO-3 база + админи/модератори + услуга" "sudo ${REMOTE_BASE}/20-setup-eco3-database.sh${RESET}"
 
-# ══ 3/4  УСЛУГИ House-Look-Book + WhereNoBiz ══
-step "3/4  Услуги House-Look-Book + WhereNoBiz (systemd + nginx)"
+# ══ 3/4  УСЛУГИ House-Look-Book + WhereNoBiz + Find Best Price ══
+step "3/4  Услуги House-Look-Book + WhereNoBiz + Find Best Price (systemd + nginx)"
 rstep "HLB услуга (kcy-hlb)" "sudo ${REMOTE_BASE}/18-setup-houselookbook-service.sh"
 rstep "WNB услуга (kcy-wnb)" "sudo ${REMOTE_BASE}/19-setup-wherenobiz-service.sh"
+rstep "FBP услуга (kcy-fbp)" "sudo ${REMOTE_BASE}/21-setup-fbp-service.sh"
 
 # ══ 4/4  ТОКЕН МОНИТОРИ ══
 step "4/4  Токен монитори (token / brch1 / multisig)"
