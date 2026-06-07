@@ -140,6 +140,14 @@ const HouseRender = (function () {
     const c = i => Math.max(0, Math.round(parseInt(m[i], 16) * f)).toString(16).padStart(2, '0');
     return '#' + c(1) + c(2) + c(3);
   }
+  // Като darken, но клампва нагоре до 255 — за по-светли стени/горни плоскости (f>1).
+  function shade(hex, f) {
+    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '#ccc');
+    if (!m) return hex;
+    const c = i => Math.min(255, Math.max(0, Math.round(parseInt(m[i], 16) * f))).toString(16).padStart(2, '0');
+    return '#' + c(1) + c(2) + c(3);
+  }
+  const DEFAULT_FURN_COLOR = '#c2b9a8';
 
   // Прозорец (рамка + кръст). x,y е горен ляв ъгъл.
   function window_(x, y, w, h, accent) {
@@ -337,7 +345,7 @@ const HouseRender = (function () {
         `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="none" stroke="#7a8aa0" stroke-width="1.2"/>` +
         `<text x="${cx}" y="${y + h + 9}" text-anchor="middle" font-size="8" fill="#345" font-family="system-ui,Arial">${nm}</text></g>`;
     }
-    return `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="${fillBox}" stroke="#9ab"/>` +
+    return `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="${it.color || fillBox}" stroke="#9ab"/>` +
       `<text x="${cx}" y="${cy + 3}" text-anchor="middle" font-size="8" fill="#345" font-family="system-ui,Arial">${nm}</text></g>`;
   }
 
@@ -429,12 +437,103 @@ const HouseRender = (function () {
           `<rect x="${x}" y="${y}" width="${fw}" height="${fh}" rx="3" fill="none" stroke="#5a7a95" stroke-width="1.5"/>` +
           `<text x="${cx}" y="${y - 3}" text-anchor="middle" font-size="9" fill="#234" font-family="system-ui,Arial">${nm}</text></g>`;
       } else {
-        inner += `<g><rect x="${x}" y="${y}" width="${fw}" height="${fh}" rx="3" fill="#cde0ef" stroke="#5a7a95" stroke-width="1.5"/><text x="${cx}" y="${floorY - fh / 2 + 3}" text-anchor="middle" font-size="9" fill="#234" font-family="system-ui,Arial">${nm}</text></g>`;
+        inner += `<g><rect x="${x}" y="${y}" width="${fw}" height="${fh}" rx="3" fill="${it.color || '#cde0ef'}" stroke="#5a7a95" stroke-width="1.5"/><text x="${cx}" y="${floorY - fh / 2 + 3}" text-anchor="middle" font-size="9" fill="#234" font-family="system-ui,Arial">${nm}</text></g>`;
       }
     });
     const rt = roomType(room && room.type);
     inner += label((rt ? T(rt.key) : '') + ' — ' + T('wall.label', { n: w + 1 }));
     return svgFrame(inner);
+  }
+
+  // ── ПЕРСПЕКТИВЕН интериорен изглед (като снимка: дълбочина, не плосък) ──────
+  // Едноточкова перспектива: под + таван + лява/дясна/задна стена сходят към
+  // изчезваща точка. Мебелите са 3D блокчета (или качени снимки), оразмерени
+  // според дълбочината И стандартния отпечатък (легло > нощно шкафче).
+  function roomPerspective(room) {
+    const items = (room && room.items) || [], walls = (room && room.walls) || [];
+    const rt = roomType(room && room.type);
+    // Близка рамка (отворът към зрителя) и задна стена (по-малка, навътре).
+    const NX0 = 18, NX1 = 382, NY0 = 26, NY1 = 332, BX0 = 150, BX1 = 250, BY0 = 122, BY1 = 230;
+    const wallC = '#d8ccb6';                               // неутрални стени
+    const floorC = shade(rt ? rt.color : '#e7dcc6', 0.92); // подът подсказва типа стая
+    const nBL = [NX0, NY1], nBR = [NX1, NY1], fBL = [BX0, BY1], fBR = [BX1, BY1];
+    const nTL = [NX0, NY0], nTR = [NX1, NY0], fTL = [BX0, BY0], fTR = [BX1, BY0];
+    const poly = (pts, fill, st) => `<polygon points="${pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}" fill="${fill}" stroke="${st || shade(fill, 0.72)}" stroke-width="1.2"/>`;
+
+    let s = `<rect x="0" y="0" width="${W}" height="${H}" fill="#26262b"/>`;   // тъмно извън стаята
+    s += poly([nTL, nTR, fTR, fTL], shade(wallC, 1.12));   // таван (по-светъл)
+    s += poly([nTL, fTL, fBL, nBL], shade(wallC, 0.8));    // лява стена (по-тъмна)
+    s += poly([nTR, fTR, fBR, nBR], shade(wallC, 0.92));   // дясна стена
+    s += poly([nBL, nBR, fBR, fBL], floorC);               // под
+    s += `<rect x="${BX0}" y="${BY0}" width="${BX1 - BX0}" height="${BY1 - BY0}" fill="${wallC}" stroke="${shade(wallC, 0.72)}" stroke-width="1.2"/>`; // задна стена
+
+    // Прозорец/врата на задната стена (от стена 0), ако има.
+    const w0 = walls[0] || {};
+    if ((+w0.windows || 0) > 0) {
+      const ww = (BX1 - BX0) * 0.42, wh = (BY1 - BY0) * 0.5, wx = (BX0 + BX1) / 2 - ww / 2, wy = BY0 + (BY1 - BY0) * 0.22;
+      s += `<rect x="${wx}" y="${wy}" width="${ww}" height="${wh}" fill="#bfe0f5" stroke="#7d97aa" stroke-width="1.5"/><line x1="${wx + ww / 2}" y1="${wy}" x2="${wx + ww / 2}" y2="${wy + wh}" stroke="#7d97aa"/><line x1="${wx}" y1="${wy + wh / 2}" x2="${wx + ww}" y2="${wy + wh / 2}" stroke="#7d97aa"/>`;
+    }
+    if ((+w0.doors || 0) > 0) {
+      const dw = (BX1 - BX0) * 0.3, dh = (BY1 - BY0) * 0.78, dx = BX0 + 4, dy = BY1 - dh;
+      s += `<rect x="${dx}" y="${dy}" width="${dw}" height="${dh}" fill="${shade(wallC, 0.7)}" stroke="${shade(wallC, 0.5)}" stroke-width="1.5"/>`;
+    }
+
+    // Точка по пода: u (0..1 ляво→дясно), v (0..1 близо→далеч) чрез билинейна интерполация.
+    function floorPt(u, v) {
+      const lx = nBL[0] + (fBL[0] - nBL[0]) * v, ly = nBL[1] + (fBL[1] - nBL[1]) * v;
+      const rx = nBR[0] + (fBR[0] - nBR[0]) * v, ry = nBR[1] + (fBR[1] - nBR[1]) * v;
+      return [lx + (rx - lx) * u, ly + (ry - ly) * u];
+    }
+    const depthScale = v => 1 - 0.56 * v;                  // близо 1 → далеч ~0.44
+
+    // Разпределение: мебели „до стена" → към задната стена; „в центъра" → решетка по пода.
+    const placed = [];
+    const wallIts = items.filter(it => it.place === 'wall');
+    wallIts.forEach((it, k) => { const u = wallIts.length > 1 ? 0.16 + 0.68 * (k / (wallIts.length - 1)) : 0.5; placed.push({ it, u, v: 0.9 }); });
+    const cen = items.filter(it => it.place === 'center');
+    const cols = Math.max(1, Math.ceil(Math.sqrt(cen.length || 1)));
+    const rows = Math.max(1, Math.ceil((cen.length || 1) / cols));
+    cen.forEach((it, k) => {
+      const col = k % cols, row = Math.floor(k / cols);
+      const u = cols > 1 ? 0.26 + 0.48 * (col / (cols - 1)) : 0.5;
+      const v = rows > 1 ? 0.32 + 0.42 * (row / (rows - 1)) : 0.52;
+      placed.push({ it, u, v });
+    });
+    placed.sort((a, b) => b.v - a.v);                      // далечните първо (живописец)
+    placed.forEach(p => { s += furnBlock(p.it, floorPt(p.u, p.v), depthScale(p.v)); });
+
+    // Заглавие горе-ляво (полупрозрачно).
+    const title = (rt ? T(rt.key) : (room && room.type) || '');
+    s += `<text x="14" y="20" font-family="system-ui,Arial" font-size="13" fill="#fff" opacity="0.85">${esc(title)}</text>`;
+    return svgFrame(s);
+  }
+
+  // Едно мебелно тяло в перспектива: 3D блок (лице+горна+дясна плоскост) ИЛИ качена
+  // снимка. base = допирната точка на пода (долен център). ds = мащаб по дълбочина.
+  function furnBlock(it, base, ds) {
+    const fi = furnitureItem(it.type) || { name: it.type, key: '' };
+    const sc = (it.scale && +it.scale > 0 ? Math.min(+it.scale, 2.5) : 1) * ds;
+    const fp = furnitureSize(it.type);
+    const w = Math.max(10, fp[0] * 1.5 * sc), depth = Math.max(6, fp[1] * 0.7 * sc);
+    const h = Math.max(10, furnitureHeight(it.type) * 150 * sc);
+    const cx = base[0], by = base[1], x = cx - w / 2, topY = by - h;
+    const col = it.color || DEFAULT_FURN_COLOR;
+    const nm = esc((fi.key ? T(fi.key) : fi.name).slice(0, 10));
+    const dx = depth * 0.7, dy = depth * 0.5;              // 3D отместване нагоре-надясно
+    // Сянка на пода (за „кацане").
+    let g = `<ellipse cx="${cx}" cy="${by}" rx="${(w / 2 + dx * 0.5).toFixed(1)}" ry="${Math.max(3, depth * 0.5).toFixed(1)}" fill="#0000003a"/>`;
+    if (it.img) {
+      const cid = 'pp' + Math.abs(hashStr(it.img + cx + '_' + by));
+      g += `<clipPath id="${cid}"><rect x="${x}" y="${topY}" width="${w}" height="${h}" rx="2"/></clipPath>` +
+        `<image href="${esc(it.img)}" x="${x}" y="${topY}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${cid})"/>` +
+        `<rect x="${x}" y="${topY}" width="${w}" height="${h}" rx="2" fill="none" stroke="#0007" stroke-width="1"/>`;
+      return `<g>${g}</g>`;
+    }
+    g += `<polygon points="${x + w},${topY} ${x + w + dx},${topY - dy} ${x + w + dx},${by - dy} ${x + w},${by}" fill="${shade(col, 0.68)}"/>` +      // дясна плоскост
+      `<polygon points="${x},${topY} ${x + w},${topY} ${x + w + dx},${topY - dy} ${x + dx},${topY - dy}" fill="${shade(col, 1.16)}"/>` +              // горна плоскост
+      `<rect x="${x}" y="${topY}" width="${w}" height="${h}" rx="1.5" fill="${col}" stroke="${shade(col, 0.55)}" stroke-width="1"/>` +                  // лице
+      `<text x="${cx}" y="${by - 4}" text-anchor="middle" font-size="${Math.max(6, Math.round(8 * ds))}" fill="#fff" opacity="0.85" font-family="system-ui,Arial">${nm}</text>`;
+    return `<g>${g}</g>`;
   }
 
   // ── рамки/общи ───────────────────────────────────────────────────
@@ -455,7 +554,7 @@ const HouseRender = (function () {
       : ({ front: 'Отпред', back: 'Отзад', left: 'Отляво', right: 'Отдясно' }[side] || side));
   }
 
-  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, ROOM_SHAPES, FURNITURE, wallsForShape, furnitureItem, WALL_MAX, CENTER_MAX, elevation, roofPlan, floorPlan, roomDetailPlan, wallElevation };
+  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, ROOM_SHAPES, FURNITURE, wallsForShape, furnitureItem, WALL_MAX, CENTER_MAX, elevation, roofPlan, floorPlan, roomDetailPlan, wallElevation, roomPerspective };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = HouseRender;

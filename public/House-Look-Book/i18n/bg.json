@@ -112,6 +112,7 @@
   "rooms.item_img": "Качи своя снимка (вариант на тази мебел)",
   "rooms.item_img_del": "Премахни снимката",
   "rooms.item_scale": "Размер спрямо стандартните мебели",
+  "rooms.item_color": "Смени цвета на мебелта",
   "rooms.item_img_fail": "Не успях да кача снимката.",
   "shapeimg.title": "Форма по снимка (по избор)",
   "shapeimg.processing": "Обработвам снимката…",

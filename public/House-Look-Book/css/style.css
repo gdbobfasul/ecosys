@@ -148,6 +148,10 @@ button:hover { filter: brightness(1.05); }
 .item-row .i-img-del { border: 1px solid #c98; background: #fff; border-radius: 5px; padding: 2px 5px; cursor: pointer; line-height: 1; }
 .add-item-row select { width: 100%; padding: 5px; border: 1px solid var(--accent,#3b6ea5); border-radius: 6px; font-family: inherit; color: var(--accent,#3b6ea5); }
 .rd-preview svg { width: 100%; height: auto; border: 1px solid #e3e8ee; border-radius: 6px; margin-top: 4px; }
+/* Перспективният изглед е главен — голям, над плана и стените. */
+.rd-persp svg { width: 100%; height: auto; border: 1px solid #cfd6df; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+.item-row .i-color { display: inline-flex; align-items: center; gap: 2px; cursor: pointer; }
+.item-row .i-color input[type=color] { width: 22px; height: 22px; padding: 0; border: 1px solid #ccd; border-radius: 5px; cursor: pointer; background: none; }
 .rd-wviews { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 6px; }
 .rd-wviews svg { width: 100%; height: auto; border: 1px solid #e3e8ee; border-radius: 6px; }
 

@@ -73,6 +73,7 @@
       // Собствена снимка на мебел (вариант на стандартната) + оразмеряване спрямо стандартните.
       if (typeof it.img === 'string' && it.img) out.img = it.img;
       if (it.scale && +it.scale > 0) out.scale = Math.min(+it.scale, 2.5);
+      if (typeof it.color === 'string' && /^#[0-9a-f]{6}$/i.test(it.color)) out.color = it.color;
       return out;
     });
     return { type: r.type, shape, walls, items };
@@ -117,15 +118,17 @@
           `<label class="i-scale" title="${T('rooms.item_scale') || 'Размер'}">⤢<input type="range" min="0.5" max="2.5" step="0.1" value="${sc}" class="i-scale-r" data-f="${f}" data-i="${i}" data-idx="${idx}"></label>` +
           `<button type="button" class="i-img-del" data-f="${f}" data-i="${i}" data-idx="${idx}" title="${T('rooms.item_img_del') || 'Премахни снимката'}">🚫</button>`
         : `<label class="i-img-btn" title="${T('rooms.item_img') || 'Качи своя снимка'}">📷<input type="file" accept="image/*" class="i-img" data-f="${f}" data-i="${i}" data-idx="${idx}" style="display:none"></label>`;
+      // Смяна на цвят на мебелта (важи, ако няма качена снимка).
+      const colorCtrl = `<label class="i-color" title="${T('rooms.item_color') || 'Цвят'}">🎨<input type="color" value="${esc(it.color || '#c2b9a8')}" class="i-color-r" data-f="${f}" data-i="${i}" data-idx="${idx}"></label>`;
       return `<div class="item-row"><span class="iname">${esc(fi.key ? T(fi.key) : fi.name)}</span>` +
         `<select class="i-place" data-f="${f}" data-i="${i}" data-idx="${idx}">${placeOptions(it)}</select>` +
-        imgCtrl +
+        colorCtrl + imgCtrl +
         `<button type="button" class="del-item" data-f="${f}" data-i="${i}" data-idx="${idx}">✕</button></div>`;
     }).join('');
     return `<div class="room-details">` +
       `<div class="rd-walls">${wallsHtml}</div>` +
       `<div class="rd-items">${itemsHtml}<div class="add-item-row"><select class="add-item-sel" data-f="${f}" data-i="${i}"><option value="">${T('rooms.add_item')}…</option>${furnitureAddOptions(r.type)}</select></div></div>` +
-      `<div class="rd-preview">${HR.roomDetailPlan(r)}<div class="rd-wviews">${Array.from({ length: nw }).map((_, w) => HR.wallElevation(r, w)).join('')}</div></div></div>`;
+      `<div class="rd-preview"><div class="rd-persp">${HR.roomPerspective(r)}</div>${HR.roomDetailPlan(r)}<div class="rd-wviews">${Array.from({ length: nw }).map((_, w) => HR.wallElevation(r, w)).join('')}</div></div></div>`;
   }
   function buildRoomsUI() {
     ensureRooms();
@@ -174,6 +177,9 @@
     box.querySelectorAll('.i-scale-r').forEach(r => r.onchange = () => {
       const it = state.rooms[+r.dataset.f][+r.dataset.i].items[+r.dataset.idx]; it.scale = Math.min(2.5, Math.max(0.5, +r.value || 1)); rebuild();
     });
+    box.querySelectorAll('.i-color-r').forEach(c => c.onchange = () => {
+      const it = state.rooms[+c.dataset.f][+c.dataset.i].items[+c.dataset.idx]; it.color = c.value; rebuild();
+    });
   }
   function addItemToRoom(f, i, typeId) {
     const HR = HouseRender, r = state.rooms[f][i], nw = HR.wallsForShape(r.shape);
@@ -205,6 +211,8 @@
     ensureRooms();
     (state.rooms || []).forEach((rooms) => {
       (rooms || []).forEach((r) => {
+        const persp = document.createElement('div'); persp.className = 'thumb';
+        persp.innerHTML = HouseRender.roomPerspective(r); grid.appendChild(persp);
         const plan = document.createElement('div'); plan.className = 'thumb';
         plan.innerHTML = HouseRender.roomDetailPlan(r); grid.appendChild(plan);
         const nw = HouseRender.wallsForShape(r.shape);
@@ -396,7 +404,7 @@
     const roomsHtml = (p.rooms || []).map(fl => (fl || []).map(r => {
       const nw = HouseRender.wallsForShape(r.shape);
       const views = Array.from({ length: nw }).map((_, w) => `<div class="cell">${HouseRender.wallElevation(r, w)}</div>`).join('');
-      return `<div class="cell">${HouseRender.roomDetailPlan(r)}</div>${views}`;
+      return `<div class="cell">${HouseRender.roomPerspective(r)}</div><div class="cell">${HouseRender.roomDetailPlan(r)}</div>${views}`;
     }).join('')).join('');
 
     const sheet = `<!doctype html><html lang="${window.HLB_I18N ? HLB_I18N.lang : 'bg'}"><head><meta charset="utf-8">

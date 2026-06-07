@@ -91,6 +91,18 @@
 
     setupToggle();
     checkIpAdmin();
+    rewriteCrossApp();
+  }
+
+  // Кръстосаните линкове (чат/wnb/hlb) → отделните им домейни. Картата идва от
+  // app-domains.js (генериран от domains.conf). Минава по целия документ (вкл. <option>).
+  function rewriteCrossApp() {
+    function go() { if (window.kcyRewriteCrossAppLinks) window.kcyRewriteCrossAppLinks(); }
+    if (window.kcyRewriteCrossAppLinks) { go(); return; }
+    var s = document.createElement('script');
+    s.src = '/shared/js/app-domains.js?v=1.0193';
+    s.onload = go;
+    document.head.appendChild(s);
   }
 
   // "ЛОГНАТ АДМИН" + "изключи" — същата cookie (kcy-guest-mode) като navigation.js.

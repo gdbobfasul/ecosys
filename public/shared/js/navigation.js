@@ -1,4 +1,4 @@
-// Version: 1.0173
+// Version: 1.0193
 /**
  * KCY Ecosystem - Navigation System
  * Admin dropdown visible ONLY with ?adm=bgmasters-set
@@ -96,6 +96,19 @@ const KCY_NAV = {
         this.checkIpAdmin();
         this.setupLangSelect();
         this.setupAuth();
+        this.rewriteCrossApp();
+    },
+
+    // Пренасочва кръстосаните линкове (чат/wnb/hlb) към отделните им домейни.
+    // Картата идва от app-domains.js (генериран от domains.conf — нула хардкод тук).
+    // Минава по ЦЕЛИЯ документ, така че хваща и nav-а, и бутоните на страницата.
+    rewriteCrossApp: function() {
+        function go() { if (window.kcyRewriteCrossAppLinks) window.kcyRewriteCrossAppLinks(); }
+        if (window.kcyRewriteCrossAppLinks) { go(); return; }
+        var s = document.createElement('script');
+        s.src = '/shared/js/app-domains.js?v=1.0193';
+        s.onload = go;
+        document.head.appendChild(s);
     },
 
     // Попълва език дропдауна + слуша за смяна на език

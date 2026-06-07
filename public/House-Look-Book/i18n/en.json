@@ -112,6 +112,7 @@
   "rooms.item_img": "Upload your own photo (a variant of this item)",
   "rooms.item_img_del": "Remove photo",
   "rooms.item_scale": "Size relative to standard items",
+  "rooms.item_color": "Change the item's colour",
   "rooms.item_img_fail": "Couldn't upload the photo.",
   "shapeimg.title": "Shape from image (optional)",
   "shapeimg.processing": "Processing image…",
