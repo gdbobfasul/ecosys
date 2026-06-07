@@ -80,8 +80,12 @@ setup_one() {
       prefix="WNB_PG_"
       schema_file="$PROJECT_DIR/private/WhereNoBiz/database/schema.sql"
       ;;
+    findbestprice)
+      prefix="FBP_PG_"
+      schema_file="$PROJECT_DIR/private/find-best-price/database/schema.sql"
+      ;;
     *)
-      echo -e "${RED}✗ Непознато приложение: '$app' (допустими: houselookbook | wherenobiz | all)${NC}"
+      echo -e "${RED}✗ Непознато приложение: '$app' (допустими: houselookbook | wherenobiz | findbestprice | all)${NC}"
       exit 1
       ;;
   esac
@@ -202,8 +206,9 @@ case "$APP" in
   all)
     setup_one houselookbook
     setup_one wherenobiz
+    setup_one findbestprice
     ;;
-  houselookbook|wherenobiz)
+  houselookbook|wherenobiz|findbestprice)
     setup_one "$APP"
     ;;
   *)
@@ -236,7 +241,8 @@ seed_app() {  # $1 = поддиректория в private/ ; $2 = етикет
 case "$APP" in
   houselookbook) seed_app "House-Look-Book" "HLB"; restart_svc kcy-hlb ;;
   wherenobiz)    seed_app "WhereNoBiz" "WNB"; restart_svc kcy-wnb ;;
-  all)           seed_app "House-Look-Book" "HLB"; restart_svc kcy-hlb; seed_app "WhereNoBiz" "WNB"; restart_svc kcy-wnb ;;
+  findbestprice) seed_app "find-best-price" "FBP"; restart_svc kcy-fbp ;;
+  all)           seed_app "House-Look-Book" "HLB"; restart_svc kcy-hlb; seed_app "WhereNoBiz" "WNB"; restart_svc kcy-wnb; seed_app "find-best-price" "FBP"; restart_svc kcy-fbp ;;
 esac
 
 echo ""

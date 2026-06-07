@@ -95,6 +95,12 @@ async function setupDatabase() {
         await db.exec(pgSchema);
         debug.stage('PG схема приложена (идемпотентно — колоните са синхронизирани)');
       } catch (e) { console.error('⚠️  PG схема не се приложи напълно:', e.message); }
+      // Модул „Задачи" (Remote Local Hands / „Истина ли е") — отделна идемпотентна схема.
+      try {
+        const tasksSchema = fs.readFileSync(path.join(__dirname, 'database', 'tasks_schema.sql'), 'utf8');
+        await db.exec(tasksSchema);
+        debug.stage('PG схема за ЗАДАЧИ приложена');
+      } catch (e) { console.error('⚠️  PG схема за задачи не се приложи:', e.message); }
     }
 
     // Всяко приложение попълва САМО своите админи/модератори от .env при собствения си
@@ -341,6 +347,7 @@ app.use('/api/profile', authenticate(dbProxy), testModeOverride, createProfileRo
 app.use('/api/help', authenticate(dbProxy), testModeOverride, createHelpRoutes(dbProxy));
 app.use('/api/search', authenticate(dbProxy), testModeOverride, createSearchRoutes(dbProxy));
 app.use('/api/matchmaking', authenticate(dbProxy), testModeOverride, createMatchmakingRoutes(dbProxy));
+app.use('/api/tasks', authenticate(dbProxy), testModeOverride, require('./routes/tasks')(dbProxy));   // модул „Задачи"
 app.use('/api/signals', require('./routes/signals'));  // Signals route (handles auth internally)
 
 // Admin routes (separate authentication)

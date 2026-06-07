@@ -1,0 +1,91 @@
+<!-- Version: 1.0193 -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="app.title">Find Best Price per Country</title>
+  <style>
+    :root { --bg:#0f1720; --panel:#16212c; --line:#26323d; --ink:#e6edf3; --muted:#94a6b6; --accent:#2bb673; --accent2:#3a8ddb; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+    header { background:linear-gradient(135deg,#11806a,#1c5a8f); padding:18px 20px; }
+    header .row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; max-width:1200px; margin:0 auto; }
+    header h1 { font-size:20px; margin:0; }
+    header p { margin:2px 0 0; color:#dbe7ee; font-size:13px; width:100%; max-width:1200px; }
+    header .spacer { flex:1; }
+    header a, header select { color:#fff; }
+    header a.btn { text-decoration:none; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.35); padding:8px 14px; border-radius:8px; font-weight:600; font-size:14px; }
+    header select { background:#0d2a3a; border:1px solid rgba(255,255,255,.3); border-radius:8px; padding:7px 9px; }
+    main { max-width:1200px; margin:0 auto; padding:20px; }
+    h2 { font-size:16px; margin:24px 0 12px; }
+    .kinds { display:flex; gap:10px; margin:18px 0 0; flex-wrap:wrap; }
+    .kind { background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:9px 18px; cursor:pointer; font-weight:600; color:var(--ink); }
+    .kind.on { background:var(--accent); color:#04210f; border-color:var(--accent); }
+    .cats { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+    .cat { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; text-align:center; cursor:pointer; transition:border-color .15s, transform .1s; }
+    .cat:hover { border-color:var(--accent); transform:translateY(-2px); }
+    .cat.on { border-color:var(--accent); box-shadow:0 0 0 2px rgba(43,182,115,.3); }
+    .cat .ic { font-size:30px; }
+    .cat .nm { margin-top:8px; font-size:14px; font-weight:600; }
+    .search { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; margin-top:8px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; }
+    .grid label { font-size:12px; color:var(--muted); display:block; margin-bottom:4px; }
+    .grid input, .grid select { width:100%; padding:9px; border-radius:8px; border:1px solid var(--line); background:#0e1822; color:var(--ink); font-size:14px; }
+    .search .actions { margin-top:14px; display:flex; gap:10px; align-items:center; }
+    .btn-go { background:var(--accent); color:#04210f; border:none; padding:11px 22px; border-radius:9px; font-weight:700; font-size:15px; cursor:pointer; }
+    .chip { font-size:12px; color:var(--muted); }
+    .results { margin-top:16px; }
+    .res-row { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:8px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+    .res-row .price { font-size:20px; font-weight:800; color:var(--accent); white-space:nowrap; }
+    .res-row .pname { font-weight:600; }
+    .res-row .meta { color:var(--muted); font-size:13px; }
+    .res-row .loc { color:#bcd; font-size:13px; }
+    .empty { color:var(--muted); padding:18px; text-align:center; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="row">
+      <h1 data-i18n="app.title">Find Best Price per Country</h1>
+      <span class="spacer"></span>
+      <a class="btn" href="add.html" data-i18n="nav.add">Add your prices</a>
+      <select id="lang" onchange="if(window.FBP_I18N) FBP_I18N.set(this.value)" title="Language"></select>
+    </div>
+    <p data-i18n="app.tagline">Compare prices of products by country, city, village and area</p>
+  </header>
+
+  <main>
+    <div id="kinds" class="kinds"></div>
+    <h2 data-i18n="cat.title">Categories</h2>
+    <div id="cats" class="cats"></div>
+
+    <h2 data-i18n="search.title">Search prices</h2>
+    <div class="search">
+      <div class="grid">
+        <div><label data-i18n="search.country">Country</label><input id="f_country"></div>
+        <div><label data-i18n="search.city">City</label><input id="f_city"></div>
+        <div><label data-i18n="search.village">Village</label><input id="f_village"></div>
+        <div><label data-i18n="search.district">District / area</label><input id="f_district"></div>
+        <div><label data-i18n="search.price_min">Min price</label><input id="f_pmin" type="number" min="0"></div>
+        <div><label data-i18n="search.price_max">Max price</label><input id="f_pmax" type="number" min="0"></div>
+        <div><label data-i18n="search.quality">Quality</label><select id="f_quality"></select></div>
+        <div><label data-i18n="search.materials">Materials</label><input id="f_materials"></div>
+        <div><label data-i18n="search.manufacturer">Manufacturer</label><input id="f_manufacturer"></div>
+        <div><label data-i18n="search.brand">Brand</label><input id="f_brand"></div>
+        <div id="fitsWrap" style="display:none"><label data-i18n="search.fits">Fits model</label><input id="f_fits"></div>
+      </div>
+      <div class="actions">
+        <button class="btn-go" id="btnSearch" data-i18n="search.btn">🔎 Search</button>
+        <span class="chip" id="catChip"></span>
+      </div>
+    </div>
+
+    <h2 data-i18n="search.results">Results</h2>
+    <div id="results" class="results"></div>
+  </main>
+
+  <script src="js/i18n.js?v=1.0193"></script>
+  <script src="js/app.js?v=1.0193"></script>
+</body>
+</html>

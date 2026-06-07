@@ -749,6 +749,12 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh *
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh *
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/21-setup-fbp-service.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/21-setup-fbp-service.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/21-setup-fbp-service.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/21-setup-fbp-service.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/21-setup-fbp-service.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/21-setup-fbp-service.sh *
 
 # ECO-3 база данни (SQLite/PostgreSQL) + админи/модератори + рестарт (точка 2 / точка 49).
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh

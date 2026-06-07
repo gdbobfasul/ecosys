@@ -11,7 +11,8 @@
     "private/brch1",
     "private/portals",
     "private/House-Look-Book",
-    "private/WhereNoBiz"
+    "private/WhereNoBiz",
+    "private/find-best-price"
   ],
   "scripts": {
     "test": "npm run test:token && npm run test:multisig && npm run test:chat && npm run test:mobile",
@@ -38,6 +39,8 @@
     "start:hlb:dev": "cd private/House-Look-Book && nodemon server.js",
     "start:wnb": "cd private/WhereNoBiz && node server.js",
     "start:wnb:dev": "cd private/WhereNoBiz && nodemon server.js",
+    "start:fbp": "cd private/find-best-price && node server.js",
+    "start:fbp:dev": "cd private/find-best-price && nodemon server.js",
     "start:all": "npm run start:chat & npm run start:eco3"
   },
   "keywords": [

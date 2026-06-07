@@ -37,6 +37,11 @@
   "browse.post_first": "पहली निश पोस्ट करें",
   "browse.missing": "{n} गायब",
   "browse.no_listings": "कोई लिस्टिंग नहीं",
+  "browse.mine": "आपकी पोस्ट (लंबित सहित):",
+  "mystatus.pending_moderation": "अनुमोदन की प्रतीक्षा में",
+  "mystatus.approved": "अनुमोदित",
+  "mystatus.rejected": "अस्वीकृत",
+  "mystatus.removed": "हटाया गया",
   "browse.err": "त्रुटि: {msg}",
 
   "new.title": "WhereNoBiz — एक खाली निश पोस्ट करें",
@@ -106,6 +111,7 @@
   "continent.Africa": "🌍 अफ़्रीका",
   "continent.Asia": "🌏 एशिया",
   "continent.Europe": "🌍 यूरोप",
+  "continent.Russia": "🇷🇺 रूस",
   "continent.North America": "🌎 उत्तरी अमेरिका",
   "continent.South America": "🌎 दक्षिण अमेरिका",
   "continent.Oceania": "🌏 ओशिनिया"

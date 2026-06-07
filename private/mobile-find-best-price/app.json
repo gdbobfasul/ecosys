@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Find Best Price",
+    "slug": "find-best-price",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.findbestprice.app",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.findbestprice.app",
+      "versionCode": 1
+    },
+    "web": { "bundler": "metro" },
+    "plugins": [
+      ["expo-build-properties", { "android": { "compileSdkVersion": 34, "targetSdkVersion": 34 }, "ios": { "deploymentTarget": "13.4" } }]
+    ]
+  }
+}

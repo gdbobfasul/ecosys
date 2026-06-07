@@ -37,6 +37,11 @@
   "browse.post_first": "最初のニッチを投稿",
   "browse.missing": "{n} 件不足",
   "browse.no_listings": "掲載なし",
+  "browse.mine": "あなたの投稿（審査待ちを含む）：",
+  "mystatus.pending_moderation": "承認待ち",
+  "mystatus.approved": "承認済み",
+  "mystatus.rejected": "却下",
+  "mystatus.removed": "削除済み",
   "browse.err": "エラー：{msg}",
 
   "new.title": "WhereNoBiz — 空きニッチを投稿",
@@ -106,6 +111,7 @@
   "continent.Africa": "🌍 アフリカ",
   "continent.Asia": "🌏 アジア",
   "continent.Europe": "🌍 ヨーロッパ",
+  "continent.Russia": "🇷🇺 ロシア",
   "continent.North America": "🌎 北アメリカ",
   "continent.South America": "🌎 南アメリカ",
   "continent.Oceania": "🌏 オセアニア"

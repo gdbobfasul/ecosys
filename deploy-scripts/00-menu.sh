@@ -248,6 +248,12 @@ show_menu() {
     item "44" "Deploy WhereNoBiz УСЛУГА (systemd+nginx) → сървър" \
         "Вдига kcy-wnb услугата (node :3011) + nginx /wherenobiz/, /api/wnb/." \
         "Отделен скрипт 19 — не пипа chat/eco3/portals. nginx маршрутът идва с опция 2."
+    item "54" "Deploy Find Best Price БАЗА (PostgreSQL) → сървър" \
+        "Създава база findbestprice + потребител (FBP_PG_USER от .env), схема + админи." \
+        "Скрипт 16 findbestprice. Само PostgreSQL."
+    item "55" "Deploy Find Best Price УСЛУГА (systemd+nginx) → сървър" \
+        "Вдига kcy-fbp услугата (node :3012) + nginx /find-best-price/, /api/fbp/." \
+        "Отделен скрипт 21 — не пипа другите. nginx маршрутът идва с опция 2."
 
     echo -e "${BOLD}${CYAN}━━━ ПО ПРИЛОЖЕНИЕ — обнови (база + админи/модератори от .env + рестарт) ━${NC}"
     echo ""
@@ -501,6 +507,57 @@ run_choice() {
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-wnb услугата е настроена на ${PICK_SRV}${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        54)
+            echo ""
+            echo -e "${BOLD}${CYAN}  DEPLOY Find Best Price база (PostgreSQL) — на кой сървър?${NC}"
+            echo ""
+            if pick_target; then
+                read -p "  Reset? Enter = НЕ трий (само създай/обнови)  |  напиши 'да' = ТРИЙ всичко (DROP): " RM
+                RST=""; case "$RM" in да|Да|ДА|reset|RESET|yes|YES|y|Y) RST=" --reset";; esac
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh findbestprice${RST}"
+                echo ""
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                echo ""
+                echo "  → Резултат: създава база findbestprice + потребителя (FBP_PG_USER от .env), схемата и попълва админи/модератори."
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — база findbestprice е настроена на ${PICK_SRV}${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        55)
+            echo ""
+            echo -e "${BOLD}${CYAN}  DEPLOY Find Best Price УСЛУГА (systemd+nginx) — на кой сървър?${NC}"
+            echo ""
+            if pick_target; then
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/21-setup-fbp-service.sh"
+                echo ""
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                echo ""
+                echo "  → Резултат: вдига kcy-fbp (node :3012) + nginx /find-best-price/, /api/fbp/."
+                echo "    (nginx маршрутът се активира напълно след опция 2 — пълен деплой.)"
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-fbp услугата е настроена на ${PICK_SRV}${NC}"
                 else
                     echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
                 fi

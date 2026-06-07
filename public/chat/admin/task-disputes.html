@@ -1,0 +1,52 @@
+<!-- Version: 1.0193 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Задачи — спорове за неплащане</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+  <div class="max-w-3xl mx-auto p-4">
+    <div class="flex items-center justify-between mb-4">
+      <h1 class="text-xl font-bold">⚠ Задачи — спорове за неплащане</h1>
+      <a href="/chat/admin/index.html" class="text-blue-400 text-sm">← Админ</a>
+    </div>
+    <p class="text-gray-400 text-sm mb-4">Изпълнителите докладват, че авторът НЕ е платил уговорената награда. Прегледай доклада и или <b>банни автора</b>, или отхвърли спора (ако авторът все пак е платил).</p>
+    <div id="list"></div>
+  </div>
+
+  <script>
+  async function api(path, opts) {
+    opts = opts || {}; opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {}); opts.credentials = 'same-origin';
+    const r = await fetch('/api/admin' + path, opts); let b = null; try { b = await r.json(); } catch (e) {}
+    return { status: r.status, ok: r.ok, body: b || {} };
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])); }
+  const TYPE = { local_hands: 'Живи ръце', verify: 'Истина ли е', other: 'Друго' };
+
+  async function load() {
+    const r = await api('/task-disputes');
+    const box = document.getElementById('list'); box.innerHTML = '';
+    if (r.status === 403) { box.innerHTML = '<p class="text-red-400">Достъп отказан (админ IP).</p>'; return; }
+    if (!r.ok || !r.body.disputes || !r.body.disputes.length) { box.innerHTML = '<p class="text-gray-500 text-center py-6">Няма спорове. 👍</p>'; return; }
+    r.body.disputes.forEach(d => {
+      const el = document.createElement('div'); el.className = 'bg-gray-800 rounded-lg p-4 mb-3';
+      el.innerHTML =
+        '<div class="flex justify-between"><b>#' + d.id + ' ' + esc(d.title) + '</b><span class="text-xs text-gray-400">' + esc(TYPE[d.type] || d.type) + ' · ' + esc(d.country || '') + '</span></div>' +
+        '<div class="text-sm text-gray-400 mt-1">💰 ' + (d.reward_amount || '?') + ' ' + esc(d.reward_currency || '') + ' · автор: <b>' + esc(d.author_phone || '') + '</b> · изпълнител: ' + esc(d.executor_phone || '') + '</div>' +
+        (d.done_report ? '<div class="text-sm bg-gray-900 rounded p-2 mt-2"><b>Доклад:</b> ' + esc(d.done_report) + '</div>' : '') +
+        '<div class="flex gap-2 mt-3">' +
+          '<button onclick="ban(' + d.id + ')" class="bg-red-700 px-4 py-2 rounded font-bold">🚫 Банни автора</button>' +
+          '<button onclick="dismiss(' + d.id + ')" class="bg-gray-700 px-4 py-2 rounded">Отхвърли спора</button>' +
+        '</div>';
+      box.appendChild(el);
+    });
+  }
+  async function ban(id) { if (!confirm('Банни автора на задача #' + id + '?')) return; const r = await api('/task-ban', { method: 'POST', body: JSON.stringify({ taskId: id }) }); alert(r.ok ? ('Баннат: ' + r.body.banned) : 'Грешка'); load(); }
+  async function dismiss(id) { await api('/task-dispute-dismiss', { method: 'POST', body: JSON.stringify({ taskId: id }) }); load(); }
+  load();
+  </script>
+</body>
+</html>

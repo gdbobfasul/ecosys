@@ -17,7 +17,11 @@
     { code: 'bg', name: 'Български' },
     { code: 'de', name: 'Deutsch' },
     { code: 'it', name: 'Italiano' },
-    { code: 'es', name: 'Español' }
+    { code: 'es', name: 'Español' },
+    { code: 'es-MX', name: 'Español (MX)' },
+    { code: 'fr', name: 'Français' },
+    { code: 'pt', name: 'Português' },
+    { code: 'ja', name: '日本語' }
   ];
 
   var RTL = ['ar']; // дясно-наляво езици

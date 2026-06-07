@@ -37,6 +37,11 @@
   "browse.post_first": "Die erste Nische posten",
   "browse.missing": "{n} fehlend",
   "browse.no_listings": "keine Einträge",
+  "browse.mine": "Deine Beiträge (inkl. ausstehend):",
+  "mystatus.pending_moderation": "wartet auf Freigabe",
+  "mystatus.approved": "freigegeben",
+  "mystatus.rejected": "abgelehnt",
+  "mystatus.removed": "entfernt",
   "browse.err": "Fehler: {msg}",
 
   "new.title": "WhereNoBiz — Eine freie Nische posten",
@@ -106,6 +111,7 @@
   "continent.Africa": "🌍 Afrika",
   "continent.Asia": "🌏 Asien",
   "continent.Europe": "🌍 Europa",
+  "continent.Russia": "🇷🇺 Russland",
   "continent.North America": "🌎 Nordamerika",
   "continent.South America": "🌎 Südamerika",
   "continent.Oceania": "🌏 Ozeanien"

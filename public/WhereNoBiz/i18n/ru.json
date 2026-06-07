@@ -37,6 +37,11 @@
   "browse.post_first": "Опубликовать первую нишу",
   "browse.missing": "{n} отсутствуют",
   "browse.no_listings": "нет объявлений",
+  "browse.mine": "Ваши публикации (включая ожидающие):",
+  "mystatus.pending_moderation": "ожидает одобрения",
+  "mystatus.approved": "одобрено",
+  "mystatus.rejected": "отклонено",
+  "mystatus.removed": "удалено",
   "browse.err": "Ошибка: {msg}",
 
   "new.title": "WhereNoBiz — Опубликовать свободную нишу",
@@ -106,6 +111,7 @@
   "continent.Africa": "🌍 Африка",
   "continent.Asia": "🌏 Азия",
   "continent.Europe": "🌍 Европа",
+  "continent.Russia": "🇷🇺 Россия",
   "continent.North America": "🌎 Северная Америка",
   "continent.South America": "🌎 Южная Америка",
   "continent.Oceania": "🌏 Океания"

@@ -1,0 +1,102 @@
+<!-- Version: 1.0193 -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="biz.add_prices">Add your prices</title>
+  <style>
+    :root { --bg:#0f1720; --panel:#16212c; --line:#26323d; --ink:#e6edf3; --muted:#94a6b6; --accent:#2bb673; }
+    * { box-sizing:border-box; } body { margin:0; font-family:system-ui,"Segoe UI",Roboto,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+    header { background:linear-gradient(135deg,#11806a,#1c5a8f); padding:16px 20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    header h1 { font-size:18px; margin:0; } header .spacer{ flex:1; }
+    header a.btn { color:#fff; text-decoration:none; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.35); padding:8px 14px; border-radius:8px; font-weight:600; font-size:14px; }
+    header select { background:#0d2a3a; color:#fff; border:1px solid rgba(255,255,255,.3); border-radius:8px; padding:7px 9px; }
+    main { max-width:760px; margin:0 auto; padding:20px; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+    h2 { font-size:16px; margin:0 0 12px; } .hint { color:var(--muted); font-size:13px; margin:0 0 12px; }
+    label { display:block; font-size:12px; color:var(--muted); margin:10px 0 4px; }
+    input, select { width:100%; padding:10px; border-radius:8px; border:1px solid var(--line); background:#0e1822; color:var(--ink); font-size:14px; }
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    button { background:var(--accent); color:#04210f; border:none; padding:11px 18px; border-radius:9px; font-weight:700; font-size:15px; cursor:pointer; margin-top:14px; }
+    button.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+    .msg { font-size:13px; margin-top:10px; } .msg.ok { color:#5fd39a; } .msg.err { color:#f0883e; }
+    .req::after { content:" *"; color:#f0883e; }
+    .list { font-size:14px; } .list .it { padding:8px 0; border-top:1px solid var(--line); color:#cdd; }
+    .tabs { display:flex; gap:8px; margin-bottom:10px; } .tabs button { margin:0; padding:8px 14px; font-size:14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 data-i18n="biz.add_prices">Add your prices</h1>
+    <span class="spacer"></span>
+    <a class="btn" href="index.html" data-i18n="nav.home">Home</a>
+    <select id="lang" onchange="if(window.FBP_I18N) FBP_I18N.set(this.value)"></select>
+  </header>
+
+  <main>
+    <!-- Вход / Регистрация -->
+    <div class="card" id="authCard">
+      <div class="tabs">
+        <button id="tabLogin" data-i18n="common.login">Log in</button>
+        <button id="tabReg" class="ghost" data-i18n="common.register">Register</button>
+      </div>
+      <div id="loginForm">
+        <label data-i18n="prod.name">Email</label><input id="l_email" type="email" placeholder="email">
+        <label>Password</label><input id="l_pass" type="password">
+        <button id="btnLogin" data-i18n="common.login">Log in</button>
+      </div>
+      <div id="regForm" style="display:none">
+        <label>Email</label><input id="r_email" type="email">
+        <label>Password</label><input id="r_pass" type="password">
+        <label data-i18n="biz.name">Name</label><input id="r_name">
+        <button id="btnReg" data-i18n="common.register">Register</button>
+      </div>
+      <div id="authMsg" class="msg"></div>
+    </div>
+
+    <!-- Дефиниране на обект -->
+    <div class="card" id="bizCard" style="display:none">
+      <h2 data-i18n="biz.add_prices">Define your business</h2>
+      <p class="hint" data-i18n="biz.define_first">First define your business, then add your products under the right category.</p>
+      <label class="req" data-i18n="biz.type">Business type</label>
+      <select id="b_type"></select>
+      <label class="req" data-i18n="biz.name">Business name</label><input id="b_name">
+      <div class="two">
+        <div><label class="req" data-i18n="biz.country">Country</label><input id="b_country"></div>
+        <div><label data-i18n="biz.city">City</label><input id="b_city"></div>
+        <div><label data-i18n="biz.village">Village</label><input id="b_village"></div>
+        <div><label data-i18n="biz.district">District</label><input id="b_district"></div>
+      </div>
+      <label class="req" data-i18n="biz.location_exact">Exact location</label><input id="b_location">
+      <button id="btnBiz" data-i18n="biz.save">Save business</button>
+      <div id="bizMsg" class="msg"></div>
+      <div class="list" id="bizList"></div>
+    </div>
+
+    <!-- Добавяне на продукт -->
+    <div class="card" id="prodCard" style="display:none">
+      <h2 data-i18n="prod.add">Add product</h2>
+      <label data-i18n="search.kind">Type</label><select id="p_kind"></select>
+      <label data-i18n="nav.my">Business</label><select id="p_biz"></select>
+      <div class="two">
+        <div><label class="req" data-i18n="prod.category">Category</label><select id="p_cat"></select></div>
+        <div id="p_fitsWrap" style="display:none"><label data-i18n="prod.fits">Fits product / model</label><input id="p_fits"></div>
+        <div><label class="req" data-i18n="prod.name">Product name</label><input id="p_name"></div>
+        <div><label class="req" data-i18n="prod.price">Price</label><input id="p_price" type="number" min="0" step="0.01"></div>
+        <div><label data-i18n="prod.currency">Currency</label><input id="p_currency" value="USD"></div>
+        <div><label data-i18n="prod.quality">Quality</label><select id="p_quality"></select></div>
+        <div><label data-i18n="prod.materials">Materials</label><input id="p_materials"></div>
+        <div><label data-i18n="prod.manufacturer">Manufacturer</label><input id="p_manufacturer"></div>
+        <div><label data-i18n="prod.brand">Brand</label><input id="p_brand"></div>
+      </div>
+      <button id="btnProd" data-i18n="prod.save">Save product</button>
+      <div id="prodMsg" class="msg"></div>
+      <div class="list" id="prodList"></div>
+    </div>
+  </main>
+
+  <script src="js/i18n.js?v=1.0193"></script>
+  <script src="js/add.js?v=1.0193"></script>
+</body>
+</html>

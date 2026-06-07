@@ -37,6 +37,11 @@
   "browse.post_first": "انشر أول فكرة",
   "browse.missing": "{n} مفقودة",
   "browse.no_listings": "لا توجد إعلانات",
+  "browse.mine": "منشوراتك (بما فيها قيد الانتظار):",
+  "mystatus.pending_moderation": "بانتظار الموافقة",
+  "mystatus.approved": "موافَق عليه",
+  "mystatus.rejected": "مرفوض",
+  "mystatus.removed": "محذوف",
   "browse.err": "خطأ: {msg}",
 
   "new.title": "WhereNoBiz — انشر فكرة شاغرة",
@@ -106,6 +111,7 @@
   "continent.Africa": "🌍 أفريقيا",
   "continent.Asia": "🌏 آسيا",
   "continent.Europe": "🌍 أوروبا",
+  "continent.Russia": "🇷🇺 روسيا",
   "continent.North America": "🌎 أمريكا الشمالية",
   "continent.South America": "🌎 أمريكا الجنوبية",
   "continent.Oceania": "🌏 أوقيانوسيا"

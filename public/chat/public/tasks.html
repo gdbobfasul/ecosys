@@ -1,0 +1,202 @@
+<!-- Version: 1.0193 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="task.page_title">Задачи — Живи ръце / Истина ли е</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+  <div class="max-w-3xl mx-auto p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h1 class="text-2xl font-bold" data-i18n="task.page_title">🤝 Задачи</h1>
+      <div class="flex items-center gap-3">
+        <select id="lang" class="bg-gray-700 rounded p-1 text-sm" onchange="if(window.KCY_I18N)KCY_I18N.set(this.value)"></select>
+        <a href="/chat/public/chat.html" class="text-blue-400 text-sm">← Чат</a>
+      </div>
+    </div>
+    <p class="text-gray-400 text-sm mb-4" data-i18n="task.subtitle"></p>
+
+    <div class="flex gap-2 mb-4">
+      <button onclick="show('browse')" id="tabBrowse" class="flex-1 bg-blue-600 py-2 rounded font-semibold" data-i18n="task.tab_browse">Разгледай</button>
+      <button onclick="show('post')" id="tabPost" class="flex-1 bg-gray-700 py-2 rounded font-semibold" data-i18n="task.tab_post">Постни</button>
+      <button onclick="show('mine')" id="tabMine" class="flex-1 bg-gray-700 py-2 rounded font-semibold" data-i18n="task.tab_mine">Моите</button>
+    </div>
+
+    <div id="panelBrowse">
+      <div class="flex gap-2 mb-3">
+        <select id="fType" class="bg-gray-700 rounded p-2 text-sm"></select>
+        <input id="fCountry" data-i18n-attr="placeholder:task.country" class="bg-gray-700 rounded p-2 text-sm flex-1">
+        <button onclick="loadBrowse()" class="bg-blue-600 px-4 rounded text-sm" data-i18n="task.search">Търси</button>
+      </div>
+      <div id="browseList"></div>
+    </div>
+
+    <div id="panelPost" class="hidden bg-gray-800 rounded-lg p-4">
+      <h2 class="font-bold mb-2" data-i18n="task.new">Нова задача</h2>
+      <p class="text-xs text-gray-400 mb-3" data-i18n="task.new_hint"></p>
+      <select id="pType" class="w-full bg-gray-700 rounded p-2 mb-2"></select>
+      <div class="grid grid-cols-2 gap-2 mb-2">
+        <input id="pCountry" data-i18n-attr="placeholder:task.country" class="bg-gray-700 rounded p-2">
+        <input id="pCity" data-i18n-attr="placeholder:task.city" class="bg-gray-700 rounded p-2">
+      </div>
+      <input id="pTitle" data-i18n-attr="placeholder:task.title_field" class="w-full bg-gray-700 rounded p-2 mb-2">
+      <textarea id="pContent" data-i18n-attr="placeholder:task.content" rows="4" class="w-full bg-gray-700 rounded p-2 mb-2"></textarea>
+      <div class="grid grid-cols-2 gap-2 mb-3">
+        <input id="pReward" type="number" min="0" data-i18n-attr="placeholder:task.reward" class="bg-gray-700 rounded p-2">
+        <input id="pCurrency" value="EUR" class="bg-gray-700 rounded p-2">
+      </div>
+      <button onclick="createTask()" class="w-full bg-green-600 py-3 rounded font-bold" data-i18n="task.save_draft">Запази чернова</button>
+      <div id="postMsg" class="mt-2 text-sm"></div>
+    </div>
+
+    <div id="panelMine" class="hidden"></div>
+
+    <div id="detail" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+      <div class="bg-gray-800 rounded-lg p-4 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between mb-2"><h2 class="font-bold" id="dTitle"></h2><button onclick="closeDetail()" class="text-gray-400">✕</button></div>
+        <div id="dBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/shared/js/i18n.js?v=1.0193"></script>
+  <script>
+  const API = '/api/tasks';
+  function tok() { return localStorage.getItem('token') || ''; }
+  if (!tok()) location.href = '/chat/public/';
+  function t(k) { return window.KCY_I18N ? KCY_I18N.t(k) : k; }
+  async function api(path, opts) {
+    opts = opts || {};
+    opts.headers = Object.assign({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok() }, opts.headers || {});
+    const r = await fetch(API + path, opts);
+    let b = null; try { b = await r.json(); } catch (e) {}
+    return { status: r.status, ok: r.ok, body: b || {} };
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])); }
+  const TYPES = ['local_hands', 'verify', 'other'];
+  function typeName(x) { return t('task.type_' + x); }
+  function statusName(s) { return t('task.s_' + (s === 'preparing' ? 'preparing' : s)) || s; }
+
+  function fillSelectsI18n() {
+    var sel = document.getElementById('lang'); if (sel && window.KCY_I18N) { sel.innerHTML = ''; KCY_I18N.supported.forEach(function (l) { var o = document.createElement('option'); o.value = l.code; o.textContent = l.name; sel.appendChild(o); }); sel.value = KCY_I18N.lang; }
+    var ft = document.getElementById('fType'); ft.innerHTML = '<option value="">' + esc(t('task.alltypes')) + '</option>' + TYPES.map(function (x) { return '<option value="' + x + '">' + esc(typeName(x)) + '</option>'; }).join('');
+    var pt = document.getElementById('pType'); pt.innerHTML = TYPES.map(function (x) { return '<option value="' + x + '">' + esc(typeName(x)) + '</option>'; }).join('');
+  }
+
+  function show(tab) {
+    ['Browse', 'Post', 'Mine'].forEach(p => {
+      document.getElementById('panel' + p).classList.toggle('hidden', p.toLowerCase() !== tab);
+      document.getElementById('tab' + p).className = 'flex-1 py-2 rounded font-semibold ' + (p.toLowerCase() === tab ? 'bg-blue-600' : 'bg-gray-700');
+    });
+    if (tab === 'browse') loadBrowse(); if (tab === 'mine') loadMine();
+  }
+
+  async function loadBrowse() {
+    const p = new URLSearchParams();
+    const ty = document.getElementById('fType').value, co = document.getElementById('fCountry').value.trim();
+    if (ty) p.set('type', ty); if (co) p.set('country', co);
+    const r = await api('/?' + p.toString());
+    const box = document.getElementById('browseList'); box.innerHTML = '';
+    if (!r.ok || !r.body.tasks || !r.body.tasks.length) { box.innerHTML = '<p class="text-gray-500 text-center py-6">' + esc(t('task.none')) + '</p>'; return; }
+    r.body.tasks.forEach(t2 => box.appendChild(card(t2)));
+  }
+  function card(t2) {
+    const d = document.createElement('div'); d.className = 'bg-gray-800 rounded-lg p-3 mb-2 cursor-pointer hover:bg-gray-700';
+    d.onclick = () => openDetail(t2.id);
+    d.innerHTML = '<div class="flex justify-between"><b>' + esc(t2.title) + '</b><span class="text-xs text-gray-400">' + esc(statusName(t2.status)) + '</span></div>' +
+      '<div class="text-sm text-gray-400">' + esc(typeName(t2.type)) + ' · 📍 ' + esc([t2.country, t2.city].filter(Boolean).join(', ')) + (t2.reward_amount ? ' · 💰 ' + t2.reward_amount + ' ' + esc(t2.reward_currency || '') : '') + '</div>' +
+      '<div class="text-sm text-gray-300 mt-1">' + esc((t2.content || '').slice(0, 120)) + '</div>';
+    return d;
+  }
+
+  async function createTask() {
+    const data = { type: document.getElementById('pType').value, country: document.getElementById('pCountry').value.trim(), city: document.getElementById('pCity').value.trim(), title: document.getElementById('pTitle').value.trim(), content: document.getElementById('pContent').value.trim(), reward_amount: document.getElementById('pReward').value || null, reward_currency: document.getElementById('pCurrency').value.trim() || 'EUR' };
+    const r = await api('/', { method: 'POST', body: JSON.stringify(data) });
+    const m = document.getElementById('postMsg');
+    if (r.ok) { m.className = 'mt-2 text-sm text-green-400'; m.textContent = t('task.draft_saved'); document.getElementById('pTitle').value = ''; document.getElementById('pContent').value = ''; }
+    else { m.className = 'mt-2 text-sm text-red-400'; m.textContent = r.body.message || 'Error'; }
+  }
+
+  async function loadMine() {
+    const r = await api('/mine/list'); const box = document.getElementById('panelMine'); box.innerHTML = '';
+    if (!r.ok) return;
+    const h1 = document.createElement('h3'); h1.className = 'font-bold mb-2'; h1.textContent = t('task.mine_author'); box.appendChild(h1);
+    (r.body.authored || []).forEach(t2 => box.appendChild(card(t2)));
+    const h2 = document.createElement('h3'); h2.className = 'font-bold mt-4 mb-2'; h2.textContent = t('task.mine_executor'); box.appendChild(h2);
+    (r.body.taken || []).forEach(t2 => box.appendChild(card(t2)));
+  }
+
+  async function openDetail(id) {
+    const r = await api('/' + id); if (!r.ok) return;
+    const x = r.body.task; const role = x.role || 'viewer';
+    document.getElementById('dTitle').textContent = x.title;
+    let h = '<div class="text-sm text-gray-400 mb-2">' + esc(typeName(x.type)) + ' · 📍 ' + esc([x.country, x.city].filter(Boolean).join(', ')) + ' · ' + esc(statusName(x.status)) + '</div>';
+    h += '<div class="text-sm mb-3 whitespace-pre-wrap">' + esc(x.content || '') + '</div>';
+    if (x.reward_amount) h += '<div class="text-green-400 mb-3">💰 ' + esc(t('task.reward_label')) + ': ' + x.reward_amount + ' ' + esc(x.reward_currency || '') + '</div>';
+
+    if (role === 'author' && x.status === 'draft') h += '<button onclick="publishTask(' + x.id + ')" class="w-full bg-green-600 py-2 rounded font-bold mb-2">' + esc(t('task.publish')) + '</button>';
+    if (role === 'viewer' && x.status === 'published') {
+      h += '<div class="text-xs text-gray-400 mb-1">' + esc(t('task.take_hint')) + (x.fee && x.fee.free ? ' ' + esc(t('task.take_free')) : (x.fee ? ' (' + x.fee.amount + ' ' + x.fee.currency + ')' : '')) + '</div>';
+      h += '<button onclick="takeTask(' + x.id + ')" class="w-full bg-blue-600 py-2 rounded font-bold mb-2">' + esc(t('task.take')) + '</button>';
+    }
+    if ((x.status === 'taken' || x.status === 'in_progress' || x.status === 'done') && (role === 'author' || role === 'executor')) h += taskChat(x);
+    if (role === 'executor' && x.status === 'taken') h += '<button onclick="lockTask(' + x.id + ')" class="w-full bg-yellow-600 py-2 rounded font-bold my-2">' + esc(t('task.lock')) + '</button>';
+    if (role === 'executor' && x.status === 'in_progress') h += '<div class="mt-3 border-t border-gray-700 pt-3"><textarea id="doneReport" data-ph="' + esc(t('task.done_report_ph')) + '" rows="3" class="w-full bg-gray-700 rounded p-2 mb-2"></textarea><input id="donePhoto" data-ph="' + esc(t('task.done_photo_ph')) + '" class="w-full bg-gray-700 rounded p-2 mb-2"><button onclick="doneTask(' + x.id + ')" class="w-full bg-green-600 py-2 rounded font-bold">' + esc(t('task.mark_done')) + '</button></div>';
+    if (x.status === 'done') {
+      if (x.done_report) h += '<div class="mt-2 text-sm bg-gray-900 rounded p-2"><b>' + esc(t('task.report_label')) + '</b> ' + esc(x.done_report) + (x.done_photo ? '<br><a href="' + esc(x.done_photo) + '" target="_blank" class="text-blue-400">📷</a>' : '') + '</div>';
+      if (role === 'author') h += '<button onclick="confirmPaid(' + x.id + ')" class="w-full bg-green-600 py-2 rounded font-bold mt-2">' + esc(t('task.confirm_paid')) + '</button>';
+      if (role === 'executor') h += '<button onclick="reportNon(' + x.id + ')" class="w-full bg-red-700 py-2 rounded font-bold mt-2">' + esc(t('task.report_nonpay')) + '</button>';
+    }
+    document.getElementById('dBody').innerHTML = h;
+    document.querySelectorAll('#dBody [data-ph]').forEach(function (el) { el.placeholder = el.getAttribute('data-ph'); });
+    document.getElementById('detail').classList.remove('hidden');
+    if (x.status === 'taken' || x.status === 'in_progress' || x.status === 'done') loadMsgs(x.id);
+  }
+  function taskChat(x) {
+    return '<div class="border-t border-gray-700 pt-2 mt-2"><div id="msgs" class="bg-gray-900 rounded p-2 max-h-40 overflow-y-auto text-sm mb-2"></div>' +
+      (x.chat_locked ? '<div class="text-xs text-gray-500">' + esc(t('task.chat_locked')) + '</div>'
+        : '<div class="flex gap-2"><input id="msgIn" placeholder="' + esc(t('task.msg_ph')) + '" class="flex-1 bg-gray-700 rounded p-2 text-sm"><button onclick="sendMsg(' + x.id + ')" class="bg-blue-600 px-3 rounded">→</button></div>') + '</div>';
+  }
+  async function loadMsgs(id) {
+    const r = await api('/' + id + '/messages'); const box = document.getElementById('msgs'); if (!box) return; box.innerHTML = '';
+    (r.body.messages || []).forEach(m => { box.innerHTML += '<div class="' + (m.sent ? 'text-right text-blue-300' : 'text-gray-300') + '">' + esc(m.text) + '</div>'; });
+    box.scrollTop = box.scrollHeight;
+  }
+  async function sendMsg(id) { const i = document.getElementById('msgIn'); if (!i.value.trim()) return; await api('/' + id + '/messages', { method: 'POST', body: JSON.stringify({ text: i.value.trim() }) }); i.value = ''; loadMsgs(id); }
+  async function publishTask(id) { await api('/' + id + '/publish', { method: 'POST' }); closeDetail(); loadMine(); }
+  async function takeTask(id) { const r = await api('/' + id + '/take', { method: 'POST' }); if (r.ok) { openDetail(id); return; } if (r.body && r.body.payment_required) { return payFee(id, r.body.fee); } alert(r.body.message || 'Error'); }
+  async function lockTask(id) { await api('/' + id + '/lock', { method: 'POST' }); openDetail(id); }
+  async function doneTask(id) { await api('/' + id + '/done', { method: 'POST', body: JSON.stringify({ report: document.getElementById('doneReport').value.trim(), photo: document.getElementById('donePhoto').value.trim() }) }); openDetail(id); }
+  async function confirmPaid(id) { await api('/' + id + '/confirm-paid', { method: 'POST' }); closeDetail(); alert(t('task.closed')); }
+  async function reportNon(id) { const r = await api('/' + id + '/report-nonpayment', { method: 'POST' }); alert(r.body.message || t('task.reported')); closeDetail(); }
+  function closeDetail() { document.getElementById('detail').classList.add('hidden'); }
+
+  // ── РЕАЛНО плащане на таксата (при free_mode=false) — Stripe Payment Element ──
+  function loadStripeJs() { return new Promise(function (res) { if (window.Stripe) return res(); var s = document.createElement('script'); s.src = 'https://js.stripe.com/v3/'; s.onload = res; document.head.appendChild(s); }); }
+  async function payFee(id, fee) {
+    const pr = await api('/' + id + '/pay-fee', { method: 'POST' });
+    if (pr.body && pr.body.free) return takeTask(id);
+    if (!pr.ok || !pr.body.clientSecret) { alert(pr.body.message || 'Stripe?'); return; }
+    await loadStripeJs();
+    const stripe = Stripe(pr.body.publishableKey);
+    const elements = stripe.elements({ clientSecret: pr.body.clientSecret });
+    const pe = elements.create('payment');
+    document.getElementById('dBody').innerHTML = '<div class="mb-2 font-semibold">' + esc(t('task.pay_fee')) + ': ' + pr.body.amount + ' ' + esc(pr.body.currency) + '</div><div id="payEl" class="bg-white rounded p-2 mb-3"></div><button id="payBtn" class="w-full bg-green-600 py-2 rounded font-bold">' + esc(t('task.pay_fee')) + '</button><div id="payMsg" class="text-sm mt-2"></div>';
+    pe.mount('#payEl');
+    document.getElementById('payBtn').onclick = async function () {
+      document.getElementById('payMsg').textContent = t('task.paying');
+      const cr = await stripe.confirmPayment({ elements, redirect: 'if_required' });
+      if (cr.error) { document.getElementById('payMsg').textContent = cr.error.message; return; }
+      const cf = await api('/' + id + '/confirm-fee', { method: 'POST' });
+      if (cf.ok) openDetail(id); else document.getElementById('payMsg').textContent = (cf.body.message || 'Error');
+    };
+  }
+
+  function boot() { fillSelectsI18n(); show('browse'); }
+  document.addEventListener('kcy-lang-ready', fillSelectsI18n);
+  if (window.KCY_I18N && KCY_I18N.lang) boot(); else document.addEventListener('kcy-lang-ready', function once() { document.removeEventListener('kcy-lang-ready', once); boot(); });
+  </script>
+</body>
+</html>

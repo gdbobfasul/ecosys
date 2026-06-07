@@ -1,0 +1,13 @@
+{
+  "name": "kcy-mobile-find-best-price",
+  "version": "1.0193",
+  "description": "Find Best Price per Country — React Native (Expo) приложение. Ползва /api/fbp на сървъра.",
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "private": true
+}

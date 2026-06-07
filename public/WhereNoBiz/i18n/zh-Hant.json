@@ -37,6 +37,11 @@
   "browse.post_first": "發佈第一個商機",
   "browse.missing": "{n} 個缺少",
   "browse.no_listings": "無刊登",
+  "browse.mine": "你的貼文（含待審核）：",
+  "mystatus.pending_moderation": "等待核准",
+  "mystatus.approved": "已核准",
+  "mystatus.rejected": "已拒絕",
+  "mystatus.removed": "已移除",
   "browse.err": "錯誤：{msg}",
 
   "new.title": "WhereNoBiz — 發佈一個空白商機",
@@ -106,6 +111,7 @@
   "continent.Africa": "🌍 非洲",
   "continent.Asia": "🌏 亞洲",
   "continent.Europe": "🌍 歐洲",
+  "continent.Russia": "🇷🇺 俄羅斯",
   "continent.North America": "🌎 北美洲",
   "continent.South America": "🌎 南美洲",
   "continent.Oceania": "🌏 大洋洲"

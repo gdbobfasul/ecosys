@@ -593,6 +593,34 @@ function createAdminRoutes(db) {
     }
   });
 
+  // ── Модул „Задачи": спорове за НЕПЛАЩАНЕ + бан на автора с един клик ──
+  router.get('/task-disputes', async (req, res) => {
+    try {
+      const rows = await db.prepare(
+        `SELECT id, type, country, title, reward_amount, reward_currency, author_phone, executor_phone, done_report, done_at
+         FROM tasks WHERE payment_disputed = TRUE ORDER BY done_at DESC LIMIT 200`
+      ).all();
+      res.json({ disputes: rows });
+    } catch (err) { console.error('task-disputes error:', err); res.status(500).json({ error: 'Server error' }); }
+  });
+  router.post('/task-ban', async (req, res) => {
+    try {
+      const { taskId } = req.body || {};
+      const t = await db.prepare('SELECT author_phone FROM tasks WHERE id = ?').get(taskId);
+      if (!t) return res.status(404).json({ error: 'not_found' });
+      await db.prepare("UPDATE users SET is_blocked = 1, blocked_reason = ? WHERE phone = ?").run('Не плати по задача #' + taskId, t.author_phone);
+      await db.prepare('UPDATE tasks SET payment_disputed = FALSE WHERE id = ?').run(taskId);
+      res.json({ success: true, banned: t.author_phone });
+    } catch (err) { console.error('task-ban error:', err); res.status(500).json({ error: 'Server error' }); }
+  });
+  // Отхвърли спора (без бан — напр. авторът е платил/спорът е неоснователен)
+  router.post('/task-dispute-dismiss', async (req, res) => {
+    try {
+      await db.prepare('UPDATE tasks SET payment_disputed = FALSE WHERE id = ?').run((req.body || {}).taskId);
+      res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: 'Server error' }); }
+  });
+
   // Unblock user
   router.post('/unblock-user', async (req, res) => {
     try {

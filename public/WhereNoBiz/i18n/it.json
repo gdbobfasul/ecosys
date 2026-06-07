@@ -37,6 +37,11 @@
   "browse.post_first": "Pubblica la prima nicchia",
   "browse.missing": "{n} mancanti",
   "browse.no_listings": "nessun annuncio",
+  "browse.mine": "I tuoi post (inclusi quelli in attesa):",
+  "mystatus.pending_moderation": "in attesa di approvazione",
+  "mystatus.approved": "approvato",
+  "mystatus.rejected": "rifiutato",
+  "mystatus.removed": "rimosso",
   "browse.err": "Errore: {msg}",
 
   "new.title": "WhereNoBiz — Pubblica una nicchia libera",
@@ -106,6 +111,7 @@
   "continent.Africa": "🌍 Africa",
   "continent.Asia": "🌏 Asia",
   "continent.Europe": "🌍 Europa",
+  "continent.Russia": "🇷🇺 Russia",
   "continent.North America": "🌎 America del Nord",
   "continent.South America": "🌎 America del Sud",
   "continent.Oceania": "🌏 Oceania"
