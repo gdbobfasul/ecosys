@@ -29,6 +29,7 @@ const { writeReport, stamp, appendRobotLogs } = require('./lib/report');
 const { extractLinksAndForms } = require('./lib/crawler');
 const { makeRng, fuzzForms } = require('./lib/fuzz');
 const { runJourney, loadEnv } = require('./lib/journey');
+const { runSeed } = require('./lib/seed');
 
 // Журита „като човек" — по едно на приложение (Фази 5+).
 const JOURNEYS = {
@@ -44,7 +45,17 @@ const args = process.argv.slice(2);
 const has = (f) => args.includes(f);
 const val = (f, d) => { const i = args.indexOf(f); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
 
-const targetName = val('--target', cfg.defaultTarget);
+const populateMode = has('--populate');             // МАСОВ СИЙДЪР: стотици потребители + реални данни
+const seedUsers = Number(val('--users', 100));      // брой персони (по подразбиране 100)
+const actionsArg = val('--actions', 'all');         // chat,posts,images,portal | all
+function parseActions(arg) {
+  if (!arg || arg === 'all') return { chat: true, posts: true, images: true, portal: true };
+  const s = new Set(arg.split(',').map((x) => x.trim()));
+  return { chat: s.has('chat'), posts: s.has('posts'), images: s.has('images'), portal: s.has('portal') };
+}
+// Сийдърът пише МНОГО данни → по подразбиране срещу VM (тежко пълнене), освен ако
+// --target е зададен изрично (потребителят избра „и двете чрез флаг --target").
+const targetName = (populateMode && !has('--target')) ? 'vm' : val('--target', cfg.defaultTarget);
 const target = cfg.TARGETS[targetName];
 if (!target) { console.error(`Непозната цел: ${targetName}. Налични: ${Object.keys(cfg.TARGETS).join(', ')}`); process.exit(2); }
 const onlyApp = val('--app', null);
@@ -114,8 +125,8 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   fs.mkdirSync(shotsDir, { recursive: true });
 
   console.log(`\n🤖 KCY робот — цел: ${targetName} (${target.base})`);
-  const modeLabel = journeyMode ? `работни сценарии: ${journeyArg}` : fuzzMode ? `fuzz (само VM, seed ${seed})` : crawlMode ? `crawler (BFS, макс ${maxPages}, дълбочина ${maxDepth})` : has('--all') ? 'пълно обхождане (дървото)' : 'критични пътища';
-  console.log(`   ${journeyMode ? `журита: ${selectedJourneys.length}` : crawlMode ? 'crawler' : `сценарии: ${scenarios.length}`}${onlyApp ? ` (само ${onlyApp})` : ''}  ·  режим: ${modeLabel}\n`);
+  const modeLabel = populateMode ? `МАСОВ СИЙДЪР (${seedUsers} потребителя)` : journeyMode ? `работни сценарии: ${journeyArg}` : fuzzMode ? `fuzz (само VM, seed ${seed})` : crawlMode ? `crawler (BFS, макс ${maxPages}, дълбочина ${maxDepth})` : has('--all') ? 'пълно обхождане (дървото)' : 'критични пътища';
+  console.log(`   ${populateMode ? `сийд: ${seedUsers} потребителя` : journeyMode ? `журита: ${selectedJourneys.length}` : crawlMode ? 'crawler' : `сценарии: ${scenarios.length}`}${onlyApp ? ` (само ${onlyApp})` : ''}  ·  режим: ${modeLabel}\n`);
 
   // Памет-безопасни флагове при пускане като root на сървъра (kcy-diag) —
   // ROBOT_NO_SANDBOX=1 ги включва: без sandbox (root), пести RAM на малък сървър.
@@ -130,6 +141,7 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   const forms = [];
   let fuzzData = null;
   let journeysData = null;
+  let seedSummary = null;
   let urlsChecked = 0;
 
   // Посещава един адрес: навигира, проверява статус + съдържание, прави снимка при грешка.
@@ -160,7 +172,19 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
     return status;
   }
 
-  if (journeyMode) {
+  if (populateMode) {
+    // ── МАСОВ СИЙДЪР: стотици потребители + реални данни (чат/постове/къщи/картинки/портал) ──
+    const env = loadEnv();
+    const actions = parseActions(actionsArg);
+    const rng = makeRng(seed);
+    console.log(`   👥 действия: ${Object.keys(actions).filter((k) => actions[k]).join(', ')}  ·  seed ${seed} (повторение: --populate --seed ${seed})\n`);
+    try {
+      seedSummary = await runSeed({ request: context.request, base: target.base, users: seedUsers, actions, env, rng, log: (m) => console.log(m) });
+    } catch (e) {
+      console.error('   ✗ Сийдърът гръмна:', (e.message || e));
+      seedSummary = { errors: -1, fatal: (e.message || String(e)).slice(0, 200) };
+    }
+  } else if (journeyMode) {
     // ── Фази 5+: работни сценарии „като човек" по приложение ──
     const env = loadEnv();
     const runToken = startedAt.getTime().toString(36);
@@ -264,16 +288,25 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   };
   const data = {
     target: targetName, base: target.base, runId,
-    mode: journeyMode ? `journey:${journeyArg}` : fuzzMode ? 'fuzz' : crawlMode ? 'crawl' : has('--all') ? 'all' : 'critical',
+    mode: populateMode ? 'populate' : journeyMode ? `journey:${journeyArg}` : fuzzMode ? 'fuzz' : crawlMode ? 'crawl' : has('--all') ? 'all' : 'critical',
     startedAt: startedAt.toISOString(), durationMs: Date.now() - startedAt.getTime(),
     scenarios: scenarios.length, urlsChecked, counts, findings, serverLog,
-    forms, fuzz: fuzzData, journeys: journeysData,
+    forms, fuzz: fuzzData, journeys: journeysData, seed: seedSummary,
   };
   writeReport(reportDir, data);
   appendRobotLogs(data, cfg.robotLogDir); // 9-те робот лога (фази 1-4 + 5 приложения)
 
   // ── обобщение в конзолата ─────────────────────────────────────────────────
   console.log('\n' + '─'.repeat(60));
+  if (seedSummary) {
+    const s = seedSummary;
+    console.log('👥 МАСОВ СИЙДЪР — създадени данни:');
+    console.log(`   💬 чат: ${s.chatUsers||0} потр · ${s.friends||0} контакта · ${s.messages||0} съобщения · ${s.match||0} мач-критерии · ${s.chatImages||0} картинки`);
+    console.log(`   🌍 WNB: ${s.wnbUsers||0} потр · ${s.wnbPosts||0} поста${s.wnbApproved!=null?` (${s.wnbApproved} одобрени)`:''}`);
+    console.log(`   🏠 HLB: ${s.hlbUsers||0} потр · ${s.hlbHouses||0} къщи${s.hlbApproved!=null?` (${s.hlbApproved} одобрени)`:''} · ${s.hlbImages||0} мебелни снимки`);
+    console.log(`   🛠️ портал: ${s.portalUsers||0} потр · ECO-3 достъп: ${s.eco3||0}`);
+    console.log(`   ⚠️ пропуснати заявки (грешки): ${s.errors||0}${s.fatal?` · ФАТАЛНО: ${s.fatal}`:''}`);
+  }
   console.log(`Резултат: 🔴 ${counts.error} грешки  ·  🟡 ${counts.warn} предупреждения  ·  ℹ️ ${counts.info} очаквани 401/403  ·  ${urlsChecked} адреса`);
   for (const f of findings.filter((x) => x.severity === 'error')) {
     console.log(`  🔴 [${f.app}] ${f.kind} ${f.status || ''} ${f.targetUrl || ''} — ${(f.detail || f.resourceUrl || '').slice(0, 90)}`);

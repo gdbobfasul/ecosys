@@ -72,6 +72,11 @@ button:hover { filter: brightness(1.05); }
 #allSides { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 #allSides .thumb { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
 #allSides .thumb svg { width: 100%; height: auto; display: block; }
+/* По-голяма визия: план на ЕТАЖА и стаите (план + 3D) са колкото целия ред. */
+#allSides .floor-big, #allSides .room-big { grid-column: 1 / -1; }
+#allSides .floor-big { box-shadow: 0 2px 10px rgba(0,0,0,.12); }
+#allSides .room-big svg { max-height: 560px; }
+#allSides .views-floor-head { grid-column: 1 / -1; font-weight: 700; font-size: 15px; margin: 14px 0 2px; padding-top: 10px; border-top: 2px solid var(--line); color: var(--accent, #3b6ea5); }
 
 .future {
   margin-top: 18px;
@@ -152,6 +157,8 @@ button:hover { filter: brightness(1.05); }
 .rd-persp svg { width: 100%; height: auto; border: 1px solid #cfd6df; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
 .item-row .i-color { display: inline-flex; align-items: center; gap: 2px; cursor: pointer; }
 .item-row .i-color input[type=color] { width: 22px; height: 22px; padding: 0; border: 1px solid #ccd; border-radius: 5px; cursor: pointer; background: none; }
+.item-row .i-3d { border: 1px solid #ccd; background: #fff; border-radius: 5px; padding: 2px 5px; cursor: pointer; line-height: 1; }
+.item-row .i-3d.on { background: #e3f0ff; border-color: #6aa6ef; }
 .rd-wviews { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 6px; }
 .rd-wviews svg { width: 100%; height: auto; border: 1px solid #e3e8ee; border-radius: 6px; }
 

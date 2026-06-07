@@ -169,7 +169,8 @@ router.get('/ranking', (req, res) => {
     ).all(month);
     log('1 - ' + rows.length + ' класирани за ' + month);
 
-    // Топ 5 → с реклама; останалите → без рекламните полета
+    // Топ 5 → с реклама; останалите → без рекламните полета. is_me маркира моя ред.
+    const meId = req.session && req.session.userId;
     const ranking = rows.map(function (r, i) {
         const base = { rank: i + 1, username: r.username, total: r.total };
         if (i < 5) {
@@ -179,11 +180,36 @@ router.get('/ranking', (req, res) => {
         } else {
             base.is_winner = false;
         }
+        if (meId && r.user_id === meId) base.is_me = true;
         return base;
     });
 
-    res.json({ month: month, ranking: ranking });
-    log('изход 1 -> 200 OK');
+    // МОИТЕ точки — дори да не съм в топ листата (играл съм само няколко игри).
+    let me = null;
+    if (meId) {
+        const myGames = db.prepare(
+            "SELECT game_slug, MAX(score) AS best FROM portal_game_scores " +
+            "WHERE user_id = ? AND substr(created_at,1,7) = ? GROUP BY game_slug"
+        ).all(meId, month);
+        const myTotal = myGames.reduce(function (s, r) { return s + (r.best || 0); }, 0);
+        let myRank = null;
+        if (myGames.length) {
+            // ранг = брой потребители с по-голям общ сбор + 1
+            const better = db.prepare(
+                "SELECT COUNT(*) AS c FROM ( " +
+                "   SELECT g.user_id, SUM(best_per_game) AS total FROM ( " +
+                "      SELECT user_id, game_slug, MAX(score) AS best_per_game FROM portal_game_scores " +
+                "      WHERE substr(created_at,1,7) = ? GROUP BY user_id, game_slug " +
+                "   ) g GROUP BY g.user_id HAVING total > ? " +
+                ")"
+            ).get(month, myTotal);
+            myRank = (better.c || 0) + 1;
+        }
+        me = { total: myTotal, played: myGames.length, total_games: GAMES.length, rank: myRank };
+    }
+
+    res.json({ month: month, ranking: ranking, me: me });
+    log('изход 1 -> 200 OK (me=' + (me ? me.total + 'т/' + me.played + 'игри' : 'гост') + ')');
 });
 
 module.exports = router;

@@ -74,6 +74,11 @@
       if (typeof it.img === 'string' && it.img) out.img = it.img;
       if (it.scale && +it.scale > 0) out.scale = Math.min(+it.scale, 2.5);
       if (typeof it.color === 'string' && /^#[0-9a-f]{6}$/i.test(it.color)) out.color = it.color;
+      // Ориентация на качената снимка като 3D плочка (ъгли + дебелина).
+      if (it.rot && typeof it.rot === 'object') {
+        const yaw = +it.rot.yaw || 0, pitch = +it.rot.pitch || 0, depth = +it.rot.depth || 0;
+        if (yaw || pitch || depth) out.rot = { yaw, pitch, depth };
+      }
       return out;
     });
     return { type: r.type, shape, walls, items };
@@ -116,6 +121,7 @@
       const imgCtrl = hasImg
         ? `<img class="i-thumb" src="${esc(it.img)}" alt="" />` +
           `<label class="i-scale" title="${T('rooms.item_scale') || 'Размер'}">⤢<input type="range" min="0.5" max="2.5" step="0.1" value="${sc}" class="i-scale-r" data-f="${f}" data-i="${i}" data-idx="${idx}"></label>` +
+          `<button type="button" class="i-3d${it.rot ? ' on' : ''}" data-f="${f}" data-i="${i}" data-idx="${idx}" title="${T('rooms.item_3d') || 'Завърти като 3D'}">🧊</button>` +
           `<button type="button" class="i-img-del" data-f="${f}" data-i="${i}" data-idx="${idx}" title="${T('rooms.item_img_del') || 'Премахни снимката'}">🚫</button>`
         : `<label class="i-img-btn" title="${T('rooms.item_img') || 'Качи своя снимка'}">📷<input type="file" accept="image/*" class="i-img" data-f="${f}" data-i="${i}" data-idx="${idx}" style="display:none"></label>`;
       // Смяна на цвят на мебелта (важи, ако няма качена снимка).
@@ -180,6 +186,13 @@
     box.querySelectorAll('.i-color-r').forEach(c => c.onchange = () => {
       const it = state.rooms[+c.dataset.f][+c.dataset.i].items[+c.dataset.idx]; it.color = c.value; rebuild();
     });
+    // 🧊 „Завърти като 3D" — отваря редактора (обемна плочка) и пази ъгъла/дебелината.
+    box.querySelectorAll('.i-3d').forEach(b => b.onclick = () => {
+      const it = state.rooms[+b.dataset.f][+b.dataset.i].items[+b.dataset.idx];
+      if (!it || !it.img) return;
+      if (!window.HLB_IMG3D) { alert('3D редакторът не е зареден'); return; }
+      HLB_IMG3D.open(it.img, it.rot, (rot) => { if (rot) { it.rot = rot; rebuild(); } });
+    });
   }
   function addItemToRoom(f, i, typeId) {
     const HR = HouseRender, r = state.rooms[f][i], nw = HR.wallsForShape(r.shape);
@@ -206,20 +219,22 @@
     roofCell.innerHTML = HouseRender.roofPlan(renderParams());
     grid.appendChild(roofCell);
 
-    // Изгледи на СТАИТЕ (план + всяка стена) до изгледите на цялата къща —
-    // за да се вижда какви мебели е сложил човекът (вкл. собствените снимки).
+    // Изгледи на СТАИТЕ — РЕДУВАТ се с плана на ЕТАЖА, за да си представя човек коя
+    // стая на кой етаж е. Подредба: план на ЕТАЖА → за всяка стая: план на стаята →
+    // 2D от всяка страна → 3D за всяка стена. Стаите са с ПО-ГОЛЯМА визия (room-big),
+    // колкото плана на етажа.
     ensureRooms();
-    (state.rooms || []).forEach((rooms) => {
+    const p = renderParams();
+    const cell = (cls, svg) => { const d = document.createElement('div'); d.className = cls; d.innerHTML = svg; grid.appendChild(d); };
+    (state.rooms || []).forEach((rooms, f) => {
+      const head = document.createElement('div'); head.className = 'views-floor-head';
+      head.textContent = T('rooms.floor', { n: f + 1 }); grid.appendChild(head);
+      cell('thumb floor-big', HouseRender.floorPlan(p, f));            // план на ЕТАЖА (голям)
       (rooms || []).forEach((r) => {
-        const persp = document.createElement('div'); persp.className = 'thumb';
-        persp.innerHTML = HouseRender.roomPerspective(r); grid.appendChild(persp);
-        const plan = document.createElement('div'); plan.className = 'thumb';
-        plan.innerHTML = HouseRender.roomDetailPlan(r); grid.appendChild(plan);
         const nw = HouseRender.wallsForShape(r.shape);
-        for (let w = 0; w < nw; w++) {
-          const c = document.createElement('div'); c.className = 'thumb';
-          c.innerHTML = HouseRender.wallElevation(r, w); grid.appendChild(c);
-        }
+        cell('thumb room-big', HouseRender.roomDetailPlan(r));         // 1) план на стаята (голям)
+        for (let w = 0; w < nw; w++) cell('thumb', HouseRender.wallElevation(r, w));   // 2) 2D от всяка страна
+        for (let w = 0; w < nw; w++) cell('thumb room-big', HouseRender.roomPerspective(r, w)); // 3) 3D за всяка стена
       });
     });
   }
@@ -400,12 +415,19 @@
     const rfName = rfO.key ? T(rfO.key) : (rfO.name || p.roof);
     const exList = Object.entries(state.extras).filter(([, v]) => v).map(([k]) => T('extra.' + k)).join(', ') || T('pdf.none');
 
-    // Стаи: за всяка — план отгоре + изглед на всяка стена.
-    const roomsHtml = (p.rooms || []).map(fl => (fl || []).map(r => {
-      const nw = HouseRender.wallsForShape(r.shape);
-      const views = Array.from({ length: nw }).map((_, w) => `<div class="cell">${HouseRender.wallElevation(r, w)}</div>`).join('');
-      return `<div class="cell">${HouseRender.roomPerspective(r)}</div><div class="cell">${HouseRender.roomDetailPlan(r)}</div>${views}`;
-    }).join('')).join('');
+    // Подредба: план на ЕТАЖА → за всяка стая: план на стаята → 2D от всяка страна →
+    // 3D за всяка стена. Планът на етажа, планът на стаята и 3D изгледите са ГОЛЕМИ.
+    const roomsHtml = (p.rooms || []).map((fl, f) => {
+      const floorHead = `<h2 class="floorh">${T('rooms.floor', { n: f + 1 })}</h2>`;
+      const floorPlan = `<div class="grid"><div class="cell big">${HouseRender.floorPlan(p, f)}</div></div>`;
+      const roomsCells = (fl || []).map(r => {
+        const nw = HouseRender.wallsForShape(r.shape);
+        const twoD = Array.from({ length: nw }).map((_, w) => `<div class="cell">${HouseRender.wallElevation(r, w)}</div>`).join('');
+        const threeD = Array.from({ length: nw }).map((_, w) => `<div class="cell big">${HouseRender.roomPerspective(r, w)}</div>`).join('');
+        return `<div class="cell big">${HouseRender.roomDetailPlan(r)}</div>${twoD}${threeD}`;
+      }).join('');
+      return floorHead + floorPlan + (roomsCells ? `<div class="grid">${roomsCells}</div>` : '');
+    }).join('');
 
     const sheet = `<!doctype html><html lang="${window.HLB_I18N ? HLB_I18N.lang : 'bg'}"><head><meta charset="utf-8">
       <title>${T('pdf.title')}</title>
@@ -414,9 +436,11 @@
         body { font-family: system-ui, Arial; color: #233; }
         h1 { font-size: 20px; margin: 0 0 4px; }
         .meta { font-size: 12px; color: #556; margin-bottom: 14px; }
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
         .cell { border: 1px solid #ccd; border-radius: 8px; padding: 6px; }
         .cell svg { width: 100%; height: auto; display: block; }
+        .cell.big { grid-column: 1 / -1; }   /* план на етажа/стаята + 3D = голяма визия */
+        .floorh { font-size: 15px; margin: 16px 0 6px; border-top: 2px solid #dde; padding-top: 8px; }
         @media print { .noprint { display: none; } }
         .noprint { margin: 14px 0; }
         button { font-size: 14px; padding: 8px 16px; }
@@ -427,9 +451,8 @@
       <div class="grid">
         ${HouseRender.SIDES.map(s => `<div class="cell">${HouseRender.elevation(p, s)}</div>`).join('')}
         <div class="cell">${HouseRender.roofPlan(p)}</div>
-        ${Array.from({ length: p.floors || 0 }).map((_, f) => `<div class="cell">${HouseRender.floorPlan(p, f)}</div>`).join('')}
       </div>
-      ${roomsHtml ? `<h1 style="font-size:16px;margin:18px 0 6px">${T('rooms.detail_pdf')}</h1><div class="grid">${roomsHtml}</div>` : ''}
+      ${roomsHtml ? `<h1 style="font-size:16px;margin:18px 0 6px">${T('rooms.detail_pdf')}</h1>${roomsHtml}` : ''}
       <script>window.onload = function(){ setTimeout(function(){ window.print(); }, 300); };<\/script>
       </body></html>`;
 

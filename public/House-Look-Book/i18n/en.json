@@ -113,6 +113,7 @@
   "rooms.item_img_del": "Remove photo",
   "rooms.item_scale": "Size relative to standard items",
   "rooms.item_color": "Change the item's colour",
+  "rooms.item_3d": "Rotate the photo as 3D (set the angle to fit)",
   "rooms.item_img_fail": "Couldn't upload the photo.",
   "shapeimg.title": "Shape from image (optional)",
   "shapeimg.processing": "Processing image…",

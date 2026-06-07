@@ -449,9 +449,12 @@ const HouseRender = (function () {
   // Едноточкова перспектива: под + таван + лява/дясна/задна стена сходят към
   // изчезваща точка. Мебелите са 3D блокчета (или качени снимки), оразмерени
   // според дълбочината И стандартния отпечатък (легло > нощно шкафче).
-  function roomPerspective(room) {
+  // focusWall (число) → 3D изглед, в който ТАЗИ стена е задната (нейните врати/прозорци
+  // + мебелите „до нея"). null → общ 3D изглед на стаята (задна стена = стена 1).
+  function roomPerspective(room, focusWall) {
     const items = (room && room.items) || [], walls = (room && room.walls) || [];
     const rt = roomType(room && room.type);
+    const fw = (typeof focusWall === 'number') ? focusWall : null;
     // Близка рамка (отворът към зрителя) и задна стена (по-малка, навътре).
     const NX0 = 18, NX1 = 382, NY0 = 26, NY1 = 332, BX0 = 150, BX1 = 250, BY0 = 122, BY1 = 230;
     const wallC = '#d8ccb6';                               // неутрални стени
@@ -467,8 +470,8 @@ const HouseRender = (function () {
     s += poly([nBL, nBR, fBR, fBL], floorC);               // под
     s += `<rect x="${BX0}" y="${BY0}" width="${BX1 - BX0}" height="${BY1 - BY0}" fill="${wallC}" stroke="${shade(wallC, 0.72)}" stroke-width="1.2"/>`; // задна стена
 
-    // Прозорец/врата на задната стена (от стена 0), ако има.
-    const w0 = walls[0] || {};
+    // Прозорец/врата на задната стена (фокусната стена, или стена 1 при общ изглед).
+    const w0 = walls[fw == null ? 0 : fw] || {};
     if ((+w0.windows || 0) > 0) {
       const ww = (BX1 - BX0) * 0.42, wh = (BY1 - BY0) * 0.5, wx = (BX0 + BX1) / 2 - ww / 2, wy = BY0 + (BY1 - BY0) * 0.22;
       s += `<rect x="${wx}" y="${wy}" width="${ww}" height="${wh}" fill="#bfe0f5" stroke="#7d97aa" stroke-width="1.5"/><line x1="${wx + ww / 2}" y1="${wy}" x2="${wx + ww / 2}" y2="${wy + wh}" stroke="#7d97aa"/><line x1="${wx}" y1="${wy + wh / 2}" x2="${wx + ww}" y2="${wy + wh / 2}" stroke="#7d97aa"/>`;
@@ -488,7 +491,8 @@ const HouseRender = (function () {
 
     // Разпределение: мебели „до стена" → към задната стена; „в центъра" → решетка по пода.
     const placed = [];
-    const wallIts = items.filter(it => it.place === 'wall');
+    // При фокус върху стена → само нейните „до стена" мебели до задната стена; иначе всички.
+    const wallIts = items.filter(it => it.place === 'wall' && (fw == null || (it.wall || 0) === fw));
     wallIts.forEach((it, k) => { const u = wallIts.length > 1 ? 0.16 + 0.68 * (k / (wallIts.length - 1)) : 0.5; placed.push({ it, u, v: 0.9 }); });
     const cen = items.filter(it => it.place === 'center');
     const cols = Math.max(1, Math.ceil(Math.sqrt(cen.length || 1)));
@@ -502,8 +506,9 @@ const HouseRender = (function () {
     placed.sort((a, b) => b.v - a.v);                      // далечните първо (живописец)
     placed.forEach(p => { s += furnBlock(p.it, floorPt(p.u, p.v), depthScale(p.v)); });
 
-    // Заглавие горе-ляво (полупрозрачно).
-    const title = (rt ? T(rt.key) : (room && room.type) || '');
+    // Заглавие горе-ляво (полупрозрачно). При фокус добавя „стена N (3D)".
+    const baseTitle = (rt ? T(rt.key) : (room && room.type) || '');
+    const title = fw == null ? baseTitle : baseTitle + ' — ' + T('wall.label', { n: fw + 1 }) + ' (3D)';
     s += `<text x="14" y="20" font-family="system-ui,Arial" font-size="13" fill="#fff" opacity="0.85">${esc(title)}</text>`;
     return svgFrame(s);
   }
@@ -523,10 +528,25 @@ const HouseRender = (function () {
     // Сянка на пода (за „кацане").
     let g = `<ellipse cx="${cx}" cy="${by}" rx="${(w / 2 + dx * 0.5).toFixed(1)}" ry="${Math.max(3, depth * 0.5).toFixed(1)}" fill="#0000003a"/>`;
     if (it.img) {
+      // Качена снимка като ОБЕМНА ПЛОЧКА (от 3D редактора): ъгълът „свива" лицето
+      // (перспективно), а дебелината се показва като страничен ръб от страната,
+      // накъдето е завъртяно (знака на yaw). Без ротация → просто лице (както преди).
+      const rot = it.rot || {};
+      const yaw = (+rot.yaw || 0) * Math.PI / 180, pitch = (+rot.pitch || 0) * Math.PI / 180;
+      const dep = Math.max(0, +rot.depth || 0) * 0.12 * sc;        // дебелина в px (мащабирана)
+      const fw2 = Math.max(6, w * Math.max(0.22, Math.abs(Math.cos(yaw))));   // свито лице (хоризонтал)
+      const fh2 = Math.max(6, h * Math.max(0.30, Math.abs(Math.cos(pitch)))); // свито лице (вертикал)
+      const fx = cx - fw2 / 2, fyTop = by - fh2;
+      const sideW = dep * Math.abs(Math.sin(yaw));                 // видима дебелина
       const cid = 'pp' + Math.abs(hashStr(it.img + cx + '_' + by));
-      g += `<clipPath id="${cid}"><rect x="${x}" y="${topY}" width="${w}" height="${h}" rx="2"/></clipPath>` +
-        `<image href="${esc(it.img)}" x="${x}" y="${topY}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${cid})"/>` +
-        `<rect x="${x}" y="${topY}" width="${w}" height="${h}" rx="2" fill="none" stroke="#0007" stroke-width="1"/>`;
+      // страничната плоскост (ръбът) — отдясно при yaw>0, отляво при yaw<0
+      if (sideW > 0.6) {
+        const sx = yaw >= 0 ? fx + fw2 : fx - sideW;
+        g += `<polygon points="${sx},${fyTop + Math.min(6, dep)} ${sx + sideW},${fyTop} ${sx + sideW},${by - 1} ${sx},${by}" fill="#4a4540"/>`;
+      }
+      g += `<clipPath id="${cid}"><rect x="${fx}" y="${fyTop}" width="${fw2}" height="${fh2}" rx="2"/></clipPath>` +
+        `<image href="${esc(it.img)}" x="${fx}" y="${fyTop}" width="${fw2}" height="${fh2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${cid})"/>` +
+        `<rect x="${fx}" y="${fyTop}" width="${fw2}" height="${fh2}" rx="2" fill="none" stroke="#0007" stroke-width="1"/>`;
       return `<g>${g}</g>`;
     }
     g += `<polygon points="${x + w},${topY} ${x + w + dx},${topY - dy} ${x + w + dx},${by - dy} ${x + w},${by}" fill="${shade(col, 0.68)}"/>` +      // дясна плоскост

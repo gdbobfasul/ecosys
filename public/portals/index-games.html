@@ -54,6 +54,12 @@
   .rrow .rk { color:#7d93a6; font-weight:700; width:34px; }
   .rrow .nm { flex:1; color:#dfe7ee; }
   .rrow .pt { color:#ffd24a; font-weight:600; }
+  /* „Твоите точки" — винаги видими, дори да не съм в топа */
+  .myrank { background:linear-gradient(135deg,#243b30,#2c5340); border:1px solid #3fae6a; border-radius:12px; padding:14px 16px; margin-bottom:14px; color:#dfeede; font-size:.95em; }
+  .myrank b { color:#9be8b4; }
+  /* моят ред в листата — открояване */
+  .rrow.me, .winner.me { outline:2px solid #ffd24a; box-shadow:0 0 0 3px rgba(255,210,74,.18); }
+  .rrow.me { background:#243140; }
 </style>
     <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
 </head>
@@ -72,6 +78,12 @@
 
 <div id="panelGames" class="panel active">
   <div id="grid" class="grid"><div class="loading" data-i18n="games.loading">Зареждам игрите…</div></div>
+  <!-- KCY входове на игрите — рекламни банери (анимирани). В панела на ИГРИТЕ →
+       скриват се автоматично при таба „Класация". -->
+  <section class="kcy-game-entries">
+    <iframe class="kcy-entry battle" src="/portals/games/ads/ad_battle.html" title="Битка на терен" loading="lazy" scrolling="no"></iframe>
+    <iframe class="kcy-entry duel"   src="/portals/games/ads/ad_duel.html"   title="Дуел"          loading="lazy" scrolling="no"></iframe>
+  </section>
 </div>
 
 <div id="panelRank" class="panel">
@@ -161,11 +173,23 @@ function loadGames(){
 function loadRanking(){
   fetch(apiUrl('/api/portals/gms/ranking')).then(authGuard).then(function(d){
     var box=document.getElementById('ranklist'); box.innerHTML='';
-    if(!d.ranking.length){ box.innerHTML='<div class="loading" data-i18n="games.no_results">Още няма резултати този месец. Бъди първи!</div>'; return; }
+    // МОИТЕ точки — показват се дори да не съм в топ листата (играл съм само няколко игри)
+    if(d.me){
+      var mine=document.createElement('div'); mine.className='myrank';
+      if(d.me.played>0){
+        mine.innerHTML='🎯 <b>Твоите точки този месец:</b> '+d.me.total+' т.'+
+          (d.me.rank?' · класиране <b>#'+d.me.rank+'</b>':'')+
+          ' · изигра <b>'+d.me.played+'/'+d.me.total_games+'</b> игри';
+      } else {
+        mine.innerHTML='🎯 Все още нямаш точки този месец — изиграй някоя игра, за да влезеш в класацията!';
+      }
+      box.appendChild(mine);
+    }
+    if(!d.ranking.length){ var none=document.createElement('div'); none.className='loading'; none.textContent='Още няма резултати този месец. Бъди първи!'; box.appendChild(none); return; }
     var medals=['🥇','🥈','🥉','🏅','🏅'];
     d.ranking.forEach(function(r){
       if(r.is_winner){
-        var w=document.createElement('div'); w.className='winner';
+        var w=document.createElement('div'); w.className='winner'+(r.is_me?' me':'');
         var ad='';
         if(r.ad_link){
           var safe=r.ad_link.replace(/"/g,'');
@@ -178,7 +202,7 @@ function loadRanking(){
           ad+'</div>';
         box.appendChild(w);
       } else {
-        var row=document.createElement('div'); row.className='rrow';
+        var row=document.createElement('div'); row.className='rrow'+(r.is_me?' me':'');
         row.innerHTML='<span class="rk">#'+r.rank+'</span>'+
           '<span class="nm">'+esc(r.username)+'</span>'+
           '<span class="pt">'+r.total+' т.</span>';
@@ -192,11 +216,6 @@ function esc(s){ return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 loadGames();
 if(location.search.indexOf('rank=1')>-1) showTab('rank');
 </script>
-    <!-- KCY входове на игрите — рекламни банери (анимирани, тръгват сами) -->
-    <section class="kcy-game-entries">
-      <iframe class="kcy-entry battle" src="/portals/games/ads/ad_battle.html" title="Битка на терен" loading="lazy" scrolling="no"></iframe>
-      <iframe class="kcy-entry duel"   src="/portals/games/ads/ad_duel.html"   title="Дуел"          loading="lazy" scrolling="no"></iframe>
-    </section>
     <style>
     .kcy-game-entries{display:flex;gap:20px;justify-content:center;align-items:flex-start;
       flex-wrap:wrap;margin:40px auto;max-width:1200px;}
