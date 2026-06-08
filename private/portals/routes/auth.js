@@ -3,6 +3,7 @@
 
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 // Debug helper за stage логове (вижда се в portal-errors.log / bundle URL)
 let debug;
@@ -155,6 +156,142 @@ router.get('/me', (req, res) => {
         current_month: currentMonth(),
     });
     log('изход 3 → 200 {logged_in:true}');
+});
+
+// ─── Facebook Login ────────────────────────────────────────────
+// Дава ВЕДНАГА регистрация: при първо влизане с Facebook създаваме акаунт с
+// потребителско име + генерирана парола и ги показваме ВЕДНЪЖ — следващия път
+// човекът може да влиза и БЕЗ Facebook (с тези данни). FB акаунтът се връзва
+// по facebook_id, за да е същият акаунт при следващи Facebook логини.
+const FB_APP_ID = process.env.PORTAL_FB_APP_ID || '';
+const FB_APP_SECRET = process.env.PORTAL_FB_APP_SECRET || '';
+const GOOGLE_CLIENT_ID = process.env.PORTAL_GOOGLE_CLIENT_ID || '';
+
+function genPassword() {
+    return crypto.randomBytes(9).toString('base64').replace(/[^A-Za-z0-9]/g, '').slice(0, 12) || crypto.randomBytes(6).toString('hex');
+}
+
+// Обща логика за Facebook И Google: намери акаунта по provider id, или СЪЗДАЙ нов
+// (username от имейл/име, уникален + генерирана парола). idColumn е константа
+// ('facebook_id' | 'google_id') — НЕ потребителски вход → няма SQL инжекция.
+async function findOrCreateOAuth(db, idColumn, providerId, email, name) {
+    try { db.exec(`ALTER TABLE portal_users ADD COLUMN ${idColumn} TEXT`); } catch (e) {}
+    try { db.exec("ALTER TABLE portal_users ADD COLUMN business_description TEXT DEFAULT ''"); } catch (e) {}
+    try { db.exec("ALTER TABLE portal_users ADD COLUMN ad_link TEXT DEFAULT ''"); } catch (e) {}
+    let user = db.prepare(`SELECT id, username FROM portal_users WHERE ${idColumn} = ?`).get(providerId);
+    let credentials = null;
+    if (!user) {
+        let base = (email ? String(email).split('@')[0] : (name || idColumn.replace('_id', '')))
+            .toLowerCase().replace(/[^a-z0-9_.-]/g, '').slice(0, 24);
+        if (base.length < 3) base = idColumn.replace('_id', '') + String(providerId).slice(-6);
+        let username = base, n = 0;
+        while (db.prepare("SELECT id FROM portal_users WHERE username = ?").get(username)) { n++; username = base + n; }
+        const password = genPassword();
+        const hash = await bcrypt.hash(password, 10);
+        const info = db.prepare(
+            `INSERT INTO portal_users (username, password_hash, ${idColumn}, business_description, ad_link) VALUES (?, ?, ?, ?, ?)`
+        ).run(username, hash, providerId, '', '');
+        user = { id: info.lastInsertRowid, username };
+        credentials = { username, password };   // показва се ВЕДНЪЖ
+    }
+    return { user, credentials };
+}
+
+// Дава App ID на фронтенда (БЕЗ секрета) + дали е настроено
+router.get('/fb-config', (req, res) => {
+    res.json({ appId: FB_APP_ID, enabled: !!(FB_APP_ID && FB_APP_SECRET) });
+});
+
+// POST /api/portals/facebook-login  { accessToken }
+router.post('/facebook-login', async (req, res) => {
+    const log = debug.scoped(req, 'fb-login');
+    const db = req.app.locals.db;
+    const token = (req.body && req.body.accessToken) || '';
+    if (!FB_APP_ID || !FB_APP_SECRET) {
+        log('изход → 503 fb_disabled (липсват PORTAL_FB_APP_ID/SECRET)');
+        return res.status(503).json({ error: 'fb_disabled', message: 'Facebook вход не е настроен.' });
+    }
+    if (!token) return res.status(400).json({ error: 'no_token' });
+    try {
+        // 1) провери че токенът е валиден И е за НАШЕТО приложение (debug_token с app token)
+        const appToken = `${FB_APP_ID}|${FB_APP_SECRET}`;
+        const dbg = await fetch('https://graph.facebook.com/debug_token?input_token=' + encodeURIComponent(token) + '&access_token=' + encodeURIComponent(appToken)).then(r => r.json());
+        if (!dbg.data || !dbg.data.is_valid || String(dbg.data.app_id) !== String(FB_APP_ID)) {
+            log('изход → 401 bad_token (невалиден или чужд токен)');
+            return res.status(401).json({ error: 'bad_token', message: 'Невалиден Facebook токен.' });
+        }
+        // 2) вземи профила (id винаги; email/name по разрешения)
+        const prof = await fetch('https://graph.facebook.com/me?fields=id,name,email&access_token=' + encodeURIComponent(token)).then(r => r.json());
+        if (!prof.id) return res.status(401).json({ error: 'no_profile' });
+        log(`FB профил: id=${prof.id}, email=${prof.email || '—'}`);
+
+        // намери/създай акаунта (обща логика с Google)
+        const { user, credentials } = await findOrCreateOAuth(db, 'facebook_id', prof.id, prof.email, prof.name);
+        log(credentials ? `нов акаунт чрез FB (id=${user.id}, username=${user.username})` : `съществуващ FB акаунт (id=${user.id})`);
+
+        req.session.userId = user.id;
+        req.session.username = user.username;
+        res.json({
+            ok: true,
+            user: { id: user.id, username: user.username },
+            is_admin: isFirstUserAdmin(db, user.id),
+            paid_this_month: hasPaidCurrentMonth(db, user.id),
+            current_month: currentMonth(),
+            new_account: !!credentials,
+            credentials,   // null при повторни логини; { username, password } при ПЪРВО
+        });
+        log('изход → 200 OK (Facebook вход успешен)');
+    } catch (e) {
+        log('грешка: ' + e.message);
+        res.status(500).json({ error: 'server_error', message: e.message });
+    }
+});
+
+// ─── Google Login ──────────────────────────────────────────────
+// Същата идея като Facebook: вход с Google → ВЕДНАГА регистрация (username +
+// генерирана парола, показани веднъж) → следващия път и без Google.
+// Дава Client ID на фронтенда (публичен)
+router.get('/google-config', (req, res) => {
+    res.json({ clientId: GOOGLE_CLIENT_ID, enabled: !!GOOGLE_CLIENT_ID });
+});
+
+// POST /api/portals/google-login  { credential }  (ID token от Google Identity Services)
+router.post('/google-login', async (req, res) => {
+    const log = debug.scoped(req, 'google-login');
+    const db = req.app.locals.db;
+    const credential = (req.body && req.body.credential) || '';
+    if (!GOOGLE_CLIENT_ID) {
+        log('изход → 503 google_disabled (липсва PORTAL_GOOGLE_CLIENT_ID)');
+        return res.status(503).json({ error: 'google_disabled', message: 'Google вход не е настроен.' });
+    }
+    if (!credential) return res.status(400).json({ error: 'no_token' });
+    try {
+        // провери ID токена през официалния tokeninfo ендпойнт (връща payload само ако е валиден)
+        const info = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(credential)).then(r => r.json());
+        if (!info.sub || String(info.aud) !== String(GOOGLE_CLIENT_ID)) {
+            log('изход → 401 bad_token (невалиден или за чуждо приложение)');
+            return res.status(401).json({ error: 'bad_token', message: 'Невалиден Google токен.' });
+        }
+        log(`Google профил: sub=${info.sub}, email=${info.email || '—'}`);
+        const { user, credentials } = await findOrCreateOAuth(db, 'google_id', info.sub, info.email, info.name);
+        log(credentials ? `нов акаунт чрез Google (id=${user.id}, username=${user.username})` : `съществуващ Google акаунт (id=${user.id})`);
+
+        req.session.userId = user.id;
+        req.session.username = user.username;
+        res.json({
+            ok: true,
+            user: { id: user.id, username: user.username },
+            is_admin: isFirstUserAdmin(db, user.id),
+            paid_this_month: hasPaidCurrentMonth(db, user.id),
+            current_month: currentMonth(),
+            new_account: !!credentials,
+            credentials,   // null при повторни логини; { username, password } при ПЪРВО
+        });
+        log('изход → 200 OK (Google вход успешен)');
+    } catch (e) {
+        log('грешка: ' + e.message);
+        res.status(500).json({ error: 'server_error', message: e.message });
+    }
 });
 
 // ─── GET /api/portals/ip-admin ─────────────────────────────────

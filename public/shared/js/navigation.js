@@ -48,7 +48,10 @@ const KCY_NAV = {
         if (isCrypto) {
             navLinks += '<a href="/token/" data-i18n="nav.token">🪙 Token</a>'
                 + '<a href="/brch1/" class="nav-brch1"><img src="/brch1/assets/brch1-icon.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:4px;">BRCH1</a>'
-                + '<a href="/multisig/" data-i18n="nav.multisig">🔐 Multi-Sig</a>';
+                + '<a href="/multisig/" data-i18n="nav.multisig">🔐 Multi-Sig</a>'
+                + '<a href="/houselookbook/">🏠 House-Look-Book</a>'
+                + '<a href="/wherenobiz/">🌍 WhereNoBiz</a>'
+                + '<a href="/find-best-price/">💰 Find Best Price</a>';
         } else {
             navLinks += '<a href="/chat/" data-i18n="nav.chat">💬 Chat</a>'
                 + '<a href="/eco-3/" data-i18n="nav.eco3">🤖 ECO-3</a>'
@@ -201,6 +204,10 @@ const KCY_NAV = {
         var btn = document.getElementById('kcy-guest-toggle');
         var badge = document.getElementById('kcy-adm-badge');
         if (!btn) return;
+        // Ако имаш ?adm=bgmasters-set (или session) — покажи админ-блока ДОРИ в guest mode,
+        // за да се вижда бутонът „включи" и да можеш да си върнеш админа без триене на кукита.
+        var block = document.getElementById('kcy-nav-admin');
+        if (block && this.isAdmin()) block.style.display = '';
         var guest = this.isGuestMode();
         // отрази текущото състояние
         if (guest) {

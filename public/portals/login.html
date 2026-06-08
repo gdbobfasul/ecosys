@@ -37,6 +37,22 @@
 
         <div id="msg" class="msg"></div>
 
+        <div id="fb-or" style="display:none; text-align:center; margin:18px 0 0; color:#aaa;">— или —</div>
+        <button id="btn-fb" style="display:none; width:100%; margin-top:12px; padding:14px; background:#1877f2; color:#fff; border:none; border-radius:8px; font-size:1.05em; cursor:pointer; font-weight:600;">
+            <b style="font-family:Georgia,serif;">f</b>&nbsp;&nbsp;Вход с Facebook
+        </button>
+        <div id="g-btn" style="display:none; margin-top:12px;"></div>
+
+        <!-- Данни за вход БЕЗ Facebook (показват се само при ПЪРВО влизане) -->
+        <div id="fb-creds" style="display:none; margin-top:18px; padding:16px; background:#eef9f0; border:2px solid #2ecc71; border-radius:10px;">
+            <b style="color:#070;">✅ Регистриран!</b>
+            <p style="margin:8px 0; color:#333; font-size:.95em;">Следващия път можеш да влезеш и <b>без Facebook</b> с тези данни — <b>запиши ги</b>:</p>
+            <div style="font-family:monospace; background:#fff; padding:10px; border-radius:6px; line-height:1.7;">
+                Потребител: <b id="fb-user"></b><br>Парола: <b id="fb-pass"></b>
+            </div>
+            <button id="btn-continue" class="btn-primary">Продължи →</button>
+        </div>
+
         <a href="./register.html" class="btn-register-big" data-i18n="r.130">📝 Нямам акаунт — Регистрация</a>
 
         <a class="back" href="/" data-i18n="r.109">← обратно към KCY Ecosystem</a>
@@ -74,6 +90,70 @@
 
         document.getElementById('btn-login').addEventListener('click', doLogin);
         document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+        // ── Facebook Login ── (бутонът се показва само ако порталът има App ID настроен)
+        let fbReady = false;
+        fetch('/api/portals/fb-config').then(r => r.json()).then(cfg => {
+            if (!cfg.enabled || !cfg.appId) return;   // не е настроено → не показвай бутона
+            document.getElementById('fb-or').style.display = '';
+            const btn = document.getElementById('btn-fb'); btn.style.display = '';
+            window.fbAsyncInit = function () { FB.init({ appId: cfg.appId, cookie: true, xfbml: false, version: 'v19.0' }); fbReady = true; };
+            (function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = 'https://connect.facebook.net/en_US/sdk.js'; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'facebook-jssdk'));
+            btn.addEventListener('click', function () {
+                if (!fbReady || typeof FB === 'undefined') { showMsg('Facebook още се зарежда, опитай пак след миг…'); return; }
+                FB.login(function (resp) {
+                    if (!resp.authResponse) { showMsg('Facebook вход отказан.'); return; }
+                    fbLogin(resp.authResponse.accessToken);
+                }, { scope: 'email' });
+            });
+        }).catch(function () { /* порталът не върви — тихо */ });
+
+        // Обща обработка на резултата от Facebook/Google (показва данните при ПЪРВО влизане)
+        function oauthResult(data) {
+            if (data.new_account && data.credentials) {
+                document.getElementById('fb-user').textContent = data.credentials.username;
+                document.getElementById('fb-pass').textContent = data.credentials.password;
+                document.getElementById('fb-creds').style.display = 'block';
+                ['btn-fb', 'g-btn', 'fb-or'].forEach(function (id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; });
+                document.getElementById('btn-continue').onclick = function () { location.href = nextUrl; };
+            } else {
+                showMsg(T('login.success', 'Успешен вход — пренасочване…'), 'ok');
+                setTimeout(function () { location.href = nextUrl; }, 400);
+            }
+        }
+
+        async function fbLogin(accessToken) {
+            try {
+                const r = await fetch('/api/portals/facebook-login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accessToken }) });
+                const data = await r.json();
+                if (!r.ok) { showMsg(data.message || 'Facebook вход се провали.'); return; }
+                oauthResult(data);
+            } catch (e) { showMsg('Мрежова грешка: ' + e.message); }
+        }
+
+        // ── Google Login ── (Google Identity Services; рендерира се само ако е настроено)
+        fetch('/api/portals/google-config').then(r => r.json()).then(cfg => {
+            if (!cfg.enabled || !cfg.clientId) return;
+            document.getElementById('fb-or').style.display = '';
+            const holder = document.getElementById('g-btn'); holder.style.display = '';
+            const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; s.defer = true;
+            s.onload = function () {
+                if (!window.google || !google.accounts) return;
+                google.accounts.id.initialize({ client_id: cfg.clientId, callback: googleCb });
+                google.accounts.id.renderButton(holder, { theme: 'outline', size: 'large', width: 360, text: 'continue_with' });
+            };
+            document.head.appendChild(s);
+        }).catch(function () { });
+
+        async function googleCb(resp) {
+            if (!resp || !resp.credential) { showMsg('Google вход отказан.'); return; }
+            try {
+                const r = await fetch('/api/portals/google-login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ credential: resp.credential }) });
+                const data = await r.json();
+                if (!r.ok) { showMsg(data.message || 'Google вход се провали.'); return; }
+                oauthResult(data);
+            } catch (e) { showMsg('Мрежова грешка: ' + e.message); }
+        }
     </script>
 
     <!-- Хедър/меню — както в останалите портал-страници (navigation.js сам го инжектира най-отгоре). -->
