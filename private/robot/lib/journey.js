@@ -107,6 +107,33 @@ async function runStep(step, page, ctx, base, navTimeout) {
   throw new Error('непознат вид стъпка: ' + Object.keys(step).join(','));
 }
 
+// При ПРОВАЛ на стъпка логваме действието в лога на съответното приложение
+// (<app>-errors.log) — „на съответната страница". При УСПЕХ не логваме нищо.
+let _createDebug;
+try { _createDebug = require('../../shared/debug-helper').create; }
+catch (e) { _createDebug = () => ({ error() {} }); }
+const _appDbg = {};
+function appLog(app) { return _appDbg[app] || (_appDbg[app] = _createDebug(app || 'robot')); }
+
+// Описва ЕДНО действие за лога при грешка: какво е попълнено/избрано/натиснато/заявено.
+// Паролите се маскират. Ползва се само при провал (виж по-долу).
+function describeStep(step, ctx) {
+  const mask = (sel, val) => (/pass|парол|pin/i.test(String(sel)) ? '***' : String(val == null ? '' : val).slice(0, 80));
+  if ('goto' in step) return `отвори ${resolve(step.goto, ctx)}`;
+  if ('fill' in step) return `попълни ${step.fill} = "${mask(step.fill, resolve(step.value, ctx))}"`;
+  if ('select' in step) return `избра ${step.select} = "${mask(step.select, resolve(step.value, ctx))}"`;
+  if ('click' in step) return `натисна ${step.click}`;
+  if ('expect' in step) return `чака елемент ${step.expect}`;
+  if ('api' in step) {
+    const a = step.api;
+    let body = '';
+    try { body = JSON.stringify(typeof a.json === 'function' ? a.json(ctx) : (a.json || a.data || '')); } catch (_) {}
+    body = body.replace(/("[^"]*(?:pass|парол)[^"]*"\s*:\s*)"[^"]*"/gi, '$1"***"').slice(0, 140);
+    return `заявка ${(a.method || 'GET')} ${resolve(a.path, ctx)} ${body}`;
+  }
+  return stepLabel(step);
+}
+
 // Изпълнява всички сценарии на едно журито; връща резултати + пише находки в sink.
 async function runJourney(journey, page, ctx, base, navTimeout, sink, log) {
   const out = [];
@@ -114,9 +141,12 @@ async function runJourney(journey, page, ctx, base, navTimeout, sink, log) {
     log(`  ▶ ${sc.name}`);
     const steps = [];
     let failed = false;
+    let trail = [];   // действия на ТЕКУЩАТА страница/форма (нулира се при навигация)
     for (const step of sc.steps) {
       const label = stepLabel(step);
       if (failed) { steps.push({ step: label, skipped: true }); continue; }
+      if ('goto' in step) trail = [];                 // нова страница/изглед → нов контекст
+      trail.push(describeStep(step, ctx));
       try {
         await runStep(step, page, ctx, base, navTimeout);
         steps.push({ step: label, ok: true });
@@ -124,6 +154,12 @@ async function runJourney(journey, page, ctx, base, navTimeout, sink, log) {
         const msg = (e.message || String(e)).split('\n')[0].slice(0, 200);
         steps.push({ step: label, ok: false, error: msg });
         sink.push({ ts: new Date().toISOString(), severity: 'error', kind: 'journey', app: journey.app, scenario: sc.name, targetUrl: page.url(), detail: `${label}: ${msg}` });
+        // САМО при грешка → в лога на приложението: КАКВО попълни/натисна на ТАЗИ
+        // страница/форма (не цялото журито) + грешката. При успех не се логва нищо.
+        try {
+          const did = trail.slice(-10).join('  ·  ');
+          appLog(journey.app).error(`[робот] ${sc.name} @ ${page.url()}\n   действия: ${did}\n   ✗ ${label}: ${msg}`);
+        } catch (_) {}
         failed = true;
         log(`     ✗ ${label} — ${msg}`);
       }

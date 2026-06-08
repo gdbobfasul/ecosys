@@ -60,6 +60,42 @@ module.exports = {
       ],
     },
     {
+      name: 'Играй → спечели (прати висок резултат) → влез в ранглистата',
+      steps: [
+        { label: 'POST /api/portals/gms/score — симулирай печалба', run: async (page, c, h) => {
+          const slug = c.gameSlug || 'plane-dodge';
+          c.winScore = 99001;
+          const r = await page.request.post(h.base + '/api/portals/gms/score', { data: { game_slug: slug, score: c.winScore, level: 7 }, failOnStatusCode: false });
+          if (r.status() !== 200) throw new Error('score HTTP ' + r.status());
+          const b = await r.json().catch(() => ({}));
+          if (!b.ok || Number(b.best_score) < c.winScore) throw new Error('прогресът не отрази печалбата: ' + JSON.stringify(b).slice(0, 120));
+        } },
+        { label: 'GET /api/portals/gms/leaderboard/<slug> — печелившият е в класацията с верния резултат', run: async (page, c, h) => {
+          const slug = c.gameSlug || 'plane-dodge';
+          const r = await page.request.get(h.base + '/api/portals/gms/leaderboard/' + slug + '?' + ADM, { failOnStatusCode: false });
+          if (r.status() !== 200) throw new Error('leaderboard HTTP ' + r.status());
+          const b = await r.json().catch(() => ({}));
+          const me = (b.top || []).find((t) => t.username === c.user);
+          if (!me) throw new Error('потребителят не е в ранглистата след печалба');
+          if (Number(me.score) < c.winScore) throw new Error('резултатът в ранглистата е по-нисък от спечеления: ' + me.score);
+        } },
+      ],
+    },
+    {
+      name: '„Лош" вход: невалидни резултати → грациозен отказ (НЕ 500)',
+      steps: [
+        { label: 'POST score с отрицателен резултат → 400, не 500', run: async (page, c, h) => {
+          const r = await page.request.post(h.base + '/api/portals/gms/score', { data: { game_slug: c.gameSlug || 'plane-dodge', score: -5, level: 1 }, failOnStatusCode: false });
+          if (r.status() >= 500) throw new Error('отрицателен резултат върна ' + r.status() + ' (трябва 400)');
+          if (r.status() !== 400) throw new Error('отрицателен резултат: очаквах 400, върна ' + r.status());
+        } },
+        { label: 'POST score за измислена игра → отказ, не 500', run: async (page, c, h) => {
+          const r = await page.request.post(h.base + '/api/portals/gms/score', { data: { game_slug: 'robot-hack-game', score: 1, level: 1 }, failOnStatusCode: false });
+          if (r.status() >= 500) throw new Error('непозната игра върна ' + r.status() + ' (трябва 400)');
+        } },
+      ],
+    },
+    {
       name: 'Почистване (трий тестовите потребители)',
       steps: [
         { api: { method: 'POST', path: '/api/portals/adm/cleanup-test', json: {} } },

@@ -427,8 +427,9 @@ app.post('/generate', eco3RequireLogin, async (req, res) => {
     if (isTest) {
         logRequest('GENERATE', `[TEST MODE] no API call`);
         const userMsg = (messages && messages[0]?.content) || '';
-        const agent = system?.includes('DIRECTOR') ? 'director' 
-            : system?.includes('ARCHITECT') ? 'architect' : 'executor';
+        const sysStr = String(system || '');   // system може да е число/обект → .includes гърмеше (500)
+        const agent = sysStr.includes('DIRECTOR') ? 'director'
+            : sysStr.includes('ARCHITECT') ? 'architect' : 'executor';
         
         const mockText = agent === 'director'
             ? `[TEST] Директор: Анализ на "${userMsg.substring(0, 80)}". Намерени 8 източника от 5 държави. Структура: Въведение → Основна част → Заключение. Източници: Reuters, BBC, DW, Al Jazeera, БНТ.`

@@ -1290,6 +1290,7 @@ server {
     client_max_body_size 100M;
 
     # Frontend
+    location = /favicon.ico { access_log off; log_not_found off; return 204; }
     location / { try_files \$uri \$uri/ /index.html; }
 
     # Самостоятелни приложения (House-Look-Book, WhereNoBiz) — управлявани
@@ -1383,6 +1384,7 @@ server {
     location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2)$ {
         expires 30d;
         add_header Cache-Control "public, immutable";
+        add_header X-Served-By "${KCY_ROLE}" always;
     }
 }
 NGINXEOF
