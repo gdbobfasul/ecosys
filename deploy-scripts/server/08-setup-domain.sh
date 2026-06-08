@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0194
+# Version: 1.0195
 ##############################################################################
 # KCY — Отделните приложни домейни + SSL (чете private/configs/domains.conf).
 #
@@ -179,3 +179,13 @@ printf '%s\n' "$APP_DOMAIN_MAP" | while read -r dom key; do
     fi
 done
 echo -e "  ${YELLOW}(главният ${MAIN_DOMAIN} е от 05 — не се пипа тук)${NC}"
+
+# ── Failover авто-възстановяване: 08 пресъздаде kcy-app-domains.conf и го пусна
+# пак → ако failover е бил активен, връщаме го (иначе app-домейните конфликтват
+# с failover front-а). No-op ако failover не е бил активен (няма маркер). ──
+FAILOVER_SH="$(dirname "$0")/12-setup-failover.sh"
+if [ -f "$FAILOVER_SH" ] && [ -f /etc/kcy-failover.conf ]; then
+    echo ""
+    echo -e "${CYAN}  Failover е бил активен — възстановявам след пресъздаването...${NC}"
+    bash "$FAILOVER_SH" --auto-restore || echo -e "  ${YELLOW}! Failover restore не мина — пусни ръчно опция 37${NC}"
+fi
