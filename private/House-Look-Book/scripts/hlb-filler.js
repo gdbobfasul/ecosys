@@ -12,9 +12,9 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', 'configs', '.env') });
 const db = require('../db');
 
-// Имена (BG) за заглавията — съвпадат с house-render.js.
-const FOOTPRINTS = { square: 'Квадратна', rect: 'Правоъгълна', lshape: 'L-образна', dome: 'С купол', snail: 'Като охлюв', waterlily: 'Водна лилия', cabin: 'Дървена колиба', inverted: 'Обърната' };
-const ROOFS = { gabled: 'Двускатен', flat: 'Плосък', dome: 'Купол', inverted: 'Обърнат', none: 'Без покрив' };
+// Имена (EN, международно) за заглавията.
+const FOOTPRINTS = { square: 'Square', rect: 'Rectangular', lshape: 'L-shape', dome: 'Dome', snail: 'Snail', waterlily: 'Water lily', cabin: 'Cabin', inverted: 'Inverted' };
+const ROOFS = { gabled: 'Gabled', flat: 'Flat', dome: 'Dome', inverted: 'Inverted', none: 'No roof' };
 // Странните форми/покриви се падат по-често.
 const FP_POOL = ['snail', 'waterlily', 'inverted', 'dome', 'cabin', 'lshape', 'snail', 'waterlily', 'inverted', 'square', 'rect'];
 const ROOF_POOL = ['inverted', 'dome', 'gabled', 'flat', 'none', 'inverted', 'dome'];
@@ -68,8 +68,8 @@ function genParams() {
   let ok = 0, fail = 0;
   for (let i = 0; i < N; i++) {
     const p = genParams();
-    const title = `Къща «${FOOTPRINTS[p.footprint] || p.footprint}» · ${ROOFS[p.roof] || p.roof} покрив · ${p.floors} ет.${p.basements ? ', ' + p.basements + ' мазе' : ''}`;
-    const description = 'Генериран примерен модел — експериментална форма. Разгледай и сглоби своя по-добър в конструктора.';
+    const title = `House · ${FOOTPRINTS[p.footprint] || p.footprint} · ${ROOFS[p.roof] || p.roof} roof · ${p.floors}F${p.basements ? ' + ' + p.basements + 'B' : ''}`;
+    const description = 'Generated sample model — experimental shape. Explore and build a better one in the composer.';
     try {
       await db.q(
         `INSERT INTO proposals (owner_id, title, description, composer_params, status, approved_at, edit_window_until, is_system)
