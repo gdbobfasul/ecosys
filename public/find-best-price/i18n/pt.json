@@ -113,5 +113,7 @@
   "zp.note": "nota / link / explicação",
   "zp.send_offer": "Enviar oferta",
   "zp.offer_sent": "Oferta enviada!",
-  "zp.published": "Publicado!"
+  "zp.published": "Publicado!",
+  "zp.password": "Senha",
+  "zp.logout": "Sair"
 }

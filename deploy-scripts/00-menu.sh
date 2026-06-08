@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0174
+# Version: 1.0176
 ##############################################################################
 # KCY Ecosystem — Start Menu
 # Един menu item = един реален скрипт. Параметрите се питат след избор.
@@ -1032,23 +1032,32 @@ run_choice() {
             ;;
         37)
             echo ""
-            echo "  Failover (главен + приложни домейни) — ДВЕ стъпки, в този ред:"
-            echo "  VM = primary (когато е пусната), VPS = SSL front + backup."
+            echo -e "${BOLD}${CYAN}  Failover — настройка (VM=primary при включена, VPS=SSL front+backup)${NC}"
+            echo -e "  ${YELLOW}⚠ Пипа nginx на ДВЕТЕ машини. Качвам ТЕКУЩИЯ (поправен) скрипт и го пускам.${NC}"
             echo ""
-            echo -e "  ${YELLOW}⚠ Деплой ПЪРВО, failover ПОСЛЕДНО — опция 2 трие failover-а.${NC}"
-            echo ""
-            echo -e "  ${BOLD}1) На VM-а${NC} (prep: всички домейни да слушат и на 8080 plain):"
-            echo -e "     ${CYAN}ssh -i ~/.ssh/id_ed25519 -p 2222 deploy@192.168.0.108${NC}"
-            echo -e "     ${CYAN}sudo /var/www/deploy/deploy-scripts/server/12-setup-failover.sh --vm-prep${NC}"
-            echo ""
-            echo -e "  ${BOLD}2) На VPS-а${NC} (front+backup; ЗАДЪЛЖИТЕЛНО с Tailscale IP-то на VM):"
-            echo -e "     ${CYAN}ssh deploy@${MAIN_DOMAIN} -p 2222${NC}"
-            echo -e "     ${CYAN}sudo /var/www/deploy/deploy-scripts/server/12-setup-failover.sh 100.119.216.84${NC}"
-            echo ""
-            echo "  Проверка: curl -sI https://find.jwork.ru | grep -i served-by"
-            echo "    X-Served-By: VM → VM обслужва;  PROD → локалният VPS."
-            echo -e "  ${CYAN}Връщане:${NC} ...12-setup-failover.sh --revert (на VPS-а)"
-            press_enter
+            LSH="$SCRIPT_DIR/server/12-setup-failover.sh"           # локалният (актуален) скрипт
+            RPATH="/var/www/deploy/deploy-scripts/server/12-setup-failover.sh"   # whitelist-нат път на сървъра
+            VM_LAN="192.168.0.108"; VM_TS="100.119.216.84"
+            if [ ! -f "$LSH" ]; then echo -e "  ${RED}Липсва $LSH${NC}"; press_enter
+            else
+              read -p "  Да настроя failover СЕГА (VM-prep + VPS)? [y/N]: " conf
+              if [ "$conf" = "y" ] || [ "$conf" = "Y" ]; then
+                echo ""
+                echo -e "  ${CYAN}→ 1/2 VM (${VM_LAN}): качвам скрипта + vm-prep…${NC}"
+                if scp -q -i ~/.ssh/id_ed25519 -P 2222 "$LSH" "deploy@${VM_LAN}:${RPATH}" \
+                   && ssh -t -i ~/.ssh/id_ed25519 -p 2222 "deploy@${VM_LAN}" "sudo ${RPATH} --vm-prep"; then
+                    echo -e "  ${GREEN}✓ VM готов${NC}"
+                    echo ""
+                    echo -e "  ${CYAN}→ 2/2 живия (${MAIN_DOMAIN}): качвам скрипта + failover…${NC}"
+                    if scp -q -P 2222 "$LSH" "deploy@${MAIN_DOMAIN}:${RPATH}" \
+                       && ssh -t -p 2222 "deploy@${MAIN_DOMAIN}" "sudo ${RPATH} ${VM_TS}"; then
+                        echo -e "  ${GREEN}✓ Failover активен.${NC} Проверка:"
+                        echo -e "    ${CYAN}curl -sI https://${MAIN_DOMAIN} | grep -i served-by${NC}   (VM = VM-ката · PROD = живият)"
+                    else echo -e "  ${RED}✗ Стъпка 2 (VPS) се провали — виж изхода горе${NC}"; fi
+                else echo -e "  ${RED}✗ Стъпка 1 (VM-prep) се провали — VM-ката достъпна ли е на ${VM_LAN}?${NC}"; fi
+              else echo "  Отказано. (Връщане: на живия → sudo ${RPATH} --revert)"; fi
+              press_enter
+            fi
             ;;
 
         # ── DANGEROUS ──

@@ -113,5 +113,7 @@
   "common.loading": "Loading...",
   "common.from": "from",
   "common.per": "per",
-  "common.all": "All"
+  "common.all": "All",
+  "zp.password": "Password",
+  "zp.logout": "Log out"
 }

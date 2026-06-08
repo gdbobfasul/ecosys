@@ -101,6 +101,7 @@
   "shape.trapezoid": "Trapecio",
   "floorplan.empty": "sin habitaciones",
   "floorplan.label": "Planta {n} — plano",
+  "floor.short": "Planta {n}",
   "floorplan.room": "plano",
   "fn.bed": "Cama",
   "fn.sofa": "Sofá",

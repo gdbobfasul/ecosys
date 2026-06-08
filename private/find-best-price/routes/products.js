@@ -4,6 +4,7 @@
 const express = require('express');
 const { one, all } = require('../db');
 const { requireAuth } = require('../middleware/auth');
+const debug = require('../../shared/debug-helper').create('fbp');
 
 const router = express.Router();
 // Категории по ВИД (kind): продукт/резервна част → продуктови; услуга → услугови.
@@ -17,6 +18,8 @@ function validCat(kind, cat) { return kind === 'service' ? SERVICE_CATS.includes
 // POST /api/fbp/products  { business_id, kind?, category, name, price, currency?, quality?, materials?, manufacturer?, brand?, fits_product? }
 router.post('/', requireAuth, async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'POST /products');
+    log('старт');
     const p = req.body || {};
     const kind = KINDS.includes(p.kind) ? p.kind : 'product';
     // обектът трябва да е на текущия потребител
@@ -26,6 +29,7 @@ router.post('/', requireAuth, async (req, res, next) => {
     if (!p.name || !String(p.name).trim()) return res.status(400).json({ error: 'no_name', message: 'Името е задължително.' });
     const price = Number(p.price);
     if (!isFinite(price) || price < 0) return res.status(400).json({ error: 'bad_price', message: 'Невалидна цена.' });
+    log('1');
     const row = await one(
       `INSERT INTO products (business_id, kind, category, name, price, currency, quality, materials, manufacturer, brand, fits_product)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
@@ -34,21 +38,25 @@ router.post('/', requireAuth, async (req, res, next) => {
         p.quality || null, p.materials || null, p.manufacturer || null, p.brand || null,
         kind === 'sparepart' ? (p.fits_product || null) : null]
     );
+    log('край → 201');
     res.status(201).json({ product: row });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('POST /products:', e && e.message); next(e); }
 });
 
 // GET /api/fbp/products/mine — продуктите на потребителя (през неговите обекти)
 router.get('/mine', requireAuth, async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'GET /products/mine');
+    log('старт');
     const rows = await all(
       `SELECT p.*, b.name AS business_name FROM products p
        JOIN businesses b ON b.id = p.business_id
        WHERE b.owner_id = $1 ORDER BY p.created_at DESC`,
       [req.user.id]
     );
+    log('край → 200');
     res.json({ products: rows });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('GET /products/mine:', e && e.message); next(e); }
 });
 
 module.exports = router;

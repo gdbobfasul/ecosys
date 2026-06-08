@@ -101,6 +101,7 @@
   "shape.trapezoid": "台形",
   "floorplan.empty": "部屋が未設定",
   "floorplan.label": "{n}階 — 間取り",
+  "floor.short": "{n}階",
   "floorplan.room": "間取り",
   "fn.bed": "ベッド",
   "fn.sofa": "ソファ",

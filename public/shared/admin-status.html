@@ -1,4 +1,4 @@
-<!-- Version: 1.0172 -->
+<!-- Version: 1.0199 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -187,6 +187,11 @@
         { file: 'chat-errors.log',     label: '💬 chat',        desc: 'kcy-chat journalctl' },
         { file: 'eco3-errors.log',     label: '🤖 eco-3',       desc: 'kcy-eco3 journalctl' },
         { file: 'portal-errors.log',   label: '🌐 portal',      desc: 'kcy-portals journalctl' },
+        { file: 'fbp-errors.log',      label: '🏷️ Find Best Price', desc: 'kcy-fbp + stage логове' },
+        { file: 'wnb-errors.log',      label: '🌍 WhereNoBiz',  desc: 'kcy-wnb + stage логове' },
+        { file: 'hlb-errors.log',      label: '🏠 House-Look-Book', desc: 'kcy-hlb + stage логове' },
+        { file: 'db-errors.log',       label: '🗄️ Бази (всички)', desc: 'DB състояние от health endpoint-ите' },
+        { file: 'filldata-errors.log', label: '🧪 FILL DATA',   desc: 'скриптове за пълнене с данни' },
         { file: 'web-errors.log',      label: '🌍 nginx',       desc: 'nginx error.log' },
         { file: 'services-errors.log', label: '⚙️ всички services', desc: 'systemctl status + restarts' },
         { file: 'health-errors.log',   label: '🔌 health',      desc: 'портове + API endpoints' },
@@ -423,6 +428,9 @@
                             ${epRow('chat :3000', 'chat', 'port_3000')}
                             ${epRow('eco-3 :3001', 'eco3', 'port_3001')}
                             ${epRow('portals :3002', 'portals', 'port_3002')}
+                            ${epRow('hlb :3010', 'hlb', 'port_3010')}
+                            ${epRow('wnb :3011', 'wnb', 'port_3011')}
+                            ${epRow('fbp :3012', 'fbp', 'port_3012')}
                             ${epRow('diag :4400', 'diag', 'port_4400')}
                         </div>
                     </div>

@@ -268,8 +268,9 @@ if [ "$1" = "--vm-prep" ]; then
         if grep -q "listen.*8080" "$f"; then
             echo -e "  ${YELLOW}↷${NC} $(basename "$f"): 8080 listen вече съществува"
         else
-            # След всеки 'listen ... 443 ...' ред добави 'listen 0.0.0.0:8080;'
-            sed -i -E '/listen[^;]*443/a\    listen 0.0.0.0:8080;' "$f"
+            # Добави 'listen 0.0.0.0:8080;' само след IPv4 'listen 443 …' (НЕ след
+            # 'listen [::]:443' — иначе два 8080 в един блок → nginx duplicate listen).
+            sed -i -E '/listen[[:space:]]+443([[:space:]]|;)/a\    listen 0.0.0.0:8080;' "$f"
             echo -e "  ${GREEN}✓${NC} $(basename "$f"): добавен listen 0.0.0.0:8080"
         fi
     done

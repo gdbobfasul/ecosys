@@ -113,5 +113,7 @@
   "zp.note": "ملاحظة / رابط / شرح",
   "zp.send_offer": "إرسال العرض",
   "zp.offer_sent": "تم إرسال العرض!",
-  "zp.published": "تم النشر!"
+  "zp.published": "تم النشر!",
+  "zp.password": "كلمة المرور",
+  "zp.logout": "تسجيل الخروج"
 }

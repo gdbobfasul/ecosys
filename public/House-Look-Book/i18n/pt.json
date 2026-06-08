@@ -101,6 +101,7 @@
   "shape.trapezoid": "Trapézio",
   "floorplan.empty": "nenhum cômodo definido",
   "floorplan.label": "Andar {n} — planta",
+  "floor.short": "Andar {n}",
   "floorplan.room": "planta",
   "fn.bed": "Cama",
   "fn.sofa": "Sofá",

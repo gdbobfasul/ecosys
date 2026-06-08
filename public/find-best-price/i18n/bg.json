@@ -113,5 +113,7 @@
   "common.loading": "Зареждане...",
   "common.from": "от",
   "common.per": "за",
-  "common.all": "Всички"
+  "common.all": "Всички",
+  "zp.password": "Парола",
+  "zp.logout": "Изход"
 }

@@ -14,10 +14,12 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', 'configs', '.env') });
 const { initializeDatabase } = require('../utils/database');
 const { pickReply } = require('./autoreply-banks');
+const filllog = require('../../shared/debug-helper').create('filldata');
 
 const MAX = Math.max(1, Math.min(20000, parseInt(process.argv[2], 10) || 500));
 
 (async () => {
+  filllog.info('fill-system-replies.js старт');
   console.log('FILL DATA · чат авто-отговори — стартирам…');
   const db = await initializeDatabase();
 
@@ -76,6 +78,7 @@ const MAX = Math.max(1, Math.min(20000, parseInt(process.argv[2], 10) || 500));
     }
   }
   console.log(`✅ Отговорени ${replied} съобщения. По намерение:`, JSON.stringify(byIntent));
+  filllog.info('fill-system-replies.js край', replied);
   if (db.close) await db.close();
   process.exit(0);
-})().catch(e => { console.error('FILL DATA авто-отговори fatal:', e.message); process.exit(1); });
+})().catch(e => { filllog.error('fill-system-replies.js:', e && e.message); console.error('FILL DATA авто-отговори fatal:', e.message); process.exit(1); });

@@ -11,6 +11,8 @@
 
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', 'configs', '.env') });
 const db = require('../db');
+const debug = require('../../shared/debug-helper').create('fbp');
+const filllog = require('../../shared/debug-helper').create('filldata');
 
 const DAILY_CAP = 3; // ТВЪРД таван Google заявки на ден
 const GKEY = process.env.FBP_GOOGLE_API_KEY || process.env.HLB_GOOGLE_API_KEY;
@@ -69,6 +71,8 @@ async function googleSearch(query, gl) {
 }
 
 (async () => {
+  debug.info('script fbp-scraper.js старт');
+  filllog.info('fbp-scraper.js старт');
   console.log('FILL DATA · FBP скрапер — старт…');
   if (!GKEY || !GCX) { console.error('✗ Липсва Google ключ (FBP_GOOGLE_API_KEY/CX или HLB_*). Спирам.'); process.exit(1); }
   await db.applySchema();
@@ -120,6 +124,7 @@ async function googleSearch(query, gl) {
     }
   }
   console.log(`✅ Готово. Google заявки: ${calls}. Нови магазини: ${stores}. Нови продукти: ${prods}.`);
+  filllog.info('fbp-scraper.js край', prods);
   await db.pool.end();
   process.exit(0);
-})().catch(e => { console.error('FBP скрапер fatal:', e.message); process.exit(1); });
+})().catch(e => { debug.error('script fbp-scraper.js:', e && e.message); filllog.error('fbp-scraper.js:', e && e.message); console.error('FBP скрапер fatal:', e.message); process.exit(1); });

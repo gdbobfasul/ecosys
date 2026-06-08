@@ -113,5 +113,7 @@
   "zp.note": "メモ / リンク / 説明",
   "zp.send_offer": "オファーを送る",
   "zp.offer_sent": "オファーを送信しました！",
-  "zp.published": "投稿しました！"
+  "zp.published": "投稿しました！",
+  "zp.password": "パスワード",
+  "zp.logout": "ログアウト"
 }

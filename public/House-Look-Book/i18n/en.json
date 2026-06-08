@@ -108,6 +108,7 @@
   "shape.trapezoid": "Trapezoid",
   "floorplan.empty": "no rooms set",
   "floorplan.label": "Floor {n} — plan",
+  "floor.short": "Floor {n}",
   "floorplan.room": "plan",
   "fn.bed": "Bed", "fn.sofa": "Sofa", "fn.sofaset": "Living room set", "fn.armchair": "Armchair",
   "fn.coffee": "Coffee table", "fn.table": "Table", "fn.chair": "Chair", "fn.desk": "Desk",

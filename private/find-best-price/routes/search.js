@@ -5,12 +5,15 @@
 
 const express = require('express');
 const { all } = require('../db');
+const debug = require('../../shared/debug-helper').create('fbp');
 
 const router = express.Router();
 
 // GET /api/fbp/search?category=&country=&city=&village=&district=&price_min=&price_max=&quality=&materials=&manufacturer=&brand=
 router.get('/', async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'GET /search');
+    log('старт');
     const Q = req.query || {};
     const where = []; const params = []; let i = 1;
     const eq = (col, val) => { where.push(`${col} = $${i}`); params.push(val); i++; };
@@ -38,9 +41,11 @@ router.get('/', async (req, res, next) => {
        ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
        ORDER BY p.price ASC
        LIMIT 200`;
+    log('1');
     const rows = await all(sql, params);
+    log('край → 200');
     res.json({ count: rows.length, results: rows });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('GET /search:', e && e.message); next(e); }
 });
 
 module.exports = router;

@@ -8,6 +8,7 @@ const { q, one, all, pool } = require('../db');
 const { requireAuth, requireRole } = require('../middleware/auth');
 const { load } = require('../config-loader');
 const { roleForEmail } = require('../roles');
+const debug = require('../../shared/debug-helper').create('wnb');
 
 const router = express.Router();
 router.use(requireAuth, requireRole('moderator', 'admin'));
@@ -22,31 +23,39 @@ async function logAction(client, { post_id, target_user, actor_id, action, note 
 // GET /api/wnb/moderation/pending
 router.get('/pending', async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'GET /pending');
+    log('старт');
     const rows = await all(
       `SELECT p.*, u.email AS owner_email, u.display_name AS owner_name
        FROM posts p JOIN users u ON u.id = p.owner_id
        WHERE p.status = 'pending_moderation' ORDER BY p.submitted_at ASC`
     );
+    log('край → 200');
     res.json({ pending: rows });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('GET /pending:', e && e.message); next(e); }
 });
 
 // GET /api/wnb/moderation/reports
 router.get('/reports', async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'GET /reports');
+    log('старт');
     const rows = await all(
       `SELECT r.*, p.title AS post_title, p.country_code, ru.display_name AS reporter_name
        FROM reports r JOIN posts p ON p.id = r.post_id JOIN users ru ON ru.id = r.reporter_id
        WHERE r.status = 'pending' ORDER BY r.created_at ASC`
     );
+    log('край → 200');
     res.json({ reports: rows });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('GET /reports:', e && e.message); next(e); }
 });
 
 // POST /api/wnb/moderation/posts/:id/approve
 router.post('/posts/:id/approve', async (req, res, next) => {
   const client = await pool.connect();
   try {
+    const log = debug.scoped(req, 'POST /posts/:id/approve');
+    log('старт');
     await client.query('BEGIN');
     const updated = await client.query(
       `UPDATE posts SET status = 'approved', approved_at = now(), moderated_by = $2, moderation_note = $3, updated_at = now()
@@ -54,10 +63,12 @@ router.post('/posts/:id/approve', async (req, res, next) => {
       [req.params.id, req.user.id, (req.body && req.body.note) || null]
     );
     if (!updated.rows[0]) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'not_found' }); }
+    log('1');
     await logAction(client, { post_id: req.params.id, actor_id: req.user.id, action: 'approve', note: req.body?.note });
     await client.query('COMMIT');
+    log('край → 200');
     res.json({ post: updated.rows[0] });
-  } catch (e) { try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
+  } catch (e) { debug.error('POST /posts/:id/approve:', e && e.message); try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
   finally { client.release(); }
 });
 
@@ -65,6 +76,8 @@ router.post('/posts/:id/approve', async (req, res, next) => {
 router.post('/posts/:id/reject', async (req, res, next) => {
   const client = await pool.connect();
   try {
+    const log = debug.scoped(req, 'POST /posts/:id/reject');
+    log('старт');
     await client.query('BEGIN');
     const updated = await client.query(
       `UPDATE posts SET status = 'rejected', moderated_by = $2, moderation_note = $3, updated_at = now()
@@ -72,10 +85,12 @@ router.post('/posts/:id/reject', async (req, res, next) => {
       [req.params.id, req.user.id, (req.body && req.body.note) || null]
     );
     if (!updated.rows[0]) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'not_found' }); }
+    log('1');
     await logAction(client, { post_id: req.params.id, actor_id: req.user.id, action: 'reject', note: req.body?.note });
     await client.query('COMMIT');
+    log('край → 200');
     res.json({ post: updated.rows[0] });
-  } catch (e) { try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
+  } catch (e) { debug.error('POST /posts/:id/reject:', e && e.message); try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
   finally { client.release(); }
 });
 
@@ -83,6 +98,8 @@ router.post('/posts/:id/reject', async (req, res, next) => {
 router.post('/posts/:id/remove', async (req, res, next) => {
   const client = await pool.connect();
   try {
+    const log = debug.scoped(req, 'POST /posts/:id/remove');
+    log('старт');
     await client.query('BEGIN');
     const updated = await client.query(
       `UPDATE posts SET status = 'removed', moderated_by = $2, moderation_note = $3, updated_at = now()
@@ -90,10 +107,12 @@ router.post('/posts/:id/remove', async (req, res, next) => {
       [req.params.id, req.user.id, (req.body && req.body.note) || null]
     );
     if (!updated.rows[0]) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'not_found' }); }
+    log('1');
     await logAction(client, { post_id: req.params.id, actor_id: req.user.id, action: 'remove', note: req.body?.note });
     await client.query('COMMIT');
+    log('край → 200');
     res.json({ post: updated.rows[0] });
-  } catch (e) { try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
+  } catch (e) { debug.error('POST /posts/:id/remove:', e && e.message); try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
   finally { client.release(); }
 });
 
@@ -102,12 +121,15 @@ router.post('/posts/:id/remove', async (req, res, next) => {
 router.post('/reports/:id/resolve', async (req, res, next) => {
   const client = await pool.connect();
   try {
+    const log = debug.scoped(req, 'POST /reports/:id/resolve');
+    log('старт');
     const valid = !!(req.body && req.body.valid);
     await client.query('BEGIN');
     const r = await client.query('SELECT * FROM reports WHERE id = $1', [req.params.id]);
     if (!r.rows[0]) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'not_found' }); }
     const report = r.rows[0];
     if (report.status !== 'pending') { await client.query('ROLLBACK'); return res.status(409).json({ error: 'already_resolved' }); }
+    log('1');
 
     await client.query('UPDATE reports SET status = $2, reviewed_by = $3, reviewed_at = now() WHERE id = $1',
       [report.id, valid ? 'valid' : 'invalid', req.user.id]);
@@ -117,8 +139,9 @@ router.post('/reports/:id/resolve', async (req, res, next) => {
       await logAction(client, { post_id: report.post_id, actor_id: req.user.id, action: 'remove', note: 'валиден доклад' });
     }
     await client.query('COMMIT');
+    log('край → 200');
     res.json({ ok: true, valid });
-  } catch (e) { try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
+  } catch (e) { debug.error('POST /reports/:id/resolve:', e && e.message); try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
   finally { client.release(); }
 });
 
@@ -126,16 +149,20 @@ router.post('/reports/:id/resolve', async (req, res, next) => {
 router.post('/users/:id/ban', requireRole('admin'), async (req, res, next) => {
   const client = await pool.connect();
   try {
+    const log = debug.scoped(req, 'POST /users/:id/ban');
+    log('старт');
     await client.query('BEGIN');
     const updated = await client.query(
       `UPDATE users SET is_banned = TRUE, ban_reason = $2, banned_at = now() WHERE id = $1 RETURNING id, email, is_banned`,
       [req.params.id, (req.body && req.body.reason) || 'бан от модератор']
     );
     if (!updated.rows[0]) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'not_found' }); }
+    log('1');
     await logAction(client, { target_user: req.params.id, actor_id: req.user.id, action: 'ban_owner', note: req.body?.reason });
     await client.query('COMMIT');
+    log('край → 200');
     res.json({ user: updated.rows[0] });
-  } catch (e) { try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
+  } catch (e) { debug.error('POST /users/:id/ban:', e && e.message); try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
   finally { client.release(); }
 });
 
@@ -143,6 +170,8 @@ router.post('/users/:id/ban', requireRole('admin'), async (req, res, next) => {
 //   Списък на ВСИЧКИ постове (админ: най-/най-малко потвърждавани, несъгласия, трий).
 router.get('/posts', requireRole('admin'), async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'GET /posts');
+    log('старт');
     const sortMap = { confirm: 'p.confirm_count', unlike: 'p.unlike_count', new: 'p.created_at' };
     const sort = sortMap[req.query.sort] || 'p.confirm_count';
     const order = (req.query.order === 'asc') ? 'ASC' : 'DESC';
@@ -155,13 +184,16 @@ router.get('/posts', requireRole('admin'), async (req, res, next) => {
     const rows = req.query.status
       ? await all(`SELECT ${cols} FROM posts p JOIN users u ON u.id = p.owner_id WHERE p.status = $1 ${tail}`, [req.query.status])
       : await all(`SELECT ${cols} FROM posts p JOIN users u ON u.id = p.owner_id ${tail}`);
+    log('край → 200');
     res.json({ posts: rows });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('GET /posts:', e && e.message); next(e); }
 });
 
 // GET /api/wnb/moderation/users?banned=1
 router.get('/users', requireRole('admin'), async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'GET /users');
+    log('старт');
     const onlyBanned = req.query.banned === '1';
     const rows = await all(
       `SELECT id, email, display_name, is_banned, ban_reason, created_at
@@ -169,24 +201,29 @@ router.get('/users', requireRole('admin'), async (req, res, next) => {
        ORDER BY is_banned DESC, created_at DESC LIMIT 200`
     );
     // Ролята идва от .env (roles.js), не от базата.
+    log('край → 200');
     res.json({ users: rows.map(r => ({ ...r, role: roleForEmail(r.email) })) });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('GET /users:', e && e.message); next(e); }
 });
 
 // POST /api/wnb/moderation/users/:id/unban
 router.post('/users/:id/unban', requireRole('admin'), async (req, res, next) => {
   const client = await pool.connect();
   try {
+    const log = debug.scoped(req, 'POST /users/:id/unban');
+    log('старт');
     await client.query('BEGIN');
     const updated = await client.query(
       `UPDATE users SET is_banned = FALSE, ban_reason = NULL, banned_at = NULL WHERE id = $1
        RETURNING id, email, is_banned`, [req.params.id]
     );
     if (!updated.rows[0]) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'not_found' }); }
+    log('1');
     await logAction(client, { target_user: req.params.id, actor_id: req.user.id, action: 'unban', note: null });
     await client.query('COMMIT');
+    log('край → 200');
     res.json({ user: updated.rows[0] });
-  } catch (e) { try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
+  } catch (e) { debug.error('POST /users/:id/unban:', e && e.message); try { await client.query('ROLLBACK'); } catch (_) {} next(e); }
   finally { client.release(); }
 });
 
@@ -194,7 +231,10 @@ router.post('/users/:id/unban', requireRole('admin'), async (req, res, next) => 
 // Admin/moderator (рутерът вече е зад requireRole). Паролните хешове се маскират.
 router.get('/db', requireRole('admin'), async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'GET /db');
+    log('старт');
     const tnames = await all("SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename");
+    log('1');
     const tables = [];
     for (const t of tnames) {
       const name = t.tablename;
@@ -212,8 +252,9 @@ router.get('/db', requireRole('admin'), async (req, res, next) => {
         rows: safe,
       });
     }
+    log('край → 200');
     res.json({ tables });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('GET /db:', e && e.message); next(e); }
 });
 
 module.exports = router;

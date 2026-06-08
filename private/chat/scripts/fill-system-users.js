@@ -11,6 +11,7 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', 'configs', '.env') });
 const bcrypt = require('bcryptjs');
 const { initializeDatabase } = require('../utils/database');
+const filllog = require('../../shared/debug-helper').create('filldata');
 
 // Държави с локални имена/градове/телефонен префикс — за реалистично разнообразие.
 const COUNTRIES = [
@@ -70,6 +71,7 @@ const pick = a => a[Math.floor(Math.random() * a.length)];
 const digits = n => { let s = ''; for (let i = 0; i < n; i++) s += Math.floor(Math.random() * 10); return s; };
 
 (async () => {
+  filllog.info('fill-system-users.js старт');
   console.log(`FILL DATA · чат — създавам ${COUNT} системни потребители…`);
   const db = await initializeDatabase();
   try { await db.exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS is_system INTEGER DEFAULT 0'); } catch (e) { /* SQLite или вече има */ }
@@ -102,6 +104,7 @@ const digits = n => { let s = ''; for (let i = 0; i < n; i++) s += Math.floor(Ma
   let total = '?';
   try { const r = await db.prepare('SELECT COUNT(*) AS n FROM users WHERE is_system = 1').get(); total = r && (r.n ?? r.count); } catch (e) {}
   console.log(`✅ Добавени ${ok} системни потребители (грешки: ${fail}). Общо системни: ${total}.`);
+  filllog.info('fill-system-users.js край', ok);
   if (db.close) await db.close();
   process.exit(0);
-})().catch(e => { console.error('FILL DATA fatal:', e.message); process.exit(1); });
+})().catch(e => { filllog.error('fill-system-users.js:', e && e.message); console.error('FILL DATA fatal:', e.message); process.exit(1); });

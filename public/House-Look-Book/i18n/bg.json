@@ -108,6 +108,7 @@
   "shape.trapezoid": "Трапец",
   "floorplan.empty": "няма зададени стаи",
   "floorplan.label": "Етаж {n} — план",
+  "floor.short": "Етаж {n}",
   "floorplan.room": "план",
   "fn.bed": "Легло", "fn.sofa": "Диван", "fn.sofaset": "Холна гарнитура", "fn.armchair": "Фотьойл",
   "fn.coffee": "Холна маса", "fn.table": "Маса", "fn.chair": "Стол", "fn.desk": "Бюро",

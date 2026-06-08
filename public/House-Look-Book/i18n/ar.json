@@ -101,6 +101,7 @@
   "shape.trapezoid": "شبه منحرف",
   "floorplan.empty": "لا غرف محددة",
   "floorplan.label": "الطابق {n} — مخطط",
+  "floor.short": "الطابق {n}",
   "floorplan.room": "مخطط",
   "fn.bed": "سرير",
   "fn.sofa": "أريكة",

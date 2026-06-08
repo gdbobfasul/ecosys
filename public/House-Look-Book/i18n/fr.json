@@ -101,6 +101,7 @@
   "shape.trapezoid": "Trapèze",
   "floorplan.empty": "aucune pièce définie",
   "floorplan.label": "Étage {n} — plan",
+  "floor.short": "Étage {n}",
   "floorplan.room": "plan",
   "fn.bed": "Lit",
   "fn.sofa": "Canapé",

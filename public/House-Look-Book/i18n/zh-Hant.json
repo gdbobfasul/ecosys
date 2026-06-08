@@ -101,6 +101,7 @@
   "shape.trapezoid": "梯形",
   "floorplan.empty": "未設定房間",
   "floorplan.label": "{n} 樓 — 平面圖",
+  "floor.short": "{n}樓",
   "floorplan.room": "平面圖",
   "fn.bed": "床",
   "fn.sofa": "沙發",

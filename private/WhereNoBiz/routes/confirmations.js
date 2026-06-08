@@ -9,6 +9,7 @@ const express = require('express');
 const { one } = require('../db');
 const { requireAuth, requireSubscribed } = require('../middleware/auth');
 const { load } = require('../config-loader');
+const debug = require('../../shared/debug-helper').create('wnb');
 
 const router = express.Router();
 
@@ -18,6 +19,8 @@ router.post('/:id/confirm', requireAuth, requireSubscribed, async (req, res, nex
   const cfg = load();
   const client = await req.app.locals.pool.connect();
   try {
+    const log = debug.scoped(req, 'POST /:id/confirm');
+    log('старт');
     const postId = req.params.id;
     const stance = (req.body && req.body.stance === 'dispute') ? 'dispute' : 'confirm';
     const where = String((req.body && req.body.where_could_develop) || '').trim();
@@ -35,6 +38,7 @@ router.post('/:id/confirm', requireAuth, requireSubscribed, async (req, res, nex
       }
     }
 
+    log('1');
     const post = await client.query("SELECT status, owner_id FROM posts WHERE id = $1", [postId]);
     if (!post.rows[0]) { client.release(); return res.status(404).json({ error: 'not_found' }); }
     if (post.rows[0].status !== 'approved') {
@@ -55,6 +59,7 @@ router.post('/:id/confirm', requireAuth, requireSubscribed, async (req, res, nex
       return res.status(409).json({ error: 'already_voted', message: 'Вече си гласувал по този пост.' });
     }
 
+    log('2');
     await client.query(
       `INSERT INTO confirmations (post_id, user_id, stance, where_could_develop, why_missing)
        VALUES ($1, $2, $3, $4, $5)`,
@@ -67,8 +72,10 @@ router.post('/:id/confirm', requireAuth, requireSubscribed, async (req, res, nex
     }
     const r = await client.query('SELECT confirm_count, unlike_count FROM posts WHERE id = $1', [postId]);
     await client.query('COMMIT');
+    log('край → 200');
     res.json({ ok: true, stance, confirm_count: r.rows[0].confirm_count, unlike_count: r.rows[0].unlike_count });
   } catch (e) {
+    debug.error('POST /:id/confirm:', e && e.message);
     try { await client.query('ROLLBACK'); } catch (_) {}
     next(e);
   } finally {
@@ -80,9 +87,12 @@ router.post('/:id/confirm', requireAuth, requireSubscribed, async (req, res, nex
 router.delete('/:id/confirm', requireAuth, async (req, res, next) => {
   const client = await req.app.locals.pool.connect();
   try {
+    const log = debug.scoped(req, 'DELETE /:id/confirm');
+    log('старт');
     const postId = req.params.id;
     await client.query('BEGIN');
     const existing = await client.query('SELECT stance FROM confirmations WHERE post_id = $1 AND user_id = $2', [postId, req.user.id]);
+    log('1');
     if (existing.rows[0]) {
       await client.query('DELETE FROM confirmations WHERE post_id = $1 AND user_id = $2', [postId, req.user.id]);
       if (existing.rows[0].stance === 'confirm') {
@@ -93,8 +103,10 @@ router.delete('/:id/confirm', requireAuth, async (req, res, next) => {
     }
     const r = await client.query('SELECT confirm_count, unlike_count FROM posts WHERE id = $1', [postId]);
     await client.query('COMMIT');
+    log('край → 200');
     res.json({ ok: true, confirm_count: r.rows[0]?.confirm_count ?? 0, unlike_count: r.rows[0]?.unlike_count ?? 0 });
   } catch (e) {
+    debug.error('DELETE /:id/confirm:', e && e.message);
     try { await client.query('ROLLBACK'); } catch (_) {}
     next(e);
   } finally {
@@ -105,10 +117,13 @@ router.delete('/:id/confirm', requireAuth, async (req, res, next) => {
 // GET /api/wnb/posts/:id/confirm — моят глас (за UI)
 router.get('/:id/confirm', requireAuth, async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'GET /:id/confirm');
+    log('старт');
     const r = await one('SELECT stance, where_could_develop, why_missing FROM confirmations WHERE post_id = $1 AND user_id = $2',
       [req.params.id, req.user.id]);
+    log('край → 200');
     res.json({ vote: r || null });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('GET /:id/confirm:', e && e.message); next(e); }
 });
 
 module.exports = router;

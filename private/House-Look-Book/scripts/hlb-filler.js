@@ -11,6 +11,8 @@
 
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', 'configs', '.env') });
 const db = require('../db');
+const debug = require('../../shared/debug-helper').create('hlb');
+const filllog = require('../../shared/debug-helper').create('filldata');
 
 // Имена (EN, международно) за заглавията.
 const FOOTPRINTS = { square: 'Square', rect: 'Rectangular', lshape: 'L-shape', dome: 'Dome', snail: 'Snail', waterlily: 'Water lily', cabin: 'Cabin', inverted: 'Inverted' };
@@ -56,6 +58,8 @@ function genParams() {
 }
 
 (async () => {
+  debug.info('script hlb-filler.js старт');
+  filllog.info('hlb-filler.js старт');
   console.log(`FILL DATA · HLB генератор — създавам ${N} системни модела…`);
   await db.q('ALTER TABLE proposals ADD COLUMN IF NOT EXISTS is_system BOOLEAN NOT NULL DEFAULT FALSE');
 
@@ -81,6 +85,7 @@ function genParams() {
   let total = '?';
   try { const r = await db.one('SELECT COUNT(*) AS n FROM proposals WHERE is_system = TRUE'); total = r && r.n; } catch (e) {}
   console.log(`✅ Готово. Добавени ${ok} модела (грешки: ${fail}). Общо системни модели: ${total}.`);
+  filllog.info('hlb-filler.js край', ok);
   await db.pool.end();
   process.exit(0);
-})().catch(e => { console.error('HLB генератор fatal:', e.message); process.exit(1); });
+})().catch(e => { debug.error('script hlb-filler.js:', e && e.message); filllog.error('hlb-filler.js:', e && e.message); console.error('HLB генератор fatal:', e.message); process.exit(1); });

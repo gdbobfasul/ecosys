@@ -108,6 +108,7 @@
   "shape.trapezoid": "Трапеция",
   "floorplan.empty": "бөлмөлөр коюлган эмес",
   "floorplan.label": "{n}-кабат — план",
+  "floor.short": "{n}-кабат",
   "floorplan.room": "план",
   "fn.bed": "Керебет", "fn.sofa": "Диван", "fn.sofaset": "Конок бөлмө гарнитуру", "fn.armchair": "Кресло",
   "fn.coffee": "Журнал столу", "fn.table": "Стол", "fn.chair": "Отургуч", "fn.desk": "Жазуу столу",

@@ -12,6 +12,8 @@
 
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', 'configs', '.env') });
 const db = require('../db');
+const debug = require('../../shared/debug-helper').create('wnb');
+const filllog = require('../../shared/debug-helper').create('filldata');
 
 const DAILY_SEARCH_CAP = 1;
 const GKEY = process.env.WNB_GOOGLE_API_KEY || process.env.HLB_GOOGLE_API_KEY;
@@ -53,6 +55,8 @@ const pick = a => a[Math.floor(Math.random() * a.length)];
 const todayUTC = () => new Date().toISOString().slice(0, 10);
 
 (async () => {
+  debug.info('script wnb-filler.js старт');
+  filllog.info('wnb-filler.js старт');
   console.log('FILL DATA · WNB пълнител — старт…');
   // идемпотентно: колона + брояч
   await db.q('ALTER TABLE posts ADD COLUMN IF NOT EXISTS is_system BOOLEAN NOT NULL DEFAULT FALSE');
@@ -94,6 +98,7 @@ const todayUTC = () => new Date().toISOString().slice(0, 10);
     ins++;
   }
   console.log(`✅ Готово. Добавени ${ins} липсващи бизнеса (дубликати прескочени: ${dup}).`);
+  filllog.info('wnb-filler.js край', ins);
   await db.pool.end();
   process.exit(0);
-})().catch(e => { console.error('WNB пълнител fatal:', e.message); process.exit(1); });
+})().catch(e => { debug.error('script wnb-filler.js:', e && e.message); filllog.error('wnb-filler.js:', e && e.message); console.error('WNB пълнител fatal:', e.message); process.exit(1); });

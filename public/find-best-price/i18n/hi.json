@@ -113,5 +113,7 @@
   "zp.note": "नोट / लिंक / व्याख्या",
   "zp.send_offer": "ऑफ़र भेजें",
   "zp.offer_sent": "ऑफ़र भेज दिया!",
-  "zp.published": "प्रकाशित!"
+  "zp.published": "प्रकाशित!",
+  "zp.password": "पासवर्ड",
+  "zp.logout": "लॉग आउट"
 }

@@ -113,5 +113,7 @@
   "zp.note": "белги / шилтеме / түшүндүрмө",
   "zp.send_offer": "Сунуш жөнөтүү",
   "zp.offer_sent": "Сунуш жөнөтүлдү!",
-  "zp.published": "Жарыяланды!"
+  "zp.published": "Жарыяланды!",
+  "zp.password": "Сырсөз",
+  "zp.logout": "Чыгуу"
 }

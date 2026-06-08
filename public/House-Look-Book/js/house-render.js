@@ -397,13 +397,31 @@ const HouseRender = (function () {
       const cols = Math.ceil(Math.sqrt(n));
       const rows = Math.ceil(n / cols);
       const cw = PW / cols, ch = PH / rows;
+      // Маркер на ръба на стаята: врата (кафяв, дебел) / прозорец (син, тънък).
+      // side: 0=горе,1=дясно,2=долу,3=ляво (стена wi → страна wi%4).
+      const edgeMark = (side, rx, ry, rw, rh, k, total, isDoor) => {
+        const col = isDoor ? '#b5651d' : '#2a86d8', sw = isDoor ? 4 : 2.4;
+        const ln = Math.max(6, Math.min(rw, rh) * (isDoor ? 0.34 : 0.26)), t = (k + 1) / (total + 1);
+        if (side === 0) { const x = rx + rw * t; return `<line x1="${(x - ln / 2).toFixed(1)}" y1="${ry.toFixed(1)}" x2="${(x + ln / 2).toFixed(1)}" y2="${ry.toFixed(1)}" stroke="${col}" stroke-width="${sw}"/>`; }
+        if (side === 1) { const y = ry + rh * t; return `<line x1="${(rx + rw).toFixed(1)}" y1="${(y - ln / 2).toFixed(1)}" x2="${(rx + rw).toFixed(1)}" y2="${(y + ln / 2).toFixed(1)}" stroke="${col}" stroke-width="${sw}"/>`; }
+        if (side === 2) { const x = rx + rw * t; return `<line x1="${(x - ln / 2).toFixed(1)}" y1="${(ry + rh).toFixed(1)}" x2="${(x + ln / 2).toFixed(1)}" y2="${(ry + rh).toFixed(1)}" stroke="${col}" stroke-width="${sw}"/>`; }
+        const y = ry + rh * t; return `<line x1="${rx.toFixed(1)}" y1="${(y - ln / 2).toFixed(1)}" x2="${rx.toFixed(1)}" y2="${(y + ln / 2).toFixed(1)}" stroke="${col}" stroke-width="${sw}"/>`;
+      };
       for (let i = 0; i < n; i++) {
-        const rt = roomType(rooms[i] && rooms[i].type) || { name: (rooms[i] && rooms[i].type) || '?', color: '#eee', key: '' };
+        const room = rooms[i] || {};
+        const rt = roomType(room.type) || { name: room.type || '?', color: '#eee', key: '' };
         const cx = PX + (i % cols) * cw, cy = PY + Math.floor(i / cols) * ch;
         const lbl = rt.key ? T(rt.key) : rt.name;
-        const shape = (rooms[i] && rooms[i].shape) || 'rect';
+        const shape = room.shape || 'rect';
+        const rx = cx + 3, ry = cy + 3, rw = cw - 6, rh = ch - 6;
+        let marks = '';
+        (room.walls || []).forEach((wl, wi) => {                    // врати/прозорци по стените на стаята
+          const side = wi % 4, dN = Math.max(0, +(wl && wl.doors) || 0), wN = Math.max(0, +(wl && wl.windows) || 0), tot = dN + wN;
+          for (let k = 0; k < tot; k++) marks += edgeMark(side, rx, ry, rw, rh, k, tot, k < dN);
+        });
         inner += `<g>
-          ${roomShapeSvg(shape, cx + 3, cy + 3, cw - 6, ch - 6, rt.color)}
+          ${roomShapeSvg(shape, rx, ry, rw, rh, rt.color)}
+          ${marks}
           <text x="${cx + cw / 2}" y="${cy + ch / 2 + 4}" text-anchor="middle" font-family="system-ui,Arial" font-size="12" fill="#334">${esc(lbl)}</text>
         </g>`;
       }
@@ -419,6 +437,12 @@ const HouseRender = (function () {
     const lvl = idx - b;
     if (lvl < 0) return T('floor.basement', { n: b + lvl + 1 }) || ('Мазе ' + (b + lvl + 1));
     return T('floorplan.label', { n: lvl + 1 });
+  }
+  // Кратко име на етажа („Етаж N" / „Мазе N") — за префикс пред стая.
+  function floorShort(params, idx) {
+    const b = +(params && params.basements) || 0, lvl = idx - b;
+    if (lvl < 0) return T('floor.basement', { n: b + lvl + 1 });
+    return T('floor.short', { n: lvl + 1 });
   }
 
   // Съседство на стаите в плана (грид cols×rows като floorPlan). За всяка стая връща
@@ -512,7 +536,7 @@ const HouseRender = (function () {
 
   // internal = bool[] по стена (true=вътрешна). Вътрешните врати/прозорци се рисуват
   // сиви/пунктирани, външните — кафяво/синьо плътно (т.4,5).
-  function roomDetailPlan(room, internal) {
+  function roomDetailPlan(room, internal, floorLabel) {
     const RX = 55, RY = 40, RW = 290, RH = 230;
     const n = wallsForShape(room && room.shape);
     const walls = (room && room.walls) || [];
@@ -560,7 +584,7 @@ const HouseRender = (function () {
       inner += furnPlan(it, cx, cy, '#fff3df');
     });
     const rt = roomType(room && room.type);
-    inner += label((rt ? T(rt.key) : (room && room.type) || '') + ' — ' + T('floorplan.room'));
+    inner += label((floorLabel ? floorLabel + ' · ' : '') + (rt ? T(rt.key) : (room && room.type) || '') + ' — ' + T('floorplan.room'));
     return svgFrame(inner);
   }
 
@@ -573,7 +597,7 @@ const HouseRender = (function () {
 
   // ── страничен изглед на ЕДНА стена (отвътре) ─────────────────────
   // Показва вратите/прозорците на стената + мебелите „до тази стена".
-  function wallElevation(room, w) {
+  function wallElevation(room, w, floorLabel) {
     const walls = (room && room.walls) || [], items = (room && room.items) || [];
     const ww = walls[w] || { doors: 0, windows: 0 };
     const WX = 34, WY = 60, WW = W - 68, WH = 210, floorY = WY + WH;
@@ -610,7 +634,7 @@ const HouseRender = (function () {
       }
     });
     const rt = roomType(room && room.type);
-    inner += label((rt ? T(rt.key) : '') + ' — ' + T('wall.label', { n: w + 1 }));
+    inner += label((floorLabel ? floorLabel + ' · ' : '') + (rt ? T(rt.key) : '') + ' — ' + T('wall.label', { n: w + 1 }));
     return svgFrame(inner);
   }
 
@@ -620,7 +644,7 @@ const HouseRender = (function () {
   // според дълбочината И стандартния отпечатък (легло > нощно шкафче).
   // focusWall (число) → 3D изглед, в който ТАЗИ стена е задната (нейните врати/прозорци
   // + мебелите „до нея"). null → общ 3D изглед на стаята (задна стена = стена 1).
-  function roomPerspective(room, focusWall) {
+  function roomPerspective(room, focusWall, floorLabel) {
     const items = (room && room.items) || [], walls = (room && room.walls) || [];
     const rt = roomType(room && room.type);
     const fw = (typeof focusWall === 'number') ? focusWall : null;
@@ -683,7 +707,7 @@ const HouseRender = (function () {
     placed.forEach(p => { s += furnBlock(p.it, floorPt(p.u, p.v), depthScale(p.v)); });
 
     // Заглавие горе-ляво (полупрозрачно). При фокус добавя „стена N (3D)".
-    const baseTitle = (rt ? T(rt.key) : (room && room.type) || '');
+    const baseTitle = (floorLabel ? floorLabel + ' · ' : '') + (rt ? T(rt.key) : (room && room.type) || '');
     const title = fw == null ? baseTitle : baseTitle + ' — ' + T('wall.label', { n: fw + 1 }) + ' (3D)';
     s += `<text x="14" y="20" font-family="system-ui,Arial" font-size="13" fill="#fff" opacity="0.85">${esc(title)}</text>`;
     return svgFrame(s);
@@ -750,7 +774,7 @@ const HouseRender = (function () {
       : ({ front: 'Отпред', back: 'Отзад', left: 'Отляво', right: 'Отдясно' }[side] || side));
   }
 
-  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, BASEMENT_ROOM_TYPES, ROOM_SHAPES, FURNITURE, wallsForShape, furnitureItem, WALL_MAX, CENTER_MAX, elevation, roofPlan, floorPlan, roomDetailPlan, wallElevation, roomPerspective, floorsStack, floorAdjacency, floorExternals, facadeOpenings, floorTitle };
+  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, BASEMENT_ROOM_TYPES, ROOM_SHAPES, FURNITURE, wallsForShape, furnitureItem, WALL_MAX, CENTER_MAX, elevation, roofPlan, floorPlan, roomDetailPlan, wallElevation, roomPerspective, floorsStack, floorAdjacency, floorExternals, facadeOpenings, floorTitle, floorShort };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = HouseRender;

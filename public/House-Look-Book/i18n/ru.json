@@ -101,6 +101,7 @@
   "shape.trapezoid": "Трапеция",
   "floorplan.empty": "комнаты не заданы",
   "floorplan.label": "Этаж {n} — план",
+  "floor.short": "Этаж {n}",
   "floorplan.room": "план",
   "fn.bed": "Кровать",
   "fn.sofa": "Диван",

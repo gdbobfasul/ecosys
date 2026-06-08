@@ -7,6 +7,7 @@ const express = require('express');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const debug = require('../shared/debug-helper').create('fbp');
 
 require('dotenv').config({ path: path.join(__dirname, '..', 'configs', '.env') });
 
@@ -69,6 +70,7 @@ app.use((req, res) => {
   res.status(404).send('Not found');
 });
 app.use((err, req, res, next) => {
+  debug.error('UNCAUGHT', req.method, req.originalUrl, err && err.message);
   console.error(`❌ FBP грешка ${req.method} ${req.originalUrl}:`, err.message);
   if (res.headersSent) return next(err);
   res.status(500).json({ error: 'server_error', message: err.message });

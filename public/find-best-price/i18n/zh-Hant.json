@@ -113,5 +113,7 @@
   "zp.note": "備註 / 連結 / 說明",
   "zp.send_offer": "送出報價",
   "zp.offer_sent": "報價已送出！",
-  "zp.published": "已發布！"
+  "zp.published": "已發布！",
+  "zp.password": "密碼",
+  "zp.logout": "登出"
 }

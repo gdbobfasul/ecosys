@@ -5,6 +5,7 @@
 const express = require('express');
 const { q, one } = require('../db');
 const { requireAuth, requireSubscribed } = require('../middleware/auth');
+const debug = require('../../shared/debug-helper').create('hlb');
 
 const router = express.Router();
 
@@ -12,14 +13,18 @@ const router = express.Router();
 router.post('/:id/like', requireAuth, requireSubscribed, async (req, res, next) => {
   const client = await req.app.locals.pool.connect();
   try {
+    const log = debug.scoped(req, 'POST /:id/like');
+    log('старт');
     const proposalId = req.params.id;
     const p = await client.query("SELECT status FROM proposals WHERE id = $1", [proposalId]);
-    if (!p.rows[0]) { client.release(); return res.status(404).json({ error: 'not_found' }); }
+    if (!p.rows[0]) { log('край → 404'); client.release(); return res.status(404).json({ error: 'not_found' }); }
     if (p.rows[0].status !== 'approved') {
+      log('край → 409');
       client.release();
       return res.status(409).json({ error: 'not_approved', message: 'Може да се лайкват само одобрени предложения.' });
     }
 
+    log('1');
     await client.query('BEGIN');
     // ON CONFLICT DO NOTHING → втори лайк от същия човек не прави нищо.
     const ins = await client.query(
@@ -32,8 +37,10 @@ router.post('/:id/like', requireAuth, requireSubscribed, async (req, res, next) 
     }
     const r = await client.query('SELECT like_count FROM proposals WHERE id = $1', [proposalId]);
     await client.query('COMMIT');
+    log('край → 200');
     res.json({ liked: true, like_count: r.rows[0].like_count });
   } catch (e) {
+    debug.error('POST /:id/like:', e && e.message);
     try { await client.query('ROLLBACK'); } catch (_) {}
     next(e);
   } finally {
@@ -45,7 +52,10 @@ router.post('/:id/like', requireAuth, requireSubscribed, async (req, res, next) 
 router.delete('/:id/like', requireAuth, async (req, res, next) => {
   const client = await req.app.locals.pool.connect();
   try {
+    const log = debug.scoped(req, 'DELETE /:id/like');
+    log('старт');
     const proposalId = req.params.id;
+    log('1');
     await client.query('BEGIN');
     const del = await client.query(
       'DELETE FROM likes WHERE proposal_id = $1 AND user_id = $2',
@@ -56,8 +66,10 @@ router.delete('/:id/like', requireAuth, async (req, res, next) => {
     }
     const r = await client.query('SELECT like_count FROM proposals WHERE id = $1', [proposalId]);
     await client.query('COMMIT');
+    log('край → 200');
     res.json({ liked: false, like_count: r.rows[0]?.like_count ?? 0 });
   } catch (e) {
+    debug.error('DELETE /:id/like:', e && e.message);
     try { await client.query('ROLLBACK'); } catch (_) {}
     next(e);
   } finally {
@@ -68,10 +80,13 @@ router.delete('/:id/like', requireAuth, async (req, res, next) => {
 // GET /api/hlb/proposals/:id/like  — лайкнал ли съм аз (за UI)
 router.get('/:id/like', requireAuth, async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'GET /:id/like');
+    log('старт');
     const r = await one('SELECT 1 AS x FROM likes WHERE proposal_id = $1 AND user_id = $2',
       [req.params.id, req.user.id]);
+    log('край → 200');
     res.json({ liked: !!r });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('GET /:id/like:', e && e.message); next(e); }
 });
 
 module.exports = router;

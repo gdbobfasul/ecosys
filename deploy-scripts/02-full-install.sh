@@ -77,6 +77,7 @@ source "$(dirname "$0")/lib/banner.sh" 2>/dev/null && arm_done_banner "$t" "$SRV
 
 echo ""
 echo -e "  Цел: ${GREEN}${USR}@${SRV}:${PRT}${NC}"
+echo -e "  ${CYAN}[checkpoint] Пълна инсталация започва: $(date '+%H:%M:%S') → ${SRV}${NC}"
 echo ""
 
 # ── Двата въпроса ──

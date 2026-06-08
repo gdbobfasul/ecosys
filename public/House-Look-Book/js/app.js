@@ -225,11 +225,11 @@
       const adj = HouseRender.floorAdjacency(rooms);
       head(HouseRender.floorTitle(p, f));
       cell('thumb floor-big', HouseRender.floorPlan(p, f));                              // т.9 голям план на етажа, сам на ред
-      rooms.forEach((r, ri) => cell('thumb room-big', HouseRender.roomDetailPlan(r, adj[ri]))); // т.10,13 първо плановете на стаите
+      rooms.forEach((r, ri) => cell('thumb room-big', HouseRender.roomDetailPlan(r, adj[ri], HouseRender.floorShort(p, f)))); // т.10,13 първо плановете на стаите
       rooms.forEach((r) => {                                                             // т.11,13 после изгледите
         const nw = HouseRender.wallsForShape(r.shape);
-        for (let w = 0; w < nw; w++) cell('thumb', HouseRender.wallElevation(r, w));     // 2D от всяка страна
-        for (let w = 0; w < nw; w++) cell('thumb room-big', HouseRender.roomPerspective(r, w)); // 3D на всяка стена
+        for (let w = 0; w < nw; w++) cell('thumb', HouseRender.wallElevation(r, w, HouseRender.floorShort(p, f)));     // 2D от всяка страна
+        for (let w = 0; w < nw; w++) cell('thumb room-big', HouseRender.roomPerspective(r, w, HouseRender.floorShort(p, f))); // 3D на всяка стена
       });
     });
   }
@@ -435,11 +435,11 @@
       const adj = HouseRender.floorAdjacency(fl);
       const floorHead = `<h2 class="floorh">${esc(HouseRender.floorTitle(p, f))}</h2>`;
       const floorPlan = `<div class="grid"><div class="cell big">${HouseRender.floorPlan(p, f)}</div></div>`;
-      const plans = fl.map((r, ri) => `<div class="cell big">${HouseRender.roomDetailPlan(r, adj[ri])}</div>`).join('');
+      const plans = fl.map((r, ri) => `<div class="cell big">${HouseRender.roomDetailPlan(r, adj[ri], HouseRender.floorShort(p, f))}</div>`).join('');
       const views = fl.map(r => {
         const nw = HouseRender.wallsForShape(r.shape);
-        const twoD = Array.from({ length: nw }).map((_, w) => `<div class="cell">${HouseRender.wallElevation(r, w)}</div>`).join('');
-        const threeD = Array.from({ length: nw }).map((_, w) => `<div class="cell big">${HouseRender.roomPerspective(r, w)}</div>`).join('');
+        const twoD = Array.from({ length: nw }).map((_, w) => `<div class="cell">${HouseRender.wallElevation(r, w, HouseRender.floorShort(p, f))}</div>`).join('');
+        const threeD = Array.from({ length: nw }).map((_, w) => `<div class="cell big">${HouseRender.roomPerspective(r, w, HouseRender.floorShort(p, f))}</div>`).join('');
         return twoD + threeD;
       }).join('');
       return floorHead + floorPlan + (plans ? `<div class="grid">${plans}</div>` : '') + (views ? `<div class="grid">${views}</div>` : '');

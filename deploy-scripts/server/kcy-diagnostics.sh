@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0093
+# Version: 1.0094
 ##############################################################################
 # KCY Ecosystem — Diagnostics log appender
 #
@@ -48,7 +48,7 @@ fi
 
 # ─── services-errors.log — статус на услугите ───
 SVC_STATUS=""
-for svc in nginx kcy-chat kcy-eco3 kcy-portals kcy-diag postgresql; do
+for svc in nginx kcy-chat kcy-eco3 kcy-portals kcy-fbp kcy-wnb kcy-hlb kcy-diag postgresql; do
     active=$(systemctl is-active "$svc" 2>/dev/null | head -1 | tr -d "\r\n")
     [ -z "$active" ] && active="n/a"
     SVC_STATUS="${SVC_STATUS}${svc}:${active} "
@@ -76,7 +76,8 @@ if [ -f /var/log/nginx/error.log ]; then
 fi
 
 # ─── per-service journalctl tails (последни 20 реда) ───
-for pair in "kcy-chat:chat-errors.log" "kcy-eco3:eco3-errors.log" "kcy-portals:portal-errors.log"; do
+for pair in "kcy-chat:chat-errors.log" "kcy-eco3:eco3-errors.log" "kcy-portals:portal-errors.log" \
+            "kcy-fbp:fbp-errors.log" "kcy-wnb:wnb-errors.log" "kcy-hlb:hlb-errors.log"; do
     svc="${pair%:*}"
     log="${pair#*:}"
     if systemctl list-units --all "${svc}.service" --no-legend 2>/dev/null | grep -q "$svc"; then
@@ -89,7 +90,7 @@ for pair in "kcy-chat:chat-errors.log" "kcy-eco3:eco3-errors.log" "kcy-portals:p
 done
 
 # Trim per-service
-for f in chat-errors.log eco3-errors.log portal-errors.log web-errors.log; do
+for f in chat-errors.log eco3-errors.log portal-errors.log fbp-errors.log wnb-errors.log hlb-errors.log web-errors.log; do
     file="$OUT/$f"
     if [ -f "$file" ] && [ "$(wc -l < "$file" 2>/dev/null)" -gt "$MAX_LINES" ]; then
         tail -n "$MAX_LINES" "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
@@ -106,7 +107,7 @@ MODLOG="$OUT/modules-errors.log"
     # Node вградени модули — пропускат се (не са npm пакети)
     BUILTINS="assert async_hooks buffer child_process cluster console crypto dgram dns domain events fs http http2 https inspector module net os path perf_hooks process punycode querystring readline repl stream string_decoder timers tls trace_events tty url util v8 vm worker_threads zlib"
 
-    for svc_dir in chat eco-3 portals; do
+    for svc_dir in chat eco-3 portals find-best-price WhereNoBiz House-Look-Book; do
         SVCPATH="$PD/private/$svc_dir"
         [ -d "$SVCPATH" ] || continue
 
@@ -161,12 +162,18 @@ http_check() {
 P_CHAT=$(port_listening 3000)
 P_ECO3=$(port_listening 3001)
 P_PORTALS=$(port_listening 3002)
+P_HLB=$(port_listening 3010)
+P_WNB=$(port_listening 3011)
+P_FBP=$(port_listening 3012)
 P_DIAG=$(port_listening 4400)
 
 # API health endpoints (локално) — всеки сървис има различен път
 H_CHAT=$(http_check "http://127.0.0.1:3000/api/health")
 H_ECO3=$(http_check "http://127.0.0.1:3001/health")
 H_PORTALS=$(http_check "http://127.0.0.1:3002/api/portals/health")
+H_HLB=$(http_check "http://127.0.0.1:3010/api/hlb/health")
+H_WNB=$(http_check "http://127.0.0.1:3011/api/wnb/health")
+H_FBP=$(http_check "http://127.0.0.1:3012/api/fbp/health")
 H_DIAG=$(http_check "http://127.0.0.1:4400/health")
 
 {
@@ -174,9 +181,13 @@ H_DIAG=$(http_check "http://127.0.0.1:4400/health")
     echo "[$TS]   chat    : port 3000=$P_CHAT  /api/health=$H_CHAT"
     echo "[$TS]   eco-3   : port 3001=$P_ECO3  /health=$H_ECO3"
     echo "[$TS]   portals : port 3002=$P_PORTALS  /health=$H_PORTALS"
+    echo "[$TS]   hlb     : port 3010=$P_HLB  /api/hlb/health=$H_HLB"
+    echo "[$TS]   wnb     : port 3011=$P_WNB  /api/wnb/health=$H_WNB"
+    echo "[$TS]   fbp     : port 3012=$P_FBP  /api/fbp/health=$H_FBP"
     echo "[$TS]   diag    : port 4400=$P_DIAG  /health=$H_DIAG"
     # Маркирай проблемите изрично
-    for svc_check in "chat:$P_CHAT:$H_CHAT" "eco-3:$P_ECO3:$H_ECO3" "portals:$P_PORTALS:$H_PORTALS" "diag:$P_DIAG:$H_DIAG"; do
+    for svc_check in "chat:$P_CHAT:$H_CHAT" "eco-3:$P_ECO3:$H_ECO3" "portals:$P_PORTALS:$H_PORTALS" \
+                     "hlb:$P_HLB:$H_HLB" "wnb:$P_WNB:$H_WNB" "fbp:$P_FBP:$H_FBP" "diag:$P_DIAG:$H_DIAG"; do
         name="${svc_check%%:*}"
         rest="${svc_check#*:}"
         port="${rest%%:*}"
@@ -340,8 +351,32 @@ ENDPOINT_JSON="\"endpoints\": {
     \"chat\": {\"port_3000\":\"$P_CHAT\",\"health\":\"$H_CHAT\"},
     \"eco3\": {\"port_3001\":\"$P_ECO3\",\"health\":\"$H_ECO3\"},
     \"portals\": {\"port_3002\":\"$P_PORTALS\",\"health\":\"$H_PORTALS\"},
+    \"hlb\": {\"port_3010\":\"$P_HLB\",\"health\":\"$H_HLB\"},
+    \"wnb\": {\"port_3011\":\"$P_WNB\",\"health\":\"$H_WNB\"},
+    \"fbp\": {\"port_3012\":\"$P_FBP\",\"health\":\"$H_FBP\"},
     \"diag\": {\"port_4400\":\"$P_DIAG\",\"health\":\"$H_DIAG\"}
   }"
+
+# ─── db-errors.log — DB състояние на ВСЕКИ апп (от health endpoint-а, който проверява
+#     реалната връзка към базата). Така DB проблем се логва ПРИ ИЗВИКВАНЕ. ───
+DBLOG="$OUT/db-errors.log"
+{
+    echo "[$TS] [DB-CHECK] състояние на базите (от health endpoint-ите)"
+    for dbpair in "chat:3000:/api/health" "eco3:3001:/health" "portals:3002:/api/portals/health" \
+                  "fbp:3012:/api/fbp/health" "wnb:3011:/api/wnb/health" "hlb:3010:/api/hlb/health"; do
+        nm="${dbpair%%:*}"; rest="${dbpair#*:}"; prt="${rest%%:*}"; pth="${rest#*:}"
+        body=$(curl -s --max-time 4 "http://127.0.0.1:${prt}${pth}" 2>/dev/null | head -c 500 | tr '\n' ' ')
+        echo "[$TS]   $nm ($prt$pth): ${body:-(няма отговор)}"
+        case "$body" in
+            '') echo "[$TS]   ⚠ $nm — health endpoint не отговаря (сървисът паднал или DB init се провали)" ;;
+            *'"healthy":false'*|*'"connected":false'*|*'"ok":false'*|*[Ee]rror*|*ECONNREFUSED*|*'does not exist'*|*'relation'*'not'*)
+                echo "[$TS]   ⚠ $nm — възможен DB проблем (виж тялото горе)" ;;
+        esac
+    done
+} > "$DBLOG"
+if [ "$(wc -l < "$DBLOG" 2>/dev/null)" -gt "$MAX_LINES" ]; then
+    tail -n "$MAX_LINES" "$DBLOG" > "${DBLOG}.tmp" && mv "${DBLOG}.tmp" "$DBLOG"
+fi
 
 # ─── status.json (за UI cards) ───
 {
@@ -354,7 +389,7 @@ ENDPOINT_JSON="\"endpoints\": {
     echo "  \"disk\": \"$DISK\","
     echo "  \"services\": {"
     first=true
-    for svc in nginx kcy-chat kcy-eco3 kcy-portals kcy-diag postgresql; do
+    for svc in nginx kcy-chat kcy-eco3 kcy-portals kcy-fbp kcy-wnb kcy-hlb kcy-diag postgresql; do
         active=$(systemctl is-active "$svc" 2>/dev/null | head -1 | tr -d "\r\n")
         [ -z "$active" ] && active="n/a"
         enabled=$(systemctl is-enabled "$svc" 2>/dev/null | head -1 | tr -d "\r\n")

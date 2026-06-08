@@ -1,9 +1,12 @@
-// Version: 1.0093
+// Version: 1.0094
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const { validatePhone, validatePassword, validateName, validateGender } = require('../utils/validation');
+let debug;
+try { debug = require('../../shared/debug-helper').create('chat'); }
+catch (e) { debug = { scoped: () => () => {}, error: () => {}, stage: () => {}, info: () => {}, warn: () => {} }; }
 
 function createAuthRoutes(db) {
   const router = express.Router();
@@ -11,6 +14,8 @@ function createAuthRoutes(db) {
   // Login - phone + password combination
   router.post('/login', async (req, res) => {
     try {
+      const log = debug.scoped(req, 'POST /login');
+      log('старт');
       const { phone, password } = req.body;
 
       if (!validatePhone(phone)) {
@@ -127,6 +132,7 @@ function createAuthRoutes(db) {
         isPaid: true
       });
     } catch (err) {
+      debug.error('login:', err && err.message);
       console.error('Login error:', err);
       res.status(500).json({ error: 'Server error' });
     }
@@ -135,6 +141,8 @@ function createAuthRoutes(db) {
   // Register new user - phone + password combo must be unique
   router.post('/register', async (req, res) => {
     try {
+      const log = debug.scoped(req, 'POST /register');
+      log('старт');
       const { phone, password, fullName, gender, heightCm, weightKg, country, city, village, street, workplace } = req.body;
 
       if (!validatePhone(phone)) {
@@ -152,31 +160,36 @@ function createAuthRoutes(db) {
       if (!validateGender(gender)) {
         return res.status(400).json({ error: 'Gender must be "male" or "female"' });
       }
+      log('1');
 
       // Hash password
       const passwordHash = await hashPassword(password);
+      log('2');
 
       // Check if THIS phone + password combo exists
       const existing = await db.prepare('SELECT id FROM users WHERE phone = ? AND password_hash = ?').get(phone, passwordHash);
       if (existing) {
         return res.status(400).json({ error: 'This phone + password combination already exists' });
       }
+      log('3');
 
       // Create user (unpaid initially)
       const paidUntil = new Date('2000-01-01').toISOString();
-      
+
       const result = await db.prepare(`
         INSERT INTO users (phone, password_hash, full_name, gender, height_cm, weight_kg, country, city, village, street, workplace, paid_until, payment_amount, payment_currency)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'EUR')
       `).run(phone, passwordHash, fullName, gender, heightCm || null, weightKg || null, country || null, city || null, village || null, street || null, workplace || null, paidUntil);
 
-      res.json({ 
+      log('край → 200');
+      res.json({
         success: true,
         userId: result.lastInsertRowid,
         phone,
         message: 'Registration successful - proceed to payment'
       });
     } catch (err) {
+      debug.error('register:', err && err.message);
       console.error('Register error:', err);
       res.status(500).json({ error: 'Server error' });
     }

@@ -108,6 +108,7 @@
   "shape.trapezoid": "Трапеція",
   "floorplan.empty": "кімнати не задані",
   "floorplan.label": "Поверх {n} — план",
+  "floor.short": "Поверх {n}",
   "floorplan.room": "план",
   "fn.bed": "Ліжко", "fn.sofa": "Диван", "fn.sofaset": "Меблевий комплект", "fn.armchair": "Крісло",
   "fn.coffee": "Журнальний столик", "fn.table": "Стіл", "fn.chair": "Стілець", "fn.desk": "Письмовий стіл",

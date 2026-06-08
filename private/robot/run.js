@@ -30,6 +30,7 @@ const { extractLinksAndForms } = require('./lib/crawler');
 const { makeRng, fuzzForms } = require('./lib/fuzz');
 const { runJourney, loadEnv } = require('./lib/journey');
 const { runSeed } = require('./lib/seed');
+const filllog = require('../shared/debug-helper').create('filldata');
 
 // Журита „като човек" — по едно на приложение (Фази 5+).
 const JOURNEYS = {
@@ -109,6 +110,7 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
 
 // ── главна логика ────────────────────────────────────────────────────────────
 (async () => {
+  filllog.info('robot старт');
   let chromium;
   try { ({ chromium } = require('playwright')); }
   catch (e) {
@@ -316,4 +318,4 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   console.log('─'.repeat(60) + '\n');
 
   process.exitCode = counts.error > 0 ? 1 : 0;
-})().catch((e) => { console.error('Робот гръмна:', e); process.exit(3); });
+})().catch((e) => { filllog.error('robot:', e && e.message); console.error('Робот гръмна:', e); process.exit(3); });

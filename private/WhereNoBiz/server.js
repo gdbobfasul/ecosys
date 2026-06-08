@@ -15,6 +15,7 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', 'configs', '.env') });
 
 const { pool, applySchema, seedCountries, seedAdminsAndMods, checkHealth, q } = require('./db');
+const debug = require('../shared/debug-helper').create('wnb');
 
 const authRouter = require('./routes/auth');
 const countriesRouter = require('./routes/countries');
@@ -76,6 +77,7 @@ app.use((req, res) => {
   res.status(404).send('Not found');
 });
 app.use((err, req, res, next) => {
+  debug.error('UNCAUGHT', req.method, req.originalUrl, err && err.message);
   console.error(`❌ WNB грешка ${req.method} ${req.originalUrl}:`, err.message);
   if (res.headersSent) return next(err);
   res.status(500).json({ error: 'server_error', message: err.message });

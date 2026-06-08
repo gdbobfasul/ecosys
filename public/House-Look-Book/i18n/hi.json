@@ -101,6 +101,7 @@
   "shape.trapezoid": "समलंब",
   "floorplan.empty": "कोई कमरा सेट नहीं",
   "floorplan.label": "मंज़िल {n} — नक़्शा",
+  "floor.short": "मंज़िल {n}",
   "floorplan.room": "नक़्शा",
   "fn.bed": "बिस्तर",
   "fn.sofa": "सोफ़ा",

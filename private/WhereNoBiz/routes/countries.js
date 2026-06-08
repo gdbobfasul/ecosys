@@ -4,6 +4,7 @@
 const express = require('express');
 const { all } = require('../db');
 const { COUNTRIES, CONTINENTS } = require('../data/countries');
+const debug = require('../../shared/debug-helper').create('wnb');
 
 const router = express.Router();
 
@@ -13,23 +14,29 @@ const CONT_BY_CODE = Object.fromEntries(COUNTRIES.map(c => [c.code, c.continent]
 // GET /api/wnb/continents — списък континенти + колко одобрени поста имат
 router.get('/continents', async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'GET /continents');
+    log('старт');
     // Брой одобрени постове по страна → агрегираме по континент.
     const rows = await all(
       `SELECT country_code, count(*)::int AS c
        FROM posts WHERE status = 'approved' GROUP BY country_code`
     );
+    log('1');
     const byCont = Object.fromEntries(CONTINENTS.map(k => [k, 0]));
     for (const r of rows) {
       const cont = CONT_BY_CODE[r.country_code];
       if (cont) byCont[cont] += r.c;
     }
+    log('край → 200');
     res.json({ continents: CONTINENTS.map(name => ({ name, postCount: byCont[name] })) });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('GET /continents:', e && e.message); next(e); }
 });
 
 // GET /api/wnb/countries?continent=Asia — държавите в континент + брой одобрени постове
 router.get('/countries', async (req, res, next) => {
   try {
+    const log = debug.scoped(req, 'GET /countries');
+    log('старт');
     const continent = req.query.continent;
     let list = COUNTRIES;
     if (continent) list = COUNTRIES.filter(c => c.continent === continent);
@@ -38,13 +45,15 @@ router.get('/countries', async (req, res, next) => {
       `SELECT country_code, count(*)::int AS c
        FROM posts WHERE status = 'approved' GROUP BY country_code`
     );
+    log('1');
     const cmap = Object.fromEntries(counts.map(r => [r.country_code, r.c]));
 
     const out = list
       .map(c => ({ code: c.code, name: c.name, continent: c.continent, postCount: cmap[c.code] || 0 }))
       .sort((a, b) => a.name.localeCompare(b.name));
+    log('край → 200');
     res.json({ countries: out });
-  } catch (e) { next(e); }
+  } catch (e) { debug.error('GET /countries:', e && e.message); next(e); }
 });
 
 module.exports = router;
