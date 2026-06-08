@@ -146,6 +146,7 @@
   "field.basements": "Andares subterrâneos (porão)",
   "floor.basement": "Porão {n}",
   "floorstack.label": "Todos os andares (sem telhado) — qual cômodo está embaixo de qual",
+  "floorstack.legend": "Legenda (cima→baixo):",
   "allsides.facades": "Vistas da casa (4 lados)",
   "roof.removed": "Telhado REMOVIDO — todos os andares",
   "roof.show": "🏠 Adicionar o telhado",

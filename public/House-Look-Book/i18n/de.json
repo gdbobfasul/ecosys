@@ -146,6 +146,7 @@
   "field.basements": "Untergeschosse (Keller)",
   "floor.basement": "Keller {n}",
   "floorstack.label": "Alle Etagen (ohne Dach) — welcher Raum unter welchem",
+  "floorstack.legend": "Legende (oben→unten):",
   "allsides.facades": "Hausansichten (4 Seiten)",
   "roof.removed": "Dach ENTFERNT — alle Etagen",
   "roof.show": "🏠 Dach hinzufügen",

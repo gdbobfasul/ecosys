@@ -146,6 +146,7 @@
   "field.basements": "地下階（地下室）",
   "floor.basement": "地下{n}",
   "floorstack.label": "全フロア（屋根なし）— どの部屋がどの下にあるか",
+  "floorstack.legend": "凡例（上→下）:",
   "allsides.facades": "家のビュー（4面）",
   "roof.removed": "屋根を取り外しました — 全フロア",
   "roof.show": "🏠 屋根を付ける",

@@ -146,6 +146,7 @@
   "field.basements": "Подземные этажи (подвал)",
   "floor.basement": "Подвал {n}",
   "floorstack.label": "Все этажи (без крыши) — какая комната под какой",
+  "floorstack.legend": "Легенда (сверху→вниз):",
   "allsides.facades": "Виды дома (4 стороны)",
   "roof.removed": "Крыша УБРАНА — все этажи",
   "roof.show": "🏠 Добавить крышу",

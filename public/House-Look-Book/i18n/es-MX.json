@@ -146,6 +146,7 @@
   "field.basements": "Pisos subterráneos (sótano)",
   "floor.basement": "Sótano {n}",
   "floorstack.label": "Todos los pisos (sin techo) — qué cuarto está debajo de cuál",
+  "floorstack.legend": "Leyenda (arriba→abajo):",
   "allsides.facades": "Vistas de la casa (4 lados)",
   "roof.removed": "Techo QUITADO — todos los pisos",
   "roof.show": "🏠 Agregar el techo",

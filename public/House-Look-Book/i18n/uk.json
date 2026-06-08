@@ -127,6 +127,7 @@
   "field.basements": "Підземні поверхи (підвал)",
   "floor.basement": "Підвал {n}",
   "floorstack.label": "Усі поверхи (без даху) — яка кімната під якою",
+  "floorstack.legend": "Легенда (згори→вниз):",
   "allsides.facades": "Вигляди будинку (4 боки)",
   "roof.removed": "Дах ПРИБРАНО — усі поверхи",
   "roof.show": "🏠 Додати дах",

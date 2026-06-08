@@ -146,6 +146,7 @@
   "field.basements": "地下樓層（地下室）",
   "floor.basement": "地下室 {n}",
   "floorstack.label": "所有樓層（無屋頂）— 哪個房間在哪個下方",
+  "floorstack.legend": "圖例（上→下）：",
   "allsides.facades": "房屋視圖（4 個面）",
   "roof.removed": "屋頂已移除 — 所有樓層",
   "roof.show": "🏠 加上屋頂",

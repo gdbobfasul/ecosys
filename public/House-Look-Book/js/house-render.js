@@ -294,22 +294,21 @@ const HouseRender = (function () {
       `<text x="${W / 2}" y="${totalH - 12}" text-anchor="middle" font-family="system-ui,Arial" font-size="14" fill="#445">${esc(sideLabel(side))}</text></svg>`;
   }
 
-  // ── „Всички етажи" (изглед ОТГОРЕ, когато покривът е махнат) — коя стая над коя ──
-  // Външен дебел ЧЕРЕН контур = формата на сградата отгоре (footprint). Навътре —
-  // концентрични рамки, по една на ЕТАЖ: най-горният етаж най-отвън, по-долните
-  // навътре, до мазе -1/-2 най-вътре. Във всяка рамка стаите като квадратчета (т.8).
+  // ── „Всички етажи" (изглед ОТГОРЕ, когато покривът е махнат) ──
+  // Голям квадрат: дебел ЧЕРЕН контур = покривът (най-външен, до ръбовете). Навътре по
+  // ~2px — контур на всеки ЕТАЖ в свой цвят (горен най-отвън → мазе най-вътре). Стаите
+  // се чертаят като ПЪЛНИ планове, които се ЗАСТЪПВАТ: най-дълбокото мазе най-отдолу,
+  // горният етаж най-отгоре. Линии и надписи в цвета на етажа. Легендата е НАД изгледа.
   function floorsStack(params) {
     const all = params.rooms || [];
     const b = Math.max(0, +params.basements || 0), nAll = all.length;
-    // ред отвън→навътре = отгоре→надолу: горен етаж → партер → мазе -1 → мазе -2 …
-    const order = [];
-    for (let i = nAll - 1; i >= b; i--) order.push(i);   // надземни: горен → партер
-    for (let i = 0; i < b; i++) order.push(i);            // мазета: -1, -2, … (най-вътре)
+    const order = [];                                     // физически отгоре→надолу
+    for (let i = nAll - 1; i >= b; i--) order.push(i);    // надземни: горен → партер
+    for (let i = 0; i < b; i++) order.push(i);            // мазета: -1 → най-дълбоко
     if (!order.length) order.push(0);
-    const PAL = ['#e57373', '#64b5f6', '#81c784', '#ffb74d', '#ba68c8', '#4db6ac', '#a1887f', '#90a4ae', '#f06292', '#9575cd'];
+    const PAL = ['#e11d48', '#2563eb', '#16a34a', '#d97706', '#9333ea', '#0891b2', '#b45309', '#475569', '#db2777', '#7c3aed'];
     const colorFor = di => PAL[di % PAL.length];
     const nF = order.length;
-    // силует на основата като outline (за изгледа отгоре)
     function fpOutline(x, y, w, h, sw, stroke) {
       const cx = x + w / 2, cy = y + h / 2;
       if (isCustom(params)) return `<path d="${customPath(params.customShape.pts, x, y, w, h)}" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
@@ -317,47 +316,51 @@ const HouseRender = (function () {
         case 'dome': case 'waterlily': return `<ellipse cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" rx="${(w / 2).toFixed(1)}" ry="${(h / 2).toFixed(1)}" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
         case 'snail': return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(Math.min(w, h) / 2).toFixed(1)}" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
         case 'lshape': return `<path d="M${x} ${y} H${(x + w * 0.58).toFixed(1)} V${(y + h * 0.52).toFixed(1)} H${x + w} V${y + h} H${x} Z" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
-        default: return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
+        default: return `<rect x="${x}" y="${y}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
       }
     }
-    const BX = 16, BY = 40, BW = 244, BH = GROUND_Y - BY - 4;
-    let inner = `<rect x="0" y="0" width="${W}" height="${H}" fill="#f4f7f9"/>`;
-    inner += fpOutline(BX, BY, BW, BH, 4, '#111');       // дебел черен силует на сградата отгоре
-    const margin = 9;
-    const stepX = (BW / 2 - margin - 6) / nF, stepY = (BH / 2 - margin - 6) / nF;
+    // ── Легенда ОТГОРЕ ──
+    const margin = 8, headH = 16, rowH = 22;
+    const legendH = headH + nF * rowH + 6;
+    let inner = `<text x="${margin}" y="12" font-size="11" font-weight="bold" fill="#334" font-family="system-ui,Arial">${esc(T('floorstack.legend'))}</text>`;
     order.forEach((fi, di) => {
-      const fr = all[fi] || [], col = colorFor(di);
-      const ix = BX + margin + di * stepX, iy = BY + margin + di * stepY;
-      const iw = Math.max(8, BW - 2 * (margin + di * stepX)), ih = Math.max(8, BH - 2 * (margin + di * stepY));
-      inner += `<rect x="${ix.toFixed(1)}" y="${iy.toFixed(1)}" width="${iw.toFixed(1)}" height="${ih.toFixed(1)}" rx="2" fill="none" stroke="${col}" stroke-width="2.2"/>`;
-      const bandY = iy + 3, bandH = Math.max(8, Math.min(stepY - 4, ih - 6, 22));
-      if (!fr.length) {                                    // празен етаж → само етикет в цвета
-        inner += `<text x="${(ix + iw / 2).toFixed(1)}" y="${(bandY + bandH / 2 + 3).toFixed(1)}" text-anchor="middle" font-size="8" fill="${col}" opacity="0.75" font-family="system-ui,Arial">${esc(floorTitle(params, fi))}</text>`;
-        return;
-      }
-      const cellW = (iw - 6) / fr.length;
-      fr.forEach((r, ci) => {
-        const bx = ix + 3 + ci * cellW;
-        inner += `<rect x="${(bx + 1).toFixed(1)}" y="${bandY.toFixed(1)}" width="${Math.max(4, cellW - 2).toFixed(1)}" height="${bandH.toFixed(1)}" rx="2" fill="none" stroke="${col}" stroke-width="1.6"/>`;
-        const rt = roomType(r.type), nm = rt ? T(rt.key) : r.type;
-        const fs = Math.max(6.5, Math.min(9, cellW * 0.26, bandH * 0.62));
-        inner += `<text x="${(bx + cellW / 2).toFixed(1)}" y="${(bandY + bandH / 2 + fs * 0.34).toFixed(1)}" text-anchor="middle" font-size="${fs.toFixed(1)}" fill="#1a1a1a" font-family="system-ui,Arial">${esc(String(nm).slice(0, 9))}</text>`;
-      });
-    });
-    // ── Легенда (дясно): цвят на етажа + имената на стаите в същия цвят ──
-    const LX = 268; let ly = BY + 6;
-    inner += `<text x="${LX}" y="${ly}" font-size="10.5" font-weight="bold" fill="#334" font-family="system-ui,Arial">Легенда (отгоре→долу)</text>`; ly += 16;
-    order.forEach((fi, di) => {
-      if (ly > GROUND_Y - 6) return;
-      const col = colorFor(di);
-      inner += `<rect x="${LX}" y="${ly - 9}" width="12" height="12" rx="2" fill="${col}"/>`;
-      inner += `<text x="${LX + 17}" y="${ly}" font-size="10" font-weight="bold" fill="#223" font-family="system-ui,Arial">${esc(floorTitle(params, fi))}</text>`; ly += 12;
+      const ly = headH + di * rowH + 12, col = colorFor(di);
+      inner += `<rect x="${margin}" y="${ly - 9}" width="12" height="12" rx="2" fill="${col}"/>`;
+      inner += `<text x="${margin + 18}" y="${ly}" font-size="10.5" font-weight="bold" fill="${col}" font-family="system-ui,Arial">${esc(floorTitle(params, fi))}</text>`;
       const names = (all[fi] || []).map(r => { const rt = roomType(r.type); return rt ? T(rt.key) : r.type; });
-      const txt = names.length ? names.join(', ') : '—';
-      inner += `<text x="${LX + 17}" y="${ly}" font-size="8.5" fill="${col}" font-family="system-ui,Arial">${esc(txt.slice(0, 30))}</text>`; ly += 15;
+      inner += `<text x="${margin + 18}" y="${ly + 10}" font-size="8.5" fill="#445" font-family="system-ui,Arial">${esc((names.join(', ') || '—').slice(0, 46))}</text>`;
     });
-    inner += label(T('floorstack.label'));
-    return svgFrame(inner);
+    // ── Голям квадрат отдолу (черен контур до ръбовете) ──
+    const S = W - 2 * margin, BX = margin, BY = legendH, BW = S, BH = S, GAP = 2;
+    inner += fpOutline(BX, BY, BW, BH, 4, '#111');                       // покрив (черно)
+    order.forEach((fi, di) => {                                          // контур на всеки етаж (2px навътре)
+      const ins = di * GAP;
+      inner += fpOutline(BX + ins, BY + ins, BW - 2 * ins, BH - 2 * ins, 1.6, colorFor(di));
+    });
+    // планове на стаите — ЗАСТЪПЕНИ, най-дълбокото мазе ПЪРВО (отдоло), горен етаж последен (отгоре)
+    const labels = [];
+    for (let di = nF - 1; di >= 0; di--) {
+      const fi = order[di], fr = all[fi] || [], col = colorFor(di);
+      if (!fr.length) continue;
+      const ins = di * GAP, fx = BX + ins, fy = BY + ins, fw = BW - 2 * ins, fh = BH - 2 * ins;
+      const n = fr.length, cols = Math.ceil(Math.sqrt(n)), rows = Math.ceil(n / cols);
+      const cw = fw / cols, ch = fh / rows;
+      fr.forEach((r, ci) => {                                            // план като преди: 2 стаи = половинки
+        const cx = fx + (ci % cols) * cw, cy = fy + Math.floor(ci / cols) * ch;
+        inner += `<rect x="${(cx + 1).toFixed(1)}" y="${(cy + 1).toFixed(1)}" width="${(cw - 2).toFixed(1)}" height="${(ch - 2).toFixed(1)}" fill="none" stroke="${col}" stroke-width="1.5"/>`;
+        const rt = roomType(r.type), nm = rt ? T(rt.key) : r.type;
+        labels.push({ di, col, x: cx + cw / 2, y: cy + ch / 2, ch, nm: String(nm) });   // позицията съвпада с стаята
+      });
+    }
+    // ── надписите НАД всички линии; вертикално отместване по етаж за по-малко застъпване ──
+    labels.forEach(c => {
+      const fs = Math.max(6.5, Math.min(11, c.ch * 0.22));
+      const offY = (c.di - (nF - 1) / 2) * Math.min(11, c.ch / (nF + 1));
+      inner += `<text x="${c.x.toFixed(1)}" y="${(c.y + offY + fs * 0.34).toFixed(1)}" text-anchor="middle" font-size="${fs.toFixed(1)}" fill="${c.col}" font-family="system-ui,Arial" stroke="#fff" stroke-width="2.4" paint-order="stroke" style="paint-order:stroke">${esc(c.nm.slice(0, 11))}</text>`;
+    });
+    const H2 = legendH + S + 22;
+    inner += `<text x="${W / 2}" y="${(H2 - 7).toFixed(1)}" text-anchor="middle" font-family="system-ui,Arial" font-size="13" fill="#445">${esc(T('floorstack.label'))}</text>`;
+    return `<svg viewBox="0 0 ${W} ${H2.toFixed(1)}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"><rect x="0" y="0" width="${W}" height="${H2.toFixed(1)}" fill="#f4f7f9"/>${inner}</svg>`;
   }
 
   // ── покривен план (отгоре) ───────────────────────────────────────

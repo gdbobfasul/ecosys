@@ -127,6 +127,7 @@
   "field.basements": "Underground floors (basement)",
   "floor.basement": "Basement {n}",
   "floorstack.label": "All floors (no roof) — which room is under which",
+  "floorstack.legend": "Legend (top→bottom):",
   "allsides.facades": "House views (4 sides)",
   "roof.removed": "Roof REMOVED — all floors",
   "roof.show": "🏠 Add the roof",

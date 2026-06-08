@@ -146,6 +146,7 @@
   "field.basements": "भूमिगत मंज़िलें (तहख़ाना)",
   "floor.basement": "तहख़ाना {n}",
   "floorstack.label": "सभी मंज़िलें (बिना छत) — कौन-सा कमरा किसके नीचे",
+  "floorstack.legend": "लेजेंड (ऊपर→नीचे):",
   "allsides.facades": "घर के दृश्य (4 ओर से)",
   "roof.removed": "छत हटाई गई — सभी मंज़िलें",
   "roof.show": "🏠 छत जोड़ें",

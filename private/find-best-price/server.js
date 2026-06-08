@@ -16,6 +16,7 @@ const authRouter = require('./routes/auth');
 const businessRouter = require('./routes/business');
 const productsRouter = require('./routes/products');
 const searchRouter = require('./routes/search');
+const wantedRouter = require('./routes/wanted');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -40,6 +41,7 @@ app.use('/api/fbp', authRouter);                 // /register /login /logout /me
 app.use('/api/fbp/business', businessRouter);    // създай/мои обекти
 app.use('/api/fbp/products', productsRouter);    // добави/мои продукти
 app.use('/api/fbp/search', searchRouter);        // ПУБЛИЧНО търсене
+app.use('/api/fbp/wanted', wantedRouter);        // ZERO PRICE — заявки „търся" + оферти
 
 app.use('/', express.static(PUBLIC_DIR));
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));

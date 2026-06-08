@@ -146,6 +146,7 @@
   "field.basements": "Piani interrati (cantina)",
   "floor.basement": "Cantina {n}",
   "floorstack.label": "Tutti i piani (senza tetto) — quale stanza sotto quale",
+  "floorstack.legend": "Legenda (alto→basso):",
   "allsides.facades": "Viste della casa (4 lati)",
   "roof.removed": "Tetto RIMOSSO — tutti i piani",
   "roof.show": "🏠 Aggiungi il tetto",

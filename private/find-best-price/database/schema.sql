@@ -64,3 +64,32 @@ CREATE TABLE IF NOT EXISTS fbp_scraper_usage (
     day   TEXT PRIMARY KEY,            -- 'YYYY-MM-DD' (UTC)
     count INTEGER NOT NULL DEFAULT 0   -- брой Google заявки този ден (таван 3)
 );
+
+-- ═══════════════════════════════════════════════════════════════
+-- ZERO PRICE („цена 0"): посетител публикува КАКВО търси, което го НЯМА в
+-- неговата държава; други предлагат цена/оферта или казват КЪДЕ го има.
+-- ═══════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS wanted_requests (
+    id           BIGSERIAL PRIMARY KEY,
+    requester_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title        TEXT NOT NULL,                 -- какво търси
+    description  TEXT NOT NULL DEFAULT '',
+    country      TEXT NOT NULL,                 -- държавата му (където липсва)
+    city         TEXT,
+    status       TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open','closed')),
+    is_system    BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS wanted_offers (
+    id            BIGSERIAL PRIMARY KEY,
+    request_id    BIGINT NOT NULL REFERENCES wanted_requests(id) ON DELETE CASCADE,
+    responder_id  BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    price         NUMERIC(14,2),                -- по желание (може само да каже КЪДЕ го има)
+    currency      TEXT DEFAULT 'USD',
+    where_country TEXT,                         -- къде го има
+    note          TEXT NOT NULL DEFAULT '',     -- обяснение / линк / къде
+    is_system     BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_fbp_wanted_country ON wanted_requests(country, status);
+CREATE INDEX IF NOT EXISTS idx_fbp_offers_req     ON wanted_offers(request_id);

@@ -146,6 +146,7 @@
   "field.basements": "طوابق تحت الأرض (قبو)",
   "floor.basement": "قبو {n}",
   "floorstack.label": "جميع الطوابق (بدون سقف) — أي غرفة تحت أي غرفة",
+  "floorstack.legend": "مفتاح (أعلى→أسفل):",
   "allsides.facades": "مناظر المنزل (4 جهات)",
   "roof.removed": "تمت إزالة السقف — جميع الطوابق",
   "roof.show": "🏠 أضف السقف",

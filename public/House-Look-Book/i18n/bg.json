@@ -127,6 +127,7 @@
   "field.basements": "Подземни етажи (мазе)",
   "floor.basement": "Мазе {n}",
   "floorstack.label": "Всички етажи (без покрив) — коя стая под коя",
+  "floorstack.legend": "Легенда (отгоре→долу):",
   "allsides.facades": "Изгледи на къщата (4 страни)",
   "roof.removed": "Покрив МАХНАТ — всички етажи",
   "roof.show": "🏠 Сложи покрива",

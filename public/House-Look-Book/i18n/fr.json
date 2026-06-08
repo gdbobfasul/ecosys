@@ -146,6 +146,7 @@
   "field.basements": "Étages en sous-sol (cave)",
   "floor.basement": "Sous-sol {n}",
   "floorstack.label": "Tous les étages (sans toit) — quelle pièce sous quelle pièce",
+  "floorstack.legend": "Légende (haut→bas) :",
   "allsides.facades": "Vues de la maison (4 côtés)",
   "roof.removed": "Toit RETIRÉ — tous les étages",
   "roof.show": "🏠 Ajouter le toit",
