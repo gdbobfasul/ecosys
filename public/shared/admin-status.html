@@ -628,6 +628,22 @@
         }
         html += `</div>`;
 
+        // ── FBP / WNB / HLB бази (PostgreSQL) — новите приложения ──
+        const pgDbCard = (icon, title, db) => {
+            db = db || {};
+            let c = `<div class="card"><h2>${icon} ${title}</h2>`;
+            c += `<div class="status-row"><span class="label">Статус</span><span class="value">${badge(db.connected ? 'connected' : 'error')}</span></div>`;
+            c += `<div class="status-row"><span class="label">Тип</span><span class="value">${db.type || 'PostgreSQL'}</span></div>`;
+            c += `<div class="status-row"><span class="label">Таблици</span><span class="value">${db.tableCount ?? '-'}</span></div>`;
+            c += `<div class="status-row"><span class="label">Общо записи</span><span class="value">${db.totalRows ?? '-'}</span></div>`;
+            if (db.tables) for (const [t, n] of Object.entries(db.tables)) c += `<div class="status-row"><span class="label" style="font-family:monospace">${t}</span><span class="value">${n} rows</span></div>`;
+            if (db.error) c += `<div style="margin-top:8px; padding:8px; background:#3a1c1c; border:1px solid #6b2b2b; border-radius:6px; font-size:0.78em; color:#f0883e;">⚠ ${String(db.error).replace(/</g,'&lt;')}</div>`;
+            return c + `</div>`;
+        };
+        html += pgDbCard('🏷️', 'Find Best Price DB', data.fbpdb);
+        html += pgDbCard('🌍', 'WhereNoBiz DB', data.wnbdb);
+        html += pgDbCard('🏠', 'House-Look-Book DB', data.hlbdb);
+
         // ── System ──
         html += `<div class="card"><h2>💻 System</h2>`;
         html += `<div class="status-row"><span class="label">Node.js</span><span class="value">${sys.nodeVersion || '-'}</span></div>`;
@@ -713,6 +729,15 @@
                 if (pRes.ok) data.portalsdb = await pRes.json();
                 else data.portalsdb = { connected: false, error: 'HTTP ' + pRes.status };
             } catch (e) { data.portalsdb = { connected: false, error: String(e.message) }; }
+
+            stage = 'fetch-newapps';
+            // FBP / WNB / HLB db-status (PostgreSQL) — таблици + брой записи
+            for (const a of [['fbp', 'fbpdb'], ['wnb', 'wnbdb'], ['hlb', 'hlbdb']]) {
+                try {
+                    const r = await fetch(window.location.origin + '/api/' + a[0] + '/db-status');
+                    data[a[1]] = r.ok ? await r.json() : { connected: false, error: 'HTTP ' + r.status };
+                } catch (e) { data[a[1]] = { connected: false, error: String(e.message) }; }
+            }
 
             stage = 'render';
             content.innerHTML = renderStatus(data);

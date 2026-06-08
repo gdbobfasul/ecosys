@@ -27,6 +27,29 @@ module.exports = {
       ],
     },
     {
+      name: 'ECO-3 ПРОИЗВЕЖДА РЕЗУЛТАТ (AI generate връща непразен текст; mock=ОК)',
+      steps: [
+        { label: 'POST /api/eco3/generate → непразен content (test/mock се приема, 500/празно = грешка)', run: async (page, c, h) => {
+          const r = await page.request.post(h.base + '/api/eco3/generate', {
+            timeout: 30000, failOnStatusCode: false,
+            data: { system: 'DIRECTOR', messages: [{ role: 'user', content: 'Робот тест: дай кратък анализ.' }], max_tokens: 256 },
+          });
+          const status = r.status();
+          // 401 = ECO-3 иска вход (отделен бекенд, порталната сесия не стига дотам) —
+          // НЕ е срив; приемаме грациозно (пълната проверка на резултата иска eco3 вход).
+          if (status === 401) return;
+          if (status >= 500) throw new Error('eco3 generate HTTP ' + status + ' (сървърна грешка)');
+          if (status === 503) throw new Error('eco3 generate 503 — Anthropic ключ липсва (а не сме в test mode)');
+          if (status !== 200) throw new Error('eco3 generate HTTP ' + status);
+          const b = await r.json().catch(() => null);
+          const text = b && Array.isArray(b.content) && b.content[0] && b.content[0].text;
+          if (!text || String(text).trim().length < 5) {
+            throw new Error('eco3 generate върна празен резултат: ' + JSON.stringify(b).slice(0, 120));
+          }
+        } },
+      ],
+    },
+    {
       name: 'Админ секция (вход ако трябва) + плащания',
       steps: [
         { goto: '/eco-3/admin/' },

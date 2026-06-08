@@ -29,6 +29,7 @@ function authenticate(db) {
 
     req.userId = user.id;
     req.user = user;
+    req.phone = user.phone;   // friends/messages route-ите ползват req.phone (иначе NULL в friends)
     // CLIENT_TYPE на сесията — 'web' или 'mobile'. Закача се тук веднъж,
     // достъпно е във ВСЕКИ route като req.clientType. Логовете го ползват
     // за да решат в кой файл да пишат (chat-web-* / chat-mobile-*).

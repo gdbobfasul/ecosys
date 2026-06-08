@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-05T09:23:49.739Z",
-  "totalPages": 81,
+  "generatedAt": "2026-06-08T20:58:06.806Z",
+  "totalPages": 93,
   "health": [
     {
       "app": "chat",
@@ -21,6 +21,10 @@
     {
       "app": "WhereNoBiz",
       "url": "/api/wnb/health"
+    },
+    {
+      "app": "find-best-price",
+      "url": "/api/fbp/health"
     }
   ],
   "groups": [
@@ -30,7 +34,7 @@
       "pages": [
         {
           "url": "/",
-          "title": "KCY Ecosystem",
+          "title": "KCY Ecosystem - Communication, Games & Services",
           "type": "page",
           "params": []
         }
@@ -48,6 +52,12 @@
           "params": []
         },
         {
+          "url": "/portals/admin-bugs.html",
+          "title": "Докладвани грешки — Admin",
+          "type": "page",
+          "params": []
+        },
+        {
           "url": "/portals/admin.html",
           "title": "Portals — Admin панел",
           "type": "admin",
@@ -56,6 +66,18 @@
         {
           "url": "/portals/billing.html",
           "title": "Плащане — KCY Portals",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/games/ads/ad_battle.html",
+          "title": "Битка на терен — вход",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/games/ads/ad_duel.html",
+          "title": "Дуел — вход",
           "type": "page",
           "params": []
         },
@@ -139,6 +161,12 @@
         {
           "url": "/portals/register.html",
           "title": "Регистрация — KCY Portals",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/portals/report-bug.html",
+          "title": "Докладвай грешка — KCY Ecosystem",
           "type": "page",
           "params": []
         },
@@ -264,6 +292,12 @@
           "params": []
         },
         {
+          "url": "/chat/admin/task-disputes.html",
+          "title": "Задачи — спорове за неплащане",
+          "type": "admin",
+          "params": []
+        },
+        {
           "url": "/chat/download/",
           "title": "Download AMS Chat - Mobile App",
           "type": "page",
@@ -318,8 +352,20 @@
           "params": []
         },
         {
+          "url": "/chat/public/tasks.html",
+          "title": "Задачи — Живи ръце / Истина ли е",
+          "type": "page",
+          "params": []
+        },
+        {
           "url": "/chat/public/warning.html",
           "title": "Choose Access Level",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/chat/register.html",
+          "title": "Регистрация — Анонимен Чат",
           "type": "page",
           "params": []
         }
@@ -346,6 +392,37 @@
           "url": "/eco-3/admin/",
           "title": "ECO-3 Admin - KCY Ecosystem",
           "type": "admin",
+          "params": []
+        }
+      ]
+    },
+    {
+      "app": "find-best-price",
+      "label": "Find Best Price",
+      "pages": [
+        {
+          "url": "/api/fbp/health",
+          "title": "health (FBP)",
+          "type": "api",
+          "note": "",
+          "params": []
+        },
+        {
+          "url": "/find-best-price/",
+          "title": "Find Best Price per Country",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/find-best-price/add.html",
+          "title": "Add your prices",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/find-best-price/zero-price.html",
+          "title": "Zero Price — what you can't find",
+          "type": "page",
           "params": []
         }
       ]
@@ -491,9 +568,51 @@
       ]
     },
     {
-      "app": "token",
-      "label": "Token — KCY-meme-1",
+      "app": "crypto",
+      "label": "Crypto (token/brch1/multisig — само админ)",
       "pages": [
+        {
+          "url": "/crypto/",
+          "title": "KCY Ecosystem - Crypto",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/crypto/brch1/",
+          "title": "BeRicH 1 (BRCH1) — KCY Ecosystem",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/crypto/brch1/admin/",
+          "title": "BRCH1 Admin — KCY Ecosystem",
+          "type": "admin",
+          "params": []
+        },
+        {
+          "url": "/crypto/multisig/",
+          "title": "Multi-Sig Wallet - KCY Ecosystem",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/crypto/multisig/admin/",
+          "title": "KCY1 Multi-Sig Control",
+          "type": "admin",
+          "params": []
+        },
+        {
+          "url": "/crypto/multisig/kcy1-website.html",
+          "title": "KCY1 Token - KCY-meme-1 | Official Documentation v1.0093",
+          "type": "page",
+          "params": []
+        },
+        {
+          "url": "/crypto/multisig/multisig-control.html",
+          "title": "KCY1 Multi-Sig Control",
+          "type": "page",
+          "params": []
+        },
         {
           "url": "/crypto/token/",
           "title": "KCY-meme-1 Token",
@@ -528,54 +647,6 @@
           "url": "/crypto/token/website/kcy1_website_setup_guide.html",
           "title": "KCY1 Website - Ръководство за настройка",
           "type": "page",
-          "params": []
-        }
-      ]
-    },
-    {
-      "app": "multisig",
-      "label": "Multisig портфейл",
-      "pages": [
-        {
-          "url": "/crypto/multisig/",
-          "title": "Multi-Sig Wallet - KCY Ecosystem",
-          "type": "page",
-          "params": []
-        },
-        {
-          "url": "/crypto/multisig/admin/",
-          "title": "KCY1 Multi-Sig Control",
-          "type": "admin",
-          "params": []
-        },
-        {
-          "url": "/crypto/multisig/kcy1-website.html",
-          "title": "KCY1 Token - KCY-meme-1 | Official Documentation v1.0093",
-          "type": "page",
-          "params": []
-        },
-        {
-          "url": "/crypto/multisig/multisig-control.html",
-          "title": "KCY1 Multi-Sig Control",
-          "type": "page",
-          "params": []
-        }
-      ]
-    },
-    {
-      "app": "brch1",
-      "label": "BeRich1",
-      "pages": [
-        {
-          "url": "/crypto/brch1/",
-          "title": "BeRicH 1 (BRCH1) — KCY Ecosystem",
-          "type": "page",
-          "params": []
-        },
-        {
-          "url": "/crypto/brch1/admin/",
-          "title": "BRCH1 Admin — KCY Ecosystem",
-          "type": "admin",
           "params": []
         }
       ]

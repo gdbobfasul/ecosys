@@ -22,7 +22,7 @@ const KCY_NAV = {
     projects: {
         home: { name: "Home", url: "/", icon: "🏠" },
         token: { name: "KCY Token", url: "/crypto/token/", admin: "/crypto/token/admin/scripts.html", icon: "🪙" },
-        brch1: { name: "BRCH1", url: "/crypto/brch1/", admin: "/crypto/brch1/admin/", icon: "/crypto/brch1/assets/brch1-icon.svg" },
+        brch1: { name: "BRCH1", url: "/crypto/brch1/", admin: "/crypto/brch1/admin/", icon: "💰" },
         multisig: { name: "Multi-Sig", url: "/crypto/multisig/", admin: "/crypto/multisig/admin/", icon: "🔐" },
         chat: { name: "AMS Chat", url: "/chat/", admin: "/chat/admin/", icon: "💬" },
         eco3: { name: "ECO-3", url: "/eco-3/", admin: "/eco-3/admin/", icon: "🤖" }

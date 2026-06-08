@@ -3,6 +3,13 @@
 // модерация) → АДМИН одобрява/отказва. Накрая чисти.
 'use strict';
 
+// Минимален ВАЛИДЕН PNG (1×1) — sharp трябва да го обработи; качваме го като реална снимка.
+const PNG_1x1 = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC',
+  'base64'
+);
+const pngFile = (name) => ({ name, mimeType: 'image/png', buffer: PNG_1x1 });
+
 module.exports = {
   app: 'wnb',
   label: 'WhereNoBiz (потребител + админ модерация)',
@@ -33,6 +40,16 @@ module.exports = {
       steps: [
         { api: { method: 'POST', path: '/api/wnb/posts', json: () => ({ country_code: 'BG', title: 'Робот липсващ бизнес', description: 'Автоматичен тест от робота — описание над двайсет знака.', links: [] }) },
           expectStatus: 201, saveAs: 'postId', extract: (b) => b.post && b.post.id },
+        { label: 'КАЧВАНЕ НА ИЗОБРАЖЕНИЕ: качи снимка към поста', run: async (page, c, h) => {
+          const r = await page.request.post(h.base + `/api/wnb/posts/${c.postId}/images`, {
+            multipart: { image: pngFile('robot-post.png') }, failOnStatusCode: false,
+          });
+          if (r.status() >= 500) throw new Error('качване на WNB снимка HTTP ' + r.status());
+          if (r.status() !== 201 && r.status() !== 409) {
+            const b = await r.json().catch(() => ({}));
+            throw new Error('качване на WNB снимка HTTP ' + r.status() + ' ' + (b.error || ''));
+          }
+        } },
       ],
     },
     {

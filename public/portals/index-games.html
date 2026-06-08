@@ -110,10 +110,9 @@ var ICONS={
 var ICON_FALLBACK={
   plane:'plane-dodge', car:'car-race', hero:'hero-jump', battle:'battle-team'
 };
-// Игри с реална снимка в thumbs/. battle-team/battle-duel още нямат (текущ проблем).
-var THUMBS={
-  'plane-dodge':1,'plane-shoot':1,'car-race':1,'car-drift':1,'hero-jump':1,'hero-run':1
-};
+// Игри с реална снимка в thumbs/<slug>.png. Празно → всички ползват рисувания SVG icon
+// (PNG-тата ги няма още → даваха 404). Добави slug тук само когато сложиш реален PNG.
+var THUMBS={};
 
 function showTab(t){
   document.getElementById('panelGames').classList.toggle('active',t==='games');
@@ -154,7 +153,7 @@ function loadGames(){
       if (game.slug === 'battle-team' || game.slug === 'battle-duel') return;
       var pr=game.progress||{best_level:1,best_score:0};
       var a=document.createElement('a');
-      a.className='game'; a.href=game.slug+'.html';
+      a.className='game'; a.href='games/'+game.slug+'.html';
       // Игрите с реална снимка (thumbs/<slug>.png). За battle-team/battle-duel още
       // няма снимка (текущ проблем) → ползваме рисувания SVG icon.
       var media = THUMBS[game.slug]

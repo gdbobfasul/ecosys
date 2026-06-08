@@ -165,17 +165,21 @@ app.use(helmet({
   },
 }));
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'];
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
+const allowedOrigins = (process.env.ALLOWED_ORIGINS?.split(',').map(s => s.trim()).filter(Boolean)) || ['http://localhost:3000'];
+// CORS: разрешава изброените origins + ВИНАГИ same-origin (страницата и API-то на
+// същия домейн — напр. my.girl.place/chat → my.girl.place/api). Така register/login
+// работят от ВСЕКИ домейн на чата без ръчно изброяване. Поправка на 500 „Not allowed by CORS".
+app.use((req, res, next) => {
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);                          // native app / same-origin без Origin
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      try { if (req.headers.host && new URL(origin).host === req.headers.host) return callback(null, true); } catch (e) {}
       callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+    },
+    credentials: true
+  })(req, res, next);
+});
 
 app.use(express.json());
 app.use(express.static('public'));

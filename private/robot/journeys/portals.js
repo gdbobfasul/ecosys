@@ -41,6 +41,43 @@ module.exports = {
       ],
     },
     {
+      name: 'Вход с Facebook + Google (бутони съществуват, потокът не дава 500)',
+      steps: [
+        { goto: '/portals/login.html' },
+        { wait: 800 },
+        { label: 'Facebook бутон присъства (или конфигът казва изключен)', run: async (page, c, h) => {
+          // Бутонът #btn-fb се показва само ако fb-config има App ID. И в двата случая
+          // искаме сан отговор: бутон ИЛИ изричен disabled — без 500/празнина.
+          const cfgR = await page.request.get(h.base + '/api/portals/fb-config', { failOnStatusCode: false });
+          if (cfgR.status() >= 500) throw new Error('fb-config HTTP ' + cfgR.status());
+          const cfg = await cfgR.json().catch(() => ({}));
+          const hasBtn = await page.evaluate(() => !!document.getElementById('btn-fb')).catch(() => false);
+          if (!hasBtn) throw new Error('Facebook бутонът (#btn-fb) липсва в login.html');
+          c.fbEnabled = !!cfg.enabled || !!cfg.appId;
+        } },
+        { label: 'Facebook вход потокът не дава 500 (изключен/невалиден токен = ОК)', run: async (page, c, h) => {
+          const r = await page.request.post(h.base + '/api/portals/facebook-login', {
+            failOnStatusCode: false, data: { accessToken: 'robot-invalid-token' },
+          });
+          // Приемливо: 503 fb_disabled (не е настроен) ИЛИ 401 bad_token (грациозен отказ).
+          // НЕприемливо: 500 (счупено) или мъртъв отговор.
+          if (r.status() >= 500 && r.status() !== 503) throw new Error('facebook-login HTTP ' + r.status() + ' (500 — счупено)');
+          const b = await r.json().catch(() => null);
+          if (!b) throw new Error('facebook-login върна непарсваем/празен отговор (статус ' + r.status() + ')');
+        } },
+        { label: 'Google вход потокът не дава 500 (изключен/невалиден токен = ОК)', run: async (page, c, h) => {
+          const cfgR = await page.request.get(h.base + '/api/portals/google-config', { failOnStatusCode: false });
+          if (cfgR.status() >= 500) throw new Error('google-config HTTP ' + cfgR.status());
+          const r = await page.request.post(h.base + '/api/portals/google-login', {
+            failOnStatusCode: false, data: { credential: 'robot-invalid-credential' },
+          });
+          if (r.status() >= 500) throw new Error('google-login HTTP ' + r.status() + ' (500 — счупено)');
+          const b = await r.json().catch(() => null);
+          if (!b) throw new Error('google-login върна непарсваем/празен отговор (статус ' + r.status() + ')');
+        } },
+      ],
+    },
+    {
       name: 'Ползвай услуга — QR генератор (клиентско)',
       steps: [
         { goto: '/portals/services/qr.html' },

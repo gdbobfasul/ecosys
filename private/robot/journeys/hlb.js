@@ -9,6 +9,14 @@ const HOUSE = {
   extras: { pool: false, boat: false, pier: false }, rooms: [[]],
 };
 
+// Минимален ВАЛИДЕН PNG (1×1) — sharp трябва да го обработи (иначе 500). Качваме го
+// като реална снимка за покритие на „качване на изображение".
+const PNG_1x1 = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC',
+  'base64'
+);
+const pngFile = (name) => ({ name, mimeType: 'image/png', buffer: PNG_1x1 });
+
 module.exports = {
   app: 'hlb',
   label: 'House-Look-Book (потребител + админ модерация)',
@@ -39,6 +47,17 @@ module.exports = {
       steps: [
         { api: { method: 'POST', path: '/api/hlb/proposals', json: () => ({ title: 'Робот къща', description: 'Автоматичен тест.', composer_params: HOUSE }) },
           expectStatus: 201, saveAs: 'propId', extract: (b) => b.proposal && b.proposal.id },
+        { label: 'КАЧВАНЕ НА ИЗОБРАЖЕНИЕ: качи view снимка (докато е editing)', run: async (page, c, h) => {
+          const r = await page.request.post(h.base + `/api/hlb/proposals/${c.propId}/images?kind=view`, {
+            multipart: { image: pngFile('robot-view.png') }, failOnStatusCode: false,
+          });
+          // 201 = качено. 409 = лимит/не-editing (приемливо при ре-пуск). 500 = счупено.
+          if (r.status() >= 500) throw new Error('качване на HLB снимка HTTP ' + r.status());
+          if (r.status() !== 201 && r.status() !== 409) {
+            const b = await r.json().catch(() => ({}));
+            throw new Error('качване на HLB снимка HTTP ' + r.status() + ' ' + (b.error || ''));
+          }
+        } },
         { api: { method: 'POST', path: (c) => `/api/hlb/proposals/${c.propId}/submit` }, expectStatus: 200 },
       ],
     },

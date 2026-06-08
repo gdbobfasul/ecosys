@@ -28,18 +28,17 @@ const ROOT = process.env.PUBLIC_DIR
 const OUT_DIR = path.join(ROOT, 'tree');
 
 // Подредба + етикети на приложенията (по първата папка). '' = коренът на сайта.
-const APP_ORDER = ['', 'portals', 'chat', 'eco-3', 'House-Look-Book', 'WhereNoBiz',
-                   'token', 'multisig', 'brch1', 'shared', 'tree'];
+const APP_ORDER = ['', 'portals', 'chat', 'eco-3', 'find-best-price', 'House-Look-Book', 'WhereNoBiz',
+                   'crypto', 'shared', 'tree'];
 const APP_LABELS = {
   '':                'Основен сайт',
   portals:           'Портали (игри + услуги)',
   chat:              'Чат',
   'eco-3':           'ECO-3 — AI студио',
+  'find-best-price': 'Find Best Price',
   'House-Look-Book': 'House-Look-Book',
   'WhereNoBiz':      'WhereNoBiz',
-  token:             'Token — KCY-meme-1',
-  multisig:          'Multisig портфейл',
-  brch1:             'BeRich1',
+  crypto:            'Crypto (token/brch1/multisig — само админ)',
   shared:            'Споделени / Диагностика',
   tree:              'Дърво (тази страница)',
 };
@@ -57,6 +56,7 @@ const EXTRAS = [
   { app: 'portals', url: '/api/portals/health', title: 'health (portals)', type: 'api' },
   { app: 'House-Look-Book', url: '/api/hlb/health', title: 'health (HLB)', type: 'api' },
   { app: 'WhereNoBiz',      url: '/api/wnb/health', title: 'health (WNB)', type: 'api' },
+  { app: 'find-best-price', url: '/api/fbp/health', title: 'health (FBP)', type: 'api' },
 ];
 
 // Курирани примерни URL параметри по страница (особено за админ/параметрични).

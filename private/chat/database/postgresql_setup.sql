@@ -114,16 +114,22 @@ CREATE TABLE IF NOT EXISTS sessions (
 );
 
 -- Friends table (now uses user_id instead of phone)
+-- Миграция: старата friends беше user_id-базирана (грешка от SQLite→PG), а кодът
+-- (routes/friends.js) ползва phone1/phone2/custom_name_by_phone1/2. Пресъздай я
+-- САМО ако е със старите колони (роботът хвана: column "phone1" does not exist).
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'friends' AND column_name = 'user_id1') THEN
+    DROP TABLE friends;
+  END IF;
+END $$;
 CREATE TABLE IF NOT EXISTS friends (
-  user_id1 INTEGER NOT NULL,
-  user_id2 INTEGER NOT NULL,
-  custom_name_by_user1 TEXT,
-  custom_name_by_user2 TEXT,
+  phone1 TEXT NOT NULL,
+  phone2 TEXT NOT NULL,
+  custom_name_by_phone1 TEXT,
+  custom_name_by_phone2 TEXT,
   created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
-  PRIMARY KEY (user_id1, user_id2),
-  CHECK (user_id1 < user_id2),
-  FOREIGN KEY (user_id1) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE CASCADE
+  PRIMARY KEY (phone1, phone2),
+  CHECK (phone1 < phone2)
 );
 
 -- Messages table (uses user_id)

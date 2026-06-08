@@ -39,6 +39,10 @@ const JOURNEYS = {
   eco3: require('./journeys/eco3'),
   hlb: require('./journeys/hlb'),
   wnb: require('./journeys/wnb'),
+  fbp: require('./journeys/fbp'),
+  services: require('./journeys/services'),
+  games: require('./journeys/games'),
+  failover: require('./journeys/failover'),
 };
 
 // ── аргументи ───────────────────────────────────────────────────────────────
