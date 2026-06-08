@@ -178,7 +178,7 @@ const server = http.createServer(async (req, res) => {
             const target = (body.target === 'vm') ? 'vm' : 'prod';
             // Режими: critical/all/crawl/fuzz (линкове/заявки) ИЛИ journey:<app> (работни
             // сценарии „като човек" — регистрация/вход/създай/админ модерация).
-            const JOURNEY_APPS = ['portals', 'chat', 'eco3', 'hlb', 'wnb', 'all'];
+            const JOURNEY_APPS = ['portals', 'chat', 'eco3', 'hlb', 'wnb', 'fbp', 'services', 'games', 'failover', 'all'];
             const raw = String(body.mode || 'critical');
             const args = ['run.js', '--target', target];
             let mode = 'critical';
