@@ -56,8 +56,8 @@
     </div>
 
     <!-- Shared Ecosystem Config (Stripe keys, URLs, pricing) -->
-    <script src="/shared/js/config.js?v=1.0093"></script>
-    <script src="/shared/js/navigation.js?v=1.0115"></script>
+    <script src="/shared/js/config.js?v=1.0195"></script>
+    <script src="/shared/js/navigation.js?v=1.0195"></script>
 
     <!-- ECO-3 Ecosystem Bridge: connects to shared Stripe & API -->
     <script>
@@ -76,9 +76,6 @@
                 PREMIUM: { USD: 9.99, EUR: 9.99 },
                 PER_MINUTE: { USD: 0.15, EUR: 0.15 }
             },
-            
-            // Crypto payment wallets (same treasury as Chat)
-            CRYPTO_WALLETS: window.CRYPTO_CONFIG ? window.CRYPTO_CONFIG.TREASURY_WALLETS : {},
             
             // Ecosystem base URL
             BASE_URL: window.KCY_CONFIG ? window.KCY_CONFIG.BASE_URL : '',

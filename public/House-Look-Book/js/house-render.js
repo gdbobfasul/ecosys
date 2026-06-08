@@ -294,40 +294,58 @@ const HouseRender = (function () {
       `<text x="${W / 2}" y="${totalH - 12}" text-anchor="middle" font-family="system-ui,Arial" font-size="14" fill="#445">${esc(sideLabel(side))}</text></svg>`;
   }
 
-  // ── „Всички етажи" (когато покривът е махнат) — коя стая под коя (т.8) ──
+  // ── „Всички етажи" (изглед ОТГОРЕ, когато покривът е махнат) — коя стая над коя ──
+  // Външен дебел ЧЕРЕН контур = формата на сградата отгоре (footprint). Навътре —
+  // концентрични рамки, по една на ЕТАЖ: най-горният етаж най-отвън, по-долните
+  // навътре, до мазе -1/-2 най-вътре. Във всяка рамка стаите като квадратчета (т.8).
   function floorsStack(params) {
     const all = params.rooms || [];
-    const order = []; for (let i = all.length - 1; i >= 0; i--) order.push(i);   // отгоре надолу
+    const b = Math.max(0, +params.basements || 0), nAll = all.length;
+    // ред отвън→навътре = отгоре→надолу: горен етаж → партер → мазе -1 → мазе -2 …
+    const order = [];
+    for (let i = nAll - 1; i >= b; i--) order.push(i);   // надземни: горен → партер
+    for (let i = 0; i < b; i++) order.push(i);            // мазета: -1, -2, … (най-вътре)
+    if (!order.length) order.push(0);
     const PAL = ['#e57373', '#64b5f6', '#81c784', '#ffb74d', '#ba68c8', '#4db6ac', '#a1887f', '#90a4ae', '#f06292', '#9575cd'];
     const colorFor = di => PAL[di % PAL.length];
-    // ляво: ГОЛЯМ квадрат (черен външен контур). Всеки етаж = РЕД с очертани стаи
-    // в цвета на етажа (само контур, БЕЗ запълване), име по средата. Редовете един
-    // НАД друг → коя стая е над коя (горен етаж най-горе, мазе най-долу). дясно: легенда.
-    const GX = 18, GY = 44, GW = 238, GH = GROUND_Y - GY - 6;
-    const nF = Math.max(1, order.length);
-    const rowH = GH / nF;
+    const nF = order.length;
+    // силует на основата като outline (за изгледа отгоре)
+    function fpOutline(x, y, w, h, sw, stroke) {
+      const cx = x + w / 2, cy = y + h / 2;
+      if (isCustom(params)) return `<path d="${customPath(params.customShape.pts, x, y, w, h)}" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
+      switch (params.footprint) {
+        case 'dome': case 'waterlily': return `<ellipse cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" rx="${(w / 2).toFixed(1)}" ry="${(h / 2).toFixed(1)}" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
+        case 'snail': return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(Math.min(w, h) / 2).toFixed(1)}" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
+        case 'lshape': return `<path d="M${x} ${y} H${(x + w * 0.58).toFixed(1)} V${(y + h * 0.52).toFixed(1)} H${x + w} V${y + h} H${x} Z" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
+        default: return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
+      }
+    }
+    const BX = 16, BY = 40, BW = 244, BH = GROUND_Y - BY - 4;
     let inner = `<rect x="0" y="0" width="${W}" height="${H}" fill="#f4f7f9"/>`;
-    inner += `<rect x="${GX}" y="${GY}" width="${GW}" height="${GH}" fill="#fff" stroke="#111" stroke-width="3"/>`;
+    inner += fpOutline(BX, BY, BW, BH, 4, '#111');       // дебел черен силует на сградата отгоре
+    const margin = 9;
+    const stepX = (BW / 2 - margin - 6) / nF, stepY = (BH / 2 - margin - 6) / nF;
     order.forEach((fi, di) => {
-      const fr = all[fi] || [];
-      const ry = GY + di * rowH, col = colorFor(di);
-      if (di > 0) inner += `<line x1="${GX}" y1="${ry}" x2="${GX + GW}" y2="${ry}" stroke="#111" stroke-width="1" opacity="0.45"/>`;
+      const fr = all[fi] || [], col = colorFor(di);
+      const ix = BX + margin + di * stepX, iy = BY + margin + di * stepY;
+      const iw = Math.max(8, BW - 2 * (margin + di * stepX)), ih = Math.max(8, BH - 2 * (margin + di * stepY));
+      inner += `<rect x="${ix.toFixed(1)}" y="${iy.toFixed(1)}" width="${iw.toFixed(1)}" height="${ih.toFixed(1)}" rx="2" fill="none" stroke="${col}" stroke-width="2.2"/>`;
+      const bandY = iy + 3, bandH = Math.max(8, Math.min(stepY - 4, ih - 6, 22));
       if (!fr.length) {                                    // празен етаж → само етикет в цвета
-        inner += `<text x="${GX + GW / 2}" y="${ry + rowH / 2 + 3}" text-anchor="middle" font-size="9" fill="${col}" opacity="0.7" font-family="system-ui,Arial">${esc(floorTitle(params, fi))}</text>`;
+        inner += `<text x="${(ix + iw / 2).toFixed(1)}" y="${(bandY + bandH / 2 + 3).toFixed(1)}" text-anchor="middle" font-size="8" fill="${col}" opacity="0.75" font-family="system-ui,Arial">${esc(floorTitle(params, fi))}</text>`;
         return;
       }
-      const n = fr.length, cw = GW / n;
+      const cellW = (iw - 6) / fr.length;
       fr.forEach((r, ci) => {
-        const cx = GX + ci * cw;
-        const pad = Math.min(6, cw * 0.12, rowH * 0.16);
-        inner += `<rect x="${cx + pad}" y="${ry + pad}" width="${Math.max(4, cw - 2 * pad)}" height="${Math.max(4, rowH - 2 * pad)}" fill="none" stroke="${col}" stroke-width="2.5" rx="3"/>`;
+        const bx = ix + 3 + ci * cellW;
+        inner += `<rect x="${(bx + 1).toFixed(1)}" y="${bandY.toFixed(1)}" width="${Math.max(4, cellW - 2).toFixed(1)}" height="${bandH.toFixed(1)}" rx="2" fill="none" stroke="${col}" stroke-width="1.6"/>`;
         const rt = roomType(r.type), nm = rt ? T(rt.key) : r.type;
-        const fs = Math.max(7, Math.min(11, cw * 0.2, rowH * 0.42));
-        inner += `<text x="${cx + cw / 2}" y="${ry + rowH / 2 + fs * 0.35}" text-anchor="middle" font-size="${fs.toFixed(1)}" fill="#1a1a1a" font-family="system-ui,Arial">${esc(String(nm).slice(0, 11))}</text>`;
+        const fs = Math.max(6.5, Math.min(9, cellW * 0.26, bandH * 0.62));
+        inner += `<text x="${(bx + cellW / 2).toFixed(1)}" y="${(bandY + bandH / 2 + fs * 0.34).toFixed(1)}" text-anchor="middle" font-size="${fs.toFixed(1)}" fill="#1a1a1a" font-family="system-ui,Arial">${esc(String(nm).slice(0, 9))}</text>`;
       });
     });
     // ── Легенда (дясно): цвят на етажа + имената на стаите в същия цвят ──
-    const LX = 266; let ly = GY + 6;
+    const LX = 268; let ly = BY + 6;
     inner += `<text x="${LX}" y="${ly}" font-size="10.5" font-weight="bold" fill="#334" font-family="system-ui,Arial">Легенда (отгоре→долу)</text>`; ly += 16;
     order.forEach((fi, di) => {
       if (ly > GROUND_Y - 6) return;

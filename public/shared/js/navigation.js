@@ -21,9 +21,9 @@ const KCY_NAV = {
     
     projects: {
         home: { name: "Home", url: "/", icon: "🏠" },
-        token: { name: "KCY Token", url: "/token/", admin: "/token/admin/scripts.html", icon: "🪙" },
-        brch1: { name: "BRCH1", url: "/brch1/", admin: "/brch1/admin/", icon: "/brch1/assets/brch1-icon.svg" },
-        multisig: { name: "Multi-Sig", url: "/multisig/", admin: "/multisig/admin/", icon: "🔐" },
+        token: { name: "KCY Token", url: "/crypto/token/", admin: "/crypto/token/admin/scripts.html", icon: "🪙" },
+        brch1: { name: "BRCH1", url: "/crypto/brch1/", admin: "/crypto/brch1/admin/", icon: "/crypto/brch1/assets/brch1-icon.svg" },
+        multisig: { name: "Multi-Sig", url: "/crypto/multisig/", admin: "/crypto/multisig/admin/", icon: "🔐" },
         chat: { name: "AMS Chat", url: "/chat/", admin: "/chat/admin/", icon: "💬" },
         eco3: { name: "ECO-3", url: "/eco-3/", admin: "/eco-3/admin/", icon: "🤖" }
     },
@@ -46,9 +46,9 @@ const KCY_NAV = {
         var isCrypto = (path.indexOf('/crypto') === 0);
         var navLinks = '<a href="/" data-i18n="nav.home">Home</a>';
         if (isCrypto) {
-            navLinks += '<a href="/token/" data-i18n="nav.token">🪙 Token</a>'
-                + '<a href="/brch1/" class="nav-brch1"><img src="/brch1/assets/brch1-icon.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:4px;">BRCH1</a>'
-                + '<a href="/multisig/" data-i18n="nav.multisig">🔐 Multi-Sig</a>'
+            navLinks += '<a href="/crypto/token/" data-i18n="nav.token">🪙 Token</a>'
+                + '<a href="/crypto/brch1/" class="nav-brch1"><img src="/crypto/brch1/assets/brch1-icon.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:4px;">BRCH1</a>'
+                + '<a href="/crypto/multisig/" data-i18n="nav.multisig">🔐 Multi-Sig</a>'
                 + '<a href="/houselookbook/">🏠 House-Look-Book</a>'
                 + '<a href="/wherenobiz/">🌍 WhereNoBiz</a>'
                 + '<a href="/find-best-price/">💰 Find Best Price</a>';
@@ -66,9 +66,9 @@ const KCY_NAV = {
             + '<option value="/tree/">🌳 Дърво</option>'
             + '<option value="" disabled>──────────────</option>';
         if (isCrypto) {
-            adminOpts += '<option value="/token/admin/scripts.html">🪙 Token Admin</option>'
-                + '<option value="/brch1/admin/">💰 BRCH1 Admin</option>'
-                + '<option value="/multisig/admin/">🔐 Multi-Sig Admin</option>';
+            adminOpts += '<option value="/crypto/token/admin/scripts.html">🪙 Token Admin</option>'
+                + '<option value="/crypto/brch1/admin/">💰 BRCH1 Admin</option>'
+                + '<option value="/crypto/multisig/admin/">🔐 Multi-Sig Admin</option>';
         } else {
             adminOpts += '<option value="/chat/admin/index.html">💬 Chat Admin</option>'
                 + '<option value="/eco-3/admin/">🤖 ECO-3 Admin</option>'

@@ -30,7 +30,7 @@
       "pages": [
         {
           "url": "/",
-          "title": "KCY Ecosystem - Crypto Platform",
+          "title": "KCY Ecosystem",
           "type": "page",
           "params": []
         }
@@ -495,37 +495,37 @@
       "label": "Token — KCY-meme-1",
       "pages": [
         {
-          "url": "/token/",
+          "url": "/crypto/token/",
           "title": "KCY-meme-1 Token",
           "type": "page",
           "params": []
         },
         {
-          "url": "/token/admin/scripts.html",
+          "url": "/crypto/token/admin/scripts.html",
           "title": "KCY1 Token - Admin Interface",
           "type": "admin",
           "params": []
         },
         {
-          "url": "/token/website/",
+          "url": "/crypto/token/website/",
           "title": "KCY1 Token - KCY-meme-1 | Official Documentation v1.0093",
           "type": "page",
           "params": []
         },
         {
-          "url": "/token/website/kcy1_documentation.html",
+          "url": "/crypto/token/website/kcy1_documentation.html",
           "title": "KCY1 Token - Пълна Документация",
           "type": "page",
           "params": []
         },
         {
-          "url": "/token/website/kcy1_website_index.html",
+          "url": "/crypto/token/website/kcy1_website_index.html",
           "title": "KCY1 Token - Official Site",
           "type": "page",
           "params": []
         },
         {
-          "url": "/token/website/kcy1_website_setup_guide.html",
+          "url": "/crypto/token/website/kcy1_website_setup_guide.html",
           "title": "KCY1 Website - Ръководство за настройка",
           "type": "page",
           "params": []
@@ -537,25 +537,25 @@
       "label": "Multisig портфейл",
       "pages": [
         {
-          "url": "/multisig/",
+          "url": "/crypto/multisig/",
           "title": "Multi-Sig Wallet - KCY Ecosystem",
           "type": "page",
           "params": []
         },
         {
-          "url": "/multisig/admin/",
+          "url": "/crypto/multisig/admin/",
           "title": "KCY1 Multi-Sig Control",
           "type": "admin",
           "params": []
         },
         {
-          "url": "/multisig/kcy1-website.html",
+          "url": "/crypto/multisig/kcy1-website.html",
           "title": "KCY1 Token - KCY-meme-1 | Official Documentation v1.0093",
           "type": "page",
           "params": []
         },
         {
-          "url": "/multisig/multisig-control.html",
+          "url": "/crypto/multisig/multisig-control.html",
           "title": "KCY1 Multi-Sig Control",
           "type": "page",
           "params": []
@@ -567,13 +567,13 @@
       "label": "BeRich1",
       "pages": [
         {
-          "url": "/brch1/",
+          "url": "/crypto/brch1/",
           "title": "BeRicH 1 (BRCH1) — KCY Ecosystem",
           "type": "page",
           "params": []
         },
         {
-          "url": "/brch1/admin/",
+          "url": "/crypto/brch1/admin/",
           "title": "BRCH1 Admin — KCY Ecosystem",
           "type": "admin",
           "params": []

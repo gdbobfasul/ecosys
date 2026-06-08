@@ -50,12 +50,12 @@ const KCY_CONFIG = {
     // Project URLs (Относителни пътища)
     urls: {
         base: "/",
-        token: "/token/",
-        tokenAdmin: "/token/admin/scripts.html",
-        brch1: "/brch1/",
-        brch1Admin: "/brch1/admin/",
-        multisig: "/multisig/",
-        multisigAdmin: "/multisig/admin/",
+        token: "/crypto/token/",
+        tokenAdmin: "/crypto/token/admin/scripts.html",
+        brch1: "/crypto/brch1/",
+        brch1Admin: "/crypto/brch1/admin/",
+        multisig: "/crypto/multisig/",
+        multisigAdmin: "/crypto/multisig/admin/",
         chat: "/chat/",
         chatDownload: "/chat/download/",
         chatAdmin: "/chat/admin/",
