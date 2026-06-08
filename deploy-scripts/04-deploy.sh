@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0172
+# Version: 1.0173
 ##############################################################################
 # KCY Ecosystem - Deploy Script (Client-side)
 #
@@ -642,6 +642,14 @@ TARGETINFO
         log "${GREEN}═══════════════════════════════════════════════════${NC}"
         log "${GREEN}  ✓ INSTALL COMPLETE${NC}"
         log "${GREEN}═══════════════════════════════════════════════════${NC}"
+        # Failover авто-възстановяване (05 го изтри). Пропуска се при пълна инсталация
+        # (02) — там restore-ът е накрая, СЛЕД услугите (иначе 18/19 конфликтват).
+        if [ -z "${KCY_IN_FULL_INSTALL:-}" ]; then
+            log ""
+            log "  ${CYAN}→ Failover авто-възстановяване (ако е бил активен)...${NC}"
+            ssh -t ${SSH_OPTS} "${USER}@${SERVER}" "sudo ${STAGING}/deploy-scripts/server/12-setup-failover.sh --auto-restore" || \
+                log "  ${YELLOW}! Failover restore не мина — пусни ръчно опция 37${NC}"
+        fi
     else
         EXIT_CODE=$?
         log ""

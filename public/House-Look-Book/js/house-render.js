@@ -255,7 +255,9 @@ const HouseRender = (function () {
     for (let f = 0; f < floors; f++) {
       const fy = GROUND_Y - (f + 1) * FLOOR_H;
       if (f > 0) body += `<line x1="${bodyX}" y1="${GROUND_Y - f * FLOOR_H}" x2="${bodyX + bodyW}" y2="${GROUND_Y - f * FLOOR_H}" stroke="${darken(wall, 0.7)}" stroke-width="1.5"/>`;
-      const e = ext(base + f, winsTop, f === 0 ? 1 : 0);
+      // Врати се показват САМО ако са зададени по външна стена на стая (т.1,2).
+      // Без fallback врата на партера — иначе изскача фантомна врата без зададена.
+      const e = ext(base + f, winsTop, 0);
       const winCount = Math.max(0, Math.min(6, e.windows));
       const winW = 34, winH = 38, gap = winCount ? (bodyW - winCount * winW) / (winCount + 1) : 0;
       // Вратата излиза на ФАСАДАТА, чиято стена има врата (не винаги отпред) — т.2.
@@ -298,26 +300,32 @@ const HouseRender = (function () {
     const order = []; for (let i = all.length - 1; i >= 0; i--) order.push(i);   // отгоре надолу
     const PAL = ['#e57373', '#64b5f6', '#81c784', '#ffb74d', '#ba68c8', '#4db6ac', '#a1887f', '#90a4ae', '#f06292', '#9575cd'];
     const colorFor = di => PAL[di % PAL.length];
-    let maxN = 1; all.forEach(fl => { maxN = Math.max(maxN, (fl || []).length); });
-    const cols = Math.max(1, Math.ceil(Math.sqrt(maxN))), rows = Math.max(1, Math.ceil(maxN / cols));
-    // ляво: грид със стаите (всеки етаж = цветна лента, една НАД друга); дясно: легенда
+    // ляво: ГОЛЯМ квадрат (черен външен контур). Всеки етаж = РЕД с очертани стаи
+    // в цвета на етажа (само контур, БЕЗ запълване), име по средата. Редовете един
+    // НАД друг → коя стая е над коя (горен етаж най-горе, мазе най-долу). дясно: легенда.
     const GX = 18, GY = 44, GW = 238, GH = GROUND_Y - GY - 6;
-    const cw = GW / cols, ch = GH / rows;
+    const nF = Math.max(1, order.length);
+    const rowH = GH / nF;
     let inner = `<rect x="0" y="0" width="${W}" height="${H}" fill="#f4f7f9"/>`;
-    for (let c = 0; c < maxN; c++) {
-      const cx = GX + (c % cols) * cw, cy = GY + Math.floor(c / cols) * ch;
-      inner += `<rect x="${cx + 1}" y="${cy + 1}" width="${cw - 2}" height="${ch - 2}" fill="#fff" stroke="#ccd"/>`;
-      const bh = (ch - 4) / order.length;                  // лента за всеки етаж
-      order.forEach((fi, di) => {
-        const r = (all[fi] || [])[c];
-        const by = cy + 2 + di * bh, col = colorFor(di);
-        inner += `<rect x="${cx + 2}" y="${by}" width="${cw - 4}" height="${Math.max(2, bh - 1)}" fill="${r ? col : '#eee'}" opacity="${r ? 0.9 : 0.3}"/>`;
-        if (r && bh >= 9) {
-          const rt = roomType(r.type), nm = rt ? T(rt.key) : r.type;
-          inner += `<text x="${cx + cw / 2}" y="${by + bh / 2 + 3}" text-anchor="middle" font-size="${Math.min(9, bh * 0.55).toFixed(1)}" fill="#1a1a1a" font-family="system-ui,Arial">${esc(String(nm).slice(0, 9))}</text>`;
-        }
+    inner += `<rect x="${GX}" y="${GY}" width="${GW}" height="${GH}" fill="#fff" stroke="#111" stroke-width="3"/>`;
+    order.forEach((fi, di) => {
+      const fr = all[fi] || [];
+      const ry = GY + di * rowH, col = colorFor(di);
+      if (di > 0) inner += `<line x1="${GX}" y1="${ry}" x2="${GX + GW}" y2="${ry}" stroke="#111" stroke-width="1" opacity="0.45"/>`;
+      if (!fr.length) {                                    // празен етаж → само етикет в цвета
+        inner += `<text x="${GX + GW / 2}" y="${ry + rowH / 2 + 3}" text-anchor="middle" font-size="9" fill="${col}" opacity="0.7" font-family="system-ui,Arial">${esc(floorTitle(params, fi))}</text>`;
+        return;
+      }
+      const n = fr.length, cw = GW / n;
+      fr.forEach((r, ci) => {
+        const cx = GX + ci * cw;
+        const pad = Math.min(6, cw * 0.12, rowH * 0.16);
+        inner += `<rect x="${cx + pad}" y="${ry + pad}" width="${Math.max(4, cw - 2 * pad)}" height="${Math.max(4, rowH - 2 * pad)}" fill="none" stroke="${col}" stroke-width="2.5" rx="3"/>`;
+        const rt = roomType(r.type), nm = rt ? T(rt.key) : r.type;
+        const fs = Math.max(7, Math.min(11, cw * 0.2, rowH * 0.42));
+        inner += `<text x="${cx + cw / 2}" y="${ry + rowH / 2 + fs * 0.35}" text-anchor="middle" font-size="${fs.toFixed(1)}" fill="#1a1a1a" font-family="system-ui,Arial">${esc(String(nm).slice(0, 11))}</text>`;
       });
-    }
+    });
     // ── Легенда (дясно): цвят на етажа + имената на стаите в същия цвят ──
     const LX = 266; let ly = GY + 6;
     inner += `<text x="${LX}" y="${ly}" font-size="10.5" font-weight="bold" fill="#334" font-family="system-ui,Arial">Легенда (отгоре→долу)</text>`; ly += 16;

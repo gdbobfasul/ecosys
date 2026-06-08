@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0172
+# Version: 1.0174
 ##############################################################################
 # KCY Ecosystem — Start Menu
 # Един menu item = един реален скрипт. Параметрите се питат след избор.
@@ -114,7 +114,11 @@ show_menu() {
         "Качва само public/assets към живия web root. Пита кой сървър." \
         "Без рестарт, без реконфигурация — nginx сервира статично."
 
-    # (Новите приложения House-Look-Book / WhereNoBiz са на 41–44 по-долу. Точка 3 е свободна.)
+    item " 3" "SSH връзка към сървър (директно)" \
+        "Отваря интерактивна SSH сесия в терминала. След избор питам коя машина:" \
+        "1) прод — root@take.offbitch.com:2222   2) VM — deploy@192.168.0.108:2222 (ключ id_ed25519)."
+
+    # (Новите приложения House-Look-Book / WhereNoBiz са на 41–44 по-долу.)
 
     echo -e "${BOLD}${CYAN}━━━ DATABASES (локални) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
@@ -357,6 +361,20 @@ run_choice() {
             ;;
         2)
             run_cmd ./deploy-scripts/02-full-install.sh
+            ;;
+        3)
+            echo ""
+            echo -e "${BOLD}${CYAN}  SSH връзка — към коя машина?${NC}"
+            echo ""
+            echo -e "    1) ${GREEN}прод${NC} — root@take.offbitch.com:2222"
+            echo -e "    2) ${GREEN}VM${NC}   — deploy@192.168.0.108:2222  (ключ id_ed25519)"
+            echo ""
+            read -p "  Избери [1-2]: " SSHPICK
+            case "$SSHPICK" in
+                1) run_cmd ssh -v -p 2222 root@take.offbitch.com ;;
+                2) run_cmd ssh -i ~/.ssh/id_ed25519 -p 2222 deploy@192.168.0.108 ;;
+                *) echo "  Отказано"; press_enter ;;
+            esac
             ;;
 
         4)
@@ -910,14 +928,22 @@ run_choice() {
             ;;
         37)
             echo ""
-            echo "  Failover се настройва САМО на production VPS-а"
-            echo "  (VPS-ът става reverse proxy, VM остава primary)."
+            echo "  Failover (главен + приложни домейни) — ДВЕ стъпки, в този ред:"
+            echo "  VM = primary (когато е пусната), VPS = SSL front + backup."
             echo ""
-            echo "  Изпълни на VPS-а:"
-            echo -e "  ${CYAN}ssh deploy@${MAIN_DOMAIN} -p 2222${NC}"
-            echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/12-setup-failover.sh${NC}"
+            echo -e "  ${YELLOW}⚠ Деплой ПЪРВО, failover ПОСЛЕДНО — опция 2 трие failover-а.${NC}"
             echo ""
-            echo "  Скриптът сам намира VM Tailscale IP-то и настройва nginx."
+            echo -e "  ${BOLD}1) На VM-а${NC} (prep: всички домейни да слушат и на 8080 plain):"
+            echo -e "     ${CYAN}ssh -i ~/.ssh/id_ed25519 -p 2222 deploy@192.168.0.108${NC}"
+            echo -e "     ${CYAN}sudo /var/www/deploy/deploy-scripts/server/12-setup-failover.sh --vm-prep${NC}"
+            echo ""
+            echo -e "  ${BOLD}2) На VPS-а${NC} (front+backup; ЗАДЪЛЖИТЕЛНО с Tailscale IP-то на VM):"
+            echo -e "     ${CYAN}ssh deploy@${MAIN_DOMAIN} -p 2222${NC}"
+            echo -e "     ${CYAN}sudo /var/www/deploy/deploy-scripts/server/12-setup-failover.sh 100.119.216.84${NC}"
+            echo ""
+            echo "  Проверка: curl -sI https://find.jwork.ru | grep -i served-by"
+            echo "    X-Served-By: VM → VM обслужва;  PROD → локалният VPS."
+            echo -e "  ${CYAN}Връщане:${NC} ...12-setup-failover.sh --revert (на VPS-а)"
             press_enter
             ;;
 
