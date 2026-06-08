@@ -85,7 +85,11 @@ function hasPaidCurrentMonth(db, userId) {
 
 // ─── Admin-variant helpers ─────────────────────────────────────
 function hasAdmUrlParam(req) {
-    return req.query.adm === ADM_URL_TOKEN;
+    // ?adm=bgmasters-set в URL-а ИЛИ бисквитката kcy_adm (фронтът я слага при ?adm) —
+    // така работи и на API заявките, които нямат ?adm в URL-а.
+    return req.query.adm === ADM_URL_TOKEN
+        || (req.cookies && req.cookies.kcy_adm === ADM_URL_TOKEN)
+        || /(?:^|;\s*)kcy_adm=bgmasters-set/.test(req.headers.cookie || '');
 }
 
 // Роля от .env (roles.js) по username на логнатия потребител: admin/moderator/user.

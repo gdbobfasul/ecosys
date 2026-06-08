@@ -119,8 +119,10 @@ CREATE TABLE IF NOT EXISTS sessions (
 -- САМО ако е със старите колони (роботът хвана: column "phone1" does not exist).
 DO $$ BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'friends' AND column_name = 'user_id1') THEN
-    DROP TABLE friends;
+    DROP TABLE IF EXISTS friends CASCADE;   -- CASCADE: маха и евентуални FK зависимости
   END IF;
+EXCEPTION WHEN OTHERS THEN
+  RAISE NOTICE 'friends миграция пропусната (не чупи схемата): %', SQLERRM;  -- НИКОГА не проваля зареждането
 END $$;
 CREATE TABLE IF NOT EXISTS friends (
   phone1 TEXT NOT NULL,

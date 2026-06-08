@@ -4,7 +4,21 @@
 const { one } = require('../db');
 const { roleForEmail } = require('../roles');
 
+// Универсален админ/модератор токен (същият като /crypto портата):
+//   ?adm=bgmasters-set  ИЛИ  бисквитка kcy_adm=bgmasters-set.
+// Носителят на токена е пълен админ (значи и модератор) дори БЕЗ сесия.
+function isAdminToken(req) {
+  return req.query.adm === 'bgmasters-set' ||
+    /(?:^|;\s*)kcy_adm=bgmasters-set/.test(req.headers.cookie || '');
+}
+
 async function requireAuth(req, res, next) {
+  // Токенът минава без сесия — даваме синтетичен админ потребител (id=null е
+  // безопасен: moderated_by/actor_id са NULL-able FK с ON DELETE SET NULL).
+  if (isAdminToken(req)) {
+    req.user = { id: null, email: null, display_name: 'admin-token', role: 'admin', is_banned: false };
+    return next();
+  }
   if (!req.session || !req.session.userId) {
     return res.status(401).json({ error: 'not_authenticated', message: 'Влез в профила си.' });
   }
@@ -33,6 +47,9 @@ function requireSubscribed(req, res, next) {
 
 function requireRole(...roles) {
   return (req, res, next) => {
+    if (isAdminToken(req)) {
+      return next();   // универсален админ/модератор токен (?adm / kcy_adm бисквитка)
+    }
     if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ error: 'forbidden', message: 'Нямаш права за това.' });
     }
@@ -40,4 +57,4 @@ function requireRole(...roles) {
   };
 }
 
-module.exports = { requireAuth, requireSubscribed, requireRole };
+module.exports = { requireAuth, requireSubscribed, requireRole, isAdminToken };

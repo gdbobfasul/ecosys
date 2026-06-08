@@ -7,12 +7,15 @@
 // Помощни за персона/атакуващ сценариите ───────────────────────────────────
 const bodyOf = async (r) => { try { return await r.json(); } catch (_) { return {}; } };
 
-// Свеж, ИЗОЛИРАН HTTP контекст (нова бисквитена кутия) — за „без вход" и „фалшива
-// сесия". Ползва браузъра на текущата страница; НЕ пипа порталната сесия на page.request.
+// Свеж, ИЗОЛИРАН HTTP контекст — за „без вход" и „фалшива сесия". Ползва НЕЗАВИСИМ
+// Playwright APIRequestContext (НЕ пипа браузъра/споделения контекст на run.js), та
+// затварянето му не сваля цялата сесия на робота.
 async function freshRequest(page, extraHeaders) {
-  const browser = page.context().browser();
-  const c = await browser.newContext(extraHeaders ? { extraHTTPHeaders: extraHeaders } : {});
-  return { request: c.request, dispose: () => c.close() };
+  const rc = await require('playwright').request.newContext({
+    ignoreHTTPSErrors: true,
+    ...(extraHeaders ? { extraHTTPHeaders: extraHeaders } : {}),
+  });
+  return { request: rc, dispose: async () => { try { await rc.dispose(); } catch (_) {} } };
 }
 
 // Извлича непразния текст от generate отговор (или null).

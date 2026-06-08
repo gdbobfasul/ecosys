@@ -12,12 +12,15 @@ const pngFile = (name) => ({ name, mimeType: 'image/png', buffer: PNG_1x1 });
 
 const bodyOf = async (r) => { try { return await r.json(); } catch (_) { return {}; } };
 
-// Свеж, ИЗОЛИРАН HTTP контекст (нова бисквитена кутия) — за „без вход" и „фалшива сесия".
-// Ползва браузъра на текущата страница; не пипа сесията на основния page.request.
+// Свеж, ИЗОЛИРАН HTTP контекст — за „без вход" и „фалшива сесия". Ползва НЕЗАВИСИМ
+// Playwright APIRequestContext (НЕ пипа браузъра/споделения контекст на run.js), та
+// затварянето му не сваля сесията на основния page.request.
 async function freshRequest(page, extraHeaders) {
-  const browser = page.context().browser();
-  const c = await browser.newContext(extraHeaders ? { extraHTTPHeaders: extraHeaders } : {});
-  return { request: c.request, dispose: () => c.close() };
+  const rc = await require('playwright').request.newContext({
+    ignoreHTTPSErrors: true,
+    ...(extraHeaders ? { extraHTTPHeaders: extraHeaders } : {}),
+  });
+  return { request: rc, dispose: async () => { try { await rc.dispose(); } catch (_) {} } };
 }
 
 // Помощ: заявката НЕ бива да гърми с 5xx, нито да „изтича" статус извън очаквания списък.

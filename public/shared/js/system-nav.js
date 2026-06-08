@@ -142,6 +142,12 @@
   // ── ГАРД (точка 4): системните страници (Статус/Робот/Дърво) са достъпни
   // САМО за ЛОГНАТ АДМИН (роля admin) И от позволен IP. Иначе — отказ/редирект.
   function guardAdminPage() {
+    // ?adm=bgmasters-set (или бисквитка kcy_adm) = админ достъп БЕЗ портал-вход — URL вместо
+    // логин (както /crypto гейта). Запомня се в бисквитка за навигация между админ страниците.
+    if (/[?&]adm=bgmasters-set/.test(location.search)) {
+      document.cookie = 'kcy_adm=bgmasters-set; Path=/; Max-Age=86400; SameSite=Lax';
+    }
+    if (/[?&]adm=bgmasters-set/.test(location.search) || /(?:^|;\s*)kcy_adm=bgmasters-set/.test(document.cookie)) return;
     Promise.all([
       fetch('/api/portals/me', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
       fetch('/api/portals/ip-admin', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
@@ -162,6 +168,7 @@
         '<p>Тази страница е достъпна само за <b>логнат админ</b> и от <b>позволен IP адрес</b>.</p>' +
         (!loggedAdmin ? '<p>⛔ Не си логнат с админ профил.</p>' : '') +
         (!ipOk ? '<p>⛔ IP адресът ти не е в списъка.</p>' : '') +
+        '<p style="color:#8b949e;font-size:.9em">Или добави <code>?adm=bgmasters-set</code> към URL-а — админ достъп без вход.</p>' +
         '<p style="margin-top:18px"><a href="/portals/login.html" style="color:#4fc3f7">Вход</a> &nbsp;·&nbsp; <a href="/" style="color:#4fc3f7">Начало</a></p></div>';
     });
   }

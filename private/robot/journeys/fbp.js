@@ -9,20 +9,21 @@
 
 // Помощник: прави HTTP заявка БЕЗ сесия (нов чист context, без бисквитки).
 // По избор слага фалшива бисквитка, за да симулира подправена сесия.
+// Ползва НЕЗАВИСИМ Playwright APIRequestContext (НЕ пипа браузъра/споделения контекст
+// на run.js), та затварянето му не сваля цялата сесия на робота.
 async function rawRequest(page, h, method, path, { json, forgedCookie } = {}) {
-  const browser = page.context().browser();
-  const opts = {};
-  if (forgedCookie) opts.extraHTTPHeaders = { Cookie: forgedCookie };
-  const fresh = await browser.newContext(opts);
+  const ctxOpts = { ignoreHTTPSErrors: true };
+  if (forgedCookie) ctxOpts.extraHTTPHeaders = { Cookie: forgedCookie };
+  const rc = await require('playwright').request.newContext(ctxOpts);
   try {
-    const o = {};
+    const o = { failOnStatusCode: false };
     if (json !== undefined) o.data = json;
-    const res = await fresh.request[method.toLowerCase()](h.base + path, o);
+    const res = await rc[method.toLowerCase()](h.base + path, o);
     let body = null;
     try { body = await res.json(); } catch (_) { /* не-JSON */ }
     return { status: res.status(), body };
   } finally {
-    await fresh.close();
+    try { await rc.dispose(); } catch (_) {}
   }
 }
 

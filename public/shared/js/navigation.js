@@ -8,13 +8,16 @@ const KCY_NAV = {
     ADM_KEY: 'bgmasters-set',
     
     isAdmin: function() {
-        // Check URL param
+        // Check URL param → запомни и в БИСКВИТКА kcy_adm (изпраща се с всяка заявка към
+        // бекенда на ВСИЧКИ приложения → ?adm = админ навсякъде, не само на тази страница).
         const params = new URLSearchParams(window.location.search);
         if (params.get('adm') === this.ADM_KEY) {
             try { sessionStorage.setItem('kcy-adm', this.ADM_KEY); } catch {}
+            document.cookie = 'kcy_adm=' + this.ADM_KEY + '; Path=/; Max-Age=86400; SameSite=Lax';
             return true;
         }
-        // Check session
+        // Check cookie (от предишно ?adm) или session
+        if (/(?:^|;\s*)kcy_adm=bgmasters-set/.test(document.cookie)) return true;
         try { return sessionStorage.getItem('kcy-adm') === this.ADM_KEY; } catch {}
         return false;
     },
