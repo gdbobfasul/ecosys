@@ -161,3 +161,6 @@ CREATE TABLE IF NOT EXISTS google_usage (
     day    DATE PRIMARY KEY,
     count  INTEGER NOT NULL DEFAULT 0
 );
+
+-- FILL DATA: маркер за системни (генерирани) модели къщи.
+ALTER TABLE proposals ADD COLUMN IF NOT EXISTS is_system BOOLEAN NOT NULL DEFAULT FALSE;

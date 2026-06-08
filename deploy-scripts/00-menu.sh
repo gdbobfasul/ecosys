@@ -306,9 +306,32 @@ show_menu() {
         "После пускаш робота от админ менюто на сайта: 🤖 Робот (/shared/robot.html)." \
         "Chromium яде RAM — на малък сървър пускай по едно обхождане."
 
+    echo ""
+    echo -e "${BOLD}${CYAN}━━━ FILL DATA (попълване със системно съдържание — ботове/скрапери) ━━${NC}"
+    echo ""
+    # РЕЗЕРВИРАНО: позиции 60-70 СА САМО за FILL DATA задачи (пълнене на данни по
+    # сайтовете). Не ги ползвай за друго. План: 61 чат авто-отговори · 62 FBP скрапер
+    # · 63 WNB пълнител · 64 HLB пълнител · 65-70 свободни за бъдещи.
+    item "60" "Чат — попълни системни потребители" \
+        "Създава N бот-потребители от различни държави (флаг is_system=1) в чата." \
+        "Питам колко. НЕ са реални хора — само оживяват чата. (fill-system-users.js на сървъра.)"
+    item "61" "Чат — авто-отговори на системните" \
+        "Системните отговарят на реални хора: поздрав / как си / работа / 20+ комплимента." \
+        "Разпознава намерение, отговаря на езика на държавата (15 езика). (fill-system-replies.js.)"
+    item "62" "Find Best Price — скрапер (Google ≤3/ден)" \
+        "Търси продукти в онлайн магазини по държави → пълни базата (магазини+продукти+цени)." \
+        "САМО текст, без картинки; маркира is_system. Твърд таван 3 Google заявки/ден. (fbp-scraper.js.)"
+    item "63" "WhereNoBiz — попълни липсващи бизнеси" \
+        "Системни постове за липсващ бизнес по държави; описание на езика на държавата." \
+        "Маркира is_system; системният няма телефон (не се договаря). Google до 1/ден. (wnb-filler.js.)"
+    item "64" "House-Look-Book — генерирай модели къщи" \
+        "Създава системни модели странни къщи (форма/покрив/етажи/стаи/цвят) — рендерират се." \
+        "Параметрични, без картинки (надеждно); маркира is_system. (hlb-filler.js.)"
+    echo -e "  ${GRAY}(65-70 запазени за бъдещи FILL DATA задачи)${NC}"
+
     echo -e "${BOLD}${GRAY}━━━ СВОБОДНИ НОМЕРА ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
-    item " 3" "СВОБОДЕН"
+    item "38" "СВОБОДЕН"
     item "38" "СВОБОДЕН"
     item "39" "СВОБОДЕН"
     item "41" "СВОБОДЕН"
@@ -651,6 +674,87 @@ run_choice() {
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
                 [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Роботът е инсталиран — пусни го от 🤖 Робот в админ менюто${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        60)
+            echo ""
+            echo -e "${BOLD}${CYAN}  FILL DATA · Чат — системни потребители${NC}"
+            if pick_target; then
+                read -p "  Колко потребителя да създам? [Enter = 20]: " NUSERS
+                NUSERS="${NUSERS:-20}"
+                if printf '%s' "$NUSERS" | grep -qE '^[0-9]+$'; then
+                    REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/chat && node scripts/fill-system-users.js ${NUSERS}'"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fill-system-users.js ${NUSERS}${NC}"
+                    ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                    RC=$?
+                    [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — ${NUSERS} системни потребители на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+                else echo "  Невалиден брой."; fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        61)
+            echo ""
+            echo -e "${BOLD}${CYAN}  FILL DATA · Чат — авто-отговори на системните${NC}"
+            if pick_target; then
+                read -p "  Макс. брой отговори този път? [Enter = 500]: " NREP
+                NREP="${NREP:-500}"
+                if printf '%s' "$NREP" | grep -qE '^[0-9]+$'; then
+                    REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/chat && node scripts/fill-system-replies.js ${NREP}'"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fill-system-replies.js ${NREP}${NC}"
+                    ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                    RC=$?
+                    [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — авто-отговорите минаха на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+                else echo "  Невалиден брой."; fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        62)
+            echo ""
+            echo -e "${BOLD}${CYAN}  FILL DATA · Find Best Price — скрапер (Google ≤3/ден)${NC}"
+            if pick_target; then
+                read -p "  Макс Google заявки този път [Enter = всички останали за деня]: " NQ
+                NQ_ARG=""
+                if [ -n "$NQ" ]; then
+                    if printf '%s' "$NQ" | grep -qE '^[0-9]+$'; then NQ_ARG=" $NQ"; else echo "  Невалиден брой."; press_enter; fi
+                fi
+                REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/find-best-price && node scripts/fbp-scraper.js${NQ_ARG}'"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fbp-scraper.js${NQ_ARG}${NC}"
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — скраперът мина на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        63)
+            echo ""
+            echo -e "${BOLD}${CYAN}  FILL DATA · WhereNoBiz — липсващи бизнеси${NC}"
+            if pick_target; then
+                read -p "  Колко поста да добавя? [Enter = 20]: " NWNB
+                NWNB="${NWNB:-20}"
+                if printf '%s' "$NWNB" | grep -qE '^[0-9]+$'; then
+                    REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/WhereNoBiz && node scripts/wnb-filler.js ${NWNB}'"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → wnb-filler.js ${NWNB}${NC}"
+                    ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                    RC=$?
+                    [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — WNB попълнен на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+                else echo "  Невалиден брой."; fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        64)
+            echo ""
+            echo -e "${BOLD}${CYAN}  FILL DATA · House-Look-Book — генерирай модели${NC}"
+            if pick_target; then
+                read -p "  Колко модела да генерирам? [Enter = 20]: " NHLB
+                NHLB="${NHLB:-20}"
+                if printf '%s' "$NHLB" | grep -qE '^[0-9]+$'; then
+                    REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/House-Look-Book && node scripts/hlb-filler.js ${NHLB}'"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → hlb-filler.js ${NHLB}${NC}"
+                    ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                    RC=$?
+                    [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — HLB модели на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+                else echo "  Невалиден брой."; fi
             else echo "  Отказано"; fi
             press_enter
             ;;

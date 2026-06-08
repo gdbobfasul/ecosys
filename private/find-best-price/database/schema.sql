@@ -56,3 +56,11 @@ CREATE INDEX IF NOT EXISTS idx_fbp_prod_price   ON products(kind, category, pric
 -- идемпотентен ъпгрейд на стара схема (ако базата вече съществува без новите колони):
 ALTER TABLE products ADD COLUMN IF NOT EXISTS kind TEXT NOT NULL DEFAULT 'product';
 ALTER TABLE products ADD COLUMN IF NOT EXISTS fits_product TEXT;
+
+-- FILL DATA: маркер за системно (скрапнато) съдържание + дневен брояч за скрапера.
+ALTER TABLE businesses ADD COLUMN IF NOT EXISTS is_system BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE products   ADD COLUMN IF NOT EXISTS is_system BOOLEAN NOT NULL DEFAULT FALSE;
+CREATE TABLE IF NOT EXISTS fbp_scraper_usage (
+    day   TEXT PRIMARY KEY,            -- 'YYYY-MM-DD' (UTC)
+    count INTEGER NOT NULL DEFAULT 0   -- брой Google заявки този ден (таван 3)
+);

@@ -183,3 +183,10 @@ CREATE TABLE IF NOT EXISTS moderation_log (
     created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS idx_wnb_modlog_post ON moderation_log(post_id);
+
+-- FILL DATA: маркер за системно (попълнено) съдържание + дневен брояч за пълнителя.
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS is_system BOOLEAN NOT NULL DEFAULT FALSE;
+CREATE TABLE IF NOT EXISTS wnb_filler_usage (
+    day   TEXT PRIMARY KEY,            -- 'YYYY-MM-DD' (UTC)
+    count INTEGER NOT NULL DEFAULT 0   -- брой Google заявки този ден (таван 1)
+);

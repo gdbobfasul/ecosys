@@ -85,7 +85,8 @@ CREATE TABLE IF NOT EXISTS users (
   working_hours TEXT CHECK(working_hours IS NULL OR length(working_hours) <= 50),  -- Working hours (50 chars max)
   last_signal_date TEXT,                       -- Last date user submitted a signal
   free_days_earned INTEGER DEFAULT 0,          -- Count of free days earned from approved signals
-  
+  is_system INTEGER DEFAULT 0,                 -- 1 = бот/системен потребител (попълнен от FILL DATA скрипт)
+
   UNIQUE(phone, password_hash)
 );
 
@@ -96,6 +97,7 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS working_hours TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS latitude REAL;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS longitude REAL;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS is_static_object INTEGER DEFAULT 0;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS is_system INTEGER DEFAULT 0;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_photo_url TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS created_from_signal_id INTEGER;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS manually_activated INTEGER DEFAULT 0;
