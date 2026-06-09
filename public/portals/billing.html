@@ -38,6 +38,8 @@
 
         <h3 data-i18n="billing.price">Цена за текущия месец</h3>
         <div id="fees" class="fees-grid"></div>
+        <p class="hint" style="margin-top:6px">Цены указаны в национальной валюте — сом (KGS). Дополнительно может указываться $ / € / ₽.</p>
+        <div data-kg-pay style="margin-top:8px"></div>
 
         <!-- ─── Плащане с КАРТА (Stripe) ─── -->
         <div class="pay-method" id="card-method">
@@ -175,5 +177,6 @@
         handleStripeReturn();
     </script>
     <script src="/shared/js/navigation.js?v=1.0195"></script>
+    <script src="/shared/js/kg-compliance.js?v=1.0001"></script>
 </body>
 </html>

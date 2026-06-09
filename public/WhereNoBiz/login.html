@@ -24,12 +24,18 @@
       <div class="field"><label for="password" data-i18n="label.password">Парола</label><input type="password" id="password" autocomplete="current-password" placeholder="поне 6 символа" data-i18n-attr="placeholder:ph.password"></div>
       <div class="field" id="nameField" style="display:none"><label for="display_name" data-i18n="label.name">Име (по избор)</label><input type="text" id="display_name"></div>
       <div class="field" id="phoneField" style="display:none"><label for="phone" data-i18n="label.phone">Телефон (по избор — за наградата при 1500 потвърждения)</label><input type="tel" id="phone"></div>
-      <div class="actions"><button id="btnSubmit" data-i18n="btn.submit_login">Вход</button></div>
+      <!-- Регистрация — еднократна такса (само карта; логата Visa/MC/Элкарт са във футъра). -->
+      <div class="field" style="margin-top:4px">
+        <p style="font-size:.9em;opacity:.85;margin:0">💳 <span data-i18n="reg.onetime_fee">Регистрация — еднократна такса:</span> <b>$1 / 72 ₽ / 88 сом</b></p>
+        <div data-kg-pay style="margin-top:4px"></div>
+      </div>
+      <div class="actions" style="margin-top:12px;flex-direction:column;align-items:stretch"><button id="btnSubmit" data-i18n="btn.submit_login" style="display:block;width:100%">Вход</button></div>
     </div>
   </main>
 
   <script src="js/i18n.js?v=1.0193"></script>
   <script src="js/wnb-common.js?v=1.0171"></script>
   <script src="js/auth.js?v=1.0171"></script>
+  <script src="/shared/js/kg-compliance.js?v=1.0001"></script>
 </body>
 </html>

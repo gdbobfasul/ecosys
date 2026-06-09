@@ -13,7 +13,8 @@
         <div class="hidden lg:block lg:w-1/2 bg-gradient-to-br from-blue-900 to-purple-900 p-12">
             <h1 class="text-4xl font-bold mb-4" data-i18n="chat.app_name_e">📱 Анонимен Чат</h1>
             <div class="flex items-center gap-2 mb-8">
-                <p class="text-xl" data-i18n="chat.price_month">€5 / $5 на месец</p>
+                <p class="text-xl leading-tight"><span data-i18n="chat.price_month">$5/360 ₽/438сом</span><br><span class="text-base text-gray-300" data-i18n="chat.per_month">на месец</span></p>
+                <div data-kg-pay class="flex justify-center mt-2"></div>
                 <a href="/chat/register.html" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-5 rounded-lg whitespace-nowrap" data-i18n="chat.register_btn">📝 Регистрация</a>
             </div>
             
@@ -55,7 +56,8 @@
                 <!-- Mobile Marketing -->
                 <div class="lg:hidden mb-8 text-center">
                     <h1 class="text-3xl font-bold mb-2" data-i18n="r.132">📱 Анонимен Чат</h1>
-                    <p class="text-gray-400" data-i18n="r.102">€5 / $5 на месец</p>
+                    <p class="text-gray-400"><span data-i18n="r.102">$5/360 ₽/438сом</span><br><span data-i18n="chat.per_month">на месец</span></p>
+                    <div data-kg-pay class="flex mt-1"></div>
                 </div>
 
                 <!-- How It Works Link -->
@@ -86,7 +88,7 @@
                             <div class="bg-gray-700 rounded p-4">
                                 <h3 class="font-bold text-blue-400 mb-2" data-i18n="chat.pay_h">💳 ПЛАЩАНЕ</h3>
                                 <ul class="space-y-1 text-gray-300">
-                                    <li><span data-i18n="chat.pay_fee">• Месечна такса:</span> <strong>€5 (EUR)</strong> <span data-i18n="r.81">или</span> <strong>$5 (USD)</strong></li>
+                                    <li><span data-i18n="chat.pay_fee">• Месечна такса:</span> <strong>$5 / 360 ₽ / 438 сом</strong></li>
                                     <li><span data-i18n="chat.pay_accept">• Приемаме:</span> <strong>Visa/Mastercard</strong></li>
                                     <li><span data-i18n="chat.pay_nosub">• Без абонамент: Чатиш</span> <strong data-i18n="chat.only">САМО</strong> <span data-i18n="chat.with_contacts">с добавени контакти</span></li>
                                 </ul>
@@ -136,15 +138,15 @@
                             class="w-full p-4 bg-gray-700 rounded text-white text-lg" 
                             required
                         >
-                        <input 
-                            type="password" 
-                            id="password" 
-                            placeholder="Парола" data-i18n-attr="placeholder:chat.password" 
-                            class="w-full p-4 bg-gray-700 rounded text-white text-lg" 
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Парола" data-i18n-attr="placeholder:chat.password"
+                            class="w-full p-4 bg-gray-700 rounded text-white text-lg"
                             required
                         >
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded font-bold text-lg"
                         >
                             Влез
@@ -190,17 +192,20 @@
                 } else if (data.isBlocked) {
                     // Blocked → Духа супата
                     messageDiv.innerHTML = '<p class="text-red-400" data-i18n="chat.blocked">Акаунтът е блокиран</p>';
-                } else if (data.needsPayment) {
-                    // Not paid → Payment page
-                    localStorage.setItem('userId', data.userId);
-                    window.location.href = `/chat/public/payment.html`;
+                } else if (data.needsPayment || data.expired || (data.exists && data.isPaid === false)) {
+                    // Съществуващ акаунт, но НЕПЛАТЕН / изтекъл абонамент → плащане
+                    // (бекендът връща {exists:true, isPaid:false, expired:true} ИЛИ {needsPayment:true})
+                    if (data.userId) localStorage.setItem('userId', data.userId);
+                    messageDiv.innerHTML = '<p class="text-yellow-400" data-i18n="chat.renew_sub">Моля, подновете месечния абонамент!</p>';
+                    if (window.KCY_I18N) KCY_I18N.apply && KCY_I18N.apply();
+                    setTimeout(function () { window.location.href = '/chat/public/payment.html'; }, 1200);
                 } else if (data.success) {
                     // Success → Chat
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('userId', data.userId);
                     window.location.href = '/chat/public/chat.html';
                 } else {
-                    messageDiv.innerHTML = `<p class="text-red-400">${data.error || KCY_I18N.t('common.error')}</p>`;
+                    messageDiv.innerHTML = `<p class="text-red-400">${data.error || (window.KCY_I18N && KCY_I18N.t('common.error')) || 'Грешка'}</p>`;
                 }
             } catch (err) {
                 console.error(err);
@@ -214,6 +219,7 @@
         }
     </script>
     <script src="/shared/js/i18n.js?v=1.0193"></script>
+    <script src="/shared/js/kg-compliance.js?v=1.0001"></script>
     <script>
     // Попълва език дропдауна на login екрана (чатът няма обща навигация)
     (function(){

@@ -113,28 +113,29 @@ CREATE TABLE IF NOT EXISTS sessions (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Friends table (now uses user_id instead of phone)
--- Миграция: старата friends беше user_id-базирана (грешка от SQLite→PG), а кодът
--- (routes/friends.js) ползва phone1/phone2/custom_name_by_phone1/2. Пресъздай я
--- САМО ако е със старите колони (роботът хвана: column "phone1" does not exist).
+-- Friends table — account-id-базирана. Телефонът НЕ е уникален (UNIQUE(phone,password)) →
+-- контактите се адресират по users.id. Пресъздай САМО ако е със старите phone-колони
+-- (от междинна phone-миграция, която се отмени).
 DO $$ BEGIN
-  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'friends' AND column_name = 'user_id1') THEN
-    DROP TABLE IF EXISTS friends CASCADE;   -- CASCADE: маха и евентуални FK зависимости
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'friends' AND column_name = 'phone1') THEN
+    DROP TABLE IF EXISTS friends CASCADE;
   END IF;
 EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'friends миграция пропусната (не чупи схемата): %', SQLERRM;  -- НИКОГА не проваля зареждането
+  RAISE NOTICE 'friends миграция пропусната (не чупи схемата): %', SQLERRM;
 END $$;
 CREATE TABLE IF NOT EXISTS friends (
-  phone1 TEXT NOT NULL,
-  phone2 TEXT NOT NULL,
-  custom_name_by_phone1 TEXT,
-  custom_name_by_phone2 TEXT,
+  user_id1 INTEGER NOT NULL,
+  user_id2 INTEGER NOT NULL,
+  custom_name_by_user1 TEXT,
+  custom_name_by_user2 TEXT,
   created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
-  PRIMARY KEY (phone1, phone2),
-  CHECK (phone1 < phone2)
+  PRIMARY KEY (user_id1, user_id2),
+  CHECK (user_id1 < user_id2),
+  FOREIGN KEY (user_id1) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Messages table (uses user_id)
+-- Messages table — account-id-базирана (from_user_id/to_user_id = users.id).
 CREATE TABLE IF NOT EXISTS messages (
   id SERIAL PRIMARY KEY,
   from_user_id INTEGER NOT NULL,
@@ -153,7 +154,7 @@ CREATE TABLE IF NOT EXISTS messages (
   FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Temp files table
+-- Temp files table — account-id-базирана (from_user_id/to_user_id = users.id).
 CREATE TABLE IF NOT EXISTS temp_files (
   id TEXT PRIMARY KEY,
   from_user_id INTEGER NOT NULL,
@@ -195,19 +196,20 @@ CREATE TABLE IF NOT EXISTS critical_words (
 );
 
 -- Flagged conversations (admin monitoring)
+-- account-id-базирана (кодът флагва по user_id1/user_id2). message_id е без FK
+-- (вкарва се 0, после се ъпдейтва → FK към messages щеше да чупи).
 CREATE TABLE IF NOT EXISTS flagged_conversations (
   id SERIAL PRIMARY KEY,
   user_id1 INTEGER NOT NULL,
   user_id2 INTEGER NOT NULL,
   matched_word TEXT NOT NULL,
-  message_id INTEGER NOT NULL,
+  message_id INTEGER DEFAULT 0,
   message_text TEXT NOT NULL,
   conversation_context TEXT,
   flagged_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
   reviewed INTEGER DEFAULT 0,
   FOREIGN KEY (user_id1) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE
+  FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Reports table (when users report each other)

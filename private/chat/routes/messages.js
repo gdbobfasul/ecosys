@@ -1,10 +1,16 @@
-// Version: 1.0172
+// Version: 1.0173
+// Съобщенията се адресират по account id (users.id), НЕ по телефон — телефонът не е
+// уникален. Контрактът съвпада с фронтенда (public/chat/public/chat.html):
+//   GET  /messages/:friendUserId            → разговор
+//   POST /messages/:friendUserId   {text}   → текстово съобщение
+//   POST /messages/:friendUserId/file       → файл (multipart)
+//   POST /messages/send-location/:friendUserId
+//   GET  /messages/download/:fileId
 const express = require('express');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs');
-const { validatePhone } = require('../utils/validation');
 const { checkCriticalWords } = require('../middleware/monitoring');
 
 function createMessagesRoutes(db, uploadDir) {
@@ -15,27 +21,60 @@ function createMessagesRoutes(db, uploadDir) {
     limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
   });
 
-  // Send location to friend
+  // helper: валиден положителен int id?
+  const toId = (v) => { const n = parseInt(v, 10); return (n && n > 0) ? n : null; };
+
+  // helper: приятели ли са двата акаунта (по числово подреден ключ)
+  async function areFriends(uidA, uidB) {
+    const [a, b] = [Number(uidA), Number(uidB)].sort((x, y) => x - y);
+    return await db.prepare('SELECT 1 FROM friends WHERE user_id1 = ? AND user_id2 = ?').get(a, b);
+  }
+
+  // ── Download file (по to_user_id — само получателят тегли) ──
+  router.get('/download/:fileId', async (req, res) => {
+    try {
+      const { fileId } = req.params;
+      const file = await db.prepare('SELECT * FROM temp_files WHERE id = ? AND to_user_id = ?').get(fileId, req.userId);
+
+      if (!file || new Date(file.expires_at) <= new Date()) {
+        return res.status(404).json({ error: 'File not found or expired' });
+      }
+      if (!fs.existsSync(file.file_path)) {
+        await db.prepare('DELETE FROM temp_files WHERE id = ?').run(fileId);
+        return res.status(404).json({ error: 'File not found on server' });
+      }
+
+      res.download(file.file_path, file.file_name, async (err) => {
+        if (err) { console.error('Download error:', err); return; }
+        await db.prepare('UPDATE temp_files SET downloaded = 1 WHERE id = ?').run(fileId);
+        setTimeout(async () => {
+          try {
+            if (fs.existsSync(file.file_path)) fs.unlinkSync(file.file_path);
+            await db.prepare('DELETE FROM temp_files WHERE id = ?').run(fileId);
+            console.log(`✅ Deleted file: ${file.file_name}`);
+          } catch (e) { console.error('Failed to delete file:', e); }
+        }, 5000);
+      });
+    } catch (err) {
+      console.error('Download error:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // ── Send location to friend (по account id) ──
   router.post('/send-location/:friendUserId', async (req, res) => {
     try {
-      const { friendUserId } = req.params;
+      const friendUserId = toId(req.params.friendUserId);
       const { latitude, longitude, country, city, village, street, number, ip } = req.body;
+      if (!friendUserId) return res.status(400).json({ error: 'Valid friendUserId required' });
 
-      // Check friendship
-      const friendship = await db.prepare(`
-        SELECT 1 FROM friends 
-        WHERE (user_id1 = ? AND user_id2 = ?) OR (user_id1 = ? AND user_id2 = ?)
-      `).get(req.userId, friendUserId, friendUserId, req.userId);
-
-      if (!friendship) {
+      if (!await areFriends(req.userId, friendUserId)) {
         return res.status(403).json({ error: 'Not friends' });
       }
 
-      // Create location message
       const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
       const yandexMapsLink = `https://yandex.com/maps/?ll=${longitude},${latitude}&z=16&pt=${longitude},${latitude}`;
       const twoGisLink = `https://2gis.com/?m=${longitude},${latitude}/16`;
-
       const locationText = `📍 Местоположение:\n` +
         `${country ? `Държава: ${country}\n` : ''}` +
         `${city ? `Град: ${city}\n` : ''}` +
@@ -49,11 +88,8 @@ function createMessagesRoutes(db, uploadDir) {
         `2GIS: ${twoGisLink}\n` +
         `Yandex: ${yandexMapsLink}`;
 
-      // Insert message
-      await db.prepare(`
-        INSERT INTO messages (from_user_id, to_user_id, text)
-        VALUES (?, ?, ?)
-      `).run(req.userId, friendUserId, locationText);
+      await db.prepare('INSERT INTO messages (from_user_id, to_user_id, text) VALUES (?, ?, ?)')
+        .run(req.userId, friendUserId, locationText);
 
       res.json({ success: true });
     } catch (err) {
@@ -62,39 +98,30 @@ function createMessagesRoutes(db, uploadDir) {
     }
   });
 
-  // Get messages with a friend
-  router.get('/:friendPhone', async (req, res) => {
+  // ── Get conversation with a friend (по account id) ──
+  router.get('/:friendUserId', async (req, res) => {
     try {
-      const { friendPhone } = req.params;
+      const friendUserId = toId(req.params.friendUserId);
+      if (!friendUserId) return res.status(400).json({ error: 'Valid friendUserId required' });
 
-      if (!validatePhone(friendPhone)) {
-        return res.status(400).json({ error: 'Invalid phone' });
-      }
-
-      // Check friendship
-      const [phone1, phone2] = [req.phone, friendPhone].sort();
-      const friendCheck = await db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
-
-      if (!friendCheck) {
+      if (!await areFriends(req.userId, friendUserId)) {
         return res.status(403).json({ error: 'Not friends' });
       }
 
-      // Get last 5KB of messages (approximately 100 messages)
       const messages = await db.prepare(`
-        SELECT id, from_phone, text, file_id, file_name, file_size, file_type, created_at, read_at
+        SELECT id, from_user_id, text, file_id, file_name, file_size, file_type, created_at, read_at
         FROM messages
-        WHERE (from_phone = ? AND to_phone = ?) OR (from_phone = ? AND to_phone = ?)
+        WHERE (from_user_id = ? AND to_user_id = ?) OR (from_user_id = ? AND to_user_id = ?)
         ORDER BY created_at DESC LIMIT 100
-      `).all(req.phone, friendPhone, friendPhone, req.phone);
+      `).all(req.userId, friendUserId, friendUserId, req.userId);
 
-      // Mark as read
-      await db.prepare('UPDATE messages SET read_at = datetime("now") WHERE to_phone = ? AND from_phone = ? AND read_at IS NULL')
-        .run(req.phone, friendPhone);
+      await db.prepare("UPDATE messages SET read_at = datetime('now') WHERE to_user_id = ? AND from_user_id = ? AND read_at IS NULL")
+        .run(req.userId, friendUserId);
 
       const result = messages.reverse().map(row => ({
         id: row.id,
         text: row.text,
-        sent: row.from_phone === req.phone,
+        sent: row.from_user_id === req.userId,
         timestamp: new Date(row.created_at).getTime(),
         read: row.read_at !== null,
         fileId: row.file_id,
@@ -110,190 +137,94 @@ function createMessagesRoutes(db, uploadDir) {
     }
   });
 
-  // Send text message (WebSocket will also handle this, but REST endpoint for fallback)
-  router.post('/send', async (req, res) => {
+  // ── Send file to a friend (multipart; по account id) ──
+  router.post('/:friendUserId/file', upload.single('file'), async (req, res) => {
     try {
-      const { to, text } = req.body;
+      if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
 
-      if (!validatePhone(to)) {
-        return res.status(400).json({ error: 'Valid recipient required' });
-      }
+      const friendUserId = toId(req.params.friendUserId);
+      if (!friendUserId) { fs.unlinkSync(req.file.path); return res.status(400).json({ error: 'Valid friendUserId required' }); }
 
-      if (!text || text.length > 5000) {
-        return res.status(400).json({ error: 'Message text required (max 5000 chars)' });
-      }
-
-      // Check if user is free (unpaid)
       const user = req.user;
-      if (!user.subscription_active || 
-          !user.paid_until || 
-          new Date(user.paid_until) <= new Date()) {
-        
-        // Free user - check daily message limit
-        const today = new Date().toISOString().split('T')[0];
-        const msgCount = await db.prepare(`
-          SELECT COUNT(*) as count 
-          FROM messages 
-          WHERE from_user_id = ? 
-          AND DATE(created_at) = ?
-        `).get(user.id, today);
-        
-        if (msgCount.count >= 10) {
-          return res.status(403).json({ 
-            error: 'Daily message limit reached (10/day). Upgrade for unlimited messaging.',
-            upgradeRequired: true
-          });
-        }
-      }
-
-      // Check friendship
-      const [phone1, phone2] = [req.phone, to].sort();
-      const friendCheck = await db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
-
-      if (!friendCheck) {
-        return res.status(403).json({ error: 'Not friends' });
-      }
-
-      const sanitizedText = text.trim();
-
-      // Check for critical words BEFORE saving
-      const flagged = await checkCriticalWords(db, sanitizedText, req.phone, to);
-
-      // Save message
-      const stmt = await db.prepare('INSERT INTO messages (from_phone, to_phone, text, flagged) VALUES (?, ?, ?, ?)');
-      const result = stmt.run(req.phone, to, sanitizedText, flagged ? 1 : 0);
-
-      // Update flagged_conversations with actual message_id
-      if (flagged) {
-        await db.prepare(`
-          UPDATE flagged_conversations 
-          SET message_id = ? 
-          WHERE phone1 = ? AND phone2 = ? AND message_id = 0
-          ORDER BY flagged_at DESC LIMIT 1
-        `).run(result.lastInsertRowid, phone1, phone2);
-      }
-
-      res.json({
-        success: true,
-        messageId: result.lastInsertRowid,
-        flagged
-      });
-    } catch (err) {
-      console.error('Send message error:', err);
-      res.status(500).json({ error: 'Server error' });
-    }
-  });
-
-  // Upload file
-  router.post('/upload', upload.single('file'), async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-      }
-
-      // Check if user is paid
-      const user = req.user;
-      if (!user.subscription_active || 
-          !user.paid_until || 
-          new Date(user.paid_until) <= new Date()) {
-        
-        // Free user - no file uploads
+      if (!user.subscription_active || !user.paid_until || new Date(user.paid_until) <= new Date()) {
         fs.unlinkSync(req.file.path);
-        return res.status(403).json({ 
-          error: 'File sharing not available. Upgrade for file sharing access.',
-          upgradeRequired: true
-        });
+        return res.status(403).json({ error: 'File sharing not available. Upgrade for file sharing access.', upgradeRequired: true });
       }
 
-      const { to } = req.body;
-
-      if (!validatePhone(to)) {
-        fs.unlinkSync(req.file.path);
-        return res.status(400).json({ error: 'Valid recipient required' });
-      }
-
-      // Check friendship
-      const [phone1, phone2] = [req.phone, to].sort();
-      const friendCheck = await db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
-
-      if (!friendCheck) {
+      if (!await areFriends(req.userId, friendUserId)) {
         fs.unlinkSync(req.file.path);
         return res.status(403).json({ error: 'Not friends' });
       }
 
       const fileId = uuidv4();
       const expiresAt = new Date();
-      expiresAt.setHours(expiresAt.getHours() + 24); // 24h expiry
+      expiresAt.setHours(expiresAt.getHours() + 24);
 
-      // Store file info
       await db.prepare(`
-        INSERT INTO temp_files (id, from_phone, to_phone, file_name, file_size, file_type, file_path, expires_at)
+        INSERT INTO temp_files (id, from_user_id, to_user_id, file_name, file_size, file_type, file_path, expires_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(fileId, req.phone, to, req.file.originalname, req.file.size, req.file.mimetype, req.file.path, expiresAt.toISOString());
+      `).run(fileId, req.userId, friendUserId, req.file.originalname, req.file.size, req.file.mimetype, req.file.path, expiresAt.toISOString());
 
-      // Save message reference
       await db.prepare(`
-        INSERT INTO messages (from_phone, to_phone, file_id, file_name, file_size, file_type)
+        INSERT INTO messages (from_user_id, to_user_id, file_id, file_name, file_size, file_type)
         VALUES (?, ?, ?, ?, ?, ?)
-      `).run(req.phone, to, fileId, req.file.originalname, req.file.size, req.file.mimetype);
+      `).run(req.userId, friendUserId, fileId, req.file.originalname, req.file.size, req.file.mimetype);
 
-      res.json({
-        success: true,
-        fileId,
-        fileName: req.file.originalname,
-        fileSize: req.file.size,
-        fileType: req.file.mimetype
-      });
+      res.json({ success: true, fileId, fileName: req.file.originalname, fileSize: req.file.size, fileType: req.file.mimetype });
     } catch (err) {
       console.error('Upload error:', err);
-      if (req.file) fs.unlinkSync(req.file.path);
+      if (req.file) { try { fs.unlinkSync(req.file.path); } catch (_) {} }
       res.status(500).json({ error: err.message });
     }
   });
 
-  // Download file
-  router.get('/download/:fileId', async (req, res) => {
+  // ── Send text message (по account id) ── (генеричен 1-сегментен route — НАКРАЯ)
+  router.post('/:friendUserId', async (req, res) => {
     try {
-      const { fileId } = req.params;
+      const friendUserId = toId(req.params.friendUserId);
+      const { text } = req.body;
 
-      const file = await db.prepare(`
-        SELECT * FROM temp_files WHERE id = ? AND to_phone = ?
-      `).get(fileId, req.phone);
-
-      if (!file || new Date(file.expires_at) <= new Date()) {
-        return res.status(404).json({ error: 'File not found or expired' });
+      if (!friendUserId) return res.status(400).json({ error: 'Valid friendUserId required' });
+      if (!text || text.length > 5000) {
+        return res.status(400).json({ error: 'Message text required (max 5000 chars)' });
       }
 
-      if (!fs.existsSync(file.file_path)) {
-        await db.prepare('DELETE FROM temp_files WHERE id = ?').run(fileId);
-        return res.status(404).json({ error: 'File not found on server' });
-      }
-
-      // Send file
-      res.download(file.file_path, file.file_name, async (err) => {
-        if (err) {
-          console.error('Download error:', err);
-          return;
+      // Free user → дневен лимит (по from_user_id; created_at LIKE 'днес%' е cross-DB)
+      const user = req.user;
+      if (!user.subscription_active || !user.paid_until || new Date(user.paid_until) <= new Date()) {
+        const today = new Date().toISOString().split('T')[0];
+        const msgCount = await db.prepare(`
+          SELECT COUNT(*) as count FROM messages
+          WHERE from_user_id = ? AND created_at LIKE ?
+        `).get(req.userId, today + '%');
+        if (msgCount.count >= 10) {
+          return res.status(403).json({ error: 'Daily message limit reached (10/day). Upgrade for unlimited messaging.', upgradeRequired: true });
         }
+      }
 
-        // Mark as downloaded
-        await db.prepare('UPDATE temp_files SET downloaded = 1 WHERE id = ?').run(fileId);
+      if (!await areFriends(req.userId, friendUserId)) {
+        return res.status(403).json({ error: 'Not friends' });
+      }
 
-        // Delete file after successful download
-        setTimeout(async () => {
-          try {
-            if (fs.existsSync(file.file_path)) {
-              fs.unlinkSync(file.file_path);
-            }
-            await db.prepare('DELETE FROM temp_files WHERE id = ?').run(fileId);
-            console.log(`✅ Deleted file: ${file.file_name}`);
-          } catch (err) {
-            console.error('Failed to delete file:', err);
-          }
-        }, 5000); // 5 second delay
-      });
+      const sanitizedText = text.trim();
+
+      // Критични думи ПРЕДИ запис (по account id)
+      const flagged = await checkCriticalWords(db, sanitizedText, req.userId, friendUserId);
+
+      const result = await db.prepare('INSERT INTO messages (from_user_id, to_user_id, text, flagged) VALUES (?, ?, ?, ?)')
+        .run(req.userId, friendUserId, sanitizedText, flagged ? 1 : 0);
+
+      if (flagged) {
+        const [uid1, uid2] = [Number(req.userId), Number(friendUserId)].sort((a, b) => a - b);
+        await db.prepare(`
+          UPDATE flagged_conversations SET message_id = ?
+          WHERE user_id1 = ? AND user_id2 = ? AND message_id = 0
+        `).run(result.lastInsertRowid, uid1, uid2);
+      }
+
+      res.json({ success: true, messageId: result.lastInsertRowid, flagged });
     } catch (err) {
-      console.error('Download error:', err);
+      console.error('Send message error:', err);
       res.status(500).json({ error: 'Server error' });
     }
   });

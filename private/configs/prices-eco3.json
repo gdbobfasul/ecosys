@@ -1,0 +1,17 @@
+{
+  "version": "1.0002",
+  "app": "eco3",
+  "note": "Цени за ECO-3 (AI студио). Редактируем — деплой (опция 5).",
+  "symbols": { "usd": "$", "rub": "₽", "kgs": "сом" },
+  "display_order": ["usd", "rub", "kgs"],
+  "generation_tiers_note": "Цена на генериране = base + duration_min × per_min (в центове EUR — Stripe; тест режим).",
+  "generation_tiers": {
+    "economy":    { "base": 299,  "per_min": 10 },
+    "standard":   { "base": 499,  "per_min": 15 },
+    "premium":    { "base": 999,  "per_min": 25 },
+    "enterprise": { "base": 4999, "per_min": 50 }
+  },
+  "services": {
+    "monthly": { "label": "Месечен абонамент", "usd": 9.99, "rub": 720, "kgs": 876 }
+  }
+}

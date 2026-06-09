@@ -1,4 +1,4 @@
-// Version: 1.0094
+// Version: 1.0095
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
@@ -25,13 +25,15 @@ function createAuthRoutes(db) {
       if (!validatePassword(password)) {
         return res.status(400).json({ error: 'Password must be 6-50 characters' });
       }
+      log('1');
 
       // Get ALL users with this phone number
       const users = await db.prepare('SELECT * FROM users WHERE phone = ?').all(phone);
 
       if (users.length === 0) {
         // No user with this phone exists
-        return res.json({ 
+        log('изход: нерегистриран телефон');
+        return res.json({
           exists: false, 
           needsRegistration: true,
           phone 
@@ -61,7 +63,8 @@ function createAuthRoutes(db) {
           await db.prepare(`UPDATE users SET is_blocked = 1, blocked_reason = 'Failed login attempts' WHERE id IN (${placeholders})`).run(...ids);
         }
 
-        return res.status(401).json({ 
+        log('изход: грешна парола');
+        return res.status(401).json({
           error: 'Incorrect password',
           hint: 'This phone may have multiple accounts with different passwords'
         });
@@ -69,7 +72,8 @@ function createAuthRoutes(db) {
 
       // Check if blocked - PERMANENT until payment
       if (matchedUser.is_blocked) {
-        return res.status(403).json({ 
+        log('изход: блокиран акаунт');
+        return res.status(403).json({
           error: 'Account blocked',
           message: 'Pay €5/$5 to unblock your account',
           needsPayment: true,
@@ -85,7 +89,8 @@ function createAuthRoutes(db) {
       const isPaid = paidUntil > new Date();
 
       if (!isPaid) {
-        return res.json({ 
+        log('изход: неплатен (изтекъл абонамент)');
+        return res.json({
           exists: true,
           isPaid: false,
           expired: true,
@@ -93,6 +98,7 @@ function createAuthRoutes(db) {
           userId: matchedUser.id
         });
       }
+      log('2');
 
       // Create session
       const token = crypto.randomBytes(32).toString('hex');
@@ -121,9 +127,13 @@ function createAuthRoutes(db) {
         VALUES (?, ?, ?, ?, ?)
       `).run(uuidv4(), matchedUser.id, token, expiresAt.toISOString(), device_type);
 
-      await db.prepare('UPDATE users SET last_login = datetime("now") WHERE id = ?').run(matchedUser.id);
+      // last_login е TEXT колона → подаваме ISO низ като ПАРАМЕТЪР. (Преди беше
+      // datetime("now"), което pgify прави на now() = timestamptz → PG отказва да
+      // го запише в TEXT и хвърля → логинът гърмеше с 500 СЛЕД като сесията е създадена.)
+      await db.prepare('UPDATE users SET last_login = ? WHERE id = ?').run(new Date().toISOString(), matchedUser.id);
 
-      res.json({ 
+      log('край → 200');
+      res.json({
         success: true,
         token,
         userId: matchedUser.id,

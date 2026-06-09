@@ -685,7 +685,7 @@
   "pdf.sig_target": "PDF a assinar",
   "qr.title": "Código QR",
   "chat.app_name_e": "📱 Chat Anónimo",
-  "chat.price_month": "€5 / $5 por mês",
+  "chat.price_month": "$5/360 ₽/438сом",
   "chat.can": "✅ Pode:",
   "chat.feat_known": "📞 Conhecidos: Telefone → chat",
   "chat.feat_dating": "💕 Encontros: Pesquisa por género/altura/peso/país",
@@ -886,7 +886,7 @@
   "r.99": "• Taxa:",
   "r.100": "• Telefone e nomes podem estar",
   "r.101": "• Conversa apenas com utilizadores que conhece",
-  "r.102": "€5 / $5 por mês",
+  "r.102": "$5/360 ₽/438сом",
   "r.103": "₿ Pagamento com criptomoeda",
   "r.104": "ℹ️ Para serviços de emergência (Médico, Hospital, Ambulância, Polícia) envie documentos para:",
   "r.105": "ℹ️ Como funciona o chat?",
@@ -946,5 +946,7 @@
   "cnav.brand": "Chat Anónimo",
   "cnav.home": "🏠 Início",
   "cnav.tochat": "💬 Para o chat",
-  "cnav.logout": "🚪 Sair"
+  "cnav.logout": "🚪 Sair",
+  "chat.renew_sub": "Renove a sua assinatura mensal!",
+  "chat.per_month": "por mês"
 }

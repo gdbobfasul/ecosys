@@ -31,16 +31,17 @@
         <div class="bg-gray-800 rounded-lg p-6 space-y-4">
             <!-- Card Payment (Stripe) -->
             <div class="border border-blue-500 rounded-lg p-6 bg-gradient-to-br from-blue-900/20 to-cyan-900/20">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-between mb-3">
                     <div>
                         <h3 class="text-xl font-bold text-blue-400" data-i18n="cpay.card">💳 Карта</h3>
-                        <p class="text-sm text-gray-400">Visa/Mastercard</p>
+                        <p class="text-sm text-gray-400">Visa · Mastercard · Элкарт</p>
                     </div>
                     <div class="text-right">
-                        <div class="text-2xl font-bold text-blue-300" id="cardPrice">€5</div>
-                        <div class="text-sm text-gray-400" data-i18n="r.82">или $5</div>
+                        <div class="text-2xl font-bold text-blue-300" id="cardPrice">438 сом</div>
+                        <div class="text-sm text-gray-400" id="cardPriceAlt">$5 · €5 · 360 ₽</div>
                     </div>
                 </div>
+                <div data-kg-pay class="flex justify-center mb-3"></div>
 
                 <button
                     id="payWithCardBtn"
@@ -81,7 +82,8 @@
                 const r = await fetch('/api/payment/pricing');
                 if (r.ok) {
                     const p = await r.json();
-                    if (p && p.displayPrice) document.getElementById('cardPrice').textContent = p.displayPrice;
+                    // Цената в сом остава водеща; локализираната цена от бекенда се добавя като доп. инфо.
+                    if (p && p.displayPrice) document.getElementById('cardPriceAlt').textContent = '$5 · €5 · 360 ₽ · ' + p.displayPrice;
                 }
             } catch (e) { /* остава по подразбиране */ }
         })();
@@ -108,5 +110,6 @@
         }
     </script>
     <script src="/shared/js/i18n.js?v=1.0193"></script>
+    <script src="/shared/js/kg-compliance.js?v=1.0001"></script>
 </body>
 </html>

@@ -1,0 +1,11 @@
+{
+  "version": "1.0001",
+  "app": "wnb",
+  "note": "Цени за WhereNoBiz в 3 валути (usd/rub/kgs). Редактируем — деплой (опция 5).",
+  "symbols": { "usd": "$", "rub": "₽", "kgs": "сом" },
+  "display_order": ["usd", "rub", "kgs"],
+  "services": {
+    "registration": { "label": "Еднократна такса при регистрация", "usd": 1, "rub": 72, "kgs": 88 },
+    "promo":        { "label": "Промотиране на обява",              "usd": 5, "rub": 360, "kgs": 438 }
+  }
+}

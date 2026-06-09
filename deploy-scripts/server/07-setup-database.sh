@@ -400,6 +400,21 @@ if [ "$USE_POSTGRESQL" = true ]; then
              GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO \"$DB_USER\";
              ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO \"$DB_USER\";
              ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO \"$DB_USER\";" 2>&1 | tail -1
+        # ── СОБСТВЕНОСТ (КРИТИЧНО) ──────────────────────────────────────────────
+        # Схемата по-горе се зарежда от postgres → таблиците остават СОБСТВЕНОСТ на
+        # postgres. Приложението се свързва като $DB_USER и при всеки старт прилага
+        # схемата (ALTER ADD COLUMN ...). ALTER изисква СОБСТВЕНОСТ → иначе „must be
+        # owner of table users", PG схемата не минава и chat пада на SQLite (fallback).
+        # Затова прехвърляме собствеността на ВСИЧКИ таблици/sequences + схемата public
+        # към $DB_USER, за да притежава всичко и ALTER да работи при всеки старт.
+        sudo -u postgres psql -d "$DB_NAME" -c "ALTER SCHEMA public OWNER TO \"$DB_USER\";" >/dev/null 2>&1
+        sudo -u postgres psql -d "$DB_NAME" -tAc \
+            "SELECT 'ALTER TABLE public.\"'||tablename||'\" OWNER TO \"$DB_USER\";' FROM pg_tables WHERE schemaname='public'
+             UNION ALL
+             SELECT 'ALTER SEQUENCE public.\"'||sequencename||'\" OWNER TO \"$DB_USER\";' FROM pg_sequences WHERE schemaname='public'" \
+          | sudo -u postgres psql -d "$DB_NAME" >/dev/null 2>&1
+        OWN_OK=$(sudo -u postgres psql -d "$DB_NAME" -tAc "SELECT count(*) FROM pg_tables WHERE schemaname='public' AND tableowner='$DB_USER'" 2>/dev/null)
+        echo -e "${GREEN}  ✓ Собственост → $DB_USER (${OWN_OK:-0} таблици; PG схемата вече се прилага при старт, без SQLite fallback)${NC}"
         TBL_COUNT=$(sudo -u postgres psql -d "$DB_NAME" -tAc "SELECT count(*) FROM pg_tables WHERE schemaname='public'" 2>/dev/null)
         echo -e "${GREEN}  ✓ Schema loaded — ${TBL_COUNT:-0} таблици (${SCHEMA_FILE##*/})${NC}"
         # Лог към диагностиката (вижда се в bundle URL → services-errors.log)

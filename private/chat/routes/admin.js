@@ -66,7 +66,7 @@ function createAdminRoutes(db) {
         return res.status(403).json({ error: 'Not authorized (not in .env admin/moderator list)' });
       }
 
-      await db.prepare('UPDATE admin_users SET last_login = datetime("now") WHERE username = ?').run(username);
+      await db.prepare("UPDATE admin_users SET last_login = datetime('now') WHERE username = ?").run(username);
 
       // Token за подстраниците (signals / matchmaking / static-objects):
       // те се валидират чрез `WHERE password_hash = ?` (виж signals.js и
@@ -423,7 +423,7 @@ function createAdminRoutes(db) {
 
         const allMessages = (await Promise.all(conversations.map(async c => {
           const contact = await db.prepare('SELECT phone FROM users WHERE id = ?').get(c.contact_id);
-          return `━━━ With ${contact?.phone || 'Unknown'} ━━━\n${c.messages}`;
+          return `━━━ With ${contact?.phone || ('#' + c.contact_id)} ━━━\n${c.messages}`;
         }))).join('\n\n');
 
         return {
@@ -486,10 +486,10 @@ function createAdminRoutes(db) {
       }
 
       // Check if has flagged conversations
-      const flaggedCount = await db.prepare(`
-        SELECT COUNT(*) as count FROM flagged_conversations 
+      const flaggedCount = (await db.prepare(`
+        SELECT COUNT(*) as count FROM flagged_conversations
         WHERE (user_id1 = ? OR user_id2 = ?) AND reviewed = 0
-      `).get(userId, userId)?.count || 0;
+      `).get(user.id, user.id))?.count || 0;
 
       user.hasFlaggedConversations = flaggedCount > 0;
       user.flaggedCount = flaggedCount;
@@ -501,10 +501,10 @@ function createAdminRoutes(db) {
           CASE WHEN user_id1 = ? THEN custom_name_by_user1 ELSE custom_name_by_user2 END as custom_name
         FROM friends
         WHERE user_id1 = ? OR user_id2 = ?
-      `).all(userId, userId, userId, userId);
+      `).all(user.id, user.id, user.id, user.id);
 
       const contactDetails = await Promise.all(contacts.map(async contact => {
-        // Get contact user details
+        // Get contact user details (по account id)
         const contactUser = await db.prepare(`
           SELECT full_name, gender, country, city, village, street, paid_until, is_blocked
           FROM users WHERE id = ?
@@ -518,12 +518,12 @@ function createAdminRoutes(db) {
             AND text IS NOT NULL
           ORDER BY created_at DESC
           LIMIT 100
-        `).all(userId, contact.contact_id, contact.contact_id, userId);
+        `).all(user.id, contact.contact_id, contact.contact_id, user.id);
 
         const conversation = messages.reverse().map(m => ({
           messageId: m.id,
           text: m.text,
-          from: m.from_user_id === parseInt(userId) ? user.full_name : (contactUser?.full_name || 'Unknown'),
+          from: m.from_user_id === user.id ? user.full_name : (contactUser?.full_name || 'Unknown'),
           timestamp: m.created_at,
           editable: true // Admin can edit!
         }));
@@ -773,7 +773,7 @@ function createAdminRoutes(db) {
     try {
       const stats = {
         totalUsers: (await db.prepare('SELECT COUNT(*) as count FROM users').get())?.count || 0,
-        activeUsers: (await db.prepare('SELECT COUNT(*) as count FROM users WHERE paid_until > datetime("now")').get())?.count || 0,
+        activeUsers: (await db.prepare("SELECT COUNT(*) as count FROM users WHERE paid_until > datetime('now')").get())?.count || 0,
         blockedUsers: (await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_blocked = 1').get())?.count || 0,
         totalMessages: (await db.prepare('SELECT COUNT(*) as count FROM messages').get())?.count || 0,
         flaggedConversations: (await db.prepare('SELECT COUNT(*) as count FROM flagged_conversations WHERE reviewed = 0').get())?.count || 0,

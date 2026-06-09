@@ -1,4 +1,4 @@
--- Version: 1.0093
+-- Version: 1.0094
 -- AMS Chat Database Schema v4.3
 -- Shared between Web & Mobile App
 -- Added: crypto wallets, subscription tracking, payment overrides, test mode support
@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT NOT NULL,
   full_name TEXT NOT NULL,
   gender TEXT NOT NULL CHECK(gender IN ('male', 'female')),
+  birth_date TEXT,
   age INTEGER,
   height_cm INTEGER,
   weight_kg INTEGER,
@@ -83,7 +84,8 @@ CREATE TABLE IF NOT EXISTS users (
   working_hours TEXT CHECK(length(working_hours) <= 50),  -- Working hours (50 chars max)
   last_signal_date TEXT,                       -- Last date user submitted a signal
   free_days_earned INTEGER DEFAULT 0,          -- Count of free days earned from approved signals
-  
+  is_system INTEGER DEFAULT 0,                 -- 1 = бот/системен потребител (FILL DATA скрипт) — изравнено с PG
+
   UNIQUE(phone, password_hash)
 );
 
@@ -98,7 +100,8 @@ CREATE TABLE IF NOT EXISTS sessions (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Friends table (now uses user_id instead of phone)
+-- Friends table — account-id-базирана. Телефонът НЕ е уникален (UNIQUE(phone,password)),
+-- затова контактите се адресират по users.id, не по телефон. custom_name по слот (1/2).
 CREATE TABLE IF NOT EXISTS friends (
   user_id1 INTEGER NOT NULL,
   user_id2 INTEGER NOT NULL,
@@ -111,7 +114,7 @@ CREATE TABLE IF NOT EXISTS friends (
   FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Messages table (uses user_id)
+-- Messages table — account-id-базирана (from_user_id/to_user_id = users.id).
 CREATE TABLE IF NOT EXISTS messages (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   from_user_id INTEGER NOT NULL,
@@ -130,7 +133,7 @@ CREATE TABLE IF NOT EXISTS messages (
   FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Temp files table
+-- Temp files table — account-id-базирана (from_user_id/to_user_id = users.id).
 CREATE TABLE IF NOT EXISTS temp_files (
   id TEXT PRIMARY KEY,
   from_user_id INTEGER NOT NULL,
@@ -172,19 +175,20 @@ CREATE TABLE IF NOT EXISTS critical_words (
 );
 
 -- Flagged conversations (admin monitoring)
+-- account-id-базирана (кодът флагва по user_id1/user_id2). message_id е без FK
+-- (вкарва се 0, после се ъпдейтва → FK към messages щеше да чупи на PG).
 CREATE TABLE IF NOT EXISTS flagged_conversations (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id1 INTEGER NOT NULL,
   user_id2 INTEGER NOT NULL,
   matched_word TEXT NOT NULL,
-  message_id INTEGER NOT NULL,
+  message_id INTEGER DEFAULT 0,
   message_text TEXT NOT NULL,
   conversation_context TEXT,
   flagged_at TEXT DEFAULT (datetime('now')),
   reviewed INTEGER DEFAULT 0,
   FOREIGN KEY (user_id1) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE
+  FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Reports table (when users report each other)

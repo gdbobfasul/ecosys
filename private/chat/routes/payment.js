@@ -1,18 +1,32 @@
 // Version: 1.0097
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const { resolveStripeConfig } = require('../../configs/stripe-config');
 const STRIPE_CFG = resolveStripeConfig(process.env);
 const stripe = require('stripe')(STRIPE_CFG.secretKey);
 const geoip = require('geoip-lite');
 
+// Цените идват от редактируемия файл private/configs/prices-chat.json (по един ценови
+// конфиг за всяко приложение). Смяна там → сменя и таксата (Stripe), и показваната цена.
+function chatMonthly() {
+  try {
+    const p = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'configs', 'prices-chat.json'), 'utf8'));
+    const s = p && p.services && p.services.monthly;
+    if (s && s.usd) return s;
+  } catch (e) { /* fallback по подразбиране */ }
+  return { usd: 5, rub: 360, kgs: 438 };
+}
+function priceDisplay() {
+  const s = chatMonthly();
+  return `$${s.usd} / ${s.rub} ₽ / ${s.kgs} сом`;
+}
+
 function getPriceForIP(ip) {
   const geo = geoip.lookup(ip);
-  const euCountries = ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE'];
-  
-  if (geo && euCountries.includes(geo.country)) {
-    return { amount: 500, currency: 'eur', country: geo.country }; // €5
-  }
-  return { amount: 500, currency: 'usd', country: geo?.country || 'US' }; // $5
+  const s = chatMonthly();
+  // Таксуваме в USD (центове); рубли/сомове са за показване. Сумата идва от prices.json.
+  return { amount: Math.round(s.usd * 100), currency: 'usd', country: geo?.country || 'US' };
 }
 
 function createPaymentRoutes(db) {
@@ -32,7 +46,7 @@ function createPaymentRoutes(db) {
       amount: pricing.amount / 100,
       currency: pricing.currency.toUpperCase(),
       country: pricing.country,
-      displayPrice: pricing.currency === 'eur' ? '€5' : '$5'
+      displayPrice: priceDisplay()   // „$5 / 360 ₽ / 438 сом" от prices.json
     });
   });
 
@@ -107,9 +121,9 @@ function createPaymentRoutes(db) {
       if (user) {
         // Update existing user
         await db.prepare(`
-          UPDATE users 
-          SET paid_until = ?, 
-              last_login = datetime("now"),
+          UPDATE users
+          SET paid_until = ?,
+              last_login = datetime('now'),
               is_blocked = 0,
               blocked_reason = NULL,
               failed_login_attempts = 0,

@@ -299,13 +299,21 @@ router.post('/admin/approve/:signalId', requireAuth, async (req, res) => {
       WHERE id = ?
     `).run(req.userId, createdUserId, req.params.signalId);
     
-    // Grant submitter 1 free day
+    // Grant submitter 1 free day — изчислява се в JS (cross-DB). Новото paid_until е
+    // по-късното от (текущо paid_until, сега) + 1 ден. Старото SQL ползваше
+    // datetime(MAX(paid_until, datetime('now')), '+1 day'): MAX е АГРЕГАТ на PostgreSQL
+    // (трябва GREATEST), а datetime(<израз>, ...) pgify не превежда → гърмеше на PG.
+    const sub = await db.prepare('SELECT paid_until FROM users WHERE id = ?').get(signal.user_id);
+    const baseTs = sub && sub.paid_until ? new Date(sub.paid_until) : new Date(0);
+    const startTs = baseTs > new Date() ? baseTs : new Date();
+    const newPaid = new Date(startTs.getTime() + 24 * 60 * 60 * 1000); // +1 ден
+    const newPaidStr = newPaid.toISOString().slice(0, 19).replace('T', ' '); // 'YYYY-MM-DD HH:MM:SS' (като схемата)
     await db.prepare(`
       UPDATE users
-      SET paid_until = datetime(MAX(paid_until, datetime('now')), '+1 day'),
+      SET paid_until = ?,
           free_days_earned = free_days_earned + 1
       WHERE id = ?
-    `).run(signal.user_id);
+    `).run(newPaidStr, signal.user_id);
     
     res.json({ 
       success: true, 

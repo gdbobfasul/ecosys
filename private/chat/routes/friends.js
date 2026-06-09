@@ -1,11 +1,14 @@
-// Version: 1.0093
+// Version: 1.0094
+// Контактите се адресират по account id (users.id), НЕ по телефон — телефонът не е
+// уникален (UNIQUE(phone,password)). Търсачката връща id (скрит визуално); добавянето
+// и съобщенията стават по този id. Телефонът е само за визуализация.
 const express = require('express');
-const { validatePhone, validateCustomName } = require('../utils/validation');
+const { validateCustomName } = require('../utils/validation');
 
 function createFriendsRoutes(db) {
   const router = express.Router();
 
-  // Search users to add as friends - САМО по: country, phone, gender, height, weight
+  // Search users to add as friends — връща id (ключът за добавяне) + телефон за показване.
   router.get('/search', async (req, res) => {
     try {
       const { phone, country, gender, height, weight } = req.query;
@@ -15,44 +18,23 @@ function createFriendsRoutes(db) {
       }
 
       let query = `
-        SELECT id, phone, full_name, gender, height_cm, weight_kg, 
+        SELECT id, phone, full_name, gender, height_cm, weight_kg,
                country, city, village, street
         FROM users
         WHERE paid_until > datetime('now')
       `;
-
       const params = [];
 
-      if (phone) {
-        query += ` AND phone LIKE ?`;
-        params.push(`%${phone}%`);
-      }
-
-      if (country) {
-        query += ` AND country LIKE ?`;
-        params.push(`%${country}%`);
-      }
-
-      if (gender) {
-        query += ` AND gender = ?`;
-        params.push(gender);
-      }
-
-      if (height) {
-        query += ` AND height_cm = ?`;
-        params.push(parseInt(height));
-      }
-
-      if (weight) {
-        query += ` AND weight_kg = ?`;
-        params.push(parseInt(weight));
-      }
+      if (phone)   { query += ` AND phone LIKE ?`;     params.push(`%${phone}%`); }
+      if (country) { query += ` AND country LIKE ?`;   params.push(`%${country}%`); }
+      if (gender)  { query += ` AND gender = ?`;        params.push(gender); }
+      if (height)  { query += ` AND height_cm = ?`;     params.push(parseInt(height)); }
+      if (weight)  { query += ` AND weight_kg = ?`;     params.push(parseInt(weight)); }
 
       query += ` AND id != ? LIMIT 50`;
       params.push(req.userId);
 
       const users = await db.prepare(query).all(...params);
-
       res.json({ users });
     } catch (err) {
       console.error('Search users error:', err);
@@ -60,84 +42,74 @@ function createFriendsRoutes(db) {
     }
   });
 
-  // Get friends list
+  // Get friends list — по user_id1/user_id2. Връща userId + fullName + phone (за показване).
   router.get('/', async (req, res) => {
     try {
-      const friends = await db.prepare(`
-        SELECT 
-          CASE WHEN phone1 = ? THEN phone2 ELSE phone1 END as phone,
-          CASE 
-            WHEN phone1 = ? THEN custom_name_by_phone1 
-            ELSE custom_name_by_phone2 
-          END as custom_name,
-          (SELECT text FROM messages 
-           WHERE (from_phone = ? AND to_phone = CASE WHEN phone1 = ? THEN phone2 ELSE phone1 END)
-              OR (from_phone = CASE WHEN phone1 = ? THEN phone2 ELSE phone1 END AND to_phone = ?)
-           ORDER BY created_at DESC LIMIT 1) as last_message,
-          (SELECT created_at FROM messages 
-           WHERE (from_phone = ? AND to_phone = CASE WHEN phone1 = ? THEN phone2 ELSE phone1 END)
-              OR (from_phone = CASE WHEN phone1 = ? THEN phone2 ELSE phone1 END AND to_phone = ?)
-           ORDER BY created_at DESC LIMIT 1) as last_message_time,
-          (SELECT COUNT(*) FROM messages
-           WHERE to_phone = ? 
-             AND from_phone = CASE WHEN phone1 = ? THEN phone2 ELSE phone1 END
-             AND read_at IS NULL) as unread_count
-        FROM friends 
-        WHERE phone1 = ? OR phone2 = ?
-        ORDER BY last_message_time DESC
-      `).all(
-        req.phone, req.phone, req.phone, req.phone, req.phone, req.phone,
-        req.phone, req.phone, req.phone, req.phone, req.phone, req.phone,
-        req.phone, req.phone
-      );
+      const rows = await db.prepare(`
+        SELECT
+          CASE WHEN user_id1 = ? THEN user_id2 ELSE user_id1 END as friend_id,
+          CASE WHEN user_id1 = ? THEN custom_name_by_user1 ELSE custom_name_by_user2 END as custom_name
+        FROM friends
+        WHERE user_id1 = ? OR user_id2 = ?
+      `).all(req.userId, req.userId, req.userId, req.userId);
 
-      const result = friends.map(row => ({
-        phone: row.phone,
-        displayName: row.custom_name || row.phone,
-        customName: row.custom_name,
-        lastMessage: row.last_message || '',
-        timestamp: row.last_message_time ? new Date(row.last_message_time).getTime() : Date.now(),
-        unread: parseInt(row.unread_count) || 0
+      const friends = await Promise.all(rows.map(async row => {
+        const u = await db.prepare('SELECT phone, full_name FROM users WHERE id = ?').get(row.friend_id);
+        const last = await db.prepare(`
+          SELECT text, created_at FROM messages
+          WHERE (from_user_id = ? AND to_user_id = ?) OR (from_user_id = ? AND to_user_id = ?)
+          ORDER BY created_at DESC LIMIT 1
+        `).get(req.userId, row.friend_id, row.friend_id, req.userId);
+        const unread = (await db.prepare(`
+          SELECT COUNT(*) as count FROM messages
+          WHERE to_user_id = ? AND from_user_id = ? AND read_at IS NULL
+        `).get(req.userId, row.friend_id))?.count || 0;
+        return {
+          userId: row.friend_id,
+          phone: u ? u.phone : '',
+          fullName: u ? u.full_name : '',
+          displayName: row.custom_name || (u && u.full_name) || (u && u.phone) || '',
+          customName: row.custom_name,
+          lastMessage: last ? last.text : '',
+          timestamp: last && last.created_at ? new Date(last.created_at).getTime() : Date.now(),
+          unread: parseInt(unread) || 0,
+        };
       }));
-
-      res.json({ friends: result });
+      friends.sort((a, b) => b.timestamp - a.timestamp);
+      res.json({ friends });
     } catch (err) {
       console.error('Get friends error:', err);
       res.status(500).json({ error: 'Server error' });
     }
   });
 
-  // Add friend
-  router.post('/', async (req, res) => {
+  // Add friend — по account id (фронтендът праща friendUserId от търсачката).
+  // Приема и POST / (легаси), и POST /add (фронтендът).
+  router.post(['/', '/add'], async (req, res) => {
     try {
-      const { friendPhone } = req.body;
+      const friendUserId = parseInt(req.body.friendUserId, 10);
 
-      if (!validatePhone(friendPhone)) {
-        return res.status(400).json({ error: 'Valid friend phone required' });
+      if (!friendUserId || friendUserId < 1) {
+        return res.status(400).json({ error: 'Valid friendUserId required' });
       }
-
-      if (friendPhone === req.phone) {
+      if (friendUserId === req.userId) {
         return res.status(400).json({ error: 'Cannot add yourself' });
       }
 
-      // Check if friend exists and is paid
-      const friend = await db.prepare('SELECT phone, paid_until FROM users WHERE phone = ?').get(friendPhone);
-
+      const friend = await db.prepare('SELECT id, paid_until FROM users WHERE id = ?').get(friendUserId);
       if (!friend) {
         return res.status(404).json({ error: 'User not found' });
       }
-
-      const paidUntil = new Date(friend.paid_until);
-      if (paidUntil <= new Date()) {
+      if (new Date(friend.paid_until) <= new Date()) {
         return res.status(400).json({ error: 'User subscription expired' });
       }
 
-      const [phone1, phone2] = [req.phone, friendPhone].sort();
-      
+      const [user_id1, user_id2] = [req.userId, friendUserId].sort((a, b) => a - b);
       try {
-        await db.prepare('INSERT INTO friends (phone1, phone2) VALUES (?, ?)').run(phone1, phone2);
+        await db.prepare('INSERT INTO friends (user_id1, user_id2) VALUES (?, ?)').run(user_id1, user_id2);
       } catch (err) {
-        if (!err.message.includes('UNIQUE')) throw err;
+        const m = String(err.message || '');
+        if (!m.includes('UNIQUE') && !m.toLowerCase().includes('duplicate')) throw err;
       }
 
       res.json({ success: true });
@@ -147,26 +119,24 @@ function createFriendsRoutes(db) {
     }
   });
 
-  // Set custom name for friend
+  // Set custom name for friend — по account id.
   router.put('/custom-name', async (req, res) => {
     try {
-      const { friendPhone, customName } = req.body;
+      const friendUserId = parseInt(req.body.friendUserId, 10);
+      const { customName } = req.body;
 
-      if (!validatePhone(friendPhone)) {
-        return res.status(400).json({ error: 'Valid phone required' });
+      if (!friendUserId || friendUserId < 1) {
+        return res.status(400).json({ error: 'Valid friendUserId required' });
       }
-
       if (customName && !validateCustomName(customName)) {
         return res.status(400).json({ error: 'Custom name max 20 characters' });
       }
 
-      const [phone1, phone2] = [req.phone, friendPhone].sort();
-      
-      // Determine which custom_name field to update
-      const field = req.phone === phone1 ? 'custom_name_by_phone1' : 'custom_name_by_phone2';
-      
-      await db.prepare(`UPDATE friends SET ${field} = ? WHERE phone1 = ? AND phone2 = ?`)
-        .run(customName || null, phone1, phone2);
+      const [user_id1, user_id2] = [req.userId, friendUserId].sort((a, b) => a - b);
+      const field = req.userId === user_id1 ? 'custom_name_by_user1' : 'custom_name_by_user2';
+
+      await db.prepare(`UPDATE friends SET ${field} = ? WHERE user_id1 = ? AND user_id2 = ?`)
+        .run(customName || null, user_id1, user_id2);
 
       res.json({ success: true, customName });
     } catch (err) {

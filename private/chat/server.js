@@ -18,6 +18,37 @@ try {
     debug = { stage: (...a) => console.log('[chat]', ...a), info: console.log, error: console.error, warn: console.warn };
 }
 
+// Разделя SQL файл на отделни изрази по top-level „;", но ПАЗИ цели:
+//   • $$…$$ / $tag$…$tag$ dollar-quoted блокове (DO/функции — имат ; вътре)
+//   • '…' стрингове (вкл. екранирано '' )   • -- коментари до края на реда
+// Така можем да приложим схемата израз-по-израз (виж PG schema apply по-долу).
+function splitSqlStatements(sql) {
+  const out = []; let buf = ''; let i = 0; const n = sql.length;
+  let inSingle = false; let dollarTag = null;
+  while (i < n) {
+    const c = sql[i];
+    if (dollarTag) {
+      if (sql.startsWith(dollarTag, i)) { buf += dollarTag; i += dollarTag.length; dollarTag = null; continue; }
+      buf += c; i++; continue;
+    }
+    if (inSingle) {
+      buf += c;
+      if (c === "'") { if (sql[i + 1] === "'") { buf += "'"; i += 2; continue; } inSingle = false; }
+      i++; continue;
+    }
+    if (c === '-' && sql[i + 1] === '-') { while (i < n && sql[i] !== '\n') { buf += sql[i]; i++; } continue; }
+    if (c === '$') {
+      const m = /^\$[A-Za-z0-9_]*\$/.exec(sql.slice(i));
+      if (m) { dollarTag = m[0]; buf += dollarTag; i += dollarTag.length; continue; }
+    }
+    if (c === "'") { inSingle = true; buf += c; i++; continue; }
+    if (c === ';') { const s = buf.trim(); if (s) out.push(s); buf = ''; i++; continue; }
+    buf += c; i++;
+  }
+  const tail = buf.trim(); if (tail) out.push(tail);
+  return out;
+}
+
 debug.stage('starting chat service');
 debug.stage('node version:', process.version);
 debug.stage('cwd:', process.cwd());
@@ -92,8 +123,19 @@ async function setupDatabase() {
     if (getDatabaseType() === 'postgresql') {
       try {
         const pgSchema = fs.readFileSync(path.join(__dirname, 'database', 'postgresql_setup.sql'), 'utf8');
-        await db.exec(pgSchema);
-        debug.stage('PG схема приложена (идемпотентно — колоните са синхронизирани)');
+        // Прилагаме схемата ИЗРАЗ-ПО-ИЗРАЗ (не като един batch). Причина: db.exec праща
+        // целия файл като ЕДНА заявка → PG я изпълнява в ЕДНА имплицитна транзакция, и
+        // ПЪРВАТА грешка (напр. „must be owner of table users" при ALTER, ако таблицата е
+        // създадена от друг PG потребител) проваля ЦЯЛАТА останала схема (вкл. friends
+        // phone-миграцията). Тук всеки израз е в собствен try/catch → пропускаме само
+        // проблемния и продължаваме. splitSqlStatements пази $$…$$ блоковете цели.
+        let okN = 0, skipN = 0, firstErr = '';
+        for (const st of splitSqlStatements(pgSchema)) {
+          try { await db.exec(st); okN++; }
+          catch (e) { skipN++; if (!firstErr) firstErr = e.message; }
+        }
+        debug.stage(`PG схема: ок ${okN}, пропуснати ${skipN}`);
+        if (skipN) console.warn(`⚠️  PG схема: ${skipN} израз(а) пропуснати (1-ви: ${firstErr})`);
       } catch (e) { console.error('⚠️  PG схема не се приложи напълно:', e.message); }
       // Модул „Задачи" (Remote Local Hands / „Истина ли е") — отделна идемпотентна схема.
       try {
@@ -234,7 +276,7 @@ wss.on('connection', async (ws, req) => {
   }
 
   const session = await db.prepare(`
-    SELECT phone, expires_at FROM sessions WHERE token = ?
+    SELECT user_id, expires_at FROM sessions WHERE token = ?
   `).get(token);
 
   if (!session || new Date(session.expires_at) <= new Date()) {
@@ -242,23 +284,26 @@ wss.on('connection', async (ws, req) => {
     return;
   }
 
-  const phone = session.phone;
-  clients.set(token, { ws, phone });
-  console.log('✅ WebSocket connected:', phone);
+  // Адресирането е по account id (телефонът не е уникален). data.to идва от фронтенда
+  // като userId (currentContactId = f.userId), а получателят разпознава по data.fromUserId.
+  const userId = session.user_id;
+  clients.set(token, { ws, userId });
+  console.log('✅ WebSocket connected (userId):', userId);
 
   ws.on('message', async (message) => {
     try {
       const data = JSON.parse(message);
 
       if (data.type === 'message') {
-        if (!data.to || !data.text || data.text.length > 5000) {
+        const toUserId = parseInt(data.to, 10);
+        if (!toUserId || !data.text || data.text.length > 5000) {
           ws.send(JSON.stringify({ type: 'error', message: 'Invalid message' }));
           return;
         }
 
-        // Check friendship
-        const [phone1, phone2] = [phone, data.to].sort();
-        const friendCheck = await db.prepare('SELECT 1 FROM friends WHERE phone1 = ? AND phone2 = ?').get(phone1, phone2);
+        // Check friendship (числово подреден ключ)
+        const [u1, u2] = [Number(userId), toUserId].sort((a, b) => a - b);
+        const friendCheck = await db.prepare('SELECT 1 FROM friends WHERE user_id1 = ? AND user_id2 = ?').get(u1, u2);
 
         if (!friendCheck) {
           ws.send(JSON.stringify({ type: 'error', message: 'Not friends' }));
@@ -267,48 +312,48 @@ wss.on('connection', async (ws, req) => {
 
         const sanitizedText = data.text.trim();
 
-        // Check for critical words
-        const flagged = await checkCriticalWords(db, sanitizedText, phone, data.to);
+        // Check for critical words (по account id)
+        const flagged = await checkCriticalWords(db, sanitizedText, userId, toUserId);
 
         // Save message
-        const stmt = await db.prepare('INSERT INTO messages (from_phone, to_phone, text, flagged) VALUES (?, ?, ?, ?)');
-        const result = stmt.run(phone, data.to, sanitizedText, flagged ? 1 : 0);
+        const stmt = await db.prepare('INSERT INTO messages (from_user_id, to_user_id, text, flagged) VALUES (?, ?, ?, ?)');
+        const result = stmt.run(userId, toUserId, sanitizedText, flagged ? 1 : 0);
 
         // Update flagged_conversations with actual message_id
         if (flagged) {
           await db.prepare(`
-            UPDATE flagged_conversations 
-            SET message_id = ? 
-            WHERE phone1 = ? AND phone2 = ? AND message_id = 0
-            ORDER BY flagged_at DESC LIMIT 1
-          `).run(result.lastInsertRowid, phone1, phone2);
+            UPDATE flagged_conversations
+            SET message_id = ?
+            WHERE user_id1 = ? AND user_id2 = ? AND message_id = 0
+          `).run(result.lastInsertRowid, u1, u2);
         }
 
         const messageData = {
           type: 'message',
           id: result.lastInsertRowid,
-          from: phone,
-          to: data.to,
+          fromUserId: userId,
+          toUserId,
           text: sanitizedText,
           timestamp: Date.now(),
           flagged
         };
 
-        // Send to recipient
+        // Send to recipient (по userId)
         for (const [clientToken, client] of clients.entries()) {
-          if (client.phone === data.to && client.ws.readyState === WebSocket.OPEN) {
+          if (client.userId === toUserId && client.ws.readyState === WebSocket.OPEN) {
             client.ws.send(JSON.stringify(messageData));
           }
         }
 
         ws.send(JSON.stringify({ ...messageData, type: 'sent' }));
       } else if (data.type === 'file_notification') {
-        // Notify recipient about file
+        const toUserId = parseInt(data.to, 10);
+        // Notify recipient about file (по userId)
         for (const [clientToken, client] of clients.entries()) {
-          if (client.phone === data.to && client.ws.readyState === WebSocket.OPEN) {
+          if (client.userId === toUserId && client.ws.readyState === WebSocket.OPEN) {
             client.ws.send(JSON.stringify({
               type: 'file_available',
-              from: phone,
+              fromUserId: userId,
               fileId: data.fileId,
               fileName: data.fileName,
               fileSize: data.fileSize,
@@ -325,7 +370,7 @@ wss.on('connection', async (ws, req) => {
 
   ws.on('close', () => {
     clients.delete(token);
-    console.log('❌ WebSocket disconnected:', phone);
+    console.log('❌ WebSocket disconnected (userId):', userId);
   });
 });
 

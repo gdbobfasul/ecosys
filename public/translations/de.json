@@ -685,7 +685,7 @@
   "pdf.sig_target": "PDF zum Signieren",
   "qr.title": "QR-Code",
   "chat.app_name_e": "📱 Anonymer Chat",
-  "chat.price_month": "€5 / $5 pro Monat",
+  "chat.price_month": "$5/360 ₽/438сом",
   "chat.can": "✅ Du kannst:",
   "chat.feat_known": "📞 Bekannte: Telefon → Chat",
   "chat.feat_dating": "💕 Dating: Suche nach Geschlecht/Größe/Gewicht/Land",
@@ -886,7 +886,7 @@
   "r.99": "• Gebühr:",
   "r.100": "• Telefon und Namen können sein",
   "r.101": "• Du chattest nur mit bekannten Nutzern",
-  "r.102": "€5 / $5 pro Monat",
+  "r.102": "$5/360 ₽/438сом",
   "r.103": "₿ Kryptowährungszahlung",
   "r.104": "ℹ️ Für Notdienste (Arzt, Krankenhaus, Rettung, Polizei) senden Sie Dokumente an:",
   "r.105": "ℹ️ Wie funktioniert der Chat?",
@@ -946,5 +946,7 @@
   "cnav.brand": "Anonymer Chat",
   "cnav.home": "🏠 Start",
   "cnav.tochat": "💬 Zum Chat",
-  "cnav.logout": "🚪 Abmelden"
+  "cnav.logout": "🚪 Abmelden",
+  "chat.renew_sub": "Bitte verlängern Sie Ihr Monatsabonnement!",
+  "chat.per_month": "pro Monat"
 }

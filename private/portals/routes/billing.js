@@ -24,9 +24,17 @@ catch (e) { debug = { stage: () => {}, info: () => {}, error: () => {}, warn: ()
 
 const router = express.Router();
 
+// Цената идва от ЦЕНТРАЛНИЯ per-app файл private/configs/prices-portals.json
+// (3 валути usd/rub/kgs). Резерв към стария configs/fees.json, ако липсва.
 function loadFees() {
-    const p = path.join(__dirname, '..', 'configs', 'fees.json');
-    return JSON.parse(fs.readFileSync(p, 'utf8'));
+    try {
+        const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'configs', 'prices-portals.json'), 'utf8'));
+        const m = cfg.services && cfg.services.monthly;
+        if (m && m.usd != null) {
+            return { version: cfg.version, monthly_fee: { USD: m.usd, RUB: m.rub, KGS: m.kgs } };
+        }
+    } catch (e) { /* резерв по-долу */ }
+    return JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'configs', 'fees.json'), 'utf8'));
 }
 
 // ─── GET /api/portals/billing/wallets ──────────────────────────

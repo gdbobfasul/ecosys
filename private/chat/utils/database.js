@@ -97,10 +97,15 @@ function initializePostgreSQL() {
       .replace(/GROUP_CONCAT\(\s*([^,()]+?)\s*,\s*('[^']*'|"[^"]*")\s*\)/gi, 'string_agg($1, $2)')
       .replace(/GROUP_CONCAT\(\s*([^,()]+?)\s*\)/gi, "string_agg($1, ',')")
       // datetime/date — и с единични, и с двойни кавички ('now' / "now")
-      .replace(/datetime\(\s*['"]now['"]\s*,\s*['"]-\s*(\d+)\s+hours?['"]\s*\)/gi, "(now() - interval '$1 hours')")
-      .replace(/datetime\(\s*['"]now['"]\s*,\s*['"]-\s*(\d+)\s+days?['"]\s*\)/gi, "(now() - interval '$1 days')")
-      .replace(/datetime\(\s*['"]now['"]\s*\)/gi, 'now()')
-      .replace(/date\(\s*['"]now['"]\s*\)/gi, "to_char(now(), 'YYYY-MM-DD')");
+      // SQLite datetime/date('now' [, '±N unit']) → PG, връщайки TEXT във формата на
+      // схемата ('YYYY-MM-DD HH24:MI:SS'). КЛЮЧОВО: НЕ връщаме now() (timestamptz), защото
+      // всички темпорални колони са TEXT → присвояване timestamptz→TEXT гърми (42804, точно
+      // бъга по login/messages). to_char дава TEXT; сравненията стават текстово-лексикографски,
+      // а понеже форматът е еднакъв и сортируем — са хронологично верни.
+      .replace(/datetime\(\s*['"]now['"]\s*,\s*['"]\s*([+-])\s*(\d+)\s+(second|minute|hour|day|week|month|year)s?\s*['"]\s*\)/gi,
+        (_m, sign, n, unit) => `to_char(((now() AT TIME ZONE 'UTC') ${sign} interval '${n} ${unit}'), 'YYYY-MM-DD HH24:MI:SS')`)
+      .replace(/datetime\(\s*['"]now['"]\s*\)/gi, "to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')")
+      .replace(/date\(\s*['"]now['"]\s*\)/gi, "to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD')");
     if (orIgnore && !/on\s+conflict/i.test(s)) s = s.replace(/;?\s*$/, '') + ' ON CONFLICT DO NOTHING';
     let i = 0;
     s = s.replace(/\?/g, () => `$${++i}`);  // ПОСЛЕДНО: ? → $1, $2 …

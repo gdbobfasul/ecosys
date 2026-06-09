@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0195
+# Version: 1.0196
 ##############################################################################
 # KCY — Отделните приложни домейни + SSL (чете private/configs/domains.conf).
 #
@@ -59,6 +59,13 @@ case "$(hostname)" in ams-chat*) KCY_ROLE="PROD" ;; *) KCY_ROLE="VM" ;; esac
 # като $host остават литерални; разширяват се само %s = API/PORT/SERVE).
 build_locations() {  # ползва $API $PORT $SERVE $NESTED от извикващия
     printf '    location ^~ %s { proxy_pass http://127.0.0.1:%s; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_read_timeout 86400; }\n' "$API" "$PORT"
+    # PORTALS (порт 3002) на ВСЕКИ приложен домейн — споделеният админ вход + системното
+    # меню (system-nav.js вика /api/portals/ip-admin и /api/portals/me на ВСЯКА страница)
+    # + /shared/admin-status.html. Без тези блокове /portals/login.html и /api/portals/*
+    # падаха в SPA fallback-а (location /) → връщаха index.html на чата (="връща ме на
+    # главната"). `^~` + най-дълъг префикс → /api/portals/ печели пред /api/ на чата.
+    printf '    location ^~ /api/portals/ { proxy_pass http://127.0.0.1:3002; proxy_http_version 1.1; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_read_timeout 86400; }\n'
+    printf '    location ^~ /portals/ { proxy_pass http://127.0.0.1:3002; proxy_http_version 1.1; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_read_timeout 86400; }\n'
     if [ "$NESTED" = "1" ]; then
         printf '    location ^~ /socket.io/ { proxy_pass http://127.0.0.1:%s; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; proxy_set_header Host $host; }\n' "$PORT"
         printf '    location ^~ /uploads/ { proxy_pass http://127.0.0.1:%s; proxy_set_header Host $host; }\n' "$PORT"

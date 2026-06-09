@@ -254,12 +254,15 @@ app.post('/create-payment', async (req, res) => {
     if (!stripe) return res.status(503).json({ error: 'Stripe not configured' });
     try {
         const { budget, duration, topic } = req.body;
-        const prices = {
-            economy:   { base: 299,  perMin: 10 },
-            standard:  { base: 499,  perMin: 15 },
-            premium:   { base: 999,  perMin: 25 },
-            enterprise:{ base: 4999, perMin: 50 }
-        };
+        // Цените (tier-ове) идват от private/configs/prices-eco3.json (редактируем).
+        let prices;
+        try {
+            const t = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '..', 'configs', 'prices-eco3.json'), 'utf8')).generation_tiers || {};
+            const pick = (k, b, pm) => ({ base: (t[k] && t[k].base) != null ? t[k].base : b, perMin: (t[k] && t[k].per_min) != null ? t[k].per_min : pm });
+            prices = { economy: pick('economy', 299, 10), standard: pick('standard', 499, 15), premium: pick('premium', 999, 25), enterprise: pick('enterprise', 4999, 50) };
+        } catch (e) {
+            prices = { economy: { base: 299, perMin: 10 }, standard: { base: 499, perMin: 15 }, premium: { base: 999, perMin: 25 }, enterprise: { base: 4999, perMin: 50 } };
+        }
         const tier = prices[budget] || prices.standard;
         const amount = tier.base + (duration || 10) * tier.perMin;
         

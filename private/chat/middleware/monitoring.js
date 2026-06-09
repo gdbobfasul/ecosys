@@ -1,40 +1,41 @@
 // Version: 1.0172
 const Database = require('better-sqlite3');
 
-async function checkCriticalWords(db, message, fromPhone, toPhone) {
+async function checkCriticalWords(db, message, fromUserId, toUserId) {
   try {
     const words = await db.prepare('SELECT word FROM critical_words').all();
     const text = message.toLowerCase();
-    
+
     for (const { word } of words) {
       if (text.includes(word.toLowerCase())) {
         // Get last 5KB of conversation context
         const context = await db.prepare(`
-          SELECT text FROM messages 
-          WHERE (from_phone = ? AND to_phone = ?) OR (from_phone = ? AND to_phone = ?)
+          SELECT text FROM messages
+          WHERE (from_user_id = ? AND to_user_id = ?) OR (from_user_id = ? AND to_user_id = ?)
           ORDER BY created_at DESC LIMIT 50
-        `).all(fromPhone, toPhone, toPhone, fromPhone);
-        
+        `).all(fromUserId, toUserId, toUserId, fromUserId);
+
         const contextText = context.map(m => m.text).reverse().join('\n').slice(-5120); // 5KB
-        
-        // Flag the conversation
+
+        // Flag the conversation (user_id1 < user_id2 — числово подреждане)
+        const [uid1, uid2] = [Number(fromUserId), Number(toUserId)].sort((a, b) => a - b);
         await db.prepare(`
-          INSERT INTO flagged_conversations 
-          (phone1, phone2, matched_word, message_id, message_text, conversation_context)
+          INSERT INTO flagged_conversations
+          (user_id1, user_id2, matched_word, message_id, message_text, conversation_context)
           VALUES (?, ?, ?, ?, ?, ?)
         `).run(
-          fromPhone < toPhone ? fromPhone : toPhone,
-          fromPhone < toPhone ? toPhone : fromPhone,
+          uid1,
+          uid2,
           word,
           0, // Will be updated with actual message_id
           message,
           contextText
         );
-        
+
         return true;
       }
     }
-    
+
     return false;
   } catch (err) {
     console.error('Monitoring error:', err);

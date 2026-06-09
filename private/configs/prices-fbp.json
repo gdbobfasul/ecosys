@@ -1,0 +1,10 @@
+{
+  "version": "1.0001",
+  "app": "fbp",
+  "note": "Цени за Find Best Price в 3 валути (usd/rub/kgs). Редактируем — деплой (опция 5).",
+  "symbols": { "usd": "$", "rub": "₽", "kgs": "сом" },
+  "display_order": ["usd", "rub", "kgs"],
+  "services": {
+    "business_monthly": { "label": "Бизнес профил (месечно)", "usd": 5, "rub": 360, "kgs": 438 }
+  }
+}
