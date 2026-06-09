@@ -1,0 +1,137 @@
+<!-- Version: 1.0001 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Детайли за потребител — Admin</title>
+  <style>
+    body{margin:0;background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}
+    .wrap{max-width:920px;margin:0 auto;padding:24px 18px 60px}
+    h1{font-size:1.5rem;margin:0 0 4px}
+    .back{color:#60a5fa;text-decoration:none;font-size:.9rem}
+    .card{background:#16202b;border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:18px;margin:16px 0}
+    .card h2{margin:0 0 12px;font-size:1.1rem;color:#93c5fd}
+    table{width:100%;border-collapse:collapse}
+    td{padding:6px 8px;border-bottom:1px solid rgba(148,163,184,.12);vertical-align:top}
+    td.k{color:#94a3b8;width:200px;white-space:nowrap}
+    .badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.85em;font-weight:700}
+    .badge.ok{background:#14532d;color:#86efac}.badge.bad{background:#7f1d1d;color:#fca5a5}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:6px}
+    button,input{font:inherit}
+    button{padding:8px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:600;color:#fff}
+    .b-block{background:#dc2626}.b-unblock{background:#16a34a}.b-pay{background:#2563eb}.b-unpay{background:#a16207}.b-save{background:#0891b2}
+    button:hover{filter:brightness(1.08)}
+    input[type=number],input[type=text]{padding:7px 9px;border-radius:7px;border:1px solid #334155;background:#0b1220;color:#e2e8f0}
+    .msg{margin:12px 0;padding:10px 12px;border-radius:8px;display:none}
+    .msg.ok{background:#14532d;color:#bbf7d0;display:block}.msg.err{background:#7f1d1d;color:#fecaca;display:block}
+    .conv{background:#0b1220;border-radius:8px;padding:10px;margin:8px 0}
+    .conv .line{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px dashed rgba(148,163,184,.12)}
+    .conv .from{color:#93c5fd;font-size:.85em;min-width:120px}
+    .conv .ed{margin-left:auto;font-size:.8em;color:#60a5fa;cursor:pointer;background:none;color:#60a5fa;padding:0}
+    .muted{color:#94a3b8;font-size:.9em}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="admin.html">← Назад към админ панела</a>
+    <h1>🔍 Детайли за потребител</h1>
+    <div id="msg" class="msg"></div>
+    <div id="content"><p class="muted">Зареждам…</p></div>
+  </div>
+
+  <script>
+    var qs = new URLSearchParams(location.search);
+    var userId = qs.get('userId');
+    var token = localStorage.getItem('token') || '';
+    var msg = document.getElementById('msg');
+    var content = document.getElementById('content');
+
+    function hdr() {
+      var h = { 'Content-Type': 'application/json' };
+      if (token) h['Authorization'] = 'Bearer ' + token;
+      return h;
+    }
+    function show(ok, text) { msg.className = 'msg ' + (ok ? 'ok' : 'err'); msg.textContent = text; }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]; }); }
+    function paid(u) { return u.paid_until && new Date(u.paid_until) > new Date(); }
+
+    function rows(u) {
+      var fields = [
+        ['ID', u.id], ['Телефон', u.phone], ['Име', u.full_name], ['Пол', u.gender],
+        ['Ръст (см)', u.height_cm], ['Тегло (кг)', u.weight_kg],
+        ['Държава', u.country], ['Град', u.city], ['Село', u.village], ['Улица', u.street], ['Месторабота', u.workplace],
+        ['Платен до', u.paid_until], ['Създаден', u.created_at], ['Последен вход', u.last_login],
+        ['Флагнати разговори', u.flaggedCount || 0]
+      ];
+      return fields.map(function (f) { return '<tr><td class="k">' + esc(f[0]) + '</td><td>' + esc(f[1] != null ? f[1] : '—') + '</td></tr>'; }).join('');
+    }
+
+    function render(data) {
+      var u = data.user;
+      var isPaid = paid(u), isBlocked = !!u.is_blocked;
+      var html = '<div class="card"><h2>Профил</h2>' +
+        '<p>Статус: ' + (isPaid ? '<span class="badge ok">✅ Активен (платен)</span>' : '<span class="badge bad">❌ Неплатен/изтекъл</span>') +
+        ' &nbsp; ' + (isBlocked ? '<span class="badge bad">🚫 Блокиран</span>' : '<span class="badge ok">🔓 Активен</span>') + '</p>' +
+        '<table>' + rows(u) + '</table></div>';
+
+      // Действия
+      html += '<div class="card"><h2>Редактиране / действия</h2><div class="actions">' +
+        (isBlocked
+          ? '<button class="b-unblock" onclick="unblock()">🔓 Деблокирай</button>'
+          : '<button class="b-block" onclick="block()">🚫 Блокирай</button>') +
+        '<input id="months" type="number" min="1" value="12" style="width:70px"> ' +
+        '<button class="b-pay" onclick="markPaid()">💳 Маркирай платен (месеци)</button>' +
+        '<button class="b-unpay" onclick="markUnpaid()">⛔ Маркирай неплатен</button>' +
+        '</div><p class="muted">„Маркирай платен" удължава абонамента с избрания брой месеци (за тест без реално плащане).</p></div>';
+
+      // Разговори
+      if (data.contacts && data.contacts.length) {
+        html += '<div class="card"><h2>Контакти и разговори (' + data.contacts.length + ')</h2>';
+        data.contacts.forEach(function (c) {
+          html += '<div class="conv"><b>' + esc(c.fullName || c.customName || c.userId) + '</b> <span class="muted">' + esc([c.country, c.city].filter(Boolean).join(', ')) + (paid(c) ? '' : ' · неплатен') + (c.isBlocked ? ' · блокиран' : '') + '</span>';
+          (c.conversation || []).forEach(function (m) {
+            html += '<div class="line"><span class="from">' + esc(m.from) + '</span><span>' + esc(m.text) + '</span>' +
+              (m.editable ? '<button class="ed" onclick="editMsg(' + m.messageId + ', this)">✏️</button>' : '') + '</div>';
+          });
+          html += '</div>';
+        });
+        html += '</div>';
+      } else {
+        html += '<div class="card"><p class="muted">Няма контакти/разговори.</p></div>';
+      }
+      content.innerHTML = html;
+    }
+
+    function load() {
+      if (!userId) { content.innerHTML = '<p class="err msg ok">Липсва userId в адреса.</p>'; return; }
+      fetch('/api/admin/user-details/' + encodeURIComponent(userId), { headers: hdr(), credentials: 'same-origin' })
+        .then(function (r) { if (r.status === 401 || r.status === 403) throw new Error('Нямаш админ достъп (логни се в admin.html или ползвай админ IP).'); return r.json(); })
+        .then(function (d) { if (d.error) throw new Error(d.error); render(d); })
+        .catch(function (e) { content.innerHTML = '<p class="muted">⛔ ' + esc(e.message) + '</p>'; });
+    }
+
+    function act(url, body, okText) {
+      fetch(url, { method: 'POST', headers: hdr(), credentials: 'same-origin', body: JSON.stringify(body) })
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          if (!res.ok || res.d.error) { show(false, '⛔ ' + (res.d.error || 'грешка')); return; }
+          show(true, '✅ ' + okText); load();
+        })
+        .catch(function (e) { show(false, '⛔ ' + e.message); });
+    }
+    function block() { var reason = prompt('Причина за блокиране:', 'admin'); if (reason === null) return; act('/api/admin/block-users', { userIds: [Number(userId)], reason: reason }, 'Блокиран.'); }
+    function unblock() { act('/api/admin/unblock-user', { userId: Number(userId) }, 'Деблокиран.'); }
+    function markPaid() { var m = parseInt(document.getElementById('months').value, 10) || 1; act('/api/admin/update-payment', { userId: Number(userId), months: m }, 'Маркиран платен за ' + m + ' мес.'); }
+    function markUnpaid() { act('/api/admin/mark-unpaid', { userId: Number(userId) }, 'Маркиран неплатен.'); }
+    function editMsg(messageId, btn) {
+      var cur = btn.previousElementSibling ? btn.previousElementSibling.textContent : '';
+      var t = prompt('Нов текст на съобщението:', cur);
+      if (t === null) return;
+      act('/api/admin/edit-message', { messageId: messageId, newText: t }, 'Съобщението е редактирано.');
+    }
+
+    load();
+  </script>
+</body>
+</html>

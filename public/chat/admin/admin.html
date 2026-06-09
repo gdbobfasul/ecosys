@@ -195,20 +195,34 @@
             document.getElementById('loginScreen').classList.remove('hidden');
         }
 
-        // При зареждане: ако вече има token (от предишен вход) → покажи панела директно
-        // (и подстраниците работят, защото token-ът е в localStorage).
+        function showAdminPanel() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+            // менюто (admin-nav.js) праща ?view=flagged|all|messages
+            const view = (new URLSearchParams(location.search)).get('view');
+            loadPage(['flagged', 'all', 'messages'].indexOf(view) > -1 ? view : 'messages');
+        }
+
+        // При зареждане: ако има token (от предишен вход) → панела директно.
+        // Иначе → провери дали сме админ ПО IP (сървърът пуска /api/admin/* по
+        // ADMIN_ALLOWED_IPS whitelist). 401/403 → покажи логина; иначе → панела без
+        // логин (както останалата екосистема разпознава админа по IP).
         document.addEventListener('DOMContentLoaded', () => {
             const t = localStorage.getItem('token');
             if (t) {
                 // Модератор → главният панел (управление на потребители) е само за админ.
                 if (localStorage.getItem('role') === 'moderator') { window.location.href = 'admin-signals.html'; return; }
                 adminToken = t;
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('adminPanel').classList.remove('hidden');
-                // менюто (admin-nav.js) праща ?view=flagged|all|messages
-                const view = (new URLSearchParams(location.search)).get('view');
-                loadPage(['flagged', 'all', 'messages'].indexOf(view) > -1 ? view : 'messages');
+                showAdminPanel();
+                return;
             }
+            fetch(`${API_URL}/admin/all-users`).then(r => {
+                if (r.status === 401 || r.status === 403) {
+                    document.getElementById('loginScreen').classList.remove('hidden');
+                } else {
+                    showAdminPanel();
+                }
+            }).catch(() => { document.getElementById('loginScreen').classList.remove('hidden'); });
         });
 
         // Apply filters
@@ -430,7 +444,7 @@
 
         // View details (opens in new tab)
         function viewDetails(userId) {
-            window.open(`/admin-user-details.html?userId=${userId}`, '_blank');
+            window.open(`admin-user-details.html?userId=${userId}`, '_blank');
         }
 
         // Block user
