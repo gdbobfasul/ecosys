@@ -15,19 +15,9 @@ const fs = require('fs');
 const DB_TYPE = (process.env.ECO3_DB_TYPE || 'sqlite').toLowerCase();
 const IS_PG = DB_TYPE === 'postgresql' || DB_TYPE === 'postgres' || DB_TYPE === 'pg';
 
-// Превръща SQLite SQL към PostgreSQL в движение: ? → $1.. ; функции за дати ; AUTOINCREMENT.
-function toPg(sql) {
-  let i = 0;
-  let s = String(sql).replace(/\?/g, () => `$${++i}`);
-  s = s
-    .replace(/datetime\('now',\s*'-\s*(\d+)\s+hours?'\)/gi, "(now() - interval '$1 hours')")
-    .replace(/datetime\('now',\s*'-\s*(\d+)\s+days?'\)/gi, "(now() - interval '$1 days')")
-    .replace(/datetime\('now'\)/gi, 'now()')
-    .replace(/date\('now'\)/gi, "to_char(now(), 'YYYY-MM-DD')")
-    .replace(/INTEGER\s+PRIMARY\s+KEY\s+AUTOINCREMENT/gi, 'SERIAL PRIMARY KEY')
-    .replace(/\bAUTOINCREMENT\b/gi, '');
-  return s;
-}
+// БЕЗ преводач. Заявките идват ВЕЧЕ нативни за диалекта от queries/pg/* и queries/sqlite/*
+// (избор по ECO3_DB_TYPE) — PG: $1.. , now(), RETURNING ; SQLite: ?, datetime('now').
+// Схемата също е по диалект (schema-pg.sql / schema.sql), затова exec подава SQL директно.
 
 // ─────────────── SQLite (непроменено поведение) ───────────────
 function createSqlite() {
@@ -66,9 +56,9 @@ function createPg() {
     type: 'postgresql',
     path: process.env.ECO3_PG_DATABASE || 'eco3_sys_db',
     pool,
-    exec: async (sql) => { await pool.query(toPg(sql)); },
+    exec: async (sql) => { await pool.query(sql); },
     prepare: (sql) => {
-      const q = toPg(sql);
+      const q = sql;
       return {
         run: async (...p) => {
           // За обикновен INSERT добавяме RETURNING id (за lastInsertRowid като SQLite).
@@ -97,4 +87,4 @@ function createPg() {
 
 function createDb() { return IS_PG ? createPg() : createSqlite(); }
 
-module.exports = { createDb, IS_PG, DB_TYPE: IS_PG ? 'postgresql' : 'sqlite', toPg };
+module.exports = { createDb, IS_PG, DB_TYPE: IS_PG ? 'postgresql' : 'sqlite' };

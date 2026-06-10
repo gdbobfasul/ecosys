@@ -12,6 +12,7 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', 'configs', '.env') });
 const bcrypt = require('bcryptjs');
 const { envAccounts, roleForUsername } = require('./roles');
+const Q = require('./queries').admins;
 
 const DB_TYPE = (process.env.ECO3_DB_TYPE || 'sqlite').toLowerCase();
 const isPG = DB_TYPE === 'postgresql' || DB_TYPE === 'postgres' || DB_TYPE === 'pg';
@@ -29,13 +30,7 @@ function pgPool() {
   });
 }
 async function pgEnsureTable(pool) {
-  await pool.query(`CREATE TABLE IF NOT EXISTS eco3_admins (
-    id            SERIAL PRIMARY KEY,
-    username      TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    created_at    TIMESTAMP DEFAULT now(),
-    last_login    TIMESTAMP
-  )`);
+  await pool.query(Q.ENSURE_TABLE);
 }
 
 // ─────────────── SQLite ───────────────
@@ -45,13 +40,7 @@ function sqliteDb() {
   if (!path.isAbsolute(p)) p = path.join(__dirname, p);
   const db = new Database(p);
   db.pragma('journal_mode = WAL');
-  db.prepare(`CREATE TABLE IF NOT EXISTS eco3_admins (
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
-    username      TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    created_at    TEXT DEFAULT (datetime('now')),
-    last_login    TEXT
-  )`).run();
+  db.prepare(Q.ENSURE_TABLE).run();
   return db;
 }
 
@@ -64,19 +53,15 @@ async function seedAdminsAndMods() {
       await pgEnsureTable(pool);
       for (const a of envAccounts()) {
         const hash = bcrypt.hashSync(a.pass, 10);
-        await pool.query(
-          `INSERT INTO eco3_admins (username, password_hash) VALUES ($1, $2)
-           ON CONFLICT (username) DO UPDATE SET password_hash = EXCLUDED.password_hash`,
-          [a.user, hash]
-        );
+        await pool.query(Q.SEED_UPSERT, [a.user, hash]);
         n++;
       }
     } finally { await pool.end(); }
   } else {
     const db = sqliteDb();
-    const sel = db.prepare('SELECT id FROM eco3_admins WHERE username = ?');
-    const upd = db.prepare('UPDATE eco3_admins SET password_hash = ? WHERE username = ?');
-    const ins = db.prepare('INSERT INTO eco3_admins (username, password_hash) VALUES (?, ?)');
+    const sel = db.prepare(Q.SEED_SELECT);
+    const upd = db.prepare(Q.SEED_UPDATE);
+    const ins = db.prepare(Q.SEED_INSERT);
     for (const a of envAccounts()) {
       const hash = bcrypt.hashSync(a.pass, 10);
       if (sel.get(a.user)) upd.run(hash, a.user); else ins.run(hash, a.user);
@@ -95,20 +80,20 @@ async function verifyLogin(username, password) {
     const pool = pgPool();
     try {
       await pgEnsureTable(pool);
-      const { rows } = await pool.query('SELECT username, password_hash FROM eco3_admins WHERE username = $1', [u]);
+      const { rows } = await pool.query(Q.LOGIN_SELECT, [u]);
       const row = rows[0];
       if (row && bcrypt.compareSync(String(password || ''), row.password_hash)) {
-        await pool.query('UPDATE eco3_admins SET last_login = now() WHERE username = $1', [row.username]);
+        await pool.query(Q.LOGIN_TOUCH, [row.username]);
         return row.username;
       }
       return null;
     } finally { await pool.end(); }
   } else {
     const db = sqliteDb();
-    const row = db.prepare('SELECT username, password_hash FROM eco3_admins WHERE username = ?').get(u);
+    const row = db.prepare(Q.LOGIN_SELECT).get(u);
     let okUser = null;
     if (row && bcrypt.compareSync(String(password || ''), row.password_hash)) {
-      db.prepare("UPDATE eco3_admins SET last_login = datetime('now') WHERE username = ?").run(row.username);
+      db.prepare(Q.LOGIN_TOUCH).run(row.username);
       okUser = row.username;
     }
     db.close();

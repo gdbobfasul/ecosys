@@ -2,6 +2,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { validateOfferings, PUBLIC_OFFERING_SERVICES, SERVICE_CATEGORIES } = require('../utils/serviceCategories');
+const Q = require('../queries').profile; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 
 function createProfileRoutes(db) {
   const router = express.Router();
@@ -11,17 +12,7 @@ function createProfileRoutes(db) {
     try {
       const userId = req.user.id;
       
-      const user = await db.prepare(`
-        SELECT 
-          id, phone, full_name, gender, birth_date, height_cm, weight_kg,
-          country, city, village, street, workplace,
-          email, code_word, current_need, offerings, is_verified,
-          hide_phone, hide_names, paid_until, payment_amount, payment_currency,
-          last_profile_update, profile_edits_this_month, profile_edit_reset_date,
-          help_button_uses, help_button_reset_date,
-          location_latitude, location_longitude
-        FROM users WHERE id = ?
-      `).get(userId);
+      const user = await db.prepare(Q.GET_PROFILE).get(userId);
       
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
@@ -54,20 +45,13 @@ function createProfileRoutes(db) {
       const { full_name, phone, birth_date, city, location_latitude, location_longitude, profile_photo_url, working_hours } = req.body;
       
       // Get current user data
-      const user = await db.prepare(`
-        SELECT profile_edits_this_month, profile_edit_reset_date, is_static_object
-        FROM users WHERE id = ?
-      `).get(userId);
+      const user = await db.prepare(Q.PUT_GET_CURRENT).get(userId);
       
       // Static objects have restrictions - can only edit working_hours
       if (user.is_static_object) {
         if (working_hours !== undefined) {
           // Only allow working hours update for static objects
-          await db.prepare(`
-            UPDATE users 
-            SET working_hours = ?
-            WHERE id = ?
-          `).run(working_hours, userId);
+          await db.prepare(Q.PUT_UPDATE_WORKING_HOURS).run(working_hours, userId);
           
           return res.json({ 
             success: true,
@@ -111,18 +95,7 @@ function createProfileRoutes(db) {
       }
       
       // Update profile (normal users)
-      await db.prepare(`
-        UPDATE users 
-        SET 
-          full_name = COALESCE(?, full_name),
-          phone = COALESCE(?, phone),
-          birth_date = COALESCE(?, birth_date),
-          city = COALESCE(?, city),
-          last_profile_update = datetime('now'),
-          profile_edits_this_month = ?,
-          profile_edit_reset_date = ?
-        WHERE id = ?
-      `).run(
+      await db.prepare(Q.PUT_UPDATE_PROFILE).run(
         full_name || null,
         phone || null,
         birth_date || null,
@@ -155,7 +128,7 @@ function createProfileRoutes(db) {
       }
       
       // Get current password hash
-      const user = await db.prepare('SELECT password_hash FROM users WHERE id = ?').get(userId);
+      const user = await db.prepare(Q.GET_PASSWORD_HASH).get(userId);
       
       // Verify current password
       const validPassword = await bcrypt.compare(current_password, user.password_hash);
@@ -167,7 +140,7 @@ function createProfileRoutes(db) {
       const newHash = await bcrypt.hash(new_password, 10);
       
       // Update password
-      await db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(newHash, userId);
+      await db.prepare(Q.UPDATE_PASSWORD).run(newHash, userId);
       
       res.json({ success: true });
       
@@ -187,7 +160,7 @@ function createProfileRoutes(db) {
         return res.status(400).json({ error: 'Code word must be at least 3 characters' });
       }
       
-      await db.prepare('UPDATE users SET code_word = ? WHERE id = ?').run(code_word, userId);
+      await db.prepare(Q.UPDATE_CODE_WORD).run(code_word, userId);
       
       res.json({ success: true });
       
@@ -212,7 +185,7 @@ function createProfileRoutes(db) {
         }
       }
       
-      await db.prepare('UPDATE users SET current_need = ? WHERE id = ?').run(current_need || null, userId);
+      await db.prepare(Q.UPDATE_NEED).run(current_need || null, userId);
       
       res.json({ success: true });
       
@@ -229,7 +202,7 @@ function createProfileRoutes(db) {
       const { offerings } = req.body;
       
       // Get user verification status
-      const user = await db.prepare('SELECT is_verified FROM users WHERE id = ?').get(userId);
+      const user = await db.prepare(Q.GET_IS_VERIFIED).get(userId);
       
       // Check if user is verified
       if (user.is_verified === 1) {
@@ -246,7 +219,7 @@ function createProfileRoutes(db) {
         return res.status(400).json({ error: validation.error });
       }
       
-      await db.prepare('UPDATE users SET offerings = ? WHERE id = ?').run(offerings || null, userId);
+      await db.prepare(Q.UPDATE_OFFERINGS).run(offerings || null, userId);
       
       res.json({ success: true });
       
@@ -267,7 +240,7 @@ function createProfileRoutes(db) {
         return res.status(400).json({ error: 'Invalid email format' });
       }
       
-      await db.prepare('UPDATE users SET email = ? WHERE id = ?').run(email || null, userId);
+      await db.prepare(Q.UPDATE_EMAIL).run(email || null, userId);
       
       res.json({ success: true });
       
@@ -283,7 +256,7 @@ function createProfileRoutes(db) {
       const userId = req.user.id;
       const { hide_phone } = req.body;
       
-      await db.prepare('UPDATE users SET hide_phone = ? WHERE id = ?').run(hide_phone ? 1 : 0, userId);
+      await db.prepare(Q.UPDATE_HIDE_PHONE).run(hide_phone ? 1 : 0, userId);
       
       res.json({ success: true });
       
@@ -299,7 +272,7 @@ function createProfileRoutes(db) {
       const userId = req.user.id;
       const { hide_names } = req.body;
       
-      await db.prepare('UPDATE users SET hide_names = ? WHERE id = ?').run(hide_names ? 1 : 0, userId);
+      await db.prepare(Q.UPDATE_HIDE_NAMES).run(hide_names ? 1 : 0, userId);
       
       res.json({ success: true });
       

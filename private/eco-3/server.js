@@ -17,6 +17,7 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
 const { createDb } = require('./db');  // DB адаптер — SQLite или PostgreSQL по ECO3_DB_TYPE
+const Q = require('./queries').server; // Явни SQL набори (PG/SQLite) — БЕЗ runtime преводач
 
 // Главният домейн от ЕДИННАТА конфигурация (private/configs/domains.conf) — нула хардкод.
 function readMainDomain() {
@@ -64,7 +65,7 @@ async function initDatabase() {
 async function dailyCleanup() {
     if (!db) return;
     try {
-        const deleted = await db.prepare("DELETE FROM eco3_uniqueness WHERE date < date('now')").run();
+        const deleted = await db.prepare(Q.CLEANUP_OLD_UNIQUENESS).run();
         if (deleted.changes > 0) {
             logRequest('CLEANUP', `Removed ${deleted.changes} old uniqueness entries`);
         }
@@ -280,7 +281,7 @@ app.post('/create-payment', async (req, res) => {
         
         // Log to DB
         if (db) {
-            await db.prepare("INSERT INTO eco3_stats (event_type, details, amount_eur) VALUES (?, ?, ?)").run(
+            await db.prepare(Q.STATS_INSERT_AMOUNT).run(
                 'payment_created', `${budget}/${duration}min`, amount / 100
             );
         }
@@ -308,7 +309,7 @@ async function googleUsageToday() {
     if (!db) return 0;
     try {
         const today = new Date().toISOString().slice(0, 10);
-        const row = await db.prepare("SELECT COALESCE(SUM(calls),0) AS c FROM eco3_google_usage WHERE date = ?").get(today);
+        const row = await db.prepare(Q.GOOGLE_USAGE_TODAY).get(today);
         return row ? row.c : 0;
     } catch { return 0; }
 }
@@ -316,7 +317,7 @@ async function googleUsageInc() {
     if (!db) return;
     try {
         const today = new Date().toISOString().slice(0, 10);
-        await db.prepare("INSERT INTO eco3_google_usage (date, calls) VALUES (?, 1) ON CONFLICT(date) DO UPDATE SET calls = calls + 1").run(today);
+        await db.prepare(Q.GOOGLE_USAGE_INC).run(today);
     } catch {}
 }
 // ISO език → Google `lr` (ограничава резултатите до езика на клиента; икон./стандарт)
@@ -387,7 +388,7 @@ async function claudeSearch(query, num, lang) {
         results = (results || []).slice(0, n).map(r => ({
             title: r.title || '', snippet: r.snippet || '', link: r.link || r.url || '', source: r.source || ''
         })).filter(r => r.link || r.title);
-        if (db) { try { await db.prepare("INSERT INTO eco3_stats (event_type, details) VALUES (?, ?)").run('search_claude', `${results.length} results`); } catch {} }
+        if (db) { try { await db.prepare(Q.STATS_INSERT).run('search_claude', `${results.length} results`); } catch {} }
         return { results, provider: 'claude' };
     } catch (err) {
         logRequest('ERROR', `Claude search: ${err.message}`);
@@ -452,7 +453,7 @@ app.post('/generate', eco3RequireLogin, async (req, res) => {
         await new Promise(r => setTimeout(r, 300 + Math.random() * 500));
         
         if (db) {
-            await db.prepare("INSERT INTO eco3_stats (event_type, details) VALUES (?, ?)").run('generate_test', agent);
+            await db.prepare(Q.STATS_INSERT).run('generate_test', agent);
         }
         return res.json({ content: [{ type: 'text', text: mockText }], usage: { input_tokens: 0, output_tokens: 0 } });
     }
@@ -487,7 +488,7 @@ app.post('/generate', eco3RequireLogin, async (req, res) => {
         
         // Log to DB
         if (db) {
-            await db.prepare("INSERT INTO eco3_stats (event_type, details) VALUES (?, ?)").run(
+            await db.prepare(Q.STATS_INSERT).run(
                 'generate', `${data.usage?.output_tokens || 0} tokens`
             );
         }
@@ -509,9 +510,7 @@ app.post('/history', async (req, res) => {
     try {
         const { topic, category, language, budget_tier, duration_min, audience, tone, session_id } = req.body;
         const ip = getClientIP(req);
-        const stmt = db.prepare(
-            "INSERT INTO eco3_search_history (topic, category, language, budget_tier, duration_min, audience, tone, session_id, ip_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        );
+        const stmt = db.prepare(Q.HISTORY_INSERT);
         const r = await stmt.run(topic, category, language || 'bg', budget_tier || 'economy', duration_min || 10, audience || 'adult', tone || 'original', session_id || '', ip);
         res.json({ ok: true, id: r.lastInsertRowid });
     } catch (err) {
@@ -527,9 +526,9 @@ app.get('/history', async (req, res) => {
         const cat = req.query.category;
         let rows;
         if (cat) {
-            rows = await db.prepare("SELECT * FROM eco3_search_history WHERE category = ? ORDER BY created_at DESC LIMIT ?").all(cat, limit);
+            rows = await db.prepare(Q.HISTORY_LIST_BY_CAT).all(cat, limit);
         } else {
-            rows = await db.prepare("SELECT * FROM eco3_search_history ORDER BY created_at DESC LIMIT ?").all(limit);
+            rows = await db.prepare(Q.HISTORY_LIST_ALL).all(limit);
         }
         res.json({ history: rows });
     } catch (err) {
@@ -542,9 +541,7 @@ app.post('/results', async (req, res) => {
     if (!db) return res.status(503).json({ error: 'Database not connected' });
     try {
         const { topic, category, director_output, architect_output, executor_output, language, budget_tier, duration_min, audience, tone, session_id } = req.body;
-        const stmt = db.prepare(
-            "INSERT INTO eco3_results (topic, category, director_output, architect_output, executor_output, language, budget_tier, duration_min, audience, tone, session_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        );
+        const stmt = db.prepare(Q.RESULTS_INSERT);
         const r = await stmt.run(topic, category, director_output || '', architect_output || '', executor_output || '', language || 'bg', budget_tier || 'economy', duration_min || 10, audience || 'adult', tone || 'original', session_id || '');
         res.json({ ok: true, id: r.lastInsertRowid });
     } catch (err) {
@@ -560,9 +557,9 @@ app.get('/results', async (req, res) => {
         const cat = req.query.category;
         let rows;
         if (cat) {
-            rows = await db.prepare("SELECT id, topic, category, language, budget_tier, duration_min, created_at FROM eco3_results WHERE category = ? ORDER BY created_at DESC LIMIT ?").all(cat, limit);
+            rows = await db.prepare(Q.RESULTS_LIST_BY_CAT).all(cat, limit);
         } else {
-            rows = await db.prepare("SELECT id, topic, category, language, budget_tier, duration_min, created_at FROM eco3_results ORDER BY created_at DESC LIMIT ?").all(limit);
+            rows = await db.prepare(Q.RESULTS_LIST_ALL).all(limit);
         }
         res.json({ results: rows });
     } catch (err) {
@@ -574,11 +571,11 @@ app.get('/results', async (req, res) => {
 app.get('/results/:id', async (req, res) => {
     if (!db) return res.status(503).json({ error: 'Database not connected' });
     try {
-        const row = await db.prepare("SELECT * FROM eco3_results WHERE id = ?").get(req.params.id);
+        const row = await db.prepare(Q.RESULTS_GET_BY_ID).get(req.params.id);
         if (!row) return res.status(404).json({ error: 'Not found' });
 
         // Count resale
-        await db.prepare("UPDATE eco3_results SET resale_count = resale_count + 1 WHERE id = ?").run(req.params.id);
+        await db.prepare(Q.RESULTS_INC_RESALE).run(req.params.id);
         res.json(row);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -591,9 +588,7 @@ app.post('/uniqueness/check', async (req, res) => {
     try {
         const { title, source, link } = req.body;
         const today = new Date().toISOString().slice(0, 10);
-        const row = await db.prepare(
-            "SELECT id FROM eco3_uniqueness WHERE date = ? AND (title = ? OR link = ?) LIMIT 1"
-        ).get(today, title || '', link || '');
+        const row = await db.prepare(Q.UNIQUENESS_CHECK).get(today, title || '', link || '');
         res.json({ exists: !!row });
     } catch (err) {
         res.json({ exists: false });
@@ -606,10 +601,10 @@ app.post('/uniqueness/add', async (req, res) => {
     try {
         const { title, source, link, session_id } = req.body;
         const today = new Date().toISOString().slice(0, 10);
-        await db.prepare("INSERT INTO eco3_uniqueness (date, title, source, link, session_id) VALUES (?, ?, ?, ?, ?)").run(
+        await db.prepare(Q.UNIQUENESS_INSERT).run(
             today, title || '', source || '', link || '', session_id || ''
         );
-        const count = await db.prepare("SELECT COUNT(*) as c FROM eco3_uniqueness WHERE date = ?").get(today);
+        const count = await db.prepare(Q.UNIQUENESS_COUNT).get(today);
         res.json({ ok: true, todayCount: Number(count.c) });
     } catch (err) {
         res.json({ ok: false, error: err.message });
@@ -621,7 +616,7 @@ app.get('/uniqueness/count', async (req, res) => {
     if (!db) return res.json({ count: 0 });
     try {
         const today = new Date().toISOString().slice(0, 10);
-        const count = await db.prepare("SELECT COUNT(*) as c FROM eco3_uniqueness WHERE date = ?").get(today);
+        const count = await db.prepare(Q.UNIQUENESS_COUNT).get(today);
         res.json({ count: Number(count.c), date: today });
     } catch (err) {
         res.json({ count: 0 });
@@ -634,12 +629,12 @@ app.get('/uniqueness/count', async (req, res) => {
 app.get('/admin/stats', adminCheck, async (req, res) => {
     if (!db) return res.json({ error: 'No database', totalRequests: 0, revenue: '0.00' });
     try {
-        const total = await db.prepare("SELECT COUNT(*) as c FROM eco3_stats WHERE created_at > datetime('now', '-24 hours')").get();
-        const generates = await db.prepare("SELECT COUNT(*) as c FROM eco3_stats WHERE event_type='generate' AND created_at > datetime('now', '-24 hours')").get();
-        const revenue = await db.prepare("SELECT COALESCE(SUM(amount_eur), 0) as s FROM eco3_stats WHERE event_type='payment_created' AND created_at > datetime('now', '-24 hours')").get();
-        const historyCount = await db.prepare("SELECT COUNT(*) as c FROM eco3_search_history").get();
-        const resultsCount = await db.prepare("SELECT COUNT(*) as c FROM eco3_results").get();
-        const uniqToday = await db.prepare("SELECT COUNT(*) as c FROM eco3_uniqueness WHERE date = date('now')").get();
+        const total = await db.prepare(Q.STATS_TOTAL_24H).get();
+        const generates = await db.prepare(Q.STATS_GENERATES_24H).get();
+        const revenue = await db.prepare(Q.STATS_REVENUE_24H).get();
+        const historyCount = await db.prepare(Q.HISTORY_COUNT).get();
+        const resultsCount = await db.prepare(Q.RESULTS_COUNT).get();
+        const uniqToday = await db.prepare(Q.UNIQUENESS_COUNT_TODAY).get();
 
         res.json({
             totalRequests: Number(total.c),
@@ -663,7 +658,7 @@ app.get('/admin/db-status', adminCheck, async (req, res) => {
         const names = await db.tableNames();
         const info = {};
         for (const name of names) {
-            const c = await db.prepare(`SELECT COUNT(*) as c FROM ${name}`).get();
+            const c = await db.prepare(Q.TABLE_COUNT(name)).get();
             info[name] = Number(c.c);
         }
         res.json({ connected: true, type: db.type, path: DB_PATH, tables: info });

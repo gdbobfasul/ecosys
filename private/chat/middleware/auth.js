@@ -1,5 +1,6 @@
 // Version: 1.0172
 const { isStaff } = require('../roles');
+const Q = require('../queries').middlewareAuth;
 
 function authenticate(db) {
   return async (req, res, next) => {
@@ -12,16 +13,14 @@ function authenticate(db) {
 
     // Сравнението на изтичането е в JS (а не в SQL), за да работи И на SQLite, И на
     // PostgreSQL: expires_at се пази като TEXT (ISO), а `text > datetime()` гърми на PG.
-    const session = await db.prepare(`
-      SELECT user_id, device_type, expires_at FROM sessions WHERE token = ?
-    `).get(token);
+    const session = await db.prepare(Q.SESSION_FIND_BY_TOKEN).get(token);
 
     if (!session || new Date(session.expires_at) <= new Date()) {
       return res.status(401).json({ error: 'Invalid or expired token' });
     }
 
     // Get user details
-    const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(session.user_id);
+    const user = await db.prepare(Q.USER_FIND_BY_ID).get(session.user_id);
 
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
@@ -57,7 +56,7 @@ function authenticateAdmin(db) {
     }
 
     // Simple admin token check (in production, use proper sessions)
-    const adminSession = await db.prepare('SELECT username FROM admin_users WHERE password_hash = ?').get(token);
+    const adminSession = await db.prepare(Q.ADMIN_FIND_BY_PASSWORD).get(token);
 
     if (!adminSession) {
       return res.status(401).json({ error: 'Admin authentication failed' });

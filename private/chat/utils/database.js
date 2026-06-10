@@ -1,11 +1,11 @@
 // Version: 1.0172
 // Database Adapter - Supports both SQLite and PostgreSQL
-// Switches based on DB_TYPE environment variable
+// Switches based on CHAT_DB_TYPE environment variable (app-specific, не generic)
 
 const fs = require('fs');
 const path = require('path');
 
-const DB_TYPE = process.env.DB_TYPE || 'sqlite'; // 'sqlite' or 'postgresql'
+const DB_TYPE = process.env.CHAT_DB_TYPE || 'sqlite'; // 'sqlite' or 'postgresql'
 const TEST_MODE = process.env.TEST_MODE === 'true';
 
 let db;
@@ -13,7 +13,7 @@ let dbType;
 
 /**
  * Initialize database connection
- * Automatically selects SQLite or PostgreSQL based on DB_TYPE
+ * Automatically selects SQLite or PostgreSQL based on CHAT_DB_TYPE
  */
 function initializeDatabase() {
   if (DB_TYPE === 'postgresql') {
@@ -33,7 +33,7 @@ function initializeSQLite() {
   
   const DB_FILE = TEST_MODE
     ? (process.env.TEST_DB || 'database/amschat_test.db')
-    : (process.env.SQLITE_DB_FILE || 'database/amschat.db');
+    : (process.env.CHAT_SQLITE_DB_FILE || 'database/amschat.db');
   
   console.log(`📦 Initializing SQLite database: ${DB_FILE}`);
   
@@ -84,44 +84,21 @@ function initializePostgreSQL() {
   });
 
   console.log(`🐘 Initializing PostgreSQL database: ${PG_DATABASE}`);
-  
-  // Превръща SQLite-синтаксиса (с който е писан кодът на chat) към PostgreSQL:
-  //   ?  →  $1, $2, …            (PG не разбира ? плейсхолдъри → иначе 42601 syntax error)
-  //   datetime('now') → now()  ·  date('now') → to_char(now(),'YYYY-MM-DD')
-  const pgify = (sql) => {
-    let s = String(sql);
-    const orIgnore = /insert\s+or\s+(ignore|replace)\s+into/i.test(s);
-    s = s
-      .replace(/insert\s+or\s+(?:ignore|replace)\s+into/gi, 'INSERT INTO')
-      // GROUP_CONCAT(x, sep) → string_agg(x, sep) ; GROUP_CONCAT(x) → string_agg(x, ',')
-      .replace(/GROUP_CONCAT\(\s*([^,()]+?)\s*,\s*('[^']*'|"[^"]*")\s*\)/gi, 'string_agg($1, $2)')
-      .replace(/GROUP_CONCAT\(\s*([^,()]+?)\s*\)/gi, "string_agg($1, ',')")
-      // datetime/date — и с единични, и с двойни кавички ('now' / "now")
-      // SQLite datetime/date('now' [, '±N unit']) → PG, връщайки TEXT във формата на
-      // схемата ('YYYY-MM-DD HH24:MI:SS'). КЛЮЧОВО: НЕ връщаме now() (timestamptz), защото
-      // всички темпорални колони са TEXT → присвояване timestamptz→TEXT гърми (42804, точно
-      // бъга по login/messages). to_char дава TEXT; сравненията стават текстово-лексикографски,
-      // а понеже форматът е еднакъв и сортируем — са хронологично верни.
-      .replace(/datetime\(\s*['"]now['"]\s*,\s*['"]\s*([+-])\s*(\d+)\s+(second|minute|hour|day|week|month|year)s?\s*['"]\s*\)/gi,
-        (_m, sign, n, unit) => `to_char(((now() AT TIME ZONE 'UTC') ${sign} interval '${n} ${unit}'), 'YYYY-MM-DD HH24:MI:SS')`)
-      .replace(/datetime\(\s*['"]now['"]\s*\)/gi, "to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD HH24:MI:SS')")
-      .replace(/date\(\s*['"]now['"]\s*\)/gi, "to_char((now() AT TIME ZONE 'UTC'), 'YYYY-MM-DD')");
-    if (orIgnore && !/on\s+conflict/i.test(s)) s = s.replace(/;?\s*$/, '') + ' ON CONFLICT DO NOTHING';
-    let i = 0;
-    s = s.replace(/\?/g, () => `$${++i}`);  // ПОСЛЕДНО: ? → $1, $2 …
-    return s;
-  };
 
-  // Wrap pool to match SQLite API (? и датите се превръщат за PG)
+  // БЕЗ преводач. Заявките идват ВЕЧЕ нативни за PostgreSQL от queries/pg/* (избрани по
+  // CHAT_DB_TYPE) — $1,$2,… плейсхолдъри, to_char(now()…), ON CONFLICT, RETURNING id. SQLite
+  // пътят ползва queries/sqlite/* с „?". Затова тук подаваме SQL директно към pool.query.
+
+  // Wrap pool to match SQLite API (.get/.all/.run; параметрите се подават позиционно)
   db = {
     pool,
 
-    // Execute single query (like SQLite exec)
-    exec: async (sql) => { await pool.query(pgify(sql)); },
+    // Execute single query (like SQLite exec) — приема и multi-statement схема (native PG)
+    exec: async (sql) => { await pool.query(sql); },
 
     // Prepare statement (like SQLite prepare)
     prepare: (sql) => {
-      const q = pgify(sql);
+      const q = sql;
       return {
         run: async (...params) => {
           // INSERT → добави RETURNING id (за lastInsertRowid като SQLite).
@@ -203,7 +180,7 @@ async function fallbackToSQLite() {
   }
   
   // Force SQLite mode
-  process.env.DB_TYPE = 'sqlite';
+  process.env.CHAT_DB_TYPE = 'sqlite';
   return initializeDatabase();
 }
 

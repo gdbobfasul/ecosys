@@ -14,6 +14,7 @@ const express = require('express');
 
 module.exports = function createTasksRoutes(db) {
   const router = express.Router();
+  const Q = require('../queries').tasks; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
   const { takeFee } = require('../utils/taskFees');
   const TYPES = ['local_hands', 'verify', 'other'];
   // Stripe — за реалното плащане на таксата при free_mode=false (ползва конфига на чата).
@@ -27,10 +28,7 @@ module.exports = function createTasksRoutes(db) {
       if (!TYPES.includes(b.type)) return res.status(400).json({ error: 'bad_type' });
       if (!b.country || !String(b.country).trim()) return res.status(400).json({ error: 'no_country', message: 'Държавата е задължителна.' });
       if (!b.title || !String(b.title).trim()) return res.status(400).json({ error: 'no_title', message: 'Заглавието е задължително.' });
-      const r = await db.prepare(
-        `INSERT INTO tasks (author_phone, type, country, city, title, content, reward_amount, reward_currency)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-      ).run(req.phone, b.type, String(b.country).trim(), b.city || null, String(b.title).trim(),
+      const r = await db.prepare(Q.CREATE_DRAFT).run(req.phone, b.type, String(b.country).trim(), b.city || null, String(b.title).trim(),
         b.content || '', b.reward_amount != null ? b.reward_amount : null, b.reward_currency || 'EUR');
       res.status(201).json({ id: r.lastInsertRowid });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
@@ -39,16 +37,12 @@ module.exports = function createTasksRoutes(db) {
   // ── редактирай чернова (само автор, само draft) ──
   router.put('/:id', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT author_phone, status FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_AUTHOR_STATUS).get(req.params.id);
       if (!t) return res.status(404).json({ error: 'not_found' });
       if (t.author_phone !== req.phone) return res.status(403).json({ error: 'not_owner' });
       if (t.status !== 'draft') return res.status(400).json({ error: 'not_editable', message: 'Публикувана задача не се редактира.' });
       const b = req.body || {};
-      await db.prepare(
-        `UPDATE tasks SET type = COALESCE(?, type), country = COALESCE(?, country), city = ?, title = COALESCE(?, title),
-                content = COALESCE(?, content), reward_amount = ?, reward_currency = COALESCE(?, reward_currency)
-         WHERE id = ?`
-      ).run(TYPES.includes(b.type) ? b.type : null, b.country || null, b.city || null, b.title || null,
+      await db.prepare(Q.UPDATE_DRAFT).run(TYPES.includes(b.type) ? b.type : null, b.country || null, b.city || null, b.title || null,
         b.content != null ? b.content : null, b.reward_amount != null ? b.reward_amount : null, b.reward_currency || null, req.params.id);
       res.json({ ok: true });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
@@ -57,11 +51,11 @@ module.exports = function createTasksRoutes(db) {
   // ── публикувай (draft → published; вече не се пипа) ──
   router.post('/:id/publish', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT author_phone, status FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_AUTHOR_STATUS).get(req.params.id);
       if (!t) return res.status(404).json({ error: 'not_found' });
       if (t.author_phone !== req.phone) return res.status(403).json({ error: 'not_owner' });
       if (t.status !== 'draft') return res.status(400).json({ error: 'already_published' });
-      await db.prepare("UPDATE tasks SET status = 'published', published_at = now() WHERE id = ?").run(req.params.id);
+      await db.prepare(Q.PUBLISH).run(req.params.id);
       res.json({ ok: true });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
   });
@@ -69,13 +63,11 @@ module.exports = function createTasksRoutes(db) {
   // ── списък (публикувани + чернови като „в подготовка" БЕЗ автора) ──
   router.get('/', async (req, res) => {
     try {
-      const where = ["status IN ('draft','published','taken','in_progress','done')"]; const params = [];
-      if (req.query.type && TYPES.includes(req.query.type)) { where.push('type = ?'); params.push(req.query.type); }
-      if (req.query.country) { where.push('country ILIKE ?'); params.push('%' + req.query.country.trim() + '%'); }
-      const rows = await db.prepare(
-        `SELECT id, type, country, city, title, content, reward_amount, reward_currency, status, created_at, published_at
-         FROM tasks WHERE ${where.join(' AND ')} ORDER BY (status='published') DESC, created_at DESC LIMIT 200`
-      ).all(...params);
+      const { sql, params } = Q.buildList({
+        type: (req.query.type && TYPES.includes(req.query.type)) ? req.query.type : null,
+        country: req.query.country || null,
+      });
+      const rows = await db.prepare(sql).all(...params);
       // черновите се показват като „в подготовка" — без автора, без хващане
       const out = rows.map(r => Object.assign({}, r, r.status === 'draft' ? { status: 'preparing' } : {}));
       res.json({ tasks: out });
@@ -85,7 +77,7 @@ module.exports = function createTasksRoutes(db) {
   // ── детайл ──
   router.get('/:id', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT * FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_FULL).get(req.params.id);
       if (!t) return res.status(404).json({ error: 'not_found' });
       const mine = (t.author_phone === req.phone), isExec = (t.executor_phone === req.phone);
       // черновата на ДРУГ → само съдържание, без автор/такси
@@ -102,7 +94,7 @@ module.exports = function createTasksRoutes(db) {
   // ── ХВАНИ (изпълнител; published → taken; плаща такса към нас; авторът не може да откаже) ──
   router.post('/:id/take', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT author_phone, status, country FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_AUTHOR_STATUS_COUNTRY).get(req.params.id);
       if (!t) return res.status(404).json({ error: 'not_found' });
       if (t.status !== 'published') return res.status(400).json({ error: 'not_available', message: 'Задачата не е свободна за хващане.' });
       if (t.author_phone === req.phone) return res.status(400).json({ error: 'own_task', message: 'Не можеш да хванеш своя задача.' });
@@ -111,9 +103,7 @@ module.exports = function createTasksRoutes(db) {
         // изисква се плащане на таксата → НЕ хващаме още; клиентът минава през pay-fee + confirm-fee
         return res.json({ ok: false, payment_required: true, fee });
       }
-      await db.prepare(
-        "UPDATE tasks SET status = 'taken', executor_phone = ?, take_fee_amount = ?, take_fee_currency = ?, taken_at = now() WHERE id = ?"
-      ).run(req.phone, fee.amount, fee.currency, req.params.id);
+      await db.prepare(Q.TAKE).run(req.phone, fee.amount, fee.currency, req.params.id);
       res.json({ ok: true, fee });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
   });
@@ -121,7 +111,7 @@ module.exports = function createTasksRoutes(db) {
   // ── РЕАЛНО плащане на таксата (при free_mode=false): създай Stripe PaymentIntent ──
   router.post('/:id/pay-fee', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT author_phone, status, country FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_AUTHOR_STATUS_COUNTRY).get(req.params.id);
       if (!t) return res.status(404).json({ error: 'not_found' });
       if (t.status !== 'published') return res.status(400).json({ error: 'not_available' });
       if (t.author_phone === req.phone) return res.status(400).json({ error: 'own_task' });
@@ -133,7 +123,7 @@ module.exports = function createTasksRoutes(db) {
         currency: (fee.currency || 'EUR').toLowerCase(),
         metadata: { task_id: String(req.params.id), executor: req.phone, kind: 'task_take_fee' },
       });
-      await db.prepare('UPDATE tasks SET take_fee_intent = ? WHERE id = ?').run(intent.id, req.params.id);
+      await db.prepare(Q.SET_FEE_INTENT).run(intent.id, req.params.id);
       res.json({ clientSecret: intent.client_secret, publishableKey: STRIPE_CFG.publishableKey, amount: fee.amount, currency: fee.currency });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
   });
@@ -141,7 +131,7 @@ module.exports = function createTasksRoutes(db) {
   // ── потвърди платената такса → ХВАНИ задачата ──
   router.post('/:id/confirm-fee', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT author_phone, status, country, take_fee_intent FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_AUTHOR_STATUS_COUNTRY_INTENT).get(req.params.id);
       if (!t) return res.status(404).json({ error: 'not_found' });
       if (t.status !== 'published') return res.status(400).json({ error: 'not_available' });
       if (t.author_phone === req.phone) return res.status(400).json({ error: 'own_task' });
@@ -149,9 +139,7 @@ module.exports = function createTasksRoutes(db) {
       const pi = await stripe.paymentIntents.retrieve(t.take_fee_intent);
       if (!pi || pi.status !== 'succeeded') return res.status(402).json({ error: 'not_paid', message: 'Плащането не е потвърдено.' });
       const fee = takeFee(t.country);
-      await db.prepare(
-        "UPDATE tasks SET status = 'taken', executor_phone = ?, take_fee_amount = ?, take_fee_currency = ?, take_fee_paid = TRUE, taken_at = now() WHERE id = ?"
-      ).run(req.phone, fee.amount, fee.currency, req.params.id);
+      await db.prepare(Q.TAKE_PAID).run(req.phone, fee.amount, fee.currency, req.params.id);
       res.json({ ok: true });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
   });
@@ -159,20 +147,20 @@ module.exports = function createTasksRoutes(db) {
   // ── чат по задачата (само автор/изпълнител; спира при заключване) ──
   router.get('/:id/messages', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT author_phone, executor_phone FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_PARTIES).get(req.params.id);
       if (!t || (t.author_phone !== req.phone && t.executor_phone !== req.phone)) return res.status(403).json({ error: 'forbidden' });
-      const msgs = await db.prepare('SELECT sender_phone, text, created_at FROM task_messages WHERE task_id = ? ORDER BY created_at ASC LIMIT 500').all(req.params.id);
+      const msgs = await db.prepare(Q.GET_MESSAGES).all(req.params.id);
       res.json({ messages: msgs.map(m => ({ text: m.text, created_at: m.created_at, sent: m.sender_phone === req.phone })) });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
   });
   router.post('/:id/messages', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT author_phone, executor_phone, status, chat_locked FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_PARTIES_FOR_CHAT).get(req.params.id);
       if (!t || (t.author_phone !== req.phone && t.executor_phone !== req.phone)) return res.status(403).json({ error: 'forbidden' });
       if (t.chat_locked) return res.status(400).json({ error: 'chat_locked', message: 'Чатът е заключен — изпълнението е започнало.' });
       const text = String((req.body && req.body.text) || '').trim();
       if (!text) return res.status(400).json({ error: 'empty' });
-      await db.prepare('INSERT INTO task_messages (task_id, sender_phone, text) VALUES (?, ?, ?)').run(req.params.id, req.phone, text.slice(0, 4000));
+      await db.prepare(Q.INSERT_MESSAGE).run(req.params.id, req.phone, text.slice(0, 4000));
       res.json({ ok: true });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
   });
@@ -180,11 +168,11 @@ module.exports = function createTasksRoutes(db) {
   // ── ЗАКЛЮЧИ чата → започва изпълнение (изпълнител; taken → in_progress) ──
   router.post('/:id/lock', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT executor_phone, status FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_EXECUTOR_STATUS).get(req.params.id);
       if (!t) return res.status(404).json({ error: 'not_found' });
       if (t.executor_phone !== req.phone) return res.status(403).json({ error: 'not_executor' });
       if (t.status !== 'taken') return res.status(400).json({ error: 'bad_status' });
-      await db.prepare("UPDATE tasks SET status = 'in_progress', chat_locked = TRUE WHERE id = ?").run(req.params.id);
+      await db.prepare(Q.LOCK).run(req.params.id);
       res.json({ ok: true });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
   });
@@ -192,12 +180,12 @@ module.exports = function createTasksRoutes(db) {
   // ── ИЗПЪЛНЕНО с доклад + снимка (изпълнител; in_progress → done) ──
   router.post('/:id/done', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT executor_phone, status FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_EXECUTOR_STATUS).get(req.params.id);
       if (!t) return res.status(404).json({ error: 'not_found' });
       if (t.executor_phone !== req.phone) return res.status(403).json({ error: 'not_executor' });
       if (t.status !== 'in_progress') return res.status(400).json({ error: 'bad_status' });
       const b = req.body || {};
-      await db.prepare("UPDATE tasks SET status = 'done', done_report = ?, done_photo = ?, done_at = now() WHERE id = ?")
+      await db.prepare(Q.DONE)
         .run(String(b.report || '').slice(0, 8000), b.photo || null, req.params.id);
       res.json({ ok: true });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
@@ -206,11 +194,11 @@ module.exports = function createTasksRoutes(db) {
   // ── авторът потвърждава, че е платил наградата (done → paid) ──
   router.post('/:id/confirm-paid', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT author_phone, status FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_AUTHOR_STATUS).get(req.params.id);
       if (!t) return res.status(404).json({ error: 'not_found' });
       if (t.author_phone !== req.phone) return res.status(403).json({ error: 'not_owner' });
       if (t.status !== 'done') return res.status(400).json({ error: 'bad_status' });
-      await db.prepare("UPDATE tasks SET status = 'paid', paid_at = now(), payment_disputed = FALSE WHERE id = ?").run(req.params.id);
+      await db.prepare(Q.CONFIRM_PAID).run(req.params.id);
       res.json({ ok: true });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
   });
@@ -218,11 +206,11 @@ module.exports = function createTasksRoutes(db) {
   // ── изпълнителят докладва, че авторът НЕ е платил → за бан (админ) ──
   router.post('/:id/report-nonpayment', async (req, res) => {
     try {
-      const t = await db.prepare('SELECT executor_phone, status FROM tasks WHERE id = ?').get(req.params.id);
+      const t = await db.prepare(Q.GET_EXECUTOR_STATUS).get(req.params.id);
       if (!t) return res.status(404).json({ error: 'not_found' });
       if (t.executor_phone !== req.phone) return res.status(403).json({ error: 'not_executor' });
       if (t.status !== 'done') return res.status(400).json({ error: 'bad_status', message: 'Само завършена задача.' });
-      await db.prepare('UPDATE tasks SET payment_disputed = TRUE WHERE id = ?').run(req.params.id);
+      await db.prepare(Q.REPORT_NONPAYMENT).run(req.params.id);
       // Бан на автора решава админ (вижда payment_disputed); тук само маркираме.
       res.json({ ok: true, message: 'Докладвано. Админ ще прегледа и при потвърждение авторът се банва.' });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
@@ -231,8 +219,8 @@ module.exports = function createTasksRoutes(db) {
   // ── моите задачи (като автор + като изпълнител) ──
   router.get('/mine/list', async (req, res) => {
     try {
-      const authored = await db.prepare('SELECT * FROM tasks WHERE author_phone = ? ORDER BY created_at DESC').all(req.phone);
-      const taken = await db.prepare('SELECT * FROM tasks WHERE executor_phone = ? ORDER BY taken_at DESC').all(req.phone);
+      const authored = await db.prepare(Q.MINE_AUTHORED).all(req.phone);
+      const taken = await db.prepare(Q.MINE_TAKEN).all(req.phone);
       res.json({ authored, taken });
     } catch (e) { res.status(500).json({ error: 'server_error', message: e.message }); }
   });

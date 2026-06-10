@@ -1,7 +1,8 @@
-// Version: 1.0093
+// Version: 1.0094
 // Matchmaking Routes - AI-powered partner matching
 // Auth middleware is applied at mount point (server.js / test setup)
 const express = require('express');
+const Q = require('../queries').matchmaking; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 
 function createMatchmakingRoutes(db) {
   const router = express.Router();
@@ -16,32 +17,11 @@ function createMatchmakingRoutes(db) {
       const criteria = req.body;
 
       // Check if user already has criteria
-      const existing = await db.prepare(
-        'SELECT id FROM matchmaking_criteria WHERE user_id = ?'
-      ).get(userId);
+      const existing = await db.prepare(Q.CRITERIA_FIND_BY_USER).get(userId);
 
       if (existing) {
         // Update existing criteria
-        const updateStmt = await db.prepare(`
-          UPDATE matchmaking_criteria SET
-            height_min = ?, height_max = ?, weight_min = ?, weight_max = ?,
-            age_min = ?, age_max = ?, hair_color = ?, eye_color = ?,
-            body_type = ?, ethnicity = ?, smoking = ?, drinking = ?,
-            diet = ?, exercise = ?, pets = ?, children = ?,
-            living_situation = ?, employment = ?, education = ?, religion = ?,
-            personality = ?, interests = ?, music_taste = ?, movies_taste = ?,
-            hobbies = ?, political_views = ?, travel_frequency = ?,
-            night_owl_or_early_bird = ?, introvert_or_extrovert = ?,
-            communication_style = ?, conflict_resolution = ?, love_language = ?,
-            humor_type = ?, relationship_goals = ?, deal_breakers = ?,
-            country = ?, city = ?, distance_km = ?, willing_to_relocate = ?,
-            language_spoken = ?, income_range = ?, financial_goals = ?,
-            car_ownership = ?, tech_savviness = ?, social_media_usage = ?,
-            family_values = ?, jealousy_level = ?, independence_level = ?,
-            future_plans = ?, commitment_level = ?,
-            updated_at = datetime('now')
-          WHERE user_id = ?
-        `);
+        const updateStmt = await db.prepare(Q.CRITERIA_UPDATE);
 
         updateStmt.run(
           criteria.height_min, criteria.height_max, criteria.weight_min, criteria.weight_max,
@@ -65,22 +45,7 @@ function createMatchmakingRoutes(db) {
         res.json({ success: true, message: 'Criteria updated successfully' });
       } else {
         // Insert new criteria
-        const insertStmt = await db.prepare(`
-          INSERT INTO matchmaking_criteria (
-            user_id, height_min, height_max, weight_min, weight_max,
-            age_min, age_max, hair_color, eye_color, body_type, ethnicity,
-            smoking, drinking, diet, exercise, pets, children,
-            living_situation, employment, education, religion,
-            personality, interests, music_taste, movies_taste, hobbies,
-            political_views, travel_frequency, night_owl_or_early_bird,
-            introvert_or_extrovert, communication_style, conflict_resolution,
-            love_language, humor_type, relationship_goals, deal_breakers,
-            country, city, distance_km, willing_to_relocate, language_spoken,
-            income_range, financial_goals, car_ownership, tech_savviness,
-            social_media_usage, family_values, jealousy_level,
-            independence_level, future_plans, commitment_level
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `);
+        const insertStmt = await db.prepare(Q.CRITERIA_INSERT);
 
         insertStmt.run(
           userId,
@@ -117,9 +82,7 @@ function createMatchmakingRoutes(db) {
     try {
       const userId = req.userId;
 
-      const criteria = await db.prepare(
-        'SELECT * FROM matchmaking_criteria WHERE user_id = ?'
-      ).get(userId);
+      const criteria = await db.prepare(Q.CRITERIA_GET).get(userId);
 
       if (!criteria) {
         return res.json({ hasCriteria: false, criteria: null });
@@ -141,9 +104,7 @@ function createMatchmakingRoutes(db) {
       const userId = req.userId;
 
       // Get user's payment info
-      const user = await db.prepare(
-        'SELECT payment_amount, payment_currency, paid_until FROM users WHERE id = ?'
-      ).get(userId);
+      const user = await db.prepare(Q.FIND_USER_PAYMENT).get(userId);
 
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
@@ -174,120 +135,36 @@ function createMatchmakingRoutes(db) {
       }
 
       // Get user's criteria
-      const criteria = await db.prepare(
-        'SELECT * FROM matchmaking_criteria WHERE user_id = ?'
-      ).get(userId);
+      const criteria = await db.prepare(Q.CRITERIA_GET).get(userId);
 
       if (!criteria) {
-        return res.status(400).json({ 
+        return res.status(400).json({
           error: 'No criteria set',
           message: 'Please set your criteria first before searching'
         });
       }
 
       // Get user's dislikes
-      const dislikes = await db.prepare(
-        'SELECT disliked_attribute, disliked_value FROM matchmaking_dislikes WHERE user_id = ?'
-      ).all(userId);
+      const dislikes = await db.prepare(Q.FIND_DISLIKES).all(userId);
 
       // Get blocked users
-      const blockedUsers = await db.prepare(`
-        SELECT blocked_id FROM matchmaking_blocks WHERE blocker_id = ?
-        UNION
-        SELECT blocker_id FROM matchmaking_blocks WHERE blocked_id = ?
-      `).all(userId, userId).map(row => row.blocked_id || row.blocker_id);
+      const blockedUsers = (await db.prepare(Q.FIND_BLOCKED).all(userId, userId)).map(row => row.blocked_id || row.blocker_id);
 
-      // Build SQL query for matching
+      // Build SQL query for matching (динамичен builder → { sql, params })
       // This is simplified - in production, you'd use AI/ML for better matching
-      let query = `
-        SELECT DISTINCT u.id, u.full_name, u.age, u.gender, u.height_cm, u.weight_kg,
-               u.city, u.country
-        FROM users u
-        LEFT JOIN matchmaking_criteria mc ON u.id = mc.user_id
-        WHERE u.id != ?
-      `;
-
-      const params = [userId];
-
-      // Exclude blocked users
-      if (blockedUsers.length > 0) {
-        query += ` AND u.id NOT IN (${blockedUsers.map(() => '?').join(',')})`;
-        params.push(...blockedUsers);
-      }
-
-      // Age range
-      if (criteria.age_min) {
-        query += ` AND u.age >= ?`;
-        params.push(criteria.age_min);
-      }
-      if (criteria.age_max) {
-        query += ` AND u.age <= ?`;
-        params.push(criteria.age_max);
-      }
-
-      // Height range
-      if (criteria.height_min) {
-        query += ` AND u.height_cm >= ?`;
-        params.push(criteria.height_min);
-      }
-      if (criteria.height_max) {
-        query += ` AND u.height_cm <= ?`;
-        params.push(criteria.height_max);
-      }
-
-      // Weight range
-      if (criteria.weight_min) {
-        query += ` AND u.weight_kg >= ?`;
-        params.push(criteria.weight_min);
-      }
-      if (criteria.weight_max) {
-        query += ` AND u.weight_kg <= ?`;
-        params.push(criteria.weight_max);
-      }
-
-      // Location
-      if (criteria.country && criteria.country !== 'no-preference') {
-        query += ` AND u.country = ?`;
-        params.push(criteria.country);
-      }
-      if (criteria.city && criteria.city !== 'no-preference') {
-        query += ` AND u.city = ?`;
-        params.push(criteria.city);
-      }
-
-      // Apply dislikes filter
-      for (const dislike of dislikes) {
-        // This is simplified - in production you'd have a more sophisticated system
-        if (dislike.disliked_attribute === 'height_cm') {
-          query += ` AND u.height_cm != ?`;
-          params.push(parseInt(dislike.disliked_value));
-        } else if (dislike.disliked_attribute === 'age') {
-          query += ` AND u.age != ?`;
-          params.push(parseInt(dislike.disliked_value));
-        }
-        // Add more dislike filters as needed
-      }
-
-      query += ` ORDER BY RANDOM() LIMIT 5`;
+      const { sql: query, params } = Q.FIND_MATCHES(userId, blockedUsers, criteria, dislikes);
 
       // Execute search
       const matches = await db.prepare(query).all(...params);
 
       // Deduct $5 from user's balance
-      await db.prepare(
-        'UPDATE users SET payment_amount = payment_amount - ? WHERE id = ?'
-      ).run(searchCost, userId);
+      await db.prepare(Q.DEDUCT_BALANCE).run(searchCost, userId);
 
-      // Log the search
-      await db.prepare(`
-        INSERT INTO matchmaking_searches (user_id, search_cost, currency, results_count)
-        VALUES (?, ?, ?, ?)
-      `).run(userId, searchCost, user.payment_currency, matches.length);
+      // Log the search (matchmaking_searches има само user_id, amount_charged, matches_found)
+      await db.prepare(Q.INSERT_SEARCH).run(userId, searchCost, matches.length);
 
       // Get updated balance
-      const updatedUser = await db.prepare(
-        'SELECT payment_amount FROM users WHERE id = ?'
-      ).get(userId);
+      const updatedUser = await db.prepare(Q.GET_BALANCE).get(userId);
 
       res.json({
         success: true,
@@ -318,36 +195,27 @@ function createMatchmakingRoutes(db) {
       }
 
       // Check if receiver exists
-      const receiver = await db.prepare('SELECT id FROM users WHERE id = ?').get(receiverId);
+      const receiver = await db.prepare(Q.INVITE_FIND_RECEIVER).get(receiverId);
       if (!receiver) {
         return res.status(404).json({ error: 'User not found' });
       }
 
       // Check if already invited
-      const existing = await db.prepare(
-        'SELECT id FROM matchmaking_invitations WHERE sender_id = ? AND receiver_id = ?'
-      ).get(senderId, receiverId);
+      const existing = await db.prepare(Q.INVITE_FIND_EXISTING).get(senderId, receiverId);
 
       if (existing) {
         return res.status(400).json({ error: 'Invitation already sent' });
       }
 
       // Check if blocked
-      const blocked = await db.prepare(`
-        SELECT id FROM matchmaking_blocks 
-        WHERE (blocker_id = ? AND blocked_id = ?) 
-           OR (blocker_id = ? AND blocked_id = ?)
-      `).get(senderId, receiverId, receiverId, senderId);
+      const blocked = await db.prepare(Q.INVITE_CHECK_BLOCKED).get(senderId, receiverId, receiverId, senderId);
 
       if (blocked) {
         return res.status(403).json({ error: 'Cannot invite this user' });
       }
 
       // Create invitation
-      await db.prepare(`
-        INSERT INTO matchmaking_invitations (sender_id, receiver_id, status)
-        VALUES (?, ?, 'pending')
-      `).run(senderId, receiverId);
+      await db.prepare(Q.INVITE_INSERT).run(senderId, receiverId);
 
       res.json({ 
         success: true, 
@@ -369,24 +237,10 @@ function createMatchmakingRoutes(db) {
       const userId = req.userId;
 
       // Get user's criteria to filter out mismatches based on dislikes
-      const dislikes = await db.prepare(
-        'SELECT disliked_attribute, disliked_value FROM matchmaking_dislikes WHERE user_id = ?'
-      ).all(userId);
+      const dislikes = await db.prepare(Q.FIND_DISLIKES).all(userId);
 
       // Get all pending invitations with sender details
-      let invitations = await db.prepare(`
-        SELECT 
-          i.id, i.sender_id, i.created_at,
-          u.full_name, u.age, u.gender, u.height_cm, u.weight_kg,
-          u.city, u.country,
-          mc.*
-        FROM matchmaking_invitations i
-        JOIN users u ON i.sender_id = u.id
-        LEFT JOIN matchmaking_criteria mc ON u.id = mc.user_id
-        WHERE i.receiver_id = ? AND i.status = 'pending'
-        ORDER BY i.created_at DESC
-        LIMIT 50
-      `).all(userId);
+      let invitations = await db.prepare(Q.INVITATIONS_RECEIVED).all(userId);
 
       // Filter out users that match dislikes
       invitations = invitations.filter(inv => {
@@ -422,15 +276,7 @@ function createMatchmakingRoutes(db) {
     try {
       const userId = req.userId;
 
-      const invitations = await db.prepare(`
-        SELECT 
-          i.id, i.receiver_id, i.status, i.created_at, i.responded_at,
-          u.full_name, u.age, u.city
-        FROM matchmaking_invitations i
-        JOIN users u ON i.receiver_id = u.id
-        WHERE i.sender_id = ?
-        ORDER BY i.created_at DESC
-      `).all(userId);
+      const invitations = await db.prepare(Q.INVITATIONS_SENT).all(userId);
 
       res.json({ 
         success: true, 
@@ -454,9 +300,7 @@ function createMatchmakingRoutes(db) {
       const invitationId = req.params.id;
 
       // Get invitation
-      const invitation = await db.prepare(
-        'SELECT * FROM matchmaking_invitations WHERE id = ? AND receiver_id = ?'
-      ).get(invitationId, userId);
+      const invitation = await db.prepare(Q.INVITATION_GET).get(invitationId, userId);
 
       if (!invitation) {
         return res.status(404).json({ error: 'Invitation not found' });
@@ -467,22 +311,19 @@ function createMatchmakingRoutes(db) {
       }
 
       // Update invitation status
-      await db.prepare(`
-        UPDATE matchmaking_invitations 
-        SET status = 'accepted', responded_at = datetime('now')
-        WHERE id = ?
-      `).run(invitationId);
+      await db.prepare(Q.INVITATION_ACCEPT).run(invitationId);
 
-      // Add to friends (so they can chat)
-      // Check if friendship already exists
-      const existingFriend = await db.prepare(
-        'SELECT id FROM friends WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)'
-      ).get(userId, invitation.sender_id, invitation.sender_id, userId);
+      // Add to friends (so they can chat). friends е с подреден числов ключ
+      // (user_id1 < user_id2) — подреждаме двойката както прави routes/friends.js.
+      const a = Number(userId);
+      const b = Number(invitation.sender_id);
+      const lo = Math.min(a, b);
+      const hi = Math.max(a, b);
+
+      const existingFriend = await db.prepare(Q.FRIEND_FIND_EXISTING).get(lo, hi);
 
       if (!existingFriend) {
-        await db.prepare(
-          'INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)'
-        ).run(userId, invitation.sender_id, 'accepted');
+        await db.prepare(Q.FRIEND_INSERT).run(lo, hi);
       }
 
       res.json({ 
@@ -511,32 +352,22 @@ function createMatchmakingRoutes(db) {
       }
 
       // Check if already blocked
-      const existing = await db.prepare(
-        'SELECT id FROM matchmaking_blocks WHERE blocker_id = ? AND blocked_id = ?'
-      ).get(blockerId, blockedId);
+      const existing = await db.prepare(Q.BLOCK_FIND_EXISTING).get(blockerId, blockedId);
 
       if (existing) {
         return res.status(400).json({ error: 'User already blocked' });
       }
 
       // Create block
-      await db.prepare(`
-        INSERT INTO matchmaking_blocks (blocker_id, blocked_id)
-        VALUES (?, ?)
-      `).run(blockerId, blockedId);
+      await db.prepare(Q.BLOCK_INSERT).run(blockerId, blockedId);
 
       // Save dislikes if provided
       if (dislikes && Array.isArray(dislikes)) {
-        const stmt = await db.prepare(`
-          INSERT INTO matchmaking_dislikes (user_id, disliked_attribute, disliked_value)
-          VALUES (?, ?, ?)
-        `);
+        const stmt = await db.prepare(Q.DISLIKE_INSERT);
 
         for (const dislike of dislikes) {
           // Check dislike count limit (500 max)
-          const count = await db.prepare(
-            'SELECT COUNT(*) as count FROM matchmaking_dislikes WHERE user_id = ?'
-          ).get(blockerId);
+          const count = await db.prepare(Q.DISLIKE_COUNT).get(blockerId);
 
           if (count.count >= 500) {
             break; // Stop adding if limit reached
@@ -547,11 +378,7 @@ function createMatchmakingRoutes(db) {
       }
 
       // Update any pending invitations to blocked status
-      await db.prepare(`
-        UPDATE matchmaking_invitations 
-        SET status = 'blocked', responded_at = datetime('now')
-        WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)
-      `).run(blockerId, blockedId, blockedId, blockerId);
+      await db.prepare(Q.BLOCK_UPDATE_INVITATIONS).run(blockerId, blockedId, blockedId, blockerId);
 
       res.json({ 
         success: true, 
@@ -573,17 +400,9 @@ function createMatchmakingRoutes(db) {
     try {
       const userId = req.userId;
 
-      const dislikes = await db.prepare(`
-        SELECT disliked_attribute, disliked_value, COUNT(*) as count
-        FROM matchmaking_dislikes
-        WHERE user_id = ?
-        GROUP BY disliked_attribute, disliked_value
-        ORDER BY count DESC
-      `).all(userId);
+      const dislikes = await db.prepare(Q.DISLIKES_GROUPED).all(userId);
 
-      const total = await db.prepare(
-        'SELECT COUNT(*) as count FROM matchmaking_dislikes WHERE user_id = ?'
-      ).get(userId);
+      const total = await db.prepare(Q.DISLIKES_TOTAL).get(userId);
 
       res.json({ 
         success: true, 
@@ -604,12 +423,12 @@ function createMatchmakingRoutes(db) {
   // ================================================================
   router.post('/admin/check', async (req, res) => {
     try {
-      // Check if user is admin
-      const adminUser = await db.prepare(
-        'SELECT is_admin FROM users WHERE id = ?'
-      ).get(req.userId);
+      // Check if user is admin. Чатът няма users.is_admin — авторитетът е admin_users
+      // (username, попълнен от .env при старт; виж roles.js). Логнатият потребител се
+      // идентифицира с full_name спрямо admin_users.
+      const adminUser = await db.prepare(Q.ADMIN_FIND).get(req.user && req.user.full_name);
 
-      if (!adminUser || !adminUser.is_admin) {
+      if (!adminUser) {
         return res.status(403).json({ error: 'Admin access required' });
       }
 
@@ -620,52 +439,22 @@ function createMatchmakingRoutes(db) {
       }
 
       // Get user's criteria
-      const criteria = await db.prepare(
-        'SELECT * FROM matchmaking_criteria WHERE user_id = ?'
-      ).get(userId);
+      const criteria = await db.prepare(Q.CRITERIA_GET).get(userId);
 
       if (!criteria) {
-        return res.status(404).json({ 
+        return res.status(404).json({
           error: 'No criteria found for this user'
         });
       }
 
       // Get user's dislikes
-      const dislikes = await db.prepare(
-        'SELECT disliked_attribute, disliked_value FROM matchmaking_dislikes WHERE user_id = ?'
-      ).all(userId);
+      const dislikes = await db.prepare(Q.FIND_DISLIKES).all(userId);
 
       // Run same matching algorithm as regular search but FREE
-      const blockedUsers = await db.prepare(`
-        SELECT blocked_id FROM matchmaking_blocks WHERE blocker_id = ?
-        UNION
-        SELECT blocker_id FROM matchmaking_blocks WHERE blocked_id = ?
-      `).all(userId, userId).map(row => row.blocked_id || row.blocker_id);
+      const blockedUsers = (await db.prepare(Q.FIND_BLOCKED).all(userId, userId)).map(row => row.blocked_id || row.blocker_id);
 
-      let query = `
-        SELECT DISTINCT u.id, u.full_name, u.age, u.gender, u.height_cm, u.weight_kg,
-               u.city, u.country
-        FROM users u
-        WHERE u.id != ?
-      `;
-
-      const params = [userId];
-
-      if (blockedUsers.length > 0) {
-        query += ` AND u.id NOT IN (${blockedUsers.map(() => '?').join(',')})`;
-        params.push(...blockedUsers);
-      }
-
-      if (criteria.age_min) {
-        query += ` AND u.age >= ?`;
-        params.push(criteria.age_min);
-      }
-      if (criteria.age_max) {
-        query += ` AND u.age <= ?`;
-        params.push(criteria.age_max);
-      }
-
-      query += ` ORDER BY RANDOM() LIMIT 50`;
+      // Динамичен builder → { sql, params }
+      const { sql: query, params } = Q.ADMIN_FIND_MATCHES(userId, blockedUsers, criteria);
 
       const matches = await db.prepare(query).all(...params);
 

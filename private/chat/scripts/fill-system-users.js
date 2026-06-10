@@ -11,6 +11,7 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', 'configs', '.env') });
 const bcrypt = require('bcryptjs');
 const { initializeDatabase } = require('../utils/database');
+const Q = require('../queries').fillSystemUsers; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 const filllog = require('../../shared/debug-helper').create('filldata');
 
 // Държави с локални имена/градове/телефонен префикс — за реалистично разнообразие.
@@ -74,7 +75,7 @@ const digits = n => { let s = ''; for (let i = 0; i < n; i++) s += Math.floor(Ma
   filllog.info('fill-system-users.js старт');
   console.log(`FILL DATA · чат — създавам ${COUNT} системни потребители…`);
   const db = await initializeDatabase();
-  try { await db.exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS is_system INTEGER DEFAULT 0'); } catch (e) { /* SQLite или вече има */ }
+  try { await db.exec(Q.ENSURE_IS_SYSTEM_COLUMN); } catch (e) { /* SQLite или вече има */ }
 
   const passHash = bcrypt.hashSync('system-' + digits(8), 10); // обща парола за ботовете (не за реален вход)
   let ok = 0, fail = 0;
@@ -87,12 +88,7 @@ const digits = n => { let s = ''; for (let i = 0; i < n; i++) s += Math.floor(Ma
     const phone = `+${c.prefix}${digits(9)}`;
     const loc = LOCALIZED[LANG_BY_CC[c.code]] || LOCALIZED.en;   // профил на езика на държавата
     try {
-      await db.prepare(
-        `INSERT INTO users
-          (phone, password_hash, full_name, gender, age, country, country_code, city,
-           current_need, offerings, paid_until, subscription_active, is_system)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,1)`
-      ).run(phone, passHash, full_name, gender, age, c.country, c.code, pick(c.cities),
+      await db.prepare(Q.INSERT_SYSTEM_USER).run(phone, passHash, full_name, gender, age, c.country, c.code, pick(c.cities),
             pick(loc.needs), pick(loc.offers), '2099-12-31 00:00:00', 1);
       ok++;
     } catch (e) {
@@ -102,7 +98,7 @@ const digits = n => { let s = ''; for (let i = 0; i < n; i++) s += Math.floor(Ma
   }
   // Колко системни има общо вече
   let total = '?';
-  try { const r = await db.prepare('SELECT COUNT(*) AS n FROM users WHERE is_system = 1').get(); total = r && (r.n ?? r.count); } catch (e) {}
+  try { const r = await db.prepare(Q.COUNT_SYSTEM_USERS).get(); total = r && (r.n ?? r.count); } catch (e) {}
   console.log(`✅ Добавени ${ok} системни потребители (грешки: ${fail}). Общо системни: ${total}.`);
   filllog.info('fill-system-users.js край', ok);
   if (db.close) await db.close();

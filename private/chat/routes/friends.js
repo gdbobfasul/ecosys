@@ -1,9 +1,10 @@
-// Version: 1.0094
+// Version: 1.0095
 // Контактите се адресират по account id (users.id), НЕ по телефон — телефонът не е
 // уникален (UNIQUE(phone,password)). Търсачката връща id (скрит визуално); добавянето
 // и съобщенията стават по този id. Телефонът е само за визуализация.
 const express = require('express');
 const { validateCustomName } = require('../utils/validation');
+const Q = require('../queries').friends; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 
 function createFriendsRoutes(db) {
   const router = express.Router();
@@ -17,24 +18,9 @@ function createFriendsRoutes(db) {
         return res.status(400).json({ error: 'At least one search parameter required' });
       }
 
-      let query = `
-        SELECT id, phone, full_name, gender, height_cm, weight_kg,
-               country, city, village, street
-        FROM users
-        WHERE paid_until > datetime('now')
-      `;
-      const params = [];
+      const { sql, params } = Q.SEARCH({ phone, country, gender, height, weight, userId: req.userId });
 
-      if (phone)   { query += ` AND phone LIKE ?`;     params.push(`%${phone}%`); }
-      if (country) { query += ` AND country LIKE ?`;   params.push(`%${country}%`); }
-      if (gender)  { query += ` AND gender = ?`;        params.push(gender); }
-      if (height)  { query += ` AND height_cm = ?`;     params.push(parseInt(height)); }
-      if (weight)  { query += ` AND weight_kg = ?`;     params.push(parseInt(weight)); }
-
-      query += ` AND id != ? LIMIT 50`;
-      params.push(req.userId);
-
-      const users = await db.prepare(query).all(...params);
+      const users = await db.prepare(sql).all(...params);
       res.json({ users });
     } catch (err) {
       console.error('Search users error:', err);
@@ -45,25 +31,12 @@ function createFriendsRoutes(db) {
   // Get friends list — по user_id1/user_id2. Връща userId + fullName + phone (за показване).
   router.get('/', async (req, res) => {
     try {
-      const rows = await db.prepare(`
-        SELECT
-          CASE WHEN user_id1 = ? THEN user_id2 ELSE user_id1 END as friend_id,
-          CASE WHEN user_id1 = ? THEN custom_name_by_user1 ELSE custom_name_by_user2 END as custom_name
-        FROM friends
-        WHERE user_id1 = ? OR user_id2 = ?
-      `).all(req.userId, req.userId, req.userId, req.userId);
+      const rows = await db.prepare(Q.FRIENDS_LIST).all(req.userId, req.userId, req.userId, req.userId);
 
       const friends = await Promise.all(rows.map(async row => {
-        const u = await db.prepare('SELECT phone, full_name FROM users WHERE id = ?').get(row.friend_id);
-        const last = await db.prepare(`
-          SELECT text, created_at FROM messages
-          WHERE (from_user_id = ? AND to_user_id = ?) OR (from_user_id = ? AND to_user_id = ?)
-          ORDER BY created_at DESC LIMIT 1
-        `).get(req.userId, row.friend_id, row.friend_id, req.userId);
-        const unread = (await db.prepare(`
-          SELECT COUNT(*) as count FROM messages
-          WHERE to_user_id = ? AND from_user_id = ? AND read_at IS NULL
-        `).get(req.userId, row.friend_id))?.count || 0;
+        const u = await db.prepare(Q.FRIEND_USER).get(row.friend_id);
+        const last = await db.prepare(Q.LAST_MESSAGE).get(req.userId, row.friend_id, row.friend_id, req.userId);
+        const unread = (await db.prepare(Q.UNREAD_COUNT).get(req.userId, row.friend_id))?.count || 0;
         return {
           userId: row.friend_id,
           phone: u ? u.phone : '',
@@ -96,7 +69,7 @@ function createFriendsRoutes(db) {
         return res.status(400).json({ error: 'Cannot add yourself' });
       }
 
-      const friend = await db.prepare('SELECT id, paid_until FROM users WHERE id = ?').get(friendUserId);
+      const friend = await db.prepare(Q.ADD_CHECK_USER).get(friendUserId);
       if (!friend) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -106,7 +79,7 @@ function createFriendsRoutes(db) {
 
       const [user_id1, user_id2] = [req.userId, friendUserId].sort((a, b) => a - b);
       try {
-        await db.prepare('INSERT INTO friends (user_id1, user_id2) VALUES (?, ?)').run(user_id1, user_id2);
+        await db.prepare(Q.ADD_INSERT).run(user_id1, user_id2);
       } catch (err) {
         const m = String(err.message || '');
         if (!m.includes('UNIQUE') && !m.toLowerCase().includes('duplicate')) throw err;
@@ -135,7 +108,7 @@ function createFriendsRoutes(db) {
       const [user_id1, user_id2] = [req.userId, friendUserId].sort((a, b) => a - b);
       const field = req.userId === user_id1 ? 'custom_name_by_user1' : 'custom_name_by_user2';
 
-      await db.prepare(`UPDATE friends SET ${field} = ? WHERE user_id1 = ? AND user_id2 = ?`)
+      await db.prepare(Q.CUSTOM_NAME_UPDATE(field))
         .run(customName || null, user_id1, user_id2);
 
       res.json({ success: true, customName });

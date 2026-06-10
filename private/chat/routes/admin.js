@@ -3,6 +3,7 @@ const express = require('express');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const { getDatabaseType } = require('../utils/database');
 const { isStaff, roleForUsername } = require('../roles');
+const Q = require('../queries').admin; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 
 // Debug helper — логва старта/изхода на ecosystem-status за диагностика
 let debug;
@@ -48,7 +49,7 @@ function createAdminRoutes(db) {
         return res.status(400).json({ error: 'Username and password required' });
       }
 
-      const admin = await db.prepare('SELECT username, password_hash FROM admin_users WHERE username = ?').get(username);
+      const admin = await db.prepare(Q.LOGIN_FIND_ADMIN).get(username);
 
       if (!admin) {
         return res.status(401).json({ error: 'Invalid credentials' });
@@ -66,7 +67,7 @@ function createAdminRoutes(db) {
         return res.status(403).json({ error: 'Not authorized (not in .env admin/moderator list)' });
       }
 
-      await db.prepare("UPDATE admin_users SET last_login = datetime('now') WHERE username = ?").run(username);
+      await db.prepare(Q.LOGIN_UPDATE_LAST_LOGIN).run(username);
 
       // Token за подстраниците (signals / matchmaking / static-objects):
       // те се валидират чрез `WHERE password_hash = ?` (виж signals.js и
@@ -97,93 +98,11 @@ function createAdminRoutes(db) {
       // Search filters
       const { search, gender, country, city, village, street, workplace, isBlocked, heightMin, heightMax, weightMin, weightMax } = req.query;
 
-      let query = `
-        SELECT DISTINCT 
-          u.id, u.phone, u.full_name, u.gender, u.height_cm, u.weight_kg, 
-          u.country, u.city, u.village, u.street, u.workplace,
-          u.is_blocked, u.paid_until, u.report_count,
-          COUNT(DISTINCT fc.id) as flagged_count
-        FROM users u
-        INNER JOIN flagged_conversations fc ON (u.id = fc.user_id1 OR u.id = fc.user_id2)
-        WHERE fc.reviewed = 0
-      `;
-
-      const params = [];
-
-      if (search) {
-        query += ` AND (u.full_name LIKE ? OR u.phone LIKE ?)`;
-        params.push(`%${search}%`, `%${search}%`);
-      }
-
-      if (gender) {
-        query += ` AND u.gender = ?`;
-        params.push(gender);
-      }
-
-      if (country) {
-        query += ` AND u.country LIKE ?`;
-        params.push(`%${country}%`);
-      }
-
-      if (city) {
-        query += ` AND u.city LIKE ?`;
-        params.push(`%${city}%`);
-      }
-
-      if (village) {
-        query += ` AND u.village LIKE ?`;
-        params.push(`%${village}%`);
-      }
-
-      if (street) {
-        query += ` AND u.street LIKE ?`;
-        params.push(`%${street}%`);
-      }
-
-      if (workplace) {
-        query += ` AND u.workplace LIKE ?`;
-        params.push(`%${workplace}%`);
-      }
-
-      if (isBlocked !== undefined) {
-        query += ` AND u.is_blocked = ?`;
-        params.push(isBlocked === 'true' ? 1 : 0);
-      }
-
-      if (heightMin) {
-        query += ` AND u.height_cm >= ?`;
-        params.push(parseInt(heightMin));
-      }
-
-      if (heightMax) {
-        query += ` AND u.height_cm <= ?`;
-        params.push(parseInt(heightMax));
-      }
-
-      if (weightMin) {
-        query += ` AND u.weight_kg >= ?`;
-        params.push(parseInt(weightMin));
-      }
-
-      if (weightMax) {
-        query += ` AND u.weight_kg <= ?`;
-        params.push(parseInt(weightMax));
-      }
-
-      query += ` GROUP BY u.id ORDER BY flagged_count DESC LIMIT ? OFFSET ?`;
-      params.push(limit, offset);
-
-      const users = await db.prepare(query).all(...params);
+      const q = Q.FLAGGED_USERS({ search, gender, country, city, village, street, workplace, isBlocked, heightMin, heightMax, weightMin, weightMax, limit, offset });
+      const users = await db.prepare(q.sql).all(...q.params);
 
       // Count total
-      let countQuery = `
-        SELECT COUNT(DISTINCT u.id) as count
-        FROM users u
-        INNER JOIN flagged_conversations fc ON (u.id = fc.user_id1 OR u.id = fc.user_id2)
-        WHERE fc.reviewed = 0
-      `;
-      const countParams = params.slice(0, -2); // Remove limit and offset
-      const total = (await db.prepare(countQuery).get(...countParams))?.count || 0;
+      const total = (await db.prepare(q.countSql).get(...q.countParams))?.count || 0;
 
       res.json({
         users,
@@ -209,100 +128,11 @@ function createAdminRoutes(db) {
 
       const { search, gender, country, city, village, street, workplace, isBlocked, heightMin, heightMax, weightMin, weightMax } = req.query;
 
-      let query = `
-        SELECT id, phone, full_name, gender, height_cm, weight_kg,
-               country, city, village, street, workplace,
-               paid_until, is_blocked, created_at, last_login
-        FROM users
-        WHERE 1=1
-      `;
-
-      const params = [];
-
-      if (search) {
-        query += ` AND (phone LIKE ? OR full_name LIKE ?)`;
-        params.push(`%${search}%`, `%${search}%`);
-      }
-
-      if (gender) {
-        query += ` AND gender = ?`;
-        params.push(gender);
-      }
-
-      if (country) {
-        query += ` AND country LIKE ?`;
-        params.push(`%${country}%`);
-      }
-
-      if (city) {
-        query += ` AND city LIKE ?`;
-        params.push(`%${city}%`);
-      }
-
-      if (village) {
-        query += ` AND village LIKE ?`;
-        params.push(`%${village}%`);
-      }
-
-      if (street) {
-        query += ` AND street LIKE ?`;
-        params.push(`%${street}%`);
-      }
-
-      if (workplace) {
-        query += ` AND workplace LIKE ?`;
-        params.push(`%${workplace}%`);
-      }
-
-      if (isBlocked !== undefined) {
-        query += ` AND is_blocked = ?`;
-        params.push(isBlocked === 'true' ? 1 : 0);
-      }
-
-      if (heightMin) {
-        query += ` AND height_cm >= ?`;
-        params.push(parseInt(heightMin));
-      }
-
-      if (heightMax) {
-        query += ` AND height_cm <= ?`;
-        params.push(parseInt(heightMax));
-      }
-
-      if (weightMin) {
-        query += ` AND weight_kg >= ?`;
-        params.push(parseInt(weightMin));
-      }
-
-      if (weightMax) {
-        query += ` AND weight_kg <= ?`;
-        params.push(parseInt(weightMax));
-      }
-
-      query += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`;
-      params.push(limit, offset);
-
-      const users = await db.prepare(query).all(...params);
+      const q = Q.ALL_USERS({ search, gender, country, city, village, street, workplace, isBlocked, heightMin, heightMax, weightMin, weightMax, limit, offset });
+      const users = await db.prepare(q.sql).all(...q.params);
 
       // Count total
-      let countQuery = 'SELECT COUNT(*) as count FROM users WHERE 1=1';
-      const countParams = params.slice(0, -2);
-      // Rebuild count query with same filters
-      let countIndex = 0;
-      if (search) { countQuery += ' AND (phone LIKE ? OR full_name LIKE ?)'; countIndex += 2; }
-      if (gender) { countQuery += ' AND gender = ?'; countIndex++; }
-      if (country) { countQuery += ' AND country LIKE ?'; countIndex++; }
-      if (city) { countQuery += ' AND city LIKE ?'; countIndex++; }
-      if (village) { countQuery += ' AND village LIKE ?'; countIndex++; }
-      if (street) { countQuery += ' AND street LIKE ?'; countIndex++; }
-      if (workplace) { countQuery += ' AND workplace LIKE ?'; countIndex++; }
-      if (isBlocked !== undefined) { countQuery += ' AND is_blocked = ?'; countIndex++; }
-      if (heightMin) { countQuery += ' AND height_cm >= ?'; countIndex++; }
-      if (heightMax) { countQuery += ' AND height_cm <= ?'; countIndex++; }
-      if (weightMin) { countQuery += ' AND weight_kg >= ?'; countIndex++; }
-      if (weightMax) { countQuery += ' AND weight_kg <= ?'; countIndex++; }
-
-      const total = (await db.prepare(countQuery).get(...countParams))?.count || 0;
+      const total = (await db.prepare(q.countSql).get(...q.countParams))?.count || 0;
 
       res.json({
         users,
@@ -328,101 +158,18 @@ function createAdminRoutes(db) {
 
       const { search, gender, country, city, village, street, workplace, isBlocked, heightMin, heightMax, weightMin, weightMax } = req.query;
 
-      let query = `
-        SELECT id, phone, full_name, gender, height_cm, weight_kg,
-               country, city, village, street, workplace, is_blocked,
-               location_country, location_city, location_village, location_street, 
-               location_number, location_latitude, location_longitude, location_ip, location_captured_at
-        FROM users
-        WHERE 1=1
-      `;
-
-      const params = [];
-
-      if (search) {
-        query += ` AND (phone LIKE ? OR full_name LIKE ?)`;
-        params.push(`%${search}%`, `%${search}%`);
-      }
-
-      if (gender) {
-        query += ` AND gender = ?`;
-        params.push(gender);
-      }
-
-      if (country) {
-        query += ` AND country LIKE ?`;
-        params.push(`%${country}%`);
-      }
-
-      if (city) {
-        query += ` AND city LIKE ?`;
-        params.push(`%${city}%`);
-      }
-
-      if (village) {
-        query += ` AND village LIKE ?`;
-        params.push(`%${village}%`);
-      }
-
-      if (street) {
-        query += ` AND street LIKE ?`;
-        params.push(`%${street}%`);
-      }
-
-      if (workplace) {
-        query += ` AND workplace LIKE ?`;
-        params.push(`%${workplace}%`);
-      }
-
-      if (isBlocked !== undefined) {
-        query += ` AND is_blocked = ?`;
-        params.push(isBlocked === 'true' ? 1 : 0);
-      }
-
-      if (heightMin) {
-        query += ` AND height_cm >= ?`;
-        params.push(parseInt(heightMin));
-      }
-
-      if (heightMax) {
-        query += ` AND height_cm <= ?`;
-        params.push(parseInt(heightMax));
-      }
-
-      if (weightMin) {
-        query += ` AND weight_kg >= ?`;
-        params.push(parseInt(weightMin));
-      }
-
-      if (weightMax) {
-        query += ` AND weight_kg <= ?`;
-        params.push(parseInt(weightMax));
-      }
-
-      query += ` ORDER BY full_name LIMIT ? OFFSET ?`;
-      params.push(limit, offset);
-
-      const users = await db.prepare(query).all(...params);
+      const q = Q.USERS_WITH_MESSAGES({ search, gender, country, city, village, street, workplace, isBlocked, heightMin, heightMax, weightMin, weightMax, limit, offset });
+      const users = await db.prepare(q.sql).all(...q.params);
 
       // For each user, get all their conversations + check if flagged
       const usersWithMessages = await Promise.all(users.map(async user => {
         // Check if user has flagged conversations
-        const flaggedCount = (await db.prepare(`
-          SELECT COUNT(*) as count FROM flagged_conversations
-          WHERE (user_id1 = ? OR user_id2 = ?) AND reviewed = 0
-        `).get(user.id, user.id))?.count || 0;
+        const flaggedCount = (await db.prepare(Q.USER_FLAGGED_COUNT).get(user.id, user.id))?.count || 0;
 
-        const conversations = await db.prepare(`
-          SELECT
-            CASE WHEN from_user_id = ? THEN to_user_id ELSE from_user_id END as contact_id,
-            GROUP_CONCAT(text, '\n') as messages
-          FROM messages
-          WHERE (from_user_id = ? OR to_user_id = ?) AND text IS NOT NULL
-          GROUP BY contact_id
-        `).all(user.id, user.id, user.id);
+        const conversations = await db.prepare(Q.USER_CONVERSATIONS).all(user.id, user.id, user.id);
 
         const allMessages = (await Promise.all(conversations.map(async c => {
-          const contact = await db.prepare('SELECT phone FROM users WHERE id = ?').get(c.contact_id);
+          const contact = await db.prepare(Q.USER_PHONE_BY_ID).get(c.contact_id);
           return `━━━ With ${contact?.phone || ('#' + c.contact_id)} ━━━\n${c.messages}`;
         }))).join('\n\n');
 
@@ -436,22 +183,7 @@ function createAdminRoutes(db) {
       }));
 
       // Count total (same filters)
-      let countQuery = 'SELECT COUNT(*) as count FROM users WHERE 1=1';
-      const countParams = params.slice(0, -2);
-      if (search) countQuery += ' AND (phone LIKE ? OR full_name LIKE ?)';
-      if (gender) countQuery += ' AND gender = ?';
-      if (country) countQuery += ' AND country LIKE ?';
-      if (city) countQuery += ' AND city LIKE ?';
-      if (village) countQuery += ' AND village LIKE ?';
-      if (street) countQuery += ' AND street LIKE ?';
-      if (workplace) countQuery += ' AND workplace LIKE ?';
-      if (isBlocked !== undefined) countQuery += ' AND is_blocked = ?';
-      if (heightMin) countQuery += ' AND height_cm >= ?';
-      if (heightMax) countQuery += ' AND height_cm <= ?';
-      if (weightMin) countQuery += ' AND weight_kg >= ?';
-      if (weightMax) countQuery += ' AND weight_kg <= ?';
-
-      const total = (await db.prepare(countQuery).get(...countParams))?.count || 0;
+      const total = (await db.prepare(q.countSql).get(...q.countParams))?.count || 0;
 
       res.json({
         users: usersWithMessages,
@@ -474,51 +206,27 @@ function createAdminRoutes(db) {
       const { userId } = req.params;
 
       // Get main user details
-      const user = await db.prepare(`
-        SELECT id, phone, full_name, gender, height_cm, weight_kg, 
-               country, city, village, street, workplace,
-               paid_until, is_blocked, blocked_reason, created_at, last_login
-        FROM users WHERE id = ?
-      `).get(userId);
+      const user = await db.prepare(Q.USER_DETAILS).get(userId);
 
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
 
       // Check if has flagged conversations
-      const flaggedCount = (await db.prepare(`
-        SELECT COUNT(*) as count FROM flagged_conversations
-        WHERE (user_id1 = ? OR user_id2 = ?) AND reviewed = 0
-      `).get(user.id, user.id))?.count || 0;
+      const flaggedCount = (await db.prepare(Q.USER_DETAILS_FLAGGED_COUNT).get(user.id, user.id))?.count || 0;
 
       user.hasFlaggedConversations = flaggedCount > 0;
       user.flaggedCount = flaggedCount;
 
       // Get all contacts with details
-      const contacts = await db.prepare(`
-        SELECT DISTINCT
-          CASE WHEN user_id1 = ? THEN user_id2 ELSE user_id1 END as contact_id,
-          CASE WHEN user_id1 = ? THEN custom_name_by_user1 ELSE custom_name_by_user2 END as custom_name
-        FROM friends
-        WHERE user_id1 = ? OR user_id2 = ?
-      `).all(user.id, user.id, user.id, user.id);
+      const contacts = await db.prepare(Q.USER_CONTACTS).all(user.id, user.id, user.id, user.id);
 
       const contactDetails = await Promise.all(contacts.map(async contact => {
         // Get contact user details (по account id)
-        const contactUser = await db.prepare(`
-          SELECT full_name, gender, country, city, village, street, paid_until, is_blocked
-          FROM users WHERE id = ?
-        `).get(contact.contact_id);
+        const contactUser = await db.prepare(Q.CONTACT_USER_DETAILS).get(contact.contact_id);
 
         // Get conversation - CAN BE EDITED!
-        const messages = await db.prepare(`
-          SELECT id, from_user_id, text, created_at
-          FROM messages
-          WHERE ((from_user_id = ? AND to_user_id = ?) OR (from_user_id = ? AND to_user_id = ?))
-            AND text IS NOT NULL
-          ORDER BY created_at DESC
-          LIMIT 100
-        `).all(user.id, contact.contact_id, contact.contact_id, user.id);
+        const messages = await db.prepare(Q.CONVERSATION_MESSAGES).all(user.id, contact.contact_id, contact.contact_id, user.id);
 
         const conversation = messages.reverse().map(m => ({
           messageId: m.id,
@@ -564,7 +272,7 @@ function createAdminRoutes(db) {
       }
 
       // Simply update the text - NO original_text saved!
-      await db.prepare('UPDATE messages SET text = ? WHERE id = ?').run(newText, messageId);
+      await db.prepare(Q.EDIT_MESSAGE).run(newText, messageId);
 
       res.json({ success: true });
     } catch (err) {
@@ -582,8 +290,7 @@ function createAdminRoutes(db) {
         return res.status(400).json({ error: 'User IDs array required' });
       }
 
-      const placeholders = userIds.map(() => '?').join(',');
-      await db.prepare(`UPDATE users SET is_blocked = 1, blocked_reason = ? WHERE id IN (${placeholders})`)
+      await db.prepare(Q.BLOCK_USERS(userIds.length))
         .run(reason || 'Admin blocked', ...userIds);
 
       res.json({ success: true, blocked: userIds.length });
@@ -596,27 +303,24 @@ function createAdminRoutes(db) {
   // ── Модул „Задачи": спорове за НЕПЛАЩАНЕ + бан на автора с един клик ──
   router.get('/task-disputes', async (req, res) => {
     try {
-      const rows = await db.prepare(
-        `SELECT id, type, country, title, reward_amount, reward_currency, author_phone, executor_phone, done_report, done_at
-         FROM tasks WHERE payment_disputed = TRUE ORDER BY done_at DESC LIMIT 200`
-      ).all();
+      const rows = await db.prepare(Q.TASK_DISPUTES).all();
       res.json({ disputes: rows });
     } catch (err) { console.error('task-disputes error:', err); res.status(500).json({ error: 'Server error' }); }
   });
   router.post('/task-ban', async (req, res) => {
     try {
       const { taskId } = req.body || {};
-      const t = await db.prepare('SELECT author_phone FROM tasks WHERE id = ?').get(taskId);
+      const t = await db.prepare(Q.TASK_AUTHOR).get(taskId);
       if (!t) return res.status(404).json({ error: 'not_found' });
-      await db.prepare("UPDATE users SET is_blocked = 1, blocked_reason = ? WHERE phone = ?").run('Не плати по задача #' + taskId, t.author_phone);
-      await db.prepare('UPDATE tasks SET payment_disputed = FALSE WHERE id = ?').run(taskId);
+      await db.prepare(Q.TASK_BAN_AUTHOR).run('Не плати по задача #' + taskId, t.author_phone);
+      await db.prepare(Q.TASK_CLEAR_DISPUTE).run(taskId);
       res.json({ success: true, banned: t.author_phone });
     } catch (err) { console.error('task-ban error:', err); res.status(500).json({ error: 'Server error' }); }
   });
   // Отхвърли спора (без бан — напр. авторът е платил/спорът е неоснователен)
   router.post('/task-dispute-dismiss', async (req, res) => {
     try {
-      await db.prepare('UPDATE tasks SET payment_disputed = FALSE WHERE id = ?').run((req.body || {}).taskId);
+      await db.prepare(Q.TASK_CLEAR_DISPUTE).run((req.body || {}).taskId);
       res.json({ success: true });
     } catch (err) { res.status(500).json({ error: 'Server error' }); }
   });
@@ -630,11 +334,7 @@ function createAdminRoutes(db) {
         return res.status(400).json({ error: 'User ID required' });
       }
 
-      await db.prepare(`
-        UPDATE users 
-        SET is_blocked = 0, blocked_reason = NULL, failed_login_attempts = 0 
-        WHERE id = ?
-      `).run(userId);
+      await db.prepare(Q.UNBLOCK_USER).run(userId);
 
       res.json({ success: true });
     } catch (err) {
@@ -652,7 +352,7 @@ function createAdminRoutes(db) {
         return res.status(400).json({ error: 'User ID and months required' });
       }
 
-      const user = await db.prepare('SELECT paid_until FROM users WHERE id = ?').get(userId);
+      const user = await db.prepare(Q.PAYMENT_GET_PAID_UNTIL).get(userId);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -663,13 +363,10 @@ function createAdminRoutes(db) {
       }
       paidUntil.setMonth(paidUntil.getMonth() + parseInt(months));
 
-      await db.prepare('UPDATE users SET paid_until = ? WHERE id = ?')
+      await db.prepare(Q.PAYMENT_SET_PAID_UNTIL)
         .run(paidUntil.toISOString(), userId);
 
-      await db.prepare(`
-        INSERT INTO payment_logs (user_id, phone, amount, currency, status, payment_type, months)
-        VALUES (?, (SELECT phone FROM users WHERE id = ?), 0, 'MANUAL', 'succeeded', 'admin_manual', ?)
-      `).run(userId, userId, months);
+      await db.prepare(Q.PAYMENT_INSERT_LOG).run(userId, userId, months);
 
       res.json({ success: true, newPaidUntil: paidUntil.toISOString() });
     } catch (err) {
@@ -688,7 +385,7 @@ function createAdminRoutes(db) {
       }
 
       const pastDate = new Date('2000-01-01').toISOString();
-      await db.prepare('UPDATE users SET paid_until = ? WHERE id = ?').run(pastDate, userId);
+      await db.prepare(Q.MARK_UNPAID).run(pastDate, userId);
 
       res.json({ success: true });
     } catch (err) {
@@ -707,20 +404,10 @@ function createAdminRoutes(db) {
       }
 
       // Update user location
-      await db.prepare(`
-        UPDATE users 
-        SET location_country = ?, location_city = ?, location_village = ?, 
-            location_street = ?, location_number = ?, location_latitude = ?, 
-            location_longitude = ?, location_ip = ?, location_captured_at = datetime('now')
-        WHERE id = ?
-      `).run(country, city, village, street, number, latitude, longitude, ip, userId);
+      await db.prepare(Q.CAPTURE_LOCATION).run(country, city, village, street, number, latitude, longitude, ip, userId);
 
       // Return updated location
-      const user = await db.prepare(`
-        SELECT location_country, location_city, location_village, location_street, 
-               location_number, location_latitude, location_longitude, location_ip, location_captured_at
-        FROM users WHERE id = ?
-      `).get(userId);
+      const user = await db.prepare(Q.GET_LOCATION).get(userId);
 
       res.json({ success: true, location: user });
     } catch (err) {
@@ -732,7 +419,7 @@ function createAdminRoutes(db) {
   // Critical words management
   router.get('/critical-words', async (req, res) => {
     try {
-      const words = await db.prepare('SELECT * FROM critical_words ORDER BY word').all();
+      const words = await db.prepare(Q.CRITICAL_WORDS_LIST).all();
       res.json({ words });
     } catch (err) {
       console.error('Get words error:', err);
@@ -748,7 +435,7 @@ function createAdminRoutes(db) {
         return res.status(400).json({ error: 'Word required (max 30 chars)' });
       }
 
-      await db.prepare('INSERT OR IGNORE INTO critical_words (word) VALUES (?)').run(word.toLowerCase());
+      await db.prepare(Q.CRITICAL_WORDS_ADD).run(word.toLowerCase());
 
       res.json({ success: true });
     } catch (err) {
@@ -760,7 +447,7 @@ function createAdminRoutes(db) {
   router.delete('/critical-words/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      await db.prepare('DELETE FROM critical_words WHERE id = ?').run(id);
+      await db.prepare(Q.CRITICAL_WORDS_DELETE).run(id);
       res.json({ success: true });
     } catch (err) {
       console.error('Delete word error:', err);
@@ -772,14 +459,14 @@ function createAdminRoutes(db) {
   router.get('/stats', async (req, res) => {
     try {
       const stats = {
-        totalUsers: (await db.prepare('SELECT COUNT(*) as count FROM users').get())?.count || 0,
-        activeUsers: (await db.prepare("SELECT COUNT(*) as count FROM users WHERE paid_until > datetime('now')").get())?.count || 0,
-        blockedUsers: (await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_blocked = 1').get())?.count || 0,
-        totalMessages: (await db.prepare('SELECT COUNT(*) as count FROM messages').get())?.count || 0,
-        flaggedConversations: (await db.prepare('SELECT COUNT(*) as count FROM flagged_conversations WHERE reviewed = 0').get())?.count || 0,
-        criticalWords: (await db.prepare('SELECT COUNT(*) as count FROM critical_words').get())?.count || 0,
-        totalRevenue: (await db.prepare('SELECT SUM(amount) as total FROM payment_logs WHERE status = "succeeded"').get())?.total || 0,
-        helpRequests: (await db.prepare('SELECT COUNT(*) as count FROM help_requests WHERE resolved = 0').get())?.count || 0
+        totalUsers: (await db.prepare(Q.STATS_TOTAL_USERS).get())?.count || 0,
+        activeUsers: (await db.prepare(Q.STATS_ACTIVE_USERS).get())?.count || 0,
+        blockedUsers: (await db.prepare(Q.STATS_BLOCKED_USERS).get())?.count || 0,
+        totalMessages: (await db.prepare(Q.STATS_TOTAL_MESSAGES).get())?.count || 0,
+        flaggedConversations: (await db.prepare(Q.STATS_FLAGGED_CONV).get())?.count || 0,
+        criticalWords: (await db.prepare(Q.STATS_CRITICAL_WORDS).get())?.count || 0,
+        totalRevenue: (await db.prepare(Q.STATS_TOTAL_REVENUE).get())?.total || 0,
+        helpRequests: (await db.prepare(Q.STATS_HELP_REQUESTS).get())?.count || 0
       };
 
       res.json(stats);
@@ -793,30 +480,13 @@ function createAdminRoutes(db) {
   router.get('/help-requests', async (req, res) => {
     try {
       const { resolved } = req.query;
-      
-      let query = 'SELECT * FROM help_requests';
-      const params = [];
-      
-      if (resolved !== undefined) {
-        query += ' WHERE resolved = ?';
-        params.push(resolved === 'true' ? 1 : 0);
-      }
-      
-      query += ' ORDER BY request_time DESC LIMIT 100';
-      
-      const requests = await db.prepare(query).all(...params);
-      
+
+      const hq = Q.HELP_REQUESTS(resolved);
+      const requests = await db.prepare(hq.sql).all(...hq.params);
+
       // Get emergency contacts for each request's country
       const results = await Promise.all(requests.map(async request => {
-        const contacts = await db.prepare(`
-          SELECT service_type, service_name, phone_international, phone_local, email
-          FROM emergency_contacts
-          WHERE country_code = (
-            SELECT country_code FROM users WHERE id = ?
-          )
-          AND service_type IN ('police', 'ambulance', 'hospital', 'emergency')
-          AND is_active = 1
-        `).all(request.user_id);
+        const contacts = await db.prepare(Q.HELP_REQUEST_CONTACTS).all(request.user_id);
 
         return {
           ...request,
@@ -841,7 +511,7 @@ function createAdminRoutes(db) {
       const requestId = req.params.id;
       
       // Get help request
-      const request = await db.prepare('SELECT * FROM help_requests WHERE id = ?').get(requestId);
+      const request = await db.prepare(Q.HELP_REQUEST_BY_ID).get(requestId);
       
       if (!request) {
         return res.status(404).json({ error: 'Help request not found' });
@@ -861,33 +531,10 @@ function createAdminRoutes(db) {
       };
       
       // Find emergency contacts in database with coordinates
-      const emergencyContacts = await db.prepare(`
-        SELECT * FROM emergency_contacts
-        WHERE country_code = (SELECT country_code FROM users WHERE id = ?)
-        AND service_type IN ('police', 'ambulance', 'hospital', 'fire')
-        AND latitude IS NOT NULL
-        AND longitude IS NOT NULL
-        AND is_active = 1
-      `).all(request.user_id);
-      
+      const emergencyContacts = await db.prepare(Q.HELP_NEARBY_CONTACTS).all(request.user_id);
+
       // Find users who offer emergency services within 50km
-      const emergencyUsers = await db.prepare(`
-        SELECT 
-          id, full_name, phone, email, gender, offerings,
-          city, street, location_latitude, location_longitude
-        FROM users
-        WHERE 
-          is_verified = 1
-          AND (
-            offerings LIKE '%Доктор%' 
-            OR offerings LIKE '%Болница%'
-            OR offerings LIKE '%Бърза помощ%'
-            OR offerings LIKE '%Полиция%'
-          )
-          AND location_latitude IS NOT NULL
-          AND location_longitude IS NOT NULL
-          AND paid_until > datetime('now')
-      `).all();
+      const emergencyUsers = await db.prepare(Q.HELP_NEARBY_USERS).all();
       
       // Calculate distances and filter by 50km
       const nearbyServices = [
@@ -951,11 +598,7 @@ function createAdminRoutes(db) {
       const requestId = req.params.id;
       const { admin_notes } = req.body;
       
-      await db.prepare(`
-        UPDATE help_requests 
-        SET resolved = 1, resolved_at = datetime('now'), admin_notes = ?
-        WHERE id = ?
-      `).run(admin_notes || null, requestId);
+      await db.prepare(Q.HELP_RESOLVE).run(admin_notes || null, requestId);
       
       res.json({ success: true });
       
@@ -982,11 +625,7 @@ function createAdminRoutes(db) {
       }
       
       // Update user
-      await db.prepare(`
-        UPDATE users 
-        SET offerings = ?, is_verified = 1
-        WHERE id = ?
-      `).run(offerings, userId);
+      await db.prepare(Q.USER_VERIFY).run(offerings, userId);
       
       res.json({ success: true, message: 'User verified and offerings set' });
       
@@ -1001,11 +640,7 @@ function createAdminRoutes(db) {
     try {
       const userId = req.params.id;
       
-      await db.prepare(`
-        UPDATE users 
-        SET is_verified = 0
-        WHERE id = ?
-      `).run(userId);
+      await db.prepare(Q.USER_UNVERIFY).run(userId);
       
       res.json({ success: true, message: 'User verification removed. Offerings can now be edited by user.' });
       
@@ -1027,7 +662,7 @@ function createAdminRoutes(db) {
         return res.status(400).json({ error: 'Maximum 3 offerings allowed' });
       }
       
-      await db.prepare('UPDATE users SET offerings = ? WHERE id = ?').run(offerings || null, userId);
+      await db.prepare(Q.USER_SET_OFFERINGS).run(offerings || null, userId);
       
       res.json({ success: true });
       
@@ -1044,12 +679,7 @@ function createAdminRoutes(db) {
   // Get user for payment override
   router.get('/payment-override/user/:phone', async (req, res) => {
     try {
-      const user = await db.prepare(`
-        SELECT id, phone, full_name, subscription_active, 
-               paid_until, emergency_active, emergency_active_until
-        FROM users 
-        WHERE phone = ?
-      `).get(req.params.phone);
+      const user = await db.prepare(Q.OVERRIDE_GET_USER).get(req.params.phone);
       
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
@@ -1083,35 +713,15 @@ function createAdminRoutes(db) {
       newDate.setDate(newDate.getDate() + parseInt(days));
       
       if (action === 'login') {
-        await db.prepare(`
-          UPDATE users 
-          SET subscription_active = 1,
-              paid_until = ?,
-              manually_activated = 1,
-              activation_reason = ?,
-              activated_by_admin_id = 1
-          WHERE id = ?
-        `).run(newDate.toISOString(), reason, userId);
+        await db.prepare(Q.OVERRIDE_APPLY_LOGIN).run(newDate.toISOString(), reason, userId);
       } else if (action === 'emergency') {
-        await db.prepare(`
-          UPDATE users 
-          SET emergency_active = 1,
-              emergency_active_until = ?,
-              manually_activated = 1,
-              activation_reason = ?,
-              activated_by_admin_id = 1
-          WHERE id = ?
-        `).run(newDate.toISOString(), reason, userId);
+        await db.prepare(Q.OVERRIDE_APPLY_EMERGENCY).run(newDate.toISOString(), reason, userId);
       } else {
         return res.status(400).json({ error: 'Invalid action. Use "login" or "emergency"' });
       }
       
       // Log override
-      await db.prepare(`
-        INSERT INTO payment_overrides 
-        (admin_id, user_id, action, days, reason, created_at)
-        VALUES (1, ?, ?, ?, ?, datetime('now'))
-      `).run(userId, action, days, reason);
+      await db.prepare(Q.OVERRIDE_INSERT_LOG).run(userId, action, days, reason);
       
       res.json({ success: true });
       
@@ -1124,19 +734,7 @@ function createAdminRoutes(db) {
   // Get override history
   router.get('/payment-override/history', async (req, res) => {
     try {
-      const history = await db.prepare(`
-        SELECT 
-          po.created_at,
-          u.phone,
-          po.action,
-          po.days,
-          po.reason,
-          'admin' as admin_username
-        FROM payment_overrides po
-        JOIN users u ON po.user_id = u.id
-        ORDER BY po.created_at DESC
-        LIMIT 50
-      `).all();
+      const history = await db.prepare(Q.OVERRIDE_HISTORY).all();
       
       res.json(history);
     } catch (err) {
@@ -1148,13 +746,7 @@ function createAdminRoutes(db) {
   // Get all users (for static objects management)
   router.get('/users', async (req, res) => {
     try {
-      const users = await db.prepare(`
-        SELECT id, phone, full_name, offerings, working_hours,
-               latitude, longitude, is_static_object, profile_photo_url,
-               created_from_signal_id, created_at
-        FROM users
-        ORDER BY is_static_object DESC, id DESC
-      `).all();
+      const users = await db.prepare(Q.STATIC_USERS_LIST).all();
       
       res.json({ users });
     } catch (err) {
@@ -1169,53 +761,53 @@ function createAdminRoutes(db) {
       const { userId } = req.params;
       const { phone, password, full_name, offerings, working_hours, latitude, longitude } = req.body;
       
-      const updateFields = [];
+      const cols = [];
       const values = [];
-      
+
       if (phone !== undefined) {
-        updateFields.push('phone = ?');
+        cols.push('phone');
         values.push(phone);
       }
-      
+
       if (password) {
         const bcrypt = require('bcryptjs');
         const hash = bcrypt.hashSync(password, 10);
-        updateFields.push('password_hash = ?');
+        cols.push('password_hash');
         values.push(hash);
       }
-      
+
       if (full_name !== undefined) {
-        updateFields.push('full_name = ?');
+        cols.push('full_name');
         values.push(full_name);
       }
-      
+
       if (offerings !== undefined) {
-        updateFields.push('offerings = ?');
+        cols.push('offerings');
         values.push(offerings);
       }
-      
+
       if (working_hours !== undefined) {
-        updateFields.push('working_hours = ?');
+        cols.push('working_hours');
         values.push(working_hours);
       }
-      
+
       if (latitude !== undefined) {
-        updateFields.push('latitude = ?');
+        cols.push('latitude');
         values.push(latitude);
       }
-      
+
       if (longitude !== undefined) {
-        updateFields.push('longitude = ?');
+        cols.push('longitude');
         values.push(longitude);
       }
-      
-      if (updateFields.length === 0) {
+
+      if (cols.length === 0) {
         return res.status(400).json({ error: 'No fields to update' });
       }
-      
+
       values.push(userId);
-      
-      const sql = `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`;
+
+      const { sql } = Q.UPDATE_USER(cols);
       await db.prepare(sql).run(...values);
       
       res.json({ success: true, message: 'User updated' });
@@ -1230,8 +822,8 @@ function createAdminRoutes(db) {
     try {
       const { userId } = req.params;
       
-      await db.prepare('DELETE FROM users WHERE id = ?').run(userId);
-      
+      await db.prepare(Q.DELETE_USER).run(userId);
+
       res.json({ success: true, message: 'User deleted' });
     } catch (err) {
       console.error('Delete user error:', err);
@@ -1259,8 +851,8 @@ function createAdminRoutes(db) {
     // и за PostgreSQL (wrapper-ът връща Promise).
     const dbType = getDatabaseType();
     try {
-      const userCount = await await db.prepare('SELECT COUNT(*) as count FROM users').get();
-      const sessionCount = await await db.prepare('SELECT COUNT(*) as count FROM sessions').get();
+      const userCount = await await db.prepare(Q.ECOSYSTEM_USER_COUNT).get();
+      const sessionCount = await await db.prepare(Q.ECOSYSTEM_SESSION_COUNT).get();
       status.services.chat = {
         status: 'running',
         port: process.env.CHAT_PORT || 3000,
@@ -1281,10 +873,7 @@ function createAdminRoutes(db) {
 
     // ── Database tables check (DB-agnostic) ──
     try {
-      const tablesQuery = dbType === 'postgresql'
-        ? "SELECT tablename AS name FROM pg_tables WHERE schemaname='public' ORDER BY tablename"
-        : "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
-      const tables = await await db.prepare(tablesQuery).all();
+      const tables = await await db.prepare(Q.ECOSYSTEM_TABLES).all();
       status.database.tables = tables.map(t => t.name);
       status.database.tableCount = tables.length;
     } catch (err) {
@@ -1395,7 +984,7 @@ function createAdminRoutes(db) {
     }
 
     // ── .env config check ──
-    const envVars = ['CHAT_PORT', 'ECO3_PORT', 'DB_TYPE', 'NODE_ENV', 'ALLOWED_ORIGINS', 'ANTHROPIC_API_KEY'];
+    const envVars = ['CHAT_PORT', 'ECO3_PORT', 'CHAT_DB_TYPE', 'NODE_ENV', 'ALLOWED_ORIGINS', 'ANTHROPIC_API_KEY'];
     envVars.forEach(v => {
       const val = process.env[v];
       if (!val) {

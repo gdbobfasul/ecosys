@@ -14,6 +14,7 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', 'configs', '.env') });
 const { initializeDatabase } = require('../utils/database');
 const { pickReply } = require('./autoreply-banks');
+const Q = require('../queries').fillSystemReplies; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 const filllog = require('../../shared/debug-helper').create('filldata');
 
 const MAX = Math.max(1, Math.min(20000, parseInt(process.argv[2], 10) || 500));
@@ -26,9 +27,7 @@ const MAX = Math.max(1, Math.min(20000, parseInt(process.argv[2], 10) || 500));
   // ── Открий кои колони ползва messages ──
   let FROM, TO, UKEY;
   try {
-    const cols = await db.prepare(
-      "SELECT column_name FROM information_schema.columns WHERE table_name = 'messages'"
-    ).all();
+    const cols = await db.prepare(Q.MESSAGES_COLUMNS).all();
     const cset = new Set(cols.map(c => c.column_name || c.COLUMN_NAME));
     if (cset.has('from_user_id') && cset.has('to_user_id')) { FROM = 'from_user_id'; TO = 'to_user_id'; UKEY = 'id'; }
     else if (cset.has('from_phone') && cset.has('to_phone')) { FROM = 'from_phone'; TO = 'to_phone'; UKEY = 'phone'; }
@@ -39,26 +38,12 @@ const MAX = Math.max(1, Math.min(20000, parseInt(process.argv[2], 10) || 500));
   }
   console.log(`  колони на messages: ${FROM} / ${TO} (ключ users.${UKEY})`);
 
-  const sys = await db.prepare(
-    'SELECT id, phone, country_code FROM users WHERE COALESCE(is_system,0) = 1'
-  ).all();
+  const sys = await db.prepare(Q.SELECT_SYSTEM_USERS).all();
   if (!sys.length) { console.log('  Няма системни потребители (пусни опция 60 първо).'); process.exit(0); }
   console.log(`  системни потребители: ${sys.length}`);
 
-  const findUnanswered = db.prepare(
-    `SELECT DISTINCT ON (m.${FROM}) m.${FROM} AS sender, m.text, m.created_at
-       FROM messages m
-       JOIN users u ON u.${UKEY} = m.${FROM}
-      WHERE m.${TO} = ?
-        AND COALESCE(u.is_system,0) = 0
-        AND m.text IS NOT NULL
-        AND NOT EXISTS (
-          SELECT 1 FROM messages r
-           WHERE r.${FROM} = ? AND r.${TO} = m.${FROM} AND r.created_at >= m.created_at
-        )
-      ORDER BY m.${FROM}, m.created_at DESC`
-  );
-  const insertReply = db.prepare(`INSERT INTO messages (${FROM}, ${TO}, text) VALUES (?, ?, ?)`);
+  const findUnanswered = db.prepare(Q.FIND_UNANSWERED(FROM, TO, UKEY));
+  const insertReply = db.prepare(Q.INSERT_REPLY(FROM, TO));
 
   let replied = 0;
   const byIntent = {};

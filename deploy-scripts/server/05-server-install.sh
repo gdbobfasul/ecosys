@@ -649,11 +649,11 @@ echo -e "  ${GREEN}✓ .env: $GLOBAL_ENV (chat + eco-3 четат директн
 # Прочети ключови стойности от .env за използване в следващите стъпки
 if [ -f "$GLOBAL_ENV" ]; then
     _env_val() { grep "^$1=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '\r'; }
-    ENV_DB_TYPE=$(_env_val DB_TYPE)
-    ENV_DB_FILE=$(_env_val SQLITE_DB_FILE)
+    ENV_DB_TYPE=$(_env_val CHAT_DB_TYPE)
+    ENV_DB_FILE=$(_env_val CHAT_SQLITE_DB_FILE)
     [ -n "$ENV_DB_TYPE" ] && DB_TYPE="$ENV_DB_TYPE" || DB_TYPE="sqlite"
     [ -n "$ENV_DB_FILE" ] && SQLITE_DB="$PRIVATE_DIR/chat/$ENV_DB_FILE"
-    echo -e "  ${GREEN}✓ .env: DB_TYPE=${DB_TYPE}, SQLITE_DB_FILE=${ENV_DB_FILE:-amschat.db}${NC}"
+    echo -e "  ${GREEN}✓ .env: CHAT_DB_TYPE=${DB_TYPE}, CHAT_SQLITE_DB_FILE=${ENV_DB_FILE:-amschat.db}${NC}"
 fi
 
 # deploy-scripts/, docs/, tests/ — пълен sync с --delete (нямат runtime data)
@@ -963,7 +963,7 @@ fi
 print_step "СТЪПКА 8: База данни (chat)"
 
 # Цялата chat DB логика е делегирана на 07-setup-database.sh.
-# Той чете DB_TYPE от .env и прави всичко автоматично:
+# Той чете CHAT_DB_TYPE от .env и прави всичко автоматично:
 #   PostgreSQL → създава потребител+база (от .env), зарежда 19-те таблици
 #   SQLite     → създава файла, зарежда схемата
 # Без интерактивни въпроси. Без ръчна намеса.
@@ -971,11 +971,11 @@ DB_SETUP_SCRIPT="$STAGING/deploy-scripts/server/07-setup-database.sh"
 [ -f "$DB_SETUP_SCRIPT" ] || DB_SETUP_SCRIPT="${PROJECT_DIR}/deploy-scripts/server/07-setup-database.sh"
 
 # Определи типа от .env (за --force флага)
-DB_TYPE_ENV=$(grep "^DB_TYPE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r' | tr '[:upper:]' '[:lower:]')
+DB_TYPE_ENV=$(grep "^CHAT_DB_TYPE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r' | tr '[:upper:]' '[:lower:]')
 DB_TYPE_ENV="${DB_TYPE_ENV:-sqlite}"
 
 if [ -f "$DB_SETUP_SCRIPT" ]; then
-    echo -e "  ${CYAN}DB_TYPE от .env: ${DB_TYPE_ENV} — пускам 07-setup-database.sh${NC}"
+    echo -e "  ${CYAN}CHAT_DB_TYPE от .env: ${DB_TYPE_ENV} — пускам 07-setup-database.sh${NC}"
     RESET_FLAG=""
     if [ "${DROP_DB:-0}" = "1" ]; then
         RESET_FLAG="--reset"

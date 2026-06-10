@@ -1,5 +1,6 @@
-// Version: 1.0093
+// Version: 1.0094
 const express = require('express');
+const Q = require('../queries').help; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 
 function createHelpRoutes(db) {
   const router = express.Router();
@@ -15,14 +16,7 @@ function createHelpRoutes(db) {
       }
       
       // Get user data
-      const user = await db.prepare(`
-        SELECT 
-          id, phone, full_name, email, gender, birth_date,
-          country, city, street, 
-          paid_until, payment_amount, payment_currency,
-          help_button_uses, help_button_reset_date
-        FROM users WHERE id = ?
-      `).get(userId);
+      const user = await db.prepare(Q.EMERGENCY_GET_USER).get(userId);
       
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
@@ -81,14 +75,7 @@ function createHelpRoutes(db) {
       const streetAddress = user.street || 'Unknown';
       
       // Create help request
-      const helpRequest = await db.prepare(`
-        INSERT INTO help_requests (
-          user_id, phone, full_name, email, gender, age,
-          country, city, street, street_number,
-          latitude, longitude,
-          charge_amount, charge_currency
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(
+      const helpRequest = await db.prepare(Q.EMERGENCY_INSERT_REQUEST).run(
         user.id,
         user.phone,
         user.full_name,
@@ -110,14 +97,7 @@ function createHelpRoutes(db) {
       paidUntil.setDate(paidUntil.getDate() - 15); // Subtract 15 days
       
       // Update user record
-      await db.prepare(`
-        UPDATE users 
-        SET 
-          paid_until = ?,
-          help_button_uses = ?,
-          help_button_reset_date = ?
-        WHERE id = ?
-      `).run(
+      await db.prepare(Q.EMERGENCY_UPDATE_USER).run(
         paidUntil.toISOString(),
         helpUses + 1,
         newResetDate,
@@ -150,30 +130,14 @@ function createHelpRoutes(db) {
       const userId = req.user.id;
       
       // Get user's country
-      const user = await db.prepare('SELECT country_code, country FROM users WHERE id = ?').get(userId);
+      const user = await db.prepare(Q.CONTACTS_GET_USER).get(userId);
       
       if (!user || !user.country_code) {
         return res.status(404).json({ error: 'Country not found in profile' });
       }
       
       // Get emergency contacts for this country
-      const contacts = await db.prepare(`
-        SELECT 
-          service_type, service_name, 
-          phone_international, phone_local,
-          email, address, city
-        FROM emergency_contacts
-        WHERE country_code = ? AND is_active = 1
-        ORDER BY 
-          CASE service_type
-            WHEN 'emergency' THEN 1
-            WHEN 'ambulance' THEN 2
-            WHEN 'police' THEN 3
-            WHEN 'fire' THEN 4
-            WHEN 'hospital' THEN 5
-            ELSE 6
-          END
-      `).all(user.country_code);
+      const contacts = await db.prepare(Q.CONTACTS_GET_BY_COUNTRY).all(user.country_code);
       
       res.json({
         country: user.country,
@@ -192,12 +156,7 @@ function createHelpRoutes(db) {
     try {
       const userId = req.user.id;
       
-      const user = await db.prepare(`
-        SELECT 
-          help_button_uses, help_button_reset_date, 
-          paid_until, payment_amount, payment_currency
-        FROM users WHERE id = ?
-      `).get(userId);
+      const user = await db.prepare(Q.AVAILABILITY_GET_USER).get(userId);
       
       if (!user) {
         return res.status(404).json({ error: 'User not found' });

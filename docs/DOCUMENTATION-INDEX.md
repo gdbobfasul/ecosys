@@ -19,6 +19,7 @@
 - **WHATS-NEW-v2.0.md** - Промени във версия 2.0
 - **MATCHMAKING-IMPLEMENTATION-SUMMARY.md** - Matchmaking имплементация (v3.0)
 - **ADMIN-PAGES-ACCESS.md** - Достъп до админ страниците (IP whitelist + URL параметър)
+- **DOCKER-WSL2-VMCOMPUTE-FIX.md** - Docker/WSL2 не тръгват (vmcompute „General access denied") — диагностика, in-place repair на Windows, алтернатива нативен PostgreSQL
 
 ### 🪙 Token Project (`/private/token/docs/`)
 

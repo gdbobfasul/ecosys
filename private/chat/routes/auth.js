@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const { validatePhone, validatePassword, validateName, validateGender } = require('../utils/validation');
+const Q = require('../queries').auth; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 let debug;
 try { debug = require('../../shared/debug-helper').create('chat'); }
 catch (e) { debug = { scoped: () => () => {}, error: () => {}, stage: () => {}, info: () => {}, warn: () => {} }; }
@@ -28,7 +29,7 @@ function createAuthRoutes(db) {
       log('1');
 
       // Get ALL users with this phone number
-      const users = await db.prepare('SELECT * FROM users WHERE phone = ?').all(phone);
+      const users = await db.prepare(Q.LOGIN_FIND_USERS).all(phone);
 
       if (users.length === 0) {
         // No user with this phone exists
@@ -53,14 +54,13 @@ function createAuthRoutes(db) {
       if (!matchedUser) {
         // Phone exists but wrong password - could be different account
         // Increment failed attempts for all accounts with this phone
-        await db.prepare('UPDATE users SET failed_login_attempts = failed_login_attempts + 1 WHERE phone = ?').run(phone);
-        
+        await db.prepare(Q.LOGIN_INCREMENT_FAILED).run(phone);
+
         // Check if any account hit 3 attempts
-        const toBlock = await db.prepare('SELECT id FROM users WHERE phone = ? AND failed_login_attempts >= 3').all(phone);
+        const toBlock = await db.prepare(Q.LOGIN_FIND_TO_BLOCK).all(phone);
         if (toBlock.length > 0) {
           const ids = toBlock.map(u => u.id);
-          const placeholders = ids.map(() => '?').join(',');
-          await db.prepare(`UPDATE users SET is_blocked = 1, blocked_reason = 'Failed login attempts' WHERE id IN (${placeholders})`).run(...ids);
+          await db.prepare(Q.LOGIN_BLOCK_BY_IDS(ids.length)).run(...ids);
         }
 
         log('изход: грешна парола');
@@ -82,7 +82,7 @@ function createAuthRoutes(db) {
       }
 
       // Reset failed attempts on successful login
-      await db.prepare('UPDATE users SET failed_login_attempts = 0 WHERE id = ?').run(matchedUser.id);
+      await db.prepare(Q.LOGIN_RESET_FAILED).run(matchedUser.id);
 
       // Check if paid
       const paidUntil = new Date(matchedUser.paid_until);
@@ -122,15 +122,12 @@ function createAuthRoutes(db) {
       }
 
       // login route записва device_type в базата
-      await db.prepare(`
-        INSERT INTO sessions (id, user_id, token, expires_at, device_type)
-        VALUES (?, ?, ?, ?, ?)
-      `).run(uuidv4(), matchedUser.id, token, expiresAt.toISOString(), device_type);
+      await db.prepare(Q.LOGIN_INSERT_SESSION).run(uuidv4(), matchedUser.id, token, expiresAt.toISOString(), device_type);
 
       // last_login е TEXT колона → подаваме ISO низ като ПАРАМЕТЪР. (Преди беше
       // datetime("now"), което pgify прави на now() = timestamptz → PG отказва да
       // го запише в TEXT и хвърля → логинът гърмеше с 500 СЛЕД като сесията е създадена.)
-      await db.prepare('UPDATE users SET last_login = ? WHERE id = ?').run(new Date().toISOString(), matchedUser.id);
+      await db.prepare(Q.LOGIN_UPDATE_LAST_LOGIN).run(new Date().toISOString(), matchedUser.id);
 
       log('край → 200');
       res.json({
@@ -177,7 +174,7 @@ function createAuthRoutes(db) {
       log('2');
 
       // Check if THIS phone + password combo exists
-      const existing = await db.prepare('SELECT id FROM users WHERE phone = ? AND password_hash = ?').get(phone, passwordHash);
+      const existing = await db.prepare(Q.REGISTER_FIND_EXISTING).get(phone, passwordHash);
       if (existing) {
         return res.status(400).json({ error: 'This phone + password combination already exists' });
       }
@@ -186,10 +183,7 @@ function createAuthRoutes(db) {
       // Create user (unpaid initially)
       const paidUntil = new Date('2000-01-01').toISOString();
 
-      const result = await db.prepare(`
-        INSERT INTO users (phone, password_hash, full_name, gender, height_cm, weight_kg, country, city, village, street, workplace, paid_until, payment_amount, payment_currency)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'EUR')
-      `).run(phone, passwordHash, fullName, gender, heightCm || null, weightKg || null, country || null, city || null, village || null, street || null, workplace || null, paidUntil);
+      const result = await db.prepare(Q.REGISTER_INSERT_USER).run(phone, passwordHash, fullName, gender, heightCm || null, weightKg || null, country || null, city || null, village || null, street || null, workplace || null, paidUntil);
 
       log('край → 200');
       res.json({
@@ -210,7 +204,7 @@ function createAuthRoutes(db) {
     try {
       const token = req.headers.authorization?.replace('Bearer ', '');
       if (token) {
-        await db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
+        await db.prepare(Q.LOGOUT_DELETE_SESSION).run(token);
       }
       res.json({ success: true });
     } catch (err) {

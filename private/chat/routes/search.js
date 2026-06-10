@@ -1,5 +1,6 @@
-// Version: 1.0093
+// Version: 1.0094
 const express = require('express');
+const Q = require('../queries').search; // набор builder-функции според CHAT_DB_TYPE (pg/sqlite)
 
 // Haversine formula for calculating distance between two coordinates
 function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -37,19 +38,10 @@ function createSearchRoutes(db) {
       
       // Type 1: EXACT SEARCH (all 5 fields required)
       if (phone && fullName && city && age && codeWord) {
-        const result = await db.prepare(`
-          SELECT id, phone, full_name, city, age, gender
-          FROM users
-          WHERE phone = ? 
-            AND full_name = ? 
-            AND city = ? 
-            AND age = ? 
-            AND code_word = ?
-            AND age >= 18
-            AND id != ?
-        `).get(phone, fullName, city, age, codeWord, user.id);
-        
-        return res.json({ 
+        const { sql, params } = Q.buildFreeExact({ phone, fullName, city, age, codeWord, userId: user.id });
+        const result = await db.prepare(sql).get(...params);
+
+        return res.json({
           type: 'exact', 
           results: result ? [result] : [],
           message: result ? 'User found' : 'No user found with these exact details'
@@ -58,17 +50,10 @@ function createSearchRoutes(db) {
       
       // Type 2: BY CITY (only city filled)
       if (city && !phone && !fullName && !age && !codeWord) {
-        const results = await db.prepare(`
-          SELECT id, phone, full_name, city, age, gender
-          FROM users
-          WHERE city = ? 
-            AND age >= 18
-            AND id != ?
-          ORDER BY RANDOM()
-          LIMIT 5
-        `).all(city, user.id);
-        
-        return res.json({ 
+        const { sql, params } = Q.buildFreeByCity({ city, userId: user.id });
+        const results = await db.prepare(sql).all(...params);
+
+        return res.json({
           type: 'city', 
           results,
           message: `${results.length} random users from ${city}`
@@ -81,17 +66,10 @@ function createSearchRoutes(db) {
           return res.status(400).json({ error: 'Minimum age is 18' });
         }
         
-        const results = await db.prepare(`
-          SELECT id, phone, full_name, city, age, gender
-          FROM users
-          WHERE age = ? 
-            AND age >= 18
-            AND id != ?
-          ORDER BY RANDOM()
-          LIMIT 5
-        `).all(age, user.id);
-        
-        return res.json({ 
+        const { sql, params } = Q.buildFreeByAge({ age, userId: user.id });
+        const results = await db.prepare(sql).all(...params);
+
+        return res.json({
           type: 'age', 
           results,
           message: `${results.length} random users age ${age}`
@@ -100,16 +78,10 @@ function createSearchRoutes(db) {
       
       // Type 4: RANDOM WORLDWIDE (nothing filled)
       if (!phone && !fullName && !city && !age && !codeWord) {
-        const results = await db.prepare(`
-          SELECT id, phone, full_name, city, age, gender
-          FROM users
-          WHERE age >= 18
-            AND id != ?
-          ORDER BY RANDOM()
-          LIMIT 5
-        `).all(user.id);
-        
-        return res.json({ 
+        const { sql, params } = Q.buildFreeRandom({ userId: user.id });
+        const results = await db.prepare(sql).all(...params);
+
+        return res.json({
           type: 'random', 
           results,
           message: `${results.length} random users worldwide`
@@ -150,43 +122,11 @@ function createSearchRoutes(db) {
         return res.status(400).json({ error: 'Your location coordinates required' });
       }
       
-      // Build query
-      let query = `
-        SELECT 
-          id, full_name, phone, gender, birth_date, height_cm, weight_kg,
-          city, country, current_need, offerings,
-          location_latitude, location_longitude,
-          hide_phone, hide_names
-        FROM users
-        WHERE 
-          id != ? 
-          AND is_blocked = 0
-          AND paid_until > datetime('now')
-          AND location_latitude IS NOT NULL
-          AND location_longitude IS NOT NULL
-          AND age >= 18
-      `;
-      
-      const params = [userId];
-      
-      // Add filters
-      if (gender) {
-        query += ' AND gender = ?';
-        params.push(gender);
-      }
-      
-      if (min_height) {
-        query += ' AND height_cm >= ?';
-        params.push(min_height);
-      }
-      
-      if (max_height) {
-        query += ' AND height_cm <= ?';
-        params.push(max_height);
-      }
-      
+      // Build query (диалект-специфичен builder: динамични gender/height условия)
+      const { sql, params } = Q.buildByDistance({ userId, gender, min_height, max_height });
+
       // Get all matching users
-      const users = await db.prepare(query).all(...params);
+      const users = await db.prepare(sql).all(...params);
       
       // Calculate distance and filter
       const results = users
@@ -293,59 +233,13 @@ function createSearchRoutes(db) {
       
       // Get matching offerings for this need (handles emergency mapping)
       const matchingOfferings = getMatchingOfferings(need);
-      
-      // Build offerings conditions dynamically
-      const offeringsConditions = [];
-      const offeringsParams = [];
-      
-      matchingOfferings.forEach(service => {
-        offeringsConditions.push('offerings LIKE ? OR offerings LIKE ? OR offerings LIKE ?');
-        offeringsParams.push(service, service + ',%', '%,' + service + '%');
-      });
-      
-      // Build query - find users who OFFER what I NEED (includes static objects)
-      let query = `
-        SELECT 
-          id, full_name, phone, email, gender, birth_date, height_cm, weight_kg,
-          city, country, current_need, offerings, is_verified,
-          location_latitude, location_longitude,
-          hide_phone, hide_names, is_static_object, profile_photo_url, working_hours
-        FROM users
-        WHERE 
-          id != ? 
-          AND is_blocked = 0
-          AND (paid_until > datetime('now') OR is_static_object = 1)
-          AND location_latitude IS NOT NULL
-          AND location_longitude IS NOT NULL
-          AND (age >= 18 OR is_static_object = 1)
-          AND (${offeringsConditions.join(' OR ')})
-      `;
-      
-      const params = [userId, ...offeringsParams];
-      
-      // Add filters
-      if (gender) {
-        query += ' AND gender = ?';
-        params.push(gender);
-      }
-      
-      if (min_height) {
-        query += ' AND height_cm >= ?';
-        params.push(min_height);
-      }
-      
-      if (max_height) {
-        query += ' AND height_cm <= ?';
-        params.push(max_height);
-      }
-      
-      if (city) {
-        query += ' AND city = ?';
-        params.push(city);
-      }
-      
+
+      // Build query - find users who OFFER what I NEED (includes static objects).
+      // Диалект-специфичен builder: динамични offerings LIKE условия + gender/height/city.
+      const { sql, params } = Q.buildByNeed({ userId, matchingOfferings, gender, min_height, max_height, city });
+
       // Get all matching users
-      const users = await db.prepare(query).all(...params);
+      const users = await db.prepare(sql).all(...params);
       
       // Calculate distance and filter by 50km max
       const results = users

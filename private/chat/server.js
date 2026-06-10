@@ -65,6 +65,7 @@ const createProfileRoutes = require('./routes/profile');
 const createHelpRoutes = require('./routes/help');
 const createSearchRoutes = require('./routes/search');
 const createMatchmakingRoutes = require('./routes/matchmaking');
+const Q = require('./queries').server; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 
 const app = express();
 // Зад nginx reverse proxy — Express трябва да вярва на X-Forwarded-* хедърите,
@@ -153,9 +154,9 @@ async function setupDatabase() {
       let n = 0;
       for (const a of envAccounts()) {
         const hash = await hashPassword(a.pass);
-        const ex = await db.prepare('SELECT id FROM admin_users WHERE username = ?').get(a.user);
-        if (ex) await db.prepare('UPDATE admin_users SET password_hash = ? WHERE username = ?').run(hash, a.user);
-        else await db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)').run(a.user, hash);
+        const ex = await db.prepare(Q.ADMIN_FIND_BY_USERNAME).get(a.user);
+        if (ex) await db.prepare(Q.ADMIN_UPDATE_PASSWORD).run(hash, a.user);
+        else await db.prepare(Q.ADMIN_INSERT).run(a.user, hash);
         n++;
       }
       if (n) console.log(`✅ chat админи/модератори попълнени в admin_users от .env (${n})`);
@@ -249,7 +250,7 @@ const clients = new Map();
 
 // Cleanup expired files every hour
 setInterval(async () => {
-  const expired = await db.prepare("SELECT * FROM temp_files WHERE expires_at < datetime('now')").all();
+  const expired = await db.prepare(Q.TEMP_FILES_EXPIRED_ALL).all();
   
   expired.forEach(file => {
     try {
@@ -261,7 +262,7 @@ setInterval(async () => {
     }
   });
   
-  await db.prepare("DELETE FROM temp_files WHERE expires_at < datetime('now')").run();
+  await db.prepare(Q.TEMP_FILES_DELETE_EXPIRED).run();
   console.log(`🧹 Cleaned up ${expired.length} expired files`);
 }, 60 * 60 * 1000);
 
@@ -275,9 +276,7 @@ wss.on('connection', async (ws, req) => {
     return;
   }
 
-  const session = await db.prepare(`
-    SELECT user_id, expires_at FROM sessions WHERE token = ?
-  `).get(token);
+  const session = await db.prepare(Q.SESSION_FIND_BY_TOKEN).get(token);
 
   if (!session || new Date(session.expires_at) <= new Date()) {
     ws.close(1008, 'Invalid or expired token');
@@ -303,7 +302,7 @@ wss.on('connection', async (ws, req) => {
 
         // Check friendship (числово подреден ключ)
         const [u1, u2] = [Number(userId), toUserId].sort((a, b) => a - b);
-        const friendCheck = await db.prepare('SELECT 1 FROM friends WHERE user_id1 = ? AND user_id2 = ?').get(u1, u2);
+        const friendCheck = await db.prepare(Q.FRIEND_CHECK).get(u1, u2);
 
         if (!friendCheck) {
           ws.send(JSON.stringify({ type: 'error', message: 'Not friends' }));
@@ -316,16 +315,12 @@ wss.on('connection', async (ws, req) => {
         const flagged = await checkCriticalWords(db, sanitizedText, userId, toUserId);
 
         // Save message
-        const stmt = await db.prepare('INSERT INTO messages (from_user_id, to_user_id, text, flagged) VALUES (?, ?, ?, ?)');
+        const stmt = await db.prepare(Q.MESSAGE_INSERT);
         const result = stmt.run(userId, toUserId, sanitizedText, flagged ? 1 : 0);
 
         // Update flagged_conversations with actual message_id
         if (flagged) {
-          await db.prepare(`
-            UPDATE flagged_conversations
-            SET message_id = ?
-            WHERE user_id1 = ? AND user_id2 = ? AND message_id = 0
-          `).run(result.lastInsertRowid, u1, u2);
+          await db.prepare(Q.FLAGGED_UPDATE_MESSAGE_ID).run(result.lastInsertRowid, u1, u2);
         }
 
         const messageData = {
@@ -419,10 +414,10 @@ cron.schedule('0 4 * * *', async () => {
   
   try {
     // Delete all sessions
-    await db.prepare('DELETE FROM sessions').run();
-    
+    await db.prepare(Q.SESSIONS_DELETE_ALL).run();
+
     // Clear session expires
-    await db.prepare('UPDATE users SET session_expires_at = NULL').run();
+    await db.prepare(Q.USERS_CLEAR_SESSION_EXPIRES).run();
     
     console.log('✅ All users logged out');
   } catch (err) {
@@ -444,7 +439,7 @@ const PORT = process.env.CHAT_PORT || 3000;
     
     // Load emergency contacts seed data (only if table is empty)
     if (getDatabaseType() === 'sqlite') {
-      const contactsCount = await db.prepare('SELECT COUNT(*) as count FROM emergency_contacts').get();
+      const contactsCount = await db.prepare(Q.EMERGENCY_CONTACTS_COUNT).get();
       if (contactsCount.count === 0) {
         console.log('📞 Loading emergency contacts seed data...');
         const seedData = fs.readFileSync('database/emergency_contacts_seed.sql', 'utf8');
@@ -453,7 +448,7 @@ const PORT = process.env.CHAT_PORT || 3000;
       }
     } else {
       // PostgreSQL
-      const result = await db.prepare('SELECT COUNT(*) as count FROM emergency_contacts').get();
+      const result = await db.prepare(Q.EMERGENCY_CONTACTS_COUNT).get();
       if (result.count === 0) {
         console.log('📞 Loading emergency contacts seed data...');
         const seedData = fs.readFileSync('database/emergency_contacts_seed.sql', 'utf8');

@@ -6,7 +6,7 @@
 #   /var/www/kcy-ecosystem/configs/.env
 #
 # Използва имената, които кодът чете:
-#   DB_TYPE, CHAT_PG_HOST, CHAT_PG_PORT, CHAT_PG_DATABASE, CHAT_PG_USER, CHAT_PG_PASSWORD
+#   CHAT_DB_TYPE, CHAT_PG_HOST, CHAT_PG_PORT, CHAT_PG_DATABASE, CHAT_PG_USER, CHAT_PG_PASSWORD
 ##############################################################################
 
 set -e
@@ -277,10 +277,10 @@ echo -e "${CYAN}========================================${NC}\n"
 echo -e "  Global .env: ${GREEN}${GLOBAL_ENV}${NC}"
 echo ""
 
-# ── Типът на базата се определя ИЗЦЯЛО от DB_TYPE в .env ──
+# ── Типът на базата се определя ИЗЦЯЛО от CHAT_DB_TYPE в .env ──
 # Няма detection по psql, няма въпроси. .env казва — .env командва.
-#   DB_TYPE=postgresql → PostgreSQL път (всичко друго се прескача)
-#   DB_TYPE=sqlite     → SQLite път
+#   CHAT_DB_TYPE=postgresql → PostgreSQL път (всичко друго се прескача)
+#   CHAT_DB_TYPE=sqlite     → SQLite път
 #   липсва/невалиден   → FATAL ERROR
 USE_POSTGRESQL=false
 
@@ -289,7 +289,7 @@ if [ ! -f "$GLOBAL_ENV" ]; then
     exit 1
 fi
 
-ENV_DB_TYPE=$(grep "^DB_TYPE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r' | tr '[:upper:]' '[:lower:]' | xargs)
+ENV_DB_TYPE=$(grep "^CHAT_DB_TYPE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r' | tr '[:upper:]' '[:lower:]' | xargs)
 
 # --force флаговете могат да override-нат (за ръчно ползване), иначе .env решава
 if [ "$FORCE_SQLITE" = true ]; then
@@ -300,16 +300,16 @@ fi
 
 case "$ENV_DB_TYPE" in
     postgresql)
-        echo -e "${GREEN}DB_TYPE=postgresql → PostgreSQL${NC}"
+        echo -e "${GREEN}CHAT_DB_TYPE=postgresql → PostgreSQL${NC}"
         USE_POSTGRESQL=true
         ;;
     sqlite)
-        echo -e "${GREEN}DB_TYPE=sqlite → SQLite${NC}"
+        echo -e "${GREEN}CHAT_DB_TYPE=sqlite → SQLite${NC}"
         USE_POSTGRESQL=false
         ;;
     *)
-        echo -e "${RED}✗ FATAL: DB_TYPE в .env е невалиден или липсва${NC}"
-        echo -e "${RED}  Намерено: DB_TYPE='${ENV_DB_TYPE}'${NC}"
+        echo -e "${RED}✗ FATAL: CHAT_DB_TYPE в .env е невалиден или липсва${NC}"
+        echo -e "${RED}  Намерено: CHAT_DB_TYPE='${ENV_DB_TYPE}'${NC}"
         echo -e "${YELLOW}  Допустими стойности: postgresql или sqlite${NC}"
         exit 1
         ;;
@@ -470,14 +470,14 @@ HBAEOF
 else
     echo -e "\n${CYAN}======== SQLite Setup ========${NC}\n"
 
-    # SQLITE_DB_FILE се чете от .env. Без него → FATAL ERROR.
+    # CHAT_SQLITE_DB_FILE се чете от .env. Без него → FATAL ERROR.
     if [ ! -f "$GLOBAL_ENV" ]; then
         echo -e "${RED}✗ .env не е намерен: $GLOBAL_ENV${NC}"
         exit 1
     fi
-    ENV_SQLITE=$(grep "^SQLITE_DB_FILE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
+    ENV_SQLITE=$(grep "^CHAT_SQLITE_DB_FILE=" "$GLOBAL_ENV" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d '\r')
     if [ -z "$ENV_SQLITE" ]; then
-        echo -e "${RED}✗ .env няма SQLITE_DB_FILE${NC}"
+        echo -e "${RED}✗ .env няма CHAT_SQLITE_DB_FILE${NC}"
         echo -e "${RED}  SQLite не може да се настрои без зададен път${NC}"
         exit 1
     fi
@@ -529,7 +529,7 @@ EOF
     echo -e "${GREEN}[2/3] better-sqlite3 драйвер — инсталиран от root npm install${NC}"
 
     # ── .env НЕ се пипа ──
-    # DB_TYPE, SQLITE_DB_FILE, JWT_SECRET, SESSION_SECRET — всичко идва от .env.
+    # CHAT_DB_TYPE, CHAT_SQLITE_DB_FILE, JWT_SECRET, SESSION_SECRET — всичко идва от .env.
     # 07-setup-database.sh само ЧЕТЕ. Ако нещо липсва → беше FATAL ERROR по-горе.
     echo -e "${CYAN}[3/3] .env не се променя — настройките се четат оттам.${NC}"
 

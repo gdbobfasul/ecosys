@@ -1,4 +1,4 @@
-// Version: 1.0097
+// Version: 1.0098
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -6,6 +6,7 @@ const { resolveStripeConfig } = require('../../configs/stripe-config');
 const STRIPE_CFG = resolveStripeConfig(process.env);
 const stripe = require('stripe')(STRIPE_CFG.secretKey);
 const geoip = require('geoip-lite');
+const Q = require('../queries').payment; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 
 // Цените идват от редактируемия файл private/configs/prices-chat.json (по един ценови
 // конфиг за всяко приложение). Смяна там → сменя и таксата (Stripe), и показваната цена.
@@ -106,7 +107,7 @@ function createPaymentRoutes(db) {
       }
 
       const pricing = getPriceForIP(clientIP);
-      const user = await db.prepare('SELECT phone, paid_until, is_blocked FROM users WHERE phone = ?').get(phone);
+      const user = await db.prepare(Q.CONFIRM_FIND_USER).get(phone);
 
       // Calculate new paid_until date
       let paidUntil = new Date();
@@ -120,29 +121,18 @@ function createPaymentRoutes(db) {
 
       if (user) {
         // Update existing user
-        await db.prepare(`
-          UPDATE users
-          SET paid_until = ?,
-              last_login = datetime('now'),
-              is_blocked = 0,
-              blocked_reason = NULL,
-              failed_login_attempts = 0,
-              payment_amount = ?,
-              payment_currency = ?
-          WHERE phone = ?
-        `).run(paidUntil.toISOString(), paymentIntent.amount / 100, paymentIntent.currency, phone);
+        await db.prepare(Q.CONFIRM_UPDATE_USER)
+          .run(paidUntil.toISOString(), paymentIntent.amount / 100, paymentIntent.currency, phone);
       } else {
         // Should not happen, but handle gracefully
         return res.status(400).json({ error: 'User not found - complete registration first' });
       }
 
       // Log payment
-      await db.prepare(`
-        INSERT INTO payment_logs (phone, amount, currency, stripe_payment_id, status, country_code, ip_address, payment_type)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(
-        phone, 
-        paymentIntent.amount / 100, 
+      await db.prepare(Q.CONFIRM_INSERT_PAYMENT_LOG).run(
+        user.id,
+        phone,
+        paymentIntent.amount / 100,
         paymentIntent.currency, 
         paymentIntentId, 
         'succeeded', 
@@ -158,10 +148,8 @@ function createPaymentRoutes(db) {
       expiresAt.setDate(expiresAt.getDate() + 30);
       
       const { v4: uuidv4 } = require('uuid');
-      await db.prepare(`
-        INSERT INTO sessions (id, phone, token, expires_at, device_type)
-        VALUES (?, ?, ?, ?, ?)
-      `).run(uuidv4(), phone, token, expiresAt.toISOString(), 'web');
+      await db.prepare(Q.CONFIRM_INSERT_SESSION)
+        .run(uuidv4(), user.id, token, expiresAt.toISOString(), 'web');
 
       res.json({
         success: true,
@@ -192,12 +180,7 @@ function createPaymentRoutes(db) {
   // Get payment status
   router.get('/status/:userId', async (req, res) => {
     try {
-      const user = await db.prepare(`
-        SELECT subscription_active, paid_until, 
-               emergency_active, emergency_active_until
-        FROM users 
-        WHERE id = ?
-      `).get(req.params.userId);
+      const user = await db.prepare(Q.STATUS_FIND_USER).get(req.params.userId);
       
       if (!user) {
         return res.status(404).json({ error: 'User not found' });

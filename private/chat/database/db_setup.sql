@@ -400,11 +400,22 @@ CREATE TABLE IF NOT EXISTS matchmaking_invitations (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   sender_id INTEGER NOT NULL,
   receiver_id INTEGER NOT NULL,
-  status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'accepted', 'rejected')),
+  status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'accepted', 'rejected', 'blocked')),
   created_at TEXT DEFAULT (datetime('now')),
   responded_at TEXT,
   FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Matchmaking blocks (кой кого е блокирал в matchmaking)
+CREATE TABLE IF NOT EXISTS matchmaking_blocks (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  blocked_user_id INTEGER NOT NULL,
+  created_at TEXT DEFAULT (datetime('now')),
+  UNIQUE(user_id, blocked_user_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (blocked_user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Matchmaking dislikes (up to 500 per user)
@@ -446,4 +457,5 @@ CREATE INDEX IF NOT EXISTS idx_matchmaking_invitations_status ON matchmaking_inv
 CREATE INDEX IF NOT EXISTS idx_matchmaking_dislikes_user ON matchmaking_dislikes(user_id);
 CREATE INDEX IF NOT EXISTS idx_matchmaking_searches_user ON matchmaking_searches(user_id);
 CREATE INDEX IF NOT EXISTS idx_matchmaking_subscriptions_user ON matchmaking_subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_matchmaking_blocks_user ON matchmaking_blocks(user_id);
 

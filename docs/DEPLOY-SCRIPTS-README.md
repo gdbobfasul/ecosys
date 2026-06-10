@@ -142,7 +142,7 @@ ALLOWED_ORIGINS=http://localhost,https://${MAIN_DOMAIN}
 ADMIN_ALLOWED_IPS=127.0.0.1,::1
 
 # ── Database (Chat) ──
-DB_TYPE=sqlite                     # sqlite или postgresql
+CHAT_DB_TYPE=sqlite                     # sqlite или postgresql
 PG_HOST=localhost                  # само за postgresql
 PG_PORT=5432                       # само за postgresql
 PG_DATABASE=ams_chat_db            # само за postgresql

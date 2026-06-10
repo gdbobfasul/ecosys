@@ -256,7 +256,7 @@ Purpose: Mobile client for chat + matchmaking
 
 | Приложение | Порт | База данни | Тип | Страници (`public/<app>/`) |
 |---|---|---|---|---|
-| **Chat (AMS Chat)** | 3000 | `amschat` (PostgreSQL) — `DB_TYPE=postgresql` | **PostgreSQL** (поддържа и SQLite dual) | `index.html`, `public/chat.html`, `public/matchmaking.html`, `public/search.html`, `public/profile.html`, `public/payment.html`, `public/signal.html`, `public/warning.html`, `admin/admin.html`, `admin/admin-matchmaking.html`, `admin/admin-signals.html`, `admin/admin-static-objects.html`, `download/index.html` |
+| **Chat (AMS Chat)** | 3000 | `amschat` (PostgreSQL) — `CHAT_DB_TYPE=postgresql` | **PostgreSQL** (поддържа и SQLite dual) | `index.html`, `public/chat.html`, `public/matchmaking.html`, `public/search.html`, `public/profile.html`, `public/payment.html`, `public/signal.html`, `public/warning.html`, `admin/admin.html`, `admin/admin-matchmaking.html`, `admin/admin-signals.html`, `admin/admin-static-objects.html`, `download/index.html` |
 | **Eco-3** (AI студио) | 3001 | `eco3.db` | SQLite | `index.html`, `admin/index.html` |
 | **Portals** (услуги+игри) | 3002 | `portals.db` | SQLite | `login.html`, `register.html`, `billing.html`, `admin.html`, `index-services.html`, `index-games.html`, `services/{watch20,crypto,charts,calc,pdf,pdf-compress,qr,image,password,text,scraper,ai-listing}.html`, `games/{battle-duel,battle-team,battle-standalone,car-race,car-drift,hero-run,hero-jump,plane-shoot,plane-dodge}.html` |
 | **House-Look-Book (HLB)** | 3010 | `houselookbook` (потр. `hlb_app`, `HLB_PG_*`) | **PostgreSQL** | `index.html`, `gallery.html`, `ranking.html`, `profile.html`, `login.html`, `admin.html` |
@@ -265,7 +265,7 @@ Purpose: Mobile client for chat + matchmaking
 
 **Бележки:**
 - На **PostgreSQL** са **Chat**, **HLB** и **WNB** (отделни бази + отделни потребители с минимум права). Връзката се чете от глобалния `private/configs/.env`.
-- **Chat** е настроен на PostgreSQL (`DB_TYPE=postgresql` в `.env`); кодът поддържа и SQLite dual-режим (`DB_TYPE=sqlite`, файл `SQLITE_DB_FILE`) — виж `docs/chat/CHAT-DATABASE-DUAL.md`.
+- **Chat** е настроен на PostgreSQL (`CHAT_DB_TYPE=postgresql` в `.env`); кодът поддържа и SQLite dual-режим (`CHAT_DB_TYPE=sqlite`, файл `CHAT_SQLITE_DB_FILE`) — виж `docs/chat/CHAT-DATABASE-DUAL.md`.
 - **Portals** е общата сесия/вход — Eco-3 ползва неговия login (споделена сесия).
 - **WNB** FK капан: таблицата `countries` (FK таргет на `posts.country_code`) трябва да е seed-ната, иначе всеки пост дава `posts_country_code_fkey` — seed-ва се при старт на `kcy-wnb` и в деплой скрипт `17-setup-wherenobiz-database.sh`.
 

@@ -21,7 +21,7 @@ AMS Chat supports both SQLite and PostgreSQL databases with automatic switching 
 ### Using SQLite (Default)
 ```bash
 # .env
-DB_TYPE=sqlite
+CHAT_DB_TYPE=sqlite
 
 # Start server
 node server.js
@@ -40,7 +40,7 @@ createdb amschat
 psql amschat < database/postgresql_setup.sql
 
 # .env
-DB_TYPE=postgresql
+CHAT_DB_TYPE=postgresql
 PG_HOST=localhost
 PG_PORT=5432
 PG_DATABASE=amschat
@@ -81,7 +81,7 @@ If PostgreSQL fails, the system automatically falls back to SQLite:
 
 ```bash
 # Database Type
-DB_TYPE=sqlite          # or 'postgresql'
+CHAT_DB_TYPE=sqlite          # or 'postgresql'
 
 # SQLite (default)
 # No additional config needed
@@ -134,7 +134,7 @@ psql amschat < data.sql
 
 **Step 4: Update .env**
 ```bash
-DB_TYPE=postgresql
+CHAT_DB_TYPE=postgresql
 PG_DATABASE=amschat
 # ... other PG config
 ```
@@ -150,12 +150,12 @@ node server.js
 
 ### Test SQLite
 ```bash
-DB_TYPE=sqlite npm test
+CHAT_DB_TYPE=sqlite npm test
 ```
 
 ### Test PostgreSQL
 ```bash
-DB_TYPE=postgresql npm test
+CHAT_DB_TYPE=postgresql npm test
 ```
 
 ---
@@ -169,7 +169,7 @@ The adapter provides a unified API for both databases:
 ```javascript
 const { initializeDatabase, getDatabaseType } = require('./utils/database');
 
-// Auto-selects SQLite or PostgreSQL based on DB_TYPE
+// Auto-selects SQLite or PostgreSQL based on CHAT_DB_TYPE
 const db = await initializeDatabase();
 
 // Check which DB is active
@@ -183,11 +183,11 @@ const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
 
 ```javascript
 // SQLite mode
-DB_TYPE=sqlite
+CHAT_DB_TYPE=sqlite
 db.prepare('SELECT ...').get()  // Synchronous
 
 // PostgreSQL mode
-DB_TYPE=postgresql
+CHAT_DB_TYPE=postgresql
 await db.prepare('SELECT ...').get()  // Async (auto-handled)
 ```
 
@@ -264,7 +264,7 @@ psql amschat < database/postgresql_setup.sql
 node server.js
 
 # Force SQLite mode
-DB_TYPE=sqlite node server.js
+CHAT_DB_TYPE=sqlite node server.js
 ```
 
 ---
