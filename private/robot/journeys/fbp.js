@@ -285,8 +285,9 @@ module.exports = {
         } },
         { label: 'търсене с огромен параметър → 200, без 5xx', run: async (page, c, h) => {
           const r = await sessionRequest(page, h, 'GET', `/api/fbp/search?brand=${encodeURIComponent('B'.repeat(20000))}`);
-          assertStatusIn('търсене огромно', r.status, [200]);
-          if (!r.body || !Array.isArray(r.body.results)) throw new Error('търсене огромно: липсва масив results');
+          // 414 (твърде дълъг URL — отрязан от nginx) е ГРАЦИОЗНО, наравно с 200 (важното е да НЕ е 5xx).
+          assertStatusIn('търсене огромно', r.status, [200, 414]);
+          if (r.status === 200 && (!r.body || !Array.isArray(r.body.results))) throw new Error('търсене огромно: липсва масив results');
         } },
         { label: 'търсене с нечислов price_min/price_max → 200, без 5xx', run: async (page, c, h) => {
           const r = await sessionRequest(page, h, 'GET', '/api/fbp/search?price_min=abc&price_max=xyz');

@@ -123,6 +123,22 @@ for svc in kcy-chat kcy-eco3 kcy-portals kcy-hlb kcy-wnb kcy-diag; do
     fi
 done
 
+# Попълване на админи/модератори от .env (идемпотентно: създава липсващ / обновява паролата).
+# РАБОТА С БАЗАТА — в деплой скрипта, НЕ в server.js. Така след всеки sync (опция 5) админите
+# винаги ги има (иначе при premахнато start-попълване порталният/чат админ изчезва).
+echo -e "${YELLOW}Попълвам админи/модератори от .env...${NC}"
+PD="/var/www/kcy-ecosystem/private"
+seed_js() { [ -f "$1/admins.js" ] && ( cd "$1" && sudo -u "$2" node admins.js ) >/dev/null 2>&1 \
+            && echo -e "  ${GREEN}OK $3 админи${NC}" || echo -e "  ${YELLOW}- $3 попълване пропуснато (провери .env)${NC}"; }
+seed_db() { [ -f "$1/db.js" ] && ( cd "$1" && sudo -u "$2" node -e 'require("./db").seedAdminsAndMods().then(function(){process.exit(0)}).catch(function(e){console.error(e.message);process.exit(1)})' ) >/dev/null 2>&1 \
+            && echo -e "  ${GREEN}OK $3 админи${NC}" || echo -e "  ${YELLOW}- $3 попълване пропуснато (провери .env)${NC}"; }
+seed_js "$PD/portals"         kcy-eco3 "portals"
+seed_js "$PD/chat"            kcy-chat "chat"
+seed_js "$PD/eco-3"           kcy-eco3 "eco-3"
+seed_db "$PD/House-Look-Book" kcy-hlb  "hlb"
+seed_db "$PD/WhereNoBiz"      kcy-wnb  "wnb"
+seed_db "$PD/find-best-price" kcy-fbp  "fbp"
+
 echo ""
 echo -e "${GREEN}OK Сорсът обновен (overlay). БЕЗ npm install, БЕЗ реконфигурация.${NC}"
 echo -e "${CYAN}   nginx не е пипан. Базите/uploads/.env са непокътнати.${NC}"

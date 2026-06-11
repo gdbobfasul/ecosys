@@ -43,24 +43,31 @@ async function fuzzForms(page, rng, navTimeout) {
       try { info = await inp.evaluate((e) => ({ tag: e.tagName.toLowerCase(), type: (e.type || '').toLowerCase(), name: e.name || e.id || '' })); }
       catch (_) { continue; }
       if (['submit', 'button', 'hidden', 'file', 'image', 'reset'].includes(info.type)) continue;
+      // ПРОПУСНИ скрити/невидими полета (напр. в свит <details> блок) — иначе fill/select
+      // чакат пълния таймаут, докато полето стане редактируемо (никога) → роботът „забива".
+      const visible = await inp.isVisible().catch(() => false);
+      if (!visible) continue;
+      // Кратък таймаут на всяко действие → проблемно поле не блокира целия пуск.
+      const T = { timeout: 2500 };
       try {
         if (info.tag === 'select') {
           const opts = await inp.$$('option');
           if (opts.length) {
             const v = await opts[Math.floor(rng() * opts.length)].getAttribute('value');
-            await inp.selectOption(v ? { value: v } : { index: 0 }).catch(() => {});
+            await inp.selectOption(v ? { value: v } : { index: 0 }, T).catch(() => {});
             record.push({ form: i, field: info.name, type: 'select', value: v });
           }
         } else if (info.type === 'checkbox' || info.type === 'radio') {
-          if (rng() > 0.5) { await inp.check().catch(() => {}); record.push({ form: i, field: info.name, type: info.type, value: 'checked' }); }
+          if (rng() > 0.5) { await inp.check(T).catch(() => {}); record.push({ form: i, field: info.name, type: info.type, value: 'checked' }); }
         } else {
           const v = fuzzValue(rng, info.type);
-          await inp.fill(String(v)).catch(() => {});
+          await inp.fill(String(v), T).catch(() => {});
           record.push({ form: i, field: info.name, type: info.type, value: String(v).slice(0, 50) });
         }
       } catch (_) { /* пропусни проблемно поле */ }
     }
     // изпрати формата
+    const urlBefore = page.url();
     try {
       record.push({ form: i, action: 'submit' });
       const submit = await form.$('button[type=submit], input[type=submit], button:not([type])');
@@ -74,6 +81,9 @@ async function fuzzForms(page, rng, navTimeout) {
       }
       await page.waitForTimeout(700);
     } catch (_) { /* формата може да е навигирала */ }
+    // Ако формата е навигирала (напр. register → payment) → останалите форми са от старата
+    // страница (detached). Спри обхождането им — иначе действия по тях чакат/гърмят.
+    if (page.url() !== urlBefore) break;
   }
   return record;
 }
