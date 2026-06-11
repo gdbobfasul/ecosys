@@ -20,17 +20,8 @@ const KEY = String(process.argv[2] || process.env.TOKEN_KEY || 'token').toLowerC
 const cfg = tokenConfig(KEY);
 const db = openDb(KEY);
 
-// Попълни админ/модератор credential-ите от .env при старта (идемпотентно).
-(async () => {
-  try {
-    for (const a of envAccounts(KEY)) {
-      const hash = await bcrypt.hash(a.pass, 10);
-      const ex = db.prepare('SELECT username FROM admins WHERE username=?').get(a.user);
-      if (ex) db.prepare('UPDATE admins SET password_hash=? WHERE username=?').run(hash, a.user);
-      else db.prepare('INSERT INTO admins (username,password_hash) VALUES (?,?)').run(a.user, hash);
-    }
-  } catch (e) { console.error(`⚠️  [${KEY}] попълване на админи пропуснато:`, e.message); }
-})();
+// Админи/модератори НЕ се попълват тук (при старт). Попълват се при подготовката по време
+// на деплой — скрипт 31 вика `node admins.js <key>` (правило „бази при бази"). Виж admins.js.
 
 const indexer = createIndexer(cfg, db);
 indexer.start();

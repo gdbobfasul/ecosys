@@ -145,9 +145,15 @@ module.exports = {
 
   // ── Page 5: User details ──
   USER_DETAILS:
-    `SELECT id, phone, full_name, gender, height_cm, weight_kg,
+    `SELECT id, phone, full_name, gender, birth_date, age, height_cm, weight_kg,
                country, city, village, street, workplace,
-               paid_until, is_blocked, blocked_reason, created_at, last_login
+               email, code_word, current_need, offerings, is_verified, hide_phone, hide_names,
+               profile_photo_url, working_hours,
+               paid_until, payment_amount, payment_currency, subscription_active,
+               emergency_active, emergency_active_until, mm_blocked, is_system,
+               is_blocked, blocked_reason, created_at, last_login,
+               location_country, location_city, location_village, location_street, location_number,
+               location_latitude, location_longitude, location_ip, location_captured_at
         FROM users WHERE id = $1`,
   USER_DETAILS_FLAGGED_COUNT:
     `SELECT COUNT(*) as count FROM flagged_conversations
@@ -342,6 +348,25 @@ module.exports = {
     return { sql: `UPDATE users SET ${setClause} WHERE id = $${i + 1}` };
   },
   DELETE_USER: 'DELETE FROM users WHERE id = $1',
+
+  // ── Преглед на 1 потребител (per-user админ изгледи) ──
+  // Приятели в двете посоки (friends.user_id1 < user_id2). Подава се (userId, userId).
+  ADMIN_USER_FRIENDS:
+    `SELECT u.id AS friend_id, u.full_name, u.phone, u.city, u.country, u.is_blocked, f.created_at
+       FROM friends f JOIN users u ON u.id = f.user_id2 WHERE f.user_id1 = $1
+     UNION ALL
+     SELECT u.id, u.full_name, u.phone, u.city, u.country, u.is_blocked, f.created_at
+       FROM friends f JOIN users u ON u.id = f.user_id1 WHERE f.user_id2 = $2`,
+  ADMIN_USER_SIGNALS:
+    `SELECT id, signal_type, title, working_hours, latitude, longitude, photo_url,
+            status, submitted_at, processed_at, rejection_reason, created_user_id
+       FROM signals WHERE user_id = $1 ORDER BY submitted_at DESC LIMIT 200`,
+  ADMIN_USER_PAYMENTS:
+    `SELECT id, amount, currency, status, payment_type, months, country_code,
+            ip_address, stripe_payment_id, created_at
+       FROM payment_logs WHERE user_id = $1 ORDER BY created_at DESC LIMIT 200`,
+  // Блокиране САМО в matchmaking (не пипа акаунта). $1 = 1/0, $2 = userId.
+  MM_ADMIN_BLOCK_SET: 'UPDATE users SET mm_blocked = $1 WHERE id = $2',
 
   // ── Ecosystem status ──
   ECOSYSTEM_USER_COUNT:    'SELECT COUNT(*) as count FROM users',

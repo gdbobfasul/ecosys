@@ -130,10 +130,8 @@ async function start() {
   if (process.env.HLB_APPLY_SCHEMA !== 'false') {
     try { await applySchema(); console.log('✅ HLB схема приложена/проверена'); }
     catch (e) { console.error('⚠️  HLB applySchema пропуснат:', e.message); }
-    // Всяко приложение попълва САМО своите админи/модератори от .env, при собствения
-    // си старт (идемпотентно — безвредно по всяко време). Виж roles.js.
-    try { await seedAdminsAndMods(); console.log('✅ HLB админи/модератори попълнени от .env'); }
-    catch (e) { console.error('⚠️  HLB попълване на админи пропуснато:', e.message); }
+    // Админи/модератори НЕ се попълват тук (при старт). Попълват се при ПОДГОТОВКАТА на
+    // базата по време на деплой — скрипт 16 вика db.seedAdminsAndMods (правило „бази при бази").
   }
   const h = await checkHealth();
   if (!h.healthy) console.error('⚠️  HLB няма връзка с PostgreSQL:', h.error);

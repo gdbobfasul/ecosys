@@ -13,6 +13,7 @@
     { href: '/chat/admin/admin.html?view=messages',   cls: 'messages', label: 'Потребители + съобщения',   adminOnly: 1 },
     { href: '/chat/admin/admin-signals.html',         cls: 'signals',  label: '📊 Сигнали' },
     { href: '/chat/admin/admin-matchmaking.html',     cls: 'match',    label: '💞 Запознанства' },
+    { href: '/chat/admin/admin-tasks.html',           cls: 'tasks',    label: '📋 Задачи',                 adminOnly: 1 },
     { href: '/chat/admin/admin-static-objects.html',  cls: 'static',   label: '📄 Статични обекти' },
     { href: '/chat/public/payment-override.html',     cls: 'payment',  label: '💳 Плащане (ръчно)',        adminOnly: 1 }
   ];
@@ -30,6 +31,7 @@
     '.ams-adminnav .messages{background:#43a047;}' +
     '.ams-adminnav .signals{background:#00897b;}' +
     '.ams-adminnav .match{background:#d81b60;}' +
+    '.ams-adminnav .tasks{background:#00838f;}' +
     '.ams-adminnav .static{background:#5e35b1;}' +
     '.ams-adminnav .payment{background:#8e24aa;}' +
     '.ams-adminnav .logout{background:#757575;margin-left:auto;}' +

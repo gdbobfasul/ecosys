@@ -1,0 +1,101 @@
+<!-- Version: 1.0001 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Задачи — Admin</title>
+  <link rel="stylesheet" href="/shared/css/common.css?v=1.0176">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f5f5f5; color: #333; padding: 20px; }
+    .header { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .header h1 { color: #333; font-size: 1.4rem; }
+    .filters { background:#fff; border-radius:10px; padding:14px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.08); display:flex; gap:10px; flex-wrap:wrap; }
+    .filters input, .filters select { padding:9px; border:1px solid #d0d7de; border-radius:8px; font:inherit; }
+    .filters button { padding:9px 16px; border:none; border-radius:8px; background:#1e88e5; color:#fff; font-weight:600; cursor:pointer; }
+    .content { background:#fff; border-radius:10px; padding:18px; box-shadow:0 2px 10px rgba(0,0,0,0.1); overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:14px; }
+    th, td { padding:9px; border-bottom:1px solid #eee; text-align:left; vertical-align:top; }
+    th { color:#555; font-weight:600; }
+    .pill { display:inline-block; padding:2px 8px; border-radius:6px; background:#eef; color:#446; font-size:.82em; font-weight:700; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:6px; font-size:.82em; font-weight:700; }
+    .badge.ok{background:#e6f4ea;color:#1e7e34}.badge.bad{background:#fdecea;color:#c62828}
+    button.view { padding:6px 10px; border:none; border-radius:6px; background:#5e35b1; color:#fff; cursor:pointer; font-size:12px; font-weight:600; }
+    .muted { color:#999; }
+    .small { font-size:12px; }
+    .chatbox { background:#f7f8fa; border-radius:8px; padding:10px; margin-top:6px; max-height:300px; overflow:auto; }
+    .line { display:flex; gap:8px; padding:4px 0; border-bottom:1px dashed #e3e6ea; }
+    .from { color:#3949ab; font-size:.85em; min-width:130px; }
+  </style>
+</head>
+<body>
+  <div class="header"><h1>📋 Задачи — преглед</h1></div>
+
+  <div class="filters">
+    <select id="fType">
+      <option value="">Всички видове</option>
+      <option value="local_hands">Remote Local Hands</option>
+      <option value="verify">Истина ли е</option>
+      <option value="other">Друго</option>
+    </select>
+    <input type="text" id="fCountry" placeholder="Държава">
+    <button onclick="loadTasks()">Приложи</button>
+  </div>
+
+  <div class="content" id="list"><p class="muted">Зареждам…</p></div>
+
+  <script>
+    var token = localStorage.getItem('token') || '';
+    function hdr() { var h = {}; if (token) h['Authorization'] = 'Bearer ' + token; return h; }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    function dt(s) { return s ? new Date(s).toLocaleString('bg-BG') : '—'; }
+    function v(x) { return (x == null || x === '') ? '—' : esc(x); }
+    function chk(r) { if (r.status === 401 || r.status === 403) throw new Error('Нямаш админ достъп (логни се в admin.html или ползвай админ IP).'); return r.json(); }
+
+    function loadTasks() {
+      var list = document.getElementById('list');
+      list.innerHTML = '<p class="muted">Зареждам…</p>';
+      var p = new URLSearchParams();
+      var t = document.getElementById('fType').value, c = document.getElementById('fCountry').value;
+      if (t) p.set('type', t); if (c) p.set('country', c);
+      fetch('/api/admin/tasks?' + p.toString(), { headers: hdr(), credentials: 'same-origin' }).then(chk).then(function (d) {
+        var tasks = d.tasks || [];
+        if (!tasks.length) { list.innerHTML = '<p class="muted">Няма задачи.</p>'; return; }
+        list.innerHTML = '<table><thead><tr><th>#</th><th>Вид</th><th>Заглавие</th><th>Държава/Град</th><th>Награда</th><th>Статус</th><th></th></tr></thead><tbody>' +
+          tasks.map(function (x) {
+            return '<tr><td>' + x.id + '</td><td class="small">' + v(x.type) + '</td><td>' + v(x.title) + '</td>' +
+              '<td class="small">' + esc([x.country, x.city].filter(Boolean).join(', ')) + '</td>' +
+              '<td>' + v(x.reward_amount) + ' ' + esc(x.reward_currency || '') + '</td>' +
+              '<td><span class="pill">' + esc(x.status) + '</span></td>' +
+              '<td><button class="view" onclick="openTask(' + x.id + ', this)">💬 Чат</button></td></tr>' +
+              '<tr><td colspan="7"><div id="tc-' + x.id + '"></div></td></tr>';
+          }).join('') + '</tbody></table>';
+      }).catch(function (e) { list.innerHTML = '<p class="muted">⛔ ' + esc(e.message) + '</p>'; });
+    }
+
+    function openTask(id, btn) {
+      var box = document.getElementById('tc-' + id);
+      if (box.innerHTML) { box.innerHTML = ''; return; }
+      box.innerHTML = '<p class="muted small">Зареждам…</p>';
+      fetch('/api/admin/task/' + id, { headers: hdr(), credentials: 'same-origin' }).then(chk).then(function (d) {
+        var ms = d.messages || [], h = '<div class="chatbox">';
+        if (d.task) {
+          h += '<p class="small muted">Автор: ' + v(d.task.author_phone) + ' · Изпълнител: ' + v(d.task.executor_phone) +
+            ' · Награда: ' + v(d.task.reward_amount) + ' ' + esc(d.task.reward_currency || '') +
+            ' · Такса: ' + v(d.task.take_fee_amount) + (d.task.take_fee_paid ? ' <span class="badge ok">платена</span>' : ' <span class="badge bad">неплатена</span>') +
+            (d.task.payment_disputed ? ' · <span class="badge bad">спор за плащане</span>' : '') + '</p>';
+          if (d.task.content) h += '<p class="small">' + esc(d.task.content) + '</p>';
+        }
+        h += ms.length ? ms.map(function (m) { return '<div class="line"><span class="from">' + esc(m.sender_phone) + '</span><span>' + esc(m.text) + '</span><span class="muted small" style="margin-left:auto">' + dt(m.created_at) + '</span></div>'; }).join('') : '<p class="muted small">Няма съобщения по задачата.</p>';
+        h += '</div>';
+        box.innerHTML = h;
+      }).catch(function (e) { box.innerHTML = '<p class="muted small">⛔ ' + esc(e.message) + '</p>'; });
+    }
+
+    loadTasks();
+  </script>
+  <script src="/shared/js/navigation.js?v=1.0195"></script>
+  <script src="/chat/admin/admin-nav.js?v=1.0177"></script>
+</body>
+</html>

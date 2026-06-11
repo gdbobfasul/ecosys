@@ -92,10 +92,8 @@ async function start() {
     catch (e) { console.error('⚠️  WNB applySchema пропуснат:', e.message); }
     try { await seedCountries(); console.log('✅ WNB страни заредени'); }
     catch (e) { console.error('⚠️  WNB seedCountries пропуснат:', e.message); }
-    // Всяко приложение попълва САМО своите админи/модератори от .env, при собствения
-    // си старт (идемпотентно — безвредно по всяко време). Виж roles.js.
-    try { await seedAdminsAndMods(); console.log('✅ WNB админи/модератори попълнени от .env'); }
-    catch (e) { console.error('⚠️  WNB попълване на админи пропуснато:', e.message); }
+    // Админи/модератори НЕ се попълват тук (при старт). Попълват се при ПОДГОТОВКАТА на
+    // базата по време на деплой — скрипт 17 вика db.seedAdminsAndMods (правило „бази при бази").
   }
   const h = await checkHealth();
   if (!h.healthy) console.error('⚠️  WNB няма връзка с PostgreSQL:', h.error);

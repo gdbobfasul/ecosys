@@ -60,24 +60,9 @@ catch (e) { console.error('⚠️  portals games schema:', e.message); }
 try { db.exec("ALTER TABLE portal_bug_reports ADD COLUMN fixed INTEGER NOT NULL DEFAULT 0"); } catch (e) { /* вече съществува */ }
 app.locals.db = db;
 
-// Всяко приложение попълва САМО своите админи/модератори от .env при собствения си
-// старт (идемпотентно — безвредно по всяко време). Кой е админ се решава от roles.js.
-(async () => {
-  try {
-    const bcrypt = require('bcryptjs');
-    const { envAccounts } = require('./roles');
-    const sel = db.prepare('SELECT id FROM portal_users WHERE username = ?');
-    const upd = db.prepare('UPDATE portal_users SET password_hash = ? WHERE username = ?');
-    const ins = db.prepare('INSERT INTO portal_users (username, password_hash) VALUES (?, ?)');
-    let n = 0;
-    for (const a of envAccounts()) {
-      const hash = await bcrypt.hash(a.pass, 10);
-      if (sel.get(a.user)) upd.run(hash, a.user); else ins.run(a.user, hash);
-      n++;
-    }
-    if (n) console.log(`✅ portals админи/модератори попълнени от .env (${n})`);
-  } catch (e) { console.error('⚠️  portals попълване на админи пропуснато:', e.message); }
-})();
+// Админи/модератори НЕ се попълват тук (при старт). Попълват се при ПОДГОТОВКАТА на
+// базата по време на деплой — скрипт 05 вика `node admins.js` (правило „бази при бази").
+// Виж private/portals/admins.js.
 
 // ── Middleware ─────────────────────────────────────────────────
 app.use(express.json({ limit: '1mb' }));

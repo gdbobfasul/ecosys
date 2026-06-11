@@ -4,6 +4,8 @@ const { hashPassword, verifyPassword } = require('../utils/password');
 const { getDatabaseType } = require('../utils/database');
 const { isStaff, roleForUsername } = require('../roles');
 const Q = require('../queries').admin; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
+const MM = require('../queries').matchmaking; // преизползвани за per-user преглед
+const TASKS = require('../queries').tasks;    // преизползвани за задачите в админа
 
 // Debug helper — логва старта/изхода на ecosystem-status за диагностика
 let debug;
@@ -258,6 +260,85 @@ function createAdminRoutes(db) {
       });
     } catch (err) {
       console.error('Get user details error:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // ── ПЪЛЕН преглед на 1 потребител (per-user) — за admin-user-details.html ──
+  // Приятели, сигнали, плащания, matchmaking (критерии/съвпадения/покани) и задачи.
+  router.get('/user-overview/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const user = await db.prepare(Q.USER_DETAILS).get(userId);
+      if (!user) return res.status(404).json({ error: 'User not found' });
+
+      const friends  = await db.prepare(Q.ADMIN_USER_FRIENDS).all(user.id, user.id);
+      const signals  = await db.prepare(Q.ADMIN_USER_SIGNALS).all(user.id);
+      const payments = await db.prepare(Q.ADMIN_USER_PAYMENTS).all(user.id);
+
+      // Matchmaking: критерии → съвпадения (същият алгоритъм като /admin/check, без такса)
+      const criteria = await db.prepare(MM.CRITERIA_GET).get(user.id);
+      let matches = [], dislikes = [];
+      if (criteria) {
+        dislikes = await db.prepare(MM.FIND_DISLIKES).all(user.id);
+        const blocked = (await db.prepare(MM.FIND_BLOCKED).all(user.id, user.id)).map(r => r.blocked_id || r.blocker_id);
+        const built = MM.ADMIN_FIND_MATCHES(user.id, blocked, criteria);
+        matches = await db.prepare(built.sql).all(...built.params);
+      }
+      const invitationsSent     = await db.prepare(MM.INVITATIONS_SENT).all(user.id);
+      const invitationsReceived = await db.prepare(MM.INVITATIONS_RECEIVED).all(user.id);
+
+      // Задачи — адресират се по телефон (author_phone / executor_phone)
+      const tasksAuthored = await db.prepare(TASKS.MINE_AUTHORED).all(user.phone);
+      const tasksTaken    = await db.prepare(TASKS.MINE_TAKEN).all(user.phone);
+
+      res.json({
+        user,
+        friends, signals, payments,
+        matchmaking: { criteria, matches, dislikes, invitationsSent, invitationsReceived, mmBlocked: !!user.mm_blocked },
+        tasks: { authored: tasksAuthored, taken: tasksTaken }
+      });
+    } catch (err) {
+      console.error('user-overview error:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // Блокирай/отблокирай потребител САМО в matchmaking (акаунтът остава активен)
+  router.post('/matchmaking-block', async (req, res) => {
+    try {
+      const { userId, blocked } = req.body || {};
+      if (!userId) return res.status(400).json({ error: 'User ID required' });
+      await db.prepare(Q.MM_ADMIN_BLOCK_SET).run(blocked === false ? 0 : 1, Number(userId));
+      res.json({ success: true, mmBlocked: blocked !== false });
+    } catch (err) {
+      console.error('matchmaking-block error:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // Всички задачи (за admin-tasks.html). Филтри: ?type= &country=
+  router.get('/tasks', async (req, res) => {
+    try {
+      const built = TASKS.buildList({ type: req.query.type, country: req.query.country });
+      const tasks = await db.prepare(built.sql).all(...built.params);
+      res.json({ tasks });
+    } catch (err) {
+      console.error('admin tasks error:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // Една задача + чата по нея (преглед на разговора между автор и изпълнител)
+  router.get('/task/:taskId', async (req, res) => {
+    try {
+      const { taskId } = req.params;
+      const task = await db.prepare(TASKS.GET_FULL).get(taskId);
+      if (!task) return res.status(404).json({ error: 'Task not found' });
+      const messages = await db.prepare(TASKS.GET_MESSAGES).all(taskId);
+      res.json({ task, messages });
+    } catch (err) {
+      console.error('admin task detail error:', err);
       res.status(500).json({ error: 'Server error' });
     }
   });

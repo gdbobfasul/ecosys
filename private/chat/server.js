@@ -146,21 +146,9 @@ async function setupDatabase() {
       } catch (e) { console.error('⚠️  PG схема за задачи не се приложи:', e.message); }
     }
 
-    // Всяко приложение попълва САМО своите админи/модератори от .env при собствения си
-    // старт (идемпотентно). Чатът пази паролите в admin_users; кой е админ → roles.js.
-    try {
-      const { hashPassword } = require('./utils/password');
-      const { envAccounts } = require('./roles');
-      let n = 0;
-      for (const a of envAccounts()) {
-        const hash = await hashPassword(a.pass);
-        const ex = await db.prepare(Q.ADMIN_FIND_BY_USERNAME).get(a.user);
-        if (ex) await db.prepare(Q.ADMIN_UPDATE_PASSWORD).run(hash, a.user);
-        else await db.prepare(Q.ADMIN_INSERT).run(a.user, hash);
-        n++;
-      }
-      if (n) console.log(`✅ chat админи/модератори попълнени в admin_users от .env (${n})`);
-    } catch (e) { console.error('⚠️  chat попълване на админи пропуснато:', e.message); }
+    // Админи/модератори НЕ се попълват тук (при старт). Попълват се при ПОДГОТОВКАТА
+    // на базата по време на деплой — скрипт 07-setup-database.sh вика `node admins.js`
+    // (правило „бази при бази"). Виж private/chat/admins.js.
 
     return db;
   } catch (error) {

@@ -60,6 +60,18 @@ NoNewPrivileges=true
 [Install]
 WantedBy=multi-user.target
 SVCEOF
+
+# Попълни админи/модератори от .env ВЕДНАГА след подготовката на базата (правило „бази при
+# бази"). admins.js (openDb) създава monitor_${KEY}.db + таблиците, ако липсват. Като
+# ${SVC_USER} → базата е негова собственост. Идемпотентно: по username обновява/създава.
+if [ ! -f "$APP_DIR/admins.js" ]; then
+  echo -e "${YELLOW}  ⚠ [${KEY}] admins.js още не е качен на сървъра — пропускам попълването (ще стане при пълно качване на кода).${NC}"
+elif ( cd "$APP_DIR" && sudo -u "$SVC_USER" node admins.js "$KEY" ); then
+  echo -e "${GREEN}  ✓ [${KEY}] админи/модератори попълнени/обновени от .env${NC}"
+else
+  echo -e "${YELLOW}  ⚠ [${KEY}] попълването не мина — провери .env ($(echo "$KEY" | tr a-z A-Z)_ADMIN_USER/PASS).${NC}"
+fi
+
 systemctl daemon-reload
 systemctl enable ${SVC}.service 2>/dev/null || true
 systemctl restart ${SVC}.service 2>/dev/null || true

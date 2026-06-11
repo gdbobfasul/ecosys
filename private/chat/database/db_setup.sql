@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS users (
   last_signal_date TEXT,                       -- Last date user submitted a signal
   free_days_earned INTEGER DEFAULT 0,          -- Count of free days earned from approved signals
   is_system INTEGER DEFAULT 0,                 -- 1 = бот/системен потребител (FILL DATA скрипт) — изравнено с PG
+  mm_blocked INTEGER DEFAULT 0,                -- 1 = блокиран САМО в matchmaking (от админ), акаунтът остава активен
 
   UNIQUE(phone, password_hash)
 );

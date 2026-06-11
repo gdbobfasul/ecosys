@@ -948,6 +948,16 @@ if [ -f "$PORTAL_INIT" ]; then
         echo -e "  ${RED}✗ Portal DB init се провали${NC}"
         echo -e "  ${YELLOW}(не е критично — portal-ът ще откаже да работи, но другите services са OK)${NC}"
     fi
+    # Попълни portals админи/модератори от .env ВЕДНАГА след подготовката на базата
+    # (правило „бази при бази"). Като ${ECO3_USER} (потребителят на kcy-portals), за да е
+    # базата негова собственост. Идемпотентно: по username → обновява паролата / създава.
+    if [ ! -f "$PORTAL_DIR/admins.js" ]; then
+        echo -e "  ${YELLOW}⚠ admins.js още не е качен на сървъра — пропускам попълването (ще стане при пълно качване на кода).${NC}"
+    elif ( cd "$PORTAL_DIR" && sudo -u "$ECO3_USER" node admins.js ); then
+        echo -e "  ${GREEN}✓ Portal админи/модератори попълнени/обновени от .env${NC}"
+    else
+        echo -e "  ${YELLOW}⚠ Portal попълването не мина — провери .env (PORTALS_ADMIN_USER/PASS).${NC}"
+    fi
     # Гарантирай правата СЛЕД init.js — директория + всички файлове (.db, .db-wal, .db-shm)
     chown -R "$ECO3_USER:$ECO3_USER" "$PORTAL_DIR/database"
     chmod 700 "$PORTAL_DIR/database"

@@ -1,137 +1,351 @@
-<!-- Version: 1.0001 -->
+<!-- Version: 1.0002 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Детайли за потребител — Admin</title>
+  <link rel="stylesheet" href="/shared/css/common.css?v=1.0176">
   <style>
-    body{margin:0;background:#0f172a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}
-    .wrap{max-width:920px;margin:0 auto;padding:24px 18px 60px}
-    h1{font-size:1.5rem;margin:0 0 4px}
-    .back{color:#60a5fa;text-decoration:none;font-size:.9rem}
-    .card{background:#16202b;border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:18px;margin:16px 0}
-    .card h2{margin:0 0 12px;font-size:1.1rem;color:#93c5fd}
-    table{width:100%;border-collapse:collapse}
-    td{padding:6px 8px;border-bottom:1px solid rgba(148,163,184,.12);vertical-align:top}
-    td.k{color:#94a3b8;width:200px;white-space:nowrap}
-    .badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.85em;font-weight:700}
-    .badge.ok{background:#14532d;color:#86efac}.badge.bad{background:#7f1d1d;color:#fca5a5}
-    .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:6px}
-    button,input{font:inherit}
-    button{padding:8px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:600;color:#fff}
-    .b-block{background:#dc2626}.b-unblock{background:#16a34a}.b-pay{background:#2563eb}.b-unpay{background:#a16207}.b-save{background:#0891b2}
-    button:hover{filter:brightness(1.08)}
-    input[type=number],input[type=text]{padding:7px 9px;border-radius:7px;border:1px solid #334155;background:#0b1220;color:#e2e8f0}
-    .msg{margin:12px 0;padding:10px 12px;border-radius:8px;display:none}
-    .msg.ok{background:#14532d;color:#bbf7d0;display:block}.msg.err{background:#7f1d1d;color:#fecaca;display:block}
-    .conv{background:#0b1220;border-radius:8px;padding:10px;margin:8px 0}
-    .conv .line{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px dashed rgba(148,163,184,.12)}
-    .conv .from{color:#93c5fd;font-size:.85em;min-width:120px}
-    .conv .ed{margin-left:auto;font-size:.8em;color:#60a5fa;cursor:pointer;background:none;color:#60a5fa;padding:0}
-    .muted{color:#94a3b8;font-size:.9em}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f5f5f5; color: #333; padding: 20px; }
+    .header { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .header h1 { color: #333; font-size: 1.4rem; }
+    .header .sub { color: #888; font-size: .9rem; margin-top: 4px; }
+    .back { color: #1e88e5; text-decoration: none; font-size: .9rem; }
+    /* под-меню за секциите на ТОЗИ потребител */
+    .subnav { display: flex; flex-wrap: wrap; gap: 8px; background: #fff; padding: 12px 14px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .subnav a { padding: 8px 12px; border-radius: 8px; background: #eef2ff; color: #3949ab; text-decoration: none; font-size: 13px; font-weight: 600; }
+    .subnav a:hover { background: #e0e7ff; }
+    .card { background: #fff; border-radius: 10px; padding: 18px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); scroll-margin-top: 16px; }
+    .card h2 { margin: 0 0 12px; font-size: 1.1rem; color: #3949ab; display: flex; align-items: center; gap: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    td, th { padding: 7px 9px; border-bottom: 1px solid #eee; vertical-align: top; text-align: left; }
+    td.k { color: #888; width: 210px; white-space: nowrap; }
+    th { color: #555; font-weight: 600; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: .82em; font-weight: 700; }
+    .badge.ok { background: #e6f4ea; color: #1e7e34; } .badge.bad { background: #fdecea; color: #c62828; }
+    .badge.warn { background: #fff4e5; color: #b26a00; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 6px; }
+    button, input { font: inherit; }
+    button { padding: 8px 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; color: #fff; }
+    .b-block{background:#e53935}.b-unblock{background:#43a047}.b-pay{background:#1e88e5}.b-unpay{background:#a16207}.b-mm{background:#d81b60}.b-view{background:#5e35b1}
+    button:hover { filter: brightness(1.07); }
+    input[type=number], input[type=text] { padding: 7px 9px; border-radius: 7px; border: 1px solid #d0d7de; background: #fff; color: #333; }
+    .msg { margin: 0 0 16px; padding: 10px 12px; border-radius: 8px; display: none; }
+    .msg.ok { background: #e6f4ea; color: #1e7e34; display: block; } .msg.err { background: #fdecea; color: #c62828; display: block; }
+    .conv { background: #f7f8fa; border-radius: 8px; padding: 10px; margin: 8px 0; }
+    .conv .line { display: flex; gap: 8px; align-items: flex-start; padding: 4px 0; border-bottom: 1px dashed #e3e6ea; }
+    .conv .from { color: #3949ab; font-size: .85em; min-width: 130px; }
+    .conv .ed { margin-left: auto; font-size: .85em; color: #1e88e5; cursor: pointer; background: none; padding: 0; }
+    .muted { color: #999; font-size: .92em; }
+    .pill { display:inline-block; padding:1px 7px; border-radius:6px; background:#eef; color:#446; font-size:.8em; margin:1px; }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+    @media (max-width:760px){ .grid2{ grid-template-columns:1fr; } td.k{ width:140px; } }
+    .small { font-size: 12px; }
+    .taskrow td { font-size: 13px; }
+    .chatbox { background:#f7f8fa; border-radius:8px; padding:10px; margin-top:8px; max-height:280px; overflow:auto; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <a class="back" href="admin.html">← Назад към админ панела</a>
+  <div class="header">
+    <a class="back" href="admin.html?view=messages">← Назад към админ панела</a>
     <h1>🔍 Детайли за потребител</h1>
-    <div id="msg" class="msg"></div>
-    <div id="content"><p class="muted">Зареждам…</p></div>
+    <div class="sub" id="who">Зареждам…</div>
   </div>
+
+  <div id="msg" class="msg"></div>
+
+  <nav class="subnav" id="subnav" style="display:none">
+    <a href="#sec-profile">👤 Профил</a>
+    <a href="#sec-location">📍 Локация</a>
+    <a href="#sec-actions">⚙️ Действия</a>
+    <a href="#sec-friends">🧑‍🤝‍🧑 Приятели</a>
+    <a href="#sec-messages">💬 Съобщения</a>
+    <a href="#sec-signals">📡 Сигнали</a>
+    <a href="#sec-match">💞 Запознанства</a>
+    <a href="#sec-tasks">📋 Задачи</a>
+    <a href="#sec-payments">💳 Плащания</a>
+  </nav>
+
+  <div id="content"><p class="muted">Зареждам…</p></div>
 
   <script>
     var qs = new URLSearchParams(location.search);
     var userId = qs.get('userId');
     var token = localStorage.getItem('token') || '';
-    var msg = document.getElementById('msg');
+    var msgEl = document.getElementById('msg');
     var content = document.getElementById('content');
 
-    function hdr() {
-      var h = { 'Content-Type': 'application/json' };
-      if (token) h['Authorization'] = 'Bearer ' + token;
-      return h;
-    }
-    function show(ok, text) { msg.className = 'msg ' + (ok ? 'ok' : 'err'); msg.textContent = text; }
-    function esc(s) { return String(s == null ? '' : s).replace(/[&<>]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]; }); }
-    function paid(u) { return u.paid_until && new Date(u.paid_until) > new Date(); }
+    function hdr() { var h = { 'Content-Type': 'application/json' }; if (token) h['Authorization'] = 'Bearer ' + token; return h; }
+    function show(ok, t) { msgEl.className = 'msg ' + (ok ? 'ok' : 'err'); msgEl.textContent = t; }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    function paid(p) { return p && new Date(p) > new Date(); }
+    function dt(s) { return s ? new Date(s).toLocaleString('bg-BG') : '—'; }
+    function v(x) { return (x === null || x === undefined || x === '') ? '—' : esc(x); }
 
-    function rows(u) {
-      var fields = [
-        ['ID', u.id], ['Телефон', u.phone], ['Име', u.full_name], ['Пол', u.gender],
-        ['Ръст (см)', u.height_cm], ['Тегло (кг)', u.weight_kg],
-        ['Държава', u.country], ['Град', u.city], ['Село', u.village], ['Улица', u.street], ['Месторабота', u.workplace],
-        ['Платен до', u.paid_until], ['Създаден', u.created_at], ['Последен вход', u.last_login],
-        ['Флагнати разговори', u.flaggedCount || 0]
+    function profileRows(u) {
+      // Тези полета админът само ГЛЕДА (не ги сменя): пол, ръст, тегло, адрес, месторабота, кодова дума, телефон.
+      var f = [
+        ['ID', u.id], ['Телефон 🔒', u.phone], ['Име', u.full_name], ['Пол 🔒', u.gender],
+        ['Дата на раждане', u.birth_date], ['Възраст', u.age],
+        ['Ръст (см) 🔒', u.height_cm], ['Тегло (кг) 🔒', u.weight_kg],
+        ['Държава 🔒', u.country], ['Град 🔒', u.city], ['Село 🔒', u.village], ['Улица 🔒', u.street], ['Месторабота 🔒', u.workplace],
+        ['Имейл', u.email], ['Кодова дума 🔒', u.code_word], ['Работно време', u.working_hours],
+        ['Текуща/спешна нужда', u.current_need], ['Предлага', u.offerings],
+        ['Верифициран', u.is_verified ? 'Да' : 'Не'], ['Скрит телефон', u.hide_phone ? 'Да' : 'Не'], ['Скрити имена', u.hide_names ? 'Да' : 'Не'],
+        ['Създаден', dt(u.created_at)], ['Последен вход', dt(u.last_login)]
       ];
-      return fields.map(function (f) { return '<tr><td class="k">' + esc(f[0]) + '</td><td>' + esc(f[1] != null ? f[1] : '—') + '</td></tr>'; }).join('');
+      return f.map(function (r) { return '<tr><td class="k">' + esc(r[0]) + '</td><td>' + v(r[1]) + '</td></tr>'; }).join('');
     }
 
-    function render(data) {
-      var u = data.user;
-      var isPaid = paid(u), isBlocked = !!u.is_blocked;
-      var html = '<div class="card"><h2>Профил</h2>' +
-        '<p>Статус: ' + (isPaid ? '<span class="badge ok">✅ Активен (платен)</span>' : '<span class="badge bad">❌ Неплатен/изтекъл</span>') +
-        ' &nbsp; ' + (isBlocked ? '<span class="badge bad">🚫 Блокиран</span>' : '<span class="badge ok">🔓 Активен</span>') + '</p>' +
-        '<table>' + rows(u) + '</table></div>';
+    function locationSection(u) {
+      var hasGps = u.location_latitude != null && u.location_longitude != null;
+      var lat = u.location_latitude, lng = u.location_longitude;
+      var maps = hasGps ? (
+        '<div class="actions small">' +
+        '<a target="_blank" href="https://www.google.com/maps?q=' + lat + ',' + lng + '">Google Maps</a> · ' +
+        '<a target="_blank" href="https://yandex.com/maps/?ll=' + lng + ',' + lat + '&z=16">Yandex</a> · ' +
+        '<a target="_blank" href="https://2gis.com/?m=' + lng + ',' + lat + '/16">2GIS</a></div>'
+      ) : '';
+      var rows = [
+        ['Държава', u.location_country], ['Град', u.location_city], ['Село', u.location_village],
+        ['Улица', u.location_street], ['Номер', u.location_number],
+        ['GPS', hasGps ? (lat + ', ' + lng) : null], ['IP', u.location_ip], ['Заснето', u.location_captured_at ? dt(u.location_captured_at) : null]
+      ].map(function (r) { return '<tr><td class="k">' + esc(r[0]) + '</td><td>' + v(r[1]) + '</td></tr>'; }).join('');
+      var capture = '<div class="actions"><button class="b-pay" onclick="captureLocation()">📍 Заснеми локация</button></div>';
+      return '<div class="card" id="sec-location"><h2>📍 Локация</h2><table>' + rows + '</table>' + maps + capture + '</div>';
+    }
 
-      // Действия
-      html += '<div class="card"><h2>Редактиране / действия</h2><div class="actions">' +
-        (isBlocked
-          ? '<button class="b-unblock" onclick="unblock()">🔓 Деблокирай</button>'
-          : '<button class="b-block" onclick="block()">🚫 Блокирай</button>') +
-        '<input id="months" type="number" min="1" value="12" style="width:70px"> ' +
+    function render(d) {
+      var u = d.user;
+      var isPaid = paid(u.paid_until), isBlocked = !!u.is_blocked, mmBlocked = d.matchmaking && d.matchmaking.mmBlocked;
+      document.getElementById('who').textContent = u.full_name + ' · ' + u.phone + ' · ID ' + u.id;
+      document.getElementById('subnav').style.display = 'flex';
+
+      var html = '';
+
+      // ── Профил ──
+      html += '<div class="card" id="sec-profile"><h2>👤 Профил</h2>' +
+        '<p style="margin-bottom:10px">' +
+        (isPaid ? '<span class="badge ok">✅ Платен</span>' : '<span class="badge bad">❌ Неплатен/изтекъл</span>') + ' ' +
+        (isBlocked ? '<span class="badge bad">🚫 Блокиран акаунт</span>' : '<span class="badge ok">🔓 Активен</span>') + ' ' +
+        (mmBlocked ? '<span class="badge warn">💔 Блокиран в запознанства</span>' : '') +
+        (u.is_system ? ' <span class="badge warn">🤖 Системен</span>' : '') +
+        '</p><p class="muted small" style="margin-bottom:8px">🔒 = админът само гледа (не се сменя).</p>' +
+        '<table>' + profileRows(u) + '</table></div>';
+
+      // ── Локация ──
+      html += locationSection(u);
+
+      // ── Действия ──
+      html += '<div class="card" id="sec-actions"><h2>⚙️ Действия</h2><div class="actions">' +
+        (isBlocked ? '<button class="b-unblock" onclick="unblock()">🔓 Деблокирай акаунт</button>'
+                   : '<button class="b-block" onclick="block()">🚫 Блокирай акаунт</button>') +
+        '<input id="months" type="number" min="1" value="12" style="width:70px">' +
         '<button class="b-pay" onclick="markPaid()">💳 Маркирай платен (месеци)</button>' +
         '<button class="b-unpay" onclick="markUnpaid()">⛔ Маркирай неплатен</button>' +
-        '</div><p class="muted">„Маркирай платен" удължава абонамента с избрания брой месеци (за тест без реално плащане).</p></div>';
+        (mmBlocked ? '<button class="b-mm" onclick="mmBlock(false)">💞 Отблокирай в запознанства</button>'
+                   : '<button class="b-mm" onclick="mmBlock(true)">💔 Блокирай само в запознанства</button>') +
+        '</div></div>';
 
-      // Разговори
-      if (data.contacts && data.contacts.length) {
-        html += '<div class="card"><h2>Контакти и разговори (' + data.contacts.length + ')</h2>';
-        data.contacts.forEach(function (c) {
-          html += '<div class="conv"><b>' + esc(c.fullName || c.customName || c.userId) + '</b> <span class="muted">' + esc([c.country, c.city].filter(Boolean).join(', ')) + (paid(c) ? '' : ' · неплатен') + (c.isBlocked ? ' · блокиран' : '') + '</span>';
+      // ── Приятели ──
+      html += '<div class="card" id="sec-friends"><h2>🧑‍🤝‍🧑 Приятели (' + (d.friends ? d.friends.length : 0) + ')</h2>';
+      if (d.friends && d.friends.length) {
+        html += '<table><thead><tr><th>Име</th><th>Телефон</th><th>Град/Държава</th><th>Статус</th><th>Добавен</th></tr></thead><tbody>' +
+          d.friends.map(function (f) {
+            return '<tr><td><a class="back" href="admin-user-details.html?userId=' + f.friend_id + '">' + esc(f.full_name) + '</a></td>' +
+              '<td>' + v(f.phone) + '</td><td>' + esc([f.city, f.country].filter(Boolean).join(', ')) + '</td>' +
+              '<td>' + (f.is_blocked ? '<span class="badge bad">блокиран</span>' : '<span class="badge ok">активен</span>') + '</td>' +
+              '<td class="small">' + dt(f.created_at) + '</td></tr>';
+          }).join('') + '</tbody></table>';
+      } else { html += '<p class="muted">Няма приятели.</p>'; }
+      html += '</div>';
+
+      // ── Съобщения (контакти + разговори) ──
+      html += '<div class="card" id="sec-messages"><h2>💬 Съобщения (' + (d.contacts ? d.contacts.length : 0) + ' контакта)</h2>';
+      if (d.contacts && d.contacts.length) {
+        d.contacts.forEach(function (c) {
+          html += '<div class="conv"><b>' + esc(c.fullName || c.customName || c.userId) + '</b> <span class="muted small">' +
+            esc([c.country, c.city].filter(Boolean).join(', ')) + (paid(c.paidUntil) ? '' : ' · неплатен') + (c.isBlocked ? ' · блокиран' : '') + '</span>';
           (c.conversation || []).forEach(function (m) {
             html += '<div class="line"><span class="from">' + esc(m.from) + '</span><span>' + esc(m.text) + '</span>' +
               (m.editable ? '<button class="ed" onclick="editMsg(' + m.messageId + ', this)">✏️</button>' : '') + '</div>';
           });
+          if (!c.conversation || !c.conversation.length) html += '<div class="muted small">няма съобщения</div>';
           html += '</div>';
         });
-        html += '</div>';
-      } else {
-        html += '<div class="card"><p class="muted">Няма контакти/разговори.</p></div>';
-      }
+      } else { html += '<p class="muted">Няма контакти/разговори.</p>'; }
+      html += '</div>';
+
+      // ── Сигнали ──
+      html += '<div class="card" id="sec-signals"><h2>📡 Сигнали (' + (d.signals ? d.signals.length : 0) + ')</h2>';
+      if (d.signals && d.signals.length) {
+        html += '<table><thead><tr><th>Тип</th><th>Заглавие</th><th>GPS</th><th>Статус</th><th>Подаден</th></tr></thead><tbody>' +
+          d.signals.map(function (s) {
+            var st = s.status === 'approved' ? 'ok' : (s.status === 'rejected' ? 'bad' : 'warn');
+            return '<tr class="small"><td>' + v(s.signal_type) + '</td><td>' + v(s.title) + '</td>' +
+              '<td>' + (s.latitude != null ? s.latitude + ', ' + s.longitude : '—') + '</td>' +
+              '<td><span class="badge ' + st + '">' + esc(s.status) + '</span></td><td>' + dt(s.submitted_at) + '</td></tr>';
+          }).join('') + '</tbody></table>';
+      } else { html += '<p class="muted">Няма сигнали.</p>'; }
+      html += '</div>';
+
+      // ── Запознанства ──
+      html += renderMatch(d.matchmaking || {});
+
+      // ── Задачи ──
+      html += renderTasks(d.tasks || {});
+
+      // ── Плащания ──
+      html += '<div class="card" id="sec-payments"><h2>💳 Плащания (' + (d.payments ? d.payments.length : 0) + ')</h2>';
+      if (d.payments && d.payments.length) {
+        html += '<table><thead><tr><th>Сума</th><th>За какво</th><th>Статус</th><th>Откъде (държава/IP)</th><th>Дата</th></tr></thead><tbody>' +
+          d.payments.map(function (p) {
+            var forWhat = (p.payment_type || '') + (p.months ? ' · ' + p.months + " мес." : '');
+            return '<tr class="small"><td><b>' + v(p.amount) + ' ' + esc(p.currency || '') + '</b></td>' +
+              '<td>' + (forWhat || '—') + '</td><td>' + v(p.status) + '</td>' +
+              '<td>' + esc([p.country_code, p.ip_address].filter(Boolean).join(' / ') || '—') + '</td>' +
+              '<td>' + dt(p.created_at) + '</td></tr>';
+          }).join('') + '</tbody></table>';
+      } else { html += '<p class="muted">Няма плащания.</p>'; }
+      html += '</div>';
+
       content.innerHTML = html;
     }
 
-    function load() {
-      if (!userId) { content.innerHTML = '<p class="err msg ok">Липсва userId в адреса.</p>'; return; }
-      fetch('/api/admin/user-details/' + encodeURIComponent(userId), { headers: hdr(), credentials: 'same-origin' })
-        .then(function (r) { if (r.status === 401 || r.status === 403) throw new Error('Нямаш админ достъп (логни се в admin.html или ползвай админ IP).'); return r.json(); })
-        .then(function (d) { if (d.error) throw new Error(d.error); render(d); })
-        .catch(function (e) { content.innerHTML = '<p class="muted">⛔ ' + esc(e.message) + '</p>'; });
+    function renderMatch(m) {
+      var h = '<div class="card" id="sec-match"><h2>💞 Запознанства</h2>';
+      if (!m.criteria) {
+        h += '<p class="muted">Потребителят не е задал критерии за партньор.</p></div>';
+        return h;
+      }
+      // Съвпадения по неговите критерии
+      h += '<h3 class="small" style="margin:6px 0">✅ Профили, които му подхождат по зададените критерии (' + (m.matches ? m.matches.length : 0) + ')</h3>';
+      if (m.matches && m.matches.length) {
+        h += '<table><thead><tr><th>Име</th><th>Пол</th><th>Възраст</th><th>Ръст/Тегло</th><th>Град</th></tr></thead><tbody>' +
+          m.matches.map(function (x) {
+            return '<tr class="small"><td><a class="back" href="admin-user-details.html?userId=' + x.id + '">' + esc(x.full_name) + '</a></td>' +
+              '<td>' + v(x.gender) + '</td><td>' + v(x.age) + '</td><td>' + v(x.height_cm) + '/' + v(x.weight_kg) + '</td>' +
+              '<td>' + esc([x.city, x.country].filter(Boolean).join(', ')) + '</td></tr>';
+          }).join('') + '</tbody></table>';
+      } else { h += '<p class="muted small">Няма съвпадения.</p>'; }
+
+      // Покани
+      h += '<div class="grid2" style="margin-top:14px">';
+      h += '<div><h3 class="small">📤 Изпратени покани (' + (m.invitationsSent ? m.invitationsSent.length : 0) + ')</h3>';
+      h += m.invitationsSent && m.invitationsSent.length ? '<table><tbody>' + m.invitationsSent.map(function (i) {
+        return '<tr class="small"><td><a class="back" href="admin-user-details.html?userId=' + i.receiver_id + '">' + esc(i.full_name) + '</a></td>' +
+          '<td><span class="pill">' + esc(i.status) + '</span></td><td class="muted">' + dt(i.created_at) + '</td></tr>';
+      }).join('') + '</tbody></table>' : '<p class="muted small">—</p>';
+      h += '</div>';
+      h += '<div><h3 class="small">📥 Получени покани (' + (m.invitationsReceived ? m.invitationsReceived.length : 0) + ')</h3>';
+      h += m.invitationsReceived && m.invitationsReceived.length ? '<table><tbody>' + m.invitationsReceived.map(function (i) {
+        return '<tr class="small"><td><a class="back" href="admin-user-details.html?userId=' + i.sender_id + '">' + esc(i.full_name) + '</a></td>' +
+          '<td class="muted">' + dt(i.created_at) + '</td></tr>';
+      }).join('') + '</tbody></table>' : '<p class="muted small">—</p>';
+      h += '</div></div>';
+
+      if (m.dislikes && m.dislikes.length) {
+        h += '<p class="small" style="margin-top:10px"><b>Неприязни:</b> ' + m.dislikes.map(function (x) { return '<span class="pill">' + esc(x.disliked_attribute) + '=' + esc(x.disliked_value) + '</span>'; }).join(' ') + '</p>';
+      }
+      h += '</div>';
+      return h;
     }
 
-    function act(url, body, okText) {
+    function renderTasks(t) {
+      var authored = t.authored || [], taken = t.taken || [];
+      function tbl(list, role) {
+        if (!list.length) return '<p class="muted small">—</p>';
+        return '<table><thead><tr><th>#</th><th>Заглавие</th><th>Държава</th><th>Награда</th><th>Статус</th><th>Такса</th><th></th></tr></thead><tbody>' +
+          list.map(function (x) {
+            var fee = (x.take_fee_amount ? (x.take_fee_amount + ' ' + (x.take_fee_currency || '')) : '0') +
+              (x.take_fee_paid ? ' <span class="badge ok">платена</span>' : (x.take_fee_amount ? ' <span class="badge bad">неплатена</span>' : ''));
+            var disp = x.payment_disputed ? ' <span class="badge bad">спор</span>' : '';
+            return '<tr class="taskrow"><td>' + x.id + '</td><td>' + v(x.title) + '</td><td>' + v(x.country) + '</td>' +
+              '<td>' + v(x.reward_amount) + ' ' + esc(x.reward_currency || '') + '</td>' +
+              '<td><span class="pill">' + esc(x.status) + '</span>' + disp + '</td><td class="small">' + fee + '</td>' +
+              '<td><button class="b-view small" onclick="openTask(' + x.id + ', this)">💬 Чат</button></td></tr>' +
+              '<tr><td colspan="7"><div id="task-chat-' + x.id + '"></div></td></tr>';
+          }).join('') + '</tbody></table>';
+      }
+      return '<div class="card" id="sec-tasks"><h2>📋 Задачи</h2>' +
+        '<h3 class="small">📝 Публикувани от потребителя (' + authored.length + ')</h3>' + tbl(authored, 'author') +
+        '<h3 class="small" style="margin-top:12px">🤝 Хванати за изпълнение (' + taken.length + ')</h3>' + tbl(taken, 'executor') +
+        '</div>';
+    }
+
+    // ── Зареждане: и двата endpoint-а паралелно (детайли = контакти/разговори; overview = всичко друго) ──
+    function load() {
+      if (!userId) { content.innerHTML = '<p class="msg err" style="display:block">Липсва userId в адреса.</p>'; return; }
+      Promise.all([
+        fetch('/api/admin/user-overview/' + encodeURIComponent(userId), { headers: hdr(), credentials: 'same-origin' }).then(chk),
+        fetch('/api/admin/user-details/' + encodeURIComponent(userId), { headers: hdr(), credentials: 'same-origin' }).then(chk)
+      ]).then(function (arr) {
+        var ov = arr[0], det = arr[1];
+        if (ov.error) throw new Error(ov.error);
+        ov.contacts = det.contacts || [];
+        render(ov);
+      }).catch(function (e) { content.innerHTML = '<p class="muted">⛔ ' + esc(e.message) + '</p>'; });
+    }
+    function chk(r) { if (r.status === 401 || r.status === 403) throw new Error('Нямаш админ достъп (логни се в admin.html или ползвай админ IP).'); return r.json(); }
+
+    function act(url, body, okText, reload) {
       fetch(url, { method: 'POST', headers: hdr(), credentials: 'same-origin', body: JSON.stringify(body) })
         .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
         .then(function (res) {
           if (!res.ok || res.d.error) { show(false, '⛔ ' + (res.d.error || 'грешка')); return; }
-          show(true, '✅ ' + okText); load();
+          show(true, '✅ ' + okText); if (reload !== false) load();
         })
         .catch(function (e) { show(false, '⛔ ' + e.message); });
     }
-    function block() { var reason = prompt('Причина за блокиране:', 'admin'); if (reason === null) return; act('/api/admin/block-users', { userIds: [Number(userId)], reason: reason }, 'Блокиран.'); }
+    function block() { var r = prompt('Причина за блокиране на акаунта:', 'admin'); if (r === null) return; act('/api/admin/block-users', { userIds: [Number(userId)], reason: r }, 'Блокиран.'); }
     function unblock() { act('/api/admin/unblock-user', { userId: Number(userId) }, 'Деблокиран.'); }
     function markPaid() { var m = parseInt(document.getElementById('months').value, 10) || 1; act('/api/admin/update-payment', { userId: Number(userId), months: m }, 'Маркиран платен за ' + m + ' мес.'); }
     function markUnpaid() { act('/api/admin/mark-unpaid', { userId: Number(userId) }, 'Маркиран неплатен.'); }
-    function editMsg(messageId, btn) {
+    function mmBlock(on) { act('/api/admin/matchmaking-block', { userId: Number(userId), blocked: on }, on ? 'Блокиран в запознанства.' : 'Отблокиран в запознанства.'); }
+    function editMsg(id, btn) {
       var cur = btn.previousElementSibling ? btn.previousElementSibling.textContent : '';
       var t = prompt('Нов текст на съобщението:', cur);
       if (t === null) return;
-      act('/api/admin/edit-message', { messageId: messageId, newText: t }, 'Съобщението е редактирано.');
+      act('/api/admin/edit-message', { messageId: id, newText: t }, 'Съобщението е редактирано.');
+    }
+    // Чат по задача (между автора и изпълнителя)
+    function openTask(taskId, btn) {
+      var box = document.getElementById('task-chat-' + taskId);
+      if (box.innerHTML) { box.innerHTML = ''; return; }
+      box.innerHTML = '<p class="muted small">Зареждам…</p>';
+      fetch('/api/admin/task/' + taskId, { headers: hdr(), credentials: 'same-origin' }).then(chk).then(function (d) {
+        var ms = d.messages || [];
+        var h = '<div class="chatbox">';
+        if (d.task) h += '<p class="small muted">Автор: ' + v(d.task.author_phone) + ' · Изпълнител: ' + v(d.task.executor_phone) + ' · Статус: ' + esc(d.task.status) + '</p>';
+        h += ms.length ? ms.map(function (m) { return '<div class="line"><span class="from">' + esc(m.sender_phone) + '</span><span>' + esc(m.text) + '</span><span class="muted small" style="margin-left:auto">' + dt(m.created_at) + '</span></div>'; }).join('') : '<p class="muted small">Няма съобщения по задачата.</p>';
+        h += '</div>';
+        box.innerHTML = h;
+      }).catch(function (e) { box.innerHTML = '<p class="muted small">⛔ ' + esc(e.message) + '</p>'; });
+    }
+
+    // Заснемане на локация (GPS на админа → reverse geocode → запис)
+    async function captureLocation() {
+      if (!navigator.geolocation) { alert('Geolocation не се поддържа'); return; }
+      if (!confirm('Заснеми текущата локация за този потребител?')) return;
+      try {
+        var pos = await new Promise(function (res, rej) { navigator.geolocation.getCurrentPosition(res, rej); });
+        var lat = pos.coords.latitude, lng = pos.coords.longitude, ip = '';
+        try { ip = (await (await fetch('https://api.ipify.org?format=json')).json()).ip; } catch (e) {}
+        var country = '', city = '', village = '', street = '', number = '';
+        try {
+          var g = await (await fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lng + '&format=json', { headers: { 'User-Agent': 'AMS-Chat-Admin/1.0' } })).json();
+          country = (g.address && g.address.country) || ''; city = (g.address && (g.address.city || g.address.town)) || '';
+          village = (g.address && g.address.village) || ''; street = (g.address && g.address.road) || ''; number = (g.address && g.address.house_number) || '';
+        } catch (e) {}
+        act('/api/admin/capture-location', { userId: Number(userId), latitude: lat, longitude: lng, country: country, city: city, village: village, street: street, number: number, ip: ip }, 'Локацията е заснета.');
+      } catch (e) { show(false, '⛔ ' + e.message); }
     }
 
     load();
   </script>
+  <script src="/shared/js/navigation.js?v=1.0195"></script>
+  <script src="/chat/admin/admin-nav.js?v=1.0177"></script>
 </body>
 </html>

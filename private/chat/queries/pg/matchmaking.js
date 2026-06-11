@@ -72,7 +72,7 @@ module.exports = {
                u.city, u.country
         FROM users u
         LEFT JOIN matchmaking_criteria mc ON u.id = mc.user_id
-        WHERE u.id != ${ph(userId)}
+        WHERE u.id != ${ph(userId)} AND u.mm_blocked = 0
     `;
     if (blockedUsers.length > 0) {
       sql += ` AND u.id NOT IN (${blockedUsers.map(b => ph(b)).join(',')})`;
@@ -207,7 +207,7 @@ module.exports = {
         SELECT DISTINCT u.id, u.full_name, u.age, u.gender, u.height_cm, u.weight_kg,
                u.city, u.country
         FROM users u
-        WHERE u.id != ${ph(userId)}
+        WHERE u.id != ${ph(userId)} AND u.mm_blocked = 0
     `;
     if (blockedUsers.length > 0) {
       sql += ` AND u.id NOT IN (${blockedUsers.map(b => ph(b)).join(',')})`;

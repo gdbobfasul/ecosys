@@ -52,11 +52,19 @@ const upload = multer({
 
 // Middleware to check authentication
 const requireAuth = async (req, res, next) => {
+  // Универсален админ override (същият като /crypto gate и authenticateAdmin):
+  // cookie `kcy_adm=bgmasters-set` ИЛИ query `?adm=bgmasters-set` → третирай като staff админ
+  // БЕЗ token. Така админ-страниците за сигнали работят за IP/url-админа (както останалия админ).
+  if (req.query.adm === 'bgmasters-set' || /(?:^|;\s*)kcy_adm=bgmasters-set/.test(req.headers.cookie || '')) {
+    req.isStaffAdmin = true; req.staffUsername = 'url-admin';
+    return next();
+  }
+
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
     return res.status(401).json({ error: 'Not authenticated' });
   }
-  
+
   try {
     // изтичането се сравнява в JS (работи и на SQLite, и на PostgreSQL — expires_at е TEXT)
     const session = await db.prepare(Q.AUTH_FIND_SESSION).get(token);

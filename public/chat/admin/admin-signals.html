@@ -270,26 +270,24 @@
         const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
         
         async function loadPendingSignals() {
+            // БЕЗ редирект към admin.html при липсващ token: админът може да е разпознат
+            // по cookie/URL (`?adm=bgmasters-set` → kcy_adm) — пращаме credentials и оставяме
+            // бекендът да реши. Token-ът (ако има) се добавя като Bearer.
             const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'admin.html';
-                return;
-            }
-            
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+
             document.getElementById('signalsContainer').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-            
+
             try {
                 const response = await fetch(`${API_URL}/api/signals/admin/pending`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers,
+                    credentials: 'same-origin'
                 });
-                
-                if (response.status === 401) {
-                    // Стар/невалиден token (напр. от вход отпреди ъпдейт) →
-                    // изчисти го и върни към вход, за да се вземе нов валиден token.
-                    localStorage.removeItem('token');
-                    window.location.href = 'admin.html';
+
+                if (response.status === 401 || response.status === 403) {
+                    // Без редирект-цикъл: покажи указание (логни се или ползвай ?adm=bgmasters-set).
+                    document.getElementById('signalsContainer').innerHTML =
+                        '<p style="color:#c62828">Нямаш админ достъп. Логни се в <a href="admin.html">admin.html</a> или отвори с <code>?adm=bgmasters-set</code>.</p>';
                     return;
                 }
                 if (!response.ok) {
