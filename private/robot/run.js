@@ -285,7 +285,11 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   const serverLog = bundle.ok
     ? { ok: true, status: bundle.status, hits: scanBundle(bundle.text) }
     : { ok: false, status: bundle.status, error: bundle.error };
-  if (bundle.ok) fs.writeFileSync(path.join(reportDir, 'last-errors-bundle.txt'), bundle.text, 'utf8');
+  // Папката може да липсва (изтрита между старта и края — напр. „Трий всички" по време на
+  // пускане, или почистване на /var/www/html). Пресъздаваме я и пишем БЕЗОПАСНО — репортът
+  // не бива да се губи, нито роботът да гърми (exit 3) само заради опционален лог-файл.
+  try { fs.mkdirSync(reportDir, { recursive: true }); } catch (e) { /* права/състезание — продължи */ }
+  if (bundle.ok) { try { fs.writeFileSync(path.join(reportDir, 'last-errors-bundle.txt'), bundle.text, 'utf8'); } catch (e) { /* не е критично */ } }
 
   // ── репорт ────────────────────────────────────────────────────────────────
   const counts = {
