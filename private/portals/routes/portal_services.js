@@ -24,6 +24,7 @@ const PORTAL_SERVICES = [
     { slug: 'pdf-compress', title: 'Свиване на PDF',   icon: 'ZIP',  file: '/portals/services/pdf-compress.html', description: 'Намали размера на голям PDF (сканирани страници, големи снимки).' },
     { slug: 'charts',   title: 'Финансови графики',   icon: 'CHRT', file: '/portals/services/charts.html',   description: 'BTC RSI, Fibonacci, liquidation heatmap, S&P 500, индекси, BTC/ETH по периоди.' },
     { slug: 'watch20',  title: 'Наблюдавай 20 валути', icon: 'WTCH', file: '/portals/services/watch20.html',  description: '20 валути/крипто спрямо USD/USDC, прагове с известие и звук.' },
+    { slug: 'ai-listing', title: 'AI обява за имот', icon: 'AI', file: '/portals/services/ai-listing.html', description: 'Генерирай обява за продажба на имот по няколко ключови думи чрез Claude AI (включено в месечния абонамент).' },
 ];
 
 // GET /api/portal-services/list — списък на услугите

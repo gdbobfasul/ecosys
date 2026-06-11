@@ -2,7 +2,7 @@
 // Version: 1.0093
 
 const express = require('express');
-const { requirePortalAccessAPI } = require('../middleware/access-control');
+const { requirePortalAccessAPI, currentMonth } = require('../middleware/access-control');
 const { generateListing } = require('../services/anthropic');
 const { runScrape } = require('../services/scraper');
 
@@ -17,6 +17,18 @@ router.get('/list', requirePortalAccessAPI, (req, res) => {
     res.json({ services: SERVICES });
 });
 
+// AI услугите (ai-listing, scraper) са ВКЛЮЧЕНИ в месечния абонамент: логнат + платил
+// този месец → безплатно. Иначе 402 (плати абонамента). Без допълнителна такса на бройка.
+// Връща true ако може; иначе праща отговора (401/402) и връща false.
+function requireMonthlyPaid(req, res) {
+    const db = req.app.locals.db;
+    const userId = req.session && req.session.userId;
+    if (!userId) { res.status(401).json({ error: 'login_required', message: 'Влез, за да ползваш AI услугата.' }); return false; }
+    const paid = db.prepare("SELECT 1 FROM portal_monthly_payments WHERE user_id = ? AND month = ?").get(userId, currentMonth());
+    if (!paid) { res.status(402).json({ error: 'payment_required', message: 'Плати месечния абонамент, за да ползваш AI услугите.' }); return false; }
+    return true;
+}
+
 // ─── POST /api/portals/services/ai-listing ─────────────────────
 router.post('/ai-listing', requirePortalAccessAPI, async (req, res) => {
     const db = req.app.locals.db;
@@ -26,6 +38,9 @@ router.post('/ai-listing', requirePortalAccessAPI, async (req, res) => {
     if (typeof keywords !== 'string' || keywords.trim().length < 3) {
         return res.status(400).json({ error: 'keywords_required' });
     }
+
+    // Достъп: AI обявата е включена в месечния абонамент (логнат + платил) → иначе 402.
+    if (!requireMonthlyPaid(req, res)) return;
 
     let jobId = null;
     if (userId) {
@@ -49,7 +64,8 @@ router.post('/ai-listing', requirePortalAccessAPI, async (req, res) => {
                 "UPDATE portal_service_jobs SET status = 'error', error_message = ?, finished_at = datetime('now') WHERE id = ?"
             ).run(err.message, jobId);
         }
-        res.status(500).json({ error: 'ai_failed', message: err.message });
+        // Липсващ AI ключ / провалена AI заявка → 503 (услугата временно недостъпна), НЕ 500.
+        res.status(503).json({ error: 'ai_unavailable', message: 'AI услугата временно е недостъпна.', detail: err.message });
     }
 });
 

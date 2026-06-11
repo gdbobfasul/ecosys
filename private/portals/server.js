@@ -72,7 +72,12 @@ app.locals.db = db;
 // ── Middleware ─────────────────────────────────────────────────
 app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
+// Споделено session хранилище (SQLite) — за да вижда eco3 порталния вход (eco3 = платена услуга
+// в порталите, задължителен портален вход). Portals и eco3 (и двата kcy-eco3) сочат СЪЩИЯ файл.
+const createSqliteSessionStore = require('../shared/sqlite-session-store');
+const PORTAL_SESSION_DB = process.env.PORTALS_SESSION_DB || path.join(__dirname, 'database', 'portal-sessions.db');
 app.use(session({
+    store: createSqliteSessionStore(session, Database, { path: PORTAL_SESSION_DB }),
     secret: process.env.PORTALS_SESSION_SECRET || 'change-me-in-production',
     resave: false,
     saveUninitialized: false,

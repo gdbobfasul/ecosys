@@ -101,7 +101,11 @@ const _session = require('express-session');
 const _cookieParser = require('cookie-parser');
 app.set('trust proxy', 1);
 app.use(_cookieParser());
+// Споделено session хранилище — СЪЩИЯТ файл като порталите → eco3 вижда порталния вход.
+const createSqliteSessionStore = require('../shared/sqlite-session-store');
+const PORTAL_SESSION_DB = process.env.PORTALS_SESSION_DB || path.join(__dirname, '..', 'portals', 'database', 'portal-sessions.db');
 app.use(_session({
+    store: createSqliteSessionStore(_session, require('better-sqlite3'), { path: PORTAL_SESSION_DB }),
     name: process.env.PORTALS_SESSION_NAME || 'connect.sid',
     secret: process.env.PORTALS_SESSION_SECRET || 'change-me-in-production',
     resave: false,

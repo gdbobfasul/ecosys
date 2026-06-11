@@ -74,6 +74,11 @@ module.exports = {
         { fill: '#gentext', value: (c) => c.qrText },
         { select: '#gensize', value: '300' },
         { select: '#genecc', value: 'M' },
+        // Изчакай QR библиотеката (CDN) да се зареди ПРЕДИ клика — иначе genQR() гърми
+        // (QRCode още undefined при бавно зареждане) → нищо не се рисува → фалшив timeout.
+        { label: 'изчакай QR библиотеката да е готова', run: async (page) => {
+          await page.waitForFunction(() => typeof window.QRCode === 'function', { timeout: 15000 }).catch(() => {});
+        } },
         { click: 'button[onclick="genQR()"]' },
         { label: 'изчакай QR картинката да се нарисува', run: async (page) => {
           await page.waitForSelector('#qrout img, #qrout canvas', { timeout: 15000 });
