@@ -69,7 +69,16 @@ async function runStep(step, page, ctx, base, navTimeout) {
   if ('fill' in step) return page.fill(step.fill, String(resolve(step.value, ctx)), { timeout: navTimeout });
   if ('select' in step) return page.selectOption(step.select, String(resolve(step.value, ctx)), { timeout: navTimeout });
   if ('check' in step) return page.check(step.check, { timeout: navTimeout });
-  if ('click' in step) return page.click(step.click, { timeout: navTimeout });
+  if ('click' in step) {
+    // Преди натискане: чекни ЗАДЪЛЖИТЕЛНИТЕ комплаенс отметки (.kg-cb), ако ги има на
+    // страницата — както би направил ЧОВЕК преди да изпрати формата. Иначе kg-compliance.js
+    // блокира клика (preventDefault + stopImmediatePropagation) и вход/регистрация не тръгват.
+    try {
+      const cbs = await page.$$('.kg-cb');
+      for (const cb of cbs) { await cb.check({ timeout: 2000 }).catch(() => {}); }
+    } catch (_) { /* няма комплаенс отметки тук — продължи */ }
+    return page.click(step.click, { timeout: navTimeout });
+  }
   if ('waitFor' in step) return page.waitForSelector(resolve(step.waitFor, ctx), { timeout: navTimeout });
   if ('wait' in step) return page.waitForTimeout(step.wait);
 

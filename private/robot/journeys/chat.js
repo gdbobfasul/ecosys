@@ -70,6 +70,8 @@ module.exports = {
           await page.fill('#weightKg', '80').catch(() => {});
         } },
         { label: 'изпрати формата → плащане + вземи userId', run: async (page, c) => {
+          // Човек чека задължителните комплаенс отметки преди да изпрати (иначе kg-compliance блокира).
+          for (const cb of await page.$$('.kg-cb')) { await cb.check().catch(() => {}); }
           await page.click('#regForm button[type="submit"]');
           const res = await Promise.race([
             page.waitForURL(/payment/, { timeout: 7000 }).then(() => 'ok').catch(() => null),
