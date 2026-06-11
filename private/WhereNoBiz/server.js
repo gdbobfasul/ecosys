@@ -24,6 +24,10 @@ const confirmationsRouter = require('./routes/confirmations');
 const reportsRouter = require('./routes/reports');
 const moderationRouter = require('./routes/moderation');
 
+// Предпазители: граничен/зловреден вход (или fuzz) НЕ бива да сваля целия процес (→ 502 за всички).
+process.on('unhandledRejection', function (r) { console.error('[wnb] unhandledRejection:', r && (r.stack || r.message || r)); });
+process.on('uncaughtException', function (e) { console.error('[wnb] uncaughtException:', e && (e.stack || e.message || e)); });
+
 const app = express();
 app.set('trust proxy', 1);
 

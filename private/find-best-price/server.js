@@ -19,6 +19,10 @@ const productsRouter = require('./routes/products');
 const searchRouter = require('./routes/search');
 const wantedRouter = require('./routes/wanted');
 
+// Предпазители: граничен/зловреден вход (или fuzz) НЕ бива да сваля целия процес (→ 502 за всички).
+process.on('unhandledRejection', function (r) { console.error('[fbp] unhandledRejection:', r && (r.stack || r.message || r)); });
+process.on('uncaughtException', function (e) { console.error('[fbp] uncaughtException:', e && (e.stack || e.message || e)); });
+
 const app = express();
 app.set('trust proxy', 1);
 

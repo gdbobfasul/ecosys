@@ -33,6 +33,10 @@ const MAIN_DOMAIN = readMainDomain();
 // Load .env — единен файл: private/configs/.env
 require('dotenv').config({ path: path.join(__dirname, '..', 'configs', '.env') });
 
+// Предпазители: граничен/зловреден вход (или fuzz) НЕ бива да сваля целия процес (→ 502 за всички).
+process.on('unhandledRejection', function (r) { console.error('[eco3] unhandledRejection:', r && (r.stack || r.message || r)); });
+process.on('uncaughtException', function (e) { console.error('[eco3] uncaughtException:', e && (e.stack || e.message || e)); });
+
 const app = express();
 const PORT = process.env.ECO3_PORT || 3001;
 

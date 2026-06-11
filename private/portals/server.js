@@ -34,6 +34,11 @@ const billingRouter = require('./routes/billing');
 const gamesRouter = require('./routes/games');
 const servicesRouter = require('./routes/services');
 
+// Предпазители: граничен/зловреден вход (или fuzz) НЕ бива да сваля целия процес — иначе
+// nginx връща 502 за ВСИЧКИ страници. Логваме и продължаваме (вместо Node да убие процеса).
+process.on('unhandledRejection', function (r) { console.error('[portals] unhandledRejection:', r && (r.stack || r.message || r)); });
+process.on('uncaughtException', function (e) { console.error('[portals] uncaughtException:', e && (e.stack || e.message || e)); });
+
 const app = express();
 // Зад nginx reverse proxy — Express трябва да вярва на X-Forwarded-* хедърите.
 // Без това express-session със secure cookie не работи (nginx терминира SSL и

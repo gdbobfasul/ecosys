@@ -26,6 +26,10 @@ const db = openDb(KEY);
 const indexer = createIndexer(cfg, db);
 indexer.start();
 
+// Предпазители: граничен/зловреден вход (или fuzz) НЕ бива да сваля целия процес (→ 502 за всички).
+process.on('unhandledRejection', function (r) { console.error('[tokmon] unhandledRejection:', r && (r.stack || r.message || r)); });
+process.on('uncaughtException', function (e) { console.error('[tokmon] uncaughtException:', e && (e.stack || e.message || e)); });
+
 const app = express();
 app.set('trust proxy', 1);
 app.use(express.json());

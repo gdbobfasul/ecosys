@@ -67,6 +67,10 @@ const createSearchRoutes = require('./routes/search');
 const createMatchmakingRoutes = require('./routes/matchmaking');
 const Q = require('./queries').server; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 
+// Предпазители: граничен/зловреден вход (или fuzz) НЕ бива да сваля целия процес (→ 502 за всички).
+process.on('unhandledRejection', function (r) { console.error('[chat] unhandledRejection:', r && (r.stack || r.message || r)); });
+process.on('uncaughtException', function (e) { console.error('[chat] uncaughtException:', e && (e.stack || e.message || e)); });
+
 const app = express();
 // Зад nginx reverse proxy — Express трябва да вярва на X-Forwarded-* хедърите,
 // иначе express-rate-limit не разпознава реалните IP-та коректно.
