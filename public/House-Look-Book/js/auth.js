@@ -40,12 +40,13 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    const user = await HLB.mountNav('login');
-    if (user) { location.href = 'gallery.html'; return; } // вече логнат
+  document.addEventListener('DOMContentLoaded', () => {
+    // Бутоните се връзват ВЕДНАГА (синхронно) — входът работи и при бърз клик (човек/робот).
+    // Проверката „вече ли съм логнат" тече ОТДЕЛНО и не блокира формата.
     $('#tabLogin').onclick = () => setMode('login');
     $('#tabRegister').onclick = () => setMode('register');
     $('#btnSubmit').onclick = submit;
     $('#password').addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+    Promise.resolve(HLB.mountNav('login')).then(user => { if (user) location.href = 'gallery.html'; }).catch(() => {});
   });
 })();

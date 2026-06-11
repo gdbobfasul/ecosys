@@ -212,8 +212,9 @@ const server = http.createServer(async (req, res) => {
                 }
                 env.ROBOT_VM_URL = vmUrl;
             }
-            robot = { running: true, runId, target, mode, startedAt: new Date().toISOString(), exitCode: null, reportDir: null, tail: [] };
+            robot = { running: true, runId, target, mode, startedAt: new Date().toISOString(), exitCode: null, reportDir: null, tail: [], child: null };
             const child = spawn('node', args, { cwd: ROBOT_DIR, env });
+            robot.child = child; // пази процеса → бутон „Спри робота" може да го убие
             const onData = (buf) => String(buf).split(/\r?\n/).forEach((l) => {
                 if (!l.trim()) return;
                 pushTail(l);
@@ -223,8 +224,25 @@ const server = http.createServer(async (req, res) => {
             child.stdout.on('data', onData);
             child.stderr.on('data', onData);
             child.on('error', (e) => { pushTail('SPAWN ERROR: ' + e.message); robot.running = false; robot.exitCode = -1; });
-            child.on('close', (code) => { robot.running = false; robot.exitCode = code; pushTail(`✔ край (exit ${code})`); });
+            child.on('close', (code) => { robot.running = false; robot.exitCode = code; robot.child = null; pushTail(`✔ край (exit ${code})`); });
             return sendJSON(res, 200, { ok: true, started: true, runId, target, mode });
+        }
+
+        // POST /robot/stop — спира/убива заседнал робот и нулира състоянието (за бутона „Спри робота")
+        if (req.method === 'POST' && route === '/robot/stop') {
+            const wasRunning = robot.running;
+            try {
+                const c = robot.child;
+                if (c && !c.killed) {
+                    c.kill('SIGTERM');
+                    setTimeout(() => { try { if (c && !c.killed) c.kill('SIGKILL'); } catch (e) {} }, 2500);
+                }
+            } catch (e) { /* вече е умрял */ }
+            pushTail('⏹ спрян ръчно');
+            robot.running = false;
+            if (robot.exitCode == null) robot.exitCode = -2;
+            robot.child = null;
+            return sendJSON(res, 200, { ok: true, stopped: wasRunning });
         }
 
         // GET /robot/status — текущо състояние + последни редове
@@ -280,6 +298,23 @@ const server = http.createServer(async (req, res) => {
             } catch (e) { /* няма папка още */ }
             out.sort((a, b) => String(b.id).localeCompare(String(a.id)));
             return sendJSON(res, 200, { reports: out.slice(0, 50) });
+        }
+
+        // DELETE /robot/reports/<id> — трий ЕДИН минал репорт (защита от path traversal)
+        if (req.method === 'DELETE' && route.startsWith('/robot/reports/')) {
+            const id = String(route.slice('/robot/reports/'.length)).replace(/[^0-9A-Za-z_-]/g, '');
+            if (!id) return sendJSON(res, 400, { ok: false, error: 'няма валидно id' });
+            try { fs.rmSync(path.join(ROBOT_REPORTS, id), { recursive: true, force: true }); return sendJSON(res, 200, { ok: true, deleted: id }); }
+            catch (e) { return sendJSON(res, 500, { ok: false, error: e.message }); }
+        }
+
+        // POST /robot/reports/clear — трий ВСИЧКИ минали репорти
+        if (req.method === 'POST' && route === '/robot/reports/clear') {
+            let n = 0;
+            try {
+                for (const id of fs.readdirSync(ROBOT_REPORTS)) { fs.rmSync(path.join(ROBOT_REPORTS, id), { recursive: true, force: true }); n++; }
+            } catch (e) { return sendJSON(res, 500, { ok: false, error: e.message }); }
+            return sendJSON(res, 200, { ok: true, cleared: n });
         }
 
         sendJSON(res, 404, { error: 'Not found', route });

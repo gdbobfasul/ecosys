@@ -36,6 +36,7 @@ const filllog = require('../shared/debug-helper').create('filldata');
 const JOURNEYS = {
   portals: require('./journeys/portals'),
   chat: require('./journeys/chat'),
+  chatx: require('./journeys/chat-actions'),
   eco3: require('./journeys/eco3'),
   hlb: require('./journeys/hlb'),
   wnb: require('./journeys/wnb'),

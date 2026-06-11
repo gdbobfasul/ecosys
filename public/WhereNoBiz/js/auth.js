@@ -35,12 +35,13 @@
     } catch (e) { showMsg(e.message, false); }
   }
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    const user = await WNB.mountNav('login');
-    if (user) { location.href = 'browse.html'; return; }
+  document.addEventListener('DOMContentLoaded', () => {
+    // Връзваме бутоните ВЕДНАГА (синхронно) — за да работи входът и при бърз клик
+    // (човек или робот). Проверката „вече ли съм логнат" тече ОТДЕЛНО и не блокира формата.
     $('#tabLogin').onclick = () => setMode('login');
     $('#tabRegister').onclick = () => setMode('register');
     $('#btnSubmit').onclick = submit;
     $('#password').addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+    Promise.resolve(WNB.mountNav('login')).then(user => { if (user) location.href = 'browse.html'; }).catch(() => {});
   });
 })();
