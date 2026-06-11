@@ -249,23 +249,14 @@ Purpose: Mobile client for chat + matchmaking
 
 ---
 
-### 🗺️ Приложение → Страница → База данни
+### 🗺️ Приложение → База данни
 
-Пълна карта на работещите уеб-приложения, техните страници и коя база данни
-ползва всяко. (Token/Multi-Sig са смарт-контракти на блокчейн — без БД.)
+> **Кой проект на каква база данни работи се описва на ЕДНО място:**
+> **[`docs/DATABASES-BY-PROJECT.md`](DATABASES-BY-PROJECT.md)** — единственият
+> каноничен източник (Chat/Eco-3 = двоен PG+SQLite; FBP/HLB/WNB = само PostgreSQL;
+> Portals/Token-Monitor = само SQLite). Не дублирай таблицата тук.
 
-| Приложение | Порт | База данни | Тип | Страници (`public/<app>/`) |
-|---|---|---|---|---|
-| **Chat (AMS Chat)** | 3000 | `amschat` (PostgreSQL) — `CHAT_DB_TYPE=postgresql` | **PostgreSQL** (поддържа и SQLite dual) | `index.html`, `public/chat.html`, `public/matchmaking.html`, `public/search.html`, `public/profile.html`, `public/payment.html`, `public/signal.html`, `public/warning.html`, `admin/admin.html`, `admin/admin-matchmaking.html`, `admin/admin-signals.html`, `admin/admin-static-objects.html`, `download/index.html` |
-| **Eco-3** (AI студио) | 3001 | `eco3.db` | SQLite | `index.html`, `admin/index.html` |
-| **Portals** (услуги+игри) | 3002 | `portals.db` | SQLite | `login.html`, `register.html`, `billing.html`, `admin.html`, `index-services.html`, `index-games.html`, `services/{watch20,crypto,charts,calc,pdf,pdf-compress,qr,image,password,text,scraper,ai-listing}.html`, `games/{battle-duel,battle-team,battle-standalone,car-race,car-drift,hero-run,hero-jump,plane-shoot,plane-dodge}.html` |
-| **House-Look-Book (HLB)** | 3010 | `houselookbook` (потр. `hlb_app`, `HLB_PG_*`) | **PostgreSQL** | `index.html`, `gallery.html`, `ranking.html`, `profile.html`, `login.html`, `admin.html` |
-| **WhereNoBiz (WNB)** | 3011 | `wherenobiz` (потр. `wnb_app`, `WNB_PG_*`) | **PostgreSQL** | `index.html`, `browse.html`, `new.html`, `post.html`, `login.html`, `admin.html` |
-| **Mobile Chat** | — | локален SQLite + Chat API | SQLite (клиент) | React Native (без `public/*.html`) |
-
-**Бележки:**
-- На **PostgreSQL** са **Chat**, **HLB** и **WNB** (отделни бази + отделни потребители с минимум права). Връзката се чете от глобалния `private/configs/.env`.
-- **Chat** е настроен на PostgreSQL (`CHAT_DB_TYPE=postgresql` в `.env`); кодът поддържа и SQLite dual-режим (`CHAT_DB_TYPE=sqlite`, файл `CHAT_SQLITE_DB_FILE`) — виж `docs/chat/CHAT-DATABASE-DUAL.md`.
+**Бележки по страниците/особеностите** (не за БД-избора — той е в каноничния файл):
 - **Portals** е общата сесия/вход — Eco-3 ползва неговия login (споделена сесия).
 - **WNB** FK капан: таблицата `countries` (FK таргет на `posts.country_code`) трябва да е seed-ната, иначе всеки пост дава `posts_country_code_fkey` — seed-ва се при старт на `kcy-wnb` и в деплой скрипт `17-setup-wherenobiz-database.sh`.
 

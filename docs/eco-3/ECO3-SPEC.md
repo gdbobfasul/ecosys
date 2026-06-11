@@ -282,8 +282,12 @@ ECO-3 е **интелигентна платформа за търсене и г
 - Logging в `private/eco-3/logs/eco3.log`
 - Port: 3001 (nginx proxy: `/api/eco3/` → `localhost:3001`)
 
-### Database (SQLite — реализирано)
-ECO-3 ползва SQLite (`better-sqlite3`) с 4 таблици:
+### Database (двоен режим: PostgreSQL **или** SQLite)
+> Изборът на БД по проект е описан каноничено в **[`docs/DATABASES-BY-PROJECT.md`](../DATABASES-BY-PROJECT.md)**.
+> ECO-3 е **двоен** — избира се по `ECO3_DB_TYPE` (`postgresql`/`sqlite`); нативни
+> заявки в `private/eco-3/queries/{pg,sqlite}/*`, без преводач.
+
+В двата диалекта има 4 таблици:
 - **eco3_uniqueness** — tracker за уникалност (дневно нулиране в 00:00 UTC)
 - **eco3_search_history** — история на всяко търсене
 - **eco3_results** — кеширани резултати (за препродажба и бързо зареждане)

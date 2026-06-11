@@ -14,6 +14,7 @@
 
 - **README.md** - Кратък преглед на системата
 - **README-COMPLETE.md** - Пълен преглед на всички проекти
+- **DATABASES-BY-PROJECT.md** - 🗄️ ЕДИНСТВЕН каноничен източник: кой проект на каква БД работи (Chat/Eco-3 двоен, FBP/HLB/WNB само PG, Portals/Token-Monitor само SQLite)
 - **INDEX.md** - Този файл (index на документацията)
 - **DEPLOYMENT-CHECKLIST.md** - Deployment checklist
 - **WHATS-NEW-v2.0.md** - Промени във версия 2.0
