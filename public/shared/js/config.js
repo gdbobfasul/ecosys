@@ -124,40 +124,23 @@ const KCY_CONFIG = {
     }
 };
 
-// Add aliases for backward compatibility with tests
-const CRYPTO_CONFIG = {
-    // ─── Адреси на портфейла на собственика (Tangem) — за крипто плащания на billing страницата ───
-    // Това са РЕАЛНИТЕ адреси на собственика от Tangem. Към тях клиентите превеждат месечната такса.
-    // ETH и BNB ползват един и същ EVM адрес (Tangem). BTC е на Bitcoin мрежата.
-    TANGEM_WALLETS: {
-        BTC: "bc1qe9drdtvqzat4k98w8lavsk3856zett8c7vw46u",        // Tangem — Bitcoin
-        ETH: "0x58ec63d31b8e4D6624B5c88338027a54Be1AE28A",        // Tangem — Ethereum (EVM)
-        BNB: "0x58ec63d31b8e4D6624B5c88338027a54Be1AE28A"         // Tangem — BNB (BEP20, същият EVM адрес)
+// Фиат ценообразуване (USD/EUR). НЕ е крипто — крипто-портфейлите са изведени в
+// private/crypto/trash/config/shared-config.crypto-wallets.js (нула крипто в чата/eco-3).
+const PRICING_CONFIG = {
+    USD_PRICE: 9.99,
+    LOGIN: {
+        USD: 5,
+        EUR: 5
     },
-    TREASURY_WALLETS: {
-        BTC: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
-        ETH: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
-        BNB: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
-        USDT: "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+    EMERGENCY: {
+        USD: 50,
+        EUR: 50
     },
-    PRICING: { 
-        USD_PRICE: 9.99,
-        BTC_CONFIRMATIONS: 6,
-        ETH_CONFIRMATIONS: 12,
-        LOGIN: {
-            USD: 5,
-            EUR: 5
-        },
-        EMERGENCY: {
-            USD: 50,
-            EUR: 50
-        },
-        ECO3: {
-            BASIC: { USD: 2.99, EUR: 2.99 },
-            STANDARD: { USD: 4.99, EUR: 4.99 },
-            PREMIUM: { USD: 9.99, EUR: 9.99 },
-            PER_MINUTE: { USD: 0.15, EUR: 0.15 }
-        }
+    ECO3: {
+        BASIC: { USD: 2.99, EUR: 2.99 },
+        STANDARD: { USD: 4.99, EUR: 4.99 },
+        PREMIUM: { USD: 9.99, EUR: 9.99 },
+        PER_MINUTE: { USD: 0.15, EUR: 0.15 }
     }
 };
 
@@ -169,14 +152,14 @@ const APP_CONFIG = {
 
 if (typeof window !== 'undefined') {
     window.KCY_CONFIG = KCY_CONFIG;
-    window.CRYPTO_CONFIG = CRYPTO_CONFIG;
+    window.PRICING_CONFIG = PRICING_CONFIG;
     window.APP_CONFIG = APP_CONFIG;
 }
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         ...KCY_CONFIG,
-        CRYPTO_CONFIG,
+        PRICING_CONFIG,
         APP_CONFIG
     };
 }

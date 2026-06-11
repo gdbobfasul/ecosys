@@ -1,13 +1,6 @@
 -- Version: 1.0093
--- Migration: Add crypto payments and subscription tracking
+-- Migration: subscription tracking (крипто данните са премахнати — нула крипто в чата)
 -- Run this on existing databases to add new fields
-
--- Add crypto wallet fields
-ALTER TABLE users ADD COLUMN crypto_wallet_btc TEXT;
-ALTER TABLE users ADD COLUMN crypto_wallet_eth TEXT;
-ALTER TABLE users ADD COLUMN crypto_wallet_bnb TEXT;
-ALTER TABLE users ADD COLUMN crypto_wallet_kcy_meme TEXT;
-ALTER TABLE users ADD COLUMN crypto_wallet_kcy_ams TEXT;
 
 -- Add subscription tracking
 ALTER TABLE users ADD COLUMN subscription_active INTEGER DEFAULT 0;

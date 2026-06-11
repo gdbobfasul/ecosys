@@ -1,7 +1,7 @@
 -- Version: 1.0094
 -- AMS Chat Database Schema v4.3
 -- Shared between Web & Mobile App
--- Added: crypto wallets, subscription tracking, payment overrides, test mode support
+-- Added: subscription tracking, payment overrides, test mode support (нула крипто)
 
 -- Users table - phone is NOT unique! phone + password_hash combination is unique
 CREATE TABLE IF NOT EXISTS users (
@@ -53,14 +53,7 @@ CREATE TABLE IF NOT EXISTS users (
   location_longitude REAL,
   location_ip TEXT,
   location_captured_at TEXT,
-  
-  -- Crypto wallet addresses
-  crypto_wallet_btc TEXT,
-  crypto_wallet_eth TEXT,
-  crypto_wallet_bnb TEXT,
-  crypto_wallet_kcy_meme TEXT,
-  crypto_wallet_kcy_ams TEXT,
-  
+
   -- Subscription tracking
   subscription_active INTEGER DEFAULT 0,
   last_payment_check TEXT,

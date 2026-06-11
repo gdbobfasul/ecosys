@@ -69,8 +69,8 @@
             // Stripe (same keys as Chat - from server-side .env)
             STRIPE_PUBLISHABLE_KEY: null, // Loaded from /api/eco3/stripe-key
             
-            // Pricing from shared config
-            PRICING: window.CRYPTO_CONFIG ? window.CRYPTO_CONFIG.PRICING.ECO3 : {
+            // Pricing from shared config (фиат, не крипто)
+            PRICING: window.PRICING_CONFIG ? window.PRICING_CONFIG.ECO3 : {
                 BASIC: { USD: 2.99, EUR: 2.99 },
                 STANDARD: { USD: 4.99, EUR: 4.99 },
                 PREMIUM: { USD: 9.99, EUR: 9.99 },

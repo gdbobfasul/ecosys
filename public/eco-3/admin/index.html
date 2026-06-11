@@ -164,9 +164,9 @@
                 setStatus('config-status', false, '✗ Не е заредена');
             }
 
-            // Pricing
-            if (window.CRYPTO_CONFIG && CRYPTO_CONFIG.PRICING.ECO3) {
-                const p = CRYPTO_CONFIG.PRICING.ECO3;
+            // Pricing (фиат, не крипто)
+            if (window.PRICING_CONFIG && PRICING_CONFIG.ECO3) {
+                const p = PRICING_CONFIG.ECO3;
                 document.getElementById('cfg-price-basic').textContent = `€${p.BASIC.EUR}`;
                 document.getElementById('cfg-price-std').textContent = `€${p.STANDARD.EUR}`;
                 document.getElementById('cfg-price-prem').textContent = `€${p.PREMIUM.EUR}`;

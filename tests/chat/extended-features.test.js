@@ -55,18 +55,7 @@ describe('🚀 Extended Features Tests', () => {
     });
   });
 
-  // CRYPTO (using real schema)
-  describe('₿ Crypto', () => {
-    it('should store crypto wallets', () => {
-      db.prepare(`UPDATE users SET crypto_wallet_btc = ?, crypto_wallet_eth = ? WHERE id = ?`).run('1BvBM...', '0x742d...', 1);
-      const user = db.prepare('SELECT crypto_wallet_btc FROM users WHERE id = ?').get(1);
-      assert(user.crypto_wallet_btc);
-    });
-    it('should validate wallet format', () => {
-      const btc = '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2';
-      assert(btc.length > 20);
-    });
-  });
+  // (Крипто блокът е премахнат — нула крипто в чата. Виж private/crypto/trash/.)
 
   // PROFILE (using real schema)
   describe('👤 Profile', () => {
