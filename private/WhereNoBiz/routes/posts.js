@@ -165,10 +165,15 @@ router.post('/:id/images', requireAuth, upload.single('image'), async (req, res,
       return res.status(409).json({ error: 'too_many_images', message: `Лимит ${cfg.post.maxImages} снимки.` });
     }
     const fname = `post${p.id}_${existing.c + 1}_${Date.now()}.jpg`;
-    await sharp(req.file.buffer)
-      .resize({ width: cfg.post.thumbnailMaxWidthPx, withoutEnlargement: true })
-      .jpeg({ quality: cfg.post.thumbnailQuality })
-      .toFile(path.join(UPLOAD_DIR, fname));
+    try {
+      await sharp(req.file.buffer)
+        .resize({ width: cfg.post.thumbnailMaxWidthPx, withoutEnlargement: true })
+        .jpeg({ quality: cfg.post.thumbnailQuality })
+        .toFile(path.join(UPLOAD_DIR, fname));
+    } catch (imgErr) {
+      // sharp хвърля при невалидно/не-изображение → грациозен 400, НИКОГА 500
+      return res.status(400).json({ error: 'invalid_image', message: 'Файлът не е валидно изображение.' });
+    }
     log('2');
     const img = await one(
       `INSERT INTO post_images (post_id, url, sort_order) VALUES ($1, $2, $3) RETURNING id, url, sort_order`,

@@ -250,10 +250,15 @@ router.post('/:id/images', requireAuth, upload.single('image'), async (req, res,
     // Умаляване (sharp) по config.proposals.thumbnail*.
     const fname = `p${p.id}_${kind}_${existing.c + 1}_${Date.now()}.jpg`;
     const fpath = path.join(UPLOAD_DIR, fname);
-    await sharp(req.file.buffer)
-      .resize({ width: cfg.proposals.thumbnailMaxWidthPx, withoutEnlargement: true })
-      .jpeg({ quality: cfg.proposals.thumbnailQuality })
-      .toFile(fpath);
+    try {
+      await sharp(req.file.buffer)
+        .resize({ width: cfg.proposals.thumbnailMaxWidthPx, withoutEnlargement: true })
+        .jpeg({ quality: cfg.proposals.thumbnailQuality })
+        .toFile(fpath);
+    } catch (imgErr) {
+      // невалидно/не-изображение → грациозен 400, НИКОГА 500
+      return res.status(400).json({ error: 'invalid_image', message: 'Файлът не е валидно изображение.' });
+    }
 
     log('2');
     const img = await one(
