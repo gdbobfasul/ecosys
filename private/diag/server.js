@@ -51,9 +51,9 @@ const ROBOT_REPORTS = '/var/www/html/last-errors/robot';
 const ROBOT_LOGS = '/var/www/html/last-errors/robot-logs'; // 9-те робот лога (фази 1-4 + 5 приложения)
 // Състояние на текущото пускане (едно в даден момент).
 let robot = { running: false, runId: null, target: null, mode: null, startedAt: null, exitCode: null, reportDir: null, tail: [] };
-// Пази ЦЕЛИЯ изход на текущия тест (не само последните редове) — за да се вижда и копира
-// всичко минало досега. Таван 5000 реда (предпазен против безкрайна памет).
-const pushTail = (line) => { robot.tail.push(line); if (robot.tail.length > 5000) robot.tail.shift(); };
+// Пази ЦЕЛИЯ изход на ЕДНО стартиране (от началото до текущо) — за да се вижда и копира
+// всичко. Таван 50000 реда (само предпазител против безкрайна памет — далеч над един пуск).
+const pushTail = (line) => { robot.tail.push(line); if (robot.tail.length > 50000) robot.tail.shift(); };
 
 // Гарантирай че директорията съществува
 try { fs.mkdirSync(path.dirname(FLAGS_FILE), { recursive: true }); } catch (e) {}
@@ -252,7 +252,7 @@ const server = http.createServer(async (req, res) => {
             return sendJSON(res, 200, {
                 running: robot.running, runId: robot.runId, target: robot.target, mode: robot.mode,
                 startedAt: robot.startedAt, exitCode: robot.exitCode, reportDir: robot.reportDir,
-                tail: robot.tail.slice(-5000), // целият изход на текущия тест
+                tail: robot.tail, // ЦЕЛИЯТ изход на текущото стартиране (от началото до сега)
             });
         }
 

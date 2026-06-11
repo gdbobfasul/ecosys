@@ -48,6 +48,18 @@ router.post('/', requireAuth, requireSubscribed, async (req, res, next) => {
     }
     const desc = String(description || '').slice(0, cfg.proposals.maxDescriptionChars);
 
+    // composer_params е JSONB → валидирай. Невалиден низ → 400 (а НЕ 500 от PG json cast).
+    let cp = null;
+    if (composer_params !== undefined && composer_params !== null && composer_params !== '') {
+      let obj = composer_params;
+      if (typeof obj === 'string') {
+        try { obj = JSON.parse(obj); }
+        catch (e) { log('край → 400 (невалиден composer_params)'); return res.status(400).json({ error: 'bad_composer_params', message: 'Невалидни данни за композитора.' }); }
+      }
+      if (typeof obj !== 'object') { return res.status(400).json({ error: 'bad_composer_params', message: 'Невалидни данни за композитора.' }); }
+      cp = obj;
+    }
+
     // Лимит на брой предложения на потребител.
     const cnt = await one(
       "SELECT count(*)::int AS c FROM proposals WHERE owner_id = $1 AND status <> 'removed'",
@@ -68,7 +80,7 @@ router.post('/', requireAuth, requireSubscribed, async (req, res, next) => {
       `INSERT INTO proposals (owner_id, title, description, composer_params, status, edit_window_until)
        VALUES ($1, $2, $3, $4, 'editing', $5)
        RETURNING *`,
-      [req.user.id, String(title).trim(), desc, composer_params || null, editUntil]
+      [req.user.id, String(title).trim(), desc, cp, editUntil]
     );
     log('край → 201');
     res.status(201).json({ proposal: p });
