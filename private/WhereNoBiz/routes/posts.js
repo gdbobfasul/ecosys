@@ -180,8 +180,8 @@ router.post('/:id/images', requireAuth, upload.single('image'), async (req, res,
         .jpeg({ quality: cfg.post.thumbnailQuality })
         .toFile(path.join(UPLOAD_DIR, fname));
     } catch (writeErr) {
-      debug.error('thumbnail toFile се провали:', writeErr && writeErr.message);
-      return res.status(500).json({ error: 'thumbnail_failed', message: 'Грешка при обработка/запис на изображението.' });
+      debug.error('thumbnail toFile се провали:', writeErr && (writeErr.stack || writeErr.message));
+      return res.status(500).json({ error: 'thumbnail_failed', message: 'Грешка при обработка/запис на изображението.', detail: writeErr && writeErr.message });
     }
     log('2');
     const img = await one(

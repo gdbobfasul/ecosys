@@ -77,15 +77,24 @@ module.exports = {
         // Библиотеката (ЛОКАЛНА vendor/qrcode.min.js) трябва да е готова ПРЕДИ генерирането —
         // иначе genQR() гърми (QRCode undefined) → нищо не се рисува → фалшив timeout.
         // Ясна грешка ако не се зареди + повтаряме genQR веднъж, ако кликът е изпреварил рисуването.
-        { label: 'генерирай QR и потвърди, че картинката се нарисува', run: async (page) => {
+        { label: 'генерирай QR и потвърди, че картинката се нарисува', run: async (page, c) => {
           const libOk = await page.waitForFunction(() => typeof window.QRCode === 'function', { timeout: 20000 }).then(() => true).catch(() => false);
           if (!libOk) throw new Error('QRCode библиотеката не се зареди (vendor/qrcode.min.js не е изпълнен)');
+          let lastErr = '';
           for (let i = 0; i < 2; i++) {
-            await page.evaluate(() => { if (typeof window.genQR === 'function') window.genQR(); });
+            // Презаписваме текста ПРЯКО преди генериране (i18n може да е пре-рендерирал полето
+            // и да е изтрил попълненото) и хващаме евентуална грешка от самата genQR.
+            lastErr = await page.evaluate((txt) => {
+              try {
+                var el = document.getElementById('gentext'); if (el) el.value = txt;
+                if (typeof window.genQR === 'function') window.genQR(); else return 'genQR не е дефинирана';
+                return '';
+              } catch (e) { return (e && e.message) ? e.message : String(e); }
+            }, c.qrText);
             const drawn = await page.waitForSelector('#qrout img, #qrout canvas', { timeout: 8000 }).then(() => true).catch(() => false);
             if (drawn) return;
           }
-          throw new Error('QR картинката не се нарисува след genQR() (виж конзолата на страницата)');
+          throw new Error('QR картинката не се нарисува след genQR()' + (lastErr ? ' — ' + lastErr : ' (виж конзолата)'));
         } },
         // 2) Извлечи генерираната картинка като байтове
         { label: 'извлечи генерирания QR като PNG байтове', run: async (page, c) => {

@@ -83,7 +83,10 @@ module.exports = {
             multipart: { image: pngFile('robot-view.png') }, failOnStatusCode: false,
           });
           // 201 = качено. 409 = лимит/не-editing (приемливо при ре-пуск). 500 = счупено.
-          if (r.status() >= 500) throw new Error('качване на HLB снимка HTTP ' + r.status());
+          if (r.status() >= 500) {
+            const b = await r.json().catch(() => ({}));
+            throw new Error('качване на HLB снимка HTTP ' + r.status() + ' ' + (b.error || '') + (b.detail ? ' — ' + b.detail : ''));
+          }
           if (r.status() !== 201 && r.status() !== 409) {
             const b = await r.json().catch(() => ({}));
             throw new Error('качване на HLB снимка HTTP ' + r.status() + ' ' + (b.error || ''));

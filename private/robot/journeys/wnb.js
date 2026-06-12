@@ -68,7 +68,10 @@ module.exports = {
           const r = await page.request.post(h.base + `/api/wnb/posts/${c.postId}/images`, {
             multipart: { image: pngFile('robot-post.png') }, failOnStatusCode: false,
           });
-          if (r.status() >= 500) throw new Error('качване на WNB снимка HTTP ' + r.status());
+          if (r.status() >= 500) {
+            const b = await r.json().catch(() => ({}));
+            throw new Error('качване на WNB снимка HTTP ' + r.status() + ' ' + (b.error || '') + (b.detail ? ' — ' + b.detail : ''));
+          }
           if (r.status() !== 201 && r.status() !== 409) {
             const b = await r.json().catch(() => ({}));
             throw new Error('качване на WNB снимка HTTP ' + r.status() + ' ' + (b.error || ''));

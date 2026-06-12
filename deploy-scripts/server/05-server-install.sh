@@ -852,6 +852,20 @@ chmod 700 "$PRIVATE_DIR/portals/database"
 find "$PRIVATE_DIR/portals/database" -type f -exec chmod 600 {} \; 2>/dev/null
 echo -e "  ${GREEN}✓${NC} portals/database/ → mode 700 (само ${ECO3_USER})"
 
+# HLB/WNB/FBP качени снимки — услугите вървят като ${ECO3_USER}. При пълна инсталация (опция 2/4)
+# тези uploads оставаха собственост на root → ${ECO3_USER} не може да пише → качването на снимка
+# дава 500 (thumbnail_failed). Гарантираме права ТУК (както прави опция 5): собственик service
+# потребителят + setgid 2775, за да наследяват новите файлове групата и да са записваеми.
+for _app in House-Look-Book WhereNoBiz find-best-price; do
+  _up="$PRIVATE_DIR/$_app/uploads"
+  if [ -d "$PRIVATE_DIR/$_app" ]; then
+    mkdir -p "$_up/posts" "$_up/proposals" 2>/dev/null || true
+    chown -R "$ECO3_USER":"$SVC_GROUP" "$_up" 2>/dev/null || true
+    chmod -R 2775 "$_up" 2>/dev/null || true
+    echo -e "  ${GREEN}✓${NC} $_app/uploads/ → ${ECO3_USER} (rw, setgid 2775)"
+  fi
+done
+
 echo -e "  ${CYAN}✓ Изолация: chat НЕ може да чете eco-3/portals databases; и обратно${NC}"
 
 ##############################################################################
@@ -1486,7 +1500,10 @@ StandardError=journal
 SyslogIdentifier=kcy-eco3
 NoNewPrivileges=true
 ProtectSystem=strict
-ReadWritePaths=/var/log/kcy-ecosystem ${PRIVATE_DIR}/eco-3/database ${PRIVATE_DIR}/eco-3/logs
+# eco3 пише и СПОДЕЛЕНАТА сесийна база в portals/database (общ вход портали↔eco3) —
+# двата сървиса вървят като kcy-eco3 и я притежават, но ProtectSystem=strict я прави read-only
+# без явно разрешение → затова я добавяме тук, иначе „attempt to write a readonly database".
+ReadWritePaths=/var/log/kcy-ecosystem ${PRIVATE_DIR}/eco-3/database ${PRIVATE_DIR}/eco-3/logs ${PRIVATE_DIR}/portals/database
 
 [Install]
 WantedBy=multi-user.target

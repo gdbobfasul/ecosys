@@ -131,7 +131,7 @@ StandardError=journal
 SyslogIdentifier=${SVC}
 NoNewPrivileges=true
 ProtectSystem=strict
-ReadWritePaths=${APP_DIR}/uploads ${LOG_DIR}
+ReadWritePaths=${APP_DIR}/uploads ${LOG_DIR} ${WEB_ROOT}/last-errors
 ReadOnlyPaths=${PUBLIC_SUBDIR}
 
 [Install]
