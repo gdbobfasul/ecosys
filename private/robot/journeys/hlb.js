@@ -105,8 +105,10 @@ module.exports = {
     {
       name: 'Админ: създай втора, после я откажи',
       steps: [
+        // 409 too_many = лимит на заявки (създадохме къща преди секунди в горния сценарий).
+        // Това е легитимен отговор, не бъг → толерирай го и спри сценария грациозно.
         { api: { method: 'POST', path: '/api/hlb/proposals', json: () => ({ title: 'Робот къща 2', composer_params: HOUSE }) },
-          expectStatus: 201, saveAs: 'propId2', extract: (b) => b.proposal && b.proposal.id },
+          expectStatus: 201, tolerateStatus: 409, saveAs: 'propId2', extract: (b) => b.proposal && b.proposal.id },
         { api: { method: 'POST', path: (c) => `/api/hlb/proposals/${c.propId2}/submit` }, expectStatus: 200 },
         { api: { method: 'POST', path: (c) => `/api/hlb/moderation/proposals/${c.propId2}/reject`, json: { note: 'робот отказа' } }, expectStatus: 200 },
       ],

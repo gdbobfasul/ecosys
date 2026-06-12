@@ -38,6 +38,16 @@ function seedAdminsAndMods() {
 module.exports = { seedAdminsAndMods };
 
 if (require.main === module) {
-  try { const n = seedAdminsAndMods(); console.log(`Portals: попълнени ${n} админ/модератор акаунта от .env`); process.exit(0); }
-  catch (e) { console.error('Portals попълване на админи се провали:', e.message); process.exit(1); }
+  const ENVF = path.join(__dirname, '..', 'configs', '.env');
+  try {
+    fs.accessSync(ENVF, fs.constants.R_OK);
+  } catch (e) {
+    console.error(`Portals: НЕ МОГА да чета ${ENVF} (права/собственик?). Дай достъп на потребителя, който пуска това.`);
+    process.exit(1);
+  }
+  try {
+    const n = seedAdminsAndMods();
+    if (n === 0) { console.error(`Portals: попълнени 0 акаунта — PORTALS_ADMIN_USER/PASS липсват или .env е празен за тоя потребител.`); process.exit(1); }
+    console.log(`Portals: попълнени ${n} админ/модератор акаунта от .env`); process.exit(0);
+  } catch (e) { console.error('Portals попълване на админи се провали:', e.message); process.exit(1); }
 }

@@ -28,6 +28,13 @@ function seedAdminsAndMods(key) {
 module.exports = { seedAdminsAndMods };
 
 if (require.main === module) {
-  try { const r = seedAdminsAndMods(); console.log(`Token Monitor [${r.key}]: попълнени ${r.n} админ/модератор акаунта от .env`); process.exit(0); }
-  catch (e) { console.error('Token Monitor попълване на админи се провали:', e.message); process.exit(1); }
+  const fs = require('fs');
+  const ENVF = path.join(__dirname, '..', 'configs', '.env');
+  try { fs.accessSync(ENVF, fs.constants.R_OK); }
+  catch (e) { console.error(`Token Monitor: НЕ МОГА да чета ${ENVF} (права/собственик?). Дай достъп на потребителя, който пуска това.`); process.exit(1); }
+  try {
+    const r = seedAdminsAndMods();
+    if (r.n === 0) { console.error(`Token Monitor [${r.key}]: попълнени 0 акаунта — админ данните за тоя токен липсват или .env е празен за тоя потребител.`); process.exit(1); }
+    console.log(`Token Monitor [${r.key}]: попълнени ${r.n} админ/модератор акаунта от .env`); process.exit(0);
+  } catch (e) { console.error('Token Monitor попълване на админи се провали:', e.message); process.exit(1); }
 }

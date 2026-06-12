@@ -104,8 +104,17 @@ async function runStep(step, page, ctx, base, navTimeout) {
     const status = res.status();
     let body = null;
     try { body = await res.json(); } catch (_) { /* не-JSON */ }
-    if (step.expectStatus && status !== step.expectStatus) {
-      throw new Error(`${a.method || 'GET'} ${resolve(a.path, ctx)} → ${status} (чаках ${step.expectStatus})${body && body.error ? ' / ' + body.error : ''}`);
+    // expectStatus: число ИЛИ списък (приема всеки от изброените).
+    const expected = step.expectStatus == null ? null
+      : (Array.isArray(step.expectStatus) ? step.expectStatus : [step.expectStatus]);
+    // tolerateStatus: статус(и), които НЕ са грешка, но спират сценария грациозно
+    // (напр. 409 лимит на заявки — легитимен отговор, не бъг; просто не можем да продължим).
+    const tolerated = step.tolerateStatus == null ? []
+      : (Array.isArray(step.tolerateStatus) ? step.tolerateStatus : [step.tolerateStatus]);
+    if (expected && !expected.includes(status)) {
+      const where = `${a.method || 'GET'} ${resolve(a.path, ctx)} → ${status}${body && body.error ? ' / ' + body.error : ''}`;
+      if (tolerated.includes(status)) { const err = new Error(`${where} (толерирано — спирам сценария)`); err.softStop = true; throw err; }
+      throw new Error(`${where} (чаках ${expected.join(' или ')})`);
     }
     if (step.saveAs && step.extract) ctx[step.saveAs] = step.extract(body, ctx);
     return;
@@ -161,6 +170,13 @@ async function runJourney(journey, page, ctx, base, navTimeout, sink, log) {
         steps.push({ step: label, ok: true });
       } catch (e) {
         const msg = (e.message || String(e)).split('\n')[0].slice(0, 200);
+        // Грациозно спиране (толериран статус, напр. 409 лимит) → НЕ е грешка: маркирай
+        // стъпката ОК с бележка и прекрати сценария без да го проваляш и без находка.
+        if (e && e.softStop) {
+          steps.push({ step: label, ok: true, note: msg });
+          log(`     ⤼ ${label} — ${msg}`);
+          break;
+        }
         steps.push({ step: label, ok: false, error: msg });
         sink.push({ ts: new Date().toISOString(), severity: 'error', kind: 'journey', app: journey.app, scenario: sc.name, targetUrl: page.url(), detail: `${label}: ${msg}` });
         // САМО при грешка → в лога на приложението: КАКВО попълни/натисна на ТАЗИ

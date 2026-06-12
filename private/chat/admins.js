@@ -37,7 +37,14 @@ module.exports = { seedAdminsAndMods };
 
 // Пряко пускане: node admins.js → попълва и излиза (ползва се от деплой скрипт 07).
 if (require.main === module) {
+  const fs = require('fs');
+  const ENVF = path.join(__dirname, '..', 'configs', '.env');
+  try { fs.accessSync(ENVF, fs.constants.R_OK); }
+  catch (e) { console.error(`Chat: НЕ МОГА да чета ${ENVF} (права/собственик?). Дай достъп на потребителя, който пуска това.`); process.exit(1); }
   seedAdminsAndMods()
-    .then(n => { console.log(`Chat: попълнени ${n} админ/модератор акаунта от .env`); process.exit(0); })
+    .then(n => {
+      if (n === 0) { console.error('Chat: попълнени 0 акаунта — CHAT_ADMIN_USER/PASS липсват или .env е празен за тоя потребител.'); process.exit(1); }
+      console.log(`Chat: попълнени ${n} админ/модератор акаунта от .env`); process.exit(0);
+    })
     .catch(e => { console.error('Chat попълване на админи се провали:', e.message); process.exit(1); });
 }

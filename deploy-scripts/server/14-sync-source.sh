@@ -128,10 +128,12 @@ done
 # винаги ги има (иначе при premахнато start-попълване порталният/чат админ изчезва).
 echo -e "${YELLOW}Попълвам админи/модератори от .env...${NC}"
 PD="/var/www/kcy-ecosystem/private"
-seed_js() { [ -f "$1/admins.js" ] && ( cd "$1" && sudo -u "$2" node admins.js ) >/dev/null 2>&1 \
-            && echo -e "  ${GREEN}OK $3 админи${NC}" || echo -e "  ${YELLOW}- $3 попълване пропуснато (провери .env)${NC}"; }
-seed_db() { [ -f "$1/db.js" ] && ( cd "$1" && sudo -u "$2" node -e 'require("./db").seedAdminsAndMods().then(function(){process.exit(0)}).catch(function(e){console.error(e.message);process.exit(1)})' ) >/dev/null 2>&1 \
-            && echo -e "  ${GREEN}OK $3 админи${NC}" || echo -e "  ${YELLOW}- $3 попълване пропуснато (провери .env)${NC}"; }
+seed_js() { [ -f "$1/admins.js" ] || { echo -e "  ${YELLOW}- $3 няма admins.js${NC}"; return; }; \
+            out=$( cd "$1" && sudo -u "$2" node admins.js 2>&1 ); rc=$?; \
+            if [ $rc -eq 0 ]; then echo -e "  ${GREEN}OK $3: ${out}${NC}"; else echo -e "  ${RED}ГРЕШКА $3: ${out}${NC}"; fi; }
+seed_db() { [ -f "$1/db.js" ] || { echo -e "  ${YELLOW}- $3 няма db.js${NC}"; return; }; \
+            out=$( cd "$1" && sudo -u "$2" node -e 'require("./db").seedAdminsAndMods().then(function(n){console.log("попълнени "+(typeof n==="number"?n:"?")+" акаунта");process.exit(0)}).catch(function(e){console.error(e.message);process.exit(1)})' 2>&1 ); rc=$?; \
+            if [ $rc -eq 0 ]; then echo -e "  ${GREEN}OK $3: ${out}${NC}"; else echo -e "  ${RED}ГРЕШКА $3: ${out}${NC}"; fi; }
 seed_js "$PD/portals"         kcy-eco3 "portals"
 seed_js "$PD/chat"            kcy-chat "chat"
 seed_js "$PD/eco-3"           kcy-eco3 "eco-3"

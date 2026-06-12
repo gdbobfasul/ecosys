@@ -89,9 +89,10 @@
   </div>
 </div>
 
-<!-- QR библиотеки: qrcode (генериране), jsQR (четене) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<!-- QR библиотеки: qrcode (генериране), jsQR (четене) — ЛОКАЛНИ (без външен CDN,
+     иначе при бавен/блокиран CDN нищо не се рисува и услугата „увисва"). -->
+<script src="/portals/services/vendor/qrcode.min.js"></script>
+<script src="/portals/services/vendor/jsQR.js"></script>
 <script>
 function showTab(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
