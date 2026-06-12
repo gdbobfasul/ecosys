@@ -74,14 +74,18 @@ module.exports = {
         { fill: '#gentext', value: (c) => c.qrText },
         { select: '#gensize', value: '300' },
         { select: '#genecc', value: 'M' },
-        // Изчакай QR библиотеката (CDN) да се зареди ПРЕДИ клика — иначе genQR() гърми
-        // (QRCode още undefined при бавно зареждане) → нищо не се рисува → фалшив timeout.
-        { label: 'изчакай QR библиотеката да е готова', run: async (page) => {
-          await page.waitForFunction(() => typeof window.QRCode === 'function', { timeout: 15000 }).catch(() => {});
-        } },
-        { click: 'button[onclick="genQR()"]' },
-        { label: 'изчакай QR картинката да се нарисува', run: async (page) => {
-          await page.waitForSelector('#qrout img, #qrout canvas', { timeout: 15000 });
+        // Библиотеката (ЛОКАЛНА vendor/qrcode.min.js) трябва да е готова ПРЕДИ генерирането —
+        // иначе genQR() гърми (QRCode undefined) → нищо не се рисува → фалшив timeout.
+        // Ясна грешка ако не се зареди + повтаряме genQR веднъж, ако кликът е изпреварил рисуването.
+        { label: 'генерирай QR и потвърди, че картинката се нарисува', run: async (page) => {
+          const libOk = await page.waitForFunction(() => typeof window.QRCode === 'function', { timeout: 20000 }).then(() => true).catch(() => false);
+          if (!libOk) throw new Error('QRCode библиотеката не се зареди (vendor/qrcode.min.js не е изпълнен)');
+          for (let i = 0; i < 2; i++) {
+            await page.evaluate(() => { if (typeof window.genQR === 'function') window.genQR(); });
+            const drawn = await page.waitForSelector('#qrout img, #qrout canvas', { timeout: 8000 }).then(() => true).catch(() => false);
+            if (drawn) return;
+          }
+          throw new Error('QR картинката не се нарисува след genQR() (виж конзолата на страницата)');
         } },
         // 2) Извлечи генерираната картинка като байтове
         { label: 'извлечи генерирания QR като PNG байтове', run: async (page, c) => {
