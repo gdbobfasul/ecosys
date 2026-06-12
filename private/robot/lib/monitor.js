@@ -12,10 +12,13 @@ const noise = (u) => IGNORE.some((r) => r.test(u || ''));
 // charts.html). Тези НЕ са наши бъгове → свеждаме ги до 'info' (виждат се, но не се броят
 // за грешка). Мачваме и по домейн, и по характерен път (support-portal-problems, pine-facade).
 const THIRD_PARTY = [
-  /tradingview\.com/i, /pine-facade/i, /pine_perm/i, /support-portal-problems/i, /\/pine\//i,
+  /tradingview\.com/i, /tradingview-widget\.com/i, /pine-facade/i, /pine_perm/i, /support-portal-problems/i, /\/pine\//i,
   /coinglass\.com/i,
-  /accounts\.google\.com/i, /\/gsi\//i, /gstatic\.com/i, /googleapis\.com/i, /play\.google\.com/i, /google\.com\/log/i,
+  /google\.com/i, /withgoogle\.com/i, /\/gsi\//i, /gstatic\.com/i, /googleapis\.com/i, /googlesyndication\.com/i,
   /doubleclick\.net/i, /connect\.facebook\.net/i,
+  // Report-only CSP нарушенията са по дефиниция безобидни (браузърът само логва, „no further
+  // action has been taken") — обикновено идват от вградени външни рамки.
+  /report-only Content Security Policy/i,
 ];
 const thirdParty = (s) => THIRD_PARTY.some((r) => r.test(s || ''));
 
