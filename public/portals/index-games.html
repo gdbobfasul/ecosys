@@ -153,7 +153,7 @@ function loadGames(){
       if (game.slug === 'battle-team' || game.slug === 'battle-duel') return;
       var pr=game.progress||{best_level:1,best_score:0};
       var a=document.createElement('a');
-      a.className='game'; a.href='games/'+game.slug+'.html';
+      a.className='game'; a.href='/portals/games/'+game.slug+'.html';
       // Игрите с реална снимка (thumbs/<slug>.png). За battle-team/battle-duel още
       // няма снимка (текущ проблем) → ползваме рисувания SVG icon.
       var media = THUMBS[game.slug]

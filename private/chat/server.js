@@ -221,9 +221,13 @@ app.use(express.static('public'));
 app.use('/assets', express.static(path.join(__dirname, '../../public/chat/assets')));
 app.use('/configs', express.static('configs'));
 
-// Rate limiting
-const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
-const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5 });
+// Rate limiting. ВАЖНО: винаги връщаме JSON (не plain text „Too many requests"), иначе
+// фронтендът гърми с „Мрежова грешка: Unexpected token 'T'" при парсване на отговора.
+// В ТЕСТОВ режим лимитите са много по-високи — роботът прави масови регистрации/входове и
+// заявки; ниският лимит му даваше фалшиви грешки (екосистемата е тестова, без живи данни).
+const rateLimitMsg = { error: 'too_many_requests', message: 'Твърде много заявки. Опитай отново малко по-късно.' };
+const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: TEST_MODE ? 5000 : 100, standardHeaders: true, legacyHeaders: false, message: rateLimitMsg });
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: TEST_MODE ? 500 : 5, standardHeaders: true, legacyHeaders: false, message: rateLimitMsg });
 
 app.use('/api/', apiLimiter);
 

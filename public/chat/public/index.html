@@ -184,9 +184,14 @@
                     body: JSON.stringify({ phone, password, client: CLIENT_TYPE })
                 });
 
-                const data = await response.json();
+                // Чети защитено: при лимит/proxy грешка отговорът може да НЕ е JSON.
+                const raw = await response.text();
+                let data = {};
+                try { data = raw ? JSON.parse(raw) : {}; } catch (e) { data = {}; }
 
-                if (data.needsRegistration) {
+                if (response.status === 429) {
+                    messageDiv.innerHTML = `<p class="text-red-400">${data.message || 'Твърде много заявки. Опитай отново малко по-късно.'}</p>`;
+                } else if (data.needsRegistration) {
                     // User doesn't exist → Register (чат регистрация)
                     window.location.href = `/chat/register.html?phone=${encodeURIComponent(phone)}&password=${encodeURIComponent(password)}`;
                 } else if (data.isBlocked) {

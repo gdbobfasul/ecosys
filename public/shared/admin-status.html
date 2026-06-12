@@ -755,7 +755,10 @@
                 • ако е <b>parse-json</b> — route-ът върна HTML/празно вместо JSON<br>
                 • ако е <b>render</b> — структурата на отговора е различна от очакваната</small>
             </div></div>`;
-            console.error('[admin-status] loadStatus гръмна на етап:', stage, err);
+            // console.warn (не error): UI кутията горе вече показва грешката на реалния админ.
+            // При обхождане (crawler) заявката се прекъсва щом се напусне страницата → „Failed to
+            // fetch" е артефакт от навигацията, не бива да се брои за грешка.
+            console.warn('[admin-status] loadStatus гръмна на етап:', stage, err);
         }
     }
 

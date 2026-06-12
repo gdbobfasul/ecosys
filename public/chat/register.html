@@ -149,14 +149,20 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                var data = await r.json();
+                // Чети защитено: при лимит/proxy грешка отговорът може да НЕ е JSON →
+                // r.json() би гръмнал с „Unexpected token". Затова парсваме ръчно.
+                var raw = await r.text();
+                var data = {};
+                try { data = raw ? JSON.parse(raw) : {}; } catch (e) { data = {}; }
                 if (r.ok && data.success) {
                     // Регистрацията мина → към плащане (€5/$5)
                     if (data.userId) localStorage.setItem('userId', data.userId);
                     msg.innerHTML = '<p class="text-green-400">✅ Регистрацията е успешна! Към плащането…</p>';
                     setTimeout(function () { location.href = '/chat/public/payment.html'; }, 900);
+                } else if (r.status === 429) {
+                    msg.innerHTML = '<p class="text-red-400">' + (data.message || 'Твърде много заявки. Опитай отново малко по-късно.') + '</p>';
                 } else {
-                    msg.innerHTML = '<p class="text-red-400">' + (data.error || 'Грешка при регистрация') + '</p>';
+                    msg.innerHTML = '<p class="text-red-400">' + (data.error || data.message || ('Грешка при регистрация (HTTP ' + r.status + ')')) + '</p>';
                 }
             } catch (err) {
                 msg.innerHTML = '<p class="text-red-400">Мрежова грешка: ' + err.message + '</p>';
