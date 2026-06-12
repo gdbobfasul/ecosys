@@ -91,7 +91,10 @@ module.exports = {
                 return '';
               } catch (e) { return (e && e.message) ? e.message : String(e); }
             }, c.qrText);
-            const drawn = await page.waitForSelector('#qrout img, #qrout canvas', { timeout: 8000 }).then(() => true).catch(() => false);
+            // ВАЖНО: state:'attached' (не 'visible'!) — qrcodejs прави canvas-а display:none и
+            // показва <img>, така че по подразбиране „visible" дава фалшив timeout. Нужно е само
+            // да е в DOM (следващата стъпка така или иначе го чете през querySelector).
+            const drawn = await page.waitForSelector('#qrout img, #qrout canvas', { state: 'attached', timeout: 8000 }).then(() => true).catch(() => false);
             if (drawn) return;
           }
           throw new Error('QR картинката не се нарисува след genQR()' + (lastErr ? ' — ' + lastErr : ' (виж конзолата)'));
