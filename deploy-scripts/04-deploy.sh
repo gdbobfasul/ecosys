@@ -173,7 +173,7 @@ Targets (промени в началото на 04-deploy.sh, или в .deploy
 За да го изпише и да попита дали да го копира на сървъра:
   DEPLOY_SHOW_ENV=1 ./deploy-scripts/04-deploy.sh
 
-За изключване на финалното питане "Пусни 05-server-install.sh?" (CI):
+За изключване на финалното питане "Пусни инсталацията?" (CI):
   DEPLOY_NO_PAUSE=1 ./deploy-scripts/04-deploy.sh
 
 Преди първо ползване:
@@ -183,7 +183,7 @@ Targets (промени в началото на 04-deploy.sh, или в .deploy
   2. Копирай ключа на сървъра:
      ssh-copy-id -p 2222 -i ~/.ssh/id_ed25519.pub deploy@$MAIN_DOMAIN
 
-  3. Пусни: ./deploy-scripts/04-deploy.sh
+  3. Пусни опция 4 (Deploy проекта)
 EOF
     exit 0
 fi
@@ -416,7 +416,7 @@ else
     log "  ${RED}║${NC}  ${GREEN}cat >> ~/.ssh/authorized_keys &&${NC}                            ${RED}║${NC}"
     log "  ${RED}║${NC}  ${GREEN}chmod 600 ~/.ssh/authorized_keys\"${NC}                           ${RED}║${NC}"
     log "  ${RED}║${NC}                                                              ${RED}║${NC}"
-    log "  ${RED}║${NC}  ${CYAN}Стъпка 3: Пусни 04-deploy.sh отново${NC}                            ${RED}║${NC}"
+    log "  ${RED}║${NC}  ${CYAN}Стъпка 3: Пусни опция 4 (Deploy проекта) отново${NC}                ${RED}║${NC}"
     log "  ${RED}║${NC}                                                              ${RED}║${NC}"
     log "  ${RED}╚══════════════════════════════════════════════════════════════╝${NC}"
     log ""
@@ -602,13 +602,13 @@ ssh ${SSH_OPTS} "${USER}@${SERVER}" "
 
 # ═══ STEP 5: RUN SERVER-INSTALL ═══
 log ""
-log "${GREEN}[5/5] Активиране — изпълнение на 05-server-install.sh...${NC}"
+log "${GREEN}[5/5] Активиране — изпълнение на инсталацията...${NC}"
 log ""
 
 # Питай дали да run-ва автоматично (default: yes)
 RUN_INSTALL="y"
 if [ -t 0 ] && [ "${DEPLOY_NO_PAUSE:-0}" != "1" ]; then
-    read -p "  Пусни 05-server-install.sh автоматично сега? [Y/n, Enter = Да]: " RUN_INSTALL
+    read -p "  Пусни инсталацията автоматично сега? [Y/n, Enter = Да]: " RUN_INSTALL
     RUN_INSTALL="${RUN_INSTALL:-y}"
 fi
 
@@ -658,18 +658,15 @@ TARGETINFO
         log "${RED}═══════════════════════════════════════════════════${NC}"
         log ""
         log "${YELLOW}Възможни причини:${NC}"
-        log "  1. ${USER} още няма limited sudo за 05-server-install.sh"
-        log "     → Run-ни като root: ${CYAN}sudo bash ${STAGING}/deploy-scripts/server/03-kcy-admin-sudo.sh${NC}"
-        log "  2. 05-server-install.sh падна по време на изпълнение"
-        log "     → SSH-ни и пусни ръчно за да видиш грешката:"
-        log "        ${CYAN}ssh -p ${PORT} ${USER}@${SERVER}${NC}"
-        log "        ${CYAN}sudo ${INSTALL_PATH}${NC}"
+        log "  1. ${USER} още няма limited sudo за инсталацията"
+        log "     → Пусни опция 30 (Update sudoers на сървъра)"
+        log "  2. Инсталацията падна по време на изпълнение"
+        log "     → Пусни отново опция 4 (Deploy проекта) — изпълнява инсталацията автоматично"
         log ""
     fi
 else
-    log "  ${YELLOW}Пропуснато. Активирай ръчно:${NC}"
-    log "    ${CYAN}ssh -p ${PORT} ${USER}@${SERVER}${NC}"
-    log "    ${CYAN}sudo ${STAGING}/deploy-scripts/server/05-server-install.sh${NC}"
+    log "  ${YELLOW}Пропуснато. За активиране пусни отново опция 4 (Deploy проекта)${NC}"
+    log "  ${YELLOW}— тя изпълнява инсталацията автоматично.${NC}"
 fi
 
 # ═══ CLEANUP LOCAL ═══
@@ -721,14 +718,12 @@ log ""
 log "  ${CYAN}Група kcy${NC} — обща група, .env е root:kcy с mode 640 (read-only за services)"
 log ""
 log "  sudo управление:"
-log "     ${GREEN}sudo bash 03-kcy-admin-sudo.sh grant${NC}   — дай sudo"
-log "     ${GREEN}sudo bash 03-kcy-admin-sudo.sh revoke${NC}  — премахни"
+log "     ${GREEN}опция 51${NC} (kcy-admin sudo вкл./изкл.) — дай или премахни sudo"
+log "     ${GREEN}опция 30${NC} (Update sudoers на сървъра) — обнови white-list правата"
 log ""
 log "${YELLOW}  Бърз ъпдейт (без пълен deploy):${NC}"
-log "  ${CYAN}ssh -p ${PORT} deploy@${SERVER}${NC}"
-log "  ${CYAN}cd ${STAGING} && git pull${NC}"
-log "  ${CYAN}su - kcy-admin${NC}"
-log "  ${CYAN}sudo bash ${STAGING}/deploy-scripts/server/05-server-install.sh${NC}"
+log "  ${CYAN}опция 5 (Прехвърли само СОРС)${NC} — качва само кода"
+log "  или ${CYAN}опция 4 (Deploy проекта)${NC} — пълен deploy + инсталация автоматично"
 log ""
 log "${YELLOW}═══════════════════════════════════════════════════${NC}"
 log "${YELLOW}  .env КОНФИГУРАЦИЯ                                ${NC}"

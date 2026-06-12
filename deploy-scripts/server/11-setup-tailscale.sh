@@ -80,5 +80,5 @@ echo -e "  Tailscale IP на това устройство: ${GREEN}${TS_IP}${NC
 echo ""
 echo -e "${CYAN}Следваща стъпка:${NC}"
 echo "  Изпълни този скрипт на ДРУГАТА машина (VPS ако сме на VM, или обратно)."
-echo "  След това можеш да настроиш failover чрез скрипт 12-setup-failover.sh"
+echo "  След това можеш да настроиш failover от менюто: опция 37 (Setup failover)"
 echo ""

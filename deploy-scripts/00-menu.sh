@@ -248,16 +248,16 @@ show_menu() {
     echo ""
     item "43" "Deploy House-Look-Book УСЛУГА (systemd+nginx) → сървър" \
         "Вдига kcy-hlb услугата (node :3010) + nginx /houselookbook/, /api/hlb/." \
-        "Отделен скрипт 18 — не пипа chat/eco3/portals. nginx маршрутът идва с опция 2."
+        "Самостоятелно — не пипа chat/eco3/portals. nginx маршрутът идва с опция 2."
     item "44" "Deploy WhereNoBiz УСЛУГА (systemd+nginx) → сървър" \
         "Вдига kcy-wnb услугата (node :3011) + nginx /wherenobiz/, /api/wnb/." \
-        "Отделен скрипт 19 — не пипа chat/eco3/portals. nginx маршрутът идва с опция 2."
+        "Самостоятелно — не пипа chat/eco3/portals. nginx маршрутът идва с опция 2."
     item "54" "Deploy Find Best Price БАЗА (PostgreSQL) → сървър" \
         "Създава база findbestprice + потребител (FBP_PG_USER от .env), схема + админи." \
-        "Скрипт 16 findbestprice. Само PostgreSQL."
+        "Самостоятелно (findbestprice). Само PostgreSQL."
     item "55" "Deploy Find Best Price УСЛУГА (systemd+nginx) → сървър" \
         "Вдига kcy-fbp услугата (node :3012) + nginx /find-best-price/, /api/fbp/." \
-        "Отделен скрипт 21 — не пипа другите. nginx маршрутът идва с опция 2."
+        "Самостоятелно — не пипа другите. nginx маршрутът идва с опция 2."
 
     echo -e "${BOLD}${CYAN}━━━ ПО ПРИЛОЖЕНИЕ — обнови (база + админи/модератори от .env + рестарт) ━${NC}"
     echo ""
@@ -314,19 +314,19 @@ show_menu() {
     # · 63 WNB пълнител · 64 HLB пълнител · 65-70 свободни за бъдещи.
     item "60" "Чат — попълни системни потребители" \
         "Създава N бот-потребители от различни държави (флаг is_system=1) в чата." \
-        "Питам колко. НЕ са реални хора — само оживяват чата. (fill-system-users.js на сървъра.)"
+        "Питам колко. НЕ са реални хора — само оживяват чата."
     item "61" "Чат — авто-отговори на системните" \
         "Системните отговарят на реални хора: поздрав / как си / работа / 20+ комплимента." \
-        "Разпознава намерение, отговаря на езика на държавата (15 езика). (fill-system-replies.js.)"
+        "Разпознава намерение, отговаря на езика на държавата (15 езика)."
     item "62" "Find Best Price — скрапер (Google ≤3/ден)" \
         "Търси продукти в онлайн магазини по държави → пълни базата (магазини+продукти+цени)." \
-        "САМО текст, без картинки; маркира is_system. Твърд таван 3 Google заявки/ден. (fbp-scraper.js.)"
+        "САМО текст, без картинки; маркира is_system. Твърд таван 3 Google заявки/ден."
     item "63" "WhereNoBiz — попълни липсващи бизнеси" \
         "Системни постове за липсващ бизнес по държави; описание на езика на държавата." \
-        "Маркира is_system; системният няма телефон (не се договаря). Google до 1/ден. (wnb-filler.js.)"
+        "Маркира is_system; системният няма телефон (не се договаря). Google до 1/ден."
     item "64" "House-Look-Book — генерирай модели къщи" \
         "Създава системни модели странни къщи (форма/покрив/етажи/стаи/цвят) — рендерират се." \
-        "Параметрични, без картинки (надеждно); маркира is_system. (hlb-filler.js.)"
+        "Параметрични, без картинки (надеждно); маркира is_system."
     echo -e "  ${GRAY}(65-70 запазени за бъдещи FILL DATA задачи)${NC}"
 
     echo -e "${BOLD}${GRAY}━━━ СВОБОДНИ НОМЕРА ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -406,7 +406,7 @@ run_choice() {
             echo -e "${BOLD}${CYAN}  ПЪЛЕН DEPLOY — на кой сървър?${NC}"
             echo "  (Качва целия проект, разархивира, пуска 05-server-install:"
             echo "   npm install + реконфигурация + рестарт. Ползвай при голяма промяна"
-            echo "   или нов пакет. За само код → опция 3, за само видеа → опция 4.)"
+            echo "   или нов пакет. За само код → опция 5 (Прехвърли само СОРС), за само видеа → опция 6 (Прехвърли само АСЕТИ).)"
             echo ""
             IDX=1
             declare -a DT_ARR=()
@@ -458,7 +458,7 @@ run_choice() {
                 RST=""; case "$RM" in да|Да|ДА|reset|RESET|yes|YES|y|Y) RST=" --reset";; esac
                 REMOTE="sudo /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh houselookbook${RST}"
                 echo ""
-                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
                 echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
                 echo -e "    ${CYAN}${REMOTE}${NC}"
                 echo ""
@@ -486,7 +486,7 @@ run_choice() {
                 RST=""; case "$RM" in да|Да|ДА|reset|RESET|yes|YES|y|Y) RST=" --reset";; esac
                 REMOTE="sudo /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh${RST}"
                 echo ""
-                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
                 echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
                 echo -e "    ${CYAN}${REMOTE}${NC}"
                 echo ""
@@ -511,7 +511,7 @@ run_choice() {
             if pick_target; then
                 REMOTE="sudo /var/www/deploy/deploy-scripts/server/18-setup-houselookbook-service.sh"
                 echo ""
-                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
                 echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
                 echo -e "    ${CYAN}${REMOTE}${NC}"
                 echo ""
@@ -536,7 +536,7 @@ run_choice() {
             if pick_target; then
                 REMOTE="sudo /var/www/deploy/deploy-scripts/server/19-setup-wherenobiz-service.sh"
                 echo ""
-                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
                 echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
                 echo -e "    ${CYAN}${REMOTE}${NC}"
                 echo ""
@@ -563,7 +563,7 @@ run_choice() {
                 RST=""; case "$RM" in да|Да|ДА|reset|RESET|yes|YES|y|Y) RST=" --reset";; esac
                 REMOTE="sudo /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh findbestprice${RST}"
                 echo ""
-                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
                 echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
                 echo -e "    ${CYAN}${REMOTE}${NC}"
                 echo ""
@@ -587,7 +587,7 @@ run_choice() {
             if pick_target; then
                 REMOTE="sudo /var/www/deploy/deploy-scripts/server/21-setup-fbp-service.sh"
                 echo ""
-                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/3):${NC}"
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
                 echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
                 echo -e "    ${CYAN}${REMOTE}${NC}"
                 echo ""
@@ -779,7 +779,7 @@ run_choice() {
                     count=$(sqlite3 private/portals/database/portals.db "SELECT COUNT(*) FROM $t" 2>/dev/null || echo "—")
                     printf "  %-30s %s\n" "$t" "$count"
                 done
-            else echo "  Portal DB не съществува (run #5 first)"
+            else echo "  Portal DB не съществува (първо пусни опция 7 — Init Portal база данни)"
             fi
             press_enter
             ;;
@@ -1120,7 +1120,7 @@ run_choice() {
             if [ -d node_modules ]; then
                 echo -e "    ${GREEN}✓${NC} ($(du -sh node_modules | cut -f1))"
             else
-                echo -e "    ${YELLOW}—${NC} run #26 (npm install)"
+                echo -e "    ${YELLOW}—${NC} пусни опция 28 (npm install ЛОКАЛНО)"
             fi
             press_enter
             ;;

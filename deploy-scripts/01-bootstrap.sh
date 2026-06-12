@@ -174,7 +174,7 @@ Usage:
   • Изпълнява 02-bootstrap-server.sh със sudo на сървъра
   • Bootstrap-ът сам инсталира всички пакети, прави потребители и т.н.
 
-В края на bootstrap-а сървърът е готов за './deploy-scripts/04-deploy.sh vm'.
+В края на bootstrap-а сървърът е готов за опция 4 (Deploy проекта).
 EOF
     exit 0
 fi
@@ -432,19 +432,17 @@ ssh $SSH_KEEPALIVE -t -p "$PORT" "${USER}@${SERVER}" "sudo bash \"\$HOME/${REMOT
     echo -e "${YELLOW}  Това е НОРМАЛНО — bootstrap (опция 1) е само за НОВ сървър.${NC}"
     echo ""
     echo -e "  За вече работещ сървър ${GREEN}НЕ ти трябва bootstrap${NC}. Вместо това:"
-    echo -e "    ${CYAN}• Обновяване на код:${NC}  опция 2 (Deploy) или опция 3 (само сорс)"
-    echo -e "    ${CYAN}• Обновяване на асети:${NC} опция 4 (само видеа/картинки)"
+    echo -e "    ${CYAN}• Обновяване на код:${NC}  опция 4 (Deploy проекта) или опция 5 (само сорс)"
+    echo -e "    ${CYAN}• Обновяване на асети:${NC} опция 6 (само видеа/картинки)"
     echo -e "    ${CYAN}• Нови sudo права:${NC}    опция 30 (Update sudoers) — пуска се без парола,"
-    echo -e "      защото 03-kcy-admin-sudo.sh е whitelist-нат за ${USER}:"
+    echo -e "      защото е whitelist-нат за ${USER}:"
     echo -e "        ${GREEN}ssh -p $PORT ${USER}@${SERVER}${NC}"
     echo -e "        ${GREEN}sudo /var/www/deploy/deploy-scripts/server/03-kcy-admin-sudo.sh${NC}"
     echo ""
     echo -e "  ${YELLOW}Истински нов сървър?${NC} Тогава ${USER} трябва да е пълен sudoer (в групата sudo),"
     echo -e "  а не ограничен. Провери на сървъра: ${GREEN}groups ${USER}${NC}"
     echo ""
-    echo "  За ръчно дебъгване:"
-    echo "    ssh -p $PORT ${USER}@${SERVER}"
-    echo "    sudo bash ~/${REMOTE_DIR}/02-bootstrap-server.sh"
+    echo "  Истински нов сървър? Пусни отново опция 1 (Bootstrap нов сървър)."
     exit 1
 }
 echo ""
@@ -550,7 +548,7 @@ if [ -f "$DEPLOY_SCRIPT" ]; then
         DEPLOY_TARGET="prod"
     fi
 
-    read -p "  Изпълни './deploy-scripts/04-deploy.sh ${DEPLOY_TARGET}' сега? [Y/n]: " DO_DEPLOY
+    read -p "  Изпълни опция 4 (Deploy проекта) за '${DEPLOY_TARGET}' сега? [Y/n]: " DO_DEPLOY
     DO_DEPLOY="${DO_DEPLOY:-y}"
 
     if [ "$DO_DEPLOY" = "y" ] || [ "$DO_DEPLOY" = "Y" ]; then
@@ -564,14 +562,14 @@ if [ -f "$DEPLOY_SCRIPT" ]; then
             echo -e "${GREEN}✓ Deploy успешен — сървърът е готов!${NC}"
         else
             echo -e "${YELLOW}⚠ Deploy завърши с код ${DEPLOY_RC}.${NC}"
-            echo "  Можеш да опиташ ръчно: ./deploy-scripts/04-deploy.sh ${DEPLOY_TARGET}"
+            echo "  Можеш да опиташ пак опция 4 (Deploy проекта) за '${DEPLOY_TARGET}'."
         fi
     else
         echo ""
         echo -e "${CYAN}СЛЕДВАЩА СТЪПКА:${NC}"
-        echo "  ${CYAN}./deploy-scripts/04-deploy.sh ${DEPLOY_TARGET}${NC}"
+        echo "  ${CYAN}опция 4 (Deploy проекта) за '${DEPLOY_TARGET}'${NC}"
         echo ""
-        echo "  Това ще качи проекта и автоматично ще извика 05-server-install.sh."
+        echo "  Опция 4 ще качи проекта и автоматично ще изпълни инсталацията."
     fi
 fi
 echo ""

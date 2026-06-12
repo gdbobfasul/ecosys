@@ -162,8 +162,7 @@ step_file_upload() {
     echo -e "     Command: ${YELLOW}.\deploy.ps1${NC}"
     echo ""
     echo -e "  ${GREEN}B)${NC} Upload from Linux/Mac"
-    echo -e "     Script: ${YELLOW}deploy-scripts/04-deploy.sh${NC}"
-    echo -e "     Command: ${YELLOW}./04-deploy.sh${NC}"
+    echo -e "     От менюто: ${YELLOW}опция 4 (Deploy проекта)${NC}"
     echo ""
     echo -e "  ${GREEN}C)${NC} Manual upload (SCP/SFTP)"
     echo -e "     Example: ${YELLOW}scp -r ./kcy-ecosystem root@server:/var/www/${NC}"
@@ -188,9 +187,8 @@ step_file_upload() {
             ;;
         B|b)
             echo ""
-            echo -e "${CYAN}On your Linux/Mac machine, run:${NC}"
-            echo -e "${YELLOW}  cd deploy-scripts${NC}"
-            echo -e "${YELLOW}  ./04-deploy.sh${NC}"
+            echo -e "${CYAN}От менюто стартирай:${NC}"
+            echo -e "${YELLOW}  опция 4 (Deploy проекта)${NC}"
             echo ""
             echo "The script will:"
             echo "  • Use rsync for efficient upload"
@@ -259,7 +257,7 @@ step_domain_config() {
             if [ -f "/etc/nginx/sites-available/kcy-ecosystem" ]; then
                 nano /etc/nginx/sites-available/kcy-ecosystem
             else
-                echo -e "${RED}Nginx config not found. Run domain setup script first.${NC}"
+                echo -e "${RED}Nginx config not found. Първо пусни опция 33 (Setup domain).${NC}"
             fi
         fi
     fi
@@ -597,7 +595,7 @@ step_summary() {
     echo -e "     ${YELLOW}pm2 logs kcy-chat${NC}"
     echo ""
     echo "  4. Configure domain (if not done):"
-    echo -e "     ${YELLOW}./08-setup-domain.sh${NC}"
+    echo -e "     ${YELLOW}от менюто: опция 33 (Setup domain)${NC}"
     echo ""
     echo "  5. Setup SSL certificate:"
     echo -e "     ${YELLOW}certbot --nginx -d ${MAIN_DOMAIN}${NC}"

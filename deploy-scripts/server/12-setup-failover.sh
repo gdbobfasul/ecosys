@@ -259,7 +259,7 @@ if [ "$1" = "--vm-prep" ]; then
     [ -f "$APP_CONF" ] && PREP_FILES+=("$APP_CONF")
 
     if [ ${#PREP_FILES[@]} -eq 0 ]; then
-        echo -e "${RED}✗ Не намерих nginx sites на VM-а. Първо deploy.${NC}"
+        echo -e "${RED}✗ Не намерих nginx sites на VM-а. Първо пусни опция 4 (Deploy проекта).${NC}"
         exit 1
     fi
 
@@ -317,7 +317,7 @@ fi
 # ── Главен домейн + main site ──
 MAIN_SITE=$(find_main_site)
 if [ -z "$MAIN_SITE" ]; then
-    echo -e "${RED}✗ Не намерих nginx site. Първо изпълни deploy.${NC}"
+    echo -e "${RED}✗ Не намерих nginx site. Първо пусни опция 4 (Deploy проекта).${NC}"
     exit 1
 fi
 MAIN_DOM="${MAIN_DOMAIN:-$(grep -m1 'server_name' "$MAIN_SITE" 2>/dev/null | awk '{print $2}' | tr -d ';')}"

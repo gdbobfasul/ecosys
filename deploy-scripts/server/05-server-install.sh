@@ -373,7 +373,7 @@ fi
 print_step "СТЪПКА 3: Проверка на staging"
 
 if [ ! -d "$STAGING/public" ] || [ ! -d "$STAGING/private" ]; then
-    echo -e "${RED}  ✗ Staging е празен! Първо пусни 04-deploy.sh${NC}"
+    echo -e "${RED}  ✗ Staging е празен! Първо пусни опция 4 (Deploy проекта)${NC}"
     ls -la "$STAGING/" 2>&1 || echo "    (директорията не съществува)"
     safe_exit 1
 fi
@@ -1948,6 +1948,8 @@ echo -e "  ${CYAN}journalctl -u kcy-eco3 -f${NC}        ECO-3 логове (live
 echo -e "  ${CYAN}nano ${GLOBAL_ENV}${NC}    Редактирай .env"
 echo ""
 echo -e "${CYAN}─── DB Reset (отделно от инсталацията) ───${NC}"
+echo -e "  От менюто: опция 32 (Setup / Reset database)"
+echo -e "  Ръчно (за разширени флагове):"
 echo -e "  ${CYAN}cd ${PROJECT_DIR}/deploy-scripts/server${NC}"
 echo -e "  ${CYAN}sudo bash 07-setup-database.sh --reset ?${NC}    Покажи help"
 echo -e "  ${CYAN}sudo bash 07-setup-database.sh --reset${NC}      Reset на цялата база"
