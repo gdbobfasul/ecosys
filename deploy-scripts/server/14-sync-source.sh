@@ -137,9 +137,11 @@ seed_db() { [ -f "$1/db.js" ] || { echo -e "  ${YELLOW}- $3 няма db.js${NC}"
 seed_js "$PD/portals"         kcy-eco3 "portals"
 seed_js "$PD/chat"            kcy-chat "chat"
 seed_js "$PD/eco-3"           kcy-eco3 "eco-3"
-seed_db "$PD/House-Look-Book" kcy-hlb  "hlb"
-seed_db "$PD/WhereNoBiz"      kcy-wnb  "wnb"
-seed_db "$PD/find-best-price" kcy-fbp  "fbp"
+# HLB/WNB/FBP услугите вървят като kcy-eco3 (НЕ kcy-hlb/kcy-wnb/kcy-fbp — такива потребители
+# НЯМА). Затова попълването минава като kcy-eco3, иначе „sudo: unknown user".
+seed_db "$PD/House-Look-Book" kcy-eco3 "hlb"
+seed_db "$PD/WhereNoBiz"      kcy-eco3 "wnb"
+seed_db "$PD/find-best-price" kcy-eco3 "fbp"
 
 echo ""
 echo -e "${GREEN}OK Сорсът обновен (overlay). БЕЗ npm install, БЕЗ реконфигурация.${NC}"
