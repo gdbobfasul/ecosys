@@ -259,7 +259,21 @@ router.post('/:id/images', requireAuth, upload.single('image'), async (req, res,
       return res.status(409).json({ error: 'too_many_images', message: `Лимит ${max} за тип '${kind}'.` });
     }
 
-    // Умаляване (sharp) по config.proposals.thumbnail*.
+    // 1) ВАЛИДИРАЙ, че е истинско изображение (само декодиране). Провал ТУК = наистина
+    //    невалиден файл → 400 invalid_image.
+    try {
+      await sharp(req.file.buffer).metadata();
+    } catch (decodeErr) {
+      log('край → 400 (invalid_image)');
+      return res.status(400).json({ error: 'invalid_image', message: 'Файлът не е валидно изображение.' });
+    }
+
+    // 2) Папката може да е изтрита от деплой (rsync --delete) СЛЕД старта на процеса —
+    //    пресъздай я преди запис (идемпотентно), иначе toFile гърми с ENOENT.
+    try { fs.mkdirSync(UPLOAD_DIR, { recursive: true }); } catch (_) {}
+
+    // 3) Умаляване (sharp) по config.proposals.thumbnail* + запис. Провал ТУК = файлов/сървърен
+    //    проблем (не „лошо изображение") → 500 с ясен код, за да не подвежда като invalid_image.
     const fname = `p${p.id}_${kind}_${existing.c + 1}_${Date.now()}.jpg`;
     const fpath = path.join(UPLOAD_DIR, fname);
     try {
@@ -267,9 +281,9 @@ router.post('/:id/images', requireAuth, upload.single('image'), async (req, res,
         .resize({ width: cfg.proposals.thumbnailMaxWidthPx, withoutEnlargement: true })
         .jpeg({ quality: cfg.proposals.thumbnailQuality })
         .toFile(fpath);
-    } catch (imgErr) {
-      // невалидно/не-изображение → грациозен 400, НИКОГА 500
-      return res.status(400).json({ error: 'invalid_image', message: 'Файлът не е валидно изображение.' });
+    } catch (writeErr) {
+      debug.error('thumbnail toFile се провали:', writeErr && writeErr.message);
+      return res.status(500).json({ error: 'thumbnail_failed', message: 'Грешка при обработка/запис на изображението.' });
     }
 
     log('2');
@@ -346,6 +360,9 @@ router.post('/furniture-image', requireAuth, upload.single('image'), async (req,
     const log = debug.scoped(req, 'POST /proposals/furniture-image');
     log('старт');
     if (!req.file) { log('край → 400'); return res.status(400).json({ error: 'no_file', message: 'Качи изображение.' }); }
+    try { await sharp(req.file.buffer).metadata(); }
+    catch (decodeErr) { log('край → 400 (bad_image)'); return res.status(400).json({ error: 'bad_image', message: 'Не мога да обработя изображението.' }); }
+    try { fs.mkdirSync(UPLOAD_DIR, { recursive: true }); } catch (_) {}
     const fname = `furn_u${req.user.id}_${Date.now()}.png`;
     const fpath = path.join(UPLOAD_DIR, fname);
     try {
@@ -353,9 +370,9 @@ router.post('/furniture-image', requireAuth, upload.single('image'), async (req,
         .resize({ width: 256, height: 256, fit: 'inside', withoutEnlargement: true })
         .png({ quality: 82 })
         .toFile(fpath);
-    } catch (e) {
-      log('край → 400');
-      return res.status(400).json({ error: 'bad_image', message: 'Не мога да обработя изображението.' });
+    } catch (writeErr) {
+      debug.error('furniture-image toFile се провали:', writeErr && writeErr.message);
+      return res.status(500).json({ error: 'thumbnail_failed', message: 'Грешка при запис на изображението.' });
     }
     log('край → 201');
     res.status(201).json({ url: `/uploads/proposals/${fname}` });

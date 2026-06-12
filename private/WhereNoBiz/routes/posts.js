@@ -164,15 +164,24 @@ router.post('/:id/images', requireAuth, upload.single('image'), async (req, res,
     if (existing.c >= cfg.post.maxImages) {
       return res.status(409).json({ error: 'too_many_images', message: `Лимит ${cfg.post.maxImages} снимки.` });
     }
+    // 1) ВАЛИДИРАЙ декодирането — провал ТУК = наистина невалиден файл → 400 invalid_image.
+    try {
+      await sharp(req.file.buffer).metadata();
+    } catch (decodeErr) {
+      return res.status(400).json({ error: 'invalid_image', message: 'Файлът не е валидно изображение.' });
+    }
+    // 2) Папката може да е изтрита от деплой (rsync --delete) СЛЕД старта — пресъздай я.
+    try { fs.mkdirSync(UPLOAD_DIR, { recursive: true }); } catch (_) {}
+    // 3) Умаляване + запис. Провал ТУК = файлов/сървърен проблем → 500 (не подвеждащ invalid_image).
     const fname = `post${p.id}_${existing.c + 1}_${Date.now()}.jpg`;
     try {
       await sharp(req.file.buffer)
         .resize({ width: cfg.post.thumbnailMaxWidthPx, withoutEnlargement: true })
         .jpeg({ quality: cfg.post.thumbnailQuality })
         .toFile(path.join(UPLOAD_DIR, fname));
-    } catch (imgErr) {
-      // sharp хвърля при невалидно/не-изображение → грациозен 400, НИКОГА 500
-      return res.status(400).json({ error: 'invalid_image', message: 'Файлът не е валидно изображение.' });
+    } catch (writeErr) {
+      debug.error('thumbnail toFile се провали:', writeErr && writeErr.message);
+      return res.status(500).json({ error: 'thumbnail_failed', message: 'Грешка при обработка/запис на изображението.' });
     }
     log('2');
     const img = await one(
