@@ -46,6 +46,10 @@ module.exports = {
   writes: true,
   setup(ctx, env) {
     ctx.email = `robot+${ctx.runToken}@test.local`;
+    // Отделен СВЕЖ потребител за админ-модерацията: основният (ctx.email) изчерпва квотата
+    // си (maxPerUser) от позволените „гранични" къщи в теста за невалиден вход → би дал
+    // фалшив 409 тук. Свеж акаунт = 0 къщи → чисто създаване.
+    ctx.email3 = `robotmod+${ctx.runToken}@test.local`;
     ctx.pass = 'Robot12345!';
     ctx.adminEmail = env.HLB_ADMIN_USER || '';
     ctx.adminPass = env.HLB_ADMIN_PASS || '';
@@ -258,8 +262,10 @@ module.exports = {
       name: 'Персона 3 — админ: модерацията работи; за нормален потребител е 403',
       steps: [
         // Нормалният потребител създава къща и я подава — после админ ще я свали.
+        // СВЕЖ акаунт (email3), за да не удря квотата на основния потребител (виж setup).
         { api: { method: 'POST', path: '/api/hlb/logout' } },
-        { api: { method: 'POST', path: '/api/hlb/login', json: (c) => ({ email: c.email, password: c.pass }) }, expectStatus: 200 },
+        { api: { method: 'POST', path: '/api/hlb/register', json: (c) => ({ email: c.email3, password: c.pass, display_name: 'Робот Мод' }) }, expectStatus: 201 },
+        { api: { method: 'POST', path: '/api/hlb/login', json: (c) => ({ email: c.email3, password: c.pass }) }, expectStatus: 200 },
         { api: { method: 'POST', path: '/api/hlb/proposals', json: () => ({ title: 'Къща за админ тест', composer_params: HOUSE }) },
           expectStatus: 201, saveAs: 'propAdmin', extract: (b) => b.proposal && b.proposal.id },
         { api: { method: 'POST', path: (c) => `/api/hlb/proposals/${c.propAdmin}/submit` }, expectStatus: 200 },

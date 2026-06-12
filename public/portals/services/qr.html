@@ -117,17 +117,22 @@ function genQR(){
       text:txt,width:size,height:size,
       correctLevel:lvl
     });
-    // бутон за сваляне след успешно генериране
-    var dl=document.createElement('button');
-    dl.className='btn'; dl.style.marginTop='14px'; dl.textContent=KCY_I18N.t('qr.download_png');
-    dl.onclick=dlQR;
-    box.appendChild(document.createElement('br'));
-    box.appendChild(dl);
   }catch(err){
     // qrcodejs гърми ако текстът е твърде дълъг за избрания размер/ECC
     box.innerHTML='<p style="color:#d9534f">Текстът е твърде дълъг за този размер/ниво на корекция. '+
       'Опитай по-голям размер, ниво на корекция "L", или по-кратък текст.</p>';
+    return;
   }
+  // Бутонът за сваляне е ОТДЕЛНО: провал тук (напр. i18n още незареден при бърз клик)
+  // НЕ бива да изтрива вече нарисувания QR. Резервен етикет, ако KCY_I18N липсва.
+  try{
+    var dl=document.createElement('button');
+    dl.className='btn'; dl.style.marginTop='14px';
+    dl.textContent=(window.KCY_I18N&&KCY_I18N.t)?KCY_I18N.t('qr.download_png'):'Свали PNG';
+    dl.onclick=dlQR;
+    box.appendChild(document.createElement('br'));
+    box.appendChild(dl);
+  }catch(e){/* етикетът не е критичен */}
 }
 function dlQR(){
   var img=document.querySelector('#qrout img')||document.querySelector('#qrout canvas');
