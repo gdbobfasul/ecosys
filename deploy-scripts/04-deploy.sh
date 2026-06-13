@@ -432,8 +432,8 @@ MAX_SSH_ATTEMPTS=4
 SSH_OK=1
 for ATTEMPT in $(seq 1 ${MAX_SSH_ATTEMPTS}); do
     if [ $ATTEMPT -gt 1 ]; then
-        log "  ${YELLOW}Опит ${ATTEMPT}/${MAX_SSH_ATTEMPTS} след 5 секунди...${NC}"
-        sleep 5
+        log "  ${YELLOW}Опит ${ATTEMPT}/${MAX_SSH_ATTEMPTS} след 1 минута...${NC}"
+        sleep 60
     fi
     ssh ${SSH_OPTS} "${USER}@${SERVER}" 'echo "  ✓ Connected as $(whoami) on $(hostname)"'
     SSH_OK=$?
@@ -515,7 +515,7 @@ log "  ${YELLOW}[debug] scp ${SCP_OPTS} ${ARCHIVE_NAME} → ${STAGING}/${NC}"
 # Ensure staging dir exists (with retry)
 for ATTEMPT in 1 2 3 4; do
     ssh ${SSH_OPTS} "${USER}@${SERVER}" "mkdir -p ${STAGING}" && break
-    [ "$ATTEMPT" -lt 4 ] && sleep 5
+    [ "$ATTEMPT" -lt 4 ] && sleep 60
 done || die "Не мога да създам ${STAGING}"
 
 START_TIME=$SECONDS
@@ -528,8 +528,8 @@ for ATTEMPT in 1 2 3 4; do
     else
         log "  ${RED}  ✗ Неуспешно${NC}"
         if [ "$ATTEMPT" -lt 4 ]; then
-            log "  ${YELLOW}  Изчакване 5 секунди...${NC}"
-            sleep 5
+            log "  ${YELLOW}  Изчакване 1 минута...${NC}"
+            sleep 60
         fi
     fi
 done
