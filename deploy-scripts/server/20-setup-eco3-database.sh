@@ -145,7 +145,7 @@ else
     echo -e "${YELLOW}  [--reset] трия ${DB_PATH} (създава се наново)${NC}"
     rm -f "$DB_PATH" "${DB_PATH}-wal" "${DB_PATH}-shm"
   fi
-  chown -R "$ECO3_USER:$ECO3_USER" "$(dirname "$DB_PATH")" 2>/dev/null || true
+  chown -R "$ECO3_USER:" "$(dirname "$DB_PATH")" 2>/dev/null || true
   echo -e "${GREEN}  ✓ SQLite готова (таблиците се създават от admins.js + при старта)${NC}"
 fi
 

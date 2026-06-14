@@ -81,9 +81,9 @@ chown -R root:"$SVC_GROUP" "$PROJECT_DIR" "$WEB_ROOT" 2>/dev/null || true
 chown -R "$CHAT_USER":"$SVC_GROUP" "$PRIVATE_DIR/chat"    2>/dev/null || true
 chown -R "$ECO3_USER":"$SVC_GROUP" "$PRIVATE_DIR/eco-3"   2>/dev/null || true
 chown -R "$ECO3_USER":"$SVC_GROUP" "$PRIVATE_DIR/portals" 2>/dev/null || true
-chown -R "$CHAT_USER":"$CHAT_USER" "$PRIVATE_DIR/chat/uploads" "$PRIVATE_DIR/chat/database" 2>/dev/null || true
-chown -R "$ECO3_USER":"$ECO3_USER" "$PRIVATE_DIR/eco-3/database" "$PRIVATE_DIR/eco-3/logs" 2>/dev/null || true
-chown -R "$ECO3_USER":"$ECO3_USER" "$PRIVATE_DIR/portals/database" 2>/dev/null || true
+chown -R "$CHAT_USER:" "$PRIVATE_DIR/chat/uploads" "$PRIVATE_DIR/chat/database" 2>/dev/null || true
+chown -R "$ECO3_USER:" "$PRIVATE_DIR/eco-3/database" "$PRIVATE_DIR/eco-3/logs" 2>/dev/null || true
+chown -R "$ECO3_USER:" "$PRIVATE_DIR/portals/database" 2>/dev/null || true
 
 # Качени файлове на новите апове (HLB/WNB). Услугите kcy-hlb/kcy-wnb се въртят като
 # $ECO3_USER, но при пълен деплой папките uploads остават собственост на root →

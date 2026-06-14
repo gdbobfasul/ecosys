@@ -10,16 +10,18 @@
   window.__amsChatFooter = true;
 
   // Всички страници, достъпни за посетителя.
+  // Подредени по приоритет: Начало първо → основни функции → акаунт → приложение.
+  // „Спешна помощ" се добавя ОТДЕЛНО най-накрая (виж build()).
   var LINKS = [
+    { href: '/chat/public/index.html',       label: '🏠 Начало' },
     { href: '/chat/public/chat.html',        label: '💬 Чат' },
     { href: '/chat/public/search.html',      label: '🔍 Търсене' },
     { href: '/chat/public/matchmaking.html', label: '💞 Запознанства' },
     { href: '/chat/public/tasks.html',       label: '📋 Задачи' },
-    { href: '/chat/public/signal.html',      label: '📢 Подай сигнал' },
+    { href: '/chat/public/signal.html',      label: '📢 Подай Обект' },
     { href: '/chat/public/profile.html',     label: '⚙️ Профил' },
     { href: '/chat/public/payment.html',     label: '💳 Плащане' },
-    { href: '/chat/download/index.html',     label: '📱 Приложение' },
-    { href: '/chat/public/index.html',       label: '🏠 Начало' }
+    { href: '/chat/download/index.html',     label: '📱 Приложение' }
   ];
 
   var CSS = '' +
@@ -35,6 +37,9 @@
     '.ams-authbar a{font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;' +
       'text-decoration:none;color:#fff;background:rgba(37,99,235,.92);box-shadow:0 1px 4px rgba(0,0,0,.35)}' +
     '.ams-authbar a.ams-in{background:rgba(22,163,74,.95)}' +
+    '.ams-authbar .ams-who{font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;' +
+      'color:#fff;background:rgba(71,85,105,.92);box-shadow:0 1px 4px rgba(0,0,0,.35);max-width:200px;' +
+      'overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
     '.ams-authbar a:hover{opacity:.88}' +
     // Бутон „Спешна помощ" в долното меню + потвърждаващ прозорец
     '.ams-foot-emg{font-size:13px;font-weight:800;padding:6px 14px;border-radius:8px;border:none;' +
@@ -108,12 +113,21 @@
     var bar = document.createElement('div');
     bar.className = 'ams-authbar';
     if (token) {
-      bar.innerHTML = '<a class="ams-in" href="/chat/public/profile.html">⚙️ Профил</a>';
+      bar.innerHTML = '<span class="ams-who" id="amsAuthName"></span>' +
+                      '<a class="ams-in" href="/chat/public/profile.html">⚙️ Профил</a>';
+      document.body.appendChild(bar);
+      // Показва КАТО КОГО е логнат — пълното име, дозарежда се от профила.
+      fetch('/api/profile', { headers: { 'Authorization': 'Bearer ' + token } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (u) {
+          var el = document.getElementById('amsAuthName');
+          if (el && u && u.full_name) el.textContent = '👤 ' + u.full_name;
+        }).catch(function () {});
     } else {
       bar.innerHTML = '<a href="/chat/public/index.html">🔑 Вход</a>' +
                       '<a href="/chat/register.html">📝 Регистрация</a>';
+      document.body.appendChild(bar);
     }
-    document.body.appendChild(bar);
   }
 
   // ── Спешна помощ: прозорец за потвърждение (НЕ browser-попъп) + изпращане ──

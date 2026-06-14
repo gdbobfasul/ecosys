@@ -639,6 +639,7 @@ rsync -a --delete \
     --exclude='configs/.env' \
     --exclude='uploads/' \
     --exclude='logs/' \
+    --exclude='token-monitor/data/' \
     "$STAGING/private/" "$PRIVATE_DIR/" || { echo -e "${RED}  ✗ rsync private/ FAILED${NC}"; }
 PRIV_COUNT=$(find "$PRIVATE_DIR" -type f | wc -l)
 echo -e "  ${GREEN}✓ private/: ${PRIV_COUNT} файла${NC}"
@@ -832,7 +833,7 @@ chmod -R 750 "$PRIVATE_DIR"
 
 # Chat sensitive — само kcy-chat
 mkdir -p "$PRIVATE_DIR/chat/uploads" "$PRIVATE_DIR/chat/database"
-chown -R $CHAT_USER:$CHAT_USER "$PRIVATE_DIR/chat/uploads" "$PRIVATE_DIR/chat/database"
+chown -R "$CHAT_USER:" "$PRIVATE_DIR/chat/uploads" "$PRIVATE_DIR/chat/database"
 chmod 700 "$PRIVATE_DIR/chat/uploads" "$PRIVATE_DIR/chat/database"
 find "$PRIVATE_DIR/chat/database" -type f -exec chmod 600 {} \; 2>/dev/null
 find "$PRIVATE_DIR/chat/uploads" -type f -exec chmod 600 {} \; 2>/dev/null
@@ -840,14 +841,14 @@ echo -e "  ${GREEN}✓${NC} chat/database/ и chat/uploads/ → mode 700 (сам
 
 # ECO-3 sensitive — само kcy-eco3
 mkdir -p "$PRIVATE_DIR/eco-3/database" "$PRIVATE_DIR/eco-3/logs"
-chown -R $ECO3_USER:$ECO3_USER "$PRIVATE_DIR/eco-3/database" "$PRIVATE_DIR/eco-3/logs"
+chown -R "$ECO3_USER:" "$PRIVATE_DIR/eco-3/database" "$PRIVATE_DIR/eco-3/logs"
 chmod 700 "$PRIVATE_DIR/eco-3/database" "$PRIVATE_DIR/eco-3/logs"
 find "$PRIVATE_DIR/eco-3/database" -type f -exec chmod 600 {} \; 2>/dev/null
 echo -e "  ${GREEN}✓${NC} eco-3/database/ и eco-3/logs/ → mode 700 (само ${ECO3_USER})"
 
 # Portals sensitive — също kcy-eco3 (portals service runs as kcy-eco3)
 mkdir -p "$PRIVATE_DIR/portals/database"
-chown -R $ECO3_USER:$ECO3_USER "$PRIVATE_DIR/portals/database"
+chown -R "$ECO3_USER:" "$PRIVATE_DIR/portals/database"
 chmod 700 "$PRIVATE_DIR/portals/database"
 find "$PRIVATE_DIR/portals/database" -type f -exec chmod 600 {} \; 2>/dev/null
 echo -e "  ${GREEN}✓${NC} portals/database/ → mode 700 (само ${ECO3_USER})"
@@ -973,7 +974,7 @@ if [ -f "$PORTAL_INIT" ]; then
         echo -e "  ${YELLOW}⚠ Portal попълването не мина — провери .env (PORTALS_ADMIN_USER/PASS).${NC}"
     fi
     # Гарантирай правата СЛЕД init.js — директория + всички файлове (.db, .db-wal, .db-shm)
-    chown -R "$ECO3_USER:$ECO3_USER" "$PORTAL_DIR/database"
+    chown -R "$ECO3_USER:" "$PORTAL_DIR/database"
     chmod 700 "$PORTAL_DIR/database"
     find "$PORTAL_DIR/database" -type f -exec chmod 600 {} \; 2>/dev/null || true
     echo -e "  ${GREEN}✓ portals/database/ права → ${ECO3_USER} (rw)${NC}"
@@ -1060,8 +1061,8 @@ fi
 
 # ECO-3 logs + database dirs — изолирани (mode 700, само eco3 user)
 mkdir -p "$PRIVATE_DIR/eco-3/logs" 2>/dev/null
-chown -R $ECO3_USER:$ECO3_USER "$PRIVATE_DIR/eco-3/logs" 2>/dev/null || true
-chown -R $ECO3_USER:$ECO3_USER "$PRIVATE_DIR/eco-3/database" 2>/dev/null || true
+chown -R "$ECO3_USER:" "$PRIVATE_DIR/eco-3/logs" 2>/dev/null || true
+chown -R "$ECO3_USER:" "$PRIVATE_DIR/eco-3/database" 2>/dev/null || true
 chmod 700 "$PRIVATE_DIR/eco-3/logs" "$PRIVATE_DIR/eco-3/database" 2>/dev/null || true
 find "$PRIVATE_DIR/eco-3/database" -type f -exec chmod 600 {} \; 2>/dev/null || true
 
