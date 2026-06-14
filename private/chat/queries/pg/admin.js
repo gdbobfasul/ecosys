@@ -241,9 +241,13 @@ module.exports = {
     if (resolved === undefined) {
       return { sql: 'SELECT * FROM help_requests ORDER BY request_time DESC LIMIT 100', params: [] };
     }
+    const isResolved = resolved === 'true' ? 1 : 0;
+    // Активните (нерешени): най-СТАРите най-отгоре — най-дълго чакащите са най-спешни.
+    // Решените (изчистени): най-скоро изчистените най-отгоре.
+    const order = isResolved ? 'resolved_at DESC' : 'request_time ASC';
     return {
-      sql: 'SELECT * FROM help_requests WHERE resolved = $1 ORDER BY request_time DESC LIMIT 100',
-      params: [resolved === 'true' ? 1 : 0]
+      sql: `SELECT * FROM help_requests WHERE resolved = $1 ORDER BY ${order} LIMIT 100`,
+      params: [isResolved]
     };
   },
   HELP_REQUEST_CONTACTS:

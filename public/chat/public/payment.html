@@ -50,6 +50,28 @@
                     <span data-i18n="cpay.pay_card">Плати с карта</span>
                 </button>
             </div>
+
+            <!-- Застраховка „спешна помощ" (по желание, отделно от абонамента) -->
+            <div id="emergencyBlock" class="border border-red-500 rounded-lg p-6 bg-gradient-to-br from-red-900/20 to-orange-900/20">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="text-xl font-bold text-red-300">🆘 Спешна помощ — застраховка</h3>
+                        <p class="text-sm text-gray-400">по желание · отделно от абонамента</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-red-200" id="emgPrice">$5 360₽ 438сом</div>
+                        <div class="text-sm text-gray-400">еднократно</div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-300 mb-3">
+                    Платена предварично, тя стои настрана и непокътната. Когато натиснеш спешния бутон, се ползва
+                    тя — без да пипа абонамента ти. Така си спокоен дори ако нямаш 15 дни абонамент. Човек не знае
+                    кога ще му потрябва помощ.
+                </p>
+                <button id="payEmergencyBtn" class="w-full bg-red-600 hover:bg-red-700 py-3 rounded font-bold">
+                    🛡️ Плати застраховка
+                </button>
+            </div>
         </div>
 
         <!-- Status Messages -->
@@ -84,14 +106,42 @@
                     const p = await r.json();
                     // Цената в сом остава водеща; локализираната цена от бекенда се добавя като доп. инфо.
                     if (p && p.displayPrice) document.getElementById('cardPriceAlt').textContent = '$5 · €5 · 360 ₽ · ' + p.displayPrice;
+                    if (p && p.emergencyDisplayPrice) document.getElementById('emgPrice').textContent = p.emergencyDisplayPrice;
                 }
             } catch (e) { /* остава по подразбиране */ }
         })();
+
+        // Ако идваме от „Застраховай се" (profile → таб 6): подсвети блока.
+        if (new URLSearchParams(location.search).get('service') === 'emergency') {
+            const b = document.getElementById('emergencyBlock');
+            if (b) {
+                b.classList.add('ring-4', 'ring-red-400');
+                b.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
 
         // Плащане с карта (Stripe checkout се закача от бекенда).
         document.getElementById('payWithCardBtn').addEventListener('click', () => {
             showStatus('⏳ Зареждане на плащане с карта...', 'info');
             // Stripe checkout flow се закача тук (бекенд: /api/payment/create-intent + confirm).
+        });
+
+        // Предплата на застраховката „спешна помощ" (paymentType='emergency').
+        // Бекендът вдига emergency_active=1, без да пипа абонамента (confirm).
+        document.getElementById('payEmergencyBtn').addEventListener('click', async () => {
+            if (!userPhone) { showStatus('Липсва телефон — влез отново, за да платиш застраховка.', 'error'); return; }
+            showStatus('⏳ Създаване на плащане за застраховка...', 'info');
+            try {
+                const r = await fetch('/api/payment/create-intent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: userPhone, paymentType: 'emergency' })
+                });
+                const d = await r.json();
+                if (!r.ok) { showStatus(d.error || 'Грешка при плащане', 'error'); return; }
+                // Следва въвеждане на карта (Stripe Elements) — същата стъпка като при абонамента, UI-ът предстои.
+                showStatus('Заявката е създадена. Въвеждането на карта (Stripe) предстои да се закачи, както при абонамента.', 'warning');
+            } catch (e) { showStatus('Грешка при плащане', 'error'); }
         });
 
         function showStatus(message, type = 'info') {
@@ -110,6 +160,7 @@
         }
     </script>
     <script src="/shared/js/i18n.js?v=1.0193"></script>
+    <script src="/chat/public/chat-footer.js?v=1.0001"></script>
     <script src="/shared/js/kg-compliance.js?v=1.0001"></script>
 </body>
 </html>

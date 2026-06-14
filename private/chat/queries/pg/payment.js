@@ -29,6 +29,13 @@ module.exports = {
     `INSERT INTO sessions (id, user_id, token, expires_at, device_type)
      VALUES ($1, $2, $3, $4, $5)`,
 
+  // confirm (emergency): вдига предплатената застраховка БЕЗ да пипа абонамента (paid_until).
+  CONFIRM_SET_EMERGENCY:
+    `UPDATE users
+       SET emergency_active = 1,
+           emergency_active_until = $1
+     WHERE phone = $2`,
+
   // status/:userId: състояние на абонамента/спешен бутон
   STATUS_FIND_USER:
     `SELECT subscription_active, paid_until,

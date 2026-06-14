@@ -6,7 +6,8 @@ module.exports = {
       id, phone, full_name, email, gender, birth_date,
       country, city, street,
       paid_until, payment_amount, payment_currency,
-      help_button_uses, help_button_reset_date
+      help_button_uses, help_button_reset_date,
+      emergency_active
     FROM users WHERE id = $1`,
 
   EMERGENCY_INSERT_REQUEST: `
@@ -25,6 +26,15 @@ module.exports = {
       help_button_uses = $2,
       help_button_reset_date = $3
     WHERE id = $4`,
+
+  // Консумиране на предплатената застраховка (emergency_active 1→0) БЕЗ да пипа абонамента.
+  EMERGENCY_CONSUME_PREPAID: `
+    UPDATE users
+    SET
+      emergency_active = 0,
+      help_button_uses = $1,
+      help_button_reset_date = $2
+    WHERE id = $3`,
 
   CONTACTS_GET_USER: 'SELECT country_code, country FROM users WHERE id = $1',
 
@@ -48,6 +58,7 @@ module.exports = {
   AVAILABILITY_GET_USER: `
     SELECT
       help_button_uses, help_button_reset_date,
-      paid_until, payment_amount, payment_currency
+      paid_until, payment_amount, payment_currency,
+      emergency_active
     FROM users WHERE id = $1`,
 };

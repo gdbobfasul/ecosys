@@ -31,7 +31,19 @@
     </div>
 
     <!-- Main Content -->
-    <div id="content" class="hidden space-y-6">
+    <div id="content" class="hidden">
+
+      <!-- Табове -->
+      <div id="tabbar" class="flex flex-wrap gap-2 mb-6">
+        <button type="button" class="tabbtn px-4 py-2 rounded font-semibold bg-blue-600" data-pane="1" onclick="showTab(1)">👤 Основна информация</button>
+        <button type="button" class="tabbtn px-4 py-2 rounded font-semibold bg-gray-700" data-pane="2" onclick="showTab(2)">🔒 Поверителност</button>
+        <button type="button" class="tabbtn px-4 py-2 rounded font-semibold bg-gray-700" data-pane="3" onclick="showTab(3)">🔍 Текуща нужда</button>
+        <button type="button" class="tabbtn px-4 py-2 rounded font-semibold bg-gray-700" data-pane="4" onclick="showTab(4)">💼 Какво предлагам</button>
+        <button type="button" class="tabbtn px-4 py-2 rounded font-semibold bg-gray-700" data-pane="5" onclick="showTab(5)">💳 Абонамент</button>
+        <button type="button" class="tabbtn px-4 py-2 rounded font-semibold bg-gray-700" data-pane="6" onclick="showTab(6)">🆘 Спешна помощ</button>
+      </div>
+
+      <div class="tabpane space-y-6" id="pane-1">
 
       <!-- Basic Info Section -->
       <div class="bg-gray-800 rounded-lg p-6">
@@ -67,6 +79,14 @@
         </div>
       </div>
 
+        <!-- Обяснение -->
+        <div class="bg-gray-800/60 rounded-lg p-4 text-sm text-gray-300 leading-relaxed">
+          <p class="font-semibold text-gray-200 mb-1">За какво е този раздел?</p>
+          <p>Тук са основните ти данни — име, телефон в международен формат (напр. +359888…), дата на раждане и град. По тях другите те разпознават и се свързват с теб, затова трябва да са верни. Ако искаш, скрий телефона и имената от таб „Поверителност". Редакция е позволена веднъж месечно.</p>
+        </div>
+      </div><!-- /pane-1 -->
+
+      <div class="tabpane space-y-6 hidden" id="pane-2">
       <!-- Privacy Settings -->
       <div class="bg-gray-800 rounded-lg p-6">
         <h2 class="text-xl font-bold mb-4" data-i18n="cp.privacy">🔒 Поверителност</h2>
@@ -128,6 +148,14 @@
         </div>
       </div>
 
+        <!-- Обяснение -->
+        <div class="bg-gray-800/60 rounded-lg p-4 text-sm text-gray-300 leading-relaxed">
+          <p class="font-semibold text-gray-200 mb-1">За какво е „Поверителност"?</p>
+          <p>Тук контролираш какво виждат другите и сигурността на акаунта. Можеш да скриеш телефона и имената си — хората те виждат, но не и личните данни, докато ти не ги споделиш в разговор. „Кодова дума" служи за точно търсене: само който я знае, може да те намери директно. Оттук сменяш и имейла, и паролата си.</p>
+        </div>
+      </div><!-- /pane-2 -->
+
+      <div class="tabpane space-y-6 hidden" id="pane-3">
       <!-- Current Need Section -->
       <div class="bg-gray-800 rounded-lg p-6">
         <h2 class="text-xl font-bold mb-4" data-i18n="cp.current_need">🔍 Текуща нужда</h2>
@@ -153,6 +181,14 @@
         </div>
       </div>
 
+        <!-- Обяснение -->
+        <div class="bg-gray-800/60 rounded-lg p-4 text-sm text-gray-300 leading-relaxed">
+          <p class="font-semibold text-gray-200 mb-1">За какво е „Текуща нужда"?</p>
+          <p>Тук казваш от какво имаш нужда точно сега — напр. доктор, електротехник, преводач, аптека. Системата те свързва с хора и обекти наблизо, които предлагат точно това. Това е сърцето на чата: не търсиш напосоки, а заявяваш нуждата и помощта идва по-бързо. Сменяй я по всяко време.</p>
+        </div>
+      </div><!-- /pane-3 -->
+
+      <div class="tabpane space-y-6 hidden" id="pane-4">
       <!-- Offerings Section -->
       <div class="bg-gray-800 rounded-lg p-6">
         <h2 class="text-xl font-bold mb-4" data-i18n="cp.what_offer">💼 Какво предлагам (макс 3)</h2>
@@ -204,6 +240,14 @@
         </div>
       </div>
 
+        <!-- Обяснение -->
+        <div class="bg-gray-800/60 rounded-lg p-4 text-sm text-gray-300 leading-relaxed">
+          <p class="font-semibold text-gray-200 mb-1">За какво е „Какво предлагам"?</p>
+          <p>Тук обявяваш какви услуги предлагаш ти (до 3) — така хората, които имат нужда от теб, те намират лесно. За спешни услуги (Доктор, Болница, Бърза помощ, Полиция) е нужна верификация — пишеш на админа. Верифицираните профили се заключват за промени, за да са надеждни.</p>
+        </div>
+      </div><!-- /pane-4 -->
+
+      <div class="tabpane space-y-6 hidden" id="pane-5">
       <!-- Payment Section -->
       <div class="bg-gray-800 rounded-lg p-6">
         <h2 class="text-xl font-bold mb-4" data-i18n="cp.subscription">💳 Абонамент</h2>
@@ -224,15 +268,27 @@
         </button>
       </div>
 
+        <!-- Обяснение -->
+        <div class="bg-gray-800/60 rounded-lg p-4 text-sm text-gray-300 leading-relaxed">
+          <p class="font-semibold text-gray-200 mb-1">За какво е „Абонамент"?</p>
+          <p>Достъпът до чата е месечен абонамент — $5 360₽ 438сом на месец. Тук виждаш статуса си и докога е платен и можеш да платиш/подновиш. Абонаментът дава пълен достъп до търсене, съобщения, приятели, мачване и задачи. Спешният бутон също се „захранва" от него (отнема 15 дни) — виж таб „Спешна помощ".</p>
+        </div>
+      </div><!-- /pane-5 -->
+
+      <div class="tabpane space-y-6 hidden" id="pane-6">
       <!-- Emergency Help Button -->
       <div class="bg-red-900 border border-red-600 rounded-lg p-6">
         <h2 class="text-xl font-bold mb-4" data-i18n="cp.emergency">🆘 Спешна помощ</h2>
         
-        <div id="helpButtonInfo" class="space-y-3 mb-4 text-sm">
-          <p data-i18n="cp.loc_btn_note">Бутонът изпраща вашата точна локация до администратора.</p>
-          <p><strong data-i18n="cp.price">Цена:</strong> <span id="helpCost"></span></p>
-          <p><strong data-i18n="cp.effect">Ефект:</strong> <span data-i18n="cp.takes_15">Отнема 15 дни от абонамента</span></p>
-          <p><strong data-i18n="cp.limit">Лимит:</strong> <span data-i18n="cp.1_month">1 използване на месец</span></p>
+        <div id="helpButtonInfo" class="space-y-2 mb-4 text-sm">
+          <p>🚨 Праща <strong>точната ти локация</strong> до администратора, който търси най-близката помощ.</p>
+          <p><strong>Без плащане в момента</strong> — в спешност няма време.</p>
+          <div class="bg-red-950 bg-opacity-60 rounded p-3 space-y-1 mt-2">
+            <p>🛡️ Застраховка: <span id="emgPrepaid" class="font-semibold">—</span></p>
+            <p>📅 Оставащи дни абонамент: <span id="emgDays" class="font-semibold">—</span></p>
+            <p>⚙️ При натискане: <span id="emgMethod" class="font-semibold">—</span></p>
+          </div>
+          <p class="text-xs text-gray-300">Застраховка струва <span id="helpCost" class="font-semibold"></span> и стои настрана, докато не я ползваш. Лимит: 1 път на месец.</p>
         </div>
 
         <button id="helpButton" onclick="sendEmergencyHelp()" class="w-full bg-red-600 hover:bg-red-700 rounded py-4 font-bold text-lg disabled:bg-gray-600 disabled:cursor-not-allowed" data-i18n="r.142">
@@ -240,7 +296,18 @@
         </button>
 
         <p id="helpUsageInfo" class="text-xs text-gray-400 mt-2 text-center"></p>
+
+        <button onclick="window.location.href='payment.html?service=emergency'" class="w-full bg-amber-600 hover:bg-amber-700 rounded py-3 mt-3 font-semibold">
+          🛡️ Застраховай се предварично (<span id="emgPrepayPrice"></span>)
+        </button>
       </div>
+
+      <!-- Обяснение -->
+      <div class="bg-gray-800/60 rounded-lg p-4 text-sm text-gray-300 leading-relaxed mt-2">
+        <p class="font-semibold text-gray-200 mb-1">За какво е „Спешна помощ"?</p>
+        <p>Спешният бутон праща точната ти локация до администратора, който намира най-близката помощ (линейка, полиция, болница или верифициран доставчик до 50 км). При натискане <strong>не се иска плащане</strong> — в спешност няма време. Покрива се по два начина: ако имаш предплатена застраховка ($5 360₽ 438сом, платена предварично и стояща настрана), ползва се тя; иначе се отнемат 15 дни от абонамента. Затова бутонът е активен само ако имаш застраховка <strong>или</strong> поне 15 дни абонамент. Можеш да се застраховаш предварително, за да си спокоен дори ако абонаментът ти е на изчерпване. Лимит: 1 път на месец.</p>
+      </div>
+      </div><!-- /pane-6 -->
 
     </div>
   </div>
@@ -257,7 +324,20 @@
       await loadServiceCategories();
       await loadProfile();
       await checkHelpButtonAvailability();
+      showTab(1);
     });
+
+    // Превключване между табовете на профила.
+    function showTab(n) {
+      document.querySelectorAll('.tabpane').forEach(p => p.classList.add('hidden'));
+      const pane = document.getElementById('pane-' + n);
+      if (pane) pane.classList.remove('hidden');
+      document.querySelectorAll('.tabbtn').forEach(b => {
+        const on = b.getAttribute('data-pane') === String(n);
+        b.classList.toggle('bg-blue-600', on);
+        b.classList.toggle('bg-gray-700', !on);
+      });
+    }
 
     async function loadServiceCategories() {
       try {
@@ -527,20 +607,31 @@
         
         const data = await res.json();
         
-        document.getElementById('helpCost').textContent = `${data.charge.currency.toUpperCase()} ${data.charge.amount}`;
-        
+        const price = data.price || (data.charge && data.charge.display) || '';
+        const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+        set('helpCost', price);
+        set('emgPrepayPrice', price);
+        set('emgPrepaid', data.has_prepaid ? 'Да ✅' : 'Не');
+        set('emgDays', (data.days_left != null ? data.days_left : '—') + ' дни');
+        set('emgMethod',
+          data.method === 'prepaid' ? 'ще се ползва застраховката (абонаментът остава непокътнат)'
+          : data.method === 'deduct' ? 'ще отнеме 15 дни от абонамента'
+          : 'неактивен');
+
         const button = document.getElementById('helpButton');
-        button.disabled = !data.available;
-        
-        if (!data.available) {
-          let reason = '';
-          if (!data.has_subscription) reason = KCY_I18N.t('cp.no_sub');
-          else if (data.uses_this_month >= 1) reason = `Вече е използван този месец. Следващо използване: ${new Date(data.next_reset).toLocaleDateString('bg-BG')}`;
-          
-          document.getElementById('helpUsageInfo').textContent = reason;
+        if (button) button.disabled = !data.available;
+
+        let reason;
+        if (data.available) {
+          reason = data.method === 'prepaid'
+            ? 'Готово: имаш предплатена застраховка.'
+            : 'Готово: ще се отнемат 15 дни от абонамента.';
+        } else if (data.used_this_month) {
+          reason = `Вече е използван този месец. Следващо използване: ${new Date(data.next_reset).toLocaleDateString('bg-BG')}`;
         } else {
-          document.getElementById('helpUsageInfo').textContent = `Остават: ${data.remaining_uses} използвания`;
+          reason = 'Неактивен: нямаш застраховка и под 15 дни абонамент. Застраховай се ($5 360₽ 438сом) или поднови абонамента.';
         }
+        set('helpUsageInfo', reason);
         
       } catch (err) {
         console.error('Check help availability error:', err);
@@ -548,7 +639,7 @@
     }
 
     async function sendEmergencyHelp() {
-      if (!confirm('⚠️ ВНИМАНИЕ!\n\nТова ще изпрати вашата точна локация до администратора и ще ви струва €50/$50 (15 дни от абонамента).\n\nПродължавате?')) {
+      if (!confirm('⚠️ СПЕШНА ПОМОЩ\n\nЩе изпратим точната ти локация до администратора.\n\nАко имаш предплатена застраховка, ще се ползва тя; иначе ще се отнемат 15 дни от абонамента.\n\nПродължаваш?')) {
         return;
       }
       
@@ -580,7 +671,10 @@
             return;
           }
           
-          alert(`✅ Спешна помощ изпратена!\n\nАдминистраторът е уведомен с вашата локация.\n\nИД на заявката: ${data.request_id}`);
+          alert('✅ Спешна помощ изпратена!\n\nАдминистраторът е уведомен с твоята локация.\n' +
+            (data.used_prepaid ? 'Използвана е предплатената застраховка (абонаментът е непокътнат).'
+                               : 'Отнети са ' + (data.deducted_days || 15) + ' дни от абонамента.') +
+            '\n\nИД на заявката: ' + data.request_id);
           
           await loadProfile();
           await checkHelpButtonAvailability();
@@ -604,5 +698,6 @@
   </script>
 
     <script src="/shared/js/i18n.js?v=1.0193"></script>
+  <script src="/chat/public/chat-footer.js?v=1.0001"></script>
 </body>
 </html>

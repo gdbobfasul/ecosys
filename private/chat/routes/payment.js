@@ -30,6 +30,29 @@ function getPriceForIP(ip) {
   return { amount: Math.round(s.usd * 100), currency: 'usd', country: geo?.country || 'US' };
 }
 
+// Цена на застраховката „спешна помощ" (отделна услуга в prices-chat.json).
+function chatEmergency() {
+  try {
+    const p = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'configs', 'prices-chat.json'), 'utf8'));
+    const e = p && p.services && p.services.emergency;
+    if (e && e.usd) return e;
+  } catch (e) { /* fallback */ }
+  return { usd: 5, rub: 360, kgs: 438 };
+}
+function emergencyDisplay() {
+  const s = chatEmergency();
+  return `$${s.usd} ${s.rub}₽ ${s.kgs}сом`;
+}
+function getEmergencyPriceForIP(ip) {
+  const geo = geoip.lookup(ip);
+  const s = chatEmergency();
+  return { amount: Math.round(s.usd * 100), currency: 'usd', country: geo?.country || 'US' };
+}
+// Избира ценообразуването според типа плащане ('emergency' = застраховка, иначе месечен абонамент).
+function priceForType(ip, paymentType) {
+  return paymentType === 'emergency' ? getEmergencyPriceForIP(ip) : getPriceForIP(ip);
+}
+
 function createPaymentRoutes(db) {
   const router = express.Router();
 
@@ -47,7 +70,8 @@ function createPaymentRoutes(db) {
       amount: pricing.amount / 100,
       currency: pricing.currency.toUpperCase(),
       country: pricing.country,
-      displayPrice: priceDisplay()   // „$5 / 360 ₽ / 438 сом" от prices.json
+      displayPrice: priceDisplay(),            // месечен абонамент
+      emergencyDisplayPrice: emergencyDisplay() // застраховка „спешна помощ": „$5 360₽ 438сом"
     });
   });
 
@@ -61,13 +85,13 @@ function createPaymentRoutes(db) {
         return res.status(400).json({ error: 'Phone required' });
       }
 
-      const pricing = getPriceForIP(clientIP);
+      const pricing = priceForType(clientIP, paymentType);
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: pricing.amount,
         currency: pricing.currency,
-        metadata: { 
-          phone, 
+        metadata: {
+          phone,
           country: pricing.country,
           paymentType: paymentType || 'new'
         },
@@ -106,8 +130,21 @@ function createPaymentRoutes(db) {
         return res.status(400).json({ error: 'Phone mismatch' });
       }
 
-      const pricing = getPriceForIP(clientIP);
+      const pricing = priceForType(clientIP, paymentType);
       const user = await db.prepare(Q.CONFIRM_FIND_USER).get(phone);
+
+      // Застраховка „спешна помощ" — ОТДЕЛНА от абонамента: вдига emergency_active=1,
+      // НЕ удължава paid_until. Стои настрана, докато човекът не натисне спешния бутон.
+      if (paymentType === 'emergency') {
+        if (!user) return res.status(400).json({ error: 'User not found - complete registration first' });
+        const farUntil = new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000).toISOString();
+        await db.prepare(Q.CONFIRM_SET_EMERGENCY).run(farUntil, phone);
+        await db.prepare(Q.CONFIRM_INSERT_PAYMENT_LOG).run(
+          user.id, phone, paymentIntent.amount / 100, paymentIntent.currency,
+          paymentIntentId, 'succeeded', pricing.country, clientIP, 'emergency'
+        );
+        return res.json({ success: true, emergency_active: true, message: 'Застраховката „спешна помощ" е активирана.' });
+      }
 
       // Calculate new paid_until date
       let paidUntil = new Date();

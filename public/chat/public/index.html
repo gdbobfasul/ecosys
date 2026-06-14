@@ -41,6 +41,68 @@
                 <div class="text-sm opacity-75" data-i18n="r.138">
                     <span data-i18n="chat.no_sms">🔒 Без SMS • 📧 Без Email • 🗑️ Файлове се трият</span>
                 </div>
+
+                <!-- Голям бутон: всички функции на чата -->
+                <button onclick="toggleFunctions()" class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-5 rounded-lg text-lg mt-2">
+                    🌟 Какво още може чатът? — всички функции
+                </button>
+            </div>
+        </div>
+
+        <!-- Модал: всички функции на чата -->
+        <div id="functionsModal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+            <div class="bg-gray-800 rounded-lg p-6 max-w-2xl max-h-screen overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold">🌟 Всички функции на чата</h2>
+                    <button onclick="toggleFunctions()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+                </div>
+
+                <p class="text-gray-200 mb-4 leading-relaxed">
+                    Това <strong>не е обикновен чат</strong>. Той свързва хората помежду им, за да намират по-бързо това,
+                    от което се нуждаят — стока, услуга или човек — и да получават помощ, <strong>спешна или не чак толкова спешна</strong>,
+                    точно когато им потрябва.
+                </p>
+
+                <div class="space-y-3 text-sm">
+                    <div class="bg-gray-700 rounded p-4">
+                        <h3 class="font-bold text-purple-300 mb-1">🔍 „Нуждая се"</h3>
+                        <p class="text-gray-300">Заявяваш от какво имаш нужда сега (доктор, електротехник, преводач, аптека…) и системата те свързва с най-близките, които точно това предлагат.</p>
+                    </div>
+                    <div class="bg-gray-700 rounded p-4">
+                        <h3 class="font-bold text-blue-300 mb-1">💼 „Предлагам"</h3>
+                        <p class="text-gray-300">Обявяваш своите услуги (до 3). Така хората, които ги търсят, те намират лесно.</p>
+                    </div>
+                    <div class="bg-gray-700 rounded p-4">
+                        <h3 class="font-bold text-green-300 mb-1">👥 Приятели / Познати</h3>
+                        <p class="text-gray-300">Добавяш контакт по телефон и чатиш само с хора, на които знаеш пълните данни и кодовата дума — сигурно и лично.</p>
+                    </div>
+                    <div class="bg-gray-700 rounded p-4">
+                        <h3 class="font-bold text-yellow-300 mb-1">📍 Локация</h3>
+                        <p class="text-gray-300">Споделяш само когато ти поискаш. Другите виждат „~30 км от теб", а не точен адрес.</p>
+                    </div>
+                    <div class="bg-red-900 border border-red-600 rounded p-4">
+                        <h3 class="font-bold text-red-300 mb-1">🆘 Спешна помощ</h3>
+                        <p class="text-gray-300">Бутон, който праща точната ти локация до администратора, който намира най-близката помощ (линейка, полиция, болница, доставчик до 50 км). Без плащане в момента — ползва предплатена застраховка или отнема 15 дни от абонамента.</p>
+                    </div>
+                    <div class="bg-gray-700 rounded p-4">
+                        <h3 class="font-bold text-orange-300 mb-1">📢 Сигнали</h3>
+                        <p class="text-gray-300">Декларираш обект или място (аптека, ресторант, човек в беда…) и помагаш на общността. За одобрен сигнал получаваш 1 безплатен ден.</p>
+                    </div>
+                    <div class="bg-gray-700 rounded p-4">
+                        <h3 class="font-bold text-pink-300 mb-1">💞 Запознанства (мачване)</h3>
+                        <p class="text-gray-300">Търсиш по пол, ръст, държава и се свързваш с хора за запознанства.</p>
+                    </div>
+                    <div class="bg-gray-700 rounded p-4">
+                        <h3 class="font-bold text-teal-300 mb-1">📋 Задачи</h3>
+                        <p class="text-gray-300">Възлагаш или поемаш дребни задачи („подай ръка на място", „провери истина ли е") срещу справедлива такса според държавата.</p>
+                    </div>
+                    <div class="bg-gray-700 rounded p-4 text-center">
+                        <p class="text-gray-200">Всичко това е зад един месечен абонамент — <strong>$5 360₽ 438сом</strong>.</p>
+                    </div>
+                </div>
+
+                <button onclick="toggleFunctions()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-3 mt-5 font-semibold">Разбрах, затвори</button>
+                <a href="/chat/register.html" class="block text-center w-full bg-green-500 hover:bg-green-600 rounded py-3 mt-3 font-bold">📝 Регистрация</a>
             </div>
         </div>
 
@@ -115,7 +177,7 @@
                                 <h3 class="font-bold text-red-300 mb-2" data-i18n="chat.help_h">🆘 БУТОН "ПОМОЩ"</h3>
                                 <ul class="space-y-1 text-gray-300">
                                     <li><span data-i18n="chat.help_send">• Изпраща</span> <strong data-i18n="chat.exact_location">точна локация</strong> <span data-i18n="chat.help_admin">до администратор</span></li>
-                                    <li><span data-i18n="chat.help_fee">• Такса:</span> <strong data-i18n="chat.help_10x">10× месечната</strong> <span data-i18n="chat.help_amt">(€50 или $50)</span></li>
+                                    <li>• Без плащане в момента: <strong>отнема 15 дни</strong> от абонамента (или предплатена застраховка <strong>$5 360₽ 438сом</strong>)</li>
                                     <li>• <strong data-i18n="chat.help_1month">1 използване/месец</strong></li>
                                 </ul>
                             </div>
@@ -222,8 +284,14 @@
             const modal = document.getElementById('howItWorksModal');
             modal.classList.toggle('hidden');
         }
+
+        function toggleFunctions() {
+            const modal = document.getElementById('functionsModal');
+            modal.classList.toggle('hidden');
+        }
     </script>
     <script src="/shared/js/i18n.js?v=1.0193"></script>
+    <script src="/chat/public/chat-footer.js?v=1.0001"></script>
     <script src="/shared/js/kg-compliance.js?v=1.0001"></script>
     <script>
     // Попълва език дропдауна на login екрана (чатът няма обща навигация)
