@@ -99,7 +99,7 @@
     if (ty) p.set('type', ty); if (co) p.set('country', co);
     const r = await api('/?' + p.toString());
     const box = document.getElementById('browseList'); box.innerHTML = '';
-    if (!r.ok || !r.body.tasks || !r.body.tasks.length) { box.innerHTML = '<p class="text-gray-500 text-center py-6">' + esc(t('task.none')) + '</p>'; return; }
+    if (!r.ok || !r.body.tasks || !r.body.tasks.length) { box.innerHTML = '<p class="text-gray-500 text-center py-6" data-i18n="task.none">Няма задачи.</p>'; if (window.KCY_I18N && KCY_I18N.apply) KCY_I18N.apply(); return; }
     r.body.tasks.forEach(t2 => box.appendChild(card(t2)));
   }
   function card(t2) {

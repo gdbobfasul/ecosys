@@ -29,7 +29,31 @@
     '.ams-foot-menu a{color:#cbd5e1;text-decoration:none;font-size:13px;font-weight:600;' +
       'padding:6px 12px;border-radius:8px;background:rgba(148,163,184,.12)}' +
     '.ams-foot-menu a:hover{background:rgba(96,165,250,.25);color:#fff}' +
-    '.ams-foot-menu a.cur{background:#2563eb;color:#fff}';
+    '.ams-foot-menu a.cur{background:#2563eb;color:#fff}' +
+    '.ams-authbar{position:fixed;top:8px;right:8px;z-index:9999;display:flex;gap:6px;' +
+      'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}' +
+    '.ams-authbar a{font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;' +
+      'text-decoration:none;color:#fff;background:rgba(37,99,235,.92);box-shadow:0 1px 4px rgba(0,0,0,.35)}' +
+    '.ams-authbar a.ams-in{background:rgba(22,163,74,.95)}' +
+    '.ams-authbar a:hover{opacity:.88}' +
+    // Бутон „Спешна помощ" в долното меню + потвърждаващ прозорец
+    '.ams-foot-emg{font-size:13px;font-weight:800;padding:6px 14px;border-radius:8px;border:none;' +
+      'cursor:pointer;color:#fff;background:#c62828}' +
+    '.ams-foot-emg:hover{background:#e53935}' +
+    '.ams-emg-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:10000;display:none;' +
+      'align-items:center;justify-content:center;padding:16px}' +
+    '.ams-emg-overlay.on{display:flex}' +
+    '.ams-emg-box{background:#1f2937;color:#e5e7eb;max-width:480px;width:100%;border-radius:14px;' +
+      'padding:22px;border:2px solid #c62828;box-shadow:0 10px 40px rgba(0,0,0,.5);' +
+      'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}' +
+    '.ams-emg-box h2{color:#f87171;font-size:20px;font-weight:800;margin:0 0 10px}' +
+    '.ams-emg-box p{font-size:14px;line-height:1.6;margin:0 0 10px}' +
+    '.ams-emg-box .warn{font-weight:800;color:#fca5a5}' +
+    '.ams-emg-status{font-size:13px;min-height:18px;margin:8px 0;color:#fcd34d}' +
+    '.ams-emg-actions{display:flex;gap:10px;margin-top:8px}' +
+    '.ams-emg-actions button{flex:1;padding:12px;border:none;border-radius:8px;font-weight:800;' +
+      'font-size:16px;cursor:pointer}' +
+    '.ams-emg-yes{background:#16a34a;color:#fff}.ams-emg-no{background:#4b5563;color:#fff}';
 
   function ensureCompliance() {
     if (window.KGCompliance) return;                                   // вече е зареден
@@ -46,6 +70,8 @@
     style.textContent = CSS;
     document.head.appendChild(style);
 
+    buildAuthBadge();   // горе вдясно: индикатор за вход
+
     var here = location.pathname.replace(/\/+$/, '');
     var nav = document.createElement('nav');
     nav.className = 'ams-foot-menu';
@@ -53,6 +79,14 @@
       var cur = l.href.replace(/\/+$/, '') === here ? ' class="cur"' : '';
       return '<a href="' + l.href + '"' + cur + '>' + l.label + '</a>';
     }).join('');
+    // Бутон „Спешна помощ" — директно извикване, с потвърждение преди това.
+    var emg = document.createElement('button');
+    emg.type = 'button';
+    emg.className = 'ams-foot-emg';
+    emg.textContent = '🆘 Спешна помощ';
+    emg.onclick = openEmergency;
+    nav.appendChild(emg);
+
     document.body.appendChild(nav);
 
     // Контейнер за фирмения футър — kg-compliance.js го попълва най-отдолу.
@@ -63,6 +97,83 @@
     }
 
     ensureCompliance();
+  }
+
+  // Горе вдясно на всяка чат страница: ако е логнат → линк към Профил;
+  // ако НЕ е → линкове към Вход и Регистрация.
+  function buildAuthBadge() {
+    if (document.querySelector('.ams-authbar')) return;
+    var token = null;
+    try { token = localStorage.getItem('token'); } catch (e) {}
+    var bar = document.createElement('div');
+    bar.className = 'ams-authbar';
+    if (token) {
+      bar.innerHTML = '<a class="ams-in" href="/chat/public/profile.html">⚙️ Профил</a>';
+    } else {
+      bar.innerHTML = '<a href="/chat/public/index.html">🔑 Вход</a>' +
+                      '<a href="/chat/register.html">📝 Регистрация</a>';
+    }
+    document.body.appendChild(bar);
+  }
+
+  // ── Спешна помощ: прозорец за потвърждение (НЕ browser-попъп) + изпращане ──
+  function emgModal() {
+    var ov = document.querySelector('.ams-emg-overlay');
+    if (ov) return ov;
+    ov = document.createElement('div');
+    ov.className = 'ams-emg-overlay';
+    ov.innerHTML =
+      '<div class="ams-emg-box">' +
+        '<h2>🆘 Спешна помощ</h2>' +
+        '<p>При натискане на <b>ДА</b> изпращате точната си локация до администратора, който може да ' +
+          'сигнализира институции (Полиция, Бърза помощ, Болница), за да Ви се притекат на помощ. Възможно е ' +
+          'първо да се свържат с Вас, за да потвърдят сигнала и местоположението Ви.</p>' +
+        '<p>Това отнема 15 дни от абонамента (или ползва предплатената застраховка). Лимит: 1 път на месец.</p>' +
+        '<p class="warn">Ако се нуждаете от спешна помощ — моля потвърдете с ДА!</p>' +
+        '<div class="ams-emg-status"></div>' +
+        '<div class="ams-emg-actions">' +
+          '<button type="button" class="ams-emg-yes">ДА</button>' +
+          '<button type="button" class="ams-emg-no">НЕ</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(ov);
+    var status = ov.querySelector('.ams-emg-status');
+    ov.querySelector('.ams-emg-no').onclick = function () { ov.classList.remove('on'); };
+    ov.querySelector('.ams-emg-yes').onclick = function () { sendEmergencyNow(status); };
+    ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.remove('on'); });
+    return ov;
+  }
+
+  function openEmergency() {
+    var ov = emgModal();
+    ov.querySelector('.ams-emg-status').textContent = '';
+    ov.classList.add('on');
+  }
+
+  function sendEmergencyNow(statusEl) {
+    var token = null;
+    try { token = localStorage.getItem('token'); } catch (e) {}
+    if (!token) { statusEl.textContent = 'Трябва да си влязъл, за да подадеш сигнал за спешна помощ.'; return; }
+    if (!navigator.geolocation) { statusEl.textContent = 'Устройството не поддържа локация.'; return; }
+    statusEl.textContent = '⏳ Засичане на локация и изпращане...';
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      fetch('/api/help/emergency', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ latitude: pos.coords.latitude, longitude: pos.coords.longitude })
+      }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          if (res.ok) {
+            statusEl.innerHTML = '✅ Сигналът е изпратен! Администраторът е уведомен с локацията Ви. ' +
+              (res.d.used_prepaid ? '(използвана е застраховката)' : '(отнети са 15 дни от абонамента)') +
+              ' · ИД: ' + res.d.request_id;
+          } else {
+            statusEl.textContent = '⚠️ ' + (res.d.message || res.d.error || 'Неуспешно изпращане.');
+          }
+        }).catch(function () { statusEl.textContent = '⚠️ Грешка при изпращане. Опитай пак.'; });
+    }, function (err) {
+      statusEl.textContent = '⚠️ Няма достъп до локацията: ' + err.message;
+    }, { enableHighAccuracy: true, timeout: 10000 });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build);

@@ -3,6 +3,7 @@
 // Auth middleware is applied at mount point (server.js / test setup)
 const express = require('express');
 const Q = require('../queries').matchmaking; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
+const { logActionError } = require('../utils/actionLog');
 
 function createMatchmakingRoutes(db) {
   const router = express.Router();
@@ -263,7 +264,7 @@ function createMatchmakingRoutes(db) {
       });
 
     } catch (error) {
-      console.error('Get invitations error:', error);
+      logActionError('Получени покани (GET /api/matchmaking/invitations/received)', error, { userId: req.userId });
       res.status(500).json({ error: 'Failed to get invitations' });
     }
   });

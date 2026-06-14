@@ -379,6 +379,26 @@
             font-size: 0.9em;
             opacity: 0.9;
         }
+
+        /* Тъмна тема — както другите чат страници (bg-gray-900 / bg-gray-800) */
+        body { background:#111827; color:#e5e7eb; }
+        .section { background:#1f2937; box-shadow:0 2px 10px rgba(0,0,0,.45); }
+        .section h2 { color:#93c5fd; border-bottom-color:#374151; }
+        .form-group label { color:#cbd5e1; }
+        .form-group input, .form-group select { background:#374151; color:#e5e7eb; border-color:#4b5563; }
+        .form-group input::placeholder { color:#9ca3af; }
+        .btn-secondary { background:#374151; color:#e5e7eb; }
+        .btn-secondary:hover { background:#4b5563; }
+        .result-card { background:#1f2937; border-color:#374151; }
+        .result-card h3 { color:#93c5fd; }
+        .result-card p { color:#9ca3af; }
+        .invitation-item { background:#374151; }
+        .invitation-info, .invitation-info * { color:#e5e7eb; }
+        .modal-content { background:#1f2937; color:#e5e7eb; }
+        .modal-header h3 { color:#93c5fd; }
+        .close-btn { color:#9ca3af; } .close-btn:hover { color:#fff; }
+        .dislike-option { border-color:#4b5563; color:#e5e7eb; }
+        .loading { color:#9ca3af; }
     </style>
 </head>
 <body>
@@ -595,7 +615,7 @@
             <div class="button-group">
                 <button class="btn btn-secondary" onclick="window.location.href='chat.html'" data-i18n="mm.back_chat">◀ Назад към чат</button>
                 <button class="btn btn-primary" onclick="saveCriteria()" data-i18n="mm.save_criteria">💾 Запази критерии</button>
-                <button class="btn btn-primary" onclick="showFindWarning()" data-i18n="mm.find_5">🔍 Намери (5€)</button>
+                <button class="btn btn-primary" onclick="showFindWarning()">🔍 Намери 5EUR 360RUB 438KGS</button>
             </div>
         </div>
 
@@ -605,7 +625,7 @@
             <div id="resultsContent"></div>
             <div class="button-group">
                 <button class="btn btn-secondary" onclick="hideResults()" data-i18n="mm.back">◀ Назад</button>
-                <button class="btn btn-primary" onclick="showFindWarning()" data-i18n="mm.new_search">🔍 Ново търсене (5€)</button>
+                <button class="btn btn-primary" onclick="showFindWarning()">🔍 Ново търсене 5EUR 360RUB 438KGS</button>
             </div>
         </div>
 
@@ -633,12 +653,12 @@
                 <h3 data-i18n="mm.criteria">Условия за търсене</h3>
                 <p data-i18n="mm.here_match">Тук ще намерите съвпадение по вашите критерии на вашата идеална половинка.</p>
                 <p data-i18n="mm.results_count">Резултатите, които ще ви представим са 5 на брой.</p>
-                <p><strong data-i18n="mm.charge_note">При всяко натискане на бутона от платежният ви баланс ще бъдат взети 5 долара/евро.</strong></p>
+                <p><strong>При всяко натискане на бутона от платежния ви баланс ще бъдат взети 5EUR / 360RUB / 438KGS.</strong></p>
                 <p style="margin-top: 15px;" data-i18n="mm.current_balance">Текущ баланс: <strong id="warningBalance">--</strong></p>
             </div>
             <div class="button-group">
                 <button class="btn btn-secondary" onclick="closeFindWarning()" data-i18n="mm.cancel">Отказ</button>
-                <button class="btn btn-primary" onclick="findMatches()" data-i18n="mm.pay_search">💳 Плати 5€ и търси</button>
+                <button class="btn btn-primary" onclick="findMatches()">💳 Плати 5EUR 360RUB 438KGS и търси</button>
             </div>
         </div>
     </div>
@@ -970,6 +990,7 @@
 
         // Load invitations
         async function loadInvitations() {
+            const content = document.getElementById('invitationsContent');
             try {
                 const response = await fetch(`${API_URL}/matchmaking/invitations/received`, {
                     headers: { 'Authorization': `Bearer ${currentUser.token}` }
@@ -980,9 +1001,14 @@
                 if (data.success) {
                     document.getElementById('pendingInvitations').textContent = data.count;
                     displayInvitations(data.invitations);
+                } else {
+                    // НЕ оставяй „Зареждане..." завинаги — покажи реалната причина.
+                    content.innerHTML = '<p style="text-align:center; color:#e57373;">Неуспешно зареждане на поканите'
+                        + (data && data.error ? ' (' + data.error + ')' : '') + '. Опитай по-късно.</p>';
                 }
             } catch (error) {
                 console.error('Load invitations error:', error);
+                content.innerHTML = '<p style="text-align:center; color:#e57373;">Грешка при връзка със сървъра.</p>';
             }
         }
 

@@ -3,6 +3,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const { validateOfferings, PUBLIC_OFFERING_SERVICES, SERVICE_CATEGORIES } = require('../utils/serviceCategories');
 const Q = require('../queries').profile; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
+const { logActionError } = require('../utils/actionLog');
 
 function createProfileRoutes(db) {
   const router = express.Router();
@@ -19,11 +20,11 @@ function createProfileRoutes(db) {
       }
       
       // Hide sensitive data based on user settings
-      if (user.hide_phone) {
+      if (user.hide_phone && user.phone) {
         user.phone = user.phone.substring(0, 7) + '...';
       }
-      
-      if (user.hide_names) {
+
+      if (user.hide_names && user.full_name) {
         const names = user.full_name.split(' ');
         user.full_name = names.map(n => n.substring(0, 4) + '...').join(' ');
       }
@@ -33,7 +34,7 @@ function createProfileRoutes(db) {
       
       res.json(user);
     } catch (err) {
-      console.error('Get profile error:', err);
+      logActionError('Зареждане на профил (GET /api/profile)', err, { userId: req.user && req.user.id });
       res.status(500).json({ error: 'Server error' });
     }
   });
