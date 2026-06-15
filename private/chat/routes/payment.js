@@ -143,7 +143,7 @@ function createPaymentRoutes(db) {
           user.id, phone, paymentIntent.amount / 100, paymentIntent.currency,
           paymentIntentId, 'succeeded', pricing.country, clientIP, 'emergency'
         );
-        return res.json({ success: true, emergency_active: true, message: 'Застраховката „спешна помощ" е активирана.' });
+        return res.json({ success: true, emergency_active: true, message: 'Плащането за „спешна помощ" е активирано.' });
       }
 
       // Calculate new paid_until date

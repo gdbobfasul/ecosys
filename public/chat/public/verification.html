@@ -1,0 +1,181 @@
+<!-- Version: 1.0001 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Кандидатстване за спешна услуга - AMS Chat</title>
+  <link rel="icon" type="image/png" href="../assets/icon-192.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+  <div class="container mx-auto px-4 py-8 max-w-2xl">
+
+    <div class="flex items-center justify-between mb-6">
+      <button onclick="window.location.href='profile.html'" class="text-blue-400 hover:text-blue-300">← Назад към профила</button>
+    </div>
+
+    <h1 class="text-2xl font-bold mb-2">🩺 Кандидатстване за спешна услуга</h1>
+    <p class="text-gray-400 text-sm mb-6">
+      Спешните услуги (Лекар, Болница, Линейка, Полиция) изискват проверка и одобрение от
+      администратор или модератор. Попълнете формата по-долу — желателно е да приложите документ
+      (лиценз/регистрация), който потвърждава, че имате право да предлагате тази услуга. След
+      одобрение услугите се добавят към профила Ви и той се заключва за промени (за надеждност).
+    </p>
+
+    <!-- Текущ статус на заявката -->
+    <div id="statusBox" class="hidden bg-gray-800 rounded-lg p-4 mb-6 text-sm"></div>
+
+    <!-- Форма -->
+    <form id="applyForm" class="bg-gray-800 rounded-lg p-6 space-y-5">
+      <div>
+        <label class="block text-sm text-gray-300 mb-2 font-semibold">Кои спешни услуги предлагате? *</label>
+        <div id="servicesBox" class="grid grid-cols-2 gap-2"></div>
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Име на организацията/заведението *</label>
+        <input id="orgName" type="text" class="w-full bg-gray-700 rounded px-4 py-2 text-white" placeholder="напр. Градска болница „Х"">
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Лиценз/регистрационен №</label>
+        <input id="licenseNumber" type="text" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Телефон за връзка</label>
+          <input id="contactPhone" type="text" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Имейл за връзка</label>
+          <input id="contactEmail" type="email" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Адрес</label>
+        <input id="address" type="text" class="w-full bg-gray-700 rounded px-4 py-2 text-white">
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Допълнителна информация</label>
+        <textarea id="details" rows="3" class="w-full bg-gray-700 rounded px-4 py-2 text-white" placeholder="Опишете накратко дейността си."></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Документ (лиценз/регистрация) — по желание</label>
+        <input id="document" type="file" class="w-full text-sm text-gray-300">
+        <p class="text-xs text-gray-500 mt-1">До 50 MB. PDF или снимка на документа.</p>
+      </div>
+
+      <button type="submit" id="submitBtn" class="w-full bg-green-600 hover:bg-green-700 rounded py-3 font-bold disabled:bg-gray-600">
+        📨 Подай заявка за проверка
+      </button>
+      <p id="formMsg" class="text-sm text-center"></p>
+    </form>
+  </div>
+
+  <script src="/shared/js/i18n.js?v=1.0193"></script>
+  <script src="/shared/js/service-i18n.js?v=1.0001"></script>
+  <script>
+    const API_URL = window.location.origin + '/api';
+    const EMERGENCY_SERVICES = ['Doctor', 'Hospital', 'Ambulance', 'Police'];
+
+    if (!localStorage.getItem('token')) { window.location.href = 'index.html'; }
+
+    function svcText(key) { return (typeof svcLabel === 'function') ? svcLabel('sub', key) : key; }
+
+    function renderServices() {
+      document.getElementById('servicesBox').innerHTML = EMERGENCY_SERVICES.map(function (s) {
+        return '<label class="flex items-center gap-2 bg-gray-700 rounded px-3 py-2 cursor-pointer">' +
+               '<input type="checkbox" class="svc-check" value="' + s + '">' +
+               '<span data-svc="' + s + '">' + svcText(s) + '</span></label>';
+      }).join('');
+    }
+    function retranslate() {
+      document.querySelectorAll('[data-svc]').forEach(function (el) {
+        el.textContent = svcText(el.getAttribute('data-svc'));
+      });
+    }
+    document.addEventListener('kcy-lang-ready', retranslate);
+    document.addEventListener('kcy-lang-changed', retranslate);
+
+    const STATUS_BG = { pending: 'Изчаква проверка', approved: 'Одобрена ✅', rejected: 'Отказана ❌' };
+
+    async function loadStatus() {
+      try {
+        const res = await fetch(`${API_URL}/verification/my`, {
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        });
+        const data = res.ok ? await res.json() : null;
+        const box = document.getElementById('statusBox');
+        if (data && data.request) {
+          const r = data.request;
+          const services = (r.requested_services || '').split(',').map(function (s) { return svcText(s.trim()); }).join(', ');
+          box.classList.remove('hidden');
+          box.innerHTML = '<p class="font-semibold mb-1">Последна заявка: ' + (STATUS_BG[r.status] || r.status) + '</p>' +
+            '<p class="text-gray-400">Услуги: ' + services + (r.org_name ? ' · ' + r.org_name : '') + '</p>' +
+            (r.admin_notes ? '<p class="text-yellow-300 mt-1">Бележка от админ: ' + r.admin_notes + '</p>' : '');
+          // Ако има висяща заявка — не позволявай нова.
+          if (r.status === 'pending') {
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('formMsg').textContent = 'Имате висяща заявка — изчакайте обработката ѝ.';
+          }
+        }
+      } catch (e) { /* тихо */ }
+    }
+
+    document.getElementById('applyForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const msg = document.getElementById('formMsg');
+      const services = Array.prototype.slice.call(document.querySelectorAll('.svc-check:checked')).map(function (c) { return c.value; });
+      if (services.length === 0) { msg.className = 'text-sm text-center text-red-400'; msg.textContent = 'Изберете поне една услуга.'; return; }
+      if (!document.getElementById('orgName').value.trim()) { msg.className = 'text-sm text-center text-red-400'; msg.textContent = 'Въведете име на организацията.'; return; }
+
+      const fd = new FormData();
+      fd.append('requested_services', services.join(','));
+      fd.append('org_name', document.getElementById('orgName').value.trim());
+      fd.append('license_number', document.getElementById('licenseNumber').value.trim());
+      fd.append('contact_phone', document.getElementById('contactPhone').value.trim());
+      fd.append('contact_email', document.getElementById('contactEmail').value.trim());
+      fd.append('address', document.getElementById('address').value.trim());
+      fd.append('details', document.getElementById('details').value.trim());
+      const file = document.getElementById('document').files[0];
+      if (file) fd.append('document', file);
+
+      document.getElementById('submitBtn').disabled = true;
+      msg.className = 'text-sm text-center text-gray-300';
+      msg.textContent = '⏳ Изпращане...';
+      try {
+        const res = await fetch(`${API_URL}/verification/apply`, {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+          body: fd
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          msg.className = 'text-sm text-center text-green-400';
+          msg.textContent = '✅ ' + data.message;
+          document.getElementById('applyForm').reset();
+          renderServices();
+          loadStatus();
+        } else {
+          document.getElementById('submitBtn').disabled = false;
+          msg.className = 'text-sm text-center text-red-400';
+          msg.textContent = '⚠️ ' + (data.error || 'Неуспешно подаване.');
+        }
+      } catch (err) {
+        document.getElementById('submitBtn').disabled = false;
+        msg.className = 'text-sm text-center text-red-400';
+        msg.textContent = '⚠️ Грешка при връзка със сървъра.';
+      }
+    });
+
+    renderServices();
+    loadStatus();
+  </script>
+  <script src="/chat/public/chat-footer.js?v=1.0001"></script>
+</body>
+</html>

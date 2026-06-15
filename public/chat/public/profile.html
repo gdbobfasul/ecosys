@@ -230,8 +230,9 @@
           </div>
 
           <div class="bg-blue-900 border border-blue-600 rounded p-4">
-            <p class="text-blue-300 text-sm" data-i18n="r.104">ℹ️ За спешни услуги (Доктор, Болница, Бърза помощ, Полиция) изпрати документи на:</p>
-            <p class="text-blue-200 mt-1"><a href="mailto:admin@amschat.com" class="underline font-semibold">admin@amschat.com</a></p>
+            <p class="text-blue-300 text-sm">ℹ️ Спешните услуги (Лекар, Болница, Линейка, Полиция) изискват проверка и одобрение от админ/модератор. Кандидатствай през формата:</p>
+            <a href="verification.html" class="inline-block mt-2 bg-blue-600 hover:bg-blue-700 rounded px-4 py-2 font-semibold text-white">🩺 Кандидатствай за спешна услуга</a>
+            <p class="text-blue-200 text-xs mt-2">Или изпрати документи на <a href="mailto:admin@amschat.com" class="underline">admin@amschat.com</a></p>
           </div>
 
           <button onclick="updateOfferings()" class="w-full bg-blue-600 hover:bg-blue-700 rounded py-2" data-i18n="r.32">
@@ -284,11 +285,11 @@
           <p>🚨 Праща <strong>точната ти локация</strong> до администратора, който търси най-близката помощ.</p>
           <p><strong>Без плащане в момента</strong> — в спешност няма време.</p>
           <div class="bg-red-950 bg-opacity-60 rounded p-3 space-y-1 mt-2">
-            <p>🛡️ Застраховка: <span id="emgPrepaid" class="font-semibold">—</span></p>
+            <p>🛡️ Плащане за спешна помощ: <span id="emgPrepaid" class="font-semibold">—</span></p>
             <p>📅 Оставащи дни абонамент: <span id="emgDays" class="font-semibold">—</span></p>
             <p>⚙️ При натискане: <span id="emgMethod" class="font-semibold">—</span></p>
           </div>
-          <p class="text-xs text-gray-300">Застраховка струва <span id="helpCost" class="font-semibold"></span> и стои настрана, докато не я ползваш. Лимит: 1 път на месец.</p>
+          <p class="text-xs text-gray-300">Плащането за спешна помощ струва <span id="helpCost" class="font-semibold"></span> и стои настрана, докато не го ползваш. Лимит: 1 път на месец.</p>
         </div>
 
         <button id="helpButton" onclick="sendEmergencyHelp()" class="w-full bg-red-600 hover:bg-red-700 rounded py-4 font-bold text-lg disabled:bg-gray-600 disabled:cursor-not-allowed" data-i18n="r.142">
@@ -298,14 +299,14 @@
         <p id="helpUsageInfo" class="text-xs text-gray-400 mt-2 text-center"></p>
 
         <button onclick="window.location.href='payment.html?service=emergency'" class="w-full bg-amber-600 hover:bg-amber-700 rounded py-3 mt-3 font-semibold">
-          🛡️ Застраховай се предварително (<span id="emgPrepayPrice"></span>)
+          🛡️ Плати спешна помощ предварително (<span id="emgPrepayPrice"></span>)
         </button>
       </div>
 
       <!-- Обяснение -->
       <div class="bg-gray-800/60 rounded-lg p-4 text-sm text-gray-300 leading-relaxed mt-2">
         <p class="font-semibold text-gray-200 mb-1">За какво е „Спешна помощ"?</p>
-        <p>Спешният бутон праща точната ти локация до администратора, който намира най-близката помощ (линейка, полиция, болница или верифициран доставчик до 50 км). При натискане <strong>не се иска плащане</strong> — в спешност няма време. Покрива се по два начина: ако имаш предплатена застраховка ($5 360₽ 438сом, платена предварително и стояща настрана), ползва се тя; иначе се отнемат 15 дни от абонамента. Затова бутонът е активен само ако имаш застраховка <strong>или</strong> поне 15 дни абонамент. Можеш да се застраховаш предварително, за да си спокоен дори ако абонаментът ти е на изчерпване. Лимит: 1 път на месец.</p>
+        <p>Спешният бутон праща точната ти локация до администратора, който намира най-близката помощ (линейка, полиция, болница или верифициран доставчик до 50 км). При натискане <strong>не се иска плащане</strong> — в спешност няма време. Покрива се по два начина: ако имаш предплатено за спешна помощ ($5 360₽ 438сом, платено предварително и стоящо настрана), ползва се то; иначе се отнемат 15 дни от абонамента. Затова бутонът е активен само ако имаш предплатено за спешна помощ <strong>или</strong> поне 15 дни абонамент. Можеш да платиш спешна помощ предварително, за да си спокоен дори ако абонаментът ти е на изчерпване. Лимит: 1 път на месец.</p>
       </div>
       </div><!-- /pane-6 -->
 
@@ -315,7 +316,27 @@
   <script>
     const API_URL = window.location.origin + '/api';   // базов адрес на API (като другите chat страници)
     let serviceCategories = {};
+    let publicOfferings = [];   // услуги, които обикновен потребител може да ПРЕДЛАГА
+    let needServices = [];      // услуги, които може да се зададат като НУЖДА
     let profileData = {};
+
+    // Преведен етикет за категория/услуга (стойността остава английска — ключ за БД).
+    function svcText(kind, key) {
+      return (typeof svcLabel === 'function') ? svcLabel(kind, key) : key;
+    }
+    // Колко под-услуги от дадена категория са позволени в текущия списък.
+    function catHasAllowed(catKey, allowed) {
+      var subs = (serviceCategories[catKey] && serviceCategories[catKey].subcategories) || [];
+      return subs.some(function (s) { return allowed.indexOf(s) >= 0; });
+    }
+    // При смяна на езика — преведи наново вече показаните опции.
+    function retranslateSvcOptions() {
+      document.querySelectorAll('option[data-svc-kind]').forEach(function (o) {
+        o.textContent = svcText(o.getAttribute('data-svc-kind'), o.getAttribute('data-svc-key'));
+      });
+    }
+    document.addEventListener('kcy-lang-ready', retranslateSvcOptions);
+    document.addEventListener('kcy-lang-changed', retranslateSvcOptions);
 
     // Load profile on page load
     document.addEventListener('DOMContentLoaded', async () => {
@@ -347,29 +368,37 @@
         });
         const data = await res.json();
         serviceCategories = data.all;
-        
-        // Populate need category dropdown
+        publicOfferings = data.public_offerings || [];
+        needServices = data.need_services || [];
+
+        // Падащо „Текуща нужда": само категории с поне една услуга, която може да е НУЖДА.
         const needCat = document.getElementById('needCategory');
         Object.keys(serviceCategories).forEach(key => {
+          if (!catHasAllowed(key, needServices)) return;
           const opt = document.createElement('option');
-          opt.value = key;
-          opt.textContent = serviceCategories[key].label;
+          opt.value = key;                       // английска стойност (ключ за БД)
+          opt.setAttribute('data-svc-kind', 'cat');
+          opt.setAttribute('data-svc-key', key);
+          opt.textContent = svcText('cat', key); // преведен етикет
           needCat.appendChild(opt);
         });
 
-        // Populate offering category dropdowns (exclude EMERGENCY)
+        // Падащо „Какво предлагам": само категории с услуги, които обикновен потребител МОЖЕ да предлага.
+        // Спешните услуги (Лекар/Болница/Линейка/Полиция) НЕ са тук — те изискват
+        // верификация от админ и се задават от админ, не се избират от потребителя.
         [1, 2, 3].forEach(i => {
           const offeringCat = document.getElementById(`offering${i}Category`);
           Object.keys(serviceCategories).forEach(key => {
-            if (key !== 'EMERGENCY') { // Can't select emergency services
-              const opt = document.createElement('option');
-              opt.value = key;
-              opt.textContent = serviceCategories[key].label;
-              offeringCat.appendChild(opt);
-            }
+            if (!catHasAllowed(key, publicOfferings)) return;
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.setAttribute('data-svc-kind', 'cat');
+            opt.setAttribute('data-svc-key', key);
+            opt.textContent = svcText('cat', key);
+            offeringCat.appendChild(opt);
           });
         });
-        
+
       } catch (err) {
         console.error('Load categories error:', err);
       }
@@ -409,10 +438,19 @@
           document.getElementById('offeringsForm').classList.add('hidden');
         } else {
           if (profileData.offerings) {
-            const offerings = profileData.offerings.split(',').map(s => s.trim());
+            const offerings = profileData.offerings.split(',').map(s => s.trim()).filter(Boolean);
             offerings.forEach((offering, idx) => {
-              if (idx < 3) {
-                document.getElementById(`offering${idx + 1}`).value = offering;
+              const num = idx + 1;
+              if (num > 3) return;
+              // Първо избери категорията на услугата → напълни под-услугите → чак тогава задай стойността,
+              // иначе опцията още не съществува и нищо не се показва.
+              for (const [catKey, catData] of Object.entries(serviceCategories)) {
+                if (catData.subcategories.includes(offering)) {
+                  document.getElementById(`offering${num}Category`).value = catKey;
+                  updateOfferingSubcategories(num);
+                  document.getElementById(`offering${num}`).value = offering;
+                  break;
+                }
               }
             });
           }
@@ -456,29 +494,37 @@
       
       container.classList.remove('hidden');
       select.innerHTML = '<option value="" data-i18n="cp.select">-- Избери --</option>';
-      
+
       serviceCategories[category].subcategories.forEach(sub => {
+        if (needServices.length && needServices.indexOf(sub) < 0) return; // само услуги, валидни като нужда
         const opt = document.createElement('option');
-        opt.value = sub;
-        opt.textContent = sub;
+        opt.value = sub;                          // английска стойност (ключ за БД)
+        opt.setAttribute('data-svc-kind', 'sub');
+        opt.setAttribute('data-svc-key', sub);
+        opt.textContent = svcText('sub', sub);    // преведен етикет
         select.appendChild(opt);
       });
+      if (typeof KCY_I18N !== 'undefined') KCY_I18N.apply(select);
     }
 
     function updateOfferingSubcategories(num) {
       const category = document.getElementById(`offering${num}Category`).value;
       const select = document.getElementById(`offering${num}`);
-      
+
       select.innerHTML = '<option value="" data-i18n="cp.select_service">-- Избери услуга --</option>';
-      
+
       if (!category) return;
-      
+
       serviceCategories[category].subcategories.forEach(sub => {
+        if (publicOfferings.length && publicOfferings.indexOf(sub) < 0) return; // само услуги, разрешени за предлагане
         const opt = document.createElement('option');
         opt.value = sub;
-        opt.textContent = sub;
+        opt.setAttribute('data-svc-kind', 'sub');
+        opt.setAttribute('data-svc-key', sub);
+        opt.textContent = svcText('sub', sub);
         select.appendChild(opt);
       });
+      if (typeof KCY_I18N !== 'undefined') KCY_I18N.apply(select);
     }
 
     async function updateProfile() {
@@ -614,7 +660,7 @@
         set('emgPrepaid', data.has_prepaid ? 'Да ✅' : 'Не');
         set('emgDays', (data.days_left != null ? data.days_left : '—') + ' дни');
         set('emgMethod',
-          data.method === 'prepaid' ? 'ще се ползва застраховката (абонаментът остава непокътнат)'
+          data.method === 'prepaid' ? 'ще се ползва предплатеното за спешна помощ (абонаментът остава непокътнат)'
           : data.method === 'deduct' ? 'ще отнеме 15 дни от абонамента'
           : 'неактивен');
 
@@ -624,12 +670,12 @@
         let reason;
         if (data.available) {
           reason = data.method === 'prepaid'
-            ? 'Готово: имаш предплатена застраховка.'
+            ? 'Готово: имаш предплатено за спешна помощ.'
             : 'Готово: ще се отнемат 15 дни от абонамента.';
         } else if (data.used_this_month) {
           reason = `Вече е използван този месец. Следващо използване: ${new Date(data.next_reset).toLocaleDateString('bg-BG')}`;
         } else {
-          reason = 'Неактивен: нямаш застраховка и под 15 дни абонамент. Застраховай се ($5 360₽ 438сом) или поднови абонамента.';
+          reason = 'Неактивен: нямаш предплатено за спешна помощ и под 15 дни абонамент. Плати спешна помощ ($5 360₽ 438сом) или поднови абонамента.';
         }
         set('helpUsageInfo', reason);
         
@@ -639,7 +685,7 @@
     }
 
     async function sendEmergencyHelp() {
-      if (!confirm('⚠️ СПЕШНА ПОМОЩ\n\nЩе изпратим точната ти локация до администратора.\n\nАко имаш предплатена застраховка, ще се ползва тя; иначе ще се отнемат 15 дни от абонамента.\n\nПродължаваш?')) {
+      if (!confirm('⚠️ СПЕШНА ПОМОЩ\n\nЩе изпратим точната ти локация до администратора.\n\nАко имаш предплатено за спешна помощ, ще се ползва то; иначе ще се отнемат 15 дни от абонамента.\n\nПродължаваш?')) {
         return;
       }
       
@@ -672,7 +718,7 @@
           }
           
           alert('✅ Спешна помощ изпратена!\n\nАдминистраторът е уведомен с твоята локация.\n' +
-            (data.used_prepaid ? 'Използвана е предплатената застраховка (абонаментът е непокътнат).'
+            (data.used_prepaid ? 'Използвано е предплатеното за спешна помощ (абонаментът е непокътнат).'
                                : 'Отнети са ' + (data.deducted_days || 15) + ' дни от абонамента.') +
             '\n\nИД на заявката: ' + data.request_id);
           
@@ -698,6 +744,7 @@
   </script>
 
     <script src="/shared/js/i18n.js?v=1.0193"></script>
+  <script src="/shared/js/service-i18n.js?v=1.0001"></script>
   <script src="/chat/public/chat-footer.js?v=1.0001"></script>
 </body>
 </html>

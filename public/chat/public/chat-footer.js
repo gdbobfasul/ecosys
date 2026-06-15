@@ -95,11 +95,27 @@
     document.body.appendChild(nav);
 
     // Контейнер за фирмения футър — kg-compliance.js го попълва най-отдолу.
-    if (!document.querySelector('.kg-foot')) {
-      var f = document.createElement('footer');
-      f.className = 'kg-foot';
-      document.body.appendChild(f);
+    var footEl = document.querySelector('.kg-foot');
+    if (!footEl) {
+      footEl = document.createElement('footer');
+      footEl.className = 'kg-foot';
+      document.body.appendChild(footEl);
     }
+
+    // Ако <body> е flex/grid (центрира съдържанието) → менюто и футърът да са
+    // ПЪЛЕН РЕД най-отдолу, а не съседни колони (иначе изглеждат като 3-та колона).
+    try {
+      var cs = getComputedStyle(document.body);
+      if (cs.display.indexOf('flex') >= 0 || cs.display.indexOf('grid') >= 0) {
+        if (cs.display.indexOf('flex') >= 0) document.body.style.flexWrap = 'wrap';
+        [nav, footEl].forEach(function (el) {
+          el.style.width = '100%';
+          el.style.flex = '0 0 100%';
+          el.style.order = '999';
+          el.style.gridColumn = '1 / -1';
+        });
+      }
+    } catch (e) {}
 
     ensureCompliance();
   }
@@ -142,7 +158,7 @@
         '<p>При натискане на <b>ДА</b> изпращате точната си локация до администратора, който може да ' +
           'сигнализира институции (Полиция, Бърза помощ, Болница), за да Ви се притекат на помощ. Възможно е ' +
           'първо да се свържат с Вас, за да потвърдят сигнала и местоположението Ви.</p>' +
-        '<p>Това отнема 15 дни от абонамента (или ползва предплатената застраховка). Лимит: 1 път на месец.</p>' +
+        '<p>Това отнема 15 дни от абонамента (или ползва предплатеното за спешна помощ). Лимит: 1 път на месец.</p>' +
         '<p class="warn">Ако се нуждаете от спешна помощ — моля потвърдете с ДА!</p>' +
         '<div class="ams-emg-status"></div>' +
         '<div class="ams-emg-actions">' +
@@ -179,7 +195,7 @@
         .then(function (res) {
           if (res.ok) {
             statusEl.innerHTML = '✅ Сигналът е изпратен! Администраторът е уведомен с локацията Ви. ' +
-              (res.d.used_prepaid ? '(използвана е застраховката)' : '(отнети са 15 дни от абонамента)') +
+              (res.d.used_prepaid ? '(използвано е предплатеното за спешна помощ)' : '(отнети са 15 дни от абонамента)') +
               ' · ИД: ' + res.d.request_id;
           } else {
             statusEl.textContent = '⚠️ ' + (res.d.message || res.d.error || 'Неуспешно изпращане.');

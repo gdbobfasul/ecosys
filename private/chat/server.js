@@ -388,6 +388,7 @@ app.use('/api/help', authenticate(dbProxy), testModeOverride, createHelpRoutes(d
 app.use('/api/search', authenticate(dbProxy), testModeOverride, createSearchRoutes(dbProxy));
 app.use('/api/matchmaking', authenticate(dbProxy), testModeOverride, createMatchmakingRoutes(dbProxy));
 app.use('/api/tasks', authenticate(dbProxy), testModeOverride, require('./routes/tasks')(dbProxy));   // модул „Задачи"
+app.use('/api/verification', authenticate(dbProxy), testModeOverride, require('./routes/verification')(dbProxy, uploadDir)); // верификация на спешни услуги
 app.use('/api/signals', require('./routes/signals'));  // Signals route (handles auth internally)
 
 // Admin routes (separate authentication)

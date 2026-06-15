@@ -6,6 +6,7 @@ const { isStaff, roleForUsername } = require('../roles');
 const Q = require('../queries').admin; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 const MM = require('../queries').matchmaking; // преизползвани за per-user преглед
 const TASKS = require('../queries').tasks;    // преизползвани за задачите в админа
+const VQ = require('../queries').verification; // опашка за верификация на спешни услуги
 
 // Debug helper — логва старта/изхода на ecosystem-status за диагностика
 let debug;
@@ -749,6 +750,80 @@ function createAdminRoutes(db) {
       
     } catch (err) {
       console.error('Update offerings error:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // ============================================
+  // ВЕРИФИКАЦИЯ НА СПЕШНИ УСЛУГИ — опашка за одобрение/отказ
+  // ============================================
+
+  // Списък заявки. ?status=pending|approved|rejected  (по подразбиране всички, висящите отгоре).
+  router.get('/verification-requests', async (req, res) => {
+    try {
+      const status = req.query.status;
+      const rows = status
+        ? await db.prepare(VQ.ADMIN_LIST_BY_STATUS).all(status)
+        : await db.prepare(VQ.ADMIN_LIST_ALL).all();
+      const pending = await db.prepare(VQ.COUNT_PENDING).get();
+      res.json({ success: true, requests: rows, pending_count: (pending && pending.count) || 0 });
+    } catch (err) {
+      console.error('List verification requests error:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // Сваляне на прикачения документ (само за админ — IP-защитено като целия рутер).
+  router.get('/verification-requests/:id/document', async (req, res) => {
+    try {
+      const row = await db.prepare(VQ.ADMIN_GET_BY_ID).get(req.params.id);
+      if (!row || !row.document_path) return res.status(404).json({ error: 'Няма прикачен документ' });
+      return res.download(row.document_path, row.document_name || ('document-' + row.id));
+    } catch (err) {
+      console.error('Download verification document error:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // Одобрение: вдига is_verified + задава спешните услуги като offerings, маркира заявката.
+  router.put('/verification-requests/:id/approve', async (req, res) => {
+    try {
+      const id = req.params.id;
+      const { offerings, admin_notes, reviewed_by } = req.body;
+
+      const row = await db.prepare(VQ.ADMIN_GET_BY_ID).get(id);
+      if (!row) return res.status(404).json({ error: 'Заявката не е намерена' });
+      if (row.status !== 'pending') return res.status(409).json({ error: 'Заявката вече е обработена (' + row.status + ').' });
+
+      // По подразбиране одобряваме точно заявените услуги; админ може да ги override-не.
+      const finalOfferings = (offerings && String(offerings).trim()) ? String(offerings).trim() : row.requested_services;
+      const list = finalOfferings.split(',').map(s => s.trim()).filter(Boolean);
+      if (list.length > 3) return res.status(400).json({ error: 'Максимум 3 услуги' });
+
+      await db.prepare(Q.USER_VERIFY).run(finalOfferings, row.user_id);   // is_verified=1 + offerings
+      await db.prepare(VQ.ADMIN_UPDATE_STATUS).run('approved', admin_notes || null, reviewed_by || 'admin', id);
+
+      res.json({ success: true, message: 'Заявката е одобрена; потребителят е верифициран.' });
+    } catch (err) {
+      console.error('Approve verification error:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // Отказ: маркира заявката като отказана (с причина), без да пипа потребителя.
+  router.put('/verification-requests/:id/reject', async (req, res) => {
+    try {
+      const id = req.params.id;
+      const { admin_notes, reviewed_by } = req.body;
+
+      const row = await db.prepare(VQ.ADMIN_GET_BY_ID).get(id);
+      if (!row) return res.status(404).json({ error: 'Заявката не е намерена' });
+      if (row.status !== 'pending') return res.status(409).json({ error: 'Заявката вече е обработена (' + row.status + ').' });
+
+      await db.prepare(VQ.ADMIN_UPDATE_STATUS).run('rejected', admin_notes || null, reviewed_by || 'admin', id);
+      res.json({ success: true, message: 'Заявката е отказана.' });
+    } catch (err) {
+      console.error('Reject verification error:', err);
       res.status(500).json({ error: 'Server error' });
     }
   });

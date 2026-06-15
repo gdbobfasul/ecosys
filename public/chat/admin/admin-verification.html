@@ -1,0 +1,201 @@
+<!-- Version: 1.0001 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Верификация на спешни услуги - Admin</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f5f5f5; padding: 20px; color: #333; }
+    .header { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    h1 { color: #1565c0; margin-bottom: 12px; }
+    .stats { display: flex; gap: 16px; }
+    .stat-box { background: #f8f9fa; padding: 14px; border-radius: 8px; flex: 1; }
+    .stat-label { font-size: 12px; color: #666; text-transform: uppercase; }
+    .stat-value { font-size: 26px; font-weight: bold; margin-top: 4px; color: #1565c0; }
+
+    .tabs { display: flex; gap: 10px; margin-bottom: 16px; }
+    .tab { flex: 1; padding: 14px; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; background: #fff; color: #555; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .tab.on { background: #1565c0; color: #fff; }
+
+    .card { background: #fff; border-radius: 10px; padding: 18px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-left: 6px solid #1565c0; }
+    .card.approved { border-left-color: #2e7d32; opacity: .95; }
+    .card.rejected { border-left-color: #c62828; opacity: .9; }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+    .who { font-size: 19px; font-weight: bold; }
+    .badge { padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 700; white-space: nowrap; color: #fff; }
+    .badge.pending { background: #ef6c00; } .badge.approved { background: #2e7d32; } .badge.rejected { background: #c62828; }
+    .time { color: #888; font-size: 13px; margin-top: 2px; }
+    .services { margin: 10px 0; }
+    .stag { display: inline-block; background: #e3f2fd; color: #1565c0; padding: 4px 10px; border-radius: 14px; margin: 3px; font-size: 13px; font-weight: 600; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 18px; margin: 12px 0; font-size: 14px; }
+    .grid div span { color: #888; }
+    .details { background: #f7f8fa; border-radius: 8px; padding: 10px 12px; margin: 8px 0; font-size: 14px; }
+    .notes { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; border-radius: 6px; font-size: 14px; margin: 8px 0; }
+    .actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .btn { padding: 10px 18px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; }
+    .btn-ok { background: #2e7d32; color: #fff; } .btn-no { background: #c62828; color: #fff; }
+    .btn-doc { background: #1565c0; color: #fff; text-decoration: none; display: inline-block; }
+    .empty { background: #fff; border-radius: 10px; padding: 40px; text-align: center; color: #888; }
+    .loading { text-align: center; padding: 40px; }
+    .spinner { border: 4px solid #eee; border-top: 4px solid #1565c0; border-radius: 50%; width: 36px; height: 36px; animation: spin 1s linear infinite; margin: 0 auto; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🩺 Верификация на спешни услуги</h1>
+    <div class="stats">
+      <div class="stat-box"><div class="stat-label">Чакащи проверка</div><div class="stat-value" id="cntPending">-</div></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" id="tabPending" onclick="switchTab('pending')">🟠 Чакащи</button>
+    <button class="tab" id="tabApproved" onclick="switchTab('approved')">✅ Одобрени</button>
+    <button class="tab" id="tabRejected" onclick="switchTab('rejected')">❌ Отказани</button>
+  </div>
+
+  <div id="message"></div>
+  <div id="list"></div>
+
+  <script src="/shared/js/service-i18n.js?v=1.0001"></script>
+  <script>
+    const API = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+    let currentStatus = 'pending';
+
+    function headers() {
+      const t = localStorage.getItem('token');
+      const h = { 'Content-Type': 'application/json' };
+      if (t) h['Authorization'] = 'Bearer ' + t;
+      return h;
+    }
+    function reviewer() { return localStorage.getItem('username') || localStorage.getItem('adminUsername') || 'admin'; }
+    function esc(s) { const d = document.createElement('div'); d.textContent = (s == null ? '' : s); return d.innerHTML; }
+    function svcText(key) { return (typeof svcLabel === 'function') ? svcLabel('sub', key) : key; }
+    function svcTags(csv) {
+      return (csv || '').split(',').map(function (s) { return '<span class="stag">' + esc(svcText(s.trim())) + '</span>'; }).join('');
+    }
+    function parseTime(s) {
+      if (!s) return null;
+      let iso = s.indexOf('T') >= 0 ? s : s.replace(' ', 'T');
+      if (iso.indexOf('T') >= 0 && !/[Zz]|[+-]\d\d:?\d\d$/.test(iso)) iso += 'Z';
+      const d = new Date(iso); return isNaN(d.getTime()) ? new Date(s) : d;
+    }
+    function fmt(s) { const d = parseTime(s); return d ? d.toLocaleString('bg-BG') : esc(s); }
+
+    function switchTab(status) {
+      currentStatus = status;
+      ['pending', 'approved', 'rejected'].forEach(function (st) {
+        document.getElementById('tab' + st.charAt(0).toUpperCase() + st.slice(1)).classList.toggle('on', st === status);
+      });
+      loadList();
+    }
+
+    async function loadList() {
+      const list = document.getElementById('list');
+      list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+      try {
+        const res = await fetch(`${API}/api/admin/verification-requests?status=${currentStatus}`, {
+          headers: headers(), credentials: 'same-origin'
+        });
+        if (res.status === 401 || res.status === 403) {
+          list.innerHTML = '<p style="color:#c62828">Нямаш админ достъп. Логни се в <a href="admin.html">admin.html</a> или ползвай админ IP.</p>';
+          return;
+        }
+        if (!res.ok) throw new Error('fail');
+        const data = await res.json();
+        document.getElementById('cntPending').textContent = data.pending_count != null ? data.pending_count : '-';
+        renderList(data.requests || []);
+      } catch (e) {
+        list.innerHTML = '<p style="color:#c62828">Грешка при зареждане.</p>';
+      }
+    }
+
+    function renderList(rows) {
+      const list = document.getElementById('list');
+      if (rows.length === 0) {
+        list.innerHTML = '<div class="empty">Няма заявки в този раздел.</div>';
+        return;
+      }
+      list.innerHTML = rows.map(function (r) {
+        const cls = r.status === 'approved' ? 'approved' : (r.status === 'rejected' ? 'rejected' : '');
+        const badge = r.status === 'approved' ? '<span class="badge approved">Одобрена</span>'
+          : r.status === 'rejected' ? '<span class="badge rejected">Отказана</span>'
+          : '<span class="badge pending">Чака проверка</span>';
+        const doc = r.document_path
+          ? '<a class="btn btn-doc" href="' + API + '/api/admin/verification-requests/' + r.id + '/document" target="_blank">📎 Документ' + (r.document_name ? ' (' + esc(r.document_name) + ')' : '') + '</a>'
+          : '<span style="color:#999;font-size:13px;">Без документ</span>';
+        let actions = '';
+        if (r.status === 'pending') {
+          actions = '<div class="actions">' +
+            '<button class="btn btn-ok" onclick="approve(' + r.id + ')">✅ Одобри</button>' +
+            '<button class="btn btn-no" onclick="reject(' + r.id + ')">❌ Откажи</button>' +
+            doc + '</div>';
+        } else {
+          actions = '<div class="actions">' + doc + '</div>';
+        }
+        return '<div class="card ' + cls + '">' +
+          '<div class="card-top"><div><div class="who">' + esc(r.full_name) + ' (ID ' + r.id + ')</div>' +
+            '<div class="time">Подадена: ' + fmt(r.created_at) + (r.reviewed_at ? ' · Обработена: ' + fmt(r.reviewed_at) : '') + '</div></div>' +
+            badge + '</div>' +
+          '<div class="services">' + svcTags(r.requested_services) + '</div>' +
+          '<div class="grid">' +
+            '<div><span>Организация:</span> ' + esc(r.org_name || '—') + '</div>' +
+            '<div><span>Лиценз №:</span> ' + esc(r.license_number || '—') + '</div>' +
+            '<div><span>Телефон:</span> ' + esc(r.contact_phone || r.phone || '—') + '</div>' +
+            '<div><span>Имейл:</span> ' + esc(r.contact_email || r.user_email || '—') + '</div>' +
+            '<div><span>Адрес:</span> ' + esc(r.address || '—') + '</div>' +
+            '<div><span>Град/Държава:</span> ' + esc((r.city || '—') + ', ' + (r.country || '—')) + '</div>' +
+          '</div>' +
+          (r.details ? '<div class="details">' + esc(r.details) + '</div>' : '') +
+          (r.admin_notes ? '<div class="notes">Бележка: ' + esc(r.admin_notes) + (r.reviewed_by ? ' — ' + esc(r.reviewed_by) : '') + '</div>' : '') +
+          actions +
+        '</div>';
+      }).join('');
+    }
+
+    async function approve(id) {
+      const offerings = prompt('Услуги за одобрение (CSV; празно = заявените):', '');
+      if (offerings === null) return; // отказ от диалога
+      const admin_notes = prompt('Бележка (по желание):', '') || '';
+      try {
+        const res = await fetch(`${API}/api/admin/verification-requests/${id}/approve`, {
+          method: 'PUT', headers: headers(), credentials: 'same-origin',
+          body: JSON.stringify({ offerings: offerings.trim(), admin_notes: admin_notes, reviewed_by: reviewer() })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) { showMsg('✅ ' + data.message, true); loadList(); }
+        else showMsg('⚠️ ' + (data.error || 'Грешка'), false);
+      } catch (e) { showMsg('⚠️ Грешка при връзка', false); }
+    }
+
+    async function reject(id) {
+      const admin_notes = prompt('Причина за отказ:', '');
+      if (admin_notes === null) return;
+      try {
+        const res = await fetch(`${API}/api/admin/verification-requests/${id}/reject`, {
+          method: 'PUT', headers: headers(), credentials: 'same-origin',
+          body: JSON.stringify({ admin_notes: admin_notes, reviewed_by: reviewer() })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) { showMsg('Заявката е отказана.', true); loadList(); }
+        else showMsg('⚠️ ' + (data.error || 'Грешка'), false);
+      } catch (e) { showMsg('⚠️ Грешка при връзка', false); }
+    }
+
+    function showMsg(text, ok) {
+      const m = document.getElementById('message');
+      m.innerHTML = '<div style="background:' + (ok ? '#e8f5e9' : '#ffebee') + ';color:' + (ok ? '#2e7d32' : '#c62828') +
+        ';padding:12px;border-radius:8px;margin-bottom:12px;font-weight:600;">' + esc(text) + '</div>';
+      setTimeout(function () { m.innerHTML = ''; }, 5000);
+    }
+
+    loadList();
+    setInterval(function () { if (currentStatus === 'pending') loadList(); }, 30000);
+  </script>
+  <script src="/shared/js/navigation.js?v=1.0195"></script>
+  <script src="/chat/admin/admin-nav.js?v=1.0178"></script>
+</body>
+</html>

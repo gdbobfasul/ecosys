@@ -15,6 +15,7 @@
     { href: '/chat/admin/admin-signals.html',         cls: 'signals',  label: '📊 Сигнали' },
     { href: '/chat/admin/admin-matchmaking.html',     cls: 'match',    label: '💞 Запознанства' },
     { href: '/chat/admin/admin-tasks.html',           cls: 'tasks',    label: '📋 Задачи',                 adminOnly: 1 },
+    { href: '/chat/admin/admin-verification.html',    cls: 'verify',   label: '🩺 Верификации<span class="vb" id="amsVerifyBadge"></span>', adminOnly: 1 },
     { href: '/chat/admin/admin-static-objects.html',  cls: 'static',   label: '📄 Статични обекти' },
     { href: '/chat/public/payment-override.html',     cls: 'payment',  label: '💳 Плащане (ръчно)',        adminOnly: 1 }
   ];
@@ -38,6 +39,9 @@
     '.ams-adminnav .signals{background:#00897b;}' +
     '.ams-adminnav .match{background:#d81b60;}' +
     '.ams-adminnav .tasks{background:#00838f;}' +
+    '.ams-adminnav .verify{background:#1565c0;}' +
+    '.ams-adminnav a.verify .vb{display:none;margin-left:7px;background:#fff;color:#1565c0;border-radius:11px;padding:1px 8px;font-size:12px;font-weight:800;}' +
+    '.ams-adminnav a.verify.has .vb{display:inline-block;}' +
     '.ams-adminnav .static{background:#5e35b1;}' +
     '.ams-adminnav .payment{background:#8e24aa;}' +
     '.ams-adminnav .logout{background:#757575;margin-left:auto;}' +
@@ -86,6 +90,32 @@
 
     // Аларма за спешна помощ — само за админи (модераторите нямат линка).
     if (!isMod) startHelpAlarm();
+    // Брояч на чакащи заявки за верификация (само за админи).
+    if (!isMod) startVerifyBadge();
+  }
+
+  // ── Бадж „Верификации" (чакащи заявки) ───────────────────────────────────
+  function pollVerify() {
+    var token = null;
+    try { token = localStorage.getItem('token'); } catch (e) {}
+    var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    fetch('/api/admin/verification-requests?status=pending', { headers: headers, credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d) return;
+        var n = parseInt(d.pending_count, 10) || 0;
+        var link = document.querySelector('.ams-adminnav a.verify');
+        var badge = document.getElementById('amsVerifyBadge');
+        if (!link) return;
+        if (n > 0) { link.classList.add('has'); if (badge) badge.textContent = n; }
+        else { link.classList.remove('has'); if (badge) badge.textContent = ''; }
+      })
+      .catch(function () {});
+  }
+
+  function startVerifyBadge() {
+    pollVerify();
+    setInterval(pollVerify, 30000);
   }
 
   // ── Аларма „Спешна помощ" ───────────────────────────────────────────────

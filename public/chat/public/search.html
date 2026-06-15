@@ -206,6 +206,28 @@
     let distanceLocation = null;
     let needLocation = null;
     let serviceCategories = {};
+    let needServices = [];   // услуги, които може да се търсят като нужда
+
+    // Преведен етикет (стойността остава английска — ключ за БД).
+    function svcText(kind, key) {
+      return (typeof svcLabel === 'function') ? svcLabel(kind, key) : key;
+    }
+    // Превежда списък услуги, разделени със запетая (както се пазят в offerings).
+    function svcListText(csv) {
+      if (!csv) return csv;
+      return String(csv).split(',').map(function (s) { return svcText('sub', s.trim()); }).join(', ');
+    }
+    function catHasAllowed(catKey, allowed) {
+      var subs = (serviceCategories[catKey] && serviceCategories[catKey].subcategories) || [];
+      return subs.some(function (s) { return allowed.indexOf(s) >= 0; });
+    }
+    function retranslateSvcOptions() {
+      document.querySelectorAll('option[data-svc-kind]').forEach(function (o) {
+        o.textContent = svcText(o.getAttribute('data-svc-kind'), o.getAttribute('data-svc-key'));
+      });
+    }
+    document.addEventListener('kcy-lang-ready', retranslateSvcOptions);
+    document.addEventListener('kcy-lang-changed', retranslateSvcOptions);
 
     // Get location for both searches
     function getLocation(type) {
@@ -254,13 +276,17 @@
         });
         const data = await res.json();
         serviceCategories = data.all;
+        needServices = data.need_services || [];
 
-        // Populate need category dropdown
+        // Падащо с категории: само такива с услуги, които може да се търсят като нужда.
         const needCat = document.getElementById('needCategory');
         Object.keys(serviceCategories).forEach(key => {
+          if (needServices.length && !catHasAllowed(key, needServices)) return;
           const opt = document.createElement('option');
-          opt.value = key;
-          opt.textContent = serviceCategories[key].label;
+          opt.value = key;                       // английска стойност (ключ за БД)
+          opt.setAttribute('data-svc-kind', 'cat');
+          opt.setAttribute('data-svc-key', key);
+          opt.textContent = svcText('cat', key); // преведен етикет
           needCat.appendChild(opt);
         });
       } catch (err) {
@@ -271,17 +297,21 @@
     function updateNeedSubcategories() {
       const category = document.getElementById('needCategory').value;
       const select = document.getElementById('needSubcategory');
-      
+
       select.innerHTML = '<option value="" data-i18n="cs.select_need">-- Избери нужда --</option>';
-      
+
       if (!category) return;
-      
+
       serviceCategories[category].subcategories.forEach(sub => {
+        if (needServices.length && needServices.indexOf(sub) < 0) return;
         const opt = document.createElement('option');
-        opt.value = sub;
-        opt.textContent = sub;
+        opt.value = sub;                          // английска стойност (ключ за БД)
+        opt.setAttribute('data-svc-kind', 'sub');
+        opt.setAttribute('data-svc-key', sub);
+        opt.textContent = svcText('sub', sub);    // преведен етикет
         select.appendChild(opt);
       });
+      if (typeof KCY_I18N !== 'undefined') KCY_I18N.apply(select);
     }
 
     // Search by distance
@@ -346,7 +376,7 @@
               <p>📞 ${user.phone}</p>
               <p>👤 ${user.gender === 'male' ? 'М' : 'Ж'}, ${user.age}г, ${user.height_cm}см</p>
               <p>📍 ${user.city}, ${user.country}</p>
-              ${user.current_need ? `<p class="text-yellow-400 mt-2">🔍 Нужда: ${user.current_need}</p>` : ''}
+              ${user.current_need ? `<p class="text-yellow-400 mt-2">🔍 Нужда: ${svcText('sub', user.current_need)}</p>` : ''}
             </div>
           </div>
         `).join('');
@@ -426,7 +456,7 @@
               <p>📍 ${user.city}, ${user.country}</p>
               <div class="bg-gray-700 rounded p-2 mt-2">
                 <p class="text-yellow-400 font-semibold">💼 Предлага:</p>
-                <p class="text-white">${user.offerings}</p>
+                <p class="text-white">${svcListText(user.offerings)}</p>
               </div>
             </div>
           </div>
@@ -462,6 +492,7 @@
   </script>
 
     <script src="/shared/js/i18n.js?v=1.0193"></script>
+    <script src="/shared/js/service-i18n.js?v=1.0001"></script>
     <script src="/chat/public/chat-footer.js?v=1.0001"></script>
 </body>
 </html>

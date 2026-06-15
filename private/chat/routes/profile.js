@@ -1,7 +1,7 @@
 // Version: 1.0093
 const express = require('express');
 const bcrypt = require('bcrypt');
-const { validateOfferings, PUBLIC_OFFERING_SERVICES, SERVICE_CATEGORIES } = require('../utils/serviceCategories');
+const { validateOfferings, PUBLIC_OFFERING_SERVICES, NEED_SERVICES, SERVICE_CATEGORIES } = require('../utils/serviceCategories');
 const Q = require('../queries').profile; // набор заявки според CHAT_DB_TYPE (pg/sqlite)
 const { logActionError } = require('../utils/actionLog');
 
@@ -287,7 +287,8 @@ function createProfileRoutes(db) {
   router.get('/service-categories', async (req, res) => {
     res.json({
       all: SERVICE_CATEGORIES,
-      public_offerings: PUBLIC_OFFERING_SERVICES
+      public_offerings: PUBLIC_OFFERING_SERVICES, // услуги, които обикновен потребител може да ПРЕДЛАГА
+      need_services: NEED_SERVICES                // услуги, които може да се зададат като НУЖДА
     });
   });
 

@@ -363,7 +363,8 @@
                                 <td>${u.is_blocked ? '<span class="no">❌ Да</span>' : '<span class="yes">✅ Не</span>'}</td>
                                 <td>${new Date(u.paid_until) > new Date() ? '<span class="yes">✅ Активен</span>' : '<span class="muted">❌ Изтекъл</span>'}</td>
                                 <td>
-                                    <button onclick="blockUser(${u.id}, '${u.phone}')" class="btn-sm red">Блокирай</button>
+                                    <button onclick="viewDetails(${u.id})" class="btn-sm blue">🔍 Детайли</button>
+                                    <button onclick="blockUser(${u.id}, '${u.phone}')" class="btn-sm red">🚫 Блокирай</button>
                                 </td>
                             </tr>
                         `).join('')}

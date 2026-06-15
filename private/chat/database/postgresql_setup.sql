@@ -304,6 +304,30 @@ CREATE TABLE IF NOT EXISTS payment_overrides (
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+-- Заявки за верификация на спешни услуги (Лекар/Болница/Линейка/Полиция).
+-- Потребител кандидатства през формата; админ/модератор одобрява или отказва.
+CREATE TABLE IF NOT EXISTS verification_requests (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  requested_services TEXT NOT NULL,        -- CSV: напр. „Hospital,Ambulance"
+  org_name TEXT,                           -- име на организацията/заведението
+  license_number TEXT,                     -- официален лиценз/регистрационен №
+  contact_phone TEXT,
+  contact_email TEXT,
+  address TEXT,
+  details TEXT,                            -- свободно описание
+  document_path TEXT,                      -- качен документ (по желание)
+  document_name TEXT,
+  status TEXT DEFAULT 'pending',           -- pending | approved | rejected
+  admin_notes TEXT,
+  reviewed_by TEXT,                        -- кой админ/модератор е обработил
+  created_at TEXT DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+  reviewed_at TEXT,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_verification_status ON verification_requests(status);
+CREATE INDEX IF NOT EXISTS idx_verification_user ON verification_requests(user_id);
+
 -- Indexes for new tables
 CREATE INDEX IF NOT EXISTS idx_emergency_country ON emergency_contacts(country_code);
 CREATE INDEX IF NOT EXISTS idx_emergency_service ON emergency_contacts(service_type);
