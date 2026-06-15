@@ -948,5 +948,8 @@
   "cnav.tochat": "💬 Чатка",
   "cnav.logout": "🚪 Чыгуу",
   "chat.renew_sub": "Сураныч, айлык жазылууну жаңылаңыз!",
-  "chat.per_month": "айына"
+  "chat.per_month": "айына",
+  "mm.phd": "Докторлук даражасы",
+  "mm.casual": "Жөнөкөй мамиле",
+  "mm.plus_size": "Толук"
 }

@@ -948,5 +948,8 @@
   "cnav.tochat": "💬 Alla chat",
   "cnav.logout": "🚪 Esci",
   "chat.renew_sub": "Rinnova il tuo abbonamento mensile!",
-  "chat.per_month": "al mese"
+  "chat.per_month": "al mese",
+  "mm.phd": "Dottorato",
+  "mm.casual": "Informale",
+  "mm.plus_size": "Formosa"
 }

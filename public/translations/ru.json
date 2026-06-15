@@ -948,5 +948,8 @@
   "cnav.tochat": "💬 В чат",
   "cnav.logout": "🚪 Выход",
   "chat.renew_sub": "Пожалуйста, продлите месячную подписку!",
-  "chat.per_month": "в месяц"
+  "chat.per_month": "в месяц",
+  "mm.phd": "Докторская степень",
+  "mm.casual": "Несерьёзные",
+  "mm.plus_size": "Пышная"
 }

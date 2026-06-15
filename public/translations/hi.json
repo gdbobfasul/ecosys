@@ -948,5 +948,8 @@
   "cnav.tochat": "💬 चैट पर",
   "cnav.logout": "🚪 लॉगआउट",
   "chat.renew_sub": "कृपया अपनी मासिक सदस्यता नवीनीकृत करें!",
-  "chat.per_month": "प्रति माह"
+  "chat.per_month": "प्रति माह",
+  "mm.phd": "डॉक्टरेट",
+  "mm.casual": "अनौपचारिक",
+  "mm.plus_size": "भारी शरीर"
 }

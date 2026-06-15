@@ -948,5 +948,8 @@
   "cnav.tochat": "💬 Zum Chat",
   "cnav.logout": "🚪 Abmelden",
   "chat.renew_sub": "Bitte verlängern Sie Ihr Monatsabonnement!",
-  "chat.per_month": "pro Monat"
+  "chat.per_month": "pro Monat",
+  "mm.phd": "Doktortitel",
+  "mm.casual": "Unverbindlich",
+  "mm.plus_size": "Vollschlank"
 }

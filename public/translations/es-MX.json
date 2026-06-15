@@ -948,5 +948,8 @@
   "cnav.tochat": "💬 Al chat",
   "cnav.logout": "🚪 Salir",
   "chat.renew_sub": "¡Renueva tu suscripción mensual!",
-  "chat.per_month": "al mes"
+  "chat.per_month": "al mes",
+  "mm.phd": "Doctorado",
+  "mm.casual": "Sin compromiso",
+  "mm.plus_size": "Talla grande"
 }

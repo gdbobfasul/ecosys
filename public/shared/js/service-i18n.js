@@ -75,7 +75,11 @@
   };
 
   function curLang() {
-    var l = (global.KCY_I18N && global.KCY_I18N.lang) || 'en';
+    // 1) явен hint (служебните админ страници задават window.KCY_SVC_LANG='bg');
+    // 2) активният език на i18n; 3) запазеният език; 4) английски по подразбиране.
+    var l = global.KCY_SVC_LANG || (global.KCY_I18N && global.KCY_I18N.lang);
+    if (!l) { try { l = localStorage.getItem('kcy-lang'); } catch (e) {} }
+    l = l || 'en';
     if (SVC[l]) return l;
     // напр. „es-419" → „es"; ако няма точен → английски
     var base = String(l).split('-')[0];

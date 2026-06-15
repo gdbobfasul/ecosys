@@ -230,6 +230,15 @@
         const API_URL = ((window.KCY_CONFIG && window.KCY_CONFIG.BASE_URL) || window.location.origin) + '/api';
         let adminToken = null;
 
+        // Кодовете на критериите се пазят на английски в БД → български етикет за админа.
+        const MM_BG = {
+          smoking:  { never: 'Никога', occasionally: 'Понякога', regularly: 'Редовно' },
+          drinking: { never: 'Никога', socially: 'Социално', regularly: 'Редовно' },
+          education: { 'high-school': 'Средно', bachelor: 'Бакалавър', master: 'Магистър', phd: 'Докторска степен' },
+          relationship_goals: { casual: 'Несериозни', serious: 'Сериозни', marriage: 'Брак', friendship: 'Приятелство' }
+        };
+        function mmLabel(field, val) { return (MM_BG[field] && MM_BG[field][val]) || val; }
+
         // Check admin authentication
         function checkAuth() {
             const token = localStorage.getItem('token');
@@ -318,25 +327,25 @@
                         ${data.criteria.smoking ? `
                             <div class="info-box">
                                 <h4>Тютюнопушене</h4>
-                                <p>${data.criteria.smoking}</p>
+                                <p>${mmLabel('smoking', data.criteria.smoking)}</p>
                             </div>
                         ` : ''}
                         ${data.criteria.drinking ? `
                             <div class="info-box">
                                 <h4>Алкохол</h4>
-                                <p>${data.criteria.drinking}</p>
+                                <p>${mmLabel('drinking', data.criteria.drinking)}</p>
                             </div>
                         ` : ''}
                         ${data.criteria.education ? `
                             <div class="info-box">
                                 <h4>Образование</h4>
-                                <p>${data.criteria.education}</p>
+                                <p>${mmLabel('education', data.criteria.education)}</p>
                             </div>
                         ` : ''}
                         ${data.criteria.relationship_goals ? `
                             <div class="info-box">
                                 <h4>Цели</h4>
-                                <p>${data.criteria.relationship_goals}</p>
+                                <p>${mmLabel('relationship_goals', data.criteria.relationship_goals)}</p>
                             </div>
                         ` : ''}
                         ${data.criteria.country ? `

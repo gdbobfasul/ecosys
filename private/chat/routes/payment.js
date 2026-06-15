@@ -30,7 +30,7 @@ function getPriceForIP(ip) {
   return { amount: Math.round(s.usd * 100), currency: 'usd', country: geo?.country || 'US' };
 }
 
-// Цена на застраховката „спешна помощ" (отделна услуга в prices-chat.json).
+// Цена на плащането за спешна помощ (отделна услуга в prices-chat.json).
 function chatEmergency() {
   try {
     const p = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'configs', 'prices-chat.json'), 'utf8'));
@@ -48,7 +48,7 @@ function getEmergencyPriceForIP(ip) {
   const s = chatEmergency();
   return { amount: Math.round(s.usd * 100), currency: 'usd', country: geo?.country || 'US' };
 }
-// Избира ценообразуването според типа плащане ('emergency' = застраховка, иначе месечен абонамент).
+// Избира ценообразуването според типа плащане ('emergency' = плащане за спешна помощ, иначе месечен абонамент).
 function priceForType(ip, paymentType) {
   return paymentType === 'emergency' ? getEmergencyPriceForIP(ip) : getPriceForIP(ip);
 }
@@ -71,7 +71,7 @@ function createPaymentRoutes(db) {
       currency: pricing.currency.toUpperCase(),
       country: pricing.country,
       displayPrice: priceDisplay(),            // месечен абонамент
-      emergencyDisplayPrice: emergencyDisplay() // застраховка „спешна помощ": „$5 360₽ 438сом"
+      emergencyDisplayPrice: emergencyDisplay() // плащане за спешна помощ: „$5 360₽ 438сом"
     });
   });
 
@@ -133,7 +133,7 @@ function createPaymentRoutes(db) {
       const pricing = priceForType(clientIP, paymentType);
       const user = await db.prepare(Q.CONFIRM_FIND_USER).get(phone);
 
-      // Застраховка „спешна помощ" — ОТДЕЛНА от абонамента: вдига emergency_active=1,
+      // Плащане за спешна помощ — ОТДЕЛНА от абонамента: вдига emergency_active=1,
       // НЕ удължава paid_until. Стои настрана, докато човекът не натисне спешния бутон.
       if (paymentType === 'emergency') {
         if (!user) return res.status(400).json({ error: 'User not found - complete registration first' });

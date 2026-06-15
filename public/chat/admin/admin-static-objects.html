@@ -490,8 +490,8 @@
                         
                         ${user.offerings ? `
                             <div class="info-item">
-                                <div class="info-label">Offerings</div>
-                                <div class="info-value">${escapeHtml(user.offerings)}</div>
+                                <div class="info-label">Предлага</div>
+                                <div class="info-value">${escapeHtml(svcCsvLabel(user.offerings))}</div>
                             </div>
                         ` : ''}
                         
@@ -651,13 +651,23 @@
             div.textContent = text;
             return div.innerHTML;
         }
-        
+
+        // Превод на услуги (стойността е английска в БД) → български етикет за админа.
+        function svcCsvLabel(csv) {
+            if (!csv) return csv;
+            return String(csv).split(',').map(function (s) {
+                return (typeof svcLabel === 'function') ? svcLabel('sub', s.trim()) : s.trim();
+            }).join(', ');
+        }
+
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', displayUsers);
         
         // Load users on page load
         loadUsers();
     </script>
+    <script>window.KCY_SVC_LANG = 'bg';</script>
+    <script src="/shared/js/service-i18n.js?v=1.0001"></script>
     <script src="/shared/js/navigation.js?v=1.0195"></script>
     <script src="/chat/admin/admin-nav.js?v=1.0176"></script>
 </body>

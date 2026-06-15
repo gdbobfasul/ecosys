@@ -948,5 +948,8 @@
   "cnav.tochat": "💬 チャットへ",
   "cnav.logout": "🚪 ログアウト",
   "chat.renew_sub": "月額サブスクリプションを更新してください！",
-  "chat.per_month": "／月"
+  "chat.per_month": "／月",
+  "mm.phd": "博士号",
+  "mm.casual": "気軽な関係",
+  "mm.plus_size": "ぽっちゃり"
 }

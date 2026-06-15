@@ -87,6 +87,12 @@
     function paid(p) { return p && new Date(p) > new Date(); }
     function dt(s) { return s ? new Date(s).toLocaleString('bg-BG') : '—'; }
     function v(x) { return (x === null || x === undefined || x === '') ? '—' : esc(x); }
+    // Превод на услуги (стойността е английска в БД) → български етикет за админа.
+    function svcOne(x) { return x ? ((typeof svcLabel === 'function') ? svcLabel('sub', String(x).trim()) : x) : x; }
+    function svcCsv(x) {
+      if (!x) return x;
+      return String(x).split(',').map(function (s) { return svcOne(s.trim()); }).join(', ');
+    }
 
     function profileRows(u) {
       // Тези полета админът само ГЛЕДА (не ги сменя): пол, ръст, тегло, адрес, месторабота, кодова дума, телефон.
@@ -96,7 +102,7 @@
         ['Ръст (см) 🔒', u.height_cm], ['Тегло (кг) 🔒', u.weight_kg],
         ['Държава 🔒', u.country], ['Град 🔒', u.city], ['Село 🔒', u.village], ['Улица 🔒', u.street], ['Месторабота 🔒', u.workplace],
         ['Имейл', u.email], ['Кодова дума 🔒', u.code_word], ['Работно време', u.working_hours],
-        ['Текуща/спешна нужда', u.current_need], ['Предлага', u.offerings],
+        ['Текуща/спешна нужда', svcOne(u.current_need)], ['Предлага', svcCsv(u.offerings)],
         ['Верифициран', u.is_verified ? 'Да' : 'Не'], ['Скрит телефон', u.hide_phone ? 'Да' : 'Не'], ['Скрити имена', u.hide_names ? 'Да' : 'Не'],
         ['Създаден', dt(u.created_at)], ['Последен вход', dt(u.last_login)]
       ];
@@ -349,6 +355,8 @@
 
     load();
   </script>
+  <script>window.KCY_SVC_LANG = 'bg';</script>
+  <script src="/shared/js/service-i18n.js?v=1.0001"></script>
   <script src="/shared/js/navigation.js?v=1.0195"></script>
   <script src="/chat/admin/admin-nav.js?v=1.0177"></script>
 </body>

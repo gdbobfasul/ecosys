@@ -948,5 +948,8 @@
   "cnav.tochat": "💬 إلى الدردشة",
   "cnav.logout": "🚪 خروج",
   "chat.renew_sub": "يرجى تجديد اشتراكك الشهري!",
-  "chat.per_month": "شهريًا"
+  "chat.per_month": "شهريًا",
+  "mm.phd": "دكتوراه",
+  "mm.casual": "علاقة عابرة",
+  "mm.plus_size": "ممتلئة"
 }

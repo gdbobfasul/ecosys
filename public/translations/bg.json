@@ -948,5 +948,8 @@
   "cnav.tochat": "💬 Към чата",
   "cnav.logout": "🚪 Изход",
   "chat.renew_sub": "Моля, подновете месечния абонамент!",
-  "chat.per_month": "на месец"
+  "chat.per_month": "на месец",
+  "mm.phd": "Докторска степен",
+  "mm.casual": "Несериозни",
+  "mm.plus_size": "Едра"
 }

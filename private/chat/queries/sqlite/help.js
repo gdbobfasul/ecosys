@@ -26,7 +26,7 @@ module.exports = {
       help_button_reset_date = ?
     WHERE id = ?`,
 
-  // Консумиране на предплатената застраховка (emergency_active 1→0) БЕЗ да пипа абонамента.
+  // Консумиране на предплатеното за спешна помощ (emergency_active 1→0) БЕЗ да пипа абонамента.
   EMERGENCY_CONSUME_PREPAID: `
     UPDATE users
     SET

@@ -29,7 +29,7 @@ module.exports = {
     `INSERT INTO sessions (id, user_id, token, expires_at, device_type)
      VALUES ($1, $2, $3, $4, $5)`,
 
-  // confirm (emergency): вдига предплатената застраховка БЕЗ да пипа абонамента (paid_until).
+  // confirm (emergency): вдига предплатеното за спешна помощ БЕЗ да пипа абонамента (paid_until).
   CONFIRM_SET_EMERGENCY:
     `UPDATE users
        SET emergency_active = 1,

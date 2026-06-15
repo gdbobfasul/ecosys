@@ -30,9 +30,9 @@ function createHelpRoutes(db) {
 
   // Изпрати заявка за спешна помощ.
   // Логика (без плащане В МОМЕНТА — в спешност няма време за плащане):
-  //   • има предплатена застраховка (emergency_active=1) → консумира я (не пипа абонамента);
+  //   • има предплатено за спешна помощ (emergency_active=1) → консумира я (не пипа абонамента);
   //   • иначе ≥15 дни абонамент → отнема 15 дни;
-  //   • иначе (без застраховка И <15 дни) → 403 (бутонът трябва да е неактивен отпред).
+  //   • иначе (без предплатено за спешна помощ И <15 дни) → 403 (бутонът трябва да е неактивен отпред).
   router.post('/emergency', async (req, res) => {
     try {
       const userId = req.user.id;
@@ -98,7 +98,7 @@ function createHelpRoutes(db) {
 
       let method, newPaidUntil = user.paid_until, deductedDays = 0;
       if (hasPrepaid) {
-        // Ползва предплатената застраховка — НЕ пипаме абонамента.
+        // Ползва предплатеното за спешна помощ — НЕ пипаме абонамента.
         method = 'prepaid';
         await db.prepare(Q.EMERGENCY_CONSUME_PREPAID).run(helpUses + 1, newResetDate, userId);
       } else {
@@ -117,7 +117,7 @@ function createHelpRoutes(db) {
         message: 'Заявката за спешна помощ е изпратена до администратора.',
         method,                        // 'prepaid' | 'deduct'
         used_prepaid: method === 'prepaid',
-        deducted_days: deductedDays,   // 15 при отнемане, 0 при застраховка
+        deducted_days: deductedDays,   // 15 при отнемане, 0 при предплащане
         price: price.display,
         new_paid_until: newPaidUntil,
         remaining_uses: 0,
@@ -180,15 +180,15 @@ function createHelpRoutes(db) {
       const daysLeft = daysLeftOf(user.paid_until);
       const hasEnoughDays = daysLeft >= DEDUCT_DAYS;
 
-      // Активен, ако има застраховка ИЛИ ≥15 дни абонамент, и не е ползван този месец.
+      // Активен, ако има предплатено за спешна помощ ИЛИ ≥15 дни абонамент, и не е ползван този месец.
       const available = (hasPrepaid || hasEnoughDays) && !usedThisMonth;
-      // Кой механизъм ще покрие следващото ползване (застраховката е с приоритет).
+      // Кой механизъм ще покрие следващото ползване (предплатеното за спешна помощ е с приоритет).
       const method = hasPrepaid ? 'prepaid' : (hasEnoughDays ? 'deduct' : null);
       const price = emergencyPrice();
 
       res.json({
         available,
-        has_prepaid: hasPrepaid,            // има ли предплатена застраховка
+        has_prepaid: hasPrepaid,            // има ли предплатено за спешна помощ
         days_left: Math.floor(daysLeft),    // оставащи дни в абонамента
         enough_days: hasEnoughDays,         // стигат ли за −15 дни
         used_this_month: usedThisMonth,
