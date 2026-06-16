@@ -257,7 +257,9 @@ module.exports = {
           const r = await sessionRequest(page, h, 'POST', '/api/fbp/business',
             { btype: 'online', name: huge, country: 'Bulgaria', location_exact: 'x 1,2' });
           assertNo500('обект огромно име', r.status);
-          assertStatusIn('обект огромно име', r.status, [201, 400, 413]);
+          // bare Express има лимит 2mb за JSON тяло, а товарът тук е ~100KB → 413 НЕ се връща
+          // от приложението (само nginx би върнал 413 при свой по-нисък лимит).
+          assertStatusIn('обект огромно име', r.status, [201, 400]);
         } },
         { label: 'продукт с инжекция в name/materials → не 5xx', run: async (page, c, h) => {
           const evil = `"><img src=x onerror=alert(1)>'; DELETE FROM products;--`;
@@ -270,7 +272,9 @@ module.exports = {
           const r = await sessionRequest(page, h, 'POST', '/api/fbp/wanted',
             { title: 'Z'.repeat(50000), description: 'D'.repeat(200000), country: 'Bulgaria' });
           assertNo500('заявка огромна', r.status);
-          assertStatusIn('заявка огромна', r.status, [201, 400, 413]);
+          // ~250KB тяло е под лимита 2mb на bare Express → 413 НЕ се връща от приложението
+          // (маршрутът отрязва title/description, така че очаквай 201; 400 ако липсва държава).
+          assertStatusIn('заявка огромна', r.status, [201, 400]);
         } },
       ],
     },
@@ -285,8 +289,9 @@ module.exports = {
         } },
         { label: 'търсене с огромен параметър → 200, без 5xx', run: async (page, c, h) => {
           const r = await sessionRequest(page, h, 'GET', `/api/fbp/search?brand=${encodeURIComponent('B'.repeat(20000))}`);
-          // 414 (твърде дълъг URL — отрязан от nginx) е ГРАЦИОЗНО, наравно с 200 (важното е да НЕ е 5xx).
-          assertStatusIn('търсене огромно', r.status, [200, 414]);
+          // bare Express обработва дълъг query string нормално → връща 200. 414 (твърде дълъг URL)
+          // се появява САМО зад nginx (свой лимит на ред в заявката), не от самото приложение.
+          assertStatusIn('търсене огромно', r.status, [200]);
           if (r.status === 200 && (!r.body || !Array.isArray(r.body.results))) throw new Error('търсене огромно: липсва масив results');
         } },
         { label: 'търсене с нечислов price_min/price_max → 200, без 5xx', run: async (page, c, h) => {

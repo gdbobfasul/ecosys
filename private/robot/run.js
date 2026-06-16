@@ -37,10 +37,18 @@ const JOURNEYS = {
   portals: require('./journeys/portals'),
   chat: require('./journeys/chat'),
   chatx: require('./journeys/chat-actions'),
+  chatv: require('./journeys/chat-verify'),
+  chatu: require('./journeys/chat-extra-user'),    // профил/търсене/запознанства/приятели/файлове
+  chatadm: require('./journeys/chat-extra-admin'), // админ модерация (edit/ban/resolve/verify/override)
   eco3: require('./journeys/eco3'),
+  eco3x: require('./journeys/eco3-extra'),          // конфиг/админ/плащане-guard/агенти/persistence
   hlb: require('./journeys/hlb'),
+  hlbx: require('./journeys/hlb-actions'),          // харесвания/класация/доклади/изображения/бан
   wnb: require('./journeys/wnb'),
+  wnbx: require('./journeys/wnb-actions'),          // потвърждения/доклади/резолюция/телефон/бан
   fbp: require('./journeys/fbp'),
+  fbpx: require('./journeys/fbp-actions'),          // публична карта/wanted/услуги-части/коректност
+  portalsx: require('./journeys/portals-extra'),    // плащания/модерация/админ триене/класация/услуги
   services: require('./journeys/services'),
   games: require('./journeys/games'),
   failover: require('./journeys/failover'),

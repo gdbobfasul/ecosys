@@ -100,15 +100,24 @@ router.post('/declare', requireLoginAPI, (req, res) => {
     }
 
     const fees = loadFees().monthly_fee;
-    const required = method === 'stripe' ? fees.USD
-        : method === 'btc' ? fees.BTC
-        : method === 'eth' ? fees.ETH
-        : fees.BNB;
-    log(`1 — нужно ${required}, дадено ${amt}`);
-
-    if (amt < required) {
-        log('изход 3 → 400 amount_too_low');
-        return res.status(400).json({ error: 'amount_too_low', required, provided: amt });
+    if (method === 'stripe') {
+        // Картово плащане: декларираната сума е в USD → сравняваме с месечната такса.
+        const required = Number(fees.USD);
+        log(`1 — нужно ${required} USD, дадено ${amt}`);
+        if (Number.isFinite(required) && amt < required) {
+            log('изход 3 → 400 amount_too_low');
+            return res.status(400).json({ error: 'amount_too_low', required, provided: amt });
+        }
+    } else {
+        // Крипто (btc/eth/bnb): сумата е в КРИПТО единици — не може да се сравни с фиат
+        // таксата без курс. (Преди тук required беше undefined, защото monthly_fee няма
+        // BTC/ETH/BNB ключове → `amt < undefined` е винаги false → ВСЯКА сума минаваше.)
+        // Затова искаме tx_reference (хешът на транзакцията) като проверимо доказателство.
+        if (!tx_reference || !String(tx_reference).trim()) {
+            log('изход 3 → 400 tx_reference_required');
+            return res.status(400).json({ error: 'tx_reference_required' });
+        }
+        log(`1 — крипто ${method}, сума ${amt}, tx=${String(tx_reference).slice(0, 16)}…`);
     }
 
     const month = currentMonth();

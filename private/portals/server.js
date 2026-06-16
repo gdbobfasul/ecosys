@@ -7,8 +7,8 @@
 //   GET  /api/portals/me
 //   GET  /api/portals/billing/fees | status
 //   POST /api/portals/billing/declare | admin-grant
-//   GET  /api/portals/games/list | leaderboard/:slug
-//   POST /api/portals/games/score
+//   GET  /api/portals/gms/list | leaderboard/:slug | ranking | progress/:slug
+//   POST /api/portals/gms/score
 //   GET  /api/portals/services/list
 //   POST /api/portals/services/ai-listing | scraper
 
@@ -31,7 +31,6 @@ debug.stage('env file:', path.join(__dirname, '..', 'configs', '.env'), fs.exist
 const { requirePortalAccess } = require('./middleware/access-control');
 const authRouter = require('./routes/auth');
 const billingRouter = require('./routes/billing');
-const gamesRouter = require('./routes/games');
 const servicesRouter = require('./routes/services');
 
 // Предпазители: граничен/зловреден вход (или fuzz) НЕ бива да сваля целия процес — иначе
@@ -105,8 +104,9 @@ app.use((req, res, next) => {
 // ── API routes ─────────────────────────────────────────────────
 app.use('/api/portals', authRouter);
 app.use('/api/portals/billing', billingRouter);
-app.use('/api/portals/games', gamesRouter);
 app.use('/api/portals/services', servicesRouter);
+// БЕЛЕЖКА: старият /api/portals/games (routes/games.js) е премахнат — беше дублиран и
+// неизползван; игрите вървят през /api/portals/gms (portal_games.js, с нива/прогрес/класация).
 // НОВО — 7-те услуги без AI (отделен файл portal_services.js)
 // ВАЖНО: монтира се под /api/portals/ (не /api/portal-services), защото
 // nginx има 'location /api/portals/' → 3002. Префикс без 's/' отива на chat (404).
