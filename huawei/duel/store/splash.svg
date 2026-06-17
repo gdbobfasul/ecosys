@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="38%" r="80%">
+      <stop offset="0%" stop-color="#0c1b3a"/>
+      <stop offset="100%" stop-color="#06060a"/>
+    </radialGradient>
+    <linearGradient id="blade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#cfe2ff"/>
+      <stop offset="100%" stop-color="#1f6feb"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="16" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#sky)"/>
+  <path d="M 320 980 L 760 540 L 793 573 L 353 1013 Z M 760 980 L 320 540 L 287 573 L 727 1013 Z" fill="url(#blade)" filter="url(#glow)"/>
+  <circle cx="540" cy="760" r="40" fill="#4d9aff" opacity="0.85"/>
+  <text x="540" y="1180" font-family="Georgia, serif" font-size="92"
+        font-weight="bold" fill="#cfe2ff" text-anchor="middle">ДУЕЛ НА РИНГА</text>
+  <text x="540" y="1250" font-family="system-ui, sans-serif" font-size="40"
+        fill="#4d9aff" text-anchor="middle">AppGallery Edition</text>
+</svg>

@@ -1,0 +1,69 @@
+{
+  "name": "selflearning-friend-desktop",
+  "productName": "Самообучаващ се приятел",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Десктоп клонинг (Windows .exe, Electron) на „Самообучаващ се приятел“ — независим клонинг със собствена локална памет на компютъра, отделна от телефона. Изцяло on-device, без акаунти/контакти/проследяване.",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "author": "DAI GROUP",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "electron": "electron .",
+    "start": "vite build && electron .",
+    "dist": "vite build && electron-builder --win",
+    "dist:dir": "vite build && electron-builder --win --dir",
+    "dist:portable": "vite build && electron-builder --win portable"
+  },
+  "dependencies": {
+    "@tensorflow-models/coco-ssd": "^2.2.3",
+    "@tensorflow-models/mobilenet": "^2.1.1",
+    "@tensorflow/tfjs": "^4.22.0",
+    "pdfjs-dist": "^4.10.38",
+    "playwright": "^1.49.1",
+    "ssh2": "^1.16.0",
+    "tesseract.js": "^5.1.1"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3",
+    "vite": "^5.4.8"
+  },
+  "build": {
+    "appId": "com.daigroup.selflearningfriend.desktop",
+    "productName": "Самообучаващ се приятел",
+    "directories": {
+      "output": "dist-exe"
+    },
+    "files": [
+      "electron/**/*",
+      "dist/**/*",
+      "node_modules/ssh2/**/*",
+      "node_modules/playwright/**/*",
+      "node_modules/playwright-core/**/*",
+      "node_modules/ssh2/node_modules/**/*"
+    ],
+    "asarUnpack": [
+      "node_modules/playwright/**/*",
+      "node_modules/playwright-core/**/*",
+      "node_modules/ssh2/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}"
+    }
+  }
+}

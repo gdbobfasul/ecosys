@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.monitorbot.huawei",
+  "appName": "Монитор-робот",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

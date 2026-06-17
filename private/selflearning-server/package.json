@@ -1,0 +1,14 @@
+{
+  "name": "kcy-selflearning-server",
+  "version": "1.0217",
+  "private": true,
+  "description": "Selflearning Friend — лек server-side relay: PENDING опашка („Слушай\" канал) + knowledge snapshot, namespace-нати по token. БЕЗ потребители/телефони/контакти. Express + better-sqlite3.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "*",
+    "express": "*"
+  }
+}

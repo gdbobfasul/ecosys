@@ -1,0 +1,39 @@
+NotificationReply — регистрация на плъгина
+==========================================
+
+Capacitor плъгин клас (за ръчна регистрация, ако трябва):
+    com.kcy.notificationreply.NotificationReplyPlugin
+
+JS име (registerPlugin):
+    NotificationReply
+
+NotificationListenerService:
+    com.kcy.notificationreply.KcyNotificationListener
+
+Целеви package имена:
+    com.whatsapp        (WhatsApp)
+    com.viber.voip      (Viber)
+    com.facebook.orca   (Facebook Messenger)
+
+КАК СЕ РЕГИСТРИРА (Capacitor 6):
+--------------------------------
+Capacitor 6 авто-открива @CapacitorPlugin класове, които са в пакета на приложението
+ИЛИ изрично регистрирани в MainActivity. install-into-android.sh добавя изрична
+регистрация в MainActivity.java за по-голяма сигурност:
+
+    import com.kcy.notificationreply.NotificationReplyPlugin;
+    ...
+    public class MainActivity extends BridgeActivity {
+      @Override
+      public void onCreate(Bundle savedInstanceState) {
+        registerPlugin(NotificationReplyPlugin.class);
+        super.onCreate(savedInstanceState);
+      }
+    }
+
+ФАЙЛОВЕ, които се копират в android/app/src/main/java/com/kcy/notificationreply/:
+    KcyNotificationListener.kt
+    NotificationReplyPlugin.kt
+
+МАНИФЕСТ:
+    Съдържанието на AndroidManifest.fragment.xml се вмъква вътре в <application>.

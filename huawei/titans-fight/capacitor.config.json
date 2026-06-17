@@ -1,0 +1,13 @@
+{
+  "appId": "com.kcy.titansfight.huawei",
+  "appName": "Titans Fight",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#05120c"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

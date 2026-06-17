@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
+      <stop offset="0%" stop-color="#241626"/>
+      <stop offset="100%" stop-color="#0c0a10"/>
+    </radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  
+    <ellipse cx="256" cy="353.5" rx="117" ry="36" fill="#000" opacity="0.3"/>
+    <path d="M 148 367 L 179.5 268
+             L 332.5 268 L 364 367 Z"
+          fill="#6a3a52"/>
+    <circle cx="256" cy="241" r="90" fill="#e8b894"/>
+    <ellipse cx="256" cy="200.5" rx="153" ry="94.5" fill="#ff7a3c"/>
+    <circle cx="256" cy="182.5" r="49.50000000000001" fill="#c59a3a"/>
+  <circle cx="110" cy="120" r="26" fill="#7d7468"/>
+          <circle cx="102.2" cy="112.2" r="9.1" fill="#fff" opacity="0.4"/>
+  <circle cx="410" cy="150" r="22" fill="#b5703a"/>
+          <circle cx="403.4" cy="143.4" r="7.699999999999999" fill="#fff" opacity="0.4"/>
+  <circle cx="120" cy="400" r="20" fill="#eaf4ff"/>
+          <circle cx="114" cy="394" r="7" fill="#fff" opacity="0.4"/>
+  <circle cx="400" cy="410" r="24" fill="#ff3b5b"/>
+          <circle cx="392.8" cy="402.8" r="8.399999999999999" fill="#fff" opacity="0.4"/>
+  <path d="M 150 90 L 200 130 L 168 132 L 178 165 L 150 90 Z" fill="#ff3b5b" opacity="0.9"/>
+</svg>

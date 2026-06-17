@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0172
+# Version: 1.0206
 ##############################################################################
 # KCY — Обнови ЕДНО приложение (самостоятелно):
 #   • базата данни (схема/настройка)
@@ -9,7 +9,7 @@
 # Всяко приложение е самостоятелно — пипа САМО своето. .env се чете оттам
 # (промени в .env идват с опция 2).
 #
-# Употреба:  sudo 30-update-app.sh <hlb|wnb|portals|chat|eco3>
+# Употреба:  sudo 30-update-app.sh <hlb|wnb|fbp|portals|chat|eco3>
 ##############################################################################
 set +e
 GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; RED=$'\033[0;31m'; NC=$'\033[0m'
@@ -50,6 +50,10 @@ case "$APP" in
     # WhereNoBiz: PostgreSQL база + рестарт kcy-wnb (старта попълва WNB админите).
     bash "$DIR/17-setup-wherenobiz-database.sh"
     ;;
+  fbp)
+    # Find Best Price: PostgreSQL база + рестарт kcy-fbp (старта попълва FBP админите).
+    bash "$DIR/16-setup-app-databases.sh" findbestprice
+    ;;
   portals)
     echo -e "${CYAN}Portals — попълвам админи/модератори от .env (portal_users), после рестарт:${NC}"
     fill_admins /var/www/kcy-ecosystem/private/portals kcy-eco3
@@ -65,7 +69,7 @@ case "$APP" in
     bash "$DIR/20-setup-eco3-database.sh"
     ;;
   *)
-    echo "Употреба: $0 <hlb|wnb|portals|chat|eco3>"
+    echo "Употреба: $0 <hlb|wnb|fbp|portals|chat|eco3>"
     exit 1
     ;;
 esac

@@ -1,0 +1,13 @@
+{
+  "appId": "com.kcy.fpshunter.rustore",
+  "appName": "FPS Hunter",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0b1018"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

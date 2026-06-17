@@ -1,0 +1,17 @@
+{
+  "appId": "com.kcy.businessfaqbot.huawei",
+  "appName": "Бизнес FAQ робот",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#d92b2b"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "appId": "com.kcy.selflearningfriend.huawei",
+  "appName": "Самообучаващ се приятел",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "BackgroundRunner": {
+      "label": "com.kcy.selflearningfriend.huawei.learn",
+      "src": "runners/learn-runner.js",
+      "event": "learnTick",
+      "repeat": true,
+      "interval": 120,
+      "autoStart": false
+    }
+  }
+}

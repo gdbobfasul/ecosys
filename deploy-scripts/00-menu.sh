@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0176
+# Version: 1.0215
 ##############################################################################
 # KCY Ecosystem — Start Menu
 # Един menu item = един реален скрипт. Параметрите се питат след избор.
@@ -258,6 +258,10 @@ show_menu() {
     item "55" "Deploy Find Best Price УСЛУГА (systemd+nginx) → сървър" \
         "Вдига kcy-fbp услугата (node :3012) + nginx /find-best-price/, /api/fbp/." \
         "Самостоятелно — не пипа другите. nginx маршрутът идва с опция 2."
+    item "38" "Deploy Selflearning Friend relay (systemd+nginx) → сървър" \
+        "Вдига kcy-selflearning услугата (node :3013) + nginx /api/selflearning/." \
+        "Канал „Слушай\" (queue) + knowledge snapshot, namespace по token. БЕЗ контакти/крипто." \
+        "Самостоятелно — не пипа другите. nginx маршрутът идва с опция 2."
 
     echo -e "${BOLD}${CYAN}━━━ ПО ПРИЛОЖЕНИЕ — обнови (база + админи/модератори от .env + рестарт) ━${NC}"
     echo ""
@@ -329,14 +333,24 @@ show_menu() {
         "Параметрични, без картинки (надеждно); маркира is_system."
     echo -e "  ${GRAY}(65-70 запазени за бъдещи FILL DATA задачи)${NC}"
 
-    echo -e "${BOLD}${GRAY}━━━ СВОБОДНИ НОМЕРА ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BOLD}${CYAN}━━━ МОБИЛНИ ПРИЛОЖЕНИЯ (RUStore / Huawei) — локално ━━━━━━━━━━━━━━━━${NC}"
     echo ""
-    item "38" "СВОБОДЕН"
-    item "38" "СВОБОДЕН"
-    item "39" "СВОБОДЕН"
-    item "41" "СВОБОДЕН"
-    item "42" "СВОБОДЕН"
+    item "56" "Инсталирай мобилна среда (Android) → ЛОКАЛНО" \
+        "JDK 17 + Android SDK + емулатор (headless) на ТАЗИ машина. Иска UAC (админ)." \
+        "Проверки на версии + дискове + избор диск/папка за SDK. (Android Studio IDE е по избор.)"
+    item "57" "Билд/компилирай мобилните апове (rustore/huawei)" \
+        "web bundle + APK (ако има Android SDK). Подаваш папка или избираш интерактивно." \
+        "Без Android среда → поне web билд (dist/). APK иска първо опция 56."
+    item "58" "Тест RUStore апове — консистентност + тест-робот" \
+        "Статични проверки + безглав браузър над всички /rustore апове." \
+        "Дали се билдват, дали стартират/'играят' + console грешки + скрийншоти."
+    item "59" "Тест Huawei апове — консистентност + тест-робот" \
+        "Статични проверки + безглав браузър над всички /huawei апове." \
+        "Дали се билдват, дали стартират/'играят' + console грешки + скрийншоти."
+    echo -e "  ${GRAY}(71-76 запазени за бъдещи мобилни задачи; 60-70 са за FILL DATA)${NC}"
 
+    echo -e "  ${GRAY}Свободни номера: 39   ·   запазени: 60-70 (FILL DATA), 71-76 (бъдещи мобилни)${NC}"
+    echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
 }
@@ -599,6 +613,31 @@ run_choice() {
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-fbp услугата е настроена на ${PICK_SRV}${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        38)
+            echo ""
+            echo -e "${BOLD}${CYAN}  DEPLOY Selflearning Friend relay (systemd+nginx) — на кой сървър?${NC}"
+            echo ""
+            if pick_target; then
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh"
+                echo ""
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                echo ""
+                echo "  → Резултат: вдига kcy-selflearning (node :3013) + nginx /api/selflearning/."
+                echo "    (nginx маршрутът се активира напълно след опция 2 — пълен деплой.)"
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-selflearning услугата е настроена на ${PICK_SRV}${NC}"
                 else
                     echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
                 fi
@@ -1058,6 +1097,28 @@ run_choice() {
               else echo "  Отказано. (Връщане: на живия → sudo ${RPATH} --revert)"; fi
               press_enter
             fi
+            ;;
+
+        # ── ЛОКАЛНА СРЕДА (мобилна, на тази машина) ──
+        56)
+            bash "$SCRIPT_DIR/install-mobile-env.sh"
+            press_enter
+            ;;
+        57)
+            bash "$SCRIPT_DIR/build-mobile-apps.sh"
+            press_enter
+            ;;
+        58)
+            bash "$SCRIPT_DIR/test-mobile-apps.sh" rustore
+            echo ""
+            bash "$SCRIPT_DIR/test-mobile-play.sh" rustore
+            press_enter
+            ;;
+        59)
+            bash "$SCRIPT_DIR/test-mobile-apps.sh" huawei
+            echo ""
+            bash "$SCRIPT_DIR/test-mobile-play.sh" huawei
+            press_enter
             ;;
 
         # ── DANGEROUS ──

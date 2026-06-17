@@ -1,0 +1,17 @@
+{
+  "appId": "com.kcy.babymonitor.huawei",
+  "appName": "Детегледачка",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#f0a35c"
+    }
+  }
+}

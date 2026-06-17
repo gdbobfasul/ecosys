@@ -1,0 +1,32 @@
+{
+  "name": "selflearning-friend-huawei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Самообучаващ се приятел — личен бот, заключен за 1 потребител. Първо пита „Как да се нарека?“, после на всяко отваряне пита „Как се казвам?“ и допуска само собственика. Учи се локално (факти, предпочитания, Q&A, корекции). Изцяло on-device, без акаунти/контакти/проследяване. По избор безплатен keyless AI (Pollinations) с graceful fallback (Huawei build).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "gen:assets": "node tools/gen-assets.mjs",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor-community/speech-recognition": "^6.0.0",
+    "@capacitor-community/text-to-speech": "^5.0.0",
+    "@capacitor/device": "^6.0.2",
+    "@capacitor/preferences": "^6.0.2",
+    "@tensorflow-models/coco-ssd": "^2.2.3",
+    "@tensorflow-models/mobilenet": "^2.1.1",
+    "@tensorflow/tfjs": "^4.22.0",
+    "pdfjs-dist": "^4.10.38",
+    "tesseract.js": "^5.1.1"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1",
+    "vite": "^5.4.8"
+  }
+}

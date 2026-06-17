@@ -1,0 +1,24 @@
+{
+  "name": "autoreply-bot-rustore",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Auto-Reply Bot - rent/activate an on-device robot that auto-replies to messages by rules, inside a sandboxed in-app inbox (RUStore build). Fully self-contained, no network, no contacts, no system SMS.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "gen:assets": "node tools/gen-assets.mjs",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/local-notifications": "^6.1.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1",
+    "vite": "^5.4.8"
+  }
+}

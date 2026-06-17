@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0e3322"/>
+      <stop offset="100%" stop-color="#05120c"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="55%">
+      <stop offset="0%" stop-color="#2ecf8f" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#2ecf8f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#bg)"/>
+  <circle cx="540" cy="806.4" r="594" fill="url(#glow)"/>
+  <text x="540" y="883.2" text-anchor="middle" font-family="system-ui,Arial"
+        font-size="130" font-weight="800" fill="#2ecf8f">TITANS</text>
+  <text x="540" y="1033.2" text-anchor="middle" font-family="system-ui,Arial"
+        font-size="130" font-weight="800" fill="#ffd24a">FIGHT</text>
+  <text x="540" y="1766.4" text-anchor="middle" font-family="system-ui,Arial"
+        font-size="44" fill="#cfcfd8">AppGallery Edition</text>
+</svg>

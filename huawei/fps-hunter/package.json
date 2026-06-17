@@ -1,0 +1,25 @@
+{
+  "name": "fps-hunter-huawei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FPS Hunter - 3D first-person shooter (Huawei AppGallery build). Self-contained Three.js + Capacitor game. 100 procedural levels, local SQLite leaderboard. No GMS/HMS.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android",
+    "apk:debug": "echo 'See README.md - requires Android SDK/JDK (NOT installed on this machine)'"
+  },
+  "dependencies": {
+    "sql.js": "^1.10.3",
+    "three": "^0.160.1"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1",
+    "vite": "^5.4.8"
+  }
+}

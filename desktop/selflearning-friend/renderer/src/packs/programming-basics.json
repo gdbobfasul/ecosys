@@ -1,0 +1,180 @@
+{
+  "name": "Основи на програмирането",
+  "topic": "programming",
+  "entries": [
+    {
+      "type": "qa",
+      "key": "какво е променлива в програмирането",
+      "value": "Променливата е именувано място в паметта, в което пазиш стойност. В JavaScript: `let x = 5;` (може да се променя), `const PI = 3.14;` (не се променя), а `var` е стар начин — избягвай го. Името описва какво пази стойността.",
+      "keywords": ["променлива", "variable", "let", "const", "var"]
+    },
+    {
+      "type": "qa",
+      "key": "какви са типовете данни",
+      "value": "Основни типове: число (number, напр. 42, 3.14), низ/текст (string, \"здравей\"), булев (boolean, true/false), null (нарочна празнота), undefined (още няма стойност). Съставни: масив ([1,2,3]) и обект ({име:\"Иван\"}).",
+      "keywords": ["типове", "types", "number", "string", "boolean", "данни"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е функция",
+      "value": "Функцията е назован блок код, който върши една задача и може да се извика многократно. Пример (JavaScript): `function sum(a, b) { return a + b; }` — викаш я с `sum(2, 3)` и връща 5. Стрелкова форма: `const sum = (a, b) => a + b;`.",
+      "keywords": ["функция", "function", "return", "arrow", "стрелкова"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е параметър и аргумент",
+      "value": "Параметърът е името в дефиницията на функцията (`function f(x)` — x е параметър). Аргументът е реалната стойност, която подаваш при викане (`f(5)` — 5 е аргумент). Функцията връща резултат с `return`.",
+      "keywords": ["параметър", "аргумент", "parameter", "argument"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е условие if else",
+      "value": "Условието изпълнява код само ако нещо е вярно. Пример: `if (age >= 18) { console.log('пълнолетен'); } else { console.log('непълнолетен'); }`. Може и `else if` за повече клонове. Сравнения: `===` (равно), `!==`, `<`, `>`, `&&` (и), `||` (или).",
+      "keywords": ["условие", "if", "else", "conditional", "сравнение"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е цикъл for",
+      "value": "Цикълът повтаря код. `for (let i = 0; i < 5; i++) { console.log(i); }` отпечатва 0,1,2,3,4. Има начало (i=0), условие (i<5) и стъпка (i++). Внимавай за безкраен цикъл, ако условието никога не става невярно.",
+      "keywords": ["цикъл", "for", "loop", "повторение"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е цикъл while",
+      "value": "`while` повтаря, докато условието е вярно: `let i = 0; while (i < 3) { console.log(i); i++; }`. Използва се, когато не знаеш предварително колко пъти ще се завърти. Винаги променяй нещо вътре, за да спре.",
+      "keywords": ["while", "цикъл", "loop"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е масив",
+      "value": "Масивът е подреден списък от стойности с индекс от 0. `const a = [10, 20, 30];` — `a[0]` е 10, `a.length` е 3. Полезни методи: `push` (добави в края), `pop` (махни последния), `map` (преобразувай), `filter` (отсей), `forEach` (обходи).",
+      "keywords": ["масив", "array", "list", "push", "map", "filter"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е обект",
+      "value": "Обектът пази двойки ключ-стойност: `const user = { name: 'Иван', age: 30 };`. Достъп: `user.name` или `user['name']`. Добавяш с `user.email = 'a@b.bg'`. Обектите моделират неща от реалния свят (потребител, продукт).",
+      "keywords": ["обект", "object", "ключ", "стойност", "property"]
+    },
+    {
+      "type": "qa",
+      "key": "каква е разликата между map и filter",
+      "value": "`map` връща нов масив със същата дължина, преобразувайки всеки елемент: `[1,2,3].map(x => x*2)` дава `[2,4,6]`. `filter` връща нов масив само с елементите, които минават теста: `[1,2,3,4].filter(x => x%2===0)` дава `[2,4]`.",
+      "keywords": ["map", "filter", "масив", "методи"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е async await",
+      "value": "Асинхронният код не блокира програмата, докато чака (мрежа, файл). `async function f() { const r = await fetch(url); const data = await r.json(); return data; }`. `await` чака Promise да приключи. Грешки хващаш с `try { ... } catch (e) { ... }`.",
+      "keywords": ["async", "await", "promise", "асинхронно", "fetch"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е promise",
+      "value": "Promise е обект за бъдеща стойност, която още не е готова. Има три състояния: pending (чака), fulfilled (успех), rejected (грешка). Използваш `.then(res => ...)` и `.catch(err => ...)`, или по-четимо — `async/await`.",
+      "keywords": ["promise", "then", "catch", "асинхронно"]
+    },
+    {
+      "type": "qa",
+      "key": "как се обработват грешки try catch",
+      "value": "Обвиваш рисков код в `try`, а грешката хващаш в `catch`: `try { JSON.parse(text); } catch (e) { console.log('грешен JSON', e.message); }`. По избор `finally { ... }` се изпълнява винаги. Хвърляш собствена грешка с `throw new Error('съобщение')`.",
+      "keywords": ["грешки", "try", "catch", "throw", "error", "finally"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е JSON",
+      "value": "JSON (JavaScript Object Notation) е текстов формат за данни: `{\"name\":\"Иван\",\"age\":30}`. Превръщаш обект в текст с `JSON.stringify(obj)`, а текст обратно в обект с `JSON.parse(text)`. Използва се при API и за запис на конфигурации.",
+      "keywords": ["json", "stringify", "parse", "формат", "данни"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е рекурсия",
+      "value": "Рекурсията е функция, която вика сама себе си, докато стигне базов случай. Пример факториел: `function f(n){ return n <= 1 ? 1 : n * f(n-1); }`. Винаги трябва базов случай, иначе ще се върти безкрайно (stack overflow).",
+      "keywords": ["рекурсия", "recursion", "факториел"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е област на видимост scope",
+      "value": "Областта на видимост (scope) определя къде дадена променлива е достъпна. `let`/`const` са блокови (видими само между {}). Функция вижда външни променливи (closure), но външният код не вижда вътрешните. Глобалните променливи са видими навсякъде — ползвай ги пестеливо.",
+      "keywords": ["scope", "видимост", "closure", "област"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е node.js",
+      "value": "Node.js е среда за изпълнение на JavaScript извън браузъра — на сървъра или в терминала. Пускаш файл с `node app.js`. Има достъп до файлове, мрежа и операционна система. Базира се на V8 двигателя (същия като в Chrome).",
+      "keywords": ["node", "nodejs", "node.js", "сървър", "javascript"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е модул в node",
+      "value": "Модулът е файл, който изнася (export) код за други файлове. ES модули: `export function f(){}` и `import { f } from './file.js'`. CommonJS (стар стил): `module.exports = f;` и `const f = require('./file')`. Така разделяш програмата на части.",
+      "keywords": ["модул", "module", "import", "export", "require"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е npm",
+      "value": "npm е пакетният мениджър на Node. `npm init` създава package.json; `npm install express` сваля пакет и го записва в dependencies; `npm install` сваля всичко от package.json; `npm run build` пуска скрипт. Пакетите стоят в node_modules.",
+      "keywords": ["npm", "install", "package.json", "пакет", "dependencies"]
+    },
+    {
+      "type": "qa",
+      "key": "как се чете файл в node",
+      "value": "С модула `fs`. Асинхронно (препоръчително): `import { readFile } from 'fs/promises'; const text = await readFile('data.txt', 'utf8');`. Синхронно: `import { readFileSync } from 'fs'; const text = readFileSync('data.txt', 'utf8');`. Запис: `writeFile('out.txt', text)`.",
+      "keywords": ["fs", "файл", "readfile", "writefile", "node"]
+    },
+    {
+      "type": "qa",
+      "key": "как се прави http сървър в node",
+      "value": "С вградения модул `http`: `import http from 'http'; const server = http.createServer((req, res) => { res.writeHead(200, {'Content-Type':'text/plain'}); res.end('Здравей'); }); server.listen(3000);`. После отваряш http://localhost:3000. За по-сложно ползвай Express.",
+      "keywords": ["http", "сървър", "server", "createserver", "listen", "node"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е express",
+      "value": "Express е популярна лека рамка за уеб сървъри в Node. Пример: `import express from 'express'; const app = express(); app.get('/', (req, res) => res.send('Здравей')); app.listen(3000);`. Дава лесни маршрути (routes), middleware и обработка на заявки.",
+      "keywords": ["express", "сървър", "route", "маршрут", "node"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е API",
+      "value": "API (Application Programming Interface) е договор, по който една програма говори с друга. При уеб най-често е REST: правиш HTTP заявка (GET за четене, POST за създаване, PUT за промяна, DELETE за триене) към URL и получаваш отговор, често в JSON.",
+      "keywords": ["api", "rest", "http", "get", "post"]
+    },
+    {
+      "type": "qa",
+      "key": "каква е разликата между javascript и typescript",
+      "value": "TypeScript е JavaScript с типове. Пишеш `function sum(a: number, b: number): number { return a + b; }` и компилаторът хваща грешки преди да пуснеш кода. TypeScript се компилира до обикновен JavaScript. Дава по-сигурен код и по-добра помощ от редактора.",
+      "keywords": ["typescript", "javascript", "типове", "ts", "js"]
+    },
+    {
+      "type": "qa",
+      "key": "основи на python",
+      "value": "Python е четим език с отстъпи вместо скоби. Променлива: `x = 5`. Функция: `def sum(a, b): return a + b`. Условие: `if x > 0: print('положително')`. Цикъл: `for i in range(5): print(i)`. Списък: `[1, 2, 3]`, речник: `{'име': 'Иван'}`. Пускаш с `python file.py`.",
+      "keywords": ["python", "def", "range", "print", "основи"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е git",
+      "value": "Git е система за контрол на версиите — пази историята на кода. Основни команди: `git init` (нов репозитори), `git add .` (подготви промени), `git commit -m 'съобщение'` (запиши), `git push` (качи на сървъра), `git pull` (свали промени), `git status` (състояние).",
+      "keywords": ["git", "commit", "push", "pull", "версии"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е алгоритъм",
+      "value": "Алгоритъмът е стъпка по стъпка рецепта за решаване на задача. Добрият алгоритъм е верен и ефективен. Сложността се мери с Big-O: O(1) е постоянна, O(n) расте линейно с данните, O(n²) бавно при много данни. Целиш по-малък ред на растеж.",
+      "keywords": ["алгоритъм", "algorithm", "big-o", "сложност"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е дебъгване",
+      "value": "Дебъгването е намиране и поправяне на грешки. Похвати: чети съобщението за грешка изцяло, печатай междинни стойности (`console.log`), стесни проблема до най-малкия случай, проверявай предположенията си едно по едно. Често грешката е там, където си най-сигурен, че не е.",
+      "keywords": ["дебъг", "debug", "грешки", "console.log", "бъг"]
+    },
+    {
+      "type": "qa",
+      "key": "какво е чист код",
+      "value": "Чистият код е лесен за четене и промяна: ясни имена (`userCount` вместо `n`), малки функции с една отговорност, без повторение (DRY), коментирай защо, не какво. Кодът се чете много по-често, отколкото се пише — пиши за човека, който ще го поддържа.",
+      "keywords": ["чист код", "clean code", "имена", "dry", "рефакторинг"]
+    }
+  ]
+}

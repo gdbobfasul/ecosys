@@ -1,0 +1,23 @@
+{
+  "name": "dodge-master-huawei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dodge Master - top-down dodge/survival game (Huawei AppGallery build). Self-contained Phaser 3 + Capacitor game.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "dependencies": {
+    "phaser": "^3.80.1"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1",
+    "vite": "^5.4.8"
+  }
+}

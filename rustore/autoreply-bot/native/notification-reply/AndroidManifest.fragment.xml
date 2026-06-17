@@ -1,0 +1,20 @@
+<!--
+  NotificationReply — фрагмент за AndroidManifest.xml
+
+  Вмъкни СЪДЪРЖАНИЕТО на <service> елемента ВЪТРЕ в <application>...</application>
+  на android/app/src/main/AndroidManifest.xml (install-into-android.sh го прави автоматично).
+
+  Не са нужни допълнителни <uses-permission> декларации: достъпът се дава от потребителя
+  ръчно през „Notification access" в системните настройки. Разрешението
+  BIND_NOTIFICATION_LISTENER_SERVICE се ИЗИСКВА от услугата чрез android:permission по-долу
+  (то е system|signature и се enforce-ва от системата за тоя intent-filter).
+-->
+<service
+    android:name="com.kcy.notificationreply.KcyNotificationListener"
+    android:label="@string/app_name"
+    android:exported="false"
+    android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+    <intent-filter>
+        <action android:name="android.service.notification.NotificationListenerService" />
+    </intent-filter>
+</service>

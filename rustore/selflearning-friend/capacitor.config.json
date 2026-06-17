@@ -1,0 +1,21 @@
+{
+  "appId": "com.kcy.selflearningfriend.rustore",
+  "appName": "Самообучаващ се приятел",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "BackgroundRunner": {
+      "label": "com.kcy.selflearningfriend.rustore.learn",
+      "src": "runners/learn-runner.js",
+      "event": "learnTick",
+      "repeat": true,
+      "interval": 120,
+      "autoStart": false
+    }
+  }
+}

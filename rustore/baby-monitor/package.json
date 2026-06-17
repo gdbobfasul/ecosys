@@ -1,0 +1,27 @@
+{
+  "name": "baby-monitor-rustore",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Детегледачка — наеми робот, който пази спящото/играещото дете през камерата на телефона. Засича движение (спи/размърда се/събуди се), втори човек в стаята (TF.js coco-ssd), излизане от кадър. Локални известия + звук + дневник със снимка. Изцяло on-device/безплатно; единствена мрежа = по избор relay/друга камера + безплатни TF.js тегла. БЕЗ IAP/GMS/HMS/Firebase, БЕЗ контакти/проследяване. ВАЖНО: това НЕ е сертифицирано устройство за безопасност. (RUStore build).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "gen:assets": "node tools/gen-assets.mjs",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/local-notifications": "^6.0.0",
+    "@capacitor/preferences": "^6.0.2",
+    "@tensorflow-models/coco-ssd": "^2.2.3",
+    "@tensorflow/tfjs": "^4.22.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1",
+    "vite": "^5.4.8"
+  }
+}

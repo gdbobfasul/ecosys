@@ -1,0 +1,11 @@
+{
+  "appId": "com.kcy.planeshooter.huawei",
+  "appName": "Plane Shooter",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

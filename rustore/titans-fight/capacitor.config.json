@@ -1,0 +1,13 @@
+{
+  "appId": "com.kcy.titansfight.rustore",
+  "appName": "Titans Fight",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0a0612"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

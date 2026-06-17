@@ -123,3 +123,19 @@ private/token-protector/node_modules/
 
 # обща node_modules за роботите (token-creator/protector/robot) — не в git
 node_modules2/
+
+# Мобилни апове (rustore/huawei) — БИНАРНИ build артефакти, не в git.
+# (node_modules/ dist/ android/ ios/ вече са покрити глобално по-горе — пази се само сорсът.)
+*.apk
+*.aab
+*.keystore
+*.jks
+# /apk — генерираните инсталируеми APK за телефона; пази се само обяснението
+/apk/*
+!/apk/README.md
+# тест-робот скрийншоти (опции 58/59)
+deploy-scripts/play-reports/
+# Тежки видео/медийни активи, вендорнати в мобилните апове (напр. DUEL ~180MB/ап) —
+# локални, бъндълват се при билд (влизат в APK), НЕ в git (като public/assets/animations/)
+rustore/**/assets/animations/
+huawei/**/assets/animations/

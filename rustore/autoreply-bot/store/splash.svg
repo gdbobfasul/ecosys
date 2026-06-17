@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#13203f"/>
+      <stop offset="100%" stop-color="#0b1020"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#sky)"/>
+  
+    <rect x="370" y="624" width="340" height="272" rx="59.49999999999999" fill="#3a7afe"/>
+    <circle cx="472" cy="751.5" r="37.4" fill="#06122b"/>
+    <circle cx="608" cy="751.5" r="37.4" fill="#06122b"/>
+    <rect x="463.5" y="819.5" width="153" height="27.2" rx="13.6" fill="#06122b"/>
+    <line x1="540" y1="624" x2="540" y2="547.5" stroke="#6aa6ff" stroke-width="20.4"/>
+    <circle cx="540" cy="539" r="27.2" fill="#3ad29f"/>
+  
+    <rect x="390" y="990" width="300" height="180" rx="45" fill="#1d2742"/>
+    <path d="M 495 1162.5 L 532.5 1222.5 L 570 1162.5 Z" fill="#1d2742"/>
+    <circle cx="472.5" cy="1080" r="18" fill="#6aa6ff"/>
+    <circle cx="540" cy="1080" r="18" fill="#6aa6ff"/>
+    <circle cx="607.5" cy="1080" r="18" fill="#6aa6ff"/>
+  <text x="540" y="1420" font-family="system-ui, sans-serif" font-size="84"
+        font-weight="bold" fill="#6aa6ff" text-anchor="middle">Auto-Reply Bot</text>
+  <text x="540" y="1485" font-family="system-ui, sans-serif" font-size="38"
+        fill="#3ad29f" text-anchor="middle">RUStore Edition</text>
+</svg>

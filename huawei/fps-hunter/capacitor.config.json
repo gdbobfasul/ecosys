@@ -1,0 +1,13 @@
+{
+  "appId": "com.kcy.fpshunter.huawei",
+  "appName": "FPS Hunter",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#08120c"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

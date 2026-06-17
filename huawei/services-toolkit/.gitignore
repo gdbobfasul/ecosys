@@ -1,0 +1,7 @@
+node_modules/
+dist/
+android/
+ios/
+assets/*.png
+.DS_Store
+*.log

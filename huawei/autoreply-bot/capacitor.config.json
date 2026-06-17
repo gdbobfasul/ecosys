@@ -1,0 +1,17 @@
+{
+  "appId": "com.kcy.autoreplybot.huawei",
+  "appName": "Auto-Reply Bot",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#16b364"
+    }
+  }
+}

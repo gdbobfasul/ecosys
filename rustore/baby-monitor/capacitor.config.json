@@ -1,0 +1,17 @@
+{
+  "appId": "com.kcy.babymonitor.rustore",
+  "appName": "Детегледачка",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#5cc8b0"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "appId": "com.kcy.dodgemaster.huawei",
+  "appName": "Dodge Master",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

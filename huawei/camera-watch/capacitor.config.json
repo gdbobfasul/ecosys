@@ -1,0 +1,17 @@
+{
+  "appId": "com.kcy.camerawatch.huawei",
+  "appName": "Камера-страж",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#c83a7a"
+    }
+  }
+}

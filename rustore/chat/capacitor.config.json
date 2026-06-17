@@ -1,0 +1,20 @@
+{
+  "appId": "com.kcy.chat.rustore",
+  "appName": "KCY Chat",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "url": "https://my.girl.place",
+    "cleartext": false,
+    "allowNavigation": [
+      "my.girl.place",
+      "kaji.kak.si",
+      "take.offbitch.com"
+    ]
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0d1117"
+  }
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1242" height="2436" viewBox="0 0 1242 2436">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#0a84ff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0c0f14"/>
+    </radialGradient>
+  </defs>
+  <rect width="1242" height="2436" fill="#0c0f14"/>
+  <rect width="1242" height="2436" fill="url(#g)"/>
+  <g transform="translate(621,1100)">
+    <circle r="280" fill="none" stroke="#5ac8fa" stroke-opacity="0.3" stroke-width="16"/>
+    <circle r="180" fill="none" stroke="#5ac8fa" stroke-opacity="0.45" stroke-width="16"/>
+    <circle r="40" fill="#0a84ff"/>
+  </g>
+  <text x="621" y="1480" text-anchor="middle" font-family="system-ui,Arial" font-size="84"
+        font-weight="800" fill="#5ac8fa">Монитор-робот</text>
+  <text x="621" y="1560" text-anchor="middle" font-family="system-ui,Arial" font-size="40"
+        fill="#9aa6b5">следи източник · известява локално</text>
+</svg>

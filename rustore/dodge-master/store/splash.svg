@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a2412"/>
+      <stop offset="100%" stop-color="#0a0d08"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#sky)"/>
+  
+    <ellipse cx="540" cy="892.5" rx="195" ry="60" fill="#000" opacity="0.3"/>
+    <path d="M 360 915 L 412.5 750
+             L 667.5 750 L 720 915 Z"
+          fill="#7a4a2b"/>
+    <circle cx="540" cy="705" r="150" fill="#e8b894"/>
+    <ellipse cx="540" cy="637.5" rx="255" ry="157.5" fill="#e0b34a"/>
+    <circle cx="540" cy="607.5" r="82.5" fill="#c59a3a"/>
+  <circle cx="220" cy="380" r="40" fill="#7d7468"/>
+          <circle cx="208" cy="368" r="14" fill="#fff" opacity="0.4"/>
+  <circle cx="860" cy="420" r="34" fill="#b5703a"/>
+          <circle cx="849.8" cy="409.8" r="11.899999999999999" fill="#fff" opacity="0.4"/>
+  <circle cx="260" cy="1020" r="32" fill="#eaf4ff"/>
+          <circle cx="250.4" cy="1010.4" r="11.2" fill="#fff" opacity="0.4"/>
+  <circle cx="820" cy="1000" r="38" fill="#d0432b"/>
+          <circle cx="808.6" cy="988.6" r="13.299999999999999" fill="#fff" opacity="0.4"/>
+  <text x="540" y="1320" font-family="system-ui, sans-serif" font-size="96"
+        font-weight="bold" fill="#e0b34a" text-anchor="middle">DODGE MASTER</text>
+  <text x="540" y="1390" font-family="system-ui, sans-serif" font-size="40"
+        fill="#6fae3a" text-anchor="middle">RUStore Edition</text>
+</svg>

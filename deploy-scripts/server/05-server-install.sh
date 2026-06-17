@@ -156,7 +156,7 @@ ANYTHING_INSTALLED=false
 # ── Services ──
 echo ""
 echo -e "  ${CYAN}Сървиси:${NC}"
-for svc in kcy-chat kcy-eco3; do
+for svc in kcy-chat kcy-eco3 kcy-portals; do
     if systemctl is-active --quiet $svc 2>/dev/null; then
         echo -e "    ${GREEN}●${NC} $svc — ${GREEN}работи${NC}"
         ANYTHING_INSTALLED=true
@@ -1580,23 +1580,9 @@ else
     echo -e "  ${YELLOW}! kcy-portals не тръгна — journalctl -u kcy-portals -n 20${NC}"
 fi
 
-# ── HLB/WNB/FBP услуги — рестарт САМО ако вече съществуват ──
-# Тези услуги се СЪЗДАВАТ от отделни сървърни скриптове (опция 2/менюто), не тук. Но rsync
-# в стъпка 6 обновява кода им на диска, а процесът продължава да върви със СТАРИЯ код докато
-# не се рестартира (научено 2026-06-17: fbp даваше 500 след „успешен" install, защото
-# kcy-fbp не беше рестартиран). Затова тук само презареждаме кода им, ако услугата я има —
-# не ги enable-ваме и не ги създаваме (изолацията си остава в техните скриптове).
-for APP_SVC in kcy-hlb kcy-wnb kcy-fbp; do
-    if systemctl list-unit-files "${APP_SVC}.service" 2>/dev/null | grep -q "^${APP_SVC}.service"; then
-        echo -e "  ${YELLOW}Рестарт на ${APP_SVC} (нов код от staging)...${NC}"
-        systemctl restart "${APP_SVC}.service" 2>/dev/null || true
-        if systemctl is-active --quiet "${APP_SVC}.service"; then
-            echo -e "  ${GREEN}✓ ${APP_SVC} работи${NC}"
-        else
-            echo -e "  ${YELLOW}! ${APP_SVC} не тръгна — journalctl -u ${APP_SVC} -n 20${NC}"
-        fi
-    fi
-done
+# Забележка: kcy-fbp/kcy-hlb/kcy-wnb НЕ се пипат тук — те са на отделните скриптове
+# (18/19/21 + 16/17), които при опция 2 се пускат като самостоятелни стъпки след 05 и
+# сами рестартират услугите си. 05 е за ядрото chat/eco3/portals.
 
 # ── SSL ──
 if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then

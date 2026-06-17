@@ -1,0 +1,17 @@
+{
+  "appId": "com.kcy.businessfaqbot.rustore",
+  "appName": "Бизнес FAQ робот",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#7b5cff"
+    }
+  }
+}

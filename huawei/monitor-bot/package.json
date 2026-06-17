@@ -1,0 +1,26 @@
+{
+  "name": "monitor-bot-huawei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Монитор-робот (Source-Watch Bot) — самостоятелно мобилно приложение, което наема робот да следи източник (RSS/Atom или публично JSON API) за нови записи или ключови думи и известява локално (Huawei издание).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "gen:assets": "node tools/gen-assets.mjs",
+    "cap:add": "cap add android",
+    "cap:sync": "cap sync",
+    "cap:open": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.2.1",
+    "@capacitor/local-notifications": "^6.0.1",
+    "@capacitor/preferences": "^6.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "vite": "^5.4.10"
+  }
+}
