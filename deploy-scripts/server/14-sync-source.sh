@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0171
+# Version: 1.0206
 ##############################################################################
 # KCY — Sync ONLY сорс код (без assets, без данни/uploads/.env/node_modules).
 # Разархивира подадения архив В STAGING (както прави Deploy), после прави
@@ -115,7 +115,7 @@ fi
 
 # рестарт на node сървисите (nginx НЕ се пипа)
 echo -e "${YELLOW}Рестарт на node сървисите...${NC}"
-for svc in kcy-chat kcy-eco3 kcy-portals kcy-hlb kcy-wnb kcy-diag; do
+for svc in kcy-chat kcy-eco3 kcy-portals kcy-hlb kcy-wnb kcy-fbp kcy-diag; do
     if systemctl restart "$svc" 2>/dev/null; then
         echo -e "  ${GREEN}OK ${svc} рестартиран${NC}"
     else
@@ -142,6 +142,11 @@ seed_js "$PD/eco-3"           kcy-eco3 "eco-3"
 seed_db "$PD/House-Look-Book" kcy-eco3 "hlb"
 seed_db "$PD/WhereNoBiz"      kcy-eco3 "wnb"
 seed_db "$PD/find-best-price" kcy-eco3 "fbp"
+
+# Tailscale health-check (ADVISORY — никога не чупи деплоя). Проверява на ВСЕКИ
+# sync дали failover линкът е жив (инсталиран + свързан + IP).
+TS_CHECK="$PROJECT_DIR/deploy-scripts/server/tailscale-check.sh"
+[ -f "$TS_CHECK" ] && bash "$TS_CHECK" || true
 
 echo ""
 echo -e "${GREEN}OK Сорсът обновен (overlay). БЕЗ npm install, БЕЗ реконфигурация.${NC}"

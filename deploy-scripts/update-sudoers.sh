@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0094
+# Version: 1.0204
 ##############################################################################
 # KCY — Приложи/обнови sudoers whitelist на сървъра.
 # Пита кой сървър → изпълнява 03-kcy-admin-sudo.sh (вече инсталиран от Deploy).
@@ -57,9 +57,9 @@ echo ""
 TARN="kcy-ds-$(date +%Y%m%d-%H%M%S).tar.gz"
 TAR="${HOME}/${TARN}"
 tar -czf "$TAR" deploy-scripts 2>/dev/null
-ssh -o ConnectTimeout=15 -p ${PORT} "${USER}@${SERVER}" "mkdir -p ${STAGING}" 2>/dev/null
-scp -o ConnectTimeout=15 -P ${PORT} -q "$TAR" "${USER}@${SERVER}:${STAGING}/${TARN}"
-ssh -t -o ConnectTimeout=15 -p ${PORT} "${USER}@${SERVER}" "
+ssh -o ConnectTimeout=90 -p ${PORT} "${USER}@${SERVER}" "mkdir -p ${STAGING}" 2>/dev/null
+scp -o ConnectTimeout=90 -P ${PORT} -q "$TAR" "${USER}@${SERVER}:${STAGING}/${TARN}"
+ssh -t -o ConnectTimeout=90 -p ${PORT} "${USER}@${SERVER}" "
     set -e
     cd ${STAGING}
     tar -xzf '${TARN}' deploy-scripts 2>/dev/null || tar -xzf '${TARN}'

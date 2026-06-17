@@ -1,4 +1,4 @@
-// Version: 1.0193
+// Version: 1.0202
 // Find Best Price — обекти (бизнеси) на потребителя.
 // За да въвежда цени, човек ПЪРВО дефинира обект: тип + държава/град/село/район/точна локация/име.
 
@@ -49,7 +49,11 @@ router.get('/:id', async (req, res, next) => {
   try {
     const log = debug.scoped(req, 'GET /business/:id');
     log('старт');
-    const row = await one('SELECT id, btype, name, country, city, village, district, location_exact FROM businesses WHERE id = $1', [req.params.id]);
+    // PG колоната id е integer — нечислов/препълващ id би хвърлил "invalid input syntax
+    // for integer" (500). Валидираме рано → чист 404 (както при липсващ обект).
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0 || id > 2147483647) return res.status(404).json({ error: 'not_found' });
+    const row = await one('SELECT id, btype, name, country, city, village, district, location_exact FROM businesses WHERE id = $1', [id]);
     if (!row) return res.status(404).json({ error: 'not_found' });
     log('край → 200');
     res.json({ business: row });

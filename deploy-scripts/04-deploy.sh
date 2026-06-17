@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0173
+# Version: 1.0204
 ##############################################################################
 # KCY Ecosystem - Deploy Script (Client-side)
 #
@@ -240,8 +240,9 @@ detect_ssh_port() {
     local user="$2"
     local configured_port="$3"
 
-    # Тествай конфигурирания порт първо чрез прост TCP test (bypass-ва SSH auth)
-    if timeout 3 bash -c "exec 3<>/dev/tcp/${server}/${configured_port}" 2>/dev/null; then
+    # Тествай конфигурирания порт първо чрез прост TCP test (bypass-ва SSH auth).
+    # timeout 8 (не 3): на бавен/мигащ международен път handshake-ът може да трае >3s.
+    if timeout 8 bash -c "exec 3<>/dev/tcp/${server}/${configured_port}" 2>/dev/null; then
         echo "$configured_port"
         return 0
     fi
@@ -261,7 +262,7 @@ detect_ssh_port() {
         [[ " $tried " == *" $p "* ]] && continue
         tried="$tried $p"
 
-        if timeout 3 bash -c "exec 3<>/dev/tcp/${server}/${p}" 2>/dev/null; then
+        if timeout 8 bash -c "exec 3<>/dev/tcp/${server}/${p}" 2>/dev/null; then
             echo "$p"
             return 0
         fi
@@ -278,12 +279,14 @@ else
     DETECTED_PORT=$(detect_ssh_port "$SERVER" "$USER" "$PORT")
 
     if [ -z "$DETECTED_PORT" ]; then
-        log "  ${RED}✗ Нито един порт не работи. Опитах: ${PORT}, 22, 2222${NC}"
-        log "  ${YELLOW}Проверки:${NC}"
-        log "    • Сървърът включен ли е?           ping ${SERVER}"
-        log "    • SSH ключът работи ли?            ssh -p ${PORT} ${USER}@${SERVER}"
-        log "    • Правилен ли е USER (${USER})?"
-        die "Не мога да открия работещ SSH порт"
+        # ВАЖНО: TCP-пробата (/dev/tcp) е НЕНАДЕЖДНА в Git Bash на Windows и на бавни/мигащи
+        # пътища. ДОСЕГА тук имаше `die` → затова опция 2 НИКОГА не тръгваше (а 3 и 5 — винаги,
+        # защото те не спират на тази проба). НЕ спираме деплоя: падаме обратно на конфигурирания
+        # порт и оставяме истинският ssh (ConnectTimeout=90 по-долу) да е арбитърът — точно както
+        # прави опция 5. Ако порт-чекът е лъжлив, ssh ще мине; ако наистина е долу, ssh ще даде
+        # ясна грешка след това.
+        log "  ${YELLOW}⚠ TCP-проба не потвърди порт (Git Bash/бавен път). НЕ спирам — продължавам директно с порт ${PORT} през ssh.${NC}"
+        DETECTED_PORT="$PORT"
     fi
 
     if [ "$DETECTED_PORT" != "$PORT" ]; then
@@ -315,8 +318,10 @@ log ""
 
 # ═══ SSH CONFIG ═══
 # SSH keepalive — пази връзката жива при дълги операции (apt install, rsync, и т.н.)
-# ConnectTimeout=15 — ако сървърът не отговори за 15 сек, fail-ва вместо да виси безкрайно
-SSH_KEEPALIVE="-o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o TCPKeepAlive=yes -o ConnectTimeout=15"
+# ConnectTimeout=90 — на задръстен международен път (Tata) TCP handshake-ът може да трае
+# >15s. Опция 3 (чист ssh, БЕЗ ConnectTimeout) затова влиза, а опция 2 с 15s падаше всеки път.
+# 90s го прави също толкова търпелив като опция 3 — без да виси безкрайно при реален отказ.
+SSH_KEEPALIVE="-o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o TCPKeepAlive=yes -o ConnectTimeout=90"
 
 # Windows (Git Bash/MSYS) doesn't support Unix sockets for ControlMaster
 if [ -n "$MSYSTEM" ] || [ -n "$WINDIR" ]; then

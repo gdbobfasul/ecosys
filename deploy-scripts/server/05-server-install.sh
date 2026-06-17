@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0172
+# Version: 1.0206
 ##############################################################################
 # KCY Ecosystem - Server Install Script
 # sudo bash 05-server-install.sh
@@ -501,8 +501,18 @@ elif [ "$TARGET_NAME" = "prod" ]; then
     DEFAULT_CHOICE=$(echo "${OPT_LABELS[@]}" | tr ' ' '\n' | grep -n "^Домейн" | head -1 | cut -d: -f1)
     [ -z "$DEFAULT_CHOICE" ] && DEFAULT_CHOICE=1
 else
-    # Custom → запази текущо ако има, иначе първа опция
-    [ "$KEEP_OPT_NUM" -gt 0 ] && DEFAULT_CHOICE="$KEEP_OPT_NUM" || DEFAULT_CHOICE=1
+    # Custom / директно пускане без TARGET_NAME (напр. sudo .../05-server-install.sh от
+    # сървърната конзола). ВАЖНО: в авто-режим НИКОГА не сядай на голо IP по подразбиране —
+    # Let's Encrypt не издава сертификат за IP → SSL се чупи и домейнът пада на self-signed
+    # (научено на 2026-06-17). Предпочети "Домейн", после "запази текущо", чак тогава опция 1.
+    DOMEYN_OPT=$(echo "${OPT_LABELS[@]}" | tr ' ' '\n' | grep -n "^Домейн" | head -1 | cut -d: -f1)
+    if [ -n "$DOMEYN_OPT" ] && [ "$T_DOMAIN" != "$T_IP" ]; then
+        DEFAULT_CHOICE="$DOMEYN_OPT"
+    elif [ "$KEEP_OPT_NUM" -gt 0 ]; then
+        DEFAULT_CHOICE="$KEEP_OPT_NUM"
+    else
+        DEFAULT_CHOICE=1
+    fi
 fi
 
 MAX_OPT=$((OPT_NUM-1))
@@ -1570,6 +1580,24 @@ else
     echo -e "  ${YELLOW}! kcy-portals не тръгна — journalctl -u kcy-portals -n 20${NC}"
 fi
 
+# ── HLB/WNB/FBP услуги — рестарт САМО ако вече съществуват ──
+# Тези услуги се СЪЗДАВАТ от отделни сървърни скриптове (опция 2/менюто), не тук. Но rsync
+# в стъпка 6 обновява кода им на диска, а процесът продължава да върви със СТАРИЯ код докато
+# не се рестартира (научено 2026-06-17: fbp даваше 500 след „успешен" install, защото
+# kcy-fbp не беше рестартиран). Затова тук само презареждаме кода им, ако услугата я има —
+# не ги enable-ваме и не ги създаваме (изолацията си остава в техните скриптове).
+for APP_SVC in kcy-hlb kcy-wnb kcy-fbp; do
+    if systemctl list-unit-files "${APP_SVC}.service" 2>/dev/null | grep -q "^${APP_SVC}.service"; then
+        echo -e "  ${YELLOW}Рестарт на ${APP_SVC} (нов код от staging)...${NC}"
+        systemctl restart "${APP_SVC}.service" 2>/dev/null || true
+        if systemctl is-active --quiet "${APP_SVC}.service"; then
+            echo -e "  ${GREEN}✓ ${APP_SVC} работи${NC}"
+        else
+            echo -e "  ${YELLOW}! ${APP_SVC} не тръгна — journalctl -u ${APP_SVC} -n 20${NC}"
+        fi
+    fi
+done
+
 # ── SSL ──
 if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
     CERT_EXPIRY=$(openssl x509 -enddate -noout -in "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" 2>/dev/null | cut -d= -f2)
@@ -1991,6 +2019,11 @@ echo -e "  ECO-3 Admin:"
 echo -e "  ${GREEN}https://${DOMAIN}/eco-3/admin/${NC}"
 echo -e "  (достъпен от IP-тата в ADMIN_ALLOWED_IPS)"
 echo ""
+
+# Tailscale health-check (ADVISORY — никога не чупи инсталацията). При всеки пълен
+# деплой докладва дали failover линкът е жив (инсталиран + свързан + IP).
+TS_CHECK="${PROJECT_DIR}/deploy-scripts/server/tailscale-check.sh"
+[ -f "$TS_CHECK" ] && bash "$TS_CHECK" || true
 
 # kcy-admin sudo управление — премахнато от инсталацията.
 # Достъпно като отделна меню опция (с double-confirm) в DANGEROUS секцията.

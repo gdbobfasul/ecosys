@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0173
+# Version: 1.0204
 ##############################################################################
 # KCY Ecosystem — ПЪЛНА ИНСТАЛАЦИЯ на нов сървър (едно действие)
 #
@@ -92,7 +92,7 @@ A_LBL="не"; [ "$WITH_ASSETS" = 1 ] && A_LBL="ДА (качват се с код
 D_LBL="НЕ (запазва данните)"; [ "$DROP_DB" = 1 ] && D_LBL="ДА (всички, от 0)"
 echo -e "  ${YELLOW}Асети: ${A_LBL}   ·   Drop бази: ${D_LBL}${NC}"
 
-SSH_OPTS="-o ConnectTimeout=15 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -p ${PRT}"
+SSH_OPTS="-o ConnectTimeout=90 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -p ${PRT}"
 REMOTE_BASE="/var/www/deploy/deploy-scripts/server"
 PROJECT_DIR="/var/www/kcy-ecosystem"
 

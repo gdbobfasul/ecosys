@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0171
+# Version: 1.0204
 ##############################################################################
 # KCY — Прехвърли САМО СОРС (без видеа/картинки, без node_modules/.env/бази).
 # Един скрипт: пита сървър → качва архив → overlay на живите папки → рестарт
@@ -50,8 +50,8 @@ source "$(dirname "$0")/lib/banner.sh" 2>/dev/null && arm_done_banner "$TNAME" "
 if ! timeout 3 bash -c "exec 3<>/dev/tcp/${SERVER}/${PORT}" 2>/dev/null; then
     for p in 22 2222; do timeout 3 bash -c "exec 3<>/dev/tcp/${SERVER}/${p}" 2>/dev/null && { PORT="$p"; break; }; done
 fi
-SSH="ssh -o ConnectTimeout=15 -o ServerAliveInterval=30 -p ${PORT}"
-SCP="scp -o ConnectTimeout=15 -P ${PORT}"
+SSH="ssh -o ConnectTimeout=90 -o ServerAliveInterval=30 -p ${PORT}"
+SCP="scp -o ConnectTimeout=90 -P ${PORT}"
 
 echo ""; echo -e "  Target:  ${GREEN}${USER}@${SERVER}:${PORT}${NC}"
 echo -e "  Режим:   ${GREEN}само СОРС${NC} (без assets/данни), overlay + рестарт"
@@ -88,7 +88,7 @@ echo -e "  ${GREEN}✓ Качено${NC}"
 # 14-sync-source.sh вече е инсталиран на сървъра (Deploy го слага в kcy-ecosystem)
 # и е whitelist-нат. Просто му подаваме качения архив — той сам разархивира и прави overlay.
 echo -e "${YELLOW}[3/3] Прилагане на сървъра (overlay + рестарт)...${NC}"
-ssh -t -o ConnectTimeout=15 -p ${PORT} "${USER}@${SERVER}" "sudo ${REMOTE_SCRIPT} '${REMOTE_TAR}'"
+ssh -t -o ConnectTimeout=90 -p ${PORT} "${USER}@${SERVER}" "sudo ${REMOTE_SCRIPT} '${REMOTE_TAR}'"
 RC=$?
 rm -f "$TAR"
 echo ""

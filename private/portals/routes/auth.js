@@ -1,5 +1,5 @@
 // KCY Portals — Auth routes
-// Version: 1.0171
+// Version: 1.0202
 
 const express = require('express');
 const bcrypt = require('bcryptjs');
@@ -265,10 +265,18 @@ router.post('/google-login', async (req, res) => {
         return res.status(503).json({ error: 'google_disabled', message: 'Google вход не е настроен.' });
     }
     if (!credential) return res.status(400).json({ error: 'no_token' });
+    // Проверката на токена е ОТДЕЛНО обвита: невалиден токен, недостъпен Google или
+    // непарсваем отговор НЕ са сървърна грешка (500) — те значат „лош токен" → 401.
+    let info;
     try {
         // провери ID токена през официалния tokeninfo ендпойнт (връща payload само ако е валиден)
-        const info = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(credential)).then(r => r.json());
-        if (!info.sub || String(info.aud) !== String(GOOGLE_CLIENT_ID)) {
+        info = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(credential)).then(r => r.json());
+    } catch (e) {
+        log('изход → 401 bad_token (tokeninfo недостъпен/непарсваем: ' + e.message + ')');
+        return res.status(401).json({ error: 'bad_token', message: 'Невалиден Google токен.' });
+    }
+    try {
+        if (!info || !info.sub || String(info.aud) !== String(GOOGLE_CLIENT_ID)) {
             log('изход → 401 bad_token (невалиден или за чуждо приложение)');
             return res.status(401).json({ error: 'bad_token', message: 'Невалиден Google токен.' });
         }

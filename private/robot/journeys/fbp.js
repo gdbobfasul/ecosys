@@ -1,4 +1,4 @@
-// Version: 1.0201
+// Version: 1.0202
 // Find Best Price — работен сценарий „като човек": регистрация → вход (UI) → създай
 // обект → добави продукт → търсене → ZERO PRICE (публикувай заявка + прати оферта).
 // FBP няма модерация (продуктите са публични веднага), затова няма админ стъпка.
@@ -257,9 +257,9 @@ module.exports = {
           const r = await sessionRequest(page, h, 'POST', '/api/fbp/business',
             { btype: 'online', name: huge, country: 'Bulgaria', location_exact: 'x 1,2' });
           assertNo500('обект огромно име', r.status);
-          // bare Express има лимит 2mb за JSON тяло, а товарът тук е ~100KB → 413 НЕ се връща
-          // от приложението (само nginx би върнал 413 при свой по-нисък лимит).
-          assertStatusIn('обект огромно име', r.status, [201, 400]);
+          // bare Express има лимит 2mb за JSON тяло (товарът тук е ~100KB), но зад nginx
+          // (VM) по-нисък лимит може да върне 413 — и двете са валидни, важно е да НЕ е 5xx.
+          assertStatusIn('обект огромно име', r.status, [201, 400, 413]);
         } },
         { label: 'продукт с инжекция в name/materials → не 5xx', run: async (page, c, h) => {
           const evil = `"><img src=x onerror=alert(1)>'; DELETE FROM products;--`;
@@ -272,9 +272,9 @@ module.exports = {
           const r = await sessionRequest(page, h, 'POST', '/api/fbp/wanted',
             { title: 'Z'.repeat(50000), description: 'D'.repeat(200000), country: 'Bulgaria' });
           assertNo500('заявка огромна', r.status);
-          // ~250KB тяло е под лимита 2mb на bare Express → 413 НЕ се връща от приложението
-          // (маршрутът отрязва title/description, така че очаквай 201; 400 ако липсва държава).
-          assertStatusIn('заявка огромна', r.status, [201, 400]);
+          // ~250KB тяло е под лимита 2mb на bare Express (201/400), но зад nginx (VM) по-нисък
+          // лимит може да върне 413 — всички са валидни, стига да НЕ е 5xx.
+          assertStatusIn('заявка огромна', r.status, [201, 400, 413]);
         } },
       ],
     },
@@ -289,9 +289,9 @@ module.exports = {
         } },
         { label: 'търсене с огромен параметър → 200, без 5xx', run: async (page, c, h) => {
           const r = await sessionRequest(page, h, 'GET', `/api/fbp/search?brand=${encodeURIComponent('B'.repeat(20000))}`);
-          // bare Express обработва дълъг query string нормално → връща 200. 414 (твърде дълъг URL)
-          // се появява САМО зад nginx (свой лимит на ред в заявката), не от самото приложение.
-          assertStatusIn('търсене огромно', r.status, [200]);
+          // bare Express обработва дълъг query string → 200. Зад nginx (VM) дългият URL ред
+          // надхвърля large_client_header_buffers → 414 — легитимен. Важно: НЕ 5xx.
+          assertStatusIn('търсене огромно', r.status, [200, 414]);
           if (r.status === 200 && (!r.body || !Array.isArray(r.body.results))) throw new Error('търсене огромно: липсва масив results');
         } },
         { label: 'търсене с нечислов price_min/price_max → 200, без 5xx', run: async (page, c, h) => {

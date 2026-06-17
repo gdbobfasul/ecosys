@@ -1,4 +1,4 @@
-// Version: 1.0093
+// Version: 1.0205
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -268,7 +268,7 @@ export default function ProfileScreen({ navigation }) {
           value={phone}
           onChangeText={setPhone}
           placeholder="+359888123456"
-          placeholderTextColor="#6B7280}
+          placeholderTextColor="#6B7280"
           keyboardType="phone-pad"
         />
 

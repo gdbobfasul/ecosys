@@ -1,4 +1,4 @@
-// Version: 1.0172
+// Version: 1.0202
 // ECO-3 AI Studio — Backend Server
 // Database: SQLite · Proxy: Anthropic API · Payments: Stripe
 // Admin: IP whitelist from .env
@@ -516,10 +516,13 @@ app.post('/generate', eco3RequireLogin, async (req, res) => {
 app.post('/history', async (req, res) => {
     if (!db) return res.status(503).json({ error: 'Database not connected' });
     try {
-        const { topic, category, language, budget_tier, duration_min, audience, tone, session_id } = req.body;
+        const { topic, category, language, budget_tier, duration_min, audience, tone, session_id } = req.body || {};
+        // topic е NOT NULL в схемата — празно тяло би хвърлило bind/constraint грешка (500).
+        // Валидираме рано → чист 400 вместо 500; category е nullable, но даваме '' по подразбиране.
+        if (!topic || !String(topic).trim()) return res.status(400).json({ error: 'topic_required' });
         const ip = getClientIP(req);
         const stmt = db.prepare(Q.HISTORY_INSERT);
-        const r = await stmt.run(topic, category, language || 'bg', budget_tier || 'economy', duration_min || 10, audience || 'adult', tone || 'original', session_id || '', ip);
+        const r = await stmt.run(String(topic).trim(), category || '', language || 'bg', budget_tier || 'economy', duration_min || 10, audience || 'adult', tone || 'original', session_id || '', ip);
         res.json({ ok: true, id: r.lastInsertRowid });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -548,9 +551,12 @@ app.get('/history', async (req, res) => {
 app.post('/results', async (req, res) => {
     if (!db) return res.status(503).json({ error: 'Database not connected' });
     try {
-        const { topic, category, director_output, architect_output, executor_output, language, budget_tier, duration_min, audience, tone, session_id } = req.body;
+        const { topic, category, director_output, architect_output, executor_output, language, budget_tier, duration_min, audience, tone, session_id } = req.body || {};
+        // topic И category са NOT NULL в схемата на eco3_results → валидираме рано (чист 400, не 500).
+        if (!topic || !String(topic).trim()) return res.status(400).json({ error: 'topic_required' });
+        if (!category || !String(category).trim()) return res.status(400).json({ error: 'category_required' });
         const stmt = db.prepare(Q.RESULTS_INSERT);
-        const r = await stmt.run(topic, category, director_output || '', architect_output || '', executor_output || '', language || 'bg', budget_tier || 'economy', duration_min || 10, audience || 'adult', tone || 'original', session_id || '');
+        const r = await stmt.run(String(topic).trim(), String(category).trim(), director_output || '', architect_output || '', executor_output || '', language || 'bg', budget_tier || 'economy', duration_min || 10, audience || 'adult', tone || 'original', session_id || '');
         res.json({ ok: true, id: r.lastInsertRowid });
     } catch (err) {
         res.status(500).json({ error: err.message });
