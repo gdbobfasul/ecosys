@@ -12,7 +12,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsInlineLimit: 0,
-    target: 'es2019',
+    target: 'es2017',
     // Големият TF.js chunk е очакван (lazy-load). Вдигаме прага само за предупреждението.
     chunkSizeWarningLimit: 4000
   }

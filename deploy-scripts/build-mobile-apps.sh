@@ -114,6 +114,9 @@ build_one() {
     echo -e "  ${CYAN}→ npm run build (web)…${NC}"
     npm run build || { echo -e "  ${RED}✗ web билдът се провали${NC}"; exit 3; }
     echo -e "  ${GREEN}✓ web билд готов → $d/dist${NC}"
+    # Capacitor WebView (вкл. Xiaomi/MIUI) понякога НЕ зарежда модулен скрипт с crossorigin
+    # на https://localhost схемата → черен екран. Махаме crossorigin от index.html (безопасно).
+    [ -f dist/index.html ] && sed -i 's/ crossorigin//g' dist/index.html 2>/dev/null || true
 
     if [ "$ANDROID_READY" = 1 ]; then
       # Осигуряваме Capacitor Android платформата (апповете обявяват core/cli, но често НЕ android).

@@ -7,7 +7,7 @@ export default defineConfig({
   base: './',
   build: {
     outDir: 'dist',
-    target: 'es2019',
+    target: 'es2017',
     assetsInlineLimit: 0
   },
   server: {

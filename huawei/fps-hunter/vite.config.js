@@ -21,7 +21,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsInlineLimit: 0,
-    target: 'es2020',
+    target: 'es2017',
     chunkSizeWarningLimit: 2000
   },
   optimizeDeps: {

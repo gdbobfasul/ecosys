@@ -11,7 +11,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsInlineLimit: 0,
-    target: 'es2019',
+    target: 'es2017',
     // .webm видеата са много и големи — не предупреждавай за размера на бъндъла.
     chunkSizeWarningLimit: 4096
   }
