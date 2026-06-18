@@ -27,6 +27,13 @@ const EMPTY_PAUSE_MS = 350;         // кратка пауза при празн
 
 export function conversationActive() { return _active; }
 
+// --- Авто-слушане по заявка (бутон „Започни да ме слушаш“ на началния екран) ---
+// Транзитен флаг: при успешно отключване чрез бутона го вдигаме, а chat.js го „консумира“
+// веднъж при рендиране и автоматично пуска слушането/разговора.
+let _autoListenArmed = false;
+export function armAutoListen() { _autoListenArmed = true; }
+export function consumeAutoListen() { const v = _autoListenArmed; _autoListenArmed = false; return v; }
+
 function setState(s) {
   if (_onState) { try { _onState(s); } catch (_) {} }
 }

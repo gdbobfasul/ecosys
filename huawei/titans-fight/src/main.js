@@ -3,26 +3,47 @@ import { BootScene } from './scenes/boot.js';
 import { MenuScene } from './scenes/menu.js';
 import { WeaponSelectScene } from './scenes/weapon-select.js';
 import { GameScene } from './scenes/game.js';
+import { LeaderboardScene } from './scenes/leaderboard.js';
 import { THEME } from './theme.js';
 
-// Базова логическа резолюция. Phaser.Scale.FIT мащабира към екрана,
-// така че на телефон играта запълва дисплея без да чупим пропорциите.
-export const GAME_W = 960;
-export const GAME_H = 540;
+// ----------------------------------------------------------------------------
+// РАЗМЕРИ НА ИГРАТА
+// ----------------------------------------------------------------------------
+// Преди играта беше с фиксиран 960x540 и Scale.FIT, което на телефон оставяше
+// огромни черни ленти (играта изглеждаше "малка"). Сега ползваме Scale.RESIZE:
+// canvas-ът заема ЦЕЛИЯ екран на устройството, а логическата резолюция следва
+// реалните пиксели на дисплея. Така играта е истински пълноекранна.
+//
+// GAME_W / GAME_H са ДИНАМИЧНИ — обновяват се при всяко преоразмеряване и при
+// завъртане на телефона. Сцените се преначертават спрямо текущите стойности.
+
+export let GAME_W = window.innerWidth || 960;
+export let GAME_H = window.innerHeight || 540;
+
+// Помощник: всички сцени викат това, за да вземат актуалния размер.
+export function gameSize(scene) {
+  const s = scene.scale.gameSize;
+  return { w: s.width, h: s.height };
+}
 
 const config = {
   type: Phaser.AUTO,
   parent: 'game',
   backgroundColor: THEME.bgBottom,
-  width: GAME_W,
-  height: GAME_H,
   scale: {
-    mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH
+    mode: Phaser.Scale.RESIZE,
+    width: GAME_W,
+    height: GAME_H,
+    autoCenter: Phaser.Scale.NO_CENTER
   },
   render: {
     antialias: true,
     roundPixels: false
+  },
+  // По подразбиране Phaser следи само 1 показалец (мишка + 1 пръст). За да може
+  // играчът да се движи И да удря ЕДНОВРЕМЕННО (multi-touch), добавяме показалци.
+  input: {
+    activePointers: 4
   },
   physics: {
     default: 'arcade',
@@ -31,10 +52,21 @@ const config = {
       debug: false
     }
   },
-  scene: [BootScene, MenuScene, WeaponSelectScene, GameScene]
+  scene: [BootScene, MenuScene, WeaponSelectScene, GameScene, LeaderboardScene]
 };
 
 const game = new Phaser.Game(config);
+
+// Достъп до играта от конзолата/тестове (безвредно за продукцията).
+if (typeof window !== 'undefined') window.__TF_GAME = game;
+
+// Поддържаме GAME_W/GAME_H синхронни с реалния размер на canvas-а.
+game.scale.on('resize', (gameSize) => {
+  GAME_W = gameSize.width;
+  GAME_H = gameSize.height;
+});
+GAME_W = game.scale.gameSize.width;
+GAME_H = game.scale.gameSize.height;
 
 // Махаме надписа "ЗАРЕЖДАНЕ…" щом Phaser е готов.
 game.events.once('ready', () => {

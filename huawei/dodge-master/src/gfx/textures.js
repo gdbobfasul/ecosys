@@ -39,48 +39,68 @@ export function generateTextures(scene) {
 // и съвсем малко обувки на дъното (фороскъсено тяло).
 const HAT_VARIANTS = ['none', 'straw', 'cap', 'fur', 'feather'];
 
+// Помощник: изсветлява (amt>0) или потъмнява (amt<0) hex цвят. amt ∈ [-1, 1].
+function shade(hex, amt) {
+  let r = (hex >> 16) & 255, gg = (hex >> 8) & 255, b = hex & 255;
+  if (amt >= 0) { r += (255 - r) * amt; gg += (255 - gg) * amt; b += (255 - b) * amt; }
+  else { const m = 1 + amt; r *= m; gg *= m; b *= m; }
+  const cl = (v) => Math.max(0, Math.min(255, Math.round(v)));
+  return (cl(r) << 16) | (cl(gg) << 8) | cl(b);
+}
+
 function generateHeroes(scene) {
   HAT_VARIANTS.forEach((hat) => {
     const w = 64, h = 80;
     bake(scene, `hero_${hat}`, w, h, (g) => {
       const cx = w / 2;
-      // Сянка под героя
-      g.fillStyle(0x000000, 0.28);
-      g.fillEllipse(cx, h - 8, 40, 14);
+      const cloth = THEME.heroCloth;
+      const clothDark = shade(cloth, -0.30);
+      const clothLite = shade(cloth, 0.22);
+      const skin = THEME.heroSkin;
 
-      // Рамене (наметало/туника) — широка трапеца под главата
-      g.fillStyle(THEME.heroCloth, 1);
+      // 1) Мека двуслойна сянка (по-плавен ръб)
+      g.fillStyle(0x000000, 0.16); g.fillEllipse(cx, h - 7, 48, 17);
+      g.fillStyle(0x000000, 0.28); g.fillEllipse(cx, h - 7, 34, 11);
+
+      // 2) Плащ (тъмна основа) → туника (основен цвят) → централна гънка (светла)
+      g.fillStyle(clothDark, 1);
       g.beginPath();
-      g.moveTo(cx - 22, h - 14);
-      g.lineTo(cx - 16, 46);
-      g.lineTo(cx + 16, 46);
-      g.lineTo(cx + 22, h - 14);
-      g.closePath();
-      g.fillPath();
-      // светъл ръб на раменете
-      g.lineStyle(2, 0xffffff, 0.10);
-      g.strokeEllipse(cx, 50, 36, 16);
+      g.moveTo(cx - 26, h - 12); g.lineTo(cx - 18, 44);
+      g.lineTo(cx + 18, 44); g.lineTo(cx + 26, h - 12);
+      g.closePath(); g.fillPath();
+      g.fillStyle(cloth, 1);
+      g.beginPath();
+      g.moveTo(cx - 18, h - 14); g.lineTo(cx - 13, 48);
+      g.lineTo(cx + 13, 48); g.lineTo(cx + 18, h - 14);
+      g.closePath(); g.fillPath();
+      g.fillStyle(clothLite, 0.55); g.fillRect(cx - 2, 50, 4, h - 64); // централна гънка
+      // диагонален rim-light по левия ръб (обем)
+      g.lineStyle(2.5, 0xffffff, 0.12);
+      g.beginPath(); g.moveTo(cx - 17, 50); g.lineTo(cx - 24, h - 14); g.strokePath();
 
-      // Малко обувки на дъното (две тъмни елипси)
-      g.fillStyle(0x2a1c12, 1);
-      g.fillEllipse(cx - 9, h - 10, 12, 7);
-      g.fillEllipse(cx + 9, h - 10, 12, 7);
+      // 3) Рамене/пауплдрони (заоблени плочки със сянка)
+      g.fillStyle(clothLite, 1);
+      g.fillEllipse(cx - 17, 50, 18, 13); g.fillEllipse(cx + 17, 50, 18, 13);
+      g.fillStyle(clothDark, 0.5);
+      g.fillEllipse(cx - 17, 53, 16, 8); g.fillEllipse(cx + 17, 53, 16, 8);
 
-      // Врат
-      g.fillStyle(THEME.heroSkin, 1);
-      g.fillRect(cx - 6, 38, 12, 12);
+      // 4) Обувки (двуслойни)
+      g.fillStyle(0x2a1c12, 1); g.fillEllipse(cx - 9, h - 9, 13, 7); g.fillEllipse(cx + 9, h - 9, 13, 7);
+      g.fillStyle(0x3e2a1a, 1); g.fillEllipse(cx - 9, h - 11, 9, 4); g.fillEllipse(cx + 9, h - 11, 9, 4);
 
-      // Глава (голяма, доминира кадъра — top-down)
-      g.fillStyle(THEME.heroSkin, 1);
-      g.fillCircle(cx, 26, 18);
-      // лека сянка отдолу на лицето
-      g.fillStyle(0x000000, 0.10);
-      g.fillEllipse(cx, 33, 26, 12);
-      // нос (връхче, видимо отгоре)
-      g.fillStyle(0xd9a07a, 1);
-      g.fillCircle(cx, 30, 3);
+      // 5) Врат
+      g.fillStyle(shade(skin, -0.12), 1); g.fillRect(cx - 6, 40, 12, 10);
 
-      // Шапка по варианти
+      // 6) Глава — обемно осветяване (сянка → база → highlight) + уши + нос
+      g.fillStyle(shade(skin, -0.14), 1); g.fillCircle(cx, 27, 19);   // долна сянка
+      g.fillStyle(skin, 1);              g.fillCircle(cx - 1, 25, 18); // осветена глава
+      g.fillStyle(shade(skin, 0.20), 0.7); g.fillCircle(cx - 5, 21, 8); // highlight горе-ляво
+      g.fillStyle(skin, 1); g.fillCircle(cx - 17, 26, 4); g.fillCircle(cx + 17, 26, 4); // уши
+      g.fillStyle(0x000000, 0.10); g.fillEllipse(cx, 35, 24, 9);       // сянка под брадичката
+      g.fillStyle(shade(skin, 0.06), 1); g.fillCircle(cx, 31, 3);      // нос (връхче)
+      g.fillStyle(0x000000, 0.12); g.fillEllipse(cx, 33.5, 6, 2.5);    // сянка под носа
+
+      // 7) Коса/шапка
       drawHat(g, cx, hat);
     });
   });
@@ -88,45 +108,49 @@ function generateHeroes(scene) {
 
 function drawHat(g, cx, hat) {
   switch (hat) {
-    case 'straw': // сламена шапка с периферия
-      g.fillStyle(0xd9b65a, 1);
-      g.fillEllipse(cx, 22, 46, 30);
-      g.fillStyle(0xc59a3a, 1);
-      g.fillCircle(cx, 18, 13);
-      g.lineStyle(1, 0x9c7a2a, 0.6);
-      g.strokeEllipse(cx, 22, 46, 30);
+    case 'straw': { // сламена шапка с периферия + плетеница и highlight
+      g.fillStyle(0xb78f3a, 1); g.fillEllipse(cx, 23, 48, 31);        // сянка на периферията
+      g.fillStyle(0xd9b65a, 1); g.fillEllipse(cx, 21, 46, 29);        // периферия
+      g.fillStyle(0xc59a3a, 1); g.fillCircle(cx, 17, 14);             // купол
+      g.fillStyle(0xe8cf86, 0.7); g.fillEllipse(cx - 4, 14, 12, 7);   // highlight
+      g.lineStyle(1, 0x9c7a2a, 0.5);
+      g.strokeEllipse(cx, 21, 46, 29); g.strokeEllipse(cx, 21, 30, 19);
       break;
-    case 'cap': // плоска шапка/каскет
-      g.fillStyle(0x4a5a6a, 1);
-      g.fillEllipse(cx, 20, 40, 24);
-      g.fillStyle(0x39485a, 1);
-      g.fillCircle(cx, 17, 14);
+    }
+    case 'cap': { // каскет с козирка
+      g.fillStyle(0x39485a, 1); g.fillEllipse(cx, 22, 42, 22);        // козирка (сянка)
+      g.fillStyle(0x4a5a6a, 1); g.fillEllipse(cx, 20, 40, 22);        // козирка
+      g.fillStyle(0x55687c, 1); g.fillCircle(cx, 16, 15);             // купол
+      g.fillStyle(0x7d93a8, 0.7); g.fillEllipse(cx - 4, 12, 12, 7);   // highlight
+      g.fillStyle(0x2f3c4a, 1); g.fillCircle(cx, 11, 2.5);            // копче
       break;
-    case 'fur': // кожена калпачка
-      g.fillStyle(0x5a3a22, 1);
-      g.fillCircle(cx, 18, 17);
-      g.fillStyle(0x6e4a2e, 1);
-      g.fillEllipse(cx, 12, 30, 12);
+    }
+    case 'fur': { // кожена калпачка с по-светъл кант
+      g.fillStyle(0x4a2f1b, 1); g.fillCircle(cx, 19, 18);            // сянка
+      g.fillStyle(0x5a3a22, 1); g.fillCircle(cx, 17, 16);            // калпак
+      g.fillStyle(0x6e4a2e, 1); g.fillEllipse(cx, 11, 32, 13);      // кожен кант
+      g.fillStyle(0x86603e, 0.8); g.fillEllipse(cx - 5, 9, 12, 6);  // highlight на канта
+      speckle(g, 64, 40, 0x3a2414, 18, 0.4);                        // текстура на коча
       break;
-    case 'feather': // шапка с перо
-      g.fillStyle(0x3a2a4a, 1);
-      g.fillEllipse(cx, 20, 38, 22);
-      g.fillStyle(0x2a1d38, 1);
-      g.fillCircle(cx, 16, 13);
-      g.fillStyle(0xd0432b, 1); // перо
-      g.beginPath();
-      g.moveTo(cx + 10, 14);
-      g.lineTo(cx + 26, 2);
-      g.lineTo(cx + 14, 16);
-      g.closePath();
-      g.fillPath();
+    }
+    case 'feather': { // шапка с перо
+      g.fillStyle(0x2a1d38, 1); g.fillEllipse(cx, 21, 40, 23);       // периферия (сянка)
+      g.fillStyle(0x3a2a4a, 1); g.fillEllipse(cx, 19, 38, 21);       // периферия
+      g.fillStyle(0x46355a, 1); g.fillCircle(cx, 15, 14);            // купол
+      g.fillStyle(0x6a5482, 0.7); g.fillEllipse(cx - 4, 11, 11, 6);  // highlight
+      g.fillStyle(0xd0432b, 1);                                      // перо
+      g.beginPath(); g.moveTo(cx + 10, 13); g.lineTo(cx + 27, 0); g.lineTo(cx + 13, 16); g.closePath(); g.fillPath();
+      g.fillStyle(0xe8674f, 0.8);                                    // highlight на перото
+      g.beginPath(); g.moveTo(cx + 12, 12); g.lineTo(cx + 24, 3); g.lineTo(cx + 14, 13); g.closePath(); g.fillPath();
       break;
+    }
     case 'none':
-    default:
-      // коса (тъмна шапчица от коса)
-      g.fillStyle(0x3a2616, 1);
-      g.fillEllipse(cx, 16, 32, 18);
+    default: { // коса с блясък
+      g.fillStyle(0x2e1d10, 1); g.fillEllipse(cx, 16, 34, 20);       // коса (сянка)
+      g.fillStyle(0x3a2616, 1); g.fillEllipse(cx, 15, 32, 18);       // коса
+      g.fillStyle(0x553920, 1); g.fillEllipse(cx - 5, 12, 12, 7);    // блясък/кичур
       break;
+    }
   }
 }
 

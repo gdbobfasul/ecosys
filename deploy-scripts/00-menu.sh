@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0215
+# Version: 1.0218
 ##############################################################################
 # KCY Ecosystem — Start Menu
 # Един menu item = един реален скрипт. Параметрите се питат след избор.
@@ -262,6 +262,10 @@ show_menu() {
         "Вдига kcy-selflearning услугата (node :3013) + nginx /api/selflearning/." \
         "Канал „Слушай\" (queue) + knowledge snapshot, namespace по token. БЕЗ контакти/крипто." \
         "Самостоятелно — не пипа другите. nginx маршрутът идва с опция 2."
+    item "39" "Свържи Selflearning робот към сървър (проверки + линк)" \
+        "Избираш сървър (prod / VM / чужд при продажба), проверявам го (ОС/RAM/диск/Node/" \
+        "порт/nginx) ПРЕДИ деплой. Правило: 1 сървър = 1 робот. После вдига relay-а + дава URL+token." \
+        "Десктопът учи, телефонът само предава. Различен робот → само с потвърдено прехвърляне."
 
     echo -e "${BOLD}${CYAN}━━━ ПО ПРИЛОЖЕНИЕ — обнови (база + админи/модератори от .env + рестарт) ━${NC}"
     echo ""
@@ -349,7 +353,7 @@ show_menu() {
         "Дали се билдват, дали стартират/'играят' + console грешки + скрийншоти."
     echo -e "  ${GRAY}(71-76 запазени за бъдещи мобилни задачи; 60-70 са за FILL DATA)${NC}"
 
-    echo -e "  ${GRAY}Свободни номера: 39   ·   запазени: 60-70 (FILL DATA), 71-76 (бъдещи мобилни)${NC}"
+    echo -e "  ${GRAY}Свободни номера: (няма)   ·   запазени: 60-70 (FILL DATA), 71-76 (бъдещи мобилни)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -640,6 +644,43 @@ run_choice() {
                     echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-selflearning услугата е настроена на ${PICK_SRV}${NC}"
                 else
                     echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано"; fi
+            press_enter
+            ;;
+        39)
+            echo ""
+            echo -e "${BOLD}${CYAN}  СВЪРЖИ Selflearning робот към сървър — кой сървър?${NC}"
+            echo -e "  ${GRAY}(prod / VM, или custom за чужд сървър при продажба/прехвърляне)${NC}"
+            echo ""
+            if pick_target; then
+                MODE=$(ask_choice "Какво да направя на ${PICK_SRV}?" \
+                    "Само проверки (без деплой)" \
+                    "Проверки + вдигни relay-а (деплой)" \
+                    "Проверки + деплой + ПРЕХВЪРЛИ робот (трие стария!)")
+                RFLAGS=""
+                case "$MODE" in
+                    "Само проверки (без деплой)") RFLAGS="" ;;
+                    "Проверки + вдигни relay-а (деплой)") RFLAGS="--deploy" ;;
+                    "Проверки + деплой + ПРЕХВЪРЛИ робот (трие стария!)") RFLAGS="--deploy --transfer" ;;
+                    *) echo "  Отказано"; press_enter; continue ;;
+                esac
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh ${RFLAGS}"
+                echo ""
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                echo ""
+                echo "  → Прави проверки на сървъра + правило „1 сървър = 1 робот\", после (по избор)"
+                echo "    вдига relay-а и показва URL+token за роботчето."
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово (exit 0) — виж данните за връзка по-горе (URL + token)${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка/NO-GO (exit ${RC}) — виж изхода по-горе${NC}"
                 fi
             else echo "  Отказано"; fi
             press_enter

@@ -7,6 +7,8 @@ import { RulesConfigScreen } from './screens/rules-config.js';
 import { PermissionsScreen } from './screens/permissions.js';
 import { DashboardScreen } from './screens/dashboard.js';
 import { DemoInboxScreen } from './screens/demo-inbox.js';
+import { ChannelsScreen } from './screens/channels.js';
+import { startPump } from './core/pump.js';
 
 const app = document.getElementById('app');
 
@@ -15,6 +17,7 @@ let current = 'dashboard';
 
 const TABS = [
   { id: 'dashboard', ic: '🏠', label: 'Табло' },
+  { id: 'channels', ic: '🔗', label: 'Връзки' },
   { id: 'rules', ic: '📜', label: 'Правила' },
   { id: 'inbox', ic: '💬', label: 'Demo' },
   { id: 'permissions', ic: '🔐', label: 'Права' }
@@ -38,6 +41,7 @@ export function render() {
 
   let view;
   switch (current) {
+    case 'channels': view = ChannelsScreen({ navigate, render }); break;
     case 'rules': view = RulesConfigScreen({ navigate, render }); break;
     case 'inbox': view = DemoInboxScreen({ navigate, render }); break;
     case 'permissions': view = PermissionsScreen({ navigate, render }); break;
@@ -46,6 +50,9 @@ export function render() {
   }
   app.appendChild(view);
   renderTabbar();
+
+  // Стартираме реалните канали (KCY polling + native listener) веднъж след активиране.
+  startPump(render);
 }
 
 function renderTabbar() {

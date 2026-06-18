@@ -1,13 +1,26 @@
 // PDF инструменти — сливане, разделяне, воден знак, визуален подпис.
 // Изцяло офлайн: pdf-lib (редакция) + pdfjs-dist (рендиране на страница за подпис).
-import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
+import { PDFDocument, rgb, degrees } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 import { setStatus, downloadBlob } from '../core/ui.js';
 // pdfjs worker — бандълва се локално чрез Vite ?url
 import * as pdfjsLib from 'pdfjs-dist/build/pdf.js';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+// Кирилски Unicode шрифт за водния знак — бандълва се ЛОКАЛНО (офлайн, без CDN).
+// pdf-lib StandardFonts (WinAnsi) не съдържат кирилица; затова вграждаме TTF чрез fontkit.
+import cyrFontUrl from 'dejavu-fonts-ttf/ttf/DejaVuSans-Bold.ttf?url';
 
 export const title = 'PDF инструменти';
+
+let _cyrFontBytes = null;
+async function getCyrFontBytes() {
+  if (_cyrFontBytes) return _cyrFontBytes;
+  const r = await fetch(cyrFontUrl);
+  if (!r.ok) throw new Error('шрифтът не се зареди');
+  _cyrFontBytes = await r.arrayBuffer();
+  return _cyrFontBytes;
+}
 
 function parseRange(str, max) {
   const pages = [];
@@ -53,7 +66,7 @@ export function render(root) {
       <label>Избери PDF файл</label>
       <input type="file" id="wFile" accept="application/pdf" />
       <label>Текст на водния знак (латиница)</label>
-      <input type="text" id="wText" value="CONFIDENTIAL" />
+      <input type="text" id="wText" value="ПОВЕРИТЕЛНО" />
       <p class="hint">Вграденият стандартен шрифт поддържа латиница. За кирилица използвай латински текст.</p>
       <button class="btn" id="wBtn">Добави воден знак</button>
       <div class="status" id="wStatus"></div>
@@ -132,14 +145,16 @@ export function render(root) {
     } catch (e) { setStatus($('#sStatus'), 'err', 'Грешка: ' + e.message); }
   });
 
-  // --- Воден знак (StandardFont, латиница, офлайн) ---
+  // --- Воден знак (вграден Unicode шрифт — кирилица работи офлайн) ---
   $('#wBtn').addEventListener('click', async () => {
     const f = $('#wFile').files[0];
     if (!f) { setStatus($('#wStatus'), 'err', 'Избери PDF файл.'); return; }
-    const text = ($('#wText').value || 'CONFIDENTIAL').replace(/[^\x00-\xFF]/g, '?');
+    const text = $('#wText').value || 'ПОВЕРИТЕЛНО';
     try {
       const doc = await PDFDocument.load(await f.arrayBuffer());
-      const font = await doc.embedFont(StandardFonts.HelveticaBold);
+      // вграждаме кирилски TTF чрез fontkit (бандълван локално → офлайн)
+      doc.registerFontkit(fontkit);
+      const font = await doc.embedFont(await getCyrFontBytes(), { subset: true });
       const pages = doc.getPages();
       pages.forEach((page) => {
         const w = page.getWidth(), h = page.getHeight();

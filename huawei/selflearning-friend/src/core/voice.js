@@ -107,39 +107,76 @@ export async function startListening({ lang = DEFAULT_LANG, onInterim = null } =
 }
 
 // Нативно (Capacitor community speech-recognition).
+//
+// ВАЖНО (поправка на „микрофонът свети, но нищо не се пише“): на Android
+// `start({partialResults:true, popup:false})` се РАЗРЕШАВА веднага — текстът идва ПО-КЪСНО
+// през събитие `partialResults`, а краят — през `listeningState: 'stopped'`. Затова НЕ
+// махаме слушателите веднага след start(); пазим ги, трупаме последния резултат и
+// финализираме при „stopped“ (или при stopListening / предпазен таймаут).
 async function startNative(sr, lang, onInterim) {
   // Подсигури разрешение (тихо).
   try { await requestMicPermission(); } catch (_) {}
   _nativeListening = true;
 
-  // Междинни резултати чрез слушател за събитие (ако плъгинът ги поддържа).
-  let partialHandle = null;
-  if (onInterim && typeof sr.addListener === 'function') {
-    try {
-      partialHandle = await sr.addListener('partialResults', (data) => {
-        const arr = (data && data.matches) || [];
-        if (arr.length) onInterim(String(arr[0] || ''));
-      });
-    } catch (_) { partialHandle = null; }
-  }
+  return new Promise((resolve) => {
+    let best = '';
+    let settled = false;
+    let safetyTimer = null;
 
-  try {
-    // start() в community-плъгина връща { matches: [...] } при popup:false.
-    const res = await sr.start({
-      language: lang,
-      maxResults: 1,
-      partialResults: !!onInterim,
-      popup: false
-    });
-    const matches = (res && res.matches) || [];
-    return String(matches[0] || '').trim();
-  } catch (e) {
-    throw new Error('stt-failed:' + (e && e.message ? e.message : 'unknown'));
-  } finally {
-    _nativeListening = false;
-    try { if (partialHandle && typeof partialHandle.remove === 'function') await partialHandle.remove(); } catch (_) {}
-    try { if (typeof sr.removeAllListeners === 'function') await sr.removeAllListeners(); } catch (_) {}
-  }
+    async function cleanup() {
+      _nativeListening = false;
+      if (safetyTimer) { clearTimeout(safetyTimer); safetyTimer = null; }
+      try { if (typeof sr.removeAllListeners === 'function') await sr.removeAllListeners(); } catch (_) {}
+    }
+    async function finish(val) {
+      if (settled) return;
+      settled = true;
+      await cleanup();
+      resolve(String(val != null ? val : best || '').trim());
+    }
+
+    // 1) Закачи слушателите ПРЕДИ старта и ги ПАЗИ, докато тече слушането.
+    (async () => {
+      try {
+        if (typeof sr.addListener === 'function') {
+          await sr.addListener('partialResults', (data) => {
+            const arr = (data && data.matches) || [];
+            if (arr.length) {
+              best = String(arr[0] || '');
+              if (onInterim) { try { onInterim(best); } catch (_) {} }
+            }
+          });
+          // Краят на слушането (потребителят спря да говори / извикан stop()).
+          try {
+            await sr.addListener('listeningState', (data) => {
+              const status = data && (data.status || data.state);
+              if (status === 'stopped') finish();
+            });
+          } catch (_) { /* по-стари версии нямат това събитие → разчитаме на таймаута/start() */ }
+        }
+      } catch (_) { /* без слушатели → разчитаме на връщането на start() */ }
+
+      // 2) Старт. На някои платформи start() връща финалните matches директно.
+      try {
+        const res = await sr.start({
+          language: lang,
+          maxResults: 5,
+          partialResults: true,
+          popup: false
+        });
+        const matches = (res && res.matches) || [];
+        if (matches.length) finish(matches[0]); // платформи, които връщат финала тук
+        // иначе чакаме 'stopped' / stopListening() / предпазния таймаут
+      } catch (e) {
+        // грешка при старт → ако имаме нещо от partials, го връщаме; иначе сигнал за грешка
+        if (best) finish(best);
+        else { settled = true; cleanup(); resolve(''); }
+      }
+
+      // 3) Предпазен таймаут: не блокирай вечно, ако нищо не приключи слушането.
+      safetyTimer = setTimeout(() => finish(), 15000);
+    })();
+  });
 }
 
 // Браузър (Web Speech API).

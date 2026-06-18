@@ -5,6 +5,7 @@ import { GAME_WIDTH, GAME_HEIGHT } from '../main.js';
 import { THEME } from '../theme.js';
 import { LEVELS, MAX_LEVEL } from './levels.js';
 import { loadProgress } from '../store/progress.js';
+import { getTop } from '../leaderboard.js';
 
 export default class MenuScene extends Phaser.Scene {
   constructor() {
@@ -77,14 +78,21 @@ export default class MenuScene extends Phaser.Scene {
       }
     });
 
-    // Най-добър резултат
-    this.add.text(W / 2, H * 0.93, `Най-добър резултат: ${prog.bestScore || 0}`, {
+    // Бутон „🏆 РАНГ ЛИСТА" (цял топ-100)
+    this.makeButton(W / 2, H * 0.88, '🏆 РАНГ ЛИСТА', () => {
+      this.scene.start('Leaderboard');
+    }, THEME.primary, 200, 42);
+
+    // Най-добър резултат + водач от листата (само име + точки)
+    const top = getTop(1);
+    const leader = top.length ? `  •  Водач: ${top[0].name} (${top[0].score})` : '';
+    this.add.text(W / 2, H * 0.94, `Най-добър резултат: ${prog.bestScore || 0}${leader}`, {
       fontFamily: 'system-ui, sans-serif', fontSize: '13px', color: '#8a8'
     }).setOrigin(0.5);
   }
 
-  makeButton(x, y, text, cb, color) {
-    const w = 240, h = 48;
+  makeButton(x, y, text, cb, color, bw, bh) {
+    const w = bw || 240, h = bh || 48;
     const rect = this.add.rectangle(x, y, w, h, color, 1).setStrokeStyle(2, 0x000000, 0.4)
       .setInteractive({ useHandCursor: true });
     const t = this.add.text(x, y, text, {

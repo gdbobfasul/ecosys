@@ -16,44 +16,73 @@ function hex(n) {
   return '#' + n.toString(16).padStart(6, '0');
 }
 
-// --- Самолетът на играча: остър триъгълен корпус с glow и кокпит ---
+// --- Самолетът на играча: истински изтребител (труп + стреловидни крила + кокпит + перки) ---
 function makePlane(scene) {
   makeCanvasTexture(scene, 'plane', 64, 72, (ctx, w, h) => {
     ctx.clearRect(0, 0, w, h);
-    // Външно сияние
-    const glow = ctx.createRadialGradient(w / 2, h / 2, 4, w / 2, h / 2, w / 2);
-    glow.addColorStop(0, 'rgba(0,229,255,0.35)');
-    glow.addColorStop(1, 'rgba(0,229,255,0)');
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, w, h);
+    const cx = w / 2;
 
-    // Крила (тъмна основа)
+    // Реактивно сияние отзад
+    const ex = ctx.createRadialGradient(cx, h - 5, 2, cx, h - 5, 24);
+    ex.addColorStop(0, 'rgba(150,235,255,0.6)');
+    ex.addColorStop(0.5, 'rgba(0,229,255,0.22)');
+    ex.addColorStop(1, 'rgba(0,229,255,0)');
+    ctx.fillStyle = ex; ctx.fillRect(0, h - 32, w, 32);
+    // Меко общо сияние
+    const aura = ctx.createRadialGradient(cx, 36, 6, cx, 36, 36);
+    aura.addColorStop(0, 'rgba(0,229,255,0.16)'); aura.addColorStop(1, 'rgba(0,229,255,0)');
+    ctx.fillStyle = aura; ctx.fillRect(0, 0, w, h);
+
+    // КРИЛА (стреловидни)
     ctx.fillStyle = hex(THEME.primary);
     ctx.beginPath();
-    ctx.moveTo(w / 2, 6);
-    ctx.lineTo(w - 6, h - 10);
-    ctx.lineTo(w / 2, h - 22);
-    ctx.lineTo(6, h - 10);
-    ctx.closePath();
-    ctx.fill();
+    ctx.moveTo(cx, 34); ctx.lineTo(w - 3, 54); ctx.lineTo(w - 13, 60);
+    ctx.lineTo(cx + 5, h - 24); ctx.lineTo(cx - 5, h - 24);
+    ctx.lineTo(13, 60); ctx.lineTo(3, 54);
+    ctx.closePath(); ctx.fill();
+    // сянка по задния ръб + светъл преден ръб
+    ctx.fillStyle = 'rgba(0,0,0,0.22)';
+    ctx.beginPath(); ctx.moveTo(cx - 5, h - 24); ctx.lineTo(cx + 5, h - 24);
+    ctx.lineTo(w - 13, 60); ctx.lineTo(13, 60); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(cx, 34); ctx.lineTo(w - 3, 54); ctx.moveTo(cx, 34); ctx.lineTo(3, 54); ctx.stroke();
 
-    // Централен корпус (светъл градиент)
-    const body = ctx.createLinearGradient(0, 0, 0, h);
-    body.addColorStop(0, hex(THEME.planeEdge));
-    body.addColorStop(1, hex(THEME.primary));
+    // ОПАШНИ ПЕРКИ
+    ctx.fillStyle = hex(THEME.primary);
+    ctx.beginPath(); ctx.moveTo(cx - 3, h - 24); ctx.lineTo(cx - 13, h - 5); ctx.lineTo(cx - 3, h - 11); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(cx + 3, h - 24); ctx.lineTo(cx + 13, h - 5); ctx.lineTo(cx + 3, h - 11); ctx.closePath(); ctx.fill();
+
+    // ТРУП (заоблен металик с обемен градиент)
+    const body = ctx.createLinearGradient(cx - 10, 0, cx + 10, 0);
+    body.addColorStop(0, 'rgba(0,0,0,0.25)');
+    body.addColorStop(0.18, hex(THEME.planeEdge));
+    body.addColorStop(0.5, '#ffffff');
+    body.addColorStop(0.82, hex(THEME.planeEdge));
+    body.addColorStop(1, 'rgba(0,0,0,0.25)');
     ctx.fillStyle = body;
     ctx.beginPath();
-    ctx.moveTo(w / 2, 4);
-    ctx.lineTo(w / 2 + 9, h - 18);
-    ctx.lineTo(w / 2 - 9, h - 18);
-    ctx.closePath();
-    ctx.fill();
+    ctx.moveTo(cx, 3);
+    ctx.quadraticCurveTo(cx + 9, 18, cx + 8, 40);
+    ctx.quadraticCurveTo(cx + 7, h - 16, cx + 4, h - 7);
+    ctx.lineTo(cx - 4, h - 7);
+    ctx.quadraticCurveTo(cx - 7, h - 16, cx - 8, 40);
+    ctx.quadraticCurveTo(cx - 9, 18, cx, 3);
+    ctx.closePath(); ctx.fill();
 
-    // Кокпит
-    ctx.fillStyle = 'rgba(255,255,255,0.85)';
-    ctx.beginPath();
-    ctx.ellipse(w / 2, 24, 4, 8, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // НОС (по-светъл връх)
+    const nose = ctx.createLinearGradient(0, 2, 0, 26);
+    nose.addColorStop(0, '#ffffff'); nose.addColorStop(1, hex(THEME.planeEdge));
+    ctx.fillStyle = nose;
+    ctx.beginPath(); ctx.moveTo(cx, 3); ctx.quadraticCurveTo(cx + 6, 14, cx + 4, 24);
+    ctx.lineTo(cx - 4, 24); ctx.quadraticCurveTo(cx - 6, 14, cx, 3); ctx.closePath(); ctx.fill();
+
+    // КОКПИТ (стъклен похлупак + блясък)
+    const cp = ctx.createLinearGradient(0, 22, 0, 40);
+    cp.addColorStop(0, '#cfeeff'); cp.addColorStop(1, '#235f8f');
+    ctx.fillStyle = cp;
+    ctx.beginPath(); ctx.ellipse(cx, 31, 4.5, 8.5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.beginPath(); ctx.ellipse(cx - 1.4, 28, 1.4, 3.2, 0, 0, Math.PI * 2); ctx.fill();
   });
 }
 
@@ -120,29 +149,46 @@ function makeMissile(scene) {
 function makeEnemy(scene, key, color, size) {
   makeCanvasTexture(scene, key, size, size, (ctx, w, h) => {
     ctx.clearRect(0, 0, w, h);
-    const glow = ctx.createRadialGradient(w / 2, h / 2, 2, w / 2, h / 2, w / 2);
-    glow.addColorStop(0, 'rgba(255,80,120,0.30)');
+    const cx = w / 2;
+    const glow = ctx.createRadialGradient(cx, h / 2, 2, cx, h / 2, w / 2);
+    glow.addColorStop(0, 'rgba(255,80,120,0.28)');
     glow.addColorStop(1, 'rgba(255,80,120,0)');
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, w, h);
 
-    const g = ctx.createLinearGradient(0, 0, 0, h);
-    g.addColorStop(0, color.light);
-    g.addColorStop(1, color.dark);
+    // Носът сочи НАДОЛУ (към играча). Крила (стреловидни).
+    ctx.fillStyle = color.dark;
+    ctx.beginPath();
+    ctx.moveTo(cx, h - 6);
+    ctx.lineTo(w - 4, h * 0.30); ctx.lineTo(w - 3, h * 0.16);
+    ctx.lineTo(cx + 5, h * 0.40); ctx.lineTo(cx - 5, h * 0.40);
+    ctx.lineTo(3, h * 0.16); ctx.lineTo(4, h * 0.30);
+    ctx.closePath(); ctx.fill();
+
+    // Труп (светъл връх долу → тъмно горе)
+    const g = ctx.createLinearGradient(0, h, 0, 0);
+    g.addColorStop(0, color.light); g.addColorStop(1, color.dark);
     ctx.fillStyle = g;
-    // Сочи надолу (към играча)
     ctx.beginPath();
-    ctx.moveTo(w / 2, h - 4);
-    ctx.lineTo(w - 5, 6);
-    ctx.lineTo(w / 2, h * 0.4);
-    ctx.lineTo(5, 6);
-    ctx.closePath();
-    ctx.fill();
-    // Ядро
-    ctx.fillStyle = 'rgba(255,255,255,0.85)';
-    ctx.beginPath();
-    ctx.arc(w / 2, h * 0.42, Math.max(2, size * 0.07), 0, Math.PI * 2);
-    ctx.fill();
+    ctx.moveTo(cx, h - 4);
+    ctx.quadraticCurveTo(cx + 7, h * 0.6, cx + 6, h * 0.32);
+    ctx.quadraticCurveTo(cx + 5, 6, cx, 4);
+    ctx.quadraticCurveTo(cx - 5, 6, cx - 6, h * 0.32);
+    ctx.quadraticCurveTo(cx - 7, h * 0.6, cx, h - 4);
+    ctx.closePath(); ctx.fill();
+    // централен светъл ръб
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(cx, 8); ctx.lineTo(cx, h - 8); ctx.stroke();
+
+    // Опашни перки (горе)
+    ctx.fillStyle = color.dark;
+    ctx.beginPath(); ctx.moveTo(cx - 3, 8); ctx.lineTo(cx - 10, 2); ctx.lineTo(cx - 3, 13); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(cx + 3, 8); ctx.lineTo(cx + 10, 2); ctx.lineTo(cx + 3, 13); ctx.closePath(); ctx.fill();
+
+    // Светещо око/ядро
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.beginPath(); ctx.arc(cx, h * 0.40, Math.max(2.4, size * 0.08), 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,90,120,0.95)';
+    ctx.beginPath(); ctx.arc(cx, h * 0.40, Math.max(1.2, size * 0.045), 0, Math.PI * 2); ctx.fill();
   });
 }
 

@@ -46,8 +46,8 @@ export const tools = [
   },
   {
     id: 'crypto', icon: 'chart', online: true,
-    name: 'Крипто графика',
-    desc: 'Цени на живо (Binance/CoinGecko)',
+    name: 'Крипто графики',
+    desc: 'RSI, Fibonacci, BTC/ETH по периоди (Binance/CoinGecko)',
     load: () => import('../tools/crypto-chart.js')
   },
   {

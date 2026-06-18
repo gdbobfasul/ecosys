@@ -16,6 +16,7 @@ import { fetchWikipedia, fetchCrypto, fetchFx, fetchNews } from './sources.js';
 import { addNote, getSubject, randomNote, notesCount } from './subjects.js';
 import { summarizeViaTeacher } from './teacher.js';
 import { dontKnow } from './honesty.js';
+import { addTask, updateTask } from './tasklist.js';
 
 // --- Разпознаване на задача от свободен текст ------------------------------
 // Връща { kind, arg } или null.
@@ -151,6 +152,33 @@ export async function tryRunFromText(text) {
   const task = parseTask(text);
   if (!task) return null;
   return runTask(task);
+}
+
+// ВКАРВА задачата в постоянния списък (pending) → изпълнява (running) → отбелязва
+// (done/failed) с кратък резултат. Така всяка дадена задача ОСТАВА в „Задачи“.
+// Връща { task, res } или { task:null, res } ако текстът не е задача.
+export async function intakeAndRun(text) {
+  const task = parseTask(text);
+  if (!task) return { task: null, res: { ok: false, kind: 'none', text: 'Не разпознах задача.' } };
+  const entry = addTask({ kind: task.kind, arg: task.arg, text });
+  updateTask(entry.id, { status: 'running' });
+  let res;
+  try {
+    res = await runTask(task);
+  } catch (_) {
+    res = { ok: false, kind: task.kind, text: 'Грешка при изпълнението на задачата.' };
+  }
+  updateTask(entry.id, {
+    status: res.ok ? 'done' : 'failed',
+    result: shortenResult(res.text),
+    citation: res.citation || ''
+  });
+  return { task: entry, res };
+}
+
+function shortenResult(s, n = 500) {
+  s = String(s || '');
+  return s.length > n ? s.slice(0, n) + '…' : s;
 }
 
 export { notesCount, getSubject };

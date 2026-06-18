@@ -95,7 +95,7 @@ export async function handleIncoming({ sender, text }, render) {
   setState({
     inbox: [...cur.inbox, { id: uid(), dir: 'out', sender, text: decision.reply, at: Date.now() }],
     log: [...cur.log, {
-      at: Date.now(), sender, incoming: text, reply: decision.reply,
+      at: Date.now(), channel: 'local', sender, incoming: text, reply: decision.reply,
       ruleId: decision.ruleId, mode: decision.mode
     }]
   });

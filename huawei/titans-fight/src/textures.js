@@ -40,65 +40,123 @@ function shade(color, amount) {
   return Phaser.Display.Color.GetColor(r, gg, b);
 }
 
-// Генерира всички текстури за титан с дадена основна боя (hero / enemy).
-// prefix = 'hero' или 'enemy'.
+// Генерира всички текстури за ВНУШИТЕЛЕН, брониран титан с дадена основна боя.
+// prefix = 'hero' или 'enemy'. Частите са едри, с метален градиент, заварени
+// ръбове, нитове, шипове и светещи очи — за да изглеждат като истински титани,
+// а не като драскулки.
 function buildTitan(scene, prefix, bodyColor, edgeColor) {
   const g = scene.make.graphics({ x: 0, y: 0, add: false });
+  const dark = shade(bodyColor, -70);
+  const light = shade(bodyColor, 70);
 
-  // --- ТОРС ---
+  // ---------------------------------------------------------------- ТОРС
+  // Едър, бронирован гръден кош с пауплдрони, плочи и светещо ядро.
   g.clear();
-  gradientRoundedRect(g, 4, 4, 56, 72, 16, shade(bodyColor, 30), shade(bodyColor, -40));
-  // броня-акцент
-  g.lineStyle(4, edgeColor, 0.9);
-  g.strokeRoundedRect(4, 4, 56, 72, 16);
-  // гръден детайл
-  g.fillStyle(shade(bodyColor, 60), 0.6);
-  g.fillTriangle(32, 16, 20, 44, 44, 44);
-  g.generateTexture(`${prefix}_torso`, 64, 80);
+  const TW = 120, TH = 150;
+  // основна броня (вертикален метален градиент)
+  gradientRoundedRect(g, 10, 6, TW - 20, TH - 16, 26, light, dark);
+  // широки рамене / пауплдрони
+  gradientRoundedRect(g, 0, 4, 40, 50, 18, light, shade(bodyColor, -30));
+  gradientRoundedRect(g, TW - 40, 4, 40, 50, 18, light, shade(bodyColor, -30));
+  // дебел заварен ръб
+  g.lineStyle(5, edgeColor, 0.95);
+  g.strokeRoundedRect(10, 6, TW - 20, TH - 16, 26);
+  g.lineStyle(4, edgeColor, 0.85);
+  g.strokeRoundedRect(0, 4, 40, 50, 18);
+  g.strokeRoundedRect(TW - 40, 4, 40, 50, 18);
+  // гръдни плочи (V-образен мускул/броня)
+  g.fillStyle(shade(bodyColor, 40), 0.7);
+  g.fillTriangle(TW / 2, 34, 30, 92, TW - 30, 92);
+  g.lineStyle(3, edgeColor, 0.5);
+  g.strokeTriangle(TW / 2, 34, 30, 92, TW - 30, 92);
+  // светещо ядро в гърдите
+  g.fillStyle(0xffffff, 0.95); g.fillCircle(TW / 2, 70, 11);
+  g.fillStyle(edgeColor, 0.9); g.fillCircle(TW / 2, 70, 7);
+  // нитове по бронята
+  g.fillStyle(light, 0.9);
+  [[26, 30], [TW - 26, 30], [26, TH - 30], [TW - 26, TH - 30]].forEach(([nx, ny]) => g.fillCircle(nx, ny, 4));
+  // долен колан/плоча
+  g.fillStyle(dark, 0.8);
+  g.fillRoundedRect(20, TH - 34, TW - 40, 22, 8);
+  g.generateTexture(`${prefix}_torso`, TW, TH);
 
-  // --- ГЛАВА (със светещи очи) ---
+  // ---------------------------------------------------------------- ГЛАВА
+  // Боен шлем с гребен/рога, забрало и яростно светещи очи.
   g.clear();
-  gradientRoundedRect(g, 4, 4, 40, 40, 12, shade(bodyColor, 40), shade(bodyColor, -20));
-  g.lineStyle(3, edgeColor, 0.9);
-  g.strokeRoundedRect(4, 4, 40, 40, 12);
-  // очи (светещи)
+  const HW = 84, HH = 88;
+  gradientRoundedRect(g, 12, 14, HW - 24, HH - 22, 18, light, dark);
+  g.lineStyle(4, edgeColor, 0.95);
+  g.strokeRoundedRect(12, 14, HW - 24, HH - 22, 18);
+  // забрало (тъмна лента за очите)
+  g.fillStyle(0x0a0a12, 0.92);
+  g.fillRoundedRect(16, 38, HW - 32, 22, 8);
+  // светещи яростни очи
   g.fillStyle(0xffffff, 1);
-  g.fillCircle(17, 24, 4);
-  g.fillCircle(31, 24, 4);
-  g.fillStyle(0xff4040, 1);
-  g.fillCircle(17, 24, 2.2);
-  g.fillCircle(31, 24, 2.2);
-  // шлемов гребен
-  g.fillStyle(edgeColor, 0.8);
-  g.fillTriangle(24, 0, 18, 8, 30, 8);
-  g.generateTexture(`${prefix}_head`, 48, 48);
+  g.fillTriangle(28, 50, 40, 44, 40, 56);
+  g.fillTriangle(HW - 28, 50, HW - 40, 44, HW - 40, 56);
+  g.fillStyle(0xff3020, 1);
+  g.fillTriangle(30, 50, 39, 46, 39, 54);
+  g.fillTriangle(HW - 30, 50, HW - 39, 46, HW - 39, 54);
+  // централен гребен на шлема
+  g.fillStyle(edgeColor, 0.95);
+  g.fillTriangle(HW / 2, 0, HW / 2 - 9, 22, HW / 2 + 9, 22);
+  // странични рога
+  g.fillStyle(edgeColor, 0.9);
+  g.fillTriangle(14, 22, 2, 6, 22, 18);
+  g.fillTriangle(HW - 14, 22, HW - 2, 6, HW - 22, 18);
+  // челюст/брадичка
+  g.fillStyle(dark, 1);
+  g.fillRoundedRect(22, HH - 26, HW - 44, 16, 6);
+  g.generateTexture(`${prefix}_head`, HW, HH);
 
-  // --- ГОРНА РЪКА / РАМО (пивот горе) ---
+  // ------------------------------------------------------ ГОРНА РЪКА / РАМО
+  // Дебела, мускулеста бронирана ръка (пивот горе) с наплечник и лента.
   g.clear();
-  gradientRoundedRect(g, 2, 2, 22, 46, 10, shade(bodyColor, 20), shade(bodyColor, -50));
-  g.lineStyle(2.5, edgeColor, 0.7);
-  g.strokeRoundedRect(2, 2, 22, 46, 10);
-  g.generateTexture(`${prefix}_arm`, 26, 50);
+  const AW = 50, AH = 96;
+  gradientRoundedRect(g, 6, 4, AW - 12, AH - 8, 16, light, dark);
+  g.lineStyle(4, edgeColor, 0.85);
+  g.strokeRoundedRect(6, 4, AW - 12, AH - 8, 16);
+  // наплечник горе
+  gradientRoundedRect(g, 2, 2, AW - 4, 30, 14, light, shade(bodyColor, -20));
+  g.lineStyle(3.5, edgeColor, 0.9);
+  g.strokeRoundedRect(2, 2, AW - 4, 30, 14);
+  // ленти/стави по ръката
+  g.fillStyle(dark, 0.7);
+  g.fillRoundedRect(8, AH * 0.55, AW - 16, 8, 4);
+  g.generateTexture(`${prefix}_arm`, AW, AH);
 
-  // --- ЮМРУК / ДЛАН ---
+  // ---------------------------------------------------------------- ЮМРУК
+  // Голям брониран юмрук с кокалчета.
   g.clear();
-  g.fillStyle(shade(bodyColor, 10), 1);
-  g.fillCircle(14, 14, 13);
-  g.lineStyle(2.5, edgeColor, 0.8);
-  g.strokeCircle(14, 14, 13);
-  g.fillStyle(shade(bodyColor, -40), 0.5);
-  g.fillCircle(14, 17, 6);
-  g.generateTexture(`${prefix}_fist`, 28, 28);
+  const FW = 56;
+  g.fillStyle(shade(bodyColor, 20), 1);
+  g.fillRoundedRect(6, 10, FW - 12, FW - 18, 12);
+  g.lineStyle(4, edgeColor, 0.9);
+  g.strokeRoundedRect(6, 10, FW - 12, FW - 18, 12);
+  // кокалчета
+  g.fillStyle(light, 0.95);
+  for (let k = 0; k < 4; k++) g.fillCircle(13 + k * 10, 14, 4);
+  // палец
+  g.fillStyle(shade(bodyColor, -10), 1);
+  g.fillRoundedRect(FW - 16, 20, 12, 18, 6);
+  g.generateTexture(`${prefix}_fist`, FW, FW);
 
-  // --- КРАК (пивот горе) ---
+  // ---------------------------------------------------------------- КРАК
+  // Масивен брониран крак с наколенник и тежко стъпало (пивот горе).
   g.clear();
-  gradientRoundedRect(g, 2, 2, 22, 52, 9, shade(bodyColor, 10), shade(bodyColor, -60));
-  g.lineStyle(2.5, edgeColor, 0.6);
-  g.strokeRoundedRect(2, 2, 22, 52, 9);
-  // стъпало
-  g.fillStyle(shade(bodyColor, -30), 1);
-  g.fillRoundedRect(0, 46, 30, 12, 4);
-  g.generateTexture(`${prefix}_leg`, 32, 60);
+  const LW = 52, LH = 110;
+  gradientRoundedRect(g, 8, 4, LW - 16, LH - 28, 14, light, dark);
+  g.lineStyle(4, edgeColor, 0.8);
+  g.strokeRoundedRect(8, 4, LW - 16, LH - 28, 14);
+  // наколенник
+  g.fillStyle(light, 0.95); g.fillCircle(LW / 2, LH * 0.46, 11);
+  g.lineStyle(3, edgeColor, 0.85); g.strokeCircle(LW / 2, LH * 0.46, 11);
+  // тежко метално стъпало
+  g.fillStyle(dark, 1);
+  g.fillRoundedRect(2, LH - 30, LW + 6, 26, 8);
+  g.lineStyle(3, edgeColor, 0.7);
+  g.strokeRoundedRect(2, LH - 30, LW + 6, 26, 8);
+  g.generateTexture(`${prefix}_leg`, LW + 10, LH);
 
   g.destroy();
 }

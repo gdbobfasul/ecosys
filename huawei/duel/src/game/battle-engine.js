@@ -128,7 +128,16 @@ BattleEngine.prototype._buildDOM = function () {
     // wrapper за aspect ratio
     var wrap = document.createElement('div');
     wrap.className = 'kbb-wrap kbb-' + this.mode.toLowerCase();
-    wrap.style.aspectRatio = this.W + '/' + this.H;
+    if (this.standalone) {
+        // Самостоятелно приложение (телефон): ЦЯЛ ЕКРАН — без aspect-кутийка и без
+        // max-width, за да не е дребно. Полето се мащабира с „cover" (виж _fitArena),
+        // запълва екрана, реже само страничната растителност. Контролите са долу.
+        wrap.style.width = '100%';
+        wrap.style.height = '100%';
+        wrap.style.maxWidth = 'none';
+    } else {
+        wrap.style.aspectRatio = this.W + '/' + this.H;
+    }
     c.appendChild(wrap);
 
     var stage = document.createElement('div');
@@ -184,15 +193,21 @@ BattleEngine.prototype._buildDOM = function () {
     info.className = 'kbb-info';
     stage.appendChild(info);
 
-    // контроли долу (V/B + комбо клавиши)
+    // контроли долу (V/B + комбо/специални клавиши)
+    // ВАЖНО: контролите се КАЧВАТ върху wrap-а (НЕ върху stage), за да НЕ ги
+    // мащабира transform:scale на полето. Така бутоните остават едри (реални
+    // пиксели), независимо колко е смалено полето на малък телефонен екран.
+    // Панелът е закотвен НАЙ-ОТДОЛУ, обособено меню, за да може играчът да
+    // натиска буквите с палци — включително няколко ЕДНОВРЕМЕННО (multi-touch)
+    // за специалните удари/комбинациите.
     var ctrl = document.createElement('div');
     ctrl.className = 'kbb-ctrl';
-    stage.appendChild(ctrl);
+    wrap.appendChild(ctrl);
 
-    // комбо индикатор (показва натиснатите букви)
+    // комбо индикатор (показва натиснатите букви) — също върху wrap, точно над панела
     var combo = document.createElement('div');
     combo.className = 'kbb-combo';
-    stage.appendChild(combo);
+    wrap.appendChild(combo);
 
     // синя стрелка за избор на цел
     var arrow = document.createElement('div');
@@ -257,7 +272,11 @@ BattleEngine.prototype._fitArena = function () {
     var w = this.els.wrap.clientWidth;
     var h = this.els.wrap.clientHeight;
     if (!w || !h) return;
-    var s = Math.min(w / this.W, h / this.H);
+    // Самостоятелно (телефон) → „cover" (Math.max): полето запълва ЦЕЛИЯ екран (по-едро),
+    // реже само страничната растителност (бойците остават по центъра, вертикално цели).
+    // Вграден в портал → „contain" (Math.min): нищо не се реже.
+    var s = this.standalone ? Math.max(w / this.W, h / this.H)
+                            : Math.min(w / this.W, h / this.H);
     this.els.stage.style.setProperty('--s', s); this.els.stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
 };
 
@@ -288,6 +307,10 @@ BattleEngine.prototype._bind = function () {
     if (this._bound) return;
     this._bound = true;
     document.addEventListener('keydown', function (e) {
+        // Когато фокусът е в текстово поле (напр. въвеждане на име за ранг листата),
+        // НЕ прихващаме Space/Enter за старт на игра — оставяме входа да си работи.
+        var tgt = e.target;
+        if (tgt && (tgt.tagName === 'INPUT' || tgt.tagName === 'TEXTAREA' || tgt.isContentEditable)) return;
         if (self.state === 'menu' || self.state === 'over') {
             if (e.code === 'Space' || e.code === 'Enter') self.startGame();
             return;
@@ -430,8 +453,10 @@ BattleEngine.prototype._slotPositions = function () {
     // HMM: 2 колони по 3 слота — изместени НАДОЛУ, за да не ги застъпват
     //      контролите/бутоните най-горе.
     if (this.teamSize === 1) {
-        return { left: [{ x: this.W * 0.25, y: this.H * 0.80 }],
-                 right: [{ x: this.W * 0.75, y: this.H * 0.80 }] };
+        // 1v1 (Дуел): бойците са вдигнати (0.72 вместо 0.80), за да не ги крие
+        // изнесеното най-долу меню с едрите бутони.
+        return { left: [{ x: this.W * 0.25, y: this.H * 0.72 }],
+                 right: [{ x: this.W * 0.75, y: this.H * 0.72 }] };
     }
     var left = [], right = [];
     var top = 0.46, bottom = 0.92;  // зоната за героите (под панела с бутони)
@@ -1184,7 +1209,10 @@ BattleEngine.prototype._renderControls = function (actor) {
     ctrl.className = 'kbb-ctrl' + (this.mode === 'Duel' ? ' kbb-ctrl-duel' : '');
     var foes = this._aliveFoes();
     var tgt = foes[Math.min(this.selTarget, foes.length - 1)];
-    var html = '<div class="kbb-actor">Твой ход: <b>' + actor.name + '</b></div>';
+    // комбо-лентата седи НАЙ-ОТГОРЕ на панела (вътре в него), за да е точно над
+    // буквените бутони и да се мащабира заедно с тях
+    var html = '<div class="kbb-combo-inline"></div>';
+    html += '<div class="kbb-actor">Твой ход: <b>' + actor.name + '</b></div>';
     if (foes.length) {
         html += '<div class="kbb-target">🎯 Цел: <b>' + (tgt ? tgt.name : '—') + '</b>' +
                 (foes.length > 1 ? ' <span class="kbb-hint">(↑/↓ смяна)</span>' : '') + '</div>';
@@ -1218,26 +1246,63 @@ BattleEngine.prototype._renderControls = function (actor) {
     }
     ctrl.innerHTML = html;
     var self = this;
+    // ── MULTI-TOUCH вход ──
+    // НЕ ползваме 'click' (той не позволява няколко едновременни натискания и
+    // изисква pointerdown+pointerup върху ЕДИН и същ елемент). Вместо това
+    // слушаме 'pointerdown' на всеки бутон: всеки докоснат пръст пуска СВОЕТО
+    // действие веднага. Така играчът може да натисне няколко букви наведнъж и
+    // те всичките се регистрират → специалните удари/комбинациите минават при
+    // едновременно натискане. setPointerCapture гарантира, че събитието
+    // принадлежи на бутона дори ако пръстът леко се измести.
+    var fire = function (b) {
+        if (self.anim || self.state !== 'playing') return;
+        var cur = self.turnOrder[self.turnIdx];
+        if (!cur || cur.side !== 'ally' || !cur.alive) return;
+        if (b.dataset.sp != null) { self.doSpecial(cur, parseInt(b.dataset.sp, 10)); self._renderHUD(); }
+        else self.handleKey(cur, b.dataset.k);
+    };
     ctrl.querySelectorAll('button').forEach(function (b) {
-        b.addEventListener('click', function () {
-            if (self.anim || self.state !== 'playing') return;
-            if (b.dataset.sp != null) { self.doSpecial(actor, parseInt(b.dataset.sp, 10)); self._renderHUD(); }
-            else self.handleKey(actor, b.dataset.k);
-        });
+        var onDown = function (e) {
+            e.preventDefault();          // спира 300ms закъснение, двойно tap-зум, скрол
+            e.stopPropagation();
+            try { b.setPointerCapture && b.setPointerCapture(e.pointerId); } catch (_) {}
+            b.classList.add('kbb-press');
+            fire(b);
+        };
+        var unpress = function () { b.classList.remove('kbb-press'); };
+        // pointerdown покрива touch + mouse + pen с ЕДИН модел и поддържа
+        // няколко едновременни pointer-а (по един на пръст).
+        b.addEventListener('pointerdown', onDown);
+        b.addEventListener('pointerup', unpress);
+        b.addEventListener('pointercancel', unpress);
+        b.addEventListener('pointerleave', unpress);
+        // Резервен път за стари WebView без Pointer Events: touchstart.
+        if (!('PointerEvent' in window)) {
+            b.addEventListener('touchstart', function (e) {
+                e.preventDefault();
+                b.classList.add('kbb-press');
+                fire(b);
+            }, { passive: false });
+            b.addEventListener('touchend', unpress);
+        }
     });
-    // combo display — показва натиснатите клавиши + дали съвпадат
+    // combo display — показва натиснатите клавиши + дали съвпадат.
+    // Пишем го във вградената лента на панела (kbb-combo-inline). Външният
+    // els.combo се изчиства, за да не дублира текста.
+    var line = ctrl.querySelector('.kbb-combo-inline');
+    if (this.els.combo) this.els.combo.textContent = '';
     if (this._comboJustFound) {
-        this.els.combo.textContent = '✓ Спец ' + this._comboJustFound + ' открит! Натисни зеления бутон, за да удариш';
+        if (line) line.textContent = '✓ Спец ' + this._comboJustFound + ' открит! Натисни зеления бутон, за да удариш';
         this._comboJustFound = 0;
     } else if (this.comboInput.length) {
         var self2 = this;
         var shown = this.comboInput.slice(-4).map(function (k) { return self2._keyLabel(k); }).join(' · ');
         var tail = (this.comboInput.length >= 4 && this._comboMiss) ? '   ✗ не съвпада' : '';
-        this.els.combo.textContent = 'Комбо: ' + shown + tail;
+        if (line) line.textContent = 'Комбо: ' + shown + tail;
     } else {
         var self3 = this;
         var hk = (this.heroKeys[actor.id] || COMBO_ALPHABET).map(function (x) { return self3._keyLabel(x); }).join(' ');
-        this.els.combo.textContent = 'Спец: познай 4 от тези 6 на героя — ' + hk + ' (в произволен ред)';
+        if (line) line.textContent = 'Спец: натисни 4 от тези 6 на героя — ' + hk + ' (в произволен ред; може и едновременно)';
     }
 };
 
@@ -1255,9 +1320,58 @@ BattleEngine.prototype.drawMenu = function () {
         '  </p>' +
         '  <p class="kbb-best">Рекорд: ниво ' + this.bestLevel + ' / ' + this.bestScore + ' т.</p>' +
         '  <button class="kbb-go">Започни (Space)</button>' +
+        '  <button class="kbb-lb-open">🏆 Ранг листа</button>' +
         '</div>';
     var self = this;
     this.els.ov.querySelector('.kbb-go').onclick = function () { self.startGame(); };
+    var lbBtn = this.els.ov.querySelector('.kbb-lb-open');
+    if (lbBtn) lbBtn.onclick = function () { self.drawLeaderboard(); };
+};
+
+/* ── РАНГ ЛИСТА (leaderboard) ── */
+/* Локален ТОП 100 — само име + точки (нула контакти). Синхронен localStorage. */
+
+// Безопасен достъп до модула (зареден като side-effect върху window.DuelLeaderboard).
+BattleEngine.prototype._lb = function () {
+    return (typeof window !== 'undefined' && window.DuelLeaderboard) || null;
+};
+
+// HTML на таблицата с топ-100. highlightIdx = индекс (0-базиран) на реда за осветяване
+// (или -1 за никакъв). meName/meScore — за да осветим точно нашия запис, когато има
+// няколко еднакви имена/точки.
+BattleEngine.prototype._leaderboardTableHTML = function (rows, highlightIdx) {
+    if (!rows || !rows.length) {
+        return '<p class="kbb-lb-empty">Все още няма записи. Изиграй бой и запиши резултата си!</p>';
+    }
+    var html = '<div class="kbb-lb-list">';
+    for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        var hl = (i === highlightIdx) ? ' kbb-lb-me' : '';
+        var nameEsc = String(r.name).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        html += '<div class="kbb-lb-row' + hl + '">' +
+                '<span class="kbb-lb-rank">' + (i + 1) + '</span>' +
+                '<span class="kbb-lb-name">' + nameEsc + '</span>' +
+                '<span class="kbb-lb-score">' + r.score + '</span>' +
+                '</div>';
+    }
+    html += '</div>';
+    return html;
+};
+
+// Самостоятелен екран „Ранг листа" от главното меню (цял топ-100, без осветен ред).
+BattleEngine.prototype.drawLeaderboard = function () {
+    var lb = this._lb();
+    var rows = lb ? lb.getTop(100) : [];
+    this.els.ov.style.display = '';
+    this.els.ov.innerHTML =
+        '<div class="kbb-card kbb-card-lb' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
+        '  <h1>🏆 Ранг листа</h1>' +
+        '  <p class="kbb-lb-sub">ТОП 100 — име и точки</p>' +
+        this._leaderboardTableHTML(rows, -1) +
+        '  <button class="kbb-go kbb-lb-back">Назад</button>' +
+        '</div>';
+    var self = this;
+    this.els.ov.querySelector('.kbb-lb-back').onclick = function () { self.drawMenu(); };
 };
 
 BattleEngine.prototype.drawLevelUp = function () {
@@ -1273,17 +1387,76 @@ BattleEngine.prototype.drawLevelUp = function () {
 };
 
 BattleEngine.prototype.drawOver = function (won) {
+    var lb = this._lb();
+    var defName = (lb && lb.lastName()) || '';
+    var defNameEsc = defName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    this._scoreSubmitted = false;  // този резултат още не е записан в листата
     this.els.ov.style.display = '';
     this.els.ov.innerHTML =
-        '<div class="kbb-card' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
+        '<div class="kbb-card kbb-card-over' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
         '  <h1>' + (won ? '🏆 ПОБЕДА!' : 'Загуба') + '</h1>' +
         '  <p>Стигна до ниво ' + this.level + '</p>' +
         '  <p>Точки: <b>' + this.score + '</b></p>' +
+        '  <div class="kbb-lb-form">' +
+        '    <label class="kbb-lb-label">Името ти за ранг листата:</label>' +
+        '    <input class="kbb-lb-input" type="text" maxlength="24" placeholder="Играч" value="' + defNameEsc + '">' +
+        '    <button class="kbb-go kbb-lb-save">Запиши резултата</button>' +
+        '  </div>' +
         '  <p class="kbb-best">Рекорд: ниво ' + this.bestLevel + ' / ' + this.bestScore + ' т.</p>' +
-        '  <button class="kbb-go">Нова игра (Space)</button>' +
+        '  <button class="kbb-go kbb-lb-newgame">Нова игра (Space)</button>' +
         '</div>';
     var self = this;
-    this.els.ov.querySelector('.kbb-go').onclick = function () { self.startGame(); };
+    var input = this.els.ov.querySelector('.kbb-lb-input');
+    var saveBtn = this.els.ov.querySelector('.kbb-lb-save');
+    if (saveBtn) saveBtn.onclick = function () { self._submitScore(input ? input.value : ''); };
+    if (input) {
+        input.onkeydown = function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); self._submitScore(input.value); }
+        };
+        // фокус, без да отваря клавиатурата прекалено агресивно
+        try { input.focus(); input.select(); } catch (_) {}
+    }
+    var newBtn = this.els.ov.querySelector('.kbb-lb-newgame');
+    if (newBtn) newBtn.onclick = function () { self.startGame(); };
+};
+
+// Записва текущия резултат с въведеното име, изчислява мястото и ВЕДНАГА показва
+// листата с осветен ред + „Ти си #N от M".
+BattleEngine.prototype._submitScore = function (name) {
+    if (this._scoreSubmitted) return;  // пази от двоен запис на същия бой
+    var lb = this._lb();
+    var cleanName = String(name == null ? '' : name).replace(/\s+/g, ' ').trim().slice(0, 24) || 'Играч';
+    var res, rank, total;
+    if (lb) {
+        res = lb.addScore(cleanName, this.score);
+        rank = res.rank; total = res.total;
+    } else {
+        rank = 1; total = 1;
+    }
+    this._scoreSubmitted = true;
+
+    var rows = lb ? lb.getTop(100) : [{ name: cleanName, score: this.score }];
+    // намери НАШИЯ ред сред показаните (име+точки), за да го осветим. Ако сме извън
+    // топ-100, осветен ред няма, но текстът „Ти си #N от M" пак го казва.
+    var highlightIdx = -1;
+    for (var i = 0; i < rows.length; i++) {
+        if (highlightIdx === -1 && rows[i].name === cleanName && rows[i].score === this.score) {
+            highlightIdx = i;  // първият съвпадащ ред (ранг = това място)
+            break;
+        }
+    }
+
+    var self = this;
+    this.els.ov.style.display = '';
+    this.els.ov.innerHTML =
+        '<div class="kbb-card kbb-card-lb' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
+        '  <h1>🏆 Ранг листа</h1>' +
+        '  <p class="kbb-lb-you">Ти си <b>#' + rank + '</b> от <b>' + total + '</b></p>' +
+        this._leaderboardTableHTML(rows, highlightIdx) +
+        '  <button class="kbb-go kbb-lb-newgame">Нова игра (Space)</button>' +
+        '</div>';
+    var newBtn = this.els.ov.querySelector('.kbb-lb-newgame');
+    if (newBtn) newBtn.onclick = function () { self.startGame(); };
 };
 
 /* ── CSS ── */
@@ -1306,25 +1479,38 @@ var BATTLE_CSS = [
 '.kbb-hpname{position:absolute;inset:0;text-align:center;color:#f0d896;font-family:"Cinzel",serif;font-weight:600;font-size:10px;letter-spacing:1px;line-height:14px;text-shadow:1px 1px 1px #000;}',
 '.kbb-info{position:absolute;top:18px;left:18px;display:flex;gap:18px;font-family:"Cinzel",serif;font-size:18px;color:#c9a35d;text-shadow:1px 1px 0 #000;letter-spacing:2px;}',
 '.kbb-msg{position:absolute;top:60px;left:50%;transform:translateX(-50%);font-family:"Cinzel",serif;font-size:22px;color:#e8d6a5;text-shadow:2px 2px 0 #000,0 0 12px rgba(0,0,0,.8);letter-spacing:1px;}',
-'.kbb-ctrl{position:absolute;top:96px;bottom:auto;left:50%;transform:translateX(-50%);text-align:center;color:#d8c08c;background:rgba(10,8,10,.88);border:3px solid #6a4a2a;border-radius:18px;padding:28px 40px;backdrop-filter:blur(4px);max-width:94%;z-index:42;}',
-'.kbb-ctrl-duel{transform:translateX(-50%) scale(0.4);transform-origin:top center;}',
-'.kbb-actor{font-family:"Cinzel",serif;font-size:40px;letter-spacing:2px;margin-bottom:14px;color:#f0d896;}',
-'.kbb-target{font-family:"Cinzel",serif;font-size:34px;color:#8fd0ff;margin-bottom:18px;letter-spacing:1px;}',
+/* ── ДОЛНО ОБОСОБЕНО МЕНЮ С КОНТРОЛИ ──
+   Качено е върху .kbb-wrap (НЕ върху мащабираното поле), затова размерите тук
+   са в РЕАЛНИ пиксели и бутоните остават едри на телефон. Закотвено е най-долу,
+   разпростряно по цялата ширина, за да се натискат буквите/специалните с палци.
+   touch-action:none + user-select:none → позволяват ЕДНОВРЕМЕННИ натискания
+   (multi-touch) без скрол/зум/селекция, които иначе ги отменят. */
+'.kbb-ctrl{position:absolute;left:0;right:0;bottom:0;top:auto;transform:none;box-sizing:border-box;text-align:center;color:#d8c08c;background:linear-gradient(180deg,rgba(10,8,10,.72),rgba(10,8,10,.96));border-top:3px solid #6a4a2a;border-radius:18px 18px 0 0;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));backdrop-filter:blur(4px);max-width:900px;margin:0 auto;z-index:42;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;}',
+/* Duel: НЕ смаляваме менюто (старият scale(0.4) го правеше дребно) — едри бутони като при отбора */
+'.kbb-ctrl-duel{transform:none;transform-origin:bottom center;}',
+'.kbb-ctrl button{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}',
+'.kbb-actor{font-family:"Cinzel",serif;font-size:18px;letter-spacing:1px;margin-bottom:4px;color:#f0d896;}',
+'.kbb-target{font-family:"Cinzel",serif;font-size:17px;color:#8fd0ff;margin-bottom:8px;letter-spacing:.5px;}',
 '.kbb-target b{color:#cfe9ff;}',
-'.kbb-hint{font-size:24px;color:#7a90a4;}',
-'.kbb-btns{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}',
-'.kbb-btn{background:linear-gradient(180deg,#3a2a1a,#1a1208);color:#e8d6a5;border:3px solid #6a4a2a;border-radius:14px;padding:26px 40px;font-family:"Cinzel",serif;font-size:40px;letter-spacing:1.5px;cursor:pointer;box-shadow:0 5px 0 #000,inset 0 1px 0 rgba(255,200,120,.2);transition:transform .1s,background .2s;}',
-'.kbb-btn b{color:#f8c450;display:inline-block;background:#1a0e06;border:2px solid #8a5a2a;padding:2px 16px;border-radius:8px;margin-right:14px;font-family:"Cinzel",serif;}',
+'.kbb-hint{font-size:13px;color:#7a90a4;}',
+'.kbb-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;}',
+'.kbb-btn{min-width:120px;min-height:64px;background:linear-gradient(180deg,#3a2a1a,#1a1208);color:#e8d6a5;border:3px solid #6a4a2a;border-radius:14px;padding:10px 18px;font-family:"Cinzel",serif;font-size:22px;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 0 #000,inset 0 1px 0 rgba(255,200,120,.2);transition:transform .08s,background .2s;}',
+'.kbb-btn b{color:#f8c450;display:inline-block;background:#1a0e06;border:2px solid #8a5a2a;padding:1px 12px;border-radius:8px;margin-right:8px;font-family:"Cinzel",serif;}',
 '.kbb-btn:hover{background:linear-gradient(180deg,#5a3a22,#2a1810);}',
-'.kbb-btn:active{transform:translateY(2px);}',
-'.kbb-comborow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}',
-'.kbb-specrow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}',
-'.kbb-sp{background:linear-gradient(180deg,#2a5a2a,#103010);color:#d8ffd8;border:3px solid #6ad06a;border-radius:14px;padding:16px 28px;font-family:"Cinzel",serif;font-size:34px;font-weight:700;cursor:pointer;letter-spacing:1px;box-shadow:0 4px 0 #000,0 0 18px rgba(120,255,120,.35);}',
+'.kbb-btn.kbb-press,.kbb-btn:active{transform:translateY(2px);background:linear-gradient(180deg,#6a4a2a,#3a2010);}',
+'.kbb-comborow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}',
+'.kbb-specrow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;}',
+'.kbb-sp{min-height:64px;background:linear-gradient(180deg,#2a5a2a,#103010);color:#d8ffd8;border:3px solid #6ad06a;border-radius:14px;padding:12px 22px;font-family:"Cinzel",serif;font-size:20px;font-weight:700;cursor:pointer;letter-spacing:.5px;box-shadow:0 4px 0 #000,0 0 18px rgba(120,255,120,.35);}',
 '.kbb-sp:hover{background:linear-gradient(180deg,#357035,#154015);}',
-'.kbb-sp:active{transform:translateY(2px);box-shadow:0 2px 0 #000;}',
-'.kbb-ck{background:#1a1208;color:#9a8862;border:2px solid #3a2a1a;border-radius:12px;width:92px;height:92px;font-family:"Cinzel",serif;font-size:36px;cursor:pointer;letter-spacing:1px;}',
-'.kbb-ck:hover{background:#2a1810;color:#e8d6a5;border-color:#6a4a2a;}',
-'.kbb-combo{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-family:"Cinzel",serif;font-size:30px;color:#f8c450;letter-spacing:4px;text-shadow:0 0 8px rgba(248,196,80,.5);min-height:24px;}',
+'.kbb-sp.kbb-press,.kbb-sp:active{transform:translateY(2px);box-shadow:0 2px 0 #000;}',
+/* буквените бутони за специалните удари — едри (мин. 64px), светли и четливи, за палец */
+'.kbb-ck{background:linear-gradient(180deg,#3a2a1a,#1a1208);color:#f0d896;border:2px solid #8a5a2a;border-radius:14px;min-width:64px;width:64px;height:64px;font-family:"Cinzel",serif;font-size:30px;font-weight:700;cursor:pointer;letter-spacing:1px;box-shadow:0 4px 0 #000,inset 0 1px 0 rgba(255,200,120,.2);transition:transform .08s,background .12s;}',
+'.kbb-ck:hover{background:linear-gradient(180deg,#5a3a22,#2a1810);color:#fff0c8;border-color:#b88a4a;}',
+'.kbb-ck.kbb-press,.kbb-ck:active{transform:translateY(2px);background:linear-gradient(180deg,#8a5a2a,#4a2810);color:#fff;box-shadow:0 1px 0 #000;}',
+/* вградената комбо-лента в горната част на долното меню */
+'.kbb-combo-inline{font-family:"Cinzel",serif;font-size:15px;color:#f8c450;letter-spacing:1px;text-shadow:0 0 8px rgba(248,196,80,.5);min-height:18px;margin-bottom:6px;line-height:1.3;}',
+/* старият плаващ индикатор вече не се ползва (текстът е в менюто) — скрит */
+'.kbb-combo{display:none;}',
 '.kbb-target-arrow{position:absolute;color:#3aa0ff;font-size:90px;line-height:1;text-shadow:0 0 18px rgba(58,160,255,.9),0 0 4px #000;pointer-events:none;z-index:41;animation:kbbArrow 0.8s ease-in-out infinite;}',
 '@keyframes kbbArrow{0%,100%{transform:translateX(0)}50%{transform:translateX(18px)}}',
 '.kbb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,5,8,.85);backdrop-filter:blur(6px);z-index:50;}',
@@ -1339,6 +1525,30 @@ var BATTLE_CSS = [
 '.kbb-go{background:linear-gradient(180deg,#7a3a1a,#3a1a08);color:#f8e0a8;border:2.5px solid #b88a4a;border-radius:11px;padding:25px 55px;font-family:"Cinzel",serif;font-size:35px;font-weight:700;letter-spacing:2px;cursor:pointer;margin-top:32px;text-shadow:1px 1px 0 #000;box-shadow:0 6px 0 #000,inset 0 1px 0 rgba(255,220,160,.3);}',
 '.kbb-go:hover{background:linear-gradient(180deg,#9a4a20,#5a2a10);}',
 '.kbb-go:active{transform:translateY(2px);box-shadow:0 2px 0 #000;}',
+/* ── РАНГ ЛИСТА (leaderboard) ── стил kbb-* ── */
+/* Картите с листа са по-широки и с ограничена височина (скролваема таблица). */
+'.kbb-card-lb,.kbb-card-over{max-width:92%;}',
+'.kbb-lb-sub{font-size:26px !important;color:#c9a35d !important;margin:0 0 18px !important;}',
+'.kbb-lb-you{font-size:34px !important;color:#f0d896 !important;margin:6px 0 20px !important;font-style:normal !important;}',
+'.kbb-lb-you b{color:#f8c450;}',
+'.kbb-lb-list{max-height:560px;overflow-y:auto;border:2px solid #6a4a2a;border-radius:12px;background:rgba(10,8,10,.6);padding:6px;margin:0 0 26px;-webkit-overflow-scrolling:touch;}',
+'.kbb-lb-row{display:flex;align-items:center;gap:14px;padding:10px 16px;border-radius:8px;font-family:"Cinzel",serif;font-size:28px;color:#e8d6a5;border-bottom:1px solid rgba(106,74,42,.35);}',
+'.kbb-lb-row:last-child{border-bottom:none;}',
+'.kbb-lb-row:nth-child(even){background:rgba(255,255,255,.03);}',
+'.kbb-lb-rank{flex:0 0 auto;min-width:70px;text-align:right;color:#c9a35d;font-weight:700;}',
+'.kbb-lb-name{flex:1 1 auto;text-align:left;color:#f0d896;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}',
+'.kbb-lb-score{flex:0 0 auto;color:#f8c450;font-weight:700;text-align:right;min-width:120px;}',
+/* осветеният ред = твоят запис */
+'.kbb-lb-me{background:linear-gradient(180deg,rgba(248,196,80,.30),rgba(248,196,80,.12)) !important;border:2px solid #f8c450;box-shadow:0 0 18px rgba(248,196,80,.45);}',
+'.kbb-lb-me .kbb-lb-name,.kbb-lb-me .kbb-lb-rank,.kbb-lb-me .kbb-lb-score{color:#fff0c8;}',
+'.kbb-lb-empty{font-size:30px !important;color:#c9a35d !important;margin:30px 0 26px !important;}',
+/* формата за въвеждане на име на края на боя */
+'.kbb-lb-form{display:flex;flex-direction:column;align-items:center;gap:16px;margin:24px 0;}',
+'.kbb-lb-label{font-family:"Cinzel",serif;font-size:26px;color:#c9a35d;letter-spacing:1px;}',
+'.kbb-lb-input{width:80%;max-width:560px;box-sizing:border-box;background:#1a0e06;border:3px solid #8a5a2a;border-radius:12px;padding:18px 22px;font-family:"Cinzel",serif;font-size:32px;color:#f8e0a8;text-align:center;letter-spacing:1px;outline:none;}',
+'.kbb-lb-input:focus{border-color:#f8c450;box-shadow:0 0 16px rgba(248,196,80,.4);}',
+'.kbb-card .kbb-go.kbb-lb-open{background:linear-gradient(180deg,#3a2a5a,#1a1030);border-color:#8a6ad0;margin-top:18px;}',
+'.kbb-card .kbb-go.kbb-lb-open:hover{background:linear-gradient(180deg,#4a3a72,#2a2050);}',
 '@keyframes kbbShake{0%,100%{transform:translate(-50%,-50%) scale(var(--s,1))}25%{transform:translate(calc(-50% - 8px),calc(-50% - 4px)) scale(var(--s,1))}50%{transform:translate(calc(-50% + 6px),calc(-50% + 6px)) scale(var(--s,1))}75%{transform:translate(calc(-50% - 4px),calc(-50% - 6px)) scale(var(--s,1))}}',
 ].join('\n');
 

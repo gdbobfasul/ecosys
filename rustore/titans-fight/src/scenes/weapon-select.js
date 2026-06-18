@@ -1,42 +1,48 @@
 import Phaser from 'phaser';
-import { GAME_W, GAME_H } from '../main.js';
 import { THEME } from '../theme.js';
 import { WEAPONS, unlockedWeapons } from '../weapons.js';
-import { LEVELS, getLevel } from '../levels.js';
+import { getLevel } from '../levels.js';
 import { makeButton, titleText } from '../ui.js';
 import { buildArena } from '../backgrounds.js';
 
-// Екран за избор на оръжие. Наличните оръжия зависят от достигнатото ниво
-// (прогресия: нови оръжия се отключват с напредъка).
+// Екран за избор на оръжие. Наличните оръжия зависят от достигнатото ниво.
+// Отзивчив към размера на екрана.
 export class WeaponSelectScene extends Phaser.Scene {
   constructor() { super('weapon-select'); }
 
   create() {
+    const { width: W, height: H } = this.scale.gameSize;
+
     const levelId = this.registry.get('pendingLevel') || 1;
     const lvl = getLevel(levelId);
     buildArena(this, lvl.arena);
 
-    titleText(this, GAME_W / 2, 64, 'ИЗБЕРИ ОРЪЖИЕ', 40, THEME.primaryHex);
-    titleText(this, GAME_W / 2, 110, `НИВО ${lvl.id} — ${lvl.name}`, 20, THEME.accentHex);
+    titleText(this, W / 2, H * 0.10, 'ИЗБЕРИ ОРЪЖИЕ', Math.min(40, W * 0.07), THEME.primaryHex);
+    titleText(this, W / 2, H * 0.18, `НИВО ${lvl.id} — ${lvl.name}`, 20, THEME.accentHex);
 
-    // Оръжията се отключват според НАЙ-ВИСОКОТО отключено ниво (прогрес), не само текущото.
     const unlockedLevel = this.registry.get('unlockedLevel') || 1;
     const available = unlockedWeapons(unlockedLevel);
 
     const all = Object.values(WEAPONS);
-    const cols = all.length;
-    const cellW = 168;
-    const startX = GAME_W / 2 - ((cols - 1) * cellW) / 2;
-    const y = 250;
+    const portrait = H > W;
+    const cols = portrait ? 3 : all.length;
+    const cellW = Math.min(W / (cols + 0.3), 168);
+    const gapX = cellW * 1.05;
+    const rows = Math.ceil(all.length / cols);
+    const startX = W / 2 - ((cols - 1) * gapX) / 2;
+    const startY = H * 0.30;
+    const gapY = H * 0.30;
 
     let selected = this.registry.get('selectedWeapon') || 'fists';
     if (!available.includes(selected)) selected = available[available.length - 1];
 
     const cards = [];
     all.forEach((w, i) => {
-      const x = startX + i * cellW;
+      const col = i % cols, row = Math.floor(i / cols);
+      const x = startX + col * gapX;
+      const y = startY + row * gapY;
       const open = available.includes(w.key);
-      const card = this._weaponCard(x, y, w, open, () => {
+      const card = this._weaponCard(x, y, Math.min(cellW * 0.92, 152), w, open, () => {
         if (!open) return;
         selected = w.key;
         cards.forEach(c => c.setSelected(c.key === selected));
@@ -48,29 +54,34 @@ export class WeaponSelectScene extends Phaser.Scene {
 
     this.registry.set('selectedWeapon', selected);
 
-    makeButton(this, GAME_W / 2 - 130, GAME_H - 60, 220, 56, '◀ НАЗАД', () => {
+    makeButton(this, W / 2 - 130, H - 56, 220, 56, '◀ НАЗАД', () => {
       this.scene.start('menu');
-    }, { color: 0x666, fontSize: '20px' });
+    }, { color: 0x6a7686, fontSize: '20px' });
 
-    makeButton(this, GAME_W / 2 + 130, GAME_H - 60, 220, 56, 'БОЙ! ⚔', () => {
+    makeButton(this, W / 2 + 130, H - 56, 220, 56, 'БОЙ! ⚔', () => {
       this.registry.set('selectedWeapon', selected);
       this.scene.start('game', { level: lvl.id, weapon: selected });
     }, { color: THEME.good, fontSize: '22px' });
+
+    this.scale.on('resize', this._onResize, this);
+    this.events.once('shutdown', () => this.scale.off('resize', this._onResize, this));
   }
 
-  _weaponCard(x, y, w, open, onClick) {
+  _onResize() { this.scene.restart(); }
+
+  _weaponCard(x, y, cw, w, open, onClick) {
     const cont = this.add.container(x, y);
     cont.key = w.key;
-    const W = 152, H = 220;
+    const CW = cw, H = cw * 1.45;
     const bg = this.add.graphics();
-    const icon = this.add.container(0, -40);
+    const icon = this.add.container(0, -H * 0.18);
     this._drawWeaponIcon(icon, w);
 
-    const name = this.add.text(0, 30, open ? w.name : '🔒 ' + w.name, {
-      fontFamily: 'system-ui', fontSize: '18px', color: '#ffffff', fontStyle: 'bold'
+    const name = this.add.text(0, H * 0.14, open ? w.name : '🔒 ' + w.name, {
+      fontFamily: 'system-ui', fontSize: '17px', color: '#ffffff', fontStyle: 'bold'
     }).setOrigin(0.5);
 
-    const stats = this.add.text(0, 64,
+    const stats = this.add.text(0, H * 0.28,
       open ? `Щета: ${w.damage}\nОбхват: ${w.type === 'throw' ? 'далечен' : w.reach}\nСкорост: ${(1000 / w.cooldown).toFixed(1)}/с`
            : `Отключи на\nниво ${w.unlockLevel}`,
       { fontFamily: 'system-ui', fontSize: '13px', color: '#d0d0d8', align: 'center' }
@@ -82,27 +93,26 @@ export class WeaponSelectScene extends Phaser.Scene {
     let sel = false;
     const redraw = () => {
       bg.clear();
-      bg.fillStyle(0x000000, 0.45);
-      bg.fillRoundedRect(-W / 2, -H / 2, W, H, 16);
-      bg.lineStyle(sel ? 4 : 2, sel ? THEME.accent : 0xffffff, sel ? 1 : 0.3);
-      bg.strokeRoundedRect(-W / 2, -H / 2, W, H, 16);
+      bg.fillStyle(0x101522, 0.7);
+      bg.fillRoundedRect(-CW / 2, -H / 2, CW, H, 16);
+      bg.lineStyle(sel ? 4 : 2, sel ? THEME.accent : 0xffffff, sel ? 1 : 0.35);
+      bg.strokeRoundedRect(-CW / 2, -H / 2, CW, H, 16);
       if (sel) {
-        bg.fillStyle(THEME.accent, 0.12);
-        bg.fillRoundedRect(-W / 2, -H / 2, W, H, 16);
+        bg.fillStyle(THEME.accent, 0.14);
+        bg.fillRoundedRect(-CW / 2, -H / 2, CW, H, 16);
       }
     };
     redraw();
     cont.setSelected = (s) => { sel = s; redraw(); };
 
     if (open) {
-      cont.setSize(W, H);
-      cont.setInteractive(new Phaser.Geom.Rectangle(-W / 2, -H / 2, W, H), Phaser.Geom.Rectangle.Contains);
+      cont.setSize(CW, H);
+      cont.setInteractive(new Phaser.Geom.Rectangle(-CW / 2, -H / 2, CW, H), Phaser.Geom.Rectangle.Contains);
       cont.on('pointerdown', onClick);
     }
     return cont;
   }
 
-  // Мини-икона на оръжието, нарисувана с Graphics.
   _drawWeaponIcon(cont, w) {
     const g = this.add.graphics();
     if (w.key === 'fists') {

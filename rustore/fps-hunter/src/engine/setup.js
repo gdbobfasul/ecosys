@@ -2,11 +2,34 @@
 import * as THREE from 'three';
 
 export function createEngine(container) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  // Мобилно: НЕ задаваме powerPreference:'high-performance' — на някои телефонни
+  // GPU (Mali/Adreno) това чупи/губи WebGL контекста и води до черен екран.
+  // Antialias е скъп на слаби GPU — изключваме го на тъч устройства.
+  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  const renderer = new THREE.WebGLRenderer({
+    antialias: !isTouch,
+    powerPreference: 'default'
+  });
+  // На мобилно ограничаваме pixelRatio до 1.5 — пести fillrate, по-стабилно.
+  const maxPR = isTouch ? 1.5 : 2;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxPR));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = false; // мобилна производителност: без скъпи сенки
   container.appendChild(renderer.domElement);
+
+  // Ако WebGL контекстът се загуби (често на слаби мобилни GPU) — показваме
+  // видимо съобщение вместо мълчалив черен екран.
+  renderer.domElement.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault();
+    console.error('[engine] WebGL контекстът беше загубен');
+    const note = document.createElement('div');
+    note.id = 'webgl-lost';
+    note.style.cssText = `position:fixed;inset:0;z-index:9998;background:#1a0808;color:#ffd2d2;
+      font-family:system-ui,sans-serif;font-size:16px;display:flex;align-items:center;
+      justify-content:center;text-align:center;padding:24px;`;
+    note.textContent = 'WebGL контекстът се загуби (графиката рестартира). Затворете и отворете приложението отново.';
+    document.body.appendChild(note);
+  }, false);
 
   const scene = new THREE.Scene();
 

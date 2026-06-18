@@ -36,32 +36,40 @@ export class Titan {
     const s = this.scene;
     const p = this.prefix;
 
-    // Контейнерът държи всички части. Пивотът е в "таза" (между краката).
+    // Общ мащаб на титана — едър и внушителен на екрана.
+    const SCALE = 1.15;
+
+    // Контейнерът държи всички части. Пивотът е в "таза" (между краката),
+    // в основата на торса. Координатите по-долу са спрямо този пивот:
+    //   y=0 е тазът; отрицателните y са нагоре (торс, глава);
+    //   положителните y са надолу (крака).
     this.root = s.add.container(x, y);
     this.root.setDepth(10);
+    this.root.setScale(SCALE);
 
     // Светлинен ореол зад титана
-    this.glow = s.add.image(0, -40, 'px_glow').setTint(this.color).setAlpha(0.25).setScale(1.4);
+    this.glow = s.add.image(0, -90, 'px_glow').setTint(this.color).setAlpha(0.28).setScale(2.2);
     this.glow.setBlendMode(Phaser.BlendModes.ADD);
 
-    // Крака (два) — пивот горе (origin 0.5, 0)
-    this.legBack = s.add.image(8, -10, `${p}_leg`).setOrigin(0.5, 0).setScale(0.85);
-    this.legFront = s.add.image(-8, -10, `${p}_leg`).setOrigin(0.5, 0);
+    // Крака (два) — пивот горе (origin 0.5, 0), започват от таза надолу.
+    this.legBack = s.add.image(16, 0, `${p}_leg`).setOrigin(0.5, 0).setScale(0.92);
+    this.legFront = s.add.image(-16, 0, `${p}_leg`).setOrigin(0.5, 0);
 
-    // Торс
-    this.torso = s.add.image(0, -56, `${p}_torso`).setOrigin(0.5, 0);
+    // Торс — стои върху таза и се издига нагоре.
+    this.torso = s.add.image(0, -132, `${p}_torso`).setOrigin(0.5, 0);
 
-    // Задна ръка (зад торса)
-    this.armBack = s.add.image(14, -52, `${p}_arm`).setOrigin(0.5, 0.08).setScale(0.9);
+    // Задна ръка (зад торса, по-малка за дълбочина)
+    this.armBack = s.add.image(30, -118, `${p}_arm`).setOrigin(0.5, 0.12).setScale(0.92);
 
-    // Глава
-    this.head = s.add.image(0, -58, `${p}_head`).setOrigin(0.5, 1);
+    // Глава — седи върху торса.
+    this.head = s.add.image(0, -132, `${p}_head`).setOrigin(0.5, 1);
 
-    // Предна ръка + длан + оръжие (групирани, за да се движат заедно при замах)
-    this.armFront = s.add.container(-14, -52);
-    this.upperArm = s.add.image(0, 0, `${p}_arm`).setOrigin(0.5, 0.08);
-    this.fist = s.add.image(0, 40, `${p}_fist`).setOrigin(0.5, 0.5);
-    this.weaponSprite = s.add.image(2, 36, 'px_spark').setOrigin(0.5, 1).setVisible(false);
+    // Предна ръка + юмрук + оръжие (групирани, за да се движат заедно при замах).
+    // Пивотът на контейнера е в рамото.
+    this.armFront = s.add.container(-28, -116);
+    this.upperArm = s.add.image(0, 0, `${p}_arm`).setOrigin(0.5, 0.12);
+    this.fist = s.add.image(0, 78, `${p}_fist`).setOrigin(0.5, 0.5);
+    this.weaponSprite = s.add.image(2, 70, 'px_spark').setOrigin(0.5, 1).setVisible(false);
     this.armFront.add([this.upperArm, this.weaponSprite, this.fist]);
 
     // Ред на наслагване
@@ -70,17 +78,19 @@ export class Titan {
       this.legFront, this.head, this.armFront
     ]);
 
+    this._torsoBaseY = -132;
     this._applyFacing();
     this._refreshWeaponSprite();
 
     // Физика: невидим спрайт-тяло за гравитация и под.
-    this.body = s.physics.add.image(x, y - 40).setVisible(false);
-    this.body.body.setSize(70, 150).setOffset(-35, -110);
+    // Тялото е центрирано така, че долният му ръб = стъпалата (y = root.y).
+    this.body = s.physics.add.image(x, y - 90).setVisible(false);
+    this.body.body.setSize(90, 200).setOffset(-45, -100);
     this.body.setMaxVelocity(400, 1400);
 
     // Лек "дишащ" idle bob
     this._idleTween = s.tweens.add({
-      targets: this.torso, y: -54, duration: 900,
+      targets: this.torso, y: this._torsoBaseY - 4, duration: 900,
       yoyo: true, repeat: -1, ease: 'Sine.inOut'
     });
   }
@@ -108,11 +118,11 @@ export class Titan {
     const w = this.weapon;
     if (w.key === 'saber') {
       this.weaponSprite.setTexture('wpn_saber').setVisible(true)
-        .setOrigin(0.5, 0.92).setScale(0.9).setPosition(2, 40);
+        .setOrigin(0.5, 0.92).setScale(1.1).setPosition(2, 78);
       this.fist.setVisible(true);
     } else if (w.key === 'hammer') {
       this.weaponSprite.setTexture('wpn_hammer').setVisible(true)
-        .setOrigin(0.5, 0.92).setScale(0.9).setPosition(2, 40);
+        .setOrigin(0.5, 0.92).setScale(1.1).setPosition(2, 78);
       this.fist.setVisible(true);
     } else {
       // юмруци / хвърляне -> няма държано оръжие, само юмрук
@@ -126,7 +136,7 @@ export class Titan {
     const reach = this.weapon.type === 'throw' ? 70 : this.weapon.reach;
     return {
       x: this.root.x + this.facing * reach,
-      y: this.root.y - 50
+      y: this.root.y - 130
     };
   }
 
@@ -240,12 +250,13 @@ export class Titan {
   }
 
   // Синхронизира визуалния контейнер с физическото тяло.
+  // Пивотът на root е в стъпалата; центърът на тялото е на 90px над тях.
   syncToBody(groundY) {
     if (!this.body) return;
     this.root.x = this.body.x;
-    this.root.y = Math.min(this.body.y + 40, groundY);
+    this.root.y = Math.min(this.body.y + 90, groundY);
     if (this.root.y >= groundY) {
-      this.body.y = groundY - 40;
+      this.body.y = groundY - 90;
       if (this.body.body.velocity.y > 0) this.body.setVelocityY(0);
     }
   }

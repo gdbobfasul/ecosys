@@ -4,6 +4,11 @@ import { getState, setState, resetAll } from '../core/storage.js';
 import { respond } from '../core/respond.js';
 import { isOpen, describe } from '../core/office-hours.js';
 
+// Кратък етикет на канала за дневника.
+function channelBadge(id) {
+  return ({ kcy: 'Нашият чат', whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: 'Демо' })[id] || id;
+}
+
 export function renderDashboard(root, { navigate, rerender }) {
   const s = getState();
 
@@ -74,6 +79,7 @@ export function renderDashboard(root, { navigate, rerender }) {
       const time = new Date(e.t).toLocaleString('bg-BG');
       logBox.appendChild(el('div', { class: 'log-item' }, [
         el('span', { class: 'pill ' + e.kind }, e.kind),
+        e.channel ? el('span', { class: 'badge' }, channelBadge(e.channel)) : null,
         el('span', { class: 'log-q', html: esc(e.q) }),
         e.label ? el('span', { class: 'badge' }, e.label) : null,
         el('span', { class: 'muted small' }, time)

@@ -5,7 +5,7 @@ import { respond, sessionName, setSessionName } from '../core/responder.js';
 import { touchSession, lock, isUnlocked } from '../core/identity.js';
 import { isLockedDown } from '../core/device.js';
 import { sttAvailable, ttsAvailable, startListening, stopListening, speak, stopSpeaking } from '../core/voice.js';
-import { startConversation, stopConversation, conversationActive } from '../core/conversation.js';
+import { startConversation, stopConversation, conversationActive, consumeAutoListen } from '../core/conversation.js';
 import {
   voiceprintSupported, voiceProfileEnabled, voiceProfileExists,
   captureSampleFeatures, addEnrollmentSample, matchOwnerVoice, enrollmentProgress
@@ -285,11 +285,19 @@ export function renderChat(root, { navigate, rerender }) {
   setConvStatus(conversationActive() ? 'listening' : 'off');
   refreshConvBtn();
 
-  // Авто-старт на разговора при отключване (по избор; изключен по подразбиране).
-  if (voiceCfg.conversationEnabled && voiceCfg.conversationAutoStart &&
-      !conversationActive() && sttAvailable() && ttsAvailable() &&
-      isUnlocked() && !isLockedDown()) {
-    setTimeout(() => { if (!conversationActive()) startConvLoop(); }, 600);
+  // Авто-старт на слушането:
+  //   • бутон „Започни да ме слушаш“ от началния екран (consumeAutoListen), ИЛИ
+  //   • настройка „Авто-старт на разговора при отключване“.
+  const wantAutoListen = consumeAutoListen();
+  const wantConvSetting = voiceCfg.conversationEnabled && voiceCfg.conversationAutoStart;
+  if ((wantAutoListen || wantConvSetting) && !conversationActive() && isUnlocked() && !isLockedDown()) {
+    if (sttAvailable() && ttsAvailable()) {
+      setTimeout(() => { if (!conversationActive()) startConvLoop(); }, 600); // пълен „Разговор“
+    } else if (wantAutoListen && sttAvailable()) {
+      setTimeout(() => onMic(), 600); // поне еднократно слушане (няма глас за отговор)
+    } else if (wantAutoListen) {
+      toast('Гласът не е наличен тук — пиши на ръка.');
+    }
   }
 
   setTimeout(() => { list.scrollTop = list.scrollHeight; input.focus(); }, 50);

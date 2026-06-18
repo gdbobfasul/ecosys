@@ -55,12 +55,24 @@ function defaultState() {
       }
     },
     kb: seedKb(),           // база знания: масив от Q&A записи (виж rule-engine.js)
-    channels: {             // канали за съобщения (виж channel-adapter.js)
+    channels: {             // канали за съобщения (виж channel-adapter.js / pump.js)
       local: true,          // вграденият демо чат — работи СЕГА
       whatsapp: false,      // изисква native plugin + Notification access
       viber: false,
-      messenger: false
+      messenger: false,
+      // НАШИЯТ чат (KCY) — реална HTTP връзка (виж kcy-chat.js). Настройките се
+      // пазят само на устройството. enabled=false докато не е настроен и включен.
+      kcy: {
+        enabled: false,
+        baseUrl: 'https://my.girl.place',
+        phone: '',
+        password: '',
+        token: '',
+        pollSeconds: 20
+      }
     },
+    // Проследяване на вече обработени входящи съобщения по канал (за да не дублираме).
+    seen: { kcy: {} },
     log: [],                // дневник на отговорените въпроси (без лични данни)
     stats: { answered: 0, fallback: 0, away: 0 } // само броячи
   };
@@ -84,7 +96,12 @@ function load() {
         ...(parsed.config || {}),
         hours: { ...base.config.hours, ...((parsed.config || {}).hours || {}) }
       },
-      channels: { ...base.channels, ...(parsed.channels || {}) },
+      channels: {
+        ...base.channels,
+        ...(parsed.channels || {}),
+        kcy: { ...base.channels.kcy, ...((parsed.channels || {}).kcy || {}) }
+      },
+      seen: { ...base.seen, ...(parsed.seen || {}) },
       stats: { ...base.stats, ...(parsed.stats || {}) }
     };
   } catch (e) {

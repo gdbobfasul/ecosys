@@ -35,6 +35,16 @@ export function DashboardScreen({ navigate, render }) {
 
     el('div', { class: 'card' }, [
       el('div', { class: 'row between' }, [
+        el('h2', {}, '🔗 Канали'),
+        el('button', { class: 'btn sm ghost', onClick: () => navigate('channels') }, 'Управление')
+      ]),
+      el('p', { class: 'muted' },
+        'Тук виждаш КЪДЕ се връзва ботът: нашият чат (KCY) по HTTP, а WhatsApp/Viber/Messenger — ' +
+        'през „Notification access" (само sideload билд). Отвори „Връзки" за реалните статуси.')
+    ]),
+
+    el('div', { class: 'card' }, [
+      el('div', { class: 'row between' }, [
         el('h2', {}, '📜 Правила'),
         el('button', { class: 'btn sm ghost', onClick: () => navigate('rules') }, 'Редактирай')
       ]),
@@ -57,12 +67,19 @@ export function DashboardScreen({ navigate, render }) {
   ]);
 }
 
+function channelLabel(id) {
+  return ({ kcy: 'Нашият чат', whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: 'Демо' })[id] || id || 'Демо';
+}
+
 function logRow(entry) {
   const t = new Date(entry.at).toLocaleString('bg-BG');
   return el('div', { class: 'logrow' }, [
     el('div', { class: 'row between' }, [
       el('strong', {}, `→ ${entry.sender}`),
-      el('span', { class: 'pill ' + (entry.mode === 'away' ? 'away' : 'on') }, entry.mode === 'away' ? 'away' : 'правило')
+      el('div', { class: 'row' }, [
+        el('span', { class: 'pill' }, channelLabel(entry.channel)),
+        el('span', { class: 'pill ' + (entry.mode === 'away' ? 'away' : 'on') }, entry.mode === 'away' ? 'away' : 'правило')
+      ])
     ]),
     el('div', { class: 'muted', style: 'margin:2px 0' }, `вх: "${entry.incoming}"`),
     el('div', {}, entry.reply),

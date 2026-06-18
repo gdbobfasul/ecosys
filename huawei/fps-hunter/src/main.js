@@ -56,15 +56,55 @@ async function boot() {
         );
       };
     }
-    game.start(levelNum, totalScore);
+    // Стартът на нивото е обвит в try/catch: ако нещо хвърли (генериране на
+    // ниво, терен, контроли), вместо тих черен екран показваме ВИДИМ overlay
+    // с текста на грешката — за да се вижда причината на устройството.
+    try {
+      game.start(levelNum, totalScore);
+    } catch (err) {
+      console.error('[startGame] грешка при старт на ниво', err);
+      showErrorOverlay(root, err);
+    }
+  }
+
+  // Видим overlay при грешка (вместо черен екран).
+  function showErrorOverlay(parent, err) {
+    const msg = (err && (err.stack || err.message)) || String(err);
+    const box = document.createElement('div');
+    box.style.cssText = `position:fixed;inset:0;z-index:9999;background:#1a0808;color:#ffd2d2;
+      font-family:monospace;font-size:13px;line-height:1.5;padding:18px;overflow:auto;
+      -webkit-user-select:text;user-select:text;`;
+    box.innerHTML = `<div style="font-size:18px;color:#ff6b6b;margin-bottom:10px;font-weight:700">
+      Грешка при старт на нивото</div><pre style="white-space:pre-wrap;margin:0">${
+        String(msg).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))
+      }</pre>
+      <button id="err-back" style="margin-top:16px;padding:10px 22px;font-size:15px;border:none;
+        border-radius:8px;background:#4fc3f7;color:#04121d;font-weight:700">Назад към менюто</button>`;
+    parent.appendChild(box);
+    box.querySelector('#err-back').addEventListener('click', () => {
+      box.remove();
+      toMenu();
+    });
   }
 
   // Главен цикъл
   const clock = new THREE.Clock();
+  let loopErrored = false;
   function loop() {
     const dt = Math.min(clock.getDelta(), 0.05); // ограничаваме скока при лаг
-    if (game && !game.ended) game.update(dt);
-    engine.renderer.render(engine.scene, engine.camera);
+    if (!loopErrored) {
+      try {
+        if (game && !game.ended) game.update(dt);
+        engine.renderer.render(engine.scene, engine.camera);
+      } catch (err) {
+        // Грешка по време на игра/рендер: спираме цикъла и показваме причината,
+        // вместо да рендираме мълчаливо черен екран кадър след кадър.
+        loopErrored = true;
+        console.error('[loop] грешка по време на игра', err);
+        if (game) game.ended = true;
+        showErrorOverlay(root, err);
+      }
+    }
     requestAnimationFrame(loop);
   }
   loop();

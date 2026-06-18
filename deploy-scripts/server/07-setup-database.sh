@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0171
+# Version: 1.0218
 ##############################################################################
 # KCY Database Setup with Advanced Reset
 # Пише database настройките в глобалния .env:
@@ -28,11 +28,13 @@ mkdir -p "$BACKUP_DIR" "$CHAT_DIR/database" "$(dirname $GLOBAL_ENV)"
 # Parse arguments
 RESET_MODE=false; RESET_DELETE_MODE=false; DO_BACKUP=false; DO_RESTORE=false
 FORCE_SQLITE=false; FORCE_POSTGRESQL=false
-KEEP_USERS=false; KEEP_PAYMENTS=false; KEEP_PLACES=false
-KEEP_MATCHES=false; KEEP_PREFERENCES=false
+KEEP_USERS=false; KEEP_PAYMENTS=false; KEEP_PREFERENCES=false
+KEEP_MATCHES=false; KEEP_PLACES=false
+ADMINS_ONLY=false
 
 for arg in "$@"; do
   case $arg in
+    --admins-only) ADMINS_ONLY=true ;;
     --reset) RESET_MODE=true ;;
     delete) RESET_DELETE_MODE=true ;;
     -users) KEEP_USERS=true ;;
@@ -84,6 +86,25 @@ EOF
 done
 
 [ "$EUID" -ne 0 ] && echo -e "${RED}ERROR: sudo $0${NC}" && exit 1
+
+##############################################################################
+# --admins-only: САМО попълва chat админи/модератори от .env (admin_users) и излиза.
+# Не пипа схема/данни. Ползва се за втори (подсигуряващ) пас в пълната инсталация,
+# така че акаунтите да се създадат дори ако ранният пас е бил пропуснат (код/.env race).
+##############################################################################
+if [ "$ADMINS_ONLY" = true ]; then
+  echo -e "${GREEN}► (admins-only) Попълвам chat админи/модератори от .env (admin_users)...${NC}"
+  if [ ! -f "$CHAT_DIR/admins.js" ]; then
+    echo -e "${YELLOW}  ⚠ admins.js още не е качен на сървъра — пропускам (качи кода).${NC}"
+    exit 0
+  elif sudo -u kcy-chat bash -c "cd '$CHAT_DIR' && node admins.js"; then
+    echo -e "${GREEN}  ✓ Админи/модератори попълнени/обновени от .env${NC}"
+    exit 0
+  else
+    echo -e "${YELLOW}  ⚠ Попълването не мина — провери .env (CHAT_ADMIN_USER/PASS, CHAT_MOD1..5).${NC}"
+    exit 1
+  fi
+fi
 
 ##############################################################################
 # Helper: update or add a line in .env without destroying other content

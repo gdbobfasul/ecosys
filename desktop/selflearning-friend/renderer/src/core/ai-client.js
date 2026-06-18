@@ -31,13 +31,15 @@ export async function askAi(prompt, { timeoutMs = 9000 } = {}) {
 }
 
 // Изгражда подкана с персона на бота + кратък контекст от наученото.
-export function buildPrompt({ botName, ownerMessage, memoryContext }) {
+// langName: на кой език да отговаря (по подразбиране български) — така ботът може да
+// „говори/се превежда“ на всеки от 15-те езика на сайта.
+export function buildPrompt({ botName, ownerMessage, memoryContext, langName = 'български' }) {
   const ctx = (memoryContext && memoryContext.length)
     ? '\nЗнаеш следното за собственика си:\n- ' + memoryContext.slice(0, 6).join('\n- ')
     : '';
   return (
     `Ти си „${botName || 'приятел'}“ — личен, дружелюбен бот-приятел. ` +
-    `Отговаряй кратко, топло и на български. Не споменавай, че си изкуствен интелект.` +
+    `Отговаряй кратко, топло и на ${langName || 'български'}. Не споменавай, че си изкуствен интелект.` +
     ctx +
     `\nСобственикът казва: ${ownerMessage}\nТвоят отговор:`
   );

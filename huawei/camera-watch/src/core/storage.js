@@ -10,20 +10,19 @@ let _prefsTried = false;
 
 // Lazy-load на Capacitor Preferences. В browser dev модулът липсва/няма нативна
 // имплементация → връщаме null и ползваме localStorage.
-async function getPrefs() {
+function getPrefs() {
   if (_prefsTried) return _prefs;
   _prefsTried = true;
-  // САМО на НАТИВНА платформа ползваме Preferences. В браузъра Capacitor връща proxy,
-  // чиито методи гърмят „not implemented on web" (вкл. при await → .then), което чупи
-  // boot-а — затова там директно ползваме localStorage.
+  // САМО на НАТИВНА платформа ползваме Preferences. ВАЖНО (поправка на „син екран при старт"):
+  // НЕ ползваме динамичен `import('@capacitor/preferences')` — той създава отделен chunk,
+  // който в Capacitor WebView (https://localhost) понякога НИТО се зарежда, НИТО reject-ва,
+  // и boot-ът увисва завинаги след инжектирането на стиловете (тъмносиния фон). Вместо това
+  // взимаме плъгина СИНХРОННО от глобалния обект window.Capacitor.Plugins (както в другите апове).
   try {
     const cap = (typeof window !== 'undefined') ? window.Capacitor : null;
     const isNative = !!(cap && typeof cap.isNativePlatform === 'function' && cap.isNativePlatform());
-    if (isNative) {
-      const mod = await import('@capacitor/preferences');
-      if (mod && mod.Preferences && typeof mod.Preferences.get === 'function') {
-        _prefs = mod.Preferences;
-      }
+    if (isNative && cap.Plugins && cap.Plugins.Preferences && typeof cap.Plugins.Preferences.get === 'function') {
+      _prefs = cap.Plugins.Preferences;
     }
   } catch (_) {
     _prefs = null;

@@ -5,12 +5,18 @@
 // es2019 build-а. Зарежда се при първа нужда само на нативна платформа.
 let Preferences = null;
 let prefsTried = false;
-async function ensurePreferences() {
+// ВАЖНО (поправка на „черен екран при старт"): НЕ ползваме динамичен
+// `import('@capacitor/preferences')` — chunk-ът в Capacitor WebView понякога НИТО се
+// зарежда, НИТО reject-ва, и boot увисва. Взимаме плъгина СИНХРОННО от глобалния обект.
+function ensurePreferences() {
   if (prefsTried) return Preferences;
   prefsTried = true;
-  if (!isNative()) return null;
   try {
-    ({ Preferences } = await import('@capacitor/preferences'));
+    const cap = (typeof window !== 'undefined') ? window.Capacitor : null;
+    if (cap && typeof cap.isNativePlatform === 'function' && cap.isNativePlatform() &&
+        cap.Plugins && cap.Plugins.Preferences && typeof cap.Plugins.Preferences.get === 'function') {
+      Preferences = cap.Plugins.Preferences;
+    }
   } catch (_) {
     Preferences = null;
   }

@@ -8,6 +8,7 @@ import { renderChannels } from './screens/channels.js';
 import { renderPermissions } from './screens/permissions.js';
 import { renderDashboard } from './screens/dashboard.js';
 import { renderDemoChat } from './screens/demo-chat.js';
+import { startPump } from './core/pump.js';
 
 const ROUTES = {
   onboarding: renderOnboarding,
@@ -68,3 +69,7 @@ window.addEventListener('hashchange', render);
 window.addEventListener('DOMContentLoaded', render);
 // При незабавно зареждане (модулите се изпълняват след DOM в повечето случаи):
 if (document.readyState !== 'loading') render();
+
+// Стартираме „двигателя" на реалните канали (KCY polling + native слушател).
+// Деградира честно: ако нищо не е настроено/налично, просто не прави нищо.
+startPump(render);

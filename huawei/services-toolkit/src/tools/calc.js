@@ -29,6 +29,8 @@ export function render(root) {
         <option value="19">Германия — 19%</option>
         <option value="21">Нидерландия — 21%</option>
         <option value="22">Италия — 22%</option>
+        <option value="21">Испания — 21%</option>
+        <option value="20">Австрия — 20%</option>
         <option value="24">Гърция — 24%</option>
         <option value="25">Швеция — 25%</option>
         <option value="0">Друга / ръчно</option>

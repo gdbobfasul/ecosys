@@ -1,12 +1,12 @@
 #!/bin/bash
-# Version: 1.0216
+# Version: 1.0218
 ##############################################################################
 # KCY — Билд/компилация на мобилните апове от /rustore и /huawei.
 #
 #   • Подаваш път (папка на магазин ИЛИ на конкретен апп), ИЛИ избираш интерактивно.
 #   • За всеки апп:  npm install → npm run build (web) → cap add/sync android → APK (gradle)
 #   • Грациозно: ако няма Android SDK/JDK, прави поне web билда и казва какво липсва
-#     (Android средата се слага с опция 38 от менюто).
+#     (Android средата се слага с опция 56 от менюто; preflight проверява всеки компонент).
 #
 # Употреба:
 #   ./deploy-scripts/build-mobile-apps.sh                       # интерактивно
@@ -23,42 +23,104 @@ cd "$ROOT" || exit 1
 
 is_app() { [ -f "$1/package.json" ] && [ -f "$1/capacitor.config.json" ]; }
 
+# Android разрешения: android/ се пресъздава при всеки билд (cap add/sync), затова
+# инжектираме нужните <uses-permission> в генерирания AndroidManifest.xml СЛЕД cap sync.
+# Източник: по избор файл `android-permissions.txt` в папката на апа (по едно разрешение
+# на ред, напр. android.permission.CAMERA). Без файл → нищо не се добавя.
+inject_android_permissions() {
+  local manifest="android/app/src/main/AndroidManifest.xml"
+  local permfile="android-permissions.txt"
+  [ -f "$manifest" ] || return 0
+  [ -f "$permfile" ] || return 0
+  local perm
+  while IFS= read -r perm; do
+    perm="$(echo "$perm" | tr -d '\r' | sed 's/[[:space:]]//g')"
+    [ -z "$perm" ] && continue
+    case "$perm" in \#*) continue ;; esac
+    if grep -q "android:name=\"$perm\"" "$manifest"; then continue; fi
+    sed -i "s|<application|    <uses-permission android:name=\"$perm\" />\n    <application|" "$manifest"
+    echo -e "  ${GREEN}✓ разрешение добавено в манифеста: $perm${NC}"
+  done < "$permfile"
+}
+
 echo ""
 echo -e "${BOLD}${CYAN}╔══════════════════════════════════════════════════════╗${NC}"
 echo -e "${BOLD}${CYAN}║  Билд на мобилни апове (rustore / huawei)            ║${NC}"
 echo -e "${BOLD}${CYAN}╚══════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-# ── Preflight: инструменти ──
-echo -e "${BOLD}${CYAN}━━━ Проверка на средата ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-NODE_OK=0; command -v node >/dev/null 2>&1 && NODE_OK=1
-printf "  node/npm:     "; [ "$NODE_OK" = 1 ] && echo -e "${GREEN}$(node -v) / $(npm -v)${NC}" || { echo -e "${RED}липсва — без Node не може${NC}"; exit 1; }
+# ── Preflight: ПЪЛНА проверка на средата (всичко, което слага опция 56) ──
+# Проверяваме НЕ само наличие, а и че реално работи (java версия, и че SDK има
+# platform-tools + platforms;android-XX + build-tools — без тях gradle НЕ прави APK).
+echo -e "${BOLD}${CYAN}━━━ Проверка на средата (компонентите от опция 56) ━━━━━━${NC}"
+declare -a MISSING=()
+okln()   { echo -e "  ${GREEN}✓${NC} $1"; }
+badln()  { echo -e "  ${RED}✗${NC} $1"; MISSING+=("$2"); }
+warnln() { echo -e "  ${YELLOW}!${NC} $1"; }
 
-# JAVA_HOME / java — машинната env от опция 38 не е в текущата сесия, затова питаме и Windows
-JAVA_OK=0
-if command -v java >/dev/null 2>&1; then JAVA_OK=1
+# 1) node/npm — критично за ВСЕКИ билд
+if command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
+  okln "node/npm: $(node -v) / $(npm -v)"
 else
+  echo -e "  ${RED}✗ node/npm липсва — без Node не може нищо. Инсталирай Node.js и пробвай пак.${NC}"; exit 1
+fi
+
+# 2) JDK (java) ≥ 17 — функционална проверка (gradle иска JDK 17). PATH или машинния JAVA_HOME.
+JAVA_OK=0
+if ! command -v java >/dev/null 2>&1; then
   JH=$(powershell.exe -NoProfile -Command "[Environment]::GetEnvironmentVariable('JAVA_HOME','Machine')" 2>/dev/null | tr -d '\r')
-  if [ -n "$JH" ] && [ -x "$(cygpath -u "$JH" 2>/dev/null)/bin/java.exe" ]; then
-    export JAVA_HOME="$JH"; export PATH="$(cygpath -u "$JH")/bin:$PATH"; JAVA_OK=1
+  if [ -n "$JH" ]; then
+    JHU="$(cygpath -u "$JH" 2>/dev/null || echo "$JH")"
+    if [ -x "$JHU/bin/java.exe" ] || [ -x "$JHU/bin/java" ]; then export JAVA_HOME="$JH"; export PATH="$JHU/bin:$PATH"; fi
   fi
 fi
-printf "  JDK (java):   "; [ "$JAVA_OK" = 1 ] && echo -e "${GREEN}налично${NC}" || echo -e "${YELLOW}липсва (web билд да; APK не)${NC}"
-
-# ANDROID_HOME — от текущата env или от машинната (опция 38)
-[ -z "$ANDROID_HOME" ] && ANDROID_HOME=$(powershell.exe -NoProfile -Command "[Environment]::GetEnvironmentVariable('ANDROID_HOME','Machine')" 2>/dev/null | tr -d '\r')
-SDK_OK=0
-if [ -n "$ANDROID_HOME" ]; then
-  ASDK_U=$(cygpath -u "$ANDROID_HOME" 2>/dev/null || echo "$ANDROID_HOME")
-  [ -d "$ASDK_U" ] && { SDK_OK=1; export ANDROID_HOME ANDROID_SDK_ROOT="$ANDROID_HOME"; }
+if command -v java >/dev/null 2>&1; then
+  JV=$(java -version 2>&1 | head -1)
+  JMAJ=$(echo "$JV" | grep -oE '[0-9]+' | head -1)
+  [ "$JMAJ" = "1" ] && JMAJ=$(echo "$JV" | grep -oE '[0-9]+' | sed -n 2p)
+  if [ "${JMAJ:-0}" -ge 17 ]; then JAVA_OK=1; okln "JDK: ${JV}"
+  else warnln "JDK версия ${JMAJ} < 17 (gradle иска JDK 17)"; MISSING+=("JDK 17 (намерено: ${JMAJ})"); fi
+else
+  badln "JDK (java) липсва или не се стартира" "JDK 17 (Temurin)"
 fi
-printf "  Android SDK:  "; [ "$SDK_OK" = 1 ] && echo -e "${GREEN}${ANDROID_HOME}${NC}" || echo -e "${YELLOW}липсва (пусни опция 38)${NC}"
 
-ANDROID_READY=0; [ "$JAVA_OK" = 1 ] && [ "$SDK_OK" = 1 ] && ANDROID_READY=1
+# 3) ANDROID_HOME — текущ env или машинния (от опция 56)
+[ -z "$ANDROID_HOME" ] && ANDROID_HOME=$(powershell.exe -NoProfile -Command "[Environment]::GetEnvironmentVariable('ANDROID_HOME','Machine')" 2>/dev/null | tr -d '\r')
+ASDK=""; SDK_DIR_OK=0
+[ -n "$ANDROID_HOME" ] && ASDK="$(cygpath -u "$ANDROID_HOME" 2>/dev/null || echo "$ANDROID_HOME")"
+if [ -n "$ASDK" ] && [ -d "$ASDK" ]; then
+  SDK_DIR_OK=1; export ANDROID_HOME ANDROID_SDK_ROOT="$ANDROID_HOME"; okln "ANDROID_HOME: ${ANDROID_HOME}"
+else
+  badln "ANDROID_HOME не е зададен/папката липсва" "Android SDK (ANDROID_HOME)"
+fi
+
+# 4–7) SDK компоненти (само ако имаме SDK папка) — критични за APK: platforms + build-tools
+PLAT_OK=0; BT_OK=0
+if [ "$SDK_DIR_OK" = 1 ]; then
+  if [ -e "$ASDK/platform-tools/adb.exe" ] || [ -e "$ASDK/platform-tools/adb" ]; then okln "platform-tools (adb)"; else warnln "platform-tools (adb) липсва (не спира билда, но опция 56 го слага)"; fi
+  if [ -d "$ASDK/platforms" ] && ls "$ASDK/platforms"/android-* >/dev/null 2>&1; then PLAT_OK=1; okln "platforms: $(ls "$ASDK/platforms" 2>/dev/null | tr '\n' ' ')"; else badln "platforms;android-XX липсва (нужно за compile)" "platforms;android-34"; fi
+  if [ -d "$ASDK/build-tools" ] && [ -n "$(ls -A "$ASDK/build-tools" 2>/dev/null)" ]; then BT_OK=1; okln "build-tools: $(ls "$ASDK/build-tools" 2>/dev/null | tr '\n' ' ')"; else badln "build-tools липсва (нужно за APK)" "build-tools;34.0.0"; fi
+  if [ -e "$ASDK/cmdline-tools/latest/bin/sdkmanager.bat" ] || [ -e "$ASDK/cmdline-tools/latest/bin/sdkmanager" ]; then okln "cmdline-tools (sdkmanager)"; else warnln "cmdline-tools липсва (не е критично за билд)"; fi
+fi
+
+# Готовност за APK: JDK 17 + SDK папка + поне една платформа + build-tools.
+ANDROID_READY=0
+[ "$JAVA_OK" = 1 ] && [ "$SDK_DIR_OK" = 1 ] && [ "$PLAT_OK" = 1 ] && [ "$BT_OK" = 1 ] && ANDROID_READY=1
 echo ""
-if [ "$ANDROID_READY" = 0 ]; then
-  echo -e "  ${YELLOW}⚠ Android средата не е пълна → ще правя само WEB билд (dist/).${NC}"
-  echo -e "  ${YELLOW}  За APK: пусни опция 38 (инсталирай мобилна среда), отвори НОВ терминал, после пак тук.${NC}"
+if [ "$ANDROID_READY" = 1 ]; then
+  echo -e "  ${GREEN}${BOLD}✓ Android средата е пълна и работеща → ще правя и APK.${NC}"
+  echo ""
+else
+  echo -e "  ${YELLOW}${BOLD}⚠ Android средата НЕ е пълна → мога само WEB билд (dist/), APK ще пропусна.${NC}"
+  if [ "${#MISSING[@]}" -gt 0 ]; then
+    echo -e "  ${YELLOW}Липсва/не работи:${NC}"
+    for m in "${MISSING[@]}"; do echo -e "      ${RED}•${NC} ${m}"; done
+  fi
+  echo -e "  ${YELLOW}→ Пусни ${BOLD}ОПЦИЯ 56${NC}${YELLOW} (Инсталирай мобилна среда), изчакай 'DONE' в елевирания прозорец,${NC}"
+  echo -e "  ${YELLOW}  ОТВОРИ НОВ ТЕРМИНАЛ (за да хване ANDROID_HOME/JAVA_HOME) и пусни 57 пак.${NC}"
+  echo ""
+  read -p "  Да продължа САМО с web билд (без APK)? [Y/n]: " CONT_WEB
+  case "${CONT_WEB,,}" in n|no|не|нет) echo "  Отказано — иди пусни опция 56."; exit 0 ;; esac
   echo ""
 fi
 
@@ -123,6 +185,7 @@ build_one() {
       echo -e "  ${CYAN}→ осигурявам @capacitor/android…${NC}"; npm i @capacitor/core@^6 @capacitor/cli@^6 @capacitor/android@^6 >/dev/null 2>&1 || true
       [ -d android ] || { echo -e "  ${CYAN}→ npx cap add android…${NC}"; npx cap add android || { echo -e "  ${RED}✗ cap add android се провали${NC}"; exit 4; }; }
       echo -e "  ${CYAN}→ npx cap sync android…${NC}"; npx cap sync android || { echo -e "  ${RED}✗ cap sync се провали${NC}"; exit 5; }
+      inject_android_permissions   # добавя CAMERA/RECORD_AUDIO и т.н. от android-permissions.txt
       echo -e "  ${CYAN}→ gradle assembleDebug (APK)…${NC}"
       (
         cd android || exit 6

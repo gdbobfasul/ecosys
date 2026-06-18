@@ -62,4 +62,13 @@ async function boot() {
   }
 }
 
-boot();
+// Никаква грешка при буут да не оставя черен екран — показваме видимо съобщение.
+boot().catch((e) => {
+  try {
+    const root = document.getElementById('app');
+    if (root) {
+      root.innerHTML = '<div style="padding:20px;font-family:sans-serif">' +
+        '<h2>Робот за рутини</h2><p>Стартова грешка: ' + (e && e.message ? e.message : 'неизвестна') + '</p></div>';
+    }
+  } catch (_) {}
+});

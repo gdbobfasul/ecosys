@@ -1,62 +1,77 @@
 import Phaser from 'phaser';
-import { GAME_W, GAME_H } from '../main.js';
 import { THEME } from '../theme.js';
 import { LEVELS } from '../levels.js';
 import { makeButton, titleText } from '../ui.js';
+// Ранг листата (само за справка тук — сцената е регистрирана в main.js).
 import { buildArena } from '../backgrounds.js';
 
 // Главно меню + избор на ниво. Показва кои нива са отключени.
+// Изцяло отзивчиво към размера на екрана (телефон портрет/пейзаж).
 export class MenuScene extends Phaser.Scene {
   constructor() { super('menu'); }
 
   create() {
+    const { width: W, height: H } = this.scale.gameSize;
+
     // фон = арена на първото ниво за атмосфера
     buildArena(this, LEVELS[0].arena);
 
-    // плакатен титан (декорация)
-    this._decorTitan();
-
-    titleText(this, GAME_W / 2, 80, THEME.titleText, 64, THEME.primaryHex);
-    titleText(this, GAME_W / 2, 128, THEME.titleSub, 18, THEME.accentHex);
+    titleText(this, W / 2, H * 0.10, THEME.titleText, Math.min(64, W * 0.10), THEME.primaryHex);
+    titleText(this, W / 2, H * 0.18, THEME.titleSub, 18, THEME.accentHex);
 
     const unlocked = this.registry.get('unlockedLevel') || 1;
 
-    titleText(this, GAME_W / 2, 178, 'ИЗБЕРИ НИВО', 22, '#ffffff');
+    titleText(this, W / 2, H * 0.26, 'ИЗБЕРИ НИВО', 22, '#ffffff');
 
-    // Решетка от 10 нива (2 реда по 5)
-    const cols = 5, cellW = 150, cellH = 92;
-    const startX = GAME_W / 2 - ((cols - 1) * cellW) / 2;
-    const startY = 250;
+    // Решетка от 10 нива — адаптивен брой колони според ширината.
+    const portrait = H > W;
+    const cols = portrait ? 2 : 5;
+    const rows = Math.ceil(LEVELS.length / cols);
+    const cellW = Math.min(W / (cols + 0.4), 190);
+    const cellH = Math.min((H * 0.5) / rows, 96);
+    const gapX = cellW * 1.08;
+    const gapY = cellH * 1.18;
+    const gridW = (cols - 1) * gapX;
+    const startX = W / 2 - gridW / 2;
+    const startY = H * 0.34;
+
     LEVELS.forEach((lvl, i) => {
       const col = i % cols, row = Math.floor(i / cols);
-      const x = startX + col * cellW;
-      const y = startY + row * (cellH + 18);
+      const x = startX + col * gapX;
+      const y = startY + row * gapY;
       const open = lvl.id <= unlocked;
-      const label = open ? `${lvl.id}\n${lvl.name}` : `🔒\n${lvl.name}`;
-      const btn = makeButton(this, x, y, cellW - 18, cellH, label, () => {
+      const label = open ? `${lvl.id}  ${lvl.name}` : `🔒 ${lvl.name}`;
+      const btn = makeButton(this, x, y, cellW, cellH * 0.86, label, () => {
         if (!open) return;
         this.registry.set('pendingLevel', lvl.id);
         this.scene.start('weapon-select');
-      }, { color: open ? (lvl.id <= unlocked ? THEME.primary : 0x555) : 0x444, fontSize: '16px' });
+      }, { color: open ? THEME.primary : 0x556070, fontSize: '17px' });
       if (!open) btn.setEnabled(false);
     });
 
-    titleText(this, GAME_W / 2, GAME_H - 28,
-      'Докосни ниво за да започнеш • Победи противника, за да отключиш следващото', 13, '#cfcfd8');
+    titleText(this, W / 2, H - 30,
+      'Докосни ниво за да започнеш • Победи противника, за да отключиш следващото',
+      Math.min(14, W * 0.026), '#cfcfd8');
+
+    // Бутон „🏆 Ранг листа" (горе вляво) — отваря целия ТОП 100.
+    makeButton(this, 96, 40, 168, 44, '🏆 РАНГ ЛИСТА', () => {
+      this.scene.start('leaderboard');
+    }, { color: THEME.accent, fontSize: '15px' });
 
     // бутон за нулиране на прогреса (полезно за тест)
-    makeButton(this, GAME_W - 90, 40, 150, 44, 'НУЛИРАЙ', () => {
+    makeButton(this, W - 86, 40, 150, 44, 'НУЛИРАЙ', () => {
       try { localStorage.setItem('tf_unlocked', '1'); } catch (e) {}
       this.registry.set('unlockedLevel', 1);
       this.scene.restart();
     }, { color: THEME.danger, fontSize: '16px' });
+
+    // Преначертаване при преоразмеряване/завъртане.
+    this.scale.on('resize', this._onResize, this);
+    this.events.once('shutdown', () => this.scale.off('resize', this._onResize, this));
   }
 
-  _decorTitan() {
-    // лек заден силует на боец
-    const g = this.add.graphics().setDepth(-50).setAlpha(0.18);
-    g.fillStyle(THEME.primary, 1);
-    g.fillCircle(GAME_W - 180, 300, 90);
-    g.fillRoundedRect(GAME_W - 230, 360, 100, 160, 20);
+  _onResize() {
+    // Просто рестартираме сцената с новия размер.
+    this.scene.restart();
   }
 }

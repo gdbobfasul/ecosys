@@ -4,6 +4,7 @@
 
 import './game/battle-heroes.js';   // дефинира window.BATTLE_HEROES
 import './game/terrain-fight.js';   // дефинира window.startTerrainBg (жив терен)
+import './game/leaderboard.js';     // дефинира window.HMMLeaderboard (локална ранг листа)
 import './game/battle-engine.js';   // дефинира window.BattleEngine
 import { ACCENT } from './theme.js';
 

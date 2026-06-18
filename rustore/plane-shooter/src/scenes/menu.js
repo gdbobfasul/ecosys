@@ -36,12 +36,17 @@ export default class MenuScene extends Phaser.Scene {
     });
 
     // Бутон СТАРТ.
-    this.makeButton(width / 2, height * 0.66, 'СТАРТ', () => {
+    this.makeButton(width / 2, height * 0.62, 'СТАРТ', () => {
       this.scene.start('Game', { level: 0, score: 0, lives: 3 });
     });
 
+    // Бутон РАНГ ЛИСТА.
+    this.makeButton(width / 2, height * 0.62 + 72, '🏆 Ранг листа', () => {
+      this.scene.start('Leaderboard');
+    });
+
     // Кратки инструкции.
-    this.add.text(width / 2, height * 0.80,
+    this.add.text(width / 2, height * 0.86,
       `Влачи, за да управляваш • авто-огън\nБутон ⚔ сменя оръжието\n${TOTAL_LEVELS} нива с нарастваща трудност`,
       {
         fontFamily: 'system-ui, sans-serif',
@@ -53,14 +58,19 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   makeButton(x, y, label, onClick) {
-    const w = 200, h = 58;
-    const g = this.add.graphics();
-    g.fillStyle(THEME.primary, 1).fillRoundedRect(x - w / 2, y - h / 2, w, h, 14);
-    g.lineStyle(2, 0xffffff, 0.6).strokeRoundedRect(x - w / 2, y - h / 2, w, h, 14);
+    const h = 58;
     const txt = this.add.text(x, y, label, {
       fontFamily: 'system-ui, sans-serif', fontSize: '24px',
       fontStyle: 'bold', color: '#ffffff'
     }).setOrigin(0.5);
+    // Ширината се адаптира към етикета (за по-дълги надписи като „Ранг листа").
+    const w = Math.max(200, txt.width + 48);
+
+    const g = this.add.graphics();
+    g.fillStyle(THEME.primary, 1).fillRoundedRect(x - w / 2, y - h / 2, w, h, 14);
+    g.lineStyle(2, 0xffffff, 0.6).strokeRoundedRect(x - w / 2, y - h / 2, w, h, 14);
+    // Текстът трябва да е над графиката.
+    this.children.bringToTop(txt);
 
     const zone = this.add.zone(x, y, w, h).setInteractive({ useHandCursor: true });
     zone.on('pointerdown', () => {

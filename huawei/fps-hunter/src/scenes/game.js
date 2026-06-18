@@ -52,13 +52,21 @@ export class GameScene {
     this.terrain = new Terrain(this.engine.scene, this.config.biome, this.config.seed);
     applyAtmosphere(this.engine, ATMO[this.config.biome] || ATMO.field);
 
-    // Камера/играч начална позиция
+    // Камера/играч начална позиция — гарантирано НАД терена (а не вътре/под него).
     const cam = this.engine.camera;
-    cam.position.set(0, this.terrain.heightAt(0, 0) + 1.7, 0);
+    const groundY = this.terrain.heightAt(0, 0);
+    cam.position.set(0, groundY + 1.7, 0);
+    // Хоризонтален поглед напред (а не нагоре към небето/надолу в земята).
+    cam.quaternion.identity();
+    cam.rotation.set(0, 0, 0);
 
     // Контроли
     this.controls = this.controlsFactory(this.terrain, this.hud);
     this.controls.enabled = true;
+    // Подравняваме контролите към текущата ориентация (yaw=0, pitch=0),
+    // за да е първият кадър валиден дори преди първия touch/update.
+    this.controls.yaw = 0;
+    this.controls.pitch = 0;
     this.hud.onFire(() => this.controls.requestFire());
 
     // Viewmodel на оръжието

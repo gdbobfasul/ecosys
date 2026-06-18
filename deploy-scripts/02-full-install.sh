@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0204
+# Version: 1.0218
 ##############################################################################
 # KCY Ecosystem — ПЪЛНА ИНСТАЛАЦИЯ на нов сървър (едно действие)
 #
@@ -117,6 +117,10 @@ if ! KCY_AUTO_DEFAULTS=1 KCY_WITH_ASSETS=$WITH_ASSETS KCY_DROP_DB=$DROP_DB DEPLO
     exit 1
 fi
 
+# Чат админи/модератори от .env — ПАС 1/2 (веднага след качване на код+.env).
+# Подсигурява акаунтите дори ако вътрешният пас в 05/07 е бил пропуснат (код/.env race).
+rstep "Чат админи/модератори от .env (пас 1/2)" "sudo ${REMOTE_BASE}/07-setup-database.sh --admins-only"
+
 # ══ 2/4  БАЗИ House-Look-Book + WhereNoBiz + Find Best Price ══
 step "2/5  Бази House-Look-Book + WhereNoBiz + Find Best Price${RESET:+   (DROP — създава от 0)}"
 rstep "HLB база (houselookbook)" "sudo ${REMOTE_BASE}/16-setup-app-databases.sh houselookbook${RESET}"
@@ -147,6 +151,10 @@ done
 # ПОСЛЕДНО, след всички nginx промени (05/услуги/монитори), иначе 18/19 конфликтват.
 step "5/5  Failover (авто-възстановяване, ако е бил активен)"
 rstep "Failover restore" "sudo ${REMOTE_BASE}/12-setup-failover.sh --auto-restore"
+
+# Чат админи/модератори от .env — ПАС 2/2 (НАКРАЯ: всичко е качено, услугите работят).
+# Гарантира, че админът и модераторите на чата ще съществуват, дори ако пас 1 е пропуснат.
+rstep "Чат админи/модератори от .env (пас 2/2)" "sudo ${REMOTE_BASE}/07-setup-database.sh --admins-only"
 
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"

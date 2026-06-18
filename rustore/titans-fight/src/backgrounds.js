@@ -33,7 +33,9 @@ function ridge(g, baseY, amp, color, alpha) {
   g.fillPath();
 }
 
-export function buildArena(scene, arena) {
+// groundOverride (по желание): къде да е "земята" по Y. На тесни телефони
+// бойната линия се вдига нагоре, за да не стоят титаните зад контролите.
+export function buildArena(scene, arena, groundOverride) {
   const g = scene.add.graphics();
   g.setDepth(-100);
 
@@ -77,9 +79,9 @@ export function buildArena(scene, arena) {
   }
 
   // ЗЕМЯ / под (по-светъл акцентен ръб горе)
-  const groundY = GAME_H - 70;
+  const groundY = groundOverride != null ? groundOverride : GAME_H - 70;
   g.fillStyle(Phaser.Display.Color.HexStringToColor(arena.bottom).color, 1);
-  g.fillRect(0, groundY, GAME_W, 70);
+  g.fillRect(0, groundY, GAME_W, GAME_H - groundY);
   g.fillStyle(acc, 0.6);
   g.fillRect(0, groundY, GAME_W, 4);
   g.fillStyle(0x000000, 0.25);

@@ -7,6 +7,7 @@ import MenuScene from './scenes/menu.js';
 import GameScene from './scenes/game.js';
 import UIScene from './scenes/ui.js';
 import GameOverScene from './scenes/gameover.js';
+import LeaderboardScene from './scenes/leaderboard.js';
 
 // Логическа резолюция на играта (портретен режим, типичен за телефон).
 export const GAME_WIDTH = 480;
@@ -37,7 +38,7 @@ const config = {
     antialias: true,
     roundPixels: false
   },
-  scene: [BootScene, MenuScene, GameScene, UIScene, GameOverScene]
+  scene: [BootScene, MenuScene, GameScene, UIScene, GameOverScene, LeaderboardScene]
 };
 
 const game = new Phaser.Game(config);

@@ -7,6 +7,7 @@ import { THEME } from './theme.js';
 // Зареждат се като side-effect (точно като оригиналните <script> тагове).
 import './game/battle-heroes.js';
 import './game/terrain-duel.js';
+import './game/leaderboard.js';
 import './game/battle-engine.js';
 
 function boot() {

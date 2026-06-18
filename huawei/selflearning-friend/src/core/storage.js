@@ -29,7 +29,11 @@ function defaultState() {
       nameHash: null,      // SHA-256 хеш на името (малки букви, trim) — не пазим открито
       nameHint: null,      // първа буква + дължина, само за дружелюбна подсказка
       avatarSeed: null,    // seed за лицето на героя (стабилно между сесии)
-      bornAt: null         // timestamp на раждането
+      bornAt: null,        // timestamp на раждането
+      // ГЛОБАЛЕН режим за лични данни (избира се при раждането, виж privacy.js):
+      //   'personal'   — събира лични данни за собственика (личен асистент);
+      //   'impersonal' — нула лични данни (за продажба/прехвърляне).
+      dataMode: 'personal'
     },
     // Състояние на заключването.
     lock: {
@@ -43,6 +47,8 @@ function defaultState() {
     memory: [],            // [{ id, type, key, value, keywords:[], created, updated, uses }]
     // Научени теми (виж subjects.js) — материалът, който задачите/ученето пълнят.
     subjects: [],          // [{ id, name, notes:[{id,text,source,url,at}], created, updated }]
+    // ПОСТОЯНЕН списък със ЗАДАЧИ от собственика (виж tasklist.js).
+    tasks: [],             // [{ id, kind, arg, text, status, result, citation, source, created, updated }]
     // Интереси, добавени от собственика (за ротацията на автономното учене).
     interests: [],         // ['Астрономия', ...]
     // Лог на режим „Слушай“ (виж listen.js).
@@ -185,6 +191,7 @@ function mergeDefaults(parsed) {
     chat: Array.isArray(parsed.chat) ? parsed.chat : [],
     memory: Array.isArray(parsed.memory) ? parsed.memory : [],
     subjects: Array.isArray(parsed.subjects) ? parsed.subjects : [],
+    tasks: Array.isArray(parsed.tasks) ? parsed.tasks : [],
     interests: Array.isArray(parsed.interests) ? parsed.interests : [],
     listen: { log: Array.isArray(parsed.listen && parsed.listen.log) ? parsed.listen.log : [] }
   };

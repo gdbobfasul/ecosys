@@ -6,6 +6,18 @@ import { esc, downloadBlob } from '../core/ui.js';
 
 export const title = 'QR код';
 
+// jsQR връща code.data като latin1 низ — за кирилица/UTF-8 декодираме
+// суровите байтове (binaryData) през TextDecoder, иначе кирилицата се чупи.
+function qrText(code) {
+  if (!code) return null;
+  try {
+    if (code.binaryData && code.binaryData.length) {
+      return new TextDecoder('utf-8').decode(new Uint8Array(code.binaryData));
+    }
+  } catch (e) { /* fallback към code.data */ }
+  return code.data;
+}
+
 export function render(root) {
   root.innerHTML = `
     <div class="tabs">
@@ -101,7 +113,7 @@ export function render(root) {
         ctx.drawImage(img, 0, 0);
         const d = ctx.getImageData(0, 0, c.width, c.height);
         const code = jsQR(d.data, d.width, d.height);
-        showReadout(code ? code.data : null);
+        showReadout(code ? qrText(code) : null);
       } catch (e) {
         showReadout(null, 'Грешка при разчитане: ' + e.message);
       }
@@ -142,7 +154,7 @@ export function render(root) {
       ctx.drawImage(v, 0, 0, c.width, c.height);
       const d = ctx.getImageData(0, 0, c.width, c.height);
       const code = jsQR(d.data, d.width, d.height);
-      if (code) { showReadout(code.data); stopCam(); return; }
+      if (code) { showReadout(qrText(code)); stopCam(); return; }
     }
     camRAF = requestAnimationFrame(scanLoop);
   }

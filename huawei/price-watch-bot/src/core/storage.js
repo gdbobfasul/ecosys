@@ -5,13 +5,19 @@
 const KEY = 'pwb.state.v1';
 
 let prefs = null;
-async function getPrefs() {
+// ВАЖНО (поправка на „черен екран без меню при старт"): НЕ ползваме динамичен
+// `import('@capacitor/preferences')` — chunk-ът в Capacitor WebView понякога НИТО се
+// зарежда, НИТО reject-ва, и boot увисва преди първото рисуване. Взимаме плъгина
+// СИНХРОННО от глобалния window.Capacitor.Plugins.
+function getPrefs() {
   if (prefs !== null) return prefs;
+  prefs = false;
   try {
-    const mod = await import('@capacitor/preferences');
-    // Capacitor е наличен само в build; проверяваме дали native слоят отговаря.
-    const { Capacitor } = await import('@capacitor/core');
-    prefs = Capacitor.isNativePlatform() ? mod.Preferences : false;
+    const cap = (typeof window !== 'undefined') ? window.Capacitor : null;
+    const isNative = !!(cap && typeof cap.isNativePlatform === 'function' && cap.isNativePlatform());
+    if (isNative && cap.Plugins && cap.Plugins.Preferences && typeof cap.Plugins.Preferences.get === 'function') {
+      prefs = cap.Plugins.Preferences;
+    }
   } catch {
     prefs = false;
   }

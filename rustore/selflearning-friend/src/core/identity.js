@@ -56,16 +56,23 @@ export function isNamed() {
 
 // Кръщаване на бота (еднократно — раждането). Връща обновеното състояние.
 // Изисква ЕДНА дума (без интервали). НЕ пази подсказка.
-export async function nameBot(name) {
+// opts.dataMode: 'personal' | 'impersonal' — глобален избор за лични данни (виж privacy.js).
+export async function nameBot(name, opts = {}) {
   const v = validateSingleWord(name);
   if (!v.ok) throw new Error(v.reason);
   const norm = normalize(name);
   const nameHash = await hashName(norm);
   const id = getState().identity;
+  const dataMode = (opts && opts.dataMode === 'impersonal') ? 'impersonal' : 'personal';
   // Анти-кражба: при раждането вързваме самоличността към устройството (отпечатък).
   let fingerprint = null;
   try { fingerprint = await captureDeviceFingerprint(); } catch (_) { /* по избор */ }
   const prevDevice = getState().device || {};
+  // В безличен режим изключваме гласовия профил (лична биометрия) още при раждането.
+  const st0 = getState();
+  if (dataMode === 'impersonal' && st0.settings && st0.settings.voice && st0.settings.voice.profile) {
+    st0.settings.voice.profile.enabled = false;
+  }
   setState({
     identity: {
       ...id,
@@ -73,7 +80,8 @@ export async function nameBot(name) {
       nameHash,
       nameHint: null,      // БЕЗ подсказка — забравиш ли думата, остава само reset
       avatarSeed: avatarSeedFrom(norm),
-      bornAt: Date.now()
+      bornAt: Date.now(),
+      dataMode
     },
     lock: { unlockedAt: Date.now(), failCount: 0, cooldownUntil: null },
     device: {

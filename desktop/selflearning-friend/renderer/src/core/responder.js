@@ -11,10 +11,13 @@
 import { addMemory, recall, updateMemory, markUsed, listMemory, tokenize } from './memory-store.js';
 import { getState } from './storage.js';
 import { buildPrompt } from './ai-client.js';
-import { parseTask, runTask, askMeFromLearned } from './tasks.js';
+import { parseTask, intakeAndRun, askMeFromLearned } from './tasks.js';
 import { teach } from './teacher.js';
 import { dontKnow, frameAiSuggestion } from './honesty.js';
 import { handleCommand } from './commands.js';
+import { parseBrowserIntent, runBrowserIntent } from './browser.js';
+import { isImpersonalMode, looksPersonal, refusePersonalText } from './privacy.js';
+import { languageByVoice } from './languages.js';
 
 // Помни последния върнат от паметта запис — за да можем да го коригираме.
 let _lastRecallId = null;
@@ -99,6 +102,10 @@ export async function respond(userText) {
   if (qa) {
     const key = qa[1].trim();
     const value = qa[2].trim();
+    // Гейт за лични данни: в безличен режим не записваме лично.
+    if (isImpersonalMode() && looksPersonal(key + ' ' + value)) {
+      return { text: refusePersonalText(), source: 'rule' };
+    }
     addMemory({ type: 'qa', key, value });
     return {
       text: `Разбрах! Като кажеш „${key}“, ще отговарям „${value}“.`,
@@ -110,6 +117,9 @@ export async function respond(userText) {
   const fact = matchAny(RE_FACT, text);
   if (fact) {
     const value = fact[1].trim();
+    if (isImpersonalMode() && looksPersonal(value)) {
+      return { text: refusePersonalText(), source: 'rule' };
+    }
     addMemory({ type: 'fact', key: value, value });
     return { text: `Запомних: ${value}`, learned: true, source: 'learn' };
   }
@@ -127,6 +137,9 @@ export async function respond(userText) {
   // Ако коригира, но няма последен запис — създаваме нов факт от корекцията.
   if (corr) {
     const value = stripCorrectionPrefix(corr[1]);
+    if (isImpersonalMode() && looksPersonal(value)) {
+      return { text: refusePersonalText(), source: 'rule' };
+    }
     addMemory({ type: 'fact', key: value, value });
     return { text: `Добре, запомних: ${value}`, learned: true, source: 'learn' };
   }
@@ -138,11 +151,24 @@ export async function respond(userText) {
     return { text: ask.text, source: ask.ok ? 'memory' : 'rule' };
   }
 
+  // 3.55) БРАУЗЪР/ТЪРСЕНЕ: „отвори браузъра“, „търси/намери ми X“, „търси в Yandex X“,
+  //       „отвори youtube за X“, „отвори example.com“. Отваря СИСТЕМНИЯ браузър.
+  const bi = parseBrowserIntent(text);
+  if (bi) {
+    try {
+      const r = await runBrowserIntent(bi);
+      return { text: r.text, source: 'rule' };
+    } catch (_) {
+      return { text: 'Опитах да отворя браузъра, но нещо се обърка.', source: 'rule' };
+    }
+  }
+
   // 3.6) ЗАДАЧИ: реши математика / научи тема / крипто / финанси / новини (РЕАЛНО).
+  //      ВКАРВАМЕ задачата в постоянния списък „Задачи“ (intakeAndRun), за да ОСТАВА там.
   const task = parseTask(text);
   if (task) {
     try {
-      const res = await runTask(task);
+      const { res } = await intakeAndRun(text);
       return {
         text: res.text,
         source: res.ok ? (task.kind === 'solve' ? 'math' : 'source') : 'rule',
@@ -178,7 +204,9 @@ export async function respond(userText) {
   //    като отговор. tier3 (локалното обобщение) важи само за РЕАЛЕН материал (задачи).
   {
     const ctx = memoryContext();
-    const prompt = buildPrompt({ botName, ownerMessage: text, memoryContext: ctx });
+    const voiceLang = (getState().settings.voice && getState().settings.voice.lang) || 'bg-BG';
+    const langName = languageByVoice(voiceLang).bg.toLowerCase();
+    const prompt = buildPrompt({ botName, ownerMessage: text, memoryContext: ctx, langName });
     const taught = await teach({ prompt, context: '' });
     if (taught && taught.text && taught.ai) {
       return { text: frameAiSuggestion(taught.text), source: 'ai' };

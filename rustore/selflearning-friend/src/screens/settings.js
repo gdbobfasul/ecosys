@@ -14,6 +14,8 @@ import {
   voiceprintSupported, voiceProfileEnabled, setVoiceProfileEnabled,
   voiceProfileExists, enrollmentProgress, resetVoiceProfile
 } from '../core/voiceprint.js';
+import { dataMode, setDataMode, personalMemoryCount, forgetPersonalData } from '../core/privacy.js';
+import { LANGUAGES } from '../core/languages.js';
 
 const APP_ID = 'com.kcy.selflearningfriend.rustore';
 
@@ -52,6 +54,50 @@ export function renderSettings(root, { rerender }) {
       'askOnReopen')
   ]));
 
+  // --- ЛИЧНИ ДАННИ: глобалният режим, избран при раждането (сменяем) ---
+  const dmSw = el('div', { class: 'switch' + (dataMode() === 'personal' ? ' on' : '') });
+  const dmState = el('div', { class: 'muted', style: 'font-size:13px' }, '');
+  function renderDm() {
+    const personal = dataMode() === 'personal';
+    dmSw.className = 'switch' + (personal ? ' on' : '');
+    dmState.textContent = personal
+      ? 'ЛИЧЕН режим: помня лични данни за теб (име, навици, предпочитания) — твой личен асистент. Всичко само на това устройство.'
+      : 'БЕЗЛИЧЕН режим: не събирам нищо лично за теб. Уча общи знания → ставам умен → можеш да ме продадеш/прехвърлиш „чист“. (Гласовият профил също е изключен.)';
+  }
+  renderDm();
+  dmSw.addEventListener('click', () => {
+    const next = dataMode() === 'personal' ? 'impersonal' : 'personal';
+    setDataMode(next);
+    renderDm();
+    rerender(); // обнови гласовия профил (изключва се в безличен режим)
+  });
+  const personalCnt = personalMemoryCount();
+  root.appendChild(el('div', { class: 'card' }, [
+    el('h3', {}, 'Лични данни'),
+    el('p', { class: 'muted', style: 'font-size:13px' },
+      'Глобалният избор от раждането. Личен = твой асистент (помни лични неща). Безличен = нула лични данни, ' +
+      'за да можеш после да ме продадеш/прехвърлиш „чист“. Можеш да го смениш по всяко време — ти ме притежаваш.'),
+    el('div', { class: 'toggle' }, [
+      el('div', {}, [
+        el('div', {}, 'Личен режим (събирай лични данни за мен)'),
+        dmState
+      ]),
+      dmSw
+    ]),
+    el('button', {
+      class: 'danger block', style: 'margin-top:10px',
+      onclick: () => {
+        const n = personalMemoryCount();
+        if (!n) { toast('Нямам разпознати лични спомени за изтриване.'); return; }
+        if (confirm(`Да изтрия ли ${n} спомена, които приличат на лични данни за теб? (за продажба/прехвърляне)`)) {
+          const removed = forgetPersonalData();
+          toast(`Изтрих ${removed} лични спомена + гласовия профил.`);
+          rerender();
+        }
+      }
+    }, `Забрави личните ми данни${personalCnt ? ' (' + personalCnt + ')' : ''}`)
+  ]));
+
   // --- ГЛАС: вход (STT), изход (TTS), език ---
   const vc = st.settings.voice;
   function voiceSwitch(getter, setter) {
@@ -68,11 +114,16 @@ export function renderSettings(root, { rerender }) {
   const outSw = voiceSwitch(() => vc.outputEnabled, (v) => { vc.outputEnabled = v; });
   const convSw = voiceSwitch(() => vc.conversationEnabled, (v) => { vc.conversationEnabled = v; if (v) { requestMicPermission().catch(() => {}); } });
   const convAutoSw = voiceSwitch(() => vc.conversationAutoStart, (v) => { vc.conversationAutoStart = v; });
-  const langSel = el('select', {}, [
-    ['bg-BG', 'Български'], ['ru-RU', 'Руски'], ['en-US', 'Английски'],
-    ['uk-UA', 'Украински'], ['tr-TR', 'Турски']
-  ].map(([v, label]) => el('option', { value: v, ...(vc.lang === v ? { selected: true } : {}) }, label)));
-  langSel.addEventListener('change', () => { vc.lang = langSel.value; persist(); toast('Език за глас: ' + langSel.value); });
+  // 15-те езика на сайта — слуша (STT) и говори (TTS) на всеки от тях.
+  const langSel = el('select', {},
+    LANGUAGES.map((l) => el('option',
+      { value: l.voice, ...(vc.lang === l.voice ? { selected: true } : {}) },
+      `${l.bg} — ${l.native}`)));
+  langSel.addEventListener('change', () => {
+    vc.lang = langSel.value; persist();
+    const l = LANGUAGES.find((x) => x.voice === langSel.value);
+    toast('Език за глас: ' + (l ? l.bg : langSel.value));
+  });
 
   const sttOk = sttAvailable();
   const ttsOk = ttsAvailable();

@@ -1,6 +1,6 @@
 // Входна точка — рутер между екраните.
 import { injectStyles } from './ui/styles.js';
-import { loadState } from './core/storage.js';
+import { loadState, defaultState } from './core/storage.js';
 import { start, stop } from './core/scheduler.js';
 import { renderOnboarding } from './screens/onboarding.js';
 import { renderConfig } from './screens/config.js';
@@ -22,7 +22,14 @@ function go(screen) {
 
 async function boot() {
   injectStyles();
-  state = await loadState();
+  // Не блокираме рисуването вечно — при забавяне/срив тръгваме с подразбиращото се.
+  try {
+    state = await Promise.race([
+      loadState(),
+      new Promise((res) => setTimeout(() => res(defaultState()), 2500))
+    ]);
+  } catch (_) { state = defaultState(); }
+  if (!state) state = defaultState();
 
   // Ако роботът вече е бил пуснат, продължаваме планировчика веднага.
   if (state.masterOn) start(state, () => { /* екранът се пречертава при влизане */ });
@@ -33,4 +40,12 @@ async function boot() {
   go(state.onboarded ? 'dashboard' : 'onboarding');
 }
 
-boot();
+// Никаква грешка при буут да не оставя черен екран.
+boot().catch((e) => {
+  try {
+    if (root) {
+      root.innerHTML = '<div style="padding:20px;font-family:sans-serif">' +
+        '<h2>Робот за цени</h2><p>Стартова грешка: ' + (e && e.message ? e.message : 'неизвестна') + '</p></div>';
+    }
+  } catch (_) {}
+});

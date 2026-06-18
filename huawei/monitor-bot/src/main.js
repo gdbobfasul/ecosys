@@ -1,6 +1,6 @@
 // Входна точка — мъничък рутер между екраните + bootstrap на планировчика.
 import { injectStyles, el } from './ui/styles.js';
-import { loadState } from './core/storage.js';
+import { loadState, defaultState } from './core/storage.js';
 import { startScheduler, tick } from './core/scheduler.js';
 import { APP_NAME } from './config.js';
 
@@ -65,7 +65,15 @@ function render() {
 
 async function boot() {
   injectStyles();
-  state = await loadState();
+  // Не блокираме рисуването вечно заради състоянието: ако четенето се забави/счупи,
+  // тръгваме с подразбиращото се. Така никога няма „черен екран без меню" при старт.
+  try {
+    state = await Promise.race([
+      loadState(),
+      new Promise((res) => setTimeout(() => res(defaultState()), 2500))
+    ]);
+  } catch (_) { state = defaultState(); }
+  if (!state) state = defaultState();
   current = state.onboarded ? 'dashboard' : 'onboarding';
   render();
 
@@ -76,4 +84,16 @@ async function boot() {
   }
 }
 
-boot();
+// Никаква грешка при буут да не оставя черен екран — показваме видимо съобщение.
+boot().catch((e) => {
+  try {
+    if (root) {
+      root.innerHTML = '';
+      const d = document.createElement('div');
+      d.style.cssText = 'padding:20px;color:#e8ecf5;font-family:sans-serif';
+      d.innerHTML = '<h2>' + APP_NAME + '</h2><p>Стартова грешка: ' +
+        (e && e.message ? e.message : 'неизвестна') + '</p>';
+      root.appendChild(d);
+    }
+  } catch (_) {}
+});

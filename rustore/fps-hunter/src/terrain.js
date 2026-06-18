@@ -33,7 +33,10 @@ export class Terrain {
     const nz = (z / TERRAIN_SIZE + 0.5) * 6;
     const h = fbm(nx, nz, this.seed, 4, 2.0, 0.5);
     // лек ръб надолу към края, за да не "падаш" визуално
-    return (h - 0.5) * this.amp;
+    const y = (h - 0.5) * this.amp;
+    // Защита: ако шумът върне NaN/Infinity, камерата/целите получават
+    // невалидна позиция -> невалидна матрица -> ЧЕРЕН екран. Падаме към 0.
+    return Number.isFinite(y) ? y : 0;
   }
 
   _build() {

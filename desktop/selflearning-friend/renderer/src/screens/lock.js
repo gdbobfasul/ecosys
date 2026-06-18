@@ -4,6 +4,7 @@ import { faceEl } from '../ui/face.js';
 import { tryUnlock, cooldownRemainingMs } from '../core/identity.js';
 import { setSessionName } from '../core/responder.js';
 import { resetAll } from '../core/storage.js';
+import { armAutoListen } from '../core/conversation.js';
 
 export function renderLock(root, { rerender }) {
   clear(root);
@@ -23,24 +24,28 @@ export function renderLock(root, { rerender }) {
       status.textContent = `Изчакай ${s} сек. преди нов опит.`;
       input.disabled = true;
       btn.disabled = true;
+      listenBtn.disabled = true;
       setTimeout(refreshCooldown, 1000);
     } else {
       input.disabled = false;
       btn.disabled = false;
+      listenBtn.disabled = false;
       if (status.className.includes('warn')) { status.textContent = ''; status.className = 'center muted'; }
     }
   }
 
-  async function attempt() {
+  async function attempt(opts = {}) {
     if (busy) return;
     const v = input.value.trim();
-    if (!v) { input.focus(); return; }
-    busy = true; btn.disabled = true;
+    if (!v) { input.focus(); toast('Първо въведи кодовата дума.'); return; }
+    busy = true; btn.disabled = true; listenBtn.disabled = true;
     const res = await tryUnlock(v);
-    busy = false; btn.disabled = false;
+    busy = false; btn.disabled = false; listenBtn.disabled = false;
     if (res.ok) {
       setSessionName(v);
-      toast('Добре дошъл отново 👋');
+      // Бутон „Започни да ме слушаш“ → веднага пуска слушането/разговора в чата.
+      if (opts.thenListen) { armAutoListen(); toast('Свързан! Слушам те… 🎙️'); }
+      else toast('Добре дошъл отново 👋');
       rerender();
       return;
     }
@@ -56,7 +61,12 @@ export function renderLock(root, { rerender }) {
     }
   }
 
-  const btn = el('button', { class: 'block', onclick: attempt }, 'Това ли е кодовата дума?');
+  const btn = el('button', { class: 'block', onclick: () => attempt() }, 'Това ли е кодовата дума?');
+  // Бутон за свързване с глас — не само с Enter. Проверява думата и веднага почва да слуша.
+  const listenBtn = el('button', {
+    class: 'secondary block', style: 'margin-top:8px',
+    onclick: () => attempt({ thenListen: true })
+  }, '🎙️ Започни да ме слушаш');
 
   root.appendChild(faceEl({ thinking: true }));
   root.appendChild(el('h1', { class: 'center' }, 'Как се казвам?'));
@@ -65,7 +75,9 @@ export function renderLock(root, { rerender }) {
     'Няма подсказка — думата е тайната.'));
 
   root.appendChild(el('div', { class: 'card' }, [
-    input, btn, status
+    input, btn, listenBtn, status,
+    el('p', { class: 'muted', style: 'font-size:12px;margin-top:8px' },
+      'Натисни „Започни да ме слушаш“, за да се свържеш с мен с глас веднага (не само с Enter).')
   ]));
 
   // Авариен изход: „Започни отначало“ БЕЗ дума (за забравена дума). Силно потвърждение.
