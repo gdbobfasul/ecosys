@@ -401,6 +401,11 @@ if [ -n "$SSH_KEY" ]; then
     if [ -f "${SSH_KEY}.pub" ]; then
         log "  ${GREEN}✓ Публичен: ${SSH_KEY}.pub${NC}"
     fi
+    # ВАЖНО (анти-fail2ban): пинваме САМО този ключ. Иначе ssh-agent предлага всички
+    # ключове подред, сървърът ги брои като "too many authentication failures" и
+    # fail2ban банва IP-то (особено при многото връзки на деплоя). IdentitiesOnly спира това.
+    SSH_OPTS="$SSH_OPTS -o IdentitiesOnly=yes -i $SSH_KEY"
+    SCP_OPTS="$SCP_OPTS -o IdentitiesOnly=yes -i $SSH_KEY"
 else
     log ""
     log "  ${RED}╔══════════════════════════════════════════════════════════════╗${NC}"
@@ -484,6 +489,9 @@ START_TIME=$SECONDS
 tar -czf "$ARCHIVE_NAME" \
     --exclude='node_modules' \
     --exclude='.git' \
+    --exclude='rustore' --exclude='huawei' --exclude='apk' --exclude='desktop' \
+    --exclude='node_modules2' --exclude='patch' \
+    --exclude='*.apk' --exclude='*.aab' --exclude='*.exe' \
     ${ASSET_EXCLUDE} \
     --exclude='*.log' \
     --exclude='coverage' \

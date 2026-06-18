@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0093
+# Version: 1.0218
 ##############################################################################
 # KCY Ecosystem - Bootstrap on fresh server
 #
@@ -683,6 +683,26 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/21-setup-fbp-service.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/21-setup-fbp-service.sh *
 
+# Selflearning Friend relay (точка 38) + свързване на робот (точка 39) + обнови по апп (45-49).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh *
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh *
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/30-update-app.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/30-update-app.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/30-update-app.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/30-update-app.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/30-update-app.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/30-update-app.sh *
+
 # Systemd service management
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-chat
 deploy ALL=(root) NOPASSWD: /bin/systemctl restart kcy-eco3
@@ -860,7 +880,25 @@ fi
 print_step "STEP 10: Enable & start services"
 systemctl enable --now nginx >/dev/null 2>&1
 print_ok "nginx стартиран"
+# fail2ban: задаваме ignoreip ПРЕДИ старт — БЕЗ него върви на дефолти и банва
+# деплой машината (динамично IP + много SSH връзки). Tailscale диапазонът (100.64.0.0/10)
+# НИКОГА да не се банва → деплой по prodts винаги минава. Плюс по-щадящ maxretry/bantime.
+mkdir -p /etc/fail2ban/jail.d
+cat > /etc/fail2ban/jail.d/kcy.local << 'F2B'
+[DEFAULT]
+# localhost + цялата Tailscale CGNAT мрежа (100.64.0.0/10) са изключени от баниране.
+ignoreip = 127.0.0.1/8 ::1 100.64.0.0/10
+bantime  = 10m
+findtime = 10m
+maxretry = 10
+
+[sshd]
+enabled = true
+maxretry = 10
+F2B
+print_ok "fail2ban: ignoreip (localhost + Tailscale 100.64.0.0/10), maxretry=10"
 systemctl enable --now fail2ban >/dev/null 2>&1
+systemctl restart fail2ban >/dev/null 2>&1
 print_ok "fail2ban стартиран"
 if systemctl list-unit-files | grep -q "^postgresql"; then
     systemctl enable --now postgresql >/dev/null 2>&1

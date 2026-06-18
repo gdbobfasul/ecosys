@@ -35,7 +35,10 @@ PORT_KEY="SELFLEARNING_PORT"; PORT_DEFAULT="3013"
 NGINX_INC_DIR="/etc/nginx/kcy-apps"
 NGINX_INC="$NGINX_INC_DIR/selflearning.conf"
 LOG_DIR="/var/log/kcy-ecosystem"
-DATA_DIR="$APP_DIR/data"
+# ВАЖНО: базата на робота живее ИЗВЪН проекта (/var/lib), за да НЕ я трие НИКОЙ деплой.
+# Deploy-ите пресъздават /var/www/kcy-ecosystem → ако данните бяха там, щяха да се губят.
+# Тук НИКОЙ деплой не пипа → базата оцелява. Трие се САМО от 23-link --transfer (ресет).
+DATA_DIR="/var/lib/kcy-selflearning/data"
 
 # Същият service потребител като другите node услуги.
 SVC_USER="kcy-eco3"

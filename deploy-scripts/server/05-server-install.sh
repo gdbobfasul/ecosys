@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0206
+# Version: 1.0218
 ##############################################################################
 # KCY Ecosystem - Server Install Script
 # sudo bash 05-server-install.sh
@@ -774,6 +774,30 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh *
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/20-setup-eco3-database.sh *
+
+# Selflearning Friend relay (точка 38) — setup на услугата.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/22-setup-selflearning-server.sh *
+
+# Selflearning Friend — свързване на робот към сървър (точка 39); приема --deploy/--transfer.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh *
+
+# Обнови по приложение (точки 45-49) — приема hlb|wnb|fbp|portals|chat|eco3.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/30-update-app.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/30-update-app.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/30-update-app.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/30-update-app.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/30-update-app.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/30-update-app.sh *
 
 # Токен монитори (точка 52 / точка 2) — приема token|brch1|multisig.
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/31-setup-token-monitor.sh

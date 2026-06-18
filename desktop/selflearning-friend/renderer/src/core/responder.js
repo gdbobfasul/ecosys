@@ -213,14 +213,28 @@ export async function respond(userText) {
     }
   }
 
-  // 7) Fallback: small talk → него; иначе ЧЕСТНО „не знам“.
-  // НЕ връщаме слабо memory-съвпадение като отговор — би било представяне на
-  // несвързан факт като отговор (нарушава честността). По-добре кажи „не знам“.
+  // 7) Не знам → КРАТКО + ЗАПОЧВАМ ДА УЧА (вместо дълъг дисклеймър и гадаене).
+  //    (а) on-device учене във фон: сваля знание от източник (Wikipedia) → Задачи/Памет;
+  //    (б) отварям търсене в браузъра (Google), за да събирам/видя знания по темата.
   if (st) return { text: st, source: 'rule' };
-  return {
-    text: dontKnow() + ' Научи ме („запомни, че…“) или ми дай задача („научи за …“).',
-    source: 'rule'
-  };
+  const topic = learnTopicFrom(text);
+  if (topic) {
+    try { intakeAndRun('научи за ' + topic); } catch (_) { /* фон — не блокира отговора */ }
+    try { runBrowserIntent({ action: 'search', engine: 'google', query: topic }); } catch (_) {}
+    return { text: 'Не съм чувала за такова нещо. Започвам да уча.', source: 'rule', learning: true };
+  }
+  return { text: dontKnow(), source: 'rule' };
+}
+
+// Извлича „тема за учене“ от въпрос/реплика (маха въпросни думи и пунктуация).
+function learnTopicFrom(text) {
+  let s = String(text || '').trim();
+  if (s.length < 2) return null;
+  s = s.replace(/^(?:какво\s+е|какво\s+са|кой\s+е|коя\s+е|кое\s+е|кои\s+са|какво\s+знаеш\s+за|знаеш\s+ли\s+(?:какво\s+е\s+|за\s+)?|кажи\s+ми\s+(?:за\s+|какво\s+е\s+)?|разкажи(?:\s+ми)?\s+(?:за\s+|нещо\s+за\s+)?|обясни(?:\s+ми)?\s+(?:какво\s+е\s+|за\s+)?|що\s+е(?:\s+то)?)\s*/i, '');
+  s = s.replace(/[?!.]+$/g, '').trim();
+  if (s.length < 2) return null;
+  if (s.length > 80) s = s.slice(0, 80).trim();
+  return s;
 }
 
 // Кратък контекст за AI: най-използваните факти/предпочитания.

@@ -127,33 +127,48 @@ fi
 # ── Събери списък с апове за билд ──
 declare -a APPS=()
 ARG="$1"
+
+# Добавя ЕДИН апп по ИМЕ за ДВАТА магазина (rustore + huawei), ако съществува там.
+add_app_both() { local n="$1" s; for s in rustore huawei; do is_app "$s/$n" && APPS+=("$s/$n"); done; }
+
 if [ -n "$ARG" ]; then
   ARG="${ARG%/}"
   if is_app "$ARG"; then
-    APPS+=("$ARG")
-  elif [ -d "$ARG" ]; then
-    for d in "$ARG"/*/; do d="${d%/}"; is_app "$d" && APPS+=("$d"); done
+    APPS+=("$ARG")                                   # точен път на апп (само този)
+  elif [ "$ARG" = "rustore" ] || [ "$ARG" = "huawei" ]; then
+    for d in "$ARG"/*/; do d="${d%/}"; is_app "$d" && APPS+=("$d"); done   # цял магазин
+  elif [[ "$ARG" != */* ]] && { is_app "rustore/$ARG" || is_app "huawei/$ARG"; }; then
+    add_app_both "$ARG"                              # само ИМЕ → двата магазина
   else
-    echo -e "  ${RED}✗ Няма такъв път/апп: $ARG${NC}"; exit 1
+    echo -e "  ${RED}✗ Няма такъв път/апп/име: $ARG${NC}"; exit 1
   fi
 else
-  # интерактивно — изброй всички апове под rustore/ и huawei/
-  declare -a ALL=()
+  # интерактивно — УНИКАЛНИ имена на апове (обхожда rustore/ и huawei/).
+  # Избор на едно име билдва за ДВАТА магазина (rustore + huawei).
+  declare -a NAMES=()
   for store in rustore huawei; do
     [ -d "$store" ] || continue
-    for d in "$store"/*/; do d="${d%/}"; is_app "$d" && ALL+=("$d"); done
+    for d in "$store"/*/; do
+      d="${d%/}"; is_app "$d" || continue
+      n="$(basename "$d")"; seen=0
+      for x in "${NAMES[@]}"; do [ "$x" = "$n" ] && { seen=1; break; }; done
+      [ "$seen" = 0 ] && NAMES+=("$n")
+    done
   done
-  [ "${#ALL[@]}" -eq 0 ] && { echo -e "  ${RED}✗ Не намерих апове в rustore/ или huawei/.${NC}"; exit 1; }
-  echo -e "${BOLD}${CYAN}━━━ Кой да билдна? ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  [ "${#NAMES[@]}" -eq 0 ] && { echo -e "  ${RED}✗ Не намерих апове в rustore/ или huawei/.${NC}"; exit 1; }
+  echo -e "${BOLD}${CYAN}━━━ Кой апп да билдна? (избраният се прави за rustore И huawei) ━${NC}"
   i=1
-  for d in "${ALL[@]}"; do echo -e "    $i) $d"; i=$((i+1)); done
-  echo -e "    a) ВСИЧКИ (${#ALL[@]})"
+  for n in "${NAMES[@]}"; do
+    tags=""; is_app "rustore/$n" && tags+="rustore "; is_app "huawei/$n" && tags+="huawei "
+    printf "    %2d) %-22s ${GRAY}(%s)${NC}\n" "$i" "$n" "$tags"; i=$((i+1))
+  done
+  echo -e "     a) ВСИЧКИ апове × двата магазина"
   echo ""
   read -p "  Избери [1-$((i-1)) / a]: " pick
   if [ "$pick" = "a" ] || [ "$pick" = "A" ]; then
-    APPS=("${ALL[@]}")
+    for n in "${NAMES[@]}"; do add_app_both "$n"; done
   elif [[ "$pick" =~ ^[0-9]+$ ]] && [ "$pick" -ge 1 ] && [ "$pick" -lt "$i" ]; then
-    APPS+=("${ALL[$((pick-1))]}")
+    add_app_both "${NAMES[$((pick-1))]}"             # избраното име → двата магазина
   else
     echo "  Отказано."; exit 0
   fi
@@ -207,7 +222,39 @@ build_one() {
   echo ""
 }
 
+# ── Десктоп Selflearning .exe (electron-builder) ──
+# НЕ е отделно: върви ЗАЕДНО с мобилния selflearning-friend (когато е в избора).
+# Electron не иска Android SDK → билдва се дори да няма Android среда. .exe → /apk.
+build_desktop_slf() {
+  local d="desktop/selflearning-friend"
+  [ -d "$d" ] || { echo -e "  ${YELLOW}↷ десктоп selflearning липсва — пропускам${NC}"; return 0; }
+  echo -e "${BOLD}${CYAN}━━━ desktop/selflearning-friend (.exe, electron) ━━━━━━━━${NC}"
+  (
+    cd "$d" || exit 1
+    if [ ! -d node_modules ]; then
+      echo -e "  ${CYAN}→ npm install…${NC}"; npm install || { echo -e "  ${RED}✗ npm install се провали${NC}"; exit 2; }
+    fi
+    echo -e "  ${CYAN}→ npm run dist:portable (electron-builder, ~145MB, бавно)…${NC}"
+    npm run dist:portable || { echo -e "  ${RED}✗ electron-builder се провали${NC}"; exit 3; }
+    EXE=$(ls -t dist-exe/*-portable.exe 2>/dev/null | head -1)
+    if [ -n "$EXE" ] && [ -f "$EXE" ]; then
+      mkdir -p "$ROOT/apk"
+      if cp -f "$EXE" "$ROOT/apk/selflearning-friend-desktop-portable.exe"; then
+        echo -e "  ${GREEN}✓ .exe → apk/selflearning-friend-desktop-portable.exe${NC}"
+      else echo -e "  ${YELLOW}! не копирах .exe в /apk${NC}"; fi
+    else echo -e "  ${YELLOW}! portable .exe не е намерен в dist-exe/${NC}"; fi
+  )
+  local rc=$?
+  [ "$rc" -eq 0 ] && RESULTS+=("${GREEN}✓${NC} desktop/selflearning-friend (.exe)") || RESULTS+=("${RED}✗${NC} desktop/selflearning-friend (.exe) (код $rc)")
+  echo ""
+}
+
 for d in "${APPS[@]}"; do build_one "$d"; done
+
+# Ако в избора има selflearning-friend → билдни И десктоп .exe-то (същият апп, не отделно).
+WANT_DESKTOP=0
+for d in "${APPS[@]}"; do [ "$(basename "$d")" = "selflearning-friend" ] && WANT_DESKTOP=1; done
+[ "$WANT_DESKTOP" = 1 ] && build_desktop_slf
 
 # ── Обобщение ──
 echo -e "${BOLD}${CYAN}━━━ Обобщение ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"

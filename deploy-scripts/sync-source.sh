@@ -50,8 +50,11 @@ source "$(dirname "$0")/lib/banner.sh" 2>/dev/null && arm_done_banner "$TNAME" "
 if ! timeout 3 bash -c "exec 3<>/dev/tcp/${SERVER}/${PORT}" 2>/dev/null; then
     for p in 22 2222; do timeout 3 bash -c "exec 3<>/dev/tcp/${SERVER}/${p}" 2>/dev/null && { PORT="$p"; break; }; done
 fi
-SSH="ssh -o ConnectTimeout=90 -o ServerAliveInterval=30 -p ${PORT}"
-SCP="scp -o ConnectTimeout=90 -P ${PORT}"
+# Анти-fail2ban: пинваме САМО deploy ключа (IdentitiesOnly) — иначе ssh-agent предлага
+# всички ключове → "too many authentication failures" → fail2ban банва IP-то.
+KEYOPT=""; [ -f "$HOME/.ssh/id_ed25519" ] && KEYOPT="-o IdentitiesOnly=yes -i $HOME/.ssh/id_ed25519"
+SSH="ssh $KEYOPT -o ConnectTimeout=90 -o ServerAliveInterval=30 -p ${PORT}"
+SCP="scp $KEYOPT -o ConnectTimeout=90 -P ${PORT}"
 
 echo ""; echo -e "  Target:  ${GREEN}${USER}@${SERVER}:${PORT}${NC}"
 echo -e "  Режим:   ${GREEN}само СОРС${NC} (без assets/данни), overlay + рестарт"
@@ -64,6 +67,9 @@ tar -czf "$TAR" \
     --exclude='public/assets' \
     --exclude='node_modules' \
     --exclude='.git' \
+    --exclude='rustore' --exclude='huawei' --exclude='apk' --exclude='desktop' \
+    --exclude='node_modules2' --exclude='patch' \
+    --exclude='*.apk' --exclude='*.aab' --exclude='*.exe' \
     --exclude='*.log' --exclude='.cache' --exclude='tmp' \
     --exclude='*.zip' --exclude='*.tar' --exclude='*.gz' --exclude='*.rar' \
     --exclude='.env' --exclude='*.env' \
@@ -88,7 +94,7 @@ echo -e "  ${GREEN}✓ Качено${NC}"
 # 14-sync-source.sh вече е инсталиран на сървъра (Deploy го слага в kcy-ecosystem)
 # и е whitelist-нат. Просто му подаваме качения архив — той сам разархивира и прави overlay.
 echo -e "${YELLOW}[3/3] Прилагане на сървъра (overlay + рестарт)...${NC}"
-ssh -t -o ConnectTimeout=90 -p ${PORT} "${USER}@${SERVER}" "sudo ${REMOTE_SCRIPT} '${REMOTE_TAR}'"
+ssh -t $KEYOPT -o ConnectTimeout=90 -p ${PORT} "${USER}@${SERVER}" "sudo ${REMOTE_SCRIPT} '${REMOTE_TAR}'"
 RC=$?
 rm -f "$TAR"
 echo ""

@@ -15,7 +15,8 @@ export const icons = {
   scraper: svg('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>'),
   ai: svg('<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h.01M15 9h.01M9 14c.8.8 4.2.8 5 0"/><path d="M2 10v4M22 10v4"/>'),
   watch: svg('<circle cx="12" cy="12" r="7"/><path d="M12 9v3l2 2"/><path d="M8 3 6 5M16 3l2 2"/>'),
-  search: svg('<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>')
+  search: svg('<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>'),
+  bell: svg('<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>')
 };
 
 export function iconHTML(name) {

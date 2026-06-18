@@ -5,16 +5,18 @@
 let localNotif = null;
 let isNative = false;
 
-async function getNative() {
+// ВАЖНО (поправка на „екранът Разрешения не се отваря / бутонът не работи"): НЕ ползваме
+// динамичен import('@capacitor/...') — chunk-ът в Capacitor WebView понякога увисва и
+// hasPermission()/requestPermission() блокират, та екранът не се рендира. Взимаме плъгина
+// СИНХРОННО от глобалния window.Capacitor.Plugins (без import, без увисване).
+function getNative() {
   if (localNotif !== null) return localNotif;
+  localNotif = false;
   try {
-    const { Capacitor } = await import('@capacitor/core');
-    isNative = Capacitor.isNativePlatform();
-    if (isNative) {
-      const mod = await import('@capacitor/local-notifications');
-      localNotif = mod.LocalNotifications;
-    } else {
-      localNotif = false;
+    const cap = (typeof window !== 'undefined') ? window.Capacitor : null;
+    isNative = !!(cap && typeof cap.isNativePlatform === 'function' && cap.isNativePlatform());
+    if (isNative && cap.Plugins && cap.Plugins.LocalNotifications) {
+      localNotif = cap.Plugins.LocalNotifications;
     }
   } catch {
     localNotif = false;

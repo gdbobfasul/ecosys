@@ -88,7 +88,14 @@ function defaultState() {
         model: 'claude-3-5-haiku-latest', // евтин по подразбиране
         anthropicVersion: '2023-06-01'
       },
-      // „Източници на знание“ (виж knowledge.js).
+      // Връзка към сървъра — собственикът въвежда само ДОМЕЙН + TOKEN (виж server-link.js).
+      // Пълните URL-та се сглобяват автоматично по каноничната схема (същата като скрипт 39).
+      server: {
+        domain: '',
+        token: ''
+      },
+      // „Източници на знание“ (виж knowledge.js). serverEndpoint/relayUrl се попълват
+      // автоматично от server (домейн+token); не се пипат ръчно.
       sources: {
         pullUrl: '',
         pullEnabled: false,
@@ -171,6 +178,7 @@ function mergeDefaults(parsed) {
       ...base.settings,
       ...(parsed.settings || {}),
       teacher: { ...base.settings.teacher, ...((parsed.settings && parsed.settings.teacher) || {}) },
+      server: { ...base.settings.server, ...((parsed.settings && parsed.settings.server) || {}) },
       sources: { ...base.settings.sources, ...((parsed.settings && parsed.settings.sources) || {}) },
       listen: { ...base.settings.listen, ...((parsed.settings && parsed.settings.listen) || {}) },
       voice: {

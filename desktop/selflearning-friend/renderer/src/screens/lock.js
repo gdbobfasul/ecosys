@@ -64,7 +64,9 @@ export function renderLock(root, { rerender }) {
   const btn = el('button', { class: 'block', onclick: () => attempt() }, 'Това ли е кодовата дума?');
   // Бутон за свързване с глас — не само с Enter. Проверява думата и веднага почва да слуша.
   const listenBtn = el('button', {
-    class: 'secondary block', style: 'margin-top:8px',
+    class: 'block',
+    // Ясно изглеждащ бутон (различен цвят от главния) — не „secondary“, който се сливаше с картата.
+    style: 'margin-top:10px; background: var(--accent-2, #2de0c6); color:#04130f; font-weight:700; border:none;',
     onclick: () => attempt({ thenListen: true })
   }, '🎙️ Започни да ме слушаш');
 

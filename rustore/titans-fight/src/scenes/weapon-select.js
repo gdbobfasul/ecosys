@@ -107,7 +107,10 @@ export class WeaponSelectScene extends Phaser.Scene {
 
     if (open) {
       cont.setSize(CW, H);
-      cont.setInteractive(new Phaser.Geom.Rectangle(-CW / 2, -H / 2, CW, H), Phaser.Geom.Rectangle.Contains);
+      // Зона от (0,0): за Container Phaser добавя displayOrigin (= CW/2,H/2) към
+      // локалната точка, затова правоъгълник от (-CW/2,-H/2) излиза изместен и
+      // кликаемата площ не съвпада с картата (същият бъг като при бутоните).
+      cont.setInteractive(new Phaser.Geom.Rectangle(0, 0, CW, H), Phaser.Geom.Rectangle.Contains);
       cont.on('pointerdown', onClick);
     }
     return cont;

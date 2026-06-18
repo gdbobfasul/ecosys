@@ -44,9 +44,30 @@ export function makeButton(scene, x, y, w, h, label, onClick, opts = {}) {
     color: opts.textColor || '#101018', fontStyle: 'bold', align: 'center'
   }).setOrigin(0.5);
   txt.setShadow(0, 1, '#ffffff', 1, false, true);
+
+  // Авто-свиване на шрифта: ако надписът е по-широк от бутона (минус малък
+  // отстъп), смаляваме размера докато се събере. Така НИКОГА не се реже текст
+  // (това беше причината „Опитай пак" да се вижда като „питай пак").
+  const pad = 18;
+  let guard = 0;
+  while (txt.width > w - pad && txt.style.fontSize && parseInt(txt.style.fontSize, 10) > 11 && guard < 24) {
+    txt.setFontSize(parseInt(txt.style.fontSize, 10) - 1);
+    guard++;
+  }
+
   c.add([bg, txt]);
   c.setSize(w, h);
-  c.setInteractive(new Phaser.Geom.Rectangle(-w / 2, -h / 2, w, h), Phaser.Geom.Rectangle.Contains);
+
+  // Точната кликаема зона = видимия бутон (същия размер и център).
+  // ВАЖНО (причина за разминаването „малка площ, леко встрани"): за Container
+  // Phaser смята локалната точка на докосване спрямо ГОРНИЯ ЛЯВ ъгъл, като
+  // ДОБАВЯ displayOrigin (= w/2, h/2 при setSize + origin 0.5). Затова hit-area
+  // правоъгълникът трябва да е в координати ОТ (0,0), а НЕ от (-w/2,-h/2) —
+  // иначе зоната излиза изместена наполовина наляво (точно симптомът на бъга).
+  // Пазим геометрията, за да я ползваме повторно при re-enable (иначе
+  // setInteractive() без аргумент я подменя с друга).
+  const hitArea = new Phaser.Geom.Rectangle(0, 0, w, h);
+  c.setInteractive(hitArea, Phaser.Geom.Rectangle.Contains);
   c.on('pointerover', () => draw(true));
   c.on('pointerout', () => draw(false));
   c.on('pointerdown', () => {
@@ -56,7 +77,9 @@ export function makeButton(scene, x, y, w, h, label, onClick, opts = {}) {
   c.setLabel = (t) => txt.setText(t);
   c.setEnabled = (en) => {
     c.alpha = en ? 1 : 0.4;
-    if (en) c.setInteractive(); else c.disableInteractive();
+    // Винаги възстановяваме СЪЩАТА кликаема зона (не подразбиращата се).
+    if (en) c.setInteractive(hitArea, Phaser.Geom.Rectangle.Contains);
+    else c.disableInteractive();
   };
   return c;
 }

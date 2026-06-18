@@ -57,6 +57,12 @@ export const tools = [
     load: () => import('../tools/fx-rates.js')
   },
   {
+    id: 'watch20', icon: 'bell', online: true,
+    name: 'Наблюдавай 20 валути',
+    desc: 'Прагове с известие и звук за до 20 двойки',
+    load: () => import('../tools/watch20.js')
+  },
+  {
     id: 'scraper', icon: 'scraper', online: true,
     name: 'Web скрапер',
     desc: 'Извличане на заглавие/текст/връзки',

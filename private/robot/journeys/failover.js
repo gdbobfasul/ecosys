@@ -14,8 +14,8 @@
 const DOMAINS = [
   { key: 'main', host: 'take.offbitch.com' },
   { key: 'chat', host: 'my.girl.place' },
-  { key: 'wnb', host: 'find.jwork.ru' },
   { key: 'hlb', host: 'look.myhousesetup.com' },
+  // wnb (find.jwork.ru) МАХНАТ — вече не се ползва отделен домейн за WNB.
 ];
 
 // Прочита X-Served-By нечувствително към регистъра (заглавките идват lowercase).

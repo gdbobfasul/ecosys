@@ -15,17 +15,6 @@
     "dir": "/chat/public/",
     "nested": true
   },
-  "wnb": {
-    "domain": "find.jwork.ru",
-    "hosts": [
-      "find.jwork.ru"
-    ],
-    "prefixes": [
-      "/wherenobiz/"
-    ],
-    "dir": "/wherenobiz/",
-    "nested": false
-  },
   "hlb": {
     "domain": "look.myhousesetup.com",
     "hosts": [

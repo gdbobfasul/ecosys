@@ -30,12 +30,16 @@ PROJECT_DIR="/var/www/kcy-ecosystem"
 PRIVATE_DIR="$PROJECT_DIR/private"
 GLOBAL_ENV="$PRIVATE_DIR/configs/.env"
 APP_DIR="$PRIVATE_DIR/$APP_NAME"
-DATA_DIR="$APP_DIR/data"
+# Базата е ИЗВЪН проекта (/var/lib) → НИКОЙ деплой не я трие. Трие се САМО оттук с --transfer.
+DATA_DIR="/var/lib/kcy-selflearning/data"
 DB_FILE="$DATA_DIR/selflearning.db"
+TOKEN_FILE="$DATA_DIR/owner-token"   # token-ът се пази тук → СТАБИЛЕН (нов само при --transfer)
 PORT_DEFAULT="3013"
 SETUP_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/22-setup-selflearning-server.sh"
 [ -f "$PRIVATE_DIR/configs/domains.conf" ] && . "$PRIVATE_DIR/configs/domains.conf" 2>/dev/null
 [ -n "${APP_selflearning_PORT:-}" ] && PORT_DEFAULT="$APP_selflearning_PORT"
+# Каноничен домейн на робота (от domains.conf). Без nginx-скрейп (хващаше чужд vhost).
+SELF_DOMAIN="${APP_selflearning_PUBLIC:-selflearning.bot.nu}"
 
 DO_DEPLOY=false; DO_TRANSFER=false
 for a in "$@"; do case "$a" in
@@ -138,9 +142,7 @@ if command -v nginx >/dev/null 2>&1; then
   else warn "nginx маршрутът не е активен още — пусни ВЕДНЪЖ опция 2 (иначе телефонът няма да стига сървъра)"; fi
 else warn "nginx липсва — без него няма публичен HTTPS достъп за телефона"; fi
 
-# Домейн (за връзка-инфото)
-DOMAIN=$(nginx -T 2>/dev/null | grep -oiE 'server_name[[:space:]]+[^;]+' | awk '{for(i=2;i<=NF;i++) if($i!="_" && $i!~/localhost/){print $i; exit}}' | head -1)
-[ -z "$DOMAIN" ] && DOMAIN="${SELFLEARNING_PUBLIC:-${APP_main_PUBLIC:-}}"
+# Домейнът е каноничен (SELF_DOMAIN от domains.conf) — НЕ скрейпваме nginx (хващаше чужд vhost).
 
 # Health (ако услугата върви)
 if command -v curl >/dev/null 2>&1; then
@@ -185,8 +187,8 @@ else
     read -r -p "  Сигурен ли си? Напиши точно TRANSFER: " CONF
     if [ "$CONF" = "TRANSFER" ]; then
       systemctl stop ${SVC}.service 2>/dev/null
-      rm -f "$DB_FILE" "$DB_FILE-wal" "$DB_FILE-shm"
-      ok "Старите данни са изтрити — сървърът е свободен за новия робот."
+      rm -f "$DB_FILE" "$DB_FILE-wal" "$DB_FILE-shm" "$TOKEN_FILE"
+      ok "Старите данни + token са изтрити — сървърът е свободен за новия робот (нов token)."
       ROBOTS="0"
     else
       echo -e "  ${YELLOW}Отказан --transfer. Старият робот остава.${NC}"
@@ -227,24 +229,44 @@ fi
 ##############################################################################
 # ВРЪЗКА-ИНФО — какво да въведеш в роботчето
 ##############################################################################
-TOKEN_NEW=$(openssl rand -hex 16 2>/dev/null || head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n')
-BASE="https://${DOMAIN:-<твоят-домейн>}/api/selflearning"
+# Token — СТАБИЛЕН: чете се от файл. Нов се генерира САМО ако липсва (т.е. първи път
+# или след --transfer, който го трие). Ъпдейт на домейн/каквото и да е НЕ сменя token-а.
+TOKEN=""
+[ -f "$TOKEN_FILE" ] && TOKEN="$(tr -d ' \r\n' < "$TOKEN_FILE" 2>/dev/null)"
+TOKEN_IS_NEW=0
+if [ -z "$TOKEN" ]; then
+  TOKEN=$(openssl rand -hex 16 2>/dev/null || head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n')
+  mkdir -p "$DATA_DIR"
+  printf '%s\n' "$TOKEN" > "$TOKEN_FILE" 2>/dev/null && chmod 600 "$TOKEN_FILE" 2>/dev/null
+  TOKEN_IS_NEW=1
+fi
+BASE="https://${SELF_DOMAIN}/api/selflearning"
 echo ""
 echo -e "${BOLD}${YELLOW}══════════════════════════════════════════════════════════════════${NC}"
-echo -e "${BOLD}  Данни за връзка — въведи ги в роботчето (Настройки):${NC}"
+echo -e "${BOLD}  КАК ДА СВЪРЖЕШ РОБОТЧЕТО (лесно — само 2 неща):${NC}"
 echo -e "${YELLOW}══════════════════════════════════════════════════════════════════${NC}"
-echo -e "  ${BOLD}Базов URL:${NC}        ${CYAN}${BASE}${NC}"
-if [ "$ROBOTS" = "0" ]; then
-  echo -e "  ${BOLD}Нов token:${NC}        ${GREEN}${TOKEN_NEW}${NC}   ${GRAY}(пази го; СЪЩИЯТ token за десктоп И телефон)${NC}"
-else
-  echo -e "  ${BOLD}Token:${NC}            ${GRAY}ползвай СЪЩИЯ token на робота (или --transfer за нов)${NC}"
-fi
-echo -e "  ${GRAY}• „Източници на знание\" → Сървърен endpoint:  ${BASE}/sync/<token>${NC}"
-echo -e "  ${GRAY}• Режим „Слушай\" → Релей URL:                 ${BASE}/listen/<token>${NC}"
-echo -e "  ${GRAY}• Проверка на живо:                           ${BASE}/health${NC}"
+echo -e "  В апа отвори:  ${CYAN}Настройки → „Източници на знание\" → 🔗 Свържи към сървър${NC}"
+echo -e "  и въведи САМО тези две полета:"
 echo ""
-echo -e "  ${GRAY}Десктопът = учащият (събира знание); телефонът = само предава (не учи).${NC}"
-echo -e "  ${GRAY}Локалното знание винаги си остава главно — сървърът само го налива/раздава.${NC}"
+echo -e "    ${BOLD}1) Домейн:${NC}  ${GREEN}${SELF_DOMAIN}${NC}   ${GRAY}(само домейна — без https://, без път)${NC}"
+echo -e "    ${BOLD}2) Token:${NC}   ${GREEN}${TOKEN}${NC}"
+if [ "$TOKEN_IS_NEW" = 1 ]; then
+  echo -e "       ${GRAY}(нов token — пази го; СЪЩИЯТ върви за десктоп И телефон на ЕДИН робот)${NC}"
+else
+  echo -e "       ${GRAY}(СЪЩИЯТ token като предишния път — стабилен е; сменя се само при --transfer)${NC}"
+fi
+echo ""
+echo -e "  ${BOLD}Натискаш „Запази връзката\" — това е всичко.${NC}"
+echo -e "  Апът сам сглобява пълните адреси (не ги пишеш ти):"
+echo -e "    ${GRAY}• sync:     ${BASE}/sync/<token>${NC}"
+echo -e "    ${GRAY}• слушай:   ${BASE}/listen/<token>${NC}"
+echo -e "    ${GRAY}• проверка: ${BASE}/health${NC}"
+echo ""
+echo -e "  ${GRAY}Базата на робота е в /var/lib/kcy-selflearning — НИКОЙ деплой не я трие.${NC}"
+echo -e "  ${GRAY}Изтрива се САМО оттук с --transfer (ресет). Десктопът учи; телефонът само предава.${NC}"
 echo -e "${YELLOW}══════════════════════════════════════════════════════════════════${NC}"
+echo ""
+echo -e "  ${YELLOW}Ако ${SELF_DOMAIN} още не отваря: насочи DNS (A запис) към сървъра и пусни${NC}"
+echo -e "  ${YELLOW}опция 33 (домейни + SSL) — domains.conf вече знае за ${SELF_DOMAIN}.${NC}"
 
 exit 0

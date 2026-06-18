@@ -93,6 +93,8 @@ D_LBL="НЕ (запазва данните)"; [ "$DROP_DB" = 1 ] && D_LBL="ДА 
 echo -e "  ${YELLOW}Асети: ${A_LBL}   ·   Drop бази: ${D_LBL}${NC}"
 
 SSH_OPTS="-o ConnectTimeout=90 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -p ${PRT}"
+# Анти-fail2ban: пинваме САМО deploy ключа (иначе agent-ът пробва всички → бан).
+[ -f "$HOME/.ssh/id_ed25519" ] && SSH_OPTS="-o IdentitiesOnly=yes -i $HOME/.ssh/id_ed25519 $SSH_OPTS"
 REMOTE_BASE="/var/www/deploy/deploy-scripts/server"
 PROJECT_DIR="/var/www/kcy-ecosystem"
 

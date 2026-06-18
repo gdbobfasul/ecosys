@@ -4,12 +4,16 @@
 // Мързелив импорт на плъгина — без top-level await (es2019).
 let LocalNotifications = null;
 let lnTried = false;
-async function ensureLN() {
+// СИНХРОНЕН достъп (без динамичен import, който увисва в WebView и блокира екрани/известия).
+function ensureLN() {
   if (lnTried) return LocalNotifications;
   lnTried = true;
-  if (!isNative()) return null;
   try {
-    ({ LocalNotifications } = await import('@capacitor/local-notifications'));
+    const cap = (typeof window !== 'undefined') ? window.Capacitor : null;
+    if (cap && typeof cap.isNativePlatform === 'function' && cap.isNativePlatform()
+        && cap.Plugins && cap.Plugins.LocalNotifications) {
+      LocalNotifications = cap.Plugins.LocalNotifications;
+    }
   } catch (_) {
     LocalNotifications = null;
   }

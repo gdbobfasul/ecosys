@@ -5,12 +5,15 @@
 let LocalNotifications = null;
 let pluginReady = false;
 
-async function loadPlugin() {
+// СИНХРОНЕН достъп (без динамичен import, който увисва в WebView и блокира екрани/известия).
+function loadPlugin() {
   if (pluginReady) return LocalNotifications;
   pluginReady = true;
   try {
-    const mod = await import('@capacitor/local-notifications');
-    LocalNotifications = mod.LocalNotifications;
+    const cap = (typeof window !== 'undefined') ? window.Capacitor : null;
+    if (cap && cap.Plugins && cap.Plugins.LocalNotifications) {
+      LocalNotifications = cap.Plugins.LocalNotifications;
+    }
   } catch (e) {
     LocalNotifications = null; // в браузъра е очаквано
   }

@@ -16,6 +16,7 @@ import {
   listenSettings, saveListenSettings, listenLog, pollOnce,
   startListening, stopListening, isListening
 } from '../core/listen.js';
+import { serverLink, currentUrls, saveServerLink } from '../core/server-link.js';
 
 export function renderSources(root, { rerender }) {
   clear(root);
@@ -38,13 +39,16 @@ export function renderSources(root, { rerender }) {
     ])
   ]));
 
-  // --- Локално (master) ---
-  root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Локално (главно, по подразбиране)'),
+  // --- Локално (master) — ТОЧКА 1, винаги първа и препоръчана ---
+  root.appendChild(el('div', { class: 'card', style: 'border-left:3px solid var(--accent-2)' }, [
+    el('h3', {}, '1) Локално — препоръчано (работи веднага)'),
     el('p', { class: 'muted', style: 'font-size:13px' },
-      `Цялото знание живее тук, на устройството ти (${memoryCount()} записа). ` +
-      'Това е каноничният източник — никога не зависи от сървър. Дори всичко друго да изчезне, ' +
-      'аз пазя локалното знание.')
+      'За повечето хора това е достатъчно: започни СЕГА, без сървър и без акаунт. ' +
+      `Цялото знание живее тук, на устройството ти (${memoryCount()} записа) и работи офлайн. ` +
+      'Ограничено е (само това устройство), но можеш да ме тестваш веднага. ' +
+      'Всичко по-долу (сървър, синхрон, „Слушай") е ПО ИЗБОР — за по-напреднали.'),
+    el('p', { class: 'muted', style: 'font-size:12px' },
+      'Локалното е винаги главно (master) — дори всичко друго да изчезне, аз пазя това знание.')
   ]));
 
   // --- Запази знанието (бекъп) ---
@@ -169,34 +173,67 @@ export function renderSources(root, { rerender }) {
     ])
   ]));
 
-  // --- Синхронизирай към сървъра ---
-  const serverEp = el('input', { type: 'text', placeholder: 'https://твой-сървър/knowledge', value: srcCfg.serverEndpoint });
+  // --- СВЪРЖИ КЪМ СЪРВЪР (само ДОМЕЙН + TOKEN) ------------------------------
+  // Собственикът въвежда само домейна и token-а от деплой-скрипт 39. Апът сам прави
+  // пълните URL-та (същата схема като скрипта). Така е лесно и без грешки.
+  const link = serverLink();
+  const domainIn = el('input', { type: 'text', placeholder: 'selflearning.bot.nu', value: link.domain || 'selflearning.bot.nu', autocapitalize: 'none', autocomplete: 'off' });
+  const tokenIn = el('input', { type: 'text', placeholder: 'token от скрипт 39', value: link.token, autocapitalize: 'none', autocomplete: 'off' });
+  const urlsBox = el('div', { class: 'muted', style: 'font-size:12px;white-space:pre-wrap;margin-top:8px' }, '');
+  function renderUrls() {
+    const u = currentUrls();
+    urlsBox.textContent = u.ok
+      ? 'Апът ще ползва:\n• sync:   ' + u.sync + '\n• слушай: ' + u.listen + '\n• проверка: ' + u.health
+      : 'Въведи домейн + token — пълните адреси се правят автоматично.';
+  }
+  renderUrls();
+  root.appendChild(el('div', { class: 'card', style: 'border-left:3px solid var(--accent-2)' }, [
+    el('h3', {}, '🔗 Свържи към сървър'),
+    el('p', { class: 'muted', style: 'font-size:13px' },
+      'Въведи САМО домейна и token-а. Останалото го прави апът сам — еднакво за всеки сървър. ' +
+      'Локалното знание остава главно (master).'),
+    el('p', { class: 'muted', style: 'font-size:12px' },
+      '❓ Откъде взимам тези данни: на сървъра пусни ОПЦИЯ 39 от менюто („Свържи Selflearning робот ' +
+      'към сървър"). Тя проверява сървъра и накрая ти показва точно ДОМЕЙНА и TOKEN-а — копираш ги тук. ' +
+      'Същият token върви за десктоп и за телефон (1 сървър = 1 робот). Сървър не е задължителен — ' +
+      'без него работя само локално.'),
+    el('label', {}, 'Домейн на сървъра'), domainIn,
+    el('label', {}, 'Token (от опция 39 на сървъра)'), tokenIn,
+    el('button', { class: 'block', style: 'margin-top:10px', onclick: () => {
+      const d = domainIn.value.trim(), t = tokenIn.value.trim();
+      if (!d || !t) { toast('Въведи и домейн, и token.'); return; }
+      const r = saveServerLink(d, t);
+      domainIn.value = r.domain; // показва нормализирания домейн
+      renderUrls();
+      toast('Връзката е запазена. Готово за sync и „Слушай“.');
+    } }, 'Запази връзката'),
+    urlsBox,
+    el('p', { class: 'muted', style: 'font-size:12px;margin-top:6px' },
+      'Същият token върви за десктоп И телефон на ЕДИН робот (1 сървър = 1 робот).')
+  ]));
+
+  // --- Синхронизирай към сървъра (ползва запазената връзка) ---
   root.appendChild(el('div', { class: 'card' }, [
     el('h3', {}, 'Синхронизирай към сървъра (по избор)'),
     el('p', { class: 'muted', style: 'font-size:13px' },
-      'Изпраща (POST) знанието към твой продукционен endpoint. Локалното остава главно. ' +
+      'Изпраща (POST) знанието към сървъра от връзката по-горе. Локалното остава главно. ' +
       'Може и през чат командата „<кодова дума>, синхронизирай към сървъра!“.'),
-    el('label', {}, 'Endpoint'), serverEp,
-    el('div', { class: 'row', style: 'gap:8px;margin-top:8px' }, [
-      el('button', { class: 'secondary grow', onclick: () => {
-        saveSourcesSettings({ serverEndpoint: serverEp.value.trim() }); toast('Запазено.');
-      } }, 'Запази'),
-      el('button', { class: 'grow', onclick: async () => {
-        saveSourcesSettings({ serverEndpoint: serverEp.value.trim() });
-        const r = await exportToServer(serverEp.value.trim());
-        if (r.ok) toast(`Изпратих ${r.count} записа.`);
-        else toast('Грешка: ' + (r.reason || 'неизвестно'));
-      } }, 'Изпрати сега')
-    ])
+    el('button', { class: 'block', onclick: async () => {
+      const ep = currentUrls().sync;
+      if (!ep) { toast('Първо свържи към сървър (домейн + token) по-горе.'); return; }
+      const r = await exportToServer(ep);
+      if (r.ok) toast(`Изпратих ${r.count} записа.`);
+      else toast('Грешка: ' + (r.reason || 'неизвестно'));
+    } }, 'Изпрати сега')
   ]));
 
-  // --- Слушай (push от външен учител) ---
+  // --- Слушай (push от външен учител; ползва запазената връзка) ---
   const lc = listenSettings();
-  const relayUrl = el('input', { type: 'text', placeholder: 'https://relay/… (GET връща уроци)', value: lc.relayUrl });
   const listenSw = el('div', { class: 'switch' + (lc.enabled ? ' on' : '') });
   listenSw.addEventListener('click', () => {
+    if (!currentUrls().ok) { toast('Първо свържи към сървър (домейн + token) по-горе.'); return; }
     const next = !listenSettings().enabled;
-    saveListenSettings({ enabled: next, relayUrl: relayUrl.value.trim() });
+    saveListenSettings({ enabled: next });
     listenSw.className = 'switch' + (next ? ' on' : '');
     if (next) startListening(rerender); else stopListening();
     rerender();
@@ -210,20 +247,15 @@ export function renderSources(root, { rerender }) {
   root.appendChild(el('div', { class: 'card' }, [
     el('h3', {}, 'Слушай (безплатен push)'),
     el('p', { class: 'muted', style: 'font-size:13px' },
-      'Когато е включено, периодично питам твой relay URL за нови уроци и ги вливам в локалното. ' +
-      'Така външен учител (напр. Claude Code) ми праща уроци безплатно — аз само слушам, нищо не плащам. ' +
-      'Договор: GET връща масив [{type,key,value,keywords}]; по избор POST /ack.'),
+      'Когато е включено, периодично питам сървъра (от връзката по-горе) за нови уроци и ги вливам в локалното. ' +
+      'Така външен учител (напр. Claude Code) ми праща уроци безплатно — аз само слушам, нищо не плащам.'),
     el('div', { class: 'toggle' }, [
       el('div', {}, el('div', {}, 'Слушане ' + (isListening() ? '(активно)' : ''))),
       listenSw
     ]),
-    el('label', {}, 'Relay URL'), relayUrl,
     el('div', { class: 'row', style: 'gap:8px;margin-top:8px' }, [
-      el('button', { class: 'secondary grow', onclick: () => {
-        saveListenSettings({ relayUrl: relayUrl.value.trim() }); toast('Запазено.');
-      } }, 'Запази'),
       el('button', { class: 'grow', onclick: async () => {
-        saveListenSettings({ relayUrl: relayUrl.value.trim() });
+        if (!currentUrls().ok) { toast('Първо свържи към сървър по-горе.'); return; }
         await pollOnce(); rerender();
       } }, 'Провери сега')
     ]),

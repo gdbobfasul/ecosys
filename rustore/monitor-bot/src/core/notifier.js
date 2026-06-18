@@ -5,16 +5,16 @@
 let LN = null;
 let isNative = false;
 
-async function getLN() {
+// СИНХРОНЕН достъп (без динамичен import, който увисва в Capacitor WebView и блокира
+// екрана „Разрешения"/известията). Взимаме плъгина от глобалния window.Capacitor.Plugins.
+function getLN() {
   if (LN !== null) return LN;
+  LN = false;
   try {
-    const { Capacitor } = await import('@capacitor/core');
-    isNative = Capacitor.isNativePlatform();
-    if (isNative) {
-      const mod = await import('@capacitor/local-notifications');
-      LN = mod.LocalNotifications;
-    } else {
-      LN = false;
+    const cap = (typeof window !== 'undefined') ? window.Capacitor : null;
+    isNative = !!(cap && typeof cap.isNativePlatform === 'function' && cap.isNativePlatform());
+    if (isNative && cap.Plugins && cap.Plugins.LocalNotifications) {
+      LN = cap.Plugins.LocalNotifications;
     }
   } catch {
     LN = false;

@@ -99,8 +99,12 @@ export function renderChat(root, { navigate, rerender }) {
     class: 'secondary mic-btn', title: 'Говори', 'aria-label': 'Говори'
   }, '🎤');
   let listening = false;
-  micBtn.addEventListener('click', onMic);
-  async function onMic() {
+  // Клик на 🎤 = ЕДНО слушане, само ПОПЪЛВА полето (не праща сам). Така нищо не тръгва
+  // в чата без да натиснеш „Изпрати“. Пълно авто има само в „💬 Разговор“.
+  micBtn.addEventListener('click', () => onMic({ autoSend: false }));
+  // opts.autoSend=false → САМО попълва полето (потребителят преглежда и натиска Изпрати).
+  async function onMic(opts) {
+    const autoSend = !(opts && opts.autoSend === false);
     if (busy) return;
     if (listening) { stopListening(); return; } // второ натискане = спри
     if (!sttAvailable()) {
@@ -110,7 +114,7 @@ export function renderChat(root, { navigate, rerender }) {
     listening = true;
     micBtn.classList.add('on');
     const prevPh = input.placeholder;
-    input.placeholder = 'Слушам…';
+    input.placeholder = 'Слушам… (натисни 🎤 пак за стоп)';
     let transcript = '';
     try {
       transcript = await startListening({
@@ -129,8 +133,9 @@ export function renderChat(root, { navigate, rerender }) {
     const text = String(transcript || '').trim();
     if (text) {
       input.value = text;
-      send(text); // → същия поток (commands.js, после responder)
       runVoiceprintSoft(); // МЕК гласов сигнал (фон; не блокира; не пипа лока)
+      if (autoSend) send(text); // → същия поток (commands.js, после responder)
+      else input.focus();       // НЕ пращаме сами — потребителят натиска „Изпрати“
     } else input.focus();
   }
 
@@ -286,18 +291,18 @@ export function renderChat(root, { navigate, rerender }) {
   refreshConvBtn();
 
   // Авто-старт на слушането:
-  //   • бутон „Започни да ме слушаш“ от началния екран (consumeAutoListen), ИЛИ
-  //   • настройка „Авто-старт на разговора при отключване“.
+  //   • бутон „Започни да ме слушаш“ (consumeAutoListen) → ЕДНО слушане, само попълва полето.
+  //     НЕ пуска непрекъснатия „Разговор“ цикъл (той беепкаше и пращаше сам — досадно).
+  //   • Непрекъснатият „Разговор“ се пуска САМО изрично: настройка „Авто-старт“ ИЛИ
+  //     бутонът „💬 Разговор“ в чата (който потребителят може да спре).
   const wantAutoListen = consumeAutoListen();
   const wantConvSetting = voiceCfg.conversationEnabled && voiceCfg.conversationAutoStart;
-  if ((wantAutoListen || wantConvSetting) && !conversationActive() && isUnlocked() && !isLockedDown()) {
-    if (sttAvailable() && ttsAvailable()) {
-      setTimeout(() => { if (!conversationActive()) startConvLoop(); }, 600); // пълен „Разговор“
-    } else if (wantAutoListen && sttAvailable()) {
-      setTimeout(() => onMic(), 600); // поне еднократно слушане (няма глас за отговор)
-    } else if (wantAutoListen) {
-      toast('Гласът не е наличен тук — пиши на ръка.');
-    }
+  if (wantConvSetting && !conversationActive() && isUnlocked() && !isLockedDown()
+      && sttAvailable() && ttsAvailable()) {
+    setTimeout(() => { if (!conversationActive()) startConvLoop(); }, 600); // ИЗРИЧНА настройка → пълен Разговор
+  } else if (wantAutoListen && isUnlocked() && !isLockedDown()) {
+    if (sttAvailable()) setTimeout(() => onMic({ autoSend: false }), 600);  // ЕДНО слушане, без авто-праща
+    else toast('Гласът не е наличен тук — пиши на ръка.');
   }
 
   setTimeout(() => { list.scrollTop = list.scrollHeight; input.focus(); }, 50);

@@ -188,9 +188,11 @@ export class GameScene extends Phaser.Scene {
     c.setSize(r * 2, r * 2);
     // ВАЖНО: за интерактивен Container кръгъл hit-area (Phaser.Geom.Circle) НЕ
     // регистрира докосвания (потвърдено с тест) — затова ползваме правоъгълна
-    // (квадратна) зона около кръга. Това беше причината бутоните да "не правят
-    // нищо". Квадратната зона е и по-удобна за палеца.
-    c.setInteractive(new Phaser.Geom.Rectangle(-r, -r, r * 2, r * 2), Phaser.Geom.Rectangle.Contains);
+    // (квадратна) зона около кръга. Квадратната зона е и по-удобна за палеца.
+    // Координатите на зоната са ОТ (0,0), а НЕ от (-r,-r): за Container Phaser
+    // добавя displayOrigin (= r,r) към локалната точка, така че зона от (-r,-r)
+    // излиза изместена към горния ляв ъгъл (кликаемо беше само 1/4 от бутона).
+    c.setInteractive(new Phaser.Geom.Rectangle(0, 0, r * 2, r * 2), Phaser.Geom.Rectangle.Contains);
     c._draw = drawn;
     c._radius = r;
     c._color = color;
@@ -472,37 +474,99 @@ export class GameScene extends Phaser.Scene {
       overlay.fillStyle(0x000000, 0.7); overlay.fillRect(0, 0, W, H);
 
       const isLast = win && this.level.id === TOTAL_LEVELS;
+
+      // --- РАЗМЕРИ НА МЕНЮТО (по мярка на екрана, НЕ по-голямо от нужното) ---
+      // Ширината на панела се събира в екрана с малки отстъпи; всичко вътре се
+      // оразмерява спрямо panelW, така че нищо не излиза извън видимото и нито
+      // един текст не се реже (причината за „питай пак" вместо „Опитай пак").
+      const margin = 16;
+      const panelW = Math.min(440, W - margin * 2);
+      const cx = W / 2;
+      const innerW = panelW - 32;                 // полезна ширина вътре в панела
+
+      // Дали двата бутона („Опитай пак"/„Следващо ниво" + „Меню") се събират
+      // един до друг. На тесни телефони ги редим един под друг (вертикално).
+      const sideBySide = innerW >= 360;
+      const btnH = 56;
+      const gap = 12;
+      const rowW = sideBySide ? (innerW - gap) / 2 : innerW;
+
+      // Заглавието се мащабира така че да се чете изцяло, без да излиза от панела.
       const big = isLast ? 'ПОБЕДА!\nТИ СИ ШАМПИОН' : (win ? 'ПОБЕДА!' : 'ПОРАЖЕНИЕ');
-      titleText(this, W / 2, H / 2 - 130, big,
-        isLast ? 48 : 64, win ? THEME.goodHex : THEME.dangerHex).setDepth(200);
+      const titleSize = Math.round(Phaser.Math.Clamp(panelW * (isLast ? 0.11 : 0.15), 30, isLast ? 48 : 64));
+
+      // --- Изчисляваме височината на съдържанието, за да е панелът по мярка. ---
+      const padTop = 26, padBottom = 22, vgap = 16;
+      let contentH = 0;
+      const titleLines = big.split('\n').length;
+      contentH += titleSize * 1.15 * titleLines;                  // заглавие
+      if (win && !isLast) contentH += vgap + 22;                  // „Отключено ниво"
+      contentH += vgap + 28;                                      // „ТОЧКИ: …"
+      contentH += vgap;
+      contentH += sideBySide ? btnH : (btnH * 2 + gap);          // ред с действие/меню
+      contentH += gap + btnH;                                     // бутон „Запиши"
+      const panelH = Math.min(H - margin * 2, contentH + padTop + padBottom);
+
+      const panelTop = Math.max(margin, (H - panelH) / 2);
+
+      // Панел по мярка (рамка + полупрозрачен фон), центриран.
+      const panel = this.add.graphics().setDepth(195);
+      panel.fillStyle(0x0c1018, 0.92);
+      panel.fillRoundedRect(cx - panelW / 2, panelTop, panelW, panelH, 22);
+      panel.lineStyle(3, 0xffffff, 0.6);
+      panel.strokeRoundedRect(cx - panelW / 2, panelTop, panelW, panelH, 22);
+
+      // Подреждаме съдържанието отгоре надолу вътре в панела.
+      let y = panelTop + padTop + (titleSize * 1.15 * titleLines) / 2;
+      titleText(this, cx, y, big, titleSize, win ? THEME.goodHex : THEME.dangerHex).setDepth(200);
+      y += (titleSize * 1.15 * titleLines) / 2;
 
       if (win && !isLast) {
-        titleText(this, W / 2, H / 2 - 62,
-          `Отключено ниво ${this.level.id + 1}!`, 22, THEME.accentHex).setDepth(200);
+        y += vgap + 11;
+        titleText(this, cx, y, `Отключено ниво ${this.level.id + 1}!`, 20, THEME.accentHex).setDepth(200);
+        y += 11;
       }
 
-      // Точки за този бой.
-      titleText(this, W / 2, H / 2 - 24,
-        `ТОЧКИ: ${this._finalScore}`, 26, '#ffffff').setDepth(200);
+      y += vgap + 14;
+      titleText(this, cx, y, `ТОЧКИ: ${this._finalScore}`, 24, '#ffffff').setDepth(200);
+      y += 14;
 
-      const by = H / 2 + 50;
-      const by2 = H / 2 + 124;
-      if (win && !isLast) {
-        makeButton(this, W / 2 - 150, by, 270, 58, 'СЛЕДВАЩО НИВО ▶', () => {
+      // makeButton сам свива шрифта да се събере в бутона (без рязане);
+      // тук задаваме само базов размер.
+      const actLabel = win && !isLast ? 'СЛЕДВАЩО НИВО ▶' : (win ? 'ПАК ▶' : 'ОПИТАЙ ПАК');
+      const btnFont = '20px';
+
+      const actClick = () => {
+        if (win && !isLast) {
           this.registry.set('pendingLevel', this.level.id + 1);
           this.scene.start('weapon-select');
-        }, { color: THEME.good }).setDepth(200);
-      } else {
-        makeButton(this, W / 2 - 150, by, 270, 58, win ? 'ПАК ▶' : 'ОПИТАЙ ПАК', () => {
+        } else {
           this.scene.restart();
-        }, { color: THEME.primary }).setDepth(200);
+        }
+      };
+
+      y += vgap + btnH / 2;
+      if (sideBySide) {
+        const leftX = cx - (rowW + gap) / 2;
+        const rightX = cx + (rowW + gap) / 2;
+        makeButton(this, leftX, y, rowW, btnH, actLabel, actClick,
+          { color: win && !isLast ? THEME.good : THEME.primary, fontSize: btnFont }).setDepth(200);
+        makeButton(this, rightX, y, rowW, btnH, 'МЕНЮ', () => this.scene.start('menu'),
+          { color: 0x88a0c0, fontSize: btnFont }).setDepth(200);
+        y += btnH / 2;
+      } else {
+        makeButton(this, cx, y, rowW, btnH, actLabel, actClick,
+          { color: win && !isLast ? THEME.good : THEME.primary, fontSize: btnFont }).setDepth(200);
+        y += btnH / 2 + gap + btnH / 2;
+        makeButton(this, cx, y, rowW, btnH, 'МЕНЮ', () => this.scene.start('menu'),
+          { color: 0x88a0c0, fontSize: btnFont }).setDepth(200);
+        y += btnH / 2;
       }
-      makeButton(this, W / 2 + 150, by, 270, 58, 'МЕНЮ', () => {
-        this.scene.start('menu');
-      }, { color: 0x88a0c0 }).setDepth(200);
 
       // Бутон „🏆 ЗАПИШИ РЕЗУЛТАТА" — отваря поле за име, записва и показва листата.
-      const saveBtn = makeButton(this, W / 2, by2, 380, 58, '🏆 ЗАПИШИ РЕЗУЛТАТА', () => {
+      y += gap + btnH / 2;
+      const saveLabel = '🏆 ЗАПИШИ РЕЗУЛТАТА';
+      const saveBtn = makeButton(this, cx, y, innerW, btnH, saveLabel, () => {
         saveBtn.setEnabled(false);
         promptName(this, lastName(), (name) => {
           if (name == null) { saveBtn.setEnabled(true); return; } // отказ
@@ -514,7 +578,7 @@ export class GameScene extends Phaser.Scene {
             headline
           });
         });
-      }, { color: THEME.accent }).setDepth(200);
+      }, { color: THEME.accent, fontSize: btnFont }).setDepth(200);
     });
   }
 
