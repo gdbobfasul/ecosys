@@ -1,4 +1,4 @@
-// Version: 1.0217
+// Version: 1.0219
 // Selflearning Friend — самостоятелен server-side relay (Express + better-sqlite3).
 //
 // Канали (token = namespace, част от пътя):
@@ -7,6 +7,7 @@
 //   POST /api/selflearning/listen/:token/ack    → изчисти доставените {count}
 //   POST /api/selflearning/sync/:token          → запиши пълен knowledge snapshot
 //   GET  /api/selflearning/sync/:token          → върни записания snapshot
+//   POST /api/selflearning/exec/:token          → изпълни команда (SSH/локално) — OPT-IN, виж по-долу
 //   GET  /api/selflearning/health               → {ok, service}
 //
 // ⚠ ЧЕСТНО за auth: token-ът в URL е ЛЕКА лична namespace-изация, НЕ втвърдена
@@ -18,6 +19,7 @@
 
 const express = require('express');
 const path = require('path');
+const { execFile } = require('child_process');
 
 const { openDb } = require('./db');
 
@@ -179,6 +181,63 @@ app.get('/api/selflearning/sync/:token', withToken, (req, res) => {
   let snapshot = null;
   try { snapshot = JSON.parse(row.payload); } catch (_) { snapshot = null; }
   res.json({ ok: true, snapshot, updated_at: row.updated_at });
+});
+
+// ── exec: изпълни команда на отдалечена машина по SSH (или локално) ──────────
+// Телефонът праща { host, command }; relay-ят изпълнява и връща { stdout, stderr, code }.
+//
+// ⚠ СИГУРНОСТ (важно):
+//   • ИЗКЛЮЧЕНО по подразбиране. Работи САМО ако SELFLEARNING_EXEC_ENABLED=1 на сървъра.
+//     Така relay-ят не е „тихо" RCE кутия — собственикът съзнателно го пуска.
+//   • Гейтингът с КОДОВА ДУМА е на телефона (commands.js): без вярната дума апът не праща.
+//   • token + rate-limit важат; всяка команда се ЛОГВА; таймаут + таван на изхода.
+//   • SSH ползва ключа/потребителя на relay-а (env по-долу) — достъпът му определя докъде стига.
+const EXEC_ENABLED    = String(process.env.SELFLEARNING_EXEC_ENABLED || '') === '1';
+const EXEC_SSH_USER   = process.env.SELFLEARNING_EXEC_SSH_USER || 'deploy';
+const EXEC_SSH_PORT   = String(process.env.SELFLEARNING_EXEC_SSH_PORT || '22');
+const EXEC_SSH_KEY    = process.env.SELFLEARNING_EXEC_SSH_KEY || '';        // по избор: път до частен ключ
+const EXEC_TIMEOUT_MS = parseInt(process.env.SELFLEARNING_EXEC_TIMEOUT_MS || '60000', 10);
+const EXEC_MAX_OUTPUT = parseInt(process.env.SELFLEARNING_EXEC_MAX_OUTPUT || '100000', 10); // байта на поток
+
+function isLocalHost(h) {
+  return !h || h === 'localhost' || h === '127.0.0.1' || h === '::1';
+}
+
+app.post('/api/selflearning/exec/:token', withToken, (req, res) => {
+  if (!EXEC_ENABLED) {
+    return res.status(403).json({ ok: false, error: 'exec_disabled',
+      hint: 'Изпълнението е изключено. На сървъра задай SELFLEARNING_EXEC_ENABLED=1 и рестартирай услугата.' });
+  }
+  const host = (req.body && typeof req.body.host === 'string') ? req.body.host.trim() : '';
+  const command = (req.body && typeof req.body.command === 'string') ? req.body.command : '';
+  if (!command.trim()) return res.status(400).json({ ok: false, error: 'no_command' });
+  // Лек филтър на хоста (за SSH): без интервали/опасни символи.
+  if (host && !/^[A-Za-z0-9._-]{1,255}$/.test(host)) {
+    return res.status(400).json({ ok: false, error: 'bad_host' });
+  }
+
+  const stamp = new Date().toISOString();
+  console.log(`[selflearning][exec] ${stamp} token=${req.token.slice(0, 6)}… host=${host || 'local'} cmd=${command.slice(0, 300)}`);
+
+  let file, args;
+  if (isLocalHost(host)) {
+    file = 'bash';
+    args = ['-lc', command];
+  } else {
+    file = 'ssh';
+    args = ['-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=accept-new', '-o', 'ConnectTimeout=12', '-p', EXEC_SSH_PORT];
+    if (EXEC_SSH_KEY) args.push('-o', 'IdentitiesOnly=yes', '-i', EXEC_SSH_KEY);
+    args.push(`${EXEC_SSH_USER}@${host}`, command);
+  }
+
+  execFile(file, args, { timeout: EXEC_TIMEOUT_MS, maxBuffer: EXEC_MAX_OUTPUT * 2 + 1024, windowsHide: true },
+    (err, stdout, stderr) => {
+      const out = String(stdout || '').slice(0, EXEC_MAX_OUTPUT);
+      const errout = String(stderr || '').slice(0, EXEC_MAX_OUTPUT);
+      const code = err && typeof err.code === 'number' ? err.code : (err ? 1 : 0);
+      const timedOut = !!(err && err.killed);
+      res.json({ ok: !err, code, host: host || 'localhost', stdout: out, stderr: errout, timedOut });
+    });
 });
 
 // ── helpers (db) ────────────────────────────────────────────────────

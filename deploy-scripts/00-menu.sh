@@ -25,6 +25,27 @@ trap 'echo ""; echo "Натисни Enter за затваряне..."; read DUMM
 press_enter() { echo ""; read -p "Натисни Enter да продължиш... " _; }
 run_cmd()     { echo ""; echo -e "${YELLOW}► $*${NC}"; echo ""; "$@"; press_enter; }
 
+# ── ОБОБЩЕНИЕ след всеки отдалечен (SSH) скрипт от менюто ────────────────────
+# Печата в КРАЯ ясен ред: коя опция/скрипт е пуснат, на кой сървър е качено/
+# изпълнено, дроп на база данни (да/не) и резултат. Ползва глобалните CURRENT_OPT,
+# PICK_SRV / PICK_USER / PICK_PORT, REMOTE, RC и DB_DROP_INFO (сетват се в блока).
+print_run_summary() {
+    local sname="${REMOTE##*/server/}"          # махни 'sudo …/deploy-scripts/server/' префикса
+    local bar="════════════════════════════════════════════════════════════════"
+    echo ""
+    echo -e "${BOLD}${CYAN}${bar}${NC}"
+    echo -e "${BOLD}${CYAN}▶  ИЗПЪЛНЕН СКРИПТ — опция ${CURRENT_OPT:-?}${NC}"
+    echo -e "    Скрипт:      ${BOLD}${sname}${NC}"
+    echo -e "    Качено на:   ${BOLD}${PICK_SRV}${NC}  ${GRAY}(${PICK_USER}@${PICK_SRV}:${PICK_PORT})${NC}"
+    echo -e "    База данни:  ${DB_DROP_INFO:-не}"
+    if [ "${RC:-1}" -eq 0 ]; then
+        echo -e "    Резултат:    ${GREEN}✓ успех (exit 0)${NC}"
+    else
+        echo -e "    Резултат:    ${RED}✗ грешка (exit ${RC})${NC}"
+    fi
+    echo -e "${BOLD}${CYAN}${bar}${NC}"
+}
+
 # Избор на сървър (prod/vm/custom) от .deploy-targets — пази същия избор като опция 2/3.
 # При успех сетва PICK_SRV / PICK_USER / PICK_PORT и връща 0; при отказ връща 1.
 pick_target() {
@@ -360,6 +381,8 @@ show_menu() {
 }
 
 run_choice() {
+    CURRENT_OPT="$1"                                  # за print_run_summary (коя опция тече)
+    DB_DROP_INFO="не — този скрипт не трие база данни" # по подразбиране; блоковете с ресет го презаписват
     case "$1" in
         # ── DEPLOY ──
         1)
@@ -474,6 +497,7 @@ run_choice() {
                 echo ""
                 read -p "  Reset? Enter = НЕ трий (само създай/обнови)  |  напиши 'да' = ТРИЙ всичко (DROP): " RM
                 RST=""; case "$RM" in да|Да|ДА|reset|RESET|yes|YES|y|Y) RST=" --reset";; esac
+                if [ -n "$RST" ]; then DB_DROP_INFO="ДА — DROP (базата е изтрита и пресъздадена)"; else DB_DROP_INFO="не (само създай/обнови схемата)"; fi
                 REMOTE="sudo /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh houselookbook${RST}"
                 echo ""
                 echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
@@ -485,6 +509,7 @@ run_choice() {
                 echo ""
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — база houselookbook е настроена на ${PICK_SRV}${NC}"
@@ -502,6 +527,7 @@ run_choice() {
                 echo ""
                 read -p "  Reset? Enter = НЕ трий (само създай/обнови)  |  напиши 'да' = ТРИЙ всичко (DROP): " RM
                 RST=""; case "$RM" in да|Да|ДА|reset|RESET|yes|YES|y|Y) RST=" --reset";; esac
+                if [ -n "$RST" ]; then DB_DROP_INFO="ДА — DROP (базата е изтрита и пресъздадена)"; else DB_DROP_INFO="не (само създай/обнови схемата)"; fi
                 REMOTE="sudo /var/www/deploy/deploy-scripts/server/17-setup-wherenobiz-database.sh${RST}"
                 echo ""
                 echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
@@ -513,6 +539,7 @@ run_choice() {
                 echo ""
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — база wherenobiz е настроена на ${PICK_SRV}${NC}"
@@ -538,6 +565,7 @@ run_choice() {
                 echo ""
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-hlb услугата е настроена на ${PICK_SRV}${NC}"
@@ -563,6 +591,7 @@ run_choice() {
                 echo ""
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-wnb услугата е настроена на ${PICK_SRV}${NC}"
@@ -579,6 +608,7 @@ run_choice() {
             if pick_target; then
                 read -p "  Reset? Enter = НЕ трий (само създай/обнови)  |  напиши 'да' = ТРИЙ всичко (DROP): " RM
                 RST=""; case "$RM" in да|Да|ДА|reset|RESET|yes|YES|y|Y) RST=" --reset";; esac
+                if [ -n "$RST" ]; then DB_DROP_INFO="ДА — DROP (базата е изтрита и пресъздадена)"; else DB_DROP_INFO="не (само създай/обнови схемата)"; fi
                 REMOTE="sudo /var/www/deploy/deploy-scripts/server/16-setup-app-databases.sh findbestprice${RST}"
                 echo ""
                 echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на сървъра (проектът трябва да е качен — опция 2/4):${NC}"
@@ -589,6 +619,7 @@ run_choice() {
                 echo ""
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — база findbestprice е настроена на ${PICK_SRV}${NC}"
@@ -614,6 +645,7 @@ run_choice() {
                 echo ""
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-fbp услугата е настроена на ${PICK_SRV}${NC}"
@@ -639,6 +671,7 @@ run_choice() {
                 echo ""
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — kcy-selflearning услугата е настроена на ${PICK_SRV}${NC}"
@@ -662,7 +695,7 @@ run_choice() {
                 case "$MODE" in
                     "Само проверки (без деплой)") RFLAGS="" ;;
                     "Проверки + вдигни relay-а (деплой)") RFLAGS="--deploy" ;;
-                    "Проверки + деплой + РЕСЕТ на робота (трие база+token — за нов/прехвърлен!)") RFLAGS="--deploy --reset" ;;
+                    "Проверки + деплой + РЕСЕТ на робота (трие база+token — за нов/прехвърлен!)") RFLAGS="--deploy --reset"; DB_DROP_INFO="ДА — selflearning база + token ИЗТРИТИ (ресет)" ;;
                     *) echo "  Отказано"; press_enter; continue ;;
                 esac
                 REMOTE="sudo /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh ${RFLAGS}"
@@ -676,6 +709,7 @@ run_choice() {
                 echo ""
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — виж данните за връзка по-горе (URL + token)${NC}"
@@ -707,6 +741,7 @@ run_choice() {
                 echo ""
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 echo ""
                 if [ "$RC" -eq 0 ]; then
                     echo -e "  ${GREEN}✓ Готово (exit 0) — ${ULABEL} обновено на ${PICK_SRV}${NC}"
@@ -739,6 +774,7 @@ run_choice() {
                     echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} ${REMOTE}${NC}"
                     ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                     RC=$?
+                    print_run_summary
                     [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ kcy-tokmon-${TKN} настроен${NC}" || echo -e "  ${RED}✗ ${TKN}: грешка (exit ${RC})${NC}"
                 done
             elif [ -z "$TLIST" ]; then echo "  Невалиден избор — отказано"
@@ -753,6 +789,7 @@ run_choice() {
                 echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} ${REMOTE}${NC}"
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Роботът е инсталиран — пусни го от 🤖 Робот в админ менюто${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
             else echo "  Отказано"; fi
             press_enter
@@ -768,6 +805,7 @@ run_choice() {
                     echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fill-system-users.js ${NUSERS}${NC}"
                     ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                     RC=$?
+                    print_run_summary
                     [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — ${NUSERS} системни потребители на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
                 else echo "  Невалиден брой."; fi
             else echo "  Отказано"; fi
@@ -784,6 +822,7 @@ run_choice() {
                     echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fill-system-replies.js ${NREP}${NC}"
                     ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                     RC=$?
+                    print_run_summary
                     [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — авто-отговорите минаха на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
                 else echo "  Невалиден брой."; fi
             else echo "  Отказано"; fi
@@ -802,6 +841,7 @@ run_choice() {
                 echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fbp-scraper.js${NQ_ARG}${NC}"
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — скраперът мина на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
             else echo "  Отказано"; fi
             press_enter
@@ -817,6 +857,7 @@ run_choice() {
                     echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → wnb-filler.js ${NWNB}${NC}"
                     ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                     RC=$?
+                    print_run_summary
                     [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — WNB попълнен на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
                 else echo "  Невалиден брой."; fi
             else echo "  Отказано"; fi
@@ -833,6 +874,7 @@ run_choice() {
                     echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → hlb-filler.js ${NHLB}${NC}"
                     ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                     RC=$?
+                    print_run_summary
                     [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — HLB модели на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
                 else echo "  Невалиден брой."; fi
             else echo "  Отказано"; fi
@@ -1072,6 +1114,7 @@ run_choice() {
                 echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} ${REMOTE}${NC}"
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
+                print_run_summary
                 [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Домейните/SSL са настроени${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
             else echo "  Отказано"; fi
             press_enter

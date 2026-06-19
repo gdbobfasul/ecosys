@@ -269,4 +269,80 @@ echo ""
 echo -e "  ${YELLOW}Ако ${SELF_DOMAIN} още не отваря: насочи DNS (A запис) към сървъра и пусни${NC}"
 echo -e "  ${YELLOW}опция 33 (домейни + SSL) — domains.conf вече знае за ${SELF_DOMAIN}.${NC}"
 
+##############################################################################
+# ЕДИН ТАЕН КЛЮЧ — пише connection.bot.token на таен URL (за ЛЕСНО прехвърляне)
+##############################################################################
+# Цялата конфигурация (домейн + token + режим + функции) се записва във файл, който
+# апът тегли само по тайния ключ. Тогава в апа въвеждаш САМО ключа (или целия URL).
+WEBROOT="/var/www/html/${APP_selflearning_FS:-selflearning}"
+EXEC_BOOL=false
+[ -f "$GLOBAL_ENV" ] && grep -qE '^SELFLEARNING_EXEC_ENABLED=1[[:space:]]*$' "$GLOBAL_ENV" && EXEC_BOOL=true
+
+# Регистър на публикуваните connection файлове (за да ги трием при СЛЕДВАЩО пускане).
+CONN_REGISTRY="$DATA_DIR/conn-bootstrap.list"
+EXPIRE_SECS=600   # 10 минути — после публикуваният файл се самоунищожава
+# Триене на ПУБЛИКУВАНИТЕ при предишно пускане (next-run cleanup) — token-ът пак е таен.
+if [ -f "$CONN_REGISTRY" ]; then
+  while IFS= read -r _old; do [ -n "$_old" ] && rm -rf "$_old" 2>/dev/null; done < "$CONN_REGISTRY"
+  : > "$CONN_REGISTRY"
+fi
+
+echo ""
+echo -e "${BOLD}${YELLOW}══════════════════════════════════════════════════════════════════${NC}"
+echo -e "${BOLD}  ИЛИ ОЩЕ ПО-ЛЕСНО — свържи робота с ЕДИН ТАЕН КЛЮЧ:${NC}"
+echo -e "${YELLOW}══════════════════════════════════════════════════════════════════${NC}"
+echo -e "  Задаваш произволен таен ключ → записвам ВСИЧКИ настройки на:"
+echo -e "    ${CYAN}https://${SELF_DOMAIN}/<ключ>/connection.bot.token${NC}"
+echo -e "  После в апа въвеждаш САМО ключа (Настройки → „🔑 Свържи с таен ключ\")."
+echo ""
+DEF_KEY=$(openssl rand -hex 8 2>/dev/null || date +%s)
+read -r -p "  Таен ключ [Enter = ${DEF_KEY}]: " CONN_KEY
+CONN_KEY="${CONN_KEY:-$DEF_KEY}"
+CONN_KEY=$(printf '%s' "$CONN_KEY" | tr -cd 'A-Za-z0-9._-')   # само безопасни за път/URL символи
+if [ -z "$CONN_KEY" ]; then
+  echo -e "  ${RED}Невалиден ключ — пропускам стъпката с тайния ключ.${NC}"
+else
+  [ -d "$WEBROOT" ] || echo -e "  ${YELLOW}! Уеб-коренът $WEBROOT още го няма (пусни опция 33). Записвам — ще се сервира щом домейнът е готов.${NC}"
+  CONN_DIR="$WEBROOT/$CONN_KEY"
+  CONN_PATH="$CONN_DIR/connection.bot.token"
+  mkdir -p "$CONN_DIR" 2>/dev/null
+  cat > "$CONN_PATH" <<JSON
+{
+  "kind": "slf-connection",
+  "version": 1,
+  "domain": "${SELF_DOMAIN}",
+  "token": "${TOKEN}",
+  "api": "/api/selflearning",
+  "storage": "local",
+  "features": { "sync": true, "listen": true, "exec": ${EXEC_BOOL} },
+  "createdAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+JSON
+  chmod 644 "$CONN_PATH" 2>/dev/null
+  if [ -f "$CONN_PATH" ]; then
+    # Запомни го в регистъра + насрочи САМОУНИЩОЖЕНИЕ след 10 мин (детачнат таймер —
+    # НЕ блокира менюто). Така token-ът е изложен на тайния URL само за кратко.
+    echo "$CONN_DIR" >> "$CONN_REGISTRY"
+    SCHED=""
+    if command -v systemd-run >/dev/null 2>&1; then
+      systemd-run --quiet --collect --on-active="${EXPIRE_SECS}" \
+        /bin/bash -c "rm -rf '$CONN_DIR'" >/dev/null 2>&1 && SCHED="systemd"
+    fi
+    if [ -z "$SCHED" ]; then
+      setsid bash -c "sleep ${EXPIRE_SECS}; rm -rf '$CONN_DIR'" </dev/null >/dev/null 2>&1 &
+      SCHED="background"
+    fi
+    echo ""
+    echo -e "  ${GREEN}✓ Записах настройките.${NC}  В апа въведи САМО този ключ:"
+    echo -e "      ${BOLD}${GREEN}${CONN_KEY}${NC}"
+    echo -e "  ${GRAY}(или целия URL: https://${SELF_DOMAIN}/${CONN_KEY}/connection.bot.token)${NC}"
+    echo -e "  ${BOLD}${YELLOW}⏱ Файлът се САМОУНИЩОЖАВА след 10 минути${NC} ${YELLOW}(или при следващо пускане на 39).${NC}"
+    echo -e "  ${GRAY}Свържи апа в този прозорец. После тайният URL изчезва — никой друг не може да го ползва.${NC}"
+    echo -e "  ${GRAY}Ръчно по-рано:  sudo rm -rf '${CONN_DIR}'   ·   owner-token-ът ОСТАВА (роботът работи).${NC}"
+  else
+    echo -e "  ${RED}✗ Не успях да запиша $CONN_PATH (права?).${NC}"
+  fi
+fi
+echo -e "${YELLOW}══════════════════════════════════════════════════════════════════${NC}"
+
 exit 0

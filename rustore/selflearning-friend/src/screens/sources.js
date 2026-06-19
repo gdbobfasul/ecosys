@@ -16,7 +16,7 @@ import {
   listenSettings, saveListenSettings, listenLog, pollOnce,
   startListening, stopListening, isListening
 } from '../core/listen.js';
-import { serverLink, currentUrls, saveServerLink } from '../core/server-link.js';
+import { serverLink, currentUrls, saveServerLink, connectWithKey, buildConnectionUrl } from '../core/server-link.js';
 
 export function renderSources(root, { rerender }) {
   clear(root);
@@ -187,14 +187,51 @@ export function renderSources(root, { rerender }) {
       : 'Въведи домейн + token — пълните адреси се правят автоматично.';
   }
   renderUrls();
+
+  // --- ЛЕСНО: свържи робота с КЛЮЧ за връзка ---------------------------------
+  // Свързването със сървър се настройва от специалист (деплой опция 2 → 38 → 39).
+  // Собственикът въвежда само ключа (домейнът е по подразбиране); чужд сървър → свой домейн + ключ.
+  const keyDomainIn = el('input', { type: 'text', value: link.domain || 'selflearning.bot.nu', placeholder: 'selflearning.bot.nu', autocapitalize: 'none', autocomplete: 'off' });
+  const keyIn = el('input', { type: 'text', placeholder: 'ключ за връзка', autocapitalize: 'none', autocomplete: 'off' });
+  const keyHint = el('div', { class: 'muted', style: 'font-size:12px;white-space:pre-wrap;margin-top:8px' }, '');
+  root.appendChild(el('div', { class: 'card', style: 'border-left:3px solid var(--accent)' }, [
+    el('h3', {}, '🔑 Свържи робота (ключ за връзка)'),
+    el('p', { class: 'muted', style: 'font-size:13px' },
+      'Свързването със сървър се настройва от СПЕЦИАЛИСТ, който има деплой скриптовете ' +
+      '(накратко: деплой опция 2 → опция 38 → опция 39). За повечето хора това НЕ е нужно — ' +
+      'работя си отлично и само локално.'),
+    el('p', { class: 'muted', style: 'font-size:13px' },
+      'Домейнът е попълнен по подразбиране — въведи само ключа. Ако сървърът е ТВОЙ (друг), ' +
+      'смени домейна и въведи своя ключ.'),
+    el('label', {}, 'Домейн на сървъра'), keyDomainIn,
+    el('label', {}, 'Ключ за връзка'), keyIn,
+    el('button', { class: 'block', style: 'margin-top:10px', onclick: async () => {
+      const dom = keyDomainIn.value.trim() || 'selflearning.bot.nu';
+      const k = keyIn.value.trim();
+      if (!k) { toast('Въведи ключа за връзка.'); return; }
+      const ref = /^https?:\/\//i.test(k) ? k : (dom + '/' + k);
+      keyHint.textContent = 'Свързвам се…';
+      const r = await connectWithKey(ref);
+      if (r.ok) {
+        domainIn.value = r.domain; tokenIn.value = r.token; renderUrls();
+        keyHint.textContent = `✓ Свързан с ${r.domain}`;
+        toast('Връзката е готова — настроих се сам.');
+      } else {
+        keyHint.textContent = '✗ ' + (r.error || 'неуспех');
+        toast('Не успях: ' + (r.error || 'неизвестно'));
+      }
+    } }, 'Свържи'),
+    keyHint
+  ]));
+
   root.appendChild(el('div', { class: 'card', style: 'border-left:3px solid var(--accent-2)' }, [
-    el('h3', {}, '🔗 Свържи към сървър'),
+    el('h3', {}, '🔗 Свържи към сървър (ръчно: домейн + token)'),
     el('p', { class: 'muted', style: 'font-size:13px' },
       'Въведи САМО домейна и token-а. Останалото го прави апът сам — еднакво за всеки сървър. ' +
       'Локалното знание остава главно (master).'),
     el('p', { class: 'muted', style: 'font-size:12px' },
-      '❓ Откъде взимам тези данни: на сървъра пусни ОПЦИЯ 39 от менюто („Свържи Selflearning робот ' +
-      'към сървър"). Тя проверява сървъра и накрая ти показва точно ДОМЕЙНА и TOKEN-а — копираш ги тук. ' +
+      '❓ Тези данни ги подготвя СПЕЦИАЛИСТ, който има деплой скриптовете: деплой (опция 2) → ' +
+      'опция 38 (вдига услугата на сървъра) → опция 39 (показва ДОМЕЙНА и TOKEN-а). Копираш ги тук. ' +
       'Същият token върви за десктоп и за телефон (1 сървър = 1 робот). Сървър не е задължителен — ' +
       'без него работя само локално.'),
     el('label', {}, 'Домейн на сървъра'), domainIn,

@@ -34,26 +34,34 @@ export const MAIN_ENGINES = [
   'startpage', 'ask', 'naver', 'sogou', 'mojeek', 'searx', 'qwant'
 ];
 
-// Псевдоними по име (за „търси в yandex …“) — латиница и кирилица.
-const ENGINE_ALIASES = [
-  ['google', /\b(?:google|гугъл|гугл)\b/i],
-  ['bing', /\b(?:bing|бинг)\b/i],
-  ['yahoo', /\b(?:yahoo|яху|яхо)\b/i],
-  ['duckduckgo', /\b(?:duckduckgo|duck\s*duck\s*go|ddg|дък\s*дък\s*гоу?)\b/i],
-  ['yandex', /\b(?:yandex|яндекс)\b/i],
-  ['baidu', /\b(?:baidu|байду)\b/i],
-  ['brave', /\b(?:brave(?:\s*search)?|брейв)\b/i],
-  ['ecosia', /\b(?:ecosia|екозия|екосия)\b/i],
-  ['startpage', /\b(?:startpage|старт\s*пейдж)\b/i],
-  ['ask', /\b(?:ask(?:\.com)?|аск)\b/i],
-  ['naver', /\b(?:naver|навер)\b/i],
-  ['sogou', /\b(?:sogou|согоу)\b/i],
-  ['mojeek', /\b(?:mojeek|моджик)\b/i],
-  ['searx', /\b(?:searx(?:ng)?|сеаркс|серкс)\b/i],
-  ['qwant', /\b(?:qwant|куант)\b/i],
-  ['youtube', /\b(?:youtube|ютюб|ютуб)\b/i],
-  ['wikipedia', /\b(?:wikipedia|уикипедия|википедия)\b/i]
+// Псевдоними по име (за „търси в yandex …“) — латиница И кирилица.
+// ВАЖНО: НЕ ползваме \b — ASCII word-boundary НЕ работи с кирилица (в JS regex без
+// 'u' флаг „\bяндекс\b" не съвпада). Затова държим само ЯДРАТА (алтернативите) тук и
+// строим граници с Unicode (\p{L}\p{N}) + lookbehind/lookahead при компилацията.
+const ENGINE_ALIAS_SRC = [
+  ['google', 'google|гугъл|гугл'],
+  ['bing', 'bing|бинг'],
+  ['yahoo', 'yahoo|яху|яхо'],
+  ['duckduckgo', 'duckduckgo|duck\\s*duck\\s*go|ddg|дък\\s*дък\\s*гоу?'],
+  ['yandex', 'yandex|яндекс'],
+  ['baidu', 'baidu|байду'],
+  ['brave', 'brave(?:\\s*search)?|брейв'],
+  ['ecosia', 'ecosia|екозия|екосия'],
+  ['startpage', 'startpage|старт\\s*пейдж'],
+  ['ask', 'ask(?:\\.com)?|аск'],
+  ['naver', 'naver|навер'],
+  ['sogou', 'sogou|согоу'],
+  ['mojeek', 'mojeek|моджик'],
+  ['searx', 'searx(?:ng)?|сеаркс|серкс'],
+  ['qwant', 'qwant|куант'],
+  ['youtube', 'youtube|ютюб|ютуб'],
+  ['wikipedia', 'wikipedia|уикипедия|википедия']
 ];
+// Граница, валидна за латиница И кирилица: не-буква/не-цифра отляво и отдясно.
+function aliasRe(src, flags = 'iu') {
+  return new RegExp('(?<![\\p{L}\\p{N}])(?:' + src + ')(?![\\p{L}\\p{N}])', flags);
+}
+const ENGINE_ALIASES = ENGINE_ALIAS_SRC.map(([k, src]) => [k, aliasRe(src)]);
 
 // Построява URL за търсене с дадена машина (по подразбиране Google).
 export function searchUrl(query, engine = 'google') {
@@ -78,12 +86,16 @@ export function detectEngine(text) {
   return null;
 }
 
-// Маха споменаването на търсачка от заявката („… в yandex“ → „…“).
+// Маха споменаването на търсачка от заявката, заедно с връзващата дума „в/на/in“
+// („в yandex котки“ → „котки“; „в яндекс котки“ → „котки“). Работи и за кирилица.
 function stripEngineMention(q) {
   let out = String(q || '');
-  for (const [, re] of ENGINE_ALIASES) {
-    out = out.replace(new RegExp('\\s*(?:в|in|на)\\s+' + re.source + '\\s*$', 'i'), ' ');
-    out = out.replace(re, ' ');
+  for (const [, src] of ENGINE_ALIAS_SRC) {
+    // връзваща дума (по избор) + името на търсачката, навсякъде в текста
+    out = out.replace(
+      new RegExp('(?:^|\\s)(?:в|на|in)?\\s*(?:' + src + ')(?![\\p{L}\\p{N}])', 'giu'),
+      ' '
+    );
   }
   return out.replace(/\s+/g, ' ').trim();
 }
@@ -96,6 +108,18 @@ function cleanQuery(q) {
   s = s.replace(/^(?:един|една|едно|някакъв|някаква|някакво|някой|нещо\s+за)\s+/i, '');
   s = s.replace(/[?!.,]+$/, '').trim();
   return s;
+}
+
+// Изрично ли иска да ВИДИ браузъра? („в браузъра“, „да го видя“, „покажи ми в браузъра“).
+export function wantsBrowserView(text) {
+  return /(?:в|във)\s+браузър(?:а)?|да\s+(?:го|я)\s+видя|да\s+видя|покажи\s+(?:ми\s+)?(?:в\s+браузър|сайта)|отвори\s+(?:ми\s+)?браузър/i.test(String(text || ''));
+}
+
+// Маха „браузърните“ фрази от заявката, за да не цапат търсенето.
+function stripBrowserPhrases(q) {
+  return String(q || '')
+    .replace(/\s*(?:във?\s+браузър(?:а)?|да\s+(?:го|я)\s+видя|да\s+видя|покажи\s+ми|отвори\s+ми|в\s+браузъра)\s*/gi, ' ')
+    .replace(/\s+/g, ' ').trim();
 }
 
 // Самото отваряне. Опитва Capacitor Browser плъгин (ако е инсталиран), иначе window.open.
@@ -159,35 +183,37 @@ export function parseBrowserIntent(text) {
   let m = low.match(/^(?:гугъл(?:ни)?|потърси|търси|издири|намери|find|search|google)\s+(?:в\s+интернет\s+|онлайн\s+|за\s+)?(.+)$/);
   if (m) {
     let engine = detectEngine(low) || 'google';
-    let q = cleanQuery(stripEngineMention(m[1]));
+    let q = stripBrowserPhrases(cleanQuery(stripEngineMention(m[1])));
     if (!q) return { action: 'open', url: ENGINES[engine].web, label: ENGINES[engine].name };
     const maybeUrl = asUrl(q);
     if (maybeUrl) return { action: 'open', url: maybeUrl, label: maybeUrl };
-    return { action: 'search', engine, query: q, label: q };
+    // action:'search' → по подразбиране резултат В ЧАТА; openInBrowser → отвори браузъра.
+    return { action: 'search', engine, query: q, label: q, openInBrowser: wantsBrowserView(s) };
   }
 
-  // 2) ОТВАРЯНЕ: „отвори/пусни/стартирай/open X“
-  m = low.match(/^(?:отвори|пусни|стартирай|open|разгледай)\s+(.+)$/);
+  // 2) ОТВАРЯНЕ: „отвори/пусни/стартирай/open/покажи X“ → отваря в СИСТЕМНИЯ браузър.
+  m = low.match(/^(?:отвори|пусни|стартирай|open|разгледай|покажи)\s+(.+)$/);
   if (m) {
-    let rest = m[1].trim();
+    let rest = m[1].trim().replace(/^(?:ми|на\s+мен)\s+/i, '');   // „отвори МИ браузъра“
+    rest = stripBrowserPhrases(rest);                             // махни „да го видя / в браузъра“
 
-    if (/^(?:браузър(?:а)?|browser|интернет(?:а)?)\s*$/.test(rest)) {
+    // само „браузъра/интернет“ (без конкретен сайт/тема) → начална страница
+    if (rest === '' || /^(?:браузър(?:а)?|browser|интернет(?:а)?)\s*$/.test(rest)) {
       return { action: 'open', url: 'https://www.google.com', label: 'браузъра' };
     }
-    // спомената търсачка като начална страница или с заявка: „отвори yandex [за/и потърси X]“
+    // спомената търсачка: „отвори yandex“ → начална страница; „отвори ютюб котки“ → търси в браузъра.
     const eng = detectEngine(rest);
     if (eng) {
-      const after = rest.replace(/^\S+\s*/, '');
       const q = cleanQuery(stripEngineMention(rest).replace(/^(?:и\s+)?(?:потърси|търси|за)\s+/i, ''));
-      if (q && /(?:потърси|търси|за)\s+/i.test(rest)) return { action: 'search', engine: eng, query: q, label: q };
+      if (q) return { action: 'search', engine: eng, query: q, label: q, openInBrowser: true };
       return { action: 'open', url: ENGINES[eng].web, label: ENGINES[eng].name };
     }
     // „отвори сайта/линка X“ или директен URL
-    rest = rest.replace(/^(?:сайта|сайт|страницата|линка|уебсайта)\s+/, '').replace(/\s+в\s+браузъра\s*$/, '').trim();
+    rest = rest.replace(/^(?:сайта|сайт|страницата|линка|уебсайта)\s+/, '').trim();
     const url = asUrl(rest);
     if (url) return { action: 'open', url, label: url };
-    // не прилича на линк → потърси го в Google
-    return { action: 'search', engine: 'google', query: cleanQuery(rest), label: cleanQuery(rest) };
+    // не прилича на линк → потърси го (в браузъра, защото командата е „отвори“)
+    return { action: 'search', engine: 'google', query: cleanQuery(rest), label: cleanQuery(rest), openInBrowser: true };
   }
 
   return null;

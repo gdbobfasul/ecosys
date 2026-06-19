@@ -16,8 +16,13 @@ import { teach } from './teacher.js';
 import { dontKnow, frameAiSuggestion } from './honesty.js';
 import { handleCommand } from './commands.js';
 import { parseBrowserIntent, runBrowserIntent } from './browser.js';
+import { webSearch } from './sources.js';
 import { isImpersonalMode, looksPersonal, refusePersonalText } from './privacy.js';
 import { languageByVoice } from './languages.js';
+
+// Помни последното търсене — за бързо „отвори в браузъра“ след резултат в чата.
+let _lastSearchQuery = null;
+let _lastSearchEngine = null;
 
 // Помни последния върнат от паметта запис — за да можем да го коригираме.
 let _lastRecallId = null;
@@ -151,15 +156,42 @@ export async function respond(userText) {
     return { text: ask.text, source: ask.ok ? 'memory' : 'rule' };
   }
 
-  // 3.55) БРАУЗЪР/ТЪРСЕНЕ: „отвори браузъра“, „търси/намери ми X“, „търси в Yandex X“,
-  //       „отвори youtube за X“, „отвори example.com“. Отваря СИСТЕМНИЯ браузър.
+  // 3.54) „отвори в браузъра“ като ПРОДЪЛЖЕНИЕ на последно търсене в чата.
+  if (/^(?:отвори|покажи)(?:\s+ми)?\s+(?:го\s+|я\s+)?(?:в(?:ъв)?\s+)?браузър(?:а)?\s*[!.]?$/i.test(text) && _lastSearchQuery) {
+    try {
+      const r = await runBrowserIntent({ action: 'search', engine: _lastSearchEngine || 'google', query: _lastSearchQuery });
+      return { text: r.text, source: 'rule' };
+    } catch (_) { /* пада надолу */ }
+  }
+
+  // 3.55) ТЪРСЕНЕ/БРАУЗЪР:
+  //   • „търси/намери/гугълни X“  → ИЗВАЖДА резултата В ЧАТА (сбито, заземено), БЕЗ да отваря браузър.
+  //   • „… в браузъра / да го видя“ или „отвори браузъра/сайта“ → отваря СИСТЕМНИЯ браузър.
   const bi = parseBrowserIntent(text);
   if (bi) {
     try {
+      if (bi.action === 'search' && !bi.openInBrowser) {
+        _lastSearchQuery = bi.query; _lastSearchEngine = bi.engine;
+        const voiceLang = (getState().settings.voice && getState().settings.voice.lang) || 'bg-BG';
+        const lng = (languageByVoice(voiceLang).code || 'bg').split('-')[0];
+        const sr = await webSearch(bi.query, { lang: lng });
+        if (sr.ok) {
+          let out = `🔎 ${sr.heading || bi.query}\n\n${sr.text}`;
+          out += `\n\n📎 ${sr.source}`;
+          out += '\n\nКажи „отвори в браузъра“, ако искаш да видиш повече.';
+          return { text: out, source: 'source' };
+        }
+        // Жива заявка (цени/време/новини) — източник без кратък отговор → честно + браузър.
+        return {
+          text: `Не намерих кратък отговор за „${bi.query}“ от източник, който мога да цитирам ` +
+            '(това е жива търсачка). Кажи „отвори в браузъра“ и ще ти го покажа в браузъра.',
+          source: 'rule'
+        };
+      }
       const r = await runBrowserIntent(bi);
       return { text: r.text, source: 'rule' };
     } catch (_) {
-      return { text: 'Опитах да отворя браузъра, но нещо се обърка.', source: 'rule' };
+      return { text: 'Опитах да потърся, но нещо се обърка.', source: 'rule' };
     }
   }
 
@@ -180,19 +212,18 @@ export async function respond(userText) {
   }
 
   // 4) Припомняне от паметта
+  //    Честност: връщаме наученото само при ДОСТАТЪЧНО силно съвпадение, или когато
+  //    записът е изричен Q&A тригер (собственикът съзнателно го е задал). Маркираме
+  //    „използван“ и помним id-то за корекция САМО при РЕАЛНО показан спомен — иначе
+  //    слаб (неказан) спомен би инфлирал броя „използвания“ и би станал грешна цел на
+  //    последваща корекция „не, …“.
   const hit = recall(text);
-  if (hit) {
+  if (hit && (hit.score >= 0.5 || hit.rec.type === 'qa')) {
     _lastRecallId = hit.rec.id;
     markUsed(hit.rec.id);
-    // Честност: връщаме директно наученото само при ДОСТАТЪЧНО силно съвпадение,
-    // или когато записът е изричен Q&A тригер (собственикът съзнателно го е задал).
-    if (hit.score >= 0.5 || hit.rec.type === 'qa') {
-      return { text: hit.rec.value, source: 'memory' };
-    }
-    // Слабо съвпадение → НЕ го представяме като отговор; продължаваме към учител/„не знам“.
-  } else {
-    _lastRecallId = null;
+    return { text: hit.rec.value, source: 'memory' };
   }
+  _lastRecallId = null;
 
   // 5) Вградени правила
   const st = smallTalk(text, botName);

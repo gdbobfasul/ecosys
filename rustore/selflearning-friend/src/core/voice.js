@@ -68,6 +68,7 @@ export function ttsAvailable() {
 
 let _webRecog = null;       // активна Web Speech инстанция (за stop)
 let _nativeListening = false;
+let _nativeStopRequested = false; // потребителят натисна „стоп" → не рестартирай сегмента
 
 // Иска разрешение за микрофон (best-effort). Никога не хвърля.
 export async function requestMicPermission() {
@@ -108,73 +109,109 @@ export async function startListening({ lang = DEFAULT_LANG, onInterim = null } =
 
 // Нативно (Capacitor community speech-recognition).
 //
-// ВАЖНО (поправка на „микрофонът свети, но нищо не се пише“): на Android
-// `start({partialResults:true, popup:false})` се РАЗРЕШАВА веднага — текстът идва ПО-КЪСНО
-// през събитие `partialResults`, а краят — през `listeningState: 'stopped'`. Затова НЕ
-// махаме слушателите веднага след start(); пазим ги, трупаме последния резултат и
-// финализираме при „stopped“ (или при stopListening / предпазен таймаут).
+// ВАЖНО (поправка на „записва само 1-2 думи и спира“, Xiaomi/Android): нативният
+// SpeechRecognizer е за КРАТКИ команди — самоизключва се при ~1-2 сек тишина или след
+// първата кратка реплика и праща `listeningState: 'stopped'`. Затова НЕ приключваме при
+// първото 'stopped': РЕСТАРТИРАМЕ слушането и ДОЛЕПЯМЕ текста (re-arm + accumulate),
+// докато: (а) кажеш нещо и спреш (1 тих сегмент след реч), (б) нищо не се чуе 2 пъти
+// подред, (в) натиснеш „стоп" (stopListening), или (г) мине таванът от 60 сек.
 async function startNative(sr, lang, onInterim) {
   // Подсигури разрешение (тихо).
   try { await requestMicPermission(); } catch (_) {}
   _nativeListening = true;
+  _nativeStopRequested = false;
 
   return new Promise((resolve) => {
-    let best = '';
+    let accumulated = '';     // финализиран текст от приключилите сегменти
+    let seg = '';             // текущ сегмент (последни partialResults)
+    let emptyStreak = 0;      // последователни празни сегменти (истинска тишина)
     let settled = false;
+    let segDone = false;      // текущият сегмент вече е приключен (анти-дубъл)
     let safetyTimer = null;
+    let restartTimer = null;
 
+    const MAX_SESSION_MS = 60000;  // абсолютен таван на едно слушане
+    const MAX_EMPTY_SEGMENTS = 2;  // 2 поредни празни сегмента → спри да чакаш
+
+    function fullText() {
+      return (accumulated + ' ' + seg).replace(/\s+/g, ' ').trim();
+    }
+    // Прибира текущия сегмент в натрупания текст. Връща true, ако сегментът е бил празен.
+    function commitSegment() {
+      const s = seg.trim();
+      seg = '';
+      if (s) { accumulated = (accumulated + ' ' + s).replace(/\s+/g, ' ').trim(); emptyStreak = 0; return false; }
+      emptyStreak++;
+      return true;
+    }
     async function cleanup() {
       _nativeListening = false;
       if (safetyTimer) { clearTimeout(safetyTimer); safetyTimer = null; }
+      if (restartTimer) { clearTimeout(restartTimer); restartTimer = null; }
       try { if (typeof sr.removeAllListeners === 'function') await sr.removeAllListeners(); } catch (_) {}
     }
-    async function finish(val) {
+    async function finish() {
       if (settled) return;
       settled = true;
+      try { if (typeof sr.stop === 'function') sr.stop(); } catch (_) {}
       await cleanup();
-      resolve(String(val != null ? val : best || '').trim());
+      resolve(fullText());
     }
 
-    // 1) Закачи слушателите ПРЕДИ старта и ги ПАЗИ, докато тече слушането.
+    // Край на ЕДИН сегмент (Android спря след тишина/кратка реплика) → реши: край или рестарт.
+    function onSegmentStopped() {
+      if (settled || segDone) return;
+      segDone = true;
+      const wasEmpty = commitSegment();
+      if (_nativeStopRequested) return finish();          // ръчен стоп
+      if (accumulated && wasEmpty) return finish();        // казал е нещо и после пауза → край
+      if (emptyStreak >= MAX_EMPTY_SEGMENTS) return finish(); // нищо не се чува → спри да чакаш
+      restartTimer = setTimeout(() => armSegment(), 200);  // продължи да слушаш
+    }
+
+    // Стартира (или рестартира) един сегмент на разпознаване.
+    async function armSegment() {
+      if (settled) return;
+      segDone = false;
+      seg = '';
+      try {
+        const res = await sr.start({ language: lang, maxResults: 5, partialResults: true, popup: false });
+        const matches = (res && res.matches) || [];
+        if (matches.length) {
+          // Платформа, която връща финала директно тук (без отделно 'stopped') → приключи сегмента.
+          seg = String(matches[0] || '');
+          if (onInterim) { try { onInterim(fullText()); } catch (_) {} }
+          setTimeout(() => { if (!settled) onSegmentStopped(); }, 0);
+        }
+        // иначе чакаме 'partialResults' + 'stopped' (Android)
+      } catch (e) {
+        // грешка при старт на сегмента → приключваме с каквото имаме
+        finish();
+      }
+    }
+
+    // Закачаме слушателите ВЕДНЪЖ — те обслужват всеки следващ сегмент при re-arm.
     (async () => {
       try {
         if (typeof sr.addListener === 'function') {
           await sr.addListener('partialResults', (data) => {
             const arr = (data && data.matches) || [];
             if (arr.length) {
-              best = String(arr[0] || '');
-              if (onInterim) { try { onInterim(best); } catch (_) {} }
+              seg = String(arr[0] || '');
+              if (onInterim) { try { onInterim(fullText()); } catch (_) {} } // показва ЦЯЛАТА растяща реплика
             }
           });
-          // Краят на слушането (потребителят спря да говори / извикан stop()).
           try {
             await sr.addListener('listeningState', (data) => {
               const status = data && (data.status || data.state);
-              if (status === 'stopped') finish();
+              if (status === 'stopped') onSegmentStopped();
             });
-          } catch (_) { /* по-стари версии нямат това събитие → разчитаме на таймаута/start() */ }
+          } catch (_) { /* по-стари версии: разчитаме на връщането на start() + таймаута */ }
         }
       } catch (_) { /* без слушатели → разчитаме на връщането на start() */ }
 
-      // 2) Старт. На някои платформи start() връща финалните matches директно.
-      try {
-        const res = await sr.start({
-          language: lang,
-          maxResults: 5,
-          partialResults: true,
-          popup: false
-        });
-        const matches = (res && res.matches) || [];
-        if (matches.length) finish(matches[0]); // платформи, които връщат финала тук
-        // иначе чакаме 'stopped' / stopListening() / предпазния таймаут
-      } catch (e) {
-        // грешка при старт → ако имаме нещо от partials, го връщаме; иначе сигнал за грешка
-        if (best) finish(best);
-        else { settled = true; cleanup(); resolve(''); }
-      }
-
-      // 3) Предпазен таймаут: не блокирай вечно, ако нищо не приключи слушането.
-      safetyTimer = setTimeout(() => finish(), 15000);
+      await armSegment();                                  // първи сегмент
+      safetyTimer = setTimeout(() => finish(), MAX_SESSION_MS);
     })();
   });
 }
@@ -223,8 +260,8 @@ export function stopListening() {
   }
   const sr = capPlugin('SpeechRecognition');
   if (sr && _nativeListening) {
+    _nativeStopRequested = true; // → onSegmentStopped ще приключи, вместо да рестартира
     try { if (typeof sr.stop === 'function') sr.stop(); } catch (_) {}
-    _nativeListening = false;
   }
 }
 

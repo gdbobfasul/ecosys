@@ -20,6 +20,16 @@ import { hashName, rekeyName, validateSingleWord } from './identity.js';
 import { getState } from './storage.js';
 import { setLearningEnabled } from './learning-loop.js';
 import { exportToFile, exportToServer, sourcesSettings } from './knowledge.js';
+import { runRemote, formatRemoteResult } from './remote.js';
+
+// Текущата „свързана" машина — за да може после само „<дума>, изпълни X!“ да върви натам.
+let _remoteHost = '';
+// Думи, които значат „самият relay сървър“ (изпълнение локално на него).
+const RELAY_ALIASES = /^(?:сървъра|сервера|сървър|relay|релея|релето|локално|localhost|тук)$/i;
+function normHost(h) {
+  const s = String(h || '').trim();
+  return RELAY_ALIASES.test(s) ? '' : s;
+}
 
 // Дали даденият текст ИЗГЛЕЖДА като гейтната команда (има „дума, …“).
 // Не валидира думата — само формата. Ползва се, за да отсеем чувствителните неща.
@@ -29,16 +39,20 @@ const GATED_PATTERNS = [
   { re: /^(.+?)\s*,\s*дай\s+ми\s+знанието\s+за\s+бекъп\s*!?$/i, cmd: 'backup' },
   { re: /^(.+?)\s*,\s*синхронизирай\s+към\s+сървъра\s*!?$/i, cmd: 'sync' },
   { re: /^(.+?)\s*,\s*започни\s+отначало\s*!?$/i, cmd: 'reset' },
-  { re: /^(.+?)\s*,\s*(?:твоята\s+)?нова\s+кодова\s+дума\s+е\s+(.+?)\s*!?$/i, cmd: 'rekey' }
+  { re: /^(.+?)\s*,\s*(?:твоята\s+)?нова\s+кодова\s+дума\s+е\s+(.+?)\s*!?$/i, cmd: 'rekey' },
+  // Свържи се с машина (по избор + изпълни команда веднага): „<дума>, свържи се с X [и изпълни Y]!“
+  { re: /^(.+?)\s*,\s*(?:свържи\s+се\s+(?:с|със)|ssh\s+(?:до|към)?)\s+(\S+?)(?:\s+(?:и\s+)?(?:изпълни|пусни|run)\s+(.+?))?\s*!?$/i, cmd: 'connect' },
+  // Изпълни команда (на изрична машина ИЛИ на последно свързаната): „<дума>, изпълни [на X] Y!“
+  { re: /^(.+?)\s*,\s*(?:изпълни|пусни|run)\s+(?:на\s+(\S+)\s+)?(.+?)\s*!?$/i, cmd: 'exec' }
 ];
 
-// Опитва да разпознае гейтната команда. Връща { cmd, word, arg } или null.
+// Опитва да разпознае гейтната команда. Връща { cmd, word, arg, arg2 } или null.
 export function parseGatedCommand(text) {
   const s = String(text || '').trim();
   for (const p of GATED_PATTERNS) {
     const m = s.match(p.re);
     if (m) {
-      return { cmd: p.cmd, word: m[1].trim(), arg: (m[2] || '').trim() };
+      return { cmd: p.cmd, word: m[1].trim(), arg: (m[2] || '').trim(), arg2: (m[3] || '').trim() };
     }
   }
   return null;
@@ -116,6 +130,36 @@ export async function handleCommand(text) {
       if (r.ok) return { matched: true, ok: true, action: 'rekey',
         text: 'Готово. Вече се казвам с новата кодова дума. Запомни я добре — няма подсказка.' };
       return { matched: true, ok: false, text: 'Не успях да сменя думата: ' + (r.reason || 'неизвестно') };
+    }
+
+    case 'connect': {
+      const host = normHost(parsed.arg);
+      _remoteHost = host;
+      const cmd = parsed.arg2;
+      if (cmd) {
+        const r = await runRemote(host, cmd);
+        return { matched: true, ok: !!(r && r.ok), text: formatRemoteResult(host, cmd, r) };
+      }
+      // само свързване → проба за достъп (и помним хоста за следващите команди)
+      const probe = 'echo "връзката работи"; hostname; whoami; uptime 2>/dev/null | head -1';
+      const r = await runRemote(host, probe);
+      const where = host || 'сървъра (relay)';
+      if (r && r.error) {
+        return { matched: true, ok: false, text: `Не можах да се свържа с ${where}: ${r.error}` };
+      }
+      return {
+        matched: true, ok: !!(r && r.ok),
+        text: `🔗 Свързах се с ${where}. Сега кажи „<кодова дума>, изпълни <команда>!“ и ще я пусна там.\n\n${formatRemoteResult(host, probe, r)}`
+      };
+    }
+
+    case 'exec': {
+      const host = parsed.arg ? normHost(parsed.arg) : _remoteHost;
+      if (parsed.arg) _remoteHost = host;
+      const cmd = parsed.arg2;
+      if (!cmd) return { matched: true, ok: false, text: 'Каква команда да изпълня?' };
+      const r = await runRemote(host, cmd);
+      return { matched: true, ok: !!(r && r.ok), text: formatRemoteResult(host, cmd, r) };
     }
 
     default:

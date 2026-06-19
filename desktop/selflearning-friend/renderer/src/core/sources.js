@@ -79,6 +79,53 @@ export async function fetchWikipedia(title, { lang = 'bg' } = {}) {
   return { ok: false, reason: 'не намерих статия (или офлайн)' };
 }
 
+// --- DuckDuckGo Instant Answer (keyless, CORS) -----------------------------
+// Връща кратък „инстантен отговор“ (Abstract/Answer/Definition) + свързани теми.
+// CORS: api.duckduckgo.com връща Access-Control-Allow-Origin: * → работи от WebView.
+export async function fetchDuckDuckGo(query) {
+  const q = String(query || '').trim();
+  if (!q) return { ok: false, reason: 'празна заявка' };
+  const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1`;
+  const d = await getJson(url);
+  if (!d) return { ok: false, reason: 'няма връзка' };
+  const abstract = String(d.AbstractText || d.Answer || d.Definition || '').trim();
+  const related = Array.isArray(d.RelatedTopics)
+    ? d.RelatedTopics.filter((t) => t && t.Text).slice(0, 3).map((t) => String(t.Text))
+    : [];
+  if (!abstract && !related.length) return { ok: false, reason: 'няма кратък отговор' };
+  return {
+    ok: true,
+    heading: d.Heading || q,
+    text: abstract,
+    related,
+    source: d.AbstractSource ? `${d.AbstractSource} (през DuckDuckGo)` : 'DuckDuckGo',
+    url: d.AbstractURL || (d.Results && d.Results[0] && d.Results[0].FirstURL) || ''
+  };
+}
+
+// --- Уеб търсене за ЧАТА: кратък, ЗАЗЕМЕН отговор (без отваряне на браузър) --
+// Опитва Wikipedia на езика на собственика (после EN вътре) → DuckDuckGo. Връща
+// { ok, heading, text, related?, source, url }. Ако и двете нямат кратък отговор →
+// { ok:false } → викащият предлага честно да отвори браузъра (жива търсачка).
+// ЧЕСТНО: това НЕ е Google-скрейп (CORS/правила го забраняват) — ползваме keyless
+// енциклопедични източници, които можем да ЦИТИРАМЕ. За живи заявки (цени, време,
+// новини от момента) източникът няма кратък отговор → отваряме браузъра.
+export async function webSearch(query, { lang = 'bg' } = {}) {
+  const q = String(query || '').trim();
+  if (!q) return { ok: false, reason: 'празна заявка' };
+
+  const wiki = await fetchWikipedia(q, { lang });
+  if (wiki.ok && wiki.summary) {
+    return { ok: true, heading: wiki.title, text: wiki.summary, source: wiki.citation, url: wiki.url, via: 'wikipedia' };
+  }
+  const ddg = await fetchDuckDuckGo(q);
+  if (ddg.ok) {
+    const text = ddg.text || ('• ' + ddg.related.join('\n• '));
+    return { ok: true, heading: ddg.heading, text, related: ddg.related, source: ddg.source, url: ddg.url, via: 'ddg' };
+  }
+  return { ok: false, reason: 'няма кратък отговор за това' };
+}
+
 // --- Новини (RSS) ----------------------------------------------------------
 // По подразбиране безплатен RSS. Парсваме <item><title>/<description>.
 const DEFAULT_RSS = 'https://feeds.bbci.co.uk/news/world/rss.xml';

@@ -5,6 +5,7 @@ import { WEAPONS, unlockedWeapons } from '../weapons.js';
 import { Titan } from '../entities/titan.js';
 import { EnemyAI } from '../ai.js';
 import { buildArena } from '../backgrounds.js';
+import { TITAN_THEMES } from '../textures.js';
 import { makeButton, titleText, promptName } from '../ui.js';
 import { addScore, lastName } from '../leaderboard.js';
 
@@ -39,8 +40,15 @@ export class GameScene extends Phaser.Scene {
     this.hero = new Titan(this, heroX, this.groundY, {
       prefix: 'hero', facing: 1, hp: heroHp, color: THEME.heroBody, weapon: this.heroWeapon
     });
+    // Стихията на противниковия титан задава кой процедурен комплект части
+    // се ползва (каменен/огнен/леден/бурен/сенчест/природен колос). Аурата
+    // (glow) ползва цвета на стихията, ако е дефинирана, иначе акцента на арената.
+    const titanKey = this.level.titan;
+    const enemyPrefix = titanKey ? `enemy_${titanKey}` : 'enemy';
+    const auraColor = (titanKey && TITAN_THEMES[titanKey])
+      ? TITAN_THEMES[titanKey].aura : this.level.arena.accent;
     this.enemy = new Titan(this, enemyX, this.groundY, {
-      prefix: 'enemy', facing: -1, hp: this.level.hp, color: this.level.arena.accent,
+      prefix: enemyPrefix, facing: -1, hp: this.level.hp, color: auraColor,
       weapon: this.level.weapons[0]
     });
 
