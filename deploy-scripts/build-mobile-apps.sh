@@ -43,6 +43,22 @@ inject_android_permissions() {
   done < "$permfile"
 }
 
+# Версия на APK: пише versionCode (МОНОТОНЕН → Android вижда всеки билд като ЪПДЕЙТ, а не
+# „вече инсталирано", затова не се налага ръчна деинсталация) и versionName (от глобалния
+# брояч 00047.version). Прави се СЛЕД cap sync, защото то пресъздава build.gradle.
+inject_version() {
+  local gradle="android/app/build.gradle"
+  [ -f "$gradle" ] || return 0
+  sed -i -E "s/versionCode[[:space:]]+[0-9]+/versionCode ${APK_VERSION_CODE}/" "$gradle"
+  sed -i -E "s/versionName[[:space:]]+\"[^\"]*\"/versionName \"${APK_VERSION_NAME}\"/" "$gradle"
+  echo -e "  ${GREEN}✓ версия: versionCode ${APK_VERSION_CODE} · versionName ${APK_VERSION_NAME}${NC}"
+}
+
+# Една версия за целия билд: code = epoch секунди (винаги расте), name = брояча 00047.version.
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+APK_VERSION_NAME="$(tr -d ' \r\n' < "$REPO_ROOT/00047.version" 2>/dev/null)"; [ -z "$APK_VERSION_NAME" ] && APK_VERSION_NAME="1.0"
+APK_VERSION_CODE="$(date +%s)"
+
 echo ""
 echo -e "${BOLD}${CYAN}╔══════════════════════════════════════════════════════╗${NC}"
 echo -e "${BOLD}${CYAN}║  Билд на мобилни апове (rustore / huawei)            ║${NC}"
@@ -201,6 +217,7 @@ build_one() {
       [ -d android ] || { echo -e "  ${CYAN}→ npx cap add android…${NC}"; npx cap add android || { echo -e "  ${RED}✗ cap add android се провали${NC}"; exit 4; }; }
       echo -e "  ${CYAN}→ npx cap sync android…${NC}"; npx cap sync android || { echo -e "  ${RED}✗ cap sync се провали${NC}"; exit 5; }
       inject_android_permissions   # добавя CAMERA/RECORD_AUDIO и т.н. от android-permissions.txt
+      inject_version               # versionCode (монотонен) + versionName → Android вижда ъпдейт
       echo -e "  ${CYAN}→ gradle assembleDebug (APK)…${NC}"
       (
         cd android || exit 6

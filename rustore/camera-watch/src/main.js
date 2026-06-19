@@ -7,16 +7,23 @@ import { renderOnboarding } from './screens/onboarding.js';
 import { renderPermissions } from './screens/permissions.js';
 import { renderConfig } from './screens/config.js';
 import { renderDashboard } from './screens/dashboard.js';
+import { renderWatcher, teardownWatcher } from './screens/watcher.js';
+import { isWatcher } from './core/pairing.js';
 
 const screens = {
   onboarding: renderOnboarding,
   permissions: renderPermissions,
   config: renderConfig,
-  dashboard: renderDashboard
+  dashboard: renderDashboard,
+  watcher: renderWatcher
 };
 
 async function go(name) {
   const root = document.getElementById('app');
+  // Винаги спираме евентуалното живо полване на наблюдаващия преди смяна на екран.
+  teardownWatcher();
+  // В роля „Наблюдаващ" таблото е без камера → показваме изгледа на наблюдаващия.
+  if (name === 'dashboard' && isWatcher()) name = 'watcher';
   const render = screens[name] || renderOnboarding;
   try {
     await render(root, { go });

@@ -148,6 +148,25 @@ location ^~ /api/selflearning/ {
     proxy_set_header X-Forwarded-Proto \$scheme;
     proxy_read_timeout 60;
 }
+
+# WATCH (детегледачка / camera-watch) — сдвояване по двойка; кадри → по-голям лимит.
+location ^~ /api/watch/ {
+    proxy_pass http://127.0.0.1:${PORT};
+    proxy_http_version 1.1;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_read_timeout 60;
+    client_max_body_size 3m;
+}
+
+# connection.bot.token (статичен, в уеб-корена) — апът го тегли от WebView (cross-origin),
+# затова трябва CORS заглавие, иначе fetch пада с „Failed to fetch". Без кеш — таен/временен.
+location ~ /connection\.bot\.token\$ {
+    add_header Access-Control-Allow-Origin "*" always;
+    add_header Cache-Control "no-store" always;
+}
 NGXEOF
 echo -e "  ${GREEN}✓ Записан: ${NGINX_INC}${NC}"
 

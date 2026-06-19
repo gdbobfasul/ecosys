@@ -271,6 +271,111 @@ function makePowerup(scene, key, glyphColor) {
   });
 }
 
+// --- Балон на щита (енергийна сфера около самолета) ---
+// Рисува се в бяло, после се оцветява в кода (setTint) според силата на щита.
+function makeShieldBubble(scene) {
+  makeCanvasTexture(scene, 'shield_bubble', 84, 84, (ctx, w, h) => {
+    ctx.clearRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2, r = w / 2 - 2;
+    // Меко вътрешно сияние (прозрачно в центъра → плътно към ръба).
+    const g = ctx.createRadialGradient(cx, cy, r * 0.55, cx, cy, r);
+    g.addColorStop(0, 'rgba(255,255,255,0)');
+    g.addColorStop(0.78, 'rgba(255,255,255,0.10)');
+    g.addColorStop(0.92, 'rgba(255,255,255,0.55)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+    // Ярък ръб (контур на сферата).
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(cx, cy, r - 1, 0, Math.PI * 2); ctx.stroke();
+    // Шестоъгълна „енергийна мрежа" — лек намек за силово поле.
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = 0; i <= 6; i++) {
+      const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
+      const x = cx + Math.cos(a) * (r - 6);
+      const y = cy + Math.sin(a) * (r - 6);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath(); ctx.stroke();
+    // Блясък горе-ляво.
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.beginPath(); ctx.ellipse(cx - r * 0.4, cy - r * 0.45, 5, 9, -0.6, 0, Math.PI * 2); ctx.fill();
+  });
+}
+
+// --- Артефакт-кристал (слаб щит, +1): четиривърха светеща звезда-кристал ---
+function makeArtifactCrystal(scene) {
+  makeCanvasTexture(scene, 'art_crystal', 30, 30, (ctx, w, h) => {
+    ctx.clearRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2;
+    // Сияние.
+    const glow = ctx.createRadialGradient(cx, cy, 1, cx, cy, w / 2);
+    glow.addColorStop(0, 'rgba(120,200,255,0.55)');
+    glow.addColorStop(1, 'rgba(120,200,255,0)');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, w, h);
+    // Тяло на кристала (ромб).
+    const g = ctx.createLinearGradient(cx, 4, cx, h - 4);
+    g.addColorStop(0, '#eaf6ff'); g.addColorStop(0.5, '#6ea8ff'); g.addColorStop(1, '#2b6bd6');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(cx, 4); ctx.lineTo(w - 7, cy); ctx.lineTo(cx, h - 4); ctx.lineTo(7, cy);
+    ctx.closePath(); ctx.fill();
+    // Фасет (централен светъл ръб).
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(cx, 4); ctx.lineTo(cx, h - 4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(7, cy); ctx.lineTo(w - 7, cy); ctx.stroke();
+  });
+}
+
+// --- Артефакт-сфера (среден щит, +3): кълбо със светъл пръстен ---
+function makeArtifactOrb(scene) {
+  makeCanvasTexture(scene, 'art_orb', 34, 34, (ctx, w, h) => {
+    ctx.clearRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2;
+    const glow = ctx.createRadialGradient(cx, cy, 1, cx, cy, w / 2);
+    glow.addColorStop(0, 'rgba(0,229,255,0.6)');
+    glow.addColorStop(1, 'rgba(0,229,255,0)');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, w, h);
+    // Кълбо.
+    const g = ctx.createRadialGradient(cx - 4, cy - 4, 2, cx, cy, w / 2 - 4);
+    g.addColorStop(0, '#ffffff'); g.addColorStop(0.5, '#3fe0ff'); g.addColorStop(1, '#0a7da8');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(cx, cy, w / 2 - 5, 0, Math.PI * 2); ctx.fill();
+    // Орбитален пръстен.
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(cx, cy, w / 2 - 3, (w / 2 - 3) * 0.42, -0.5, 0, Math.PI * 2); ctx.stroke();
+  });
+}
+
+// --- Артефакт-звезда (силен щит, пълно зареждане): рядка златиста звезда ---
+function makeArtifactStar(scene) {
+  makeCanvasTexture(scene, 'art_star', 38, 38, (ctx, w, h) => {
+    ctx.clearRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2;
+    const glow = ctx.createRadialGradient(cx, cy, 1, cx, cy, w / 2);
+    glow.addColorStop(0, 'rgba(255,209,102,0.7)');
+    glow.addColorStop(1, 'rgba(255,209,102,0)');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, w, h);
+    // Петолъчна звезда.
+    const R = w / 2 - 4, r = R * 0.45;
+    const g = ctx.createLinearGradient(cx, cy - R, cx, cy + R);
+    g.addColorStop(0, '#fff7d6'); g.addColorStop(0.5, '#ffd166'); g.addColorStop(1, '#d98a00');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    for (let i = 0; i < 10; i++) {
+      const rad = (i % 2 === 0) ? R : r;
+      const a = (i / 10) * Math.PI * 2 - Math.PI / 2;
+      const x = cx + Math.cos(a) * rad, y = cy + Math.sin(a) * rad;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 1.2; ctx.stroke();
+  });
+}
+
 // --- Малка частица (за експлозии и ауспух) ---
 function makeParticle(scene) {
   makeCanvasTexture(scene, 'spark', 16, 16, (ctx, w, h) => {
@@ -311,6 +416,10 @@ export function generateTextures(scene) {
   makePowerup(scene, 'pu_bomb', '#ffb020');
   makePowerup(scene, 'pu_missile', THEME.dangerHex);
   makePowerup(scene, 'pu_health', '#39d98a');
+  makeShieldBubble(scene);
+  makeArtifactCrystal(scene);
+  makeArtifactOrb(scene);
+  makeArtifactStar(scene);
   makeParticle(scene);
   makeStar(scene);
 }

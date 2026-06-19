@@ -27,34 +27,40 @@ async function boot() {
     new Controls(engine.camera, engine.renderer.domElement, terrain, hudRef);
 
   function toMenu() {
+    try {
+      if (hud) { hud.dispose(); hud = null; }
+      if (game) { game.cleanup(); }
+      // Камерата вече е извън сцената след cleanup(); връщаме я в неутрална поза.
+      engine.camera.position.set(0, 1.7, 0);
+      engine.camera.quaternion.identity();
+      showMenu(root, leaderboard, (startLevel) => startLevel != null && startGame(startLevel, 0));
+    } catch (err) {
+      console.error('[toMenu] грешка при връщане към менюто', err);
+      showErrorOverlay(root, err);
+    }
+  }
+
+  // Краят на ниво е една и съща логика и при първи старт, и при рестарт —
+  // дефинираме я веднъж, за да няма разминаване между двата пътя.
+  function handleLevelEnd(result) {
     if (hud) { hud.dispose(); hud = null; }
-    if (game) { game.cleanup(); }
-    engine.camera.position.set(0, 1.7, 0);
-    showMenu(root, leaderboard, (startLevel) => startLevel != null && startGame(startLevel, 0));
+    showGameOver(
+      root, leaderboard, result,
+      () => toMenu(),
+      (lvl) => startGame(lvl, result.win ? result.score : 0) // при печалба пренасяме точките
+    );
   }
 
   function startGame(levelNum, totalScore) {
     if (hud) hud.dispose();
     hud = new HUD(root);
+    // GameScene се създава веднъж и се преизползва при рестарт; всеки път
+    // освежаваме препратките към новия HUD и към обработчика за край на ниво.
     if (!game) {
-      game = new GameScene(engine, controlsFactory, hud, (result) => {
-        if (hud) { hud.dispose(); hud = null; }
-        showGameOver(
-          root, leaderboard, result,
-          () => toMenu(),
-          (lvl) => startGame(lvl, result.win ? result.score : 0) // при печалба пренасяме точките
-        );
-      });
+      game = new GameScene(engine, controlsFactory, hud, handleLevelEnd);
     } else {
       game.hud = hud;
-      game.onLevelEnd = (result) => {
-        if (hud) { hud.dispose(); hud = null; }
-        showGameOver(
-          root, leaderboard, result,
-          () => toMenu(),
-          (lvl) => startGame(lvl, result.win ? result.score : 0)
-        );
-      };
+      game.onLevelEnd = handleLevelEnd;
     }
     // Стартът на нивото е обвит в try/catch: ако нещо хвърли (генериране на
     // ниво, терен, контроли), вместо тих черен екран показваме ВИДИМ overlay

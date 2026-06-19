@@ -19,9 +19,21 @@ import { createMotionDetector } from '../core/motion-detector.js';
 import { classifyFrame } from '../core/recognizer.js';
 import { notify } from '../core/notifier.js';
 import { loadSettings, loadEvents, addEvent, clearEvents } from '../core/storage.js';
+import { isMonitor, sendAlert, sendFrame } from '../core/pairing.js';
 
 const READ_EVERY_MS = 350;       // честота на проверка за движение
 const FRAME_MAX_W = 480;         // работна ширина на пълния кадър (за класификация)
+
+// Малък компресиран кадър (≈320px JPEG) за релея — да не товари мрежата/лимита.
+function smallFrame(canvas) {
+  try {
+    if (!canvas || !canvas.width) return null;
+    const w = 320, scale = w / canvas.width, h = Math.max(1, Math.round(canvas.height * scale));
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(canvas, 0, 0, w, h);
+    return c.toDataURL('image/jpeg', 0.5);
+  } catch (_) { return null; }
+}
 
 export async function renderDashboard(root, { go }) {
   const s = await loadSettings();
@@ -153,6 +165,13 @@ export async function renderDashboard(root, { go }) {
     const thumb = snapshotDataUrl(frameCanvas);
     const ev = await addEvent({ kind: 'detection', category, label, score, thumb });
     prependLog(ev);
+
+    // ДВУФОНОВ режим: ако сме „Страж" (monitor), пращаме събитието + смалена снимка към
+    // наблюдаващия телефон през релея. Типът = категорията (person → критично).
+    if (isMonitor()) {
+      sendAlert('camerawatch', category, label);
+      try { const f = smallFrame(frameCanvas); if (f) sendFrame(f, label); } catch (_) {}
+    }
 
     if (s.notify) {
       const pctTxt = score ? ' (' + Math.round(score * 100) + '%)' : '';

@@ -21,6 +21,8 @@ export default class GameScene extends Phaser.Scene {
     this.lives = data.lives != null ? data.lives : 3;
     // Запазваме отключените оръжия между нивата (подава се от предишно ниво).
     this.carryWeapons = data.weapons || ['bullet'];
+    // Пренасяме и натрупания щит между нивата.
+    this.carryShield = data.shield || 0;
   }
 
   create() {
@@ -37,6 +39,8 @@ export default class GameScene extends Phaser.Scene {
     this.player = new Plane(this);
     this.carryWeapons.forEach((k) => this.player.unlocked.add(k));
     this.player.weaponKey = this.carryWeapons[this.carryWeapons.length - 1];
+    // Възстановяваме пренесения щит.
+    if (this.carryShield > 0) this.player.addShield(this.carryShield);
 
     // Групи (с физика).
     this.bullets = this.physics.add.group();
@@ -44,6 +48,8 @@ export default class GameScene extends Phaser.Scene {
     this.enemyBullets = this.physics.add.group();
     this.obstacles = this.physics.add.group();
     this.powerups = this.physics.add.group();
+    // Артефакти за щит — носят се по полето, играчът ги събира с прелитане.
+    this.artifacts = this.physics.add.group();
 
     // Частици за експлозии.
     this.explosions = this.add.particles(0, 0, 'spark', {
@@ -68,6 +74,7 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player.sprite, this.obstacles, this.onPlayerObstacle, null, this);
     this.physics.add.overlap(this.player.sprite, this.enemyBullets, this.onPlayerEnemyBullet, null, this);
     this.physics.add.overlap(this.player.sprite, this.powerups, this.onPlayerPowerup, null, this);
+    this.physics.add.overlap(this.player.sprite, this.artifacts, this.onPlayerArtifact, null, this);
 
     // Таймери за спавн.
     this.spawnTimer = this.time.addEvent({
@@ -82,6 +89,18 @@ export default class GameScene extends Phaser.Scene {
         callback: () => this.spawnObstacle()
       });
     }
+
+    // Таймер за артефакти (щит). Появяват се по-често на по-трудните нива,
+    // за да може играчът да оцелее от ~ниво 5 нататък със събиране на щитове.
+    // levelIndex 0..9; на ниво 5 (index 4) интервалът вече е забележимо по-кратък.
+    const artifactDelay = Phaser.Math.Clamp(9000 - this.levelIndex * 700, 4200, 9000);
+    this.artifactTimer = this.time.addEvent({
+      delay: artifactDelay,
+      loop: true,
+      callback: () => this.spawnArtifact()
+    });
+    // Първи артефакт малко по-рано, за да усети играчът механиката.
+    this.time.delayedCall(2500, () => this.spawnArtifact());
 
     // Стартираме HUD сцената отгоре.
     this.scene.launch('UI', { game: this });
@@ -269,6 +288,48 @@ export default class GameScene extends Phaser.Scene {
     this.tweens.add({ targets: pu, scale: 1.25, duration: 500, yoyo: true, repeat: -1 });
   }
 
+  // --- Артефакти за щит ---
+  // Три типа с различна сила:
+  //   crystal — слаб щит (+1 заряд)
+  //   orb     — среден щит (+3 заряда)
+  //   star    — силен/рядък щит (+6 заряда, на практика пълно поле)
+  // На по-високите нива по-силните артефакти стават малко по-вероятни.
+  spawnArtifact() {
+    if (this.levelComplete) return;
+    const { width } = this.scale;
+    const r = Phaser.Math.FloatBetween(0, 1);
+    // Тежест на типовете расте леко с нивото (повече помощ след ниво 5).
+    const hard = this.levelIndex >= 4;
+    let kind;
+    if (r < (hard ? 0.10 : 0.06)) kind = 'star';        // рядък
+    else if (r < (hard ? 0.42 : 0.32)) kind = 'orb';    // среден
+    else kind = 'crystal';                               // чест
+
+    const texMap = { crystal: 'art_crystal', orb: 'art_orb', star: 'art_star' };
+    const x = Phaser.Math.Between(40, width - 40);
+    const a = this.artifacts.create(x, -30, texMap[kind]);
+    a.kind = kind;
+    a.setDepth(8);
+    // Леко странично полюшване, за да изглежда като носещ се по пътя артефакт.
+    a.setVelocity(Phaser.Math.Between(-30, 30), Phaser.Math.Between(70, 110));
+    a.body.setAllowGravity(false);
+    // Пулсация + бавно завъртане за „жив" вид.
+    this.tweens.add({ targets: a, scale: 1.25, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+    this.tweens.add({ targets: a, angle: 360, duration: 4000, repeat: -1 });
+  }
+
+  onPlayerArtifact(planeSprite, art) {
+    const kind = art.kind;
+    const amounts = { crystal: 1, orb: 3, star: 6 };
+    const tints = { crystal: 0x6ea8ff, orb: 0x00e5ff, star: 0xffd166 };
+    const names = { crystal: 'ЩИТ +1', orb: 'ЩИТ +3', star: 'СИЛЕН ЩИТ!' };
+    const added = this.player.addShield(amounts[kind] || 1);
+    art.destroy();
+    // Ефект при събиране.
+    this.boom(planeSprite.x, planeSprite.y, tints[kind] || 0x66ddff, 1.1);
+    this.flashBanner(added > 0 ? names[kind] : 'ЩИТЪТ Е ПЪЛЕН');
+  }
+
   // --- Прогрес на нивото ---
   checkLevelProgress() {
     if (this.levelComplete || this.bossActive) return;
@@ -316,6 +377,7 @@ export default class GameScene extends Phaser.Scene {
     this.levelComplete = true;
     this.spawnTimer.paused = true;
     if (this.obstacleTimer) this.obstacleTimer.paused = true;
+    if (this.artifactTimer) this.artifactTimer.paused = true;
 
     // Награда: отключване на ново оръжие.
     if (this.level.reward) this.player.unlock(this.level.reward);
@@ -331,7 +393,8 @@ export default class GameScene extends Phaser.Scene {
           level: this.levelIndex + 1,
           score: this.score,
           lives: this.lives,
-          weapons: Array.from(this.player.unlocked)
+          weapons: Array.from(this.player.unlocked),
+          shield: this.player.shield
         });
       }
     });
@@ -420,6 +483,11 @@ export default class GameScene extends Phaser.Scene {
     });
     this.powerups.getChildren().forEach((pu) => {
       if (pu.y > this.scale.height + 30) pu.destroy();
+    });
+    // Чисти артефактите, които са напуснали екрана (държим страничната граница).
+    this.artifacts.getChildren().forEach((a) => {
+      if (a.y > this.scale.height + 40) a.destroy();
+      else if (a.x < 16 || a.x > this.scale.width - 16) a.setVelocityX(-a.body.velocity.x);
     });
 
     // Бос.

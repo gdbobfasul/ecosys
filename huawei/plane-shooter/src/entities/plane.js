@@ -19,6 +19,17 @@ export default class Plane {
     this.health = 100;
     this.invuln = 0; // секунди неуязвимост след удар
 
+    // --- ЩИТ (издържливост от артефакти) ---
+    // Щитът поглъща удари ВМЕСТО здравето/живота. Всеки заряд = един погълнат удар.
+    // Зарядите идват от артефакти, които играчът събира по пътя.
+    this.shield = 0;          // текущи заряди на щита
+    this.maxShield = 9;       // таван на зарядите
+    // Балон около самолета — рисуван като отделен спрайт с пулсация.
+    this.shieldBubble = scene.add.sprite(this.sprite.x, this.sprite.y, 'shield_bubble');
+    this.shieldBubble.setDepth(11);
+    this.shieldBubble.setVisible(false);
+    this.shieldHitFlash = 0;  // секунди ярко проблясване при погълнат удар
+
     // Отключени оръжия — започваме само с куршуми.
     this.unlocked = new Set(['bullet']);
     this.weaponKey = 'bullet';
@@ -74,6 +85,14 @@ export default class Plane {
 
   hit(dmg) {
     if (this.invuln > 0) return false;
+    // Ако имаме щит — един заряд поглъща удара ВМЕСТО здравето.
+    if (this.shield > 0) {
+      this.shield--;
+      this.invuln = 0.8;        // кратка неуязвимост, по-малка от тази при истински удар
+      this.shieldHitFlash = 0.25;
+      if (this.shield <= 0) this.shieldBubble.setVisible(false);
+      return false;             // ударът е поет от щита — играчът не губи здраве/живот
+    }
     this.health = Math.max(0, this.health - dmg);
     this.invuln = 1.2;
     return true;
@@ -81,6 +100,14 @@ export default class Plane {
 
   heal(amount) {
     this.health = Math.min(this.maxHealth, this.health + amount);
+  }
+
+  // Добавяме заряди към щита (от събран артефакт). Връща реално добавените.
+  addShield(amount) {
+    const before = this.shield;
+    this.shield = Math.min(this.maxShield, this.shield + amount);
+    if (this.shield > 0) this.shieldBubble.setVisible(true);
+    return this.shield - before;
   }
 
   update(dt) {
@@ -91,10 +118,38 @@ export default class Plane {
     } else {
       this.sprite.setAlpha(1);
     }
+
+    // --- Балон на щита: следва самолета, пулсира и сменя цвят според силата ---
+    if (this.shield > 0) {
+      const b = this.shieldBubble;
+      b.setVisible(true);
+      b.x = this.sprite.x;
+      b.y = this.sprite.y;
+      const t = this.scene.time.now / 1000;
+      // Лека пулсация на размера.
+      const pulse = 1 + 0.06 * Math.sin(t * 4);
+      b.setScale(pulse);
+      // Цвят/непрозрачност по сила: слаб=син, среден=циан, силен=златист.
+      let tint, baseAlpha;
+      if (this.shield >= 6) { tint = 0xffd166; baseAlpha = 0.55; }        // силен (златист)
+      else if (this.shield >= 3) { tint = 0x00e5ff; baseAlpha = 0.45; }   // среден (циан)
+      else { tint = 0x6ea8ff; baseAlpha = 0.34; }                          // слаб (син)
+      // Лек блясък при току-що погълнат удар.
+      if (this.shieldHitFlash > 0) {
+        this.shieldHitFlash -= dt;
+        tint = 0xffffff;
+        baseAlpha = 0.85;
+      }
+      b.setTint(tint);
+      b.setAlpha(baseAlpha + 0.08 * Math.sin(t * 6));
+    } else {
+      this.shieldBubble.setVisible(false);
+    }
   }
 
   destroy() {
     this.thruster.destroy();
+    this.shieldBubble.destroy();
     this.sprite.destroy();
   }
 }

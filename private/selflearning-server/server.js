@@ -30,7 +30,7 @@ process.on('uncaughtException', (e) => console.error('[selflearning] uncaughtExc
 const PORT = process.env.SELFLEARNING_PORT || process.env.PORT || 3013;
 
 // Скромни лимити (light, но защитава relay-а).
-const BODY_LIMIT   = process.env.SELFLEARNING_BODY_LIMIT || '1mb';
+const BODY_LIMIT   = process.env.SELFLEARNING_BODY_LIMIT || '2mb';  // 2mb → побира малък кадър (watch/frame)
 const MAX_ENTRIES  = parseInt(process.env.SELFLEARNING_MAX_ENTRIES || '500', 10);  // на заявка teach
 const QUEUE_CAP    = parseInt(process.env.SELFLEARNING_QUEUE_CAP   || '5000', 10); // на token
 const RL_WINDOW_MS = parseInt(process.env.SELFLEARNING_RL_WINDOW_MS || '60000', 10);
@@ -238,6 +238,69 @@ app.post('/api/selflearning/exec/:token', withToken, (req, res) => {
       const timedOut = !!(err && err.killed);
       res.json({ ok: !err, code, host: host || 'localhost', stdout: out, stderr: errout, timedOut });
     });
+});
+
+// ── WATCH (детегледачка / camera-watch): сдвояване по „pair" ключ ────────────
+// Телефонът до детето (Детегледачка) праща събития/кадри; наблюдаващият ги тегли.
+// pair = таен ключ за двойка (като token — лек namespace, не втвърдена автентикация).
+function withPair(req, res, next) {
+  const pair = cleanToken(req.params.pair);
+  if (!pair) return res.status(400).json({ ok: false, error: 'bad_pair' });
+  if (!rateLimit('watch:' + pair)) return res.status(429).json({ ok: false, error: 'rate_limited' });
+  req.pair = pair;
+  next();
+}
+function watchPending(pair) {
+  return db.prepare('SELECT COUNT(*) AS c FROM watch_queue WHERE pair = ?').get(pair).c;
+}
+
+// Детегледачката праща събитие.
+app.post('/api/watch/alert/:pair', withPair, (req, res) => {
+  const b = req.body || {};
+  const appName = b.app != null ? String(b.app).slice(0, 40) : '';
+  const type = b.type != null ? String(b.type).slice(0, 40) : '';
+  const label = b.label != null ? String(b.label).slice(0, 400) : '';
+  db.prepare('INSERT INTO watch_queue (pair, app, type, label, created_at) VALUES (?, ?, ?, ?, ?)')
+    .run(req.pair, appName, type, label, Date.now());
+  // Cap: пазим последните 200 на двойка.
+  db.prepare(`DELETE FROM watch_queue WHERE pair = ? AND id NOT IN
+              (SELECT id FROM watch_queue WHERE pair = ? ORDER BY id DESC LIMIT 200)`)
+    .run(req.pair, req.pair);
+  res.json({ ok: true, pending: watchPending(req.pair) });
+});
+
+// Наблюдаващият тегли новите събития (?ack=1 ги изчиства веднага).
+app.get('/api/watch/alert/:pair', withPair, (req, res) => {
+  const rows = db.prepare('SELECT id, app, type, label, created_at FROM watch_queue WHERE pair = ? ORDER BY id ASC').all(req.pair);
+  if (String(req.query.ack || '') === '1') db.prepare('DELETE FROM watch_queue WHERE pair = ?').run(req.pair);
+  res.json({ ok: true, alerts: rows });
+});
+
+// Изчиства най-старите N (по-безопасният ack).
+app.post('/api/watch/alert/:pair/ack', withPair, (req, res) => {
+  const n = parseInt((req.body && req.body.count), 10);
+  if (!Number.isInteger(n) || n < 0) return res.status(400).json({ ok: false, error: 'bad_count' });
+  const info = db.prepare('DELETE FROM watch_queue WHERE id IN (SELECT id FROM watch_queue WHERE pair = ? ORDER BY id ASC LIMIT ?)').run(req.pair, n);
+  res.json({ ok: true, cleared: info.changes, pending: watchPending(req.pair) });
+});
+
+// Детегледачката качва последния кадър (малка компресирана снимка).
+app.post('/api/watch/frame/:pair', withPair, (req, res) => {
+  const b = req.body || {};
+  const dataurl = b.dataurl != null ? String(b.dataurl) : '';
+  if (!/^data:image\//.test(dataurl)) return res.status(400).json({ ok: false, error: 'bad_frame' });
+  const label = b.label != null ? String(b.label).slice(0, 400) : '';
+  db.prepare(`INSERT INTO watch_frame (pair, dataurl, label, updated_at) VALUES (?, ?, ?, ?)
+              ON CONFLICT(pair) DO UPDATE SET dataurl = excluded.dataurl, label = excluded.label, updated_at = excluded.updated_at`)
+    .run(req.pair, dataurl, label, Date.now());
+  res.json({ ok: true, bytes: dataurl.length });
+});
+
+// Наблюдаващият дърпа последния кадър.
+app.get('/api/watch/frame/:pair', withPair, (req, res) => {
+  const row = db.prepare('SELECT dataurl, label, updated_at FROM watch_frame WHERE pair = ?').get(req.pair);
+  if (!row) return res.json({ ok: true, frame: null });
+  res.json({ ok: true, frame: row.dataurl, label: row.label, updated_at: row.updated_at });
 });
 
 // ── helpers (db) ────────────────────────────────────────────────────

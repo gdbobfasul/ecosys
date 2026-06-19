@@ -212,7 +212,19 @@ export class GameScene {
 
   cleanup() {
     if (this.controls) { this.controls.dispose(); this.controls = null; }
-    if (this.viewmodel) { this.engine.camera.remove(this.viewmodel); this.viewmodel = null; }
+    if (this.viewmodel) {
+      // Махаме viewmodel-а от камерата И освобождаваме геометрии/материали,
+      // за да не се трупат при всеки рестарт.
+      this.engine.camera.remove(this.viewmodel);
+      this.viewmodel.traverse((o) => {
+        if (o.geometry) o.geometry.dispose();
+        if (o.material) o.material.dispose();
+      });
+      this.viewmodel = null;
+    }
+    // Камерата се добавя към сцената при start(); махаме я тук, за да е
+    // добавянето при следващия start() симетрично и чисто (без двойно водене).
+    if (this.engine.camera.parent) this.engine.camera.removeFromParent();
     if (this.targets) { this.targets.forEach((t) => t.dispose()); this.targets = []; }
     if (this.effects) this.effects.clear();
     if (this.terrain) { this.terrain.dispose(); this.terrain = null; }

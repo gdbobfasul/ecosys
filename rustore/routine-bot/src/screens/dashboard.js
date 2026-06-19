@@ -27,6 +27,12 @@ export async function renderDashboard(root, { go }) {
         <button class="btn secondary" id="preview">👁️ Преглед на брифинга сега</button>
       </div>
 
+      <div class="card">
+        <h2>🔋 Фонов режим</h2>
+        <p class="muted" id="bgNote"></p>
+        <button class="btn secondary small" id="resetRoutine">Нулирай настройките на рутината</button>
+      </div>
+
       <h2>Времева линия на деня</h2>
       <div class="card" id="timeline"></div>
 
@@ -81,6 +87,23 @@ export async function renderDashboard(root, { go }) {
   el.querySelector('#preview').addEventListener('click', async () => {
     const text = await scheduler.previewBriefingNow();
     toast('🤖 Брифинг (преглед)', text);
+  });
+
+  // Фонов режим — честно обяснение според средата.
+  const isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  el.querySelector('#bgNote').textContent = isNative
+    ? 'Когато роботът е АКТИВЕН, напомнянията и брифингът се доставят дори при ЗАТВОРЕНО приложение ' +
+      '(нативно планирани известия). Не е нужно да го държиш отворен. Изисква разрешение за известия.'
+    : 'В браузър напомнянията работят само докато приложението е отворено. На телефона (инсталирано) ' +
+      'работят и при затворено — нативно планирани известия.';
+
+  // Нулиране САМО на настройките на рутината (без да трие бележки/напомняния/онбординг).
+  el.querySelector('#resetRoutine').addEventListener('click', async () => {
+    await storage.set(KEYS.routine, defaultRoutine());
+    await scheduler.reschedule();
+    toast('Рутина', 'Настройките на рутината са върнати по подразбиране.');
+    clear(root);
+    renderDashboard(root, { go });
   });
 
   el.querySelector('#reset').addEventListener('click', async () => {

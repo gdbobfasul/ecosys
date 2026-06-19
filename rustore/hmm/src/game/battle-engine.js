@@ -967,6 +967,10 @@ BattleEngine.prototype.playAttack = function (actor, targets, animName, dtype, k
             // прилагаме щетите и пускаме реакцията СЛЕД края на атаката
             targets.forEach(function (t) {
                 if (!t.alive) return;
+                // ВИНАГИ пусни видим тинт-проблясък + трепване върху целта.
+                // Така дори масова специалната атака („Огнен дъх по всички") да
+                // НЕ зависи от наличието на reaction-видео — всяка ударена цел реагира.
+                self._flashHit(t, dtype);
                 t.locked = true; reactsLeft++;
                 self._setHeroState(t, 'react:' + dtype, { onEnd: function () {
                     var after = function () { reactsLeft--; proceed(); };
@@ -1023,6 +1027,34 @@ BattleEngine.prototype._screenShake = function (mag) {
     var s = this.els.stage;
     s.style.animation = 'kbbShake ' + (mag > 14 ? 400 : 250) + 'ms';
     setTimeout(function () { s.style.animation = ''; }, 500);
+};
+
+/* ── визуална реакция при удар (НЕ зависи от видео файл) ──
+   Винаги пуска тинт-проблясък + трепване върху целта, така че дори ако
+   reaction-видеото липсва (404 → fallback изтича), целта пак ВИДИМО реагира.
+   За огнените удари (inFire / dragon-hit) тинтът е пламъчен. */
+BattleEngine.prototype._flashHit = function (unit, dtype) {
+    if (!unit || !unit.dom || !unit.dom.box) return;
+    var box = unit.dom.box;
+    // цвят на проблясъка според типа щета
+    var fire = (dtype === 'inFire' || dtype === 'dragon-hit');
+    var ice  = (dtype === 'iceblocks');
+    var elec = (dtype === 'electricity');
+    var tint = fire ? 'rgba(255,110,30,.55)'
+             : ice  ? 'rgba(120,200,255,.50)'
+             : elec ? 'rgba(150,170,255,.55)'
+             :        'rgba(255,40,40,.45)';
+    // слой-проблясък върху видеата на целта
+    var ov = document.createElement('div');
+    ov.className = 'kbb-hit-overlay' + (fire ? ' kbb-hit-fire' : '');
+    ov.style.background = 'radial-gradient(circle at 50% 45%,' + tint + ',transparent 70%)';
+    box.appendChild(ov);
+    // трепване на цялата целева кутия (без да чупи left/top позицията)
+    box.classList.add('kbb-hit-flinch');
+    setTimeout(function () {
+        box.classList.remove('kbb-hit-flinch');
+        if (ov.parentNode) ov.parentNode.removeChild(ov);
+    }, 620);
 };
 
 /* ── idle watchdog: героите, които стоят, пускат idle от време на време ── */
@@ -1545,6 +1577,13 @@ var BATTLE_CSS = [
 '.kbb-lb-hi{background:linear-gradient(180deg,rgba(248,196,80,.25),rgba(248,196,80,.10));border:2px solid #f8c450;border-radius:8px;box-shadow:0 0 16px rgba(248,196,80,.45);}',
 '.kbb-lb-back{margin-top:14px;}',
 '@keyframes kbbShake{0%,100%{transform:translate(-50%,-50%) scale(var(--s,1))}25%{transform:translate(calc(-50% - 8px),calc(-50% - 4px)) scale(var(--s,1))}50%{transform:translate(calc(-50% + 6px),calc(-50% + 6px)) scale(var(--s,1))}75%{transform:translate(calc(-50% - 4px),calc(-50% - 6px)) scale(var(--s,1))}}',
+/* ── реакция при удар: тинт-проблясък + трепване на целта ── */
+'.kbb-hit-overlay{position:absolute;inset:0;pointer-events:none;z-index:5;mix-blend-mode:screen;animation:kbbHitFlash .55s ease-out forwards;}',
+'.kbb-hit-overlay.kbb-hit-fire{animation:kbbHitFlash .62s ease-out forwards,kbbFirePulse .31s ease-in-out 2;}',
+'@keyframes kbbHitFlash{0%{opacity:0;}15%{opacity:1;}100%{opacity:0;}}',
+'@keyframes kbbFirePulse{0%,100%{filter:brightness(1);}50%{filter:brightness(1.6);}}',
+'.kbb-hit-flinch{animation:kbbFlinch .6s ease-in-out;}',
+'@keyframes kbbFlinch{0%,100%{transform:translateX(0) rotate(0);}15%{transform:translateX(-9px) rotate(-1.5deg);}40%{transform:translateX(7px) rotate(1deg);}65%{transform:translateX(-5px) rotate(-.6deg);}85%{transform:translateX(3px) rotate(.3deg);}}',
 ].join('\n');
 
 /* ── debug панел CSS (само админ) ── */

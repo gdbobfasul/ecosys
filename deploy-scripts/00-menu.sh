@@ -100,8 +100,10 @@ ask_choice() {
 }
 
 # Print one menu item with 2-line description
+MENU_INDEX=()   # пълни се от item() при всяко показване — за търсачката (виж search_menu)
 item() {
     local num="$1"; local title="$2"; local desc1="$3"; local desc2="$4"; local note="$5"
+    MENU_INDEX+=("${num}|${title}|${desc1} ${desc2} ${note}")
     printf "  ${BOLD}%2s${NC})  %s\n" "$num" "$title"
     [ -n "$desc1" ] && echo -e "         ${GRAY}${desc1}${NC}"
     [ -n "$desc2" ] && echo -e "         ${GRAY}${desc2}${NC}"
@@ -109,8 +111,29 @@ item() {
     echo ""
 }
 
+# Търсачка в менюто: филтрира опциите по дума (номер/заглавие/описание). Викана с „/дума".
+search_menu() {
+    local term="$1"
+    [ -z "$term" ] && { echo "  Напиши дума след /, напр. /домейн"; return; }
+    echo ""
+    echo -e "  ${BOLD}${CYAN}Резултати за: ${term}${NC}"
+    echo ""
+    local found=0 entry num rest title
+    for entry in "${MENU_INDEX[@]}"; do
+        if printf '%s' "$entry" | grep -iq -- "$term"; then
+            num="${entry%%|*}"; rest="${entry#*|}"; title="${rest%%|*}"
+            printf "    ${BOLD}%2s${NC})  %s\n" "$num" "$title"
+            found=$((found+1))
+        fi
+    done
+    [ "$found" = 0 ] && echo -e "    ${GRAY}(нищо намерено за: ${term})${NC}"
+    echo ""
+    echo -e "  ${GRAY}Намерени: ${found}. Въведи номер, за да пуснеш опцията.${NC}"
+}
+
 show_menu() {
     clear
+    MENU_INDEX=()   # нулирай индекса преди всяко изреждане (за търсачката)
     echo -e "${MAGENTA}╔════════════════════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${MAGENTA}║         KCY Ecosystem — Admin Menu        $(date '+%Y-%m-%d %H:%M:%S')          ║${NC}"
     echo -e "${MAGENTA}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
@@ -1290,7 +1313,11 @@ print_start_banner() {
 # === MAIN LOOP ===
 while true; do
     show_menu
-    read -p "Избери [1-52, q]: " choice
+    read -p "Избери [1-52, q · напиши /дума за търсене]: " choice
+    # Търсачка в менюто: „/дума" филтрира опциите (по номер/заглавие/описание).
+    case "$choice" in
+        /*) search_menu "${choice#/}"; press_enter; continue ;;
+    esac
     # банер само за реалните опции (не за изход/празен ред)
     case "$choice" in
         ''|q|Q|quit|exit|изход) : ;;

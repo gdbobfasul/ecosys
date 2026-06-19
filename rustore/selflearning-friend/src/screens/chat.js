@@ -113,13 +113,15 @@ export function renderChat(root, { navigate, rerender }) {
     }
     listening = true;
     micBtn.classList.add('on');
+    // СКРИЙ клавиатурата — ако полето е на фокус, тя „краде" аудиото и спира микрофона.
+    try { input.blur(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (_) {}
     const prevPh = input.placeholder;
     input.placeholder = 'Слушам… (натисни 🎤 пак за стоп)';
     let transcript = '';
     try {
       transcript = await startListening({
         lang: (st.settings.voice && st.settings.voice.lang) || 'bg-BG',
-        onInterim: (t) => { input.value = t; } // покажи междинния резултат в полето
+        onInterim: (t) => { if (t) input.value = t; } // покажи междинния резултат (не трий при празно)
       });
     } catch (e) {
       const msg = String(e && e.message || '');
@@ -245,7 +247,7 @@ export function renderChat(root, { navigate, rerender }) {
       startConversation({
         isAllowed: () => isUnlocked() && !isLockedDown(),
         // едно слушане → финален транскрипт (показваме междинното в полето)
-        listenOnce: () => startListening({ lang, onInterim: (t) => { input.value = t; } }),
+        listenOnce: () => startListening({ lang, onInterim: (t) => { if (t) input.value = t; } }),
         // същият път като писане/микрофон: commands.js → responder → учене
         handle: async (text) => {
           input.value = '';

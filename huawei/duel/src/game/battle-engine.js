@@ -272,11 +272,12 @@ BattleEngine.prototype._fitArena = function () {
     var w = this.els.wrap.clientWidth;
     var h = this.els.wrap.clientHeight;
     if (!w || !h) return;
-    // Самостоятелно (телефон) → „cover" (Math.max): полето запълва ЦЕЛИЯ екран (по-едро),
-    // реже само страничната растителност (бойците остават по центъра, вертикално цели).
-    // Вграден в портал → „contain" (Math.min): нищо не се реже.
-    var s = this.standalone ? Math.max(w / this.W, h / this.H)
-                            : Math.min(w / this.W, h / this.H);
+    // И самостоятелно (телефон), и вграден в портал → „contain" (Math.min):
+    // ЦЯЛОТО поле (1280×960) се побира в екрана, без нищо да се реже встрани или
+    // отгоре/отдолу. На телефон в портретен режим това оставя черни ленти горе/долу
+    // (letterbox), но боят НЕ излиза извън екрана — точно това искаше играчът.
+    // (По-рано standalone ползваше „cover"/Math.max и режеше боя извън кадъра.)
+    var s = Math.min(w / this.W, h / this.H);
     this.els.stage.style.setProperty('--s', s); this.els.stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
 };
 
@@ -1197,6 +1198,9 @@ BattleEngine.prototype._renderHUD = function () {
     if (actor && actor.side === 'ally' && this.state === 'playing' && !this.anim) {
         this._renderControls(actor);
     } else {
+        // не е твой ход / тече анимация → скрий и затвори менюто
+        this._ctrlOpen = false;
+        this.els.ctrl.classList.remove('kbb-ctrl-open');
         this.els.ctrl.innerHTML = '';
         this.els.combo.innerHTML = '';
     }
@@ -1206,12 +1210,40 @@ BattleEngine.prototype._renderHUD = function () {
 
 BattleEngine.prototype._renderControls = function (actor) {
     var ctrl = this.els.ctrl;
-    ctrl.className = 'kbb-ctrl' + (this.mode === 'Duel' ? ' kbb-ctrl-duel' : '');
+    var self = this;
+    var open = !!this._ctrlOpen;
+    // Менюто с бутоните е ЦЯЛ ЕКРАН (overlay), за да избира играчът спокойно, и се
+    // СКРИВА след избора. Докато е скрито, долу стои само един едър бутон-стартер
+    // („⚔ Избери удар"), който отваря менюто. Класът kbb-ctrl-open пали overlay-я
+    // (виж CSS), за да не закрива боя, когато е затворено.
+    ctrl.className = 'kbb-ctrl' + (this.mode === 'Duel' ? ' kbb-ctrl-duel' : '') +
+                     (open ? ' kbb-ctrl-open' : '');
+
+    // ── ЗАТВОРЕНО: само бутонът-стартер (боят се вижда напълно) ──
+    if (!open) {
+        ctrl.innerHTML = '<button class="kbb-ctrl-launch">⚔ Избери удар</button>';
+        var launch = ctrl.querySelector('.kbb-ctrl-launch');
+        var openDown = function (e) {
+            e.preventDefault(); e.stopPropagation();
+            if (self.anim || self.state !== 'playing') return;
+            var cur = self.turnOrder[self.turnIdx];
+            if (!cur || cur.side !== 'ally' || !cur.alive) return;
+            self._ctrlOpen = true;
+            self._renderHUD();
+        };
+        if ('PointerEvent' in window) launch.addEventListener('pointerdown', openDown);
+        else launch.addEventListener('touchstart', openDown, { passive: false });
+        launch.addEventListener('click', openDown);
+        if (this.els.combo) this.els.combo.textContent = '';
+        return;
+    }
+
     var foes = this._aliveFoes();
     var tgt = foes[Math.min(this.selTarget, foes.length - 1)];
     // комбо-лентата седи НАЙ-ОТГОРЕ на панела (вътре в него), за да е точно над
     // буквените бутони и да се мащабира заедно с тях
-    var html = '<div class="kbb-combo-inline"></div>';
+    var html = '<button class="kbb-ctrl-close" data-close="1">✕ Затвори</button>';
+    html += '<div class="kbb-combo-inline"></div>';
     html += '<div class="kbb-actor">Твой ход: <b>' + actor.name + '</b></div>';
     if (foes.length) {
         html += '<div class="kbb-target">🎯 Цел: <b>' + (tgt ? tgt.name : '—') + '</b>' +
@@ -1245,7 +1277,6 @@ BattleEngine.prototype._renderControls = function (actor) {
         html += '</div>';
     }
     ctrl.innerHTML = html;
-    var self = this;
     // ── MULTI-TOUCH вход ──
     // НЕ ползваме 'click' (той не позволява няколко едновременни натискания и
     // изисква pointerdown+pointerup върху ЕДИН и същ елемент). Вместо това
@@ -1255,11 +1286,24 @@ BattleEngine.prototype._renderControls = function (actor) {
     // едновременно натискане. setPointerCapture гарантира, че събитието
     // принадлежи на бутона дори ако пръстът леко се измести.
     var fire = function (b) {
+        // бутонът „✕ Затвори" само скрива менюто (боят остава, без да е изигран ход)
+        if (b.dataset.close != null) { self._ctrlOpen = false; self._renderHUD(); return; }
         if (self.anim || self.state !== 'playing') return;
         var cur = self.turnOrder[self.turnIdx];
         if (!cur || cur.side !== 'ally' || !cur.alive) return;
-        if (b.dataset.sp != null) { self.doSpecial(cur, parseInt(b.dataset.sp, 10)); self._renderHUD(); }
-        else self.handleKey(cur, b.dataset.k);
+        if (b.dataset.sp != null) {
+            // специален удар → ходът приключва → менюто се СКРИВА
+            self._ctrlOpen = false;
+            self.doSpecial(cur, parseInt(b.dataset.sp, 10)); self._renderHUD();
+        } else if (b.dataset.k === 'v' || b.dataset.k === 'b') {
+            // обикновен удар (V/B) → ходът приключва → менюто се СКРИВА
+            self._ctrlOpen = false;
+            self.handleKey(cur, b.dataset.k);
+        } else {
+            // буква от комбинацията → НЕ затваряме (играчът трупа 4-те букви);
+            // менюто се скрива само когато комбинацията се изпълни като special.
+            self.handleKey(cur, b.dataset.k);
+        }
     };
     ctrl.querySelectorAll('button').forEach(function (b) {
         var onDown = function (e) {
@@ -1485,7 +1529,19 @@ var BATTLE_CSS = [
    разпростряно по цялата ширина, за да се натискат буквите/специалните с палци.
    touch-action:none + user-select:none → позволяват ЕДНОВРЕМЕННИ натискания
    (multi-touch) без скрол/зум/селекция, които иначе ги отменят. */
-'.kbb-ctrl{position:absolute;left:0;right:0;bottom:0;top:auto;transform:none;box-sizing:border-box;text-align:center;color:#d8c08c;background:linear-gradient(180deg,rgba(10,8,10,.72),rgba(10,8,10,.96));border-top:3px solid #6a4a2a;border-radius:18px 18px 0 0;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));backdrop-filter:blur(4px);max-width:900px;margin:0 auto;z-index:42;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;}',
+/* ЗАТВОРЕНО състояние: само лента долу с бутона-стартер (боят се вижда напълно). */
+'.kbb-ctrl{position:absolute;left:0;right:0;bottom:0;top:auto;transform:none;box-sizing:border-box;text-align:center;color:#d8c08c;background:transparent;border:none;padding:0 12px calc(12px + env(safe-area-inset-bottom,0px));margin:0 auto;z-index:42;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;}',
+/* ── ОТВОРЕНО: ЦЯЛ ЕКРАН (overlay) за спокоен избор; крие се след избора ──
+   Покрива целия екран над боя, центрира едрите бутони, скролва при нужда.
+   touch-action:none + user-select:none → позволяват ЕДНОВРЕМЕННИ натискания
+   (multi-touch) без скрол/зум/селекция, които иначе ги отменят. */
+'.kbb-ctrl.kbb-ctrl-open{position:fixed;inset:0;left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;overflow-y:auto;background:linear-gradient(180deg,rgba(8,5,8,.94),rgba(8,5,8,.98));border:none;border-radius:0;padding:calc(14px + env(safe-area-inset-top,0px)) 14px calc(18px + env(safe-area-inset-bottom,0px));max-width:none;backdrop-filter:blur(6px);z-index:60;}',
+/* бутонът-стартер (видим, когато менюто е затворено) */
+'.kbb-ctrl-launch{width:100%;max-width:640px;min-height:72px;background:linear-gradient(180deg,#7a3a1a,#3a1a08);color:#f8e0a8;border:3px solid #b88a4a;border-radius:16px;font-family:"Cinzel",serif;font-size:26px;font-weight:700;letter-spacing:2px;cursor:pointer;text-shadow:1px 1px 0 #000;box-shadow:0 6px 0 #000,inset 0 1px 0 rgba(255,220,160,.3);}',
+'.kbb-ctrl-launch:active{transform:translateY(2px);box-shadow:0 2px 0 #000;}',
+/* бутонът „✕ Затвори" в горния десен ъгъл на overlay-я */
+'.kbb-ctrl-close{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:14px;min-height:48px;background:linear-gradient(180deg,#3a2a1a,#1a1208);color:#f0d896;border:2px solid #8a5a2a;border-radius:12px;padding:8px 18px;font-family:"Cinzel",serif;font-size:18px;letter-spacing:1px;cursor:pointer;box-shadow:0 3px 0 #000;}',
+'.kbb-ctrl-close:active{transform:translateY(2px);box-shadow:0 1px 0 #000;}',
 /* Duel: НЕ смаляваме менюто (старият scale(0.4) го правеше дребно) — едри бутони като при отбора */
 '.kbb-ctrl-duel{transform:none;transform-origin:bottom center;}',
 '.kbb-ctrl button{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}',

@@ -17,8 +17,21 @@ export class Controls {
     this.fireRequested = false;
     this.enabled = true;
 
+    // Пазим ВСИЧКИ закачени слушатели, за да ги махнем напълно при dispose().
+    // Без това при всеки рестарт се натрупваше нов пълен комплект слушатели
+    // върху същия canvas/прозорец — стари (вече непочистени) Controls обекти
+    // продължаваха да дърпат камерата с препратка към изхвърлен терен, което
+    // водеше до конфликтно поведение и потенциално черен екран при рестарт.
+    this._listeners = [];
+
     this._initDesktop();
     this._initTouch();
+  }
+
+  // Помощник: закача слушател и го запомня за по-късно махане при dispose().
+  _on(target, type, handler, options) {
+    target.addEventListener(type, handler, options);
+    this._listeners.push({ target, type, handler, options });
   }
 
   isTouch() {
@@ -27,23 +40,22 @@ export class Controls {
 
   // ---------- Десктоп ----------
   _initDesktop() {
-    window.addEventListener('keydown', (e) => { this.keys[e.code] = true; });
-    window.addEventListener('keyup', (e) => { this.keys[e.code] = false; });
+    this._on(window, 'keydown', (e) => { this.keys[e.code] = true; });
+    this._on(window, 'keyup', (e) => { this.keys[e.code] = false; });
 
-    this._onMouseMove = (e) => {
+    this._on(document, 'mousemove', (e) => {
       if (document.pointerLockElement !== this.dom) return;
       this.yaw -= e.movementX * 0.0022;
       this.pitch -= e.movementY * 0.0022;
       this._clampPitch();
-    };
-    document.addEventListener('mousemove', this._onMouseMove);
+    });
 
-    this.dom.addEventListener('click', () => {
+    this._on(this.dom, 'click', () => {
       if (!this.isTouch() && document.pointerLockElement !== this.dom) {
         this.dom.requestPointerLock?.();
       }
     });
-    document.addEventListener('mousedown', (e) => {
+    this._on(document, 'mousedown', (e) => {
       if (e.button === 0 && document.pointerLockElement === this.dom) {
         this.fireRequested = true;
       }
@@ -104,10 +116,10 @@ export class Controls {
         }
       }
     };
-    this.dom.addEventListener('touchstart', onStart, { passive: true });
-    this.dom.addEventListener('touchmove', onMove, { passive: true });
-    this.dom.addEventListener('touchend', onEnd, { passive: true });
-    this.dom.addEventListener('touchcancel', onEnd, { passive: true });
+    this._on(this.dom, 'touchstart', onStart, { passive: true });
+    this._on(this.dom, 'touchmove', onMove, { passive: true });
+    this._on(this.dom, 'touchend', onEnd, { passive: true });
+    this._on(this.dom, 'touchcancel', onEnd, { passive: true });
   }
 
   // Бутонът "огън" (HUD) вика това.
@@ -155,6 +167,12 @@ export class Controls {
   }
 
   dispose() {
-    document.removeEventListener('mousemove', this._onMouseMove);
+    this.enabled = false;
+    // Махаме ВСИЧКИ слушатели (клавиатура, мишка, тъч), а не само mousemove —
+    // иначе при рестарт оставаха стари слушатели, дърпащи изхвърлен терен/камера.
+    for (const { target, type, handler, options } of this._listeners) {
+      target.removeEventListener(type, handler, options);
+    }
+    this._listeners = [];
   }
 }

@@ -9,7 +9,9 @@ import { renderOnboarding } from './screens/onboarding.js';
 import { renderConfig } from './screens/config.js';
 import { renderPermissions } from './screens/permissions.js';
 import { renderDashboard, teardownDashboard } from './screens/dashboard.js';
+import { renderWatcher, teardownWatcher } from './screens/watcher.js';
 import { renderLog } from './screens/log.js';
+import { isWatcher } from './core/pairing.js';
 
 // Маршрути на „онбординг“ потока (без таб-бар).
 const FLOW = {
@@ -50,8 +52,9 @@ function renderNav(active) {
 function render() {
   const app = document.getElementById('app');
   if (!app) return;
-  // Винаги спираме евентуалното живо наблюдение преди пререндер (камера/цикъл).
+  // Винаги спираме евентуалното живо наблюдение преди пререндер (камера/цикъл + watcher poll).
   teardownDashboard();
+  teardownWatcher();
   clear(app);
 
   const s = getState();
@@ -77,7 +80,9 @@ function render() {
   // Готово приложение с таб-бар.
   let route = currentRoute();
   if (!APP_ROUTES[route]) route = 'dashboard';
-  APP_ROUTES[route](screen, ctx);
+  // В роля „Наблюдаващ" табът „Наблюдение" показва изгледа на наблюдаващия (без камера).
+  if (route === 'dashboard' && isWatcher()) renderWatcher(screen, ctx);
+  else APP_ROUTES[route](screen, ctx);
   app.appendChild(screen);
   app.appendChild(renderNav(route));
 }

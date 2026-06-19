@@ -45,6 +45,26 @@ function openDb() {
       window_start INTEGER NOT NULL,
       count        INTEGER NOT NULL
     );
+
+    -- WATCH (детегледачка / camera-watch): сдвояване по „pair" ключ.
+    -- alert опашка: едно събитие на ред, FIFO, namespace=pair (наблюдаващият телефон я тегли).
+    CREATE TABLE IF NOT EXISTS watch_queue (
+      id     INTEGER PRIMARY KEY AUTOINCREMENT,
+      pair   TEXT NOT NULL,
+      app     TEXT,
+      type    TEXT,
+      label   TEXT,
+      created_at INTEGER NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_watch_queue_pair ON watch_queue(pair, id);
+
+    -- Последен кадър (снимка) на двойка — една редица на pair (наблюдаващият го дърпа).
+    CREATE TABLE IF NOT EXISTS watch_frame (
+      pair       TEXT PRIMARY KEY,
+      dataurl    TEXT NOT NULL,   -- data:image/jpeg;base64,… (малък, компресиран от телефона)
+      label      TEXT,
+      updated_at INTEGER NOT NULL
+    );
   `);
   _db = db;
   return db;

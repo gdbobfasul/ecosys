@@ -13,7 +13,7 @@
 
 import { solveMath, looksLikeMath } from './math-solver.js';
 import { fetchWikipedia, fetchCrypto, fetchFx, fetchNews } from './sources.js';
-import { addNote, getSubject, randomNote, notesCount } from './subjects.js';
+import { addNote, getSubject, randomNote, notesCount, addInterest } from './subjects.js';
 import { summarizeViaTeacher } from './teacher.js';
 import { dontKnow } from './honesty.js';
 import { addTask, updateTask } from './tasklist.js';
@@ -29,7 +29,14 @@ export function parseTask(text) {
   if (/^(реши|пресметни|изчисли|смятай|колко\s+е|solve|calculate)(?:\s|$)/u.test(low) || looksLikeMath(s)) {
     return { kind: 'solve', arg: s };
   }
-  // крипто
+  // УЧЕНЕ (изрично) — ПРИОРИТЕТ пред крипто/финанси/новини: „научи за крипто" значи да
+  // УЧА за крипто, а не да върна цена. Така темата „крипто" не отвлича командата.
+  let m = low.match(/^(?:научи(?:\s+се)?|учи|изучи)\s+(?:за\s+|по\s+)?(.+)/);
+  if (m) return { kind: 'learn', arg: cleanTopic(m[1]) };
+  m = low.match(/^(?:прочети|чети|разкажи\s+ми)\s+(?:за\s+|на\s+тема\s+)?(.+)/);
+  if (m) return { kind: 'read', arg: cleanTopic(m[1]) };
+
+  // крипто (цена в момента)
   if (/(крипто|crypto|биткойн|bitcoin|btc|етер|ethereum|eth|пазар(?:и|а)?\s+на\s+крипто)/.test(low)) {
     return { kind: 'crypto', arg: extractCoins(low) };
   }
@@ -41,11 +48,6 @@ export function parseTask(text) {
   if (/(новини|news|случва се|заглавия)/.test(low)) {
     return { kind: 'news', arg: null };
   }
-  // учи/чети за тема: „научи за X“, „прочети за X“, „учи X“
-  let m = low.match(/^(?:научи(?:\s+се)?|учи|изучи)\s+(?:за\s+|по\s+)?(.+)/);
-  if (m) return { kind: 'learn', arg: cleanTopic(m[1]) };
-  m = low.match(/^(?:прочети|чети|разкажи\s+ми)\s+(?:за\s+|на\s+тема\s+)?(.+)/);
-  if (m) return { kind: 'read', arg: cleanTopic(m[1]) };
 
   return null;
 }
@@ -90,9 +92,16 @@ export async function runTask(task) {
     case 'read': {
       const topic = task.arg;
       if (!topic) return { ok: false, kind: task.kind, text: 'Коя тема да проуча?' };
+      // Запомни темата като ИНТЕРЕС → фоновият учещ цикъл ще продължи да я изучава.
+      try { addInterest(topic); } catch (_) {}
       const wiki = await fetchWikipedia(topic);
       if (!wiki.ok) {
-        return { ok: false, kind: task.kind, text: `Не намерих надежден източник за „${topic}“ (${wiki.reason}). Не искам да измислям, затова не записах нищо.` };
+        return {
+          ok: true, kind: task.kind, learned: true,
+          text: `Започвам да уча за „${topic}". Добавих го към темите, които изучавам — ще го проучвам и ` +
+            `при следващите проверки. Засега нямам проверим източник тук; кажи „търси ${topic}", за да го ` +
+            `извадя веднага (в чата или браузъра).`
+        };
       }
       // обобщаваме (учител с локален fallback); пазим заземената наставка
       let summary = wiki.summary;
@@ -102,7 +111,7 @@ export async function runTask(task) {
       const aiNote = (t && t.ai) ? '\n\n🤔 (Имам и AI преразказ, но записвам само проверимото резюме от източника.)' : '';
       return {
         ok: true, kind: task.kind, learned: true, citation: wiki.citation,
-        text: `Научих нещо за „${wiki.title}“ и го записах в Задачи → теми:\n\n${summary}\n\n📎 ${wiki.citation}${aiNote}`
+        text: `Започнах да уча за „${wiki.title}“ и го записах в Задачи → теми (ще продължа да го изучавам):\n\n${summary}\n\n📎 ${wiki.citation}${aiNote}`
       };
     }
 

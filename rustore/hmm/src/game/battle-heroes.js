@@ -46,7 +46,9 @@ var DRAGON = {
             walks: ['walk', 'runs', 'flies'],
         },
         reactions: {
-            'inFire':       ['inFire', 'onFire', 'burns-inFire', 'dies-fire'],
+            // specialMassFire — посветено „изгарян от огнен дъх" видео (само right dragon);
+            // при липса (left) fallback-веригата пуска onFire/burns-inFire.
+            'inFire':       ['specialMassFire', 'inFire', 'onFire', 'burns-inFire', 'dies-fire'],
             'bleeds':       ['bleeds', 'bleeds2', 'bleedsMassive', 'axes', 'axehit'],
             'dies':         ['dies', 'dies2', 'dies-fire', 'electricity-death'],
             'iceblocks':    ['iceblocks', 'iceBlocks', 'ice', 'ice2'],

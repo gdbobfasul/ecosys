@@ -162,7 +162,12 @@ function kcyBlock(render) {
 
   const statusEl = el('span', { class: 'pill off' }, kcyConfigured(cfg) ? 'проверка…' : 'не е настроен');
 
-  const baseInput = el('input', { type: 'text', value: cfg.baseUrl || '', placeholder: 'https://my.girl.place' });
+  const baseInput = el('input', { type: 'text', value: cfg.baseUrl || 'https://my.girl.place', placeholder: 'https://my.girl.place' });
+  // Бързи бутони за двата домейна на нашия чат.
+  const pickRow = el('div', { class: 'row', style: 'gap:6px;margin:4px 0' }, [
+    el('button', { class: 'btn sm', onClick: () => { baseInput.value = 'https://my.girl.place'; } }, 'my.girl.place'),
+    el('button', { class: 'btn sm', onClick: () => { baseInput.value = 'https://kaji.kak.si'; } }, 'kaji.kak.si')
+  ]);
   const phoneInput = el('input', { type: 'text', value: cfg.phone || '', placeholder: 'телефон (международен формат)' });
   const passInput = el('input', { type: 'text', value: cfg.password || '', placeholder: 'парола' });
   const tokenInput = el('input', { type: 'text', value: cfg.token || '', placeholder: 'готов Bearer токен (по избор)' });
@@ -209,6 +214,7 @@ function kcyBlock(render) {
       'Всичко се пази само на устройството.'),
     el('label', {}, 'Адрес на чата (base URL)'),
     baseInput,
+    pickRow,
     el('label', {}, 'Телефон'),
     phoneInput,
     el('label', {}, 'Парола'),

@@ -3,6 +3,7 @@
 
 import { el, mount } from '../ui/dom.js';
 import { loadSettings, saveSettings } from '../core/storage.js';
+import { getPairing, setPairing, generatePairKey, checkPairing } from '../core/pairing.js';
 
 export async function renderConfig(root, { go }) {
   const s = await loadSettings();
@@ -42,6 +43,8 @@ export async function renderConfig(root, { go }) {
     oninput: (e) => { s.cooldownSec = parseInt(e.target.value, 10); cdVal.textContent = s.cooldownSec + ' сек'; }
   });
 
+  const pairingCard = buildPairingCard(go);
+
   const cbClassify = checkbox(s.classify, (v) => s.classify = v);
   const cbNotify = checkbox(s.notify, (v) => s.notify = v);
   const cbPerson = checkbox(s.watchPerson, (v) => s.watchPerson = v);
@@ -54,6 +57,8 @@ export async function renderConfig(root, { go }) {
       el('div', { class: 's active' }), el('div', { class: 's' })
     ]),
     el('h1', { text: 'Настройки' }),
+
+    pairingCard,
 
     el('div', { class: 'card' }, [
       el('label', { text: 'Източник на видео' }),
@@ -97,6 +102,61 @@ export async function renderConfig(root, { go }) {
   ]);
 
   mount(root, view);
+}
+
+// --- Сдвояване (2 телефона): страж (до камерата) ↔ наблюдаващ ---
+function buildPairingCard(go) {
+  const p = getPairing();
+  const roleSel = el('select', {}, [
+    optionEl('solo', 'Сам (един телефон)', p.role),
+    optionEl('monitor', 'Страж (до камерата — праща)', p.role),
+    optionEl('watcher', 'Наблюдаващ (получава известията)', p.role)
+  ]);
+  const keyIn = el('input', { type: 'text', value: p.pairKey, placeholder: 'ключ за двойката', autocapitalize: 'none', autocomplete: 'off' });
+  const baseIn = el('input', { type: 'text', value: p.relayBase, placeholder: 'https://selflearning.bot.nu', autocapitalize: 'none', autocomplete: 'off' });
+  const pollIn = el('input', { type: 'number', value: String(p.pollSeconds), min: '3' });
+  const statusEl = el('span', { class: 'pill' }, '');
+
+  return el('div', { class: 'card' }, [
+    el('h2', { text: '🔗 Сдвояване (2 телефона)' }),
+    el('p', { class: 'muted', text:
+      'Два телефона: единият до камерата („Страж" — гледа и праща), другият при теб ' +
+      '(„Наблюдаващ" — получава известията). Свържи ги с ЕДИН и същ ключ за двойката. ' +
+      '„Сам" = един телефон (по подразбиране).' }),
+    el('label', { text: 'Режим / роля' }), roleSel,
+    el('label', { text: 'Ключ за двойката (еднакъв на двата телефона)' }), keyIn,
+    el('div', { class: 'row', style: 'gap:6px;margin-top:6px' }, [
+      el('button', { class: 'btn ghost', onclick: () => { keyIn.value = generatePairKey(); } }, 'Генерирай ключ')
+    ]),
+    el('label', { text: 'Сървър (релей)' }), baseIn,
+    el('label', { text: 'Проверка на всеки (сек) — за наблюдаващия' }), pollIn,
+    el('div', { class: 'row', style: 'gap:8px;margin-top:10px;align-items:center' }, [
+      el('button', {
+        class: 'btn', onclick: () => {
+          setPairing({ role: roleSel.value, pairKey: keyIn.value.trim(), relayBase: baseIn.value.trim(), pollSeconds: parseInt(pollIn.value, 10) || 6 });
+          statusEl.className = 'pill on';
+          statusEl.textContent = 'запазено ✓';
+        }
+      }, 'Запази'),
+      el('button', {
+        class: 'btn ghost', onclick: async () => {
+          setPairing({ role: roleSel.value, pairKey: keyIn.value.trim(), relayBase: baseIn.value.trim() });
+          statusEl.className = 'pill';
+          statusEl.textContent = 'проверявам…';
+          const r = await checkPairing();
+          statusEl.className = 'pill ' + (r.ok ? 'on' : 'off');
+          statusEl.textContent = r.ok ? 'връзката работи ✓' : ('няма връзка' + (r.reason ? ` (${r.reason})` : ''));
+        }
+      }, 'Провери'),
+      statusEl
+    ])
+  ]);
+}
+
+function optionEl(value, label, current) {
+  const o = el('option', { value, text: label });
+  if (value === current) o.setAttribute('selected', '');
+  return o;
 }
 
 function pct(v) { return Math.round(v * 1000) / 10 + '% пиксели'; }

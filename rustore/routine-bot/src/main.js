@@ -10,6 +10,7 @@ import { renderRoutineConfig } from './screens/routine-config.js';
 import { renderRemindersSetup } from './screens/reminders.js';
 import { renderPermissions } from './screens/permissions.js';
 import { renderDashboard } from './screens/dashboard.js';
+import { renderNotes } from './screens/notes.js';
 
 const root = document.getElementById('app');
 let navEl = null;
@@ -30,6 +31,10 @@ function go(screen) {
       renderDashboard(root, ctx);
       mountNav('dashboard');
       return;
+    case 'notes':
+      renderNotes(root, ctx);
+      mountNav('notes');
+      return;
     default: return renderOnboarding(root, ctx);
   }
 }
@@ -40,6 +45,8 @@ function mountNav(active) {
     <nav class="nav">
       <button data-go="dashboard" class="${active === 'dashboard' ? 'active' : ''}">
         <span class="ico">🏠</span>Табло</button>
+      <button data-go="notes" class="${active === 'notes' ? 'active' : ''}">
+        <span class="ico">📝</span>Бележки</button>
       <button data-go="config"><span class="ico">⚙️</span>Рутина</button>
       <button data-go="permissions-edit"><span class="ico">🔔</span>Разрешения</button>
     </nav>

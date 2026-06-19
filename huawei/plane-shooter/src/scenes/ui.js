@@ -19,6 +19,10 @@ export default class UIScene extends Phaser.Scene {
 
     this.scoreText = this.add.text(12, height - 26, '', font).setDepth(100);
     this.levelText = this.add.text(width - 12, height - 26, '', font).setOrigin(1, 0).setDepth(100);
+    // Индикатор за щита (показва се само когато играчът има заряди).
+    this.shieldText = this.add.text(12, 10, '', {
+      fontFamily: 'system-ui, sans-serif', fontSize: '16px', color: '#bfe6ff'
+    }).setDepth(100);
 
     // Здравна лента.
     this.hpBar = this.add.graphics().setDepth(100);
@@ -46,6 +50,17 @@ export default class UIScene extends Phaser.Scene {
     this.scoreText.setText('Точки: ' + g.score);
     const q = Math.min(g.killed, g.level.quota);
     this.levelText.setText(`Ниво ${g.level.id}/10  ${q}/${g.level.quota}  ♥×${g.lives}`);
+
+    // Индикатор за щита: брой заряди + цвят по сила.
+    const sh = g.player.shield;
+    if (sh > 0) {
+      const col = sh >= 6 ? '#ffd166' : (sh >= 3 ? '#00e5ff' : '#6ea8ff');
+      this.shieldText.setText('Щит ⛨×' + sh);
+      this.shieldText.setColor(col);
+      this.shieldText.setVisible(true);
+    } else {
+      this.shieldText.setVisible(false);
+    }
 
     // Здравна лента горе.
     const pct = g.player.health / g.player.maxHealth;

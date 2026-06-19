@@ -12,6 +12,18 @@ import { createMotionDetector } from './motion-detector.js';
 import { detectPersons } from './recognizer.js';
 import { notify, relay } from './notifier.js';
 import { getState, addEvent } from './storage.js';
+import { isMonitor, sendAlert, sendFrame } from './pairing.js';
+
+// Малък компресиран кадър (≈320px JPEG) за релея — да не товари мрежата/лимита.
+function smallFrame(canvas) {
+  try {
+    if (!canvas || !canvas.width) return null;
+    const w = 320, scale = w / canvas.width, h = Math.max(1, Math.round(canvas.height * scale));
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(canvas, 0, 0, w, h);
+    return c.toDataURL('image/jpeg', 0.5);
+  } catch (_) { return null; }
+}
 
 const PERSON_EVERY_MS = 2500;     // колко често да броим хора
 const LEFT_FRAME_GRACE_MS = 6000; // колко да липсва дете, преди „излезе от кадър“
@@ -44,9 +56,16 @@ export function createMonitor({ videoEl, canvasEl, onTick, onEvent } = {}) {
     let snapshot = null;
     try { snapshot = snapshotDataUrl(canvasEl); } catch (_) {}
     const ev = addEvent({ type, label, snapshot });
-    // Известие + звук
-    notify({ title: 'Детегледачка', body: label, sound: st.sound, vibrate: st.vibrate });
-    // По избор relay към друг телефон (нужен е сървър — честно)
+    // КРИТИЧНИ събития (опасност) → алармена мелодия + силна вибрация. Иначе мек сигнал.
+    const critical = (type === 'stranger' || type === 'fire');
+    // Известие + звук (на ТОЗИ телефон — по избор; ако сме „Детегледачка" може да няма кой да чуе).
+    notify({ title: 'Детегледачка', body: label, sound: st.sound, vibrate: st.vibrate, critical });
+    // ДВУФОНОВ режим: „Детегледачка" праща събитието + смалена снимка към наблюдаващия телефон.
+    if (isMonitor()) {
+      sendAlert('babymonitor', type, label);
+      try { const f = smallFrame(canvasEl); if (f) sendFrame(f, label); } catch (_) {}
+    }
+    // Стар по избор relay (свободен URL) — оставен за съвместимост.
     if (st.relayUrl) relay(st.relayUrl, { type, label });
     if (onEvent) { try { onEvent(ev); } catch (_) {} }
   }

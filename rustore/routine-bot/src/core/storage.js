@@ -75,7 +75,9 @@ const KEYS = {
   events: 'events',
   perms: 'perms',
   log: 'activity_log',
-  location: 'location'
+  location: 'location',
+  notes: 'notes',          // бележки, които роботът помни и изговаря
+  ttsLang: 'tts_lang'      // избран език за изговаряне (код от 15-те)
 };
 
 export { KEYS };
