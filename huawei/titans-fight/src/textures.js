@@ -116,6 +116,88 @@ function crackPath(x1, y1, x2, y2, segs, jitter) {
 }
 
 // ---------------------------------------------------------------------------
+// ПОМОЩНИЦИ ЗА ОРГАНИЧНИ ФОРМИ (силуети на същество, НЕ правоъгълници)
+// ---------------------------------------------------------------------------
+// Phaser.Graphics няма безие — кривите се приближават с много къси отсечки,
+// смятани от sin/cos. Всичко тяло на титана се рисува като ЗАПЪЛНЕНИ полигони
+// с назъбени/извити ръбове, за да чете като жива, мускулеста, скална плът.
+
+// Запълва затворен полигон от точки [[x,y],...] с даден цвят.
+function fillPoly(g, pts, color, alpha = 1) {
+  g.fillStyle(color, alpha);
+  g.beginPath();
+  g.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) g.lineTo(pts[i][0], pts[i][1]);
+  g.closePath();
+  g.fillPath();
+}
+
+// Очертава контура на полигон (за гравиран ръб/релеф).
+function strokePoly(g, pts, width, color, alpha = 1, closed = true) {
+  g.lineStyle(width, color, alpha);
+  g.beginPath();
+  g.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) g.lineTo(pts[i][0], pts[i][1]);
+  if (closed) g.closePath();
+  g.strokePath();
+}
+
+// Запълва полигон с ВЕРТИКАЛЕН градиент чрез наслагване на резени (clip-режим
+// през scissor не е наличен в make.graphics, затова чертаем самия силует на
+// слоеве с леко свиване и потъмняване — създава обемна, "издута" плът).
+// pts = външен контур; cx,cy = център за свиване навътре.
+function fillPolyShaded(g, pts, cx, cy, topColor, botColor, layers = 7) {
+  // Намираме min/max Y за нормализиране на засенчването по височина.
+  let minY = Infinity, maxY = -Infinity;
+  for (const p of pts) { if (p[1] < minY) minY = p[1]; if (p[1] > maxY) maxY = p[1]; }
+  const span = Math.max(1, maxY - minY);
+  // Чертаем от тъмната основа към светлия връх, всеки слой леко свит навътре,
+  // така че по-светлите слоеве остават като централно "издуто" осветяване.
+  for (let l = 0; l < layers; l++) {
+    const t = l / (layers - 1);                 // 0 (външен/тъмен) → 1 (вътрешен/светъл)
+    const k = t * 0.5;                          // свиване навътре към центъра
+    const col = mix(botColor, topColor, t);
+    const lp = pts.map(([px, py]) => {
+      // по-високите точки получават повече от светлия цвят (горно осветяване)
+      const hy = 1 - (py - minY) / span;
+      const kk = k * (0.6 + hy * 0.8);
+      return [px + (cx - px) * kk, py + (cy - py) * kk];
+    });
+    const c2 = mix(col, topColor, Math.min(1, t * 0.4));
+    fillPoly(g, lp, c2, 1);
+  }
+}
+
+// Дъга/извивка от точки — за рога, нокти, гръбни шипове.
+// Връща масив [[x,y],...] по квадратична крива (3 котви) с n сегмента.
+function arcPts(x0, y0, x1, y1, x2, y2, n) {
+  const pts = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    const u = 1 - t;
+    const x = u * u * x0 + 2 * u * t * x1 + t * t * x2;
+    const y = u * u * y0 + 2 * u * t * y1 + t * t * y2;
+    pts.push([x, y]);
+  }
+  return pts;
+}
+
+// Извит, заострен ШИП/РОГ: дебел в основата, остър на върха. base сочи къде
+// е "корена" (две точки), tip е върхът; bend огъва формата настрани.
+function spike(g, bx, by, tipX, tipY, halfW, bend, fillCol, edgeCol) {
+  // Управляваща точка по средата, изместена настрани за извивка.
+  const mx = (bx + tipX) / 2 + bend;
+  const my = (by + tipY) / 2;
+  const left  = arcPts(bx - halfW, by, mx - halfW * 0.4 + bend, my, tipX, tipY, 8);
+  const right = arcPts(tipX, tipY, mx + halfW * 0.4 + bend, my, bx + halfW, by, 8);
+  const pts = left.concat(right);
+  fillPoly(g, pts, fillCol, 1);
+  strokePoly(g, pts, 2, edgeCol, 0.7);
+  // лек блясък по гръбнака на шипа
+  glowStroke(g, [[bx, by], [mx + bend * 0.5, my], [tipX, tipY]], shade(fillCol, 60), 1.2);
+}
+
+// ---------------------------------------------------------------------------
 // СТИХИЙНИ ТЕМИ НА ТИТАНИТЕ
 // ---------------------------------------------------------------------------
 // Всяка тема дефинира палитра и характер на стихията. Тялото е каменно/брониран
@@ -163,159 +245,245 @@ function buildTitan(scene, prefix, theme) {
   const light  = shade(base, 55);
 
   // ---------------------------------------------------------------- ТОРС
-  // Масивен каменно-брониран гръден кош: широки рамене (пауплдрони), гръдни
-  // плочи, светещо ядро между тях и мрежа от рунически пукнатини.
+  // Прегърбен гръден кош на КОЛОС: широки канари-рамене с гръбни шипове,
+  // стесняване към тесен кръст, мускулно/скално плато с пукнатини и светещо
+  // стихийно ядро в центъра. Леко асиметричен — жив, не машинен.
   g.clear();
   const TW = 120, TH = 150;
+  const cxT = TW / 2;
 
-  // основен блок на торса (вертикален каменен градиент: светъл връх → тъмна основа)
-  gradientRoundedRect(g, 10, 6, TW - 20, TH - 16, 26, light, darker);
-  // вътрешна сянка по краищата (обем)
-  g.lineStyle(8, darker, 0.5);
-  g.strokeRoundedRect(13, 9, TW - 26, TH - 22, 23);
-  // широки тежки рамене / пауплдрони
-  gradientRoundedRect(g, -2, 2, 44, 54, 20, light, dark);
-  gradientRoundedRect(g, TW - 42, 2, 44, 54, 20, light, dark);
-  // дебел гравиран ръб по цялата броня
-  g.lineStyle(5, edge, 0.9);
-  g.strokeRoundedRect(10, 6, TW - 20, TH - 16, 26);
-  g.lineStyle(4, edge, 0.85);
-  g.strokeRoundedRect(-2, 2, 44, 54, 20);
-  g.strokeRoundedRect(TW - 42, 2, 44, 54, 20);
-  rimLight(g, 10, 6, TW - 20, TH - 16, 26, light);
+  // Външен силует — прегърбен торс. Тръгваме от лявото рамо, по гръб надолу
+  // до тесния кръст, после симетрично (с малка асиметрия) нагоре до дясно рамо.
+  const torsoSil = [
+    [14, 30],            // ляво рамо-канара
+    [4, 14],             // връх на лявото рамо (по-високо)
+    [30, 8],             // горна яка вляво
+    [cxT - 14, 16],      // вдлъбнатина към врата
+    [cxT + 14, 14],      // дясно врат
+    [TW - 26, 6],        // дясна яка
+    [TW - 4, 18],        // дясно рамо-канара (леко по-ниско → асиметрия)
+    [TW - 12, 34],
+    [TW - 22, 70],       // мускул на гръдния кош вдясно
+    [TW - 30, 104],      // стесняване към кръста
+    [TW - 36, TH - 12],  // десен хълбок
+    [cxT + 10, TH - 4],  // долен ръб (тазобедрен)
+    [cxT - 10, TH - 4],
+    [34, TH - 12],       // ляв хълбок
+    [28, 104],
+    [22, 70],            // ляв гръден мускул
+    [16, 40]
+  ];
+  // обемно засенчване (тъмен ръб → светло "издуто" ядро)
+  fillPolyShaded(g, torsoSil, cxT, 78, light, darker, 8);
+  // дълбок гравиран контур
+  strokePoly(g, torsoSil, 4, darker, 0.55);
+  strokePoly(g, torsoSil, 2.5, edge, 0.85);
 
-  // гръдни плочи (V-образен релеф на броня/мускул)
-  g.fillStyle(shade(base, 35), 0.65);
-  g.fillTriangle(TW / 2, 34, 28, 96, TW - 28, 96);
-  g.lineStyle(3, edge, 0.5);
-  g.strokeTriangle(TW / 2, 34, 28, 96, TW - 28, 96);
+  // гръбни шипове по двете рамене (извити навън)
+  spike(g, 12, 22, -6, -2, 7, -4, dark, edge);
+  spike(g, 26, 12, 18, -10, 6, -2, dark, edge);
+  spike(g, TW - 12, 18, TW + 8, -2, 7, 4, dark, edge);
+  spike(g, TW - 28, 10, TW - 18, -12, 6, 2, dark, edge);
 
-  // рунически пукнатини, тръгващи от ядрото нагоре и встрани
-  glowStroke(g, [[TW / 2, 70], [TW / 2 - 18, 40], [22, 24]], rune, 2.5);
-  glowStroke(g, [[TW / 2, 70], [TW / 2 + 18, 40], [TW - 22, 24]], rune, 2.5);
-  glowStroke(g, [[TW / 2, 80], [TW / 2 - 10, 112], [30, TH - 22]], rune, 2.5);
-  glowStroke(g, [[TW / 2, 80], [TW / 2 + 10, 112], [TW - 30, TH - 22]], rune, 2.5);
+  // гръдни плочи — два мускулни дяла (асиметрични криви), не V-кутия
+  const pecL = arcPts(cxT - 4, 40, 22, 58, 30, 100, 8)
+    .concat([[cxT - 6, 96], [cxT - 4, 40]]);
+  const pecR = arcPts(cxT + 4, 40, TW - 22, 56, TW - 28, 100, 8)
+    .concat([[cxT + 6, 96], [cxT + 4, 40]]);
+  fillPoly(g, pecL, shade(base, 28), 0.5);
+  fillPoly(g, pecR, shade(base, 28), 0.5);
+  strokePoly(g, pecL, 2, darker, 0.4);
+  strokePoly(g, pecR, 2, darker, 0.4);
 
-  // светещо ядро в гърдите (сърцето на стихията)
-  glowDot(g, TW / 2, 72, 12, rune);
+  // мрежа от рунически пукнатини от ядрото нагоре/настрани (назъбени)
+  glowStroke(g, crackPath(cxT, 72, 24, 22, 5, 6), rune, 2.2);
+  glowStroke(g, crackPath(cxT, 72, TW - 22, 24, 5, 6), rune, 2.2);
+  glowStroke(g, crackPath(cxT, 84, 34, TH - 16, 6, 7), rune, 2.2);
+  glowStroke(g, crackPath(cxT, 84, TW - 32, TH - 16, 6, 7), rune, 2.2);
 
-  // рунически камъни (нитове) по бронята
-  [[18, 28], [TW - 18, 28], [22, TH - 28], [TW - 22, TH - 28]].forEach(([nx, ny]) => {
-    glowDot(g, nx, ny, 3.5, rune);
+  // светещо стихийно ядро в гърдите (сърцето на колоса)
+  glowDot(g, cxT, 74, 13, rune);
+  // рунически камъни-нитове по плочите
+  [[24, 38], [TW - 24, 36], [34, TH - 24], [TW - 34, TH - 24]].forEach(([nx, ny]) => {
+    glowDot(g, nx, ny, 3, rune);
   });
-
-  // долен брониран колан/плоча
-  gradientRoundedRect(g, 18, TH - 36, TW - 36, 24, 9, dark, darker);
-  g.lineStyle(3, edge, 0.6);
-  g.strokeRoundedRect(18, TH - 36, TW - 36, 24, 9);
   g.generateTexture(`${prefix}_torso`, TW, TH);
 
   // ---------------------------------------------------------------- ГЛАВА
-  // Древен шлем/лик: гребен, странични рога, тъмно забрало с яростно светещи
-  // очи и рунически белег на челото.
+  // Череп на рогат звяр: тежко чело, хлътнали яростни очи, заострена муцуна
+  // с зъбата паст и големи извити назад рога. Асиметрично и заплашително.
+  // origin (0.5,1): долният ръб на платното сяда върху врата на торса, затова
+  // муцуната/челюстта са в долната половина, а рогата излизат нагоре.
   g.clear();
   const HW = 84, HH = 88;
-  gradientRoundedRect(g, 12, 14, HW - 24, HH - 22, 18, light, darker);
-  g.lineStyle(8, darker, 0.45);
-  g.strokeRoundedRect(15, 17, HW - 30, HH - 28, 15);
-  g.lineStyle(4, edge, 0.9);
-  g.strokeRoundedRect(12, 14, HW - 24, HH - 22, 18);
-  rimLight(g, 12, 14, HW - 24, HH - 22, 18, light);
+  const cxH = HW / 2;
 
-  // централен гребен на шлема
-  gradientRoundedRect(g, HW / 2 - 6, -2, 12, 26, 4, edge, dark);
-  g.fillStyle(edge, 0.95);
-  g.fillTriangle(HW / 2, -6, HW / 2 - 9, 18, HW / 2 + 9, 18);
-  // странични извити рога
-  g.fillStyle(edge, 0.92);
-  g.fillTriangle(14, 24, 0, 2, 24, 18);
-  g.fillTriangle(HW - 14, 24, HW, 2, HW - 24, 18);
-  g.lineStyle(2, shade(edge, 40), 0.6);
-  g.strokeTriangle(14, 24, 0, 2, 24, 18);
-  g.strokeTriangle(HW - 14, 24, HW, 2, HW - 24, 18);
+  // Голям извит рог вляво (изтеглен назад/нагоре) и вдясно — рисувани първи,
+  // за да минат зад черепа.
+  spike(g, 20, 30, 2, -6, 9, -10, dark, edge);
+  spike(g, HW - 18, 28, HW - 2, -8, 9, 10, dark, edge);
+  // вторични по-малки рогца над веждите
+  spike(g, 30, 24, 22, 2, 5, -3, dark, edge);
+  spike(g, HW - 30, 24, HW - 22, 2, 5, 3, dark, edge);
 
-  // тъмно забрало (процеп за очите)
-  g.fillStyle(0x07060c, 0.95);
-  g.fillRoundedRect(16, 40, HW - 32, 22, 8);
-  // яростно светещи очи (резки, не кръгчета)
-  glowDot(g, 30, 51, 5, eye);
-  glowDot(g, HW - 30, 51, 5, eye);
-  g.fillStyle(0xffffff, 0.95);
-  g.fillTriangle(24, 51, 36, 47, 36, 55);
-  g.fillTriangle(HW - 24, 51, HW - 36, 47, HW - 36, 55);
-  g.fillStyle(eye, 1);
-  g.fillTriangle(26, 51, 35, 48, 35, 54);
-  g.fillTriangle(HW - 26, 51, HW - 35, 48, HW - 35, 54);
+  // Силует на черепа: широко чело горе, стеснява се към заострена муцуна долу.
+  const skull = [
+    [cxH - 26, 26],      // ляво чело
+    [cxH - 30, 40],      // скула
+    [cxH - 22, 58],
+    [cxH - 16, 70],      // стеснение към муцуната
+    [cxH - 9, HH - 10],  // връх на муцуната вляво
+    [cxH, HH - 4],       // зурла/брадичка (най-долу)
+    [cxH + 9, HH - 10],
+    [cxH + 17, 70],
+    [cxH + 23, 58],
+    [cxH + 31, 40],
+    [cxH + 25, 26],      // дясно чело (леко по-малко → асиметрия)
+    [cxH + 12, 18],      // гребен на черепа
+    [cxH - 12, 18]
+  ];
+  fillPolyShaded(g, skull, cxH, 50, light, darker, 7);
+  strokePoly(g, skull, 3.5, darker, 0.5);
+  strokePoly(g, skull, 2, edge, 0.8);
+
+  // тежка надочна вежда (костна греда) — хвърля сянка над очите
+  const brow = [[cxH - 28, 40], [cxH - 6, 36], [cxH + 6, 36], [cxH + 28, 40],
+                [cxH + 20, 48], [cxH, 45], [cxH - 20, 48]];
+  fillPoly(g, brow, darker, 0.85);
+  strokePoly(g, brow, 1.5, edge, 0.4);
+
+  // хлътнали яростни очи (дълбоко в сянката, наклонени → гняв)
+  g.fillStyle(0x05040a, 0.95);
+  g.fillTriangle(cxH - 28, 50, cxH - 8, 48, cxH - 14, 60);
+  g.fillTriangle(cxH + 28, 50, cxH + 8, 48, cxH + 14, 60);
+  glowDot(g, cxH - 19, 53, 4.5, eye);
+  glowDot(g, cxH + 19, 53, 4.5, eye);
+  // ярка зеница-резка
+  g.fillStyle(0xffffff, 0.9);
+  g.fillTriangle(cxH - 24, 53, cxH - 14, 50, cxH - 15, 56);
+  g.fillTriangle(cxH + 24, 53, cxH + 14, 50, cxH + 15, 56);
+
+  // зъбата паст в муцуната (горни и долни кучешки зъби)
+  g.fillStyle(0x09070e, 0.92);
+  fillPoly(g, [[cxH - 12, 66], [cxH + 12, 66], [cxH + 8, HH - 12],
+               [cxH, HH - 8], [cxH - 8, HH - 12]], 0x09070e, 0.92);
+  g.fillStyle(0xf2ead8, 0.95);
+  // горни зъби (надолу)
+  [-9, -4, 1, 6].forEach((dx, i) => {
+    const len = i % 2 ? 7 : 10;
+    g.fillTriangle(cxH + dx - 2, 66, cxH + dx + 2, 66, cxH + dx, 66 + len);
+  });
+  // долни зъби (нагоре)
+  [-7, -1, 5].forEach((dx) => {
+    g.fillTriangle(cxH + dx - 2, HH - 9, cxH + dx + 2, HH - 9, cxH + dx, HH - 16);
+  });
 
   // рунически белег на челото
-  glowStroke(g, [[HW / 2, 30], [HW / 2, 38]], rune, 2);
-  glowDot(g, HW / 2, 27, 2.5, rune);
-
-  // тежка челюст/брадичка
-  gradientRoundedRect(g, 22, HH - 28, HW - 44, 18, 7, dark, darker);
-  g.lineStyle(2.5, edge, 0.5);
-  g.strokeRoundedRect(22, HH - 28, HW - 44, 18, 7);
+  glowStroke(g, crackPath(cxH, 24, cxH, 34, 4, 1.5), rune, 1.8);
+  glowDot(g, cxH, 22, 2.5, rune);
+  // костни ребра по муцуната
+  strokePoly(g, [[cxH - 14, 68], [cxH - 10, 74], [cxH - 6, 70]], 1.5, edge, 0.3, false);
+  strokePoly(g, [[cxH + 14, 68], [cxH + 10, 74], [cxH + 6, 70]], 1.5, edge, 0.3, false);
   g.generateTexture(`${prefix}_head`, HW, HH);
 
   // ------------------------------------------------------ ГОРНА РЪКА / РАМО
-  // Дебела каменна ръка (пивот горе) с наплечник, рунически разлом по дължината
-  // и стави.
+  // Мускулеста звярска ръка: дебела канара-рамо горе (пивот ~0.12), стеснява
+  // се към предмишницата, с няколко шипа и рунически разлом. Не цилиндър.
   g.clear();
   const AW = 50, AH = 96;
-  gradientRoundedRect(g, 6, 4, AW - 12, AH - 8, 16, light, darker);
-  g.lineStyle(6, darker, 0.4);
-  g.strokeRoundedRect(9, 7, AW - 18, AH - 14, 13);
-  g.lineStyle(4, edge, 0.85);
-  g.strokeRoundedRect(6, 4, AW - 12, AH - 8, 16);
-  rimLight(g, 6, 4, AW - 12, AH - 8, 16, light);
-  // тежък наплечник горе
-  gradientRoundedRect(g, 0, 0, AW, 32, 14, light, dark);
-  g.lineStyle(3.5, edge, 0.9);
-  g.strokeRoundedRect(0, 0, AW, 32, 14);
-  glowDot(g, AW / 2, 15, 3.5, rune);
-  // рунически разлом по ръката
-  glowStroke(g, [[AW / 2, 34], [AW / 2 - 4, AH * 0.6], [AW / 2 + 2, AH - 10]], rune, 2);
-  // ставна лента
-  g.fillStyle(darker, 0.8);
-  g.fillRoundedRect(8, AH * 0.56, AW - 16, 8, 4);
+  const cxA = AW / 2;
+  const armSil = [
+    [cxA - 22, 14],      // външен ръб на рамото
+    [cxA - 24, 4],       // връх на рамо-канарата
+    [cxA - 6, 0],
+    [cxA + 16, 2],       // горна яка
+    [cxA + 22, 16],      // дясно рамо
+    [cxA + 14, 40],      // стеснение към лакътя
+    [cxA + 12, AH * 0.6],
+    [cxA + 13, AH - 6],  // китка долу
+    [cxA - 9, AH - 4],
+    [cxA - 11, AH * 0.6],
+    [cxA - 14, 42],
+    [cxA - 20, 26]
+  ];
+  fillPolyShaded(g, armSil, cxA, AH * 0.4, light, darker, 7);
+  strokePoly(g, armSil, 3, darker, 0.45);
+  strokePoly(g, armSil, 2, edge, 0.8);
+  // шипове по рамото и лакътя
+  spike(g, cxA - 20, 12, cxA - 34, 2, 5, -3, dark, edge);
+  spike(g, cxA + 18, 14, cxA + 30, 6, 5, 3, dark, edge);
+  spike(g, cxA - 12, AH * 0.6, cxA - 22, AH * 0.6 + 8, 4, -2, dark, edge);
+  // светещ камък на рамото + разлом по ръката
+  glowDot(g, cxA, 14, 3.5, rune);
+  glowStroke(g, crackPath(cxA, 30, cxA + 2, AH - 12, 5, 3), rune, 1.8);
   g.generateTexture(`${prefix}_arm`, AW, AH);
 
   // ---------------------------------------------------------------- ЮМРУК
-  // Голям каменен юмрук с рунически кокалчета.
+  // Ноктеста лапа / канара-юмрук: грапава длан с няколко извити нокътя/талона
+  // и светещи кокалчета. origin центриран.
   g.clear();
   const FW = 56;
-  gradientRoundedRect(g, 6, 10, FW - 12, FW - 18, 12, light, darker);
-  g.lineStyle(4, edge, 0.85);
-  g.strokeRoundedRect(6, 10, FW - 12, FW - 18, 12);
-  rimLight(g, 6, 10, FW - 12, FW - 18, 12, light);
+  const cxF = FW / 2, cyF = FW / 2;
+  // груба длан (неправилен многоъгълник, не кръг)
+  const palm = [
+    [cxF - 18, cyF - 6], [cxF - 12, cyF - 16], [cxF + 4, cyF - 18],
+    [cxF + 16, cyF - 10], [cxF + 19, cyF + 4], [cxF + 12, cyF + 16],
+    [cxF - 4, cyF + 18], [cxF - 16, cyF + 10]
+  ];
+  fillPolyShaded(g, palm, cxF, cyF, light, darker, 6);
+  strokePoly(g, palm, 2.5, darker, 0.5);
+  strokePoly(g, palm, 1.5, edge, 0.7);
+  // извити нокти/талони, излизащи от горния ръб на лапата
+  spike(g, cxF - 12, cyF - 14, cxF - 16, cyF - 28, 4, -2, dark, edge);
+  spike(g, cxF - 2, cyF - 17, cxF - 3, cyF - 32, 4, 0, dark, edge);
+  spike(g, cxF + 8, cyF - 15, cxF + 12, cyF - 29, 4, 2, dark, edge);
+  // палец-нокът встрани
+  spike(g, cxF + 16, cyF - 2, cxF + 28, cyF - 6, 4, 3, dark, edge);
   // светещи кокалчета
-  for (let k = 0; k < 4; k++) glowDot(g, 13 + k * 10, 15, 3, rune);
-  // палец
-  gradientRoundedRect(g, FW - 16, 20, 12, 18, 6, light, dark);
-  g.lineStyle(2.5, edge, 0.6);
-  g.strokeRoundedRect(FW - 16, 20, 12, 18, 6);
+  [[cxF - 10, cyF - 8], [cxF - 1, cyF - 10], [cxF + 8, cyF - 7]].forEach(([kx, ky]) => {
+    glowDot(g, kx, ky, 2.5, rune);
+  });
   g.generateTexture(`${prefix}_fist`, FW, FW);
 
   // ---------------------------------------------------------------- КРАК
-  // Масивен каменен крак с наколенник, рунически разлом и тежко стъпало.
+  // Дигитиграден звярски крак (обърнато коляно), стеснява се към глезена и
+  // завършва с ноктеста/копитна стъпка. origin (0.5,0): бедрото горе, лапата
+  // долу. Силно органична S-извивка, не прав стълб.
   g.clear();
   const LW = 52, LH = 110;
-  gradientRoundedRect(g, 8, 4, LW - 16, LH - 28, 14, light, darker);
-  g.lineStyle(6, darker, 0.4);
-  g.strokeRoundedRect(11, 7, LW - 22, LH - 34, 11);
-  g.lineStyle(4, edge, 0.8);
-  g.strokeRoundedRect(8, 4, LW - 16, LH - 28, 14);
-  rimLight(g, 8, 4, LW - 16, LH - 28, 14, light);
-  // рунически разлом по пищяла
-  glowStroke(g, [[LW / 2, 14], [LW / 2 - 3, LH * 0.4], [LW / 2 + 2, LH - 36]], rune, 2);
-  // наколенник (рунически камък)
-  gradientRoundedRect(g, LW / 2 - 11, LH * 0.46 - 11, 22, 22, 11, light, dark);
-  g.lineStyle(3, edge, 0.85); g.strokeCircle(LW / 2, LH * 0.46, 11);
-  glowDot(g, LW / 2, LH * 0.46, 4, rune);
-  // тежко каменно стъпало
-  gradientRoundedRect(g, 2, LH - 30, LW + 6, 26, 8, dark, darker);
-  g.lineStyle(3, edge, 0.7);
-  g.strokeRoundedRect(2, LH - 30, LW + 6, 26, 8);
+  const off = 5;                // платното е LW+10 широко; рисуваме с отместване
+  const cxL = (LW + 10) / 2;
+  // силует с обърнато коляно: бедро навън → коляно вътре → глезен навън → лапа
+  const legSil = [
+    [cxL - 16, 6],            // горна вътрешна част на бедрото
+    [cxL - 20, 4],
+    [cxL - 2, 2],            // тазобедрена става
+    [cxL + 16, 6],          // външно бедро
+    [cxL + 18, LH * 0.3],   // изпъкнало коляно навън
+    [cxL + 6, LH * 0.5],    // прибиране навътре (обърнат стави)
+    [cxL + 4, LH * 0.7],    // тънък глезен
+    [cxL + 14, LH - 18],    // стъпване напред
+    [cxL + 20, LH - 4],     // нокти отпред
+    [cxL - 14, LH - 4],     // пета отзад
+    [cxL - 10, LH - 18],
+    [cxL - 6, LH * 0.7],    // вътрешен глезен
+    [cxL - 8, LH * 0.5],
+    [cxL - 18, LH * 0.32]   // вътрешно коляно/бедро
+  ];
+  fillPolyShaded(g, legSil, cxL, LH * 0.45, light, darker, 8);
+  strokePoly(g, legSil, 3, darker, 0.45);
+  strokePoly(g, legSil, 2, edge, 0.8);
+  // петен шип (като при звяр)
+  spike(g, cxL - 10, LH - 16, cxL - 22, LH - 22, 4, -3, dark, edge);
+  // ноктести пръсти отпред на стъпката
+  g.fillStyle(dark, 1);
+  [0, 7, 14].forEach((dx) => {
+    g.fillTriangle(cxL - 2 + dx, LH - 6, cxL + 4 + dx, LH - 6, cxL + 2 + dx, LH);
+  });
+  strokePoly(g, [[cxL - 2, LH - 6], [cxL + 18, LH - 6]], 1.5, edge, 0.4, false);
+  // светещ камък на коляното + разлом по пищяла
+  glowDot(g, cxL + 10, LH * 0.32, 4, rune);
+  glowStroke(g, crackPath(cxL, 14, cxL + 2, LH - 22, 6, 4), rune, 1.8);
   g.generateTexture(`${prefix}_leg`, LW + 10, LH);
 
   g.destroy();

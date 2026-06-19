@@ -126,6 +126,96 @@ export async function webSearch(query, { lang = 'bg' } = {}) {
   return { ok: false, reason: 'няма кратък отговор за това' };
 }
 
+// ── РАЗШИРЕНИ безплатни (keyless, CORS) източници за УЧЕНЕ по тема ───────────
+// Всички пращат CORS заглавие → работят от WebView. Без ключове, без акаунти.
+
+// Wikipedia ПЪЛЕН увод (повече текст от summary) през action API.
+export async function fetchWikipediaFull(topic, { lang = 'bg' } = {}) {
+  const t = String(topic || '').trim(); if (!t) return { ok: false };
+  const url = `https://${lang}.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&redirects=1&format=json&origin=*&titles=${encodeURIComponent(t)}`;
+  const d = await getJson(url);
+  const pages = d && d.query && d.query.pages;
+  if (!pages) return { ok: false };
+  const page = Object.values(pages)[0];
+  if (!page || page.missing !== undefined || !page.extract) return { ok: false };
+  return {
+    ok: true, title: page.title,
+    text: summarizeLocally(page.extract, { maxSentences: 5, maxChars: 800 }),
+    citation: `Wikipedia (${lang}, увод): ${page.title}`,
+    url: `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(String(page.title).replace(/\s+/g, '_'))}`
+  };
+}
+
+// Wiktionary — речникова дефиниция на дума/термин.
+export async function fetchWiktionary(word, { lang = 'bg' } = {}) {
+  const w = String(word || '').trim(); if (!w) return { ok: false };
+  const url = `https://${lang}.wiktionary.org/api/rest_v1/page/definition/${encodeURIComponent(w.replace(/\s+/g, '_'))}`;
+  const d = await getJson(url);
+  if (!d) return { ok: false };
+  const arr = d[lang] || Object.values(d)[0] || [];
+  const defs = [];
+  for (const grp of arr) for (const def of (grp.definitions || [])) {
+    const txt = String(def.definition || '').replace(/<[^>]+>/g, '').trim();
+    if (txt) defs.push(txt);
+  }
+  if (!defs.length) return { ok: false };
+  return { ok: true, text: defs.slice(0, 3).join(' • '), citation: `Wiktionary (${lang}): ${w}`, url: `https://${lang}.wiktionary.org/wiki/${encodeURIComponent(w)}` };
+}
+
+// Wikidata — кратко структурирано описание на понятието.
+export async function fetchWikidata(topic, { lang = 'bg' } = {}) {
+  const t = String(topic || '').trim(); if (!t) return { ok: false };
+  const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(t)}&language=${lang}&uselang=${lang}&format=json&origin=*&limit=1`;
+  const d = await getJson(url);
+  const hit = d && d.search && d.search[0];
+  if (!hit || !hit.description) return { ok: false };
+  return { ok: true, text: `${hit.label || t}: ${hit.description}`, citation: `Wikidata: ${hit.id}`, url: hit.concepturi || '' };
+}
+
+// Stack Overflow — практически Q&A (за „как се прави X").
+export async function fetchStackExchange(topic) {
+  const t = String(topic || '').trim(); if (!t) return { ok: false };
+  const url = `https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=${encodeURIComponent(t)}&site=stackoverflow&pagesize=1`;
+  const d = await getJson(url);
+  const item = d && d.items && d.items[0];
+  if (!item || !item.title) return { ok: false };
+  return { ok: true, text: `„${item.title}"${item.is_answered ? ' (има приет отговор)' : ''}`, citation: 'Stack Overflow', url: item.link || '' };
+}
+
+// СЪБИРА знание за тема от МНОЖЕСТВО източници (keyless, CORS). Връща
+// { notes:[{text, source, url, key}], tried:[ключове] }. excludeKeys пропуска вече минати.
+export async function gatherTopicKnowledge(topic, { lang = 'bg', excludeKeys = [] } = {}) {
+  const ex = new Set(excludeKeys);
+  const SOURCES = [
+    { key: 'wiki-bg',    run: () => fetchWikipedia(topic, { lang: 'bg' }) },
+    { key: 'wiki-en',    run: () => fetchWikipedia(topic, { lang: 'en' }) },
+    { key: 'wiki-full',  run: () => fetchWikipediaFull(topic, { lang }) },
+    { key: 'wiktionary', run: () => fetchWiktionary(topic, { lang }) },
+    { key: 'wikidata',   run: () => fetchWikidata(topic, { lang }) },
+    { key: 'ddg',        run: () => fetchDuckDuckGo(topic) },
+    { key: 'stackex',    run: () => fetchStackExchange(topic) }
+  ];
+  const notes = [];
+  const tried = [];
+  for (const s of SOURCES) {
+    if (ex.has(s.key)) continue;
+    tried.push(s.key);
+    let r = null;
+    try { r = await s.run(); } catch (_) { r = null; }
+    if (r && r.ok) {
+      const text = String(r.summary || r.text || '').trim();
+      if (text) notes.push({ text, source: r.citation || r.source || s.key, url: r.url || '', key: s.key });
+      if (s.key === 'ddg' && Array.isArray(r.related)) {
+        for (const rel of r.related.slice(0, 3)) if (rel) notes.push({ text: String(rel), source: 'DuckDuckGo (свързано)', url: '', key: 'ddg-rel' });
+      }
+    }
+  }
+  return { notes, tried };
+}
+
+// Колко източника общо има (за „изчерпах ли всичко" — праг).
+export const TOPIC_SOURCE_COUNT = 7;
+
 // --- Новини (RSS) ----------------------------------------------------------
 // По подразбиране безплатен RSS. Парсваме <item><title>/<description>.
 const DEFAULT_RSS = 'https://feeds.bbci.co.uk/news/world/rss.xml';

@@ -6,6 +6,7 @@
 // (принцип на честността — не пазим нещо без произход).
 
 import { getState, persist, uid } from './storage.js';
+import { tokenize } from './memory-store.js';
 
 // Списък по подразбиране за автономното учене (ротира се). Собственикът добавя още.
 export const DEFAULT_INTERESTS = [
@@ -99,6 +100,52 @@ export function deleteSubject(id) {
 // Общ брой научени наставки (за брояча „научени неща“).
 export function notesCount() {
   return (getState().subjects || []).reduce((acc, s) => acc + s.notes.length, 0);
+}
+
+// Търси из НАУЧЕНОТО (subjects) най-подходящата наставка за въпрос. Връща
+// { subject, note, score } или null. Така роботът ОТГОВАРЯ от наученото (заземено + цитат).
+export function findInSubjects(query, { threshold = 0.34 } = {}) {
+  const q = tokenize(query);
+  if (!q.length) return null;
+  const qset = new Set(q);
+  let best = null;
+  for (const s of listSubjects()) {
+    const nameTokens = new Set(tokenize(s.name));
+    let nameHit = 0;
+    for (const t of qset) if (nameTokens.has(t)) nameHit = 0.6; // въпросът споменава темата
+    for (const n of s.notes) {
+      const nt = new Set(tokenize(n.text));
+      if (!nt.size) continue;
+      let overlap = 0;
+      for (const t of qset) if (nt.has(t)) overlap++;
+      const score = nameHit + overlap / Math.max(qset.size, 1);
+      if (!best || score > best.score) best = { subject: s.name, note: n, score };
+    }
+  }
+  return (best && best.score >= threshold) ? best : null;
+}
+
+// --- Следене на ИЗТОЧНИЦИТЕ на тема (за „изчерпах ли всичко") -----------------
+// Всяка тема пази кои източници са пробвани (s.sources) и флаг „изчерпана" (s.covered).
+export function markSourceTried(subjectName, sourceKey) {
+  const s = ensureSubject(subjectName);
+  s.sources = s.sources || [];
+  const k = String(sourceKey || '').trim();
+  if (k && !s.sources.includes(k)) { s.sources.push(k); persist(); }
+}
+export function subjectSourcesTried(name) {
+  const s = getSubject(name);
+  return (s && s.sources) ? s.sources.slice() : [];
+}
+export function markCovered(name, covered = true) {
+  const s = ensureSubject(name);
+  s.covered = !!covered; s.coveredAt = covered ? Date.now() : null;
+  persist();
+  return s.covered;
+}
+export function isCovered(name) {
+  const s = getSubject(name);
+  return !!(s && s.covered);
 }
 
 // Връща случайна наставка от дадена/произволна тема (за „питай ме“ и припомняне).

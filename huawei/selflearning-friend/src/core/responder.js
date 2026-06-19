@@ -12,6 +12,7 @@ import { addMemory, recall, updateMemory, markUsed, listMemory, tokenize } from 
 import { getState } from './storage.js';
 import { buildPrompt } from './ai-client.js';
 import { parseTask, intakeAndRun, askMeFromLearned } from './tasks.js';
+import { findInSubjects } from './subjects.js';
 import { teach } from './teacher.js';
 import { dontKnow, frameAiSuggestion } from './honesty.js';
 import { handleCommand } from './commands.js';
@@ -224,6 +225,18 @@ export async function respond(userText) {
     return { text: hit.rec.value, source: 'memory' };
   }
   _lastRecallId = null;
+
+  // 4.5) НАУЧЕНИ ТЕМИ: ако питаш за нещо, което ВЕЧЕ съм учил (subjects), отговарям
+  //      от наученото — заземено, с цитат на източника. Така роботът „показва знанията си".
+  {
+    const learned = findInSubjects(text);
+    if (learned) {
+      return {
+        text: `Ето какво научих за „${learned.subject}":\n\n${learned.note.text}\n\n📎 ${learned.note.source}`,
+        source: 'source'
+      };
+    }
+  }
 
   // 5) Вградени правила
   const st = smallTalk(text, botName);

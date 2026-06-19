@@ -113,15 +113,26 @@ export function renderChat(root, { navigate, rerender }) {
     }
     listening = true;
     micBtn.classList.add('on');
-    // СКРИЙ клавиатурата — ако полето е на фокус, тя „краде" аудиото и спира микрофона.
-    try { input.blur(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (_) {}
+    // ЗАПАЗИ вече въведеното → новата реч се ДОЛЕПЯ (а не замества; затова преди се триеше
+    // и не можеше да допълваш — при второ натискане новата реплика заместваше старата).
+    const prefix = String(input.value || '').trim();
+    const join = (a, b) => (a ? (a + ' ' + b) : b);
+    // СКРИЙ клавиатурата ОКОНЧАТЕЛНО: DISABLED поле НЕ може да получи фокус → клавиатурата
+    // физически не може да изскочи (стойността пак се обновява програмно). readonly не
+    // стигаше на някои WebView-та (Xiaomi) — затова disabled + blur + inputmode=none.
+    try {
+      input.blur();
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      input.setAttribute('inputmode', 'none');
+      input.disabled = true;
+    } catch (_) {}
     const prevPh = input.placeholder;
     input.placeholder = 'Слушам… (натисни 🎤 пак за стоп)';
     let transcript = '';
     try {
       transcript = await startListening({
         lang: (st.settings.voice && st.settings.voice.lang) || 'bg-BG',
-        onInterim: (t) => { if (t) input.value = t; } // покажи междинния резултат (не трий при празно)
+        onInterim: (t) => { if (t) input.value = join(prefix, t); } // ДОЛЕПЯ (полето е disabled → без клавиатура)
       });
     } catch (e) {
       const msg = String(e && e.message || '');
@@ -131,14 +142,15 @@ export function renderChat(root, { navigate, rerender }) {
       listening = false;
       micBtn.classList.remove('on');
       input.placeholder = prevPh;
+      try { input.disabled = false; input.removeAttribute('inputmode'); } catch (_) {}
     }
-    const text = String(transcript || '').trim();
-    if (text) {
-      input.value = text;
-      runVoiceprintSoft(); // МЕК гласов сигнал (фон; не блокира; не пипа лока)
-      if (autoSend) send(text); // → същия поток (commands.js, после responder)
-      else input.focus();       // НЕ пращаме сами — потребителят натиска „Изпрати“
-    } else input.focus();
+    const heard = String(transcript || '').trim();
+    if (heard) {
+      input.value = join(prefix, heard);   // финално долепяне към вече казаното/написаното
+      runVoiceprintSoft();                 // МЕК гласов сигнал (фон; не блокира; не пипа лока)
+      if (autoSend) send(input.value.trim());
+      // НЕ фокусираме полето → клавиатурата НЕ изскача. Натисни 🎤 пак за още думи, или „Изпрати".
+    }
   }
 
   function pushBubble(role, text, source) {
@@ -307,5 +319,6 @@ export function renderChat(root, { navigate, rerender }) {
     else toast('Гласът не е наличен тук — пиши на ръка.');
   }
 
-  setTimeout(() => { list.scrollTop = list.scrollHeight; input.focus(); }, 50);
+  // НЕ фокусираме полето при отваряне (то вдигаше клавиатурата само). Само превъртаме надолу.
+  setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
 }

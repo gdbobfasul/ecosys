@@ -12,8 +12,8 @@
 // детерминистична със стъпки; при офлайн/неуспех — честно съобщение, без измисляне.
 
 import { solveMath, looksLikeMath } from './math-solver.js';
-import { fetchWikipedia, fetchCrypto, fetchFx, fetchNews } from './sources.js';
-import { addNote, getSubject, randomNote, notesCount, addInterest } from './subjects.js';
+import { fetchWikipedia, fetchCrypto, fetchFx, fetchNews, gatherTopicKnowledge, TOPIC_SOURCE_COUNT } from './sources.js';
+import { addNote, getSubject, randomNote, notesCount, addInterest, subjectSourcesTried, markSourceTried, markCovered } from './subjects.js';
 import { summarizeViaTeacher } from './teacher.js';
 import { dontKnow } from './honesty.js';
 import { addTask, updateTask } from './tasklist.js';
@@ -31,7 +31,9 @@ export function parseTask(text) {
   }
   // УЧЕНЕ (изрично) — ПРИОРИТЕТ пред крипто/финанси/новини: „научи за крипто" значи да
   // УЧА за крипто, а не да върна цена. Така темата „крипто" не отвлича командата.
-  let m = low.match(/^(?:научи(?:\s+се)?|учи|изучи)\s+(?:за\s+|по\s+)?(.+)/);
+  // Хваща: „научи/учи/изучи за X", „започни да учиш за X", „искам да научиш за X",
+  // спрежения (научи/научиш/науча/учи/учиш/уча/изучи/изучавай).
+  let m = low.match(/^(?:моля\s+)?(?:започни\s+(?:да\s+)?)?(?:искам\s+(?:да\s+)?)?(?:науч(?:и|иш|а)(?:\s+се)?|изуч(?:и|авай)|уч(?:и|иш|а))\s+(?:за\s+|по\s+|на\s+тема\s+)?(.+)/);
   if (m) return { kind: 'learn', arg: cleanTopic(m[1]) };
   m = low.match(/^(?:прочети|чети|разкажи\s+ми)\s+(?:за\s+|на\s+тема\s+)?(.+)/);
   if (m) return { kind: 'read', arg: cleanTopic(m[1]) };
@@ -92,26 +94,45 @@ export async function runTask(task) {
     case 'read': {
       const topic = task.arg;
       if (!topic) return { ok: false, kind: task.kind, text: 'Коя тема да проуча?' };
-      // Запомни темата като ИНТЕРЕС → фоновият учещ цикъл ще продължи да я изучава.
       try { addInterest(topic); } catch (_) {}
-      const wiki = await fetchWikipedia(topic);
-      if (!wiki.ok) {
-        return {
-          ok: true, kind: task.kind, learned: true,
-          text: `Започвам да уча за „${topic}". Добавих го към темите, които изучавам — ще го проучвам и ` +
-            `при следващите проверки. Засега нямам проверим източник тук; кажи „търси ${topic}", за да го ` +
-            `извадя веднага (в чата или браузъра).`
-        };
+
+      // „прочети за X" → ако ВЕЧЕ съм научил, показвам наученото (без нов fetch).
+      if (task.kind === 'read') {
+        const sub = getSubject(topic);
+        if (sub && sub.notes && sub.notes.length) {
+          const body = sub.notes.slice(0, 3).map((n) => `• ${n.text}\n  📎 ${n.source}`).join('\n\n');
+          return { ok: true, kind: 'read', learned: false, citation: sub.notes[0].source,
+            text: `Ето какво научих за „${sub.name}":\n\n${body}` };
+        }
       }
-      // обобщаваме (учител с локален fallback); пазим заземената наставка
-      let summary = wiki.summary;
-      const t = await summarizeViaTeacher(wiki.full, topic);
-      if (t && !t.ai) summary = t.text; // ползваме само локалното обобщение за ЗАПИС (заземено)
-      addNote(topic, { text: summary, source: wiki.citation, url: wiki.url });
-      const aiNote = (t && t.ai) ? '\n\n🤔 (Имам и AI преразказ, но записвам само проверимото резюме от източника.)' : '';
+
+      // УЧЕНЕ от МНОЖЕСТВО безплатни източници (без вече минатите за тази тема).
+      const triedBefore = subjectSourcesTried(topic);
+      const g = await gatherTopicKnowledge(topic, { excludeKeys: triedBefore });
+      for (const k of g.tried) markSourceTried(topic, k);
+      let added = 0; let firstNote = null;
+      for (const n of g.notes) {
+        const res = addNote(topic, { text: n.text, source: n.source, url: n.url });
+        if (res) { added++; if (!firstNote) firstNote = n; }
+      }
+      const totalTried = subjectSourcesTried(topic).length;
+      const totalNotes = (getSubject(topic) || { notes: [] }).notes.length;
+
+      // ИЗЧЕРПВАНЕ: минати всички източници И този пас не добави нищо ново → темата е покрита.
+      if (added === 0 && totalTried >= TOPIC_SOURCE_COUNT) {
+        markCovered(topic, true);
+        return { ok: true, kind: task.kind, learned: false,
+          text: `Изчерпах безплатните източници за „${topic}" — минах всичките ${totalTried} и нямам ` +
+            `какво ново да добавя. Знам ${totalNotes} неща по темата. Питай ме каквото искаш по нея.` };
+      }
+      if (added === 0) {
+        return { ok: true, kind: task.kind, learned: false,
+          text: `Засега не намерих ново за „${topic}" (минах ${totalTried} източника). Ще пробвам останалите при следващите проверки.` };
+      }
       return {
-        ok: true, kind: task.kind, learned: true, citation: wiki.citation,
-        text: `Започнах да уча за „${wiki.title}“ и го записах в Задачи → теми (ще продължа да го изучавам):\n\n${summary}\n\n📎 ${wiki.citation}${aiNote}`
+        ok: true, kind: task.kind, learned: true, citation: firstNote ? firstNote.source : '',
+        text: `Научих ${added} нови неща за „${topic}" от ${g.tried.length} източника (вече знам ${totalNotes}):\n\n` +
+          `${firstNote.text}\n\n📎 ${firstNote.source}\n\n(Записах всичко в Задачи → теми; питай ме по темата.)`
       };
     }
 
