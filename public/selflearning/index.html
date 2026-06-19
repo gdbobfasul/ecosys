@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Selflearning Friend — relay</title>
+  <style>
+    :root { --accent:#2de0c6; --bg:#0b1020; --card:#131a30; --line:#1f2944; --text:#e8ecf5; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; height:100%; }
+    body {
+      background: radial-gradient(ellipse at top, #16203f 0%, var(--bg) 70%);
+      color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .card {
+      max-width:560px; width:100%; background:var(--card); border:1px solid var(--line);
+      border-radius:18px; padding:28px 24px; box-shadow:0 10px 40px rgba(0,0,0,.45);
+    }
+    .logo { font-size:48px; line-height:1; }
+    h1 { margin:12px 0 4px; font-size:24px; }
+    p.sub { margin:0 0 18px; color:#9fb2d8; }
+    .row { display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px solid var(--line); }
+    .row:first-of-type { border-top:none; }
+    .dot { width:10px; height:10px; border-radius:50%; background:#666; flex:none; }
+    .dot.ok { background:#39d98a; box-shadow:0 0 10px #39d98a; }
+    .dot.bad { background:#ff5c7a; box-shadow:0 0 10px #ff5c7a; }
+    code { background:#0a1226; border:1px solid var(--line); border-radius:8px; padding:2px 7px; color:var(--accent); font-size:13px; }
+    .muted { color:#7e90b6; font-size:13px; }
+    a { color:var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">🤖</div>
+    <h1>Selflearning Friend — сървър (relay)</h1>
+    <p class="sub">Личният ти самообучаващ се приятел. Това е само relay-ят за синхронизация и канала „Слушай" — знанието на робота живее ЛОКАЛНО на устройството ти.</p>
+
+    <div class="row"><span class="dot" id="dot"></span><div><b>Състояние на relay-а</b><div class="muted" id="status">проверявам…</div></div></div>
+    <div class="row"><div><b>За връзка в апа</b><div class="muted">Настройки → „Източници на знание" → 🔗 Свържи към сървър → домейн <code>selflearning.bot.nu</code> + token (от меню опция 39).</div></div></div>
+
+    <p class="muted" style="margin-top:18px">Без акаунти, без контакти, без проследяване. 1 сървър = 1 робот.</p>
+  </div>
+
+  <script>
+    (function () {
+      var dot = document.getElementById('dot');
+      var st = document.getElementById('status');
+      fetch('/api/selflearning/health', { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); })
+        .then(function (t) { dot.className = 'dot ok'; st.textContent = 'Relay-ят работи ✓ ' + (t || ''); })
+        .catch(function () { dot.className = 'dot bad'; st.textContent = 'Relay-ят не отговаря (още не е вдигнат? — меню опция 38).'; });
+    })();
+  </script>
+</body>
+</html>

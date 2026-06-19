@@ -11,12 +11,12 @@
 #   • Към 1 сървър се връзва МАКСИМУМ 1 Selflearning робот (1 token namespace).
 #   • Десктоп + телефон на СЪЩИЯ робот = СЪЩИЯ token: десктопът се обучава (учащ),
 #     телефонът само ПРЕДАВА знанието си (не учи). Това е един и същ робот.
-#   • Различен робот (напр. при продажба) → само с --transfer (трие стария).
+#   • Различен робот (напр. при продажба) → само с --reset (трие стария).
 #
 # Употреба (обикновено през меню опция 39):
 #   sudo ./23-link-selflearning-robot.sh              # САМО проверки + verdict + връзка-инфо
 #   sudo ./23-link-selflearning-robot.sh --deploy     # проверки → (ако GO) вдига relay-а
-#   sudo ./23-link-selflearning-robot.sh --deploy --transfer  # смяна на робот (ТРИЕ стария!)
+#   sudo ./23-link-selflearning-robot.sh --deploy --reset  # смяна на робот (ТРИЕ стария!)
 ##############################################################################
 
 set +e
@@ -30,10 +30,10 @@ PROJECT_DIR="/var/www/kcy-ecosystem"
 PRIVATE_DIR="$PROJECT_DIR/private"
 GLOBAL_ENV="$PRIVATE_DIR/configs/.env"
 APP_DIR="$PRIVATE_DIR/$APP_NAME"
-# Базата е ИЗВЪН проекта (/var/lib) → НИКОЙ деплой не я трие. Трие се САМО оттук с --transfer.
+# Базата е ИЗВЪН проекта (/var/lib) → НИКОЙ деплой не я трие. Трие се САМО оттук с --reset.
 DATA_DIR="/var/lib/kcy-selflearning/data"
 DB_FILE="$DATA_DIR/selflearning.db"
-TOKEN_FILE="$DATA_DIR/owner-token"   # token-ът се пази тук → СТАБИЛЕН (нов само при --transfer)
+TOKEN_FILE="$DATA_DIR/owner-token"   # token-ът се пази тук → СТАБИЛЕН (нов само при --reset)
 PORT_DEFAULT="3013"
 SETUP_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/22-setup-selflearning-server.sh"
 [ -f "$PRIVATE_DIR/configs/domains.conf" ] && . "$PRIVATE_DIR/configs/domains.conf" 2>/dev/null
@@ -43,8 +43,8 @@ SELF_DOMAIN="${APP_selflearning_PUBLIC:-selflearning.bot.nu}"
 
 DO_DEPLOY=false; DO_TRANSFER=false
 for a in "$@"; do case "$a" in
-  --deploy)   DO_DEPLOY=true ;;
-  --transfer) DO_TRANSFER=true ;;
+  --deploy)            DO_DEPLOY=true ;;
+  --reset|--transfer)  DO_TRANSFER=true ;;   # РЕСЕТ = триене на база+token (--reset е синоним)
 esac; done
 
 [ "$EUID" -ne 0 ] && { echo -e "${RED}ERROR: пусни със sudo: sudo $0 $*${NC}"; exit 1; }
@@ -69,7 +69,7 @@ echo ""
 echo -e "${BOLD}${YELLOW}ПРАВИЛО: 1 сървър = МАКСИМУМ 1 робот.${NC}"
 echo -e "  ${GRAY}• Десктоп + телефон на СЪЩИЯ робот ползват СЪЩИЯ token (десктопът учи,${NC}"
 echo -e "  ${GRAY}  телефонът само предава знанието си) — това е един робот.${NC}"
-echo -e "  ${GRAY}• Различен робот (продажба/прехвърляне) → само с --transfer (трие стария).${NC}"
+echo -e "  ${GRAY}• Различен робот (продажба/прехвърляне) → само с --reset (трие стария).${NC}"
 echo ""
 echo -e "${BOLD}Най-важни параметри на сървър-машината, която става за връзка:${NC}"
 echo -e "  ${GRAY}• Linux (Debian/Ubuntu предпочитан), 64-bit; root/sudo достъп.${NC}"
@@ -176,22 +176,22 @@ if [ "$ROBOTS" = "0" ]; then
   ok "Няма вързан робот — сървърът е свободен за 1 нов робот."
 elif [ "$ROBOTS" = "ERR" ] || [ "$ROBOTS" = "?" ]; then
   warn "Има данни за Selflearning, но не можах да преброя роботите (липсва better-sqlite3). Приеми, че МОЖЕ да има вързан робот."
-  if [ "$DO_DEPLOY" = true ] && [ "$DO_TRANSFER" != true ]; then warn "Деплоят НЕ трие данни — стар робот (ако има) остава. За смяна ползвай --transfer."; fi
+  if [ "$DO_DEPLOY" = true ] && [ "$DO_TRANSFER" != true ]; then warn "Деплоят НЕ трие данни — стар робот (ако има) остава. За смяна ползвай --reset."; fi
 else
   warn "Вече има ВЪРЗАН робот (${ROBOTS} token namespace(s) с данни на този сървър)."
   echo -e "    ${GRAY}• Ако това е СЪЩИЯ робот (друга инстанция — десктоп/телефон): ползвай СЪЩИЯ token.${NC}"
-  echo -e "    ${GRAY}• Ако линкваш ДРУГ робот (продажба): пусни с --transfer, за да изтрия стария.${NC}"
+  echo -e "    ${GRAY}• Ако линкваш ДРУГ робот (продажба): пусни с --reset, за да изтрия стария.${NC}"
   if [ "$DO_TRANSFER" = true ]; then
     echo ""
-    echo -e "  ${RED}${BOLD}--transfer: ще ИЗТРИЯ знанието на стария робот от сървъра (необратимо).${NC}"
-    read -r -p "  Сигурен ли си? Напиши точно TRANSFER: " CONF
-    if [ "$CONF" = "TRANSFER" ]; then
+    echo -e "  ${RED}${BOLD}РЕСЕТ: ще ИЗТРИЯ базата + token на стария робот (необратимо). Само за нов/прехвърлен робот.${NC}"
+    read -r -p "  Сигурен ли си? Напиши точно RESET: " CONF
+    if [ "$CONF" = "RESET" ] || [ "$CONF" = "TRANSFER" ]; then
       systemctl stop ${SVC}.service 2>/dev/null
       rm -f "$DB_FILE" "$DB_FILE-wal" "$DB_FILE-shm" "$TOKEN_FILE"
       ok "Старите данни + token са изтрити — сървърът е свободен за новия робот (нов token)."
       ROBOTS="0"
     else
-      echo -e "  ${YELLOW}Отказан --transfer. Старият робот остава.${NC}"
+      echo -e "  ${YELLOW}Отказан --reset. Старият робот остава.${NC}"
     fi
   fi
 fi
@@ -230,7 +230,7 @@ fi
 # ВРЪЗКА-ИНФО — какво да въведеш в роботчето
 ##############################################################################
 # Token — СТАБИЛЕН: чете се от файл. Нов се генерира САМО ако липсва (т.е. първи път
-# или след --transfer, който го трие). Ъпдейт на домейн/каквото и да е НЕ сменя token-а.
+# или след --reset, който го трие). Ъпдейт на домейн/каквото и да е НЕ сменя token-а.
 TOKEN=""
 [ -f "$TOKEN_FILE" ] && TOKEN="$(tr -d ' \r\n' < "$TOKEN_FILE" 2>/dev/null)"
 TOKEN_IS_NEW=0
@@ -253,7 +253,7 @@ echo -e "    ${BOLD}2) Token:${NC}   ${GREEN}${TOKEN}${NC}"
 if [ "$TOKEN_IS_NEW" = 1 ]; then
   echo -e "       ${GRAY}(нов token — пази го; СЪЩИЯТ върви за десктоп И телефон на ЕДИН робот)${NC}"
 else
-  echo -e "       ${GRAY}(СЪЩИЯТ token като предишния път — стабилен е; сменя се само при --transfer)${NC}"
+  echo -e "       ${GRAY}(СЪЩИЯТ token като предишния път — стабилен е; сменя се само при --reset)${NC}"
 fi
 echo ""
 echo -e "  ${BOLD}Натискаш „Запази връзката\" — това е всичко.${NC}"
@@ -263,7 +263,7 @@ echo -e "    ${GRAY}• слушай:   ${BASE}/listen/<token>${NC}"
 echo -e "    ${GRAY}• проверка: ${BASE}/health${NC}"
 echo ""
 echo -e "  ${GRAY}Базата на робота е в /var/lib/kcy-selflearning — НИКОЙ деплой не я трие.${NC}"
-echo -e "  ${GRAY}Изтрива се САМО оттук с --transfer (ресет). Десктопът учи; телефонът само предава.${NC}"
+echo -e "  ${GRAY}Изтрива се САМО оттук с --reset (ресет). Десктопът учи; телефонът само предава.${NC}"
 echo -e "${YELLOW}══════════════════════════════════════════════════════════════════${NC}"
 echo ""
 echo -e "  ${YELLOW}Ако ${SELF_DOMAIN} още не отваря: насочи DNS (A запис) към сървъра и пусни${NC}"

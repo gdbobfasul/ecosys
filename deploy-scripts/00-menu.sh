@@ -657,12 +657,12 @@ run_choice() {
                 MODE=$(ask_choice "Какво да направя на ${PICK_SRV}?" \
                     "Само проверки (без деплой)" \
                     "Проверки + вдигни relay-а (деплой)" \
-                    "Проверки + деплой + ПРЕХВЪРЛИ робот (трие стария!)")
+                    "Проверки + деплой + РЕСЕТ на робота (трие база+token — за нов/прехвърлен!)")
                 RFLAGS=""
                 case "$MODE" in
                     "Само проверки (без деплой)") RFLAGS="" ;;
                     "Проверки + вдигни relay-а (деплой)") RFLAGS="--deploy" ;;
-                    "Проверки + деплой + ПРЕХВЪРЛИ робот (трие стария!)") RFLAGS="--deploy --transfer" ;;
+                    "Проверки + деплой + РЕСЕТ на робота (трие база+token — за нов/прехвърлен!)") RFLAGS="--deploy --reset" ;;
                     *) echo "  Отказано"; press_enter; continue ;;
                 esac
                 REMOTE="sudo /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh ${RFLAGS}"

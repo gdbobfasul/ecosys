@@ -73,26 +73,32 @@ export default class GameOverScene extends Phaser.Scene {
     input.type = 'text';
     input.maxLength = 24;
     input.value = defaultName || '';
-    input.placeholder = 'Играч';
+    input.placeholder = 'Натисни тук и въведи името си';
     input.setAttribute('autocomplete', 'off');
     input.setAttribute('autocapitalize', 'words');
+    input.setAttribute('autofocus', '');
     Object.assign(input.style, {
       position: 'fixed',
-      zIndex: '50',
+      zIndex: '99999',          // над платното (избягваме скриване зад canvas)
       textAlign: 'center',
       fontFamily: 'system-ui, sans-serif',
       fontSize: '18px',
-      padding: '8px 10px',
+      padding: '10px 12px',
       borderRadius: '12px',
       border: '2px solid ' + THEME.accentHex,
-      background: 'rgba(8,16,40,0.92)',
+      background: 'rgba(8,16,40,0.96)',
       color: '#ffffff',
       outline: 'none',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      boxShadow: '0 0 0 3px rgba(0,229,255,0.25)'
     });
-    (canvas.parentElement || document.body).appendChild(input);
+    // ВАЖНО: към document.body (НЕ canvas.parent) — ако родител има CSS transform,
+    // position:fixed се смята спрямо него и полето излиза извън екрана.
+    document.body.appendChild(input);
     this.nameInput = input;
     this.positionNameInput();
+    // Опит за фокус (на някои устройства клавиатурата изскача чак при тап — затова е едро и ярко).
+    setTimeout(() => { try { input.focus(); input.select(); } catch (_) {} }, 60);
 
     // Enter запазва.
     input.addEventListener('keydown', (e) => {
@@ -132,8 +138,13 @@ export default class GameOverScene extends Phaser.Scene {
   // --- Записва точките и преминава към ранг листата ---
   saveScore() {
     if (this.saved) return;
+    let name = this.nameInput ? String(this.nameInput.value || '').trim() : '';
+    // Резервно: ако полето е празно (не се е видяло/фокусирало), питаме директно —
+    // натискането на ЗАПАЗИ е жест → клавиатурата изскача надеждно.
+    if (!name) {
+      try { name = String(window.prompt('Въведи името си за ранг листата:', lastName() || '') || '').trim(); } catch (_) {}
+    }
     this.saved = true;
-    const name = this.nameInput ? this.nameInput.value : '';
     const res = addScore(name, this.finalScore);
     this.removeNameInput();
     this.clearBody();
