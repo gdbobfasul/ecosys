@@ -1,4 +1,4 @@
-// Version: 1.0231
+// Version: 1.0237
 // Selflearning Friend — самостоятелен server-side relay (Express + better-sqlite3).
 //
 // Канали (token = namespace, част от пътя):
@@ -8,6 +8,7 @@
 //   POST /api/selflearning/sync/:token          → запиши пълен knowledge snapshot
 //   GET  /api/selflearning/sync/:token          → върни записания snapshot
 //   POST /api/selflearning/exec/:token          → изпълни команда (SSH/локално) — OPT-IN, виж по-долу
+//   POST /api/selflearning/ai/:token            → локален модел (Ollama) → {text} — OPT-IN (опция 80)
 //   GET  /api/selflearning/health               → {ok, service}
 //
 // ⚠ ЧЕСТНО за auth: token-ът в URL е ЛЕКА лична namespace-изация, НЕ втвърдена
@@ -280,6 +281,54 @@ app.post('/api/selflearning/exec/:token', withToken, (req, res) => {
       const timedOut = !!(err && err.killed);
       res.json({ ok: !err, code, host: host || 'localhost', stdout: out, stderr: errout, timedOut });
     });
+});
+
+// ── ai: ЛОКАЛЕН езиков модел (Ollama) на ТОЗИ сървър — частен, без облак ──────────
+// Телефонът/роботът праща { prompt } → relay-ят пита локалния Ollama → връща { text }.
+// Така апът ползва МОДЕЛА НА СЪРВЪРА (tier1 endpoint в teacher.js), вместо облачния Pollinations.
+//   • ИЗКЛЮЧЕНО по подразбиране. Пуска се само ако SELFLEARNING_AI_ENABLED=1 (слага се от опция 80
+//     САМО на сериозен сървър/VM — НЕ на production). Конфигът е в сървър-локален файл (ai.env),
+//     който деплоят НЕ трие.
+const AI_ENABLED    = String(process.env.SELFLEARNING_AI_ENABLED || '') === '1';
+const AI_URL        = (process.env.SELFLEARNING_AI_URL || 'http://127.0.0.1:11434').replace(/\/+$/, '');
+const AI_MODEL      = process.env.SELFLEARNING_AI_MODEL || 'qwen2.5:3b';
+const AI_TIMEOUT_MS = parseInt(process.env.SELFLEARNING_AI_TIMEOUT_MS || '60000', 10);
+
+async function askLocalModel(prompt) {
+  if (typeof fetch !== 'function') return null;          // Node < 18 → няма глобален fetch
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), AI_TIMEOUT_MS);
+  try {
+    const resp = await fetch(`${AI_URL}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: AI_MODEL, prompt: String(prompt || ''), stream: false }),
+      signal: ctrl.signal,
+    });
+    if (!resp.ok) return null;
+    const data = await resp.json().catch(() => null);
+    const text = data && typeof data.response === 'string' ? data.response.trim() : '';
+    return text || null;
+  } catch (_) {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+app.post('/api/selflearning/ai/:token', withToken, async (req, res) => {
+  if (!AI_ENABLED) {
+    return res.status(403).json({ ok: false, error: 'ai_disabled',
+      hint: 'Локалният AI е изключен. Пусни го през деплой опция 80 на ТОЗИ сървър (Ollama + модел).' });
+  }
+  const prompt = (req.body && typeof req.body.prompt === 'string') ? req.body.prompt : '';
+  if (!prompt.trim()) return res.status(400).json({ ok: false, error: 'no_prompt' });
+  const text = await askLocalModel(prompt);
+  if (text == null) {
+    return res.status(502).json({ ok: false, error: 'ai_unreachable',
+      hint: `Не стигнах до локалния модел (${AI_MODEL} на ${AI_URL}). Провери, че Ollama върви.` });
+  }
+  res.json({ ok: true, text, model: AI_MODEL });
 });
 
 // ── WATCH (детегледачка / camera-watch): сдвояване по „pair" ключ ────────────

@@ -9,17 +9,22 @@
 import { fetchTimeout } from './net.js';
 
 const ENDPOINT = 'https://text.pollinations.ai/';
+// Моделът „openai" дава ЗНАЧИТЕЛНО по-добър български от стандартния (пробвано). По-голям
+// таймаут, защото услугата често отговаря за 10-20с (старите 9с винаги изтичаха → ботът
+// падаше към тъпите правила и „не разбираше").
+const MODEL = 'openai';
 
-// Връща string с отговор или хвърля/връща null при неуспех. Има timeout.
-export async function askAi(prompt, { timeoutMs = 9000 } = {}) {
+// Връща string с отговор или null при неуспех. Има timeout.
+export async function askAi(prompt, { timeoutMs = 25000 } = {}) {
   if (typeof fetch !== 'function') return null;
   try {
-    const url = ENDPOINT + encodeURIComponent(prompt);
+    const url = ENDPOINT + encodeURIComponent(prompt) + '?model=' + MODEL;
     const res = await fetchTimeout(url, { method: 'GET' }, timeoutMs);
     if (!res || !res.ok) return null;
-    const text = (await res.text()).trim();
-    if (!text || text.length > 1500) return text ? text.slice(0, 1500) : null;
-    return text;
+    let text = (await res.text()).trim();
+    if (!text) return null;
+    if (/^\s*\{\s*"error"/.test(text) || /legacy text API is being deprecated/i.test(text)) return null; // върна грешка/депрекация
+    return text.length > 1500 ? text.slice(0, 1500) : text;
   } catch (_) {
     return null; // graceful fallback — викащият решава какво да прави
   }
@@ -33,8 +38,10 @@ export function buildPrompt({ botName, ownerMessage, memoryContext, langName = '
     ? '\nЗнаеш следното за собственика си:\n- ' + memoryContext.slice(0, 6).join('\n- ')
     : '';
   return (
-    `Ти си „${botName || 'приятел'}“ — личен, дружелюбен бот-приятел. ` +
-    `Отговаряй кратко, топло и на ${langName || 'български'}. Не споменавай, че си изкуствен интелект.` +
+    `Ти си „${botName || 'приятел'}“ — личен, дружелюбен помощник. Разбираш какво ти казва ` +
+    `собственикът, дори да е казано небрежно или с грешки, и отговаряш ЯСНО, кратко, топло и на ` +
+    `правилен ${langName || 'български'}. Ако те моли да направиш нещо (да научиш, потърсиш, ` +
+    `преведеш, обясниш) — кажи какво ще направиш и го направи. Не споменавай, че си изкуствен интелект.` +
     ctx +
     `\nСобственикът казва: ${ownerMessage}\nТвоят отговор:`
   );

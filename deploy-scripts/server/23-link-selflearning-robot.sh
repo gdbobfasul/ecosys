@@ -278,6 +278,20 @@ WEBROOT="/var/www/html/${APP_selflearning_FS:-selflearning}"
 EXEC_BOOL=false
 [ -f "$GLOBAL_ENV" ] && grep -qE '^SELFLEARNING_EXEC_ENABLED=1[[:space:]]*$' "$GLOBAL_ENV" && EXEC_BOOL=true
 
+# ЛОКАЛЕН AI на ТОЗИ сървър? (пуска се от опция 80 → пише ai.env в DATA_DIR). Ако е включен,
+# обявяваме го на робота: features.localAI + teacher endpoint → апът ползва СЪРВЪРНИЯ модел.
+AI_BOOL=false
+AI_ENV="$DATA_DIR/ai.env"
+[ -f "$AI_ENV" ] && grep -qE '^SELFLEARNING_AI_ENABLED=1[[:space:]]*$' "$AI_ENV" && AI_BOOL=true
+# Ниво на сървъра за AI: local (нормален — има локален модел) или cloud (слаб — ползва облачен).
+AI_MODE=cloud; [ "$AI_BOOL" = true ] && AI_MODE=local
+TEACHER_JSON=""
+if [ "$AI_BOOL" = true ]; then
+  TEACHER_JSON=",
+  \"teacher\": { \"claudeEnabled\": true, \"approved\": true, \"endpoint\": \"https://${SELF_DOMAIN}/api/selflearning/ai/${TOKEN}\" }"
+fi
+echo -e "  ${CYAN}Ниво на този сървер за AI: $([ "$AI_BOOL" = true ] && echo 'НОРМАЛЕН (локален модел + дълбоко учене)' || echo 'СЛАБ (облачен AI, без локален модел)')${NC}"
+
 # Регистър на публикуваните connection файлове (за да ги трием при СЛЕДВАЩО пускане).
 CONN_REGISTRY="$DATA_DIR/conn-bootstrap.list"
 EXPIRE_SECS=600   # 10 минути — после публикуваният файл се самоунищожава
@@ -314,7 +328,8 @@ else
   "token": "${TOKEN}",
   "api": "/api/selflearning",
   "storage": "local",
-  "features": { "sync": true, "listen": true, "exec": ${EXEC_BOOL} },
+  "features": { "sync": true, "listen": true, "exec": ${EXEC_BOOL}, "localAI": ${AI_BOOL}, "deepCrawl": ${AI_BOOL} },
+  "aiMode": "${AI_MODE}"${TEACHER_JSON},
   "createdAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }
 JSON

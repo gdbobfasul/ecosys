@@ -256,10 +256,44 @@ export async function respond(userText) {
   const st = smallTalk(text, botName);
   if (st && !getState().settings.useAi) return { text: st, source: 'rule' };
 
-  // 6) Учителски слот (tier1 Claude изключен → tier2 Pollinations → tier3 локално).
-  //    Честност: AI-изходът се МАРКИРА като предположение. НЕ подаваме memory-контекста
-  //    като „context“ за tier3 — иначе локалното обобщение би върнало несвързан спомен
-  //    като отговор. tier3 (локалното обобщение) важи само за РЕАЛЕН материал (задачи).
+  // 6) ФАКТИ ПЪРВО (МИГНОВЕНО, с цитати): ако прилича на тема — събери от източниците и върни
+  //    веднага (Wikipedia + клони). Ако НЕ намеря нищо → пропадам надолу към AI (за разбиране на
+  //    свободна реч). Така фактологичните въпроси са бързи, а AI се пази за разговора.
+  const topic = learnTopicFrom(text);
+  if (topic) {
+    const searchLang = (getState().settings.voice && getState().settings.voice.lang) || 'bg-BG';
+    const searchCode = (languageByVoice(searchLang).code || 'bg').split('-')[0];
+    try {
+      const tree = await gatherTreeAnswer(topic, { lang: searchCode, limit: 6, relatedLimit: 12 });
+      const total = tree.main.length + tree.related.length;
+      if (total) {
+        // ТРУПАМ: записвам ВСИЧКО намерено (темата + всеки свързан клон като отделна тема) в паметта.
+        try { addInterest(topic); } catch (_) {}
+        try { for (const n of tree.main) addNote(topic, { text: n.text, source: n.source, url: n.url }); } catch (_) {}
+        try {
+          for (const r of tree.related) {
+            addInterest(r.topic);
+            addNote(r.topic, { text: r.text, source: r.source, url: r.url });
+          }
+        } catch (_) {}
+        let out = `🔎 ${topic} — събрах ${total} статии/източника (записах всички в паметта):\n\n` +
+          tree.main.slice(0, 5).map((n) => `• ${n.text}\n  📎 ${n.source}`).join('\n\n');
+        if (tree.related.length) {
+          out += `\n\n🌳 Свързани статии (${tree.related.length}), записах ги всички:\n` +
+            tree.related.slice(0, 8).map((r) => `▸ ${r.topic}: ${r.text}`).join('\n');
+        }
+        _lastSearchQuery = topic; _lastSearchEngine = 'google';
+        const qenc = encodeURIComponent(topic);
+        out += `\n\nЗа още кажи „отвори в браузъра" или директно:\n` +
+          `🌍 Google: https://www.google.com/search?q=${qenc}\n` +
+          `▶ YouTube: https://www.youtube.com/results?search_query=${qenc}`;
+        return { text: out, source: 'source', learned: true };
+      }
+    } catch (_) { /* нищо заземено → падам към AI */ }
+  }
+
+  // 7) AI слой (tier1 Claude → tier2 Pollinations → tier3 локално) — за РАЗБИРАНЕ на свободна реч
+  //    и разговор, когато не е чисто фактологична тема. Това е „езиковият модел" на бота.
   {
     const ctx = memoryContext();
     const voiceLang = (getState().settings.voice && getState().settings.voice.lang) || 'bg-BG';
@@ -273,51 +307,11 @@ export async function respond(userText) {
 
   if (st) return { text: st, source: 'rule' };
 
-  // 7) РЕАЛНО ТЪРСЕНЕ („рови"): не знам от памет/AI → СВАЛЯМ знание от МНОГО безплатни
-  //    източници ЕДНОВРЕМЕННО (Wikipedia bg+en+увод, Wiktionary, Wikidata, DuckDuckGo,
-  //    Stack Overflow) и отговарям ЗАЗЕМЕНО В ЧАТА с НЯКОЛКО цитата. Записвам всичко в паметта.
-  //    Така ботът наистина рови надълбоко и носи богато знание ВЕДНАГА, не само едно изречение.
-  const topic = learnTopicFrom(text);
+  // 8) Нищо не дойде → стартирам фоново учене + браузър (ако имаше тема), иначе честно „не знам".
   if (topic) {
-    const searchLang = (getState().settings.voice && getState().settings.voice.lang) || 'bg-BG';
-    const searchCode = (languageByVoice(searchLang).code || 'bg').split('-')[0];
-    try {
-      // ДЪРВОВИДНО събиране: богато за самата тема (много източници) + клони към ПРЯКО
-      // свързаните теми (напр. „борсови акции" → „борсов индекс", „фондова борса", „дивидент").
-      const tree = await gatherTreeAnswer(topic, { lang: searchCode, limit: 6, relatedLimit: 12 });
-      const total = tree.main.length + tree.related.length;
-      if (total) {
-        // ТРУПАМ: записвам ВСИЧКО намерено (темата + всеки свързан клон като отделна тема) в паметта.
-        try { addInterest(topic); } catch (_) {}
-        try { for (const n of tree.main) addNote(topic, { text: n.text, source: n.source, url: n.url }); } catch (_) {}
-        try {
-          for (const r of tree.related) {
-            addInterest(r.topic);
-            addNote(r.topic, { text: r.text, source: r.source, url: r.url });
-          }
-        } catch (_) {}
-        // Показвам ЧАСТ (паметта пази всичко) — да не залея чата.
-        let out = `🔎 ${topic} — събрах ${total} статии/източника (записах всички в паметта):\n\n` +
-          tree.main.slice(0, 5).map((n) => `• ${n.text}\n  📎 ${n.source}`).join('\n\n');
-        if (tree.related.length) {
-          out += `\n\n🌳 Свързани статии (${tree.related.length}), записах ги всички:\n` +
-            tree.related.slice(0, 8).map((r) => `▸ ${r.topic}: ${r.text}`).join('\n');
-        }
-        // За ОЩЕ — жива търсачка (Google/YouTube). Запомням заявката за „отвори в браузъра".
-        _lastSearchQuery = topic; _lastSearchEngine = 'google';
-        const qenc = encodeURIComponent(topic);
-        out += `\n\nЗа още кажи „отвори в браузъра" или директно:\n` +
-          `🌍 Google: https://www.google.com/search?q=${qenc}\n` +
-          `▶ YouTube: https://www.youtube.com/results?search_query=${qenc}`;
-        return { text: out, source: 'source', learned: true };
-      }
-    } catch (_) { /* падам към фоново учене + браузър */ }
-
-    // Дори да няма какво да цитирам сега (жива заявка/няма статия/офлайн) → стартирам фоново
-    // учене (обхожда всички източници при следващите проверки) и отварям търсене в браузъра.
     try { intakeAndRun('научи за ' + topic); } catch (_) { /* фон — не блокира отговора */ }
     try { runBrowserIntent({ action: 'search', engine: 'google', query: topic }); } catch (_) {}
-    return { text: `Още не знам за „${topic}" от източник, който мога да цитирам — затова започвам да проучвам по-надълбоко. Питай ме пак след малко.`, source: 'rule', learning: true };
+    return { text: `Още не знам за „${topic}" — започвам да проучвам по-надълбоко. Питай ме пак след малко.`, source: 'rule', learning: true };
   }
   return { text: dontKnow(), source: 'rule' };
 }

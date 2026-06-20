@@ -63,7 +63,7 @@ export function teacherReady() {
 // --- tier1: Claude (ПЛАТЕН, РЕАЛЕН) ----------------------------------------
 
 // Прокси на собственика: POST {endpoint} { prompt } → { text } (ключът е на сървъра).
-async function callClaudeProxy(endpoint, prompt, timeoutMs = 20000) {
+async function callClaudeProxy(endpoint, prompt, timeoutMs = 45000) {
   if (typeof fetch !== 'function') return null;
   try {
     const res = await fetchTimeout(endpoint, {

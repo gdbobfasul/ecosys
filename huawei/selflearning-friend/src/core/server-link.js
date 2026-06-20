@@ -157,6 +157,11 @@ async function attemptConnect(url, timeoutMs) {
     // Запомни и features (ако ги има) — само информативно за UI.
     const st = getState();
     st.settings.server.features = (cfg.features && typeof cfg.features === 'object') ? cfg.features : {};
+    // Ако сървърът обявява СВОЙ AI (teacher endpoint) → прилагаме го, за да ползва апът МОДЕЛА НА
+    // СЪРВЪРА (tier1 в teacher.js), вместо облачния Pollinations. Само ако наистина е подаден.
+    if (cfg.teacher && typeof cfg.teacher === 'object' && cfg.teacher.endpoint) {
+      st.settings.teacher = { ...(st.settings.teacher || {}), ...cfg.teacher };
+    }
     persist();
 
     return { ok: true, domain: saved.domain, token: saved.token, storage, urls: saved.urls };

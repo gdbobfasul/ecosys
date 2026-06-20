@@ -113,6 +113,9 @@ Environment=SELFLEARNING_DATA_DIR=${DATA_DIR}
 # /tmp е read-only заради ProtectSystem=strict). Сложи 0, само ако СЪЗНАТЕЛНО искаш суров достъп.
 Environment=SELFLEARNING_EXEC_SAFE_MODE=1
 Environment=SELFLEARNING_EXEC_SANDBOX=${DATA_DIR}/exec-sandbox
+# ЛОКАЛЕН AI (Ollama): конфигът е в СЪРВЪР-ЛОКАЛЕН файл ai.env (пише се от секцията по-долу САМО
+# ако избереш да го инсталираш на ТОЗИ сървър). Деплоят НЕ го трие и НЕ влиза на production.
+EnvironmentFile=-${DATA_DIR}/ai.env
 ExecStart=/usr/bin/node server.js
 Restart=always
 RestartSec=10
@@ -153,7 +156,7 @@ location ^~ /api/selflearning/ {
     proxy_set_header X-Real-IP \$remote_addr;
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto \$scheme;
-    proxy_read_timeout 60;
+    proxy_read_timeout 180;
 }
 
 # WATCH (детегледачка / camera-watch) — сдвояване по двойка; кадри → по-голям лимит.
@@ -190,6 +193,61 @@ if nginx -T 2>/dev/null | grep -q 'kcy-apps/selflearning'; then
   echo -e "  ${GREEN}✓ Маршрутът е активен в nginx${NC}"
 else
   echo -e "  ${YELLOW}  ! include директивата още не е в основния конфиг — пусни ВЕДНЪЖ опция 2.${NC}"
+fi
+
+##############################################################################
+# 3) ЛОКАЛЕН AI (Ollama) — ПО ИЗБОР, само за СЕРИОЗЕН сървер/VM (НЕ за production)
+##############################################################################
+echo ""
+echo -e "${GREEN}[3/3] Локален AI (Ollama) — по избор...${NC}"
+AI_ENV="$DATA_DIR/ai.env"
+DO_AI=""
+case " $* " in *" --ai "*) DO_AI=y ;; esac
+[ "${AI_INSTALL:-}" = "1" ] && DO_AI=y
+if [ -z "$DO_AI" ]; then
+  echo -e "  ${YELLOW}Да инсталирам ли ЛОКАЛЕН езиков модел (Ollama + модел ~1-2GB) на ТОЗИ сървър?${NC}"
+  echo -e "  ${GRAY}Само за сериозни машини (напр. VM). НЕ за production (натоварва RAM/CPU).${NC}"
+  read -r -p "  Инсталирам ли локален AI? [y/N]: " DO_AI
+fi
+if printf '%s' "$DO_AI" | grep -qiE '^y'; then
+  DISK_FREE_GB=$(df -BG --output=avail "$DATA_DIR" 2>/dev/null | tail -1 | tr -dc '0-9'); DISK_FREE_GB=${DISK_FREE_GB:-0}
+  RAM_MB=$(free -m 2>/dev/null | awk '/^Mem:/{print $2}'); RAM_MB=${RAM_MB:-0}
+  echo -e "  ${CYAN}Свободен диск: ${DISK_FREE_GB}GB · RAM: ${RAM_MB}MB${NC}"
+  AI_MODEL=""
+  if [ "$DISK_FREE_GB" -ge 3 ] && [ "$RAM_MB" -ge 2800 ]; then AI_MODEL="qwen2.5:3b"
+  elif [ "$DISK_FREE_GB" -ge 2 ] && [ "$RAM_MB" -ge 1700 ]; then AI_MODEL="llama3.2:1b"
+  fi
+  if [ -z "$AI_MODEL" ]; then
+    echo -e "  ${RED}✗ Недостатъчно ресурси (нужни ≥3GB диск и ≥3GB RAM за 3B; или ≥2GB/≥2GB за 1B). Пропускам.${NC}"
+    echo -e "  ${YELLOW}→ Този сървер е СЛАБ за AI (ниво 2): роботът ще ползва ОБЛАЧЕН AI (като телефона).${NC}"
+  else
+    echo -e "  ${GREEN}Избран модел: ${AI_MODEL}${NC}"
+    if ! command -v ollama >/dev/null 2>&1; then
+      echo -e "  ${CYAN}Инсталирам Ollama...${NC}"
+      curl -fsSL https://ollama.com/install.sh | sh
+    fi
+    systemctl enable --now ollama 2>/dev/null || true
+    sleep 2
+    echo -e "  ${CYAN}Тегля модела ${AI_MODEL} (еднократно)...${NC}"
+    if ollama pull "$AI_MODEL"; then
+      mkdir -p "$DATA_DIR"
+      cat > "$AI_ENV" <<AIENV
+SELFLEARNING_AI_ENABLED=1
+SELFLEARNING_AI_MODEL=${AI_MODEL}
+SELFLEARNING_AI_URL=http://127.0.0.1:11434
+AIENV
+      chown "$SVC_USER":"$SVC_GROUP" "$AI_ENV" 2>/dev/null || true
+      chmod 640 "$AI_ENV" 2>/dev/null || true
+      systemctl restart "${SVC}.service" 2>/dev/null || true
+      echo -e "  ${GREEN}✓ Локален AI готов (${AI_MODEL}). Endpoint: /api/selflearning/ai/<token>${NC}"
+      echo -e "  ${GREEN}→ Този сървер е НОРМАЛЕН за AI (ниво 3): локален модел + дълбоко учене.${NC}"
+      echo -e "  ${GRAY}Сега пусни опция 81 → ще го обяви на робота (апът ще ползва СЪРВЪРНИЯ модел).${NC}"
+    else
+      echo -e "  ${RED}✗ Тегленето на модела не успя. Локалният AI остава изключен.${NC}"
+    fi
+  fi
+else
+  echo -e "  ${GRAY}Пропуснат локален AI → ниво 2 (СЛАБ/облачен AI) или production. Роботът ще ползва облачния AI.${NC}"
 fi
 
 echo ""

@@ -75,6 +75,19 @@ export function setCrawlMode(mode) {
   return st.settings.learning.crawlMode;
 }
 
+// Кой AI ползва апът СЕГА (за изричен показ на нивото):
+//   'server' → локален модел на свързан НОРМАЛЕН сървер (ниво 3);
+//   'cloud'  → облачен Pollinations (телефон/ниво 1, или СЛАБ сървер/ниво 2);
+//   'rules'  → без AI (само правила).
+export function aiSource() {
+  try {
+    const t = (getState().settings && getState().settings.teacher) || {};
+    if (serverLinkConfigured() && t.endpoint && t.approved) return { mode: 'server', label: 'сървърен модел (локален на сървъра)' };
+  } catch (_) { /* без сървър */ }
+  try { if (getState().settings && getState().settings.useAi) return { mode: 'cloud', label: 'облачен (Pollinations)' }; } catch (_) {}
+  return { mode: 'rules', label: 'само правила (без AI)' };
+}
+
 // Бюджет за ЕДНО обхождане: цел брой бележки, таван заявки и ТВЪРД таван на базата (байтове).
 // Тванът MB е ОБЩ (спирачка на базата) и важи при ВСЯКА стратегия; стратегията мени само колко
 // взима ЕДНО обхождане (дълбоко по 1 тема vs леко по много теми).

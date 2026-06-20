@@ -3,7 +3,7 @@ import { el, clear, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
 import { lock } from '../core/identity.js';
 import { learningEnabled, setLearningEnabled, getLearnRole, setLearnRole } from '../core/learning-loop.js';
-import { dbSizeMB, maxDbMB, setMaxDbMB, learnBudget, crawlMode, setCrawlMode, deepAllowed } from '../core/learn-budget.js';
+import { dbSizeMB, maxDbMB, setMaxDbMB, learnBudget, crawlMode, setCrawlMode, deepAllowed, aiSource } from '../core/learn-budget.js';
 import { listInterests, addInterest, removeInterest } from '../core/subjects.js';
 import { buildOwnershipDossier, formatDossier } from '../core/device.js';
 import { notesCount } from '../core/subjects.js';
@@ -275,6 +275,8 @@ export function renderSettings(root, { rerender }) {
   const curMB = (() => { try { return dbSizeMB(); } catch (_) { return 0; } })();
   const usageLine = el('div', { class: 'muted', style: 'font-size:13px;margin-top:4px' },
     `Сега базата заема ~${curMB.toFixed(2)} MB. Режим: ${bud.deep ? 'ДЪЛБОК (сериозен)' : 'ЛЕК (телефон)'} · цел на едно обхождане ~${bud.targetNotes} бележки.`);
+  const aiSrc = (() => { try { return aiSource(); } catch (_) { return { label: '—' }; } })();
+  const aiLine = el('div', { class: 'muted', style: 'font-size:13px' }, `AI сега: ${aiSrc.label}.`);
   const mbSelect = el('select', {});
   for (const v of [4, 8, 16, 32, 64, 128, 256]) {
     const o = el('option', { value: String(v) }, v + ' MB');
@@ -308,6 +310,7 @@ export function renderSettings(root, { rerender }) {
       'Дълбокото учене (обхождане на „дървото") спира, щом базата стигне този таван — за да НЕ забива телефонът. ' +
       'На десктоп/сериозен сървър ученето е дълбоко (хиляди бележки); на телефон — леко с таван.'),
     usageLine,
+    aiLine,
     el('label', {}, 'Таван на локалната база'),
     mbSelect,
     el('label', {}, 'Стратегия на учене (телефон, същия таван)'),
