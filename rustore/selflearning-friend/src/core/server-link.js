@@ -94,26 +94,31 @@ export function buildConnectionUrl(keyOrUrl, defaultDomain = DEFAULT_CONN_DOMAIN
   return `https://${defaultDomain}/${s}/${CONN_FILE}`;     // само ключ
 }
 
-// Тегли connection.bot.token и конфигурира връзката. Връща { ok, domain, token, storage } или { ok:false, error }.
-export async function connectWithKey(keyOrUrl, { defaultDomain = DEFAULT_CONN_DOMAIN, timeoutMs = 12000 } = {}) {
-  const url = buildConnectionUrl(keyOrUrl, defaultDomain);
-  if (!url) return { ok: false, error: 'Въведи таен ключ или URL.' };
-  if (typeof fetch !== 'function') return { ok: false, error: 'Няма мрежа в тази среда.' };
-
+// ЕДИН опит за теглене на connection.bot.token. Връща { ok, ... } или { ok:false, error, retryable }.
+// retryable=true означава „файлът може още да не е качен/разпространен" → има смисъл да пробваме пак.
+async function attemptConnect(url, timeoutMs) {
   const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
   const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
   try {
     const res = await fetch(url, { cache: 'no-store', signal: ctrl ? ctrl.signal : undefined });
-    if (!res.ok) return { ok: false, error: `Не намерих настройките (сървърът върна ${res.status}). Провери ключа.` };
+    if (!res.ok) {
+      // 404/403/5xx → файлът най-вероятно още не е публикуван/разпространен → пробвай пак.
+      return { ok: false, error: `сървърът върна ${res.status}`, retryable: true };
+    }
     let cfg = null;
-    try { cfg = await res.json(); } catch (_) { return { ok: false, error: 'Файлът с настройки не е валиден.' }; }
-    if (!cfg || cfg.kind !== 'slf-connection') return { ok: false, error: 'Това не е валиден файл за връзка (connection.bot.token).' };
+    try { cfg = await res.json(); } catch (_) {
+      // Невалиден JSON често значи частично качен файл → пробвай пак.
+      return { ok: false, error: 'файлът с настройки още не е готов', retryable: true };
+    }
+    if (!cfg || cfg.kind !== 'slf-connection') {
+      return { ok: false, error: 'това не е валиден файл за връзка (connection.bot.token)', retryable: false };
+    }
 
     // Домейн: от файла, иначе от самия URL (хоста преди /<ключ>/).
     let domain = normalizeDomain(cfg.domain || '');
     if (!domain) { try { domain = new URL(url).host; } catch (_) {} }
     const token = String(cfg.token || '').trim();
-    if (!domain || !token) return { ok: false, error: 'Във файла липсва домейн или token.' };
+    if (!domain || !token) return { ok: false, error: 'във файла липсва домейн или token', retryable: false };
 
     const storage = (cfg.storage === 'server') ? 'server' : 'local';
     const saved = saveServerLink(domain, token, { storage });
@@ -126,8 +131,56 @@ export async function connectWithKey(keyOrUrl, { defaultDomain = DEFAULT_CONN_DO
     return { ok: true, domain: saved.domain, token: saved.token, storage, urls: saved.urls };
   } catch (e) {
     const msg = String((e && e.message) || e);
-    return { ok: false, error: /abort/i.test(msg) ? 'Изтеглянето отне твърде дълго (таймаут).' : ('Грешка при връзката: ' + msg) };
+    // Таймаут/мрежова грешка → файлът/SSL може още да не е готов → пробвай пак.
+    return { ok: false, error: /abort/i.test(msg) ? 'изтеглянето отне твърде дълго (таймаут)' : msg, retryable: true };
   } finally {
     if (timer) clearTimeout(timer);
   }
+}
+
+function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
+
+// Тегли connection.bot.token и конфигурира връзката — С ИЗЧАКВАНЕ И ПОВТОРНИ ОПИТИ.
+// Публикуваният през HTTPS файл понякога се появява след ~30с (SSL/разпространение),
+// затова НЕ се отказваме на първия неуспех: правим до (retries+1) опита, по 1 минута
+// пауза между тях. Така апът „чака" файла, вместо да гръмне веднага с „failed to fetch".
+//   timeoutMs    — таймаут на ЕДИН опит (колко да ЧАКА резултата от заявката). ВАЖНО:
+//                  сървърът понякога се бави дълго ДОКАТО ИЗОБЩО почне да отговаря (публикуване
+//                  на файла/SSL/разпространение), затова таймаутът е голям (180с = 3 мин) — да
+//                  НЕ прекъсваме заявката, преди отговорът да е тръгнал.
+//   retries      — колко ДОПЪЛНИТЕЛНИ опита след първия (по подразбиране 3 → общо 4 опита)
+//   retryDelayMs — пауза между опитите (по подразбиране 60000 = 1 минута)
+//   onProgress(info) — по избор: уведомява UI коя стъпка тече { attempt, total, waitingMs }
+export async function connectWithKey(keyOrUrl, {
+  defaultDomain = DEFAULT_CONN_DOMAIN,
+  timeoutMs = 180000,
+  retries = 3,
+  retryDelayMs = 60000,
+  onProgress = null
+} = {}) {
+  const url = buildConnectionUrl(keyOrUrl, defaultDomain);
+  if (!url) return { ok: false, error: 'Въведи таен ключ или URL.' };
+  if (typeof fetch !== 'function') return { ok: false, error: 'Няма мрежа в тази среда.' };
+
+  const total = (retries || 0) + 1;
+  let last = null;
+  for (let attempt = 1; attempt <= total; attempt++) {
+    if (onProgress) { try { onProgress({ attempt, total, waitingMs: 0 }); } catch (_) {} }
+    last = await attemptConnect(url, timeoutMs);
+    if (last.ok) return last;
+    // Невъзстановима грешка (напр. валиден файл, но грешен формат) → няма смисъл да чакаме.
+    if (last.retryable === false) {
+      return { ok: false, error: 'Не намерих валидни настройки: ' + last.error + '. Провери ключа.' };
+    }
+    // Има още опити → изчакай 1 минута и пробвай пак (файлът може още да се качва).
+    if (attempt < total) {
+      if (onProgress) { try { onProgress({ attempt, total, waitingMs: retryDelayMs }); } catch (_) {} }
+      await sleep(retryDelayMs);
+    }
+  }
+  return {
+    ok: false,
+    error: `Не успях да сваля настройките след ${total} опита (${(last && last.error) || 'няма връзка'}). ` +
+      'Изчакай файлът да се публикува и пробвай пак, или провери ключа/домейна.'
+  };
 }

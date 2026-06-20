@@ -205,13 +205,26 @@ export function renderSources(root, { rerender }) {
       'смени домейна и въведи своя ключ.'),
     el('label', {}, 'Домейн на сървъра'), keyDomainIn,
     el('label', {}, 'Ключ за връзка'), keyIn,
-    el('button', { class: 'block', style: 'margin-top:10px', onclick: async () => {
+    el('button', { class: 'block', style: 'margin-top:10px', onclick: async (ev) => {
+      const btn = ev.currentTarget;
       const dom = keyDomainIn.value.trim() || 'selflearning.bot.nu';
       const k = keyIn.value.trim();
       if (!k) { toast('Въведи ключа за връзка.'); return; }
       const ref = /^https?:\/\//i.test(k) ? k : (dom + '/' + k);
-      keyHint.textContent = 'Свързвам се…';
-      const r = await connectWithKey(ref);
+      // Файлът може да се появи след ~30с (SSL/разпространение) → апът ЧАКА и пробва
+      // няколко пъти по минута. Заключваме бутона и показваме коя стъпка тече.
+      btn.disabled = true;
+      keyHint.textContent = 'Свързвам се… изчаквам сървъра (до ~3 мин на опит) — не затваряй.';
+      const r = await connectWithKey(ref, {
+        onProgress: ({ attempt, total, waitingMs }) => {
+          if (waitingMs > 0) {
+            keyHint.textContent = `Още не е готово (опит ${attempt}/${total}) — чакам 1 минута и пробвам пак…`;
+          } else {
+            keyHint.textContent = `Свързвам се… изчаквам сървъра (опит ${attempt}/${total}, до ~3 мин) — не затваряй.`;
+          }
+        }
+      });
+      btn.disabled = false;
       if (r.ok) {
         domainIn.value = r.domain; tokenIn.value = r.token; renderUrls();
         keyHint.textContent = `✓ Свързан с ${r.domain}`;

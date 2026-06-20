@@ -13,15 +13,26 @@
 
 const TIMEOUT = 9000;
 
+// Брояч на „достигнат сървър" vs „мрежова грешка" (за да различим ОФЛАЙН от „няма данни").
+// _netReached расте при ВСЕКИ получен HTTP отговор (дори 404); _netFailed — при мрежова
+// грешка/таймаут/блокиран достъп (изобщо не стигнахме до сървъра). gatherTopicKnowledge
+// чете _netReached около всеки източник, за да реши „минат ли е" (само ако е достигнат).
+let _netReached = 0;
+let _netFailed = 0;
+export function netCounters() { return { reached: _netReached, failed: _netFailed }; }
+
 async function getJson(url, { timeoutMs = TIMEOUT, accept = 'application/json' } = {}) {
   if (typeof fetch !== 'function') return null;
   const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
   const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
+  let reached = false;
   try {
     const res = await fetch(url, { headers: { Accept: accept }, signal: ctrl ? ctrl.signal : undefined });
+    reached = true; _netReached++;          // сървърът отговори (дори да е !ok)
     if (!res.ok) return null;
     return await res.json();
   } catch (_) {
+    if (!reached) _netFailed++;             // изобщо не стигнахме (офлайн/таймаут/блокиран)
     return null;
   } finally {
     if (timer) clearTimeout(timer);
@@ -32,11 +43,14 @@ async function getText(url, { timeoutMs = TIMEOUT } = {}) {
   if (typeof fetch !== 'function') return null;
   const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
   const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
+  let reached = false;
   try {
     const res = await fetch(url, { signal: ctrl ? ctrl.signal : undefined });
+    reached = true; _netReached++;
     if (!res.ok) return null;
     return await res.text();
   } catch (_) {
+    if (!reached) _netFailed++;
     return null;
   } finally {
     if (timer) clearTimeout(timer);
@@ -196,12 +210,15 @@ export async function gatherTopicKnowledge(topic, { lang = 'bg', excludeKeys = [
     { key: 'stackex',    run: () => fetchStackExchange(topic) }
   ];
   const notes = [];
-  const tried = [];
+  const tried = [];     // източници, които РЕАЛНО отговориха (броят се към „изчерпване")
+  const failed = [];    // източници, до които НЕ стигнахме (офлайн/блокирани) — НЕ изчерпване
   for (const s of SOURCES) {
     if (ex.has(s.key)) continue;
-    tried.push(s.key);
+    const reachedBefore = _netReached;
     let r = null;
     try { r = await s.run(); } catch (_) { r = null; }
+    // „минат" САМО ако поне една заявка на този източник е получила отговор от сървър.
+    if (_netReached > reachedBefore) tried.push(s.key); else failed.push(s.key);
     if (r && r.ok) {
       const text = String(r.summary || r.text || '').trim();
       if (text) notes.push({ text, source: r.citation || r.source || s.key, url: r.url || '', key: s.key });
@@ -210,7 +227,7 @@ export async function gatherTopicKnowledge(topic, { lang = 'bg', excludeKeys = [
       }
     }
   }
-  return { notes, tried };
+  return { notes, tried, failed };
 }
 
 // Колко източника общо има (за „изчерпах ли всичко" — праг).

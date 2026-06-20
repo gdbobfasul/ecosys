@@ -48,10 +48,8 @@ export function renderSettings(root, { rerender }) {
   root.appendChild(el('div', { class: 'card' }, [
     toggleRow('Безплатен AI помощник',
       'По избор: при онлайн ползва безплатния keyless Pollinations за по-богати отговори. Изключи го за изцяло офлайн режим. При неуспех винаги пада към паметта/правилата.',
-      'useAi'),
-    toggleRow('Питай името при отваряне',
-      'След период на неактивност ще питам „Как се казвам?“ преди достъп.',
-      'askOnReopen')
+      'useAi')
+    // (Авто-заключването вече е в картата „Заключване“ по-долу — с избор за таймаут.)
   ]));
 
   // --- ЛИЧНИ ДАННИ: глобалният режим, избран при раждането (сменяем) ---
@@ -386,22 +384,45 @@ export function renderSettings(root, { rerender }) {
     el('p', { class: 'muted', style: 'font-size:13px' }, PRINCIPLE_TEXT)
   ]));
 
-  // Числови настройки на заключването.
-  const idle = el('input', { type: 'number', min: '1', max: '120', value: String(st.settings.inactivityMin) });
+  // АВТО-ЗАКЛЮЧВАНЕ при бездействие: падащо меню с готови таймаути.
+  // „Никога" (по подразбиране) → НЕ се самозаключва (askOnReopen=false). Числов избор →
+  // самозаключва се след толкова минути бездействие (askOnReopen=true + inactivityMin).
+  const AUTO_LOCK_OPTIONS = [
+    { v: 0,  label: 'Никога (не се заключва)' },
+    { v: 5,  label: 'След 5 минути' },
+    { v: 10, label: 'След 10 минути' },
+    { v: 30, label: 'След 30 минути' },
+    { v: 60, label: 'След 1 час' }
+  ];
+  // Текуща стойност: ако авто-заключването е изключено → 0 (Никога); иначе минутите.
+  const curAutoLock = st.settings.askOnReopen ? (st.settings.inactivityMin || 10) : 0;
+  const idleSel = el('select', {},
+    AUTO_LOCK_OPTIONS.map((o) => el('option', { value: String(o.v) }, o.label))
+  );
+  idleSel.value = String(curAutoLock);
+
   const maxA = el('input', { type: 'number', min: '1', max: '20', value: String(st.settings.maxAttempts) });
   const cool = el('input', { type: 'number', min: '1', max: '60', value: String(st.settings.cooldownMin) });
 
   root.appendChild(el('div', { class: 'card' }, [
     el('h3', {}, 'Заключване'),
-    el('label', {}, 'Неактивност преди заключване (минути)'), idle,
+    el('label', {}, 'Авто-заключване при бездействие'), idleSel,
+    el('p', { class: 'muted', style: 'font-size:12px;margin:4px 0 8px' },
+      'По подразбиране НЕ се заключва само. Избери таймаут, ако искаш да иска кодовата дума след период на бездействие.'),
     el('label', {}, 'Грешни опити преди пауза'), maxA,
     el('label', {}, 'Пауза при много грешки (минути)'), cool,
     el('button', { class: 'block', style: 'margin-top:12px', onclick: () => {
-      st.settings.inactivityMin = clampNum(idle.value, 1, 120, 10);
+      const mins = parseInt(idleSel.value, 10) || 0;
+      if (mins <= 0) {
+        st.settings.askOnReopen = false;            // Никога → не се самозаключва
+      } else {
+        st.settings.askOnReopen = true;
+        st.settings.inactivityMin = mins;           // самозаключи се след толкова минути
+      }
       st.settings.maxAttempts = clampNum(maxA.value, 1, 20, 5);
       st.settings.cooldownMin = clampNum(cool.value, 1, 60, 2);
       persist();
-      toast('Запазено.');
+      toast(mins <= 0 ? 'Запазено — няма да се самозаключва.' : `Запазено — авто-заключване след ${mins} мин.`);
     } }, 'Запази заключването')
   ]));
 

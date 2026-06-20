@@ -121,7 +121,9 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 .bubble.owner { align-self: flex-end; background: var(--accent); border-bottom-right-radius: 5px; }
 .bubble .tag { display:block; font-size: 11px; opacity:.6; margin-top: 4px; }
 .composer { position: sticky; bottom: 0; display: flex; gap: 8px; padding: 10px 0; background: linear-gradient(transparent, var(--bg) 30%); }
-.composer input { flex: 1; }
+/* scroll-margin-bottom: при фокус (писане) scrollIntoView оставя това разстояние под полето,
+   за да НЕ го покрива клавиатурата/таб-барът (преди оставаше ~20px ниско). */
+.composer input { flex: 1; scroll-margin-bottom: 96px; }
 
 /* --- Микрофон (гласов вход) --- */
 .mic-btn { flex: none; padding: 12px 14px; }

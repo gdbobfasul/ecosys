@@ -107,73 +107,123 @@ export async function startListening({ lang = DEFAULT_LANG, onInterim = null } =
   throw new Error('no-stt'); // викащият показва дружелюбно съобщение и оставя писането
 }
 
-// Нативно (Capacitor community speech-recognition).
+// Нативно (Capacitor community speech-recognition) — НЕПРЕКЪСНАТА ДИКТОВКА.
 //
-// ВАЖНО (поправка на „постоянен тип-звук + триене на текста"): предишният подход
-// РЕСТАРТИРАШЕ разпознаването (re-arm), а Android свири тон при ВСеки `start()` →
-// непрекъснат досаден звук, и всеки рестарт нулираше частичния резултат → текстът се
-// триеше. Затова сега правим ЕДНА сесия: слушаме веднъж, трупаме само НАЙ-ДОБРИЯ
-// (последен непразен) частичен резултат, и финализираме при 'stopped' / финал от
-// start() / предпазен таймаут. БЕЗ рестарт → един звук, без триене. Ако искаш да
-// добавиш още — натисни микрофона пак (нова реплика), или ползвай режим „Разговор".
+// ПРОБЛЕМ, който решаваме: Android спира разпознаването при ПЪРВАТА кратка тишина
+// (след 3-4 думи) и връща финал. Затова преди диктовката „спираше" по средата на
+// изречение. Решение: щом един сегмент приключи (тишина), РЕ-стартираме нов сегмент и
+// ДОЛЕПЯМЕ резултата към вече казаното → говориш свободно през естествените паузи.
+//
+// БЕЗ връщане на стария бъг „постоянен тон + триене": (1) тонът на ОС се чува само при
+// реалния старт на НОВ сегмент — тоест на пауза, НЕ непрекъснато; (2) НИКОГА не трием —
+// само долепяме (committed расте). Спираме чисто когато: натиснеш 🎤 пак (стоп), 2
+// поредни ТИХИ сегмента (спрял си да говориш), празен сегмент приключил твърде бързо
+// (грешка/няма реч — за да няма тон в цикъл), или общ таван за дължината на диктовката.
 async function startNative(sr, lang, onInterim) {
   // Подсигури разрешение (тихо).
   try { await requestMicPermission(); } catch (_) {}
+
+  // КРИТИЧНО за Xiaomi/MIUI: нативният разпознавател се „запъва" при бързо рестартиране
+  // (затова СЛЕДВАЩИТЕ натискания гърмяха веднага). Преди нов старт спираме евентуална стара
+  // сесия и махаме старите слушатели — но БЕЗ `await` (когато няма какво да се спира, тези
+  // извиквания МОГАТ ДА УВИСНАТ на този плъгин → микрофонът оставаше включен и не записваше).
+  try { if (typeof sr.removeAllListeners === 'function') sr.removeAllListeners(); } catch (_) {}
+  try { if (typeof sr.stop === 'function') sr.stop(); } catch (_) {}
+  await new Promise((r) => setTimeout(r, 250));   // кратка пауза за освобождаване на разпознавателя
+
   _nativeListening = true;
   _nativeStopRequested = false;
 
-  return new Promise((resolve) => {
-    let best = '';            // последен НЕПРАЗЕН частичен резултат (никога не трием с празно)
-    let settled = false;
-    let safetyTimer = null;
+  const SAFETY_MS = 15000;        // ако ОС не прати 'stopped' → затваряме сами (не виси)
+  const RETRY_DELAY_MS = 450;     // ако разпознавателят е бил зает → изчакай и пробвай старт пак
+  const MAX_STARTS = 2;           // най-много 2 опита за старт (1 + 1 повторен при зает)
 
-    async function cleanup() {
+  return new Promise((resolve) => {
+    // ЕДНА реплика на натискане (без авто-рестарт — той чупеше MIUI). Връщаме чутото; чатът
+    // го долепя към вече въведеното, а за още думи натискаш 🎤 пак (надеждно).
+    let best = '';                // последен НЕПРАЗЕН частичен/финален резултат
+    let gotSignal = false;        // получили ли сме реален partial/final за тази сесия
+    let settled = false;
+    let starts = 0;
+    let safety = null;
+
+    function cleanup() {
       _nativeListening = false;
-      if (safetyTimer) { clearTimeout(safetyTimer); safetyTimer = null; }
-      try { if (typeof sr.removeAllListeners === 'function') await sr.removeAllListeners(); } catch (_) {}
+      if (safety) { clearTimeout(safety); safety = null; }
+      // БЕЗ await — да не може да увисне и да блокира приключването.
+      try { if (typeof sr.removeAllListeners === 'function') sr.removeAllListeners(); } catch (_) {}
     }
-    async function finish(val) {
+    function finish(val) {
       if (settled) return;
       settled = true;
       try { if (typeof sr.stop === 'function') sr.stop(); } catch (_) {}
-      await cleanup();
+      cleanup();
       resolve(String(val != null ? val : best || '').trim());
     }
 
-    (async () => {
+    function onStopped() {
+      if (settled) return;
+      // Ръчен стоп (натиснал си 🎤 пак) → приключи веднага, БЕЗ повторен старт.
+      if (_nativeStopRequested) { finish(); return; }
+      if (best) { finish(); return; }                 // имаме реч → готово
+      // Спря без нито една дума и още не сме чули нищо → разпознавателят вероятно е бил зает.
+      // Пробвай старт ПАК веднъж (с пауза), вместо да се предаваш веднага (това поправя
+      // „следващите натискания спират да записват").
+      if (!gotSignal && starts < MAX_STARTS) {
+        setTimeout(() => { if (!settled && !_nativeStopRequested) doStart(); else finish(); }, RETRY_DELAY_MS);
+        return;
+      }
+      finish();
+    }
+
+    async function doStart() {
+      if (settled) return;
+      starts++;
+      if (safety) { clearTimeout(safety); safety = null; }
+      // чисти слушатели за този опит (БЕЗ await — да не увисва)
+      try { if (typeof sr.removeAllListeners === 'function') sr.removeAllListeners(); } catch (_) {}
       try {
         if (typeof sr.addListener === 'function') {
           await sr.addListener('partialResults', (data) => {
             const arr = (data && data.matches) || [];
             const txt = arr.length ? String(arr[0] || '') : '';
             if (txt) {                                  // САМО непразно → не трие вече показаното
+              gotSignal = true;
               best = txt;
               if (onInterim) { try { onInterim(best); } catch (_) {} }
             }
           });
-          // Край на изказването (тишина / извикан stop) → финализирай. БЕЗ рестарт.
           try {
             await sr.addListener('listeningState', (data) => {
               const status = data && (data.status || data.state);
-              if (status === 'stopped') finish();
+              if (status === 'stopped') onStopped();
             });
-          } catch (_) { /* по-стари версии: разчитаме на връщането на start() + таймаута */ }
+          } catch (_) { /* по-стари версии: разчитаме на финала от start() + таймера */ }
         }
-      } catch (_) { /* без слушатели → разчитаме на връщането на start() */ }
+      } catch (_) { /* без слушатели → разчитаме на финала от start() + таймера */ }
 
-      // ЕДИН старт (един тон). Някои платформи връщат финала директно тук.
       try {
         const res = await sr.start({ language: lang, maxResults: 5, partialResults: true, popup: false });
         const matches = (res && res.matches) || [];
-        if (matches.length && String(matches[0] || '').trim()) finish(matches[0]);
-        // иначе чакаме 'partialResults' + 'stopped' (Android)
+        if (matches.length && String(matches[0] || '').trim()) {
+          // Платформа, която връща финала директно от start().
+          best = String(matches[0]); gotSignal = true; finish(); return;
+        }
+        // иначе: start() само потвърди „слушам" → чакаме partial/stopped.
       } catch (e) {
-        finish(best); // грешка при старт → връщаме каквото имаме
+        // Стартът се провали (зает разпознавател) → изчакай и пробвай пак веднъж (ако не е стоп).
+        if (starts < MAX_STARTS && !settled && !_nativeStopRequested) {
+          setTimeout(() => { if (!settled && !_nativeStopRequested) doStart(); else finish(); }, RETRY_DELAY_MS);
+          return;
+        }
+        finish(); return;
       }
 
-      // Предпазен таван: не блокирай вечно, ако нищо не приключи слушането.
-      safetyTimer = setTimeout(() => finish(), 15000);
-    })();
+      // Предпазен таван: ако ОС не прати 'stopped' и нямаме реч → не виси.
+      safety = setTimeout(() => finish(), SAFETY_MS);
+    }
+
+    doStart();
   });
 }
 

@@ -117,6 +117,18 @@ export async function runTask(task) {
       }
       const totalTried = subjectSourcesTried(topic).length;
       const totalNotes = (getSubject(topic) || { notes: [] }).notes.length;
+      const reachedNow = (g.tried || []).length;
+      const failedNow = (g.failed || []).length;
+
+      // ОФЛАЙН/БЛОКИРАНИ: ако този пас не достигна НИТО ЕДИН източник (всички паднаха с
+      // мрежова грешка) → НЕ е „изчерпано", а няма връзка. НЕ маркираме нищо като минато
+      // (затова и не отравяме броя), за да опитаме пак щом има интернет.
+      if (added === 0 && reachedNow === 0 && failedNow > 0) {
+        return { ok: false, kind: task.kind, learned: false,
+          text: `Не можах да стигна до източниците за „${topic}" (${failedNow} опита без връзка — ` +
+            `телефонът е офлайн или източниците са блокирани в момента). НЕ съм изчерпал темата — ` +
+            `провери връзката и ми кажи пак „научи за ${topic}".` };
+      }
 
       // ИЗЧЕРПВАНЕ: минати всички източници И този пас не добави нищо ново → темата е покрита.
       if (added === 0 && totalTried >= TOPIC_SOURCE_COUNT) {

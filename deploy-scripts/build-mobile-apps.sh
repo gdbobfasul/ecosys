@@ -204,6 +204,13 @@ build_one() {
     if [ ! -d node_modules ]; then
       echo -e "  ${CYAN}→ npm install…${NC}"; npm install || { echo -e "  ${RED}✗ npm install се провали${NC}"; exit 2; }
     fi
+    # Версия във web бъндъла: ако апът има src/version.js, го презаписваме с текущата
+    # версия (00047.version) ПРЕДИ vite build → числото влиза в бъндъла и апът го показва
+    # при старт (така веднага виждаш, че кодът е сменен). Апове без този файл се пропускат.
+    if [ -f src/version.js ]; then
+      printf "// Автогенериран от build-mobile-apps.sh — НЕ редактирай ръчно.\nexport const APP_VERSION = '%s';\n" "$APK_VERSION_NAME" > src/version.js
+      echo -e "  ${GREEN}✓ src/version.js → ${APK_VERSION_NAME}${NC}"
+    fi
     echo -e "  ${CYAN}→ npm run build (web)…${NC}"
     npm run build || { echo -e "  ${RED}✗ web билдът се провали${NC}"; exit 3; }
     echo -e "  ${GREEN}✓ web билд готов → $d/dist${NC}"

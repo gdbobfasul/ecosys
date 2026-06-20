@@ -10,6 +10,7 @@ import {
   voiceprintSupported, voiceProfileEnabled, voiceProfileExists,
   captureSampleFeatures, addEnrollmentSample, matchOwnerVoice, enrollmentProgress
 } from '../core/voiceprint.js';
+import { APP_VERSION } from '../version.js';
 
 const SRC_LABEL = {
   memory: 'от паметта', rule: 'правило', ai: 'AI (предположение)',
@@ -46,6 +47,12 @@ export function renderChat(root, { navigate, rerender }) {
       class: 'ghost', onclick: () => { stopConversation(); stopSpeaking(); stopListening(); lock(); rerender(); }
     }, '🔒 Заключи')
   ]);
+
+  // ВЕРСИЯ при старт: винаги показваме коя версия върви — така веднага виждаш, че кодът е
+  // сменен (числото идва от 00047.version, инжектира се в src/version.js при всеки билд).
+  const versionLine = el('div', {
+    class: 'muted', style: 'font-size:12px;margin:-4px 0 8px 2px;opacity:.75'
+  }, `Версия ${APP_VERSION}`);
 
   // --- ГЛАСОВ ПРОФИЛ (МЕК сигнал) -----------------------------------------
   // След успешна гласова реплика на собственика: или обучаваме профила (докато
@@ -91,7 +98,12 @@ export function renderChat(root, { navigate, rerender }) {
 
   const list = el('div', { class: 'chat-list' });
   const input = el('input', { type: 'text', placeholder: 'Кажи нещо или ме научи…', autocomplete: 'off' });
-  const sendBtn = el('button', { onclick: () => send() }, '➤');
+  // „Изпрати": ако микрофонът РАБОТИ в момента → първо го спира, после праща наученото
+  // (потребителят поиска: и микрофонът, и „Изпрати" да спират записа).
+  const sendBtn = el('button', { onclick: () => {
+    if (listening) { pendingSend = true; stopListening(); }
+    else send();
+  } }, '➤');
 
   // --- ГЛАС: микрофон бутон (само ако е включен и платформата поддържа STT) ---
   const voiceCfg = st.settings.voice || {};
@@ -99,6 +111,7 @@ export function renderChat(root, { navigate, rerender }) {
     class: 'secondary mic-btn', title: 'Говори', 'aria-label': 'Говори'
   }, '🎤');
   let listening = false;
+  let pendingSend = false; // вдигнат от „Изпрати" по време на слушане → прати щом микрофонът спре
   // Клик на 🎤 = ЕДНО слушане, само ПОПЪЛВА полето (не праща сам). Така нищо не тръгва
   // в чата без да натиснеш „Изпрати“. Пълно авто има само в „💬 Разговор“.
   micBtn.addEventListener('click', () => onMic({ autoSend: false }));
@@ -112,6 +125,7 @@ export function renderChat(root, { navigate, rerender }) {
       return;
     }
     listening = true;
+    pendingSend = false; // ново слушане → нулирай евентуален стар „прати щом спре"
     micBtn.classList.add('on');
     // ЗАПАЗИ вече въведеното → новата реч се ДОЛЕПЯ (а не замества; затова преди се триеше
     // и не можеше да допълваш — при второ натискане новата реплика заместваше старата).
@@ -148,8 +162,13 @@ export function renderChat(root, { navigate, rerender }) {
     if (heard) {
       input.value = join(prefix, heard);   // финално долепяне към вече казаното/написаното
       runVoiceprintSoft();                 // МЕК гласов сигнал (фон; не блокира; не пипа лока)
-      if (autoSend) send(input.value.trim());
       // НЕ фокусираме полето → клавиатурата НЕ изскача. Натисни 🎤 пак за още думи, или „Изпрати".
+    }
+    // Пращане: авто-режим (Разговор) ИЛИ натиснат „Изпрати" по време на слушане (pendingSend).
+    if (pendingSend || (autoSend && heard)) {
+      pendingSend = false;
+      const toSend = input.value.trim();
+      if (toSend) send(toSend);
     }
   }
 
@@ -232,6 +251,16 @@ export function renderChat(root, { navigate, rerender }) {
 
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
 
+  // Когато ПИШЕШ (микрофонът е изключен → полето е активно и клавиатурата изскача), тя
+  // покриваше долните ~20px на полето. При фокус вдигаме полето над клавиатурата/таб-бара
+  // с буфер (scroll-margin-bottom в CSS + scrollIntoView след анимацията на клавиатурата).
+  // ВАЖНО: при работещ микрофон полето е disabled → не може да получи фокус → това НЕ се
+  // задейства и клавиатурата НЕ изскача (точно както трябва).
+  input.addEventListener('focus', () => {
+    if (input.disabled) return; // микрофонът работи → не пипаме
+    setTimeout(() => { try { input.scrollIntoView({ block: 'end', behavior: 'smooth' }); } catch (_) {} }, 350);
+  });
+
   // --- РАЗГОВОР: hands-free двупосочен глас (слушай→отговори→говори→слушай). ---
   const convBtn = el('button', {
     class: 'secondary conv-btn', title: 'Разговор (хендс-фрий глас)', 'aria-label': 'Разговор'
@@ -296,6 +325,7 @@ export function renderChat(root, { navigate, rerender }) {
     : null;
 
   root.appendChild(header);
+  root.appendChild(versionLine);
   root.appendChild(hintBar);
   if (convBar) root.appendChild(convBar);
   root.appendChild(convStatus);

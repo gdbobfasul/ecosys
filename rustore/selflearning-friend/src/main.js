@@ -92,13 +92,24 @@ function render() {
   }
 
   // Отключени сме → пускаме непрекъснатото учене + слушането (докато приложението е активно).
-  startLearning(render);
+  startLearning(learningRerender);
   startListening();
 
   const route = currentRoute();
   (APP_ROUTES[route] || renderChat)(screen, ctx);
   app.appendChild(screen);
   app.appendChild(renderNav(route));
+}
+
+// Фоновото учене обновява екрана при нов научен елемент. НО пълно пре-рисуване на
+// ИНТЕРАКТИВНИ екрани разваля текущото действие: на „Чат" трие текста в полето, а на
+// „Знание" (sources) ПРЕКЪСВА тегленето на connection.bot.token (връзката умираше след
+// 1-2 опита, без да стигне до 4). Затова на тези екрани НЕ пре-рисуваме от фоновия такт.
+// На останалите (Задачи, Памет…) обновяваме нормално, за да се вижда новонаученото.
+const NO_BG_RERENDER = new Set(['chat', 'sources', 'settings']);
+function learningRerender() {
+  if (NO_BG_RERENDER.has(currentRoute())) return;
+  render();
 }
 
 window.addEventListener('hashchange', render);
@@ -120,7 +131,7 @@ async function boot() {
 if (typeof document !== 'undefined') {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { stopLearning(); stopListening(); stopConversation(); }
-    else if (isNamed() && isUnlocked() && !isLockedDown()) { startLearning(render); startListening(); }
+    else if (isNamed() && isUnlocked() && !isLockedDown()) { startLearning(learningRerender); startListening(); }
   });
 }
 
