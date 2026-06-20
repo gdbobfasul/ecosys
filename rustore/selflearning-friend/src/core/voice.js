@@ -107,26 +107,21 @@ export async function startListening({ lang = DEFAULT_LANG, onInterim = null } =
   throw new Error('no-stt'); // викащият показва дружелюбно съобщение и оставя писането
 }
 
-// Нативно (Capacitor community speech-recognition) — НЕПРЕКЪСНАТА ДИКТОВКА.
+// Нативно (Capacitor community speech-recognition) — НЕПРЕКЪСНАТА ДИКТОВКА (цяло изречение).
 //
-// ПРОБЛЕМ, който решаваме: Android спира разпознаването при ПЪРВАТА кратка тишина
-// (след 3-4 думи) и връща финал. Затова преди диктовката „спираше" по средата на
-// изречение. Решение: щом един сегмент приключи (тишина), РЕ-стартираме нов сегмент и
-// ДОЛЕПЯМЕ резултата към вече казаното → говориш свободно през естествените паузи.
-//
-// БЕЗ връщане на стария бъг „постоянен тон + триене": (1) тонът на ОС се чува само при
-// реалния старт на НОВ сегмент — тоест на пауза, НЕ непрекъснато; (2) НИКОГА не трием —
-// само долепяме (committed расте). Спираме чисто когато: натиснеш 🎤 пак (стоп), 2
-// поредни ТИХИ сегмента (спрял си да говориш), празен сегмент приключил твърде бързо
-// (грешка/няма реч — за да няма тон в цикъл), или общ таван за дължината на диктовката.
+// ПРОБЛЕМ: Android спира разпознаването при ПЪРВАТА кратка тишина (след 3-4 думи) и връща
+// финал → не можеш да кажеш цяло изречение. РЕШЕНИЕ: след всеки сегмент с реч РЕ-стартираме
+// нов сегмент и ДОЛЕПЯМЕ → говориш свободно през естествените паузи. Спираме чисто, когато:
+//   • натиснеш 🎤/Изпрати (ръчен стоп);
+//   • след вече казана реч дойде ПРАЗЕН сегмент (истинска тишина = спрял си да говориш);
+//   • общ таван за дължина.
+// MIUI надеждност: преди старт чистим стара сесия БЕЗ `await` (await-ът можеше да УВИСНЕ →
+// микрофонът оставаше включен), пауза за освобождаване, и повторен опит при „зает" разпознавател.
 async function startNative(sr, lang, onInterim) {
   // Подсигури разрешение (тихо).
   try { await requestMicPermission(); } catch (_) {}
 
-  // КРИТИЧНО за Xiaomi/MIUI: нативният разпознавател се „запъва" при бързо рестартиране
-  // (затова СЛЕДВАЩИТЕ натискания гърмяха веднага). Преди нов старт спираме евентуална стара
-  // сесия и махаме старите слушатели — но БЕЗ `await` (когато няма какво да се спира, тези
-  // извиквания МОГАТ ДА УВИСНАТ на този плъгин → микрофонът оставаше включен и не записваше).
+  // Чисти евентуална стара сесия — БЕЗ await (може да увисне на този плъгин).
   try { if (typeof sr.removeAllListeners === 'function') sr.removeAllListeners(); } catch (_) {}
   try { if (typeof sr.stop === 'function') sr.stop(); } catch (_) {}
   await new Promise((r) => setTimeout(r, 250));   // кратка пауза за освобождаване на разпознавателя
@@ -134,96 +129,107 @@ async function startNative(sr, lang, onInterim) {
   _nativeListening = true;
   _nativeStopRequested = false;
 
-  const SAFETY_MS = 15000;        // ако ОС не прати 'stopped' → затваряме сами (не виси)
-  const RETRY_DELAY_MS = 450;     // ако разпознавателят е бил зает → изчакай и пробвай старт пак
-  const MAX_STARTS = 2;           // най-много 2 опита за старт (1 + 1 повторен при зает)
+  const SAFETY_MS = 15000;        // ако ОС не прати 'stopped' → затваряме сегмента сами (не виси)
+  const BUSY_RETRY_MS = 450;      // зает разпознавател → изчакай и пробвай старт пак
+  const REARM_MS = 180;           // кратка пауза при продължаване (минимална загуба на думи)
+  const MAX_SEG_STARTS = 2;       // опити да стартираме ЕДИН сегмент (при „зает")
+  const OVERALL_MS = 120000;      // таван за цялата диктовка
 
   return new Promise((resolve) => {
-    // ЕДНА реплика на натискане (без авто-рестарт — той чупеше MIUI). Връщаме чутото; чатът
-    // го долепя към вече въведеното, а за още думи натискаш 🎤 пак (надеждно).
-    let best = '';                // последен НЕПРАЗЕН частичен/финален резултат
-    let gotSignal = false;        // получили ли сме реален partial/final за тази сесия
+    let committed = '';            // натрупаното от всички сегменти — НИКОГА не се трие
     let settled = false;
-    let starts = 0;
-    let safety = null;
+    let overall = setTimeout(() => finish(), OVERALL_MS);
 
-    function cleanup() {
-      _nativeListening = false;
-      if (safety) { clearTimeout(safety); safety = null; }
-      // БЕЗ await — да не може да увисне и да блокира приключването.
-      try { if (typeof sr.removeAllListeners === 'function') sr.removeAllListeners(); } catch (_) {}
-    }
-    function finish(val) {
+    function join(a, b) { b = String(b || '').trim(); if (!b) return a; return a ? (a + ' ' + b) : b; }
+    function finish() {
       if (settled) return;
       settled = true;
+      _nativeListening = false;
+      if (overall) { clearTimeout(overall); overall = null; }
       try { if (typeof sr.stop === 'function') sr.stop(); } catch (_) {}
-      cleanup();
-      resolve(String(val != null ? val : best || '').trim());
-    }
-
-    function onStopped() {
-      if (settled) return;
-      // Ръчен стоп (натиснал си 🎤 пак) → приключи веднага, БЕЗ повторен старт.
-      if (_nativeStopRequested) { finish(); return; }
-      if (best) { finish(); return; }                 // имаме реч → готово
-      // Спря без нито една дума и още не сме чули нищо → разпознавателят вероятно е бил зает.
-      // Пробвай старт ПАК веднъж (с пауза), вместо да се предаваш веднага (това поправя
-      // „следващите натискания спират да записват").
-      if (!gotSignal && starts < MAX_STARTS) {
-        setTimeout(() => { if (!settled && !_nativeStopRequested) doStart(); else finish(); }, RETRY_DELAY_MS);
-        return;
-      }
-      finish();
-    }
-
-    async function doStart() {
-      if (settled) return;
-      starts++;
-      if (safety) { clearTimeout(safety); safety = null; }
-      // чисти слушатели за този опит (БЕЗ await — да не увисва)
       try { if (typeof sr.removeAllListeners === 'function') sr.removeAllListeners(); } catch (_) {}
-      try {
-        if (typeof sr.addListener === 'function') {
-          await sr.addListener('partialResults', (data) => {
-            const arr = (data && data.matches) || [];
-            const txt = arr.length ? String(arr[0] || '') : '';
-            if (txt) {                                  // САМО непразно → не трие вече показаното
-              gotSignal = true;
-              best = txt;
-              if (onInterim) { try { onInterim(best); } catch (_) {} }
-            }
-          });
-          try {
-            await sr.addListener('listeningState', (data) => {
-              const status = data && (data.status || data.state);
-              if (status === 'stopped') onStopped();
-            });
-          } catch (_) { /* по-стари версии: разчитаме на финала от start() + таймера */ }
-        }
-      } catch (_) { /* без слушатели → разчитаме на финала от start() + таймера */ }
+      resolve(committed.trim());
+    }
 
-      try {
-        const res = await sr.start({ language: lang, maxResults: 5, partialResults: true, popup: false });
-        const matches = (res && res.matches) || [];
-        if (matches.length && String(matches[0] || '').trim()) {
-          // Платформа, която връща финала директно от start().
-          best = String(matches[0]); gotSignal = true; finish(); return;
-        }
-        // иначе: start() само потвърди „слушам" → чакаме partial/stopped.
-      } catch (e) {
-        // Стартът се провали (зает разпознавател) → изчакай и пробвай пак веднъж (ако не е стоп).
-        if (starts < MAX_STARTS && !settled && !_nativeStopRequested) {
-          setTimeout(() => { if (!settled && !_nativeStopRequested) doStart(); else finish(); }, RETRY_DELAY_MS);
+    // Слуша ЕДИН сегмент (до тишина). После: ако имаше реч → продължава (нов сегмент);
+    // ако празен → край (или повторен старт, ако още нищо не сме чули — зает разпознавател).
+    function runSegment() {
+      if (settled || _nativeStopRequested) { finish(); return; }
+      let segBest = '';
+      let segDone = false;
+      let segStarts = 0;
+      let safety = null;
+
+      function finishSegment() {
+        if (segDone) return;
+        segDone = true;
+        if (safety) { clearTimeout(safety); safety = null; }
+        try { if (typeof sr.removeAllListeners === 'function') sr.removeAllListeners(); } catch (_) {}
+        const seg = segBest.trim();
+        if (seg) committed = join(committed, seg);
+        if (_nativeStopRequested) { finish(); return; }          // ръчен стоп → край (с долепеното)
+        if (seg) {
+          if (onInterim) { try { onInterim(committed); } catch (_) {} }
+          // имаше реч → продължи да слушаш остатъка от изречението
+          setTimeout(() => { if (!settled && !_nativeStopRequested) runSegment(); else finish(); }, REARM_MS);
           return;
         }
-        finish(); return;
+        // ПРАЗЕН сегмент:
+        if (committed !== '') { finish(); return; }              // вече има реч + тишина → спрял си
+        // още нищо не сме чули → може да е зает разпознавател; пробвай старт пак (до MAX)
+        if (segStarts < MAX_SEG_STARTS) {
+          setTimeout(() => { if (!settled && !_nativeStopRequested) doStart(); else finish(); }, BUSY_RETRY_MS);
+        } else finish();
       }
 
-      // Предпазен таван: ако ОС не прати 'stopped' и нямаме реч → не виси.
-      safety = setTimeout(() => finish(), SAFETY_MS);
+      async function doStart() {
+        if (settled || _nativeStopRequested) { finish(); return; }
+        segStarts++;
+        segDone = false;
+        if (safety) { clearTimeout(safety); safety = null; }
+        try { if (typeof sr.removeAllListeners === 'function') sr.removeAllListeners(); } catch (_) {}
+        try {
+          if (typeof sr.addListener === 'function') {
+            await sr.addListener('partialResults', (data) => {
+              const arr = (data && data.matches) || [];
+              const txt = arr.length ? String(arr[0] || '') : '';
+              if (txt) {                                          // САМО непразно → не трие показаното
+                segBest = txt;
+                if (onInterim) { try { onInterim(join(committed, segBest)); } catch (_) {} }
+              }
+            });
+            try {
+              await sr.addListener('listeningState', (data) => {
+                const status = data && (data.status || data.state);
+                if (status === 'stopped') finishSegment();
+              });
+            } catch (_) { /* по-стари версии: финал от start() + таймера */ }
+          }
+        } catch (_) { /* без слушатели → финал от start() + таймера */ }
+
+        try {
+          const res = await sr.start({ language: lang, maxResults: 5, partialResults: true, popup: false });
+          const matches = (res && res.matches) || [];
+          if (matches.length && String(matches[0] || '').trim()) {
+            segBest = String(matches[0]); finishSegment(); return; // финал директно от start()
+          }
+          // иначе: start() само потвърди „слушам" → чакаме partial/stopped.
+        } catch (e) {
+          // Зает разпознавател → изчакай и пробвай пак (ако не е стоп).
+          if (segStarts < MAX_SEG_STARTS && !settled && !_nativeStopRequested) {
+            setTimeout(() => { if (!segDone && !settled && !_nativeStopRequested) doStart(); else finish(); }, BUSY_RETRY_MS);
+            return;
+          }
+          finishSegment(); return;
+        }
+
+        safety = setTimeout(finishSegment, SAFETY_MS);
+      }
+
+      doStart();
     }
 
-    doStart();
+    runSegment();
   });
 }
 

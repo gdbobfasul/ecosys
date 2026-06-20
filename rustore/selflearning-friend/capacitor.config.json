@@ -9,6 +9,7 @@
     "allowMixedContent": false
   },
   "plugins": {
+    "CapacitorHttp": { "enabled": true },
     "BackgroundRunner": {
       "label": "com.kcy.selflearningfriend.rustore.learn",
       "src": "runners/learn-runner.js",
