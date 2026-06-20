@@ -1,4 +1,4 @@
-// Version: 1.0219
+// Version: 1.0231
 // Selflearning Friend — самостоятелен server-side relay (Express + better-sqlite3).
 //
 // Канали (token = namespace, част от пътя):
@@ -198,9 +198,43 @@ const EXEC_SSH_PORT   = String(process.env.SELFLEARNING_EXEC_SSH_PORT || '22');
 const EXEC_SSH_KEY    = process.env.SELFLEARNING_EXEC_SSH_KEY || '';        // по избор: път до частен ключ
 const EXEC_TIMEOUT_MS = parseInt(process.env.SELFLEARNING_EXEC_TIMEOUT_MS || '60000', 10);
 const EXEC_MAX_OUTPUT = parseInt(process.env.SELFLEARNING_EXEC_MAX_OUTPUT || '100000', 10); // байта на поток
+// БЕЗОПАСЕН РЕЖИМ — ВКЛЮЧЕН по подразбиране. Дори exec да е пуснат на production, се допускат
+// САМО безвредни команди (mkdir/ls/rm/rmdir/echo/cat/stat/pwd) и САМО в пясъчника по-долу.
+// Изключва се изрично с SELFLEARNING_EXEC_SAFE_MODE=0 (НЕ препоръчително на prod).
+const EXEC_SAFE_MODE  = String(process.env.SELFLEARNING_EXEC_SAFE_MODE || '1') === '1';
+const EXEC_SANDBOX    = (process.env.SELFLEARNING_EXEC_SANDBOX || '/tmp/slf-test').replace(/\/+$/, '');
 
 function isLocalHost(h) {
   return !h || h === 'localhost' || h === '127.0.0.1' || h === '::1';
+}
+
+// Пази машината: допуска САМО безвредни команди В ПЯСЪЧНИКА. Без sudo, без опасни обвивкови
+// оператори (; | & ` $() < > \), без пътища извън пясъчника, без „..". Връща { ok } | { ok, reason }.
+const EXEC_SAFE_VERBS = ['mkdir', 'ls', 'rm', 'rmdir', 'echo', 'cat', 'stat', 'pwd'];
+function safeGuard(command) {
+  const c = String(command || '').trim();
+  if (!c) return { ok: false, reason: 'празна команда' };
+  if (c.length > 500) return { ok: false, reason: 'командата е твърде дълга' };
+  // Без обвивкови оператори/подмяна (позволяваме интервали, кавички, тире, * за glob).
+  if (/[;&|`<>\n\r\\]|\$\(|\$\{/.test(c)) return { ok: false, reason: 'недопустими обвивкови оператори' };
+  const verb = c.split(/\s+/)[0];
+  if (!EXEC_SAFE_VERBS.includes(verb)) {
+    return { ok: false, reason: `командата „${verb}" не е в безопасния списък (${EXEC_SAFE_VERBS.join('/')})` };
+  }
+  // Всеки АБСОЛЮТЕН път трябва да е самият пясъчник или под него.
+  const paths = c.match(/\/[^\s"']*/g) || [];
+  for (const raw of paths) {
+    const p = raw.replace(/["']/g, '');
+    if (p.includes('..')) return { ok: false, reason: 'пътят съдържа „..“' };
+    if (p !== EXEC_SANDBOX && !p.startsWith(EXEC_SANDBOX + '/')) {
+      return { ok: false, reason: `пътят „${p}" е извън пясъчника ${EXEC_SANDBOX}` };
+    }
+  }
+  // Променящите команди ЗАДЪЛЖИТЕЛНО работят по път в пясъчника (без гол „rm -rf").
+  if (['rm', 'rmdir', 'mkdir'].includes(verb) && paths.length === 0) {
+    return { ok: false, reason: `„${verb}" изисква път в пясъчника ${EXEC_SANDBOX}` };
+  }
+  return { ok: true };
 }
 
 app.post('/api/selflearning/exec/:token', withToken, (req, res) => {
@@ -214,6 +248,14 @@ app.post('/api/selflearning/exec/:token', withToken, (req, res) => {
   // Лек филтър на хоста (за SSH): без интервали/опасни символи.
   if (host && !/^[A-Za-z0-9._-]{1,255}$/.test(host)) {
     return res.status(400).json({ ok: false, error: 'bad_host' });
+  }
+  // БЕЗОПАСЕН РЕЖИМ: пропускаме само безвредни команди в пясъчника (пази production).
+  if (EXEC_SAFE_MODE) {
+    const g = safeGuard(command);
+    if (!g.ok) {
+      console.log(`[selflearning][exec] ОТКАЗАНА (safe): ${g.reason} | cmd=${command.slice(0, 200)}`);
+      return res.status(400).json({ ok: false, error: 'unsafe_command', hint: g.reason, sandbox: EXEC_SANDBOX });
+    }
   }
 
   const stamp = new Date().toISOString();

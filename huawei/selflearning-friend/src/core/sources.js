@@ -13,6 +13,29 @@
 
 const TIMEOUT = 9000;
 
+// Wikimedia ИЗИСКВА описателен User-Agent, иначе бързо връща „too many requests". В браузър
+// `User-Agent` е забранена за смяна заглавка, но Wikimedia приема `Api-User-Agent` като
+// заместител; на телефона (нативен HTTP) слагаме и двете. Така не ни лимитират агресивно.
+const API_UA = 'SelflearningFriend/1.0 (https://selflearning.bot.nu; ltd.dai.grup@gmail.com)';
+// Имейл за MyMemory `de=` — вдига безплатния анонимен лимит за превод на 50000 знака/ден.
+const MYMEMORY_EMAIL = 'ltd.dai.grup@gmail.com';
+
+// Изпълнява задачи с ОГРАНИЧЕН паралелизъм (пул) — да не засипваме API с твърде много
+// едновременни заявки (което води до rate-limit). Връща резултатите в реда на входа.
+async function mapPool(items, fn, concurrency = 4) {
+  const out = new Array(items.length);
+  let i = 0;
+  async function worker() {
+    while (i < items.length) {
+      const idx = i++;
+      try { out[idx] = await fn(items[idx], idx); } catch (_) { out[idx] = null; }
+    }
+  }
+  const n = Math.max(1, Math.min(concurrency, items.length));
+  await Promise.all(Array.from({ length: n }, () => worker()));
+  return out;
+}
+
 // Брояч на „достигнат сървър" vs „мрежова грешка" (за да различим ОФЛАЙН от „няма данни").
 // _netReached расте при ВСЕКИ получен HTTP отговор (дори 404); _netFailed — при мрежова
 // грешка/таймаут/блокиран достъп (изобщо не стигнахме до сървъра). gatherTopicKnowledge
@@ -35,7 +58,7 @@ async function getJson(url, { timeoutMs = TIMEOUT, accept = 'application/json' }
   if (typeof fetch !== 'function') return null;
   let reached = false;
   try {
-    const res = await fetchTimeout(url, { headers: { Accept: accept } }, timeoutMs);
+    const res = await fetchTimeout(url, { headers: { Accept: accept, 'Api-User-Agent': API_UA, 'User-Agent': API_UA } }, timeoutMs);
     reached = true; _netReached++;          // сървърът отговори (дори да е !ok)
     if (!res || !res.ok) return null;
     return await res.json();
@@ -49,7 +72,7 @@ async function getText(url, { timeoutMs = TIMEOUT } = {}) {
   if (typeof fetch !== 'function') return null;
   let reached = false;
   try {
-    const res = await fetchTimeout(url, {}, timeoutMs);
+    const res = await fetchTimeout(url, { headers: { 'Api-User-Agent': API_UA, 'User-Agent': API_UA } }, timeoutMs);
     reached = true; _netReached++;
     if (!res || !res.ok) return null;
     return await res.text();
@@ -232,8 +255,269 @@ export async function gatherTopicKnowledge(topic, { lang = 'bg', excludeKeys = [
   return { notes, tried, failed };
 }
 
+// Събира знание от МНОГО източника ПАРАЛЕЛНО — за БОГАТ отговор в чата (бързо, наведнъж).
+// За разлика от webSearch (връща ПЪРВИЯ източник), тук обхождаме ВСИЧКИ безплатни източници
+// едновременно и връщаме обединените бележки с цитати. Връща [{ text, source, url }] (до limit),
+// без дубликати. При офлайн/нищо → празен масив (викащият пада грациозно).
+// Wikipedia ПЪЛНОТЕКСТОВО търсене → реални статии за СВОБОДНА заявка (не точно заглавие).
+// Пример: „борсови акции" → [{title:'Акция (финанси)'}, {title:'Фондова борса'}, …].
+// Нужно е, защото summary/extract търсят по ТОЧНО заглавие — затова първо резолвваме.
+export async function wikiSearch(query, { lang = 'bg', limit = 6 } = {}) {
+  const q = String(query || '').trim();
+  if (!q) return [];
+  try {
+    const url = `https://${lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}&srlimit=${limit}&srnamespace=0&format=json&origin=*`;
+    const d = await getJson(url);
+    const hits = (d && d.query && d.query.search) || [];
+    return hits.map((h) => ({ title: h.title, snippet: stripHtml(String(h.snippet || '')) }));
+  } catch (_) { return []; }
+}
+
+export async function gatherRichAnswer(topic, { lang = 'bg', limit = 6 } = {}) {
+  const t = String(topic || '').trim();
+  if (!t) return [];
+  // Резолвваме свободната заявка до реално заглавие на статия (ако не е точно заглавие).
+  let title = t;
+  try { const hits = await wikiSearch(t, { lang, limit: 1 }); if (hits.length) title = hits[0].title; } catch (_) {}
+  const runners = [
+    () => fetchWikipedia(title, { lang }),
+    () => fetchWikipediaFull(title, { lang }),
+    () => fetchWikidata(t, { lang }),
+    () => fetchWiktionary(t, { lang }),
+    () => fetchDuckDuckGo(t),
+    () => fetchStackExchange(t)
+  ];
+  const results = await Promise.all(runners.map((r) => r().catch(() => null)));
+  const notes = [];
+  const seen = new Set();
+  function push(text, source, url) {
+    const clean = String(text || '').trim();
+    if (!clean) return;
+    const key = clean.slice(0, 60).toLowerCase();
+    if (seen.has(key)) return;            // без повтарящи се бележки между източниците
+    seen.add(key);
+    notes.push({ text: clean, source: source || '', url: url || '' });
+  }
+  for (const r of results) {
+    if (!r || !r.ok) continue;
+    push(r.summary || r.text, r.citation || r.source, r.url);
+    if (Array.isArray(r.related)) for (const rel of r.related.slice(0, 2)) push(rel, 'DuckDuckGo (свързано)', '');
+  }
+  return notes.slice(0, limit);
+}
+
+// Намира ПРЯКО СВЪРЗАНИ (родствени) теми за дадена тема — за „дървовидно" събиране на знание.
+// Пример: „борсови акции" → „борсов индекс", „фондова борса", „дивидент", „облигация"…
+// Keyless: Wikipedia „morelike" търсене (статии, семантично близки до темата) + OpenSearch
+// предложения + DuckDuckGo свързани теми. Връща списък с имена на теми (без самата тема).
+export async function relatedTopics(topic, { lang = 'bg', limit = 6 } = {}) {
+  const t = String(topic || '').trim();
+  if (!t) return [];
+  const out = [];
+  const seen = new Set([t.toLowerCase()]);
+  function add(name) {
+    const n = String(name || '').trim();
+    if (!n || n.length < 2) return;
+    const k = n.toLowerCase();
+    if (seen.has(k)) return;
+    seen.add(k); out.push(n);
+  }
+  // 1) Пълнотекстово търсене: статиите СЛЕД първата (която е самата тема) са вече СВЪРЗАНИ.
+  let mainTitle = t;
+  try {
+    const hits = await wikiSearch(t, { lang, limit: limit + 1 });
+    if (hits.length) {
+      mainTitle = hits[0].title;
+      seen.add(mainTitle.toLowerCase());        // първата е самата тема → не я броим за клон
+      for (let i = 1; i < hits.length; i++) add(hits[i].title);
+    }
+  } catch (_) { /* пропускаме */ }
+  // 2) „morelike" — статии, семантично БЛИЗКИ до резолвнатото заглавие (същински клони).
+  if (out.length < limit) {
+    try {
+      const url = `https://${lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent('morelike:' + mainTitle)}&srlimit=${limit}&srnamespace=0&format=json&origin=*`;
+      const d = await getJson(url);
+      const hits = (d && d.query && d.query.search) || [];
+      for (const h of hits) add(h.title);
+    } catch (_) { /* пропускаме */ }
+  }
+  // 3) OpenSearch — термини, които съдържат темата (напр. „борса" → „борсов индекс").
+  if (out.length < limit) {
+    try {
+      const url = `https://${lang}.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(t)}&limit=${limit}&namespace=0&format=json&origin=*`;
+      const d = await getJson(url);
+      const names = (Array.isArray(d) && Array.isArray(d[1])) ? d[1] : [];
+      for (const n of names) add(n);
+    } catch (_) { /* пропускаме */ }
+  }
+  // 3) DuckDuckGo свързани теми (взимаме само водещото понятие от всеки ред).
+  if (out.length < limit) {
+    try {
+      const ddg = await fetchDuckDuckGo(t);
+      if (ddg.ok && Array.isArray(ddg.related)) {
+        for (const r of ddg.related) add(String(r).split(/\s[-–—]\s|,/)[0]);
+      }
+    } catch (_) { /* пропускаме */ }
+  }
+  return out.slice(0, limit);
+}
+
+// „ДЪРВО" от знание: събира БОГАТО за самата тема (много източници) + по едно кратко резюме
+// за всяка ПРЯКО СВЪРЗАНА тема. Така ботът тръгва от темата и се „разклонява" към съседните
+// понятия. Връща { main:[бележки], related:[{topic, text, source, url}] }. Всичко в паралел.
+export async function gatherTreeAnswer(topic, { lang = 'bg', limit = 6, relatedLimit = 12 } = {}) {
+  const t = String(topic || '').trim();
+  if (!t) return { main: [], related: [] };
+
+  // ШИРОКО търсене: взимаме МНОГО статии за заявката наведнъж (не само 1). Първата е „главната",
+  // останалите са вече свързани. Плюс „morelike" разширява дървото с още близки теми.
+  let hits = [];
+  try { hits = await wikiSearch(t, { lang, limit: Math.max(relatedLimit + 2, 12) }); } catch (_) { /* ще паднем към темата */ }
+  const mainTitle = hits.length ? hits[0].title : t;
+
+  // „morelike" — още семантично близки заглавия (повече клони на дървото), паралелно с главното.
+  const [moreData] = await Promise.all([
+    hits.length
+      ? getJson(`https://${lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent('morelike:' + mainTitle)}&srlimit=${relatedLimit}&srnamespace=0&format=json&origin=*`).catch(() => null)
+      : Promise.resolve(null)
+  ]);
+  const moreTitles = ((moreData && moreData.query && moreData.query.search) || []).map((h) => h.title);
+
+  // ГЛАВНА тема — богато от няколко източника (ограничен паралелизъм да не ни лимитират).
+  const mainRunners = [
+    () => fetchWikipediaFull(mainTitle, { lang }),
+    () => fetchWikipedia(mainTitle, { lang }),
+    () => fetchWikidata(t, { lang }),
+    () => fetchWiktionary(t, { lang }),
+    () => fetchDuckDuckGo(t)
+  ];
+  const mainRes = await mapPool(mainRunners, (r) => r().catch(() => null), 4);
+  const main = [];
+  const seen = new Set();
+  function pushMain(text, source, url) {
+    const clean = String(text || '').trim();
+    if (!clean) return;
+    const key = clean.slice(0, 60).toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    main.push({ text: clean, source: source || '', url: url || '' });
+  }
+  for (const r of mainRes) {
+    if (!r || !r.ok) continue;
+    pushMain(r.summary || r.text, r.citation || r.source, r.url);
+    if (Array.isArray(r.related)) for (const rel of r.related.slice(0, 3)) pushMain(rel, 'DuckDuckGo (свързано)', '');
+  }
+
+  // СВЪРЗАНИ — резюме за ВСЯКА друга намерена статия (хитове + morelike), дедуп по заглавие.
+  const relTitles = [];
+  const titleSeen = new Set([mainTitle.toLowerCase()]);
+  for (const h of hits.slice(1)) { const k = h.title.toLowerCase(); if (!titleSeen.has(k)) { titleSeen.add(k); relTitles.push(h.title); } }
+  for (const tt of moreTitles) { const k = tt.toLowerCase(); if (!titleSeen.has(k)) { titleSeen.add(k); relTitles.push(tt); } }
+  const relRes = await mapPool(relTitles.slice(0, relatedLimit), async (rt) => {
+    const w = await fetchWikipedia(rt, { lang }).catch(() => null);
+    if (w && w.ok && w.summary) return { topic: rt, text: w.summary, source: w.citation, url: w.url };
+    return null;
+  }, 4);
+
+  return { main: main.slice(0, limit), related: relRes.filter(Boolean) };
+}
+
+function _sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
+
+// ДЪЛБОКО ОБХОЖДАНЕ на дървото от знание (BFS по връзките в Wikipedia) — за МНОГО бележки
+// (стотици до ~1000) по тема. Ефективно: `generator=links`+`prop=extracts` връща до ~20 статии С
+// уводите им в ЕДНА заявка. Обхожда на широчина, дава резултатите на ПАКЕТИ (onBatch — викащият
+// ги пише наведнъж → 1 persist/заявка, не 1 persist/бележка). Спира при target/таван/прекъсване.
+//   onBatch(notes[]) → след ВСЯКА заявка с новите бележки; връща колко РЕАЛНО е добавил.
+//   onProgress({stored,requests,frontier,rootTitle}) и shouldStop() — по избор.
+export async function deepLearnCrawl(rootTopic, {
+  lang = 'bg', targetNotes = 1000, maxRequests = 90, batchChars = 280,
+  onBatch = null, onProgress = null, shouldStop = null
+} = {}) {
+  const root = String(rootTopic || '').trim();
+  if (!root) return { rootTitle: '', stored: 0, requests: 0, visited: 0 };
+  let rootTitle = root;
+  try { const hits = await wikiSearch(root, { lang, limit: 1 }); if (hits.length) rootTitle = hits[0].title; } catch (_) { /* ползваме темата */ }
+
+  const visited = new Set();
+  const noted = new Set();           // заглавия, на които вече дадохме бележка (дедуп)
+  const frontier = [rootTitle];
+  let stored = 0, requests = 0, emptyStreak = 0;
+
+  while (frontier.length && stored < targetNotes && requests < maxRequests) {
+    if (shouldStop && shouldStop()) break;
+    const title = frontier.shift();
+    const key = title.toLowerCase();
+    if (visited.has(key)) continue;
+    visited.add(key);
+
+    const url = `https://${lang}.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=40&gplnamespace=0` +
+      `&prop=extracts&exintro=1&explaintext=1&exlimit=20&redirects=1&format=json&origin=*&titles=${encodeURIComponent(title)}`;
+    let d = null;
+    try { d = await getJson(url); } catch (_) { d = null; }
+    requests++;
+    const pages = (d && d.query && d.query.pages) ? Object.values(d.query.pages) : [];
+    if (!pages.length) { if (++emptyStreak >= 6) break; await _sleep(400); continue; }
+    emptyStreak = 0;
+
+    const batch = [];
+    for (const p of pages) {
+      if (!p || p.missing !== undefined || p.ns !== 0) continue;
+      const name = String(p.title || '').trim();
+      if (!name) continue;
+      const nk = name.toLowerCase();
+      const extract = String(p.extract || '').trim();
+      if (extract && !noted.has(nk)) {
+        const note = summarizeLocally(extract, { maxSentences: 2, maxChars: batchChars });
+        if (note) {
+          noted.add(nk);
+          batch.push({ topic: name, text: note, source: `Wikipedia (${lang}): ${name}`,
+            url: `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(name.replace(/\s+/g, '_'))}` });
+        }
+      }
+      if (!visited.has(nk) && frontier.length < targetNotes * 2) frontier.push(name); // разширявай дървото
+    }
+    if (batch.length) {
+      const accepted = onBatch ? (Number(onBatch(batch)) || 0) : batch.length;
+      stored += accepted;
+    }
+    if (onProgress) { try { onProgress({ stored, requests, frontier: frontier.length, rootTitle }); } catch (_) {} }
+    await _sleep(300);   // учтиво към Wikipedia (да не ни лимитира)
+  }
+  return { rootTitle, stored, requests, visited: visited.size };
+}
+
 // Колко източника общо има (за „изчерпах ли всичко" — праг).
 export const TOPIC_SOURCE_COUNT = 7;
+
+// --- Превод (keyless, безплатен, CORS) -------------------------------------
+// MyMemory публичен endpoint — без ключ, без акаунт, с CORS заглавие → работи и от WebView.
+// Лимит за анонимни ~5000 знака/ден, до ~500 думи/заявка → пращаме къси откъси.
+// translate(текст, целеви_код, изходен_код) → { ok, text, source } | { ok:false, reason }.
+export async function translate(text, toCode, fromCode = 'bg') {
+  const q = String(text || '').trim();
+  if (!q) return { ok: false, reason: 'празен текст' };
+  const to = String(toCode || '').split('-')[0].toLowerCase();
+  const from = String(fromCode || 'bg').split('-')[0].toLowerCase();
+  if (!to) return { ok: false, reason: 'няма целеви език' };
+  if (to === from) return { ok: true, text: q, source: '(същ. език)' };
+  // `de=` имейл вдига анонимния лимит на MyMemory от 5000 на 50000 знака/ден (без ключ/акаунт).
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(q.slice(0, 480))}&langpair=${encodeURIComponent(from + '|' + to)}&de=${encodeURIComponent(MYMEMORY_EMAIL)}`;
+  const d = await getJson(url);
+  const tr = d && d.responseData && d.responseData.translatedText;
+  if (!tr || /MYMEMORY WARNING|INVALID|QUOTA|LIMIT/i.test(String(tr))) return { ok: false, reason: 'няма превод (лимит/неуспех)' };
+  return { ok: true, text: String(tr).trim(), source: `MyMemory (${from}→${to})` };
+}
+
+// Превежда текст на МНОЖЕСТВО езици (по кодове) — паралелно с ограничен пул (учтиво към API).
+// langCodes = ['en','ru','de',…]. Връща [{ code, ok, text, source }].
+export async function translateMany(text, langCodes = [], fromCode = 'bg') {
+  const codes = (langCodes || []).map((c) => String(c || '').split('-')[0].toLowerCase()).filter(Boolean);
+  return mapPool(codes, async (code) => {
+    const r = await translate(text, code, fromCode).catch(() => null);
+    return { code, ok: !!(r && r.ok), text: (r && r.text) || '', source: (r && r.source) || '' };
+  }, 3);
+}
 
 // --- Новини (RSS) ----------------------------------------------------------
 // По подразбиране безплатен RSS. Парсваме <item><title>/<description>.

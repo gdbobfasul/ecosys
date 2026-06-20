@@ -3,6 +3,7 @@ import { el, clear, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
 import { lock } from '../core/identity.js';
 import { learningEnabled, setLearningEnabled, getLearnRole, setLearnRole } from '../core/learning-loop.js';
+import { dbSizeMB, maxDbMB, setMaxDbMB, learnBudget, crawlMode, setCrawlMode, deepAllowed } from '../core/learn-budget.js';
 import { listInterests, addInterest, removeInterest } from '../core/subjects.js';
 import { buildOwnershipDossier, formatDossier } from '../core/device.js';
 import { notesCount } from '../core/subjects.js';
@@ -267,6 +268,51 @@ export function renderSettings(root, { rerender }) {
       ]),
       learnSw
     ])
+  ]));
+
+  // --- Памет: лимит на локалната база (спирачка за дълбокото учене на телефон) ---
+  const bud = (() => { try { return learnBudget(); } catch (_) { return { deep: false, targetNotes: 300, maxDbMB: 8 }; } })();
+  const curMB = (() => { try { return dbSizeMB(); } catch (_) { return 0; } })();
+  const usageLine = el('div', { class: 'muted', style: 'font-size:13px;margin-top:4px' },
+    `Сега базата заема ~${curMB.toFixed(2)} MB. Режим: ${bud.deep ? 'ДЪЛБОК (сериозен)' : 'ЛЕК (телефон)'} · цел на едно обхождане ~${bud.targetNotes} бележки.`);
+  const mbSelect = el('select', {});
+  for (const v of [4, 8, 16, 32, 64, 128, 256]) {
+    const o = el('option', { value: String(v) }, v + ' MB');
+    if (v === maxDbMB()) o.setAttribute('selected', '');
+    mbSelect.appendChild(o);
+  }
+  mbSelect.addEventListener('change', () => {
+    const mb = setMaxDbMB(parseInt(mbSelect.value, 10));
+    try { persist(); } catch (_) {}
+    usageLine.textContent = `Сега базата заема ~${dbSizeMB().toFixed(2)} MB. Таван: ${mb} MB.`;
+    toast(`Таван на базата: ${mb} MB.`);
+  });
+  // Стратегия (важи на ТЕЛЕФОН, при СЪЩИЯ таван MB): 1 дълбоко ИЛИ много леки обхождания.
+  const stratSelect = el('select', {});
+  for (const [val, label] of [['light', 'Много ЛЕКИ обхождания (повече теми)'], ['deep', '1 ПО-ДЪЛБОКО обхождане (по-малко теми)']]) {
+    const o = el('option', { value: val }, label);
+    if (val === crawlMode()) o.setAttribute('selected', '');
+    stratSelect.appendChild(o);
+  }
+  stratSelect.addEventListener('change', () => {
+    const m = setCrawlMode(stratSelect.value);
+    try { persist(); } catch (_) {}
+    toast(m === 'deep' ? 'Стратегия: 1 по-дълбоко обхождане.' : 'Стратегия: много леки обхождания.');
+  });
+  const stratNote = deepAllowed()
+    ? el('div', { class: 'muted', style: 'font-size:12px;margin-top:4px' }, '(Сега си в СЕРИОЗЕН режим — ученето е дълбоко; стратегията долу важи за телефон.)')
+    : null;
+  root.appendChild(el('div', { class: 'card' }, [
+    el('h3', {}, 'Памет (таван на базата)'),
+    el('p', { class: 'muted', style: 'font-size:13px' },
+      'Дълбокото учене (обхождане на „дървото") спира, щом базата стигне този таван — за да НЕ забива телефонът. ' +
+      'На десктоп/сериозен сървър ученето е дълбоко (хиляди бележки); на телефон — леко с таван.'),
+    usageLine,
+    el('label', {}, 'Таван на локалната база'),
+    mbSelect,
+    el('label', {}, 'Стратегия на учене (телефон, същия таван)'),
+    stratSelect,
+    stratNote
   ]));
 
   // --- Интереси (за ротацията на автономното учене) ---

@@ -494,6 +494,7 @@ tar -czf "$ARCHIVE_NAME" \
     --exclude='*.apk' --exclude='*.aab' --exclude='*.exe' \
     ${ASSET_EXCLUDE} \
     --exclude='*.log' \
+    --exclude='logs' \
     --exclude='coverage' \
     --exclude='dist' \
     --exclude='build' \

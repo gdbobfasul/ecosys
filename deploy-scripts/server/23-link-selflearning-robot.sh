@@ -13,7 +13,7 @@
 #     телефонът само ПРЕДАВА знанието си (не учи). Това е един и същ робот.
 #   • Различен робот (напр. при продажба) → само с --reset (трие стария).
 #
-# Употреба (обикновено през меню опция 39):
+# Употреба (обикновено през меню опция 81):
 #   sudo ./23-link-selflearning-robot.sh              # САМО проверки + verdict + връзка-инфо
 #   sudo ./23-link-selflearning-robot.sh --deploy     # проверки → (ако GO) вдига relay-а
 #   sudo ./23-link-selflearning-robot.sh --deploy --reset  # смяна на робот (ТРИЕ стария!)
@@ -222,7 +222,7 @@ if [ "$DO_DEPLOY" = true ]; then
     DRC=$?
     [ "$DRC" -ne 0 ] && { echo -e "  ${RED}✗ Setup-ът върна грешка (${DRC}).${NC}"; exit "$DRC"; }
   else
-    echo -e "  ${RED}✗ Не намерих $SETUP_SCRIPT — пусни ръчно опция 38.${NC}"; exit 3
+    echo -e "  ${RED}✗ Не намерих $SETUP_SCRIPT — пусни ръчно опция 80.${NC}"; exit 3
   fi
 fi
 

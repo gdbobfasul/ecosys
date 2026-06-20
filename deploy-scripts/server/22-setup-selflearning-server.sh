@@ -106,6 +106,13 @@ ${ENVFILE_LINE}
 Environment=NODE_ENV=production
 Environment=SELFLEARNING_PORT=${PORT}
 Environment=SELFLEARNING_DATA_DIR=${DATA_DIR}
+# Отдалечено изпълнение (exec): ИЗКЛЮЧЕНО по подразбиране. За да го пуснеш, добави
+# SELFLEARNING_EXEC_ENABLED=1 в ${GLOBAL_ENV} и рестартирай услугата (или пусни пак опция 22).
+# БЕЗОПАСНИЯТ РЕЖИМ е ВКЛЮЧЕН тук → дори да го пуснеш, минават само mkdir/ls/rm/rmdir/echo/cat/
+# stat/pwd и САМО в пясъчника по-долу (под DATA_DIR, който е единственият писваем път на услугата —
+# /tmp е read-only заради ProtectSystem=strict). Сложи 0, само ако СЪЗНАТЕЛНО искаш суров достъп.
+Environment=SELFLEARNING_EXEC_SAFE_MODE=1
+Environment=SELFLEARNING_EXEC_SANDBOX=${DATA_DIR}/exec-sandbox
 ExecStart=/usr/bin/node server.js
 Restart=always
 RestartSec=10

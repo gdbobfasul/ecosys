@@ -12,12 +12,12 @@ import { addMemory, recall, updateMemory, markUsed, listMemory, tokenize } from 
 import { getState } from './storage.js';
 import { buildPrompt } from './ai-client.js';
 import { parseTask, intakeAndRun, askMeFromLearned } from './tasks.js';
-import { findInSubjects } from './subjects.js';
+import { findInSubjects, getSubject, addNote, addInterest } from './subjects.js';
 import { teach } from './teacher.js';
 import { dontKnow, frameAiSuggestion } from './honesty.js';
 import { handleCommand } from './commands.js';
 import { parseBrowserIntent, runBrowserIntent } from './browser.js';
-import { webSearch } from './sources.js';
+import { webSearch, gatherTreeAnswer } from './sources.js';
 import { isImpersonalMode, looksPersonal, refusePersonalText } from './privacy.js';
 import { languageByVoice } from './languages.js';
 
@@ -157,6 +157,20 @@ export async function respond(userText) {
     return { text: ask.text, source: ask.ok ? 'memory' : 'rule' };
   }
 
+  // 3.52) „колко знам/научи за X" → брой натрупани бележки по темата (прогрес на дълбокото учене).
+  {
+    const mk = text.match(/^колко\s+(?:неща\s+)?(?:знаеш|знам|научи(?:х)?|събра(?:х)?|има[мш]?)\b\s*(?:за\s+|по\s+)?(.+)?$/i);
+    const topic = mk && mk[1] ? mk[1].trim().replace(/[?!.]+$/, '') : '';
+    if (topic) {
+      let sub = getSubject(topic);
+      if (!sub) { const f = findInSubjects(topic); if (f) sub = getSubject(f.subject); }
+      if (sub && sub.notes && sub.notes.length) {
+        return { text: `За „${sub.name}" знам ${sub.notes.length} неща (и продължавам да трупам по дървото, ако обхождам). Питай ме нещо конкретно по темата.`, source: 'memory' };
+      }
+      return { text: `Още не съм учил за „${topic}". Кажи ми „научи за ${topic}".`, source: 'rule' };
+    }
+  }
+
   // 3.54) „отвори в браузъра“ като ПРОДЪЛЖЕНИЕ на последно търсене в чата.
   if (/^(?:отвори|покажи)(?:\s+ми)?\s+(?:го\s+|я\s+)?(?:в(?:ъв)?\s+)?браузър(?:а)?\s*[!.]?$/i.test(text) && _lastSearchQuery) {
     try {
@@ -257,15 +271,53 @@ export async function respond(userText) {
     }
   }
 
-  // 7) Не знам → КРАТКО + ЗАПОЧВАМ ДА УЧА (вместо дълъг дисклеймър и гадаене).
-  //    (а) on-device учене във фон: сваля знание от източник (Wikipedia) → Задачи/Памет;
-  //    (б) отварям търсене в браузъра (Google), за да събирам/видя знания по темата.
   if (st) return { text: st, source: 'rule' };
+
+  // 7) РЕАЛНО ТЪРСЕНЕ („рови"): не знам от памет/AI → СВАЛЯМ знание от МНОГО безплатни
+  //    източници ЕДНОВРЕМЕННО (Wikipedia bg+en+увод, Wiktionary, Wikidata, DuckDuckGo,
+  //    Stack Overflow) и отговарям ЗАЗЕМЕНО В ЧАТА с НЯКОЛКО цитата. Записвам всичко в паметта.
+  //    Така ботът наистина рови надълбоко и носи богато знание ВЕДНАГА, не само едно изречение.
   const topic = learnTopicFrom(text);
   if (topic) {
+    const searchLang = (getState().settings.voice && getState().settings.voice.lang) || 'bg-BG';
+    const searchCode = (languageByVoice(searchLang).code || 'bg').split('-')[0];
+    try {
+      // ДЪРВОВИДНО събиране: богато за самата тема (много източници) + клони към ПРЯКО
+      // свързаните теми (напр. „борсови акции" → „борсов индекс", „фондова борса", „дивидент").
+      const tree = await gatherTreeAnswer(topic, { lang: searchCode, limit: 6, relatedLimit: 12 });
+      const total = tree.main.length + tree.related.length;
+      if (total) {
+        // ТРУПАМ: записвам ВСИЧКО намерено (темата + всеки свързан клон като отделна тема) в паметта.
+        try { addInterest(topic); } catch (_) {}
+        try { for (const n of tree.main) addNote(topic, { text: n.text, source: n.source, url: n.url }); } catch (_) {}
+        try {
+          for (const r of tree.related) {
+            addInterest(r.topic);
+            addNote(r.topic, { text: r.text, source: r.source, url: r.url });
+          }
+        } catch (_) {}
+        // Показвам ЧАСТ (паметта пази всичко) — да не залея чата.
+        let out = `🔎 ${topic} — събрах ${total} статии/източника (записах всички в паметта):\n\n` +
+          tree.main.slice(0, 5).map((n) => `• ${n.text}\n  📎 ${n.source}`).join('\n\n');
+        if (tree.related.length) {
+          out += `\n\n🌳 Свързани статии (${tree.related.length}), записах ги всички:\n` +
+            tree.related.slice(0, 8).map((r) => `▸ ${r.topic}: ${r.text}`).join('\n');
+        }
+        // За ОЩЕ — жива търсачка (Google/YouTube). Запомням заявката за „отвори в браузъра".
+        _lastSearchQuery = topic; _lastSearchEngine = 'google';
+        const qenc = encodeURIComponent(topic);
+        out += `\n\nЗа още кажи „отвори в браузъра" или директно:\n` +
+          `🌍 Google: https://www.google.com/search?q=${qenc}\n` +
+          `▶ YouTube: https://www.youtube.com/results?search_query=${qenc}`;
+        return { text: out, source: 'source', learned: true };
+      }
+    } catch (_) { /* падам към фоново учене + браузър */ }
+
+    // Дори да няма какво да цитирам сега (жива заявка/няма статия/офлайн) → стартирам фоново
+    // учене (обхожда всички източници при следващите проверки) и отварям търсене в браузъра.
     try { intakeAndRun('научи за ' + topic); } catch (_) { /* фон — не блокира отговора */ }
     try { runBrowserIntent({ action: 'search', engine: 'google', query: topic }); } catch (_) {}
-    return { text: 'Не съм чувала за такова нещо. Започвам да уча.', source: 'rule', learning: true };
+    return { text: `Още не знам за „${topic}" от източник, който мога да цитирам — затова започвам да проучвам по-надълбоко. Питай ме пак след малко.`, source: 'rule', learning: true };
   }
   return { text: dontKnow(), source: 'rule' };
 }

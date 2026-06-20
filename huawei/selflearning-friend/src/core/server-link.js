@@ -35,6 +35,13 @@ export function serverLinkConfigured() {
   return !!(c.domain && c.token);
 }
 
+// Възможности, обявени от свързания сървър (от connection.bot.token → settings.server.features).
+// Напр. { deepCrawl:true } разрешава ДЪЛБОКО учене (виж learn-budget.js).
+export function serverFeatures() {
+  const s = (getState().settings && getState().settings.server) || {};
+  return (s.features && typeof s.features === 'object') ? s.features : {};
+}
+
 // Сглобява пълните URL-та от домейн+token. Връща { ok, base, sync, listen, health }.
 export function buildUrls(domain, token) {
   const d = normalizeDomain(domain);
@@ -73,6 +80,20 @@ export function saveServerLink(domain, token, opts = {}) {
   st.settings.listen = { ...(st.settings.listen || {}), relayUrl: u.listen };
   persist();
   return { domain: d, token: t, urls: u };
+}
+
+// Прекъсва връзката със сървъра и се ВРЪЩА КЪМ ЛОКАЛНАТА база на телефона.
+// Изтрива домейна/token-а и сглобените URL-та (sync/listen/exec) и превключва режима на
+// съхранение на 'local'. ВАЖНО: наученото (subjects/memory/tasks) СИ ОСТАВА на устройството —
+// триене на връзката НЕ трие знанието. Връща { ok:true, was:'<предишен домейн>' }.
+export function disconnectServer() {
+  const st = getState();
+  const prev = (st.settings.server && st.settings.server.domain) || '';
+  st.settings.server = { domain: '', token: '', storage: 'local' };
+  if (st.settings.sources) st.settings.sources.serverEndpoint = '';
+  if (st.settings.listen) st.settings.listen.relayUrl = '';
+  persist();
+  return { ok: true, was: prev };
 }
 
 // ── Свързване с ЕДИН таен ключ ──────────────────────────────────────────────

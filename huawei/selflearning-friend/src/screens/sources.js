@@ -16,7 +16,7 @@ import {
   listenSettings, saveListenSettings, listenLog, pollOnce,
   startListening, stopListening, isListening
 } from '../core/listen.js';
-import { serverLink, currentUrls, saveServerLink, connectWithKey, buildConnectionUrl } from '../core/server-link.js';
+import { serverLink, currentUrls, saveServerLink, connectWithKey, buildConnectionUrl, disconnectServer, serverLinkConfigured } from '../core/server-link.js';
 
 export function renderSources(root, { rerender }) {
   clear(root);
@@ -189,7 +189,7 @@ export function renderSources(root, { rerender }) {
   renderUrls();
 
   // --- ЛЕСНО: свържи робота с КЛЮЧ за връзка ---------------------------------
-  // Свързването със сървър се настройва от специалист (деплой опция 2 → 38 → 39).
+  // Свързването със сървър се настройва от специалист (деплой опция 2 → 80 → 81).
   // Собственикът въвежда само ключа (домейнът е по подразбиране); чужд сървър → свой домейн + ключ.
   const keyDomainIn = el('input', { type: 'text', value: link.domain || 'selflearning.bot.nu', placeholder: 'selflearning.bot.nu', autocapitalize: 'none', autocomplete: 'off' });
   const keyIn = el('input', { type: 'text', placeholder: 'ключ за връзка', autocapitalize: 'none', autocomplete: 'off' });
@@ -198,7 +198,7 @@ export function renderSources(root, { rerender }) {
     el('h3', {}, '🔑 Свържи робота (ключ за връзка)'),
     el('p', { class: 'muted', style: 'font-size:13px' },
       'Свързването със сървър се настройва от СПЕЦИАЛИСТ, който има деплой скриптовете ' +
-      '(накратко: деплой опция 2 → опция 38 → опция 39). За повечето хора това НЕ е нужно — ' +
+      '(накратко: деплой опция 2 → опция 80 → опция 81). За повечето хора това НЕ е нужно — ' +
       'работя си отлично и само локално.'),
     el('p', { class: 'muted', style: 'font-size:13px' },
       'Домейнът е попълнен по подразбиране — въведи само ключа. Ако сървърът е ТВОЙ (друг), ' +
@@ -234,7 +234,16 @@ export function renderSources(root, { rerender }) {
         toast('Не успях: ' + (r.error || 'неизвестно'));
       }
     } }, 'Свържи'),
-    keyHint
+    keyHint,
+    // ПРЕКЪСВАНЕ → връщане към ЛОКАЛНАТА база. Наученото ОСТАВА на телефона.
+    el('div', { class: 'muted', style: 'font-size:12px;margin-top:12px' },
+      serverLinkConfigured() ? `Сега си свързан с: ${serverLink().domain}` : 'Сега работиш ЛОКАЛНО (без сървър).'),
+    el('button', { class: 'block secondary', style: 'margin-top:8px', onclick: () => {
+      if (!serverLinkConfigured()) { toast('И сега работиш локално — няма какво да прекъсна.'); return; }
+      const r = disconnectServer();
+      toast('Прекъснах връзката с ' + (r.was || 'сървъра') + ' — върнах се на локалната база. Наученото е запазено.');
+      try { rerender(); } catch (_) {}
+    } }, 'Прекъсни връзката (локална база)')
   ]));
 
   root.appendChild(el('div', { class: 'card', style: 'border-left:3px solid var(--accent-2)' }, [
@@ -244,11 +253,11 @@ export function renderSources(root, { rerender }) {
       'Локалното знание остава главно (master).'),
     el('p', { class: 'muted', style: 'font-size:12px' },
       '❓ Тези данни ги подготвя СПЕЦИАЛИСТ, който има деплой скриптовете: деплой (опция 2) → ' +
-      'опция 38 (вдига услугата на сървъра) → опция 39 (показва ДОМЕЙНА и TOKEN-а). Копираш ги тук. ' +
+      'опция 80 (вдига услугата на сървъра) → опция 81 (показва ДОМЕЙНА и TOKEN-а). Копираш ги тук. ' +
       'Същият token върви за десктоп и за телефон (1 сървър = 1 робот). Сървър не е задължителен — ' +
       'без него работя само локално.'),
     el('label', {}, 'Домейн на сървъра'), domainIn,
-    el('label', {}, 'Token (от опция 39 на сървъра)'), tokenIn,
+    el('label', {}, 'Token (от опция 81 на сървъра)'), tokenIn,
     el('button', { class: 'block', style: 'margin-top:10px', onclick: () => {
       const d = domainIn.value.trim(), t = tokenIn.value.trim();
       if (!d || !t) { toast('Въведи и домейн, и token.'); return; }

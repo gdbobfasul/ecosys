@@ -83,6 +83,27 @@ export function addNote(subjectName, { text, source, url }) {
   return { subject: s, note };
 }
 
+// ПАКЕТНО добавяне на МНОГО бележки (за дълбокото обхождане на дървото). Прави persist ВЕДНЪЖ
+// (иначе 1000× addNote = 1000× persist на целия state = квадратично забиване). Дедуп по текст,
+// висок таван (по подразбиране 2000 на тема). Връща броя реално добавени НОВИ бележки.
+export function addNotesBulk(subjectName, notes, { cap = 2000 } = {}) {
+  if (!Array.isArray(notes) || !notes.length) return 0;
+  const s = ensureSubject(subjectName);
+  const seen = new Set(s.notes.map((n) => n.text));
+  let added = 0;
+  for (const it of notes) {
+    const body = String((it && it.text) || '').trim();
+    if (!body || seen.has(body)) continue;
+    seen.add(body);
+    s.notes.unshift({ id: uid(), text: body, source: (it && it.source) || 'неизвестен', url: (it && it.url) || '', at: Date.now() });
+    added++;
+  }
+  if (s.notes.length > cap) s.notes.length = cap;
+  s.updated = Date.now();
+  persist();
+  return added;
+}
+
 export function getSubject(name) {
   return listSubjects().find((x) => x.name.toLowerCase() === String(name).toLowerCase()) || null;
 }
@@ -104,23 +125,32 @@ export function notesCount() {
 
 // Търси из НАУЧЕНОТО (subjects) най-подходящата наставка за въпрос. Връща
 // { subject, note, score } или null. Така роботът ОТГОВАРЯ от наученото (заземено + цитат).
-export function findInSubjects(query, { threshold = 0.34 } = {}) {
+export function findInSubjects(query, { threshold = 0.5 } = {}) {
   const q = tokenize(query);
   if (!q.length) return null;
   const qset = new Set(q);
   let best = null;
   for (const s of listSubjects()) {
+    if (!s.notes || !s.notes.length) continue;
     const nameTokens = new Set(tokenize(s.name));
+    if (!nameTokens.size) continue;
     let nameHit = 0;
-    for (const t of qset) if (nameTokens.has(t)) nameHit = 0.6; // въпросът споменава темата
+    for (const t of qset) if (nameTokens.has(t)) nameHit++;
+    const nameFrac = nameHit / qset.size;                 // доля от ВЪПРОСА, която е в ИМЕТО на темата
+    const wholeNameInQuery = nameHit >= nameTokens.size;   // въпросът съдържа ЦЯЛОТО име на темата
+    // СТРОГО: приемаме само при силно съвпадение по ИМЕ (поне половината въпрос е в името, или
+    // цялото име е във въпроса). Преди единична обща дума в бележка лъжеше (праг 0.34) → грешни теми.
+    if (nameFrac < 0.5 && !wholeNameInQuery) continue;
+    // сред бележките — най-добрата по застъпване (само за подредба/бонус, НЕ като праг).
+    let bestNote = s.notes[0], bestOverlap = 0;
     for (const n of s.notes) {
       const nt = new Set(tokenize(n.text));
-      if (!nt.size) continue;
       let overlap = 0;
       for (const t of qset) if (nt.has(t)) overlap++;
-      const score = nameHit + overlap / Math.max(qset.size, 1);
-      if (!best || score > best.score) best = { subject: s.name, note: n, score };
+      if (overlap > bestOverlap) { bestOverlap = overlap; bestNote = n; }
     }
+    const score = nameFrac + (bestOverlap / Math.max(qset.size, 1)) * 0.3;
+    if (!best || score > best.score) best = { subject: s.name, note: bestNote, score };
   }
   return (best && best.score >= threshold) ? best : null;
 }

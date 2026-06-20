@@ -12,8 +12,28 @@
 // детерминистична със стъпки; при офлайн/неуспех — честно съобщение, без измисляне.
 
 import { solveMath, looksLikeMath } from './math-solver.js';
-import { fetchWikipedia, fetchCrypto, fetchFx, fetchNews, gatherTopicKnowledge, TOPIC_SOURCE_COUNT } from './sources.js';
-import { addNote, getSubject, randomNote, notesCount, addInterest, subjectSourcesTried, markSourceTried, markCovered } from './subjects.js';
+import { fetchWikipedia, fetchCrypto, fetchFx, fetchNews, gatherTopicKnowledge, gatherTreeAnswer, deepLearnCrawl, TOPIC_SOURCE_COUNT } from './sources.js';
+import { addNote, addNotesBulk, getSubject, randomNote, notesCount, addInterest, subjectSourcesTried, markSourceTried, markCovered } from './subjects.js';
+import { learnBudget, dbSizeBytes } from './learn-budget.js';
+
+// ДЪЛБОКО ОБХОЖДАНЕ във фон: само ЕДНО наведнъж (да не залеем Wikipedia), и не повтаряме тема.
+// Бюджетът (цел/таван заявки/таван MB на базата) идва от learn-budget.js според устройството:
+// телефон → леко + спирачка по размер на базата; десктоп/сериозен сървер → дълбоко.
+let _deepBusy = false;
+const _deepDone = new Set();
+function startDeepCrawl(topic) {
+  _deepBusy = true;
+  const b = learnBudget();
+  deepLearnCrawl(topic, {
+    lang: 'bg', targetNotes: b.targetNotes, maxRequests: b.maxRequests,
+    shouldStop: () => dbSizeBytes() >= b.maxDbBytes,   // СПИРАЧКА: достигнат лимит на базата (MB)
+    onBatch: (batch) => {
+      try { addInterest(topic); } catch (_) {}
+      try { return addNotesBulk(topic, batch, { cap: b.deep ? 5000 : 600 }); } catch (_) { return 0; }
+    }
+  }).then(() => { _deepBusy = false; _deepDone.add(topic); })
+    .catch(() => { _deepBusy = false; });
+}
 import { summarizeViaTeacher } from './teacher.js';
 import { dontKnow } from './honesty.js';
 import { addTask, updateTask } from './tasklist.js';
@@ -33,17 +53,22 @@ export function parseTask(text) {
   // УЧА за крипто, а не да върна цена. Така темата „крипто" не отвлича командата.
   // Хваща: „научи/учи/изучи за X", „започни да учиш за X", „искам да научиш за X",
   // спрежения (научи/научиш/науча/учи/учиш/уча/изучи/изучавай).
-  let m = low.match(/^(?:моля\s+)?(?:започни\s+(?:да\s+)?)?(?:искам\s+(?:да\s+)?)?(?:науч(?:и|иш|а)(?:\s+се)?|изуч(?:и|авай)|уч(?:и|иш|а))\s+(?:за\s+|по\s+|на\s+тема\s+)?(.+)/);
+  // Водещи „пълнители/учтивост" (по избор, повтарящи се): моля те / хайде / дай (ми) да /
+  // може(ш) ли да / искам да / започни да / ПРОДЪЛЖАВАЙ/ПРОДЪЛЖИ да / седни да.
+  let m = low.match(/^(?:(?:моля(?:\s+те)?|хайде|дай(?:\s+ми)?(?:\s+да)?|може(?:ш)?\s+ли(?:\s+да)?|искам(?:\s+да)?|започни(?:\s+да)?|продълж(?:авай|и)(?:\s+да)?|седни(?:\s+да)?)\s+)*(?:науч(?:и|иш|а|ете)?(?:\s+се)?|изуч(?:и|авай|ете)?|уч(?:и|иш|а|ете)?|разуч(?:и|авай)?|проуч(?:и|вай)?|разбер(?:и|еш)|запозна(?:й|ваш)\s+се)(?:\s+се)?(?:\s+(?:повече|още|нещо))?(?:\s+(?:за|по|с(?:ъс)?|на\s+тема))?\s+(.+)/);
   if (m) return { kind: 'learn', arg: cleanTopic(m[1]) };
-  m = low.match(/^(?:прочети|чети|разкажи\s+ми)\s+(?:за\s+|на\s+тема\s+)?(.+)/);
+  m = low.match(/^(?:(?:моля(?:\s+те)?|хайде|може(?:ш)?\s+ли(?:\s+да)?)\s+)*(?:прочети|чети|разкажи(?:\s+ми)?|кажи\s+ми|обясни(?:\s+ми)?|опиши)(?:\s+(?:повече|нещо))?(?:\s+(?:за|на\s+тема))?\s+(.+)/);
   if (m) return { kind: 'read', arg: cleanTopic(m[1]) };
 
-  // крипто (цена в момента)
-  if (/(крипто|crypto|биткойн|bitcoin|btc|етер|ethereum|eth|пазар(?:и|а)?\s+на\s+крипто)/.test(low)) {
+  // крипто (ЦЕНА в момента) — иска ИЗРИЧНА ценова/пазарна дума. Само „крипто"/„биткойн"
+  // без ценова дума НЕ е задача за цена, а ТЕМА за учене/търсене (пада надолу към webSearch).
+  const cryptoWord = /(крипто|crypto|биткойн|bitcoin|btc|етер(?:еум|иум)?|ethereum|eth|солана|solana|sol|xrp|ripple|ton|dogecoin|догикойн|cardano|кардано|ada|bnb)/.test(low);
+  const priceWord = /(цена|курс|колко\s+струва|струва|стойност|пазар|колко\s+е|price|rate|market|почем)/.test(low);
+  if (cryptoWord && priceWord) {
     return { kind: 'crypto', arg: extractCoins(low) };
   }
-  // финанси / валути
-  if (/(валут|курс|финанс|forex|fx|обмен)/.test(low)) {
+  // финанси / валути — също иска ценова/обменна дума (не само спомената валута).
+  if (/(валутн|курс|обмен|forex|fx|колко\s+(?:е|струва)\s+(?:доларът|еврото|лев|рубл))/.test(low)) {
     return { kind: 'finance', arg: extractBase(low) };
   }
   // новини
@@ -55,14 +80,22 @@ export function parseTask(text) {
 }
 
 function cleanTopic(t) {
-  return String(t || '').trim().replace(/[?.!]+$/, '').replace(/^(темата\s+|за\s+|по\s+)/, '').trim();
+  let s = String(t || '').trim();
+  // махни водещи „се/темата/за/по/на тема"
+  s = s.replace(/^(?:се\s+|темата\s+|за\s+|по\s+|с\s+|със\s+|на\s+тема\s+)/iu, '').trim();
+  // махни ЗАВЪРШВАЩИ пълнители: „и прочие / и пр. / и така нататък / и т.н. / и др. / и други /
+  // и подобни / и останалото / и всичко останало" (повтарящи се), + многоточие/пунктуация.
+  s = s.replace(/\s*[,;]?\s*(?:и\s+)?(?:прочие|пр\.?|т\.?\s*н\.?|така\s+нататък|др\.?|други|подобни(?:те)?|останалото|всичко\s+останало)\s*$/iu, '').trim();
+  s = s.replace(/[\s.…!?]+$/u, '').trim();
+  return s;
 }
 function extractCoins(low) {
   const found = [];
   for (const [sym, re] of [['btc', /биткойн|bitcoin|btc/], ['eth', /етер|ethereum|eth/], ['bnb', /bnb|binance coin/], ['sol', /solana|sol\b/], ['xrp', /xrp|ripple/], ['ton', /\bton\b/]]) {
     if (re.test(low)) found.push(sym);
   }
-  return found.length ? found : ['btc', 'eth'];
+  // Без конкретна монета → показваме по-широк пазарен срез (не само BTC/ETH).
+  return found.length ? found : ['btc', 'eth', 'bnb', 'sol', 'xrp'];
 }
 function extractBase(low) {
   if (/eur|евро/.test(low)) return 'EUR';
@@ -106,45 +139,55 @@ export async function runTask(task) {
         }
       }
 
-      // УЧЕНЕ от МНОЖЕСТВО безплатни източници (без вече минатите за тази тема).
-      const triedBefore = subjectSourcesTried(topic);
-      const g = await gatherTopicKnowledge(topic, { excludeKeys: triedBefore });
-      for (const k of g.tried) markSourceTried(topic, k);
+      // ДЪЛБОКО УЧЕНЕ: резолвва свободната заявка (напр. „криптовалути и финансови инструменти")
+      // до реални статии и събира МНОГО (главна тема + 12 свързани). Така „научи за X" не връща 0
+      // при многословна/неточна тема (старият път търсеше само по ТОЧНО заглавие → 0).
+      const tree = await gatherTreeAnswer(topic, { lang: 'bg', limit: 8, relatedLimit: 12 });
       let added = 0; let firstNote = null;
-      for (const n of g.notes) {
-        const res = addNote(topic, { text: n.text, source: n.source, url: n.url });
-        if (res) { added++; if (!firstNote) firstNote = n; }
+      for (const n of tree.main) {
+        if (addNote(topic, { text: n.text, source: n.source, url: n.url })) { added++; if (!firstNote) firstNote = n; }
       }
-      const totalTried = subjectSourcesTried(topic).length;
+      // Свързаните теми се записват като ОТДЕЛНИ теми (трупане по дървото).
+      for (const r of tree.related) {
+        try { addInterest(r.topic); } catch (_) {}
+        if (addNote(r.topic, { text: r.text, source: r.source, url: r.url })) added++;
+      }
+      const totalGathered = tree.main.length + tree.related.length;
       const totalNotes = (getSubject(topic) || { notes: [] }).notes.length;
-      const reachedNow = (g.tried || []).length;
-      const failedNow = (g.failed || []).length;
 
-      // ОФЛАЙН/БЛОКИРАНИ: ако този пас не достигна НИТО ЕДИН източник (всички паднаха с
-      // мрежова грешка) → НЕ е „изчерпано", а няма връзка. НЕ маркираме нищо като минато
-      // (затова и не отравяме броя), за да опитаме пак щом има интернет.
-      if (added === 0 && reachedNow === 0 && failedNow > 0) {
+      // Нищо не дойде → офлайн/няма статия (НЕ „изчерпано").
+      if (totalGathered === 0) {
         return { ok: false, kind: task.kind, learned: false,
-          text: `Не можах да стигна до източниците за „${topic}" (${failedNow} опита без връзка — ` +
-            `телефонът е офлайн или източниците са блокирани в момента). НЕ съм изчерпал темата — ` +
-            `провери връзката и ми кажи пак „научи за ${topic}".` };
+          text: `Не можах да стигна до източниците за „${topic}" (телефонът е офлайн или темата няма ` +
+            `статия в момента). Провери връзката и ми кажи пак „научи за ${topic}".` };
       }
 
-      // ИЗЧЕРПВАНЕ: минати всички източници И този пас не добави нищо ново → темата е покрита.
-      if (added === 0 && totalTried >= TOPIC_SOURCE_COUNT) {
-        markCovered(topic, true);
-        return { ok: true, kind: task.kind, learned: false,
-          text: `Изчерпах безплатните източници за „${topic}" — минах всичките ${totalTried} и нямам ` +
-            `какво ново да добавя. Знам ${totalNotes} неща по темата. Питай ме каквото искаш по нея.` };
+      // ОНЛАЙН → пускам ДЪЛБОКО обхождане на дървото във ФОН (цел ~1000 бележки по темата).
+      let deepMsg;
+      if (_deepDone.has(topic)) {
+        deepMsg = `\n\n(Вече съм обходил дървото за „${topic}" надълбоко — знам ${totalNotes} неща.)`;
+      } else if (_deepBusy) {
+        deepMsg = `\n\n(Сега обхождам друга тема надълбоко; ще стигна и до „${topic}" — пробвай пак след малко.)`;
+      } else {
+        const b = learnBudget();
+        startDeepCrawl(topic);
+        deepMsg = b.deep
+          ? `\n\n🌳 Обхождам дървото НАДЪЛБОКО във фон (цел ~${b.targetNotes}, сериозен режим) — трупам под „${topic}". Питай „колко знам за ${topic}".`
+          : `\n\n🌳 Обхождам ${b.mode === 'deep' ? 'ПО-ДЪЛБОКО (1 тема)' : 'ЛЕКО (много теми)'} във фон (до ~${b.targetNotes}, таван ${b.maxDbMB}MB база — пести телефона) под „${topic}". Смени стратегията/тавана в Настройки → „Памет". Питай „колко знам за ${topic}".`;
       }
+
+      // Стигнах източници, но нищо НОВО в първия пас (дълбокото обхождане ще добави още).
       if (added === 0) {
         return { ok: true, kind: task.kind, learned: false,
-          text: `Засега не намерих ново за „${topic}" (минах ${totalTried} източника). Ще пробвам останалите при следващите проверки.` };
+          text: `Вече имам начално знание за „${topic}" (знам ${totalNotes} неща).${deepMsg}` };
       }
+      // Показвам НЯКОЛКО нови бележки (с цитати) + колко свързани съм записал.
+      const shown = tree.main.slice(0, 4).map((n) => `• ${n.text}\n  📎 ${n.source}`).join('\n\n');
+      const relLine = tree.related.length ? `\n\n🌳 + ${tree.related.length} свързани теми (записах ги).` : '';
       return {
         ok: true, kind: task.kind, learned: true, citation: firstNote ? firstNote.source : '',
-        text: `Научих ${added} нови неща за „${topic}" от ${g.tried.length} източника (вече знам ${totalNotes}):\n\n` +
-          `${firstNote.text}\n\n📎 ${firstNote.source}\n\n(Записах всичко в Задачи → теми; питай ме по темата.)`
+        text: `Научих ${added} нови неща за „${topic}" от ${totalGathered} статии (вече знам ${totalNotes}):\n\n` +
+          `${shown}${relLine}${deepMsg}\n\n(Записах всичко в Задачи → теми.)`
       };
     }
 

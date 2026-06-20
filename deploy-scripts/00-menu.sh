@@ -302,14 +302,6 @@ show_menu() {
     item "55" "Deploy Find Best Price УСЛУГА (systemd+nginx) → сървър" \
         "Вдига kcy-fbp услугата (node :3012) + nginx /find-best-price/, /api/fbp/." \
         "Самостоятелно — не пипа другите. nginx маршрутът идва с опция 2."
-    item "38" "Deploy Selflearning Friend relay (systemd+nginx) → сървър" \
-        "Вдига kcy-selflearning услугата (node :3013) + nginx /api/selflearning/." \
-        "Канал „Слушай\" (queue) + knowledge snapshot, namespace по token. БЕЗ контакти/крипто." \
-        "Самостоятелно — не пипа другите. nginx маршрутът идва с опция 2."
-    item "39" "Свържи Selflearning робот към сървър (проверки + линк)" \
-        "Избираш сървър (prod / VM / чужд при продажба), проверявам го (ОС/RAM/диск/Node/" \
-        "порт/nginx) ПРЕДИ деплой. Правило: 1 сървър = 1 робот. После вдига relay-а + дава URL+token." \
-        "Десктопът учи, телефонът само предава. Различен робот → само с потвърдено прехвърляне."
 
     echo -e "${BOLD}${CYAN}━━━ ПО ПРИЛОЖЕНИЕ — обнови (база + админи/модератори от .env + рестарт) ━${NC}"
     echo ""
@@ -397,7 +389,23 @@ show_menu() {
         "Дали се билдват, дали стартират/'играят' + console грешки + скрийншоти."
     echo -e "  ${GRAY}(71-76 запазени за бъдещи мобилни задачи; 60-70 са за FILL DATA)${NC}"
 
-    echo -e "  ${GRAY}Свободни номера: (няма)   ·   запазени: 60-70 (FILL DATA), 71-76 (бъдещи мобилни)${NC}"
+    echo ""
+    echo -e "${BOLD}${CYAN}━━━ SELFLEARNING FRIEND (relay + тест-бот) ━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    item "80" "Deploy Selflearning Friend relay (systemd+nginx) → сървър" \
+        "Вдига kcy-selflearning услугата (node :3013) + nginx /api/selflearning/." \
+        "Канал „Слушай\" (queue) + knowledge snapshot, namespace по token. БЕЗ контакти/крипто." \
+        "Самостоятелно — не пипа другите. nginx маршрутът идва с опция 2."
+    item "81" "Свържи Selflearning робот към сървър (проверки + линк)" \
+        "Избираш сървър (prod / VM / чужд при продажба), проверявам го (ОС/RAM/диск/Node/" \
+        "порт/nginx) ПРЕДИ деплой. Правило: 1 сървър = 1 робот. После вдига relay-а + дава URL+token." \
+        "Десктопът учи, телефонът само предава. Различен робот → само с потвърдено прехвърляне."
+    item "82" "Тест-бот Selflearning — ВСИЧКИ тестове (знание + способности + сървър)" \
+        "ЛОКАЛНО, и двата теста: 1) test-bot.mjs — 100 знание-заявки (търсене/дърво/цитати);" \
+        "2) test-bot-tasks.mjs — YouTube/превод на 15 езика/връзка-прекъсване + безопасни задачи на" \
+        "сървъра (тест1 + mkdir/ls/rm в пясъчника). С token → live към relay-а; без token → DRY-RUN."
+
+    echo -e "  ${GRAY}Свободни номера: 77-79   ·   запазени: 60-70 (FILL DATA), 71-76 (мобилни), 80-82 (selflearning)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -678,7 +686,7 @@ run_choice() {
             else echo "  Отказано"; fi
             press_enter
             ;;
-        38)
+        80)
             echo ""
             echo -e "${BOLD}${CYAN}  DEPLOY Selflearning Friend relay (systemd+nginx) — на кой сървър?${NC}"
             echo ""
@@ -704,7 +712,7 @@ run_choice() {
             else echo "  Отказано"; fi
             press_enter
             ;;
-        39)
+        81)
             echo ""
             echo -e "${BOLD}${CYAN}  СВЪРЖИ Selflearning робот към сървър — кой сървър?${NC}"
             echo -e "  ${GRAY}(prod / VM, или custom за чужд сървър при продажба/прехвърляне)${NC}"
@@ -740,6 +748,49 @@ run_choice() {
                     echo -e "  ${RED}✗ Скриптът върна грешка/NO-GO (exit ${RC}) — виж изхода по-горе${NC}"
                 fi
             else echo "  Отказано"; fi
+            press_enter
+            ;;
+        82)
+            echo ""
+            echo -e "${BOLD}${CYAN}  ТЕСТ-БОТ Selflearning — ВСИЧКИ тестове (ЛОКАЛНО)${NC}"
+            echo -e "  ${GRAY}1) 100 знание-заявки  ·  2) способности (YouTube/превод/връзка)  ·  3) безопасни задачи на сървъра.${NC}"
+            echo ""
+            SLF_DIR="$SCRIPT_DIR/../huawei/selflearning-friend"
+            if [ ! -f "$SLF_DIR/tools/test-bot.mjs" ] || [ ! -f "$SLF_DIR/tools/test-bot-tasks.mjs" ]; then
+                echo -e "  ${RED}✗ Не намирам тестовете в $SLF_DIR/tools/ — прекъсвам.${NC}"
+                press_enter; continue
+            fi
+            read -p "  Колко знание-заявки? [Enter = 100, 0 = пропусни]: " SLF_N
+            SLF_N="${SLF_N:-100}"
+            read -p "  Token на робота за СЪРВЪРНИЯ тест (Enter = само DRY-RUN, без сървър): " SLF_TOK
+            SLF_DOM="selflearning.bot.nu"; SLF_SBX="/var/lib/kcy-selflearning/data/exec-sandbox"
+            if [ -n "$SLF_TOK" ]; then
+                read -p "  Домейн [Enter = selflearning.bot.nu]: " _D; SLF_DOM="${_D:-selflearning.bot.nu}"
+                read -p "  Пясъчник [Enter = ${SLF_SBX}]: " _S; SLF_SBX="${_S:-$SLF_SBX}"
+            fi
+            # ЛОГ: logs/<източник>/<скрипт>-<какво>-<дата_час>.log (виж logs/README.md).
+            # Папката е извън git и извън деплоя. tee → и на екрана, и във файла.
+            LOG_DIR="$SCRIPT_DIR/../logs/selflearning-testbot"
+            mkdir -p "$LOG_DIR"
+            LOGFILE="$LOG_DIR/test-bot-all-$(date +%Y-%m-%d_%H-%M-%S).log"
+            echo -e "  ${GRAY}Лог: ${LOGFILE}${NC}"
+            echo "=== ТЕСТ-БОТ Selflearning $(date) | домейн=${SLF_DOM} | live=$([ -n "$SLF_TOK" ] && echo да || echo не) ===" > "$LOGFILE"
+            # 1) ЗНАНИЕ — 100 направления (без сървър).
+            if [ "$SLF_N" != "0" ]; then
+                echo ""; echo -e "  ${YELLOW}► node tools/test-bot.mjs ${SLF_N}${NC}"; echo ""
+                ( cd "$SLF_DIR" && node tools/test-bot.mjs "$SLF_N" ) 2>&1 | tee -a "$LOGFILE"
+            fi
+            # 2+3) СПОСОБНОСТИ + СЪРВЪР — live при token, иначе DRY-RUN.
+            echo ""
+            if [ -n "$SLF_TOK" ]; then
+                echo -e "  ${YELLOW}► node tools/test-bot-tasks.mjs --live ${SLF_DOM} <token> ${SLF_SBX}${NC}"
+                echo -e "  ${GRAY}Изисква exec ВКЛЮЧЕН на сървъра (.env SELFLEARNING_EXEC_ENABLED=1 + деплой/рестарт на услугата).${NC}"; echo ""
+                ( cd "$SLF_DIR" && node tools/test-bot-tasks.mjs --live "$SLF_DOM" "$SLF_TOK" "$SLF_SBX" ) 2>&1 | tee -a "$LOGFILE"
+            else
+                echo -e "  ${YELLOW}► node tools/test-bot-tasks.mjs   ${GRAY}(DRY-RUN — без докосване на сървър)${NC}"; echo ""
+                ( cd "$SLF_DIR" && node tools/test-bot-tasks.mjs ) 2>&1 | tee -a "$LOGFILE"
+            fi
+            echo ""; echo -e "  ${GREEN}✓ Логът е записан: ${LOGFILE}${NC}"
             press_enter
             ;;
         45|46|47|48|49)
