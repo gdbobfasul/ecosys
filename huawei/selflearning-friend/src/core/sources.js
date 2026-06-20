@@ -21,39 +21,41 @@ let _netReached = 0;
 let _netFailed = 0;
 export function netCounters() { return { reached: _netReached, failed: _netFailed }; }
 
+// Таймаут БЕЗ AbortController: CapacitorHttp (нативният HTTP на Android, който ползваме за
+// заобикаляне на CORS) НЕ поддържа AbortController/signal — подаването му чупеше заявката
+// моментално. Затова правим таймаута през Promise.race с гол fetch (работи и нативно, и в браузър).
+function fetchTimeout(url, opts, ms) {
+  return Promise.race([
+    fetch(url, opts || {}),
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+  ]);
+}
+
 async function getJson(url, { timeoutMs = TIMEOUT, accept = 'application/json' } = {}) {
   if (typeof fetch !== 'function') return null;
-  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
   let reached = false;
   try {
-    const res = await fetch(url, { headers: { Accept: accept }, signal: ctrl ? ctrl.signal : undefined });
+    const res = await fetchTimeout(url, { headers: { Accept: accept } }, timeoutMs);
     reached = true; _netReached++;          // сървърът отговори (дори да е !ok)
-    if (!res.ok) return null;
+    if (!res || !res.ok) return null;
     return await res.json();
   } catch (_) {
     if (!reached) _netFailed++;             // изобщо не стигнахме (офлайн/таймаут/блокиран)
     return null;
-  } finally {
-    if (timer) clearTimeout(timer);
   }
 }
 
 async function getText(url, { timeoutMs = TIMEOUT } = {}) {
   if (typeof fetch !== 'function') return null;
-  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
   let reached = false;
   try {
-    const res = await fetch(url, { signal: ctrl ? ctrl.signal : undefined });
+    const res = await fetchTimeout(url, {}, timeoutMs);
     reached = true; _netReached++;
-    if (!res.ok) return null;
+    if (!res || !res.ok) return null;
     return await res.text();
   } catch (_) {
     if (!reached) _netFailed++;
     return null;
-  } finally {
-    if (timer) clearTimeout(timer);
   }
 }
 

@@ -8,6 +8,7 @@
 // Сървърният endpoint е изключен по подразбиране (SELFLEARNING_EXEC_ENABLED=1 го пуска).
 
 import { currentUrls } from './server-link.js';
+import { fetchTimeout } from './net.js';
 
 // Изпълнява command на host (празен host = на самия relay сървър). Връща
 // { ok, code, stdout, stderr, timedOut } или { ok:false, error } при проблем с връзката.
@@ -18,15 +19,12 @@ export async function runRemote(host, command, { timeoutMs = 65000 } = {}) {
   }
   if (typeof fetch !== 'function') return { ok: false, error: 'Няма мрежа в тази среда.' };
 
-  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
   try {
-    const res = await fetch(u.exec, {
+    const res = await fetchTimeout(u.exec, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ host: String(host || ''), command: String(command || '') }),
-      signal: ctrl ? ctrl.signal : undefined
-    });
+      body: JSON.stringify({ host: String(host || ''), command: String(command || '') })
+    }, timeoutMs);
     let data = null;
     try { data = await res.json(); } catch (_) { data = null; }
     if (res.status === 403 && data && data.error === 'exec_disabled') {
@@ -38,9 +36,7 @@ export async function runRemote(host, command, { timeoutMs = 65000 } = {}) {
     return data; // { ok, code, host, stdout, stderr, timedOut }
   } catch (e) {
     const msg = String((e && e.message) || e);
-    return { ok: false, error: /abort/i.test(msg) ? 'Командата отне твърде дълго (таймаут).' : ('Грешка при връзката: ' + msg) };
-  } finally {
-    if (timer) clearTimeout(timer);
+    return { ok: false, error: /timeout/i.test(msg) ? 'Командата отне твърде дълго (таймаут).' : ('Грешка при връзката: ' + msg) };
   }
 }
 

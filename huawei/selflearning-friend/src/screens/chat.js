@@ -97,7 +97,14 @@ export function renderChat(root, { navigate, rerender }) {
   }
 
   const list = el('div', { class: 'chat-list' });
-  const input = el('input', { type: 'text', placeholder: 'Кажи нещо или ме научи…', autocomplete: 'off' });
+  // ТЕКСТОВО ПОЛЕ: textarea, което РАСТЕ на много редове, докато пишеш/диктуваш (до ~екрана,
+  // после се скролва вътре) — за да се вижда цялото изречение. autoGrow се вика при всяка
+  // промяна (писане И програмно попълване от диктовката).
+  const input = el('textarea', { rows: '1', placeholder: 'Кажи нещо или ме научи…', autocomplete: 'off' });
+  function autoGrow() {
+    try { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, Math.round((window.innerHeight || 700) * 0.55)) + 'px'; } catch (_) {}
+  }
+  input.addEventListener('input', autoGrow);
   // „Изпрати": ако микрофонът РАБОТИ в момента → първо го спира, после праща наученото
   // (потребителят поиска: и микрофонът, и „Изпрати" да спират записа).
   const sendBtn = el('button', { onclick: () => {
@@ -146,7 +153,7 @@ export function renderChat(root, { navigate, rerender }) {
     try {
       transcript = await startListening({
         lang: (st.settings.voice && st.settings.voice.lang) || 'bg-BG',
-        onInterim: (t) => { if (t) input.value = join(prefix, t); } // ДОЛЕПЯ (полето е disabled → без клавиатура)
+        onInterim: (t) => { if (t) { input.value = join(prefix, t); autoGrow(); } } // ДОЛЕПЯ + расте (полето е disabled → без клавиатура)
       });
     } catch (e) {
       const msg = String(e && e.message || '');
@@ -161,6 +168,7 @@ export function renderChat(root, { navigate, rerender }) {
     const heard = String(transcript || '').trim();
     if (heard) {
       input.value = join(prefix, heard);   // финално долепяне към вече казаното/написаното
+      autoGrow();
       runVoiceprintSoft();                 // МЕК гласов сигнал (фон; не блокира; не пипа лока)
       // НЕ фокусираме полето → клавиатурата НЕ изскача. Натисни 🎤 пак за още думи, или „Изпрати".
     }
@@ -200,6 +208,7 @@ export function renderChat(root, { navigate, rerender }) {
     const text = (forced != null ? String(forced) : input.value).trim();
     if (!text) return null;
     input.value = '';
+    autoGrow();
     touchSession();
 
     pushBubble('owner', text);
@@ -249,7 +258,8 @@ export function renderChat(root, { navigate, rerender }) {
     return res;
   }
 
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+  // Enter праща; Shift+Enter = нов ред (за многоредово писане).
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
 
   // Когато ПИШЕШ (микрофонът е изключен → полето е активно и клавиатурата изскача), тя
   // покриваше долните ~20px на полето. При фокус вдигаме полето над клавиатурата/таб-бара
@@ -288,10 +298,11 @@ export function renderChat(root, { navigate, rerender }) {
       startConversation({
         isAllowed: () => isUnlocked() && !isLockedDown(),
         // едно слушане → финален транскрипт (показваме междинното в полето)
-        listenOnce: () => startListening({ lang, onInterim: (t) => { if (t) input.value = t; } }),
+        listenOnce: () => startListening({ lang, onInterim: (t) => { if (t) { input.value = t; autoGrow(); } } }),
         // същият път като писане/микрофон: commands.js → responder → учене
         handle: async (text) => {
           input.value = '';
+          autoGrow();
           runVoiceprintSoft(); // МЕК гласов сигнал (фон; не блокира; не пипа лока)
           const res = await send(text);
           return (res && res.text) || '';
@@ -311,7 +322,7 @@ export function renderChat(root, { navigate, rerender }) {
   const hintBar = el('div', { class: 'row wrap', style: 'gap:6px;margin-bottom:8px' },
     ['запомни, че…', 'реши 2x+3=11', 'колко е 12% от 480', 'научи за …', 'питай ме'].map((t) =>
       el('button', { class: 'secondary', style: 'font-size:12px;padding:6px 10px',
-        onclick: () => { input.value = t.replace('…', ' '); input.focus(); } }, t)
+        onclick: () => { input.value = t.replace('…', ' '); autoGrow(); input.focus(); } }, t)
     )
   );
 

@@ -6,27 +6,22 @@
 // НЕ изпращаме лични данни освен текущото съобщение + малък контекст от паметта,
 // който САМИЯТ собственик е въвел. Нищо не се проследява, няма акаунт.
 
+import { fetchTimeout } from './net.js';
+
 const ENDPOINT = 'https://text.pollinations.ai/';
 
 // Връща string с отговор или хвърля/връща null при неуспех. Има timeout.
 export async function askAi(prompt, { timeoutMs = 9000 } = {}) {
   if (typeof fetch !== 'function') return null;
-  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
   try {
     const url = ENDPOINT + encodeURIComponent(prompt);
-    const res = await fetch(url, {
-      method: 'GET',
-      signal: ctrl ? ctrl.signal : undefined
-    });
-    if (!res.ok) return null;
+    const res = await fetchTimeout(url, { method: 'GET' }, timeoutMs);
+    if (!res || !res.ok) return null;
     const text = (await res.text()).trim();
     if (!text || text.length > 1500) return text ? text.slice(0, 1500) : null;
     return text;
   } catch (_) {
     return null; // graceful fallback — викащият решава какво да прави
-  } finally {
-    if (timer) clearTimeout(timer);
   }
 }
 

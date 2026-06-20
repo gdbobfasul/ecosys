@@ -22,6 +22,7 @@
 import { getState, persist } from './storage.js';
 import { askAi, buildPrompt } from './ai-client.js';
 import { summarizeLocally } from './sources.js';
+import { fetchTimeout } from './net.js';
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 
@@ -64,16 +65,13 @@ export function teacherReady() {
 // Прокси на собственика: POST {endpoint} { prompt } → { text } (ключът е на сървъра).
 async function callClaudeProxy(endpoint, prompt, timeoutMs = 20000) {
   if (typeof fetch !== 'function') return null;
-  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
   try {
-    const res = await fetch(endpoint, {
+    const res = await fetchTimeout(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt }),
-      signal: ctrl ? ctrl.signal : undefined
-    });
-    if (!res.ok) return null;
+      body: JSON.stringify({ prompt })
+    }, timeoutMs);
+    if (!res || !res.ok) return null;
     const data = await res.json().catch(() => null);
     if (data && typeof data.text === 'string') return data.text.trim() || null;
     // толерираме и формата на Anthropic, ако проксито го препредава 1:1
@@ -83,18 +81,14 @@ async function callClaudeProxy(endpoint, prompt, timeoutMs = 20000) {
     return null;
   } catch (_) {
     return null;
-  } finally {
-    if (timer) clearTimeout(timer);
   }
 }
 
 // Директно към Anthropic от приложението (WebView). Изисква dangerous-direct-browser-access.
 async function callAnthropicDirect(prompt, t, timeoutMs = 20000) {
   if (typeof fetch !== 'function') return null;
-  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
   try {
-    const res = await fetch(ANTHROPIC_URL, {
+    const res = await fetchTimeout(ANTHROPIC_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -106,10 +100,9 @@ async function callAnthropicDirect(prompt, t, timeoutMs = 20000) {
         model: t.model,
         max_tokens: 600,
         messages: [{ role: 'user', content: prompt }]
-      }),
-      signal: ctrl ? ctrl.signal : undefined
-    });
-    if (!res.ok) return null;
+      })
+    }, timeoutMs);
+    if (!res || !res.ok) return null;
     const data = await res.json().catch(() => null);
     if (data && Array.isArray(data.content)) {
       const txt = data.content.filter((c) => c && c.type === 'text').map((c) => c.text).join('\n').trim();
@@ -118,8 +111,6 @@ async function callAnthropicDirect(prompt, t, timeoutMs = 20000) {
     return null;
   } catch (_) {
     return null;
-  } finally {
-    if (timer) clearTimeout(timer);
   }
 }
 

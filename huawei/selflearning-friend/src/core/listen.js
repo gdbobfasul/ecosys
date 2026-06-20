@@ -14,6 +14,7 @@
 
 import { getState, persist } from './storage.js';
 import { mergeEntries } from './knowledge.js';
+import { fetchTimeout } from './net.js';
 
 let _timer = null;
 let _running = false;
@@ -58,16 +59,14 @@ export async function pollOnce() {
   if (!cfg.relayUrl) { pushLog({ status: 'idle', note: 'Няма зададен relay URL.' }); return { ok: false }; }
   if (typeof fetch !== 'function') { pushLog({ status: 'idle', note: 'Няма мрежа в тази среда.' }); return { ok: false }; }
 
-  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-  const timer = ctrl ? setTimeout(() => ctrl.abort(), 12000) : null;
   try {
-    const res = await fetch(cfg.relayUrl, { signal: ctrl ? ctrl.signal : undefined });
-    if (!res.ok) { pushLog({ status: 'error', note: 'Relay върна ' + res.status }); return { ok: false }; }
+    const res = await fetchTimeout(cfg.relayUrl, {}, 12000);
+    if (!res || !res.ok) { pushLog({ status: 'error', note: 'Relay върна ' + (res ? res.status : 'няма отговор') }); return { ok: false }; }
     const data = await res.json();
     const merged = mergeEntries(data);
     if (merged.added > 0) {
       pushLog({ status: 'received', note: `Получих ${merged.added} нови урока (пропуснати дубликати: ${merged.skipped}).` });
-      if (cfg.ack) await ackReceived(cfg.relayUrl, merged.added, ctrl);
+      if (cfg.ack) await ackReceived(cfg.relayUrl, merged.added);
     } else {
       pushLog({ status: 'empty', note: 'Нямаше нови уроци за момента.' });
     }
@@ -75,20 +74,17 @@ export async function pollOnce() {
   } catch (e) {
     pushLog({ status: 'error', note: 'Спънка (офлайн?): ' + (e && e.message || e) });
     return { ok: false };
-  } finally {
-    if (timer) clearTimeout(timer);
   }
 }
 
-async function ackReceived(relayUrl, received, ctrl) {
+async function ackReceived(relayUrl, received) {
   const ackUrl = relayUrl.endsWith('/') ? relayUrl + 'ack' : relayUrl + '/ack';
   try {
-    await fetch(ackUrl, {
+    await fetchTimeout(ackUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ received }),
-      signal: ctrl ? ctrl.signal : undefined
-    });
+      body: JSON.stringify({ received })
+    }, 12000);
   } catch (_) { /* ack е по избор — тихо пропускаме */ }
 }
 

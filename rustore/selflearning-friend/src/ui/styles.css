@@ -123,7 +123,13 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 .composer { position: sticky; bottom: 0; display: flex; gap: 8px; padding: 10px 0; background: linear-gradient(transparent, var(--bg) 30%); }
 /* scroll-margin-bottom: при фокус (писане) scrollIntoView оставя това разстояние под полето,
    за да НЕ го покрива клавиатурата/таб-барът (преди оставаше ~20px ниско). */
-.composer input { flex: 1; scroll-margin-bottom: 96px; }
+.composer input, .composer textarea { flex: 1; scroll-margin-bottom: 96px; }
+/* textarea расте на много редове (autoGrow в chat.js), до ~екрана, после скролва вътре. */
+.composer textarea {
+  resize: none; overflow-y: auto; min-height: 44px; max-height: 60vh;
+  line-height: 1.35; font-family: inherit; font-size: inherit;
+}
+.composer { align-items: flex-end; }
 
 /* --- Микрофон (гласов вход) --- */
 .mic-btn { flex: none; padding: 12px 14px; }

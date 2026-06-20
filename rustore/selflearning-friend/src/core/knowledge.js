@@ -14,6 +14,7 @@
 
 import { getState, persist } from './storage.js';
 import { listMemory, addMemory, tokenize } from './memory-store.js';
+import { fetchTimeout } from './net.js';
 
 const PACK_KIND = 'slf-knowledge';
 const PACK_VERSION = 1;
@@ -142,18 +143,14 @@ export async function pullFromUrl(url, { timeoutMs = 12000 } = {}) {
   const u = String(url || '').trim();
   if (!u) return { ok: false, added: 0, skipped: 0, reason: 'Няма зададен URL.' };
   if (typeof fetch !== 'function') return { ok: false, added: 0, skipped: 0, reason: 'Няма мрежа в тази среда.' };
-  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
   try {
-    const res = await fetch(u, { signal: ctrl ? ctrl.signal : undefined });
-    if (!res.ok) return { ok: false, added: 0, skipped: 0, reason: 'Сървърът върна ' + res.status };
+    const res = await fetchTimeout(u, {}, timeoutMs);
+    if (!res || !res.ok) return { ok: false, added: 0, skipped: 0, reason: 'Сървърът върна ' + (res ? res.status : 'няма отговор') };
     const data = await res.json();
     const merged = mergeEntries(data);
     return { ok: true, ...merged };
   } catch (e) {
     return { ok: false, added: 0, skipped: 0, reason: 'Грешка при изтегляне (офлайн?): ' + (e && e.message || e) };
-  } finally {
-    if (timer) clearTimeout(timer);
   }
 }
 
@@ -165,21 +162,16 @@ export async function exportToServer(endpoint, { timeoutMs = 12000 } = {}) {
   if (!ep) return { ok: false, reason: 'Няма зададен сървърен endpoint.' };
   if (typeof fetch !== 'function') return { ok: false, reason: 'Няма мрежа в тази среда.' };
   const pack = buildKnowledgePack();
-  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
   try {
-    const res = await fetch(ep, {
+    const res = await fetchTimeout(ep, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(pack),
-      signal: ctrl ? ctrl.signal : undefined
-    });
-    if (!res.ok) return { ok: false, reason: 'Сървърът върна ' + res.status };
+      body: JSON.stringify(pack)
+    }, timeoutMs);
+    if (!res || !res.ok) return { ok: false, reason: 'Сървърът върна ' + (res ? res.status : 'няма отговор') };
     return { ok: true, count: pack.count };
   } catch (e) {
     return { ok: false, reason: 'Грешка при изпращане (офлайн?): ' + (e && e.message || e) };
-  } finally {
-    if (timer) clearTimeout(timer);
   }
 }
 

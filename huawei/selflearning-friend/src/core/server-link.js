@@ -96,19 +96,29 @@ export function buildConnectionUrl(keyOrUrl, defaultDomain = DEFAULT_CONN_DOMAIN
 
 // ЕДИН опит за теглене на connection.bot.token. Връща { ok, ... } или { ok:false, error, retryable }.
 // retryable=true означава „файлът може още да не е качен/разпространен" → има смисъл да пробваме пак.
+// Таймаут БЕЗ AbortController: CapacitorHttp (нативният HTTP, който заобикаля CORS — а файлът
+// connection.bot.token се сервира БЕЗ CORS заглавие) НЕ поддържа signal → подаването му чупеше
+// заявката моментално. Затова таймаутът е през Promise.race с гол fetch.
+function fetchTimeout(url, opts, ms) {
+  return Promise.race([
+    fetch(url, opts || {}),
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+  ]);
+}
+
 async function attemptConnect(url, timeoutMs) {
-  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
   try {
-    const res = await fetch(url, { cache: 'no-store', signal: ctrl ? ctrl.signal : undefined });
-    if (!res.ok) {
+    const res = await fetchTimeout(url, { headers: { Accept: 'application/json' } }, timeoutMs);
+    if (!res || !res.ok) {
       // 404/403/5xx → файлът най-вероятно още не е публикуван/разпространен → пробвай пак.
-      return { ok: false, error: `сървърът върна ${res.status}`, retryable: true };
+      return { ok: false, error: `сървърът върна ${res ? res.status : 'няма отговор'}`, retryable: true };
     }
     let cfg = null;
     try { cfg = await res.json(); } catch (_) {
-      // Невалиден JSON често значи частично качен файл → пробвай пак.
-      return { ok: false, error: 'файлът с настройки още не е готов', retryable: true };
+      // Някои native слоеве дават текст вместо json → пробвай ръчно да парснем.
+      try { cfg = JSON.parse(await res.text()); } catch (__) {
+        return { ok: false, error: 'файлът с настройки още не е готов', retryable: true };
+      }
     }
     if (!cfg || cfg.kind !== 'slf-connection') {
       return { ok: false, error: 'това не е валиден файл за връзка (connection.bot.token)', retryable: false };
@@ -132,9 +142,7 @@ async function attemptConnect(url, timeoutMs) {
   } catch (e) {
     const msg = String((e && e.message) || e);
     // Таймаут/мрежова грешка → файлът/SSL може още да не е готов → пробвай пак.
-    return { ok: false, error: /abort/i.test(msg) ? 'изтеглянето отне твърде дълго (таймаут)' : msg, retryable: true };
-  } finally {
-    if (timer) clearTimeout(timer);
+    return { ok: false, error: /timeout/i.test(msg) ? 'изтеглянето отне твърде дълго (таймаут)' : msg, retryable: true };
   }
 }
 
