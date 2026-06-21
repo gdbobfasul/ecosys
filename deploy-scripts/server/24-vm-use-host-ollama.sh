@@ -33,10 +33,18 @@ fi
 URL="http://${HOST_IP}:${PORT}"
 
 echo "→ Проверявам достъп до Ollama на хоста (${URL}/api/tags)…"
-if ! curl -fsS --max-time 8 "${URL}/api/tags" >/dev/null 2>&1; then
-  echo "✗ Не стигам ${URL}/api/tags."
+# ПОВТАРЯМЕ — хостът може точно сега да рестартира Ollama (опция 84 го рестартира преди това),
+# затова не падаме на първия неуспех, а пробваме няколко пъти (понася „дупката" на рестарта).
+_reach=0
+for _i in 1 2 3 4 5 6; do
+  if curl -fsS --max-time 6 "${URL}/api/tags" >/dev/null 2>&1; then _reach=1; break; fi
+  echo "    още не отговаря (опит ${_i}/6) — изчаквам 3с…"
+  sleep 3
+done
+if [ "$_reach" -ne 1 ]; then
+  echo "✗ Не стигам ${URL}/api/tags след 6 опита."
   echo "  Провери на ХОСТА: OLLAMA_HOST=0.0.0.0:${PORT}, правило в защитната стена за ${PORT},"
-  echo "  и че хостът и виртуалката са на един LAN (или Host-Only адаптер)."
+  echo "  и че Ollama върви. Алтернатива: ползвай Tailscale IP на хоста за ${URL%:*}."
   exit 1
 fi
 echo "✓ Хостът отговаря."

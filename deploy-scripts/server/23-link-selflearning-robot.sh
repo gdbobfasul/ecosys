@@ -41,16 +41,22 @@ SETUP_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/22-setup-selflearnin
 # Каноничен домейн на робота (от domains.conf). Без nginx-скрейп (хващаше чужд vhost).
 SELF_DOMAIN="${APP_selflearning_PUBLIC:-selflearning.bot.nu}"
 
-DO_DEPLOY=false; DO_TRANSFER=false
+DO_DEPLOY=false; DO_TRANSFER=false; DO_TAILSCALE=false
 for a in "$@"; do case "$a" in
   --deploy)            DO_DEPLOY=true ;;
   --reset|--transfer)  DO_TRANSFER=true ;;   # РЕСЕТ = триене на база+token (--reset е синоним)
+  --tailscale)         DO_TAILSCALE=true ;;  # изложи по Tailscale (валиден ts.net сертификат за телефона)
 esac; done
 
 [ "$EUID" -ne 0 ] && { echo -e "${RED}ERROR: пусни със sudo: sudo $0 $*${NC}"; exit 1; }
 
 read_env() { grep "^$1=" "$GLOBAL_ENV" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' | tr -d '\r' | xargs; }
 PORT=$(read_env "SELFLEARNING_PORT"); PORT="${PORT:-$PORT_DEFAULT}"
+# Локален nginx порт, към който Tailscale serve проксира (виж блока „достъп по Tailscale" по-долу).
+# ПОРТ 80 редиректва към https (location / { return 301 https://… }) → редирект-цикъл през serve.
+# Порт 8080 (от failover блока, 12-setup-failover.sh) обслужва СЪЩОТО съдържание БЕЗ редирект.
+TS_PROXY_PORT_DEFAULT="8080"
+TS_PROXY_PORT=$(read_env "SELFLEARNING_TS_PROXY_PORT"); TS_PROXY_PORT="${TS_PROXY_PORT:-$TS_PROXY_PORT_DEFAULT}"
 
 ##############################################################################
 # Пълно описание (показва се при СТАРТА на процеса — по-подробно от менюто)
@@ -227,6 +233,46 @@ if [ "$DO_DEPLOY" = true ]; then
 fi
 
 ##############################################################################
+# ДОСТЪП ПО TAILSCALE ЗА ТЕЛЕФОНА (само с флаг --tailscale; за сървър БЕЗ публичен домейн)
+##############################################################################
+# Апът иска ДОВЕРЕН https. Сървър без публичен домейн (напр. локална VM) е със самоподписан
+# сертификат → телефонът отказва. `tailscale serve` дава ВАЛИДЕН сертификат на ts.net името;
+# и сменяме SELF_DOMAIN на него, за да влезе правилното име в connection.bot.token. Затова
+# serve + домейнът са ТУК (заедно). ВКЛЮЧВА СЕ САМО с флаг --tailscale (избор от меню 81) — без
+# интерактивен въпрос (на production е безсмислено: там има публичен домейн).
+if [ "$DO_TAILSCALE" = true ]; then
+  echo ""
+  echo -e "${BOLD}${CYAN}━━━ Достъп по Tailscale за телефона (валиден сертификат) ━━━━━━━${NC}"
+  if ! command -v tailscale >/dev/null 2>&1; then
+    echo -e "  ${YELLOW}tailscale липсва на този сървър — пропускам (инсталирай Tailscale).${NC}"
+  else
+    # ts.net името на ТОЗИ възел (MagicDNS), без завършваща точка.
+    TS_DNS=$(tailscale status --json 2>/dev/null | grep -o '"DNSName"[: ]*"[^"]*"' | head -1 | sed -E 's/.*"([^"]*)"$/\1/; s/\.$//')
+    if [ -z "$TS_DNS" ]; then
+      echo -e "  ${YELLOW}Няма MagicDNS име — включи MagicDNS в Tailscale конзолата, после пусни пак. Пропускам.${NC}"
+    else
+      echo -e "  Tailscale име: ${GREEN}${TS_DNS}${NC}"
+      # Проксираме https://<ts.net>/ → nginx:${TS_PROXY_PORT} (по подразбиране 8080). НЕ порт 80 —
+      # той редиректва към https (return 301) и прави редирект-цикъл. 8080 обслужва /api/ + тайния файл.
+      if tailscale serve --bg --https=443 "http://127.0.0.1:${TS_PROXY_PORT}" >/dev/null 2>&1; then
+        echo -e "  ${GREEN}✓ tailscale serve вдигнат (https → nginx:${TS_PROXY_PORT}).${NC}"
+      else
+        echo -e "  ${YELLOW}! tailscale serve върна грешка — включи Settings → Features → HTTPS Certificates в конзолата.${NC}"
+      fi
+      # Проба, че сертификатът работи (изисква включени HTTPS Certificates в конзолата).
+      if curl -fsS --max-time 8 "https://${TS_DNS}/api/selflearning/health" >/dev/null 2>&1; then
+        echo -e "  ${GREEN}✓ https://${TS_DNS} обслужва робота с ДОВЕРЕН сертификат.${NC}"
+      else
+        echo -e "  ${YELLOW}! Още не отговаря по https://${TS_DNS}.${NC}"
+        echo -e "  ${GRAY}  Включи Settings → Features → HTTPS Certificates в Tailscale конзолата, после пусни 81 пак.${NC}"
+      fi
+      SELF_DOMAIN="$TS_DNS"   # ← ОТТУК НАДОЛУ всичко (домейн/teacher/ключ) ползва ts.net името
+      echo -e "  ${GRAY}Домейн за робота: ${SELF_DOMAIN}. На телефона: Tailscale (същия имейл) + ключа по-долу.${NC}"
+    fi
+  fi
+fi
+
+##############################################################################
 # ВРЪЗКА-ИНФО — какво да въведеш в роботчето
 ##############################################################################
 # Token — СТАБИЛЕН: чете се от файл. Нов се генерира САМО ако липсва (т.е. първи път
@@ -351,7 +397,7 @@ JSON
     echo -e "  ${GREEN}✓ Записах настройките.${NC}  В апа въведи САМО този ключ:"
     echo -e "      ${BOLD}${GREEN}${CONN_KEY}${NC}"
     echo -e "  ${GRAY}(или целия URL: https://${SELF_DOMAIN}/${CONN_KEY}/connection.bot.token)${NC}"
-    echo -e "  ${BOLD}${YELLOW}⏱ Файлът се САМОУНИЩОЖАВА след 10 минути${NC} ${YELLOW}(или при следващо пускане на 39).${NC}"
+    echo -e "  ${BOLD}${YELLOW}⏱ Файлът се САМОУНИЩОЖАВА след 10 минути${NC} ${YELLOW}(или при следващо пускане на 81).${NC}"
     echo -e "  ${GRAY}Свържи апа в този прозорец. После тайният URL изчезва — никой друг не може да го ползва.${NC}"
     echo -e "  ${GRAY}Ръчно по-рано:  sudo rm -rf '${CONN_DIR}'   ·   owner-token-ът ОСТАВА (роботът работи).${NC}"
   else

@@ -161,6 +161,14 @@ deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/23-link-selflearning-robot.sh *
 
+# Selflearning Friend — насочи relay-а към Ollama на хоста (точка 84); приема <IP> <модел> <порт>.
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/24-vm-use-host-ollama.sh
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/24-vm-use-host-ollama.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/24-vm-use-host-ollama.sh
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/24-vm-use-host-ollama.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/24-vm-use-host-ollama.sh
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/24-vm-use-host-ollama.sh *
+
 # Обнови по приложение (точки 45-49) — приема hlb|wnb|fbp|portals|chat|eco3.
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/30-update-app.sh
 deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/30-update-app.sh *

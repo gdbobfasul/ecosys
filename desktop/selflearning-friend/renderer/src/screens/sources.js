@@ -17,6 +17,7 @@ import {
   startListening, stopListening, isListening
 } from '../core/listen.js';
 import { serverLink, currentUrls, saveServerLink, connectWithKey, buildConnectionUrl } from '../core/server-link.js';
+import { SERVER_PRESETS, DEFAULT_PRESET_DOMAIN } from '../core/server-presets.js';
 
 export function renderSources(root, { rerender }) {
   clear(root);
@@ -191,7 +192,24 @@ export function renderSources(root, { rerender }) {
   // --- ЛЕСНО: свържи робота с КЛЮЧ за връзка ---------------------------------
   // Свързването със сървър се настройва от специалист (деплой опция 2 → 38 → 39).
   // Собственикът въвежда само ключа (домейнът е по подразбиране); чужд сървър → свой домейн + ключ.
-  const keyDomainIn = el('input', { type: 'text', value: link.domain || 'selflearning.bot.nu', placeholder: 'selflearning.bot.nu', autocapitalize: 'none', autocomplete: 'off' });
+  // Падащо меню с ГОТОВИ домейни (идват от private/configs/.env при компилация → server-presets.js),
+  // за да не се преписват на ръка. Плюс опция „Друг" за ръчно въвеждане.
+  const presetOptions = SERVER_PRESETS.map((p) => el('option', { value: p.domain }, p.label));
+  presetOptions.push(el('option', { value: '__custom__' }, 'Друг (въведи ръчно)…'));
+  const keyDomainSel = el('select', { style: 'width:100%' }, presetOptions);
+  const keyDomainCustom = el('input', { type: 'text', placeholder: 'напр. kcy-srv.tail3c87c4.ts.net', autocapitalize: 'none', autocomplete: 'off', style: 'display:none;margin-top:6px' });
+  const savedDom = link.domain || DEFAULT_PRESET_DOMAIN;
+  if (SERVER_PRESETS.some((p) => p.domain === savedDom)) {
+    keyDomainSel.value = savedDom;
+  } else if (link.domain) {
+    keyDomainSel.value = '__custom__';
+    keyDomainCustom.value = link.domain;
+    keyDomainCustom.style.display = '';
+  }
+  keyDomainSel.addEventListener('change', () => {
+    keyDomainCustom.style.display = (keyDomainSel.value === '__custom__') ? '' : 'none';
+  });
+  const resolveKeyDomain = () => (keyDomainSel.value === '__custom__' ? keyDomainCustom.value.trim() : keyDomainSel.value);
   const keyIn = el('input', { type: 'text', placeholder: 'ключ за връзка', autocapitalize: 'none', autocomplete: 'off' });
   const keyHint = el('div', { class: 'muted', style: 'font-size:12px;white-space:pre-wrap;margin-top:8px' }, '');
   root.appendChild(el('div', { class: 'card', style: 'border-left:3px solid var(--accent)' }, [
@@ -201,12 +219,12 @@ export function renderSources(root, { rerender }) {
       '(накратко: деплой опция 2 → опция 38 → опция 39). За повечето хора това НЕ е нужно — ' +
       'работя си отлично и само локално.'),
     el('p', { class: 'muted', style: 'font-size:13px' },
-      'Домейнът е попълнен по подразбиране — въведи само ключа. Ако сървърът е ТВОЙ (друг), ' +
-      'смени домейна и въведи своя ключ.'),
-    el('label', {}, 'Домейн на сървъра'), keyDomainIn,
+      'Избери домейна от списъка (готовите идват от настройката при компилация). ' +
+      '„Публичен" — за истинския сайт; „Tailscale" — за телефон към твоята виртуалка; „Друг" — ръчно.'),
+    el('label', {}, 'Домейн на сървъра (избери)'), keyDomainSel, keyDomainCustom,
     el('label', {}, 'Ключ за връзка'), keyIn,
     el('button', { class: 'block', style: 'margin-top:10px', onclick: async () => {
-      const dom = keyDomainIn.value.trim() || 'selflearning.bot.nu';
+      const dom = resolveKeyDomain() || DEFAULT_PRESET_DOMAIN;
       const k = keyIn.value.trim();
       if (!k) { toast('Въведи ключа за връзка.'); return; }
       const ref = /^https?:\/\//i.test(k) ? k : (dom + '/' + k);

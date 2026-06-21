@@ -6,8 +6,11 @@ import { getLevel } from './levels.js';
 import Rustam from '../entities/rustam.js';
 import Cucumber from '../entities/cucumber.js';
 
-// Граници на играта (полето) — под HUD-а.
-const FIELD = { x: 16, y: 96, w: GAME_WIDTH - 32, h: GAME_HEIGHT - 112 };
+// Граници на играта (полето) — под HUD-а. Числата са от логическата резолюция
+// (GAME_WIDTH 480 × GAME_HEIGHT 854, виж main.js). НЕ ги четем от main.js НА MODULE-LOAD:
+// main.js ↔ scenes е кръгов импорт → GAME_WIDTH е в TDZ при зареждане
+// („Cannot access 'GAME_WIDTH' before initialization"). Затова са литерали тук.
+const FIELD = { x: 16, y: 96, w: 480 - 32, h: 854 - 112 };
 const COLLECT_RADIUS = 34;   // на какво разстояние Рустам бере краставицата
 
 export default class GameScene extends Phaser.Scene {

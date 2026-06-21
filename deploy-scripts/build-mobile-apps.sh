@@ -211,6 +211,42 @@ build_one() {
       printf "// Автогенериран от build-mobile-apps.sh — НЕ редактирай ръчно.\nexport const APP_VERSION = '%s';\n" "$APK_VERSION_NAME" > src/version.js
       echo -e "  ${GREEN}✓ src/version.js → ${APK_VERSION_NAME}${NC}"
     fi
+    # Домейни за падащото меню „Домейн на сървъра": впръскваме ги от private/configs/.env в
+    # src/core/server-presets.js (само ако апът има този файл — т.е. selflearning-friend), за да
+    # не се преписват на ръка. Липсва tailnet/vm-host → менюто показва само публичния домейн.
+    if [ -f src/core/server-presets.js ]; then
+      _SLF_ENV="$REPO_ROOT/private/configs/.env"
+      _slf_env() { grep -E "^$1=" "$_SLF_ENV" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' | tr -d '\r' | xargs; }
+      _slf_raw() { grep -E "^$1=" "$_SLF_ENV" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' | tr -d '\r'; }
+      _trim() { local s="$1"; s="${s#"${s%%[![:space:]]*}"}"; s="${s%"${s##*[![:space:]]}"}"; printf '%s' "${s//\'/}"; }
+      SLF_PUB="$(_slf_env SELFLEARNING_PUBLIC_DOMAIN)"; SLF_PUB="${SLF_PUB:-selflearning.bot.nu}"
+      SLF_TNET="$(_slf_env SELFLEARNING_TAILNET)"
+      SLF_VMH="$(_slf_env SELFLEARNING_VM_HOST)"
+      SLF_EXTRA="$(_slf_raw SELFLEARNING_EXTRA_DOMAINS)"
+      {
+        printf "// Автогенериран от build-mobile-apps.sh от private/configs/.env — НЕ редактирай ръчно.\n"
+        printf "export const SERVER_PRESETS = [\n"
+        printf "  { label: 'Публичен — %s', domain: '%s' },\n" "$SLF_PUB" "$SLF_PUB"
+        if [ -n "$SLF_TNET" ] && [ -n "$SLF_VMH" ]; then
+          printf "  { label: 'Виртуалка по Tailscale — %s', domain: '%s.%s' },\n" "$SLF_VMH" "$SLF_VMH" "$SLF_TNET"
+        fi
+        # Допълнителни домейни от .env (SELFLEARNING_EXTRA_DOMAINS): формат „Етикет|домейн", разделени с „;".
+        if [ -n "$SLF_EXTRA" ]; then
+          _OIFS="$IFS"; IFS=';'
+          for _e in $SLF_EXTRA; do
+            _lbl="$(_trim "${_e%%|*}")"
+            _dom="$(_trim "${_e#*|}")"; _dom="${_dom// /}"
+            [ -n "$_dom" ] || continue
+            [ -n "$_lbl" ] || _lbl="$_dom"
+            printf "  { label: '%s', domain: '%s' },\n" "$_lbl" "$_dom"
+          done
+          IFS="$_OIFS"
+        fi
+        printf "];\n"
+        printf "export const DEFAULT_PRESET_DOMAIN = '%s';\n" "$SLF_PUB"
+      } > src/core/server-presets.js
+      echo -e "  ${GREEN}✓ src/core/server-presets.js ← .env (${SLF_PUB}${SLF_VMH:+, ${SLF_VMH}.${SLF_TNET}}${SLF_EXTRA:+, +доп.})${NC}"
+    fi
     echo -e "  ${CYAN}→ npm run build (web)…${NC}"
     npm run build || { echo -e "  ${RED}✗ web билдът се провали${NC}"; exit 3; }
     echo -e "  ${GREEN}✓ web билд готов → $d/dist${NC}"
@@ -272,6 +308,20 @@ build_desktop_slf() {
   [ "$rc" -eq 0 ] && RESULTS+=("${GREEN}✓${NC} desktop/selflearning-friend (.exe)") || RESULTS+=("${RED}✗${NC} desktop/selflearning-friend (.exe) (код $rc)")
   echo ""
 }
+
+# Чистим СТАРИТЕ APK-та в /apk — но САМО за магазините, които ще билдваме СЕГА. Така папката
+# е една (/apk) и без остатъци от изтрити апове, но НЕ трием APK на ДРУГ магазин, билднат с
+# отделно извикване (напр. `… huawei` после `… rustore` — да не си трият взаимно).
+if [ "$ANDROID_READY" = 1 ] && [ "${#APPS[@]}" -gt 0 ]; then
+  mkdir -p "$ROOT/apk"
+  # Трием САМО APK-тата на апове, които ще билдваме СЕГА (точно по име) — за да няма стар
+  # APK, но БЕЗ да бутаме съседните (нито друг магазин, нито други апове при единичен билд).
+  for d in "${APPS[@]}"; do
+    st="${d%%/*}"; nm="$(basename "$d")"
+    rm -f "$ROOT/apk/${nm}-${st}-debug.apk" 2>/dev/null
+  done
+  echo -e "  ${CYAN}↻ изчистих старите APK само на избраните апове в /apk${NC}"
+fi
 
 for d in "${APPS[@]}"; do build_one "$d"; done
 

@@ -399,7 +399,7 @@ show_menu() {
     item "81" "Свържи Selflearning робот към сървър (проверки + линк)" \
         "Избираш сървър (prod / VM / чужд при продажба), проверявам го (ОС/RAM/диск/Node/" \
         "порт/nginx) ПРЕДИ деплой. Правило: 1 сървър = 1 робот. После вдига relay-а + дава URL+token." \
-        "Десктопът учи, телефонът само предава. Различен робот → само с потвърдено прехвърляне."
+        "Има режим за достъп по Tailscale — за телефон към VM без публичен домейн, валиден ts.net сертификат. Различен робот → --reset."
     item "82" "Тест-бот Selflearning — ВСИЧКИ тестове (знание + способности + сървър)" \
         "ЛОКАЛНО, и двата теста: 1) test-bot.mjs — 100 знание-заявки (търсене/дърво/цитати);" \
         "2) test-bot-tasks.mjs — YouTube/превод на 15 езика/връзка-прекъсване + безопасни задачи на" \
@@ -725,11 +725,13 @@ run_choice() {
                 MODE=$(ask_choice "Какво да направя на ${PICK_SRV}?" \
                     "Само проверки (без деплой)" \
                     "Проверки + вдигни relay-а (деплой)" \
+                    "Проверки + деплой + достъп по Tailscale за телефона (за VM БЕЗ публичен домейн)" \
                     "Проверки + деплой + РЕСЕТ на робота (трие база+token — за нов/прехвърлен!)")
                 RFLAGS=""
                 case "$MODE" in
                     "Само проверки (без деплой)") RFLAGS="" ;;
                     "Проверки + вдигни relay-а (деплой)") RFLAGS="--deploy" ;;
+                    "Проверки + деплой + достъп по Tailscale за телефона (за VM БЕЗ публичен домейн)") RFLAGS="--deploy --tailscale" ;;
                     "Проверки + деплой + РЕСЕТ на робота (трие база+token — за нов/прехвърлен!)") RFLAGS="--deploy --reset"; DB_DROP_INFO="ДА — selflearning база + token ИЗТРИТИ (ресет)" ;;
                     *) echo "  Отказано"; press_enter; continue ;;
                 esac
@@ -836,6 +838,30 @@ run_choice() {
                 echo ""
                 echo "  → Насочва relay-а към Ollama на хоста, спира локалния CPU модел, рестарт + проба."
                 echo ""
+                # Изчакваме виртуалката да е будна — за да не гръмне с „Connection timed out",
+                # ако е изключена. Настройването е автоматично: пусни я и менюто само продължава.
+                vm_reachable() { ssh -o BatchMode=yes -o ConnectTimeout=6 -o StrictHostKeyChecking=accept-new \
+                    -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" true >/dev/null 2>&1; }
+                if ! vm_reachable; then
+                    echo -e "  ${YELLOW}⏳ ${PICK_SRV} не отговаря — изглежда е изключена.${NC}"
+                    WAITPICK=$(ask_choice "Какво да направя?" \
+                        "Изчакай — ПУСНИ виртуалката сега, проверявам на всеки 5с (до ~3 мин)" \
+                        "Откажи (хостът е настроен; пусни 84 пак след старт на VM)")
+                    if [ "$WAITPICK" = "Изчакай — ПУСНИ виртуалката сега, проверявам на всеки 5с (до ~3 мин)" ]; then
+                        echo "  Пусни виртуалката в VirtualBox сега… чакам да се появи."
+                        _n=0
+                        until vm_reachable; do
+                            _n=$((_n+1))
+                            if [ "$_n" -ge 18 ]; then echo -e "\n  ${RED}Не дойде до ~3 мин. Откажи и пробвай пак.${NC}"; break; fi
+                            printf "\r    чакам… (%s/18)   " "$_n"; sleep 5
+                        done
+                        echo ""
+                        if ! vm_reachable; then echo "  Отказано."; press_enter; continue; fi
+                        echo -e "  ${GREEN}✓ Будна е — продължавам автоматично.${NC}"
+                    else
+                        echo "  Отказано (хостът е готов; пусни 84 пак след старт на VM)."; press_enter; continue
+                    fi
+                fi
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
                 print_run_summary

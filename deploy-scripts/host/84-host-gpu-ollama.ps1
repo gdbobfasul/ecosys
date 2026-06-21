@@ -89,11 +89,17 @@ if ($rule) {
 
 # 5) Рестарт на Ollama, за да хване новите променливи (setx важи само за НОВИ процеси).
 Info "`nРестартирам Ollama, за да влязат настройките…"
+# ВАЖНО: setx пише в регистъра, но НОВ процес през Start-Process наследява средата на
+# ТЕКУЩАТА сесия. Затова задаваме променливите и в текущата сесия — иначе рестартираният
+# Ollama пак ще се върже само на 127.0.0.1 (старата среда без OLLAMA_HOST).
+$env:OLLAMA_HOST = "0.0.0.0:$Port"
+if ($Gpu -ge 0) { $env:CUDA_VISIBLE_DEVICES = "$Gpu" }
+else { Remove-Item Env:CUDA_VISIBLE_DEVICES -ErrorAction SilentlyContinue }
 Get-Process "ollama","ollama app" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
 Start-Sleep -Seconds 2
 $app = Join-Path $ollamaDir "ollama app.exe"
 if (Test-Path $app) { Start-Process $app } else { Start-Process -WindowStyle Hidden ollama -ArgumentList "serve" }
-Start-Sleep -Seconds 3
+Start-Sleep -Seconds 6
 
 # Моделът наличен ли е? Ако не — тегли го.
 Info "Проверявам модела „$Model"…"

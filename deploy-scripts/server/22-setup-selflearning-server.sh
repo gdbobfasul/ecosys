@@ -204,6 +204,16 @@ AI_ENV="$DATA_DIR/ai.env"
 DO_AI=""
 case " $* " in *" --ai "*) DO_AI=y ;; esac
 [ "${AI_INSTALL:-}" = "1" ] && DO_AI=y
+# Ако AI ВЕЧЕ е настроен (ai.env съществува и е включен) — НЕ питай и НЕ пипай. Иначе бихме
+# презаписали напр. насочването към Ollama на ХОСТА (опция 84 → SELFLEARNING_AI_URL=http://<хост>).
+# За съзнателно преинсталиране: подай флаг `--ai` (или AI_INSTALL=1).
+if [ -z "$DO_AI" ] && [ -f "$AI_ENV" ] && grep -qE '^SELFLEARNING_AI_ENABLED=1[[:space:]]*$' "$AI_ENV"; then
+  _CUR_URL=$(grep -E '^SELFLEARNING_AI_URL=' "$AI_ENV" | head -1 | cut -d= -f2- | tr -d '"' | tr -d '\r')
+  _CUR_MODEL=$(grep -E '^SELFLEARNING_AI_MODEL=' "$AI_ENV" | head -1 | cut -d= -f2- | tr -d '"' | tr -d '\r')
+  echo -e "  ${GREEN}✓ Локален AI ВЕЧЕ е настроен (${AI_ENV}): модел ${_CUR_MODEL:-?} @ ${_CUR_URL:-?}${NC}"
+  echo -e "  ${GRAY}Пропускам — не презаписвам (за преинсталиране подай флаг --ai).${NC}"
+  DO_AI=n
+fi
 if [ -z "$DO_AI" ]; then
   echo -e "  ${YELLOW}Да инсталирам ли ЛОКАЛЕН езиков модел (Ollama + модел ~1-2GB) на ТОЗИ сървър?${NC}"
   echo -e "  ${GRAY}Само за сериозни машини (напр. VM). НЕ за production (натоварва RAM/CPU).${NC}"
