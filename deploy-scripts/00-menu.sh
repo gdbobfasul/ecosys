@@ -404,8 +404,12 @@ show_menu() {
         "ЛОКАЛНО, и двата теста: 1) test-bot.mjs — 100 знание-заявки (търсене/дърво/цитати);" \
         "2) test-bot-tasks.mjs — YouTube/превод на 15 езика/връзка-прекъсване + безопасни задачи на" \
         "сървъра (тест1 + mkdir/ls/rm в пясъчника). С token → live към relay-а; без token → DRY-RUN."
+    item "84" "Видеокарта за робота — Ollama на ХОСТА → виртуалната машина (вариант 1)" \
+        "ХОСТ: избираш коя видеокарта (CUDA_VISIBLE_DEVICES) + слушане навън (0.0.0.0) + защитна стена." \
+        "ВИРТУАЛКА: relay-ят сочи към Ollama на хоста (ai.env), спира локалния CPU модел, рестарт+проба." \
+        "За 1× 3090 (VirtualBox/VMware не подават картата на госта). Обратимо. Без преинсталация."
 
-    echo -e "  ${GRAY}Свободни номера: 77-79   ·   запазени: 60-70 (FILL DATA), 71-76 (мобилни), 80-82 (selflearning)${NC}"
+    echo -e "  ${GRAY}Свободни номера: 77-79, 83   ·   запазени: 60-70 (FILL DATA), 71-76 (мобилни), 80-84 (selflearning)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -791,6 +795,57 @@ run_choice() {
                 ( cd "$SLF_DIR" && node tools/test-bot-tasks.mjs ) 2>&1 | tee -a "$LOGFILE"
             fi
             echo ""; echo -e "  ${GREEN}✓ Логът е записан: ${LOGFILE}${NC}"
+            press_enter
+            ;;
+        84)
+            echo ""
+            echo -e "${BOLD}${CYAN}  ВИДЕОКАРТА ЗА РОБОТА — Ollama на ХОСТА → виртуалната машина (вариант 1)${NC}"
+            echo -e "  ${GRAY}Моделът върви на хоста (на 3090), relay-ят във виртуалката само сочи към него.${NC}"
+            echo -e "  ${GRAY}(VirtualBox/VMware Workstation не подават картата на госта — затова така.)${NC}"
+            echo ""
+            # --- ЧАСТ 1: ХОСТ (Windows PowerShell) ---
+            read -p "  Кой модел да ползва роботчето? [Enter = qwen3.5:9b]: " H_MODEL
+            H_MODEL="${H_MODEL:-qwen3.5:9b}"
+            read -p "  Коя видеокарта (индекс, напр. 0; Enter = ще те пита/всички): " H_GPU
+            H_GPU="${H_GPU:-2147483647}"   # 2147483647 = sentinel „-Gpu -1\" (питай вътре)
+            [ "$H_GPU" = "2147483647" ] && H_GPU="-1"
+            PS1="$SCRIPT_DIR/host/84-host-gpu-ollama.ps1"
+            if [ ! -f "$PS1" ]; then
+                echo -e "  ${RED}✗ Липсва $PS1${NC}"; press_enter; continue
+            fi
+            echo ""
+            echo -e "  ${YELLOW}► Настройвам ХОСТА (видеокарта + слушане навън + защитна стена)…${NC}"
+            echo -e "  ${GRAY}(защитната стена може да поиска потвърждение UAC)${NC}"
+            echo ""
+            powershell.exe -ExecutionPolicy Bypass -File "$(cygpath -w "$PS1" 2>/dev/null || echo "$PS1")" -Model "$H_MODEL" -Gpu "$H_GPU"
+            echo ""
+            # --- ЧАСТ 2: ВИРТУАЛКА (SSH) ---
+            read -p "  IP на хоста, видим от виртуалката [Enter = 192.168.0.133]: " H_IP
+            H_IP="${H_IP:-192.168.0.133}"
+            read -p "  Порт на Ollama [Enter = 11434]: " H_PORT
+            H_PORT="${H_PORT:-11434}"
+            echo ""
+            echo -e "  ${BOLD}${CYAN}  Сега виртуалната машина — кой сървър?${NC}"
+            echo -e "  ${GRAY}(избери VM — там е relay-ят, който ще сочи към хоста)${NC}"
+            if pick_target; then
+                REMOTE="sudo /var/www/deploy/deploy-scripts/server/24-vm-use-host-ollama.sh ${H_IP} ${H_MODEL} ${H_PORT}"
+                echo ""
+                echo -e "  ${YELLOW}Менюто ще се свърже и изпълни на виртуалката (проектът трябва да е качен — опция 2/4):${NC}"
+                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV}${NC}"
+                echo -e "    ${CYAN}${REMOTE}${NC}"
+                echo ""
+                echo "  → Насочва relay-а към Ollama на хоста, спира локалния CPU модел, рестарт + проба."
+                echo ""
+                ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
+                RC=$?
+                print_run_summary
+                echo ""
+                if [ "$RC" -eq 0 ]; then
+                    echo -e "  ${GREEN}✓ Готово — роботчето вече дъвче на видеокартата на хоста (${H_MODEL} @ ${H_IP}:${H_PORT})${NC}"
+                else
+                    echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
+                fi
+            else echo "  Отказано (хостът е настроен; виртуалката — не)"; fi
             press_enter
             ;;
         45|46|47|48|49)

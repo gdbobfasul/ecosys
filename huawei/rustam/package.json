@@ -1,0 +1,23 @@
+{
+  "name": "rustam-huawei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Рустам - бере краставици преди къртиците да ги отмъкнат (Huawei AppGallery build). Самостоятелна Phaser 3 + Capacitor игра.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:add": "cap add android",
+    "cap:sync": "vite build && cap sync android"
+  },
+  "dependencies": {
+    "phaser": "^3.80.1"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1",
+    "vite": "^5.4.8"
+  }
+}
