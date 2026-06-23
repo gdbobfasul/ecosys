@@ -76,19 +76,19 @@ export function renderYoutube(root, { rerender }) {
   // --- Тема (по избор) ---
   const topicInput = el('input', {
     type: 'text',
-    placeholder: 'напр. Математика, Физика, История…',
+    placeholder: t('yt_topic_ph'),
     list: 'yt-topics',
     style: 'width:100%'
   });
   const datalist = el('datalist', { id: 'yt-topics' },
     listInterests().map((s) => el('option', { value: s })));
   const titleInput = el('input', {
-    type: 'text', placeholder: 'Заглавие на видеото (по избор)', style: 'width:100%;margin-top:8px'
+    type: 'text', placeholder: t('yt_title_ph'), style: 'width:100%;margin-top:8px'
   });
 
   // --- Транскрипт/бележки (ГЛАВНИЯТ надежден път) ---
   const transcript = el('textarea', {
-    placeholder: 'Постави тук транскрипта или бележките си от видеото…',
+    placeholder: t('yt_transcript_ph'),
     style: 'width:100%;min-height:140px;margin-top:8px'
   });
   const learnResult = el('div', { style: 'margin-top:10px;font-size:13px;white-space:pre-wrap' });
@@ -98,28 +98,28 @@ export function renderYoutube(root, { rerender }) {
     class: 'secondary block', style: 'margin-top:8px',
     onclick: async () => {
       const id = _lastId || parseVideoId(srcInput.value);
-      if (!id) { toast('Първо покажи конкретно видео (нужен е id).'); return; }
-      learnResult.textContent = 'Опитвам автоматичните субтитри…';
+      if (!id) { toast(t('yt_need_video')); return; }
+      learnResult.textContent = t('yt_trying_captions');
       let r;
       try { r = await tryFetchCaptions(id); }
-      catch (_) { r = { ok: false, reason: 'автоматичните субтитри са блокирани от браузъра — постави транскрипта ръчно' }; }
+      catch (_) { r = { ok: false, reason: t('yt_captions_blocked') }; }
       if (r.ok && r.text) {
         transcript.value = r.text;
-        learnResult.textContent = '✅ Издърпах субтитрите. Прегледай ги и натисни „Научи от текста“.';
+        learnResult.textContent = t('yt_captions_pulled');
       } else {
-        learnResult.textContent = '⚠️ ' + (r.reason || 'не успях') +
-          (r.blocked ? '\n(Това е нормално — браузърите блокират YouTube субтитрите. Постави транскрипта ръчно или задай CORS-proxy в настройките по-долу.)' : '');
+        learnResult.textContent = '⚠️ ' + (r.reason || t('yt_failed_short')) +
+          (r.blocked ? t('yt_blocked_note') : '');
       }
     }
-  }, 'Опитай авто-субтитри (best-effort)');
+  }, t('yt_try_captions_btn'));
 
   const learnBtn = el('button', {
     class: 'block', style: 'margin-top:8px',
     onclick: async () => {
       const material = String(transcript.value || '').trim();
-      if (!material) { toast('Постави транскрипт или бележки.'); return; }
+      if (!material) { toast(t('yt_paste_transcript')); return; }
       learnBtn.setAttribute('disabled', '');
-      learnResult.textContent = 'Обобщавам и пазя…';
+      learnResult.textContent = t('yt_summarizing');
       let r;
       try {
         r = await learnFromText({
@@ -129,27 +129,26 @@ export function renderYoutube(root, { rerender }) {
           id: _lastId || parseVideoId(srcInput.value) || ''
         });
       } catch (e) {
-        r = { ok: false, reason: 'грешка: ' + (e && e.message ? e.message : 'неизвестно') };
+        r = { ok: false, reason: tf('yt_error_short', (e && e.message ? e.message : t('yt_unknown'))) };
       }
       learnBtn.removeAttribute('disabled');
       if (r.ok) {
-        const via = r.tier === 1 ? 'Claude' : (r.tier === 2 ? 'Pollinations (безплатно)' : 'локален обобщител (офлайн)');
+        const via = r.tier === 1 ? 'Claude' : (r.tier === 2 ? t('yt_via_pollinations') : t('yt_via_local'));
         learnResult.textContent =
-          `✅ Научих и запазих в паметта` + (r.subject ? ` под тема „${r.subject}“` : '') +
-          ` (обобщено чрез ${via}).\n\nРезюме:\n${r.summary}\n\n` +
-          'Сега можеш да ме питаш по темата в „Чат“ — ще си спомня това.';
-        toast('Запазено в паметта.');
+          t('yt_learned') + (r.subject ? tf('yt_under_topic', r.subject) : '') +
+          tf('yt_summary_body', via, r.summary);
+        toast(t('yt_saved_to_memory'));
       } else {
-        learnResult.textContent = '⚠️ ' + (r.reason || 'не успях да науча');
+        learnResult.textContent = '⚠️ ' + (r.reason || t('yt_learn_fail'));
       }
     }
-  }, 'Научи от текста → запази в паметта');
+  }, t('yt_learn_btn'));
 
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, '2) Учи от видеото'),
-    el('label', {}, 'Тема (групира наученото)'), topicInput, datalist,
+    el('h3', {}, t('yt_step_learn')),
+    el('label', {}, t('yt_topic_label')), topicInput, datalist,
     titleInput,
-    el('label', { style: 'margin-top:10px' }, 'Транскрипт / бележки (главният, надежден път)'),
+    el('label', { style: 'margin-top:10px' }, t('yt_transcript_label')),
     transcript,
     tryCaptionsBtn,
     learnBtn,
@@ -160,19 +159,16 @@ export function renderYoutube(root, { rerender }) {
   const cfg = youtubeSettings();
   const proxyInput = el('input', {
     type: 'text', value: cfg.corsProxy,
-    placeholder: 'https://твой-cors-proxy/?url=  (по избор, празно = изключено)',
+    placeholder: t('yt_proxy_ph'),
     style: 'width:100%'
   });
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'CORS-proxy за авто-субтитри (по избор)'),
-    el('p', { class: 'muted', style: 'font-size:13px' },
-      'Празно по подразбиране — нищо не е вградено. Ако имаш свой безплатен CORS-proxy ' +
-      '(който добавя CORS заглавия), сложи го тук и опитът за авто-субтитри ще мине през него. ' +
-      'Без него браузърът блокира субтитрите — тогава поставяй транскрипта ръчно.'),
-    el('label', {}, 'Proxy URL (префикс преди целевия адрес)'), proxyInput,
+    el('h3', {}, t('yt_proxy_title')),
+    el('p', { class: 'muted', style: 'font-size:13px' }, t('yt_proxy_desc')),
+    el('label', {}, t('yt_proxy_label')), proxyInput,
     el('button', {
       class: 'secondary block', style: 'margin-top:8px',
-      onclick: () => { saveYoutubeSettings({ corsProxy: proxyInput.value.trim() }); toast('Запазено.'); }
-    }, 'Запази proxy')
+      onclick: () => { saveYoutubeSettings({ corsProxy: proxyInput.value.trim() }); toast(t('saved')); }
+    }, t('yt_save_proxy'))
   ]));
 }
