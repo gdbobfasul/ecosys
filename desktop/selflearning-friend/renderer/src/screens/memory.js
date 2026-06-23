@@ -1,13 +1,14 @@
 // memory.js — екран „Памет“: преглед, ръчно добавяне, редакция и триене на наученото.
 import { el, clear, toast } from '../ui/dom.js';
 import { listMemory, addMemory, updateMemory, deleteMemory } from '../core/memory-store.js';
+import { t } from '../core/i18n.js';
 
 const TYPE_LABEL = { qa: 'Q&A', fact: 'факт', pref: 'предпочитание' };
 
 export function renderMemory(root, { rerender }) {
   clear(root);
 
-  root.appendChild(el('h2', {}, 'Памет'));
+  root.appendChild(el('h2', {}, t('screen_memory')));
   root.appendChild(el('p', { class: 'muted' },
     'Всичко, на което си ме научил. Можеш да преглеждаш, поправяш и триеш. Пази се само тук, на устройството ти.'));
 

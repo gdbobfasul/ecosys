@@ -10,16 +10,18 @@ import {
   voiceprintSupported, voiceProfileEnabled, voiceProfileExists,
   captureSampleFeatures, addEnrollmentSample, matchOwnerVoice, enrollmentProgress
 } from '../core/voiceprint.js';
+import { t, tf } from '../core/i18n.js';
 
-const SRC_LABEL = {
-  memory: 'от паметта', rule: 'правило', ai: 'AI (предположение)',
-  learn: 'научих', math: 'изчислено', source: 'от източник'
+// Източник на отговора (бадж в чата) → ключ за превод (чете се при всяко рисуване).
+const SRC_KEY = {
+  memory: 'src_memory', rule: 'src_rule', ai: 'src_ai',
+  learn: 'src_learn', math: 'src_math', source: 'src_source'
 };
 
 export function renderChat(root, { navigate, rerender }) {
   clear(root);
   const st = getState();
-  const name = sessionName() || 'приятел';
+  const name = sessionName() || t('chat_default_name');
 
   // Бадж за гласовия профил (МЕК сигнал; виж voiceprint.js). Скрит по подразбиране.
   // ВАЖНО: само информативен — НЕ влияе на заключването/достъпа.
@@ -44,7 +46,7 @@ export function renderChat(root, { navigate, rerender }) {
     el('div', {}, [ el('h2', { style: 'display:inline' }, name), voiceBadge ]),
     el('button', {
       class: 'ghost', onclick: () => { stopConversation(); stopSpeaking(); stopListening(); lock(); rerender(); }
-    }, '🔒 Заключи')
+    }, t('chat_lock_btn'))
   ]);
 
   // --- ГЛАСОВ ПРОФИЛ (МЕК сигнал) -----------------------------------------
@@ -83,14 +85,14 @@ export function renderChat(root, { navigate, rerender }) {
     class: 'muted', style: 'font-size:13px;min-height:18px;margin-bottom:4px;display:none'
   });
   function setConvStatus(state) {
-    const labels = { listening: '🎧 Слушам…', speaking: '🗣️ Говоря…', idle: '… (обмислям)', off: '' };
+    const labels = { listening: t('chat_status_listening'), speaking: t('chat_status_speaking'), idle: t('chat_status_thinking'), off: '' };
     const txt = labels[state] || '';
     convStatus.textContent = txt;
     convStatus.style.display = txt ? 'block' : 'none';
   }
 
   const list = el('div', { class: 'chat-list' });
-  const input = el('input', { type: 'text', placeholder: 'Кажи нещо или ме научи…', autocomplete: 'off' });
+  const input = el('input', { type: 'text', placeholder: t('chat_input_ph'), autocomplete: 'off' });
   const sendBtn = el('button', { onclick: () => send() }, '➤');
 
   // --- ГЛАС: микрофон бутон (само ако е включен и платформата поддържа STT) ---
@@ -108,7 +110,7 @@ export function renderChat(root, { navigate, rerender }) {
     if (busy) return;
     if (listening) { stopListening(); return; } // второ натискане = спри
     if (!sttAvailable()) {
-      toast('Гласовият вход не е наличен тук. Пиши на ръка.');
+      toast(t('chat_voice_unavailable'));
       return;
     }
     listening = true;
@@ -127,7 +129,7 @@ export function renderChat(root, { navigate, rerender }) {
       input.disabled = true;
     } catch (_) {}
     const prevPh = input.placeholder;
-    input.placeholder = 'Слушам… (натисни 🎤 пак за стоп)';
+    input.placeholder = t('chat_listening_ph');
     let transcript = '';
     try {
       transcript = await startListening({
@@ -136,8 +138,8 @@ export function renderChat(root, { navigate, rerender }) {
       });
     } catch (e) {
       const msg = String(e && e.message || '');
-      if (/denied|not-allowed|service-not-allowed/i.test(msg)) toast('Микрофонът е отказан. Пиши на ръка.');
-      else toast('Не успях да чуя. Опитай пак или пиши.');
+      if (/denied|not-allowed|service-not-allowed/i.test(msg)) toast(t('chat_mic_denied'));
+      else toast(t('chat_no_hear'));
     } finally {
       listening = false;
       micBtn.classList.remove('on');
@@ -156,8 +158,8 @@ export function renderChat(root, { navigate, rerender }) {
   function pushBubble(role, text, source) {
     const b = el('div', { class: 'bubble ' + role });
     b.appendChild(document.createTextNode(text));
-    if (role === 'bot' && source && SRC_LABEL[source]) {
-      b.appendChild(el('span', { class: 'tag' }, SRC_LABEL[source]));
+    if (role === 'bot' && source && SRC_KEY[source]) {
+      b.appendChild(el('span', { class: 'tag' }, t(SRC_KEY[source])));
     }
     list.appendChild(b);
     list.scrollTop = list.scrollHeight;
@@ -166,8 +168,7 @@ export function renderChat(root, { navigate, rerender }) {
 
   // Покажи историята.
   if (!st.chat.length) {
-    pushBubble('bot', `Здравей! Аз съм ${name}. Научи ме нещо — например „запомни, че любимият ми цвят е син“ ` +
-      `или „като кажа добро утро, отговаряй Слънце мое!“.`, 'rule');
+    pushBubble('bot', tf('chat_greeting', name), 'rule');
   } else {
     for (const m of st.chat) pushBubble(m.role, m.text, m.source);
   }
@@ -195,7 +196,7 @@ export function renderChat(root, { navigate, rerender }) {
     try {
       res = await respond(text);
     } catch (e) {
-      res = { text: 'Опс, нещо се обърка, но съм тук.', source: 'rule' };
+      res = { text: t('chat_oops'), source: 'rule' };
     }
     thinking.remove();
     pushBubble('bot', res.text, res.source);
@@ -235,21 +236,21 @@ export function renderChat(root, { navigate, rerender }) {
   // --- РАЗГОВОР: hands-free двупосочен глас (слушай→отговори→говори→слушай). ---
   const convBtn = el('button', {
     class: 'secondary conv-btn', title: 'Разговор (хендс-фрий глас)', 'aria-label': 'Разговор'
-  }, '💬 Разговор');
+  }, t('chat_conv_btn'));
   function refreshConvBtn() {
     const on = conversationActive();
     convBtn.classList.toggle('on', on);
-    convBtn.textContent = on ? '⏹️ Спри разговора' : '💬 Разговор';
+    convBtn.textContent = on ? t('chat_conv_stop_btn') : t('chat_conv_btn');
   }
   function stopConvUi() { stopConversation(); setConvStatus('off'); refreshConvBtn(); }
   convBtn.addEventListener('click', () => {
     if (conversationActive()) { stopConvUi(); return; }
     // Предусловия: глас наличен + отключено + не lockdown.
     if (!sttAvailable() || !ttsAvailable()) {
-      toast('Разговорът иска и микрофон, и глас. Тук не са налични — пиши на ръка.');
+      toast(t('chat_conv_needs'));
       return;
     }
-    if (!isUnlocked() || isLockedDown()) { toast('Разговор е достъпен само при отключен достъп.'); return; }
+    if (!isUnlocked() || isLockedDown()) { toast(t('chat_conv_unlocked_only')); return; }
     startConvLoop();
   });
 
@@ -273,9 +274,9 @@ export function renderChat(root, { navigate, rerender }) {
         notify: (m) => toast(m)
       });
       refreshConvBtn();
-      toast('Разговор включен. Говори свободно — за да спра, натисни „Спри разговора“.');
+      toast(t('chat_conv_on'));
     } catch (_) {
-      toast('Не успях да включа разговора.');
+      toast(t('chat_conv_fail'));
     }
   }
 
@@ -316,7 +317,7 @@ export function renderChat(root, { navigate, rerender }) {
     setTimeout(() => { if (!conversationActive()) startConvLoop(); }, 600); // ИЗРИЧНА настройка → пълен Разговор
   } else if (wantAutoListen && isUnlocked() && !isLockedDown()) {
     if (sttAvailable()) setTimeout(() => onMic({ autoSend: false }), 600);  // ЕДНО слушане, без авто-праща
-    else toast('Гласът не е наличен тук — пиши на ръка.');
+    else toast(t('chat_voice_unavailable_here'));
   }
 
   // НЕ фокусираме полето при отваряне (то вдигаше клавиатурата само). Само превъртаме надолу.

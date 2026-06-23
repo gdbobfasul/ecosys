@@ -4,6 +4,7 @@
 //     WhatsApp/Viber/Messenger чрез native NotificationReply плъгина. Честно:
 //     работи само на устройство с native билд + дадено разрешение.
 import { el } from '../ui/dom.js';
+import { t } from '../core/i18n.js';
 import { getState, setState } from '../core/storage.js';
 import { requestNotificationPermission } from '../core/notifier.js';
 import { toast } from '../ui/dom.js';
@@ -16,7 +17,7 @@ export function PermissionsScreen({ render }) {
     if (wantOn) {
       const granted = await requestNotificationPermission();
       setState({ permissions: { ...getState().permissions, notifications: granted } });
-      if (!granted) toast('Известията не са разрешени от системата.');
+      if (!granted) toast(t('perm_notif_denied'));
     } else {
       setState({ permissions: { ...getState().permissions, notifications: false } });
     }
@@ -24,14 +25,14 @@ export function PermissionsScreen({ render }) {
   };
 
   return el('div', {}, [
-    el('h1', {}, '🔐 Разрешения'),
-    el('p', { class: 'muted' }, 'Това приложение е изцяло локално. Иска само едно реално разрешение.'),
+    el('h1', {}, t('perm_title')),
+    el('p', { class: 'muted' }, t('perm_intro')),
 
     el('div', { class: 'card' }, [
       el('div', { class: 'row between' }, [
         el('div', { class: 'grow' }, [
-          el('strong', {}, '🔔 Известия'),
-          el('p', { class: 'muted' }, 'За да те уведомяваме, когато роботът изпрати авто-отговор.')
+          el('strong', {}, t('perm_notif')),
+          el('p', { class: 'muted' }, t('perm_notif_note'))
         ]),
         switchEl(s.permissions.notifications, toggleNotif)
       ])
@@ -40,12 +41,12 @@ export function PermissionsScreen({ render }) {
     messengersCard(),
 
     el('div', { class: 'card' }, [
-      el('h2', {}, 'Какво НЕ правим'),
-      bullet('🚫 Без достъп до системните SMS — Android го забранява; роботът работи в свой sandbox чат.'),
-      bullet('🚫 Без достъп до контакти.'),
-      bullet('🚫 Без интернет / мрежови заявки.'),
-      bullet('🚫 Без акаунти, без проследяване, без анализ.'),
-      bullet('✅ Всички правила и дневник се пазят само на устройството.')
+      el('h2', {}, t('perm_not_do_title')),
+      bullet(t('perm_no_sms')),
+      bullet(t('perm_no_contacts')),
+      bullet(t('perm_no_internet')),
+      bullet(t('perm_no_accounts')),
+      bullet(t('perm_local_only'))
     ])
   ]);
 }
@@ -53,34 +54,31 @@ export function PermissionsScreen({ render }) {
 // Опционална секция: реален авто-отговор в месинджърите чрез „Notification access".
 // Честно: статусът зависи от native билда + системното разрешение (затова е async).
 function messengersCard() {
-  const statusEl = el('span', { class: 'pill off' }, 'проверка…');
-  const note = el('p', { class: 'muted', style: 'margin:6px 0' },
-    'Реалният авто-отговор в WhatsApp/Viber/Messenger е безплатен само през системния ' +
-    '„Notification access" (четене на нотификации + direct-reply). Изисква NATIVE билд с ' +
-    'плъгина NotificationReply и отделно разрешение. Тук НЕ симулираме изпращане.');
+  const statusEl = el('span', { class: 'pill off' }, t('ch_status_checking'));
+  const note = el('p', { class: 'muted', style: 'margin:6px 0' }, t('perm_messengers_note'));
 
-  const openBtn = el('button', { class: 'btn sm' }, 'Отвори „Notification access“');
+  const openBtn = el('button', { class: 'btn sm' }, t('ch_open_access'));
   openBtn.addEventListener('click', async () => {
     const ok = await openAccessSettings();
-    if (!ok) toast('Налично само на устройство с native билд (виж native/notification-reply/).');
+    if (!ok) toast(t('perm_open_native_only'));
   });
 
   // Асинхронно обновяваме статуса според реалната среда.
   (async () => {
     if (!isNativeReplyAvailable()) {
       statusEl.className = 'pill off';
-      statusEl.textContent = 'native билд нужен';
+      statusEl.textContent = t('ch_st_need_native');
       openBtn.disabled = true;
       return;
     }
     const granted = await isAccessGranted();
     statusEl.className = 'pill ' + (granted ? 'on' : 'away');
-    statusEl.textContent = granted ? 'достъп даден' : 'няма достъп';
+    statusEl.textContent = granted ? t('ch_st_access_granted') : t('ch_st_no_access');
   })();
 
   return el('div', { class: 'card' }, [
     el('div', { class: 'row between' }, [
-      el('strong', {}, '💬 Месинджъри (по избор)'),
+      el('strong', {}, t('perm_messengers_opt')),
       statusEl
     ]),
     note,

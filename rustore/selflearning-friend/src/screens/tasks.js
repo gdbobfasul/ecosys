@@ -5,28 +5,27 @@ import { parseTask, intakeAndRun } from '../core/tasks.js';
 import { listTasks, removeTask, clearFinished, statusLabel } from '../core/tasklist.js';
 import { listSubjects, deleteSubject, listInterests } from '../core/subjects.js';
 import { learningFeed, learnedCount, currentlyLearning, learningEnabled, setLearningEnabled, tick } from '../core/learning-loop.js';
+import { t, tf } from '../core/i18n.js';
 
 export function renderTasks(root, { rerender }) {
   clear(root);
 
-  root.appendChild(el('h2', {}, 'Задачи'));
-  root.appendChild(el('p', { class: 'muted' },
-    'Дай ми задача: реши задача, научи тема, събери крипто/валути/новини. ' +
-    'Пазя само проверим материал с източник — ако не намеря, казвам честно.'));
+  root.appendChild(el('h2', {}, t('screen_tasks')));
+  root.appendChild(el('p', { class: 'muted' }, t('tasks_intro')));
 
   // --- Поле за задача ---
-  const taskInput = el('input', { type: 'text', placeholder: 'напр. „реши 2x+3=11“ или „научи за фотосинтеза“' });
+  const taskInput = el('input', { type: 'text', placeholder: t('tasks_input_ph') });
   const result = el('div', { class: 'card', style: 'white-space:pre-wrap; display:none' });
   let busy = false;
 
   async function run(presetText) {
     if (busy) return;
     const text = (presetText != null ? presetText : taskInput.value).trim();
-    if (!text) { toast('Напиши задача.'); return; }
+    if (!text) { toast(t('tasks_write_one')); return; }
     const task = parseTask(text);
-    if (!task) { showResult('Не разпознах това като задача. Опитай „реши …“, „научи за …“, „крипто“, „валути“, „новини“.'); return; }
+    if (!task) { showResult(t('tasks_not_recognized')); return; }
     busy = true;
-    showResult('Работя по задачата…');
+    showResult(t('tasks_working'));
     try {
       // intakeAndRun ВКАРВА задачата в постоянния списък (pending→running→done/failed).
       const { res } = await intakeAndRun(text);
@@ -34,7 +33,7 @@ export function renderTasks(root, { rerender }) {
       renderTaskList();
       if (res.learned) rerenderSubjects();
     } catch (_) {
-      showResult('Нещо се обърка при изпълнението.');
+      showResult(t('tasks_run_fail'));
     }
     busy = false;
   }
@@ -45,15 +44,21 @@ export function renderTasks(root, { rerender }) {
 
   taskInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') run(); });
 
+  const quickKeys = [
+    ['tasks_q_crypto', t('tasks_q_crypto')],
+    ['tasks_q_currencies', t('tasks_q_currencies')],
+    ['tasks_q_news', t('tasks_q_news')],
+    ['tasks_q_learn_space', t('tasks_q_learn_space')]
+  ];
   root.appendChild(el('div', { class: 'card' }, [
-    el('label', {}, 'Дай задача'),
+    el('label', {}, t('tasks_give_label')),
     taskInput,
     el('div', { class: 'row', style: 'margin-top:10px;gap:8px' }, [
-      el('button', { style: 'flex:1', onclick: () => run() }, 'Изпълни'),
+      el('button', { style: 'flex:1', onclick: () => run() }, t('tasks_run_btn')),
     ]),
     el('div', { class: 'row wrap', style: 'gap:6px;margin-top:8px' },
-      ['крипто', 'валути', 'новини', 'научи за космос'].map((t) =>
-        el('button', { class: 'secondary', style: 'font-size:12px;padding:6px 10px', onclick: () => run(t) }, t)
+      quickKeys.map(([, label]) =>
+        el('button', { class: 'secondary', style: 'font-size:12px;padding:6px 10px', onclick: () => run(label) }, label)
       )
     )
   ]));
@@ -65,22 +70,20 @@ export function renderTasks(root, { rerender }) {
     clear(taskListWrap);
     const tasks = listTasks();
     const header = el('div', { class: 'row spread', style: 'align-items:center;margin-top:8px' }, [
-      el('h3', { style: 'margin:0' }, `Моите задачи (${tasks.length})`),
+      el('h3', { style: 'margin:0' }, tf('tasks_my_tasks', tasks.length)),
     ]);
-    if (tasks.some((t) => t.status === 'done' || t.status === 'failed')) {
+    if (tasks.some((tk) => tk.status === 'done' || tk.status === 'failed')) {
       header.appendChild(el('button', {
         class: 'secondary', style: 'font-size:12px;padding:6px 10px',
         onclick: () => { clearFinished(); renderTaskList(); }
-      }, 'Изчисти готовите'));
+      }, t('tasks_clear_done')));
     }
     taskListWrap.appendChild(header);
     if (!tasks.length) {
-      taskListWrap.appendChild(el('p', { class: 'muted', style: 'font-size:13px' },
-        'Тук влиза всяка задача, която ми дадеш (реши/научи/крипто/валути/новини) — ' +
-        'с какво е завършила и какво е останало.'));
+      taskListWrap.appendChild(el('p', { class: 'muted', style: 'font-size:13px' }, t('tasks_empty_note')));
       return;
     }
-    for (const t of tasks) taskListWrap.appendChild(taskItem(t, renderTaskList));
+    for (const tk of tasks) taskListWrap.appendChild(taskItem(tk, renderTaskList));
   }
   renderTaskList();
   root.appendChild(taskListWrap);
@@ -93,9 +96,8 @@ export function renderTasks(root, { rerender }) {
     const cur = currentlyLearning();
     learnCard.appendChild(el('div', { class: 'toggle' }, [
       el('div', {}, [
-        el('div', {}, 'Непрекъснато учене („НЯМА спирка“)'),
-        el('div', { class: 'muted', style: 'font-size:13px' },
-          'Когато нямам задача, уча сам от безплатни източници.')
+        el('div', {}, t('tasks_learn_title')),
+        el('div', { class: 'muted', style: 'font-size:13px' }, t('tasks_learn_desc'))
       ]),
       (() => {
         const sw = el('div', { class: 'switch' + (on ? ' on' : '') });
@@ -104,23 +106,23 @@ export function renderTasks(root, { rerender }) {
       })()
     ]));
     learnCard.appendChild(el('div', { class: 'row spread', style: 'margin-top:8px' }, [
-      el('div', { class: 'muted' }, 'Научени неща общо:'),
+      el('div', { class: 'muted' }, t('tasks_learned_total')),
       el('div', { style: 'font-weight:700;color:var(--accent-2)' }, String(learnedCount()))
     ]));
     learnCard.appendChild(el('div', { style: 'margin-top:8px' }, [
-      el('div', { class: 'muted', style: 'font-size:13px' }, 'Какво уча сега:'),
-      el('div', { style: 'font-weight:600' }, cur ? cur.note : (on ? 'Подготвям се…' : 'На пауза.'))
+      el('div', { class: 'muted', style: 'font-size:13px' }, t('tasks_learning_now')),
+      el('div', { style: 'font-weight:600' }, cur ? cur.note : (on ? t('tasks_preparing') : t('tasks_paused')))
     ]));
     if (on) {
       learnCard.appendChild(el('button', {
         class: 'secondary block', style: 'margin-top:10px',
         onclick: async () => { await tick(); renderLearnCard(); rerenderSubjects(); }
-      }, 'Научи нещо сега'));
+      }, t('tasks_learn_now_btn')));
     }
     // поток на активността
     const feed = learningFeed().slice(0, 8);
     if (feed.length) {
-      learnCard.appendChild(el('div', { class: 'muted', style: 'font-size:13px;margin-top:10px' }, 'Поток на активността:'));
+      learnCard.appendChild(el('div', { class: 'muted', style: 'font-size:13px;margin-top:10px' }, t('tasks_activity_flow')));
       const ul = el('div', {});
       for (const f of feed) {
         ul.appendChild(el('div', { class: 'muted', style: 'font-size:12px;padding:3px 0' },
@@ -138,12 +140,11 @@ export function renderTasks(root, { rerender }) {
     clear(subjWrap);
     renderLearnCard();
     const subjects = listSubjects().sort((a, b) => b.updated - a.updated);
-    subjWrap.appendChild(el('h3', { style: 'margin-top:8px' }, `Научени теми (${subjects.length})`));
+    subjWrap.appendChild(el('h3', { style: 'margin-top:8px' }, tf('tasks_subjects_count', subjects.length)));
     if (!subjects.length) {
-      subjWrap.appendChild(el('p', { class: 'muted' },
-        'Още нямам научени теми. Дай ми задача „научи за …“ или ме остави да уча сам.'));
+      subjWrap.appendChild(el('p', { class: 'muted' }, t('tasks_no_subjects')));
       subjWrap.appendChild(el('p', { class: 'muted', style: 'font-size:12px' },
-        'Ротирам интереси: ' + listInterests().slice(0, 6).join(', ') + '…'));
+        tf('tasks_rotating', listInterests().slice(0, 6).join(', '))));
       return;
     }
     for (const s of subjects) subjWrap.appendChild(subjectItem(s, rerenderSubjects));
@@ -152,40 +153,40 @@ export function renderTasks(root, { rerender }) {
   root.appendChild(subjWrap);
 }
 
-function taskItem(t, rerenderList) {
+function taskItem(tk, rerenderList) {
   const wrap = el('div', { class: 'mem-item' });
-  const color = t.status === 'done' ? 'var(--accent-2)'
-    : t.status === 'failed' ? 'var(--err)'
-    : t.status === 'running' ? 'var(--accent)' : 'var(--muted)';
+  const color = tk.status === 'done' ? 'var(--accent-2)'
+    : tk.status === 'failed' ? 'var(--err)'
+    : tk.status === 'running' ? 'var(--accent)' : 'var(--muted)';
   wrap.appendChild(el('div', { class: 'row spread' }, [
-    el('span', { class: 'badge', style: `color:${color}` }, statusLabel(t.status)),
-    el('span', { class: 'muted', style: 'font-size:11px' }, kindLabel(t.kind))
+    el('span', { class: 'badge', style: `color:${color}` }, statusLabel(tk.status)),
+    el('span', { class: 'muted', style: 'font-size:11px' }, kindLabel(tk.kind))
   ]));
-  wrap.appendChild(el('div', { class: 'k' }, t.text));
-  if (t.result) {
-    wrap.appendChild(el('div', { class: 'v', style: 'white-space:pre-wrap;font-size:13px' }, t.result));
+  wrap.appendChild(el('div', { class: 'k' }, tk.text));
+  if (tk.result) {
+    wrap.appendChild(el('div', { class: 'v', style: 'white-space:pre-wrap;font-size:13px' }, tk.result));
   }
-  if (t.citation) {
-    wrap.appendChild(el('div', { class: 'muted', style: 'font-size:11px;margin-top:4px' }, '📎 ' + t.citation));
+  if (tk.citation) {
+    wrap.appendChild(el('div', { class: 'muted', style: 'font-size:11px;margin-top:4px' }, '📎 ' + tk.citation));
   }
   wrap.appendChild(el('button', {
     class: 'secondary', style: 'font-size:12px;padding:6px 10px;margin-top:8px',
-    onclick: () => { removeTask(t.id); rerenderList(); }
-  }, 'Премахни'));
+    onclick: () => { removeTask(tk.id); rerenderList(); }
+  }, t('tasks_remove_btn')));
   return wrap;
 }
 
 function kindLabel(kind) {
   return ({
-    solve: 'смятане', learn: 'учене', read: 'четене',
-    crypto: 'крипто', finance: 'валути', news: 'новини'
+    solve: t('tasks_kind_solve'), learn: t('tasks_kind_learn'), read: t('tasks_kind_read'),
+    crypto: t('tasks_kind_crypto'), finance: t('tasks_kind_finance'), news: t('tasks_kind_news')
   })[kind] || kind || '';
 }
 
 function subjectItem(s, rerenderSubjects) {
   const wrap = el('div', { class: 'mem-item' });
   wrap.appendChild(el('div', {}, [
-    el('span', { class: 'badge' }, `${s.notes.length} наставки`)
+    el('span', { class: 'badge' }, tf('tasks_notes_count', s.notes.length))
   ]));
   wrap.appendChild(el('div', { class: 'k' }, s.name));
   const latest = s.notes[0];
@@ -195,8 +196,8 @@ function subjectItem(s, rerenderSubjects) {
   }
   wrap.appendChild(el('div', { class: 'row', style: 'margin-top:10px;gap:8px' }, [
     el('button', { class: 'danger', style: 'flex:1', onclick: () => {
-      deleteSubject(s.id); toast('Темата е изтрита.'); rerenderSubjects();
-    } }, 'Изтрий темата')
+      deleteSubject(s.id); toast(t('tasks_subject_deleted')); rerenderSubjects();
+    } }, t('tasks_delete_subject'))
   ]));
   return wrap;
 }

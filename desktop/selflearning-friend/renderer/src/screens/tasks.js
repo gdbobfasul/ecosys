@@ -5,11 +5,12 @@ import { parseTask, intakeAndRun } from '../core/tasks.js';
 import { listTasks, removeTask, clearFinished, statusLabel } from '../core/tasklist.js';
 import { listSubjects, deleteSubject, listInterests } from '../core/subjects.js';
 import { learningFeed, learnedCount, currentlyLearning, learningEnabled, setLearningEnabled, tick } from '../core/learning-loop.js';
+import { t } from '../core/i18n.js';
 
 export function renderTasks(root, { rerender }) {
   clear(root);
 
-  root.appendChild(el('h2', {}, 'Задачи'));
+  root.appendChild(el('h2', {}, t('screen_tasks')));
   root.appendChild(el('p', { class: 'muted' },
     'Дай ми задача: реши задача, научи тема, събери крипто/валути/новини. ' +
     'Пазя само проверим материал с източник — ако не намеря, казвам честно.'));

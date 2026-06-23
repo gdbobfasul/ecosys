@@ -16,14 +16,26 @@ import {
 } from '../core/voiceprint.js';
 import { dataMode, setDataMode, personalMemoryCount, forgetPersonalData } from '../core/privacy.js';
 import { LANGUAGES } from '../core/languages.js';
+import { t, getLang, languageByCode } from '../core/i18n.js';
 
 const APP_ID = 'com.kcy.selflearningfriend.rustore';
 
-export function renderSettings(root, { rerender }) {
+export function renderSettings(root, { rerender, openLangPicker }) {
   clear(root);
   const st = getState();
 
-  root.appendChild(el('h2', {}, 'Настройки'));
+  root.appendChild(el('h2', {}, t('screen_settings')));
+
+  // --- ЕЗИК НА ПРИЛОЖЕНИЕТО (UI език) — независим от гласовия език по-долу ---
+  const curLang = languageByCode(getLang());
+  root.appendChild(el('div', { class: 'card' }, [
+    el('h3', {}, t('ui_language')),
+    el('p', { class: 'muted', style: 'font-size:13px' }, t('ui_language_desc')),
+    el('button', {
+      class: 'secondary block', style: 'margin-top:8px',
+      onclick: () => { if (openLangPicker) openLangPicker(); }
+    }, t('lang_btn') + ' — ' + (curLang ? curLang.native : getLang()))
+  ]));
 
   function toggleRow(labelText, descText, key, onChange) {
     const sw = el('div', { class: 'switch' + (st.settings[key] ? ' on' : '') });
@@ -122,13 +134,13 @@ export function renderSettings(root, { rerender }) {
   langSel.addEventListener('change', () => {
     vc.lang = langSel.value; persist();
     const l = LANGUAGES.find((x) => x.voice === langSel.value);
-    toast('Език за глас: ' + (l ? l.bg : langSel.value));
+    toast(t('set_voice_lang_toast').replace('{0}', (l ? l.bg : langSel.value)));
   });
 
   const sttOk = sttAvailable();
   const ttsOk = ttsAvailable();
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Глас'),
+    el('h3', {}, t('set_voice')),
     el('p', { class: 'muted', style: 'font-size:13px' },
       'Говори на бота и той ти отговаря на глас. Изцяло on-device/безплатно (OS разпознаване и синтез), ' +
       'без облачна услуга и без ключове. В браузър ползва Web Speech API.'),
@@ -149,7 +161,7 @@ export function renderSettings(root, { rerender }) {
       ]),
       outSw
     ]),
-    el('label', {}, 'Език за разпознаване/синтез'), langSel,
+    el('label', {}, t('set_voice_lang_label')), langSel,
     // --- РАЗГОВОР (hands-free двупосочен глас) ---
     el('div', { class: 'toggle', style: 'margin-top:8px' }, [
       el('div', {}, [
@@ -406,25 +418,24 @@ export function renderSettings(root, { rerender }) {
   ]));
 
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Сесия'),
-    el('button', { class: 'secondary block', onclick: () => { lock(); rerender(); } }, '🔒 Заключи сега')
+    el('h3', {}, t('set_session')),
+    el('button', { class: 'secondary block', onclick: () => { lock(); rerender(); } }, t('set_lock_now'))
   ]));
 
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', { class: 'err-text' }, 'Опасна зона'),
-    el('p', { class: 'muted' },
-      'Нулирането трие името, цялата памет и разговорите от това устройство. Действието е необратимо.'),
+    el('h3', { class: 'err-text' }, t('set_danger')),
+    el('p', { class: 'muted' }, t('set_danger_desc')),
     el('button', { class: 'danger block', onclick: () => {
-      if (confirm('Сигурен ли си? Това трие името, паметта и разговорите завинаги.')) {
+      if (confirm(t('set_wipe_q'))) {
         resetAll();
-        toast('Изтрито. Започваме отначало.');
+        toast(t('wiped_restart'));
         rerender();
       }
-    } }, 'Изтрий всичко и забрави ме')
+    } }, t('set_wipe_btn'))
   ]));
 
   root.appendChild(el('p', { class: 'muted center', style: 'margin-top:8px;font-size:12px' },
-    'Всичко се пази само на това устройство. Без акаунти, без контакти, без проследяване.'));
+    t('set_footer')));
 }
 
 function clampNum(v, min, max, def) {

@@ -17,61 +17,61 @@ export async function renderDashboard(root, { go }) {
 
   const el = h(`
     <div>
-      <h1>🤖 Роботът</h1>
+      <h1>${t('dash_robot')}</h1>
       <div class="card big-toggle">
         <div class="robot">${state.active ? '🟢🤖' : '⚪🤖'}</div>
-        <div class="state">${state.active ? 'АКТИВЕН' : 'СПРЯН'}</div>
-        <div class="muted">${state.active ? 'Роботът изпълнява рутината ти.' : 'Роботът е на пауза.'}</div>
+        <div class="state">${state.active ? t('dash_active') : t('dash_stopped')}</div>
+        <div class="muted">${state.active ? t('dash_active_note') : t('dash_paused_note')}</div>
         <div class="spacer"></div>
-        <button class="btn" id="power">${state.active ? 'Спри робота' : 'Стартирай робота'}</button>
+        <button class="btn" id="power">${state.active ? t('dash_stop') : t('dash_start')}</button>
         <div class="spacer"></div>
-        <button class="btn secondary" id="preview">👁️ Преглед на брифинга сега</button>
+        <button class="btn secondary" id="preview">${t('dash_preview')}</button>
       </div>
 
       <div class="card">
-        <h2>🔋 Фонов режим</h2>
+        <h2>${t('dash_bg_title')}</h2>
         <p class="muted" id="bgNote"></p>
-        <button class="btn secondary small" id="resetRoutine">Нулирай настройките на рутината</button>
+        <button class="btn secondary small" id="resetRoutine">${t('dash_reset_routine')}</button>
       </div>
 
-      <h2>Времева линия на деня</h2>
+      <h2>${t('dash_timeline')}</h2>
       <div class="card" id="timeline"></div>
 
-      <h2>Напомняния</h2>
+      <h2>${t('dash_reminders')}</h2>
       <div id="reminders-mount"></div>
 
-      <h2>Събития и задачи</h2>
+      <h2>${t('dash_events')}</h2>
       <div id="events-mount"></div>
 
-      <h2>Дневник на активността</h2>
+      <h2>${t('dash_log')}</h2>
       <div class="card" id="logwrap"></div>
 
       <div class="spacer"></div>
-      <button class="btn danger small" id="reset">Нулирай приложението</button>
+      <button class="btn danger small" id="reset">${t('dash_reset_app')}</button>
     </div>
   `);
 
   // Времева линия
   const tl = el.querySelector('#timeline');
   const tlItems = [];
-  if (routine.morningTime) tlItems.push([routine.morningTime, '🌤️ Сутрешен брифинг']);
+  if (routine.morningTime) tlItems.push([routine.morningTime, t('dash_tl_morning')]);
   todaysEvents(events).forEach((e) => tlItems.push([e.time || '—', '📋 ' + e.title]));
   reminders.filter((r) => !r.paused).forEach((r) => tlItems.push([r.time, '⏰ ' + r.title]));
-  if (routine.eveningEnabled) tlItems.push([routine.eveningTime, '🌙 Вечерно резюме']);
+  if (routine.eveningEnabled) tlItems.push([routine.eveningTime, t('dash_tl_evening')]);
   tlItems.sort((a, b) => a[0].localeCompare(b[0]));
   if (!tlItems.length) {
-    tl.appendChild(h(`<p class="muted">Празна линия — добави елементи.</p>`));
+    tl.appendChild(h(`<p class="muted">${esc(t('dash_timeline_empty'))}</p>`));
   } else {
-    tlItems.forEach(([t, label]) => {
-      tl.appendChild(h(`<p><span class="timeline-dot"></span><strong>${esc(t)}</strong> · ${esc(label)}</p>`));
+    tlItems.forEach(([time, label]) => {
+      tl.appendChild(h(`<p><span class="timeline-dot"></span><strong>${esc(time)}</strong> · ${esc(label)}</p>`));
     });
   }
 
   // Дневник
   const lw = el.querySelector('#logwrap');
-  if (!log.length) lw.appendChild(h(`<p class="muted">Все още няма записи.</p>`));
+  if (!log.length) lw.appendChild(h(`<p class="muted">${esc(t('dash_log_empty'))}</p>`));
   log.slice(0, 12).forEach((e) => {
-    const time = new Date(e.at).toLocaleString('bg-BG');
+    const time = new Date(e.at).toLocaleString(getLang());
     lw.appendChild(h(`<p class="muted">${esc(time)} — ${esc(e.text)}</p>`));
   });
 
@@ -87,22 +87,18 @@ export async function renderDashboard(root, { go }) {
 
   el.querySelector('#preview').addEventListener('click', async () => {
     const text = await scheduler.previewBriefingNow();
-    toast('🤖 Брифинг (преглед)', text);
+    toast(t('toast_preview_title'), text);
   });
 
   // Фонов режим — честно обяснение според средата.
   const isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
-  el.querySelector('#bgNote').textContent = isNative
-    ? 'Когато роботът е АКТИВЕН, напомнянията и брифингът се доставят дори при ЗАТВОРЕНО приложение ' +
-      '(нативно планирани известия). Не е нужно да го държиш отворен. Изисква разрешение за известия.'
-    : 'В браузър напомнянията работят само докато приложението е отворено. На телефона (инсталирано) ' +
-      'работят и при затворено — нативно планирани известия.';
+  el.querySelector('#bgNote').textContent = isNative ? t('dash_bg_native') : t('dash_bg_web');
 
   // Нулиране САМО на настройките на рутината (без да трие бележки/напомняния/онбординг).
   el.querySelector('#resetRoutine').addEventListener('click', async () => {
     await storage.set(KEYS.routine, defaultRoutine());
     await scheduler.reschedule();
-    toast('Рутина', 'Настройките на рутината са върнати по подразбиране.');
+    toast(t('toast_routine'), t('toast_routine_reset'));
     clear(root);
     renderDashboard(root, { go });
   });

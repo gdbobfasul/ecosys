@@ -23,6 +23,8 @@ import { renderYoutube } from './screens/youtube.js';
 import { renderSettings } from './screens/settings.js';
 import { renderAgent } from './screens/agent.js';
 import { renderAppBuilder } from './screens/app-builder.js';
+import { renderLanguage } from './screens/language.js';
+import { hasLangChosen, t } from './core/i18n.js';
 
 // Десктоп ли сме? (Electron preload изнася SLF_DESKTOP === true.) Само тогава показваме
 // екрана „🛠 Агент" + рутата му. На телефона (rustore/huawei) флагът липсва → скрит.
@@ -37,23 +39,30 @@ const APP_ROUTES = {
   youtube: renderYoutube,
   settings: renderSettings
 };
+// route → ключ за превод на етикета в навигацията (преводът се чете при всяко рисуване).
 const NAV = [
-  ['chat', 'Чат'],
-  ['tasks', 'Задачи'],
-  ['memory', 'Памет'],
-  ['sources', 'Знание'],
-  ['vision', 'Зрение'],
-  ['youtube', 'YouTube'],
-  ['settings', 'Настройки']
+  ['chat', 'nav_chat'],
+  ['tasks', 'nav_tasks'],
+  ['memory', 'nav_memory'],
+  ['sources', 'nav_sources'],
+  ['vision', 'nav_vision'],
+  ['youtube', 'nav_youtube'],
+  ['settings', 'nav_settings']
 ];
 
-// Само на десктоп добавяме агентската рута + таб + App Builder-а.
+// Само на десктоп добавяме агентската рута + таб + App Builder-а. Етикетите им
+// (🛠 Агент / 🏗 App Builder) са десктоп-специфични — оставаме ги без превод (нямат
+// ключ в i18n; не са част от мобилния поток). Префиксваме ги с literal: за renderNav.
 if (IS_DESKTOP) {
   APP_ROUTES.agent = renderAgent;
-  NAV.push(['agent', '🛠 Агент']);
+  NAV.push(['agent', 'literal:🛠 Агент']);
   APP_ROUTES['app-builder'] = renderAppBuilder;
-  NAV.push(['app-builder', '🏗 App Builder']);
+  NAV.push(['app-builder', 'literal:🏗 App Builder']);
 }
+
+// Флаг: показваме екрана за избор на UI език (повторен избор от 🌐 бутона). При първо
+// стартиране се определя автоматично от hasLangChosen() в render().
+let forceLangPicker = false;
 
 function currentRoute() {
   const h = (location.hash || '').replace(/^#\/?/, '');
@@ -62,15 +71,26 @@ function currentRoute() {
 
 export function navigate(route) { location.hash = '#/' + route; }
 
+// Отваря екрана за повторен избор на UI език (от 🌐 бутона / Настройки). След избор
+// (или Отказ) се връща към нормалния поток през render().
+export function openLangPicker() { forceLangPicker = true; render(); }
+
+// Превежда етикет на навигацията: literal:… остава дословно, иначе е ключ за i18n.
+function navLabel(labelKey) {
+  return labelKey.startsWith('literal:') ? labelKey.slice('literal:'.length) : t(labelKey);
+}
+
 function renderNav(active) {
-  return el('nav', { class: 'tabbar' },
-    NAV.map(([route, label]) =>
+  return el('nav', { class: 'tabbar' }, [
+    ...NAV.map(([route, labelKey]) =>
       el('button', {
         class: 'tab' + (route === active ? ' active' : ''),
         onclick: () => navigate(route)
-      }, label)
-    )
-  );
+      }, navLabel(labelKey))
+    ),
+    // 🌐 бутон за повторен избор на UI език (НЕ е рута — отваря екрана директно).
+    el('button', { class: 'tab', onclick: openLangPicker }, t('lang_btn'))
+  ]);
 }
 
 function render() {
@@ -79,7 +99,22 @@ function render() {
   clear(app);
 
   const screen = el('main', { class: 'screen' });
-  const ctx = { navigate, rerender: render };
+  const ctx = { navigate, rerender: render, openLangPicker };
+
+  // ПЪРВО СТАРТИРАНЕ: избор на UI език ПРЕДИ целия поток (lockdown/раждане/заключване/чат).
+  // Показваме го, ако потребителят още не е избирал език, ИЛИ ако е поискал повторен избор
+  // от 🌐 бутона (forceLangPicker). Гласовият език е независим и не се пипа тук.
+  const repick = forceLangPicker;
+  if (!hasLangChosen() || repick) {
+    stopLearning(); stopListening(); stopConversation();
+    renderLanguage(screen, {
+      showCancel: repick,                       // „Отказ“ само при повторен избор (вече има избран)
+      onChosen: () => { forceLangPicker = false; render(); },
+      onCancel: () => { forceLangPicker = false; render(); }
+    });
+    app.appendChild(screen);
+    return;
+  }
 
   // Анти-кражба: ако е активен lockdown, искаме повторна авторизация преди всичко.
   if (isNamed() && isLockedDown()) {

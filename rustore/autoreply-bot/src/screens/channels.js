@@ -9,6 +9,7 @@
 //     твой идентификатор и (по избор) токен; ботът чете нови съобщения и авто-отговаря.
 //
 import { el, toast } from '../ui/dom.js';
+import { t, tf } from '../core/i18n.js';
 import { getState, setState } from '../core/storage.js';
 import { isNativeReplyAvailable, isAccessGranted, openAccessSettings, getRecent } from '../core/native-reply.js';
 import { kcyConfigured, kcyCheck } from '../core/kcy-chat.js';
@@ -25,11 +26,9 @@ export function ChannelsScreen({ render }) {
 
   root.appendChild(el('div', { class: 'brand' }, [
     el('div', { class: 'logo' }, '🔗'),
-    el('h1', {}, 'Връзки / Канали')
+    el('h1', {}, t('ch_title'))
   ]));
-  root.appendChild(el('p', { class: 'muted' },
-    'Тук виждаш КЪДЕ и КАК ботът се връзва към всеки канал. Нищо не е „свързано" наужким — ' +
-    'статусите са реални.'));
+  root.appendChild(el('p', { class: 'muted' }, t('ch_intro')));
 
   // --- Месинджъри (WhatsApp/Viber/Messenger) през Notification access ---
   root.appendChild(messengersBlock(render));
@@ -59,35 +58,30 @@ function channelCard({ ic, title, statusEl, enabled, onToggle, children }) {
 function messengersBlock(render) {
   const wrap = el('div', {});
 
-  wrap.appendChild(el('h2', {}, '💬 Месинджъри'));
-  const how = el('p', { class: 'muted' },
-    'WhatsApp, Viber и Facebook Messenger нямат безплатен официален начин трета страна да ' +
-    'отговаря вместо теб. Единственият on-device начин е чрез системния „Notification access": ' +
-    'ботът ЧЕТЕ входящите нотификации и отговаря през бутона „Reply" в самата нотификация — ' +
-    'без да отваря приложението. Работи само на реално устройство със sideload (native) билд. ' +
-    'Магазините ограничават този достъп, затова в магазинния билд може да не е наличен.');
+  wrap.appendChild(el('h2', {}, t('ch_messengers')));
+  const how = el('p', { class: 'muted' }, t('ch_messengers_how'));
   wrap.appendChild(how);
 
   // Общ статус на native слоя + бутон за разрешението.
-  const accessPill = el('span', { class: 'pill off' }, 'проверка…');
-  const accessBtn = el('button', { class: 'btn sm primary', style: 'margin-top:6px' }, 'Дай „Notification access"');
+  const accessPill = el('span', { class: 'pill off' }, t('ch_status_checking'));
+  const accessBtn = el('button', { class: 'btn sm primary', style: 'margin-top:6px' }, t('ch_grant_access'));
   accessBtn.addEventListener('click', async () => {
     const ok = await openAccessSettings();
-    if (!ok) toast('Налично само на устройство с native билд (sideload APK).');
+    if (!ok) toast(t('ch_only_native_settings'));
     else setTimeout(() => refreshAccess(), 1200);
   });
 
   async function refreshAccess() {
     if (!isNativeReplyAvailable()) {
       accessPill.className = 'pill off';
-      accessPill.textContent = 'нужен е native билд';
+      accessPill.textContent = t('ch_st_need_native');
       accessBtn.disabled = true;
       for (const c of NATIVE_CHANNELS) updateChannelStatus(c.id, 'no-native');
       return;
     }
     const granted = await isAccessGranted();
     accessPill.className = 'pill ' + (granted ? 'on' : 'away');
-    accessPill.textContent = granted ? 'достъп даден' : 'няма достъп';
+    accessPill.textContent = granted ? t('ch_st_access_granted') : t('ch_st_no_access');
     accessBtn.disabled = false;
 
     // Кои месинджъри реално са изпратили нотификация (т.е. „виждаме" ги).
@@ -103,11 +97,10 @@ function messengersBlock(render) {
 
   wrap.appendChild(el('div', { class: 'card', style: 'background:var(--bg-soft)' }, [
     el('div', { class: 'row between' }, [
-      el('strong', {}, '🔐 Notification access'),
+      el('strong', {}, t('ch_notif_access')),
       accessPill
     ]),
-    el('p', { class: 'muted', style: 'margin:6px 0' },
-      'Едно системно разрешение, общо за трите месинджъра. Без него ботът не може да чете/отговаря.'),
+    el('p', { class: 'muted', style: 'margin:6px 0' }, t('ch_notif_access_note')),
     accessBtn
   ]));
 
@@ -117,12 +110,12 @@ function messengersBlock(render) {
     const elx = statusEls[id];
     if (!elx) return;
     const map = {
-      'no-native': ['off', 'нужен е native билд'],
-      'need-access': ['away', 'дай „Notification access"'],
-      ready: ['away', 'готово — чака съобщение'],
-      live: ['on', 'свързан (виждам съобщения)']
+      'no-native': ['off', t('ch_st_need_native')],
+      'need-access': ['away', t('ch_st_need_grant')],
+      ready: ['away', t('ch_st_ready')],
+      live: ['on', t('ch_st_live')]
     };
-    const [cls, txt] = map[kind] || ['off', 'неизвестно'];
+    const [cls, txt] = map[kind] || ['off', t('ch_st_unknown')];
     elx.className = 'pill ' + cls;
     elx.textContent = txt;
   }
@@ -142,11 +135,10 @@ function messengersBlock(render) {
         const cur = getState();
         setState({ channels: { ...cur.channels, [c.id]: { ...(cur.channels[c.id] || {}), enabled: on } } });
         reloadChannels(render);
-        toast(on ? `${c.title}: авто-отговорът е включен` : `${c.title}: спрян`);
+        toast(on ? tf('ch_toggle_on', c.title) : tf('ch_toggle_off', c.title));
       },
       children: [
-        el('p', { class: 'muted', style: 'margin:6px 0 0' },
-          `Пакет: ${c.pkg}. Авто-отговорът тръгва, щом дойде нотификация с бутон „Reply".`)
+        el('p', { class: 'muted', style: 'margin:6px 0 0' }, tf('ch_pkg_note', c.pkg))
       ]
     }));
   }
@@ -160,7 +152,7 @@ function kcyBlock(render) {
   const st = getState();
   const cfg = (st.channels && st.channels.kcy) || {};
 
-  const statusEl = el('span', { class: 'pill off' }, kcyConfigured(cfg) ? 'проверка…' : 'не е настроен');
+  const statusEl = el('span', { class: 'pill off' }, kcyConfigured(cfg) ? t('ch_status_checking') : t('ch_status_not_configured'));
 
   const baseInput = el('input', { type: 'text', value: cfg.baseUrl || 'https://my.girl.place', placeholder: 'https://my.girl.place' });
   // Бързи бутони за двата домейна на нашия чат.
@@ -168,9 +160,9 @@ function kcyBlock(render) {
     el('button', { class: 'btn sm', onClick: () => { baseInput.value = 'https://my.girl.place'; } }, 'my.girl.place'),
     el('button', { class: 'btn sm', onClick: () => { baseInput.value = 'https://kaji.kak.si'; } }, 'kaji.kak.si')
   ]);
-  const phoneInput = el('input', { type: 'text', value: cfg.phone || '', placeholder: 'телефон (международен формат)' });
-  const passInput = el('input', { type: 'text', value: cfg.password || '', placeholder: 'парола' });
-  const tokenInput = el('input', { type: 'text', value: cfg.token || '', placeholder: 'готов Bearer токен (по избор)' });
+  const phoneInput = el('input', { type: 'text', value: cfg.phone || '', placeholder: t('ch_phone_ph') });
+  const passInput = el('input', { type: 'text', value: cfg.password || '', placeholder: t('ch_password_ph') });
+  const tokenInput = el('input', { type: 'text', value: cfg.token || '', placeholder: t('ch_token_ph') });
   const pollInput = el('input', { type: 'text', value: String(cfg.pollSeconds || 20), placeholder: '20' });
 
   const save = () => {
@@ -185,46 +177,42 @@ function kcyBlock(render) {
     };
     setState({ channels: { ...cur.channels, kcy: next } });
     reloadChannels(render);
-    toast('Настройките за нашия чат са запазени.');
+    toast(t('ch_saved'));
   };
 
-  const testBtn = el('button', { class: 'btn sm' }, 'Провери връзката');
+  const testBtn = el('button', { class: 'btn sm' }, t('ch_check'));
   testBtn.addEventListener('click', async () => {
     save();
     statusEl.className = 'pill away';
-    statusEl.textContent = 'проверка…';
+    statusEl.textContent = t('ch_status_checking');
     const res = await kcyCheck(getState().channels.kcy);
     if (res.ok) {
       statusEl.className = 'pill on';
-      statusEl.textContent = 'свързан';
-      toast(`Връзката работи. Намерени съобщения: ${res.count}.`);
+      statusEl.textContent = t('ch_status_connected');
+      toast(tf('ch_check_ok', res.count));
     } else {
       statusEl.className = 'pill off';
       statusEl.textContent = reasonShort(res.reason);
-      toast('Връзката не успя: ' + (res.note || res.reason));
+      toast(tf('ch_check_fail', res.note || res.reason));
     }
   });
 
   const enabled = !!(cfg.enabled);
   const body = [
-    el('p', { class: 'muted' },
-      'Това е НАШИЯТ чат. За разлика от месинджърите тук връзката е директна по HTTP към чат ' +
-      'бекенда: ботът влиза с твоя акаунт, чете новите съобщения от разговорите и праща ' +
-      'авто-отговор. Ботът отговаря само на хора, които вече са ти приятели в чата. ' +
-      'Всичко се пази само на устройството.'),
-    el('label', {}, 'Адрес на чата (base URL)'),
+    el('p', { class: 'muted' }, t('ch_kcy_note')),
+    el('label', {}, t('ch_kcy_addr')),
     baseInput,
     pickRow,
-    el('label', {}, 'Телефон'),
+    el('label', {}, t('ch_phone')),
     phoneInput,
-    el('label', {}, 'Парола'),
+    el('label', {}, t('ch_password')),
     passInput,
-    el('label', {}, 'или: готов Bearer токен (вместо телефон+парола)'),
+    el('label', {}, t('ch_token')),
     tokenInput,
-    el('label', {}, 'Проверявай за нови съобщения на (секунди)'),
+    el('label', {}, t('ch_poll')),
     pollInput,
     el('div', { class: 'row', style: 'margin-top:10px' }, [
-      el('button', { class: 'btn sm primary', onClick: save }, 'Запази'),
+      el('button', { class: 'btn sm primary', onClick: save }, t('save')),
       testBtn
     ])
   ];
@@ -234,27 +222,27 @@ function kcyBlock(render) {
     (async () => {
       const res = await kcyCheck(cfg);
       statusEl.className = 'pill ' + (res.ok ? 'on' : 'off');
-      statusEl.textContent = res.ok ? 'свързан' : reasonShort(res.reason);
+      statusEl.textContent = res.ok ? t('ch_status_connected') : reasonShort(res.reason);
     })();
   }
 
   return el('div', {}, [
-    el('h2', {}, '🤖 Нашият чат (KCY)'),
+    el('h2', {}, t('ch_kcy_title')),
     channelCard({
       ic: '💠',
-      title: 'KCY чат',
+      title: t('ch_kcy_name'),
       statusEl,
       enabled,
       onToggle: (on) => {
         if (on && !kcyConfigured(getState().channels.kcy)) {
-          toast('Първо въведи адрес и идентификатор, после включи.');
+          toast(t('ch_need_config'));
           render();
           return;
         }
         const cur = getState();
         setState({ channels: { ...cur.channels, kcy: { ...(cur.channels.kcy || {}), enabled: on } } });
         reloadChannels(render);
-        toast(on ? 'KCY: авто-отговорът е включен' : 'KCY: спрян');
+        toast(on ? t('ch_kcy_on') : t('ch_kcy_off'));
       },
       children: body
     })
@@ -263,12 +251,12 @@ function kcyBlock(render) {
 
 function reasonShort(reason) {
   return ({
-    'not-configured': 'не е настроен',
-    auth: 'грешен токен',
-    network: 'няма връзка',
-    http: 'грешка от сървъра',
-    'bad-json': 'лош отговор'
-  })[reason] || 'не е свързан';
+    'not-configured': t('reason_not_configured'),
+    auth: t('reason_auth'),
+    network: t('reason_network'),
+    http: t('reason_http'),
+    'bad-json': t('reason_bad_json')
+  })[reason] || t('reason_not_connected');
 }
 
 // --- Демо чат -----------------------------------------------------------------
@@ -276,20 +264,19 @@ function localBlock(render) {
   const st = getState();
   const enabled = !(st.channels && st.channels.local && st.channels.local.enabled === false);
   return el('div', {}, [
-    el('h2', {}, '🧪 Демо чат'),
+    el('h2', {}, t('ch_demo_title')),
     channelCard({
       ic: '💬',
-      title: 'Демо чат (в приложението)',
-      statusEl: el('span', { class: 'pill on' }, 'работи'),
+      title: t('ch_demo_name'),
+      statusEl: el('span', { class: 'pill on' }, t('ch_status_works')),
       enabled,
       onToggle: (on) => {
         const cur = getState();
         setState({ channels: { ...cur.channels, local: { ...(cur.channels.local || {}), enabled: on } } });
-        toast(on ? 'Демо чатът е включен' : 'Демо чатът е спрян');
+        toast(on ? t('ch_demo_on') : t('ch_demo_off'));
       },
       children: [
-        el('p', { class: 'muted', style: 'margin:6px 0 0' },
-          'Вграден sandbox за тестване на правилата. Не докосва системата. Тествай в таб „Demo".')
+        el('p', { class: 'muted', style: 'margin:6px 0 0' }, t('ch_demo_note'))
       ]
     })
   ]);

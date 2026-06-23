@@ -2,50 +2,49 @@
 import { el, toast } from '../ui/dom.js';
 import { getState, setState } from '../core/storage.js';
 import { requestNotificationPermission, checkNotificationPermission } from '../core/notifier.js';
+import { t } from '../core/i18n.js';
 
 export function renderPermissions(root, { navigate, rerender }) {
   const s = getState();
 
   root.appendChild(el('header', { class: 'page-head' }, [
-    el('h1', {}, 'Разрешения'),
-    el('p', { class: 'lead' }, 'Искаме само едно разрешение — известия. Всичко останало е локално.')
+    el('h1', {}, t('perm_title')),
+    el('p', { class: 'lead' }, t('perm_lead'))
   ]));
 
   // Известия (единственото реално разрешение).
   const notifRow = el('div', { class: 'perm-row' }, [
     el('div', {}, [
-      el('strong', {}, '🔔 Известия'),
-      el('p', { class: 'muted small' },
-        'За да ви известяваме, когато роботът е отговорил на въпрос. Локални известия, без сървър/push.')
+      el('strong', {}, t('perm_notif')),
+      el('p', { class: 'muted small' }, t('perm_notif_desc'))
     ]),
     el('button', {
       class: 'btn ' + (s.permissions.notifications ? 'ok' : 'primary'),
       onclick: async () => {
         const granted = await requestNotificationPermission();
         setState({ permissions: { ...getState().permissions, notifications: granted } });
-        toast(granted ? 'Известията са разрешени.' : 'Известията са отказани (ще ползваме toast).');
+        toast(granted ? t('perm_notif_ok') : t('perm_notif_denied'));
         rerender();
       }
-    }, s.permissions.notifications ? 'Разрешено ✓' : 'Разреши')
+    }, s.permissions.notifications ? t('perm_granted') : t('perm_grant'))
   ]);
   root.appendChild(el('section', { class: 'card' }, [notifRow]));
 
   // Явно: какво НЕ правим.
   root.appendChild(el('section', { class: 'card' }, [
-    el('h2', {}, 'Какво НЕ искаме и НЕ правим'),
+    el('h2', {}, t('perm_not_title')),
     el('ul', { class: 'bullets no' }, [
-      el('li', {}, '🚫 Без достъп до контакти.'),
-      el('li', {}, '🚫 Без акаунти/вход.'),
-      el('li', {}, '🚫 Без локация и без проследяване/анализи.'),
-      el('li', {}, '🚫 Без мрежа за ядрото — правилата работят офлайн.'),
-      el('li', {}, 'ℹ️ Достъпът до известия на други приложения (за WhatsApp/Viber/Messenger) ' +
-        'се иска ОТДЕЛНО от екрана „Канали" и изисква native билд.')
+      el('li', {}, t('perm_no1')),
+      el('li', {}, t('perm_no2')),
+      el('li', {}, t('perm_no3')),
+      el('li', {}, t('perm_no4')),
+      el('li', {}, t('perm_no5'))
     ])
   ]));
 
   root.appendChild(el('div', { class: 'row gap' }, [
-    el('button', { class: 'btn primary', onclick: () => navigate('kb') }, 'Напред: База знания →'),
-    el('button', { class: 'btn ghost', onclick: () => navigate('dashboard') }, 'Към таблото')
+    el('button', { class: 'btn primary', onclick: () => navigate('kb') }, t('perm_next_kb')),
+    el('button', { class: 'btn ghost', onclick: () => navigate('dashboard') }, t('to_dashboard'))
   ]));
 
   // Опресняване на реалния статус (напр. при връщане в native).

@@ -5,13 +5,14 @@ import { respond } from '../core/respond.js';
 import { getAdapter } from '../core/channel-adapter.js';
 import { notify } from '../core/notifier.js';
 import { toast } from '../ui/dom.js';
+import { t } from '../core/i18n.js';
 
 export function renderDemoChat(root, { navigate }) {
   const s = getState();
 
   root.appendChild(el('header', { class: 'page-head' }, [
-    el('h1', {}, 'Демо чат'),
-    el('p', { class: 'lead' }, 'Напиши въпрос — роботът отговаря по правилата (канал: local).')
+    el('h1', {}, t('demo_title')),
+    el('p', { class: 'lead' }, t('demo_lead'))
   ]));
 
   const thread = el('div', { class: 'chat-thread' });
@@ -24,26 +25,26 @@ export function renderDemoChat(root, { navigate }) {
   }
 
   // Поздрав в началото.
-  if (s.config.greeting) thread.appendChild(bubble(s.config.greeting, 'bot', 'поздрав'));
+  if (s.config.greeting) thread.appendChild(bubble(s.config.greeting, 'bot', t('demo_greeting_meta')));
 
   function botAnswer(input) {
     const r = respond(input);
     const local = getAdapter('local');
     local.deliver({ text: r.reply }); // local адаптер: показваме в чата
-    const metaMap = { away: 'извън работно време', answer: 'правило', fallback: 'резервен' };
+    const metaMap = { away: t('kind_away'), answer: t('kind_answer'), fallback: t('kind_fallback') };
     thread.appendChild(bubble(r.reply, 'bot', metaMap[r.kind]));
     thread.scrollTop = thread.scrollHeight;
     if (getState().permissions.notifications) {
-      notify('Роботът отговори', r.reply, (m) => toast(m));
+      notify(t('demo_notify_title'), r.reply, (m) => toast(m));
     }
   }
 
   function send(text) {
-    const t = String(text || '').trim();
-    if (!t) return;
-    thread.appendChild(bubble(t, 'user'));
+    const txt = String(text || '').trim();
+    if (!txt) return;
+    thread.appendChild(bubble(txt, 'user'));
     thread.scrollTop = thread.scrollHeight;
-    setTimeout(() => botAnswer(t), 120);
+    setTimeout(() => botAnswer(txt), 120);
   }
 
   // Бързи бутони.
@@ -53,11 +54,11 @@ export function renderDemoChat(root, { navigate }) {
     )
   );
 
-  const input = el('input', { class: 'input', type: 'text', placeholder: 'Напиши въпрос...' });
+  const input = el('input', { class: 'input', type: 'text', placeholder: t('demo_input_ph') });
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { send(input.value); input.value = ''; }
   });
-  const sendBtn = el('button', { class: 'btn primary', onclick: () => { send(input.value); input.value = ''; } }, 'Изпрати');
+  const sendBtn = el('button', { class: 'btn primary', onclick: () => { send(input.value); input.value = ''; } }, t('demo_send'));
 
   root.appendChild(el('section', { class: 'card chat-card' }, [
     thread,
@@ -65,5 +66,5 @@ export function renderDemoChat(root, { navigate }) {
     el('div', { class: 'row gap composer' }, [input, sendBtn])
   ]));
 
-  root.appendChild(el('button', { class: 'btn ghost', onclick: () => navigate('dashboard') }, '← Към таблото'));
+  root.appendChild(el('button', { class: 'btn ghost', onclick: () => navigate('dashboard') }, t('to_dashboard_back')));
 }

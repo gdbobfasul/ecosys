@@ -18,6 +18,7 @@ import {
   replyTo,
   TARGET_PKG
 } from './native-reply.js';
+import { t } from './i18n.js';
 
 // Обратна съвместимост: старият код вика NotificationReplyPlugin.* директно.
 export const NotificationReplyPlugin = {
@@ -42,17 +43,17 @@ class ChannelAdapter {
   // Дали този канал може реално да изпраща ОТГОВОРИ в текущата среда.
   canSend() { return false; }
   // Човешки статус за UI.
-  status() { return { ready: false, note: 'неизвестно' }; }
+  status() { return { ready: false, note: t('ch_st_unknown') }; }
   // Доставя отговор. local го показва в чата; останалите минават през native плъгина.
   async deliver(_payload) { throw new Error('not implemented'); }
 }
 
 // --- local: вграденият демо/sandbox чат (работи сега) -------------------------
 class LocalAdapter extends ChannelAdapter {
-  constructor() { super('local', 'Демо чат (в приложението)'); }
+  constructor() { super('local', t('ca_local_name')); }
   canSend() { return true; }
   status() {
-    return { ready: true, note: 'Работи сега — отговорите се показват в демо чата.' };
+    return { ready: true, note: t('ca_local_works') };
   }
   async deliver({ text }) {
     return { ok: true, channel: 'local', text, delivered: true };
@@ -69,10 +70,10 @@ class NotificationChannelAdapter extends ChannelAdapter {
     if (!isNativeReplyAvailable()) {
       return {
         ready: false,
-        note: 'изисква native билд (опция 38) + „Notification access"'
+        note: t('ca_need_native_access')
       };
     }
-    return { ready: true, note: 'native плъгин наличен — нужен е и „Notification access"' };
+    return { ready: true, note: t('ca_native_avail') };
   }
 
   // НЕ симулираме изпращане.
@@ -84,22 +85,21 @@ class NotificationChannelAdapter extends ChannelAdapter {
     if (!isNativeReplyAvailable()) {
       return {
         ok: false, channel: this.id, pending: true, reason: 'native-not-available',
-        note: 'Изпращането изисква native NotificationReply плъгин + „Notification access". ' +
-              'Виж native/notification-reply/.'
+        note: t('ca_send_needs_native')
       };
     }
     const access = await isAccessGranted();
     if (!access) {
       return {
         ok: false, channel: this.id, pending: true, reason: 'no-access',
-        note: 'Липсва „Notification access" в настройките на Android.'
+        note: t('ca_missing_access')
       };
     }
     if (!key) {
       // Реалният direct-reply изисква нотификацията, на която отговаряме (нейния key).
       return {
         ok: false, channel: this.id, pending: true, reason: 'no-target',
-        note: 'Няма заловена нотификация за отговор (нужен е key от getRecent/onMessage).'
+        note: t('ca_no_target')
       };
     }
     try {

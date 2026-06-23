@@ -14,12 +14,13 @@
 // Правилата се обхождат ПО РЕД (priority order). Първото съвпадение печели.
 
 import { activeMode } from './scheduler.js';
+import { t } from './i18n.js';
 
 // Заменя променливите в шаблон с реални стойности.
 export function renderTemplate(tpl, ctx) {
   const now = ctx.when || new Date();
   const vars = {
-    name: ctx.sender || 'приятел',
+    name: ctx.sender || t('tpl_friend'),
     time: now.toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' }),
     date: now.toLocaleDateString('bg-BG'),
     text: ctx.text || ''

@@ -18,10 +18,11 @@ import {
 } from '../core/listen.js';
 import { serverLink, currentUrls, saveServerLink, connectWithKey, buildConnectionUrl } from '../core/server-link.js';
 import { SERVER_PRESETS, DEFAULT_PRESET_DOMAIN } from '../core/server-presets.js';
+import { t } from '../core/i18n.js';
 
 export function renderSources(root, { rerender }) {
   clear(root);
-  root.appendChild(el('h2', {}, 'Източници на знание'));
+  root.appendChild(el('h2', {}, t('screen_sources')));
 
   // --- Индикатор „Къде се пази знанието“ + значка за ролята ---
   const loc = storageLocationLabel();

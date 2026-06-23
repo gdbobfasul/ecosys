@@ -13,10 +13,11 @@ import {
   youtubeSettings, saveYoutubeSettings,
   tryFetchCaptions, learnFromText
 } from '../core/youtube.js';
+import { t } from '../core/i18n.js';
 
 export function renderYoutube(root, { rerender }) {
   clear(root);
-  root.appendChild(el('h2', {}, '📺 YouTube — гледай и учи'));
+  root.appendChild(el('h2', {}, t('screen_youtube')));
 
   // Честен дисклеймър.
   root.appendChild(el('div', { class: 'card', style: 'border-left:3px solid var(--accent-2)' }, [

@@ -3,31 +3,33 @@ import { h, esc } from '../ui/dom.js';
 import { storage, KEYS } from '../core/storage.js';
 import { LANGUAGES, voiceByCode } from '../core/languages.js';
 import { speak, stopSpeaking, ttsAvailable } from '../core/tts.js';
+import { t } from '../core/i18n.js';
 
 export async function renderNotes(root, { go }) {
   const notes = await storage.get(KEYS.notes, []);
   const defLang = await storage.get(KEYS.ttsLang, 'bg');
+  // Името на езика се показва в собствената му писменост (native), еднакво за всеки
+  // език на интерфейса — затова тук НЕ ползваме фиксирани български имена.
   const langOptions = LANGUAGES
-    .map((l) => `<option value="${l.code}" ${l.code === defLang ? 'selected' : ''}>${esc(l.bg)}</option>`)
+    .map((l) => `<option value="${l.code}" ${l.code === defLang ? 'selected' : ''}>${esc(l.native)}</option>`)
     .join('');
 
   const el = h(`
     <div>
-      <h1>📝 Бележки</h1>
-      <p class="muted">Запиши бележки, които роботът да помни — и да ти ги ИЗГОВАРЯ на избрания език
-      (един от 15-те на екосистемата).</p>
+      <h1>${t('notes_title')}</h1>
+      <p class="muted">${esc(t('notes_intro'))}</p>
 
       <div class="card">
         <div class="field">
-          <label>Нова бележка</label>
-          <textarea id="noteText" rows="3" placeholder="напр. Купи хляб и мляко; обади се на мама в 18:00"></textarea>
+          <label>${t('notes_new')}</label>
+          <textarea id="noteText" rows="3" placeholder="${esc(t('notes_text_ph'))}"></textarea>
         </div>
         <div class="field">
-          <label>Език за изговаряне</label>
+          <label>${t('notes_speak_lang')}</label>
           <select id="noteLang">${langOptions}</select>
         </div>
-        <button class="btn" id="addNote">Добави бележка</button>
-        ${ttsAvailable() ? '' : '<p class="muted">⚠ Гласът не е наличен на това устройство — бележките пак се пазят.</p>'}
+        <button class="btn" id="addNote">${t('notes_add')}</button>
+        ${ttsAvailable() ? '' : `<p class="muted">${esc(t('notes_no_tts'))}</p>`}
       </div>
 
       <div id="notesList"></div>
@@ -38,16 +40,16 @@ export async function renderNotes(root, { go }) {
 
   function renderList(items) {
     listEl.innerHTML = '';
-    if (!items.length) { listEl.appendChild(h('<p class="muted">Още няма бележки.</p>')); return; }
+    if (!items.length) { listEl.appendChild(h(`<p class="muted">${esc(t('notes_empty'))}</p>`)); return; }
     items.forEach((n) => {
       const lang = LANGUAGES.find((l) => l.code === n.lang);
       const card = h(`
         <div class="card">
           <div>${esc(n.text)}</div>
-          <div class="muted" style="font-size:12px;margin-top:4px">🗣️ ${esc(lang ? lang.bg : n.lang)}</div>
+          <div class="muted" style="font-size:12px;margin-top:4px">🗣️ ${esc(lang ? lang.native : n.lang)}</div>
           <div class="row" style="gap:8px;margin-top:8px">
-            <button class="btn sm" data-act="speak">▶️ Изговори</button>
-            <button class="btn sm ghost" data-act="del">🗑️ Изтрий</button>
+            <button class="btn sm" data-act="speak">${t('notes_speak')}</button>
+            <button class="btn sm ghost" data-act="del">${t('notes_delete')}</button>
           </div>
         </div>
       `);

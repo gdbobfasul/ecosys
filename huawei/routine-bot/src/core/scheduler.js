@@ -14,6 +14,7 @@ import { notifier } from './notifier.js';
 import { fetchWeather } from './weather-api.js';
 import { quoteForDay } from './quotes.js';
 import { storage, KEYS } from './storage.js';
+import { t, tf } from './i18n.js';
 
 let webTimers = [];
 
@@ -52,26 +53,26 @@ export async function buildBriefingText(routine, events) {
     if (loc && loc.latitude != null) {
       const w = await fetchWeather(loc.latitude, loc.longitude);
       if (w.ok) {
-        lines.push(`${w.emoji} ${w.desc}, ${Math.round(w.temperature)}${w.unit} (макс ${Math.round(w.max)}/мин ${Math.round(w.min)})`);
+        lines.push(tf('brief_weather_line', w.emoji, w.desc, Math.round(w.temperature), w.unit, Math.round(w.max), Math.round(w.min)));
       } else {
-        lines.push('🌡️ Времето: няма връзка');
+        lines.push(t('brief_weather_nolink'));
       }
     } else {
-      lines.push('🌡️ Времето: задай локация в настройките');
+      lines.push(t('brief_weather_setloc'));
     }
   }
   if (routine.includeAgenda) {
     const todays = todaysEvents(events || []);
     if (todays.length) {
-      lines.push('📋 Днес: ' + todays.map((e) => (e.time ? e.time + ' ' : '') + e.title).join('; '));
+      lines.push(tf('brief_agenda_today', todays.map((e) => (e.time ? e.time + ' ' : '') + e.title).join('; ')));
     } else {
-      lines.push('📋 Днес: няма събития');
+      lines.push(t('brief_agenda_none'));
     }
   }
   if (routine.includeQuote) {
     lines.push('💡 ' + quoteForDay());
   }
-  return lines.join('\n') || 'Добро утро! Рутината е активна.';
+  return lines.join('\n') || t('brief_default');
 }
 
 export function todaysEvents(events) {
@@ -87,8 +88,9 @@ function computeItems(routine, reminders) {
   if (routine.enabled && routine.morningTime) {
     items.push({
       id: idFor('morning', routine.morningTime),
-      title: '🤖 Сутрешен брифинг',
-      body: 'Вашата рутина е готова. Отворете за подробности.',
+      kind: 'morning',
+      title: t('notif_morning_title'),
+      body: t('notif_morning_body'),
       at: nextDateForTime(routine.morningTime, [0, 1, 2, 3, 4, 5, 6]),
       repeats: true
     });
@@ -96,8 +98,9 @@ function computeItems(routine, reminders) {
   if (routine.enabled && routine.eveningEnabled && routine.eveningTime) {
     items.push({
       id: idFor('evening', routine.eveningTime),
-      title: '🌙 Вечерно резюме',
-      body: 'Прегледай деня и планирай утрешния.',
+      kind: 'evening',
+      title: t('notif_evening_title'),
+      body: t('notif_evening_body'),
       at: nextDateForTime(routine.eveningTime, [0, 1, 2, 3, 4, 5, 6]),
       repeats: true
     });
@@ -107,8 +110,9 @@ function computeItems(routine, reminders) {
     const days = (r.repeatDays && r.repeatDays.length) ? r.repeatDays : [0, 1, 2, 3, 4, 5, 6];
     items.push({
       id: idFor('reminder', r.id),
-      title: '⏰ ' + (r.title || 'Напомняне'),
-      body: r.note || 'Време е!',
+      kind: 'reminder',
+      title: '⏰ ' + (r.title || t('notif_reminder_default')),
+      body: r.note || t('notif_reminder_body'),
       at: nextDateForTime(r.time, days),
       repeats: true
     });
@@ -140,22 +144,22 @@ export const scheduler = {
       items.forEach((it) => {
         const delay = it.at.getTime() - Date.now();
         if (delay > 0 && delay < 24 * 3600 * 1000) {
-          const t = setTimeout(async () => {
-            // За сутрешния брифинг сглоби пълния текст.
-            if (it.title.includes('Сутрешен')) {
+          const timer = setTimeout(async () => {
+            // За сутрешния брифинг сглоби пълния текст (по kind, не по текста на заглавието).
+            if (it.kind === 'morning') {
               const events = await storage.get(KEYS.events, []);
               const text = await buildBriefingText(routine, events);
               notifier.notifyNow(it.title, text);
             } else {
               notifier.notifyNow(it.title, it.body);
             }
-            appendLog(`Известие (уеб): ${it.title}`);
+            appendLog(tf('log_web_notif', it.title));
           }, delay);
-          webTimers.push(t);
+          webTimers.push(timer);
         }
       });
     }
-    await appendLog(`Графикът е презареден: ${items.length} елемента`);
+    await appendLog(tf('log_rescheduled', items.length));
     return { scheduled: items.length, active: true, native: notifier.isNative() };
   },
 
@@ -164,8 +168,8 @@ export const scheduler = {
     const routine = await storage.get(KEYS.routine, defaultRoutine());
     const events = await storage.get(KEYS.events, []);
     const text = await buildBriefingText(routine, events);
-    await notifier.notifyNow('🤖 Преглед: Сутрешен брифинг', text);
-    await appendLog('Преглед на брифинга');
+    await notifier.notifyNow(t('notif_preview_title'), text);
+    await appendLog(t('log_preview'));
     return text;
   },
 

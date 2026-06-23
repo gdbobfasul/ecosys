@@ -13,26 +13,22 @@ import {
   youtubeSettings, saveYoutubeSettings,
   tryFetchCaptions, learnFromText
 } from '../core/youtube.js';
+import { t, tf } from '../core/i18n.js';
 
 export function renderYoutube(root, { rerender }) {
   clear(root);
-  root.appendChild(el('h2', {}, '📺 YouTube — гледай и учи'));
+  root.appendChild(el('h2', {}, t('yt_title')));
 
   // Честен дисклеймър.
   root.appendChild(el('div', { class: 'card', style: 'border-left:3px solid var(--accent-2)' }, [
-    el('div', { style: 'font-weight:700' }, 'Какво мога честно'),
-    el('p', { class: 'muted', style: 'font-size:13px;margin:6px 0 0' },
-      'Гледането работи (вграждам плейъра). Ученето е от ТЕКСТА — поставяш транскрипт ' +
-      'или бележки, аз ги обобщавам (безплатно през Pollinations, или по избор Claude, ' +
-      'или локално офлайн) и ги пазя в паметта под темата. ' +
-      'Автоматичните субтитри са best-effort — браузърът обикновено ги блокира (CORS). ' +
-      'Не ползвам платен YouTube API ключ и не измислям транскрипт.')
+    el('div', { style: 'font-weight:700' }, t('yt_honest_title')),
+    el('p', { class: 'muted', style: 'font-size:13px;margin:6px 0 0' }, t('yt_honest_desc'))
   ]));
 
   // --- Вход: URL / id / търсене ---
   const srcInput = el('input', {
     type: 'text',
-    placeholder: 'YouTube линк, video id, или дума за търсене',
+    placeholder: t('yt_src_ph'),
     style: 'width:100%'
   });
   const player = el('div', { style: 'margin-top:10px' });
@@ -40,13 +36,13 @@ export function renderYoutube(root, { rerender }) {
 
   function showVideo() {
     const raw = String(srcInput.value || '').trim();
-    if (!raw) { toast('Постави линк, id или дума за търсене.'); return; }
+    if (!raw) { toast(t('yt_paste_first')); return; }
     clear(player);
     const id = parseVideoId(raw);
     let url, kind;
     if (id) { url = embedUrl(id); kind = 'video'; }
     else { url = searchEmbedUrl(raw); kind = 'search'; }
-    if (!url) { idLabel.textContent = 'Не разпознах видео или термин.'; return; }
+    if (!url) { idLabel.textContent = t('yt_not_recognized'); return; }
 
     const frame = el('iframe', {
       src: url,
@@ -58,11 +54,11 @@ export function renderYoutube(root, { rerender }) {
     player.appendChild(frame);
 
     if (kind === 'video') {
-      idLabel.textContent = `Видео id: ${id} · ${watchUrl(id)}`;
+      idLabel.textContent = tf('yt_video_id', id, watchUrl(id));
       // запомни последния id за бутона за авто-субтитри
       _lastId = id;
     } else {
-      idLabel.textContent = 'Резултати от търсене (избери видео вътре, после копирай линка му за учене).';
+      idLabel.textContent = t('yt_search_results');
       _lastId = '';
     }
   }
@@ -70,9 +66,9 @@ export function renderYoutube(root, { rerender }) {
   let _lastId = '';
 
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, '1) Гледай'),
+    el('h3', {}, t('yt_step_watch')),
     srcInput,
-    el('button', { class: 'block', style: 'margin-top:8px', onclick: showVideo }, 'Покажи / гледай'),
+    el('button', { class: 'block', style: 'margin-top:8px', onclick: showVideo }, t('yt_show_watch')),
     player,
     idLabel
   ]));

@@ -107,30 +107,30 @@ export function renderKbConfig(root, { navigate, rerender }) {
   function renderList() {
     list.replaceChildren();
     const kb = getState().kb;
-    if (!kb.length) list.appendChild(el('p', { class: 'muted' }, 'Няма записи още.'));
+    if (!kb.length) list.appendChild(el('p', { class: 'muted' }, t('log_empty')));
     kb.forEach((entry, idx) => list.appendChild(renderEntry(entry, idx, kb.length)));
   }
 
   function renderEntry(entry, idx, total) {
     return el('div', { class: 'kb-item' }, [
       el('div', { class: 'kb-item-head' }, [
-        el('strong', {}, entry.label || '(без име)'),
-        el('span', { class: 'badge' }, 'хитове: ' + (entry.hits || 0)),
+        el('strong', {}, entry.label || t('kb_no_name')),
+        el('span', { class: 'badge' }, t('kb_hits') + ' ' + (entry.hits || 0)),
         el('label', { class: 'switch small' }, [
           el('input', {
             type: 'checkbox', checked: entry.enabled !== false,
             onchange: (e) => { entry.enabled = e.target.checked; persist(); }
           }),
-          el('span', {}, 'вкл.')
+          el('span', {}, t('on'))
         ])
       ]),
-      el('p', { class: 'muted small' }, 'ключове: ' + (entry.keywords || []).join(', ')),
+      el('p', { class: 'muted small' }, t('kb_keys') + ' ' + (entry.keywords || []).join(', ')),
       el('p', { class: 'small' }, entry.answer),
       el('div', { class: 'row gap' }, [
         el('button', { class: 'btn tiny', disabled: idx === 0, onclick: () => move(idx, -1) }, '↑'),
         el('button', { class: 'btn tiny', disabled: idx === total - 1, onclick: () => move(idx, 1) }, '↓'),
-        el('button', { class: 'btn tiny', onclick: () => editEntry(entry) }, 'Редактирай'),
-        el('button', { class: 'btn tiny danger', onclick: () => del(entry.id) }, 'Изтрий')
+        el('button', { class: 'btn tiny', onclick: () => editEntry(entry) }, t('edit')),
+        el('button', { class: 'btn tiny danger', onclick: () => del(entry.id) }, t('delete'))
       ])
     ]);
   }
@@ -150,9 +150,9 @@ export function renderKbConfig(root, { navigate, rerender }) {
   }
 
   // Форма за добавяне/редакция.
-  const fLabel = el('input', { class: 'input', type: 'text', placeholder: 'Име (напр. Доставка)' });
-  const fKeywords = el('input', { class: 'input', type: 'text', placeholder: 'ключови думи, разделени със запетая' });
-  const fAnswer = el('textarea', { class: 'input', rows: 3, placeholder: 'Отговор...' });
+  const fLabel = el('input', { class: 'input', type: 'text', placeholder: t('kb_name_ph') });
+  const fKeywords = el('input', { class: 'input', type: 'text', placeholder: t('kb_keys_ph') });
+  const fAnswer = el('textarea', { class: 'input', rows: 3, placeholder: t('kb_answer_ph') });
   let editingId = null;
 
   function editEntry(entry) {
@@ -167,7 +167,7 @@ export function renderKbConfig(root, { navigate, rerender }) {
     const label = fLabel.value.trim();
     const keywords = fKeywords.value.split(',').map((x) => x.trim()).filter(Boolean);
     const answer = fAnswer.value.trim();
-    if (!keywords.length || !answer) { toast('Нужни са ключови думи и отговор.'); return; }
+    if (!keywords.length || !answer) { toast(t('kb_need_fields')); return; }
     const kb = getState().kb.slice();
     if (editingId) {
       const e = kb.find((x) => x.id === editingId);
@@ -179,21 +179,21 @@ export function renderKbConfig(root, { navigate, rerender }) {
     editingId = null;
     fLabel.value = ''; fKeywords.value = ''; fAnswer.value = '';
     renderList();
-    toast('Записът е запазен.');
+    toast(t('kb_entry_saved'));
   }
 
   root.appendChild(el('section', { class: 'card' }, [
-    el('h2', {}, 'Въпроси и отговори (Q&A)'),
+    el('h2', {}, t('kb_qa_title')),
     list,
     el('hr', {}),
-    el('h3', {}, 'Добави / редактирай запис'),
+    el('h3', {}, t('kb_add_edit')),
     fLabel, fKeywords, fAnswer,
-    el('button', { class: 'btn primary', onclick: submit }, 'Запази записа')
+    el('button', { class: 'btn primary', onclick: submit }, t('kb_save_entry'))
   ]));
   renderList();
 
   root.appendChild(el('div', { class: 'row gap' }, [
-    el('button', { class: 'btn primary', onclick: () => navigate('chat') }, 'Тествай в демо чата →'),
-    el('button', { class: 'btn ghost', onclick: () => navigate('dashboard') }, 'Към таблото')
+    el('button', { class: 'btn primary', onclick: () => navigate('chat') }, t('kb_test_in_demo')),
+    el('button', { class: 'btn ghost', onclick: () => navigate('dashboard') }, t('to_dashboard'))
   ]));
 }

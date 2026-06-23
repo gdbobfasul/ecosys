@@ -8,6 +8,7 @@
 // честно: ако канал не е наличен/настроен, просто не прави нищо за него.
 
 import { getState, setState, uid } from './storage.js';
+import { t, tf } from './i18n.js';
 import { decideReply } from './rule-engine.js';
 import { notifyAutoReply } from './notifier.js';
 import { toast } from '../ui/dom.js';
@@ -60,12 +61,12 @@ async function processIncoming({ channel, sender, text }, deliver, onRendered) {
     await notifyAutoReply({ sender: `${channelLabel(channel)} · ${sender}`, reply: decision.reply }, (msg) => toast(msg));
     if (typeof onRendered === 'function') onRendered(decision);
   } else {
-    toast(`Авто-отговор по ${channelLabel(channel)} не мина: ${(res && res.note) || 'неизвестна грешка'}`);
+    toast(tf('pump_send_failed', channelLabel(channel), (res && res.note) || t('err_unknown')));
   }
 }
 
 function channelLabel(id) {
-  return ({ kcy: 'Нашият чат', whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: 'Демо' })[id] || id;
+  return ({ kcy: t('chan_our_chat'), whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: t('chan_demo') })[id] || id;
 }
 
 // --- KCY polling --------------------------------------------------------------
@@ -163,14 +164,14 @@ function startNativeListener(render) {
     if (st.channels && st.channels[channel] && st.channels[channel].enabled === false) return;
 
     await processIncoming(
-      { channel, sender: msg.sender || '(непознат)', text: msg.text },
+      { channel, sender: msg.sender || t('sender_unknown'), text: msg.text },
       async (reply) => {
         const access = await isAccessGranted();
-        if (!access) return { ok: false, note: 'няма „Notification access"' };
-        if (!msg.key || !msg.canReply) return { ok: false, note: 'нотификацията няма поле за отговор' };
+        if (!access) return { ok: false, note: t('core_no_access') };
+        if (!msg.key || !msg.canReply) return { ok: false, note: t('core_no_reply_field') };
         try {
           const r = await replyTo({ key: msg.key, text: reply });
-          return { ok: !!r.ok, note: r.ok ? '' : 'direct-reply неуспешен' };
+          return { ok: !!r.ok, note: r.ok ? '' : t('core_reply_failed') };
         } catch (e) {
           return { ok: false, note: String(e && e.message ? e.message : e) };
         }

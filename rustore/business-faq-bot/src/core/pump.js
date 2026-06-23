@@ -19,6 +19,7 @@ import {
   kcyConfigured, kcyFetchFriends, kcyFetchConversation, kcySend, kcyResetSession
 } from './kcy-chat.js';
 import { isNativeReplyAvailable, isAccessGranted, onMessage, replyTo } from './native-reply.js';
+import { t, tf } from './i18n.js';
 
 let _started = false;
 let _kcyTimer = null;
@@ -26,7 +27,7 @@ let _kcyBusy = false;
 let _unsubNative = null;
 
 function channelLabel(id) {
-  return ({ kcy: 'Нашият чат', whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger' })[id] || id;
+  return ({ kcy: t('ch_kcy_short'), whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger' })[id] || id;
 }
 
 // Дали даден РЕАЛЕН канал е включен в настройките.
@@ -75,10 +76,10 @@ async function processIncoming({ channel, sender, text }) {
       channel, sender, incoming: text, reply: r.reply,
       kind: r.kind, label: r.entry ? r.entry.label : null
     });
-    await notify(`Авто-отговор · ${channelLabel(channel)}`, r.reply, (m) => toast(m));
+    await notify(tf('pump_autoreply', channelLabel(channel)), r.reply, (m) => toast(m));
     return true;
   }
-  toast(`Авто-отговор по ${channelLabel(channel)} не мина: ${(res && res.note) || 'неизвестна грешка'}`);
+  toast(tf('pump_autoreply_fail', channelLabel(channel), (res && res.note) || t('err_unknown')));
   return false;
 }
 
@@ -89,11 +90,11 @@ async function deliverWrap(channel, reply, msg) {
   }
   // native месинджъри: direct-reply по key на нотификацията
   const access = await isAccessGranted();
-  if (!access) return { ok: false, note: 'няма „Notification access"' };
-  if (!msg.key || !msg.canReply) return { ok: false, note: 'нотификацията няма поле за отговор' };
+  if (!access) return { ok: false, note: t('pump_no_access') };
+  if (!msg.key || !msg.canReply) return { ok: false, note: t('pump_no_reply_field') };
   try {
     const r = await replyTo({ key: msg.key, text: reply });
-    return { ok: !!r.ok, note: r.ok ? '' : 'direct-reply неуспешен' };
+    return { ok: !!r.ok, note: r.ok ? '' : t('pump_direct_reply_fail') };
   } catch (e) {
     return { ok: false, note: String(e && e.message ? e.message : e) };
   }
@@ -195,7 +196,7 @@ function startNativeListener(rerender) {
     if (!channelEnabled(channel)) return;
 
     const ok = await processIncoming({
-      channel, sender: msg.sender || '(непознат)', text: msg.text,
+      channel, sender: msg.sender || t('sender_unknown'), text: msg.text,
       key: msg.key, canReply: msg.canReply
     });
     if (ok && typeof rerender === 'function') rerender();

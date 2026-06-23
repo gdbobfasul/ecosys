@@ -12,6 +12,7 @@ import {
   classifyImage, detectObjects, describeRecognition,
   translateText, TARGET_LANGS, understandViaTeacher
 } from '../core/vision.js';
+import { t } from '../core/i18n.js';
 
 // Модулно състояние на камерата (за чисто освобождаване между навигации).
 let _stream = null;
@@ -36,7 +37,7 @@ export function renderVision(root /*, { navigate, rerender } */) {
   bindLifecycle();
   releaseCamera(); // чист старт при всяко влизане
 
-  root.appendChild(el('h2', {}, '👁️ Зрение'));
+  root.appendChild(el('h2', {}, t('screen_vision')));
   root.appendChild(el('p', { class: 'muted', style: 'font-size:13px' },
     'Камера на живо, четене на текст (OCR), разпознаване на изображения и превод — ' +
     'всичко на устройството, безплатно. Тежките модели се зареждат при първа нужда, ' +

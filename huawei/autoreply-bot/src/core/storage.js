@@ -1,6 +1,8 @@
 // storage.js — локално, on-device съхранение (localStorage).
 // НЯМА мрежа, НЯМА акаунти. Всичко живее само на устройството.
 
+import { t } from './i18n.js';
+
 const KEY = 'arb.state.v1';
 
 // Начално състояние на приложението.
@@ -16,7 +18,7 @@ function defaultState() {
       from: '09:00',
       to: '18:00',
       days: [1, 2, 3, 4, 5], // 0=нед..6=съб; кои дни са „работни"
-      awayReply: 'Извън работно време сме. Ще отговорим скоро.'
+      awayReply: t('default_away_reply')
     },
     rules: [],               // правила (виж rule-engine.js за формата)
     lists: {

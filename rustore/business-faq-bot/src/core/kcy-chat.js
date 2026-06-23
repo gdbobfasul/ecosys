@@ -17,6 +17,8 @@
 // Деградира честно: при липсваща настройка / изтекла сесия / мрежова грешка връща
 // ясен статус, БЕЗ да симулира успех.
 
+import { t, tf } from './i18n.js';
+
 // Маха крайни наклонени черти.
 function normBase(baseUrl) {
   return String(baseUrl || '').trim().replace(/\/+$/, '');
@@ -24,8 +26,8 @@ function normBase(baseUrl) {
 
 function authHeaders(token) {
   const h = { 'Content-Type': 'application/json', Accept: 'application/json' };
-  const t = String(token || '').trim();
-  if (t) h.Authorization = 'Bearer ' + t;
+  const tk = String(token || '').trim();
+  if (tk) h.Authorization = 'Bearer ' + tk;
   return h;
 }
 
@@ -40,10 +42,10 @@ export function kcyConfigured(cfg) {
 // Вход с телефон+парола. Връща { ok, token, userId } или { ok:false, reason, note }.
 export async function kcyLogin(cfg) {
   const base = normBase(cfg.baseUrl);
-  if (!base) return { ok: false, reason: 'not-configured', note: 'Липсва адрес на чата.' };
+  if (!base) return { ok: false, reason: 'not-configured', note: t('kcy_missing_base') };
   const phone = String(cfg.phone || '').trim();
   const password = String(cfg.password || '').trim();
-  if (!phone || !password) return { ok: false, reason: 'not-configured', note: 'Липсва телефон или парола.' };
+  if (!phone || !password) return { ok: false, reason: 'not-configured', note: t('kcy_missing_login') };
 
   let resp;
   try {
@@ -63,10 +65,10 @@ export async function kcyLogin(cfg) {
     return { ok: true, token: data.token, userId: data.user_id != null ? String(data.user_id) : '' };
   }
   if (data && data.needsRegistration) {
-    return { ok: false, reason: 'no-account', note: 'Няма такъв акаунт — регистрирай се в чата първо.' };
+    return { ok: false, reason: 'no-account', note: t('kcy_no_account') };
   }
-  if (resp.status === 401) return { ok: false, reason: 'auth', note: 'Грешен телефон или парола.' };
-  return { ok: false, reason: 'http', note: `Входът върна HTTP ${resp.status}.` };
+  if (resp.status === 401) return { ok: false, reason: 'auth', note: t('kcy_wrong_login') };
+  return { ok: false, reason: 'http', note: tf('kcy_http', t('kcy_http_login'), resp.status) };
 }
 
 // Държи активния токен за сесията (в паметта; конфигът също може да носи token).
@@ -99,7 +101,7 @@ export function kcyResetSession() {
 // Лек тест на връзката: логва (ако трябва) и дърпа списъка с приятели веднъж.
 export async function kcyCheck(cfg) {
   if (!kcyConfigured(cfg)) {
-    return { ok: false, reason: 'not-configured', note: 'Въведи адрес и токен или телефон+парола.' };
+    return { ok: false, reason: 'not-configured', note: t('kcy_not_configured') };
   }
   kcyResetSession();
   const auth = await ensureToken(cfg);
@@ -123,13 +125,13 @@ export async function kcyFetchFriends(cfg) {
   }
   if (resp.status === 401) {
     kcyResetSession();
-    return { ok: false, friends: [], reason: 'auth', note: 'Сесията изтече — провери паролата.' };
+    return { ok: false, friends: [], reason: 'auth', note: t('kcy_session_expired_pw') };
   }
-  if (!resp.ok) return { ok: false, friends: [], reason: 'http', note: `friends върна HTTP ${resp.status}.` };
+  if (!resp.ok) return { ok: false, friends: [], reason: 'http', note: tf('kcy_http', 'friends', resp.status) };
 
   let data;
   try { data = await resp.json(); } catch (_) {
-    return { ok: false, friends: [], reason: 'bad-json', note: 'Лош отговор от /api/friends.' };
+    return { ok: false, friends: [], reason: 'bad-json', note: t('kcy_bad_friends') };
   }
   const friends = Array.isArray(data && data.friends) ? data.friends : [];
   return { ok: true, friends };
@@ -150,12 +152,12 @@ export async function kcyFetchConversation(cfg, friendId) {
   } catch (e) {
     return { ok: false, messages: [], reason: 'network', note: String(e && e.message ? e.message : e) };
   }
-  if (resp.status === 401) { kcyResetSession(); return { ok: false, messages: [], reason: 'auth', note: 'Сесията изтече.' }; }
-  if (!resp.ok) return { ok: false, messages: [], reason: 'http', note: `messages върна HTTP ${resp.status}.` };
+  if (resp.status === 401) { kcyResetSession(); return { ok: false, messages: [], reason: 'auth', note: t('kcy_session_expired') }; }
+  if (!resp.ok) return { ok: false, messages: [], reason: 'http', note: tf('kcy_http', 'messages', resp.status) };
 
   let data;
   try { data = await resp.json(); } catch (_) {
-    return { ok: false, messages: [], reason: 'bad-json', note: 'Лош отговор от /api/messages.' };
+    return { ok: false, messages: [], reason: 'bad-json', note: t('kcy_bad_messages') };
   }
   const messages = Array.isArray(data && data.messages) ? data.messages : [];
   return { ok: true, messages };
@@ -163,7 +165,7 @@ export async function kcyFetchConversation(cfg, friendId) {
 
 // POST /api/messages/:friendId { text } — праща (авто-)отговор. Връща { ok, reason?, note? }.
 export async function kcySend(cfg, { friendId, text }) {
-  if (!friendId) return { ok: false, reason: 'no-target', note: 'Липсва получател.' };
+  if (!friendId) return { ok: false, reason: 'no-target', note: t('kcy_missing_recipient') };
   const base = normBase(cfg.baseUrl);
   const auth = await ensureToken(cfg);
   if (!auth.ok) return { ok: false, reason: auth.reason, note: auth.note };
@@ -176,12 +178,12 @@ export async function kcySend(cfg, { friendId, text }) {
   } catch (e) {
     return { ok: false, reason: 'network', note: String(e && e.message ? e.message : e) };
   }
-  if (resp.status === 401) { kcyResetSession(); return { ok: false, reason: 'auth', note: 'Сесията изтече.' }; }
+  if (resp.status === 401) { kcyResetSession(); return { ok: false, reason: 'auth', note: t('kcy_session_expired') }; }
   if (resp.status === 403) {
     let d = {}; try { d = await resp.json(); } catch (_) { /* ignore */ }
-    return { ok: false, reason: 'forbidden', note: (d && d.error) || 'Не е разрешено (приятелство/лимит).' };
+    return { ok: false, reason: 'forbidden', note: (d && d.error) || t('kcy_not_allowed') };
   }
-  if (!resp.ok) return { ok: false, reason: 'http', note: `Изпращането върна HTTP ${resp.status}.` };
+  if (!resp.ok) return { ok: false, reason: 'http', note: tf('kcy_http', t('kcy_http_send'), resp.status) };
 
   let d = {}; try { d = await resp.json(); } catch (_) { /* ignore */ }
   return { ok: !!(d && d.success), reason: d && d.success ? '' : 'rejected', note: d && d.error };

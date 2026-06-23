@@ -5,6 +5,8 @@
 // Импортът на плъгина е динамичен/защитен, за да върви и в чист браузър (vite dev),
 // където нативният плъгин липсва.
 
+import { t } from './i18n.js';
+
 let LocalNotifications = null;
 let pluginReady = false;
 
@@ -59,7 +61,7 @@ export async function requestNotificationPermission() {
 // Показва известие за изпратен авто-отговор.
 // onToast(msg) се ползва като визуален fallback в страницата.
 export async function notifyAutoReply({ sender, reply }, onToast) {
-  const title = 'Авто-отговор изпратен';
+  const title = t('notif_title');
   const body = `→ ${sender}: ${reply}`;
 
   const plugin = await loadPlugin();
