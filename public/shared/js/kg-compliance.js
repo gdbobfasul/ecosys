@@ -17,8 +17,8 @@
     legal: { policy: '/shared/legal/policy.html', payment: '/shared/legal/payment.html' }
   };
 
-  // Речник (т.1/4/6). Отметка: [префикс, текст-линк, суфикс]. Липсващ език → en.
-  // es-MX → es. ja/zh-Hant/hi/ar → en (легалните преводи там — native преглед).
+  // Речник (т.1/4/6). Отметка: [префикс, текст-линк, суфикс]. Всичките 15 езика са налични.
+  // es-MX → es (псевдоним). Липсващ/непознат език → en (резерв).
   var DICT = {
     en: { c1: ['I agree to the ', 'Privacy Policy and Public Offer', ''], c2: ['I have read the ', 'Refund Rules and Card Payment terms', ''],
       err: 'You must accept both conditions to continue.', helpBtn: 'Help — card payment', tel: 'Tel', mail: 'E-mail' },
@@ -39,7 +39,15 @@
     it: { c1: ['Accetto l’', 'Informativa sulla privacy e l’Offerta pubblica', ''], c2: ['Ho letto le ', 'Regole di rimborso e pagamento con carta', ''],
       err: 'Devi accettare entrambe le condizioni per continuare.', helpBtn: 'Aiuto — pagamento con carta', tel: 'Tel', mail: 'E-mail' },
     pt: { c1: ['Concordo com a ', 'Política de Privacidade e a Oferta Pública', ''], c2: ['Li as ', 'Regras de Reembolso e Pagamento com Cartão', ''],
-      err: 'Você deve aceitar ambas as condições para continuar.', helpBtn: 'Ajuda — pagamento com cartão', tel: 'Tel', mail: 'E-mail' }
+      err: 'Você deve aceitar ambas as condições para continuar.', helpBtn: 'Ajuda — pagamento com cartão', tel: 'Tel', mail: 'E-mail' },
+    ja: { c1: ['', 'プライバシーポリシーと公開オファー', 'に同意します'], c2: ['', '返金規則とカード決済の条件', 'を読みました'],
+      err: '続行するには両方の条件に同意する必要があります。', helpBtn: 'ヘルプ — カード決済', tel: '電話', mail: 'メール' },
+    'zh-Hant': { c1: ['我同意', '隱私政策與公開要約', ''], c2: ['我已閱讀', '退款規則與卡片付款條款', ''],
+      err: '您必須接受這兩項條件才能繼續。', helpBtn: '說明 — 卡片付款', tel: '電話', mail: '電子郵件' },
+    hi: { c1: ['मैं ', 'गोपनीयता नीति और सार्वजनिक प्रस्ताव', ' से सहमत हूँ'], c2: ['मैंने ', 'धनवापसी नियम और कार्ड भुगतान शर्तें', ' पढ़ी हैं'],
+      err: 'जारी रखने के लिए आपको दोनों शर्तें स्वीकार करनी होंगी।', helpBtn: 'सहायता — कार्ड भुगतान', tel: 'फ़ोन', mail: 'ईमेल' },
+    ar: { c1: ['أوافق على ', 'سياسة الخصوصية والعرض العام', ''], c2: ['لقد اطّلعت على ', 'قواعد الاسترداد وشروط الدفع بالبطاقة', ''],
+      err: 'يجب قبول كلا الشرطين للمتابعة.', helpBtn: 'مساعدة — الدفع بالبطاقة', tel: 'هاتف', mail: 'بريد إلكتروني' }
   };
   DICT['es-MX'] = DICT.es;
 

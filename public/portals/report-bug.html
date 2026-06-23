@@ -1,10 +1,10 @@
-<!-- Version: 1.0176 -->
+<!-- Version: 1.0243 -->
 <!doctype html>
 <html lang="bg">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Докладвай грешка — KCY Ecosystem</title>
+  <title data-i18n="report.title">Докладвай грешка — KCY Ecosystem</title>
   <link rel="stylesheet" href="/shared/css/common.css?v=1.0176">
   <style>
     body { background: #f5f7fa; }
@@ -31,32 +31,36 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>🐞 Докладвай грешка</h1>
-    <div class="sub">Опиши проблема, който си срещнал в платформата. Само за регистрирани потребители в Portals.</div>
+    <h1 data-i18n="report.h1">🐞 Докладвай грешка</h1>
+    <div class="sub" data-i18n="report.sub">Опиши проблема, който си срещнал в платформата. Само за регистрирани потребители в Portals.</div>
 
-    <div id="loading" class="loading">Зареждам…</div>
+    <div id="loading" class="loading" data-i18n="common.loading">Зареждам…</div>
 
     <div id="form-area" style="display:none">
-      <div class="note">ℹ️ Имаш право на <b>един</b> доклад. Ако вече си пускал — формата е попълнена и можеш да я <b>редактираш</b>. Без снимки — само заглавие и текст.</div>
+      <div class="note" data-i18n="report.note">ℹ️ Имаш право на <b>един</b> доклад. Ако вече си пускал — формата е попълнена и можеш да я <b>редактираш</b>. Без снимки — само заглавие и текст.</div>
       <div id="existing" class="existing"></div>
 
-      <label for="title">Заглавие</label>
-      <input type="text" id="title" maxlength="200" placeholder="Кратко описание на грешката">
+      <label for="title" data-i18n="report.label_title">Заглавие</label>
+      <input type="text" id="title" maxlength="200" data-i18n-attr="placeholder:report.ph_title" placeholder="Кратко описание на грешката">
       <div class="count"><span id="tcount">0</span>/200</div>
 
-      <label for="body">Описание</label>
-      <textarea id="body" maxlength="5000" placeholder="Какво се случи? На коя страница? Какво очакваше да стане?"></textarea>
+      <label for="body" data-i18n="report.label_body">Описание</label>
+      <textarea id="body" maxlength="5000" data-i18n-attr="placeholder:report.ph_body" placeholder="Какво се случи? На коя страница? Какво очакваше да стане?"></textarea>
       <div class="count"><span id="bcount">0</span>/5000</div>
 
-      <button class="btn-submit" id="submit">Изпрати доклада</button>
+      <button class="btn-submit" id="submit" data-i18n="report.submit">Изпрати доклада</button>
       <div id="msg" class="msg"></div>
 
-      <div class="links"><a href="/">← Към началото</a></div>
+      <div class="links"><a href="/" data-i18n="report.back">← Към началото</a></div>
     </div>
   </div>
 
   <script>
     var titleEl, bodyEl, msgEl, submitEl;
+
+    // Защитен превод — i18n.js се зарежда асинхронно (инжектира се от navigation.js),
+    // затова не извикваме KCY_I18N директно (иначе ReferenceError, ако още не е готов).
+    function T(key, fb) { return (window.KCY_I18N && KCY_I18N.t) ? KCY_I18N.t(key) : fb; }
 
     function showMsg(text, kind) { msgEl.textContent = text; msgEl.className = 'msg ' + (kind || 'err'); }
 
@@ -90,20 +94,20 @@
                 document.getElementById('bcount').textContent = bodyEl.value.length;
                 var ex = document.getElementById('existing');
                 ex.style.display = 'block';
-                ex.innerHTML = '✏️ Вече имаш доклад (последна промяна: ' + (data.report.updated_at || data.report.created_at) + '). Промени го и натисни „Запази промените".';
-                submitEl.textContent = 'Запази промените';
+                ex.textContent = T('report.existing_pre', '✏️ Вече имаш доклад (последна промяна: ') + (data.report.updated_at || data.report.created_at) + T('report.existing_post', '). Промени го и натисни „Запази промените".');
+                submitEl.textContent = T('report.save_changes', 'Запази промените');
               }
             });
         })
         .catch(function () {
-          document.getElementById('loading').textContent = 'Грешка при зареждане.';
+          document.getElementById('loading').textContent = T('report.load_error', 'Грешка при зареждане.');
         });
 
       // 3) Изпращане (upsert)
       submitEl.addEventListener('click', function () {
         var title = titleEl.value.trim(), body = bodyEl.value.trim();
-        if (!title) { showMsg('Въведи заглавие.', 'err'); return; }
-        if (!body) { showMsg('Въведи описание.', 'err'); return; }
+        if (!title) { showMsg(T('report.need_title', 'Въведи заглавие.'), 'err'); return; }
+        if (!body) { showMsg(T('report.need_body', 'Въведи описание.'), 'err'); return; }
         submitEl.disabled = true;
         fetch('/api/portals/bug-report', {
           method: 'POST', credentials: 'same-origin',
@@ -114,15 +118,19 @@
           .then(function (res) {
             submitEl.disabled = false;
             if (res.ok) {
-              showMsg('✅ Благодарим! Докладът е записан. Можеш да го редактираш по всяко време от същия бутон.', 'ok');
-              submitEl.textContent = 'Запази промените';
+              showMsg(T('report.success', '✅ Благодарим! Докладът е записан. Можеш да го редактираш по всяко време от същия бутон.'), 'ok');
+              submitEl.textContent = T('report.save_changes', 'Запази промените');
             } else {
-              showMsg(res.d.message || res.d.error || 'Грешка при записа.', 'err');
+              showMsg(res.d.message || res.d.error || T('report.save_error', 'Грешка при записа.'), 'err');
             }
           })
-          .catch(function (e) { submitEl.disabled = false; showMsg('Мрежова грешка: ' + e.message, 'err'); });
+          .catch(function (e) { submitEl.disabled = false; showMsg(T('report.network_error', 'Мрежова грешка: ') + e.message, 'err'); });
       });
     });
   </script>
+
+  <!-- Хедър/меню + език — както в останалите портал-страници (navigation.js инжектира nav-а и зарежда i18n.js). -->
+  <script src="/shared/js/navigation.js?v=1.0195"></script>
+  <script src="/shared/js/kg-compliance.js?v=1.0001"></script>
 </body>
 </html>

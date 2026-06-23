@@ -5,8 +5,8 @@
 (function () {
   'use strict';
   var LANGS = [['ru', 'Русский'], ['en', 'English'], ['ky', 'Кыргызча'], ['bg', 'Български'],
-    ['uk', 'Українська'], ['de', 'Deutsch'], ['es', 'Español'], ['fr', 'Français'],
-    ['it', 'Italiano'], ['pt', 'Português'], ['tr', 'Türkçe'], ['zh-Hant', '繁體中文'],
+    ['uk', 'Українська'], ['de', 'Deutsch'], ['es', 'Español'], ['es-MX', 'Español (MX)'],
+    ['fr', 'Français'], ['it', 'Italiano'], ['pt', 'Português'], ['zh-Hant', '繁體中文'],
     ['ja', '日本語'], ['ar', 'العربية'], ['hi', 'हिन्दी']];
   var BACK = { ru: 'Назад', en: 'Back', ky: 'Артка', bg: 'Назад' };
   var cache = {};

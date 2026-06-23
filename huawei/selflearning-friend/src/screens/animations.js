@@ -13,6 +13,7 @@
 import { el, clear, toast } from '../ui/dom.js';
 import { addMemory } from '../core/memory-store.js';
 import { sessionName } from '../core/responder.js';
+import { t, tf } from '../core/i18n.js';
 
 // --- Модулно състояние (за чисто освобождаване между навигации) ---
 let _raf = null;            // requestAnimationFrame дръжка
@@ -60,10 +61,10 @@ function bindLifecycle() {
 // --- Поддръжка на запис (честна проверка на средата) ---
 function recordingSupport(canvas) {
   if (typeof MediaRecorder === 'undefined') {
-    return { ok: false, reason: 'Тази среда няма MediaRecorder — записът на видео не е наличен тук. Анимацията пак работи.' };
+    return { ok: false, reason: t('anim_no_mediarecorder') };
   }
   if (!canvas || typeof canvas.captureStream !== 'function') {
-    return { ok: false, reason: 'Този браузър/WebView не поддържа canvas.captureStream — записът не е наличен. Анимацията пак работи.' };
+    return { ok: false, reason: t('anim_no_capturestream') };
   }
   return { ok: true };
 }
@@ -172,7 +173,7 @@ function styleWaves({ color, speed }) {
 // 4) Поздрав — анимиран надпис (името на бота / собствен текст) с pulse + блясък.
 function styleGreeting({ color, speed, text }) {
   const c = hexToRgb(color);
-  const label = (text && text.trim()) || (sessionName() || 'Здравей!');
+  const label = (text && text.trim()) || (sessionName() || t('anim_default_hello'));
   return (ctx, t, W, H) => {
     const g = ctx.createRadialGradient(W / 2, H / 2, 10, W / 2, H / 2, Math.max(W, H) * 0.7);
     g.addColorStop(0, `rgba(${c.r},${c.g},${c.b},0.45)`);
@@ -201,11 +202,12 @@ function styleGreeting({ color, speed, text }) {
   };
 }
 
+// Вторият елемент е КЛЮЧ за превод (резолвва се при рисуване → следва UI езика).
 const STYLES = [
-  ['particles', 'Частици', styleParticles],
-  ['bounce', 'Подскачащи форми', styleBounce],
-  ['waves', 'Градиентни вълни', styleWaves],
-  ['greeting', 'Поздрав (надпис)', styleGreeting]
+  ['particles', 'anim_style_particles', styleParticles],
+  ['bounce', 'anim_style_shapes', styleBounce],
+  ['waves', 'anim_style_waves', styleWaves],
+  ['greeting', 'anim_style_greeting', styleGreeting]
 ];
 
 export function renderAnimations(root /*, { navigate, rerender } */) {
@@ -213,12 +215,8 @@ export function renderAnimations(root /*, { navigate, rerender } */) {
   bindLifecycle();
   releaseAll(); // чист старт при всяко влизане
 
-  root.appendChild(el('h2', {}, '🎬 Анимации'));
-  root.appendChild(el('p', { class: 'muted', style: 'font-size:13px' },
-    'Ботът създава кратка зациклена анимация на платно (canvas) — чист код, върви в браузъра. ' +
-    'Можеш да я запишеш във видео (.webm) през MediaRecorder. ' +
-    'Честно: анимациите се генерират с код; видеото е реален запис на платното. ' +
-    'Няма външна услуга; тежка видео обработка не е тук.'));
+  root.appendChild(el('h2', {}, t('screen_animations')));
+  root.appendChild(el('p', { class: 'muted', style: 'font-size:13px' }, t('anim_intro')));
 
   // --- Платно ---
   const W = 480, H = 270; // 16:9 работна резолюция
@@ -230,13 +228,13 @@ export function renderAnimations(root /*, { navigate, rerender } */) {
 
   // --- Параметри ---
   const styleSel = el('select', {},
-    STYLES.map(([v, label]) => el('option', { value: v }, label)));
+    STYLES.map(([v, labelKey]) => el('option', { value: v }, t(labelKey))));
   styleSel.value = 'greeting';
 
   const colorInput = el('input', { type: 'color', value: '#7b5cff', style: 'width:64px;height:40px;padding:2px' });
   const speedInput = el('input', { type: 'range', min: '0.2', max: '2.5', step: '0.1', value: '1', style: 'flex:1' });
   const textInput = el('input', {
-    type: 'text', placeholder: 'Текст за стил „Поздрав“ (по избор)',
+    type: 'text', placeholder: t('anim_greeting_ph'),
     value: sessionName() || ''
   });
 
@@ -274,20 +272,20 @@ export function renderAnimations(root /*, { navigate, rerender } */) {
 
   root.appendChild(el('div', { class: 'card' }, [
     canvas,
-    el('label', {}, 'Стил'), styleSel,
+    el('label', {}, t('anim_style_label')), styleSel,
     el('div', { class: 'row', style: 'gap:10px;margin-top:8px;align-items:center' }, [
-      el('span', { class: 'muted', style: 'font-size:13px' }, 'Цвят'),
+      el('span', { class: 'muted', style: 'font-size:13px' }, t('anim_color')),
       colorInput,
-      el('span', { class: 'muted', style: 'font-size:13px' }, 'Скорост'),
+      el('span', { class: 'muted', style: 'font-size:13px' }, t('anim_speed')),
       speedInput
     ]),
-    el('label', {}, 'Текст за поздрав'), textInput
+    el('label', {}, t('anim_greeting_text_label')), textInput
   ]));
 
   // --- Запис на видео (MediaRecorder) ---
   const recStatus = el('div', { class: 'muted', style: 'font-size:13px;min-height:18px' }, '');
-  const startRecBtn = el('button', { class: 'grow' }, '⏺ Запиши видео');
-  const stopRecBtn = el('button', { class: 'secondary grow', disabled: true }, '⏹ Спри записа');
+  const startRecBtn = el('button', { class: 'grow' }, t('anim_rec_btn'));
+  const stopRecBtn = el('button', { class: 'secondary grow', disabled: true }, t('anim_rec_stop_btn'));
   const resultBox = el('div', { style: 'margin-top:10px' });
 
   const sup = recordingSupport(canvas);
@@ -312,21 +310,21 @@ export function renderAnimations(root /*, { navigate, rerender } */) {
         const blob = new Blob(_chunks, { type: mime });
         _chunks = [];
         if (_recStream) { try { _recStream.getTracks().forEach((tr) => tr.stop()); } catch (_) { /* ignore */ } _recStream = null; }
-        if (!blob.size) { recStatus.textContent = 'Записът е празен.'; return; }
+        if (!blob.size) { recStatus.textContent = t('anim_rec_empty'); return; }
         revokeLastUrl();
         _lastUrl = URL.createObjectURL(blob);
         const kb = Math.round(blob.size / 1024);
         recStatus.className = 'ok-text';
-        recStatus.textContent = `Готово: ${kb} KB (${mime}).`;
+        recStatus.textContent = tf('anim_rec_done', kb, mime);
         buildResult(blob, _lastUrl);
       };
       _recorder.start();
       startRecBtn.disabled = true; stopRecBtn.disabled = false;
       recStatus.className = 'muted';
-      recStatus.textContent = `Записвам… (${mime})`;
+      recStatus.textContent = tf('anim_recording', mime);
     } catch (e) {
       recStatus.className = 'err-text';
-      recStatus.textContent = 'Не успях да започна запис: ' + (e && e.message ? e.message : e);
+      recStatus.textContent = tf('anim_rec_start_fail', (e && e.message ? e.message : e));
       stopRecording(true);
       startRecBtn.disabled = false; stopRecBtn.disabled = true;
     }
@@ -341,20 +339,20 @@ export function renderAnimations(root /*, { navigate, rerender } */) {
     clear(resultBox);
     const fname = `animation-${Date.now()}.webm`;
     const video = el('video', { src: url, controls: true, loop: true, style: 'width:100%;border-radius:12px;margin-top:8px;max-height:300px' });
-    const dl = el('a', { href: url, download: fname, class: 'ghost', style: 'display:inline-block;margin-top:8px' }, '⬇ Свали .webm');
+    const dl = el('a', { href: url, download: fname, class: 'ghost', style: 'display:inline-block;margin-top:8px' }, t('anim_download'));
     const row = el('div', { class: 'row wrap', style: 'gap:8px;margin-top:6px' }, [dl]);
     // Web Share (ако е наличен и поддържа файлове).
     if (typeof navigator !== 'undefined' && navigator.share) {
-      const shareBtn = el('button', { class: 'secondary' }, '📤 Сподели');
+      const shareBtn = el('button', { class: 'secondary' }, t('anim_share'));
       shareBtn.addEventListener('click', async () => {
         try {
           const file = new File([blob], fname, { type: blob.type || 'video/webm' });
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({ files: [file], title: 'Анимация' });
+            await navigator.share({ files: [file], title: t('anim_share_title') });
           } else {
-            await navigator.share({ title: 'Анимация', text: 'Моята анимация' });
+            await navigator.share({ title: t('anim_share_title'), text: t('anim_share_text') });
           }
-        } catch (_) { toast('Споделянето е отказано или не е налично.'); }
+        } catch (_) { toast(t('anim_share_denied')); }
       });
       row.appendChild(shareBtn);
     }
@@ -363,31 +361,30 @@ export function renderAnimations(root /*, { navigate, rerender } */) {
   }
 
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Запис на видео (.webm)'),
-    el('p', { class: 'muted', style: 'font-size:13px' },
-      'Записва текущата анимация от платното чрез MediaRecorder. Формат webm (vp9/vp8 според средата).'),
+    el('h3', {}, t('anim_rec_title')),
+    el('p', { class: 'muted', style: 'font-size:13px' }, t('anim_rec_desc')),
     el('div', { class: 'row wrap', style: 'gap:8px' }, [startRecBtn, stopRecBtn]),
     recStatus, resultBox
   ]));
 
   // --- Бележка в паметта (по избор) ---
-  const noteInput = el('input', { type: 'text', placeholder: 'Кратка бележка за анимацията (по избор)' });
-  const noteBtn = el('button', { class: 'secondary grow' }, '💾 Запомни бележка');
+  const noteInput = el('input', { type: 'text', placeholder: t('anim_note_ph') });
+  const noteBtn = el('button', { class: 'secondary grow' }, t('anim_remember_note'));
   noteBtn.addEventListener('click', () => {
     const v = noteInput.value.trim();
-    if (!v) { toast('Напиши кратка бележка.'); return; }
-    const styleLabel = (STYLES.find((s) => s[0] === styleSel.value) || STYLES[0])[1];
+    if (!v) { toast(t('anim_write_note')); return; }
+    const styleLabel = t((STYLES.find((s) => s[0] === styleSel.value) || STYLES[0])[1]);
     addMemory({
       type: 'fact',
-      key: `Анимация (${styleLabel}) ${new Date().toLocaleString('bg-BG')}`,
+      key: tf('anim_mem_key', styleLabel, new Date().toLocaleString()),
       value: v
     });
     noteInput.value = '';
-    toast('Запомних бележката за анимацията.');
+    toast(t('anim_note_saved'));
   });
 
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Бележка'),
+    el('h3', {}, t('anim_note_title')),
     noteInput,
     el('div', { class: 'row', style: 'gap:8px;margin-top:8px' }, [noteBtn])
   ]));

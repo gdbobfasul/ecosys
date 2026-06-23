@@ -54,6 +54,36 @@ inject_version() {
   echo -e "  ${GREEN}✓ версия: versionCode ${APK_VERSION_CODE} · versionName ${APK_VERSION_NAME}${NC}"
 }
 
+# Заздравяване на gradle веригата за инструментите (СЛЕД cap sync, защото android/ се пресъздава):
+#  1) Някои Capacitor плъгини (напр. @aparajita/capacitor-secure-storage) декларират Java 21 в
+#     своя android/build.gradle. Билд средата е JDK 17 → „invalid source release: 21". Сваляме
+#     ВСЕКИ subproject до Java 17 (17 е базата на екосистемата; плъгините са тънки обвивки).
+#  2) Зависимости като bcprov-jdk18on:1.79 носят Java 21 класове (multi-release jar). Gradle 8.2.1
+#     ги инструментира със стар ASM → „Unsupported class file major version 65". Вдигаме wrapper-а
+#     на 8.7 (нов ASM, чете Java 21 класове; съвместим с AGP 8.2.1).
+harden_gradle_toolchain() {
+  local wrap="android/gradle/wrapper/gradle-wrapper.properties"
+  [ -f "$wrap" ] && sed -i 's#gradle-8\.2\.1-all\.zip#gradle-8.7-all.zip#' "$wrap"
+  local root="android/build.gradle"
+  if [ -f "$root" ] && ! grep -q "FORCE_JAVA_17" "$root"; then
+    cat >> "$root" <<'GRADLE'
+
+// FORCE_JAVA_17 (build-mobile-apps.sh) — плъгини, декларирали Java 21, се свалят до 17 (JDK 17 среда).
+subprojects {
+    afterEvaluate { p ->
+        if (p.hasProperty('android')) {
+            p.android.compileOptions {
+                sourceCompatibility JavaVersion.VERSION_17
+                targetCompatibility JavaVersion.VERSION_17
+            }
+        }
+    }
+}
+GRADLE
+  fi
+  echo -e "  ${GREEN}✓ gradle верига: wrapper 8.7 + Java 17 за всички subprojects${NC}"
+}
+
 # Една версия за целия билд: code = epoch секунди (винаги расте), name = брояча 00047.version.
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APK_VERSION_NAME="$(tr -d ' \r\n' < "$REPO_ROOT/00047.version" 2>/dev/null)"; [ -z "$APK_VERSION_NAME" ] && APK_VERSION_NAME="1.0"
@@ -259,6 +289,7 @@ build_one() {
       echo -e "  ${CYAN}→ осигурявам @capacitor/android…${NC}"; npm i @capacitor/core@^6 @capacitor/cli@^6 @capacitor/android@^6 >/dev/null 2>&1 || true
       [ -d android ] || { echo -e "  ${CYAN}→ npx cap add android…${NC}"; npx cap add android || { echo -e "  ${RED}✗ cap add android се провали${NC}"; exit 4; }; }
       echo -e "  ${CYAN}→ npx cap sync android…${NC}"; npx cap sync android || { echo -e "  ${RED}✗ cap sync се провали${NC}"; exit 5; }
+      harden_gradle_toolchain      # wrapper 8.7 + Java 17 за всички subprojects (плъгини с Java 21)
       inject_android_permissions   # добавя CAMERA/RECORD_AUDIO и т.н. от android-permissions.txt
       inject_version               # versionCode (монотонен) + versionName → Android вижда ъпдейт
       echo -e "  ${CYAN}→ gradle assembleDebug (APK)…${NC}"

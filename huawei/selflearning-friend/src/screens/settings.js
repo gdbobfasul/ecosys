@@ -17,6 +17,7 @@ import {
 } from '../core/voiceprint.js';
 import { dataMode, setDataMode, personalMemoryCount, forgetPersonalData } from '../core/privacy.js';
 import { LANGUAGES } from '../core/languages.js';
+import { t, tf } from '../core/i18n.js';
 
 const APP_ID = 'com.kcy.selflearningfriend.rustore';
 
@@ -24,7 +25,7 @@ export function renderSettings(root, { rerender }) {
   clear(root);
   const st = getState();
 
-  root.appendChild(el('h2', {}, 'Настройки'));
+  root.appendChild(el('h2', {}, t('screen_settings')));
 
   function toggleRow(labelText, descText, key, onChange) {
     const sw = el('div', { class: 'switch' + (st.settings[key] ? ' on' : '') });
@@ -47,10 +48,7 @@ export function renderSettings(root, { rerender }) {
   }
 
   root.appendChild(el('div', { class: 'card' }, [
-    toggleRow('Безплатен AI помощник',
-      'По избор: при онлайн ползва безплатния keyless Pollinations за по-богати отговори. Изключи го за изцяло офлайн режим. При неуспех винаги пада към паметта/правилата.',
-      'useAi')
-    // (Авто-заключването вече е в картата „Заключване“ по-долу — с избор за таймаут.)
+    toggleRow(t('set_ai_label'), t('set_ai_desc'), 'useAi')
   ]));
 
   // --- ЛИЧНИ ДАННИ: глобалният режим, избран при раждането (сменяем) ---
@@ -59,9 +57,7 @@ export function renderSettings(root, { rerender }) {
   function renderDm() {
     const personal = dataMode() === 'personal';
     dmSw.className = 'switch' + (personal ? ' on' : '');
-    dmState.textContent = personal
-      ? 'ЛИЧЕН режим: помня лични данни за теб (име, навици, предпочитания) — твой личен асистент. Всичко само на това устройство.'
-      : 'БЕЗЛИЧЕН режим: не събирам нищо лично за теб. Уча общи знания → ставам умен → можеш да ме продадеш/прехвърлиш „чист“. (Гласовият профил също е изключен.)';
+    dmState.textContent = personal ? t('set_dm_personal') : t('set_dm_impersonal');
   }
   renderDm();
   dmSw.addEventListener('click', () => {
@@ -72,13 +68,11 @@ export function renderSettings(root, { rerender }) {
   });
   const personalCnt = personalMemoryCount();
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Лични данни'),
-    el('p', { class: 'muted', style: 'font-size:13px' },
-      'Глобалният избор от раждането. Личен = твой асистент (помни лични неща). Безличен = нула лични данни, ' +
-      'за да можеш после да ме продадеш/прехвърлиш „чист“. Можеш да го смениш по всяко време — ти ме притежаваш.'),
+    el('h3', {}, t('set_personal_data')),
+    el('p', { class: 'muted', style: 'font-size:13px' }, t('set_personal_desc')),
     el('div', { class: 'toggle' }, [
       el('div', {}, [
-        el('div', {}, 'Личен режим (събирай лични данни за мен)'),
+        el('div', {}, t('set_personal_toggle')),
         dmState
       ]),
       dmSw
@@ -87,14 +81,14 @@ export function renderSettings(root, { rerender }) {
       class: 'danger block', style: 'margin-top:10px',
       onclick: () => {
         const n = personalMemoryCount();
-        if (!n) { toast('Нямам разпознати лични спомени за изтриване.'); return; }
-        if (confirm(`Да изтрия ли ${n} спомена, които приличат на лични данни за теб? (за продажба/прехвърляне)`)) {
+        if (!n) { toast(t('set_no_personal')); return; }
+        if (confirm(tf('set_forget_q', n))) {
           const removed = forgetPersonalData();
-          toast(`Изтрих ${removed} лични спомена + гласовия профил.`);
+          toast(tf('set_forgot_n', removed));
           rerender();
         }
       }
-    }, `Забрави личните ми данни${personalCnt ? ' (' + personalCnt + ')' : ''}`)
+    }, t('set_forget_btn') + (personalCnt ? ' (' + personalCnt + ')' : ''))
   ]));
 
   // --- ГЛАС: вход (STT), изход (TTS), език ---
@@ -114,6 +108,7 @@ export function renderSettings(root, { rerender }) {
   const convSw = voiceSwitch(() => vc.conversationEnabled, (v) => { vc.conversationEnabled = v; if (v) { requestMicPermission().catch(() => {}); } });
   const convAutoSw = voiceSwitch(() => vc.conversationAutoStart, (v) => { vc.conversationAutoStart = v; });
   // 15-те езика на сайта — слуша (STT) и говори (TTS) на всеки от тях.
+  // Етикетите са имена на езици (данни) — показваме ги двуезично, не ги превеждаме.
   const langSel = el('select', {},
     LANGUAGES.map((l) => el('option',
       { value: l.voice, ...(vc.lang === l.voice ? { selected: true } : {}) },
@@ -121,73 +116,63 @@ export function renderSettings(root, { rerender }) {
   langSel.addEventListener('change', () => {
     vc.lang = langSel.value; persist();
     const l = LANGUAGES.find((x) => x.voice === langSel.value);
-    toast('Език за глас: ' + (l ? l.bg : langSel.value));
+    toast(tf('set_voice_lang_toast', l ? l.bg : langSel.value));
   });
 
   const sttOk = sttAvailable();
   const ttsOk = ttsAvailable();
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Глас'),
-    el('p', { class: 'muted', style: 'font-size:13px' },
-      'Говори на бота и той ти отговаря на глас. Изцяло on-device/безплатно (OS разпознаване и синтез), ' +
-      'без облачна услуга и без ключове. В браузър ползва Web Speech API.'),
+    el('h3', {}, t('set_voice')),
+    el('p', { class: 'muted', style: 'font-size:13px' }, t('set_voice_desc')),
     el('div', { class: 'toggle' }, [
       el('div', {}, [
-        el('div', {}, 'Гласов вход (микрофон в чата)'),
+        el('div', {}, t('set_voice_in')),
         el('div', { class: 'muted', style: 'font-size:12px' },
-          sttOk ? 'Натисни 🎤 в чата, говори, текстът влиза в полето и минава по обичайния път (вкл. командите с кодовата дума).'
-                : 'На това устройство/браузър разпознаването не е налично — апът работи с писане.')
+          sttOk ? t('set_voice_in_ok') : t('set_voice_in_no'))
       ]),
       inSw
     ]),
     el('div', { class: 'toggle' }, [
       el('div', {}, [
-        el('div', {}, 'Гласов отговор'),
+        el('div', {}, t('set_voice_out')),
         el('div', { class: 'muted', style: 'font-size:12px' },
-          ttsOk ? 'Ботът изговаря отговорите си на глас.' : 'Синтез на глас не е наличен тук.')
+          ttsOk ? t('set_voice_out_ok') : t('set_voice_out_no'))
       ]),
       outSw
     ]),
-    el('label', {}, 'Език за разпознаване/синтез'), langSel,
+    el('label', {}, t('set_voice_lang_label')), langSel,
     // --- РАЗГОВОР (hands-free двупосочен глас) ---
     el('div', { class: 'toggle', style: 'margin-top:8px' }, [
       el('div', {}, [
-        el('div', {}, 'Режим „Разговор“ (хендс-фрий)'),
+        el('div', {}, t('set_conv_mode')),
         el('div', { class: 'muted', style: 'font-size:12px' },
-          (sttOk && ttsOk)
-            ? 'Показва бутон „Разговор“ в чата: ботът слуша, отговаря и говори в цикъл — без писане. Работи само при отключен достъп; минава по обичайния път (вкл. командите с кодовата дума).'
-            : 'Иска и микрофон, и глас — тук не са налични. Апът работи с писане.')
+          (sttOk && ttsOk) ? t('set_conv_mode_ok') : t('set_conv_mode_no'))
       ]),
       convSw
     ]),
     el('div', { class: 'toggle' }, [
       el('div', {}, [
-        el('div', {}, 'Авто-старт на разговора при отключване'),
-        el('div', { class: 'muted', style: 'font-size:12px' },
-          'По избор: при влизане започва разговора веднага. По подразбиране изключено.')
+        el('div', {}, t('set_conv_autostart')),
+        el('div', { class: 'muted', style: 'font-size:12px' }, t('set_conv_autostart_desc'))
       ]),
       convAutoSw
     ])
   ]));
 
   // --- ГЛАСОВ ПРОФИЛ (МЕК сигнал; НЕ е сигурност) ---
-  // Роботът се учи да разпознава гласа на собственика и меко казва „познат глас“.
-  // ЧЕСТНО: това е удобен сигнал, НЕ сигурна биометрия — може да бъде заблуден от
-  // запис и зависи от шум/микрофон. КОДОВАТА ДУМА остава единственият истински ключ;
-  // гласовото съвпадение НИКОГА не отключва и не заобикаля заключването.
   const vpSupported = voiceprintSupported();
   const vpEnabledSw = el('div', { class: 'switch' + (voiceProfileEnabled() ? ' on' : '') });
   const vpProgress = el('div', { class: 'muted', style: 'font-size:13px;margin-top:6px' }, '');
   function renderVpProgress() {
     const pr = enrollmentProgress();
     if (!vpSupported) {
-      vpProgress.textContent = 'Тук не е наличен (нужни са микрофон и Web Audio). Функцията е изключена — апът работи нормално.';
+      vpProgress.textContent = t('set_vp_unsupported');
     } else if (!pr.enabled) {
-      vpProgress.textContent = 'Изключен. Включи го, за да започне ученето на гласа при гласовите реплики.';
+      vpProgress.textContent = t('set_vp_disabled');
     } else if (voiceProfileExists()) {
-      vpProgress.textContent = 'Готово: профилът е обучен (' + pr.target + '/' + pr.target + '). При глас меко показвам „познат глас 🙂“.';
+      vpProgress.textContent = tf('set_vp_ready', pr.target, pr.target);
     } else {
-      vpProgress.textContent = 'Обучение: ' + pr.count + '/' + pr.target + ' реплики. Говори на бота (микрофон/Разговор), за да го обуча.';
+      vpProgress.textContent = tf('set_vp_training', pr.count, pr.target);
     }
   }
   renderVpProgress();
@@ -199,16 +184,12 @@ export function renderSettings(root, { rerender }) {
     renderVpProgress();
   });
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Гласов профил'),
-    el('p', { class: 'warn-text', style: 'font-size:13px' },
-      'ЧЕСТНО: това е МЕК/удобен сигнал, НЕ е сигурна биометрия. Може да бъде заблуден от запис на гласа ' +
-      'и зависи от шума/микрофона. Кодовата дума остава ЕДИНСТВЕНИЯТ истински ключ — гласовото съвпадение ' +
-      'НИКОГА не отключва и не заобикаля заключването. (Истинска гласова верификация би искала тежък ML модел/сървър — извън обхвата; тук само безплатно, on-device.)'),
+    el('h3', {}, t('set_vp_title')),
+    el('p', { class: 'warn-text', style: 'font-size:13px' }, t('set_vp_honest')),
     el('div', { class: 'toggle' }, [
       el('div', {}, [
-        el('div', {}, 'Разпознавай ме по гласа (мек сигнал)'),
-        el('div', { class: 'muted', style: 'font-size:12px' },
-          'При първите няколко гласови реплики роботът учи гласа ти (локално, чрез Web Audio). После при глас меко показва „познат глас 🙂“. Изцяло on-device.')
+        el('div', {}, t('set_vp_toggle')),
+        el('div', { class: 'muted', style: 'font-size:12px' }, t('set_vp_toggle_desc'))
       ]),
       vpEnabledSw
     ]),
@@ -218,21 +199,17 @@ export function renderSettings(root, { rerender }) {
       onclick: () => {
         resetVoiceProfile();
         renderVpProgress();
-        toast('Гласовият профил е изчистен. Ще се обуча наново при следващите гласови реплики.');
+        toast(t('set_vp_reset_toast'));
       }
-    }, 'Преобучи гласа (нулирай профила)')
+    }, t('set_vp_reset_btn'))
   ]));
 
   // --- Роля на това копие: „Учащ“ / „Само чете“ ---
-  // При клонинги (телефон + компютър) само ЕДНО копие трябва да е учащ.
   const roleSw = el('div', { class: 'switch' + (getLearnRole() === 'reader' ? ' on' : '') });
   const roleState = el('div', { class: 'muted', style: 'font-size:13px' }, '');
   function renderRoleState() {
-    const reader = getLearnRole() === 'reader';
-    roleState.textContent = reader
-      ? 'Роля: Само чете — това копие НЕ трупа ново знание (самообучението е спряно), ' +
-        'но пак чете/припомня, отговаря и разговаря.'
-      : 'Роля: Учащ — това копие може да учи само от безплатни източници.';
+    const isReader = getLearnRole() === 'reader';
+    roleState.textContent = isReader ? t('set_role_reader') : t('set_role_learner');
   }
   renderRoleState();
   roleSw.addEventListener('click', () => {
@@ -251,20 +228,18 @@ export function renderSettings(root, { rerender }) {
     learnSw.className = 'switch' + (next ? ' on' : '');
   });
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Учене'),
+    el('h3', {}, t('set_learning')),
     el('div', { class: 'toggle' }, [
       el('div', {}, [
-        el('div', {}, 'Роля: Учащ / Само чете'),
+        el('div', {}, t('set_role_toggle')),
         roleState
       ]),
       roleSw
     ]),
     el('div', { class: 'toggle', style: 'margin-top:8px' }, [
       el('div', {}, [
-        el('div', {}, 'Непрекъснато самообучение'),
-        el('div', { class: 'muted', style: 'font-size:13px' },
-          'Когато няма задача, ученикът сам учи от безплатни източници (докато апът е активен). ' +
-          'В роля „Само чете“ е изключено.')
+        el('div', {}, t('set_continuous')),
+        el('div', { class: 'muted', style: 'font-size:13px' }, t('set_continuous_desc'))
       ]),
       learnSw
     ])
@@ -274,9 +249,9 @@ export function renderSettings(root, { rerender }) {
   const bud = (() => { try { return learnBudget(); } catch (_) { return { deep: false, targetNotes: 300, maxDbMB: 8 }; } })();
   const curMB = (() => { try { return dbSizeMB(); } catch (_) { return 0; } })();
   const usageLine = el('div', { class: 'muted', style: 'font-size:13px;margin-top:4px' },
-    `Сега базата заема ~${curMB.toFixed(2)} MB. Режим: ${bud.deep ? 'ДЪЛБОК (сериозен)' : 'ЛЕК (телефон)'} · цел на едно обхождане ~${bud.targetNotes} бележки.`);
+    tf('set_usage_line', curMB.toFixed(2), bud.deep ? t('set_mode_deep') : t('set_mode_light'), bud.targetNotes));
   const aiSrc = (() => { try { return aiSource(); } catch (_) { return { label: '—' }; } })();
-  const aiLine = el('div', { class: 'muted', style: 'font-size:13px' }, `AI сега: ${aiSrc.label}.`);
+  const aiLine = el('div', { class: 'muted', style: 'font-size:13px' }, tf('set_ai_now', aiSrc.label));
   const mbSelect = el('select', {});
   for (const v of [4, 8, 16, 32, 64, 128, 256]) {
     const o = el('option', { value: String(v) }, v + ' MB');
@@ -286,12 +261,12 @@ export function renderSettings(root, { rerender }) {
   mbSelect.addEventListener('change', () => {
     const mb = setMaxDbMB(parseInt(mbSelect.value, 10));
     try { persist(); } catch (_) {}
-    usageLine.textContent = `Сега базата заема ~${dbSizeMB().toFixed(2)} MB. Таван: ${mb} MB.`;
-    toast(`Таван на базата: ${mb} MB.`);
+    usageLine.textContent = tf('set_usage_after', dbSizeMB().toFixed(2), mb);
+    toast(tf('set_db_ceiling_toast', mb));
   });
   // Стратегия (важи на ТЕЛЕФОН, при СЪЩИЯ таван MB): 1 дълбоко ИЛИ много леки обхождания.
   const stratSelect = el('select', {});
-  for (const [val, label] of [['light', 'Много ЛЕКИ обхождания (повече теми)'], ['deep', '1 ПО-ДЪЛБОКО обхождане (по-малко теми)']]) {
+  for (const [val, label] of [['light', t('set_strat_light')], ['deep', t('set_strat_deep')]]) {
     const o = el('option', { value: val }, label);
     if (val === crawlMode()) o.setAttribute('selected', '');
     stratSelect.appendChild(o);
@@ -299,46 +274,44 @@ export function renderSettings(root, { rerender }) {
   stratSelect.addEventListener('change', () => {
     const m = setCrawlMode(stratSelect.value);
     try { persist(); } catch (_) {}
-    toast(m === 'deep' ? 'Стратегия: 1 по-дълбоко обхождане.' : 'Стратегия: много леки обхождания.');
+    toast(m === 'deep' ? t('set_strat_deep_toast') : t('set_strat_light_toast'));
   });
   const stratNote = deepAllowed()
-    ? el('div', { class: 'muted', style: 'font-size:12px;margin-top:4px' }, '(Сега си в СЕРИОЗЕН режим — ученето е дълбоко; стратегията долу важи за телефон.)')
+    ? el('div', { class: 'muted', style: 'font-size:12px;margin-top:4px' }, t('set_serious_note'))
     : null;
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Памет (таван на базата)'),
-    el('p', { class: 'muted', style: 'font-size:13px' },
-      'Дълбокото учене (обхождане на „дървото") спира, щом базата стигне този таван — за да НЕ забива телефонът. ' +
-      'На десктоп/сериозен сървър ученето е дълбоко (хиляди бележки); на телефон — леко с таван.'),
+    el('h3', {}, t('set_memory_title')),
+    el('p', { class: 'muted', style: 'font-size:13px' }, t('set_memory_desc')),
     usageLine,
     aiLine,
-    el('label', {}, 'Таван на локалната база'),
+    el('label', {}, t('set_db_ceiling_label')),
     mbSelect,
-    el('label', {}, 'Стратегия на учене (телефон, същия таван)'),
+    el('label', {}, t('set_strat_label')),
     stratSelect,
     stratNote
   ]));
 
   // --- Интереси (за ротацията на автономното учене) ---
-  const interestInput = el('input', { type: 'text', placeholder: 'напр. Астрономия' });
+  const interestInput = el('input', { type: 'text', placeholder: t('set_interest_ph') });
   const interestList = el('div', { class: 'row wrap', style: 'gap:6px;margin-top:8px' });
   function renderInterests() {
     clear(interestList);
     for (const name of listInterests()) {
       interestList.appendChild(el('button', {
         class: 'secondary', style: 'font-size:12px;padding:6px 10px',
-        onclick: () => { if (removeInterest(name)) { renderInterests(); } else { toast('Това е тема по подразбиране.'); } }
+        onclick: () => { if (removeInterest(name)) { renderInterests(); } else { toast(t('set_default_topic')); } }
       }, name + ' ✕'));
     }
   }
   renderInterests();
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Интереси за учене'),
-    el('p', { class: 'muted', style: 'font-size:13px' }, 'Добави теми — ученикът ще ги ротира, когато учи сам.'),
+    el('h3', {}, t('set_interests_title')),
+    el('p', { class: 'muted', style: 'font-size:13px' }, t('set_interests_desc')),
     el('div', { class: 'row', style: 'gap:8px' }, [
       el('div', { class: 'grow' }, interestInput),
       el('button', { onclick: () => {
-        if (addInterest(interestInput.value)) { interestInput.value = ''; renderInterests(); toast('Добавено.'); }
-        else toast('Празно или вече съществува.');
+        if (addInterest(interestInput.value)) { interestInput.value = ''; renderInterests(); toast(t('set_added')); }
+        else toast(t('set_empty_or_exists'));
       } }, '+')
     ]),
     interestList
@@ -346,9 +319,9 @@ export function renderSettings(root, { rerender }) {
 
   // --- Учител: Claude (ПЛАТЕН, РЕАЛЕН — единствената платена функция) ---
   const ts = teacherSettings();
-  const apiKeyInput = el('input', { type: 'password', placeholder: 'sk-ant-… (твоят ключ, пази се локално)', value: ts.apiKey });
-  const teacherEp = el('input', { type: 'text', placeholder: 'или https://твой-сървър/claude (proxy, по избор)', value: ts.endpoint });
-  const modelInput = el('input', { type: 'text', placeholder: 'модел', value: ts.model });
+  const apiKeyInput = el('input', { type: 'password', placeholder: t('set_api_key_ph'), value: ts.apiKey });
+  const teacherEp = el('input', { type: 'text', placeholder: t('set_endpoint_ph'), value: ts.endpoint });
+  const modelInput = el('input', { type: 'text', placeholder: t('set_model_ph'), value: ts.model });
 
   const claudeSw = el('div', { class: 'switch' + (ts.claudeEnabled ? ' on' : '') });
   claudeSw.addEventListener('click', () => {
@@ -369,48 +342,43 @@ export function renderSettings(root, { rerender }) {
   const approveBtn = el('button', {
     class: (ts.approved ? 'secondary' : '') + ' block', style: 'margin-top:10px',
     onclick: () => {
-      if (teacherSettings().approved) { revokeTeacherApproval(); toast('Одобрението е отменено.'); }
-      else { approveTeacher(); toast('Одобрено. Платените повиквания са разрешени.'); }
+      if (teacherSettings().approved) { revokeTeacherApproval(); toast(t('set_approval_revoked')); }
+      else { approveTeacher(); toast(t('set_approval_granted')); }
       rerender();
     }
-  }, ts.approved ? 'Отмени одобрението' : 'Одобри (разреши харчене)');
+  }, ts.approved ? t('set_revoke_approval') : t('set_approve'));
 
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Учител: Claude (платено)'),
-    el('p', { class: 'muted', style: 'font-size:13px' },
-      'ЕДИНСТВЕНАТА платена функция. Въведи СВОЙ Anthropic API ключ (пази се само тук, локално) ' +
-      'или алтернативно proxy endpoint на твой сървър. Платеният слой работи само ако е включен, ' +
-      'одобрен и има ключ/endpoint. Без него безплатните нива (Pollinations и локалното) винаги работят.'),
+    el('h3', {}, t('set_teacher_title')),
+    el('p', { class: 'muted', style: 'font-size:13px' }, t('set_teacher_desc')),
     el('div', { class: 'toggle' }, [
-      el('div', {}, el('div', {}, 'Включи Claude учителя')),
+      el('div', {}, el('div', {}, t('set_enable_claude'))),
       claudeSw
     ]),
-    el('label', {}, 'Твой Anthropic API ключ'), apiKeyInput,
-    el('label', {}, 'ИЛИ proxy endpoint (ползва се с приоритет)'), teacherEp,
-    el('label', {}, 'Модел'), modelInput,
+    el('label', {}, t('set_api_key_label')), apiKeyInput,
+    el('label', {}, t('set_endpoint_label')), teacherEp,
+    el('label', {}, t('set_model_label')), modelInput,
     el('div', { class: 'toggle', style: 'margin-top:8px' }, [
       el('div', {}, [
-        el('div', {}, 'Искай одобрение при всяко повикване'),
-        el('div', { class: 'muted', style: 'font-size:12px' }, 'По-стриктно: одобрението важи само за едно повикване.')
+        el('div', {}, t('set_per_call')),
+        el('div', { class: 'muted', style: 'font-size:12px' }, t('set_per_call_desc'))
       ]),
       perCallSw
     ]),
     el('button', { class: 'secondary block', style: 'margin-top:10px', onclick: () => {
       saveTeacherSettings({ apiKey: apiKeyInput.value.trim(), endpoint: teacherEp.value.trim(), model: modelInput.value.trim() || 'claude-3-5-haiku-latest' });
-      toast('Запазено локално.');
-    } }, 'Запази учителя'),
+      toast(t('set_saved_local'));
+    } }, t('set_save_teacher')),
     approveBtn,
     el('p', { class: ready.ready ? 'muted' : 'warn-text', style: 'font-size:12px;margin-top:8px' },
-      ready.ready ? 'Готово: платените повиквания са разрешени и предстои да харчат при нужда.' : ('Състояние: ' + ready.reason))
+      ready.ready ? t('set_teacher_ready') : tf('set_teacher_state', ready.reason))
   ]));
 
   // --- Доказателство за собственост (anti-theft dossier) ---
   const dossierBox = el('div', { class: 'card', style: 'white-space:pre-wrap;font-size:12px;display:none' });
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Доказателство за собственост'),
-    el('p', { class: 'muted', style: 'font-size:13px' },
-      'Генерира досие (хеш на името, ID на устройството, дата, брой научени неща), ' +
-      'с което можеш да докажеш „това е моят телефон“. Не съдържа открито име или лични данни.'),
+    el('h3', {}, t('set_dossier_title')),
+    el('p', { class: 'muted', style: 'font-size:13px' }, t('set_dossier_desc')),
     el('button', { class: 'secondary block', onclick: () => {
       const id = getState().identity || {};
       const d = buildOwnershipDossier({
@@ -421,27 +389,25 @@ export function renderSettings(root, { rerender }) {
       dossierBox.style.display = 'block';
       dossierBox.textContent = text;
       try {
-        if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => toast('Копирано.'), () => {});
+        if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => toast(t('set_copied')), () => {});
       } catch (_) { /* копирането е по избор */ }
-    } }, 'Генерирай досие')
+    } }, t('set_gen_dossier'))
   ]));
   root.appendChild(dossierBox);
 
   // --- Принцип на честността ---
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Принцип на честността'),
+    el('h3', {}, t('set_honesty_title')),
     el('p', { class: 'muted', style: 'font-size:13px' }, PRINCIPLE_TEXT)
   ]));
 
   // АВТО-ЗАКЛЮЧВАНЕ при бездействие: падащо меню с готови таймаути.
-  // „Никога" (по подразбиране) → НЕ се самозаключва (askOnReopen=false). Числов избор →
-  // самозаключва се след толкова минути бездействие (askOnReopen=true + inactivityMin).
   const AUTO_LOCK_OPTIONS = [
-    { v: 0,  label: 'Никога (не се заключва)' },
-    { v: 5,  label: 'След 5 минути' },
-    { v: 10, label: 'След 10 минути' },
-    { v: 30, label: 'След 30 минути' },
-    { v: 60, label: 'След 1 час' }
+    { v: 0,  label: t('set_lock_never') },
+    { v: 5,  label: t('set_lock_5min') },
+    { v: 10, label: t('set_lock_10min') },
+    { v: 30, label: t('set_lock_30min') },
+    { v: 60, label: t('set_lock_1hour') }
   ];
   // Текуща стойност: ако авто-заключването е изключено → 0 (Никога); иначе минутите.
   const curAutoLock = st.settings.askOnReopen ? (st.settings.inactivityMin || 10) : 0;
@@ -454,12 +420,11 @@ export function renderSettings(root, { rerender }) {
   const cool = el('input', { type: 'number', min: '1', max: '60', value: String(st.settings.cooldownMin) });
 
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Заключване'),
-    el('label', {}, 'Авто-заключване при бездействие'), idleSel,
-    el('p', { class: 'muted', style: 'font-size:12px;margin:4px 0 8px' },
-      'По подразбиране НЕ се заключва само. Избери таймаут, ако искаш да иска кодовата дума след период на бездействие.'),
-    el('label', {}, 'Грешни опити преди пауза'), maxA,
-    el('label', {}, 'Пауза при много грешки (минути)'), cool,
+    el('h3', {}, t('set_lockout_title')),
+    el('label', {}, t('set_autolock_label')), idleSel,
+    el('p', { class: 'muted', style: 'font-size:12px;margin:4px 0 8px' }, t('set_autolock_desc')),
+    el('label', {}, t('set_max_attempts')), maxA,
+    el('label', {}, t('set_cooldown_min')), cool,
     el('button', { class: 'block', style: 'margin-top:12px', onclick: () => {
       const mins = parseInt(idleSel.value, 10) || 0;
       if (mins <= 0) {
@@ -471,30 +436,28 @@ export function renderSettings(root, { rerender }) {
       st.settings.maxAttempts = clampNum(maxA.value, 1, 20, 5);
       st.settings.cooldownMin = clampNum(cool.value, 1, 60, 2);
       persist();
-      toast(mins <= 0 ? 'Запазено — няма да се самозаключва.' : `Запазено — авто-заключване след ${mins} мин.`);
-    } }, 'Запази заключването')
+      toast(mins <= 0 ? t('set_lock_saved_never') : tf('set_lock_saved_min', mins));
+    } }, t('set_save_lockout'))
   ]));
 
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Сесия'),
-    el('button', { class: 'secondary block', onclick: () => { lock(); rerender(); } }, '🔒 Заключи сега')
+    el('h3', {}, t('set_session')),
+    el('button', { class: 'secondary block', onclick: () => { lock(); rerender(); } }, t('set_lock_now'))
   ]));
 
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', { class: 'err-text' }, 'Опасна зона'),
-    el('p', { class: 'muted' },
-      'Нулирането трие името, цялата памет и разговорите от това устройство. Действието е необратимо.'),
+    el('h3', { class: 'err-text' }, t('set_danger')),
+    el('p', { class: 'muted' }, t('set_danger_desc')),
     el('button', { class: 'danger block', onclick: () => {
-      if (confirm('Сигурен ли си? Това трие името, паметта и разговорите завинаги.')) {
+      if (confirm(t('set_wipe_q'))) {
         resetAll();
-        toast('Изтрито. Започваме отначало.');
+        toast(t('wiped_restart'));
         rerender();
       }
-    } }, 'Изтрий всичко и забрави ме')
+    } }, t('set_wipe_btn'))
   ]));
 
-  root.appendChild(el('p', { class: 'muted center', style: 'margin-top:8px;font-size:12px' },
-    'Всичко се пази само на това устройство. Без акаунти, без контакти, без проследяване.'));
+  root.appendChild(el('p', { class: 'muted center', style: 'margin-top:8px;font-size:12px' }, t('set_footer')));
 }
 
 function clampNum(v, min, max, def) {

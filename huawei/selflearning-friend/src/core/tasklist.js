@@ -9,6 +9,7 @@
 // пълни списъка (то си има отделен поток „Какво уча сега“).
 
 import { getState, persist, uid } from './storage.js';
+import { t } from './i18n.js';
 
 export function listTasks() {
   const st = getState();
@@ -83,10 +84,10 @@ export function clearFinished() {
 // Етикет за статуса (за UI).
 export function statusLabel(status) {
   switch (status) {
-    case 'pending': return 'чака';
-    case 'running': return 'изпълнявам';
-    case 'done': return 'готово';
-    case 'failed': return 'неуспех';
+    case 'pending': return t('task_status_pending');
+    case 'running': return t('task_status_running');
+    case 'done': return t('task_status_done');
+    case 'failed': return t('task_status_failed');
     default: return status || '';
   }
 }
