@@ -4,6 +4,7 @@ import { THEME } from '../theme.js';
 import Starfield from '../gfx/starfield.js';
 import { getTop } from '../leaderboard.js';
 import { showLeaderboardList } from '../gfx/leaderboard_view.js';
+import { t } from '../core/i18n.js';
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
@@ -14,13 +15,13 @@ export default class LeaderboardScene extends Phaser.Scene {
     const { width, height } = this.scale;
     this.stars = new Starfield(this);
 
-    const title = this.add.text(width / 2, height * 0.08, '🏆 РАНГ ЛИСТА', {
+    const title = this.add.text(width / 2, height * 0.08, t('lb_title'), {
       fontFamily: 'system-ui, sans-serif', fontSize: '30px', fontStyle: 'bold',
       color: '#ffffff'
     }).setOrigin(0.5);
     title.setShadow(0, 0, THEME.accentHex, 16, true, true);
 
-    this.add.text(width / 2, height * 0.08 + 36, 'Топ 100 • само устройството', {
+    this.add.text(width / 2, height * 0.08 + 36, t('lb_sub'), {
       fontFamily: 'system-ui, sans-serif', fontSize: '13px', color: '#9fc8ff'
     }).setOrigin(0.5);
 
@@ -35,7 +36,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     });
 
     // Бутон обратно към менюто.
-    this.makeButton(width / 2, height * 0.92, 'МЕНЮ', () => {
+    this.makeButton(width / 2, height * 0.92, t('menu'), () => {
       this.scene.start('Menu');
     });
   }

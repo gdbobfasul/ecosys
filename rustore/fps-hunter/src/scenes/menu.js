@@ -1,6 +1,8 @@
-// Меню сцена: заглавие, бутон Старт, избор на начално ниво, лидерборд.
+// Меню сцена: заглавие, бутон Старт, избор на начално ниво, лидерборд, бутон 🌐.
 import { THEME } from '../theme.js';
 import { iconSVG, svgDataUrl } from '../branding.svg.js';
+import { t } from '../core/i18n.js';
+import { showLanguage } from './language.js';
 
 export function showMenu(root, leaderboard, onStart) {
   const a = THEME.accent;
@@ -14,36 +16,44 @@ export function showMenu(root, leaderboard, onStart) {
     ? top.map((r, i) => `<tr><td style="padding:2px 10px;color:${a}">${i + 1}</td>
         <td style="padding:2px 10px">${escapeHtml(r.name)}</td>
         <td style="padding:2px 10px;text-align:right;color:${THEME.accent2}">${r.points}</td></tr>`).join('')
-    : `<tr><td colspan="3" style="padding:8px;color:#7a8a9a">Все още няма резултати</td></tr>`;
+    : `<tr><td colspan="3" style="padding:8px;color:#7a8a9a">${escapeHtml(t('no_results'))}</td></tr>`;
 
   wrap.innerHTML = `
+    <button id="lang-btn" style="position:fixed;top:12px;right:12px;z-index:21;padding:8px 14px;font-size:14px;
+      border:1px solid #2a3b4d;border-radius:10px;background:rgba(14,23,34,0.85);color:#dfe7ee;cursor:pointer">${escapeHtml(t('lang_btn'))}</button>
+
     <img src="${svgDataUrl(iconSVG(160))}" width="120" height="120" alt="" style="margin-bottom:8px"/>
     <h1 style="margin:0;font-size:38px;letter-spacing:4px;color:#fff">FPS HUNTER</h1>
-    <p style="margin:6px 0 18px;color:#9fb0c0">100 нива · 3D ловен шутър от първо лице</p>
+    <p style="margin:6px 0 18px;color:#9fb0c0">${escapeHtml(t('tagline'))}</p>
 
     <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px">
-      <label style="font-size:14px;color:#9fb0c0">Начално ниво</label>
+      <label style="font-size:14px;color:#9fb0c0">${escapeHtml(t('start_level_label'))}</label>
       <input id="start-level" type="number" min="1" max="100" value="1"
         style="width:70px;padding:8px;border-radius:8px;border:1px solid #2a3b4d;background:#0e1722;color:#fff;font-size:16px"/>
     </div>
 
     <button id="start-btn" style="padding:14px 40px;font-size:20px;font-weight:800;border:none;border-radius:12px;
-      background:${a};color:#04121d;cursor:pointer;letter-spacing:2px">СТАРТ</button>
+      background:${a};color:#04121d;cursor:pointer;letter-spacing:2px">${escapeHtml(t('start_btn'))}</button>
 
     <div style="margin-top:26px;width:min(420px,90vw)">
-      <div style="font-size:15px;color:#9fb0c0;margin-bottom:6px;text-align:center">🏆 Топ 10 (локално)</div>
+      <div style="font-size:15px;color:#9fb0c0;margin-bottom:6px;text-align:center">${escapeHtml(t('top10_local'))}</div>
       <table style="width:100%;border-collapse:collapse;font-size:15px;background:rgba(0,0,0,0.25);border-radius:10px;overflow:hidden">
         <tbody>${rows}</tbody>
       </table>
     </div>
 
     <div style="margin-top:18px;max-width:420px;text-align:center;font-size:12px;color:#65788a;line-height:1.5">
-      Управление: телефон — ляв джойстик за движение, влачи вдясно за оглеждане, бутон ОГЪН.
-      Десктоп — WASD + мишка (клик за заключване на курсора) + клик за стрелба.<br/>
-      Изцяло офлайн. Без акаунти. Без мрежа. Лидербордът пази само име + точки.
+      ${escapeHtml(t('controls_help'))}<br/>
+      ${escapeHtml(t('privacy_note'))}
     </div>
   `;
   root.appendChild(wrap);
+
+  wrap.querySelector('#lang-btn').addEventListener('click', () => {
+    wrap.remove();
+    // Показваме избора на език; след избор се връщаме в (наново построеното) меню.
+    showLanguage(root, () => showMenu(root, leaderboard, onStart));
+  });
 
   const lvlInput = wrap.querySelector('#start-level');
   wrap.querySelector('#start-btn').addEventListener('click', () => {

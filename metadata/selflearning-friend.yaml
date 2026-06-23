@@ -1,0 +1,117 @@
+id: selflearning-friend
+name: Самообучаващ се приятел
+folders:
+  - rustore/selflearning-friend
+  - huawei/selflearning-friend
+  - desktop/selflearning-friend          # десктоп издание (Electron)
+stores: [rustore, huawei, desktop]
+package:
+  rustore: com.kcy.selflearningfriend.rustore
+  huawei:  com.kcy.selflearningfriend.huawei
+category:
+  google_play: Education
+  rustore: Образование
+  huawei: Education
+content_rating: "3+ (Everyone) — без насилие, без реклами, без потребителско съдържание"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Самообучающийся друг
+    short: Личный бот для одного владельца — учится локально, голос и зрение
+    full: |
+      Самообучающийся друг — это личный бот-компаньон, который учится локально и
+      заблокирован под одного владельца. При первом запуске он спрашивает «Как меня
+      назвать?»; это слово — кодовая фраза доступа (хранится как SHA-256-хеш, без
+      подсказки). При каждом открытии он спрашивает «Как меня зовут?» и пускает
+      только владельца.
+
+      • Учится по-настоящему (не заглушка): факты, предпочтения, вопрос-ответ,
+        исправления — всё в локальной памяти. Экран «Память» для просмотра и правки.
+      • Голос: слушает (распознавание речи) и говорит (TTS) на 15 языках.
+      • Зрение: распознаёт объекты по камере (TensorFlow.js, on-device), читает
+        текст с фото (OCR) и PDF — всё на устройстве.
+      • Задачи: офлайн-калькулятор (арифметика, проценты, уравнения, единицы) с
+        шагами; темы из Wikipedia (keyless).
+      • По желанию — бесплатный AI без ключа (Pollinations) с мягким откатом к
+        локальной памяти. AI можно полностью отключить.
+      • Без аккаунтов, без контактов, без слежки. Опционально — связь со своим
+        сервером (домен + токен), который вы указываете сами.
+  en:
+    title: Self-Learning Friend
+    short: A personal single-owner bot — learns locally, voice and vision
+    full: |
+      Self-Learning Friend is a personal companion bot that learns locally and is
+      locked to a single owner. On first launch it asks "What should I call myself?";
+      that word is your access pass-phrase (stored as a SHA-256 hash, with no hint).
+      On every open it asks "What is my name?" and lets only the owner in.
+
+      • It really learns (not a stub): facts, preferences, Q&A, corrections — all in
+        local memory. A "Memory" screen lets you review and edit.
+      • Voice: it listens (speech recognition) and speaks (TTS) in 15 languages.
+      • Vision: recognises objects from the camera (TensorFlow.js, on-device), reads
+        text from photos (OCR) and PDFs — all on device.
+      • Tasks: an offline calculator (arithmetic, percentages, equations, units) with
+        steps; topics from Wikipedia (keyless).
+      • Optional free keyless AI (Pollinations) with a graceful fallback to local
+        memory. The AI can be turned off entirely.
+      • No accounts, no contacts, no tracking. Optionally link your own server
+        (domain + token) that you provide yourself.
+  bg:
+    title: Самообучаващ се приятел
+    short: Личен бот за един собственик — учи се локално, глас и зрение
+    full: |
+      Самообучаващ се приятел е личен бот-приятел, който се учи локално и е заключен
+      за един собственик. При първо отваряне пита „Как да се нарека?"; тази дума е
+      твоята кодова фраза за достъп (пази се като SHA-256 хеш, без подсказка). На
+      всяко отваряне пита „Как се казвам?" и допуска само собственика.
+
+      • Учи се реално (не стъб): факти, предпочитания, въпрос-отговор, корекции —
+        всичко в локална памет. Екран „Памет" за преглед и редакция.
+      • Глас: слуша (разпознаване на реч) и говори (TTS) на 15 езика.
+      • Зрение: разпознава обекти от камерата (TensorFlow.js, on-device), чете текст
+        от снимки (OCR) и PDF — всичко на устройството.
+      • Задачи: офлайн калкулатор (аритметика, проценти, уравнения, мерни единици)
+        със стъпки; теми от Wikipedia (без ключ).
+      • По избор безплатен AI без ключ (Pollinations) с грациозен fallback към
+        локалната памет. AI може да се изключи изцяло.
+      • Без акаунти, без контакти, без проследяване. По избор — връзка със собствен
+        сървър (домейн + токен), който ти сам задаваш.
+
+permissions:
+  - id: android.permission.RECORD_AUDIO
+    why: Гласово разпознаване — ботът слуша и отговаря (@capacitor-community/speech-recognition). Незадължително; може да се пише вместо да се говори.
+  - id: android.permission.CAMERA
+    why: Зрение — разпознаване на обекти и четене на текст (OCR) от камерата, локално на устройството. Незадължително.
+  - id: android.permission.INTERNET
+    why: По избор — безплатен AI без ключ (Pollinations), теми от Wikipedia, крипто/курсове/новини от публични keyless източници, и (по избор) връзка със собствения сървър на потребителя. Работи и изцяло офлайн.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Кодова дума за достъп — пази се само като SHA-256 хеш, локално, без подсказка
+    - Научена памет (факти, предпочитания, Q&A, корекции), теми и настройки — само локално (@capacitor/preferences)
+    - Отпечатък на устройството (модел/платформа/UUID през @capacitor/device) — локално, за анти-кражба заключване; не се изпраща на трета страна
+  shared_with_third_parties: |
+    Само ако потребителят го включи: подсказки към безплатния AI (Pollinations) и
+    заявки към публични keyless източници (Wikipedia/CoinGecko/Binance/RSS), както и
+    export/синхронизация към СОБСТВЕН сървър, чийто домейн+токен потребителят сам
+    въвежда. По подразбиране всичко това е изключаемо; ядрото работи офлайн.
+  encrypted_in_transit: true            # всички мрежови заявки са по HTTPS
+  encrypted_at_rest: false              # паметта е локална; кодовата дума е хеширана (не открита)
+  user_can_delete: true                 # „Започни отначало" (factory reset) + триене на отделни записи в Памет
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (мотив „лице/приятел", виолетов акцент #7b5cff)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 3 (раждане/кръщаване, чат с лице, екран Памет, Зрение/Задачи)
+
+keywords: [assistant, companion, learning, on-device, voice, vision, OCR, offline, private, education]

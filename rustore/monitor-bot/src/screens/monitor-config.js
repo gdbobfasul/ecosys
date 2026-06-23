@@ -2,6 +2,7 @@
 import { el } from '../ui/styles.js';
 import { saveState, pushLog } from '../core/storage.js';
 import { PRESETS, newMonitorId, checkMonitor } from '../core/scheduler.js';
+import { t, tf } from '../core/i18n.js';
 
 export function renderMonitorConfig(ctx) {
   const { state, go, params } = ctx;
@@ -24,7 +25,7 @@ export function renderMonitorConfig(ctx) {
         paused: false,
         lastCheck: null,
         lastMatch: null,
-        lastStatus: 'нов'
+        lastStatus: t('status_new')
       };
 
   const form = {};
@@ -36,9 +37,9 @@ export function renderMonitorConfig(ctx) {
   }
 
   const jsonBlock = el('div', { style: draft.sourceType === 'json' ? '' : 'display:none' }, [
-    field('JSON път до списъка (напр. data.children)', 'jsonPath'),
-    field('Поле за уникален id (напр. data.id)', 'idField'),
-    field('Поле за заглавие (напр. data.title)', 'titleField')
+    field(t('cfg_json_path'), 'jsonPath'),
+    field(t('cfg_id_field'), 'idField'),
+    field(t('cfg_title_field'), 'titleField')
   ]);
 
   const typeSel = el('select', {
@@ -47,34 +48,34 @@ export function renderMonitorConfig(ctx) {
       jsonBlock.style.display = draft.sourceType === 'json' ? '' : 'none';
     }
   }, [
-    optionEl('rss', 'RSS / Atom емисия', draft.sourceType),
-    optionEl('json', 'Публично JSON API', draft.sourceType)
+    optionEl('rss', t('cfg_src_rss'), draft.sourceType),
+    optionEl('json', t('cfg_src_json'), draft.sourceType)
   ]);
   form.sourceType = typeSel;
 
   const ruleSel = el('select', {}, [
-    optionEl('new', 'Нов запис се появи', draft.rule),
-    optionEl('keyword', 'Съдържа ключова дума', draft.rule),
-    optionEl('new+keyword', 'Нов запис + ключова дума', draft.rule)
+    optionEl('new', t('cfg_rule_new'), draft.rule),
+    optionEl('keyword', t('cfg_rule_keyword'), draft.rule),
+    optionEl('new+keyword', t('cfg_rule_both'), draft.rule)
   ]);
   form.rule = ruleSel;
 
   const freqSel = el('select', {}, [
-    optionEl('15min', 'На всеки 15 мин', draft.freq),
-    optionEl('1h', 'На всеки час', draft.freq),
-    optionEl('daily', 'Веднъж дневно', draft.freq)
+    optionEl('15min', t('cfg_freq_15min'), draft.freq),
+    optionEl('1h', t('cfg_freq_1h'), draft.freq),
+    optionEl('daily', t('cfg_freq_daily'), draft.freq)
   ]);
   form.freq = freqSel;
 
-  const kwInput = el('input', { value: draft.keywords || '', placeholder: 'дума1, дума2' });
+  const kwInput = el('input', { value: draft.keywords || '', placeholder: t('cfg_keywords_ph') });
   form.keywords = kwInput;
-  const nameInput = el('input', { value: draft.name || '', placeholder: 'Име на монитора' });
+  const nameInput = el('input', { value: draft.name || '', placeholder: t('cfg_name_ph') });
   form.name = nameInput;
   const urlInput = el('input', { value: draft.url || '', placeholder: 'https://...' });
   form.url = urlInput;
 
   function collect() {
-    draft.name = nameInput.value.trim() || 'Монитор';
+    draft.name = nameInput.value.trim() || t('cfg_default_name');
     draft.url = urlInput.value.trim();
     draft.sourceType = typeSel.value;
     draft.rule = ruleSel.value;
@@ -87,13 +88,13 @@ export function renderMonitorConfig(ctx) {
 
   async function save() {
     collect();
-    if (!draft.url) { alert('Въведи адрес на източника.'); return; }
+    if (!draft.url) { alert(t('cfg_need_url')); return; }
     if (editing) {
       Object.assign(editing, draft);
-      pushLog(state, 'Мониторът „' + draft.name + '" е обновен.');
+      pushLog(state, tf('log_mon_updated', draft.name));
     } else {
       state.monitors.push(draft);
-      pushLog(state, 'Добавен монитор „' + draft.name + '".');
+      pushLog(state, tf('log_mon_added', draft.name));
     }
     await saveState(state);
     go('dashboard');
@@ -101,21 +102,19 @@ export function renderMonitorConfig(ctx) {
 
   async function test() {
     collect();
-    if (!draft.url) { alert('Въведи адрес на източника.'); return; }
-    testBtn.textContent = 'Проверявам…';
+    if (!draft.url) { alert(t('cfg_need_url')); return; }
+    testBtn.textContent = t('cfg_testing');
     const r = await checkMonitor(state, draft, { force: true });
-    testBtn.textContent = 'Тествай сега';
+    testBtn.textContent = t('cfg_test');
     if (r.ok) {
-      alert('Връзката е ОК. Статус: ' + draft.lastStatus);
+      alert(tf('cfg_conn_ok', draft.lastStatus));
     } else {
       const e = r.error;
-      alert('Грешка: ' + (e.kind === 'cors'
-        ? 'CORS/мрежа. Този източник вероятно блокира браузърен fetch. Виж README за безплатен CORS прокси (Настройки → прокси).'
-        : e.message));
+      alert(tf('cfg_err_prefix', e.kind === 'cors' ? t('cfg_err_cors') : e.message));
     }
   }
 
-  const testBtn = el('button', { class: 'btn', onclick: test }, 'Тествай сега');
+  const testBtn = el('button', { class: 'btn', onclick: test }, t('cfg_test'));
 
   // Пресети
   const presetCards = PRESETS.map((p) =>
@@ -123,7 +122,7 @@ export function renderMonitorConfig(ctx) {
       class: 'btn small',
       style: 'margin:4px 4px 0 0',
       onclick: () => {
-        nameInput.value = p.name;
+        nameInput.value = p.labelKey ? t(p.labelKey) : p.name;
         urlInput.value = p.url;
         typeSel.value = p.sourceType;
         draft.sourceType = p.sourceType;
@@ -135,32 +134,32 @@ export function renderMonitorConfig(ctx) {
         if (p.idField) form.idField.value = p.idField;
         if (p.titleField) form.titleField.value = p.titleField;
       }
-    }, p.name)
+    }, p.labelKey ? t(p.labelKey) : p.name)
   );
 
   return el('div', { class: 'content' }, [
-    el('h2', {}, editing ? 'Редакция на монитор' : 'Нов монитор'),
+    el('h2', {}, editing ? t('cfg_edit_title') : t('cfg_new_title')),
 
     el('div', { class: 'card' }, [
-      el('b', {}, 'Бързи пресети (безплатни)'),
+      el('b', {}, t('cfg_presets_title')),
       el('div', { class: 'row', style: 'flex-wrap:wrap; margin-top:6px' }, presetCards),
-      el('p', { class: 'small', style: 'margin:8px 0 0' }, 'Дали минават директно зависи от CORS на източника в момента на теста.')
+      el('p', { class: 'small', style: 'margin:8px 0 0' }, t('cfg_presets_note'))
     ]),
 
-    el('label', {}, 'Име'), nameInput,
-    el('label', {}, 'Тип източник'), typeSel,
-    el('label', {}, 'Адрес (URL)'), urlInput,
+    el('label', {}, t('cfg_name')), nameInput,
+    el('label', {}, t('cfg_source_type')), typeSel,
+    el('label', {}, t('cfg_url')), urlInput,
     jsonBlock,
-    el('label', {}, 'Правило за съвпадение'), ruleSel,
-    el('label', {}, 'Ключови думи (CSV, по желание)'), kwInput,
-    el('label', {}, 'Честота на проверка'), freqSel,
+    el('label', {}, t('cfg_rule')), ruleSel,
+    el('label', {}, t('cfg_keywords')), kwInput,
+    el('label', {}, t('cfg_freq')), freqSel,
 
     el('div', { class: 'gap' }),
     testBtn,
     el('div', { class: 'gap' }),
-    el('button', { class: 'btn primary', onclick: save }, editing ? 'Запази промените' : 'Добави монитор'),
+    el('button', { class: 'btn primary', onclick: save }, editing ? t('cfg_save_changes') : t('cfg_add_monitor')),
     el('div', { class: 'gap' }),
-    el('button', { class: 'btn', onclick: () => go('dashboard') }, 'Отказ')
+    el('button', { class: 'btn', onclick: () => go('dashboard') }, t('cancel'))
   ]);
 }
 

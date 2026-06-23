@@ -25,15 +25,15 @@ var DRAGON = {
     id: 'dragon', name: 'Дракон', hp: 110, mode: 'HMM',
     slotShiftX: 350,  // широка картинка — измества се към противника да не се крие зад своите
     moves: [
-        { key: 'v', name: 'Огън', type: 'magic', target: 'one',
+        { key: 'v', name: 'Огън', nameKey: 'move_fire', type: 'magic', target: 'one',
           attackAnim: ['attack3', 'attack4', 'attack231', 'attack244', 'attack233', 'spits'],
           damageType: 'inFire', projectile: 'fire' },
-        { key: 'b', name: 'Захапка', type: 'melee', target: 'one',
+        { key: 'b', name: 'Захапка', nameKey: 'move_bite', type: 'melee', target: 'one',
           attackAnim: ['attack1', 'attack2', 'attack11', 'attack143'],
           damageType: 'bleeds' },
     ],
     specials: [
-        { name: 'Огнен дъх по всички', target: 'all',
+        { name: 'Огнен дъх по всички', nameKey: 'special_firebreath', target: 'all',
           attackAnim: ['special', 'special-3', 'special-MassFire', 'special-MassFire2'],
           damageType: 'inFire', projectile: 'fire-wave', color: '#ff7b2a' },
     ],
@@ -68,19 +68,19 @@ var DRAGON = {
 var MAGE = {
     id: 'mage', name: 'Магьосник', hp: 80, stationary: true,  // маг: каства от място, не се движи
     moves: [
-        { key: 'v', name: 'Огнено кълбо', type: 'magic', target: 'one',
+        { key: 'v', name: 'Огнено кълбо', nameKey: 'move_fireball', type: 'magic', target: 'one',
           attackAnim: { left: ['fires-smallFireball', 'fires-bigFireball', 'fires', 'attack1'],
                         right: ['attack1', 'specialIce'] },  // right mage — leden!
           damageType: { left: 'inFire', right: 'iceblocks' } },
-        { key: 'b', name: 'Корени', type: 'magic', target: 'one',
+        { key: 'b', name: 'Корени', nameKey: 'move_roots', type: 'magic', target: 'one',
           attackAnim: ['root-attack', 'roots', 'attack2'],
           damageType: 'roots' },
     ],
     specials: [
-        { name: 'Вледеняване на всички', target: 'all',
+        { name: 'Вледеняване на всички', nameKey: 'special_freezeall', target: 'all',
           attackAnim: ['freezesAll', 'freezeAll', 'specialIce'],
           damageType: 'iceblocks', projectile: 'ice', color: '#7fd8ff', freeze: true },
-        { name: 'Електрически вълни', target: 'all',
+        { name: 'Електрически вълни', nameKey: 'special_electricwaves', target: 'all',
           attackAnim: ['electricAll', 'specialElectricity'],
           damageType: 'electricity', projectile: 'lightning', color: '#5b9bff' },
     ],
@@ -119,7 +119,7 @@ var MAGE = {
 var DWARF = {
     id: 'dwarf', name: 'Джудже', hp: 95, mode: 'HMM',
     moves: [
-        { key: 'v', name: 'Удар с брадва', type: 'melee', target: 'one',
+        { key: 'v', name: 'Удар с брадва', nameKey: 'move_axe', type: 'melee', target: 'one',
           attackAnim: ['attack1', 'attack2'],
           damageType: 'axe-hit' },
     ],
@@ -153,7 +153,7 @@ var DWARF = {
 var KNIGHT = {
     id: 'knight', name: 'Рицар', hp: 105, mode: 'HMM',
     moves: [
-        { key: 'v', name: 'Меч', type: 'melee', target: 'one',
+        { key: 'v', name: 'Меч', nameKey: 'move_sword', type: 'melee', target: 'one',
           attackAnim: ['attack1', 'attack2'],
           damageType: 'sword-hit' },
     ],

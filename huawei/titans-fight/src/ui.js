@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 // Преизползваеми UI помощници: светли, контрастни бутони и текст със сянка.
 import { THEME } from './theme.js';
+import { t } from './core/i18n.js';
 
 // Изсветлява цвят (за по-светли, ясно видими бутони).
 function lighten(color, amount) {
@@ -97,7 +98,7 @@ export function promptName(scene, defaultName, onDone) {
   dim.fillStyle(0x000000, 0.78);
   dim.fillRect(0, 0, W, H);
 
-  const title = titleText(scene, W / 2, H / 2 - 110, 'ВЪВЕДИ ИМЕ ЗА РАНГ ЛИСТАТА', 22, '#ffffff')
+  const title = titleText(scene, W / 2, H / 2 - 110, t('enter_name_title'), 22, '#ffffff')
     .setDepth(301);
 
   // HTML overlay за полето + бутоните (canvas не приема клавиатура директно).
@@ -110,7 +111,7 @@ export function promptName(scene, defaultName, onDone) {
   input.type = 'text';
   input.maxLength = 24;
   input.value = String(defaultName || '').slice(0, 24);
-  input.placeholder = 'Твоето име';
+  input.placeholder = t('name_placeholder');
   input.style.cssText =
     'font-size:22px;padding:12px 16px;border-radius:12px;border:3px solid #ffffff;' +
     'background:#181820;color:#fff;text-align:center;width:min(70vw,320px);outline:none;';
@@ -126,8 +127,8 @@ export function promptName(scene, defaultName, onDone) {
       `background:${bg};color:#101018;cursor:pointer;`;
     return b;
   };
-  const okBtn = mkBtn('ЗАПАЗИ', '#ffd24a');
-  const cancelBtn = mkBtn('ОТКАЗ', '#c8d0dc');
+  const okBtn = mkBtn(t('save'), '#ffd24a');
+  const cancelBtn = mkBtn(t('cancel'), '#c8d0dc');
 
   row.appendChild(okBtn);
   row.appendChild(cancelBtn);

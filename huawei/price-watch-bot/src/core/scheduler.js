@@ -11,6 +11,7 @@ import { WEB_TICK_MS } from '../config.js';
 import { fetchValue } from './api.js';
 import { notify } from './notifier.js';
 import { saveState, pushLog } from './storage.js';
+import { t, tf, getLang, languageByCode } from './i18n.js';
 
 // Честоти в милисекунди.
 export const FREQ = {
@@ -44,24 +45,27 @@ async function checkWatch(state, watch, force = false) {
         watch.status = 'hit';
         const label = `${watch.symbol} ${watch.condition === 'below' ? '≤' : '≥'} ${watch.target}`;
         const msg = `${watch.symbol}: ${formatVal(value)} (${source})`;
-        await notify('Цена-робот: праг достигнат', `${label} — сега ${msg}`);
-        pushLog(state, `🔔 ${label} достигнат — стойност ${formatVal(value)}`);
+        await notify(t('notif_title'), tf('notif_body', label, msg));
+        pushLog(state, tf('log_hit', label, formatVal(value)));
       }
     } else {
       watch.status = 'watching';
     }
     return true;
   } catch (e) {
-    watch.error = (e && e.message) || 'грешка';
+    watch.error = (e && e.message) || t('err_generic');
     watch.lastCheck = Date.now();
-    pushLog(state, `⚠️ ${watch.symbol}: ${watch.error}`);
+    pushLog(state, tf('log_error', watch.symbol, watch.error));
     return true;
   }
 }
 
 export function formatVal(v) {
   if (!isFinite(v)) return '—';
-  if (v >= 1000) return v.toLocaleString('bg-BG', { maximumFractionDigits: 2 });
+  if (v >= 1000) {
+    const locale = languageByCode(getLang()).voice;
+    return v.toLocaleString(locale, { maximumFractionDigits: 2 });
+  }
   if (v >= 1) return v.toFixed(4);
   return v.toFixed(6);
 }

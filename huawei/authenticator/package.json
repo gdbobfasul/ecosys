@@ -1,0 +1,27 @@
+{
+  "name": "authenticator-huawei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KCY Authenticator — двуфакторни кодове (TOTP/HOTP/Steam) с шифриран сейф. Huawei издание.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "cap:add": "cap add android",
+    "cap:sync": "cap sync",
+    "cap:open": "cap open android"
+  },
+  "dependencies": {
+    "@aparajita/capacitor-biometric-auth": "^8.0.0",
+    "@aparajita/capacitor-secure-storage": "^7.0.0",
+    "jsqr": "^1.4.0",
+    "qrcode": "^1.5.3"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1",
+    "vite": "^5.4.10"
+  }
+}

@@ -9,32 +9,65 @@
 //   • махнеш `server.url` и предпочетеш redirect-подход,
 //   • искаш приветлив офлайн екран ПРЕДИ да пуснеш чата.
 //
-// Логика: проверяваме връзката със сървъра; при успех → пренасочваме към чата;
-// при липса → показваме „няма връзка със сървъра" + бутон „Опитай пак".
+// Логика: при ПЪРВО стартиране показваме избор на език; после проверяваме
+// връзката със сървъра; при успех → пренасочваме към чата; при липса →
+// показваме „няма връзка със сървъра" + бутон „Опитай пак" (+ 🌐 за смяна на език).
 import { CHAT_URL, PING_TIMEOUT_MS } from './config.js';
+import {
+  t, getLang, setLang, hasLangChosen, applyDir, LANGUAGES
+} from './core/i18n.js';
 import './styles.css';
 
 const app = document.getElementById('app');
 
+// Прилагаме посоката (RTL/LTR) и текущия език още при зареждане.
+applyDir();
+
+function brandHtml() {
+  return `<div class="brand"><span class="dot"></span> ${t('brand')}</div>`;
+}
+
 function showLoading() {
   app.innerHTML = `
     <div class="screen">
-      <div class="brand"><span class="dot"></span> KCY Chat</div>
+      ${brandHtml()}
       <div class="spinner" aria-hidden="true"></div>
-      <p class="muted">Свързване със сървъра…</p>
+      <p class="muted">${t('connecting')}</p>
     </div>`;
 }
 
 function showOffline() {
   app.innerHTML = `
     <div class="screen">
-      <div class="brand"><span class="dot"></span> KCY Chat</div>
+      ${brandHtml()}
       <div class="icon-warn" aria-hidden="true">⚠</div>
-      <h1>Няма връзка със сървъра</h1>
-      <p class="muted">Провери интернет връзката и опитай пак.</p>
-      <button id="retry" class="btn">Опитай пак</button>
+      <h1>${t('offline_title')}</h1>
+      <p class="muted">${t('offline_desc')}</p>
+      <button id="retry" class="btn">${t('retry')}</button>
+      <button id="relang" class="btn-ghost">${t('lang_btn')}</button>
     </div>`;
   document.getElementById('retry').addEventListener('click', boot);
+  document.getElementById('relang').addEventListener('click', () => showLangPicker(boot));
+}
+
+// Избор на език (overlay). При избор → setLang + продължаваме с `next`.
+function showLangPicker(next) {
+  const cur = getLang();
+  const buttons = LANGUAGES.map((l) =>
+    `<button class="lang-btn${l.code === cur ? ' cur' : ''}" data-code="${l.code}">${l.native}</button>`
+  ).join('');
+  app.innerHTML = `
+    <div class="screen">
+      <div class="lang-globe" aria-hidden="true">🌐</div>
+      <h1>${t('pick_lang')}</h1>
+      <div class="lang-grid">${buttons}</div>
+    </div>`;
+  app.querySelectorAll('.lang-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      setLang(btn.getAttribute('data-code'));
+      next();
+    });
+  });
 }
 
 // HEAD ping с таймаут. mode:'no-cors' → не четем тялото, само дали мрежата отговаря.
@@ -61,4 +94,9 @@ async function boot() {
   }
 }
 
-boot();
+// При първо стартиране → избор на език ПРЕДИ проверката на връзката.
+if (hasLangChosen()) {
+  boot();
+} else {
+  showLangPicker(boot);
+}

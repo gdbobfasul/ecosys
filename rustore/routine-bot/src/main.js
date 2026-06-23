@@ -4,6 +4,7 @@ import { injectStyles } from './ui/styles.js';
 import { clear, h } from './ui/dom.js';
 import { storage, KEYS } from './core/storage.js';
 import { scheduler } from './core/scheduler.js';
+import { t, applyDir, hasLangChosen } from './core/i18n.js';
 
 import { renderOnboarding } from './screens/onboarding.js';
 import { renderRoutineConfig } from './screens/routine-config.js';
@@ -11,9 +12,11 @@ import { renderRemindersSetup } from './screens/reminders.js';
 import { renderPermissions } from './screens/permissions.js';
 import { renderDashboard } from './screens/dashboard.js';
 import { renderNotes } from './screens/notes.js';
+import { renderLanguage } from './screens/language.js';
 
 const root = document.getElementById('app');
 let navEl = null;
+let langFab = null;
 
 function go(screen) {
   clear(root);
@@ -22,6 +25,10 @@ function go(screen) {
 
   const ctx = { go };
   switch (screen) {
+    case 'language':
+      // Изборът на език показва само езиковата решетка (без 🌐 бутон и навигация).
+      removeLangFab();
+      return renderLanguage(root, () => boot());
     case 'onboarding': return renderOnboarding(root, ctx);
     case 'config': return renderRoutineConfig(root, ctx);
     case 'reminders-setup': return renderRemindersSetup(root, ctx);
@@ -39,16 +46,27 @@ function go(screen) {
   }
 }
 
+// Плаващ бутон 🌐 за смяна на езика на интерфейса по всяко време.
+function ensureLangFab() {
+  if (langFab) return;
+  langFab = h(`<button class="lang-fab">${t('lang_btn')}</button>`);
+  langFab.addEventListener('click', () => go('language'));
+  document.body.appendChild(langFab);
+}
+function removeLangFab() {
+  if (langFab) { langFab.remove(); langFab = null; }
+}
+
 function mountNav(active) {
   if (navEl) navEl.remove();
   navEl = h(`
     <nav class="nav">
       <button data-go="dashboard" class="${active === 'dashboard' ? 'active' : ''}">
-        <span class="ico">🏠</span>Табло</button>
+        <span class="ico">🏠</span>${t('nav_dashboard')}</button>
       <button data-go="notes" class="${active === 'notes' ? 'active' : ''}">
-        <span class="ico">📝</span>Бележки</button>
-      <button data-go="config"><span class="ico">⚙️</span>Рутина</button>
-      <button data-go="permissions-edit"><span class="ico">🔔</span>Разрешения</button>
+        <span class="ico">📝</span>${t('nav_notes')}</button>
+      <button data-go="config"><span class="ico">⚙️</span>${t('nav_routine')}</button>
+      <button data-go="permissions-edit"><span class="ico">🔔</span>${t('nav_perms')}</button>
     </nav>
   `);
   navEl.querySelectorAll('button').forEach((b) => {
@@ -59,6 +77,15 @@ function mountNav(active) {
 
 async function boot() {
   injectStyles();
+  applyDir();
+
+  // ПЪРВО стартиране: ако езикът на интерфейса още не е избран — покажи избора.
+  if (!hasLangChosen()) {
+    removeLangFab();
+    return go('language');
+  }
+  ensureLangFab();
+
   const state = await storage.get(KEYS.state, null);
   // При старт презареди графика (нативно възстановяване след рестарт).
   try { await scheduler.reschedule(); } catch (_) {}
@@ -75,7 +102,9 @@ boot().catch((e) => {
     const root = document.getElementById('app');
     if (root) {
       root.innerHTML = '<div style="padding:20px;font-family:sans-serif">' +
-        '<h2>Робот за рутини</h2><p>Стартова грешка: ' + (e && e.message ? e.message : 'неизвестна') + '</p></div>';
+        '<h2>' + t('boot_title') + '</h2><p>' +
+        t('boot_error').replace('{0}', (e && e.message ? e.message : t('boot_unknown'))) +
+        '</p></div>';
     }
   } catch (_) {}
 });

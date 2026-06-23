@@ -1,0 +1,89 @@
+id: business-faq-bot
+name: Бизнес FAQ робот
+folders:
+  - rustore/business-faq-bot
+  - huawei/business-faq-bot
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.businessfaqbot.rustore
+  huawei:  com.kcy.businessfaqbot.huawei
+category:
+  google_play: Business
+  rustore: Бизнес
+  huawei: Business
+content_rating: "3+ (Everyone) — без насилие, без реклами, без покупки; базата знания е създадена от потребителя локално"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Бизнес FAQ-бот
+    short: Робот отвечает на частые вопросы клиентов по ключевым словам — офлайн
+    full: |
+      Бизнес FAQ-бот — «робот в аренду» для малого бизнеса: отвечает на частые вопросы
+      клиентов по правилам (совпадение ключевых слов), без платного LLM, без аккаунтов,
+      без контактов и без отслеживания. Всё на устройстве.
+
+      • База знаний: вопрос-ответ (CRUD), приветствие, резервный ответ, эскалация.
+      • Рабочие часы: 24/7 или заданный интервал (в т.ч. через полночь) — иначе away-сообщение.
+      • Встроенный демо-чат для проверки правил и консоль с журналом и счётчиками.
+      • Каналы мессенджеров показаны честно как «требуют native» — отправка не имитируется.
+      Движок: вход нормализуется, ключевые фразы взвешиваются по длине — побеждает самый
+      точный ответ; при отсутствии совпадений — резервный ответ.
+  en:
+    title: Business FAQ Bot
+    short: A robot that answers customer FAQs by keywords — offline
+    full: |
+      Business FAQ Bot is a "robot for rent" for small businesses: it answers frequent
+      customer questions by rules (keyword matching), with no paid LLM, no accounts, no
+      contacts and no tracking. Everything is on-device.
+
+      • Knowledge base: Q&A (CRUD), greeting, fallback reply and escalation.
+      • Office hours: 24/7 or a chosen window (including across midnight) — otherwise an away message.
+      • Built-in demo chat to test the rules, plus a console with a log and counters.
+      • Messenger channels are shown honestly as "native required" — sending is not faked.
+      Engine: input is normalized and key phrases are weighted by length, so the most
+      specific answer wins; with no match, a fallback reply is sent.
+  bg:
+    title: Бизнес FAQ робот
+    short: Робот отговаря на чести въпроси по ключови думи — офлайн
+    full: |
+      Бизнес FAQ робот е „робот под наем" за малък бизнес: отговаря на честите въпроси
+      на клиентите по правила (съвпадение на ключови думи), без платен LLM, без акаунти,
+      без контакти и без проследяване. Всичко е на устройството.
+
+      • База знания: въпрос-отговор (CRUD), поздрав, резервен отговор и ескалация.
+      • Работно време: 24/7 или избран интервал (вкл. през полунощ) — иначе away съобщение.
+      • Вграден демо чат за тест на правилата и конзола с дневник и броячи.
+      • Каналите към месинджъри са показани честно като „изискват native" — изпращането не се имитира.
+      Машина: входът се нормализира, ключовите фрази се претеглят по дължина — печели
+      най-точният отговор; при нула съвпадения се връща резервен отговор.
+
+permissions:
+  - id: POST_NOTIFICATIONS (@capacitor/local-notifications)
+    why: Локални известия за нови съобщения/ескалация. Незадължително — приложението работи и без тях.
+  - id: android.permission.INTERNET
+    why: Стандартно разрешение на Capacitor WebView обвивката. Приложението не прави мрежови заявки — базата знания е само локална.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - База знания (въпроси/отговори), поздрав/резервен отговор, работно време и дневник — само локално (localStorage)
+  shared_with_third_parties: none
+  encrypted_in_transit: not_applicable   # няма мрежови трансфер
+  encrypted_at_rest: false
+  user_can_delete: true                  # триене/нулиране на записите в приложението
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (робот/въпросителна мотив, лилав акцент #7b5cff)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2 (База знания, Табло ON/OFF, Демо чат)
+
+keywords: [faq, chatbot, business, customer support, rules, keyword, offline, no LLM]

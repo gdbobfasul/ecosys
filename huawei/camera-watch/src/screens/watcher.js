@@ -2,18 +2,17 @@
 import { el, mount } from '../ui/dom.js';
 import { startWatching, stopWatching } from '../core/watcher.js';
 import { getPairing, pairingConfigured } from '../core/pairing.js';
+import { t, tf } from '../core/i18n.js';
 
 export function teardownWatcher() { stopWatching(); }
 
 export async function renderWatcher(root, { go }) {
   if (!pairingConfigured()) {
     const view = el('div', {}, [
-      el('h1', { text: '🔔 Наблюдаващ' }),
-      el('p', { class: 'muted', text:
-        'Още не е сдвоено. Отвори Настройки → „Сдвояване (2 телефона)" и въведи ключа за двойката ' +
-        '(същия като на телефона-страж до камерата).' }),
+      el('h1', { text: t('wat_title') }),
+      el('p', { class: 'muted', text: t('wat_not_paired') }),
       el('div', { class: 'row' }, [
-        el('button', { class: 'btn', onclick: () => go('config') }, 'Към Настройки')
+        el('button', { class: 'btn', onclick: () => go('config') }, t('wat_to_settings'))
       ])
     ]);
     mount(root, view);
@@ -21,20 +20,18 @@ export async function renderWatcher(root, { go }) {
   }
 
   const p = getPairing();
-  const statusEl = el('span', { class: 'pill' }, 'свързвам…');
-  const lastEl = el('div', { class: 'card' }, 'Още няма събития. Чакам сигнал от камерата…');
+  const statusEl = el('span', { class: 'pill' }, t('wat_connecting'));
+  const lastEl = el('div', { class: 'card' }, t('wat_waiting'));
   const frameImg = el('img', { style: 'width:100%;border-radius:12px;margin-top:8px;display:none' });
   const frameCap = el('div', { class: 'muted', style: 'font-size:12px;margin-top:4px;display:none' }, '');
 
   const view = el('div', {}, [
     el('div', { class: 'row between' }, [
-      el('h1', { text: '🔔 Наблюдаващ', class: 'grow' }),
-      el('button', { class: 'btn ghost', onclick: () => { stopWatching(); go('config'); } }, 'Настройки')
+      el('h1', { text: t('wat_title'), class: 'grow' }),
+      el('button', { class: 'btn ghost', onclick: () => { stopWatching(); go('config'); } }, t('settings'))
     ]),
-    el('p', { class: 'muted', text:
-      `Сдвоен. Проверявам за нови събития на всеки ${p.pollSeconds} сек. При събитие ще получиш ` +
-      'локална нотификация и ще видиш последния кадър от камерата.' }),
-    el('div', { class: 'row', style: 'align-items:center;gap:8px;margin:6px 0' }, [el('span', {}, 'Връзка:'), statusEl]),
+    el('p', { class: 'muted', text: tf('wat_intro', p.pollSeconds) }),
+    el('div', { class: 'row', style: 'align-items:center;gap:8px;margin:6px 0' }, [el('span', {}, t('wat_connection')), statusEl]),
     lastEl,
     frameImg,
     frameCap
@@ -48,7 +45,7 @@ export async function renderWatcher(root, { go }) {
   startWatching({
     onStatus: (st) => {
       statusEl.className = 'pill ' + (st.ok ? 'on' : 'off');
-      statusEl.textContent = st.ok ? 'слуша ✓' : ('няма връзка' + (st.reason ? ' (' + st.reason + ')' : ''));
+      statusEl.textContent = st.ok ? t('wat_listening') : (t('pair_no_link') + (st.reason ? ' (' + st.reason + ')' : ''));
     },
     onAlert: (a) => {
       const critical = (a.type === 'person');
@@ -58,7 +55,7 @@ export async function renderWatcher(root, { go }) {
       if (f && f.frame) {
         frameImg.src = f.frame; frameImg.style.display = 'block';
         frameCap.style.display = 'block';
-        frameCap.textContent = 'Последен кадър от камерата' + (f.label ? (' — ' + f.label) : '');
+        frameCap.textContent = t('wat_last_frame') + (f.label ? (' — ' + f.label) : '');
       }
     }
   });

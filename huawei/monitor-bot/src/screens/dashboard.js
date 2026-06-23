@@ -3,6 +3,7 @@
 import { el, fmtTime } from '../ui/styles.js';
 import { saveState, pushLog } from '../core/storage.js';
 import { checkMonitor, startScheduler, stopScheduler } from '../core/scheduler.js';
+import { t, tf } from '../core/i18n.js';
 
 export function renderDashboard(ctx) {
   const { state, go, refresh } = ctx;
@@ -14,7 +15,7 @@ export function renderDashboard(ctx) {
       ...(state.masterOn ? { checked: 'checked' } : {}),
       onchange: async (e) => {
         state.masterOn = e.target.checked;
-        pushLog(state, state.masterOn ? 'Роботът е ВКЛЮЧЕН.' : 'Роботът е ИЗКЛЮЧЕН.');
+        pushLog(state, state.masterOn ? t('log_on') : t('log_off'));
         await saveState(state);
         if (state.masterOn) startScheduler(state, { onUpdate: refresh });
         else stopScheduler();
@@ -27,16 +28,16 @@ export function renderDashboard(ctx) {
   // Списък монитори
   const monitorList = state.monitors.length
     ? state.monitors.map((m) => monitorItem(m))
-    : [el('p', { class: 'muted' }, 'Още няма монитори. Натисни „+ Нов монитор".')];
+    : [el('p', { class: 'muted' }, t('dash_no_monitors'))];
 
   function monitorItem(m) {
     const statusPill = m.paused
-      ? el('span', { class: 'pill off' }, 'на пауза')
-      : (m.lastStatus && m.lastStatus.startsWith('грешка'))
-        ? el('span', { class: 'pill err' }, 'грешка')
+      ? el('span', { class: 'pill off' }, t('st_paused'))
+      : m.lastError
+        ? el('span', { class: 'pill err' }, t('st_error'))
         : m.lastMatch
-          ? el('span', { class: 'pill match' }, 'съвпадение')
-          : el('span', { class: 'pill on' }, 'активен');
+          ? el('span', { class: 'pill match' }, t('st_match'))
+          : el('span', { class: 'pill on' }, t('st_active'));
 
     return el('div', { class: 'list-item' }, [
       el('div', { class: 'row between' }, [
@@ -44,8 +45,8 @@ export function renderDashboard(ctx) {
       ]),
       el('p', { class: 'small', style: 'margin:4px 0' },
         (m.sourceType === 'rss' ? 'RSS' : 'JSON') + ' · ' + freqLabel(m.freq) + ' · ' + ruleLabel(m.rule)),
-      el('p', { class: 'small' }, 'Последна проверка: ' + fmtTime(m.lastCheck) + ' · Съвпадение: ' + fmtTime(m.lastMatch)),
-      el('p', { class: 'small', style: 'color:#aeb8c6' }, 'Статус: ' + (m.lastStatus || '—')),
+      el('p', { class: 'small' }, t('dash_last_check') + ': ' + fmtTime(m.lastCheck) + ' · ' + t('dash_match_at') + ': ' + fmtTime(m.lastMatch)),
+      el('p', { class: 'small', style: 'color:#aeb8c6' }, t('dash_status') + ': ' + (m.lastStatus || '—')),
       el('div', { class: 'row', style: 'margin-top:8px; flex-wrap:wrap' }, [
         el('button', {
           class: 'btn small',
@@ -53,26 +54,26 @@ export function renderDashboard(ctx) {
             const r = await checkMonitor(state, m, { force: true });
             refresh();
             if (!r.ok && r.error.kind === 'cors') {
-              alert('CORS/мрежа: източникът блокира браузърен fetch. Виж полето „CORS прокси" по-долу или README.');
+              alert(t('dash_cors_alert'));
             }
           }
-        }, 'Провери сега'),
-        el('button', { class: 'btn small', onclick: () => go('monitor-config', { id: m.id }) }, 'Редактирай'),
+        }, t('dash_check_now')),
+        el('button', { class: 'btn small', onclick: () => go('monitor-config', { id: m.id }) }, t('edit')),
         el('button', {
           class: 'btn small',
           onclick: async () => { m.paused = !m.paused; await saveState(state); refresh(); }
-        }, m.paused ? 'Възобнови' : 'Пауза'),
+        }, m.paused ? t('dash_resume') : t('dash_pause')),
         el('button', {
           class: 'btn small danger',
           onclick: async () => {
-            if (confirm('Изтрий монитора „' + m.name + '"?')) {
+            if (confirm(tf('dash_del_confirm', m.name))) {
               state.monitors = state.monitors.filter((x) => x.id !== m.id);
-              pushLog(state, 'Изтрит монитор „' + m.name + '".');
+              pushLog(state, tf('log_deleted', m.name));
               await saveState(state);
               refresh();
             }
           }
-        }, 'Изтрий')
+        }, t('delete'))
       ])
     ]);
   }
@@ -81,52 +82,52 @@ export function renderDashboard(ctx) {
   const logEntries = state.log.length
     ? state.log.slice(0, 30).map((l) =>
         el('div', { class: 'log-entry ' + (l.kind || 'info') }, fmtTime(l.ts) + ' — ' + l.text))
-    : [el('p', { class: 'muted' }, 'Празен дневник.')];
+    : [el('p', { class: 'muted' }, t('dash_log_empty'))];
 
   // CORS прокси поле
-  const proxyInput = el('input', { value: state.proxyBase || '', placeholder: 'напр. https://corsproxy.io/?  (по желание)' });
+  const proxyInput = el('input', { value: state.proxyBase || '', placeholder: t('dash_cors_ph') });
 
   return el('div', { class: 'content' }, [
     el('div', { class: 'card' }, [
       el('div', { class: 'row between' }, [
-        el('div', {}, [el('b', {}, 'Роботът'), el('p', { class: 'small', style: 'margin:4px 0 0' }, state.masterOn ? 'работи и проверява по график' : 'спрян')]),
+        el('div', {}, [el('b', {}, t('dash_bot')), el('p', { class: 'small', style: 'margin:4px 0 0' }, state.masterOn ? t('dash_running') : t('dash_stopped'))]),
         masterSwitch
       ]),
       !state.permissions.notifications
-        ? el('p', { class: 'warn', style: 'margin-top:10px' }, 'Известията не са разрешени — съвпаденията ще се пишат само в дневника. Включи ги от „Разрешения".')
+        ? el('p', { class: 'warn', style: 'margin-top:10px' }, t('dash_notif_warn'))
         : null
     ]),
 
     el('div', { class: 'row between' }, [
-      el('h2', { style: 'margin:6px 0' }, 'Монитори'),
-      el('button', { class: 'btn small primary', onclick: () => go('monitor-config') }, '+ Нов монитор')
+      el('h2', { style: 'margin:6px 0' }, t('dash_monitors')),
+      el('button', { class: 'btn small primary', onclick: () => go('monitor-config') }, t('dash_new_monitor'))
     ]),
     el('div', { class: 'card' }, monitorList),
 
-    el('h2', { style: 'margin:14px 0 6px' }, 'CORS прокси (по желание)'),
+    el('h2', { style: 'margin:14px 0 6px' }, t('dash_cors_title')),
     el('div', { class: 'card' }, [
-      el('p', { class: 'small' }, 'Произволни сайтове често блокират браузърен fetch (CORS). Тук можеш да поставиш СВОЙ безплатен прокси. Нищо не е хардкоднато — по подразбиране празно. Поддържа „{url}" заместител или долепя адреса най-отзад.'),
+      el('p', { class: 'small' }, t('dash_cors_desc')),
       proxyInput,
       el('div', { class: 'gap' }),
       el('button', {
         class: 'btn small',
         onclick: async () => {
           state.proxyBase = proxyInput.value.trim();
-          pushLog(state, state.proxyBase ? 'Зададен CORS прокси.' : 'CORS прокси изчистен.');
+          pushLog(state, state.proxyBase ? t('log_proxy_set') : t('log_proxy_clear'));
           await saveState(state);
-          alert('Запазено.');
+          alert(t('saved'));
         }
-      }, 'Запази прокси')
+      }, t('dash_save_proxy'))
     ]),
 
-    el('h2', { style: 'margin:14px 0 6px' }, 'Дневник'),
+    el('h2', { style: 'margin:14px 0 6px' }, t('dash_log')),
     el('div', { class: 'card' }, logEntries)
   ]);
 }
 
 function freqLabel(f) {
-  return { '15min': 'на 15 мин', '1h': 'на час', 'daily': 'дневно' }[f] || f;
+  return { '15min': t('lbl_freq_15min'), '1h': t('lbl_freq_1h'), 'daily': t('lbl_freq_daily') }[f] || f;
 }
 function ruleLabel(r) {
-  return { 'new': 'нов запис', 'keyword': 'ключова дума', 'new+keyword': 'нов + ключова дума' }[r] || r;
+  return { 'new': t('lbl_rule_new'), 'keyword': t('lbl_rule_keyword'), 'new+keyword': t('lbl_rule_both') }[r] || r;
 }

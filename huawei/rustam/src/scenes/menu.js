@@ -6,6 +6,7 @@ import { THEME } from '../theme.js';
 import { LEVELS, MAX_LEVEL } from './levels.js';
 import { loadProgress } from '../store/progress.js';
 import { getTop } from '../leaderboard.js';
+import { t, tf } from '../core/i18n.js';
 
 export default class MenuScene extends Phaser.Scene {
   constructor() {
@@ -42,17 +43,17 @@ export default class MenuScene extends Phaser.Scene {
       fontFamily: 'system-ui, sans-serif', fontSize: '16px', color: '#cbb'
     }).setOrigin(0.5);
 
-    this.add.text(W / 2, H * 0.53, 'Бери краставиците преди къртиците!', {
-      fontFamily: 'system-ui, sans-serif', fontSize: '14px', color: '#bcd9a0'
+    this.add.text(W / 2, H * 0.53, t('tagline'), {
+      fontFamily: 'system-ui, sans-serif', fontSize: '14px', color: '#bcd9a0', align: 'center'
     }).setOrigin(0.5);
 
     // Бутон „ИГРАЙ" (стартира последното отключено ниво).
-    this.makeButton(W / 2, H * 0.60, `ИГРАЙ (НИВО ${unlocked})`, () => {
+    this.makeButton(W / 2, H * 0.60, tf('play_level', unlocked), () => {
       this.scene.start('Game', { level: unlocked, carryScore: 0 });
     }, THEME.accent);
 
     // Решетка с нивата 1..10.
-    this.add.text(W / 2, H * 0.66, 'ИЗБЕРИ НИВО', {
+    this.add.text(W / 2, H * 0.66, t('choose_level'), {
       fontFamily: 'system-ui, sans-serif', fontSize: '14px', color: '#9a9'
     }).setOrigin(0.5);
 
@@ -79,15 +80,20 @@ export default class MenuScene extends Phaser.Scene {
     });
 
     // Бутон „🏆 РАНГ ЛИСТА".
-    this.makeButton(W / 2, H * 0.88, '🏆 РАНГ ЛИСТА', () => {
+    this.makeButton(W / 2, H * 0.88, '🏆 ' + t('leaderboard'), () => {
       this.scene.start('Leaderboard');
     }, THEME.primary, 200, 42);
 
+    // Бутон „🌐 Език" — връща към екрана за избор на език.
+    this.makeButton(W - 70, 26, t('lang_btn'), () => {
+      this.scene.start('Language', { next: 'Menu' });
+    }, 0x3a4a2c, 124, 34);
+
     // Най-добър резултат + водач.
     const top = getTop(1);
-    const leader = top.length ? `  •  Водач: ${top[0].name} (${top[0].score})` : '';
-    this.add.text(W / 2, H * 0.94, `Най-добър резултат: ${prog.bestScore || 0}${leader}`, {
-      fontFamily: 'system-ui, sans-serif', fontSize: '13px', color: '#8a8'
+    const leader = top.length ? '  •  ' + tf('leader', top[0].name, top[0].score) : '';
+    this.add.text(W / 2, H * 0.94, tf('best_score', prog.bestScore || 0) + leader, {
+      fontFamily: 'system-ui, sans-serif', fontSize: '13px', color: '#8a8', align: 'center'
     }).setOrigin(0.5);
   }
 

@@ -9,6 +9,7 @@
 
 // Нормализиран item: { id, title, link, ts }
 // id е стабилен идентификатор за diff (guid/link/hash).
+import { t, tf } from './i18n.js';
 
 function applyProxy(url, proxyBase) {
   if (!proxyBase) return url;
@@ -28,13 +29,13 @@ async function rawFetch(url) {
     res = await fetch(url, { redirect: 'follow', headers: { Accept: '*/*' } });
   } catch (e) {
     // TypeError „Failed to fetch" в браузър почти винаги = CORS или офлайн.
-    const err = new Error('CORS/мрежа: не успях да заредя източника (вероятно CORS блокировка или липса на връзка).');
+    const err = new Error(t('err_cors_full'));
     err.kind = 'cors';
     err.cause = e;
     throw err;
   }
   if (!res.ok) {
-    const err = new Error('HTTP ' + res.status + ' от източника.');
+    const err = new Error(tf('err_http', res.status));
     err.kind = 'http';
     err.status = res.status;
     throw err;
@@ -53,7 +54,7 @@ function hash(str) {
 export function parseFeed(xmlText) {
   const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
   if (doc.querySelector('parsererror')) {
-    const err = new Error('Невалиден XML/RSS отговор.');
+    const err = new Error(t('err_bad_xml'));
     err.kind = 'parse';
     throw err;
   }
@@ -103,7 +104,7 @@ function normalize(title, link, id, pub) {
   const stableId = (id || link || title || '').trim();
   return {
     id: stableId ? hash(stableId) : hash(title + link),
-    title: title || '(без заглавие)',
+    title: title || t('item_no_title'),
     link: link || '',
     ts
   };
@@ -123,12 +124,12 @@ export function extractJsonItems(data, opts = {}) {
     }
   }
   if (!Array.isArray(arr)) {
-    const err = new Error('JSON отговорът не съдържа списък (опитай да зададеш JSON път).');
+    const err = new Error(t('err_no_list'));
     err.kind = 'parse';
     throw err;
   }
   return arr.map((it) => {
-    const title = pick(it, opts.titleField) ?? pick(it, 'title') ?? pick(it, 'name') ?? '(запис)';
+    const title = pick(it, opts.titleField) ?? pick(it, 'title') ?? pick(it, 'name') ?? t('item_entry');
     const idVal = pick(it, opts.idField) ?? pick(it, 'id') ?? title;
     const link = pick(it, 'url') ?? pick(it, 'link') ?? '';
     return {
@@ -156,7 +157,7 @@ export async function fetchItems(monitor, proxyBase) {
     try {
       data = JSON.parse(body);
     } catch {
-      const err = new Error('Невалиден JSON отговор.');
+      const err = new Error(t('err_bad_json'));
       err.kind = 'parse';
       throw err;
     }

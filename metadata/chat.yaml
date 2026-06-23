@@ -1,0 +1,84 @@
+id: chat
+name: KCY Chat
+folders:
+  - rustore/chat
+  - huawei/chat
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.chat.rustore
+  huawei:  com.kcy.chat.huawei
+category:
+  google_play: Communication
+  rustore: Общение
+  huawei: Social
+content_rating: "12+ — комуникационно приложение с потребителско съдържание (чат между потребители); има модерация/сигнали от страна на сървъра"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: KCY Chat
+    short: Мобильный клиент чата KCY — общение, сообщения, задачи
+    full: |
+      KCY Chat — официальный мобильный клиент чата KCY. Приложение загружает рабочий
+      чат-сервер во встроенном WebView, поэтому вы всегда видите актуальную версию
+      сервиса.
+
+      • Общение и обмен сообщениями между пользователями.
+      • При отсутствии связи показывается экран «Нет связи с сервером» с кнопкой «Повторить».
+      • Соединение только по HTTPS.
+      Сообщения отправляются на чат-сервер KCY (требуется интернет). Это коммуникационный
+      сервис с пользовательским контентом.
+  en:
+    title: KCY Chat
+    short: KCY chat mobile client — messaging, conversations, tasks
+    full: |
+      KCY Chat is the official mobile client for the KCY chat. The app loads the live
+      chat server inside an embedded WebView, so you always get the current version of
+      the service.
+
+      • Conversations and messaging between users.
+      • If the connection drops, an offline screen shows "No connection to server" with a "Retry" button.
+      • HTTPS-only connection.
+      Messages are sent to the KCY chat server (internet required). This is a communication
+      service with user-generated content.
+  bg:
+    title: KCY Chat
+    short: Мобилен клиент за чата на KCY — общуване, съобщения, задачи
+    full: |
+      KCY Chat е официалният мобилен клиент за чата на KCY. Приложението зарежда живия
+      чат сървър във вграден WebView, така че винаги виждаш актуалната версия на услугата.
+
+      • Общуване и обмен на съобщения между потребители.
+      • При липса на връзка се показва екран „Няма връзка със сървъра" с бутон „Опитай пак".
+      • Връзка само по HTTPS.
+      Съобщенията се изпращат към чат сървъра на KCY (изисква интернет). Това е
+      комуникационна услуга с потребителско съдържание.
+
+permissions:
+  - id: android.permission.INTERNET
+    why: Приложението е WebView обвивка, която зарежда живия чат сървър (https://my.girl.place) — интернет връзката е задължителна за работа.
+
+data_safety:
+  collects_personal_data: true          # съобщения и профил се обработват от чат сървъра
+  data_stored:
+    - Съобщения, профил и сесия — на чат сървъра на KCY (не локално в приложението)
+    - Локално: само bootstrap/офлайн състояние на обвивката
+  shared_with_third_parties: none        # данните остават в услугата KCY
+  encrypted_in_transit: true             # само HTTPS (cleartext:false)
+  encrypted_at_rest: server_side         # управлява се от чат сървъра
+  user_can_delete: true                  # през самата чат услуга (акаунт/съобщения)
+  account_required: true                 # вход в чат услугата
+
+assets:
+  icon: 512x512 PNG (чат балон мотив, тъмна тема #0d1117)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2 (Чат списък, Разговор, Офлайн екран „Опитай пак")
+
+keywords: [chat, messaging, communication, KCY, conversations, tasks]

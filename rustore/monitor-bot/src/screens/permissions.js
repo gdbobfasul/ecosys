@@ -2,6 +2,7 @@
 import { el } from '../ui/styles.js';
 import { saveState, pushLog } from '../core/storage.js';
 import { requestNotifPermission } from '../core/notifier.js';
+import { t } from '../core/i18n.js';
 
 export function renderPermissions(ctx) {
   const { state, go, refresh } = ctx;
@@ -14,7 +15,7 @@ export function renderPermissions(ctx) {
         if (e.target.checked) {
           const ok = await requestNotifPermission();
           state.permissions.notifications = ok;
-          pushLog(state, ok ? 'Известията са разрешени.' : 'Известията бяха отказани.');
+          pushLog(state, ok ? t('log_notif_on') : t('log_notif_off'));
           if (!ok) e.target.checked = false;
         } else {
           state.permissions.notifications = false;
@@ -27,29 +28,29 @@ export function renderPermissions(ctx) {
   ]);
 
   return el('div', { class: 'content' }, [
-    el('h2', {}, 'Разрешения'),
-    el('p', { class: 'muted' }, 'Роботът иска само минимума. Можеш да го промениш по всяко време.'),
+    el('h2', {}, t('perm_title')),
+    el('p', { class: 'muted' }, t('perm_intro')),
 
     el('div', { class: 'card' }, [
       el('div', { class: 'row between' }, [
-        el('div', {}, [el('b', {}, 'Интернет'), el('p', { class: 'muted', style: 'margin:4px 0 0' }, 'Нужен, за да изтегли източника (RSS/JSON). Без него роботът не може да проверява.')]),
-        el('span', { class: 'pill on' }, 'нужно')
+        el('div', {}, [el('b', {}, t('perm_internet')), el('p', { class: 'muted', style: 'margin:4px 0 0' }, t('perm_internet_desc'))]),
+        el('span', { class: 'pill on' }, t('perm_needed'))
       ])
     ]),
 
     el('div', { class: 'card' }, [
       el('div', { class: 'row between' }, [
-        el('div', { style: 'flex:1' }, [el('b', {}, 'Известия'), el('p', { class: 'muted', style: 'margin:4px 0 0' }, 'Локални известия на устройството при ново съвпадение. Без push сървър.')]),
+        el('div', { style: 'flex:1' }, [el('b', {}, t('perm_notif')), el('p', { class: 'muted', style: 'margin:4px 0 0' }, t('perm_notif_desc'))]),
         notifSwitch
       ])
     ]),
 
     el('div', { class: 'card' }, [
-      el('b', {}, 'Какво НЕ ползваме'),
-      el('p', { class: 'muted', style: 'margin:6px 0 0' }, 'Без местоположение, без контакти, без камера, без реклами, без анализ/проследяване, без акаунти. Данните остават само на устройството.')
+      el('b', {}, t('perm_notnused_title')),
+      el('p', { class: 'muted', style: 'margin:6px 0 0' }, t('perm_notused_desc'))
     ]),
 
     el('div', { class: 'gap' }),
-    el('button', { class: 'btn primary', onclick: () => go('dashboard') }, 'Готово — към таблото')
+    el('button', { class: 'btn primary', onclick: () => go('dashboard') }, t('perm_done'))
   ]);
 }

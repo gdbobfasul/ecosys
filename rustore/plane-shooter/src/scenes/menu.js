@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import { THEME } from '../theme.js';
 import Starfield from '../gfx/starfield.js';
 import { TOTAL_LEVELS } from './levels.js';
+import { t, tf } from '../core/i18n.js';
 
 export default class MenuScene extends Phaser.Scene {
   constructor() {
@@ -36,18 +37,23 @@ export default class MenuScene extends Phaser.Scene {
     });
 
     // Бутон СТАРТ.
-    this.makeButton(width / 2, height * 0.62, 'СТАРТ', () => {
+    this.makeButton(width / 2, height * 0.62, t('start'), () => {
       this.scene.start('Game', { level: 0, score: 0, lives: 3 });
     });
 
     // Бутон РАНГ ЛИСТА.
-    this.makeButton(width / 2, height * 0.62 + 72, '🏆 Ранг листа', () => {
+    this.makeButton(width / 2, height * 0.62 + 72, t('lb_btn'), () => {
       this.scene.start('Leaderboard');
+    });
+
+    // Бутон „🌐 Език" — връща към екрана за избор на език.
+    this.makeButton(width - 70, 26, t('lang_btn'), () => {
+      this.scene.start('Language', { next: 'Menu' });
     });
 
     // Кратки инструкции.
     this.add.text(width / 2, height * 0.86,
-      `Влачи, за да управляваш • авто-огън\nБутон ⚔ сменя оръжието\n${TOTAL_LEVELS} нива с нарастваща трудност`,
+      tf('instructions', TOTAL_LEVELS),
       {
         fontFamily: 'system-ui, sans-serif',
         fontSize: '14px',

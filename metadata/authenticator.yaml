@@ -1,0 +1,88 @@
+id: authenticator
+name: KCY Authenticator
+folders:
+  - rustore/authenticator
+  - huawei/authenticator
+  - public/portals/services/authenticator.html   # уеб версия (Portal Services)
+stores: [rustore, huawei, web]
+package:
+  rustore: com.kcy.authenticator.rustore
+  huawei:  com.kcy.authenticator.huawei
+category:
+  google_play: Tools
+  rustore: Инструменты
+  huawei: Tools
+content_rating: "3+ (Everyone) — без насилие, без реклами, без потребителско съдържание"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: KCY Authenticator
+    short: Коды 2FA (TOTP/HOTP/Steam) с шифрованным хранилищем — офлайн
+    full: |
+      KCY Authenticator — это двухфакторная аутентификация (как Google Authenticator
+      и Aegis), полностью офлайн. Генерирует одноразовые коды TOTP, HOTP и Steam Guard.
+
+      • Хранилище зашифровано: AES-GCM + PBKDF2 (мастер-пароль), плюс биометрия.
+      • Добавление аккаунта 4 способами: камера, загрузка файла с QR, вручную, ссылка otpauth://.
+      • Вкладка «Коллекция»: храните любые QR-коды (например с камер) с названием.
+      • Вкладка «Пароли»: название, логин, пароль, описание — с кнопкой копирования.
+      • Экспорт всех аккаунтов в виде QR-картинок (.zip) и поиск дубликатов.
+      • Интерфейс на 15 языках. Секреты не покидают устройство.
+  en:
+    title: KCY Authenticator
+    short: 2FA codes (TOTP/HOTP/Steam) with an encrypted vault — offline
+    full: |
+      KCY Authenticator is a two-factor authentication app (like Google Authenticator
+      and Aegis), fully offline. It generates one-time TOTP, HOTP and Steam Guard codes.
+
+      • Encrypted vault: AES-GCM + PBKDF2 (master password) plus biometric unlock.
+      • Add an account 4 ways: camera, QR file upload, manual entry, otpauth:// link.
+      • "Collection" tab: keep any QR codes (e.g. from cameras) with a title.
+      • "Passwords" tab: title, login, password, note — each with a copy button.
+      • Export all accounts as QR images (.zip) and find duplicates.
+      • UI in 15 languages. Secrets never leave your device.
+  bg:
+    title: KCY Authenticator
+    short: 2FA кодове (TOTP/HOTP/Steam) с шифриран сейф — офлайн
+    full: |
+      KCY Authenticator е приложение за двуфакторно удостоверяване (като Google
+      Authenticator и Aegis), напълно офлайн. Генерира еднократни TOTP, HOTP и Steam кодове.
+
+      • Шифриран сейф: AES-GCM + PBKDF2 (master парола) и биометрия.
+      • Добавяне по 4 начина: камера, качване на файл с QR, ръчно, otpauth:// линк.
+      • Таб „Колекция": пази произволни QR кодове (напр. от камери) със заглавие.
+      • Таб „Пароли": заглавие, логин, парола, описание — с бутон за копиране.
+      • Експорт на всички като QR картинки (.zip) и откриване на дубликати.
+      • Интерфейс на 15 езика. Тайните не напускат устройството.
+
+permissions:
+  - id: android.permission.CAMERA
+    why: Сканиране на QR кодове за добавяне на акаунти/записи в колекцията. Незадължително — има и ръчно въвеждане/качване на файл.
+  - id: USE_BIOMETRIC / USE_FINGERPRINT
+    why: Незадължително биометрично отключване на сейфа.
+  # Без интернет разрешение по същество — приложението работи офлайн.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - 2FA тайни, запазени QR кодове, записи с пароли — само локално, шифровани (AES-GCM)
+  shared_with_third_parties: none
+  encrypted_in_transit: not_applicable   # няма мрежови трансфер
+  encrypted_at_rest: true
+  user_can_delete: true                  # „Изтрий целия сейф" + триене на отделни записи
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (щит/ключ мотив, тъмно-синьо/тюркоазено)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2 (екран с кодове, екран за добавяне, табове Колекция/Пароли)
+
+keywords: [authenticator, 2FA, TOTP, OTP, Steam Guard, one-time password, security, vault, offline]

@@ -107,3 +107,22 @@ textarea { min-height: 64px; resize: vertical; }
 .brand .logo { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: grid; place-items: center; font-size: 1.1rem; }
 .draghandle { cursor: grab; color: var(--muted); padding: 0 6px; }
 .empty { text-align: center; color: var(--muted); padding: 24px 8px; }
+
+/* избор на език (overlay + бутон) */
+.lang-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: var(--bg); overflow-y: auto;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
+}
+.lang-box { width: 100%; max-width: 560px; margin: auto 0; }
+.lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.lang-btn {
+  border: 1px solid #ffffff1f; border-radius: 12px; padding: 14px 10px;
+  background: var(--bg-card); color: var(--text);
+  font-size: 0.95rem; font-weight: 600; cursor: pointer;
+}
+.lang-btn:active { transform: translateY(1px); }
+.lang-btn.cur { border-color: var(--accent); color: var(--accent-2); }
+.btn.lang { background: transparent; border: 1px solid #ffffff26; }
+[dir=rtl] body { text-align: right; }

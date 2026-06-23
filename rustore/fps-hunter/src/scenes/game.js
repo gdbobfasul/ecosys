@@ -6,6 +6,7 @@ import { Terrain } from '../terrain.js';
 import { Target } from '../targets.js';
 import { generateLevel } from '../level-generator.js';
 import { buildViewmodel, muzzleFlash, fadeFlash, EffectsPool } from '../engine/effects.js';
+import { t, tf } from '../core/i18n.js';
 
 // Атмосфера по биом.
 const ATMO = {
@@ -18,11 +19,10 @@ const ATMO = {
   urban:  { skyTop: 0x8a93a0, skyBottom: 0xc8cfd8, fogColor: 0xb6bdc6, fogNear: 50, fogFar: 280, sunIntensity: 0.8 }
 };
 
-const TARGET_NAMES = {
-  rabbit: 'Заек', roe_deer: 'Сърна', red_deer: 'Елен', elk: 'Лос', boar: 'Глиган',
-  wolf: 'Вълк', snake: 'Змия', gnome: 'Гном', soldier: 'Войник', scarecrow: 'Плашило',
-  tank: 'Танк', plane: 'Самолет', balloon: 'Балон'
-};
+// Името на целта се взима от i18n по ключ tgt_<тип> (преведено на 15 езика).
+function targetName(type) {
+  return t('tgt_' + type);
+}
 
 export class GameScene {
   constructor(engine, controlsFactory, hud, onLevelEnd) {
@@ -77,14 +77,14 @@ export class GameScene {
 
     this.hud.set({
       level: this.config.level,
-      target: TARGET_NAMES[this.config.target] || this.config.target,
-      weapon: this.config.weapon.name,
+      target: targetName(this.config.target),
+      weapon: t('wpn_' + this.config.weapon.key),
       score: this.score,
       left: this.config.count,
       time: Math.ceil(this.timeLeft),
       ammo: this.ammo
     });
-    this.hud.toast(`Ниво ${this.config.level}: ${TARGET_NAMES[this.config.target]}`);
+    this.hud.toast(tf('level_toast', this.config.level, targetName(this.config.target)));
   }
 
   _spawnTarget() {
@@ -99,7 +99,7 @@ export class GameScene {
   // Стрелба: hitscan (пушка/пистолет) или проектил (ракета/прашка).
   _fire() {
     if (this.reloadCd > 0) return;
-    if (this.ammo <= 0) { this.hud.toast('Няма боеприпаси!', 800); return; }
+    if (this.ammo <= 0) { this.hud.toast(t('no_ammo'), 800); return; }
 
     const w = this.config.weapon;
     if (this.ammo !== 999) this.ammo--;

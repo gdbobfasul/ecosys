@@ -1,0 +1,92 @@
+id: baby-monitor
+name: Детегледачка
+folders:
+  - rustore/baby-monitor
+  - huawei/baby-monitor
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.babymonitor.rustore
+  huawei:  com.kcy.babymonitor.huawei
+category:
+  google_play: Parenting
+  rustore: Дети
+  huawei: Education
+content_rating: "3+ (Everyone) — помощно средство за родители, без насилие/реклами/покупки; НЕ е сертифицирано устройство за безопасност"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Детская видеоняня
+    short: "Камера-няня: движение, сон/пробуждение, второй человек — на устройстве"
+    full: |
+      Видеоняня, которая через камеру телефона следит за спящим или играющим ребёнком
+      и подаёт сигнал. Всё обрабатывается на устройстве и бесплатно — видео никуда не
+      загружается.
+
+      • Сон/пробуждение по движению (анализ кадров): «спит спокойно», «зашевелился», «проснулся».
+      • Распознавание людей (TensorFlow.js): «второй человек в комнате», «вышел из кадра».
+      • Локальные уведомления + звук + вибрация, журнал событий со снимком.
+      • По желанию — «другая камера» по URL (поток, проигрываемый в браузере, с CORS).
+      ВАЖНО: это НЕ сертифицированное устройство безопасности и не замена настоящей
+      радионяне или датчику дыма. Используйте как вспомогательное средство.
+  en:
+    title: Baby Monitor
+    short: "Camera monitor: motion, sleep/wake, second person — on-device"
+    full: |
+      A baby/child monitor that watches your sleeping or playing child through the phone
+      camera and alerts you. Everything is processed on-device and it is free — video is
+      never uploaded.
+
+      • Sleep/wake by motion (frame analysis): "sleeping calmly", "stirring", "woke up".
+      • People detection (TensorFlow.js): "second person in the room", "left the frame".
+      • Local notifications + sound + vibration, and an event log with a snapshot.
+      • Optional "other camera" by URL (a browser-playable stream with CORS).
+      IMPORTANT: this is NOT a certified safety device and not a replacement for a real
+      baby monitor or smoke detector. Use it only as a helper.
+  bg:
+    title: Детегледачка
+    short: "Камера-бавачка: движение, сън/събуждане, втори човек — на устройството"
+    full: |
+      Детегледачка, която през камерата на телефона пази спящото или играещото дете и
+      подава сигнал. Всичко се обработва на устройството и е безплатно — видеото не се
+      качва никъде.
+
+      • Сън/събуждане чрез движение (анализ на кадрите): „спи спокойно", „размърдва се", „събуди се".
+      • Разпознаване на хора (TensorFlow.js): „втори човек в стаята", „излезе от кадър".
+      • Локални известия + звук + вибрация и дневник със снимка на събитието.
+      • По избор „друга камера" по URL (browser-playable поток с CORS).
+      ВАЖНО: това НЕ е сертифицирано устройство за безопасност и не замества истински
+      бебефон или датчик за дим. Ползвай го само като помощно средство.
+
+permissions:
+  - id: android.permission.CAMERA
+    why: Заснемане на живо видео от камерата на телефона за засичане на движение и хора. Видеото се обработва само локално и не се качва.
+  - id: POST_NOTIFICATIONS (@capacitor/local-notifications)
+    why: Локални известия при засичане на събитие (събуждане, втори човек и т.н.).
+  - id: android.permission.INTERNET
+    why: Сваляне на безплатните тегла на TensorFlow.js модела и по избор „друга камера"/relay по URL. Без камерата на телефона приложението не изисква интернет за работа.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Настройки и снимки на събития (data URL) — само локално (Capacitor Preferences/localStorage)
+    - Живото видео се обработва на устройството и НЕ се качва
+  shared_with_third_parties: none
+  encrypted_in_transit: not_applicable   # видеото не напуска устройството; по избор relay URL е на потребителя
+  encrypted_at_rest: false
+  user_can_delete: true                  # триене на дневника и нулиране на настройките
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (бебе/камера мотив, мента акцент #5cc8b0)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2 (Наблюдение на живо, Настройки, Дневник със снимка)
+
+keywords: [baby monitor, babysitter, camera, motion detection, sleep, on-device, offline, parenting]

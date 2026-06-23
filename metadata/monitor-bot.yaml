@@ -1,0 +1,93 @@
+id: monitor-bot
+name: Монитор-робот
+folders:
+  - rustore/monitor-bot
+  - huawei/monitor-bot
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.monitorbot.rustore
+  huawei:  com.kcy.monitorbot.huawei
+category:
+  google_play: Productivity
+  rustore: Инструменты
+  huawei: Tools
+content_rating: "3+ (Everyone) — без насилие, без реклами, без потребителско съдържание"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Монитор-робот
+    short: Следит RSS/Atom и JSON API — локальные уведомления о новых записях
+    full: |
+      Монитор-робот — это «робот в аренду», который следит за источником (RSS/Atom
+      лента или публичный JSON API) и присылает локальное уведомление, когда
+      появляется новая запись или совпадает ключевое слово. Без аккаунта, без
+      облака, без слежки, без рекламы.
+
+      • Добавьте мониторы: источник (RSS/Atom или JSON API), правило (новая запись
+        и/или ключевые слова), частота (15 мин / 1 ч / ежедневно).
+      • Готовые бесплатные пресеты для быстрого теста.
+      • Главный выключатель ON/OFF, журнал проверок и совпадений, пауза/удаление.
+      • Diff локально: первая проверка «запоминает», далее уведомляет только о новом.
+      • Уведомления полностью локальные — без сервера и push. Данные на устройстве.
+      • Интерфейс на 15 языках.
+  en:
+    title: Monitor Bot
+    short: Watches RSS/Atom and JSON APIs — local alerts on new entries
+    full: |
+      Monitor Bot is a "robot for hire" that watches a source (an RSS/Atom feed or
+      a public JSON API) and sends a local notification when a new entry appears or
+      a keyword matches. No account, no cloud, no tracking, no ads.
+
+      • Add monitors: source (RSS/Atom or JSON API), rule (new entry and/or
+        keywords), frequency (15 min / 1 h / daily).
+      • Ready-made free presets for a quick test.
+      • Main ON/OFF switch, a log of checks and matches, pause/delete.
+      • Local diff: the first check "learns", then it only alerts on what is new.
+      • Notifications are fully local — no server, no push. Data stays on device.
+      • UI in 15 languages.
+  bg:
+    title: Монитор-робот
+    short: Следи RSS/Atom и JSON API — локални известия за нови записи
+    full: |
+      Монитор-робот е „робот под наем", който следи източник (RSS/Atom емисия или
+      публично JSON API) и праща локално известие, когато се появи нов запис или
+      съвпадне ключова дума. Без акаунт, без облак, без проследяване, без реклами.
+
+      • Добавяй монитори: източник (RSS/Atom или JSON API), правило (нов запис
+        и/или ключови думи), честота (15 мин / 1 ч / дневно).
+      • Готови безплатни пресети за бърз тест.
+      • Главен ключ ON/OFF, дневник на проверките и съвпаденията, пауза/триене.
+      • Локален diff: първата проверка „заучава", после известява само за новото.
+      • Известията са изцяло локални — без сървър и push. Данните са на устройството.
+      • Интерфейс на 15 езика.
+
+permissions:
+  - id: android.permission.INTERNET
+    why: Тегли избраните от потребителя източници (RSS/Atom емисии и публични JSON API), за да открие нови записи. Само към адресите, които потребителят сам е въвел.
+  - id: android.permission.POST_NOTIFICATIONS
+    why: Локални известия (@capacitor/local-notifications), когато се появи нов запис или съвпадне ключова дума. Незадължително.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Конфигурация на мониторите (URL източници, ключови думи, честота) и id-та на видените записи — само локално (@capacitor/preferences)
+  shared_with_third_parties: none
+  encrypted_in_transit: true            # източниците се теглят по HTTPS
+  encrypted_at_rest: false              # обикновени локални настройки, без чувствителни данни
+  user_can_delete: true                 # триене на отделни монитори и на конфигурацията
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (мотив „радар/око", акцент по издание)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2 (онбординг, настройка на монитор, табло с дневник)
+
+keywords: [monitor, RSS, Atom, feed, JSON API, watch, alerts, notifications, keyword, offline]

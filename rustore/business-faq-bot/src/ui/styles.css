@@ -160,3 +160,28 @@ textarea.input { resize: vertical; }
 
 #toast-host { position: fixed; bottom: 76px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; z-index: 50; }
 .toast { background: #000c; color: #fff; padding: 10px 16px; border-radius: 10px; max-width: 90%; font-size: .9rem; }
+
+/* Избор на език (първо стартиране + бутон 🌐). */
+.lang-pick { padding: 32px 8px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.lang-globe { font-size: 2.6rem; }
+.lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 420px; }
+.lang-btn {
+  padding: 14px; border-radius: 10px; background: var(--card-2);
+  border: 1px solid #33406a; color: var(--text); cursor: pointer;
+  font: inherit; font-weight: 600;
+}
+.lang-btn.cur { background: var(--accent); color: #fff; border-color: var(--accent); }
+.lang-fab {
+  background: transparent; border: 1px solid #33406a; color: var(--text);
+  border-radius: 999px; padding: 6px 12px; font: inherit; font-size: .85rem; cursor: pointer;
+}
+.page-head .lang-fab { float: inline-end; }
+[dir="rtl"] body { direction: rtl; }
+.lang-overlay {
+  position: fixed; inset: 0; background: #000a; z-index: 100;
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.lang-sheet {
+  background: var(--card); border: 1px solid #232b45; border-radius: var(--radius);
+  padding: 16px; width: 100%; max-width: 440px; max-height: 86vh; overflow-y: auto;
+}

@@ -1,0 +1,94 @@
+id: price-watch-bot
+name: Цена-робот
+folders:
+  - rustore/price-watch-bot
+  - huawei/price-watch-bot
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.pricewatchbot.rustore
+  huawei:  com.kcy.pricewatchbot.huawei
+category:
+  google_play: Finance
+  rustore: Финансы
+  huawei: Finance
+content_rating: "3+ (Everyone) — без насилие, без реклами, без потребителско съдържание"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Цена-робот
+    short: Следит за курсами крипто и валют — локальные уведомления о пороге
+    full: |
+      Цена-робот — это «робот в аренду», который следит за ценами на криптовалюты
+      и фиатные курсы и присылает локальное уведомление при достижении заданного
+      порога. Без аккаунта, без облака, без слежки. Все цены — из бесплатных
+      публичных API без ключей.
+
+      • Добавьте наблюдения: крипто или валюта, условие «ниже/выше», порог, частота
+        (15 мин / 1 ч / ежедневно).
+      • Источники без ключа и регистрации: Binance, CoinGecko (резерв), open.er-api.
+      • Главный выключатель ON/OFF, список наблюдений с последним значением, журнал,
+        «Проверить сейчас», пауза/удаление.
+      • Уведомления полностью локальные — без сервера и push. Данные на устройстве.
+      • Никаких криптоплатежей — только информация о ценах. Интерфейс на 15 языках.
+  en:
+    title: Price Watch Bot
+    short: Watches crypto and FX rates — local alerts on threshold
+    full: |
+      Price Watch Bot is a "robot for hire" that watches cryptocurrency and fiat
+      exchange rates and sends a local notification when a threshold is reached.
+      No account, no cloud, no tracking. All prices come from free public APIs
+      with no keys.
+
+      • Add watches: crypto or FX, condition "below/above", threshold, frequency
+        (15 min / 1 h / daily).
+      • Keyless sources: Binance, CoinGecko (fallback), open.er-api.
+      • Main ON/OFF switch, a list of watches with the last value, a log, "Check
+        now", pause/delete.
+      • Notifications are fully local — no server, no push. Data stays on device.
+      • No crypto payments — price information only. UI in 15 languages.
+  bg:
+    title: Цена-робот
+    short: Следи курсове на крипто и валути — локални известия при праг
+    full: |
+      Цена-робот е „робот под наем", който следи цени на криптовалути и валутни
+      курсове и праща локално известие при достигнат праг. Без акаунт, без облак,
+      без проследяване. Всички цени идват от безплатни публични API без ключове.
+
+      • Добавяй наблюдения: крипто или валута, условие „под/над", прагова стойност,
+        честота (15 мин / 1 ч / дневно).
+      • Източници без ключ и регистрация: Binance, CoinGecko (резерв), open.er-api.
+      • Главен ключ ON/OFF, списък наблюдения с последна стойност, дневник,
+        „Провери сега", пауза/триене.
+      • Известията са изцяло локални — без сървър и push. Данните са на устройството.
+      • Без крипто плащания — само информация за цени. Интерфейс на 15 езика.
+
+permissions:
+  - id: android.permission.INTERNET
+    why: Тегли актуални котировки от безплатни публични API без ключове (Binance, CoinGecko, open.er-api), за да сравни с прага. Само заявки за четене на цени.
+  - id: android.permission.POST_NOTIFICATIONS
+    why: Локални известия (@capacitor/local-notifications), когато цена премине зададения праг. Незадължително.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Конфигурация на наблюденията (символ, условие, праг, честота) и последни стойности — само локално (@capacitor/preferences)
+  shared_with_third_parties: none
+  encrypted_in_transit: true            # котировките се теглят по HTTPS
+  encrypted_at_rest: false              # обикновени локални настройки, без чувствителни данни
+  user_can_delete: true                 # триене на отделни наблюдения и на конфигурацията
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (мотив „графика/стрелка", акцент по издание)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2 (онбординг, настройка на наблюдение, табло с дневник)
+
+keywords: [price, crypto, exchange rate, FX, alerts, threshold, Binance, CoinGecko, watch, offline]

@@ -4,6 +4,7 @@ import { makeButton, titleText } from '../ui.js';
 import { buildArena } from '../backgrounds.js';
 import { LEVELS } from '../levels.js';
 import { getTop } from '../leaderboard.js';
+import { t } from '../core/i18n.js';
 
 // Сцена „🏆 Ранг листа" — показва целия ТОП 100 (само име + точки).
 // Достъпна от главното меню. С плавно влачене (скрол) на дълъг списък.
@@ -29,7 +30,7 @@ export class LeaderboardScene extends Phaser.Scene {
     dim.fillStyle(0x000000, 0.45);
     dim.fillRect(0, 0, W, H);
 
-    titleText(this, W / 2, H * 0.08, '🏆 РАНГ ЛИСТА', Math.min(44, W * 0.085), THEME.accentHex)
+    titleText(this, W / 2, H * 0.08, t('board_title'), Math.min(44, W * 0.085), THEME.accentHex)
       .setDepth(10);
 
     // По желание: ред „Ти си #N от M" (подаден от края на боя).
@@ -43,14 +44,14 @@ export class LeaderboardScene extends Phaser.Scene {
     const rows = getTop(100);
 
     if (!rows.length) {
-      titleText(this, W / 2, H / 2, 'Все още няма резултати.\nИграй и бъди първи!',
+      titleText(this, W / 2, H / 2, t('no_results'),
         20, '#cfcfd8').setDepth(10);
     } else {
       this._buildList(rows, W, topY, H * 0.80);
     }
 
     // Бутон НАЗАД към менюто (долу по средата, ясно видим).
-    makeButton(this, W / 2, H - 44, Math.min(240, W * 0.6), 52, '◀ МЕНЮ', () => {
+    makeButton(this, W / 2, H - 44, Math.min(240, W * 0.6), 52, t('board_back'), () => {
       this.scene.start('menu');
     }, { color: THEME.primary }).setDepth(50);
 

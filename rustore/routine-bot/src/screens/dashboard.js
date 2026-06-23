@@ -6,6 +6,7 @@ import { scheduler, defaultRoutine, todaysEvents } from '../core/scheduler.js';
 import { mountReminders } from './reminders.js';
 import { mountEventsTasks } from './events-tasks.js';
 import { toast } from '../core/notifier.js';
+import { t, getLang } from '../core/i18n.js';
 
 export async function renderDashboard(root, { go }) {
   const state = await storage.get(KEYS.state, { active: false });

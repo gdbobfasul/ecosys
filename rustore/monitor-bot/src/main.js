@@ -3,16 +3,20 @@ import { injectStyles, el } from './ui/styles.js';
 import { loadState, defaultState } from './core/storage.js';
 import { startScheduler, tick } from './core/scheduler.js';
 import { APP_NAME } from './config.js';
+import { t, applyDir, hasLangChosen } from './core/i18n.js';
 
 import { renderOnboarding } from './screens/onboarding.js';
 import { renderPermissions } from './screens/permissions.js';
 import { renderMonitorConfig } from './screens/monitor-config.js';
 import { renderDashboard } from './screens/dashboard.js';
+import { renderLanguage } from './screens/language.js';
 
 const root = document.getElementById('app');
 let state = null;
 let current = 'onboarding';
 let currentParams = null;
+// Показваме ли точно сега екрана за избор на език (преди първия екран / при ръчно отваряне)?
+let langPick = false;
 
 const SCREENS = {
   onboarding: renderOnboarding,
@@ -21,12 +25,12 @@ const SCREENS = {
   dashboard: renderDashboard
 };
 
-// Долна навигация — само след онбординг.
+// Долна навигация — само след онбординг. Етикетите се превеждат при всяко рисуване.
 const NAV = [
-  { id: 'dashboard', ic: '📡', label: 'Табло' },
-  { id: 'monitor-config', ic: '＋', label: 'Монитор' },
-  { id: 'permissions', ic: '🔔', label: 'Разрешения' },
-  { id: 'onboarding', ic: 'ℹ️', label: 'За робота' }
+  { id: 'dashboard', ic: '📡', label: 'nav_dashboard' },
+  { id: 'monitor-config', ic: '＋', label: 'nav_monitor' },
+  { id: 'permissions', ic: '🔔', label: 'nav_permissions' },
+  { id: 'onboarding', ic: 'ℹ️', label: 'nav_about' }
 ];
 
 function go(screen, params = null) {
@@ -41,11 +45,22 @@ const ctx = () => ({ state, go, refresh, params: currentParams });
 function render() {
   root.innerHTML = '';
 
-  // Топбар
+  // Топбар (с бутон за смяна на език 🌐)
   root.appendChild(el('div', { class: 'topbar' }, [
     el('div', { class: 'logo' }),
-    el('h1', {}, APP_NAME)
+    el('h1', {}, APP_NAME),
+    el('button', {
+      class: 'lang',
+      title: t('language'),
+      onclick: () => { langPick = true; render(); }
+    }, t('lang_btn'))
   ]));
+
+  // Екран за избор на език (заема мястото на съдържанието; без долна навигация).
+  if (langPick) {
+    root.appendChild(renderLanguage(() => { langPick = false; render(); }));
+    return;
+  }
 
   const fn = SCREENS[current] || renderDashboard;
   root.appendChild(fn(ctx()));
@@ -57,7 +72,7 @@ function render() {
       nav.appendChild(el('button', {
         class: current === n.id ? 'active' : '',
         onclick: () => go(n.id)
-      }, [el('span', { class: 'ic' }, n.ic), n.label]));
+      }, [el('span', { class: 'ic' }, n.ic), t(n.label)]));
     }
     root.appendChild(nav);
   }
@@ -65,6 +80,9 @@ function render() {
 
 async function boot() {
   injectStyles();
+  applyDir();
+  // Първо стартиране без избран език → показваме избора преди всичко останало.
+  langPick = !hasLangChosen();
   // Не блокираме рисуването вечно заради състоянието: ако четенето се забави/счупи,
   // тръгваме с подразбиращото се. Така никога няма „черен екран без меню" при старт.
   try {
@@ -91,8 +109,9 @@ boot().catch((e) => {
       root.innerHTML = '';
       const d = document.createElement('div');
       d.style.cssText = 'padding:20px;color:#e8ecf5;font-family:sans-serif';
-      d.innerHTML = '<h2>' + APP_NAME + '</h2><p>Стартова грешка: ' +
-        (e && e.message ? e.message : 'неизвестна') + '</p>';
+      const msg = (e && e.message) ? e.message : t('boot_unknown');
+      d.innerHTML = '<h2>' + APP_NAME + '</h2><p>' +
+        t('boot_error').replace('{0}', msg) + '</p>';
       root.appendChild(d);
     }
   } catch (_) {}

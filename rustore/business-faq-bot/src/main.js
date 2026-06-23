@@ -8,7 +8,9 @@ import { renderChannels } from './screens/channels.js';
 import { renderPermissions } from './screens/permissions.js';
 import { renderDashboard } from './screens/dashboard.js';
 import { renderDemoChat } from './screens/demo-chat.js';
+import { renderLanguagePicker } from './screens/language.js';
 import { startPump } from './core/pump.js';
+import { t, hasLangChosen, applyDir } from './core/i18n.js';
 
 const ROUTES = {
   onboarding: renderOnboarding,
@@ -20,11 +22,11 @@ const ROUTES = {
 };
 
 const NAV = [
-  ['dashboard', 'Табло'],
-  ['kb', 'База знания'],
-  ['channels', 'Канали'],
-  ['chat', 'Демо чат'],
-  ['permissions', 'Разрешения']
+  ['dashboard', 'nav_dashboard'],
+  ['kb', 'nav_kb'],
+  ['channels', 'nav_channels'],
+  ['chat', 'nav_chat'],
+  ['permissions', 'nav_permissions']
 ];
 
 function currentRoute() {
@@ -39,11 +41,11 @@ export function navigate(route) {
 function renderNav(active) {
   if (!getState().activated) return null;
   return el('nav', { class: 'tabbar' },
-    NAV.map(([route, label]) =>
+    NAV.map(([route, labelKey]) =>
       el('button', {
         class: 'tab' + (route === active ? ' active' : ''),
         onclick: () => navigate(route)
-      }, label)
+      }, t(labelKey))
     )
   );
 }
@@ -51,6 +53,13 @@ function renderNav(active) {
 function render() {
   const app = document.getElementById('app');
   clear(app);
+  applyDir();
+
+  // ПЪРВО стартиране: показваме избор на език преди всичко друго.
+  if (!hasLangChosen()) {
+    renderLanguagePicker(app, render);
+    return;
+  }
 
   let route = currentRoute();
   // Преди активиране насочваме винаги към онбординг.

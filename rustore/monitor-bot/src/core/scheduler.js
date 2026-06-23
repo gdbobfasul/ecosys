@@ -26,6 +26,7 @@ import { diffAndMatch, rememberSeen } from './differ.js';
 import { notify } from './notifier.js';
 import { saveState, pushLog } from './storage.js';
 import { WEB_TICK_MS } from '../config.js';
+import { t, tf } from './i18n.js';
 
 export const FREQ_MS = {
   '15min': 15 * 60 * 1000,
@@ -38,6 +39,7 @@ export const FREQ_MS = {
 export const PRESETS = [
   {
     name: 'Hacker News (RSS)',
+    labelKey: 'preset_hn_rss',
     sourceType: 'rss',
     url: 'https://hnrss.org/frontpage',
     rule: 'new',
@@ -45,7 +47,8 @@ export const PRESETS = [
     freq: '1h'
   },
   {
-    name: 'Hacker News — търси „ai" (JSON API)',
+    name: 'Hacker News — ai (JSON API)',
+    labelKey: 'preset_hn_ai',
     sourceType: 'json',
     url: 'https://hn.algolia.com/api/v1/search_by_date?query=ai&tags=story',
     jsonPath: 'hits',
@@ -57,6 +60,7 @@ export const PRESETS = [
   },
   {
     name: 'Reddit r/worldnews (JSON)',
+    labelKey: 'preset_reddit',
     sourceType: 'json',
     url: 'https://www.reddit.com/r/worldnews/new.json?limit=25',
     jsonPath: 'data.children',
@@ -75,35 +79,37 @@ export function newMonitorId() {
 // Проверява един монитор сега. Връща обобщение и обновява монитора + лог.
 export async function checkMonitor(state, monitor, { force = false } = {}) {
   monitor.lastCheck = Date.now();
+  monitor.lastError = false;
   try {
     const items = await fetchItems(monitor, state.proxyBase);
     const { matched, firstRun } = diffAndMatch(monitor, items);
     rememberSeen(monitor, items);
 
     if (firstRun) {
-      monitor.lastStatus = 'заучен (' + items.length + ' записа)';
-      pushLog(state, '„' + monitor.name + '“: първа проверка, заучих ' + items.length + ' записа.', 'info');
+      monitor.lastStatus = tf('status_learned', items.length);
+      pushLog(state, tf('log_first_check', monitor.name, items.length), 'info');
       return { ok: true, matchedCount: 0, firstRun: true };
     }
 
     if (matched.length > 0) {
       monitor.lastMatch = Date.now();
-      monitor.lastStatus = matched.length + ' ново съвпадение';
+      monitor.lastStatus = tf('status_n_matches', matched.length);
       const top = matched.slice(0, 3).map((m) => '• ' + m.title).join('\n');
-      pushLog(state, '„' + monitor.name + '“: ' + matched.length + ' съвпадение(я).', 'match');
+      pushLog(state, tf('log_n_matches', monitor.name, matched.length), 'match');
       if (state.permissions.notifications && !monitor.paused) {
         await notify(
-          'Монитор-робот: ' + monitor.name,
-          matched.length + ' ново съвпадение:\n' + top
+          tf('notif_title', monitor.name),
+          tf('notif_body', matched.length, top)
         );
       }
       return { ok: true, matchedCount: matched.length, items: matched };
     }
 
-    monitor.lastStatus = 'без промяна';
+    monitor.lastStatus = t('status_unchanged');
     return { ok: true, matchedCount: 0 };
   } catch (e) {
-    monitor.lastStatus = 'грешка: ' + (e.kind === 'cors' ? 'CORS/мрежа' : e.message);
+    monitor.lastError = true;
+    monitor.lastStatus = tf('status_error', e.kind === 'cors' ? t('err_cors_short') : e.message);
     pushLog(state, '„' + monitor.name + '“: ' + e.message, 'error');
     return { ok: false, error: e };
   } finally {

@@ -1,5 +1,14 @@
 // scheduler.js — логика за работно време (office-hours) и денонощен режим.
 // Чисти функции — лесни за тест в браузъра.
+import { t, tf } from './i18n.js';
+
+// Кратки имена на дните от седмицата (0=нед..6=съб) — преведени.
+const DAY_KEYS = ['day_sun', 'day_mon', 'day_tue', 'day_wed', 'day_thu', 'day_fri', 'day_sat'];
+
+// Връща преведените къси имена на дните като масив (0=нед..6=съб).
+export function dayNames() {
+  return DAY_KEYS.map((k) => t(k));
+}
 
 // Превръща 'HH:MM' в минути от полунощ.
 export function toMinutes(hhmm) {
@@ -37,8 +46,8 @@ export function activeMode(schedule, when = new Date()) {
 
 // Човешко описание на статуса за UI.
 export function describeSchedule(schedule) {
-  if (!schedule || schedule.mode === '247') return 'Денонощно (24/7)';
-  const names = ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+  if (!schedule || schedule.mode === '247') return t('sched_247');
+  const names = dayNames();
   const days = (schedule.days || []).map((d) => names[d]).join(', ');
-  return `Работно време ${schedule.from}–${schedule.to} (${days || 'без дни'})`;
+  return tf('sched_office', schedule.from, schedule.to, days || t('sched_no_days'));
 }

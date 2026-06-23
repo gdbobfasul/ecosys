@@ -1,0 +1,436 @@
+<!-- Version: 1.0157 -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KCY Authenticator</title>
+<style>
+  :root { --pri:#2a86d8; --acc:#28c08a; --dng:#e0574d; --bg:#0e151d; --card:#18232f; --inp:#101a24; --txt:#e8eef4; --dim:#8aa0b4; --bd:#24323f; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--txt); }
+  .head { background:linear-gradient(135deg,var(--pri),var(--acc)); color:#fff; padding:22px 16px; text-align:center; }
+  .head h1 { font-size:1.5em; margin-bottom:4px; }
+  .head a { color:#fff; text-decoration:none; background:rgba(255,255,255,.2); padding:6px 14px; border-radius:8px; display:inline-block; margin-top:8px; font-size:.85em; }
+  .head .langbtn { position:absolute; right:12px; top:12px; background:rgba(0,0,0,.2); border:none; color:#fff; padding:6px 12px; border-radius:8px; cursor:pointer; font-size:.85em; }
+  .head { position:relative; }
+  .wrap { max-width:560px; margin:0 auto; padding:16px; }
+  .card { background:var(--card); border:1px solid var(--bd); border-radius:12px; padding:18px; }
+  label { display:block; font-weight:600; margin:14px 0 6px; font-size:.9em; color:var(--dim); }
+  input,select { width:100%; padding:12px; font-size:1em; color:var(--txt); background:var(--inp); border:1px solid var(--bd); border-radius:10px; outline:none; }
+  input:focus,select:focus { border-color:var(--pri); }
+  .btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:13px; font-size:1em; font-weight:700; cursor:pointer; background:var(--pri); color:#fff; border:none; border-radius:10px; margin-top:14px; }
+  .btn.accent { background:var(--acc); } .btn.ghost { background:transparent; color:var(--txt); border:1px solid var(--bd); } .btn.danger { background:var(--dng); }
+  .btn:active { filter:brightness(.92); }
+  .err { color:var(--dng); font-size:.9em; margin-top:8px; min-height:1.1em; }
+  .muted { color:var(--dim); font-size:.9em; line-height:1.4; }
+  .center { text-align:center; padding:20px 0; }
+  .lang-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .lang-btn { padding:13px; border-radius:10px; background:var(--inp); border:1px solid var(--bd); color:var(--txt); cursor:pointer; font-weight:600; }
+  .lang-btn.cur { background:var(--acc); color:#fff; border-color:var(--acc); }
+  .entry { display:flex; align-items:center; gap:12px; background:var(--inp); border:1px solid var(--bd); border-radius:12px; padding:12px; margin-bottom:10px; }
+  .badge { width:42px; height:42px; border-radius:10px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; background:var(--pri); }
+  .einfo { flex:1; min-width:0; cursor:pointer; }
+  .issuer { font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .acct { color:var(--dim); font-size:.82em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .code { font-family:ui-monospace,monospace; font-size:1.6em; letter-spacing:3px; color:var(--acc); cursor:pointer; }
+  .ring { font-size:.85em; color:var(--dim); min-width:34px; text-align:right; }
+  .hotp-next { background:var(--inp); border:1px solid var(--bd); color:var(--txt); border-radius:8px; padding:6px 10px; cursor:pointer; }
+  .row { display:flex; gap:10px; } .row>* { flex:1; }
+  .seg { display:flex; gap:8px; margin:8px 0; }
+  .seg button { flex:1; padding:10px; border-radius:10px; border:1px solid var(--bd); background:var(--inp); color:var(--txt); cursor:pointer; }
+  .seg button.on { background:var(--pri); color:#fff; border-color:var(--pri); }
+  .setting { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0; border-bottom:1px solid var(--bd); }
+  .topbar { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .topbar h2 { flex:1; font-size:1.1em; }
+  .iconbtn { background:none; border:none; color:var(--txt); font-size:1.3em; cursor:pointer; }
+  #scanvideo { width:100%; border-radius:12px; background:#000; margin-top:10px; }
+  .tabbar { display:flex; border-top:1px solid var(--bd); margin-top:14px; }
+  .tab { flex:1; background:none; border:none; color:var(--dim); cursor:pointer; padding:10px 4px; font-size:1.3em; display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .tab .tablabel { font-size:.6em; font-weight:600; }
+  .tab.on { color:var(--acc); }
+  .copyfield { display:flex; gap:8px; align-items:stretch; }
+  .copyfield input { flex:1; }
+  .copy-btn { flex:0 0 auto; width:46px; background:var(--inp); border:1px solid var(--bd); color:var(--txt); border-radius:10px; cursor:pointer; font-size:1.1em; }
+  .copy-btn:active { background:var(--pri); color:#fff; }
+  .qrimg { width:100%; max-width:320px; display:block; margin:12px auto; border-radius:12px; background:#fff; padding:8px; }
+  textarea { width:100%; padding:12px; font-size:1em; color:var(--txt); background:var(--inp); border:1px solid var(--bd); border-radius:10px; outline:none; resize:vertical; min-height:70px; font-family:inherit; }
+  textarea:focus { border-color:var(--pri); }
+  #toast { position:fixed; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:#000; color:#fff; padding:10px 18px; border-radius:999px; font-size:.9em; opacity:0; pointer-events:none; transition:.25s; z-index:50; }
+  #toast.show { opacity:.95; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="head">
+  <button class="langbtn" id="langBtn" onclick="App.go('language')">🌐</button>
+  <h1>KCY Authenticator</h1>
+  <p id="subtitle" class="muted" style="color:#eaf6ff">—</p>
+  <a href="/portals/services/" id="allLink">← —</a>
+</div>
+<div class="wrap"><div id="app"></div></div>
+
+<script src="/portals/services/vendor/jsQR.js"></script>
+<script src="/portals/services/vendor/qrcode.min.js"></script>
+<script>
+"use strict";
+// ─────────────────────────────────────────────────────────────────────────────
+// KCY Authenticator — уеб версия (Portal Services). Самостоятелна, работи изцяло
+// в браузъра. Тайните се пазят шифровани (AES-GCM + PBKDF2) в localStorage.
+// Същата OTP логика като мобилното приложение (TOTP/HOTP/Steam, RFC 6238/4226).
+// Интерфейс на 15-те езика; език по подразбиране — руски.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── 15-те езика ──
+var LANGUAGES = [
+  {code:'bg',native:'Български'},{code:'ru',native:'Русский'},{code:'uk',native:'Українська'},
+  {code:'en',native:'English'},{code:'de',native:'Deutsch'},{code:'fr',native:'Français'},
+  {code:'es',native:'Español'},{code:'es-MX',native:'Español (MX)'},{code:'it',native:'Italiano'},
+  {code:'pt',native:'Português'},{code:'ar',native:'العربية'},{code:'hi',native:'हिन्दी'},
+  {code:'ja',native:'日本語'},{code:'ky',native:'Кыргызча'},{code:'zh-Hant',native:'繁體中文'}
+];
+var RTL = ['ar'];
+
+// ── Преводи (същите ключове като мобилния апп + чрома на услугата) ──
+var STR = {
+  subtitle:{bg:'Двуфакторни кодове — изцяло в браузъра',ru:'Двухфакторные коды — полностью в браузере',uk:'Двофакторні коди — повністю у браузері',en:'Two-factor codes — entirely in your browser',de:'Zwei-Faktor-Codes — komplett im Browser',fr:'Codes à deux facteurs — entièrement dans le navigateur',es:'Códigos de doble factor — totalmente en el navegador','es-MX':'Códigos de doble factor — totalmente en el navegador',it:'Codici a due fattori — interamente nel browser',pt:'Códigos de dois fatores — inteiramente no navegador',ar:'رموز ثنائية — كليًا في المتصفح',hi:'टू-फैक्टर कोड — पूरी तरह ब्राउज़र में',ja:'二要素コード — すべてブラウザ内で',ky:'Эки факторлуу коддор — толугу менен браузерде','zh-Hant':'雙重驗證碼 — 完全在瀏覽器中'},
+  all_services:{bg:'← Всички услуги',ru:'← Все услуги',uk:'← Усі послуги',en:'← All services',de:'← Alle Dienste',fr:'← Tous les services',es:'← Todos los servicios','es-MX':'← Todos los servicios',it:'← Tutti i servizi',pt:'← Todos os serviços',ar:'← كل الخدمات',hi:'← सभी सेवाएं',ja:'← すべてのサービス',ky:'← Бардык кызматтар','zh-Hant':'← 所有服務'},
+  pick_lang:{bg:'Избери език',ru:'Выберите язык',uk:'Виберіть мову',en:'Choose language',de:'Sprache wählen',fr:'Choisir la langue',es:'Elegir idioma','es-MX':'Elegir idioma',it:'Scegli la lingua',pt:'Escolher idioma',ar:'اختر اللغة',hi:'भाषा चुनें',ja:'言語を選択',ky:'Тилди тандаңыз','zh-Hant':'選擇語言'},
+  setup_title:{bg:'Създай master парола',ru:'Создайте мастер-пароль',uk:'Створіть майстер-пароль',en:'Create a master password',de:'Master-Passwort erstellen',fr:'Créer un mot de passe maître',es:'Crea una contraseña maestra','es-MX':'Crea una contraseña maestra',it:'Crea una password principale',pt:'Crie uma senha mestra',ar:'أنشئ كلمة مرور رئيسية',hi:'मास्टर पासवर्ड बनाएं',ja:'マスターパスワードを作成',ky:'Башкы сырсөз түзүңүз','zh-Hant':'建立主密碼'},
+  setup_desc:{bg:'Сейфът се шифрова с тази парола. Без нея няма достъп до кодовете.',ru:'Хранилище шифруется этим паролем. Без него доступа к кодам нет.',uk:'Сховище шифрується цим паролем. Без нього доступу до кодів немає.',en:'The vault is encrypted with this password. Without it there is no access to your codes.',de:'Der Tresor wird mit diesem Passwort verschlüsselt. Ohne es gibt es keinen Zugriff.',fr:'Le coffre est chiffré avec ce mot de passe. Sans lui, aucun accès.',es:'La bóveda se cifra con esta contraseña. Sin ella no hay acceso.','es-MX':'La bóveda se cifra con esta contraseña. Sin ella no hay acceso.',it:'La cassaforte è cifrata con questa password. Senza, niente accesso.',pt:'O cofre é cifrado com esta senha. Sem ela não há acesso.',ar:'تُشفَّر الخزنة بهذه الكلمة. بدونها لا وصول.',hi:'वॉल्ट इस पासवर्ड से एन्क्रिप्ट होता है। इसके बिना पहुँच नहीं।',ja:'保管庫はこのパスワードで暗号化されます。これがないとアクセスできません。',ky:'Сейф ушул сырсөз менен шифрленет. Ансыз мүмкүндүк жок.','zh-Hant':'保險庫以此密碼加密，沒有它就無法存取。'},
+  password:{bg:'Парола',ru:'Пароль',uk:'Пароль',en:'Password',de:'Passwort',fr:'Mot de passe',es:'Contraseña','es-MX':'Contraseña',it:'Password',pt:'Senha',ar:'كلمة المرور',hi:'पासवर्ड',ja:'パスワード',ky:'Сырсөз','zh-Hant':'密碼'},
+  confirm_password:{bg:'Повтори паролата',ru:'Повторите пароль',uk:'Повторіть пароль',en:'Repeat password',de:'Passwort wiederholen',fr:'Répéter le mot de passe',es:'Repite la contraseña','es-MX':'Repite la contraseña',it:'Ripeti la password',pt:'Repita a senha',ar:'كرّر كلمة المرور',hi:'पासवर्ड दोहराएं',ja:'パスワードを再入力',ky:'Сырсөздү кайталаңыз','zh-Hant':'再次輸入密碼'},
+  password_min:{bg:'Поне 6 символа',ru:'Минимум 6 символов',uk:'Щонайменше 6 символів',en:'At least 6 characters',de:'Mindestens 6 Zeichen',fr:'Au moins 6 caractères',es:'Al menos 6 caracteres','es-MX':'Al menos 6 caracteres',it:'Almeno 6 caratteri',pt:'Pelo menos 6 caracteres',ar:'٦ أحرف على الأقل',hi:'कम से कम 6 अक्षर',ja:'6文字以上',ky:'Кеминде 6 белги','zh-Hant':'至少 6 個字元'},
+  passwords_mismatch:{bg:'Паролите не съвпадат',ru:'Пароли не совпадают',uk:'Паролі не збігаються',en:'Passwords do not match',de:'Passwörter stimmen nicht überein',fr:'Les mots de passe ne correspondent pas',es:'Las contraseñas no coinciden','es-MX':'Las contraseñas no coinciden',it:'Le password non coincidono',pt:'As senhas não coincidem',ar:'كلمتا المرور غير متطابقتين',hi:'पासवर्ड मेल नहीं खाते',ja:'パスワードが一致しません',ky:'Сырсөздөр дал келбейт','zh-Hant':'密碼不一致'},
+  create_vault:{bg:'Създай сейф',ru:'Создать хранилище',uk:'Створити сховище',en:'Create vault',de:'Tresor erstellen',fr:'Créer le coffre',es:'Crear bóveda','es-MX':'Crear bóveda',it:'Crea cassaforte',pt:'Criar cofre',ar:'أنشئ الخزنة',hi:'वॉल्ट बनाएं',ja:'保管庫を作成',ky:'Сейф түзүү','zh-Hant':'建立保險庫'},
+  unlock_title:{bg:'Отключи сейфа',ru:'Разблокируйте хранилище',uk:'Розблокуйте сховище',en:'Unlock the vault',de:'Tresor entsperren',fr:'Déverrouiller le coffre',es:'Desbloquea la bóveda','es-MX':'Desbloquea la bóveda',it:'Sblocca la cassaforte',pt:'Desbloqueie o cofre',ar:'افتح الخزنة',hi:'वॉल्ट अनलॉक करें',ja:'保管庫を解除',ky:'Сейфти ачуу','zh-Hant':'解鎖保險庫'},
+  unlock:{bg:'Отключи',ru:'Разблокировать',uk:'Розблокувати',en:'Unlock',de:'Entsperren',fr:'Déverrouiller',es:'Desbloquear','es-MX':'Desbloquear',it:'Sblocca',pt:'Desbloquear',ar:'افتح',hi:'अनलॉक',ja:'解除',ky:'Ачуу','zh-Hant':'解鎖'},
+  wrong_password:{bg:'Грешна парола',ru:'Неверный пароль',uk:'Невірний пароль',en:'Wrong password',de:'Falsches Passwort',fr:'Mot de passe incorrect',es:'Contraseña incorrecta','es-MX':'Contraseña incorrecta',it:'Password errata',pt:'Senha incorreta',ar:'كلمة مرور خاطئة',hi:'गलत पासवर्ड',ja:'パスワードが違います',ky:'Сырсөз туура эмес','zh-Hant':'密碼錯誤'},
+  empty_title:{bg:'Няма акаунти',ru:'Нет аккаунтов',uk:'Немає акаунтів',en:'No accounts',de:'Keine Konten',fr:'Aucun compte',es:'Sin cuentas','es-MX':'Sin cuentas',it:'Nessun account',pt:'Sem contas',ar:'لا حسابات',hi:'कोई खाता नहीं',ja:'アカウントなし',ky:'Аккаунттар жок','zh-Hant':'沒有帳戶'},
+  empty_desc:{bg:'Добави първия си акаунт с бутона +',ru:'Добавьте первый аккаунт кнопкой +',uk:'Додайте перший акаунт кнопкою +',en:'Add your first account with the + button',de:'Füge dein erstes Konto mit + hinzu',fr:'Ajoute ton premier compte avec le bouton +',es:'Añade tu primera cuenta con el botón +','es-MX':'Agrega tu primera cuenta con el botón +',it:'Aggiungi il primo account con +',pt:'Adicione sua primeira conta com +',ar:'أضف حسابك الأول بزر +',hi:'+ बटन से पहला खाता जोड़ें',ja:'＋ボタンで最初のアカウントを追加',ky:'+ баскычы менен биринчи аккаунтту кошуңуз','zh-Hant':'用 + 按鈕新增第一個帳戶'},
+  search_ph:{bg:'Търси…',ru:'Поиск…',uk:'Пошук…',en:'Search…',de:'Suchen…',fr:'Rechercher…',es:'Buscar…','es-MX':'Buscar…',it:'Cerca…',pt:'Buscar…',ar:'بحث…',hi:'खोजें…',ja:'検索…',ky:'Издөө…','zh-Hant':'搜尋…'},
+  add_account:{bg:'Добави акаунт',ru:'Добавить аккаунт',uk:'Додати акаунт',en:'Add account',de:'Konto hinzufügen',fr:'Ajouter un compte',es:'Añadir cuenta','es-MX':'Agregar cuenta',it:'Aggiungi account',pt:'Adicionar conta',ar:'أضف حسابًا',hi:'खाता जोड़ें',ja:'アカウントを追加',ky:'Аккаунт кошуу','zh-Hant':'新增帳戶'},
+  copied:{bg:'Копирано',ru:'Скопировано',uk:'Скопійовано',en:'Copied',de:'Kopiert',fr:'Copié',es:'Copiado','es-MX':'Copiado',it:'Copiato',pt:'Copiado',ar:'تم النسخ',hi:'कॉपी हो गया',ja:'コピーしました',ky:'Көчүрүлдү','zh-Hant':'已複製'},
+  next_code:{bg:'Следващ код',ru:'Следующий код',uk:'Наступний код',en:'Next code',de:'Nächster Code',fr:'Code suivant',es:'Código siguiente','es-MX':'Código siguiente',it:'Codice successivo',pt:'Próximo código',ar:'الرمز التالي',hi:'अगला कोड',ja:'次のコード',ky:'Кийинки код','zh-Hant':'下一個代碼'},
+  add_title:{bg:'Нов акаунт',ru:'Новый аккаунт',uk:'Новий акаунт',en:'New account',de:'Neues Konto',fr:'Nouveau compte',es:'Nueva cuenta','es-MX':'Nueva cuenta',it:'Nuovo account',pt:'Nova conta',ar:'حساب جديد',hi:'नया खाता',ja:'新しいアカウント',ky:'Жаңы аккаунт','zh-Hant':'新帳戶'},
+  scan_qr:{bg:'Сканирай QR',ru:'Сканировать QR',uk:'Сканувати QR',en:'Scan QR',de:'QR scannen',fr:'Scanner QR',es:'Escanear QR','es-MX':'Escanear QR',it:'Scansiona QR',pt:'Escanear QR',ar:'امسح QR',hi:'QR स्कैन',ja:'QRスキャン',ky:'QR скандоо','zh-Hant':'掃描 QR'},
+  enter_manually:{bg:'Въведи ръчно',ru:'Ввести вручную',uk:'Ввести вручну',en:'Enter manually',de:'Manuell eingeben',fr:'Saisir manuellement',es:'Ingresar manualmente','es-MX':'Ingresar manualmente',it:'Inserisci manualmente',pt:'Inserir manualmente',ar:'إدخال يدوي',hi:'मैन्युअल दर्ज करें',ja:'手動で入力',ky:'Кол менен киргизүү','zh-Hant':'手動輸入'},
+  paste_uri:{bg:'или постави otpauth:// линк',ru:'или вставьте ссылку otpauth://',uk:'або вставте посилання otpauth://',en:'or paste an otpauth:// link',de:'oder otpauth://-Link einfügen',fr:'ou collez un lien otpauth://',es:'o pega un enlace otpauth://','es-MX':'o pega un enlace otpauth://',it:'o incolla un link otpauth://',pt:'ou cole um link otpauth://',ar:'أو الصق رابط ‎otpauth://',hi:'या otpauth:// लिंक पेस्ट करें',ja:'または otpauth:// リンクを貼り付け',ky:'же otpauth:// шилтемесин коюңуз','zh-Hant':'或貼上 otpauth:// 連結'},
+  issuer:{bg:'Издател (напр. Google)',ru:'Сервис (напр. Google)',uk:'Сервіс (напр. Google)',en:'Issuer (e.g. Google)',de:'Anbieter (z. B. Google)',fr:'Émetteur (ex. Google)',es:'Emisor (p. ej. Google)','es-MX':'Emisor (p. ej. Google)',it:'Servizio (es. Google)',pt:'Emissor (ex. Google)',ar:'الجهة (مثل Google)',hi:'जारीकर्ता (जैसे Google)',ja:'発行元（例: Google）',ky:'Кызмат (мис. Google)','zh-Hant':'發行方（如 Google）'},
+  account:{bg:'Акаунт (напр. имейл)',ru:'Аккаунт (напр. эл. почта)',uk:'Акаунт (напр. ел. пошта)',en:'Account (e.g. email)',de:'Konto (z. B. E-Mail)',fr:'Compte (ex. e-mail)',es:'Cuenta (p. ej. correo)','es-MX':'Cuenta (p. ej. correo)',it:'Account (es. email)',pt:'Conta (ex. e-mail)',ar:'الحساب (مثل البريد)',hi:'खाता (जैसे ईमेल)',ja:'アカウント（例: メール）',ky:'Аккаунт (мис. эл. почта)','zh-Hant':'帳戶（如電子郵件）'},
+  secret:{bg:'Тайна (Base32)',ru:'Секрет (Base32)',uk:'Секрет (Base32)',en:'Secret (Base32)',de:'Geheimnis (Base32)',fr:'Secret (Base32)',es:'Secreto (Base32)','es-MX':'Secreto (Base32)',it:'Segreto (Base32)',pt:'Segredo (Base32)',ar:'السر (Base32)',hi:'सीक्रेट (Base32)',ja:'シークレット（Base32）',ky:'Сыр (Base32)','zh-Hant':'金鑰（Base32）'},
+  type:{bg:'Тип',ru:'Тип',uk:'Тип',en:'Type',de:'Typ',fr:'Type',es:'Tipo','es-MX':'Tipo',it:'Tipo',pt:'Tipo',ar:'النوع',hi:'प्रकार',ja:'タイプ',ky:'Түрү','zh-Hant':'類型'},
+  advanced:{bg:'Разширени',ru:'Дополнительно',uk:'Додатково',en:'Advanced',de:'Erweitert',fr:'Avancé',es:'Avanzado','es-MX':'Avanzado',it:'Avanzate',pt:'Avançado',ar:'متقدم',hi:'उन्नत',ja:'詳細',ky:'Кошумча','zh-Hant':'進階'},
+  algorithm:{bg:'Алгоритъм',ru:'Алгоритм',uk:'Алгоритм',en:'Algorithm',de:'Algorithmus',fr:'Algorithme',es:'Algoritmo','es-MX':'Algoritmo',it:'Algoritmo',pt:'Algoritmo',ar:'الخوارزمية',hi:'एल्गोरिदम',ja:'アルゴリズム',ky:'Алгоритм','zh-Hant':'演算法'},
+  digits:{bg:'Цифри',ru:'Цифры',uk:'Цифри',en:'Digits',de:'Stellen',fr:'Chiffres',es:'Dígitos','es-MX':'Dígitos',it:'Cifre',pt:'Dígitos',ar:'الأرقام',hi:'अंक',ja:'桁数',ky:'Сандар','zh-Hant':'位數'},
+  period:{bg:'Период (сек)',ru:'Период (сек)',uk:'Період (сек)',en:'Period (sec)',de:'Intervall (Sek.)',fr:'Période (sec)',es:'Período (seg)','es-MX':'Período (seg)',it:'Periodo (sec)',pt:'Período (seg)',ar:'الفترة (ث)',hi:'अवधि (सेकंड)',ja:'周期（秒）',ky:'Мезгил (сек)','zh-Hant':'週期（秒）'},
+  counter:{bg:'Брояч',ru:'Счётчик',uk:'Лічильник',en:'Counter',de:'Zähler',fr:'Compteur',es:'Contador','es-MX':'Contador',it:'Contatore',pt:'Contador',ar:'العدّاد',hi:'काउंटर',ja:'カウンター',ky:'Эсептегич','zh-Hant':'計數器'},
+  save:{bg:'Запази',ru:'Сохранить',uk:'Зберегти',en:'Save',de:'Speichern',fr:'Enregistrer',es:'Guardar','es-MX':'Guardar',it:'Salva',pt:'Salvar',ar:'حفظ',hi:'सहेजें',ja:'保存',ky:'Сактоо','zh-Hant':'儲存'},
+  cancel:{bg:'Отказ',ru:'Отмена',uk:'Скасувати',en:'Cancel',de:'Abbrechen',fr:'Annuler',es:'Cancelar','es-MX':'Cancelar',it:'Annulla',pt:'Cancelar',ar:'إلغاء',hi:'रद्द करें',ja:'キャンセル',ky:'Жокко чыгаруу','zh-Hant':'取消'},
+  invalid_secret:{bg:'Невалидна тайна',ru:'Неверный секрет',uk:'Невірний секрет',en:'Invalid secret',de:'Ungültiges Geheimnis',fr:'Secret invalide',es:'Secreto inválido','es-MX':'Secreto inválido',it:'Segreto non valido',pt:'Segredo inválido',ar:'سر غير صالح',hi:'अमान्य सीक्रेट',ja:'無効なシークレット',ky:'Жараксыз сыр','zh-Hant':'金鑰無效'},
+  scan_hint:{bg:'Насочи камерата към QR кода',ru:'Наведите камеру на QR-код',uk:'Наведіть камеру на QR-код',en:'Point the camera at the QR code',de:'Richte die Kamera auf den QR-Code',fr:'Pointe la caméra vers le QR code',es:'Apunta la cámara al código QR','es-MX':'Apunta la cámara al código QR',it:'Inquadra il QR code',pt:'Aponte a câmera para o QR code',ar:'وجّه الكاميرا نحو رمز QR',hi:'कैमरे को QR कोड पर रखें',ja:'カメラをQRコードに向けてください',ky:'Камераны QR кодго багыттаңыз','zh-Hant':'將相機對準 QR 碼'},
+  camera_denied:{bg:'Няма достъп до камерата',ru:'Нет доступа к камере',uk:'Немає доступу до камери',en:'No camera access',de:'Kein Kamerazugriff',fr:'Pas d’accès à la caméra',es:'Sin acceso a la cámara','es-MX':'Sin acceso a la cámara',it:'Nessun accesso alla fotocamera',pt:'Sem acesso à câmera',ar:'لا وصول إلى الكاميرا',hi:'कैमरा एक्सेस नहीं',ja:'カメラにアクセスできません',ky:'Камерага мүмкүндүк жок','zh-Hant':'無法存取相機'},
+  edit_title:{bg:'Редактирай',ru:'Редактировать',uk:'Редагувати',en:'Edit',de:'Bearbeiten',fr:'Modifier',es:'Editar','es-MX':'Editar',it:'Modifica',pt:'Editar',ar:'تعديل',hi:'संपादित करें',ja:'編集',ky:'Түзөтүү','zh-Hant':'編輯'},
+  delete:{bg:'Изтрий',ru:'Удалить',uk:'Видалити',en:'Delete',de:'Löschen',fr:'Supprimer',es:'Eliminar','es-MX':'Eliminar',it:'Elimina',pt:'Excluir',ar:'حذف',hi:'हटाएं',ja:'削除',ky:'Өчүрүү','zh-Hant':'刪除'},
+  delete_confirm:{bg:'Да изтрия ли този акаунт?',ru:'Удалить этот аккаунт?',uk:'Видалити цей акаунт?',en:'Delete this account?',de:'Dieses Konto löschen?',fr:'Supprimer ce compte ?',es:'¿Eliminar esta cuenta?','es-MX':'¿Eliminar esta cuenta?',it:'Eliminare questo account?',pt:'Excluir esta conta?',ar:'حذف هذا الحساب؟',hi:'यह खाता हटाएं?',ja:'このアカウントを削除しますか？',ky:'Бул аккаунтту өчүрөсүзбү?','zh-Hant':'刪除此帳戶？'},
+  settings_title:{bg:'Настройки',ru:'Настройки',uk:'Налаштування',en:'Settings',de:'Einstellungen',fr:'Réglages',es:'Ajustes','es-MX':'Ajustes',it:'Impostazioni',pt:'Configurações',ar:'الإعدادات',hi:'सेटिंग्स',ja:'設定',ky:'Жөндөөлөр','zh-Hant':'設定'},
+  autolock:{bg:'Авто-заключване',ru:'Автоблокировка',uk:'Автоблокування',en:'Auto-lock',de:'Auto-Sperre',fr:'Verrouillage auto',es:'Bloqueo automático','es-MX':'Bloqueo automático',it:'Blocco automatico',pt:'Bloqueio automático',ar:'القفل التلقائي',hi:'ऑटो-लॉक',ja:'自動ロック',ky:'Авто-кулпулоо','zh-Hant':'自動鎖定'},
+  never:{bg:'Никога',ru:'Никогда',uk:'Ніколи',en:'Never',de:'Nie',fr:'Jamais',es:'Nunca','es-MX':'Nunca',it:'Mai',pt:'Nunca',ar:'أبدًا',hi:'कभी नहीं',ja:'なし',ky:'Эч качан','zh-Hant':'永不'},
+  minutes:{bg:'{0} мин',ru:'{0} мин',uk:'{0} хв',en:'{0} min',de:'{0} Min.',fr:'{0} min',es:'{0} min','es-MX':'{0} min',it:'{0} min',pt:'{0} min',ar:'{0} د',hi:'{0} मिनट',ja:'{0} 分',ky:'{0} мүн','zh-Hant':'{0} 分鐘'},
+  lock_now:{bg:'Заключи сега',ru:'Заблокировать сейчас',uk:'Заблокувати зараз',en:'Lock now',de:'Jetzt sperren',fr:'Verrouiller maintenant',es:'Bloquear ahora','es-MX':'Bloquear ahora',it:'Blocca ora',pt:'Bloquear agora',ar:'اقفل الآن',hi:'अभी लॉक करें',ja:'今すぐロック',ky:'Азыр кулпулоо','zh-Hant':'立即鎖定'},
+  change_password:{bg:'Смени паролата',ru:'Сменить пароль',uk:'Змінити пароль',en:'Change password',de:'Passwort ändern',fr:'Changer le mot de passe',es:'Cambiar contraseña','es-MX':'Cambiar contraseña',it:'Cambia password',pt:'Alterar senha',ar:'تغيير كلمة المرور',hi:'पासवर्ड बदलें',ja:'パスワードを変更',ky:'Сырсөздү алмаштыруу','zh-Hant':'更改密碼'},
+  new_password:{bg:'Нова парола',ru:'Новый пароль',uk:'Новий пароль',en:'New password',de:'Neues Passwort',fr:'Nouveau mot de passe',es:'Nueva contraseña','es-MX':'Nueva contraseña',it:'Nuova password',pt:'Nova senha',ar:'كلمة مرور جديدة',hi:'नया पासवर्ड',ja:'新しいパスワード',ky:'Жаңы сырсөз','zh-Hant':'新密碼'},
+  password_changed:{bg:'Паролата е сменена',ru:'Пароль изменён',uk:'Пароль змінено',en:'Password changed',de:'Passwort geändert',fr:'Mot de passe changé',es:'Contraseña cambiada','es-MX':'Contraseña cambiada',it:'Password cambiata',pt:'Senha alterada',ar:'تم تغيير كلمة المرور',hi:'पासवर्ड बदल गया',ja:'パスワードを変更しました',ky:'Сырсөз алмаштырылды','zh-Hant':'密碼已更改'},
+  language:{bg:'Език',ru:'Язык',uk:'Мова',en:'Language',de:'Sprache',fr:'Langue',es:'Idioma','es-MX':'Idioma',it:'Lingua',pt:'Idioma',ar:'اللغة',hi:'भाषा',ja:'言語',ky:'Тил','zh-Hant':'語言'},
+  export_json:{bg:'Експорт (.json)',ru:'Экспорт (.json)',uk:'Експорт (.json)',en:'Export (.json)',de:'Export (.json)',fr:'Exporter (.json)',es:'Exportar (.json)','es-MX':'Exportar (.json)',it:'Esporta (.json)',pt:'Exportar (.json)',ar:'تصدير (.json)',hi:'निर्यात (.json)',ja:'エクスポート (.json)',ky:'Экспорт (.json)','zh-Hant':'匯出 (.json)'},
+  import_json:{bg:'Импорт (.json)',ru:'Импорт (.json)',uk:'Імпорт (.json)',en:'Import (.json)',de:'Import (.json)',fr:'Importer (.json)',es:'Importar (.json)','es-MX':'Importar (.json)',it:'Importa (.json)',pt:'Importar (.json)',ar:'استيراد (.json)',hi:'आयात (.json)',ja:'インポート (.json)',ky:'Импорт (.json)','zh-Hant':'匯入 (.json)'},
+  export_warning:{bg:'Файлът съдържа тайните ти НЕшифровани. Пази го на сигурно.',ru:'Файл содержит ваши секреты БЕЗ шифрования. Храните его в безопасности.',uk:'Файл містить ваші секрети БЕЗ шифрування. Зберігайте його в безпеці.',en:'The file holds your secrets UNENCRYPTED. Keep it safe.',de:'Die Datei enthält deine Geheimnisse UNVERSCHLÜSSELT. Bewahre sie sicher auf.',fr:'Le fichier contient tes secrets NON chiffrés. Garde-le en sécurité.',es:'El archivo contiene tus secretos SIN cifrar. Guárdalo a salvo.','es-MX':'El archivo contiene tus secretos SIN cifrar. Guárdalo a salvo.',it:'Il file contiene i tuoi segreti NON cifrati. Conservalo al sicuro.',pt:'O arquivo contém seus segredos SEM criptografia. Guarde-o em segurança.',ar:'الملف يحتوي أسرارك غير مشفّرة. احفظه بأمان.',hi:'फ़ाइल में आपके सीक्रेट बिना एन्क्रिप्शन के हैं। इसे सुरक्षित रखें।',ja:'ファイルにはシークレットが暗号化されずに含まれます。安全に保管してください。',ky:'Файлда сырларыңыз ШИФРЛЕНБЕГЕН. Аны коопсуз сактаңыз.','zh-Hant':'檔案含有未加密的金鑰，請妥善保管。'},
+  import_done:{bg:'Импортирани {0} акаунта',ru:'Импортировано {0} аккаунтов',uk:'Імпортовано {0} акаунтів',en:'Imported {0} accounts',de:'{0} Konten importiert',fr:'{0} comptes importés',es:'{0} cuentas importadas','es-MX':'{0} cuentas importadas',it:'{0} account importati',pt:'{0} contas importadas',ar:'تم استيراد {0} حساب',hi:'{0} खाते आयात किए',ja:'{0} 件をインポート',ky:'{0} аккаунт импорттолду','zh-Hant':'已匯入 {0} 個帳戶'},
+  import_failed:{bg:'Неуспешен импорт',ru:'Импорт не удался',uk:'Імпорт не вдався',en:'Import failed',de:'Import fehlgeschlagen',fr:'Échec de l’import',es:'Error al importar','es-MX':'Error al importar',it:'Importazione fallita',pt:'Falha na importação',ar:'فشل الاستيراد',hi:'आयात विफल',ja:'インポートに失敗',ky:'Импорт ишке ашкан жок','zh-Hant':'匯入失敗'},
+  wipe:{bg:'Изтрий целия сейф',ru:'Удалить всё хранилище',uk:'Видалити все сховище',en:'Delete entire vault',de:'Gesamten Tresor löschen',fr:'Supprimer tout le coffre',es:'Eliminar toda la bóveda','es-MX':'Eliminar toda la bóveda',it:'Elimina tutta la cassaforte',pt:'Excluir todo o cofre',ar:'حذف الخزنة بالكامل',hi:'पूरा वॉल्ट हटाएं',ja:'保管庫を全削除',ky:'Бүт сейфти өчүрүү','zh-Hant':'刪除整個保險庫'},
+  wipe_confirm:{bg:'Това трие ВСИЧКИ акаунти безвъзвратно. Сигурен ли си?',ru:'Это безвозвратно удалит ВСЕ аккаунты. Вы уверены?',uk:'Це безповоротно видалить ВСІ акаунти. Ви впевнені?',en:'This permanently deletes ALL accounts. Are you sure?',de:'Dies löscht ALLE Konten unwiderruflich. Bist du sicher?',fr:'Ceci supprime DÉFINITIVEMENT tous les comptes. Es-tu sûr ?',es:'Esto elimina TODAS las cuentas para siempre. ¿Estás seguro?','es-MX':'Esto elimina TODAS las cuentas para siempre. ¿Estás seguro?',it:'Questo elimina TUTTI gli account per sempre. Sei sicuro?',pt:'Isto exclui TODAS as contas para sempre. Tem certeza?',ar:'هذا يحذف كل الحسابات نهائيًا. هل أنت متأكد؟',hi:'यह सभी खाते स्थायी रूप से हटा देगा। निश्चित हैं?',ja:'すべてのアカウントを完全に削除します。よろしいですか？',ky:'Бул БАРДЫК аккаунттарды биротоло өчүрөт. Ишенесизби?','zh-Hant':'這將永久刪除所有帳戶。確定嗎？'},
+  type_totp:{bg:'Време (TOTP)',ru:'Время (TOTP)',uk:'Час (TOTP)',en:'Time (TOTP)',de:'Zeit (TOTP)',fr:'Temps (TOTP)',es:'Tiempo (TOTP)','es-MX':'Tiempo (TOTP)',it:'Tempo (TOTP)',pt:'Tempo (TOTP)',ar:'زمني (TOTP)',hi:'समय (TOTP)',ja:'時刻 (TOTP)',ky:'Убакыт (TOTP)','zh-Hant':'時間 (TOTP)'},
+  type_hotp:{bg:'Брояч (HOTP)',ru:'Счётчик (HOTP)',uk:'Лічильник (HOTP)',en:'Counter (HOTP)',de:'Zähler (HOTP)',fr:'Compteur (HOTP)',es:'Contador (HOTP)','es-MX':'Contador (HOTP)',it:'Contatore (HOTP)',pt:'Contador (HOTP)',ar:'عدّاد (HOTP)',hi:'काउंटर (HOTP)',ja:'カウンター (HOTP)',ky:'Эсептегич (HOTP)','zh-Hant':'計數 (HOTP)'},
+  type_steam:{bg:'Steam',ru:'Steam',uk:'Steam',en:'Steam',de:'Steam',fr:'Steam',es:'Steam','es-MX':'Steam',it:'Steam',pt:'Steam',ar:'Steam',hi:'Steam',ja:'Steam',ky:'Steam','zh-Hant':'Steam'},
+  back:{bg:'Назад',ru:'Назад',uk:'Назад',en:'Back',de:'Zurück',fr:'Retour',es:'Atrás','es-MX':'Atrás',it:'Indietro',pt:'Voltar',ar:'رجوع',hi:'वापस',ja:'戻る',ky:'Артка','zh-Hant':'返回'},
+  upload_file:{bg:'Качи файл с QR',ru:'Загрузить файл с QR',uk:'Завантажити файл з QR',en:'Upload QR file',de:'QR-Datei hochladen',fr:'Importer un fichier QR',es:'Subir archivo QR','es-MX':'Subir archivo QR',it:'Carica file QR',pt:'Enviar arquivo QR',ar:'تحميل ملف QR',hi:'QR फ़ाइल अपलोड करें',ja:'QRファイルをアップロード',ky:'QR файлын жүктөө','zh-Hant':'上傳 QR 檔案'},
+  export_all_qr:{bg:'Експортирай всички (QR)',ru:'Экспорт всех (QR)',uk:'Експорт усіх (QR)',en:'Export all (QR)',de:'Alle exportieren (QR)',fr:'Tout exporter (QR)',es:'Exportar todo (QR)','es-MX':'Exportar todo (QR)',it:'Esporta tutti (QR)',pt:'Exportar tudo (QR)',ar:'تصدير الكل (QR)',hi:'सभी निर्यात (QR)',ja:'すべてエクスポート（QR）',ky:'Баарын экспорт (QR)','zh-Hant':'匯出全部 (QR)'},
+  export_all_desc:{bg:'Сваля всяка авторизация като отделна QR картинка в един .zip.',ru:'Скачивает каждую запись отдельной QR-картинкой в одном .zip.',uk:'Завантажує кожен запис окремою QR-картинкою в одному .zip.',en:'Downloads each account as a separate QR image in one .zip.',de:'Lädt jedes Konto als separates QR-Bild in einer .zip herunter.',fr:'Télécharge chaque compte en image QR séparée dans un .zip.',es:'Descarga cada cuenta como imagen QR separada en un .zip.','es-MX':'Descarga cada cuenta como imagen QR separada en un .zip.',it:'Scarica ogni account come immagine QR separata in uno .zip.',pt:'Baixa cada conta como imagem QR separada em um .zip.',ar:'ينزّل كل حساب كصورة QR منفصلة في ملف .zip.',hi:'हर खाते को अलग QR छवि के रूप में एक .zip में डाउनलोड करता है।',ja:'各アカウントを個別のQR画像として1つの.zipでダウンロード。',ky:'Ар бир аккаунтту өзүнчө QR сүрөт катары бир .zip ичинде жүктөйт.','zh-Hant':'將每個帳戶以獨立 QR 圖片下載到一個 .zip。'},
+  duplicates:{bg:'Дубликати',ru:'Дубликаты',uk:'Дублікати',en:'Duplicates',de:'Duplikate',fr:'Doublons',es:'Duplicados','es-MX':'Duplicados',it:'Duplicati',pt:'Duplicados',ar:'مكرّرات',hi:'डुप्लिकेट',ja:'重複',ky:'Кайталанмалар','zh-Hant':'重複項'},
+  find_duplicates:{bg:'Намери дубликати',ru:'Найти дубликаты',uk:'Знайти дублікати',en:'Find duplicates',de:'Duplikate finden',fr:'Trouver les doublons',es:'Buscar duplicados','es-MX':'Buscar duplicados',it:'Trova duplicati',pt:'Encontrar duplicados',ar:'البحث عن المكرّرات',hi:'डुप्लिकेट खोजें',ja:'重複を検索',ky:'Кайталанмаларды табуу','zh-Hant':'尋找重複項'},
+  no_duplicates:{bg:'Няма дубликати',ru:'Дубликатов нет',uk:'Дублікатів немає',en:'No duplicates',de:'Keine Duplikate',fr:'Aucun doublon',es:'Sin duplicados','es-MX':'Sin duplicados',it:'Nessun duplicato',pt:'Sem duplicados',ar:'لا مكرّرات',hi:'कोई डुप्लिकेट नहीं',ja:'重複なし',ky:'Кайталанма жок','zh-Hant':'沒有重複項'},
+  dup_same_secret:{bg:'Еднаква тайна',ru:'Одинаковый секрет',uk:'Однаковий секрет',en:'Same secret',de:'Gleiches Geheimnis',fr:'Même secret',es:'Mismo secreto','es-MX':'Mismo secreto',it:'Stesso segreto',pt:'Mesmo segredo',ar:'السر نفسه',hi:'समान सीक्रेट',ja:'同じシークレット',ky:'Бирдей сыр','zh-Hant':'相同金鑰'},
+  dup_similar:{bg:'Подобни имена',ru:'Похожие имена',uk:'Схожі імена',en:'Similar names',de:'Ähnliche Namen',fr:'Noms similaires',es:'Nombres similares','es-MX':'Nombres similares',it:'Nomi simili',pt:'Nomes parecidos',ar:'أسماء متشابهة',hi:'मिलते-जुलते नाम',ja:'類似した名前',ky:'Окшош аттар','zh-Hant':'相似名稱'},
+  select_all:{bg:'Избери всички',ru:'Выбрать все',uk:'Вибрати всі',en:'Select all',de:'Alle auswählen',fr:'Tout sélectionner',es:'Seleccionar todo','es-MX':'Seleccionar todo',it:'Seleziona tutto',pt:'Selecionar tudo',ar:'تحديد الكل',hi:'सभी चुनें',ja:'すべて選択',ky:'Баарын тандоо','zh-Hant':'全選'},
+  delete_selected:{bg:'Изтрий избраните',ru:'Удалить выбранные',uk:'Видалити вибрані',en:'Delete selected',de:'Auswahl löschen',fr:'Supprimer la sélection',es:'Eliminar seleccionados','es-MX':'Eliminar seleccionados',it:'Elimina selezionati',pt:'Excluir selecionados',ar:'حذف المحدد',hi:'चयनित हटाएं',ja:'選択を削除',ky:'Тандалгандарды өчүрүү','zh-Hant':'刪除所選'},
+  deleted_n:{bg:'Изтрити {0}',ru:'Удалено {0}',uk:'Видалено {0}',en:'Deleted {0}',de:'{0} gelöscht',fr:'{0} supprimés',es:'{0} eliminados','es-MX':'{0} eliminados',it:'{0} eliminati',pt:'{0} excluídos',ar:'تم حذف {0}',hi:'{0} हटाए',ja:'{0} 件削除',ky:'{0} өчүрүлдү','zh-Hant':'已刪除 {0}'},
+  decoded_ok:{bg:'QR разчетен ✓',ru:'QR распознан ✓',uk:'QR розпізнано ✓',en:'QR decoded ✓',de:'QR erkannt ✓',fr:'QR décodé ✓',es:'QR leído ✓','es-MX':'QR leído ✓',it:'QR letto ✓',pt:'QR lido ✓',ar:'تم قراءة QR ✓',hi:'QR पढ़ा ✓',ja:'QR読取 ✓',ky:'QR окулду ✓','zh-Hant':'QR 已解碼 ✓'},
+  qr_not_found:{bg:'Не е намерен QR код в картинката',ru:'QR-код в изображении не найден',uk:'QR-код у зображенні не знайдено',en:'No QR code found in the image',de:'Kein QR-Code im Bild gefunden',fr:'Aucun QR code trouvé dans l’image',es:'No se encontró QR en la imagen','es-MX':'No se encontró QR en la imagen',it:'Nessun QR trovato nell’immagine',pt:'Nenhum QR encontrado na imagem',ar:'لم يُعثر على رمز QR في الصورة',hi:'छवि में कोई QR कोड नहीं मिला',ja:'画像にQRコードが見つかりません',ky:'Сүрөттө QR код табылган жок','zh-Hant':'圖片中找不到 QR 碼'},
+  nothing_to_export:{bg:'Няма какво да се експортира',ru:'Нечего экспортировать',uk:'Нема чого експортувати',en:'Nothing to export',de:'Nichts zu exportieren',fr:'Rien à exporter',es:'Nada que exportar','es-MX':'Nada que exportar',it:'Niente da esportare',pt:'Nada para exportar',ar:'لا شيء للتصدير',hi:'निर्यात के लिए कुछ नहीं',ja:'エクスポートするものがありません',ky:'Экспорттоого эч нерсе жок','zh-Hant':'沒有可匯出的項目'},
+  exporting:{bg:'Експортиране…',ru:'Экспорт…',uk:'Експорт…',en:'Exporting…',de:'Exportieren…',fr:'Exportation…',es:'Exportando…','es-MX':'Exportando…',it:'Esportazione…',pt:'Exportando…',ar:'جارٍ التصدير…',hi:'निर्यात हो रहा…',ja:'エクスポート中…',ky:'Экспорттолууда…','zh-Hant':'匯出中…'},
+  tab_auth:{bg:'Аутентикация',ru:'Аутентификация',uk:'Автентифікація',en:'Authentication',de:'Authentifizierung',fr:'Authentification',es:'Autenticación','es-MX':'Autenticación',it:'Autenticazione',pt:'Autenticação',ar:'المصادقة',hi:'प्रमाणीकरण',ja:'認証',ky:'Аутентификация','zh-Hant':'驗證'},
+  tab_collection:{bg:'Колекция',ru:'Коллекция',uk:'Колекція',en:'Collection',de:'Sammlung',fr:'Collection',es:'Colección','es-MX':'Colección',it:'Collezione',pt:'Coleção',ar:'المجموعة',hi:'संग्रह',ja:'コレクション',ky:'Коллекция','zh-Hant':'收藏'},
+  tab_passwords:{bg:'Пароли',ru:'Пароли',uk:'Паролі',en:'Passwords',de:'Passwörter',fr:'Mots de passe',es:'Contraseñas','es-MX':'Contraseñas',it:'Password',pt:'Senhas',ar:'كلمات المرور',hi:'पासवर्ड',ja:'パスワード',ky:'Сырсөздөр','zh-Hant':'密碼'},
+  title:{bg:'Заглавие',ru:'Название',uk:'Назва',en:'Title',de:'Titel',fr:'Titre',es:'Título','es-MX':'Título',it:'Titolo',pt:'Título',ar:'العنوان',hi:'शीर्षक',ja:'タイトル',ky:'Аталышы','zh-Hant':'標題'},
+  login:{bg:'Логин',ru:'Логин',uk:'Логін',en:'Login',de:'Login',fr:'Identifiant',es:'Usuario','es-MX':'Usuario',it:'Accesso',pt:'Login',ar:'اسم الدخول',hi:'लॉगिन',ja:'ログイン',ky:'Логин','zh-Hant':'登入帳號'},
+  note:{bg:'Допълнително описание',ru:'Дополнительное описание',uk:'Додатковий опис',en:'Additional description',de:'Zusätzliche Beschreibung',fr:'Description supplémentaire',es:'Descripción adicional','es-MX':'Descripción adicional',it:'Descrizione aggiuntiva',pt:'Descrição adicional',ar:'وصف إضافي',hi:'अतिरिक्त विवरण',ja:'追加説明',ky:'Кошумча сүрөттөмө','zh-Hant':'附加說明'},
+  copy:{bg:'Копиране',ru:'Копировать',uk:'Копіювати',en:'Copy',de:'Kopieren',fr:'Copier',es:'Copiar','es-MX':'Copiar',it:'Copia',pt:'Copiar',ar:'نسخ',hi:'कॉपी',ja:'コピー',ky:'Көчүрүү','zh-Hant':'複製'},
+  col_add_title:{bg:'Добави в колекцията',ru:'Добавить в коллекцию',uk:'Додати до колекції',en:'Add to collection',de:'Zur Sammlung hinzufügen',fr:'Ajouter à la collection',es:'Añadir a la colección','es-MX':'Agregar a la colección',it:'Aggiungi alla collezione',pt:'Adicionar à coleção',ar:'أضف إلى المجموعة',hi:'संग्रह में जोड़ें',ja:'コレクションに追加',ky:'Коллекцияга кошуу','zh-Hant':'加入收藏'},
+  pwd_add_title:{bg:'Нов запис за парола',ru:'Новая запись пароля',uk:'Новий запис пароля',en:'New password entry',de:'Neuer Passworteintrag',fr:'Nouvelle entrée de mot de passe',es:'Nueva entrada de contraseña','es-MX':'Nueva entrada de contraseña',it:'Nuova voce password',pt:'Nova entrada de senha',ar:'إدخال كلمة مرور جديد',hi:'नई पासवर्ड प्रविष्टि',ja:'新しいパスワード項目',ky:'Жаңы сырсөз жазуусу','zh-Hant':'新增密碼項目'},
+  empty_col_title:{bg:'Няма запазени кодове',ru:'Нет сохранённых кодов',uk:'Немає збережених кодів',en:'No saved codes',de:'Keine gespeicherten Codes',fr:'Aucun code enregistré',es:'Sin códigos guardados','es-MX':'Sin códigos guardados',it:'Nessun codice salvato',pt:'Sem códigos salvos',ar:'لا رموز محفوظة',hi:'कोई सहेजा कोड नहीं',ja:'保存されたコードなし',ky:'Сакталган коддор жок','zh-Hant':'沒有已儲存的代碼'},
+  empty_col_desc:{bg:'Качи или сканирай QR код и му дай заглавие',ru:'Загрузите или отсканируйте QR-код и дайте ему название',uk:'Завантажте або відскануйте QR-код і дайте йому назву',en:'Upload or scan a QR code and give it a title',de:'Lade einen QR-Code hoch oder scanne ihn und gib ihm einen Titel',fr:'Importe ou scanne un QR code et donne-lui un titre',es:'Sube o escanea un código QR y ponle un título','es-MX':'Sube o escanea un código QR y ponle un título',it:'Carica o scansiona un QR code e dagli un titolo',pt:'Envie ou escaneie um QR code e dê um título',ar:'حمّل أو امسح رمز QR وأعطه عنوانًا',hi:'QR कोड अपलोड या स्कैन करें और शीर्षक दें',ja:'QRコードをアップロードまたはスキャンしてタイトルを付けます',ky:'QR кодду жүктөңүз же скандаңыз жана аталыш бериңиз','zh-Hant':'上傳或掃描 QR 碼並命名'},
+  empty_pwd_title:{bg:'Няма запазени пароли',ru:'Нет сохранённых паролей',uk:'Немає збережених паролів',en:'No saved passwords',de:'Keine gespeicherten Passwörter',fr:'Aucun mot de passe enregistré',es:'Sin contraseñas guardadas','es-MX':'Sin contraseñas guardadas',it:'Nessuna password salvata',pt:'Sem senhas salvas',ar:'لا كلمات مرور محفوظة',hi:'कोई सहेजा पासवर्ड नहीं',ja:'保存されたパスワードなし',ky:'Сакталган сырсөздөр жок','zh-Hant':'沒有已儲存的密碼'},
+  empty_pwd_desc:{bg:'Добави заглавие, логин и парола',ru:'Добавьте название, логин и пароль',uk:'Додайте назву, логін і пароль',en:'Add a title, login and password',de:'Füge Titel, Login und Passwort hinzu',fr:'Ajoute un titre, un identifiant et un mot de passe',es:'Añade título, usuario y contraseña','es-MX':'Agrega título, usuario y contraseña',it:'Aggiungi titolo, accesso e password',pt:'Adicione título, login e senha',ar:'أضف عنوانًا واسم دخول وكلمة مرور',hi:'शीर्षक, लॉगिन और पासवर्ड जोड़ें',ja:'タイトル、ログイン、パスワードを追加',ky:'Аталыш, логин жана сырсөз кошуңуз','zh-Hant':'新增標題、登入帳號與密碼'},
+  title_required:{bg:'Заглавието е задължително',ru:'Название обязательно',uk:'Назва обов’язкова',en:'Title is required',de:'Titel ist erforderlich',fr:'Le titre est requis',es:'El título es obligatorio','es-MX':'El título es obligatorio',it:'Il titolo è obbligatorio',pt:'O título é obrigatório',ar:'العنوان مطلوب',hi:'शीर्षक आवश्यक है',ja:'タイトルは必須です',ky:'Аталыш милдеттүү','zh-Hant':'必須填寫標題'}
+};
+
+// ── i18n ──
+var LS = { vault:'kcyauth.web.vault', settings:'kcyauth.web.settings', lang:'kcyauth.web.lang' };
+var DEF='ru', FB='en', cur = (function(){ try{ var s=localStorage.getItem(LS.lang); if(s&&STR.save[s]!=null) return s; }catch(e){} return DEF; })();
+function t(k){ var r=STR[k]; if(!r) return k; if(r[cur]!=null) return r[cur]; if(r[DEF]!=null) return r[DEF]; if(r[FB]!=null) return r[FB]; return k; }
+function tf(k){ var s=t(k),a=arguments; for(var i=1;i<a.length;i++) s=s.replace(new RegExp('\\{'+(i-1)+'\\}','g'),String(a[i])); return s; }
+function setLang(c){ if(STR.save[c]==null) return; cur=c; try{localStorage.setItem(LS.lang,c);}catch(e){} document.documentElement.setAttribute('dir', RTL.indexOf(c)>-1?'rtl':'ltr'); document.documentElement.setAttribute('lang',c); }
+function hasLang(){ try{ return !!localStorage.getItem(LS.lang); }catch(e){ return false; } }
+
+// ── Base32 ──
+var B32='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+function b32dec(input){ var clean=String(input||'').toUpperCase().replace(/[\s\-=]/g,''),bits=0,val=0,out=[]; for(var i=0;i<clean.length;i++){ var idx=B32.indexOf(clean[i]); if(idx<0) continue; val=(val<<5)|idx; bits+=5; if(bits>=8){ bits-=8; out.push((val>>>bits)&0xff); } } return new Uint8Array(out); }
+
+// ── OTP (TOTP/HOTP/Steam) ──
+var STEAM='23456789BCDFGHJKMNPQRTVWXY';
+function hashName(a){ a=String(a||'SHA1').toUpperCase(); return a==='SHA256'?'SHA-256':a==='SHA512'?'SHA-512':'SHA-1'; }
+function ctrBytes(c){ var b=new Uint8Array(8),x=Math.floor(c); for(var i=7;i>=0;i--){ b[i]=x&0xff; x=Math.floor(x/256); } return b; }
+async function hmac(key,msg,alg){ var k=await crypto.subtle.importKey('raw',key,{name:'HMAC',hash:{name:hashName(alg)}},false,['sign']); return new Uint8Array(await crypto.subtle.sign('HMAC',k,msg)); }
+function trunc(h){ var o=h[h.length-1]&0x0f; return ((h[o]&0x7f)<<24)|((h[o+1]&0xff)<<16)|((h[o+2]&0xff)<<8)|(h[o+3]&0xff); }
+async function hotp(sec,counter,opts){ opts=opts||{}; var d=opts.digits||6; var h=await hmac(b32dec(sec),ctrBytes(counter),opts.algorithm); return String(trunc(h)%Math.pow(10,d)).padStart(d,'0'); }
+async function totp(sec,opts){ opts=opts||{}; var p=opts.period||30; var ts=Math.floor((opts.timestamp!=null?opts.timestamp:Date.now())/1000); return hotp(sec,Math.floor(ts/p),opts); }
+async function steam(sec,opts){ opts=opts||{}; var p=opts.period||30; var ts=Math.floor((opts.timestamp!=null?opts.timestamp:Date.now())/1000); var h=await hmac(b32dec(sec),ctrBytes(Math.floor(ts/p)),'SHA1'); var num=trunc(h),code=''; for(var i=0;i<5;i++){ code+=STEAM[num%STEAM.length]; num=Math.floor(num/STEAM.length); } return code; }
+async function genCode(e){ var o={digits:e.digits||6,period:e.period||30,algorithm:e.algorithm||'SHA1'}; if(e.type==='hotp') return hotp(e.secret,e.counter||0,o); if(e.type==='steam') return steam(e.secret,o); return totp(e.secret,o); }
+function secLeft(p){ p=p||30; return p-(Math.floor(Date.now()/1000)%p); }
+function parseURI(uri){ var u; try{ u=new URL(String(uri).trim()); }catch(e){ return null; } if(u.protocol!=='otpauth:') return null; var type=(u.host||'').toLowerCase(); if(['totp','hotp','steam'].indexOf(type)<0) return null; var label=decodeURIComponent((u.pathname||'/').replace(/^\//,'')); var issuer=u.searchParams.get('issuer')||'',account=label; if(label.indexOf(':')>=0){ var pr=label.split(':'); if(!issuer) issuer=pr[0].trim(); account=pr.slice(1).join(':').trim(); } var secret=(u.searchParams.get('secret')||'').replace(/\s/g,''); if(!secret) return null; return {type:type,issuer:issuer.trim(),account:account.trim(),secret:secret,algorithm:(u.searchParams.get('algorithm')||'SHA1').toUpperCase(),digits:parseInt(u.searchParams.get('digits')||(type==='steam'?'5':'6'),10)||6,period:parseInt(u.searchParams.get('period')||'30',10)||30,counter:parseInt(u.searchParams.get('counter')||'0',10)||0}; }
+
+// ── Сглобяване на otpauth:// (за експорт като QR) ──
+function buildURI(e){ var type=e.type||'totp'; var label=e.issuer?(encodeURIComponent(e.issuer)+':'+encodeURIComponent(e.account||'')):encodeURIComponent(e.account||''); var p=new URLSearchParams(); p.set('secret',e.secret); if(e.issuer) p.set('issuer',e.issuer); if(e.algorithm&&e.algorithm!=='SHA1') p.set('algorithm',e.algorithm); if(e.digits&&e.digits!==6) p.set('digits',String(e.digits)); if(e.period&&e.period!==30) p.set('period',String(e.period)); if(type==='hotp') p.set('counter',String(e.counter||0)); return 'otpauth://'+type+'/'+label+'?'+p.toString(); }
+
+// ── Минимален ZIP (метод store) — за „Експортирай всички" ──
+var CRC_T=null;
+function crcT(){ if(CRC_T) return CRC_T; var t=new Uint32Array(256); for(var n=0;n<256;n++){ var c=n; for(var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0; } CRC_T=t; return t; }
+function crc32(b){ var t=crcT(),c=0xFFFFFFFF; for(var i=0;i<b.length;i++) c=t[(c^b[i])&0xff]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+function zipStore(files){ var te=new TextEncoder(),parts=[],central=[],offset=0; files.forEach(function(f){ var nb=te.encode(f.name),data=f.data,crc=crc32(data),size=data.length; var lh=new Uint8Array(30+nb.length),lv=new DataView(lh.buffer); lv.setUint32(0,0x04034b50,true); lv.setUint16(4,20,true); lv.setUint16(6,0x0800,true); lv.setUint16(8,0,true); lv.setUint16(10,0,true); lv.setUint16(12,0,true); lv.setUint32(14,crc,true); lv.setUint32(18,size,true); lv.setUint32(22,size,true); lv.setUint16(26,nb.length,true); lv.setUint16(28,0,true); lh.set(nb,30); parts.push(lh,data); var ch=new Uint8Array(46+nb.length),cv=new DataView(ch.buffer); cv.setUint32(0,0x02014b50,true); cv.setUint16(4,20,true); cv.setUint16(6,20,true); cv.setUint16(8,0x0800,true); cv.setUint16(10,0,true); cv.setUint16(12,0,true); cv.setUint16(14,0,true); cv.setUint32(16,crc,true); cv.setUint32(20,size,true); cv.setUint32(24,size,true); cv.setUint16(28,nb.length,true); cv.setUint16(30,0,true); cv.setUint16(32,0,true); cv.setUint16(34,0,true); cv.setUint16(36,0,true); cv.setUint32(38,0,true); cv.setUint32(42,offset,true); ch.set(nb,46); central.push(ch); offset+=lh.length+data.length; }); var cSize=central.reduce(function(s,c){return s+c.length;},0); var eocd=new Uint8Array(22),ev=new DataView(eocd.buffer); ev.setUint32(0,0x06054b50,true); ev.setUint16(8,files.length,true); ev.setUint16(10,files.length,true); ev.setUint32(12,cSize,true); ev.setUint32(16,offset,true); return new Blob(parts.concat(central,[eocd]),{type:'application/zip'}); }
+function durlBytes(durl){ var b64=(durl.split(',')[1]||''),s=atob(b64),a=new Uint8Array(s.length); for(var i=0;i<s.length;i++) a[i]=s.charCodeAt(i); return a; }
+function sanitize(s){ return String(s||'').replace(/[^\w.\-]+/g,'_').replace(/^_+|_+$/g,'').slice(0,60)||'acc'; }
+// Прави QR PNG (data URL) през vendor qrcode.min.js (qrcodejs).
+function qrPng(text){ return new Promise(function(res){ if(typeof QRCode==='undefined'){ res(null); return; } var box=document.createElement('div'); box.style.position='fixed'; box.style.left='-9999px'; document.body.appendChild(box); try{ new QRCode(box,{text:text,width:320,height:320,correctLevel:QRCode.CorrectLevel.M}); }catch(e){ box.remove(); res(null); return; } setTimeout(function(){ var cv=box.querySelector('canvas'); var durl=null; try{ durl=cv?cv.toDataURL('image/png'):(box.querySelector('img')||{}).src||null; }catch(e){} box.remove(); res(durl); },60); }); }
+async function exportAllQR(){ if(!sess.entries.length) return {ok:false,reason:'empty'}; var files=[],used={}; for(var i=0;i<sess.entries.length;i++){ var e=sess.entries[i]; var durl=await qrPng(buildURI(e)); if(!durl) continue; var base=sanitize((e.issuer?e.issuer+'-':'')+(e.account||'acc')),name=base,n=1; while(used[name]) name=base+'_'+(++n); used[name]=1; files.push({name:name+'.png',data:durlBytes(durl)}); } if(!files.length) return {ok:false,reason:'nolib'}; var blob=zipStore(files),a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='kcy-authenticator-qr.zip'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1500); return {ok:true,count:files.length}; }
+// Декодира QR от качена картинка.
+function decodeImageFile(file){ return new Promise(function(res){ if(typeof jsQR==='undefined'){ res(null); return; } var url=URL.createObjectURL(file),im=new Image(); im.onload=function(){ var cv=document.createElement('canvas'); cv.width=im.naturalWidth; cv.height=im.naturalHeight; var ctx=cv.getContext('2d',{willReadFrequently:true}); ctx.drawImage(im,0,0); var d=ctx.getImageData(0,0,cv.width,cv.height); var found=jsQR(d.data,d.width,d.height); URL.revokeObjectURL(url); res(found&&found.data?found.data:null); }; im.onerror=function(){ URL.revokeObjectURL(url); res(null); }; im.src=url; }); }
+// Откриване на дубликати (еднаква тайна / подобни имена).
+function lev(a,b){ var m=a.length,n=b.length; if(!m) return n; if(!n) return m; var prev=[]; for(var j=0;j<=n;j++) prev[j]=j; for(var i=1;i<=m;i++){ var pd=prev[0]; prev[0]=i; for(var j2=1;j2<=n;j2++){ var tmp=prev[j2]; prev[j2]=Math.min(prev[j2]+1,prev[j2-1]+1,pd+(a[i-1]===b[j2-1]?0:1)); pd=tmp; } } return prev[n]; }
+function nm(s){ return String(s||'').trim().toLowerCase(); }
+function fname(e){ return (nm(e.issuer)+' '+nm(e.account)).trim(); }
+function simil(a,b){ if(!a||!b) return a===b; if(a===b) return true; if(a.indexOf(b)>=0||b.indexOf(a)>=0) return true; var d=lev(a,b),m=Math.max(a.length,b.length); return m>0&&(1-d/m)>=0.8; }
+function findDups(){ var entries=sess.entries,groups=[],usedS={}; var bySec={}; entries.forEach(function(e){ var k=String(e.secret||'').toUpperCase().replace(/\s/g,''); if(!k) return; (bySec[k]=bySec[k]||[]).push(e); }); Object.keys(bySec).forEach(function(k){ var arr=bySec[k]; if(arr.length>1){ groups.push({reason:'secret',entries:arr}); arr.forEach(function(e){ usedS[e.id]=1; }); } }); var rest=entries.filter(function(e){ return !usedS[e.id]; }),seen={}; for(var i=0;i<rest.length;i++){ if(seen[rest[i].id]) continue; var grp=[rest[i]]; for(var j=i+1;j<rest.length;j++){ if(seen[rest[j].id]) continue; if(simil(fname(rest[i]),fname(rest[j]))){ grp.push(rest[j]); seen[rest[j].id]=1; } } if(grp.length>1){ grp.forEach(function(e){ seen[e.id]=1; }); groups.push({reason:'name',entries:grp}); } } return groups; }
+
+// ── Сейф (AES-GCM + PBKDF2) ──
+var ITER=210000, te=new TextEncoder(), td=new TextDecoder();
+function b64e(b){ var s='',u=new Uint8Array(b); for(var i=0;i<u.length;i++) s+=String.fromCharCode(u[i]); return btoa(s); }
+function b64d(s){ var x=atob(s),o=new Uint8Array(x.length); for(var i=0;i<x.length;i++) o[i]=x.charCodeAt(i); return o; }
+async function deriveKey(pw,salt){ var bk=await crypto.subtle.importKey('raw',te.encode(pw),'PBKDF2',false,['deriveKey']); return crypto.subtle.deriveKey({name:'PBKDF2',salt:salt,iterations:ITER,hash:'SHA-256'},bk,{name:'AES-GCM',length:256},false,['encrypt','decrypt']); }
+async function encVault(obj,pw){ var salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await deriveKey(pw,salt); var ct=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,te.encode(JSON.stringify(obj))); return {v:1,salt:b64e(salt),iv:b64e(iv),ct:b64e(ct)}; }
+async function decVault(blob,pw){ if(!blob||!blob.salt) throw new Error('bad'); var key=await deriveKey(pw,b64d(blob.salt)),pt; try{ pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(blob.iv)},key,b64d(blob.ct)); }catch(e){ throw new Error('wrong_password'); } return JSON.parse(td.decode(pt)); }
+
+// ── Съхранение + сесия ──
+var DEFS={lang:null,autoLockMin:1};
+var sess={unlocked:false,password:null,entries:[],collection:[],passwords:[]};
+function hasVault(){ try{ return !!localStorage.getItem(LS.vault); }catch(e){ return false; } }
+function loadSettings(){ try{ var r=localStorage.getItem(LS.settings); return Object.assign({},DEFS,r?JSON.parse(r):{}); }catch(e){ return Object.assign({},DEFS); } }
+function saveSettings(p){ var n=Object.assign(loadSettings(),p||{}); try{ localStorage.setItem(LS.settings,JSON.stringify(n)); }catch(e){} return n; }
+async function createVault(pw){ sess.entries=[]; sess.collection=[]; sess.passwords=[]; sess.password=pw; sess.unlocked=true; await persist(); }
+async function unlockVault(pw){ var blob=JSON.parse(localStorage.getItem(LS.vault)); var d=await decVault(blob,pw); sess.entries=Array.isArray(d.entries)?d.entries:[]; sess.collection=Array.isArray(d.collection)?d.collection:[]; sess.passwords=Array.isArray(d.passwords)?d.passwords:[]; sess.password=pw; sess.unlocked=true; }
+async function persist(){ if(!sess.unlocked) throw new Error('locked'); var blob=await encVault({entries:sess.entries,collection:sess.collection,passwords:sess.passwords},sess.password); localStorage.setItem(LS.vault,JSON.stringify(blob)); }
+function lock(){ sess.unlocked=false; sess.password=null; sess.entries=[]; sess.collection=[]; sess.passwords=[]; }
+function wipeVault(){ try{ localStorage.removeItem(LS.vault); }catch(e){} lock(); }
+function newId(){ return 'e'+Date.now().toString(36)+Math.floor(performance.now()).toString(36); }
+function cap256(s){ return String(s==null?'':s).slice(0,256); }
+async function addEntry(e){ var x=Object.assign({id:newId(),type:'totp',algorithm:'SHA1',digits:6,period:30,counter:0},e); sess.entries.push(x); await persist(); return x; }
+async function updEntry(id,p){ var e=sess.entries.find(function(x){return x.id===id;}); if(!e) return; Object.assign(e,p); await persist(); }
+async function delEntry(id){ sess.entries=sess.entries.filter(function(x){return x.id!==id;}); await persist(); }
+async function incCounter(id){ var e=sess.entries.find(function(x){return x.id===id;}); if(!e||e.type!=='hotp') return; e.counter=(e.counter||0)+1; await persist(); }
+async function addColl(it){ var x={id:newId(),title:cap256(it&&it.title),content:String(it&&it.content||''),image:String(it&&it.image||'')}; sess.collection.push(x); await persist(); return x; }
+async function updColl(id,p){ var x=sess.collection.find(function(c){return c.id===id;}); if(!x) return; if(p.title!=null) p.title=cap256(p.title); Object.assign(x,p); await persist(); }
+async function delColl(id){ sess.collection=sess.collection.filter(function(c){return c.id!==id;}); await persist(); }
+async function addPwd(it){ var x={id:newId(),title:cap256(it&&it.title),login:cap256(it&&it.login),password:cap256(it&&it.password),note:cap256(it&&it.note)}; sess.passwords.push(x); await persist(); return x; }
+async function updPwd(id,p){ var x=sess.passwords.find(function(c){return c.id===id;}); if(!x) return; ['title','login','password','note'].forEach(function(k){ if(p[k]!=null) p[k]=cap256(p[k]); }); Object.assign(x,p); await persist(); }
+async function delPwd(id){ sess.passwords=sess.passwords.filter(function(c){return c.id!==id;}); await persist(); }
+
+// ── Помощници за DOM ──
+function el(tag,attrs){ var n=document.createElement(tag); if(attrs) for(var k in attrs){ var v=attrs[k]; if(v==null||v===false) continue; if(k==='class') n.className=v; else if(k==='text') n.textContent=v; else if(k==='html') n.innerHTML=v; else if(k.slice(0,2)==='on'&&typeof v==='function') n.addEventListener(k.slice(2).toLowerCase(),v); else n.setAttribute(k,v); } for(var i=2;i<arguments.length;i++){ var c=arguments[i]; if(c==null||c===false) continue; n.appendChild(typeof c==='string'?document.createTextNode(c):c); } return n; }
+function clear(n){ while(n.firstChild) n.removeChild(n.firstChild); }
+var toastT=null;
+function toast(m){ var x=document.getElementById('toast'); if(!x){ x=document.createElement('div'); x.id='toast'; document.body.appendChild(x); } x.textContent=m; x.classList.add('show'); if(toastT) clearTimeout(toastT); toastT=setTimeout(function(){ x.classList.remove('show'); },1400); }
+function copyText(text){ var s=String(text==null?'':text); try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(s); return true; } }catch(e){} try{ var ta=document.createElement('textarea'); ta.value=s; ta.style.position='fixed'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); ta.remove(); return true; }catch(e){ return false; } }
+var activeTab='auth';
+
+// ── Рутер ──
+var tickTimer=null, activeStream=null, rafId=null;
+function stopCamera(){ if(rafId){ cancelAnimationFrame(rafId); rafId=null; } if(activeStream){ activeStream.getTracks().forEach(function(tr){ try{tr.stop();}catch(e){} }); activeStream=null; } }
+function chrome(){ document.getElementById('subtitle').textContent=t('subtitle'); document.getElementById('allLink').textContent=t('all_services'); }
+
+var App = {
+  go:function(screen,data){ if(tickTimer){ clearInterval(tickTimer); tickTimer=null; } stopCamera(); chrome(); resetLock(); (this['s_'+screen]||this.s_list)(data); },
+  start:function(){ if(!hasLang()) return this.go('language'); if(!hasVault()) return this.go('setup'); if(!sess.unlocked) return this.go('unlock'); return this.go('list'); },
+  lock:function(){ lock(); this.go('unlock'); },
+  root:function(){ return document.getElementById('app'); },
+
+  s_language:function(){ var r=this.root(); clear(r); var grid=el('div',{class:'lang-grid'}); LANGUAGES.forEach(function(l){ grid.appendChild(el('button',{class:'lang-btn'+(l.code===cur?' cur':''),onclick:function(){ setLang(l.code); App.start(); }},l.native)); }); r.appendChild(el('div',{class:'card'},el('div',{class:'center'},el('div',{style:'font-size:2.4em'},'🌐'),el('h2',{text:t('pick_lang')})),grid)); },
+
+  s_setup:function(){ var r=this.root(); clear(r); var p=el('input',{type:'password'}),c=el('input',{type:'password'}),er=el('div',{class:'err'}); function sub(){ if(!p.value||p.value.length<6){ er.textContent=t('password_min'); return; } if(p.value!==c.value){ er.textContent=t('passwords_mismatch'); return; } createVault(p.value).then(function(){ App.go('list'); }); } c.addEventListener('keydown',function(e){ if(e.key==='Enter') sub(); }); r.appendChild(el('div',{class:'card'},el('div',{class:'center'},el('div',{style:'font-size:2.6em'},'🛡️'),el('h2',{text:t('setup_title')})),el('p',{class:'muted',text:t('setup_desc')}),el('label',{text:t('password')}),p,el('label',{text:t('confirm_password')}),c,er,el('button',{class:'btn accent',onclick:sub,text:t('create_vault')}))); },
+
+  s_unlock:function(){ var r=this.root(); clear(r); var p=el('input',{type:'password'}),er=el('div',{class:'err'}); function sub(){ unlockVault(p.value).then(function(){ App.go('list'); }).catch(function(){ er.textContent=t('wrong_password'); p.value=''; }); } p.addEventListener('keydown',function(e){ if(e.key==='Enter') sub(); }); r.appendChild(el('div',{class:'card'},el('div',{class:'center'},el('div',{style:'font-size:2.6em'},'🔒'),el('h2',{text:t('unlock_title')})),el('label',{text:t('password')}),p,er,el('button',{class:'btn',onclick:sub,text:t('unlock')}))); setTimeout(function(){ try{ p.focus(); }catch(e){} },60); },
+
+  s_list:function(){ var r=this.root(); clear(r);
+    var bar=el('div',{class:'topbar'},el('h2',{text:'KCY Authenticator'}),el('button',{class:'iconbtn',title:t('add_account'),onclick:fabAction},'＋'),el('button',{class:'iconbtn',title:t('settings_title'),onclick:function(){ App.go('settings'); }},'⚙️'));
+    var container=el('div',{});
+    var tabs=[{k:'auth',ic:'🔐',l:t('tab_auth')},{k:'collection',ic:'🗂',l:t('tab_collection')},{k:'passwords',ic:'🔑',l:t('tab_passwords')}];
+    var tabbar=el('div',{class:'tabbar'}); tabs.forEach(function(tb){ tabbar.appendChild(el('button',{class:'tab'+(activeTab===tb.k?' on':''),onclick:function(){ activeTab=tb.k; draw(); }},el('div',{},tb.ic),el('div',{class:'tablabel',text:tb.l}))); });
+    r.appendChild(el('div',{class:'card'},bar,container,tabbar));
+    function fabAction(){ if(activeTab==='auth') App.go('add'); else if(activeTab==='collection') App.go('collection_add'); else App.go('password_edit'); }
+    function empty(icon,title,desc){ return el('div',{class:'center'},el('div',{style:'font-size:2.4em'},icon),el('h2',{text:title}),el('p',{class:'muted',text:desc})); }
+    function fmt(e,c){ if(e.type==='steam') return c; if(c.length===6) return c.slice(0,3)+' '+c.slice(3); if(c.length===8) return c.slice(0,4)+' '+c.slice(4); return c; }
+    function draw(){ if(tickTimer){ clearInterval(tickTimer); tickTimer=null; } var bs=tabbar.children; for(var i=0;i<bs.length;i++) bs[i].classList.toggle('on',tabs[i].k===activeTab); clear(container); if(activeTab==='auth') drawAuth(); else if(activeTab==='collection') drawCollection(); else drawPasswords(); }
+    function drawAuth(){ var filter='',rows=[]; var search=el('input',{placeholder:t('search_ph'),oninput:function(e){ filter=e.target.value.toLowerCase(); redraw(); }}); var listEl=el('div',{}); if(sess.entries.length) container.appendChild(search); container.appendChild(listEl);
+      function rowFor(e){ var code=el('div',{class:'code'},'••• •••'); var ring=el('div',{class:'ring'},''); var badge=el('div',{class:'badge'},((e.issuer||e.account||'?').trim().charAt(0)||'?').toUpperCase());
+        code.addEventListener('click',function(){ var c=code.textContent.replace(/\s/g,''); if(c&&c.indexOf('•')<0){ copyText(c); toast(t('copied')); } });
+        var right=el('div',{}); if(e.type==='hotp'){ right.appendChild(el('button',{class:'hotp-next',title:t('next_code'),onclick:function(ev){ ev.stopPropagation(); incCounter(e.id).then(refresh); }},'↻')); } else { right.appendChild(ring); }
+        var info=el('div',{class:'einfo'},el('div',{class:'issuer',text:e.issuer||e.account||'—'}),el('div',{class:'acct',text:e.issuer?(e.account||''):''})); info.addEventListener('click',function(){ App.go('edit',e); }); badge.addEventListener('click',function(){ App.go('edit',e); });
+        var row=el('div',{class:'entry'},badge,info,el('div',{},code),right);
+        function refresh(){ genCode(e).then(function(c){ code.textContent=fmt(e,c); }).catch(function(){ code.textContent='——————'; }); if(e.type!=='hotp'){ var rem=secLeft(e.period); ring.textContent=rem+'s'; ring.style.color=rem<=5?'var(--dng)':'var(--dim)'; } }
+        row._refresh=refresh; refresh(); return row; }
+      function redraw(){ if(!sess.entries.length){ clear(listEl); listEl.appendChild(empty('🔐',t('empty_title'),t('empty_desc'))); rows=[]; return; } var items=sess.entries.filter(function(e){ return !filter||((e.issuer||'')+' '+(e.account||'')).toLowerCase().indexOf(filter)>=0; }); rows=items.map(rowFor); clear(listEl); rows.forEach(function(x){ listEl.appendChild(x); }); }
+      redraw(); tickTimer=setInterval(function(){ rows.forEach(function(x){ if(x._refresh) x._refresh(); }); },1000); }
+    function drawCollection(){ if(!sess.collection.length){ container.appendChild(empty('🗂',t('empty_col_title'),t('empty_col_desc'))); return; } sess.collection.forEach(function(c){ var thumb=c.image?el('img',{src:c.image,style:'width:42px;height:42px;border-radius:8px;object-fit:cover;background:#fff'}):el('div',{class:'badge'},'▦'); var info=el('div',{class:'einfo'},el('div',{class:'issuer',text:c.title||'—'}),el('div',{class:'acct',text:c.content||''})); var row=el('div',{class:'entry',style:'cursor:pointer'},thumb,info,el('div',{class:'muted'},'›')); row.addEventListener('click',function(){ App.go('collection_view',c); }); container.appendChild(row); }); }
+    function drawPasswords(){ if(!sess.passwords.length){ container.appendChild(empty('🔑',t('empty_pwd_title'),t('empty_pwd_desc'))); return; } sess.passwords.forEach(function(p){ var badge=el('div',{class:'badge'},((p.title||'?').trim().charAt(0)||'?').toUpperCase()); var info=el('div',{class:'einfo'},el('div',{class:'issuer',text:p.title||'—'}),el('div',{class:'acct',text:p.login||''})); var row=el('div',{class:'entry',style:'cursor:pointer'},badge,info,el('div',{class:'muted'},'›')); row.addEventListener('click',function(){ App.go('password_edit',p); }); container.appendChild(row); }); }
+    draw();
+  },
+  s_collection_add:function(){ var r=this.root(); clear(r); stopCamera(); var cap={content:'',image:''};
+    var title=el('input',{type:'text',maxlength:'256',placeholder:t('title')}); var preview=el('div',{}); var status=el('div',{class:'muted center'},''); var err=el('div',{class:'err'});
+    var bar=el('div',{class:'topbar'},el('button',{class:'iconbtn',onclick:function(){ stopCamera(); App.go('list'); }},'←'),el('h2',{text:t('col_add_title')}));
+    function shrink(img){ var max=512,w=img.naturalWidth||img.width,hh=img.naturalHeight||img.height,sc=Math.min(1,max/Math.max(w,hh)); w=Math.round(w*sc); hh=Math.round(hh*sc); var c=document.createElement('canvas'); c.width=w; c.height=hh; c.getContext('2d').drawImage(img,0,0,w,hh); return c.toDataURL('image/png'); }
+    function showPrev(){ clear(preview); if(cap.image) preview.appendChild(el('img',{src:cap.image,class:'qrimg'})); if(cap.content) preview.appendChild(el('p',{class:'muted',style:'word-break:break-all',text:cap.content})); }
+    var fi=el('input',{type:'file',accept:'image/*'}); fi.addEventListener('change',function(){ var f=fi.files&&fi.files[0]; if(!f) return; var url=URL.createObjectURL(f),im=new Image(); im.onload=function(){ cap.image=shrink(im); if(typeof jsQR!=='undefined'){ var c=document.createElement('canvas'); c.width=im.naturalWidth; c.height=im.naturalHeight; var ctx=c.getContext('2d',{willReadFrequently:true}); ctx.drawImage(im,0,0); var d=ctx.getImageData(0,0,c.width,c.height); var fo=jsQR(d.data,d.width,d.height); cap.content=fo&&fo.data?fo.data:''; } URL.revokeObjectURL(url); status.textContent=cap.content?t('decoded_ok'):''; showPrev(); }; im.onerror=function(){ URL.revokeObjectURL(url); }; im.src=url; });
+    var videoWrap=el('div',{});
+    function startScan(){ stopCamera(); clear(videoWrap); var video=el('video',{id:'scanvideo',playsinline:'true',muted:'true'}); videoWrap.appendChild(video); videoWrap.appendChild(el('p',{class:'muted center',text:t('scan_hint')}));
+      navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(function(stream){ activeStream=stream; video.srcObject=stream; video.play(); var canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
+        function scan(){ if(!activeStream) return; if(video.readyState===video.HAVE_ENOUGH_DATA&&typeof jsQR!=='undefined'){ canvas.width=video.videoWidth; canvas.height=video.videoHeight; ctx.drawImage(video,0,0,canvas.width,canvas.height); var d=ctx.getImageData(0,0,canvas.width,canvas.height); var fo=jsQR(d.data,d.width,d.height); if(fo&&fo.data){ cap.content=fo.data; cap.image=canvas.toDataURL('image/png'); stopCamera(); clear(videoWrap); status.textContent=t('decoded_ok'); showPrev(); return; } } rafId=requestAnimationFrame(scan); } rafId=requestAnimationFrame(scan);
+      }).catch(function(){ clear(videoWrap); videoWrap.appendChild(el('p',{class:'err',text:t('camera_denied')})); }); }
+    function save(){ var ti=title.value.trim(); if(!ti){ err.textContent=t('title_required'); return; } if(!cap.image&&!cap.content){ err.textContent=t('qr_not_found'); return; } stopCamera(); addColl({title:ti,content:cap.content,image:cap.image}).then(function(){ App.go('list'); }); }
+    r.appendChild(el('div',{class:'card'},bar,el('label',{text:t('title')}),title,el('div',{class:'seg'},el('button',{class:'on',onclick:function(){ fi.click(); }},'🖼 '+t('upload_file')),el('button',{onclick:startScan},'📷 '+t('scan_qr'))),fi,videoWrap,status,preview,err,el('button',{class:'btn accent',onclick:save,text:t('save')}),el('button',{class:'btn ghost',onclick:function(){ stopCamera(); App.go('list'); },text:t('cancel')})));
+  },
+  s_collection_view:function(item){ var r=this.root(); clear(r); if(!item) return App.go('list'); var title=el('input',{type:'text',maxlength:'256',value:item.title||''});
+    var bar=el('div',{class:'topbar'},el('button',{class:'iconbtn',onclick:function(){ App.go('list'); }},'←'),el('h2',{text:t('tab_collection')}));
+    var card=el('div',{class:'card'},bar,el('label',{text:t('title')}),title);
+    if(item.image) card.appendChild(el('img',{src:item.image,class:'qrimg'}));
+    if(item.content){ card.appendChild(el('label',{text:'QR'})); card.appendChild(el('div',{class:'copyfield'},el('input',{type:'text',value:item.content,readonly:'readonly'}),el('button',{class:'copy-btn',title:t('copy'),onclick:function(){ copyText(item.content); toast(t('copied')); }},'⧉'))); }
+    card.appendChild(el('button',{class:'btn accent',onclick:function(){ updColl(item.id,{title:title.value.trim()}).then(function(){ App.go('list'); }); },text:t('save')}));
+    card.appendChild(el('button',{class:'btn danger',onclick:function(){ if(!confirm(t('delete_confirm'))) return; delColl(item.id).then(function(){ App.go('list'); }); },text:t('delete')}));
+    r.appendChild(card);
+  },
+  s_password_edit:function(item){ var r=this.root(); clear(r); var editing=!!(item&&item.id);
+    var title=el('input',{type:'text',maxlength:'256',value:(item&&item.title)||''}); var login=el('input',{type:'text',maxlength:'256',value:(item&&item.login)||''}); var password=el('input',{type:'password',maxlength:'256',value:(item&&item.password)||''}); var note=el('textarea',{maxlength:'256'}); note.value=(item&&item.note)||''; var err=el('div',{class:'err'});
+    var bar=el('div',{class:'topbar'},el('button',{class:'iconbtn',onclick:function(){ App.go('list'); }},'←'),el('h2',{text:editing?t('edit_title'):t('pwd_add_title')}));
+    var loginRow=el('div',{class:'copyfield'},login,el('button',{class:'copy-btn',title:t('copy'),onclick:function(){ copyText(login.value); toast(t('copied')); }},'⧉'));
+    var pwdRow=el('div',{class:'copyfield'},password,el('button',{class:'copy-btn',onclick:function(){ password.type=password.type==='password'?'text':'password'; }},'👁'),el('button',{class:'copy-btn',title:t('copy'),onclick:function(){ copyText(password.value); toast(t('copied')); }},'⧉'));
+    function save(){ if(!title.value.trim()){ err.textContent=t('title_required'); return; } var data={title:title.value.trim(),login:login.value,password:password.value,note:note.value}; (editing?updPwd(item.id,data):addPwd(data)).then(function(){ App.go('list'); }); }
+    var card=el('div',{class:'card'},bar,el('label',{text:t('title')}),title,el('label',{text:t('login')}),loginRow,el('label',{text:t('password')}),pwdRow,el('label',{text:t('note')}),note,err,el('button',{class:'btn accent',onclick:save,text:t('save')}));
+    if(editing) card.appendChild(el('button',{class:'btn danger',onclick:function(){ if(!confirm(t('delete_confirm'))) return; delPwd(item.id).then(function(){ App.go('list'); }); },text:t('delete')}));
+    r.appendChild(card);
+  },
+
+  s_add:function(){ var r=this.root(); clear(r); var mode='manual';
+    var bar=el('div',{class:'topbar'},el('button',{class:'iconbtn',onclick:function(){ App.go('list'); }},'←'),el('h2',{text:t('add_title')}));
+    var body=el('div',{}); var card=el('div',{class:'card'},bar,body); r.appendChild(card);
+    var MODES=[{k:'scan',l:'📷 '+t('scan_qr')},{k:'upload',l:'🖼 '+t('upload_file')},{k:'manual',l:'⌨ '+t('enter_manually')}];
+    var seg=el('div',{class:'seg'}); MODES.forEach(function(mm){ seg.appendChild(el('button',{onclick:function(){ setMode(mm.k); }},mm.l)); });
+    function setMode(m){ mode=m; var bs=seg.children; for(var i=0;i<bs.length;i++) bs[i].classList.toggle('on',MODES[i].k===m); stopCamera(); if(m==='scan') renderScan(); else if(m==='upload') renderUpload(); else renderManual(); }
+    function renderUpload(){ var fi=el('input',{type:'file',accept:'image/*'}); var status=el('p',{class:'muted center',text:t('scan_hint')}); fi.addEventListener('change',function(){ var f=fi.files&&fi.files[0]; if(!f) return; decodeImageFile(f).then(function(uri){ var p=uri?parseURI(uri.trim()):null; if(!p){ status.textContent=t('qr_not_found'); status.style.color='var(--dng)'; return; } addEntry({type:p.type,issuer:p.issuer,account:p.account,secret:p.secret.toUpperCase(),algorithm:p.algorithm,digits:p.digits,period:p.period,counter:p.counter}).then(function(){ App.go('list'); }); }); }); clear(body); [seg,el('p',{class:'muted center',text:t('upload_file')}),fi,status,el('button',{class:'btn ghost',onclick:function(){ setMode('manual'); },text:t('enter_manually')})].forEach(function(x){ body.appendChild(x); }); }
+    function renderManual(){ var issuer=el('input',{type:'text'}),account=el('input',{type:'text'}),secret=el('input',{type:'text',autocapitalize:'characters',spellcheck:'false'});
+      var type=el('select',{},el('option',{value:'totp'},t('type_totp')),el('option',{value:'hotp'},t('type_hotp')),el('option',{value:'steam'},t('type_steam')));
+      var alg=el('select',{},el('option',{value:'SHA1'},'SHA1'),el('option',{value:'SHA256'},'SHA256'),el('option',{value:'SHA512'},'SHA512'));
+      var digits=el('input',{type:'number',value:'6',min:'4',max:'10'}),period=el('input',{type:'number',value:'30',min:'5',max:'120'}),counter=el('input',{type:'number',value:'0',min:'0'});
+      var er=el('div',{class:'err'}); var uri=el('input',{type:'text',placeholder:'otpauth://…',spellcheck:'false'});
+      uri.addEventListener('input',function(){ var p=parseURI(uri.value.trim()); if(p){ issuer.value=p.issuer; account.value=p.account; secret.value=p.secret; type.value=p.type; alg.value=p.algorithm; digits.value=p.digits; period.value=p.period; counter.value=p.counter; toast('otpauth ✓'); } });
+      var adv=el('div',{style:'display:none'},el('label',{text:t('algorithm')}),alg,el('div',{class:'row'},el('div',{},el('label',{text:t('digits')}),digits),el('div',{},el('label',{text:t('period')}),period)),el('label',{text:t('counter')}),counter);
+      var advBtn=el('button',{class:'btn ghost',onclick:function(){ adv.style.display=adv.style.display==='none'?'block':'none'; },text:t('advanced')});
+      function save(){ var s=secret.value.replace(/\s/g,''); if(!s||b32dec(s).length===0){ er.textContent=t('invalid_secret'); return; } addEntry({type:type.value,issuer:issuer.value.trim(),account:account.value.trim(),secret:s.toUpperCase(),algorithm:alg.value,digits:parseInt(digits.value,10)||6,period:parseInt(period.value,10)||30,counter:parseInt(counter.value,10)||0}).then(function(){ App.go('list'); }); }
+      clear(body); body.appendChild(seg); [el('label',{text:t('paste_uri')}),uri,el('label',{text:t('issuer')}),issuer,el('label',{text:t('account')}),account,el('label',{text:t('secret')}),secret,el('label',{text:t('type')}),type,advBtn,adv,er,el('button',{class:'btn accent',onclick:save,text:t('save')}),el('button',{class:'btn ghost',onclick:function(){ App.go('list'); },text:t('cancel')})].forEach(function(x){ body.appendChild(x); }); }
+    function renderScan(){ var video=el('video',{id:'scanvideo',playsinline:'true',muted:'true'}); var status=el('p',{class:'muted center',text:t('scan_hint')}); clear(body); [seg,video,status,el('button',{class:'btn ghost',onclick:function(){ setMode('manual'); },text:t('enter_manually')})].forEach(function(x){ body.appendChild(x); });
+      navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(function(stream){ activeStream=stream; video.srcObject=stream; video.play(); var canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
+        function scan(){ if(!activeStream) return; if(video.readyState===video.HAVE_ENOUGH_DATA&&typeof jsQR!=='undefined'){ canvas.width=video.videoWidth; canvas.height=video.videoHeight; ctx.drawImage(video,0,0,canvas.width,canvas.height); var img=ctx.getImageData(0,0,canvas.width,canvas.height); var found=jsQR(img.data,img.width,img.height); if(found&&found.data){ var p=parseURI(found.data.trim()); if(p){ stopCamera(); addEntry({type:p.type,issuer:p.issuer,account:p.account,secret:p.secret.toUpperCase(),algorithm:p.algorithm,digits:p.digits,period:p.period,counter:p.counter}).then(function(){ App.go('list'); }); return; } } } rafId=requestAnimationFrame(scan); }
+        rafId=requestAnimationFrame(scan);
+      }).catch(function(){ status.textContent=t('camera_denied'); status.style.color='var(--dng)'; }); }
+    setMode('manual');
+  },
+
+  s_edit:function(entry){ var r=this.root(); clear(r); if(!entry) return this.go('list'); var issuer=el('input',{type:'text',value:entry.issuer||''}),account=el('input',{type:'text',value:entry.account||''});
+    function save(){ updEntry(entry.id,{issuer:issuer.value.trim(),account:account.value.trim()}).then(function(){ App.go('list'); }); }
+    function remove(){ if(!confirm(t('delete_confirm'))) return; delEntry(entry.id).then(function(){ App.go('list'); }); }
+    var bar=el('div',{class:'topbar'},el('button',{class:'iconbtn',onclick:function(){ App.go('list'); }},'←'),el('h2',{text:t('edit_title')}));
+    issuer.value=entry.issuer||''; account.value=entry.account||'';
+    r.appendChild(el('div',{class:'card'},bar,el('label',{text:t('issuer')}),issuer,el('label',{text:t('account')}),account,el('button',{class:'btn accent',onclick:save,text:t('save')}),el('button',{class:'btn danger',onclick:remove,text:t('delete')})));
+  },
+
+  s_settings:function(){ var r=this.root(); clear(r); var st=loadSettings();
+    var bar=el('div',{class:'topbar'},el('button',{class:'iconbtn',onclick:function(){ App.go('list'); }},'←'),el('h2',{text:t('settings_title')}));
+    var langCtl=el('button',{class:'btn ghost',style:'width:auto;margin:0',onclick:function(){ App.go('language'); }},(LANGUAGES.find(function(l){return l.code===cur;})||{}).native||cur);
+    var lockSel=el('select',{style:'width:auto;margin:0',onchange:function(e){ saveSettings({autoLockMin:parseInt(e.target.value,10)}); }}); [0,1,5,15,30].forEach(function(m){ var o=el('option',{value:String(m)},m===0?t('never'):tf('minutes',m)); if(m===st.autoLockMin) o.setAttribute('selected','selected'); lockSel.appendChild(o); });
+    var np=el('input',{type:'password'}),np2=el('input',{type:'password'}),npErr=el('div',{class:'err'});
+    function changePw(){ if(!np.value||np.value.length<6){ npErr.textContent=t('password_min'); return; } if(np.value!==np2.value){ npErr.textContent=t('passwords_mismatch'); return; } sess.password=np.value; persist().then(function(){ np.value=''; np2.value=''; npErr.textContent=''; toast(t('password_changed')); }); }
+    function doExport(){ var data=JSON.stringify({app:'kcy-authenticator',version:1,entries:sess.entries},null,2); var blob=new Blob([data],{type:'application/json'}); var a=el('a',{href:URL.createObjectURL(blob),download:'kcy-authenticator-export.json'}); document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1000); }
+    function doExportAll(){ toast(t('exporting')); exportAllQR().then(function(res){ if(!res.ok) toast(res.reason==='empty'?t('nothing_to_export'):t('import_failed')); }); }
+    var fileInput=el('input',{type:'file',accept:'.json,application/json',style:'display:none'});
+    fileInput.addEventListener('change',function(){ var f=fileInput.files&&fileInput.files[0]; if(!f) return; var rd=new FileReader(); rd.onload=function(){ try{ var parsed=JSON.parse(rd.result); var list=Array.isArray(parsed)?parsed:(Array.isArray(parsed.entries)?parsed.entries:[]); var n=0; (function next(i){ if(i>=list.length){ toast(tf('import_done',n)); fileInput.value=''; return; } var it=list[i]; if(it&&it.secret){ addEntry({type:it.type||'totp',issuer:it.issuer||'',account:it.account||it.name||'',secret:String(it.secret).toUpperCase(),algorithm:it.algorithm||'SHA1',digits:it.digits||6,period:it.period||30,counter:it.counter||0}).then(function(){ n++; next(i+1); }); } else next(i+1); })(0); }catch(e){ toast(t('import_failed')); } }; rd.readAsText(f); });
+    function wipe(){ if(!confirm(t('wipe_confirm'))) return; wipeVault(); App.start(); }
+    function setRow(label,ctl){ return el('div',{class:'setting'},el('div',{class:'lbl',text:label}),ctl); }
+    r.appendChild(el('div',{class:'card'},bar,
+      setRow(t('language'),langCtl),
+      setRow(t('autolock'),lockSel),
+      el('button',{class:'btn ghost',onclick:function(){ App.lock(); },text:'🔒 '+t('lock_now')}),
+      el('h2',{style:'font-size:1em;margin-top:20px',text:t('change_password')}),
+      el('label',{text:t('new_password')}),np,el('label',{text:t('confirm_password')}),np2,npErr,
+      el('button',{class:'btn',onclick:changePw,text:t('change_password')}),
+      el('h2',{style:'font-size:1em;margin-top:20px',text:'⇄'}),
+      el('p',{class:'muted',text:t('export_warning')}),
+      el('button',{class:'btn ghost',onclick:doExport,text:'⬇ '+t('export_json')}),
+      el('button',{class:'btn ghost',onclick:function(){ fileInput.click(); },text:'⬆ '+t('import_json')}),fileInput,
+      el('p',{class:'muted',style:'margin-top:14px',text:t('export_all_desc')}),
+      el('button',{class:'btn ghost',onclick:doExportAll,text:'🗂 '+t('export_all_qr')}),
+      el('button',{class:'btn ghost',style:'margin-top:14px',onclick:function(){ App.go('dups'); },text:'🔍 '+t('find_duplicates')}),
+      el('button',{class:'btn danger',style:'margin-top:22px',onclick:wipe,text:t('wipe')})
+    ));
+  },
+
+  s_dups:function(){ var r=this.root(); clear(r); var groups=findDups();
+    var bar=el('div',{class:'topbar'},el('button',{class:'iconbtn',onclick:function(){ App.go('settings'); }},'←'),el('h2',{text:t('duplicates')}));
+    if(!groups.length){ r.appendChild(el('div',{class:'card'},bar,el('div',{class:'center'},el('div',{style:'font-size:2.2em'},'✅'),el('h2',{text:t('no_duplicates')})))); return; }
+    var selected={}; groups.forEach(function(g){ g.entries.forEach(function(e,i){ if(i>0) selected[e.id]=1; }); });
+    function row(e){ var cb=el('input',{type:'checkbox'}); cb.checked=!!selected[e.id]; cb.addEventListener('change',function(){ if(cb.checked) selected[e.id]=1; else delete selected[e.id]; }); var code=el('span',{class:'muted',style:'font-family:ui-monospace,monospace'},'••••••'); genCode(e).then(function(c){ code.textContent=c; }).catch(function(){}); var lab=el('label',{class:'entry',style:'cursor:pointer'},cb,el('div',{class:'einfo'},el('div',{class:'issuer',text:e.issuer||e.account||'—'}),el('div',{class:'acct',text:e.issuer?(e.account||''):''})),code); return lab; }
+    var card=el('div',{class:'card'},bar);
+    groups.forEach(function(g){ card.appendChild(el('div',{class:'muted',style:'margin:14px 0 8px'},(g.reason==='secret'?'🔑 '+t('dup_same_secret'):'🔤 '+t('dup_similar'))+'  ('+g.entries.length+')')); g.entries.forEach(function(e){ card.appendChild(row(e)); }); });
+    card.appendChild(el('button',{class:'btn danger',onclick:function(){ var ids=Object.keys(selected); if(!ids.length) return; (function next(i){ if(i>=ids.length){ toast(tf('deleted_n',ids.length)); App.go('list'); return; } delEntry(ids[i]).then(function(){ next(i+1); }); })(0); },text:t('delete_selected')}));
+    r.appendChild(card);
+  }
+};
+
+// ── Авто-заключване ──
+var lockTimer=null;
+function resetLock(){ if(lockTimer){ clearTimeout(lockTimer); lockTimer=null; } var m=loadSettings().autoLockMin; if(!sess.unlocked||!m||m<=0) return; lockTimer=setTimeout(function(){ if(sess.unlocked) App.lock(); },m*60*1000); }
+['pointerdown','keydown'].forEach(function(ev){ window.addEventListener(ev,function(){ if(sess.unlocked) resetLock(); },{passive:true}); });
+document.addEventListener('visibilitychange',function(){ if(document.hidden&&sess.unlocked){ var m=loadSettings().autoLockMin; if(m&&m>0) App.lock(); } });
+
+// ── Старт ──
+setLang(cur);
+document.getElementById('allLink').setAttribute('href','/portals/services/');
+App.start();
+</script>
+<script src="/shared/js/navigation.js?v=1.0195"></script>
+</body>
+</html>

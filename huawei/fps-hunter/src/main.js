@@ -8,11 +8,15 @@ import { Leaderboard } from './leaderboard.js';
 import { GameScene } from './scenes/game.js';
 import { showMenu } from './scenes/menu.js';
 import { showGameOver } from './scenes/gameover.js';
+import { showLanguage } from './scenes/language.js';
+import { t, tf, hasLangChosen } from './core/i18n.js';
 
 const root = document.getElementById('app');
 const bootHint = document.getElementById('boot-hint');
 
 async function boot() {
+  // Текстът „Зареждане…" на избрания (или подразбиращ се) език.
+  if (bootHint) bootHint.textContent = t('loading');
   const engine = createEngine(root);
   const leaderboard = new Leaderboard();
   await leaderboard.init();
@@ -81,11 +85,11 @@ async function boot() {
       font-family:monospace;font-size:13px;line-height:1.5;padding:18px;overflow:auto;
       -webkit-user-select:text;user-select:text;`;
     box.innerHTML = `<div style="font-size:18px;color:#ff6b6b;margin-bottom:10px;font-weight:700">
-      Грешка при старт на нивото</div><pre style="white-space:pre-wrap;margin:0">${
+      ${t('err_title')}</div><pre style="white-space:pre-wrap;margin:0">${
         String(msg).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))
       }</pre>
       <button id="err-back" style="margin-top:16px;padding:10px 22px;font-size:15px;border:none;
-        border-radius:8px;background:#4fc3f7;color:#04121d;font-weight:700">Назад към менюто</button>`;
+        border-radius:8px;background:#4fc3f7;color:#04121d;font-weight:700">${t('err_back')}</button>`;
     parent.appendChild(box);
     box.querySelector('#err-back').addEventListener('click', () => {
       box.remove();
@@ -115,10 +119,16 @@ async function boot() {
   }
   loop();
 
-  toMenu();
+  // При първо стартиране показваме избора на език ПРЕДИ менюто; после се пази
+  // в localStorage и при следващите стартирания отиваме директно в менюто.
+  if (hasLangChosen()) {
+    toMenu();
+  } else {
+    showLanguage(root, () => toMenu());
+  }
 }
 
 boot().catch((err) => {
   console.error(err);
-  if (bootHint) bootHint.textContent = 'Грешка при зареждане: ' + err.message;
+  if (bootHint) bootHint.textContent = tf('boot_error', err.message);
 });

@@ -1,0 +1,104 @@
+id: services-toolkit
+name: Services Toolkit
+folders:
+  - rustore/services-toolkit
+  - huawei/services-toolkit
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.servicestoolkit.rustore
+  huawei:  com.kcy.servicestoolkit.huawei
+category:
+  google_play: Tools
+  rustore: Инструменты
+  huawei: Tools
+content_rating: "3+ (Everyone) — без насилие, без реклами, без потребителско съдържание"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Services Toolkit
+    short: "Офлайн-набор инструментов: QR, пароли, калькуляторы, PDF, фото"
+    full: |
+      Services Toolkit — это автономный набор полезных инструментов, работающих
+      прямо на устройстве (offline-first). Без аккаунта, без слежки, без рекламы.
+
+      Полностью офлайн:
+      • QR-код — генерация (PNG) и чтение из файла или с камеры.
+      • Генератор паролей — случайные / из слов / PIN / произносимые, оценка силы.
+      • Калькуляторы — кредит, НДС (по стране), проценты, простой/сложный процент.
+      • Текстовые инструменты — счётчик, регистр, Base64, реверс.
+      • Сжатие изображений — JPEG/PNG/WebP через canvas, изменение размера.
+      • PDF — объединение, разделение, водяной знак, визуальная подпись, сжатие.
+
+      Информационные экраны (требуют сети у внешних провайдеров): финансовые
+      графики, курсы, веб-скрапер, AI-генератор текста. Интерфейс на 15 языках.
+  en:
+    title: Services Toolkit
+    short: "Offline toolset: QR, passwords, calculators, PDF, photos"
+    full: |
+      Services Toolkit is a standalone set of handy tools that run right on the
+      device (offline-first). No account, no tracking, no ads.
+
+      Fully offline:
+      • QR code — generate (PNG) and read from a file or the camera.
+      • Password generator — random / words / PIN / pronounceable, strength meter.
+      • Calculators — loan, VAT (by country), percentages, simple/compound interest.
+      • Text tools — counter, case formatting, Base64, reverse.
+      • Image compression — JPEG/PNG/WebP via canvas, resizing.
+      • PDF — merge, split, watermark, visual signature, compress.
+
+      Informational screens (these need a network at external providers): finance
+      charts, exchange rates, web scraper, AI text generator. UI in 15 languages.
+  bg:
+    title: Services Toolkit
+    short: "Офлайн инструменти: QR, пароли, калкулатори, PDF, снимки"
+    full: |
+      Services Toolkit е самостоятелен набор от полезни инструменти, които работят
+      директно на устройството (офлайн-първо). Без акаунт, без проследяване, без
+      реклами.
+
+      Изцяло офлайн:
+      • QR код — генериране (PNG) и разчитане от файл или от камера.
+      • Генератор на пароли — случайни / от думи / PIN / произносими, оценка на силата.
+      • Калкулатори — заем, ДДС (по държава), проценти, проста/сложна лихва.
+      • Текстови инструменти — брояч, регистър, Base64, обръщане.
+      • Компресор на снимки — JPEG/PNG/WebP през canvas, преоразмеряване.
+      • PDF — сливане, разделяне, воден знак, визуален подпис, свиване.
+
+      Информативни екрани (изискват мрежа при външни доставчици): финансови графики,
+      курсове, web скрапер, AI генератор на текст. Интерфейс на 15 езика.
+
+permissions:
+  - id: android.permission.CAMERA
+    why: Сканиране на QR кодове в реално време (getUserMedia, jsQR). Незадължително — има и разчитане от качен файл.
+  - id: android.permission.INTERNET
+    why: Само за изрично обозначените онлайн екрани (финансови графики, курсове, web скрапер, AI текст). Офлайн инструментите не правят мрежови заявки.
+  - id: android.permission.POST_NOTIFICATIONS
+    why: Локални известия от инструмента „Наблюдение на курсове" (@capacitor/local-notifications), ако потребителят го ползва. Незадължително.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Резултати и входни данни на инструментите се обработват локално в момента; не се събира профил. Дребни настройки/предпочитания — локално.
+  shared_with_third_parties: |
+    Само офлайн инструменти по подразбиране. Изрично обозначените онлайн екрани
+    (графики/курсове/скрапер/AI текст) изпращат заявки към съответните външни
+    доставчици само когато потребителят ги отвори и ползва.
+  encrypted_in_transit: true            # онлайн екраните ползват HTTPS
+  encrypted_at_rest: not_applicable     # няма постоянен чувствителен сейф
+  user_can_delete: true                 # без натрупани данни за триене; настройките се нулират
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (мотив „гаечен ключ/кутия с инструменти", акцент по издание)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 3 (мрежа от инструменти, QR, генератор на пароли, PDF инструменти)
+
+keywords: [tools, QR code, password generator, calculator, PDF, image compress, VAT, Base64, offline, utilities]

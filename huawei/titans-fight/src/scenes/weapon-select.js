@@ -4,6 +4,7 @@ import { WEAPONS, unlockedWeapons } from '../weapons.js';
 import { getLevel } from '../levels.js';
 import { makeButton, titleText } from '../ui.js';
 import { buildArena } from '../backgrounds.js';
+import { t, tf, weaponName, levelName } from '../core/i18n.js';
 
 // Екран за избор на оръжие. Наличните оръжия зависят от достигнатото ниво.
 // Отзивчив към размера на екрана.
@@ -17,8 +18,8 @@ export class WeaponSelectScene extends Phaser.Scene {
     const lvl = getLevel(levelId);
     buildArena(this, lvl.arena);
 
-    titleText(this, W / 2, H * 0.10, 'ИЗБЕРИ ОРЪЖИЕ', Math.min(40, W * 0.07), THEME.primaryHex);
-    titleText(this, W / 2, H * 0.18, `НИВО ${lvl.id} — ${lvl.name}`, 20, THEME.accentHex);
+    titleText(this, W / 2, H * 0.10, t('choose_weapon'), Math.min(40, W * 0.07), THEME.primaryHex);
+    titleText(this, W / 2, H * 0.18, tf('level_name_n', lvl.id, levelName(lvl.id)), 20, THEME.accentHex);
 
     const unlockedLevel = this.registry.get('unlockedLevel') || 1;
     const available = unlockedWeapons(unlockedLevel);
@@ -54,11 +55,11 @@ export class WeaponSelectScene extends Phaser.Scene {
 
     this.registry.set('selectedWeapon', selected);
 
-    makeButton(this, W / 2 - 130, H - 56, 220, 56, '◀ НАЗАД', () => {
+    makeButton(this, W / 2 - 130, H - 56, 220, 56, t('back'), () => {
       this.scene.start('menu');
     }, { color: 0x6a7686, fontSize: '20px' });
 
-    makeButton(this, W / 2 + 130, H - 56, 220, 56, 'БОЙ! ⚔', () => {
+    makeButton(this, W / 2 + 130, H - 56, 220, 56, t('fight'), () => {
       this.registry.set('selectedWeapon', selected);
       this.scene.start('game', { level: lvl.id, weapon: selected });
     }, { color: THEME.good, fontSize: '22px' });
@@ -77,13 +78,15 @@ export class WeaponSelectScene extends Phaser.Scene {
     const icon = this.add.container(0, -H * 0.18);
     this._drawWeaponIcon(icon, w);
 
-    const name = this.add.text(0, H * 0.14, open ? w.name : '🔒 ' + w.name, {
+    const wName = weaponName(w.key);
+    const name = this.add.text(0, H * 0.14, open ? wName : '🔒 ' + wName, {
       fontFamily: 'system-ui', fontSize: '17px', color: '#ffffff', fontStyle: 'bold'
     }).setOrigin(0.5);
 
+    const reachTxt = w.type === 'throw' ? t('reach_ranged') : String(w.reach);
     const stats = this.add.text(0, H * 0.28,
-      open ? `Щета: ${w.damage}\nОбхват: ${w.type === 'throw' ? 'далечен' : w.reach}\nСкорост: ${(1000 / w.cooldown).toFixed(1)}/с`
-           : `Отключи на\nниво ${w.unlockLevel}`,
+      open ? `${t('weapon_damage')}: ${w.damage}\n${t('weapon_reach')}: ${reachTxt}\n${t('weapon_speed')}: ${(1000 / w.cooldown).toFixed(1)}/с`
+           : tf('weapon_locked', w.unlockLevel),
       { fontFamily: 'system-ui', fontSize: '13px', color: '#d0d0d8', align: 'center' }
     ).setOrigin(0.5, 0);
 

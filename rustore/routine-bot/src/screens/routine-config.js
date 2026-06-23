@@ -1,7 +1,8 @@
 // Съветник за конфигурация на рутината.
-import { h, toggle } from '../ui/dom.js';
+import { h, toggle, esc } from '../ui/dom.js';
 import { storage, KEYS } from '../core/storage.js';
 import { defaultRoutine } from '../core/scheduler.js';
+import { t } from '../core/i18n.js';
 
 export async function renderRoutineConfig(root, { go }) {
   const routine = await storage.get(KEYS.routine, defaultRoutine());
@@ -9,37 +10,37 @@ export async function renderRoutineConfig(root, { go }) {
   const el = h(`
     <div>
       <div class="steps"><span class="s on"></span><span class="s"></span><span class="s"></span></div>
-      <h1>Настрой рутината</h1>
-      <p class="muted">Кога и какво да включва сутрешният брифинг.</p>
+      <h1>${esc(t('cfg_title'))}</h1>
+      <p class="muted">${esc(t('cfg_sub'))}</p>
 
       <div class="card">
         <div class="field">
-          <label>Час на сутрешния брифинг</label>
+          <label>${esc(t('cfg_morning_time'))}</label>
           <input type="time" id="morning" value="${routine.morningTime}">
         </div>
       </div>
 
       <div class="card">
-        <h2>Какво да включва</h2>
-        <div class="row"><div>🌤️ Време</div><span data-t="weather"></span></div>
+        <h2>${esc(t('cfg_include_title'))}</h2>
+        <div class="row"><div>${esc(t('cfg_weather'))}</div><span data-t="weather"></span></div>
         <div class="spacer"></div>
-        <div class="row"><div>📋 Днешна програма</div><span data-t="agenda"></span></div>
+        <div class="row"><div>${esc(t('cfg_agenda'))}</div><span data-t="agenda"></span></div>
         <div class="spacer"></div>
-        <div class="row"><div>💡 Мотивация</div><span data-t="quote"></span></div>
+        <div class="row"><div>${esc(t('cfg_quote'))}</div><span data-t="quote"></span></div>
       </div>
 
       <div class="card">
         <div class="row">
-          <div>🌙 Вечерно резюме</div>
+          <div>${esc(t('cfg_evening'))}</div>
           <span data-t="evening"></span>
         </div>
         <div class="field" id="eveningWrap" style="display:none">
-          <label>Час на вечерното резюме</label>
+          <label>${esc(t('cfg_evening_time'))}</label>
           <input type="time" id="eveningTime" value="${routine.eveningTime}">
         </div>
       </div>
 
-      <button class="btn" id="next">Напред към напомнянията</button>
+      <button class="btn" id="next">${esc(t('cfg_next'))}</button>
     </div>
   `);
 

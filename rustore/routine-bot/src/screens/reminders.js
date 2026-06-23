@@ -1,7 +1,8 @@
 // Напомняния (лекарства/навици) — час + дни на повторение + пауза/изтриване.
 // Този модул се ползва и като стъпка от съветника, и в таблото.
-import { h, esc, clear, DAYS_BG } from '../ui/dom.js';
+import { h, esc, clear, dayNames } from '../ui/dom.js';
 import { storage, KEYS } from '../core/storage.js';
+import { t } from '../core/i18n.js';
 
 function uid() {
   return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -12,10 +13,10 @@ export async function renderRemindersSetup(root, { go }) {
   const el = h(`
     <div>
       <div class="steps"><span class="s on"></span><span class="s on"></span><span class="s"></span></div>
-      <h1>Напомняния</h1>
-      <p class="muted">Добави напомняния за лекарства, навици или задачи. Можеш и да пропуснеш.</p>
+      <h1>${esc(t('rem_title'))}</h1>
+      <p class="muted">${esc(t('rem_setup_sub'))}</p>
       <div id="mount"></div>
-      <button class="btn" id="next">Напред към разрешенията</button>
+      <button class="btn" id="next">${esc(t('rem_next'))}</button>
     </div>
   `);
   await mountReminders(el.querySelector('#mount'));
@@ -28,19 +29,20 @@ export async function mountReminders(container) {
   clear(container);
   const reminders = await storage.get(KEYS.reminders, []);
 
+  const DAYS = dayNames();
   const editor = h(`
     <div class="card">
-      <h2>Ново напомняне</h2>
-      <div class="field"><label>Заглавие</label><input id="r-title" placeholder="напр. Витамин D"></div>
-      <div class="field"><label>Бележка (по избор)</label><input id="r-note" placeholder="след закуска"></div>
-      <div class="field"><label>Час</label><input id="r-time" type="time" value="09:00"></div>
-      <div class="field"><label>Дни</label><div class="chips" id="r-days"></div></div>
-      <button class="btn small" id="r-add">Добави напомняне</button>
+      <h2>${esc(t('rem_new'))}</h2>
+      <div class="field"><label>${esc(t('title_field'))}</label><input id="r-title" placeholder="${esc(t('rem_title_ph'))}"></div>
+      <div class="field"><label>${esc(t('rem_note_label'))}</label><input id="r-note" placeholder="${esc(t('rem_note_ph'))}"></div>
+      <div class="field"><label>${esc(t('rem_time_label'))}</label><input id="r-time" type="time" value="09:00"></div>
+      <div class="field"><label>${esc(t('rem_days_label'))}</label><div class="chips" id="r-days"></div></div>
+      <button class="btn small" id="r-add">${esc(t('rem_add'))}</button>
     </div>
   `);
   const selDays = new Set([1, 2, 3, 4, 5]);
   const daysWrap = editor.querySelector('#r-days');
-  DAYS_BG.forEach((d, i) => {
+  DAYS.forEach((d, i) => {
     const c = h(`<span class="chip ${selDays.has(i) ? 'on' : ''}">${d}</span>`);
     c.addEventListener('click', () => {
       if (selDays.has(i)) { selDays.delete(i); c.classList.remove('on'); }
@@ -70,23 +72,23 @@ export async function mountReminders(container) {
 
   const listWrap = h(`<div></div>`);
   if (!reminders.length) {
-    listWrap.appendChild(h(`<p class="muted">Все още няма напомняния.</p>`));
+    listWrap.appendChild(h(`<p class="muted">${esc(t('rem_empty'))}</p>`));
   }
   reminders.forEach((r) => {
-    const days = (r.repeatDays && r.repeatDays.length === 7) ? 'всеки ден'
-      : (r.repeatDays || []).map((d) => DAYS_BG[d]).join(' ');
+    const days = (r.repeatDays && r.repeatDays.length === 7) ? t('rem_everyday')
+      : (r.repeatDays || []).map((d) => DAYS[d]).join(' ');
     const item = h(`
       <div class="list-item">
         <div class="row">
           <div>
             <strong>${esc(r.title)}</strong> <span class="pill ${r.paused ? 'off' : ''}">${r.time}</span>
-            <div class="muted">${esc(r.note || '')} ${days ? '· ' + days : ''}</div>
+            <div class="muted">${esc(r.note || '')} ${days ? '· ' + esc(days) : ''}</div>
           </div>
         </div>
         <div class="spacer"></div>
         <div class="row" style="justify-content:flex-start;gap:8px">
-          <button class="btn secondary small" data-act="pause">${r.paused ? 'Възобнови' : 'Пауза'}</button>
-          <button class="btn danger small" data-act="del">Изтрий</button>
+          <button class="btn secondary small" data-act="pause">${esc(r.paused ? t('rem_resume') : t('rem_pause'))}</button>
+          <button class="btn danger small" data-act="del">${esc(t('delete'))}</button>
         </div>
       </div>
     `);

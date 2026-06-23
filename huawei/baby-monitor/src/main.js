@@ -11,7 +11,9 @@ import { renderPermissions } from './screens/permissions.js';
 import { renderDashboard, teardownDashboard } from './screens/dashboard.js';
 import { renderWatcher, teardownWatcher } from './screens/watcher.js';
 import { renderLog } from './screens/log.js';
+import { renderLanguage } from './screens/language.js';
 import { isWatcher } from './core/pairing.js';
+import { t, hasLangChosen, applyDir } from './core/i18n.js';
 
 // Маршрути на „онбординг“ потока (без таб-бар).
 const FLOW = {
@@ -26,10 +28,13 @@ const APP_ROUTES = {
   config: renderConfig
 };
 const NAV = [
-  ['dashboard', 'Наблюдение'],
-  ['log', 'Дневник'],
-  ['config', 'Настройки']
+  ['dashboard', 'nav_watch'],
+  ['log', 'nav_log'],
+  ['config', 'nav_settings']
 ];
+
+// При първо стартиране показваме избор на език ПРЕДИ първия екран.
+let _langPending = !hasLangChosen();
 
 function currentRoute() {
   const h = (location.hash || '').replace(/^#\/?/, '');
@@ -40,13 +45,23 @@ export function navigate(route) { location.hash = '#/' + route; }
 
 function renderNav(active) {
   return el('nav', { class: 'tabbar' },
-    NAV.map(([route, label]) =>
+    NAV.map(([route, key]) =>
       el('button', {
         class: 'tab' + (route === active ? ' active' : ''),
         onclick: () => navigate(route)
-      }, label)
+      }, t(key))
     )
   );
+}
+
+// Малък 🌐 бутон (горе вдясно) за повторен избор на език.
+function langFab() {
+  return el('button', {
+    class: 'lang-fab',
+    title: t('language'),
+    'aria-label': t('language'),
+    onclick: () => { _langPending = true; render(); }
+  }, '🌐');
 }
 
 function render() {
@@ -61,10 +76,18 @@ function render() {
   const screen = el('main', { class: 'screen' });
   const ctx = { navigate, rerender: render };
 
+  // Първо стартиране (или натиснат 🌐) → избор на език ПРЕДИ всичко друго.
+  if (_langPending) {
+    renderLanguage(screen, () => { _langPending = false; render(); });
+    app.appendChild(screen);
+    return;
+  }
+
   // Все още не активиран → онбординг.
   if (!s.activated) {
     renderOnboarding(screen, ctx);
     app.appendChild(screen);
+    app.appendChild(langFab());
     return;
   }
 
@@ -74,6 +97,7 @@ function render() {
     const fn = FLOW[r] || renderConfig; // след активиране отиваме на config
     fn(screen, ctx);
     app.appendChild(screen);
+    app.appendChild(langFab());
     return;
   }
 
@@ -84,6 +108,7 @@ function render() {
   if (route === 'dashboard' && isWatcher()) renderWatcher(screen, ctx);
   else APP_ROUTES[route](screen, ctx);
   app.appendChild(screen);
+  app.appendChild(langFab());
   app.appendChild(renderNav(route));
 }
 
@@ -97,6 +122,7 @@ if (typeof document !== 'undefined') {
 }
 
 async function boot() {
+  applyDir(); // прилага dir=rtl/ltr + lang според избрания език
   try { await hydrate(); } catch (_) { /* localStorage кешът остава */ }
   render();
 }

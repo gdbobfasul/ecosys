@@ -2,6 +2,7 @@ import './core/styles.css';
 import { tools, findTool } from './core/registry.js';
 import { iconHTML } from './core/icons.js';
 import { esc } from './core/ui.js';
+import { t, getLang, setLang, hasLangChosen, applyDir, LANGUAGES } from './core/i18n.js';
 
 const app = document.getElementById('app');
 
@@ -16,35 +17,56 @@ function navigate(hash) {
   location.hash = hash;
 }
 
+// --- Екран за избор на език (при първо стартиране и от бутона 🌐) ---
+function renderLanguage() {
+  const cur = getLang();
+  app.innerHTML = `
+    <div class="view">
+      <div class="hero"><div style="font-size:2.4em">🌐</div><h1>${esc(t('pick_lang'))}</h1></div>
+      <div class="lang-grid" id="langgrid"></div>
+    </div>
+  `;
+  const grid = app.querySelector('#langgrid');
+  grid.innerHTML = LANGUAGES.map((l) =>
+    `<button class="lang-btn${l.code === cur ? ' cur' : ''}" data-code="${l.code}">${esc(l.native)}</button>`
+  ).join('');
+  grid.querySelectorAll('.lang-btn').forEach((b) => {
+    b.addEventListener('click', () => { setLang(b.dataset.code); renderHome(); });
+  });
+}
+
 // --- Начален екран ---
 function renderHome() {
   app.innerHTML = `
     <div class="view">
       <div class="hero">
+        <button class="lang-toggle" id="langbtn" title="${esc(t('lang_btn'))}">${esc(t('lang_btn'))}</button>
         <h1>Services Toolkit</h1>
-        <p>Полезни офлайн инструменти — всичко работи на устройството.</p>
+        <p>${esc(t('home_sub'))}</p>
       </div>
-      <input class="search" id="search" type="search" placeholder="Търси инструмент…" autocomplete="off" />
+      <input class="search" id="search" type="search" placeholder="${esc(t('search_ph'))}" autocomplete="off" />
       <div class="grid" id="grid"></div>
-      <div class="empty" id="empty" style="display:none">Няма съвпадения.</div>
+      <div class="empty" id="empty" style="display:none">${esc(t('no_matches'))}</div>
     </div>
   `;
   const grid = app.querySelector('#grid');
   const empty = app.querySelector('#empty');
   const search = app.querySelector('#search');
+  const langbtn = app.querySelector('#langbtn');
+  if (langbtn) langbtn.addEventListener('click', renderLanguage);
 
   function draw(filter) {
     const q = (filter || '').trim().toLowerCase();
-    const list = tools.filter((t) =>
-      !q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q)
+    const list = tools.filter((tool) =>
+      !q || t(tool.name).toLowerCase().includes(q) || t(tool.desc).toLowerCase().includes(q)
     );
     empty.style.display = list.length ? 'none' : 'block';
-    grid.innerHTML = list.map((t) => `
-      <div class="card${t.online ? ' online' : ''}" data-id="${t.id}">
-        <div class="ic">${iconHTML(t.icon)}</div>
-        <h3>${esc(t.name)}</h3>
-        <p>${esc(t.desc)}</p>
-        ${t.online ? '<span class="tag">онлайн</span>' : ''}
+    grid.innerHTML = list.map((tool) => `
+      <div class="card${tool.online ? ' online' : ''}" data-id="${tool.id}">
+        <div class="ic">${iconHTML(tool.icon)}</div>
+        <h3>${esc(t(tool.name))}</h3>
+        <p>${esc(t(tool.desc))}</p>
+        ${tool.online ? `<span class="tag">${esc(t('online_tag'))}</span>` : ''}
       </div>
     `).join('');
     grid.querySelectorAll('.card').forEach((c) => {
@@ -63,14 +85,14 @@ async function renderTool(id) {
 
   app.innerHTML = `
     <div class="topbar">
-      <button class="back" id="back" aria-label="Назад">&#8592;</button>
+      <button class="back" id="back" aria-label="${esc(t('back'))}">&#8592;</button>
       <div class="ttlwrap">
-        <div class="ttl">${esc(tool.name)}</div>
-        <div class="sub">${esc(tool.desc)}</div>
+        <div class="ttl">${esc(t(tool.name))}</div>
+        <div class="sub">${esc(t(tool.desc))}</div>
       </div>
     </div>
     <div class="view" id="toolbody">
-      <div class="hint">Зареждам…</div>
+      <div class="hint">${esc(t('loading'))}</div>
     </div>
   `;
   app.querySelector('#back').addEventListener('click', () => navigate('#/'));
@@ -81,16 +103,19 @@ async function renderTool(id) {
     body.innerHTML = '';
     mod.render(body);
   } catch (e) {
-    body.innerHTML = `<div class="notice">Грешка при зареждане на инструмента: ${esc(e.message)}</div>`;
+    body.innerHTML = `<div class="notice">${esc(t('load_error'))} ${esc(e.message)}</div>`;
   }
 }
 
 function route() {
   const r = parseRoute();
   window.scrollTo(0, 0);
+  // При първо стартиране първо избор на език (само на началния маршрут).
+  if (r.name !== 'tool' && !hasLangChosen()) { renderLanguage(); return; }
   if (r.name === 'tool') renderTool(r.id);
   else renderHome();
 }
 
+applyDir();
 window.addEventListener('hashchange', route);
 route();

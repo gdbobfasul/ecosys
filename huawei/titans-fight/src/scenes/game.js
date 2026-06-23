@@ -1,13 +1,14 @@
 import Phaser from 'phaser';
 import { THEME } from '../theme.js';
 import { getLevel, HERO_BASE_HP, TOTAL_LEVELS } from '../levels.js';
-import { WEAPONS, unlockedWeapons } from '../weapons.js';
+import { unlockedWeapons } from '../weapons.js';
 import { Titan } from '../entities/titan.js';
 import { EnemyAI } from '../ai.js';
 import { buildArena } from '../backgrounds.js';
 import { TITAN_THEMES } from '../textures.js';
 import { makeButton, titleText, promptName } from '../ui.js';
 import { addScore, lastName } from '../leaderboard.js';
+import { t, tf, weaponName, levelName } from '../core/i18n.js';
 
 // Главната бойна сцена.
 export class GameScene extends Phaser.Scene {
@@ -66,7 +67,7 @@ export class GameScene extends Phaser.Scene {
     this._setupControls();
 
     // intro
-    this._announce(`НИВО ${this.level.id}\n${this.level.name}`, 1400);
+    this._announce(`${tf('level_n', this.level.id)}\n${levelName(this.level.id)}`, 1400);
 
     this.cameras.main.fadeIn(400, 0, 0, 0);
 
@@ -105,11 +106,11 @@ export class GameScene extends Phaser.Scene {
   _buildHUD() {
     const { width: W } = this._size();
     // здравни ленти
-    this.heroBar = this._healthBar(30, 26, false, 'ТИ');
-    this.enemyBar = this._healthBar(W - 30, 26, true, this.level.name);
+    this.heroBar = this._healthBar(30, 26, false, t('you'));
+    this.enemyBar = this._healthBar(W - 30, 26, true, levelName(this.level.id));
 
     // индикатор за ниво (по средата горе)
-    this.levelLabel = titleText(this, W / 2, 30, `НИВО ${this.level.id}/${TOTAL_LEVELS}`, 20, THEME.accentHex)
+    this.levelLabel = titleText(this, W / 2, 30, tf('level_total', this.level.id, TOTAL_LEVELS), 20, THEME.accentHex)
       .setDepth(100);
 
     // комбо текст
@@ -118,7 +119,7 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(100).setAlpha(0);
 
     // --- БУТОН ИЗХОД (ясно видим, горе вляво) ---
-    this.exitBtn = makeButton(this, 88, 78, 132, 46, '✕ ИЗХОД', () => {
+    this.exitBtn = makeButton(this, 88, 78, 132, 46, t('exit'), () => {
       this.scene.start('menu');
     }, { color: THEME.danger, fontSize: '18px' });
     this.exitBtn.setDepth(130);
@@ -263,8 +264,7 @@ export class GameScene extends Phaser.Scene {
     const y = H - 28;
     this.weaponBtns = [];
     this.heroArsenal.forEach((key, i) => {
-      const w = WEAPONS[key];
-      const btn = makeButton(this, startX + i * spacing, y, spacing - 8, 36, w.name.slice(0, 4), () => {
+      const btn = makeButton(this, startX + i * spacing, y, spacing - 8, 36, weaponName(key).slice(0, 4), () => {
         this.hero.setWeapon(key);
         this._highlightWeapon(key);
       }, { color: key === this.heroWeapon ? THEME.accent : 0x88a0c0, fontSize: '12px' });
@@ -342,7 +342,7 @@ export class GameScene extends Phaser.Scene {
 
   _afterHit(attacker, defender) {
     if (attacker === this.hero && attacker.comboCount >= 2) {
-      this.comboText.setText(`КОМБО x${attacker.comboCount}!`).setAlpha(1).setScale(0.6);
+      this.comboText.setText(tf('combo', attacker.comboCount)).setAlpha(1).setScale(0.6);
       this.tweens.add({ targets: this.comboText, scale: 1.1, alpha: 0, duration: 700, ease: 'Cubic.out' });
     }
   }
@@ -500,7 +500,7 @@ export class GameScene extends Phaser.Scene {
       const rowW = sideBySide ? (innerW - gap) / 2 : innerW;
 
       // Заглавието се мащабира така че да се чете изцяло, без да излиза от панела.
-      const big = isLast ? 'ПОБЕДА!\nТИ СИ ШАМПИОН' : (win ? 'ПОБЕДА!' : 'ПОРАЖЕНИЕ');
+      const big = isLast ? t('champion') : (win ? t('victory') : t('defeat'));
       const titleSize = Math.round(Phaser.Math.Clamp(panelW * (isLast ? 0.11 : 0.15), 30, isLast ? 48 : 64));
 
       // --- Изчисляваме височината на съдържанието, за да е панелът по мярка. ---
@@ -531,17 +531,17 @@ export class GameScene extends Phaser.Scene {
 
       if (win && !isLast) {
         y += vgap + 11;
-        titleText(this, cx, y, `Отключено ниво ${this.level.id + 1}!`, 20, THEME.accentHex).setDepth(200);
+        titleText(this, cx, y, tf('unlocked_next', this.level.id + 1), 20, THEME.accentHex).setDepth(200);
         y += 11;
       }
 
       y += vgap + 14;
-      titleText(this, cx, y, `ТОЧКИ: ${this._finalScore}`, 24, '#ffffff').setDepth(200);
+      titleText(this, cx, y, tf('points', this._finalScore), 24, '#ffffff').setDepth(200);
       y += 14;
 
       // makeButton сам свива шрифта да се събере в бутона (без рязане);
       // тук задаваме само базов размер.
-      const actLabel = win && !isLast ? 'СЛЕДВАЩО НИВО ▶' : (win ? 'ПАК ▶' : 'ОПИТАЙ ПАК');
+      const actLabel = win && !isLast ? t('next_level') : (win ? t('again') : t('try_again'));
       const btnFont = '20px';
 
       const actClick = () => {
@@ -559,29 +559,29 @@ export class GameScene extends Phaser.Scene {
         const rightX = cx + (rowW + gap) / 2;
         makeButton(this, leftX, y, rowW, btnH, actLabel, actClick,
           { color: win && !isLast ? THEME.good : THEME.primary, fontSize: btnFont }).setDepth(200);
-        makeButton(this, rightX, y, rowW, btnH, 'МЕНЮ', () => this.scene.start('menu'),
+        makeButton(this, rightX, y, rowW, btnH, t('menu'), () => this.scene.start('menu'),
           { color: 0x88a0c0, fontSize: btnFont }).setDepth(200);
         y += btnH / 2;
       } else {
         makeButton(this, cx, y, rowW, btnH, actLabel, actClick,
           { color: win && !isLast ? THEME.good : THEME.primary, fontSize: btnFont }).setDepth(200);
         y += btnH / 2 + gap + btnH / 2;
-        makeButton(this, cx, y, rowW, btnH, 'МЕНЮ', () => this.scene.start('menu'),
+        makeButton(this, cx, y, rowW, btnH, t('menu'), () => this.scene.start('menu'),
           { color: 0x88a0c0, fontSize: btnFont }).setDepth(200);
         y += btnH / 2;
       }
 
       // Бутон „🏆 ЗАПИШИ РЕЗУЛТАТА" — отваря поле за име, записва и показва листата.
       y += gap + btnH / 2;
-      const saveLabel = '🏆 ЗАПИШИ РЕЗУЛТАТА';
+      const saveLabel = t('save_result');
       const saveBtn = makeButton(this, cx, y, innerW, btnH, saveLabel, () => {
         saveBtn.setEnabled(false);
         promptName(this, lastName(), (name) => {
           if (name == null) { saveBtn.setEnabled(true); return; } // отказ
           const { rank, total } = addScore(name, this._finalScore);
-          const headline = rank > 0 ? `Ти си #${rank} от ${total}` : `Извън ТОП 100 (${total})`;
+          const headline = rank > 0 ? tf('your_rank', rank, total) : tf('out_of_top', total);
           this.scene.start('leaderboard', {
-            highlightName: String(name).slice(0, 24).trim() || 'Играч',
+            highlightName: String(name).slice(0, 24).trim() || t('default_name'),
             highlightScore: this._finalScore,
             headline
           });

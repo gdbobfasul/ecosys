@@ -12,6 +12,7 @@
 import initSqlJs from 'sql.js';
 // Vite разрешава ?url към финалния път на WASM актива (работи и под Capacitor).
 import wasmUrl from 'sql.js/dist/sql-wasm.wasm?url';
+import { t } from './core/i18n.js';
 
 const DB_KEY = 'fpshunter_scores_db';   // IndexedDB / localStorage ключ
 const TABLE = 'scores';
@@ -40,7 +41,8 @@ export class Leaderboard {
 
   // Вмъкване на резултат и класиране сред вече запазените.
   async addScore(name, points) {
-    const clean = String(name || 'Играч').slice(0, 24).trim() || 'Играч';
+    const fallbackName = t('default_name');
+    const clean = String(name || fallbackName).slice(0, 24).trim() || fallbackName;
     const pts = Math.max(0, Math.round(points));
     if (this.usingFallback) {
       this._fb.push({ name: clean, points: pts });

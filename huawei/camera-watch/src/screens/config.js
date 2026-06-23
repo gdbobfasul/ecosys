@@ -4,22 +4,20 @@
 import { el, mount } from '../ui/dom.js';
 import { loadSettings, saveSettings } from '../core/storage.js';
 import { getPairing, setPairing, generatePairKey, checkPairing } from '../core/pairing.js';
+import { t, tf } from '../core/i18n.js';
 
 export async function renderConfig(root, { go }) {
   const s = await loadSettings();
 
   const otherWrap = el('div', { class: s.source === 'other' ? '' : 'spacer' });
-  const otherUrl = el('input', { type: 'url', placeholder: 'https://example/stream.m3u8  или  http://cam/mjpeg', value: s.otherUrl || '' });
+  const otherUrl = el('input', { type: 'url', placeholder: t('cfg_other_url_ph'), value: s.otherUrl || '' });
 
   function renderOther() {
     otherWrap.innerHTML = '';
     if (s.source === 'other') {
-      otherWrap.appendChild(el('label', { text: 'URL на „друга камера“' }));
+      otherWrap.appendChild(el('label', { text: t('cfg_other_url') }));
       otherWrap.appendChild(otherUrl);
-      otherWrap.appendChild(el('div', { class: 'notice warn', html:
-        '<b>Честно:</b> работи само ако потокът е възпроизводим в браузър и позволява CORS ' +
-        '(MJPEG/HLS/HTTP видео). <b>RTSP и произволни IP камери не се поддържат</b> директно — ' +
-        'нужен е сървър/gateway, който транскодира към HLS/MJPEG.' }));
+      otherWrap.appendChild(el('div', { class: 'notice warn', html: t('cfg_other_warn') }));
     }
   }
   renderOther();
@@ -27,8 +25,8 @@ export async function renderConfig(root, { go }) {
   const sourceSel = el('select', {
     onchange: (e) => { s.source = e.target.value; renderOther(); }
   }, [
-    el('option', { value: 'phone', text: 'Камера на телефона (задна)', selected: s.source === 'phone' }),
-    el('option', { value: 'other', text: 'Друга камера (поток по URL)', selected: s.source === 'other' })
+    el('option', { value: 'phone', text: t('cfg_source_phone'), selected: s.source === 'phone' }),
+    el('option', { value: 'other', text: t('cfg_source_other'), selected: s.source === 'other' })
   ]);
 
   const sensVal = el('span', { class: 'muted', text: pct(s.sensitivity) });
@@ -37,10 +35,10 @@ export async function renderConfig(root, { go }) {
     oninput: (e) => { s.sensitivity = parseFloat(e.target.value); sensVal.textContent = pct(s.sensitivity); }
   });
 
-  const cdVal = el('span', { class: 'muted', text: s.cooldownSec + ' сек' });
+  const cdVal = el('span', { class: 'muted', text: tf('cfg_seconds', s.cooldownSec) });
   const cd = el('input', {
     type: 'range', min: '3', max: '60', step: '1', value: String(s.cooldownSec),
-    oninput: (e) => { s.cooldownSec = parseInt(e.target.value, 10); cdVal.textContent = s.cooldownSec + ' сек'; }
+    oninput: (e) => { s.cooldownSec = parseInt(e.target.value, 10); cdVal.textContent = tf('cfg_seconds', s.cooldownSec); }
   });
 
   const pairingCard = buildPairingCard(go);
@@ -56,48 +54,48 @@ export async function renderConfig(root, { go }) {
       el('div', { class: 's active' }), el('div', { class: 's active' }),
       el('div', { class: 's active' }), el('div', { class: 's' })
     ]),
-    el('h1', { text: 'Настройки' }),
+    el('h1', { text: t('cfg_title') }),
 
     pairingCard,
 
     el('div', { class: 'card' }, [
-      el('label', { text: 'Източник на видео' }),
+      el('label', { text: t('cfg_source') }),
       sourceSel,
       otherWrap
     ]),
 
     el('div', { class: 'card' }, [
-      el('div', { class: 'row between' }, [el('label', { text: 'Чувствителност на движение', class: 'grow' }), sensVal]),
+      el('div', { class: 'row between' }, [el('label', { text: t('cfg_sensitivity'), class: 'grow' }), sensVal]),
       sens,
-      el('p', { class: 'muted', text: 'По-ниско = реагира и на малко движение (повече сигнали). По-високо = само големи промени.' })
+      el('p', { class: 'muted', text: t('cfg_sensitivity_hint') })
     ]),
 
     el('div', { class: 'card' }, [
-      el('h2', { text: 'Какво да алармира' }),
-      toggle('Човек / нарушител', cbPerson),
-      toggle('Животни (куче, котка, птица…)', cbAnimal),
-      toggle('Друго движение (немаркиран обект)', cbOther),
+      el('h2', { text: t('cfg_what_alarm') }),
+      toggle(t('cfg_alarm_person'), cbPerson),
+      toggle(t('cfg_alarm_animal'), cbAnimal),
+      toggle(t('cfg_alarm_other'), cbOther),
       el('div', { class: 'spacer' }),
-      toggle('Разпознавай какво помръдна (TF.js)', cbClassify),
-      el('p', { class: 'muted', text: 'Ако е изключено: алармира само „движение“, без класификация (по-малко работа).' })
+      toggle(t('cfg_classify'), cbClassify),
+      el('p', { class: 'muted', text: t('cfg_classify_hint') })
     ]),
 
     el('div', { class: 'card' }, [
-      toggle('Локални нотификации при детекция', cbNotify),
+      toggle(t('cfg_local_notif'), cbNotify),
       el('div', { class: 'spacer' }),
-      el('div', { class: 'row between' }, [el('label', { text: 'Пауза между сигнали (cooldown)', class: 'grow' }), cdVal]),
+      el('div', { class: 'row between' }, [el('label', { text: t('cfg_cooldown'), class: 'grow' }), cdVal]),
       cd
     ]),
 
     el('div', { class: 'row' }, [
-      el('button', { class: 'btn ghost', onclick: () => go('permissions') }, 'Назад'),
+      el('button', { class: 'btn ghost', onclick: () => go('permissions') }, t('back')),
       el('button', {
         class: 'btn grow', onclick: async () => {
           s.otherUrl = otherUrl.value.trim();
           await saveSettings(s);
           go('dashboard');
         }
-      }, 'Запази и към таблото')
+      }, t('cfg_save_to_dashboard'))
     ])
   ]);
 
@@ -108,46 +106,43 @@ export async function renderConfig(root, { go }) {
 function buildPairingCard(go) {
   const p = getPairing();
   const roleSel = el('select', {}, [
-    optionEl('solo', 'Сам (един телефон)', p.role),
-    optionEl('monitor', 'Страж (до камерата — праща)', p.role),
-    optionEl('watcher', 'Наблюдаващ (получава известията)', p.role)
+    optionEl('solo', t('pair_role_solo'), p.role),
+    optionEl('monitor', t('pair_role_monitor'), p.role),
+    optionEl('watcher', t('pair_role_watcher'), p.role)
   ]);
-  const keyIn = el('input', { type: 'text', value: p.pairKey, placeholder: 'ключ за двойката', autocapitalize: 'none', autocomplete: 'off' });
+  const keyIn = el('input', { type: 'text', value: p.pairKey, placeholder: t('pair_key_ph'), autocapitalize: 'none', autocomplete: 'off' });
   const baseIn = el('input', { type: 'text', value: p.relayBase, placeholder: 'https://selflearning.bot.nu', autocapitalize: 'none', autocomplete: 'off' });
   const pollIn = el('input', { type: 'number', value: String(p.pollSeconds), min: '3' });
   const statusEl = el('span', { class: 'pill' }, '');
 
   return el('div', { class: 'card' }, [
-    el('h2', { text: '🔗 Сдвояване (2 телефона)' }),
-    el('p', { class: 'muted', text:
-      'Два телефона: единият до камерата („Страж" — гледа и праща), другият при теб ' +
-      '(„Наблюдаващ" — получава известията). Свържи ги с ЕДИН и същ ключ за двойката. ' +
-      '„Сам" = един телефон (по подразбиране).' }),
-    el('label', { text: 'Режим / роля' }), roleSel,
-    el('label', { text: 'Ключ за двойката (еднакъв на двата телефона)' }), keyIn,
+    el('h2', { text: t('pair_title') }),
+    el('p', { class: 'muted', text: t('pair_desc') }),
+    el('label', { text: t('pair_role') }), roleSel,
+    el('label', { text: t('pair_key') }), keyIn,
     el('div', { class: 'row', style: 'gap:6px;margin-top:6px' }, [
-      el('button', { class: 'btn ghost', onclick: () => { keyIn.value = generatePairKey(); } }, 'Генерирай ключ')
+      el('button', { class: 'btn ghost', onclick: () => { keyIn.value = generatePairKey(); } }, t('pair_gen_key'))
     ]),
-    el('label', { text: 'Сървър (релей)' }), baseIn,
-    el('label', { text: 'Проверка на всеки (сек) — за наблюдаващия' }), pollIn,
+    el('label', { text: t('pair_server') }), baseIn,
+    el('label', { text: t('pair_poll') }), pollIn,
     el('div', { class: 'row', style: 'gap:8px;margin-top:10px;align-items:center' }, [
       el('button', {
         class: 'btn', onclick: () => {
           setPairing({ role: roleSel.value, pairKey: keyIn.value.trim(), relayBase: baseIn.value.trim(), pollSeconds: parseInt(pollIn.value, 10) || 6 });
           statusEl.className = 'pill on';
-          statusEl.textContent = 'запазено ✓';
+          statusEl.textContent = t('pair_saved');
         }
-      }, 'Запази'),
+      }, t('save')),
       el('button', {
         class: 'btn ghost', onclick: async () => {
           setPairing({ role: roleSel.value, pairKey: keyIn.value.trim(), relayBase: baseIn.value.trim() });
           statusEl.className = 'pill';
-          statusEl.textContent = 'проверявам…';
+          statusEl.textContent = t('pair_checking');
           const r = await checkPairing();
           statusEl.className = 'pill ' + (r.ok ? 'on' : 'off');
-          statusEl.textContent = r.ok ? 'връзката работи ✓' : ('няма връзка' + (r.reason ? ` (${r.reason})` : ''));
+          statusEl.textContent = r.ok ? t('pair_link_ok') : (t('pair_no_link') + (r.reason ? ` (${r.reason})` : ''));
         }
-      }, 'Провери'),
+      }, t('pair_check')),
       statusEl
     ])
   ]);
@@ -159,7 +154,7 @@ function optionEl(value, label, current) {
   return o;
 }
 
-function pct(v) { return Math.round(v * 1000) / 10 + '% пиксели'; }
+function pct(v) { return tf('cfg_pct_pixels', Math.round(v * 1000) / 10); }
 
 function checkbox(checked, onChange) {
   const c = el('input', { type: 'checkbox' });

@@ -1,18 +1,20 @@
 // log.js — пълен дневник на събитията (само локално) + изчистване.
 import { el, toast } from '../ui/dom.js';
 import { getState, clearEvents } from '../core/storage.js';
+import { t, getLang } from '../core/i18n.js';
+import { typeLabel } from '../core/events.js';
 
 export function renderLog(root, ctx) {
   root.appendChild(el('div', { class: 'row between' }, [
-    el('h1', {}, 'Дневник'),
+    el('h1', {}, t('nav_log')),
     el('button', { class: 'btn danger small', onclick: () => {
-      clearEvents(); toast('Дневникът е изчистен'); ctx.rerender();
-    } }, 'Изчисти')
+      clearEvents(); toast(t('log_cleared')); ctx.rerender();
+    } }, t('log_clear'))
   ]));
 
   const evs = getState().events;
   if (!evs.length) {
-    root.appendChild(el('p', { class: 'muted' }, 'Няма записани събития. Стартирай наблюдението от „Наблюдение“.'));
+    root.appendChild(el('p', { class: 'muted' }, t('log_empty')));
     return;
   }
 
@@ -27,17 +29,7 @@ function eventRow(e) {
   children.push(el('div', { class: 'meta' }, [
     el('div', { class: 'etype ' + e.type }, typeLabel(e.type)),
     el('div', { class: 'muted small' }, e.label),
-    el('div', { class: 'muted small' }, new Date(e.at).toLocaleString('bg-BG'))
+    el('div', { class: 'muted small' }, new Date(e.at).toLocaleString(getLang()))
   ]));
   return el('div', { class: 'event' }, children);
-}
-
-function typeLabel(type) {
-  switch (type) {
-    case 'wake': return 'Събуди се';
-    case 'stranger': return 'Непознат в стаята';
-    case 'left': return 'Излезе от кадър';
-    case 'fire': return 'Възможен пожар (груба евристика)';
-    default: return 'Събитие';
-  }
 }

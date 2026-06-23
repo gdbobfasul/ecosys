@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { BootScene } from './scenes/boot.js';
+import { LanguageScene } from './scenes/language.js';
 import { MenuScene } from './scenes/menu.js';
 import { WeaponSelectScene } from './scenes/weapon-select.js';
 import { GameScene } from './scenes/game.js';
@@ -52,7 +53,7 @@ const config = {
       debug: false
     }
   },
-  scene: [BootScene, MenuScene, WeaponSelectScene, GameScene, LeaderboardScene]
+  scene: [BootScene, LanguageScene, MenuScene, WeaponSelectScene, GameScene, LeaderboardScene]
 };
 
 const game = new Phaser.Game(config);

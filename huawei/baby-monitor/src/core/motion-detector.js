@@ -14,6 +14,8 @@
 // Бруто евристика за „пожар“ (по избор, изключена по подразбиране, виж settings):
 //   • рязък скок на яркост + оранжев оттенък + трептене. НЕ Е НАДЕЖДНА ДЕТЕКЦИЯ НА ПОЖАР.
 
+import { t } from './i18n.js';
+
 const GRID_W = 48;        // ширина на работната решетка
 const GRID_H = 36;        // височина на работната решетка
 
@@ -138,12 +140,12 @@ function toGrayGrid(canvasEl) {
 
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
-// Етикет на български за състояние.
+// Преведен етикет за състояние (текущ език).
 export function stateLabel(state) {
   switch (state) {
-    case 'calm': return 'Спи спокойно';
-    case 'stir': return 'Размърдва се';
-    case 'awake': return 'Събуди се';
-    default: return 'Изчаквам…';
+    case 'calm': return t('state_calm');
+    case 'stir': return t('state_stir');
+    case 'awake': return t('state_awake');
+    default: return t('state_waiting');
   }
 }

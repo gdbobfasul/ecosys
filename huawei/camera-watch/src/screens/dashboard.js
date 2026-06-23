@@ -20,6 +20,7 @@ import { classifyFrame } from '../core/recognizer.js';
 import { notify } from '../core/notifier.js';
 import { loadSettings, loadEvents, addEvent, clearEvents } from '../core/storage.js';
 import { isMonitor, sendAlert, sendFrame } from '../core/pairing.js';
+import { t, tf } from '../core/i18n.js';
 
 const READ_EVERY_MS = 350;       // честота на проверка за движение
 const FRAME_MAX_W = 480;         // работна ширина на пълния кадър (за класификация)
@@ -53,7 +54,7 @@ export async function renderDashboard(root, { go }) {
   const frameCanvas = document.createElement('canvas'); // off-DOM работен кадър
 
   const dot = el('span', { class: 'dot idle' });
-  const statusText = el('span', { text: 'В готовност' });
+  const statusText = el('span', { text: t('st_ready') });
   const statusBar = el('div', { class: 'statusbar' }, [dot, statusText]);
 
   const stage = el('div', { class: 'stage' }, [videoEl, imgEl, statusBar]);
@@ -67,9 +68,9 @@ export async function renderDashboard(root, { go }) {
   }
 
   function setArmedUI() {
-    armBtn.textContent = armed ? 'На пост — спри (Disarm)' : 'Постави на пост (Arm)';
+    armBtn.textContent = armed ? t('dash_disarm') : t('dash_arm');
     armBtn.className = armed ? 'btn danger grow' : 'btn grow';
-    if (!armed) setStatus('idle', camReady ? 'В готовност' : 'Камерата не е активна');
+    if (!armed) setStatus('idle', camReady ? t('st_ready') : t('st_cam_off'));
   }
 
   // --- Източник ------------------------------------------------------------
@@ -119,7 +120,7 @@ export async function renderDashboard(root, { go }) {
         } else if (m.motion) {
           await onMotion();
         } else {
-          setStatus('idle', 'На пост — спокойно (' + Math.round(m.ratio * 1000) / 10 + '%)');
+          setStatus('idle', tf('st_guard_calm', Math.round(m.ratio * 1000) / 10));
         }
       }
     } catch (_) { /* не спираме цикъла заради единичен кадър */ }
@@ -127,12 +128,12 @@ export async function renderDashboard(root, { go }) {
   }
 
   async function onMotion() {
-    setStatus('motion', 'Движение засечено…');
+    setStatus('motion', t('st_motion'));
     const now = Date.now();
     if (now - lastAlertAt < s.cooldownSec * 1000) return; // в cooldown — без нова аларма
 
     let category = 'other';
-    let label = 'движение';
+    let label = t('cls_motion');
     let score = 0;
 
     if (s.classify && !busyClassify) {
@@ -155,12 +156,12 @@ export async function renderDashboard(root, { go }) {
       (!s.classify && s.watchOther) ||
       (!s.classify && (s.watchPerson || s.watchAnimal)); // без класификация: алармирай при движение, ако нещо е желано
     if (!want) {
-      setStatus('motion', 'Движение (' + label + ') — извън избраните класове');
+      setStatus('motion', tf('st_motion_out', label));
       return;
     }
 
     lastAlertAt = now;
-    setStatus('hit', 'ДЕТЕКЦИЯ: ' + label);
+    setStatus('hit', tf('st_detection', label));
 
     const thumb = snapshotDataUrl(frameCanvas);
     const ev = await addEvent({ kind: 'detection', category, label, score, thumb });
@@ -175,7 +176,7 @@ export async function renderDashboard(root, { go }) {
 
     if (s.notify) {
       const pctTxt = score ? ' (' + Math.round(score * 100) + '%)' : '';
-      await notify('Камера-страж: ' + label + pctTxt, 'Засечено движение в ' + fmtTime(ev.ts));
+      await notify(tf('notif_title', label + pctTxt), tf('notif_body', fmtTime(ev.ts)));
     }
   }
 
@@ -199,7 +200,7 @@ export async function renderDashboard(root, { go }) {
   async function refreshLog() {
     const events = await loadEvents();
     clear(logWrap);
-    if (!events.length) { logWrap.appendChild(el('p', { class: 'muted', text: 'Още няма събития.' })); return; }
+    if (!events.length) { logWrap.appendChild(el('p', { class: 'muted', text: t('dash_no_events') })); return; }
     for (const ev of events) logWrap.appendChild(logItem(ev));
   }
 
@@ -210,7 +211,7 @@ export async function renderDashboard(root, { go }) {
       if (!ok) { setArmedUI(); return; }
       armed = true; running = true;
       setArmedUI();
-      setStatus('idle', 'На пост…');
+      setStatus('idle', t('st_on_guard'));
       setTimeout(tick, READ_EVERY_MS);
     } else {
       armed = false; running = false;
@@ -226,21 +227,21 @@ export async function renderDashboard(root, { go }) {
       el('div', { class: 's active' }), el('div', { class: 's active' })
     ]),
     el('div', { class: 'row between' }, [
-      el('h1', { text: 'Табло', class: 'grow' }),
-      el('button', { class: 'btn ghost', onclick: async () => { running = false; armed = false; stopSource(); go('config'); } }, 'Настройки')
+      el('h1', { text: t('dash_title'), class: 'grow' }),
+      el('button', { class: 'btn ghost', onclick: async () => { running = false; armed = false; stopSource(); go('config'); } }, t('settings'))
     ]),
-    el('p', { class: 'muted', text: s.source === 'other' ? 'Източник: друга камера (поток)' : 'Източник: камера на телефона' }),
+    el('p', { class: 'muted', text: s.source === 'other' ? t('dash_source_other') : t('dash_source_phone') }),
     stage,
     el('div', { class: 'spacer' }),
     el('div', { class: 'row' }, [armBtn]),
     el('div', { class: 'card' }, [
       el('div', { class: 'row between' }, [
-        el('h2', { text: 'Журнал на събитията', class: 'grow' }),
-        el('button', { class: 'btn ghost', onclick: async () => { await clearEvents(); refreshLog(); } }, 'Изчисти')
+        el('h2', { text: t('dash_log_title'), class: 'grow' }),
+        el('button', { class: 'btn ghost', onclick: async () => { await clearEvents(); refreshLog(); } }, t('dash_clear'))
       ]),
       logWrap
     ]),
-    el('p', { class: 'muted', html: 'Видеото се обработва на устройството. Нищо не се качва. „Друга камера“ изисква browser-playable поток (виж настройките).' })
+    el('p', { class: 'muted', html: t('dash_footer') })
   ]);
 
   setArmedUI();

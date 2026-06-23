@@ -46,3 +46,26 @@ h1 { font-size: 22px; margin: 16px 0 8px; }
   animation: spin 1s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* Избор на език (overlay при първо стартиране + повторен избор). */
+.lang-globe { font-size: 48px; margin-bottom: 8px; }
+.lang-grid {
+  margin-top: 20px; display: grid;
+  grid-template-columns: repeat(2, 1fr); gap: 10px;
+}
+.lang-btn {
+  padding: 12px 10px; border: 1px solid rgba(255,255,255,.12);
+  border-radius: 12px; background: rgba(255,255,255,.04);
+  color: var(--fg); font-size: 15px; font-weight: 600; cursor: pointer;
+}
+.lang-btn:active { opacity: .85; }
+.lang-btn.cur { border-color: var(--accent2); background: rgba(255,82,82,.18); }
+
+/* Дискретен бутон „🌐 Език" на офлайн екрана. */
+.btn-ghost {
+  display: inline-block; margin-top: 14px; padding: 8px 18px;
+  border: 1px solid rgba(255,255,255,.12); border-radius: 12px;
+  background: transparent; color: var(--muted);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.btn-ghost:active { opacity: .85; }

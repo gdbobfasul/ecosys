@@ -1,23 +1,24 @@
 // rules-config.js — съветник за правила: тригери, шаблони, график, списъци, приоритет.
-import { el, clear } from '../ui/dom.js';
-import { getState, setState, uid, persist } from '../core/storage.js';
-import { describeSchedule } from '../core/scheduler.js';
+import { el } from '../ui/dom.js';
+import { getState, setState, uid } from '../core/storage.js';
+import { describeSchedule, dayNames } from '../core/scheduler.js';
+import { t } from '../core/i18n.js';
 
-const TRIGGER_LABELS = {
-  contains: 'съдържа ключова дума',
-  exact: 'точно съвпадение',
-  any: 'всяко съобщение'
+const TRIGGER_KEYS = {
+  contains: 'trigger_contains',
+  exact: 'trigger_exact',
+  any: 'trigger_any'
 };
 
 function newRule() {
   return {
     id: uid(),
-    name: 'Ново правило',
+    name: t('rule_new_name'),
     enabled: true,
     triggerType: 'contains',
     triggerValue: '',
     caseSensitive: false,
-    reply: 'Здравей, {name}! Получих съобщението ти в {time}. Ще се върна към теб скоро.'
+    reply: t('rule_default_reply')
   };
 }
 
@@ -29,16 +30,16 @@ export function RulesConfigScreen({ render }) {
 
   // --- График / работно време ---
   const sched = s.schedule;
-  const dayNames = ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+  const dayLabels = dayNames();
 
   const scheduleCard = el('div', { class: 'card' }, [
-    el('h2', {}, '🕐 График'),
+    el('h2', {}, t('rules_sched_title')),
     el('p', { class: 'muted' }, describeSchedule(sched)),
-    el('label', {}, 'Режим'),
+    el('label', {}, t('rules_mode')),
     (() => {
       const sel = el('select', {}, [
-        el('option', { value: '247' }, 'Денонощно (24/7)'),
-        el('option', { value: 'office' }, 'Работно време')
+        el('option', { value: '247' }, t('rules_mode_247')),
+        el('option', { value: 'office' }, t('rules_mode_office'))
       ]);
       sel.value = sched.mode;
       sel.addEventListener('change', () => {
@@ -56,13 +57,13 @@ export function RulesConfigScreen({ render }) {
     to.addEventListener('change', () => setState({ schedule: { ...getState().schedule, to: to.value } }));
 
     scheduleCard.appendChild(el('div', { class: 'row' }, [
-      el('div', { class: 'grow' }, [el('label', {}, 'От'), from]),
-      el('div', { class: 'grow' }, [el('label', {}, 'До'), to])
+      el('div', { class: 'grow' }, [el('label', {}, t('rules_from')), from]),
+      el('div', { class: 'grow' }, [el('label', {}, t('rules_to')), to])
     ]));
 
-    scheduleCard.appendChild(el('label', {}, 'Работни дни'));
+    scheduleCard.appendChild(el('label', {}, t('rules_workdays')));
     const daysRow = el('div', { class: 'row wrap' });
-    dayNames.forEach((nm, idx) => {
+    dayLabels.forEach((nm, idx) => {
       const on = (getState().schedule.days || []).includes(idx);
       const b = el('button', { class: 'btn sm ' + (on ? 'primary' : 'ghost') }, nm);
       b.addEventListener('click', () => {
@@ -77,7 +78,7 @@ export function RulesConfigScreen({ render }) {
 
     const away = el('textarea', {}, sched.awayReply);
     away.addEventListener('change', () => setState({ schedule: { ...getState().schedule, awayReply: away.value } }));
-    scheduleCard.appendChild(el('label', {}, 'Съобщение извън работно време ({name}, {time}, {date})'));
+    scheduleCard.appendChild(el('label', {}, t('rules_away_label')));
     scheduleCard.appendChild(away);
   }
   root.appendChild(scheduleCard);
@@ -85,18 +86,18 @@ export function RulesConfigScreen({ render }) {
   // --- Правила (приоритет = ред) ---
   const rulesCard = el('div', { class: 'card' }, [
     el('div', { class: 'row between' }, [
-      el('h2', {}, '📜 Правила'),
+      el('h2', {}, t('rules_list_title')),
       el('button', { class: 'btn sm primary', onClick: () => {
         const st = getState();
         setState({ rules: [...st.rules, newRule()] });
         redraw();
-      } }, '+ Добави')
+      } }, t('add'))
     ]),
-    el('p', { class: 'muted' }, 'Редът = приоритет. Първото съвпаднало правило печели. Местиш с ▲▼.')
+    el('p', { class: 'muted' }, t('rules_priority_note'))
   ]);
 
   if (s.rules.length === 0) {
-    rulesCard.appendChild(el('div', { class: 'empty' }, 'Все още няма правила. Добави първото.'));
+    rulesCard.appendChild(el('div', { class: 'empty' }, t('rules_empty')));
   }
 
   s.rules.forEach((rule, i) => {
@@ -106,17 +107,17 @@ export function RulesConfigScreen({ render }) {
 
   // --- Списъци ---
   const listsCard = el('div', { class: 'card' }, [
-    el('h2', {}, '👥 Бели / черни списъци'),
-    el('p', { class: 'muted' }, 'По име на подателя. Бял списък (непразен) → отговаряме само на тях. Черен → игнорираме ги. Имена, разделени със запетая.')
+    el('h2', {}, t('rules_lists_title')),
+    el('p', { class: 'muted' }, t('rules_lists_note'))
   ]);
   const wl = el('input', { type: 'text', value: (s.lists.whitelist || []).join(', ') });
   const bl = el('input', { type: 'text', value: (s.lists.blacklist || []).join(', ') });
   const parseList = (v) => v.split(',').map((x) => x.trim()).filter(Boolean);
   wl.addEventListener('change', () => setState({ lists: { ...getState().lists, whitelist: parseList(wl.value) } }));
   bl.addEventListener('change', () => setState({ lists: { ...getState().lists, blacklist: parseList(bl.value) } }));
-  listsCard.appendChild(el('label', {}, 'Бял списък'));
+  listsCard.appendChild(el('label', {}, t('rules_whitelist')));
   listsCard.appendChild(wl);
-  listsCard.appendChild(el('label', {}, 'Черен списък'));
+  listsCard.appendChild(el('label', {}, t('rules_blacklist')));
   listsCard.appendChild(bl);
   root.appendChild(listsCard);
 
@@ -149,12 +150,12 @@ function ruleEditor(rule, index, redraw) {
   const nameInput = el('input', { type: 'text', value: rule.name });
   nameInput.addEventListener('change', () => patch({ name: nameInput.value }));
 
-  const typeSel = el('select', {}, Object.entries(TRIGGER_LABELS).map(([v, lbl]) =>
-    el('option', { value: v }, lbl)));
+  const typeSel = el('select', {}, Object.entries(TRIGGER_KEYS).map(([v, key]) =>
+    el('option', { value: v }, t(key))));
   typeSel.value = rule.triggerType;
   typeSel.addEventListener('change', () => { patch({ triggerType: typeSel.value }); redraw(); });
 
-  const valInput = el('input', { type: 'text', value: rule.triggerValue, placeholder: 'напр. цена, помощ, здравей' });
+  const valInput = el('input', { type: 'text', value: rule.triggerValue, placeholder: t('rule_keyword_ph') });
   valInput.addEventListener('change', () => patch({ triggerValue: valInput.value }));
 
   const replyInput = el('textarea', {}, rule.reply);
@@ -162,7 +163,7 @@ function ruleEditor(rule, index, redraw) {
 
   box.appendChild(el('div', { class: 'row between' }, [
     el('div', { class: 'row' }, [
-      el('span', { class: 'pill ' + (rule.enabled ? 'on' : 'off') }, rule.enabled ? 'активно' : 'на пауза'),
+      el('span', { class: 'pill ' + (rule.enabled ? 'on' : 'off') }, rule.enabled ? t('pill_active') : t('pill_on_pause')),
       el('strong', {}, `#${index + 1}`)
     ]),
     el('div', { class: 'row' }, [
@@ -171,27 +172,27 @@ function ruleEditor(rule, index, redraw) {
     ])
   ]));
 
-  box.appendChild(el('label', {}, 'Име'));
+  box.appendChild(el('label', {}, t('rule_name_label')));
   box.appendChild(nameInput);
-  box.appendChild(el('label', {}, 'Тригер'));
+  box.appendChild(el('label', {}, t('rule_trigger')));
   box.appendChild(typeSel);
 
   if (rule.triggerType !== 'any') {
-    box.appendChild(el('label', {}, 'Ключова дума / фраза'));
+    box.appendChild(el('label', {}, t('rule_keyword')));
     box.appendChild(valInput);
     const cs = el('input', { type: 'checkbox' });
     cs.checked = !!rule.caseSensitive;
     cs.addEventListener('change', () => patch({ caseSensitive: cs.checked }));
-    box.appendChild(el('label', { class: 'row', style: 'margin-top:8px' }, [cs, el('span', {}, ' Различавай главни/малки букви')]));
+    box.appendChild(el('label', { class: 'row', style: 'margin-top:8px' }, [cs, el('span', {}, ' ' + t('rule_case_sensitive'))]));
   }
 
-  box.appendChild(el('label', {}, 'Отговор ({name}, {time}, {date}, {text})'));
+  box.appendChild(el('label', {}, t('rule_reply_label')));
   box.appendChild(replyInput);
 
   box.appendChild(el('div', { class: 'row between', style: 'margin-top:10px' }, [
     el('button', { class: 'btn sm ' + (rule.enabled ? 'ghost' : 'primary'), onClick: () => { patch({ enabled: !rule.enabled }); redraw(); } },
-      rule.enabled ? 'Пауза' : 'Активирай'),
-    el('button', { class: 'btn sm danger', onClick: remove }, 'Изтрий')
+      rule.enabled ? t('rule_pause') : t('rule_activate')),
+    el('button', { class: 'btn sm danger', onClick: remove }, t('delete'))
   ]));
 
   return box;

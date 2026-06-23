@@ -2,6 +2,7 @@
 // Тези събития захранват реда „Днешна програма" в брифинга.
 import { h, esc, clear } from '../ui/dom.js';
 import { storage, KEYS } from '../core/storage.js';
+import { t } from '../core/i18n.js';
 
 function uid() {
   return 'e' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -14,11 +15,11 @@ export async function mountEventsTasks(container) {
 
   const editor = h(`
     <div class="card">
-      <h2>Ново събитие / задача</h2>
-      <div class="field"><label>Заглавие</label><input id="e-title" placeholder="напр. Среща с екипа"></div>
-      <div class="field"><label>Дата</label><input id="e-date" type="date" value="${today}"></div>
-      <div class="field"><label>Час (по избор)</label><input id="e-time" type="time"></div>
-      <button class="btn small" id="e-add">Добави</button>
+      <h2>${esc(t('ev_new'))}</h2>
+      <div class="field"><label>${esc(t('title_field'))}</label><input id="e-title" placeholder="${esc(t('ev_title_ph'))}"></div>
+      <div class="field"><label>${esc(t('ev_date'))}</label><input id="e-date" type="date" value="${today}"></div>
+      <div class="field"><label>${esc(t('ev_time_opt'))}</label><input id="e-time" type="time"></div>
+      <button class="btn small" id="e-add">${esc(t('add'))}</button>
     </div>
   `);
   editor.querySelector('#e-add').addEventListener('click', async () => {
@@ -40,21 +41,21 @@ export async function mountEventsTasks(container) {
   const sorted = [...events].sort((a, b) =>
     (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
   const listWrap = h(`<div></div>`);
-  if (!sorted.length) listWrap.appendChild(h(`<p class="muted">Няма събития.</p>`));
+  if (!sorted.length) listWrap.appendChild(h(`<p class="muted">${esc(t('ev_empty'))}</p>`));
   sorted.forEach((e) => {
     const item = h(`
       <div class="list-item">
         <div class="row">
           <div>
             <strong style="${e.done ? 'text-decoration:line-through;opacity:.6' : ''}">${esc(e.title)}</strong>
-            <div class="muted">${e.date}${e.time ? ' · ' + e.time : ''}</div>
+            <div class="muted">${esc(e.date)}${e.time ? ' · ' + esc(e.time) : ''}</div>
           </div>
-          <span class="pill ${e.done ? 'off' : ''}">${e.done ? 'готово' : 'отворено'}</span>
+          <span class="pill ${e.done ? 'off' : ''}">${esc(e.done ? t('ev_done_pill') : t('ev_open_pill'))}</span>
         </div>
         <div class="spacer"></div>
         <div class="row" style="justify-content:flex-start;gap:8px">
-          <button class="btn secondary small" data-act="done">${e.done ? 'Отмени' : 'Готово'}</button>
-          <button class="btn danger small" data-act="del">Изтрий</button>
+          <button class="btn secondary small" data-act="done">${esc(e.done ? t('ev_undo') : t('ev_mark_done'))}</button>
+          <button class="btn danger small" data-act="del">${esc(t('delete'))}</button>
         </div>
       </div>
     `);

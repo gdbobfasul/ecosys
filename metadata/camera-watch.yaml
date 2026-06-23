@@ -1,0 +1,92 @@
+id: camera-watch
+name: Камера-страж
+folders:
+  - rustore/camera-watch
+  - huawei/camera-watch
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.camerawatch.rustore
+  huawei:  com.kcy.camerawatch.huawei
+category:
+  google_play: Tools
+  rustore: Инструменты
+  huawei: Tools
+content_rating: "3+ (Everyone) — помощно средство за наблюдение, без насилие/реклами/покупки; НЕ е сертифицирана охранителна система"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Камера-страж
+    short: "Детектор движения с распознаванием: человек, собака, кошка — на устройстве"
+    full: |
+      Камера-страж — «робот в аренду», который следит за камерой, фиксирует движение и
+      распознаёт, что именно шевельнулось (человек/нарушитель, собака, кошка, другое
+      животное). Всё на устройстве, бесплатно, без аккаунтов, контактов и отслеживания.
+
+      • Движение: кадры уменьшаются и сравниваются — доля изменившихся пикселей даёт сигнал
+        (регулируемая чувствительность).
+      • Распознавание: при движении запускается COCO-SSD (TensorFlow.js) и относит объект к
+        категории человек / животное / другое.
+      • Локальное уведомление + журнал событий со снимком; cooldown ограничивает частоту.
+      • По желанию — «другая камера» по URL (browser-playable поток с CORS; RTSP не поддерживается напрямую).
+  en:
+    title: Camera Watch
+    short: "Motion detector with recognition: human, dog, cat — on-device"
+    full: |
+      Camera Watch is a "robot for rent" that watches a camera, detects motion and
+      recognizes what moved (human/intruder, dog, cat, other animal). It runs entirely
+      on-device, free, with no accounts, contacts or tracking.
+
+      • Motion: frames are downscaled and compared — the share of changed pixels triggers an
+        alert (adjustable sensitivity).
+      • Recognition: on motion it runs COCO-SSD (TensorFlow.js) and maps the object to a
+        person / animal / other category.
+      • Local notification + an event log with a snapshot; a cooldown limits frequency.
+      • Optional "other camera" by URL (a browser-playable stream with CORS; RTSP is not supported directly).
+  bg:
+    title: Камера-страж
+    short: "Детектор на движение с разпознаване: човек, куче, котка — на устройството"
+    full: |
+      Камера-страж е „робот под наем", който следи камера, засича движение и разпознава
+      какво е помръднало (човек/нарушител, куче, котка, друго животно). Изцяло на
+      устройството, безплатно, без акаунти, контакти и проследяване.
+
+      • Движение: кадрите се смаляват и сравняват — делът променени пиксели дава сигнал
+        (регулируема чувствителност).
+      • Разпознаване: при движение се пуска COCO-SSD (TensorFlow.js) и обектът се причислява
+        към категория човек / животно / друго.
+      • Локално известие + дневник със снимка; cooldown ограничава честотата.
+      • По избор „друга камера" по URL (browser-playable поток с CORS; RTSP не се поддържа директно).
+
+permissions:
+  - id: android.permission.CAMERA
+    why: Заснемане на живо видео от камерата на телефона за засичане и разпознаване на движение. Видеото се обработва само локално и не се качва.
+  - id: POST_NOTIFICATIONS (@capacitor/local-notifications)
+    why: Локални известия при засечено събитие (човек/животно/друго).
+  - id: android.permission.INTERNET
+    why: Сваляне на безплатните тегла на TensorFlow.js (COCO-SSD) и по избор „друга камера" по URL. Без камерата на телефона приложението не изисква интернет за работа.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Настройки и снимки на събития (JPEG data URL) — само локално (Capacitor Preferences/localStorage)
+    - Живото видео се обработва на устройството и НЕ се качва
+  shared_with_third_parties: none
+  encrypted_in_transit: not_applicable   # видеото не напуска устройството
+  encrypted_at_rest: false
+  user_can_delete: true                  # триене на журнала и нулиране на настройките
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (камера/щит мотив, тюркоаз акцент #00c2a8)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2 (Наблюдение на живо, Настройки/чувствителност, Журнал със снимка)
+
+keywords: [camera, motion detection, security, surveillance, object detection, on-device, offline, AI]

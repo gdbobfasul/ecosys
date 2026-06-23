@@ -2,6 +2,8 @@
 // резервен/ескалационен отговор, бързи бутони.
 import { el, toast } from '../ui/dom.js';
 import { getState, setState, persist, uid } from '../core/storage.js';
+import { t, dayName } from '../core/i18n.js';
+import { langButton } from './lang-button.js';
 
 function saveConfig(patch) {
   const cfg = { ...getState().config, ...patch };
@@ -18,8 +20,9 @@ export function renderKbConfig(root, { navigate, rerender }) {
   const cfg = s.config;
 
   root.appendChild(el('header', { class: 'page-head' }, [
-    el('h1', {}, 'База знания'),
-    el('p', { class: 'lead' }, 'Дефинирай какво и как да отговаря роботът.')
+    langButton(rerender),
+    el('h1', {}, t('kb_title')),
+    el('p', { class: 'lead' }, t('kb_lead'))
   ]));
 
   // --- Поздрав / резервен / ескалация ----------------------------------------
@@ -27,10 +30,10 @@ export function renderKbConfig(root, { navigate, rerender }) {
   const fallback = el('textarea', { class: 'input', rows: 2 }, cfg.fallback);
   const escalation = el('textarea', { class: 'input', rows: 2 }, cfg.escalation);
   root.appendChild(el('section', { class: 'card' }, [
-    el('h2', {}, 'Съобщения'),
-    el('label', {}, 'Поздрав'), greeting,
-    el('label', {}, 'Резервен отговор (когато нищо не съвпадне)'), fallback,
-    el('label', {}, 'Ескалация („ще ви свържа с човек")'), escalation,
+    el('h2', {}, t('kb_messages')),
+    el('label', {}, t('kb_greeting')), greeting,
+    el('label', {}, t('kb_fallback')), fallback,
+    el('label', {}, t('kb_escalation')), escalation,
     el('button', {
       class: 'btn primary', onclick: () => {
         saveConfig({
@@ -38,39 +41,38 @@ export function renderKbConfig(root, { navigate, rerender }) {
           fallback: fallback.value.trim(),
           escalation: escalation.value.trim()
         });
-        toast('Съобщенията са запазени.');
+        toast(t('kb_messages_saved'));
       }
-    }, 'Запази съобщенията')
+    }, t('kb_save_messages'))
   ]));
 
   // --- Бързи бутони -----------------------------------------------------------
   const quick = el('input', { class: 'input', type: 'text',
     value: (cfg.quickReplies || []).join(', '),
-    placeholder: 'Работно време, Цени, Адрес' });
+    placeholder: t('kb_quick_ph') });
   root.appendChild(el('section', { class: 'card' }, [
-    el('h2', {}, 'Бързи бутони (меню)'),
-    el('p', { class: 'muted small' }, 'Разделени със запетая. Показват се в демо чата.'),
+    el('h2', {}, t('kb_quick_title')),
+    el('p', { class: 'muted small' }, t('kb_quick_hint')),
     quick,
     el('button', {
       class: 'btn primary', onclick: () => {
         const list = quick.value.split(',').map((x) => x.trim()).filter(Boolean);
         saveConfig({ quickReplies: list });
-        toast('Бързите бутони са запазени.');
+        toast(t('kb_quick_saved'));
       }
-    }, 'Запази бутоните')
+    }, t('kb_save_quick'))
   ]));
 
   // --- Работно време ----------------------------------------------------------
-  const dayNames = ['нд', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
   const mode = el('select', { class: 'input' }, [
-    el('option', { value: '247' }, 'Денонощно (24/7)'),
-    el('option', { value: 'office' }, 'Само в работно време')
+    el('option', { value: '247' }, t('kb_mode_247')),
+    el('option', { value: 'office' }, t('kb_mode_office'))
   ]);
   mode.value = cfg.hours.mode;
   const from = el('input', { class: 'input', type: 'time', value: cfg.hours.from });
   const to = el('input', { class: 'input', type: 'time', value: cfg.hours.to });
   const away = el('textarea', { class: 'input', rows: 2 }, cfg.hours.awayMessage);
-  const dayBtns = dayNames.map((name, i) =>
+  const dayBtns = [0, 1, 2, 3, 4, 5, 6].map((i) =>
     el('button', {
       type: 'button',
       class: 'chip' + (cfg.hours.days.includes(i) ? ' on' : ''),
@@ -80,24 +82,24 @@ export function renderKbConfig(root, { navigate, rerender }) {
         saveHours({ days: [...days].sort() });
         e.target.classList.toggle('on');
       }
-    }, name)
+    }, dayName(i))
   );
   root.appendChild(el('section', { class: 'card' }, [
-    el('h2', {}, 'Работно време'),
-    el('label', {}, 'Режим'), mode,
+    el('h2', {}, t('kb_hours_title')),
+    el('label', {}, t('kb_mode')), mode,
     el('div', { class: 'row gap' }, [
-      el('div', {}, [el('label', {}, 'От'), from]),
-      el('div', {}, [el('label', {}, 'До'), to])
+      el('div', {}, [el('label', {}, t('kb_from')), from]),
+      el('div', {}, [el('label', {}, t('kb_to')), to])
     ]),
-    el('label', {}, 'Работни дни'),
+    el('label', {}, t('kb_workdays')),
     el('div', { class: 'chips' }, dayBtns),
-    el('label', {}, 'Съобщение извън работно време'), away,
+    el('label', {}, t('kb_away_msg')), away,
     el('button', {
       class: 'btn primary', onclick: () => {
         saveHours({ mode: mode.value, from: from.value, to: to.value, awayMessage: away.value.trim() });
-        toast('Работното време е запазено.');
+        toast(t('kb_hours_saved'));
       }
-    }, 'Запази работното време')
+    }, t('kb_save_hours'))
   ]));
 
   // --- Q&A записи -------------------------------------------------------------

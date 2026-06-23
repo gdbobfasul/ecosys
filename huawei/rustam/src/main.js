@@ -6,6 +6,7 @@
 // а Рустам има все по-малко време.
 import Phaser from 'phaser';
 import BootScene from './scenes/boot.js';
+import LanguageScene from './scenes/language.js';
 import MenuScene from './scenes/menu.js';
 import GameScene from './scenes/game.js';
 import UIScene from './scenes/ui.js';
@@ -41,7 +42,7 @@ const config = {
     antialias: true,
     roundPixels: false
   },
-  scene: [BootScene, MenuScene, GameScene, UIScene, GameOverScene, LeaderboardScene]
+  scene: [BootScene, LanguageScene, MenuScene, GameScene, UIScene, GameOverScene, LeaderboardScene]
 };
 
 const game = new Phaser.Game(config);

@@ -1,6 +1,7 @@
 // office-hours.js — определя дали „сега" е в работно време.
 // Режим '247' = винаги отворено. Режим 'office' = проверява ден + интервал.
 // Поддържа интервали, които пресичат полунощ (напр. 22:00–06:00).
+import { t, dayName } from './i18n.js';
 
 // "HH:MM" -> минути от полунощ
 function toMinutes(hhmm) {
@@ -43,10 +44,9 @@ export function isOpen(hours, now = new Date()) {
   return days.includes(prevDay);
 }
 
-// Помощно: човешко описание на режима.
+// Помощно: човешко описание на режима (преведено на текущия език).
 export function describe(hours) {
-  if (!hours || hours.mode === '247') return 'Денонощно (24/7)';
-  const names = ['нд', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
-  const ds = (hours.days || []).map((d) => names[d]).join(', ');
+  if (!hours || hours.mode === '247') return t('kb_mode_247');
+  const ds = (hours.days || []).map((d) => dayName(d)).join(', ');
   return `${ds || '—'} • ${hours.from}–${hours.to}`;
 }

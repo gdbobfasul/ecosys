@@ -3,6 +3,7 @@
 import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../main.js';
 import { THEME } from '../theme.js';
+import { tf } from '../core/i18n.js';
 
 export default class UIScene extends Phaser.Scene {
   constructor() {
@@ -29,7 +30,7 @@ export default class UIScene extends Phaser.Scene {
     }
 
     // --- Ниво ---
-    this.add.text(W - 14, 14, `НИВО ${this.levelNum}`, {
+    this.add.text(W - 14, 14, tf('level_n', this.levelNum), {
       fontFamily: 'system-ui, sans-serif', fontSize: '18px', color: THEME.primaryHex,
       fontStyle: 'bold'
     }).setOrigin(1, 0).setDepth(100);

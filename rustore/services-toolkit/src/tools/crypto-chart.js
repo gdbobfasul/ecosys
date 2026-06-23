@@ -21,7 +21,46 @@
 // Всеки панел има graceful fallback: при липса на връзка показва ясно
 // съобщение, не чупи останалите панели.
 
-export const title = 'Крипто графики';
+import { t, tf, register, getLang } from '../core/i18n.js';
+
+register({
+  cry_title: { bg:'Крипто графики', ru:'Крипто-графики', uk:'Крипто-графіки', en:'Crypto charts', de:'Krypto-Charts', fr:'Graphiques crypto', es:'Gráficos cripto', 'es-MX':'Gráficos cripto', it:'Grafici cripto', pt:'Gráficos cripto', ar:'مخططات الكريبتو', hi:'क्रिप्टो चार्ट', ja:'暗号資産チャート', ky:'Крипто графиктер', 'zh-Hant':'加密貨幣圖表' },
+  cry_notice: { bg:'Крипто и борсови данни на живо от <b>Binance</b> / <b>CoinGecko</b> — безплатни публични API без ключ. Всичко е с информативна цел и <b>не представлява финансов съвет</b>.', ru:'Крипто- и биржевые данные в реальном времени от <b>Binance</b> / <b>CoinGecko</b> — бесплатные публичные API без ключа. Всё носит информационный характер и <b>не является финансовым советом</b>.', uk:'Крипто- та біржові дані в реальному часі від <b>Binance</b> / <b>CoinGecko</b> — безкоштовні публічні API без ключа. Усе має інформаційний характер і <b>не є фінансовою порадою</b>.', en:'Live crypto and market data from <b>Binance</b> / <b>CoinGecko</b> — free public APIs, no key. Everything is for information only and <b>is not financial advice</b>.', de:'Krypto- und Marktdaten in Echtzeit von <b>Binance</b> / <b>CoinGecko</b> — kostenlose öffentliche APIs ohne Schlüssel. Alles dient nur zur Information und <b>ist keine Finanzberatung</b>.', fr:'Données crypto et de marché en direct de <b>Binance</b> / <b>CoinGecko</b> — API publiques gratuites, sans clé. Tout est à titre informatif et <b>ne constitue pas un conseil financier</b>.', es:'Datos de cripto y mercado en vivo de <b>Binance</b> / <b>CoinGecko</b> — API públicas gratuitas, sin clave. Todo es solo informativo y <b>no constituye asesoramiento financiero</b>.', 'es-MX':'Datos de cripto y mercado en vivo de <b>Binance</b> / <b>CoinGecko</b> — API públicas gratuitas, sin clave. Todo es solo informativo y <b>no constituye asesoría financiera</b>.', it:'Dati crypto e di mercato in tempo reale da <b>Binance</b> / <b>CoinGecko</b> — API pubbliche gratuite, senza chiave. Tutto è solo a scopo informativo e <b>non è una consulenza finanziaria</b>.', pt:'Dados de cripto e mercado ao vivo de <b>Binance</b> / <b>CoinGecko</b> — APIs públicas gratuitas, sem chave. Tudo é apenas informativo e <b>não constitui aconselhamento financeiro</b>.', ar:'بيانات الكريبتو والسوق المباشرة من <b>Binance</b> / <b>CoinGecko</b> — واجهات برمجية عامة مجانية بدون مفتاح. كل شيء لغرض المعلومات فقط و<b>لا يُعد نصيحة مالية</b>.', hi:'<b>Binance</b> / <b>CoinGecko</b> से लाइव क्रिप्टो और बाज़ार डेटा — मुफ़्त सार्वजनिक API, बिना कुंजी। सब कुछ केवल जानकारी हेतु है और <b>यह वित्तीय सलाह नहीं है</b>।', ja:'<b>Binance</b> / <b>CoinGecko</b> のライブ暗号資産・市場データ — キー不要の無料公開API。すべて情報提供のみで<b>金融助言ではありません</b>。', ky:'<b>Binance</b> / <b>CoinGecko</b> түз крипто жана базар маалыматтары — ачкычсыз акысыз ачык API. Баары маалымат үчүн гана жана <b>каржы кеңеши эмес</b>.', 'zh-Hant':'來自 <b>Binance</b> / <b>CoinGecko</b> 的即時加密貨幣與市場資料 — 免費公開 API，無需金鑰。所有內容僅供參考，<b>不構成財務建議</b>。' },
+  cry_coin: { bg:'Монета', ru:'Монета', uk:'Монета', en:'Coin', de:'Münze', fr:'Pièce', es:'Moneda', 'es-MX':'Moneda', it:'Moneta', pt:'Moeda', ar:'العملة', hi:'सिक्का', ja:'コイン', ky:'Монета', 'zh-Hant':'幣種' },
+  cry_period: { bg:'Период', ru:'Период', uk:'Період', en:'Period', de:'Zeitraum', fr:'Période', es:'Período', 'es-MX':'Período', it:'Periodo', pt:'Período', ar:'الفترة', hi:'अवधि', ja:'期間', ky:'Мезгил', 'zh-Hant':'週期' },
+  cry_show: { bg:'Покажи графика', ru:'Показать график', uk:'Показати графік', en:'Show chart', de:'Chart anzeigen', fr:'Afficher le graphique', es:'Mostrar gráfico', 'es-MX':'Mostrar gráfico', it:'Mostra grafico', pt:'Mostrar gráfico', ar:'عرض المخطط', hi:'चार्ट दिखाएं', ja:'チャートを表示', ky:'Графикти көрсөтүү', 'zh-Hant':'顯示圖表' },
+  cry_data_from: { bg:'Данни от {0} (безплатни публични API, без ключ).', ru:'Данные от {0} (бесплатные публичные API, без ключа).', uk:'Дані від {0} (безкоштовні публічні API, без ключа).', en:'Data from {0} (free public APIs, no key).', de:'Daten von {0} (kostenlose öffentliche APIs, ohne Schlüssel).', fr:'Données de {0} (API publiques gratuites, sans clé).', es:'Datos de {0} (API públicas gratuitas, sin clave).', 'es-MX':'Datos de {0} (API públicas gratuitas, sin clave).', it:'Dati da {0} (API pubbliche gratuite, senza chiave).', pt:'Dados de {0} (APIs públicas gratuitas, sem chave).', ar:'بيانات من {0} (واجهات برمجية عامة مجانية بدون مفتاح).', hi:'{0} से डेटा (मुफ़्त सार्वजनिक API, बिना कुंजी)।', ja:'{0} のデータ（キー不要の無料公開API）。', ky:'{0} маалыматтары (ачкычсыз акысыз ачык API).', 'zh-Hant':'資料來自 {0}（免費公開 API，無需金鑰）。' },
+  cry_chg_over: { bg:'{0}{1}% за {2}', ru:'{0}{1}% за {2}', uk:'{0}{1}% за {2}', en:'{0}{1}% over {2}', de:'{0}{1}% in {2}', fr:'{0}{1}% sur {2}', es:'{0}{1}% en {2}', 'es-MX':'{0}{1}% en {2}', it:'{0}{1}% in {2}', pt:'{0}{1}% em {2}', ar:'{0}{1}% خلال {2}', hi:'{2} में {0}{1}%', ja:'{2}で{0}{1}%', ky:'{2} ичинде {0}{1}%', 'zh-Hant':'{2} 內 {0}{1}%' },
+  cry_loading_prices: { bg:'Зареждам цени…', ru:'Загружаю цены…', uk:'Завантажую ціни…', en:'Loading prices…', de:'Lade Preise…', fr:'Chargement des prix…', es:'Cargando precios…', 'es-MX':'Cargando precios…', it:'Caricamento prezzi…', pt:'Carregando preços…', ar:'جارٍ تحميل الأسعار…', hi:'कीमतें लोड हो रहीं…', ja:'価格を読み込み中…', ky:'Баалар жүктөлүүдө…', 'zh-Hant':'載入價格中…' },
+  cry_loading_data: { bg:'Зареждам данни…', ru:'Загружаю данные…', uk:'Завантажую дані…', en:'Loading data…', de:'Lade Daten…', fr:'Chargement des données…', es:'Cargando datos…', 'es-MX':'Cargando datos…', it:'Caricamento dati…', pt:'Carregando dados…', ar:'جارٍ تحميل البيانات…', hi:'डेटा लोड हो रहा…', ja:'データを読み込み中…', ky:'Маалыматтар жүктөлүүдө…', 'zh-Hant':'載入資料中…' },
+  cry_no_conn: { bg:'Няма връзка / услугата не отговаря. Опитай отново, когато си онлайн.', ru:'Нет связи / сервис не отвечает. Повторите, когда будете онлайн.', uk:'Немає зв’язку / сервіс не відповідає. Спробуйте знову, коли будете онлайн.', en:'No connection / service not responding. Try again when you are online.', de:'Keine Verbindung / Dienst antwortet nicht. Versuche es erneut, wenn du online bist.', fr:'Pas de connexion / le service ne répond pas. Réessayez une fois en ligne.', es:'Sin conexión / el servicio no responde. Inténtalo de nuevo cuando estés en línea.', 'es-MX':'Sin conexión / el servicio no responde. Inténtalo de nuevo cuando estés en línea.', it:'Nessuna connessione / il servizio non risponde. Riprova quando sei online.', pt:'Sem conexão / o serviço não responde. Tente novamente quando estiver online.', ar:'لا يوجد اتصال / الخدمة لا تستجيب. حاول مرة أخرى عندما تكون متصلاً.', hi:'कोई कनेक्शन नहीं / सेवा प्रतिक्रिया नहीं दे रही। ऑनलाइन होने पर पुनः प्रयास करें।', ja:'接続なし／サービスが応答しません。オンライン時に再試行してください。', ky:'Байланыш жок / кызмат жооп бербейт. Онлайн болгондо кайра аракет кылыңыз.', 'zh-Hant':'無連線／服務無回應。請在連線後重試。' },
+  cry_no_data: { bg:'Няма данни.', ru:'Нет данных.', uk:'Немає даних.', en:'No data.', de:'Keine Daten.', fr:'Aucune donnée.', es:'Sin datos.', 'es-MX':'Sin datos.', it:'Nessun dato.', pt:'Sem dados.', ar:'لا توجد بيانات.', hi:'कोई डेटा नहीं।', ja:'データなし。', ky:'Маалымат жок.', 'zh-Hant':'沒有資料。' },
+  cry_no_data_pair: { bg:'Няма данни (пробвай другата двойка).', ru:'Нет данных (попробуйте другую пару).', uk:'Немає даних (спробуйте іншу пару).', en:'No data (try the other pair).', de:'Keine Daten (versuche das andere Paar).', fr:'Aucune donnée (essayez l’autre paire).', es:'Sin datos (prueba el otro par).', 'es-MX':'Sin datos (prueba el otro par).', it:'Nessun dato (prova l’altra coppia).', pt:'Sem dados (tente o outro par).', ar:'لا توجد بيانات (جرّب الزوج الآخر).', hi:'कोई डेटा नहीं (दूसरी जोड़ी आज़माएं)।', ja:'データなし（別のペアをお試しください）。', ky:'Маалымат жок (башка жупту байкап көрүңүз).', 'zh-Hant':'沒有資料（請試另一組）。' },
+  cry_no_data_period: { bg:'Няма данни за този период (двойката вероятно не е била листната тогава — пробвай другата двойка).', ru:'Нет данных за этот период (пара, вероятно, тогда ещё не торговалась — попробуйте другую пару).', uk:'Немає даних за цей період (пара, ймовірно, тоді ще не торгувалася — спробуйте іншу пару).', en:'No data for this period (the pair was probably not listed then — try the other pair).', de:'Keine Daten für diesen Zeitraum (das Paar war damals wahrscheinlich nicht gelistet — versuche das andere Paar).', fr:'Aucune donnée pour cette période (la paire n’était probablement pas cotée alors — essayez l’autre paire).', es:'Sin datos para este período (la pareja probablemente no estaba listada entonces — prueba el otro par).', 'es-MX':'Sin datos para este período (el par probablemente no estaba listado entonces — prueba el otro par).', it:'Nessun dato per questo periodo (la coppia probabilmente non era quotata allora — prova l’altra coppia).', pt:'Sem dados para este período (o par provavelmente não estava listado então — tente o outro par).', ar:'لا توجد بيانات لهذه الفترة (ربما لم يكن الزوج مدرجًا حينها — جرّب الزوج الآخر).', hi:'इस अवधि के लिए कोई डेटा नहीं (यह जोड़ी तब शायद सूचीबद्ध नहीं थी — दूसरी जोड़ी आज़माएं)।', ja:'この期間のデータなし（当時このペアは未上場の可能性 — 別のペアをお試しください）。', ky:'Бул мезгил үчүн маалымат жок (жуп ал кезде катталбаган болушу мүмкүн — башка жупту байкаңыз).', 'zh-Hant':'此期間無資料（該交易對當時可能尚未上架 — 請試另一組）。' },
+  cry_rsi_h3: { bg:'Bitcoin RSI (седмично / месечно)', ru:'Bitcoin RSI (недельный / месячный)', uk:'Bitcoin RSI (тижневий / місячний)', en:'Bitcoin RSI (weekly / monthly)', de:'Bitcoin RSI (wöchentlich / monatlich)', fr:'Bitcoin RSI (hebdomadaire / mensuel)', es:'Bitcoin RSI (semanal / mensual)', 'es-MX':'Bitcoin RSI (semanal / mensual)', it:'Bitcoin RSI (settimanale / mensile)', pt:'Bitcoin RSI (semanal / mensal)', ar:'Bitcoin RSI (أسبوعي / شهري)', hi:'Bitcoin RSI (साप्ताहिक / मासिक)', ja:'Bitcoin RSI（週足 / 月足）', ky:'Bitcoin RSI (жумалык / айлык)', 'zh-Hant':'Bitcoin RSI（週線 / 月線）' },
+  cry_rsi_hint: { bg:'RSI (14): над 70 = пренакупено, под 30 = препродадено. Цената е горе, RSI долу.', ru:'RSI (14): выше 70 = перекупленность, ниже 30 = перепроданность. Цена сверху, RSI снизу.', uk:'RSI (14): вище 70 = перекупленість, нижче 30 = перепроданість. Ціна зверху, RSI знизу.', en:'RSI (14): above 70 = overbought, below 30 = oversold. Price on top, RSI below.', de:'RSI (14): über 70 = überkauft, unter 30 = überverkauft. Preis oben, RSI unten.', fr:'RSI (14) : au-dessus de 70 = suracheté, en dessous de 30 = survendu. Prix en haut, RSI en bas.', es:'RSI (14): por encima de 70 = sobrecompra, por debajo de 30 = sobreventa. Precio arriba, RSI abajo.', 'es-MX':'RSI (14): por encima de 70 = sobrecompra, por debajo de 30 = sobreventa. Precio arriba, RSI abajo.', it:'RSI (14): sopra 70 = ipercomprato, sotto 30 = ipervenduto. Prezzo sopra, RSI sotto.', pt:'RSI (14): acima de 70 = sobrecomprado, abaixo de 30 = sobrevendido. Preço em cima, RSI embaixo.', ar:'RSI (14): فوق 70 = شراء مفرط، تحت 30 = بيع مفرط. السعر بالأعلى، RSI بالأسفل.', hi:'RSI (14): 70 से ऊपर = ओवरबॉट, 30 से नीचे = ओवरसोल्ड। कीमत ऊपर, RSI नीचे।', ja:'RSI（14）: 70超=買われ過ぎ、30未満=売られ過ぎ。価格は上、RSIは下。', ky:'RSI (14): 70дөн жогору = ашык сатылып алынган, 30дан төмөн = ашык сатылган. Баа жогору, RSI ылдый.', 'zh-Hant':'RSI（14）：高於 70＝超買，低於 30＝超賣。價格在上，RSI 在下。' },
+  cry_rsi_w: { bg:'BTC RSI — седмично (1W)', ru:'BTC RSI — недельный (1W)', uk:'BTC RSI — тижневий (1W)', en:'BTC RSI — weekly (1W)', de:'BTC RSI — wöchentlich (1W)', fr:'BTC RSI — hebdomadaire (1W)', es:'BTC RSI — semanal (1W)', 'es-MX':'BTC RSI — semanal (1W)', it:'BTC RSI — settimanale (1W)', pt:'BTC RSI — semanal (1W)', ar:'BTC RSI — أسبوعي (1W)', hi:'BTC RSI — साप्ताहिक (1W)', ja:'BTC RSI — 週足（1W）', ky:'BTC RSI — жумалык (1W)', 'zh-Hant':'BTC RSI — 週線（1W）' },
+  cry_rsi_m: { bg:'BTC RSI — месечно (1M)', ru:'BTC RSI — месячный (1M)', uk:'BTC RSI — місячний (1M)', en:'BTC RSI — monthly (1M)', de:'BTC RSI — monatlich (1M)', fr:'BTC RSI — mensuel (1M)', es:'BTC RSI — mensual (1M)', 'es-MX':'BTC RSI — mensual (1M)', it:'BTC RSI — mensile (1M)', pt:'BTC RSI — mensal (1M)', ar:'BTC RSI — شهري (1M)', hi:'BTC RSI — मासिक (1M)', ja:'BTC RSI — 月足（1M）', ky:'BTC RSI — айлык (1M)', 'zh-Hant':'BTC RSI — 月線（1M）' },
+  cry_fib_h3: { bg:'Bitcoin — Fibonacci нива (автоматични)', ru:'Bitcoin — уровни Фибоначчи (автоматические)', uk:'Bitcoin — рівні Фібоначчі (автоматичні)', en:'Bitcoin — Fibonacci levels (automatic)', de:'Bitcoin — Fibonacci-Levels (automatisch)', fr:'Bitcoin — niveaux de Fibonacci (automatiques)', es:'Bitcoin — niveles de Fibonacci (automáticos)', 'es-MX':'Bitcoin — niveles de Fibonacci (automáticos)', it:'Bitcoin — livelli di Fibonacci (automatici)', pt:'Bitcoin — níveis de Fibonacci (automáticos)', ar:'Bitcoin — مستويات فيبوناتشي (تلقائية)', hi:'Bitcoin — फिबोनाची स्तर (स्वचालित)', ja:'Bitcoin — フィボナッチ・レベル（自動）', ky:'Bitcoin — Фибоначчи деңгээлдери (автоматтык)', 'zh-Hant':'Bitcoin — 費波那契水平（自動）' },
+  cry_fib_hint: { bg:'Fibonacci нивата (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) се чертаят автоматично между най-високата и най-ниската точка за периода. 61.8% (*) е „златното" ниво — често силна зона на съпротива/поддръжка.', ru:'Уровни Фибоначчи (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) строятся автоматически между максимумом и минимумом за период. 61.8% (*) — «золотой» уровень, часто сильная зона сопротивления/поддержки.', uk:'Рівні Фібоначчі (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) будуються автоматично між максимумом і мінімумом за період. 61.8% (*) — «золотий» рівень, часто сильна зона опору/підтримки.', en:'Fibonacci levels (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) are drawn automatically between the highest and lowest point of the period. 61.8% (*) is the “golden” level — often a strong support/resistance zone.', de:'Fibonacci-Levels (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) werden automatisch zwischen Hoch- und Tiefpunkt des Zeitraums gezeichnet. 61.8% (*) ist das „goldene“ Level — oft eine starke Support-/Widerstandszone.', fr:'Les niveaux de Fibonacci (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) sont tracés automatiquement entre le plus haut et le plus bas de la période. 61.8% (*) est le niveau « doré » — souvent une forte zone de support/résistance.', es:'Los niveles de Fibonacci (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) se trazan automáticamente entre el punto más alto y más bajo del período. 61.8% (*) es el nivel «dorado» — a menudo una fuerte zona de soporte/resistencia.', 'es-MX':'Los niveles de Fibonacci (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) se trazan automáticamente entre el punto más alto y más bajo del período. 61.8% (*) es el nivel «dorado» — a menudo una fuerte zona de soporte/resistencia.', it:'I livelli di Fibonacci (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) vengono tracciati automaticamente tra il punto più alto e più basso del periodo. 61.8% (*) è il livello «d’oro» — spesso una forte zona di supporto/resistenza.', pt:'Os níveis de Fibonacci (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) são traçados automaticamente entre o ponto mais alto e mais baixo do período. 61.8% (*) é o nível “dourado” — frequentemente uma forte zona de suporte/resistência.', ar:'تُرسم مستويات فيبوناتشي (0%، 23.6%، 38.2%، 50%، 61.8*، 78.6%، 100%) تلقائيًا بين أعلى وأدنى نقطة في الفترة. 61.8% (*) هو المستوى «الذهبي» — غالبًا منطقة دعم/مقاومة قوية.', hi:'फिबोनाची स्तर (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) अवधि के उच्चतम और निम्नतम बिंदु के बीच स्वचालित रूप से खींचे जाते हैं। 61.8% (*) «स्वर्णिम» स्तर है — अक्सर एक मज़बूत समर्थन/प्रतिरोध क्षेत्र।', ja:'フィボナッチ・レベル（0%、23.6%、38.2%、50%、61.8*、78.6%、100%）は期間の最高値と最安値の間に自動で描画されます。61.8%（*）は「黄金」レベルで、強いサポート/レジスタンス帯になることが多いです。', ky:'Фибоначчи деңгээлдери (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) мезгилдин эң жогорку жана эң төмөнкү чекитинин ортосунда автоматтык түрдө тартылат. 61.8% (*) — «алтын» деңгээл, көбүнчө күчтүү колдоо/каршылык зонасы.', 'zh-Hant':'費波那契水平（0%、23.6%、38.2%、50%、61.8*、78.6%、100%）會在該週期最高與最低點之間自動繪製。61.8%（*）是「黃金」水平 — 常為強力的支撐／壓力區。' },
+  cry_btc_h3: { bg:'Bitcoin — текущо състояние и до 4 години назад', ru:'Bitcoin — текущее состояние и до 4 лет назад', uk:'Bitcoin — поточний стан і до 4 років тому', en:'Bitcoin — current state and up to 4 years back', de:'Bitcoin — aktueller Stand und bis zu 4 Jahre zurück', fr:'Bitcoin — état actuel et jusqu’à 4 ans en arrière', es:'Bitcoin — estado actual y hasta 4 años atrás', 'es-MX':'Bitcoin — estado actual y hasta 4 años atrás', it:'Bitcoin — stato attuale e fino a 4 anni fa', pt:'Bitcoin — estado atual e até 4 anos atrás', ar:'Bitcoin — الحالة الحالية وحتى 4 سنوات مضت', hi:'Bitcoin — वर्तमान स्थिति और 4 साल पहले तक', ja:'Bitcoin — 現在の状態と最大4年前まで', ky:'Bitcoin — учурдагы абал жана 4 жылга чейин артка', 'zh-Hant':'Bitcoin — 目前狀態與最多 4 年前' },
+  cry_eth_h3: { bg:'Ethereum — текущо състояние и до 4 години назад', ru:'Ethereum — текущее состояние и до 4 лет назад', uk:'Ethereum — поточний стан і до 4 років тому', en:'Ethereum — current state and up to 4 years back', de:'Ethereum — aktueller Stand und bis zu 4 Jahre zurück', fr:'Ethereum — état actuel et jusqu’à 4 ans en arrière', es:'Ethereum — estado actual y hasta 4 años atrás', 'es-MX':'Ethereum — estado actual y hasta 4 años atrás', it:'Ethereum — stato attuale e fino a 4 anni fa', pt:'Ethereum — estado atual e até 4 anos atrás', ar:'Ethereum — الحالة الحالية وحتى 4 سنوات مضت', hi:'Ethereum — वर्तमान स्थिति और 4 साल पहले तक', ja:'Ethereum — 現在の状態と最大4年前まで', ky:'Ethereum — учурдагы абал жана 4 жылга чейин артка', 'zh-Hant':'Ethereum — 目前狀態與最多 4 年前' },
+  cry_btc_hint: { bg:'Текущата графика поддържа 15мин/час/ден/седмица/месец. Графиките „X години назад" показват дневен/седмичен/месечен изглед за съответния период с автоматичен Fibonacci.', ru:'Текущий график поддерживает 15мин/час/день/неделю/месяц. Графики «X лет назад» показывают дневной/недельный/месячный вид за соответствующий период с автоматическим Фибоначчи.', uk:'Поточний графік підтримує 15хв/година/день/тиждень/місяць. Графіки «X років тому» показують денний/тижневий/місячний вигляд за відповідний період з автоматичним Фібоначчі.', en:'The current chart supports 15min/hour/day/week/month. The “X years back” charts show a daily/weekly/monthly view for the respective period with automatic Fibonacci.', de:'Der aktuelle Chart unterstützt 15Min/Stunde/Tag/Woche/Monat. Die „X Jahre zurück“-Charts zeigen eine Tages-/Wochen-/Monatsansicht für den jeweiligen Zeitraum mit automatischem Fibonacci.', fr:'Le graphique actuel prend en charge 15min/heure/jour/semaine/mois. Les graphiques « X ans en arrière » affichent une vue journalière/hebdomadaire/mensuelle pour la période concernée avec Fibonacci automatique.', es:'El gráfico actual admite 15min/hora/día/semana/mes. Los gráficos «X años atrás» muestran una vista diaria/semanal/mensual del período correspondiente con Fibonacci automático.', 'es-MX':'El gráfico actual admite 15min/hora/día/semana/mes. Los gráficos «X años atrás» muestran una vista diaria/semanal/mensual del período correspondiente con Fibonacci automático.', it:'Il grafico attuale supporta 15min/ora/giorno/settimana/mese. I grafici «X anni fa» mostrano una vista giornaliera/settimanale/mensile per il periodo corrispondente con Fibonacci automatico.', pt:'O gráfico atual suporta 15min/hora/dia/semana/mês. Os gráficos “X anos atrás” mostram uma visão diária/semanal/mensal do respectivo período com Fibonacci automático.', ar:'يدعم المخطط الحالي 15دقيقة/ساعة/يوم/أسبوع/شهر. مخططات «قبل X سنوات» تعرض عرضًا يوميًا/أسبوعيًا/شهريًا للفترة المعنية مع فيبوناتشي تلقائي.', hi:'वर्तमान चार्ट 15मिनट/घंटा/दिन/सप्ताह/माह का समर्थन करता है। «X वर्ष पहले» चार्ट संबंधित अवधि के लिए दैनिक/साप्ताहिक/मासिक दृश्य स्वचालित फिबोनाची के साथ दिखाते हैं।', ja:'現在のチャートは15分/時間/日/週/月に対応。「X年前」チャートは該当期間の日足/週足/月足ビューを自動フィボナッチ付きで表示します。', ky:'Учурдагы график 15мүн/саат/күн/жума/айды колдойт. «X жыл артка» графиктери тиешелүү мезгил үчүн күндүк/жумалык/айлык көрүнүштү автоматтык Фибоначчи менен көрсөтөт.', 'zh-Hant':'目前圖表支援 15分/小時/日/週/月。「X 年前」圖表會以日線/週線/月線顯示對應週期，並自動套用費波那契。' },
+  cry_pair: { bg:'{0} / {1}', ru:'{0} / {1}', uk:'{0} / {1}', en:'{0} / {1}', de:'{0} / {1}', fr:'{0} / {1}', es:'{0} / {1}', 'es-MX':'{0} / {1}', it:'{0} / {1}', pt:'{0} / {1}', ar:'{0} / {1}', hi:'{0} / {1}', ja:'{0} / {1}', ky:'{0} / {1}', 'zh-Hant':'{0} / {1}' },
+  cry_current: { bg:'{0}/{1} — Текущо ({2})', ru:'{0}/{1} — Текущее ({2})', uk:'{0}/{1} — Поточне ({2})', en:'{0}/{1} — Current ({2})', de:'{0}/{1} — Aktuell ({2})', fr:'{0}/{1} — Actuel ({2})', es:'{0}/{1} — Actual ({2})', 'es-MX':'{0}/{1} — Actual ({2})', it:'{0}/{1} — Attuale ({2})', pt:'{0}/{1} — Atual ({2})', ar:'{0}/{1} — الحالي ({2})', hi:'{0}/{1} — वर्तमान ({2})', ja:'{0}/{1} — 現在（{2}）', ky:'{0}/{1} — Учурдагы ({2})', 'zh-Hant':'{0}/{1} — 目前（{2}）' },
+  cry_years_ago: { bg:'{0}/{1} — преди {2} г. ({3})', ru:'{0}/{1} — {2} г. назад ({3})', uk:'{0}/{1} — {2} р. тому ({3})', en:'{0}/{1} — {2} yr ago ({3})', de:'{0}/{1} — vor {2} J. ({3})', fr:'{0}/{1} — il y a {2} an(s) ({3})', es:'{0}/{1} — hace {2} año(s) ({3})', 'es-MX':'{0}/{1} — hace {2} año(s) ({3})', it:'{0}/{1} — {2} anno/i fa ({3})', pt:'{0}/{1} — {2} ano(s) atrás ({3})', ar:'{0}/{1} — قبل {2} سنة ({3})', hi:'{0}/{1} — {2} वर्ष पहले ({3})', ja:'{0}/{1} — {2}年前（{3}）', ky:'{0}/{1} — {2} жыл мурун ({3})', 'zh-Hant':'{0}/{1} — {2} 年前（{3}）' },
+  cry_day: { bg:'ден', ru:'день', uk:'день', en:'day', de:'Tag', fr:'jour', es:'día', 'es-MX':'día', it:'giorno', pt:'dia', ar:'يوم', hi:'दिन', ja:'日', ky:'күн', 'zh-Hant':'日' },
+  cry_week: { bg:'седмица', ru:'неделя', uk:'тиждень', en:'week', de:'Woche', fr:'semaine', es:'semana', 'es-MX':'semana', it:'settimana', pt:'semana', ar:'أسبوع', hi:'सप्ताह', ja:'週', ky:'жума', 'zh-Hant':'週' },
+  cry_month: { bg:'месец', ru:'месяц', uk:'місяць', en:'month', de:'Monat', fr:'mois', es:'mes', 'es-MX':'mes', it:'mese', pt:'mês', ar:'شهر', hi:'माह', ja:'月', ky:'ай', 'zh-Hant':'月' },
+  cry_15m: { bg:'15 мин', ru:'15 мин', uk:'15 хв', en:'15 min', de:'15 Min', fr:'15 min', es:'15 min', 'es-MX':'15 min', it:'15 min', pt:'15 min', ar:'15 دقيقة', hi:'15 मिनट', ja:'15分', ky:'15 мүн', 'zh-Hant':'15 分' },
+  cry_hour: { bg:'час', ru:'час', uk:'година', en:'hour', de:'Stunde', fr:'heure', es:'hora', 'es-MX':'hora', it:'ora', pt:'hora', ar:'ساعة', hi:'घंटा', ja:'時間', ky:'саат', 'zh-Hant':'小時' },
+  cry_price: { bg:'цена', ru:'цена', uk:'ціна', en:'price', de:'Preis', fr:'prix', es:'precio', 'es-MX':'precio', it:'prezzo', pt:'preço', ar:'السعر', hi:'कीमत', ja:'価格', ky:'баа', 'zh-Hant':'價格' },
+  cry_r7: { bg:'7 дни', ru:'7 дней', uk:'7 днів', en:'7 days', de:'7 Tage', fr:'7 jours', es:'7 días', 'es-MX':'7 días', it:'7 giorni', pt:'7 dias', ar:'7 أيام', hi:'7 दिन', ja:'7日', ky:'7 күн', 'zh-Hant':'7 天' },
+  cry_r30: { bg:'30 дни', ru:'30 дней', uk:'30 днів', en:'30 days', de:'30 Tage', fr:'30 jours', es:'30 días', 'es-MX':'30 días', it:'30 giorni', pt:'30 dias', ar:'30 يومًا', hi:'30 दिन', ja:'30日', ky:'30 күн', 'zh-Hant':'30 天' },
+  cry_r90: { bg:'90 дни', ru:'90 дней', uk:'90 днів', en:'90 days', de:'90 Tage', fr:'90 jours', es:'90 días', 'es-MX':'90 días', it:'90 giorni', pt:'90 dias', ar:'90 يومًا', hi:'90 दिन', ja:'90日', ky:'90 күн', 'zh-Hant':'90 天' }
+});
+
+export const title = t('cry_title');
 
 // ─────────────────────────────────────────────────────────────────────────
 // Данни — зареждане на свещи (klines). Връща масив { time, open, high, low, close }.
@@ -305,7 +344,7 @@ function drawRSI(canvas, candles) {
   for (let i = 1; i < n; i++) ctx.lineTo(xOf(i), pyOf(closes[i]));
   ctx.strokeStyle = accent2; ctx.lineWidth = 1.8; ctx.lineJoin = 'round'; ctx.stroke();
   ctx.font = '10px ui-monospace, monospace'; ctx.fillStyle = '#8b949e'; ctx.textBaseline = 'middle';
-  ctx.fillText('цена', padL + 2, 10);
+  ctx.fillText(t('cry_price'), padL + 2, 10);
 
   // ── RSI панел долу ──
   const ryOf = (v) => rsiTop + (1 - v / 100) * rsiH;
@@ -349,15 +388,15 @@ const COINS = [
   { sym: 'DOGE', label: 'Dogecoin (DOGE)', binance: 'DOGEUSDT', cg: 'dogecoin' }
 ];
 const RANGES = [
-  { days: 7, label: '7 дни', interval: '4h', limit: 42 },
-  { days: 30, label: '30 дни', interval: '1d', limit: 30 },
-  { days: 90, label: '90 дни', interval: '1d', limit: 90 }
+  { days: 7, labelKey: 'cry_r7', interval: '4h', limit: 42 },
+  { days: 30, labelKey: 'cry_r30', interval: '1d', limit: 30 },
+  { days: 90, labelKey: 'cry_r90', interval: '1d', limit: 90 }
 ];
 // интервал → обхват дни (за Fibonacci/исторически панели)
 const FIB_INTERVALS = {
-  '1d': { label: 'ден', spanDays: 30 },
-  '1w': { label: 'седмица', spanDays: 180 },
-  '1M': { label: 'месец', spanDays: 540 }
+  '1d': { labelKey: 'cry_day', spanDays: 30 },
+  '1w': { labelKey: 'cry_week', spanDays: 180 },
+  '1M': { labelKey: 'cry_month', spanDays: 540 }
 };
 // Binance не поддържа '1w'/'1M' като код — превеждаме към реалните кодове.
 const BINANCE_IV = { '1d': '1d', '1w': '1w', '1M': '1M' };
@@ -366,10 +405,10 @@ const BINANCE_IV = { '1d': '1d', '1w': '1w', '1M': '1M' };
 // Малки помощни за зареждане в конкретен контейнер с loading/error
 // ─────────────────────────────────────────────────────────────────────────
 function loadingBox(el, msg) {
-  el.innerHTML = `<div class="hint" style="padding:14px;text-align:center">${msg || 'Зареждам данни…'}</div>`;
+  el.innerHTML = `<div class="hint" style="padding:14px;text-align:center">${msg || t('cry_loading_data')}</div>`;
 }
 function errorBox(el, msg) {
-  el.innerHTML = `<div class="status show err" style="margin:0">${msg || 'Няма връзка / услугата не отговаря. Опитай отново, когато си онлайн.'}</div>`;
+  el.innerHTML = `<div class="status show err" style="margin:0">${msg || t('cry_no_conn')}</div>`;
 }
 
 // Рисува канвас в контейнер, гарантирайки правилна ширина (контейнерът е във view).
@@ -384,90 +423,88 @@ function canvasIn(el, h) {
 export function render(root) {
   root.innerHTML = `
     <div class="notice" style="margin-bottom:14px">
-      Крипто и борсови данни на живо от <b>Binance</b> / <b>CoinGecko</b> —
-      безплатни публични API без ключ. Всичко е с информативна цел и
-      <b>не представлява финансов съвет</b>.
+      ${t('cry_notice')}
     </div>
 
     <!-- ── Панел 1: избираема графика на живо ── -->
     <div class="tool-card">
       <div class="row">
         <div>
-          <label>Монета</label>
+          <label>${t('cry_coin')}</label>
           <select id="ccCoin">
             ${COINS.map((c, i) => `<option value="${i}">${c.label}</option>`).join('')}
           </select>
         </div>
         <div>
-          <label>Период</label>
+          <label>${t('cry_period')}</label>
           <select id="ccRange">
-            ${RANGES.map((r, i) => `<option value="${i}" ${r.days === 30 ? 'selected' : ''}>${r.label}</option>`).join('')}
+            ${RANGES.map((r, i) => `<option value="${i}" ${r.days === 30 ? 'selected' : ''}>${t(r.labelKey)}</option>`).join('')}
           </select>
         </div>
       </div>
-      <button class="btn" id="ccBtn">Покажи графика</button>
+      <button class="btn" id="ccBtn">${t('cry_show')}</button>
       <div class="status" id="ccStatus"></div>
       <div id="ccHead" style="display:none;margin-top:16px;text-align:center">
         <div style="font-size:1.5em;font-weight:700" id="ccPrice">—</div>
         <div id="ccChg" style="font-size:.95em;margin-top:2px"></div>
       </div>
       <div style="margin-top:12px"><canvas id="ccCanvas" style="width:100%;height:220px;display:block"></canvas></div>
-      <p class="hint" style="margin-top:10px">Данни от <span id="ccSrc">Binance / CoinGecko</span> (безплатни публични API, без ключ).</p>
+      <p class="hint" style="margin-top:10px">${tf('cry_data_from', '<span id="ccSrc">Binance / CoinGecko</span>')}</p>
     </div>
 
     <!-- ── Панел 2: Bitcoin RSI ── -->
     <div class="tool-card">
-      <h3 style="margin-bottom:8px">Bitcoin RSI (седмично / месечно)</h3>
-      <p class="hint" style="margin-bottom:10px">RSI (14): над 70 = пренакупено, под 30 = препродадено. Цената е горе, RSI долу.</p>
-      <label style="margin-top:0">BTC RSI — седмично (1W)</label>
+      <h3 style="margin-bottom:8px">${t('cry_rsi_h3')}</h3>
+      <p class="hint" style="margin-bottom:10px">${t('cry_rsi_hint')}</p>
+      <label style="margin-top:0">${t('cry_rsi_w')}</label>
       <div id="rsiW"></div>
-      <label>BTC RSI — месечно (1M)</label>
+      <label>${t('cry_rsi_m')}</label>
       <div id="rsiM"></div>
     </div>
 
     <!-- ── Панел 3: Bitcoin Fibonacci ── -->
     <div class="tool-card">
-      <h3 style="margin-bottom:8px">Bitcoin — Fibonacci нива (автоматични)</h3>
+      <h3 style="margin-bottom:8px">${t('cry_fib_h3')}</h3>
       <div class="tabs" id="fibTf">
-        <button class="tab active" data-iv="1d">ден</button>
-        <button class="tab" data-iv="1w">седмица</button>
-        <button class="tab" data-iv="1M">месец</button>
+        <button class="tab active" data-iv="1d">${t('cry_day')}</button>
+        <button class="tab" data-iv="1w">${t('cry_week')}</button>
+        <button class="tab" data-iv="1M">${t('cry_month')}</button>
       </div>
       <div id="fibChart"></div>
-      <p class="hint" style="margin-top:10px">Fibonacci нивата (0%, 23.6%, 38.2%, 50%, 61.8*, 78.6%, 100%) се чертаят автоматично между най-високата и най-ниската точка за периода. 61.8% (*) е „златното" ниво — често силна зона на съпротива/поддръжка.</p>
+      <p class="hint" style="margin-top:10px">${t('cry_fib_hint')}</p>
     </div>
 
     <!-- ── Панел 4: BTC текущо + до 4 г назад ── -->
     <div class="tool-card">
-      <h3 style="margin-bottom:8px">Bitcoin — текущо състояние и до 4 години назад</h3>
+      <h3 style="margin-bottom:8px">${t('cry_btc_h3')}</h3>
       <div class="tabs" id="btcTabs">
-        <button class="tab active" data-pair="USDT">BTC / USDT</button>
-        <button class="tab" data-pair="USDC">BTC / USDC</button>
+        <button class="tab active" data-pair="USDT">${tf('cry_pair', 'BTC', 'USDT')}</button>
+        <button class="tab" data-pair="USDC">${tf('cry_pair', 'BTC', 'USDC')}</button>
       </div>
       <div class="tabs" id="btcTf">
-        <button class="tab active" data-int="15m">15 мин</button>
-        <button class="tab" data-int="1h">час</button>
-        <button class="tab" data-int="1d">ден</button>
-        <button class="tab" data-int="1w">седмица</button>
-        <button class="tab" data-int="1M">месец</button>
+        <button class="tab active" data-int="15m">${t('cry_15m')}</button>
+        <button class="tab" data-int="1h">${t('cry_hour')}</button>
+        <button class="tab" data-int="1d">${t('cry_day')}</button>
+        <button class="tab" data-int="1w">${t('cry_week')}</button>
+        <button class="tab" data-int="1M">${t('cry_month')}</button>
       </div>
       <div id="btcGrid"></div>
-      <p class="hint" style="margin-top:10px">Текущата графика поддържа 15мин/час/ден/седмица/месец. Графиките „X години назад" показват дневен/седмичен/месечен изглед за съответния период с автоматичен Fibonacci.</p>
+      <p class="hint" style="margin-top:10px">${t('cry_btc_hint')}</p>
     </div>
 
     <!-- ── Панел 5: ETH текущо + до 4 г назад ── -->
     <div class="tool-card">
-      <h3 style="margin-bottom:8px">Ethereum — текущо състояние и до 4 години назад</h3>
+      <h3 style="margin-bottom:8px">${t('cry_eth_h3')}</h3>
       <div class="tabs" id="ethTabs">
-        <button class="tab active" data-pair="USDT">ETH / USDT</button>
-        <button class="tab" data-pair="USDC">ETH / USDC</button>
+        <button class="tab active" data-pair="USDT">${tf('cry_pair', 'ETH', 'USDT')}</button>
+        <button class="tab" data-pair="USDC">${tf('cry_pair', 'ETH', 'USDC')}</button>
       </div>
       <div class="tabs" id="ethTf">
-        <button class="tab active" data-int="15m">15 мин</button>
-        <button class="tab" data-int="1h">час</button>
-        <button class="tab" data-int="1d">ден</button>
-        <button class="tab" data-int="1w">седмица</button>
-        <button class="tab" data-int="1M">месец</button>
+        <button class="tab active" data-int="15m">${t('cry_15m')}</button>
+        <button class="tab" data-int="1h">${t('cry_hour')}</button>
+        <button class="tab" data-int="1d">${t('cry_day')}</button>
+        <button class="tab" data-int="1w">${t('cry_week')}</button>
+        <button class="tab" data-int="1M">${t('cry_month')}</button>
       </div>
       <div id="ethGrid"></div>
     </div>
@@ -486,7 +523,7 @@ export function render(root) {
       const range = RANGES[parseInt($('#ccRange').value, 10) || 0];
       const btn = $('#ccBtn');
       btn.disabled = true;
-      setStatus('work', 'Зареждам цени…');
+      setStatus('work', t('cry_loading_prices'));
       $('#ccHead').style.display = 'none';
       try {
         const { source, candles } = await fetchKlines(coin.binance, range.interval, { limit: range.limit, cgDays: range.days });
@@ -497,7 +534,7 @@ export function render(root) {
         $('#ccHead').style.display = 'block';
         $('#ccPrice').textContent = fmtUsd(last);
         const sign = chgPct >= 0 ? '+' : '';
-        $('#ccChg').textContent = `${sign}${chgPct.toFixed(2)}% за ${range.label}`;
+        $('#ccChg').textContent = tf('cry_chg_over', sign, chgPct.toFixed(2), t(range.labelKey));
         $('#ccChg').style.color = chgPct >= 0 ? '#56d364' : '#ff7b72';
         $('#ccSrc').textContent = source;
         drawLine($('#ccCanvas'), prices);
@@ -505,7 +542,7 @@ export function render(root) {
         $('#ccHead').style.display = 'none';
         const cv = $('#ccCanvas');
         cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
-        setStatus('err', 'Няма връзка / услугата не отговаря. Опитай отново, когато си онлайн.');
+        setStatus('err', t('cry_no_conn'));
       } finally {
         btn.disabled = false;
       }
@@ -520,10 +557,10 @@ export function render(root) {
   (async function () {
     async function rsiPanel(elId, interval, limit) {
       const el = $('#' + elId);
-      loadingBox(el, 'Зареждам данни…');
+      loadingBox(el, t('cry_loading_data'));
       try {
         const { candles } = await fetchKlines('BTCUSDT', interval, { limit });
-        if (!candles.length) { errorBox(el, 'Няма данни.'); return; }
+        if (!candles.length) { errorBox(el, t('cry_no_data')); return; }
         const cv = canvasIn(el, 260);
         drawRSI(cv, candles);
       } catch (e) {
@@ -539,13 +576,13 @@ export function render(root) {
     const tf = $('#fibTf');
     const chart = $('#fibChart');
     async function load(iv) {
-      loadingBox(chart, 'Зареждам данни…');
+      loadingBox(chart, t('cry_loading_data'));
       const conf = FIB_INTERVALS[iv] || FIB_INTERVALS['1d'];
       const end = Date.now();
       const start = end - conf.spanDays * 86400000;
       try {
         const { candles } = await fetchKlines('BTCUSDT', BINANCE_IV[iv], { startMs: start, endMs: end, limit: 1000, cgDays: conf.spanDays });
-        if (!candles.length) { errorBox(chart, 'Няма данни.'); return; }
+        if (!candles.length) { errorBox(chart, t('cry_no_data')); return; }
         const cv = canvasIn(chart, 300);
         drawCandles(cv, candles, true, null);
       } catch (e) {
@@ -577,7 +614,7 @@ export function render(root) {
       // 1) Текущо
       const cur = document.createElement('div');
       cur.style.marginTop = '6px';
-      cur.innerHTML = `<label style="margin-top:0">${base}/${state.pair} — Текущо (${intLabel(state.int)})</label><div class="histbox"></div>`;
+      cur.innerHTML = `<label style="margin-top:0">${tf('cry_current', base, state.pair, intLabel(state.int))}</label><div class="histbox"></div>`;
       grid.appendChild(cur);
       loadCurrent(cur.querySelector('.histbox'), binSymbol, state.int);
 
@@ -585,13 +622,13 @@ export function render(root) {
       for (let y = 1; y <= 4; y++) {
         const d = new Date(now.getFullYear() - y, now.getMonth(), now.getDate());
         const wrap = document.createElement('div');
-        const dateLbl = d.toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' });
+        const dateLbl = d.toLocaleDateString(getLang(), { day: 'numeric', month: 'long', year: 'numeric' });
         wrap.innerHTML =
-          `<label>${base}/${state.pair} — преди ${y} г. (${dateLbl})</label>` +
+          `<label>${tf('cry_years_ago', base, state.pair, y, dateLbl)}</label>` +
           `<div class="tabs histtf">
-             <button class="tab active" data-iv="1d">ден</button>
-             <button class="tab" data-iv="1w">седмица</button>
-             <button class="tab" data-iv="1M">месец</button>
+             <button class="tab active" data-iv="1d">${t('cry_day')}</button>
+             <button class="tab" data-iv="1w">${t('cry_week')}</button>
+             <button class="tab" data-iv="1M">${t('cry_month')}</button>
            </div>` +
           `<div class="histbox"></div>`;
         grid.appendChild(wrap);
@@ -629,16 +666,16 @@ export function render(root) {
   }
 
   function intLabel(i) {
-    return { '15m': '15 мин', '1h': 'час', '1d': 'ден', '1w': 'седмица', '1M': 'месец' }[i] || i;
+    return { '15m': t('cry_15m'), '1h': t('cry_hour'), '1d': t('cry_day'), '1w': t('cry_week'), '1M': t('cry_month') }[i] || i;
   }
 
   // Текущ панел — обикновени свещи до днес.
   async function loadCurrent(box, symbol, interval) {
-    loadingBox(box, 'Зареждам данни…');
+    loadingBox(box, t('cry_loading_data'));
     const limitByInt = { '15m': 96, '1h': 168, '1d': 90, '1w': 104, '1M': 60 };
     try {
       const { candles } = await fetchKlines(symbol, interval, { limit: limitByInt[interval] || 120, cgDays: 90 });
-      if (!candles.length) { errorBox(box, 'Няма данни (пробвай другата двойка).'); return; }
+      if (!candles.length) { errorBox(box, t('cry_no_data_pair')); return; }
       const cv = canvasIn(box, 300);
       drawCandles(cv, candles, false, null);
     } catch (e) {
@@ -648,7 +685,7 @@ export function render(root) {
 
   // Исторически панел — свещи около целева дата + авто-Fibonacci + маркер.
   async function historyChart(box, symbol, targetDate, iv) {
-    loadingBox(box, 'Зареждам данни…');
+    loadingBox(box, t('cry_loading_data'));
     const conf = FIB_INTERVALS[iv] || FIB_INTERVALS['1d'];
     const t = targetDate.getTime();
     const span = conf.spanDays;
@@ -658,7 +695,7 @@ export function render(root) {
     if (end > now) end = now;
     try {
       const { candles } = await fetchKlines(symbol, BINANCE_IV[iv], { startMs: start, endMs: end, limit: 1000, cgDays: 90 });
-      if (!candles.length) { errorBox(box, 'Няма данни за този период (двойката вероятно не е била листната тогава — пробвай другата двойка).'); return; }
+      if (!candles.length) { errorBox(box, t('cry_no_data_period')); return; }
       const cv = canvasIn(box, 300);
       drawCandles(cv, candles, true, Math.floor(t / 1000));
     } catch (e) {

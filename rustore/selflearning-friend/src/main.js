@@ -22,6 +22,8 @@ import { renderVision } from './screens/vision.js';
 import { renderYoutube } from './screens/youtube.js';
 import { renderAnimations } from './screens/animations.js';
 import { renderSettings } from './screens/settings.js';
+import { renderLanguage } from './screens/language.js';
+import { hasLangChosen, t } from './core/i18n.js';
 
 const APP_ROUTES = {
   chat: renderChat,
@@ -33,16 +35,21 @@ const APP_ROUTES = {
   animations: renderAnimations,
   settings: renderSettings
 };
+// route → ключ за превод на етикета в навигацията (преводът се чете при всяко рисуване).
 const NAV = [
-  ['chat', 'Чат'],
-  ['tasks', 'Задачи'],
-  ['memory', 'Памет'],
-  ['sources', 'Знание'],
-  ['vision', 'Зрение'],
-  ['youtube', 'YouTube'],
-  ['animations', 'Анимации'],
-  ['settings', 'Настройки']
+  ['chat', 'nav_chat'],
+  ['tasks', 'nav_tasks'],
+  ['memory', 'nav_memory'],
+  ['sources', 'nav_sources'],
+  ['vision', 'nav_vision'],
+  ['youtube', 'nav_youtube'],
+  ['animations', 'nav_animations'],
+  ['settings', 'nav_settings']
 ];
+
+// Флаг: показваме екрана за избор на UI език (повторен избор от 🌐 бутона). При първо
+// стартиране се определя автоматично от hasLangChosen() в render().
+let forceLangPicker = false;
 
 function currentRoute() {
   const h = (location.hash || '').replace(/^#\/?/, '');
@@ -51,13 +58,17 @@ function currentRoute() {
 
 export function navigate(route) { location.hash = '#/' + route; }
 
+// Отваря екрана за повторен избор на UI език (от 🌐 бутона / Настройки). След избор
+// (или Отказ) се връща към нормалния поток през render().
+export function openLangPicker() { forceLangPicker = true; render(); }
+
 function renderNav(active) {
   return el('nav', { class: 'tabbar' },
-    NAV.map(([route, label]) =>
+    NAV.map(([route, labelKey]) =>
       el('button', {
         class: 'tab' + (route === active ? ' active' : ''),
         onclick: () => navigate(route)
-      }, label)
+      }, t(labelKey))
     )
   );
 }
@@ -68,7 +79,22 @@ function render() {
   clear(app);
 
   const screen = el('main', { class: 'screen' });
-  const ctx = { navigate, rerender: render };
+  const ctx = { navigate, rerender: render, openLangPicker };
+
+  // ПЪРВО СТАРТИРАНЕ: избор на UI език ПРЕДИ целия поток (lockdown/раждане/заключване/чат).
+  // Показваме го, ако потребителят още не е избирал език, ИЛИ ако е поискал повторен избор
+  // от 🌐 бутона (forceLangPicker). Гласовият език е независим и не се пипа тук.
+  const repick = forceLangPicker;
+  if (!hasLangChosen() || repick) {
+    stopLearning(); stopListening(); stopConversation();
+    renderLanguage(screen, {
+      showCancel: repick,                       // „Отказ“ само при повторен избор (вече има избран)
+      onChosen: () => { forceLangPicker = false; render(); },
+      onCancel: () => { forceLangPicker = false; render(); }
+    });
+    app.appendChild(screen);
+    return;
+  }
 
   // Анти-кражба: ако е активен lockdown, искаме повторна авторизация преди всичко.
   if (isNamed() && isLockedDown()) {

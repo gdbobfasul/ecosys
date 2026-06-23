@@ -7,6 +7,7 @@ import { THEME } from '../theme.js';
 import { MAX_LEVEL } from './levels.js';
 import { recordWin, recordScore } from '../store/progress.js';
 import { addScore, getTop, lastName, setLastName } from '../leaderboard.js';
+import { t, tf } from '../core/i18n.js';
 
 export default class GameOverScene extends Phaser.Scene {
   constructor() {
@@ -32,19 +33,19 @@ export default class GameOverScene extends Phaser.Scene {
     const bg = this.add.graphics();
     bg.fillStyle(0x000000, 0.85); bg.fillRect(0, 0, W, H);
 
-    const title = this.win ? 'ОЦЕЛЯ!' : 'УЦЕЛЕН СИ!';
+    const title = this.win ? t('win_title') : t('lose_title');
     const color = this.win ? THEME.accentHex : THEME.dangerHex;
     this.add.text(W / 2, H * 0.10, title, {
       fontFamily: 'system-ui, sans-serif', fontSize: '40px', color,
       fontStyle: 'bold', stroke: '#000', strokeThickness: 6
     }).setOrigin(0.5);
 
-    this.add.text(W / 2, H * 0.17, `Ниво ${this.levelNum}`, {
+    this.add.text(W / 2, H * 0.17, tf('level_n', this.levelNum), {
       fontFamily: 'system-ui, sans-serif', fontSize: '18px', color: '#fff'
     }).setOrigin(0.5);
 
     this.add.text(W / 2, H * 0.21,
-      `Точки: ${this.score}   •   Избегнати: ${this.dodges}`, {
+      tf('score_line', this.score, this.dodges), {
       fontFamily: 'system-ui, sans-serif', fontSize: '14px', color: '#cbb', align: 'center'
     }).setOrigin(0.5);
 
@@ -61,17 +62,17 @@ export default class GameOverScene extends Phaser.Scene {
   showNameEntry() {
     const W = GAME_WIDTH, H = GAME_HEIGHT;
 
-    this.entryGroup.add(this.add.text(W / 2, H * 0.30, 'Въведи име за РАНГ ЛИСТАТА:', {
-      fontFamily: 'system-ui, sans-serif', fontSize: '16px', color: THEME.primaryHex
+    this.entryGroup.add(this.add.text(W / 2, H * 0.30, t('enter_name'), {
+      fontFamily: 'system-ui, sans-serif', fontSize: '16px', color: THEME.primaryHex, align: 'center'
     }).setOrigin(0.5));
 
     // HTML <input> overlay върху canvas-а (надеждна клавиатура и на мобилно).
-    this.createNameInput(lastName() || 'Играч');
+    this.createNameInput(lastName() || t('default_name'));
 
-    this.saveBtn = this.makeButton(W / 2, H * 0.46, 'ЗАПИШИ В ЛИСТАТА', () => this.doSave(), THEME.accent);
+    this.saveBtn = this.makeButton(W / 2, H * 0.46, t('save_board'), () => this.doSave(), THEME.accent);
 
     // Алтернатива: пропусни записа и иди към обичайните бутони.
-    this.makeButton(W / 2, H * 0.46 + 56, 'ПРОПУСНИ', () => {
+    this.makeButton(W / 2, H * 0.46 + 56, t('skip'), () => {
       this.removeNameInput();
       this.entryGroup.destroy(true);
       this.showLeaderboard(-1, -1);
@@ -82,7 +83,7 @@ export default class GameOverScene extends Phaser.Scene {
   doSave() {
     if (this.saved) return;
     this.saved = true;
-    const name = (this.getNameValue() || lastName() || 'Играч').slice(0, 24).trim() || 'Играч';
+    const name = (this.getNameValue() || lastName() || t('default_name')).slice(0, 24).trim() || t('default_name');
     setLastName(name);
     const { rank, total } = addScore(name, this.score);
     this.result = { rank, total };
@@ -99,13 +100,13 @@ export default class GameOverScene extends Phaser.Scene {
     const list = getTop(100);
 
     if (rank > 0) {
-      this.add.text(W / 2, H * 0.27, `Ти си #${rank} от ${total}`, {
+      this.add.text(W / 2, H * 0.27, tf('your_rank', rank, total), {
         fontFamily: 'system-ui, sans-serif', fontSize: '22px', color: THEME.primaryHex,
         fontStyle: 'bold', stroke: '#000', strokeThickness: 4
       }).setOrigin(0.5);
     }
 
-    this.add.text(W / 2, H * 0.31 + (rank > 0 ? 0 : -6), '🏆 РАНГ ЛИСТА (ТОП 100)', {
+    this.add.text(W / 2, H * 0.31 + (rank > 0 ? 0 : -6), '🏆 ' + t('board_top100'), {
       fontFamily: 'system-ui, sans-serif', fontSize: '14px', color: '#9a9'
     }).setOrigin(0.5);
 
@@ -170,22 +171,22 @@ export default class GameOverScene extends Phaser.Scene {
     const W = GAME_WIDTH;
     // Бутон „напред" само ако е победа и има още нива
     if (this.win && this.levelNum < MAX_LEVEL) {
-      this.makeButton(W / 2, y, `НАПРЕД (НИВО ${this.levelNum + 1})`, () => {
+      this.makeButton(W / 2, y, tf('next_level', this.levelNum + 1), () => {
         this.scene.start('Game', { level: this.levelNum + 1 });
       }, THEME.accent, 240, 42);
       y += 50;
     } else if (this.win && this.levelNum >= MAX_LEVEL) {
-      this.add.text(W / 2, y, 'Премина всички 10 нива! 🏆', {
-        fontFamily: 'system-ui, sans-serif', fontSize: '16px', color: THEME.primaryHex
+      this.add.text(W / 2, y, t('all_passed'), {
+        fontFamily: 'system-ui, sans-serif', fontSize: '16px', color: THEME.primaryHex, align: 'center'
       }).setOrigin(0.5);
       y += 40;
     }
 
     // Двата малки бутона един до друг: „ОПИТАЙ ПАК" и „МЕНЮ".
-    this.makeButton(W * 0.30, y, this.win ? 'ИГРАЙ ПАК' : 'ОПИТАЙ ПАК', () => {
+    this.makeButton(W * 0.30, y, this.win ? t('play_again') : t('try_again'), () => {
       this.scene.start('Game', { level: this.levelNum });
     }, THEME.primary, 130, 42);
-    this.makeButton(W * 0.70, y, 'МЕНЮ', () => {
+    this.makeButton(W * 0.70, y, t('menu'), () => {
       this.scene.start('Menu');
     }, 0x666666, 130, 42);
   }
@@ -198,7 +199,7 @@ export default class GameOverScene extends Phaser.Scene {
     el.type = 'text';
     el.maxLength = 24;
     el.value = defaultValue;
-    el.setAttribute('aria-label', 'Име за ранг листата');
+    el.setAttribute('aria-label', t('name_label'));
     el.style.cssText = [
       'position:fixed', 'z-index:50', 'box-sizing:border-box',
       'text-align:center', 'font-family:system-ui, sans-serif', 'font-weight:bold',

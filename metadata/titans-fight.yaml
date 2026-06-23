@@ -1,0 +1,94 @@
+id: titans-fight
+name: Titans Fight
+folders:
+  - rustore/titans-fight
+  - huawei/titans-fight
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.titansfight.rustore
+  huawei:  com.kcy.titansfight.huawei
+category:
+  google_play: Games / Action
+  rustore: Игры
+  huawei: Games
+content_rating: "7+ — фентъзи файтинг с карикатурно насилие (юмруци, оръжия), без кръв/реализъм, без реклами"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Titans Fight
+    short: "2D файтинг: два титана, арсенал оружия, 10 уровней"
+    full: |
+      Titans Fight — 2D файтинг, где два титана бьются на 10 уровнях растущей сложности.
+      Сражайся против всё более умного и агрессивного ИИ, открывай новое оружие и
+      продвигайся к финалу.
+
+      • Управление: на телефоне — экранные кнопки (D-pad, ⚔ атака, ★ спецудар, ⤒ прыжок,
+        полоса смены оружия); на ПК — A/D или стрелки, W прыжок, SPACE атака, SHIFT+SPACE спец.
+      • Арсенал открывается по прогрессу: кулаки → сабли → молот → ядро → бомба. У каждого
+        оружия свои дальность, урон и перезарядка.
+      • 10 уровней: с каждым растёт здоровье, скорость, агрессия и «ум» врага; арена
+        визуально меняется. 10-й уровень — финал («Бог войны»).
+      • Полностью офлайн: вся графика сгенерирована в коде, без рекламы и покупок.
+        Прогресс хранится только на устройстве.
+  en:
+    title: Titans Fight
+    short: "2D fighting: two titans, a weapon arsenal, 10 levels"
+    full: |
+      Titans Fight is a 2D fighting game where two titans clash across 10 levels of
+      rising difficulty. Battle an ever smarter and more aggressive AI, unlock new
+      weapons and push toward the finale.
+
+      • Controls: on phone — on-screen buttons (D-pad, ⚔ attack, ★ special, ⤒ jump, a
+        weapon-switch bar); on desktop — A/D or arrows, W jump, SPACE attack, SHIFT+SPACE special.
+      • The arsenal unlocks with progress: fists → swords → hammer → cannonball → bomb.
+        Each weapon has its own range, damage and cooldown.
+      • 10 levels: each raises the enemy's HP, speed, aggression and reaction; the arena
+        changes visually. Level 10 is the finale ("God of War").
+      • Fully offline: all graphics are generated in code, no ads, no purchases. Progress
+        stays on your device only.
+  bg:
+    title: Titans Fight
+    short: "2D файтинг: два титана, арсенал оръжия, 10 нива"
+    full: |
+      Titans Fight е 2D файтинг, в който два титана се бият на 10 нива с нарастваща
+      трудност. Бий се срещу все по-умен и по-агресивен AI, отключвай нови оръжия и
+      върви към финала.
+
+      • Управление: на телефон — екранни бутони (D-pad, ⚔ атака, ★ специален, ⤒ скок,
+        лента за смяна на оръжие); на десктоп — A/D или стрелки, W скок, SPACE атака,
+        SHIFT+SPACE специален.
+      • Арсеналът се отключва с прогреса: юмруци → саби → чук → гюле → бомба. Всяко оръжие
+        има свой обхват, щета и презареждане.
+      • 10 нива: всяко вдига живота, скоростта, агресията и „ума" на врага; арената се
+        сменя визуално. 10-то ниво е финалът („Бог на войната").
+      • Напълно офлайн: цялата графика е генерирана в кода, без реклами и покупки.
+        Прогресът се пази само на устройството.
+
+permissions: []
+# Приложението не изисква специални разрешения (офлайн игра). В манифеста стои само
+# стандартното за Capacitor android.permission.INTERNET, но играта не ползва мрежа.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Локален рекорд/прогрес (отключено ниво, име по избор + точки) — само в localStorage
+  shared_with_third_parties: none
+  encrypted_in_transit: not_applicable
+  encrypted_at_rest: false
+  user_can_delete: true
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (титан/боец мотив)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2-3 (битка на арена, смяна на оръжие, специален удар/финал)
+
+keywords: [titans fight, файтинг, fighting, битка, action, файтинг 2d, fighter, offline, без интернет]

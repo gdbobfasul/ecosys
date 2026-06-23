@@ -7,6 +7,8 @@ import { createMonitor } from '../core/monitor.js';
 import { stateLabel } from '../core/motion-detector.js';
 import { preload as preloadRecognizer } from '../core/recognizer.js';
 import { requestNotifyPermission } from '../core/notifier.js';
+import { t, getLang } from '../core/i18n.js';
+import { typeLabel } from '../core/events.js';
 
 // Държим живи референции, за да можем да спираме при напускане на екрана.
 let _active = null; // { stream, video, monitor }
@@ -27,15 +29,15 @@ export function renderDashboard(root, ctx) {
   // Сцена: video (на живо) + скрит canvas (за анализ).
   const video = el('video', { autoplay: true, muted: true, playsinline: true });
   const canvas = el('canvas', { class: 'hidden' });
-  const badge = el('div', { class: 'statebadge unknown' }, 'Изчаквам…');
+  const badge = el('div', { class: 'statebadge unknown' }, t('state_waiting'));
   const stage = el('div', { class: 'stage' }, [video, canvas, badge]);
   root.appendChild(stage);
 
   // Контроли + статус
-  const startBtn = el('button', { class: 'btn' }, 'Старт');
-  const stopBtn = el('button', { class: 'btn secondary', disabled: true }, 'Стоп');
-  const modelPill = el('span', { class: 'pill' }, 'модел: не зареден');
-  const personPill = el('span', { class: 'pill' }, 'хора: —');
+  const startBtn = el('button', { class: 'btn' }, t('btn_start'));
+  const stopBtn = el('button', { class: 'btn secondary', disabled: true }, t('btn_stop'));
+  const modelPill = el('span', { class: 'pill' }, t('model_unloaded'));
+  const personPill = el('span', { class: 'pill' }, t('people_label') + ': —');
   root.appendChild(el('div', { class: 'card' }, [
     el('div', { class: 'spread' }, [startBtn, stopBtn]),
     el('div', { class: 'spread', style: 'margin-top:10px' }, [modelPill, personPill])
@@ -44,7 +46,7 @@ export function renderDashboard(root, ctx) {
   // Timeline на движението
   const timeline = el('div', { class: 'timeline' });
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, 'Движение (последни кадри)'),
+    el('h3', {}, t('timeline_title')),
     timeline
   ]));
 
@@ -52,8 +54,8 @@ export function renderDashboard(root, ctx) {
   const eventsBox = el('div', {});
   root.appendChild(el('div', { class: 'card' }, [
     el('div', { class: 'row between' }, [
-      el('h3', {}, 'Последни събития'),
-      el('button', { class: 'btn secondary small', onclick: () => ctx.navigate('log') }, 'Целият дневник')
+      el('h3', {}, t('recent_events')),
+      el('button', { class: 'btn secondary small', onclick: () => ctx.navigate('log') }, t('full_log'))
     ]),
     eventsBox
   ]));
@@ -78,7 +80,7 @@ export function renderDashboard(root, ctx) {
 
   async function start() {
     if (!cameraSupported() && s.settings.cameraSource !== 'other') {
-      toast('Тази среда няма камера. Пусни на телефон или ползвай „Друга камера (URL)“.');
+      toast(t('no_camera_toast'));
       return;
     }
     // Известия (best-effort)
@@ -95,11 +97,11 @@ export function renderDashboard(root, ctx) {
     const monitor = createMonitor({
       videoEl: video,
       canvasEl: canvas,
-      onTick: (t) => {
-        if (t.noFrame) return;
-        setBadge(t.state);
-        renderTimeline(t.history);
-        if (typeof t.personCount === 'number') personPill.textContent = 'хора: ' + t.personCount;
+      onTick: (tk) => {
+        if (tk.noFrame) return;
+        setBadge(tk.state);
+        renderTimeline(tk.history);
+        if (typeof tk.personCount === 'number') personPill.textContent = t('people_label') + ': ' + tk.personCount;
       },
       onEvent: () => { renderRecent(eventsBox); }
     });
@@ -107,21 +109,21 @@ export function renderDashboard(root, ctx) {
     monitor.start();
 
     // Lazy зареждане на разпознавателя (coco-ssd) на фон — за втори човек / излизане от кадър.
-    modelPill.textContent = 'модел: зарежда…';
+    modelPill.textContent = t('model_loading');
     preloadRecognizer().then((pr) => {
-      modelPill.textContent = pr.ok ? 'модел: готов ✓' : 'модел: недостъпен (само движение)';
+      modelPill.textContent = pr.ok ? t('model_ready') : t('model_unavailable');
     });
 
     startBtn.disabled = true; stopBtn.disabled = false;
-    toast('Наблюдението започна');
+    toast(t('watch_started'));
   }
 
   function stop() {
     teardownDashboard();
     setBadge('unknown');
     startBtn.disabled = false; stopBtn.disabled = true;
-    personPill.textContent = 'хора: —';
-    toast('Наблюдението спря');
+    personPill.textContent = t('people_label') + ': —';
+    toast(t('watch_stopped'));
   }
 
   startBtn.addEventListener('click', start);
@@ -131,7 +133,7 @@ export function renderDashboard(root, ctx) {
 function renderRecent(box) {
   box.innerHTML = '';
   const evs = getState().events.slice(0, 4);
-  if (!evs.length) { box.appendChild(el('p', { class: 'muted small' }, 'Още няма събития.')); return; }
+  if (!evs.length) { box.appendChild(el('p', { class: 'muted small' }, t('no_events_yet'))); return; }
   for (const e of evs) box.appendChild(eventRow(e));
 }
 
@@ -141,17 +143,7 @@ function eventRow(e) {
   children.push(el('div', { class: 'meta' }, [
     el('div', { class: 'etype ' + e.type }, typeLabel(e.type)),
     el('div', { class: 'muted small' }, e.label),
-    el('div', { class: 'muted small' }, new Date(e.at).toLocaleTimeString('bg-BG'))
+    el('div', { class: 'muted small' }, new Date(e.at).toLocaleTimeString(getLang()))
   ]));
   return el('div', { class: 'event' }, children);
-}
-
-function typeLabel(type) {
-  switch (type) {
-    case 'wake': return 'Събуди се';
-    case 'stranger': return 'Непознат в стаята';
-    case 'left': return 'Излезе от кадър';
-    case 'fire': return 'Възможен пожар (груба евристика)';
-    default: return 'Събитие';
-  }
 }

@@ -3,6 +3,10 @@
 import Phaser from 'phaser';
 import { THEME } from '../theme.js';
 import { WEAPONS } from '../weapons/weapons.js';
+import { t, tf } from '../core/i18n.js';
+
+// Превод на имената на оръжията (стойността в WEAPONS е българската по подразбиране).
+const WEAPON_KEY = { bullet: 'weapon_bullet', bomb: 'weapon_bomb', missile: 'weapon_missile' };
 
 export default class UIScene extends Phaser.Scene {
   constructor() {
@@ -47,15 +51,15 @@ export default class UIScene extends Phaser.Scene {
     if (!g || !g.player) return;
     const { width, height } = this.scale;
 
-    this.scoreText.setText('Точки: ' + g.score);
+    this.scoreText.setText(tf('score', g.score));
     const q = Math.min(g.killed, g.level.quota);
-    this.levelText.setText(`Ниво ${g.level.id}/10  ${q}/${g.level.quota}  ♥×${g.lives}`);
+    this.levelText.setText(tf('hud_status', g.level.id, q, g.level.quota, g.lives));
 
     // Индикатор за щита: брой заряди + цвят по сила.
     const sh = g.player.shield;
     if (sh > 0) {
       const col = sh >= 6 ? '#ffd166' : (sh >= 3 ? '#00e5ff' : '#6ea8ff');
-      this.shieldText.setText('Щит ⛨×' + sh);
+      this.shieldText.setText(tf('shield', sh));
       this.shieldText.setColor(col);
       this.shieldText.setVisible(true);
     } else {
@@ -75,6 +79,6 @@ export default class UIScene extends Phaser.Scene {
     this.weaponBtnBg.clear();
     this.weaponBtnBg.fillStyle(THEME.primary, 0.85).fillCircle(width - 44, height - 70, 28);
     this.weaponBtnBg.lineStyle(2, 0xffffff, 0.6).strokeCircle(width - 44, height - 70, 28);
-    this.weaponLabel.setText(WEAPONS[g.player.weaponKey].name);
+    this.weaponLabel.setText(t(WEAPON_KEY[g.player.weaponKey] || 'weapon_bullet'));
   }
 }

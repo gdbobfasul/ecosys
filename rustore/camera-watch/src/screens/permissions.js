@@ -3,13 +3,14 @@
 import { el, mount } from '../ui/dom.js';
 import { startPhoneCamera, stopPhoneCamera } from '../core/camera.js';
 import { requestNotificationPermission, getNotificationStatus } from '../core/notifier.js';
+import { t } from '../core/i18n.js';
 
 export async function renderPermissions(root, { go }) {
   let camStatus = 'prompt';
   let notifStatus = await getNotificationStatus();
 
-  const camPill = el('span', { class: 'pill off', text: 'не е дадено' });
-  const notifPill = el('span', { class: 'pill off', text: notifStatus === 'granted' ? 'дадено' : 'не е дадено' });
+  const camPill = el('span', { class: 'pill off', text: t('perm_not_given') });
+  const notifPill = el('span', { class: 'pill off', text: notifStatus === 'granted' ? t('perm_granted') : t('perm_not_given') });
   if (notifStatus === 'granted') { notifPill.className = 'pill on'; }
 
   function setCam(ok, txt) {
@@ -19,7 +20,7 @@ export async function renderPermissions(root, { go }) {
   }
   function setNotif(ok) {
     notifPill.className = ok ? 'pill on' : 'pill off';
-    notifPill.textContent = ok ? 'дадено' : 'не е дадено';
+    notifPill.textContent = ok ? t('perm_granted') : t('perm_not_given');
   }
 
   const view = el('div', {}, [
@@ -27,45 +28,45 @@ export async function renderPermissions(root, { go }) {
       el('div', { class: 's active' }), el('div', { class: 's active' }),
       el('div', { class: 's' }), el('div', { class: 's' })
     ]),
-    el('h1', { text: 'Разрешения' }),
-    el('p', { text: 'Нужни са само две неща. Нищо повече не се иска.' }),
+    el('h1', { text: t('perm_title') }),
+    el('p', { text: t('perm_intro') }),
 
     el('div', { class: 'card' }, [
       el('div', { class: 'row between' }, [
-        el('h2', { text: 'Камера', class: 'grow' }), camPill
+        el('h2', { text: t('perm_camera'), class: 'grow' }), camPill
       ]),
-      el('p', { class: 'muted', text: 'За да гледа кадрите и да засича движение. Видеото не напуска устройството.' }),
+      el('p', { class: 'muted', text: t('perm_camera_desc') }),
       el('button', {
         class: 'btn secondary', onclick: async () => {
           const probe = document.createElement('video');
           const r = await startPhoneCamera(probe);
-          if (r.ok) { stopPhoneCamera(r.stream); setCam(true, 'дадено'); }
-          else { setCam(false, 'отказано'); alert(r.reason); }
+          if (r.ok) { stopPhoneCamera(r.stream); setCam(true, t('perm_granted')); }
+          else { setCam(false, t('perm_denied')); alert(r.reason); }
         }
-      }, 'Разреши камера')
+      }, t('perm_allow_camera'))
     ]),
 
     el('div', { class: 'card' }, [
       el('div', { class: 'row between' }, [
-        el('h2', { text: 'Нотификации', class: 'grow' }), notifPill
+        el('h2', { text: t('perm_notif'), class: 'grow' }), notifPill
       ]),
-      el('p', { class: 'muted', text: 'За локални сигнали при детекция. Само локални — без push сървър.' }),
+      el('p', { class: 'muted', text: t('perm_notif_desc') }),
       el('button', {
         class: 'btn secondary', onclick: async () => {
           const r = await requestNotificationPermission();
           setNotif(r.granted);
-          if (!r.granted) alert('Нотификациите не са разрешени. Приложението пак ще показва събитията в журнала на екрана.');
+          if (!r.granted) alert(t('perm_notif_denied_alert'));
         }
-      }, 'Разреши нотификации')
+      }, t('perm_allow_notif'))
     ]),
 
     el('div', { class: 'notice' }, [
-      el('span', { html: '<b>Не искаме:</b> контакти, местоположение, микрофон, идентификатори. Без проследяване.' })
+      el('span', { html: t('perm_dont_want') })
     ]),
 
     el('div', { class: 'row' }, [
-      el('button', { class: 'btn ghost', onclick: () => go('onboarding') }, 'Назад'),
-      el('button', { class: 'btn grow', onclick: () => go('config') }, 'Напред')
+      el('button', { class: 'btn ghost', onclick: () => go('onboarding') }, t('back')),
+      el('button', { class: 'btn grow', onclick: () => go('config') }, t('next'))
     ])
   ]);
 

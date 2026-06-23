@@ -4,6 +4,7 @@ import { LEVELS } from '../levels.js';
 import { makeButton, titleText } from '../ui.js';
 // Ранг листата (само за справка тук — сцената е регистрирана в main.js).
 import { buildArena } from '../backgrounds.js';
+import { t, levelName } from '../core/i18n.js';
 
 // Главно меню + избор на ниво. Показва кои нива са отключени.
 // Изцяло отзивчиво към размера на екрана (телефон портрет/пейзаж).
@@ -17,11 +18,12 @@ export class MenuScene extends Phaser.Scene {
     buildArena(this, LEVELS[0].arena);
 
     titleText(this, W / 2, H * 0.10, THEME.titleText, Math.min(64, W * 0.10), THEME.primaryHex);
+    // Подзаглавието („… Edition") е марково и идва от темата (различно по store).
     titleText(this, W / 2, H * 0.18, THEME.titleSub, 18, THEME.accentHex);
 
     const unlocked = this.registry.get('unlockedLevel') || 1;
 
-    titleText(this, W / 2, H * 0.26, 'ИЗБЕРИ НИВО', 22, '#ffffff');
+    titleText(this, W / 2, H * 0.26, t('choose_level'), 22, '#ffffff');
 
     // Решетка от 10 нива — адаптивен брой колони според ширината.
     const portrait = H > W;
@@ -40,7 +42,8 @@ export class MenuScene extends Phaser.Scene {
       const x = startX + col * gapX;
       const y = startY + row * gapY;
       const open = lvl.id <= unlocked;
-      const label = open ? `${lvl.id}  ${lvl.name}` : `🔒 ${lvl.name}`;
+      const nm = levelName(lvl.id);
+      const label = open ? `${lvl.id}  ${nm}` : `🔒 ${nm}`;
       const btn = makeButton(this, x, y, cellW, cellH * 0.86, label, () => {
         if (!open) return;
         this.registry.set('pendingLevel', lvl.id);
@@ -50,16 +53,21 @@ export class MenuScene extends Phaser.Scene {
     });
 
     titleText(this, W / 2, H - 30,
-      'Докосни ниво за да започнеш • Победи противника, за да отключиш следващото',
+      t('menu_hint'),
       Math.min(14, W * 0.026), '#cfcfd8');
 
     // Бутон „🏆 Ранг листа" (горе вляво) — отваря целия ТОП 100.
-    makeButton(this, 96, 40, 168, 44, '🏆 РАНГ ЛИСТА', () => {
+    makeButton(this, 96, 40, 168, 44, t('board_btn'), () => {
       this.scene.start('leaderboard');
     }, { color: THEME.accent, fontSize: '15px' });
 
+    // Бутон „🌐 Език" (горе, до ранг листата) — отваря екрана за избор на език.
+    makeButton(this, 96, 92, 168, 44, t('lang_btn'), () => {
+      this.scene.start('language', { next: 'menu' });
+    }, { color: THEME.primary, fontSize: '15px' });
+
     // бутон за нулиране на прогреса (полезно за тест)
-    makeButton(this, W - 86, 40, 150, 44, 'НУЛИРАЙ', () => {
+    makeButton(this, W - 86, 40, 150, 44, t('reset'), () => {
       try { localStorage.setItem('tf_unlocked', '1'); } catch (e) {}
       this.registry.set('unlockedLevel', 1);
       this.scene.restart();

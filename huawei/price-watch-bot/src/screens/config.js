@@ -1,6 +1,8 @@
 // Екран „Настрой робота" (config wizard) — добавяне на watch елементи.
 import { CRYPTO, FX } from '../core/api.js';
 import { saveState, pushLog } from '../core/storage.js';
+import { t, tf } from '../core/i18n.js';
+import { topBar, bindTopBar } from '../ui/topbar.js';
 
 let draft = null;
 
@@ -18,57 +20,58 @@ export function renderConfig(root, state, go) {
   }
 
   function existingList() {
-    if (!state.watches.length) return '<p class="muted">Още няма добавени наблюдения.</p>';
+    if (!state.watches.length) return `<p class="muted">${t('cfg_none_yet')}</p>`;
     return state.watches.map(w => `
       <div class="row between" style="padding:8px 0;border-bottom:1px solid var(--line)">
-        <div>${w.symbol} <span class="muted">${w.condition === 'below' ? '≤' : '≥'} ${w.target} · ${w.freq}</span></div>
-        <button class="btn ghost sm" data-del="${w.id}">Изтрий</button>
+        <div>${w.symbol} <span class="muted">${w.condition === 'below' ? '≤' : '≥'} ${w.target} · ${t('freq_' + w.freq)}</span></div>
+        <button class="btn ghost sm" data-del="${w.id}">${t('delete')}</button>
       </div>`).join('');
   }
 
   function draw() {
     root.innerHTML = `
-      <div class="top"><div class="logo"></div><h1>Настрой робота</h1></div>
+      ${topBar(t('cfg_title'))}
       <div class="pad">
-        <p>Добави какво да следи роботът. Можеш да добавиш няколко.</p>
+        <p>${t('cfg_intro')}</p>
         <div class="card">
-          <label>Тип</label>
+          <label>${t('cfg_type')}</label>
           <div class="grid">
-            <div class="chip ${draft.kind === 'crypto' ? 'on' : ''}" data-kind="crypto">Крипто</div>
-            <div class="chip ${draft.kind === 'fx' ? 'on' : ''}" data-kind="fx">Валута (FX)</div>
+            <div class="chip ${draft.kind === 'crypto' ? 'on' : ''}" data-kind="crypto">${t('cfg_crypto')}</div>
+            <div class="chip ${draft.kind === 'fx' ? 'on' : ''}" data-kind="fx">${t('cfg_fx')}</div>
           </div>
 
-          <label>${draft.kind === 'crypto' ? 'Монета (цена в USD)' : 'Валута (за 1 USD)'}</label>
+          <label>${draft.kind === 'crypto' ? t('cfg_coin_label') : t('cfg_fx_label')}</label>
           <select id="symbol">${symbolOptions()}</select>
 
-          <label>Условие</label>
+          <label>${t('cfg_condition')}</label>
           <div class="grid">
-            <div class="chip ${draft.condition === 'below' ? 'on' : ''}" data-cond="below">Падне под</div>
-            <div class="chip ${draft.condition === 'above' ? 'on' : ''}" data-cond="above">Качи се над</div>
+            <div class="chip ${draft.condition === 'below' ? 'on' : ''}" data-cond="below">${t('cfg_below')}</div>
+            <div class="chip ${draft.condition === 'above' ? 'on' : ''}" data-cond="above">${t('cfg_above')}</div>
           </div>
 
-          <label>Прагова стойност</label>
-          <input id="target" type="number" inputmode="decimal" placeholder="напр. 60000" value="${draft.target}"/>
+          <label>${t('cfg_threshold')}</label>
+          <input id="target" type="number" inputmode="decimal" placeholder="${t('cfg_threshold_ph')}" value="${draft.target}"/>
 
-          <label>Честота на проверка</label>
+          <label>${t('cfg_freq')}</label>
           <select id="freq">
-            <option value="15min" ${draft.freq === '15min' ? 'selected' : ''}>На 15 минути</option>
-            <option value="1h" ${draft.freq === '1h' ? 'selected' : ''}>На 1 час</option>
-            <option value="daily" ${draft.freq === 'daily' ? 'selected' : ''}>Веднъж дневно</option>
+            <option value="15min" ${draft.freq === '15min' ? 'selected' : ''}>${t('freq_15min')}</option>
+            <option value="1h" ${draft.freq === '1h' ? 'selected' : ''}>${t('freq_1h')}</option>
+            <option value="daily" ${draft.freq === 'daily' ? 'selected' : ''}>${t('freq_daily')}</option>
           </select>
 
-          <button class="btn" id="add" style="margin-top:14px">Добави наблюдение</button>
+          <button class="btn" id="add" style="margin-top:14px">${t('cfg_add')}</button>
           <p class="err-line" id="err"></p>
         </div>
 
         <div class="card">
-          <h2>Текущи наблюдения (${state.watches.length})</h2>
+          <h2>${tf('cfg_current_n', state.watches.length)}</h2>
           ${existingList()}
         </div>
 
-        <button class="btn ghost" id="done">Продължи към разрешения</button>
+        <button class="btn ghost" id="done">${t('cfg_to_perms')}</button>
       </div>
     `;
+    bindTopBar(root);
 
     root.querySelectorAll('[data-kind]').forEach(c => c.onclick = () => {
       draft.kind = c.dataset.kind;
@@ -81,20 +84,20 @@ export function renderConfig(root, state, go) {
     root.querySelector('#freq').onchange = e => draft.freq = e.target.value;
 
     root.querySelector('#add').onclick = async () => {
-      const t = parseFloat(draft.target);
+      const tgt = parseFloat(draft.target);
       const err = root.querySelector('#err');
-      if (!isFinite(t) || t <= 0) { err.textContent = 'Въведи валидна прагова стойност.'; return; }
+      if (!isFinite(tgt) || tgt <= 0) { err.textContent = t('cfg_invalid'); return; }
       const limit = 50;
       if (state.watches.length >= limit) {
-        err.textContent = `Достигнат лимит (${limit}).`;
+        err.textContent = tf('cfg_limit', limit);
         return;
       }
       state.watches.push({
         id: 'w' + Date.now().toString(36),
         kind: draft.kind, symbol: draft.symbol, condition: draft.condition,
-        target: t, freq: draft.freq, lastValue: null, lastCheck: null, status: 'watching', paused: false
+        target: tgt, freq: draft.freq, lastValue: null, lastCheck: null, status: 'watching', paused: false
       });
-      pushLog(state, `➕ Добавено: ${draft.symbol} ${draft.condition === 'below' ? '≤' : '≥'} ${t}`);
+      pushLog(state, tf('log_added', draft.symbol, draft.condition === 'below' ? '≤' : '≥', tgt));
       await saveState(state);
       draft = newDraft();
       draw();

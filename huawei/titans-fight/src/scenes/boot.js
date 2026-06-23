@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { generateTextures } from '../textures.js';
 import { THEME } from '../theme.js';
+import { hasLangChosen } from '../core/i18n.js';
 
 // BootScene: генерира всички процедурни текстури веднъж, после към менюто.
 export class BootScene extends Phaser.Scene {
@@ -18,6 +19,7 @@ export class BootScene extends Phaser.Scene {
     this.registry.set('unlockedLevel', unlocked);
     this.registry.set('selectedWeapon', 'fists');
 
-    this.scene.start('menu');
+    // При първо стартиране показваме екрана за избор на език, после менюто.
+    this.scene.start(hasLangChosen() ? 'menu' : 'language');
   }
 }

@@ -1,6 +1,11 @@
 // HUD: DOM overlay върху canvas-а — мерник, виртуален джойстик, бутон огън,
 // боеприпаси, ниво, точки, оставащи цели, таймер, оръжие.
 import { THEME } from './theme.js';
+import { t } from './core/i18n.js';
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
 
 export class HUD {
   constructor(root) {
@@ -24,16 +29,16 @@ export class HUD {
 
       <!-- Горен ляв инфо панел -->
       <div style="position:fixed;left:12px;top:12px;color:#dfe7ee;font-size:14px;line-height:1.5;text-shadow:0 1px 2px #000;">
-        <div>Ниво <span id="hud-level" style="color:${a};font-weight:700">1</span> / 100</div>
-        <div>Цел: <span id="hud-target">—</span></div>
-        <div>Оръжие: <span id="hud-weapon">—</span></div>
+        <div>${esc(t('hud_level'))} <span id="hud-level" style="color:${a};font-weight:700">1</span> / 100</div>
+        <div>${esc(t('hud_target'))}: <span id="hud-target">—</span></div>
+        <div>${esc(t('hud_weapon'))}: <span id="hud-weapon">—</span></div>
       </div>
 
       <!-- Горен десен: точки/таймер/останали -->
       <div style="position:fixed;right:12px;top:12px;text-align:right;color:#dfe7ee;font-size:14px;line-height:1.5;text-shadow:0 1px 2px #000;">
-        <div>Точки: <span id="hud-score" style="color:${a2};font-weight:700">0</span></div>
-        <div>Останали: <span id="hud-left">0</span></div>
-        <div>Време: <span id="hud-time">0</span>с</div>
+        <div>${esc(t('hud_score'))}: <span id="hud-score" style="color:${a2};font-weight:700">0</span></div>
+        <div>${esc(t('hud_left'))}: <span id="hud-left">0</span></div>
+        <div>${esc(t('hud_time'))}: <span id="hud-time">0</span>${esc(t('time_suffix'))}</div>
       </div>
 
       <!-- Боеприпаси долу вдясно над бутона -->
@@ -43,7 +48,7 @@ export class HUD {
       <div id="fire-btn" style="position:fixed;right:24px;bottom:28px;width:96px;height:96px;border-radius:50%;
            background:rgba(239,83,80,0.35);border:3px solid ${THEME.danger};pointer-events:auto;
            display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;
-           -webkit-user-select:none;user-select:none;">ОГЪН</div>
+           -webkit-user-select:none;user-select:none;">${esc(t('fire_btn'))}</div>
 
       <!-- Виртуален джойстик (мобилно) -->
       <div id="joy-base" style="position:fixed;display:none;width:120px;height:120px;border-radius:50%;

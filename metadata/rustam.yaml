@@ -1,0 +1,93 @@
+id: rustam
+name: Рустам
+folders:
+  - rustore/rustam
+  - huawei/rustam
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.rustam.rustore
+  huawei:  com.kcy.rustam.huawei
+category:
+  google_play: Games / Arcade
+  rustore: Игры
+  huawei: Games
+content_rating: "3+ (Everyone) — аркада без насилие, без реклами, без потребителско съдържание"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Рустам
+    short: Собери огурцы, пока кроты не утащили их под землю — 10 уровней
+    full: |
+      Рустам — простая офлайн-аркада. Рустам стоит посреди поля и собирает огурцы,
+      которые выскакивают из земли. Рядом с каждым огурцом растёт нора: из точки она
+      постепенно увеличивается, а когда дорастёт — из неё выскакивает крот и утаскивает
+      огурец под землю. Успей добежать до огурца раньше крота!
+
+      • Управление виртуальным джойстиком (коснись и веди), на ПК — WASD/стрелки.
+      • Набери нужное число огурцов, чтобы пройти уровень. Каждый утащенный огурец
+        стоит сердце — кончатся сердца, и игра окончена.
+      • 10 уровней. После 3-го кроты и норы становятся меньше, а времени до огурца
+        меньше — сложность растёт.
+      • Полностью офлайн: вся графика рисуется в коде, рекорды хранятся только на
+        устройстве. Без рекламы и покупок.
+  en:
+    title: Rustam
+    short: Pick the cucumbers before the moles drag them underground — 10 levels
+    full: |
+      Rustam is a simple offline arcade game. Rustam stands in the middle of a field
+      and picks cucumbers that pop out of the ground. Next to each cucumber a hole
+      starts growing — from a tiny dot it slowly expands, and once it reaches full size
+      a mole pops out and drags the cucumber underground. Reach the cucumber in time!
+
+      • Move with a virtual joystick (touch and drag), or WASD/arrows on desktop.
+      • Collect the target number of cucumbers to clear the level. Every cucumber a mole
+        steals costs you a heart — run out of hearts and it is game over.
+      • 10 levels. After level 3 the moles and holes shrink and your time-to-cucumber
+        shortens, ramping up the difficulty.
+      • Fully offline: all graphics are drawn in code and high scores stay on your
+        device only. No ads, no purchases.
+  bg:
+    title: Рустам
+    short: Бери краставиците преди къртиците да ги отмъкнат — 10 нива
+    full: |
+      Рустам е проста офлайн аркада. Рустам стои насред поле и бере краставици, които
+      изскачат от земята. До всяка краставица започва да расте дупка — от точица
+      постепенно се уголемява, а стигне ли пълен размер, от нея изскача къртица, която
+      прибира краставицата под земята. Стигни краставицата навреме!
+
+      • Движение с виртуален джойстик (докосни и влачи), на десктоп — WASD/стрелки.
+      • Набери целта краставици, за да минеш нивото. Всяка отмъкната краставица струва
+        сърце — свършат ли сърцата, играта свършва.
+      • 10 нива. След 3-то ниво къртиците и дупките стават по-малки, а времето до
+        краставицата намалява — трудността расте.
+      • Напълно офлайн: цялата графика се рисува в кода, рекордите се пазят само на
+        устройството. Без реклами и покупки.
+
+permissions: []
+# Приложението не изисква специални разрешения (офлайн игра). В манифеста стои само
+# стандартното за Capacitor android.permission.INTERNET, но играта не ползва мрежа.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Локален рекорд/прогрес (име по избор + точки) — само в localStorage на устройството
+  shared_with_third_parties: none
+  encrypted_in_transit: not_applicable   # няма мрежови трансфер
+  encrypted_at_rest: false
+  user_can_delete: true                  # триене на данните на приложението
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (краставица/поле мотив, зелено)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2-3 (поле с краставици и дупки, бране, край с ранг листа)
+
+keywords: [рустам, аркада, краставици, къртици, casual, arcade, offline, без интернет, деца]

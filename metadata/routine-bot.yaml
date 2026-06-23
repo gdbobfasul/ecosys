@@ -1,0 +1,99 @@
+id: routine-bot
+name: Рутина-робот
+folders:
+  - rustore/routine-bot
+  - huawei/routine-bot
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.routinebot.rustore
+  huawei:  com.kcy.routinebot.huawei
+category:
+  google_play: Productivity
+  rustore: Продуктивность
+  huawei: Productivity
+content_rating: "3+ (Everyone) — без насилие, без реклами, без потребителско съдържание"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Рутина-робот
+    short: "Ежедневная рутина: брифинг, напоминания, итог — локальные уведомления"
+    full: |
+      Рутина-робот — это «робот в аренду», который каждый день выполняет вашу
+      рутину: утренний брифинг (время, программа дня, мотивация), напоминания и
+      вечерний итог, и присылает локальные уведомления. Без аккаунтов, без
+      слежки, без крипто. Всё на устройстве.
+
+      • Настройте рутину: час утреннего брифинга и что в него входит, вечерний итог.
+      • Напоминания: лекарства / привычки / задачи с часом и днями недели.
+      • Заметки и список событий/задач.
+      • Погода — бесплатно и без ключа (Open-Meteo); локация по желанию: устройство,
+        ручной город или координаты.
+      • Озвучивание заметок (TTS) на 15 языках.
+      • Уведомления локальные — без сервера и push. Интерфейс на 15 языках.
+  en:
+    title: Routine Bot
+    short: "Daily routine: briefing, reminders, summary — local notifications"
+    full: |
+      Routine Bot is a "robot for hire" that runs your daily routine every day:
+      a morning briefing (time, the day's plan, motivation), reminders and an
+      evening summary, with local notifications. No accounts, no tracking, no
+      crypto. Everything stays on the device.
+
+      • Configure the routine: the morning briefing hour and its contents, plus an
+        optional evening summary.
+      • Reminders: medication / habits / tasks with an hour and days of the week.
+      • Notes and an events/tasks list.
+      • Weather is free and keyless (Open-Meteo); location is optional: device,
+        a manual city or coordinates.
+      • Speak notes aloud (TTS) in 15 languages.
+      • Notifications are local — no server, no push. UI in 15 languages.
+  bg:
+    title: Рутина-робот
+    short: "Дневна рутина: брифинг, напомняния, резюме — локални известия"
+    full: |
+      Рутина-робот е „робот под наем", който всеки ден изпълнява твоята рутина:
+      сутрешен брифинг (време, програма за деня, мотивация), напомняния и вечерно
+      резюме, с локални известия. Без акаунти, без проследяване, без крипто.
+      Всичко е на устройството.
+
+      • Настрой рутината: час на сутрешния брифинг и какво включва, по избор вечерно
+        резюме.
+      • Напомняния: лекарства / навици / задачи с час и дни от седмицата.
+      • Бележки и списък със събития/задачи.
+      • Времето е безплатно и без ключ (Open-Meteo); локацията е по избор: устройство,
+        ръчен град или координати.
+      • Изговаряне на бележки (TTS) на 15 езика.
+      • Известията са локални — без сървър и push. Интерфейс на 15 езика.
+
+permissions:
+  - id: android.permission.POST_NOTIFICATIONS
+    why: Планира нативни локални известия (@capacitor/local-notifications) за сутрешния брифинг, напомнянията и вечерното резюме.
+  - id: android.permission.INTERNET
+    why: Тегли времето от Open-Meteo (без ключ) за брифинга. Незадължително — при липса на мрежа приложението деградира грациозно.
+  - id: "android.permission.ACCESS_COARSE_LOCATION / ACCESS_FINE_LOCATION"
+    why: Само за прогнозата за времето по текущо местоположение (@capacitor/geolocation). Незадължително — има и ръчно въвеждане на град/координати.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Рутина, напомняния, бележки, събития/задачи и настройки за локация — само локално (@capacitor/preferences)
+  shared_with_third_parties: none
+  encrypted_in_transit: true            # времето се тегли по HTTPS
+  encrypted_at_rest: false              # обикновени локални настройки
+  user_can_delete: true                 # триене на напомняния, бележки, събития и нулиране
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (мотив „слънце/часовник", акцент по издание)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2 (онбординг, конфигуриране на рутина, напомняния, табло/времева линия)
+
+keywords: [routine, reminders, briefing, habits, medication, weather, notes, TTS, productivity, offline]

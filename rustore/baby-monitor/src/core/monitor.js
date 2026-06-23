@@ -13,6 +13,7 @@ import { detectPersons } from './recognizer.js';
 import { notify, relay } from './notifier.js';
 import { getState, addEvent } from './storage.js';
 import { isMonitor, sendAlert, sendFrame } from './pairing.js';
+import { t } from './i18n.js';
 
 // Малък компресиран кадър (≈320px JPEG) за релея — да не товари мрежата/лимита.
 function smallFrame(canvas) {
@@ -59,7 +60,7 @@ export function createMonitor({ videoEl, canvasEl, onTick, onEvent } = {}) {
     // КРИТИЧНИ събития (опасност) → алармена мелодия + силна вибрация. Иначе мек сигнал.
     const critical = (type === 'stranger' || type === 'fire');
     // Известие + звук (на ТОЗИ телефон — по избор; ако сме „Детегледачка" може да няма кой да чуе).
-    notify({ title: 'Детегледачка', body: label, sound: st.sound, vibrate: st.vibrate, critical });
+    notify({ title: t('app_title'), body: label, sound: st.sound, vibrate: st.vibrate, critical });
     // ДВУФОНОВ режим: „Детегледачка" праща събитието + смалена снимка към наблюдаващия телефон.
     if (isMonitor()) {
       sendAlert('babymonitor', type, label);
@@ -79,12 +80,12 @@ export function createMonitor({ videoEl, canvasEl, onTick, onEvent } = {}) {
       const m = detector.analyze(canvasEl, now);
       if (m.ok) {
         if (m.event === 'wake' && settings().alertWake) {
-          raiseEvent('wake', 'Детето се събуди (устойчиво движение).');
+          raiseEvent('wake', t('evmsg_wake'));
         }
         // Пожар-евристика (груба, по избор)
         if (m.fireHeuristic && settings().alertFireHeuristic && (now - lastFireAt) > FIRE_DEBOUNCE_MS) {
           lastFireAt = now;
-          raiseEvent('fire', 'Възможен ярък блясък (ГРУБА евристика — НЕ е датчик за дим!).');
+          raiseEvent('fire', t('evmsg_fire'));
         }
         if (onTick) {
           try {
@@ -113,7 +114,7 @@ export function createMonitor({ videoEl, canvasEl, onTick, onEvent } = {}) {
           // Втори човек → „непознат в стаята“
           if (r.count >= 2 && st.alertStranger && (n2 - lastStrangerAt) > STRANGER_DEBOUNCE_MS) {
             lastStrangerAt = n2;
-            raiseEvent('stranger', 'Втори човек в стаята (непознат?).');
+            raiseEvent('stranger', t('evmsg_stranger'));
           }
 
           // Проследяване „излезе от кадър“
@@ -125,7 +126,7 @@ export function createMonitor({ videoEl, canvasEl, onTick, onEvent } = {}) {
                      (n2 - lastLeftAt) > LEFT_DEBOUNCE_MS) {
             leftFlagged = true;
             lastLeftAt = n2;
-            raiseEvent('left', 'Детето излезе от кадър.');
+            raiseEvent('left', t('evmsg_left'));
           }
         }).catch(() => { personBusy = false; });
       }

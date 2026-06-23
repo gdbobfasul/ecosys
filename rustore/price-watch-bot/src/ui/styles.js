@@ -58,6 +58,14 @@ export function injectStyles() {
   .big{font-size:46px;line-height:1;margin:8px 0}
   .price{font-variant-numeric:tabular-nums;font-weight:600}
   .err-line{color:var(--warn);font-size:12px}
+  .top .lang-toggle{margin-left:auto;background:transparent;border:1px solid var(--line);color:var(--text);
+    border-radius:10px;padding:6px 10px;font-size:14px;cursor:pointer;flex:0 0 auto}
+  .lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .lang-btn{padding:14px 12px;border:1px solid var(--line);border-radius:12px;background:#0b0f15;
+    color:var(--text);font-size:15px;cursor:pointer;text-align:center}
+  .lang-btn.cur{border-color:var(--accent);color:var(--accent2);box-shadow:0 0 0 1px var(--accent)}
+  [dir="rtl"] .row.between{flex-direction:row-reverse}
+  [dir="rtl"] .top .lang-toggle{margin-left:0;margin-right:auto}
   `;
   const el = document.createElement('style');
   el.textContent = css;

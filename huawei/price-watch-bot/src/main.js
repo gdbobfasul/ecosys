@@ -6,12 +6,15 @@ import { renderOnboarding } from './screens/onboarding.js';
 import { renderConfig } from './screens/config.js';
 import { renderPermissions } from './screens/permissions.js';
 import { renderDashboard } from './screens/dashboard.js';
+import { renderLanguage } from './screens/language.js';
+import { applyDir, t, hasLangChosen } from './core/i18n.js';
 
 const root = document.getElementById('app');
 let state = null;
 
 function go(screen) {
   switch (screen) {
+    case 'language': return renderLanguage(root, () => go(state.onboarded ? 'dashboard' : 'onboarding'));
     case 'onboarding': return renderOnboarding(root, state, go);
     case 'config': return renderConfig(root, state, go);
     case 'permissions': return renderPermissions(root, state, go);
@@ -20,8 +23,12 @@ function go(screen) {
   }
 }
 
+// Свободна точка за повторно отваряне на избора на език (от бутона 🌐).
+window.__pwbOpenLang = () => go('language');
+
 async function boot() {
   injectStyles();
+  applyDir();
   // Не блокираме рисуването вечно — при забавяне/срив тръгваме с подразбиращото се.
   try {
     state = await Promise.race([
@@ -37,6 +44,9 @@ async function boot() {
   // Спираме таймера при затваряне, за да не текат заявки.
   window.addEventListener('beforeunload', stop);
 
+  // ПЪРВО стартиране → избор на език преди първия екран; после се пропуска.
+  if (!hasLangChosen()) return go('language');
+
   go(state.onboarded ? 'dashboard' : 'onboarding');
 }
 
@@ -44,8 +54,10 @@ async function boot() {
 boot().catch((e) => {
   try {
     if (root) {
+      const msg = (e && e.message) ? e.message : t('err_unknown');
       root.innerHTML = '<div style="padding:20px;font-family:sans-serif">' +
-        '<h2>Робот за цени</h2><p>Стартова грешка: ' + (e && e.message ? e.message : 'неизвестна') + '</p></div>';
+        '<h2>' + t('app_name') + '</h2><p>' +
+        t('boot_error').replace('{0}', msg) + '</p></div>';
     }
   } catch (_) {}
 });

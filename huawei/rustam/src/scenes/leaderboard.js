@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../main.js';
 import { THEME } from '../theme.js';
 import { getTop } from '../leaderboard.js';
+import { t } from '../core/i18n.js';
 
 export default class LeaderboardScene extends Phaser.Scene {
   constructor() {
@@ -21,18 +22,18 @@ export default class LeaderboardScene extends Phaser.Scene {
     bg.fillGradientStyle(0x16240f, 0x16240f, 0x0a0d08, 0x0a0d08, 1);
     bg.fillRect(0, 0, W, H);
 
-    this.add.text(W / 2, H * 0.06, '🏆 РАНГ ЛИСТА', {
+    this.add.text(W / 2, H * 0.06, '🏆 ' + t('leaderboard'), {
       fontFamily: 'system-ui, sans-serif', fontSize: '30px', color: THEME.primaryHex,
       fontStyle: 'bold', stroke: '#000', strokeThickness: 5
     }).setOrigin(0.5);
-    this.add.text(W / 2, H * 0.06 + 28, 'ТОП 100 — име и набрани краставици', {
-      fontFamily: 'system-ui, sans-serif', fontSize: '13px', color: '#9a9'
+    this.add.text(W / 2, H * 0.06 + 28, t('board_sub'), {
+      fontFamily: 'system-ui, sans-serif', fontSize: '13px', color: '#9a9', align: 'center'
     }).setOrigin(0.5);
 
     const rows = getTop(100);
 
     if (!rows.length) {
-      this.add.text(W / 2, H * 0.45, 'Все още няма резултати.\nИграй и стани първи!', {
+      this.add.text(W / 2, H * 0.45, t('no_results'), {
         fontFamily: 'system-ui, sans-serif', fontSize: '18px', color: '#cbb', align: 'center'
       }).setOrigin(0.5);
     } else {
@@ -40,7 +41,7 @@ export default class LeaderboardScene extends Phaser.Scene {
     }
 
     // Бутон „МЕНЮ"
-    this.makeButton(W / 2, H * 0.95, 'МЕНЮ', () => this.scene.start('Menu'), 0x666666);
+    this.makeButton(W / 2, H * 0.95, t('menu'), () => this.scene.start('Menu'), 0x666666);
   }
 
   // Скролируем списък с резултати (mask + влачене).

@@ -19,6 +19,7 @@ const PORTAL_SERVICES = [
     { slug: 'image',    title: 'Компресор на снимки', icon: 'IMG',  file: '/portals/services/image.html',    description: 'Намали размера на JPEG / PNG / WebP изображения.' },
     { slug: 'pdf',      title: 'PDF инструменти',     icon: 'PDF',  file: '/portals/services/pdf.html',      description: 'Сливане, разделяне и воден знак на PDF файлове.' },
     { slug: 'password', title: 'Генератор на пароли', icon: 'KEY',  file: '/portals/services/password.html', description: 'Силни пароли — няколко метода на генериране.' },
+    { slug: 'authenticator', title: '2FA Аутентикатор', icon: '2FA', file: '/portals/services/authenticator.html', description: 'Двуфакторни кодове (TOTP/HOTP/Steam) с шифриран сейф — изцяло в браузъра, като Google Authenticator/Aegis. Интерфейс на 15 езика.' },
     { slug: 'calc',     title: 'Калкулатори',         icon: 'CALC', file: '/portals/services/calc.html',     description: 'Заем, лихва, ДДС, проценти — по държава.' },
     { slug: 'text',     title: 'Текстови инструменти', icon: 'TXT', file: '/portals/services/text.html',     description: 'Брояч на думи, форматиране, Base64.' },
     { slug: 'pdf-compress', title: 'Свиване на PDF',   icon: 'ZIP',  file: '/portals/services/pdf-compress.html', description: 'Намали размера на голям PDF (сканирани страници, големи снимки).' },

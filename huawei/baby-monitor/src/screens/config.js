@@ -3,53 +3,51 @@ import { el, toast } from '../ui/dom.js';
 import { toggle } from '../ui/widgets.js';
 import { getState, setSettings } from '../core/storage.js';
 import { getPairing, setPairing, generatePairKey, checkPairing } from '../core/pairing.js';
+import { t } from '../core/i18n.js';
 
 export function renderConfig(root, ctx) {
   const s = getState().settings;
 
-  root.appendChild(el('h1', {}, 'Настройки'));
+  root.appendChild(el('h1', {}, t('nav_settings')));
 
   // --- Сдвояване (2 телефона): детегледачка ↔ наблюдаващ ---
   {
     const p = getPairing();
     const roleSel = el('select', {}, [
-      optionEl('solo', 'Сам (един телефон)', p.role),
-      optionEl('monitor', 'Детегледачка (до детето — праща)', p.role),
-      optionEl('watcher', 'Наблюдаващ / Майка Тереза (получава)', p.role)
+      optionEl('solo', t('role_solo'), p.role),
+      optionEl('monitor', t('role_monitor'), p.role),
+      optionEl('watcher', t('role_watcher'), p.role)
     ]);
-    const keyIn = el('input', { type: 'text', value: p.pairKey, placeholder: 'ключ за двойката', autocapitalize: 'none', autocomplete: 'off' });
+    const keyIn = el('input', { type: 'text', value: p.pairKey, placeholder: t('pair_key_ph'), autocapitalize: 'none', autocomplete: 'off' });
     const baseIn = el('input', { type: 'text', value: p.relayBase, placeholder: 'https://selflearning.bot.nu', autocapitalize: 'none', autocomplete: 'off' });
     const pollIn = el('input', { type: 'number', value: String(p.pollSeconds), min: '3' });
     const statusEl = el('span', { class: 'pill' }, '');
     root.appendChild(el('div', { class: 'card' }, [
-      el('h2', {}, '🔗 Сдвояване (2 телефона)'),
-      el('p', { class: 'muted small' },
-        'Два телефона: единият до детето („Детегледачка" — гледа и праща), другият при теб ' +
-        '(„Наблюдаващ" — получава известията). Свържи ги с ЕДИН и същ ключ за двойката. ' +
-        '„Сам" = един телефон (по подразбиране).'),
-      el('label', {}, 'Режим / роля'), roleSel,
-      el('label', {}, 'Ключ за двойката (еднакъв на двата телефона)'), keyIn,
+      el('h2', {}, t('pair_title')),
+      el('p', { class: 'muted small' }, t('pair_desc')),
+      el('label', {}, t('pair_role')), roleSel,
+      el('label', {}, t('pair_key_label')), keyIn,
       el('div', { class: 'row', style: 'gap:6px;margin-top:6px' }, [
-        el('button', { class: 'btn sm', onclick: () => { keyIn.value = generatePairKey(); } }, 'Генерирай ключ')
+        el('button', { class: 'btn sm', onclick: () => { keyIn.value = generatePairKey(); } }, t('pair_gen_key'))
       ]),
-      el('label', {}, 'Сървър (релей)'), baseIn,
-      el('label', {}, 'Проверка на всеки (сек) — за наблюдаващия'), pollIn,
+      el('label', {}, t('pair_relay_label')), baseIn,
+      el('label', {}, t('pair_poll_label')), pollIn,
       el('div', { class: 'row', style: 'gap:8px;margin-top:10px;align-items:center' }, [
         el('button', {
           class: 'btn primary', onclick: () => {
             setPairing({ role: roleSel.value, pairKey: keyIn.value.trim(), relayBase: baseIn.value.trim(), pollSeconds: parseInt(pollIn.value, 10) || 6 });
-            toast('Сдвояването е запазено.');
+            toast(t('pair_saved'));
             if (ctx && ctx.rerender) ctx.rerender();
           }
-        }, 'Запази'),
+        }, t('save')),
         el('button', {
           class: 'btn sm', onclick: async () => {
             setPairing({ role: roleSel.value, pairKey: keyIn.value.trim(), relayBase: baseIn.value.trim() });
-            statusEl.textContent = 'проверявам…';
+            statusEl.textContent = t('pair_checking');
             const r = await checkPairing();
-            statusEl.textContent = r.ok ? 'връзката работи ✓' : ('няма връзка' + (r.reason ? ` (${r.reason})` : ''));
+            statusEl.textContent = r.ok ? t('pair_ok') : (t('pair_none') + (r.reason ? ` (${r.reason})` : ''));
           }
-        }, 'Провери'),
+        }, t('pair_check')),
         statusEl
       ])
     ]));
@@ -57,70 +55,66 @@ export function renderConfig(root, ctx) {
 
   // --- Камера ---
   const camSel = el('select', { onchange: (e) => setSettings({ cameraSource: e.target.value }) }, [
-    optionEl('front', 'Предна камера', s.cameraSource),
-    optionEl('back', 'Задна камера', s.cameraSource),
-    optionEl('other', 'Друга камера (URL)', s.cameraSource)
+    optionEl('front', t('cam_front'), s.cameraSource),
+    optionEl('back', t('cam_back'), s.cameraSource),
+    optionEl('other', t('cam_other'), s.cameraSource)
   ]);
   const urlInput = el('input', {
-    type: 'url', placeholder: 'https://… (HLS/MJPEG/.mp4, с CORS)', value: s.otherCameraUrl,
+    type: 'url', placeholder: t('cam_url_ph'), value: s.otherCameraUrl,
     oninput: (e) => setSettings({ otherCameraUrl: e.target.value.trim() })
   });
   root.appendChild(el('div', { class: 'card' }, [
-    el('h2', {}, 'Камера'),
-    el('label', {}, 'Източник'),
+    el('h2', {}, t('camera_title')),
+    el('label', {}, t('camera_source')),
     camSel,
-    el('label', {}, 'URL на друга камера (по избор)'),
+    el('label', {}, t('cam_url_label')),
     urlInput,
-    el('p', { class: 'muted small' },
-      'Честно: браузърът свири само browser-playable потоци (HLS/MJPEG/.mp4) и чете пиксели ' +
-      'само ако сървърът връща CORS. RTSP (повечето IP камери) изисква gateway/транскодиране.')
+    el('p', { class: 'muted small' }, t('cam_honest'))
   ]));
 
   // --- Движение ---
   const sensVal = el('span', { class: 'pill' }, String(s.motionSensitivity));
-  const sleepVal = el('span', { class: 'pill' }, s.sleepSeconds + ' сек');
+  const sleepVal = el('span', { class: 'pill' }, s.sleepSeconds + ' ' + t('seconds_short'));
   root.appendChild(el('div', { class: 'card' }, [
-    el('h2', {}, 'Движение'),
-    el('div', { class: 'row between' }, [el('label', {}, 'Чувствителност'), sensVal]),
+    el('h2', {}, t('motion_title')),
+    el('div', { class: 'row between' }, [el('label', {}, t('sensitivity')), sensVal]),
     el('input', {
       type: 'range', min: '0', max: '100', value: String(s.motionSensitivity),
       oninput: (e) => { const v = Number(e.target.value); sensVal.textContent = String(v); setSettings({ motionSensitivity: v }); }
     }),
-    el('div', { class: 'row between' }, [el('label', {}, 'Спокойствие → „спи“ след'), sleepVal]),
+    el('div', { class: 'row between' }, [el('label', {}, t('calm_after')), sleepVal]),
     el('input', {
       type: 'range', min: '5', max: '120', value: String(s.sleepSeconds),
-      oninput: (e) => { const v = Number(e.target.value); sleepVal.textContent = v + ' сек'; setSettings({ sleepSeconds: v }); }
+      oninput: (e) => { const v = Number(e.target.value); sleepVal.textContent = v + ' ' + t('seconds_short'); setSettings({ sleepSeconds: v }); }
     })
   ]));
 
   // --- Събития ---
   root.appendChild(el('div', { class: 'card' }, [
-    el('h2', {}, 'Сигнали'),
-    toggle('„Събуди се“', s.alertWake, (v) => setSettings({ alertWake: v })),
-    toggle('„Непознат в стаята“ (втори човек)', s.alertStranger, (v) => setSettings({ alertStranger: v }),
-      'Само „появи се втори човек“ — НЕ е разпознаване на лице или анти-отвличане.'),
-    toggle('„Детето излезе от кадър“', s.alertLeftFrame, (v) => setSettings({ alertLeftFrame: v })),
-    toggle('„Възможен пожар“ (груба евристика)', s.alertFireHeuristic, (v) => setSettings({ alertFireHeuristic: v }),
-      'ГРУБА евристика по яркост/трептене — НЕ заменя датчик за дим! Изключено по подразбиране.')
+    el('h2', {}, t('alerts_title')),
+    toggle(t('alert_wake'), s.alertWake, (v) => setSettings({ alertWake: v })),
+    toggle(t('alert_stranger'), s.alertStranger, (v) => setSettings({ alertStranger: v }),
+      t('alert_stranger_hint')),
+    toggle(t('alert_left'), s.alertLeftFrame, (v) => setSettings({ alertLeftFrame: v })),
+    toggle(t('alert_fire'), s.alertFireHeuristic, (v) => setSettings({ alertFireHeuristic: v }),
+      t('alert_fire_hint'))
   ]));
 
   // --- Известия ---
   root.appendChild(el('div', { class: 'card' }, [
-    el('h2', {}, 'Известия'),
-    toggle('Звук', s.sound, (v) => setSettings({ sound: v })),
-    toggle('Вибрация', s.vibrate, (v) => setSettings({ vibrate: v })),
-    el('label', {}, 'Relay URL към друг телефон (по избор)'),
+    el('h2', {}, t('notify_title')),
+    toggle(t('sound'), s.sound, (v) => setSettings({ sound: v })),
+    toggle(t('vibrate'), s.vibrate, (v) => setSettings({ vibrate: v })),
+    el('label', {}, t('relay_label')),
     el('input', {
       type: 'url', placeholder: 'https://…/notify', value: s.relayUrl,
       oninput: (e) => setSettings({ relayUrl: e.target.value.trim() })
     }),
-    el('p', { class: 'muted small' },
-      'Честно: известие към ДРУГ телефон не може само on-device — нужен е твой relay/сървър (push). ' +
-      'Без зададен URL не се изпраща нищо навън.')
+    el('p', { class: 'muted small' }, t('relay_honest'))
   ]));
 
-  root.appendChild(el('button', { class: 'btn wide', onclick: () => { toast('Запазено'); ctx.navigate('permissions'); } },
-    'Напред към разрешения'));
+  root.appendChild(el('button', { class: 'btn wide', onclick: () => { toast(t('saved')); ctx.navigate('permissions'); } },
+    t('to_permissions')));
 }
 
 function optionEl(value, label, current) {

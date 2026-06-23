@@ -28,6 +28,31 @@
 (function (global) {
 'use strict';
 
+// ── Преводен слой ──
+// main.js слага window.DuelI18n преди да зареди този модул. Тук използваме малки
+// обвивки, които пращат към него; ако (по някаква причина) липсва, връщаме ключа.
+function I18N() { return (typeof global !== 'undefined' && global.DuelI18n) || null; }
+function t(key) { var i = I18N(); return i ? i.t(key) : key; }
+function tf() { var i = I18N(); return i ? i.tf.apply(i, arguments) : (arguments[0] || ''); }
+// Преведено име на герой (чете се от i18n, не от battle-heroes.js).
+function heroName(unit) {
+    var i = I18N();
+    if (i && unit && unit.def) return i.t('hero_' + unit.def.id);
+    return (unit && unit.name) || '';
+}
+// Преведено име на ход/специал по дефиниция на героя.
+function moveName(def, move) {
+    var i = I18N();
+    if (i && def && move) return i.t('move_' + def.id + '_' + move.key);
+    return (move && move.name) || '';
+}
+function specialName(def, idx) {
+    var i = I18N();
+    if (i && def) return i.t('spec_' + def.id + '_' + idx);
+    var sp = (def && def.specials || [])[idx];
+    return (sp && sp.name) || ('спец' + (idx + 1));
+}
+
 // Cache-busting за анимациите. Смяна на тази стойност = браузърите теглят
 // видеата наново (без нужда от hard refresh). Бутай я при всяко ново качване на assets.
 var ASSET_V = '?v=20260607';
@@ -440,7 +465,7 @@ BattleEngine.prototype.setupLevel = function () {
     this.turnIdx = 0;
     this.anim = null;
     this.selTarget = 0;
-    this.msg = 'Ниво ' + this.level + ' — битката започва!';
+    this.msg = tf('level_starts', this.level);
     this.state = 'playing';
     this._renderAll();
     this._startIdleWatch();
@@ -521,7 +546,7 @@ BattleEngine.prototype._buildHeroDOM = function (unit) {
     // HP бар над героя
     var hp = document.createElement('div');
     hp.className = 'kbb-hpbar';
-    hp.innerHTML = '<span class="kbb-hpfill"></span><span class="kbb-hpname">' + unit.def.name + '</span>';
+    hp.innerHTML = '<span class="kbb-hpfill"></span><span class="kbb-hpname">' + heroName(unit) + '</span>';
     box.appendChild(hp);
 
     this.els.heroes.appendChild(box);
@@ -728,7 +753,7 @@ BattleEngine.prototype.advanceTurn = function (first) {
     // замразен пропуска
     if (actor.frozen) {
         actor.frozen = false;
-        this.msg = actor.name + ' е обездвижен — пропуска хода';
+        this.msg = tf('immobilized', heroName(actor));
         this._renderHUD();
         setTimeout(function () { self.advanceTurn(false); }, 1200);
         return;
@@ -1189,8 +1214,8 @@ BattleEngine.prototype._renderHUD = function () {
     }
     // info
     this.els.info.innerHTML =
-      '<span>Ниво ' + this.level + '/' + this.maxLevels + '</span>' +
-      '<span>Точки: ' + this.score + '</span>';
+      '<span>' + tf('hud_level', this.level, this.maxLevels) + '</span>' +
+      '<span>' + tf('hud_score', this.score) + '</span>';
     // msg
     this.els.msg.textContent = this.msg || '';
     // controls — за текущия actor
@@ -1221,7 +1246,7 @@ BattleEngine.prototype._renderControls = function (actor) {
 
     // ── ЗАТВОРЕНО: само бутонът-стартер (боят се вижда напълно) ──
     if (!open) {
-        ctrl.innerHTML = '<button class="kbb-ctrl-launch">⚔ Избери удар</button>';
+        ctrl.innerHTML = '<button class="kbb-ctrl-launch">' + t('ctrl_launch') + '</button>';
         var launch = ctrl.querySelector('.kbb-ctrl-launch');
         var openDown = function (e) {
             e.preventDefault(); e.stopPropagation();
@@ -1242,17 +1267,17 @@ BattleEngine.prototype._renderControls = function (actor) {
     var tgt = foes[Math.min(this.selTarget, foes.length - 1)];
     // комбо-лентата седи НАЙ-ОТГОРЕ на панела (вътре в него), за да е точно над
     // буквените бутони и да се мащабира заедно с тях
-    var html = '<button class="kbb-ctrl-close" data-close="1">✕ Затвори</button>';
+    var html = '<button class="kbb-ctrl-close" data-close="1">' + t('ctrl_close') + '</button>';
     html += '<div class="kbb-combo-inline"></div>';
-    html += '<div class="kbb-actor">Твой ход: <b>' + actor.name + '</b></div>';
+    html += '<div class="kbb-actor">' + t('your_turn') + '<b>' + heroName(actor) + '</b></div>';
     if (foes.length) {
-        html += '<div class="kbb-target">🎯 Цел: <b>' + (tgt ? tgt.name : '—') + '</b>' +
-                (foes.length > 1 ? ' <span class="kbb-hint">(↑/↓ смяна)</span>' : '') + '</div>';
+        html += '<div class="kbb-target">' + t('target_label') + '<b>' + (tgt ? heroName(tgt) : '—') + '</b>' +
+                (foes.length > 1 ? ' <span class="kbb-hint">' + t('target_switch') + '</span>' : '') + '</div>';
     }
     html += '<div class="kbb-btns">';
     for (var i = 0; i < actor.def.moves.length; i++) {
         var m = actor.def.moves[i];
-        html += '<button data-k="' + m.key + '" class="kbb-btn"><b>' + this._keyLabel(m.key) + '</b> ' + m.name + '</button>';
+        html += '<button data-k="' + m.key + '" class="kbb-btn"><b>' + this._keyLabel(m.key) + '</b> ' + moveName(actor.def, m) + '</button>';
     }
     html += '</div>';
     var hasSpecials = (actor.def.specials || []).length > 0;
@@ -1265,7 +1290,7 @@ BattleEngine.prototype._renderControls = function (actor) {
         if (anyDisc) {
             html += '<div class="kbb-specrow">';
             for (var s = 0; s < specials.length; s++) {
-                if (disc[s]) html += '<button data-sp="' + s + '" class="kbb-sp">⚡ Спец ' + (s + 1) + ': ' + specials[s].name + '</button>';
+                if (disc[s]) html += '<button data-sp="' + s + '" class="kbb-sp">' + tf('special_btn', (s + 1), specialName(actor.def, s)) + '</button>';
             }
             html += '</div>';
         }
@@ -1336,17 +1361,17 @@ BattleEngine.prototype._renderControls = function (actor) {
     var line = ctrl.querySelector('.kbb-combo-inline');
     if (this.els.combo) this.els.combo.textContent = '';
     if (this._comboJustFound) {
-        if (line) line.textContent = '✓ Спец ' + this._comboJustFound + ' открит! Натисни зеления бутон, за да удариш';
+        if (line) line.textContent = tf('combo_found', this._comboJustFound);
         this._comboJustFound = 0;
     } else if (this.comboInput.length) {
         var self2 = this;
         var shown = this.comboInput.slice(-4).map(function (k) { return self2._keyLabel(k); }).join(' · ');
-        var tail = (this.comboInput.length >= 4 && this._comboMiss) ? '   ✗ не съвпада' : '';
-        if (line) line.textContent = 'Комбо: ' + shown + tail;
+        var tail = (this.comboInput.length >= 4 && this._comboMiss) ? t('combo_nomatch') : '';
+        if (line) line.textContent = tf('combo_label', shown) + tail;
     } else {
         var self3 = this;
         var hk = (this.heroKeys[actor.id] || COMBO_ALPHABET).map(function (x) { return self3._keyLabel(x); }).join(' ');
-        if (line) line.textContent = 'Спец: натисни 4 от тези 6 на героя — ' + hk + ' (в произволен ред; може и едновременно)';
+        if (line) line.textContent = tf('combo_hint', hk);
     }
 };
 
@@ -1355,21 +1380,26 @@ BattleEngine.prototype.drawMenu = function () {
     this.els.ov.style.display = '';
     this.els.ov.innerHTML =
         '<div class="kbb-card' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
-        '  <h1>' + this.title + '</h1>' +
+        '  <h1>' + t('game_title') + '</h1>' +
         '  <p class="kbb-rules">' +
-        '   Походова битка. Героите ти излизат <b>произволно</b> на всяко ниво.<br>' +
-        '   Обикновени удари: <kbd>V</kbd> или <kbd>B</kbd> (0–20% щета).<br>' +
-        '   Специален: всеки герой има <b>свои 6 клавиша</b>; познай скритата <b>комбинация от 4</b> (произволен ред). 30–40% щета.<br>' +
-        '   Откриваш комбинациите чрез опити. Не се сменят цяла игра.<br>' +
+        '   ' + t('rules_turnbased') + '<br>' +
+        '   ' + t('rules_basic') + '<br>' +
+        '   ' + t('rules_special') + '<br>' +
+        '   ' + t('rules_discover') + '<br>' +
         '  </p>' +
-        '  <p class="kbb-best">Рекорд: ниво ' + this.bestLevel + ' / ' + this.bestScore + ' т.</p>' +
-        '  <button class="kbb-go">Започни (Space)</button>' +
-        '  <button class="kbb-lb-open">🏆 Ранг листа</button>' +
+        '  <p class="kbb-best">' + tf('best_record', this.bestLevel, this.bestScore) + '</p>' +
+        '  <button class="kbb-go">' + t('menu_start') + '</button>' +
+        '  <button class="kbb-lb-open">' + t('open_leaderboard') + '</button>' +
+        '  <button class="kbb-go kbb-lang-btn">' + t('lang_btn') + '</button>' +
         '</div>';
     var self = this;
     this.els.ov.querySelector('.kbb-go').onclick = function () { self.startGame(); };
     var lbBtn = this.els.ov.querySelector('.kbb-lb-open');
     if (lbBtn) lbBtn.onclick = function () { self.drawLeaderboard(); };
+    var langBtn = this.els.ov.querySelector('.kbb-lang-btn');
+    if (langBtn) langBtn.onclick = function () {
+        if (global.DuelOpenLangPicker) global.DuelOpenLangPicker();
+    };
 };
 
 /* ── РАНГ ЛИСТА (leaderboard) ── */
@@ -1385,7 +1415,7 @@ BattleEngine.prototype._lb = function () {
 // няколко еднакви имена/точки.
 BattleEngine.prototype._leaderboardTableHTML = function (rows, highlightIdx) {
     if (!rows || !rows.length) {
-        return '<p class="kbb-lb-empty">Все още няма записи. Изиграй бой и запиши резултата си!</p>';
+        return '<p class="kbb-lb-empty">' + t('lb_empty') + '</p>';
     }
     var html = '<div class="kbb-lb-list">';
     for (var i = 0; i < rows.length; i++) {
@@ -1409,10 +1439,10 @@ BattleEngine.prototype.drawLeaderboard = function () {
     this.els.ov.style.display = '';
     this.els.ov.innerHTML =
         '<div class="kbb-card kbb-card-lb' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
-        '  <h1>🏆 Ранг листа</h1>' +
-        '  <p class="kbb-lb-sub">ТОП 100 — име и точки</p>' +
+        '  <h1>🏆 ' + t('leaderboard') + '</h1>' +
+        '  <p class="kbb-lb-sub">' + t('lb_subtitle') + '</p>' +
         this._leaderboardTableHTML(rows, -1) +
-        '  <button class="kbb-go kbb-lb-back">Назад</button>' +
+        '  <button class="kbb-go kbb-lb-back">' + t('back') + '</button>' +
         '</div>';
     var self = this;
     this.els.ov.querySelector('.kbb-lb-back').onclick = function () { self.drawMenu(); };
@@ -1422,9 +1452,9 @@ BattleEngine.prototype.drawLevelUp = function () {
     this.els.ov.style.display = '';
     this.els.ov.innerHTML =
         '<div class="kbb-card' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
-        '  <h2>Ниво ' + this.level + ' преминато!</h2>' +
-        '  <p>Точки: ' + this.score + '</p>' +
-        '  <button class="kbb-go">Към ниво ' + (this.level + 1) + ' (Space)</button>' +
+        '  <h2>' + tf('level_passed', this.level) + '</h2>' +
+        '  <p>' + tf('score_value', this.score) + '</p>' +
+        '  <button class="kbb-go">' + tf('to_next_level', (this.level + 1)) + '</button>' +
         '</div>';
     var self = this;
     this.els.ov.querySelector('.kbb-go').onclick = function () { self.nextLevel(); };
@@ -1438,16 +1468,16 @@ BattleEngine.prototype.drawOver = function (won) {
     this.els.ov.style.display = '';
     this.els.ov.innerHTML =
         '<div class="kbb-card kbb-card-over' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
-        '  <h1>' + (won ? '🏆 ПОБЕДА!' : 'Загуба') + '</h1>' +
-        '  <p>Стигна до ниво ' + this.level + '</p>' +
-        '  <p>Точки: <b>' + this.score + '</b></p>' +
+        '  <h1>' + (won ? t('win_title') : t('lose_title')) + '</h1>' +
+        '  <p>' + tf('reached_level', this.level) + '</p>' +
+        '  <p>' + tf('score_value', '<b>' + this.score + '</b>') + '</p>' +
         '  <div class="kbb-lb-form">' +
-        '    <label class="kbb-lb-label">Името ти за ранг листата:</label>' +
-        '    <input class="kbb-lb-input" type="text" maxlength="24" placeholder="Играч" value="' + defNameEsc + '">' +
-        '    <button class="kbb-go kbb-lb-save">Запиши резултата</button>' +
+        '    <label class="kbb-lb-label">' + t('name_label') + '</label>' +
+        '    <input class="kbb-lb-input" type="text" maxlength="24" placeholder="' + t('default_name') + '" value="' + defNameEsc + '">' +
+        '    <button class="kbb-go kbb-lb-save">' + t('save_score') + '</button>' +
         '  </div>' +
-        '  <p class="kbb-best">Рекорд: ниво ' + this.bestLevel + ' / ' + this.bestScore + ' т.</p>' +
-        '  <button class="kbb-go kbb-lb-newgame">Нова игра (Space)</button>' +
+        '  <p class="kbb-best">' + tf('best_record', this.bestLevel, this.bestScore) + '</p>' +
+        '  <button class="kbb-go kbb-lb-newgame">' + t('new_game') + '</button>' +
         '</div>';
     var self = this;
     var input = this.els.ov.querySelector('.kbb-lb-input');
@@ -1469,7 +1499,7 @@ BattleEngine.prototype.drawOver = function (won) {
 BattleEngine.prototype._submitScore = function (name) {
     if (this._scoreSubmitted) return;  // пази от двоен запис на същия бой
     var lb = this._lb();
-    var cleanName = String(name == null ? '' : name).replace(/\s+/g, ' ').trim().slice(0, 24) || 'Играч';
+    var cleanName = String(name == null ? '' : name).replace(/\s+/g, ' ').trim().slice(0, 24) || t('default_name');
     var res, rank, total;
     if (lb) {
         res = lb.addScore(cleanName, this.score);
@@ -1494,10 +1524,10 @@ BattleEngine.prototype._submitScore = function (name) {
     this.els.ov.style.display = '';
     this.els.ov.innerHTML =
         '<div class="kbb-card kbb-card-lb' + (this.mode === 'Duel' ? ' kbb-card-duel' : '') + '">' +
-        '  <h1>🏆 Ранг листа</h1>' +
-        '  <p class="kbb-lb-you">Ти си <b>#' + rank + '</b> от <b>' + total + '</b></p>' +
+        '  <h1>🏆 ' + t('leaderboard') + '</h1>' +
+        '  <p class="kbb-lb-you">' + tf('your_rank', '<b>' + rank + '</b>', '<b>' + total + '</b>') + '</p>' +
         this._leaderboardTableHTML(rows, highlightIdx) +
-        '  <button class="kbb-go kbb-lb-newgame">Нова игра (Space)</button>' +
+        '  <button class="kbb-go kbb-lb-newgame">' + t('new_game') + '</button>' +
         '</div>';
     var newBtn = this.els.ov.querySelector('.kbb-lb-newgame');
     if (newBtn) newBtn.onclick = function () { self.startGame(); };

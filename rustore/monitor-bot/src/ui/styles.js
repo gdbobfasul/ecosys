@@ -59,6 +59,11 @@ export function injectStyles() {
   .ok { color:#5be584; }
   .center { text-align:center; }
   .gap { height:8px; }
+  .lang-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:420px; margin:0 auto; }
+  .lang-btn { padding:14px; border-radius:10px; background:#141a23; border:1px solid #1e2530;
+              color:#e8ecf2; cursor:pointer; font-weight:600; font-size:15px; }
+  .lang-btn.cur { background:var(--accent); color:#04121f; border-color:var(--accent); }
+  .topbar .lang { background:none; border:0; color:#9aa6b5; font-size:14px; cursor:pointer; padding:6px 8px; }
   `;
   const el = document.createElement('style');
   el.id = 'mob-styles';

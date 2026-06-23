@@ -1,0 +1,90 @@
+id: hmm
+name: Битка на терен HMM
+folders:
+  - rustore/hmm
+  - huawei/hmm
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.hmm.rustore
+  huawei:  com.kcy.hmm.huawei
+category:
+  google_play: Games / Action
+  rustore: Игры
+  huawei: Games
+content_rating: "7+ — походова фентъзи битка 3v3 с видео-анимации, карикатурно насилие без кръв, без реклами"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Битва на поле HMM
+    short: Пошаговая битва 3 на 3 с видео-анимациями, угадай комбо
+    full: |
+      Битва на поле (HMM) — пошаговое сражение 3 на 3 с настоящими видео-анимациями в
+      стиле Heroes of Might & Magic. На каждом уровне выходят случайные герои на живой
+      анимированной арене.
+
+      • Обычные удары — кнопки V/B (урон 0–20%).
+      • Спецудар: у каждого героя свои 6 клавиш/кнопок; угадай скрытую комбинацию из 4
+        (в любом порядке) → 30–40% урона. Цель меняется стрелками (или автоматически при
+        одном враге).
+      • На телефоне всё играется касанием; на ПК дополнительно работает клавиатура.
+      • Рекорд хранится локально. Полностью офлайн и бесплатно: без backend, без рекламы,
+        без покупок, без трекинга.
+  en:
+    title: Field Battle HMM
+    short: Turn-based 3v3 battle with video animations, guess the combo
+    full: |
+      Field Battle (HMM) is a turn-based 3-versus-3 battle with real video animations in
+      a Heroes of Might & Magic style. Each level brings out random heroes on a living,
+      animated arena.
+
+      • Normal hits — the V/B buttons (0–20% damage).
+      • Special attack: each hero has its own 6 keys/buttons; guess the hidden
+        4-combination (in any order) for 30–40% damage. Switch target with the arrows (or
+        automatically when one enemy remains).
+      • On phone everything is played by tapping; the keyboard also works on desktop.
+      • Best score is kept locally. Fully offline and free: no backend, no ads, no
+        purchases, no tracking.
+  bg:
+    title: Битка на терен HMM
+    short: Походова битка 3 срещу 3 с видео-анимации, познай комбото
+    full: |
+      Битка на терен (HMM) е походова битка 3 срещу 3 с реални видео-анимации в стил
+      Heroes of Might & Magic. На всяко ниво излизат произволни герои на жив анимиран терен.
+
+      • Обикновени удари — бутоните V/B (0–20% щета).
+      • Специален удар: всеки герой има свои 6 клавиша/бутона; познай скритата комбинация
+        от 4 (в произволен ред) → 30–40% щета. Целта се сменя със стрелките (или
+        автоматично при 1 враг).
+      • На телефон всичко се играе с докосване; на десктоп работи и клавиатурата.
+      • Рекордът се пази локално. Напълно офлайн и безплатно: без backend, без реклами,
+        без покупки, без трекинг.
+
+permissions: []
+# Приложението не изисква специални разрешения (офлайн игра). В манифеста стои само
+# стандартното за Capacitor android.permission.INTERNET, но играта не ползва мрежа —
+# всички видео-анимации са вградени локално.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Локален рекорд (име по избор + точки) — само в localStorage на устройството
+  shared_with_third_parties: none
+  encrypted_in_transit: not_applicable
+  encrypted_at_rest: false
+  user_can_delete: true
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (топло злато/мед акцент, битка мотив)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2-3 (битка 3v3, комбо бутони, специален удар)
+
+keywords: [hmm, битка на терен, heroes, turn-based, походова битка, фентъзи, combo, offline, без интернет]

@@ -72,6 +72,10 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .warn { border-left-color: #ffcf5c; }
 .center { text-align: center; }
 .spacer { height: 8px; }
+.lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 420px; margin: 12px auto 0; }
+.lang-btn { padding: 14px; border-radius: 10px; background: #131a30; border: 1px solid #1f2944; color: #e8ecf5; cursor: pointer; font-weight: 600; font-size: 1em; }
+.lang-btn.cur { background: var(--accent); color: #04130f; border-color: var(--accent); }
+.lang-fab { position: fixed; top: 10px; inset-inline-end: 10px; z-index: 20; background: #131a30; border: 1px solid #2a385e; color: var(--accent); border-radius: 999px; padding: 6px 12px; font-size: .85rem; font-weight: 700; cursor: pointer; }
 `;
   const el = document.createElement('style');
   el.id = 'cw-styles';

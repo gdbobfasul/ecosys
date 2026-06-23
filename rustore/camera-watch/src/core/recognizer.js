@@ -8,6 +8,8 @@
 // 'bear', 'elephant', 'zebra', 'giraffe' и др. Картографираме ги към български етикети
 // и в три категории: person | animal | other.
 
+import { t, classLabel } from './i18n.js';
+
 let _tfReady = false;
 let _cocoSsd = null;
 let _loading = null;
@@ -17,25 +19,11 @@ const ANIMAL_CLASSES = new Set([
   'elephant', 'bear', 'zebra', 'giraffe'
 ]);
 
-const BG_LABEL = {
-  person: 'човек / нарушител',
-  dog: 'куче',
-  cat: 'котка',
-  bird: 'птица',
-  horse: 'кон',
-  sheep: 'овца',
-  cow: 'крава',
-  elephant: 'слон',
-  bear: 'мечка',
-  zebra: 'зебра',
-  giraffe: 'жираф'
-};
-
 async function ensureModel(onStatus) {
   if (_cocoSsd) return _cocoSsd;
   if (_loading) return _loading;
   _loading = (async () => {
-    if (onStatus) onStatus('Зареждам разпознаване (еднократно)…');
+    if (onStatus) onStatus(t('rec_loading'));
     const tf = await import('@tensorflow/tfjs');
     try { await tf.setBackend('webgl'); } catch (_) {}
     try { await tf.ready(); } catch (_) {}
@@ -67,7 +55,7 @@ export async function classifyFrame(canvasOrImg, { minScore = 0.5, onStatus } = 
       .map((p) => ({ class: p.class, score: p.score, bbox: p.bbox }));
 
     if (!objects.length) {
-      return { ok: true, top: null, category: 'none', label: 'нещо помръдна', score: 0, objects: [] };
+      return { ok: true, top: null, category: 'none', label: t('cls_something'), score: 0, objects: [] };
     }
 
     // Приоритет: човек > животно > друго; при равенство — по-висок score.
@@ -79,9 +67,9 @@ export async function classifyFrame(canvasOrImg, { minScore = 0.5, onStatus } = 
     if (top.class === 'person') category = 'person';
     else if (ANIMAL_CLASSES.has(top.class)) category = 'animal';
 
-    const label = BG_LABEL[top.class] || (category === 'animal' ? 'животно' : top.class);
+    const label = classLabel(top.class) || (category === 'animal' ? t('cls_animal') : top.class);
     return { ok: true, top, category, label, score: top.score, objects };
   } catch (e) {
-    return { ok: false, reason: 'Разпознаването се провали: ' + (e && e.message ? e.message : 'неизвестно') };
+    return { ok: false, reason: 'classify-failed: ' + (e && e.message ? e.message : 'unknown') };
   }
 }

@@ -5,13 +5,14 @@ import { tryUnlock, cooldownRemainingMs } from '../core/identity.js';
 import { setSessionName } from '../core/responder.js';
 import { resetAll } from '../core/storage.js';
 import { armAutoListen } from '../core/conversation.js';
+import { t, tf } from '../core/i18n.js';
 
 export function renderLock(root, { rerender }) {
   clear(root);
   let busy = false;
 
   const input = el('input', {
-    type: 'text', placeholder: 'въведи моята кодова дума', maxlength: '24',
+    type: 'text', placeholder: t('lock_input_ph'), maxlength: '24',
     autocomplete: 'off', autocapitalize: 'none'
   });
   const status = el('p', { class: 'center muted' }, '');
@@ -21,7 +22,7 @@ export function renderLock(root, { rerender }) {
     if (ms > 0) {
       const s = Math.ceil(ms / 1000);
       status.className = 'center warn-text';
-      status.textContent = `Изчакай ${s} сек. преди нов опит.`;
+      status.textContent = tf('lock_cooldown', s);
       input.disabled = true;
       btn.disabled = true;
       listenBtn.disabled = true;
@@ -37,70 +38,62 @@ export function renderLock(root, { rerender }) {
   async function attempt(opts = {}) {
     if (busy) return;
     const v = input.value.trim();
-    if (!v) { input.focus(); toast('Първо въведи кодовата дума.'); return; }
+    if (!v) { input.focus(); toast(t('lock_enter_first')); return; }
     busy = true; btn.disabled = true; listenBtn.disabled = true;
     const res = await tryUnlock(v);
     busy = false; btn.disabled = false; listenBtn.disabled = false;
     if (res.ok) {
       setSessionName(v);
       // Бутон „Започни да ме слушаш“ → веднага пуска слушането/разговора в чата.
-      if (opts.thenListen) { armAutoListen(); toast('Свързан! Слушам те… 🎙️'); }
-      else toast('Добре дошъл отново 👋');
+      if (opts.thenListen) { armAutoListen(); toast(t('lock_connected_listen')); }
+      else toast(t('lock_welcome_back'));
       rerender();
       return;
     }
     input.value = '';
     if (res.reason === 'cooldown') {
       refreshCooldown();
-      toast('Твърде много опити. Малка пауза.');
+      toast(t('lock_too_many'));
     } else {
       status.className = 'center err-text';
       status.textContent = res.attemptsLeft > 0
-        ? `Не, не съм аз. Опитай пак (остават ${res.attemptsLeft} опита).`
-        : 'Не, не съм аз.';
+        ? tf('lock_not_me_left', res.attemptsLeft)
+        : t('lock_not_me');
     }
   }
 
-  const btn = el('button', { class: 'block', onclick: () => attempt() }, 'Това ли е кодовата дума?');
+  const btn = el('button', { class: 'block', onclick: () => attempt() }, t('lock_btn'));
   // Бутон за свързване с глас — не само с Enter. Проверява думата и веднага почва да слуша.
   const listenBtn = el('button', {
     class: 'block',
     // Ясно изглеждащ бутон (различен цвят от главния) — не „secondary“, който се сливаше с картата.
     style: 'margin-top:10px; background: var(--accent-2, #2de0c6); color:#04130f; font-weight:700; border:none;',
     onclick: () => attempt({ thenListen: true })
-  }, '🎙️ Започни да ме слушаш');
+  }, t('lock_listen_btn'));
 
   root.appendChild(faceEl({ thinking: true }));
-  root.appendChild(el('h1', { class: 'center' }, 'Как се казвам?'));
-  root.appendChild(el('p', { class: 'center muted' },
-    'Само човекът, който ми избра кодовата дума, може да разговаря с мен. ' +
-    'Няма подсказка — думата е тайната.'));
+  root.appendChild(el('h1', { class: 'center' }, t('lock_q')));
+  root.appendChild(el('p', { class: 'center muted' }, t('lock_intro')));
 
   root.appendChild(el('div', { class: 'card' }, [
     input, btn, listenBtn, status,
-    el('p', { class: 'muted', style: 'font-size:12px;margin-top:8px' },
-      'Натисни „Започни да ме слушаш“, за да се свържеш с мен с глас веднага (не само с Enter).')
+    el('p', { class: 'muted', style: 'font-size:12px;margin-top:8px' }, t('lock_listen_note'))
   ]));
 
   // Авариен изход: „Започни отначало“ БЕЗ дума (за забравена дума). Силно потвърждение.
   function factoryReset() {
-    const sure = confirm(
-      'Започни отначало?\n\nТова трие НЕОБРАТИМО кодовата дума, цялата памет и разговорите. ' +
-      'Имаш ли бекъп файл на знанието? След това ще поискам нова кодова дума.'
-    );
+    const sure = confirm(t('start_over_q'));
     if (!sure) return;
-    const sure2 = confirm('Сигурен ли си? Това е окончателно и не може да се върне.');
+    const sure2 = confirm(t('start_over_q2'));
     if (!sure2) return;
     resetAll();
     setSessionName(null);
-    toast('Изтрито. Започваме отначало.');
+    toast(t('wiped_restart'));
     rerender();
   }
   root.appendChild(el('div', { class: 'card' }, [
-    el('p', { class: 'muted', style: 'font-size:13px' },
-      'Забрави ли кодовата дума? Няма подсказка. Единственият изход е да започнеш отначало ' +
-      '(трие всичко). Ако имаш бекъп файл, после ще можеш да го внесеш.'),
-    el('button', { class: 'danger block', onclick: factoryReset }, 'Започни отначало (трие всичко)')
+    el('p', { class: 'muted', style: 'font-size:13px' }, t('lock_forgot_note')),
+    el('button', { class: 'danger block', onclick: factoryReset }, t('start_over_btn'))
   ]));
 
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') attempt(); });

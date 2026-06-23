@@ -1,0 +1,97 @@
+id: fps-hunter
+name: FPS Hunter
+folders:
+  - rustore/fps-hunter
+  - huawei/fps-hunter
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.fpshunter.rustore
+  huawei:  com.kcy.fpshunter.huawei
+category:
+  google_play: Games / Action
+  rustore: Игры
+  huawei: Games
+content_rating: "12+ — 3D шутър от първо лице с лов/стрелба (животни, войници, техника), карикатурно насилие без кръв, без реклами"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: FPS Hunter
+    short: "3D шутер от первого лица: 100 уровней охоты, разное оружие"
+    full: |
+      FPS Hunter — 3D охотничий шутер от первого лица. Двигайся по разным ландшафтам
+      (лес, поле, снег, пустыня, холмы, болото, городские руины), процедурно меняющимся
+      от уровня к уровню, и поражай цели.
+
+      • На каждом уровне один тип цели, а оружие подбирается под неё автоматически:
+        ружьё/винтовка по зверю и солдатам, пистолет по змеям и пугалам, рогатка по
+        гномам и шарам, ракетомёт по танку, зенитные ракеты по самолёту.
+      • 100 процедурно сгенерированных уровней с монотонно растущей сложностью
+        (больше целей, выше скорость и уклончивость, жёстче лимиты времени и патронов).
+        Уровни детерминированы — повторяемы.
+      • Управление: телефон — левый джойстик движения, перетаскивание справа для обзора,
+        кнопка ОГОНЬ; ПК — WASD + мышь, ЛКМ стрельба.
+      • Локальный рекорд (SQLite на устройстве). Полностью офлайн, без рекламы и покупок.
+  en:
+    title: FPS Hunter
+    short: "3D first-person shooter: 100 hunting levels, varied weapons"
+    full: |
+      FPS Hunter is a 3D first-person hunting shooter. Move across varied terrains
+      (forest, field, snow, desert, hills, swamp, city ruins) that change procedurally
+      level to level, and take down the targets.
+
+      • Each level has one target type, and the weapon is picked automatically to match:
+        shotgun/rifle for game and soldiers, pistol for snakes and scarecrows, a stone
+        sling for gnomes and balloons, a rocket launcher for the tank, AA rockets for
+        the plane.
+      • 100 procedurally generated levels with steadily rising difficulty (more targets,
+        higher speed and evasiveness, tighter time and ammo limits). Levels are
+        deterministic — repeatable.
+      • Controls: phone — left movement joystick, drag on the right to look, FIRE button;
+        desktop — WASD + mouse, left click to shoot.
+      • Local high score (on-device SQLite). Fully offline, no ads, no purchases.
+  bg:
+    title: FPS Hunter
+    short: "3D шутър от първо лице: 100 нива лов, различни оръжия"
+    full: |
+      FPS Hunter е 3D ловен шутър от първо лице. Движиш се по различни терени (гора,
+      поле, сняг, пустиня, хълмове, блато, градски руини), които се менят процедурно по
+      ниво, и поразяваш целите.
+
+      • Всяко ниво има един тип цел, а оръжието се избира автоматично спрямо нея: ловна
+        пушка/пушка за дивеч и войници, пистолет за змии и плашила, прашка за гноми и
+        балони, ракетомет за танк, зенитни ракети за самолет.
+      • 100 процедурно генерирани нива с монотонно нарастваща трудност (повече цели,
+        по-висока скорост и уклончивост, по-стегнати лимити за време и боеприпаси).
+        Нивата са детерминирани — повторяеми.
+      • Управление: телефон — ляв джойстик за движение, влачене вдясно за оглеждане,
+        бутон ОГЪН; десктоп — WASD + мишка, ляв клик стрелба.
+      • Локален рекорд (SQLite на устройството). Напълно офлайн, без реклами и покупки.
+
+permissions: []
+# Приложението не изисква специални разрешения (офлайн игра). В манифеста стои само
+# стандартното за Capacitor android.permission.INTERNET, но играта не ползва мрежа.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Локален лидерборд (само {name, points}) — SQLite/sql.js в IndexedDB на устройството
+  shared_with_third_parties: none
+  encrypted_in_transit: not_applicable
+  encrypted_at_rest: false
+  user_can_delete: true
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (мерник/оръжие мотив, 3D сцена)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2-3 (3D сцена с цел и мерник, различни терени, лидерборд)
+
+keywords: [fps hunter, шутър, лов, hunting, first-person, 3d shooter, three.js, offline, без интернет]

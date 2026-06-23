@@ -81,6 +81,16 @@ textarea { min-height: 64px; resize: vertical; }
 .error { color: var(--danger); font-size: 14px; }
 .ok { color: var(--ok); }
 a { color: var(--accent); }
+.lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+.lang-btn { background: var(--card); color: var(--text); border: 1px solid var(--line);
+  border-radius: 12px; padding: 14px 10px; font-size: 16px; cursor: pointer; }
+.lang-btn:active { background: var(--card2); }
+.lang-btn.cur { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.lang-fab { position: fixed; top: 10px; right: 10px; z-index: 50; background: var(--card);
+  color: var(--text); border: 1px solid var(--line); border-radius: 999px;
+  padding: 6px 12px; font-size: 14px; cursor: pointer; }
+[dir="rtl"] .lang-fab { right: auto; left: 10px; }
+[dir="rtl"] .nav button { direction: rtl; }
 `;
   const style = document.createElement('style');
   style.textContent = css;

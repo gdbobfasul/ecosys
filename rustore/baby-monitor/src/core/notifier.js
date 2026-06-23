@@ -6,6 +6,7 @@
 //   • ЧЕСТНО за „другия телефон“: известие към ДРУГ телефон НЕ може да стане само on-device —
 //     нужен е relay/сървър (push). Предлагаме по избор relayUrl и пращаме best-effort POST,
 //     но НЕ преструваме, че работи без сървър. Ако няма relayUrl — нищо не пращаме.
+import { t } from './i18n.js';
 
 let _capLN = null;
 try {
@@ -46,7 +47,8 @@ let _nid = 1;
 // critical=true → настойчива АЛАРМЕНА МЕЛОДИЯ + силна вибрация (за опасност).
 // Връща { ok, kind }.
 export async function notify({ title, body, sound = true, vibrate = true, critical = false } = {}) {
-  const t = critical ? ('⚠️ ' + (title || 'Детегледачка')) : (title || 'Детегледачка');
+  const baseTitle = title || t('app_title');
+  const nt = critical ? ('⚠️ ' + baseTitle) : baseTitle;
   const b = body || '';
 
   // Звук: при КРИТИЧНО — настойчива аларма (мелодия); иначе мек двутонов сигнал.
@@ -61,7 +63,7 @@ export async function notify({ title, body, sound = true, vibrate = true, critic
       await _capLN.schedule({
         notifications: [{
           id: _nid++,
-          title: t,
+          title: nt,
           body: b,
           schedule: { at: new Date(Date.now() + 100) }
         }]
@@ -71,7 +73,7 @@ export async function notify({ title, body, sound = true, vibrate = true, critic
   }
 
   if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-    try { new Notification(t, { body: b }); return { ok: true, kind: 'web' }; } catch (_) {}
+    try { new Notification(nt, { body: b }); return { ok: true, kind: 'web' }; } catch (_) {}
   }
 
   // Нямаме системно известие — UI слоят пак показва toast/дневник.

@@ -1,0 +1,86 @@
+id: plane-shooter
+name: Plane Shooter
+folders:
+  - rustore/plane-shooter
+  - huawei/plane-shooter
+stores: [rustore, huawei]
+package:
+  rustore: com.kcy.planeshooter.rustore
+  huawei:  com.kcy.planeshooter.huawei
+category:
+  google_play: Games / Arcade
+  rustore: Игры
+  huawei: Games
+content_rating: "3+ (Everyone) — класически аркаден самолетен шутър, без кръв, без реклами"
+pricing: free
+contains_ads: false
+in_app_purchases: false
+default_language: ru
+supported_languages: [bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant]
+privacy_policy: https://bgmasters.net/legal/privacy
+support_email: ltd.dai.grup@gmail.com
+website: https://bgmasters.net
+
+listings:
+  ru:
+    title: Plane Shooter
+    short: "Аркадный самолётный шутёр: 3 оружия, боссы, 10 уровней"
+    full: |
+      Plane Shooter — классический 2D аркадный самолётный шутёр. Управляй маленьким
+      самолётом пальцем (перетаскивание), стрельба автоматическая. Уворачивайся от врагов,
+      собирай очки и проходи уровни.
+
+      • 3 оружия, открываются по мере прогресса: пули → бомбы (урон по площади) →
+        самонаводящиеся ракеты. Кнопка ⚔ переключает активное оружие.
+      • Ровно 10 уровней с растущей сложностью, боссы на 5-м и 10-м уровнях.
+      • Power-up капсулы, частицы, параллакс-фон из звёзд, очки, здоровье и жизни, HUD.
+      • Полностью офлайн: вся графика в коде, без рекламы и покупок. Рекорды хранятся
+        только на устройстве.
+  en:
+    title: Plane Shooter
+    short: "Arcade plane shooter: 3 weapons, bosses, 10 levels"
+    full: |
+      Plane Shooter is a classic 2D arcade plane shooter. Steer a small plane with your
+      finger (drag), firing is automatic. Dodge enemies, rack up points and clear levels.
+
+      • 3 weapons unlocked as you progress: bullets → bombs (area damage) → homing
+        missiles. The ⚔ button switches the active weapon.
+      • Exactly 10 levels of rising difficulty, with bosses on level 5 and level 10.
+      • Power-up capsules, particles, a parallax starfield, score, health and lives, HUD.
+      • Fully offline: all graphics are in code, no ads, no purchases. High scores stay
+        on your device only.
+  bg:
+    title: Plane Shooter
+    short: "Аркаден самолетен шутър: 3 оръжия, босове, 10 нива"
+    full: |
+      Plane Shooter е класически 2D аркаден самолетен шутър. Управляваш малък самолет с
+      пръст (влачене), огънят е автоматичен. Избягвай враговете, трупай точки и минавай
+      нивата.
+
+      • 3 оръжия, отключват се с прогреса: куршуми → бомби (площна щета) → самонасочващи
+        се ракети. Бутонът ⚔ сменя активното оръжие.
+      • Точно 10 нива с нарастваща трудност, босове на 5-то и 10-то ниво.
+      • Power-up капсули, частици, паралакс звезден фон, точки, здраве и животи, HUD.
+      • Напълно офлайн: цялата графика е в кода, без реклами и покупки. Рекордите се
+        пазят само на устройството.
+
+permissions: []
+# Приложението не изисква специални разрешения (офлайн игра). В манифеста стои само
+# стандартното за Capacitor android.permission.INTERNET, но играта не ползва мрежа.
+
+data_safety:
+  collects_personal_data: false
+  data_stored:
+    - Локален рекорд/прогрес (име по избор + точки) — само в localStorage на устройството
+  shared_with_third_parties: none
+  encrypted_in_transit: not_applicable
+  encrypted_at_rest: false
+  user_can_delete: true
+  account_required: false
+
+assets:
+  icon: 512x512 PNG (самолет + звезден фон)
+  feature_graphic: 1024x500 (Google Play)
+  screenshots: мин. 2-3 (геймплей с врагове, бос, смяна на оръжие)
+
+keywords: [plane shooter, самолет, шутър, аркада, shmup, arcade, shooter, offline, без интернет]
