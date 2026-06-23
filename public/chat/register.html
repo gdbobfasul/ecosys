@@ -1,72 +1,88 @@
-<!-- Version: 1.0176 -->
+<!-- Version: 1.0243 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация — Анонимен Чат</title>
+    <title data-i18n="chat_reg.title">Регистрация — Анонимен Чат</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-gray-800 rounded-lg p-8">
-        <h1 class="text-3xl font-bold mb-1">📝 Регистрация</h1>
-        <p class="text-gray-400 mb-6">Анонимен Чат · $5 360₽ 438сом<br>на месец</p>
+        <!-- Език / Language -->
+        <div class="flex justify-end mb-4">
+            <select id="kcy-lang-select" onchange="if(window.KCY_I18N) KCY_I18N.set(this.value)"
+                class="bg-gray-700 text-white border border-gray-600 rounded px-3 py-2 text-sm cursor-pointer"
+                title="Language / Език"></select>
+        </div>
+        <h1 class="text-3xl font-bold mb-1" data-i18n="chat_reg.h1">📝 Регистрация</h1>
+        <p class="text-gray-400 mb-6"><span data-i18n="chat_reg.app_name">Анонимен Чат</span> · $5 360₽ 438сом<br><span data-i18n="chat_reg.per_month">на месец</span></p>
         <div data-kg-pay class="mt-2 mb-2 flex justify-center"></div>
 
         <form id="regForm" class="space-y-4">
             <div>
-                <label class="block text-sm text-gray-400 mb-1">Телефон *</label>
+                <label class="block text-sm text-gray-400 mb-1" data-i18n="chat_reg.lbl_phone">Телефон *</label>
                 <input type="tel" id="phone" placeholder="+359..." required
                     class="w-full p-3 bg-gray-700 rounded text-white">
             </div>
             <div>
-                <label class="block text-sm text-gray-400 mb-1">Парола * (6–50 символа)</label>
-                <input type="password" id="password" placeholder="Парола" required minlength="6" maxlength="50"
+                <label class="block text-sm text-gray-400 mb-1" data-i18n="chat_reg.lbl_password">Парола * (6–50 символа)</label>
+                <input type="password" id="password" placeholder="Парола" data-i18n-attr="placeholder:chat_reg.ph_password" required minlength="6" maxlength="50"
                     class="w-full p-3 bg-gray-700 rounded text-white">
             </div>
             <div>
-                <label class="block text-sm text-gray-400 mb-1">Име * (2–50 символа)</label>
-                <input type="text" id="fullName" placeholder="Твоето име" required minlength="2" maxlength="50"
+                <label class="block text-sm text-gray-400 mb-1" data-i18n="chat_reg.lbl_name">Име * (2–50 символа)</label>
+                <input type="text" id="fullName" placeholder="Твоето име" data-i18n-attr="placeholder:chat_reg.ph_name" required minlength="2" maxlength="50"
                     class="w-full p-3 bg-gray-700 rounded text-white">
             </div>
             <div>
-                <label class="block text-sm text-gray-400 mb-1">Пол *</label>
+                <label class="block text-sm text-gray-400 mb-1" data-i18n="chat_reg.lbl_gender">Пол *</label>
                 <select id="gender" required class="w-full p-3 bg-gray-700 rounded text-white">
-                    <option value="">— избери —</option>
-                    <option value="male">Мъж</option>
-                    <option value="female">Жена</option>
+                    <option value="" data-i18n="chat_reg.opt_choose">— избери —</option>
+                    <option value="male" data-i18n="chat_reg.opt_male">Мъж</option>
+                    <option value="female" data-i18n="chat_reg.opt_female">Жена</option>
                 </select>
             </div>
 
             <details class="text-sm">
-                <summary class="cursor-pointer text-blue-400 mb-2">Допълнителни данни (по избор) — за запознанства/търсене</summary>
+                <summary class="cursor-pointer text-blue-400 mb-2" data-i18n="chat_reg.extra_summary">Допълнителни данни (по избор) — за запознанства/търсене</summary>
                 <div class="grid grid-cols-2 gap-3 mt-2">
-                    <input type="number" id="heightCm" placeholder="Ръст (см)" class="p-3 bg-gray-700 rounded text-white">
-                    <input type="number" id="weightKg" placeholder="Тегло (кг)" class="p-3 bg-gray-700 rounded text-white">
+                    <input type="number" id="heightCm" placeholder="Ръст (см)" data-i18n-attr="placeholder:chat_reg.ph_height" class="p-3 bg-gray-700 rounded text-white">
+                    <input type="number" id="weightKg" placeholder="Тегло (кг)" data-i18n-attr="placeholder:chat_reg.ph_weight" class="p-3 bg-gray-700 rounded text-white">
                     <select id="country" class="p-3 bg-gray-700 rounded text-white">
-                        <option value="">Държава…</option>
+                        <option value="" data-i18n="chat_reg.opt_country">Държава…</option>
                     </select>
                     <select id="city" class="p-3 bg-gray-700 rounded text-white" disabled>
-                        <option value="">Първо избери държава</option>
+                        <option value="" data-i18n="chat_reg.opt_country_first">Първо избери държава</option>
                     </select>
-                    <input type="text" id="village" placeholder="Село (по избор)" class="p-3 bg-gray-700 rounded text-white">
-                    <input type="text" id="street" placeholder="Улица (по избор)" class="p-3 bg-gray-700 rounded text-white">
-                    <input type="text" id="workplace" placeholder="Месторабота (по избор)" class="p-3 bg-gray-700 rounded text-white col-span-2">
+                    <input type="text" id="village" placeholder="Село (по избор)" data-i18n-attr="placeholder:chat_reg.ph_village" class="p-3 bg-gray-700 rounded text-white">
+                    <input type="text" id="street" placeholder="Улица (по избор)" data-i18n-attr="placeholder:chat_reg.ph_street" class="p-3 bg-gray-700 rounded text-white">
+                    <input type="text" id="workplace" placeholder="Месторабота (по избор)" data-i18n-attr="placeholder:chat_reg.ph_workplace" class="p-3 bg-gray-700 rounded text-white col-span-2">
                 </div>
             </details>
 
-            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 py-4 rounded font-bold text-lg">
+            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 py-4 rounded font-bold text-lg" data-i18n="chat_reg.submit">
                 Регистрирай се →
             </button>
         </form>
 
         <div id="message" class="mt-4 text-center"></div>
         <div class="mt-6 text-center">
-            <a href="/chat/public/" class="text-blue-400 hover:text-blue-300 underline text-sm">← Вече имам акаунт (вход)</a>
+            <a href="/chat/public/" class="text-blue-400 hover:text-blue-300 underline text-sm" data-i18n="chat_reg.have_account">← Вече имам акаунт (вход)</a>
         </div>
     </div>
 
     <script>
+        // Малък помощник: превод по ключ с резерв (запазваме българския текст,
+        // ако i18n още не е зареден или липсва ключът).
+        function T(key, fallback) {
+            if (window.KCY_I18N && typeof KCY_I18N.t === 'function') {
+                var v = KCY_I18N.t(key);
+                if (v != null && v !== key) return v;
+            }
+            return fallback;
+        }
+
         // Попълни телефон/парола, ако идваме от login формата (?phone=...&password=...)
         var p = new URLSearchParams(location.search);
         if (p.get('phone')) document.getElementById('phone').value = p.get('phone');
@@ -94,8 +110,8 @@
             })
             .catch(function () {
                 // Резерва: ако файловете липсват — позволи ръчно въвеждане.
-                countrySel.outerHTML = '<input type="text" id="country" placeholder="Държава (по избор)" class="p-3 bg-gray-700 rounded text-white">';
-                citySel.outerHTML = '<input type="text" id="city" placeholder="Град (по избор)" class="p-3 bg-gray-700 rounded text-white">';
+                countrySel.outerHTML = '<input type="text" id="country" placeholder="' + T('chat_reg.ph_country_opt', 'Държава (по избор)') + '" class="p-3 bg-gray-700 rounded text-white">';
+                citySel.outerHTML = '<input type="text" id="city" placeholder="' + T('chat_reg.ph_city_opt', 'Град (по избор)') + '" class="p-3 bg-gray-700 rounded text-white">';
             });
 
         // 2) При избор на държава → нейните градове от локалния файл
@@ -103,20 +119,20 @@
             citySel.innerHTML = '';
             var selOpt = countrySel.options[countrySel.selectedIndex];
             var sl = selOpt ? selOpt.getAttribute('data-slug') : '';
-            if (!countrySel.value || !sl) { opt(citySel, '', 'Първо избери държава'); citySel.disabled = true; return; }
-            opt(citySel, '', 'Зареждам градове…'); citySel.disabled = true;
+            if (!countrySel.value || !sl) { opt(citySel, '', T('chat_reg.opt_country_first', 'Първо избери държава')); citySel.disabled = true; return; }
+            opt(citySel, '', T('chat_reg.loading_cities', 'Зареждам градове…')); citySel.disabled = true;
             fetch('/shared/geo/cities/' + sl + '.json')
                 .then(function (r) { return r.json(); })
                 .then(function (cities) {
                     cities = cities || [];
                     citySel.innerHTML = '';
-                    opt(citySel, '', cities.length ? 'Град…' : '(няма градове — пропусни)');
+                    opt(citySel, '', cities.length ? T('chat_reg.opt_city', 'Град…') : T('chat_reg.no_cities', '(няма градове — пропусни)'));
                     cities.forEach(function (c) { opt(citySel, c); });
                     citySel.disabled = cities.length === 0;
                 })
                 .catch(function () {
                     citySel.innerHTML = '';
-                    opt(citySel, '', '(градовете не се заредиха — пропусни)');
+                    opt(citySel, '', T('chat_reg.cities_failed', '(градовете не се заредиха — пропусни)'));
                     citySel.disabled = true;
                 });
         });
@@ -127,7 +143,7 @@
         document.getElementById('regForm').addEventListener('submit', async function (e) {
             e.preventDefault();
             var msg = document.getElementById('message');
-            msg.innerHTML = '<p class="text-gray-400">Регистрирам…</p>';
+            msg.innerHTML = '<p class="text-gray-400">' + T('chat_reg.registering', 'Регистрирам…') + '</p>';
 
             var payload = {
                 phone: val('phone'),
@@ -157,19 +173,43 @@
                 if (r.ok && data.success) {
                     // Регистрацията мина → към плащане (€5/$5)
                     if (data.userId) localStorage.setItem('userId', data.userId);
-                    msg.innerHTML = '<p class="text-green-400">✅ Регистрацията е успешна! Към плащането…</p>';
+                    msg.innerHTML = '<p class="text-green-400">' + T('chat_reg.success', '✅ Регистрацията е успешна! Към плащането…') + '</p>';
                     setTimeout(function () { location.href = '/chat/public/payment.html'; }, 900);
                 } else if (r.status === 429) {
-                    msg.innerHTML = '<p class="text-red-400">' + (data.message || 'Твърде много заявки. Опитай отново малко по-късно.') + '</p>';
+                    msg.innerHTML = '<p class="text-red-400">' + (data.message || T('chat_reg.rate_limit', 'Твърде много заявки. Опитай отново малко по-късно.')) + '</p>';
                 } else {
-                    msg.innerHTML = '<p class="text-red-400">' + (data.error || data.message || ('Грешка при регистрация (HTTP ' + r.status + ')')) + '</p>';
+                    msg.innerHTML = '<p class="text-red-400">' + (data.error || data.message || (T('chat_reg.err_http', 'Грешка при регистрация (HTTP ') + r.status + ')')) + '</p>';
                 }
             } catch (err) {
-                msg.innerHTML = '<p class="text-red-400">Мрежова грешка: ' + err.message + '</p>';
+                msg.innerHTML = '<p class="text-red-400">' + T('chat_reg.net_err', 'Мрежова грешка: ') + err.message + '</p>';
             }
         });
     </script>
+    <script src="/shared/js/i18n.js?v=1.0193"></script>
     <script src="/chat/public/chat-footer.js?v=1.0001"></script>
     <script src="/shared/js/kg-compliance.js?v=1.0001"></script>
+    <script>
+    // Попълва език дропдауна (чатът няма обща навигация) — както в index.html
+    (function(){
+      function fillLang(){
+        var sel=document.getElementById('kcy-lang-select');
+        if(!sel||!window.KCY_I18N) return;
+        sel.innerHTML='';
+        KCY_I18N.supported.forEach(function(l){
+          var o=document.createElement('option');
+          o.value=l.code; o.textContent=l.name;
+          sel.appendChild(o);
+        });
+        sel.value=KCY_I18N.lang;
+      }
+      document.addEventListener('kcy-lang-ready', fillLang);
+      document.addEventListener('kcy-lang-changed', function(e){
+        var sel=document.getElementById('kcy-lang-select');
+        if(sel) sel.value=e.detail.lang;
+      });
+      // ако i18n вече е готов
+      if(window.KCY_I18N && KCY_I18N.lang) setTimeout(fillLang, 100);
+    })();
+    </script>
 </body>
 </html>
