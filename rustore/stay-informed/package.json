@@ -1,0 +1,24 @@
+{
+  "name": "stay-informed-rustore",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Stay Informed — самостоятелно мобилно приложение за новини по държави от целия свят: събира официални и неофициални източници (RSS на вестници, телевизия, радио + агрегатор), показва ги на избрания от теб език и може да ти ги чете на глас (RUStore издание).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "cap:add": "cap add android",
+    "cap:sync": "cap sync",
+    "cap:open": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.2.1",
+    "@capacitor/preferences": "^6.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "vite": "^5.4.10"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "appId": "com.kcy.stayinformed.rustore",
+  "appName": "Stay Informed",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": true
+  },
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}

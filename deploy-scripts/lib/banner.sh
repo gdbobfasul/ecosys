@@ -1,20 +1,29 @@
 #!/usr/bin/env bash
 # Споделен завършващ надпис за деплой скриптовете.
 # done_banner <target-key> [server] [label]
-#   Печата в ЛИЛАВО „ъпдейта на <етикет> завърши". Мапва target ключа:
-#     prod → production
-#     vm   → virtual machine
-#     друго (custom) → label-ът, иначе IP/хоста на сървъра (както е в менюто), иначе „server".
+#   Печата в ЛИЛАВО „обновяването на <име> завърши" — ЧИСТ БЪЛГАРСКИ, без заемки.
+#   Мапва target ключа към българско име:
+#     prod        → основния сървър
+#     prodts      → основния сървър (Tailscale)   (същият основен сървър, но през Tailscale)
+#     vm          → виртуалната машина
+#     друго (custom) → етикета, иначе „сървъра" (НИКОГА голо IP).
 done_banner() {
-    local key="$1" server="$2" label="$3" name
+    local key="$1" server="$2" label="$3" name script
     local PURPLE=$'\033[1;35m' NC=$'\033[0m'
+    script="${0##*/}"          # КОЙ скрипт приключи (име на файла, напр. 04-deploy.sh)
+    [ -z "$script" ] && script="скриптът"
     case "$key" in
-        prod|production|PROD) name="production" ;;
-        vm|VM|virtualmachine) name="virtual machine" ;;
-        *)                    name="${label:-${server:-server}}" ;;
+        prod|production|PROD)      name="основния сървър" ;;
+        prodts|prodTS|PRODTS)      name="основния сървър (Tailscale)" ;;
+        vm|VM|virtualmachine)      name="виртуалната машина" ;;
+        *)                         name="${label:-сървъра}" ;;
+    esac
+    # Предпазител: ако name по някаква причина е голо IP (IPv4) — не го показвай, ползвай „сървъра".
+    case "$name" in
+        [0-9]*.[0-9]*.[0-9]*.[0-9]*) name="сървъра" ;;
     esac
     echo ""
-    echo -e "${PURPLE}ъпдейта на ${name} завърши${NC}"
+    echo -e "${PURPLE}скрипт ${script} приключи · обновяването на ${name} завърши${NC}"
     echo ""
 }
 

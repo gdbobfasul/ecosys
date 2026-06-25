@@ -128,8 +128,8 @@ else
     PORT="${3:-2222}"
     TARGET_LABEL="custom"
 fi
-# лилав завършващ надпис при успех (prod→production, vm→virtual machine, друго→IP/хоста)
-source "$(dirname "$0")/lib/banner.sh" 2>/dev/null && arm_done_banner "$TARGET_NAME" "$SERVER"
+# лилав завършващ надпис при успех (чист български: prod→основния сървър, prodts→основния сървър (Tailscale), vm→виртуалната машина, друго→етикета/„сървъра")
+source "$(dirname "$0")/lib/banner.sh" 2>/dev/null && arm_done_banner "$TARGET_NAME" "$SERVER" "$TARGET_LABEL"
 
 STAGING="/var/www/deploy"
 LOG_FILE="${HOME}/kcy-deploy.log"

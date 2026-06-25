@@ -21,11 +21,23 @@ import { t, tf } from '../core/i18n.js';
 
 const APP_ID = 'com.kcy.selflearningfriend.rustore';
 
-export function renderSettings(root, { rerender }) {
+export function renderSettings(root, { rerender, openLangPicker }) {
   clear(root);
   const st = getState();
 
   root.appendChild(el('h2', {}, t('screen_settings')));
+
+  // 🌐 Език на приложението — ВИНАГИ достъпен оттук, за да може сбъркан избор да се
+  // поправи без преинсталиране на телефона. Бутонът отваря СЪЩИЯ екран за избор на език
+  // (с „Отказ“), през openLangPicker от main.js.
+  root.appendChild(el('div', { class: 'card' }, [
+    el('div', {}, t('ui_language')),
+    el('div', { class: 'muted', style: 'font-size:13px; margin:4px 0 10px' }, t('ui_language_desc')),
+    el('button', {
+      class: 'block',
+      onclick: () => { if (typeof openLangPicker === 'function') openLangPicker(); }
+    }, t('lang_btn'))
+  ]));
 
   function toggleRow(labelText, descText, key, onChange) {
     const sw = el('div', { class: 'switch' + (st.settings[key] ? ' on' : '') });
