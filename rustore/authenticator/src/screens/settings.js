@@ -1,16 +1,27 @@
 // settings.js — настройки: език, авто-заключване, биометрия, смяна на парола,
-// импорт/експорт и изтриване на сейфа.
+// импорт/експорт (всички варианти, същите като при бутона „+") и изтриване на сейфа.
 import { h, mount, toast } from '../ui/dom.js';
 import { t, tf, getLang, languageByCode } from '../core/i18n.js';
 import {
-  loadSettings, saveSettings, session, changePassword, addEntry, wipeVault
+  loadSettings, saveSettings, session, changePassword, wipeVault, autoLockSeconds
 } from '../core/storage.js';
 import {
   biometricAvailable, biometricVerify, biometricStorePassword, biometricClear
 } from '../core/biometric.js';
+import { importJsonText, describeResult } from '../core/importer.js';
+import { importAegisFile } from './aegis-import.js';
+import { exportJsonFile, exportAegisFile, exportGoogleQR } from '../core/exporter.js';
 import { exportAllQR } from '../core/qrexport.js';
 
-const LOCK_OPTIONS = [0, 1, 5, 15, 30];
+// Опции за авто-заключване при бездействие (В СЕКУНДИ; 0 = никога). По молба:
+// 30 сек, 1 мин, 5 мин, 10 мин, 15 мин, 30 мин, 1 час, никога.
+const LOCK_OPTIONS = [30, 60, 300, 600, 900, 1800, 3600, 0];
+function lockLabel(sec) {
+  if (sec === 0) return t('never');
+  if (sec < 60) return tf('secs', sec);
+  if (sec % 3600 === 0) return tf('hours', sec / 3600);
+  return tf('minutes', sec / 60);
+}
 
 export function renderSettings(root, nav) {
   const st = loadSettings();
@@ -25,12 +36,13 @@ export function renderSettings(root, nav) {
     h('button', { class: 'btn ghost', style: 'width:auto;margin:0', onclick: () => nav.go('language') },
       languageByCode(getLang()).native));
 
-  // --- Авто-заключване ---
+  // --- Авто-заключване (секунди) ---
+  const curLock = autoLockSeconds();
   const lockSel = h('select', { style: 'width:auto;margin:0',
-    onchange: (e) => saveSettings({ autoLockMin: parseInt(e.target.value, 10) }) },
-    ...LOCK_OPTIONS.map((m) => {
-      const o = h('option', { value: String(m) }, m === 0 ? t('never') : tf('minutes', m));
-      if (m === st.autoLockMin) o.setAttribute('selected', 'selected');
+    onchange: (e) => saveSettings({ autoLockSec: parseInt(e.target.value, 10) }) },
+    ...LOCK_OPTIONS.map((sec) => {
+      const o = h('option', { value: String(sec) }, lockLabel(sec));
+      if (sec === curLock) o.setAttribute('selected', 'selected');
       return o;
     }));
   const lockRow = settingRow(t('autolock'), lockSel);
@@ -67,50 +79,30 @@ export function renderSettings(root, nav) {
     toast(t('password_changed'));
   };
 
-  // --- Експорт ---
-  const doExport = () => {
-    const data = JSON.stringify({ app: 'kcy-authenticator', version: 1, entries: session.entries }, null, 2);
-    const blob = new Blob([data], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'kcy-authenticator-export.json';
-    document.body.appendChild(a); a.click();
-    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-  };
+  // --- ИМПОРТ (всички варианти; едни и същи като при бутона „+") ---
+  async function runImport(promise) { toast(describeResult(await promise)); }
 
-  // --- Експорт на всички като QR картинки (.zip) ---
-  const doExportAll = async () => {
-    toast(t('exporting'));
-    const r = await exportAllQR();
-    if (!r.ok) toast(r.reason === 'empty' ? t('nothing_to_export') : t('import_failed'));
-  };
-
-  // --- Импорт ---
-  const fileInput = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none' });
-  fileInput.addEventListener('change', () => {
-    const f = fileInput.files && fileInput.files[0];
-    if (!f) return;
-    const reader = new FileReader();
-    reader.onload = async () => {
-      try {
-        const parsed = JSON.parse(reader.result);
-        const list = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.entries) ? parsed.entries : []);
-        let n = 0;
-        for (const it of list) {
-          if (!it || !it.secret) continue;
-          await addEntry({
-            type: it.type || 'totp', issuer: it.issuer || '', account: it.account || it.name || '',
-            secret: String(it.secret).toUpperCase(), algorithm: it.algorithm || 'SHA1',
-            digits: it.digits || 6, period: it.period || 30, counter: it.counter || 0
-          });
-          n++;
-        }
-        toast(tf('import_done', n));
-      } catch (e) { toast(t('import_failed')); }
-      fileInput.value = '';
-    };
-    reader.readAsText(f);
+  const jsonInput = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none' });
+  jsonInput.addEventListener('change', () => {
+    const f = jsonInput.files && jsonInput.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => { runImport(importJsonText(r.result)); jsonInput.value = ''; };
+    r.readAsText(f);
   });
+  const aegisInput = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none' });
+  aegisInput.addEventListener('change', () => {
+    const f = aegisInput.files && aegisInput.files[0]; if (!f) return;
+    importAegisFile(f);
+    aegisInput.value = '';
+  });
+
+  // --- ЕКСПОРТ (всички варианти) ---
+  async function runExport(fn) {
+    toast(t('exporting'));
+    const r = await fn();
+    if (!r || !r.ok) { toast(r && r.reason === 'empty' ? t('nothing_to_export') : t('import_failed')); return; }
+    toast(r.skipped ? tf('export_done_skip', r.count, r.skipped) : tf('export_done', r.count));
+  }
 
   // --- Изтриване на сейфа ---
   const wipe = () => {
@@ -131,14 +123,21 @@ export function renderSettings(root, nav) {
     npErr,
     h('button', { class: 'btn', onclick: changePw, text: t('change_password') }),
 
-    h('h1', { style: 'font-size:1em;margin-top:22px', text: '⇄' }),
-    h('p', { class: 'muted', text: t('export_warning') }),
-    h('button', { class: 'btn ghost', onclick: doExport, text: '⬇ ' + t('export_json') }),
-    h('button', { class: 'btn ghost', onclick: () => fileInput.click(), text: '⬆ ' + t('import_json') }),
-    fileInput,
+    // ── ИМПОРТ ──
+    h('h1', { style: 'font-size:1em;margin-top:22px', text: '⬆ ' + t('import_title') }),
+    h('button', { class: 'btn', onclick: () => nav.go('add'), text: '➕ ' + t('add_more_ways') }),
+    h('button', { class: 'btn ghost', onclick: () => jsonInput.click(), text: t('import_json') }), jsonInput,
+    h('button', { class: 'btn ghost', onclick: () => aegisInput.click(), text: t('import_aegis') }), aegisInput,
+    h('p', { class: 'muted', style: 'font-size:.85em', text: t('import_aegis_hint') }),
 
-    h('p', { class: 'muted', style: 'margin-top:14px', text: t('export_all_desc') }),
-    h('button', { class: 'btn ghost', onclick: doExportAll, text: '🗂 ' + t('export_all_qr') }),
+    // ── ЕКСПОРТ ──
+    h('h1', { style: 'font-size:1em;margin-top:22px', text: '⬇ ' + t('export_title') }),
+    h('p', { class: 'muted', text: t('export_warning') }),
+    h('button', { class: 'btn ghost', onclick: () => runExport(exportJsonFile), text: t('export_json') }),
+    h('button', { class: 'btn ghost', onclick: () => runExport(exportAegisFile), text: t('export_aegis') }),
+    h('button', { class: 'btn ghost', onclick: () => runExport(exportGoogleQR), text: t('export_google') }),
+    h('button', { class: 'btn ghost', onclick: () => runExport(exportAllQR), text: '🗂 ' + t('export_all_qr') }),
+    h('p', { class: 'muted', style: 'font-size:.85em', text: t('export_all_desc') }),
 
     h('button', { class: 'btn ghost', style: 'margin-top:14px', onclick: () => nav.go('dups'), text: '🔍 ' + t('find_duplicates') }),
 

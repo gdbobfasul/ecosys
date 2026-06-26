@@ -10,7 +10,8 @@ const SETTINGS_KEY = 'kcyauth.settings';
 
 const DEFAULT_SETTINGS = {
   lang: null,            // null = още не е избран (показваме избор на език)
-  autoLockMin: 1,        // авто-заключване след N минути бездействие (0 = никога)
+  autoLockSec: 60,       // авто-заключване след N СЕКУНДИ бездействие (0 = никога)
+  autoLockMin: 1,        // (наследено) минути — пази съвместимост; autoLockSec има предимство
   biometric: false,      // отключване с пръстов отпечатък (ако устройството поддържа)
   sort: 'manual'         // подредба: manual | issuer | account
 };
@@ -40,6 +41,15 @@ export function saveSettings(patch) {
   const next = Object.assign(cur, patch || {});
   try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(next)); } catch (e) {}
   return next;
+}
+
+// Таймаут за авто-заключване В СЕКУНДИ (0 = никога). Предпочита autoLockSec; ако липсва,
+// пада към стария autoLockMin (×60) за съвместимост със стари инсталации.
+export function autoLockSeconds() {
+  const s = loadSettings();
+  if (typeof s.autoLockSec === 'number') return s.autoLockSec;
+  if (typeof s.autoLockMin === 'number') return s.autoLockMin * 60;
+  return 60;
 }
 
 // Създава нов сейф с дадена парола (първоначална настройка).

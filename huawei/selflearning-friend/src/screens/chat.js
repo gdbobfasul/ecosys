@@ -6,6 +6,7 @@ import { touchSession, lock, isUnlocked } from '../core/identity.js';
 import { isLockedDown } from '../core/device.js';
 import { sttAvailable, ttsAvailable, startListening, stopListening, speak, stopSpeaking } from '../core/voice.js';
 import { startConversation, stopConversation, conversationActive, consumeAutoListen } from '../core/conversation.js';
+import { currentlyLearning } from '../core/learning-loop.js';
 import {
   voiceprintSupported, voiceProfileEnabled, voiceProfileExists,
   captureSampleFeatures, addEnrollmentSample, matchOwnerVoice, enrollmentProgress
@@ -18,6 +19,10 @@ const SRC_LABEL_KEY = {
   memory: 'src_memory', rule: 'src_rule', ai: 'src_ai',
   learn: 'src_learn', math: 'src_math', source: 'src_source'
 };
+
+// Интервал за живия банер „какво учи роботът сега" (обновява текста на място, БЕЗ да
+// пречертава чата → полето за писане/диктовка остава непокътнато).
+let _learnBannerTimer = null;
 
 export function renderChat(root, { navigate, rerender }) {
   clear(root);
@@ -347,6 +352,29 @@ export function renderChat(root, { navigate, rerender }) {
     ? el('div', { class: 'row', style: 'gap:8px;margin-bottom:8px' }, [convBtn])
     : null;
 
+  // ЖИВ БАНЕР НАЙ-ГОРЕ: показва ПОСТОЯННО какво учи роботът в момента (обновява се на място
+  // на всеки 2.5с — не пречертава чата, затова не трие въведения/диктувания текст).
+  const learnBanner = el('div', { class: 'learn-banner', style:
+    'position:sticky;top:0;z-index:5;background:#10243a;border:1px solid #1e3a5f;border-radius:8px;' +
+    'padding:7px 10px;margin:0 0 8px;font-size:13px;color:#cfe3ff;line-height:1.35' });
+  function updateLearnBanner() {
+    // Самопочистване: ако банерът вече не е на екрана (сменен е екранът) → спри интервала.
+    if (!learnBanner.isConnected && _learnBannerTimer) { clearInterval(_learnBannerTimer); _learnBannerTimer = null; return; }
+    const a = currentlyLearning();
+    if (a && a.note) {
+      const icon = a.status === 'learning' ? '🧠 ' : (a.status === 'done' ? '✅ ' : '💤 ');
+      learnBanner.textContent = icon + a.note;
+      learnBanner.style.display = 'block';
+    } else {
+      learnBanner.textContent = '🧠 ' + t('chat_learn_idle');
+      learnBanner.style.display = 'block';
+    }
+  }
+  updateLearnBanner();
+  if (_learnBannerTimer) clearInterval(_learnBannerTimer);
+  _learnBannerTimer = setInterval(updateLearnBanner, 2500);
+
+  root.appendChild(learnBanner);
   root.appendChild(header);
   root.appendChild(versionLine);
   root.appendChild(linkLine);

@@ -43,6 +43,30 @@ export function mount(node, ...children) {
   for (const c of children) if (c) node.appendChild(c);
 }
 
+// Малък модал за въвеждане на парола (напр. за криптиран Aegis експорт). Връща
+// Promise<string|null> — низ при потвърждение, null при отказ. Не зависи от CSS (вградени стилове).
+export function promptPassword(message, okLabel, cancelLabel) {
+  return new Promise((resolve) => {
+    const finish = (val) => { try { ov.remove(); } catch (e) {} resolve(val); };
+    const input = h('input', {
+      type: 'password', autocomplete: 'off', autocapitalize: 'none', spellcheck: 'false',
+      style: 'width:100%;padding:12px;border-radius:10px;border:1px solid #2a3550;background:#0e1726;color:#fff;font-size:16px;box-sizing:border-box'
+    });
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') finish(input.value); });
+    const box = h('div', { style: 'max-width:340px;width:100%;background:#121a2b;border-radius:14px;padding:18px;box-sizing:border-box' },
+      h('div', { style: 'color:#e6edf3;font-size:15px;margin-bottom:12px', text: message || '' }),
+      input,
+      h('div', { style: 'display:flex;gap:8px;margin-top:14px' },
+        h('button', { style: 'flex:1;padding:11px;border:none;border-radius:10px;background:#243049;color:#cdd', onclick: () => finish(null) }, cancelLabel || 'Cancel'),
+        h('button', { style: 'flex:1;padding:11px;border:none;border-radius:10px;background:#0a84ff;color:#fff;font-weight:600', onclick: () => finish(input.value) }, okLabel || 'OK')
+      )
+    );
+    const ov = h('div', { style: 'position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:24px' }, box);
+    document.body.appendChild(ov);
+    setTimeout(() => { try { input.focus(); } catch (e) {} }, 60);
+  });
+}
+
 // Кратко известие (toast) долу на екрана.
 let toastTimer = null;
 export function toast(msg) {

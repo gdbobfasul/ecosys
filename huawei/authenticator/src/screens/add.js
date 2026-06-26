@@ -4,6 +4,8 @@ import { t } from '../core/i18n.js';
 import { addEntry } from '../core/storage.js';
 import { parseOtpauthURI } from '../core/otp.js';
 import { base32Decode } from '../core/base32.js';
+import { importQRData, importJsonText, isImportableQR, describeResult } from '../core/importer.js';
+import { importAegisFile } from './aegis-import.js';
 
 let activeStream = null;
 let rafId = null;
@@ -27,11 +29,13 @@ export function renderAdd(root, nav) {
 
   const body = h('div', { class: 'content' });
 
-  // Три начина за въвеждане: камера, качване на файл с QR, ръчно (вкл. поставяне на линк).
+  // ВСИЧКИ начини за добавяне/импорт на ЕДНО място (по молба — нищо да не е скрито само в
+  // Настройки): камера, QR от изображение, ръчно/otpauth, файл (.json бекъп ИЛИ Aegis).
   const MODES = [
     { key: 'scan', label: '📷 ' + t('scan_qr') },
     { key: 'upload', label: '🖼 ' + t('upload_file') },
-    { key: 'manual', label: '⌨ ' + t('enter_manually') }
+    { key: 'manual', label: '⌨ ' + t('enter_manually') },
+    { key: 'file', label: '📁 ' + t('import_file') }
   ];
   const seg = h('div', { class: 'seg' },
     ...MODES.map((m) => h('button', { onclick: () => setMode(m.key) }, m.label))
@@ -43,6 +47,7 @@ export function renderAdd(root, nav) {
     stopCamera();
     if (m === 'scan') renderScan();
     else if (m === 'upload') renderUpload();
+    else if (m === 'file') renderFile();
     else renderManual();
   }
 
@@ -64,24 +69,53 @@ export function renderAdd(root, nav) {
     } catch (e) { return null; } finally { URL.revokeObjectURL(url); }
   }
 
+  // Импортира декодиран QR низ (единичен otpauth ИЛИ Google миграция) през обединения импортер;
+  // показва КОЛКО кода и ПО КАКЪВ начин (+ дубликати) и навигира при успех. Връща res.
+  async function runImport(promise) {
+    const res = await promise;
+    toast(describeResult(res));
+    if (res && res.ok && res.imported > 0) nav.go('list');
+    return res;
+  }
+
   function renderUpload() {
     const fileInput = h('input', { type: 'file', accept: 'image/*' });
     const status = h('p', { class: 'muted', style: 'text-align:center', text: t('scan_hint') });
     fileInput.addEventListener('change', () => {
       const f = fileInput.files && fileInput.files[0];
       if (!f) return;
-      decodeImageFile(f).then((uri) => {
-        const p = uri ? parseOtpauthURI(uri.trim()) : null;
-        if (!p) { status.textContent = t('qr_not_found'); status.style.color = 'var(--danger)'; return; }
-        addEntry({
-          type: p.type, issuer: p.issuer, account: p.account, secret: p.secret.toUpperCase(),
-          algorithm: p.algorithm, digits: p.digits, period: p.period, counter: p.counter
-        }).then(() => nav.go('list'));
+      decodeImageFile(f).then(async (uri) => {
+        if (!uri) { status.textContent = t('qr_not_found'); status.style.color = 'var(--danger)'; return; }
+        await runImport(importQRData(uri));
       });
     });
     mount(body, seg,
       h('p', { class: 'muted', style: 'text-align:center', text: t('upload_file') }),
       fileInput, status,
+      h('button', { class: 'btn ghost', onclick: () => setMode('manual'), text: t('enter_manually') })
+    );
+  }
+
+  // ---- Импорт от файл: наш .json бекъп ИЛИ Aegis JSON експорт ----
+  function renderFile() {
+    const jsonIn = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none' });
+    jsonIn.addEventListener('change', () => {
+      const f = jsonIn.files && jsonIn.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = () => { runImport(importJsonText(r.result)); jsonIn.value = ''; };
+      r.readAsText(f);
+    });
+    const aegisIn = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none' });
+    aegisIn.addEventListener('change', () => {
+      const f = aegisIn.files && aegisIn.files[0]; if (!f) return;
+      importAegisFile(f, (res) => { if (res && res.ok && res.imported > 0) nav.go('list'); });
+      aegisIn.value = '';
+    });
+    mount(body, seg,
+      h('p', { class: 'muted', style: 'text-align:center', text: t('import_file_hint') }),
+      h('button', { class: 'btn', onclick: () => jsonIn.click(), text: '⬆ ' + t('import_json') }), jsonIn,
+      h('button', { class: 'btn', onclick: () => aegisIn.click(), text: '⬆ ' + t('import_aegis') }), aegisIn,
+      h('p', { class: 'muted', style: 'font-size:.85em', text: t('import_aegis_hint') }),
       h('button', { class: 'btn ghost', onclick: () => setMode('manual'), text: t('enter_manually') })
     );
   }
@@ -182,16 +216,10 @@ export function renderAdd(root, nav) {
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const found = jsQR(img.data, img.width, img.height);
-            if (found && found.data) {
-              const p = parseOtpauthURI(found.data.trim());
-              if (p) {
-                stopCamera();
-                addEntry({
-                  type: p.type, issuer: p.issuer, account: p.account, secret: p.secret.toUpperCase(),
-                  algorithm: p.algorithm, digits: p.digits, period: p.period, counter: p.counter
-                }).then(() => nav.go('list'));
-                return;
-              }
+            if (found && found.data && isImportableQR(found.data)) {
+              stopCamera();
+              runImport(importQRData(found.data));   // единичен otpauth ИЛИ Google миграция (много акаунта)
+              return;
             }
           }
           rafId = requestAnimationFrame(scan);

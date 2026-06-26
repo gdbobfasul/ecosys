@@ -166,6 +166,7 @@ async function startNative(sr, lang, onInterim) {
     let segDone = false;      // текущият сегмент вече е приключен (анти-дубъл)
     let safetyTimer = null;
     let restartTimer = null;
+    let stopGrace = null;     // кратко изчакване на ФИНАЛНИЯ резултат (носи последните думи)
 
     const MAX_SESSION_MS = 180000; // абсолютен таван на едно слушане
     const MAX_EMPTY_SEGMENTS = 2;  // 2 поредни празни сегмента → спри да чакаш
@@ -187,6 +188,7 @@ async function startNative(sr, lang, onInterim) {
       _nativeForceStop = null;
       if (safetyTimer) { clearTimeout(safetyTimer); safetyTimer = null; }
       if (restartTimer) { clearTimeout(restartTimer); restartTimer = null; }
+      if (stopGrace) { clearTimeout(stopGrace); stopGrace = null; }
       try { if (typeof sr.removeAllListeners === 'function') await sr.removeAllListeners(); } catch (_) {}
     }
     async function finish() {
@@ -197,9 +199,15 @@ async function startNative(sr, lang, onInterim) {
       await cleanup();
       resolve(text);
     }
-    // МОМЕНТАЛЕН стоп отвън (натиснат 🎤/Изпрати) → приключи ВЕДНАГА с текущия текст.
-    // Поправя „забиването ~1 минута, докато микрофонът угасне".
-    _nativeForceStop = () => { _nativeStopRequested = true; finish(); };
+    // Стоп отвън (натиснат 🎤/Изпрати): спираме разпознаването и даваме КРАТКА глътка време
+    // (350мс) за финалния резултат, който носи ПОСЛЕДНИТЕ 1–2 думи (иначе се режеха). Ако
+    // финалът дойде по-рано (start() резолва) — приключваме веднага. 350мс ≪ старото „1 минута".
+    _nativeForceStop = () => {
+      _nativeStopRequested = true;
+      try { if (typeof sr.stop === 'function') sr.stop(); } catch (_) {}
+      if (stopGrace) clearTimeout(stopGrace);
+      stopGrace = setTimeout(() => finish(), 350);
+    };
 
     // Край на ЕДИН сегмент (Android спря след тишина/кратка реплика) → реши: край или рестарт.
     function onSegmentStopped() {
@@ -222,11 +230,19 @@ async function startNative(sr, lang, onInterim) {
       try {
         const res = await sr.start({ language: lang, maxResults: 5, partialResults: true, popup: false });
         const matches = (res && res.matches) || [];
-        if (matches.length) {
-          // Платформа, която връща финала директно тук (без отделно 'stopped') → приключи сегмента.
-          seg = String(matches[0] || '');
-          if (onInterim) { try { onInterim(fullText()); } catch (_) {} }
-          setTimeout(() => { if (!settled) onSegmentStopped(); }, 0);
+        const finalTxt = matches.length ? String(matches[0] || '') : '';
+        if (finalTxt) {
+          if (stopGrace) { clearTimeout(stopGrace); stopGrace = null; }
+          if (segDone) {
+            // Сегментът вече е приключен (от 'stopped') с по-кратък partial → финалът е по-пълен.
+            // Долепяме разликата (mergeText маха припокриването) → връщаме отрязаните последни думи.
+            accumulated = mergeText(accumulated, finalTxt);
+            if (onInterim) { try { onInterim(fullText()); } catch (_) {} }
+          } else {
+            if (finalTxt.length >= seg.length) seg = finalTxt;  // финалът е най-пълният текст
+            if (onInterim) { try { onInterim(fullText()); } catch (_) {} }
+            if (!settled) onSegmentStopped();                   // приключи сегмента С финала
+          }
         }
         // иначе чакаме 'partialResults' + 'stopped' (Android)
       } catch (e) {

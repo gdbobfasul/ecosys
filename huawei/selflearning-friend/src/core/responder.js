@@ -12,6 +12,7 @@ import { addMemory, recall, updateMemory, markUsed, listMemory, tokenize } from 
 import { getState } from './storage.js';
 import { buildPrompt } from './ai-client.js';
 import { parseTask, intakeAndRun, askMeFromLearned } from './tasks.js';
+import { setLearningEnabled } from './learning-loop.js';
 import { findInSubjects, getSubject, addNote, addInterest } from './subjects.js';
 import { teach } from './teacher.js';
 import { dontKnow, frameAiSuggestion } from './honesty.js';
@@ -167,6 +168,24 @@ export async function respond(userText) {
       } catch (_) {
         return { text: 'Преводът се обърка. Провери връзката и пробвай пак.', source: 'rule' };
       }
+    }
+  }
+
+  // 0.6) ОТРИЦАНИЕ „НЕ спирай да учиш [за X]" / „не преставай да учиш" → потребителят иска
+  //      ПРОДЪЛЖИ да учиш (а НЕ да спреш). Важно е да се хване ТУК, защото иначе „не …" се
+  //      лапва от корекционния шаблон („не, …") и роботът разбираше точно обратното — „спирай".
+  {
+    const m = text.match(/^не\s+(?:спирай|спри|преставай|перествай|перестай)\s+(?:да\s+)?(?:уч(?:иш|а|ете)?|се\s+учиш)(?:\s+(?:повече|още))?(?:\s+(?:за|по|на\s+тема)\s+(.+))?\s*[!.?]*$/i);
+    if (m) {
+      try { setLearningEnabled(true); } catch (_) {}
+      const topic = (m[1] || '').replace(/[?!.…]+$/u, '').trim();
+      if (topic) {
+        try {
+          const { res } = await intakeAndRun('научи за ' + topic);
+          return { text: `Няма да спирам — продължавам да уча за „${topic}".\n\n${res.text}`, source: res.ok ? 'source' : 'rule', learned: !!res.learned };
+        } catch (_) { /* пада към общото потвърждение */ }
+      }
+      return { text: 'Добре, няма да спирам да уча. Продължавам.', source: 'rule' };
     }
   }
 

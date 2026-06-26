@@ -10,7 +10,7 @@ enforceLock(); // 4-дневно пробно заключване (виж core/
 import { THEME } from './theme.js';
 import { CSS } from './ui/styles.js';
 import { applyDir, hasLangChosen } from './core/i18n.js';
-import { hasVault, loadSettings, session, lock } from './core/storage.js';
+import { hasVault, loadSettings, session, lock, autoLockSeconds } from './core/storage.js';
 
 import { renderLanguage } from './screens/language.js';
 import { renderSetup } from './screens/setup.js';
@@ -83,11 +83,11 @@ export const nav = {
 let lockTimer = null;
 function resetLockTimer() {
   if (lockTimer) { clearTimeout(lockTimer); lockTimer = null; }
-  const mins = loadSettings().autoLockMin;
-  if (!session.unlocked || !mins || mins <= 0) return;
+  const sec = autoLockSeconds();
+  if (!session.unlocked || !sec || sec <= 0) return;
   lockTimer = setTimeout(() => {
     if (session.unlocked) nav.lock();
-  }, mins * 60 * 1000);
+  }, sec * 1000);
 }
 
 function bootstrap() {
@@ -99,8 +99,8 @@ function bootstrap() {
   // Заключи при отиване на заден план (живот на приложението).
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && session.unlocked) {
-      const mins = loadSettings().autoLockMin;
-      if (mins && mins > 0) nav.lock();
+      const sec = autoLockSeconds();
+      if (sec && sec > 0) nav.lock();
     }
   });
   nav.start();
