@@ -29,19 +29,41 @@ run_cmd()     { echo ""; echo -e "${YELLOW}► $*${NC}"; echo ""; "$@"; press_en
 # Печата в КРАЯ ясен ред: коя опция/скрипт е пуснат, на кой сървър е качено/
 # изпълнено, дроп на база данни (да/не) и резултат. Ползва глобалните CURRENT_OPT,
 # PICK_SRV / PICK_USER / PICK_PORT, REMOTE, RC и DB_DROP_INFO (сетват се в блока).
+# Връща ЗАГЛАВИЕТО на точка от менюто (от MENU_INDEX, пълнен от item()). По CURRENT_OPT по подр.
+# Така завършващите съобщения говорят за ТОЧКАТА (какво прави), а НЕ за името на скрипта-файл.
+menu_title() {
+    local n="${1:-$CURRENT_OPT}" e rest
+    for e in "${MENU_INDEX[@]}"; do
+        case "$e" in
+            "${n}|"*) rest="${e#*|}"; printf '%s' "${rest%%|*}"; return ;;
+        esac
+    done
+    printf 'точка %s' "$n"
+}
+
+# Интелигентно завършващо съобщение: ТОЧКАТА от менюто (номер + какво прави) + МАШИНАТА,
+# на която се изпълни — НИКОГА името на скрипта-файл. За локални точки подай втори аргумент
+# (напр. 'тази машина (локално)'); по подразбиране е избраният сървър PICK_SRV.
+menu_done() {
+    local rc="${1:-0}" where="${2:-${PICK_SRV:-тази машина}}"
+    if [ "${rc}" -eq 0 ]; then
+        echo -e "  ${GREEN}✓ Точка ${CURRENT_OPT:-?} — $(menu_title) · приключи успешно на ${BOLD}${where}${NC}${GREEN}.${NC}"
+    else
+        echo -e "  ${RED}✗ Точка ${CURRENT_OPT:-?} — $(menu_title) · грешка (exit ${rc}) на ${where}.${NC}"
+    fi
+}
+
 print_run_summary() {
-    local sname="${REMOTE##*/server/}"          # махни 'sudo …/deploy-scripts/server/' префикса
     local bar="════════════════════════════════════════════════════════════════"
     echo ""
     echo -e "${BOLD}${CYAN}${bar}${NC}"
-    echo -e "${BOLD}${CYAN}▶  ИЗПЪЛНЕН СКРИПТ — опция ${CURRENT_OPT:-?}${NC}"
-    echo -e "    Скрипт:      ${BOLD}${sname}${NC}"
-    echo -e "    Качено на:   ${BOLD}${PICK_SRV}${NC}  ${GRAY}(${PICK_USER}@${PICK_SRV}:${PICK_PORT})${NC}"
+    echo -e "${BOLD}${CYAN}▶  ТОЧКА ${CURRENT_OPT:-?} — $(menu_title)${NC}"
+    echo -e "    Машина:      ${BOLD}${PICK_SRV}${NC}  ${GRAY}(${PICK_USER}@${PICK_SRV}:${PICK_PORT})${NC}"
     echo -e "    База данни:  ${DB_DROP_INFO:-не}"
     if [ "${RC:-1}" -eq 0 ]; then
-        echo -e "    Резултат:    ${GREEN}✓ успех (exit 0)${NC}"
+        echo -e "    Резултат:    ${GREEN}✓ успех (exit 0) — точка ${CURRENT_OPT:-?} приключи на ${PICK_SRV}${NC}"
     else
-        echo -e "    Резултат:    ${RED}✗ грешка (exit ${RC})${NC}"
+        echo -e "    Резултат:    ${RED}✗ грешка (exit ${RC}) — точка ${CURRENT_OPT:-?} на ${PICK_SRV}${NC}"
     fi
     echo -e "${BOLD}${CYAN}${bar}${NC}"
 }
@@ -362,9 +384,9 @@ show_menu() {
     item "61" "Чат — авто-отговори на системните" \
         "Системните отговарят на реални хора: поздрав / как си / работа / 20+ комплимента." \
         "Разпознава намерение, отговаря на езика на държавата (15 езика)."
-    item "62" "Find Best Price — скрапер (Google ≤3/ден)" \
-        "Търси продукти в онлайн магазини по държави → пълни базата (магазини+продукти+цени)." \
-        "САМО текст, без картинки; маркира is_system. Твърд таван 3 Google заявки/ден."
+    item "62" "Find Best Price — попълни базата (системно / Google)" \
+        "1) системен пълнеж БЕЗ Google (всички категории+услуги+части+ZERO PRICE, идемпотентно)." \
+        "2) Google скрапер (реални цени, таван 3 заявки/ден). И двата маркират is_system."
     item "63" "WhereNoBiz — попълни липсващи бизнеси" \
         "Системни постове за липсващ бизнес по държави; описание на езика на държавата." \
         "Маркира is_system; системният няма телефон (не се договаря). Google до 1/ден."
@@ -417,6 +439,8 @@ show_menu() {
 
 run_choice() {
     CURRENT_OPT="$1"                                  # за print_run_summary (коя опция тече)
+    PICK_SRV=""; PICK_USER=""; PICK_PORT=""           # нулиране → завършващият банер знае на КОЯ машина тече
+                                                       # тази точка (pick_target пак ги сетва при ремоут точките)
     DB_DROP_INFO="не — този скрипт не трие база данни" # по подразбиране; блоковете с ресет го презаписват
     case "$1" in
         # ── DEPLOY ──
@@ -451,8 +475,10 @@ run_choice() {
                 read -p "  Server (IP или hostname): " S
                 read -p "  Username: " U
                 read -p "  SSH port: " P
+                PICK_SRV="$S"; PICK_USER="$U"; PICK_PORT="$P"   # за завършващия банер (на коя машина)
                 run_cmd ./deploy-scripts/01-bootstrap.sh "$S" "$U" "$P"
             elif [ -n "${BS_ARR[$PICK]}" ]; then
+                PICK_SRV="${BS_SERVER_ARR[$PICK]}"; PICK_USER="${BS_USER_ARR[$PICK]}"; PICK_PORT="${BS_PORT_ARR[$PICK]}"
                 run_cmd ./deploy-scripts/01-bootstrap.sh "${BS_SERVER_ARR[$PICK]}" "${BS_USER_ARR[$PICK]}" "${BS_PORT_ARR[$PICK]}"
             else
                 echo "Невалиден избор"; press_enter
@@ -470,8 +496,8 @@ run_choice() {
             echo ""
             read -p "  Избери [1-2]: " SSHPICK
             case "$SSHPICK" in
-                1) run_cmd ssh -v -p 2222 root@take.offbitch.com ;;
-                2) run_cmd ssh -i ~/.ssh/id_ed25519 -p 2222 deploy@192.168.0.108 ;;
+                1) PICK_SRV="take.offbitch.com"; PICK_USER="root"; PICK_PORT="2222"; run_cmd ssh -v -p 2222 root@take.offbitch.com ;;
+                2) PICK_SRV="192.168.0.108"; PICK_USER="deploy"; PICK_PORT="2222"; run_cmd ssh -i ~/.ssh/id_ed25519 -p 2222 deploy@192.168.0.108 ;;
                 *) echo "  Отказано"; press_enter ;;
             esac
             ;;
@@ -957,11 +983,11 @@ run_choice() {
                 NUSERS="${NUSERS:-20}"
                 if printf '%s' "$NUSERS" | grep -qE '^[0-9]+$'; then
                     REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/chat && node scripts/fill-system-users.js ${NUSERS}'"
-                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fill-system-users.js ${NUSERS}${NC}"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} — точка ${CURRENT_OPT} (на машината по-горе)${NC}"
                     ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                     RC=$?
                     print_run_summary
-                    [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — ${NUSERS} системни потребители на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+                    menu_done "$RC"
                 else echo "  Невалиден брой."; fi
             else echo "  Отказано"; fi
             press_enter
@@ -974,11 +1000,11 @@ run_choice() {
                 NREP="${NREP:-500}"
                 if printf '%s' "$NREP" | grep -qE '^[0-9]+$'; then
                     REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/chat && node scripts/fill-system-replies.js ${NREP}'"
-                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fill-system-replies.js ${NREP}${NC}"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} — точка ${CURRENT_OPT} (на машината по-горе)${NC}"
                     ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                     RC=$?
                     print_run_summary
-                    [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — авто-отговорите минаха на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+                    menu_done "$RC"
                 else echo "  Невалиден брой."; fi
             else echo "  Отказано"; fi
             press_enter
@@ -999,7 +1025,7 @@ run_choice() {
                         if printf '%s' "$NQ" | grep -qE '^[0-9]+$'; then NQ_ARG=" $NQ"; else echo "  Невалиден брой."; press_enter; fi
                     fi
                     REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/find-best-price && node scripts/fbp-scraper.js${NQ_ARG}'"
-                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fbp-scraper.js${NQ_ARG}${NC}"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} — точка ${CURRENT_OPT} (на машината по-горе)${NC}"
                 else
                     read -p "  Брой записи на категория на държава [Enter = 2]: " NPER
                     NPER_ARG=""
@@ -1007,12 +1033,12 @@ run_choice() {
                         if printf '%s' "$NPER" | grep -qE '^[0-9]+$'; then NPER_ARG=" $NPER"; else echo "  Невалиден брой."; press_enter; fi
                     fi
                     REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/find-best-price && node scripts/fill-system-fbp.js${NPER_ARG}'"
-                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fill-system-fbp.js${NPER_ARG}${NC}"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} — точка ${CURRENT_OPT} (на машината по-горе)${NC}"
                 fi
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
                 print_run_summary
-                [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — пълненето мина на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+                menu_done "$RC"
             else echo "  Отказано"; fi
             press_enter
             ;;
@@ -1024,11 +1050,11 @@ run_choice() {
                 NWNB="${NWNB:-20}"
                 if printf '%s' "$NWNB" | grep -qE '^[0-9]+$'; then
                     REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/WhereNoBiz && node scripts/wnb-filler.js ${NWNB}'"
-                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → wnb-filler.js ${NWNB}${NC}"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} — точка ${CURRENT_OPT} (на машината по-горе)${NC}"
                     ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                     RC=$?
                     print_run_summary
-                    [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — WNB попълнен на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+                    menu_done "$RC"
                 else echo "  Невалиден брой."; fi
             else echo "  Отказано"; fi
             press_enter
@@ -1041,11 +1067,11 @@ run_choice() {
                 NHLB="${NHLB:-20}"
                 if printf '%s' "$NHLB" | grep -qE '^[0-9]+$'; then
                     REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/House-Look-Book && node scripts/hlb-filler.js ${NHLB}'"
-                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → hlb-filler.js ${NHLB}${NC}"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} — точка ${CURRENT_OPT} (на машината по-горе)${NC}"
                     ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                     RC=$?
                     print_run_summary
-                    [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — HLB модели на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+                    menu_done "$RC"
                 else echo "  Невалиден брой."; fi
             else echo "  Отказано"; fi
             press_enter
@@ -1452,8 +1478,25 @@ print_start_banner() {
     local RULE="════════════════════════════════════════════════════════════════════════════════"
     echo ""
     echo -e "${PURPLE}${RULE}${NC}"
-    echo -e "${PURPLE}${BOLD}                              ▶  СТАРТИРА СКРИПТ — опция ${opt}${NC}"
+    echo -e "${PURPLE}${BOLD}  ▶  СТАРТИРА ТОЧКА ${opt} — $(menu_title "$opt")${NC}"
     echo -e "${PURPLE}${RULE}${NC}"
+    echo ""
+}
+
+# Завършващ банер за ВСЯКА точка от менюто (вика се централно след run_choice). Казва коя
+# ТОЧКА (номер + какво прави) приключи и на КОЯ МАШИНА — никога име на скрипт-файл. Машината е
+# избраният сървър (ако точката е ремоут) или „тази машина (локално)" (билд/локални точки).
+print_end_banner() {
+    local opt="$1"
+    local TEAL=$'\033[1;36m'
+    local RULE="════════════════════════════════════════════════════════════════════════════════"
+    local where
+    if [ -n "$PICK_SRV" ]; then where="${PICK_SRV}  (${PICK_USER}@${PICK_SRV}:${PICK_PORT})"; else where="тази машина (локалните точки) — за деплой целевият сървър е на реда ► по-горе"; fi
+    echo ""
+    echo -e "${TEAL}${RULE}${NC}"
+    echo -e "${TEAL}${BOLD}  ■  ПРИКЛЮЧИ ТОЧКА ${opt} — $(menu_title "$opt")${NC}"
+    echo -e "${TEAL}     Машина: ${BOLD}${where}${NC}"
+    echo -e "${TEAL}${RULE}${NC}"
     echo ""
 }
 
@@ -1471,4 +1514,9 @@ while true; do
         *) print_start_banner "$choice" ;;
     esac
     run_choice "$choice"
+    # завършващ банер за ВСЯКА реална точка: коя точка + на коя машина (никога име на скрипт)
+    case "$choice" in
+        ''|q|Q|quit|exit|изход) : ;;
+        *) print_end_banner "$choice" ;;
+    esac
 done
