@@ -1,3 +1,5 @@
+import { enforceLock } from './core/lock.js';
+enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // main.js — входна точка: рутиране между екраните + долна навигация.
 import './ui/styles.css';
 import { el, clear } from './ui/dom.js';

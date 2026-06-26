@@ -1,3 +1,5 @@
+import { enforceLock } from './core/lock.js';
+enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // Входна точка на играта.
 // Тук конфигурираме Phaser и регистрираме сцените.
 import Phaser from 'phaser';

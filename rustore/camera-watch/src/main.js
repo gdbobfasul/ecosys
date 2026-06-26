@@ -1,3 +1,5 @@
+import { enforceLock } from './core/lock.js';
+enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // main.js — буут + мъничък рутер между екраните.
 // Бутва бързо: TF.js НЕ се внася тук (lazy-load в recognizer.js при първа нужда).
 

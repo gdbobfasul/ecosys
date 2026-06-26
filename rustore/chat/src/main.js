@@ -1,3 +1,5 @@
+import { enforceLock } from './core/lock.js';
+enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // Bootstrap на обвивката.
 //
 // В ПРОДУКЦИЯ Capacitor зарежда чата директно през `server.url`

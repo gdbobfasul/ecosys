@@ -1,3 +1,5 @@
+import { enforceLock } from './core/lock.js';
+enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // Входна точка: инициализира engine, лидерборд, контролите и оркестрира
 // сцените меню -> игра -> край.
 import * as THREE from 'three';

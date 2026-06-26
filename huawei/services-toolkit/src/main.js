@@ -1,3 +1,5 @@
+import { enforceLock } from './core/lock.js';
+enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 import './core/styles.css';
 import { tools, findTool } from './core/registry.js';
 import { iconHTML } from './core/icons.js';

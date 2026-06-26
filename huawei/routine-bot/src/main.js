@@ -1,3 +1,5 @@
+import { enforceLock } from './core/lock.js';
+enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // Входна точка + прост рутер. Всичко е самостоятелно: без мрежа освен
 // безплатното keyless Open-Meteo за времето.
 import { injectStyles } from './ui/styles.js';

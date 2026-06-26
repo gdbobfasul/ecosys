@@ -1,3 +1,5 @@
+import { enforceLock } from './core/lock.js';
+enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // main.js — входна точка + рутер със състояния:
 //   0) засечена смяна на устройство → lockdown (анти-кражба)
 //   1) НЕ е кръстен → раждане (birth)

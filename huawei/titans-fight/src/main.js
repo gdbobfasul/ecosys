@@ -1,3 +1,5 @@
+import { enforceLock } from './core/lock.js';
+enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 import Phaser from 'phaser';
 import { BootScene } from './scenes/boot.js';
 import { LanguageScene } from './scenes/language.js';

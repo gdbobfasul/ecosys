@@ -1,3 +1,5 @@
+import { enforceLock } from './core/lock.js';
+enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // Дуел на ринга — самостоятелен мобилен билд (Vite + Capacitor).
 // Вгражда оригиналния browser-движок (vanilla JS, DOM + WebM видеа) локално,
 // без портали/бекенд/реклами/плащания. Работи офлайн.

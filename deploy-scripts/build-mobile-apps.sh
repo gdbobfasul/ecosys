@@ -54,6 +54,42 @@ inject_version() {
   echo -e "  ${GREEN}✓ версия: versionCode ${APK_VERSION_CODE} · versionName ${APK_VERSION_NAME}${NC}"
 }
 
+# Икона на приложението: генерира launcher иконите от store/icon.svg в android/res (СЛЕД cap
+# sync, защото android/ се пресъздава всеки билд → ръчна икона там не оцелява, затова е тук, в
+# кода). Ползва sharp (libvips) за SVG→PNG в 5-те плътности. Маха adaptive XML (anydpi-v26),
+# за да ползва Android директно нашето PNG навсякъде. Без store/icon.svg или без sharp —
+# тихо пропуска (остава дефолтната икона), НЕ чупи билда.
+inject_app_icon() {
+  local src="store/icon.svg"
+  [ -f "$src" ] || { echo -e "  ${GRAY}↷ икона: няма store/icon.svg — оставям дефолтната${NC}"; return 0; }
+  local resdir="android/app/src/main/res"
+  [ -d "$resdir" ] || return 0
+  node -e '
+    const fs=require("fs"), path=require("path");
+    let sharp; try{ sharp=require("sharp"); }catch(e){ process.exit(42); }
+    const src=process.argv[1], res=process.argv[2];
+    const dens={ "mipmap-mdpi":48,"mipmap-hdpi":72,"mipmap-xhdpi":96,"mipmap-xxhdpi":144,"mipmap-xxxhdpi":192 };
+    (async()=>{
+      const svg=fs.readFileSync(src);
+      for(const dir of Object.keys(dens)){
+        const size=dens[dir];
+        const out=path.join(res,dir); fs.mkdirSync(out,{recursive:true});
+        const png=await sharp(svg,{density:512}).resize(size,size).png().toBuffer();
+        fs.writeFileSync(path.join(out,"ic_launcher.png"),png);
+        fs.writeFileSync(path.join(out,"ic_launcher_round.png"),png);
+        fs.writeFileSync(path.join(out,"ic_launcher_foreground.png"),png);
+      }
+      try{ fs.rmSync(path.join(res,"mipmap-anydpi-v26"),{recursive:true,force:true}); }catch(e){}
+      process.exit(0);
+    })().catch(()=>process.exit(43));
+  ' "$src" "$resdir"
+  local rc=$?
+  if [ "$rc" = 0 ]; then echo -e "  ${GREEN}✓ икона генерирана от store/icon.svg (5 плътности)${NC}"
+  elif [ "$rc" = 42 ]; then echo -e "  ${YELLOW}↷ икона: sharp липсва — оставям дефолтната${NC}"
+  else echo -e "  ${YELLOW}! икона: грешка при генериране — оставям дефолтната${NC}"; fi
+  return 0
+}
+
 # Заздравяване на gradle веригата за инструментите (СЛЕД cap sync, защото android/ се пресъздава):
 #  1) Някои Capacitor плъгини (напр. @aparajita/capacitor-secure-storage) декларират Java 21 в
 #     своя android/build.gradle. Билд средата е JDK 17 → „invalid source release: 21". Сваляме
@@ -292,6 +328,7 @@ build_one() {
       harden_gradle_toolchain      # wrapper 8.7 + Java 17 за всички subprojects (плъгини с Java 21)
       inject_android_permissions   # добавя CAMERA/RECORD_AUDIO и т.н. от android-permissions.txt
       inject_version               # versionCode (монотонен) + versionName → Android вижда ъпдейт
+      inject_app_icon              # икона от store/icon.svg → android/res (sharp), ако има
       echo -e "  ${CYAN}→ gradle assembleDebug (APK)…${NC}"
       (
         cd android || exit 6

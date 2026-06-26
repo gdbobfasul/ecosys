@@ -1,3 +1,5 @@
+import { enforceLock } from './core/lock.js';
+enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // Входна точка — мъничък рутер между екраните + bootstrap на планировчика.
 import { injectStyles, el } from './ui/styles.js';
 import { loadState, defaultState } from './core/storage.js';
