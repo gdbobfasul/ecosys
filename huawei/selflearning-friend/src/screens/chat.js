@@ -11,6 +11,7 @@ import {
   captureSampleFeatures, addEnrollmentSample, matchOwnerVoice, enrollmentProgress
 } from '../core/voiceprint.js';
 import { APP_VERSION } from '../version.js';
+import { serverInfo } from '../core/server-link.js';
 import { t, tf } from '../core/i18n.js';
 
 const SRC_LABEL_KEY = {
@@ -54,6 +55,16 @@ export function renderChat(root, { navigate, rerender }) {
   const versionLine = el('div', {
     class: 'muted', style: 'font-size:12px;margin:-4px 0 8px 2px;opacity:.75'
   }, tf('chat_version', APP_VERSION));
+
+  // Ред „Към какво съм свързан“: ако има сървър — домейн (+ модел, ако е обявен); иначе „локално“.
+  // Така веднага виждаш дали ползваш виртуалката и кой модел, без да ходиш в „Знание“.
+  const _si = serverInfo();
+  const linkTxt = !_si.configured
+    ? t('chat_link_local')
+    : (_si.model ? tf('chat_link_model', _si.domain, _si.model) : tf('chat_link_srv', _si.domain));
+  const linkLine = el('div', {
+    class: 'muted', style: 'font-size:12px;margin:-2px 0 8px 2px;opacity:.8'
+  }, linkTxt);
 
   // --- ГЛАСОВ ПРОФИЛ (МЕК сигнал) -----------------------------------------
   // След успешна гласова реплика на собственика: или обучаваме профила (докато
@@ -338,6 +349,7 @@ export function renderChat(root, { navigate, rerender }) {
 
   root.appendChild(header);
   root.appendChild(versionLine);
+  root.appendChild(linkLine);
   root.appendChild(hintBar);
   if (convBar) root.appendChild(convBar);
   root.appendChild(convStatus);

@@ -77,7 +77,9 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])); }
   const TYPES = ['local_hands', 'verify', 'other'];
   function typeName(x) { return t('task.type_' + x); }
-  function statusName(s) { return t('task.s_' + (s === 'preparing' ? 'preparing' : s)) || s; }
+  // Статусите в базата са с долна черта (in_progress), а ключовете на преводите са без нея
+  // (task.s_inprogress) → махаме чертата, за да съвпаднат (иначе баджът показваше суров „in_progress").
+  function statusName(s) { return t('task.s_' + String(s == null ? '' : s).replace(/_/g, '')) || s; }
 
   function fillSelectsI18n() {
     var sel = document.getElementById('lang'); if (sel && window.KCY_I18N) { sel.innerHTML = ''; KCY_I18N.supported.forEach(function (l) { var o = document.createElement('option'); o.value = l.code; o.textContent = l.name; sel.appendChild(o); }); sel.value = KCY_I18N.lang; }

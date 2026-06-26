@@ -42,6 +42,40 @@ export function serverFeatures() {
   return (s.features && typeof s.features === 'object') ? s.features : {};
 }
 
+// Обобщена информация за връзката (за UI): домейн, режим (local/cloud), име на модела.
+export function serverInfo() {
+  const s = (getState().settings && getState().settings.server) || {};
+  return {
+    configured: !!((s.domain || '').trim() && (s.token || '').trim()),
+    domain: (s.domain || '').trim(),
+    aiMode: (s.aiMode || '').trim(),
+    model: (s.aiModel || '').trim()
+  };
+}
+
+// Проверка НА ЖИВО: пита {base}/health и казва дали сървърът отговаря СЕГА. Връща
+// { ok, status?, error?, model } — моделът е този, обявен при свързването (или върнат от health).
+// Таймаут през Promise.race (CapacitorHttp няма AbortController).
+export async function pingHealth(ms = 8000) {
+  const u = currentUrls();
+  if (!u.ok) return { ok: false, error: 'няма връзка (липсва домейн или token)', model: '' };
+  try {
+    const res = await Promise.race([
+      fetch(u.health, { headers: { Accept: 'application/json' } }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+    ]);
+    if (!res || !res.ok) {
+      return { ok: false, status: res ? res.status : 0, error: `сървърът върна ${res ? res.status : 'нищо'}`, model: serverInfo().model };
+    }
+    let data = null;
+    try { data = await res.json(); } catch (_) { try { data = JSON.parse(await res.text()); } catch (__) { data = null; } }
+    const model = (data && (data.model || data.aiModel)) || serverInfo().model || '';
+    return { ok: true, status: res.status, data: data || {}, model };
+  } catch (e) {
+    return { ok: false, error: /timeout/i.test(String(e && e.message)) ? 'няма отговор навреме (таймаут)' : String(e && e.message || e), model: serverInfo().model };
+  }
+}
+
 // Сглобява пълните URL-та от домейн+token. Връща { ok, base, sync, listen, health }.
 export function buildUrls(domain, token) {
   const d = normalizeDomain(domain);
@@ -157,6 +191,11 @@ async function attemptConnect(url, timeoutMs) {
     // Запомни и features (ако ги има) — само информативно за UI.
     const st = getState();
     st.settings.server.features = (cfg.features && typeof cfg.features === 'object') ? cfg.features : {};
+    // Режим (local/cloud) и ИМЕ НА МОДЕЛА, обявени от сървъра — за да ги покажем в апа
+    // („към кой модел съм свързан във виртуалката“). Моделът идва от connection.bot.token
+    // (aiModel), а ако липсва там — от teacher.model.
+    st.settings.server.aiMode = String(cfg.aiMode || '').trim();
+    st.settings.server.aiModel = String(cfg.aiModel || (cfg.teacher && cfg.teacher.model) || '').trim();
     // Ако сървърът обявява СВОЙ AI (teacher endpoint) → прилагаме го, за да ползва апът МОДЕЛА НА
     // СЪРВЪРА (tier1 в teacher.js), вместо облачния Pollinations. Само ако наистина е подаден.
     if (cfg.teacher && typeof cfg.teacher === 'object' && cfg.teacher.endpoint) {

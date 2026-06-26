@@ -66,6 +66,31 @@ export function ttsAvailable() {
 //  STT — разпознаване на реч (глас → текст)
 // =========================================================================
 
+// Долепя `add` към `base`, като МАХА ПРИПОКРИВАЩАТА се част. Android често връща в нов
+// сегмент ПОВТОРЕНИЕ на вече казаното (рестартираме разпознаването при всяка пауза) → без
+// това се получаваше дубъл: „искам да започнеш да учиш искам да започнеш да учиш за…“.
+// Работи по ДУМИ: ако опашката на `base` съвпада с началото на `add`, режем застъпването.
+function mergeText(base, add) {
+  const a = String(base || '').replace(/\s+/g, ' ').trim();
+  const b = String(add || '').replace(/\s+/g, ' ').trim();
+  if (!a) return b;
+  if (!b) return a;
+  if (b === a) return a;                 // точен дубъл на целия сегмент
+  if (b.startsWith(a)) return b;         // новият сегмент е КУМУЛАТИВЕН (съдържа стария) → замести
+  if (a.endsWith(b)) return a;           // новият сегмент повтаря само опашката → нищо ново
+  const aw = a.split(' ');
+  const bw = b.split(' ');
+  const max = Math.min(aw.length, bw.length);
+  for (let k = max; k > 0; k--) {        // най-голямо застъпване: последни k думи на a == първи k на b
+    let same = true;
+    for (let i = 0; i < k; i++) {
+      if (aw[aw.length - k + i].toLowerCase() !== bw[i].toLowerCase()) { same = false; break; }
+    }
+    if (same) return aw.concat(bw.slice(k)).join(' ');
+  }
+  return a + ' ' + b;                    // няма застъпване → просто долепи
+}
+
 let _webRecog = null;       // активна Web Speech инстанция (за stop)
 let _nativeListening = false;
 let _nativeStopRequested = false; // потребителят натисна „стоп" → не рестартирай сегмента
@@ -146,13 +171,14 @@ async function startNative(sr, lang, onInterim) {
     const MAX_EMPTY_SEGMENTS = 2;  // 2 поредни празни сегмента → спри да чакаш
 
     function fullText() {
-      return (accumulated + ' ' + seg).replace(/\s+/g, ' ').trim();
+      return mergeText(accumulated, seg);
     }
-    // Прибира текущия сегмент в натрупания текст. Връща true, ако сегментът е бил празен.
+    // Прибира текущия сегмент в натрупания текст (с махане на припокриването — виж mergeText).
+    // Връща true, ако сегментът е бил празен.
     function commitSegment() {
       const s = seg.trim();
       seg = '';
-      if (s) { accumulated = (accumulated + ' ' + s).replace(/\s+/g, ' ').trim(); emptyStreak = 0; return false; }
+      if (s) { accumulated = mergeText(accumulated, s); emptyStreak = 0; return false; }
       emptyStreak++;
       return true;
     }
@@ -179,10 +205,12 @@ async function startNative(sr, lang, onInterim) {
     function onSegmentStopped() {
       if (settled || segDone) return;
       segDone = true;
-      const wasEmpty = commitSegment();
-      if (_nativeStopRequested) return finish();              // ръчен стоп
-      if (accumulated && wasEmpty) return finish();           // казал е нещо и после пауза → край
-      if (emptyStreak >= MAX_EMPTY_SEGMENTS) return finish(); // нищо не се чува → спри да чакаш
+      commitSegment();
+      if (_nativeStopRequested) return finish();              // ръчен стоп (🎤 / Изпрати)
+      // НЕ приключваме на ПЪРВАТА пауза (така можеш да си поемеш дъх насред изречението —
+      // преди това „започни да учиш…“ се накъсваше). Чакаме 2 ПОРЕДНИ тихи сегмента →
+      // едва тогава край. По всяко време можеш да спреш веднага с 🎤 / „Изпрати“.
+      if (emptyStreak >= MAX_EMPTY_SEGMENTS) return finish(); // 2 поредни тишини → спри да чакаш
       restartTimer = setTimeout(() => armSegment(), 200);     // продължи да слушаш
     }
 

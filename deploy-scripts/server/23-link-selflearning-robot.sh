@@ -331,12 +331,17 @@ AI_ENV="$DATA_DIR/ai.env"
 [ -f "$AI_ENV" ] && grep -qE '^SELFLEARNING_AI_ENABLED=1[[:space:]]*$' "$AI_ENV" && AI_BOOL=true
 # Ниво на сървъра за AI: local (нормален — има локален модел) или cloud (слаб — ползва облачен).
 AI_MODE=cloud; [ "$AI_BOOL" = true ] && AI_MODE=local
+# ИМЕ НА МОДЕЛА (Ollama) от ai.env — обявяваме го на робота, за да го показва апът
+# („към кой модел съм свързан във виртуалката“). Същата стойност пише и опция 84 (Ollama на хоста).
+AI_MODEL=""
+[ -f "$AI_ENV" ] && AI_MODEL=$(grep -E '^SELFLEARNING_AI_MODEL=' "$AI_ENV" | head -1 | cut -d= -f2- | tr -d '"' | tr -d '\r')
 TEACHER_JSON=""
 if [ "$AI_BOOL" = true ]; then
   TEACHER_JSON=",
-  \"teacher\": { \"claudeEnabled\": true, \"approved\": true, \"endpoint\": \"https://${SELF_DOMAIN}/api/selflearning/ai/${TOKEN}\" }"
+  \"teacher\": { \"claudeEnabled\": true, \"approved\": true, \"endpoint\": \"https://${SELF_DOMAIN}/api/selflearning/ai/${TOKEN}\", \"model\": \"${AI_MODEL}\" }"
 fi
 echo -e "  ${CYAN}Ниво на този сървер за AI: $([ "$AI_BOOL" = true ] && echo 'НОРМАЛЕН (локален модел + дълбоко учене)' || echo 'СЛАБ (облачен AI, без локален модел)')${NC}"
+[ -n "$AI_MODEL" ] && echo -e "  ${CYAN}Модел (Ollama), който апът ще показва: ${AI_MODEL}${NC}"
 
 # Регистър на публикуваните connection файлове (за да ги трием при СЛЕДВАЩО пускане).
 CONN_REGISTRY="$DATA_DIR/conn-bootstrap.list"
@@ -384,7 +389,8 @@ else
   "api": "/api/selflearning",
   "storage": "local",
   "features": { "sync": true, "listen": true, "exec": ${EXEC_BOOL}, "localAI": ${AI_BOOL}, "deepCrawl": ${AI_BOOL} },
-  "aiMode": "${AI_MODE}"${TEACHER_JSON},
+  "aiMode": "${AI_MODE}",
+  "aiModel": "${AI_MODEL}"${TEACHER_JSON},
   "createdAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }
 JSON

@@ -17,7 +17,7 @@ import { teach } from './teacher.js';
 import { dontKnow, frameAiSuggestion } from './honesty.js';
 import { handleCommand } from './commands.js';
 import { parseBrowserIntent, runBrowserIntent } from './browser.js';
-import { webSearch, gatherTreeAnswer } from './sources.js';
+import { webSearch, gatherTreeAnswer, translate } from './sources.js';
 import { isImpersonalMode, looksPersonal, refusePersonalText } from './privacy.js';
 import { languageByVoice } from './languages.js';
 
@@ -45,6 +45,51 @@ const RE_CORRECT = [
   /^(?:не[,!.\s]+|грешка[,!.\s]+|всъщност[,!.\s]+|невярно[,!.\s]+|погрешно[,!.\s]+)(.+)/i,
   /^(?:no[,!.\s]+|wrong[,!.\s]+|actually[,!.\s]+)(.+)/i
 ];
+
+// --- ПРЕВОД между 15-те езика (команда) -------------------------------------
+// Разпознава име на език (на български, родно или английско) → нашия код от 15-те.
+// „мексикански“ се проверява ПРЕДИ „испански“, за да хване es-MX.
+const LANG_NAME_TO_CODE = [
+  [/мексиканск/i, 'es-MX'],
+  [/б[ъь]лгарск|bulgarian|болгарск/i, 'bg'],
+  [/рус(?:ки|ский)|russian|русск/i, 'ru'],
+  [/украин|ukrainian|українськ/i, 'uk'],
+  [/английск|english|англ[ие]йск/i, 'en'],
+  [/немск|german|deutsch|немецк/i, 'de'],
+  [/френск|french|fran[cç]|французск/i, 'fr'],
+  [/испанск|spanish|espa[nñ]ol/i, 'es'],
+  [/италианск|italian|italiano|итальянск/i, 'it'],
+  [/португалск|portuguese|portugu[eê]s|португальск/i, 'pt'],
+  [/арабск|arabic|عرب/i, 'ar'],
+  [/хинди|hindi|हिन/i, 'hi'],
+  [/японск|japanese|日本|японск/i, 'ja'],
+  [/киргизк|kyrgyz|кыргыз|киргизск/i, 'ky'],
+  [/китайск|chinese|中文|繁體|мандарин|китайск/i, 'zh-Hant']
+];
+function resolveLangName(s) {
+  const x = String(s || '').toLowerCase().trim();
+  for (const [re, code] of LANG_NAME_TO_CODE) if (re.test(x)) return code;
+  return null;
+}
+
+// Разпознава команда за превод. Форми:
+//   „преведи на <език>: <текст>“        (с двоеточие/тире)
+//   „преведи на <език> <текст>“         (без двоеточие — езикът е една дума)
+//   „преведи <текст> на <език>“
+//   „как се казва <текст> на <език>“ / „как е <текст> на <език>“
+// Връща { lang, text } или null.
+function parseTranslate(text) {
+  const s = String(text || '').trim();
+  let m = s.match(/^(?:преведи|преведете|превод|translate)(?:\s+ми)?(?:\s+(?:това|текста|следното))?\s+на\s+([^:\-—]+?)\s*[:\-—]\s*(.+)$/iu);
+  if (m) return { lang: m[1], text: m[2] };
+  m = s.match(/^(?:преведи|преведете|превод|translate)(?:\s+ми)?\s+на\s+(\S+)\s+(.+)$/iu);
+  if (m && resolveLangName(m[1])) return { lang: m[1], text: m[2] };
+  m = s.match(/^(?:преведи|преведете|превод|translate)(?:\s+ми)?\s+(.+?)\s+на\s+([\p{L}\- ]+?)\s*[.?!]*$/iu);
+  if (m && resolveLangName(m[2])) return { lang: m[2], text: m[1] };
+  m = s.match(/^как\s+(?:се\s+казва|е)\s+(.+?)\s+на\s+([\p{L}\- ]+?)\s*[?.!]*$/iu);
+  if (m && resolveLangName(m[2])) return { lang: m[2], text: m[1] };
+  return null;
+}
 
 function matchAny(res, text) {
   for (const re of res) {
@@ -101,6 +146,28 @@ export async function respond(userText) {
   const cmd = await handleCommand(text);
   if (cmd.matched) {
     return { text: cmd.text, source: 'rule', action: cmd.action || null };
+  }
+
+  // 0.5) ПРЕВОД по команда между 15-те езика (безплатно, MyMemory). Хваща се РАНО, за да
+  //      не се обърка с търсене/учене. Източникът е текущият език (UI/глас), целта е казаната.
+  {
+    const tr = parseTranslate(text);
+    if (tr) {
+      const tgt = resolveLangName(tr.lang);
+      if (!tgt) {
+        return { text: 'На кой от 15-те езика да преведа? Кажи напр. „преведи на английски: здравей“ или „преведи здравей на немски“.', source: 'rule' };
+      }
+      const body = String(tr.text || '').trim().replace(/^["“„'»«]+|["“”'»«]+$/g, '').trim();
+      if (!body) return { text: 'Какво да преведа? Кажи текста след езика.', source: 'rule' };
+      const srcCode = (languageByVoice((getState().settings.voice && getState().settings.voice.lang) || 'bg-BG').code || 'bg').split('-')[0];
+      try {
+        const r = await translate(body, tgt, srcCode);
+        if (r.ok) return { text: `🌐 ${r.text}\n\n📎 ${r.source}`, source: 'source' };
+        return { text: `Опитах да преведа, но не успях (${r.reason || 'лимит/няма връзка'}). Пробвай по-кратък текст или пак.`, source: 'rule' };
+      } catch (_) {
+        return { text: 'Преводът се обърка. Провери връзката и пробвай пак.', source: 'rule' };
+      }
+    }
   }
 
   // 1) Q&A учене: „като кажа X, отговаряй Y“
@@ -226,6 +293,27 @@ export async function respond(userText) {
     }
   }
 
+  // 3.65) УЧЕБНА КОМАНДА (предпазна мрежа). Ако казва „започни да учиш за…/научи за…/учи …“,
+  //       но parseTask по-горе НЕ я е хванал (напр. накъсана/шумна диктовка) — пак я
+  //       разпознаваме като команда за УЧЕНЕ. НИКОГА не търсим изречението буквално в Google
+  //       (точно това се оплака потребителят: „отваря гугъл и търси 'започни да учиш за…'“).
+  {
+    const learnTopic = stripLearnCommand(text);
+    if (learnTopic !== null) {
+      if (learnTopic) {
+        try {
+          const { res } = await intakeAndRun('научи за ' + learnTopic);
+          return { text: res.text, source: res.ok ? 'source' : 'rule', learned: !!res.learned };
+        } catch (_) { /* пада към питането по-долу */ }
+      }
+      // Команда без ясна тема → ПИТАМЕ коя тема (а не търсим командата като текст).
+      return {
+        text: 'Разбрах, че искаш да започна да уча — но коя тема? Кажи напр. „научи за криптовалути“ или „започни да учиш за вулканите“.',
+        source: 'rule'
+      };
+    }
+  }
+
   // 4) Припомняне от паметта
   //    Честност: връщаме наученото само при ДОСТАТЪЧНО силно съвпадение, или когато
   //    записът е изричен Q&A тригер (собственикът съзнателно го е задал). Маркираме
@@ -316,10 +404,27 @@ export async function respond(userText) {
   return { text: dontKnow(), source: 'rule' };
 }
 
+// Командната обвивка на УЧЕНЕТО: „[моля/хайде/искам да/започни да/продължи да] науч(и/иш/а)/
+// уч(и/иш)/изучи/проучи [се] [повече] [за/по/на тема] …“. Същата като в tasks.js (parseTask),
+// но БЕЗ задължителна тема — за да хванем и „започни да учиш“ без предмет (често от накъсана
+// диктовка) и да НЕ търсим цялото изречение буквално в Google.
+const LEARN_CMD_RE = /^(?:(?:моля(?:\s+те)?|хайде|дай(?:\s+ми)?(?:\s+да)?|може(?:ш)?\s+ли(?:\s+да)?|искам(?:\s+да)?|започни(?:\s+да)?|продълж(?:авай|и)(?:\s+да)?|седни(?:\s+да)?)\s+)*(?:науч(?:и|иш|а|ете)?(?:\s+се)?|изуч(?:и|авай|ете)?|уч(?:и|иш|а|ете)?|разуч(?:и|авай)?|проуч(?:и|вай)?|разбер(?:и|еш)|запозна(?:й|ваш)\s+се)(?:\s+се)?(?:\s+(?:повече|още|нещо))?(?:\s+(?:за|по|с(?:ъс)?|на\s+тема))?\s*/i;
+
+// Ако текстът Е учебна команда → връща САМО темата (или '' ако няма предмет).
+// Ако НЕ е учебна команда → връща null.
+function stripLearnCommand(text) {
+  const s = String(text || '').trim();
+  if (!LEARN_CMD_RE.test(s)) return null;
+  return s.replace(LEARN_CMD_RE, '').replace(/[?!.…]+$/u, '').trim();
+}
+
 // Извлича „тема за учене“ от въпрос/реплика (маха въпросни думи и пунктуация).
 function learnTopicFrom(text) {
   let s = String(text || '').trim();
   if (s.length < 2) return null;
+  // Ако е учебна команда („научи за X“) → вземи само темата (а не цялата команда).
+  const lc = stripLearnCommand(s);
+  if (lc !== null) { if (!lc) return null; s = lc; }
   s = s.replace(/^(?:какво\s+е|какво\s+са|кой\s+е|коя\s+е|кое\s+е|кои\s+са|какво\s+знаеш\s+за|знаеш\s+ли\s+(?:какво\s+е\s+|за\s+)?|кажи\s+ми\s+(?:за\s+|какво\s+е\s+)?|разкажи(?:\s+ми)?\s+(?:за\s+|нещо\s+за\s+)?|обясни(?:\s+ми)?\s+(?:какво\s+е\s+|за\s+)?|що\s+е(?:\s+то)?)\s*/i, '');
   s = s.replace(/[?!.]+$/g, '').trim();
   if (s.length < 2) return null;

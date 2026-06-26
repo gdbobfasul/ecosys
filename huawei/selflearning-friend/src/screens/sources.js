@@ -16,13 +16,37 @@ import {
   listenSettings, saveListenSettings, listenLog, pollOnce,
   startListening, stopListening, isListening
 } from '../core/listen.js';
-import { serverLink, currentUrls, saveServerLink, connectWithKey, buildConnectionUrl, disconnectServer, serverLinkConfigured } from '../core/server-link.js';
+import { serverLink, currentUrls, saveServerLink, connectWithKey, buildConnectionUrl, disconnectServer, serverLinkConfigured, serverInfo, pingHealth } from '../core/server-link.js';
 import { SERVER_PRESETS, DEFAULT_PRESET_DOMAIN } from '../core/server-presets.js';
 import { t, tf } from '../core/i18n.js';
 
 export function renderSources(root, { rerender }) {
   clear(root);
   root.appendChild(el('h2', {}, t('screen_sources')));
+
+  // Блок „Към кой модел/сървър съм свързан“ + проверка НА ЖИВО (виртуалката отговаря ли сега).
+  // Показва ИМЕТО на модела, обявен от сървъра (от connection.bot.token), и бутон, който пита
+  // {домейн}/api/selflearning/health → казва веднага дали връзката работи в момента.
+  function serverHealthBlock() {
+    const info = serverInfo();
+    const wrap = el('div', { style: 'margin-top:12px' });
+    if (!info.configured) return wrap; // не сме свързани → нищо (горе вече пише „локално“)
+    const modelTxt = info.model
+      ? tf('sr_srv_model', info.model)
+      : (info.aiMode === 'local' ? t('sr_srv_local_nomodel') : t('sr_srv_none'));
+    wrap.appendChild(el('div', { class: 'muted', style: 'font-size:13px;margin-bottom:6px' }, modelTxt));
+    const status = el('div', { class: 'muted', style: 'font-size:13px;min-height:18px;margin-top:6px' });
+    const btn = el('button', { class: 'block', style: 'margin-top:4px', onclick: async () => {
+      btn.disabled = true; status.textContent = t('sr_check_run');
+      let r; try { r = await pingHealth(); } catch (_) { r = { ok: false, error: '—' }; }
+      btn.disabled = false;
+      if (r.ok) status.textContent = r.model ? tf('sr_check_okm', r.model) : t('sr_check_ok');
+      else status.textContent = tf('sr_check_bad', r.error || '—');
+    } }, t('sr_check_btn'));
+    wrap.appendChild(btn);
+    wrap.appendChild(status);
+    return wrap;
+  }
 
   // --- Индикатор „Къде се пази знанието“ + значка за ролята ---
   const loc = storageLocationLabel();
@@ -236,7 +260,9 @@ export function renderSources(root, { rerender }) {
       const r = disconnectServer();
       toast(tf('sr_disconnected', r.was || t('sr_the_server')));
       try { rerender(); } catch (_) {}
-    } }, t('sr_disconnect_btn'))
+    } }, t('sr_disconnect_btn')),
+    // „Към кой модел/сървър съм свързан“ + проверка НА ЖИВО, че виртуалката отговаря сега.
+    serverHealthBlock()
   ]));
 
   root.appendChild(el('div', { class: 'card', style: 'border-left:3px solid var(--accent-2)' }, [

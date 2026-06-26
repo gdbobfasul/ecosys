@@ -985,19 +985,34 @@ run_choice() {
             ;;
         62)
             echo ""
-            echo -e "${BOLD}${CYAN}  FILL DATA · Find Best Price — скрапер (Google ≤3/ден)${NC}"
+            echo -e "${BOLD}${CYAN}  FILL DATA · Find Best Price — пълнене на базата${NC}"
+            echo -e "    ${GRAY}1) Системен пълнеж (БЕЗ Google) — готово демо: всички 12+10 категории,${NC}"
+            echo -e "    ${GRAY}   много държави/валути, продукти+услуги+резервни части+ZERO PRICE. Идемпотентен.${NC}"
+            echo -e "    ${GRAY}2) Google скрапер — реални цени от мрежата (иска Google ключ, таван 3 заявки/ден)${NC}"
+            read -p "  Избери [1=системен / 2=скрапер, Enter=1]: " FBP_MODE
+            FBP_MODE="${FBP_MODE:-1}"
             if pick_target; then
-                read -p "  Макс Google заявки този път [Enter = всички останали за деня]: " NQ
-                NQ_ARG=""
-                if [ -n "$NQ" ]; then
-                    if printf '%s' "$NQ" | grep -qE '^[0-9]+$'; then NQ_ARG=" $NQ"; else echo "  Невалиден брой."; press_enter; fi
+                if [ "$FBP_MODE" = "2" ]; then
+                    read -p "  Макс Google заявки този път [Enter = всички останали за деня]: " NQ
+                    NQ_ARG=""
+                    if [ -n "$NQ" ]; then
+                        if printf '%s' "$NQ" | grep -qE '^[0-9]+$'; then NQ_ARG=" $NQ"; else echo "  Невалиден брой."; press_enter; fi
+                    fi
+                    REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/find-best-price && node scripts/fbp-scraper.js${NQ_ARG}'"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fbp-scraper.js${NQ_ARG}${NC}"
+                else
+                    read -p "  Брой записи на категория на държава [Enter = 2]: " NPER
+                    NPER_ARG=""
+                    if [ -n "$NPER" ]; then
+                        if printf '%s' "$NPER" | grep -qE '^[0-9]+$'; then NPER_ARG=" $NPER"; else echo "  Невалиден брой."; press_enter; fi
+                    fi
+                    REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/find-best-price && node scripts/fill-system-fbp.js${NPER_ARG}'"
+                    echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fill-system-fbp.js${NPER_ARG}${NC}"
                 fi
-                REMOTE="bash -lc 'cd /var/www/kcy-ecosystem/private/find-best-price && node scripts/fbp-scraper.js${NQ_ARG}'"
-                echo -e "    ${CYAN}ssh -p ${PICK_PORT} ${PICK_USER}@${PICK_SRV} → fbp-scraper.js${NQ_ARG}${NC}"
                 ssh -t -p "$PICK_PORT" "${PICK_USER}@${PICK_SRV}" "$REMOTE"
                 RC=$?
                 print_run_summary
-                [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — скраперът мина на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+                [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Готово — пълненето мина на ${PICK_SRV}${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
             else echo "  Отказано"; fi
             press_enter
             ;;
