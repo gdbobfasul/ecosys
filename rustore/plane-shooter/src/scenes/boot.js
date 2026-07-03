@@ -1,3 +1,4 @@
+// Version: 1.0001
 // BootScene — генерира всички текстури процедурно, после към избор на език / менюто.
 import Phaser from 'phaser';
 import { generateTextures } from '../gfx/textures.js';

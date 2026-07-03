@@ -1,3 +1,4 @@
+// Version: 1.0001
 // theme.js — визуална тема за Huawei изданието.
 // Цветовете се различават от RUStore версията (своя палитра).
 export const THEME = {

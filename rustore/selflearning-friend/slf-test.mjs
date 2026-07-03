@@ -1,3 +1,4 @@
+// Version: 1.0001
 global.localStorage = (() => { let s={}; return {getItem:k=>k in s?s[k]:null,setItem:(k,v)=>{s[k]=String(v)},removeItem:k=>{delete s[k]}}; })();
 global.window = {};
 const ll = await import('./src/core/learning-loop.js');

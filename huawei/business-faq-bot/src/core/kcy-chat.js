@@ -1,3 +1,4 @@
+// Version: 1.0001
 // kcy-chat.js — реална HTTP връзка към НАШИЯ чат (KCY chat app).
 //
 // За разлика от WhatsApp/Viber/Messenger (които минават през Android

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // learn-runner.js — СКЕЛЕ за фоново учене през @capacitor/background-runner.
 //
 // ВАЖНО / ЧЕСТНО ЗА ГРАНИЦИТЕ:

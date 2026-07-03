@@ -1,3 +1,4 @@
+// Version: 1.0001
 // watcher.js (екран) — изглед „Наблюдаващ": без камера, само получава събития от камерата-страж.
 import { el, mount } from '../ui/dom.js';
 import { startWatching, stopWatching } from '../core/watcher.js';

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // styles.js — инжектира CSS веднъж. Тъмна тема; акцентът е per-store (AppGallery = маджента).
 // Без външни CSS файлове/шрифтове (offline-friendly).
 

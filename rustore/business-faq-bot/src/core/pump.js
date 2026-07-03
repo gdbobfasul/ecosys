@@ -1,3 +1,4 @@
+// Version: 1.0001
 // pump.js — „двигателят" на РЕАЛНИТЕ канали за business-faq-bot.
 //
 // Свързва входа от каналите със собствения FAQ rule-engine (respond.js) и

@@ -1,3 +1,4 @@
+// Version: 1.0001
 import Phaser from 'phaser';
 
 // Данни за 10-те нива (data-driven трудност).

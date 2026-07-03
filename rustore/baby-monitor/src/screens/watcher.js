@@ -1,3 +1,4 @@
+// Version: 1.0001
 // watcher.js (екран) — изглед „Наблюдаващ" (Майка Тереза): без камера, само получава.
 import { el, clear } from '../ui/dom.js';
 import { startWatching, stopWatching } from '../core/watcher.js';

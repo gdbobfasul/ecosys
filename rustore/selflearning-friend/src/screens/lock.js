@@ -1,3 +1,4 @@
+// Version: 1.0001
 // lock.js — екран за заключване. Ботът пита „Как се казвам?“ и пуска само собственика.
 import { el, clear, toast } from '../ui/dom.js';
 import { faceEl } from '../ui/face.js';

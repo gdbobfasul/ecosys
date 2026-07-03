@@ -1,0 +1,458 @@
+{
+  "target": "prod",
+  "base": "https://take.offbitch.com",
+  "runId": "20260612-020106",
+  "mode": "journey:wnb",
+  "startedAt": "2026-06-11T20:01:06.037Z",
+  "durationMs": 45254,
+  "scenarios": 7,
+  "urlsChecked": 67,
+  "counts": {
+    "error": 4,
+    "warn": 0,
+    "info": 1
+  },
+  "findings": [
+    {
+      "ts": "2026-06-11T20:01:11.466Z",
+      "pageUrl": "https://take.offbitch.com/wherenobiz/login.html",
+      "app": "wnb",
+      "scenario": "WhereNoBiz (потребител + админ модерация)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://take.offbitch.com/api/wnb/me"
+    },
+    {
+      "ts": "2026-06-11T20:01:13.798Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "wnb",
+      "scenario": "Потребител: регистрация (API) + вход (UI)",
+      "targetUrl": "https://take.offbitch.com/wherenobiz/login.html",
+      "detail": "api GET /api/wnb/me: GET /api/wnb/me → 401 (чаках 200) / not_authenticated"
+    },
+    {
+      "ts": "2026-06-11T20:01:14.035Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "wnb",
+      "scenario": "Потребител: създай пост (минава модерация)",
+      "targetUrl": "https://take.offbitch.com/wherenobiz/login.html",
+      "detail": "api POST /api/wnb/posts: POST /api/wnb/posts → 401 (чаках 201) / not_authenticated"
+    },
+    {
+      "ts": "2026-06-11T20:01:15.131Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "wnb",
+      "scenario": "Админ: вход + одобри поста",
+      "targetUrl": "https://take.offbitch.com/wherenobiz/login.html",
+      "detail": "api POST (c) => `/api/wnb/moderation/posts/${c.postId}/approve`: POST /api/wnb/moderation/posts/undefined/approve → 500 (чаках 200) / server_error"
+    },
+    {
+      "ts": "2026-06-11T20:01:19.224Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "wnb",
+      "scenario": "НЕВАЛИДЕН ВХОД: пост с грешни данни → 400 (никога 500)",
+      "targetUrl": "https://take.offbitch.com/wherenobiz/login.html",
+      "detail": "label качване на НЕ-изображение → грациозно (никога 500): качване на не-изображение: HTTP 500 (сървърна грешка — никога 5xx)"
+    }
+  ],
+  "serverLog": {
+    "ok": true,
+    "status": 200,
+    "hits": [
+      "    2026/06/11 11:21:33 [error] 1486842#1486842: *1043 open() \"/var/www/html/shared/js/kg-compliance.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/kg-compliance.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:33 [error] 1486842#1486842: *1047 open() \"/var/www/html/shared/js/kg-compliance.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/kg-compliance.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:34 [error] 1486842#1486842: *1050 open() \"/var/www/html/shared/js/i18n.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/i18n.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:34 [error] 1486842#1486842: *1051 open() \"/var/www/html/shared/js/i18n.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/i18n.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:34 [error] 1486842#1486842: *1052 open() \"/var/www/html/shared/js/kg-compliance.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/kg-compliance.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:35 [error] 1486842#1486842: *1054 open() \"/var/www/html/shared/js/i18n.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/i18n.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() \"/var/www/html/assets/js/message.js\" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: \"GET /assets/js/message.js HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() \"/var/www/html/assets/js/qr_modal.js\" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: \"GET /assets/js/qr_modal.js HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() \"/var/www/html/assets/js/auth.js\" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: \"GET /assets/js/auth.js HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/admin/user-overview/1 HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/user-overview/1\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/admin/user-details/1 HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/user-details/1\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/ip-admin HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/ip-admin\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/me HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/me\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/me HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/me\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/ip-admin HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/ip-admin\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 11:21:33 [error] 1486842#1486842: *1043 open() \"/var/www/html/shared/js/kg-compliance.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/kg-compliance.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:33 [error] 1486842#1486842: *1047 open() \"/var/www/html/shared/js/kg-compliance.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/kg-compliance.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:34 [error] 1486842#1486842: *1050 open() \"/var/www/html/shared/js/i18n.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/i18n.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:34 [error] 1486842#1486842: *1051 open() \"/var/www/html/shared/js/i18n.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/i18n.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:34 [error] 1486842#1486842: *1052 open() \"/var/www/html/shared/js/kg-compliance.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/kg-compliance.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:35 [error] 1486842#1486842: *1054 open() \"/var/www/html/shared/js/i18n.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/i18n.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() \"/var/www/html/assets/js/message.js\" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: \"GET /assets/js/message.js HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() \"/var/www/html/assets/js/qr_modal.js\" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: \"GET /assets/js/qr_modal.js HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() \"/var/www/html/assets/js/auth.js\" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: \"GET /assets/js/auth.js HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/admin/user-overview/1 HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/user-overview/1\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/admin/user-details/1 HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/user-details/1\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/ip-admin HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/ip-admin\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/me HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/me\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/me HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/me\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/ip-admin HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/ip-admin\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 11:21:33 [error] 1486842#1486842: *1043 open() \"/var/www/html/shared/js/kg-compliance.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/kg-compliance.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:33 [error] 1486842#1486842: *1047 open() \"/var/www/html/shared/js/kg-compliance.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/kg-compliance.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:34 [error] 1486842#1486842: *1050 open() \"/var/www/html/shared/js/i18n.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/i18n.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:34 [error] 1486842#1486842: *1051 open() \"/var/www/html/shared/js/i18n.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/i18n.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:34 [error] 1486842#1486842: *1052 open() \"/var/www/html/shared/js/kg-compliance.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/kg-compliance.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 11:21:35 [error] 1486842#1486842: *1054 open() \"/var/www/html/shared/js/i18n.js.map\" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: \"GET /shared/js/i18n.js.map HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() \"/var/www/html/assets/js/message.js\" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: \"GET /assets/js/message.js HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() \"/var/www/html/assets/js/qr_modal.js\" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: \"GET /assets/js/qr_modal.js HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() \"/var/www/html/assets/js/auth.js\" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: \"GET /assets/js/auth.js HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/admin/user-overview/1 HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/user-overview/1\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/admin/user-details/1 HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/user-details/1\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/ip-admin HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/ip-admin\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/me HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/me\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/me HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/me\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\"",
+      "    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: \"GET /api/portals/ip-admin HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/portals/ip-admin\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1\""
+    ]
+  },
+  "forms": [],
+  "fuzz": null,
+  "journeys": [
+    {
+      "app": "wnb",
+      "label": "WhereNoBiz (потребител + админ модерация)",
+      "scenarios": [
+        {
+          "name": "Потребител: регистрация (API) + вход (UI)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/register",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "goto /wherenobiz/login.html",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "fill #email",
+              "ok": true
+            },
+            {
+              "step": "fill #password",
+              "ok": true
+            },
+            {
+              "step": "click #btnSubmit",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "api GET /api/wnb/me",
+              "ok": false,
+              "error": "GET /api/wnb/me → 401 (чаках 200) / not_authenticated"
+            }
+          ]
+        },
+        {
+          "name": "Потребител: създай пост (минава модерация)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/posts",
+              "ok": false,
+              "error": "POST /api/wnb/posts → 401 (чаках 201) / not_authenticated"
+            },
+            {
+              "step": "label КАЧВАНЕ НА ИЗОБРАЖЕНИЕ: качи снимка към поста",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Админ: вход + одобри поста",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "api GET /api/wnb/moderation/pending",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => `/api/wnb/moderation/posts/${c.postId}/approve`",
+              "ok": false,
+              "error": "POST /api/wnb/moderation/posts/undefined/approve → 500 (чаках 200) / server_error"
+            },
+            {
+              "step": "label провери, че е approved",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Админ: създай втори пост (друг потребител) и го откажи",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/register",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/posts",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => `/api/wnb/moderation/posts/${c.postId2}/reject`",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "НЕВАЛИДЕН ВХОД: пост с грешни данни → 400 (никога 500)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label празно заглавие → 400 missing_title",
+              "ok": true
+            },
+            {
+              "step": "label липсва country_code → 400 bad_country",
+              "ok": true
+            },
+            {
+              "step": "label невалидна държава → 400 bad_country",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/posts",
+              "ok": true
+            },
+            {
+              "step": "label качване БЕЗ файл → 400 no_file (никога 500)",
+              "ok": true
+            },
+            {
+              "step": "label качване на НЕ-изображение → грациозно (никога 500)",
+              "ok": false,
+              "error": "качване на не-изображение: HTTP 500 (сървърна грешка — никога 5xx)"
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "skipped": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "skipped": true
+            },
+            {
+              "step": "api POST (c) => `/api/wnb/moderation/posts/${c.badImgPostId}/remove`",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "АТАКУВАЩ („лош потребител\"): модерация без права → 401/403 (никога 500/изтичане)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label pending без вход → 401",
+              "ok": true
+            },
+            {
+              "step": "label approve без вход → 401",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label approve като обикновен потребител → 403",
+              "ok": true
+            },
+            {
+              "step": "label reject като обикновен потребител → 403",
+              "ok": true
+            },
+            {
+              "step": "label remove като обикновен потребител → 403",
+              "ok": true
+            },
+            {
+              "step": "label ban на потребител като обикновен → 403",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "АТАКУВАЩ: чужд пост / телефон / фалшива сесия → 403/404/401",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label качи снимка на ЧУЖД пост → 403",
+              "ok": true
+            },
+            {
+              "step": "label reveal-phone на ЧУЖД пост → 403",
+              "ok": true
+            },
+            {
+              "step": "label reveal-phone на НЕсъществуващ пост → 404",
+              "ok": true
+            },
+            {
+              "step": "label buy-phone без разкрит телефон → отказ (НЕ безплатно разкриване)",
+              "ok": true
+            },
+            {
+              "step": "label buy-phone на НЕсъществуващ пост → 404",
+              "ok": true
+            },
+            {
+              "step": "label фалшива сесийна бисквитка → 401",
+              "ok": true
+            },
+            {
+              "step": "label фалшива сесия към моите постове → 401",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "АТАКУВАЩ: инжекции + огромен текст в тялото на поста → 400/обработено (никога 500)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label SQL-инжекция в заглавие/държава → 400 (никога 500)",
+              "ok": true
+            },
+            {
+              "step": "label XSS/инжекция в иначе ВАЛИДЕН пост → 201, без 500 (екранирането е на изхода)",
+              "ok": true
+            },
+            {
+              "step": "label ОГРОМЕН текст в описанието → обработено (никога 500)",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label свали инжекционните постове (ако са създадени)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "АВТОРИЗАЦИЯ: обикновен потребител е ОТКАЗАН за админ-само действие → 403",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label GET moderation/posts като обикновен → 403",
+              "ok": true
+            },
+            {
+              "step": "label GET moderation/users като обикновен → 403",
+              "ok": true
+            },
+            {
+              "step": "label GET moderation/db като обикновен → 403 (без изтичане на БД)",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Почистване (свали тестовите постове)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST (c) => `/api/wnb/moderation/posts/${c.postId}/remove`",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => `/api/wnb/moderation/posts/${c.postId2}/remove`",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "seed": null
+}

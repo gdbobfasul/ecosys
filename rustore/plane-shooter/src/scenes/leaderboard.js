@@ -1,3 +1,4 @@
+// Version: 1.0001
 // LeaderboardScene — самостоятелен екран с целия топ-100, достъпен от менюто.
 import Phaser from 'phaser';
 import { THEME } from '../theme.js';

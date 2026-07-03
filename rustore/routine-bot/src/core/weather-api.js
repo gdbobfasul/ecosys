@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Времето през Open-Meteo — БЕЗПЛАТНО и БЕЗ ключ (keyless).
 // Документация: https://open-meteo.com/en/docs — „No API key required".
 // Endpoint (доказано без ключ — никъде няма apikey/token параметър):

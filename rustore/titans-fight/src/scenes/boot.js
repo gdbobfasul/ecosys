@@ -1,3 +1,4 @@
+// Version: 1.0001
 import Phaser from 'phaser';
 import { generateTextures } from '../textures.js';
 import { THEME } from '../theme.js';

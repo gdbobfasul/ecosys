@@ -1,3 +1,4 @@
+// Version: 1.0001
 import Phaser from 'phaser';
 // Преизползваеми UI помощници: светли, контрастни бутони и текст със сянка.
 import { THEME } from './theme.js';

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // birth.js — раждане / кръщаване. Героят се представя и пита „Как да се нарека?“.
 import { el, clear, toast } from '../ui/dom.js';
 import { faceEl } from '../ui/face.js';

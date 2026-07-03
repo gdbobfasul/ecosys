@@ -1,3 +1,4 @@
+// Version: 1.0001
 // importer.js — ЕДИНЕН импорт за всички източници (QR/otpauth, .json бекъп, Aegis, Google
 // Authenticator миграция). Прави ДЕДУПЛИКАЦИЯ (прескача вече съществуващи кодове) и връща
 // единен резултат { ok, imported, duplicates, method, reason }, който UI-ят описва еднакво
@@ -68,7 +69,7 @@ export async function importAegisText(text) {
 // Импорт от КРИПТИРАН Aegis експорт с парола (scrypt + AES-GCM).
 export async function importAegisEncrypted(text, password) {
   const a = await decryptAegisExport(text, password);
-  if (!a.ok) return { ok: false, method: 'aegis', reason: a.reason };
+  if (!a.ok) return { ok: false, method: 'aegis', reason: a.reason, detail: a.detail };
   const r = await addEntriesDedup(a.entries);
   return { ok: true, method: 'aegis', ...r };
 }
@@ -105,8 +106,10 @@ export function describeResult(res) {
     const r = res && res.reason;
     if (r === 'encrypted') return t('aegis_encrypted');
     if (r === 'password') return t('aegis_bad_password');
-    if (r === 'noscrypt') return t('import_failed');
-    if (r === 'not_aegis') return t('aegis_not');
+    if (r === 'noscrypt') return t('import_failed') + ' (scrypt липсва)';
+    // Техническа грешка при извеждане на ключа — показваме реалната причина, за да се диагностицира.
+    if (r === 'scrypt_error') return t('import_failed') + (res.detail ? ' — ' + res.detail : ' (scrypt)');
+    if (r === 'not_aegis') return t('aegis_not') + (res.detail ? ' — ' + res.detail : '');
     if (r === 'qr') return t('qr_not_found');
     if (r === 'empty') return t('import_empty');
     return t('import_failed');

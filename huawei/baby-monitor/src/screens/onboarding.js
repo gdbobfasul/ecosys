@@ -1,3 +1,4 @@
+// Version: 1.0001
 // onboarding.js — посрещане + безплатно „активиране“ на наетия робот.
 import { el } from '../ui/dom.js';
 import { safetyBanner } from '../ui/widgets.js';

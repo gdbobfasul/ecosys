@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Инжектира глобалните стилове. Акцентът идва от config.js (различен по магазин).
 import { ACCENT, ACCENT2 } from '../config.js';
 

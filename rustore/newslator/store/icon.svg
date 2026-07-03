@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a7cf0"/><stop offset="1" stop-color="#0b3aa0"/>
+    </linearGradient>
+    <clipPath id="g"><circle cx="256" cy="312" r="150"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- глобус -->
+  <circle cx="256" cy="312" r="150" fill="#29a6df"/>
+  <g clip-path="url(#g)">
+    <path d="M140 270 q45 -34 96 -12 q34 16 12 48 q-28 28 -78 16 q-44 -12 -30 -52z" fill="#49b258"/>
+    <path d="M292 316 q54 -12 84 22 q16 44 -34 64 q-48 10 -62 -28 q-10 -42 12 -58z" fill="#49b258"/>
+    <path d="M206 402 q32 -6 48 22 q6 26 -26 32 q-38 0 -32 -32z" fill="#3f9e4d"/>
+    <ellipse cx="256" cy="312" rx="150" ry="62" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="4"/>
+    <line x1="256" y1="162" x2="256" y2="462" stroke="#ffffff" stroke-opacity="0.25" stroke-width="4"/>
+  </g>
+  <circle cx="256" cy="312" r="150" fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="6"/>
+  <!-- шапка на абсолвент (mortarboard) -->
+  <path d="M186 214 v26 q70 34 140 0 v-26" fill="#17171c"/>
+  <polygon points="256,120 402,178 256,236 110,178" fill="#1c1c22"/>
+  <polygon points="256,132 380,180 256,228 132,180" fill="#2a2a33"/>
+  <circle cx="256" cy="180" r="11" fill="#ffd23f"/>
+  <line x1="402" y1="178" x2="402" y2="258" stroke="#ffd23f" stroke-width="7"/>
+  <circle cx="402" cy="264" r="13" fill="#ffd23f"/>
+</svg>

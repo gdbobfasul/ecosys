@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.servicestoolkit.huawei",
+  "appId": "com.kcy.servicestoolkit.hw",
   "appName": "Services Toolkit",
   "webDir": "dist",
   "bundledWebRuntime": false,

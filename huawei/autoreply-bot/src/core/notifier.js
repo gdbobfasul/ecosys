@@ -1,3 +1,4 @@
+// Version: 1.0001
 // notifier.js — известия при сработило правило.
 // На устройство: Capacitor Local Notifications (локални, on-device, без сървър/push).
 // В браузър / без разрешение: fallback към in-page toast.

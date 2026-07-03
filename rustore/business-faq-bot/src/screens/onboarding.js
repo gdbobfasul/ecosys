@@ -1,3 +1,4 @@
+// Version: 1.0001
 // onboarding.js — обяснение + безплатно активиране.
 import { el } from '../ui/dom.js';
 import { setState } from '../core/storage.js';

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // add.js — нов акаунт: сканиране на QR код (камера + jsQR) ИЛИ ръчно въвеждане.
 import { h, mount, toast } from '../ui/dom.js';
 import { t } from '../core/i18n.js';
@@ -98,14 +99,16 @@ export function renderAdd(root, nav) {
 
   // ---- Импорт от файл: наш .json бекъп ИЛИ Aegis JSON експорт ----
   function renderFile() {
-    const jsonIn = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none' });
+    // accept='*/*' нарочно: Android често крие .json файла (типизира го като
+    // application/octet-stream) при тесен филтър → не можеше да се избере Aegis файл. Allow all.
+    const jsonIn = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
     jsonIn.addEventListener('change', () => {
       const f = jsonIn.files && jsonIn.files[0]; if (!f) return;
       const r = new FileReader();
       r.onload = () => { runImport(importJsonText(r.result)); jsonIn.value = ''; };
       r.readAsText(f);
     });
-    const aegisIn = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none' });
+    const aegisIn = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
     aegisIn.addEventListener('change', () => {
       const f = aegisIn.files && aegisIn.files[0]; if (!f) return;
       importAegisFile(f, (res) => { if (res && res.ok && res.imported > 0) nav.go('list'); });

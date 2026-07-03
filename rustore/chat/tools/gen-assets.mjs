@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Генератор на икона и splash екран като SVG (без бинарни файлове).
 // Стартирай: node tools/gen-assets.mjs   (или npm run assets)
 // Резултат: store/icon.svg и store/splash.svg

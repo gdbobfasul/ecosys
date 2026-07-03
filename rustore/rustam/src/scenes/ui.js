@@ -1,3 +1,4 @@
+// Version: 1.0001
 // UIScene — HUD (оставащи пропуски, прогрес към целта, точки, ниво) + виртуален джойстик.
 // Работи като overlay над GameScene.
 import Phaser from 'phaser';

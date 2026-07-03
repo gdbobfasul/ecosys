@@ -1,3 +1,4 @@
+// Version: 1.0001
 // permissions.js — иска камера + известия, ясно и без излишни права (без контакти/проследяване).
 import { el, toast } from '../ui/dom.js';
 import { startDeviceCamera, stopCamera, cameraSupported } from '../core/camera.js';

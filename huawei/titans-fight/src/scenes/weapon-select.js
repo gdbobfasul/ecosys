@@ -1,3 +1,4 @@
+// Version: 1.0001
 import Phaser from 'phaser';
 import { THEME } from '../theme.js';
 import { WEAPONS, unlockedWeapons } from '../weapons.js';

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Екран „За робота" — обяснение + безплатно активиране (всичко е безплатно).
 import { el } from '../ui/styles.js';
 import { saveState, pushLog } from '../core/storage.js';

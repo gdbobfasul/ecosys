@@ -1,3 +1,4 @@
+// Version: 1.0001
 // dashboard.js — ON/OFF, обобщение на правилата, дневник на авто-отговорите.
 import { el } from '../ui/dom.js';
 import { getState, setState } from '../core/storage.js';

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // net.js — fetch с таймаут БЕЗ AbortController.
 //
 // ЗАЩО: апът пуска CapacitorHttp (нативния HTTP на Android), за да заобикаля CORS при

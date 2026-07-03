@@ -1,3 +1,4 @@
+// Version: 1.0001
 // widgets.js — общи UI парчета (без рамки).
 import { el } from './dom.js';
 

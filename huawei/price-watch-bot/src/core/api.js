@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Достъп до цени — САМО безплатни публични API без ключове и без акаунти.
 //
 // Крипто (основен):  https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT

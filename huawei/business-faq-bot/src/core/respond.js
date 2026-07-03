@@ -1,3 +1,4 @@
+// Version: 1.0001
 // respond.js — обединява rule-engine + office-hours + лог + статистика.
 // Канал-независимо: дава какво да отговори роботът за даден вход.
 import { getState, persist } from './storage.js';

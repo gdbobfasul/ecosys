@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Управление: мобилно (ляв виртуален джойстик за движение + влачене вдясно за
 // оглеждане + бутон огън) и десктоп (WASD + mouse-look с pointer lock + клик огън).
 import * as THREE from 'three';
@@ -45,8 +46,12 @@ export class Controls {
 
     this._on(document, 'mousemove', (e) => {
       if (document.pointerLockElement !== this.dom) return;
-      this.yaw -= e.movementX * 0.0022;
-      this.pitch -= e.movementY * 0.0022;
+      // ЗАЩИТА: на някои Android WebView-та mousemove идва с undefined movementX/Y → yaw става
+      // NaN → камерата отива в NaN → ЧЕРЕН екран без грешка. Пропускаме нечислови делти.
+      const mx = e.movementX, my = e.movementY;
+      if (typeof mx !== 'number' || typeof my !== 'number' || !isFinite(mx) || !isFinite(my)) return;
+      this.yaw -= mx * 0.0022;
+      this.pitch -= my * 0.0022;
       this._clampPitch();
     });
 
@@ -99,6 +104,9 @@ export class Controls {
           this.move.y = (dy / len) * (cl / max);
           this.hud?.moveJoystick(dx, dy, max);
         } else if (t.identifier === this.lookId) {
+          // ЗАЩИТА: ако touchmove дойде преди да имаме lookLast (рядка надпревара) —
+          // инициализираме без да местим (иначе clientX - undefined = NaN → черен екран).
+          if (!this.lookLast) { this.lookLast = { x: t.clientX, y: t.clientY }; continue; }
           this.yaw -= (t.clientX - this.lookLast.x) * 0.005;
           this.pitch -= (t.clientY - this.lookLast.y) * 0.005;
           this._clampPitch();
@@ -133,6 +141,12 @@ export class Controls {
   update(dt) {
     if (!this.enabled) return;
 
+    // ПРЕДПАЗНА МРЕЖА срещу NaN: ако нещо (вход/делта) е разсипало ориентацията, я нулираме.
+    // Без това една NaN стойност зачерня екрана ЗАВИНАГИ (камерата има невалидна матрица и
+    // Three.js рендира черно, БЕЗ да хвърля грешка → не се вижда причина). По-добре „поглед напред“.
+    if (!isFinite(this.yaw)) this.yaw = 0;
+    if (!isFinite(this.pitch)) this.pitch = 0;
+
     // WASD -> move вектор (десктоп)
     if (!this.isTouch()) {
       let mx = 0, my = 0;
@@ -163,7 +177,15 @@ export class Controls {
     this.camera.position.x = THREE.MathUtils.clamp(this.camera.position.x, -lim, lim);
     this.camera.position.z = THREE.MathUtils.clamp(this.camera.position.z, -lim, lim);
     const ground = this.terrain.heightAt(this.camera.position.x, this.camera.position.z);
-    this.camera.position.y = ground + 1.7;
+    this.camera.position.y = (isFinite(ground) ? ground : 0) + 1.7;
+
+    // Последна защита: ако позицията някак е станала NaN, връщаме камерата в центъра — пак
+    // да вижда, вместо черен екран.
+    const p = this.camera.position;
+    if (!isFinite(p.x) || !isFinite(p.y) || !isFinite(p.z)) {
+      const gy = this.terrain.heightAt(0, 0);
+      p.set(0, (isFinite(gy) ? gy : 0) + 1.7, 0);
+    }
   }
 
   dispose() {

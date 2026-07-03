@@ -1,3 +1,4 @@
+// Version: 1.0001
 // i18n.js — преводен слой за играта „Titans Fight" на 15-те езика на екосистемата.
 // Изборът на език се пази в localStorage. При първо стартиране играта показва
 // екран за избор на език (виж scenes/language.js), после се отваря менюто.
@@ -20,6 +21,11 @@ const STR = {
     de: 'Sprache wählen', fr: 'Choisir la langue', es: 'Elegir idioma', 'es-MX': 'Elegir idioma',
     it: 'Scegli la lingua', pt: 'Escolher idioma', ar: 'اختر اللغة', hi: 'भाषा चुनें',
     ja: '言語を選択', ky: 'Тилди тандаңыз', 'zh-Hant': '選擇語言'
+  },
+  start_app: {
+    bg: 'Стартирай', ru: 'Запустить', uk: 'Запустити', en: 'Start', de: 'Starten',
+    fr: 'Démarrer', es: 'Iniciar', 'es-MX': 'Iniciar', it: 'Avvia', pt: 'Iniciar',
+    ar: 'ابدأ', hi: 'शुरू करें', ja: '開始', ky: 'Баштоо', 'zh-Hant': '開始'
   },
   leaderboard: {
     bg: 'РАНГ ЛИСТА', ru: 'РЕЙТИНГ', uk: 'РЕЙТИНГ', en: 'LEADERBOARD',

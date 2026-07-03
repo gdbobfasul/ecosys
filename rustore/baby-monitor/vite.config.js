@@ -1,3 +1,4 @@
+// Version: 1.0001
 import { defineConfig } from 'vite';
 
 // Конфигурация на Vite.

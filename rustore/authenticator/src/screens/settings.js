@@ -1,3 +1,4 @@
+// Version: 1.0001
 // settings.js — настройки: език, авто-заключване, биометрия, смяна на парола,
 // импорт/експорт (всички варианти, същите като при бутона „+") и изтриване на сейфа.
 import { h, mount, toast } from '../ui/dom.js';
@@ -82,14 +83,15 @@ export function renderSettings(root, nav) {
   // --- ИМПОРТ (всички варианти; едни и същи като при бутона „+") ---
   async function runImport(promise) { toast(describeResult(await promise)); }
 
-  const jsonInput = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none' });
+  // accept='*/*' нарочно (виж add.js): тесният .json филтър криеше Aegis файла в Android пикъра.
+  const jsonInput = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
   jsonInput.addEventListener('change', () => {
     const f = jsonInput.files && jsonInput.files[0]; if (!f) return;
     const r = new FileReader();
     r.onload = () => { runImport(importJsonText(r.result)); jsonInput.value = ''; };
     r.readAsText(f);
   });
-  const aegisInput = h('input', { type: 'file', accept: '.json,application/json', style: 'display:none' });
+  const aegisInput = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
   aegisInput.addEventListener('change', () => {
     const f = aegisInput.files && aegisInput.files[0]; if (!f) return;
     importAegisFile(f);

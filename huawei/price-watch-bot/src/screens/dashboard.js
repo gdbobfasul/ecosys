@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Табло — главен ON/OFF ключ, списък наблюдения, дневник, действия.
 import { saveState, pushLog } from '../core/storage.js';
 import { start, stop, checkNow, formatVal } from '../core/scheduler.js';

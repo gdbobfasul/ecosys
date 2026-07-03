@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Стилове, инжектирани от код (без отделен CSS файл; акцентът идва от config).
 import { ACCENT, ACCENT2 } from '../config.js';
 

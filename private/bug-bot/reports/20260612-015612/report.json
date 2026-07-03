@@ -1,0 +1,164 @@
+{
+  "target": "vm",
+  "base": "https://192.168.0.108",
+  "runId": "20260612-015612",
+  "mode": "journey:chatx",
+  "startedAt": "2026-06-11T19:56:12.910Z",
+  "durationMs": 864,
+  "scenarios": 7,
+  "urlsChecked": 24,
+  "counts": {
+    "error": 0,
+    "warn": 0,
+    "info": 0
+  },
+  "findings": [],
+  "serverLog": {
+    "ok": false,
+    "status": 0,
+    "error": "fetch failed"
+  },
+  "forms": [],
+  "fuzz": null,
+  "journeys": [
+    {
+      "app": "chat",
+      "label": "Чат РАЗШИРЕН (задачи + покани + mm_blocked + админ изгледи + спешност)",
+      "scenarios": [
+        {
+          "name": "Подготовка: А и Б (API регистрация) → админ платени → вход → токени",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label регистрирай А и Б",
+              "ok": true
+            },
+            {
+              "step": "label админ-вход (от .env) → токен (по избор)",
+              "ok": true
+            },
+            {
+              "step": "label админ: маркирай А и Б платени",
+              "ok": true
+            },
+            {
+              "step": "label вход А и Б → токени",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "ЗАДАЧИ: А създава → публикува → Б хваща → чат → заключи → готово → А потвърждава",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label А създава чернова (POST /api/tasks)",
+              "ok": true
+            },
+            {
+              "step": "label Б НЕ може да публикува чужда задача → 403",
+              "ok": true
+            },
+            {
+              "step": "label А публикува задачата",
+              "ok": true
+            },
+            {
+              "step": "label списъкът показва публикуваната задача (GET /api/tasks)",
+              "ok": true
+            },
+            {
+              "step": "label А НЕ може да хване своя задача → 400",
+              "ok": true
+            },
+            {
+              "step": "label Б хваща задачата (free) ИЛИ изисква плащане (записваме)",
+              "ok": true
+            },
+            {
+              "step": "label чат по задачата: Б пише, А чете",
+              "ok": true
+            },
+            {
+              "step": "label Б заключва → готово с доклад; А потвърждава плащане",
+              "ok": true
+            },
+            {
+              "step": "label моите задачи (А автор / Б изпълнител)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "ЗАПОЗНАНСТВА: А кани Б → Б приема; А блокира в matchmaking",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label А кани Б (POST /api/matchmaking/invite)",
+              "ok": true
+            },
+            {
+              "step": "label Б вижда получената покана и я приема",
+              "ok": true
+            },
+            {
+              "step": "label А вижда изпратените покани",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "АДМИН: блок САМО в matchmaking (mm_blocked) + нови изгледи (user-overview/задачи/чат)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label админ блокира Б само в запознанства",
+              "ok": true
+            },
+            {
+              "step": "label админ user-overview за Б → структура + mmBlocked=true",
+              "ok": true
+            },
+            {
+              "step": "label админ списък задачи + чат по нашата задача",
+              "ok": true
+            },
+            {
+              "step": "label админ отблокира Б в запознанства (почистване)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "HELP/спешност: контакти + наличност + спешен бутон (платен)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label GET /api/help/emergency-contacts",
+              "ok": true
+            },
+            {
+              "step": "label GET /api/help/availability",
+              "ok": true
+            },
+            {
+              "step": "label спешен бутон (А, платен): 200 или 429 „веднъж месечно\", не 500",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Изход (двамата)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label logout А и Б",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "seed": null
+}

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Екран за активиране — обяснява концепцията и активира робота безплатно.
 import { h, esc } from '../ui/dom.js';
 import { APP_CONFIG } from '../config.js';

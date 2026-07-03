@@ -1,3 +1,4 @@
+// Version: 1.0001
 // rules-config.js — съветник за правила: тригери, шаблони, график, списъци, приоритет.
 import { el } from '../ui/dom.js';
 import { getState, setState, uid } from '../core/storage.js';

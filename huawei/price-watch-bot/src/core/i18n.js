@@ -1,3 +1,4 @@
+// Version: 1.0001
 // i18n.js — преводен слой на „Цена-робот" за 15-те езика на екосистемата.
 // Език по подразбиране: руски (до избор от потребителя при първо стартиране).
 // Резервна верига при липсващ ключ: текущ → ru → en → самият ключ.
@@ -12,6 +13,7 @@ const FALLBACK_LANG = 'en';
 const STR = {
   // --- Избор на език / общи ---
   pick_lang: { bg:'Избери език', ru:'Выберите язык', uk:'Виберіть мову', en:'Choose language', de:'Sprache wählen', fr:'Choisir la langue', es:'Elegir idioma', 'es-MX':'Elegir idioma', it:'Scegli la lingua', pt:'Escolher idioma', ar:'اختر اللغة', hi:'भाषा चुनें', ja:'言語を選択', ky:'Тилди тандаңыз', 'zh-Hant':'選擇語言' },
+  start_app: { bg:'Стартирай', ru:'Запустить', uk:'Запустити', en:'Start', de:'Starten', fr:'Démarrer', es:'Iniciar', 'es-MX':'Iniciar', it:'Avvia', pt:'Iniciar', ar:'ابدأ', hi:'शुरू करें', ja:'開始', ky:'Баштоо', 'zh-Hant':'開始' },
   language: { bg:'Език', ru:'Язык', uk:'Мова', en:'Language', de:'Sprache', fr:'Langue', es:'Idioma', 'es-MX':'Idioma', it:'Lingua', pt:'Idioma', ar:'اللغة', hi:'भाषा', ja:'言語', ky:'Тил', 'zh-Hant':'語言' },
   delete: { bg:'Изтрий', ru:'Удалить', uk:'Видалити', en:'Delete', de:'Löschen', fr:'Supprimer', es:'Eliminar', 'es-MX':'Eliminar', it:'Elimina', pt:'Excluir', ar:'حذف', hi:'हटाएं', ja:'削除', ky:'Өчүрүү', 'zh-Hant':'刪除' },
 

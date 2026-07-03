@@ -1,0 +1,37 @@
+# huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
+# Приложение: NewsLator (huawei издание)
+# Попълва се на стъпка „Set basic app information“ и „Integrate open capabilities“.
+
+[Set basic app information]
+App type: App (приложение, НЕ игра)
+App name: NewsLator            # 9 / 30 знака
+App package name: com.kcy.newslator.hw   # 20 / 128 знака  — виж бележката за суфикса по-долу
+Level-1 app category: News (Новини)
+
+[Integrate open capabilities]
+# За това приложение НЕ ползваме платени услуги на Huawei (HMS Core), реклами или вход с Huawei ID.
+# То е самостоятелен новинарски четец: тегли публични RSS емисии и ги превежда/чете на глас.
+# Open capabilities: няма (без Account Kit, без IAP, без Push, без Ads, без Game Service).
+
+[Support / Поддръжка]
+Support email: dai.group.ltd.support@gmail.com
+# Този имейл влиза и в описанието на приложението на всеки от 15-те езика
+# (виж publish/store-listing/<език>.txt).
+
+[Localization / Локализация]
+Languages: bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant   (15 езика)
+Default language: en (English)
+Listing (описания): publish/store-listing/<език>.txt          # заглавие + какво прави + имейл за поддръжка
+Screenshots (екрани): publish/screenshots/<език>/01..04.png    # по 4 екрана на език (онбординг, новини, държави, настройки)
+Shared screenshot: publish/screenshots/00-language.png         # екранът за избор на език (общ за всички)
+
+[БЕЛЕЖКА — пакетно име (РЕШЕНО)]
+# Формата на Huawei казва: „The package name must end with .huawei or .HUAWEI only for
+# joint operations games.“ → суфиксът „.huawei“ е ЗАПАЗЕН САМО за joint-operations ИГРИ.
+# Затова за ВСИЧКИ huawei апове сменихме суфикса „.huawei“ → „.hw“ (това не е игра).
+# Новото пакетно име тук е com.kcy.newslator.hw.
+#
+# Смяната е нанесена в източника: appId в huawei/<ап>/capacitor.config.json (меродавен —
+# android/ е gitignored и се пресъздава от него при `cap add`). Старите генерирани android/
+# дървета са изтрити, за да се регенерират чисто с новия пакет при следващия билд.
+# Диагностичната константа appId в src/config.js също е обновена (показва се в „За приложението“).

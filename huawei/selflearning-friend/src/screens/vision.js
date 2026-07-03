@@ -1,3 +1,4 @@
+// Version: 1.0001
 // vision.js (екран) — „Зрение“: камера на живо + OCR + разпознаване + превод.
 //
 // OWNER-GATED: рутерът в main.js рисува този екран само когато сме отключени
@@ -11,7 +12,8 @@ import {
   startCamera, stopCamera, grabFrame, drawImageFileToCanvas,
   ocrCanvas, ocrPdfFile,
   classifyImage, detectObjects, describeRecognition,
-  translateText, TARGET_LANGS, understandViaTeacher
+  translateText, TARGET_LANGS, understandViaTeacher,
+  takeVisionIntent
 } from '../core/vision.js';
 
 // Модулно състояние на камерата (за чисто освобождаване между навигации).
@@ -56,21 +58,24 @@ export function renderVision(root /*, { navigate, rerender } */) {
   const stopBtn = el('button', { class: 'secondary grow', disabled: true }, t('vis_stop'));
   const grabBtn = el('button', { class: 'secondary grow', disabled: true }, t('vis_grab'));
 
-  startBtn.addEventListener('click', async () => {
+  // Пуска камерата с избрана посока ('environment' = задна, 'user' = предна). Връща true при успех.
+  async function startCam(facing = 'environment') {
     startBtn.disabled = true;
-    const r = await startCamera(video);
+    const r = await startCamera(video, { facingMode: facing });
     if (r.ok) {
       _stream = r.stream;
       video.style.display = 'block';
       camMsg.style.display = 'none';
       stopBtn.disabled = false; grabBtn.disabled = false;
-    } else {
-      camMsg.textContent = r.reason;
-      camMsg.className = 'warn-text';
-      startBtn.disabled = false;
-      toast(r.reason);
+      return true;
     }
-  });
+    camMsg.textContent = r.reason;
+    camMsg.className = 'warn-text';
+    startBtn.disabled = false;
+    toast(r.reason);
+    return false;
+  }
+  startBtn.addEventListener('click', () => startCam('environment'));
   stopBtn.addEventListener('click', () => {
     releaseCamera();
     video.style.display = 'none';
@@ -151,7 +156,7 @@ export function renderVision(root /*, { navigate, rerender } */) {
 
   // Разпознаване „какво има“ (MobileNet класификация + COCO-SSD детекция).
   const recogBtn = el('button', { class: 'grow' }, t('vis_whats_in'));
-  recogBtn.addEventListener('click', async () => {
+  async function doRecognize() {
     if (!ensureSource()) return;
     recogBtn.disabled = true; setOut(''); progress.textContent = t('vis_loading_models');
     const [cls, det] = await Promise.all([classifyImage(preview), detectObjects(preview)]);
@@ -171,7 +176,8 @@ export function renderVision(root /*, { navigate, rerender } */) {
     if (objects.length) lines.push(t('vis_objects') + '\n' +
       objects.map((o) => `• ${o.label} — ${Math.round(o.score * 100)}%`).join('\n'));
     setOut(lines.join('\n\n'));
-  });
+  }
+  recogBtn.addEventListener('click', doRecognize);
 
   // По избор: „разбиране“ през AI учителя (текстово описание → teach()).
   const understandBtn = el('button', { class: 'ghost grow' }, t('vis_understand_ai'));
@@ -222,4 +228,38 @@ export function renderVision(root /*, { navigate, rerender } */) {
     el('div', { class: 'row wrap', style: 'gap:8px;margin-top:8px' }, [translateBtn, memBtn]),
     progress, out
   ]));
+
+  // --- Изпълнение на ГЛАСОВА заявка („виж“/„виж през предната“/„запази“) ---
+  // Чатът остави заявка (setVisionIntent) и навигира тук. Пускаме исканата камера, изчакваме
+  // първи кадър, хващаме го и анализираме автоматично — за да „види“ каквото показваш.
+  function waitForFrame(timeoutMs = 5000) {
+    return new Promise((resolve) => {
+      const t0 = Date.now();
+      const tick = () => {
+        if ((video.videoWidth || 0) > 0 && (video.videoHeight || 0) > 0) return resolve(true);
+        if (Date.now() - t0 > timeoutMs) return resolve(false);
+        setTimeout(tick, 120);
+      };
+      tick();
+    });
+  }
+  async function runVoiceIntent(intent) {
+    // Уверяваме се, че камерата работи (с исканата посока; за „запази“ — задната по подразбиране).
+    if (!_stream) {
+      const ok = await startCam(intent.facing || 'environment');
+      if (!ok) return;
+    }
+    const haveFrame = await waitForFrame();
+    if (haveFrame) {
+      const g = grabFrame(video, preview);
+      if (g.ok) preview.style.display = 'block';
+    }
+    if (intent.analyze) {
+      await doRecognize();
+      // По избор: и кратко „разбиране“ през учителя, ако има какво.
+      if (lastText) { try { understandBtn.click(); } catch (_) {} }
+    }
+  }
+  const intent = takeVisionIntent();
+  if (intent) { try { runVoiceIntent(intent); } catch (_) {} }
 }

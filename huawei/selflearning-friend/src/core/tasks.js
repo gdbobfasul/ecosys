@@ -1,3 +1,4 @@
+// Version: 1.0001
 // tasks.js — РЕАЛНИ задачи, които собственикът може да даде (НЕ стъбове).
 //
 // Видове задачи:
@@ -143,15 +144,19 @@ export async function runTask(task) {
       // до реални статии и събира МНОГО (главна тема + 12 свързани). Така „научи за X" не връща 0
       // при многословна/неточна тема (старият път търсеше само по ТОЧНО заглавие → 0).
       const tree = await gatherTreeAnswer(topic, { lang: 'bg', limit: 8, relatedLimit: 12 });
-      let added = 0; let firstNote = null;
+      // Броим РАЗДЕЛНО: бележки ПРЯКО по темата vs бележки в СВЪРЗАНИ теми. Иначе се получаваше
+      // противоречие („Научих 13… вече знам 2“): „added“ сумираше из 12 теми, а „знам“ беше само
+      // главната тема. Сега числата са съгласувани и честни.
+      let addedMain = 0; let addedRelated = 0; let firstNote = null;
       for (const n of tree.main) {
-        if (addNote(topic, { text: n.text, source: n.source, url: n.url })) { added++; if (!firstNote) firstNote = n; }
+        if (addNote(topic, { text: n.text, source: n.source, url: n.url })) { addedMain++; if (!firstNote) firstNote = n; }
       }
       // Свързаните теми се записват като ОТДЕЛНИ теми (трупане по дървото).
       for (const r of tree.related) {
         try { addInterest(r.topic); } catch (_) {}
-        if (addNote(r.topic, { text: r.text, source: r.source, url: r.url })) added++;
+        if (addNote(r.topic, { text: r.text, source: r.source, url: r.url })) addedRelated++;
       }
+      const added = addedMain + addedRelated;
       const totalGathered = tree.main.length + tree.related.length;
       const totalNotes = (getSubject(topic) || { notes: [] }).notes.length;
 
@@ -183,10 +188,11 @@ export async function runTask(task) {
       }
       // Показвам НЯКОЛКО нови бележки (с цитати) + колко свързани съм записал.
       const shown = tree.main.slice(0, 4).map((n) => `• ${n.text}\n  📎 ${n.source}`).join('\n\n');
-      const relLine = tree.related.length ? `\n\n🌳 + ${tree.related.length} свързани теми (записах ги).` : '';
+      const relLine = addedRelated ? `\n\n🌳 + ${addedRelated} нови бележки в свързани теми (по клоните на дървото).` : '';
       return {
         ok: true, kind: task.kind, learned: true, citation: firstNote ? firstNote.source : '',
-        text: `Научих ${added} нови неща за „${topic}" от ${totalGathered} статии (вече знам ${totalNotes}):\n\n` +
+        text: `Записах ${added} нови неща от ${totalGathered} статии: ${addedMain} пряко за „${topic}" ` +
+          `(вече знам ${totalNotes} по тази тема)${addedRelated ? `, ${addedRelated} в свързани теми` : ''}.\n\n` +
           `${shown}${relLine}${deepMsg}\n\n(Записах всичко в Задачи → теми.)`
       };
     }

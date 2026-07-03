@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Меню сцена: заглавие, бутон Старт, избор на начално ниво, лидерборд, бутон 🌐.
 import { THEME } from '../theme.js';
 import { iconSVG, svgDataUrl } from '../branding.svg.js';

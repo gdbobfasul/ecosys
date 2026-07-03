@@ -1,3 +1,4 @@
+// Version: 1.0001
 // recognizer.js — разпознаване на хора в кадъра с TensorFlow.js coco-ssd (on-device).
 //
 // ПРИНЦИПИ:

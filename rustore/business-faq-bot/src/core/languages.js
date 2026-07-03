@@ -1,3 +1,4 @@
+// Version: 1.0001
 // languages.js — 15-те езика на екосистемата (същите като public/translations).
 export const LANGUAGES = [
   { code: 'bg',      bg: 'Български',            native: 'Български' },

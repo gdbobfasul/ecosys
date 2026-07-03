@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Локални известия — само на устройство. БЕЗ push, БЕЗ сървър, БЕЗ FCM/HMS.
 // На устройство: @capacitor/local-notifications.
 // В браузъра: Web Notifications API (ако е разрешено), иначе тих лог.

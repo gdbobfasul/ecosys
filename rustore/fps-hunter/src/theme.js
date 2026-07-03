@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Тема / акцентни цветове за RUStore билда.
 // Huawei билдът има собствен theme.js с различен акцент.
 export const THEME = {

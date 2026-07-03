@@ -1,0 +1,682 @@
+KCY Diagnostics Bundle
+Generated: 2026-06-11T20:01:51.891Z
+Hostname: ams-chat
+
+═══════════════════════════════════════════════════
+  chat-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T19:57:08] [SNAPSHOT] journalctl -u kcy-chat -n 20:
+    Jun 11 19:52:33 ams-chat kcy-chat[1544529]: [19:52:33 chat] ecosystem-status: старт
+    Jun 11 19:52:33 ams-chat kcy-chat[1544529]: [19:52:33 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:53:03 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:53:03 ams-chat kcy-chat[1544529]: [19:53:03 chat] ecosystem-status: старт
+    Jun 11 19:53:04 ams-chat kcy-chat[1544529]: [19:53:04 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:53:36 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:53:36 ams-chat kcy-chat[1544529]: [19:53:36 chat] ecosystem-status: старт
+    Jun 11 19:53:37 ams-chat kcy-chat[1544529]: [19:53:37 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:54:07 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:54:07 ams-chat kcy-chat[1544529]: [19:54:07 chat] ecosystem-status: старт
+    Jun 11 19:54:07 ams-chat kcy-chat[1544529]: [19:54:07 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:54:37 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:54:37 ams-chat kcy-chat[1544529]: [19:54:37 chat] ecosystem-status: старт
+    Jun 11 19:54:37 ams-chat kcy-chat[1544529]: [19:54:37 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:55:10 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:55:10 ams-chat kcy-chat[1544529]: [19:55:10 chat] ecosystem-status: старт
+    Jun 11 19:55:11 ams-chat kcy-chat[1544529]: [19:55:11 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:55:40 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:55:40 ams-chat kcy-chat[1544529]: [19:55:40 chat] ecosystem-status: старт
+    Jun 11 19:55:40 ams-chat kcy-chat[1544529]: [19:55:40 chat] ecosystem-status: изход 1 → 200 OK
+[2026-06-11T20:00:11] [SNAPSHOT] journalctl -u kcy-chat -n 20:
+    Jun 11 19:52:33 ams-chat kcy-chat[1544529]: [19:52:33 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:53:03 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:53:03 ams-chat kcy-chat[1544529]: [19:53:03 chat] ecosystem-status: старт
+    Jun 11 19:53:04 ams-chat kcy-chat[1544529]: [19:53:04 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:53:36 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:53:36 ams-chat kcy-chat[1544529]: [19:53:36 chat] ecosystem-status: старт
+    Jun 11 19:53:37 ams-chat kcy-chat[1544529]: [19:53:37 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:54:07 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:54:07 ams-chat kcy-chat[1544529]: [19:54:07 chat] ecosystem-status: старт
+    Jun 11 19:54:07 ams-chat kcy-chat[1544529]: [19:54:07 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:54:37 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:54:37 ams-chat kcy-chat[1544529]: [19:54:37 chat] ecosystem-status: старт
+    Jun 11 19:54:37 ams-chat kcy-chat[1544529]: [19:54:37 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:55:10 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:55:10 ams-chat kcy-chat[1544529]: [19:55:10 chat] ecosystem-status: старт
+    Jun 11 19:55:11 ams-chat kcy-chat[1544529]: [19:55:11 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:55:40 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:55:40 ams-chat kcy-chat[1544529]: [19:55:40 chat] ecosystem-status: старт
+    Jun 11 19:55:40 ams-chat kcy-chat[1544529]: [19:55:40 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:59:04 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 143.198.212.195
+[2026-06-11T20:01:33] [SNAPSHOT] journalctl -u kcy-chat -n 20:
+    Jun 11 19:52:33 ams-chat kcy-chat[1544529]: [19:52:33 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:53:03 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:53:03 ams-chat kcy-chat[1544529]: [19:53:03 chat] ecosystem-status: старт
+    Jun 11 19:53:04 ams-chat kcy-chat[1544529]: [19:53:04 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:53:36 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:53:36 ams-chat kcy-chat[1544529]: [19:53:36 chat] ecosystem-status: старт
+    Jun 11 19:53:37 ams-chat kcy-chat[1544529]: [19:53:37 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:54:07 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:54:07 ams-chat kcy-chat[1544529]: [19:54:07 chat] ecosystem-status: старт
+    Jun 11 19:54:07 ams-chat kcy-chat[1544529]: [19:54:07 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:54:37 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:54:37 ams-chat kcy-chat[1544529]: [19:54:37 chat] ecosystem-status: старт
+    Jun 11 19:54:37 ams-chat kcy-chat[1544529]: [19:54:37 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:55:10 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:55:10 ams-chat kcy-chat[1544529]: [19:55:10 chat] ecosystem-status: старт
+    Jun 11 19:55:11 ams-chat kcy-chat[1544529]: [19:55:11 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:55:40 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 95.87.73.240
+    Jun 11 19:55:40 ams-chat kcy-chat[1544529]: [19:55:40 chat] ecosystem-status: старт
+    Jun 11 19:55:40 ams-chat kcy-chat[1544529]: [19:55:40 chat] ecosystem-status: изход 1 → 200 OK
+    Jun 11 19:59:04 ams-chat kcy-chat[1544529]: ✅ Admin access granted for IP: 143.198.212.195
+
+
+═══════════════════════════════════════════════════
+  db-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T20:01:33] [DB-CHECK] състояние на базите (от health endpoint-ите)
+[2026-06-11T20:01:33]   chat (3000/api/health): {"status":"ok","db":"sqlite","timestamp":1781208107262}
+[2026-06-11T20:01:33]   eco3 (3001/health): {"ok":true,"service":"eco-3","version":"1.0093","mode":"test","uptime":1647.083533772,"database":{"connected":true,"type":"postgresql","tables":6,"path":"eco3_sys_db"},"anthropic":{"configured":true},"stripe":{"configured":true,"mode":"test"},"timestamp":"2026-06-11T20:01:47.291Z"}
+[2026-06-11T20:01:33]   portals (3002/api/portals/health): {"ok":true,"version":"1.0093","port":"3002","now":"2026-06-11T20:01:47.314Z"}
+[2026-06-11T20:01:33]   fbp (3012/api/fbp/health): {"ok":true,"app":"find-best-price","port":"3012","db":{"healthy":true},"now":"2026-06-11T20:01:47.335Z"}
+[2026-06-11T20:01:33]   wnb (3011/api/wnb/health): {"ok":true,"app":"where-no-biz","port":"3011","db":{"healthy":true},"now":"2026-06-11T20:01:47.361Z"}
+[2026-06-11T20:01:33]   hlb (3010/api/hlb/health): {"ok":true,"app":"house-look-book","port":"3010","db":{"healthy":true},"now":"2026-06-11T20:01:47.388Z"}
+
+
+═══════════════════════════════════════════════════
+  eco3-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T19:57:08] [SNAPSHOT] journalctl -u kcy-eco3 -n 20:
+    Jun 11 19:34:20 ams-chat systemd[1]: Started kcy-eco3.service - KCY ECO-3 AI Studio Backend.
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: [19:34:20 DEBUG/eco3] starting eco-3 service
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: [19:34:20 DEBUG/eco3] node version: v20.20.2 cwd: /var/www/kcy-ecosystem/private/eco-3
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: designed for a production environment, as it will leak
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: memory, and will not scale past a single process.
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [2026-06-11T19:34:21.035Z] [DB] Connected (postgresql): eco3_sys_db (6 tables)
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [19:34:21 DEBUG/eco3] starting HTTP server on port 3001
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [19:34:21 DEBUG/eco3] ✓ listening on port 3001
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: 🤖 ECO-3 AI Studio Backend v1.0093
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Port:      3001
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Mode:      🧪 TEST (безплатно, mock данни)
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Database:  ✓ eco3_sys_db
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Stripe:    ✓
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Anthropic: ✓ (не се ползва в test mode)
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Admin IPs: 127.0.0.1,::1,143.198.212.195,92.62.70.0,92.62.76.240,95.87.73.240,0.0.0.0/0
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Env:       production
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Log:       /var/www/kcy-ecosystem/private/eco-3/logs/eco3.log
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    💡 За реални заявки: смени ECO3_MODE=production в .env
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [2026-06-11T19:34:21.045Z] [START] ECO-3 v1.0093 on port 3001
+[2026-06-11T20:00:11] [SNAPSHOT] journalctl -u kcy-eco3 -n 20:
+    Jun 11 19:34:20 ams-chat systemd[1]: Started kcy-eco3.service - KCY ECO-3 AI Studio Backend.
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: [19:34:20 DEBUG/eco3] starting eco-3 service
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: [19:34:20 DEBUG/eco3] node version: v20.20.2 cwd: /var/www/kcy-ecosystem/private/eco-3
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: designed for a production environment, as it will leak
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: memory, and will not scale past a single process.
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [2026-06-11T19:34:21.035Z] [DB] Connected (postgresql): eco3_sys_db (6 tables)
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [19:34:21 DEBUG/eco3] starting HTTP server on port 3001
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [19:34:21 DEBUG/eco3] ✓ listening on port 3001
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: 🤖 ECO-3 AI Studio Backend v1.0093
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Port:      3001
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Mode:      🧪 TEST (безплатно, mock данни)
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Database:  ✓ eco3_sys_db
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Stripe:    ✓
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Anthropic: ✓ (не се ползва в test mode)
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Admin IPs: 127.0.0.1,::1,143.198.212.195,92.62.70.0,92.62.76.240,95.87.73.240,0.0.0.0/0
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Env:       production
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Log:       /var/www/kcy-ecosystem/private/eco-3/logs/eco3.log
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    💡 За реални заявки: смени ECO3_MODE=production в .env
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [2026-06-11T19:34:21.045Z] [START] ECO-3 v1.0093 on port 3001
+[2026-06-11T20:01:33] [SNAPSHOT] journalctl -u kcy-eco3 -n 20:
+    Jun 11 19:34:20 ams-chat systemd[1]: Started kcy-eco3.service - KCY ECO-3 AI Studio Backend.
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: [19:34:20 DEBUG/eco3] starting eco-3 service
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: [19:34:20 DEBUG/eco3] node version: v20.20.2 cwd: /var/www/kcy-ecosystem/private/eco-3
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: designed for a production environment, as it will leak
+    Jun 11 19:34:20 ams-chat kcy-eco3[1547215]: memory, and will not scale past a single process.
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [2026-06-11T19:34:21.035Z] [DB] Connected (postgresql): eco3_sys_db (6 tables)
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [19:34:21 DEBUG/eco3] starting HTTP server on port 3001
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [19:34:21 DEBUG/eco3] ✓ listening on port 3001
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: 🤖 ECO-3 AI Studio Backend v1.0093
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Port:      3001
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Mode:      🧪 TEST (безплатно, mock данни)
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Database:  ✓ eco3_sys_db
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Stripe:    ✓
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Anthropic: ✓ (не се ползва в test mode)
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Admin IPs: 127.0.0.1,::1,143.198.212.195,92.62.70.0,92.62.76.240,95.87.73.240,0.0.0.0/0
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Env:       production
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    Log:       /var/www/kcy-ecosystem/private/eco-3/logs/eco3.log
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]:    💡 За реални заявки: смени ECO3_MODE=production в .env
+    Jun 11 19:34:21 ams-chat kcy-eco3[1547215]: [2026-06-11T19:34:21.045Z] [START] ECO-3 v1.0093 on port 3001
+
+
+═══════════════════════════════════════════════════
+  failover-errors.log
+═══════════════════════════════════════════════════
+
+
+═══════════════════════════════════════════════════
+  fbp-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T19:57:08] [SNAPSHOT] journalctl -u kcy-fbp -n 20:
+    Jun 11 19:34:11 ams-chat systemd[1]: kcy-fbp.service: Consumed 4.752s CPU time, 23.8M memory peak, 21.1M memory swap peak.
+    Jun 11 19:34:11 ams-chat systemd[1]: Started kcy-fbp.service - KCY Find Best Price Backend (самостоятелно приложение).
+    Jun 11 19:34:12 ams-chat kcy-fbp[1546804]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:12 ams-chat kcy-fbp[1546804]: designed for a production environment, as it will leak
+    Jun 11 19:34:12 ams-chat kcy-fbp[1546804]: memory, and will not scale past a single process.
+    Jun 11 19:34:12 ams-chat kcy-fbp[1546804]: ⚠️  FBP applySchema пропуснат: must be owner of table users
+    Jun 11 19:34:12 ams-chat kcy-fbp[1546804]: 💰 Find Best Price на http://localhost:3012
+    Jun 11 19:34:12 ams-chat kcy-fbp[1546804]:    Public: /var/www/html/find-best-price
+    Jun 11 19:34:12 ams-chat kcy-fbp[1546804]:    DB: findbestprice @ localhost
+    Jun 11 19:34:38 ams-chat systemd[1]: Stopping kcy-fbp.service - KCY Find Best Price Backend (самостоятелно приложение)...
+    Jun 11 19:34:38 ams-chat systemd[1]: kcy-fbp.service: Deactivated successfully.
+    Jun 11 19:34:38 ams-chat systemd[1]: Stopped kcy-fbp.service - KCY Find Best Price Backend (самостоятелно приложение).
+    Jun 11 19:34:38 ams-chat systemd[1]: Started kcy-fbp.service - KCY Find Best Price Backend (самостоятелно приложение).
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: designed for a production environment, as it will leak
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: memory, and will not scale past a single process.
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: ⚠️  FBP applySchema пропуснат: must be owner of table users
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: 💰 Find Best Price на http://localhost:3012
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]:    Public: /var/www/html/find-best-price
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]:    DB: findbestprice @ localhost
+[2026-06-11T20:00:11] [SNAPSHOT] journalctl -u kcy-fbp -n 20:
+    Jun 11 19:34:12 ams-chat kcy-fbp[1546804]:    Public: /var/www/html/find-best-price
+    Jun 11 19:34:12 ams-chat kcy-fbp[1546804]:    DB: findbestprice @ localhost
+    Jun 11 19:34:38 ams-chat systemd[1]: Stopping kcy-fbp.service - KCY Find Best Price Backend (самостоятелно приложение)...
+    Jun 11 19:34:38 ams-chat systemd[1]: kcy-fbp.service: Deactivated successfully.
+    Jun 11 19:34:38 ams-chat systemd[1]: Stopped kcy-fbp.service - KCY Find Best Price Backend (самостоятелно приложение).
+    Jun 11 19:34:38 ams-chat systemd[1]: Started kcy-fbp.service - KCY Find Best Price Backend (самостоятелно приложение).
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: designed for a production environment, as it will leak
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: memory, and will not scale past a single process.
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: ⚠️  FBP applySchema пропуснат: must be owner of table users
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: 💰 Find Best Price на http://localhost:3012
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]:    Public: /var/www/html/find-best-price
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]:    DB: findbestprice @ localhost
+    Jun 11 19:59:23 ams-chat kcy-fbp[1547887]: [19:59:23 fbp] GET /search: старт
+    Jun 11 19:59:23 ams-chat kcy-fbp[1547887]: [19:59:23 fbp] GET /search: 1
+    Jun 11 19:59:23 ams-chat kcy-fbp[1547887]: [19:59:23 fbp] GET /search: край → 200
+    Jun 11 19:59:26 ams-chat kcy-fbp[1547887]: [19:59:26 fbp] GET /wanted: старт
+    Jun 11 19:59:26 ams-chat kcy-fbp[1547887]: [19:59:26 fbp] GET /wanted: край → 200
+    Jun 11 19:59:26 ams-chat kcy-fbp[1547887]: [19:59:26 fbp] GET /wanted: старт
+    Jun 11 19:59:26 ams-chat kcy-fbp[1547887]: [19:59:26 fbp] GET /wanted: край → 200
+[2026-06-11T20:01:33] [SNAPSHOT] journalctl -u kcy-fbp -n 20:
+    Jun 11 19:34:12 ams-chat kcy-fbp[1546804]:    Public: /var/www/html/find-best-price
+    Jun 11 19:34:12 ams-chat kcy-fbp[1546804]:    DB: findbestprice @ localhost
+    Jun 11 19:34:38 ams-chat systemd[1]: Stopping kcy-fbp.service - KCY Find Best Price Backend (самостоятелно приложение)...
+    Jun 11 19:34:38 ams-chat systemd[1]: kcy-fbp.service: Deactivated successfully.
+    Jun 11 19:34:38 ams-chat systemd[1]: Stopped kcy-fbp.service - KCY Find Best Price Backend (самостоятелно приложение).
+    Jun 11 19:34:38 ams-chat systemd[1]: Started kcy-fbp.service - KCY Find Best Price Backend (самостоятелно приложение).
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: designed for a production environment, as it will leak
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: memory, and will not scale past a single process.
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: ⚠️  FBP applySchema пропуснат: must be owner of table users
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]: 💰 Find Best Price на http://localhost:3012
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]:    Public: /var/www/html/find-best-price
+    Jun 11 19:34:38 ams-chat kcy-fbp[1547887]:    DB: findbestprice @ localhost
+    Jun 11 19:59:23 ams-chat kcy-fbp[1547887]: [19:59:23 fbp] GET /search: старт
+    Jun 11 19:59:23 ams-chat kcy-fbp[1547887]: [19:59:23 fbp] GET /search: 1
+    Jun 11 19:59:23 ams-chat kcy-fbp[1547887]: [19:59:23 fbp] GET /search: край → 200
+    Jun 11 19:59:26 ams-chat kcy-fbp[1547887]: [19:59:26 fbp] GET /wanted: старт
+    Jun 11 19:59:26 ams-chat kcy-fbp[1547887]: [19:59:26 fbp] GET /wanted: край → 200
+    Jun 11 19:59:26 ams-chat kcy-fbp[1547887]: [19:59:26 fbp] GET /wanted: старт
+    Jun 11 19:59:26 ams-chat kcy-fbp[1547887]: [19:59:26 fbp] GET /wanted: край → 200
+
+
+═══════════════════════════════════════════════════
+  filldata-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T19:56:30.298Z] [INFO] robot старт
+[2026-06-11T19:57:45.030Z] [INFO] robot старт
+[2026-06-11T20:00:39.621Z] [INFO] robot старт
+
+
+═══════════════════════════════════════════════════
+  health-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T20:01:33] [HEALTH-CHECK] портове + endpoints
+[2026-06-11T20:01:33]   chat    : port 3000=yes  /api/health=200
+[2026-06-11T20:01:33]   eco-3   : port 3001=yes  /health=200
+[2026-06-11T20:01:33]   portals : port 3002=yes  /health=200
+[2026-06-11T20:01:33]   hlb     : port 3010=yes  /api/hlb/health=200
+[2026-06-11T20:01:33]   wnb     : port 3011=yes  /api/wnb/health=200
+[2026-06-11T20:01:33]   fbp     : port 3012=yes  /api/fbp/health=200
+[2026-06-11T20:01:33]   diag    : port 4400=yes  /health=200
+[2026-06-11T20:01:33]   nginx config: OK
+[2026-06-11T20:01:33]   failover: неактивен (443 → директно сайта)
+[2026-06-11T20:01:33]   diag snippet: има bundle location ✓
+[2026-06-11T20:01:33]   bundle 4400 директно: HTTP 200
+[2026-06-11T20:01:33]   bundle публичен URL: OK (text/plain) ✓
+[2026-06-11T20:01:33] ── nginx активни конфиги ──
+[2026-06-11T20:01:33]   enabled: 143.198.212.195
+[2026-06-11T20:01:33]   enabled: kcy-app-domains.conf
+[2026-06-11T20:01:33]   enabled: take.offbitch.com
+[2026-06-11T20:01:33] ── nginx location блокове (server_name + location + proxy_pass + root) ──
+[2026-06-11T20:01:33]       listen 80;
+[2026-06-11T20:01:33]       listen [::]:80;
+[2026-06-11T20:01:33]       server_name 143.198.212.195;
+[2026-06-11T20:01:33]       location /.well-known/acme-challenge/ { root /var/www/html; }
+[2026-06-11T20:01:33]       location / { return 301 https://$host$request_uri; }
+[2026-06-11T20:01:33]       listen 443 ssl http2;
+[2026-06-11T20:01:33]       listen [::]:443 ssl http2;
+[2026-06-11T20:01:33]       server_name 143.198.212.195;
+[2026-06-11T20:01:33]       include /etc/nginx/snippets/kcy-diag-proxy.conf;
+[2026-06-11T20:01:33]       root /var/www/html;
+[2026-06-11T20:01:33]       location = /favicon.ico { access_log off; log_not_found off; return 204; }
+[2026-06-11T20:01:33]       location / { try_files $uri $uri/ /index.html; }
+[2026-06-11T20:01:33]       include /etc/nginx/kcy-apps/*.conf;
+[2026-06-11T20:01:33]       location /api/eco3/ {
+[2026-06-11T20:01:33]           proxy_pass http://127.0.0.1:3001/;
+[2026-06-11T20:01:33]       location /api/portals/ {
+[2026-06-11T20:01:33]           proxy_pass http://127.0.0.1:3002;
+[2026-06-11T20:01:33]       location /portals/ {
+[2026-06-11T20:01:33]           proxy_pass http://127.0.0.1:3002;
+[2026-06-11T20:01:33]       location /api/ {
+[2026-06-11T20:01:33]           proxy_pass http://127.0.0.1:3000;
+[2026-06-11T20:01:33]       location /socket.io/ {
+[2026-06-11T20:01:33]           proxy_pass http://127.0.0.1:3000;
+[2026-06-11T20:01:33]       location /shared/ {
+[2026-06-11T20:01:33]       location ^~ /docs { deny all; }
+[2026-06-11T20:01:33]       location ^~ /crypto {
+[2026-06-11T20:01:33]       location ~ /\. { deny all; }
+[2026-06-11T20:01:33]       location ~ \.(env|sql|sqlite|db)$ { deny all; }
+[2026-06-11T20:01:33]       location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2)$ {
+[2026-06-11T20:01:33]       listen 80;
+[2026-06-11T20:01:33]       server_name find.jwork.ru;
+[2026-06-11T20:01:33]       location ^~ /.well-known/acme-challenge/ { root /var/www/html; allow all; default_type "text/plain"; }
+[2026-06-11T20:01:33]       location / { return 301 https://$host$request_uri; }
+[2026-06-11T20:01:33]       listen 443 ssl;
+[2026-06-11T20:01:33]       server_name find.jwork.ru;
+[2026-06-11T20:01:33]       root /var/www/html/WhereNoBiz;
+[2026-06-11T20:01:33]       location ^~ /.well-known/acme-challenge/ { root /var/www/html; allow all; default_type "text/plain"; }
+[2026-06-11T20:01:33]       location ^~ /api/wnb/ { proxy_pass http://127.0.0.1:3011; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_read_timeout 86400; }
+[2026-06-11T20:01:33]       location ^~ /uploads/ { proxy_pass http://127.0.0.1:3011; proxy_set_header Host $host; }
+[2026-06-11T20:01:33]       location ^~ /shared/       { root /var/www/html; }
+[2026-06-11T20:01:33]       location ^~ /translations/ { root /var/www/html; }
+[2026-06-11T20:01:33]       location ^~ /assets/       { root /var/www/html; }
+[2026-06-11T20:01:33]       location ^~ /downloads/    { root /var/www/html; }
+[2026-06-11T20:01:33]       location / { try_files $uri $uri/ /index.html; }
+[2026-06-11T20:01:33]       listen 80;
+[2026-06-11T20:01:33]       server_name look.myhousesetup.com;
+[2026-06-11T20:01:33]       location ^~ /.well-known/acme-challenge/ { root /var/www/html; allow all; default_type "text/plain"; }
+[2026-06-11T20:01:33]       location / { return 301 https://$host$request_uri; }
+[2026-06-11T20:01:33]       listen 443 ssl;
+[2026-06-11T20:01:33]       server_name look.myhousesetup.com;
+[2026-06-11T20:01:33]       root /var/www/html/House-Look-Book;
+[2026-06-11T20:01:33]       location ^~ /.well-known/acme-challenge/ { root /var/www/html; allow all; default_type "text/plain"; }
+[2026-06-11T20:01:33]       location ^~ /api/hlb/ { proxy_pass http://127.0.0.1:3010; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_read_timeout 86400; }
+[2026-06-11T20:01:33]       location ^~ /uploads/ { proxy_pass http://127.0.0.1:3010; proxy_set_header Host $host; }
+[2026-06-11T20:01:33]       location ^~ /shared/       { root /var/www/html; }
+[2026-06-11T20:01:33]       location ^~ /translations/ { root /var/www/html; }
+[2026-06-11T20:01:33]       location ^~ /assets/       { root /var/www/html; }
+[2026-06-11T20:01:33]       location ^~ /downloads/    { root /var/www/html; }
+[2026-06-11T20:01:33]       location / { try_files $uri $uri/ /index.html; }
+[2026-06-11T20:01:33]       listen 80;
+[2026-06-11T20:01:33] ── Portals static тест ──
+[2026-06-11T20:01:33]   файл: /var/www/html/portals/register.html съществува (6903 байта)
+[2026-06-11T20:01:33]   файл: /var/www/kcy-ecosystem/public/portals/register.html ЛИПСВА
+[2026-06-11T20:01:33]   3002 директно /portals/register.html: HTTP 200
+[2026-06-11T20:01:33]   nginx /portals/register.html: HTTP 200
+[2026-06-11T20:01:33]   POST register (3002): 200 application/json; charset=utf-8
+[2026-06-11T20:01:33]   POST register тяло: {"ok":true,"user":{"id":19,"username":"__diagtest__"},"is_first_user":false} 
+[2026-06-11T20:01:33]   billing/status СЪС сесия (3002): {"error":"login_required"} [HTTP 401]
+[2026-06-11T20:01:33]   billing/status СЪС сесия (nginx HTTPS): {"current_month":"2026-06","paid_this_month":false,"payment":null,"fees":{"USD":5,"RUB":360,"KGS":438}} [HTTP 200]
+[2026-06-11T20:01:33]   diag cleanup: изтрити 4 тестови потребителя
+[2026-06-11T20:01:33]   /portals/games/ (3002): HTTP 200
+[2026-06-11T20:01:33]     index-games.html: 20916 байта
+[2026-06-11T20:01:33]   /portals/services/ (3002): HTTP 200
+[2026-06-11T20:01:33]     index-services.html: 3345 байта
+[2026-06-11T20:01:33] ── portals journal (последни грешки) ──
+[2026-06-11T20:01:33]   Jun 11 20:01:46 ams-chat kcy-portals[1544542]: [20:01:46 DB/portals] SELECT portal_monthly_payments WHERE user_id=22 AND month='2026-06'
+[2026-06-11T20:01:33]   Jun 11 20:01:46 ams-chat kcy-portals[1544542]: [20:01:46 portals] billing/status: 1 — платил този месец: НЕ
+[2026-06-11T20:01:33]   Jun 11 20:01:46 ams-chat kcy-portals[1544542]: [20:01:46 portals] billing/status: изход 1 → 200 OK
+[2026-06-11T20:01:33]   Jun 11 20:01:46 ams-chat kcy-portals[1544542]: [20:01:46 DEBUG/portals] ← GET /api/portals/billing/status → HTTP 200 (16ms)
+[2026-06-11T20:01:33]   Jun 11 20:01:46 ams-chat kcy-portals[1544542]: [20:01:46 DEBUG/portals] → GET /portals/games/ [без сесия]
+[2026-06-11T20:01:33]   Jun 11 20:01:46 ams-chat kcy-portals[1544542]: [20:01:46 portals] GET /portals/games/: старт — sendFile /var/www/html/portals/index-games.html
+[2026-06-11T20:01:33]   Jun 11 20:01:46 ams-chat kcy-portals[1544542]: [20:01:46 portals] GET /portals/games/: изход 3 → 200 OK
+[2026-06-11T20:01:33]   Jun 11 20:01:46 ams-chat kcy-portals[1544542]: [20:01:46 DEBUG/portals] ← GET /portals/games/ → HTTP 200 (40ms)
+[2026-06-11T20:01:33]   Jun 11 20:01:47 ams-chat kcy-portals[1544542]: [20:01:47 DEBUG/portals] → GET /portals/services/ [без сесия]
+[2026-06-11T20:01:33]   Jun 11 20:01:47 ams-chat kcy-portals[1544542]: [20:01:47 portals] GET /portals/services/: старт — sendFile /var/www/html/portals/index-services.html
+[2026-06-11T20:01:33]   Jun 11 20:01:47 ams-chat kcy-portals[1544542]: [20:01:47 portals] GET /portals/services/: изход 3 → 200 OK
+[2026-06-11T20:01:33]   Jun 11 20:01:47 ams-chat kcy-portals[1544542]: [20:01:47 DEBUG/portals] ← GET /portals/services/ → HTTP 200 (15ms)
+
+
+═══════════════════════════════════════════════════
+  hlb-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T19:57:08] [SNAPSHOT] journalctl -u kcy-hlb -n 20:
+    Jun 11 19:33:54 ams-chat kcy-hlb[1546011]: ⏰ HLB auto-flip активен (на всеки 30 мин)
+    Jun 11 19:33:54 ams-chat kcy-hlb[1546011]: 🏠 House-Look-Book на http://localhost:3010
+    Jun 11 19:33:54 ams-chat kcy-hlb[1546011]:    Public: /var/www/html/House-Look-Book
+    Jun 11 19:33:54 ams-chat kcy-hlb[1546011]:    DB: houselookbook @ localhost
+    Jun 11 19:34:24 ams-chat systemd[1]: Stopping kcy-hlb.service - KCY House-Look-Book Backend (самостоятелно приложение)...
+    Jun 11 19:34:24 ams-chat systemd[1]: kcy-hlb.service: Deactivated successfully.
+    Jun 11 19:34:24 ams-chat systemd[1]: Stopped kcy-hlb.service - KCY House-Look-Book Backend (самостоятелно приложение).
+    Jun 11 19:34:24 ams-chat systemd[1]: Starting kcy-hlb.service - KCY House-Look-Book Backend (самостоятелно приложение)...
+    Jun 11 19:34:24 ams-chat systemd[1]: Started kcy-hlb.service - KCY House-Look-Book Backend (самостоятелно приложение).
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: designed for a production environment, as it will leak
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: memory, and will not scale past a single process.
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: ⚠️  HLB applySchema пропуснат: must be owner of table users
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: ⏰ HLB auto-flip активен (на всеки 30 мин)
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: 🏠 House-Look-Book на http://localhost:3010
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]:    Public: /var/www/html/House-Look-Book
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]:    DB: houselookbook @ localhost
+    Jun 11 19:57:01 ams-chat kcy-hlb[1547429]: [19:57:01 hlb] GET /proposals/ranking: старт
+    Jun 11 19:57:01 ams-chat kcy-hlb[1547429]: [19:57:01 hlb] GET /proposals/ranking: 1
+    Jun 11 19:57:01 ams-chat kcy-hlb[1547429]: [19:57:01 hlb] GET /proposals/ranking: край → 200
+[2026-06-11T20:00:11] [SNAPSHOT] journalctl -u kcy-hlb -n 20:
+    Jun 11 19:34:24 ams-chat systemd[1]: Stopped kcy-hlb.service - KCY House-Look-Book Backend (самостоятелно приложение).
+    Jun 11 19:34:24 ams-chat systemd[1]: Starting kcy-hlb.service - KCY House-Look-Book Backend (самостоятелно приложение)...
+    Jun 11 19:34:24 ams-chat systemd[1]: Started kcy-hlb.service - KCY House-Look-Book Backend (самостоятелно приложение).
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: designed for a production environment, as it will leak
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: memory, and will not scale past a single process.
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: ⚠️  HLB applySchema пропуснат: must be owner of table users
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: ⏰ HLB auto-flip активен (на всеки 30 мин)
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: 🏠 House-Look-Book на http://localhost:3010
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]:    Public: /var/www/html/House-Look-Book
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]:    DB: houselookbook @ localhost
+    Jun 11 19:57:01 ams-chat kcy-hlb[1547429]: [19:57:01 hlb] GET /proposals/ranking: старт
+    Jun 11 19:57:01 ams-chat kcy-hlb[1547429]: [19:57:01 hlb] GET /proposals/ranking: 1
+    Jun 11 19:57:01 ams-chat kcy-hlb[1547429]: [19:57:01 hlb] GET /proposals/ranking: край → 200
+    Jun 11 19:59:31 ams-chat kcy-hlb[1547429]: [19:59:31 hlb] GET /proposals: старт
+    Jun 11 19:59:31 ams-chat kcy-hlb[1547429]: [19:59:31 hlb] GET /proposals: 1
+    Jun 11 19:59:31 ams-chat kcy-hlb[1547429]: [19:59:31 hlb] GET /proposals: край → 200
+    Jun 11 19:59:36 ams-chat kcy-hlb[1547429]: [19:59:36 hlb] GET /proposals/ranking: старт
+    Jun 11 19:59:36 ams-chat kcy-hlb[1547429]: [19:59:36 hlb] GET /proposals/ranking: 1
+    Jun 11 19:59:36 ams-chat kcy-hlb[1547429]: [19:59:36 hlb] GET /proposals/ranking: край → 200
+[2026-06-11T20:01:33] [SNAPSHOT] journalctl -u kcy-hlb -n 20:
+    Jun 11 19:34:24 ams-chat systemd[1]: Stopped kcy-hlb.service - KCY House-Look-Book Backend (самостоятелно приложение).
+    Jun 11 19:34:24 ams-chat systemd[1]: Starting kcy-hlb.service - KCY House-Look-Book Backend (самостоятелно приложение)...
+    Jun 11 19:34:24 ams-chat systemd[1]: Started kcy-hlb.service - KCY House-Look-Book Backend (самостоятелно приложение).
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: designed for a production environment, as it will leak
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: memory, and will not scale past a single process.
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: ⚠️  HLB applySchema пропуснат: must be owner of table users
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: ⏰ HLB auto-flip активен (на всеки 30 мин)
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]: 🏠 House-Look-Book на http://localhost:3010
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]:    Public: /var/www/html/House-Look-Book
+    Jun 11 19:34:24 ams-chat kcy-hlb[1547429]:    DB: houselookbook @ localhost
+    Jun 11 19:57:01 ams-chat kcy-hlb[1547429]: [19:57:01 hlb] GET /proposals/ranking: старт
+    Jun 11 19:57:01 ams-chat kcy-hlb[1547429]: [19:57:01 hlb] GET /proposals/ranking: 1
+    Jun 11 19:57:01 ams-chat kcy-hlb[1547429]: [19:57:01 hlb] GET /proposals/ranking: край → 200
+    Jun 11 19:59:31 ams-chat kcy-hlb[1547429]: [19:59:31 hlb] GET /proposals: старт
+    Jun 11 19:59:31 ams-chat kcy-hlb[1547429]: [19:59:31 hlb] GET /proposals: 1
+    Jun 11 19:59:31 ams-chat kcy-hlb[1547429]: [19:59:31 hlb] GET /proposals: край → 200
+    Jun 11 19:59:36 ams-chat kcy-hlb[1547429]: [19:59:36 hlb] GET /proposals/ranking: старт
+    Jun 11 19:59:36 ams-chat kcy-hlb[1547429]: [19:59:36 hlb] GET /proposals/ranking: 1
+    Jun 11 19:59:36 ams-chat kcy-hlb[1547429]: [19:59:36 hlb] GET /proposals/ranking: край → 200
+
+
+═══════════════════════════════════════════════════
+  memory-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T19:57:08] [SNAPSHOT] RAM 629/961MB · Swap 345/2047MB
+[2026-06-11T20:00:11] [SNAPSHOT] RAM 531/961MB · Swap 430/2047MB
+[2026-06-11T20:01:33] [SNAPSHOT] RAM 576/961MB · Swap 437/2047MB
+
+
+═══════════════════════════════════════════════════
+  modules-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T20:01:33] [MODULE-CHECK] Проверка на require() vs node_modules
+[2026-06-11T20:01:33] [OK] chat → всички require() модули са налични
+[2026-06-11T20:01:33] [OK] eco-3 → всички require() модули са налични
+[2026-06-11T20:01:33] [OK] portals → всички require() модули са налични
+[2026-06-11T20:01:33] [OK] find-best-price → всички require() модули са налични
+[2026-06-11T20:01:33] [OK] WhereNoBiz → всички require() модули са налични
+[2026-06-11T20:01:33] [OK] House-Look-Book → всички require() модули са налични
+
+
+═══════════════════════════════════════════════════
+  portal-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T19:57:08] [SNAPSHOT] journalctl -u kcy-portals -n 20:
+    Jun 11 19:56:54 ams-chat kcy-portals[1544542]: [19:56:54 DEBUG/portals] → GET /api/portals/ip-admin [без сесия]
+    Jun 11 19:56:54 ams-chat kcy-portals[1544542]: [19:56:54 DEBUG/portals] ← GET /api/portals/ip-admin → HTTP 304 (11ms)
+    Jun 11 19:56:54 ams-chat kcy-portals[1544542]: [19:56:54 DEBUG/portals] → GET /api/portals/me [без сесия]
+    Jun 11 19:56:54 ams-chat kcy-portals[1544542]: [19:56:54 portals] me: старт (сесия: НЯМА)
+    Jun 11 19:56:54 ams-chat kcy-portals[1544542]: [19:56:54 portals] me: изход 1 → 200 {logged_in:false} (няма сесия)
+    Jun 11 19:56:54 ams-chat kcy-portals[1544542]: [19:56:54 DEBUG/portals] ← GET /api/portals/me → HTTP 304 (19ms)
+    Jun 11 19:56:54 ams-chat kcy-portals[1544542]: [19:56:54 DEBUG/portals] → GET /api/portals/ip-admin [без сесия]
+    Jun 11 19:56:54 ams-chat kcy-portals[1544542]: [19:56:54 DEBUG/portals] ← GET /api/portals/ip-admin → HTTP 304 (13ms)
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 DEBUG/portals] → GET /api/portals/me [без сесия]
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 portals] me: старт (сесия: НЯМА)
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 portals] me: изход 1 → 200 {logged_in:false} (няма сесия)
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 DEBUG/portals] ← GET /api/portals/me → HTTP 304 (7ms)
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 DEBUG/portals] → GET /api/portals/ip-admin [без сесия]
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 DEBUG/portals] ← GET /api/portals/ip-admin → HTTP 304 (10ms)
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 DEBUG/portals] → GET /api/portals/me [без сесия]
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 portals] me: старт (сесия: НЯМА)
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 portals] me: изход 1 → 200 {logged_in:false} (няма сесия)
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 DEBUG/portals] ← GET /api/portals/me → HTTP 304 (36ms)
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 DEBUG/portals] → GET /api/portals/ip-admin [без сесия]
+    Jun 11 19:56:56 ams-chat kcy-portals[1544542]: [19:56:56 DEBUG/portals] ← GET /api/portals/ip-admin → HTTP 304 (14ms)
+[2026-06-11T20:00:11] [SNAPSHOT] journalctl -u kcy-portals -n 20:
+    Jun 11 19:59:47 ams-chat kcy-portals[1544542]: [19:59:47 portals] me: изход 1 → 200 {logged_in:false} (няма сесия)
+    Jun 11 19:59:47 ams-chat kcy-portals[1544542]: [19:59:47 DEBUG/portals] ← GET /api/portals/me → HTTP 304 (27ms)
+    Jun 11 19:59:49 ams-chat kcy-portals[1544542]: [19:59:49 DEBUG/portals] → GET /api/portals/ip-admin [без сесия]
+    Jun 11 19:59:49 ams-chat kcy-portals[1544542]: [19:59:49 DEBUG/portals] ← GET /api/portals/ip-admin → HTTP 304 (25ms)
+    Jun 11 19:59:49 ams-chat kcy-portals[1544542]: [19:59:49 DEBUG/portals] → GET /api/portals/me [без сесия]
+    Jun 11 19:59:49 ams-chat kcy-portals[1544542]: [19:59:49 portals] me: старт (сесия: НЯМА)
+    Jun 11 19:59:49 ams-chat kcy-portals[1544542]: [19:59:49 portals] me: изход 1 → 200 {logged_in:false} (няма сесия)
+    Jun 11 19:59:49 ams-chat kcy-portals[1544542]: [19:59:49 DEBUG/portals] ← GET /api/portals/me → HTTP 304 (21ms)
+    Jun 11 19:59:50 ams-chat kcy-portals[1544542]: [19:59:50 DEBUG/portals] → GET /api/portals/ip-admin [без сесия]
+    Jun 11 19:59:50 ams-chat kcy-portals[1544542]: [19:59:50 DEBUG/portals] ← GET /api/portals/ip-admin → HTTP 304 (23ms)
+    Jun 11 19:59:50 ams-chat kcy-portals[1544542]: [19:59:50 DEBUG/portals] → GET /api/portals/me [без сесия]
+    Jun 11 19:59:50 ams-chat kcy-portals[1544542]: [19:59:50 portals] me: старт (сесия: НЯМА)
+    Jun 11 19:59:50 ams-chat kcy-portals[1544542]: [19:59:50 portals] me: изход 1 → 200 {logged_in:false} (няма сесия)
+    Jun 11 19:59:50 ams-chat kcy-portals[1544542]: [19:59:50 DEBUG/portals] ← GET /api/portals/me → HTTP 304 (30ms)
+    Jun 11 19:59:56 ams-chat kcy-portals[1544542]: [19:59:56 DEBUG/portals] → GET /api/portals/ip-admin [без сесия]
+    Jun 11 19:59:56 ams-chat kcy-portals[1544542]: [19:59:56 DEBUG/portals] ← GET /api/portals/ip-admin → HTTP 304 (22ms)
+    Jun 11 19:59:56 ams-chat kcy-portals[1544542]: [19:59:56 DEBUG/portals] → GET /api/portals/me [без сесия]
+    Jun 11 19:59:56 ams-chat kcy-portals[1544542]: [19:59:56 portals] me: старт (сесия: НЯМА)
+    Jun 11 19:59:56 ams-chat kcy-portals[1544542]: [19:59:56 portals] me: изход 1 → 200 {logged_in:false} (няма сесия)
+    Jun 11 19:59:56 ams-chat kcy-portals[1544542]: [19:59:56 DEBUG/portals] ← GET /api/portals/me → HTTP 304 (21ms)
+[2026-06-11T20:01:33] [SNAPSHOT] journalctl -u kcy-portals -n 20:
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 portals] register: 2 — записан в базата (id=18)
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 portals] register: 3 — сесия записана
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 portals] register: изход 4 → 200 OK (регистриран успешно)
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 DEBUG/portals] ← POST /api/portals/register → HTTP 200 (153ms)
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 DEBUG/portals] → GET /api/portals/billing/status [user#18]
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 portals] billing/status: старт (user#18, месец 2026-06)
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 DB/portals] SELECT portal_monthly_payments WHERE user_id=18 AND month='2026-06'
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 portals] billing/status: 1 — платил този месец: НЕ
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 portals] billing/status: изход 1 → 200 OK
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 DEBUG/portals] ← GET /api/portals/billing/status → HTTP 200 (10ms)
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 DEBUG/portals] → GET /portals/games/ [без сесия]
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 portals] GET /portals/games/: старт — sendFile /var/www/html/portals/index-games.html
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 portals] GET /portals/games/: изход 3 → 200 OK
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 DEBUG/portals] ← GET /portals/games/ → HTTP 200 (10ms)
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 DEBUG/portals] → GET /portals/services/ [без сесия]
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 portals] GET /portals/services/: старт — sendFile /var/www/html/portals/index-services.html
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 portals] GET /portals/services/: изход 3 → 200 OK
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 DEBUG/portals] ← GET /portals/services/ → HTTP 200 (9ms)
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 DEBUG/portals] → GET /api/portals/health [без сесия]
+    Jun 11 20:00:19 ams-chat kcy-portals[1544542]: [20:00:19 DEBUG/portals] ← GET /api/portals/health → HTTP 200 (3ms)
+
+
+═══════════════════════════════════════════════════
+  services-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T19:57:08] [SNAPSHOT] nginx:active kcy-chat:active kcy-eco3:active kcy-portals:active kcy-fbp:active kcy-wnb:active kcy-hlb:active kcy-diag:active postgresql:active 
+[2026-06-11T19:57:08] [SNAPSHOT] ⚠ 1 failed units: ● 
+[2026-06-11T19:57:08] [SNAPSHOT] disk / · 12G/24G (49%)
+[2026-06-11T20:00:11] [SNAPSHOT] nginx:active kcy-chat:active kcy-eco3:active kcy-portals:active kcy-fbp:active kcy-wnb:active kcy-hlb:active kcy-diag:active postgresql:active 
+[2026-06-11T20:00:11] [SNAPSHOT] ⚠ 1 failed units: ● 
+[2026-06-11T20:00:11] [SNAPSHOT] disk / · 12G/24G (49%)
+[2026-06-11T20:01:33] [SNAPSHOT] nginx:active kcy-chat:active kcy-eco3:active kcy-portals:active kcy-fbp:active kcy-wnb:active kcy-hlb:active kcy-diag:active postgresql:active 
+[2026-06-11T20:01:33] [SNAPSHOT] ⚠ 1 failed units: ● 
+[2026-06-11T20:01:33] [SNAPSHOT] disk / · 12G/24G (49%)
+
+
+═══════════════════════════════════════════════════
+  status.json
+═══════════════════════════════════════════════════
+{
+  "generated": "2026-06-11T20:01:33",
+  "hostname": "ams-chat",
+  "uptime": "up 3 weeks, 1 day, 7 hours, 35 minutes",
+  "memory": {"ram_used_mb":576,"ram_total_mb":961,"swap_used_mb":437,"swap_total_mb":2047},
+  "disk": "12G/24G (49%)",
+  "services": {
+    "nginx": {"active":"active","enabled":"enabled","restarts":0},
+    "kcy-chat": {"active":"active","enabled":"enabled","restarts":0},
+    "kcy-eco3": {"active":"active","enabled":"enabled","restarts":0},
+    "kcy-portals": {"active":"active","enabled":"enabled","restarts":0},
+    "kcy-fbp": {"active":"active","enabled":"enabled","restarts":0},
+    "kcy-wnb": {"active":"active","enabled":"enabled","restarts":0},
+    "kcy-hlb": {"active":"active","enabled":"enabled","restarts":0},
+    "kcy-diag": {"active":"active","enabled":"enabled","restarts":0},
+    "postgresql": {"active":"active","enabled":"enabled","restarts":0}
+  },
+  "endpoints": {
+    "chat": {"port_3000":"yes","health":"200"},
+    "eco3": {"port_3001":"yes","health":"200"},
+    "portals": {"port_3002":"yes","health":"200"},
+    "hlb": {"port_3010":"yes","health":"200"},
+    "wnb": {"port_3011":"yes","health":"200"},
+    "fbp": {"port_3012":"yes","health":"200"},
+    "diag": {"port_4400":"yes","health":"200"}
+  },
+  "checks": {
+    "env_file":true,
+    "root_node_modules":true,
+    "express":true,
+    "sharp":true,
+    "better_sqlite3":true,
+    "portal_db":true,
+    "missing_modules":false,
+    "nginx_config_valid":true
+  }
+}
+
+
+═══════════════════════════════════════════════════
+  web-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T19:57:08] [SNAPSHOT] nginx error.log tail -20:
+    2026/06/11 06:25:25 [notice] 1486840#1486840: using inherited sockets from "7;8;9;10;"
+    2026/06/11 06:25:25 [warn] 1486840#1486840: protocol options redefined for 0.0.0.0:443 in /etc/nginx/sites-enabled/take.offbitch.com:15
+    2026/06/11 11:21:33 [error] 1486842#1486842: *1043 open() "/var/www/html/shared/js/kg-compliance.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/kg-compliance.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:33 [error] 1486842#1486842: *1047 open() "/var/www/html/shared/js/kg-compliance.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/kg-compliance.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:34 [error] 1486842#1486842: *1050 open() "/var/www/html/shared/js/i18n.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/i18n.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:34 [error] 1486842#1486842: *1051 open() "/var/www/html/shared/js/i18n.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/i18n.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:34 [error] 1486842#1486842: *1052 open() "/var/www/html/shared/js/kg-compliance.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/kg-compliance.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:35 [error] 1486842#1486842: *1054 open() "/var/www/html/shared/js/i18n.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/i18n.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() "/var/www/html/assets/js/message.js" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: "GET /assets/js/message.js HTTP/2.0", host: "my.girl.place"
+    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() "/var/www/html/assets/js/qr_modal.js" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: "GET /assets/js/qr_modal.js HTTP/2.0", host: "my.girl.place"
+    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() "/var/www/html/assets/js/auth.js" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: "GET /assets/js/auth.js HTTP/2.0", host: "my.girl.place"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/admin/user-overview/1 HTTP/2.0", upstream: "http://127.0.0.1:3000/api/admin/user-overview/1", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/admin/user-details/1 HTTP/2.0", upstream: "http://127.0.0.1:3000/api/admin/user-details/1", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/ip-admin HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/ip-admin", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/me HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/me", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/me HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/me", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/ip-admin HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/ip-admin", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+[2026-06-11T20:00:11] [SNAPSHOT] nginx error.log tail -20:
+    2026/06/11 06:25:25 [notice] 1486840#1486840: using inherited sockets from "7;8;9;10;"
+    2026/06/11 06:25:25 [warn] 1486840#1486840: protocol options redefined for 0.0.0.0:443 in /etc/nginx/sites-enabled/take.offbitch.com:15
+    2026/06/11 11:21:33 [error] 1486842#1486842: *1043 open() "/var/www/html/shared/js/kg-compliance.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/kg-compliance.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:33 [error] 1486842#1486842: *1047 open() "/var/www/html/shared/js/kg-compliance.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/kg-compliance.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:34 [error] 1486842#1486842: *1050 open() "/var/www/html/shared/js/i18n.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/i18n.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:34 [error] 1486842#1486842: *1051 open() "/var/www/html/shared/js/i18n.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/i18n.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:34 [error] 1486842#1486842: *1052 open() "/var/www/html/shared/js/kg-compliance.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/kg-compliance.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:35 [error] 1486842#1486842: *1054 open() "/var/www/html/shared/js/i18n.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/i18n.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() "/var/www/html/assets/js/message.js" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: "GET /assets/js/message.js HTTP/2.0", host: "my.girl.place"
+    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() "/var/www/html/assets/js/qr_modal.js" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: "GET /assets/js/qr_modal.js HTTP/2.0", host: "my.girl.place"
+    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() "/var/www/html/assets/js/auth.js" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: "GET /assets/js/auth.js HTTP/2.0", host: "my.girl.place"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/admin/user-overview/1 HTTP/2.0", upstream: "http://127.0.0.1:3000/api/admin/user-overview/1", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/admin/user-details/1 HTTP/2.0", upstream: "http://127.0.0.1:3000/api/admin/user-details/1", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/ip-admin HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/ip-admin", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/me HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/me", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/me HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/me", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/ip-admin HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/ip-admin", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+[2026-06-11T20:01:33] [SNAPSHOT] nginx error.log tail -20:
+    2026/06/11 06:25:25 [notice] 1486840#1486840: using inherited sockets from "7;8;9;10;"
+    2026/06/11 06:25:25 [warn] 1486840#1486840: protocol options redefined for 0.0.0.0:443 in /etc/nginx/sites-enabled/take.offbitch.com:15
+    2026/06/11 11:21:33 [error] 1486842#1486842: *1043 open() "/var/www/html/shared/js/kg-compliance.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/kg-compliance.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:33 [error] 1486842#1486842: *1047 open() "/var/www/html/shared/js/kg-compliance.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/kg-compliance.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:34 [error] 1486842#1486842: *1050 open() "/var/www/html/shared/js/i18n.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/i18n.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:34 [error] 1486842#1486842: *1051 open() "/var/www/html/shared/js/i18n.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/i18n.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:34 [error] 1486842#1486842: *1052 open() "/var/www/html/shared/js/kg-compliance.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/kg-compliance.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 11:21:35 [error] 1486842#1486842: *1054 open() "/var/www/html/shared/js/i18n.js.map" failed (2: No such file or directory), client: 93.123.109.178, server: my.girl.place, request: "GET /shared/js/i18n.js.map HTTP/1.1", host: "my.girl.place"
+    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() "/var/www/html/assets/js/message.js" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: "GET /assets/js/message.js HTTP/2.0", host: "my.girl.place"
+    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() "/var/www/html/assets/js/qr_modal.js" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: "GET /assets/js/qr_modal.js HTTP/2.0", host: "my.girl.place"
+    2026/06/11 13:21:21 [error] 1486842#1486842: *1258 open() "/var/www/html/assets/js/auth.js" failed (2: No such file or directory), client: 155.2.228.196, server: my.girl.place, request: "GET /assets/js/auth.js HTTP/2.0", host: "my.girl.place"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/admin/user-overview/1 HTTP/2.0", upstream: "http://127.0.0.1:3000/api/admin/user-overview/1", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/admin/user-details/1 HTTP/2.0", upstream: "http://127.0.0.1:3000/api/admin/user-details/1", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/ip-admin HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/ip-admin", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/me HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/me", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/me HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/me", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+    2026/06/11 18:51:37 [error] 1536226#1536226: *3401 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.240, server: kaji.kak.si, request: "GET /api/portals/ip-admin HTTP/2.0", upstream: "http://127.0.0.1:3000/api/portals/ip-admin", host: "kaji.kak.si", referrer: "https://kaji.kak.si/chat/admin/admin-user-details.html?userId=1"
+
+
+═══════════════════════════════════════════════════
+  wnb-errors.log
+═══════════════════════════════════════════════════
+[2026-06-11T19:57:08] [SNAPSHOT] journalctl -u kcy-wnb -n 20:
+    Jun 11 19:34:04 ams-chat kcy-wnb[1546427]:    DB: wherenobiz @ localhost
+    Jun 11 19:34:31 ams-chat systemd[1]: Stopping kcy-wnb.service - KCY WhereNoBiz Backend (самостоятелно приложение)...
+    Jun 11 19:34:31 ams-chat systemd[1]: kcy-wnb.service: Deactivated successfully.
+    Jun 11 19:34:31 ams-chat systemd[1]: Stopped kcy-wnb.service - KCY WhereNoBiz Backend (самостоятелно приложение).
+    Jun 11 19:34:31 ams-chat systemd[1]: Starting kcy-wnb.service - KCY WhereNoBiz Backend (самостоятелно приложение)...
+    Jun 11 19:34:31 ams-chat systemd[1]: Started kcy-wnb.service - KCY WhereNoBiz Backend (самостоятелно приложение).
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: designed for a production environment, as it will leak
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: memory, and will not scale past a single process.
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: ⚠️  WNB applySchema пропуснат: must be owner of table users
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: ✅ WNB страни заредени
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: 🌍 WhereNoBiz на http://localhost:3011
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]:    Public: /var/www/html/WhereNoBiz
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]:    DB: wherenobiz @ localhost
+    Jun 11 19:57:03 ams-chat kcy-wnb[1547667]: [19:57:03 wnb] GET /continents: старт
+    Jun 11 19:57:03 ams-chat kcy-wnb[1547667]: [19:57:03 wnb] GET /continents: 1
+    Jun 11 19:57:03 ams-chat kcy-wnb[1547667]: [19:57:03 wnb] GET /continents: край → 200
+    Jun 11 19:57:06 ams-chat kcy-wnb[1547667]: [19:57:06 wnb] GET /continents: старт
+    Jun 11 19:57:06 ams-chat kcy-wnb[1547667]: [19:57:06 wnb] GET /continents: 1
+    Jun 11 19:57:06 ams-chat kcy-wnb[1547667]: [19:57:06 wnb] GET /continents: край → 200
+[2026-06-11T20:00:11] [SNAPSHOT] journalctl -u kcy-wnb -n 20:
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: Warning: connect.session() MemoryStore is not
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: designed for a production environment, as it will leak
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: memory, and will not scale past a single process.
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: ⚠️  WNB applySchema пропуснат: must be owner of table users
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: ✅ WNB страни заредени
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]: 🌍 WhereNoBiz на http://localhost:3011
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]:    Public: /var/www/html/WhereNoBiz
+    Jun 11 19:34:32 ams-chat kcy-wnb[1547667]:    DB: wherenobiz @ localhost
+    Jun 11 19:57:03 ams-chat kcy-wnb[1547667]: [19:57:03 wnb] GET /continents: старт
+    Jun 11 19:57:03 ams-chat kcy-wnb[1547667]: [19:57:03 wnb] GET /continents: 1
+    Jun 11 19:57:03 ams-chat kcy-wnb[1547667]: [19:57:03 wnb] GET /continents: край → 200
+    Jun 11 19:57:06 ams-chat kcy-wnb[1547667]: [19:57:06 wnb] GET /continents: старт
+    Jun 11 19:57:06 ams-chat kcy-wnb[1547667]: [19:57:06 wnb] GET /continents: 1
+    Jun 11 19:57:06 ams-chat kcy-wnb[1547667]: [19:57:06 wnb] GET /continents: край → 200
+    Jun 11 19:59:38 ams-chat kcy-wnb[1547667]: [19:59:38 wnb] GET /continents: старт
+    Jun 11 19:59:38 ams-chat kcy-wnb[1547667]: [19:59:38 wnb] GET /continents: 1
+    Jun 11 19:59:38 ams-chat kcy-wnb[1547667]: [19:59:38 wnb] GET /continents: край → 200
+    Jun 11 19:59:39 ams-chat kcy-wnb[1547667]: [19:59:39 wnb] GET /continents: старт
+    Jun 11 19:59:39 ams-chat kcy-wnb[1547667]: [19:59:39 wnb] GET /continents: 1
+    Jun 11 19:59:39 ams-chat kcy-wnb[1547667]: [19:59:39 wnb] GET /continents: край → 200
+[2026-06-11T20:01:33] [SNAPSHOT] journalctl -u kcy-wnb -n 20:
+    Jun 11 20:01:29 ams-chat kcy-wnb[1547667]: [20:01:29 wnb] POST /posts/:id/remove: 1
+    Jun 11 20:01:29 ams-chat kcy-wnb[1547667]: [20:01:29 wnb] POST /posts/:id/remove: край → 200
+    Jun 11 20:01:30 ams-chat kcy-wnb[1547667]: [20:01:30 wnb] POST /posts/:id/remove: старт
+    Jun 11 20:01:30 ams-chat kcy-wnb[1547667]: [20:01:30 wnb] POST /posts/:id/remove: 1
+    Jun 11 20:01:30 ams-chat kcy-wnb[1547667]: [20:01:30 wnb] POST /posts/:id/remove: край → 200
+    Jun 11 20:01:30 ams-chat kcy-wnb[1547667]: [20:01:30 wnb] POST /logout: старт
+    Jun 11 20:01:30 ams-chat kcy-wnb[1547667]: [20:01:30 wnb] POST /login: старт
+    Jun 11 20:01:30 ams-chat kcy-wnb[1547667]: [20:01:30 wnb] POST /login: 1
+    Jun 11 20:01:30 ams-chat kcy-wnb[1547667]: [20:01:30 wnb] POST /login: край → 200
+    Jun 11 20:01:31 ams-chat kcy-wnb[1547667]: [20:01:31 wnb] POST /logout: старт
+    Jun 11 20:01:32 ams-chat kcy-wnb[1547667]: [20:01:32 wnb] POST /login: старт
+    Jun 11 20:01:32 ams-chat kcy-wnb[1547667]: [20:01:32 wnb] POST /login: 1
+    Jun 11 20:01:32 ams-chat kcy-wnb[1547667]: [20:01:32 wnb] POST /login: край → 200
+    Jun 11 20:01:32 ams-chat kcy-wnb[1547667]: [20:01:32 wnb] POST /posts/:id/remove: старт
+    Jun 11 20:01:32 ams-chat kcy-wnb[1547667]: [20:01:32 ERROR/wnb] POST /posts/:id/remove: invalid input syntax for type bigint: "undefined"
+    Jun 11 20:01:32 ams-chat kcy-wnb[1547667]: [20:01:32 ERROR/wnb] UNCAUGHT POST /api/wnb/moderation/posts/undefined/remove invalid input syntax for type bigint: "undefined"
+    Jun 11 20:01:32 ams-chat kcy-wnb[1547667]: ❌ WNB грешка POST /api/wnb/moderation/posts/undefined/remove: invalid input syntax for type bigint: "undefined"
+    Jun 11 20:01:32 ams-chat kcy-wnb[1547667]: [20:01:32 wnb] POST /posts/:id/remove: старт
+    Jun 11 20:01:32 ams-chat kcy-wnb[1547667]: [20:01:32 wnb] POST /posts/:id/remove: 1
+    Jun 11 20:01:32 ams-chat kcy-wnb[1547667]: [20:01:32 wnb] POST /posts/:id/remove: край → 200
+
+

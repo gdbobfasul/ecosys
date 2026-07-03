@@ -1,3 +1,4 @@
+// Version: 1.0001
 // chat.js — разговор със самообучаващия се приятел.
 import { el, clear, esc, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
@@ -56,7 +57,7 @@ export function renderChat(root, { navigate, rerender }) {
   ]);
 
   // ВЕРСИЯ при старт: винаги показваме коя версия върви — така веднага виждаш, че кодът е
-  // сменен (числото идва от 00047.version, инжектира се в src/version.js при всеки билд).
+  // сменен (числото идва от 00048.version, инжектира се в src/version.js при всеки билд).
   const versionLine = el('div', {
     class: 'muted', style: 'font-size:12px;margin:-4px 0 8px 2px;opacity:.75'
   }, tf('chat_version', APP_VERSION));
@@ -267,6 +268,13 @@ export function renderChat(root, { navigate, rerender }) {
       // кодовата дума е сменена; името на сесията вече не отговаря → заключваме за чистота.
       stopConversation();
       setTimeout(() => { lock(); setSessionName(null); rerender(); }, 900);
+      return res;
+    }
+    if (res.action === 'vision') {
+      // Гласова команда „виж“/„запази“ → отваряме екрана „Зрение“; той изпълнява заявката
+      // (пуска исканата камера и анализира). Кратко закъснение, за да се изговори репликата.
+      stopConversation();
+      setTimeout(() => navigate('vision'), 500);
       return res;
     }
 

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Генератор на икона и splash като inline SVG (без бинарни файлове).
 // Рендирай на 512/1024 за иконата и 1080x1920 за splash (виж store/CHECKLIST.md).
 import { THEME } from './theme.js';

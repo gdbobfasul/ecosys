@@ -1,3 +1,4 @@
+// Version: 1.0001
 import { enforceLock } from './core/lock.js';
 enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // Bootstrap на обвивката.
@@ -18,6 +19,7 @@ import { CHAT_URL, PING_TIMEOUT_MS } from './config.js';
 import {
   t, getLang, setLang, hasLangChosen, applyDir, LANGUAGES
 } from './core/i18n.js';
+import { APP_VERSION } from './version.js';
 import './styles.css';
 
 const app = document.getElementById('app');
@@ -55,6 +57,8 @@ function showOffline() {
 // Избор на език (overlay). При избор → setLang + продължаваме с `next`.
 function showLangPicker(next) {
   const cur = getLang();
+  // Продължаване с даден език: записва избора и минава нататък (същия път като езиков бутон).
+  const proceed = (code) => { setLang(code); next(); };
   const buttons = LANGUAGES.map((l) =>
     `<button class="lang-btn${l.code === cur ? ' cur' : ''}" data-code="${l.code}">${l.native}</button>`
   ).join('');
@@ -63,13 +67,14 @@ function showLangPicker(next) {
       <div class="lang-globe" aria-hidden="true">🌐</div>
       <h1>${t('pick_lang')}</h1>
       <div class="lang-grid">${buttons}</div>
+      <button id="lang-start" class="btn">${t('start_app')}</button>
+      <div style="opacity:0.55;font-size:12px;margin-top:6px">v${APP_VERSION}</div>
     </div>`;
   app.querySelectorAll('.lang-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      setLang(btn.getAttribute('data-code'));
-      next();
-    });
+    btn.addEventListener('click', () => proceed(btn.getAttribute('data-code')));
   });
+  // Бутон „Стартирай" — влиза с текущо избрания (или подразбиращ се) език, без повторен избор.
+  document.getElementById('lang-start').addEventListener('click', () => proceed(cur));
 }
 
 // HEAD ping с таймаут. mode:'no-cors' → не четем тялото, само дали мрежата отговаря.

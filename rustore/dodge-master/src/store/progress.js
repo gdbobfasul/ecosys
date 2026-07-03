@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Прогрес в localStorage: отключени нива + най-добър резултат.
 // Per-store ключ (THEME.saveKey), за да не се бъркат записите между билдовете.
 import { THEME } from '../theme.js';

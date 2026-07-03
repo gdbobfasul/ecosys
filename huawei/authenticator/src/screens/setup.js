@@ -1,3 +1,4 @@
+// Version: 1.0001
 // setup.js — създаване на master парола при първо стартиране (празен сейф).
 import { h, mount } from '../ui/dom.js';
 import { t } from '../core/i18n.js';

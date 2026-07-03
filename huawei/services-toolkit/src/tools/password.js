@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Генератор на пароли — 4 метода, криптографски случайни числа.
 import { copyText } from '../core/ui.js';
 import { t, register } from '../core/i18n.js';

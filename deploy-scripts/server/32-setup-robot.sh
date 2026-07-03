@@ -5,7 +5,7 @@
 #
 # Роботът се пуска от админ страницата (/shared/robot.html) през kcy-diag.
 # Този скрипт подготвя зависимостите:
-#   1) npm install в private/robot  (сваля playwright)
+#   1) npm install в private/bug-bot  (сваля playwright)
 #   2) npx playwright install --with-deps chromium  (браузър + системни libs)
 #   3) папка за репортите: /var/www/html/last-errors/robot
 #   4) рестарт на kcy-diag (за новите /robot/* ендпойнти)
@@ -20,7 +20,7 @@ set -e
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 
 PROJECT_DIR="/var/www/kcy-ecosystem"
-ROBOT_DIR="$PROJECT_DIR/private/robot"
+ROBOT_DIR="$PROJECT_DIR/private/bug-bot"
 REPORTS_DIR="/var/www/html/last-errors/robot"
 
 [ "$EUID" -ne 0 ] && echo -e "${RED}ERROR: пусни със sudo: sudo $0${NC}" && exit 1

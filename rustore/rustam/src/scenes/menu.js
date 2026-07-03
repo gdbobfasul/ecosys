@@ -1,3 +1,4 @@
+// Version: 1.0001
 // MenuScene — заглавие, избор на ниво (отключени), старт.
 // Прогресът се пази в localStorage (THEME.saveKey).
 import Phaser from 'phaser';

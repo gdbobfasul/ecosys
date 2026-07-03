@@ -1,3 +1,4 @@
+// Version: 1.0001
 // language-picker.js — екран за избор на език (HTML overlay), подходящ за HMM.
 // Играта рендерира през DOM/canvas, затова пикърът е обикновен HTML слой върху
 // целия екран — решетка с родните имена на 15-те езика. Ползва се:
@@ -8,6 +9,7 @@
 // избере език (изборът вече е записан в localStorage през setLang).
 import { LANGUAGES } from './languages.js';
 import { t, setLang, getLang, isRTL } from './i18n.js';
+import { APP_VERSION } from '../version.js';   // версия за реда долу в избора на език
 
 let cssInjected = false;
 
@@ -35,6 +37,14 @@ function injectCSS() {
     '.hmm-lang-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #000;}',
     '.hmm-lang-btn.cur{background:linear-gradient(180deg,#7a5a2a,#3a2810);border-color:#f8c450;color:#fff;',
     '  box-shadow:0 4px 0 #000,0 0 18px rgba(248,196,80,.45);}',
+    // „Стартирай" — основен бутон под решетката (продължава с текущия език).
+    '.hmm-lang-start{flex:0 0 auto;width:100%;max-width:760px;margin:10px auto 4px;min-height:64px;',
+    '  display:flex;align-items:center;justify-content:center;font-family:"Cinzel",serif;font-size:23px;font-weight:700;',
+    '  background:linear-gradient(180deg,#f8c450,#b8860f);color:#2a1808;border:2.5px solid #f8c450;border-radius:14px;',
+    '  cursor:pointer;box-shadow:0 4px 0 #000,0 0 18px rgba(248,196,80,.45),inset 0 1px 0 rgba(255,255,255,.3);}',
+    '.hmm-lang-start:active{transform:translateY(2px);box-shadow:0 2px 0 #000;}',
+    // Дискретен ред с версията.
+    '.hmm-lang-ver{flex:0 0 auto;text-align:center;font-size:13px;opacity:.55;letter-spacing:1px;margin:6px 0 4px;}',
     '@media (min-width:560px){.hmm-lang-grid{grid-template-columns:repeat(3,1fr);}}'
   ].join('');
   document.head.appendChild(css);
@@ -76,6 +86,25 @@ export function showLanguagePicker() {
       };
       grid.appendChild(b);
     });
+
+    // „Стартирай" — продължава с ТЕКУЩИЯ (по подразбиране) език: прави точно
+    // същото като избор на бутона за текущия език, без повторен избор.
+    const start = document.createElement('button');
+    start.className = 'hmm-lang-start';
+    start.type = 'button';
+    start.textContent = t('start_app');
+    start.onclick = () => {
+      setLang(cur);                 // потвърждава текущия език (записва избора)
+      if (ov.parentNode) ov.parentNode.removeChild(ov);
+      resolve(cur);
+    };
+    ov.appendChild(start);
+
+    // Дискретен ред с версията на приложението.
+    const ver = document.createElement('div');
+    ver.className = 'hmm-lang-ver';
+    ver.textContent = 'v' + APP_VERSION;
+    ov.appendChild(ver);
 
     document.body.appendChild(ov);
   });

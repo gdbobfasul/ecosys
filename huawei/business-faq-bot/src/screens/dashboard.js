@@ -1,3 +1,4 @@
+// Version: 1.0001
 // dashboard.js — ON/OFF, тест конзола, дневник, прости броячи.
 import { el, esc, toast } from '../ui/dom.js';
 import { getState, setState, resetAll } from '../core/storage.js';

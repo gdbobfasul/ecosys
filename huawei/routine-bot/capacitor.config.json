@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.routinebot.huawei",
+  "appId": "com.kcy.routinebot.hw",
   "appName": "Рутина-робот",
   "webDir": "dist",
   "bundledWebRuntime": false,

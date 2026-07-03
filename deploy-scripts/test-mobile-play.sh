@@ -2,7 +2,7 @@
 # Version: 1.0215
 ##############################################################################
 # KCY — „ТЕСТ-РОБОТ" за мобилните апове: пуска всеки апп в безглав Chromium
-# (Playwright от private/robot) и проверява дали СТАРТИРА/„играе" без грешки + скрийншот.
+# (Playwright от private/bug-bot) и проверява дали СТАРТИРА/„играе" без грешки + скрийншот.
 # Допълва test-mobile-apps.sh (статичните проверки).
 # Употреба:  ./deploy-scripts/test-mobile-play.sh [rustore|huawei|път/до/апп]
 ##############################################################################
@@ -10,12 +10,12 @@ set +e
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; BOLD=$'\033[1m'; NC=$'\033[0m'
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"; cd "$ROOT" || exit 1
 HELPER="$ROOT/deploy-scripts/_mobile-play-check.cjs"
-PWDIR="$ROOT/private/robot/node_modules/playwright"
+PWDIR="$ROOT/private/bug-bot/node_modules/playwright"
 TARGET="${1%/}"
 
 if [ ! -d "$PWDIR" ]; then
-  echo -e "${YELLOW}Playwright липсва в private/robot. Инсталирай:${NC}"
-  echo -e "  ${CYAN}(cd private/robot && npm i -D playwright && npx playwright install chromium)${NC}"
+  echo -e "${YELLOW}Playwright липсва в private/bug-bot. Инсталирай:${NC}"
+  echo -e "  ${CYAN}(cd private/bug-bot && npm i -D playwright && npx playwright install chromium)${NC}"
   exit 1
 fi
 

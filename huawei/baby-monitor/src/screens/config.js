@@ -1,3 +1,4 @@
+// Version: 1.0001
 // config.js — конфигурация на наблюдението (камера, чувствителност, събития, звук, relay).
 import { el, toast } from '../ui/dom.js';
 import { toggle } from '../ui/widgets.js';

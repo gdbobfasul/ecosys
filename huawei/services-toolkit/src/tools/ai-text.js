@@ -1,3 +1,4 @@
+// Version: 1.0001
 // AI генератор на текст — РЕАЛЕН инструмент чрез БЕЗПЛАТЕН keyless ендпойнт.
 // Източник: Pollinations Text API (безплатен, БЕЗ ключ, БЕЗ акаунт, с CORS).
 //   GET  https://text.pollinations.ai/<URL-кодиран промпт>

@@ -120,10 +120,23 @@ GRADLE
   echo -e "  ${GREEN}✓ gradle верига: wrapper 8.7 + Java 17 за всички subprojects${NC}"
 }
 
-# Една версия за целия билд: code = epoch секунди (винаги расте), name = брояча 00047.version.
+# versionCode = epoch секунди (винаги расте → Android вижда ъпдейт).
+# versionName е ПЕР-АП: най-високата „Version:" сред СОБСТВЕНИТЕ файлове на апа (смята се в
+# build_one → compute_app_version). Екосистемният маркер 000NN.version НЕ се чете — той е само
+# визуален маркер за най-високата версия някъде, не версия на конкретно приложение.
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APK_VERSION_NAME="$(tr -d ' \r\n' < "$REPO_ROOT/00047.version" 2>/dev/null)"; [ -z "$APK_VERSION_NAME" ] && APK_VERSION_NAME="1.0"
+APK_VERSION_NAME="1.0001"   # фолбек, ако ап без нито един „Version:" хедър
 APK_VERSION_CODE="$(date +%s)"
+
+# Версия на един ап = max „Version: 1.XXXX" сред файловете му (src + коренни html/js/css).
+# Викa се ВЪТРЕ в build_one (след cd в папката на апа).
+compute_app_version() {
+  local max
+  max="$(grep -rhoE "Version:[[:space:]]*1\.[0-9]{4}" src ./*.html ./*.js ./*.css 2>/dev/null \
+        | grep -oE "1\.[0-9]{4}" | sort -t. -k2,2n | tail -1)"
+  [ -z "$max" ] && max="1.0001"
+  printf '%s' "$max"
+}
 
 echo ""
 echo -e "${BOLD}${CYAN}╔══════════════════════════════════════════════════════╗${NC}"
@@ -267,13 +280,19 @@ build_one() {
   echo -e "${BOLD}${CYAN}━━━ $name ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
   (
     cd "$d" || exit 1
+    # Версия на ТОЗИ ап (НЕ екосистемната): max „Version:" хедър сред собствените му файлове.
+    # Записва се в app.version в директорията на апа — това е версията, която апът показва/качва.
+    APK_VERSION_NAME="$(compute_app_version)"
+    printf '%s\n' "$APK_VERSION_NAME" > app.version
+    echo -e "  ${GREEN}✓ версия на апа: ${APK_VERSION_NAME} → app.version${NC}"
     if [ ! -d node_modules ]; then
       echo -e "  ${CYAN}→ npm install…${NC}"; npm install || { echo -e "  ${RED}✗ npm install се провали${NC}"; exit 2; }
     fi
-    # Версия във web бъндъла: ако апът има src/version.js, го презаписваме с текущата
-    # версия (00047.version) ПРЕДИ vite build → числото влиза в бъндъла и апът го показва
-    # при старт (така веднага виждаш, че кодът е сменен). Апове без този файл се пропускат.
-    if [ -f src/version.js ]; then
+    # Версия във web бъндъла: за ВСЕКИ апп (пре)записваме src/version.js с текущата версия
+    # (app.version) ПРЕДИ vite build → числото влиза в бъндъла и апът го показва на началния
+    # екран (така веднага виждаш, че кодът е сменен). Преди се пишеше само при вече съществуващ
+    # файл; сега се създава навсякъде, за да МОЖЕ всеки начален екран да показва версията.
+    if [ -d src ]; then
       printf "// Автогенериран от build-mobile-apps.sh — НЕ редактирай ръчно.\nexport const APP_VERSION = '%s';\n" "$APK_VERSION_NAME" > src/version.js
       echo -e "  ${GREEN}✓ src/version.js → ${APK_VERSION_NAME}${NC}"
     fi

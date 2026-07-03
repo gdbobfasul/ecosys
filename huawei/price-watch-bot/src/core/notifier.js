@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Известия. На устройство → @capacitor/local-notifications (LOCAL, без сървър/push).
 // В браузъра → Web Notifications, ако са разрешени, иначе тих лог.
 // Зарежда се динамично, за да върви и в чист уеб без Capacitor.

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // dom.js — мънички DOM помощници (без рамка). Държи екраните кратки и четими.
 
 export function el(tag, attrs = {}, children = []) {

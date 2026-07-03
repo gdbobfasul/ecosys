@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Екран „Разрешения" — иска САМО нужното, прозрачно, с обяснение за всяко.
 import { requestPermission, hasPermission } from '../core/notifier.js';
 import { saveState } from '../core/storage.js';

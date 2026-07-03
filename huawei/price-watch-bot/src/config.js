@@ -1,9 +1,10 @@
+// Version: 1.0001
 // Конфигурация на изданието (единственото място, което се различава между магазините
 // освен store/<store>-sdk.js и магазинните документи).
 export const STORE = 'huawei';
 export const ACCENT = '#1aa06d';   // Huawei зелен акцент
 export const ACCENT2 = '#3ddc97';
-export const APP_ID = 'com.kcy.pricewatchbot.huawei';
+export const APP_ID = 'com.kcy.pricewatchbot.hw';
 export const APP_NAME = 'Цена-робот';
 
 // Колко често роботът прави реална проверка в браузъра (демо таймер).

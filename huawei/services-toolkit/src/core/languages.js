@@ -1,3 +1,4 @@
+// Version: 1.0001
 // languages.js — 15-те езика на екосистемата (същите като public/translations).
 // Приложението ползва само името за разпознаване (native) + български етикет (bg).
 export const LANGUAGES = [

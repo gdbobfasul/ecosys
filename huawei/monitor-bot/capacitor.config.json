@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.monitorbot.huawei",
+  "appId": "com.kcy.monitorbot.hw",
   "appName": "Монитор-робот",
   "webDir": "dist",
   "bundledWebRuntime": false,

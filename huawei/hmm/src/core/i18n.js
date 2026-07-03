@@ -1,3 +1,4 @@
+// Version: 1.0001
 // i18n.js — преводен слой за играта „Битка на терен" (HMM) на 15-те езика на
 // екосистемата. Изборът на език се пази в localStorage (ключ 'hmm.lang'). При
 // първо стартиране играта показва екран за избор на език (виж main.js), после
@@ -35,6 +36,12 @@ const STR = {
     bg: '🌐 Език', ru: '🌐 Язык', uk: '🌐 Мова', en: '🌐 Language', de: '🌐 Sprache',
     fr: '🌐 Langue', es: '🌐 Idioma', 'es-MX': '🌐 Idioma', it: '🌐 Lingua', pt: '🌐 Idioma',
     ar: '🌐 اللغة', hi: '🌐 भाषा', ja: '🌐 言語', ky: '🌐 Тил', 'zh-Hant': '🌐 語言'
+  },
+  start_app: {
+    bg: 'Стартирай', ru: 'Запустить', uk: 'Запустити', en: 'Start',
+    de: 'Starten', fr: 'Démarrer', es: 'Iniciar', 'es-MX': 'Iniciar',
+    it: 'Avvia', pt: 'Iniciar', ar: 'ابدأ', hi: 'शुरू करें',
+    ja: '開始', ky: 'Баштоо', 'zh-Hant': '開始'
   },
 
   /* ── зареждане (index.html boot-hint) ── */

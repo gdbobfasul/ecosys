@@ -1,3 +1,4 @@
+// Version: 1.0001
 // otp.js — генериране на еднократни кодове (като Google Authenticator / Aegis).
 // Поддържа TOTP (RFC 6238), HOTP (RFC 4226) и Steam Guard.
 // HMAC се смята с WebCrypto (crypto.subtle) → функциите са асинхронни.

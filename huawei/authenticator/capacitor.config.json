@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.authenticator.huawei",
+  "appId": "com.kcy.authenticator.hw",
   "appName": "KCY Authenticator",
   "webDir": "dist",
   "bundledWebRuntime": false,

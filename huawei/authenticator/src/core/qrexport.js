@@ -1,8 +1,10 @@
+// Version: 1.0001
 // qrexport.js — „Експортирай всички": за всеки акаунт прави QR картинка (PNG) от
 // неговия otpauth:// линк и ги пакетира в един .zip за сваляне.
 import { buildOtpauthURI } from './otp.js';
 import { zipStore } from './zip.js';
 import { session } from './storage.js';
+import { saveFile } from './filesave.js';
 
 function dataURLtoBytes(durl) {
   const b64 = durl.split(',')[1] || '';
@@ -37,11 +39,6 @@ export async function exportAllQR() {
     files.push({ name: name + '.png', data: dataURLtoBytes(durl) });
   }
 
-  const blob = zipStore(files);
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'kcy-authenticator-qr.zip';
-  document.body.appendChild(a); a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  await saveFile('kcy-authenticator-qr.zip', zipStore(files), 'application/zip');
   return { ok: true, count: files.length };
 }

@@ -1,3 +1,4 @@
+// Version: 1.0001
 import Phaser from 'phaser';
 import { THEME } from '../theme.js';
 import { getLevel, HERO_BASE_HP, TOTAL_LEVELS } from '../levels.js';

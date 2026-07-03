@@ -1,9 +1,10 @@
+// Version: 1.0001
 // Конфигурация на изданието (Huawei AppGallery).
 // Това е ЕДИНСТВЕНИЯТ файл в src/, който се различава между двата магазина.
 // Различия: app id, акцентен цвят на темата, име на магазина, store SDK.
 export const APP_CONFIG = {
   store: 'huawei',
-  appId: 'com.kcy.routinebot.huawei',
+  appId: 'com.kcy.routinebot.hw',
   appName: 'Рутина-робот',
   storeName: 'AppGallery',
   // Акцентен цвят на темата — Huawei издание (тийл/зелено).

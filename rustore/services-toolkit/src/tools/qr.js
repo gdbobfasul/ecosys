@@ -1,3 +1,4 @@
+// Version: 1.0001
 // QR код — генериране (qrcode npm) + четене от файл/камера (jsqr npm).
 // Изцяло на устройството, без мрежа.
 import QRCode from 'qrcode';

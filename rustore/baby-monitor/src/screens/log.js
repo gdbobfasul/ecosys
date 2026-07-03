@@ -1,3 +1,4 @@
+// Version: 1.0001
 // log.js — пълен дневник на събитията (само локално) + изчистване.
 import { el, toast } from '../ui/dom.js';
 import { getState, clearEvents } from '../core/storage.js';

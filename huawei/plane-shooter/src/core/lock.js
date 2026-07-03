@@ -1,3 +1,4 @@
+// Version: 1.0001
 // lock.js — ПРОБНО ЗАКЛЮЧВАНЕ за всички приложения.
 // Поведение: при първото пускане се запомня времето. След 4 ДНИ приложението се самозаключва —
 // покрива се с екран за парола и НЕ се ползва, докато не въведеш вярната парола. Веднъж
@@ -113,10 +114,91 @@ function renderLockScreen() {
   setTimeout(function () { try { inp.focus(); } catch (e) {} }, 60);
 }
 
+// ── Универсален бутон „око" за полета с парола/скрити стойности ──────────────
+// Слага малко 👁 в десния край на ВСЯКО поле за парола (input[type=password] или с
+// data-mask="1") — натискане показва/скрива стойността. Работи и за динамично добавени
+// полета (MutationObserver). Извиква се на старта на ВСеки ап (от enforceLock), затова
+// покрива и заключващия екран, и полетата за парола/ключ/тайна вътре в приложението.
+let _eyeInstalled = false;
+function enhancePasswordField(input) {
+  if (!input || input.nodeType !== 1 || input.tagName !== 'INPUT' || input.__kcyEye) return;
+  const masked = input.type === 'password' || input.getAttribute('data-mask') === '1';
+  if (!masked) return;
+  const parent = input.parentNode;
+  if (!parent) return;
+  // Ако приложението ВЕЧЕ е сложило свое „око" до полето (бутон с 👁 наблизо) — не дублираме.
+  try {
+    const near = parent.querySelectorAll('button');
+    for (let i = 0; i < near.length; i++) {
+      if ((near[i].textContent || '').indexOf('👁') > -1) { input.__kcyEye = true; return; }
+    }
+  } catch (e) {}
+  input.__kcyEye = true;
+
+  // Обвиваме полето, за да позиционираме бутона в десния му край без да чупим оформлението.
+  const wrap = document.createElement('span');
+  wrap.setAttribute('style', 'position:relative;display:inline-flex;align-items:center;' +
+    'width:100%;box-sizing:border-box');
+  parent.insertBefore(wrap, input);
+  wrap.appendChild(input);
+  // Полето пълни обвивката и оставя място вдясно за бутона.
+  try {
+    input.style.width = '100%';
+    input.style.boxSizing = 'border-box';
+    input.style.paddingRight = '42px';
+  } catch (e) {}
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'покажи/скрий');
+  btn.setAttribute('tabindex', '-1');
+  btn.textContent = '👁';
+  btn.setAttribute('style', 'position:absolute;right:8px;top:50%;transform:translateY(-50%);' +
+    'background:transparent;border:none;font-size:18px;line-height:1;cursor:pointer;padding:4px;' +
+    'opacity:0.6;z-index:3;-webkit-tap-highlight-color:transparent');
+  btn.addEventListener('click', function (e) {
+    e.preventDefault(); e.stopPropagation();
+    const showing = input.type !== 'password';
+    if (input.type === 'password') input.type = 'text';
+    else if (input.getAttribute('data-mask') === '1') {
+      // Поле с маскиране през data-mask (не е истинско password) — превключваме самия атрибут.
+      input.setAttribute('data-mask', input.getAttribute('data-mask') === '1' ? '0' : '1');
+    } else input.type = 'password';
+    btn.style.opacity = showing ? '0.6' : '1';
+    try { input.focus(); } catch (_) {}
+  });
+  wrap.appendChild(btn);
+}
+function scanForPasswordFields(root) {
+  try {
+    const list = (root || document).querySelectorAll('input[type="password"], input[data-mask="1"]');
+    for (let i = 0; i < list.length; i++) enhancePasswordField(list[i]);
+  } catch (e) {}
+}
+export function installPasswordEye() {
+  if (_eyeInstalled) { scanForPasswordFields(document); return; }
+  _eyeInstalled = true;
+  scanForPasswordFields(document);
+  try {
+    const obs = new MutationObserver(function (muts) {
+      for (const m of muts) {
+        for (const n of m.addedNodes) {
+          if (!n || n.nodeType !== 1) continue;
+          if (n.tagName === 'INPUT') enhancePasswordField(n);
+          else if (n.querySelectorAll) scanForPasswordFields(n);
+        }
+      }
+    });
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+  } catch (e) { /* стар WebView без MutationObserver → разчитаме на първоначалното сканиране */ }
+}
+
 // Извиква се НАЙ-ОТГОРЕ в main.js на всеки ап. Ако е заключено — рисува екрана за парола и
 // СПИРА приложението (хвърля грешка, за да не продължи инициализацията под покривния екран).
 export function enforceLock() {
+  installPasswordEye();             // универсалното „око" — на ВСеки ап, независимо от заключването
   if (!isLocked()) return;
   renderLockScreen();
+  scanForPasswordFields(document);  // веднага озареди и полето на заключващия екран
   throw new Error('kcy-locked');   // спира по-нататъшната инициализация на приложението
 }

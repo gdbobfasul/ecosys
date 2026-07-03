@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.pricewatchbot.huawei",
+  "appId": "com.kcy.pricewatchbot.hw",
   "appName": "Цена-робот",
   "webDir": "dist",
   "bundledWebRuntime": false,

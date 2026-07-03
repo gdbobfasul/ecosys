@@ -1,8 +1,10 @@
+// Version: 1.0001
 // Екран за избор на език (DOM overlay) — показва се при първо стартиране и от
 // менюто чрез бутона 🌐. Решетка с 15-те езика на екосистемата с родните им
 // имена; изборът се пази в localStorage, после се извиква onDone().
 import { THEME } from '../theme.js';
 import { LANGUAGES, setLang, getLang, t } from '../core/i18n.js';
+import { APP_VERSION } from '../version.js';
 
 export function showLanguage(root, onDone) {
   const a = THEME.accent;
@@ -30,6 +32,10 @@ export function showLanguage(root, onDone) {
     <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:min(440px,94vw)">
       ${grid}
     </div>
+    <button id="lang-start" style="margin-top:22px;padding:14px 40px;font-size:19px;font-weight:700;
+      border:2px solid #ffffff;border-radius:12px;background:${a};color:#04121d;cursor:pointer">
+      ${escapeHtml(t('start_app'))}</button>
+    <div style="margin-top:16px;font-size:12px;color:#7c8794">v${escapeHtml(APP_VERSION)}</div>
   `;
   root.appendChild(wrap);
 
@@ -39,6 +45,13 @@ export function showLanguage(root, onDone) {
       wrap.remove();
       onDone();
     });
+  });
+
+  // Бутон „Стартирай" — продължава с текущо избрания език (по подразбиране до избор).
+  wrap.querySelector('#lang-start').addEventListener('click', () => {
+    setLang(getLang());
+    wrap.remove();
+    onDone();
   });
 }
 

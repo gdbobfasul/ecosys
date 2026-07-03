@@ -140,3 +140,4 @@ deploy-scripts/play-reports/
 # локални, бъндълват се при билд (влизат в APK), НЕ в git (като public/assets/animations/)
 rustore/**/assets/animations/
 huawei/**/assets/animations/
+/keystores/

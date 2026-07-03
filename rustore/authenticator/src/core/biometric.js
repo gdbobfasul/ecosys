@@ -1,3 +1,4 @@
+// Version: 1.0001
 // biometric.js — отключване с пръстов отпечатък/лице (като Aegis).
 // Използва два Capacitor плъгина, заредени ПРЕДПАЗЛИВО (динамичен import в try/catch):
 //   • @aparajita/capacitor-biometric-auth  — самата биометрична проверка

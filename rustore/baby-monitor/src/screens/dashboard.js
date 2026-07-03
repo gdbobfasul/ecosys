@@ -1,3 +1,4 @@
+// Version: 1.0001
 // dashboard.js — живо наблюдение: камера + състояние (спи/размърда/буден) + timeline + сигнали.
 import { el, toast } from '../ui/dom.js';
 import { safetyBanner } from '../ui/widgets.js';

@@ -1,3 +1,4 @@
+// Version: 1.0001
 import { createRequire } from 'module';
 const require = createRequire('G:/wrk/2026-06-02-toks/private/robot/package.json');
 const { chromium } = require('playwright');

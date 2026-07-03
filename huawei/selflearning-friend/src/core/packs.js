@@ -1,3 +1,4 @@
+// Version: 1.0001
 // packs.js — „Пакети знание“: внасяне на готови знания в локалната памет.
 //
 // Пакет знание = JSON { name, topic, entries:[{type,key,value,keywords}] }.

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // camera.js — източник на видео: собствена камера на телефона (getUserMedia) ИЛИ
 // „Друга камера“ (browser-playable поток по URL).
 //

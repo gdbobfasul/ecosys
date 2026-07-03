@@ -1,3 +1,4 @@
+// Version: 1.0001
 // GameScene — полето, Рустам, изскачащите краставици и къртиците.
 import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../main.js';
@@ -32,6 +33,8 @@ export default class GameScene extends Phaser.Scene {
     this.physics.world.setBounds(FIELD.x, FIELD.y, FIELD.w, FIELD.h);
 
     this.rustam = new Rustam(this, GAME_WIDTH / 2, FIELD.y + FIELD.h * 0.62);
+    // По-късните нива започват леко по-бързо (плавно компенсиране, +6 px/сек на ниво).
+    this.rustam.setBaseSpeed(252 + (this.levelNum - 1) * 6);
 
     // Състояние.
     this.cukes = [];
@@ -172,6 +175,7 @@ export default class GameScene extends Phaser.Scene {
     if (!c.collect()) return;
     this.collected += 1;
     this.score += 1;
+    this.rustam.speedUp();                       // всяка краставица → мъничко по-бърз Рустам
     this.popText(c.x, c.y - 18, '+1', THEME.accentHex);
     this.emitProgress();
     if (this.collected >= this.cfg.quota) this.win();

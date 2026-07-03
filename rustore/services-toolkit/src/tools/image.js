@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Компресор на снимки — изцяло през canvas, без качване.
 import { downloadBlob, fmtSize } from '../core/ui.js';
 import { t, tf, register } from '../core/i18n.js';

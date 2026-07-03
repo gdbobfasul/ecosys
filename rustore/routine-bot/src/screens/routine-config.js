@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Съветник за конфигурация на рутината.
 import { h, toggle, esc } from '../ui/dom.js';
 import { storage, KEYS } from '../core/storage.js';

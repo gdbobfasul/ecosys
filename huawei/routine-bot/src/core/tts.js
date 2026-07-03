@@ -1,3 +1,4 @@
+// Version: 1.0001
 // tts.js — изговаряне (текст → глас) на бележките, на избрания от 15-те езика.
 //
 // Нативно (APK): Capacitor TextToSpeech, ако е наличен; иначе Web speechSynthesis

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // recognizer.js — класификация „какво помръдна“ с TensorFlow.js + COCO-SSD (on-device).
 //
 // ПРИНЦИП: безплатно/keyless. Теглата на COCO-SSD идват веднъж от официалния storage

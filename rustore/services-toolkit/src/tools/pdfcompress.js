@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Свиване на PDF — растеризира всяка страница с pdf.js, после сглобява нов PDF.
 // Изцяло офлайн.
 import { PDFDocument } from 'pdf-lib';

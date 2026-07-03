@@ -1,3 +1,4 @@
+// Version: 1.0001
 // responder.js — мозъкът: интенти за учене, припомняне от паметта, корекции,
 // small talk и ПО ИЗБОР безплатен AI enhancer с graceful fallback.
 //
@@ -18,7 +19,8 @@ import { teach } from './teacher.js';
 import { dontKnow, frameAiSuggestion } from './honesty.js';
 import { handleCommand } from './commands.js';
 import { parseBrowserIntent, runBrowserIntent } from './browser.js';
-import { webSearch, gatherTreeAnswer, translate } from './sources.js';
+import { webSearch, gatherTreeAnswer, translate, extractSearchTopics } from './sources.js';
+import { setVisionIntent } from './vision.js';
 import { isImpersonalMode, looksPersonal, refusePersonalText } from './privacy.js';
 import { languageByVoice } from './languages.js';
 
@@ -89,6 +91,30 @@ function parseTranslate(text) {
   if (m && resolveLangName(m[2])) return { lang: m[2], text: m[1] };
   m = s.match(/^как\s+(?:се\s+казва|е)\s+(.+?)\s+на\s+([\p{L}\- ]+?)\s*[?.!]*$/iu);
   if (m && resolveLangName(m[2])) return { lang: m[2], text: m[1] };
+  return null;
+}
+
+// --- ЗРЕНИЕ по гласова команда -----------------------------------------------
+// „виж“/„погледни“/„огледай“ → отвори камерата (задна по подразбиране, предна при „предна/селфи“)
+// и анализирай каквото показваш. „запази“/„снимай“/„видя ли това“ → хвани кадър и анализирай.
+// Връща { facing?, autoStart?, capture?, analyze? } или null. Стриктно, за да не лапа дълги реплики.
+function parseVisionCommand(text) {
+  const s = String(text || '').trim().toLowerCase().replace(/[.!?,…]+$/u, '').trim();
+  if (!s) return null;
+  // Хвани текущия кадър и анализирай (камерата вече е пусната или ще я пуснем).
+  if (/^(запази|снимай|направи(\s+ми)?\s+снимка(та)?|снимка|щракни|хвани\s+(кадър|кадъра|снимка)|видя\s+ли(\s+(това|го|туй))?)$/u.test(s)) {
+    return { capture: true, analyze: true };
+  }
+  // Команда за „гледане“ (БЕЗ \b — кирилицата не образува word-boundary в JS regex; ползваме \s|$).
+  if (!/^(виж|вижда[мш]?|погледни|огледай|пусни\s+камерата|включи\s+камерата|отвори\s+камерата)(?:\s|$)/u.test(s)) return null;
+  // „виж какво научи/знаеш/помниш“ = ПРЕГЛЕД на знание, не камера → пропусни.
+  if (/(научи|научил|знаеш|помниш|памет|събра)/u.test(s)) return null;
+  const front = /(предна|предната|селфи|отпред|front)/u.test(s);
+  const camWord = /(камер|предна|задна|отпред|отзад|селфи|това|туй|сега|тук|наоколо|виждаш|пред\s+теб)/u.test(s);
+  const words = s.split(/\s+/).length;
+  if (words <= 3 || camWord) {
+    return { facing: front ? 'user' : 'environment', autoStart: true, analyze: true };
+  }
   return null;
 }
 
@@ -168,6 +194,21 @@ export async function respond(userText) {
       } catch (_) {
         return { text: 'Преводът се обърка. Провери връзката и пробвай пак.', source: 'rule' };
       }
+    }
+  }
+
+  // 0.55) ЗРЕНИЕ по гласова команда: „виж“ → отвори камерата (задна/предна) и анализирай това,
+  //       което показваш; „запази“/„видя ли това“ → хвани кадър и анализирай. Чатът получава
+  //       action:'vision' и навигира към екрана „Зрение“, който чете оставената заявка.
+  {
+    const vis = parseVisionCommand(text);
+    if (vis) {
+      setVisionIntent(vis);
+      const where = vis.facing === 'user' ? 'предната' : 'задната';
+      const msg = vis.capture
+        ? 'Хващам кадър и анализирам какво виждам…'
+        : `Отварям зрението — гледам през ${where} камера и анализирам това, което показваш.`;
+      return { text: msg, source: 'rule', action: 'vision' };
     }
   }
 
@@ -371,25 +412,43 @@ export async function respond(userText) {
     const searchLang = (getState().settings.voice && getState().settings.voice.lang) || 'bg-BG';
     const searchCode = (languageByVoice(searchLang).code || 'bg').split('-')[0];
     try {
-      const tree = await gatherTreeAnswer(topic, { lang: searchCode, limit: 6, relatedLimit: 12 });
-      const total = tree.main.length + tree.related.length;
+      // НЯКОЛКО ТЕМИ от диктовката: при НЯКОЛКО ИЗРЕЧЕНИЯ (силен разделител — точка/запетая/нов
+      // ред) вадим до 2 водещи теми и учим за ВСЯКА (всяка дава и свои клонове). При едно понятие
+      // (напр. „черна дупка") НЕ цепим на части — оставяме самата фраза, а gatherTreeAnswer вече е
+      // устойчив (ключови думи + английски) и сам я резолвва. Така покриваме казаното, без да
+      // удвояваме мрежата за единичен термин.
+      const multiSentence = /[.!?;\n,]/.test(topic);
+      const subTopics = multiSentence ? extractSearchTopics(topic, { lang: searchCode, max: 2 }) : [];
+      const queries = (subTopics.length >= 2) ? subTopics : [topic];
+      const trees = [];
+      for (const q of queries) {
+        const tr = await gatherTreeAnswer(q, { lang: searchCode, limit: 6, relatedLimit: 12 });
+        if (tr.main.length || tr.related.length) trees.push({ q, tree: tr });
+      }
+      const total = trees.reduce((s, x) => s + x.tree.main.length + x.tree.related.length, 0);
       if (total) {
-        // ТРУПАМ: записвам ВСИЧКО намерено (темата + всеки свързан клон като отделна тема) в паметта.
-        try { addInterest(topic); } catch (_) {}
-        try { for (const n of tree.main) addNote(topic, { text: n.text, source: n.source, url: n.url }); } catch (_) {}
-        try {
-          for (const r of tree.related) {
-            addInterest(r.topic);
-            addNote(r.topic, { text: r.text, source: r.source, url: r.url });
-          }
-        } catch (_) {}
-        let out = `🔎 ${topic} — събрах ${total} статии/източника (записах всички в паметта):\n\n` +
-          tree.main.slice(0, 5).map((n) => `• ${n.text}\n  📎 ${n.source}`).join('\n\n');
-        if (tree.related.length) {
-          out += `\n\n🌳 Свързани статии (${tree.related.length}), записах ги всички:\n` +
-            tree.related.slice(0, 8).map((r) => `▸ ${r.topic}: ${r.text}`).join('\n');
+        // ТРУПАМ: записвам ВСИЧКО намерено (всяка тема + всеки свързан клон) в паметта.
+        const mainAll = [];
+        const relAll = [];
+        for (const { q, tree } of trees) {
+          try { addInterest(q); } catch (_) {}
+          try { for (const n of tree.main) { addNote(q, { text: n.text, source: n.source, url: n.url }); mainAll.push(n); } } catch (_) {}
+          try {
+            for (const r of tree.related) {
+              addInterest(r.topic);
+              addNote(r.topic, { text: r.text, source: r.source, url: r.url });
+              relAll.push(r);
+            }
+          } catch (_) {}
         }
-        _lastSearchQuery = topic; _lastSearchEngine = 'google';
+        const learnedTopics = trees.map((x) => x.q).join(', ');
+        let out = `🔎 ${learnedTopics} — събрах ${total} статии/източника (записах всички в паметта):\n\n` +
+          mainAll.slice(0, 5).map((n) => `• ${n.text}\n  📎 ${n.source}`).join('\n\n');
+        if (relAll.length) {
+          out += `\n\n🌳 Свързани статии (${relAll.length}), записах ги всички:\n` +
+            relAll.slice(0, 8).map((r) => `▸ ${r.topic}: ${r.text}`).join('\n');
+        }
+        _lastSearchQuery = queries[0]; _lastSearchEngine = 'google';
         const qenc = encodeURIComponent(topic);
         out += `\n\nЗа още кажи „отвори в браузъра" или директно:\n` +
           `🌍 Google: https://www.google.com/search?q=${qenc}\n` +
@@ -447,7 +506,8 @@ function learnTopicFrom(text) {
   s = s.replace(/^(?:какво\s+е|какво\s+са|кой\s+е|коя\s+е|кое\s+е|кои\s+са|какво\s+знаеш\s+за|знаеш\s+ли\s+(?:какво\s+е\s+|за\s+)?|кажи\s+ми\s+(?:за\s+|какво\s+е\s+)?|разкажи(?:\s+ми)?\s+(?:за\s+|нещо\s+за\s+)?|обясни(?:\s+ми)?\s+(?:какво\s+е\s+|за\s+)?|що\s+е(?:\s+то)?)\s*/i, '');
   s = s.replace(/[?!.]+$/g, '').trim();
   if (s.length < 2) return null;
-  if (s.length > 80) s = s.slice(0, 80).trim();
+  // По-висок таван (за да оцелеят НЯКОЛКО издиктувани изречения, от които после вадим темите).
+  if (s.length > 160) s = s.slice(0, 160).trim();
   return s;
 }
 

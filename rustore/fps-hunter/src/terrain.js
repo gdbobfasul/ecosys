@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Процедурален терен: heightfield от value-noise/fBm.
 // Различни биоми (forest/field/snow/desert/hills/marsh/urban) задават
 // амплитуда на височините, цветове и плътност на декорите.

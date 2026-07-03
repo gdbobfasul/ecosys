@@ -1,3 +1,4 @@
+// Version: 1.0001
 // notes.js — бележки, които роботът ПОМНИ и ИЗГОВАРЯ на избрания от 15-те езика.
 import { h, esc } from '../ui/dom.js';
 import { storage, KEYS } from '../core/storage.js';

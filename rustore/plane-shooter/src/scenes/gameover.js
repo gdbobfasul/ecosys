@@ -1,3 +1,4 @@
+// Version: 1.0001
 // GameOverScene — екран за победа или загуба + въвеждане на име, ранг листа и рестарт.
 import Phaser from 'phaser';
 import { THEME } from '../theme.js';

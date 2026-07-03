@@ -1,3 +1,4 @@
+// Version: 1.0001
 import { enforceLock } from './core/lock.js';
 enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // Дуел на ринга — самостоятелен мобилен билд (Vite + Capacitor).
@@ -6,6 +7,7 @@ enforceLock(); // 4-дневно пробно заключване (виж core/
 import { THEME } from './theme.js';
 import * as I18N from './core/i18n.js';
 import { LANGUAGES, RTL_CODES } from './core/languages.js';
+import { APP_VERSION } from './version.js';   // версия за реда долу в избора на език
 
 // Излагаме преводния слой на window ПРЕДИ да зареди движокът, за да може
 // vanilla-JS движокът (battle-engine.js) да го ползва през window.DuelI18n.
@@ -79,7 +81,14 @@ function showLangPicker(onDone) {
       '#duel-lang button{min-height:60px;background:linear-gradient(180deg,#3a2a1a,#1a1208);color:#f0d896;',
       'border:2px solid #8a5a2a;border-radius:14px;font-family:inherit;font-size:20px;letter-spacing:.5px;cursor:pointer;',
       'box-shadow:0 4px 0 #000,inset 0 1px 0 rgba(255,200,120,.2);padding:8px 6px;}',
-      '#duel-lang button:active{transform:translateY(2px);box-shadow:0 1px 0 #000;background:linear-gradient(180deg,#5a3a22,#2a1810);}'
+      '#duel-lang button:active{transform:translateY(2px);box-shadow:0 1px 0 #000;background:linear-gradient(180deg,#5a3a22,#2a1810);}',
+      // „Стартирай" — основен бутон под решетката (продължава с текущия език).
+      '#duel-lang button.duel-lang-start{width:100%;max-width:560px;margin:18px 0 0;min-height:64px;font-size:23px;',
+      'background:linear-gradient(180deg,#f8c450,#b8860f);color:#2a1808;border-color:#f8c450;font-weight:700;',
+      'box-shadow:0 4px 0 #000,0 0 18px rgba(248,196,80,.45),inset 0 1px 0 rgba(255,255,255,.3);}',
+      '#duel-lang button.duel-lang-start:active{transform:translateY(2px);box-shadow:0 1px 0 #000;}',
+      // Дискретен ред с версията.
+      '#duel-lang .duel-lang-ver{margin:14px 0 4px;font-size:13px;opacity:.55;text-align:center;color:#f0d896;letter-spacing:1px;}'
     ].join('');
     document.head.appendChild(css);
   }
@@ -105,6 +114,26 @@ function showLangPicker(onDone) {
     grid.appendChild(b);
   });
   ov.appendChild(grid);
+
+  // „Стартирай" — продължава с ТЕКУЩИЯ (по подразбиране) език: прави точно
+  // същото като натискане на бутона за текущия език, без повторен избор.
+  const start = document.createElement('button');
+  start.className = 'duel-lang-start';
+  start.textContent = I18N.t('start_app');
+  start.addEventListener('click', () => {
+    I18N.setLang(I18N.getLang());   // потвърждава текущия език (записва избора)
+    applyDir();
+    ov.remove();
+    onDone();
+  });
+  ov.appendChild(start);
+
+  // Дискретен ред с версията на приложението.
+  const ver = document.createElement('div');
+  ver.className = 'duel-lang-ver';
+  ver.textContent = 'v' + APP_VERSION;
+  ov.appendChild(ver);
+
   document.body.appendChild(ov);
 }
 

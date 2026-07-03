@@ -1,3 +1,4 @@
+// Version: 1.0001
 import { defineConfig } from 'vite';
 
 // base: './' -> относителни пътища, нужни за Capacitor (WebView зарежда от file://).

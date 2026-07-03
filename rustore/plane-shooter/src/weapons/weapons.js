@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Дефиниция на трите оръжия и тяхното поведение.
 // (1) bullet  – обикновен куршум, бърз огън, малка щета
 // (2) bomb    – бомба, по-бавна, площна щета (splash)
@@ -38,8 +39,24 @@ export const WEAPONS = {
     homing: true,
     turnRate: 4.5,     // радиани/сек завъртане към целта
     tint: THEME.danger
+  },
+  // МЕГА-МИНА — отключва се от ниво 8 (виж game.js). ОГРОМЕН радиус на взрив (≈150px), който
+  // мете 8–10 близки вражески самолета наведнъж. Така главният самолет компенсира гъстите рояци
+  // на финалните нива. По-дълъг кулдаун (мощно, но не тривиализиращо). fullSplash = пълна щета
+  // на ВСИЧКИ в радиуса (не половин), за да реже сигурно цял рояк.
+  megamine: {
+    key: 'megamine',
+    name: 'Мега-мини',
+    texture: 'bomb',
+    cooldown: 820,
+    speed: -340,
+    damage: 10,
+    splash: 150,
+    fullSplash: true,
+    homing: false,
+    tint: 0xff3b3b
   }
 };
 
 // Подреден списък за превключване (UI бутон „смени оръжие").
-export const WEAPON_ORDER = ['bullet', 'bomb', 'missile'];
+export const WEAPON_ORDER = ['bullet', 'bomb', 'missile', 'megamine'];

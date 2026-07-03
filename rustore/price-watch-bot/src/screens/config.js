@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Екран „Настрой робота" (config wizard) — добавяне на watch елементи.
 import { CRYPTO, FX } from '../core/api.js';
 import { saveState, pushLog } from '../core/storage.js';

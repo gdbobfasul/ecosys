@@ -1,9 +1,11 @@
+// Version: 1.0001
 // LanguageScene — избор на език при първо стартиране (и от менюто чрез бутона 🌐).
 // Показва 15-те езика на екосистемата с родните им имена; изборът се пази и
 // после се отваря менюто. Заглавието „Избери език" се изписва на текущия език.
 import Phaser from 'phaser';
 import { THEME } from '../theme.js';
 import { LANGUAGES, setLang, getLang, t } from '../core/i18n.js';
+import { APP_VERSION } from '../version.js';
 
 export default class LanguageScene extends Phaser.Scene {
   constructor() {
@@ -34,7 +36,7 @@ export default class LanguageScene extends Phaser.Scene {
     // Решетка с езиците (2 колони × ~8 реда), скролируема при нужда.
     const cur = getLang();
     const topY = H * 0.19;
-    const bottomY = H * 0.96;
+    const bottomY = H * 0.85;   // долната граница на решетката — оставя място за бутона „Стартирай"
     const viewH = bottomY - topY;
     const cols = 2, btnW = 210, btnH = 48, gapX = 14, gapY = 12;
     const gridW = cols * btnW + (cols - 1) * gapX;
@@ -83,6 +85,26 @@ export default class LanguageScene extends Phaser.Scene {
         container.y = Phaser.Math.Clamp(container.y - dy * 0.5, minY, 0);
       });
     }
+
+    // Бутон „Стартирай" — продължава в играта с текущо избрания език.
+    const startY = H * 0.905;
+    const startBtn = this.add.rectangle(W / 2, startY, 220, 52, THEME.accent, 1)
+      .setStrokeStyle(2, 0xffffff, 0.9)
+      .setInteractive({ useHandCursor: true });
+    const startLabel = this.add.text(W / 2, startY, t('start_app'), {
+      fontFamily: 'system-ui, sans-serif', fontSize: '20px',
+      color: '#05060f', fontStyle: 'bold'
+    }).setOrigin(0.5);
+    const go = () => this.choose(getLang());
+    startBtn.on('pointerover', () => startBtn.setScale(1.04));
+    startBtn.on('pointerout', () => startBtn.setScale(1));
+    startBtn.on('pointerup', go);
+    startLabel.setInteractive({ useHandCursor: true }).on('pointerup', go);
+
+    // Версия на приложението — дребен сив текст най-долу.
+    this.add.text(W / 2, H * 0.97, 'v' + APP_VERSION, {
+      fontFamily: 'system-ui, sans-serif', fontSize: '12px', color: '#8a93a8'
+    }).setOrigin(0.5);
   }
 
   choose(code) {

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Рустам — top-down градинар, който се движи свободно и бере краставици.
 // Управление: виртуален джойстик (мобилно) или WASD/стрелки (десктоп) — виж game.js.
 import Phaser from 'phaser';
@@ -8,7 +9,8 @@ export default class Rustam extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.speed = 252;            // px/сек
+    this.baseSpeed = 252;        // px/сек — базова скорост (леко расте с нивото, виж setBaseSpeed)
+    this.speed = this.baseSpeed; // текуща скорост — расте с всяка набрана краставица (speedUp)
 
     // Хитбоксът е по-малък от спрайта (заради фороскъсеното тяло) — за досега до краставиците.
     const body = this.body;
@@ -32,6 +34,18 @@ export default class Rustam extends Phaser.Physics.Arcade.Sprite {
   stop() {
     this.setVelocity(0, 0);
     this.setRotation(0);
+  }
+
+  // Базова скорост за нивото (леко расте с номера му → по-късните нива не са „пеша").
+  setBaseSpeed(v) {
+    this.baseSpeed = v;
+    if (this.speed < v) this.speed = v;
+  }
+
+  // Всяка набрана краставица го прави мъничко по-бърз (компенсира растящата трудност и това,
+  // че за същото време изскачат повече краставици). Расте до таван над базата.
+  speedUp(step = 5, cap = 130) {
+    this.speed = Math.min(this.baseSpeed + cap, this.speed + step);
   }
 
   // Център на досега (главата/ръцете на героя).

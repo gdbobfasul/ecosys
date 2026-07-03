@@ -1,3 +1,4 @@
+// Version: 1.0001
 import { enforceLock } from './core/lock.js';
 enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 // Входна точка: инициализира engine, лидерборд, контролите и оркестрира
@@ -73,6 +74,7 @@ async function boot() {
     // с текста на грешката — за да се вижда причината на устройството.
     try {
       game.start(levelNum, totalScore);
+      blackProbe = 0; blackReported = false; // пре-армиране на диагностиката за това ниво
     } catch (err) {
       console.error('[startGame] грешка при старт на ниво', err);
       showErrorOverlay(root, err);
@@ -99,15 +101,74 @@ async function boot() {
     });
   }
 
+  // Диагностичен overlay при „черен екран без грешка" (нищо не се рисува / нулево платно).
+  // Показва реалните числа, за да се установи причината директно на устройството.
+  function showDiagOverlay(parent, calls, canvas, centerBlack) {
+    const cam = engine.camera;
+    const p = cam ? cam.position : { x: 0, y: 0, z: 0 };
+    const lines = [
+      'причина: ' + (centerBlack ? 'кадърът е ЧЕРЕН (рисува се, но черно)' :
+        (canvas.width === 0 || canvas.height === 0) ? 'нулево платно' : 'нула тегления'),
+      'draw calls: ' + calls,
+      'canvas (буфер): ' + canvas.width + ' × ' + canvas.height,
+      'canvas (CSS): ' + canvas.clientWidth + ' × ' + canvas.clientHeight,
+      'window: ' + window.innerWidth + ' × ' + window.innerHeight,
+      'documentElement: ' + document.documentElement.clientWidth + ' × ' + document.documentElement.clientHeight,
+      'pixelRatio: ' + (window.devicePixelRatio || 1),
+      'камера xyz: ' + p.x.toFixed(1) + ' / ' + p.y.toFixed(1) + ' / ' + p.z.toFixed(1),
+      'scene.background: ' + (engine.scene && engine.scene.background ? '#' + engine.scene.background.getHexString() : 'няма')
+    ];
+    const box = document.createElement('div');
+    box.style.cssText = `position:fixed;inset:0;z-index:9999;background:#08121a;color:#cfe7ff;
+      font-family:monospace;font-size:13px;line-height:1.7;padding:18px;overflow:auto;
+      -webkit-user-select:text;user-select:text;`;
+    box.innerHTML = `<div style="font-size:17px;color:#4fc3f7;margin-bottom:10px;font-weight:700">
+      Диагностика на екрана</div><pre style="white-space:pre-wrap;margin:0">${lines.join('\n')}</pre>
+      <button id="diag-back" style="margin-top:16px;padding:10px 22px;font-size:15px;border:none;
+        border-radius:8px;background:#4fc3f7;color:#04121d;font-weight:700">${t('err_back')}</button>`;
+    parent.appendChild(box);
+    box.querySelector('#diag-back').addEventListener('click', () => { box.remove(); toMenu(); });
+  }
+
   // Главен цикъл
   const clock = new THREE.Clock();
   let loopErrored = false;
+  let blackProbe = 0;        // броим кадри докато тече игра, за да хванем „нищо не се рисува"
+  let blackReported = false;
   function loop() {
     const dt = Math.min(clock.getDelta(), 0.05); // ограничаваме скока при лаг
     if (!loopErrored) {
       try {
+        // Синхронизирай размера на платното с реалния (поправя черен екран, когато
+        // WebView-ът установи innerHeight чак няколко кадъра след старта).
+        if (engine.syncSize) engine.syncSize();
         if (game && !game.ended) game.update(dt);
         engine.renderer.render(engine.scene, engine.camera);
+        // ДИАГНОСТИКА: ако тече игра, но рендерът не прави НИТО едно теглене (draw call),
+        // или платното е с нулев размер — вместо мълчалив черен екран показваме реалните
+        // числа, за да се види причината директно на телефона.
+        if (game && !game.ended && !blackReported) {
+          if (++blackProbe >= 40) {
+            const info = engine.renderer.info.render;
+            const c = engine.renderer.domElement;
+            const calls = info ? info.calls : -1;
+            // РЕАЛНА проба за „черно": четем централния пиксел от платното. Така хващаме и
+            // случая, в който рендерът ПРАВИ тегления и платното е с размер, но кадърът пак
+            // излиза черен (напр. отказал шейдър за небе/невалидна камера) — който проверката
+            // само по calls/размер пропускаше.
+            let centerBlack = false;
+            try {
+              const gl = engine.renderer.getContext();
+              const px = new Uint8Array(4);
+              gl.readPixels((c.width / 2) | 0, (c.height / 2) | 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+              centerBlack = (px[0] + px[1] + px[2] < 12);
+            } catch (_) { /* без четене → разчитаме на calls/размер */ }
+            if (calls === 0 || c.width === 0 || c.height === 0 || centerBlack) {
+              blackReported = true;
+              showDiagOverlay(root, calls, c, centerBlack);
+            }
+          }
+        }
       } catch (err) {
         // Грешка по време на игра/рендер: спираме цикъла и показваме причината,
         // вместо да рендираме мълчаливо черен екран кадър след кадър.

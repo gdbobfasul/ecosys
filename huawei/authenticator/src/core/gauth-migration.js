@@ -1,3 +1,4 @@
+// Version: 1.0001
 // gauth-migration.js — разбор на ЕКСПОРТ QR от Google Authenticator („Прехвърли акаунти").
 // Такъв QR е otpauth-migration://offline?data=<base64>, който съдържа МНОГО акаунта,
 // кодирани в Google protobuf. Тук има минимален protobuf четец (БЕЗ външна библиотека),

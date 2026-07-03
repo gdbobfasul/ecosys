@@ -1,3 +1,4 @@
+// Version: 1.0001
 // MenuScene — заглавен екран с градиентен фон, паралакс звезди и старт бутон.
 import Phaser from 'phaser';
 import { THEME } from '../theme.js';

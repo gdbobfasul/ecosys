@@ -1,0 +1,17 @@
+{
+  "appId": "com.kcy.newslator.hw",
+  "appName": "NewsLator",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": true
+  },
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}

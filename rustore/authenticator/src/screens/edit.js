@@ -1,3 +1,4 @@
+// Version: 1.0001
 // edit.js — редакция на съществуващ акаунт: издател/акаунт, подредба и изтриване.
 import { h, mount } from '../ui/dom.js';
 import { t } from '../core/i18n.js';

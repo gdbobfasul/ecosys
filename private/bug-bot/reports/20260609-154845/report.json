@@ -1,0 +1,225 @@
+{
+  "target": "prod",
+  "base": "http://localhost:3000",
+  "runId": "20260609-154845",
+  "mode": "journey:chat",
+  "startedAt": "2026-06-09T09:48:45.102Z",
+  "durationMs": 30817,
+  "scenarios": 7,
+  "urlsChecked": 35,
+  "counts": {
+    "error": 0,
+    "warn": 0,
+    "info": 0
+  },
+  "findings": [],
+  "serverLog": {
+    "ok": false,
+    "status": 404
+  },
+  "forms": [],
+  "fuzz": null,
+  "journeys": [
+    {
+      "app": "chat",
+      "label": "Чат (регистрация през формата + двама потребители РЕАЛНО си пишат)",
+      "scenarios": [
+        {
+          "name": "Потребител А: регистрация ПРЕЗ ФОРМАТА (държава→град каскада → плащане)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "goto /chat/register.html",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "expect #phone",
+              "ok": true
+            },
+            {
+              "step": "fill #phone",
+              "ok": true
+            },
+            {
+              "step": "fill #password",
+              "ok": true
+            },
+            {
+              "step": "fill #fullName",
+              "ok": true
+            },
+            {
+              "step": "select #gender",
+              "ok": true
+            },
+            {
+              "step": "label отвори доп. данни + каскада държава→град",
+              "ok": true
+            },
+            {
+              "step": "label изпрати формата → плащане + вземи userId",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Потребител Б: регистрация (API) + двамата маркирани платени",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label регистрирай Б",
+              "ok": true
+            },
+            {
+              "step": "label админ: маркирай А и Б платени",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Двамата влизат (взимат токени)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label вход А и Б",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "РЕАЛНО ЧАТЕНЕ: А добавя Б за контакт → праща съобщение → Б го получава",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label А добавя Б за контакт",
+              "ok": true
+            },
+            {
+              "step": "label А праща съобщение на Б",
+              "ok": true
+            },
+            {
+              "step": "label Б отваря разговора и проверява, че съобщението е доставено",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "А: профил + matchmaking + сигнали",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label GET /api/profile",
+              "ok": true
+            },
+            {
+              "step": "label matchmaking критерии (GET+POST)",
+              "ok": true
+            },
+            {
+              "step": "label GET /api/signals/can-submit",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона 1: ВАЛИДЕН успех + НЕВАЛИДЕН вход (очаквам 400, не 500)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label register: лош телефон → 400 (не 500)",
+              "ok": true
+            },
+            {
+              "step": "label register: слаба парола → 400 (не 500)",
+              "ok": true
+            },
+            {
+              "step": "label register: липсващ пол → 400 (не 500)",
+              "ok": true
+            },
+            {
+              "step": "label send: ПРАЗНО тяло → 400 (не 500); валидното беше доставено по-горе",
+              "ok": true
+            },
+            {
+              "step": "label friends: малформиран телефон → 400 (не 500)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона 2: атакер (без токен / фалшив токен / чужд ресурс / инжекции)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label защитен ендпойнт БЕЗ токен → 401",
+              "ok": true
+            },
+            {
+              "step": "label админ-вход с НОРМАЛЕН потребител (телефон като username) → 401/403, не успех",
+              "ok": true
+            },
+            {
+              "step": "label ФАЛШИВ bearer токен → 401",
+              "ok": true
+            },
+            {
+              "step": "label чужд разговор: Б НЕ е приятел с В → 403/404, без чужди данни",
+              "ok": true
+            },
+            {
+              "step": "label изпращане до НЕ-приятел → 403/404, не доставка",
+              "ok": true
+            },
+            {
+              "step": "label ОГРОМЕН вход (100k знака) → обработено (не 500)",
+              "ok": true
+            },
+            {
+              "step": "label ИНЖЕКЦИИ (SQL/XML) в текст → обработено (не 500)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона 3: админ блокира/отблокира; нормалният потребител е отказан (403)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label админ-вход (от .env) → токен",
+              "ok": true
+            },
+            {
+              "step": "label АДМИН блокира тестов потребител Б → успех",
+              "ok": true
+            },
+            {
+              "step": "label АДМИН отблокира Б обратно → успех (почистване на ефекта)",
+              "ok": true
+            },
+            {
+              "step": "label НОРМАЛЕН потребител НЕ може да стане админ (admin/login с неговите данни) → 401/403",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Изход (двамата)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label logout А и Б",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "seed": null
+}

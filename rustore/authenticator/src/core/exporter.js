@@ -1,18 +1,11 @@
+// Version: 1.0001
 // exporter.js — ЕДИНЕН експорт: наш .json бекъп, Aegis JSON, Google Authenticator (миграционен
 // QR като PNG), и „всички като QR" (.zip). Сваля файл през браузъра (Blob + <a download>).
 import { session } from './storage.js';
 import { buildAegisExport } from './aegis.js';
 import { buildGoogleMigrationURIs } from './gauth-migration.js';
 import { zipStore } from './zip.js';
-
-function download(filename, blobOrText, mime) {
-  const blob = (blobOrText instanceof Blob) ? blobOrText : new Blob([blobOrText], { type: mime || 'application/octet-stream' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  document.body.appendChild(a); a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
-}
+import { saveFile } from './filesave.js';
 
 function dataURLtoBytes(durl) {
   const b64 = durl.split(',')[1] || '';
@@ -23,18 +16,18 @@ function dataURLtoBytes(durl) {
 }
 
 // Наш .json бекъп.
-export function exportJsonFile() {
+export async function exportJsonFile() {
   if (!session.entries.length) return { ok: false, reason: 'empty' };
   const data = JSON.stringify({ app: 'kcy-authenticator', version: 1, entries: session.entries }, null, 2);
-  download('kcy-authenticator-export.json', data, 'application/json');
+  await saveFile('kcy-authenticator-export.json', data, 'application/json', { isText: true });
   return { ok: true, count: session.entries.length };
 }
 
 // Aegis JSON експорт (некриптиран) — отваря се директно в Aegis → Импорт.
-export function exportAegisFile() {
+export async function exportAegisFile() {
   if (!session.entries.length) return { ok: false, reason: 'empty' };
   const json = buildAegisExport(session.entries);
-  download('aegis-export.json', json, 'application/json');
+  await saveFile('aegis-export.json', json, 'application/json', { isText: true });
   return { ok: true, count: session.entries.length };
 }
 
@@ -51,14 +44,14 @@ export async function exportGoogleQR() {
 
   if (uris.length === 1) {
     const durl = await QR.toDataURL(uris[0], { width: 480, margin: 2, errorCorrectionLevel: 'M' });
-    download('google-authenticator-qr.png', new Blob([dataURLtoBytes(durl)], { type: 'image/png' }), 'image/png');
+    await saveFile('google-authenticator-qr.png', dataURLtoBytes(durl), 'image/png');
   } else {
     const files = [];
     for (let i = 0; i < uris.length; i++) {
       const durl = await QR.toDataURL(uris[i], { width: 480, margin: 2, errorCorrectionLevel: 'M' });
       files.push({ name: 'google-auth-' + (i + 1) + '.png', data: dataURLtoBytes(durl) });
     }
-    download('google-authenticator-qr.zip', zipStore(files), 'application/zip');
+    await saveFile('google-authenticator-qr.zip', zipStore(files), 'application/zip');
   }
   return { ok: true, count: exported, skipped, batches: uris.length };
 }

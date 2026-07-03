@@ -1,3 +1,4 @@
+// Version: 1.0001
 // ai-client.js — ПО ИЗБОР безплатен, keyless AI enhancer (Pollinations).
 //
 // https://text.pollinations.ai/<prompt>  → връща свободен текст, БЕЗ ключ/акаунт, с CORS.

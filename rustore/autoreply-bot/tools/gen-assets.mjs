@@ -1,3 +1,4 @@
+// Version: 1.0001
 // gen-assets.mjs — генерира store/icon.svg и store/splash.svg (SVG като код).
 // Стартиране:  node tools/gen-assets.mjs
 // За store-овете после конвертирай SVG -> PNG (виж store/CHECKLIST.md).

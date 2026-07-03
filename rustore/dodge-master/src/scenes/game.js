@@ -1,3 +1,4 @@
+// Version: 1.0001
 // GameScene — самата игра: арена, играч, хвърлячи, снаряди, сблъсъци, прогрес.
 import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../main.js';

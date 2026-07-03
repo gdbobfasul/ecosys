@@ -1,3 +1,4 @@
+// Version: 1.0001
 // aegis.js — импорт от ЕКСПОРТ файл на Aegis Authenticator (Android, отворен код).
 // Aegis експортира JSON. Поддържаме НЕкриптирания (plain) експорт; криптираният (scrypt +
 // AES-GCM) изисква декриптиране с парола, което не правим тук — за него казваме на потребителя
@@ -10,6 +11,27 @@
 //          "info":{ "secret":"<Base32>", "algo":"SHA1", "digits":6, "period":30, "counter":0 } }
 //     ] } }
 // Криптиран: "db" е base64 НИЗ, а "header.slots" е масив.
+//
+// ВАЖНО (поправка на „не отключва на телефона"): scrypt-js се внася СТАТИЧНО горе, за да
+// влезе в ОСНОВНИЯ bundle. Преди се ползваше динамичен `await import('scrypt-js')`, който при
+// `base:'./'` + зареждане от file:// на устройството правеше ОТДЕЛНО async парче, ненамираемо
+// в WebView-а → ключът от паролата не се извличаше и отключването падаше въпреки вярната парола.
+import scryptDefault, * as scryptNS from 'scrypt-js';
+// Взимаме И двата варианта (от namespace ИЛИ от default — според това как бъндлерът интерпретира
+// CommonJS модула). Предпочитаме СИНХРОННИЯ syncScrypt: асинхронният scrypt разчита на setTimeout
+// за разбиване на работата, което в някои Android WebView-та се държи различно/бавно → ключът
+// не излизаше и отключването „падаше" въпреки вярната парола. syncScrypt е чисто изчисление.
+const _syncScrypt = (scryptNS && scryptNS.syncScrypt) || (scryptDefault && scryptDefault.syncScrypt) || null;
+const _asyncScrypt = (scryptNS && scryptNS.scrypt) || (scryptDefault && scryptDefault.scrypt) || null;
+const scryptFn = _syncScrypt || _asyncScrypt || null;
+
+// Извежда ключ от парола чрез scrypt. Ползва синхронния вариант, ако е наличен (по-надеждно
+// на телефон); иначе async. Хвърля при липсваща реализация — викащият го хваща и докладва.
+async function scryptDerive(pw, salt, n, r, p, dkLen) {
+  if (_syncScrypt) return _syncScrypt(pw, salt, n, r, p, dkLen);
+  if (_asyncScrypt) return await _asyncScrypt(pw, salt, n, r, p, dkLen);
+  throw new Error('scrypt липсва в бъндъла');
+}
 
 // Връща { ok:true, entries:[...] } или { ok:false, reason:'json'|'not_aegis'|'encrypted'|'empty' }.
 // reason='encrypted' → UI казва „експортирай от Aegis без парола".
@@ -131,22 +153,34 @@ export async function decryptAegisExport(text, password) {
   if (!j || typeof j.db !== 'string' || !j.header || !Array.isArray(j.header.slots)) {
     return { ok: false, reason: 'not_aegis' };
   }
-  let scrypt = null;
-  try { const mod = await import('scrypt-js'); scrypt = mod.scrypt || (mod.default && mod.default.scrypt) || null; } catch (_) { scrypt = null; }
-  if (!scrypt) return { ok: false, reason: 'noscrypt' };
+  if (!scryptFn) return { ok: false, reason: 'noscrypt' };
 
   const pw = new TextEncoder().encode(String(password || ''));
   const slots = j.header.slots.filter((s) => s && s.type === 1 && s.key && s.key_params); // password slots
+  if (!slots.length) return { ok: false, reason: 'not_aegis', detail: 'няма слот с парола (type 1)' };
+
   let masterKey = null;
+  let scryptErr = null;   // ако извеждането на ключ (scrypt) се счупи — различаваме го от „грешна парола"
   for (const slot of slots) {
+    let slotKey = null;
     try {
-      const dk = await scrypt(pw, hexToBytes(slot.salt), slot.n, slot.r, slot.p, 32);
-      const slotKey = (dk instanceof Uint8Array) ? dk : new Uint8Array(dk);
+      const dk = await scryptDerive(pw, hexToBytes(slot.salt), slot.n, slot.r, slot.p, 32);
+      slotKey = (dk instanceof Uint8Array) ? dk : new Uint8Array(dk);
+    } catch (e) {
+      scryptErr = String((e && e.message) || e);   // scrypt не успя (липсва/счупен) → запомни и пробвай нататък
+      continue;
+    }
+    try {
       masterKey = await aesGcmDecrypt(slotKey, hexToBytes(slot.key_params.nonce), hexToBytes(slot.key), hexToBytes(slot.key_params.tag));
       break;
     } catch (_) { /* грешна парола за този слот → пробвай следващия */ }
   }
-  if (!masterKey) return { ok: false, reason: 'password' };
+  if (!masterKey) {
+    // Ако scrypt се е счупил на ВСИЧКИ слотове → това НЕ е „грешна парола", а техническа грешка
+    // (показваме реалната причина, за да се види на устройството). Иначе наистина е грешна парола.
+    if (scryptErr) return { ok: false, reason: 'scrypt_error', detail: scryptErr };
+    return { ok: false, reason: 'password' };
+  }
 
   try {
     const params = j.header.params || {};

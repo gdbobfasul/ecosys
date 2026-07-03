@@ -1,3 +1,4 @@
+// Version: 1.0001
 // native-reply.js — JS мост към native Capacitor плъгина 'NotificationReply'.
 //
 // Деградира ЧЕСТНО: в браузър / без native слой методите връщат „не е налично",

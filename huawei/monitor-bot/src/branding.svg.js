@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Брандинг като SVG в код (без бинарни файлове). Акцентът идва от config.js.
 // gen-assets.mjs записва store/icon.svg и store/splash.svg.
 import { ACCENT, ACCENT2, APP_NAME } from './config.js';

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // sources.js — БЕЗПЛАТНИ, БЕЗ КЛЮЧ мрежови източници + локален обобщител.
 //
 // Разрешени източници (всички keyless, без акаунт, с CORS, безплатни):
@@ -91,6 +92,68 @@ export function summarizeLocally(text, { maxSentences = 3, maxChars = 600 } = {}
   let out = sentences.slice(0, maxSentences).join(' ');
   if (out.length > maxChars) out = out.slice(0, maxChars - 1).trim() + '…';
   return out;
+}
+
+// --- Изваждане на смислени ТЕМИ от свободна (издиктувана) реч ----------------
+// Защо: при диктовка на няколко изречения старият код търсеше ЦЯЛОТО изречение буквално в
+// Wikipedia → пълнотекстовото търсене за дълга фраза (често с дребни грешки от диктовката) ту
+// хваща нещо, ту нищо → „малко и непостоянно". Тук превръщаме речта в кратки, чисти заявки:
+// собствените имена (с главна буква) са най-добрите теми, после двойки съседни съдържателни
+// думи (по-точни от единичните), накрая отделните съдържателни думи. Стопдумите (служебните
+// и учебните командни думи) се махат, за да не размиват търсенето.
+const STOP_WORDS = {
+  bg: ['и', 'или', 'но', 'а', 'да', 'не', 'че', 'се', 'си', 'съм', 'ще', 'ли', 'то', 'за', 'на',
+    'във', 'със', 'от', 'до', 'по', 'при', 'като', 'що', 'как', 'кога', 'къде', 'кой', 'коя',
+    'кое', 'кои', 'аз', 'ти', 'той', 'тя', 'ние', 'вие', 'те', 'ми', 'го', 'я', 'ги', 'му', 'им',
+    'това', 'този', 'тази', 'тези', 'онзи', 'там', 'тук', 'много', 'малко', 'искам', 'кажи',
+    'моля', 'хайде', 'започни', 'продължи', 'научи', 'науча', 'научиш', 'научите', 'учи', 'уча',
+    'учиш', 'изучи', 'проучи', 'разучи', 'знаеш', 'знам', 'разкажи', 'разкажеш', 'обясни',
+    'нещо', 'повече', 'също', 'още', 'така', 'защото', 'който', 'която',
+    'което', 'които', 'има', 'няма', 'бъде', 'беше', 'каза', 'казва'],
+  ru: ['и', 'или', 'но', 'а', 'да', 'не', 'что', 'это', 'как', 'когда', 'где', 'кто', 'я', 'ты',
+    'он', 'она', 'мы', 'вы', 'они', 'для', 'на', 'во', 'со', 'от', 'до', 'по', 'при', 'за', 'об',
+    'же', 'ли', 'бы', 'то', 'этот', 'эта', 'эти', 'там', 'тут', 'очень', 'хочу', 'скажи',
+    'расскажи', 'объясни', 'знаешь', 'учи', 'научи', 'ещё', 'еще', 'тоже', 'который', 'которая',
+    'есть', 'нет', 'был', 'была', 'было', 'про', 'нам', 'мне', 'его', 'её', 'их'],
+  en: ['the', 'a', 'an', 'is', 'are', 'was', 'were', 'to', 'of', 'and', 'or', 'but', 'in', 'on',
+    'at', 'for', 'with', 'from', 'by', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she',
+    'we', 'they', 'it', 'me', 'my', 'your', 'please', 'tell', 'about', 'learn', 'study', 'know',
+    'explain', 'something', 'more', 'very', 'want', 'what', 'who', 'when', 'where', 'how']
+};
+
+// Връща до `max` кратки заявки за търсене, подредени от най-точната (собствено име) надолу.
+export function extractSearchTopics(text, { lang = 'bg', max = 4 } = {}) {
+  const raw = String(text || '').replace(/\s+/g, ' ').trim();
+  if (!raw) return [];
+  const base = String(lang || 'bg').split('-')[0];
+  const stop = new Set([...(STOP_WORDS[base] || []), ...STOP_WORDS.en]);
+  const topics = [];
+  const seen = new Set();
+  const add = (s) => {
+    const v = String(s || '').replace(/[^\p{L}\p{N}\s-]/gu, ' ').replace(/\s+/g, ' ').trim();
+    if (v.length < 2) return;
+    const k = v.toLowerCase();
+    if (seen.has(k)) return;
+    seen.add(k); topics.push(v);
+  };
+  // 1) Собствени имена: поредици от думи с главна буква (без тези в самото начало на изречение,
+  //    които често са просто първата дума). Латиница и кирилица.
+  const proper = raw.match(/(?:[A-ZА-ЯЁ][\p{L}-]+)(?:\s+[A-ZА-ЯЁ][\p{L}-]+)*/gu) || [];
+  for (const p of proper) if (p.length >= 4 && p.split(' ').length >= 2) add(p);
+  // 2) По клаузи: махаме стопдумите → двойки съседни съдържателни думи, после единичните.
+  //    ВАЖНО: НЕ ползваме \b за разделителите „и/или/а" — границата на думата (\b) не работи след
+  //    кирилица в JS → ползваме явни интервали около съюза (\s+съюз\s+), което реже коректно.
+  const clauses = raw.split(/[.!?;,:\n]+|\s[-–—]\s|\s+и\s+|\s+или\s+|\s+а\s+/iu);
+  const singles = [];
+  for (const cl of clauses) {
+    const words = cl.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, ' ').split(/\s+/).filter(Boolean);
+    const content = words.filter((w) => w.length >= 3 && !stop.has(w) && !/^\d+$/.test(w));
+    for (let i = 0; i + 1 < content.length; i++) add(content[i] + ' ' + content[i + 1]);
+    for (const w of content) singles.push(w);
+  }
+  // 3) Единични съдържателни думи (само ако не сме напълнили вече) — пазят кратките диктовки.
+  for (const w of singles) add(w);
+  return topics.slice(0, max);
 }
 
 // --- Wikipedia -------------------------------------------------------------
@@ -362,6 +425,37 @@ export async function relatedTopics(topic, { lang = 'bg', limit = 6 } = {}) {
   return out.slice(0, limit);
 }
 
+// УСТОЙЧИВО намиране на статии за свободна (издиктувана) заявка. Опитва по ред, на ВСЕКИ език
+// (първо избрания, после английски), докато хване статии: 1) цялата заявка; 2) извлечените
+// ключови теми (по-кратки и чисти); 3) opensearch по заглавие/префикс. Връща { hits, lang } —
+// езикът, на който са намерени, за да теглим текста ОТ СЪЩИЯ. Така при дълга диктовка пак
+// намираме нещо вместо празно („малко и непостоянно" → стабилно).
+async function resolveTreeHits(query, { lang = 'bg', limit = 12 } = {}) {
+  const base = String(lang || 'bg').split('-')[0];
+  const langs = base === 'en' ? ['en'] : [base, 'en'];
+  const cands = extractSearchTopics(query, { lang: base, max: 3 });
+  for (const lg of langs) {
+    // 1) цялата заявка буквално
+    let hits = await wikiSearch(query, { lang: lg, limit }).catch(() => []);
+    if (hits.length) return { hits, lang: lg };
+    // 2) извлечените ключови теми (всяка поотделно)
+    for (const c of cands) {
+      if (c.toLowerCase() === query.toLowerCase()) continue;
+      hits = await wikiSearch(c, { lang: lg, limit }).catch(() => []);
+      if (hits.length) return { hits, lang: lg };
+    }
+    // 3) opensearch по заглавие (хваща и частични/префиксни съвпадения)
+    for (const c of (cands.length ? cands : [query])) {
+      try {
+        const d = await getJson(`https://${lg}.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(c)}&limit=${limit}&namespace=0&format=json&origin=*`);
+        const titles = (Array.isArray(d) && Array.isArray(d[1])) ? d[1] : [];
+        if (titles.length) return { hits: titles.map((tt) => ({ title: tt, snippet: '' })), lang: lg };
+      } catch (_) { /* пробвай следващото */ }
+    }
+  }
+  return { hits: [], lang: base };
+}
+
 // „ДЪРВО" от знание: събира БОГАТО за самата тема (много източници) + по едно кратко резюме
 // за всяка ПРЯКО СВЪРЗАНА тема. Така ботът тръгва от темата и се „разклонява" към съседните
 // понятия. Връща { main:[бележки], related:[{topic, text, source, url}] }. Всичко в паралел.
@@ -369,10 +463,15 @@ export async function gatherTreeAnswer(topic, { lang = 'bg', limit = 6, relatedL
   const t = String(topic || '').trim();
   if (!t) return { main: [], related: [] };
 
-  // ШИРОКО търсене: взимаме МНОГО статии за заявката наведнъж (не само 1). Първата е „главната",
-  // останалите са вече свързани. Плюс „morelike" разширява дървото с още близки теми.
+  // ШИРОКО + УСТОЙЧИВО търсене: взимаме МНОГО статии наведнъж. Ако цялата заявка не върне нищо,
+  // resolveTreeHits пробва ключовите думи и английски, та дългата диктовка пак намира тема.
+  // Първата статия е „главната", останалите са вече свързани. „morelike" разширява дървото.
   let hits = [];
-  try { hits = await wikiSearch(t, { lang, limit: Math.max(relatedLimit + 2, 12) }); } catch (_) { /* ще паднем към темата */ }
+  let lang0 = String(lang || 'bg').split('-')[0];
+  try {
+    const r = await resolveTreeHits(t, { lang: lang0, limit: Math.max(relatedLimit + 2, 12) });
+    hits = r.hits; lang = r.lang;          // теглим текста от езика, на който НАМЕРИХМЕ статиите
+  } catch (_) { lang = lang0; /* ще паднем към темата */ }
   const mainTitle = hits.length ? hits[0].title : t;
 
   // „morelike" — още семантично близки заглавия (повече клони на дървото), паралелно с главното.

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // permissions.js — само известия; всичко друго е локално.
 import { el, toast } from '../ui/dom.js';
 import { getState, setState } from '../core/storage.js';

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // memory.js — екран „Памет“: преглед, ръчно добавяне, редакция и триене на наученото.
 import { el, clear, toast } from '../ui/dom.js';
 import { listMemory, addMemory, updateMemory, deleteMemory } from '../core/memory-store.js';

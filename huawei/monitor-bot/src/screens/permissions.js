@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Екран „Разрешения" — интернет + известия, с ясни ключове и обяснения.
 import { el } from '../ui/styles.js';
 import { saveState, pushLog } from '../core/storage.js';

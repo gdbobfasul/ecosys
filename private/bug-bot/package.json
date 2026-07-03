@@ -1,0 +1,18 @@
+{
+  "name": "kcy-bugbot",
+  "version": "1.0173",
+  "private": true,
+  "description": "KCY тест робот — Playwright обхождане на критичните пътища + сървърна лог-корелация. Плюс генератор на /tree.",
+  "main": "run.js",
+  "scripts": {
+    "tree": "node tree-gen.js",
+    "test": "node run.js --target prod",
+    "test:vm": "node run.js --target vm",
+    "test:all": "node run.js --target prod --all",
+    "setup": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0",
+    "playwright-core": "^1.60.0"
+  }
+}

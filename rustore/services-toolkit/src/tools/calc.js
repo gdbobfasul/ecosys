@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Калкулатори — заем, ДДС, лихва, проценти.
 import { t, tf, register } from '../core/i18n.js';
 

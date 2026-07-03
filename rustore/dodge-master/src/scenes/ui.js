@@ -1,3 +1,4 @@
+// Version: 1.0001
 // UIScene — HUD (здраве, прогрес, точки, ниво) + виртуален джойстик.
 // Работи като overlay над GameScene.
 import Phaser from 'phaser';

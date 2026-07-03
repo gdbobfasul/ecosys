@@ -1,3 +1,4 @@
+// Version: 1.0001
 // LeaderboardScene — цял топ-100 (само име + точки), достъпен от менюто.
 import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../main.js';

@@ -1,3 +1,4 @@
+// Version: 1.0001
 import Phaser from 'phaser';
 // Процедурно генериране на ВСИЧКИ текстури в кода (без външни картинки).
 // Използваме Phaser.Graphics + generateTexture, за да направим спрайтове за

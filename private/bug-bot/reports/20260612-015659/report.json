@@ -1,0 +1,2943 @@
+{
+  "target": "vm",
+  "base": "https://192.168.0.108",
+  "runId": "20260612-015659",
+  "mode": "journey:all",
+  "startedAt": "2026-06-11T19:56:59.777Z",
+  "durationMs": 114677,
+  "scenarios": 7,
+  "urlsChecked": 381,
+  "counts": {
+    "error": 36,
+    "warn": 0,
+    "info": 42
+  },
+  "findings": [
+    {
+      "ts": "2026-06-11T19:57:03.793Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "portals",
+      "scenario": "Изход + вход отново (UI)",
+      "targetUrl": "https://192.168.0.108/portals/login.html",
+      "detail": "label проверка, че съм логнат: не съм логнат след вход"
+    },
+    {
+      "ts": "2026-06-11T19:57:03.817Z",
+      "pageUrl": "https://192.168.0.108/portals/login.html",
+      "app": "portals",
+      "scenario": "Портали (регистрация, вход, услуга)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://accounts.google.com/gsi/client"
+    },
+    {
+      "ts": "2026-06-11T19:57:05.012Z",
+      "pageUrl": "https://192.168.0.108/portals/login.html",
+      "app": "portals",
+      "scenario": "Портали (регистрация, вход, услуга)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://accounts.google.com/gsi/client"
+    },
+    {
+      "ts": "2026-06-11T19:57:06.404Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "portals",
+      "scenario": "Персона: валиден + невалиден доклад за грешка",
+      "targetUrl": "https://192.168.0.108/portals/services/qr.html",
+      "detail": "api POST /api/portals/login: POST /api/portals/login → 401 (чаках 200) / bad_credentials"
+    },
+    {
+      "ts": "2026-06-11T19:57:06.417Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "portals",
+      "scenario": "Персона: нападател — админ ендпойнти без права",
+      "targetUrl": "https://192.168.0.108/portals/services/qr.html",
+      "detail": "api POST /api/portals/login: POST /api/portals/login → 401 (чаках 200) / bad_credentials"
+    },
+    {
+      "ts": "2026-06-11T19:57:06.424Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "portals",
+      "scenario": "Персона: нападател — заобикаляне на платена услуга + фалшива сесия",
+      "targetUrl": "https://192.168.0.108/portals/services/qr.html",
+      "detail": "api POST /api/portals/login: POST /api/portals/login → 401 (чаках 200) / bad_credentials"
+    },
+    {
+      "ts": "2026-06-11T19:57:06.428Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "portals",
+      "scenario": "Персона: нападател — инжекции и преголеми входове (без 500)",
+      "targetUrl": "https://192.168.0.108/portals/services/qr.html",
+      "detail": "api POST /api/portals/login: POST /api/portals/login → 401 (чаках 200) / bad_credentials"
+    },
+    {
+      "ts": "2026-06-11T19:57:39.997Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "chat",
+      "scenario": "Потребител А: регистрация ПРЕЗ ФОРМАТА (държава→град каскада → плащане)",
+      "targetUrl": "https://192.168.0.108/chat/register.html",
+      "detail": "label изпрати формата → плащане + вземи userId: регистрацията през формата се провали: няма пренасочване към плащане"
+    },
+    {
+      "ts": "2026-06-11T19:57:41.780Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "eco3",
+      "scenario": "ECO-3 ВХОД + РЕАЛНО ПРОИЗВЕЖДА (portal login → generate връща непразен текст; mock=ОК)",
+      "targetUrl": "https://192.168.0.108/eco-3/",
+      "detail": "label POST /api/eco3/generate (логнат) → НЕПРАЗЕН content; 401 тук Е грешка (току-що влязохме): eco3 generate 401 след портален вход — споделената сесия не работи"
+    },
+    {
+      "ts": "2026-06-11T19:57:42.505Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 (достъп през портал + админ)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/api/eco3/uniqueness/count"
+    },
+    {
+      "ts": "2026-06-11T19:57:42.505Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 (достъп през портал + админ)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/api/eco3/payment-links"
+    },
+    {
+      "ts": "2026-06-11T19:57:42.505Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 (достъп през портал + админ)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/api/eco3/history?category=analytic&limit=20"
+    },
+    {
+      "ts": "2026-06-11T19:57:42.505Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 (достъп през портал + админ)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/api/eco3/health"
+    },
+    {
+      "ts": "2026-06-11T19:57:42.505Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 (достъп през портал + админ)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/api/eco3/results?category=analytic&limit=10"
+    },
+    {
+      "ts": "2026-06-11T19:57:42.505Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 (достъп през портал + админ)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2"
+    },
+    {
+      "ts": "2026-06-11T19:57:42.505Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 (достъп през портал + админ)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwhsk.woff2"
+    },
+    {
+      "ts": "2026-06-11T19:57:42.505Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 (достъп през портал + админ)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://fonts.gstatic.com/s/crimsonpro/v28/q5uDsoa5M_tv7IihmnkabARboYE.woff2"
+    },
+    {
+      "ts": "2026-06-11T19:57:43.512Z",
+      "pageUrl": "https://192.168.0.108/houselookbook/login.html",
+      "app": "hlb",
+      "scenario": "House-Look-Book (потребител + админ модерация)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://192.168.0.108/api/hlb/me"
+    },
+    {
+      "ts": "2026-06-11T19:57:46.025Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "hlb",
+      "scenario": "Потребител: регистрация (API) + вход (UI)",
+      "targetUrl": "https://192.168.0.108/houselookbook/login.html",
+      "detail": "api GET /api/hlb/me: GET /api/hlb/me → 401 (чаках 200) / not_authenticated"
+    },
+    {
+      "ts": "2026-06-11T19:57:46.029Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "hlb",
+      "scenario": "Потребител: създай къща + подай за модерация",
+      "targetUrl": "https://192.168.0.108/houselookbook/login.html",
+      "detail": "api POST /api/hlb/proposals: POST /api/hlb/proposals → 401 (чаках 201) / not_authenticated"
+    },
+    {
+      "ts": "2026-06-11T19:57:46.110Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "hlb",
+      "scenario": "Админ: вход + одобри къщата",
+      "targetUrl": "https://192.168.0.108/houselookbook/login.html",
+      "detail": "api POST (c) => `/api/hlb/moderation/proposals/${c.propId}/approve`: POST /api/hlb/moderation/proposals/undefined/approve → 500 (чаках 200) / server_error"
+    },
+    {
+      "ts": "2026-06-11T19:57:46.410Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "hlb",
+      "scenario": "Персона 1 — валиден потребител: валиден + невалиден вход (никога 500)",
+      "targetUrl": "https://192.168.0.108/houselookbook/login.html",
+      "detail": "label НЕВАЛИДНИ входове при създаване → 400, НИКОГА 500: създаване „счупени composer_params (низ)\" → HTTP 500 (НЕ бива 500)"
+    },
+    {
+      "ts": "2026-06-11T19:57:46.760Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "hlb",
+      "scenario": "Персона 3 — админ: модерацията работи; за нормален потребител е 403",
+      "targetUrl": "https://192.168.0.108/houselookbook/login.html",
+      "detail": "api POST /api/hlb/proposals: POST /api/hlb/proposals → 409 (чаках 201) / too_many"
+    },
+    {
+      "ts": "2026-06-11T19:57:47.231Z",
+      "pageUrl": "https://192.168.0.108/wherenobiz/login.html",
+      "app": "wnb",
+      "scenario": "WhereNoBiz (потребител + админ модерация)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://192.168.0.108/api/wnb/me"
+    },
+    {
+      "ts": "2026-06-11T19:57:49.775Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "wnb",
+      "scenario": "Потребител: регистрация (API) + вход (UI)",
+      "targetUrl": "https://192.168.0.108/wherenobiz/login.html",
+      "detail": "api GET /api/wnb/me: GET /api/wnb/me → 401 (чаках 200) / not_authenticated"
+    },
+    {
+      "ts": "2026-06-11T19:57:49.779Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "wnb",
+      "scenario": "Потребител: създай пост (минава модерация)",
+      "targetUrl": "https://192.168.0.108/wherenobiz/login.html",
+      "detail": "api POST /api/wnb/posts: POST /api/wnb/posts → 401 (чаках 201) / not_authenticated"
+    },
+    {
+      "ts": "2026-06-11T19:57:49.859Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "wnb",
+      "scenario": "Админ: вход + одобри поста",
+      "targetUrl": "https://192.168.0.108/wherenobiz/login.html",
+      "detail": "api POST (c) => `/api/wnb/moderation/posts/${c.postId}/approve`: POST /api/wnb/moderation/posts/undefined/approve → 500 (чаках 200) / server_error"
+    },
+    {
+      "ts": "2026-06-11T19:57:50.185Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "wnb",
+      "scenario": "НЕВАЛИДЕН ВХОД: пост с грешни данни → 400 (никога 500)",
+      "targetUrl": "https://192.168.0.108/wherenobiz/login.html",
+      "detail": "label качване на НЕ-изображение → грациозно (никога 500): качване на не-изображение: HTTP 500 (сървърна грешка — никога 5xx)"
+    },
+    {
+      "ts": "2026-06-11T19:57:50.908Z",
+      "pageUrl": "https://192.168.0.108/find-best-price/add.html",
+      "app": "fbp",
+      "scenario": "Find Best Price (вход → обект → продукт → търсене → Zero Price)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://192.168.0.108/api/fbp/me"
+    },
+    {
+      "ts": "2026-06-11T19:57:53.424Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "fbp",
+      "scenario": "Потребител: регистрация (API) + вход (UI)",
+      "targetUrl": "https://192.168.0.108/find-best-price/add.html",
+      "detail": "api GET /api/fbp/me: GET /api/fbp/me → 401 (чаках 200) / not_authenticated"
+    },
+    {
+      "ts": "2026-06-11T19:57:53.428Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "fbp",
+      "scenario": "Създай обект (бизнес)",
+      "targetUrl": "https://192.168.0.108/find-best-price/add.html",
+      "detail": "api POST /api/fbp/business: POST /api/fbp/business → 401 (чаках 201) / not_authenticated"
+    },
+    {
+      "ts": "2026-06-11T19:57:53.431Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "fbp",
+      "scenario": "Добави продукт под обекта",
+      "targetUrl": "https://192.168.0.108/find-best-price/add.html",
+      "detail": "api POST /api/fbp/products: POST /api/fbp/products → 401 (чаках 201) / not_authenticated"
+    },
+    {
+      "ts": "2026-06-11T19:57:53.440Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "fbp",
+      "scenario": "ZERO PRICE: публикувай заявка + прати оферта",
+      "targetUrl": "https://192.168.0.108/find-best-price/add.html",
+      "detail": "api POST /api/fbp/wanted: POST /api/fbp/wanted → 401 (чаках 201) / not_authenticated"
+    },
+    {
+      "ts": "2026-06-11T19:57:53.443Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "fbp",
+      "scenario": "НЕВАЛИДЕН ВХОД: обект/продукт/заявка/оферта дават 400, не 500",
+      "targetUrl": "https://192.168.0.108/find-best-price/add.html",
+      "detail": "label обект без име → 400: обект без име: статус 401, чаках един от [400]"
+    },
+    {
+      "ts": "2026-06-11T19:57:53.648Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "fbp",
+      "scenario": "АТАКА: инжекции + огромни полета → 400/обработено, НИКОГА 500",
+      "targetUrl": "https://192.168.0.108/find-best-price/add.html",
+      "detail": "label продукт с инжекция в name/materials → не 5xx: продукт инжекция: статус 403, чаках един от [201,400]"
+    },
+    {
+      "ts": "2026-06-11T19:57:53.681Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "fbp",
+      "scenario": "АТАКА: странни/огромни параметри в търсенето → 200 обработено, НИКОГА 500",
+      "targetUrl": "https://192.168.0.108/find-best-price/add.html",
+      "detail": "label търсене с огромен параметър → 200, без 5xx: търсене огромно: статус 414, чаках един от [200]"
+    },
+    {
+      "ts": "2026-06-11T19:57:55.895Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "services",
+      "scenario": "Вход: регистрирай + влез портален потребител (достъп до услугите)",
+      "targetUrl": "https://192.168.0.108/portals/register.html",
+      "detail": "label потвърди, че сесията е активна: не съм логнат след регистрация — услугите ще са недостъпни"
+    },
+    {
+      "ts": "2026-06-11T19:58:11.370Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "services",
+      "scenario": "QR round-trip: генерирай → качи → разчети → сравни (СЪРЦЕВИНАТА)",
+      "targetUrl": "https://192.168.0.108/portals/services/qr.html?adm=bgmasters-set",
+      "detail": "label изчакай QR картинката да се нарисува: page.waitForSelector: Timeout 15000ms exceeded."
+    },
+    {
+      "ts": "2026-06-11T19:58:16.583Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://pagead2.googlesyndication.com/pagead/ping?e=1"
+    },
+    {
+      "ts": "2026-06-11T19:58:17.597Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 403,
+      "resourceUrl": "https://googleads.g.doubleclick.net/pagead/ads?client=ca-pub-7208892162400154&output=html&adk=1812271804&adf=3279755397&abgtt=6&plaf=1%3A2%2C2%3A2%2C7%3A2&plat=1%3A16777728%2C2%3A512%2C3%3A2097664%2C4%3A2097664%2C8%3A512%2C9%3A33288%2C16%3A8388608%2C17%3A32%2C24%3A32%2C25%3A32%2C26%3A512%2C27%3A512%"
+    },
+    {
+      "ts": "2026-06-11T19:58:19.533Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 403,
+      "resourceUrl": "https://www.tradingview-widget.com/support/support-portal-problems/?language=en"
+    },
+    {
+      "ts": "2026-06-11T19:58:19.534Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "error",
+      "kind": "console",
+      "detail": "2026-06-11T19:58:19.534Z:Fetch:/support/support-portal-problems/?language=en. Status 403"
+    },
+    {
+      "ts": "2026-06-11T19:58:19.584Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 403,
+      "resourceUrl": "https://www.tradingview-widget.com/support/support-portal-problems/?language=en"
+    },
+    {
+      "ts": "2026-06-11T19:58:19.584Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "error",
+      "kind": "console",
+      "detail": "2026-06-11T19:58:19.584Z:Fetch:/support/support-portal-problems/?language=en. Status 403"
+    },
+    {
+      "ts": "2026-06-11T19:58:19.868Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://widget-sheriff.tradingview-widget.com/sheriff/api/v1/rules/search?origin=https%3A%2F%2F192.168.0.108"
+    },
+    {
+      "ts": "2026-06-11T19:58:19.868Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://widget-sheriff.tradingview-widget.com/sheriff/api/v1/rules/search?origin=https%3A%2F%2F192.168.0.108"
+    },
+    {
+      "ts": "2026-06-11T19:58:19.868Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://widget-sheriff.tradingview-widget.com/sheriff/api/v1/rules/search?origin=https%3A%2F%2F192.168.0.108"
+    },
+    {
+      "ts": "2026-06-11T19:58:19.881Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 403,
+      "resourceUrl": "https://www.tradingview-widget.com/support/support-portal-problems/?language=en"
+    },
+    {
+      "ts": "2026-06-11T19:58:19.881Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "error",
+      "kind": "console",
+      "detail": "2026-06-11T19:58:19.881Z:Fetch:/support/support-portal-problems/?language=en. Status 403"
+    },
+    {
+      "ts": "2026-06-11T19:58:20.650Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://widget-sheriff.tradingview-widget.com/sheriff/api/v1/rules/search?origin=https%3A%2F%2F192.168.0.108"
+    },
+    {
+      "ts": "2026-06-11T19:58:20.829Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 403,
+      "resourceUrl": "https://www.tradingview-widget.com/support/support-portal-problems/?language=en"
+    },
+    {
+      "ts": "2026-06-11T19:58:20.829Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "error",
+      "kind": "console",
+      "detail": "2026-06-11T19:58:20.826Z:Fetch:/support/support-portal-problems/?language=en. Status 403"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.229Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://widget-sheriff.tradingview-widget.com/sheriff/api/v1/rules/search?origin=https%3A%2F%2F192.168.0.108"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.387Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 403,
+      "resourceUrl": "https://www.tradingview-widget.com/support/support-portal-problems/?language=en"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.387Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "error",
+      "kind": "console",
+      "detail": "2026-06-11T19:58:21.387Z:Fetch:/support/support-portal-problems/?language=en. Status 403"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.429Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://www.tradingview-widget.com/support/support-portal-problems/?language=en"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.430Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://pine-facade.tradingview.com/pine-facade/translate/STD%3BRSI/last"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.430Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://www.tradingview-widget.com/support/support-portal-problems/?language=en"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.430Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "error",
+      "kind": "console",
+      "detail": "2026-06-11T19:58:21.422Z:Fetch:GET https://pine-facade.tradingview.com/pine-facade/translate/STD%3BRSI/last. TypeError: Failed to fetch"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.430Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "error",
+      "kind": "console",
+      "detail": "2026-06-11T19:58:21.422Z:Chart.Study.Versioning:Requesting pine facade scripts failed, url: translate/STD;RSI/last"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.464Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://ep2.adtrafficquality.google/generate_204?rFUP8A"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.465Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://www.tradingview-widget.com/support/support-portal-problems/?language=en"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.465Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://www.tradingview-widget.com/support/support-portal-problems/?language=en"
+    },
+    {
+      "ts": "2026-06-11T19:58:21.465Z",
+      "pageUrl": "https://192.168.0.108/portals/services/charts.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://www.tradingview-widget.com/support/support-portal-problems/?language=en"
+    },
+    {
+      "ts": "2026-06-11T19:58:24.490Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "services",
+      "scenario": "Валутен конвертор: зарежда курсове и смята конверсия",
+      "targetUrl": "https://192.168.0.108/portals/services/crypto.html?adm=bgmasters-set",
+      "detail": "label инструментът се показва (курсовете се заредиха) и смята: конверторът не изчисли резултат"
+    },
+    {
+      "ts": "2026-06-11T19:58:24.532Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://192.168.0.108/api/portals/svc/watch20/prefs"
+    },
+    {
+      "ts": "2026-06-11T19:58:24.559Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/translations/bg.json"
+    },
+    {
+      "ts": "2026-06-11T19:58:24.559Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/api/portals/svc/watch20/prefs"
+    },
+    {
+      "ts": "2026-06-11T19:58:24.559Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies.json"
+    },
+    {
+      "ts": "2026-06-11T19:58:24.559Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/api/portals/me"
+    },
+    {
+      "ts": "2026-06-11T19:58:24.559Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/api/portals/ip-admin"
+    },
+    {
+      "ts": "2026-06-11T19:58:24.559Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/api/portals/me"
+    },
+    {
+      "ts": "2026-06-11T19:58:24.559Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/translations/en.json"
+    },
+    {
+      "ts": "2026-06-11T19:58:24.559Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html?adm=bgmasters-set",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/api/portals/ip-admin"
+    },
+    {
+      "ts": "2026-06-11T19:58:26.423Z",
+      "pageUrl": "https://192.168.0.108/portals/login.html?next=%2Fportals%2Fservices%2Fwatch20.html",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "info",
+      "kind": "http",
+      "status": 403,
+      "resourceUrl": "https://accounts.google.com/gsi/button?theme=outline&size=large&width=360&text=continue_with&is_fedcm_supported=true&client_id=956292743480-cmcssujd8vkusln2ps3ithqu0ov2on08.apps.googleusercontent.com&iframe_id=gsi_905885_271895&cas=PZwzgNOip8AxkOVBqsRdz3gvs8yQKrtHE6ZFPNHEero"
+    },
+    {
+      "ts": "2026-06-11T19:58:26.884Z",
+      "pageUrl": "https://192.168.0.108/portals/login.html?next=%2Fportals%2Fservices%2Fwatch20.html",
+      "app": "services",
+      "scenario": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "targetUrl": null,
+      "severity": "error",
+      "kind": "console",
+      "detail": "[GSI_LOGGER]: The given origin is not allowed for the given client ID."
+    },
+    {
+      "ts": "2026-06-11T19:58:49.579Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "services",
+      "scenario": "Watch20: зарежда 20 слота и взима предпочитанията (бекенд достъп)",
+      "targetUrl": "https://192.168.0.108/portals/login.html?next=%2Fportals%2Fservices%2Fwatch20.html",
+      "detail": "label построяват се 20 слота: watch20 построи 0 слота, очаквах 20"
+    },
+    {
+      "ts": "2026-06-11T19:58:54.253Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "failover",
+      "scenario": "Наблюдавай X-Served-By по всички домейни",
+      "targetUrl": "about:blank",
+      "detail": "label GET https://<домейн>/ за всеки домейн → чети X-Served-By: failover проблеми → take.offbitch.com: HTTP 200, но без X-Served-By заглавка"
+    }
+  ],
+  "serverLog": {
+    "ok": false,
+    "status": 0,
+    "error": "fetch failed"
+  },
+  "forms": [],
+  "fuzz": null,
+  "journeys": [
+    {
+      "app": "portals",
+      "label": "Портали (регистрация, вход, услуга)",
+      "scenarios": [
+        {
+          "name": "Регистрация (UI)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "goto /portals/register.html",
+              "ok": true
+            },
+            {
+              "step": "fill #username",
+              "ok": true
+            },
+            {
+              "step": "fill #password",
+              "ok": true
+            },
+            {
+              "step": "click #btn-register",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "api GET /api/portals/me",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Изход + вход отново (UI)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/portals/logout",
+              "ok": true
+            },
+            {
+              "step": "goto /portals/login.html",
+              "ok": true
+            },
+            {
+              "step": "fill #username",
+              "ok": true
+            },
+            {
+              "step": "fill #password",
+              "ok": true
+            },
+            {
+              "step": "click #btn-login",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "label проверка, че съм логнат",
+              "ok": false,
+              "error": "не съм логнат след вход"
+            }
+          ]
+        },
+        {
+          "name": "Вход с Facebook + Google (бутони съществуват, потокът не дава 500)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "goto /portals/login.html",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "label Facebook бутон присъства (или конфигът казва изключен)",
+              "ok": true
+            },
+            {
+              "step": "label Facebook вход потокът не дава 500 (изключен/невалиден токен = ОК)",
+              "ok": true
+            },
+            {
+              "step": "label Google вход потокът не дава 500 (изключен/невалиден токен = ОК)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Ползвай услуга — QR генератор (клиентско)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "goto /portals/services/qr.html",
+              "ok": true
+            },
+            {
+              "step": "expect #gentext",
+              "ok": true
+            },
+            {
+              "step": "fill #gentext",
+              "ok": true
+            },
+            {
+              "step": "label генерирай QR",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "expect #genresult",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона: валиден + невалиден вход (регистрация)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/portals/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/portals/register",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/portals/logout",
+              "ok": true
+            },
+            {
+              "step": "label твърде кратко username → 400 username_invalid",
+              "ok": true
+            },
+            {
+              "step": "label твърде кратка парола → 400 password_invalid",
+              "ok": true
+            },
+            {
+              "step": "label празни полета → 400",
+              "ok": true
+            },
+            {
+              "step": "label дублирано username → 409 username_taken",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона: валиден + невалиден доклад за грешка",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/portals/login",
+              "ok": false,
+              "error": "POST /api/portals/login → 401 (чаках 200) / bad_credentials"
+            },
+            {
+              "step": "api POST /api/portals/bug-report",
+              "skipped": true
+            },
+            {
+              "step": "label празно заглавие → 400 title_required",
+              "skipped": true
+            },
+            {
+              "step": "label празно тяло → 400 body_required",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Персона: нападател — админ ендпойнти без права",
+          "ok": false,
+          "steps": [
+            {
+              "step": "label разбери дали IP-то е третирано като админ",
+              "ok": true
+            },
+            {
+              "step": "label GET /adm/users без сесия → 401/403 (не 500/листинг)",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/portals/login",
+              "ok": false,
+              "error": "POST /api/portals/login → 401 (чаках 200) / bad_credentials"
+            },
+            {
+              "step": "label GET /adm/users като НОРМАЛЕН потребител → 403 (не 500/листинг)",
+              "skipped": true
+            },
+            {
+              "step": "label DELETE /adm/users/1 като нормален потребител → 403 (не 500)",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Персона: нападател — заобикаляне на платена услуга + фалшива сесия",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/portals/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/portals/login",
+              "ok": false,
+              "error": "POST /api/portals/login → 401 (чаках 200) / bad_credentials"
+            },
+            {
+              "step": "label POST /services/ai-listing без плащане → 402/403 (не съдържание/500)",
+              "skipped": true
+            },
+            {
+              "step": "label GET /portals/services/ без достъп → редирект, не съдържание",
+              "skipped": true
+            },
+            {
+              "step": "label фалшива connect.sid бисквитка → 401 (не 500)",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Персона: нападател — инжекции и преголеми входове (без 500)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/portals/login",
+              "ok": false,
+              "error": "POST /api/portals/login → 401 (чаках 200) / bad_credentials"
+            },
+            {
+              "step": "label инжекция в доклад → обработено (200/400), не 500",
+              "skipped": true
+            },
+            {
+              "step": "label преголям вход в доклад → обработено, не 500",
+              "skipped": true
+            },
+            {
+              "step": "label login с не-стрингови полета → 400 (не 500)",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Персона: админ (.env) върши админ действие; нормален = 403",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label админ: вход + GET /adm/users работи; нормален → 403",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона: модератор (.env) преглежда, но НЕ трие (само ако е настроен)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label модератор: вижда доклади, но cleanup-test/триене → 403",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Почистване (трий тестовите потребители)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label влез като .env админ за почистването (ако има)",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/portals/adm/cleanup-test",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "app": "chat",
+      "label": "Чат (регистрация през формата + двама потребители РЕАЛНО си пишат)",
+      "scenarios": [
+        {
+          "name": "Потребител А: регистрация ПРЕЗ ФОРМАТА (държава→град каскада → плащане)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "goto /chat/register.html",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "expect #phone",
+              "ok": true
+            },
+            {
+              "step": "fill #phone",
+              "ok": true
+            },
+            {
+              "step": "fill #password",
+              "ok": true
+            },
+            {
+              "step": "fill #fullName",
+              "ok": true
+            },
+            {
+              "step": "select #gender",
+              "ok": true
+            },
+            {
+              "step": "label отвори доп. данни + каскада държава→град",
+              "ok": true
+            },
+            {
+              "step": "label изпрати формата → плащане + вземи userId",
+              "ok": false,
+              "error": "регистрацията през формата се провали: няма пренасочване към плащане"
+            }
+          ]
+        },
+        {
+          "name": "Потребител Б: регистрация (API) + двамата маркирани платени",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label регистрирай Б",
+              "ok": true
+            },
+            {
+              "step": "label админ: маркирай А и Б платени",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Двамата влизат (взимат токени)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label вход А и Б",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "РЕАЛНО ЧАТЕНЕ: А добавя Б за контакт → праща съобщение → Б го получава",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label А добавя Б за контакт (по account id)",
+              "ok": true
+            },
+            {
+              "step": "label А праща съобщение на Б (POST /messages/:userId)",
+              "ok": true
+            },
+            {
+              "step": "label Б отваря разговора и проверява, че съобщението е доставено",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "А: профил + matchmaking + сигнали",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label GET /api/profile",
+              "ok": true
+            },
+            {
+              "step": "label matchmaking критерии (GET+POST)",
+              "ok": true
+            },
+            {
+              "step": "label GET /api/signals/can-submit",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона 1: ВАЛИДЕН успех + НЕВАЛИДЕН вход (очаквам 400, не 500)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label register: лош телефон → 400 (не 500)",
+              "ok": true
+            },
+            {
+              "step": "label register: слаба парола → 400 (не 500)",
+              "ok": true
+            },
+            {
+              "step": "label register: липсващ пол → 400 (не 500)",
+              "ok": true
+            },
+            {
+              "step": "label send: ПРАЗНО тяло → 400 (не 500); валидното беше доставено по-горе",
+              "ok": true
+            },
+            {
+              "step": "label friends: невалиден account id → 400 (не 500)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона 2: атакер (без токен / фалшив токен / чужд ресурс / инжекции)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label защитен ендпойнт БЕЗ токен → 401",
+              "ok": true
+            },
+            {
+              "step": "label админ-вход с НОРМАЛЕН потребител (телефон като username) → 401/403, не успех",
+              "ok": true
+            },
+            {
+              "step": "label ФАЛШИВ bearer токен → 401",
+              "ok": true
+            },
+            {
+              "step": "label чужд разговор: Б НЕ е приятел с непознат акаунт → 403/404, без чужди данни",
+              "ok": true
+            },
+            {
+              "step": "label изпращане до НЕ-приятел → 403/404, не доставка",
+              "ok": true
+            },
+            {
+              "step": "label ОГРОМЕН вход (100k знака) → обработено (не 500)",
+              "ok": true
+            },
+            {
+              "step": "label ИНЖЕКЦИИ (SQL/XML) в текст → обработено (не 500)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона 3: админ блокира/отблокира; нормалният потребител е отказан (403)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label админ-вход (от .env) → токен",
+              "ok": true
+            },
+            {
+              "step": "label АДМИН блокира тестов потребител Б → успех",
+              "ok": true
+            },
+            {
+              "step": "label АДМИН отблокира Б обратно → успех (почистване на ефекта)",
+              "ok": true
+            },
+            {
+              "step": "label НОРМАЛЕН потребител НЕ може да стане админ (admin/login с неговите данни) → 401/403",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Изход (двамата)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label logout А и Б",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "app": "chat",
+      "label": "Чат РАЗШИРЕН (задачи + покани + mm_blocked + админ изгледи + спешност)",
+      "scenarios": [
+        {
+          "name": "Подготовка: А и Б (API регистрация) → админ платени → вход → токени",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label регистрирай А и Б",
+              "ok": true
+            },
+            {
+              "step": "label админ-вход (от .env) → токен (по избор)",
+              "ok": true
+            },
+            {
+              "step": "label админ: маркирай А и Б платени",
+              "ok": true
+            },
+            {
+              "step": "label вход А и Б → токени",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "ЗАДАЧИ: А създава → публикува → Б хваща → чат → заключи → готово → А потвърждава",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label А създава чернова (POST /api/tasks)",
+              "ok": true
+            },
+            {
+              "step": "label Б НЕ може да публикува чужда задача → 403",
+              "ok": true
+            },
+            {
+              "step": "label А публикува задачата",
+              "ok": true
+            },
+            {
+              "step": "label списъкът показва публикуваната задача (GET /api/tasks)",
+              "ok": true
+            },
+            {
+              "step": "label А НЕ може да хване своя задача → 400",
+              "ok": true
+            },
+            {
+              "step": "label Б хваща задачата (free) ИЛИ изисква плащане (записваме)",
+              "ok": true
+            },
+            {
+              "step": "label чат по задачата: Б пише, А чете",
+              "ok": true
+            },
+            {
+              "step": "label Б заключва → готово с доклад; А потвърждава плащане",
+              "ok": true
+            },
+            {
+              "step": "label моите задачи (А автор / Б изпълнител)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "ЗАПОЗНАНСТВА: А кани Б → Б приема; А блокира в matchmaking",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label А кани Б (POST /api/matchmaking/invite)",
+              "ok": true
+            },
+            {
+              "step": "label Б вижда получената покана и я приема",
+              "ok": true
+            },
+            {
+              "step": "label А вижда изпратените покани",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "АДМИН: блок САМО в matchmaking (mm_blocked) + нови изгледи (user-overview/задачи/чат)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label админ блокира Б само в запознанства",
+              "ok": true
+            },
+            {
+              "step": "label админ user-overview за Б → структура + mmBlocked=true",
+              "ok": true
+            },
+            {
+              "step": "label админ списък задачи + чат по нашата задача",
+              "ok": true
+            },
+            {
+              "step": "label админ отблокира Б в запознанства (почистване)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "HELP/спешност: контакти + наличност + спешен бутон (платен)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label GET /api/help/emergency-contacts",
+              "ok": true
+            },
+            {
+              "step": "label GET /api/help/availability",
+              "ok": true
+            },
+            {
+              "step": "label спешен бутон (А, платен): 200 или 429 „веднъж месечно\", не 500",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Изход (двамата)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label logout А и Б",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "app": "eco3",
+      "label": "ECO-3 (достъп през портал + админ)",
+      "scenarios": [
+        {
+          "name": "Достъп до ECO-3 след портален вход",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/portals/register",
+              "ok": true
+            },
+            {
+              "step": "goto /eco-3/",
+              "ok": true
+            },
+            {
+              "step": "label health на eco-3",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "ECO-3 ПРОИЗВЕЖДА РЕЗУЛТАТ (AI generate връща непразен текст; mock=ОК)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label POST /api/eco3/generate → непразен content (test/mock се приема, 500/празно = грешка)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "ECO-3 ВХОД + РЕАЛНО ПРОИЗВЕЖДА (portal login → generate връща непразен текст; mock=ОК)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/portals/register",
+              "ok": true
+            },
+            {
+              "step": "label GET /api/eco3/health → ok + знаем режима (test/production)",
+              "ok": true
+            },
+            {
+              "step": "label POST /api/eco3/generate (логнат) → НЕПРАЗЕН content; 401 тук Е грешка (току-що влязохме)",
+              "ok": false,
+              "error": "eco3 generate 401 след портален вход — споделената сесия не работи"
+            }
+          ]
+        },
+        {
+          "name": "НЕВАЛИДЕН ВХОД към generate → 400, НИКОГА 500",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label липсват messages → не 500 (очаквам 400)",
+              "ok": true
+            },
+            {
+              "step": "label system е число (не низ) → не 500",
+              "ok": true
+            },
+            {
+              "step": "label отрицателен max_tokens + празни messages → не 500",
+              "ok": true
+            },
+            {
+              "step": "label напълно повреден body (низ вместо обект) → не 500",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "АТАКУВАЩ / „лош потребител\" → отказ (401/403/404), НИКОГА 500 или свободен достъп",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label generate БЕЗ вход (чиста сесия) → 401/403 (НЕ свободно генериране)",
+              "ok": true
+            },
+            {
+              "step": "label generate с ПОДПРАВЕНА сесийна бисквитка → пак отказан (401/403)",
+              "ok": true
+            },
+            {
+              "step": "label инжекция + ПРЕКАЛЕНО ДЪЛЪГ prompt (логнат) → обработено, НИКОГА 500",
+              "ok": true
+            },
+            {
+              "step": "label админ DB endpoint БЕЗ админ (анонимно) → НИКОГА 500; не изтича база в production",
+              "ok": true
+            },
+            {
+              "step": "label админ payments БЕЗ админ (анонимно) → НИКОГА 500; не изтича плащания в production",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Админ секция (вход ако трябва) + плащания",
+          "ok": true,
+          "steps": [
+            {
+              "step": "goto /eco-3/admin/",
+              "ok": true
+            },
+            {
+              "step": "label вход с .env админ, ако се показва форма (иначе IP-то е вече админ)",
+              "ok": true
+            },
+            {
+              "step": "api GET /api/eco3/admin/payments",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Почистване (трий тестовия портал потребител)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/portals/adm/cleanup-test",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "app": "hlb",
+      "label": "House-Look-Book (потребител + админ модерация)",
+      "scenarios": [
+        {
+          "name": "Потребител: регистрация (API) + вход (UI)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/hlb/register",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/hlb/logout",
+              "ok": true
+            },
+            {
+              "step": "goto /houselookbook/login.html",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "fill #email",
+              "ok": true
+            },
+            {
+              "step": "fill #password",
+              "ok": true
+            },
+            {
+              "step": "click #btnSubmit",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "api GET /api/hlb/me",
+              "ok": false,
+              "error": "GET /api/hlb/me → 401 (чаках 200) / not_authenticated"
+            }
+          ]
+        },
+        {
+          "name": "Потребител: създай къща + подай за модерация",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/hlb/proposals",
+              "ok": false,
+              "error": "POST /api/hlb/proposals → 401 (чаках 201) / not_authenticated"
+            },
+            {
+              "step": "label КАЧВАНЕ НА ИЗОБРАЖЕНИЕ: качи view снимка (докато е editing)",
+              "skipped": true
+            },
+            {
+              "step": "api POST (c) => `/api/hlb/proposals/${c.propId}/submit`",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Админ: вход + одобри къщата",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/hlb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/hlb/login",
+              "ok": true
+            },
+            {
+              "step": "api GET /api/hlb/moderation/pending",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => `/api/hlb/moderation/proposals/${c.propId}/approve`",
+              "ok": false,
+              "error": "POST /api/hlb/moderation/proposals/undefined/approve → 500 (чаках 200) / server_error"
+            },
+            {
+              "step": "label провери, че е approved",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Админ: създай втора, после я откажи",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/hlb/proposals",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => `/api/hlb/proposals/${c.propId2}/submit`",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => `/api/hlb/moderation/proposals/${c.propId2}/reject`",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона 1 — валиден потребител: валиден + невалиден вход (никога 500)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/hlb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/hlb/login",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/hlb/proposals",
+              "ok": true
+            },
+            {
+              "step": "label НЕВАЛИДНИ входове при създаване → 400, НИКОГА 500",
+              "ok": false,
+              "error": "създаване „счупени composer_params (низ)\" → HTTP 500 (НЕ бива 500)"
+            },
+            {
+              "step": "label НЕВАЛИДНО качване на изображение → 400, НИКОГА 500",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Персона 2 — атакуващ: модерация без права/без вход → 401/403",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label нормален потребител НЕ може да модерира → 403",
+              "ok": true
+            },
+            {
+              "step": "label БЕЗ вход модерация → 401",
+              "ok": true
+            },
+            {
+              "step": "label ФАЛШИВА/боклук сесия → 401",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона 2 — атакуващ: чужда къща (редакция/триене) → 403/404",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/hlb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/hlb/register",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/hlb/proposals",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/hlb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/hlb/login",
+              "ok": true
+            },
+            {
+              "step": "label редакция/триене/качване/submit на ЧУЖДА къща → 403; несъществуваща → 404",
+              "ok": true
+            },
+            {
+              "step": "label инжекция/огромен текст в поле → обработено (400/handled), НИКОГА 500",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Персона 3 — админ: модерацията работи; за нормален потребител е 403",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/hlb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/hlb/login",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/hlb/proposals",
+              "ok": false,
+              "error": "POST /api/hlb/proposals → 409 (чаках 201) / too_many"
+            },
+            {
+              "step": "api POST (c) => `/api/hlb/proposals/${c.propAdmin}/submit`",
+              "skipped": true
+            },
+            {
+              "step": "label нормален потребител НЕ може да approve → 403 (контрол)",
+              "skipped": true
+            },
+            {
+              "step": "api POST /api/hlb/logout",
+              "skipped": true
+            },
+            {
+              "step": "api POST /api/hlb/login",
+              "skipped": true
+            },
+            {
+              "step": "label админ ролята е admin",
+              "skipped": true
+            },
+            {
+              "step": "api POST (c) => `/api/hlb/moderation/proposals/${c.propAdmin}/approve`",
+              "skipped": true
+            },
+            {
+              "step": "label същото действие мина за админ (статус approved)",
+              "skipped": true
+            },
+            {
+              "step": "api GET /api/hlb/moderation/users",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Персона 3 — модератор: модерира, но НЕ admin-only действия",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label модератор може да модерира, но не admin-only (или пропусни ако няма мод в .env)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Почистване (свали тестовите къщи)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/hlb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/hlb/login",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => `/api/hlb/moderation/proposals/${c.propId}/remove`",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => `/api/hlb/moderation/proposals/${c.propId2}/remove`",
+              "ok": true
+            },
+            {
+              "step": "label свали и тестовите къщи от персоните",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "app": "wnb",
+      "label": "WhereNoBiz (потребител + админ модерация)",
+      "scenarios": [
+        {
+          "name": "Потребител: регистрация (API) + вход (UI)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/register",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "goto /wherenobiz/login.html",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "fill #email",
+              "ok": true
+            },
+            {
+              "step": "fill #password",
+              "ok": true
+            },
+            {
+              "step": "click #btnSubmit",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "api GET /api/wnb/me",
+              "ok": false,
+              "error": "GET /api/wnb/me → 401 (чаках 200) / not_authenticated"
+            }
+          ]
+        },
+        {
+          "name": "Потребител: създай пост (минава модерация)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/posts",
+              "ok": false,
+              "error": "POST /api/wnb/posts → 401 (чаках 201) / not_authenticated"
+            },
+            {
+              "step": "label КАЧВАНЕ НА ИЗОБРАЖЕНИЕ: качи снимка към поста",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Админ: вход + одобри поста",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "api GET /api/wnb/moderation/pending",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => `/api/wnb/moderation/posts/${c.postId}/approve`",
+              "ok": false,
+              "error": "POST /api/wnb/moderation/posts/undefined/approve → 500 (чаках 200) / server_error"
+            },
+            {
+              "step": "label провери, че е approved",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Админ: създай втори пост (друг потребител) и го откажи",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/register",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/posts",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => `/api/wnb/moderation/posts/${c.postId2}/reject`",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "НЕВАЛИДЕН ВХОД: пост с грешни данни → 400 (никога 500)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label празно заглавие → 400 missing_title",
+              "ok": true
+            },
+            {
+              "step": "label липсва country_code → 400 bad_country",
+              "ok": true
+            },
+            {
+              "step": "label невалидна държава → 400 bad_country",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/posts",
+              "ok": true
+            },
+            {
+              "step": "label качване БЕЗ файл → 400 no_file (никога 500)",
+              "ok": true
+            },
+            {
+              "step": "label качване на НЕ-изображение → грациозно (никога 500)",
+              "ok": false,
+              "error": "качване на не-изображение: HTTP 500 (сървърна грешка — никога 5xx)"
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "skipped": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "skipped": true
+            },
+            {
+              "step": "api POST (c) => `/api/wnb/moderation/posts/${c.badImgPostId}/remove`",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "АТАКУВАЩ („лош потребител\"): модерация без права → 401/403 (никога 500/изтичане)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label pending без вход → 401",
+              "ok": true
+            },
+            {
+              "step": "label approve без вход → 401",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label approve като обикновен потребител → 403",
+              "ok": true
+            },
+            {
+              "step": "label reject като обикновен потребител → 403",
+              "ok": true
+            },
+            {
+              "step": "label remove като обикновен потребител → 403",
+              "ok": true
+            },
+            {
+              "step": "label ban на потребител като обикновен → 403",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "АТАКУВАЩ: чужд пост / телефон / фалшива сесия → 403/404/401",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label качи снимка на ЧУЖД пост → 403",
+              "ok": true
+            },
+            {
+              "step": "label reveal-phone на ЧУЖД пост → 403",
+              "ok": true
+            },
+            {
+              "step": "label reveal-phone на НЕсъществуващ пост → 404",
+              "ok": true
+            },
+            {
+              "step": "label buy-phone без разкрит телефон → отказ (НЕ безплатно разкриване)",
+              "ok": true
+            },
+            {
+              "step": "label buy-phone на НЕсъществуващ пост → 404",
+              "ok": true
+            },
+            {
+              "step": "label фалшива сесийна бисквитка → 401",
+              "ok": true
+            },
+            {
+              "step": "label фалшива сесия към моите постове → 401",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "АТАКУВАЩ: инжекции + огромен текст в тялото на поста → 400/обработено (никога 500)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label SQL-инжекция в заглавие/държава → 400 (никога 500)",
+              "ok": true
+            },
+            {
+              "step": "label XSS/инжекция в иначе ВАЛИДЕН пост → 201, без 500 (екранирането е на изхода)",
+              "ok": true
+            },
+            {
+              "step": "label ОГРОМЕН текст в описанието → обработено (никога 500)",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label свали инжекционните постове (ако са създадени)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "АВТОРИЗАЦИЯ: обикновен потребител е ОТКАЗАН за админ-само действие → 403",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            },
+            {
+              "step": "label GET moderation/posts като обикновен → 403",
+              "ok": true
+            },
+            {
+              "step": "label GET moderation/users като обикновен → 403",
+              "ok": true
+            },
+            {
+              "step": "label GET moderation/db като обикновен → 403 (без изтичане на БД)",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/logout",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/wnb/login",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Почистване (свали тестовите постове)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST (c) => `/api/wnb/moderation/posts/${c.postId}/remove`",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => `/api/wnb/moderation/posts/${c.postId2}/remove`",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "app": "fbp",
+      "label": "Find Best Price (вход → обект → продукт → търсене → Zero Price)",
+      "scenarios": [
+        {
+          "name": "Потребител: регистрация (API) + вход (UI)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/fbp/register",
+              "ok": true
+            },
+            {
+              "step": "api POST /api/fbp/logout",
+              "ok": true
+            },
+            {
+              "step": "goto /find-best-price/add.html",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "fill #l_email",
+              "ok": true
+            },
+            {
+              "step": "fill #l_pass",
+              "ok": true
+            },
+            {
+              "step": "click #btnLogin",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "api GET /api/fbp/me",
+              "ok": false,
+              "error": "GET /api/fbp/me → 401 (чаках 200) / not_authenticated"
+            }
+          ]
+        },
+        {
+          "name": "Създай обект (бизнес)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/fbp/business",
+              "ok": false,
+              "error": "POST /api/fbp/business → 401 (чаках 201) / not_authenticated"
+            }
+          ]
+        },
+        {
+          "name": "Добави продукт под обекта",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/fbp/products",
+              "ok": false,
+              "error": "POST /api/fbp/products → 401 (чаках 201) / not_authenticated"
+            },
+            {
+              "step": "label провери, че продуктът е в „моите\"",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "ТЪРСЕНЕ: публичното търсене връща резултати",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label GET /api/fbp/search → 200 + поле results",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "ZERO PRICE: публикувай заявка + прати оферта",
+          "ok": false,
+          "steps": [
+            {
+              "step": "api POST /api/fbp/wanted",
+              "ok": false,
+              "error": "POST /api/fbp/wanted → 401 (чаках 201) / not_authenticated"
+            },
+            {
+              "step": "api POST (c) => `/api/fbp/wanted/${c.wantedId}/offer`",
+              "skipped": true
+            },
+            {
+              "step": "label провери, че офертата е по заявката",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "НЕВАЛИДЕН ВХОД: обект/продукт/заявка/оферта дават 400, не 500",
+          "ok": false,
+          "steps": [
+            {
+              "step": "label обект без име → 400",
+              "ok": false,
+              "error": "обект без име: статус 401, чаках един от [400]"
+            },
+            {
+              "step": "label обект без държава → 400",
+              "skipped": true
+            },
+            {
+              "step": "label обект без локация → 400",
+              "skipped": true
+            },
+            {
+              "step": "label обект с невалиден тип → 400",
+              "skipped": true
+            },
+            {
+              "step": "label продукт с грешна категория за вида → 400",
+              "skipped": true
+            },
+            {
+              "step": "label продукт с отрицателна цена → 400",
+              "skipped": true
+            },
+            {
+              "step": "label продукт без име → 400",
+              "skipped": true
+            },
+            {
+              "step": "label продукт с нечислова цена → 400",
+              "skipped": true
+            },
+            {
+              "step": "label Zero Price заявка без заглавие → 400",
+              "skipped": true
+            },
+            {
+              "step": "label Zero Price заявка без държава → 400",
+              "skipped": true
+            },
+            {
+              "step": "label оферта с невалидна (отрицателна) цена → 400",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "АТАКА: защитени endpoint-и без сесия / с фалшива бисквитка → 401",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label POST /business без сесия → 401",
+              "ok": true
+            },
+            {
+              "step": "label POST /products без сесия → 401",
+              "ok": true
+            },
+            {
+              "step": "label POST /wanted без сесия → 401",
+              "ok": true
+            },
+            {
+              "step": "label GET /business/mine без сесия → 401",
+              "ok": true
+            },
+            {
+              "step": "label GET /products/mine без сесия → 401",
+              "ok": true
+            },
+            {
+              "step": "label POST /business с ФАЛШИВА бисквитка → 401",
+              "ok": true
+            },
+            {
+              "step": "label GET /products/mine с ФАЛШИВА бисквитка → 401",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "АТАКА: втори потребител не може да слага продукт под чужд обект → 403",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST () => '/api/fbp/logout'",
+              "ok": true
+            },
+            {
+              "step": "api POST (c) => '/api/fbp/register'",
+              "ok": true
+            },
+            {
+              "step": "label вторият има СВОЯ празна листа с продукти (не вижда чуждите)",
+              "ok": true
+            },
+            {
+              "step": "label вторият слага продукт под ЧУЖДИЯ обект → 403 not_your_business",
+              "ok": true
+            },
+            {
+              "step": "api POST () => '/api/fbp/logout'",
+              "ok": true
+            },
+            {
+              "step": "api POST () => '/api/fbp/login'",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "АТАКА: инжекции + огромни полета → 400/обработено, НИКОГА 500",
+          "ok": false,
+          "steps": [
+            {
+              "step": "label обект с SQL/HTML инжекция в името → не 5xx (400/201 ок)",
+              "ok": true
+            },
+            {
+              "step": "label обект с ОГРОМНО име (100k символа) → не 5xx",
+              "ok": true
+            },
+            {
+              "step": "label продукт с инжекция в name/materials → не 5xx",
+              "ok": false,
+              "error": "продукт инжекция: статус 403, чаках един от [201,400]"
+            },
+            {
+              "step": "label Zero Price заявка с огромно заглавие/описание → не 5xx",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "АТАКА: странни/огромни параметри в търсенето → 200 обработено, НИКОГА 500",
+          "ok": false,
+          "steps": [
+            {
+              "step": "label търсене с инжекция в параметрите → 200 + масив results",
+              "ok": true
+            },
+            {
+              "step": "label търсене с огромен параметър → 200, без 5xx",
+              "ok": false,
+              "error": "търсене огромно: статус 414, чаках един от [200]"
+            },
+            {
+              "step": "label търсене с нечислов price_min/price_max → 200, без 5xx",
+              "skipped": true
+            },
+            {
+              "step": "label оферта по НЕСЪЩЕСТВУВАЩА заявка → 404, не 500",
+              "skipped": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "app": "services",
+      "label": "Услуги (реални човешки симулации с проверка за правилност — round-trip)",
+      "scenarios": [
+        {
+          "name": "Вход: регистрирай + влез портален потребител (достъп до услугите)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "goto /portals/register.html",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "fill #username",
+              "ok": true
+            },
+            {
+              "step": "fill #password",
+              "ok": true
+            },
+            {
+              "step": "click #btn-register",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "label потвърди, че сесията е активна",
+              "ok": false,
+              "error": "не съм логнат след регистрация — услугите ще са недостъпни"
+            }
+          ]
+        },
+        {
+          "name": "QR round-trip: генерирай → качи → разчети → сравни (СЪРЦЕВИНАТА)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "label отвори QR услугата",
+              "ok": true
+            },
+            {
+              "step": "expect #gentext",
+              "ok": true
+            },
+            {
+              "step": "fill #gentext",
+              "ok": true
+            },
+            {
+              "step": "select #gensize",
+              "ok": true
+            },
+            {
+              "step": "select #genecc",
+              "ok": true
+            },
+            {
+              "step": "click button[onclick=\"genQR()\"]",
+              "ok": true
+            },
+            {
+              "step": "label изчакай QR картинката да се нарисува",
+              "ok": false,
+              "error": "page.waitForSelector: Timeout 15000ms exceeded."
+            },
+            {
+              "step": "label извлечи генерирания QR като PNG байтове",
+              "skipped": true
+            },
+            {
+              "step": "click button[onclick=\"showTab('read')\"]",
+              "skipped": true
+            },
+            {
+              "step": "wait",
+              "skipped": true
+            },
+            {
+              "step": "label качи генерираната картинка в четеца",
+              "skipped": true
+            },
+            {
+              "step": "click button[onclick=\"decodeFile()\"]",
+              "skipped": true
+            },
+            {
+              "step": "label изчакай четецът да покаже резултат",
+              "skipped": true
+            },
+            {
+              "step": "label разчетеното СЪВПАДА с входа (иначе round-trip е счупен)",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Калкулатор: 15% от 200 = 30 (точна проверка)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label отвори калкулаторите",
+              "ok": true
+            },
+            {
+              "step": "click button[onclick=\"tab('pct')\"]",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "select #pMode",
+              "ok": true
+            },
+            {
+              "step": "fill #pX",
+              "ok": true
+            },
+            {
+              "step": "fill #pY",
+              "ok": true
+            },
+            {
+              "step": "click button[onclick=\"calcPct()\"]",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "label резултатът трябва да е 30",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Парола: дължина 24, само цифри (PIN) — проверка на набора",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label отвори генератора на пароли",
+              "ok": true
+            },
+            {
+              "step": "expect #method",
+              "ok": true
+            },
+            {
+              "step": "select #method",
+              "ok": true
+            },
+            {
+              "step": "fill #len",
+              "ok": true
+            },
+            {
+              "step": "click button[onclick=\"gen()\"]",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "label изходът е 24 цифри (PIN набор)",
+              "ok": true
+            },
+            {
+              "step": "label случайна парола 30 с главни/малки/цифри/символи",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Текст: uppercase + брояч символи (точна проверка)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label отвори текстовите инструменти",
+              "ok": true
+            },
+            {
+              "step": "expect #txt",
+              "ok": true
+            },
+            {
+              "step": "fill #txt",
+              "ok": true
+            },
+            {
+              "step": "label въведи и провери броячите",
+              "ok": true
+            },
+            {
+              "step": "click button[onclick=\"apply('upper')\"]",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "label текстът стана ГЛАВНИ букви",
+              "ok": true
+            },
+            {
+              "step": "label Base64 round-trip (кодирай → декодирай → същият текст)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Графики: реално построяват панели (canvas/контейнери)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label отвори финансовите графики",
+              "ok": true
+            },
+            {
+              "step": "wait",
+              "ok": true
+            },
+            {
+              "step": "label има изградени панели в BTC/ETH мрежите",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Компресор на снимки: качи → компресирай → излиза резултат",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label отвори компресора",
+              "ok": true
+            },
+            {
+              "step": "expect #file",
+              "ok": true
+            },
+            {
+              "step": "label качи реална (по-голяма) PNG и компресирай",
+              "ok": true
+            },
+            {
+              "step": "label появи се компресирана картинка + размер",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "PDF: построй PDF в браузъра → раздели страница → излиза статус ОК",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label отвори PDF инструментите",
+              "ok": true
+            },
+            {
+              "step": "label изчакай pdf-lib (CDN) и подай 2-странен PDF за разделяне",
+              "ok": true
+            },
+            {
+              "step": "label статусът на разделянето е успешен (ok), не грешка",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Свиване на PDF: страницата + основната контрола работят (без външен шрифт)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label отвори свиването на PDF",
+              "ok": true
+            },
+            {
+              "step": "expect #pdfFile",
+              "ok": true
+            },
+            {
+              "step": "label pdf.js/pdf-lib (CDN) са налични и бутонът реагира на празен вход",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Скрапер: страницата + валидация работят (БЕЗ да викаме платения backend)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label отвори скрапера",
+              "ok": true
+            },
+            {
+              "step": "expect #go",
+              "ok": true
+            },
+            {
+              "step": "label празни заявки → клиентска валидация (не вика бекенда)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "AI обява: страницата + валидация работят (БЕЗ да викаме Claude API)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label отвори AI обявата",
+              "ok": true
+            },
+            {
+              "step": "expect #gen",
+              "ok": true
+            },
+            {
+              "step": "label твърде кратък вход → клиентска валидация (не вика AI бекенда)",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Валутен конвертор: зарежда курсове и смята конверсия",
+          "ok": false,
+          "steps": [
+            {
+              "step": "label отвори конвертора",
+              "ok": true
+            },
+            {
+              "step": "label инструментът се показва (курсовете се заредиха) и смята",
+              "ok": false,
+              "error": "конверторът не изчисли резултат"
+            }
+          ]
+        },
+        {
+          "name": "Watch20: зарежда 20 слота и взима предпочитанията (бекенд достъп)",
+          "ok": false,
+          "steps": [
+            {
+              "step": "label отвори наблюдението на 20 валути",
+              "ok": true
+            },
+            {
+              "step": "label построяват се 20 слота",
+              "ok": false,
+              "error": "watch20 построи 0 слота, очаквах 20"
+            },
+            {
+              "step": "label бекендът за предпочитания е достъпен (не 401/402)",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Почистване (трий тестовия потребител)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/portals/adm/cleanup-test",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "app": "games",
+      "label": "Игри (вход портал → списък игри → игрова страница зарежда)",
+      "scenarios": [
+        {
+          "name": "Регистрация/вход на портал потребител",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/portals/register",
+              "ok": true
+            },
+            {
+              "step": "api GET /api/portals/me",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Списъкът с игри връща игри (gms/list)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label GET /api/portals/gms/list?adm → 200 + непразен games[]",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Игрова страница зарежда (HTTP 200, не 404)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label GET /portals/games/<slug>.html?adm → 200",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Играй → спечели (прати висок резултат) → влез в ранглистата",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label POST /api/portals/gms/score — симулирай печалба",
+              "ok": true
+            },
+            {
+              "step": "label GET /api/portals/gms/leaderboard/<slug> — печелившият е в класацията с верния резултат",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "„Лош\" вход: невалидни резултати → грациозен отказ (НЕ 500)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label POST score с отрицателен резултат → 400, не 500",
+              "ok": true
+            },
+            {
+              "step": "label POST score за измислена игра → отказ, не 500",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Почистване (трий тестовите потребители)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "api POST /api/portals/adm/cleanup-test",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "app": "failover",
+      "label": "Failover/Tailscale (коя машина обслужва всеки домейн — VM нагоре ИЛИ надолу)",
+      "scenarios": [
+        {
+          "name": "Наблюдавай X-Served-By по всички домейни",
+          "ok": false,
+          "steps": [
+            {
+              "step": "label GET https://<домейн>/ за всеки домейн → чети X-Served-By",
+              "ok": false,
+              "error": "failover проблеми → take.offbitch.com: HTTP 200, но без X-Served-By заглавка"
+            },
+            {
+              "step": "label обобщение коя машина обслужва",
+              "skipped": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "seed": null
+}

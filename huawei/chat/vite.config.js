@@ -1,3 +1,4 @@
+// Version: 1.0001
 import { defineConfig } from 'vite';
 
 // Vite конфигурация — тънка обвивка (shell) за продукционния чат.

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // learning-loop.js — непрекъснат самообучаващ цикъл („НЯМА спирка“).
 //
 // Когато няма активна задача, ботът сам избира тема (ротира през интересите + темите,
@@ -14,8 +15,8 @@
 //     тук НЕ имплементираме. Документираме това честно (виж README/store/BACKGROUND.md).
 
 import { getState, persist } from './storage.js';
-import { listInterests, listSubjects, addNote, notesCount } from './subjects.js';
-import { fetchWikipedia, fetchCrypto, fetchFx } from './sources.js';
+import { listInterests, listSubjects, addNote, addInterest, notesCount } from './subjects.js';
+import { fetchCrypto, fetchFx, gatherTreeAnswer, netCounters } from './sources.js';
 
 let _timer = null;
 let _running = false;
@@ -110,32 +111,51 @@ function pickNextTopic() {
   return topic;
 }
 
-// Един обучителен такт: взема нещо ново и го записва. Връща записаната активност или null.
+// Един обучителен такт: ОБХОЖДА ДЪРВОТО за темата (главна статия + свързани клонове, много
+// източника наведнъж) и записва ВСИЧКО ново. Така ученето е реално и дълбоко — не едно резюме,
+// което на втория такт става дубликат и лъжливо казва „няма материал“. Връща активността или null.
 export async function tick() {
   if (!learningEnabled()) return null;
   const topic = pickNextTopic();
-  pushActivity({ status: 'learning', topic, note: `Уча за „${topic}“…` });
+  pushActivity({ status: 'learning', topic, note: `Обхождам дървото за „${topic}“…` });
   if (_onTick) _onTick();
 
   try {
-    let saved = null;
     const low = topic.toLowerCase();
+    const before = netCounters();
+    let addedMain = 0, addedRelated = 0, branches = 0, firstSource = '';
+
+    // Крипто/финанси са ЖИВИ данни → взимаме реалните цени/курсове (не енциклопедия).
     if (/крипто|crypto/.test(low)) {
-      const r = await fetchCrypto({ coins: ['btc', 'eth'] });
-      if (r.ok) saved = addNote(topic, { text: r.summary, source: r.citation });
+      const r = await fetchCrypto({ coins: ['btc', 'eth', 'bnb', 'sol'] });
+      if (r.ok && addNote(topic, { text: r.summary, source: r.citation })) { addedMain++; firstSource = r.citation; }
     } else if (/финанс|валут/.test(low)) {
       const r = await fetchFx({ base: 'USD' });
-      if (r.ok) saved = addNote(topic, { text: r.summary, source: r.citation });
+      if (r.ok && addNote(topic, { text: r.summary, source: r.citation })) { addedMain++; firstSource = r.citation; }
     } else {
-      const r = await fetchWikipedia(topic);
-      if (r.ok) saved = addNote(topic, { text: r.summary, source: r.citation, url: r.url });
+      // ОБЩИ теми → ДЪРВОВИДНО събиране: главна тема (няколко източника) + свързани клонове.
+      const tree = await gatherTreeAnswer(topic, { lang: 'bg', limit: 8, relatedLimit: 8 });
+      for (const n of tree.main) {
+        if (addNote(topic, { text: n.text, source: n.source, url: n.url })) { addedMain++; if (!firstSource) firstSource = n.source; }
+      }
+      for (const r of tree.related) {                 // всеки клон = отделна тема (разраства дървото)
+        try { addInterest(r.topic); } catch (_) {}
+        if (addNote(r.topic, { text: r.text, source: r.source, url: r.url })) { addedRelated++; branches++; }
+      }
     }
 
-    if (saved) {
-      pushActivity({ status: 'done', topic, note: `Научих ново за „${topic}“.`, citation: saved.note ? saved.note.source : '' });
+    const added = addedMain + addedRelated;
+    const after = netCounters();
+    const reached = after.reached > before.reached;   // стигнахме ли изобщо до сървър (офлайн ли сме)
+
+    if (added > 0) {
+      const br = addedRelated ? ` + ${addedRelated} по ${branches} свързани клона` : '';
+      pushActivity({ status: 'done', topic, note: `Научих ${addedMain} пряко за „${topic}“${br}.`, citation: firstSource });
+    } else if (!reached) {
+      pushActivity({ status: 'idle', topic, note: `Офлайн съм — ще обходя „${topic}“, щом се върне връзката.` });
     } else {
-      // честно: нищо ново (дубликат) или офлайн — не измисляме
-      pushActivity({ status: 'idle', topic, note: `Нямаше нов проверим материал за „${topic}“ (офлайн или вече го знам).` });
+      // стигнахме източниците, но всичко по тази тема вече го знам → минавам към следващ клон/тема
+      pushActivity({ status: 'idle', topic, note: `„${topic}“ е добре покрита засега — минавам към следваща тема по дървото.` });
     }
   } catch (_) {
     pushActivity({ status: 'idle', topic, note: `Спънка при ученето за „${topic}“ — ще опитам пак.` });

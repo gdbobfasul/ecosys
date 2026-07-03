@@ -1,3 +1,4 @@
+// Version: 1.0001
 import { enforceLock } from './core/lock.js';
 enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
 import './core/styles.css';
@@ -5,6 +6,7 @@ import { tools, findTool } from './core/registry.js';
 import { iconHTML } from './core/icons.js';
 import { esc } from './core/ui.js';
 import { t, getLang, setLang, hasLangChosen, applyDir, LANGUAGES } from './core/i18n.js';
+import { APP_VERSION } from './version.js';
 
 const app = document.getElementById('app');
 
@@ -26,15 +28,21 @@ function renderLanguage() {
     <div class="view">
       <div class="hero"><div style="font-size:2.4em">🌐</div><h1>${esc(t('pick_lang'))}</h1></div>
       <div class="lang-grid" id="langgrid"></div>
+      <button class="btn" id="startbtn" style="margin-top:16px">${esc(t('start_app'))}</button>
+      <div class="center" style="opacity:0.55; font-size:12px; margin-top:6px">v${esc(APP_VERSION)}</div>
     </div>
   `;
+  // Избор/продължаване с даден език: записва езика и влиза в приложението.
+  const choose = (code) => { setLang(code); renderHome(); };
   const grid = app.querySelector('#langgrid');
   grid.innerHTML = LANGUAGES.map((l) =>
     `<button class="lang-btn${l.code === cur ? ' cur' : ''}" data-code="${l.code}">${esc(l.native)}</button>`
   ).join('');
   grid.querySelectorAll('.lang-btn').forEach((b) => {
-    b.addEventListener('click', () => { setLang(b.dataset.code); renderHome(); });
+    b.addEventListener('click', () => choose(b.dataset.code));
   });
+  // Бутон „Стартирай" — влиза с ТЕКУЩО избрания (или подразбиращ се) език.
+  app.querySelector('#startbtn').addEventListener('click', () => choose(cur));
 }
 
 // --- Начален екран ---

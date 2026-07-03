@@ -1,3 +1,4 @@
+// Version: 1.0001
 // i18n.js — преводен слой за „Бизнес FAQ робот" на 15-те езика на екосистемата.
 // Самостоятелен (без външни зависимости освен languages.js).
 // Език по подразбиране: руски (до избор от потребителя при първо стартиране).
@@ -12,6 +13,7 @@ const STR = {
   // --- Език / избор ----------------------------------------------------------
   pick_lang: { bg:'Избери език', ru:'Выберите язык', uk:'Виберіть мову', en:'Choose language', de:'Sprache wählen', fr:'Choisir la langue', es:'Elegir idioma', 'es-MX':'Elegir idioma', it:'Scegli la lingua', pt:'Escolher idioma', ar:'اختر اللغة', hi:'भाषा चुनें', ja:'言語を選択', ky:'Тилди тандаңыз', 'zh-Hant':'選擇語言' },
   lang_btn: { bg:'🌐 Език', ru:'🌐 Язык', uk:'🌐 Мова', en:'🌐 Language', de:'🌐 Sprache', fr:'🌐 Langue', es:'🌐 Idioma', 'es-MX':'🌐 Idioma', it:'🌐 Lingua', pt:'🌐 Idioma', ar:'🌐 اللغة', hi:'🌐 भाषा', ja:'🌐 言語', ky:'🌐 Тил', 'zh-Hant':'🌐 語言' },
+  start_app: { bg:'Стартирай', ru:'Запустить', uk:'Запустити', en:'Start', de:'Starten', fr:'Démarrer', es:'Iniciar', 'es-MX':'Iniciar', it:'Avvia', pt:'Iniciar', ar:'ابدأ', hi:'शुरू करें', ja:'開始', ky:'Баштоо', 'zh-Hant':'開始' },
   language: { bg:'Език', ru:'Язык', uk:'Мова', en:'Language', de:'Sprache', fr:'Langue', es:'Idioma', 'es-MX':'Idioma', it:'Lingua', pt:'Idioma', ar:'اللغة', hi:'भाषा', ja:'言語', ky:'Тил', 'zh-Hant':'語言' },
 
   // --- Общи бутони / етикети -------------------------------------------------

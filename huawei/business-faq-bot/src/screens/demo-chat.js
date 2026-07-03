@@ -1,3 +1,4 @@
+// Version: 1.0001
 // demo-chat.js — вграден чат за тест. Пишеш въпрос → роботът отговаря по правилата.
 import { el, esc } from '../ui/dom.js';
 import { getState } from '../core/storage.js';

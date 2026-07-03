@@ -1,3 +1,4 @@
+// Version: 1.0001
 // GameScene — основната игрова логика.
 // Отговаря за: спавн на врагове/препятствия, оръжия, колизии, бос,
 // прогрес на нивото и преминаване нагоре по 10-те нива.
@@ -41,6 +42,13 @@ export default class GameScene extends Phaser.Scene {
     this.player.weaponKey = this.carryWeapons[this.carryWeapons.length - 1];
     // Възстановяваме пренесения щит.
     if (this.carryShield > 0) this.player.addShield(this.carryShield);
+
+    // От ниво 8 нататък главният самолет получава МЕГА-МИНА — мощно оръжие срещу гъстите рояци
+    // (взривява 8–10 близки врага наведнъж). Прави го активно оръжие; играчът пак може да цикли.
+    if (this.level.id >= 8) {
+      this.player.unlock('megamine');
+      this.player.weaponKey = 'megamine';
+    }
 
     // Групи (с физика).
     this.bullets = this.physics.add.group();
@@ -166,7 +174,9 @@ export default class GameScene extends Phaser.Scene {
     b.weapon = w.key;
     b.damage = w.damage;
     b.splash = w.splash;
+    b.fullSplash = !!w.fullSplash;
     b.homing = w.homing;
+    if (w.key === 'megamine') b.setScale(1.6);   // по-едър заряд визуално
     b.turnRate = w.turnRate || 0;
     if (w.homing) {
       b.setVelocity(0, w.speed);
@@ -204,13 +214,17 @@ export default class GameScene extends Phaser.Scene {
     this.consumeBullet(bullet);
   }
 
-  // Splash щета за бомби/ракети.
+  // Splash щета за бомби/ракети/мега-мини. fullSplash (мега-мина) нанася ПЪЛНА щета на всички в
+  // радиуса (мете цял рояк наведнъж); иначе — половин щета (бомба/ракета).
   applyBulletHit(bullet, x, y) {
     if (bullet.splash > 0) {
-      this.boom(x, y, 0xffc04d, 1.4);
+      const big = !!bullet.fullSplash;
+      const splashDmg = big ? bullet.damage : Math.ceil(bullet.damage / 2);
+      this.boom(x, y, big ? 0xff5a3b : 0xffc04d, big ? 3.0 : 1.4);
+      if (big) this.cameras.main.shake(160, 0.01);
       this.enemies.getChildren().forEach((e) => {
         if (Phaser.Math.Distance.Between(x, y, e.x, e.y) <= bullet.splash) {
-          e.hp -= Math.ceil(bullet.damage / 2);
+          e.hp -= splashDmg;
           if (e.hp <= 0) {
             this.score += e.score; this.killed++;
             this.boom(e.x, e.y, 0xff7a7a); e.destroy();
@@ -220,7 +234,7 @@ export default class GameScene extends Phaser.Scene {
       });
       // Splash и по боса.
       if (this.boss && Phaser.Math.Distance.Between(x, y, this.boss.sprite.x, this.boss.sprite.y) <= bullet.splash) {
-        if (this.boss.hit(Math.ceil(bullet.damage / 2))) this.onBossDead();
+        if (this.boss.hit(splashDmg)) this.onBossDead();
       }
     }
   }

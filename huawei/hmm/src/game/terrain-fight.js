@@ -1,3 +1,4 @@
+// Version: 1.0001
 // AUTO-GENERATED от scripts/build-terrain-bg.js (източник: patch/FIGHT_ON_PLACE_1920x2560.html).
 // НЕ редактирай ръчно — промени патча/скрипта и пусни: node scripts/build-terrain-bg.js
 (function(){

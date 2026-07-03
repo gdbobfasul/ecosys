@@ -1,3 +1,4 @@
+// Version: 1.0001
 // i18n.js — преводен слой за „Камера-страж" на 15-те езика на екосистемата.
 // Език по подразбиране: руски (до избор от потребителя при първо стартиране).
 // Резерв: текущ → ru → en → ключ.
@@ -11,6 +12,7 @@ const STR = {
   // --- Общи (споделени, проверени преводи) ---
   pick_lang: { bg:'Избери език', ru:'Выберите язык', uk:'Виберіть мову', en:'Choose language', de:'Sprache wählen', fr:'Choisir la langue', es:'Elegir idioma', 'es-MX':'Elegir idioma', it:'Scegli la lingua', pt:'Escolher idioma', ar:'اختر اللغة', hi:'भाषा चुनें', ja:'言語を選択', ky:'Тилди тандаңыз', 'zh-Hant':'選擇語言' },
   lang_btn: { bg:'🌐 Език', ru:'🌐 Язык', uk:'🌐 Мова', en:'🌐 Language', de:'🌐 Sprache', fr:'🌐 Langue', es:'🌐 Idioma', 'es-MX':'🌐 Idioma', it:'🌐 Lingua', pt:'🌐 Idioma', ar:'🌐 اللغة', hi:'🌐 भाषा', ja:'🌐 言語', ky:'🌐 Тил', 'zh-Hant':'🌐 語言' },
+  start_app: { bg:'Стартирай', ru:'Запустить', uk:'Запустити', en:'Start', de:'Starten', fr:'Démarrer', es:'Iniciar', 'es-MX':'Iniciar', it:'Avvia', pt:'Iniciar', ar:'ابدأ', hi:'शुरू करें', ja:'開始', ky:'Баштоо', 'zh-Hant':'開始' },
   app_name: { bg:'Камера-страж', ru:'Камера-страж', uk:'Камера-вартовий', en:'Camera Watch', de:'Kamera-Wächter', fr:'Caméra-veille', es:'Cámara vigía', 'es-MX':'Cámara vigía', it:'Telecamera di guardia', pt:'Câmera-vigia', ar:'حارس الكاميرا', hi:'कैमरा-प्रहरी', ja:'カメラ監視', ky:'Камера-сакчы', 'zh-Hant':'攝影機守衛' },
   back: { bg:'Назад', ru:'Назад', uk:'Назад', en:'Back', de:'Zurück', fr:'Retour', es:'Atrás', 'es-MX':'Atrás', it:'Indietro', pt:'Voltar', ar:'رجوع', hi:'वापस', ja:'戻る', ky:'Артка', 'zh-Hant':'返回' },
   next: { bg:'Напред', ru:'Далее', uk:'Далі', en:'Next', de:'Weiter', fr:'Suivant', es:'Siguiente', 'es-MX':'Siguiente', it:'Avanti', pt:'Avançar', ar:'التالي', hi:'आगे', ja:'次へ', ky:'Алдыга', 'zh-Hant':'下一步' },

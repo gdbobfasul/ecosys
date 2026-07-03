@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Генератор на икона и splash екран като SVG (без бинарни файлове).
 // Стартирай: node generate-assets.mjs
 // Резултат: assets/icon.svg и assets/splash.svg

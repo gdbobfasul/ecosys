@@ -1,6 +1,6 @@
 // Version: 1.0215
 // KCY — помощник за „тест-робота": зарежда URL в безглав Chromium (Playwright от
-// private/robot) и проверява дали приложението наистина се РЕНДИРА без реални грешки.
+// private/bug-bot) и проверява дали приложението наистина се РЕНДИРА без реални грешки.
 // Изход: 0 = чисто; 1 = реални console/page грешки или не се рендира; 2 = Playwright липсва.
 // Употреба: node _mobile-play-check.cjs <url> <screenshotPath>
 const path = require('path');
@@ -8,7 +8,7 @@ let PW;
 try {
   PW = require(path.join(__dirname, '..', 'private', 'robot', 'node_modules', 'playwright'));
 } catch (e) {
-  console.log('Playwright не е намерен в private/robot/node_modules: ' + e.message);
+  console.log('Playwright не е намерен в private/bug-bot/node_modules: ' + e.message);
   process.exit(2);
 }
 
@@ -26,7 +26,7 @@ const NOISE = /Framebuffer|swiftshader|WebGL|GL_INVALID|GroupMarkerNotSet|fallba
       args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--no-sandbox']
     });
   } catch (e) {
-    console.log('Не успях да пусна Chromium: ' + e.message + ' (опитай: cd private/robot && npx playwright install chromium)');
+    console.log('Не успях да пусна Chromium: ' + e.message + ' (опитай: cd private/bug-bot && npx playwright install chromium)');
     process.exit(2);
   }
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });

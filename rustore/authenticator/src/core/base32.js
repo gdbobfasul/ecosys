@@ -1,3 +1,4 @@
+// Version: 1.0001
 // base32.js — RFC 4648 Base32 (без подложка), за тайните на OTP акаунтите.
 // Тайните в otpauth:// са Base32, главни букви A–Z и цифри 2–7.
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';

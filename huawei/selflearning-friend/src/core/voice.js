@@ -1,3 +1,4 @@
+// Version: 1.0001
 // voice.js — ГЛАС: STT (глас→текст) + TTS (текст→глас), безплатно и on-device.
 //
 // СТРАТЕГИЯ (без платена облачна услуга, без ключове):
@@ -160,6 +161,9 @@ async function startNative(sr, lang, onInterim) {
 
   return new Promise((resolve) => {
     let accumulated = '';     // финализиран текст от приключилите сегменти
+    let segBase = '';         // снимка на `accumulated` при СТАРТА на текущия сегмент — финалът на
+                              // сегмента се МЕРЖВА върху НЕЯ (замества по-краткия partial, а не се
+                              // долепя след него → край на „крип“+„криптовалути“ = боклук/рязане)
     let seg = '';             // текущ сегмент (последни partialResults)
     let emptyStreak = 0;      // последователни празни сегменти (истинска тишина)
     let settled = false;
@@ -169,7 +173,12 @@ async function startNative(sr, lang, onInterim) {
     let stopGrace = null;     // кратко изчакване на ФИНАЛНИЯ резултат (носи последните думи)
 
     const MAX_SESSION_MS = 180000; // абсолютен таван на едно слушане
-    const MAX_EMPTY_SEGMENTS = 2;  // 2 поредни празни сегмента → спри да чакаш
+    // За ДИКТОВКА на няколко изречения трябва по-голям търпеж към паузите между тях:
+    // 3 поредни празни сегмента (а не 2) → така след „…космоса“ <пауза за мисъл> „…и Рим“
+    // не приключваме рано. Спираш мигом по всяко време с 🎤 / „Изпрати“.
+    const MAX_EMPTY_SEGMENTS = 3;  // 3 поредни празни сегмента → спри да чакаш
+    const RESTART_GAP_MS = 90;     // прозорец между сегментите — КОЛКОТО СЕ МОЖЕ по-малък, за да не
+                                   // се губят думи, казани точно при рестарта (причина за „рязане“)
 
     function fullText() {
       return mergeText(accumulated, seg);
@@ -179,7 +188,9 @@ async function startNative(sr, lang, onInterim) {
     function commitSegment() {
       const s = seg.trim();
       seg = '';
-      if (s) { accumulated = mergeText(accumulated, s); emptyStreak = 0; return false; }
+      // Мержваме върху segBase (НЕ върху текущото accumulated): ако после дойде по-пълен ФИНАЛ за
+      // същия сегмент, той пак ще се сметне от segBase и ще ЗАМЕСТИ този частичен — без двойно лепене.
+      if (s) { accumulated = mergeText(segBase, s); emptyStreak = 0; return false; }
       emptyStreak++;
       return true;
     }
@@ -206,7 +217,7 @@ async function startNative(sr, lang, onInterim) {
       _nativeStopRequested = true;
       try { if (typeof sr.stop === 'function') sr.stop(); } catch (_) {}
       if (stopGrace) clearTimeout(stopGrace);
-      stopGrace = setTimeout(() => finish(), 350);
+      stopGrace = setTimeout(() => finish(), 600);   // глътка за ФИНАЛА (носи последните 1–2 думи)
     };
 
     // Край на ЕДИН сегмент (Android спря след тишина/кратка реплика) → реши: край или рестарт.
@@ -214,12 +225,20 @@ async function startNative(sr, lang, onInterim) {
       if (settled || segDone) return;
       segDone = true;
       commitSegment();
-      if (_nativeStopRequested) return finish();              // ръчен стоп (🎤 / Изпрати)
+      if (_nativeStopRequested) {
+        // РЪЧЕН СТОП (🎤 / Изпрати): НЕ приключвай веднага! ОС-ът праща 'stopped' с по-КЪС
+        // частичен резултат (напр. „крип“), а ФИНАЛЪТ от start() идва милисекунди по-късно с
+        // цялата дума (напр. „криптовалути“). Ако приключим тук, режем ПОСЛЕДНАТА дума при
+        // изключване на микрофона. Затова чакаме глътката (stopGrace): дойде ли финалът → той
+        // замества частичния и приключваме; не дойде ли → след глътката приключваме с каквото има.
+        if (!stopGrace) stopGrace = setTimeout(() => finish(), 600);
+        return;
+      }
       // НЕ приключваме на ПЪРВАТА пауза (така можеш да си поемеш дъх насред изречението —
       // преди това „започни да учиш…“ се накъсваше). Чакаме 2 ПОРЕДНИ тихи сегмента →
       // едва тогава край. По всяко време можеш да спреш веднага с 🎤 / „Изпрати“.
-      if (emptyStreak >= MAX_EMPTY_SEGMENTS) return finish(); // 2 поредни тишини → спри да чакаш
-      restartTimer = setTimeout(() => armSegment(), 200);     // продължи да слушаш
+      if (emptyStreak >= MAX_EMPTY_SEGMENTS) return finish(); // поредни тишини → спри да чакаш
+      restartTimer = setTimeout(() => armSegment(), RESTART_GAP_MS); // продължи да слушаш (малък прозорец)
     }
 
     // Стартира (или рестартира) един сегмент на разпознаване.
@@ -227,6 +246,7 @@ async function startNative(sr, lang, onInterim) {
       if (settled) return;
       segDone = false;
       seg = '';
+      segBase = accumulated;   // основа за този сегмент: всичко натрупано ДОСЕГА
       try {
         const res = await sr.start({ language: lang, maxResults: 5, partialResults: true, popup: false });
         const matches = (res && res.matches) || [];
@@ -234,10 +254,12 @@ async function startNative(sr, lang, onInterim) {
         if (finalTxt) {
           if (stopGrace) { clearTimeout(stopGrace); stopGrace = null; }
           if (segDone) {
-            // Сегментът вече е приключен (от 'stopped') с по-кратък partial → финалът е по-пълен.
-            // Долепяме разликата (mergeText маха припокриването) → връщаме отрязаните последни думи.
-            accumulated = mergeText(accumulated, finalTxt);
+            // Сегментът вече е приключен (от 'stopped') с по-КРАТЪК partial (напр. „крип“), а ФИНАЛЪТ
+            // носи цялата дума/израз (напр. „криптовалути“). ЗАМЕСТВАМЕ приноса на сегмента: смятаме
+            // отново от segBase с финала → отрязаната опашка се връща, без дублиране на сричка.
+            accumulated = mergeText(segBase, finalTxt);
             if (onInterim) { try { onInterim(fullText()); } catch (_) {} }
+            if (_nativeStopRequested) finish();   // финалът дойде след ръчен стоп → приключи веднага (с цялата последна дума)
           } else {
             if (finalTxt.length >= seg.length) seg = finalTxt;  // финалът е най-пълният текст
             if (onInterim) { try { onInterim(fullText()); } catch (_) {} }

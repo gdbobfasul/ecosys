@@ -1,3 +1,4 @@
+// Version: 1.0001
 // settings.js — настройки: безплатен AI enhancer, поведение на заключването, нулиране.
 import { el, clear, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';

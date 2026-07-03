@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.selflearningfriend.huawei",
+  "appId": "com.kcy.selflearningfriend.hw",
   "appName": "Самообучаващ се приятел",
   "webDir": "dist",
   "server": {
@@ -9,9 +9,11 @@
     "allowMixedContent": false
   },
   "plugins": {
-    "CapacitorHttp": { "enabled": true },
+    "CapacitorHttp": {
+      "enabled": true
+    },
     "BackgroundRunner": {
-      "label": "com.kcy.selflearningfriend.huawei.learn",
+      "label": "com.kcy.selflearningfriend.hw.learn",
       "src": "runners/learn-runner.js",
       "event": "learnTick",
       "repeat": true,

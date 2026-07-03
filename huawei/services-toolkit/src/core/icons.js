@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Inline SVG икони (stroke-базирани, наследяват currentColor).
 // Без външни файлове — всичко е код.
 const svg = (inner) =>

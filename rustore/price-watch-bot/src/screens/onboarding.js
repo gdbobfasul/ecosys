@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Екран за активиране — обяснява какво прави роботът и го активира безплатно.
 import { saveState, pushLog } from '../core/storage.js';
 import { t } from '../core/i18n.js';

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Малки помощници за DOM (без рамка).
 export function h(html) {
   const t = document.createElement('template');

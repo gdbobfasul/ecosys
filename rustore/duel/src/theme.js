@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Тема за RUStore билда — топъл „кървав рубин" акцент.
 // Единствената разлика между rustore/ и huawei/ копията (плюс app id).
 export const THEME = {

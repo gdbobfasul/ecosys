@@ -1,3 +1,4 @@
+// Version: 1.0001
 // unlock.js — отключване на сейфа с парола (или биометрия, ако е включена).
 import { h, mount } from '../ui/dom.js';
 import { t } from '../core/i18n.js';

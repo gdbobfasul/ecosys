@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Валутни курсове и конвертор — РЕАЛЕН инструмент с курсове на живо.
 // Източник: open.er-api.com (отвореният БЕЗПЛАТЕН тир на ExchangeRate-API).
 //   GET https://open.er-api.com/v6/latest/USD

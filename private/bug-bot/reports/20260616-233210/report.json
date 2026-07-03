@@ -1,0 +1,235 @@
+{
+  "target": "vm",
+  "base": "https://192.168.0.108",
+  "runId": "20260616-233210",
+  "mode": "critical",
+  "startedAt": "2026-06-16T17:32:10.481Z",
+  "durationMs": 54267,
+  "scenarios": 7,
+  "urlsChecked": 17,
+  "counts": {
+    "error": 0,
+    "warn": 0,
+    "info": 19
+  },
+  "findings": [
+    {
+      "ts": "2026-06-16T17:32:43.363Z",
+      "pageUrl": "https://192.168.0.108/portals/login.html",
+      "app": "portals",
+      "scenario": "Портали — начало, вход, регистрация",
+      "targetUrl": "https://192.168.0.108/portals/login.html",
+      "severity": "info",
+      "kind": "http",
+      "status": 403,
+      "resourceUrl": "https://accounts.google.com/gsi/button?theme=outline&size=large&width=360&text=continue_with&is_fedcm_supported=true&client_id=956292743480-cmcssujd8vkusln2ps3ithqu0ov2on08.apps.googleusercontent.com&iframe_id=gsi_162975_930351&cas=nCiCxONrojNUKbURaBgZqazY%2FCOwZ0KJYs5lPEyPB0I"
+    },
+    {
+      "ts": "2026-06-16T17:32:43.858Z",
+      "pageUrl": "https://192.168.0.108/portals/login.html",
+      "app": "portals",
+      "scenario": "Портали — начало, вход, регистрация",
+      "targetUrl": "https://192.168.0.108/portals/login.html",
+      "severity": "info",
+      "kind": "console-3rd",
+      "detail": "[GSI_LOGGER]: The given origin is not allowed for the given client ID.",
+      "resourceUrl": "https://ssl.gstatic.com/_/gsi/_/js/k=gsi.gsi.ky.-MXIP9yi4PQ.O/am=AAAAAAkCmBIC/d=1/rs=AF0KOtUge58thbn7vhmXrTm5mZ4QhpjcYw/m=credential_button_library"
+    },
+    {
+      "ts": "2026-06-16T17:32:45.645Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html",
+      "app": "portals",
+      "scenario": "Портали — услуги (извадка)",
+      "targetUrl": "https://192.168.0.108/portals/services/watch20.html",
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://192.168.0.108/api/portals/svc/watch20/prefs"
+    },
+    {
+      "ts": "2026-06-16T17:32:45.754Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html",
+      "app": "portals",
+      "scenario": "Портали — услуги (извадка)",
+      "targetUrl": "https://192.168.0.108/portals/services/watch20.html",
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://192.168.0.108/assets/crypto-watch/alert.ogg"
+    },
+    {
+      "ts": "2026-06-16T17:32:45.754Z",
+      "pageUrl": "https://192.168.0.108/portals/services/watch20.html",
+      "app": "portals",
+      "scenario": "Портали — услуги (извадка)",
+      "targetUrl": "https://192.168.0.108/portals/services/watch20.html",
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies.json"
+    },
+    {
+      "ts": "2026-06-16T17:32:45.977Z",
+      "pageUrl": "https://192.168.0.108/portals/login.html?next=%2Fportals%2Fservices%2Fwatch20.html",
+      "app": "portals",
+      "scenario": "Портали — услуги (извадка)",
+      "targetUrl": "https://192.168.0.108/portals/services/watch20.html",
+      "severity": "info",
+      "kind": "http",
+      "status": 403,
+      "resourceUrl": "https://accounts.google.com/gsi/button?theme=outline&size=large&width=360&text=continue_with&is_fedcm_supported=true&client_id=956292743480-cmcssujd8vkusln2ps3ithqu0ov2on08.apps.googleusercontent.com&iframe_id=gsi_165872_197790&cas=oRHXq91BWOioF37vnTSNTjLEK%2BLTzI6FirlWCWZe%2FbA"
+    },
+    {
+      "ts": "2026-06-16T17:32:46.131Z",
+      "pageUrl": "https://192.168.0.108/portals/login.html?next=%2Fportals%2Fservices%2Fwatch20.html",
+      "app": "portals",
+      "scenario": "Портали — услуги (извадка)",
+      "targetUrl": "https://192.168.0.108/portals/services/watch20.html",
+      "severity": "info",
+      "kind": "console-3rd",
+      "detail": "[GSI_LOGGER]: The given origin is not allowed for the given client ID.",
+      "resourceUrl": "https://ssl.gstatic.com/_/gsi/_/js/k=gsi.gsi.ky.-MXIP9yi4PQ.O/am=AAAAAAkC2BIC/d=1/rs=AF0KOtVO4U40uIR6tXqG1GFpmGmDDpL5yw/m=credential_button_library"
+    },
+    {
+      "ts": "2026-06-16T17:32:52.094Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 — начало + админ вход",
+      "targetUrl": "https://192.168.0.108/eco-3/",
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://unpkg.com/react@18/umd/react.production.min.js"
+    },
+    {
+      "ts": "2026-06-16T17:32:52.111Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 — начало + админ вход",
+      "targetUrl": "https://192.168.0.108/eco-3/",
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+    },
+    {
+      "ts": "2026-06-16T17:32:52.111Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 — начало + админ вход",
+      "targetUrl": "https://192.168.0.108/eco-3/",
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://unpkg.com/@babel/standalone/babel.min.js"
+    },
+    {
+      "ts": "2026-06-16T17:32:52.111Z",
+      "pageUrl": "https://192.168.0.108/eco-3/",
+      "app": "eco3",
+      "scenario": "ECO-3 — начало + админ вход",
+      "targetUrl": "https://192.168.0.108/eco-3/",
+      "severity": "info",
+      "kind": "requestfailed",
+      "detail": "net::ERR_ABORTED",
+      "resourceUrl": "https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    },
+    {
+      "ts": "2026-06-16T17:32:52.326Z",
+      "pageUrl": "https://192.168.0.108/portals/login.html?next=%2Feco-3%2F",
+      "app": "eco3",
+      "scenario": "ECO-3 — начало + админ вход",
+      "targetUrl": "https://192.168.0.108/eco-3/",
+      "severity": "info",
+      "kind": "http",
+      "status": 403,
+      "resourceUrl": "https://accounts.google.com/gsi/button?theme=outline&size=large&width=360&text=continue_with&is_fedcm_supported=true&client_id=956292743480-cmcssujd8vkusln2ps3ithqu0ov2on08.apps.googleusercontent.com&iframe_id=gsi_172227_260961&cas=rAyormnwHjSUWRElv2nrz7QOlsCko4kQft2Wj4gNU2Q"
+    },
+    {
+      "ts": "2026-06-16T17:32:52.337Z",
+      "pageUrl": "https://192.168.0.108/portals/login.html?next=%2Feco-3%2F",
+      "app": "eco3",
+      "scenario": "ECO-3 — начало + админ вход",
+      "targetUrl": "https://192.168.0.108/eco-3/",
+      "severity": "info",
+      "kind": "console-3rd",
+      "detail": "[GSI_LOGGER]: The given origin is not allowed for the given client ID.",
+      "resourceUrl": "https://ssl.gstatic.com/_/gsi/_/js/k=gsi.gsi.ky.-MXIP9yi4PQ.O/am=AAAAAAkCmBIC/d=1/rs=AF0KOtUge58thbn7vhmXrTm5mZ4QhpjcYw/m=credential_button_library"
+    },
+    {
+      "ts": "2026-06-16T17:32:55.327Z",
+      "pageUrl": "https://192.168.0.108/houselookbook/",
+      "app": "hlb",
+      "scenario": "House-Look-Book — начало + класация",
+      "targetUrl": "https://192.168.0.108/houselookbook/",
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://192.168.0.108/api/hlb/me"
+    },
+    {
+      "ts": "2026-06-16T17:32:56.806Z",
+      "pageUrl": "https://192.168.0.108/houselookbook/login.html",
+      "app": "hlb",
+      "scenario": "House-Look-Book — начало + класация",
+      "targetUrl": "https://192.168.0.108/houselookbook/login.html",
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://192.168.0.108/api/hlb/me"
+    },
+    {
+      "ts": "2026-06-16T17:32:58.315Z",
+      "pageUrl": "https://192.168.0.108/houselookbook/ranking.html",
+      "app": "hlb",
+      "scenario": "House-Look-Book — начало + класация",
+      "targetUrl": "https://192.168.0.108/houselookbook/ranking.html",
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://192.168.0.108/api/hlb/me"
+    },
+    {
+      "ts": "2026-06-16T17:32:59.908Z",
+      "pageUrl": "https://192.168.0.108/wherenobiz/",
+      "app": "wnb",
+      "scenario": "WhereNoBiz — начало + преглед",
+      "targetUrl": "https://192.168.0.108/wherenobiz/",
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://192.168.0.108/api/wnb/me"
+    },
+    {
+      "ts": "2026-06-16T17:33:01.401Z",
+      "pageUrl": "https://192.168.0.108/wherenobiz/login.html",
+      "app": "wnb",
+      "scenario": "WhereNoBiz — начало + преглед",
+      "targetUrl": "https://192.168.0.108/wherenobiz/login.html",
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://192.168.0.108/api/wnb/me"
+    },
+    {
+      "ts": "2026-06-16T17:33:02.890Z",
+      "pageUrl": "https://192.168.0.108/wherenobiz/browse.html",
+      "app": "wnb",
+      "scenario": "WhereNoBiz — начало + преглед",
+      "targetUrl": "https://192.168.0.108/wherenobiz/browse.html",
+      "severity": "info",
+      "kind": "http",
+      "status": 401,
+      "resourceUrl": "https://192.168.0.108/api/wnb/me"
+    }
+  ],
+  "serverLog": {
+    "ok": false,
+    "status": 0,
+    "error": "fetch failed"
+  },
+  "forms": [],
+  "fuzz": null,
+  "journeys": null,
+  "seed": null
+}

@@ -1,3 +1,4 @@
+// Version: 1.0001
 // Текстови инструменти — брояч, форматиране, Base64.
 import { copyText } from '../core/ui.js';
 import { t, register } from '../core/i18n.js';

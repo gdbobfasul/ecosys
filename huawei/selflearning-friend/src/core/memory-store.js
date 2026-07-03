@@ -1,3 +1,4 @@
+// Version: 1.0001
 // memory-store.js — РЕАЛНО локално самообучение (НЕ стъб).
 //
 // Памет = масив от записи { id, type, key, value, keywords:[], created, updated, uses }.
