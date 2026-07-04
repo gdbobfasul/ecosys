@@ -1,0 +1,8 @@
+A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+
+100 Level · 3D-Ego-Jagdshooter
+
+Steuerung: Handy — linker Joystick zum Bewegen, rechts ziehen zum Umsehen, FEUER-Taste. Desktop — WASD + Maus (Klick zum Sperren des Cursors) + Klick zum Schießen.
+
+Support: dai.group.ltd.support@gmail.com
+Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com

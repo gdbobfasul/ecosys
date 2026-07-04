@@ -1,0 +1,12 @@
+A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to turn the fight.
+
+ساحة المعركة — 3 ضد 3
+
+معركة بالأدوار. أبطالك يظهرون <b>عشوائيًا</b> في كل مستوى.
+
+الخاص: لكل بطل <b>مفاتيحه الستة</b>؛ خمّن <b>التركيبة المخفية من 4</b> (بأي ترتيب). 30–40% ضرر.
+
+تكتشف التركيبات بالتجربة. لا تتغير طوال اللعبة.
+
+الدعم: dai.group.ltd.support@gmail.com
+للأسئلة والدعم، راسلونا على: dai.group.ltd.support@gmail.com

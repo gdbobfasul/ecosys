@@ -1,0 +1,12 @@
+A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to turn the fight.
+
+Campo de batalla — 3 contra 3
+
+Batalla por turnos. Tus héroes salen <b>al azar</b> en cada nivel.
+
+Especial: cada héroe tiene <b>sus 6 teclas</b>; adivina el <b>combo oculto de 4</b> (cualquier orden). 30–40% de daño.
+
+Descubre los combos probando. No cambian en toda la partida.
+
+Soporte: dai.group.ltd.support@gmail.com
+Para preguntas y soporte, escribe a: dai.group.ltd.support@gmail.com

@@ -1,0 +1,20 @@
+# huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
+# Приложение: Titans Fight (huawei издание). Генерирано от AppPublisherBot.
+
+[Set basic app information]
+App type: Game (игра)
+App name: Titans Fight            # 12 / 30 знака
+App package name: com.kcy.titansfight.hw   # 22 / 128 знака
+Level-1 app category: Games
+
+[Integrate open capabilities]
+# Open capabilities: няма (без Account Kit, IAP, Push, Ads, Game Service) — освен ако не е отбелязано друго.
+
+[Support / Поддръжка]
+Support email: dai.group.ltd.support@gmail.com
+# Влиза и в описанието на 15-те езика (publish/store-listing/<език>.txt).
+
+[Localization]
+Languages: bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant (15)
+Listing: publish/store-listing/<език>.txt
+Screenshots: publish/screenshots/<език>/*.png  (+ споделен publish/screenshots/00-*.png)

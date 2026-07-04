@@ -1,0 +1,27 @@
+{
+  "categoryHuawei": "Business",
+  "isGame": false,
+  "generativeAI": false,
+  "descKeys": [
+    "onb_lead",
+    "privacy_note"
+  ],
+  "pitchEn": "A rule-based bot that automatically answers your customers' frequently asked questions using a keyword FAQ knowledge base, greetings, office-hours and out-of-hours messages, quick-reply buttons, and a fallback that escalates to a human. It runs entirely on-device with no paid AI, and a built-in demo chat lets you test it immediately.",
+  "newFeaturesEn": "First release: on-device keyword FAQ knowledge base with office hours, quick-reply menus, human-escalation fallback, and a demo chat for instant testing.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": true,
+    "storesLocalOnly": true,
+    "notes": "The FAQ knowledge base and settings are stored only on the device. Core answering works fully offline; network is used only for the optional KCY chat channel over HTTP. No accounts, no contacts, no tracking."
+  },
+  "reviewerRemarksEn": "No account or login is needed. On first launch choose a language and tap 'Activate the bot'. Keep the sample knowledge base, then open the Demo chat and type a question containing a keyword; the bot replies from the FAQ, respects office hours, and offers escalation. All evaluation can be done offline in the demo chat.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

@@ -1,0 +1,8 @@
+Um assistente de conscientização baseado em câmera que observa o seu filho dormindo ou brincando através da câmera do telefone e o alerta sobre o movimento: ele sinaliza agitação/vigília, uma segunda pessoa aparece na sala ou a criança sai do quadro. A deteção é executada no dispositivo com uma notificação local, som e um registo fotográfico para cada evento.
+
+Um robô de aluguel que vigia seu filho dormindo ou brincando pela câmera do telefone e te avisa.
+
+Grátis e no dispositivo. Sem contas, sem contatos, sem rastreamento. A única rede é opcional (outra câmera / relay) e os pesos gratuitos do modelo.
+
+Suporte: dai.group.ltd.support@gmail.com
+Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com

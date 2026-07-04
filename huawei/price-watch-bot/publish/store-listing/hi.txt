@@ -1,0 +1,10 @@
+A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.
+
+एक बॉट जो आपके लिए कीमतों पर नज़र रखता है
+
+यह बॉट चुनी हुई क्रिप्टो और मुद्रा दरों पर नज़र रखता है और जैसे ही कोई कीमत आपकी तय सीमा से नीचे गिरती है या ऊपर जाती है, आपको सूचित करता है।
+
+सब कुछ डिवाइस पर चलता है। कोई खाता नहीं, कोई संपर्क नहीं, कोई ट्रैकिंग नहीं। कीमतें मुफ़्त सार्वजनिक स्रोतों से आती हैं।
+
+सहायता: dai.group.ltd.support@gmail.com
+प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com

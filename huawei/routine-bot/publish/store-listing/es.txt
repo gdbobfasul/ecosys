@@ -1,0 +1,12 @@
+A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+{0} es tu robot diario personal. Actívalo una vez y cada día ejecuta una rutina: resumen matutino, recordatorios y (opcional) resumen nocturno — y te avisa.
+
+🌤️ Resumen matutino: clima, agenda del día y motivación
+
+⏰ Recordatorios: medicación, hábitos, tareas — con horas y días
+
+🌙 Resumen nocturno (opcional)
+
+Soporte: dai.group.ltd.support@gmail.com
+Para preguntas y soporte, escribe a: dai.group.ltd.support@gmail.com

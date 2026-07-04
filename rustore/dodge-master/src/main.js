@@ -1,6 +1,8 @@
 // Version: 1.0001
 import { enforceLock } from './core/lock.js';
-enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
+import { mountHelp } from './core/help.js';
+enforceLock();
+mountHelp('dodge-master'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // Входна точка на играта Dodge Master.
 // Top-down dodge/survival: човек в центъра, отвсякъде летят старовремски снаряди,
 // играчът се движи свободно и ги избягва. 10 нива с нарастваща трудност.

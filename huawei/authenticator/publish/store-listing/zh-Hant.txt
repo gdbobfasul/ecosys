@@ -1,0 +1,8 @@
+私人雙因素驗證(2FA)應用程式，可產生TOTP/HOTP/Steam一次性代碼，並將所有祕密保存在裝置上的加密生物特徵鎖定保管庫中。透過掃描QR碼、貼上otpauth://連結、手動輸入金鑰或從Aegis和Google Authenticator匯入來新增帳戶，並以.zip格式匯出所有QR圖片。
+
+保險庫以此密碼加密。沒有它就無法存取代碼。
+
+將每個帳戶以獨立 QR 圖片下載到一個 .zip。
+
+支援: dai.group.ltd.support@gmail.com
+如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com

@@ -1,0 +1,12 @@
+A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+{0} 是你的私人每日機器人。啟用一次，它每天就會執行例程：早晨簡報、提醒以及（可選的）晚間總結 — 並通知你。
+
+🌤️ 早晨簡報：天氣、今日行程與激勵
+
+⏰ 提醒：藥物、習慣、任務 — 含時間與日期
+
+🌙 晚間總結（可選）
+
+支援: dai.group.ltd.support@gmail.com
+如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com

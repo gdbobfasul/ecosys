@@ -1,0 +1,8 @@
+A private two-factor authentication (2FA) app that generates TOTP/HOTP/Steam one-time codes and keeps all secrets in an encrypted, biometric-locked vault on your device. Add accounts by scanning a QR code, pasting an otpauth:// link, entering keys manually, or importing from Aegis and Google Authenticator, and export everything as QR images in a .zip.
+
+The vault is encrypted with this password. Without it there is no access to your codes.
+
+Downloads each account as a separate QR image in one .zip.
+
+Support: dai.group.ltd.support@gmail.com
+For questions and support, write to: dai.group.ltd.support@gmail.com

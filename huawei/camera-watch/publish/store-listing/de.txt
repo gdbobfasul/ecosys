@@ -1,0 +1,8 @@
+Ein Kameraguard-Assistent, der einen Kamerafutter beobachtet und Sie bei Bewegungen warnt und Ihnen sagt, was sich bewegt hat: eine Person/ein Eindringling, ein Hund, eine Katze oder ein anderes Tier. Bewegung wird auf dem Gerät mit einer lokalen Warnung und einem Fotoprotokoll für jedes Ereignis erkannt; es kann die Telefonkamera oder einen externen Browser-Kamerastream verwenden.
+
+Ein angeheuerter Roboter, der eine Kamera überwacht und dich bei Bewegung warnt — und sagt, was sich bewegt hat: Person/Eindringling, Hund, Katze oder anderes Tier.
+
+<b>Ehrlich und ohne versteckte Gebühren:</b> Alles läuft auf dem Gerät und ist kostenlos. Kein Konto, keine Kontakte, kein Tracking, keine In-App-Käufe. Einzige Netznutzung: einmaliger kostenloser Download des KI-Modells und optional deine URL für „andere Kamera“.
+
+Support: dai.group.ltd.support@gmail.com
+Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com

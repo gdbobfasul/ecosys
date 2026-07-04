@@ -1,0 +1,12 @@
+A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to turn the fight.
+
+戦場 — 3対3
+
+ターン制バトル。各レベルで味方は<b>ランダム</b>に出現。
+
+必殺: 各英雄に<b>固有の6キー</b>。隠れた<b>4つのコンボ</b>を当てる（順不同）。ダメージ30〜40%。
+
+コンボは試して見つける。ゲーム中ずっと同じ。
+
+サポート: dai.group.ltd.support@gmail.com
+ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com

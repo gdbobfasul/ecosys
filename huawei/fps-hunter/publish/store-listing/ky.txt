@@ -1,0 +1,8 @@
+A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+
+100 деңгээл · 3D биринчи жактан мергенчилик атышма
+
+Башкаруу: телефон — солдо жойстик менен жылуу, оңго сүйрөп карап чыгуу, ОТ баскычы. Десктоп — WASD + чычкан (курсорду кулпулоо үчүн басуу) + атуу үчүн басуу.
+
+Колдоо: dai.group.ltd.support@gmail.com
+Суроолор жана колдоо үчүн жазыңыз: dai.group.ltd.support@gmail.com

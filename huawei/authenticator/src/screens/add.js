@@ -5,7 +5,7 @@ import { t } from '../core/i18n.js';
 import { addEntry } from '../core/storage.js';
 import { parseOtpauthURI } from '../core/otp.js';
 import { base32Decode } from '../core/base32.js';
-import { importQRData, importJsonText, isImportableQR, describeResult } from '../core/importer.js';
+import { importQRData, importJsonText, import2FASText, importOtpauthList, isImportableQR, describeResult } from '../core/importer.js';
 import { importAegisFile } from './aegis-import.js';
 
 let activeStream = null;
@@ -114,10 +114,33 @@ export function renderAdd(root, nav) {
       importAegisFile(f, (res) => { if (res && res.ok && res.imported > 0) nav.go('list'); });
       aegisIn.value = '';
     });
+    // 2FAS Auth експорт (.2fas / .json). Криптиран → упъти да експортира без парола.
+    const twofasIn = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
+    twofasIn.addEventListener('change', () => {
+      const f = twofasIn.files && twofasIn.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = async () => {
+        const res = await import2FASText(r.result);
+        if (res && !res.ok && res.reason === 'encrypted') toast(t('twofas_encrypted'));
+        else await runImport(Promise.resolve(res));
+        twofasIn.value = '';
+      };
+      r.readAsText(f);
+    });
+    // Универсален otpauth:// списък (текст, по един на ред) — от почти всеки authenticator.
+    const otpauthIn = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
+    otpauthIn.addEventListener('change', () => {
+      const f = otpauthIn.files && otpauthIn.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = () => { runImport(importOtpauthList(r.result)); otpauthIn.value = ''; };
+      r.readAsText(f);
+    });
     mount(body, seg,
       h('p', { class: 'muted', style: 'text-align:center', text: t('import_file_hint') }),
       h('button', { class: 'btn', onclick: () => jsonIn.click(), text: '⬆ ' + t('import_json') }), jsonIn,
       h('button', { class: 'btn', onclick: () => aegisIn.click(), text: '⬆ ' + t('import_aegis') }), aegisIn,
+      h('button', { class: 'btn', onclick: () => twofasIn.click(), text: '⬆ ' + t('import_2fas') }), twofasIn,
+      h('button', { class: 'btn', onclick: () => otpauthIn.click(), text: '⬆ ' + t('import_otpauth') }), otpauthIn,
       h('p', { class: 'muted', style: 'font-size:.85em', text: t('import_aegis_hint') }),
       h('button', { class: 'btn ghost', onclick: () => setMode('manual'), text: t('enter_manually') })
     );

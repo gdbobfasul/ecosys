@@ -61,14 +61,55 @@ router.post('/', requireLoginAPI, (req, res) => {
     res.json({ ok: true, report: row });
 });
 
+// ── АНОНИМЕН доклад от мобилно приложение (без вход) ─────────────────────────
+// POST /api/portals/bug-report/anon  { app, title, body }
+// Всяко приложение (KCY Authenticator, игрите и т.н.) има бутон „HELP?" на началния екран,
+// който праща тук БЕЗ вход. Записва се в СЪЩАТА таблица като порталните доклади, с user_id = NULL
+// и поле `app` (от кое приложение идва). Няколко доклада от един ап са позволени (не upsert).
+const anonHits = new Map();   // проста защита от спам: IP → [времена] (не ползваме Date в тестове? тук е рънтайм — Date е ок)
+function anonRateOk(ip) {
+    const now = Date.now();
+    const arr = (anonHits.get(ip) || []).filter((t) => now - t < 60000);
+    if (arr.length >= 8) { anonHits.set(ip, arr); return false; }   // макс 8/минута на IP
+    arr.push(now); anonHits.set(ip, arr); return true;
+}
+// CORS: мобилните апове POST-ват от WebView (origin capacitor://localhost и т.н.) → пусни всички
+// за анонимния endpoint (публичен, само запис на доклад). CapacitorHttp и без това заобикаля CORS.
+router.options('/anon', (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(204).end();
+});
+router.post('/anon', (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    const db = req.app.locals.db;
+    const ip = (req.headers['x-forwarded-for'] || req.ip || '').toString().split(',')[0].trim();
+    if (!anonRateOk(ip)) return res.status(429).json({ error: 'too_many', message: 'Твърде много доклади. Опитай пак след минута.' });
+    let { app, title, body } = req.body || {};
+    app = String(app || '').trim().slice(0, 60) || 'unknown';
+    title = String(title || '').trim();
+    body = String(body || '').trim();
+    if (!body) return res.status(400).json({ error: 'body_required', message: 'Опиши проблема.' });
+    if (!title) title = body.slice(0, 60);   // ако няма заглавие → първите думи от текста
+    if (title.length > 200) title = title.slice(0, 200);
+    if (body.length > 5000) body = body.slice(0, 5000);
+    db.prepare(
+        'INSERT INTO portal_bug_reports (user_id, app, title, body) VALUES (NULL, ?, ?, ?)'
+    ).run(app, title, body);
+    res.json({ ok: true, message: 'Благодарим! Докладът е изпратен.' });
+});
+
 // ── Админ/модератор: списък по статус ────────────────────────────────────────
 // GET /api/portals/bug-report/admin/list?fixed=0|1  (0 = неоправени, 1 = оправени)
 router.get('/admin/list', requireStaffView, (req, res) => {
     const db = req.app.locals.db;
     const fixed = req.query.fixed === '1' ? 1 : 0;
+    // LEFT JOIN → показваме и АНОНИМНИТЕ (user_id NULL) доклади от приложенията; `app` = източникът.
     const rows = db.prepare(
-        `SELECT b.id, b.title, b.body, b.fixed, b.created_at, b.updated_at, u.username
-         FROM portal_bug_reports b JOIN portal_users u ON u.id = b.user_id
+        `SELECT b.id, b.title, b.body, b.fixed, b.app, b.created_at, b.updated_at,
+                COALESCE(u.username, '') AS username
+         FROM portal_bug_reports b LEFT JOIN portal_users u ON u.id = b.user_id
          WHERE b.fixed = ? ORDER BY b.updated_at DESC`
     ).all(fixed);
     res.json({ reports: rows });

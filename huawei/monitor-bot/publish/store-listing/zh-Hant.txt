@@ -1,0 +1,8 @@
+An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+機器人會監看你選擇的來源（RSS/Atom 訂閱源或公開 JSON API），在出現新項目或關鍵字符合時通知你。一切都在裝置本機執行——無帳戶、無雲端、無追蹤。
+
+無限監控、本機通知、依新項目與關鍵字比對。
+
+支援: dai.group.ltd.support@gmail.com
+如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com

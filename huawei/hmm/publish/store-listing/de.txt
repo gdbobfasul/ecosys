@@ -1,0 +1,12 @@
+A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to turn the fight.
+
+Schlachtfeld — 3 gegen 3
+
+Rundenkampf. Deine Helden erscheinen <b>zufällig</b> auf jedem Level.
+
+Spezial: jeder Held hat <b>eigene 6 Tasten</b>; errate die verborgene <b>4er-Kombo</b> (beliebige Reihenfolge). 30–40% Schaden.
+
+Die Kombos findest du durch Ausprobieren. Sie bleiben das ganze Spiel gleich.
+
+Support: dai.group.ltd.support@gmail.com
+Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com

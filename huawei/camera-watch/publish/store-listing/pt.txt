@@ -1,0 +1,8 @@
+Um assistente de guarda-câmera que observa um feed de câmera e avisa sobre o movimento, dizendo o que se moveu: uma pessoa/intruso, cão, gato ou outro animal. O movimento é detectado no dispositivo com um alerta local e um registro de fotos para cada evento; ele pode usar a câmera do telefone ou um fluxo de câmera do navegador externo.
+
+Um robô contratado que vigia uma câmera e avisa você ao detectar movimento — e diz o que se moveu: pessoa/intruso, cão, gato ou outro animal.
+
+<b>Honesto e sem taxas ocultas:</b> tudo funciona no dispositivo e é grátis. Sem conta, sem contatos, sem rastreamento, sem compras no app. Único uso de rede: um download gratuito único do modelo de IA e, opcionalmente, sua URL para «outra câmera».
+
+Suporte: dai.group.ltd.support@gmail.com
+Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com

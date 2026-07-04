@@ -1,0 +1,8 @@
+A rule-based bot that automatically answers your customers' frequently asked questions using a keyword FAQ knowledge base, greetings, office-hours and out-of-hours messages, quick-reply buttons, and a fallback that escalates to a human. It runs entirely on-device with no paid AI, and a built-in demo chat lets you test it immediately.
+
+A bot that automatically answers your customers’ common questions — by rules (keywords), entirely on-device. No paid AI, no accounts, no tracking.
+
+Privacy: no contacts, no accounts, no location, no tracking. The knowledge base stays only on this device.
+
+Support: dai.group.ltd.support@gmail.com
+For questions and support, write to: dai.group.ltd.support@gmail.com

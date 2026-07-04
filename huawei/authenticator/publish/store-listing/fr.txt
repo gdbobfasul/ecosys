@@ -1,0 +1,8 @@
+Une application privée d'authentification à deux facteurs (2FA) qui génère des codes à usage unique TOTP/HOTP/Steam et conserve tous les secrets dans un coffre-fort crypté et biométrique verrouillé sur votre appareil. Ajoutez des comptes en scannant un code QR, en collant un lien otpauth ://, en saisissant les clés manuellement ou en les important à partir d'Aegis et de Google Authenticator, et exportez le tout sous forme d'images QR dans un fichier .zip.
+
+Le coffre est chiffré avec ce mot de passe. Sans lui, aucun accès aux codes.
+
+Télécharge chaque compte en image QR séparée dans un .zip.
+
+Assistance: dai.group.ltd.support@gmail.com
+Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com

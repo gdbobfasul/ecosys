@@ -1,0 +1,26 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [
+    "tagline"
+  ],
+  "pitchEn": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficulty. Beat your best score and climb a local leaderboard.",
+  "newFeaturesEn": "First release of Dodge Master: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No network, no accounts. Only a self-entered nickname, score and language are stored on-device; nothing leaves the device."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run pick a language and tap Start, then choose a level and press PLAY. Move your character to dodge incoming projectiles until the level ends. No account, login, or internet connection is required; an optional name for the local leaderboard is the only input.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

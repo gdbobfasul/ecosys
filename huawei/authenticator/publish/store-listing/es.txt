@@ -1,0 +1,8 @@
+Una aplicación privada de autenticación de dos factores (2FA) que genera códigos TOTP/HOTP/Steam de un solo uso y guarda todos los secretos en una bóveda cifrada y con bloqueo biométrico en su dispositivo. Agregue cuentas escaneando un código QR, pegando un enlace otpauth://, ingresando claves manualmente o importando desde Aegis y Google Authenticator, y exporte todo como imágenes QR en un .zip.
+
+La bóveda se cifra con esta contraseña. Sin ella no hay acceso a tus códigos.
+
+Descarga cada cuenta como imagen QR separada en un .zip.
+
+Soporte: dai.group.ltd.support@gmail.com
+Para preguntas y soporte, escribe a: dai.group.ltd.support@gmail.com

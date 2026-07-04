@@ -1,0 +1,8 @@
+Un bot basado en reglas que responde automáticamente a las preguntas más frecuentes de sus clientes utilizando una base de conocimientos de preguntas frecuentes de palabras clave, saludos, mensajes de horas de oficina y fuera de horario, botones de respuesta rápida y un respaldo que se escala a un humano. Se ejecuta completamente en el dispositivo sin IA de pago, y un chat de demostración incorporado te permite probarlo de inmediato.
+
+Un bot que responde automáticamente las preguntas frecuentes de tus clientes — por reglas (palabras clave), totalmente en el dispositivo. Sin IA de pago, sin cuentas, sin rastreo.
+
+Privacidad: sin contactos, sin cuentas, sin ubicación, sin rastreo. La base de conocimiento permanece solo en este dispositivo.
+
+Soporte: dai.group.ltd.support@gmail.com
+Para dudas y soporte, escribe a: dai.group.ltd.support@gmail.com

@@ -1,0 +1,24 @@
+{
+  "categoryHuawei": "Communication",
+  "isGame": false,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
+  "newFeaturesEn": "First release of KCY Chat: real-time messaging in 15 languages with a clean connect/offline experience.",
+  "dataHandling": {
+    "collectsPersonalData": true,
+    "accountsOrLogin": true,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": false,
+    "notes": "Connects to a live chat server; messages and account data are sent to and stored on the server, so data leaves the device. The app itself stores only the chosen UI language locally."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run choose a language and tap Start. It connects to the live chat server over the internet, so a working network connection is required. Account/registration steps happen inside the chat itself; no credentials are needed to reach the language screen and connect.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

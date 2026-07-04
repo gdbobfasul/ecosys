@@ -1,0 +1,8 @@
+Ein automatischer Assistent zum Beantworten von Nachrichten, der Ihnen nach Ihren eigenen Regeln antwortet: Schlüsselwörter werden mit fertigen Antworten, Bürozeiten, Abwesenheitsnachrichten und Genehmigungs-/Sperrlisten ausgelöst. Es protokolliert jede automatische Antwort und benachrichtigt Sie und enthält einen integrierten Demo-Posteingang, damit Sie alles sofort testen können.
+
+Ein Roboter, der für dich antwortet — nach deinen Regeln.
+
+Aktiviere den Roboter, lege Regeln fest (Schlüsselwörter → fertige Antworten, Geschäftszeiten, Erlaubt-/Sperrlisten) und schalte ihn ein. Trifft eine Nachricht ein, antwortet der Roboter automatisch und benachrichtigt dich.
+
+Support: dai.group.ltd.support@gmail.com
+Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com

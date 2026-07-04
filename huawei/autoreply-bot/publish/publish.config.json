@@ -1,0 +1,28 @@
+{
+  "_comment": "Snapshot конфиг (специфичен за autoreply-bot). Език=autoreply.lang; активиран dashboard=arb.state.v1 с activated:true + robotOn:true + правила + дневник.",
+  "webDir": "dist",
+  "viewport": { "width": 360, "height": 760 },
+  "deviceScaleFactor": 3,
+  "langKey": "autoreply.lang",
+  "stateKey": "arb.state.v1",
+  "state": {
+    "activated": true,
+    "robotOn": true,
+    "permissions": { "notifications": true },
+    "rules": [
+      { "id": "r1", "name": "Greeting", "enabled": true, "triggerType": "contains", "triggerValue": "hello", "caseSensitive": false, "reply": "Hi {name}! Thanks for your message, I'll reply soon." },
+      { "id": "r2", "name": "Pricing", "enabled": true, "triggerType": "contains", "triggerValue": "price", "caseSensitive": false, "reply": "Our price list is on the way, {name}." },
+      { "id": "r3", "name": "Working hours", "enabled": true, "triggerType": "contains", "triggerValue": "open", "caseSensitive": false, "reply": "We are open Mon-Fri, 9:00-18:00." },
+      { "id": "r4", "name": "Support", "enabled": false, "triggerType": "contains", "triggerValue": "help", "caseSensitive": false, "reply": "Support will contact you shortly, {name}." }
+    ],
+    "log": [
+      { "at": 1751610000000, "sender": "Anna", "channel": "whatsapp", "mode": "normal", "incoming": "hello, are you there?", "reply": "Hi Anna! Thanks for your message, I'll reply soon." },
+      { "at": 1751612400000, "sender": "Mark", "channel": "kcy", "mode": "normal", "incoming": "what is the price?", "reply": "Our price list is on the way, Mark." },
+      { "at": 1751614800000, "sender": "Lena", "channel": "whatsapp", "mode": "away", "incoming": "are you open now?", "reply": "I'm away right now, I'll get back to you soon." }
+    ]
+  },
+  "sharedShot": "1-language-picker.png",
+  "screens": [
+    { "name": "main.png", "state": "full", "wait": 1800 }
+  ]
+}

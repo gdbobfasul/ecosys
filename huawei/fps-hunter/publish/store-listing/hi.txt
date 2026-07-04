@@ -1,0 +1,8 @@
+A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+
+100 स्तर · 3D फर्स्ट-पर्सन शिकार शूटर
+
+नियंत्रण: फ़ोन — चलने के लिए बायाँ जॉयस्टिक, देखने के लिए दाईं ओर खींचें, फायर बटन। डेस्कटॉप — WASD + माउस (कर्सर लॉक करने के लिए क्लिक) + गोली के लिए क्लिक।
+
+सहायता: dai.group.ltd.support@gmail.com
+प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com

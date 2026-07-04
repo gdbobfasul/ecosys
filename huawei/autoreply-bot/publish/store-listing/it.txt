@@ -1,0 +1,8 @@
+Un assistente automatico di risposta ai messaggi che risponde per te secondo le tue regole: le parole chiave si attivano con risposte pronte, orari d'ufficio, messaggi di assenza ed elenchi consentiti/bloccati. Registra ogni risposta automatica e ti avvisa e include una casella di posta demo integrata in modo da poter testare tutto all'istante.
+
+Un robot che risponde al posto tuo — secondo le tue regole.
+
+Attiva il robot, imposta regole (parole chiave → risposte pronte, orari, liste bianche/nere) e accendilo. All’arrivo di un messaggio, il robot risponde da solo e ti avvisa.
+
+Assistenza: dai.group.ltd.support@gmail.com
+Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com

@@ -1,0 +1,12 @@
+A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+{0} — ваш личный ежедневный робот. Активируйте его один раз, и каждый день он выполняет рутину: утренний брифинг, напоминания и (по желанию) вечернюю сводку — и уведомляет вас.
+
+🌤️ Утренний брифинг: погода, программа дня и мотивация
+
+⏰ Напоминания: лекарства, привычки, задачи — с временем и днями
+
+🌙 Вечерняя сводка (по желанию)
+
+Поддержка: dai.group.ltd.support@gmail.com
+По вопросам и поддержке пишите на: dai.group.ltd.support@gmail.com

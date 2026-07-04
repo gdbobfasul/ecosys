@@ -1,0 +1,8 @@
+A camera-guard assistant that watches a camera feed and warns you on movement, telling you what moved: a person/intruder, dog, cat, or other animal. Motion is detected on-device with a local alert and a photo log for each event; it can use the phone camera or an external browser camera stream.
+
+A hired robot that watches a camera and warns you on movement — and tells you what moved: a person/intruder, dog, cat or other animal.
+
+<b>Honest and no hidden fees:</b> everything runs on the device and is free. No account, no contacts, no tracking, no in-app purchases. The only network use: a one-time free download of the AI model and, optionally, your URL for "another camera".
+
+Support: dai.group.ltd.support@gmail.com
+For questions and support, write to: dai.group.ltd.support@gmail.com

@@ -1,0 +1,12 @@
+A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+
+रिंग द्वंद्व — 1 बनाम 1
+
+बारी-आधारित युद्ध। हर स्तर पर तुम्हारे योद्धा <b>यादृच्छिक</b> आते हैं।
+
+विशेष: हर योद्धा की <b>अपनी 6 कुंजियाँ</b>; छिपा हुआ <b>4 का कॉम्बो</b> भांपो (किसी भी क्रम में)। 30–40% क्षति।
+
+कॉम्बो आज़माकर खोजो। पूरी गेम में नहीं बदलते।
+
+सहायता: dai.group.ltd.support@gmail.com
+प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com

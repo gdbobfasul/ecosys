@@ -1,0 +1,12 @@
+A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+{0} روبوتك اليومي الشخصي. فعّله مرة واحدة وكل يوم ينفّذ روتينًا: موجز صباحي وتذكيرات و(اختياريًا) ملخص مسائي — وينبّهك.
+
+🌤️ موجز صباحي: الطقس وجدول اليوم وتحفيز
+
+⏰ تذكيرات: الأدوية والعادات والمهام — بالأوقات والأيام
+
+🌙 ملخص مسائي (اختياري)
+
+الدعم: dai.group.ltd.support@gmail.com
+للأسئلة والدعم، راسلونا على: dai.group.ltd.support@gmail.com

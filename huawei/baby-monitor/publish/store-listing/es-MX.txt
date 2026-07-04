@@ -1,0 +1,8 @@
+Un asistente de conciencia basado en cámara que observa a su hijo durmiendo o jugando a través de la cámara del teléfono y le alerta sobre el movimiento: marca agitación/despertar, aparece una segunda persona en la habitación o el niño abandona el marco. La detección se ejecuta en el dispositivo con una notificación local, sonido y un registro de fotos para cada evento.
+
+Un robot de alquiler que vigila a tu hijo dormido o jugando a través de la cámara del teléfono y te avisa.
+
+Gratis y en el dispositivo. Sin cuentas, sin contactos, sin rastreo. La única red es opcional (otra cámara / relay) y los pesos gratuitos del modelo.
+
+Soporte: dai.group.ltd.support@gmail.com
+Para dudas y soporte, escribe a: dai.group.ltd.support@gmail.com

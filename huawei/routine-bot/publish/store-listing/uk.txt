@@ -1,0 +1,12 @@
+A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+{0} — ваш особистий щоденний робот. Активуйте його один раз, і щодня він виконує рутину: ранковий брифінг, нагадування і (за бажанням) вечірню зведення — і сповіщає вас.
+
+🌤️ Ранковий брифінг: погода, програма дня і мотивація
+
+⏰ Нагадування: ліки, звички, завдання — з часом і днями
+
+🌙 Вечірнє зведення (за бажанням)
+
+Підтримка: dai.group.ltd.support@gmail.com
+З питань і підтримки пишіть на: dai.group.ltd.support@gmail.com

@@ -103,7 +103,8 @@ CREATE INDEX IF NOT EXISTS idx_portal_watch_alerts_user ON portal_watch_alerts(u
 -- ═══════════════════════════════════════════
 CREATE TABLE IF NOT EXISTS portal_bug_reports (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL UNIQUE,
+    user_id INTEGER,                      -- NULL = анонимен доклад от мобилно приложение (без вход)
+    app TEXT,                             -- от кое приложение идва (напр. „authenticator"); NULL = порталът
     title TEXT NOT NULL,
     body TEXT NOT NULL,
     fixed INTEGER NOT NULL DEFAULT 0,     -- 0 = неоправена, 1 = оправена (маркира се от админ/модератор)
@@ -111,3 +112,5 @@ CREATE TABLE IF NOT EXISTS portal_bug_reports (
     updated_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (user_id) REFERENCES portal_users(id) ON DELETE CASCADE
 );
+-- 1 доклад на ЛОГНАТ потребител (частичен UNIQUE); анонимните (user_id IS NULL) са неограничени.
+CREATE UNIQUE INDEX IF NOT EXISTS ux_portal_bug_user ON portal_bug_reports(user_id) WHERE user_id IS NOT NULL;

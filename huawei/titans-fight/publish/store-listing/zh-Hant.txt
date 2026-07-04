@@ -1,0 +1,11 @@
+A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved to a local leaderboard on your device.
+
+點選關卡開始 • 擊敗對手以解鎖下一關
+
+選擇武器
+
+勝利！
+你是冠軍
+
+支援: dai.group.ltd.support@gmail.com
+如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com

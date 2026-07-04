@@ -1,0 +1,8 @@
+Uma aplicação privada de autenticação de dois fatores (2FA) que gera códigos únicos TOTP/HOTP/Steam e mantém todos os segredos num cofre criptografado e com bloqueio biométrico no seu dispositivo. Adicione contas digitalizando um código QR, colando um link otpauth://, inserindo chaves manualmente ou importando do Aegis e do Google Authenticator e exporte tudo como imagens QR em um .zip.
+
+O cofre é cifrado com esta senha. Sem ela não há acesso aos códigos.
+
+Baixa cada conta como imagem QR separada em um .zip.
+
+Suporte: dai.group.ltd.support@gmail.com
+Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com

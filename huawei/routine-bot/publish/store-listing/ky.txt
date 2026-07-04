@@ -1,0 +1,12 @@
+A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+{0} — сиздин жеке күнүмдүк роботуңуз. Бир жолу иштетиңиз, ал ар күнү тартипти аткарат: эртеңки брифинг, эскертүүлөр жана (тандоо боюнча) кечки корутунду — жана сизге кабарлайт.
+
+🌤️ Эртеңки брифинг: аба ырайы, бүгүнкү программа жана мотивация
+
+⏰ Эскертүүлөр: дары, адаттар, тапшырмалар — убакыт жана күндөр менен
+
+🌙 Кечки корутунду (тандоо боюнча)
+
+Колдоо: dai.group.ltd.support@gmail.com
+Суроолор жана колдоо үчүн жазыңыз: dai.group.ltd.support@gmail.com

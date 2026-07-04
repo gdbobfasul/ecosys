@@ -1,0 +1,12 @@
+A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+
+Дуэль на ринге — 1 на 1
+
+Пошаговый бой. Твои герои выходят <b>случайно</b> на каждом уровне.
+
+Спецудар: у каждого героя <b>свои 6 клавиш</b>; угадай скрытую <b>комбинацию из 4</b> (любой порядок). 30–40% урона.
+
+Комбинации находишь подбором. Не меняются всю игру.
+
+Поддержка: dai.group.ltd.support@gmail.com
+По вопросам и поддержке пишите на: dai.group.ltd.support@gmail.com

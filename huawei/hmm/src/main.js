@@ -1,6 +1,8 @@
 // Version: 1.0001
 import { enforceLock } from './core/lock.js';
-enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
+import { mountHelp } from './core/help.js';
+enforceLock();
+mountHelp('hmm'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // HMM — Битка на терен (самостоятелно мобилно приложение, RUStore)
 // Зарежда вградения двигател и пуска отборната (HMM) битка 3 срещу 3.
 // Без portals backend, без мрежа: всичко е локално (offline).

@@ -1,0 +1,8 @@
+An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+Бот стежить за обраним вами джерелом (RSS/Atom-стрічка або публічний JSON API) і сповіщає, коли з’являється новий запис або збігається ключове слово. Усе працює локально на пристрої — без акаунта, без хмари, без стеження.
+
+Необмежені монітори, локальні сповіщення, порівняння за новими записами та ключовими словами.
+
+Підтримка: dai.group.ltd.support@gmail.com
+З питань і підтримки пишіть на: dai.group.ltd.support@gmail.com

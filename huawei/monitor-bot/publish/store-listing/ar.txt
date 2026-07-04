@@ -1,0 +1,8 @@
+An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+يراقب البوت مصدرًا تختاره (تغذية RSS/Atom أو واجهة JSON عامة) ويُعلِمك عند ظهور إدخال جديد أو تطابق كلمة مفتاحية. كل شيء يعمل محليًا على الجهاز — دون حساب ودون سحابة ودون تتبّع.
+
+مراقبات غير محدودة، إشعارات محلية، مقارنة على الإدخالات الجديدة والكلمات المفتاحية.
+
+الدعم: dai.group.ltd.support@gmail.com
+للأسئلة والدعم، راسلونا على: dai.group.ltd.support@gmail.com

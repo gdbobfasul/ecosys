@@ -3,6 +3,8 @@
 // QR като PNG), и „всички като QR" (.zip). Сваля файл през браузъра (Blob + <a download>).
 import { session } from './storage.js';
 import { buildAegisExport } from './aegis.js';
+import { build2FAS } from './twofas.js';
+import { buildOtpauthURI } from './otp.js';
 import { buildGoogleMigrationURIs } from './gauth-migration.js';
 import { zipStore } from './zip.js';
 import { saveFile } from './filesave.js';
@@ -28,6 +30,21 @@ export async function exportAegisFile() {
   if (!session.entries.length) return { ok: false, reason: 'empty' };
   const json = buildAegisExport(session.entries);
   await saveFile('aegis-export.json', json, 'application/json', { isText: true });
+  return { ok: true, count: session.entries.length };
+}
+
+// 2FAS експорт (некриптиран .2fas JSON) — внася се в 2FAS Auth → Settings → Import.
+export async function export2FASFile() {
+  if (!session.entries.length) return { ok: false, reason: 'empty' };
+  await saveFile('kcy-export.2fas', build2FAS(session.entries), 'application/json', { isText: true });
+  return { ok: true, count: session.entries.length };
+}
+
+// УНИВЕРСАЛЕН otpauth:// списък (текст, по един URI на ред) — внася се в почти всеки authenticator.
+export async function exportOtpauthListFile() {
+  if (!session.entries.length) return { ok: false, reason: 'empty' };
+  const txt = session.entries.map(buildOtpauthURI).join('\n') + '\n';
+  await saveFile('otpauth-list.txt', txt, 'text/plain', { isText: true });
   return { ok: true, count: session.entries.length };
 }
 

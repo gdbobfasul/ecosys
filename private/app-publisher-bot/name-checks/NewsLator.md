@@ -1,6 +1,6 @@
 # Проверка на име: NewsLator
 
-_2026-07-01T18:23:47.331Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-03T21:43:08.456Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 
@@ -19,29 +19,30 @@ _Условия: търсено в App Store на 2 държави — САЩ (u
 - Daily Mail: Breaking News — dmg media ltd (News)
 - AP News — The Associated Press (News)
 - Opera News: Breaking & Local — Opera Norway AS (News)
-- Scripps News — Media Convergence Group, Inc. (News)
 - NewsBlur — NewsBlur, Inc. (News)
 - USA News Updates — MONETIZEGO LTD (Entertainment)
+- NewsNation: Unbiased News — Nexstar Broadcasting, Inc. (News)
 
 ## Huawei AppGallery
-**Намерени заглавия: 1** · точни съвпадения на името: **0**
+**Намерени заглавия: 97** · точни съвпадения на името: **0**
 _Условия: прочетено от JSON API-то на AppGallery (getTabDetail, всички AJAX страници при скролване), глобално по думата „NewsLator". Резултатите са РАЗМИТИ (свързани/препоръчани приложения), затова значение има само ТОЧНОТО съвпадение на името._
-→ Приложения/Игри
+→ NewSpaper Boy, Newspapers Delivery Boy, Jang Newspaper, Sky News Arabia, Roya News, Netease News, GMA News, Newspapers -local & world news, News Africa, Geo News, News App, iFeng News, PressReader, The Star ePaper, NewssQ - местни новини, световни новини, последни новини, XINHUA NEWS, Newspaper Reader, Nasa News, GB News, IPL News, Aleph News, Weather News Pro, Tech News, China News, World News … (+72 още)
 
 ## Google Play (Android)
 **Намерени приложения: 13** · възможни съвпадения на името: **0**
 _Условия: търсено в Google Play (уеб), на английски, по думата „NewsLator" (без конкретна държава)._
-→ Newslater: Personal newsletterHatch Software · Newsletter.ist - Reading Appnewsletter.ist · Google News - Daily HeadlinesGoogle LLC4.2star · Kagi NewsKagi Inc. · Reuters - Breaking World NewsThomson Reuters · NewsSQ – USA NewspapersSM techq - news apps · Haystack News: Local TV NewsHaystack News2.6star · Breaking News: Local & AlertsBeloud.com4.4star · NewsMaker 23NewsMaker 23 · Sky News ArabiaSky News Arabia FZ LLC · Newsgram: Smart News with AIMVSOFT. · Tessera News - RSS ReaderArchbox · PressReader: News & MagazinesPressReader Inc.
+→ Newslater: Personal newsletterHatch Software · Newsletter.ist - Reading Appnewsletter.ist · Google News - Daily HeadlinesGoogle LLC4.2star · Kagi NewsKagi Inc. · Reuters - Breaking World NewsThomson Reuters · NewsSQ – USA NewspapersSM techq - news apps · Haystack News: Local TV NewsHaystack News2.6star · Breaking News: Local & AlertsBeloud.com4.4star · Newsgram: Smart News with AIMVSOFT. · NewsMaker 23NewsMaker 23 · Sky News ArabiaSky News Arabia FZ LLC · Tessera News - RSS ReaderArchbox · PressReader: News & MagazinesPressReader Inc.
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **2** · свободни: **43** · несигурни: **4**
+**Проверени разширения: 49** · заети: **3** · свободни: **32** · несигурни: **14**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „NewsLator". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 
 Заети (малко — оглед на съдържание и ниша):
 - **newslator.com** → нишата неясна
 - **newslator.org** → нишата неясна
-Свободни: 43 (напр. newslator.net, newslator.co, newslator.io, newslator.ai, newslator.app, newslator.news, newslator.media, newslator.press …)
-Несигурни (RDAP без отговор + без DNS): newslator.me, newslator.us, newslator.so, newslator.ac
+- **newslator.so** → сайтът не отговаря
+Свободни: 32 (напр. newslator.net, newslator.co, newslator.io, newslator.ai, newslator.app, newslator.news, newslator.media, newslator.press …)
+Несигурни (RDAP без отговор + без DNS): newslator.tv, newslator.me, newslator.biz, newslator.wiki, newslator.ink, newslator.design, newslator.club, newslator.vip, newslator.work, newslator.fit, newslator.health, newslator.fashion, newslator.us, newslator.ac
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

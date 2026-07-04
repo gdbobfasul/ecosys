@@ -1,0 +1,8 @@
+Eine private Zwei-Faktor-Authentifizierungs-App (2FA), die einmalige TOTP/HOTP/Steam-Codes generiert und alle Geheimnisse in einem verschlüsselten, biometrisch gesperrten Tresor auf Ihrem Gerät aufbewahrt. Fügen Sie Konten hinzu, indem Sie einen QR-Code scannen, einen otpauth:// -Link einfügen, Schlüssel manuell eingeben oder aus Aegis und Google Authenticator importieren, und exportieren Sie alles als QR-Bilder in einem .zip.
+
+Der Tresor wird mit diesem Passwort verschlüsselt. Ohne es gibt es keinen Zugriff auf die Codes.
+
+Lädt jedes Konto als separates QR-Bild in einer .zip herunter.
+
+Support: dai.group.ltd.support@gmail.com
+Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com

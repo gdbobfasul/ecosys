@@ -1,0 +1,12 @@
+A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to turn the fight.
+
+Битва на поле — 3 на 3
+
+Пошаговая битва. Твои герои выходят <b>случайно</b> на каждом уровне.
+
+Особый: у каждого героя <b>свои 6 клавиш</b>; угадай скрытую <b>комбинацию из 4</b> (в любом порядке). 30–40% урона.
+
+Комбинации открываешь подбором. Они не меняются всю игру.
+
+Поддержка: dai.group.ltd.support@gmail.com
+По вопросам и поддержке пишите на: dai.group.ltd.support@gmail.com

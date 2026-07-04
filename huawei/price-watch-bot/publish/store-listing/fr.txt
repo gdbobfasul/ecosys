@@ -1,0 +1,10 @@
+A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.
+
+Un robot qui surveille les prix pour vous
+
+Ce robot surveille des taux crypto et de change choisis et vous avertit dès qu’un prix descend sous ou monte au-dessus du seuil que vous fixez.
+
+Tout fonctionne sur l’appareil. Sans compte, sans contacts, sans suivi. Les prix proviennent de sources publiques gratuites.
+
+Assistance: dai.group.ltd.support@gmail.com
+Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com

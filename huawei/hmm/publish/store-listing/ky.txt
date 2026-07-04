@@ -1,0 +1,12 @@
+A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to turn the fight.
+
+Согуш талаасы — 3ке 3
+
+Кезектүү согуш. Ар деңгээлде баатырларың <b>кокусунан</b> чыгат.
+
+Атайын: ар баатырда <b>өзүнүн 6 баскычы</b> бар; жашыруун <b>4төн комбинацияны</b> тап (каалаган тартипте). 30–40% зыян.
+
+Комбинацияларды сынап табасың. Оюн бою өзгөрбөйт.
+
+Колдоо: dai.group.ltd.support@gmail.com
+Суроолор жана колдоо үчүн жазыңыз: dai.group.ltd.support@gmail.com

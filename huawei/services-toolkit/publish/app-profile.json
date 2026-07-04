@@ -1,0 +1,30 @@
+{
+  "categoryHuawei": "Tools",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [
+    "home_sub",
+    "t_qr_desc",
+    "t_password_desc",
+    "t_pdf_desc",
+    "t_ai_desc"
+  ],
+  "pitchEn": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a free AI text helper. Most tools run entirely on the device, with a few that fetch live online data.",
+  "newFeaturesEn": "First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": true,
+    "microphone": false,
+    "location": false,
+    "notifications": true,
+    "storesLocalOnly": true,
+    "notes": "No account or login. Offline tools (QR, passwords, calculators, text, image/PDF compression) run fully on-device. Camera is used only when scanning a QR code. Network is used by the online tools (currency rates, crypto charts, web scraper, AI text). No personal data is collected or uploaded."
+  },
+  "reviewerRemarksEn": "No account needed. On first launch choose a language and tap Start to reach the tool grid, then open any tool. Offline tools work with no connection; online tools (currency, crypto, scraper, AI text) need internet. The QR tool asks for camera permission only when you start scanning, and the currency watcher may request notification permission for alerts.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

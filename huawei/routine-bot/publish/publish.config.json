@@ -1,0 +1,13 @@
+{
+  "_comment": "Snapshot конфиг (специфичен за routine-bot). Език=routinebot.lang; storage ползва префикс routinebot: — гейтът към таблото е ключът routinebot:state с onboarded:true (active:true за зелен робот). Останалите ключове падат към разумни по подразбиране (рутина 07:30).",
+  "webDir": "dist",
+  "viewport": { "width": 360, "height": 760 },
+  "deviceScaleFactor": 3,
+  "langKey": "routinebot.lang",
+  "stateKey": "routinebot:state",
+  "state": { "onboarded": true, "active": true },
+  "sharedShot": "1-language-picker.png",
+  "screens": [
+    { "name": "main.png", "state": "full", "wait": 1800 }
+  ]
+}

@@ -6,7 +6,8 @@
 import { session, addEntry } from './storage.js';
 import { parseOtpauthURI } from './otp.js';
 import { parseGoogleMigration } from './gauth-migration.js';
-import { parseAegisExport, decryptAegisExport } from './aegis.js';
+import { parseAegisExport, decryptAegisExport, looksLikeAegis } from './aegis.js';
+import { parse2FAS, looksLike2FAS } from './twofas.js';
 import { t, tf } from './i18n.js';
 
 // Ключ за дубликат: ТАЙНА (нормализирана) + ТИП. Един и същ код = един и същ акаунт.
@@ -74,6 +75,39 @@ export async function importAegisEncrypted(text, password) {
   return { ok: true, method: 'aegis', ...r };
 }
 
+// Импорт от 2FAS Auth експорт (некриптиран JSON). Криптиран → reason:'encrypted'.
+export async function import2FASText(text) {
+  const a = parse2FAS(text);
+  if (!a.ok) return { ok: false, method: '2fas', reason: a.reason };
+  const r = await addEntriesDedup(a.entries);
+  return { ok: true, method: '2fas', ...r };
+}
+
+// Импорт от УНИВЕРСАЛЕН otpauth:// списък (текст, по един URI на ред). Поддържа и otpauth-migration
+// (Google) редове. Това е форматът, който почти всеки authenticator може да изнесе/внесе.
+export async function importOtpauthList(text) {
+  const lines = String(text || '').split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+  const list = [];
+  for (const ln of lines) {
+    if (/^otpauth-migration:/i.test(ln)) { const g = parseGoogleMigration(ln); if (g) list.push(...g); }
+    else if (/^otpauth:/i.test(ln)) { const p = parseOtpauthURI(ln); if (p) list.push(p); }
+  }
+  if (!list.length) return { ok: false, method: 'otpauth', reason: 'qr' };
+  const r = await addEntriesDedup(list);
+  return { ok: true, method: 'otpauth', ...r };
+}
+
+// АВТО-разпознаване на формат от съдържанието на файл: otpauth списък / Aegis / 2FAS / наш .json бекъп.
+// Aegis/2FAS криптирани връщат reason:'encrypted' → викащият да поиска парола (за Aegis) или да упъти.
+export async function importAnyText(text) {
+  const s = String(text || '').trim();
+  if (!s) return { ok: false, method: 'json', reason: 'empty' };
+  if (s[0] !== '{' && s[0] !== '[' && /^otpauth(-migration)?:/im.test(s)) return importOtpauthList(text);
+  if (looksLikeAegis(s)) return importAegisText(text);
+  if (looksLike2FAS(s)) return import2FASText(text);
+  return importJsonText(text);
+}
+
 // Импорт от декодиран QR низ: единичен otpauth:// ИЛИ Google миграция (много акаунта).
 export async function importQRData(data) {
   const s = String(data || '').trim();
@@ -96,7 +130,8 @@ export function isImportableQR(s) {
 }
 
 const METHOD_KEY = {
-  qr: 'method_qr', google: 'method_google', aegis: 'method_aegis', json: 'method_json'
+  qr: 'method_qr', google: 'method_google', aegis: 'method_aegis', json: 'method_json',
+  '2fas': 'method_2fas', otpauth: 'method_otpauth'
 };
 
 // ЕДИННО съобщение за резултата: при УСПЕХ — колко кода и по какъв начin (+ колко дубликата

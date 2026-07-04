@@ -1,0 +1,12 @@
+A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+
+مبارزة الحلبة — ١ ضد ١
+
+قتال بالأدوار. يظهر أبطالك <b>عشوائيًا</b> في كل مستوى.
+
+الضربة الخاصة: لكل بطل <b>٦ مفاتيح خاصة به</b>؛ خمّن <b>تركيبة الـ٤ المخفية</b> (بأي ترتيب). ٣٠–٤٠٪ ضرر.
+
+تكتشف التركيبات بالتجربة. لا تتغيّر طوال اللعبة.
+
+الدعم: dai.group.ltd.support@gmail.com
+للأسئلة والدعم، راسلونا على: dai.group.ltd.support@gmail.com

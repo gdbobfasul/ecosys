@@ -1,6 +1,8 @@
 // Version: 1.0001
 import { enforceLock } from './core/lock.js';
-enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
+import { mountHelp } from './core/help.js';
+enforceLock();
+mountHelp('chat'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // Bootstrap на обвивката.
 //
 // В ПРОДУКЦИЯ Capacitor зарежда чата директно през `server.url`

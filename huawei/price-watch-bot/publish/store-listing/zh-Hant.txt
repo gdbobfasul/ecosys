@@ -1,0 +1,10 @@
+A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.
+
+替你盯緊價格的機器人
+
+此機器人監看你選定的加密貨幣與匯率，一旦價格跌破或漲過你設定的門檻就立即通知你。
+
+一切都在裝置上運行。無需帳戶、不存取聯絡人、不追蹤。價格來自免費的公開來源。
+
+支援: dai.group.ltd.support@gmail.com
+如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com

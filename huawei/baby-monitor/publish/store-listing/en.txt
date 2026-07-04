@@ -1,0 +1,8 @@
+A camera-based awareness assistant that watches your sleeping or playing child through the phone camera and alerts you on motion: it flags stirring/waking, a second person appearing in the room, or the child leaving the frame. Detection runs on-device with a local notification, sound, and a photo log for each event.
+
+A robot for rent that watches your sleeping or playing child through the phone camera and alerts you.
+
+Free and on-device. No accounts, no contacts, no tracking. The only network is optional (another camera / relay) and the free model weights.
+
+Support: dai.group.ltd.support@gmail.com
+For questions and support, write to: dai.group.ltd.support@gmail.com

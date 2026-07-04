@@ -1,0 +1,8 @@
+Um assistente automático de resposta a mensagens que responde às suas próprias regras: acionadores de palavras-chave com respostas prontas, horário de expediente, mensagens de ausência e listas de permissão/bloqueio. Ele registra todas as respostas automáticas e notifica você, além de incluir uma caixa de entrada de demonstração integrada para que você possa testar tudo instantaneamente.
+
+Um robô que responde por você — pelas suas regras.
+
+Ative o robô, defina regras (palavras-chave → respostas prontas, horário, listas de permissão/bloqueio) e ligue-o. Quando chega uma mensagem, o robô responde sozinho e avisa você.
+
+Suporte: dai.group.ltd.support@gmail.com
+Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com

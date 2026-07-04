@@ -1,0 +1,12 @@
+A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+
+Ring Duel — 1 vs 1
+
+Turn-based battle. Your heroes appear <b>at random</b> each level.
+
+Special: each hero has <b>its own 6 keys</b>; guess the hidden <b>combo of 4</b> (any order). 30–40% damage.
+
+You discover combos by trying. They don’t change all game.
+
+Support: dai.group.ltd.support@gmail.com
+For questions and support, write to: dai.group.ltd.support@gmail.com

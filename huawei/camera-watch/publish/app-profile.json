@@ -1,0 +1,27 @@
+{
+  "categoryHuawei": "Tools",
+  "isGame": false,
+  "generativeAI": false,
+  "descKeys": [
+    "ob_intro",
+    "ob_honest"
+  ],
+  "pitchEn": "A camera-guard assistant that watches a camera feed and warns you on movement, telling you what moved: a person/intruder, dog, cat, or other animal. Motion is detected on-device with a local alert and a photo log for each event; it can use the phone camera or an external browser camera stream.",
+  "newFeaturesEn": "First release: on-device motion detection with object recognition (person/animal), local alerts, a photo event log, and support for the phone camera or an external camera URL.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": true,
+    "microphone": false,
+    "location": false,
+    "notifications": true,
+    "storesLocalOnly": true,
+    "notes": "Video is analyzed on the device and never leaves it; event snapshots and logs stay local. Network is used only for a one-time free AI-model download and optionally a user-supplied camera URL. No account, contacts, location, or tracking."
+  },
+  "reviewerRemarksEn": "No account or login is required. On first launch pick a language, read the onboarding, and tap 'Activate for free', then continue to Permissions and grant Camera (and optionally Notifications). Start the watcher and move in front of the camera; the app detects motion, labels what moved, fires a local notification, and adds a snapshot to the log. All processing happens on-device.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

@@ -1,0 +1,8 @@
+Un asistente automático de respuesta de mensajes que responde por ti según tus propias reglas: disparadores de palabras clave con respuestas listas, horas de oficina, mensajes ausentes y listas de permitir/bloquear. Registra todas las respuestas automáticas y te notifica, e incluye una bandeja de entrada de demostración incorporada para que puedas probar todo al instante.
+
+Un robot que responde por ti — con tus reglas.
+
+Activa el robot, define reglas (palabras clave → respuestas listas, horario, listas blancas/negras) y enciéndelo. Cuando llega un mensaje, el robot responde solo y te avisa.
+
+Soporte: dai.group.ltd.support@gmail.com
+Para dudas y soporte, escribe a: dai.group.ltd.support@gmail.com

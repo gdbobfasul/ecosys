@@ -1,6 +1,6 @@
 // forms.cjs — генерира обяснителните файлове за попълване на формите в Huawei AppGallery Connect,
 // по един за всяко издание: Android („New app") и HarmonyOS („New app ID"). Слага ги в
-// <ап>/publish/forma-android.md и forma-harmonyos.md. Данните (име, пакет, категория) се четат
+// <ап>/publish/form-android.md и form-harmonyos.md. Данните (име, пакет, категория) се четат
 // от publish/huawei.meta и capacitor.config.json — така важи за КОЕ ДА Е приложение.
 const fs = require('fs');
 const path = require('path');
@@ -51,7 +51,8 @@ async function tr(text, code) {
 const NEW_FEATURES_EN = 'First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.';
 
 // Пише отделен файл с Brief + Full + New features (локализирани) за поддържаните езици.
-async function generateDescriptions(appDir, appName) {
+async function generateDescriptions(appDir, appName, newFeaturesEn) {
+  const NF_EN = newFeaturesEn || NEW_FEATURES_EN;
   const pub = path.join(appDir, 'publish');
   const L = [];
   L.push('# ' + appName + ' — описание по език (Brief + Full + New features)');
@@ -66,7 +67,7 @@ async function generateDescriptions(appDir, appName) {
     const t = readSafe(path.join(pub, 'store-listing', code + '.txt')).trim();
     if (!t) continue;
     // eslint-disable-next-line no-await-in-loop
-    const nf = await tr(NEW_FEATURES_EN, code);
+    const nf = await tr(NF_EN, code);
     L.push('## ' + (LANG_NAME[code] || code) + ' (' + code + ') — AppGallery: **' + AG_LANG[code] + '**');
     L.push('**Brief introduction (до 25 знака):**');
     L.push('```');
@@ -95,176 +96,139 @@ function metaField(meta, label) {
 
 const SUPPORT_EMAIL = 'dai.group.ltd.support@gmail.com';
 
-function androidForm(name, pkg, cat, fullIntro, brief, appBase) {
-  return `# Попълване на ВСИЧКИ Android форми в Huawei AppGallery Connect — ${name}
+function androidForm(opts) {
+  const { name, pkg, cat, appBase } = opts;
+  const isGame = !!opts.isGame;
+  const network = opts.network !== false;
+  const collects = !!opts.collectsPersonalData;
+  const accounts = !!opts.accountsOrLogin;
+  const genAI = !!opts.generativeAI;
+  const pricing = opts.pricing || { type: 'Paid', price: '1.00 USD' };
+  const paid = /paid/i.test(pricing.type);
+  const remarks = (opts.reviewerRemarksEn || '').trim();
 
-Път: Apps and atomic services → таб **Android** → бутон **Release**. Формите се попълват ПОСЛЕДОВАТЕЛНО (стойностите за копиране са в блоковете).
+  // Плащане — Paid (с Merchant agreement + цена + бележка за Русия/Беларус) или Free.
+  const paymentBlock = paid
+    ? `**Paid** — цена **${pricing.price}**. Приеми Merchant Service Agreement, въведи цената през „View and edit", Save. Махни **Russia** и **Belarus** от държавите.`
+    : `**Free**.`;
 
----
+  const collectBlock = collects ? '**Yes**' : '**No**';
+  const aiBlock = genAI ? '**Involved**' : '**Not involved**';
+  const countriesLine = 'Всички освен **Chinese mainland**' + (paid ? ', **Russia**, **Belarus**' : '');
+  const filingNet = ''; // без обяснения — решението е в реда „Filing information" по-долу
+  const gameNote = isGame ? '**Category = Games** → Huawei иска възрастов рейтинг (IARC въпросник). Попълни честно.\n\n' : '';
 
-## Форма 1 — диалог „New app"
+  const signInLine = accounts ? 'отметни (има вход)' : 'без отметка (няма вход)';
+  const reviewerNote = paid
+    ? 'Note: this build includes a 4-day trial; after 4 days it asks for a code word to continue — the code word is "кокошка" (kokoshka).'
+    : 'Note: this build asks for the code word "кокошка" (kokoshka) after 4 days of use.';
+  const privacyUrl = `https://selflearning.bot.nu/privacy/${appBase}/hw-privacy.html`;
+  // Името е НЕЗАВИСИМО поле (може да се смени по всяко време) → placeholder, не се пише твърдо тук.
+  const NAME_FIELD = 'името на приложението (източник: `capacitor.config.json` → `appName`)';
 
-| Поле | Стойност |
+  return `# Android форма — ${appBase}
+
+Път: **Apps and atomic services → таб Android → бутон Release.** Попълвай по реда отдолу.
+
+> Името на приложението е единственото поле, което зависи от избора ти — навсякъде долу „App name" = ${NAME_FIELD}. Останалото не се мени при смяна на име.
+
+${gameNote}## 1. New app
+| Поле | Попълни |
 |---|---|
-| **Package type** | **APK (Android app)** (НЕ „RPK (quick app)") |
-| **Devices supported** | **Mobile phone** |
-| **App name** | \`${name}\` |
-| **App category** | **${cat}** |
-| **Default language** | **English (UK)** |
-| **Add to project** | без отметка |
+| Package type | APK (Android app) |
+| Devices supported | Mobile phone |
+| App name | ${NAME_FIELD} |
+| App category | ${cat} |
+| Default language | English (UK) |
+| Add to project | без отметка |
 
-→ **OK**
+→ OK
 
----
-
-## Форма 2 — App information (Localization)
-
-**Compatibility → Compatible devices:** ✅ **Mobile phone** (Tablet/Watch — не)
-**Localization → Language:** English (UK) - default
-
-**App name:**
-\`\`\`
-${name}
-\`\`\`
-
-**Brief introduction** (до 25 знака), **Full introduction** (до 8000 знака) и **New features** (до 1000 знака):
-→ вземи ги от файла **\`publish/descriptions-languages.md\`** — там и трите са локализирани за
-езиците, които AppGallery поддържа (без кыргызки). За English (UK, default) ползвай секцията
-„English (en)"; другите се задават последователно през **Manage languages** от същия файл.
-
-**Icon** (квадратна 512×512 PNG): качи \`publish/icon-512.png\` (същата икона като в APK-то).
-
----
-
-## Форма 3 — Visual assets → Screenshots (задължително, 3–8 бр.)
-
-Качи 8-те екрана от \`publish/\` (на РАЗЛИЧНИ езици — да се вижда, че има преводи), в реда:
-\`1-language-picker.png\` · \`2-english.png\` · \`3-bulgarian.png\` · \`4-arabic.png\` (RTL) ·
-\`5-hindi.png\` · \`6-japanese.png\` · \`7-chinese.png\` · \`8-german.png\`.
-(Introduction/Promotion video — по избор.)
-
----
-
-## Форма 4 — Categorization
-
-**Category:**
-\`\`\`
-${cat}
-\`\`\`
-
----
-
-## Форма 5 — Service information
-
-Provider / Developer name — вече попълнени (Dai Grup Ltd.).
-**Website:** по избор — може да се остави празно.
-Имейл за поддръжка (в раздела за контакти/поддръжка): \`${SUPPORT_EMAIL}\`
-
----
-
-## Форма 6 — „New version - Draft" (версията + законовите полета)
-
-**App version → App version:** натисни **Manage packages** → качи
-\`apk/${appBase}-huawei-release.apk\` (release, подписан). Пакетът \`${pkg}\` идва от APK-то.
-⚠️ Ако смениш държавите/регионите СЛЕД качване, Huawei иска **повторно качване на APK-то**
-(съобщение „contract signing entity has changed … upload an app package again") — просто качи
-пак СЪЩИЯ файл през Manage packages. Нормална стъпка, нищо по файла не се променя.
-
-**Payment information → Payment type:** **Paid** — цена **1.00 USD**.
-Стъпки: (1) приеми **Huawei Merchant Service Agreement** (линкът до „Paid") — задължително за
-получаване на пари; (2) до **Price (tax included)** натисни **View and edit** → въведи базова цена
-**1.00 USD** (Huawei авто-попълва другите валути) → **Save**; (3) **Submit** отново — грешката
-„Edit and save the price" изчезва, щом цената е записана.
-Забележки: Huawei удържа комисиона (~15%); настрой банкова сметка за изплащане (Finance/Payout).
-
-**In-app purchases:** нищо не отмятай (приложението няма вътрешни покупки — цената е еднократна при сваляне).
-
-**Privacy statement:**
-| Поле | Стойност |
+## 2. App information
+| Поле | Попълни |
 |---|---|
-| **Privacy policy URL** (задължително) | \`https://selflearning.bot.nu/privacy/${appBase}/hw-privacy.html\` |
-| **Data subject right URL** | остави празно (може да е същият адрес) |
+| Compatible devices | само Mobile phone |
+| Language | English (UK) - default |
+| App name | ${NAME_FIELD} |
+| Brief introduction | descriptions-languages.md → English → Brief |
+| Full introduction | descriptions-languages.md → English → Full |
+| New features | descriptions-languages.md → English → New features |
+| Icon | качи \`publish/icon-512.png\` |
 
-**Privacy tags → Collect personal data:** **No** (приложението не събира лични данни — няма профили/вход, само локални настройки).
+Другите езици: **Manage languages** → добави език → копирай от \`descriptions-languages.md\`.
 
-**AI function declaration → Generative AI service:** **Not involved**
-(приложението само превежда и чете новини; няма генеративен ИИ).
+## 3. Screenshots
+Качи 8-те .png от \`publish/\` (различни езици): \`1-language-picker.png\`, \`2-english.png\`, \`3-bulgarian.png\`, \`4-arabic.png\`, \`5-hindi.png\`, \`6-japanese.png\`, \`7-chinese.png\`, \`8-german.png\`.
 
-**Copyright information → Proof of copyright:** ти сме собственик на кода — при поискване
-качи документ/декларация от Dai Grup Ltd. (или екранна снимка на репозитория). Често не е
-задължително за първо подаване — попълни ако системата го изисква.
+## 4. Categorization
+| Поле | Попълни |
+|---|---|
+| Category | ${cat} |
 
-**Filing information (китайско ICP/MIIT изискване) → РЕШЕНИЕ: махни континентален Китай от разпространението.**
-Тази секция иска Filing entity + Organization code, проверени в китайското министерство (MIIT) —
-т.е. РЕАЛНО китайско ICP разрешително + китайско юр. лице/организационен код. НЯМАМЕ такова.
-Секцията е задължителна САМО защото континентален Китай е сред целевите пазари. Затова:
-1. Иди в **Countries/Regions за разпространение** → **изключи „Chinese mainland" / China**.
-2. Върни се на „Filing information" — щом Китай (mainland) не е целеви пазар, секцията вече НЕ е
-   задължителна и грешката „One or more errors ... Filing information" изчезва.
-⚠️ НЕ избирай „Standalone app" (значи БЕЗ мрежа, а ${name} ползва мрежа → пада на проверка) и НЕ
-избирай „App server is in Chinese mainland". Приложението остава достъпно във всички ДРУГИ региони.
-Таргетираме Тайван (zh-Hant, традиционен китайски), не континентален Китай (там е zh-CN, който нямаме).
+## 5. Service information
+| Поле | Попълни |
+|---|---|
+| Provider / Developer | Dai Grup Ltd. (вече попълнено) |
+| Website | празно |
+| Support email | ${SUPPORT_EMAIL} |
 
-**Family sharing:** **изключено** (не отмятай). Важи само за приложения в китайския
-континентален пазар и при платено съдържание. ${name} е безплатно и без покупки → неприложимо.
+## 6. New version
+| Поле | Попълни |
+|---|---|
+| App package | Manage packages → качи \`apk/${appBase}-huawei-release.apk\` |
+| Payment type | ${paymentBlock} |
+| In-app purchases | нищо |
+| Privacy policy URL | \`${privacyUrl}\` |
+| Data subject right URL | празно |
+| Collect personal data | ${collectBlock} |
+| Generative AI service | ${aiBlock} |
+| Filing information | махни **Chinese mainland** от Countries/Regions → секцията изчезва |
+| Copyright proof | празно (попълни само ако системата поиска) |
+| Family sharing | изключено |
+| Countries/Regions | ${countriesLine} |
+| Sign-in required | ${signInLine} |
+| Release time | Immediately once approved |
 
-**For reviewer:**
-- **Sign-in required:** без отметка (няма вход в приложението).
-- **Remarks** (инструкция за рецензента, копирай):
+**For reviewer → Remarks** (копирай):
 \`\`\`
-No account or sign-in is required. On first launch, choose an interface language, then pick a country to read its latest news. The headlines are automatically translated into the selected language. Tap the speaker icon on a headline (or "Read all") to have it read aloud via the device's text-to-speech. You can change country and language anytime from the tabs.
+${remarks ? remarks + ' ' : ''}${reviewerNote}
 \`\`\`
 
-**Release → Release time:** **Immediately once approved**.
-
-→ Горе вдясно **Save**, после **Submit**.
-
-### Privacy policy URL — хостване (готово в кода)
-Адресът е ПОСТОЯНЕН — не се сменя, докато приложението е активно в магазина.
-Privacy страницата за Huawei е \`public/privacy/${appBase}/hw-privacy.html\` → при деплой отива в
-\`/var/www/html/privacy/${appBase}/hw-privacy.html\` и се сервира на
-**\`https://selflearning.bot.nu/privacy/${appBase}/hw-privacy.html\`** (nginx блокът \`/privacy/\` е
-добавен в \`08-setup-domain.sh\`). За RuStore има отделна страница на
-\`https://selflearning.bot.nu/privacy/${appBase}/ru-privacy.html\`. След деплой (опция 2/5 + опция 8
-за домейните) адресът е публичен по HTTPS и се попълва в полето. НЕ ползваме offbitch.com (счупен).
+→ **Save** → **Submit**.
 
 ---
-
-## Всички поддържани езици
-Кратко (Brief) и пълно (Full) описание за всеки език са в **\`publish/descriptions-languages.md\`**.
-През **Manage languages** добавяш всеки език и попълваш от там, последователно. Снимките важат за всички езици.
-
-## Двоичен файл (за качване)
-\`apk/${appBase}-huawei-release.apk\` — **release, подписан** (не debug). Пакет \`${pkg}\`.
+APK за качване: \`apk/${appBase}-huawei-release.apk\` (release, подписан). Пакет: \`${pkg}\`.
+Privacy е хостнат на \`${privacyUrl}\` (RuStore: \`.../ru-privacy.html\`) — публичен след деплой.
 `;
 }
 
-function harmonyForm(name, pkg, cat) {
+function harmonyForm(name, pkg, cat, appBase) {
   const bundle = pkg.replace(/\.(hw|huawei|HUAWEI|rustore)$/, '');
-  return `# Форма „New app ID" (HarmonyOS) в Huawei AppGallery Connect — попълване за ${name}
+  const NAME_FIELD = 'името на приложението (източник: `capacitor.config.json` → `appName`)';
+  return `# HarmonyOS форма — ${appBase || bundle}
 
-**Път:** Apps and atomic services → таб **HarmonyOS** → **New app ID**.
-(За Android виж \`forma-android.md\`.)
+Път: **Apps and atomic services → таб HarmonyOS → New app ID.**
 
-## Попълване
-
-| Поле | Какво да избереш / въведеш |
+## New app ID
+| Поле | Попълни |
 |---|---|
-| **App type** | **HarmonyOS app** (НЕ „Atomic service") |
-| **App name** | \`${name}\` |
-| **App package name** | \`${bundle}\` (HarmonyOS bundle name) |
-| **Level-1 app category** | **${cat}** (НЕ „Game") |
+| App type | HarmonyOS app |
+| App name | ${NAME_FIELD} |
+| App package name | ${bundle} |
+| Level-1 app category | ${cat} |
 
-Натисни **Next**. Бележката за суфикс \`.huawei\`/\`.HUAWEI\` важи само за joint-operations игри.
+→ Next
 
-## ⚠️ HarmonyOS иска ОТДЕЛЕН билд (HAP), не Android APK
-Прави се с **DevEco Studio + HarmonyOS SDK**. Тъй като приложението е уеб (HTML/JS),
-HarmonyOS изданието е тънка **ArkTS обвивка**, зареждаща \`dist/\` в **Web компонент (ArkWeb)**.
-Състояние: чака DevEco Studio.
+Останалите форми (описания, икона, снимки, цена, privacy, държави) — **същите стойности като \`form-android.md\`**.
 
-## Общи данни
-- Имейл за поддръжка: \`${SUPPORT_EMAIL}\`
-- Описания: \`publish/store-listing/<език>.txt\` · Снимки: \`publish/screenshots/\` · Категория: ${cat}
+| Поле | Попълни |
+|---|---|
+| Support email | ${SUPPORT_EMAIL} |
+| Описания | \`publish/descriptions-languages.md\` |
+| Снимки | \`publish/screenshots/\` |
+| Категория | ${cat} |
+
+⚠️ HarmonyOS иска отделен билд (HAP през DevEco Studio), не Android APK. Състояние: чака DevEco Studio.
 `;
 }
 
@@ -277,17 +241,24 @@ async function generateForms(appDir) {
   const pkg = metaField(meta, 'App package name') || cap.appId || '';
   const cat = metaField(meta, 'Level-1 app category') || 'App';
   const appBase = path.basename(appDir);
-  // Пълно и кратко описание — от английския store-listing (така важи за КОЕ ДА Е приложение).
-  const enListing = readSafe(path.join(pub, 'store-listing', 'en.txt')).trim();
-  let brief = (enListing.split('\n').map((l) => l.trim()).find(Boolean) || name);
-  // Brief introduction — предпочита се до 25 знака; режем по граница на дума, без висяща пунктуация.
-  if (brief.length > 25) brief = brief.slice(0, 25).replace(/[\s,;:.\-]+\S*$/, '').replace(/[\s,;:.\-]+$/, '').trim();
-  const fullIntro = enListing || name;
-  const aPath = path.join(pub, 'forma-android.md');
-  const hPath = path.join(pub, 'forma-harmonyos.md');
-  fs.writeFileSync(aPath, androidForm(name, pkg, cat, fullIntro, brief, appBase), 'utf8');
-  fs.writeFileSync(hPath, harmonyForm(name, pkg, cat), 'utf8');
-  const desc = await generateDescriptions(appDir, name);
+  // Профил на приложението (данни/цена/категория) — от publish/app-profile.json (пише го драйверът).
+  let profile = {}; try { profile = JSON.parse(readSafe(path.join(pub, 'app-profile.json')) || '{}'); } catch (_) {}
+  const dh = profile.dataHandling || {};
+  const opts = {
+    name, pkg, cat, appBase,
+    isGame: !!profile.isGame,
+    network: dh.network !== false,
+    collectsPersonalData: !!dh.collectsPersonalData,
+    accountsOrLogin: !!dh.accountsOrLogin,
+    generativeAI: !!profile.generativeAI,
+    pricing: profile.pricing || { type: 'Paid', price: '1.00 USD' },
+    reviewerRemarksEn: profile.reviewerRemarksEn || ''
+  };
+  const aPath = path.join(pub, 'form-android.md');
+  const hPath = path.join(pub, 'form-harmonyos.md');
+  fs.writeFileSync(aPath, androidForm(opts), 'utf8');
+  fs.writeFileSync(hPath, harmonyForm(name, pkg, cat, appBase), 'utf8');
+  const desc = await generateDescriptions(appDir, name, profile.newFeaturesEn);
   return { android: aPath, harmonyos: hPath, descriptions: desc.path, name, pkg };
 }
 

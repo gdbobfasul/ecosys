@@ -1,0 +1,8 @@
+Un assistant de réponse automatique aux messages qui répond pour vous selon vos propres règles : les déclencheurs de mots-clés avec des réponses prêtes, les heures de bureau, les messages d'absence et les listes d'autorisation/blocage. Il enregistre chaque réponse automatique et vous en informe, et comprend une boîte de réception de démonstration intégrée afin que vous puissiez tout tester instantanément.
+
+Un robot qui répond à votre place — selon vos règles.
+
+Activez le robot, définissez des règles (mots-clés → réponses prêtes, horaires, listes blanches/noires) et lancez-le. À la réception d’un message, le robot répond automatiquement et vous prévient.
+
+Assistance: dai.group.ltd.support@gmail.com
+Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com

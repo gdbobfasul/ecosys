@@ -1,0 +1,8 @@
+An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.
+
+Il bot controlla una fonte a tua scelta (un feed RSS/Atom o un’API JSON pubblica) e ti avvisa quando compare una nuova voce o corrisponde una parola chiave. Tutto funziona localmente sul dispositivo: senza account, senza cloud, senza tracciamento.
+
+Monitor illimitati, notifiche locali, confronto su nuove voci e parole chiave.
+
+Assistenza: dai.group.ltd.support@gmail.com
+Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com

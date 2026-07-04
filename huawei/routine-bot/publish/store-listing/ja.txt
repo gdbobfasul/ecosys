@@ -1,0 +1,12 @@
+A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+{0} はあなた専用の毎日のロボットです。一度有効にすれば、毎日ルーティンを実行します：朝のブリーフィング、リマインダー、（任意で）夜のまとめ — そして通知します。
+
+🌤️ 朝のブリーフィング：天気、今日の予定、モチベーション
+
+⏰ リマインダー：薬、習慣、タスク — 時刻と曜日つき
+
+🌙 夜のまとめ（任意）
+
+サポート: dai.group.ltd.support@gmail.com
+ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com

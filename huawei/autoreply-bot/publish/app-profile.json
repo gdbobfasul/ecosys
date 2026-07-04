@@ -1,0 +1,27 @@
+{
+  "categoryHuawei": "Communication",
+  "isGame": false,
+  "generativeAI": false,
+  "descKeys": [
+    "onboard_tagline",
+    "onboard_how_body"
+  ],
+  "pitchEn": "An automatic message-reply assistant that answers for you by your own rules: keyword triggers with ready replies, office hours, away messages, and allow/block lists. It logs every auto-reply and notifies you, and includes a built-in demo inbox so you can test everything instantly.",
+  "newFeaturesEn": "First release: rule-based auto-replies with keywords, office hours, allow/block lists, a demo inbox, and local notifications for every answer sent.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": true,
+    "storesLocalOnly": true,
+    "notes": "Rules and reply logs are stored on the device only. Network is used optionally to connect the KCY chat channel over HTTP. No account, no contacts, no tracking."
+  },
+  "reviewerRemarksEn": "No account or login is needed. On first launch choose a language, then tap 'Activate the robot — free' on the onboarding screen. Open the 'Demo' (inbox) tab and send a test message; the bot matches your rules and auto-replies, and the reply appears in the dashboard log. Nothing external is required to evaluate the app.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

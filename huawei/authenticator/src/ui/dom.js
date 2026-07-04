@@ -68,6 +68,26 @@ export function promptPassword(message, okLabel, cancelLabel) {
   });
 }
 
+// ПОСТОЯНЕН диалог със селектируем текст (за дебъг/диагностика) — стои, докато не го затвориш.
+export function showAlert(title, text) {
+  const finish = () => { try { ov.remove(); } catch (e) {} };
+  const pre = h('textarea', {
+    readonly: 'readonly',
+    style: 'width:100%;height:260px;box-sizing:border-box;background:#0e1726;color:#cfe;border:1px solid #2a3550;border-radius:10px;padding:10px;font:12px/1.5 monospace;white-space:pre-wrap;resize:none'
+  });
+  pre.value = String(text || '');
+  const box = h('div', { style: 'max-width:360px;width:100%;background:#121a2b;border-radius:14px;padding:16px;box-sizing:border-box' },
+    h('div', { style: 'color:#e6edf3;font-size:15px;font-weight:600;margin-bottom:10px', text: title || 'Debug' }),
+    pre,
+    h('div', { style: 'display:flex;gap:8px;margin-top:12px' },
+      h('button', { style: 'flex:1;padding:11px;border:none;border-radius:10px;background:#243049;color:#cdd', onclick: () => { try { navigator.clipboard && navigator.clipboard.writeText(pre.value); } catch (e) {} } }, 'Copy'),
+      h('button', { style: 'flex:1;padding:11px;border:none;border-radius:10px;background:#0a84ff;color:#fff;font-weight:600', onclick: finish }, 'OK')
+    )
+  );
+  const ov = h('div', { style: 'position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:20px' }, box);
+  document.body.appendChild(ov);
+}
+
 // Кратко известие (toast) долу на екрана.
 let toastTimer = null;
 export function toast(msg) {

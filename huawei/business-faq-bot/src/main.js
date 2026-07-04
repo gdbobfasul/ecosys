@@ -1,6 +1,8 @@
 // Version: 1.0001
 import { enforceLock } from './core/lock.js';
-enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
+import { mountHelp } from './core/help.js';
+enforceLock();
+mountHelp('business-faq-bot'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // main.js — входна точка + прост hash-based рутер.
 import './ui/styles.css';
 import { getState } from './core/storage.js';

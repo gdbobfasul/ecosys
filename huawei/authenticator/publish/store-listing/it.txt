@@ -1,0 +1,8 @@
+Un'app privata di autenticazione a due fattori (2FA) che genera codici una tantum TOTP/HOTP/Steam e conserva tutti i segreti in un vault crittografato e bloccato biometricamente sul tuo dispositivo. Aggiungi account scansionando un codice QR, incollando un link otpauth://, inserendo le chiavi manualmente o importando da Aegis e Google Authenticator ed esporta tutto come immagini QR in un .zip.
+
+La cassaforte è cifrata con questa password. Senza, niente accesso ai codici.
+
+Scarica ogni account come immagine QR separata in uno .zip.
+
+Assistenza: dai.group.ltd.support@gmail.com
+Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com

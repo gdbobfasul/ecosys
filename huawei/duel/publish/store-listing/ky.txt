@@ -1,0 +1,12 @@
+A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+
+Рингдеги дуэль — 1ге 1
+
+Кезектүү согуш. Ар деңгээлде баатырларың <b>кокустан</b> чыгат.
+
+Атайын: ар баатырдын <b>өзүнчө 6 баскычы</b> бар; жашыруун <b>4төн комбону</b> тап (каалаган тартипте). 30–40% зыян.
+
+Комболорду сынап табасың. Бүт оюн бою өзгөрбөйт.
+
+Колдоо: dai.group.ltd.support@gmail.com
+Суроолор жана колдоо үчүн жазыңыз: dai.group.ltd.support@gmail.com

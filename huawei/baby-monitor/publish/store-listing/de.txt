@@ -1,0 +1,8 @@
+Ein kamerabasierter Achtsamkeitsassistent, der Ihr schlafendes oder spielendes Kind durch die Telefonkamera beobachtet und Sie bei Bewegung warnt: Er markiert das Rühren/Aufwachen, eine zweite Person, die im Raum erscheint, oder das Kind, das den Rahmen verlässt. Die Erkennung erfolgt auf dem Gerät mit einer lokalen Benachrichtigung, Ton und einem Fotoprotokoll für jedes Ereignis.
+
+Ein gemieteter Roboter, der dein schlafendes oder spielendes Kind über die Telefonkamera beobachtet und dich warnt.
+
+Kostenlos und auf dem Gerät. Keine Konten, keine Kontakte, kein Tracking. Das einzige Netz ist optional (andere Kamera / Relay) und die kostenlosen Modellgewichte.
+
+Support: dai.group.ltd.support@gmail.com
+Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com

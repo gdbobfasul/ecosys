@@ -1,0 +1,8 @@
+An automatic message-reply assistant that answers for you by your own rules: keyword triggers with ready replies, office hours, away messages, and allow/block lists. It logs every auto-reply and notifies you, and includes a built-in demo inbox so you can test everything instantly.
+
+A robot that replies for you — by your rules.
+
+Activate the robot, set rules (keywords → ready replies, office hours, allow/block lists) and turn it on. When a message arrives, the robot replies automatically and notifies you.
+
+Support: dai.group.ltd.support@gmail.com
+For questions and support, write to: dai.group.ltd.support@gmail.com

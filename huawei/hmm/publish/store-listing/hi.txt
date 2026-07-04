@@ -1,0 +1,12 @@
+A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to turn the fight.
+
+रणभूमि — 3 बनाम 3
+
+बारी-आधारित युद्ध। हर स्तर पर तुम्हारे नायक <b>यादृच्छिक</b> रूप से आते हैं।
+
+विशेष: हर नायक की <b>अपनी 6 कुंजियाँ</b>; छिपा <b>4 का कॉम्बो</b> पहचानो (किसी भी क्रम में)। 30–40% क्षति।
+
+कॉम्बो आज़माकर खोजो। ये पूरे खेल में नहीं बदलते।
+
+सहायता: dai.group.ltd.support@gmail.com
+प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com

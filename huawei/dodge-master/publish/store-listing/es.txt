@@ -1,0 +1,6 @@
+A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficulty. Beat your best score and climb a local leaderboard.
+
+¡Muévete y esquiva los proyectiles!
+
+Soporte: dai.group.ltd.support@gmail.com
+Para preguntas y soporte, escribe a: dai.group.ltd.support@gmail.com

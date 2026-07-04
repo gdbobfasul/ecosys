@@ -1,0 +1,18 @@
+{
+  "_comment": "Snapshot конфиг (business-faq-bot). Език=businessfaq.lang; таблото се показва при activated:true. kb остава засято по подразбиране (seedKb) — не го подаваме, за да не изтрием демо базата; добавяме броячи, за да изглежда живо.",
+  "webDir": "dist",
+  "viewport": { "width": 360, "height": 760 },
+  "deviceScaleFactor": 3,
+  "langKey": "businessfaq.lang",
+  "stateKey": "bfb.state.v1",
+  "state": {
+    "activated": true,
+    "robotOn": true,
+    "permissions": { "notifications": true },
+    "stats": { "answered": 12, "fallback": 2, "away": 1 }
+  },
+  "sharedShot": "1-language-picker.png",
+  "screens": [
+    { "name": "main.png", "state": "full", "wait": 1800 }
+  ]
+}

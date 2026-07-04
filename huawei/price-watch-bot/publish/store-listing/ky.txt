@@ -1,0 +1,10 @@
+A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.
+
+Сиздин ордуңузга бааларды көзөмөлдөгөн робот
+
+Бул робот тандалган крипто жана валюта курстарын байкап, баа сиз койгон чектен төмөн түшкөндө же жогору чыкканда сизге кабарлайт.
+
+Баары түзмөктө иштейт. Аккаунтсуз, байланыштарсыз, көзөмөлсүз. Баалар акысыз ачык булактардан алынат.
+
+Колдоо: dai.group.ltd.support@gmail.com
+Суроолор жана колдоо үчүн жазыңыз: dai.group.ltd.support@gmail.com

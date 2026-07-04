@@ -1,6 +1,8 @@
 // Version: 1.0001
 import { enforceLock } from './core/lock.js';
-enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
+import { mountHelp } from './core/help.js';
+enforceLock();
+mountHelp('price-watch-bot'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // Входна точка — рутер между екраните.
 import { injectStyles } from './ui/styles.js';
 import { loadState, defaultState } from './core/storage.js';

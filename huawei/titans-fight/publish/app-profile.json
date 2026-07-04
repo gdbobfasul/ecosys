@@ -1,0 +1,28 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [
+    "menu_hint",
+    "choose_weapon",
+    "champion"
+  ],
+  "pitchEn": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved to a local leaderboard on your device.",
+  "newFeaturesEn": "First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No account, no network calls, no device permissions. Level progress and the leaderboard (an optional player name plus scores) are stored only in local storage on the device."
+  },
+  "reviewerRemarksEn": "No account or internet is required. On first launch pick a language, then tap a level in the menu to start; choose a weapon and press Fight. Win a match to unlock the next level, and optionally enter a name to save a score to the on-device leaderboard. The app requests no runtime permissions.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

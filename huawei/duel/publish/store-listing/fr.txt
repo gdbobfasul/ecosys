@@ -1,0 +1,12 @@
+A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+
+Duel sur le ring — 1 contre 1
+
+Combat au tour par tour. Tes héros apparaissent <b>au hasard</b> à chaque niveau.
+
+Spécial : chaque héros a <b>ses 6 touches</b> ; devine la <b>combo cachée de 4</b> (ordre libre). 30–40% de dégâts.
+
+Tu découvres les combos en essayant. Ils ne changent pas de toute la partie.
+
+Assistance: dai.group.ltd.support@gmail.com
+Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com

@@ -1,0 +1,13 @@
+{
+  "_comment": "Snapshot конфиг (специфичен за camera-watch). Език=camerawatch.lang; активиран dashboard=cw.settings.v1 с activated:true.",
+  "webDir": "dist",
+  "viewport": { "width": 360, "height": 760 },
+  "deviceScaleFactor": 3,
+  "langKey": "camerawatch.lang",
+  "stateKey": "cw.settings.v1",
+  "state": { "activated": true, "source": "phone", "classify": true, "notify": true, "watchPerson": true, "watchAnimal": true, "watchOther": false },
+  "sharedShot": "1-language-picker.png",
+  "screens": [
+    { "name": "main.png", "state": "full", "wait": 1600 }
+  ]
+}

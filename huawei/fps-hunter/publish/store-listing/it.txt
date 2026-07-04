@@ -1,0 +1,8 @@
+A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+
+100 livelli · sparatutto di caccia 3D in prima persona
+
+Comandi: telefono — joystick sinistro per muoverti, trascina a destra per guardare, pulsante FUOCO. PC — WASD + mouse (clic per bloccare il cursore) + clic per sparare.
+
+Assistenza: dai.group.ltd.support@gmail.com
+Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com

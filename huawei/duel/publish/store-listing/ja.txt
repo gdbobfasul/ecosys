@@ -1,0 +1,12 @@
+A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+
+リングの決闘 — 1対1
+
+ターン制バトル。各レベルで英雄は<b>ランダム</b>に登場。
+
+必殺技: 各英雄に<b>専用の6キー</b>。隠された<b>4つのコンボ</b>を当てよう（順不同）。ダメージ 30〜40%。
+
+コンボは試して見つける。試合中は変わらない。
+
+サポート: dai.group.ltd.support@gmail.com
+ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com

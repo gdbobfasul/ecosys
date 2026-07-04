@@ -1,0 +1,8 @@
+A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+
+100 уровней · 3D-шутер от первого лица
+
+Управление: телефон — левый джойстик для движения, тяни справа для обзора, кнопка ОГОНЬ. Десктоп — WASD + мышь (клик для захвата курсора) + клик для выстрела.
+
+Поддержка: dai.group.ltd.support@gmail.com
+По вопросам и поддержке пишите на: dai.group.ltd.support@gmail.com

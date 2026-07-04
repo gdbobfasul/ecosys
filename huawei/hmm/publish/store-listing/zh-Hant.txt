@@ -1,0 +1,12 @@
+A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to turn the fight.
+
+戰場 — 3 對 3
+
+回合制戰鬥。每關你的英雄<b>隨機</b>登場。
+
+絕招：每位英雄有<b>專屬 6 個按鍵</b>；猜出隱藏的<b>4 鍵組合</b>（不限順序）。30–40% 傷害。
+
+靠嘗試找出組合。整場遊戲不變。
+
+支援: dai.group.ltd.support@gmail.com
+如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com

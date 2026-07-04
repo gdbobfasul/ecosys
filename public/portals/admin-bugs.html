@@ -80,9 +80,12 @@ function load(fixed) {
             ? '<button class="btn reopen" data-id="' + b.id + '" data-to="0">↩️ Върни като неоправена</button>'
             : '<button class="btn fix" data-id="' + b.id + '" data-to="1">✅ Маркирай оправена</button>';
         }
+        // Източник: логнат портален потребител ИЛИ анонимен доклад от мобилно приложение (b.app).
+        var src = b.username ? ('от <b>' + esc(b.username) + '</b>') : '📱 <b>анонимно</b>';
+        var appTag = b.app ? ' · приложение: <b>' + esc(b.app) + '</b>' : '';
         el.innerHTML =
           '<div class="ttl">' + esc(b.title) + badge + '</div>' +
-          '<div class="meta">от <b>' + esc(b.username) + '</b> · подадено: ' + esc((b.created_at || '').slice(0, 16)) +
+          '<div class="meta">' + src + appTag + ' · подадено: ' + esc((b.created_at || '').slice(0, 16)) +
             (b.updated_at && b.updated_at !== b.created_at ? ' · промяна: ' + esc(b.updated_at.slice(0, 16)) : '') + '</div>' +
           '<div class="body">' + esc(b.body) + '</div>' +
           (act ? '<div class="acts">' + act + '</div>' : '');

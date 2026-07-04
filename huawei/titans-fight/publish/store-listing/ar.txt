@@ -1,0 +1,11 @@
+A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved to a local leaderboard on your device.
+
+انقر على مستوى للبدء • اهزم الخصم لفتح التالي
+
+اختر السلاح
+
+انتصار!
+أنت البطل
+
+الدعم: dai.group.ltd.support@gmail.com
+للأسئلة والدعم، راسلونا على: dai.group.ltd.support@gmail.com

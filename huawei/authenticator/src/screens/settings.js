@@ -9,9 +9,9 @@ import {
 import {
   biometricAvailable, biometricVerify, biometricStorePassword, biometricClear
 } from '../core/biometric.js';
-import { importJsonText, describeResult } from '../core/importer.js';
+import { importJsonText, import2FASText, importOtpauthList, describeResult } from '../core/importer.js';
 import { importAegisFile } from './aegis-import.js';
-import { exportJsonFile, exportAegisFile, exportGoogleQR } from '../core/exporter.js';
+import { exportJsonFile, exportAegisFile, export2FASFile, exportOtpauthListFile, exportGoogleQR } from '../core/exporter.js';
 import { exportAllQR } from '../core/qrexport.js';
 
 // Опции за авто-заключване при бездействие (В СЕКУНДИ; 0 = никога). По молба:
@@ -97,6 +97,24 @@ export function renderSettings(root, nav) {
     importAegisFile(f);
     aegisInput.value = '';
   });
+  const twofasInput = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
+  twofasInput.addEventListener('change', () => {
+    const f = twofasInput.files && twofasInput.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = async () => {
+      const res = await import2FASText(r.result);
+      if (res && !res.ok && res.reason === 'encrypted') toast(t('twofas_encrypted')); else toast(describeResult(res));
+      twofasInput.value = '';
+    };
+    r.readAsText(f);
+  });
+  const otpauthInput = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
+  otpauthInput.addEventListener('change', () => {
+    const f = otpauthInput.files && otpauthInput.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => { runImport(importOtpauthList(r.result)); otpauthInput.value = ''; };
+    r.readAsText(f);
+  });
 
   // --- ЕКСПОРТ (всички варианти) ---
   async function runExport(fn) {
@@ -130,6 +148,8 @@ export function renderSettings(root, nav) {
     h('button', { class: 'btn', onclick: () => nav.go('add'), text: '➕ ' + t('add_more_ways') }),
     h('button', { class: 'btn ghost', onclick: () => jsonInput.click(), text: t('import_json') }), jsonInput,
     h('button', { class: 'btn ghost', onclick: () => aegisInput.click(), text: t('import_aegis') }), aegisInput,
+    h('button', { class: 'btn ghost', onclick: () => twofasInput.click(), text: t('import_2fas') }), twofasInput,
+    h('button', { class: 'btn ghost', onclick: () => otpauthInput.click(), text: t('import_otpauth') }), otpauthInput,
     h('p', { class: 'muted', style: 'font-size:.85em', text: t('import_aegis_hint') }),
 
     // ── ЕКСПОРТ ──
@@ -137,6 +157,8 @@ export function renderSettings(root, nav) {
     h('p', { class: 'muted', text: t('export_warning') }),
     h('button', { class: 'btn ghost', onclick: () => runExport(exportJsonFile), text: t('export_json') }),
     h('button', { class: 'btn ghost', onclick: () => runExport(exportAegisFile), text: t('export_aegis') }),
+    h('button', { class: 'btn ghost', onclick: () => runExport(export2FASFile), text: t('export_2fas') }),
+    h('button', { class: 'btn ghost', onclick: () => runExport(exportOtpauthListFile), text: t('export_otpauth') }),
     h('button', { class: 'btn ghost', onclick: () => runExport(exportGoogleQR), text: t('export_google') }),
     h('button', { class: 'btn ghost', onclick: () => runExport(exportAllQR), text: '🗂 ' + t('export_all_qr') }),
     h('p', { class: 'muted', style: 'font-size:.85em', text: t('export_all_desc') }),

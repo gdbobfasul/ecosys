@@ -1,0 +1,8 @@
+Un bot basato su regole che risponde automaticamente alle domande frequenti dei tuoi clienti utilizzando una knowledge base di FAQ per parole chiave, saluti, messaggi in orario d'ufficio e fuori orario, pulsanti di risposta rapida e un fallback che si intensifica a un essere umano. Funziona interamente su dispositivo senza AI a pagamento e una chat demo integrata ti consente di testarlo immediatamente.
+
+Un bot che risponde automaticamente alle domande frequenti dei tuoi clienti — per regole (parole chiave), interamente sul dispositivo. Senza IA a pagamento, senza account, senza tracciamento.
+
+Privacy: niente contatti, niente account, niente posizione, niente tracciamento. La base di conoscenza resta solo su questo dispositivo.
+
+Assistenza: dai.group.ltd.support@gmail.com
+Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com

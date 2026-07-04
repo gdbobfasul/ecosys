@@ -62,6 +62,38 @@ try { db.exec(fs.readFileSync(path.join(__dirname, 'database', 'schema_games.sql
 catch (e) { console.error('⚠️  portals games schema:', e.message); }
 // миграция: добави колона `fixed` към докладите, ако базата е стара (без нея)
 try { db.exec("ALTER TABLE portal_bug_reports ADD COLUMN fixed INTEGER NOT NULL DEFAULT 0"); } catch (e) { /* вече съществува */ }
+// миграция: докладите от мобилните приложения са АНОНИМНИ (user_id NULL) + носят поле `app`.
+// Старата схема има `user_id NOT NULL UNIQUE` → блокира анонимните. Пресъздаваме таблицата с
+// nullable user_id и ЧАСТИЧЕН UNIQUE (само за логнати). Данните са тестови → безопасно.
+try {
+  const cols = db.prepare('PRAGMA table_info(portal_bug_reports)').all();
+  const uid = cols.find((c) => c.name === 'user_id');
+  const hasApp = cols.some((c) => c.name === 'app');
+  if (uid && uid.notnull === 1) {
+    db.exec(`
+      BEGIN;
+      ALTER TABLE portal_bug_reports RENAME TO portal_bug_reports_old;
+      CREATE TABLE portal_bug_reports (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        app TEXT,
+        title TEXT NOT NULL,
+        body TEXT NOT NULL,
+        fixed INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT DEFAULT (datetime('now')),
+        updated_at TEXT DEFAULT (datetime('now')),
+        FOREIGN KEY (user_id) REFERENCES portal_users(id) ON DELETE CASCADE
+      );
+      INSERT INTO portal_bug_reports (id, user_id, title, body, fixed, created_at, updated_at)
+        SELECT id, user_id, title, body, fixed, created_at, updated_at FROM portal_bug_reports_old;
+      DROP TABLE portal_bug_reports_old;
+      COMMIT;
+    `);
+  } else if (!hasApp) {
+    db.exec('ALTER TABLE portal_bug_reports ADD COLUMN app TEXT');
+  }
+  db.exec('CREATE UNIQUE INDEX IF NOT EXISTS ux_portal_bug_user ON portal_bug_reports(user_id) WHERE user_id IS NOT NULL');
+} catch (e) { console.error('⚠️  portal_bug_reports миграция:', e.message); }
 app.locals.db = db;
 
 // Админи/модератори НЕ се попълват тук (при старт). Попълват се при ПОДГОТОВКАТА на

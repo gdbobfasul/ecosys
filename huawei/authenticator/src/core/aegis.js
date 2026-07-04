@@ -24,6 +24,8 @@ import scryptDefault, * as scryptNS from 'scrypt-js';
 const _syncScrypt = (scryptNS && scryptNS.syncScrypt) || (scryptDefault && scryptDefault.syncScrypt) || null;
 const _asyncScrypt = (scryptNS && scryptNS.scrypt) || (scryptDefault && scryptDefault.scrypt) || null;
 const scryptFn = _syncScrypt || _asyncScrypt || null;
+// Диагностика (за дебъг панела): кой scrypt път е наличен в бъндъла.
+export const SCRYPT_INFO = _syncScrypt ? 'sync' : (_asyncScrypt ? 'async' : 'none');
 
 // Извежда ключ от парола чрез scrypt. Ползва синхронния вариант, ако е наличен (по-надеждно
 // на телефон); иначе async. Хвърля при липсваща реализация — викащият го хваща и докладва.
@@ -148,38 +150,49 @@ function mapAegisEntries(list) {
 // Декриптира криптиран Aegis експорт с парола. Връща { ok:true, entries } или
 // { ok:false, reason:'json'|'not_aegis'|'noscrypt'|'password'|'empty' }.
 export async function decryptAegisExport(text, password) {
+  const diag = ['scrypt=' + SCRYPT_INFO];
+  const withDiag = (o) => ({ ...o, diag: diag.join(' | ') });
   let j;
-  try { j = JSON.parse(text); } catch (_) { return { ok: false, reason: 'json' }; }
+  try { j = JSON.parse(text); } catch (e) { diag.push('JSON.parse FAIL: ' + (e && e.message)); return withDiag({ ok: false, reason: 'json' }); }
+  diag.push('parsed; db=' + typeof j.db + '; slots=' + (j && j.header && Array.isArray(j.header.slots) ? j.header.slots.length : 'нет'));
   if (!j || typeof j.db !== 'string' || !j.header || !Array.isArray(j.header.slots)) {
-    return { ok: false, reason: 'not_aegis' };
+    return withDiag({ ok: false, reason: 'not_aegis' });
   }
-  if (!scryptFn) return { ok: false, reason: 'noscrypt' };
+  if (!scryptFn) return withDiag({ ok: false, reason: 'noscrypt' });
 
   const pw = new TextEncoder().encode(String(password || ''));
+  diag.push('pwBytes=' + pw.length);
+  const slotTypes = j.header.slots.map((s) => s && s.type).join(',');
   const slots = j.header.slots.filter((s) => s && s.type === 1 && s.key && s.key_params); // password slots
-  if (!slots.length) return { ok: false, reason: 'not_aegis', detail: 'няма слот с парола (type 1)' };
+  diag.push('slotTypes=[' + slotTypes + ']; pwdSlots=' + slots.length);
+  if (!slots.length) return withDiag({ ok: false, reason: 'not_aegis', detail: 'няма слот с парола (type 1)' });
 
   let masterKey = null;
   let scryptErr = null;   // ако извеждането на ключ (scrypt) се счупи — различаваме го от „грешна парола"
+  let si = 0;
   for (const slot of slots) {
+    si++;
     let slotKey = null;
     try {
       const dk = await scryptDerive(pw, hexToBytes(slot.salt), slot.n, slot.r, slot.p, 32);
       slotKey = (dk instanceof Uint8Array) ? dk : new Uint8Array(dk);
+      diag.push('slot' + si + ': scrypt ok (n=' + slot.n + ',r=' + slot.r + ',p=' + slot.p + ',key=' + slotKey.length + 'b)');
     } catch (e) {
       scryptErr = String((e && e.message) || e);   // scrypt не успя (липсва/счупен) → запомни и пробвай нататък
+      diag.push('slot' + si + ': scrypt EXC: ' + scryptErr);
       continue;
     }
     try {
       masterKey = await aesGcmDecrypt(slotKey, hexToBytes(slot.key_params.nonce), hexToBytes(slot.key), hexToBytes(slot.key_params.tag));
+      diag.push('slot' + si + ': master key OK (' + masterKey.length + 'b)');
       break;
-    } catch (_) { /* грешна парола за този слот → пробвай следващия */ }
+    } catch (e) { diag.push('slot' + si + ': master decrypt fail (' + (e && e.name) + ')'); /* грешна парола за този слот → пробвай следващия */ }
   }
   if (!masterKey) {
     // Ако scrypt се е счупил на ВСИЧКИ слотове → това НЕ е „грешна парола", а техническа грешка
     // (показваме реалната причина, за да се види на устройството). Иначе наистина е грешна парола.
-    if (scryptErr) return { ok: false, reason: 'scrypt_error', detail: scryptErr };
-    return { ok: false, reason: 'password' };
+    if (scryptErr) return withDiag({ ok: false, reason: 'scrypt_error', detail: scryptErr });
+    return withDiag({ ok: false, reason: 'password' });
   }
 
   try {
@@ -187,9 +200,11 @@ export async function decryptAegisExport(text, password) {
     const ptBytes = await aesGcmDecrypt(masterKey, hexToBytes(params.nonce), b64ToBytes(j.db), hexToBytes(params.tag));
     const db = JSON.parse(new TextDecoder().decode(ptBytes));
     const entries = mapAegisEntries(Array.isArray(db.entries) ? db.entries : []);
-    if (!entries.length) return { ok: false, reason: 'empty' };
-    return { ok: true, entries };
-  } catch (_) {
-    return { ok: false, reason: 'password' };
+    diag.push('db decrypted; rawEntries=' + (Array.isArray(db.entries) ? db.entries.length : '?') + '; mapped=' + entries.length);
+    if (!entries.length) return withDiag({ ok: false, reason: 'empty' });
+    return withDiag({ ok: true, entries });
+  } catch (e) {
+    diag.push('db decrypt/parse EXC: ' + (e && e.message));
+    return withDiag({ ok: false, reason: 'password' });
   }
 }

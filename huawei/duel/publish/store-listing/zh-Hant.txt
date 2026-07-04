@@ -1,0 +1,12 @@
+A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+
+擂台決鬥 — 1 對 1
+
+回合制戰鬥。每關英雄<b>隨機</b>登場。
+
+特殊技：每位英雄有<b>專屬 6 個按鍵</b>；猜出隱藏的<b>4 鍵連招</b>（順序不限）。傷害 30–40%。
+
+透過嘗試發現連招。整局不會改變。
+
+支援: dai.group.ltd.support@gmail.com
+如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com

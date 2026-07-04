@@ -1,0 +1,26 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [
+    "tagline"
+  ],
+  "pitchEn": "A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies and survive 10 increasingly difficult levels. Fully offline single-player action.",
+  "newFeaturesEn": "First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No network, no hardware permissions, no accounts. Only local game settings/progress are kept on the device."
+  },
+  "reviewerRemarksEn": "No account, login or internet connection is needed. Launch the app, pick a language on first run, and tap Start to play. Control the plane to shoot enemies and progress through the 10 levels. Everything runs offline on the device.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

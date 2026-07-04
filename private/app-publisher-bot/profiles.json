@@ -1,0 +1,429 @@
+{
+  "_comment": "Профили на приложенията за AppPublisherBot (категория, данни, описателни ключове, цена). Хранят генераторите на meta/listing/forms/privacy. Цената по подразбиране е Paid 1.00 USD (потребителят иска пари) — сменя се на Free при нужда. ВНИМАНИЕ: всички апове имат 4-дневно пробно заключване (enforceLock) — виж trialLock бележката в формите.",
+  "_pricingDefault": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  },
+  "apps": {
+    "authenticator": {
+      "categoryHuawei": "Tools",
+      "isGame": false,
+      "generativeAI": false,
+      "descKeys": [
+        "setup_desc",
+        "export_all_desc"
+      ],
+      "pitchEn": "A private two-factor authentication (2FA) app that generates TOTP/HOTP/Steam one-time codes and keeps all secrets in an encrypted, biometric-locked vault on your device. Add accounts by scanning a QR code, pasting an otpauth:// link, entering keys manually, or importing from Aegis and Google Authenticator, and export everything as QR images in a .zip.",
+      "newFeaturesEn": "First release: encrypted local 2FA vault with TOTP/HOTP/Steam codes, QR/manual/Aegis/Google Authenticator import, biometric unlock, and duplicate detection.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": false,
+        "camera": true,
+        "microphone": false,
+        "location": false,
+        "notifications": false,
+        "storesLocalOnly": true,
+        "notes": "All 2FA secrets are stored in an encrypted on-device vault; nothing is sent to any server. Camera is used only to scan otpauth QR codes. No login, no network."
+      },
+      "reviewerRemarksEn": "No account or sign-in is required. On first launch pick a language and create a master password, which encrypts the local vault. Tap the + button and choose 'Scan QR code' (grant camera permission when asked) or 'Enter manually' to add a test account, then view the rotating 6-digit code on the list screen. All data stays on the device."
+    },
+    "autoreply-bot": {
+      "categoryHuawei": "Communication",
+      "isGame": false,
+      "generativeAI": false,
+      "descKeys": [
+        "onboard_tagline",
+        "onboard_how_body"
+      ],
+      "pitchEn": "An automatic message-reply assistant that answers for you by your own rules: keyword triggers with ready replies, office hours, away messages, and allow/block lists. It logs every auto-reply and notifies you, and includes a built-in demo inbox so you can test everything instantly.",
+      "newFeaturesEn": "First release: rule-based auto-replies with keywords, office hours, allow/block lists, a demo inbox, and local notifications for every answer sent.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": true,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": true,
+        "storesLocalOnly": true,
+        "notes": "Rules and reply logs are stored on the device only. Network is used optionally to connect the KCY chat channel over HTTP. No account, no contacts, no tracking."
+      },
+      "reviewerRemarksEn": "No account or login is needed. On first launch choose a language, then tap 'Activate the robot — free' on the onboarding screen. Open the 'Demo' (inbox) tab and send a test message; the bot matches your rules and auto-replies, and the reply appears in the dashboard log. Nothing external is required to evaluate the app."
+    },
+    "baby-monitor": {
+      "categoryHuawei": "Lifestyle",
+      "isGame": false,
+      "generativeAI": false,
+      "descKeys": [
+        "ob_tagline",
+        "ob_note"
+      ],
+      "pitchEn": "A camera-based awareness assistant that watches your sleeping or playing child through the phone camera and alerts you on motion: it flags stirring/waking, a second person appearing in the room, or the child leaving the frame. Detection runs on-device with a local notification, sound, and a photo log for each event.",
+      "newFeaturesEn": "First release: on-device motion watching with child-aware alerts (stirring, stranger in room, left frame), local notifications, and an event log with snapshots.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": true,
+        "camera": true,
+        "microphone": false,
+        "location": false,
+        "notifications": true,
+        "storesLocalOnly": true,
+        "notes": "Video is processed on the device and never uploaded; event snapshots and logs stay local. Network is used only for a one-time free AI-model download and optionally a user-supplied camera/relay URL. In-app disclaimer states it is NOT a certified safety device."
+      },
+      "reviewerRemarksEn": "No account or login is required. On first launch pick a language, read the onboarding (including the safety disclaimer that it is not a certified baby monitor), and continue to Permissions. Grant Camera (and optionally Notifications), point the phone camera at a scene, and start the watcher; moving in front of the camera triggers a local alert and a logged snapshot. Everything runs on-device."
+    },
+    "business-faq-bot": {
+      "categoryHuawei": "Business",
+      "isGame": false,
+      "generativeAI": false,
+      "descKeys": [
+        "onb_lead",
+        "privacy_note"
+      ],
+      "pitchEn": "A rule-based bot that automatically answers your customers' frequently asked questions using a keyword FAQ knowledge base, greetings, office-hours and out-of-hours messages, quick-reply buttons, and a fallback that escalates to a human. It runs entirely on-device with no paid AI, and a built-in demo chat lets you test it immediately.",
+      "newFeaturesEn": "First release: on-device keyword FAQ knowledge base with office hours, quick-reply menus, human-escalation fallback, and a demo chat for instant testing.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": true,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": true,
+        "storesLocalOnly": true,
+        "notes": "The FAQ knowledge base and settings are stored only on the device. Core answering works fully offline; network is used only for the optional KCY chat channel over HTTP. No accounts, no contacts, no tracking."
+      },
+      "reviewerRemarksEn": "No account or login is needed. On first launch choose a language and tap 'Activate the bot'. Keep the sample knowledge base, then open the Demo chat and type a question containing a keyword; the bot replies from the FAQ, respects office hours, and offers escalation. All evaluation can be done offline in the demo chat."
+    },
+    "camera-watch": {
+      "categoryHuawei": "Tools",
+      "isGame": false,
+      "generativeAI": false,
+      "descKeys": [
+        "ob_intro",
+        "ob_honest"
+      ],
+      "pitchEn": "A camera-guard assistant that watches a camera feed and warns you on movement, telling you what moved: a person/intruder, dog, cat, or other animal. Motion is detected on-device with a local alert and a photo log for each event; it can use the phone camera or an external browser camera stream.",
+      "newFeaturesEn": "First release: on-device motion detection with object recognition (person/animal), local alerts, a photo event log, and support for the phone camera or an external camera URL.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": true,
+        "camera": true,
+        "microphone": false,
+        "location": false,
+        "notifications": true,
+        "storesLocalOnly": true,
+        "notes": "Video is analyzed on the device and never leaves it; event snapshots and logs stay local. Network is used only for a one-time free AI-model download and optionally a user-supplied camera URL. No account, contacts, location, or tracking."
+      },
+      "reviewerRemarksEn": "No account or login is required. On first launch pick a language, read the onboarding, and tap 'Activate for free', then continue to Permissions and grant Camera (and optionally Notifications). Start the watcher and move in front of the camera; the app detects motion, labels what moved, fires a local notification, and adds a snapshot to the log. All processing happens on-device."
+    },
+    "chat": {
+      "categoryHuawei": "Communication",
+      "isGame": false,
+      "generativeAI": false,
+      "descKeys": [],
+      "pitchEn": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
+      "newFeaturesEn": "First release of KCY Chat: real-time messaging in 15 languages with a clean connect/offline experience.",
+      "dataHandling": {
+        "collectsPersonalData": true,
+        "accountsOrLogin": true,
+        "network": true,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": false,
+        "storesLocalOnly": false,
+        "notes": "Connects to a live chat server; messages and account data are sent to and stored on the server, so data leaves the device. The app itself stores only the chosen UI language locally."
+      },
+      "reviewerRemarksEn": "Launch the app; on first run choose a language and tap Start. It connects to the live chat server over the internet, so a working network connection is required. Account/registration steps happen inside the chat itself; no credentials are needed to reach the language screen and connect."
+    },
+    "dodge-master": {
+      "categoryHuawei": "Games",
+      "isGame": true,
+      "generativeAI": false,
+      "descKeys": [
+        "tagline"
+      ],
+      "pitchEn": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficulty. Beat your best score and climb a local leaderboard.",
+      "newFeaturesEn": "First release of Dodge Master: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": false,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": false,
+        "storesLocalOnly": true,
+        "notes": "Fully offline game. No network, no accounts. Only a self-entered nickname, score and language are stored on-device; nothing leaves the device."
+      },
+      "reviewerRemarksEn": "Launch the app; on first run pick a language and tap Start, then choose a level and press PLAY. Move your character to dodge incoming projectiles until the level ends. No account, login, or internet connection is required; an optional name for the local leaderboard is the only input."
+    },
+    "duel": {
+      "categoryHuawei": "Games",
+      "isGame": true,
+      "generativeAI": false,
+      "descKeys": [
+        "game_title",
+        "rules_turnbased",
+        "rules_special",
+        "rules_discover"
+      ],
+      "pitchEn": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.",
+      "newFeaturesEn": "First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": false,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": false,
+        "storesLocalOnly": true,
+        "notes": "Fully offline standalone game. No accounts, no network. Only a self-entered nickname, score and language are stored on-device."
+      },
+      "reviewerRemarksEn": "Launch the app; on first run choose a language and tap Start, then press Start/Begin in the menu. Fight turn by turn: pick a basic attack, or try key combinations to discover the hero's hidden special move. No account, login, or internet is required; it runs entirely offline and only asks for an optional leaderboard name."
+    },
+    "fps-hunter": {
+      "categoryHuawei": "Games",
+      "isGame": true,
+      "generativeAI": false,
+      "descKeys": [
+        "tagline",
+        "controls_help"
+      ],
+      "pitchEn": "A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.",
+      "newFeaturesEn": "First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": false,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": false,
+        "storesLocalOnly": true,
+        "notes": "Fully offline game. No accounts, no network. Only a self-entered nickname, score and language are stored on-device."
+      },
+      "reviewerRemarksEn": "Launch the app; on first run pick a language and tap Start, then choose a starting level and press START. On phone use the left joystick to move, drag on the right side to aim, and tap the FIRE button to shoot the targets. No account, login, or internet connection is needed; an optional name for the local top-10 is the only input."
+    },
+    "hmm": {
+      "categoryHuawei": "Games",
+      "isGame": true,
+      "generativeAI": false,
+      "descKeys": [
+        "game_title",
+        "rule_turnbased",
+        "rule_special",
+        "rule_discover"
+      ],
+      "pitchEn": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to turn the fight.",
+      "newFeaturesEn": "First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": false,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": false,
+        "storesLocalOnly": true,
+        "notes": "Fully offline standalone game. No accounts, no network. Only a self-entered nickname, score and language are stored on-device."
+      },
+      "reviewerRemarksEn": "Launch the app; on first run choose a language, then start the battle from the menu (Start / Space). Command your 3 heroes turn by turn: pick basic attacks or try key combinations to unlock each hero's hidden special. No account, login, or internet is required; it runs entirely offline and only asks for an optional leaderboard name."
+    },
+    "monitor-bot": {
+      "categoryHuawei": "Tools",
+      "isGame": false,
+      "generativeAI": false,
+      "descKeys": [
+        "onb_intro",
+        "onb_free_desc"
+      ],
+      "pitchEn": "An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.",
+      "newFeaturesEn": "First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": true,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": true,
+        "storesLocalOnly": true,
+        "notes": "Fetches only the RSS/Atom or JSON sources the user enters (optionally via a user-supplied CORS proxy). Monitors, logs and settings are stored locally; no account, no cloud, no analytics. Local notifications only."
+      },
+      "reviewerRemarksEn": "No account or login is required. On first launch pick a language, tap through the onboarding, then grant the notification permission and add a monitor by pasting a public RSS/Atom feed URL or a JSON API URL. Use 'Check now' to fetch immediately; a match is written to the log and shown as a local notification. Internet is used only to download the source you entered."
+    },
+    "plane-shooter": {
+      "categoryHuawei": "Games",
+      "isGame": true,
+      "generativeAI": false,
+      "descKeys": [
+        "tagline"
+      ],
+      "pitchEn": "A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies and survive 10 increasingly difficult levels. Fully offline single-player action.",
+      "newFeaturesEn": "First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": false,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": false,
+        "storesLocalOnly": true,
+        "notes": "Fully offline game. No network, no hardware permissions, no accounts. Only local game settings/progress are kept on the device."
+      },
+      "reviewerRemarksEn": "No account, login or internet connection is needed. Launch the app, pick a language on first run, and tap Start to play. Control the plane to shoot enemies and progress through the 10 levels. Everything runs offline on the device."
+    },
+    "price-watch-bot": {
+      "categoryHuawei": "Tools",
+      "isGame": false,
+      "generativeAI": false,
+      "descKeys": [
+        "ob_headline",
+        "ob_intro",
+        "ob_privacy"
+      ],
+      "pitchEn": "A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.",
+      "newFeaturesEn": "First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": true,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": true,
+        "storesLocalOnly": true,
+        "notes": "Reads read-only public price data from public exchange APIs. No wallet, no trading, no payments, no personal data. Watch list, thresholds and logs are stored locally; local notifications only."
+      },
+      "reviewerRemarksEn": "No account or login is required. On first launch choose a language and activate the robot, then grant notifications and add a watch by picking a crypto or currency, a threshold and a direction. Internet is only used to read public exchange rates. Use 'Check now' to test; when a threshold is crossed a local notification is shown. The app only monitors prices; it does not buy, sell or hold assets."
+    },
+    "routine-bot": {
+      "categoryHuawei": "Productivity",
+      "isGame": false,
+      "generativeAI": false,
+      "descKeys": [
+        "onb_intro",
+        "onb_feat_morning",
+        "onb_feat_reminders",
+        "onb_feat_evening"
+      ],
+      "pitchEn": "A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.",
+      "newFeaturesEn": "First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": true,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": true,
+        "storesLocalOnly": true,
+        "notes": "Network is used only to fetch weather from a public service by a city NAME the user types (no GPS/device location). Text-to-speech uses the device speaker. Reminders, notes and settings are stored locally; local notifications only, no account, no cloud."
+      },
+      "reviewerRemarksEn": "No account or login is required. On first launch pick a language and activate the robot, then grant the notification permission. Add reminders (with time and days), notes, and optionally type a city name to enable the weather part of the morning briefing. Use the briefing preview to see it immediately. Internet is used only for weather lookups by city name; location/GPS is never accessed."
+    },
+    "rustam": {
+      "categoryHuawei": "Games",
+      "isGame": true,
+      "generativeAI": false,
+      "descKeys": [
+        "tagline"
+      ],
+      "pitchEn": "A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.",
+      "newFeaturesEn": "First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": false,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": false,
+        "storesLocalOnly": true,
+        "notes": "Fully offline game. No network, no hardware permissions, no accounts. Only local game settings/progress are kept on the device."
+      },
+      "reviewerRemarksEn": "No account, login or internet connection is needed. Launch the app, choose a language on first run, and tap Start to play. Collect the cucumbers before the moles reach them and advance through the 10 levels. Everything runs offline on the device."
+    },
+    "selflearning-friend": {
+      "categoryHuawei": "Education",
+      "isGame": false,
+      "generativeAI": true,
+      "descKeys": [
+        "birth_intro",
+        "birth_personal_desc",
+        "birth_impersonal_desc"
+      ],
+      "pitchEn": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.",
+      "newFeaturesEn": "First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": true,
+        "camera": true,
+        "microphone": true,
+        "location": false,
+        "notifications": false,
+        "storesLocalOnly": true,
+        "notes": "No developer account or sign-in; access is guarded by a user-chosen local code word. Personal data (name, habits, memory) is stored only on the device and not uploaded by default. Microphone is used for voice conversation and camera for the optional Vision feature. Network fetches general knowledge and translations and can optionally sync with a user-supplied server; there is no developer backend collecting data."
+      },
+      "reviewerRemarksEn": "No account or registration is needed. On first launch pick a UI language, then on the 'birth' screen choose a one-word secret code (remember it — there is no hint) and give the friend a name; the app opens to Chat. To review, type in Chat or grant microphone permission to talk by voice; the Vision tab requests camera. All data stays on the device and the optional server link can be left empty."
+    },
+    "services-toolkit": {
+      "categoryHuawei": "Tools",
+      "isGame": false,
+      "generativeAI": true,
+      "descKeys": [
+        "home_sub",
+        "t_qr_desc",
+        "t_password_desc",
+        "t_pdf_desc",
+        "t_ai_desc"
+      ],
+      "pitchEn": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a free AI text helper. Most tools run entirely on the device, with a few that fetch live online data.",
+      "newFeaturesEn": "First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": true,
+        "camera": true,
+        "microphone": false,
+        "location": false,
+        "notifications": true,
+        "storesLocalOnly": true,
+        "notes": "No account or login. Offline tools (QR, passwords, calculators, text, image/PDF compression) run fully on-device. Camera is used only when scanning a QR code. Network is used by the online tools (currency rates, crypto charts, web scraper, AI text). No personal data is collected or uploaded."
+      },
+      "reviewerRemarksEn": "No account needed. On first launch choose a language and tap Start to reach the tool grid, then open any tool. Offline tools work with no connection; online tools (currency, crypto, scraper, AI text) need internet. The QR tool asks for camera permission only when you start scanning, and the currency watcher may request notification permission for alerts."
+    },
+    "titans-fight": {
+      "categoryHuawei": "Games",
+      "isGame": true,
+      "generativeAI": false,
+      "descKeys": [
+        "menu_hint",
+        "choose_weapon",
+        "champion"
+      ],
+      "pitchEn": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved to a local leaderboard on your device.",
+      "newFeaturesEn": "First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.",
+      "dataHandling": {
+        "collectsPersonalData": false,
+        "accountsOrLogin": false,
+        "network": false,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": false,
+        "storesLocalOnly": true,
+        "notes": "Fully offline game. No account, no network calls, no device permissions. Level progress and the leaderboard (an optional player name plus scores) are stored only in local storage on the device."
+      },
+      "reviewerRemarksEn": "No account or internet is required. On first launch pick a language, then tap a level in the menu to start; choose a weapon and press Fight. Win a match to unlock the next level, and optionally enter a name to save a score to the on-device leaderboard. The app requests no runtime permissions."
+    }
+  }
+}

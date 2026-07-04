@@ -1,0 +1,8 @@
+A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+
+100 levels · 3D first-person hunting shooter
+
+Controls: phone — left joystick to move, drag on the right to look, FIRE button. Desktop — WASD + mouse (click to lock cursor) + click to shoot.
+
+Support: dai.group.ltd.support@gmail.com
+For questions and support, write to: dai.group.ltd.support@gmail.com

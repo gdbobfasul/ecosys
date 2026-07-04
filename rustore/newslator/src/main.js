@@ -1,6 +1,8 @@
 // Version: 1.0001
 import { enforceLock } from './core/lock.js';
-enforceLock(); // 4-дневно пробно заключване (виж core/lock.js)
+import { mountHelp } from './core/help.js';
+enforceLock();
+mountHelp('newslator'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // main.js — входна точка и рутер: език → начален екран → основен изглед с раздели
 // (Новини / Държави / Настройки). Езикът може да се смени по всяко време с 🌐.
 import { injectStyles } from './ui/styles.js';

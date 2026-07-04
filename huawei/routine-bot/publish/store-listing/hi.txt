@@ -1,0 +1,12 @@
+A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.
+
+{0} आपका निजी दैनिक रोबोट है। इसे एक बार सक्रिय करें और हर दिन यह एक दिनचर्या चलाता है: सुबह की ब्रीफिंग, रिमाइंडर और (वैकल्पिक) शाम का सारांश — और आपको सूचित करता है।
+
+🌤️ सुबह की ब्रीफिंग: मौसम, आज का कार्यक्रम और प्रेरणा
+
+⏰ रिमाइंडर: दवा, आदतें, कार्य — समय और दिनों के साथ
+
+🌙 शाम का सारांश (वैकल्पिक)
+
+सहायता: dai.group.ltd.support@gmail.com
+प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com

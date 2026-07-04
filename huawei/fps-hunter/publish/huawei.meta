@@ -1,0 +1,20 @@
+# huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
+# Приложение: FPS Hunter (huawei издание). Генерирано от AppPublisherBot.
+
+[Set basic app information]
+App type: Game (игра)
+App name: FPS Hunter            # 10 / 30 знака
+App package name: com.kcy.fpshunter.hw   # 20 / 128 знака
+Level-1 app category: Games
+
+[Integrate open capabilities]
+# Open capabilities: няма (без Account Kit, IAP, Push, Ads, Game Service) — освен ако не е отбелязано друго.
+
+[Support / Поддръжка]
+Support email: dai.group.ltd.support@gmail.com
+# Влиза и в описанието на 15-те езика (publish/store-listing/<език>.txt).
+
+[Localization]
+Languages: bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant (15)
+Listing: publish/store-listing/<език>.txt
+Screenshots: publish/screenshots/<език>/*.png  (+ споделен publish/screenshots/00-*.png)

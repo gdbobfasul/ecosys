@@ -1,0 +1,8 @@
+A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+
+100レベル · 3D一人称ハンティングシューター
+
+操作: スマホ — 左ジョイスティックで移動、右をドラッグで視点、発射ボタン。PC — WASD + マウス（クリックでカーソルロック）+ クリックで射撃。
+
+サポート: dai.group.ltd.support@gmail.com
+ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com
