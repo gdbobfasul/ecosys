@@ -1,0 +1,19 @@
+{
+  "appId": "com.kcy.houselookbook.rustore",
+  "appName": "HouseLookBook",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "url": "https://look.myhousesetup.com",
+    "cleartext": false,
+    "allowNavigation": [
+      "look.myhousesetup.com",
+      "take.offbitch.com"
+    ]
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0d1117"
+  }
+}

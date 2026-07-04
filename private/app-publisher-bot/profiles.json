@@ -424,6 +424,26 @@
         "notes": "Fully offline game. No account, no network calls, no device permissions. Level progress and the leaderboard (an optional player name plus scores) are stored only in local storage on the device."
       },
       "reviewerRemarksEn": "No account or internet is required. On first launch pick a language, then tap a level in the menu to start; choose a weapon and press Fight. Win a match to unlock the next level, and optionally enter a name to save a score to the on-device leaderboard. The app requests no runtime permissions."
+    },
+    "houselookbook": {
+      "categoryHuawei": "Lifestyle",
+      "isGame": false,
+      "generativeAI": false,
+      "descKeys": [],
+      "pitchEn": "Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.",
+      "newFeaturesEn": "First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.",
+      "dataHandling": {
+        "collectsPersonalData": true,
+        "accountsOrLogin": true,
+        "network": true,
+        "camera": false,
+        "microphone": false,
+        "location": false,
+        "notifications": false,
+        "storesLocalOnly": false,
+        "notes": "Connects to a live server (look.myhousesetup.com). Account/registration details and the designs and photos you upload are sent to and stored on the server, so this data leaves the device. A subscription for premium features is handled through the store billing."
+      },
+      "reviewerRemarksEn": "The app is a thin wrapper that loads the live web app at https://look.myhousesetup.com over the internet (a working network connection is required). On first run you can browse; creating and saving a home design requires a free account created inside the app. No credentials are needed to open the app and view the gallery."
     }
   }
 }

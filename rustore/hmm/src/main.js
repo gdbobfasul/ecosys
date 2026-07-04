@@ -1,7 +1,9 @@
 // Version: 1.0001
 import { enforceLock } from './core/lock.js';
+import { playIntro } from './core/intro.js';
 import { mountHelp } from './core/help.js';
 enforceLock();
+playIntro(); // кратко „KCY Ecosystem" интро при старт
 mountHelp('hmm'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // HMM — Битка на терен (самостоятелно мобилно приложение, RUStore)
 // Зарежда вградения двигател и пуска отборната (HMM) битка 3 срещу 3.

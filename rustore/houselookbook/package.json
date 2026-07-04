@@ -1,0 +1,22 @@
+{
+  "name": "kcy-houselookbook",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KCY Chat — мобилна обвивка (Capacitor WebView), която зарежда продукционния чат сървър (RUStore издание).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "assets": "node tools/gen-assets.mjs",
+    "cap:add": "cap add android",
+    "cap:sync": "cap sync",
+    "cap:open": "cap open android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1",
+    "vite": "^5.4.10"
+  }
+}

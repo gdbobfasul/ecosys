@@ -95,6 +95,7 @@ async function generateScreenshots(appDir, opts = {}) {
   if (cfg.sharedShot) {
     const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: dsf });
     const page = await ctx.newPage();
+    await page.addInitScript(() => { try { window.__KCY_INTRO_OFF__ = true; } catch (e) {} });
     await page.route('**/*', (route) => isLocal(route.request().url())
       ? route.continue() : route.fulfill({ status: 200, contentType: 'application/xml', body: buildRss(headlines) }));
     await page.goto(base, { waitUntil: 'networkidle' }).catch(() => {});
@@ -117,6 +118,7 @@ async function generateScreenshots(appDir, opts = {}) {
       const init = initFor(screen, cfg, lang, rss);
       await page.addInitScript((d) => {
         try { localStorage.clear(); } catch (e) {}
+        try { window.__KCY_INTRO_OFF__ = true; } catch (e) {}   // без „KCY Ecosystem" интро в снимките
         if (d.lang) localStorage.setItem(d.langKey, d.lang);
         if (d.state) localStorage.setItem(d.stateKey, d.state);
       }, init);
