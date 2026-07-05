@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0003
 // add.js — нов акаунт: сканиране на QR код (камера + jsQR) ИЛИ ръчно въвеждане.
 import { h, mount, toast, showAlert } from '../ui/dom.js';
 import { t } from '../core/i18n.js';
@@ -7,7 +7,7 @@ import { parseOtpauthURI } from '../core/otp.js';
 import { base32Decode } from '../core/base32.js';
 import { importQRData, importJsonText, import2FASText, importOtpauthList, isImportableQR, describeResult } from '../core/importer.js';
 import { importAegisFile } from './aegis-import.js';
-import { pickTextFile } from '../core/filepick.js';
+import { pickTextFile, pickBinaryFile } from '../core/filepick.js';
 
 let activeStream = null;
 let rafId = null;
@@ -53,14 +53,13 @@ export function renderAdd(root, nav) {
     else renderManual();
   }
 
-  // Декодира QR код от качена картинка (jsQR върху пикселите).
-  async function decodeImageFile(file) {
+  // Декодира QR код от картинка, подадена като dataURL (jsQR върху пикселите).
+  async function decodeImageDataUrl(dataUrl) {
     let jsQR = null;
     try { jsQR = (await import('jsqr')).default; } catch (e) { jsQR = window.jsQR || null; }
     if (!jsQR) return null;
-    const url = URL.createObjectURL(file);
     try {
-      const img = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = url; });
+      const img = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = dataUrl; });
       const canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -68,7 +67,7 @@ export function renderAdd(root, nav) {
       const d = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const found = jsQR(d.data, d.width, d.height);
       return found && found.data ? found.data : null;
-    } catch (e) { return null; } finally { URL.revokeObjectURL(url); }
+    } catch (e) { return null; }
   }
 
   // Импортира декодиран QR низ (единичен otpauth ИЛИ Google миграция) през обединения импортер;
@@ -81,19 +80,30 @@ export function renderAdd(root, nav) {
   }
 
   function renderUpload() {
-    const fileInput = h('input', { type: 'file', accept: 'image/*' });
+    // Картинката минава през НАДЕЖДНИЯ pickBinaryFile (нативен picker на телефон → чете реалните
+    // байтове; input в браузър), защото `<input type=file>` в Android WebView връщаше ПРАЗЕН файл.
     const status = h('p', { class: 'muted', style: 'text-align:center', text: t('scan_hint') });
-    fileInput.addEventListener('change', () => {
-      const f = fileInput.files && fileInput.files[0];
-      if (!f) return;
-      decodeImageFile(f).then(async (uri) => {
+    async function pickAndDecode() {
+      const dbg = ['=== QR image import debug ==='];
+      try {
+        const picked = await pickBinaryFile('image/*');
+        if (!picked) return;                                // отказ
+        dbg.push('file=' + (picked.name || '?') + ' size=' + (picked.size != null ? picked.size : '?') + ' mime=' + (picked.mimeType || '?') + ' dataUrlChars=' + (picked.dataUrl ? picked.dataUrl.length : 0));
+        if (!picked.dataUrl) { status.textContent = t('import_empty'); status.style.color = 'var(--danger)'; showAlert('Import debug', dbg.join('\n')); return; }
+        const uri = await decodeImageDataUrl(picked.dataUrl);
+        dbg.push('qr: ' + (uri ? ('decoded chars=' + uri.length) : 'NOT FOUND'));
         if (!uri) { status.textContent = t('qr_not_found'); status.style.color = 'var(--danger)'; return; }
-        await runImport(importQRData(uri));
-      });
-    });
+        const res = await runImport(importQRData(uri));
+        dbg.push('result: ' + (res && res.ok ? 'ok imported=' + res.imported + ' dup=' + res.duplicates : 'reason=' + (res && res.reason)));
+        if (res && !res.ok) showAlert('Import debug', dbg.join('\n'));   // дебъг при неуспех
+      } catch (err) {
+        dbg.push('EXCEPTION: ' + (err && (err.stack || err.message) || err));
+        showAlert('Import debug', dbg.join('\n'));
+      }
+    }
     mount(body, seg,
-      h('p', { class: 'muted', style: 'text-align:center', text: t('upload_file') }),
-      fileInput, status,
+      h('button', { class: 'btn', onclick: pickAndDecode, text: '🖼 ' + t('upload_file') }),
+      status,
       h('button', { class: 'btn ghost', onclick: () => setMode('manual'), text: t('enter_manually') })
     );
   }

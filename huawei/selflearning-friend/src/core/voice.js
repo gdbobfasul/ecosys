@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0003
 // voice.js — ГЛАС: STT (глас→текст) + TTS (текст→глас), безплатно и on-device.
 //
 // СТРАТЕГИЯ (без платена облачна услуга, без ключове):
@@ -168,6 +168,9 @@ async function startNative(sr, lang, onInterim) {
     let emptyStreak = 0;      // последователни празни сегменти (истинска тишина)
     let settled = false;
     let segDone = false;      // текущият сегмент вече е приключен (анти-дубъл)
+    let segStarted = false;   // текущият сегмент е РЕАЛНО стартирал ('started' от ОС)
+    let armAt = 0;            // кога е въоръжен текущият сегмент (за отсяване на закъснели 'stopped')
+    let startFails = 0;       // поредни неуспешни sr.start() (транзитни „busy" при бърз рестарт)
     let safetyTimer = null;
     let restartTimer = null;
     let stopGrace = null;     // кратко изчакване на ФИНАЛНИЯ резултат (носи последните думи)
@@ -235,8 +238,8 @@ async function startNative(sr, lang, onInterim) {
         return;
       }
       // НЕ приключваме на ПЪРВАТА пауза (така можеш да си поемеш дъх насред изречението —
-      // преди това „започни да учиш…“ се накъсваше). Чакаме 2 ПОРЕДНИ тихи сегмента →
-      // едва тогава край. По всяко време можеш да спреш веднага с 🎤 / „Изпрати“.
+      // преди това „започни да учиш…“ се накъсваше). Чакаме MAX_EMPTY_SEGMENTS (3) ПОРЕДНИ
+      // тихи сегмента → едва тогава край. По всяко време спираш веднага с 🎤 / „Изпрати“.
       if (emptyStreak >= MAX_EMPTY_SEGMENTS) return finish(); // поредни тишини → спри да чакаш
       restartTimer = setTimeout(() => armSegment(), RESTART_GAP_MS); // продължи да слушаш (малък прозорец)
     }
@@ -246,9 +249,12 @@ async function startNative(sr, lang, onInterim) {
       if (settled) return;
       segDone = false;
       seg = '';
+      segStarted = false;
+      armAt = Date.now();
       segBase = accumulated;   // основа за този сегмент: всичко натрупано ДОСЕГА
       try {
         const res = await sr.start({ language: lang, maxResults: 5, partialResults: true, popup: false });
+        startFails = 0;        // стартът мина → нулирай брояча на транзитните грешки
         const matches = (res && res.matches) || [];
         const finalTxt = matches.length ? String(matches[0] || '') : '';
         if (finalTxt) {
@@ -268,7 +274,15 @@ async function startNative(sr, lang, onInterim) {
         }
         // иначе чакаме 'partialResults' + 'stopped' (Android)
       } catch (e) {
-        finish(); // грешка при старт → приключваме с каквото имаме
+        // Грешка при старт. Най-често е ТРАНЗИТНА („busy": предишната сесия още гасне при бързия
+        // рестарт) → НЕ убиваме цялата диктовка от първия път: до 2 повторни опита с малка пауза.
+        // Едва след тях приключваме с каквото е натрупано.
+        if (!settled && !_nativeStopRequested && startFails < 2) {
+          startFails++;
+          restartTimer = setTimeout(() => armSegment(), 350);
+        } else {
+          finish();
+        }
       }
     }
 
@@ -290,7 +304,14 @@ async function startNative(sr, lang, onInterim) {
           try {
             await sr.addListener('listeningState', (data) => {
               const status = data && (data.status || data.state);
-              if (status === 'stopped') onSegmentStopped();
+              if (status === 'started' || status === 'listening') { segStarted = true; return; }
+              if (status === 'stopped') {
+                // ЗАКЪСНЯЛО 'stopped' от ПРЕДИШНИЯ сегмент: идва веднага след re-arm, ПРЕДИ новият
+                // да е стартирал. Ако го приемем, брои ФАЛШИВА тишина и въоръжава ВТОРИ паралелен
+                // start() („busy" → преждевременен край на диктовката). Затова го игнорираме.
+                if (!segStarted && (Date.now() - armAt) < 400) return;
+                onSegmentStopped();
+              }
             });
           } catch (_) { /* по-стари версии: разчитаме на връщането на start() + таймаута */ }
         }

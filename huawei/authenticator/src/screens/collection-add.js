@@ -1,10 +1,11 @@
-// Version: 1.0001
+// Version: 1.0003
 // collection-add.js — добавяне в таб „Колекция": качване или сканиране на QR код,
 // + заглавие (до 256 знака). Пази се картинката (за повторно показване/сканиране)
 // и декодираният текст. Полезно за QR от устройства (видеокамери и пр.).
 import { h, mount, toast } from '../ui/dom.js';
 import { t } from '../core/i18n.js';
 import { addCollectionItem } from '../core/storage.js';
+import { pickBinaryFile } from '../core/filepick.js';
 
 let activeStream = null, rafId = null;
 function stopCamera() {
@@ -50,14 +51,14 @@ export function renderCollectionAdd(root, nav) {
       captured.content ? h('p', { class: 'muted', style: 'word-break:break-all', text: captured.content }) : null);
   }
 
-  // Качване на файл с картинка (QR).
-  const fileInput = h('input', { type: 'file', accept: 'image/*' });
-  fileInput.addEventListener('change', async () => {
-    const f = fileInput.files && fileInput.files[0];
-    if (!f) return;
-    const url = URL.createObjectURL(f);
-    const img = await new Promise((res) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = url; });
-    if (!img) { URL.revokeObjectURL(url); return; }
+  // Качване на файл с картинка (QR). Минава през НАДЕЖДНИЯ pickBinaryFile (нативен picker на
+  // телефон → чете реалните байтове; input в браузър), защото `<input type=file>` в Android
+  // WebView връщаше ПРАЗЕН файл за content:// (Downloads/Drive).
+  async function pickImage() {
+    const picked = await pickBinaryFile('image/*');
+    if (!picked || !picked.dataUrl) { if (picked) toast(t('import_empty')); return; }
+    const img = await new Promise((res) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = picked.dataUrl; });
+    if (!img) return;
     captured.image = shrinkToDataURL(img);
     const jsQR = await loadJsQR();
     if (jsQR) {
@@ -67,10 +68,9 @@ export function renderCollectionAdd(root, nav) {
       const found = jsQR(d.data, d.width, d.height);
       captured.content = found && found.data ? found.data : '';
     }
-    URL.revokeObjectURL(url);
     status.textContent = captured.content ? t('decoded_ok') : '';
     showPreview();
-  });
+  }
 
   // Сканиране с камера.
   const scanBtn = h('button', { class: 'btn ghost', onclick: startScan, text: '📷 ' + t('scan_qr') });
@@ -118,10 +118,10 @@ export function renderCollectionAdd(root, nav) {
   mount(root, topbar, h('div', { class: 'content' },
     h('label', { text: t('title') }), titleInput,
     h('div', { class: 'seg' },
-      h('button', { class: 'on', onclick: () => fileInput.click() }, '🖼 ' + t('upload_file')),
+      h('button', { class: 'on', onclick: pickImage }, '🖼 ' + t('upload_file')),
       scanBtn
     ),
-    fileInput, videoWrap, status, preview,
+    videoWrap, status, preview,
     err,
     h('button', { class: 'btn accent', onclick: save, text: t('save') }),
     h('button', { class: 'btn ghost', onclick: () => { stopCamera(); nav.go('list'); }, text: t('cancel') })
