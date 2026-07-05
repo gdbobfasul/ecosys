@@ -16,7 +16,13 @@ const L = {
   thanks: { bg:'Благодарим! Изпратено.', ru:'Спасибо! Отправлено.', uk:'Дякуємо! Надіслано.', en:'Thanks! Sent.', de:'Danke! Gesendet.', fr:'Merci ! Envoyé.', es:'¡Gracias! Enviado.', 'es-MX':'¡Gracias! Enviado.', it:'Grazie! Inviato.', pt:'Obrigado! Enviado.', ar:'شكرًا! تم الإرسال.', hi:'धन्यवाद! भेजा गया।', ja:'ありがとう！送信しました。', ky:'Рахмат! Жөнөтүлдү.', 'zh-Hant':'謝謝！已送出。' },
   err:    { bg:'Грешка. Опитай пак.', ru:'Ошибка. Попробуй снова.', uk:'Помилка. Спробуй ще раз.', en:'Error. Try again.', de:'Fehler. Erneut versuchen.', fr:'Erreur. Réessaie.', es:'Error. Inténtalo de nuevo.', 'es-MX':'Error. Inténtalo de nuevo.', it:'Errore. Riprova.', pt:'Erro. Tenta de novo.', ar:'خطأ. حاول مرة أخرى.', hi:'त्रुटि। फिर से प्रयास करें।', ja:'エラー。もう一度お試しください。', ky:'Ката. Кайра аракет кыл.', 'zh-Hant':'錯誤，請再試一次。' }
 };
-function lang() { try { const h = document.documentElement.getAttribute('lang'); if (h && L.btn[h]) return h; } catch (e) {} return 'en'; }
+// Надеждно откриване на езика: 1) ключа „<апп>.lang" от localStorage (ИСТИНСКИЯТ избор на
+// потребителя — приоритет, защото някои апове оставят <html lang> на default); 2) <html lang>; 3) en.
+function lang() {
+  try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && /\.lang$/.test(k)) { const v = localStorage.getItem(k); if (v && L.btn[v]) return v; } } } catch (e) {}
+  try { const h = document.documentElement.getAttribute('lang'); if (h && L.btn[h]) return h; } catch (e) {}
+  return 'en';
+}
 function tr(k) { const m = L[k] || {}; return m[lang()] || m.en || m.bg || k; }
 
 async function post(app, body) {

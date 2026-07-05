@@ -50,7 +50,7 @@
 | Поле | Попълни |
 |---|---|
 | App package | Manage packages → качи `apk/plane-shooter-huawei-release.apk` |
-| Payment type | **Paid** — цена **1.00 USD**. Приеми Merchant Service Agreement, въведи цената през „View and edit", Save. Махни **Russia** и **Belarus** от държавите. |
+| Payment type | **Free**. |
 | In-app purchases | нищо |
 | Privacy policy URL | `https://selflearning.bot.nu/privacy/plane-shooter/hw-privacy.html` |
 | Data subject right URL | празно |
@@ -59,13 +59,13 @@
 | Filing information | махни **Chinese mainland** от Countries/Regions → секцията изчезва |
 | Copyright proof | празно (попълни само ако системата поиска) |
 | Family sharing | изключено |
-| Countries/Regions | Всички освен **Chinese mainland**, **Russia**, **Belarus** |
+| Countries/Regions | Всички освен **Chinese mainland** |
 | Sign-in required | без отметка (няма вход) |
 | Release time | Immediately once approved |
 
 **For reviewer → Remarks** (копирай):
 ```
-No account, login or internet connection is needed. Launch the app, pick a language on first run, and tap Start to play. Control the plane to shoot enemies and progress through the 10 levels. Everything runs offline on the device. Note: this build includes a 4-day trial; after 4 days it asks for a code word to continue — the code word is "кокошка" (kokoshka).
+No account, login or internet connection is needed. Launch the app, pick a language on first run, and tap Start to play. Control the plane to shoot enemies and progress through the 10 levels. Everything runs offline on the device. This app is FREE and contains cross-promotion ads for our own other apps (house ads) shown at start, mid-session and game over; each ad is closeable. Note: this build asks for the code word "кокошка" (kokoshka) after 4 days of use.
 ```
 
 → **Save** → **Submit**.

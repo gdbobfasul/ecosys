@@ -278,7 +278,10 @@
         "storesLocalOnly": true,
         "notes": "Fully offline game. No network, no hardware permissions, no accounts. Only local game settings/progress are kept on the device."
       },
-      "reviewerRemarksEn": "No account, login or internet connection is needed. Launch the app, pick a language on first run, and tap Start to play. Control the plane to shoot enemies and progress through the 10 levels. Everything runs offline on the device."
+      "reviewerRemarksEn": "No account, login or internet connection is needed. Launch the app, pick a language on first run, and tap Start to play. Control the plane to shoot enemies and progress through the 10 levels. Everything runs offline on the device. This app is FREE and contains cross-promotion ads for our own other apps (house ads) shown at start, mid-session and game over; each ad is closeable.",
+      "pricing": {
+        "type": "Free"
+      }
     },
     "price-watch-bot": {
       "categoryHuawei": "Tools",

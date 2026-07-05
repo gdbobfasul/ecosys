@@ -17,6 +17,7 @@
     "@capacitor-community/text-to-speech": "^5.0.0",
     "@capacitor/device": "^6.0.2",
     "@capacitor/preferences": "^6.0.2",
+    "@capawesome/capacitor-file-picker": "^6.2.0",
     "@tensorflow-models/coco-ssd": "^2.2.3",
     "@tensorflow-models/mobilenet": "^2.1.1",
     "@tensorflow/tfjs": "^4.22.0",

@@ -4,6 +4,7 @@
 // Секции: Локално (по подразбиране) · Запази знанието (бекъп) · Внеси от файл ·
 //         Изтегли от URL (по избор) · Синхронизирай към сървъра · Слушай (push).
 import { el, clear, toast } from '../ui/dom.js';
+import { pickTextFile } from '../core/filepick.js';
 import { memoryCount } from '../core/memory-store.js';
 import {
   exportToFile, importFromJsonText, pullFromUrl, exportToServer,
@@ -88,23 +89,18 @@ export function renderSources(root, { rerender }) {
     pathBox
   ]));
 
-  // --- Внеси от файл ---
-  const fileInput = el('input', { type: 'file', accept: 'application/json,.json' });
+  // --- Внеси от файл (надежден нативен picker — виж filepick.js: `<input type=file>` в Android
+  // WebView връщаше празен файл за файлове от Downloads/Drive) ---
   root.appendChild(el('div', { class: 'card' }, [
     el('h3', {}, t('sr_import_title')),
     el('p', { class: 'muted', style: 'font-size:13px' }, t('sr_import_desc')),
-    fileInput,
-    el('button', { class: 'secondary block', style: 'margin-top:8px', onclick: () => {
-      const f = fileInput.files && fileInput.files[0];
-      if (!f) { toast(t('sr_pick_file')); return; }
-      const fr = new FileReader();
-      fr.onload = () => {
-        const r = importFromJsonText(String(fr.result || ''));
-        if (r.ok) { toast(tf('sr_imported_new', r.added, r.skipped)); rerender(); }
-        else toast(tf('sr_error_p', r.reason || t('sr_unknown')));
-      };
-      fr.onerror = () => toast(t('sr_read_fail'));
-      fr.readAsText(f);
+    el('button', { class: 'secondary block', style: 'margin-top:8px', onclick: async () => {
+      let picked; try { picked = await pickTextFile(); } catch (e) { toast(t('sr_read_fail')); return; }
+      if (!picked) return;
+      if (!picked.text) { toast(t('sr_read_fail')); return; }
+      const r = importFromJsonText(picked.text);
+      if (r.ok) { toast(tf('sr_imported_new', r.added, r.skipped)); rerender(); }
+      else toast(tf('sr_error_p', r.reason || t('sr_unknown')));
     } }, t('sr_import_btn'))
   ]));
 
@@ -133,8 +129,6 @@ export function renderSources(root, { rerender }) {
     placeholder: '{ "name": "...", "topic": "...", "entries": [ { "type":"qa", "key":"...", "value":"..." } ] }',
     style: 'width:100%;min-height:90px;margin-top:8px;font-family:monospace;font-size:12px'
   });
-  const packFile = el('input', { type: 'file', accept: 'application/json,.json', style: 'margin-top:8px' });
-
   root.appendChild(el('div', { class: 'card' }, [
     el('h3', {}, t('sr_packs_title')),
     el('p', { class: 'muted', style: 'font-size:13px' }, t('sr_packs_desc')),
@@ -145,14 +139,12 @@ export function renderSources(root, { rerender }) {
       if (!txt) { toast(t('sr_paste_json')); return; }
       reportPack(t('sr_pasted_pack'), importPackFromJsonText(txt));
     } }, t('sr_import_from_text')),
-    el('label', { style: 'margin-top:12px' }, t('sr_or_load_file')), packFile,
-    el('button', { class: 'secondary block', style: 'margin-top:8px', onclick: () => {
-      const f = packFile.files && packFile.files[0];
-      if (!f) { toast(t('sr_pick_file')); return; }
-      const fr = new FileReader();
-      fr.onload = () => reportPack(t('sr_file_pack'), importPackFromJsonText(String(fr.result || '')));
-      fr.onerror = () => toast(t('sr_read_fail'));
-      fr.readAsText(f);
+    el('label', { style: 'margin-top:12px' }, t('sr_or_load_file')),
+    el('button', { class: 'secondary block', style: 'margin-top:8px', onclick: async () => {
+      let picked; try { picked = await pickTextFile(); } catch (e) { toast(t('sr_read_fail')); return; }
+      if (!picked) return;
+      if (!picked.text) { toast(t('sr_read_fail')); return; }
+      reportPack(t('sr_file_pack'), importPackFromJsonText(picked.text));
     } }, t('sr_import_from_file')),
     packsRes
   ]));

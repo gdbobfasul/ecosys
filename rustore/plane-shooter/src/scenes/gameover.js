@@ -21,6 +21,7 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   create() {
+    try { if (window.KCY_END_AD) window.KCY_END_AD(); } catch (e) {} // реклама в КРАЯ (game over)
     const { width, height } = this.scale;
     this.stars = new Starfield(this);
 

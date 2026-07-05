@@ -18,7 +18,14 @@ async function loadCatalog() {
   } catch (e) { /* fetch */ }
   try { const r = await fetch(CATALOG_URL, { cache: 'no-store' }); CACHE = await r.json(); return CACHE; } catch (e) { return null; }
 }
-function lang() { try { const h = document.documentElement.getAttribute('lang'); if (h) return h; } catch (e) {} return 'en'; }
+const LANGS = ['bg', 'ru', 'uk', 'en', 'de', 'fr', 'es', 'es-MX', 'it', 'pt', 'ar', 'hi', 'ja', 'ky', 'zh-Hant'];
+// Надеждно откриване на езика: ключа „<апп>.lang" от localStorage (истинският избор — приоритет);
+// иначе <html lang>; иначе en.
+function lang() {
+  try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && /\.lang$/.test(k)) { const v = localStorage.getItem(k); if (v && LANGS.indexOf(v) >= 0) return v; } } } catch (e) {}
+  try { const h = document.documentElement.getAttribute('lang'); if (h && LANGS.indexOf(h) >= 0) return h; } catch (e) {}
+  return 'en';
+}
 function openLink(url) {
   if (!url) return;
   try { if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) { window.Capacitor.Plugins.Browser.open({ url }); return; } } catch (e) {}

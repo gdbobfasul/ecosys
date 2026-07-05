@@ -335,6 +335,12 @@ build_one() {
     echo -e "  ${CYAN}→ npm run build (web)…${NC}"
     npm run build || { echo -e "  ${RED}✗ web билдът се провали${NC}"; exit 3; }
     echo -e "  ${GREEN}✓ web билд готов → $d/dist${NC}"
+    # Каталог „Още от KCY Ecosystem" → dist/kcy-promo.json (редактира се ЛЕСНО ПРЕДИ БИЛД в
+    # app-shared/promo-catalog.json: кои апове са одобрени/публикувани, имена, store линкове).
+    if [ -f "$ROOT/app-shared/promo-catalog.json" ] && [ -d dist ]; then
+      cp "$ROOT/app-shared/promo-catalog.json" dist/kcy-promo.json
+      echo -e "  ${GREEN}✓ каталог → dist/kcy-promo.json${NC}"
+    fi
     # Capacitor WebView (вкл. Xiaomi/MIUI) понякога НЕ зарежда модулен скрипт с crossorigin
     # на https://localhost схемата → черен екран. Махаме crossorigin от index.html (безопасно).
     [ -f dist/index.html ] && sed -i 's/ crossorigin//g' dist/index.html 2>/dev/null || true

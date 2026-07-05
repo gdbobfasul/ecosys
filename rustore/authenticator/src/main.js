@@ -1,8 +1,10 @@
 // Version: 1.0001
 import { enforceLock } from './core/lock.js';
+import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
 import { mountHelp } from './core/help.js';
 enforceLock();
+mountEcosystem('authenticator'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
 mountHelp('authenticator'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // main.js — входна точка и рутер на „KCY Authenticator".
@@ -101,9 +103,10 @@ function bootstrap() {
   // Активността нулира таймера за заключване.
   ['pointerdown', 'keydown'].forEach((ev) =>
     window.addEventListener(ev, () => { if (session.unlocked) resetLockTimer(); }, { passive: true }));
-  // Заключи при отиване на заден план (живот на приложението).
+  // Заключи при отиване на заден план (живот на приложението) — НО не и докато нативен file-picker
+  // е активен (той изкарва апа на заден план; иначе трезорът се заключва насред импорт → „locked").
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden && session.unlocked) {
+    if (document.hidden && session.unlocked && !window.__KCY_SUSPEND_LOCK__) {
       const sec = autoLockSeconds();
       if (sec && sec > 0) nav.lock();
     }

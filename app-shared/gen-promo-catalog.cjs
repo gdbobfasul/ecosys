@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// gen-promo-catalog.cjs — създава/опреснява deploy-scripts/promo-catalog.json (каталог за екрана
+// gen-promo-catalog.cjs — създава/опреснява app-shared/promo-catalog.json (каталог за екрана
 // „Още от KCY Ecosystem"). Този файл се РЕДАКТИРА ЛЕСНО ПРЕДИ БИЛД: за всеки апп сложи
 // `enabled:true` щом е одобрен/публикуван, финалното `name` и `storeUrl` (линка за сваляне).
 // Билдът копира каталога във всеки апп (dist/kcy-promo.json). Само enabled записи (≠ текущия) се

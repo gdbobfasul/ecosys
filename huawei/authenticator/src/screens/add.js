@@ -1,12 +1,13 @@
 // Version: 1.0001
 // add.js — нов акаунт: сканиране на QR код (камера + jsQR) ИЛИ ръчно въвеждане.
-import { h, mount, toast } from '../ui/dom.js';
+import { h, mount, toast, showAlert } from '../ui/dom.js';
 import { t } from '../core/i18n.js';
 import { addEntry } from '../core/storage.js';
 import { parseOtpauthURI } from '../core/otp.js';
 import { base32Decode } from '../core/base32.js';
 import { importQRData, importJsonText, import2FASText, importOtpauthList, isImportableQR, describeResult } from '../core/importer.js';
 import { importAegisFile } from './aegis-import.js';
+import { pickTextFile } from '../core/filepick.js';
 
 let activeStream = null;
 let rafId = null;
@@ -97,50 +98,39 @@ export function renderAdd(root, nav) {
     );
   }
 
-  // ---- Импорт от файл: наш .json бекъп ИЛИ Aegis JSON експорт ----
+  // ---- Импорт от файл: .json бекъп / Aegis / 2FAS / otpauth списък ----
+  // Всичко минава през НАДЕЖДНИЯ pickTextFile (нативен file-picker на телефон → чете реалното
+  // съдържание; input в браузър), защото `<input type=file>` в Android WebView връщаше ПРАЗЕН файл.
   function renderFile() {
-    // accept='*/*' нарочно: Android често крие .json файла (типизира го като
-    // application/octet-stream) при тесен филтър → не можеше да се избере Aegis файл. Allow all.
-    const jsonIn = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
-    jsonIn.addEventListener('change', () => {
-      const f = jsonIn.files && jsonIn.files[0]; if (!f) return;
-      const r = new FileReader();
-      r.onload = () => { runImport(importJsonText(r.result)); jsonIn.value = ''; };
-      r.readAsText(f);
-    });
-    const aegisIn = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
-    aegisIn.addEventListener('change', () => {
-      const f = aegisIn.files && aegisIn.files[0]; if (!f) return;
-      importAegisFile(f, (res) => { if (res && res.ok && res.imported > 0) nav.go('list'); });
-      aegisIn.value = '';
-    });
-    // 2FAS Auth експорт (.2fas / .json). Криптиран → упъти да експортира без парола.
-    const twofasIn = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
-    twofasIn.addEventListener('change', () => {
-      const f = twofasIn.files && twofasIn.files[0]; if (!f) return;
-      const r = new FileReader();
-      r.onload = async () => {
-        const res = await import2FASText(r.result);
-        if (res && !res.ok && res.reason === 'encrypted') toast(t('twofas_encrypted'));
-        else await runImport(Promise.resolve(res));
-        twofasIn.value = '';
-      };
-      r.readAsText(f);
-    });
-    // Универсален otpauth:// списък (текст, по един на ред) — от почти всеки authenticator.
-    const otpauthIn = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
-    otpauthIn.addEventListener('change', () => {
-      const f = otpauthIn.files && otpauthIn.files[0]; if (!f) return;
-      const r = new FileReader();
-      r.onload = () => { runImport(importOtpauthList(r.result)); otpauthIn.value = ''; };
-      r.readAsText(f);
-    });
+    async function pickAndImport(kind) {
+      // Дебъг: при неуспех/изключение показва ПОСТОЯНЕН диалог с диагностика (както при Aegis).
+      const dbg = ['=== ' + kind + ' import debug ==='];
+      try {
+        const picked = await pickTextFile();
+        if (!picked) return;                                  // отказ
+        dbg.push('file=' + (picked.name || '?') + ' size=' + (picked.size != null ? picked.size : '?') + ' chars=' + (picked.text ? picked.text.length : 0));
+        if (!picked.text) { toast(t('import_empty')); showAlert('Import debug', dbg.join('\n')); return; }
+        const text = picked.text;
+        let res;
+        if (kind === 'json') res = await importJsonText(text);
+        else if (kind === 'otpauth') res = await importOtpauthList(text);
+        else res = await import2FASText(text);
+        dbg.push('result: ' + (res.ok ? 'ok imported=' + res.imported + ' dup=' + res.duplicates : 'reason=' + res.reason) + (res.detail ? ' detail=' + res.detail : ''));
+        if (kind === '2fas' && res && !res.ok && res.reason === 'encrypted') { toast(t('twofas_encrypted')); showAlert('Import debug', dbg.join('\n')); return; }
+        toast(describeResult(res));
+        if (res && res.ok && res.imported > 0) nav.go('list');
+        else if (res && !res.ok) showAlert('Import debug', dbg.join('\n'));   // дебъг при неуспех
+      } catch (err) {
+        dbg.push('EXCEPTION: ' + (err && (err.stack || err.message) || err));
+        showAlert('Import debug', dbg.join('\n'));
+      }
+    }
     mount(body, seg,
       h('p', { class: 'muted', style: 'text-align:center', text: t('import_file_hint') }),
-      h('button', { class: 'btn', onclick: () => jsonIn.click(), text: '⬆ ' + t('import_json') }), jsonIn,
-      h('button', { class: 'btn', onclick: () => aegisIn.click(), text: '⬆ ' + t('import_aegis') }), aegisIn,
-      h('button', { class: 'btn', onclick: () => twofasIn.click(), text: '⬆ ' + t('import_2fas') }), twofasIn,
-      h('button', { class: 'btn', onclick: () => otpauthIn.click(), text: '⬆ ' + t('import_otpauth') }), otpauthIn,
+      h('button', { class: 'btn', onclick: () => pickAndImport('json'), text: '⬆ ' + t('import_json') }),
+      h('button', { class: 'btn', onclick: () => importAegisFile((res) => { if (res && res.ok && res.imported > 0) nav.go('list'); }), text: '⬆ ' + t('import_aegis') }),
+      h('button', { class: 'btn', onclick: () => pickAndImport('2fas'), text: '⬆ ' + t('import_2fas') }),
+      h('button', { class: 'btn', onclick: () => pickAndImport('otpauth'), text: '⬆ ' + t('import_otpauth') }),
       h('p', { class: 'muted', style: 'font-size:.85em', text: t('import_aegis_hint') }),
       h('button', { class: 'btn ghost', onclick: () => setMode('manual'), text: t('enter_manually') })
     );

@@ -1,7 +1,7 @@
 // Version: 1.0001
 // settings.js — настройки: език, авто-заключване, биометрия, смяна на парола,
 // импорт/експорт (всички варианти, същите като при бутона „+") и изтриване на сейфа.
-import { h, mount, toast } from '../ui/dom.js';
+import { h, mount, toast, showAlert } from '../ui/dom.js';
 import { t, tf, getLang, languageByCode } from '../core/i18n.js';
 import {
   loadSettings, saveSettings, session, changePassword, wipeVault, autoLockSeconds
@@ -11,6 +11,7 @@ import {
 } from '../core/biometric.js';
 import { importJsonText, import2FASText, importOtpauthList, describeResult } from '../core/importer.js';
 import { importAegisFile } from './aegis-import.js';
+import { pickTextFile } from '../core/filepick.js';
 import { exportJsonFile, exportAegisFile, export2FASFile, exportOtpauthListFile, exportGoogleQR } from '../core/exporter.js';
 import { exportAllQR } from '../core/qrexport.js';
 
@@ -83,45 +84,49 @@ export function renderSettings(root, nav) {
   // --- ИМПОРТ (всички варианти; едни и същи като при бутона „+") ---
   async function runImport(promise) { toast(describeResult(await promise)); }
 
-  // accept='*/*' нарочно (виж add.js): тесният .json филтър криеше Aegis файла в Android пикъра.
-  const jsonInput = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
-  jsonInput.addEventListener('change', () => {
-    const f = jsonInput.files && jsonInput.files[0]; if (!f) return;
-    const r = new FileReader();
-    r.onload = () => { runImport(importJsonText(r.result)); jsonInput.value = ''; };
-    r.readAsText(f);
-  });
-  const aegisInput = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
-  aegisInput.addEventListener('change', () => {
-    const f = aegisInput.files && aegisInput.files[0]; if (!f) return;
-    importAegisFile(f);
-    aegisInput.value = '';
-  });
-  const twofasInput = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
-  twofasInput.addEventListener('change', () => {
-    const f = twofasInput.files && twofasInput.files[0]; if (!f) return;
-    const r = new FileReader();
-    r.onload = async () => {
-      const res = await import2FASText(r.result);
-      if (res && !res.ok && res.reason === 'encrypted') toast(t('twofas_encrypted')); else toast(describeResult(res));
-      twofasInput.value = '';
-    };
-    r.readAsText(f);
-  });
-  const otpauthInput = h('input', { type: 'file', accept: '*/*', style: 'display:none' });
-  otpauthInput.addEventListener('change', () => {
-    const f = otpauthInput.files && otpauthInput.files[0]; if (!f) return;
-    const r = new FileReader();
-    r.onload = () => { runImport(importOtpauthList(r.result)); otpauthInput.value = ''; };
-    r.readAsText(f);
-  });
+  // Импортът минава през НАДЕЖДНИЯ pickTextFile (нативен file-picker на телефон → чете реалното
+  // съдържание; input в браузър), защото `<input type=file>` в Android WebView връщаше ПРАЗЕН файл.
+  async function pickAndImport(kind) {
+    // Дебъг: при неуспех/изключение показва ПОСТОЯНЕН диалог с диагностика (както при Aegis).
+    const dbg = ['=== ' + kind + ' import debug ==='];
+    try {
+      const picked = await pickTextFile();
+      if (!picked) return;
+      dbg.push('file=' + (picked.name || '?') + ' size=' + (picked.size != null ? picked.size : '?') + ' chars=' + (picked.text ? picked.text.length : 0));
+      if (!picked.text) { toast(t('import_empty')); showAlert('Import debug', dbg.join('\n')); return; }
+      const text = picked.text;
+      let res;
+      if (kind === 'json') res = await importJsonText(text);
+      else if (kind === 'otpauth') res = await importOtpauthList(text);
+      else res = await import2FASText(text);
+      dbg.push('result: ' + (res.ok ? 'ok imported=' + res.imported + ' dup=' + res.duplicates : 'reason=' + res.reason) + (res.detail ? ' detail=' + res.detail : ''));
+      if (kind === '2fas' && res && !res.ok && res.reason === 'encrypted') { toast(t('twofas_encrypted')); showAlert('Import debug', dbg.join('\n')); return; }
+      toast(describeResult(res));
+      if (res && !res.ok) showAlert('Import debug', dbg.join('\n'));   // дебъг при неуспех
+    } catch (err) {
+      dbg.push('EXCEPTION: ' + (err && (err.stack || err.message) || err));
+      showAlert('Import debug', dbg.join('\n'));
+    }
+  }
 
   // --- ЕКСПОРТ (всички варианти) ---
   async function runExport(fn) {
     toast(t('exporting'));
-    const r = await fn();
-    if (!r || !r.ok) { toast(r && r.reason === 'empty' ? t('nothing_to_export') : t('import_failed')); return; }
-    toast(r.skipped ? tf('export_done_skip', r.count, r.skipped) : tf('export_done', r.count));
+    // Дебъг: при неуспех/изключение показва диагностика (както при импортите).
+    const dbg = ['=== export debug ==='];
+    try {
+      const r = await fn();
+      dbg.push('result: ' + JSON.stringify(r));
+      if (!r || !r.ok) {
+        toast(r && r.reason === 'empty' ? t('nothing_to_export') : t('import_failed'));
+        if (!r || r.reason !== 'empty') showAlert('Export debug', dbg.join('\n'));   // празно = нормално, не дразним
+        return;
+      }
+      toast(r.skipped ? tf('export_done_skip', r.count, r.skipped) : tf('export_done', r.count));
+    } catch (err) {
+      dbg.push('EXCEPTION: ' + (err && (err.stack || err.message) || err));
+      showAlert('Export debug', dbg.join('\n'));
+    }
   }
 
   // --- Изтриване на сейфа ---
@@ -146,10 +151,10 @@ export function renderSettings(root, nav) {
     // ── ИМПОРТ ──
     h('h1', { style: 'font-size:1em;margin-top:22px', text: '⬆ ' + t('import_title') }),
     h('button', { class: 'btn', onclick: () => nav.go('add'), text: '➕ ' + t('add_more_ways') }),
-    h('button', { class: 'btn ghost', onclick: () => jsonInput.click(), text: t('import_json') }), jsonInput,
-    h('button', { class: 'btn ghost', onclick: () => aegisInput.click(), text: t('import_aegis') }), aegisInput,
-    h('button', { class: 'btn ghost', onclick: () => twofasInput.click(), text: t('import_2fas') }), twofasInput,
-    h('button', { class: 'btn ghost', onclick: () => otpauthInput.click(), text: t('import_otpauth') }), otpauthInput,
+    h('button', { class: 'btn ghost', onclick: () => pickAndImport('json'), text: t('import_json') }),
+    h('button', { class: 'btn ghost', onclick: () => importAegisFile(), text: t('import_aegis') }),
+    h('button', { class: 'btn ghost', onclick: () => pickAndImport('2fas'), text: t('import_2fas') }),
+    h('button', { class: 'btn ghost', onclick: () => pickAndImport('otpauth'), text: t('import_otpauth') }),
     h('p', { class: 'muted', style: 'font-size:.85em', text: t('import_aegis_hint') }),
 
     // ── ЕКСПОРТ ──
