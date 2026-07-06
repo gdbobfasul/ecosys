@@ -21,6 +21,7 @@
 - **MATCHMAKING-IMPLEMENTATION-SUMMARY.md** - Matchmaking имплементация (v3.0)
 - **ADMIN-PAGES-ACCESS.md** - Достъп до админ страниците (IP whitelist + URL параметър)
 - **DOCKER-WSL2-VMCOMPUTE-FIX.md** - Docker/WSL2 не тръгват (vmcompute „General access denied") — диагностика, in-place repair на Windows, алтернатива нативен PostgreSQL
+- **apps/MONETIZACIA-I-REKLAMI.md** - 💰 Монетизация на мобилните приложения (publish/monetization.json: free/one_time/subscription/iap; released → никакво пробно заключване) + рекламна функционалност (интро, „Още от KCY" каталог от сървъра — кой файл се редактира) + месечен абонамент в Huawei AGC
 
 ### 🪙 Token Project (`/private/token/docs/`)
 

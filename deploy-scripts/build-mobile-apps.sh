@@ -296,6 +296,24 @@ build_one() {
       printf "// Автогенериран от build-mobile-apps.sh — НЕ редактирай ръчно.\nexport const APP_VERSION = '%s';\n" "$APK_VERSION_NAME" > src/version.js
       echo -e "  ${GREEN}✓ src/version.js → ${APK_VERSION_NAME}${NC}"
     fi
+    # Монетизация: publish/monetization.json (единствен източник: huawei/<ап>/publish, ВАЖИ и за
+    # rustore билда) → src/monetize.js. Приложението чете оттам модела (free / one_time /
+    # subscription / iap) и дали е РЕЛИЙЗНАТО: released:true или trialLock.enabled:false →
+    # core/lock.js НЕ заключва (никакво 4-дневно пробно заключване на издадено приложение).
+    if [ -d src ]; then
+      _APPBASE="$(basename "$PWD")"
+      _MON_SRC="$ROOT/huawei/$_APPBASE/publish/monetization.json"
+      [ -f "$_MON_SRC" ] || _MON_SRC="$PWD/publish/monetization.json"
+      if [ -f "$_MON_SRC" ]; then
+        { printf "// Автогенериран от build-mobile-apps.sh от publish/monetization.json — НЕ редактирай ръчно.\n// Редактира се huawei/%s/publish/monetization.json.\nexport const MONETIZATION = " "$_APPBASE"
+          cat "$_MON_SRC"
+          printf ";\n"; } > src/monetize.js
+        echo -e "  ${GREEN}✓ src/monetize.js ← publish/monetization.json${NC}"
+      elif [ -f src/core/lock.js ]; then
+        printf "// Автогенериран — липсва publish/monetization.json → подразбиране (тест, пробно заключване).\nexport const MONETIZATION = { \"model\": \"free\", \"released\": false, \"trialLock\": { \"enabled\": true, \"days\": 4 } };\n" > src/monetize.js
+        echo -e "  ${YELLOW}! няма publish/monetization.json → src/monetize.js с подразбиране (пробно заключване)${NC}"
+      fi
+    fi
     # Домейни за падащото меню „Домейн на сървъра": впръскваме ги от private/configs/.env в
     # src/core/server-presets.js (само ако апът има този файл — т.е. selflearning-friend), за да
     # не се преписват на ръка. Липсва tailnet/vm-host → менюто показва само публичния домейн.
@@ -335,11 +353,15 @@ build_one() {
     echo -e "  ${CYAN}→ npm run build (web)…${NC}"
     npm run build || { echo -e "  ${RED}✗ web билдът се провали${NC}"; exit 3; }
     echo -e "  ${GREEN}✓ web билд готов → $d/dist${NC}"
-    # Каталог „Още от KCY Ecosystem" → dist/kcy-promo.json (редактира се ЛЕСНО ПРЕДИ БИЛД в
-    # app-shared/promo-catalog.json: кои апове са одобрени/публикувани, имена, store линкове).
+    # Каталог „Още от KCY Ecosystem" (редактира се в app-shared/promo-catalog.json: кои апове са
+    # одобрени/публикувани `enabled:true`, имена, store линкове). Апът го тегли ПЪРВО ОТ СЪРВЪРА
+    # (https://…/promo/kcy-promo.json — централно управление БЕЗ нов билд); копието в dist/ е само
+    # РЕЗЕРВА без интернет. Затова опресняваме И public/promo/kcy-promo.json — при деплой на сайта
+    # то става живият сървърен каталог.
     if [ -f "$ROOT/app-shared/promo-catalog.json" ] && [ -d dist ]; then
       cp "$ROOT/app-shared/promo-catalog.json" dist/kcy-promo.json
-      echo -e "  ${GREEN}✓ каталог → dist/kcy-promo.json${NC}"
+      mkdir -p "$ROOT/public/promo" && cp "$ROOT/app-shared/promo-catalog.json" "$ROOT/public/promo/kcy-promo.json"
+      echo -e "  ${GREEN}✓ каталог → dist/kcy-promo.json + public/promo/kcy-promo.json (сървърен)${NC}"
     fi
     # Capacitor WebView (вкл. Xiaomi/MIUI) понякога НЕ зарежда модулен скрипт с crossorigin
     # на https://localhost схемата → черен екран. Махаме crossorigin от index.html (безопасно).
@@ -359,6 +381,13 @@ build_one() {
         cd android || exit 6
         if [ -f gradlew ]; then ./gradlew assembleDebug; else exit 7; fi
       )
+      # Провален gradle → СПИРАМЕ с грешка. Иначе долното cp щеше да копира СТАРО APK от
+      # предишен билд и обобщението да излъже „✓" (случи се с newslator: паднал signing config).
+      _GRC=$?
+      if [ "$_GRC" -ne 0 ]; then
+        echo -e "  ${RED}✗ gradle assembleDebug се провали (код $_GRC) — НЕ копирам старо APK${NC}"
+        exit 8
+      fi
       # CWD е $d (subshell-ът вече cd-на в апа) → APK-ът е спрямо текущата папка.
       APK="android/app/build/outputs/apk/debug/app-debug.apk"
       if [ -f "$APK" ]; then

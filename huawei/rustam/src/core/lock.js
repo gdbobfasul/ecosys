@@ -1,17 +1,32 @@
-// Version: 1.0001
-// lock.js — ПРОБНО ЗАКЛЮЧВАНЕ за всички приложения.
-// Поведение: при първото пускане се запомня времето. След 4 ДНИ приложението се самозаключва —
+// Version: 1.0004
+// lock.js — ПРОБНО ЗАКЛЮЧВАНЕ за всички приложения, УПРАВЛЯВАНО от publish/monetization.json.
+// Поведение: при първото пускане се запомня времето. След N ДНИ приложението се самозаключва —
 // покрива се с екран за парола и НЕ се ползва, докато не въведеш вярната парола. Веднъж
 // отключено (вярна парола) → остава отключено завинаги на това устройство.
+//
+// ЗАКЛЮЧВАНЕТО ЗАВИСИ ОТ МОНЕТИЗАЦИЯТА (src/monetize.js, генериран от publish/monetization.json):
+//   • released: true            → НИКАКВО заключване (приложението има релийз в магазин —
+//                                  платилият потребител НИКОГА не бива да бъде заключван);
+//   • trialLock.enabled: false  → НИКАКВО заключване (изключено изрично за този ап);
+//   • trialLock.days            → след колко дни заключва (подразбиране 4).
+// Пробното заключване е САМО за тестовия период ПРЕДИ издаване.
 //
 // Паролата е ЕДНА за ВСИЧКИ приложения. Сменя се САМО ТУК (PASSWORD) + ребилд на апповете.
 //
 // ВАЖНО: това е ПРОСТ гейт за тестовата екосистема, а не криптографска защита — логиката е на
-// клиента. Триене на данните на приложението нулира 4-дневния брояч (дава нови 4 дни), но не
+// клиента. Триене на данните на приложението нулира брояча (дава нови N дни), но не
 // „разбива" защитата. Достатъчно за целта (изтичащ пробен период).
+import { MONETIZATION } from '../monetize.js';
 
 const PASSWORD = 'кокошка';                       // ← СМЯНА НА ПАРОЛАТА СТАВА ТУК (+ ребилд)
-const LOCK_AFTER_MS = 4 * 24 * 60 * 60 * 1000;     // 4 дни
+function trialCfg() {
+  const m = MONETIZATION || {};
+  const tl = m.trialLock || {};
+  return {
+    allowed: m.released !== true && tl.enabled === true,   // релийз/изключено → никакво заключване
+    afterMs: (Number(tl.days) > 0 ? Number(tl.days) : 4) * 24 * 60 * 60 * 1000
+  };
+}
 const K_FIRST = 'kcy.lock.first';                  // времеви печат на първото пускане
 const K_OK = 'kcy.lock.ok';                        // „1" = вече отключено (остава отключено)
 
@@ -44,6 +59,8 @@ function tr(key, lang) { const row = T[key] || {}; return row[lang] || row.ru ||
 // Заключено ли е? Първото пускане се записва тук (и НЕ заключва веднага).
 function isLocked() {
   try {
+    const cfg = trialCfg();
+    if (!cfg.allowed) return false;                // релийз/изключено пробно заключване → никога
     if (localStorage.getItem(K_OK) === '1') return false;
     let first = parseInt(localStorage.getItem(K_FIRST) || '0', 10);
     if (!first || isNaN(first)) {
@@ -51,7 +68,7 @@ function isLocked() {
       try { localStorage.setItem(K_FIRST, String(first)); } catch (e) {}
       return false;
     }
-    return (Date.now() - first) >= LOCK_AFTER_MS;
+    return (Date.now() - first) >= cfg.afterMs;
   } catch (e) { return false; }
 }
 

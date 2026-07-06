@@ -1,22 +1,39 @@
-// Version: 1.0001
+// Version: 1.0004
 // ecosystem.js — екран „Още от KCY Ecosystem": плаващ бутон + showcase списък на ДРУГИТЕ
 // приложения (снимка + ИМЕ + описание 15 езика + линк към приложението). Footer
 // „KCY Ecosystem publisher 2026". БЕЗ изскачащи реклами (доброволен екран → минава правилата на
 // магазините). Всеки апп подава своя id и се самоизключва.
 //
-// Каталогът е ЛОКАЛЕН файл `kcy-promo.json`, вкаран в билда от `promo-catalog.json` (редактира се
-// ЛЕСНО ПРЕДИ БИЛД: кои апове са одобрени/публикувани `enabled:true`, финални имена, store линкове).
+// Каталогът се тегли ПЪРВО ОТ СЪРВЪРА (public/promo/kcy-promo.json → https://…/promo/kcy-promo.json):
+// така СЛЕД издаване се управлява ЦЕНТРАЛНО кои приложения се рекламират (одобрени/качени в
+// магазина `enabled:true`) — свалено/неодобрено приложение се спира БЕЗ нов билд, само с редакция
+// на файла на сървъра. Ако сървърът не отговори (без интернет) → ЛОКАЛНОТО резервно копие
+// `kcy-promo.json`, вкарано в билда от `app-shared/promo-catalog.json`.
 // Само записи с `enabled:true` и различни от текущия апп се показват.
-const CATALOG_URL = './kcy-promo.json';
+const CATALOG_URL_REMOTE = 'https://selflearning.bot.nu/promo/kcy-promo.json';
+const CATALOG_URL_LOCAL = './kcy-promo.json';
 let CACHE = null;
+
+// Изтегляне на JSON от адрес. БЕЗ AbortController (чупи fetch при CapacitorHttp) —
+// таймаутът е през Promise.race, за да не виси екранът при бавен/недостъпен сървър.
+async function fetchCatalog(url, timeoutMs) {
+  const timeout = new Promise((res) => setTimeout(() => res(null), timeoutMs || 6000));
+  const load = (async () => {
+    try {
+      const CH = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) || window.CapacitorHttp;
+      if (CH && CH.get) { const r = await CH.get({ url }); return typeof r.data === 'string' ? JSON.parse(r.data) : r.data; }
+    } catch (e) { /* пада към fetch */ }
+    try { const r = await fetch(url, { cache: 'no-store' }); return await r.json(); } catch (e) { return null; }
+  })();
+  return await Promise.race([load, timeout]);
+}
 
 async function loadCatalog() {
   if (CACHE) return CACHE;
-  try {
-    const CH = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) || window.CapacitorHttp;
-    if (CH && CH.get) { const r = await CH.get({ url: CATALOG_URL }); CACHE = typeof r.data === 'string' ? JSON.parse(r.data) : r.data; return CACHE; }
-  } catch (e) { /* fetch */ }
-  try { const r = await fetch(CATALOG_URL, { cache: 'no-store' }); CACHE = await r.json(); return CACHE; } catch (e) { return null; }
+  let cat = await fetchCatalog(CATALOG_URL_REMOTE, 6000);
+  if (!cat || !Array.isArray(cat.apps)) cat = await fetchCatalog(CATALOG_URL_LOCAL, 4000);
+  if (cat && Array.isArray(cat.apps)) CACHE = cat;
+  return CACHE;
 }
 const LANGS = ['bg', 'ru', 'uk', 'en', 'de', 'fr', 'es', 'es-MX', 'it', 'pt', 'ar', 'hi', 'ja', 'ky', 'zh-Hant'];
 // Надеждно откриване на езика: ключа „<апп>.lang" от localStorage (истинският избор — приоритет);
