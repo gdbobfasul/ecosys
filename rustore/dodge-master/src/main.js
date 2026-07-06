@@ -2,10 +2,12 @@
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
+import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
 enforceLock();
 mountEcosystem('dodge-master'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
+startPromoAds('dodge-master'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('dodge-master'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // Входна точка на играта Dodge Master.
 // Top-down dodge/survival: човек в центъра, отвсякъде летят старовремски снаряди,

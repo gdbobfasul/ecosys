@@ -2,10 +2,12 @@
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
+import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
 enforceLock();
 mountEcosystem('hmm'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
+startPromoAds('hmm'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('hmm'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // HMM — Битка на терен (самостоятелно мобилно приложение, RUStore)
 // Зарежда вградения двигател и пуска отборната (HMM) битка 3 срещу 3.

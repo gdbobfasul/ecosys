@@ -9,7 +9,7 @@ export const WEAPONS = {
     key: 'fists',
     name: 'ЮМРУЦИ',
     type: 'melee',
-    reach: 90,
+    reach: 152,
     damage: 7,
     cooldown: 360,      // ms между ударите
     windup: 90,         // забавяне преди да удари
@@ -35,7 +35,7 @@ export const WEAPONS = {
     key: 'hammer',
     name: 'ЧУК',
     type: 'melee',
-    reach: 135,
+    reach: 150,
     damage: 22,
     cooldown: 720,
     windup: 260,

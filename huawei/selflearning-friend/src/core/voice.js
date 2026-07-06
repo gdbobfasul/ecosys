@@ -1,4 +1,4 @@
-// Version: 1.0003
+// Version: 1.0006
 // voice.js — ГЛАС: STT (глас→текст) + TTS (текст→глас), безплатно и on-device.
 //
 // СТРАТЕГИЯ (без платена облачна услуга, без ключове):
@@ -148,13 +148,31 @@ export async function startListening({ lang = DEFAULT_LANG, onInterim = null } =
 // губеше или не се изписваше). Моменталният стоп взима текста ПРЕДИ изчистване → нищо не се
 // губи и микрофонът гасне веднага (без „забиване" по минута).
 async function startNative(sr, lang, onInterim) {
-  // Подсигури разрешение (тихо).
-  try { await requestMicPermission(); } catch (_) {}
+  // СЕРИАЛИЗАЦИЯ: втора сесия НЕ тръгва върху жива първа (двойно натискане на 🎤 или натискане,
+  // докато диалогът за разрешение виси). Иначе два цикъла се борят за микрофона: тонът
+  // „включване" се чува многократно подред, думите се губят, а допълването става невъзможно.
+  if (_nativeListening) {
+    _nativeStopRequested = true;
+    try { if (typeof _nativeForceStop === 'function') _nativeForceStop(); } catch (_) {}
+    const t0 = Date.now();
+    while (_nativeListening && (Date.now() - t0) < 1500) { await new Promise((r) => setTimeout(r, 50)); }
+  }
+
+  // Разрешение — РЕЗУЛТАТЪТ СЕ ЗАЧИТА: отказ → 'denied' (ясно съобщение в чата), а НЕ
+  // сляп start(), който после гърми с тонове в цикъл. (Преди резултатът се игнорираше.)
+  const permT0 = Date.now();
+  let permOk = true;
+  try { permOk = await requestMicPermission(); } catch (_) { permOk = false; }
+  if (permOk === false) throw new Error('denied');
+  // Диалогът за разрешение БИЛ ли е показан (личи по продължителността)? Веднага след
+  // „Разреши" Android разпознавачът е нестабилен — първите start() връщат мигновени 'stopped'
+  // и грешки (тонът се чуваше картечно, думите се губеха). Даваме му глътка да се застабилизира.
+  const permDialogShown = (Date.now() - permT0) > 500;
 
   // Лек предварителен старт-чист (срещу „зает" при бързо повторно натискане) — БЕЗ await.
   try { if (typeof sr.removeAllListeners === 'function') sr.removeAllListeners(); } catch (_) {}
   try { if (typeof sr.stop === 'function') sr.stop(); } catch (_) {}
-  await new Promise((r) => setTimeout(r, 200));
+  await new Promise((r) => setTimeout(r, permDialogShown ? 650 : 200));
 
   _nativeListening = true;
   _nativeStopRequested = false;
@@ -241,7 +259,10 @@ async function startNative(sr, lang, onInterim) {
       // преди това „започни да учиш…“ се накъсваше). Чакаме MAX_EMPTY_SEGMENTS (3) ПОРЕДНИ
       // тихи сегмента → едва тогава край. По всяко време спираш веднага с 🎤 / „Изпрати“.
       if (emptyStreak >= MAX_EMPTY_SEGMENTS) return finish(); // поредни тишини → спри да чакаш
-      restartTimer = setTimeout(() => armSegment(), RESTART_GAP_MS); // продължи да слушаш (малък прозорец)
+      // Темпо на рестарта: след РЕЧ — възможно най-бързо (90мс), за да не се губят думи на
+      // границата. След ПРАЗЕН сегмент (тишина/нестабилна услуга) — по-спокойно (350мс): няма
+      // какво да се изгуби, а картечните рестарти дразнеха с тона и предизвикваха „busy".
+      restartTimer = setTimeout(() => armSegment(), emptyStreak > 0 ? 350 : RESTART_GAP_MS);
     }
 
     // Стартира (или рестартира) един сегмент на разпознаване.
@@ -279,7 +300,7 @@ async function startNative(sr, lang, onInterim) {
         // Едва след тях приключваме с каквото е натрупано.
         if (!settled && !_nativeStopRequested && startFails < 2) {
           startFails++;
-          restartTimer = setTimeout(() => armSegment(), 350);
+          restartTimer = setTimeout(() => armSegment(), 350 * startFails); // 350мс → 700мс (услугата да догасне)
         } else {
           finish();
         }

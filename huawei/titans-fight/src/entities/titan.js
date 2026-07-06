@@ -193,11 +193,15 @@ export class Titan {
         }
       });
     } else {
-      // melee: завъртане на ръката надолу/напред с "windup"
+      // melee: завъртане на ръката надолу/напред с "windup" + ЗАСИЛВАНЕ НАПРЕД (lunge).
       const swing = w.key === 'hammer' ? 130 : 95;
+      const lunge = (w.key === 'hammer' ? 30 : 22) * this.facing;   // визуален скок към противника
       this.scene.tweens.add({
         targets: arm, angle: -swing * 0.5, duration: w.windup, ease: 'Sine.in',
         onComplete: () => {
+          // рязко напред (замах) — root се дърпа към врага, после се връща
+          this.scene.tweens.add({ targets: this, _lungeOffset: lunge, duration: 90, ease: 'Cubic.out',
+            yoyo: true, hold: 40, onComplete: () => { this._lungeOffset = 0; } });
           this.scene.tweens.add({
             targets: arm, angle: swing, duration: 110, ease: 'Cubic.out',
             onComplete: () => {
@@ -254,7 +258,9 @@ export class Titan {
   // Пивотът на root е в стъпалата; центърът на тялото е на 90px над тях.
   syncToBody(groundY) {
     if (!this.body) return;
-    this.root.x = this.body.x;
+    // _lungeOffset е кратко визуално засилване НАПРЕД при удар (виж attack) — прибавя се към
+    // позицията на тялото, без да пипа физиката, за да чете като истински замах към противника.
+    this.root.x = this.body.x + (this._lungeOffset || 0);
     this.root.y = Math.min(this.body.y + 90, groundY);
     if (this.root.y >= groundY) {
       this.body.y = groundY - 90;

@@ -6,3 +6,9 @@ Descarga cada cuenta como imagen QR separada en un .zip.
 
 Soporte: dai.group.ltd.support@gmail.com
 Para dudas y soporte, escribe a: dai.group.ltd.support@gmail.com
+
+Compatible con tus apps favoritas: importa y exporta en ambos sentidos:
+• Contraseñas de navegadores: Google Chrome, Microsoft Edge, Mozilla Firefox.
+• Códigos 2FA: Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass, además de cualquier app otpauth.
+• Frases semilla y claves de carteras cripto: MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
+Todos los datos quedan cifrados solo en tu dispositivo.

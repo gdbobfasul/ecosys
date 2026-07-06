@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0009
 // HUD: DOM overlay върху canvas-а — мерник, виртуален джойстик, бутон огън,
 // боеприпаси, ниво, точки, оставащи цели, таймер, оръжие.
 import { THEME } from './theme.js';
@@ -62,7 +62,10 @@ export class HUD {
       <div id="hud-toast" style="position:fixed;left:50%;top:30%;transform:translateX(-50%);color:#fff;
            font-size:26px;font-weight:800;text-shadow:0 2px 6px #000;opacity:0;transition:opacity .3s;"></div>
     `;
-    root.appendChild(el);
+    // ПОПРАВКА (играта не тръгваше): тук пишеше `root.appendChild` — глобално `root` НЯМА
+    // (елементът е #app) → ReferenceError при ВСЕКИ старт на ниво → менюто вече е махнато
+    // и остава само празната сцена („сивкаво-зеленикав екран, нищо не се случва").
+    this.root.appendChild(el);
     this.el = el;
 
     this.refs = {

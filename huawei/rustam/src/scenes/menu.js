@@ -35,12 +35,12 @@ export default class MenuScene extends Phaser.Scene {
     const mole = this.add.image(W * 0.74, H * 0.36, 'mole').setScale(0.5).setAngle(6);
     this.tweens.add({ targets: mole, y: H * 0.36 - 6, yoyo: true, repeat: -1, duration: 900, ease: 'Sine.inOut' });
 
-    // Заглавие.
-    this.add.text(W / 2, H * 0.46, THEME.titleText, {
-      fontFamily: 'system-ui, sans-serif', fontSize: '46px', color: THEME.primaryHex,
-      fontStyle: 'bold', stroke: '#000', strokeThickness: 6
+    // Заглавие (двуредово „РУСТАМ БЕРЕ КРАСТАВИЦИ" — по-малък шрифт, за да събере дългото име).
+    this.add.text(W / 2, H * 0.45, THEME.titleText, {
+      fontFamily: 'system-ui, sans-serif', fontSize: '34px', color: THEME.primaryHex,
+      fontStyle: 'bold', stroke: '#000', strokeThickness: 6, align: 'center', lineSpacing: 2
     }).setOrigin(0.5);
-    this.add.text(W / 2, H * 0.46 + 38, THEME.titleSub, {
+    this.add.text(W / 2, H * 0.45 + 52, THEME.titleSub, {
       fontFamily: 'system-ui, sans-serif', fontSize: '16px', color: '#cbb'
     }).setOrigin(0.5);
 

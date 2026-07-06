@@ -20,7 +20,7 @@ export const THEME = {
   heroSkin: 0xe8b894,
   heroCloth: 0x4f7a2b,    // зелена риза на градинар
   // Заглавие на менюто
-  titleText: 'РУСТАМ',
+  titleText: 'РУСТАМ БЕРЕ\nКРАСТАВИЦИ',
   titleSub: 'RUStore Edition',
   // Ключ за localStorage (различен per-store, за да не се бъркат записите)
   saveKey: 'rustam.rustore.save'

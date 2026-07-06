@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0009
 // Инициализация на Three.js: renderer, сцена, камера (first-person), небе, мъгла, светлини.
 import * as THREE from 'three';
 
@@ -39,18 +39,35 @@ export function createEngine(container) {
     renderer.setSize(w, h, true);
   }
 
-  // Ако WebGL контекстът се загуби (често на слаби мобилни GPU) — показваме
-  // видимо съобщение вместо мълчалив черен екран.
+  // Ако WebGL контекстът се загуби (често на слаби мобилни GPU, вкл. ВРЕМЕННО при
+  // старта/връщане от заден план) — показваме съобщение с бутон за рестарт.
+  // КРИТИЧНО (доклад „играта не тръгва — нищо не реагира"): старият слой се показваше
+  // ЗАВИНАГИ и ГЪЛТАШЕ всички докосвания, а възстановяването на контекста изобщо не се
+  // слушаше. preventDefault() ПОЗВОЛЯВА автоматично възстановяване → при
+  // 'webglcontextrestored' слоят се МАХА и играта продължава сама.
+  let lostNote = null;
   renderer.domElement.addEventListener('webglcontextlost', (e) => {
-    e.preventDefault();
+    e.preventDefault();                 // позволи на браузъра да възстанови контекста
     console.error('[engine] WebGL контекстът беше загубен');
-    const note = document.createElement('div');
-    note.id = 'webgl-lost';
-    note.style.cssText = `position:fixed;inset:0;z-index:9998;background:#1a0808;color:#ffd2d2;
-      font-family:system-ui,sans-serif;font-size:16px;display:flex;align-items:center;
-      justify-content:center;text-align:center;padding:24px;`;
-    note.textContent = 'WebGL контекстът се загуби (графиката рестартира). Затворете и отворете приложението отново.';
-    document.body.appendChild(note);
+    if (lostNote) return;
+    lostNote = document.createElement('div');
+    lostNote.id = 'webgl-lost';
+    lostNote.style.cssText = `position:fixed;inset:0;z-index:9998;background:#1a0808;color:#ffd2d2;
+      font-family:system-ui,sans-serif;font-size:16px;display:flex;flex-direction:column;gap:14px;
+      align-items:center;justify-content:center;text-align:center;padding:24px;`;
+    const msg = document.createElement('div');
+    msg.textContent = 'Графиката прекъсна за момент (WebGL). Изчакваме я да се върне…';
+    const btn = document.createElement('button');
+    btn.textContent = '↻ Рестартирай играта';
+    btn.style.cssText = 'padding:12px 26px;font-size:16px;font-weight:700;border:none;border-radius:10px;background:#4fc3f7;color:#04121d;cursor:pointer';
+    btn.addEventListener('click', () => { try { location.reload(); } catch (_) {} });
+    lostNote.appendChild(msg); lostNote.appendChild(btn);
+    document.body.appendChild(lostNote);
+  }, false);
+  renderer.domElement.addEventListener('webglcontextrestored', () => {
+    console.warn('[engine] WebGL контекстът се възстанови — продължаваме');
+    if (lostNote) { try { lostNote.remove(); } catch (_) {} lostNote = null; }
+    try { applySize(); } catch (_) {}   // главният цикъл продължава да рендира
   }, false);
 
   const scene = new THREE.Scene();

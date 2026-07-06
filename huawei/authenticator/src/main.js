@@ -1,11 +1,13 @@
-// Version: 1.0001
+// Version: 1.0013
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
+import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
 enforceLock();
 mountEcosystem('authenticator'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
+startPromoAds('authenticator'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('authenticator'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // main.js — входна точка и рутер на „KCY Authenticator".
 // Поток при старт:
@@ -30,6 +32,7 @@ import { renderDups } from './screens/dups.js';
 import { renderCollectionAdd } from './screens/collection-add.js';
 import { renderCollectionView } from './screens/collection-view.js';
 import { renderPasswordEdit } from './screens/password-edit.js';
+import { renderSeedEdit } from './screens/seed-edit.js';
 
 // --- Инжектиране на стилове + цветовете на темата като CSS променливи ---
 function injectStyles() {
@@ -60,7 +63,8 @@ const SCREENS = {
   dups: renderDups,
   'collection-add': renderCollectionAdd,
   'collection-view': renderCollectionView,
-  'password-edit': renderPasswordEdit
+  'password-edit': renderPasswordEdit,
+  'seed-edit': renderSeedEdit
 };
 
 // Навигационен обект, подаван на всеки екран.
@@ -88,8 +92,10 @@ export const nav = {
 
 // --- Авто-заключване при бездействие ---
 let lockTimer = null;
+let lastActivityAt = Date.now();   // за проверка при връщане на фокуса (таймерите на заден план спят)
 function resetLockTimer() {
   if (lockTimer) { clearTimeout(lockTimer); lockTimer = null; }
+  lastActivityAt = Date.now();
   const sec = autoLockSeconds();
   if (!session.unlocked || !sec || sec <= 0) return;
   lockTimer = setTimeout(() => {
@@ -103,12 +109,22 @@ function bootstrap() {
   // Активността нулира таймера за заключване.
   ['pointerdown', 'keydown'].forEach((ev) =>
     window.addEventListener(ev, () => { if (session.unlocked) resetLockTimer(); }, { passive: true }));
-  // Заключи при отиване на заден план (живот на приложението) — НО не и докато нативен file-picker
-  // е активен (той изкарва апа на заден план; иначе трезорът се заключва насред импорт → „locked").
+  // Поведение при отиване на заден план (смяна на приложението). НО не и докато нативен
+  // file-picker е активен (той изкарва апа на заден план; иначе трезорът се заключва насред
+  // импорт → „locked").
+  //   • lockOnBlur: true (подразбиране) → заключва ВЕДНАГА при загуба на фокус;
+  //   • lockOnBlur: false → НЕ заключва при смяна на приложението: важи САМО таймаутът за
+  //     бездействие. Понеже таймерите спят на заден план, при ВРЪЩАНЕ на фокуса проверяваме
+  //     колко е минало от последното действие — изтекъл таймаут → заключва чак тогава.
   document.addEventListener('visibilitychange', () => {
+    const sec = autoLockSeconds();
     if (document.hidden && session.unlocked && !window.__KCY_SUSPEND_LOCK__) {
-      const sec = autoLockSeconds();
-      if (sec && sec > 0) nav.lock();
+      if (!sec || sec <= 0) return;                       // „никога" → не заключваме
+      if (loadSettings().lockOnBlur === false) return;    // изборът: без заключване при смяна
+      nav.lock();
+    } else if (!document.hidden && session.unlocked) {
+      if (sec && sec > 0 && (Date.now() - lastActivityAt) >= sec * 1000) nav.lock();
+      else resetLockTimer();                              // подновяваме таймера след връщане
     }
   });
   nav.start();

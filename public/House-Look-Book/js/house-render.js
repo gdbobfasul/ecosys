@@ -588,6 +588,198 @@ const HouseRender = (function () {
     return svgFrame(inner);
   }
 
+  // ── БИБЛИОТЕКА С ФОРМИ на мебелите (НЕ кутии!) ────────────────────────────
+  // Всяка мебел/уред се рисува с РАЗПОЗНАВАЕМ силует (тоалетна чиния, легло, гардероб…).
+  // Паралелепипед остава САМО за наистина кутиестите (шкафове, хладилник, пералня…) —
+  // и там с ВИДИМИ вратички/рафтове/дръжки. (x,y) = горе-ляво, w×h = габарит, подът е y+h.
+  const BOXY = { wardrobe: 1, cabinet: 1, fridge: 1, dresser: 1, nightstand: 1, tvstand: 1, dishwasher: 1, washer: 1, oven: 1, stove: 1, boiler: 1, shoecab: 1, island: 1, shelves: 1 };
+
+  function furnFace(type, x, y, w, h, col) {
+    col = col || DEFAULT_FURN_COLOR;
+    const dk = shade(col, 0.58), lt = shade(col, 1.18), mid = shade(col, 0.82);
+    const cx = x + w / 2, by = y + h;
+    const r = (xx, yy, ww, hh, fill, rx, sw) => `<rect x="${xx.toFixed(1)}" y="${yy.toFixed(1)}" width="${Math.max(1, ww).toFixed(1)}" height="${Math.max(1, hh).toFixed(1)}" rx="${rx == null ? 2 : rx}" fill="${fill}" stroke="${dk}" stroke-width="${sw || 1}"/>`;
+    const ln = (x1, y1, x2, y2, st, sw) => `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${st || dk}" stroke-width="${sw || 1.2}"/>`;
+    const el2 = (ecx, ecy, rx, ry, fill, sw) => `<ellipse cx="${ecx.toFixed(1)}" cy="${ecy.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="${fill}" stroke="${dk}" stroke-width="${sw || 1}"/>`;
+    const ci = (ccx, ccy, rr, fill, sw) => `<circle cx="${ccx.toFixed(1)}" cy="${ccy.toFixed(1)}" r="${rr.toFixed(1)}" fill="${fill}" stroke="${dk}" stroke-width="${sw || 1}"/>`;
+    let g = '';
+    switch (type) {
+      case 'bed':         // табла + рамка + матрак + възглавница + завивка
+        g += r(x, y, w * 0.10, h, mid, 3);                                                    // табла (ляво, високо)
+        g += r(x + w * 0.06, by - h * 0.34, w * 0.94, h * 0.16, mid, 2);                      // рамка
+        g += r(x + w * 0.08, by - h * 0.52, w * 0.90, h * 0.22, lt, 5);                       // матрак
+        g += r(x + w * 0.11, by - h * 0.50, w * 0.16, h * 0.12, '#ffffff', 3);                // възглавница
+        g += r(x + w * 0.30, by - h * 0.48, w * 0.66, h * 0.17, col, 4);                      // завивка
+        g += r(x + w * 0.10, by - h * 0.18, w * 0.04, h * 0.18, dk, 1) + r(x + w * 0.90, by - h * 0.18, w * 0.04, h * 0.18, dk, 1); // крачета
+        break;
+      case 'sofa': case 'sofaset': case 'armchair': {                                        // облегалка + седалка + подлакътници
+        g += r(x + w * 0.06, y, w * 0.88, h * 0.55, mid, 6);                                  // облегалка
+        g += r(x, y + h * 0.30, w * 0.14, h * 0.55, col, 6);                                  // ляв подлакътник
+        g += r(x + w * 0.86, y + h * 0.30, w * 0.14, h * 0.55, col, 6);                       // десен подлакътник
+        g += r(x + w * 0.10, y + h * 0.48, w * 0.80, h * 0.30, lt, 5);                        // седалка (възглавници)
+        if (type !== 'armchair') g += ln(cx, y + h * 0.50, cx, y + h * 0.76);                 // разделение на седалките
+        g += r(x + w * 0.08, by - h * 0.10, w * 0.05, h * 0.10, dk, 1) + r(x + w * 0.87, by - h * 0.10, w * 0.05, h * 0.10, dk, 1); // крачета
+        break;
+      }
+      case 'coffee': case 'table': {                                                         // плот + крака
+        const topH = h * (type === 'coffee' ? 0.18 : 0.12), legW = Math.max(2, w * 0.05);
+        g += r(x, y, w, topH, col, 3);                                                        // плот
+        g += r(x + w * 0.06, y + topH, legW, h - topH, mid, 1);                               // ляв крак
+        g += r(x + w * 0.94 - legW, y + topH, legW, h - topH, mid, 1);                        // десен крак
+        break;
+      }
+      case 'chair':                                                                           // облегалка + седалка + крака
+        g += r(x + w * 0.15, y, w * 0.12, h * 0.55, mid, 2);                                  // облегалка (странично)
+        g += r(x, y + h * 0.45, w, h * 0.12, col, 3);                                         // седалка
+        g += r(x + w * 0.08, y + h * 0.57, Math.max(2, w * 0.08), h * 0.43, mid, 1);
+        g += r(x + w * 0.84, y + h * 0.57, Math.max(2, w * 0.08), h * 0.43, mid, 1);
+        break;
+      case 'desk': {                                                                          // плот + шкафче с чекмеджета + крак
+        const topH = h * 0.10;
+        g += r(x, y, w, topH, col, 2);                                                        // плот
+        g += r(x + w * 0.62, y + topH, w * 0.34, h - topH, mid, 2);                           // шкафче
+        g += ln(x + w * 0.64, y + h * 0.42, x + w * 0.94, y + h * 0.42) + ln(x + w * 0.64, y + h * 0.70, x + w * 0.94, y + h * 0.70); // чекмеджета
+        g += ci(x + w * 0.79, y + h * 0.30, Math.max(1.4, w * 0.015), dk);                    // дръжка
+        g += r(x + w * 0.04, y + topH, Math.max(2, w * 0.05), h - topH, mid, 1);              // крак
+        break;
+      }
+      case 'toilet': {                                                                        // казанче + чиния + основа
+        g += r(x + w * 0.22, y, w * 0.56, h * 0.34, lt, 4);                                   // казанче
+        g += r(x + w * 0.30, y + h * 0.06, w * 0.40, h * 0.06, mid, 2);                       // бутон
+        g += el2(cx, y + h * 0.58, w * 0.42, h * 0.20, '#ffffff');                            // седалка/чиния
+        g += el2(cx, y + h * 0.58, w * 0.28, h * 0.12, lt);                                   // отвор на чинията
+        g += r(x + w * 0.36, y + h * 0.72, w * 0.28, h * 0.28, '#ffffff', 4);                 // основа
+        break;
+      }
+      case 'bathtub':                                                                         // вана: борд + корито + крачета + смесител
+        g += r(x, y + h * 0.30, w, h * 0.58, '#ffffff', Math.min(14, h * 0.28), 1.4);         // корпус
+        g += el2(cx, y + h * 0.42, w * 0.44, h * 0.13, shade('#cfe6f2', 1));                  // водна повърхност
+        g += r(x + w * 0.06, by - h * 0.10, w * 0.06, h * 0.10, dk, 1) + r(x + w * 0.88, by - h * 0.10, w * 0.06, h * 0.10, dk, 1);
+        g += ln(x + w * 0.12, y + h * 0.08, x + w * 0.12, y + h * 0.30, mid, 3) + ci(x + w * 0.12, y + h * 0.08, Math.max(2, w * 0.03), mid); // смесител
+        break;
+      case 'sink':                                                                            // мивка: смесител + купа + колона
+        g += ln(cx, y + h * 0.02, cx, y + h * 0.18, mid, 3) + ci(cx, y + h * 0.02, Math.max(1.6, w * 0.05), mid); // смесител
+        g += el2(cx, y + h * 0.30, w * 0.48, h * 0.16, '#ffffff', 1.4);                       // купа
+        g += r(x + w * 0.36, y + h * 0.42, w * 0.28, h * 0.58, lt, 3);                        // колона
+        break;
+      case 'shower': {                                                                        // душ-кабина: рамка + стъкло + слушалка + корито
+        g += r(x, y, w, h, 'none', 3, 2);                                                     // рамка
+        g += `<rect x="${(x + 2).toFixed(1)}" y="${(y + 2).toFixed(1)}" width="${(w - 4).toFixed(1)}" height="${(h - 4).toFixed(1)}" rx="3" fill="#bfe0f5" opacity="0.45" stroke="none"/>`; // стъкло
+        g += ln(cx, y + 3, cx, by - h * 0.10, mid, 1.6);                                      // отвор на вратата
+        g += ln(x + w * 0.18, y + h * 0.08, x + w * 0.18, y + h * 0.22, mid, 2.4) + ci(x + w * 0.18, y + h * 0.24, Math.max(2, w * 0.05), mid); // слушалка
+        g += r(x, by - h * 0.08, w, h * 0.08, lt, 3);                                         // корито
+        break;
+      }
+      case 'coatrack': {                                                                      // закачалка: стойка + куки + основа
+        g += r(cx - Math.max(1.5, w * 0.05), y + h * 0.04, Math.max(3, w * 0.10), h * 0.90, mid, 2); // стълб
+        g += ln(cx, y + h * 0.10, x + w * 0.10, y + h * 0.22, dk, 2) + ln(cx, y + h * 0.10, x + w * 0.90, y + h * 0.22, dk, 2); // рамена
+        g += ln(cx, y + h * 0.24, x + w * 0.22, y + h * 0.34, dk, 2) + ln(cx, y + h * 0.24, x + w * 0.78, y + h * 0.34, dk, 2);
+        g += el2(cx, by - h * 0.03, w * 0.36, h * 0.05, mid);                                 // основа
+        break;
+      }
+      case 'hood':                                                                            // аспиратор: комин + камбана
+        g += r(cx - w * 0.10, y, w * 0.20, h * 0.45, mid, 1);                                 // комин
+        g += `<polygon points="${(x).toFixed(1)},${(by).toFixed(1)} ${(x + w).toFixed(1)},${(by).toFixed(1)} ${(x + w * 0.72).toFixed(1)},${(y + h * 0.45).toFixed(1)} ${(x + w * 0.28).toFixed(1)},${(y + h * 0.45).toFixed(1)}" fill="${col}" stroke="${dk}"/>`;
+        g += ln(x + w * 0.16, by - 2.5, x + w * 0.84, by - 2.5, lt, 1.6);                     // светеща лента
+        break;
+      case 'washer':                                                                          // пералня: люк (кръгла врата) + панел
+        g += r(x, y, w, h, col, 3, 1.4);
+        g += ln(x + 2, y + h * 0.18, x + w - 2, y + h * 0.18);                                // панел
+        g += ci(x + w * 0.82, y + h * 0.09, Math.max(2, h * 0.05), lt);                       // копче
+        g += ci(cx, y + h * 0.58, Math.min(w, h) * 0.30, mid, 2);                             // люк (външен)
+        g += ci(cx, y + h * 0.58, Math.min(w, h) * 0.20, '#bfe0f5', 1.4);                     // стъкло
+        break;
+      case 'stove':                                                                           // печка: котлони/копчета + фурна с прозорец
+        g += r(x, y, w, h, col, 2, 1.4);
+        g += ci(x + w * 0.22, y + h * 0.09, Math.max(1.6, w * 0.045), dk) + ci(x + w * 0.42, y + h * 0.09, Math.max(1.6, w * 0.045), dk) + ci(x + w * 0.62, y + h * 0.09, Math.max(1.6, w * 0.045), dk) + ci(x + w * 0.82, y + h * 0.09, Math.max(1.6, w * 0.045), dk); // копчета
+        g += r(x + w * 0.10, y + h * 0.26, w * 0.80, h * 0.52, '#3a3f46', 3);                 // врата на фурната
+        g += r(x + w * 0.18, y + h * 0.34, w * 0.64, h * 0.30, '#5b6b7a', 2);                 // прозорец
+        g += ln(x + w * 0.12, y + h * 0.22, x + w * 0.88, y + h * 0.22, dk, 2.4);             // дръжка
+        break;
+      case 'oven':                                                                            // фурна за вграждане
+        g += r(x, y, w, h, col, 2, 1.4);
+        g += ci(x + w * 0.2, y + h * 0.1, Math.max(1.6, h * 0.05), dk) + ci(x + w * 0.5, y + h * 0.1, Math.max(1.6, h * 0.05), dk) + ci(x + w * 0.8, y + h * 0.1, Math.max(1.6, h * 0.05), dk);
+        g += ln(x + w * 0.10, y + h * 0.24, x + w * 0.90, y + h * 0.24, dk, 2.6);             // дръжка
+        g += r(x + w * 0.10, y + h * 0.32, w * 0.80, h * 0.56, '#3a3f46', 3);                 // стъклена врата
+        g += r(x + w * 0.18, y + h * 0.40, w * 0.64, h * 0.36, '#5b6b7a', 2);
+        break;
+      case 'fridge':                                                                          // хладилник: 2 врати + дръжки
+        g += r(x, y, w, h, lt, 4, 1.4);
+        g += ln(x + 1.5, y + h * 0.34, x + w - 1.5, y + h * 0.34, dk, 1.6);                   // граница фризер/хладилник
+        g += r(x + w * 0.08, y + h * 0.08, Math.max(2, w * 0.05), h * 0.18, mid, 2);          // горна дръжка
+        g += r(x + w * 0.08, y + h * 0.40, Math.max(2, w * 0.05), h * 0.30, mid, 2);          // долна дръжка
+        break;
+      case 'dishwasher':                                                                      // съдомиялна: панел + врата с дръжка
+        g += r(x, y, w, h, col, 2, 1.4);
+        g += ln(x + 2, y + h * 0.16, x + w - 2, y + h * 0.16);
+        g += ci(x + w * 0.16, y + h * 0.08, Math.max(1.4, h * 0.035), dk) + ci(x + w * 0.30, y + h * 0.08, Math.max(1.4, h * 0.035), dk);
+        g += ln(x + w * 0.10, y + h * 0.26, x + w * 0.90, y + h * 0.26, dk, 2.6);             // дръжка
+        g += r(x + w * 0.10, y + h * 0.34, w * 0.80, h * 0.54, mid, 2);                       // врата
+        break;
+      case 'boiler':                                                                          // бойлер: легнал цилиндър + тръби
+        g += r(x, y + h * 0.06, w, h * 0.70, lt, Math.min(16, h * 0.30), 1.4);                // корпус (заоблен)
+        g += ci(x + w * 0.5, y + h * 0.41, Math.min(w, h) * 0.10, mid);                       // капак/термостат
+        g += ln(x + w * 0.25, y + h * 0.76, x + w * 0.25, by, mid, 3) + ln(x + w * 0.75, y + h * 0.76, x + w * 0.75, by, mid, 3); // тръби
+        break;
+      case 'wardrobe':                                                                        // гардероб: корниз + 2 врати + дръжки + крачета
+        g += r(x, y, w, h * 0.96, col, 2, 1.4);
+        g += r(x - 1, y, w + 2, h * 0.05, mid, 1);                                            // корниз
+        g += ln(cx, y + h * 0.05, cx, y + h * 0.96, dk, 1.6);                                 // разделение на вратите
+        g += r(cx - w * 0.10, y + h * 0.42, Math.max(1.6, w * 0.035), h * 0.14, dk, 2);       // лява дръжка
+        g += r(cx + w * 0.065, y + h * 0.42, Math.max(1.6, w * 0.035), h * 0.14, dk, 2);      // дясна дръжка
+        g += r(x + w * 0.06, by - h * 0.04, w * 0.06, h * 0.04, dk, 1) + r(x + w * 0.88, by - h * 0.04, w * 0.06, h * 0.04, dk, 1);
+        break;
+      case 'cabinet': case 'shoecab':                                                         // шкаф: врати + рафт/клапи + дръжки
+        g += r(x, y, w, h, col, 2, 1.4);
+        if (type === 'cabinet') {
+          g += ln(cx, y + 2, cx, by - 2, dk, 1.4);                                            // 2 врати
+          g += ln(x + 2, y + h * 0.5, x + w - 2, y + h * 0.5, mid, 1);                        // рафт
+          g += ci(cx - w * 0.08, y + h * 0.45, Math.max(1.4, w * 0.02), dk) + ci(cx + w * 0.08, y + h * 0.45, Math.max(1.4, w * 0.02), dk);
+        } else {
+          g += ln(x + 2, y + h * 0.5, x + w - 2, y + h * 0.5, dk, 1.2);                       // 2 клапи за обувки
+          g += ln(x + w * 0.30, y + h * 0.28, x + w * 0.70, y + h * 0.28, dk, 2) + ln(x + w * 0.30, y + h * 0.78, x + w * 0.70, y + h * 0.78, dk, 2); // дръжки-канали
+        }
+        break;
+      case 'shelves': {                                                                       // етажерка: отворени рафтове + книги
+        g += r(x, y, w, h, 'none', 2, 1.6);
+        for (let i = 1; i <= 3; i++) g += ln(x + 1.5, y + h * i / 4, x + w - 1.5, y + h * i / 4, dk, 1.4);
+        const bookC = ['#a35d4e', '#4e7aa3', '#6da35d', '#a3934e'];
+        for (let sh = 0; sh < 3; sh++) {
+          for (let b = 0; b < 3; b++) {
+            const bw = w * 0.10, bh = h * 0.16;
+            g += r(x + w * (0.10 + b * 0.14 + sh * 0.04), y + h * (sh + 1) / 4 - bh, bw, bh, bookC[(sh + b) % 4], 1);
+          }
+        }
+        break;
+      }
+      case 'nightstand': case 'dresser': {                                                    // чекмеджета с дръжки
+        g += r(x, y, w, h * 0.96, col, 2, 1.4);
+        const rows = type === 'dresser' ? 3 : 2;
+        for (let i = 1; i < rows; i++) g += ln(x + 2, y + h * 0.96 * i / rows, x + w - 2, y + h * 0.96 * i / rows, dk, 1.2);
+        for (let i = 0; i < rows; i++) g += r(cx - w * 0.10, y + h * 0.96 * (i + 0.5) / rows - 1.4, w * 0.20, 2.8, dk, 1.4);
+        g += r(x + w * 0.06, by - h * 0.04, w * 0.06, h * 0.04, dk, 1) + r(x + w * 0.88, by - h * 0.04, w * 0.06, h * 0.04, dk, 1);
+        break;
+      }
+      case 'tvstand':                                                                         // ТВ шкаф: нисък шкаф + телевизор отгоре
+        g += r(x + w * 0.14, y, w * 0.72, h * 0.52, '#22262c', 2, 1.2);                       // телевизор
+        g += r(x + w * 0.17, y + h * 0.03, w * 0.66, h * 0.44, '#39424e', 1);                 // екран
+        g += r(cx - w * 0.03, y + h * 0.52, w * 0.06, h * 0.06, dk, 1);                       // столче
+        g += r(x, y + h * 0.60, w, h * 0.40, col, 2, 1.4);                                    // шкаф
+        g += ln(cx, y + h * 0.62, cx, by - 2, dk, 1.2);                                       // 2 вратички
+        g += ci(cx - w * 0.06, y + h * 0.80, Math.max(1.4, w * 0.018), dk) + ci(cx + w * 0.06, y + h * 0.80, Math.max(1.4, w * 0.018), dk);
+        break;
+      case 'island':                                                                          // кухненски остров: плот с надвес + шкафове
+        g += r(x + w * 0.04, y + h * 0.10, w * 0.92, h * 0.90, col, 2, 1.4);                  // тяло
+        g += ln(x + w * 0.36, y + h * 0.12, x + w * 0.36, by - 2, dk, 1.2) + ln(x + w * 0.68, y + h * 0.12, x + w * 0.68, by - 2, dk, 1.2); // вратички
+        g += r(x, y, w, h * 0.10, mid, 2);                                                    // плот (надвес)
+        break;
+      default:
+        g += r(x, y, w, h, col, 3, 1.2);                                                      // непознат тип → кутия (последна резерва)
+        g += ln(x + 2, y + h * 0.5, x + w - 2, y + h * 0.5, dk, 1);
+    }
+    return g;
+  }
+
   // Груба височина на мебел (дял от стената) за страничните изгледи.
   function furnitureHeight(id) {
     if (['wardrobe', 'fridge', 'shelves', 'cabinet', 'shower', 'boiler', 'coatrack'].indexOf(id) > -1) return 0.82;
@@ -630,7 +822,8 @@ const HouseRender = (function () {
           `<rect x="${x}" y="${y}" width="${fw}" height="${fh}" rx="3" fill="none" stroke="#5a7a95" stroke-width="1.5"/>` +
           `<text x="${cx}" y="${y - 3}" text-anchor="middle" font-size="9" fill="#234" font-family="system-ui,Arial">${nm}</text></g>`;
       } else {
-        inner += `<g><rect x="${x}" y="${y}" width="${fw}" height="${fh}" rx="3" fill="${it.color || '#cde0ef'}" stroke="#5a7a95" stroke-width="1.5"/><text x="${cx}" y="${floorY - fh / 2 + 3}" text-anchor="middle" font-size="9" fill="#234" font-family="system-ui,Arial">${nm}</text></g>`;
+        // РАЗПОЗНАВАЕМА ФОРМА на мебелта (не кутия!) — тоалетна чиния, легло, гардероб…
+        inner += `<g>${furnFace(it.type, x, y, fw, fh, it.color || '#cde0ef')}<text x="${cx}" y="${y - 3}" text-anchor="middle" font-size="9" fill="#234" font-family="system-ui,Arial">${nm}</text></g>`;
       }
     });
     const rt = roomType(room && room.type);
@@ -691,8 +884,9 @@ const HouseRender = (function () {
     if (fw != null) {
       const others = items.filter(it => it.place === 'wall' && (it.wall || 0) !== fw);
       const lefts = others.filter((_, i) => i % 2 === 0), rights = others.filter((_, i) => i % 2 === 1);
-      lefts.forEach((it, k) => placed.push({ it, u: 0.1, v: lefts.length > 1 ? 0.42 + 0.44 * (k / (lefts.length - 1)) : 0.55 }));
-      rights.forEach((it, k) => placed.push({ it, u: 0.9, v: rights.length > 1 ? 0.42 + 0.44 * (k / (rights.length - 1)) : 0.55 }));
+      // __side дава на furnBlock накъде да „обърне" мебелта (лек наклон към стената).
+      lefts.forEach((it, k) => placed.push({ it: { ...it, __side: 'left' }, u: 0.1, v: lefts.length > 1 ? 0.42 + 0.44 * (k / (lefts.length - 1)) : 0.55 }));
+      rights.forEach((it, k) => placed.push({ it: { ...it, __side: 'right' }, u: 0.9, v: rights.length > 1 ? 0.42 + 0.44 * (k / (rights.length - 1)) : 0.55 }));
     }
     const cen = items.filter(it => it.place === 'center');
     const cols = Math.max(1, Math.ceil(Math.sqrt(cen.length || 1)));
@@ -749,10 +943,20 @@ const HouseRender = (function () {
         `<rect x="${fx}" y="${fyTop}" width="${fw2}" height="${fh2}" rx="2" fill="none" stroke="#0007" stroke-width="1"/>`;
       return `<g>${g}</g>`;
     }
-    g += `<polygon points="${x + w},${topY} ${x + w + dx},${topY - dy} ${x + w + dx},${by - dy} ${x + w},${by}" fill="${shade(col, 0.68)}"/>` +      // дясна плоскост
-      `<polygon points="${x},${topY} ${x + w},${topY} ${x + w + dx},${topY - dy} ${x + dx},${topY - dy}" fill="${shade(col, 1.16)}"/>` +              // горна плоскост
-      `<rect x="${x}" y="${topY}" width="${w}" height="${h}" rx="1.5" fill="${col}" stroke="${shade(col, 0.55)}" stroke-width="1"/>` +                  // лице
-      `<text x="${cx}" y="${by - 4}" text-anchor="middle" font-size="${Math.max(6, Math.round(8 * ds))}" fill="#fff" opacity="0.85" font-family="system-ui,Arial">${nm}</text>`;
+    // РАЗПОЗНАВАЕМИ ФОРМИ вместо голи кутии: кутиестите мебели (шкафове, хладилник…)
+    // пазят 3D плоскостите (горна+дясна) + ВИДИМИ вратички/рафтове/дръжки върху лицето;
+    // всички останали (легло, тоалетна чиния, диван, вана…) се рисуват със силуета си.
+    if (BOXY[it.type]) {
+      g += `<polygon points="${x + w},${topY} ${x + w + dx},${topY - dy} ${x + w + dx},${by - dy} ${x + w},${by}" fill="${shade(col, 0.68)}"/>` +   // дясна плоскост
+        `<polygon points="${x},${topY} ${x + w},${topY} ${x + w + dx},${topY - dy} ${x + dx},${topY - dy}" fill="${shade(col, 1.16)}"/>`;           // горна плоскост
+    }
+    g += furnFace(it.type, x, topY, w, h, col);                                              // лицето — с формата на мебелта
+    g += `<text x="${cx}" y="${topY - 3}" text-anchor="middle" font-size="${Math.max(6, Math.round(8 * ds))}" fill="#fff" opacity="0.85" font-family="system-ui,Arial">${nm}</text>`;
+    // Ориентация КЪМ СТЕНАТА: мебел до лявата/дясната стена се накланя леко към нея
+    // (перспективен намек), за да изглежда опряна на стената, а не „гледаща" зрителя.
+    const side = it.__side;
+    if (side === 'left') return `<g transform="translate(${cx.toFixed(1)},${by.toFixed(1)}) skewY(-8) translate(${(-cx).toFixed(1)},${(-by).toFixed(1)})">${g}</g>`;
+    if (side === 'right') return `<g transform="translate(${cx.toFixed(1)},${by.toFixed(1)}) skewY(8) translate(${(-cx).toFixed(1)},${(-by).toFixed(1)})">${g}</g>`;
     return `<g>${g}</g>`;
   }
 

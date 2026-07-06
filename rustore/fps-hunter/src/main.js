@@ -1,11 +1,13 @@
-// Version: 1.0001
+// Version: 1.0009
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
+import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
 enforceLock();
 mountEcosystem('fps-hunter'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
+startPromoAds('fps-hunter'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('fps-hunter'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // Входна точка: инициализира engine, лидерборд, контролите и оркестрира
 // сцените меню -> игра -> край.
@@ -65,20 +67,19 @@ async function boot() {
   }
 
   function startGame(levelNum, totalScore) {
-    if (hud) hud.dispose();
-    hud = new HUD(root);
-    // GameScene се създава веднъж и се преизползва при рестарт; всеки път
-    // освежаваме препратките към новия HUD и към обработчика за край на ниво.
-    if (!game) {
-      game = new GameScene(engine, controlsFactory, hud, handleLevelEnd);
-    } else {
-      game.hud = hud;
-      game.onLevelEnd = handleLevelEnd;
-    }
-    // Стартът на нивото е обвит в try/catch: ако нещо хвърли (генериране на
-    // ниво, терен, контроли), вместо тих черен екран показваме ВИДИМ overlay
-    // с текста на грешката — за да се вижда причината на устройството.
+    // ЦЕЛИЯТ старт е в try/catch (преди new HUD беше ОТВЪН → грешка в HUD оставаше
+    // невидима: менюто е махнато, сцената празна, нищо не реагира).
     try {
+      if (hud) hud.dispose();
+      hud = new HUD(root);
+      // GameScene се създава веднъж и се преизползва при рестарт; всеки път
+      // освежаваме препратките към новия HUD и към обработчика за край на ниво.
+      if (!game) {
+        game = new GameScene(engine, controlsFactory, hud, handleLevelEnd);
+      } else {
+        game.hud = hud;
+        game.onLevelEnd = handleLevelEnd;
+      }
       game.start(levelNum, totalScore);
       blackProbe = 0; blackReported = false; // пре-армиране на диагностиката за това ниво
     } catch (err) {

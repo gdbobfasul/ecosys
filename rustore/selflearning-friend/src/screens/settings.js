@@ -1,10 +1,10 @@
-// Version: 1.0001
+// Version: 1.0008
 // settings.js — настройки: безплатен AI enhancer, поведение на заключването, нулиране.
 import { el, clear, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
 import { lock } from '../core/identity.js';
 import { learningEnabled, setLearningEnabled, getLearnRole, setLearnRole } from '../core/learning-loop.js';
-import { dbSizeMB, maxDbMB, setMaxDbMB, learnBudget, crawlMode, setCrawlMode, deepAllowed, aiSource } from '../core/learn-budget.js';
+import { dbSizeMB, maxDbMB, setMaxDbMB, learnBudget, crawlMode, setCrawlMode, deepAllowed, aiSource, machineMaxMB, diskCapacity, storageLocation, perTopicNotes, setPerTopicNotes } from '../core/learn-budget.js';
 import { listInterests, addInterest, removeInterest } from '../core/subjects.js';
 import { buildOwnershipDossier, formatDossier } from '../core/device.js';
 import { notesCount } from '../core/subjects.js';
@@ -265,17 +265,36 @@ export function renderSettings(root, { rerender, openLangPicker }) {
     tf('set_usage_line', curMB.toFixed(2), bud.deep ? t('set_mode_deep') : t('set_mode_light'), bud.targetNotes));
   const aiSrc = (() => { try { return aiSource(); } catch (_) { return { label: '—' }; } })();
   const aiLine = el('div', { class: 'muted', style: 'font-size:13px' }, tf('set_ai_now', aiSrc.label));
-  const mbSelect = el('select', {});
-  for (const v of [4, 8, 16, 32, 64, 128, 256]) {
-    const o = el('option', { value: String(v) }, v + ' MB');
-    if (v === maxDbMB()) o.setAttribute('selected', '');
-    mbSelect.appendChild(o);
-  }
-  mbSelect.addEventListener('change', () => {
-    const mb = setMaxDbMB(parseInt(mbSelect.value, 10));
+  // Къде живее базата (телефон/компютър/сървър) + РЕАЛНОТО свободно място на устройството.
+  const loc = (() => { try { return storageLocation(); } catch (_) { return { base: 'web', server: false }; } })();
+  const locName = t(loc.base === 'phone' ? 'set_loc_phone' : (loc.base === 'desktop' ? 'set_loc_desktop' : 'set_loc_web')) +
+    (loc.server ? ' + ' + t('set_loc_server') : '');
+  const locLine = el('div', { class: 'muted', style: 'font-size:13px' }, tf('set_loc_line', locName, curMB.toFixed(2), '…'));
+  diskCapacity().then((d) => {
+    if (d) locLine.textContent = tf('set_loc_line', locName, dbSizeMB().toFixed(2), String(d.freeMB));
+  }).catch(() => {});
+
+  // ПЛЪЗГАЧ: общ лимит на базата (MB). Горната граница се смята от МАШИНАТА (тип + реална
+  // квота на диска + свързан сървър) — на телефон е тясна, на компютър/сървър широка.
+  const mbVal = el('span', { style: 'font-weight:600;margin-left:8px' }, maxDbMB() + ' MB');
+  const mbSlider = el('input', { type: 'range', min: '4', max: String(Math.max(maxDbMB(), 128)), step: '4', value: String(maxDbMB()), style: 'width:100%' });
+  machineMaxMB().then((mx) => { try { mbSlider.max = String(Math.max(8, mx)); } catch (_) {} }).catch(() => {});
+  mbSlider.addEventListener('input', () => { mbVal.textContent = mbSlider.value + ' MB'; });
+  mbSlider.addEventListener('change', () => {
+    const mb = setMaxDbMB(parseInt(mbSlider.value, 10));
     try { persist(); } catch (_) {}
     usageLine.textContent = tf('set_usage_after', dbSizeMB().toFixed(2), mb);
     toast(tf('set_db_ceiling_toast', mb));
+  });
+
+  // ПЛЪЗГАЧ: лимит на ЕДНА тема (бележки) — колко може да събере роботът по конкретна тема.
+  const topicVal = el('span', { style: 'font-weight:600;margin-left:8px' }, String(perTopicNotes()));
+  const topicSlider = el('input', { type: 'range', min: '50', max: '5000', step: '50', value: String(Math.min(5000, perTopicNotes())), style: 'width:100%' });
+  topicSlider.addEventListener('input', () => { topicVal.textContent = topicSlider.value; });
+  topicSlider.addEventListener('change', () => {
+    const n = setPerTopicNotes(parseInt(topicSlider.value, 10));
+    try { persist(); } catch (_) {}
+    toast(tf('set_topic_limit_toast', n));
   });
   // Стратегия (важи на ТЕЛЕФОН, при СЪЩИЯ таван MB): 1 дълбоко ИЛИ много леки обхождания.
   const stratSelect = el('select', {});
@@ -297,8 +316,11 @@ export function renderSettings(root, { rerender, openLangPicker }) {
     el('p', { class: 'muted', style: 'font-size:13px' }, t('set_memory_desc')),
     usageLine,
     aiLine,
-    el('label', {}, t('set_db_ceiling_label')),
-    mbSelect,
+    locLine,
+    el('label', {}, [document.createTextNode(t('set_db_ceiling_label')), mbVal]),
+    mbSlider,
+    el('label', {}, [document.createTextNode(t('set_topic_limit_label')), topicVal]),
+    topicSlider,
     el('label', {}, t('set_strat_label')),
     stratSelect,
     stratNote

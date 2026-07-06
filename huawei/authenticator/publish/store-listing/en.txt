@@ -6,3 +6,9 @@ Downloads each account as a separate QR image in one .zip.
 
 Support: dai.group.ltd.support@gmail.com
 For questions and support, write to: dai.group.ltd.support@gmail.com
+
+Compatible with your favorite apps — import and export in both directions:
+• Browser passwords: Google Chrome, Microsoft Edge, Mozilla Firefox.
+• 2FA codes: Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass, plus any otpauth app.
+• Crypto wallet seed phrases and keys: MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
+All data stays encrypted on your device only.

@@ -1,11 +1,11 @@
-// Version: 1.0003
+// Version: 1.0011
 // add.js — нов акаунт: сканиране на QR код (камера + jsQR) ИЛИ ръчно въвеждане.
-import { h, mount, toast, showAlert } from '../ui/dom.js';
+import { h, mount, toast, showAlert, promptPassword } from '../ui/dom.js';
 import { t } from '../core/i18n.js';
 import { addEntry } from '../core/storage.js';
 import { parseOtpauthURI } from '../core/otp.js';
 import { base32Decode } from '../core/base32.js';
-import { importQRData, importJsonText, import2FASText, importOtpauthList, isImportableQR, describeResult } from '../core/importer.js';
+import { importQRData, importJsonText, import2FASText, import2FASEncrypted, importOtpauthList, isImportableQR, describeResult } from '../core/importer.js';
 import { importAegisFile } from './aegis-import.js';
 import { pickTextFile, pickBinaryFile } from '../core/filepick.js';
 
@@ -126,7 +126,17 @@ export function renderAdd(root, nav) {
         else if (kind === 'otpauth') res = await importOtpauthList(text);
         else res = await import2FASText(text);
         dbg.push('result: ' + (res.ok ? 'ok imported=' + res.imported + ' dup=' + res.duplicates : 'reason=' + res.reason) + (res.detail ? ' detail=' + res.detail : ''));
-        if (kind === '2fas' && res && !res.ok && res.reason === 'encrypted') { toast(t('twofas_encrypted')); showAlert('Import debug', dbg.join('\n')); return; }
+        // Криптиран 2FAS (експорт С парола) → питаме за паролата и декриптираме (с повторни опити).
+        while (kind === '2fas' && res && !res.ok && res.reason === 'encrypted') {
+          const pw = await promptPassword(t('twofas_password_prompt'), t('save'), t('cancel'));
+          if (pw == null) { dbg.push('encrypted: парола отказана'); return; }
+          res = await import2FASEncrypted(text, pw);
+          dbg.push('decrypt → ' + (res.ok ? 'ok imported=' + res.imported : 'reason=' + res.reason));
+          if (res && !res.ok && res.reason === 'password') {
+            toast(t('twofas_bad_password'));
+            res = { ok: false, reason: 'encrypted' };   // питай пак
+          }
+        }
         toast(describeResult(res));
         if (res && res.ok && res.imported > 0) nav.go('list');
         else if (res && !res.ok) showAlert('Import debug', dbg.join('\n'));   // дебъг при неуспех

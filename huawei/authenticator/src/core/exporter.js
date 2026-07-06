@@ -1,11 +1,13 @@
-// Version: 1.0001
+// Version: 1.0013
 // exporter.js — ЕДИНЕН експорт: наш .json бекъп, Aegis JSON, Google Authenticator (миграционен
-// QR като PNG), и „всички като QR" (.zip). Сваля файл през браузъра (Blob + <a download>).
+// QR като PNG), „всички като QR" (.zip), браузърни пароли (CSV) и крипто портфейли (.json).
+// Сваля файл на устройството (Blob + native saveFile). Нищо не се качва навън.
 import { session } from './storage.js';
 import { buildAegisExport } from './aegis.js';
 import { build2FAS } from './twofas.js';
 import { buildOtpauthURI } from './otp.js';
 import { buildGoogleMigrationURIs } from './gauth-migration.js';
+import { buildChromiumCsv, buildFirefoxCsv } from './passwords-io.js';
 import { zipStore } from './zip.js';
 import { saveFile } from './filesave.js';
 
@@ -46,6 +48,29 @@ export async function exportOtpauthListFile() {
   const txt = session.entries.map(buildOtpauthURI).join('\n') + '\n';
   await saveFile('otpauth-list.txt', txt, 'text/plain', { isText: true });
   return { ok: true, count: session.entries.length };
+}
+
+// ── ПАРОЛИ → браузър (CSV) ──
+// Chrome и Microsoft Edge ползват ЕДИН И СЪЩ Chromium CSV → един файл за двата.
+export async function exportChromiumCsv() {
+  if (!session.passwords.length) return { ok: false, reason: 'empty' };
+  await saveFile('kcy-passwords-chrome-edge.csv', buildChromiumCsv(session.passwords), 'text/csv', { isText: true });
+  return { ok: true, count: session.passwords.length };
+}
+export async function exportFirefoxCsv() {
+  if (!session.passwords.length) return { ok: false, reason: 'empty' };
+  await saveFile('kcy-passwords-firefox.csv', buildFirefoxCsv(session.passwords), 'text/csv', { isText: true });
+  return { ok: true, count: session.passwords.length };
+}
+
+// ── КРИПТО ПОРТФЕЙЛИ → наш .json бекъп (за прехвърляне между СВОИ устройства) ──
+// Няма стандартен формат за seed фрази между портфейлите → пазим НАШ JSON. Файлът съдържа
+// тайните В ЧИСТ ВИД → предупреждаваме потребителя (UI) да го пази като златото си.
+export async function exportSeedsJson() {
+  if (!session.seeds.length) return { ok: false, reason: 'empty' };
+  const data = JSON.stringify({ app: 'kcy-authenticator', kind: 'wallets', version: 1, seeds: session.seeds }, null, 2);
+  await saveFile('kcy-wallets-backup.json', data, 'application/json', { isText: true });
+  return { ok: true, count: session.seeds.length };
 }
 
 // Google Authenticator миграционен QR (PNG). Много акаунти → партиди → ако са няколко

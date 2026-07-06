@@ -2,10 +2,12 @@
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
+import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
 enforceLock();
 mountEcosystem('business-faq-bot'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
+startPromoAds('business-faq-bot'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('business-faq-bot'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // main.js — входна точка + прост hash-based рутер.
 import './ui/styles.css';

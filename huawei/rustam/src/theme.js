@@ -1,26 +1,27 @@
 // Version: 1.0001
-// Визуална тема за Huawei AppGallery версията.
-// Различни акцентни цветове спрямо RUStore версията (по-хладна/кехлибарена палитра).
+// Визуална тема за RUStore версията.
+// Тук държим акцентните цветове, които се различават между двата store-а.
+// (Huawei версията има различна палитра.)
 export const THEME = {
-  store: 'huawei',
-  // Основни акценти — кехлибар + тюркоазено-зелено
-  primary: 0xffb347,      // кехлибарено
-  primaryHex: '#ffb347',
-  accent: 0x33b07a,       // тюркоазено-зелено (краставица/успех)
-  accentHex: '#33b07a',
-  danger: 0xc8552b,       // теракота (къртица/пръст)
-  dangerHex: '#c8552b',
-  warning: 0xffd24d,
-  warningHex: '#ffd24d',
+  store: 'rustore',
+  // Основни акценти — топла „градинарска/народна" палитра
+  primary: 0xe0b34a,      // топло злато
+  primaryHex: '#e0b34a',
+  accent: 0x6fae3a,       // тревисто зелено (краставица)
+  accentHex: '#6fae3a',
+  danger: 0x8a5a2b,       // кафяво (къртица/пръст)
+  dangerHex: '#8a5a2b',
+  warning: 0xffcf4d,
+  warningHex: '#ffcf4d',
   // Фон
-  bgTop: '#101a24',
+  bgTop: '#16240f',
   bgBottom: '#0a0d08',
   // Корпус на героя Рустам (дрехи/шапка)
   heroSkin: 0xe8b894,
-  heroCloth: 0x356a52,    // тюркоазено-зелена риза
+  heroCloth: 0x4f7a2b,    // зелена риза на градинар
   // Заглавие на менюто
-  titleText: 'РУСТАМ',
-  titleSub: 'AppGallery Edition',
+  titleText: 'РУСТАМ БЕРЕ\nКРАСТАВИЦИ',
+  titleSub: 'RUStore Edition',
   // Ключ за localStorage (различен per-store, за да не се бъркат записите)
-  saveKey: 'rustam.huawei.save'
+  saveKey: 'rustam.rustore.save'
 };

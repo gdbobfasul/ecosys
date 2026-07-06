@@ -2,10 +2,12 @@
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
+import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
 enforceLock();
 mountEcosystem('camera-watch'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
+startPromoAds('camera-watch'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('camera-watch'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // main.js — буут + мъничък рутер между екраните.
 // Бутва бързо: TF.js НЕ се внася тук (lazy-load в recognizer.js при първа нужда).

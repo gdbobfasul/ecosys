@@ -1,15 +1,18 @@
-// Version: 1.0001
-// list.js — главният екран след отключване, с три таба:
+// Version: 1.0013
+// list.js — главният екран след отключване, с четири таба:
 //   „Аутентикация" (въртящи се кодове), „Колекция" (запазени QR кодове),
-//   „Пароли" (заглавие/логин/парола/описание). И трите са в шифрирания сейф.
+//   „Пароли" (заглавие/логин/парола/описание) и „Портфейли" (крипто акаунти по портфейл).
+//   ВСИЧКИ са в шифрирания сейф — само на устройството, нищо не се качва.
 import { h, mount, toast, copyText } from '../ui/dom.js';
 import { t } from '../core/i18n.js';
 import { THEME } from '../theme.js';
-import { session, incrementCounter } from '../core/storage.js';
+import { session, incrementCounter, seedCountFor } from '../core/storage.js';
 import { generateCode, secondsRemaining } from '../core/otp.js';
+import { WALLETS, walletByKey, maxForWallet } from '../core/wallets.js';
 
 let tickTimer = null;
-let activeTab = 'auth';   // запазва се между влизанията
+let activeTab = 'auth';       // запазва се между влизанията
+let selectedWallet = null;    // в таб „Портфейли": избраният портфейл (null = решетката)
 
 export function renderList(root, nav) {
   if (tickTimer) { clearInterval(tickTimer); tickTimer = null; }
@@ -24,12 +27,13 @@ export function renderList(root, nav) {
   const tabs = [
     { key: 'auth', icon: '🔐', label: t('tab_auth') },
     { key: 'collection', icon: '🗂', label: t('tab_collection') },
-    { key: 'passwords', icon: '🔑', label: t('tab_passwords') }
+    { key: 'passwords', icon: '🔑', label: t('tab_passwords') },
+    { key: 'crypto', icon: '👛', label: t('tab_crypto') }
   ];
   const tabbar = h('div', { class: 'tabbar' },
     ...tabs.map((tb) => h('button', {
       class: 'tab' + (activeTab === tb.key ? ' on' : ''),
-      onclick: () => { activeTab = tb.key; draw(); }
+      onclick: () => { activeTab = tb.key; if (tb.key !== 'crypto') selectedWallet = null; draw(); }
     }, h('div', {}, tb.icon), h('div', { class: 'tablabel', text: tb.label })))
   );
 
@@ -38,7 +42,12 @@ export function renderList(root, nav) {
   function fabAction() {
     if (activeTab === 'auth') nav.go('add');
     else if (activeTab === 'collection') nav.go('collection-add');
-    else nav.go('password-edit');
+    else if (activeTab === 'passwords') nav.go('password-edit');
+    else { // крипто: добавя за избрания портфейл (ако е избран), иначе подсказва
+      if (!selectedWallet) { toast(t('crypto_pick_wallet')); return; }
+      if (seedCountFor(selectedWallet) >= maxForWallet(selectedWallet)) { toast(t('crypto_limit_reached')); return; }
+      nav.go('seed-edit', { wallet: selectedWallet });
+    }
   }
 
   function draw() {
@@ -46,7 +55,8 @@ export function renderList(root, nav) {
     [...tabbar.children].forEach((b, i) => b.classList.toggle('on', tabs[i].key === activeTab));
     if (activeTab === 'auth') drawAuth();
     else if (activeTab === 'collection') drawCollection();
-    else drawPasswords();
+    else if (activeTab === 'passwords') drawPasswords();
+    else drawCrypto();
   }
 
   // ---------- Таб „Аутентикация" ----------
@@ -136,11 +146,63 @@ export function renderList(root, nav) {
     mount(container, ...rows);
   }
 
+  // ---------- Таб „Портфейли" (крипто акаунти по портфейл) ----------
+  function drawCrypto() {
+    if (!selectedWallet) return drawWalletGrid();
+    return drawWalletAccounts(selectedWallet);
+  }
+
+  // Решетка от портфейли (плочки с икона + име + брой акаунти).
+  function drawWalletGrid() {
+    const note = h('p', { class: 'muted', style: 'font-size:.82em;text-align:center;margin:2px 0 12px', text: t('crypto_local_note') });
+    const grid = h('div', { style: 'display:grid;grid-template-columns:repeat(2,1fr);gap:10px' },
+      ...WALLETS.map((w) => {
+        const cnt = seedCountFor(w.key);
+        const name = w.isOther ? t('crypto_other') : w.name;
+        const tile = h('button', {
+          class: 'btn ghost',
+          style: 'display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 8px;height:auto;margin:0;border-left:4px solid ' + w.color,
+          onclick: () => { selectedWallet = w.key; draw(); }
+        },
+          h('div', { style: 'font-size:26px' }, w.icon),
+          h('div', { style: 'font-weight:700', text: name }),
+          h('div', { class: 'muted', style: 'font-size:.8em', text: cnt ? tf2('crypto_count', cnt, maxForWallet(w.key)) : t('crypto_add_here') }));
+        return tile;
+      }));
+    mount(container, note, grid);
+  }
+
+  // Списък с акаунтите за избран портфейл + бутон „назад".
+  function drawWalletAccounts(key) {
+    const w = walletByKey(key);
+    const name = w.isOther ? t('crypto_other') : w.name;
+    const back = h('button', { class: 'btn ghost', style: 'margin:0 0 10px', onclick: () => { selectedWallet = null; draw(); } }, '← ' + t('crypto_all_wallets'));
+    const head = h('div', { style: 'display:flex;align-items:center;gap:8px;margin-bottom:6px' },
+      h('div', { style: 'font-size:22px' }, w.icon),
+      h('h1', { style: 'margin:0;font-size:1.1em', text: name }),
+      h('div', { class: 'muted', style: 'margin-left:auto;font-size:.85em', text: tf2('crypto_count', seedCountFor(key), maxForWallet(key)) }));
+    const items = session.seeds.filter((s) => s.wallet === key);
+    const kids = items.length ? items.map((s) => {
+      const badge = h('div', { class: 'badge' }, (w.icon || '👛'));
+      const info = h('div', { class: 'info' },
+        h('div', { class: 'issuer', text: s.label || s.account || t('crypto_account') }),
+        h('div', { class: 'acct', text: s.seedPhrase ? '•••• seed' : (s.publicAddress || s.account || '') }));
+      const row = h('div', { class: 'entry', style: 'cursor:pointer' }, badge, info, h('div', { class: 'muted' }, '›'));
+      row.addEventListener('click', () => nav.go('seed-edit', s));
+      return row;
+    }) : [emptyBox(w.icon || '👛', tf2('crypto_empty_title', name), t('crypto_empty_desc'))];
+    mount(container, back, head, ...kids);
+  }
+
   function emptyBox(icon, title, desc) {
     return h('div', { class: 'center' },
       h('div', { style: 'font-size:2.6em' }, icon),
       h('h1', { text: title }),
       h('p', { class: 'muted', text: desc }));
+  }
+  // локален tf (за да не разчитаме на импорт извън t) — прости {0}/{1} замествания
+  function tf2(key, a, b) {
+    return String(t(key)).replace('{0}', a).replace('{1}', b === undefined ? '' : b);
   }
 
   draw();

@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0007
 // tasks.js — РЕАЛНИ задачи, които собственикът може да даде (НЕ стъбове).
 //
 // Видове задачи:
@@ -151,9 +151,9 @@ export async function runTask(task) {
       for (const n of tree.main) {
         if (addNote(topic, { text: n.text, source: n.source, url: n.url })) { addedMain++; if (!firstNote) firstNote = n; }
       }
-      // Свързаните теми се записват като ОТДЕЛНИ теми (трупане по дървото).
+      // Свързаните теми се записват като ОТДЕЛНИ теми (трупане по дървото), но НЕ влизат в
+      // ротацията на самообучението (иначе роботът после „сам избираше произволни теми").
       for (const r of tree.related) {
-        try { addInterest(r.topic); } catch (_) {}
         if (addNote(r.topic, { text: r.text, source: r.source, url: r.url })) addedRelated++;
       }
       const added = addedMain + addedRelated;

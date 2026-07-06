@@ -1,18 +1,35 @@
-// Version: 1.0001
-// promo-ads.js — ИЗСКАЧАЩА реклама (само за БЕЗПЛАТНИ апове, напр. Plane Shooter). Показва ~3–4с
-// промо на ПРОИЗВОЛНО одобрено приложение от каталога (kcy-promo.json): снимка + ИМЕ + описание +
-// бутон „Open" (линк към приложението) + „KCY Ecosystem publisher 2026". Затворима (× се появява
-// веднага; авто-затваря след ~4с). Извиква се на СТАРТ, по СРЕДАТА (таймер) и в КРАЯ (game over).
-const CATALOG_URL = './kcy-promo.json';
+// Version: 1.0009
+// promo-ads.js — ИЗСКАЧАЩА реклама във ВСИЧКИ апове (изискване на собственика): показва ~3–4с
+// промо на ПРОИЗВОЛНО одобрено приложение от каталога: снимка + ИМЕ + описание + бутон „Open"
+// (линк към приложението) + „KCY Ecosystem publisher 2026". Затворима (× се появява веднага;
+// авто-затваря след ~4с). Ред: 2-сек интро „KCY Ecosystem" (intro.js) → СТАРТ реклама → апът;
+// после по СРЕДАТА (таймер) и в КРАЯ (игрите викат window.KCY_END_AD() при game over).
+//
+// Каталогът се тегли ПЪРВО ОТ СЪРВЪРА (public/promo/kcy-promo.json) — така се управлява
+// ЦЕНТРАЛНО кои приложения се рекламират, БЕЗ нов билд; вграденото копие е резерва без интернет.
+const CATALOG_URL_REMOTE = 'https://selflearning.bot.nu/promo/kcy-promo.json';
+const CATALOG_URL_LOCAL = './kcy-promo.json';
 let CACHE = null, SELF = '', midTimer = null;
+
+// БЕЗ AbortController (чупи fetch при CapacitorHttp) — таймаут през Promise.race.
+async function fetchCatalog(url, timeoutMs) {
+  const timeout = new Promise((res) => setTimeout(() => res(null), timeoutMs || 6000));
+  const load = (async () => {
+    try {
+      const CH = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) || window.CapacitorHttp;
+      if (CH && CH.get) { const r = await CH.get({ url }); return typeof r.data === 'string' ? JSON.parse(r.data) : r.data; }
+    } catch (e) { /* пада към fetch */ }
+    try { const r = await fetch(url, { cache: 'no-store' }); return await r.json(); } catch (e) { return null; }
+  })();
+  return await Promise.race([load, timeout]);
+}
 
 async function loadCatalog() {
   if (CACHE) return CACHE;
-  try {
-    const CH = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) || window.CapacitorHttp;
-    if (CH && CH.get) { const r = await CH.get({ url: CATALOG_URL }); CACHE = typeof r.data === 'string' ? JSON.parse(r.data) : r.data; return CACHE; }
-  } catch (e) {}
-  try { const r = await fetch(CATALOG_URL, { cache: 'no-store' }); CACHE = await r.json(); return CACHE; } catch (e) { return null; }
+  let cat = await fetchCatalog(CATALOG_URL_REMOTE, 6000);
+  if (!cat || !Array.isArray(cat.apps)) cat = await fetchCatalog(CATALOG_URL_LOCAL, 4000);
+  if (cat && Array.isArray(cat.apps)) CACHE = cat;
+  return CACHE;
 }
 const LANGS = ['bg', 'ru', 'uk', 'en', 'de', 'fr', 'es', 'es-MX', 'it', 'pt', 'ar', 'hi', 'ja', 'ky', 'zh-Hant'];
 // Надеждно откриване на езика: ключа „<апп>.lang" от localStorage (истинският избор — приоритет);
@@ -59,13 +76,13 @@ async function showAd() {
   setTimeout(close, 4200);                                            // авто-затваря след ~4с
 }
 
-// СТАРТ (веднага) + СРЕДА (на всеки ~120с докато е активно). КРАЯТ се вика от играта при game over
-// през window.KCY_END_AD().
+// СТАРТ (СЛЕД 2-сек интрото „KCY Ecosystem" — не върху него) + СРЕДА (на всеки ~120с докато е
+// активно). КРАЯТ се вика от играта при game over през window.KCY_END_AD().
 export function startPromoAds(selfId) {
   SELF = selfId || '';
   loadCatalog();                                                     // предзареди
-  const start = () => { showAd(); };                                 // старт реклама
-  if (document.body) setTimeout(start, 500); else document.addEventListener('DOMContentLoaded', () => setTimeout(start, 500));
+  const start = () => { showAd(); };                                 // старт реклама (след интрото)
+  if (document.body) setTimeout(start, 2600); else document.addEventListener('DOMContentLoaded', () => setTimeout(start, 2600));
   if (midTimer) clearInterval(midTimer);
   midTimer = setInterval(() => { if (!document.hidden) showAd(); }, 120000);   // среда
   try { window.KCY_END_AD = () => showAd(); } catch (e) {}           // край (game over)

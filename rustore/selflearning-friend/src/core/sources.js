@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0008
 // sources.js — БЕЗПЛАТНИ, БЕЗ КЛЮЧ мрежови източници + локален обобщител.
 //
 // Разрешени източници (всички keyless, без акаунт, с CORS, безплатни):
@@ -174,7 +174,10 @@ export async function fetchWikipedia(title, { lang = 'bg' } = {}) {
         full: extract,
         citation: `Wikipedia (${lg}): ${data.title || t}`,
         url: (data.content_urls && data.content_urls.desktop && data.content_urls.desktop.page) ||
-          `https://${lg}.wikipedia.org/wiki/${enc}`
+          `https://${lg}.wikipedia.org/wiki/${enc}`,
+        // Линк към картинката на статията (схема/илюстрация) — ботът трупа и ВИЗУАЛНИ примери,
+        // за да може после да покаже схеми в чата, не само текст.
+        img: (data.thumbnail && data.thumbnail.source) || (data.originalimage && data.originalimage.source) || ''
       };
     }
   }
@@ -493,17 +496,17 @@ export async function gatherTreeAnswer(topic, { lang = 'bg', limit = 6, relatedL
   const mainRes = await mapPool(mainRunners, (r) => r().catch(() => null), 4);
   const main = [];
   const seen = new Set();
-  function pushMain(text, source, url) {
+  function pushMain(text, source, url, img) {
     const clean = String(text || '').trim();
     if (!clean) return;
     const key = clean.slice(0, 60).toLowerCase();
     if (seen.has(key)) return;
     seen.add(key);
-    main.push({ text: clean, source: source || '', url: url || '' });
+    main.push({ text: clean, source: source || '', url: url || '', img: img || '' });
   }
   for (const r of mainRes) {
     if (!r || !r.ok) continue;
-    pushMain(r.summary || r.text, r.citation || r.source, r.url);
+    pushMain(r.summary || r.text, r.citation || r.source, r.url, r.img);
     if (Array.isArray(r.related)) for (const rel of r.related.slice(0, 3)) pushMain(rel, 'DuckDuckGo (свързано)', '');
   }
 
@@ -514,7 +517,7 @@ export async function gatherTreeAnswer(topic, { lang = 'bg', limit = 6, relatedL
   for (const tt of moreTitles) { const k = tt.toLowerCase(); if (!titleSeen.has(k)) { titleSeen.add(k); relTitles.push(tt); } }
   const relRes = await mapPool(relTitles.slice(0, relatedLimit), async (rt) => {
     const w = await fetchWikipedia(rt, { lang }).catch(() => null);
-    if (w && w.ok && w.summary) return { topic: rt, text: w.summary, source: w.citation, url: w.url };
+    if (w && w.ok && w.summary) return { topic: rt, text: w.summary, source: w.citation, url: w.url, img: w.img || '' };
     return null;
   }, 4);
 

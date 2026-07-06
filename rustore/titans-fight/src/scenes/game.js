@@ -393,6 +393,22 @@ export class GameScene extends Phaser.Scene {
     // --- AI ---
     this.ai.update(now, delta);
 
+    // --- РАЗДЕЛЯНЕ на телата (за да НЕ се сливат в неразбираема каша) ---
+    // Двата титана имат физични тела, но НЕ се сблъскват → минаваха един през друг и се
+    // застъпваха напълно. Държим минимум разстояние между центровете, за да се четат като
+    // ДВАМА бойци един срещу друг. Обсегът на юмруците (128) е ≥ MIN_GAP, за да стигат ударите.
+    const MIN_GAP = 148;
+    if (!this.over && !this.hero.dead && !this.enemy.dead) {
+      const dx = this.enemy.body.x - this.hero.body.x;
+      const gap = Math.abs(dx);
+      if (gap < MIN_GAP) {
+        const push = (MIN_GAP - gap) / 2 + 0.5;
+        const sign = dx >= 0 ? 1 : -1;                 // враг вдясно → бута героя наляво, врага надясно
+        this.hero.body.x -= sign * push;
+        this.enemy.body.x += sign * push;
+      }
+    }
+
     // --- синхрон физика/визуал + граници ---
     [this.hero, this.enemy].forEach(t => {
       t.body.x = Phaser.Math.Clamp(t.body.x, 70, W - 70);

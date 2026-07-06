@@ -6,3 +6,9 @@
 
 支援: dai.group.ltd.support@gmail.com
 如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com
+
+與你喜愛的應用程式相容——雙向匯入與匯出：
+• 瀏覽器密碼：Google Chrome, Microsoft Edge, Mozilla Firefox。
+• 2FA 驗證碼：Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass，以及任何 otpauth 應用程式。
+• 加密錢包助記詞與金鑰：MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet。
+所有資料僅在你的裝置上保持加密。

@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0008
 // subjects.js — теми за учене + интереси на собственика + дневник на наученото.
 //
 // Държи списък „теми“ (subjects), всяка с натрупани наставки от източници. Това е
@@ -9,7 +9,9 @@
 import { getState, persist, uid } from './storage.js';
 import { tokenize } from './memory-store.js';
 
-// Списък по подразбиране за автономното учене (ротира се). Собственикът добавя още.
+// Предложения за интерфейса (НЕ влизат в ротацията на ученето!). Преди се смесваха в
+// listInterests → роботът „избираше произволна тема", дори собственикът да не е задал нищо,
+// а „спри да учиш за X" не можеше да ги махне. Сега се учат САМО зададените теми.
 export const DEFAULT_INTERESTS = [
   'Математика', 'Биология', 'Химия', 'Физика', 'История',
   'Космос', 'Крипто пазари', 'Финанси', 'Изкуствен интелект', 'География'
@@ -19,15 +21,15 @@ export function listSubjects() {
   return (getState().subjects || []).slice();
 }
 
+// САМО темите, ЗАДАДЕНИ от собственика („научи за X" / Настройки → интереси).
+// Без зададени теми роботът ЧАКА задача (learning-loop го отбелязва в лентата).
 export function listInterests() {
   const st = getState();
-  const custom = (st.interests || []);
-  // обединяваме подразбиращите се с потребителските, без дубликати
   const seen = new Set();
   const out = [];
-  for (const s of DEFAULT_INTERESTS.concat(custom)) {
-    const k = s.trim().toLowerCase();
-    if (k && !seen.has(k)) { seen.add(k); out.push(s.trim()); }
+  for (const s of (st.interests || [])) {
+    const k = String(s).trim().toLowerCase();
+    if (k && !seen.has(k)) { seen.add(k); out.push(String(s).trim()); }
   }
   return out;
 }
@@ -38,7 +40,6 @@ export function addInterest(name) {
   if (!n) return false;
   st.interests = st.interests || [];
   if (st.interests.some((x) => x.toLowerCase() === n.toLowerCase())) return false;
-  if (DEFAULT_INTERESTS.some((x) => x.toLowerCase() === n.toLowerCase())) return false;
   st.interests.push(n);
   persist();
   return true;
@@ -70,18 +71,31 @@ export function ensureSubject(name) {
 
 // Добавя заземена наставка (note) към тема. Изисква source/citation (честност).
 // Връща { subject, note } или null при дубликат/празно.
-export function addNote(subjectName, { text, source, url }) {
+export function addNote(subjectName, { text, source, url, img }) {
   const body = String(text || '').trim();
   if (!body) return null;
   const s = ensureSubject(subjectName);
   // не дублираме идентична наставка
   if (s.notes.some((n) => n.text === body)) return null;
-  const note = { id: uid(), text: body, source: source || 'неизвестен', url: url || '', at: Date.now() };
+  const note = { id: uid(), text: body, source: source || 'неизвестен', url: url || '', img: img || '', at: Date.now() };
   s.notes.unshift(note);          // най-новото отгоре
-  if (s.notes.length > 50) s.notes.length = 50;
+  // Таванът НА ТЕМА следва плъзгача от Настройки (learn-budget.perTopicNotes), не твърдите 50 —
+  // иначе „лимит на тема 600" беше лъжа: 51-вата бележка тихо избутваше стара.
+  const cap = Math.max(50, _perTopicCap());
+  if (s.notes.length > cap) s.notes.length = cap;
   s.updated = Date.now();
   persist();
   return { subject: s, note };
+}
+
+// Лимитът на тема идва от learn-budget (плъзгача), но БЕЗ статичен import (за да няма кръг
+// subjects ↔ learn-budget при бъдещи промени): четем настройката директно от state.
+function _perTopicCap() {
+  try {
+    const s = (getState().settings && getState().settings.learning) || {};
+    if (typeof s.perTopicNotes === 'number' && s.perTopicNotes > 0) return s.perTopicNotes;
+  } catch (_) {}
+  return 600;
 }
 
 // ПАКЕТНО добавяне на МНОГО бележки (за дълбокото обхождане на дървото). Прави persist ВЕДНЪЖ
@@ -96,7 +110,7 @@ export function addNotesBulk(subjectName, notes, { cap = 2000 } = {}) {
     const body = String((it && it.text) || '').trim();
     if (!body || seen.has(body)) continue;
     seen.add(body);
-    s.notes.unshift({ id: uid(), text: body, source: (it && it.source) || 'неизвестен', url: (it && it.url) || '', at: Date.now() });
+    s.notes.unshift({ id: uid(), text: body, source: (it && it.source) || 'неизвестен', url: (it && it.url) || '', img: (it && it.img) || '', at: Date.now() });
     added++;
   }
   if (s.notes.length > cap) s.notes.length = cap;

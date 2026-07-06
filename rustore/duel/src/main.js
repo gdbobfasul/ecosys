@@ -2,10 +2,12 @@
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
+import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
 enforceLock();
 mountEcosystem('duel'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
+startPromoAds('duel'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('duel'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 // Дуел на ринга — самостоятелен мобилен билд (Vite + Capacitor).
 // Вгражда оригиналния browser-движок (vanilla JS, DOM + WebM видеа) локално,

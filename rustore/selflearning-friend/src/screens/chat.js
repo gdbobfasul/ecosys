@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0008
 // chat.js — разговор със самообучаващия се приятел.
 import { el, clear, esc, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
@@ -7,7 +7,9 @@ import { touchSession, lock, isUnlocked } from '../core/identity.js';
 import { isLockedDown } from '../core/device.js';
 import { sttAvailable, ttsAvailable, startListening, stopListening, speak, stopSpeaking } from '../core/voice.js';
 import { startConversation, stopConversation, conversationActive, consumeAutoListen } from '../core/conversation.js';
-import { currentlyLearning } from '../core/learning-loop.js';
+import { learningFeed } from '../core/learning-loop.js';
+import { pickAndIngestFile } from '../core/ingest.js';
+import { dbSizeMB, maxDbMB } from '../core/learn-budget.js';
 import {
   voiceprintSupported, voiceProfileEnabled, voiceProfileExists,
   captureSampleFeatures, addEnrollmentSample, matchOwnerVoice, enrollmentProgress
@@ -244,6 +246,19 @@ export function renderChat(root, { navigate, rerender }) {
     }
     thinking.remove();
     pushBubble('bot', res.text, res.source);
+    // КАРТИНКИ към отговора (схеми/илюстрации, събрани при ученето) — до 4, под текста.
+    if (Array.isArray(res.images) && res.images.length) {
+      const imgWrap = el('div', { class: 'bubble bot', style: 'display:flex;flex-direction:column;gap:6px' });
+      for (const u of res.images.slice(0, 4)) {
+        const im = document.createElement('img');
+        im.src = u; im.loading = 'lazy'; im.alt = '';
+        im.style.cssText = 'max-width:100%;border-radius:10px;display:block';
+        im.onerror = () => { try { im.remove(); } catch (_) {} };
+        imgWrap.appendChild(im);
+      }
+      list.appendChild(imgWrap);
+      list.scrollTop = list.scrollHeight;
+    }
     // ГЛАС: ако „Гласов отговор“ е включен и TTS е наличен — изговори репликата.
     // В режим „Разговор“ говоренето го прави самият цикъл (за да изчака края, анти-ехо)
     // → тук НЕ дублираме.
@@ -275,6 +290,18 @@ export function renderChat(root, { navigate, rerender }) {
       // (пуска исканата камера и анализира). Кратко закъснение, за да се изговори репликата.
       stopConversation();
       setTimeout(() => navigate('vision'), 500);
+      return res;
+    }
+    if (res.action === 'learn-file') {
+      // „Научи от файл": нативен избор на файл → извличане на текста → учене (core/ingest.js).
+      const extracting = pushBubble('bot', '📄 …', null);
+      let r;
+      try { r = await pickAndIngestFile({}); }
+      catch (e) { r = { ok: false, text: 'Спънка при четенето на файла: ' + ((e && e.message) || 'грешка') }; }
+      extracting.remove();
+      pushBubble('bot', r.text, r.ok ? 'learn' : 'rule');
+      st.chat.push({ role: 'bot', text: r.text, source: r.ok ? 'learn' : 'rule', at: Date.now() });
+      persist();
       return res;
     }
 
@@ -360,23 +387,44 @@ export function renderChat(root, { navigate, rerender }) {
     ? el('div', { class: 'row', style: 'gap:8px;margin-bottom:8px' }, [convBtn])
     : null;
 
-  // ЖИВ БАНЕР НАЙ-ГОРЕ: показва ПОСТОЯННО какво учи роботът в момента (обновява се на място
-  // на всеки 2.5с — не пречертава чата, затова не трие въведения/диктувания текст).
+  // ЖИВ БАНЕР НАЙ-ГОРЕ: ВЪРТЯЩА СЕ ЛЕНТА — непрекъснато превърта с четима скорост какво е
+  // научил и по коя тема: последните учебни събития от потока (вкл. „Научих още N… Общо: T теми")
+  // + общият напредък. Обновява се на място (не пречертава чата → не трие въведения текст),
+  // а анимацията се рестартира САМО при промяна на съдържанието, за да не подскача.
   const learnBanner = el('div', { class: 'learn-banner', style:
     'position:sticky;top:0;z-index:5;background:#10243a;border:1px solid #1e3a5f;border-radius:8px;' +
-    'padding:7px 10px;margin:0 0 8px;font-size:13px;color:#cfe3ff;line-height:1.35' });
+    'padding:7px 0;margin:0 0 8px;font-size:13px;color:#cfe3ff;line-height:1.35;overflow:hidden;white-space:nowrap' });
+  const tickerInner = el('span', { style: 'display:inline-block;white-space:nowrap;padding-left:100%;will-change:transform' });
+  learnBanner.appendChild(tickerInner);
+  if (!document.getElementById('slf-ticker-css')) {
+    const tickerCss = document.createElement('style'); tickerCss.id = 'slf-ticker-css';
+    tickerCss.textContent = '@keyframes slfTicker{from{transform:translateX(0)}to{transform:translateX(-100%)}}';
+    document.head.appendChild(tickerCss);
+  }
+  let tickerText = '';
   function updateLearnBanner() {
     // Самопочистване: ако банерът вече не е на екрана (сменен е екранът) → спри интервала.
     if (!learnBanner.isConnected && _learnBannerTimer) { clearInterval(_learnBannerTimer); _learnBannerTimer = null; return; }
-    const a = currentlyLearning();
-    if (a && a.note) {
+    const feed = learningFeed().slice(0, 4);   // последните 4 събития, най-новото първо
+    const parts = feed.filter((a) => a && a.note).map((a) => {
       const icon = a.status === 'learning' ? '🧠 ' : (a.status === 'done' ? '✅ ' : '💤 ');
-      learnBanner.textContent = icon + a.note;
-      learnBanner.style.display = 'block';
-    } else {
-      learnBanner.textContent = '🧠 ' + t('chat_learn_idle');
-      learnBanner.style.display = 'block';
-    }
+      return icon + a.note;
+    });
+    if (!parts.length) parts.push('🧠 ' + t('chat_learn_idle'));
+    // ЗАПЪЛВАНЕ НА ЛИМИТА (плъзгача от Настройки): винаги първо в лентата, за да се вижда
+    // колко от позволеното пространство е заето с информация.
+    try {
+      const mb = dbSizeMB(); const mx = maxDbMB();
+      parts.unshift(`📦 ${mb.toFixed(1)}/${mx} MB (${Math.min(100, Math.round((mb / mx) * 100))}% от лимита)`);
+    } catch (_) {}
+    const txt = parts.join('   •   ');
+    if (txt === tickerText) return;            // същото съдържание → лентата продължава да си върви
+    tickerText = txt;
+    tickerInner.textContent = txt;
+    const dur = Math.max(14, Math.round(txt.length / 7));  // четима скорост: ~7 знака в секунда
+    tickerInner.style.animation = 'none';
+    void tickerInner.offsetWidth;              // принудителен рестарт на анимацията
+    tickerInner.style.animation = 'slfTicker ' + dur + 's linear infinite';
   }
   updateLearnBanner();
   if (_learnBannerTimer) clearInterval(_learnBannerTimer);

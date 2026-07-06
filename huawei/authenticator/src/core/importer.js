@@ -1,13 +1,14 @@
-// Version: 1.0001
+// Version: 1.0014
 // importer.js — ЕДИНЕН импорт за всички източници (QR/otpauth, .json бекъп, Aegis, Google
 // Authenticator миграция). Прави ДЕДУПЛИКАЦИЯ (прескача вече съществуващи кодове) и връща
 // единен резултат { ok, imported, duplicates, method, reason }, който UI-ят описва еднакво
 // навсякъде с describeResult() — за да се изписва КОЛКО кода и ПО КАКЪВ начин при ВСЕКИ импорт.
-import { session, addEntry } from './storage.js';
+import { session, addEntry, addPassword, addSeed } from './storage.js';
 import { parseOtpauthURI } from './otp.js';
 import { parseGoogleMigration } from './gauth-migration.js';
 import { parseAegisExport, decryptAegisExport, looksLikeAegis } from './aegis.js';
-import { parse2FAS, looksLike2FAS } from './twofas.js';
+import { parse2FAS, looksLike2FAS, decrypt2FAS } from './twofas.js';
+import { parseBrowserCsv, passwordFullKey } from './passwords-io.js';
 import { t, tf } from './i18n.js';
 
 // Ключ за дубликат: ТАЙНА (нормализирана) + ТИП. Един и същ код = един и същ акаунт.
@@ -83,6 +84,15 @@ export async function import2FASText(text) {
   return { ok: true, method: '2fas', ...r };
 }
 
+// Импорт от КРИПТИРАН 2FAS експорт (с парола): PBKDF2-SHA256 (10000) + AES-GCM
+// (twofas.decrypt2FAS). Грешна парола → reason:'password' (викащият пита пак).
+export async function import2FASEncrypted(text, password) {
+  const a = await decrypt2FAS(text, password);
+  if (!a.ok) return { ok: false, method: '2fas', reason: a.reason, detail: a.detail };
+  const r = await addEntriesDedup(a.entries);
+  return { ok: true, method: '2fas', ...r };
+}
+
 // Импорт от УНИВЕРСАЛЕН otpauth:// списък (текст, по един URI на ред). Поддържа и otpauth-migration
 // (Google) редове. Това е форматът, който почти всеки authenticator може да изнесе/внесе.
 export async function importOtpauthList(text) {
@@ -129,9 +139,47 @@ export function isImportableQR(s) {
   return /^otpauth-migration:/i.test(x) ? !!parseGoogleMigration(x) : !!parseOtpauthURI(x);
 }
 
+// ── ПАРОЛИ: импорт от браузърен CSV (Chrome/Edge/Firefox) с ДЕДУПЛИКАЦИЯ ──
+// Прескача само при ПЪЛНО СЪВПАДЕНИЕ (сайт + потребител + парола). Различна парола или
+// различен потребител за същия сайт = НОВ запис (добавя се, не се брои за дубликат).
+export async function importPasswordsCsv(text) {
+  const p = parseBrowserCsv(text);
+  if (!p.ok) return { ok: false, method: 'passwords', reason: p.reason, detail: p.detail };
+  const seen = new Set(session.passwords.map(passwordFullKey));
+  let imported = 0, duplicates = 0;
+  for (const e of p.entries) {
+    const k = passwordFullKey(e);
+    if (seen.has(k)) { duplicates++; continue; }
+    seen.add(k);
+    await addPassword({ title: e.title, url: e.url, login: e.login, password: e.password, note: e.note });
+    imported++;
+  }
+  return { ok: true, method: 'passwords', format: p.format, imported, duplicates };
+}
+
+// ── КРИПТО ПОРТФЕЙЛИ: импорт от наш .json бекъп (дедуп по портфейл+етикет+seed) ──
+export async function importSeedsJson(text) {
+  let parsed;
+  try { parsed = JSON.parse(text); } catch (_) { return { ok: false, method: 'seeds', reason: 'json' }; }
+  const list = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.seeds) ? parsed.seeds : []);
+  if (!list.length) return { ok: false, method: 'seeds', reason: 'empty' };
+  const keyS = (s) => (s.wallet || 'other') + '|' + (s.label || '') + '|' + (s.seedPhrase || s.privateKey || '');
+  const seen = new Set(session.seeds.map(keyS));
+  let imported = 0, duplicates = 0;
+  for (const s of list) {
+    if (!s || typeof s !== 'object') continue;
+    const k = keyS(s);
+    if (seen.has(k)) { duplicates++; continue; }
+    seen.add(k);
+    await addSeed(s);
+    imported++;
+  }
+  return { ok: true, method: 'seeds', imported, duplicates };
+}
+
 const METHOD_KEY = {
   qr: 'method_qr', google: 'method_google', aegis: 'method_aegis', json: 'method_json',
-  '2fas': 'method_2fas', otpauth: 'method_otpauth'
+  '2fas': 'method_2fas', otpauth: 'method_otpauth', passwords: 'method_passwords', seeds: 'method_seeds'
 };
 
 // ЕДИННО съобщение за резултата: при УСПЕХ — колко кода и по какъв начin (+ колко дубликата
@@ -146,6 +194,7 @@ export function describeResult(res) {
     if (r === 'scrypt_error') return t('import_failed') + (res.detail ? ' — ' + res.detail : ' (scrypt)');
     if (r === 'not_aegis') return t('aegis_not') + (res.detail ? ' — ' + res.detail : '');
     if (r === 'qr') return t('qr_not_found');
+    if (r === 'not_browser_csv') return t('pw_not_csv') + (res.detail ? ' — ' + res.detail : '');
     if (r === 'empty') return t('import_empty');
     return t('import_failed');
   }

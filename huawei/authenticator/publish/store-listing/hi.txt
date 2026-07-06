@@ -6,3 +6,9 @@
 
 सहायता: dai.group.ltd.support@gmail.com
 प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com
+
+आपके पसंदीदा ऐप्स के साथ संगत — दोनों दिशाओं में इम्पोर्ट और एक्सपोर्ट:
+• ब्राउज़र पासवर्ड: Google Chrome, Microsoft Edge, Mozilla Firefox.
+• 2FA कोड: Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass, और कोई भी otpauth ऐप।
+• क्रिप्टो वॉलेट सीड फ़्रेज़ और कीज़: MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
+सारा डेटा केवल आपके डिवाइस पर एन्क्रिप्टेड रहता है।

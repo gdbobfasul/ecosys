@@ -6,3 +6,9 @@
 
 الدعم: dai.group.ltd.support@gmail.com
 للأسئلة والدعم، راسلونا على: dai.group.ltd.support@gmail.com
+
+متوافق مع تطبيقاتك المفضّلة — استيراد وتصدير في الاتجاهين:
+• كلمات مرور المتصفحات: Google Chrome, Microsoft Edge, Mozilla Firefox.
+• رموز المصادقة الثنائية: Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass، بالإضافة إلى أي تطبيق otpauth.
+• عبارات الاسترداد والمفاتيح لمحافظ العملات: MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
+تبقى كل البيانات مشفّرة على جهازك فقط.

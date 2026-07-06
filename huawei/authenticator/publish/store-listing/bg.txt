@@ -6,3 +6,9 @@
 
 Поддръжка: dai.group.ltd.support@gmail.com
 За въпроси и поддръжка пишете на: dai.group.ltd.support@gmail.com
+
+Съвместим с любимите ти приложения — импорт и експорт в двете посоки:
+• Пароли от браузъри: Google Chrome, Microsoft Edge, Mozilla Firefox.
+• 2FA кодове: Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass, както и всяко otpauth приложение.
+• Seed фрази и ключове за крипто портфейли: MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
+Всички данни остават шифровани само на твоето устройство.

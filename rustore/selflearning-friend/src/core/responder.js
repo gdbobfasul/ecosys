@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0008
 // responder.js — мозъкът: интенти за учене, припомняне от паметта, корекции,
 // small talk и ПО ИЗБОР безплатен AI enhancer с graceful fallback.
 //
@@ -14,13 +14,14 @@ import { getState } from './storage.js';
 import { buildPrompt } from './ai-client.js';
 import { parseTask, intakeAndRun, askMeFromLearned } from './tasks.js';
 import { setLearningEnabled } from './learning-loop.js';
-import { findInSubjects, getSubject, addNote, addInterest } from './subjects.js';
-import { teach } from './teacher.js';
+import { findInSubjects, getSubject, addNote, addInterest, removeInterest, listInterests, listSubjects } from './subjects.js';
+import { teach, summarizeViaTeacher } from './teacher.js';
 import { dontKnow, frameAiSuggestion } from './honesty.js';
 import { handleCommand } from './commands.js';
 import { parseBrowserIntent, runBrowserIntent } from './browser.js';
 import { webSearch, gatherTreeAnswer, translate, extractSearchTopics } from './sources.js';
 import { setVisionIntent } from './vision.js';
+import { ingestUrl } from './ingest.js';
 import { isImpersonalMode, looksPersonal, refusePersonalText } from './privacy.js';
 import { languageByVoice } from './languages.js';
 
@@ -284,6 +285,42 @@ export async function respond(userText) {
     return { text: ask.text, source: ask.ok ? 'memory' : 'rule' };
   }
 
+  // 3.51) „Спри да учиш (за X)" — маха темата от ЗАДАДЕНИТЕ. Роботът НЕ избира произволна
+  //        друга: без зададени теми чака нова задача (виж learning-loop.pickNextTopic).
+  {
+    const ms = text.match(/^(?:спри|престани|стига)\s+(?:да\s+)?(?:учиш|учене(?:то)?|четеш)\s*(?:(?:за|по|относно)\s+(.+?))?\s*[!.]*$/i);
+    if (ms) {
+      const stopTopic = (ms[1] || '').trim().replace(/^["„«]|["“»]$/g, '');
+      if (stopTopic) {
+        const key = stopTopic.toLowerCase();
+        const hits = listInterests().filter((n) => {
+          const l = n.toLowerCase();
+          return l.includes(key) || key.includes(l);
+        });
+        let removed = 0;
+        for (const h of hits) { if (removeInterest(h)) removed++; }
+        if (removed) {
+          const rest = listInterests();
+          return {
+            text: `Спирам да уча за „${hits.join('“, „')}“. ` +
+              (rest.length ? `Продължавам със зададените: ${rest.join(', ')}.`
+                           : 'Нямам други зададени теми — ще чакам да ми дадеш нова („научи за …“).'),
+            source: 'rule'
+          };
+        }
+        const cur = listInterests();
+        return {
+          text: `„${stopTopic}“ не е сред зададените ми теми` +
+            (cur.length ? ` (в момента уча: ${cur.join(', ')}).` : ' — в момента нямам зададени теми.'),
+          source: 'rule'
+        };
+      }
+      // Без тема: спри самообучението изцяло (подновява се с „научи за …“).
+      try { setLearningEnabled(false); } catch (_) {}
+      return { text: 'Спрях самообучението. Кажи „научи за …“ и започвам отново.', source: 'rule' };
+    }
+  }
+
   // 3.52) „колко знам/научи за X" → брой натрупани бележки по темата (прогрес на дълбокото учене).
   {
     const mk = text.match(/^колко\s+(?:неща\s+)?(?:знаеш|знам|научи(?:х)?|събра(?:х)?|има[мш]?)\b\s*(?:за\s+|по\s+)?(.+)?$/i);
@@ -295,6 +332,103 @@ export async function respond(userText) {
         return { text: `За „${sub.name}" знам ${sub.notes.length} неща (и продължавам да трупам по дървото, ако обхождам). Питай ме нещо конкретно по темата.`, source: 'memory' };
       }
       return { text: `Още не съм учил за „${topic}". Кажи ми „научи за ${topic}".`, source: 'rule' };
+    }
+  }
+
+  // 3.53) РЕЗЮМЕ на наученото: „дай резюме какви теми си научил" / „кои теми научи" →
+  //       общ брой научени теми + СПИСЪК със заглавията им (подредени по брой бележки).
+  {
+    const wantsSummary =
+      (/резюме/i.test(text) && /(тем|науч|учи)/i.test(text)) ||
+      /^(?:какви|кои)\s+теми\s+(?:си\s+)?(?:научи|научил|знаеш|учи)/i.test(text);
+    if (wantsSummary) {
+      const subs = listSubjects().filter((s) => s && s.notes && s.notes.length);
+      if (!subs.length) {
+        return { text: 'Още не съм натрупал теми. Кажи ми „научи за …" и започвам да обхождам дървото.', source: 'rule' };
+      }
+      const sorted = subs.slice().sort((a, b) => b.notes.length - a.notes.length);
+      const MAX_LIST = 120;   // предпазен таван, за да не залее чата при огромно дърво
+      const lines = sorted.slice(0, MAX_LIST).map((s) => `• ${s.name} (${s.notes.length})`);
+      const more = sorted.length > MAX_LIST ? `\n… и още ${sorted.length - MAX_LIST} теми.` : '';
+      const totalNotes = sorted.reduce((n, s) => n + s.notes.length, 0);
+      return {
+        text: `Научих ${sorted.length} теми (общо ${totalNotes} бележки):\n${lines.join('\n')}${more}`,
+        source: 'memory'
+      };
+    }
+  }
+
+  // 3.532) АНАЛИЗ на натрупаното: „анализирай X" / „направи анализ на X" → статистика +
+  //        обобщение върху СОБСТВЕНИТЕ бележки (заземено — анализираме каквото сме събрали).
+  {
+    const am = text.match(/^(?:направи\s+|дай\s+)?анализ(?:ирай)?\s*(?:на|за|по)?\s+(.+?)\s*[!.?]*$/i);
+    if (am) {
+      const q = am[1].trim();
+      let sub = getSubject(q);
+      if (!sub) { const f = findInSubjects(q); if (f) sub = getSubject(f.subject); }
+      if (!sub || !sub.notes || !sub.notes.length) {
+        return { text: `Нямам натрупано за „${q}" — кажи „научи за ${q}" и след малко ще мога да направя анализ.`, source: 'rule' };
+      }
+      const notes = sub.notes;
+      const srcSet = new Set(notes.map((n) => n.source).filter(Boolean));
+      const oldest = notes.reduce((m, n) => Math.min(m, n.at || m), Date.now());
+      const freq = {};
+      for (const n of notes) { for (const w of tokenize(n.text)) { if (w.length >= 5) freq[w] = (freq[w] || 0) + 1; } }
+      const top = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([w]) => w);
+      let summary = '';
+      try {
+        const r = await summarizeViaTeacher(notes.slice(0, 30).map((n) => n.text).join('\n'), sub.name);
+        summary = (r && r.text) ? String(r.text).trim() : '';
+      } catch (_) {}
+      const days = Math.max(1, Math.round((Date.now() - oldest) / 86400000));
+      return {
+        text: `📊 Анализ на „${sub.name}":\n` +
+          `• бележки: ${notes.length} от ${srcSet.size} различни източника (събирани ${days} дни)\n` +
+          `• ключови понятия: ${top.join(', ') || '—'}\n` +
+          (summary ? `\nОбобщение върху събраното:\n${summary}` : '\nОбобщение: още няма достатъчно свързан текст — продължавам да трупам.'),
+        source: 'memory',
+        images: notes.filter((n) => n.img).slice(0, 3).map((n) => n.img)
+      };
+    }
+  }
+
+  // 3.533) „Покажи схеми/картинки за X" → визуалните примери, събрани при ученето по темата.
+  {
+    const pm = text.match(/^покажи(?:\s+ми)?\s+(?:схеми(?:те)?|картинки(?:те)?|изображения(?:та)?|снимки(?:те)?|диаграми(?:те)?)\s*(?:на|за|по|от)?\s+(.+?)\s*[!.?]*$/i);
+    if (pm) {
+      const q = pm[1].trim();
+      let sub = getSubject(q);
+      if (!sub) { const f = findInSubjects(q); if (f) sub = getSubject(f.subject); }
+      const withImg = ((sub && sub.notes) || []).filter((n) => n.img);
+      if (!withImg.length) {
+        return { text: `Още нямам събрани схеми/картинки за „${q}". Трупам и визуални примери, докато обхождам темата — кажи „научи за ${q}" и питай пак след малко.`, source: 'rule' };
+      }
+      const chosen = withImg.slice(0, 4);
+      return {
+        text: `🖼 Ето какво съм събрал за „${sub.name}" (${withImg.length} визуални примера):\n` +
+          chosen.map((n, i) => `${i + 1}. ${n.text.slice(0, 90)}… 📎 ${n.source}`).join('\n'),
+        source: 'memory',
+        images: chosen.map((n) => n.img)
+      };
+    }
+  }
+
+  // 3.535) УЧЕНЕ ОТ ЛИНК (уеб страница / RSS емисия / YouTube) и ОТ КАЧЕН ФАЙЛ (ingest.js).
+  //        „научи от <линк>", „научи за X от <линк>", само поставен линк, „научи от файл".
+  {
+    const urlM = text.match(/https?:\/\/[^\s"„“”]+/i);
+    const asksIngest = /(науч|прочет|изуч|учи|запомни)/i.test(text);
+    if (urlM && (asksIngest || /^https?:\/\/\S+\s*[!.]?$/i.test(text))) {
+      const topicM = text.match(/^(?:научи|учи|прочети)\s+(?:се\s+)?за\s+(.+?)\s+от\s+http/i);
+      const r = await ingestUrl(urlM[0], { topic: topicM ? topicM[1].trim() : '' });
+      return { text: r.text, source: r.ok ? 'learn' : 'rule', learned: !!r.ok };
+    }
+    if (/(науч|прочет|учи)[^.!?]*\s+от\s+(файл|файла|документ|документа|пдф|pdf|уърд|word|лекци)/i.test(text) ||
+        /^(качвам|давам)\s+(?:ти\s+)?(файл|документ|лекция|материал)/i.test(text)) {
+      return {
+        text: 'Добре — избери файла (PDF, docx, odt, rtf, txt, md, html…). Ще извлека текста и ще го науча като тема.',
+        source: 'rule', action: 'learn-file'
+      };
     }
   }
 
@@ -435,7 +569,7 @@ export async function respond(userText) {
           try { for (const n of tree.main) { addNote(q, { text: n.text, source: n.source, url: n.url }); mainAll.push(n); } } catch (_) {}
           try {
             for (const r of tree.related) {
-              addInterest(r.topic);
+              // Клонът се записва като тема (знание), но НЕ влиза в ротацията на ученето.
               addNote(r.topic, { text: r.text, source: r.source, url: r.url });
               relAll.push(r);
             }
@@ -473,13 +607,31 @@ export async function respond(userText) {
 
   if (st) return { text: st, source: 'rule' };
 
-  // 8) Нищо не дойде → стартирам фоново учене + браузър (ако имаше тема), иначе честно „не знам".
+  // 8) Нищо не дойде → НЕ казваме „не знам": казваме „сега ще проверя" и НАИСТИНА проверяваме
+  //    ВЕДНАГА (синхронно търсене по дървото); намерим ли — отговаряме СЕГА и записваме.
+  //    Иначе пускаме дълбокото фоново учене (дървото на темата продължава да расте) и каним
+  //    собственика да попита пак — при следващия въпрос вече ще има натрупано знание.
   if (topic) {
+    try {
+      const crawl = await gatherTreeAnswer(topic, { lang: 'bg', limit: 6, relatedLimit: 8 });
+      let saved = 0;
+      for (const n of crawl.main) { if (addNote(topic, { text: n.text, source: n.source, url: n.url, img: n.img })) saved++; }
+      for (const r of crawl.related) { if (addNote(r.topic, { text: r.text, source: r.source, url: r.url, img: r.img })) saved++; }
+      if (crawl.main.length) {
+        const body = crawl.main.slice(0, 4).map((n) => `• ${n.text}\n  📎 ${n.source}`).join('\n\n');
+        try { intakeAndRun('научи за ' + topic); } catch (_) { /* фон — задълбочава след отговора */ }
+        return {
+          text: `Проверих в момента (записах ${saved} нови бележки) — ето какво намерих за „${topic}":\n\n${body}\n\nПродължавам да ровя по-надълбоко по дървото — питай ме пак за още.`,
+          source: 'source', learned: true,
+          images: crawl.main.filter((n) => n.img).slice(0, 3).map((n) => n.img)
+        };
+      }
+    } catch (_) { /* мрежова спънка → фоновият път по-долу */ }
     try { intakeAndRun('научи за ' + topic); } catch (_) { /* фон — не блокира отговора */ }
     try { runBrowserIntent({ action: 'search', engine: 'google', query: topic }); } catch (_) {}
-    return { text: `Още не знам за „${topic}" — започвам да проучвам по-надълбоко. Питай ме пак след малко.`, source: 'rule', learning: true };
+    return { text: `Сега ще проверя — ровя в източниците за „${topic}" и трупам знание по дървото. Питай ме пак след малко и ще отговоря задълбочено.`, source: 'rule', learning: true };
   }
-  return { text: dontKnow(), source: 'rule' };
+  return { text: 'Сега ще проверя — само ми кажи за коя тема е въпросът (с една дума повече), за да зная къде да ровя.', source: 'rule' };
 }
 
 // Командната обвивка на УЧЕНЕТО: „[моля/хайде/искам да/започни да/продължи да] науч(и/иш/а)/

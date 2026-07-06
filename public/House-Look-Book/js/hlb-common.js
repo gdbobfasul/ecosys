@@ -101,3 +101,17 @@ const HLB = (function () {
 
   return { api, me, mountNav, esc };
 })();
+
+// ── „Още от KCY Ecosystem" — плаващ бутон със ✕ (Version: 1.0005) ─────────────────────────
+// Зарежда js/kcy-eco-web.js (копие на public/shared/kcy-eco-web.js) САМО когато сайтът е
+// отворен ВЪТРЕ в мобилното приложение (Capacitor) — посетителите в браузър не го виждат.
+(function () {
+  try {
+    if (!(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform())) return;
+    var me = document.querySelector('script[src*="hlb-common.js"]');
+    var src = me ? me.getAttribute('src').replace(/hlb-common\.js.*$/, 'kcy-eco-web.js?v=1.0005') : '/js/kcy-eco-web.js?v=1.0005';
+    var s = document.createElement('script');
+    s.src = src; s.setAttribute('data-kcy-app', 'houselookbook');
+    document.head.appendChild(s);
+  } catch (e) {}
+})();

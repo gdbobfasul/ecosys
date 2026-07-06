@@ -1184,11 +1184,33 @@ run_choice() {
         # ── EXPORT ──
         20)
             NAME="kcy-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
+            # БЕКЪП НА КОДА — БЕЗ билд артефактите (те се регенерират от кода и подуваха архива
+            # до ~7 GB). Изключваме: зависимости, Gradle/Android билд изход, уеб/десктоп билдове,
+            # готови APK/EXE, вграденото копие на dist в APK-а, кешове и логове. Остават source-ът,
+            # иконите/ресурсите, публичните ассети и историята (.git).
             run_cmd tar -czf "$HOME/${NAME}" \
-                --exclude='node_modules' --exclude='artifacts' \
-                --exclude='cache' --exclude='*.log' \
+                --exclude='node_modules' \
+                --exclude='build' \
+                --exclude='.gradle' \
+                --exclude='.cxx' \
+                --exclude='captures' \
+                --exclude='dist' \
+                --exclude='dist-exe' \
+                --exclude='dist-electron' \
+                --exclude='dist-ssr' \
+                --exclude='.vite' \
+                --exclude='apk' \
+                --exclude='*/main/assets/public' \
+                --exclude='artifacts' \
+                --exclude='cache' \
+                --exclude='.cache' \
+                --exclude='*.log' \
+                --exclude='*.apk' \
+                --exclude='*.aab' \
+                --exclude='*.keystore' \
                 -C "$PROJECT_ROOT/.." "$(basename "$PROJECT_ROOT")"
             echo "  ✓ $HOME/${NAME}"
+            echo "  (без билд артефакти: android build, dist, dist-exe, apk — регенерират се от кода)"
             press_enter
             ;;
         21)

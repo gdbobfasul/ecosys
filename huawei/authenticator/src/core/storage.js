@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0013
 // storage.js — устойчиво съхранение + сесийно състояние.
 // • Шифрираният блок със записите се пази в localStorage (VAULT_KEY).
 // • Нетайните настройки (език, авто-заключване, биометрия, подредба) — в SETTINGS_KEY.
@@ -14,16 +14,21 @@ const DEFAULT_SETTINGS = {
   autoLockSec: 60,       // авто-заключване след N СЕКУНДИ бездействие (0 = никога)
   autoLockMin: 1,        // (наследено) минути — пази съвместимост; autoLockSec има предимство
   biometric: false,      // отключване с пръстов отпечатък (ако устройството поддържа)
-  sort: 'manual'         // подредба: manual | issuer | account
+  sort: 'manual',        // подредба: manual | issuer | account
+  lockOnBlur: true       // true = заключва ВЕДНАГА при смяна на приложението (както досега);
+                         // false = НЕ заключва при загуба на фокус — само по таймаута за
+                         // бездействие (проверен и при връщане на фокуса)
 };
 
-// Сесийно състояние (в паметта). И трите колекции се шифроват заедно в сейфа.
+// Сесийно състояние (в паметта). ВСИЧКИ колекции се шифроват заедно в сейфа и живеят САМО
+// на устройството — нищо не се качва на сървър (виж persist: пише само в localStorage).
 export const session = {
   unlocked: false,
   password: null,        // master паролата, докато сейфът е отключен
   entries: [],           // таб „Аутентикация": [{ id, type, issuer, account, secret, ... }]
   collection: [],        // таб „Колекция": [{ id, title, content, image }] (QR кодове със заглавие)
-  passwords: []          // таб „Пароли": [{ id, title, login, password, note }]
+  passwords: [],         // таб „Пароли": [{ id, title, login, password, note, url }]
+  seeds: []              // таб „Портфейли": крипто акаунти (seed фрази/ключове) — виж seedFields()
 };
 
 export function hasVault() {
@@ -58,6 +63,7 @@ export async function createVault(password) {
   session.entries = [];
   session.collection = [];
   session.passwords = [];
+  session.seeds = [];
   session.password = password;
   session.unlocked = true;
   await persist();
@@ -70,17 +76,20 @@ export async function unlockVault(password) {
   session.entries = Array.isArray(data.entries) ? data.entries : [];
   session.collection = Array.isArray(data.collection) ? data.collection : [];
   session.passwords = Array.isArray(data.passwords) ? data.passwords : [];
+  session.seeds = Array.isArray(data.seeds) ? data.seeds : [];
   session.password = password;
   session.unlocked = true;
 }
 
-// Записва целия сейф шифровано (с паролата от сесията).
+// Записва целия сейф шифровано (с паролата от сесията). ПИШЕ САМО В localStorage на
+// устройството — няма мрежова заявка, нищо не се изпраща навън (важи и за seed фразите).
 export async function persist() {
   if (!session.unlocked || session.password == null) throw new Error('locked');
   const blob = await encryptVault({
     entries: session.entries,
     collection: session.collection,
-    passwords: session.passwords
+    passwords: session.passwords,
+    seeds: session.seeds
   }, session.password);
   localStorage.setItem(VAULT_KEY, JSON.stringify(blob));
 }
@@ -91,13 +100,14 @@ export async function changePassword(newPassword) {
   await persist();
 }
 
-// Заключва сейфа — чисти тайните от паметта.
+// Заключва сейфа — чисти ВСИЧКИ тайни от паметта (вкл. seed фразите).
 export function lock() {
   session.unlocked = false;
   session.password = null;
   session.entries = [];
   session.collection = [];
   session.passwords = [];
+  session.seeds = [];
 }
 
 // Изтрива целия сейф (нужна е парола за пресъздаване).
@@ -175,11 +185,12 @@ export async function deleteCollectionItem(id) {
   await persist();
 }
 
-// ── Таб „Пароли" ──
+// ── Таб „Пароли" (+ url за импорт/експорт от браузъри) ──
 export async function addPassword(item) {
   const it = {
     id: newId(),
     title: cap256(item && item.title),
+    url: cap256(item && item.url),
     login: cap256(item && item.login),
     password: cap256(item && item.password),
     note: cap256(item && item.note)
@@ -191,11 +202,42 @@ export async function addPassword(item) {
 export async function updatePassword(id, patch) {
   const x = session.passwords.find((p) => p.id === id);
   if (!x) return;
-  ['title', 'login', 'password', 'note'].forEach((k) => { if (patch[k] != null) patch[k] = cap256(patch[k]); });
+  ['title', 'url', 'login', 'password', 'note'].forEach((k) => { if (patch[k] != null) patch[k] = cap256(patch[k]); });
   Object.assign(x, patch);
   await persist();
 }
 export async function deletePassword(id) {
   session.passwords = session.passwords.filter((p) => p.id !== id);
   await persist();
+}
+
+// ── Таб „Портфейли" (крипто акаунти: seed фрази, ключове, пароли — САМО локално) ──
+// Полетата, които пазим за крипто портфейл/борса. Всички са опционални освен label;
+// чувствителните се показват през „око". seedPhrase/privateKey/passphrase = най-тайните.
+export const SEED_FIELDS = ['label', 'account', 'seedPhrase', 'passphrase', 'password', 'pin', 'privateKey', 'publicAddress', 'derivationPath', 'note'];
+// По-дълъг лимит за seed/ключове (не 256): 24-думни фрази + деривации.
+function capField(k, v) { return String(v == null ? '' : v).slice(0, k === 'seedPhrase' || k === 'note' || k === 'privateKey' ? 2000 : 256); }
+
+export async function addSeed(item) {
+  const it = { id: newId(), wallet: cap256(item && item.wallet) || 'other', walletName: cap256(item && item.walletName), at: Date.now() };
+  for (const k of SEED_FIELDS) it[k] = capField(k, item && item[k]);
+  session.seeds.push(it);
+  await persist();
+  return it;
+}
+export async function updateSeed(id, patch) {
+  const x = session.seeds.find((s) => s.id === id);
+  if (!x) return;
+  if (patch.wallet != null) x.wallet = cap256(patch.wallet);
+  if (patch.walletName != null) x.walletName = cap256(patch.walletName);
+  for (const k of SEED_FIELDS) { if (patch[k] != null) x[k] = capField(k, patch[k]); }
+  await persist();
+}
+export async function deleteSeed(id) {
+  session.seeds = session.seeds.filter((s) => s.id !== id);
+  await persist();
+}
+// Колко акаунта има за даден портфейл (за лимитите 20 / 100).
+export function seedCountFor(walletKey) {
+  return session.seeds.filter((s) => s.wallet === walletKey).length;
 }

@@ -1,10 +1,12 @@
-// Version: 1.0001
+// Version: 1.0009
 // Game-over / резултат сцена: показва точки, въвеждаш ИМЕ, записва се и се
 // класира; показва ранга и Топ-N. Само {name, points} се пазят.
 import { THEME } from '../theme.js';
 import { t, tf } from '../core/i18n.js';
 
 export function showGameOver(root, leaderboard, result, onMenu, onRetry) {
+  // Реклама „в края" (изискване): при всеки край на ниво — 1 промо на друго KCY приложение.
+  try { if (typeof window.KCY_END_AD === 'function') window.KCY_END_AD(); } catch (e) {}
   const a = THEME.accent;
   const wrap = document.createElement('div');
   wrap.style.cssText = `position:fixed;inset:0;z-index:20;background:rgba(7,12,20,0.94);

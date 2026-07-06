@@ -1,6 +1,6 @@
-// Version: 1.0001
+// Version: 1.0013
 // password-edit.js — добавяне/редакция на запис в таб „Пароли".
-// Полета (всички до 256 знака): заглавие, логин, парола, допълнително описание.
+// Полета: заглавие, адрес (url — за импорт/експорт от браузъри), логин, парола, описание.
 // До логина и паролата има иконка „копиране" → стойността отива в клипборда.
 import { h, mount, toast, copyText } from '../ui/dom.js';
 import { t } from '../core/i18n.js';
@@ -10,6 +10,7 @@ export function renderPasswordEdit(root, nav, item) {
   const editing = !!(item && item.id);
 
   const title = h('input', { type: 'text', maxlength: '256', value: (item && item.title) || '' });
+  const url = h('input', { type: 'text', maxlength: '256', value: (item && item.url) || '', placeholder: 'https://…' });
   const login = h('input', { type: 'text', maxlength: '256', value: (item && item.login) || '' });
   const password = h('input', { type: 'password', maxlength: '256', value: (item && item.password) || '' });
   const note = h('textarea', { maxlength: '256' });
@@ -34,7 +35,7 @@ export function renderPasswordEdit(root, nav, item) {
 
   const save = async () => {
     if (!title.value.trim()) { err.textContent = t('title_required'); return; }
-    const data = { title: title.value.trim(), login: login.value, password: password.value, note: note.value };
+    const data = { title: title.value.trim(), url: url.value.trim(), login: login.value, password: password.value, note: note.value };
     if (editing) await updatePassword(item.id, data); else await addPassword(data);
     nav.go('list');
   };
@@ -47,6 +48,7 @@ export function renderPasswordEdit(root, nav, item) {
 
   const content = [
     h('label', { text: t('title') }), title,
+    h('label', { text: t('pw_url') }), copyField(url),
     h('label', { text: t('login') }), copyField(login),
     h('label', { text: t('password') }), pwdRow,
     h('label', { text: t('note') }), note,
