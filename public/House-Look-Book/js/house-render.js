@@ -516,8 +516,94 @@ const HouseRender = (function () {
     return S[id] || [28, 18];
   }
   function hashStr(s) { s = String(s); let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return h; }
+
+  // РАЗПОЗНАВАЕМ ТОП-ДАУН СИЛУЕТ на мебелта (изглед ОТГОРЕ) — вместо гол правоъгълник.
+  // (x,y)=горе-ляво, w×h=отпечатък. Всеки тип чертае характерната си форма отгоре.
+  function furnPlanShape(type, x, y, w, h, col) {
+    col = col || DEFAULT_FURN_COLOR;
+    const dk = shade(col, 0.6), lt = shade(col, 1.15), mid = shade(col, 0.85), cx = x + w / 2, cy = y + h / 2;
+    const r = (xx, yy, ww, hh, f, rad) => `<rect x="${xx.toFixed(1)}" y="${yy.toFixed(1)}" width="${Math.max(1, ww).toFixed(1)}" height="${Math.max(1, hh).toFixed(1)}" rx="${rad == null ? 2 : rad}" fill="${f}" stroke="${dk}" stroke-width="1"/>`;
+    const ci = (a, b, rr, f) => `<circle cx="${a.toFixed(1)}" cy="${b.toFixed(1)}" r="${rr.toFixed(1)}" fill="${f}" stroke="${dk}" stroke-width="0.8"/>`;
+    const el = (a, b, rx, ry, f) => `<ellipse cx="${a.toFixed(1)}" cy="${b.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="${f}" stroke="${dk}" stroke-width="0.8"/>`;
+    const ln = (x1, y1, x2, y2) => `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${dk}" stroke-width="0.8"/>`;
+    let g = '';
+    switch (type) {
+      case 'bed':                                                            // матрак + възглавници горе + завивка
+        g += r(x, y, w, h, col, 3);
+        g += r(x + w * 0.08, y + h * 0.06, w * 0.36, h * 0.2, '#fff', 2) + r(x + w * 0.56, y + h * 0.06, w * 0.36, h * 0.2, '#fff', 2);
+        g += r(x + w * 0.05, y + h * 0.34, w * 0.9, h * 0.6, lt, 2) + ln(x + w * 0.05, y + h * 0.34, x + w * 0.95, y + h * 0.34);
+        break;
+      case 'sofa': case 'sofaset': case 'armchair':                          // П-форма (облегалка+подлакътници+седалки)
+        g += r(x, y, w, h * 0.32, mid, 3);                                   // облегалка (горе)
+        g += r(x, y + h * 0.2, w * 0.16, h * 0.8, col, 3) + r(x + w * 0.84, y + h * 0.2, w * 0.16, h * 0.8, col, 3); // подлакътници
+        g += r(x + w * 0.18, y + h * 0.38, w * 0.64, h * 0.56, lt, 3);       // седалка
+        if (type !== 'armchair') g += ln(cx, y + h * 0.4, cx, y + h * 0.92);
+        break;
+      case 'table': case 'coffee':                                           // плот + столове наоколо (за table)
+        g += r(x + w * 0.14, y + h * 0.14, w * 0.72, h * 0.72, col, 3);
+        if (type === 'table') { g += r(x + w * 0.36, y - h * 0.02, w * 0.28, h * 0.12, mid, 2) + r(x + w * 0.36, y + h * 0.9, w * 0.28, h * 0.12, mid, 2) + r(x - w * 0.02, y + h * 0.36, w * 0.12, h * 0.28, mid, 2) + r(x + w * 0.9, y + h * 0.36, w * 0.12, h * 0.28, mid, 2); }
+        break;
+      case 'chair':
+        g += r(x + w * 0.18, y + h * 0.28, w * 0.64, h * 0.64, col, 2) + r(x + w * 0.12, y + h * 0.06, w * 0.76, h * 0.16, mid, 2);
+        break;
+      case 'desk':
+        g += r(x, y, w, h, col, 2) + r(x + w * 0.62, y + h * 0.1, w * 0.32, h * 0.8, mid, 2) + ln(x + w * 0.62, cy, x + w * 0.94, cy);
+        break;
+      case 'toilet':                                                         // казанче (правоъг.) + чиния (овал)
+        g += r(x + w * 0.2, y, w * 0.6, h * 0.28, mid, 2);
+        g += el(cx, y + h * 0.62, w * 0.32, h * 0.34, '#fff') + el(cx, y + h * 0.62, w * 0.2, h * 0.22, lt);
+        break;
+      case 'bathtub':                                                        // заоблен правоъг. + вътрешен овал (вода)
+        g += r(x, y, w, h, '#fff', Math.min(w, h) * 0.28) + el(cx, cy + h * 0.06, w * 0.34, h * 0.32, shade('#cfe6f2', 1)) + ci(x + w * 0.16, y + h * 0.18, Math.max(1.5, w * 0.04), mid);
+        break;
+      case 'sink':
+        g += r(x, y, w, h, col, 2) + el(cx, cy, w * 0.34, h * 0.3, '#fff') + ci(cx, y + h * 0.16, Math.max(1.2, w * 0.05), mid);
+        break;
+      case 'shower':                                                         // квадрат + четвърт-кръг (кабина) + отточник
+        g += r(x, y, w, h, lt, 2) + `<path d="M${x} ${y} A ${w} ${h} 0 0 1 ${(x + w).toFixed(1)} ${(y + h).toFixed(1)}" fill="none" stroke="${dk}" stroke-width="1"/>` + ci(cx, cy, Math.max(1.4, w * 0.06), mid);
+        break;
+      case 'stove':                                                          // 4 котлона
+        g += r(x, y, w, h, col, 2) + ci(x + w * 0.3, y + h * 0.3, w * 0.14, mid) + ci(x + w * 0.7, y + h * 0.3, w * 0.14, mid) + ci(x + w * 0.3, y + h * 0.7, w * 0.14, mid) + ci(x + w * 0.7, y + h * 0.7, w * 0.14, mid);
+        break;
+      case 'oven': case 'dishwasher':
+        g += r(x, y, w, h, col, 2) + ln(x + 1.5, y + h * 0.2, x + w - 1.5, y + h * 0.2) + r(x + w * 0.1, y + h * 0.28, w * 0.8, h * 0.6, mid, 2);
+        break;
+      case 'washer':                                                         // люк (кръг)
+        g += r(x, y, w, h, col, 2) + ci(cx, cy + h * 0.08, Math.min(w, h) * 0.3, lt) + ci(cx, cy + h * 0.08, Math.min(w, h) * 0.18, '#cfe6f2');
+        break;
+      case 'fridge':
+        g += r(x, y, w, h, lt, 3) + ln(x + 1.5, cy, x + w - 1.5, cy) + r(x + w * 0.08, y + h * 0.12, w * 0.06, h * 0.24, mid, 2) + r(x + w * 0.08, y + h * 0.56, w * 0.06, h * 0.3, mid, 2);
+        break;
+      case 'wardrobe': case 'cabinet': case 'shoecab':                       // шкаф с врати
+        g += r(x, y, w, h, col, 2) + ln(cx, y + 1.5, cx, y + h - 1.5) + ci(cx - w * 0.08, cy, Math.max(1, w * 0.03), dk) + ci(cx + w * 0.08, cy, Math.max(1, w * 0.03), dk);
+        break;
+      case 'nightstand': case 'dresser':                                     // чекмеджета (линии) + дръжки
+        g += r(x, y, w, h, col, 2);
+        { const rows = type === 'dresser' ? 3 : 2; for (let i = 1; i < rows; i++) g += ln(x + 1.5, y + h * i / rows, x + w - 1.5, y + h * i / rows); for (let i = 0; i < rows; i++) g += ci(cx, y + h * (i + 0.5) / rows, Math.max(1, w * 0.04), dk); }
+        break;
+      case 'shelves': case 'tvstand':
+        g += r(x, y, w, h, col, 2); for (let i = 1; i <= 2; i++) g += ln(x + 1.5, y + h * i / 3, x + w - 1.5, y + h * i / 3);
+        break;
+      case 'island':
+        g += r(x, y, w, h, col, 3) + r(x + w * 0.06, y + h * 0.06, w * 0.88, h * 0.88, lt, 2);
+        break;
+      case 'boiler':
+        g += ci(cx, cy, Math.min(w, h) * 0.46, lt) + ci(cx, cy, Math.min(w, h) * 0.14, mid);
+        break;
+      case 'coatrack':                                                       // куки (точки) в кръг
+        g += ci(cx, cy, Math.min(w, h) * 0.4, mid); for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2; g += ci(cx + Math.cos(a) * w * 0.3, cy + Math.sin(a) * h * 0.3, Math.max(1, w * 0.04), dk); }
+        break;
+      case 'hood':
+        g += r(x, y + h * 0.2, w, h * 0.6, mid, 3) + ln(x + w * 0.2, cy, x + w * 0.8, cy);
+        break;
+      default:
+        g += r(x, y, w, h, col, 3) + ln(x + 2, cy, x + w - 2, cy);
+    }
+    return g;
+  }
+
   // Рисува една мебел в плана, центрирана в (cx,cy). Качена снимка → <image> с
-  // отрязване по отпечатъка; иначе цветна кутийка. Размерът = стандартен × scale.
+  // отрязване по отпечатъка; иначе РАЗПОЗНАВАЕМ топ-даун силует (не гол правоъгълник).
   function furnPlan(it, cx, cy, fillBox) {
     const fi = furnitureItem(it.type) || { name: it.type, key: '' };
     const sc = (it.scale && +it.scale > 0) ? Math.min(+it.scale, 2.5) : 1;
@@ -530,8 +616,8 @@ const HouseRender = (function () {
         `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="none" stroke="#7a8aa0" stroke-width="1.2"/>` +
         `<text x="${cx}" y="${y + h + 9}" text-anchor="middle" font-size="8" fill="#345" font-family="system-ui,Arial">${nm}</text></g>`;
     }
-    return `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="${it.color || fillBox}" stroke="#9ab"/>` +
-      `<text x="${cx}" y="${cy + 3}" text-anchor="middle" font-size="8" fill="#345" font-family="system-ui,Arial">${nm}</text></g>`;
+    return `<g>${furnPlanShape(it.type, x, y, w, h, it.color || fillBox)}` +
+      `<text x="${cx}" y="${y + h + 8}" text-anchor="middle" font-size="8" fill="#345" font-family="system-ui,Arial">${nm}</text></g>`;
   }
 
   // internal = bool[] по стена (true=вътрешна). Вътрешните врати/прозорци се рисуват
@@ -978,7 +1064,7 @@ const HouseRender = (function () {
       : ({ front: 'Отпред', back: 'Отзад', left: 'Отляво', right: 'Отдясно' }[side] || side));
   }
 
-  return { SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, BASEMENT_ROOM_TYPES, ROOM_SHAPES, FURNITURE, wallsForShape, furnitureItem, WALL_MAX, CENTER_MAX, elevation, roofPlan, floorPlan, roomDetailPlan, wallElevation, roomPerspective, floorsStack, floorAdjacency, floorExternals, facadeOpenings, floorTitle, floorShort };
+  return { VERSION: '1.0014', SIDES, FOOTPRINTS, ROOFS, ROOM_TYPES, BASEMENT_ROOM_TYPES, ROOM_SHAPES, FURNITURE, wallsForShape, furnitureItem, WALL_MAX, CENTER_MAX, elevation, roofPlan, floorPlan, roomDetailPlan, wallElevation, roomPerspective, floorsStack, floorAdjacency, floorExternals, facadeOpenings, floorTitle, floorShort };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = HouseRender;

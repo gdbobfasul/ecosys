@@ -353,6 +353,15 @@ build_one() {
     echo -e "  ${CYAN}→ npm run build (web)…${NC}"
     npm run build || { echo -e "  ${RED}✗ web билдът се провали${NC}"; exit 3; }
     echo -e "  ${GREEN}✓ web билд готов → $d/dist${NC}"
+
+    # ── HouseLookBook: ВГРАЖДАНЕ на целия сайт В APK-то (embedded, не обвивка) ──
+    # Копираме public/House-Look-Book В dist/, за да НОСИ APK-то последния HLB код (мебелни форми,
+    # версия) и да работи ОФЛАЙН. hlb-common.js сам сочи API-то към живия сървър на устройство.
+    # Обвивъчния splash (index.html от src) го заменяме с истинския HLB index.html.
+    if [ "$(basename "$PWD")" = "houselookbook" ] && [ -d "$ROOT/public/House-Look-Book" ]; then
+      cp -rf "$ROOT/public/House-Look-Book/"* dist/ 2>/dev/null
+      echo -e "  ${GREEN}✓ HouseLookBook вграден в dist (embedded — APK носи целия сайт)${NC}"
+    fi
     # Каталог „Още от KCY Ecosystem" (редактира се в app-shared/promo-catalog.json: кои апове са
     # одобрени/публикувани `enabled:true`, имена, store линкове). Апът го тегли ПЪРВО ОТ СЪРВЪРА
     # (https://…/promo/kcy-promo.json — централно управление БЕЗ нов билд); копието в dist/ е само

@@ -1,15 +1,22 @@
-// Version: 1.0171
+// Version: 1.0014
 // House-Look-Book — общи помощници за фронтенда: API + навигация + сесия.
-// Без външни зависимости. Всичко върви срещу собствения бекенд /api/hlb.
+// Без външни зависимости. Всичко върви срещу бекенда /api/hlb.
 
 const HLB = (function () {
   'use strict';
 
-  const BASE = '/api/hlb';
+  // В БРАУЗЪР/на сайта: относителен път (същият origin като сайта).
+  // ВГРАДЕН В APK (Capacitor native, origin=capacitor://localhost): АБСОЛЮТЕН към живия
+  // сървър, за да работят запазване/вход/споделяне, докато рисуването е изцяло локално.
+  const _native = (function () {
+    try { return !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()); }
+    catch (e) { return false; }
+  })();
+  const BASE = _native ? 'https://look.myhousesetup.com/api/hlb' : '/api/hlb';
 
   // Тънка обвивка над fetch — праща/чете JSON, носи сесийната бисквитка.
   async function api(pathname, { method = 'GET', body, formData } = {}) {
-    const opts = { method, credentials: 'same-origin', headers: {} };
+    const opts = { method, credentials: _native ? 'include' : 'same-origin', headers: {} };
     if (formData) {
       opts.body = formData; // multipart — браузърът сам слага Content-Type
     } else if (body !== undefined) {
