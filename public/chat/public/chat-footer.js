@@ -2,12 +2,18 @@
 //   1) „footer menu" с всички страници, на които посетителят може да отиде;
 //   2) контейнер за фирмения футър (kg-compliance.js: лога Visa/MC/Элкарт + данни на фирмата).
 // Включвай само това на всяка страница:
-//   <script src="/chat/public/chat-footer.js?v=1.0001"></script>
+//   <script src="/chat/public/chat-footer.js?v=1.0016"></script>
 // Скриптът сам зарежда kg-compliance.js, ако страницата вече не го зарежда.
 (function () {
   'use strict';
   if (window.__amsChatFooter) return;
   window.__amsChatFooter = true;
+
+  // ВИДИМА ВЕРСИЯ на ЖИВИЯ чат (какво е деплойнато на сървъра в момента).
+  // Показва се като малък бадж долу-ляво на всяка страница — така и в мобилната
+  // обвивка (WebView зарежда живите страници) личи коя версия гледаш.
+  // При нов деплой на чата → вдигни това число (и ?v= на скрипта в страниците).
+  var FOOTER_VERSION = '1.0016';
 
   // Всички страници, достъпни за посетителя.
   // Подредени по приоритет: Начало първо → основни функции → акаунт → приложение.
@@ -76,6 +82,7 @@
     document.head.appendChild(style);
 
     buildAuthBadge();   // горе вдясно: индикатор за вход
+    buildVersionBadge(); // долу вляво: видима версия на живия чат
 
     var here = location.pathname.replace(/\/+$/, '');
     var nav = document.createElement('nav');
@@ -118,6 +125,20 @@
     } catch (e) {}
 
     ensureCompliance();
+  }
+
+  // Долу вляво на всяка страница: малък бадж с версията на живия чат.
+  // pointer-events:none → не пречи на нищо под него. Скрива се от печат.
+  function buildVersionBadge() {
+    if (document.querySelector('.ams-ver-badge')) return;
+    var b = document.createElement('div');
+    b.className = 'ams-ver-badge';
+    b.textContent = 'v' + FOOTER_VERSION;
+    b.style.cssText = 'position:fixed;left:6px;bottom:6px;z-index:2147483000;' +
+      'background:rgba(15,23,42,.82);color:#7dd3fc;' +
+      'font:600 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;' +
+      'padding:3px 8px;border-radius:8px;pointer-events:none;letter-spacing:.3px';
+    (document.body || document.documentElement).appendChild(b);
   }
 
   // Горе вдясно на всяка чат страница: ако е логнат → линк към Профил;
