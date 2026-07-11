@@ -1,0 +1,242 @@
+{
+  "name": "Компютърна игра — пакет знание",
+  "topic": "компютърна-игра",
+  "seedInterests": false,
+  "terms": [
+    {
+      "term": "Компютърна игра",
+      "definition": "Компютърната игра е видеоигра, която се играе предимно на персонален компютър. Играта, сама по себе си, предполага участието на поне един играч, който може да влияе на средата, в която е поставен. Компютърните игри се създават от специализирани софтуерни компании, често в сътрудничество с различни специалисти и се публикуват самостоятелно или чрез външна фирма. Разпространяват се на твърди носители, като DVD-та или CD-та, свалят се от интернет за изпробване или се използват специализирани онлайн услуги за доставка.",
+      "source": "bg.wikipedia.org: Компютърна игра",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8E%D1%82%D1%8A%D1%80%D0%BD%D0%B0_%D0%B8%D0%B3%D1%80%D0%B0"
+    },
+    {
+      "term": "Virus (компютърна игра)",
+      "definition": "Вирус е компютърна игра проектирана от британския компютърен програмист Дейвид Брабен, развита от Фронтиър Дивелъпмънтс(Frontier Developments) и издадена през 1988 г. от Бритиш Телеком под името на Файърбърд (Firebird).",
+      "source": "bg.wikipedia.org: Virus (компютърна игра)",
+      "url": "https://bg.wikipedia.org/wiki/Virus_(%D0%BA%D0%BE%D0%BC%D0%BF%D1%8E%D1%82%D1%8A%D1%80%D0%BD%D0%B0_%D0%B8%D0%B3%D1%80%D0%B0)"
+    },
+    {
+      "term": "The Colour of Magic (игра)",
+      "definition": "The Colour of Magic е приключенска текстова игра, произведена от Delta 4 и издадена от Piranha Games през 1986 за компютърните системи ZX Spectrum, Armstrad CPC и Commodore 64. Тя е първата компютърна игра от поредицата Светът на диска и единствената, която спазва изцяло сюжета на книгата.",
+      "source": "bg.wikipedia.org: The Colour of Magic (игра)",
+      "url": "https://bg.wikipedia.org/wiki/The_Colour_of_Magic_(%D0%B8%D0%B3%D1%80%D0%B0)"
+    },
+    {
+      "term": "Ролева игра",
+      "definition": "Ролева игра е тип игра, в която участниците заемат ролите на персонажи и заедно създават истории. Участниците определят действията на персонажите си, според характерите им, а действията биват успешни или неуспешни, според установена система от правила или насоки. В рамките на тези правила, те могат свободно да импровизират; техните избори оформят посоката и крайния резултат от игрите.",
+      "source": "bg.wikipedia.org: Ролева игра",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A0%D0%BE%D0%BB%D0%B5%D0%B2%D0%B0_%D0%B8%D0%B3%D1%80%D0%B0"
+    },
+    {
+      "term": "Стратегия в реално време",
+      "definition": "Стратегия в реално време е жанр стратегическа компютърна игра. Терминът е употребен за пръв път в американското списание BYTE през 1982 г., но добива популярност едва в началото на 90-те, след излизането на играта Dune II.",
+      "source": "bg.wikipedia.org: Стратегия в реално време",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A1%D1%82%D1%80%D0%B0%D1%82%D0%B5%D0%B3%D0%B8%D1%8F_%D0%B2_%D1%80%D0%B5%D0%B0%D0%BB%D0%BD%D0%BE_%D0%B2%D1%80%D0%B5%D0%BC%D0%B5"
+    },
+    {
+      "term": "Hearts (Windows)",
+      "definition": "Hearts е компютърна игра на карти, включена в операционните системи Microsoft Windows. Версия е на играта Купи.",
+      "source": "bg.wikipedia.org: Hearts (Windows)",
+      "url": "https://bg.wikipedia.org/wiki/Hearts_(Windows)"
+    },
+    {
+      "term": "Purble Place",
+      "definition": "Purble Place е компютърна игра, разработена от Oberon Games и включена в Windows Vista и Windows 7. Представлява образователна игра за деца, която учи на разпознаване на цветове и фигури.",
+      "source": "bg.wikipedia.org: Purble Place",
+      "url": "https://bg.wikipedia.org/wiki/Purble_Place"
+    },
+    {
+      "term": "Diablo (игра)",
+      "definition": "Diablo е екшън компютърна ролева игра, издадена от Blizzard Entertainment и разработвана от Blizzard North. Излиза на пазара през 1996. В нея играчът (играчите) се борят срещу зли демони, които се опитват да покорят света. Основната цел в Diablo е героят да унищожи всички демони, които са в околностите на малкия град Тристрам, като събира оръжия, брони и магически предмети.",
+      "source": "bg.wikipedia.org: Diablo (игра)",
+      "url": "https://bg.wikipedia.org/wiki/Diablo_(%D0%B8%D0%B3%D1%80%D0%B0)"
+    },
+    {
+      "term": "Chess Titans",
+      "definition": "Chess Titans е компютърна игра, включена в Windows Vista Home Premium и Ultimate, както и в изданията Home Premium, Professional, Enterprise и Ultimate на Windows 7. Представлява компютърна версия на играта шахмат.",
+      "source": "bg.wikipedia.org: Chess Titans",
+      "url": "https://bg.wikipedia.org/wiki/Chess_Titans"
+    },
+    {
+      "term": "FreeCell (Windows)",
+      "definition": "FreeCell е компютърна игра, включена в Microsoft Windows.",
+      "source": "bg.wikipedia.org: FreeCell (Windows)",
+      "url": "https://bg.wikipedia.org/wiki/FreeCell_(Windows)"
+    },
+    {
+      "term": "Quake",
+      "definition": "Quake е компютърна игра, екшън от първо лице, разработвана от id Software, която излиза на 22 юли 1996.",
+      "source": "bg.wikipedia.org: Quake",
+      "url": "https://bg.wikipedia.org/wiki/Quake"
+    },
+    {
+      "term": "Mahjong Titans",
+      "definition": "Mahjong Titans е компютърна игра, версия на пасианса Маа Джонг, създадена от компанията Oberon Games и включена в изданията Home Premium, Business, Enterprise и Ultimate на Windows Vista. В изданията Business и Enterprise играта не се инсталира по подразбиране. Включена е и в изданията Home Premium, Professional, Enterprise и Ultimate на Windows 7. Играта се възползва от новия сложен графичен потребителски интерфейс на Windows Vista и има някои свойства, като избор на фон в прозореца. Mahjong Titans няма хазартен елемент.",
+      "source": "bg.wikipedia.org: Mahjong Titans",
+      "url": "https://bg.wikipedia.org/wiki/Mahjong_Titans"
+    },
+    {
+      "term": "The Sims",
+      "definition": "The Sims е стратегическа компютърна игра, симулираща реалния живот. Тя е първата от серията на The Sims и е обявена на 4 февруари 2000 г. от Electronic Arts. Играта симулира ежедневието на виртуални хора. Играчът персонализира своите симове, строи им дом и се грижи за техните нужди и щастие.",
+      "source": "bg.wikipedia.org: The Sims",
+      "url": "https://bg.wikipedia.org/wiki/The_Sims"
+    },
+    {
+      "term": "Half-Life",
+      "definition": "Half-Life е футуристична компютърна игра, триизмерен екшън от първо лице. Създадена от Valve Corporation и публикувана от Sierra Studios.",
+      "source": "bg.wikipedia.org: Half-Life",
+      "url": "https://bg.wikipedia.org/wiki/Half-Life"
+    },
+    {
+      "term": "Игра",
+      "definition": "Играта е физическа или интелектуална форма на организирана по някакви правила социална или индивидуална дейност. Този вид занимание съществува от дълбока древност и се осъществява с цел забавление, отмора, закаляване на тялото или упражняване на умствените способности, с познавателна цел, печелене на пари посредством залози или за сплотяване на дадена общност.",
+      "source": "bg.wikipedia.org: Игра",
+      "url": "https://bg.wikipedia.org/wiki/%D0%98%D0%B3%D1%80%D0%B0"
+    },
+    {
+      "term": "Кими га нозому ейен",
+      "definition": "Kimi ga Nozomu Eien е японска компютърна игра, издадена през 2001 г. През 2003 г. по тази игра е направено и аниме.",
+      "source": "bg.wikipedia.org: Кими га нозому ейен",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9A%D0%B8%D0%BC%D0%B8_%D0%B3%D0%B0_%D0%BD%D0%BE%D0%B7%D0%BE%D0%BC%D1%83_%D0%B5%D0%B9%D0%B5%D0%BD"
+    },
+    {
+      "term": "Microsoft Solitaire",
+      "definition": "Solitaire е компютърна игра, предоставена в операционните системи Microsoft Windows. Версия е на пасианса Клондайк.",
+      "source": "bg.wikipedia.org: Microsoft Solitaire",
+      "url": "https://bg.wikipedia.org/wiki/Microsoft_Solitaire"
+    },
+    {
+      "term": "Hold 'Em (Windows)",
+      "definition": "Hold 'Em е компютърна игра на карти, създадена от Mobicore и включена в Windows Ultimate Extras. Играта е версия на Texas Hold 'em.",
+      "source": "bg.wikipedia.org: Hold 'Em (Windows)",
+      "url": "https://bg.wikipedia.org/wiki/Hold_'Em_(Windows)"
+    },
+    {
+      "term": "Age of Empires",
+      "definition": "Age of Empires е компютърна игра, стратегия в реално време. Играта издадена на 26 октомври 1997 година в САЩ и през 2005 година в Русия.",
+      "source": "bg.wikipedia.org: Age of Empires",
+      "url": "https://bg.wikipedia.org/wiki/Age_of_Empires"
+    },
+    {
+      "term": "StarCraft",
+      "definition": "StarCraft е игра в жанр реално-времева стратегия. Играта е издадена на 31 март 1998 г. от Blizzard Entertainment. Добива голяма и продължителна популярност. Получава наградата Компютърна игра на годината от Академията по интерактивни изкуства и науки.",
+      "source": "bg.wikipedia.org: StarCraft",
+      "url": "https://bg.wikipedia.org/wiki/StarCraft"
+    },
+    {
+      "term": "Браузърна игра",
+      "definition": "Браузърните игри се играят онлайн, чрез Интернет. Различават се от обикновените видео- и компютърни игри по това, че не изискват потребителят да ги инсталира като софтуер на своя компютър. Някои игри разчитат изцяло на технологии „от страна на клиента“ като уеббраузър и обичаен плъгин от рода на Java или Flash, докато други използват скриптове „от страна на сървъра“. Последните обикновено са (масови) мултиплейър игри, докато игрите „от страна на клиента“ са само за един играч. Често игрите, които се играят в браузър, се наричат и браузър-базирани игри.",
+      "source": "bg.wikipedia.org: Браузърна игра",
+      "url": "https://bg.wikipedia.org/wiki/%D0%91%D1%80%D0%B0%D1%83%D0%B7%D1%8A%D1%80%D0%BD%D0%B0_%D0%B8%D0%B3%D1%80%D0%B0"
+    },
+    {
+      "term": "Тетрис",
+      "definition": "„Тетрис“ е компютърна игра, създадена на 6 юни 1984 г. в Москва от Алексей Пажитнов и Дмитрий Павловски. Двамата автори са компютърни инженери от Компютърния център към Руската академия на науките.",
+      "source": "bg.wikipedia.org: Тетрис",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A2%D0%B5%D1%82%D1%80%D0%B8%D1%81"
+    },
+    {
+      "term": "InkBall",
+      "definition": "InkBall е компютърна игра, включена в Windows XP Tablet PC Edition 2005 и изданията Home Premium, Business, Enterprise и Ultimate на Windows Vista. Играта не присъства в Windows 7.",
+      "source": "bg.wikipedia.org: InkBall",
+      "url": "https://bg.wikipedia.org/wiki/InkBall"
+    },
+    {
+      "term": "Spider Solitaire",
+      "definition": "Spider Solitare e компютърна игра на карти, включена в Microsoft Windows. За първи път е излязла заедно с Microsoft Plus! за Windows 98.",
+      "source": "bg.wikipedia.org: Spider Solitaire",
+      "url": "https://bg.wikipedia.org/wiki/Spider_Solitaire"
+    },
+    {
+      "term": "Сокобан",
+      "definition": "Сокобан е класическа главоблъсканица, реализирана като компютърна игра. Неин създател е японецът Хироюки Имабаяши, президент на фирмата „Мислещ заек“. През 1980 г. Сокобан печели конкурс за компютърни игри и две години по-късно играта е защитена с авторски права. През годините са разработени много версии на играта за всевъзможни устройства, като нови нива на сложност продължават да се създават и до днес.",
+      "source": "bg.wikipedia.org: Сокобан",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A1%D0%BE%D0%BA%D0%BE%D0%B1%D0%B0%D0%BD"
+    },
+    {
+      "term": "Батман се завръща (компютърна игра)",
+      "definition": "Играта „Батман се завръща“ за PC DOS се появява през 1992, след излизането на едноименния филм на Тим Бъртън. Разработена от KONAMI и GAME TEK, тази версия се различава от другите игри за Батман. Вместо традиционните екшън-приключения създателите са решили да направят играта куест.",
+      "source": "bg.wikipedia.org: Батман се завръща (компютърна игра)",
+      "url": "https://bg.wikipedia.org/wiki/%D0%91%D0%B0%D1%82%D0%BC%D0%B0%D0%BD_%D1%81%D0%B5_%D0%B7%D0%B0%D0%B2%D1%80%D1%8A%D1%89%D0%B0_(%D0%BA%D0%BE%D0%BC%D0%BF%D1%8E%D1%82%D1%8A%D1%80%D0%BD%D0%B0_%D0%B8%D0%B3%D1%80%D0%B0)"
+    },
+    {
+      "term": "Microsoft Tinker",
+      "definition": "Tinker е логическа компютърна игра с 60 нива. В нея играчът контролира робот, преминавайки през различни лабиринти и препятствия. Излиза на 23 септември 2008 г. като част от пакета Windows Ultimate Extras.",
+      "source": "bg.wikipedia.org: Microsoft Tinker",
+      "url": "https://bg.wikipedia.org/wiki/Microsoft_Tinker"
+    },
+    {
+      "term": "FIFA (поредица)",
+      "definition": "FIFA е компютърна игра, футболен симулатор, на компанията EA. Първата игра от поредицата се появява в края на 1993 г. и е първата от този вид с официален лиценз от ФИФА. Последните версии на играта съдържат множество първенства и отбори от целия свят, включително английската Висша лига, германската Бундеслига, италианската серия А и други.",
+      "source": "bg.wikipedia.org: FIFA (поредица)",
+      "url": "https://bg.wikipedia.org/wiki/FIFA_(%D0%BF%D0%BE%D1%80%D0%B5%D0%B4%D0%B8%D1%86%D0%B0)"
+    },
+    {
+      "term": "Team Fortress 2",
+      "definition": "Team Fortress 2 е компютърна игра от първо лице, създадена от Valve Corporation. Играта е продължение на Team Fortress Classic и е разработена за платформите Windows, Xbox 360, PlayStation 3, като версията за PlayStation 3 излиза месец по-късно.",
+      "source": "bg.wikipedia.org: Team Fortress 2",
+      "url": "https://bg.wikipedia.org/wiki/Team_Fortress_2"
+    },
+    {
+      "term": "Deus Ex",
+      "definition": "Deus Ex е компютърна игра, издадена през 2000 година от Ion Storm, със сюжет в стила киберпънк. Действието се развива през 2052 година когато главния герой – новоназначения агент в антитерористичната коалиция на обединените нации Джей Си Дентън – преследва терористите, които стават все повече и светът се движи към хаос. Дентън се оказва вплетен в дълбока и древна конспирация и се сблъсква с измислените превъплъщения на организации като Маджестик-12, Илюминатите, Триадите в Хонконг и рицарите Тамплиери. Играта комбинира екшън от първо лице, възможност за развитие на героя и взаимоотношения като при ролева игра. Името на играта идва от латинското deus ex machina, което означава човек или съби…",
+      "source": "bg.wikipedia.org: Deus Ex",
+      "url": "https://bg.wikipedia.org/wiki/Deus_Ex"
+    },
+    {
+      "term": "Winterheart's Guild",
+      "definition": "Winterheart's Guild е третият студиен албум на финландската пауър метъл група Соната Арктика, издаден през 2003 г. Записан е в студио „Tico Tico“. От албума произлизат два сингъла – Victoria's Secret и Broken.",
+      "source": "bg.wikipedia.org: Winterheart's Guild",
+      "url": "https://bg.wikipedia.org/wiki/Winterheart's_Guild"
+    },
+    {
+      "term": "Фантасмагория",
+      "definition": "Phantasmagoria е компютърна игра, издадена от Sierra Online през 1995.",
+      "source": "bg.wikipedia.org: Фантасмагория",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A4%D0%B0%D0%BD%D1%82%D0%B0%D1%81%D0%BC%D0%B0%D0%B3%D0%BE%D1%80%D0%B8%D1%8F"
+    },
+    {
+      "term": "SimCity",
+      "definition": "SimCity е компютърна и конзолна серия видео игра с отворен край (безкрайна) на градски симулатор оригинално създадени от разработчика Уил Райт.",
+      "source": "bg.wikipedia.org: SimCity",
+      "url": "https://bg.wikipedia.org/wiki/SimCity"
+    },
+    {
+      "term": "Anno 2205",
+      "definition": "Anno 2205 е икономическата компютърна игра в изграждането на града с елементи на реалновремева стратегия, разработена от Ubisoft Blue Byte Mainz, която е шестата част от поредицата Anno. Издадена е на 3 ноември 2015 г.",
+      "source": "bg.wikipedia.org: Anno 2205",
+      "url": "https://bg.wikipedia.org/wiki/Anno_2205"
+    },
+    {
+      "term": "Росен Манчев",
+      "definition": "Росен Манчев е български художник, роден в София на 24 септември 1966 г.",
+      "source": "bg.wikipedia.org: Росен Манчев",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A0%D0%BE%D1%81%D0%B5%D0%BD_%D0%9C%D0%B0%D0%BD%D1%87%D0%B5%D0%B2"
+    },
+    {
+      "term": "3D компютърна графика",
+      "definition": "3D компютърната графика е графика, която използва триизмерно представяне на геометрични данни, които могат да се обработват с помощта на компютърна програма. Обработката на тези данни включва извършване на различни изчисления и рендериране на двумерни изображения. Такива образи могат да бъдат съхранявани за да се гледат по-късно или показват в реално време.",
+      "source": "bg.wikipedia.org: 3D компютърна графика",
+      "url": "https://bg.wikipedia.org/wiki/3D_%D0%BA%D0%BE%D0%BC%D0%BF%D1%8E%D1%82%D1%8A%D1%80%D0%BD%D0%B0_%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%B0"
+    },
+    {
+      "term": "Guild Wars",
+      "definition": "Guild Wars е ролева компютърна игра, разработвана от ArenaNet и издавана от NCSoft.",
+      "source": "bg.wikipedia.org: Guild Wars",
+      "url": "https://bg.wikipedia.org/wiki/Guild_Wars"
+    },
+    {
+      "term": "Електронна игра",
+      "definition": "Електронна игра е най-общо игра, която въвлича някаква форма на електроника. Най-масовите такива игри са компютърните и конзолните игри.",
+      "source": "bg.wikipedia.org: Електронна игра",
+      "url": "https://bg.wikipedia.org/wiki/%D0%95%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D0%B0_%D0%B8%D0%B3%D1%80%D0%B0"
+    },
+    {
+      "term": "Postal 2",
+      "definition": "Постал 2 е компютърна игра, издадена през 2003 година от компанията „Running With Scissors“.",
+      "source": "bg.wikipedia.org: Postal 2",
+      "url": "https://bg.wikipedia.org/wiki/Postal_2"
+    }
+  ],
+  "entries": []
+}

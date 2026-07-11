@@ -1,4 +1,4 @@
-// Version: 1.0008
+// Version: 1.0012
 // learning-loop.js — непрекъснат самообучаващ цикъл („НЯМА спирка“).
 //
 // Когато няма активна задача, ботът сам избира тема (ротира през интересите + темите,
@@ -15,8 +15,8 @@
 //     тук НЕ имплементираме. Документираме това честно (виж README/store/BACKGROUND.md).
 
 import { getState, persist } from './storage.js';
-import { listInterests, listSubjects, addNote, notesCount, getSubject } from './subjects.js';
-import { fetchCrypto, fetchFx, gatherTreeAnswer, netCounters, wikiSearch, relatedTopics } from './sources.js';
+import { listInterests, listSubjects, addNote, notesCount, getSubject, removeInterest, forgetSubjects, DEFAULT_INTERESTS } from './subjects.js';
+import { fetchCrypto, fetchFx, gatherTreeAnswer, netCounters, wikiSearch, relatedTopics, extractTermsFromText, validateTermsViaWiki } from './sources.js';
 import { listLearnFeeds, refreshNextFeed, refreshTopicFeeds } from './ingest.js';
 import { learnBudget, dbSizeBytes, dbSizeMB, perTopicNotes } from './learn-budget.js';
 
@@ -24,6 +24,7 @@ let _timer = null;
 let _running = false;
 let _onTick = null;        // UI callback за обновяване на потока
 let _rotateIdx = 0;
+let _curioIdx = 0;         // ротация за автономните („любопитни") теми
 let _tickN = 0;            // брояч на тактовете (за периодичната проверка на RSS емисиите)
 
 const TICK_MS = 45000;     // на колко да учи нов елемент (докато е активно)
@@ -83,6 +84,42 @@ export function setLearningEnabled(on) {
   if (on && !isReader()) start(_onTick); else stop();
 }
 
+// --- АВТОНОМНО („любопитно") учене ------------------------------------------
+// Идеята на бота: дори БЕЗ зададена тема да учи сам нещо (от Google/Wikipedia). Това е
+// ЯВЕН превключвател — по подразбиране ВКЛЮЧЕН. Изричното „спри да учиш" го гаси, за да не
+// се повтори старият проблем („след 'спри за крипто' скачаше на произволна тема"): щом
+// собственикът изрично спре, автономното мълчи, докато пак не каже „учи нещо".
+export function autonomousEnabled() {
+  if (isReader()) return false;
+  const st = getState();
+  return !st.learning || st.learning.autonomous !== false;
+}
+
+export function setAutonomous(on) {
+  const st = getState();
+  st.learning = st.learning || { feed: [], learnedCount: 0 };
+  st.learning.autonomous = !!on;
+  persist();
+  if (on && learningEnabled() && !isReader()) start(_onTick);
+  return st.learning.autonomous;
+}
+
+// „Забрави тема(и)" — трие темата, интереса и дървото ѝ (освобождава място). Връща
+// { removed, bytes, names } от subjects.forgetSubjects + чисти ротацията/опашката.
+export function forgetTopic(name) {
+  const r = forgetSubjects(name);
+  try { removeInterest(name); } catch (_) {}
+  const st = getState();
+  if (st.learning && st.learning.trees) {
+    const key = String(name || '').toLowerCase();
+    for (const k of Object.keys(st.learning.trees)) {
+      if (k === key || k.includes(key) || key.includes(k)) delete st.learning.trees[k];
+    }
+  }
+  persist();
+  return r;
+}
+
 export function learningFeed() {
   const st = getState();
   return (st.learning && st.learning.feed) || [];
@@ -99,21 +136,42 @@ export function currentlyLearning() {
   return f.length ? f[0] : null;
 }
 
-// Избира следваща тема: ротира САМО зададените от собственика (приоритет на „гладните“ —
-// без наставки). НЯМА произволна тема: без зададени → null (чака задача). Преди резервата
-// беше 'Наука' + клоните от дървото влизаха в ротацията → след рестарт/„спри да учиш за X"
-// роботът „сам си избираше нещо произволно" (доклад на собственика).
+// Избира следваща тема: ПЪРВО зададените от собственика (приоритет на „гладните“ — без
+// наставки). Нямаш зададени → при ВКЛЮЧЕНО автономно учене сам избира любопитна тема; при
+// изрично спряно (setAutonomous(false)) → null (чака задача). Така „идеята на бота" (учи и
+// без задача) работи, но изричното „спри да учиш" наистина го спира — без произволни скокове.
 function pickNextTopic() {
   const interests = listInterests();
-  if (!interests.length) return null;
+  if (interests.length) {
+    const subjects = listSubjects();
+    const hungry = interests.filter((name) => {
+      const s = subjects.find((x) => x.name.toLowerCase() === name.toLowerCase());
+      return !s || s.notes.length === 0;
+    });
+    const pool = hungry.length ? hungry : interests;
+    const topic = pool[_rotateIdx % pool.length];
+    _rotateIdx++;
+    return topic;
+  }
+  // НЯМА зададени теми: при АВТОНОМНО учене (по подразбиране) сам избираме „любопитна" тема —
+  // тя се обхожда като всяка друга (дърво + търсене). Спре ли се изрично → null (чака задача).
+  if (autonomousEnabled()) return pickCuriosityTopic();
+  return null;
+}
+
+// Автономен избор от любопитния пул (DEFAULT_INTERESTS): приоритет на „гладните" (без бележки),
+// после ротация. Темата влиза в subjects като всяка друга — вижда се в списъка и подлежи на
+// „забрави". Дървото после вади по-специфични подтеми чрез търсене (Google/Wikipedia).
+function pickCuriosityTopic() {
+  const pool0 = (DEFAULT_INTERESTS && DEFAULT_INTERESTS.length) ? DEFAULT_INTERESTS : ['Наука'];
   const subjects = listSubjects();
-  const hungry = interests.filter((name) => {
+  const hungry = pool0.filter((name) => {
     const s = subjects.find((x) => x.name.toLowerCase() === name.toLowerCase());
     return !s || s.notes.length === 0;
   });
-  const pool = hungry.length ? hungry : interests;
-  const topic = pool[_rotateIdx % pool.length];
-  _rotateIdx++;
+  const pool = hungry.length ? hungry : pool0;
+  const topic = pool[_curioIdx % pool.length];
+  _curioIdx++;
   return topic;
 }
 
@@ -136,7 +194,7 @@ export async function tick() {
         }
       } catch (_) {}
     }
-    const idleNote = 'Нямам зададена тема — кажи „научи за …“ и започвам (помня темите и след рестарт).';
+    const idleNote = 'Самостоятелното учене е спряно. Кажи „учи нещо“ (сам избирам тема) или „научи за …“ за конкретна.';
     const cur = currentlyLearning();
     if (!cur || cur.note !== idleNote) pushActivity({ status: 'idle', topic: '', note: idleNote });
     if (_onTick) _onTick();
@@ -257,6 +315,20 @@ export async function tick() {
       const key = String(r.topic || '').trim().toLowerCase();
       if (key && !tree.seen[key] && tree.queue.length < 300) { tree.seen[key] = 1; tree.queue.push(r.topic); newBranches++; }
     }
+    // ТЕРМИНИ ОТ САМИЯ ТЕКСТ: дървото тръгва по СПЕЦИФИЧНИТЕ термини, намерени в статиите (напр.
+    // „финансови средства"), а НЕ по обикновени думи (напр. „вещ"). Всеки нов термин става клон в
+    // опашката → получава свое обхождане; няма ли статия за него, тихо отпада при следващия такт.
+    try {
+      const bodyText = crawl.main.map((n) => n.text).join(' ');
+      const cand = extractTermsFromText(bodyText, { lang: 'bg', topic, max: 14 });
+      // АРБИТЪР УИКИПЕДИЯ: минават само термините със статия (НАТО/ЕС/ЗЕМЯ да, „вещ"/сглобени — не),
+      // за да не хабим бавните тактове по несъществуващи теми. Връща каноничните заглавия.
+      const terms = cand.length ? await validateTermsViaWiki(cand, { lang: 'bg', max: 8 }) : [];
+      for (const term of terms) {
+        const key = String(term || '').trim().toLowerCase();
+        if (key && !tree.seen[key] && tree.queue.length < 300) { tree.seen[key] = 1; tree.queue.push(term); newBranches++; }
+      }
+    } catch (_) { /* извличането/валидацията на термини никога не бива да чупи такта */ }
     persist();                                          // опашката/seen да преживеят рестарт
 
     const added = addedMain + addedRelated;

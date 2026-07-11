@@ -1,4 +1,4 @@
-// Version: 1.0008
+// Version: 1.0011
 // chat.js — разговор със самообучаващия се приятел.
 import { el, clear, esc, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
@@ -139,9 +139,35 @@ export function renderChat(root, { navigate, rerender }) {
   }, '🎤');
   let listening = false;
   let pendingSend = false; // вдигнат от „Изпрати" по време на слушане → прати щом микрофонът спре
-  // Клик на 🎤 = ЕДНО слушане, само ПОПЪЛВА полето (не праща сам). Така нищо не тръгва
-  // в чата без да натиснеш „Изпрати“. Пълно авто има само в „💬 Разговор“.
-  micBtn.addEventListener('click', () => onMic({ autoSend: false }));
+  // Дали да ползваме КЛАВИАТУРНИЯ микрофон (Gboard) вместо вградения разпознавач. На телефона
+  // клавиатурата е ГЛАДКА (една непрекъсната сесия → един бийп, без загуба/дублиране на думи,
+  // правилно дописване), докато безплатният плъгин е за кратки команди и се рестартира на всяка
+  // пауза (оттам бийповете и загубените думи). По подразбиране ВКЛ на телефон; вграденият остава
+  // за „💬 Разговор" (hands-free, там няма клавиатура). Изключваш го от Настройки.
+  function isNativePlatform() {
+    try { return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); }
+    catch (_) { return false; }
+  }
+  function preferKeyboardMic() {
+    return isNativePlatform() && !(st.settings.voice && st.settings.voice.keyboardMic === false);
+  }
+  // Клик на 🎤: на телефон (по подразбиране) → отваря клавиатурата, за да диктуваш през НЕЙНИЯ
+  // микрофон (най-точно). Иначе → вграденото ЕДНО слушане (само попълва полето, не праща сам).
+  micBtn.addEventListener('click', () => {
+    if (preferKeyboardMic()) {
+      try {
+        input.disabled = false; input.removeAttribute('inputmode');
+        autoGrow(); input.focus();
+        const len = input.value.length; input.setSelectionRange(len, len);   // курсор в края → дописва
+      } catch (_) {}
+      if (!(st.settings.voice && st.settings.voice.__kbHintShown)) {
+        toast(t('chat_kb_mic_hint'));
+        st.settings.voice = st.settings.voice || {}; st.settings.voice.__kbHintShown = true; persist();
+      }
+      return;
+    }
+    onMic({ autoSend: false });
+  });
   // opts.autoSend=false → САМО попълва полето (потребителят преглежда и натиска Изпрати).
   async function onMic(opts) {
     const autoSend = !(opts && opts.autoSend === false);

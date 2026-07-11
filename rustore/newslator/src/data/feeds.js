@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0010
 // feeds.js — източниците на новини по държава.
 //
 // ДВА слоя:
@@ -83,8 +83,8 @@ export const COUNTRIES = [
   { code: 'NP', name: 'Nepal', region: 'asia', hl: 'ne' },
   { code: 'AF', name: 'Afghanistan', region: 'asia', hl: 'fa' },
   { code: 'CN', name: 'China', region: 'asia', hl: 'zh-CN' },
-  { code: 'TW', name: 'Taiwan', region: 'asia', hl: 'zh-TW' },
-  { code: 'HK', name: 'Hong Kong', region: 'asia', hl: 'zh-HK' },
+  { code: 'TW', name: 'Taiwan, China', region: 'asia', hl: 'zh-TW', flag: '🇨🇳' },
+  { code: 'HK', name: 'Hong Kong, China', region: 'asia', hl: 'zh-HK', flag: '🇨🇳' },
   { code: 'JP', name: 'Japan', region: 'asia', hl: 'ja' },
   { code: 'KR', name: 'South Korea', region: 'asia', hl: 'ko' },
   { code: 'MN', name: 'Mongolia', region: 'asia', hl: 'mn' },

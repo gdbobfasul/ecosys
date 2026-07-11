@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0015
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -16,6 +16,7 @@ mountHelp('selflearning-friend'); // универсален бутон „Пом
 //   3) отключен → приложение (chat / tasks / memory / settings)
 import './ui/styles.css';
 import { hydrate, getState } from './core/storage.js';
+import { seedDefaultPacks } from './core/packs.js';
 import { el, clear } from './ui/dom.js';
 import { isNamed, isUnlocked } from './core/identity.js';
 import { checkDeviceIntegrity, engageLockdown, isLockedDown } from './core/device.js';
@@ -154,6 +155,9 @@ window.addEventListener('hashchange', render);
 // Hydrate от нативния storage (ако има), после проверка за устройство, после рисуваме.
 async function boot() {
   try { await hydrate(); } catch (_) { /* localStorage кешът остава */ }
+  // По подразбиране зареждаме вграденото знание „правене и публикуване на апове за Huawei/RuStore"
+  // (еднократно, с флаг в състоянието) — ботът го знае наготово още при първото стартиране.
+  try { seedDefaultPacks(); } catch (_) { /* не блокираме старта заради знание */ }
   // Анти-кражба: ако имаме базов отпечатък и сегашното устройство не съвпада → lockdown.
   try {
     if (isNamed() && !isLockedDown()) {

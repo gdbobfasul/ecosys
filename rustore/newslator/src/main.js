@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0010
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -20,6 +20,7 @@ import { renderOnboarding } from './screens/onboarding.js';
 import { renderNews } from './screens/news.js';
 import { renderCountries } from './screens/countries.js';
 import { renderSettings } from './screens/settings.js';
+import { privacyFooter } from './core/privacy.js';
 
 const rootEl = document.getElementById('app');
 let app = null;
@@ -91,6 +92,9 @@ function render() {
   } else {
     renderNews(content, app, nav);
   }
+
+  // Линк към политиката за поверителност — най-отдолу на всеки екран (изискване 7.1 на магазините).
+  content.appendChild(privacyFooter());
 }
 
 async function boot() {

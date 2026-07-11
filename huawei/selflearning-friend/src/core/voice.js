@@ -1,4 +1,4 @@
-// Version: 1.0006
+// Version: 1.0010
 // voice.js — ГЛАС: STT (глас→текст) + TTS (текст→глас), безплатно и on-device.
 //
 // СТРАТЕГИЯ (без платена облачна услуга, без ключове):
@@ -88,6 +88,13 @@ function mergeText(base, add) {
       if (aw[aw.length - k + i].toLowerCase() !== bw[i].toLowerCase()) { same = false; break; }
     }
     if (same) return aw.concat(bw.slice(k)).join(' ');
+  }
+  // Частична ПОСЛЕДНА дума на a, доизказана в началото на b: „крип" + „криптовалути" → замести
+  // недовършената с пълната (без да дублираме сричка), вместо да лепим две парчета.
+  const lastA = aw[aw.length - 1].toLowerCase();
+  const firstB = bw[0].toLowerCase();
+  if (lastA && firstB && firstB !== lastA && firstB.startsWith(lastA)) {
+    return aw.slice(0, -1).concat(bw).join(' ');
   }
   return a + ' ' + b;                    // няма застъпване → просто долепи
 }
@@ -245,7 +252,7 @@ async function startNative(sr, lang, onInterim) {
     function onSegmentStopped() {
       if (settled || segDone) return;
       segDone = true;
-      commitSegment();
+      const wasEmpty = commitSegment();
       if (_nativeStopRequested) {
         // РЪЧЕН СТОП (🎤 / Изпрати): НЕ приключвай веднага! ОС-ът праща 'stopped' с по-КЪС
         // частичен резултат (напр. „крип“), а ФИНАЛЪТ от start() идва милисекунди по-късно с
@@ -255,14 +262,21 @@ async function startNative(sr, lang, onInterim) {
         if (!stopGrace) stopGrace = setTimeout(() => finish(), 600);
         return;
       }
-      // НЕ приключваме на ПЪРВАТА пауза (така можеш да си поемеш дъх насред изречението —
-      // преди това „започни да учиш…“ се накъсваше). Чакаме MAX_EMPTY_SEGMENTS (3) ПОРЕДНИ
-      // тихи сегмента → едва тогава край. По всяко време спираш веднага с 🎤 / „Изпрати“.
-      if (emptyStreak >= MAX_EMPTY_SEGMENTS) return finish(); // поредни тишини → спри да чакаш
-      // Темпо на рестарта: след РЕЧ — възможно най-бързо (90мс), за да не се губят думи на
-      // границата. След ПРАЗЕН сегмент (тишина/нестабилна услуга) — по-спокойно (350мс): няма
-      // какво да се изгуби, а картечните рестарти дразнеха с тона и предизвикваха „busy".
-      restartTimer = setTimeout(() => armSegment(), emptyStreak > 0 ? 350 : RESTART_GAP_MS);
+      // ⛔ КЛЮЧОВО срещу „картечния сигнал” и загубата на думи: НЕ пре-въоръжаваме микрофона при
+      // ТИШИНА. Ако вече има натрупан текст и настъпи празен сегмент (спрял си да говориш) →
+      // ПРИКЛЮЧВАМЕ чисто — БЕЗ нов sr.start() (тонът „вкл/изкл” се чуваше точно от тези рестарти,
+      // а прозорецът между тях гълташе думи). Пре-въоръжаваме САМО след РЕЧ, за да продължиш дълго
+      // изречение с паузи за дъх. Спираш по всяко време с 🎤 / „Изпрати”.
+      if (wasEmpty) {
+        if (accumulated.trim()) return finish();                 // пауза СЛЕД реч → край (без бийп)
+        if (emptyStreak >= MAX_EMPTY_SEGMENTS) return finish();  // само тишина от старта → откажи се
+        // още нищо не е казано → изчакай малко реч (по-спокоен ре-старт, без картечница)
+        restartTimer = setTimeout(() => armSegment(), 400);
+        return;
+      }
+      // Имаше РЕЧ → пре-въоръжи възможно най-бързо (за да не се губят думи на границата),
+      // така че да можеш да продължиш изречението след кратка пауза.
+      restartTimer = setTimeout(() => armSegment(), RESTART_GAP_MS);
     }
 
     // Стартира (или рестартира) един сегмент на разпознаване.

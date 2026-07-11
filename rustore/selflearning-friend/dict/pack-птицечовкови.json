@@ -1,0 +1,38 @@
+{
+  "name": "Птицечовкови — пакет знание",
+  "topic": "птицечовкови",
+  "seedInterests": false,
+  "terms": [
+    {
+      "term": "Птицечовкови",
+      "definition": "Птицечовковите (Ornithorhynchidae) са семейство бозайници от разред Еднопроходни (Monotremata).",
+      "source": "bg.wikipedia.org: Птицечовкови",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9F%D1%82%D0%B8%D1%86%D0%B5%D1%87%D0%BE%D0%B2%D0%BA%D0%BE%D0%B2%D0%B8"
+    },
+    {
+      "term": "Птицечовкови жаби",
+      "definition": "Птицечовковите жаби (Rheobatrachus) са род изчезнали земноводни от семейство Австралийски жаби (Myobatrachidae).",
+      "source": "bg.wikipedia.org: Птицечовкови жаби",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9F%D1%82%D0%B8%D1%86%D0%B5%D1%87%D0%BE%D0%B2%D0%BA%D0%BE%D0%B2%D0%B8_%D0%B6%D0%B0%D0%B1%D0%B8"
+    },
+    {
+      "term": "Австралийски жаби",
+      "definition": "Австралийските жаби (Myobatrachidae) са семейство земноводни от разред Безопашати земноводни (Anura).",
+      "source": "bg.wikipedia.org: Австралийски жаби",
+      "url": "https://bg.wikipedia.org/wiki/%D0%90%D0%B2%D1%81%D1%82%D1%80%D0%B0%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%B8_%D0%B6%D0%B0%D0%B1%D0%B8"
+    },
+    {
+      "term": "Птицечовка",
+      "definition": "Птицечовката е малък плаващ бозайник, наречен така заради подобието си с патиците, включително и в това, че муцуната му има формата на човка. Друга нейна особеност е, че е отровна. Това странно животно е ендемит на територията на Австралия и се среща само в източната част на континента Австралия. Живеят около 10 – 15 години.",
+      "source": "bg.wikipedia.org: Птицечовка",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9F%D1%82%D0%B8%D1%86%D0%B5%D1%87%D0%BE%D0%B2%D0%BA%D0%B0"
+    },
+    {
+      "term": "Класификация на земноводните",
+      "definition": "Класификацията на земноводните по-долу включва всички родове от клас Земноводни (Amphibia).",
+      "source": "bg.wikipedia.org: Класификация на земноводните",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9A%D0%BB%D0%B0%D1%81%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%8F_%D0%BD%D0%B0_%D0%B7%D0%B5%D0%BC%D0%BD%D0%BE%D0%B2%D0%BE%D0%B4%D0%BD%D0%B8%D1%82%D0%B5"
+    }
+  ],
+  "entries": []
+}

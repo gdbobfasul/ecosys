@@ -1,4 +1,4 @@
-// Version: 1.0008
+// Version: 1.0010
 // subjects.js — теми за учене + интереси на собственика + дневник на наученото.
 //
 // Държи списък „теми“ (subjects), всяка с натрупани наставки от източници. Това е
@@ -136,6 +136,43 @@ export function deleteSubject(id) {
 // Общ брой научени наставки (за брояча „научени неща“).
 export function notesCount() {
   return (getState().subjects || []).reduce((acc, s) => acc + s.notes.length, 0);
+}
+
+// Приблизителен размер на ЕДНА тема в байтове (UTF-8) — за „дай списък с темите по МБ".
+export function subjectSizeBytes(s) {
+  let json = '';
+  try { json = JSON.stringify(s || {}); } catch (_) { return 0; }
+  try { if (typeof TextEncoder !== 'undefined') return new TextEncoder().encode(json).length; } catch (_) {}
+  return json.length * 2;
+}
+
+// Списък с темите + размер (байтове) + брой бележки, подреден по размер (най-голямата първо).
+// За командата „какви теми си научил / колко място заемат" → собственикът решава кои да махне.
+export function listSubjectsWithSize() {
+  return listSubjects()
+    .map((s) => ({ id: s.id, name: s.name, notes: (s.notes || []).length, bytes: subjectSizeBytes(s) }))
+    .sort((a, b) => b.bytes - a.bytes);
+}
+
+// „Забрави" тема(и): трие темата и всичко натрупано по нея, за да ОСВОБОДИ пространство.
+// Съвпада по точно име ИЛИ по съдържане (тема/подтема), за да хване и клоните на дървото.
+// Връща { removed, bytes, names } — колко теми, колко байта освободени и имената им.
+export function forgetSubjects(name) {
+  const st = getState();
+  if (!st.subjects) return { removed: 0, bytes: 0, names: [] };
+  const key = String(name || '').trim().toLowerCase();
+  if (!key) return { removed: 0, bytes: 0, names: [] };
+  let removed = 0, bytes = 0; const names = [];
+  for (let i = st.subjects.length - 1; i >= 0; i--) {
+    const s = st.subjects[i];
+    const l = String(s.name || '').toLowerCase();
+    if (l === key || l.includes(key) || key.includes(l)) {
+      bytes += subjectSizeBytes(s); removed++; names.push(s.name);
+      st.subjects.splice(i, 1);
+    }
+  }
+  if (removed) persist();
+  return { removed, bytes, names };
 }
 
 // Търси из НАУЧЕНОТО (subjects) най-подходящата наставка за въпрос. Връща

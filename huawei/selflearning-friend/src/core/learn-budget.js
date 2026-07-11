@@ -1,4 +1,4 @@
-// Version: 1.0008
+// Version: 1.0010
 // learn-budget.js — БЮДЖЕТ за дълбокото учене според УСТРОЙСТВОТО, РЕАЛНИЯ ДИСК и лимита на базата.
 //
 // Идея (за да НЕ забива телефона):
@@ -80,10 +80,20 @@ export function storageLocation() {
   return { base, server, deep: deepAllowed() };
 }
 
-// Лимит на базата (MB): от настройките, иначе по подразбиране според устройството.
+// Лимит на базата (MB): от настройките, иначе по подразбиране според устройството И
+// свързания сървър. Свързан сериозен сървър (виртуалка/продъкшън) с обявен таван вдига
+// лимита над телефонните 8 MB — затова на виртуалната „0/8 MB" вече става „0/512 MB" и т.н.
 export function maxDbMB() {
   const s = (getState().settings && getState().settings.learning) || {};
   if (typeof s.maxDbMB === 'number' && s.maxDbMB > 0) return s.maxDbMB;
+  // Свързан сървър с обявен features.maxDbMB → него (иначе deepCrawl → 512 MB).
+  try {
+    if (serverLinkConfigured()) {
+      const f = serverFeatures();
+      if (f && Number(f.maxDbMB) > 0) return Math.floor(Number(f.maxDbMB));
+      if (f && (f.deepCrawl === true || f.deep === true)) return 512;
+    }
+  } catch (_) { /* без сървър → падни към устройството */ }
   const k = platformKind();
   if (k === 'mobile') return 8;     // телефон: пести — 8 MB по подразбиране
   if (k === 'desktop') return 256;  // десктоп: има място

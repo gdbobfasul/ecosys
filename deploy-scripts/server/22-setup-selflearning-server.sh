@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0217
+# Version: 1.0218
 ##############################################################################
 # KCY — Setup на УСЛУГАТА за Selflearning Friend relay (systemd + nginx)
 #
@@ -63,6 +63,8 @@ show_status() {
   fi
   echo -e "  nginx include: $([ -f "$NGINX_INC" ] && echo "$NGINX_INC ✓" || echo "липсва")"
   echo -e "  Активен в nginx: $(nginx -T 2>/dev/null | grep -q 'kcy-apps/selflearning' && echo да || echo "НЕ (пусни опция 2 веднъж)")"
+  local DN; DN=$(ls /var/www/html/dict/pack-*.json 2>/dev/null | wc -l | tr -d ' ')
+  echo -e "  Речници (dict): ${DN:-0} бр. в /var/www/html/dict/ ($([ -f /var/www/html/dict/catalog.json ] && echo 'catalog.json ✓' || echo 'няма catalog.json'))"
 }
 
 if [ "$STATUS_ONLY" = true ]; then show_status; exit 0; fi
@@ -141,6 +143,38 @@ else
 fi
 
 ##############################################################################
+# 1b) РЕЧНИЦИ (dict/) → уеб-корен, за каталог-лоудъра в апа (<домейн>/dict/catalog.json)
+##############################################################################
+# Апът (packs.js → importFromCatalog) тегли готовите тематични речници по подразбиране от
+# https://<домейн>/dict/catalog.json. Копираме папката dict/ (генерирана от tools/collect-all.mjs)
+# в уеб-корена. Източникът се открива автоматично сред обичайните места ИЛИ се подава с --dict=<път>.
+echo -e "${GREEN}[dict] Речници за каталог-лоудъра...${NC}"
+DICT_WEBROOT="/var/www/html/dict"
+DICT_SRC=""
+for arg in "$@"; do case "$arg" in --dict=*) DICT_SRC="${arg#--dict=}" ;; esac; done
+[ -z "$DICT_SRC" ] && [ -n "${DICT_SRC_ENV:-}" ] && DICT_SRC="$DICT_SRC_ENV"
+if [ -z "$DICT_SRC" ]; then
+  for cand in \
+    "$PROJECT_DIR/rustore/selflearning-friend/dict" \
+    "$PROJECT_DIR/huawei/selflearning-friend/dict" \
+    "$PROJECT_DIR/dict" \
+    "$APP_DIR/dict"; do
+    [ -f "$cand/catalog.json" ] && { DICT_SRC="$cand"; break; }
+  done
+fi
+mkdir -p "$DICT_WEBROOT"
+if [ -n "$DICT_SRC" ] && [ -f "$DICT_SRC/catalog.json" ]; then
+  cp -f "$DICT_SRC"/*.json "$DICT_WEBROOT/" 2>/dev/null || true
+  DICT_N=$(ls "$DICT_WEBROOT"/pack-*.json 2>/dev/null | wc -l | tr -d ' ')
+  chown -R "$SVC_USER":"$SVC_GROUP" "$DICT_WEBROOT" 2>/dev/null || true
+  echo -e "  ${GREEN}✓ dict → ${DICT_WEBROOT} (${DICT_N} речника + catalog.json), от ${DICT_SRC}${NC}"
+else
+  echo -e "  ${YELLOW}  ! Не намерих source dict (catalog.json). nginx правилото пак се слага —${NC}"
+  echo -e "  ${YELLOW}    качи папката dict/ (от selflearning-friend, генерирана с tools/collect-all.mjs)${NC}"
+  echo -e "  ${YELLOW}    в ${DICT_WEBROOT}/ или пусни пак с --dict=/пълен/път/до/dict${NC}"
+fi
+
+##############################################################################
 # 2) nginx include (отделен файл)
 ##############################################################################
 echo -e "${GREEN}[2/2] nginx маршрут (отделен include)...${NC}"
@@ -176,6 +210,16 @@ location ^~ /api/watch/ {
 location ~ /connection\.bot\.token\$ {
     add_header Access-Control-Allow-Origin "*" always;
     add_header Cache-Control "no-store" always;
+}
+
+# РЕЧНИЦИ (каталог-лоудър в апа): статични JSON от ${DICT_WEBROOT}, отдавани на /dict/.
+# Апът ги тегли от WebView (cross-origin) → нужно е CORS заглавие. Кеш 1 час (съдържанието е статично).
+location ^~ /dict/ {
+    alias ${DICT_WEBROOT}/;
+    add_header Access-Control-Allow-Origin "*" always;
+    add_header Cache-Control "public, max-age=3600";
+    default_type application/json;
+    try_files \$uri =404;
 }
 NGXEOF
 echo -e "  ${GREEN}✓ Записан: ${NGINX_INC}${NC}"
@@ -263,6 +307,8 @@ fi
 echo ""
 echo -e "${YELLOW}══════════════════════════════════════════════════════${NC}"
 echo -e "${GREEN}  Готово: ${SVC} (Selflearning Friend relay).${NC}"
-echo -e "${CYAN}  Тест:  https://<домейн>/api/selflearning/health${NC}"
+echo -e "${CYAN}  Тест relay:   https://<домейн>/api/selflearning/health${NC}"
+echo -e "${CYAN}  Тест каталог: https://<домейн>/dict/catalog.json${NC}"
+echo -e "${CYAN}  В апа: зареди знание за <тема> — каталогът се тегли от /dict/ на този домейн.${NC}"
 echo -e "${CYAN}  Статус: sudo $0 --status${NC}"
 echo -e "${YELLOW}══════════════════════════════════════════════════════${NC}"

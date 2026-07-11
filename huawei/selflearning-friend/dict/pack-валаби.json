@@ -1,0 +1,224 @@
+{
+  "name": "Валаби — пакет знание",
+  "topic": "валаби",
+  "seedInterests": false,
+  "terms": [
+    {
+      "term": "Валаби",
+      "definition": "Валаби е сборно име на десетки видове торбести животни от семейство Кенгурови. Терминът е неформален и обикновено се използва за всички дребни кенгурута. Някои от горските валабита австралийците наричат и Падемелони и Доркопсиси. Името валаби идва от езика на аборигените от племето еора, обитаващо района на Сидни. Подобно на всички останали представители на семейството и малките на валабитата се наричат с думата „джоуи“.",
+      "source": "bg.wikipedia.org: Валаби",
+      "url": "https://bg.wikipedia.org/wiki/%D0%92%D0%B0%D0%BB%D0%B0%D0%B1%D0%B8"
+    },
+    {
+      "term": "Скално валаби",
+      "definition": "Скално валаби, още каменно кенгуру, малко скално кенгуру или малко ръждиво кенгуру, е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Скално валаби",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A1%D0%BA%D0%B0%D0%BB%D0%BD%D0%BE_%D0%B2%D0%B0%D0%BB%D0%B0%D0%B1%D0%B8"
+    },
+    {
+      "term": "Лунно нокътоопашато валаби",
+      "definition": "Лунно нокътоопашато валаби е изчезнал вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Лунно нокътоопашато валаби",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9B%D1%83%D0%BD%D0%BD%D0%BE_%D0%BD%D0%BE%D0%BA%D1%8A%D1%82%D0%BE%D0%BE%D0%BF%D0%B0%D1%88%D0%B0%D1%82%D0%BE_%D0%B2%D0%B0%D0%BB%D0%B0%D0%B1%D0%B8"
+    },
+    {
+      "term": "Нокътоопашато валаби",
+      "definition": "Нокътоопашатото валаби е вид бозайник от семейство Кенгурови (Macropodidae). Видът е световно застрашен със статут уязвим.",
+      "source": "bg.wikipedia.org: Нокътоопашато валаби",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9D%D0%BE%D0%BA%D1%8A%D1%82%D0%BE%D0%BE%D0%BF%D0%B0%D1%88%D0%B0%D1%82%D0%BE_%D0%B2%D0%B0%D0%BB%D0%B0%D0%B1%D0%B8"
+    },
+    {
+      "term": "Жълтокрако скално валаби",
+      "definition": "Жълтокракото скално валаби е вид бозайник от семейство Кенгурови (Macropodidae). Видът е почти застрашен от изчезване.",
+      "source": "bg.wikipedia.org: Жълтокрако скално валаби",
+      "url": "https://bg.wikipedia.org/wiki/%D0%96%D1%8A%D0%BB%D1%82%D0%BE%D0%BA%D1%80%D0%B0%D0%BA%D0%BE_%D1%81%D0%BA%D0%B0%D0%BB%D0%BD%D0%BE_%D0%B2%D0%B0%D0%BB%D0%B0%D0%B1%D0%B8"
+    },
+    {
+      "term": "Четкоопашато скално валаби",
+      "definition": "Четкоопашатото скално валаби е вид бозайник от семейство Кенгурови (Macropodidae). Видът е почти застрашен от изчезване.",
+      "source": "bg.wikipedia.org: Четкоопашато скално валаби",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A7%D0%B5%D1%82%D0%BA%D0%BE%D0%BE%D0%BF%D0%B0%D1%88%D0%B0%D1%82%D0%BE_%D1%81%D0%BA%D0%B0%D0%BB%D0%BD%D0%BE_%D0%B2%D0%B0%D0%BB%D0%B0%D0%B1%D0%B8"
+    },
+    {
+      "term": "Кенгурови",
+      "definition": "Кенгурови (Macropodidae) са семейство Двуутробни (Marsupialia) бозайници. Основните представители обитават Австралия, но от по-малките кенгурута се срещат в Нова Гвинея и остров Тасмания, както и са интродуцирани в Нова Зеландия и някои острови. Те са дневни животни, вегетарианци. Живеят на стада, водени от един възрастен мъжкар. Придвижват се със скокове, а голямата им опашка служи като балансьор. Някои от тях могат да плуват, други да се катерят по дърветата.",
+      "source": "bg.wikipedia.org: Кенгурови",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9A%D0%B5%D0%BD%D0%B3%D1%83%D1%80%D0%BE%D0%B2%D0%B8"
+    },
+    {
+      "term": "Ръждивоврато кенгуру",
+      "definition": "Ръждивоврато кенгуру, известно още като Валаби на Бенет, е двуутробен бозайник, който живее в Австралия и Тасмания.",
+      "source": "bg.wikipedia.org: Ръждивоврато кенгуру",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A0%D1%8A%D0%B6%D0%B4%D0%B8%D0%B2%D0%BE%D0%B2%D1%80%D0%B0%D1%82%D0%BE_%D0%BA%D0%B5%D0%BD%D0%B3%D1%83%D1%80%D1%83"
+    },
+    {
+      "term": "Очилато заешко кенгуру",
+      "definition": "Очилато заешко кенгуру или очилато заешко валаби е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Очилато заешко кенгуру",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9E%D1%87%D0%B8%D0%BB%D0%B0%D1%82%D0%BE_%D0%B7%D0%B0%D0%B5%D1%88%D0%BA%D0%BE_%D0%BA%D0%B5%D0%BD%D0%B3%D1%83%D1%80%D1%83"
+    },
+    {
+      "term": "Кускус (животно)",
+      "definition": "Кускус е сборно име на видове торбести животни от 4 таксономични рода на семейство Phalangeridae както следва:Ailurops\nPhalanger\nSpilocuscus\nStrigocuscus",
+      "source": "bg.wikipedia.org: Кускус (животно)",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9A%D1%83%D1%81%D0%BA%D1%83%D1%81_(%D0%B6%D0%B8%D0%B2%D0%BE%D1%82%D0%BD%D0%BE)"
+    },
+    {
+      "term": "Тихоокеански бои",
+      "definition": "Малайско-тихоокеанските бои (Candoia) са род змии от семейство боидни, разпространени в Нова Гвинея, Соломонови острови, Молукски острови и остров Сулавеси. Този род змии са със сравнително едро и тежко тяло. Украската им е различна: при някои видове тя може да има ярки оттенъци, но преобладава кафявото и черното.",
+      "source": "bg.wikipedia.org: Тихоокеански бои",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A2%D0%B8%D1%85%D0%BE%D0%BE%D0%BA%D0%B5%D0%B0%D0%BD%D1%81%D0%BA%D0%B8_%D0%B1%D0%BE%D0%B8"
+    },
+    {
+      "term": "Плъховидни кенгурута",
+      "definition": "Плъховидни кенгурута (Potoroidae), също кенгурови плъхове, са семейство торбести бозайници от разред Двурезцови. Семейството е представено от дребни подскачащи животни с размери на заек, наподобяващи плъх или много малко валаби.",
+      "source": "bg.wikipedia.org: Плъховидни кенгурута",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9F%D0%BB%D1%8A%D1%85%D0%BE%D0%B2%D0%B8%D0%B4%D0%BD%D0%B8_%D0%BA%D0%B5%D0%BD%D0%B3%D1%83%D1%80%D1%83%D1%82%D0%B0"
+    },
+    {
+      "term": "Старозагорска зоологическа градина",
+      "definition": "Старозагорският зоопарк е основан на 26 април 1957 г. на върха на парк „Митрополит Методи Кусев“ – Аязмото. Това е вторият зоопарк в България, след Софийската зоологическа градина.",
+      "source": "bg.wikipedia.org: Старозагорска зоологическа градина",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A1%D1%82%D0%B0%D1%80%D0%BE%D0%B7%D0%B0%D0%B3%D0%BE%D1%80%D1%81%D0%BA%D0%B0_%D0%B7%D0%BE%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0_%D0%B3%D1%80%D0%B0%D0%B4%D0%B8%D0%BD%D0%B0"
+    },
+    {
+      "term": "Кенгуроподобни",
+      "definition": "Кенгуроподобни е един от трите подразреда на разред Двурезцови торбести. представен от кенгурута, валабита и плъховидни кенгурута.",
+      "source": "bg.wikipedia.org: Кенгуроподобни",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9A%D0%B5%D0%BD%D0%B3%D1%83%D1%80%D0%BE%D0%BF%D0%BE%D0%B4%D0%BE%D0%B1%D0%BD%D0%B8"
+    },
+    {
+      "term": "Плосконокътно кенгуру",
+      "definition": "Плосконокътното кенгуру е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Плосконокътно кенгуру",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9F%D0%BB%D0%BE%D1%81%D0%BA%D0%BE%D0%BD%D0%BE%D0%BA%D1%8A%D1%82%D0%BD%D0%BE_%D0%BA%D0%B5%D0%BD%D0%B3%D1%83%D1%80%D1%83"
+    },
+    {
+      "term": "Сафари парк",
+      "definition": "Сафари парковете са туристическа атракция, подобна на зоопарк, при която посетителите могат да наблюдават свободно движещи се животни, докато карат собствените си моторни превозни средства или се возят в предоставени от парка превозни средства. Сафари парковете са по-големи от зоологическа градина и често имат програми за опазване със застрашени животни като слонове, носорози, жирафи, лъвове, тигри, гепарди и хиени.",
+      "source": "bg.wikipedia.org: Сафари парк",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A1%D0%B0%D1%84%D0%B0%D1%80%D0%B8_%D0%BF%D0%B0%D1%80%D0%BA"
+    },
+    {
+      "term": "Мегафауна",
+      "definition": "Мегафауната обединява най-едрите животински видове на планетата. Тя може да бъде 2 вида – първи тип мегафауна и втори тип мегафауна. Първият тип мегафауна обединява като цяло представителите на фауната, чието тегло надхвърля 45 kg. Този тип обхваща множество животински видове, за разлика от втория тип мегафауна, която обединява само най-големите животни, тежащи над 900 kg.",
+      "source": "bg.wikipedia.org: Мегафауна",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9C%D0%B5%D0%B3%D0%B0%D1%84%D0%B0%D1%83%D0%BD%D0%B0"
+    },
+    {
+      "term": "Вирусна треска Рос Ривър",
+      "definition": "Вирусна треска Рос Ривър или Епидемичен полиартрит е арбовирусна инфекция пренасяна от комари. Причинява се от Ross River virus, представител на семейство Togaviridae. Заболяването се характеризира като типична инфлуенцоподобна треска започваща внезапно, полиартритни прояви, макулопапулозен обрив, главоболие, гадене, повръщане и увеличени лимфни възли.",
+      "source": "bg.wikipedia.org: Вирусна треска Рос Ривър",
+      "url": "https://bg.wikipedia.org/wiki/%D0%92%D0%B8%D1%80%D1%83%D1%81%D0%BD%D0%B0_%D1%82%D1%80%D0%B5%D1%81%D0%BA%D0%B0_%D0%A0%D0%BE%D1%81_%D0%A0%D0%B8%D0%B2%D1%8A%D1%80"
+    },
+    {
+      "term": "Тасмания",
+      "definition": "Тасмания е австралийски остров на границата между Тихия океан и Индийския океан. Административният център на австралийския щат Тасмания, е град Хобарт. Друг по-голям град на острова е Лонсестън в северната му част. На север от Тасмания се намират островите Кинг и Фърно.",
+      "source": "bg.wikipedia.org: Тасмания",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A2%D0%B0%D1%81%D0%BC%D0%B0%D0%BD%D0%B8%D1%8F"
+    },
+    {
+      "term": "Гребеноопашат бетонг",
+      "definition": "Гребеноопашат бетонг или гребеноопашато плъховидно кенгуру е вид бозайник от семейство Плъховидни кенгурута (Potoroidae). Възникнал е преди около 0,0117 млн. години по времето на периода кватернер. Видът е критично застрашен от изчезване.",
+      "source": "bg.wikipedia.org: Гребеноопашат бетонг",
+      "url": "https://bg.wikipedia.org/wiki/%D0%93%D1%80%D0%B5%D0%B1%D0%B5%D0%BD%D0%BE%D0%BE%D0%BF%D0%B0%D1%88%D0%B0%D1%82_%D0%B1%D0%B5%D1%82%D0%BE%D0%BD%D0%B3"
+    },
+    {
+      "term": "Червенокрак филандер",
+      "definition": "Червенокракият филандер е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Червенокрак филандер",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A7%D0%B5%D1%80%D0%B2%D0%B5%D0%BD%D0%BE%D0%BA%D1%80%D0%B0%D0%BA_%D1%84%D0%B8%D0%BB%D0%B0%D0%BD%D0%B4%D0%B5%D1%80"
+    },
+    {
+      "term": "Коала",
+      "definition": "Коалата е двуутробен растителнояден бозайник, приспособен за живот по високите евкалиптови дървета и ендемичен за Австралия, където и единствено се срещат евкалиптите, с чиито листа се храни. Тя е единственият запазен представител на семейство Коалови (Phascolarctidae).",
+      "source": "bg.wikipedia.org: Коала",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9A%D0%BE%D0%B0%D0%BB%D0%B0"
+    },
+    {
+      "term": "Wallabia bicolor",
+      "definition": "Wallabia bicolor е вид бозайник от семейство Кенгурови (Macropodidae), единствен представител на род Wallabia.",
+      "source": "bg.wikipedia.org: Wallabia bicolor",
+      "url": "https://bg.wikipedia.org/wiki/Wallabia_bicolor"
+    },
+    {
+      "term": "Австралийски торбести",
+      "definition": "Австралийските торбести (Australidelphia) са надразред австралийски торбести бозайници.",
+      "source": "bg.wikipedia.org: Австралийски торбести",
+      "url": "https://bg.wikipedia.org/wiki/%D0%90%D0%B2%D1%81%D1%82%D1%80%D0%B0%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%B8_%D1%82%D0%BE%D1%80%D0%B1%D0%B5%D1%81%D1%82%D0%B8"
+    },
+    {
+      "term": "Petrogale coenensis",
+      "definition": "Petrogale coenensis е вид бозайник от семейство Кенгурови (Macropodidae). Видът е почти застрашен от изчезване.",
+      "source": "bg.wikipedia.org: Petrogale coenensis",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_coenensis"
+    },
+    {
+      "term": "Petrogale persephone",
+      "definition": "Petrogale persephone е вид бозайник от семейство Кенгурови (Macropodidae). Видът е застрашен от изчезване.",
+      "source": "bg.wikipedia.org: Petrogale persephone",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_persephone"
+    },
+    {
+      "term": "Petrogale rothschildi",
+      "definition": "Petrogale rothschildi е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Petrogale rothschildi",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_rothschildi"
+    },
+    {
+      "term": "Petrogale purpureicollis",
+      "definition": "Petrogale purpureicollis е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Petrogale purpureicollis",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_purpureicollis"
+    },
+    {
+      "term": "Petrogale lateralis",
+      "definition": "Petrogale lateralis е вид бозайник от семейство Кенгурови (Macropodidae). Видът е почти застрашен от изчезване.",
+      "source": "bg.wikipedia.org: Petrogale lateralis",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_lateralis"
+    },
+    {
+      "term": "Petrogale sharmani",
+      "definition": "Petrogale sharmani е вид бозайник от семейство Кенгурови (Macropodidae). Видът е почти застрашен от изчезване.",
+      "source": "bg.wikipedia.org: Petrogale sharmani",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_sharmani"
+    },
+    {
+      "term": "Petrogale assimilis",
+      "definition": "Petrogale assimilis е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Petrogale assimilis",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_assimilis"
+    },
+    {
+      "term": "Petrogale mareeba",
+      "definition": "Petrogale mareeba е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Petrogale mareeba",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_mareeba"
+    },
+    {
+      "term": "Petrogale inornata",
+      "definition": "Petrogale inornata е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Petrogale inornata",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_inornata"
+    },
+    {
+      "term": "Petrogale herberti",
+      "definition": "Petrogale herberti е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Petrogale herberti",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_herberti"
+    },
+    {
+      "term": "Petrogale godmani",
+      "definition": "Petrogale godmani е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Petrogale godmani",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_godmani"
+    },
+    {
+      "term": "Petrogale brachyotis",
+      "definition": "Petrogale brachyotis е вид бозайник от семейство Кенгурови (Macropodidae).",
+      "source": "bg.wikipedia.org: Petrogale brachyotis",
+      "url": "https://bg.wikipedia.org/wiki/Petrogale_brachyotis"
+    }
+  ],
+  "entries": []
+}

@@ -1,4 +1,4 @@
-// Version: 1.0008
+// Version: 1.0011
 // settings.js — настройки: безплатен AI enhancer, поведение на заключването, нулиране.
 import { el, clear, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
@@ -117,6 +117,8 @@ export function renderSettings(root, { rerender, openLangPicker }) {
     return sw;
   }
   const inSw = voiceSwitch(() => vc.inputEnabled, (v) => { vc.inputEnabled = v; if (v) { requestMicPermission().catch(() => {}); } });
+  // Диктовка чрез клавиатурата (Gboard) — по подразбиране ВКЛ. Само на телефон има смисъл.
+  const kbSw = voiceSwitch(() => vc.keyboardMic !== false, (v) => { vc.keyboardMic = v; });
   const outSw = voiceSwitch(() => vc.outputEnabled, (v) => { vc.outputEnabled = v; });
   const convSw = voiceSwitch(() => vc.conversationEnabled, (v) => { vc.conversationEnabled = v; if (v) { requestMicPermission().catch(() => {}); } });
   const convAutoSw = voiceSwitch(() => vc.conversationAutoStart, (v) => { vc.conversationAutoStart = v; });
@@ -144,6 +146,13 @@ export function renderSettings(root, { rerender, openLangPicker }) {
           sttOk ? t('set_voice_in_ok') : t('set_voice_in_no'))
       ]),
       inSw
+    ]),
+    el('div', { class: 'toggle' }, [
+      el('div', {}, [
+        el('div', {}, t('set_kb_mic')),
+        el('div', { class: 'muted', style: 'font-size:12px' }, t('set_kb_mic_desc'))
+      ]),
+      kbSw
     ]),
     el('div', { class: 'toggle' }, [
       el('div', {}, [

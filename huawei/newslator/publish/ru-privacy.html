@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- Version: 1.0001 -->
-<html lang="en">
+<!-- Version: 1.0002 -->
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Privacy Policy — com.kcy.newslator.rustore</title>
+<title>Политика конфиденциальности — NewsLator (com.kcy.newslator.rustore)</title>
 <style>
   :root { color-scheme: light dark; }
   body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 820px; margin: 0 auto; padding: 24px; line-height: 1.6; color: #1a1a1a; background: #fff; }
@@ -13,27 +13,109 @@
   .muted { color: #666; font-size: .92rem; }
   a { color: #2a7cf0; }
   ul { padding-left: 1.2em; }
-  @media (prefers-color-scheme: dark) { body { color: #eee; background: #16171b; } code { background: #26272c; } }
+  table { border-collapse: collapse; width: 100%; margin: .6em 0; font-size: .95rem; }
+  th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; vertical-align: top; }
+  hr { border: none; border-top: 1px solid #ccc; margin: 2.4em 0; }
+  @media (prefers-color-scheme: dark) { body { color: #eee; background: #16171b; } code { background: #26272c; } th, td { border-color: #3a3b40; } hr { border-top-color: #3a3b40; } }
 </style>
 </head>
 <body>
-<h1>Privacy Policy</h1>
-<p class="muted">App package: <code>com.kcy.newslator.rustore</code> · Store: RuStore · Provider: Dai Grup Ltd.</p>
+<h1>Политика конфиденциальности — NewsLator</h1>
+<p class="muted">Приложение: <strong>NewsLator</strong> · Пакет: <code>com.kcy.newslator.rustore</code> · Магазин: RuStore · Оператор (контролёр данных): Dai Grup Ltd. · Дата вступления в силу: 2026-07-11</p>
 
-<p></p>
+<p>NewsLator — это читалка новостей. Вы выбираете страну/регион, и NewsLator показывает публичные новости по нему, может переводить заголовки на ваш язык или читать их вслух. Эта политика простыми словами объясняет, какие данные обрабатывает приложение, зачем и с кем они передаются. <strong>Мы не ведём учётных записей, не продаём никакие данные и не используем рекламу или сторонние SDK аналитики/трекинга.</strong></p>
 
-<h2>1. We do not collect personal data</h2>
-<p>This application has <strong>no user accounts, no registration and no login by us</strong>. We do not collect, store or transmit personal information such as your name, email, phone number, contacts or precise location. We do not use advertising or third-party analytics / tracking SDKs.</p>
+<h2>1. Мы не собираем персональные данные на своих серверах</h2>
+<p>В NewsLator <strong>нет регистрации, входа и учётных записей с нашей стороны</strong>. Мы не эксплуатируем сервер, который хранит сведения о вас. Мы не собираем и не передаём себе ваше имя, электронную почту, телефон, контакты, точное местоположение, фотографии или рекламный идентификатор.</p>
+
+<h2>2. Данные, хранящиеся на вашем устройстве</h2>
+<p>Ваш выбор — страна/регион, язык интерфейса и перевода, настройки — хранится <strong>только локально на устройстве</strong>. Эти данные к нам не поступают и удаляются при удалении приложения или очистке его хранилища.</p>
+
+<h2>3. Сетевые запросы и третьи стороны (цель, способ, объём)</h2>
+<p>Поскольку NewsLator загружает актуальные новости и может их переводить, приложение обращается к сторонним сервисам. Все запросы идут по <strong>HTTPS/TLS</strong>, где это поддерживается. Как и при любом интернет-запросе, эти третьи стороны неизбежно получают <strong>IP-адрес</strong> вашего устройства и стандартные метаданные запроса; это необходимо для доставки их контента и регулируется <em>их собственными</em> политиками. Мы не привязываем к этим запросам вашу личность. Третьи стороны:</p>
+<table>
+  <tr><th>Получатель</th><th>Передаваемые данные</th><th>Цель</th><th>Их политика</th></tr>
+  <tr>
+    <td>Google News (Google LLC)</td>
+    <td>Код выбранной страны/региона и язык; ваш IP-адрес</td>
+    <td>Получить публичную ленту новостей для выбранного региона</td>
+    <td><a href="https://policies.google.com/privacy">policies.google.com/privacy</a></td>
+  </tr>
+  <tr>
+    <td>Новостные издания, чьи публичные RSS-ленты вы открываете (например BBC, NPR и другие)</td>
+    <td>Ваш IP-адрес и стандартный запрос их публичной ленты</td>
+    <td>Загрузить заголовки и ссылки этого издания</td>
+    <td>Собственная политика каждого издания</td>
+  </tr>
+  <tr>
+    <td>Перевод MyMemory (Translated S.r.l.), <code>api.mymemory.translated.net</code></td>
+    <td>Текст заголовка/фрагмента для перевода, исходный и целевой язык, а также фиксированная контактная почта разработчика (только для повышения бесплатного анонимного лимита — <strong>не ваша почта</strong>); ваш IP-адрес</td>
+    <td>Перевести текст новостей на выбранный язык. Используется только при активном переводе</td>
+    <td><a href="https://mymemory.translated.net/doc/en/privacy.php">mymemory.translated.net privacy</a></td>
+  </tr>
+  <tr>
+    <td>Синтезатор речи вашего устройства (операционная система)</td>
+    <td>Текст для озвучивания</td>
+    <td>Читать заголовки вслух. Обрабатывается устройством/ОС, нам не передаётся</td>
+    <td>Политика производителя устройства / ОС</td>
+  </tr>
+</table>
+<p>Мы не раскрываем персональные данные каким-либо иным сторонам и не используем данные для рекламы, профилирования или персонализации.</p>
+
+<h2>4. Мы не продаём данные</h2>
+<p>NewsLator <strong>не продаёт</strong> персональные данные и не передаёт их для чужого самостоятельного маркетинга.</p>
+
+<h2>5. Чувствительные данные, разрешения и дети</h2>
+<p>NewsLator не запрашивает доступ к местоположению, камере, микрофону, контактам или хранилищу и не использует журналы вызовов, SMS, биометрию, данные о здоровье или местоположение устройства ни для каких целей. Приложение не предназначено для детей и не собирает данные осознанно ни от кого.</p>
+
+<h2>6. Безопасность</h2>
+<p>Наши исходящие запросы для загрузки и перевода новостей выполняются по зашифрованным соединениям <strong>HTTPS</strong> везде, где сторонний сервис это предлагает. Поскольку нет учётных записей и нашего сервера, отсутствует и база учётных записей, которую можно было бы взломать.</p>
+
+<h2>7. Ваши права и как ими воспользоваться</h2>
+<p>Так как у нас нет учётной записи и мы ничего о вас не храним на сервере, с нашей стороны нет персональных данных для доступа, исправления, выгрузки или удаления. Полный контроль остаётся у вас на устройстве:</p>
+<ul>
+  <li><strong>Отзыв согласия / прекращение обработки:</strong> прекратите пользоваться функциями перевода и новостей или удалите приложение в любой момент. Ни одна функция не отключается из-за отказа от необязательной обработки.</li>
+  <li><strong>Удаление данных:</strong> очистите хранилище приложения в настройках устройства или удалите приложение — это удалит весь локально сохранённый выбор.</li>
+  <li><strong>Данные у третьих сторон</strong> (Google, издания, MyMemory) регулируются их собственными политиками, указанными выше; свои права вы реализуете напрямую у них.</li>
+  <li><strong>Вопросы и жалобы (канал обратной связи):</strong> напишите нам, и мы ответим в течение 30 дней.</li>
+</ul>
+
+<h2>8. Изменения политики</h2>
+<p>При изменении этой политики обновлённая версия публикуется по этому же адресу с новой датой вступления в силу.</p>
+
+<h2>9. Контакт</h2>
+<p>По любым вопросам, запросам или жалобам о конфиденциальности пишите: <a href="mailto:dai.group.ltd.support@gmail.com">dai.group.ltd.support@gmail.com</a> (Dai Grup Ltd.).</p>
+
+<hr>
+
+<h1>Privacy Policy — NewsLator (English)</h1>
+<p class="muted">App: <strong>NewsLator</strong> · Package: <code>com.kcy.newslator.rustore</code> · Store: RuStore · Provider (data controller): Dai Grup Ltd. · Effective date: 2026-07-11</p>
+
+<p>NewsLator is a news reader. You choose a country/region and NewsLator shows public news for it, and can translate headlines into your language or read them aloud. This policy explains what data the app processes, why, and with whom it is shared. <strong>We do not run user accounts, we do not sell any data, and we do not use advertising or third-party analytics/tracking SDKs.</strong></p>
+
+<h2>1. We do not collect personal data on our servers</h2>
+<p>NewsLator has no registration, login or user accounts operated by us. We operate no server that stores information about you, and do not collect your name, email, phone, contacts, precise location, photos or any advertising identifier.</p>
+
 <h2>2. Data stored on your device</h2>
-<p>Your settings and app data (such as the interface language you choose) are stored <strong>locally on your device</strong>. This data is removed when you uninstall the app.</p>
-<h2>3. Network</h2>
-<p>The app works fully offline and makes no network requests.</p>
-<h2>4. Children</h2>
-<p>The app does not target children and does not knowingly collect any data from anyone.</p>
-<h2>5. Changes</h2>
-<p>If this policy changes, the updated version will be published at this address.</p>
-<h2>6. Contact</h2>
-<p>For any question about privacy or the app, write to: <a href="mailto:dai.group.ltd.support@gmail.com">dai.group.ltd.support@gmail.com</a>.</p>
+<p>Your choices (country/region, language, settings) are stored only locally and are removed when you uninstall the app or clear its storage.</p>
+
+<h2>3. Network requests and third parties</h2>
+<p>NewsLator fetches live news and can translate it, so it makes HTTPS requests to: <strong>Google News</strong> (receives your selected region/language and IP, to return the news feed), the <strong>news outlets</strong> whose public RSS feeds you open (receive your IP and the feed request), <strong>MyMemory</strong> translation (receives the headline text to translate, the languages, a fixed developer contact email — not yours — and your IP), and your device's <strong>text-to-speech engine</strong> (handled by the OS, not sent to us). Each third party is governed by its own privacy policy. We attach no identity to these requests and use no data for advertising or personalization.</p>
+
+<h2>4. No sale of data</h2>
+<p>We do not sell personal data and do not share it for anyone else's marketing.</p>
+
+<h2>5. Sensitive data, permissions, children</h2>
+<p>The app requests no location, camera, microphone, contacts or storage permission, and uses no call logs, SMS, biometrics, health data or device location. It does not target children.</p>
+
+<h2>6. Security</h2>
+<p>Our outbound requests use encrypted HTTPS where the third-party service offers it. There is no account database on our side.</p>
+
+<h2>7. Your rights</h2>
+<p>We hold no account or server data about you. You may withdraw consent by stopping use of the features or uninstalling; delete local data by clearing app storage or uninstalling; and exercise rights over third-party-held data directly with those parties. For any privacy question or complaint, email us and we reply within 30 days.</p>
+
+<h2>8. Changes &amp; contact</h2>
+<p>Updates are published at this same address with a new effective date. Contact: <a href="mailto:dai.group.ltd.support@gmail.com">dai.group.ltd.support@gmail.com</a> (Dai Grup Ltd.).</p>
 
 </body>
 </html>

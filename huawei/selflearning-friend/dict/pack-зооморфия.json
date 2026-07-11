@@ -1,0 +1,26 @@
+{
+  "name": "Зооморфия — пакет знание",
+  "topic": "зооморфия",
+  "seedInterests": false,
+  "terms": [
+    {
+      "term": "Зооморфия",
+      "definition": "Зооморфизъм е приписване на животински характеристики на хора, неодушевени предмети, природни стихии или митологични същества.",
+      "source": "bg.wikipedia.org: Зооморфия",
+      "url": "https://bg.wikipedia.org/wiki/%D0%97%D0%BE%D0%BE%D0%BC%D0%BE%D1%80%D1%84%D0%B8%D1%8F"
+    },
+    {
+      "term": "Джейкъб Блек",
+      "definition": "Джейкъб Блек е измислен герой от сагата Здрач.",
+      "source": "bg.wikipedia.org: Джейкъб Блек",
+      "url": "https://bg.wikipedia.org/wiki/%D0%94%D0%B6%D0%B5%D0%B9%D0%BA%D1%8A%D0%B1_%D0%91%D0%BB%D0%B5%D0%BA"
+    },
+    {
+      "term": "Рейчъл Хокинс",
+      "definition": "Рейчъл Хокинс е американска писателка на бестселъри в жанра фентъзи и паранормален любовен роман.",
+      "source": "bg.wikipedia.org: Рейчъл Хокинс",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A0%D0%B5%D0%B9%D1%87%D1%8A%D0%BB_%D0%A5%D0%BE%D0%BA%D0%B8%D0%BD%D1%81"
+    }
+  ],
+  "entries": []
+}

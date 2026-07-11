@@ -1,0 +1,248 @@
+{
+  "name": "Междуплатформен софтуер — пакет знание",
+  "topic": "междуплатформен-софтуер",
+  "seedInterests": false,
+  "terms": [
+    {
+      "term": "Междуплатформен софтуер",
+      "definition": "Междуплатформен софтуер, често като междуплатформени разработки в компютърните науки характеризира компютърен софтуер или методи на изчисление и концепции, които са прилагани и интероперират на множество компютърни платформи Междуплатформеният софтуер бива два вида:единият вид изисква индивидуална компилация за всяка платформа, която поддържа,\nдругият е такъв, че директно се стартира и работи върху всеки вид платформа без специална подготовка, например софтуер, писан на интерпретативен език или предварително компилиран байт-код, за който интерпретатори или пакети по време на използване (runtime) са общи или стандартни за всички платформи.",
+      "source": "bg.wikipedia.org: Междуплатформен софтуер",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9C%D0%B5%D0%B6%D0%B4%D1%83%D0%BF%D0%BB%D0%B0%D1%82%D1%84%D0%BE%D1%80%D0%BC%D0%B5%D0%BD_%D1%81%D0%BE%D1%84%D1%82%D1%83%D0%B5%D1%80"
+    },
+    {
+      "term": "Wireshark",
+      "definition": "Wireshark (Уайършарк) е безплатен и с отворен код анализатор на мрежови протоколи. Той се използва за отстраняване на проблеми в мрежата, анализ, разработка на софтуер и комуникационни протоколи и образование. Първоначалното име на проекта е Ethereal, но през май 2006 г. е преименуван на Wireshark във връзка със спорове по отношение на търговската марка.",
+      "source": "bg.wikipedia.org: Wireshark",
+      "url": "https://bg.wikipedia.org/wiki/Wireshark"
+    },
+    {
+      "term": "NetBeans",
+      "definition": "NetBeans е интегрирана среда за разработка (IDE) на Java, JavaScript, PHP, Python, Ruby, Groovy, C, C++, Scala, Clojure и други приложения.",
+      "source": "bg.wikipedia.org: NetBeans",
+      "url": "https://bg.wikipedia.org/wiki/NetBeans"
+    },
+    {
+      "term": "Компютърна платформа",
+      "definition": "Компютърна платформа е съчетанието на хардуер и подходящият за него софтуер, предназначени за изпълнението на приложен софтуер. Една типична компютърна платформа се състои от компютърна архитектура, операционна система, езици за програмиране и съответния потребителски интерфейс.",
+      "source": "bg.wikipedia.org: Компютърна платформа",
+      "url": "https://bg.wikipedia.org/wiki/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8E%D1%82%D1%8A%D1%80%D0%BD%D0%B0_%D0%BF%D0%BB%D0%B0%D1%82%D1%84%D0%BE%D1%80%D0%BC%D0%B0"
+    },
+    {
+      "term": "TightVNC",
+      "definition": "TightVNC е междуплатформен софтуер за отдалечено управление на компютри.",
+      "source": "bg.wikipedia.org: TightVNC",
+      "url": "https://bg.wikipedia.org/wiki/TightVNC"
+    },
+    {
+      "term": "FreeCAD",
+      "definition": "FrееСАD e свободен междуплатформен софтуер за 3D моделиране и проектиране.",
+      "source": "bg.wikipedia.org: FreeCAD",
+      "url": "https://bg.wikipedia.org/wiki/FreeCAD"
+    },
+    {
+      "term": "Qt (toolkit)",
+      "definition": "Qt представлява инструментариум и среда за разработка за междуплатформен софтуер, използван основно за разработване на графични потребителски интерфейси, но също и за разработването на софтуер без графичен интерфейс, като конзолни инструменти и сървърни програми. Последната версия е 6.",
+      "source": "bg.wikipedia.org: Qt (toolkit)",
+      "url": "https://bg.wikipedia.org/wiki/Qt_(toolkit)"
+    },
+    {
+      "term": "Fractal",
+      "definition": "Fractal е свободен, междуплатформен софтуер за интернет комуникация, написан на Rust и част от проекта GNOME.",
+      "source": "bg.wikipedia.org: Fractal",
+      "url": "https://bg.wikipedia.org/wiki/Fractal"
+    },
+    {
+      "term": "Frostbite Engine",
+      "definition": "Frostbite Engine е компютърен компилатор, изграден от EA DICE. Този компилатор е междуплатформен софтуер и произведените от него продукти работят върху Microsoft Windows, Xbox 360, Xbox One, PlayStation 3 и PlayStation 4.",
+      "source": "bg.wikipedia.org: Frostbite Engine",
+      "url": "https://bg.wikipedia.org/wiki/Frostbite_Engine"
+    },
+    {
+      "term": "Shotcut",
+      "definition": "Shotcut е свободен междуплатформен софтуер за видеообработка.",
+      "source": "bg.wikipedia.org: Shotcut",
+      "url": "https://bg.wikipedia.org/wiki/Shotcut"
+    },
+    {
+      "term": "WxWidgets",
+      "definition": "wxWidgets е програмна библиотека за създаване на графични потребителски интерфейси.",
+      "source": "bg.wikipedia.org: WxWidgets",
+      "url": "https://bg.wikipedia.org/wiki/WxWidgets"
+    },
+    {
+      "term": "Avidemux",
+      "definition": "Avidemux е безплатен междуплатформен софтуер с отворен код за видеообработка.",
+      "source": "bg.wikipedia.org: Avidemux",
+      "url": "https://bg.wikipedia.org/wiki/Avidemux"
+    },
+    {
+      "term": "Sublime Text",
+      "definition": "Sublime Text е междуплатформен софтуер за обработка на изходен код и текстов редактор с приложно-програмен интерфейс (API), написан на Python. Функционалността му може да бъде допълвана от потребителите чрез плъгини. Повечето от допълненията са с лиценз за свободен софтуер и се разработват и поддържат от потребителите.",
+      "source": "bg.wikipedia.org: Sublime Text",
+      "url": "https://bg.wikipedia.org/wiki/Sublime_Text"
+    },
+    {
+      "term": "Mozilla Thunderbird",
+      "definition": "Mozilla Thunderbird е свободен клиент за електронна поща с отворен код, който функционира и като мениджър на лична информация с календар, задачи, адресници, четец на RSS емисии, клиент за чат (IRC/XMPP/Matrix) и модул за четене на дискусионни групи.",
+      "source": "bg.wikipedia.org: Mozilla Thunderbird",
+      "url": "https://bg.wikipedia.org/wiki/Mozilla_Thunderbird"
+    },
+    {
+      "term": "Графичен софтуер",
+      "definition": "В компютърната графика графичният софтуер e програма или набор от програми, които позволяват на човек да променя визуално снимки и изображения.",
+      "source": "bg.wikipedia.org: Графичен софтуер",
+      "url": "https://bg.wikipedia.org/wiki/%D0%93%D1%80%D0%B0%D1%84%D0%B8%D1%87%D0%B5%D0%BD_%D1%81%D0%BE%D1%84%D1%82%D1%83%D0%B5%D1%80"
+    },
+    {
+      "term": "Etherpad",
+      "definition": "Etherpad е уеб-базиран текстов редактор за съвместна работа в реално време, позволяващ на авторите едновременно да редактират текстов документ, който се вижда от всички участници в реално време, с възможност за показване на всеки авторски текст в различен цвят. В страничната лента има прозорец за чат, който позволява мета комуникация.",
+      "source": "bg.wikipedia.org: Etherpad",
+      "url": "https://bg.wikipedia.org/wiki/Etherpad"
+    },
+    {
+      "term": "Audacity",
+      "definition": "Audacity е безплатен, свободен междуплатформен софтуер за редактиране на звук с отворен код. Програмата е налична за Windows, GNU/Linux, macOS и други Unix-базирани операционни системи. През есента на 1999 г. Доминик Мацони и Роджър Даненберг дават началото на проекта в Университета „Карнеги Мелън“. На 28 май 2000 г. излиза първата версия.",
+      "source": "bg.wikipedia.org: Audacity",
+      "url": "https://bg.wikipedia.org/wiki/Audacity"
+    },
+    {
+      "term": "GTK",
+      "definition": "GTK е софтуер, междуплатформен набор инструменти за създаване на графичен потребителски интерфейс.",
+      "source": "bg.wikipedia.org: GTK",
+      "url": "https://bg.wikipedia.org/wiki/GTK"
+    },
+    {
+      "term": "Extensible Messaging and Presence Protocol",
+      "definition": "Extensible Messaging and Presence Protocol (XMPP) (джабер) е протокол за моментни съобщения и съобщения за състояние, оформен като свободен стандарт, базиран на XML. По данни на Jabber Software Foundation основан на XMPP софтуер е инсталиран на хиляди сървъри в Интернет и се използва от над десет милиона души по цял свят. Протоколът е проектиран с възможности за разширение, очаква се добавяне на възможности за Voice over IP и прехвърляне на файлове.",
+      "source": "bg.wikipedia.org: Extensible Messaging and Presence Protocol",
+      "url": "https://bg.wikipedia.org/wiki/Extensible_Messaging_and_Presence_Protocol"
+    },
+    {
+      "term": "Godot",
+      "definition": "Godot е междуплатформен игрови двигател с отворен код.",
+      "source": "bg.wikipedia.org: Godot",
+      "url": "https://bg.wikipedia.org/wiki/Godot"
+    },
+    {
+      "term": "PowerShell",
+      "definition": "PowerShell е програма за автоматизиране на задачи и конфигурационно управление, разработвана от Microsoft. Съставена е от шел с команден ред и свързания с него скриптов език. Създаден е през 2006 г. като компонент на Windows, а през 2016 г. е превърнат в междуплатформен софтуер с отворен код.",
+      "source": "bg.wikipedia.org: PowerShell",
+      "url": "https://bg.wikipedia.org/wiki/PowerShell"
+    },
+    {
+      "term": "Редактор за изходен код",
+      "definition": "Редактор за изходен код е текстов редактор, създаден специално за обработка на програмен код. Той може да бъде самостоятелна програма или да е вграден в интегрирана среда за разработка или браузър. Това е най-фундаменталното средство за програмиране, тъй като основната работа на един програмист е да създава и променя код.",
+      "source": "bg.wikipedia.org: Редактор за изходен код",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A0%D0%B5%D0%B4%D0%B0%D0%BA%D1%82%D0%BE%D1%80_%D0%B7%D0%B0_%D0%B8%D0%B7%D1%85%D0%BE%D0%B4%D0%B5%D0%BD_%D0%BA%D0%BE%D0%B4"
+    },
+    {
+      "term": "StarDict",
+      "definition": "StarDict е многоплатформен компютърен речник, разпространяван като свободен софтуер. Разработва се от Ху Дженг, който продължава проекта, наречен тогава StarDic, дело на Ма Суан.",
+      "source": "bg.wikipedia.org: StarDict",
+      "url": "https://bg.wikipedia.org/wiki/StarDict"
+    },
+    {
+      "term": "OBS Studio",
+      "definition": "OBS е безплатна, междуплатформена програма с отворен код за запис и предаване на живо. Налична е за операционните системи Windows, GNU/Linux и macOS.",
+      "source": "bg.wikipedia.org: OBS Studio",
+      "url": "https://bg.wikipedia.org/wiki/OBS_Studio"
+    },
+    {
+      "term": "Dart",
+      "definition": "Dart е междуплатформен, обектно ориентиран език за програмиране с подобен на C синтаксис, проектиран от датските програмисти Ларс Бак и Каспер Лунд и разработван и поддържан от Google.",
+      "source": "bg.wikipedia.org: Dart",
+      "url": "https://bg.wikipedia.org/wiki/Dart"
+    },
+    {
+      "term": "Emacs",
+      "definition": "Emacs е група текстови редактори, най-популярният сред които е GNU Emacs, част от проекта ГНУ. Първоначалният EMACS е създаден от Ричард Столман и Ги Стил като набор от макроси за редактора TECO. Emacs се разпространява под лиценза GPL. Текущата версия е 26.3 от 28 август 2019 г.",
+      "source": "bg.wikipedia.org: Emacs",
+      "url": "https://bg.wikipedia.org/wiki/Emacs"
+    },
+    {
+      "term": "Java Applet",
+      "definition": "Джава аплет е малък приложен софтуер написан на Джава или друг език за програмиране който може да се компилира до специфичен за езика код, наречен байт код, подаващ команда към виртуалната машина на програмния език Java. Програмата се компилира във вид на .class файл или съвкупност от такива компилирани Java класове, записани в .jar файл.",
+      "source": "bg.wikipedia.org: Java Applet",
+      "url": "https://bg.wikipedia.org/wiki/Java_Applet"
+    },
+    {
+      "term": "Irrlicht",
+      "definition": "Irrlicht е игрови двигател с отворен код, написан на C++.",
+      "source": "bg.wikipedia.org: Irrlicht",
+      "url": "https://bg.wikipedia.org/wiki/Irrlicht"
+    },
+    {
+      "term": "Lua",
+      "definition": "Луа е лек, мултипарадигмен език за програмиране от високо ниво, предназначен предимно за вградена употреба в приложения. Lua е междуплатформен, тъй като интерпретаторът на компилиран код е написан на ANSI C. Lua има сравнително прост API на C, за вграждане в приложения.",
+      "source": "bg.wikipedia.org: Lua",
+      "url": "https://bg.wikipedia.org/wiki/Lua"
+    },
+    {
+      "term": "Samba",
+      "definition": "Samba е свободна реимплементация на мрежовия протокол SMB/CIFS под лиценза GNU General Public License. От версия 3 Samba не само предоставя файлови услуги и печат за различни Microsoft Windows клиенти, но може също да се интегрира в Windows домейн като първичен контролер на домейн или като член на домейн. Може да бъде и част от Active Directory домейн.",
+      "source": "bg.wikipedia.org: Samba",
+      "url": "https://bg.wikipedia.org/wiki/Samba"
+    },
+    {
+      "term": "Tcsh",
+      "definition": "tcsh е команден интерпретатор за Юникс, подобна на bash, с възможност за програмиране. Тя дава възможност за дефиниране на променливи, изпълняване контролни структури за цикъл, поставя „капани“ за обработка на прекъсвания в програмата. tcsh се основава на интерпретатора csh и подобно на нея използва синтаксис, подобен на този на езика за програмиране C. Разпространява се под лиценза на BSD.",
+      "source": "bg.wikipedia.org: Tcsh",
+      "url": "https://bg.wikipedia.org/wiki/Tcsh"
+    },
+    {
+      "term": "InnoDB",
+      "definition": "InnoDB е една от предпочитаните подсистеми на системата за управление на бази данни MySQL и MariaDB. Основното предимство на InnoDB пред други подсистеми от ниско ниво на MySQL е наличието на съвместим с ACID механизъм за трансакции.",
+      "source": "bg.wikipedia.org: InnoDB",
+      "url": "https://bg.wikipedia.org/wiki/InnoDB"
+    },
+    {
+      "term": "Jami",
+      "definition": "Jami е междуплатформено чат приложение с отворен код, базирано на протокола SIP. Собственост на канадската компания Savoir-faire Linux Inc.",
+      "source": "bg.wikipedia.org: Jami",
+      "url": "https://bg.wikipedia.org/wiki/Jami"
+    },
+    {
+      "term": "Bluefish",
+      "definition": "Bluefish е текстов редактор за разработване на (динамични) уеб сайтове.\nПоддържа се синтаксис за HTML, XHTML, CSS, XML, PHP, C, Javascript, Jscript, Java, SQL, Perl, ColdFusion, JSP, Python, Ruby, и шел скриптове.Цитат от страницата на Bluefish: „Bluefish работи на повечето POSIX съвместими системи, включително платформи като Linux, FreeBSD, Mac OS X, OpenBSD и Solaris.“",
+      "source": "bg.wikipedia.org: Bluefish",
+      "url": "https://bg.wikipedia.org/wiki/Bluefish"
+    },
+    {
+      "term": "Composer (софтуер)",
+      "definition": "Composer e мениджър на пакети на ниво приложение на езика за програмиране PHP, който предоставя стандартен формат за управление на зависимости (dependencies) в PHP софтуер, както и необходимите библиотеки. Той е създаден от Nils Adermann и Jordi Boggiano, които все още управляват проекта. Те започват разработката през април 2001 г. и първата реализация е на 1 март 2012 г..",
+      "source": "bg.wikipedia.org: Composer (софтуер)",
+      "url": "https://bg.wikipedia.org/wiki/Composer_(%D1%81%D0%BE%D1%84%D1%82%D1%83%D0%B5%D1%80)"
+    },
+    {
+      "term": "PhotoRec",
+      "definition": "PhotoRec e програма с отворен код, служеща за възстановяване на данни. Възстановява данни от различни носители – карти памет, твърди дискове, USB флашпамети и т.н. Програмата работи в команден ред.",
+      "source": "bg.wikipedia.org: PhotoRec",
+      "url": "https://bg.wikipedia.org/wiki/PhotoRec"
+    },
+    {
+      "term": "LMMS",
+      "definition": "LMMS е безплатна и междуплатформена софтуерна среда, в която се записва и редактира музика. Програмата поддържа MIDI инструменти, освен това нейната богата функционалност може допълнително да се разшири посредством стотици добавки.",
+      "source": "bg.wikipedia.org: LMMS",
+      "url": "https://bg.wikipedia.org/wiki/LMMS"
+    },
+    {
+      "term": "X Window System",
+      "definition": "Системата X Window версия 11 е графичен потребителски интерфейс, създаден като част от проекта „Атина“ в MIT. Числото 11 е номерът на версията. Предишните версии на X не са използвани. Това е най-често срещаната дисплейна система в Linux системите.",
+      "source": "bg.wikipedia.org: X Window System",
+      "url": "https://bg.wikipedia.org/wiki/X_Window_System"
+    },
+    {
+      "term": "Селениум (софтуер)",
+      "definition": "Селениум (Selenium) е портативна структура за тестване на софтуер при уеб приложения. Той е набор от софтуерни инструменти, всяко с различен подход за поддръжка на автоматизацията на тестове. Всичките заедно предоставят множество функции за тестване на всякакви видове уеб приложения. Позволява сравняването на резултата от теста с актуалното поведение на приложението. Едно от най-големите предимства на Selenium е възможността за изпълнение на тестовете върху множество браузър платформи. Има свой собствен домейн-специфичен език (Selenese), на който могат да се пишат тестове на голям брой от популярните програмни езици, включващи Java, C#, Groovy, Perl, PHP, Python и Ruby. Selenium върви върху…",
+      "source": "bg.wikipedia.org: Селениум (софтуер)",
+      "url": "https://bg.wikipedia.org/wiki/%D0%A1%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D1%83%D0%BC_(%D1%81%D0%BE%D1%84%D1%82%D1%83%D0%B5%D1%80)"
+    },
+    {
+      "term": "Apache Accumulo",
+      "definition": "Apache Accumulo е сортирано, ключ / стойност хранилище базирано на Google BigTable дизайн. Това е система, построена на върха на Apache Hadoop, Apache Zookeeper, Apache Thrift. Написан на Java, Accumulo има клетъчно ниво на достъп до етикети и server-side програмни механизми.",
+      "source": "bg.wikipedia.org: Apache Accumulo",
+      "url": "https://bg.wikipedia.org/wiki/Apache_Accumulo"
+    }
+  ],
+  "entries": []
+}

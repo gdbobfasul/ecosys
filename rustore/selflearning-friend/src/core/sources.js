@@ -1,4 +1,4 @@
-// Version: 1.0008
+// Version: 1.0012
 // sources.js — БЕЗПЛАТНИ, БЕЗ КЛЮЧ мрежови източници + локален обобщител.
 //
 // Разрешени източници (всички keyless, без акаунт, с CORS, безплатни):
@@ -154,6 +154,128 @@ export function extractSearchTopics(text, { lang = 'bg', max = 4 } = {}) {
   // 3) Единични съдържателни думи (само ако не сме напълнили вече) — пазят кратките диктовки.
   for (const w of singles) add(w);
   return topics.slice(0, max);
+}
+
+// --- СПЕЦИФИЧНИ ТЕРМИНИ от текста на статиите (за дървовидното учене) ---------
+// Идея (по искане на собственика): при учене по дърво ботът трябва да тръгва по СПЕЦИФИЧНИТЕ
+// термини, намерени в статиите, а НЕ по обикновени думи. Пример: тема „криптовалути", изречение
+// „…не са специфични финансови средства а вещ" → клон е „финансови средства"/„финансов", НЕ „вещ".
+//
+// Как разграничаваме СПЕЦИФИЧЕН термин от обикновена дума (БЕЗ филтър по дължина — „НАТО",
+// „ЕС", „ООН", „ЗЕМЯ" са кратки, но са термини!):
+//   • АКРОНИМИ (изцяло с главни: НАТО, ЕС, ООН, САЩ) → винаги силни термини, независимо от дължина;
+//   • думи/съчетания с ГЛАВНА буква (собствени имена, названия: „Земя", „Европейски съюз") → термини;
+//   • многословните съчетания от съдържателни думи („финансови средства") → силни термини;
+//   • обикновените абстрактни съществителни (вещ, неща, начин, случай, пример…) и стопдумите → вън;
+//   • темата-корен не се връща като собствен клон.
+// АРБИТЪР = УИКИПЕДИЯ: кандидатите се проверяват с validateTermsViaWiki — има ли статия, значи е
+// истински термин (така „НАТО"/„ЕС"/„ЗЕМЯ" минават, а измислени/сглобени думи отпадат). Регистърът
+// се ЗАПАЗВА (иначе „нато" ≠ „НАТО" в Уикипедия).
+const COMMON_ABSTRACT = {
+  bg: new Set(['вещ', 'вещи', 'неща', 'нещо', 'начин', 'начини', 'случай', 'случаи', 'пример', 'примери',
+    'част', 'части', 'вид', 'видове', 'форма', 'форми', 'група', 'групи', 'брой', 'страна', 'страни',
+    'място', 'места', 'време', 'въпрос', 'въпроси', 'отговор', 'причина', 'причини', 'резултат',
+    'резултати', 'цел', 'цели', 'ред', 'дума', 'думи', 'точка', 'точки', 'линия', 'име', 'имена',
+    'човек', 'хора', 'година', 'години', 'ден', 'дни', 'път', 'пъти', 'страница', 'статия', 'текст',
+    'смисъл', 'значение', 'общо', 'също', 'например', 'според', 'освен', 'между', 'върху', 'обаче']),
+  en: new Set(['thing', 'things', 'way', 'ways', 'case', 'cases', 'example', 'examples', 'part', 'parts',
+    'kind', 'kinds', 'type', 'types', 'form', 'forms', 'group', 'groups', 'number', 'side', 'place',
+    'places', 'time', 'question', 'answer', 'reason', 'result', 'goal', 'word', 'words', 'point',
+    'name', 'names', 'person', 'people', 'year', 'years', 'day', 'days', 'page', 'article', 'text',
+    'meaning', 'sense', 'however', 'according', 'besides', 'between'])
+};
+
+export function extractTermsFromText(text, { lang = 'bg', topic = '', max = 12 } = {}) {
+  const raw = String(text || '').replace(/\s+/g, ' ').trim();
+  if (!raw) return [];
+  const base = String(lang || 'bg').split('-')[0];
+  const stop = new Set([...(STOP_WORDS[base] || []), ...STOP_WORDS.en]);
+  const common = new Set([...(COMMON_ABSTRACT[base] || []), ...COMMON_ABSTRACT.en]);
+  const topicWords = new Set(String(topic || '').toLowerCase().split(/\s+/).filter(Boolean));
+
+  const isAcronym = (w) => /^[\p{Lu}]{2,}$/u.test(w);              // НАТО, ЕС, ООН, САЩ
+  const isCapitalized = (w) => /^[\p{Lu}][\p{L}]/u.test(w);        // Собствено име/название (Земя…)
+  // ТЕРМИН-дума: НЕ стопдума/обикновена, НЕ число; акронимите и главните минават БЕЗ ограничение за
+  // дължина (НАТО/ЕС/ЗЕМЯ), обикновените малки думи — поне 3 букви (за да не влизат частици).
+  const isTermToken = (w) => {
+    const x = w.toLowerCase();
+    if (/^\d+$/.test(w) || !/[\p{L}]/u.test(w)) return false;
+    if (stop.has(x) || common.has(x)) return false;
+    if (isAcronym(w) || isCapitalized(w)) return true;
+    return x.length >= 3;
+  };
+
+  // Пазим ОРИГИНАЛНИЯ регистър (ключ = малки букви за дедуп/честота): „нато" ≠ „НАТО" в Уикипедия.
+  const phraseFreq = new Map();   // key→{term,n} — многословни (силни)
+  const singleFreq = new Map();   // key→{term,n} — единични
+  const bump = (map, term) => { const k = term.toLowerCase(); const e = map.get(k); if (e) e.n++; else map.set(k, { term, n: 1 }); };
+
+  const clauses = raw.split(/[.!?;:()"„“»«]+|\s[-–—]\s|\s+и\s+|\s+или\s+|\s+а\s+|\s+но\s+/iu);
+  for (const cl of clauses) {
+    const words = cl.replace(/[^\p{L}\p{N}\s-]/gu, ' ').split(/\s+/).filter(Boolean);
+    let run = [];
+    const flush = () => {
+      for (let i = 0; i < run.length; i++) {
+        if (i + 1 < run.length) bump(phraseFreq, run[i] + ' ' + run[i + 1]);
+        if (i + 2 < run.length) bump(phraseFreq, run[i] + ' ' + run[i + 1] + ' ' + run[i + 2]);
+        bump(singleFreq, run[i]);
+      }
+      run = [];
+    };
+    for (const w of words) { if (isTermToken(w)) run.push(w); else flush(); }
+    flush();
+  }
+
+  // Изхвърляме кандидати, които СА самата тема (или се съдържат изцяло в думите ѝ).
+  const notTopic = (term) => {
+    const tw = term.toLowerCase().split(' ');
+    return !tw.every((w) => topicWords.has(w));
+  };
+
+  // Подредба: първо многословните (по честота, после по-дългите), после единичните.
+  const rank = (map) => [...map.values()].filter((e) => notTopic(e.term))
+    .sort((a, b) => (b.n - a.n) || (b.term.length - a.term.length)).map((e) => e.term);
+  const phrases = rank(phraseFreq);
+  const singles = rank(singleFreq);
+
+  const out = [];
+  const seen = new Set();
+  for (const term of [...phrases, ...singles]) {
+    if (out.length >= max) break;
+    const k = term.toLowerCase();
+    if (seen.has(k)) continue;
+    // не добавяй единична дума, която вече е част от избран многословен термин
+    if (!term.includes(' ') && out.some((t) => t.includes(' ') && t.toLowerCase().split(' ').includes(k))) continue;
+    seen.add(k); out.push(term);
+  }
+  return out;
+}
+
+// АРБИТЪР УИКИПЕДИЯ: от кандидат-термините връща само тези, за които Уикипедия познава статия
+// (opensearch дава заглавие). Връща КАНОНИЧНИТЕ заглавия (по-чисти клони). Така „НАТО"/„ЕС"/„ЗЕМЯ"
+// минават, а сглобени/грешни низове отпадат — без да хабим бавните тактове по несъществуващи теми.
+export async function validateTermsViaWiki(terms, { lang = 'bg', max = 8 } = {}) {
+  const base = String(lang || 'bg').split('-')[0];
+  const list = (terms || []).slice(0, max * 2);
+  if (!list.length) return [];
+  const seen = new Set();
+  const results = await mapPool(list, async (term) => {
+    try {
+      const url = `https://${base}.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(term)}&limit=1&namespace=0&format=json&origin=*`;
+      const d = await getJson(url);
+      const titles = (Array.isArray(d) && Array.isArray(d[1])) ? d[1] : [];
+      return titles.length ? titles[0] : null;
+    } catch (_) { return null; }
+  }, 3);
+  const out = [];
+  for (const title of results) {
+    if (!title) continue;
+    const k = String(title).toLowerCase();
+    if (seen.has(k)) continue;
+    seen.add(k); out.push(title);
+    if (out.length >= max) break;
+  }
+  return out;
 }
 
 // --- Wikipedia -------------------------------------------------------------

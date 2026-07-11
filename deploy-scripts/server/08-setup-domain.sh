@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0196
+# Version: 1.0197
 ##############################################################################
 # KCY — Отделните приложни домейни + SSL (чете private/configs/domains.conf).
 #
@@ -142,6 +142,34 @@ EOF
     done
     ln -sf "$APP_CONF" /etc/nginx/sites-enabled/kcy-app-domains.conf
 }
+
+# Публикува статичните privacy страници: копира */publish/*-privacy.html от репото в
+# /var/www/html/privacy/<приложение>/, откъдето nginx ги сервира (изискване за поверителност
+# на магазините — Huawei правило 7.2 / RuStore). No-op с предупреждение, ако липсват.
+sync_privacy_pages() {
+    local dest_root="/var/www/html/privacy" n=0 f pubdir appdir app
+    mkdir -p "$dest_root"
+    while IFS= read -r f; do
+        [ -f "$f" ] || continue
+        pubdir="$(dirname "$f")"          # .../<приложение>/publish
+        appdir="$(dirname "$pubdir")"     # .../<приложение>
+        app="$(basename "$appdir")"
+        mkdir -p "$dest_root/$app"
+        cp -f "$f" "$dest_root/$app/" && n=$((n+1))
+    done <<EOF
+$(find "$PROJECT_DIR" -type f -name '*-privacy.html' -path '*/publish/*' 2>/dev/null)
+EOF
+    chmod -R 755 "$dest_root" 2>/dev/null || true
+    if [ "$n" -gt 0 ]; then
+        echo -e "  ${GREEN}✓ публикувани $n privacy страници в $dest_root${NC}"
+    else
+        echo -e "  ${YELLOW}! няма *-privacy.html под $PROJECT_DIR — качи ги ръчно в $dest_root/<приложение>/${NC}"
+    fi
+}
+
+# ── Публикувай privacy страниците (за магазините) ──
+echo -e "${CYAN}Публикувам privacy страници...${NC}"
+sync_privacy_pages
 
 # ── Пас 1: HTTP блокове (за да тръгне ACME webroot) ──
 echo -e "${CYAN}nginx блокове — пас 1 (HTTP)...${NC}"

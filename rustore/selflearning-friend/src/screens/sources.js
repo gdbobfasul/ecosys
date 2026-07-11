@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0014
 // sources.js (екран) — „Източници на знание“: локалното е ВИНАГИ master.
 //
 // Секции: Локално (по подразбиране) · Запази знанието (бекъп) · Внеси от файл ·
@@ -12,7 +12,8 @@ import {
 } from '../core/knowledge.js';
 import { getLearnRole } from '../core/learning-loop.js';
 import {
-  listBundledPacks, importBundledPack, importPackFromJsonText
+  listBundledPacks, importBundledPack, importPackFromJsonText,
+  catalogUrl, setCatalogUrl, listCatalog, importFromCatalog
 } from '../core/packs.js';
 import {
   listenSettings, saveListenSettings, listenLog, pollOnce,
@@ -175,6 +176,42 @@ export function renderSources(root, { rerender }) {
         else toast(tf('sr_error_p', r.reason || t('sr_unknown')));
       } }, t('sr_pull_now'))
     ])
+  ]));
+
+  // --- КАТАЛОГ с готови тематични речници (по желание на клиента) ------------
+  // Каталог = хостнат catalog.json (генериран от tools/collect-all.mjs). По подразбиране се търси
+  // на свързания сървър (/dict/catalog.json). Клиентът избира тема/категория → сваля се в базата.
+  const catIn = el('input', { type: 'text', placeholder: 'https://<домейн>/dict/catalog.json', value: catalogUrl(), autocapitalize: 'none', autocomplete: 'off' });
+  const catThemeIn = el('input', { type: 'text', placeholder: 'тема или категория (напр. Математика)', autocapitalize: 'none', autocomplete: 'off' });
+  const catMsg = el('div', { class: 'muted', style: 'font-size:12px;margin-top:8px;white-space:pre-wrap' }, '');
+  root.appendChild(el('div', { class: 'card' }, [
+    el('h3', {}, '📚 Каталог с готови знания'),
+    el('p', { class: 'muted', style: 'font-size:13px' }, 'Зареди готови тематични речници (курсове/учебници/термини) по желание. Ученето после ги надгражда.'),
+    el('label', {}, 'Адрес на каталога (празно = от свързания сървър)'), catIn,
+    el('div', { class: 'row', style: 'gap:8px;margin-top:8px' }, [
+      el('button', { class: 'secondary grow', onclick: () => { setCatalogUrl(catIn.value.trim()); toast(t('saved')); } }, 'Запази'),
+      el('button', { class: 'secondary grow', onclick: async () => {
+        setCatalogUrl(catIn.value.trim());
+        const r = await listCatalog({});
+        catMsg.textContent = r.ok
+          ? `Каталогът има ${r.packs.length} речника в ${r.categories.length} категории:\n${r.categories.join(', ')}`
+          : ('Каталогът не е достъпен: ' + (r.reason || ''));
+      } }, 'Виж темите')
+    ]),
+    el('label', { style: 'margin-top:8px' }, 'Зареди тема/категория'), catThemeIn,
+    el('button', { style: 'margin-top:8px', onclick: async () => {
+      const q = catThemeIn.value.trim();
+      if (!q) { toast('Напиши тема или категория.'); return; }
+      catMsg.textContent = 'Свалям…';
+      const r = await importFromCatalog(q);
+      if (r.ok) {
+        catMsg.textContent = r.kind === 'category'
+          ? `Заредих „${r.matched}": ${r.loaded}/${r.total} речника, ${r.termSubjects || 0} теми.`
+          : `Заредих „${r.matched || q}": ${r.termSubjects || 0} теми, ${(r.termNotes || 0) + (r.added || 0)} записа.`;
+        toast(t('saved')); rerender();
+      } else { catMsg.textContent = 'Не се зареди: ' + (r.reason || ''); }
+    } }, '⬇️ Зареди в базата'),
+    catMsg
   ]));
 
   // --- СВЪРЖИ КЪМ СЪРВЪР (само ДОМЕЙН + TOKEN) ------------------------------

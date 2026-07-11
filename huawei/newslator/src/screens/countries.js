@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0010
 // Екран „Държави“ — търсачка + списък по региони. Избор на държава → onPick(code).
 // Държавите с поименни източници са отбелязани; всички останали работят през агрегатора.
 import { el, clear } from '../ui/dom.js';
@@ -17,7 +17,7 @@ function countryRow(c, curCode, onPick) {
     class: 'country' + (c.code === curCode ? ' cur' : ''),
     onclick: () => { if (onPick) onPick(c.code); }
   }, [
-    el('div', { class: 'flag' }, flag(c.code)),
+    el('div', { class: 'flag' }, c.flag || flag(c.code)),
     el('div', { class: 'nm' }, c.name),
     el('div', { class: 'tag' }, hasNamedSources(c.code) ? t('named_sources') : t('general_only'))
   ]);

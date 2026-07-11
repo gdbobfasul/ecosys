@@ -1,10 +1,11 @@
-// Version: 1.0001
+// Version: 1.0010
 // Екран „Настройки“ — език на приложението (повторен избор!), държава, авто-превод,
 // четене на глас, и кратко „Относно“ с уговорката за източниците.
 import { el, clear } from '../ui/dom.js';
 import { t, tf, getLang, languageByCode } from '../core/i18n.js';
 import { countryByCode } from '../data/feeds.js';
 import { ttsAvailable } from '../core/tts.js';
+import { openPrivacy } from '../core/privacy.js';
 
 function toggleCard(labelKey, descKey, getVal, onToggle) {
   const sw = el('div', { class: 'switch' + (getVal() ? ' on' : '') });
@@ -56,6 +57,7 @@ export function renderSettings(root, app, nav) {
   root.appendChild(el('div', { class: 'card' }, [
     el('h3', {}, t('set_about')),
     el('div', { class: 'muted', style: 'font-size:13px;line-height:1.55' }, t('set_about_text')),
-    el('div', { class: 'note' }, t('news_disclaimer'))
+    el('div', { class: 'note' }, t('news_disclaimer')),
+    el('button', { class: 'btn block secondary', style: 'margin-top:10px', onclick: openPrivacy }, '🔒 ' + t('privacy_policy'))
   ]));
 }

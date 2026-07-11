@@ -1,4 +1,4 @@
-// Version: 1.0008
+// Version: 1.0014
 // responder.js — мозъкът: интенти за учене, припомняне от паметта, корекции,
 // small talk и ПО ИЗБОР безплатен AI enhancer с graceful fallback.
 //
@@ -13,8 +13,9 @@ import { addMemory, recall, updateMemory, markUsed, listMemory, tokenize } from 
 import { getState } from './storage.js';
 import { buildPrompt } from './ai-client.js';
 import { parseTask, intakeAndRun, askMeFromLearned } from './tasks.js';
-import { setLearningEnabled } from './learning-loop.js';
-import { findInSubjects, getSubject, addNote, addInterest, removeInterest, listInterests, listSubjects } from './subjects.js';
+import { setLearningEnabled, setAutonomous, forgetTopic } from './learning-loop.js';
+import { findInSubjects, getSubject, addNote, addInterest, removeInterest, listInterests, listSubjects, listSubjectsWithSize } from './subjects.js';
+import { maxDbMB, dbSizeMB } from './learn-budget.js';
 import { teach, summarizeViaTeacher } from './teacher.js';
 import { dontKnow, frameAiSuggestion } from './honesty.js';
 import { handleCommand } from './commands.js';
@@ -24,6 +25,7 @@ import { setVisionIntent } from './vision.js';
 import { ingestUrl } from './ingest.js';
 import { isImpersonalMode, looksPersonal, refusePersonalText } from './privacy.js';
 import { languageByVoice } from './languages.js';
+import { listBundledPacks, importBundledPack, importPackFromUrl, importFromCatalog, listCatalog } from './packs.js';
 
 // Помни последното търсене — за бързо „отвори в браузъра“ след резултат в чата.
 let _lastSearchQuery = null;
@@ -231,6 +233,114 @@ export async function respond(userText) {
     }
   }
 
+  // 0.7) „ЗАБРАВИ за X" / „изтрий/махни темата X" → трие темата (и клоните ѝ) и ОСВОБОЖДАВА
+  //      място. Хваща се РАНО, за да не се обърка с корекция („не …") или учебна команда.
+  {
+    const fm = text.match(/^(?:забрави|изтрий|махни|премахни|изчисти|отучи\s+се)\s+(?:за\s+|темата\s+|всичко\s+(?:за|по)\s+|знанието\s+(?:за|по)\s+)?(.+?)\s*[!.?]*$/i);
+    if (fm && !/^(?:си|ме|как|какво|кой|коя|кое)\b/i.test(fm[1])) {
+      const what = fm[1].trim().replace(/^["„«]|["“»]$/g, '');
+      const r = forgetTopic(what);
+      if (r.removed) {
+        const freedMB = r.bytes / (1024 * 1024);
+        const freed = freedMB >= 0.1 ? `${freedMB.toFixed(1)} MB` : `${Math.round(r.bytes / 1024)} KB`;
+        const used = dbSizeMB(); const mx = maxDbMB();
+        return {
+          text: `Забравих ${r.removed === 1 ? 'темата' : r.removed + ' теми'}: „${r.names.join('“, „')}“. Освободих ${freed}. ` +
+            `Сега заемам ${used.toFixed(1)}/${mx} MB — има място за ново.`,
+          source: 'rule'
+        };
+      }
+      return { text: `Нямам натрупано за „${what}“, няма какво да забравя. Кажи „какви теми си научил“ да видиш какво пазя.`, source: 'rule' };
+    }
+  }
+
+  // 0.8) „УЧИ нещо / учи каквото искаш / учи самостоятелно" → пуска АВТОНОМНОТО учене (ботът
+  //      сам избира тема от Google/Wikipedia). Това е „идеята на бота" — учи и без задача.
+  {
+    if (/^(?:учи|започни\s+да\s+учиш|може(?:ш)?\s+да\s+учиш)\s+(?:нещо|каквото\s+(?:си\s+)?(?:искаш|решиш)|самостоятелно|само|каквото\s+намериш|по\s+свой\s+избор)\s*[!.?]*$/i.test(text)
+        || /^(?:учи\s+самостоятелно|учи\s+сам|учи\s+свободно|бъди\s+любопитен)\s*[!.?]*$/i.test(text)) {
+      try { setAutonomous(true); setLearningEnabled(true); } catch (_) {}
+      return {
+        text: 'Добре — ще уча самостоятелно каквото ми е любопитно (от свободните източници). ' +
+          'Спри ме с „спри да учиш“, а за конкретно кажи „научи за …“.',
+        source: 'rule'
+      };
+    }
+  }
+
+  // 0.85) КАТАЛОГ от готови тематични речници (хостнат, напр. на свързания сървър /dict/catalog.json):
+  //       „какви теми/знания мога да заредя [за <категория>]", „зареди знание за <тема> [от <URL>]".
+  {
+    // Списък от каталога.
+    const lc = text.match(/^(?:какви|кои)\s+(?:теми|знания|речници)\s+(?:мога|може(?:ш)?)(?:\s+да)?\s+(?:заред(?:я|иш|им)|свал(?:я|иш|им))\s*(?:за\s+(.+?))?\s*[!.?]*$/i);
+    if (lc) {
+      const r = await listCatalog({ category: (lc[1] || '').trim() });
+      if (!r.ok) return { text: 'Каталогът с готови знания не е достъпен: ' + (r.reason || '') + '\nЗадай URL в Настройки → Източници (или „зареди знание за <тема> от <URL>").', source: 'rule' };
+      if (lc[1]) {
+        const names = r.packs.slice(0, 60).map((p) => p.theme);
+        return { text: `В „${lc[1].trim()}" мога да заредя ${r.packs.length} речника:\n${names.join(', ')}${r.packs.length > 60 ? ' …' : ''}\n\nКажи „зареди знание за <тема>".`, source: 'rule' };
+      }
+      return { text: `Каталогът има ${r.packs.length} речника в ${r.categories.length} категории:\n${r.categories.join(', ')}\n\nКажи „какви теми мога да заредя за <категория>" или „зареди знание за <тема>".`, source: 'rule' };
+    }
+    // Зареждане на знание за тема (по избор от изричен каталог URL).
+    const lk = text.match(/^(?:зареди|искам да (?:знаеш|имаш)|дай(?:\s+ми)?)\s+(?:знание|знания|курс(?:ове)?|учебници)\s+(?:за|по|на\s+тема)\s+(.+?)(?:\s+от\s+(https?:\/\/\S+))?\s*[!.?]*$/i);
+    if (lk) {
+      const topic = lk[1].trim().replace(/^["„«]|["“»]$/g, '');
+      const r = await importFromCatalog(topic, { url: lk[2] || '' });
+      if (r.ok) {
+        if (r.kind === 'category') {
+          return { text: `Заредих знание за „${r.matched}": ${r.loaded} от ${r.total} речника (${r.termSubjects || 0} теми, ${r.termNotes || 0} записа). ` +
+            'Питай ме — а ученето ще ги надгражда.' + (r.termStopped ? ' (Стигнах лимита — вдигни плъзгача или свържи сървър.)' : ''), source: 'learn', learned: true };
+        }
+        return { text: `Заредих речника „${r.matched || topic}": ${r.termSubjects || 0} теми, ${(r.termNotes || 0) + (r.added || 0)} записа. ` +
+          'Готово базово знание — питай ме, ученето го надгражда.' + (r.termStopped ? ' (Стигнах лимита на базата.)' : ''), source: 'learn', learned: true };
+      }
+      return { text: 'Не заредих знание за „' + topic + '": ' + (r.reason || 'неизвестно') + '.', source: 'rule' };
+    }
+  }
+
+  // 0.9) РЕЧНИЦИ/ПАКЕТИ знание — тематично зареждане на готови термини (после ученето ги надгражда):
+  //      „какви речници има", „зареди речник от <URL>", „зареди речник <тема/име>".
+  {
+    if (/^(?:какви|кои)\s+речници|покажи(?:\s+ми)?\s+(?:речниците|пакетите)|списък\s+(?:с\s+)?речници/i.test(text)) {
+      const packs = listBundledPacks();
+      if (!packs.length) return { text: 'Няма вградени речници. Можеш да заредиш от линк: „зареди речник от <URL>".', source: 'rule' };
+      return {
+        text: 'Налични вградени речници (кажи „зареди речник <име>"):\n' +
+          packs.map((p) => `• ${p.name} — ${p.count} термина/записа [${p.id}]`).join('\n') +
+          '\n\nИли „зареди речник от <URL>" за свален JSON речник.',
+        source: 'rule'
+      };
+    }
+    const urlM = text.match(/^(?:зареди|внеси|качи|добави)\s+(?:речник(?:а)?|пакет(?:а)?)\s+(?:от\s+)?(https?:\/\/\S+)/i);
+    if (urlM) {
+      const r = await importPackFromUrl(urlM[1]);
+      if (r.ok) {
+        return { text: `Заредих речника „${r.name || 'без име'}": ${r.termSubjects || 0} теми, ${(r.termNotes || 0) + (r.added || 0)} нови записа. ` +
+          'Питай ме по темите — и ще ги надграждам, докато уча.' +
+          (r.termStopped ? ' (Стигнах лимита на базата — вдигни плъзгача в Настройки или свържи сървър за повече място.)' : ''), source: 'learn', learned: true };
+      }
+      return { text: 'Не успях да заредя речника: ' + (r.reason || 'неизвестно') + '.', source: 'rule' };
+    }
+    const nameM = text.match(/^(?:зареди|внеси|качи|добави)\s+(?:речник(?:а)?|пакет(?:а)?)\s+(?:за\s+|по\s+тема\s+|на\s+тема\s+)?(.+?)\s*[!.?]*$/i);
+    if (nameM) {
+      const q = nameM[1].trim().toLowerCase();
+      const packs = listBundledPacks();
+      const hit = packs.find((p) => p.id.toLowerCase() === q || p.name.toLowerCase().includes(q) || p.topic.toLowerCase().includes(q) || q.includes(p.topic.toLowerCase()));
+      if (!hit) {
+        return { text: `Нямам вграден речник за „${nameM[1].trim()}". Налични: ${packs.map((p) => p.name).join(', ') || '—'}. ` +
+          'Или дай линк: „зареди речник от <URL>".', source: 'rule' };
+      }
+      const r = importBundledPack(hit.id);
+      if (r.ok) {
+        return { text: `Заредих „${r.name}": ${r.termSubjects || 0} теми, ${(r.termNotes || 0) + (r.added || 0)} нови записа. ` +
+          'Готово базово знание — питай ме, а ученето ще го надгражда.' +
+          (r.termStopped ? ' (Стигнах лимита на базата — вдигни плъзгача в Настройки или свържи сървър.)' : ''), source: 'learn', learned: true };
+      }
+      return { text: 'Не успях да заредя речника: ' + (r.reason || 'неизвестно') + '.', source: 'rule' };
+    }
+  }
+
   // 1) Q&A учене: „като кажа X, отговаряй Y“
   const qa = matchAny(RE_QA, text);
   if (qa) {
@@ -288,7 +398,8 @@ export async function respond(userText) {
   // 3.51) „Спри да учиш (за X)" — маха темата от ЗАДАДЕНИТЕ. Роботът НЕ избира произволна
   //        друга: без зададени теми чака нова задача (виж learning-loop.pickNextTopic).
   {
-    const ms = text.match(/^(?:спри|престани|стига)\s+(?:да\s+)?(?:учиш|учене(?:то)?|четеш)\s*(?:(?:за|по|относно)\s+(.+?))?\s*[!.]*$/i);
+    // Хваща и „спри да СЕ учиш" (рефлексивното „се"), „спри да учиш/уча/четеш", „престани/стига".
+    const ms = text.match(/^(?:спри|спрете|престани|престанете|стига|недей(?:те)?(?:\s+да)?)\s+(?:да\s+)?(?:се\s+)?(?:уч(?:иш|а|ете|ене(?:то)?)?|четеш|самообучаваш(?:\s+се)?)\s*(?:(?:за|по|относно|на\s+тема)\s+(.+?))?\s*[!.?]*$/i);
     if (ms) {
       const stopTopic = (ms[1] || '').trim().replace(/^["„«]|["“»]$/g, '');
       if (stopTopic) {
@@ -301,10 +412,13 @@ export async function respond(userText) {
         for (const h of hits) { if (removeInterest(h)) removed++; }
         if (removed) {
           const rest = listInterests();
+          // Изричен „спри за X": ако не останат зададени теми → гасим и АВТОНОМНОТО, за да не
+          // скочи роботът на произволна друга тема (точно от това се оплака собственикът преди).
+          if (!rest.length) { try { setAutonomous(false); } catch (_) {} }
           return {
             text: `Спирам да уча за „${hits.join('“, „')}“. ` +
               (rest.length ? `Продължавам със зададените: ${rest.join(', ')}.`
-                           : 'Нямам други зададени теми — ще чакам да ми дадеш нова („научи за …“).'),
+                           : 'Нямам други зададени теми и спрях самостоятелното учене. Кажи „учи нещо“ или „научи за …“.'),
             source: 'rule'
           };
         }
@@ -315,9 +429,10 @@ export async function respond(userText) {
           source: 'rule'
         };
       }
-      // Без тема: спри самообучението изцяло (подновява се с „научи за …“).
-      try { setLearningEnabled(false); } catch (_) {}
-      return { text: 'Спрях самообучението. Кажи „научи за …“ и започвам отново.', source: 'rule' };
+      // Без тема: спри самообучението ИЗЦЯЛО — и ръчните теми, и автономното (иначе продължава
+      // да учи любопитни теми). Подновяваш с „учи нещо“ (автономно) или „научи за …“ (конкретно).
+      try { setLearningEnabled(false); setAutonomous(false); } catch (_) {}
+      return { text: 'Спрях да уча (и самостоятелното). Кажи „учи нещо“ или „научи за …“ да подновя.', source: 'rule' };
     }
   }
 
@@ -340,19 +455,26 @@ export async function respond(userText) {
   {
     const wantsSummary =
       (/резюме/i.test(text) && /(тем|науч|учи)/i.test(text)) ||
-      /^(?:какви|кои)\s+теми\s+(?:си\s+)?(?:научи|научил|знаеш|учи)/i.test(text);
+      /^(?:какви|кои)\s+теми\s+(?:си\s+)?(?:научи|научил|знаеш|учи)/i.test(text) ||
+      /^(?:дай(?:\s+ми)?\s+)?списък(?:а)?\s+(?:с|на)\s+тем/i.test(text) ||
+      /(?:колко\s+(?:място|памет|мегабайт)|размер)\b/i.test(text) && /тем/i.test(text) ||
+      /^изброй\s+(?:ми\s+)?темите/i.test(text);
     if (wantsSummary) {
-      const subs = listSubjects().filter((s) => s && s.notes && s.notes.length);
-      if (!subs.length) {
-        return { text: 'Още не съм натрупал теми. Кажи ми „научи за …" и започвам да обхождам дървото.', source: 'rule' };
+      // Списък по РАЗМЕР (МБ/КБ) — за да прецени собственикът кои теми да „забрави" и да освободи
+      // място. Всяка тема с байтовете си; общо/лимит най-отдолу.
+      const rows = listSubjectsWithSize().filter((r) => r.notes > 0);
+      if (!rows.length) {
+        return { text: 'Още не съм натрупал теми. Кажи ми „научи за …“ или „учи нещо“ и започвам.', source: 'rule' };
       }
-      const sorted = subs.slice().sort((a, b) => b.notes.length - a.notes.length);
-      const MAX_LIST = 120;   // предпазен таван, за да не залее чата при огромно дърво
-      const lines = sorted.slice(0, MAX_LIST).map((s) => `• ${s.name} (${s.notes.length})`);
-      const more = sorted.length > MAX_LIST ? `\n… и още ${sorted.length - MAX_LIST} теми.` : '';
-      const totalNotes = sorted.reduce((n, s) => n + s.notes.length, 0);
+      const fmtSize = (b) => (b >= 1024 * 1024 ? (b / (1024 * 1024)).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB');
+      const MAX_LIST = 120;
+      const lines = rows.slice(0, MAX_LIST).map((r) => `• ${r.name} — ${fmtSize(r.bytes)} (${r.notes} бележки)`);
+      const more = rows.length > MAX_LIST ? `\n… и още ${rows.length - MAX_LIST} теми.` : '';
+      const totalNotes = rows.reduce((n, r) => n + r.notes, 0);
+      const used = dbSizeMB(); const mx = maxDbMB();
       return {
-        text: `Научих ${sorted.length} теми (общо ${totalNotes} бележки):\n${lines.join('\n')}${more}`,
+        text: `Научих ${rows.length} теми (общо ${totalNotes} бележки · ${used.toFixed(1)}/${mx} MB от лимита):\n` +
+          `${lines.join('\n')}${more}\n\nЗа да освободиш място кажи „забрави за <тема>“.`,
         source: 'memory'
       };
     }
@@ -429,6 +551,44 @@ export async function respond(userText) {
         text: 'Добре — избери файла (PDF, docx, odt, rtf, txt, md, html…). Ще извлека текста и ще го науча като тема.',
         source: 'rule', action: 'learn-file'
       };
+    }
+  }
+
+  // 3.537) „Учи за <тема> НА/ОТ/СПОРЕД <учен/автор>" → търси КОНКРЕТНО (тема + автор) и НАДГРАЖДА
+  //         вече наученото по темата (заредени речници/литература + предишни обхождания). Записва под
+  //         СЪЩАТА тема (addNote дедупва), за да расте знанието, а не да започва от нулата.
+  //         Изисква автор с ГЛАВНА буква и НЕ линк (за да не се бърка с „научи за X от <URL>").
+  {
+    const am = text.match(/^(?:(?:моля(?:\s+те)?|хайде|искам(?:\s+да)?|започни(?:\s+да)?|продълж(?:и|авай)(?:\s+да)?)\s+)*(?:науч(?:и|иш|а)?|уч(?:и|иш)|разуч(?:и)?|проуч(?:и)?)(?:\s+се)?\s+за\s+(.+?)\s+(?:на|от|според|по)\s+(?!https?:)([\p{Lu}][\p{L}.\- ]{1,60})\s*[!.?]*$/iu);
+    if (am) {
+      const topic = am[1].trim().replace(/^["„«]|["“»]$/g, '');
+      const author = am[2].trim().replace(/[.?!]+$/u, '');
+      const searchLang = (getState().settings.voice && getState().settings.voice.lang) || 'bg-BG';
+      const code = (languageByVoice(searchLang).code || 'bg').split('-')[0];
+      try { addInterest(topic); } catch (_) {}
+      const existing = getSubject(topic);
+      const had = (existing && existing.notes && existing.notes.length) || 0;
+      let saved = 0;
+      const imgs = [];
+      try {
+        // Търсим КОМБИНАЦИЯТА тема+автор + чистата тема (за да свържем автора с базовото понятие).
+        for (const q of [`${topic} ${author}`, topic]) {
+          const tr = await gatherTreeAnswer(q, { lang: code, limit: 6, relatedLimit: 8 });
+          for (const n of tr.main) { if (addNote(topic, { text: n.text, source: n.source, url: n.url, img: n.img })) { saved++; if (n.img) imgs.push(n.img); } }
+          for (const r of tr.related) { if (addNote(topic, { text: r.text, source: r.source, url: r.url })) saved++; }
+          if (saved) break;   // намерихме по комбинацията → стига
+        }
+      } catch (_) {}
+      try { intakeAndRun('научи за ' + topic); } catch (_) { /* фон — задълбочава по дървото */ }
+      if (saved || had) {
+        return {
+          text: `Уча за „${topic}" през ${author} — надграждам върху вече наученото (имах ${had} бележки, добавих ${saved}). ` +
+            `Питай ме конкретно за „${topic}" и ще отговоря от натрупаното (речници + литература + търсене).`,
+          source: 'source', learned: true,
+          images: imgs.slice(0, 3)
+        };
+      }
+      return { text: `Започвам да уча за „${topic}" (по ${author}). Дай ми малко да натрупам от източниците и питай пак.`, source: 'rule', learning: true };
     }
   }
 

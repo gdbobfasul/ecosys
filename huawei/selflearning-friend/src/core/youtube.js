@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0011
 // youtube.js — гледане + учене по тема от YouTube (БЕЗПЛАТНО, без ключ).
 //
 // Две способности, ЧЕСТНО разделени:
@@ -24,6 +24,7 @@ import { getState, persist } from './storage.js';
 import { addMemory } from './memory-store.js';
 import { addNote, ensureSubject } from './subjects.js';
 import { summarizeViaTeacher } from './teacher.js';
+import { fetchTimeout } from './net.js';
 
 // --- Разбор на video id от често срещани форми -----------------------------
 // Поддържа: watch?v=ID, youtu.be/ID, /embed/ID, /shorts/ID, /v/ID, &v=ID,
@@ -105,45 +106,84 @@ export function saveYoutubeSettings(patch) {
   return youtubeSettings();
 }
 
-// --- Best-effort авто-субтитри (timedtext) — ЧЕСТНО за CORS -----------------
-// Връща { ok:true, text } при успех, иначе { ok:false, reason, blocked? }.
-// Браузърите обикновено блокират този endpoint с CORS → ясно го казваме.
+// --- Авто-субтитри (вкл. АВТОМАТИЧНО генерираните = „каквото говорят") ------
+// На ТЕЛЕФОНА нативният HTTP (CapacitorHttp, през fetchTimeout) заобикаля CORS → четем реално.
+// Стратегия (надеждна):
+//   1) Изтегляме watch страницата и вадим `captionTracks[]` от ytInitialPlayerResponse —
+//      всеки трак носи ГОТОВ baseUrl (валиден, подписан) + languageCode + kind ('asr' = авто-
+//      генерирани от речта). Оттам хващаме и субтитрите, писани от автора, И авто-генерираните.
+//   2) Ако страницата не даде тракове → резерва към директния timedtext endpoint.
+// Връща { ok:true, text, lang } или { ok:false, reason, blocked? }.
 export async function tryFetchCaptions(id, { lang = '' } = {}) {
   const vid = parseVideoId(id) || (/^[A-Za-z0-9_-]{11}$/.test(id) ? id : null);
   if (!vid) return { ok: false, reason: 'невалиден video id' };
   if (typeof fetch !== 'function') return { ok: false, reason: 'няма fetch в средата' };
 
-  const proxy = youtubeSettings().corsProxy; // напр. https://my-proxy/?url=
-  const langs = lang ? [lang] : ['bg', 'en', ''];
+  const proxy = youtubeSettings().corsProxy; // по избор: https://my-proxy/?url=
+  const wrap = (u) => (proxy ? (proxy + encodeURIComponent(u)) : u);
+  const prefer = lang ? [lang, 'bg', 'en'] : ['bg', 'en'];
 
-  for (const lg of langs) {
+  // 1) През watch страницата → списък тракове с готови baseUrl-и.
+  try {
+    const wres = await fetchTimeout(wrap(watchUrl(vid)), { headers: { 'Accept-Language': 'bg,en;q=0.8' } }, 15000);
+    const html = await wres.text();
+    const tracks = extractCaptionTracks(html);
+    if (tracks.length) {
+      const track = pickTrack(tracks, prefer);
+      if (track && track.baseUrl) {
+        // baseUrl-ът може да е JSON-escape-нат (& → &); &fmt= няма → ще върне XML.
+        const turl = track.baseUrl.replace(/\\u0026/g, '&').replace(/\\\//g, '/');
+        const tres = await fetchTimeout(wrap(turl), { headers: { Accept: 'text/xml,application/xml,*/*' } }, 15000);
+        const xml = await tres.text();
+        const text = parseTimedTextXml(xml);
+        if (text) return { ok: true, text, lang: track.languageCode || 'auto', auto: track.kind === 'asr' };
+      }
+    }
+  } catch (_) { /* пробваме директния endpoint по-долу */ }
+
+  // 2) Резерва: директен timedtext (по-старите/ръчните субтитри понякога излизат оттук).
+  for (const lg of (lang ? [lang] : ['bg', 'en', ''])) {
     const base = `https://www.youtube.com/api/timedtext?v=${vid}` + (lg ? `&lang=${lg}` : '');
-    const url = proxy ? (proxy + encodeURIComponent(base)) : base;
     try {
-      const res = await fetch(url, { headers: { Accept: 'text/xml,application/xml,*/*' } });
+      const res = await fetchTimeout(wrap(base), { headers: { Accept: 'text/xml,application/xml,*/*' } }, 15000);
       if (!res.ok) continue;
       const xml = await res.text();
       const text = parseTimedTextXml(xml);
       if (text) return { ok: true, text, lang: lg || 'auto' };
-    } catch (_) {
-      // Типично CORS/мрежова грешка — честно докладваме блокиране (ако няма proxy).
-      if (!proxy) {
-        return {
-          ok: false,
-          blocked: true,
-          reason: 'автоматичните субтитри са блокирани от браузъра — постави транскрипта ръчно'
-        };
-      }
-      // с proxy: пробвай следващия език
-    }
+    } catch (_) { /* пробвай следващия език */ }
   }
+
   return {
     ok: false,
     blocked: !proxy,
-    reason: proxy
-      ? 'не намерих автоматични субтитри (празни или липсват)'
-      : 'автоматичните субтитри са блокирани от браузъра — постави транскрипта ръчно'
+    reason: 'не намерих субтитри за това видео (може да са изключени). Ако имаш транскрипт — постави ми го в екрана „YouTube".'
   };
+}
+
+// Вади captionTracks[] (baseUrl/languageCode/kind/name) от HTML на watch страницата.
+function extractCaptionTracks(html) {
+  const s = String(html || '');
+  const m = s.match(/"captionTracks":(\[[^\]]*\])/);
+  if (!m) return [];
+  let arr;
+  try { arr = JSON.parse(m[1].replace(/\\u0026/g, '&')); } catch (_) { return []; }
+  if (!Array.isArray(arr)) return [];
+  return arr.map((t) => ({
+    baseUrl: (t && t.baseUrl) || '',
+    languageCode: (t && t.languageCode) || '',
+    kind: (t && t.kind) || '',
+    name: (t && t.name && (t.name.simpleText || (t.name.runs && t.name.runs[0] && t.name.runs[0].text))) || ''
+  })).filter((t) => t.baseUrl);
+}
+
+// Избира трак по предпочитан език (bg → en → първия наличен). При равни предпочита РЪЧНИТЕ
+// пред авто-генерираните (по-чист текст), но авто-генерираните пак стават (речта на видеото).
+function pickTrack(tracks, prefer) {
+  for (const code of prefer) {
+    const exact = tracks.filter((t) => (t.languageCode || '').toLowerCase().startsWith(String(code).toLowerCase()));
+    if (exact.length) return exact.find((t) => t.kind !== 'asr') || exact[0];
+  }
+  return tracks.find((t) => t.kind !== 'asr') || tracks[0];
 }
 
 // Парсва YouTube timedtext XML (<text start="…">…</text>) в чист текст.
