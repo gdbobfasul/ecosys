@@ -1,4 +1,4 @@
-// Version: 1.0009
+// Version: 1.0010
 // promo-ads.js — ИЗСКАЧАЩА реклама във ВСИЧКИ апове (изискване на собственика): показва ~3–4с
 // промо на ПРОИЗВОЛНО одобрено приложение от каталога: снимка + ИМЕ + описание + бутон „Open"
 // (линк към приложението) + „KCY Ecosystem publisher 2026". Затворима (× се появява веднага;
@@ -7,6 +7,13 @@
 //
 // Каталогът се тегли ПЪРВО ОТ СЪРВЪРА (public/promo/kcy-promo.json) — така се управлява
 // ЦЕНТРАЛНО кои приложения се рекламират, БЕЗ нов билд; вграденото копие е резерва без интернет.
+import { MONETIZATION } from '../monetize.js';
+// ⚙️ Изскачащите реклами се показват САМО в БЕЗПЛАТНИ апове (за да препращат към платените/Pro
+// версии). В ПЛАТЕН ап (one_time/subscription/iap) са ИЗКЛ. — реклами в платен ап дразнят ревюто на
+// Huawei/RuStore. Управлява се от МОДЕЛА в publish/monetization.json (билдът го вгражда в monetize.js):
+// смениш ли model → "free", рекламите се включват сами. Кодът е цял (нищо не е махнато). Балончето
+// „✨ KCY" + showcase-ът (ecosystem.js) са ОТДЕЛНИ, ненатрапчиви и затваряеми — те остават ВИНАГИ.
+const PROMO_ADS_ENABLED = !!(MONETIZATION && MONETIZATION.model === 'free');
 const CATALOG_URL_REMOTE = 'https://selflearning.bot.nu/promo/kcy-promo.json';
 const CATALOG_URL_LOCAL = './kcy-promo.json';
 let CACHE = null, SELF = '', midTimer = null;
@@ -79,6 +86,9 @@ async function showAd() {
 // СТАРТ (СЛЕД 2-сек интрото „KCY Ecosystem" — не върху него) + СРЕДА (на всеки ~120с докато е
 // активно). КРАЯТ се вика от играта при game over през window.KCY_END_AD().
 export function startPromoAds(selfId) {
+  // ДЕАКТИВИРАНО: нищо не се показва. Неутрализираме и window.KCY_END_AD (игрите го викат на game
+  // over) → без реклама на края. Балончето/showcase (ecosystem.js) е отделно и остава.
+  if (!PROMO_ADS_ENABLED) { try { window.KCY_END_AD = function () {}; } catch (e) {} return; }
   SELF = selfId || '';
   loadCatalog();                                                     // предзареди
   const start = () => { showAd(); };                                 // старт реклама (след интрото)

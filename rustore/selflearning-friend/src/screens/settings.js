@@ -1,5 +1,5 @@
-// Version: 1.0011
-// settings.js — настройки: безплатен AI enhancer, поведение на заключването, нулиране.
+// Version: 1.0016
+// settings.js — настройки: безплатен AI enhancer, поведение на заключването, нулиране, бекъп/пренасяне.
 import { el, clear, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
 import { lock } from '../core/identity.js';
@@ -18,6 +18,7 @@ import {
 } from '../core/voiceprint.js';
 import { dataMode, setDataMode, personalMemoryCount, forgetPersonalData } from '../core/privacy.js';
 import { LANGUAGES } from '../core/languages.js';
+import { getRecoveryCfg, setRecoveryCfg, saveSettingsFile, saveKnowledgeFile, restoreFromPickedFile, deleteLocalFiles } from '../core/recovery.js';
 import { t, tf } from '../core/i18n.js';
 
 const APP_ID = 'com.kcy.selflearningfriend.rustore';
@@ -487,6 +488,81 @@ export function renderSettings(root, { rerender, openLangPicker }) {
   root.appendChild(el('div', { class: 'card' }, [
     el('h3', {}, t('set_session')),
     el('button', { class: 'secondary block', onclick: () => { lock(); rerender(); } }, t('set_lock_now'))
+  ]));
+
+  // ── Пренасяне / Бекъп (оцеляване след деинсталация) ────────────────────────────────
+  // (i18n: текстовете тук са на български; локализация на 15 езика — отделна задача.)
+  const rc = getRecoveryCfg();
+  const dirIn = el('input', { type: 'text', value: rc.dir, placeholder: 'KCY', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
+  const setNameIn = el('input', { type: 'text', value: rc.settingsName, placeholder: 'slf-settings', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
+  const knNameIn = el('input', { type: 'text', value: rc.knowledgeName, placeholder: 'slf-knowledge', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
+  const autoSaveChk = el('input', { type: 'checkbox' }); if (rc.autoSave) autoSaveChk.checked = true;
+  const ktSel = el('select', { style: 'width:100%' }, [
+    el('option', { value: 'file' }, 'Локален файл (на устройството)'),
+    el('option', { value: 'server' }, 'На сървъра (при връзка)')
+  ]);
+  ktSel.value = rc.knowledgeTarget;
+  const recStatus = el('p', { class: 'muted', style: 'font-size:12px;white-space:pre-wrap' }, '');
+
+  function persistCfg() {
+    setRecoveryCfg({
+      dir: dirIn.value.trim() || 'KCY',
+      settingsName: setNameIn.value.trim() || 'slf-settings',
+      knowledgeName: knNameIn.value.trim() || 'slf-knowledge',
+      autoSave: !!autoSaveChk.checked,
+      knowledgeTarget: ktSel.value
+    });
+  }
+  function showRes(r, what) {
+    if (r.ok) {
+      recStatus.className = 'muted';
+      recStatus.textContent = `✅ ${what}: ${r.path}` +
+        (r.survives === false ? '\n⚠️ Записано в Documents — трие се при деинсталация. Ползвай „Сподели", за да го преместиш.' : '') +
+        (r.shared ? '\n📤 Отворих и менюто за споделяне.' : '');
+    } else {
+      recStatus.className = 'warn-text';
+      recStatus.textContent = `❌ ${what}: ${r.reason || 'неуспех'}`;
+    }
+  }
+
+  root.appendChild(el('div', { class: 'card' }, [
+    el('h3', {}, '💾 Пренасяне / Бекъп'),
+    el('p', { class: 'muted', style: 'font-size:13px' },
+      'Запазва настройките и (по избор) знанието във файл в Downloads/' + rc.dir + ', за да ОЦЕЛЕЯТ ' +
+      'деинсталация. При нова инсталация приложението пита и ги връща (сървър, памет, език, заключване, речници).'),
+    el('label', {}, 'Папка в Downloads'), dirIn,
+    el('label', {}, 'Име на файла с настройките'), setNameIn,
+    el('label', {}, 'Име на файла със знанието'), knNameIn,
+    el('label', { style: 'display:flex;align-items:center;gap:8px;margin-top:8px' }, [autoSaveChk, 'Авто-запис на настройките при промяна']),
+    el('label', { style: 'margin-top:8px' }, 'Къде да се пази знанието'), ktSel,
+    el('button', { class: 'block', style: 'margin-top:12px', onclick: async () => {
+      persistCfg(); recStatus.textContent = 'Записвам настройките…';
+      showRes(await saveSettingsFile({ share: true }), 'Настройки');
+    } }, '💾 Запази настройките сега'),
+    el('button', { class: 'block', style: 'margin-top:8px', onclick: async () => {
+      persistCfg(); recStatus.textContent = 'Записвам знанието…';
+      showRes(await saveKnowledgeFile({ share: true }), 'Знание');
+    } }, '🧠 Запази знанието във файл'),
+    el('button', { class: 'secondary block', style: 'margin-top:8px', onclick: async () => {
+      recStatus.textContent = 'Избери файла за възстановяване…';
+      const r = await restoreFromPickedFile();
+      if (r.cancelled) { recStatus.textContent = 'Отказан избор.'; return; }
+      if (!r.ok) { recStatus.className = 'warn-text'; recStatus.textContent = '❌ ' + (r.reason || 'неуспех'); return; }
+      recStatus.className = 'ok-text';
+      recStatus.textContent = '✅ Върнах: ' + ((r.applied || []).join(', ') || '—') +
+        (r.admin ? ' · разпознах администратор' : '') + (r.redownloaded ? ` · ${r.redownloaded} речника се свалят` : '');
+      rerender();
+    } }, '📂 Възстанови от файл'),
+    el('button', { class: 'danger block', style: 'margin-top:8px', onclick: async () => {
+      if (!confirm('Да изтрия локалните файлове с настройки/знание от Downloads? (ОС-ът не може да пита при самата деинсталация — затова се трие оттук.)')) return;
+      const r = await deleteLocalFiles();
+      recStatus.className = r.ok ? 'muted' : 'warn-text';
+      recStatus.textContent = r.ok ? `🗑️ Изтрих ${r.deleted} файл(а).` : ('❌ ' + (r.reason || 'неуспех'));
+    } }, '🗑️ Изтрий локалните файлове'),
+    recStatus,
+    el('p', { class: 'muted', style: 'font-size:12px;margin-top:6px' },
+      'Забележка: Android не позволява приложение да пита при деинсталация — затова изтриването е оттук. ' +
+      'Ако си админ, файлът носи маркер и при нова инсталация те разпознава автоматично.')
   ]));
 
   root.appendChild(el('div', { class: 'card' }, [

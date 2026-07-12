@@ -1,0 +1,68 @@
+{
+  "_comment": "Snapshot конфиг (price-watch-bot). Език=pricewatch.lang; таблото се показва при onboarded:true. Засяваме 3 наблюдения (крипто + валута) + дневник.",
+  "webDir": "dist",
+  "viewport": { "width": 360, "height": 760 },
+  "deviceScaleFactor": 3,
+  "langKey": "pricewatch.lang",
+  "stateKey": "pwb.state.v1",
+  "state": {
+    "onboarded": true,
+    "masterOn": true,
+    "permissions": { "notifications": true, "internet": true },
+    "watches": [
+      {
+        "id": "w-seed-btc",
+        "kind": "crypto",
+        "symbol": "BTC",
+        "base": "usd",
+        "condition": "below",
+        "target": 60000,
+        "freq": "15min",
+        "lastValue": 61240.5,
+        "lastCheck": 1719951000000,
+        "lastSource": "CoinGecko",
+        "status": "watching",
+        "paused": false,
+        "error": null
+      },
+      {
+        "id": "w-seed-eth",
+        "kind": "crypto",
+        "symbol": "ETH",
+        "base": "usd",
+        "condition": "above",
+        "target": 3000,
+        "freq": "1h",
+        "lastValue": 3320.75,
+        "lastCheck": 1719950400000,
+        "lastSource": "CoinGecko",
+        "status": "hit",
+        "paused": false,
+        "error": null
+      },
+      {
+        "id": "w-seed-fx",
+        "kind": "fx",
+        "symbol": "USD/EUR",
+        "condition": "below",
+        "target": 0.9,
+        "freq": "daily",
+        "lastValue": 0.923456,
+        "lastCheck": 1719946800000,
+        "lastSource": "exchangerate.host",
+        "status": "watching",
+        "paused": false,
+        "error": null
+      }
+    ],
+    "log": [
+      { "ts": 1719950400000, "text": "ETH ≥ 3000 — hit at 3,320.75" },
+      { "ts": 1719951000000, "text": "Manual check completed" },
+      { "ts": 1719946800000, "text": "Monitoring started" }
+    ]
+  },
+  "sharedShot": "1-language-picker.png",
+  "screens": [
+    { "name": "main.png", "state": "full", "wait": 1800 }
+  ]
+}

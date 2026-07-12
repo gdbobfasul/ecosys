@@ -4,11 +4,15 @@ import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
 import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
+import { mountPrivacyLink } from './core/legal.js';
+import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
 mountEcosystem('newslator'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
 startPromoAds('newslator'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('newslator'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
+mountPrivacyLink('newslator'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
+mountLegalGate('newslator'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 // main.js — входна точка и рутер: език → начален екран → основен изглед с раздели
 // (Новини / Държави / Настройки). Езикът може да се смени по всяко време с 🌐.
 import { injectStyles } from './ui/styles.js';

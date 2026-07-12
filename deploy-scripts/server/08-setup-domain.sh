@@ -143,9 +143,10 @@ EOF
     ln -sf "$APP_CONF" /etc/nginx/sites-enabled/kcy-app-domains.conf
 }
 
-# Публикува статичните privacy страници: копира */publish/*-privacy.html от репото в
-# /var/www/html/privacy/<приложение>/, откъдето nginx ги сервира (изискване за поверителност
-# на магазините — Huawei правило 7.2 / RuStore). No-op с предупреждение, ако липсват.
+# Публикува статичните правни страници: копира */publish/*-privacy.html И */publish/*-terms.html
+# от репото в /var/www/html/privacy/<приложение>/, откъдето nginx ги сервира (изискване на
+# магазините — Huawei 7.2/7.1 privacy + Общи условия за legal-gate „екран 3"; RuStore). No-op с
+# предупреждение, ако липсват.
 sync_privacy_pages() {
     local dest_root="/var/www/html/privacy" n=0 f pubdir appdir app
     mkdir -p "$dest_root"
@@ -157,18 +158,18 @@ sync_privacy_pages() {
         mkdir -p "$dest_root/$app"
         cp -f "$f" "$dest_root/$app/" && n=$((n+1))
     done <<EOF
-$(find "$PROJECT_DIR" -type f -name '*-privacy.html' -path '*/publish/*' 2>/dev/null)
+$(find "$PROJECT_DIR" -type f \( -name '*-privacy.html' -o -name '*-terms.html' \) -path '*/publish/*' 2>/dev/null)
 EOF
     chmod -R 755 "$dest_root" 2>/dev/null || true
     if [ "$n" -gt 0 ]; then
-        echo -e "  ${GREEN}✓ публикувани $n privacy страници в $dest_root${NC}"
+        echo -e "  ${GREEN}✓ публикувани $n правни страници (privacy + terms) в $dest_root${NC}"
     else
-        echo -e "  ${YELLOW}! няма *-privacy.html под $PROJECT_DIR — качи ги ръчно в $dest_root/<приложение>/${NC}"
+        echo -e "  ${YELLOW}! няма *-privacy.html / *-terms.html под $PROJECT_DIR — качи ги ръчно в $dest_root/<приложение>/${NC}"
     fi
 }
 
-# ── Публикувай privacy страниците (за магазините) ──
-echo -e "${CYAN}Публикувам privacy страници...${NC}"
+# ── Публикувай правните страници (privacy + terms) за магазините ──
+echo -e "${CYAN}Публикувам правни страници (privacy + terms)...${NC}"
 sync_privacy_pages
 
 # ── Пас 1: HTTP блокове (за да тръгне ACME webroot) ──

@@ -4,11 +4,15 @@ import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
 import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
+import { mountPrivacyLink } from './core/legal.js';
+import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
 mountEcosystem('routine-bot'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
 startPromoAds('routine-bot'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('routine-bot'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
+mountPrivacyLink('routine-bot'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
+mountLegalGate('routine-bot'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 // Входна точка + прост рутер. Всичко е самостоятелно: без мрежа освен
 // безплатното keyless Open-Meteo за времето.
 import { injectStyles } from './ui/styles.js';

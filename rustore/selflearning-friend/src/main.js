@@ -1,14 +1,18 @@
-// Version: 1.0015
+// Version: 1.0016
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
 import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
+import { mountPrivacyLink } from './core/legal.js';
+import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
 mountEcosystem('selflearning-friend'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
 startPromoAds('selflearning-friend'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('selflearning-friend'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
+mountPrivacyLink('selflearning-friend'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
+mountLegalGate('selflearning-friend'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 // main.js — входна точка + рутер със състояния:
 //   0) засечена смяна на устройство → lockdown (анти-кражба)
 //   1) НЕ е кръстен → раждане (birth)
@@ -16,7 +20,8 @@ mountHelp('selflearning-friend'); // универсален бутон „Пом
 //   3) отключен → приложение (chat / tasks / memory / settings)
 import './ui/styles.css';
 import { hydrate, getState } from './core/storage.js';
-import { seedDefaultPacks } from './core/packs.js';
+import { refreshCacheCap } from './core/query-cache.js';
+import { seedDefaultPacks, isAdminUnlocked, seedAdminPacks } from './core/packs.js';
 import { el, clear } from './ui/dom.js';
 import { isNamed, isUnlocked } from './core/identity.js';
 import { checkDeviceIntegrity, engageLockdown, isLockedDown } from './core/device.js';
@@ -35,6 +40,8 @@ import { renderYoutube } from './screens/youtube.js';
 import { renderAnimations } from './screens/animations.js';
 import { renderSettings } from './screens/settings.js';
 import { renderLanguage } from './screens/language.js';
+import { renderRestore } from './screens/restore.js';
+import { shouldPromptRestore, initAutoSave } from './core/recovery.js';
 import { hasLangChosen, t } from './core/i18n.js';
 
 const APP_ROUTES = {
@@ -108,6 +115,16 @@ function render() {
     return;
   }
 
+  // НОВА ИНСТАЛАЦИЯ: питаме дали да върнем запазени настройки/знание (само на свежа, непитана
+  // инсталация — виж recovery.shouldPromptRestore). Ако потребителят зареди файл с валиден админ
+  // маркер, апът РАЗПОЗНАВА админа и отключва админските речници автоматично.
+  if (shouldPromptRestore()) {
+    stopLearning(); stopListening(); stopConversation();
+    renderRestore(screen, { done: () => render() });
+    app.appendChild(screen);
+    return;
+  }
+
   // Анти-кражба: ако е активен lockdown, искаме повторна авторизация преди всичко.
   if (isNamed() && isLockedDown()) {
     stopLearning(); stopListening(); stopConversation();
@@ -155,9 +172,15 @@ window.addEventListener('hashchange', render);
 // Hydrate от нативния storage (ако има), после проверка за устройство, после рисуваме.
 async function boot() {
   try { await hydrate(); } catch (_) { /* localStorage кешът остава */ }
-  // По подразбиране зареждаме вграденото знание „правене и публикуване на апове за Huawei/RuStore"
-  // (еднократно, с флаг в състоянието) — ботът го знае наготово още при първото стартиране.
+  // Публични речници по подразбиране (засега няма — виж packs.js). Оставено за бъдещи публични пакети.
   try { seedDefaultPacks(); } catch (_) { /* не блокираме старта заради знание */ }
+  // АДМИНСКИ речници (Huawei/RuStore публикуване) — САМО ако админът вече ги е отключил с тайната
+  // фраза на ТОВА устройство. Обикновеният потребител никога не стига дотук. Async, не блокира старта.
+  try { if (isAdminUnlocked()) seedAdminPacks(); } catch (_) { /* не блокираме старта заради знание */ }
+  // Авто-запис на настройките (тихо, ако е включен от Настройки → Пренасяне/Бекъп).
+  try { initAutoSave(); } catch (_) {}
+  // Офлайн кеш на скорошни търсения — опресни лимита по устройство (телефон/компютър).
+  try { refreshCacheCap(); } catch (_) {}
   // Анти-кражба: ако имаме базов отпечатък и сегашното устройство не съвпада → lockdown.
   try {
     if (isNamed() && !isLockedDown()) {

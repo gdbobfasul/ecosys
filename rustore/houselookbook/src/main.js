@@ -6,6 +6,8 @@
 // или ако server.url е недостъпен: splash + пренасочване към живия сайт; без връзка → „офлайн".
 import { HLB_URL, PING_TIMEOUT_MS } from './config.js';
 import { mountHelp } from './core/help.js';
+import { mountPrivacyLink } from './core/legal.js';
+import { mountLegalGate } from './core/legal-gate.js';
 import { APP_VERSION } from './version.js';
 
 const app = document.getElementById('app');
@@ -42,4 +44,6 @@ async function boot() {
   else offline();
 }
 try { mountHelp('houselookbook'); } catch (e) {}
+mountPrivacyLink('houselookbook', { account: true }); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
+mountLegalGate('houselookbook', { hasLang: false }); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 boot();

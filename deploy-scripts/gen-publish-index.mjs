@@ -70,6 +70,7 @@ for (const app of apps) {
     has(pub, 'icon-512.png') ? `| Икона | 512×512 (и 216×216) | [\`icon-512.png\`](./icon-512.png) |` : '',
     shots ? `| Екранни снимки | поне 3; споделени + по език (${shots} папки/файла) | [\`screenshots/\`](./screenshots/) |` : '',
     has(pub, 'hw-privacy.html') ? `| **Политика за поверителност** | подава се като URL в AGC + показва се в апа (правило 7.1) | [\`hw-privacy.html\`](./hw-privacy.html) → \`${hwUrl}\` |` : '',
+    row(pub, 'analyse.hw', '⚠️ Анализ за качване', 'слаби места и вероятни причини за връщане — прегледай ПРЕДИ подаване'),
     row(pub, 'ANALYSIS.md', 'Проверка на име', 'опора при съмнение за марка/име (не е правен съвет)')
   ].filter(Boolean).join('\n');
 
@@ -79,7 +80,8 @@ for (const app of apps) {
     shots ? `| Екранни снимки | 1–10; същите като за Huawei | [\`screenshots/\`](./screenshots/) |` : '',
     row(pub, 'app-profile.json', 'Разрешения (обосновка)', 'кои разрешения и защо — за декларацията в конзолата'),
     row(pub, 'monetization.json', 'Монетизация', 'модел; при плащания — RuStore Pay SDK'),
-    has(pub, ruPrivacyFile) ? `| **Политика за поверителност (руски)** | подава се като URL в RuStore Console + в апа | [\`${ruPrivacyFile}\`](./${ruPrivacyFile}) → \`${ruUrl}\` |` : ''
+    has(pub, ruPrivacyFile) ? `| **Политика за поверителност (руски)** | подава се като URL в RuStore Console + в апа | [\`${ruPrivacyFile}\`](./${ruPrivacyFile}) → \`${ruUrl}\` |` : '',
+    row(pub, 'analyse.rustore', '⚠️ Анализ за качване', 'слаби места и вероятни причини за връщане — прегледай ПРЕДИ подаване')
   ].filter(Boolean).join('\n');
 
   const md = `# Документи за публикуване — ${name}

@@ -1,0 +1,21 @@
+# huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
+# Приложение: Market Pulse (huawei издание).
+
+[Set basic app information]
+App type: App (приложение, НЕ игра)
+App name: Market Pulse            # 12 / 30 знака
+App package name: com.kcy.marketpulse.hw   # 24 / 128 знака
+Level-1 app category: Finance
+
+[Integrate open capabilities]
+# Open capabilities: няма (без Account Kit, IAP, Push, Ads, Game Service).
+# ВАЖНО (финанси): задължителен disclaimer при старт (образователно, НЕ инвестиционен съвет) — виж екран 3 (legal-gate).
+
+[Support / Поддръжка]
+Support email: dai.group.ltd.support@gmail.com
+# Влиза и в описанието на 15-те езика (publish/store-listing/<език>.txt).
+
+[Localization]
+Languages: bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant (15)
+Listing: publish/store-listing/<език>.txt
+Screenshots: publish/screenshots/<език>/*.png  (+ споделен publish/screenshots/00-*.png)

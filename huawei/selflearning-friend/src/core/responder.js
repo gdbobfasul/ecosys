@@ -19,6 +19,7 @@ import { maxDbMB, dbSizeMB } from './learn-budget.js';
 import { teach, summarizeViaTeacher } from './teacher.js';
 import { dontKnow, frameAiSuggestion } from './honesty.js';
 import { handleCommand } from './commands.js';
+import { cacheAnswer, findCachedAnswer } from './query-cache.js';
 import { parseBrowserIntent, runBrowserIntent } from './browser.js';
 import { webSearch, gatherTreeAnswer, translate, extractSearchTopics } from './sources.js';
 import { setVisionIntent } from './vision.js';
@@ -747,6 +748,7 @@ export async function respond(userText) {
         out += `\n\nЗа още кажи „отвори в браузъра" или директно:\n` +
           `🌍 Google: https://www.google.com/search?q=${qenc}\n` +
           `▶ YouTube: https://www.youtube.com/results?search_query=${qenc}`;
+        try { cacheAnswer(topic, out); } catch (_) {}   // офлайн кеш за скорошни теми на питащия
         return { text: out, source: 'source', learned: true };
       }
     } catch (_) { /* нищо заземено → падам към AI */ }
@@ -780,6 +782,7 @@ export async function respond(userText) {
       if (crawl.main.length) {
         const body = crawl.main.slice(0, 4).map((n) => `• ${n.text}\n  📎 ${n.source}`).join('\n\n');
         try { intakeAndRun('научи за ' + topic); } catch (_) { /* фон — задълбочава след отговора */ }
+        try { cacheAnswer(topic, body); } catch (_) {}   // офлайн кеш
         return {
           text: `Проверих в момента (записах ${saved} нови бележки) — ето какво намерих за „${topic}":\n\n${body}\n\nПродължавам да ровя по-надълбоко по дървото — питай ме пак за още.`,
           source: 'source', learned: true,
@@ -787,6 +790,8 @@ export async function respond(userText) {
         };
       }
     } catch (_) { /* мрежова спънка → фоновият път по-долу */ }
+    // ОФЛАЙН: няма мрежа/нищо не се намери → ако имам кеширан отговор по същата/близка тема, дай него.
+    try { const cachedOff = findCachedAnswer(topic); if (cachedOff) return { text: '📵 (офлайн, от кеша) ' + cachedOff, source: 'cache' }; } catch (_) {}
     try { intakeAndRun('научи за ' + topic); } catch (_) { /* фон — не блокира отговора */ }
     try { runBrowserIntent({ action: 'search', engine: 'google', query: topic }); } catch (_) {}
     return { text: `Сега ще проверя — ровя в източниците за „${topic}" и трупам знание по дървото. Питай ме пак след малко и ще отговоря задълбочено.`, source: 'rule', learning: true };

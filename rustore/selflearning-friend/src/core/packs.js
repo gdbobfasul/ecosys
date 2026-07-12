@@ -1,4 +1,4 @@
-// Version: 1.0015
+// Version: 1.0016
 // packs.js — „Пакети знание“: внасяне на готови знания в локалната памет.
 //
 // Пакет знание = JSON { name, topic, entries:[{type,key,value,keywords}] }.
@@ -20,24 +20,123 @@ import { getState, persist } from './storage.js';
 import { serverInfo } from './server-link.js';
 
 // Вградени стартови пакети (бъндълнати в билда чрез статичен import — работят офлайн).
+// ТУК са само ПУБЛИЧНИТЕ речници — виждат ги всички потребители, свалили апа от магазина.
 import programmingBasics from '../packs/programming-basics.json';
 import linuxBasics from '../packs/linux-basics.json';
 import cryptoFinanceTerms from '../packs/crypto-finance-terms.json';
-import storePublishing from '../packs/store-publishing.json';
 
-// Регистър на наличните вградени пакети (id → { meta, data }).
+// Регистър на наличните ПУБЛИЧНИ вградени пакети (id → { meta, data }).
 export const BUNDLED_PACKS = {
   'programming-basics': programmingBasics,
   'linux-basics': linuxBasics,
-  'crypto-finance-terms': cryptoFinanceTerms,
-  'store-publishing': storePublishing
+  'crypto-finance-terms': cryptoFinanceTerms
 };
 
-// Пакети, които се зареждат ПО ПОДРАЗБИРАНЕ при първо стартиране (без потребителят да ги иска).
-// „store-publishing" е знанието за правене и публикуване на приложения за Huawei AppGallery и
-// RuStore — ботът трябва да го знае веднага, наготово. seedDefaultPacks() ги слива еднократно
-// (пази флаг в състоянието); mergeEntries дедупва, тъй че повторно извикване е безвредно.
-const DEFAULT_SEED_PACKS = ['store-publishing'];
+// ── АДМИНСКИ РЕЧНИЦИ (само за собственика/разработчика) ──────────────────────────────
+// Пакетите за публикуване в Huawei AppGallery и RuStore са ЛИЧНИ за админа. Хората, които
+// свалят апа от магазина, НЕ бива да ги виждат, нито да ги инсталират. Затова:
+//   • НЕ са в BUNDLED_PACKS → не се показват в списъка с речници (sources.js/responder.js);
+//   • НЕ се засяват по подразбиране (DEFAULT_SEED_PACKS е празно);
+//   • стоят в отделна папка src/packs/admin/ и се внасят през ДИНАМИЧЕН import → Vite ги слага
+//     в ОТДЕЛНА част (chunk), която не е в главния бъндъл и се тегли САМО ако админът отключи.
+// Тоест обикновеният потребител нито ги вижда, нито ги зарежда.
+const ADMIN_PACK_LOADERS = {
+  'store-publishing': () => import('../packs/admin/store-publishing.json').then((m) => m.default),
+  'store-docs-full': () => import('../packs/admin/store-docs-full.json').then((m) => m.default)
+};
+export const ADMIN_PACK_IDS = Object.keys(ADMIN_PACK_LOADERS);
+
+// ТАЙНА админска фраза — РАЗЛИЧНА от личната кодова дума на всеки потребител! Само админът я
+// знае, значи само той може да зареди админските речници. Смени я тук при нужда.
+export const ADMIN_UNLOCK_PHRASE = 'кцу мастер публикуване';
+export function adminPhraseMatches(word) {
+  return String(word || '').trim().toLowerCase() === ADMIN_UNLOCK_PHRASE.toLowerCase();
+}
+export function isAdminUnlocked() {
+  const st = getState();
+  return !!(st.settings && st.settings.adminPacksUnlocked);
+}
+
+// Внася админските речници (динамично). Ползва се при отключване и при всеки старт, ако вече е
+// отключено. mergeEntries дедупва → повторното е безвредно.
+export async function seedAdminPacks() {
+  if (!isAdminUnlocked()) return { ok: false, loaded: 0, reason: 'Админските речници не са отключени.' };
+  let loaded = 0, addedEntries = 0, addedNotes = 0;
+  for (const id of ADMIN_PACK_IDS) {
+    try {
+      const pack = await ADMIN_PACK_LOADERS[id]();
+      const res = importPack(pack);
+      if (res && res.ok) { loaded++; addedEntries += res.added || 0; addedNotes += res.termNotes || 0; }
+    } catch (_) { /* липсващ chunk → пропускаме */ }
+  }
+  return { ok: loaded > 0, loaded, addedEntries, addedNotes };
+}
+
+// Отключва (с тайната фраза) и веднага зарежда админските речници.
+export async function unlockAdminPacks(phrase) {
+  if (!adminPhraseMatches(phrase)) return { ok: false, loaded: 0, reason: 'Грешна админска фраза.' };
+  const st = getState();
+  st.settings = { ...(st.settings || {}), adminPacksUnlocked: true };
+  try { persist(); } catch (_) {}
+  const r = await seedAdminPacks();
+  return { ok: true, ...r };
+}
+
+// Заключва обратно (маха флага). НЕ трие вече внесените записи от паметта.
+export function lockAdminPacks() {
+  const st = getState();
+  st.settings = { ...(st.settings || {}), adminPacksUnlocked: false };
+  try { persist(); } catch (_) {}
+  return { ok: true };
+}
+
+// ── АДМИН МАРКЕР за разпознаване през възстановяващ файл (виж recovery.js) ────────────
+// Малък детерминиран токен, изведен от тайната админска фраза. Слага се в бекъп файла на
+// админа; при зареждане на файл с валиден маркер апът РАЗПОЗНАВА, че админът го инсталира,
+// и отключва админските речници — без ръчно въвеждане на фразата. Не е криптография —
+// истинската защита е, че само админът има фразата/файла.
+function simpleHash(s) {
+  let h = 5381;
+  const str = String(s || '');
+  for (let i = 0; i < str.length; i++) { h = ((h << 5) + h + str.charCodeAt(i)) >>> 0; }
+  return 'kadm-' + h.toString(36);
+}
+export function adminMarker() { return simpleHash('kcy-admin::' + ADMIN_UNLOCK_PHRASE.toLowerCase()); }
+export function verifyAdminMarker(tok) { return String(tok || '') === adminMarker(); }
+export function unlockAdminByMarker(tok) {
+  if (!verifyAdminMarker(tok)) return { ok: false };
+  const st = getState();
+  st.settings = { ...(st.settings || {}), adminPacksUnlocked: true };
+  try { persist(); } catch (_) {}
+  return { ok: true };
+}
+
+// ── Следене кои речници е ползвал потребителят (за повторно сваляне при възстановяване) ─
+// Пази списък { theme?, url? } в settings.knowledge.loadedThemes (дедупнат). recovery.js ги
+// сваля наново при нова инсталация. НЕ включва админските речници (те се пазят отделно).
+export function recordLoadedTheme(item) {
+  if (!item || (!item.theme && !item.url && !item.bundled)) return;
+  const st = getState();
+  const kn = { ...(st.settings.knowledge || {}) };
+  const list = Array.isArray(kn.loadedThemes) ? kn.loadedThemes.slice() : [];
+  const key = (x) => (x.url || '') + '|' + (x.theme || '').toLowerCase() + '|' + (x.bundled || '');
+  if (!list.some((x) => key(x) === key(item))) {
+    list.push({ theme: item.theme || '', url: item.url || '', bundled: item.bundled || '' });
+    kn.loadedThemes = list;
+    st.settings.knowledge = kn;
+    try { persist(); } catch (_) {}
+  }
+}
+export function loadedThemes() {
+  const st = getState();
+  return (st.settings.knowledge && Array.isArray(st.settings.knowledge.loadedThemes))
+    ? st.settings.knowledge.loadedThemes : [];
+}
+
+// Пакети, засявани по подразбиране при първо стартиране. ПРАЗНО — публичните речници се теглят
+// по желание (от каталога), а админските само с тайна фраза. seedDefaultPacks() остава за бъдещи
+// публични пакети по подразбиране.
+const DEFAULT_SEED_PACKS = [];
 
 export function seedDefaultPacks() {
   const st = getState();
@@ -149,14 +248,18 @@ export async function importPackFromUrl(url) {
     return { ok: false, added: 0, skipped: 0, total: 0, reason: 'Не свалих пакета (' + ((e && e.message) || 'мрежова грешка') + ').' };
   }
   if (Array.isArray(data)) data = { name: 'Свален пакет', topic: '', entries: data };
-  return importPack(data);
+  const r = importPack(data);
+  if (r && r.ok) { try { recordLoadedTheme({ url: u }); } catch (_) {} }  // за повторно сваляне при възстановяване
+  return r;
 }
 
 // Внася вграден стартов пакет по id (напр. 'programming-basics').
 export function importBundledPack(id) {
   const pack = BUNDLED_PACKS[id];
   if (!pack) return { ok: false, added: 0, skipped: 0, total: 0, reason: 'Няма такъв вграден пакет: ' + id };
-  return importPack(pack);
+  const r = importPack(pack);
+  if (r && r.ok) { try { recordLoadedTheme({ bundled: id }); } catch (_) {} }  // публичен пакет → пази се за възстановяване
+  return r;
 }
 
 // ── КАТАЛОГ от готови тематични речници (хостнати, напр. /dict/catalog.json на сървъра) ──────

@@ -1,0 +1,21 @@
+{
+  "categoryHuawei": "Finance",
+  "isGame": false,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "Market Pulse is an educational, multi-market analyzer. It reads public market data (cryptocurrencies, gold and metals, stock indices by country, and real-estate ETFs), market sentiment and news, and computes classic indicators (RSI, moving-average trend, momentum) for a period you choose. It is strictly educational and is NOT investment advice.",
+  "newFeaturesEn": "First release: analyze crypto, gold, stock indices (by country) and real-estate markets; drill down market -> country -> instrument; pick a period (now / 1-5 years ago / custom dates such as May-August 2015) and see the reading plus what happened next; classic indicators and market sentiment (Fear & Greed); current news and news from the selected period. Educational only - not investment advice.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Reads public market data (CoinGecko, Stooq), market sentiment (alternative.me Fear & Greed) and news headlines (Google News RSS). No account, no wallet, no trading, no payments and no personal data. Only your language and app preferences are stored on-device. A mandatory disclaimer states the app is educational and not investment advice."
+  },
+  "reviewerRemarksEn": "No login or account. On first launch: a short KCY Ecosystem intro, then choose a language, then a MANDATORY disclaimer screen (educational only, not investment advice) with an 'I have read and I agree' checkbox that must be ticked to continue. Then pick a market (Crypto / Gold / Stock indices / Real estate) -> country/instrument -> see the analysis for a chosen period plus current and period news. Internet is used only to read public prices, sentiment and news from free sources.",
+  "pricing": { "type": "Paid", "price": "1.00 USD" }
+}

@@ -4,11 +4,15 @@ import { startPromoAds } from './core/promo-ads.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
 import { mountHelp } from './core/help.js';
+import { mountPrivacyLink } from './core/legal.js';
+import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
 startPromoAds('plane-shooter'); // 3 реклами: старт/среда/край (само тази безплатна игра)
 mountEcosystem('plane-shooter'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
 mountHelp('plane-shooter'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
+mountPrivacyLink('plane-shooter'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
+mountLegalGate('plane-shooter', { hasLang: false }); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 // Входна точка на играта.
 // Тук конфигурираме Phaser и регистрираме сцените.
 import Phaser from 'phaser';

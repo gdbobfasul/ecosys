@@ -195,8 +195,11 @@ function rightsSection(app, lang, n) {
       : '<strong>Удалить свои данные:</strong> очистите хранилище приложения в настройках устройства или удалите приложение — это удалит все локально сохранённые данные.');
   } else {
     li.push(lang === 'en'
-      ? '<strong>Access, correct or delete your account data:</strong> from within the service, or by emailing us; we will action account deletion on request.'
-      : '<strong>Доступ, исправление или удаление данных аккаунта:</strong> в самом сервисе или по e-mail; по запросу мы удалим аккаунт.');
+      ? '<strong>Access or correct your account data:</strong> from within the service, or by emailing us.'
+      : '<strong>Доступ или исправление данных аккаунта:</strong> в самом сервисе или по e-mail.');
+    li.push(lang === 'en'
+      ? '<strong>Delete your account:</strong> for security reasons account deletion is not self-service — tap <em>“Delete account”</em> inside the app (or email us) to send a deletion request; only an administrator/moderator performs the deletion. We action verified requests within 30 days and confirm by our support channel.'
+      : '<strong>Удаление аккаунта:</strong> из соображений безопасности удаление не является самообслуживанием — нажмите <em>«Удалить аккаунт»</em> внутри приложения (или напишите нам), чтобы отправить запрос на удаление; удаление выполняет только администратор/модератор. Проверенные запросы мы обрабатываем в течение 30 дней и подтверждаем через канал поддержки.');
   }
   li.push(lang === 'en'
     ? 'Data held by the third parties listed above is subject to their own policies; you may exercise your rights directly with them.'
@@ -423,6 +426,26 @@ const APPS = [
       policy: 'Each provider’s own policy'
     }],
     permissions: [PERM.notif()]
+  },
+
+  // ── market-pulse (образователен финансов анализатор) ──
+  {
+    id: 'market-pulse', name: 'Market Pulse', hwPkg: 'com.kcy.marketpulse.hw', ruPkg: 'com.kcy.marketpulse.rustore',
+    pitch: {
+      en: 'Market Pulse is an EDUCATIONAL market analyzer. It reads public market data (crypto, gold, stock indices, real-estate ETFs), market sentiment and news, computes classic indicators for a period you choose, and shows an educational reading. It is NOT investment advice, handles no wallets or payments, and has no account.',
+      ru: 'Market Pulse — ОБРАЗОВАТЕЛЬНЫЙ анализатор рынков. Он читает публичные рыночные данные (крипто, золото, биржевые индексы, ETF на недвижимость), настроение рынка и новости, рассчитывает классические индикаторы за выбранный период и показывает образовательный вывод. Это НЕ инвестиционный совет; нет кошельков, платежей и аккаунта.'
+    },
+    device: {
+      en: 'Your language and app preferences are stored <strong>only on your device</strong>. There is no account, no wallet, no trading and no payments. All analysis is educational.',
+      ru: 'Ваш язык и настройки приложения хранятся <strong>только на устройстве</strong>. Нет аккаунта, кошелька, торговли и платежей. Весь анализ — образовательный.'
+    },
+    thirdParties: [{
+      recipient: 'Public market/data & news APIs: CoinGecko, Stooq, alternative.me (Fear & Greed), Google News RSS',
+      data: { en: 'Standard read-only requests for public market data and news headlines, plus your IP address. No personal data is sent.', ru: 'Стандартные запросы только на чтение публичных рыночных данных и заголовков новостей, а также ваш IP-адрес. Персональные данные не отправляются.' },
+      purpose: { en: 'To read public prices/indices, market sentiment and news for the market and period you choose.', ru: 'Чтение публичных цен/индексов, настроений рынка и новостей по выбранному рынку и периоду.' },
+      policy: 'Each provider’s own policy'
+    }],
+    permissions: []
   },
 
   // ── routine-bot ──

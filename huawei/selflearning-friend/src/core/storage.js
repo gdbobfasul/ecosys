@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0016
 // storage.js — локално, on-device съхранение.
 // Опитва Capacitor Preferences (нативно, ако сме в APK); ако липсва — localStorage.
 // НЯМА мрежа за съхранение, НЯМА акаунти, НЯМА контакти. Всичко живее само на устройството.
@@ -105,6 +105,21 @@ function defaultState() {
         serverEndpoint: '',
         autoExport: false
       },
+      // „Знание": адрес на каталога + СПИСЪК кои речници се ползват (за повторно сваляне
+      // при нова инсталация — виж packs.recordLoadedTheme / recovery.js).
+      knowledge: {
+        catalogUrl: '',
+        loadedThemes: []     // [{ theme?, url?, bundled? }] — БЕЗ админските речници
+      },
+      // Пренасяне на настройки/знание извън апа, за да ОЦЕЛЯВАТ деинсталация (виж recovery.js).
+      recovery: {
+        dir: 'KCY',                    // подпапка в Downloads
+        settingsName: 'slf-settings',  // име на файла с настройките (без .json)
+        knowledgeName: 'slf-knowledge',// име на файла със знанието
+        autoSave: true,                // авто-запис на настройките при промяна (по подразбиране ВКЛ.)
+        knowledgeTarget: 'file',       // къде се пази знанието: 'file' (локален файл) | 'server'
+        restorePrompted: false         // питахме ли вече при нова инсталация
+      },
       // Режим „Слушай“ (виж listen.js).
       listen: {
         enabled: false,
@@ -183,6 +198,10 @@ function mergeDefaults(parsed) {
       teacher: { ...base.settings.teacher, ...((parsed.settings && parsed.settings.teacher) || {}) },
       server: { ...base.settings.server, ...((parsed.settings && parsed.settings.server) || {}) },
       sources: { ...base.settings.sources, ...((parsed.settings && parsed.settings.sources) || {}) },
+      knowledge: { ...base.settings.knowledge, ...((parsed.settings && parsed.settings.knowledge) || {}),
+        loadedThemes: Array.isArray(parsed.settings && parsed.settings.knowledge && parsed.settings.knowledge.loadedThemes)
+          ? parsed.settings.knowledge.loadedThemes : [] },
+      recovery: { ...base.settings.recovery, ...((parsed.settings && parsed.settings.recovery) || {}) },
       listen: { ...base.settings.listen, ...((parsed.settings && parsed.settings.listen) || {}) },
       voice: {
         ...base.settings.voice,
@@ -219,6 +238,11 @@ export function setState(patch) {
   return _state;
 }
 
+// Куки, извиквани СЛЕД всеки запис (напр. авто-бекъп в recovery.js). Регистрират се веднъж
+// при старт. Пазим ги тук (а не в recovery.js), за да няма кръгова зависимост.
+let _persistHooks = [];
+export function onPersist(fn) { if (typeof fn === 'function') _persistHooks.push(fn); }
+
 // Запис: синхронно към localStorage + async към Preferences (best-effort).
 export function persist() {
   const json = JSON.stringify(_state);
@@ -231,6 +255,7 @@ export function persist() {
     _prefs.set({ key: KEY, value: json }).catch((e) =>
       console.warn('storage: Preferences запис неуспешен', e));
   }
+  for (const fn of _persistHooks) { try { fn(); } catch (_) { /* кука не бива да чупи запис */ } }
 }
 
 export function resetAll() {

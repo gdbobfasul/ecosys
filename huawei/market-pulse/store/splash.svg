@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="2048" viewBox="0 0 2048 2048">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#1aa06d"/><stop offset="1" stop-color="#3ddc97"/>
+  </linearGradient></defs>
+  <rect width="2048" height="2048" fill="#0d1117"/>
+  <g transform="translate(704,560)">
+    <rect width="640" height="640" rx="140" fill="url(#g)"/>
+    <g transform="scale(0.625)">
+  <g fill="none" stroke="#ffffff" stroke-width="34" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="312" y="360" width="400" height="300" rx="60"/>
+    <circle cx="430" cy="500" r="34" fill="#ffffff" stroke="none"/>
+    <circle cx="594" cy="500" r="34" fill="#ffffff" stroke="none"/>
+    <line x1="512" y1="300" x2="512" y2="360"/>
+    <circle cx="512" cy="280" r="22" fill="#ffffff" stroke="none"/>
+    <polyline points="360,600 430,560 500,590 580,520 660,560"/>
+  </g></g>
+  </g>
+  <text x="1024" y="1480" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="92" font-weight="700" fill="#e6edf3" text-anchor="middle">Цена-робот</text>
+</svg>

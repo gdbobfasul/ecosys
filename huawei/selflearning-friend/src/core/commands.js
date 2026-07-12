@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0016
 // commands.js — чувствителни команди, ГЕЙТНАТИ от кодовата дума (РАЗКОВНИЧЕ).
 //
 // Формат: „<кодова дума>, <команда>!“  (запетая след думата, удивителна по избор).
@@ -22,6 +22,7 @@ import { getState } from './storage.js';
 import { setLearningEnabled } from './learning-loop.js';
 import { exportToFile, exportToServer, sourcesSettings } from './knowledge.js';
 import { runRemote, formatRemoteResult } from './remote.js';
+import { adminPhraseMatches, unlockAdminPacks, lockAdminPacks } from './packs.js';
 
 // Текущата „свързана" машина — за да може после само „<дума>, изпълни X!“ да върви натам.
 let _remoteHost = '';
@@ -44,7 +45,11 @@ const GATED_PATTERNS = [
   // Свържи се с машина (по избор + изпълни команда веднага): „<дума>, свържи се с X [и изпълни Y]!“
   { re: /^(.+?)\s*,\s*(?:свържи\s+се\s+(?:с|със)|ssh\s+(?:до|към)?)\s+(\S+?)(?:\s+(?:и\s+)?(?:изпълни|пусни|run)\s+(.+?))?\s*!?$/i, cmd: 'connect' },
   // Изпълни команда (на изрична машина ИЛИ на последно свързаната): „<дума>, изпълни [на X] Y!“
-  { re: /^(.+?)\s*,\s*(?:изпълни|пусни|run)\s+(?:на\s+(\S+)\s+)?(.+?)\s*!?$/i, cmd: 'exec' }
+  { re: /^(.+?)\s*,\s*(?:изпълни|пусни|run)\s+(?:на\s+(\S+)\s+)?(.+?)\s*!?$/i, cmd: 'exec' },
+  // АДМИН: зареди/заключи админските речници (Huawei/RuStore публикуване). Гейтва се от ТАЙНАТА
+  // админска фраза (виж packs.js), а НЕ от личната кодова дума — затова е само за админа.
+  { re: /^(.+?)\s*,\s*(?:зареди|заредете)\s+админ(?:ски)?\s+речници\s*!?$/i, cmd: 'adminpacks' },
+  { re: /^(.+?)\s*,\s*(?:махни|премахни|заключи)\s+админ(?:ски)?\s+речници\s*!?$/i, cmd: 'adminpackslock' }
 ];
 
 // Опитва да разпознае гейтната команда. Връща { cmd, word, arg, arg2 } или null.
@@ -73,6 +78,25 @@ async function wordMatches(word) {
 export async function handleCommand(text) {
   const parsed = parseGatedCommand(text);
   if (!parsed) return { matched: false };
+
+  // АДМИНСКИ речници: гейтват се от ТАЙНАТА админска фраза (не от личната кодова дума на
+  // потребителя). Само админът я знае → само той зарежда/заключва тези речници.
+  if (parsed.cmd === 'adminpacks' || parsed.cmd === 'adminpackslock') {
+    if (!adminPhraseMatches(parsed.word)) {
+      return { matched: true, ok: false, text: 'Тази команда е само за администратора.' };
+    }
+    if (parsed.cmd === 'adminpackslock') {
+      lockAdminPacks();
+      return { matched: true, ok: true,
+        text: 'Заключих админските речници. Вече няма да се зареждат при старт (внесеното знание остава в паметта, ако не го изтриеш ръчно).' };
+    }
+    const r = await unlockAdminPacks(parsed.word);
+    if (r.ok) {
+      return { matched: true, ok: true,
+        text: `Заредих админските речници за публикуване (Huawei AppGallery + RuStore): ${r.addedEntries || 0} нови записа. Ще се зареждат и при следващите стартирания на това устройство.` };
+    }
+    return { matched: true, ok: false, text: 'Не успях да заредя админските речници: ' + (r.reason || 'неизвестно') };
+  }
 
   // Гейт: трябва правилната кодова дума като префикс.
   const ok = await wordMatches(parsed.word);

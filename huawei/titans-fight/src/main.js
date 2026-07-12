@@ -4,11 +4,15 @@ import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
 import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
+import { mountPrivacyLink } from './core/legal.js';
+import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
 mountEcosystem('titans-fight'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
 startPromoAds('titans-fight'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('titans-fight'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
+mountPrivacyLink('titans-fight'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
+mountLegalGate('titans-fight', { hasLang: false }); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 import Phaser from 'phaser';
 import { BootScene } from './scenes/boot.js';
 import { LanguageScene } from './scenes/language.js';

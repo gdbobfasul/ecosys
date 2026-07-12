@@ -4,11 +4,15 @@ import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
 import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
+import { mountPrivacyLink } from './core/legal.js';
+import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
 mountEcosystem('monitor-bot'); // „Още от KCY Ecosystem" showcase
 playIntro(); // кратко „KCY Ecosystem" интро при старт
 startPromoAds('monitor-bot'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('monitor-bot'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
+mountPrivacyLink('monitor-bot'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
+mountLegalGate('monitor-bot'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 // Входна точка — мъничък рутер между екраните + bootstrap на планировчика.
 import { injectStyles, el } from './ui/styles.js';
 import { loadState, defaultState } from './core/storage.js';

@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.marketpulse.hw",
+  "appName": "Market Pulse",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
