@@ -1,5 +1,5 @@
 {
   "model": "one_time",
-  "released": false,
-  "trialLock": { "enabled": true, "days": 4 }
+  "released": true,
+  "trialLock": { "enabled": false, "days": 4 }
 }

@@ -1,4 +1,4 @@
-// Version: 1.0016
+// Version: 1.0017
 // settings.js — настройки: безплатен AI enhancer, поведение на заключването, нулиране, бекъп/пренасяне.
 import { el, clear, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
@@ -491,15 +491,14 @@ export function renderSettings(root, { rerender, openLangPicker }) {
   ]));
 
   // ── Пренасяне / Бекъп (оцеляване след деинсталация) ────────────────────────────────
-  // (i18n: текстовете тук са на български; локализация на 15 езика — отделна задача.)
   const rc = getRecoveryCfg();
   const dirIn = el('input', { type: 'text', value: rc.dir, placeholder: 'KCY', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
   const setNameIn = el('input', { type: 'text', value: rc.settingsName, placeholder: 'slf-settings', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
   const knNameIn = el('input', { type: 'text', value: rc.knowledgeName, placeholder: 'slf-knowledge', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
   const autoSaveChk = el('input', { type: 'checkbox' }); if (rc.autoSave) autoSaveChk.checked = true;
   const ktSel = el('select', { style: 'width:100%' }, [
-    el('option', { value: 'file' }, 'Локален файл (на устройството)'),
-    el('option', { value: 'server' }, 'На сървъра (при връзка)')
+    el('option', { value: 'file' }, t('bk_kt_file')),
+    el('option', { value: 'server' }, t('bk_kt_server'))
   ]);
   ktSel.value = rc.knowledgeTarget;
   const recStatus = el('p', { class: 'muted', style: 'font-size:12px;white-space:pre-wrap' }, '');
@@ -517,52 +516,48 @@ export function renderSettings(root, { rerender, openLangPicker }) {
     if (r.ok) {
       recStatus.className = 'muted';
       recStatus.textContent = `✅ ${what}: ${r.path}` +
-        (r.survives === false ? '\n⚠️ Записано в Documents — трие се при деинсталация. Ползвай „Сподели", за да го преместиш.' : '') +
-        (r.shared ? '\n📤 Отворих и менюто за споделяне.' : '');
+        (r.survives === false ? '\n' + t('bk_docs_warn') : '') +
+        (r.shared ? '\n' + t('bk_shared') : '');
     } else {
       recStatus.className = 'warn-text';
-      recStatus.textContent = `❌ ${what}: ${r.reason || 'неуспех'}`;
+      recStatus.textContent = `❌ ${what}: ${r.reason || t('bk_fail_generic')}`;
     }
   }
 
   root.appendChild(el('div', { class: 'card' }, [
-    el('h3', {}, '💾 Пренасяне / Бекъп'),
-    el('p', { class: 'muted', style: 'font-size:13px' },
-      'Запазва настройките и (по избор) знанието във файл в Downloads/' + rc.dir + ', за да ОЦЕЛЕЯТ ' +
-      'деинсталация. При нова инсталация приложението пита и ги връща (сървър, памет, език, заключване, речници).'),
-    el('label', {}, 'Папка в Downloads'), dirIn,
-    el('label', {}, 'Име на файла с настройките'), setNameIn,
-    el('label', {}, 'Име на файла със знанието'), knNameIn,
-    el('label', { style: 'display:flex;align-items:center;gap:8px;margin-top:8px' }, [autoSaveChk, 'Авто-запис на настройките при промяна']),
-    el('label', { style: 'margin-top:8px' }, 'Къде да се пази знанието'), ktSel,
+    el('h3', {}, t('bk_title')),
+    el('p', { class: 'muted', style: 'font-size:13px' }, tf('bk_desc', rc.dir)),
+    el('label', {}, t('rst_dir')), dirIn,
+    el('label', {}, t('bk_set_name')), setNameIn,
+    el('label', {}, t('bk_kn_name')), knNameIn,
+    el('label', { style: 'display:flex;align-items:center;gap:8px;margin-top:8px' }, [autoSaveChk, t('bk_autosave')]),
+    el('label', { style: 'margin-top:8px' }, t('bk_kn_where')), ktSel,
     el('button', { class: 'block', style: 'margin-top:12px', onclick: async () => {
-      persistCfg(); recStatus.textContent = 'Записвам настройките…';
-      showRes(await saveSettingsFile({ share: true }), 'Настройки');
-    } }, '💾 Запази настройките сега'),
+      persistCfg(); recStatus.textContent = t('bk_saving_set');
+      showRes(await saveSettingsFile({ share: true }), t('nav_settings'));
+    } }, t('bk_save_now')),
     el('button', { class: 'block', style: 'margin-top:8px', onclick: async () => {
-      persistCfg(); recStatus.textContent = 'Записвам знанието…';
-      showRes(await saveKnowledgeFile({ share: true }), 'Знание');
-    } }, '🧠 Запази знанието във файл'),
+      persistCfg(); recStatus.textContent = t('bk_saving_kn');
+      showRes(await saveKnowledgeFile({ share: true }), t('nav_sources'));
+    } }, t('bk_save_kn')),
     el('button', { class: 'secondary block', style: 'margin-top:8px', onclick: async () => {
-      recStatus.textContent = 'Избери файла за възстановяване…';
+      recStatus.textContent = t('rst_pick');
       const r = await restoreFromPickedFile();
-      if (r.cancelled) { recStatus.textContent = 'Отказан избор.'; return; }
-      if (!r.ok) { recStatus.className = 'warn-text'; recStatus.textContent = '❌ ' + (r.reason || 'неуспех'); return; }
+      if (r.cancelled) { recStatus.textContent = t('rst_cancelled'); return; }
+      if (!r.ok) { recStatus.className = 'warn-text'; recStatus.textContent = '❌ ' + (r.reason || t('bk_fail_generic')); return; }
       recStatus.className = 'ok-text';
-      recStatus.textContent = '✅ Върнах: ' + ((r.applied || []).join(', ') || '—') +
-        (r.admin ? ' · разпознах администратор' : '') + (r.redownloaded ? ` · ${r.redownloaded} речника се свалят` : '');
+      recStatus.textContent = tf('bk_returned', (r.applied || []).join(', ') || '—') +
+        (r.admin ? ' · ' + t('rst_admin') : '') + (r.redownloaded ? ' · ' + tf('bk_redl_short', r.redownloaded) : '');
       rerender();
-    } }, '📂 Възстанови от файл'),
+    } }, t('bk_restore')),
     el('button', { class: 'danger block', style: 'margin-top:8px', onclick: async () => {
-      if (!confirm('Да изтрия локалните файлове с настройки/знание от Downloads? (ОС-ът не може да пита при самата деинсталация — затова се трие оттук.)')) return;
+      if (!confirm(t('bk_del_q'))) return;
       const r = await deleteLocalFiles();
       recStatus.className = r.ok ? 'muted' : 'warn-text';
-      recStatus.textContent = r.ok ? `🗑️ Изтрих ${r.deleted} файл(а).` : ('❌ ' + (r.reason || 'неуспех'));
-    } }, '🗑️ Изтрий локалните файлове'),
+      recStatus.textContent = r.ok ? tf('bk_deleted_n', r.deleted) : ('❌ ' + (r.reason || t('bk_fail_generic')));
+    } }, t('bk_delete')),
     recStatus,
-    el('p', { class: 'muted', style: 'font-size:12px;margin-top:6px' },
-      'Забележка: Android не позволява приложение да пита при деинсталация — затова изтриването е оттук. ' +
-      'Ако си админ, файлът носи маркер и при нова инсталация те разпознава автоматично.')
+    el('p', { class: 'muted', style: 'font-size:12px;margin-top:6px' }, t('bk_note'))
   ]));
 
   root.appendChild(el('div', { class: 'card' }, [

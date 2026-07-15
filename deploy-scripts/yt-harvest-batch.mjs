@@ -32,7 +32,40 @@ const QUERIES = [
   ['gold price record 2011 why', 'en'],
   ['gold price rally 2024 central banks', 'en'],
   ['chatgpt ai boom stock market impact', 'en'],
-  ['quantum computing stocks google willow', 'en']
+  ['quantum computing stocks google willow', 'en'],
+  // Партида 2 (2026-07-16): имоти + пропуснати големи събития + нововъведения.
+  ['2008 housing market crash explained', 'en'],
+  ['china evergrande property crisis explained', 'en'],
+  ['us housing market 2021 boom why prices', 'en'],
+  ['housing market 2025 prices forecast', 'en'],
+  ['dot com bubble 2000 crash explained', 'en'],
+  ['black monday 1987 stock crash explained', 'en'],
+  ['svb silicon valley bank collapse 2023 explained', 'en'],
+  ['japan carry trade unwind august 2024 crash', 'en'],
+  ['deepseek ai selloff nvidia january 2025', 'en'],
+  ['bitcoin halving 2024 explained price', 'en'],
+  ['ethereum merge 2022 explained price', 'en'],
+  ['terra luna ust collapse 2022 explained', 'en'],
+  ['gold all time high 2025 why', 'en'],
+  ['fed rate hikes 2022 inflation stock market', 'en'],
+  ['ai bubble 2026 burst or not', 'en'],
+  // Партида 3 (2026-07-16): дупките — Европа, Азия (в апа има Nikkei/DAX/Nifty/Shanghai),
+  // ретро уроци (1971/1989/2010/2015/2016) + крипто механизми (ICO, трежъри фирми, мем-монети).
+  ['european debt crisis greece 2011 explained', 'en'],
+  ['china stock market crash 2015 explained', 'en'],
+  ['brexit 2016 market reaction pound explained', 'en'],
+  ['flash crash may 2010 explained', 'en'],
+  ['gamestop short squeeze january 2021 explained', 'en'],
+  ['credit suisse collapse march 2023 explained', 'en'],
+  ['japan bubble economy 1989 nikkei crash explained', 'en'],
+  ['nixon ends gold standard 1971 explained', 'en'],
+  ['dogecoin 2021 elon musk rally explained', 'en'],
+  ['ethereum ico boom 2017 explained', 'en'],
+  ['microstrategy bitcoin treasury strategy explained', 'en'],
+  ['germany dax energy crisis 2022 stocks', 'en'],
+  ['india nifty stock market rally 2024 why', 'en'],
+  ['archegos collapse 2021 explained', 'en'],
+  ['stablecoins genius act 2025 crypto explained', 'en']
 ];
 
 function slugOf(q) { return q.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60); }
