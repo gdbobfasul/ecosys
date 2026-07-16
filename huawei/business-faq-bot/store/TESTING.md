@@ -1,4 +1,4 @@
-# TESTING — Бизнес FAQ робот (Huawei AppGallery)
+# TESTING — KCY FAQ Desk (Huawei AppGallery)
 
 ## Тест в браузър (работи СЕГА, без Android SDK)
 1. `npm install`

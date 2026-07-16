@@ -1,4 +1,4 @@
-# Тестване — Рутина-робот (AppGallery)
+# Тестване — KCY Routine Planner (AppGallery)
 
 ## В браузър (бързо, без Android SDK)
 1. `npm install`

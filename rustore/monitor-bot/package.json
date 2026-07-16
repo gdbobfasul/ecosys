@@ -2,7 +2,7 @@
   "name": "monitor-bot-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "Монитор-робот (Source-Watch Bot) — самостоятелно мобилно приложение, което наема робот да следи източник (RSS/Atom или публично JSON API) за нови записи или ключови думи и известява локално (RUStore издание).",
+  "description": "KCY Site Monitor (Source-Watch Bot) — самостоятелно мобилно приложение, което наема робот да следи източник (RSS/Atom или публично JSON API) за нови записи или ключови думи и известява локално (RUStore издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

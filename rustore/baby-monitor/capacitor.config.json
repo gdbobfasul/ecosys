@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.babymonitor.rustore",
-  "appName": "Детегледачка",
+  "appName": "KCY Baby Radar",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

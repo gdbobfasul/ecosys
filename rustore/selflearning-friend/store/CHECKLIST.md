@@ -1,8 +1,8 @@
-# Чеклист за публикуване — Самообучаващ се приятел (RUStore)
+# Чеклист за публикуване — KCY Learning Buddy (RUStore)
 
 ## Идентичност
 - [ ] App ID: `com.kcy.selflearningfriend.rustore`
-- [ ] Име: „Самообучаващ се приятел“
+- [ ] Име: „KCY Learning Buddy“
 - [ ] Версия и versionCode зададени
 
 ## Ресурси

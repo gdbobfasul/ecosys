@@ -1,4 +1,4 @@
-# Бизнес FAQ робот — Huawei AppGallery build
+# KCY FAQ Desk — Huawei AppGallery build
 
 Self-contained мобилно приложение „robot for rent": малък бизнес **наема/активира** робот,
 който отговаря автоматично на честите въпроси на клиентите **по правила (ключови думи)** —

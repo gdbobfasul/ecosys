@@ -1,4 +1,4 @@
-# Тестване — Самообучаващ се приятел (RUStore)
+# Тестване — KCY Learning Buddy (RUStore)
 
 ## Браузър (бързо)
 1. `npm install`

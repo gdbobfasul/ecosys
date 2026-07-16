@@ -5,7 +5,7 @@ export const STORE = 'rustore';
 export const ACCENT = '#0a84ff';   // RUStore син акцент
 export const ACCENT2 = '#5ac8fa';
 export const APP_ID = 'com.kcy.pricewatchbot.rustore';
-export const APP_NAME = 'Цена-робот';
+export const APP_NAME = 'KCY Price Watch';
 
 // Колко често роботът прави реална проверка в браузъра (демо таймер).
 // На устройство планировчикът ползва интервала на всеки watch.

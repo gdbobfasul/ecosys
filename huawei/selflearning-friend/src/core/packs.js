@@ -1,4 +1,4 @@
-// Version: 1.0016
+// Version: 1.0020
 // packs.js — „Пакети знание“: внасяне на готови знания в локалната памет.
 //
 // Пакет знание = JSON { name, topic, entries:[{type,key,value,keywords}] }.
@@ -24,12 +24,66 @@ import { serverInfo } from './server-link.js';
 import programmingBasics from '../packs/programming-basics.json';
 import linuxBasics from '../packs/linux-basics.json';
 import cryptoFinanceTerms from '../packs/crypto-finance-terms.json';
+// Пакети за първоначална инсталация от свободни източници (tools/build-install-packs.mjs):
+// Уикиречник (kaikki.org) + честотен списък, Tatoeba, Wikidata, Простата английска Уикипедия.
+import dictBgEnCore from '../packs/dict-bg-en-core.json';
+import sentencesBgEn from '../packs/sentences-bg-en.json';
+import worldCountries from '../packs/world-countries.json';
+import generalKnowledge from '../packs/general-knowledge.json';
+// История на всяка държава (Уикипедия bg/en) + речници за 15-те поддържани езика
+// (kaikki английския Уикиречник: преводите на топ-думите към всеки език; bg има
+// собствения по-богат dict-bg-en-core; es покрива и es-MX).
+import countryHistories from '../packs/country-histories.json';
+import dictRu from '../packs/dict-ru.json';
+import dictUk from '../packs/dict-uk.json';
+import dictDe from '../packs/dict-de.json';
+import dictFr from '../packs/dict-fr.json';
+import dictEs from '../packs/dict-es.json';
+import dictIt from '../packs/dict-it.json';
+import dictPt from '../packs/dict-pt.json';
+import dictAr from '../packs/dict-ar.json';
+import dictHi from '../packs/dict-hi.json';
+import dictJa from '../packs/dict-ja.json';
+import dictKy from '../packs/dict-ky.json';
+import dictZhHant from '../packs/dict-zh-hant.json';
+import dictEn from '../packs/dict-en.json';
+// Останалите свободни източници: FreeDict (EN→БГ разширен), WordNet (синоними), ConceptNet
+// (житейски знания), OpenStax (каталог свободни учебници за „анализирай <линк>"),
+// CIA Factbook + WIPO Lex (правната система и кодексите на всяка държава).
+import dictEnBgExtended from '../packs/dict-en-bg-extended.json';
+import wordnetSynonymsEn from '../packs/wordnet-synonyms-en.json';
+import conceptnetBasics from '../packs/conceptnet-basics.json';
+import openstaxBooks from '../packs/openstax-books.json';
+import countryLegalSystems from '../packs/country-legal-systems.json';
 
 // Регистър на наличните ПУБЛИЧНИ вградени пакети (id → { meta, data }).
 export const BUNDLED_PACKS = {
   'programming-basics': programmingBasics,
   'linux-basics': linuxBasics,
-  'crypto-finance-terms': cryptoFinanceTerms
+  'crypto-finance-terms': cryptoFinanceTerms,
+  'dict-bg-en-core': dictBgEnCore,
+  'sentences-bg-en': sentencesBgEn,
+  'world-countries': worldCountries,
+  'general-knowledge': generalKnowledge,
+  'country-histories': countryHistories,
+  'dict-ru': dictRu,
+  'dict-uk': dictUk,
+  'dict-de': dictDe,
+  'dict-fr': dictFr,
+  'dict-es': dictEs,
+  'dict-it': dictIt,
+  'dict-pt': dictPt,
+  'dict-ar': dictAr,
+  'dict-hi': dictHi,
+  'dict-ja': dictJa,
+  'dict-ky': dictKy,
+  'dict-zh-hant': dictZhHant,
+  'dict-en': dictEn,
+  'dict-en-bg-extended': dictEnBgExtended,
+  'wordnet-synonyms-en': wordnetSynonymsEn,
+  'conceptnet-basics': conceptnetBasics,
+  'openstax-books': openstaxBooks,
+  'country-legal-systems': countryLegalSystems
 };
 
 // ── АДМИНСКИ РЕЧНИЦИ (само за собственика/разработчика) ──────────────────────────────

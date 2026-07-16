@@ -1,4 +1,4 @@
-# Тестване — Рутина-робот (RUStore)
+# Тестване — KCY Routine Planner (RUStore)
 
 ## В браузър (бързо, без Android SDK)
 1. `npm install`

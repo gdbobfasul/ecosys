@@ -1,6 +1,6 @@
 A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
 
-Дуел на ринга — 1 срещу 1
+KCY Ring Clash — 1 срещу 1
 
 Походова битка. Героите ти излизат <b>произволно</b> на всяко ниво.
 

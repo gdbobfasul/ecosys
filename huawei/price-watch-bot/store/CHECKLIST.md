@@ -1,4 +1,4 @@
-# Предпубликационен чеклист — Цена-робот (Huawei AppGallery)
+# Предпубликационен чеклист — KCY Price Watch (Huawei AppGallery)
 
 - [ ] `appId` = `com.kcy.pricewatchbot.huawei` (capacitor.config.json)
 - [ ] Версия вдигната в package.json

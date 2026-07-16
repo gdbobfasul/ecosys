@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.routinebot.hw",
-  "appName": "Рутина-робот",
+  "appName": "KCY Routine Planner",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

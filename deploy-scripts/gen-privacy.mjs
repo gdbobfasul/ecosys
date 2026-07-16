@@ -304,17 +304,17 @@ const APPS = [
   game('titans-fight', 'Titans Fight',
     'Titans Fight is a single-player arcade fighting game across 10 levels: pick your weapon, beat each foe and climb from Rookie to God of War, saving scores to a local leaderboard.',
     'Titans Fight — одиночный аркадный файтинг на 10 уровней: выберите оружие, побеждайте противников и пройдите путь от новичка до Бога войны; результаты сохраняются в локальной таблице.'),
-  game('rustam', 'Rustam',
+  game('rustam', 'Рустам бере краставици',
     'Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.',
     'Rustam — казуальная аркада: помогите садовнику собрать все огурцы, пока их не забрали кроты, на 10 уровнях. Лёгкая офлайн-игра для одного игрока.'),
-  game('hmm', 'HMM Team Battle',
+  game('hmm', 'KCY Field Battle',
     'HMM is a 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels, each with a hidden 4-key special combo.',
     'HMM — пошаговая командная битва 3 на 3: случайно назначенные герои сражаются на 10 уровнях, у каждого есть скрытая спецкомбинация из 4 клавиш.'),
   // Дуел — офлайн игра, но зарежда Google шрифт
   (() => {
-    const g = game('duel', 'Duel Arena',
-      'Duel Arena is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.',
-      'Duel Arena — пошаговый файтинг 1 на 1: случайно назначенный герой сражается на 10 уровнях, у каждого есть скрытая спецкомбинация из 4 клавиш.');
+    const g = game('duel', 'KCY Ring Clash',
+      'KCY Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.',
+      'KCY Ring Clash — пошаговый файтинг 1 на 1: случайно назначенный герой сражается на 10 уровнях, у каждого есть скрытая спецкомбинация из 4 клавиш.');
     g.thirdParties = [{
       recipient: 'Google Fonts (Google LLC), <code>fonts.googleapis.com</code>',
       data: { en: 'Your IP address and a standard request to download the display fonts used in the game.', ru: 'IP-адрес и стандартный запрос на загрузку экранных шрифтов, используемых в игре.' },
@@ -344,10 +344,10 @@ const APPS = [
 
   // ── baby-monitor ──
   {
-    id: 'baby-monitor', name: 'Baby Monitor', hwPkg: 'com.kcy.babymonitor.hw', ruPkg: 'com.kcy.babymonitor.rustore',
+    id: 'baby-monitor', name: 'KCY Baby Radar', hwPkg: 'com.kcy.babymonitor.hw', ruPkg: 'com.kcy.babymonitor.rustore',
     pitch: {
-      en: 'Baby Monitor is a camera-based awareness assistant that watches your child through the phone camera and alerts you on motion. Detection runs on-device. It is <strong>not a certified safety device</strong>.',
-      ru: 'Baby Monitor — помощник наблюдения на основе камеры: следит за ребёнком через камеру телефона и уведомляет о движении. Распознавание выполняется на устройстве. Это <strong>не сертифицированное устройство безопасности</strong>.'
+      en: 'KCY Baby Radar is a camera-based awareness assistant that watches your child through the phone camera and alerts you on motion. Detection runs on-device. It is <strong>not a certified safety device</strong>.',
+      ru: 'KCY Baby Radar — помощник наблюдения на основе камеры: следит за ребёнком через камеру телефона и уведомляет о движении. Распознавание выполняется на устройстве. Это <strong>не сертифицированное устройство безопасности</strong>.'
     },
     device: {
       en: 'The camera video is analysed <strong>on the device and is never uploaded</strong>. Event snapshots, logs and settings stay in local storage on your device and are removed when you uninstall the app.',
@@ -390,10 +390,10 @@ const APPS = [
 
   // ── monitor-bot ──
   {
-    id: 'monitor-bot', name: 'Monitor Bot', hwPkg: 'com.kcy.monitorbot.hw', ruPkg: 'com.kcy.monitorbot.rustore',
+    id: 'monitor-bot', name: 'KCY Site Monitor', hwPkg: 'com.kcy.monitorbot.hw', ruPkg: 'com.kcy.monitorbot.rustore',
     pitch: {
-      en: 'Monitor Bot is an on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches.',
-      ru: 'Monitor Bot — наблюдатель на устройстве за любыми RSS/Atom-лентами или публичными JSON-API по вашему выбору: присылает локальное уведомление при появлении новой записи или совпадении ключевого слова.'
+      en: 'KCY Site Monitor is an on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches.',
+      ru: 'KCY Site Monitor — наблюдатель на устройстве за любыми RSS/Atom-лентами или публичными JSON-API по вашему выбору: присылает локальное уведомление при появлении новой записи или совпадении ключевого слова.'
     },
     device: {
       en: 'The monitors you create, their logs and your settings are stored <strong>only on your device</strong>. There is no account and no cloud sync.',
@@ -410,10 +410,10 @@ const APPS = [
 
   // ── price-watch-bot ──
   {
-    id: 'price-watch-bot', name: 'Price Watch Bot', hwPkg: 'com.kcy.pricewatchbot.hw', ruPkg: 'com.kcy.pricewatchbot.rustore',
+    id: 'price-watch-bot', name: 'KCY Price Watch', hwPkg: 'com.kcy.pricewatchbot.hw', ruPkg: 'com.kcy.pricewatchbot.rustore',
     pitch: {
-      en: 'Price Watch Bot tracks selected crypto and currency rates and sends a local notification when a price crosses a threshold you set. It only reads prices from free public sources and never handles wallets or payments.',
-      ru: 'Price Watch Bot отслеживает выбранные крипто- и валютные курсы и присылает локальное уведомление, когда цена пересекает заданный вами порог. Он только читает цены из бесплатных публичных источников и не работает с кошельками или платежами.'
+      en: 'KCY Price Watch tracks selected crypto and currency rates and sends a local notification when a price crosses a threshold you set. It only reads prices from free public sources and never handles wallets or payments.',
+      ru: 'KCY Price Watch отслеживает выбранные крипто- и валютные курсы и присылает локальное уведомление, когда цена пересекает заданный вами порог. Он только читает цены из бесплатных публичных источников и не работает с кошельками или платежами.'
     },
     device: {
       en: 'Your watch list, thresholds and logs are stored <strong>only on your device</strong>. No wallet, no trading, no account.',
@@ -430,10 +430,10 @@ const APPS = [
 
   // ── market-pulse (образователен финансов анализатор) ──
   {
-    id: 'market-pulse', name: 'Market Pulse', hwPkg: 'com.kcy.marketpulse.hw', ruPkg: 'com.kcy.marketpulse.rustore',
+    id: 'market-pulse', name: 'KCY Market Pulse', hwPkg: 'com.kcy.marketpulse.hw', ruPkg: 'com.kcy.marketpulse.rustore',
     pitch: {
-      en: 'Market Pulse is an EDUCATIONAL market analyzer. It reads public market data (crypto, gold, stock indices, real-estate ETFs), market sentiment and news, computes classic indicators for a period you choose, and shows an educational reading. It is NOT investment advice, handles no wallets or payments, and has no account.',
-      ru: 'Market Pulse — ОБРАЗОВАТЕЛЬНЫЙ анализатор рынков. Он читает публичные рыночные данные (крипто, золото, биржевые индексы, ETF на недвижимость), настроение рынка и новости, рассчитывает классические индикаторы за выбранный период и показывает образовательный вывод. Это НЕ инвестиционный совет; нет кошельков, платежей и аккаунта.'
+      en: 'KCY Market Pulse is an EDUCATIONAL market analyzer. It reads public market data (crypto, gold, stock indices, real-estate ETFs), market sentiment and news, computes classic indicators for a period you choose, and shows an educational reading. It is NOT investment advice, handles no wallets or payments, and has no account.',
+      ru: 'KCY Market Pulse — ОБРАЗОВАТЕЛЬНЫЙ анализатор рынков. Он читает публичные рыночные данные (крипто, золото, биржевые индексы, ETF на недвижимость), настроение рынка и новости, рассчитывает классические индикаторы за выбранный период и показывает образовательный вывод. Это НЕ инвестиционный совет; нет кошельков, платежей и аккаунта.'
     },
     device: {
       en: 'Your language and app preferences are stored <strong>only on your device</strong>. There is no account, no wallet, no trading and no payments. All analysis is educational.',
@@ -450,10 +450,10 @@ const APPS = [
 
   // ── routine-bot ──
   {
-    id: 'routine-bot', name: 'Routine Bot', hwPkg: 'com.kcy.routinebot.hw', ruPkg: 'com.kcy.routinebot.rustore',
+    id: 'routine-bot', name: 'KCY Routine Planner', hwPkg: 'com.kcy.routinebot.hw', ruPkg: 'com.kcy.routinebot.rustore',
     pitch: {
-      en: 'Routine Bot is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.',
-      ru: 'Routine Bot — личный ежедневный помощник: утренний брифинг (погода, план, мотивация), напоминания о лекарствах, привычках и задачах, необязательное вечернее резюме и чтение ваших заметок вслух на 15 языках.'
+      en: 'KCY Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.',
+      ru: 'KCY Routine Planner — личный ежедневный помощник: утренний брифинг (погода, план, мотивация), напоминания о лекарствах, привычках и задачах, необязательное вечернее резюме и чтение ваших заметок вслух на 15 языках.'
     },
     device: {
       en: 'Your reminders, notes, habits and settings are stored <strong>only on your device</strong>. Text-to-speech uses your device’s speaker. There is no account and no cloud.',
@@ -473,10 +473,10 @@ const APPS = [
 
   // ── autoreply-bot ──
   {
-    id: 'autoreply-bot', name: 'Auto-Reply Bot', hwPkg: 'com.kcy.autoreplybot.hw', ruPkg: 'com.kcy.autoreplybot.rustore',
+    id: 'autoreply-bot', name: 'KCY Auto Answer', hwPkg: 'com.kcy.autoreplybot.hw', ruPkg: 'com.kcy.autoreplybot.rustore',
     pitch: {
-      en: 'Auto-Reply Bot answers messages for you by your own rules: keyword triggers with ready replies, office hours, away messages and allow/block lists, with a built-in demo inbox to test everything.',
-      ru: 'Auto-Reply Bot отвечает на сообщения за вас по вашим правилам: триггеры по ключевым словам с готовыми ответами, рабочие часы, сообщения об отсутствии и списки разрешённых/заблокированных, со встроенным демо-ящиком для проверки.'
+      en: 'KCY Auto Answer answers messages for you by your own rules: keyword triggers with ready replies, office hours, away messages and allow/block lists, with a built-in demo inbox to test everything.',
+      ru: 'KCY Auto Answer отвечает на сообщения за вас по вашим правилам: триггеры по ключевым словам с готовыми ответами, рабочие часы, сообщения об отсутствии и списки разрешённых/заблокированных, со встроенным демо-ящиком для проверки.'
     },
     device: {
       en: 'Your rules and reply logs are stored <strong>only on your device</strong>. The core works fully offline; no contacts are read.',
@@ -493,10 +493,10 @@ const APPS = [
 
   // ── business-faq-bot ──
   {
-    id: 'business-faq-bot', name: 'Business FAQ Bot', hwPkg: 'com.kcy.businessfaqbot.hw', ruPkg: 'com.kcy.businessfaqbot.rustore',
+    id: 'business-faq-bot', name: 'KCY FAQ Desk', hwPkg: 'com.kcy.businessfaqbot.hw', ruPkg: 'com.kcy.businessfaqbot.rustore',
     pitch: {
-      en: 'Business FAQ Bot automatically answers your customers’ frequently asked questions from a keyword FAQ knowledge base, with greetings, office-hours messages, quick replies and a fallback to a human. It runs entirely on-device with no paid AI.',
-      ru: 'Business FAQ Bot автоматически отвечает на частые вопросы клиентов из базы FAQ по ключевым словам, с приветствиями, сообщениями о рабочих часах, быстрыми ответами и передачей человеку. Работает полностью на устройстве без платного ИИ.'
+      en: 'KCY FAQ Desk automatically answers your customers’ frequently asked questions from a keyword FAQ knowledge base, with greetings, office-hours messages, quick replies and a fallback to a human. It runs entirely on-device with no paid AI.',
+      ru: 'KCY FAQ Desk автоматически отвечает на частые вопросы клиентов из базы FAQ по ключевым словам, с приветствиями, сообщениями о рабочих часах, быстрыми ответами и передачей человеку. Работает полностью на устройстве без платного ИИ.'
     },
     device: {
       en: 'The FAQ knowledge base and settings are stored <strong>only on your device</strong>. Answering works fully offline.',
@@ -549,14 +549,14 @@ const APPS = [
 
   // ── selflearning-friend ──
   {
-    id: 'selflearning-friend', name: 'Self-Learning Friend', hwPkg: 'com.kcy.selflearningfriend.hw', ruPkg: 'com.kcy.selflearningfriend.rustore',
+    id: 'selflearning-friend', name: 'KCY Learning Buddy', hwPkg: 'com.kcy.selflearningfriend.hw', ruPkg: 'com.kcy.selflearningfriend.rustore',
     genAI: {
       en: 'The app is a self-learning AI companion. It generates conversation and learns from public web knowledge on-device. It has <strong>no developer AI backend collecting your data</strong>; knowledge and translation come from the public sources listed above, and everything the companion learns and remembers stays on your device.',
       ru: 'Приложение — самообучающийся ИИ-компаньон. Он ведёт беседу и учится из публичных веб-знаний на устройстве. У него <strong>нет разработческого ИИ-бэкенда, собирающего ваши данные</strong>; знания и перевод берутся из перечисленных выше публичных источников, а всё, что компаньон выучил и запомнил, остаётся на вашем устройстве.'
     },
     pitch: {
-      en: 'Self-Learning Friend is a private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns stays on your device, tied to a secret code word only you know.',
-      ru: 'Self-Learning Friend — личный ИИ-компаньон, которого вы называете и обучаете сами: общается голосом или текстом, учится из интернета и может «видеть» через камеру. Всё, что он узнаёт, остаётся на вашем устройстве и защищено секретным кодовым словом, известным только вам.'
+      en: 'KCY Learning Buddy is a private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns stays on your device, tied to a secret code word only you know.',
+      ru: 'KCY Learning Buddy — личный ИИ-компаньон, которого вы называете и обучаете сами: общается голосом или текстом, учится из интернета и может «видеть» через камеру. Всё, что он узнаёт, остаётся на вашем устройстве и защищено секретным кодовым словом, известным только вам.'
     },
     device: {
       en: 'There is <strong>no developer account or sign-in</strong>; access is guarded by a code word you choose. The companion’s name, everything it learns, your conversations and habits are stored <strong>only on your device</strong> and are not uploaded by us.',

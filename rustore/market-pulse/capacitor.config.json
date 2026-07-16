@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.marketpulse.rustore",
-  "appName": "Market Pulse",
+  "appName": "KCY Market Pulse",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

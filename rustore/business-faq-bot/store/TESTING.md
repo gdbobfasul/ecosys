@@ -1,4 +1,4 @@
-# TESTING — Бизнес FAQ робот (RUStore)
+# TESTING — KCY FAQ Desk (RUStore)
 
 ## Тест в браузър (работи СЕГА, без Android SDK)
 1. `npm install`

@@ -1,5 +1,6 @@
-// Version: 1.0017
-// settings.js — настройки: безплатен AI enhancer, поведение на заключването, нулиране, бекъп/пренасяне.
+// Version: 1.0021
+// settings.js — настройки: безплатен AI enhancer, поведение на заключването, нулиране, бекъп/пренасяне,
+// секция „Пакети знание" (пълният списък + недостъпните с условията им).
 import { el, clear, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
 import { lock } from '../core/identity.js';
@@ -19,6 +20,7 @@ import {
 import { dataMode, setDataMode, personalMemoryCount, forgetPersonalData } from '../core/privacy.js';
 import { LANGUAGES } from '../core/languages.js';
 import { getRecoveryCfg, setRecoveryCfg, saveSettingsFile, saveKnowledgeFile, restoreFromPickedFile, deleteLocalFiles } from '../core/recovery.js';
+import { listBundledPacks, importBundledPack, loadedThemes, catalogUrl, isAdminUnlocked } from '../core/packs.js';
 import { t, tf } from '../core/i18n.js';
 
 const APP_ID = 'com.kcy.selflearningfriend.rustore';
@@ -335,6 +337,72 @@ export function renderSettings(root, { rerender, openLangPicker }) {
     stratSelect,
     stratNote
   ]));
+
+  // --- 📦 Пакети знание: обяснение + ПЪЛНИЯТ списък. Недостъпното НЕ се крие — показва се
+  // като „🔒 Недостъпен" + при какви УСЛОВИЯ става достъпно (искане на собственика). ---
+  (() => {
+    const dbFull = (() => { try { return dbSizeMB() >= maxDbMB(); } catch (_) { return false; } })();
+    const loadedBundled = new Set(loadedThemes().map((x) => x.bundled).filter(Boolean));
+    const listBox = el('div', {});
+    function renderPackList() {
+      clear(listBox);
+      for (const p of listBundledPacks()) {
+        const info = el('div', {}, [
+          el('div', { style: 'font-size:14px' }, p.name),
+          el('div', { class: 'muted', style: 'font-size:12px' }, tf('pk_records', p.count))
+        ]);
+        let right;
+        if (loadedBundled.has(p.id)) {
+          right = el('span', { class: 'muted', style: 'font-size:13px;white-space:nowrap' }, t('pk_loaded'));
+        } else if (dbFull) {
+          // реално условие: пълна база → зареждането е „забранено", условието е изписано горе
+          right = el('span', { class: 'muted', style: 'font-size:13px;white-space:nowrap' }, t('pk_locked'));
+        } else {
+          right = el('button', {
+            class: 'secondary', style: 'font-size:12px;padding:6px 10px;white-space:nowrap',
+            onclick: () => {
+              const r = importBundledPack(p.id);
+              if (r && r.ok) {
+                toast(tf('pk_load_result', p.name, (r.added || 0) + (r.termNotes || 0)));
+                loadedBundled.add(p.id);
+                renderPackList();
+              } else { toast((r && r.reason) || '…'); }
+            }
+          }, t('pk_load'));
+        }
+        listBox.appendChild(el('div', { class: 'toggle', style: 'margin-top:6px;align-items:center;gap:8px' }, [info, right]));
+      }
+    }
+    renderPackList();
+    // Каталогът от сървъра: достъпен само при връзка/зададен URL — иначе 🔒 + условието.
+    const catUrl = (() => { try { return catalogUrl(); } catch (_) { return ''; } })();
+    const catStatus = catUrl
+      ? el('div', { class: 'muted', style: 'font-size:13px;margin-top:4px' }, tf('pk_catalog_ok', catUrl))
+      : el('div', { style: 'margin-top:4px' }, [
+          el('div', { style: 'font-size:13px' }, t('pk_locked')),
+          el('div', { class: 'muted', style: 'font-size:12px' }, t('pk_catalog_cond'))
+        ]);
+    // Админските речници: видими за ВСИЧКИ, но заключени — с ясното условие за отключване.
+    const admStatus = isAdminUnlocked()
+      ? el('div', { class: 'muted', style: 'font-size:13px;margin-top:4px' }, t('pk_admin_ok'))
+      : el('div', { style: 'margin-top:4px' }, [
+          el('div', { style: 'font-size:13px' }, t('pk_locked')),
+          el('div', { class: 'muted', style: 'font-size:12px' }, t('pk_admin_cond'))
+        ]);
+    root.appendChild(el('div', { class: 'card' }, [
+      el('h3', {}, t('pk_title')),
+      el('p', { class: 'muted', style: 'font-size:13px' }, t('pk_explain')),
+      dbFull ? el('p', { style: 'font-size:13px' }, tf('pk_full_cond', (() => { try { return dbSizeMB().toFixed(1); } catch (_) { return '?'; } })(), maxDbMB())) : null,
+      el('div', { style: 'font-weight:600;margin-top:8px' }, t('pk_builtin_title')),
+      listBox,
+      el('div', { style: 'font-weight:600;margin-top:14px' }, t('pk_catalog_title')),
+      el('div', { class: 'muted', style: 'font-size:12px' }, t('pk_catalog_desc')),
+      catStatus,
+      el('div', { style: 'font-weight:600;margin-top:14px' }, t('pk_admin_title')),
+      el('div', { class: 'muted', style: 'font-size:12px' }, t('pk_admin_desc')),
+      admStatus
+    ]));
+  })();
 
   // --- Интереси (за ротацията на автономното учене) ---
   const interestInput = el('input', { type: 'text', placeholder: t('set_interest_ph') });

@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: Битка на терен HMM (huawei издание). Генерирано от AppPublisherBot.
+# Приложение: KCY Field Battle (huawei издание). Генерирано от AppPublisherBot.
 
 [Set basic app information]
 App type: Game (игра)
-App name: Битка на терен HMM            # 18 / 30 знака
+App name: KCY Field Battle            # 16 / 30 знака
 App package name: com.kcy.hmm.hw   # 14 / 128 знака
 Level-1 app category: Games
 

@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.rustam.rustore",
-  "appName": "Рустам",
+  "appName": "Рустам бере краставици",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

@@ -1,4 +1,4 @@
-# Data Safety — Auto-Reply Bot (Huawei AppGallery)
+# Data Safety — KCY Auto Answer (Huawei AppGallery)
 
 **Сбор на данни:** НЯМА.
 **Споделяне на данни:** НЯМА.

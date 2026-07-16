@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.selflearningfriend.hw",
-  "appName": "Самообучаващ се приятел",
+  "appName": "KCY Learning Buddy",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

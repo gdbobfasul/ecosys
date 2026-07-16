@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: Рутина-робот (huawei издание). Генерирано от AppPublisherBot.
+# Приложение: KCY Routine Planner (huawei издание). Генерирано от AppPublisherBot.
 
 [Set basic app information]
 App type: App (приложение, НЕ игра)
-App name: Рутина-робот            # 12 / 30 знака
+App name: KCY Routine Planner            # 19 / 30 знака
 App package name: com.kcy.routinebot.hw   # 21 / 128 знака
 Level-1 app category: Productivity
 

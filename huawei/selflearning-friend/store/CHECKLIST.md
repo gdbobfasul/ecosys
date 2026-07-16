@@ -1,8 +1,8 @@
-# Чеклист за публикуване — Самообучаващ се приятел (Huawei)
+# Чеклист за публикуване — KCY Learning Buddy (Huawei)
 
 ## Идентичност
 - [ ] App ID: `com.kcy.selflearningfriend.huawei`
-- [ ] Име: „Самообучаващ се приятел“
+- [ ] Име: „KCY Learning Buddy“
 - [ ] Версия и versionCode зададени
 
 ## Ресурси

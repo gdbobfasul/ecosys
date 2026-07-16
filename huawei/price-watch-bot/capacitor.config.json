@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.pricewatchbot.hw",
-  "appName": "Цена-робот",
+  "appName": "KCY Price Watch",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

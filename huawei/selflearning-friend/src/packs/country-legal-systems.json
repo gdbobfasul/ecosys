@@ -1,0 +1,1190 @@
+{
+ "name": "Правни системи на държавите (кодекси)",
+ "topic": "право",
+ "source": "CIA World Factbook + WIPO Lex",
+ "seedInterests": false,
+ "terms": [
+  {
+   "term": "Правна система на Австралия",
+   "definition": "Правна система (на английски, CIA World Factbook): common law system based on the English model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/AU — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/AU"
+  },
+  {
+   "term": "Правна система на Австрия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; Constitutional Court reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/AT — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/AT"
+  },
+  {
+   "term": "Правна система на Азербайджан",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/AZ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/AZ"
+  },
+  {
+   "term": "Правна система на Албания",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system except in the northern rural areas where customary law known as the \"Code of Leke\" is still present. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/AL — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/AL"
+  },
+  {
+   "term": "Правна система на Алжир",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of French civil law and Islamic law; judicial review of legislative acts in ad hoc Constitutional Council composed of various public officials including several Supreme Court justices. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/DZ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/DZ"
+  },
+  {
+   "term": "Правна система на Ангола",
+   "definition": "Правна система (на английски, CIA World Factbook): civil legal system based on Portuguese civil law; no judicial review of legislation. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/AO — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/AO"
+  },
+  {
+   "term": "Правна система на Андора",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed legal system of civil and customary law with the influence of canon (religious) law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/AD — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/AD"
+  },
+  {
+   "term": "Правна система на Антигуа и Барбуда",
+   "definition": "Правна система (на английски, CIA World Factbook): common law based on the English model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/AG — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/AG"
+  },
+  {
+   "term": "Правна система на Аржентина",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on Western European legal systems. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/AR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/AR"
+  },
+  {
+   "term": "Правна система на Армения",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/AM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/AM"
+  },
+  {
+   "term": "Правна система на Афганистан",
+   "definition": "Правна система (на английски, CIA World Factbook): the Taliban is implementing its own interpretation of Islamic law, which is partially based on the Hanifi school of Islamic jurisprudence and have enforced strict punishments; before the Taliban takeover, Afghanistan had a mixed legal system of civil, customary, and Islamic law (2021). Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/AF — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/AF"
+  },
+  {
+   "term": "Правна система на Бангладеш",
+   "definition": "Правна система (на английски, CIA World Factbook): common law, incorporating elements of English common law; since independence, statutory law has been the primary form of legislation; Islamic law applies to Muslims in family and inheritance laws, with Hindu personal law applying to Hindus and Buddhists. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BD — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BD"
+  },
+  {
+   "term": "Правна система на Барбадос",
+   "definition": "Правна система (на английски, CIA World Factbook): English common law; no judicial review of legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BB — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BB"
+  },
+  {
+   "term": "Правна система на Бахамски острови",
+   "definition": "Правна система (на английски, CIA World Factbook): common-law system based on the English model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BS — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BS"
+  },
+  {
+   "term": "Правна система на Бахрейн",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed legal system of Islamic (sharia) law, English common law, Egyptian civil, criminal, and commercial codes; customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BH — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BH"
+  },
+  {
+   "term": "Правна система на Беларус",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BY — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BY"
+  },
+  {
+   "term": "Правна система на Белгия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the French Civil Code; judicial review of legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BE"
+  },
+  {
+   "term": "Правна система на Белиз",
+   "definition": "Правна система (на английски, CIA World Factbook): English common law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BZ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BZ"
+  },
+  {
+   "term": "Правна система на Бенин",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system modeled largely on the French system and some customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BJ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BJ"
+  },
+  {
+   "term": "Правна система на Боливия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system with influences from Roman, Spanish, canon (religious), French, and ethnic groups' pre-colonial law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BO — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BO"
+  },
+  {
+   "term": "Правна система на Босна и Херцеговина",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; Constitutional Court review of legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BA"
+  },
+  {
+   "term": "Правна система на Ботсвана",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed legal system of civil law influenced by the Roman-Dutch model, including customary and common law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BW — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BW"
+  },
+  {
+   "term": "Правна система на Бразилия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BR"
+  },
+  {
+   "term": "Правна система на Бруней",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed legal system based on English common law and Islamic law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BN — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BN"
+  },
+  {
+   "term": "Правна система на Буркина Фасо",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law based on the French model and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BF — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BF"
+  },
+  {
+   "term": "Правна система на Бурунди",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed legal system of Belgian civil law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BI — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BI"
+  },
+  {
+   "term": "Правна система на Бутан",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law based on Buddhist religious law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BT — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BT"
+  },
+  {
+   "term": "Правна система на България",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/BG — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/BG"
+  },
+  {
+   "term": "Правна система на Вануату",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law, French law, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/VU — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/VU"
+  },
+  {
+   "term": "Правна система на Ватикан",
+   "definition": "Правна система (на английски, CIA World Factbook): religious system based on canon (religious) law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/VA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/VA"
+  },
+  {
+   "term": "Правна система на Венецуела",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the Spanish civil code. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/VE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/VE"
+  },
+  {
+   "term": "Правна система на Виетнам",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system with European influences. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/VN — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/VN"
+  },
+  {
+   "term": "Правна система на Габон",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of French civil law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GA"
+  },
+  {
+   "term": "Правна система на Гамбия",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law, Islamic law, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GM"
+  },
+  {
+   "term": "Правна система на Гана",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GH — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GH"
+  },
+  {
+   "term": "Правна система на Гаяна",
+   "definition": "Правна система (на английски, CIA World Factbook): common law system, based on the English model, with some Roman-Dutch civil law influence. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GY — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GY"
+  },
+  {
+   "term": "Правна система на Гватемала",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; judicial review of legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GT — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GT"
+  },
+  {
+   "term": "Правна система на Гвинея",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the French model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GN — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GN"
+  },
+  {
+   "term": "Правна система на Гвинея-Бисау",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil law, which incorporated Portuguese law at independence; influenced by Economic Community of West African States (ECOWAS), West African Economic and Monetary Union (UEMOA), African Francophone Public Law, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GW — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GW"
+  },
+  {
+   "term": "Правна система на Германия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/DE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/DE"
+  },
+  {
+   "term": "Правна система на Гренада",
+   "definition": "Правна система (на английски, CIA World Factbook): common law based on English model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GD — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GD"
+  },
+  {
+   "term": "Правна система на Грузия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GE"
+  },
+  {
+   "term": "Правна система на Гърция",
+   "definition": "Правна система (на английски, CIA World Factbook): civil legal system based on Roman law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GR"
+  },
+  {
+   "term": "Правна система на Демократична република Конго",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system primarily based on Belgian law, but also customary and tribal law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CD — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CD"
+  },
+  {
+   "term": "Правна система на Джибути",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system based primarily on the French civil code (as it existed in 1997), Islamic religious law (in matters of family law and successions), and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/DJ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/DJ"
+  },
+  {
+   "term": "Правна система на Доминика",
+   "definition": "Правна система (на английски, CIA World Factbook): common law based on the English model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/DM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/DM"
+  },
+  {
+   "term": "Правна система на Доминиканска република",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the French civil code; Criminal Procedures Code modified in 2004 to include important elements of an accusatory system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/DO — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/DO"
+  },
+  {
+   "term": "Правна система на Държава Палестина",
+   "definition": "Собствена правна система. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/PS — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/PS"
+  },
+  {
+   "term": "Правна система на Египет",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system based on Napoleonic civil and penal law, Islamic religious law, and vestiges of colonial-era laws; Supreme Constitutional Court reviews laws. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/EG — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/EG"
+  },
+  {
+   "term": "Правна система на Еквадор",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law based on the Chilean civil code with modifications; traditional law in ethnic communities. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/EC — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/EC"
+  },
+  {
+   "term": "Правна система на Екваториална Гвинея",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GQ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GQ"
+  },
+  {
+   "term": "Правна система на Еритрея",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil, customary, and Islamic religious law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/ER — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/ER"
+  },
+  {
+   "term": "Правна система на Есватини",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil, common, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SZ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SZ"
+  },
+  {
+   "term": "Правна система на Естония",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/EE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/EE"
+  },
+  {
+   "term": "Правна система на Етиопия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/ET — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/ET"
+  },
+  {
+   "term": "Правна система на Замбия",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/ZM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/ZM"
+  },
+  {
+   "term": "Правна система на Зимбабве",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law, Roman-Dutch civil law, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/ZW — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/ZW"
+  },
+  {
+   "term": "Правна система на Израел",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law, British Mandate regulations, and Jewish, Christian, and Muslim religious laws. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/IL — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/IL"
+  },
+  {
+   "term": "Правна система на Източен Тимор",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the Portuguese model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TL — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TL"
+  },
+  {
+   "term": "Правна система на Индия",
+   "definition": "Правна система (на английски, CIA World Factbook): common law system based on the English model; separate personal law codes apply to Muslims, Christians, and Hindus; judicial review of legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/IN — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/IN"
+  },
+  {
+   "term": "Правна система на Индонезия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the Roman-Dutch model and influenced by customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/ID — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/ID"
+  },
+  {
+   "term": "Правна система на Ирак",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil and Islamic law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/IQ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/IQ"
+  },
+  {
+   "term": "Правна система на Иран",
+   "definition": "Правна система (на английски, CIA World Factbook): religious system based on secular and Islamic law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/IR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/IR"
+  },
+  {
+   "term": "Правна система на Ирландия",
+   "definition": "Правна система (на английски, CIA World Factbook): common law system based on the English model but substantially modified by customary law; Supreme Court reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/IE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/IE"
+  },
+  {
+   "term": "Правна система на Исландия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system influenced by the Danish model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/IS — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/IS"
+  },
+  {
+   "term": "Правна система на Испания",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system with regional variations. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/ES — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/ES"
+  },
+  {
+   "term": "Правна система на Италия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; Constitutional Court reviews legislation under certain conditions. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/IT — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/IT"
+  },
+  {
+   "term": "Правна система на Йемен",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of Islamic (sharia) law, Napoleonic law, English common law, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/YE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/YE"
+  },
+  {
+   "term": "Правна система на Йордания",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system developed from Ottoman Empire codes (based on French law), British common law, and Islamic law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/JO — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/JO"
+  },
+  {
+   "term": "Правна система на Кабо Верде",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system of Portugal. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CV — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CV"
+  },
+  {
+   "term": "Правна система на Казахстан",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system influenced by Roman-Germanic law and by the theory and practice of the Russian Federation. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/KZ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/KZ"
+  },
+  {
+   "term": "Правна система на Камбоджа",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system (influenced by the UN Transitional Authority in Cambodia), customary law, Communist legal theory, and common law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/KH — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/KH"
+  },
+  {
+   "term": "Правна система на Камерун",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law, French civil law, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CM"
+  },
+  {
+   "term": "Правна система на Канада",
+   "definition": "Правна система (на английски, CIA World Factbook): common law system except in Quebec, where civil law based on the French civil code prevails. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CA"
+  },
+  {
+   "term": "Правна система на Катар",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil law and Islamic (sharia) law (in family and personal matters). Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/QA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/QA"
+  },
+  {
+   "term": "Правна система на Кения",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law, Islamic law, and customary law; Supreme Court reviews laws. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/KE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/KE"
+  },
+  {
+   "term": "Правна система на Кипър",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and civil law, with European law supremacy. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CY — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CY"
+  },
+  {
+   "term": "Правна система на Киргизстан",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system that includes features of French civil law and Russian Federation laws. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/KG — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/KG"
+  },
+  {
+   "term": "Правна система на Кирибати",
+   "definition": "Правна система (на английски, CIA World Factbook): English common law supplemented by customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/KI — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/KI"
+  },
+  {
+   "term": "Правна система на Китай",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law influenced by Soviet and continental European civil law systems; legislature retains power to interpret statutes. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CN — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CN"
+  },
+  {
+   "term": "Правна система на Колумбия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system influenced by the Spanish and French civil codes. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CO — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CO"
+  },
+  {
+   "term": "Правна система на Коморски острови",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed legal system of Islamic religious law, the French civil code of 1975, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/KM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/KM"
+  },
+  {
+   "term": "Правна система на Косово",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/XK — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/XK"
+  },
+  {
+   "term": "Правна система на Коста Рика",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on Spanish civil code; Supreme Court reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CR"
+  },
+  {
+   "term": "Правна система на Кот д'Ивоар",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the French civil code; Constitutional Chamber of the Supreme Court reviews legislation. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CI — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CI"
+  },
+  {
+   "term": "Правна система на Кралство Дания",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law; judicial review of legislative acts. Пълните закони и кодекси: https://www.wipo.int/wipolex/ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": ""
+  },
+  {
+   "term": "Правна система на Кралство Нидерландия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the French system; constitution does not permit judicial review of acts of the States General. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/NL — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/NL"
+  },
+  {
+   "term": "Правна система на Куба",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on Spanish civil code. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CU — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CU"
+  },
+  {
+   "term": "Правна система на Кувейт",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system consisting of English common law, French civil law, and Islamic sharia law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/KW — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/KW"
+  },
+  {
+   "term": "Правна система на Лаос",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system similar in form to the French system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/LA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/LA"
+  },
+  {
+   "term": "Правна система на Латвия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system with traces of socialist legal traditions and practices. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/LV — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/LV"
+  },
+  {
+   "term": "Правна система на Лесото",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and Roman-Dutch law; High Court and Court of Appeal review legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/LS — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/LS"
+  },
+  {
+   "term": "Правна система на Либерия",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of common law, based on Anglo-American law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/LR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/LR"
+  },
+  {
+   "term": "Правна система на Либия",
+   "definition": "Правна система (на английски, CIA World Factbook): Libya's post-revolution system is in flux and driven by state and non-state entities. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/LY — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/LY"
+  },
+  {
+   "term": "Правна система на Ливан",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil law based on the French civil code, Ottoman legal tradition, and religious laws covering personal status, marriage, divorce, and other family relations of the Jewish, Islamic, and Christian communities. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/LB — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/LB"
+  },
+  {
+   "term": "Правна система на Литва",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; legislative acts can be appealed to the Constitutional Court. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/LT — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/LT"
+  },
+  {
+   "term": "Правна система на Лихтенщайн",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system influenced by Swiss, Austrian, and German law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/LI — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/LI"
+  },
+  {
+   "term": "Правна система на Люксембург",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/LU — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/LU"
+  },
+  {
+   "term": "Правна система на Мавритания",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of Islamic and French civil law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MR"
+  },
+  {
+   "term": "Правна система на Мавриций",
+   "definition": "Правна система (на английски, CIA World Factbook): civil system based on French civil law with some elements of English common law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MU — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MU"
+  },
+  {
+   "term": "Правна система на Мадагаскар",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the old French civil code and customary law in matters of marriage, family, and obligation. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MG — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MG"
+  },
+  {
+   "term": "Правна система на Малави",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and customary law; Supreme Court of Appeal reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MW — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MW"
+  },
+  {
+   "term": "Правна система на Малайзия",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law, Islamic law (sharia), and customary law; the Federal Court can review legislative acts at the request of the supreme head of the federation. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MY — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MY"
+  },
+  {
+   "term": "Правна система на Малдиви",
+   "definition": "Правна система (на английски, CIA World Factbook): Islamic (sharia) legal system with English common law influences, primarily in commercial matters. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MV — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MV"
+  },
+  {
+   "term": "Правна система на Мали",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the French civil law model and influenced by customary law; Constitutional Court reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/ML — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/ML"
+  },
+  {
+   "term": "Правна система на Малта",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and civil law based on the Roman and Napoleonic civil codes; subject to European Union law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MT — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MT"
+  },
+  {
+   "term": "Правна система на Мароко",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil law based on French civil law and Islamic (sharia) law; Constitutional Court reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MA"
+  },
+  {
+   "term": "Правна система на Маршалови острови",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of US and English common law, customary law, and local statutes. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MH — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MH"
+  },
+  {
+   "term": "Правна система на Мексико",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system with US constitutional law influence; judicial review of legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MX — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MX"
+  },
+  {
+   "term": "Правна система на Мианмар",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed legal system of English common law (as introduced in codifications designed for colonial India) and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MM"
+  },
+  {
+   "term": "Правна система на Микронезия (държава)",
+   "definition": "Собствена правна система. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/FM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/FM"
+  },
+  {
+   "term": "Правна система на Мозамбик",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of Portuguese civil law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MZ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MZ"
+  },
+  {
+   "term": "Правна система на Молдова",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system with Germanic law influences; Constitutional Court reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MD — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MD"
+  },
+  {
+   "term": "Правна система на Монако",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system influenced by French legal tradition. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MC — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MC"
+  },
+  {
+   "term": "Правна система на Монголия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system influenced by Soviet and Romano-Germanic systems; constitution ambiguous on judicial review of legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MN — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MN"
+  },
+  {
+   "term": "Правна система на Намибия",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of uncodified civil law based on Roman-Dutch law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/NA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/NA"
+  },
+  {
+   "term": "Правна система на Науру",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of common law based on the English model and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/NR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/NR"
+  },
+  {
+   "term": "Правна система на Непал",
+   "definition": "Правна система (на английски, CIA World Factbook): English common law and Hindu legal concepts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/NP — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/NP"
+  },
+  {
+   "term": "Правна система на Нигер",
+   "definition": "Правна система (на английски, CIA World Factbook): <strong>note:</strong> following the 26 July 2023 military coup, the National Council for the Safeguard of the Homeland assumed control of all government institutions and rules by decree; formerly, mixed system of civil law, based on French civil law, Islamic law, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/NE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/NE"
+  },
+  {
+   "term": "Правна система на Нигерия",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law, Islamic law (in 12 northern states), and traditional law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/NG — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/NG"
+  },
+  {
+   "term": "Правна система на Никарагуа",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; Supreme Court may review administrative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/NI — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/NI"
+  },
+  {
+   "term": "Правна система на Нова Зеландия",
+   "definition": "Правна система (на английски, CIA World Factbook): common law system, based on English model, with special legislation and land courts for the Maori. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/NZ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/NZ"
+  },
+  {
+   "term": "Правна система на Норвегия",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil, common, and customary law; Supreme Court can advise on legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/NO — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/NO"
+  },
+  {
+   "term": "Правна система на Обединени арабски емирства",
+   "definition": "Собствена правна система. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/AE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/AE"
+  },
+  {
+   "term": "Правна система на Обединено кралство",
+   "definition": "Правна система (на английски, CIA World Factbook): common law system; has nonbinding judicial review of Acts of Parliament under the Human Rights Act of 1998. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/GB — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/GB"
+  },
+  {
+   "term": "Правна система на Оман",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of Anglo-Saxon law and Islamic law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/OM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/OM"
+  },
+  {
+   "term": "Правна система на Пакистан",
+   "definition": "Правна система (на английски, CIA World Factbook): common law system with Islamic law influence. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/PK — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/PK"
+  },
+  {
+   "term": "Правна система на Палау",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil, common, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/PW — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/PW"
+  },
+  {
+   "term": "Правна система на Панама",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; Supreme Court of Justice reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/PA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/PA"
+  },
+  {
+   "term": "Правна система на Папуа Нова Гвинея",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/PG — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/PG"
+  },
+  {
+   "term": "Правна система на Парагвай",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system with influences from Argentine, Spanish, Roman, and French civil law models; Supreme Court of Justice reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/PY — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/PY"
+  },
+  {
+   "term": "Правна система на Перу",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/PE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/PE"
+  },
+  {
+   "term": "Правна система на Полша",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; judicial review of legislative, administrative, and other governmental acts; constitutional law rulings of the Constitutional Tribunal are final. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/PL — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/PL"
+  },
+  {
+   "term": "Правна система на Португалия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; Constitutional Court reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/PT — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/PT"
+  },
+  {
+   "term": "Правна система на Република Китай",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TW — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TW"
+  },
+  {
+   "term": "Правна система на Република Конго",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of French civil law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CG — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CG"
+  },
+  {
+   "term": "Правна система на Република Южна Африка",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of Roman-Dutch civil law, English common law, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/ZA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/ZA"
+  },
+  {
+   "term": "Правна система на Руанда",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil law, based on German and Belgian models, and customary law; Supreme Court reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/RW — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/RW"
+  },
+  {
+   "term": "Правна система на Румъния",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/RO — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/RO"
+  },
+  {
+   "term": "Правна система на Русия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; judicial review of legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/RU — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/RU"
+  },
+  {
+   "term": "Правна система на Салвадор",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system with minor common law influence; Supreme Court reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SV — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SV"
+  },
+  {
+   "term": "Правна система на Самоа",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and customary law; judicial review of legislative acts involving fundamental citizen rights. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/WS — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/WS"
+  },
+  {
+   "term": "Правна система на Сан Марино",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system with Italian civil law influences. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SM"
+  },
+  {
+   "term": "Правна система на Сао Томе и Принсипи",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil law based on the Portuguese model and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/ST — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/ST"
+  },
+  {
+   "term": "Правна система на Саудитска Арабия",
+   "definition": "Правна система (на английски, CIA World Factbook): Islamic (sharia) system with some elements of Egyptian, French, and customary law; commercial disputes handled by special committees. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SA"
+  },
+  {
+   "term": "Правна система на САЩ",
+   "definition": "Правна система (на английски, CIA World Factbook): common law system based on English common law at the federal level; state legal systems based on common law, except Louisiana, where state law is based on Napoleonic civil code; judicial review of legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/US — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/US"
+  },
+  {
+   "term": "Правна система на Северна Корея",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the Prussian model; influenced by Japanese traditions and Communist legal theory. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/KP — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/KP"
+  },
+  {
+   "term": "Правна система на Северна Македония",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; judicial review of legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/MK — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/MK"
+  },
+  {
+   "term": "Правна система на Сейнт Винсент и Гренадини",
+   "definition": "Правна система (на английски, CIA World Factbook): English common law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/VC — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/VC"
+  },
+  {
+   "term": "Правна система на Сейнт Китс и Невис",
+   "definition": "Правна система (на английски, CIA World Factbook): English common law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/KN — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/KN"
+  },
+  {
+   "term": "Правна система на Сейнт Лусия",
+   "definition": "Правна система (на английски, CIA World Factbook): English common law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/LC — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/LC"
+  },
+  {
+   "term": "Правна система на Сейшели",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law, French civil law, and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SC — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SC"
+  },
+  {
+   "term": "Правна система на Сенегал",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on French law; Constitutional Council reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SN — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SN"
+  },
+  {
+   "term": "Правна система на Сиера Леоне",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SL — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SL"
+  },
+  {
+   "term": "Правна система на Сингапур",
+   "definition": "Правна система (на английски, CIA World Factbook): English common law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SG — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SG"
+  },
+  {
+   "term": "Правна система на Сирия",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil and Islamic (sharia) law (for family courts). Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SY — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SY"
+  },
+  {
+   "term": "Правна система на Словакия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on Austro-Hungarian codes. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SK — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SK"
+  },
+  {
+   "term": "Правна система на Словения",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SI — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SI"
+  },
+  {
+   "term": "Правна система на Соломонови острови",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SB — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SB"
+  },
+  {
+   "term": "Правна система на Сомалия",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil law, Islamic (sharia) law, and customary law (referred to as Xeer). Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SO — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SO"
+  },
+  {
+   "term": "Правна система на Судан",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of Islamic law and English common law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SD — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SD"
+  },
+  {
+   "term": "Правна система на Суринам",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system influenced by Dutch civil law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SR"
+  },
+  {
+   "term": "Правна система на Сърбия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/RS — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/RS"
+  },
+  {
+   "term": "Правна система на Таджикистан",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TJ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TJ"
+  },
+  {
+   "term": "Правна система на Тайланд",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system with common law influences. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TH — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TH"
+  },
+  {
+   "term": "Правна система на Танзания",
+   "definition": "Правна система (на английски, CIA World Factbook): English common law; judicial review of legislative acts limited to matters of interpretation. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TZ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TZ"
+  },
+  {
+   "term": "Правна система на Того",
+   "definition": "Правна система (на английски, CIA World Factbook): customary law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TG — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TG"
+  },
+  {
+   "term": "Правна система на Тонга",
+   "definition": "Правна система (на английски, CIA World Factbook): English common law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TO — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TO"
+  },
+  {
+   "term": "Правна система на Тринидад и Тобаго",
+   "definition": "Правна система (на английски, CIA World Factbook): English common law; Supreme Court reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TT — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TT"
+  },
+  {
+   "term": "Правна система на Тувалу",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and local customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TV — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TV"
+  },
+  {
+   "term": "Правна система на Тунис",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil law, based on the French civil code and Islamic (sharia) law; Supreme Court reviews some legislative acts in joint session. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TN — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TN"
+  },
+  {
+   "term": "Правна система на Туркменистан",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system with Islamic (sharia) law influences. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TM"
+  },
+  {
+   "term": "Правна система на Турция",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on various European systems, notably the Swiss civil code. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TR"
+  },
+  {
+   "term": "Правна система на Уганда",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of English common law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/UG — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/UG"
+  },
+  {
+   "term": "Правна система на Узбекистан",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/UZ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/UZ"
+  },
+  {
+   "term": "Правна система на Украйна",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; judicial review of legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/UA — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/UA"
+  },
+  {
+   "term": "Правна система на Унгария",
+   "definition": "Правна система (на английски, CIA World Factbook): civil system influenced by the German model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/HU — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/HU"
+  },
+  {
+   "term": "Правна система на Уругвай",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the Spanish civil code. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/UY — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/UY"
+  },
+  {
+   "term": "Правна система на Фиджи",
+   "definition": "Правна система (на английски, CIA World Factbook): common law system based on the English model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/FJ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/FJ"
+  },
+  {
+   "term": "Правна система на Филипини",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil, common, Islamic (sharia), and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/PH — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/PH"
+  },
+  {
+   "term": "Правна система на Финландия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on the Swedish model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/FI — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/FI"
+  },
+  {
+   "term": "Правна система на Франция",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law; review of administrative but not legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/FR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/FR"
+  },
+  {
+   "term": "Правна система на Хаити",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system strongly influenced by Napoleonic Code. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/HT — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/HT"
+  },
+  {
+   "term": "Правна система на Хондурас",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/HN — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/HN"
+  },
+  {
+   "term": "Правна система на Хърватия",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system influenced by legal heritage of Austria-Hungary. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/HR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/HR"
+  },
+  {
+   "term": "Правна система на Централноафриканска република",
+   "definition": "Собствена правна система. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CF — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CF"
+  },
+  {
+   "term": "Правна система на Чад",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of civil and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/TD — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/TD"
+  },
+  {
+   "term": "Правна система на Черна гора",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/ME — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/ME"
+  },
+  {
+   "term": "Правна система на Чехия",
+   "definition": "Правна система (на английски, CIA World Factbook): new civil code enacted in 2014, replacing civil code of 1964 based on former Austro-Hungarian civil codes and socialist theory. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CZ — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CZ"
+  },
+  {
+   "term": "Правна система на Чили",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system influenced by several Western European civil legal systems; Constitutional Tribunal reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CL — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CL"
+  },
+  {
+   "term": "Правна система на Швейцария",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system; judicial review of legislative acts, except federal decrees of a general obligatory character. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/CH — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/CH"
+  },
+  {
+   "term": "Правна система на Швеция",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system influenced by Roman-Germanic law and customary law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SE — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SE"
+  },
+  {
+   "term": "Правна система на Шри Ланка",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system of Roman-Dutch civil law, English common law, Jaffna Tamil customary law, and Muslim personal law. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/LK — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/LK"
+  },
+  {
+   "term": "Правна система на Южен Судан",
+   "definition": "Собствена правна система. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/SS — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/SS"
+  },
+  {
+   "term": "Правна система на Южна Корея",
+   "definition": "Правна система (на английски, CIA World Factbook): mixed system combining European civil law, Anglo-American law, and Chinese classical thought. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/KR — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/KR"
+  },
+  {
+   "term": "Правна система на Ямайка",
+   "definition": "Правна система (на английски, CIA World Factbook): common law system based on the English model. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/JM — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/JM"
+  },
+  {
+   "term": "Правна система на Япония",
+   "definition": "Правна система (на английски, CIA World Factbook): civil law system based on German model; also reflects Anglo-American influence and Japanese traditions; Supreme Court reviews legislative acts. Пълните закони и кодекси (наказателен, граждански и др.): https://www.wipo.int/wipolex/en/members/profile/JP — кажи „анализирай <линк към закона>\", за да изуча конкретен кодекс.",
+   "source": "CIA World Factbook (обществено достояние) + WIPO Lex",
+   "url": "https://www.wipo.int/wipolex/en/members/profile/JP"
+  }
+ ]
+}

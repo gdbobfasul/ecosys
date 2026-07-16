@@ -1,4 +1,4 @@
-# Тестване — Самообучаващ се приятел (Huawei)
+# Тестване — KCY Learning Buddy (Huawei)
 
 ## Браузър (бързо)
 1. `npm install`

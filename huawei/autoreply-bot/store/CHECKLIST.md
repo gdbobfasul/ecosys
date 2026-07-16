@@ -1,4 +1,4 @@
-# Release Checklist — Auto-Reply Bot (Huawei AppGallery)
+# Release Checklist — KCY Auto Answer (Huawei AppGallery)
 
 ## Преди публикация
 - [ ] `npm install` минава без грешки.

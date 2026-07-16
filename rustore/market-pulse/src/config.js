@@ -5,7 +5,7 @@ export const STORE = 'rustore';
 export const ACCENT = '#0a84ff';   // RUStore син акцент
 export const ACCENT2 = '#5ac8fa';
 export const APP_ID = 'com.kcy.marketpulse.rustore';
-export const APP_NAME = 'Market Pulse';
+export const APP_NAME = 'KCY Market Pulse';
 
 // Колко често роботът прави реална проверка в браузъра (демо таймер).
 // На устройство планировчикът ползва интервала на всеки watch.

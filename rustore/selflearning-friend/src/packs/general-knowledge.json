@@ -1,0 +1,1040 @@
+{
+ "name": "Общи знания — основни теми (на английски)",
+ "topic": "общи знания",
+ "source": "Simple English Wikipedia (CC BY-SA)",
+ "seedInterests": false,
+ "terms": [
+  {
+   "term": "Africa",
+   "definition": "Africa is the second largest continent on Earth. It makes up about one-fifth of the world's total land area. It is surrounded by large areas of water. There are 54 fully recognised and independent countries in Africa, and 14.7% of the world's population lives there. It is thought to be the continent where the first humans evolved.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Africa"
+  },
+  {
+   "term": "Agriculture",
+   "definition": "Agriculture is made up of livestock production, aquaculture, fisheries, forestry, animal husbandry and farming. From agriculture one can get food and non-food products.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Agriculture"
+  },
+  {
+   "term": "Air",
+   "definition": "Air is the Earth's atmosphere. Air is a mixture of many gases and tiny dust particles. It is the clear gas in which living things live and breathe. It has an indefinite shape and volume. It has mass and weight, because it is matter. The weight of air creates atmospheric pressure. There is no air in outer space.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Air"
+  },
+  {
+   "term": "Airplane",
+   "definition": "An airplane, also known as an aeroplane or just plane, is a fixed-wing aircraft. It moves by thrust from a jet engine, propeller, or rocket engine. Airplanes come in many shapes and sizes. The use of aircraft is called aviation. Airplanes are used for many things including recreation, transportation of goods and people, military, and research.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Airplane"
+  },
+  {
+   "term": "Albert Einstein",
+   "definition": "Albert Einstein was a German-born Jewish scientist. He worked on theoretical physics. He is most famous for the theory of relativity. He won the Nobel Prize in Physics in 1921 for theoretical physics.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Albert_Einstein"
+  },
+  {
+   "term": "Alphabet",
+   "definition": "An alphabet is a writing system, a list of symbols for writing. The basic symbols in an alphabet are called letters. In an alphabet, each letter is a symbol for a sound or related sounds. To make the alphabet work better, more signs assist the reader: punctuation marks, spaces, standard reading direction, and so on.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Alphabet"
+  },
+  {
+   "term": "Ancient Egypt",
+   "definition": "Ancient Egypt was a society that began around 3150 BC and lasted until 30 BC, when it was invaded by the Romans.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Ancient_Egypt"
+  },
+  {
+   "term": "Ancient Greece",
+   "definition": "Ancient Greek civilization, also commonly called Ancient Greece, was a large area, mostly along the northeast shore of the Mediterranean Sea, where people spoke the Greek language. The area was much larger than today's country of Greece.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Ancient_Greece"
+  },
+  {
+   "term": "Animal",
+   "definition": "Animals are living creatures with many cells that make up the kingdom Animalia.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Animal"
+  },
+  {
+   "term": "Ant",
+   "definition": "Ants are a species of insect that live together in large colonies. They are in the family Formicidae. it is an authentic animal for organisation.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Ant"
+  },
+  {
+   "term": "Antarctica",
+   "definition": "Antarctica is the Earth's southernmost and the continent with the least people. It is on the South Pole. It is almost entirely south of the Antarctic Circle. Around Antarctica is the Southern Ocean. It is the fifth-largest continent in area after Asia, Africa, North America, and South America. About 99% of Antarctica is covered by ice. This ice averages at least 1.6 kilometers (1.0 miles) thick.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Antarctica"
+  },
+  {
+   "term": "Aristotle",
+   "definition": "Aristotle was a Greek philosopher. He was one of the most important philosophers in the history of Western civilization. Aristotle wrote many books, and some of those books survive. Aristotle tutored Alexander the Great when Alexander was a child.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Aristotle"
+  },
+  {
+   "term": "Art",
+   "definition": "Art is a creative activity. It produces a product, an object. Art is a diverse range of human activities in creating visual, performing subjects, and expressing the author's thoughts. The product of art is called a work of art, for others to experience.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Art"
+  },
+  {
+   "term": "Artificial intelligence",
+   "definition": "Artificial intelligence is a computer program or a machine that is able to learn and mimic human thinking. Sometimes the word AI is used to talk about neural networks or deep learning.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Artificial_intelligence"
+  },
+  {
+   "term": "Asia",
+   "definition": "Asia is the largest continent on Earth by area and number of people. It is mainly in the northern hemisphere. Asia is connected to Europe in the west and Africa on the south, and separated from North America at the east. Sometimes Asia and Europe are combined to form a larger continent called Eurasia. Some of the oldest human civilizations began in Asia, for example Sumer, China, and Pakistan. Asia was the birthplace of many religions, for example Hinduism, Zoroastrianism, Judaism, Jainism, Buddhism, Confucianism, Taoism, Christianity, Islam…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Asia"
+  },
+  {
+   "term": "Association football",
+   "definition": "Association football, or soccer, is a sport played between two teams. In the United States, Canada and Australia, it is called soccer. In most other English-speaking countries, it is called football. Association football is the most popular sport in the world.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Association_football"
+  },
+  {
+   "term": "Astronomy",
+   "definition": "Astronomy is the scientific study of celestial bodies. It is a major branch of space science. Stars, galaxies, planets, moons, asteroids, comets and nebulae are studied, as are supernovae explosions, gamma ray bursts, and cosmic microwave background radiation. Astronomy includes the development, physics, chemistry, meteorology and movement of celestial bodies. The big questions are the structure and development of the universe.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Astronomy"
+  },
+  {
+   "term": "Atlantic Ocean",
+   "definition": "The Atlantic Ocean is the world's second largest ocean. It covers a total area of about 106,400,000 square kilometres, about 20 percent of the Earth's surface.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Atlantic_Ocean"
+  },
+  {
+   "term": "Atom",
+   "definition": "An atom is an extremely small piece of matter. All normal matter – everything that has mass – is made of atoms. This includes solids, liquids, and gases. The atom cannot be broken to parts by chemistry, so people once thought it was the smallest piece of matter that could exist. There are over 100 different kinds of atoms, called chemical elements. Each kind has the same basic structure, but a different number of parts.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Atom"
+  },
+  {
+   "term": "Australia",
+   "definition": "Australia, officially the Commonwealth of Australia, is an island country and sovereign state located in the southern hemisphere, in Oceania! Its capital city is Canberra, and its largest city is Sydney. It is mostly a desert country.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Australia"
+  },
+  {
+   "term": "Automobile",
+   "definition": "A car, or an automobile, is a motor vehicle with wheels. Most definitions of cars state that they run primarily on roads, seat 1-8 people, have four wheels, and mainly transport people rather than cargo but are relatively smaller than a truck/lorry or a bus. There are around 1.644 billion cars in use worldwide as of January 2025.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Automobile"
+  },
+  {
+   "term": "Bacteria",
+   "definition": "Bacteria are very small organisms. They are prokaryotic microorganisms.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Bacteria"
+  },
+  {
+   "term": "Bank",
+   "definition": "A bank is a financial institution where customers can save or borrow money. Banks also invest money to build up their reserve of money. What they do is regulated by laws. Those laws differ in different countries. The people who work at a bank are called bank employees. Certain banks deal directly with the public and are the only ones that a regular person will work with. Other banks deal with investments and international currency trading.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Bank"
+  },
+  {
+   "term": "Bee",
+   "definition": "Bees are flying insects of the Hymenoptera, which also includes ants, wasps and sawflies. There are about 20,000 species of bees. Bees collect pollen from flowers. Bees can be found on all continents except Antarctica.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Bee"
+  },
+  {
+   "term": "Big Bang",
+   "definition": "The Big Bang is a physical theory about how the universe started expanding, and then made the stars and galaxies we see today. The Big Bang is the name that scientists use for the most common theory of the universe, from the very early stages to the present day.\nThe most commonly considered alternatives are called the Steady State theory and Plasma cosmology, according to both of which the universe has no beginning or end.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Big_Bang"
+  },
+  {
+   "term": "Biology",
+   "definition": "Biology is the science that studies life, living things, and the evolution of life. Living things include animals, plants, fungi, and microorganisms such as bacteria and archaea.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Biology"
+  },
+  {
+   "term": "Bird",
+   "definition": "Birds (Aves) are a group of animals with backbones. Birds are the only dinosaurs that survived the Cretaceous–Paleogene extinction, and are part of the theropod group of dinosaurs. The word for \"bird-like\" is avian, from Latin language avis, bird.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Bird"
+  },
+  {
+   "term": "Black hole",
+   "definition": "A black hole is a place in space where gravity is so strong that nothing can escape from it, even light. This idea comes from Albert Einstein's general theory of relativity. The outer edge of a black hole is called the event horizon. When something enters the black hole, it cannot get out. Black holes act like perfect black bodies, which means they do not reflect any light. According to quantum mechanics, black holes can slowly release a tiny amount of energy called Hawking radiation. But this radiation is so weak that it cannot be seen with…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Black_hole"
+  },
+  {
+   "term": "Blood",
+   "definition": "Blood is a liquid in humans and many animals. There are about 5 litres of blood in the human body. Blood is pushed through the organism by the heart. It brings nutrients and oxygen to the tissues of the body. It also takes away waste and carbon dioxide from tissues.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Blood"
+  },
+  {
+   "term": "Brain",
+   "definition": "The brain is the part of the body which lets living beings think. It does some bodily functions, such as telling the rest of the body what to do. Almost all animals have a brain: the exceptions are sponges, cnidarians, and lancelets. Plants and fungi do not have brains, although they do react to changes in their environment.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Brain"
+  },
+  {
+   "term": "Bread",
+   "definition": "Bread is a type of baked food. It is mainly made from dough, which is made mainly from flour and water. Usually, salt and yeast are added. Bread is often baked in an oven. It can be bought all over the world.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Bread"
+  },
+  {
+   "term": "Bulgaria",
+   "definition": "Bulgaria is a country in south-eastern Europe, on the Balkan Peninsula. Bulgaria is the south of the River Danube and west of the Black Sea. To the west of Bulgaria are Serbia and North Macedonia, to the south of Bulgaria are Greece and the European part of Turkey. To the north of the Danube and northeast between Silistra and Durankulak is Romania, while to the west of Bulgaria is Serbia.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Bulgaria"
+  },
+  {
+   "term": "Calendar",
+   "definition": "A calendar is a tool for organizing days. People use calendars to say when something happened, and for planning things that have not happened yet. The calendar gives the days names and numbers, called calendar dates. The dates are usually made based on how things in the sky seem to move. The year and month are based on motions of the Sun and moon. By knowing what day something happened or will happen, people have an easier life. Since the beginning of history, knowing when the seasons would start for crops was very important for farmers.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Calendar"
+  },
+  {
+   "term": "Camera",
+   "definition": "A camera is a device that takes pictures (photographs). It uses film or electronics to make a picture of something. It is a tool of photography. A lens makes the image that the film or electronics \"sees\".",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Camera"
+  },
+  {
+   "term": "Carbon",
+   "definition": "Carbon is a very important chemical element, with a chemical symbol of C. All known life on Earth needs it to survive. Carbon has atomic mass 12 and atomic number 6. It is a nonmetal, meaning that it is not a metal.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Carbon"
+  },
+  {
+   "term": "Cat",
+   "definition": "Cats, also called domestic cats, are small, carnivorous mammals, of the family Felidae. Cats have been domesticated (tamed) for nearly 10,000 years. Some of the most popular breeds of this mammal include the Siamese, Japanese Bobtail, Abysinnian, Cornish Rex, American Shorthair, Ragdoll, Aegean cat, Russian Blue, Persian, Manx, Burmese, Sphynx, and British Shorthair Tabby.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Cat"
+  },
+  {
+   "term": "Cell",
+   "definition": "In biology, the cell is the basic structure of organisms. All living things are made up of cells, from the organs in the human body to the parts of plants. All cells are made by the division of cells that already exist.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Cell"
+  },
+  {
+   "term": "Charles Darwin",
+   "definition": "Charles Robert Darwin was an English naturalist. He is famous for his work on the theory of evolution. Darwin's book On the Origin of Species was published in 1859. In this book, he put forward much evidence that evolution had occurred. He also proposed natural selection as the way evolution had taken place.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Charles_Darwin"
+  },
+  {
+   "term": "Chemistry",
+   "definition": "Chemistry is the science that studies what everything is made of and how it changes. It looks at matter, which is anything that takes up space. Chemistry tries to understand how matter is built, how it behaves, and how it can change. Chemistry explores how tiny particles called atoms and molecules come together, break apart, or rearrange to form new substances. People often call chemistry the “central science” because it connects other sciences like physics and biology. Chemistry helps explain things all around us, like why iron rusts, how f…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Chemistry"
+  },
+  {
+   "term": "Chess",
+   "definition": "Chess is a board game for two players. It is played on a square board, made up of 64 smaller squares, with eight squares in each row and column. Each player starts with 16 pieces: eight pawns, two knights, two bishops, two rooks, one queen and one king.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Chess"
+  },
+  {
+   "term": "Climate",
+   "definition": "Climate means the usual condition of the temperature, humidity, atmospheric pressure, wind, rainfall, and other meteorological patterns in an area of the Earth's surface for a long time. In simple terms, climate is the average condition for about thirty years. Climate and weather are different: weather is the day to day conditions in the atmosphere.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Climate"
+  },
+  {
+   "term": "Cold War",
+   "definition": "The Cold War (1947-1991) was the fighting between the United States and its allies and the Soviet Union and its allies between the end of World War II and the fall of the Soviet Union. It is called the \"Cold\" War because the Americans and the Soviets never actually fought each other directly.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Cold_War"
+  },
+  {
+   "term": "Computer",
+   "definition": "A computer is a machine that uses electronics to input, process, store, and output data. Data is information such as numbers, words, and lists. Input of data means to read information from a keyboard, a storage device like a hard drive, or a sensor. The computer processes or changes the data by following the instructions in software programs. A computer program is a list of instructions the computer has to perform. Programs usually perform mathematical calculations, modify data, or move it around. The data is then saved on a storage device, …",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Computer"
+  },
+  {
+   "term": "Continent",
+   "definition": "A continent is a large area of the land on Earth that is joined. There are no strict rules for what land is considered a continent, but in general the Earth is known to have seven continents; these being, Africa, Antarctica, Asia, Europe, North America, South America and Oceania or Australia",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Continent"
+  },
+  {
+   "term": "Democracy",
+   "definition": "Democracy means rule by the people. There are different ways this can be done:People meet to decide about new laws, and changes to existing ones. This is usually called direct democracy. It is never used except in small countries, or perhaps in towns. Modern populations are usually too large to do this.\nThe people elect their leaders. These leaders make decisions about laws. This is called representative democracy. Elections are either held after a certain time, or when a leader dies.\nSometimes people can suggest new laws or changes to exist…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Democracy"
+  },
+  {
+   "term": "Desert",
+   "definition": "A desert is an arid (dry) biome. They get less than 25 cm of rainfall a year.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Desert"
+  },
+  {
+   "term": "Dinosaur",
+   "definition": "Dinosaurs are a group of Archosaur reptiles of the clade Dinosauria. Dinosaurs eventually gave rise to birds.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Dinosaur"
+  },
+  {
+   "term": "DNA",
+   "definition": "DNA, short for deoxyribonucleic acid, is the molecule that contains the genetic code of living organisms. This includes animals, plants, protists, archaea and bacteria. It is made up of two polynucleotide chains in a double helix.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/DNA"
+  },
+  {
+   "term": "Dog",
+   "definition": "Dogs are mammals, usually to be kept as pets, or work on farms or for the police. Some dogs are trained to be rescue dogs and join teams such as mountain rescue.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Dog"
+  },
+  {
+   "term": "Eagle",
+   "definition": "Eagle is a general term for many large birds of prey. Over 60 species have been described, and they live in many parts of the world. Most species of eagle are found in Eurasia and in Africa.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Eagle"
+  },
+  {
+   "term": "Ear",
+   "definition": "The ear is the part of the body which allows animals to hear. People and most mammals have ears. Non-mammals, such as lizards or frogs, can also hear, but may have holes instead of external ears. The ear works by directing sound waves to the inner ear. These vibrations are sent to the brain by an organized group of nerves. This system is called the auditory system — auditory meaning relating to hearing and how we hear. The ear is self-cleaning. It uses muscles and part of the head or face to push earwax like a \"conveyor belt\" out of the ear,…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Ear"
+  },
+  {
+   "term": "Earth",
+   "definition": "Earth is the third planet from the Sun and the only place known where life exists. One big reason life can exist here is that Earth has a lot of water on its surface, being the only planet in our Solar System with liquid water. Most of Earth’s water is in the oceans, which cover about 71% of the planet’s surface. The rest, about 29%, is land. Most of this land is grouped into large continents, like North America, Africa, and Asia, which are mostly humid and covered with plants, while the icy parts at the North and South Poles hold more water…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Earth"
+  },
+  {
+   "term": "Earthquake",
+   "definition": "An earthquake is when Earth's tectonic plates shake and move Earth's surface. Strong earthquakes damage buildings.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Earthquake"
+  },
+  {
+   "term": "Ecology",
+   "definition": "Ecology is the branch or aspect of biology that studies the biota, the environment, and their interactions. It comes from the Greek oikos = house; logos = study.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Ecology"
+  },
+  {
+   "term": "Economics",
+   "definition": "Economics is the social science which studies economic activity: how people make choices to get what they want. It has been called \"the study of scarcity and choice\". Economics is about the choices people make. It also studies what affects the production, distribution and consumption of goods and services in an economy. Goods are real things that people sell. Services are things that people do. For example, a shoe is a good. A person who makes shoes is doing a service.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Economics"
+  },
+  {
+   "term": "Electricity",
+   "definition": "Electricity is the presence and flow of electric current. Using electricity, we can transfer energy in ways that make machines do work. Its best-known form is the flow of electrons through conductors such as copper wires.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Electricity"
+  },
+  {
+   "term": "Elephant",
+   "definition": "Elephants are the biggest living land mammals. They have long noses called trunks and large flapping ears. The largest elephant ever recorded was shot in Angola in 1974. It weighed 27,060 lb (12.27 t) and stood 13 ft 8 in (4.17 m) tall.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Elephant"
+  },
+  {
+   "term": "Energy",
+   "definition": "Energy can mean various things:In physics, energy is a property of matter and space. It can be transferred between objects. It can be converted in its form. It cannot be created or destroyed.\nIn economics it may mean the ‘energy industry’, as in fuel or electric power distribution.\nEnergy can be used to heat, move or illuminate.\nIn everyday use, the word is used to describe someone acting or speaking in a lively and vigorous way.\nSome religions have a view on the energy, e.g. Hinduists believe in Shakti energy.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Energy"
+  },
+  {
+   "term": "Europe",
+   "definition": "Europe is the western part of the continent of Eurasia, often thought of as its own continent. It is separated from Asia by the Ural Mountains in Russia and the Bosporus strait in Turkey.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Europe"
+  },
+  {
+   "term": "Evolution",
+   "definition": "Evolution is a biological process. It is how living things change over time and how new species develop. The theory of evolution explains how evolution works, and how living and extinct things have come to be the way they are.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Evolution"
+  },
+  {
+   "term": "Eye",
+   "definition": "The eye is a round organ for sensing light so organisms can see. It is the first part of the visual system. About 97 percent of animal species have eyes. Image-resolving eyes are present in cnidaria, molluscs, vertebrates, annelids and arthropods.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Eye"
+  },
+  {
+   "term": "Fire",
+   "definition": "Fire is a chemical reaction that gives off light and heat. Fire happens when a material rapidly oxidizes, or loses electrons, and gives off a great amount of energy. Flames are only the part of the fire that give off visible light.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Fire"
+  },
+  {
+   "term": "Fish",
+   "definition": "Fish are a group of animals which live in water and respire from their gills. As a group, they are much older than other vertebrates. The first fish developed about 500 million years ago.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Fish"
+  },
+  {
+   "term": "Flower",
+   "definition": "A flower is the reproductive part of flowering plants. Flowers are also called the bloom or blossom of a plant. Flowers have petals. Inside the part of the flower that has petals are the parts which produce pollen and seeds.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Flower"
+  },
+  {
+   "term": "Food",
+   "definition": "Food is what people, plants and animals eat to live. Every organism needs energy to carry on with the process of living which comes from food. Food usually comes from animals and plants. It is eaten by living things to provide energy and nutrition. Food contains the nutrition that people and animals need to be healthy. The consumption of food is normally enjoyable to humans.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Food"
+  },
+  {
+   "term": "French Revolution",
+   "definition": "The French Revolution was a revolution in France from 1789 to 1799. It ended the French monarchy. The revolution began with a meeting of the Estates General in Versailles, and ended when Napoleon Bonaparte took power in November 1804.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/French_Revolution"
+  },
+  {
+   "term": "Galaxy",
+   "definition": "A galaxy is a group of many stars, with gas, dust, and dark matter. The name 'galaxy' is taken from the Greek word galaxia meaning milky, a reference to our own galaxy, the Milky Way. Most galaxies look very misty, like small micro-droplets of milk, when looked through a telescope.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Galaxy"
+  },
+  {
+   "term": "Geography",
+   "definition": "Geography is the study of earth and its people. It is one of the social sciences. Its features are things like continents, seas, rivers and mountains. The 'inhabitants' of Earth are all the people and animals that live on it. Its phenomena are the things that happen like tides, hurricanes, tornadoes, earthquakes and more.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Geography"
+  },
+  {
+   "term": "Geology",
+   "definition": "Geology is the study of the nonliving things that the Earth is made of. Geology is the study of rocks in the Earth's crust. People who study geology are called geologists. Some geologists study minerals (mineralogist) and the useful substances the rocks contain such as ores and fossil fuels. Geologists also study the history of the Earth.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Geology"
+  },
+  {
+   "term": "Gold",
+   "definition": "Gold is a soft, dense, bright yellow metal. It is a chemical element. Its chemical symbol is Au. Its atomic number is 79. As a precious metal, it has been used for many thousands of years by people all over the world, for jewelry, and as money. It is easy to shape. This means, it can be hammered into sheets or stretched into wires without breaking. Chemically, gold is a noble metal. This means it barely reacts with anything. Only platinum is less reactive.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Gold"
+  },
+  {
+   "term": "Gravity",
+   "definition": "Gravity, or gravitation is one of the fundamental forces of the universe. It is an attraction, or pull, between any two objects with mass. We discuss it here in three parts:",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Gravity"
+  },
+  {
+   "term": "Health",
+   "definition": "Health is a state of complete physical, mental, and social well-being, and not merely the absence of disease according to the World Health Organization (WHO). Physical health is about the body. Mental health is about how people think and feel. Social health talks about how people live with other people. It is about family, work, school, and friends.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Health"
+  },
+  {
+   "term": "Heart",
+   "definition": "The heart is a hard-working, fist-sized muscle found in people and animals. It pumps out blood through tube-like structures called blood vessels. The heart and these vessels together make up the body-wide circulatory system. Blood carries in oxygen-rich air and nutrient-packed food to the body and takes away waste-filled substances like carbon dioxide to the lungs. In people, the heart is about the size of a closed-hand and sits in between the lungs, in the chest-centered cavity.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Heart"
+  },
+  {
+   "term": "Heat",
+   "definition": "Heat, or thermal energy, is the sum of the kinetic energy of atoms or molecules. In thermodynamics, heat means energy which is moved between two things when one of them has a higher temperature than the other.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Heat"
+  },
+  {
+   "term": "History",
+   "definition": "History is the study of past events. People know what happened in the past by looking at things from the past including sources, buildings and different types of artifacts Libraries, archives, and museums collect and keep these things for people to study history. A person who studies history is called a historian. A person who studies pre-history and history through things left behind by ancient cultures is called an archaeologist. A person who studies mankind and society is called an anthropologist. The study of the sources and methods used…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/History"
+  },
+  {
+   "term": "Honey",
+   "definition": "Honey is a food made by honeybees from nectar. They put the honey into a honeycomb, which for them is a storage unit. Honey is sweet and can be used instead of sugar. It is a supersaturated liquid. As the temperature drops, glucose comes out of solution. Then it is a semi-solid rather than a liquid.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Honey"
+  },
+  {
+   "term": "Horse",
+   "definition": "Horses are a group of animals of the family Equidae.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Horse"
+  },
+  {
+   "term": "Human",
+   "definition": "A human is a member of the species Homo sapiens, which means 'wise man' in Latin. Carolus Linnaeus put humans in the mammalian order of primates. Humans are a species of hominid, and chimpanzees, gorillas and orangutans are their closest living relatives.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Human"
+  },
+  {
+   "term": "Human body",
+   "definition": "The human body is the body of a person. It is the physical structure of a person.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Human_body"
+  },
+  {
+   "term": "Industrial Revolution",
+   "definition": "The Industrial Revolution is the name of the time when there was a big change in the way things were made. Instead of things being hand-made in small workshops, they were made more cheaply in large quantities by machines in factories. This improved the idea of assembly lines. People found that they could make many more things using an assembly line than each person working individually.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Industrial_Revolution"
+  },
+  {
+   "term": "Insect",
+   "definition": "Insects are a class in the phylum Arthropoda. They are small terrestrial invertebrates which have a hard exoskeleton.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Insect"
+  },
+  {
+   "term": "Internet",
+   "definition": "The Internet is the world’s largest global communication network for computers and other devices.\nIt connects many smaller networks from homes, schools, businesses, and governments. These networks share different kinds of information. The short form of the Internet is “the Net.” One of its most popular services is the World Wide Web, which is used by billions of people every day.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Internet"
+  },
+  {
+   "term": "Isaac Newton",
+   "definition": "Sir Isaac Newton was an English physicist, mathematician and astronomer. He is well known for his work on the laws of motion, optics, gravity, and calculus also, he presents his theory of universal gravitation and three laws of motion.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Isaac_Newton"
+  },
+  {
+   "term": "Jupiter",
+   "definition": "Jupiter is the largest planet in the Solar System. It is the fifth planet from the Sun. Jupiter is a gas giant because it is large and made mostly of gas. Gas giants are a subtype of giant planets. The other gas giant planets in the Solar System are Saturn, Uranus and Neptune.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Jupiter"
+  },
+  {
+   "term": "Kidney",
+   "definition": "The kidneys are two bean-shaped organs located in the abdomen of vertebrates such as humans. They regulate (control) the amount of water and salts in the blood. They make urine so that waste can be removed from the body.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Kidney"
+  },
+  {
+   "term": "Language",
+   "definition": "Language is the normal way humans communicate. Only humans use language, though other animals communicate through other means. The study of language is called linguistics.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Language"
+  },
+  {
+   "term": "Law",
+   "definition": "Law is a set of rules made by a particular place or authority to keep society safe and purple.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Law"
+  },
+  {
+   "term": "Leonardo da Vinci",
+   "definition": "Leonardo Da Vinci was an Italian polymath who lived during the Renaissance. He is famous for his paintings. He was also a scientist, mathematician, engineer, inventor, anatomist, sculptor, architect, botanist, musician, and writer. Leonardo wanted to know everything about nature, and wanted to know how everything worked. He was very good at studying, as well as designing and making all sorts of inventions.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Leonardo_da_Vinci"
+  },
+  {
+   "term": "Life",
+   "definition": "Life is matter that can make more of itself. It is separated by non-living matter.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Life"
+  },
+  {
+   "term": "Light",
+   "definition": "Light is a form of electromagnetic radiation. It is natural agent that stimulates sight and makes things easier to see. Light is the opposite of darkness.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Light"
+  },
+  {
+   "term": "Lion",
+   "definition": "The lion is a large mammal of the Felidae (cat) family. Some large males weigh over 250 kg (550 lb). Today, wild lions live in sub-Saharan Africa and western India. Lions are adapted for life in grasslands and mixed areas with trees and grass. The relatively small females are fast runners over short distances, and coordinate their hunting of herd animals.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Lion"
+  },
+  {
+   "term": "Literature",
+   "definition": "Literature is a group of works of art that are made of words. Most are written, but some are shared by word of mouth. Literature usually means a work of poetry, theatre or narrative. There are many different kinds of literature, such as poetry, plays, or novels. They can also be put into groups by their language, historical time, place of origin, genre, and subject. The word \"literature\" comes from the Latin word \"literatura,\" which means \"writing formed with letters.\"",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Literature"
+  },
+  {
+   "term": "Liver",
+   "definition": "The liver is an organ in the abdomen. It is part of the digestive system. Sometimes people use hepar- or hepat- as a prefix when they talk about the liver.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Liver"
+  },
+  {
+   "term": "Ludwig van Beethoven",
+   "definition": "Ludwig van Beethoven was a German composer. He wrote classical music for the piano, orchestras and different groups of instruments. His best-known works are his third (Eroica), fifth, sixth (Pastorale) and ninth (Choral) symphonies, the eighth (Pathetique) and fourteenth (Moonlight) piano sonatas, two of his later piano concertos, his opera Fidelio, and also the piano piece Für Elise. Beethoven lived when the piano was still a new instrument, and when he was a young man, he was a talented pianist. Beethoven was popular with the rich and impo…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Ludwig_van_Beethoven"
+  },
+  {
+   "term": "Lung",
+   "definition": "The lung is an organ in many vertebrates. It takes blood oxygen from the air, and expels carbon dioxide. Most vertebrates with lungs have two of them.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Lung"
+  },
+  {
+   "term": "Magnetism",
+   "definition": "Magnetism is a force that attracts or repels objects that have a magnetic material like iron inside them. In simpler words, it is a property of substances which pull closer or repel other objects. It is a subject in physics.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Magnetism"
+  },
+  {
+   "term": "Mammal",
+   "definition": "Mammals are in the class Mammalia. They are a group of vertebrate animals. They have fur or hair and very precise temperature regulation.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Mammal"
+  },
+  {
+   "term": "Map",
+   "definition": "A map is an image of the Earth or part of the Earth. A map is different from an aerial photograph because it includes interpretation. Many maps are called \"charts\" such as star charts and nautical charts. Some maps are of distant worlds. Before the late 20th century almost all maps were on paper. Today, many maps are digital, and can be seen on smartphones and computers. However, physical items such as paper maps, charts, or drawings are still used.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Map"
+  },
+  {
+   "term": "Marie Curie",
+   "definition": "Maria Salomea Skłodowska–Curie was a Polish physicist and chemist. She did research on radioactivity. She was also the first woman to win a Nobel Prize. ,which she went on to win twice. She was the first woman professor at the University of Paris. She was the first person to win two Nobel Prizes. She received a Nobel Prize in physics for her research on uncontrolled radiation, which was discovered by Henri Becquerel.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Marie_Curie"
+  },
+  {
+   "term": "Mars",
+   "definition": "Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System, nicknamed  The Red Planet.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Mars"
+  },
+  {
+   "term": "Mathematics",
+   "definition": "Mathematics is the study of numbers, shapes, and patterns and letters. The word comes from the Greek μάθημα (máthema), meaning \"science, knowledge, or learning\", and is sometimes shortened to math or maths.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Mathematics"
+  },
+  {
+   "term": "Medicine",
+   "definition": "Medicine is the science that treats and prevents diseases in humans. Medical workers treat injuries, infections, and sickness. Medicine also helps people with disease prevention and the best ways to not get sick from bacteria or viruses. Medical doctors also help unhealthy people return to a healthy condition.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Medicine"
+  },
+  {
+   "term": "Mercury (planet)",
+   "definition": "Mercury is the first planet from the Sun. It is the second hottest planet, and the smallest in the Solar System. It is also the closest planet to the Sun. It makes one trip around the Sun once every 87.969 days.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Mercury_(planet)"
+  },
+  {
+   "term": "Metal",
+   "definition": "Some chemical elements are called metals. Most elements in the periodic table are metals. These elements usually have the following traits:They can conduct electricity and heat.\nThey can be shaped easily.\nThey have a shiny appearance.\nThey have a high melting point.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Metal"
+  },
+  {
+   "term": "Microscope",
+   "definition": "A microscope is a scientific instrument. It makes small objects look larger. This lets people see the small things. People who use microscopes frequently in their jobs include doctors and scientists. Students in science classes such as biology also use microscopes to study small things.\nThe earliest microscopes had only one lens and are called simple microscopes. Compound microscopes have at least two lenses. In a compound microscope, the lens closer to the eye is called the eyepiece. The lens at the other end is called the objective. The le…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Microscope"
+  },
+  {
+   "term": "Middle Ages",
+   "definition": "The Middle Ages were a period of about 1000 years in European history. They took place between the end of the Western Roman Empire in 476 CE when Romulus Augustulus was deposed, and the beginning of the Renaissance around 1400 - 1500 CE. Because it occurred in the \"middle\" of these two events, this period was named the Middle Ages.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Middle_Ages"
+  },
+  {
+   "term": "Milk",
+   "definition": "Milk is a white liquid made by mammals, like cows, dogs, and humans. It is made in the mammary glands of female mammals. Newborn babies must be given milk before they can eat solid food. Milk has many nutrients to help babies grow and be healthy. It is also a rich source of calcium which is good for their bones and teeth.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Milk"
+  },
+  {
+   "term": "Milky Way",
+   "definition": "The Milky Way is our home galaxy. It contains around 400 billion stars, including our Sun.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Milky_Way"
+  },
+  {
+   "term": "Molecule",
+   "definition": "A molecule is the smallest amount of a chemical substance that can exist. If a molecule were split into smaller pieces, it would be a different substance.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Molecule"
+  },
+  {
+   "term": "Money",
+   "definition": "Money, also sometimes called currency, can be defined as anything that people use to buy goods and services. Money is what many people receive for selling their own things or services.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Money"
+  },
+  {
+   "term": "Moon",
+   "definition": "The Moon, also known as Luna, is Earth's only natural satellite. It is usually visible in the night sky, but is sometimes seen during the day.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Moon"
+  },
+  {
+   "term": "Mountain",
+   "definition": "A mountain is a large natural rise of the Earth's surface that usually has a \"summit\". It is usually steeper and taller than a hill. By definition, mountains are often thought of as being a landform which is higher than 2,000 feet (610 m).",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Mountain"
+  },
+  {
+   "term": "Muscle",
+   "definition": "Muscle is a tissue in animal bodies. Muscles are basically tissue which may contract (shorten). They usually attach to bones and are the way animals move.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Muscle"
+  },
+  {
+   "term": "Music",
+   "definition": "Music is a form of art that uses sound organised in time. Music is also a form of entertainment that puts sounds together in a way that people like, find interesting or dance to. Most music includes people singing with their voices or playing musical instruments, such as the piano, guitar, drums or bass.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Music"
+  },
+  {
+   "term": "Neptune",
+   "definition": "Neptune is the eighth and farthest planet from the Sun in the Solar System. It is an ice giant. It is the fourth-largest planet in the system.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Neptune"
+  },
+  {
+   "term": "Nikola Tesla",
+   "definition": "Nikola Tesla was a Serbian-American inventor and engineer of Serbian origin. He is best known for his contributions to the design of the modern alternating current (AC) electricity supply system. He was born in the village of Smiljan, in the part of former Austria-Hungary that is now Croatia. He later became an American citizen.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Nikola_Tesla"
+  },
+  {
+   "term": "North America",
+   "definition": "North America is a large continent in the Northern and Western Hemispheres of Earth. It is to the east of the Pacific Ocean, the west of the Atlantic Ocean, the south of the Arctic Ocean, and it is the northern part of the Americas. The southernmost part is Central America. It is the third largest continent in the world after Asia and Africa. North America has a population of around 528 million, and is the 4th most populous continent in the world.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/North_America"
+  },
+  {
+   "term": "Number",
+   "definition": "A number is a mathematical object used to count, measure, and label:People use symbols to represent numbers; they call them numerals. Common places where numerals are used are for labeling, as in telephone numbers, for ordering, as in serial numbers, or to put a unique identifier, as in an ISBN, a unique number that can identify a book.\nCardinal number\nOrdinal number",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Number"
+  },
+  {
+   "term": "Ocean",
+   "definition": "An ocean is a large body of water between continents. Oceans are extremely big and they join smaller seas together. Oceans cover 70% of Earth. There are five main oceans: the Pacific Ocean, the Atlantic Ocean, the Indian Ocean, the Southern Ocean, and the Arctic Ocean.The largest ocean is the Pacific Ocean. The smallest ocean is the Arctic Ocean. Many types of animals live in oceans, such as carp, crabs, starfish, sharks, and whales.\nDifferent water movements separate the Southern Ocean from the Atlantic, Pacific and Indian Oceans. The South…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Ocean"
+  },
+  {
+   "term": "Olympic Games",
+   "definition": "The Olympic Games is an important international event featuring summer and winter sports. Summer Olympic Games and Winter Olympic Games are held every four years. Originally, the ancient Olympic Games were held in Ancient Greece at Olympia. The first games were in 776 BC. They were held every four years until the 6th century AC. The first \"modern\" Olympics took place in 1896 in Athens, Greece. Athletes participate in the Olympics Games to represent their countries.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Olympic_Games"
+  },
+  {
+   "term": "Oxygen",
+   "definition": "Oxygen is a chemical element. It has the symbol O and atomic number 8. It is a colorless, odorless, and tasteless gas at 25 degrees Celsius at Standard atmosphere .\nOxygen is part of the air we breathe. It makes up about 21% of Earth’s atmosphere. It is the third most common element in the universe, after hydrogen and helium. Oxygen is part of the chalcogen group on the periodic table. Oxygen is very reactive, meaning it easily combines with other elements. It often forms oxides, like iron oxide (rust) or carbon dioxide (CO₂). It supports co…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Oxygen"
+  },
+  {
+   "term": "Pacific Ocean",
+   "definition": "The Pacific Ocean is the largest ocean and covers one third of the surface of the entire world. The body of water is between Asia and Australia in the west, the Americas in the east, the Southern Ocean to the south, and the Arctic Ocean to the north. It joins the Atlantic Ocean at a line drawn south from Cape Horn, in Chile andArgentina, to Antarctica, and it joins the Indian Ocean at a line drawn south from Tasmania, in Australia, to Antarctica.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Pacific_Ocean"
+  },
+  {
+   "term": "Philosophy",
+   "definition": "Philosophy is the study of wisdom. Philosophia is the Ancient Greek word for the \"love of wisdom\".",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Philosophy"
+  },
+  {
+   "term": "Photosynthesis",
+   "definition": "Photosynthesis is a process in which green plants make their own food from sunlight, using the help of leaves to produce sugar. It is the process by which these organisms convert light energy into chemical energy, which is used to produce food. Photosynthesis is the process by which plant cells containing chlorophyll produce food substances from carbon dioxide and water, and oxygen is released.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Photosynthesis"
+  },
+  {
+   "term": "Physical exercise",
+   "definition": "The word exercise means:Things to do to get some practical experience and skill in some activity.\nRepeatedly moving the human body to make it stronger or better at doing something. This is called physical exercise.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Physical_exercise"
+  },
+  {
+   "term": "Physics",
+   "definition": "Physics is the science of how things move in space and time and how the universe works. It studies matter and forces.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Physics"
+  },
+  {
+   "term": "Plant",
+   "definition": "Plants are one of six big groups (kingdoms) of living things. They are autotrophic eukaryotes, this means they have complex cells, and make their own food. Usually, they cannot move. Plants need sunlight, soil and water whereas seeds need warmth.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Plant"
+  },
+  {
+   "term": "Plato",
+   "definition": "Plato was one of the most important philosophers of all time. Born to wealthy parents in Athens, Greece, Plato was a student of Socrates and, later, became the teacher of Aristotle. Plato started a university in Athens called the Academy where he taught. Plato wrote about many ideas in philosophy that are still talked about today, including political philosophy and the philosophy of language. One modern scholar, Alfred North Whitehead, said that all European philosophy since Plato is a series of footnotes to his works.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Plato"
+  },
+  {
+   "term": "Psychology",
+   "definition": "Psychology is the study of the mind and brain. It studies thoughts, feelings, and behaviors in humans and animals. Psychology aims to explain how the mind works. It also looks at how our actions relate to how we think.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Psychology"
+  },
+  {
+   "term": "Radio",
+   "definition": "Radio is a way to send electromagnetic signals over a long distance. It is mainly used to deliver information from one place to another. A machine that sends radio waves is called a transmitter, while a machine that \"picks up\" the signals is called a receiver or antenna. A machine that does both jobs is a \"transceiver\". When radio signals are sent out to many receivers at the same time, it is called a broadcast.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Radio"
+  },
+  {
+   "term": "Rain",
+   "definition": "Rain is a kind of precipitation. Precipitation is any kind of water that falls from clouds in the sky, like rain, hail, sleet and snow. It is measured by a rain gauge.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Rain"
+  },
+  {
+   "term": "Renaissance",
+   "definition": "The Renaissance is a period in European history that followed the Middle Ages and ended in the 17th century. Renaissance is a French word for “cultural rebirth.” During this period, there was a “rebirth” of classical learning. People started relearning the teachings of scholars from Ancient Greece, Rome, and other ancient societies. The Renaissance is often said to be the start of the modern age.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Renaissance"
+  },
+  {
+   "term": "Reptile",
+   "definition": "Reptile is the common name for one of the main groups of land vertebrates. It is not used so much by biologists, who use more accurate terms.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Reptile"
+  },
+  {
+   "term": "River",
+   "definition": "A river is a stream of water that flows through a channel on the surface of the ground. The passage where the river flows is called the riverbed and the earth on each side is called a riverbank. A river begins on high ground or in hills or mountains and flows down from the high ground to the lower ground, because of gravity. A river begins as a small stream and gets bigger the farther it flows.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/River"
+  },
+  {
+   "term": "Robot",
+   "definition": "A robot is a machine that can move and do certain tasks and work.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Robot"
+  },
+  {
+   "term": "Roman Empire",
+   "definition": "The Roman Empire ruled the Mediterranean and much of Europe, Western Asia and North Africa. The Romans conquered most of this during the Republic, and it was ruled by emperors following Octavian's assumption of effective sole rule in 27 BC. The western empire collapsed in 476 AD, but the eastern empire, the Byzantine Empire, lasted until the fall of Constantinople in 1453.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Roman_Empire"
+  },
+  {
+   "term": "Salt",
+   "definition": "In chemistry, a salt is any neutral chemical compound made of cations attached to anions. The most common example of a salt is sodium chloride, with the chemical formula NaCl - this is the table salt that people use in food.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Salt"
+  },
+  {
+   "term": "Satellite",
+   "definition": "Satellite may mean one of these:Satellite (artificial) - An object humans put into orbit\nCommunications satellite\nSatellite television - Television using an artificial satellite to broadcast the signal\nNatural satellite - A natural object in orbit, generally a moon\nQuasi-satellite - an astronomical object which crosses a planet's orbit during its own orbit.Client state, or political satellite",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Satellite"
+  },
+  {
+   "term": "Saturn",
+   "definition": "Saturn is the sixth planet from the Sun in our solar system. On average, Saturn is about 9.57 astronomical units (1,432 Gm; 1.432×109 km; 890,000,000 mi) away from the Sun.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Saturn"
+  },
+  {
+   "term": "Science",
+   "definition": "Science is what we do to find out about the natural world. There are different kinds of science. Natural sciences study nature and the physical world. They include biology, chemistry, geology, astronomy, and physics. Social sciences study people and how societies work. They include, psychology, sociology, and economics. Applied sciences use the things we learn from science to solve problems. They include, engineering and medicine. Science uses mathematics, computer science and logic, which are sometimes called \"formal sciences\". Science make…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Science"
+  },
+  {
+   "term": "Ship",
+   "definition": "A ship is a large vehicle used to travel on water. It is bigger than a boat. Most are cargo ships, which carry most of the world's international trade. There are also many warships, passenger ships and other kinds for different purposes.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Ship"
+  },
+  {
+   "term": "Skeleton",
+   "definition": "A skeleton is the hard structure that protects the internal organs of a living thing. Skeletons can be inside the body or outside the body. In mammals, which include humans, the skeleton is made of bones. All the bones, when they are joined together, make the \"skeletal system\" of a body. The skeletal system or \"skeleton\" is under the skin, the muscle and the tissue of the body. The skeleton supports the skin, muscle and tissue, and all the organs that are inside the body. The skeleton protects important internal organs like the brain, heart …",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Skeleton"
+  },
+  {
+   "term": "Skin",
+   "definition": "The skin is the outer covering of mammals and some other animals. It has many important jobs. First, it helps protect the body by stopping pathogens such as bacteria and parasites from getting inside. Second, it helps control the body's temperature. It does this by allowing evaporation from the skin and by making changes to help the body stay at the right temperature. The skin is a physical barrier. In some animals it is very strong, while in humans it is less protective. The skin and hair of mammals also have several uses. Besides temperatu…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Skin"
+  },
+  {
+   "term": "Sleep",
+   "definition": "Sleep is a state of resting. It happens in most animals, including humans. To sleep is to be unconscious.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Sleep"
+  },
+  {
+   "term": "Snow",
+   "definition": "Snow is a form of ice. Snow forms when water in the atmosphere becomes frozen. It comprises individual ice crystals that grow while suspended in the atmosphere—usually within clouds—and then fall, accumulating on the ground where they undergo further changes. Snow comes in all different shapes and sizes.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Snow"
+  },
+  {
+   "term": "Solar System",
+   "definition": "The Solar System is a group of space objects that are held together by gravity, with the Sun in the center. The Sun is a huge ball of hot glowing gas that gives off light and heat. Everything else in the Solar System moves around the Sun. The Solar System formed about 4.6 billion years ago when a giant cloud of gas and dust collapsed and started to spin. Scientists call this process the solar nebula theory. As the cloud collapsed, gravity caused it to spin faster and flatten into a disk. The Sun formed at the center, while the remaining mate…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Solar_System"
+  },
+  {
+   "term": "Sound",
+   "definition": "Sound is caused by waves of pressure called sound waves. It can be heard when it goes through a medium to the ear. All sounds are made by vibrations of molecules. For example, when a person hits a drum or a cymbal the object vibrates. These vibrations make air molecules move. Sound waves move away from where they came from. When the vibrating air molecules reach our ears, the eardrum vibrates, too. The bones of the ear vibrate in the way the object that started the sound wave vibrates.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Sound"
+  },
+  {
+   "term": "South America",
+   "definition": "South America is the continent to the south of North America. These two continents are separated by the Panama Canal. There are seven continents which make up the globe, South America being the 4th largest. South America includes 12 countries: Argentina, Bolivia, Brazil, Chile, Colombia, Ecuador, Guyana, Paraguay, Peru, Suriname, Uruguay, and Venezuela.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/South_America"
+  },
+  {
+   "term": "Sport",
+   "definition": "Sport usually means athletic games that involve a degree of competition, such as football, basketball or cross-country Olympic skiing. Some games and many kinds of racing are called sports. A professional at a sport is called an athlete. Many people do sports with their friends. They need coaches to teach or train teams or individuals how to do better. Sports can be played indoors or outdoors and by individuals or team.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Sport"
+  },
+  {
+   "term": "Star",
+   "definition": "A star is a very large ball of bright, glowing, hot matter in space. That matter is called plasma. Stars are held together by gravity. They emit light because they are very hot. The Sun is an example of a star. It is at the center of the solar system.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Star"
+  },
+  {
+   "term": "Sugar",
+   "definition": "Sugar is the common name for several chemical substances, some of which taste sweet. Mostly, it refers to sucrose, lactose, or fructose. Sugar is in certain kinds of food, or it is added to make it sweeter.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Sugar"
+  },
+  {
+   "term": "Sun",
+   "definition": "The Sun, also known as Sol, is a star at the center of the solar system. It is a white star that gives off different types of energy such as infrared energy (heat), ultraviolet light, radio waves and light. It gives off the light and heat that make life on Earth possible. Without it, Earth would be a frozen, lifeless place. It is a huge ball of hot gases, mostly hydrogen and helium.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Sun"
+  },
+  {
+   "term": "Telephone",
+   "definition": "A telephone, also known as a phone, is a communication tool. People use it to talk with people far away. Originally, it was an electric tool sending analogue speech through wires. Many telephones in the 21st century are electronic tools sending digital signals on wires or radio transmission. Using a telephone, two people who are in different places can talk to each other. Early telephones needed to be connected with wires which are called fixed or landline telephones. Modern mobile phones use radio waves.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Telephone"
+  },
+  {
+   "term": "Telescope",
+   "definition": "A telescope makes astronomical objects appear closer to the naked eye. It is an important tool for astronomy that gathers light and directs it to a single point. Some do this with curved mirrors, some with curved lenses, and some with both. Telescopes make distant things look bigger, brighter and closer. Galileo was the first person to use a telescope for astronomy, but he did not invent them. The first telescope was invented in the Netherlands in 1608. Some telescopes, not mainly used for astronomy, are binoculars, camera lenses, or spyglas…",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Telescope"
+  },
+  {
+   "term": "Television",
+   "definition": "A television set is a machine with a screen or set of lenses. Televisions receive broadcasting signals and change them into pictures and sound. The word \"television\" comes from the words tele and vision (sight).",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Television"
+  },
+  {
+   "term": "Time",
+   "definition": "Time is the continued proсess of existence and events. It happens in an apparently irreversible way from the history, through the now and to the future.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Time"
+  },
+  {
+   "term": "Trade",
+   "definition": "To trade is to willingly give things or services and get other things or services in return. For example, a person giving a thing must find another person who wants to get that thing. The giver gets something back in return. A trade is sometimes also called an \"exchange\" or a \"swap\".",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Trade"
+  },
+  {
+   "term": "Train",
+   "definition": "A train is a set of railway cars that are tied together with or without a locomotive. Trains are used to carry people, and also things like raw material, finished goods, cargo, and waste. The vehicles that carry freight are called cars or wagons. The ones that carry passengers are often called coaches or carriages. A place where a train stops to let people get on and off is called a train station or railway station.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Train"
+  },
+  {
+   "term": "Tree",
+   "definition": "A tree is a tall plant with a trunk and branches made of wood.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Tree"
+  },
+  {
+   "term": "Universe",
+   "definition": "The universe is space and everything in it. It is made of billions of stars, planets, and enormous clouds of gas separated by huge voids of space. It is believed that an event called the Big Bang started the expansion of the universe.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Universe"
+  },
+  {
+   "term": "Uranus",
+   "definition": "Uranus is the seventh planet from the Sun in our Solar System. Like Neptune, it is an ice giant. It is the third largest planet in the solar system.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Uranus"
+  },
+  {
+   "term": "Venus",
+   "definition": "Venus is the second planet from the Sun. Venus is the only planet in the Solar System that has a day longer than a year. The year length of Venus is 225 Earth days. The day length of Venus is 243 Earth days.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Venus"
+  },
+  {
+   "term": "Virus",
+   "definition": "A virus is a tiny parasite. Viruses reproduce inside other living things; they are not free-living. A virus makes copies of itself inside another organism's cells. When viruses infect living organisms, they can cause disease. There are many types of diseases caused by viruses, such as polio, ebola and hepatitis. Viruses outnumber all other forms of life on the planet by a long way.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Virus"
+  },
+  {
+   "term": "Vitamin",
+   "definition": "A vitamin is a chemical compound that is needed in small amounts for the human body to work correctly. They include Vitamin A, many B vitamins (like B1, B2, B3, B6, and B12), Vitamin C, Vitamin D, Vitamin E, and Vitamin K. For example, citrus fruits such as oranges and lemons contain vitamin C. A vitamin is also a pill that contains vitamins, eaten regularly to keep one healthy like dietary supplements.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Vitamin"
+  },
+  {
+   "term": "Volcano",
+   "definition": "A volcano is a mountain that has lava coming out from a magma chamber under the ground, or did have in the past. Volcanoes are formed by the movement of tectonic plates.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Volcano"
+  },
+  {
+   "term": "Water",
+   "definition": "Water is a simple chemical compound made of two hydrogen atoms and one oxygen atom. It is clear, has no taste or smell, and is almost colorless. All living things need water to survive. Water molecules stick together because of hydrogen bonds. These bonds give water special properties. For example, water has high surface tension, and can dissolve many substances. Water exists in three forms on Earth: solid (ice), liquid (water), and gas. The word \"water\" comes from the Old English word wæter.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Water"
+  },
+  {
+   "term": "Weather",
+   "definition": "Weather is the day-to-day or hour-to-hour change in the atmosphere. Weather includes wind, lightning, storms, hurricanes, tornadoes, rain, hail, snow, and lots more. Energy from the Sun affects the weather too. \nClimate tells us what kinds of weather usually happen in an area at different times of the year. \nChanges in weather can affect the mood and life of many living things. People wear different clothes and do different things in different weather conditions. They also choose different food in different seasons.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Weather"
+  },
+  {
+   "term": "Whale",
+   "definition": "Whales are a group of cetacean mammals that live in the ocean. Like other mammals, they breathe oxygen from the air, have a small amount of hair, and are warm blooded.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Whale"
+  },
+  {
+   "term": "William Shakespeare",
+   "definition": "William Shakespeare was an English dramatist, poet and theatre actor. He wrote 40 known plays and two long poems in his lifetime. He lived in Stratford-upon-Avon, in Warwickshire, England. His plays are still performed today. He is often quoted in modern writing.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/William_Shakespeare"
+  },
+  {
+   "term": "Wolfgang Amadeus Mozart",
+   "definition": "Wolfgang Amadeus Mozart was a composer, instrumentalist, and music teacher. His full baptised name was Johannes Chrysostomus Wolfgangus Theophilus Mozart. He was born in Salzburg. He was the youngest child of Leopold and Anna Maria Mozart. From a very early age, the young Mozart showed great musical talent. He toured Europe with his parents and older sister \"Nannerl\" for several years. In these tours, he performed for royalty and the aristocratic elite.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/Wolfgang_Amadeus_Mozart"
+  },
+  {
+   "term": "World War I",
+   "definition": "World War I, also called the First World War, or the Great War, began on 28 July 1914 and lasted until 11 November 1918. It was a global conflict and lasted exactly 4 years, 3 months and 2 weeks. Most of the fighting was in continental Europe.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/World_War_I"
+  },
+  {
+   "term": "World War II",
+   "definition": "World War II, or the Second World War, was a global conflict which involved fighting between the Allies and the Axis. Most of the world's countries, including all of the great powers, fought as part of two military alliances: the Allied Powers include the United States, the Soviet Union, the United Kingdom and the Axis Powers include Nazi Germany, Fascist Italy and the Empire of Japan.",
+   "source": "Simple English Wikipedia (CC BY-SA)",
+   "url": "https://simple.wikipedia.org/wiki/World_War_II"
+  }
+ ]
+}

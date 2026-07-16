@@ -27,7 +27,7 @@ export function startWatching({ onAlert = null, onFrame = null, onStatus = null 
       for (const a of r.alerts) {
         const critical = (a.type === 'stranger' || a.type === 'fire');
         // Известие на родителския телефон (критичните — с мелодия).
-        notify({ title: 'Детегледачка', body: a.label || a.type, critical });
+        notify({ title: 'KCY Baby Radar', body: a.label || a.type, critical });
         // Запиши в дневника, за да се вижда историята и тук.
         try { addEvent({ type: a.type, label: a.label, snapshot: null }); } catch (_) {}
         if (onAlert) { try { onAlert(a); } catch (_) {} }

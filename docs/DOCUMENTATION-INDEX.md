@@ -22,6 +22,7 @@
 - **ADMIN-PAGES-ACCESS.md** - Достъп до админ страниците (IP whitelist + URL параметър)
 - **DOCKER-WSL2-VMCOMPUTE-FIX.md** - Docker/WSL2 не тръгват (vmcompute „General access denied") — диагностика, in-place repair на Windows, алтернатива нативен PostgreSQL
 - **apps/MONETIZACIA-I-REKLAMI.md** - 💰 Монетизация на мобилните приложения (publish/monetization.json: free/one_time/subscription/iap; released → никакво пробно заключване) + рекламна функционалност (интро, „Още от KCY" каталог от сървъра — кой файл се редактира) + месечен абонамент в Huawei AGC
+- **SELFLEARNING-KNOWLEDGE-PACKS.md** - 📦 Selflearning Friend: как се зареждат пакетите знание (26-те вградени, каталогът /dict/ от сървъра, пакет от линк/файл, админските речници) — команди в чата, екран „Източници", нужни настройки, лимити
 
 ### 🪙 Token Project (`/private/token/docs/`)
 

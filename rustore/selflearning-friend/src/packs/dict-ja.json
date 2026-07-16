@@ -1,0 +1,7707 @@
+{
+ "name": "Речник японски↔английски (ядро)",
+ "topic": "езици",
+ "source": "Уикиречник през kaikki.org (CC BY-SA) + честотен списък",
+ "entries": [
+  {
+   "type": "превод",
+   "key": "貴方",
+   "value": "„貴方\" (anata) на японски = английски „you\" — The people spoken, or written to, as an object.",
+   "keywords": [
+    "貴方",
+    "you",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "に",
+   "value": "„に\" (ni) на японски = английски „to\" — In order to.",
+   "keywords": [
+    "に",
+    "to",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "これ",
+   "value": "„これ\" (kore) на японски = английски „it\" — The third-person singular neuter personal pronoun used to refer to an inanimate object,…",
+   "keywords": [
+    "これ",
+    "it",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "と",
+   "value": "„と\" (to) на японски = английски „and\" — As a coordinating conjunction; expressing two elements to be taken together or in addit…",
+   "keywords": [
+    "と",
+    "and",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "それ",
+   "value": "„それ\" на японски = английски „that\" — The thing, person, idea, quality, event, action, or time indicated or understood from c…",
+   "keywords": [
+    "それ",
+    "that",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "の中の",
+   "value": "„の中の\" (no naka no) на японски = английски „of\" — Expressing distance or motion.",
+   "keywords": [
+    "の中の",
+    "of",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...に",
+   "value": "„...に\" (... ni) на японски = английски „in\" — Used to indicate location, inclusion, or position within spatial, temporal or abstract …",
+   "keywords": [
+    "...に",
+    "in",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "物",
+   "value": "„物\" (mono) на японски = английски „what\" — Which thing, event, circumstance, etc.: used in asking for the specification of an iden…",
+   "keywords": [
+    "物",
+    "what",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "私達",
+   "value": "„私達\" (watashitachi) на японски = английски „we\" — Two or more people including or consisting of the speaker(s)/writer(s).",
+   "keywords": [
+    "私達",
+    "we",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "私を",
+   "value": "„私を\" (watashi-o) на японски = английски „me\" — The first-person singular, as the object (of a verb, preposition, etc).",
+   "keywords": [
+    "私を",
+    "me",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "これ",
+   "value": "„これ\" (kore) на японски = английски „this\" — The thing, item, etc. being indicated.",
+   "keywords": [
+    "これ",
+    "this",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "彼",
+   "value": "„彼\" (kare) на японски = английски „he\" — A person who identifies as male, or animal already known or implied.",
+   "keywords": [
+    "彼",
+    "he",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...のため",
+   "value": "„...のため\" на японски = английски „for\" — Because.",
+   "keywords": [
+    "...のため",
+    "for",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "まあ",
+   "value": "„まあ\" (maa) на японски = английски „my\" — Used to express surprise, shock or amazement.",
+   "keywords": [
+    "まあ",
+    "my",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "…の上に",
+   "value": "„…の上に\" (… no ue ni) на японски = английски „on\" — Indicating position or location.",
+   "keywords": [
+    "…の上に",
+    "on",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "持つ",
+   "value": "„持つ\" (motsu) на японски = английски „have\" — To possess, own.",
+   "keywords": [
+    "持つ",
+    "have",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "か",
+   "value": "„か\" (ka) на японски = английски „do\" — A syntactic marker.",
+   "keywords": [
+    "か",
+    "do",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "しない",
+   "value": "„しない\" (shinai) на японски = английски „no\" — A negating expression; an answer that shows disagreement, denial, refusal, or disapproval.",
+   "keywords": [
+    "しない",
+    "no",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...ではない",
+   "value": "„...ではない\" (de wa nai) на японски = английски „not\" — Negates the meaning of the modified verb.",
+   "keywords": [
+    "...ではない",
+    "not",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "れる",
+   "value": "„れる\" (reru) на японски = английски „be\" — As an auxiliary verb:",
+   "keywords": [
+    "れる",
+    "be",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "アール",
+   "value": "„アール\" (āru) на японски = английски „are\" — An accepted (but deprecated and rarely used) metric unit of area equal to 100 square me…",
+   "keywords": [
+    "アール",
+    "are",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ドン",
+   "value": "„ドン\" (don) на японски = английски „don\" — A university professor, particularly one at Oxford or Cambridge.",
+   "keywords": [
+    "ドン",
+    "don",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...を知っている",
+   "value": "„...を知っている\" (...o shitte iru) на японски = английски „know\" — To perceive the truth or factuality of; to be certain of; to be certain that.",
+   "keywords": [
+    "...を知っている",
+    "know",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "できる",
+   "value": "„できる\" (dekiru) на японски = английски „can\" — To know how to.",
+   "keywords": [
+    "できる",
+    "can",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...と",
+   "value": "„...と\" (-to) на японски = английски „with\" — Against.",
+   "keywords": [
+    "...と",
+    "with",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "が",
+   "value": "„が\" (ga) на японски = английски „but\" — However, although, nevertheless, on the other hand (introducing a clause contrary to pr…",
+   "keywords": [
+    "が",
+    "but",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "完全に",
+   "value": "„完全に\" (kanzen-ni) на японски = английски „all\" — Wholly; entirely; completely; totally.",
+   "keywords": [
+    "完全に",
+    "all",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ために",
+   "value": "„ために\" на японски = английски „so\" — As a result; for that reason; therefore; because of this; due to this.",
+   "keywords": [
+    "ために",
+    "so",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "公正な",
+   "value": "„公正な\" (kōsei na) на японски = английски „just\" — Factually right, correct; factual.",
+   "keywords": [
+    "公正な",
+    "just",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "そこ",
+   "value": "„そこ\" (sokó) на японски = английски „there\" — In or at a place or location (stated, implied or otherwise indicated) that is perceived…",
+   "keywords": [
+    "そこ",
+    "there",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ここ",
+   "value": "„ここ\" (koko) на японски = английски „here\" — In, on, or at this place (a place perceived to be close to the speaker); compare there.",
+   "keywords": [
+    "ここ",
+    "here",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "彼ら",
+   "value": "„彼ら\" (karera) на японски = английски „they\" — A group of entities previously mentioned.",
+   "keywords": [
+    "彼ら",
+    "they",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "…が好き",
+   "value": "„…が好き\" (... ga suki) на японски = английски „like\" — To enjoy, be pleased by; favor; be in favor of.",
+   "keywords": [
+    "…が好き",
+    "like",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "得る",
+   "value": "„得る\" (eru) на японски = английски „get\" — To obtain; to acquire.",
+   "keywords": [
+    "得る",
+    "get",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "彼女",
+   "value": "„彼女\" (kanojo) на японски = английски „she\" — The female (typically) person or animal previously mentioned or implied.",
+   "keywords": [
+    "彼女",
+    "she",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "鳴く",
+   "value": "„鳴く\" (naku) на японски = английски „go\" — To move, either physically or in an abstract sense:",
+   "keywords": [
+    "鳴く",
+    "go",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "もし...",
+   "value": "„もし...\" (moshi...) на японски = английски „if\" — Supposing that, assuming that, in the circumstances that; used to introduce a condition…",
+   "keywords": [
+    "もし...",
+    "if",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "右",
+   "value": "„右\" (migi) на японски = английски „right\" — Designating the side of the body which is positioned to the east if one is facing north…",
+   "keywords": [
+    "右",
+    "right",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "外に",
+   "value": "„外に\" (soto ni) на японски = английски „out\" — Away from the inside or centre.",
+   "keywords": [
+    "外に",
+    "out",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "…の辺りで",
+   "value": "„…の辺りで\" (… no atari de) на японски = английски „about\" — In a circle around; all round; on every side of; on the outside of; around.",
+   "keywords": [
+    "…の辺りで",
+    "about",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "上に",
+   "value": "„上に\" (ue ni) на японски = английски „up\" — Indicating movement towards or location at a higher place or position.",
+   "keywords": [
+    "上に",
+    "up",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...で",
+   "value": "„...で\" (...de) на японски = английски „at\" — In, near, or in the general vicinity of (a particular place).",
+   "keywords": [
+    "...で",
+    "at",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "今や",
+   "value": "„今や\" (imaya) на японски = английски „now\" — At the present time.",
+   "keywords": [
+    "今や",
+    "now",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "あら",
+   "value": "„あら\" (ara) на японски = английски „oh\" — Expression of surprise.",
+   "keywords": [
+    "あら",
+    "oh",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "一",
+   "value": "„一\" (ichi) на японски = английски „one\" — The number represented by the Arabic numeral 1; the numerical value equal to that cardi…",
+   "keywords": [
+    "一",
+    "one",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "来る",
+   "value": "„来る\" (kuru) на японски = английски „come\" — To move nearer to the point of perspective.",
+   "keywords": [
+    "来る",
+    "come",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "良く",
+   "value": "„良く\" (yoku) на японски = английски „well\" — Accurately, competently, satisfactorily.",
+   "keywords": [
+    "良く",
+    "well",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "どのように",
+   "value": "„どのように\" (dono yō ni) на японски = английски „how\" — To what degree or extent.",
+   "keywords": [
+    "どのように",
+    "how",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "やった",
+   "value": "„やった\" (yatta) на японски = английски „yeah\" — Expressing joy, celebration, glee, etc.",
+   "keywords": [
+    "やった",
+    "yeah",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "望む",
+   "value": "„望む\" (nozomu) на японски = английски „will\" — Used to express the future tense, sometimes with an implication of volition or determin…",
+   "keywords": [
+    "望む",
+    "will",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "欲しい",
+   "value": "„欲しい\" (hoshii) на японски = английски „want\" — To wish for or desire (something); to feel a need or desire for; to crave, hanker, or d…",
+   "keywords": [
+    "欲しい",
+    "want",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "考える",
+   "value": "„考える\" (kangaeru) на японски = английски „think\" — To ponder, to go over in one's mind.",
+   "keywords": [
+    "考える",
+    "think",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "のほどに",
+   "value": "„のほどに\" (no hodo ni) на японски = английски „as\" — To such an extent or degree; to the same extent or degree.",
+   "keywords": [
+    "のほどに",
+    "as",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "見る",
+   "value": "„見る\" (miru) на японски = английски „see\" — To perceive or detect someone or something with the eyes, or as if by sight.",
+   "keywords": [
+    "見る",
+    "see",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "大丈夫な",
+   "value": "„大丈夫な\" (daijōbu na) на японски = английски „good\" — Of a person or an animal:",
+   "keywords": [
+    "大丈夫な",
+    "good",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "誰",
+   "value": "„誰\" (dare) на японски = английски „who\" — What person or people; which person or people; asks for the identity of someone; used i…",
+   "keywords": [
+    "誰",
+    "who",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "何故",
+   "value": "„何故\" (naze) на японски = английски „why\" — For what cause, reason, or purpose.",
+   "keywords": [
+    "何故",
+    "why",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "から",
+   "value": "„から\" (kara) на японски = английски „from\" — Used to indicate source or provenance.",
+   "keywords": [
+    "から",
+    "from",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...させる",
+   "value": "„...させる\" (...saseru) на японски = английски „let\" — To allow to, not to prevent (+ infinitive, but usually without to).",
+   "keywords": [
+    "...させる",
+    "let",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "よし",
+   "value": "„よし\" (yoshi) на японски = английски „yes\" — An exclamation of pleasure or approval, usually transcribed with an exclamation point.",
+   "keywords": [
+    "よし",
+    "yes",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "何時",
+   "value": "„何時\" (itsu) на японски = английски „when\" — At what time? At which time? Upon which occasion or circumstance? Used to introduce dir…",
+   "keywords": [
+    "何時",
+    "when",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "時間",
+   "value": "„時間\" (jikan) на японски = английски „time\" — The inevitable progression into the future with the passing of present and past events.",
+   "keywords": [
+    "時間",
+    "time",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "後の",
+   "value": "„後の\" (ushiro no) на японски = английски „back\" — At or near the rear.",
+   "keywords": [
+    "後の",
+    "back",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "見る",
+   "value": "„見る\" (miru) на японски = английски „look\" — To try to see, to pay attention to with one’s eyes.",
+   "keywords": [
+    "見る",
+    "look",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "私達",
+   "value": "„私達\" (watashitachi) на японски = английски „us\" — Me and at least one other person, excluding the person(s) being addressed. (exclusive us.)",
+   "keywords": [
+    "私達",
+    "us",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "どこ",
+   "value": "„どこ\" (doko) на японски = английски „where\" — In, at or to what place.",
+   "keywords": [
+    "どこ",
+    "where",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "取る",
+   "value": "„取る\" (toru) на японски = английски „take\" — To get into one's hands, possession, or control, with or without force.",
+   "keywords": [
+    "取る",
+    "take",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "その時",
+   "value": "„その時\" (sono toki) на японски = английски „then\" — At that time.",
+   "keywords": [
+    "その時",
+    "then",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "または",
+   "value": "„または\" (mata wa) на японски = английски „or\" — Connects at least two alternative words, phrases, clauses, sentences, etc., each of whi…",
+   "keywords": [
+    "または",
+    "or",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "分かる",
+   "value": "„分かる\" (wakaru) на японски = английски „tell\" — Mental senses related to determining, reckoning, or perceiving",
+   "keywords": [
+    "分かる",
+    "tell",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "本当に",
+   "value": "„本当に\" (hontō ni) на японски = английски „really\" — In a way or manner that is real, not unreal.",
+   "keywords": [
+    "本当に",
+    "really",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "男性",
+   "value": "„男性\" (dansei) на японски = английски „man\" — An adult male human.",
+   "keywords": [
+    "男性",
+    "man",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "いくつか",
+   "value": "„いくつか\" (ikutsuka) на японски = английски „some\" — A certain number (multiple but not all).",
+   "keywords": [
+    "いくつか",
+    "some",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "言う",
+   "value": "„言う\" (iu) на японски = английски „say\" — To pronounce.",
+   "keywords": [
+    "言う",
+    "say",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "おい",
+   "value": "„おい\" (oi) на японски = английски „hey\" — An exclamation to get attention.",
+   "keywords": [
+    "おい",
+    "hey",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "…で",
+   "value": "„…で\" на японски = английски „by\" — Near or next to.",
+   "keywords": [
+    "…で",
+    "by",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "必要",
+   "value": "„必要\" (hitsuyō) на японски = английски „need\" — A requirement for something; something needed.",
+   "keywords": [
+    "必要",
+    "need",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "何か",
+   "value": "„何か\" (nanika) на японски = английски „something\" — An uncertain or unspecified thing; one thing.",
+   "keywords": [
+    "何か",
+    "something",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "…過ぎる",
+   "value": "„…過ぎる\" (...sugiru) на японски = английски „too\" — Likewise.",
+   "keywords": [
+    "…過ぎる",
+    "too",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "よりたくさん",
+   "value": "„よりたくさん\" на японски = английски „more\" — To a greater degree or extent.",
+   "keywords": [
+    "よりたくさん",
+    "more",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "手段",
+   "value": "„手段\" (shudan) на японски = английски „way\" — To do with a place or places.",
+   "keywords": [
+    "手段",
+    "way",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "下に",
+   "value": "„下に\" (shita ni) на японски = английски „down\" — From a higher position to a lower one; downwards.",
+   "keywords": [
+    "下に",
+    "down",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "創る",
+   "value": "„創る\" (tsukuru) на японски = английски „make\" — To create.",
+   "keywords": [
+    "創る",
+    "make",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "とても",
+   "value": "„とても\" (totemo) на японски = английски „very\" — To a great extent or degree.",
+   "keywords": [
+    "とても",
+    "very",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "決して",
+   "value": "„決して\" (kesshite) на японски = английски „never\" — At no time; on no occasion; in no circumstance.",
+   "keywords": [
+    "決して",
+    "never",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "唯一の",
+   "value": "„唯一の\" (yuiitsu no) на японски = английски „only\" — Alone in a category.",
+   "keywords": [
+    "唯一の",
+    "only",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "人々",
+   "value": "„人々\" (hitobito) на японски = английски „people\" — Persons forming or belonging to a particular group, such as a nation, class, ethnic gro…",
+   "keywords": [
+    "人々",
+    "people",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "上に",
+   "value": "„上に\" (ue ni) на японски = английски „over\" — Expressing spatial relationship or movement.",
+   "keywords": [
+    "上に",
+    "over",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "なぜなら",
+   "value": "„なぜなら\" (nazenara) на японски = английски „because\" — By or for the cause that; on this account that; for the reason that.",
+   "keywords": [
+    "なぜなら",
+    "because",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "小さい",
+   "value": "„小さい\" (chiisai) на японски = английски „little\" — Small, not large, limited, particularly",
+   "keywords": [
+    "小さい",
+    "little",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "喜ばす",
+   "value": "„喜ばす\" (yorokobasu) на японски = английски „please\" — To make happy or satisfy; to give pleasure to.",
+   "keywords": [
+    "喜ばす",
+    "please",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "愛",
+   "value": "„愛\" (ai) на японски = английски „love\" — A deep caring for the existence of another.",
+   "keywords": [
+    "愛",
+    "love",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...べきである",
+   "value": "„...べきである\" (...beki de aru) на японски = английски „should\" — Ought to; indicating opinion, advice, or instruction, about what is required or desirable.",
+   "keywords": [
+    "...べきである",
+    "should",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "意図する",
+   "value": "„意図する\" (ito suru) на японски = английски „mean\" — To intend.",
+   "keywords": [
+    "意図する",
+    "mean",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "すまない",
+   "value": "„すまない\" (sumanai) на японски = английски „sorry\" — Regretful or apologetic for one's actions.",
+   "keywords": [
+    "すまない",
+    "sorry",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "与える",
+   "value": "„与える\" (ataeru) на японски = английски „give\" — To move, shift, provide something abstract or concrete to someone or something or somew…",
+   "keywords": [
+    "与える",
+    "give",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "感謝する",
+   "value": "„感謝する\" (kansha suru) на японски = английски „thank\" — To express appreciation or gratitude toward (someone or something).",
+   "keywords": [
+    "感謝する",
+    "thank",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "どれも",
+   "value": "„どれも\" (doremo) на японски = английски „any\" — Any thing(s) or person(s).",
+   "keywords": [
+    "どれも",
+    "any",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "二",
+   "value": "„二\" (ni) на японски = английски „two\" — A numerical value equal to 2; this many dots (••).",
+   "keywords": [
+    "二",
+    "two",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "等しい",
+   "value": "„等しい\" (hitoshii) на японски = английски „even\" — Flat and level.",
+   "keywords": [
+    "等しい",
+    "even",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "沢山の",
+   "value": "„沢山の\" (takusan no) на японски = английски „much\" — To a great extent.",
+   "keywords": [
+    "沢山の",
+    "much",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "すること",
+   "value": "„すること\" (suru koto) на японски = английски „doing\" — A deed or action, especially when somebody is held responsible for it.",
+   "keywords": [
+    "すること",
+    "doing",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "確か",
+   "value": "„確か\" (tashika) на японски = английски „sure\" — Physically secure and certain, non-failing, reliable.",
+   "keywords": [
+    "確か",
+    "sure",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "物",
+   "value": "„物\" (mono) на японски = английски „thing\" — That which is considered to exist as a separate entity, object, quality or concept.",
+   "keywords": [
+    "物",
+    "thing",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "これら",
+   "value": "„これら\" (korera) на японски = английски „these\"",
+   "keywords": [
+    "これら",
+    "these",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "助け",
+   "value": "„助け\" (tasuke) на японски = английски „help\" — Action given to provide assistance; aid.",
+   "keywords": [
+    "助け",
+    "help",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "第一",
+   "value": "„第一\" (daiichi) на японски = английски „first\" — Preceding all others of a series or kind; the ordinal of one; earliest.",
+   "keywords": [
+    "第一",
+    "first",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "何でも",
+   "value": "„何でも\" (nandemo) на японски = английски „anything\" — Any object, act, state, event, or fact whatsoever; a thing of any kind; something or ot…",
+   "keywords": [
+    "何でも",
+    "anything",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "止まっている",
+   "value": "„止まっている\" (tomatte iru) на японски = английски „still\" — Not moving; calm.",
+   "keywords": [
+    "止まっている",
+    "still",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "見付ける",
+   "value": "„見付ける\" (mitsukeru) на японски = английски „find\" — To locate",
+   "keywords": [
+    "見付ける",
+    "find",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "命",
+   "value": "„命\" (inochi) на японски = английски „life\" — The state of organisms preceding their death, characterized by biological processes suc…",
+   "keywords": [
+    "命",
+    "life",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "何も...ない",
+   "value": "„何も...ない\" (nani mo...nai) на японски = английски „nothing\" — Not any thing; no thing.",
+   "keywords": [
+    "何も...ない",
+    "nothing",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "旦那",
+   "value": "„旦那\" (danna) на японски = английски „sir\" — A man of a higher rank or position.",
+   "keywords": [
+    "旦那",
+    "sir",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "日",
+   "value": "„日\" (hi) на японски = английски „day\" — The time when the Sun is above the horizon and it lights the sky.",
+   "keywords": [
+    "日",
+    "day",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "神",
+   "value": "„神\" (kami) на японски = английски „god\" — A deity or supreme being; a supernatural, typically immortal, being with superior power…",
+   "keywords": [
+    "神",
+    "god",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "仕事",
+   "value": "„仕事\" (shigoto) на японски = английски „work\" — Employment.",
+   "keywords": [
+    "仕事",
+    "work",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "あのう",
+   "value": "„あのう\" (anō) на японски = английски „uh\" — Expression of thought, confusion, or uncertainty.",
+   "keywords": [
+    "あのう",
+    "uh",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "又",
+   "value": "„又\" (mata) на японски = английски „again\" — Another time: indicating a repeat of an action.",
+   "keywords": [
+    "又",
+    "again",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "多分",
+   "value": "„多分\" (tabun) на японски = английски „maybe\" — Perhaps, possibly.",
+   "keywords": [
+    "多分",
+    "maybe",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...なきゃ",
+   "value": "„...なきゃ\" (...nakya) на японски = английски „must\" — To do as a requirement; indicates that the sentence subject is required as an imperativ…",
+   "keywords": [
+    "...なきゃ",
+    "must",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...の前に",
+   "value": "„...の前に\" (...no mae ni) на японски = английски „before\" — Earlier than (in time).",
+   "keywords": [
+    "...の前に",
+    "before",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "他の",
+   "value": "„他の\" (hoka no) на японски = английски „other\" — See other (determiner) below.",
+   "keywords": [
+    "他の",
+    "other",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "待つ",
+   "value": "„待つ\" (matsu) на японски = английски „wait\" — To delay movement or action until some event or time; to remain neglected or in readiness.",
+   "keywords": [
+    "待つ",
+    "wait",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "止める",
+   "value": "„止める\" (tomeru) на японски = английски „stop\" — To cease moving.",
+   "keywords": [
+    "止める",
+    "stop",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "訪ねる",
+   "value": "„訪ねる\" (tazuneru) на японски = английски „call\" — To reach out with one's voice.",
+   "keywords": [
+    "訪ねる",
+    "call",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "後で",
+   "value": "„後で\" на японски = английски „after\" — Behind; later in time; following.",
+   "keywords": [
+    "後で",
+    "after",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ウォン",
+   "value": "„ウォン\" (won) на японски = английски „won\" — The currency of Korea, worth 100 jun in North Korea and 100 jeon in South Korea.",
+   "keywords": [
+    "ウォン",
+    "won",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "話す",
+   "value": "„話す\" (hanasu) на японски = английски „talk\" — To communicate, usually by means of speech.",
+   "keywords": [
+    "話す",
+    "talk",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "遠くに",
+   "value": "„遠くに\" (tooku ni) на японски = английски „away\" — From a place, hence.",
+   "keywords": [
+    "遠くに",
+    "away",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...より",
+   "value": "„...より\" на японски = английски „than\" — Introduces a comparison, and is associated with comparatives, and with words such as mo…",
+   "keywords": [
+    "...より",
+    "than",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "考え",
+   "value": "„考え\" (kangae) на японски = английски „thought\" — A representation created in the mind without the use of one's faculties of vision, soun…",
+   "keywords": [
+    "考え",
+    "thought",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "家",
+   "value": "„家\" на японски = английски „home\" — A dwelling.",
+   "keywords": [
+    "家",
+    "home",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "夜",
+   "value": "„夜\" на японски = английски „night\" — The time when the Sun is below the horizon when the sky is dark.",
+   "keywords": [
+    "夜",
+    "night",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "置く",
+   "value": "„置く\" (oku) на японски = английски „put\" — To physically place (sth or sb swh).",
+   "keywords": [
+    "置く",
+    "put",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "凄い",
+   "value": "„凄い\" (sugoi) на японски = английски „great\" — Taking much space; large.",
+   "keywords": [
+    "凄い",
+    "great",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "最後",
+   "value": "„最後\" (saigo) на японски = английски „last\" — Final, ultimate, coming after all others of its kind.",
+   "keywords": [
+    "最後",
+    "last",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "もっといい",
+   "value": "„もっといい\" на японски = английски „better\" — Greater in amount or quantity",
+   "keywords": [
+    "もっといい",
+    "better",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "全て",
+   "value": "„全て\" (subete) на японски = английски „everything\" — All the things under discussion.",
+   "keywords": [
+    "全て",
+    "everything",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "さん",
+   "value": "„さん\" (san) на японски = английски „mr.\" — Abbreviation of Mister.",
+   "keywords": [
+    "さん",
+    "mr.",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "新しい",
+   "value": "„新しい\" (atarashii) на японски = английски „new\" — Recently made, or created.",
+   "keywords": [
+    "新しい",
+    "new",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "いつも",
+   "value": "„いつも\" (itsu mo) на японски = английски „always\" — At all times; throughout all time; since the beginning.",
+   "keywords": [
+    "いつも",
+    "always",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "保持する",
+   "value": "„保持する\" (hoji suru) на японски = английски „keep\" — To continue in (a course or mode of action); to not intermit or fall from; to uphold or…",
+   "keywords": [
+    "保持する",
+    "keep",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "長い",
+   "value": "„長い\" (nagai) на японски = английски „long\" — Having much distance in space from one end to the other.",
+   "keywords": [
+    "長い",
+    "long",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "出発する",
+   "value": "„出発する\" (shuppatsu-suru) на японски = английски „leave\" — To have a consequence or remnant.",
+   "keywords": [
+    "出発する",
+    "leave",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "お金",
+   "value": "„お金\" (okane) на японски = английски „money\" — A generally accepted means of exchange.",
+   "keywords": [
+    "お金",
+    "money",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "…のまわり",
+   "value": "„…のまわり\" (... no mawari) на японски = английски „around\" — Forming a circle or closed curve containing (something).",
+   "keywords": [
+    "…のまわり",
+    "around",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "名前",
+   "value": "„名前\" (namae) на японски = английски „name\" — Any nounal word or phrase which indicates a particular person, place, class, or thing.",
+   "keywords": [
+    "名前",
+    "name",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "広場",
+   "value": "„広場\" (hiroba) на японски = английски „place\" — An area; somewhere within an area.",
+   "keywords": [
+    "広場",
+    "place",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ずっと",
+   "value": "„ずっと\" (zutto) на японски = английски „ever\" — Continuously, constantly, all the time (for the complete duration).",
+   "keywords": [
+    "ずっと",
+    "ever",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "感じる",
+   "value": "„感じる\" (kanjiru) на японски = английски „feel\" — To use or experience the sense of touch.",
+   "keywords": [
+    "感じる",
+    "feel",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "お父さん",
+   "value": "„お父さん\" (otōsan) на японски = английски „father\" — A male parent, especially of a human; a male who parents a child (which he has sired, a…",
+   "keywords": [
+    "お父さん",
+    "father",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "やつら",
+   "value": "„やつら\" (yatsura) на японски = английски „guy\" — An effigy of a man burned on a bonfire on the anniversary of the Gunpowder Plot (5th No…",
+   "keywords": [
+    "やつら",
+    "guy",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "古い",
+   "value": "„古い\" (furui) на японски = английски „old\" — Of an object, concept, relationship, etc., having existed for a relatively long period …",
+   "keywords": [
+    "古い",
+    "old",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "どれ",
+   "value": "„どれ\" (dore) на японски = английски „which\" — What one or ones (of those mentioned or implied).",
+   "keywords": [
+    "どれ",
+    "which",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "大人",
+   "value": "„大人\" (otona) на японски = английски „big\" — Of great size, large.",
+   "keywords": [
+    "大人",
+    "big",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "宿命",
+   "value": "„宿命\" (shukumei) на японски = английски „lot\" — A large quantity or number; a great deal.",
+   "keywords": [
+    "宿命",
+    "lot",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "済んだ",
+   "value": "„済んだ\" (sunda) на японски = английски „done\" — Having completed or finished an activity.",
+   "keywords": [
+    "済んだ",
+    "done",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "おはよう",
+   "value": "„おはよう\" (ohayō) на японски = английски „hello\" — A greeting (salutation) said when meeting someone or acknowledging someone’s arrival or…",
+   "keywords": [
+    "おはよう",
+    "hello",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "良い",
+   "value": "„良い\" (ii) на японски = английски „nice\" — Pleasant, satisfactory, complimentary.",
+   "keywords": [
+    "良い",
+    "nice",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "信じる",
+   "value": "„信じる\" (shinjiru) на японски = английски „believe\" — To accept as true, particularly without absolute certainty (i.e., as opposed to knowing).",
+   "keywords": [
+    "信じる",
+    "believe",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "女の子",
+   "value": "„女の子\" (onna no ko) на японски = английски „girl\" — A female child.",
+   "keywords": [
+    "女の子",
+    "girl",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "誰か",
+   "value": "„誰か\" (dareka) на японски = английски „someone\" — One or some person of unspecified or indefinite identity.",
+   "keywords": [
+    "誰か",
+    "someone",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "平凡",
+   "value": "„平凡\" (heibon) на японски = английски „fine\" — Senses referring to subjective quality.",
+   "keywords": [
+    "平凡",
+    "fine",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ありがとう",
+   "value": "„ありがとう\" (arigatō) на японски = английски „thanks\" — Used to express appreciation or gratitude.",
+   "keywords": [
+    "ありがとう",
+    "thanks",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "指名手配中",
+   "value": "„指名手配中\" (shimei tehai chū) на японски = английски „wanted\" — Wished for; desired; sought.",
+   "keywords": [
+    "指名手配中",
+    "wanted",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "種類",
+   "value": "„種類\" (shurui) на японски = английски „kind\" — A type, race or category; a group of entities that have common characteristics such tha…",
+   "keywords": [
+    "種類",
+    "kind",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "来臨",
+   "value": "„来臨\" (rairin) на японски = английски „coming\" — The act of arriving; an arrival.",
+   "keywords": [
+    "来臨",
+    "coming",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "家",
+   "value": "„家\" на японски = английски „house\" — A structure built or serving as an abode of human beings.",
+   "keywords": [
+    "家",
+    "house",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "オーケー",
+   "value": "„オーケー\" (ōkē) на японски = английски „ok\" — Endorsement; approval; acceptance; acquiescence.",
+   "keywords": [
+    "オーケー",
+    "ok",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...を通って",
+   "value": "„...を通って\" (...o tōtte) на японски = английски „through\" — From one side or end of (something) to the other.",
+   "keywords": [
+    "...を通って",
+    "through",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "生き物",
+   "value": "„生き物\" (ikimono) на японски = английски „being\" — A living creature.",
+   "keywords": [
+    "生き物",
+    "being",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "コース",
+   "value": "„コース\" (kōsu) на японски = английски „course\" — A sequence of events.",
+   "keywords": [
+    "コース",
+    "course",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "留まる",
+   "value": "„留まる\" (tomaru) на японски = английски „stay\" — To remain in a particular place, especially for a definite or short period of time; soj…",
+   "keywords": [
+    "留まる",
+    "stay",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "左",
+   "value": "„左\" (hidari) на японски = английски „left\" — Designating the side of the body toward the west when one is facing north; the side of …",
+   "keywords": [
+    "左",
+    "left",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "お父さん",
+   "value": "„お父さん\" (otōsan) на японски = английски „dad\" — A father, a male parent.",
+   "keywords": [
+    "お父さん",
+    "dad",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "十分に",
+   "value": "„十分に\" (jūbun ni) на японски = английски „enough\" — Sufficiently.",
+   "keywords": [
+    "十分に",
+    "enough",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "してもいい",
+   "value": "„してもいい\" (shite mo ii) на японски = английски „may\" — To be able to go.",
+   "keywords": [
+    "してもいい",
+    "may",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "お母さん",
+   "value": "„お母さん\" (okāsan) на японски = английски „mother\" — A female parent, especially of a human; a female who parents a child (which she has giv…",
+   "keywords": [
+    "お母さん",
+    "mother",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "間違った",
+   "value": "„間違った\" (machigatta) на японски = английски „wrong\" — Incorrect or untrue.",
+   "keywords": [
+    "間違った",
+    "wrong",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "世界",
+   "value": "„世界\" (sekai) на японски = английски „world\" — The subjective human experience, regarded collectively; human collective existence; exi…",
+   "keywords": [
+    "世界",
+    "world",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "悪い",
+   "value": "„悪い\" (warui) на японски = английски „bad\" — Bold, daring, and tough.",
+   "keywords": [
+    "悪い",
+    "bad",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "かも知れない",
+   "value": "„かも知れない\" (ka mo shirenai) на японски = английски „might\" — simple past of may",
+   "keywords": [
+    "かも知れない",
+    "might",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "三",
+   "value": "„三\" (san) на японски = английски „three\" — A numerical value after two and before four. Represented in Arabic digits as 3; this ma…",
+   "keywords": [
+    "三",
+    "three",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "今日",
+   "value": "„今日\" (kyō) на японски = английски „today\" — On the current day or date.",
+   "keywords": [
+    "今日",
+    "today",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "聞く",
+   "value": "„聞く\" (kiku) на японски = английски „listen\" — To use one's sense of hearing and auditory cognition in an intentional way; to make del…",
+   "keywords": [
+    "聞く",
+    "listen",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "分かる",
+   "value": "„分かる\" (wakaru) на японски = английски „understand\" — To know the meaning of; to parse or have parsed correctly; to comprehend.",
+   "keywords": [
+    "分かる",
+    "understand",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "聞く",
+   "value": "„聞く\" (kiku) на японски = английски „hear\" — To perceive sounds through the ear.",
+   "keywords": [
+    "聞く",
+    "hear",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "思い出す",
+   "value": "„思い出す\" (omoidasu) на японски = английски „remember\" — To recall from one's memory; to have an image in one's memory.",
+   "keywords": [
+    "思い出す",
+    "remember",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "頼む",
+   "value": "„頼む\" (tanomu) на японски = английски „ask\" — To request or petition.",
+   "keywords": [
+    "頼む",
+    "ask",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "自身の",
+   "value": "„自身の\" (jishin no) на японски = английски „own\" — Belonging to; possessed; acquired and designated by; proper to; property of; titled to;…",
+   "keywords": [
+    "自身の",
+    "own",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "同じ",
+   "value": "„同じ\" (onaji) на японски = английски „same\" — Not different or other; not another or others; not different as regards self; selfsame;…",
+   "keywords": [
+    "同じ",
+    "same",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "見せる",
+   "value": "„見せる\" (miseru) на японски = английски „show\" — To display or exhibit; to have somebody see (something); to direct attention to something.",
+   "keywords": [
+    "見せる",
+    "show",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "然も無くば",
+   "value": "„然も無くば\" (samonakuba) на японски = английски „else\" — Otherwise, if not.",
+   "keywords": [
+    "然も無くば",
+    "else",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "殺す",
+   "value": "„殺す\" (korosu) на японски = английски „kill\" — To put to death; to extinguish the life of.",
+   "keywords": [
+    "殺す",
+    "kill",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "興す",
+   "value": "„興す\" (okosu) на японски = английски „found\" — To start (an institution or organization).",
+   "keywords": [
+    "興す",
+    "found",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "明くる",
+   "value": "„明くる\" (akuru) на японски = английски „next\" — Nearest in place or position, having nothing similar intervening; adjoining.",
+   "keywords": [
+    "明くる",
+    "next",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "気にする",
+   "value": "„気にする\" (ki ni suru) на японски = английски „care\" — Close attention; concern; responsibility.",
+   "keywords": [
+    "気にする",
+    "care",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "車",
+   "value": "„車\" (kuruma) на японски = английски „car\" — A wheeled vehicle that moves independently, with at least three wheels, powered mechani…",
+   "keywords": [
+    "車",
+    "car",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "息子",
+   "value": "„息子\" (musuko) на японски = английски „son\" — One's male offspring.",
+   "keywords": [
+    "息子",
+    "son",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "挑戦する",
+   "value": "„挑戦する\" (chōsen suru) на японски = английски „try\" — To attempt; to endeavour. Followed by infinitive.",
+   "keywords": [
+    "挑戦する",
+    "try",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "女の人",
+   "value": "„女の人\" (onna no hito) на японски = английски „woman\" — An adult female human.",
+   "keywords": [
+    "女の人",
+    "woman",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "こんにちは",
+   "value": "„こんにちは\" (konnichi wa) на японски = английски „hi\" — A friendly, informal, casual greeting said upon someone's arrival.",
+   "keywords": [
+    "こんにちは",
+    "hi",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "死んだ",
+   "value": "„死んだ\" (shinda) на японски = английски „dead\" — No longer living; deceased. (Also used as a noun.)",
+   "keywords": [
+    "死んだ",
+    "dead",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "心",
+   "value": "„心\" (kokoro) на японски = английски „mind\" — The capability for rational thought.",
+   "keywords": [
+    "心",
+    "mind",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "友達",
+   "value": "„友達\" (tomodachi) на японски = английски „friend\" — A person, typically someone other than a family member, spouse or lover, whose company …",
+   "keywords": [
+    "友達",
+    "friend",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "一番",
+   "value": "„一番\" (ichiban) на японски = английски „best\" — Most; largest.",
+   "keywords": [
+    "一番",
+    "best",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "地獄",
+   "value": "„地獄\" (jigoku) на японски = английски „hell\" — A place or situation of great suffering in life.",
+   "keywords": [
+    "地獄",
+    "hell",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "朝",
+   "value": "„朝\" (asa) на японски = английски „morning\" — The early part of the day, especially from midnight to noon.",
+   "keywords": [
+    "朝",
+    "morning",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ボーイ",
+   "value": "„ボーイ\" (bōi) на японски = английски „boy\" — A male child.",
+   "keywords": [
+    "ボーイ",
+    "boy",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "一緒に",
+   "value": "„一緒に\" (issho ni) на японски = английски „together\" — At the same time, in the same place; in close association or proximity.",
+   "keywords": [
+    "一緒に",
+    "together",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "自身",
+   "value": "„自身\" (jishin) на японски = английски „yourself\" — Your own self (singular).",
+   "keywords": [
+    "自身",
+    "yourself",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "仕事",
+   "value": "„仕事\" (shigoto) на японски = английски „job\" — A task.",
+   "keywords": [
+    "仕事",
+    "job",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "鋸",
+   "value": "„鋸\" (nokogiri) на японски = английски „saw\" — A tool used for cutting hard substances, in particular wood or metal.",
+   "keywords": [
+    "鋸",
+    "saw",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "親戚",
+   "value": "„親戚\" (shinseki) на японски = английски „family\" — A group of people who are closely related to one another (by blood, marriage or adoptio…",
+   "keywords": [
+    "親戚",
+    "family",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "現実の",
+   "value": "„現実の\" (genjitsu no) на японски = английски „real\" — True, genuine, not merely nominal or apparent.",
+   "keywords": [
+    "現実の",
+    "real",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...なしで",
+   "value": "„...なしで\" (...nashi de) на японски = английски „without\" — Not having, containing, characteristic of, etc.",
+   "keywords": [
+    "...なしで",
+    "without",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "赤ちゃん",
+   "value": "„赤ちゃん\" (akachan) на японски = английски „baby\" — A very young human, particularly from birth to a couple of years old or until walking i…",
+   "keywords": [
+    "赤ちゃん",
+    "baby",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "空間",
+   "value": "„空間\" (kūkan) на японски = английски „room\" — Space for something, or to carry out an activity.",
+   "keywords": [
+    "空間",
+    "room",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "既に",
+   "value": "„既に\" (súde ni) на японски = английски „already\" — Prior to some specified time, either past, present, or future; by this time; previously.",
+   "keywords": [
+    "既に",
+    "already",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "動かす",
+   "value": "„動かす\" (ugokasu) на японски = английски „move\" — To change place or posture; to go, in any manner, from one place or position to another.",
+   "keywords": [
+    "動かす",
+    "move",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "最も",
+   "value": "„最も\" (mottomo) на японски = английски „most\" — Forms the superlative of many adjectives.",
+   "keywords": [
+    "最も",
+    "most",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "住む",
+   "value": "„住む\" (sumu) на японски = английски „live\" — To be alive; to have life.",
+   "keywords": [
+    "住む",
+    "live",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "当てそこなう",
+   "value": "„当てそこなう\" (atesokonau) на японски = английски „miss\" — To fail to hit, catch, grasp, etc.",
+   "keywords": [
+    "当てそこなう",
+    "miss",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "本当に",
+   "value": "„本当に\" (hontō ni) на японски = английски „actually\" — In act or in fact; really; in truth; positively.",
+   "keywords": [
+    "本当に",
+    "actually",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "へえ",
+   "value": "„へえ\" (hē) на японски = английски „huh\" — Used to express doubt or confusion.",
+   "keywords": [
+    "へえ",
+    "huh",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "糞",
+   "value": "„糞\" (kuso) на японски = английски „shit\" — Usually solid excretory product evacuated from the bowels; feces.",
+   "keywords": [
+    "糞",
+    "shit",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "…でもあり…でもある",
+   "value": "„…でもあり…でもある\" (...demo ari...demo aru) на японски = английски „both\" — Including both of (used with and).",
+   "keywords": [
+    "…でもあり…でもある",
+    "both",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "一度",
+   "value": "„一度\" (ichido) на японски = английски „once\" — One and only one time.",
+   "keywords": [
+    "一度",
+    "once",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "用意の出来た",
+   "value": "„用意の出来た\" (yōi no dekita) на японски = английски „ready\" — Prepared for immediate action or use.",
+   "keywords": [
+    "用意の出来た",
+    "ready",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "頭",
+   "value": "„頭\" (atama) на японски = английски „head\" — The part of the body of an animal or human which contains the brain, mouth, and main se…",
+   "keywords": [
+    "頭",
+    "head",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "中古",
+   "value": "„中古\" (chūko) на японски = английски „used\" — That is or has or have been used.",
+   "keywords": [
+    "中古",
+    "used",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "着想",
+   "value": "„着想\" (chakusō) на японски = английски „idea\" — An abstract archetype of a given thing, compared to which real-life examples are seen a…",
+   "keywords": [
+    "着想",
+    "idea",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "持つ",
+   "value": "„持つ\" (motsu) на японски = английски „hold\" — To grasp or grip.",
+   "keywords": [
+    "持つ",
+    "hold",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "幸せな",
+   "value": "„幸せな\" (shiawase na) на японски = английски „happy\" — Having a feeling arising from a consciousness of well-being or of enjoyment; enjoying g…",
+   "keywords": [
+    "幸せな",
+    "happy",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "戸",
+   "value": "„戸\" (to) на японски = английски „door\" — A portal of entry into a building, room, or vehicle, typically consisting of a rigid pl…",
+   "keywords": [
+    "戸",
+    "door",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "エッチする",
+   "value": "„エッチする\" (etchi suru) на японски = английски „fuck\" — To have sexual intercourse; to copulate.",
+   "keywords": [
+    "エッチする",
+    "fuck",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "兄弟",
+   "value": "„兄弟\" (kyōdai) на японски = английски „brother\" — Son of the same parents as another person.",
+   "keywords": [
+    "兄弟",
+    "brother",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "も",
+   "value": "„も\" (mo) на японски = английски „also\" — In addition; besides; as well; further; too.",
+   "keywords": [
+    "も",
+    "also",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "綺麗な",
+   "value": "„綺麗な\" (kirei-na) на японски = английски „pretty\" — Pleasant to the sight or other senses; attractive, especially of women or children.",
+   "keywords": [
+    "綺麗な",
+    "pretty",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "馬銜",
+   "value": "„馬銜\" на японски = английски „bit\" — A piece of metal placed in a horse's mouth and connected to the reins to direct the ani…",
+   "keywords": [
+    "馬銜",
+    "bit",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "港",
+   "value": "„港\" (minato) на японски = английски „haven\" — A harbour or anchorage protected from the sea.",
+   "keywords": [
+    "港",
+    "haven",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "まだ",
+   "value": "„まだ\" (mada) на японски = английски „yet\" — Thus far; up to the present; up to some unspecified time.",
+   "keywords": [
+    "まだ",
+    "yet",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "人々",
+   "value": "„人々\" (hitobito) на японски = английски „men\" — (The) people, humanity, man(kind).",
+   "keywords": [
+    "人々",
+    "men",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "全体の",
+   "value": "„全体の\" (zentai no) на японски = английски „whole\" — Entire, undivided.",
+   "keywords": [
+    "全体の",
+    "whole",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "開始",
+   "value": "„開始\" (kaishi) на японски = английски „start\" — The beginning of an activity.",
+   "keywords": [
+    "開始",
+    "start",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "使用",
+   "value": "„使用\" (shiyō) на японски = английски „use\" — The act of using.",
+   "keywords": [
+    "使用",
+    "use",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "期間",
+   "value": "„期間\" (kikan) на японски = английски „while\" — An uncertain duration of time, a period of time.",
+   "keywords": [
+    "期間",
+    "while",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "…以来",
+   "value": "„…以来\" (...irai) на японски = английски „since\" — From: referring to a period of time ending in the present and defining it by the point …",
+   "keywords": [
+    "…以来",
+    "since",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "妻",
+   "value": "„妻\" (tsuma) на японски = английски „wife\" — A married woman, especially in relation to her spouse.",
+   "keywords": [
+    "妻",
+    "wife",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "推測する",
+   "value": "„推測する\" (suisoku suru) на японски = английски „guess\" — To reach a partly (or totally) unconfirmed conclusion; to engage in conjecture; to spec…",
+   "keywords": [
+    "推測する",
+    "guess",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "明日",
+   "value": "„明日\" на японски = английски „tomorrow\" — On the day after the present day.",
+   "keywords": [
+    "明日",
+    "tomorrow",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "物質",
+   "value": "„物質\" (busshitsu) на японски = английски „matter\" — Material; substance.",
+   "keywords": [
+    "物質",
+    "matter",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "会う",
+   "value": "„会う\" (au) на японски = английски „meet\" — To make contact (with someone) while in proximity.",
+   "keywords": [
+    "会う",
+    "meet",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "持って来る",
+   "value": "„持って来る\" (motte-kuru) на японски = английски „bring\" — To transport toward somebody/somewhere.",
+   "keywords": [
+    "持って来る",
+    "bring",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "今夜",
+   "value": "„今夜\" (kon'ya) на японски = английски „tonight\" — During the night following the current day; during the evening of today.",
+   "keywords": [
+    "今夜",
+    "tonight",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "皆さん",
+   "value": "„皆さん\" (minasan) на японски = английски „everyone\" — Every person.",
+   "keywords": [
+    "皆さん",
+    "everyone",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "走る",
+   "value": "„走る\" (hashiru) на японски = английски „run\" — To move swiftly.",
+   "keywords": [
+    "走る",
+    "run",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "難しい",
+   "value": "„難しい\" (muzukashii) на японски = английски „hard\" — Solid and firm.",
+   "keywords": [
+    "難しい",
+    "hard",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ああ",
+   "value": "„ああ\" (ā) на японски = английски „ah\" — An expression of relief, relaxation, comfort, confusion, understanding, wonder, awe, et…",
+   "keywords": [
+    "ああ",
+    "ah",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "一人",
+   "value": "„一人\" (hitori) на японски = английски „alone\" — By oneself; apart from, or exclusive of, others; solo.",
+   "keywords": [
+    "一人",
+    "alone",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "自分",
+   "value": "„自分\" (jibun) на японски = английски „myself\" — Me, as direct or indirect object the speaker as the object of a verb or preposition, wh…",
+   "keywords": [
+    "自分",
+    "myself",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "学校",
+   "value": "„学校\" (gakkō) на японски = английски „school\" — An institution dedicated to teaching and learning; an educational institution.",
+   "keywords": [
+    "学校",
+    "school",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ご臨終",
+   "value": "„ご臨終\" (go-rinjū) на японски = английски „end\" — The terminal point of something in space or time.",
+   "keywords": [
+    "ご臨終",
+    "end",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "格言",
+   "value": "„格言\" (kakugen) на японски = английски „saying\" — A proverb or maxim.",
+   "keywords": [
+    "格言",
+    "saying",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "電話をかける",
+   "value": "„電話をかける\" (denwa o kakeru) на японски = английски „phone\" — To call (someone) using a telephone.",
+   "keywords": [
+    "電話をかける",
+    "phone",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "演ずる",
+   "value": "„演ずる\" (enzuru) на японски = английски „play\" — To act in a manner such that one has fun; to engage in activities expressly for the pur…",
+   "keywords": [
+    "演ずる",
+    "play",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "容貌",
+   "value": "„容貌\" (yōbō) на японски = английски „looks\" — One's appearance or attractiveness.",
+   "keywords": [
+    "容貌",
+    "looks",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "but see",
+   "value": "„but see\" на японски = английски „fucking\"",
+   "keywords": [
+    "but see",
+    "fucking",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "問題",
+   "value": "„問題\" (mondai) на японски = английски „problem\" — A difficulty that has to be resolved or dealt with.",
+   "keywords": [
+    "問題",
+    "problem",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "開いた",
+   "value": "„開いた\" (aita) на японски = английски „open\" — Physically unobstructed, uncovered, etc.",
+   "keywords": [
+    "開いた",
+    "open",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "誰も 誰でも",
+   "value": "„誰も 誰でも\" (dare de mo) на японски = английски „anyone\" — Any person; anybody.",
+   "keywords": [
+    "誰も 誰でも",
+    "anyone",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "希望する",
+   "value": "„希望する\" (kibō suru) на японски = английски „hope\" — To want (something) to happen, with a sense of expectation that it might [with that (+ …",
+   "keywords": [
+    "希望する",
+    "hope",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "面",
+   "value": "„面\" (men) на японски = английски „face\" — The front part of the head of a human or other animal, featuring the eyes, nose, and mo…",
+   "keywords": [
+    "面",
+    "face",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "まで",
+   "value": "„まで\" (made) на японски = английски „until\" — Up to the time of (something happening); pending.",
+   "keywords": [
+    "まで",
+    "until",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "警察",
+   "value": "„警察\" (keisatsu) на японски = английски „police\" — A constituted body of officers representing the civil authority of government, empowere…",
+   "keywords": [
+    "警察",
+    "police",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "許す",
+   "value": "„許す\" (yurusu) на японски = английски „excuse\" — To forgive; to pardon; to overlook.",
+   "keywords": [
+    "許す",
+    "excuse",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "回る",
+   "value": "„回る\" (mawaru) на японски = английски „turn\" — To make a non-linear physical movement.",
+   "keywords": [
+    "回る",
+    "turn",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "事業",
+   "value": "„事業\" (jigyō) на японски = английски „business\" — A specific commercial enterprise or establishment.",
+   "keywords": [
+    "事業",
+    "business",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "例",
+   "value": "„例\" (rei) на японски = английски „case\" — An actual event, situation, or fact.",
+   "keywords": [
+    "例",
+    "case",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "真実の",
+   "value": "„真実の\" (shinjitsu-no) на японски = английски „true\" — Conforming to the actual state of reality or fact; factually correct.",
+   "keywords": [
+    "真実の",
+    "true",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "死ぬ",
+   "value": "„死ぬ\" (shinu) на японски = английски „die\" — To stop living; to become dead; to undergo death.",
+   "keywords": [
+    "死ぬ",
+    "die",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "気持ち",
+   "value": "„気持ち\" (kimochi) на японски = английски „heart\" — A muscular organ that pumps blood through the body, traditionally thought to be the sea…",
+   "keywords": [
+    "気持ち",
+    "heart",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "すぐに",
+   "value": "„すぐに\" (sugu ni) на японски = английски „soon\" — Within a short time; quickly.",
+   "keywords": [
+    "すぐに",
+    "soon",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "心配する",
+   "value": "„心配する\" (shinpai suru) на японски = английски „worry\" — To be troubled; to give way to mental anxiety or doubt.",
+   "keywords": [
+    "心配する",
+    "worry",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "後に",
+   "value": "„後に\" (ato ni) на японски = английски „later\" — Afterward in time (used with than when comparing with another time).",
+   "keywords": [
+    "後に",
+    "later",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "年",
+   "value": "„年\" на японски = английски „year\" — A period of time akin to the time taken for the Earth to undergo a full cycle of seasons.",
+   "keywords": [
+    "年",
+    "year",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "腕時計",
+   "value": "„腕時計\" (udedokei) на японски = английски „watch\" — A portable or wearable timepiece.",
+   "keywords": [
+    "腕時計",
+    "watch",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "音楽",
+   "value": "„音楽\" (ongaku) на японски = английски „music\" — A series of sounds organized in time, usually employing some combination of harmony, me…",
+   "keywords": [
+    "音楽",
+    "music",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "一握り",
+   "value": "„一握り\" (hitonigiri) на японски = английски „hand\" — The part of the forelimb below the forearm or wrist in a human, and the corresponding p…",
+   "keywords": [
+    "一握り",
+    "hand",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "多分",
+   "value": "„多分\" (tabun) на японски = английски „probably\" — In all likelihood.",
+   "keywords": [
+    "多分",
+    "probably",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "美しい",
+   "value": "„美しい\" (utsukushii) на японски = английски „beautiful\" — Possessing beauty, impressing the eye; attractive.",
+   "keywords": [
+    "美しい",
+    "beautiful",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "博士",
+   "value": "„博士\" на японски = английски „doctor\" — A physician; a member of the medical profession; one who is trained and licensed to hea…",
+   "keywords": [
+    "博士",
+    "doctor",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "座る",
+   "value": "„座る\" (suwaru) на японски = английски „sit\" — To be in a position in which the upper body is upright and supported by the buttocks.",
+   "keywords": [
+    "座る",
+    "sit",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "食べる",
+   "value": "„食べる\" (taberu) на японски = английски „eat\" — To ingest.",
+   "keywords": [
+    "食べる",
+    "eat",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "若い",
+   "value": "„若い\" (wakai) на японски = английски „young\" — In the early part of growth or life; born not long ago.",
+   "keywords": [
+    "若い",
+    "young",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "第二",
+   "value": "„第二\" (daini) на японски = английски „second\" — Number-two; following after the first one with nothing between them. The ordinal number…",
+   "keywords": [
+    "第二",
+    "second",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "水",
+   "value": "„水\" (mizu) на японски = английски „water\" — An inorganic compound (of molecular formula H₂O) found at room temperature and pressure…",
+   "keywords": [
+    "水",
+    "water",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "人",
+   "value": "„人\" (hito) на японски = английски „person\" — An individual who has been granted personhood; usually a human being.",
+   "keywords": [
+    "人",
+    "person",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "一部",
+   "value": "„一部\" (ichibu) на японски = английски „part\" — A portion; a component.",
+   "keywords": [
+    "一部",
+    "part",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "晩い",
+   "value": "„晩い\" (osoi) на японски = английски „late\" — Near the end of a period of time.",
+   "keywords": [
+    "晩い",
+    "late",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "原料",
+   "value": "„原料\" (genryō) на японски = английски „stuff\" — Miscellaneous items or objects; (with possessive) personal effects.",
+   "keywords": [
+    "原料",
+    "stuff",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "正確に",
+   "value": "„正確に\" (seikaku ni) на японски = английски „exactly\" — Without approximation; precisely.",
+   "keywords": [
+    "正確に",
+    "exactly",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...下に",
+   "value": "„...下に\" (...shita ni) на японски = английски „under\" — Beneath; below; at or to the bottom of, or the area covered or surmounted by.",
+   "keywords": [
+    "...下に",
+    "under",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "死",
+   "value": "„死\" (shi) на японски = английски „death\" — The cessation of life and all associated processes; the end of an organism's existence …",
+   "keywords": [
+    "死",
+    "death",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "分",
+   "value": "„分\" (fun) на японски = английски „minute\" — A unit of time which is one sixtieth of an hour (sixty seconds).",
+   "keywords": [
+    "分",
+    "minute",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "払う",
+   "value": "„払う\" (harau) на японски = английски „pay\" — To give money or other compensation to in exchange for goods or services.",
+   "keywords": [
+    "払う",
+    "pay",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "気が狂った",
+   "value": "„気が狂った\" (ki ga kurutta) на японски = английски „crazy\" — Of unsound mind; insane; demented.",
+   "keywords": [
+    "気が狂った",
+    "crazy",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "忘れる",
+   "value": "„忘れる\" (wasureru) на японски = английски „forget\" — To lose remembrance of.",
+   "keywords": [
+    "忘れる",
+    "forget",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "皆さん",
+   "value": "„皆さん\" (mina-san) на японски = английски „everybody\" — All people.",
+   "keywords": [
+    "皆さん",
+    "everybody",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "子供",
+   "value": "„子供\" (kodomo) на японски = английски „kid\" — A child, adolescent, or (loosely) a young adult.",
+   "keywords": [
+    "子供",
+    "kid",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "変わる",
+   "value": "„変わる\" (kawaru) на японски = английски „change\" — To become something different.",
+   "keywords": [
+    "変わる",
+    "change",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "起こる",
+   "value": "„起こる\" (okoru) на японски = английски „happen\" — To occur or take place.",
+   "keywords": [
+    "起こる",
+    "happen",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "地獄に落とす",
+   "value": "„地獄に落とす\" (jigoku ni otosu) на японски = английски „damn\" — To condemn.",
+   "keywords": [
+    "地獄に落とす",
+    "damn",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "五",
+   "value": "„五\" (go) на японски = английски „five\" — A numerical value equal to 5; the number following four and preceding six.",
+   "keywords": [
+    "五",
+    "five",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "飲む",
+   "value": "„飲む\" (nomu) на японски = английски „drink\" — To consume (a liquid) through the mouth.",
+   "keywords": [
+    "飲む",
+    "drink",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "遠い",
+   "value": "„遠い\" (tōi) на японски = английски „far\" — Distant; remote in space.",
+   "keywords": [
+    "遠い",
+    "far",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "どうでもいい！",
+   "value": "„どうでもいい！\" (Dōdemo ii!) на японски = английски „whatever\" — A holophrastic expression used to dismiss something that the speaker doesn't care about…",
+   "keywords": [
+    "どうでもいい！",
+    "whatever",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "閉める",
+   "value": "„閉める\" (shimeru) на японски = английски „shut\" — To close, in various senses.",
+   "keywords": [
+    "閉める",
+    "shut",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "打つ",
+   "value": "„打つ\" (utsu) на японски = английски „hit\" — To strike.",
+   "keywords": [
+    "打つ",
+    "hit",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "簡単な",
+   "value": "„簡単な\" (kantan na) на японски = английски „easy\" — Comfortable; at ease.",
+   "keywords": [
+    "簡単な",
+    "easy",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "掛ける",
+   "value": "„掛ける\" (kakeru) на японски = английски „times\" — Multiplied by (see also 'ratio of comparison' sense at 'time').",
+   "keywords": [
+    "掛ける",
+    "times",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "検査",
+   "value": "„検査\" (kensa) на японски = английски „check\" — An inspection or examination.",
+   "keywords": [
+    "検査",
+    "check",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "会議録",
+   "value": "„会議録\" (kaigiroku) на японски = английски „minutes\" — The official notes kept during a meeting.",
+   "keywords": [
+    "会議録",
+    "minutes",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "取引する",
+   "value": "„取引する\" (torihiki suru) на японски = английски „deal\" — To distribute among a number of recipients, to give out as one’s portion or share.",
+   "keywords": [
+    "取引する",
+    "deal",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "異なる",
+   "value": "„異なる\" (kotonaru) на японски = английски „different\" — Not the same; exhibiting a difference.",
+   "keywords": [
+    "異なる",
+    "different",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "手段",
+   "value": "„手段\" (shudan) на японски = английски „means\" — An instrument or condition to achieve a result.",
+   "keywords": [
+    "手段",
+    "means",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "点",
+   "value": "„点\" (ten) на японски = английски „point\" — A small dot or mark.",
+   "keywords": [
+    "点",
+    "point",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "内部",
+   "value": "„内部\" (naibu) на японски = английски „inside\" — The interior or inner part.",
+   "keywords": [
+    "内部",
+    "inside",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "誰か",
+   "value": "„誰か\" (dareka) на японски = английски „somebody\" — Some unspecified person.",
+   "keywords": [
+    "誰か",
+    "somebody",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "私の",
+   "value": "„私の\" (watashi no) на японски = английски „mine\" — That or those belonging to me.",
+   "keywords": [
+    "私の",
+    "mine",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "体",
+   "value": "„体\" (karada) на японски = английски „body\" — Physical frame.",
+   "keywords": [
+    "体",
+    "body",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "怖い",
+   "value": "„怖い\" (kowai) на японски = английски „afraid\" — Impressed with fear or apprehension; in fear.",
+   "keywords": [
+    "怖い",
+    "afraid",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "寝る",
+   "value": "„寝る\" (neru) на японски = английски „sleep\" — To rest in a state of reduced consciousness.",
+   "keywords": [
+    "寝る",
+    "sleep",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "機会",
+   "value": "„機会\" (kikai) на японски = английски „chance\" — An opportunity or possibility.",
+   "keywords": [
+    "機会",
+    "chance",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "拝啓",
+   "value": "„拝啓\" (haikei) на японски = английски „dear\" — High in price; expensive.",
+   "keywords": [
+    "拝啓",
+    "dear",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "すっかり",
+   "value": "„すっかり\" (sukkari) на японски = английски „quite\" — To the greatest extent or degree; completely, entirely.",
+   "keywords": [
+    "すっかり",
+    "quite",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "四",
+   "value": "„四\" (yon, shi) на японски = английски „four\" — A numerical value equal to 4; the number after three and before five; two plus two. Thi…",
+   "keywords": [
+    "四",
+    "four",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "とにかく",
+   "value": "„とにかく\" (tonikaku) на японски = английски „anyway\" — Regardless; anyhow.",
+   "keywords": [
+    "とにかく",
+    "anyway",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "閉める",
+   "value": "„閉める\" (shimeru) на японски = английски „close\" — To remove or block an opening, gap or passage through.",
+   "keywords": [
+    "閉める",
+    "close",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "会",
+   "value": "„会\" (kai) на японски = английски „party\" — A person or group of people constituting one side in a legal proceeding, such as in a l…",
+   "keywords": [
+    "会",
+    "party",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "遊び",
+   "value": "„遊び\" (asobi) на японски = английски „fun\" — Amusement, enjoyment or pleasure.",
+   "keywords": [
+    "遊び",
+    "fun",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...に反して",
+   "value": "„...に反して\" (...ni han shite) на японски = английски „against\" — In a contrary direction to.",
+   "keywords": [
+    "...に反して",
+    "against",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "言葉",
+   "value": "„言葉\" (kotoba) на японски = английски „word\" — The smallest unit of language that has a particular meaning and can be expressed by its…",
+   "keywords": [
+    "言葉",
+    "word",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "重要",
+   "value": "„重要\" (jūyō) на японски = английски „important\" — Having relevant and crucial value; having import.",
+   "keywords": [
+    "重要",
+    "important",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "置く",
+   "value": "„置く\" (oku) на японски = английски „set\" — To put (something) down, to rest.",
+   "keywords": [
+    "置く",
+    "set",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ものとする",
+   "value": "„ものとする\" (-mono to suru) на японски = английски „shall\" — Used before a verb to indicate the simple future tense in the first person singular or …",
+   "keywords": [
+    "ものとする",
+    "shall",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "物語",
+   "value": "„物語\" (monogatari) на японски = английски „story\" — An account of real or fictional events.",
+   "keywords": [
+    "物語",
+    "story",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "番",
+   "value": "„番\" (ban) на японски = английски „number\" — Quantity of countable things.",
+   "keywords": [
+    "番",
+    "number",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "娘",
+   "value": "„娘\" (musume) на японски = английски „daughter\" — One’s female offspring.",
+   "keywords": [
+    "娘",
+    "daughter",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "待つこと",
+   "value": "„待つこと\" (matsu koto) на японски = английски „waiting\" — The act of staying or remaining in expectation.",
+   "keywords": [
+    "待つこと",
+    "waiting",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "傷つける",
+   "value": "„傷つける\" (kizutsukeru) на японски = английски „hurt\" — To cause (a person or animal) physical pain and/or injury.",
+   "keywords": [
+    "傷つける",
+    "hurt",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "願い",
+   "value": "„願い\" (negai) на японски = английски „wish\" — A desire, hope, or longing for something or for something to happen.",
+   "keywords": [
+    "願い",
+    "wish",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "モーメント",
+   "value": "„モーメント\" (mōmento) на японски = английски „moment\" — A particular point, or relatively small region.",
+   "keywords": [
+    "モーメント",
+    "moment",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "対決する",
+   "value": "„対決する\" (taiketsu suru) на японски = английски „fight\" — Senses relating to physical conflict:",
+   "keywords": [
+    "対決する",
+    "fight",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "週",
+   "value": "„週\" (shū) на японски = английски „week\" — Any period of seven consecutive days.",
+   "keywords": [
+    "週",
+    "week",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "夫",
+   "value": "„夫\" (otto) на японски = английски „husband\" — A man in a marriage or marital relationship, especially in relation to his spouse.",
+   "keywords": [
+    "夫",
+    "husband",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "休み",
+   "value": "„休み\" (yasumi) на японски = английски „rest\" — Relief from work or activity by sleeping; sleep.",
+   "keywords": [
+    "休み",
+    "rest",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "結婚している",
+   "value": "„結婚している\" (kekkon shite iru) на японски = английски „married\" — In a state of marriage; having a wife or a husband.",
+   "keywords": [
+    "結婚している",
+    "married",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "火",
+   "value": "„火\" (hi) на японски = английски „fire\" — A (usually self-sustaining) chemical reaction involving the bonding of oxygen with carb…",
+   "keywords": [
+    "火",
+    "fire",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "遊び",
+   "value": "„遊び\" (asobi) на японски = английски „game\" — A playful or competitive activity.",
+   "keywords": [
+    "遊び",
+    "game",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "辺",
+   "value": "„辺\" (hen) на японски = английски „side\" — A bounding straight edge of a two-dimensional shape.",
+   "keywords": [
+    "辺",
+    "side",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "立つ",
+   "value": "„立つ\" (tatsu) на японски = английски „stand\" — To position or be positioned physically:",
+   "keywords": [
+    "立つ",
+    "stand",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "読む",
+   "value": "„読む\" (yomu) на японски = английски „read\" — To look at and interpret letters or other information that is written.",
+   "keywords": [
+    "読む",
+    "read",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "にもかかわらず",
+   "value": "„にもかかわらず\" (nimokakawarazu) на японски = английски „though\" — Despite that; however.",
+   "keywords": [
+    "にもかかわらず",
+    "though",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "切る",
+   "value": "„切る\" (kiru) на японски = английски „cut\" — To incise, to cut into the surface of something.",
+   "keywords": [
+    "切る",
+    "cut",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "姉妹",
+   "value": "„姉妹\" (shimai) на японски = английски „sister\" — A daughter of the same parents as another person; a female sibling.",
+   "keywords": [
+    "姉妹",
+    "sister",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "…の間に",
+   "value": "„…の間に\" на японски = английски „between\" — In the position or interval that separates (two things), or intermediate in quantity or…",
+   "keywords": [
+    "…の間に",
+    "between",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "子供",
+   "value": "„子供\" (kodomo) на японски = английски „child\" — A person who has not yet reached adulthood, whether natural (puberty), cultural (initia…",
+   "keywords": [
+    "子供",
+    "child",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "話す",
+   "value": "„話す\" (hanasu) на японски = английски „speak\" — To communicate with one's voice, to say words out loud.",
+   "keywords": [
+    "話す",
+    "speak",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "レディース",
+   "value": "„レディース\" на японски = английски „women\" — Clipping of women's team, used in club names, as in [Club Name] Women.",
+   "keywords": [
+    "レディース",
+    "women",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...の後ろに",
+   "value": "„...の後ろに\" (...no ushiro ni) на японски = английски „behind\" — At or to the back or far side of.",
+   "keywords": [
+    "...の後ろに",
+    "behind",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ほとんど",
+   "value": "„ほとんど\" (hotondo) на японски = английски „almost\" — Very close to, but not quite.",
+   "keywords": [
+    "ほとんど",
+    "almost",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "真実",
+   "value": "„真実\" (shinjitsu) на японски = английски „truth\" — True facts, genuine depiction or statements of reality.",
+   "keywords": [
+    "真実",
+    "truth",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "血",
+   "value": "„血\" (chi) на японски = английски „blood\" — A vital liquid flowing in the bodies of many types of animals that usually conveys nutr…",
+   "keywords": [
+    "血",
+    "blood",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "有能",
+   "value": "„有能\" (yūnō) на японски = английски „able\" — Having the necessary powers or the needed resources to accomplish a task.",
+   "keywords": [
+    "有能",
+    "able",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "奥様",
+   "value": "„奥様\" (okusama) на японски = английски „lady\" — The mistress of a household.",
+   "keywords": [
+    "奥様",
+    "lady",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "散弾",
+   "value": "„散弾\" (sandan) на японски = английски „shot\" — The result of launching a projectile or bullet.",
+   "keywords": [
+    "散弾",
+    "shot",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "理由",
+   "value": "„理由\" (riyū) на японски = английски „reason\" — A cause:",
+   "keywords": [
+    "理由",
+    "reason",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "厄介",
+   "value": "„厄介\" (yakkai) на японски = английски „trouble\" — A distressing or dangerous situation.",
+   "keywords": [
+    "厄介",
+    "trouble",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "割れる",
+   "value": "„割れる\" (wareru) на японски = английски „break\" — To separate into two or more pieces, to fracture or crack, by a process that cannot eas…",
+   "keywords": [
+    "割れる",
+    "break",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "戦争",
+   "value": "„戦争\" (sensō) на японски = английски „war\" — Organized, large-scale, armed conflict between countries or between national, ethnic, o…",
+   "keywords": [
+    "戦争",
+    "war",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "都市",
+   "value": "„都市\" (toshi) на японски = английски „city\" — A large settlement, bigger than a town; sometimes with a specific legal definition, dep…",
+   "keywords": [
+    "都市",
+    "city",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "歩く",
+   "value": "„歩く\" (aruku) на японски = английски „walk\" — To move on the feet by alternately setting each foot (or pair or group of feet, in the …",
+   "keywords": [
+    "歩く",
+    "walk",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "街",
+   "value": "„街\" (machi) на японски = английски „town\" — A settlement; an area with residential districts, shops and amenities, and its own loca…",
+   "keywords": [
+    "街",
+    "town",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "信",
+   "value": "„信\" (shin) на японски = английски „trust\" — Confidence in or reliance on some person or quality.",
+   "keywords": [
+    "信",
+    "trust",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "事務所",
+   "value": "„事務所\" (jimusho) на японски = английски „office\" — A ceremonial duty or service, particularly",
+   "keywords": [
+    "事務所",
+    "office",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "質問",
+   "value": "„質問\" (shitsumon) на японски = английски „question\" — A worded or expressed sentence, phrase, or only a word on its own, which asks for infor…",
+   "keywords": [
+    "質問",
+    "question",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "歓迎すべき",
+   "value": "„歓迎すべき\" (kangei subeki) на японски = английски „welcome\" — Whose arrival is a cause of joy; received with gladness; admitted willingly to the hous…",
+   "keywords": [
+    "歓迎すべき",
+    "welcome",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "高い",
+   "value": "„高い\" (takai) на японски = английски „high\" — Physically elevated, extending above a base or average level:",
+   "keywords": [
+    "高い",
+    "high",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "うわ",
+   "value": "„うわ\" (uwa) на японски = английски „wow\" — An indication of excitement, surprise, astonishment, or pleasure.",
+   "keywords": [
+    "うわ",
+    "wow",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "二つ",
+   "value": "„二つ\" (futatsu) на японски = английски „couple\" — Two of the same kind connected or considered together.",
+   "keywords": [
+    "二つ",
+    "couple",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "半分",
+   "value": "„半分\" (hanbun) на японски = английски „half\" — One of two usually roughly equal parts into which anything may be divided, or considere…",
+   "keywords": [
+    "半分",
+    "half",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "涼しい",
+   "value": "„涼しい\" (suzushii) на японски = английски „cool\" — Of a mildly low temperature.",
+   "keywords": [
+    "涼しい",
+    "cool",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "自由",
+   "value": "„自由\" (jiyū) на японски = английски „free\" — Unconstrained.",
+   "keywords": [
+    "自由",
+    "free",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "…か…か",
+   "value": "„…か…か\" (-ka ...-ka) на японски = английски „either\" — Introduces the first of two (or occasionally more) options or possibilities, the second…",
+   "keywords": [
+    "…か…か",
+    "either",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "仕事率",
+   "value": "„仕事率\" (shigotoritsu) на японски = английски „power\" — The ability to do or undergo something.",
+   "keywords": [
+    "仕事率",
+    "power",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "どう",
+   "value": "„どう\" (dō) на японски = английски „whoa\" — Stop (especially when commanding a horse or imitative thereof); calm down; slow down.",
+   "keywords": [
+    "どう",
+    "whoa",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "またね",
+   "value": "„またね\" (mata ne) на японски = английски „bye\" — Goodbye.",
+   "keywords": [
+    "またね",
+    "bye",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "買う",
+   "value": "„買う\" (kau) на японски = английски „buy\" — To obtain (something) in exchange for money or goods.",
+   "keywords": [
+    "買う",
+    "buy",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "蜂蜜",
+   "value": "„蜂蜜\" (hachimitsu) на японски = английски „honey\" — A sweet, viscous, gold-colored fluid produced from plant nectar by bees, and often cons…",
+   "keywords": [
+    "蜂蜜",
+    "honey",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "前",
+   "value": "„前\" (mae) на японски = английски „front\" — The foremost side of something or the end that faces the direction it normally moves.",
+   "keywords": [
+    "前",
+    "front",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "チーム",
+   "value": "„チーム\" (chīmu) на японски = английски „team\" — A set of draught animals, such as two horses in front of a carriage.",
+   "keywords": [
+    "チーム",
+    "team",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "答え",
+   "value": "„答え\" (kotae) на японски = английски „answer\" — A response or reply; something said or done in reaction to a statement or question.",
+   "keywords": [
+    "答え",
+    "answer",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "銃",
+   "value": "„銃\" (jū) на японски = английски „gun\" — A device for shooting projectiles or ditto (a shooter), functioning through stored ener…",
+   "keywords": [
+    "銃",
+    "gun",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "線",
+   "value": "„線\" (sen) на японски = английски „line\" — A path through two or more points (compare ‘segment’); a continuous mark, including as …",
+   "keywords": [
+    "線",
+    "line",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "送る",
+   "value": "„送る\" (okuru) на японски = английски „send\" — To make something (such as an object or message) go from one place to another (or to so…",
+   "keywords": [
+    "送る",
+    "send",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "知らせ",
+   "value": "„知らせ\" (shirase) на японски = английски „news\" — New information of interest.",
+   "keywords": [
+    "知らせ",
+    "news",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "馬鹿",
+   "value": "„馬鹿\" (baka) на японски = английски „stupid\" — Without intelligence.",
+   "keywords": [
+    "馬鹿",
+    "stupid",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "寝床",
+   "value": "„寝床\" (nedoko) на японски = английски „bed\" — A piece of furniture, usually flat and soft, on which to rest or sleep.",
+   "keywords": [
+    "寝床",
+    "bed",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "急ぐこと",
+   "value": "„急ぐこと\" (isogu koto) на японски = английски „hurry\" — A rushed action.",
+   "keywords": [
+    "急ぐこと",
+    "hurry",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "完全",
+   "value": "„完全\" (kanzen) на японски = английски „full\" — Containing the maximum possible amount that can fit in the space available.",
+   "keywords": [
+    "完全",
+    "full",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "救う",
+   "value": "„救う\" (sukuu) на японски = английски „save\" — To prevent harm or difficulty.",
+   "keywords": [
+    "救う",
+    "save",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "時時",
+   "value": "„時時\" на японски = английски „sometimes\" — On some occasions, over some periods, or in certain circumstances, but not always.",
+   "keywords": [
+    "時時",
+    "sometimes",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...になる",
+   "value": "„...になる\" (... ni naru) на японски = английски „become\" — begin to be; turn into (often with permanent states).",
+   "keywords": [
+    "...になる",
+    "become",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "に沿って",
+   "value": "„に沿って\" (ni sotte) на японски = английски „along\" — By the length of; in a line with the length of; lengthwise next to.",
+   "keywords": [
+    "に沿って",
+    "along",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ヘイト",
+   "value": "„ヘイト\" (heito) на японски = английски „hate\" — An object of hatred.",
+   "keywords": [
+    "ヘイト",
+    "hate",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "食べ物",
+   "value": "„食べ物\" (tabemono) на японски = английски „food\" — Any solid substance that can be consumed by living organisms, especially by eating, in …",
+   "keywords": [
+    "食べ物",
+    "food",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "外に",
+   "value": "„外に\" (soto ni) на японски = английски „outside\" — To or in the outdoors or outside; to or in an area that is beyond the scope, limits, or…",
+   "keywords": [
+    "外に",
+    "outside",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "明かり",
+   "value": "„明かり\" (akari) на японски = английски „light\" — Electromagnetic radiation in the wavelength range visible to the human eye (about 400–7…",
+   "keywords": [
+    "明かり",
+    "light",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "犬",
+   "value": "„犬\" (inu) на японски = английски „dog\" — A mammal of the family Canidae:",
+   "keywords": [
+    "犬",
+    "dog",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "国",
+   "value": "„国\" (kuni) на японски = английски „country\" — The territory of a nation; a sovereign state or a region once independent and still dis…",
+   "keywords": [
+    "国",
+    "country",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "透明な",
+   "value": "„透明な\" (tōmei na) на японски = английски „clear\" — Transparent in colour.",
+   "keywords": [
+    "透明な",
+    "clear",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "順序",
+   "value": "„順序\" (junjo) на японски = английски „order\" — Arrangement, disposition, or sequence.",
+   "keywords": [
+    "順序",
+    "order",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "エム",
+   "value": "„エム\" (emu) на японски = английски „em\" — The name of the Latin script letter M/m.",
+   "keywords": [
+    "エム",
+    "em",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "事実",
+   "value": "„事実\" (jijitsu) на японски = английски „fact\" — Something actual as opposed to invented.",
+   "keywords": [
+    "事実",
+    "fact",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "主",
+   "value": "„主\" (shu) на японски = английски „lord\" — One possessing similar mastery over others; (historical) any feudal superior generally;…",
+   "keywords": [
+    "主",
+    "lord",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "船長",
+   "value": "„船長\" (senchō) на японски = английски „captain\" — A chief or leader.",
+   "keywords": [
+    "船長",
+    "captain",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "六",
+   "value": "„六\" (roku) на японски = английски „six\" — A numerical value equal to 6; the number following five and preceding seven. This numbe…",
+   "keywords": [
+    "六",
+    "six",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "暑い",
+   "value": "„暑い\" (atsui) на японски = английски „hot\" — Relating to heat and conditions which produce it.",
+   "keywords": [
+    "暑い",
+    "hot",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "面白い",
+   "value": "„面白い\" (omoshiroi) на японски = английски „funny\" — Amusing; humorous; comical.",
+   "keywords": [
+    "面白い",
+    "funny",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "黒い",
+   "value": "„黒い\" (kuroi) на японски = английски „black\" — Absorbing all light and reflecting none; dark and hueless.",
+   "keywords": [
+    "黒い",
+    "black",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "生きている",
+   "value": "„生きている\" (ikiteiru) на японски = английски „alive\" — Having life; living; not dead.",
+   "keywords": [
+    "生きている",
+    "alive",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "つるはし",
+   "value": "„つるはし\" (tsuruhashi) на японски = английски „pick\" — A tool used for digging; a pickaxe.",
+   "keywords": [
+    "つるはし",
+    "pick",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "敏感な",
+   "value": "„敏感な\" (binkan na) на японски = английски „feeling\" — Emotionally sensitive.",
+   "keywords": [
+    "敏感な",
+    "feeling",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "生計",
+   "value": "„生計\" (seikei) на японски = английски „living\" — The state of being alive.",
+   "keywords": [
+    "生計",
+    "living",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "原因",
+   "value": "„原因\" (gen'in) на японски = английски „cause\" — The source of, or reason for, an event or action; that which produces or effects a result.",
+   "keywords": [
+    "原因",
+    "cause",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "先に",
+   "value": "„先に\" (saki ni) на японски = английски „ahead\" — At or towards the front; in the direction one is facing or moving.",
+   "keywords": [
+    "先に",
+    "ahead",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "なくす",
+   "value": "„なくす\" (nakusu) на японски = английски „lose\" — To cease to have (something) in one's possession or capability.",
+   "keywords": [
+    "なくす",
+    "lose",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "キング",
+   "value": "„キング\" (kingu) на японски = английски „king\" — A male monarch; a man who heads a monarchy; in an absolute monarchy, the supreme ruler …",
+   "keywords": [
+    "キング",
+    "king",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "設計図",
+   "value": "„設計図\" (sekkeizu) на японски = английски „plan\" — A drawing showing technical details of a building, machine, etc., with unwanted details…",
+   "keywords": [
+    "設計図",
+    "plan",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "夕食",
+   "value": "„夕食\" (yūshoku) на японски = английски „dinner\" — The main meal of the day, often eaten in the evening.",
+   "keywords": [
+    "夕食",
+    "dinner",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "人",
+   "value": "„人\" (hito) на японски = английски „sort\" — A general type.",
+   "keywords": [
+    "人",
+    "sort",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "走る",
+   "value": "„走る\" (hashiru) на японски = английски „running\" — The action of the verb to run.",
+   "keywords": [
+    "走る",
+    "running",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "上司",
+   "value": "„上司\" (jōshi) на японски = английски „boss\" — One who is in charge or something.",
+   "keywords": [
+    "上司",
+    "boss",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "約束",
+   "value": "„約束\" (yakusoku) на японски = английски „promise\" — An oath or affirmation; a vow.",
+   "keywords": [
+    "約束",
+    "promise",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "安全",
+   "value": "„安全\" (anzen) на японски = английски „safe\" — Not in danger; out of harm's reach.",
+   "keywords": [
+    "安全",
+    "safe",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "本",
+   "value": "„本\" (hon) на японски = английски „book\" — A collection of sheets of paper bound together to hinge at one edge, containing printed…",
+   "keywords": [
+    "本",
+    "book",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "白い",
+   "value": "„白い\" (shiroi) на японски = английски „white\" — Bright and colourless; reflecting equal quantities of all frequencies of visible light.",
+   "keywords": [
+    "白い",
+    "white",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "時",
+   "value": "„時\" (ji) на японски = английски „hour\" — A unit of time of one twenty-fourth of a day (sixty minutes).",
+   "keywords": [
+    "時",
+    "hour",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "小さい",
+   "value": "„小さい\" (chiisai) на японски = английски „small\" — Not large or big; insignificant; few in number.",
+   "keywords": [
+    "小さい",
+    "small",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "完璧な",
+   "value": "„完璧な\" (kanpeki na) на японски = английски „perfect\" — Fitting its definition precisely.",
+   "keywords": [
+    "完璧な",
+    "perfect",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "特別な",
+   "value": "„特別な\" (tokubetsu na) на японски = английски „special\" — Distinguished by a unique, particular, or unusual quality.",
+   "keywords": [
+    "特別な",
+    "special",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "彼自身",
+   "value": "„彼自身\" (kare-jishin) на японски = английски „himself\" — Him; the male object of a verb or preposition that also appears as the subject",
+   "keywords": [
+    "彼自身",
+    "himself",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "多分",
+   "value": "„多分\" (tabun) на японски = английски „perhaps\" — Possibly.",
+   "keywords": [
+    "多分",
+    "perhaps",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "真面目",
+   "value": "„真面目\" (majime) на японски = английски „serious\" — Without humor or expression of happiness; grave in manner or disposition.",
+   "keywords": [
+    "真面目",
+    "serious",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ヤバい",
+   "value": "„ヤバい\" (yabai) на японски = английски „sick\" — In poor health; ill.",
+   "keywords": [
+    "ヤバい",
+    "sick",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "訪問者",
+   "value": "„訪問者\" (hōmonsha) на японски = английски „company\" — A team; a group of people who work together professionally.",
+   "keywords": [
+    "訪問者",
+    "company",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ふ",
+   "value": "„ふ\" (fu) на японски = английски „ha\" — A representation of laughter.",
+   "keywords": [
+    "ふ",
+    "ha",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "脅えた",
+   "value": "„脅えた\" (obieta) на японски = английски „scared\" — Feeling fear; afraid, frightened.",
+   "keywords": [
+    "脅えた",
+    "scared",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "伯父",
+   "value": "„伯父\" (oji) на японски = английски „uncle\" — The brother or brother-in-law of one’s parent.",
+   "keywords": [
+    "伯父",
+    "uncle",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "貧しい",
+   "value": "„貧しい\" (mazushii) на японски = английски „poor\" — With no or few possessions or money, particularly in relation to contemporaries who do …",
+   "keywords": [
+    "貧しい",
+    "poor",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "赤",
+   "value": "„赤\" (aka) на японски = английски „red\" — The colour of the setting sun, blood, and strawberries; the colour which is evoked by t…",
+   "keywords": [
+    "赤",
+    "red",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "過去",
+   "value": "„過去\" (kako) на японски = английски „past\" — The period of time that has already happened, in contrast to the present and the future.",
+   "keywords": [
+    "過去",
+    "past",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "地",
+   "value": "„地\" (chi) на японски = английски „earth\" — Soil.",
+   "keywords": [
+    "地",
+    "earth",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ありうる",
+   "value": "„ありうる\" (ariuru) на японски = английски „possible\" — Able but not certain to happen; neither inevitable nor impossible.",
+   "keywords": [
+    "ありうる",
+    "possible",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "撃つ",
+   "value": "„撃つ\" (utsu) на японски = английски „shoot\" — To launch (forcefully project) a projectile.",
+   "keywords": [
+    "撃つ",
+    "shoot",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "触る",
+   "value": "„触る\" (sawaru) на японски = английски „touch\" — Primarily physical senses.",
+   "keywords": [
+    "触る",
+    "touch",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "健康な",
+   "value": "„健康な\" (kenkō na) на японски = английски „sound\" — Healthy.",
+   "keywords": [
+    "健康な",
+    "sound",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "蓋",
+   "value": "„蓋\" (futa) на японски = английски „top\" — The highest or uppermost part of something.",
+   "keywords": [
+    "蓋",
+    "top",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "尻",
+   "value": "„尻\" (shiri) на японски = английски „ass\" — The buttocks.",
+   "keywords": [
+    "尻",
+    "ass",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...できない",
+   "value": "„...できない\" (...dekinai) на японски = английски „cannot\" — Can not; be unable to (whether due to physical inability, logical impossibility, etc.).",
+   "keywords": [
+    "...できない",
+    "cannot",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "勝つ",
+   "value": "„勝つ\" (katsu) на японски = английски „win\" — To reach some destination or object, despite difficulty or toil (now usually intransiti…",
+   "keywords": [
+    "勝つ",
+    "win",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "嬉しい",
+   "value": "„嬉しい\" (ureshii) на японски = английски „glad\" — Pleased; happy; gratified.",
+   "keywords": [
+    "嬉しい",
+    "glad",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "操る",
+   "value": "„操る\" (ayatsuru) на японски = английски „control\" — To exercise influence over; to suggest or dictate the behavior of.",
+   "keywords": [
+    "操る",
+    "control",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "うーん",
+   "value": "„うーん\" (ūn) на японски = английски „hmm\" — Indicates thinking or pondering.",
+   "keywords": [
+    "うーん",
+    "hmm",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "人の",
+   "value": "„人の\" (hito no) на японски = английски „human\" — Of or belonging to the species Homo sapiens or its closest relatives.",
+   "keywords": [
+    "人の",
+    "human",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "運転する",
+   "value": "„運転する\" (unten suru) на японски = английски „drive\" — To operate a vehicle:",
+   "keywords": [
+    "運転する",
+    "drive",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "毛",
+   "value": "„毛\" (ke) на японски = английски „hair\" — A pigmented filament of keratin which grows from a follicle on the skin of humans and o…",
+   "keywords": [
+    "毛",
+    "hair",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ジャック",
+   "value": "„ジャック\" (jakku) на японски = английски „jack\" — A man.",
+   "keywords": [
+    "ジャック",
+    "jack",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "雌犬",
+   "value": "„雌犬\" (mesuinu) на японски = английски „bitch\" — A female dog or other canine, particularly a recent mother.",
+   "keywords": [
+    "雌犬",
+    "bitch",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "運",
+   "value": "„運\" (un) на японски = английски „luck\" — Something that happens to someone by chance, a chance occurrence.",
+   "keywords": [
+    "運",
+    "luck",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "殺人",
+   "value": "„殺人\" (satsujin) на японски = английски „murder\" — The crime of killing a person unlawfully, especially with predetermination.",
+   "keywords": [
+    "殺人",
+    "murder",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "空気",
+   "value": "„空気\" (kūki) на японски = английски „air\" — The substance constituting Earth's atmosphere: a gaseous mixture of nitrogen, oxygen, a…",
+   "keywords": [
+    "空気",
+    "air",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "十",
+   "value": "„十\" на японски = английски „ten\" — The number occurring after nine and before eleven, represented in Arabic numerals (base…",
+   "keywords": [
+    "十",
+    "ten",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "お兄ちゃん",
+   "value": "„お兄ちゃん\" (Onīchan) на японски = английски „daddy\" — Also used as a term of address: a father; one's father.",
+   "keywords": [
+    "お兄ちゃん",
+    "daddy",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "終に",
+   "value": "„終に\" (tsui ni) на японски = английски „finally\" — At the end or conclusion; ultimately.",
+   "keywords": [
+    "終に",
+    "finally",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "速い",
+   "value": "„速い\" (hayai) на японски = английски „fast\" — Firmly or securely fixed in place; stable.",
+   "keywords": [
+    "速い",
+    "fast",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "寒い",
+   "value": "„寒い\" (samui) на японски = английски „cold\" — Having a low temperature.",
+   "keywords": [
+    "寒い",
+    "cold",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...らしい",
+   "value": "„...らしい\" (...rashii) на японски = английски „seem\" — To appear; to look outwardly; to be perceived as.",
+   "keywords": [
+    "...らしい",
+    "seem",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "病院",
+   "value": "„病院\" (byōin) на японски = английски „hospital\" — A large medical facility, usually in a building with multiple floors, where seriously i…",
+   "keywords": [
+    "病院",
+    "hospital",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "道",
+   "value": "„道\" (michi) на японски = английски „street\" — A paved part of road, usually in a village or a town.",
+   "keywords": [
+    "道",
+    "street",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "掛かる",
+   "value": "„掛かる\" (kakaru) на японски = английски „hang\" — To be or remain suspended.",
+   "keywords": [
+    "掛かる",
+    "hang",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ダンス",
+   "value": "„ダンス\" (dansu) на японски = английски „dance\" — A social gathering where dancing is the main activity.",
+   "keywords": [
+    "ダンス",
+    "dance",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "会合",
+   "value": "„会合\" (kaigō) на японски = английски „meeting\" — The act of persons or things that meet.",
+   "keywords": [
+    "会合",
+    "meeting",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...まで",
+   "value": "„...まで\" на японски = английски „till\" — Until; to, up to; as late as (a given time).",
+   "keywords": [
+    "...まで",
+    "till",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "キャッチボール",
+   "value": "„キャッチボール\" (kyatchi bōru) на японски = английски „catch\" — The act of seizing or capturing.",
+   "keywords": [
+    "キャッチボール",
+    "catch",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "追う",
+   "value": "„追う\" (ou) на японски = английски „follow\" — To go after; to pursue; to move behind in the same path or direction, especially with t…",
+   "keywords": [
+    "追う",
+    "follow",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "意味",
+   "value": "„意味\" (imi) на японски = английски „sense\" — Any of the manners by which living beings perceive the physical world: for humans sight…",
+   "keywords": [
+    "意味",
+    "sense",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "性別",
+   "value": "„性別\" (seibetsu) на японски = английски „sex\" — A category into which sexually-reproducing organisms are divided on the basis of their …",
+   "keywords": [
+    "性別",
+    "sex",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "臥す",
+   "value": "„臥す\" (fusu) на японски = английски „lie\" — To rest in a horizontal position on a surface.",
+   "keywords": [
+    "臥す",
+    "lie",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "夕方",
+   "value": "„夕方\" (yūgata) на японски = английски „evening\" — The time of day between afternoon and night.",
+   "keywords": [
+    "夕方",
+    "evening",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "主人",
+   "value": "„主人\" (shujin) на японски = английски „master\" — Someone who has control over something or someone.",
+   "keywords": [
+    "主人",
+    "master",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "夢",
+   "value": "„夢\" (yume) на японски = английски „dream\" — Imaginary events seen in the mind while sleeping.",
+   "keywords": [
+    "夢",
+    "dream",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "書く",
+   "value": "„書く\" (kaku) на японски = английски „write\" — To form letters, words or symbols on a surface in order to communicate.",
+   "keywords": [
+    "書く",
+    "write",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "百万",
+   "value": "„百万\" (hyaku-man) на японски = английски „million\" — The cardinal number 1 000 000: 10⁶; a thousand thousand (1,000²).",
+   "keywords": [
+    "百万",
+    "million",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "声",
+   "value": "„声\" (koe) на японски = английски „voice\" — Sound uttered by the mouth, especially by human beings in speech or song; sound thus ut…",
+   "keywords": [
+    "声",
+    "voice",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "甘い",
+   "value": "„甘い\" (amai) на японски = английски „sweet\" — Tasting of sugars.",
+   "keywords": [
+    "甘い",
+    "sweet",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "寧ろ",
+   "value": "„寧ろ\" (mushiro) на японски = английски „rather\" — Used to specify a choice or preference; preferably, in preference to. (Now usually foll…",
+   "keywords": [
+    "寧ろ",
+    "rather",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "フェルト",
+   "value": "„フェルト\" (feruto) на японски = английски „felt\" — A cloth or stuff made of matted fibres of wool, or wool and fur, fulled or wrought into…",
+   "keywords": [
+    "フェルト",
+    "felt",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "印",
+   "value": "„印\" (shirushi) на японски = английски „sign\" — A visible fact that shows that something exists or may happen.",
+   "keywords": [
+    "印",
+    "sign",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "幸運",
+   "value": "„幸運\" (kōun) на японски = английски „lucky\" — Favoured by luck; fortunate; having good success or good fortune.",
+   "keywords": [
+    "幸運",
+    "lucky",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "どこかへ",
+   "value": "„どこかへ\" (dokoka e) на японски = английски „somewhere\" — In an uncertain or unspecified location.",
+   "keywords": [
+    "どこかへ",
+    "somewhere",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "賭ける",
+   "value": "„賭ける\" (kakeru) на японски = английски „bet\" — To stake or pledge upon the outcome of an event; to wager.",
+   "keywords": [
+    "賭ける",
+    "bet",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "天命",
+   "value": "„天命\" (tenmē) на японски = английски „calling\" — A strong urge (to do some particular thing with or in one's life, for example to become…",
+   "keywords": [
+    "天命",
+    "calling",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "静かな",
+   "value": "„静かな\" (shizuka na) на японски = английски „quiet\" — With little or no sound; free of disturbing noise.",
+   "keywords": [
+    "静かな",
+    "quiet",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...より少ない",
+   "value": "„...より少ない\" на японски = английски „less\" — Used for constructing syntactic diminutive comparatives of adjectives and adverbs.",
+   "keywords": [
+    "...より少ない",
+    "less",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "引く",
+   "value": "„引く\" (hiku) на японски = английски „pull\" — To apply a force to (an object) so that it comes toward the person or thing applying th…",
+   "keywords": [
+    "引く",
+    "pull",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "拍",
+   "value": "„拍\" (haku) на японски = английски „beat\" — A stroke; a blow.",
+   "keywords": [
+    "拍",
+    "beat",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "思慮深い",
+   "value": "„思慮深い\" (shiryobukai) на японски = английски „careful\" — Taking care; attentive to potential danger, error or harm; cautious.",
+   "keywords": [
+    "思慮深い",
+    "careful",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "コーヒー豆",
+   "value": "„コーヒー豆\" (kōhī mame) на японски = английски „coffee\" — A beverage made by infusing the beans of the coffee plant in hot water.",
+   "keywords": [
+    "コーヒー豆",
+    "coffee",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "返す",
+   "value": "„返す\" (kaesu) на японски = английски „return\" — To come or go back (to a place or person).",
+   "keywords": [
+    "返す",
+    "return",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "秘密",
+   "value": "„秘密\" (himitsu) на японски = английски „secret\" — A piece of knowledge that is hidden and intended to be kept hidden.",
+   "keywords": [
+    "秘密",
+    "secret",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "デーツ",
+   "value": "„デーツ\" (dētsu) на японски = английски „date\" — The fruit of the date palm, Phoenix dactylifera, somewhat in the shape of an olive, con…",
+   "keywords": [
+    "デーツ",
+    "date",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "落ちる",
+   "value": "„落ちる\" (ochiru) на японски = английски „fall\" — To be moved downwards.",
+   "keywords": [
+    "落ちる",
+    "fall",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "欠点",
+   "value": "„欠点\" (ketten) на японски = английски „fault\" — Culpability; the responsibility for a blameworthy event.",
+   "keywords": [
+    "欠点",
+    "fault",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "率直",
+   "value": "„率直\" (sotchoku) на японски = английски „straight\" — Not crooked, curly, or bent; having a constant direction throughout its length.",
+   "keywords": [
+    "率直",
+    "straight",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "歌",
+   "value": "„歌\" (uta) на японски = английски „song\" — A musical composition with lyrics for voice or voices, performed by singing.",
+   "keywords": [
+    "歌",
+    "song",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "未来",
+   "value": "„未来\" (mirai) на японски = английски „future\" — The time ahead; those moments yet to be experienced.",
+   "keywords": [
+    "未来",
+    "future",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "愛され",
+   "value": "„愛され\" на японски = английски „loved\" — Being the object of love.",
+   "keywords": [
+    "愛され",
+    "loved",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "道",
+   "value": "„道\" (michi) на японски = английски „road\" — A way used for travelling between places, originally one wide enough to allow foot pass…",
+   "keywords": [
+    "道",
+    "road",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "穏やかな",
+   "value": "„穏やかな\" (odayaka na) на японски = английски „calm\" — Peaceful, quiet, especially free from anger and anxiety.",
+   "keywords": [
+    "穏やかな",
+    "calm",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "素晴しい",
+   "value": "„素晴しい\" (subarashii) на японски = английски „wonderful\" — Tending to excite wonder; surprising, extraordinary.",
+   "keywords": [
+    "素晴しい",
+    "wonderful",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "気が狂った",
+   "value": "„気が狂った\" (ki-ga kurutta) на японски = английски „mad\" — Insane; crazy, mentally deranged.",
+   "keywords": [
+    "気が狂った",
+    "mad",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "滴",
+   "value": "„滴\" (shizuku) на японски = английски „drop\" — A small quantity of liquid, just large enough to hold its own rounded shape through sur…",
+   "keywords": [
+    "滴",
+    "drop",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "レディース",
+   "value": "„レディース\" на японски = английски „ladies\"",
+   "keywords": [
+    "レディース",
+    "ladies",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "習う",
+   "value": "„習う\" (narau) на японски = английски „learn\" — To acquire, or attempt to acquire knowledge or an ability to do something.",
+   "keywords": [
+    "習う",
+    "learn",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "足取り",
+   "value": "„足取り\" (ashidori) на японски = английски „step\" — An advance or movement made from one foot to the other; a pace.",
+   "keywords": [
+    "足取り",
+    "step",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "絶対に",
+   "value": "„絶対に\" (zettai ni) на японски = английски „absolutely\" — In an absolute or unconditional manner; utterly, positively, wholly.",
+   "keywords": [
+    "絶対に",
+    "absolutely",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "早い",
+   "value": "„早い\" (hayai) на японски = английски „early\" — At a time in advance of the usual or expected event.",
+   "keywords": [
+    "早い",
+    "early",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "説明する",
+   "value": "„説明する\" (setsumei suru) на японски = английски „explain\" — To make plain, manifest, or intelligible; to clear of obscurity; to illustrate the mean…",
+   "keywords": [
+    "説明する",
+    "explain",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "清い",
+   "value": "„清い\" (kiyoi) на японски = английски „clean\" — Free of dirt, filth, or impurities (extraneous matter); not dirty, filthy, or soiled.",
+   "keywords": [
+    "清い",
+    "clean",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "部分",
+   "value": "„部分\" (bubun) на японски = английски „piece\" — A part of a larger whole, usually in such a form that it is able to be separated from o…",
+   "keywords": [
+    "部分",
+    "piece",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "昨日",
+   "value": "„昨日\" (kinō) на японски = английски „yesterday\" — The day immediately before today; one day ago.",
+   "keywords": [
+    "昨日",
+    "yesterday",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "投げる",
+   "value": "„投げる\" (nageru) на японски = английски „throw\" — To hurl; to release (an object) with some force from one’s hands, an apparatus, etc. so…",
+   "keywords": [
+    "投げる",
+    "throw",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "絵",
+   "value": "„絵\" (e) на японски = английски „picture\" — A representation of anything (as a person, a landscape, a building) upon canvas, paper,…",
+   "keywords": [
+    "絵",
+    "picture",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "土",
+   "value": "„土\" (tsuchi) на японски = английски „land\" — The part of Earth which is not covered by oceans or other bodies of water.",
+   "keywords": [
+    "土",
+    "land",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "驚異",
+   "value": "„驚異\" (kyōi) на японски = английски „wonder\" — A sense of awe, astonishment and curiosity, inspired by unexpected events, novel experi…",
+   "keywords": [
+    "驚異",
+    "wonder",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "話すこと",
+   "value": "„話すこと\" (hanasu koto) на японски = английски „speaking\" — One's ability to communicate vocally in a given language.",
+   "keywords": [
+    "話すこと",
+    "speaking",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "価値がある",
+   "value": "„価値がある\" (kachi ga aru) на японски = английски „worth\" — Having a value of; proper to be exchanged for.",
+   "keywords": [
+    "価値がある",
+    "worth",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "愛すべき",
+   "value": "„愛すべき\" (aisubeki) на японски = английски „darling\" — Often used as an affectionate term of address: a person who is very dear to one.",
+   "keywords": [
+    "愛すべき",
+    "darling",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "やつ",
+   "value": "„やつ\" (yatsu) на японски = английски „dude\" — A man, generally a younger man.",
+   "keywords": [
+    "やつ",
+    "dude",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "大統領",
+   "value": "„大統領\" (daitōryō) на японски = английски „president\" — The head of state of a republic, sometimes also the head of government as well, particu…",
+   "keywords": [
+    "大統領",
+    "president",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "目",
+   "value": "„目\" (me) на японски = английски „eye\" — An organ through which animals see (“perceive surroundings via light”).",
+   "keywords": [
+    "目",
+    "eye",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "速い",
+   "value": "„速い\" (hayai) на японски = английски „quick\" — Moving with speed, rapidity or swiftness, or capable of doing so; rapid; fast.",
+   "keywords": [
+    "速い",
+    "quick",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "感動的な",
+   "value": "„感動的な\" (kandōteki-na) на японски = английски „moving\" — That moves or move.",
+   "keywords": [
+    "感動的な",
+    "moving",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "人物",
+   "value": "„人物\" (jinbutsu) на японски = английски „figure\" — A drawing or diagram conveying information.",
+   "keywords": [
+    "人物",
+    "figure",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "状態",
+   "value": "„状態\" (jōtai) на японски = английски „state\" — A condition; a set of circumstances applying at any given time.",
+   "keywords": [
+    "状態",
+    "state",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "強い",
+   "value": "„強い\" (tsuyoi) на японски = английски „strong\" — Capable of producing great physical force.",
+   "keywords": [
+    "強い",
+    "strong",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "どれでも...ない",
+   "value": "„どれでも...ない\" (dorenimo...nai) на японски = английски „none\" — Not any of a given number or group.",
+   "keywords": [
+    "どれでも...ない",
+    "none",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "驚くべき",
+   "value": "„驚くべき\" (odoroku-beki) на японски = английски „amazing\" — Causing wonder and amazement; very surprising.",
+   "keywords": [
+    "驚くべき",
+    "amazing",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "行為",
+   "value": "„行為\" (kōi) на японски = английски „act\" — Something done, a deed.",
+   "keywords": [
+    "行為",
+    "act",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "変",
+   "value": "„変\" (hen) на японски = английски „weird\" — Having an unusually strange character or behaviour.",
+   "keywords": [
+    "変",
+    "weird",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "法律",
+   "value": "„法律\" (hōritsu) на японски = английски „law\" — The body of binding rules and regulations, customs, and standards established in a comm…",
+   "keywords": [
+    "法律",
+    "law",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "心配した",
+   "value": "„心配した\" (shinpai shita) на японски = английски „worried\" — Thinking about unpleasant things that have happened or that might happen; feeling afrai…",
+   "keywords": [
+    "心配した",
+    "worried",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "報告する",
+   "value": "„報告する\" (hōkoku suru) на японски = английски „report\" — To relate details of (an event or incident); to recount, describe (something).",
+   "keywords": [
+    "報告する",
+    "report",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "さようなら",
+   "value": "„さようなら\" (sayōnara) на японски = английски „goodbye\" — Farewell; a formula used to another person or persons when the speaker, writer, or pers…",
+   "keywords": [
+    "さようなら",
+    "goodbye",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "選択",
+   "value": "„選択\" (sentaku) на японски = английски „choice\" — An option; a decision; an opportunity to choose or select something.",
+   "keywords": [
+    "選択",
+    "choice",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "おしゃれ",
+   "value": "„おしゃれ\" (oshare) на японски = английски „happening\" — Busy, lively; vibrant, dynamic; fashionable.",
+   "keywords": [
+    "おしゃれ",
+    "happening",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "長",
+   "value": "„長\" (chō) на японски = английски „chief\" — The leader or head of a tribe, organisation, business unit, or other group.",
+   "keywords": [
+    "長",
+    "chief",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "結婚式",
+   "value": "„結婚式\" (kekkonshiki) на японски = английски „wedding\" — A marriage ceremony; a ritual officially celebrating the beginning of a marriage.",
+   "keywords": [
+    "結婚式",
+    "wedding",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "変",
+   "value": "„変\" (hen) на японски = английски „strange\" — Not normal; odd, unusual, surprising, out of the ordinary, often with a negative connot…",
+   "keywords": [
+    "変",
+    "strange",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "一般",
+   "value": "„一般\" (ippan) на японски = английски „general\" — Including or involving every part or member of a given or implied entity, whole, etc.; …",
+   "keywords": [
+    "一般",
+    "general",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "痛み",
+   "value": "„痛み\" (itami) на японски = английски „pain\" — An ache or bodily suffering, or an instance of this; an unpleasant sensation, resulting…",
+   "keywords": [
+    "痛み",
+    "pain",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "通る",
+   "value": "„通る\" (tōru) на японски = английски „pass\" — To change place.",
+   "keywords": [
+    "通る",
+    "pass",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "疲れた",
+   "value": "„疲れた\" (tsukareta) на японски = английски „tired\" — In need of some rest or sleep.",
+   "keywords": [
+    "疲れた",
+    "tired",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "等級",
+   "value": "„等級\" (tōkyū) на японски = английски „class\" — A group, collection, category or set sharing characteristics or attributes.",
+   "keywords": [
+    "等級",
+    "class",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "役員",
+   "value": "„役員\" (yakuin) на японски = английски „officer\" — One who has a position of authority in a hierarchical organization, especially in milit…",
+   "keywords": [
+    "役員",
+    "officer",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "目覚める",
+   "value": "„目覚める\" (mezameru) на японски = английски „wake\" — (often followed by up) To stop sleeping.",
+   "keywords": [
+    "目覚める",
+    "wake",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "さらに…悪い",
+   "value": "„さらに…悪い\" (sara ni…warui) на японски = английски „worse\"",
+   "keywords": [
+    "さらに…悪い",
+    "worse",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "繁華",
+   "value": "„繁華\" (hanka) на японски = английски „busy\" — Crowded with business or activities; having a great deal going on.",
+   "keywords": [
+    "繁華",
+    "busy",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ね",
+   "value": "„ね\" (ne) на японски = английски „eh\" — Used as a tag question, to emphasise what goes before or to request that the listener e…",
+   "keywords": [
+    "ね",
+    "eh",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "勘違いする",
+   "value": "„勘違いする\" (kanchigai suru) на японски = английски „mistake\" — To understand wrongly, taking one thing or person for another.",
+   "keywords": [
+    "勘違いする",
+    "mistake",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "キスする",
+   "value": "„キスする\" (kisu suru) на японски = английски „kiss\" — To touch with the lips or press the lips against, usually to show love or affection or …",
+   "keywords": [
+    "キスする",
+    "kiss",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "中庭",
+   "value": "„中庭\" (nakaniwa) на японски = английски „court\" — An enclosed space; a courtyard; an uncovered area shut in by the walls of a building, o…",
+   "keywords": [
+    "中庭",
+    "court",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "建築",
+   "value": "„建築\" (kenchiku) на японски = английски „building\" — The act or process by which something is built; construction.",
+   "keywords": [
+    "建築",
+    "building",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "終わり",
+   "value": "„終わり\" (owari) на японски = английски „finish\" — An end; the end of anything.",
+   "keywords": [
+    "終わり",
+    "finish",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "…の間",
+   "value": "„…の間\" (... no aida) на японски = английски „during\" — For all of a given time interval; throughout; in; pending.",
+   "keywords": [
+    "…の間",
+    "during",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "時代",
+   "value": "„時代\" (jidai) на японски = английски „age\" — The amount of time that some being has been alive, or that some thing has been in exist…",
+   "keywords": [
+    "時代",
+    "age",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "船",
+   "value": "„船\" (fune) на японски = английски „ship\" — A water-borne vessel generally larger than a boat.",
+   "keywords": [
+    "船",
+    "ship",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "結婚する",
+   "value": "„結婚する\" (kekkon suru) на японски = английски „marry\" — To enter into the conjugal or connubial state; to take a husband or a wife.",
+   "keywords": [
+    "結婚する",
+    "marry",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "売る",
+   "value": "„売る\" (uru) на японски = английски „sell\" — To transfer goods or provide services in exchange for money.",
+   "keywords": [
+    "売る",
+    "sell",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "暗い",
+   "value": "„暗い\" (kurai) на японски = английски „dark\" — Having an absolute or (more often) relative lack of light.",
+   "keywords": [
+    "暗い",
+    "dark",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "系統",
+   "value": "„系統\" (keitō) на японски = английски „system\" — A group or set of related things that operate together as a complex whole.",
+   "keywords": [
+    "系統",
+    "system",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "推測する",
+   "value": "„推測する\" (suisoku suru) на японски = английски „suppose\" — To take for granted; to conclude, with less than absolute supporting data; to believe.",
+   "keywords": [
+    "推測する",
+    "suppose",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "証拠",
+   "value": "„証拠\" (shōko) на японски = английски „evidence\" — Facts or observations presented in support of an assertion.",
+   "keywords": [
+    "証拠",
+    "evidence",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "映画",
+   "value": "„映画\" (eiga) на японски = английски „movie\" — A recorded sequence of images displayed on a screen at a rate sufficiently fast to crea…",
+   "keywords": [
+    "映画",
+    "movie",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "乗る",
+   "value": "„乗る\" (noru) на японски = английски „ride\" — To transport oneself by sitting on and directing a horse, later also a bicycle etc.",
+   "keywords": [
+    "乗る",
+    "ride",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "全く",
+   "value": "„全く\" (mattaku) на японски = английски „completely\" — In a complete manner; thoroughly.",
+   "keywords": [
+    "全く",
+    "completely",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "口",
+   "value": "„口\" (kuchi) на японски = английски „mouth\" — The front opening of a creature through which food is ingested.",
+   "keywords": [
+    "口",
+    "mouth",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "誕生日",
+   "value": "„誕生日\" (tanjōbi) на японски = английски „birthday\" — The anniversary of the day on which someone is born.",
+   "keywords": [
+    "誕生日",
+    "birthday",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "テレビ",
+   "value": "„テレビ\" (terebi) на японски = английски „tv\" — Abbreviation of television.",
+   "keywords": [
+    "テレビ",
+    "tv",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "許す",
+   "value": "„許す\" (yurusu) на японски = английски „forgive\" — To pardon (someone); to waive any negative feeling towards or desire for punishment or …",
+   "keywords": [
+    "許す",
+    "forgive",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "生まれた",
+   "value": "„生まれた\" (umareta) на японски = английски „born\" — Having from birth (or as if from birth) a certain quality or character; innate; inherited.",
+   "keywords": [
+    "生まれた",
+    "born",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "想像する",
+   "value": "„想像する\" (sōzō suru) на японски = английски „imagine\" — To form a mental image of something; to envision or create something in one's mind.",
+   "keywords": [
+    "想像する",
+    "imagine",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "情報",
+   "value": "„情報\" (jōhō) на японски = английски „information\" — Something that provides a definitive characterization or description of the nature and …",
+   "keywords": [
+    "情報",
+    "information",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...の代わりに",
+   "value": "„...の代わりに\" (...no kawari-ni) на японски = английски „instead\" — In the place of something (usually mentioned earlier); as a substitute or alternative.",
+   "keywords": [
+    "...の代わりに",
+    "instead",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "確かに",
+   "value": "„確かに\" (tashika ni) на японски = английски „definitely\" — Without question and beyond doubt.",
+   "keywords": [
+    "確かに",
+    "definitely",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "安全",
+   "value": "„安全\" (anzen) на японски = английски „security\" — The condition of not being threatened, especially physically, psychologically, emotiona…",
+   "keywords": [
+    "安全",
+    "security",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "確かに",
+   "value": "„確かに\" (tashika ni) на японски = английски „certainly\" — In a way which is certain; with certainty.",
+   "keywords": [
+    "確かに",
+    "certainly",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "膜",
+   "value": "„膜\" (maku) на японски = английски „film\" — A thin layer of some substance; a pellicle; a membranous covering, causing opacity.",
+   "keywords": [
+    "膜",
+    "film",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "月",
+   "value": "„月\" (tsuki) на японски = английски „month\" — A period into which a year is divided, historically based on the phases of the moon.",
+   "keywords": [
+    "月",
+    "month",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "もし...でなければ",
+   "value": "„もし...でなければ\" (moshi ... de nakereba) на японски = английски „unless\" — Except on a specified condition; if not.",
+   "keywords": [
+    "もし...でなければ",
+    "unless",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "列車",
+   "value": "„列車\" (ressha) на японски = английски „train\" — Elongated or trailing portion.",
+   "keywords": [
+    "列車",
+    "train",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "七",
+   "value": "„七\" на японски = английски „seven\" — A numerical value equal to 7; the number following six and preceding eight. This many d…",
+   "keywords": [
+    "七",
+    "seven",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "着る",
+   "value": "„着る\" (kiru) на японски = английски „wear\" — To have on:",
+   "keywords": [
+    "着る",
+    "wear",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "衣服",
+   "value": "„衣服\" (ifuku) на японски = английски „clothes\" — Items of clothing; apparel.",
+   "keywords": [
+    "衣服",
+    "clothes",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ホテル",
+   "value": "„ホテル\" (hoteru) на японски = английски „hotel\" — A large town house or mansion; a grand private residence, especially in France.",
+   "keywords": [
+    "ホテル",
+    "hotel",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "攻撃",
+   "value": "„攻撃\" (kōgeki) на японски = английски „attack\" — An attempt to cause damage, injury to, or death of an opponent or enemy.",
+   "keywords": [
+    "攻撃",
+    "attack",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "丸い",
+   "value": "„丸い\" (marui) на японски = английски „round\" — Of shape:",
+   "keywords": [
+    "丸い",
+    "round",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "期待する",
+   "value": "„期待する\" (kitai suru) на японски = английски „expect\" — To predict or believe that something will happen",
+   "keywords": [
+    "期待する",
+    "expect",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "歌う",
+   "value": "„歌う\" (utau) на японски = английски „sing\" — To produce musical or harmonious sounds with one’s voice.",
+   "keywords": [
+    "歌う",
+    "sing",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "恐ろしい",
+   "value": "„恐ろしい\" (osoroshii) на японски = английски „terrible\" — Dreadful; causing terror, alarm and fear; awesome",
+   "keywords": [
+    "恐ろしい",
+    "terrible",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "袋",
+   "value": "„袋\" (fukuro) на японски = английски „bag\" — A soft container made out of cloth, paper, thin plastic, etc. and open at the top, used…",
+   "keywords": [
+    "袋",
+    "bag",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "歴史",
+   "value": "„歴史\" (rekishi) на японски = английски „history\" — The aggregate of past events, both unrecorded and recorded.",
+   "keywords": [
+    "歴史",
+    "history",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "青い",
+   "value": "„青い\" (aoi) на японски = английски „blue\" — Of a blue hue.",
+   "keywords": [
+    "青い",
+    "blue",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "近い",
+   "value": "„近い\" (chikai) на японски = английски „near\" — Physically close.",
+   "keywords": [
+    "近い",
+    "near",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "すっからかん",
+   "value": "„すっからかん\" (sukkarakan) на японски = английски „broke\" — Financially ruined, bankrupt.",
+   "keywords": [
+    "すっからかん",
+    "broke",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "駅",
+   "value": "„駅\" (eki) на японски = английски „station\" — A stopping place.",
+   "keywords": [
+    "駅",
+    "station",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "まじに",
+   "value": "„まじに\" (maji ni) на японски = английски „seriously\" — In a serious or literal manner.",
+   "keywords": [
+    "まじに",
+    "seriously",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "永久に",
+   "value": "„永久に\" (eikyū ni) на японски = английски „forever\" — For all time, for all eternity; for a lifetime; for an infinite amount of time.",
+   "keywords": [
+    "永久に",
+    "forever",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "はっきり言う",
+   "value": "„はっきり言う\" на японски = английски „frank\" — Honest, especially in a manner that seems slightly blunt; candid; not reserved or disgu…",
+   "keywords": [
+    "はっきり言う",
+    "frank",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "除く",
+   "value": "„除く\" (nozoku) на японски = английски „except\" — To exclude; to specify as being an exception.",
+   "keywords": [
+    "除く",
+    "except",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "伝言",
+   "value": "„伝言\" (dengon) на японски = английски „message\" — A communication, or what is communicated; any concept or information conveyed.",
+   "keywords": [
+    "伝言",
+    "message",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "全部の",
+   "value": "„全部の\" (zenbu no) на японски = английски „entire\" — Whole; complete.",
+   "keywords": [
+    "全部の",
+    "entire",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "太郎",
+   "value": "„太郎\" (Tarō) на японски = английски „joe\" — A male; a guy; a fellow.",
+   "keywords": [
+    "太郎",
+    "joe",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "台",
+   "value": "„台\" (dai) на японски = английски „table\" — Furniture with a top surface to accommodate a variety of uses.",
+   "keywords": [
+    "台",
+    "table",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "向こう",
+   "value": "„向こう\" (mukō) на японски = английски „across\" — To, toward, or from the far side of (something that lies between two points of interest).",
+   "keywords": [
+    "向こう",
+    "across",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "岩石",
+   "value": "„岩石\" (ganseki) на японски = английски „rock\" — A formation of minerals, specifically:",
+   "keywords": [
+    "岩石",
+    "rock",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "綺麗",
+   "value": "„綺麗\" (kirei) на японски = английски „lovely\" — Delightful for beauty, harmony, or grace.",
+   "keywords": [
+    "綺麗",
+    "lovely",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "取っ手",
+   "value": "„取っ手\" (totte) на японски = английски „handle\" — The part of an object which is (designed to be) held in the hand when used or moved.",
+   "keywords": [
+    "取っ手",
+    "handle",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "中央",
+   "value": "„中央\" (chūō) на японски = английски „middle\" — A centre, midpoint.",
+   "keywords": [
+    "中央",
+    "middle",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "仲間",
+   "value": "„仲間\" (nakama) на японски = английски „buddy\" — A person far removed from the conversation.",
+   "keywords": [
+    "仲間",
+    "buddy",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "守る",
+   "value": "„守る\" (mamoru) на японски = английски „protect\" — To keep safe; to defend; to guard; to prevent harm coming to.",
+   "keywords": [
+    "守る",
+    "protect",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "床",
+   "value": "„床\" (yuka) на японски = английски „floor\" — The interior bottom or surface of a house or building; the supporting surface of a room.",
+   "keywords": [
+    "床",
+    "floor",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "誓う",
+   "value": "„誓う\" (chikau) на японски = английски „swear\" — To take an oath, to promise intensely, solemnly, and/or with legally binding effect.",
+   "keywords": [
+    "誓う",
+    "swear",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "消費する",
+   "value": "„消費する\" (shōhi suru) на японски = английски „spend\" — To pay out (money).",
+   "keywords": [
+    "消費する",
+    "spend",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "状況",
+   "value": "„状況\" (jōkyō) на японски = английски „situation\" — The combination of circumstances at a given moment; a state of affairs.",
+   "keywords": [
+    "状況",
+    "situation",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "リング",
+   "value": "„リング\" (ringu) на японски = английски „ring\" — A solid object in the shape of a circle.",
+   "keywords": [
+    "リング",
+    "ring",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "どこでも",
+   "value": "„どこでも\" (dokodemo) на японски = английски „anywhere\" — In or at any location.",
+   "keywords": [
+    "どこでも",
+    "anywhere",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "危険",
+   "value": "„危険\" (kiken) на японски = английски „dangerous\" — Full of danger.",
+   "keywords": [
+    "危険",
+    "dangerous",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "法律案",
+   "value": "„法律案\" (hōritsuan) на японски = английски „bill\" — A written list or inventory. (Now obsolete except in specific senses or set phrases; bi…",
+   "keywords": [
+    "法律案",
+    "bill",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "陸軍",
+   "value": "„陸軍\" (rikugun) на японски = английски „army\" — A large, highly organized military force, concerned mainly with ground (rather than air…",
+   "keywords": [
+    "陸軍",
+    "army",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "鉛",
+   "value": "„鉛\" (namari) на японски = английски „lead\" — A heavy, pliable, inelastic metal element, having a bright, bluish color, but easily ta…",
+   "keywords": [
+    "鉛",
+    "lead",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "終わった",
+   "value": "„終わった\" (owatta) на японски = английски „finished\" — Processed or perfected.",
+   "keywords": [
+    "終わった",
+    "finished",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "美しい",
+   "value": "„美しい\" (utsukushii) на японски = английски „fair\" — Unblemished (figuratively or literally); clean and pure; innocent.",
+   "keywords": [
+    "美しい",
+    "fair",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "太陽",
+   "value": "„太陽\" (taiyō) на японски = английски „sun\" — A star, especially when seen as the centre of any single solar system.",
+   "keywords": [
+    "太陽",
+    "sun",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "文字",
+   "value": "„文字\" (moji) на японски = английски „letter\" — A symbol in an alphabet.",
+   "keywords": [
+    "文字",
+    "letter",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "愚か者",
+   "value": "„愚か者\" (orokamono) на японски = английски „fool\" — A person with poor judgment or little intelligence.",
+   "keywords": [
+    "愚か者",
+    "fool",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "注意",
+   "value": "„注意\" (chūi) на японски = английски „attention\" — Mental focus.",
+   "keywords": [
+    "注意",
+    "attention",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "クラブ",
+   "value": "„クラブ\" (kurabu) на японски = английски „club\" — A heavy object, often a kind of stick, intended for use as a bludgeoning weapon or a pl…",
+   "keywords": [
+    "クラブ",
+    "club",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "簡単な",
+   "value": "„簡単な\" (kantan na) на японски = английски „simple\" — Uncomplicated; lacking complexity; taken by itself, with nothing added.",
+   "keywords": [
+    "簡単な",
+    "simple",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "面白い",
+   "value": "„面白い\" (omoshiroi) на японски = английски „interesting\" — Arousing or holding the attention or interest of someone.",
+   "keywords": [
+    "面白い",
+    "interesting",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "空間",
+   "value": "„空間\" (kūkan) на японски = английски „space\" — Unlimited or generalized extent, physical or otherwise.",
+   "keywords": [
+    "空間",
+    "space",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "実験",
+   "value": "„実験\" (jikken) на японски = английски „test\" — A challenge, trial.",
+   "keywords": [
+    "実験",
+    "test",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "箱",
+   "value": "„箱\" (hako) на японски = английски „box\" — Senses relating to a three-dimensional object or space.",
+   "keywords": [
+    "箱",
+    "box",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "集団",
+   "value": "„集団\" (shūdan) на японски = английски „group\" — A number of things or persons being in some relation to one another.",
+   "keywords": [
+    "集団",
+    "group",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "一倍",
+   "value": "„一倍\" (ichibai) на японски = английски „single\" — Not accompanied by anything else; one in number.",
+   "keywords": [
+    "一倍",
+    "single",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "座",
+   "value": "„座\" на японски = английски „sitting\" — A period during which one is seated for a specific purpose.",
+   "keywords": [
+    "座",
+    "sitting",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "結婚",
+   "value": "„結婚\" (kekkon) на японски = английски „marriage\" — The state of being married.",
+   "keywords": [
+    "結婚",
+    "marriage",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "繋げる",
+   "value": "„繋げる\" (tsunageru) на японски = английски „join\" — To connect or combine into one; to put together.",
+   "keywords": [
+    "繋げる",
+    "join",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "恐れ",
+   "value": "„恐れ\" (osore) на японски = английски „fear\" — A strong, unpleasant emotion or feeling caused by actual or perceived danger or threat.",
+   "keywords": [
+    "恐れ",
+    "fear",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "平和",
+   "value": "„平和\" (heiwa) на японски = английски „peace\" — A state of tranquility, quiet, and harmony. For instance, a state free from civil distu…",
+   "keywords": [
+    "平和",
+    "peace",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "強制",
+   "value": "„強制\" (kyōsei) на японски = английски „force\" — Ability to influence; strength or energy of body or mind; active power; vigour; might; …",
+   "keywords": [
+    "強制",
+    "force",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "短い",
+   "value": "„短い\" (mijikai) на японски = английски „short\" — Having a small distance from one end or edge to another, either horizontally or vertica…",
+   "keywords": [
+    "短い",
+    "short",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "正常",
+   "value": "„正常\" (seijō) на японски = английски „normal\" — According to norms or rules or to a regular pattern.",
+   "keywords": [
+    "正常",
+    "normal",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "現在の",
+   "value": "„現在の\" (genzai no) на японски = английски „present\" — Relating to now, for the time being; current.",
+   "keywords": [
+    "現在の",
+    "present",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "楽しむ",
+   "value": "„楽しむ\" (tanoshimu) на японски = английски „enjoy\" — To receive pleasure or satisfaction from something.",
+   "keywords": [
+    "楽しむ",
+    "enjoy",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "犯罪",
+   "value": "„犯罪\" (hanzai) на японски = английски „crime\" — A specific act committed in violation of the law, especially criminal law.",
+   "keywords": [
+    "犯罪",
+    "crime",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "馬",
+   "value": "„馬\" (uma) на японски = английски „horse\" — A hoofed mammal, Equus ferus caballus, often used throughout history for riding and dra…",
+   "keywords": [
+    "馬",
+    "horse",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "地",
+   "value": "„地\" (chi) на японски = английски „ground\" — The surface of the Earth, as opposed to the sky or water or underground.",
+   "keywords": [
+    "地",
+    "ground",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "アメリカ人",
+   "value": "„アメリカ人\" (amerikajin) на японски = английски „american\" — A citizen or national of the United States of America.",
+   "keywords": [
+    "アメリカ人",
+    "american",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "数える",
+   "value": "„数える\" (kazoeru) на японски = английски „count\" — To recite numbers in sequence.",
+   "keywords": [
+    "数える",
+    "count",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "面積",
+   "value": "„面積\" (menseki) на японски = английски „area\" — A measure of the extent of a surface; it is measured in square units.",
+   "keywords": [
+    "面積",
+    "area",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "突撃",
+   "value": "„突撃\" (totsugeki) на японски = английски „charge\" — The amount of money levied for a service.",
+   "keywords": [
+    "突撃",
+    "charge",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "名誉",
+   "value": "„名誉\" (meiyo) на японски = английски „honor\" — Recognition of importance or value; respect; veneration (of someone, usually for being …",
+   "keywords": [
+    "名誉",
+    "honor",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "昼食",
+   "value": "„昼食\" (chūshoku) на японски = английски „lunch\" — A light meal usually eaten around midday, notably when not as main meal of the day.",
+   "keywords": [
+    "昼食",
+    "lunch",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ラジオ",
+   "value": "„ラジオ\" (rajio) на японски = английски „radio\" — The technology that allows for the transmission of sound or other signals by modulation…",
+   "keywords": [
+    "ラジオ",
+    "radio",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "馬鹿",
+   "value": "„馬鹿\" (baka) на японски = английски „idiot\" — A person of low general intelligence.",
+   "keywords": [
+    "馬鹿",
+    "idiot",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "玉",
+   "value": "„玉\" (tama) на японски = английски „ball\" — A solid or hollow sphere, or roughly spherical mass.",
+   "keywords": [
+    "玉",
+    "ball",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "驚き",
+   "value": "„驚き\" (odoroki) на японски = английски „surprise\" — Something unexpected.",
+   "keywords": [
+    "驚き",
+    "surprise",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "紙",
+   "value": "„紙\" (kami) на японски = английски „paper\" — A sheet material typically used for writing on or printing on (or as a non-waterproof c…",
+   "keywords": [
+    "紙",
+    "paper",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "鍵",
+   "value": "„鍵\" (kagi) на японски = английски „key\" — An object designed to open and close a lock or to activate or deactivate something, esp…",
+   "keywords": [
+    "鍵",
+    "key",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "舟",
+   "value": "„舟\" (fune) на японски = английски „boat\" — A craft used for transportation of goods, fishing, racing, recreational cruising, or mi…",
+   "keywords": [
+    "舟",
+    "boat",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "速く",
+   "value": "„速く\" (hayaku) на японски = английски „quickly\" — Rapidly; with speed; fast; with expedition.",
+   "keywords": [
+    "速く",
+    "quickly",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "金",
+   "value": "„金\" на японски = английски „gold\" — Made of gold.",
+   "keywords": [
+    "金",
+    "gold",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "棒",
+   "value": "„棒\" (bō) на японски = английски „bar\" — A solid, more or less rigid object of metal or wood with a uniform cross-section smalle…",
+   "keywords": [
+    "棒",
+    "bar",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "魚",
+   "value": "„魚\" на японски = английски „fish\" — A typically cold-blooded vertebrate animal that lives in water, moving with the help of…",
+   "keywords": [
+    "魚",
+    "fish",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "標識",
+   "value": "„標識\" (hyōshiki) на японски = английски „mark\" — Boundary, land within a boundary.",
+   "keywords": [
+    "標識",
+    "mark",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "雄猫",
+   "value": "„雄猫\" на японски = английски „tom\" — The male of the domesticated cat, especially if not neutered.",
+   "keywords": [
+    "雄猫",
+    "tom",
+    "превод",
+    "японски"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "疲れる",
+   "value": "„疲れる\" (tsukareru) на японски = английски „wearing\" — Intended to be worn.",
+   "keywords": [
+    "疲れる",
+    "wearing",
+    "превод",
+    "японски"
+   ]
+  }
+ ]
+}

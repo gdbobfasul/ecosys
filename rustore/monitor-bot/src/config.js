@@ -5,7 +5,7 @@ export const STORE = 'rustore';
 export const ACCENT = '#0a84ff';   // RUStore син акцент
 export const ACCENT2 = '#5ac8fa';
 export const APP_ID = 'com.kcy.monitorbot.rustore';
-export const APP_NAME = 'Монитор-робот';
+export const APP_NAME = 'KCY Site Monitor';
 
 // Колко често роботът „тиктака" в браузъра (демо/уеб таймер).
 // На устройство всеки монитор се планира по собствения си интервал.

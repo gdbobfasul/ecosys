@@ -1,0 +1,7707 @@
+{
+ "name": "Речник италиански↔английски (ядро)",
+ "topic": "езици",
+ "source": "Уикиречник през kaikki.org (CC BY-SA) + честотен списък",
+ "entries": [
+  {
+   "type": "превод",
+   "key": "ti",
+   "value": "„ti\" на италиански = английски „you\" — The people spoken, or written to, as an object.",
+   "keywords": [
+    "ti",
+    "you",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "per",
+   "value": "„per\" на италиански = английски „to\" — In order to.",
+   "keywords": [
+    "per",
+    "to",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "esso",
+   "value": "„esso\" на италиански = английски „it\" — The third-person singular neuter personal pronoun used to refer to an inanimate object,…",
+   "keywords": [
+    "esso",
+    "it",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "e",
+   "value": "„e\" на италиански = английски „and\" — As a coordinating conjunction; expressing two elements to be taken together or in addit…",
+   "keywords": [
+    "e",
+    "and",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "che",
+   "value": "„che\" на италиански = английски „that\" — Introducing a clause that is the object of a verb, especially a reporting verb or verb …",
+   "keywords": [
+    "che",
+    "that",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "di",
+   "value": "„di\" на италиански = английски „of\" — Expressing distance or motion.",
+   "keywords": [
+    "di",
+    "of",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "in",
+   "value": "„in\" на италиански = английски „in\" — Used to indicate location, inclusion, or position within spatial, temporal or abstract …",
+   "keywords": [
+    "in",
+    "in",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "quello che",
+   "value": "„quello che\" на италиански = английски „what\" — Which thing, event, circumstance, etc.: used in asking for the specification of an iden…",
+   "keywords": [
+    "quello che",
+    "what",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "noi",
+   "value": "„noi\" на италиански = английски „we\" — Two or more people including or consisting of the speaker(s)/writer(s).",
+   "keywords": [
+    "noi",
+    "we",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mi",
+   "value": "„mi\" на италиански = английски „me\" — The first-person singular, as the object (of a verb, preposition, etc).",
+   "keywords": [
+    "mi",
+    "me",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "così",
+   "value": "„così\" на италиански = английски „this\" — To the degree or extent indicated.",
+   "keywords": [
+    "così",
+    "this",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lui",
+   "value": "„lui\" на италиански = английски „he\" — A person who identifies as male, or animal already known or implied.",
+   "keywords": [
+    "lui",
+    "he",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "perché",
+   "value": "„perché\" на италиански = английски „for\" — Because.",
+   "keywords": [
+    "perché",
+    "for",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dentro",
+   "value": "„dentro\" на италиански = английски „on\" — In the state of being active, functioning or operating.",
+   "keywords": [
+    "dentro",
+    "on",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "avere",
+   "value": "„avere\" на италиански = английски „have\" — To possess, own.",
+   "keywords": [
+    "avere",
+    "have",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "andare",
+   "value": "„andare\" на италиански = английски „do\" — A syntactic marker.",
+   "keywords": [
+    "andare",
+    "do",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "no",
+   "value": "„no\" на италиански = английски „no\" — A negating expression; an answer that shows disagreement, denial, refusal, or disapproval.",
+   "keywords": [
+    "no",
+    "no",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "non",
+   "value": "„non\" на италиански = английски „not\" — Negates the meaning of the modified verb.",
+   "keywords": [
+    "non",
+    "not",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "essere",
+   "value": "„essere\" на италиански = английски „be\" — As an auxiliary verb:",
+   "keywords": [
+    "essere",
+    "be",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ara",
+   "value": "„ara\" на италиански = английски „are\" — An accepted (but deprecated and rarely used) metric unit of area equal to 100 square me…",
+   "keywords": [
+    "ara",
+    "are",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "don",
+   "value": "„don\" на италиански = английски „don\" — A university professor, particularly one at Oxford or Cambridge.",
+   "keywords": [
+    "don",
+    "don",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "conoscere",
+   "value": "„conoscere\" на италиански = английски „know\" — To perceive the truth or factuality of; to be certain of; to be certain that.",
+   "keywords": [
+    "conoscere",
+    "know",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "potere",
+   "value": "„potere\" на италиански = английски „can\" — To know how to.",
+   "keywords": [
+    "potere",
+    "can",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "con",
+   "value": "„con\" на италиански = английски „with\" — Against.",
+   "keywords": [
+    "con",
+    "with",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ma",
+   "value": "„ma\" на италиански = английски „but\" — However, although, nevertheless, on the other hand (introducing a clause contrary to pr…",
+   "keywords": [
+    "ma",
+    "but",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tutto",
+   "value": "„tutto\" на италиански = английски „all\" — Wholly; entirely; completely; totally.",
+   "keywords": [
+    "tutto",
+    "all",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "perché",
+   "value": "„perché\" на италиански = английски „so\" — As a result; for that reason; therefore; because of this; due to this.",
+   "keywords": [
+    "perché",
+    "so",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "giusto",
+   "value": "„giusto\" на италиански = английски „just\" — Factually right, correct; factual.",
+   "keywords": [
+    "giusto",
+    "just",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lì",
+   "value": "„lì\" на италиански = английски „there\" — In or at a place or location (stated, implied or otherwise indicated) that is perceived…",
+   "keywords": [
+    "lì",
+    "there",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "qui",
+   "value": "„qui\" на италиански = английски „here\" — In, on, or at this place (a place perceived to be close to the speaker); compare there.",
+   "keywords": [
+    "qui",
+    "here",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "essi",
+   "value": "„essi\" на италиански = английски „they\" — A group of entities previously mentioned.",
+   "keywords": [
+    "essi",
+    "they",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "piacere a",
+   "value": "„piacere a\" на италиански = английски „like\" — To enjoy, be pleased by; favor; be in favor of.",
+   "keywords": [
+    "piacere a",
+    "like",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ottenere",
+   "value": "„ottenere\" на италиански = английски „get\" — To obtain; to acquire.",
+   "keywords": [
+    "ottenere",
+    "get",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lei",
+   "value": "„lei\" на италиански = английски „she\" — The female (typically) person or animal previously mentioned or implied.",
+   "keywords": [
+    "lei",
+    "she",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dire",
+   "value": "„dire\" на италиански = английски „go\" — To move, either physically or in an abstract sense:",
+   "keywords": [
+    "dire",
+    "go",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "se",
+   "value": "„se\" на италиански = английски „if\" — Supposing that, assuming that, in the circumstances that; used to introduce a condition…",
+   "keywords": [
+    "se",
+    "if",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "destro",
+   "value": "„destro\" на италиански = английски „right\" — Designating the side of the body which is positioned to the east if one is facing north…",
+   "keywords": [
+    "destro",
+    "right",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fuori",
+   "value": "„fuori\" на италиански = английски „out\" — A radio procedure word meaning that the station is finished with its transmission and d…",
+   "keywords": [
+    "fuori",
+    "out",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "intorno",
+   "value": "„intorno\" на италиански = английски „about\" — In a circle around; all round; on every side of; on the outside of; around.",
+   "keywords": [
+    "intorno",
+    "about",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "su",
+   "value": "„su\" на италиански = английски „up\" — Indicating movement towards or location at a higher place or position.",
+   "keywords": [
+    "su",
+    "up",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "a",
+   "value": "„a\" на италиански = английски „at\" — In, near, or in the general vicinity of (a particular place).",
+   "keywords": [
+    "a",
+    "at",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "gli",
+   "value": "„gli\" на италиански = английски „him\" — A masculine pronoun; he as a grammatical object.",
+   "keywords": [
+    "gli",
+    "him",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "adesso",
+   "value": "„adesso\" на италиански = английски „now\" — At the present time.",
+   "keywords": [
+    "adesso",
+    "now",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "uno",
+   "value": "„uno\" на италиански = английски „one\" — The number represented by the Arabic numeral 1; the numerical value equal to that cardi…",
+   "keywords": [
+    "uno",
+    "one",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "venire",
+   "value": "„venire\" на италиански = английски „come\" — To move nearer to the point of perspective.",
+   "keywords": [
+    "venire",
+    "come",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bene",
+   "value": "„bene\" на италиански = английски „well\" — Accurately, competently, satisfactorily.",
+   "keywords": [
+    "bene",
+    "well",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "come",
+   "value": "„come\" на италиански = английски „how\" — To what degree or extent.",
+   "keywords": [
+    "come",
+    "how",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sì",
+   "value": "„sì\" на италиански = английски „yeah\" — Expressing joy, celebration, glee, etc.",
+   "keywords": [
+    "sì",
+    "yeah",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "volere",
+   "value": "„volere\" на италиански = английски „will\" — Used to express the future tense, sometimes with an implication of volition or determin…",
+   "keywords": [
+    "volere",
+    "will",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "volere",
+   "value": "„volere\" на италиански = английски „want\" — To wish for or desire (something); to feel a need or desire for; to crave, hanker, or d…",
+   "keywords": [
+    "volere",
+    "want",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "credere",
+   "value": "„credere\" на италиански = английски „think\" — To ponder, to go over in one's mind.",
+   "keywords": [
+    "credere",
+    "think",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tanto",
+   "value": "„tanto\" на италиански = английски „as\" — To such an extent or degree; to the same extent or degree.",
+   "keywords": [
+    "tanto",
+    "as",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "vedere",
+   "value": "„vedere\" на италиански = английски „see\" — To perceive or detect someone or something with the eyes, or as if by sight.",
+   "keywords": [
+    "vedere",
+    "see",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "buono",
+   "value": "„buono\" на италиански = английски „good\" — Of a person or an animal:",
+   "keywords": [
+    "buono",
+    "good",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "che",
+   "value": "„che\" на италиански = английски „who\" — What person or people; which person or people; asks for the identity of someone; used i…",
+   "keywords": [
+    "che",
+    "who",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "perché",
+   "value": "„perché\" на италиански = английски „why\" — For what cause, reason, or purpose.",
+   "keywords": [
+    "perché",
+    "why",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "da",
+   "value": "„da\" на италиански = английски „from\" — Used to indicate source or provenance.",
+   "keywords": [
+    "da",
+    "from",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lasciare",
+   "value": "„lasciare\" на италиански = английски „let\" — To allow to, not to prevent (+ infinitive, but usually without to).",
+   "keywords": [
+    "lasciare",
+    "let",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "il suo",
+   "value": "„il suo\" на италиански = английски „his\" — That or those belonging to him; the possessive case of he, used without a following noun.",
+   "keywords": [
+    "il suo",
+    "his",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sì",
+   "value": "„sì\" на италиански = английски „yes\" — An exclamation of pleasure or approval, usually transcribed with an exclamation point.",
+   "keywords": [
+    "sì",
+    "yes",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "quando",
+   "value": "„quando\" на италиански = английски „when\" — At what time? At which time? Upon which occasion or circumstance? Used to introduce dir…",
+   "keywords": [
+    "quando",
+    "when",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tempo",
+   "value": "„tempo\" на италиански = английски „time\" — The inevitable progression into the future with the passing of present and past events.",
+   "keywords": [
+    "tempo",
+    "time",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "se",
+   "value": "„se\" на италиански = английски „an\"",
+   "keywords": [
+    "se",
+    "an",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "posteriore",
+   "value": "„posteriore\" на италиански = английски „back\" — At or near the rear.",
+   "keywords": [
+    "posteriore",
+    "back",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "guardare",
+   "value": "„guardare\" на италиански = английски „look\" — To try to see, to pay attention to with one’s eyes.",
+   "keywords": [
+    "guardare",
+    "look",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "noi",
+   "value": "„noi\" на италиански = английски „us\" — Me and at least one other person, excluding the person(s) being addressed. (exclusive us.)",
+   "keywords": [
+    "noi",
+    "us",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "We sat on the bench",
+   "value": "„We sat on the bench\" на италиански = английски „would\" — Past tense of will; usually followed by a bare infinitive.",
+   "keywords": [
+    "We sat on the bench",
+    "would",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "loro",
+   "value": "„loro\" на италиански = английски „them\" — Those ones.",
+   "keywords": [
+    "loro",
+    "them",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dove",
+   "value": "„dove\" на италиански = английски „where\" — In, at or to what place.",
+   "keywords": [
+    "dove",
+    "where",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "prendere",
+   "value": "„prendere\" на италиански = английски „take\" — To get into one's hands, possession, or control, with or without force.",
+   "keywords": [
+    "prendere",
+    "take",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "allora",
+   "value": "„allora\" на италиански = английски „then\" — At that time.",
+   "keywords": [
+    "allora",
+    "then",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "o",
+   "value": "„o\" на италиански = английски „or\" — Connects at least two alternative words, phrases, clauses, sentences, etc., each of whi…",
+   "keywords": [
+    "o",
+    "or",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "notare",
+   "value": "„notare\" на италиански = английски „tell\" — Mental senses related to determining, reckoning, or perceiving",
+   "keywords": [
+    "notare",
+    "tell",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "veramente",
+   "value": "„veramente\" на италиански = английски „really\" — In a way or manner that is real, not unreal.",
+   "keywords": [
+    "veramente",
+    "really",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "uomo",
+   "value": "„uomo\" на италиански = английски „man\" — An adult male human.",
+   "keywords": [
+    "uomo",
+    "man",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "del",
+   "value": "„del\" на италиански = английски „some\" — A certain number (multiple but not all).",
+   "keywords": [
+    "del",
+    "some",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "diciamo",
+   "value": "„diciamo\" на италиански = английски „say\" — To pronounce.",
+   "keywords": [
+    "diciamo",
+    "say",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ehi",
+   "value": "„ehi\" на италиански = английски „hey\" — An exclamation to get attention.",
+   "keywords": [
+    "ehi",
+    "hey",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "con",
+   "value": "„con\" на италиански = английски „by\" — Near or next to.",
+   "keywords": [
+    "con",
+    "by",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bisogno",
+   "value": "„bisogno\" на италиански = английски „need\" — A requirement for something; something needed.",
+   "keywords": [
+    "bisogno",
+    "need",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "qualcosa",
+   "value": "„qualcosa\" на италиански = английски „something\" — An uncertain or unspecified thing; one thing.",
+   "keywords": [
+    "qualcosa",
+    "something",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "anche",
+   "value": "„anche\" на италиански = английски „too\" — Likewise.",
+   "keywords": [
+    "anche",
+    "too",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "più",
+   "value": "„più\" на италиански = английски „more\" — To a greater degree or extent.",
+   "keywords": [
+    "più",
+    "more",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "maniera",
+   "value": "„maniera\" на италиански = английски „way\" — To do with a place or places.",
+   "keywords": [
+    "maniera",
+    "way",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "abbasso",
+   "value": "„abbasso\" на италиански = английски „down\" — From a higher position to a lower one; downwards.",
+   "keywords": [
+    "abbasso",
+    "down",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fare",
+   "value": "„fare\" на италиански = английски „make\" — To create.",
+   "keywords": [
+    "fare",
+    "make",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "molto",
+   "value": "„molto\" на италиански = английски „very\" — To a great extent or degree.",
+   "keywords": [
+    "molto",
+    "very",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mai",
+   "value": "„mai\" на италиански = английски „never\" — At no time; on no occasion; in no circumstance.",
+   "keywords": [
+    "mai",
+    "never",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "unico",
+   "value": "„unico\" на италиански = английски „only\" — Alone in a category.",
+   "keywords": [
+    "unico",
+    "only",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "gente",
+   "value": "„gente\" на италиански = английски „people\" — Persons forming or belonging to a particular group, such as a nation, class, ethnic gro…",
+   "keywords": [
+    "gente",
+    "people",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "terminato",
+   "value": "„terminato\" на италиански = английски „over\" — Finished; ended; concluded.",
+   "keywords": [
+    "terminato",
+    "over",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "perché",
+   "value": "„perché\" на италиански = английски „because\" — By or for the cause that; on this account that; for the reason that.",
+   "keywords": [
+    "perché",
+    "because",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "poco",
+   "value": "„poco\" на италиански = английски „little\" — Small, not large, limited, particularly",
+   "keywords": [
+    "poco",
+    "little",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "accontentare",
+   "value": "„accontentare\" на италиански = английски „please\" — To make happy or satisfy; to give pleasure to.",
+   "keywords": [
+    "accontentare",
+    "please",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "amore",
+   "value": "„amore\" на италиански = английски „love\" — A deep caring for the existence of another.",
+   "keywords": [
+    "amore",
+    "love",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dovere",
+   "value": "„dovere\" на италиански = английски „should\" — Ought to; indicating opinion, advice, or instruction, about what is required or desirable.",
+   "keywords": [
+    "dovere",
+    "should",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "volere",
+   "value": "„volere\" на италиански = английски „mean\" — To intend.",
+   "keywords": [
+    "volere",
+    "mean",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "stare dispiaciuto",
+   "value": "„stare dispiaciuto\" на италиански = английски „sorry\" — Regretful or apologetic for one's actions.",
+   "keywords": [
+    "stare dispiaciuto",
+    "sorry",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dare",
+   "value": "„dare\" на италиански = английски „give\" — To move, shift, provide something abstract or concrete to someone or something or somew…",
+   "keywords": [
+    "dare",
+    "give",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "spento",
+   "value": "„spento\" на италиански = английски „off\" — Inoperative, disabled.",
+   "keywords": [
+    "spento",
+    "off",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ringraziare",
+   "value": "„ringraziare\" на италиански = английски „thank\" — To express appreciation or gratitude toward (someone or something).",
+   "keywords": [
+    "ringraziare",
+    "thank",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "affatto",
+   "value": "„affatto\" на италиански = английски „any\" — To even the slightest extent, at all.",
+   "keywords": [
+    "affatto",
+    "any",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "due",
+   "value": "„due\" на италиански = английски „two\" — A numerical value equal to 2; this many dots (••).",
+   "keywords": [
+    "due",
+    "two",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "piano",
+   "value": "„piano\" на италиански = английски „even\" — Flat and level.",
+   "keywords": [
+    "piano",
+    "even",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "molto",
+   "value": "„molto\" на италиански = английски „much\" — To a great extent.",
+   "keywords": [
+    "molto",
+    "much",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sicuro",
+   "value": "„sicuro\" на италиански = английски „sure\" — Physically secure and certain, non-failing, reliable.",
+   "keywords": [
+    "sicuro",
+    "sure",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cosa",
+   "value": "„cosa\" на италиански = английски „thing\" — That which is considered to exist as a separate entity, object, quality or concept.",
+   "keywords": [
+    "cosa",
+    "thing",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "questi",
+   "value": "„questi\" на италиански = английски „these\"",
+   "keywords": [
+    "questi",
+    "these",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "aiuto",
+   "value": "„aiuto\" на италиански = английски „help\" — Action given to provide assistance; aid.",
+   "keywords": [
+    "aiuto",
+    "help",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "primo",
+   "value": "„primo\" на италиански = английски „first\" — Preceding all others of a series or kind; the ordinal of one; earliest.",
+   "keywords": [
+    "primo",
+    "first",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "in",
+   "value": "„in\" на италиански = английски „into\" — To or towards the inside of.",
+   "keywords": [
+    "in",
+    "into",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "qualunque cosa",
+   "value": "„qualunque cosa\" на италиански = английски „anything\" — Any object, act, state, event, or fact whatsoever; a thing of any kind; something or ot…",
+   "keywords": [
+    "qualunque cosa",
+    "anything",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fermo",
+   "value": "„fermo\" на италиански = английски „still\" — Not moving; calm.",
+   "keywords": [
+    "fermo",
+    "still",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "trovare",
+   "value": "„trovare\" на италиански = английски „find\" — To locate",
+   "keywords": [
+    "trovare",
+    "find",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "vita",
+   "value": "„vita\" на италиански = английски „life\" — The state of organisms preceding their death, characterized by biological processes suc…",
+   "keywords": [
+    "vita",
+    "life",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "niente",
+   "value": "„niente\" на италиански = английски „nothing\" — Not any thing; no thing.",
+   "keywords": [
+    "niente",
+    "nothing",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "signore",
+   "value": "„signore\" на италиански = английски „sir\" — A man of a higher rank or position.",
+   "keywords": [
+    "signore",
+    "sir",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "giorno",
+   "value": "„giorno\" на италиански = английски „day\" — The time when the Sun is above the horizon and it lights the sky.",
+   "keywords": [
+    "giorno",
+    "day",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dio",
+   "value": "„dio\" на италиански = английски „god\" — A deity or supreme being; a supernatural, typically immortal, being with superior power…",
+   "keywords": [
+    "dio",
+    "god",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lavoro",
+   "value": "„lavoro\" на италиански = английски „work\" — Employment.",
+   "keywords": [
+    "lavoro",
+    "work",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "uh",
+   "value": "„uh\" на италиански = английски „uh\" — Expression of thought, confusion, or uncertainty.",
+   "keywords": [
+    "uh",
+    "uh",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "di nuovo",
+   "value": "„di nuovo\" на италиански = английски „again\" — Another time: indicating a repeat of an action.",
+   "keywords": [
+    "di nuovo",
+    "again",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "forse",
+   "value": "„forse\" на италиански = английски „maybe\" — Perhaps, possibly.",
+   "keywords": [
+    "forse",
+    "maybe",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dovere",
+   "value": "„dovere\" на италиански = английски „must\" — To do as a requirement; indicates that the sentence subject is required as an imperativ…",
+   "keywords": [
+    "dovere",
+    "must",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "prima",
+   "value": "„prima\" на италиански = английски „before\" — Earlier than (in time).",
+   "keywords": [
+    "prima",
+    "before",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "altro",
+   "value": "„altro\" на италиански = английски „other\" — See other (determiner) below.",
+   "keywords": [
+    "altro",
+    "other",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "aspettare",
+   "value": "„aspettare\" на италиански = английски „wait\" — To delay movement or action until some event or time; to remain neglected or in readiness.",
+   "keywords": [
+    "aspettare",
+    "wait",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fermare",
+   "value": "„fermare\" на италиански = английски „stop\" — To cease moving.",
+   "keywords": [
+    "fermare",
+    "stop",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "visitare",
+   "value": "„visitare\" на италиански = английски „call\" — To reach out with one's voice.",
+   "keywords": [
+    "visitare",
+    "call",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "poi",
+   "value": "„poi\" на италиански = английски „after\" — Behind; later in time; following.",
+   "keywords": [
+    "poi",
+    "after",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "parlare",
+   "value": "„parlare\" на италиански = английски „talk\" — To communicate, usually by means of speech.",
+   "keywords": [
+    "parlare",
+    "talk",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "via",
+   "value": "„via\" на италиански = английски „away\" — From a place, hence.",
+   "keywords": [
+    "via",
+    "away",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "di",
+   "value": "„di\" на италиански = английски „than\" — Introduces a comparison, and is associated with comparatives, and with words such as mo…",
+   "keywords": [
+    "di",
+    "than",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "idea",
+   "value": "„idea\" на италиански = английски „thought\" — A representation created in the mind without the use of one's faculties of vision, soun…",
+   "keywords": [
+    "idea",
+    "thought",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "casa",
+   "value": "„casa\" на италиански = английски „home\" — A dwelling.",
+   "keywords": [
+    "casa",
+    "home",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "notte",
+   "value": "„notte\" на италиански = английски „night\" — The time when the Sun is below the horizon when the sky is dark.",
+   "keywords": [
+    "notte",
+    "night",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mettere",
+   "value": "„mettere\" на италиански = английски „put\" — To physically place (sth or sb swh).",
+   "keywords": [
+    "mettere",
+    "put",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "formidabile",
+   "value": "„formidabile\" на италиански = английски „great\" — Taking much space; large.",
+   "keywords": [
+    "formidabile",
+    "great",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ultimo",
+   "value": "„ultimo\" на италиански = английски „last\" — Final, ultimate, coming after all others of its kind.",
+   "keywords": [
+    "ultimo",
+    "last",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "migliore",
+   "value": "„migliore\" на италиански = английски „better\" — Greater in amount or quantity",
+   "keywords": [
+    "migliore",
+    "better",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tutto",
+   "value": "„tutto\" на италиански = английски „everything\" — All the things under discussion.",
+   "keywords": [
+    "tutto",
+    "everything",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "Sig.",
+   "value": "„Sig.\" на италиански = английски „mr.\" — Abbreviation of Mister.",
+   "keywords": [
+    "Sig.",
+    "mr.",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "nuovo",
+   "value": "„nuovo\" на италиански = английски „new\" — Recently made, or created.",
+   "keywords": [
+    "nuovo",
+    "new",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sempre",
+   "value": "„sempre\" на италиански = английски „always\" — At all times; throughout all time; since the beginning.",
+   "keywords": [
+    "sempre",
+    "always",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tenere",
+   "value": "„tenere\" на италиански = английски „keep\" — To continue in (a course or mode of action); to not intermit or fall from; to uphold or…",
+   "keywords": [
+    "tenere",
+    "keep",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lungo",
+   "value": "„lungo\" на италиански = английски „long\" — Having much distance in space from one end to the other.",
+   "keywords": [
+    "lungo",
+    "long",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "partire",
+   "value": "„partire\" на италиански = английски „leave\" — To have a consequence or remnant.",
+   "keywords": [
+    "partire",
+    "leave",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "denaro",
+   "value": "„denaro\" на италиански = английски „money\" — A generally accepted means of exchange.",
+   "keywords": [
+    "denaro",
+    "money",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "attorno",
+   "value": "„attorno\" на италиански = английски „around\" — Forming a circle or closed curve containing (something).",
+   "keywords": [
+    "attorno",
+    "around",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "nome",
+   "value": "„nome\" на италиански = английски „name\" — Any nounal word or phrase which indicates a particular person, place, class, or thing.",
+   "keywords": [
+    "nome",
+    "name",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "piazza",
+   "value": "„piazza\" на италиански = английски „place\" — An area; somewhere within an area.",
+   "keywords": [
+    "piazza",
+    "place",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mai",
+   "value": "„mai\" на италиански = английски „ever\" — Continuously, constantly, all the time (for the complete duration).",
+   "keywords": [
+    "mai",
+    "ever",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sentire",
+   "value": "„sentire\" на италиански = английски „feel\" — To use or experience the sense of touch.",
+   "keywords": [
+    "sentire",
+    "feel",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "padre",
+   "value": "„padre\" на италиански = английски „father\" — A male parent, especially of a human; a male who parents a child (which he has sired, a…",
+   "keywords": [
+    "padre",
+    "father",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "gente",
+   "value": "„gente\" на италиански = английски „guy\" — An effigy of a man burned on a bonfire on the anniversary of the Gunpowder Plot (5th No…",
+   "keywords": [
+    "gente",
+    "guy",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "vecchio",
+   "value": "„vecchio\" на италиански = английски „old\" — Of an object, concept, relationship, etc., having existed for a relatively long period …",
+   "keywords": [
+    "vecchio",
+    "old",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "quale",
+   "value": "„quale\" на италиански = английски „which\" — What one or ones (of those mentioned or implied).",
+   "keywords": [
+    "quale",
+    "which",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "grande",
+   "value": "„grande\" на италиански = английски „big\" — Of great size, large.",
+   "keywords": [
+    "grande",
+    "big",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "gruppo",
+   "value": "„gruppo\" на италиански = английски „lot\" — A large quantity or number; a great deal.",
+   "keywords": [
+    "gruppo",
+    "lot",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fatto",
+   "value": "„fatto\" на италиански = английски „done\" — Having completed or finished an activity.",
+   "keywords": [
+    "fatto",
+    "done",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ciao",
+   "value": "„ciao\" на италиански = английски „hello\" — A greeting (salutation) said when meeting someone or acknowledging someone’s arrival or…",
+   "keywords": [
+    "ciao",
+    "hello",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "simpatico",
+   "value": "„simpatico\" на италиански = английски „nice\" — Pleasant, satisfactory, complimentary.",
+   "keywords": [
+    "simpatico",
+    "nice",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "credere",
+   "value": "„credere\" на италиански = английски „believe\" — To accept as true, particularly without absolute certainty (i.e., as opposed to knowing).",
+   "keywords": [
+    "credere",
+    "believe",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bambina",
+   "value": "„bambina\" на италиански = английски „girl\" — A female child.",
+   "keywords": [
+    "bambina",
+    "girl",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "qualcuno",
+   "value": "„qualcuno\" на италиански = английски „someone\" — One or some person of unspecified or indefinite identity.",
+   "keywords": [
+    "qualcuno",
+    "someone",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fine",
+   "value": "„fine\" на италиански = английски „fine\" — Senses referring to subjective quality.",
+   "keywords": [
+    "fine",
+    "fine",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "grazie",
+   "value": "„grazie\" на италиански = английски „thanks\" — Used to express appreciation or gratitude.",
+   "keywords": [
+    "grazie",
+    "thanks",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "genere",
+   "value": "„genere\" на италиански = английски „kind\" — A type, race or category; a group of entities that have common characteristics such tha…",
+   "keywords": [
+    "genere",
+    "kind",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "arrivo",
+   "value": "„arrivo\" на италиански = английски „coming\" — The act of arriving; an arrival.",
+   "keywords": [
+    "arrivo",
+    "coming",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "casa",
+   "value": "„casa\" на италиански = английски „house\" — A structure built or serving as an abode of human beings.",
+   "keywords": [
+    "casa",
+    "house",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ok",
+   "value": "„ok\" на италиански = английски „ok\" — Endorsement; approval; acceptance; acquiescence.",
+   "keywords": [
+    "ok",
+    "ok",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "attraverso",
+   "value": "„attraverso\" на италиански = английски „through\" — From one side or end of (something) to the other.",
+   "keywords": [
+    "attraverso",
+    "through",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "essere",
+   "value": "„essere\" на италиански = английски „being\" — A living creature.",
+   "keywords": [
+    "essere",
+    "being",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "corso",
+   "value": "„corso\" на италиански = английски „course\" — A sequence of events.",
+   "keywords": [
+    "corso",
+    "course",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "stare",
+   "value": "„stare\" на италиански = английски „stay\" — To remain in a particular place, especially for a definite or short period of time; soj…",
+   "keywords": [
+    "stare",
+    "stay",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sinistro",
+   "value": "„sinistro\" на италиански = английски „left\" — Designating the side of the body toward the west when one is facing north; the side of …",
+   "keywords": [
+    "sinistro",
+    "left",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "papà",
+   "value": "„papà\" на италиански = английски „dad\" — A father, a male parent.",
+   "keywords": [
+    "papà",
+    "dad",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "abbastanza",
+   "value": "„abbastanza\" на италиански = английски „enough\" — Sufficiently.",
+   "keywords": [
+    "abbastanza",
+    "enough",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "potere",
+   "value": "„potere\" на италиански = английски „may\" — To be able to go.",
+   "keywords": [
+    "potere",
+    "may",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "madre",
+   "value": "„madre\" на италиански = английски „mother\" — A female parent, especially of a human; a female who parents a child (which she has giv…",
+   "keywords": [
+    "madre",
+    "mother",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sbagliato",
+   "value": "„sbagliato\" на италиански = английски „wrong\" — Incorrect or untrue.",
+   "keywords": [
+    "sbagliato",
+    "wrong",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mondo",
+   "value": "„mondo\" на италиански = английски „world\" — The subjective human experience, regarded collectively; human collective existence; exi…",
+   "keywords": [
+    "mondo",
+    "world",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sbagliato",
+   "value": "„sbagliato\" на италиански = английски „bad\" — Bold, daring, and tough.",
+   "keywords": [
+    "sbagliato",
+    "bad",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "potere",
+   "value": "„potere\" на италиански = английски „might\" — Power, strength, force, or influence held by a person or group.",
+   "keywords": [
+    "potere",
+    "might",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tre",
+   "value": "„tre\" на италиански = английски „three\" — A numerical value after two and before four. Represented in Arabic digits as 3; this ma…",
+   "keywords": [
+    "tre",
+    "three",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "oggi",
+   "value": "„oggi\" на италиански = английски „today\" — On the current day or date.",
+   "keywords": [
+    "oggi",
+    "today",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ascoltare",
+   "value": "„ascoltare\" на италиански = английски „listen\" — To use one's sense of hearing and auditory cognition in an intentional way; to make del…",
+   "keywords": [
+    "ascoltare",
+    "listen",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "capire",
+   "value": "„capire\" на италиански = английски „understand\" — To know the meaning of; to parse or have parsed correctly; to comprehend.",
+   "keywords": [
+    "capire",
+    "understand",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sentire",
+   "value": "„sentire\" на италиански = английски „hear\" — To perceive sounds through the ear.",
+   "keywords": [
+    "sentire",
+    "hear",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ricordare",
+   "value": "„ricordare\" на италиански = английски „remember\" — To recall from one's memory; to have an image in one's memory.",
+   "keywords": [
+    "ricordare",
+    "remember",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "chiedere",
+   "value": "„chiedere\" на италиански = английски „ask\" — To request or petition.",
+   "keywords": [
+    "chiedere",
+    "ask",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "proprio",
+   "value": "„proprio\" на италиански = английски „own\" — Belonging to; possessed; acquired and designated by; proper to; property of; titled to;…",
+   "keywords": [
+    "proprio",
+    "own",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "stesso",
+   "value": "„stesso\" на италиански = английски „same\" — Not different or other; not another or others; not different as regards self; selfsame;…",
+   "keywords": [
+    "stesso",
+    "same",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mostrare",
+   "value": "„mostrare\" на италиански = английски „show\" — To display or exhibit; to have somebody see (something); to direct attention to something.",
+   "keywords": [
+    "mostrare",
+    "show",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "altro",
+   "value": "„altro\" на италиански = английски „else\" — Otherwise, if not.",
+   "keywords": [
+    "altro",
+    "else",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sopprimere",
+   "value": "„sopprimere\" на италиански = английски „kill\" — To put to death; to extinguish the life of.",
+   "keywords": [
+    "sopprimere",
+    "kill",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fondare",
+   "value": "„fondare\" на италиански = английски „found\" — To start (an institution or organization).",
+   "keywords": [
+    "fondare",
+    "found",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "più vicino",
+   "value": "„più vicino\" на италиански = английски „next\" — Nearest in place or position, having nothing similar intervening; adjoining.",
+   "keywords": [
+    "più vicino",
+    "next",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ottenimento",
+   "value": "„ottenimento\" на италиански = английски „getting\" — The act of obtaining or acquiring; acquisition.",
+   "keywords": [
+    "ottenimento",
+    "getting",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cura",
+   "value": "„cura\" на италиански = английски „care\" — Close attention; concern; responsibility.",
+   "keywords": [
+    "cura",
+    "care",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "macchina",
+   "value": "„macchina\" на италиански = английски „car\" — A wheeled vehicle that moves independently, with at least three wheels, powered mechani…",
+   "keywords": [
+    "macchina",
+    "car",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "figlio",
+   "value": "„figlio\" на италиански = английски „son\" — One's male offspring.",
+   "keywords": [
+    "figlio",
+    "son",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cercare",
+   "value": "„cercare\" на италиански = английски „try\" — To attempt; to endeavour. Followed by infinitive.",
+   "keywords": [
+    "cercare",
+    "try",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "donna",
+   "value": "„donna\" на италиански = английски „woman\" — An adult female human.",
+   "keywords": [
+    "donna",
+    "woman",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ciao",
+   "value": "„ciao\" на италиански = английски „hi\" — A friendly, informal, casual greeting said upon someone's arrival.",
+   "keywords": [
+    "ciao",
+    "hi",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "morto",
+   "value": "„morto\" на италиански = английски „dead\" — No longer living; deceased. (Also used as a noun.)",
+   "keywords": [
+    "morto",
+    "dead",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "molti",
+   "value": "„molti\" на италиански = английски „many\" — A large, indefinite number of people or things.",
+   "keywords": [
+    "molti",
+    "many",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mente",
+   "value": "„mente\" на италиански = английски „mind\" — The capability for rational thought.",
+   "keywords": [
+    "mente",
+    "mind",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "amico",
+   "value": "„amico\" на италиански = английски „friend\" — A person, typically someone other than a family member, spouse or lover, whose company …",
+   "keywords": [
+    "amico",
+    "friend",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "migliore",
+   "value": "„migliore\" на италиански = английски „best\" — Most; largest.",
+   "keywords": [
+    "migliore",
+    "best",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "inferno",
+   "value": "„inferno\" на италиански = английски „hell\" — A place or situation of great suffering in life.",
+   "keywords": [
+    "inferno",
+    "hell",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mattino",
+   "value": "„mattino\" на италиански = английски „morning\" — The early part of the day, especially from midnight to noon.",
+   "keywords": [
+    "mattino",
+    "morning",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "difficile",
+   "value": "„difficile\" на италиански = английски „trying\" — Difficult to endure; arduous.",
+   "keywords": [
+    "difficile",
+    "trying",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ragazzo",
+   "value": "„ragazzo\" на италиански = английски „boy\" — A male child.",
+   "keywords": [
+    "ragazzo",
+    "boy",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "insieme",
+   "value": "„insieme\" на италиански = английски „together\" — At the same time, in the same place; in close association or proximity.",
+   "keywords": [
+    "insieme",
+    "together",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "te stesso",
+   "value": "„te stesso\" на италиански = английски „yourself\" — Your own self (singular).",
+   "keywords": [
+    "te stesso",
+    "yourself",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "compito",
+   "value": "„compito\" на италиански = английски „job\" — A task.",
+   "keywords": [
+    "compito",
+    "job",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sega",
+   "value": "„sega\" на италиански = английски „saw\" — A tool used for cutting hard substances, in particular wood or metal.",
+   "keywords": [
+    "sega",
+    "saw",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "famiglia",
+   "value": "„famiglia\" на италиански = английски „family\" — A group of people who are closely related to one another (by blood, marriage or adoptio…",
+   "keywords": [
+    "famiglia",
+    "family",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "reale",
+   "value": "„reale\" на италиански = английски „real\" — True, genuine, not merely nominal or apparent.",
+   "keywords": [
+    "reale",
+    "real",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "senza",
+   "value": "„senza\" на италиански = английски „without\" — Not having, containing, characteristic of, etc.",
+   "keywords": [
+    "senza",
+    "without",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bambino",
+   "value": "„bambino\" на италиански = английски „baby\" — A very young human, particularly from birth to a couple of years old or until walking i…",
+   "keywords": [
+    "bambino",
+    "baby",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "motivo",
+   "value": "„motivo\" на италиански = английски „room\" — Space for something, or to carry out an activity.",
+   "keywords": [
+    "motivo",
+    "room",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "già",
+   "value": "„già\" на италиански = английски „already\" — Prior to some specified time, either past, present, or future; by this time; previously.",
+   "keywords": [
+    "già",
+    "already",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "muovere",
+   "value": "„muovere\" на италиански = английски „move\" — To change place or posture; to go, in any manner, from one place or position to another.",
+   "keywords": [
+    "muovere",
+    "move",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "il più",
+   "value": "„il più\" на италиански = английски „most\" — Forms the superlative of many adjectives.",
+   "keywords": [
+    "il più",
+    "most",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "abitare",
+   "value": "„abitare\" на италиански = английски „live\" — To be alive; to have life.",
+   "keywords": [
+    "abitare",
+    "live",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "perdere",
+   "value": "„perdere\" на италиански = английски „miss\" — To fail to hit, catch, grasp, etc.",
+   "keywords": [
+    "perdere",
+    "miss",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "realmente",
+   "value": "„realmente\" на италиански = английски „actually\" — In act or in fact; really; in truth; positively.",
+   "keywords": [
+    "realmente",
+    "actually",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "eh",
+   "value": "„eh\" на италиански = английски „huh\" — Used to express doubt or confusion.",
+   "keywords": [
+    "eh",
+    "huh",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cazzo",
+   "value": "„cazzo\" на италиански = английски „shit\" — Usually solid excretory product evacuated from the bowels; feces.",
+   "keywords": [
+    "cazzo",
+    "shit",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sia... sia...",
+   "value": "„sia... sia...\" на италиански = английски „both\" — Including both of (used with and).",
+   "keywords": [
+    "sia... sia...",
+    "both",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "una volta",
+   "value": "„una volta\" на италиански = английски „once\" — One and only one time.",
+   "keywords": [
+    "una volta",
+    "once",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pronto",
+   "value": "„pronto\" на италиански = английски „ready\" — Prepared for immediate action or use.",
+   "keywords": [
+    "pronto",
+    "ready",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "testa",
+   "value": "„testa\" на италиански = английски „head\" — The part of the body of an animal or human which contains the brain, mouth, and main se…",
+   "keywords": [
+    "testa",
+    "head",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "concetto",
+   "value": "„concetto\" на италиански = английски „idea\" — An abstract archetype of a given thing, compared to which real-life examples are seen a…",
+   "keywords": [
+    "concetto",
+    "idea",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mantenere",
+   "value": "„mantenere\" на италиански = английски „hold\" — To grasp or grip.",
+   "keywords": [
+    "mantenere",
+    "hold",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "felice",
+   "value": "„felice\" на италиански = английски „happy\" — Having a feeling arising from a consciousness of well-being or of enjoyment; enjoying g…",
+   "keywords": [
+    "felice",
+    "happy",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "porta",
+   "value": "„porta\" на италиански = английски „door\" — A portal of entry into a building, room, or vehicle, typically consisting of a rigid pl…",
+   "keywords": [
+    "porta",
+    "door",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fottere",
+   "value": "„fottere\" на италиански = английски „fuck\" — To have sexual intercourse; to copulate.",
+   "keywords": [
+    "fottere",
+    "fuck",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fratello",
+   "value": "„fratello\" на италиански = английски „brother\" — Son of the same parents as another person.",
+   "keywords": [
+    "fratello",
+    "brother",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "anche",
+   "value": "„anche\" на италиански = английски „also\" — In addition; besides; as well; further; too.",
+   "keywords": [
+    "anche",
+    "also",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "carino",
+   "value": "„carino\" на италиански = английски „pretty\" — Pleasant to the sight or other senses; attractive, especially of women or children.",
+   "keywords": [
+    "carino",
+    "pretty",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "morso",
+   "value": "„morso\" на италиански = английски „bit\" — A piece of metal placed in a horse's mouth and connected to the reins to direct the ani…",
+   "keywords": [
+    "morso",
+    "bit",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "porto",
+   "value": "„porto\" на италиански = английски „haven\" — A harbour or anchorage protected from the sea.",
+   "keywords": [
+    "porto",
+    "haven",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ancora",
+   "value": "„ancora\" на италиански = английски „yet\" — Thus far; up to the present; up to some unspecified time.",
+   "keywords": [
+    "ancora",
+    "yet",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "genti",
+   "value": "„genti\" на италиански = английски „men\" — (The) people, humanity, man(kind).",
+   "keywords": [
+    "genti",
+    "men",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "intero",
+   "value": "„intero\" на италиански = английски „whole\" — Entire, undivided.",
+   "keywords": [
+    "intero",
+    "whole",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "avvio",
+   "value": "„avvio\" на италиански = английски „start\" — The beginning of an activity.",
+   "keywords": [
+    "avvio",
+    "start",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "uso",
+   "value": "„uso\" на италиански = английски „use\" — The act of using.",
+   "keywords": [
+    "uso",
+    "use",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "periodo",
+   "value": "„periodo\" на италиански = английски „while\" — An uncertain duration of time, a period of time.",
+   "keywords": [
+    "periodo",
+    "while",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "da allora",
+   "value": "„da allora\" на италиански = английски „since\" — From a specified time in the past.",
+   "keywords": [
+    "da allora",
+    "since",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sposa",
+   "value": "„sposa\" на италиански = английски „wife\" — A married woman, especially in relation to her spouse.",
+   "keywords": [
+    "sposa",
+    "wife",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "indovinare",
+   "value": "„indovinare\" на италиански = английски „guess\" — To reach a partly (or totally) unconfirmed conclusion; to engage in conjecture; to spec…",
+   "keywords": [
+    "indovinare",
+    "guess",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "domani",
+   "value": "„domani\" на италиански = английски „tomorrow\" — On the day after the present day.",
+   "keywords": [
+    "domani",
+    "tomorrow",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "materia",
+   "value": "„materia\" на италиански = английски „matter\" — Material; substance.",
+   "keywords": [
+    "materia",
+    "matter",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "incontrare",
+   "value": "„incontrare\" на италиански = английски „meet\" — To make contact (with someone) while in proximity.",
+   "keywords": [
+    "incontrare",
+    "meet",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "portare",
+   "value": "„portare\" на италиански = английски „bring\" — To transport toward somebody/somewhere.",
+   "keywords": [
+    "portare",
+    "bring",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "stanotte",
+   "value": "„stanotte\" на италиански = английски „tonight\" — During the night following the current day; during the evening of today.",
+   "keywords": [
+    "stanotte",
+    "tonight",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ciascuno",
+   "value": "„ciascuno\" на италиански = английски „everyone\" — Every person.",
+   "keywords": [
+    "ciascuno",
+    "everyone",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "correre",
+   "value": "„correre\" на италиански = английски „run\" — To move swiftly.",
+   "keywords": [
+    "correre",
+    "run",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "duro",
+   "value": "„duro\" на италиански = английски „hard\" — Solid and firm.",
+   "keywords": [
+    "duro",
+    "hard",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "solo",
+   "value": "„solo\" на италиански = английски „alone\" — By oneself, solitary.",
+   "keywords": [
+    "solo",
+    "alone",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mi",
+   "value": "„mi\" на италиански = английски „myself\" — Me, as direct or indirect object the speaker as the object of a verb or preposition, wh…",
+   "keywords": [
+    "mi",
+    "myself",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "scuola",
+   "value": "„scuola\" на италиански = английски „school\" — An institution dedicated to teaching and learning; an educational institution.",
+   "keywords": [
+    "scuola",
+    "school",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "andarsene",
+   "value": "„andarsene\" на италиански = английски „gone\" — Away, having left.",
+   "keywords": [
+    "andarsene",
+    "gone",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fine",
+   "value": "„fine\" на италиански = английски „end\" — The terminal point of something in space or time.",
+   "keywords": [
+    "fine",
+    "end",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "proverbio",
+   "value": "„proverbio\" на италиански = английски „saying\" — A proverb or maxim.",
+   "keywords": [
+    "proverbio",
+    "saying",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "telefonare",
+   "value": "„telefonare\" на италиански = английски „phone\" — To call (someone) using a telephone.",
+   "keywords": [
+    "telefonare",
+    "phone",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "recitare",
+   "value": "„recitare\" на италиански = английски „play\" — To act in a manner such that one has fun; to engage in activities expressly for the pur…",
+   "keywords": [
+    "recitare",
+    "play",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "aspetto",
+   "value": "„aspetto\" на италиански = английски „looks\" — One's appearance or attractiveness.",
+   "keywords": [
+    "aspetto",
+    "looks",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "scopata",
+   "value": "„scopata\" на италиански = английски „fucking\" — An act of sexual intercourse, especially one lacking passion or a feeling of sincere love.",
+   "keywords": [
+    "scopata",
+    "fucking",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "problema",
+   "value": "„problema\" на италиански = английски „problem\" — A difficulty that has to be resolved or dealt with.",
+   "keywords": [
+    "problema",
+    "problem",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "aperto",
+   "value": "„aperto\" на италиански = английски „open\" — Physically unobstructed, uncovered, etc.",
+   "keywords": [
+    "aperto",
+    "open",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "chiunque",
+   "value": "„chiunque\" на италиански = английски „anyone\" — Any person; anybody.",
+   "keywords": [
+    "chiunque",
+    "anyone",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sperare",
+   "value": "„sperare\" на италиански = английски „hope\" — To want (something) to happen, with a sense of expectation that it might [with that (+ …",
+   "keywords": [
+    "sperare",
+    "hope",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "faccia",
+   "value": "„faccia\" на италиански = английски „face\" — The front part of the head of a human or other animal, featuring the eyes, nose, and mo…",
+   "keywords": [
+    "faccia",
+    "face",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "finché",
+   "value": "„finché\" на италиански = английски „until\" — Up to the time of (something happening); pending.",
+   "keywords": [
+    "finché",
+    "until",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "perso",
+   "value": "„perso\" на италиански = английски „lost\" — Having wandered from, or unable to find, the way.",
+   "keywords": [
+    "perso",
+    "lost",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "polizia",
+   "value": "„polizia\" на италиански = английски „police\" — A constituted body of officers representing the civil authority of government, empowere…",
+   "keywords": [
+    "polizia",
+    "police",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "scusare",
+   "value": "„scusare\" на италиански = английски „excuse\" — To forgive; to pardon; to overlook.",
+   "keywords": [
+    "scusare",
+    "excuse",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mutare",
+   "value": "„mutare\" на италиански = английски „turn\" — To make a non-linear physical movement.",
+   "keywords": [
+    "mutare",
+    "turn",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "azienda",
+   "value": "„azienda\" на италиански = английски „business\" — A specific commercial enterprise or establishment.",
+   "keywords": [
+    "azienda",
+    "business",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "caso",
+   "value": "„caso\" на италиански = английски „case\" — An actual event, situation, or fact.",
+   "keywords": [
+    "caso",
+    "case",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "vero",
+   "value": "„vero\" на италиански = английски „true\" — Conforming to the actual state of reality or fact; factually correct.",
+   "keywords": [
+    "vero",
+    "true",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "morire",
+   "value": "„morire\" на италиански = английски „die\" — To stop living; to become dead; to undergo death.",
+   "keywords": [
+    "morire",
+    "die",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cuore",
+   "value": "„cuore\" на италиански = английски „heart\" — A muscular organ that pumps blood through the body, traditionally thought to be the sea…",
+   "keywords": [
+    "cuore",
+    "heart",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "presto",
+   "value": "„presto\" на италиански = английски „soon\" — Within a short time; quickly.",
+   "keywords": [
+    "presto",
+    "soon",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "preoccuparsi",
+   "value": "„preoccuparsi\" на италиански = английски „worry\" — To be troubled; to give way to mental anxiety or doubt.",
+   "keywords": [
+    "preoccuparsi",
+    "worry",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "più in ritardo",
+   "value": "„più in ritardo\" на италиански = английски „later\" — Afterward in time (used with than when comparing with another time).",
+   "keywords": [
+    "più in ritardo",
+    "later",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "anno",
+   "value": "„anno\" на италиански = английски „year\" — A period of time akin to the time taken for the Earth to undergo a full cycle of seasons.",
+   "keywords": [
+    "anno",
+    "year",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "orologio",
+   "value": "„orologio\" на италиански = английски „watch\" — A portable or wearable timepiece.",
+   "keywords": [
+    "orologio",
+    "watch",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "musica",
+   "value": "„musica\" на италиански = английски „music\" — A series of sounds organized in time, usually employing some combination of harmony, me…",
+   "keywords": [
+    "musica",
+    "music",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mano",
+   "value": "„mano\" на италиански = английски „hand\" — The part of the forelimb below the forearm or wrist in a human, and the corresponding p…",
+   "keywords": [
+    "mano",
+    "hand",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "probabilmente",
+   "value": "„probabilmente\" на италиански = английски „probably\" — In all likelihood.",
+   "keywords": [
+    "probabilmente",
+    "probably",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bello",
+   "value": "„bello\" на италиански = английски „beautiful\" — Possessing beauty, impressing the eye; attractive.",
+   "keywords": [
+    "bello",
+    "beautiful",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dottore",
+   "value": "„dottore\" на италиански = английски „doctor\" — A physician; a member of the medical profession; one who is trained and licensed to hea…",
+   "keywords": [
+    "dottore",
+    "doctor",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sedere",
+   "value": "„sedere\" на италиански = английски „sit\" — To be in a position in which the upper body is upright and supported by the buttocks.",
+   "keywords": [
+    "sedere",
+    "sit",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mangiare",
+   "value": "„mangiare\" на италиански = английски „eat\" — To ingest.",
+   "keywords": [
+    "mangiare",
+    "eat",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "giovane",
+   "value": "„giovane\" на италиански = английски „young\" — In the early part of growth or life; born not long ago.",
+   "keywords": [
+    "giovane",
+    "young",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "secondo",
+   "value": "„secondo\" на италиански = английски „second\" — Number-two; following after the first one with nothing between them. The ordinal number…",
+   "keywords": [
+    "secondo",
+    "second",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "funzionante",
+   "value": "„funzionante\" на италиански = английски „working\" — That is or are functioning.",
+   "keywords": [
+    "funzionante",
+    "working",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "acqua",
+   "value": "„acqua\" на италиански = английски „water\" — An inorganic compound (of molecular formula H₂O) found at room temperature and pressure…",
+   "keywords": [
+    "acqua",
+    "water",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "persona",
+   "value": "„persona\" на италиански = английски „person\" — An individual who has been granted personhood; usually a human being.",
+   "keywords": [
+    "persona",
+    "person",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "parte",
+   "value": "„parte\" на италиански = английски „part\" — A portion; a component.",
+   "keywords": [
+    "parte",
+    "part",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tardo",
+   "value": "„tardo\" на италиански = английски „late\" — Near the end of a period of time.",
+   "keywords": [
+    "tardo",
+    "late",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cose",
+   "value": "„cose\" на италиански = английски „stuff\" — Miscellaneous items or objects; (with possessive) personal effects.",
+   "keywords": [
+    "cose",
+    "stuff",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "esattamente",
+   "value": "„esattamente\" на италиански = английски „exactly\" — Without approximation; precisely.",
+   "keywords": [
+    "esattamente",
+    "exactly",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sotto",
+   "value": "„sotto\" на италиански = английски „under\" — Beneath; below; at or to the bottom of, or the area covered or surmounted by.",
+   "keywords": [
+    "sotto",
+    "under",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "morte",
+   "value": "„morte\" на италиански = английски „death\" — The cessation of life and all associated processes; the end of an organism's existence …",
+   "keywords": [
+    "morte",
+    "death",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "minuto",
+   "value": "„minuto\" на италиански = английски „minute\" — A unit of time which is one sixtieth of an hour (sixty seconds).",
+   "keywords": [
+    "minuto",
+    "minute",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pagare",
+   "value": "„pagare\" на италиански = английски „pay\" — To give money or other compensation to in exchange for goods or services.",
+   "keywords": [
+    "pagare",
+    "pay",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pazzo",
+   "value": "„pazzo\" на италиански = английски „crazy\" — Of unsound mind; insane; demented.",
+   "keywords": [
+    "pazzo",
+    "crazy",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dimenticare",
+   "value": "„dimenticare\" на италиански = английски „forget\" — To lose remembrance of.",
+   "keywords": [
+    "dimenticare",
+    "forget",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tutti",
+   "value": "„tutti\" на италиански = английски „everybody\" — All people.",
+   "keywords": [
+    "tutti",
+    "everybody",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bambino",
+   "value": "„bambino\" на италиански = английски „kid\" — A child, adolescent, or (loosely) a young adult.",
+   "keywords": [
+    "bambino",
+    "kid",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cambiare",
+   "value": "„cambiare\" на италиански = английски „change\" — To become something different.",
+   "keywords": [
+    "cambiare",
+    "change",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "accadere",
+   "value": "„accadere\" на италиански = английски „happen\" — To occur or take place.",
+   "keywords": [
+    "accadere",
+    "happen",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dannare",
+   "value": "„dannare\" на италиански = английски „damn\" — To condemn.",
+   "keywords": [
+    "dannare",
+    "damn",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cinque",
+   "value": "„cinque\" на италиански = английски „five\" — A numerical value equal to 5; the number following four and preceding six.",
+   "keywords": [
+    "cinque",
+    "five",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bere",
+   "value": "„bere\" на италиански = английски „drink\" — To consume (a liquid) through the mouth.",
+   "keywords": [
+    "bere",
+    "drink",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lontano",
+   "value": "„lontano\" на италиански = английски „far\" — Distant; remote in space.",
+   "keywords": [
+    "lontano",
+    "far",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "vabbè",
+   "value": "„vabbè\" на италиански = английски „whatever\" — A holophrastic expression used to dismiss something that the speaker doesn't care about…",
+   "keywords": [
+    "vabbè",
+    "whatever",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "chiudere",
+   "value": "„chiudere\" на италиански = английски „shut\" — To close, in various senses.",
+   "keywords": [
+    "chiudere",
+    "shut",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "colpire",
+   "value": "„colpire\" на италиански = английски „hit\" — To strike.",
+   "keywords": [
+    "colpire",
+    "hit",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "facile",
+   "value": "„facile\" на италиански = английски „easy\" — Comfortable; at ease.",
+   "keywords": [
+    "facile",
+    "easy",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "per",
+   "value": "„per\" на италиански = английски „times\" — Multiplied by (see also 'ratio of comparison' sense at 'time').",
+   "keywords": [
+    "per",
+    "times",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "controllo",
+   "value": "„controllo\" на италиански = английски „check\" — An inspection or examination.",
+   "keywords": [
+    "controllo",
+    "check",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "verbale",
+   "value": "„verbale\" на италиански = английски „minutes\" — The official notes kept during a meeting.",
+   "keywords": [
+    "verbale",
+    "minutes",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "parte",
+   "value": "„parte\" на италиански = английски „deal\" — An indefinite quantity or amount; a lot (now usually qualified by great or good).",
+   "keywords": [
+    "parte",
+    "deal",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "differente",
+   "value": "„differente\" на италиански = английски „different\" — Not the same; exhibiting a difference.",
+   "keywords": [
+    "differente",
+    "different",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mezzo",
+   "value": "„mezzo\" на италиански = английски „means\" — An instrument or condition to achieve a result.",
+   "keywords": [
+    "mezzo",
+    "means",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "virgola",
+   "value": "„virgola\" на италиански = английски „point\" — A small dot or mark.",
+   "keywords": [
+    "virgola",
+    "point",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "interno",
+   "value": "„interno\" на италиански = английски „inside\" — The interior or inner part.",
+   "keywords": [
+    "interno",
+    "inside",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "qualcuno",
+   "value": "„qualcuno\" на италиански = английски „somebody\" — Some unspecified person.",
+   "keywords": [
+    "qualcuno",
+    "somebody",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "il mio",
+   "value": "„il mio\" на италиански = английски „mine\" — That or those belonging to me.",
+   "keywords": [
+    "il mio",
+    "mine",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "corpo",
+   "value": "„corpo\" на италиански = английски „body\" — Physical frame.",
+   "keywords": [
+    "corpo",
+    "body",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "con paura",
+   "value": "„con paura\" на италиански = английски „afraid\" — Impressed with fear or apprehension; in fear.",
+   "keywords": [
+    "con paura",
+    "afraid",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dormire",
+   "value": "„dormire\" на италиански = английски „sleep\" — To rest in a state of reduced consciousness.",
+   "keywords": [
+    "dormire",
+    "sleep",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "possibilità",
+   "value": "„possibilità\" на италиански = английски „chance\" — An opportunity or possibility.",
+   "keywords": [
+    "possibilità",
+    "chance",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "egregio",
+   "value": "„egregio\" на италиански = английски „dear\" — High in price; expensive.",
+   "keywords": [
+    "egregio",
+    "dear",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "proprio",
+   "value": "„proprio\" на италиански = английски „quite\" — To the greatest extent or degree; completely, entirely.",
+   "keywords": [
+    "proprio",
+    "quite",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "quattro",
+   "value": "„quattro\" на италиански = английски „four\" — A numerical value equal to 4; the number after three and before five; two plus two. Thi…",
+   "keywords": [
+    "quattro",
+    "four",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "comunque",
+   "value": "„comunque\" на италиански = английски „anyway\" — Regardless; anyhow.",
+   "keywords": [
+    "comunque",
+    "anyway",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "chiudere",
+   "value": "„chiudere\" на италиански = английски „close\" — To remove or block an opening, gap or passage through.",
+   "keywords": [
+    "chiudere",
+    "close",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "parte",
+   "value": "„parte\" на италиански = английски „party\" — A person or group of people constituting one side in a legal proceeding, such as in a l…",
+   "keywords": [
+    "parte",
+    "party",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "divertimento",
+   "value": "„divertimento\" на италиански = английски „fun\" — Amusement, enjoyment or pleasure.",
+   "keywords": [
+    "divertimento",
+    "fun",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "contrario",
+   "value": "„contrario\" на италиански = английски „against\" — In a contrary direction to.",
+   "keywords": [
+    "contrario",
+    "against",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "parola",
+   "value": "„parola\" на италиански = английски „word\" — The smallest unit of language that has a particular meaning and can be expressed by its…",
+   "keywords": [
+    "parola",
+    "word",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "importante",
+   "value": "„importante\" на италиански = английски „important\" — Having relevant and crucial value; having import.",
+   "keywords": [
+    "importante",
+    "important",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fruttificare",
+   "value": "„fruttificare\" на италиански = английски „set\" — To put (something) down, to rest.",
+   "keywords": [
+    "fruttificare",
+    "set",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dovere",
+   "value": "„dovere\" на италиански = английски „shall\" — Used before a verb to indicate the simple future tense in the first person singular or …",
+   "keywords": [
+    "dovere",
+    "shall",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "racconto",
+   "value": "„racconto\" на италиански = английски „story\" — An account of real or fictional events.",
+   "keywords": [
+    "racconto",
+    "story",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "numero",
+   "value": "„numero\" на италиански = английски „number\" — Quantity of countable things.",
+   "keywords": [
+    "numero",
+    "number",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "figlia",
+   "value": "„figlia\" на италиански = английски „daughter\" — One’s female offspring.",
+   "keywords": [
+    "figlia",
+    "daughter",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "meno",
+   "value": "„meno\" на италиански = английски „least\" — In a degree below all others; in the lowest or smallest degree.",
+   "keywords": [
+    "meno",
+    "least",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "attesa",
+   "value": "„attesa\" на италиански = английски „waiting\" — The act of staying or remaining in expectation.",
+   "keywords": [
+    "attesa",
+    "waiting",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ferire",
+   "value": "„ferire\" на италиански = английски „hurt\" — To cause (a person or animal) physical pain and/or injury.",
+   "keywords": [
+    "ferire",
+    "hurt",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "desiderio",
+   "value": "„desiderio\" на италиански = английски „wish\" — A desire, hope, or longing for something or for something to happen.",
+   "keywords": [
+    "desiderio",
+    "wish",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "momento",
+   "value": "„momento\" на италиански = английски „moment\" — A particular point, or relatively small region.",
+   "keywords": [
+    "momento",
+    "moment",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "combattere",
+   "value": "„combattere\" на италиански = английски „fight\" — Senses relating to physical conflict:",
+   "keywords": [
+    "combattere",
+    "fight",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "settimana",
+   "value": "„settimana\" на италиански = английски „week\" — Any period of seven consecutive days.",
+   "keywords": [
+    "settimana",
+    "week",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "marito",
+   "value": "„marito\" на италиански = английски „husband\" — A man in a marriage or marital relationship, especially in relation to his spouse.",
+   "keywords": [
+    "marito",
+    "husband",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "riposo",
+   "value": "„riposo\" на италиански = английски „rest\" — Relief from work or activity by sleeping; sleep.",
+   "keywords": [
+    "riposo",
+    "rest",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sposato",
+   "value": "„sposato\" на италиански = английски „married\" — In a state of marriage; having a wife or a husband.",
+   "keywords": [
+    "sposato",
+    "married",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fuoco",
+   "value": "„fuoco\" на италиански = английски „fire\" — A (usually self-sustaining) chemical reaction involving the bonding of oxygen with carb…",
+   "keywords": [
+    "fuoco",
+    "fire",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "gioco",
+   "value": "„gioco\" на италиански = английски „game\" — A playful or competitive activity.",
+   "keywords": [
+    "gioco",
+    "game",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "nessuno",
+   "value": "„nessuno\" на италиански = английски „nobody\" — A person dismissed as unimportant.",
+   "keywords": [
+    "nessuno",
+    "nobody",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lato",
+   "value": "„lato\" на италиански = английски „side\" — A bounding straight edge of a two-dimensional shape.",
+   "keywords": [
+    "lato",
+    "side",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "stare in piedi",
+   "value": "„stare in piedi\" на италиански = английски „stand\" — To position or be positioned physically:",
+   "keywords": [
+    "stare in piedi",
+    "stand",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "leggere",
+   "value": "„leggere\" на италиански = английски „read\" — To look at and interpret letters or other information that is written.",
+   "keywords": [
+    "leggere",
+    "read",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "però",
+   "value": "„però\" на италиански = английски „though\" — Despite that; however.",
+   "keywords": [
+    "però",
+    "though",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tagliare",
+   "value": "„tagliare\" на италиански = английски „cut\" — To incise, to cut into the surface of something.",
+   "keywords": [
+    "tagliare",
+    "cut",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sorella",
+   "value": "„sorella\" на италиански = английски „sister\" — A daughter of the same parents as another person; a female sibling.",
+   "keywords": [
+    "sorella",
+    "sister",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tra",
+   "value": "„tra\" на италиански = английски „between\" — In the position or interval that separates (two things), or intermediate in quantity or…",
+   "keywords": [
+    "tra",
+    "between",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bambino",
+   "value": "„bambino\" на италиански = английски „child\" — A person who has not yet reached adulthood, whether natural (puberty), cultural (initia…",
+   "keywords": [
+    "bambino",
+    "child",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "parlare",
+   "value": "„parlare\" на италиански = английски „speak\" — To communicate with one's voice, to say words out loud.",
+   "keywords": [
+    "parlare",
+    "speak",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "Women",
+   "value": "„Women\" на италиански = английски „women\" — Clipping of women's team, used in club names, as in [Club Name] Women.",
+   "keywords": [
+    "Women",
+    "women",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dietro",
+   "value": "„dietro\" на италиански = английски „behind\" — At or to the back or far side of.",
+   "keywords": [
+    "dietro",
+    "behind",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "quasi",
+   "value": "„quasi\" на италиански = английски „almost\" — Very close to, but not quite.",
+   "keywords": [
+    "quasi",
+    "almost",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "verità",
+   "value": "„verità\" на италиански = английски „truth\" — True facts, genuine depiction or statements of reality.",
+   "keywords": [
+    "verità",
+    "truth",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sangue",
+   "value": "„sangue\" на италиански = английски „blood\" — A vital liquid flowing in the bodies of many types of animals that usually conveys nutr…",
+   "keywords": [
+    "sangue",
+    "blood",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "abile",
+   "value": "„abile\" на италиански = английски „able\" — Having the necessary powers or the needed resources to accomplish a task.",
+   "keywords": [
+    "abile",
+    "able",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "signora",
+   "value": "„signora\" на италиански = английски „lady\" — The mistress of a household.",
+   "keywords": [
+    "signora",
+    "lady",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sparo",
+   "value": "„sparo\" на италиански = английски „shot\" — The result of launching a projectile or bullet.",
+   "keywords": [
+    "sparo",
+    "shot",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ragione",
+   "value": "„ragione\" на италиански = английски „reason\" — A cause:",
+   "keywords": [
+    "ragione",
+    "reason",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "problema",
+   "value": "„problema\" на италиански = английски „trouble\" — A distressing or dangerous situation.",
+   "keywords": [
+    "problema",
+    "trouble",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "rompersi",
+   "value": "„rompersi\" на италиански = английски „break\" — To separate into two or more pieces, to fracture or crack, by a process that cannot eas…",
+   "keywords": [
+    "rompersi",
+    "break",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "guerra",
+   "value": "„guerra\" на италиански = английски „war\" — Organized, large-scale, armed conflict between countries or between national, ethnic, o…",
+   "keywords": [
+    "guerra",
+    "war",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "città",
+   "value": "„città\" на италиански = английски „city\" — A large settlement, bigger than a town; sometimes with a specific legal definition, dep…",
+   "keywords": [
+    "città",
+    "city",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "camminare",
+   "value": "„camminare\" на италиански = английски „walk\" — To move on the feet by alternately setting each foot (or pair or group of feet, in the …",
+   "keywords": [
+    "camminare",
+    "walk",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "città",
+   "value": "„città\" на италиански = английски „town\" — A settlement; an area with residential districts, shops and amenities, and its own loca…",
+   "keywords": [
+    "città",
+    "town",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fiducia",
+   "value": "„fiducia\" на италиански = английски „trust\" — Confidence in or reliance on some person or quality.",
+   "keywords": [
+    "fiducia",
+    "trust",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ufficio",
+   "value": "„ufficio\" на италиански = английски „office\" — A ceremonial duty or service, particularly",
+   "keywords": [
+    "ufficio",
+    "office",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "domanda",
+   "value": "„domanda\" на италиански = английски „question\" — A worded or expressed sentence, phrase, or only a word on its own, which asks for infor…",
+   "keywords": [
+    "domanda",
+    "question",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tuo",
+   "value": "„tuo\" на италиански = английски „yours\" — That or those belonging to you; the possessive second-person singular pronoun used with…",
+   "keywords": [
+    "tuo",
+    "yours",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "benvenuto",
+   "value": "„benvenuto\" на италиански = английски „welcome\" — Whose arrival is a cause of joy; received with gladness; admitted willingly to the hous…",
+   "keywords": [
+    "benvenuto",
+    "welcome",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "alto",
+   "value": "„alto\" на италиански = английски „high\" — Physically elevated, extending above a base or average level:",
+   "keywords": [
+    "alto",
+    "high",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "accipicchia",
+   "value": "„accipicchia\" на италиански = английски „wow\" — An indication of excitement, surprise, astonishment, or pleasure.",
+   "keywords": [
+    "accipicchia",
+    "wow",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "coppia",
+   "value": "„coppia\" на италиански = английски „couple\" — Two of the same kind connected or considered together.",
+   "keywords": [
+    "coppia",
+    "couple",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "metà",
+   "value": "„metà\" на италиански = английски „half\" — One of two usually roughly equal parts into which anything may be divided, or considere…",
+   "keywords": [
+    "metà",
+    "half",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fresco",
+   "value": "„fresco\" на италиански = английски „cool\" — Of a mildly low temperature.",
+   "keywords": [
+    "fresco",
+    "cool",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "libero",
+   "value": "„libero\" на италиански = английски „free\" — Unconstrained.",
+   "keywords": [
+    "libero",
+    "free",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "neanche",
+   "value": "„neanche\" на италиански = английски „either\" — As well.",
+   "keywords": [
+    "neanche",
+    "either",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "potenza",
+   "value": "„potenza\" на италиански = английски „power\" — The ability to do or undergo something.",
+   "keywords": [
+    "potenza",
+    "power",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "comprare",
+   "value": "„comprare\" на италиански = английски „buy\" — To obtain (something) in exchange for money or goods.",
+   "keywords": [
+    "comprare",
+    "buy",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "miele",
+   "value": "„miele\" на италиански = английски „honey\" — A sweet, viscous, gold-colored fluid produced from plant nectar by bees, and often cons…",
+   "keywords": [
+    "miele",
+    "honey",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "davanti",
+   "value": "„davanti\" на италиански = английски „front\" — The foremost side of something or the end that faces the direction it normally moves.",
+   "keywords": [
+    "davanti",
+    "front",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "squadra",
+   "value": "„squadra\" на италиански = английски „team\" — A set of draught animals, such as two horses in front of a carriage.",
+   "keywords": [
+    "squadra",
+    "team",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "risposta",
+   "value": "„risposta\" на италиански = английски „answer\" — A response or reply; something said or done in reaction to a statement or question.",
+   "keywords": [
+    "risposta",
+    "answer",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pistola",
+   "value": "„pistola\" на италиански = английски „gun\" — A device for shooting projectiles or ditto (a shooter), functioning through stored ener…",
+   "keywords": [
+    "pistola",
+    "gun",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "corda",
+   "value": "„corda\" на италиански = английски „line\" — A path through two or more points (compare ‘segment’); a continuous mark, including as …",
+   "keywords": [
+    "corda",
+    "line",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "inviare",
+   "value": "„inviare\" на италиански = английски „send\" — To make something (such as an object or message) go from one place to another (or to so…",
+   "keywords": [
+    "inviare",
+    "send",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "novità",
+   "value": "„novità\" на италиански = английски „news\" — New information of interest.",
+   "keywords": [
+    "novità",
+    "news",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "stupefatto",
+   "value": "„stupefatto\" на италиански = английски „stupid\" — Without intelligence.",
+   "keywords": [
+    "stupefatto",
+    "stupid",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "letto",
+   "value": "„letto\" на италиански = английски „bed\" — A piece of furniture, usually flat and soft, on which to rest or sleep.",
+   "keywords": [
+    "letto",
+    "bed",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fretta",
+   "value": "„fretta\" на италиански = английски „hurry\" — A rushed action.",
+   "keywords": [
+    "fretta",
+    "hurry",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "completo",
+   "value": "„completo\" на италиански = английски „full\" — Containing the maximum possible amount that can fit in the space available.",
+   "keywords": [
+    "completo",
+    "full",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "salvare",
+   "value": "„salvare\" на италиански = английски „save\" — To prevent harm or difficulty.",
+   "keywords": [
+    "salvare",
+    "save",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "qualche volta",
+   "value": "„qualche volta\" на италиански = английски „sometimes\" — On some occasions, over some periods, or in certain circumstances, but not always.",
+   "keywords": [
+    "qualche volta",
+    "sometimes",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "diventare",
+   "value": "„diventare\" на италиански = английски „become\" — begin to be; turn into (often with permanent states).",
+   "keywords": [
+    "diventare",
+    "become",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lungo",
+   "value": "„lungo\" на италиански = английски „along\" — By the length of; in a line with the length of; lengthwise next to.",
+   "keywords": [
+    "lungo",
+    "along",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "odiare",
+   "value": "„odiare\" на италиански = английски „hate\" — To dislike intensely or greatly.",
+   "keywords": [
+    "odiare",
+    "hate",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cibo",
+   "value": "„cibo\" на италиански = английски „food\" — Any solid substance that can be consumed by living organisms, especially by eating, in …",
+   "keywords": [
+    "cibo",
+    "food",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "esterno",
+   "value": "„esterno\" на италиански = английски „outside\" — The part of something that faces out; the outer surface.",
+   "keywords": [
+    "esterno",
+    "outside",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "luce",
+   "value": "„luce\" на италиански = английски „light\" — Electromagnetic radiation in the wavelength range visible to the human eye (about 400–7…",
+   "keywords": [
+    "luce",
+    "light",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cane",
+   "value": "„cane\" на италиански = английски „dog\" — A mammal of the family Canidae:",
+   "keywords": [
+    "cane",
+    "dog",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "Paese",
+   "value": "„Paese\" на италиански = английски „country\" — The territory of a nation; a sovereign state or a region once independent and still dis…",
+   "keywords": [
+    "Paese",
+    "country",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "trasparente",
+   "value": "„trasparente\" на италиански = английски „clear\" — Transparent in colour.",
+   "keywords": [
+    "trasparente",
+    "clear",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ordine",
+   "value": "„ordine\" на италиански = английски „order\" — Arrangement, disposition, or sequence.",
+   "keywords": [
+    "ordine",
+    "order",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "emme",
+   "value": "„emme\" на италиански = английски „em\" — The name of the Latin script letter M/m.",
+   "keywords": [
+    "emme",
+    "em",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fatto",
+   "value": "„fatto\" на италиански = английски „fact\" — Something actual as opposed to invented.",
+   "keywords": [
+    "fatto",
+    "fact",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "castellano",
+   "value": "„castellano\" на италиански = английски „lord\" — One possessing similar mastery over others; (historical) any feudal superior generally;…",
+   "keywords": [
+    "castellano",
+    "lord",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "capitano",
+   "value": "„capitano\" на италиански = английски „captain\" — A chief or leader.",
+   "keywords": [
+    "capitano",
+    "captain",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sei",
+   "value": "„sei\" на италиански = английски „six\" — A numerical value equal to 6; the number following five and preceding seven. This numbe…",
+   "keywords": [
+    "sei",
+    "six",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "caldo",
+   "value": "„caldo\" на италиански = английски „hot\" — Relating to heat and conditions which produce it.",
+   "keywords": [
+    "caldo",
+    "hot",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "buffo",
+   "value": "„buffo\" на италиански = английски „funny\" — Amusing; humorous; comical.",
+   "keywords": [
+    "buffo",
+    "funny",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "nero",
+   "value": "„nero\" на италиански = английски „black\" — Absorbing all light and reflecting none; dark and hueless.",
+   "keywords": [
+    "nero",
+    "black",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "vivo",
+   "value": "„vivo\" на италиански = английски „alive\" — Having life; living; not dead.",
+   "keywords": [
+    "vivo",
+    "alive",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "piccone",
+   "value": "„piccone\" на италиански = английски „pick\" — A tool used for digging; a pickaxe.",
+   "keywords": [
+    "piccone",
+    "pick",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "senso",
+   "value": "„senso\" на италиански = английски „feeling\" — Sensation, particularly through the skin.",
+   "keywords": [
+    "senso",
+    "feeling",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "causa",
+   "value": "„causa\" на италиански = английски „cause\" — The source of, or reason for, an event or action; that which produces or effects a result.",
+   "keywords": [
+    "causa",
+    "cause",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "antecedentemente",
+   "value": "„antecedentemente\" на италиански = английски „ahead\" — At or towards the front; in the direction one is facing or moving.",
+   "keywords": [
+    "antecedentemente",
+    "ahead",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "perdere",
+   "value": "„perdere\" на италиански = английски „lose\" — To cease to have (something) in one's possession or capability.",
+   "keywords": [
+    "perdere",
+    "lose",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "re",
+   "value": "„re\" на италиански = английски „king\" — A male monarch; a man who heads a monarchy; in an absolute monarchy, the supreme ruler …",
+   "keywords": [
+    "re",
+    "king",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "piano",
+   "value": "„piano\" на италиански = английски „plan\" — A drawing showing technical details of a building, machine, etc., with unwanted details…",
+   "keywords": [
+    "piano",
+    "plan",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cena",
+   "value": "„cena\" на италиански = английски „dinner\" — The main meal of the day, often eaten in the evening.",
+   "keywords": [
+    "cena",
+    "dinner",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tipo",
+   "value": "„tipo\" на италиански = английски „sort\" — A general type.",
+   "keywords": [
+    "tipo",
+    "sort",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "corrente",
+   "value": "„corrente\" на италиански = английски „running\" — Moving or advancing at a run.",
+   "keywords": [
+    "corrente",
+    "running",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "capo",
+   "value": "„capo\" на италиански = английски „boss\" — One who is in charge or something.",
+   "keywords": [
+    "capo",
+    "boss",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "promessa",
+   "value": "„promessa\" на италиански = английски „promise\" — An oath or affirmation; a vow.",
+   "keywords": [
+    "promessa",
+    "promise",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "infatuato",
+   "value": "„infatuato\" на италиански = английски „taken\" — Infatuated; fond of or attracted to.",
+   "keywords": [
+    "infatuato",
+    "taken",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sicuro",
+   "value": "„sicuro\" на италиански = английски „safe\" — Not in danger; out of harm's reach.",
+   "keywords": [
+    "sicuro",
+    "safe",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mamma",
+   "value": "„mamma\" на италиански = английски „ma\" — mother, mama",
+   "keywords": [
+    "mamma",
+    "ma",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "libro",
+   "value": "„libro\" на италиански = английски „book\" — A collection of sheets of paper bound together to hinge at one edge, containing printed…",
+   "keywords": [
+    "libro",
+    "book",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bianco",
+   "value": "„bianco\" на италиански = английски „white\" — Bright and colourless; reflecting equal quantities of all frequencies of visible light.",
+   "keywords": [
+    "bianco",
+    "white",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ora",
+   "value": "„ora\" на италиански = английски „hour\" — A unit of time of one twenty-fourth of a day (sixty minutes).",
+   "keywords": [
+    "ora",
+    "hour",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "qualcuno",
+   "value": "„qualcuno\" на италиански = английски „anybody\" — Any one out of an indefinite number of persons; anyone; any person.",
+   "keywords": [
+    "qualcuno",
+    "anybody",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "piccolo",
+   "value": "„piccolo\" на италиански = английски „small\" — Not large or big; insignificant; few in number.",
+   "keywords": [
+    "piccolo",
+    "small",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "perfetto",
+   "value": "„perfetto\" на италиански = английски „perfect\" — Fitting its definition precisely.",
+   "keywords": [
+    "perfetto",
+    "perfect",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "speciale",
+   "value": "„speciale\" на италиански = английски „special\" — Distinguished by a unique, particular, or unusual quality.",
+   "keywords": [
+    "speciale",
+    "special",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "forse",
+   "value": "„forse\" на италиански = английски „perhaps\" — Possibly.",
+   "keywords": [
+    "forse",
+    "perhaps",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "serio",
+   "value": "„serio\" на италиански = английски „serious\" — Without humor or expression of happiness; grave in manner or disposition.",
+   "keywords": [
+    "serio",
+    "serious",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "gli ammalati",
+   "value": "„gli ammalati\" на италиански = английски „sick\" — In poor health; ill.",
+   "keywords": [
+    "gli ammalati",
+    "sick",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "compagnia",
+   "value": "„compagnia\" на италиански = английски „company\" — A team; a group of people who work together professionally.",
+   "keywords": [
+    "compagnia",
+    "company",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ah",
+   "value": "„ah\" на италиански = английски „ha\" — A representation of laughter.",
+   "keywords": [
+    "ah",
+    "ha",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "spaventato",
+   "value": "„spaventato\" на италиански = английски „scared\" — Feeling fear; afraid, frightened.",
+   "keywords": [
+    "spaventato",
+    "scared",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "zio",
+   "value": "„zio\" на италиански = английски „uncle\" — The brother or brother-in-law of one’s parent.",
+   "keywords": [
+    "zio",
+    "uncle",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "povero",
+   "value": "„povero\" на италиански = английски „poor\" — With no or few possessions or money, particularly in relation to contemporaries who do …",
+   "keywords": [
+    "povero",
+    "poor",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "rosso",
+   "value": "„rosso\" на италиански = английски „red\" — The colour of the setting sun, blood, and strawberries; the colour which is evoked by t…",
+   "keywords": [
+    "rosso",
+    "red",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "passato",
+   "value": "„passato\" на италиански = английски „past\" — The period of time that has already happened, in contrast to the present and the future.",
+   "keywords": [
+    "passato",
+    "past",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "terra",
+   "value": "„terra\" на италиански = английски „earth\" — Soil.",
+   "keywords": [
+    "terra",
+    "earth",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "possibile",
+   "value": "„possibile\" на италиански = английски „possible\" — Able but not certain to happen; neither inevitable nor impossible.",
+   "keywords": [
+    "possibile",
+    "possible",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sparare",
+   "value": "„sparare\" на италиански = английски „shoot\" — To launch (forcefully project) a projectile.",
+   "keywords": [
+    "sparare",
+    "shoot",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "toccare",
+   "value": "„toccare\" на италиански = английски „touch\" — Primarily physical senses.",
+   "keywords": [
+    "toccare",
+    "touch",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sano",
+   "value": "„sano\" на италиански = английски „sound\" — Healthy.",
+   "keywords": [
+    "sano",
+    "sound",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sommità",
+   "value": "„sommità\" на италиански = английски „top\" — The highest or uppermost part of something.",
+   "keywords": [
+    "sommità",
+    "top",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "asino",
+   "value": "„asino\" на италиански = английски „ass\" — Any of several species of horse-like animals, especially Equus asinus, the domesticated…",
+   "keywords": [
+    "asino",
+    "ass",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "non potere",
+   "value": "„non potere\" на италиански = английски „cannot\" — Can not; be unable to (whether due to physical inability, logical impossibility, etc.).",
+   "keywords": [
+    "non potere",
+    "cannot",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "vincere",
+   "value": "„vincere\" на италиански = английски „win\" — To reach some destination or object, despite difficulty or toil (now usually intransiti…",
+   "keywords": [
+    "vincere",
+    "win",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lieto",
+   "value": "„lieto\" на италиански = английски „glad\" — Pleased; happy; gratified.",
+   "keywords": [
+    "lieto",
+    "glad",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "controllare",
+   "value": "„controllare\" на италиански = английски „control\" — To exercise influence over; to suggest or dictate the behavior of.",
+   "keywords": [
+    "controllare",
+    "control",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mmh",
+   "value": "„mmh\" на италиански = английски „hmm\" — Indicates thinking or pondering.",
+   "keywords": [
+    "mmh",
+    "hmm",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "umano",
+   "value": "„umano\" на италиански = английски „human\" — Of or belonging to the species Homo sapiens or its closest relatives.",
+   "keywords": [
+    "umano",
+    "human",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "guidare",
+   "value": "„guidare\" на италиански = английски „drive\" — To operate a vehicle:",
+   "keywords": [
+    "guidare",
+    "drive",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pelo",
+   "value": "„pelo\" на италиански = английски „hair\" — A pigmented filament of keratin which grows from a follicle on the skin of humans and o…",
+   "keywords": [
+    "pelo",
+    "hair",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "presa elettrica",
+   "value": "„presa elettrica\" на италиански = английски „jack\" — A man.",
+   "keywords": [
+    "presa elettrica",
+    "jack",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cagna",
+   "value": "„cagna\" на италиански = английски „bitch\" — A female dog or other canine, particularly a recent mother.",
+   "keywords": [
+    "cagna",
+    "bitch",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fortuna",
+   "value": "„fortuna\" на италиански = английски „luck\" — Something that happens to someone by chance, a chance occurrence.",
+   "keywords": [
+    "fortuna",
+    "luck",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "assassinio",
+   "value": "„assassinio\" на италиански = английски „murder\" — The crime of killing a person unlawfully, especially with predetermination.",
+   "keywords": [
+    "assassinio",
+    "murder",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "aria",
+   "value": "„aria\" на италиански = английски „air\" — The substance constituting Earth's atmosphere: a gaseous mixture of nitrogen, oxygen, a…",
+   "keywords": [
+    "aria",
+    "air",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dieci",
+   "value": "„dieci\" на италиански = английски „ten\" — The number occurring after nine and before eleven, represented in Arabic numerals (base…",
+   "keywords": [
+    "dieci",
+    "ten",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "babbo",
+   "value": "„babbo\" на италиански = английски „daddy\" — Also used as a term of address: a father; one's father.",
+   "keywords": [
+    "babbo",
+    "daddy",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "alla fine",
+   "value": "„alla fine\" на италиански = английски „finally\" — At the end or conclusion; ultimately.",
+   "keywords": [
+    "alla fine",
+    "finally",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "veloce",
+   "value": "„veloce\" на италиански = английски „fast\" — Firmly or securely fixed in place; stable.",
+   "keywords": [
+    "veloce",
+    "fast",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "freddo",
+   "value": "„freddo\" на италиански = английски „cold\" — Having a low temperature.",
+   "keywords": [
+    "freddo",
+    "cold",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sembrare",
+   "value": "„sembrare\" на италиански = английски „seem\" — To appear; to look outwardly; to be perceived as.",
+   "keywords": [
+    "sembrare",
+    "seem",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ospedale",
+   "value": "„ospedale\" на италиански = английски „hospital\" — A large medical facility, usually in a building with multiple floors, where seriously i…",
+   "keywords": [
+    "ospedale",
+    "hospital",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "strada",
+   "value": "„strada\" на италиански = английски „street\" — A paved part of road, usually in a village or a town.",
+   "keywords": [
+    "strada",
+    "street",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pendere",
+   "value": "„pendere\" на италиански = английски „hang\" — To be or remain suspended.",
+   "keywords": [
+    "pendere",
+    "hang",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ballo",
+   "value": "„ballo\" на италиански = английски „dance\" — A social gathering where dancing is the main activity.",
+   "keywords": [
+    "ballo",
+    "dance",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "riunione",
+   "value": "„riunione\" на италиански = английски „meeting\" — The act of persons or things that meet.",
+   "keywords": [
+    "riunione",
+    "meeting",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fino a",
+   "value": "„fino a\" на италиански = английски „till\" — Until; to, up to; as late as (a given time).",
+   "keywords": [
+    "fino a",
+    "till",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "presa",
+   "value": "„presa\" на италиански = английски „catch\" — The act of seizing or capturing.",
+   "keywords": [
+    "presa",
+    "catch",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "seguire",
+   "value": "„seguire\" на италиански = английски „follow\" — To go after; to pursue; to move behind in the same path or direction, especially with t…",
+   "keywords": [
+    "seguire",
+    "follow",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "senso",
+   "value": "„senso\" на италиански = английски „sense\" — Any of the manners by which living beings perceive the physical world: for humans sight…",
+   "keywords": [
+    "senso",
+    "sense",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sesso",
+   "value": "„sesso\" на италиански = английски „sex\" — A category into which sexually-reproducing organisms are divided on the basis of their …",
+   "keywords": [
+    "sesso",
+    "sex",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "essere sdraiato",
+   "value": "„essere sdraiato\" на италиански = английски „lie\" — To rest in a horizontal position on a surface.",
+   "keywords": [
+    "essere sdraiato",
+    "lie",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sera",
+   "value": "„sera\" на италиански = английски „evening\" — The time of day between afternoon and night.",
+   "keywords": [
+    "sera",
+    "evening",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "padrone",
+   "value": "„padrone\" на италиански = английски „master\" — Someone who has control over something or someone.",
+   "keywords": [
+    "padrone",
+    "master",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "conosciuto",
+   "value": "„conosciuto\" на италиански = английски „known\" — Identified as a specific type; famous, renowned.",
+   "keywords": [
+    "conosciuto",
+    "known",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sogno",
+   "value": "„sogno\" на италиански = английски „dream\" — Imaginary events seen in the mind while sleeping.",
+   "keywords": [
+    "sogno",
+    "dream",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "scrivere a",
+   "value": "„scrivere a\" на италиански = английски „write\" — To form letters, words or symbols on a surface in order to communicate.",
+   "keywords": [
+    "scrivere a",
+    "write",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "milione",
+   "value": "„milione\" на италиански = английски „million\" — The cardinal number 1 000 000: 10⁶; a thousand thousand (1,000²).",
+   "keywords": [
+    "milione",
+    "million",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "voce",
+   "value": "„voce\" на италиански = английски „voice\" — Sound uttered by the mouth, especially by human beings in speech or song; sound thus ut…",
+   "keywords": [
+    "voce",
+    "voice",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dolce",
+   "value": "„dolce\" на италиански = английски „sweet\" — Tasting of sugars.",
+   "keywords": [
+    "dolce",
+    "sweet",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "preferibilmente",
+   "value": "„preferibilmente\" на италиански = английски „rather\" — Used to specify a choice or preference; preferably, in preference to. (Now usually foll…",
+   "keywords": [
+    "preferibilmente",
+    "rather",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "feltro",
+   "value": "„feltro\" на италиански = английски „felt\" — A cloth or stuff made of matted fibres of wool, or wool and fur, fulled or wrought into…",
+   "keywords": [
+    "feltro",
+    "felt",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "segno",
+   "value": "„segno\" на италиански = английски „sign\" — A visible fact that shows that something exists or may happen.",
+   "keywords": [
+    "segno",
+    "sign",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fortunato",
+   "value": "„fortunato\" на италиански = английски „lucky\" — Favoured by luck; fortunate; having good success or good fortune.",
+   "keywords": [
+    "fortunato",
+    "lucky",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "da qualche parte",
+   "value": "„da qualche parte\" на италиански = английски „somewhere\" — In an uncertain or unspecified location.",
+   "keywords": [
+    "da qualche parte",
+    "somewhere",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "scommessa",
+   "value": "„scommessa\" на италиански = английски „bet\" — A wager, an agreement between two parties that a stake (usually money) will be paid by …",
+   "keywords": [
+    "scommessa",
+    "bet",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "vocazione",
+   "value": "„vocazione\" на италиански = английски „calling\" — A strong urge (to do some particular thing with or in one's life, for example to become…",
+   "keywords": [
+    "vocazione",
+    "calling",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "quieto",
+   "value": "„quieto\" на италиански = английски „quiet\" — With little or no sound; free of disturbing noise.",
+   "keywords": [
+    "quieto",
+    "quiet",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "meno",
+   "value": "„meno\" на италиански = английски „less\" — Used for constructing syntactic diminutive comparatives of adjectives and adverbs.",
+   "keywords": [
+    "meno",
+    "less",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tirare",
+   "value": "„tirare\" на италиански = английски „pull\" — To apply a force to (an object) so that it comes toward the person or thing applying th…",
+   "keywords": [
+    "tirare",
+    "pull",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ritmo",
+   "value": "„ritmo\" на италиански = английски „beat\" — A stroke; a blow.",
+   "keywords": [
+    "ritmo",
+    "beat",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "prudente",
+   "value": "„prudente\" на италиански = английски „careful\" — Taking care; attentive to potential danger, error or harm; cautious.",
+   "keywords": [
+    "prudente",
+    "careful",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "chicco di caffè",
+   "value": "„chicco di caffè\" на италиански = английски „coffee\" — A beverage made by infusing the beans of the coffee plant in hot water.",
+   "keywords": [
+    "chicco di caffè",
+    "coffee",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "restituire",
+   "value": "„restituire\" на италиански = английски „return\" — To come or go back (to a place or person).",
+   "keywords": [
+    "restituire",
+    "return",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "segreto",
+   "value": "„segreto\" на италиански = английски „secret\" — A piece of knowledge that is hidden and intended to be kept hidden.",
+   "keywords": [
+    "segreto",
+    "secret",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dattero",
+   "value": "„dattero\" на италиански = английски „date\" — The fruit of the date palm, Phoenix dactylifera, somewhat in the shape of an olive, con…",
+   "keywords": [
+    "dattero",
+    "date",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cadere",
+   "value": "„cadere\" на италиански = английски „fall\" — To be moved downwards.",
+   "keywords": [
+    "cadere",
+    "fall",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tenendo conto",
+   "value": "„tenendo conto\" на италиански = английски „given\" — Considering; taking into account.",
+   "keywords": [
+    "tenendo conto",
+    "given",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "colpa",
+   "value": "„colpa\" на италиански = английски „fault\" — Culpability; the responsibility for a blameworthy event.",
+   "keywords": [
+    "colpa",
+    "fault",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "retto",
+   "value": "„retto\" на италиански = английски „straight\" — Not crooked, curly, or bent; having a constant direction throughout its length.",
+   "keywords": [
+    "retto",
+    "straight",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "canzone",
+   "value": "„canzone\" на италиански = английски „song\" — A musical composition with lyrics for voice or voices, performed by singing.",
+   "keywords": [
+    "canzone",
+    "song",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "futuro",
+   "value": "„futuro\" на италиански = английски „future\" — The time ahead; those moments yet to be experienced.",
+   "keywords": [
+    "futuro",
+    "future",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "strada",
+   "value": "„strada\" на италиански = английски „road\" — A way used for travelling between places, originally one wide enough to allow foot pass…",
+   "keywords": [
+    "strada",
+    "road",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "calmo",
+   "value": "„calmo\" на италиански = английски „calm\" — Peaceful, quiet, especially free from anger and anxiety.",
+   "keywords": [
+    "calmo",
+    "calm",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "meraviglioso",
+   "value": "„meraviglioso\" на италиански = английски „wonderful\" — Tending to excite wonder; surprising, extraordinary.",
+   "keywords": [
+    "meraviglioso",
+    "wonderful",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pazzo",
+   "value": "„pazzo\" на италиански = английски „mad\" — Insane; crazy, mentally deranged.",
+   "keywords": [
+    "pazzo",
+    "mad",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "goccia",
+   "value": "„goccia\" на италиански = английски „drop\" — A small quantity of liquid, just large enough to hold its own rounded shape through sur…",
+   "keywords": [
+    "goccia",
+    "drop",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "imparare",
+   "value": "„imparare\" на италиански = английски „learn\" — To acquire, or attempt to acquire knowledge or an ability to do something.",
+   "keywords": [
+    "imparare",
+    "learn",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "passo",
+   "value": "„passo\" на италиански = английски „step\" — An advance or movement made from one foot to the other; a pace.",
+   "keywords": [
+    "passo",
+    "step",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "assolutamente",
+   "value": "„assolutamente\" на италиански = английски „absolutely\" — In an absolute or unconditional manner; utterly, positively, wholly.",
+   "keywords": [
+    "assolutamente",
+    "absolutely",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "presto",
+   "value": "„presto\" на италиански = английски „early\" — At a time in advance of the usual or expected event.",
+   "keywords": [
+    "presto",
+    "early",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "spiegare",
+   "value": "„spiegare\" на италиански = английски „explain\" — To make plain, manifest, or intelligible; to clear of obscurity; to illustrate the mean…",
+   "keywords": [
+    "spiegare",
+    "explain",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pulito",
+   "value": "„pulito\" на италиански = английски „clean\" — Free of dirt, filth, or impurities (extraneous matter); not dirty, filthy, or soiled.",
+   "keywords": [
+    "pulito",
+    "clean",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pezzo",
+   "value": "„pezzo\" на италиански = английски „piece\" — A part of a larger whole, usually in such a form that it is able to be separated from o…",
+   "keywords": [
+    "pezzo",
+    "piece",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ieri",
+   "value": "„ieri\" на италиански = английски „yesterday\" — The day immediately before today; one day ago.",
+   "keywords": [
+    "ieri",
+    "yesterday",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "generare",
+   "value": "„generare\" на италиански = английски „throw\" — To hurl; to release (an object) with some force from one’s hands, an apparatus, etc. so…",
+   "keywords": [
+    "generare",
+    "throw",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "quadro",
+   "value": "„quadro\" на италиански = английски „picture\" — A representation of anything (as a person, a landscape, a building) upon canvas, paper,…",
+   "keywords": [
+    "quadro",
+    "picture",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "terra",
+   "value": "„terra\" на италиански = английски „land\" — The part of Earth which is not covered by oceans or other bodies of water.",
+   "keywords": [
+    "terra",
+    "land",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "meraviglia",
+   "value": "„meraviglia\" на италиански = английски „wonder\" — A sense of awe, astonishment and curiosity, inspired by unexpected events, novel experi…",
+   "keywords": [
+    "meraviglia",
+    "wonder",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "valore",
+   "value": "„valore\" на италиански = английски „worth\" — Having a value of; proper to be exchanged for.",
+   "keywords": [
+    "valore",
+    "worth",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "amore",
+   "value": "„amore\" на италиански = английски „darling\" — Often used as an affectionate term of address: a person who is very dear to one.",
+   "keywords": [
+    "amore",
+    "darling",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tipo",
+   "value": "„tipo\" на италиански = английски „dude\" — A man, generally a younger man.",
+   "keywords": [
+    "tipo",
+    "dude",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "presidente",
+   "value": "„presidente\" на италиански = английски „president\" — The head of state of a republic, sometimes also the head of government as well, particu…",
+   "keywords": [
+    "presidente",
+    "president",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "occhio",
+   "value": "„occhio\" на италиански = английски „eye\" — An organ through which animals see (“perceive surroundings via light”).",
+   "keywords": [
+    "occhio",
+    "eye",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "rapido",
+   "value": "„rapido\" на италиански = английски „quick\" — Moving with speed, rapidity or swiftness, or capable of doing so; rapid; fast.",
+   "keywords": [
+    "rapido",
+    "quick",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "commovente",
+   "value": "„commovente\" на италиански = английски „moving\" — That moves or move.",
+   "keywords": [
+    "commovente",
+    "moving",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "figura",
+   "value": "„figura\" на италиански = английски „figure\" — A drawing or diagram conveying information.",
+   "keywords": [
+    "figura",
+    "figure",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "stato",
+   "value": "„stato\" на италиански = английски „state\" — A condition; a set of circumstances applying at any given time.",
+   "keywords": [
+    "stato",
+    "state",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "forte",
+   "value": "„forte\" на италиански = английски „strong\" — Capable of producing great physical force.",
+   "keywords": [
+    "forte",
+    "strong",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "nessuno",
+   "value": "„nessuno\" на италиански = английски „none\" — Not any of a given number or group.",
+   "keywords": [
+    "nessuno",
+    "none",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "meraviglioso",
+   "value": "„meraviglioso\" на италиански = английски „amazing\" — Causing wonder and amazement; very surprising.",
+   "keywords": [
+    "meraviglioso",
+    "amazing",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "scena",
+   "value": "„scena\" на италиански = английски „act\" — Something done, a deed.",
+   "keywords": [
+    "scena",
+    "act",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "strano",
+   "value": "„strano\" на италиански = английски „weird\" — Having an unusually strange character or behaviour.",
+   "keywords": [
+    "strano",
+    "weird",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "legge",
+   "value": "„legge\" на италиански = английски „law\" — The body of binding rules and regulations, customs, and standards established in a comm…",
+   "keywords": [
+    "legge",
+    "law",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "preoccupato",
+   "value": "„preoccupato\" на италиански = английски „worried\" — Thinking about unpleasant things that have happened or that might happen; feeling afrai…",
+   "keywords": [
+    "preoccupato",
+    "worried",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "riferire",
+   "value": "„riferire\" на италиански = английски „report\" — To relate details of (an event or incident); to recount, describe (something).",
+   "keywords": [
+    "riferire",
+    "report",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "arrivederci",
+   "value": "„arrivederci\" на италиански = английски „goodbye\" — Farewell; a formula used to another person or persons when the speaker, writer, or pers…",
+   "keywords": [
+    "arrivederci",
+    "goodbye",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mancante",
+   "value": "„mancante\" на италиански = английски „missing\" — Not able to be located; gone, misplaced.",
+   "keywords": [
+    "mancante",
+    "missing",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "scelta",
+   "value": "„scelta\" на италиански = английски „choice\" — An option; a decision; an opportunity to choose or select something.",
+   "keywords": [
+    "scelta",
+    "choice",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "capo",
+   "value": "„capo\" на италиански = английски „chief\" — The leader or head of a tribe, organisation, business unit, or other group.",
+   "keywords": [
+    "capo",
+    "chief",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "matrimonio",
+   "value": "„matrimonio\" на италиански = английски „wedding\" — A marriage ceremony; a ritual officially celebrating the beginning of a marriage.",
+   "keywords": [
+    "matrimonio",
+    "wedding",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "strano",
+   "value": "„strano\" на италиански = английски „strange\" — Not normal; odd, unusual, surprising, out of the ordinary, often with a negative connot…",
+   "keywords": [
+    "strano",
+    "strange",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "generale",
+   "value": "„generale\" на италиански = английски „general\" — Including or involving every part or member of a given or implied entity, whole, etc.; …",
+   "keywords": [
+    "generale",
+    "general",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "dolore",
+   "value": "„dolore\" на италиански = английски „pain\" — An ache or bodily suffering, or an instance of this; an unpleasant sensation, resulting…",
+   "keywords": [
+    "dolore",
+    "pain",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "passare",
+   "value": "„passare\" на италиански = английски „pass\" — To change place.",
+   "keywords": [
+    "passare",
+    "pass",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "stanco",
+   "value": "„stanco\" на италиански = английски „tired\" — In need of some rest or sleep.",
+   "keywords": [
+    "stanco",
+    "tired",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ceto",
+   "value": "„ceto\" на италиански = английски „class\" — A group, collection, category or set sharing characteristics or attributes.",
+   "keywords": [
+    "ceto",
+    "class",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "funzionario",
+   "value": "„funzionario\" на италиански = английски „officer\" — One who has a position of authority in a hierarchical organization, especially in milit…",
+   "keywords": [
+    "funzionario",
+    "officer",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "risvegliarsi",
+   "value": "„risvegliarsi\" на италиански = английски „wake\" — (often followed by up) To stop sleeping.",
+   "keywords": [
+    "risvegliarsi",
+    "wake",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "peggiore",
+   "value": "„peggiore\" на италиански = английски „worse\"",
+   "keywords": [
+    "peggiore",
+    "worse",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "indaffarato",
+   "value": "„indaffarato\" на италиански = английски „busy\" — Crowded with business or activities; having a great deal going on.",
+   "keywords": [
+    "indaffarato",
+    "busy",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "eh",
+   "value": "„eh\" на италиански = английски „eh\" — Used as a tag question, to emphasise what goes before or to request that the listener e…",
+   "keywords": [
+    "eh",
+    "eh",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fraintendere",
+   "value": "„fraintendere\" на италиански = английски „mistake\" — To understand wrongly, taking one thing or person for another.",
+   "keywords": [
+    "fraintendere",
+    "mistake",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "baciare",
+   "value": "„baciare\" на италиански = английски „kiss\" — To touch with the lips or press the lips against, usually to show love or affection or …",
+   "keywords": [
+    "baciare",
+    "kiss",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cortile",
+   "value": "„cortile\" на италиански = английски „court\" — An enclosed space; a courtyard; an uncovered area shut in by the walls of a building, o…",
+   "keywords": [
+    "cortile",
+    "court",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "costruzione",
+   "value": "„costruzione\" на италиански = английски „building\" — The act or process by which something is built; construction.",
+   "keywords": [
+    "costruzione",
+    "building",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "fine",
+   "value": "„fine\" на италиански = английски „finish\" — An end; the end of anything.",
+   "keywords": [
+    "fine",
+    "finish",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "durante",
+   "value": "„durante\" на италиански = английски „during\" — For all of a given time interval; throughout; in; pending.",
+   "keywords": [
+    "durante",
+    "during",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "età",
+   "value": "„età\" на италиански = английски „age\" — The amount of time that some being has been alive, or that some thing has been in exist…",
+   "keywords": [
+    "età",
+    "age",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "nave",
+   "value": "„nave\" на италиански = английски „ship\" — A water-borne vessel generally larger than a boat.",
+   "keywords": [
+    "nave",
+    "ship",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sposarsi",
+   "value": "„sposarsi\" на италиански = английски „marry\" — To enter into the conjugal or connubial state; to take a husband or a wife.",
+   "keywords": [
+    "sposarsi",
+    "marry",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "vendere",
+   "value": "„vendere\" на италиански = английски „sell\" — To transfer goods or provide services in exchange for money.",
+   "keywords": [
+    "vendere",
+    "sell",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "buio",
+   "value": "„buio\" на италиански = английски „dark\" — Having an absolute or (more often) relative lack of light.",
+   "keywords": [
+    "buio",
+    "dark",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sistema",
+   "value": "„sistema\" на италиански = английски „system\" — A group or set of related things that operate together as a complex whole.",
+   "keywords": [
+    "sistema",
+    "system",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "supporre",
+   "value": "„supporre\" на италиански = английски „suppose\" — To take for granted; to conclude, with less than absolute supporting data; to believe.",
+   "keywords": [
+    "supporre",
+    "suppose",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "prova",
+   "value": "„prova\" на италиански = английски „evidence\" — Facts or observations presented in support of an assertion.",
+   "keywords": [
+    "prova",
+    "evidence",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "film",
+   "value": "„film\" на италиански = английски „movie\" — A recorded sequence of images displayed on a screen at a rate sufficiently fast to crea…",
+   "keywords": [
+    "film",
+    "movie",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "giro",
+   "value": "„giro\" на италиански = английски „ride\" — An instance of riding.",
+   "keywords": [
+    "giro",
+    "ride",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "completamente",
+   "value": "„completamente\" на италиански = английски „completely\" — In a complete manner; thoroughly.",
+   "keywords": [
+    "completamente",
+    "completely",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bocca",
+   "value": "„bocca\" на италиански = английски „mouth\" — The front opening of a creature through which food is ingested.",
+   "keywords": [
+    "bocca",
+    "mouth",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "totalmente",
+   "value": "„totalmente\" на италиански = английски „totally\" — To the fullest extent or degree.",
+   "keywords": [
+    "totalmente",
+    "totally",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "compleanno",
+   "value": "„compleanno\" на италиански = английски „birthday\" — The anniversary of the day on which someone is born.",
+   "keywords": [
+    "compleanno",
+    "birthday",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "TV",
+   "value": "„TV\" на италиански = английски „tv\" — Abbreviation of television.",
+   "keywords": [
+    "TV",
+    "tv",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "perdonare",
+   "value": "„perdonare\" на италиански = английски „forgive\" — To pardon (someone); to waive any negative feeling towards or desire for punishment or …",
+   "keywords": [
+    "perdonare",
+    "forgive",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "nato",
+   "value": "„nato\" на италиански = английски „born\" — Having from birth (or as if from birth) a certain quality or character; innate; inherited.",
+   "keywords": [
+    "nato",
+    "born",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "immaginarsi",
+   "value": "„immaginarsi\" на италиански = английски „imagine\" — To form a mental image of something; to envision or create something in one's mind.",
+   "keywords": [
+    "immaginarsi",
+    "imagine",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "informazione",
+   "value": "„informazione\" на италиански = английски „information\" — Something that provides a definitive characterization or description of the nature and …",
+   "keywords": [
+    "informazione",
+    "information",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "in luogo di",
+   "value": "„in luogo di\" на италиански = английски „instead\" — In the place of something (usually mentioned earlier); as a substitute or alternative.",
+   "keywords": [
+    "in luogo di",
+    "instead",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "indubbiamente",
+   "value": "„indubbiamente\" на италиански = английски „definitely\" — Without question and beyond doubt.",
+   "keywords": [
+    "indubbiamente",
+    "definitely",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sicurezza",
+   "value": "„sicurezza\" на италиански = английски „security\" — The condition of not being threatened, especially physically, psychologically, emotiona…",
+   "keywords": [
+    "sicurezza",
+    "security",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "certamente",
+   "value": "„certamente\" на италиански = английски „certainly\" — In a way which is certain; with certainty.",
+   "keywords": [
+    "certamente",
+    "certainly",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "film",
+   "value": "„film\" на италиански = английски „film\" — A thin layer of some substance; a pellicle; a membranous covering, causing opacity.",
+   "keywords": [
+    "film",
+    "film",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mese",
+   "value": "„mese\" на италиански = английски „month\" — A period into which a year is divided, historically based on the phases of the moon.",
+   "keywords": [
+    "mese",
+    "month",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "a meno che",
+   "value": "„a meno che\" на италиански = английски „unless\" — Except on a specified condition; if not.",
+   "keywords": [
+    "a meno che",
+    "unless",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "treno",
+   "value": "„treno\" на италиански = английски „train\" — Elongated or trailing portion.",
+   "keywords": [
+    "treno",
+    "train",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sette",
+   "value": "„sette\" на италиански = английски „seven\" — A numerical value equal to 7; the number following six and preceding eight. This many d…",
+   "keywords": [
+    "sette",
+    "seven",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "indossare",
+   "value": "„indossare\" на италиански = английски „wear\" — To have on:",
+   "keywords": [
+    "indossare",
+    "wear",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "vestiti",
+   "value": "„vestiti\" на италиански = английски „clothes\" — Items of clothing; apparel.",
+   "keywords": [
+    "vestiti",
+    "clothes",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "albergo",
+   "value": "„albergo\" на италиански = английски „hotel\" — A large town house or mansion; a grand private residence, especially in France.",
+   "keywords": [
+    "albergo",
+    "hotel",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "attacco",
+   "value": "„attacco\" на италиански = английски „attack\" — An attempt to cause damage, injury to, or death of an opponent or enemy.",
+   "keywords": [
+    "attacco",
+    "attack",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "rotondo",
+   "value": "„rotondo\" на италиански = английски „round\" — Of shape:",
+   "keywords": [
+    "rotondo",
+    "round",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "aspettarsi",
+   "value": "„aspettarsi\" на италиански = английски „expect\" — To predict or believe that something will happen",
+   "keywords": [
+    "aspettarsi",
+    "expect",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cantare",
+   "value": "„cantare\" на италиански = английски „sing\" — To produce musical or harmonious sounds with one’s voice.",
+   "keywords": [
+    "cantare",
+    "sing",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "terribile",
+   "value": "„terribile\" на италиански = английски „terrible\" — Dreadful; causing terror, alarm and fear; awesome",
+   "keywords": [
+    "terribile",
+    "terrible",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sacco",
+   "value": "„sacco\" на италиански = английски „bag\" — A soft container made out of cloth, paper, thin plastic, etc. and open at the top, used…",
+   "keywords": [
+    "sacco",
+    "bag",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "storia",
+   "value": "„storia\" на италиански = английски „history\" — The aggregate of past events, both unrecorded and recorded.",
+   "keywords": [
+    "storia",
+    "history",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "blu",
+   "value": "„blu\" на италиански = английски „blue\" — Of a blue hue.",
+   "keywords": [
+    "blu",
+    "blue",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "vicino",
+   "value": "„vicino\" на италиански = английски „near\" — Physically close.",
+   "keywords": [
+    "vicino",
+    "near",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "al verde",
+   "value": "„al verde\" на италиански = английски „broke\" — Financially ruined, bankrupt.",
+   "keywords": [
+    "al verde",
+    "broke",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "stazione",
+   "value": "„stazione\" на италиански = английски „station\" — A stopping place.",
+   "keywords": [
+    "stazione",
+    "station",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "seriamente",
+   "value": "„seriamente\" на италиански = английски „seriously\" — In a serious or literal manner.",
+   "keywords": [
+    "seriamente",
+    "seriously",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "per sempre",
+   "value": "„per sempre\" на италиански = английски „forever\" — For all time, for all eternity; for a lifetime; for an infinite amount of time.",
+   "keywords": [
+    "per sempre",
+    "forever",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "franco",
+   "value": "„franco\" на италиански = английски „frank\" — Honest, especially in a manner that seems slightly blunt; candid; not reserved or disgu…",
+   "keywords": [
+    "franco",
+    "frank",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "salvo",
+   "value": "„salvo\" на италиански = английски „except\" — Used to introduce an exception or qualification to something previously stated.",
+   "keywords": [
+    "salvo",
+    "except",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "messaggio",
+   "value": "„messaggio\" на италиански = английски „message\" — A communication, or what is communicated; any concept or information conveyed.",
+   "keywords": [
+    "messaggio",
+    "message",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "intero",
+   "value": "„intero\" на италиански = английски „entire\" — Whole; complete.",
+   "keywords": [
+    "intero",
+    "entire",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "tavola",
+   "value": "„tavola\" на италиански = английски „table\" — Furniture with a top surface to accommodate a variety of uses.",
+   "keywords": [
+    "tavola",
+    "table",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "attraverso",
+   "value": "„attraverso\" на италиански = английски „across\" — To, toward, or from the far side of (something that lies between two points of interest).",
+   "keywords": [
+    "attraverso",
+    "across",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "roccia",
+   "value": "„roccia\" на италиански = английски „rock\" — A formation of minerals, specifically:",
+   "keywords": [
+    "roccia",
+    "rock",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bello",
+   "value": "„bello\" на италиански = английски „lovely\" — Delightful for beauty, harmony, or grace.",
+   "keywords": [
+    "bello",
+    "lovely",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "impugnatura",
+   "value": "„impugnatura\" на италиански = английски „handle\" — The part of an object which is (designed to be) held in the hand when used or moved.",
+   "keywords": [
+    "impugnatura",
+    "handle",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "mezzo",
+   "value": "„mezzo\" на италиански = английски „middle\" — A centre, midpoint.",
+   "keywords": [
+    "mezzo",
+    "middle",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "amico",
+   "value": "„amico\" на италиански = английски „buddy\" — A person far removed from the conversation.",
+   "keywords": [
+    "amico",
+    "buddy",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "proteggere",
+   "value": "„proteggere\" на италиански = английски „protect\" — To keep safe; to defend; to guard; to prevent harm coming to.",
+   "keywords": [
+    "proteggere",
+    "protect",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pavimento",
+   "value": "„pavimento\" на италиански = английски „floor\" — The interior bottom or surface of a house or building; the supporting surface of a room.",
+   "keywords": [
+    "pavimento",
+    "floor",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "giurare",
+   "value": "„giurare\" на италиански = английски „swear\" — To take an oath, to promise intensely, solemnly, and/or with legally binding effect.",
+   "keywords": [
+    "giurare",
+    "swear",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "spendere",
+   "value": "„spendere\" на италиански = английски „spend\" — To pay out (money).",
+   "keywords": [
+    "spendere",
+    "spend",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "situazione",
+   "value": "„situazione\" на италиански = английски „situation\" — The combination of circumstances at a given moment; a state of affairs.",
+   "keywords": [
+    "situazione",
+    "situation",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ring",
+   "value": "„ring\" на италиански = английски „ring\" — A solid object in the shape of a circle.",
+   "keywords": [
+    "ring",
+    "ring",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ovunque",
+   "value": "„ovunque\" на италиански = английски „anywhere\" — In or at any location.",
+   "keywords": [
+    "ovunque",
+    "anywhere",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pericoloso",
+   "value": "„pericoloso\" на италиански = английски „dangerous\" — Full of danger.",
+   "keywords": [
+    "pericoloso",
+    "dangerous",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "inventario",
+   "value": "„inventario\" на италиански = английски „bill\" — A written list or inventory. (Now obsolete except in specific senses or set phrases; bi…",
+   "keywords": [
+    "inventario",
+    "bill",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "esercito",
+   "value": "„esercito\" на италиански = английски „army\" — A large, highly organized military force, concerned mainly with ground (rather than air…",
+   "keywords": [
+    "esercito",
+    "army",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lamiera",
+   "value": "„lamiera\" на италиански = английски „lead\" — A heavy, pliable, inelastic metal element, having a bright, bluish color, but easily ta…",
+   "keywords": [
+    "lamiera",
+    "lead",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "bello",
+   "value": "„bello\" на италиански = английски „fair\" — Unblemished (figuratively or literally); clean and pure; innocent.",
+   "keywords": [
+    "bello",
+    "fair",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sole",
+   "value": "„sole\" на италиански = английски „sun\" — A star, especially when seen as the centre of any single solar system.",
+   "keywords": [
+    "sole",
+    "sun",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "lettera",
+   "value": "„lettera\" на италиански = английски „letter\" — A symbol in an alphabet.",
+   "keywords": [
+    "lettera",
+    "letter",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "stolto",
+   "value": "„stolto\" на италиански = английски „fool\" — A person with poor judgment or little intelligence.",
+   "keywords": [
+    "stolto",
+    "fool",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "attenzione",
+   "value": "„attenzione\" на италиански = английски „attention\" — Mental focus.",
+   "keywords": [
+    "attenzione",
+    "attention",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "club",
+   "value": "„club\" на италиански = английски „club\" — A heavy object, often a kind of stick, intended for use as a bludgeoning weapon or a pl…",
+   "keywords": [
+    "club",
+    "club",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "semplice",
+   "value": "„semplice\" на италиански = английски „simple\" — Uncomplicated; lacking complexity; taken by itself, with nothing added.",
+   "keywords": [
+    "semplice",
+    "simple",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "interessante",
+   "value": "„interessante\" на италиански = английски „interesting\" — Arousing or holding the attention or interest of someone.",
+   "keywords": [
+    "interessante",
+    "interesting",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "spazio",
+   "value": "„spazio\" на италиански = английски „space\" — Unlimited or generalized extent, physical or otherwise.",
+   "keywords": [
+    "spazio",
+    "space",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "prova",
+   "value": "„prova\" на италиански = английски „test\" — A challenge, trial.",
+   "keywords": [
+    "prova",
+    "test",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cornice",
+   "value": "„cornice\" на италиански = английски „box\" — Senses relating to a three-dimensional object or space.",
+   "keywords": [
+    "cornice",
+    "box",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "gruppo",
+   "value": "„gruppo\" на италиански = английски „group\" — A number of things or persons being in some relation to one another.",
+   "keywords": [
+    "gruppo",
+    "group",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "singolo",
+   "value": "„singolo\" на италиански = английски „single\" — Not accompanied by anything else; one in number.",
+   "keywords": [
+    "singolo",
+    "single",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "matrimonio",
+   "value": "„matrimonio\" на италиански = английски „marriage\" — The state of being married.",
+   "keywords": [
+    "matrimonio",
+    "marriage",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "unire",
+   "value": "„unire\" на италиански = английски „join\" — To connect or combine into one; to put together.",
+   "keywords": [
+    "unire",
+    "join",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "paura",
+   "value": "„paura\" на италиански = английски „fear\" — A strong, unpleasant emotion or feeling caused by actual or perceived danger or threat.",
+   "keywords": [
+    "paura",
+    "fear",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pace",
+   "value": "„pace\" на италиански = английски „peace\" — A state of tranquility, quiet, and harmony. For instance, a state free from civil distu…",
+   "keywords": [
+    "pace",
+    "peace",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "forza",
+   "value": "„forza\" на италиански = английски „force\" — Ability to influence; strength or energy of body or mind; active power; vigour; might; …",
+   "keywords": [
+    "forza",
+    "force",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "corto",
+   "value": "„corto\" на италиански = английски „short\" — Having a small distance from one end or edge to another, either horizontally or vertica…",
+   "keywords": [
+    "corto",
+    "short",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "normale",
+   "value": "„normale\" на италиански = английски „normal\" — According to norms or rules or to a regular pattern.",
+   "keywords": [
+    "normale",
+    "normal",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "presente",
+   "value": "„presente\" на италиански = английски „present\" — Relating to now, for the time being; current.",
+   "keywords": [
+    "presente",
+    "present",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "godere",
+   "value": "„godere\" на италиански = английски „enjoy\" — To receive pleasure or satisfaction from something.",
+   "keywords": [
+    "godere",
+    "enjoy",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "crimine",
+   "value": "„crimine\" на италиански = английски „crime\" — A specific act committed in violation of the law, especially criminal law.",
+   "keywords": [
+    "crimine",
+    "crime",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "cavallina",
+   "value": "„cavallina\" на италиански = английски „horse\" — A hoofed mammal, Equus ferus caballus, often used throughout history for riding and dra…",
+   "keywords": [
+    "cavallina",
+    "horse",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "suolo",
+   "value": "„suolo\" на италиански = английски „ground\" — The surface of the Earth, as opposed to the sky or water or underground.",
+   "keywords": [
+    "suolo",
+    "ground",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "americano",
+   "value": "„americano\" на италиански = английски „american\" — A citizen or national of the United States of America.",
+   "keywords": [
+    "americano",
+    "american",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "contare",
+   "value": "„contare\" на италиански = английски „count\" — To recite numbers in sequence.",
+   "keywords": [
+    "contare",
+    "count",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "area",
+   "value": "„area\" на италиански = английски „area\" — A measure of the extent of a surface; it is measured in square units.",
+   "keywords": [
+    "area",
+    "area",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "carico",
+   "value": "„carico\" на италиански = английски „charge\" — The amount of money levied for a service.",
+   "keywords": [
+    "carico",
+    "charge",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "onore",
+   "value": "„onore\" на италиански = английски „honor\" — Recognition of importance or value; respect; veneration (of someone, usually for being …",
+   "keywords": [
+    "onore",
+    "honor",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "pranzo",
+   "value": "„pranzo\" на италиански = английски „lunch\" — A light meal usually eaten around midday, notably when not as main meal of the day.",
+   "keywords": [
+    "pranzo",
+    "lunch",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "radio",
+   "value": "„radio\" на италиански = английски „radio\" — The technology that allows for the transmission of sound or other signals by modulation…",
+   "keywords": [
+    "radio",
+    "radio",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "idiota",
+   "value": "„idiota\" на италиански = английски „idiot\" — A person of low general intelligence.",
+   "keywords": [
+    "idiota",
+    "idiot",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "palla",
+   "value": "„palla\" на италиански = английски „ball\" — A solid or hollow sphere, or roughly spherical mass.",
+   "keywords": [
+    "palla",
+    "ball",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "sorpresa",
+   "value": "„sorpresa\" на италиански = английски „surprise\" — Something unexpected.",
+   "keywords": [
+    "sorpresa",
+    "surprise",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "carta",
+   "value": "„carta\" на италиански = английски „paper\" — A sheet material typically used for writing on or printing on (or as a non-waterproof c…",
+   "keywords": [
+    "carta",
+    "paper",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "chiave",
+   "value": "„chiave\" на италиански = английски „key\" — An object designed to open and close a lock or to activate or deactivate something, esp…",
+   "keywords": [
+    "chiave",
+    "key",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "barca",
+   "value": "„barca\" на италиански = английски „boat\" — A craft used for transportation of goods, fishing, racing, recreational cruising, or mi…",
+   "keywords": [
+    "barca",
+    "boat",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "rapidamente",
+   "value": "„rapidamente\" на италиански = английски „quickly\" — Rapidly; with speed; fast; with expedition.",
+   "keywords": [
+    "rapidamente",
+    "quickly",
+    "превод",
+    "италиански"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "di oro",
+   "value": "„di oro\" на италиански = английски „gold\" — Made of gold.",
+   "keywords": [
+    "di oro",
+    "gold",
+    "превод",
+    "италиански"
+   ]
+  }
+ ]
+}

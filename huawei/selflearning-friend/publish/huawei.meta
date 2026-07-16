@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: Самообучаващ се приятел (huawei издание). Генерирано от AppPublisherBot.
+# Приложение: KCY Learning Buddy (huawei издание). Генерирано от AppPublisherBot.
 
 [Set basic app information]
 App type: App (приложение, НЕ игра)
-App name: Самообучаващ се приятел            # 23 / 30 знака
+App name: KCY Learning Buddy            # 18 / 30 знака
 App package name: com.kcy.selflearningfriend.hw   # 29 / 128 знака
 Level-1 app category: Education
 

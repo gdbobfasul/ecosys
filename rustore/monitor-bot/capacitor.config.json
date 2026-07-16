@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.monitorbot.rustore",
-  "appName": "Монитор-робот",
+  "appName": "KCY Site Monitor",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

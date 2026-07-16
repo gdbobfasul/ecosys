@@ -1,4 +1,4 @@
-# Data Safety — Бизнес FAQ робот (Huawei AppGallery)
+# Data Safety — KCY FAQ Desk (Huawei AppGallery)
 
 | Тип данни | Събира ли се? | Споделя ли се? | Бележка |
 |-----------|---------------|----------------|---------|

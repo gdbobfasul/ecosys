@@ -2,7 +2,7 @@
 
 ## Идентичност
 - App ID: `com.kcy.monitorbot.huawei`
-- Име: Монитор-робот
+- Име: KCY Site Monitor
 - Акцент: #16c79a (Huawei тюркоаз)
 
 ## Активи

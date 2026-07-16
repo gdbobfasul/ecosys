@@ -1,4 +1,4 @@
-# Тестване — Цена-робот (RUStore)
+# Тестване — KCY Price Watch (RUStore)
 
 ## В браузър (без Android SDK)
 1. `npm install`

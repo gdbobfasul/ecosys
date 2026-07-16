@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.duel.rustore",
-  "appName": "Дуел на ринга",
+  "appName": "KCY Ring Clash",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

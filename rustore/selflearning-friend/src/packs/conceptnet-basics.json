@@ -1,0 +1,7207 @@
+{
+ "name": "Житейски знания (на английски)",
+ "topic": "общи знания",
+ "source": "ConceptNet (CC BY-SA)",
+ "entries": [
+  {
+   "type": "факт",
+   "key": "baseball",
+   "value": "baseball is a sport.",
+   "keywords": [
+    "baseball",
+    "sport"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "yo yo",
+   "value": "yo yo is a toy.",
+   "keywords": [
+    "yo yo",
+    "toy"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dog",
+   "value": "dog can bark.",
+   "keywords": [
+    "dog",
+    "bark"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "polo",
+   "value": "Polo is a game.",
+   "keywords": [
+    "polo",
+    "game"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "gold",
+   "value": "gold is a kind of metal.",
+   "keywords": [
+    "gold",
+    "metal"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "reading",
+   "value": "Sometimes reading causes learning.",
+   "keywords": [
+    "reading",
+    "learning"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "linux",
+   "value": "linux is a kind of operating system.",
+   "keywords": [
+    "linux",
+    "operating system"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fish",
+   "value": "You are likely to find a fish in water.",
+   "keywords": [
+    "fish",
+    "water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "shark",
+   "value": "You are likely to find a shark in any ocean.",
+   "keywords": [
+    "shark",
+    "ocean"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "stapler",
+   "value": "You are likely to find a stapler in a desk.",
+   "keywords": [
+    "stapler",
+    "desk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "humans",
+   "value": "humans can die only once.",
+   "keywords": [
+    "humans",
+    "die only once"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "saw",
+   "value": "A saw is a tool.",
+   "keywords": [
+    "saw",
+    "tool"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "coat",
+   "value": "*Something you find in a closet is a coat.",
+   "keywords": [
+    "coat",
+    "closet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "computers",
+   "value": "*Something you find at the office is computers.",
+   "keywords": [
+    "computers",
+    "office"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "books",
+   "value": "*Something you find on a shelf is books.",
+   "keywords": [
+    "books",
+    "shelf"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "clothing",
+   "value": "*Something you find in the closet is clothing.",
+   "keywords": [
+    "clothing",
+    "closet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "alcohol",
+   "value": "alcohol can cloud your judgement.",
+   "keywords": [
+    "alcohol",
+    "cloud judgement"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "keyboard",
+   "value": "a keyboard is part of a computer.",
+   "keywords": [
+    "keyboard",
+    "computer"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cat",
+   "value": "You are likely to find a cat in my lap.",
+   "keywords": [
+    "cat",
+    "lap"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "water",
+   "value": "You are likely to find water in a lake.",
+   "keywords": [
+    "water",
+    "lake"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sex",
+   "value": "Sex is fun.",
+   "keywords": [
+    "sex",
+    "fun"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "doing housework",
+   "value": "The effect of doing housework is a clean house.",
+   "keywords": [
+    "doing housework",
+    "clean house"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "apple",
+   "value": "apple can be red.",
+   "keywords": [
+    "apple",
+    "red"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tennis",
+   "value": "Tennis is a sport.",
+   "keywords": [
+    "tennis",
+    "sport"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dog",
+   "value": "You are likely to find a dog in a kennel.",
+   "keywords": [
+    "dog",
+    "kennel"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "paper clips",
+   "value": "*Something you find in the desk is paper clips.",
+   "keywords": [
+    "paper clips",
+    "desk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "telephone",
+   "value": "*Something you find on your desk is telephone.",
+   "keywords": [
+    "telephone",
+    "desk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "comb",
+   "value": "a comb can part your hair.",
+   "keywords": [
+    "comb",
+    "part hair"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "knife",
+   "value": "knife can spread butter.",
+   "keywords": [
+    "knife",
+    "spread butter"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "get money from",
+   "value": "If you want to get some money from someone then you should ask.",
+   "keywords": [
+    "get money from",
+    "ask"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "get up early",
+   "value": "If you want to get up early then you should set the alarm clock.",
+   "keywords": [
+    "get up early",
+    "set alarm clock"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "listen to music",
+   "value": "If you want to listen to music then you should turn on a radio.",
+   "keywords": [
+    "listen to music",
+    "turn on radio"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "rain",
+   "value": "rain is water.",
+   "keywords": [
+    "rain",
+    "water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sex",
+   "value": "Sex is an activity.",
+   "keywords": [
+    "sex",
+    "activity"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "venus",
+   "value": "Venus is a planet.",
+   "keywords": [
+    "venus",
+    "planet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bed",
+   "value": "You can use a bed to have sex.",
+   "keywords": [
+    "bed",
+    "have sex"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "telephone",
+   "value": "You can use a telephone to communicate.",
+   "keywords": [
+    "telephone",
+    "communicate"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "children",
+   "value": "You are likely to find children in a school.",
+   "keywords": [
+    "children",
+    "school"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "jellyfish",
+   "value": "You are likely to find a jellyfish in most oceans.",
+   "keywords": [
+    "jellyfish",
+    "most oceans"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "magician",
+   "value": "A magician can fool the audience.",
+   "keywords": [
+    "magician",
+    "fool audience"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pilot",
+   "value": "A pilot can land a plane.",
+   "keywords": [
+    "pilot",
+    "land plane"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "buy",
+   "value": "If you want to buy something then you should have money.",
+   "keywords": [
+    "buy",
+    "have money"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "football",
+   "value": "football is a type of game.",
+   "keywords": [
+    "football",
+    "game"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "soccer",
+   "value": "Soccer is a sport.",
+   "keywords": [
+    "soccer",
+    "sport"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "keyboard",
+   "value": "A keyboard  is for typing.",
+   "keywords": [
+    "keyboard",
+    "typing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "words",
+   "value": "*Something you find in books is words.",
+   "keywords": [
+    "words",
+    "books"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "exercise",
+   "value": "Sometimes exercise causes sweat.",
+   "keywords": [
+    "exercise",
+    "sweat"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "going to get haircut",
+   "value": "The effect of going to get a haircut is your hair will be shorter.",
+   "keywords": [
+    "going to get haircut",
+    "hair will shorter"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "commit perjury",
+   "value": "If you want to commit perjury then you should lie.",
+   "keywords": [
+    "commit perjury",
+    "lie"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "see exhibits",
+   "value": "Something you need to do before you see exhibits is go to a museum.",
+   "keywords": [
+    "see exhibits",
+    "go to museum"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "corn",
+   "value": "Corn is a vegetable.",
+   "keywords": [
+    "corn",
+    "vegetable"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "teeth",
+   "value": "*Something you find in your mouth is teeth.",
+   "keywords": [
+    "teeth",
+    "mouth"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "going on vacation",
+   "value": "Something that might happen as a consequence of going on a vacation is relaxation.",
+   "keywords": [
+    "going on vacation",
+    "relaxation"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sex",
+   "value": "Sometimes sex causes children.",
+   "keywords": [
+    "sex",
+    "children"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "birds",
+   "value": "Birds have feathers.",
+   "keywords": [
+    "birds",
+    "feathers"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "maintain muscle strength",
+   "value": "If you want to maintain muscle strength then you should exercise.",
+   "keywords": [
+    "maintain muscle strength",
+    "exercise"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sleep",
+   "value": "If you want to sleep then you should close your eyes.",
+   "keywords": [
+    "sleep",
+    "close eyes"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "chair",
+   "value": "*Something you find at the office is a chair.",
+   "keywords": [
+    "chair",
+    "office"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cloud",
+   "value": "*Something you find in the sky is a cloud.",
+   "keywords": [
+    "cloud",
+    "sky"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "have checkup",
+   "value": "If you want to have a checkup then you should make a doctor's appointment.",
+   "keywords": [
+    "have checkup",
+    "make doctor's appointment"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bass",
+   "value": "A bass is a kind of fish.",
+   "keywords": [
+    "bass",
+    "fish"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "doll",
+   "value": "a doll is a toy.",
+   "keywords": [
+    "doll",
+    "toy"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "rock",
+   "value": "rock is a type of music.",
+   "keywords": [
+    "rock",
+    "music"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "boat",
+   "value": "You are likely to find a boat in the water.",
+   "keywords": [
+    "boat",
+    "water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "food",
+   "value": "*Something you find in the refrigerator is food.",
+   "keywords": [
+    "food",
+    "refrigerator"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "exercising",
+   "value": "Exercising requires energy.",
+   "keywords": [
+    "exercising",
+    "energy"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go for drive",
+   "value": "Something you need to do before you go for a drive is get into the car.",
+   "keywords": [
+    "go for drive",
+    "get into car"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "biology",
+   "value": "biology is a science.",
+   "keywords": [
+    "biology",
+    "science"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "college",
+   "value": "A college is a place.",
+   "keywords": [
+    "college",
+    "place"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "book",
+   "value": "a book is used for learning.",
+   "keywords": [
+    "book",
+    "learning"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "water",
+   "value": "You can use water to drink.",
+   "keywords": [
+    "water",
+    "drink"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "chimney",
+   "value": "*Something you find on a roof is a chimney.",
+   "keywords": [
+    "chimney",
+    "roof"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "computer",
+   "value": "*Something you find in a house is a computer.",
+   "keywords": [
+    "computer",
+    "house"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "glasses",
+   "value": "*Something you find in the cupboard is glasses.",
+   "keywords": [
+    "glasses",
+    "cupboard"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "lawn mower",
+   "value": "*Something you find in the garage is a lawn mower.",
+   "keywords": [
+    "lawn mower",
+    "garage"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "librarians",
+   "value": "*Something you find at the library is librarians.",
+   "keywords": [
+    "librarians",
+    "library"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tablecloth",
+   "value": "*Something you find on a table is a tablecloth.",
+   "keywords": [
+    "tablecloth",
+    "table"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "lighting match",
+   "value": "Something that might happen as a consequence of lighting a match is fire.",
+   "keywords": [
+    "lighting match",
+    "fire"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "playing",
+   "value": "The effect of playing is fun.",
+   "keywords": [
+    "playing",
+    "fun"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go to bed",
+   "value": "Something you need to do before you go to bed is turn off the light.",
+   "keywords": [
+    "go to bed",
+    "turn off light"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sleeping",
+   "value": "sleeping requires closing your eyes.",
+   "keywords": [
+    "sleeping",
+    "closing eyes"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "world",
+   "value": "the world is round.",
+   "keywords": [
+    "world",
+    "round"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "goldfish",
+   "value": "a goldfish is a carp.",
+   "keywords": [
+    "goldfish",
+    "carp"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "gravity",
+   "value": "gravity is a kind of force.",
+   "keywords": [
+    "gravity",
+    "force"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "mastercard",
+   "value": "a mastercard is a type of credit card.",
+   "keywords": [
+    "mastercard",
+    "credit card"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "murder",
+   "value": "a murder is a crime.",
+   "keywords": [
+    "murder",
+    "crime"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "carpet",
+   "value": "*Something you find in a house is a carpet.",
+   "keywords": [
+    "carpet",
+    "house"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dresser",
+   "value": "You are likely to find a dresser in a bedroom.",
+   "keywords": [
+    "dresser",
+    "bedroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "literature",
+   "value": "*Something you find at the library is literature.",
+   "keywords": [
+    "literature",
+    "library"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "money",
+   "value": "You are likely to find a money in a bank.",
+   "keywords": [
+    "money",
+    "bank"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "shingle",
+   "value": "*Something you find on the roof is a shingle.",
+   "keywords": [
+    "shingle",
+    "roof"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "shirt",
+   "value": "You are likely to find a shirt in closet.",
+   "keywords": [
+    "shirt",
+    "closet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cats",
+   "value": "Cats can hunt mice.",
+   "keywords": [
+    "cats",
+    "hunt mice"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "gardener",
+   "value": "a gardener can water his plants.",
+   "keywords": [
+    "gardener",
+    "water plants"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "having haircut",
+   "value": "Sometimes having a haircut causes you to have shorter hair.",
+   "keywords": [
+    "having haircut",
+    "have shorter hair"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "playing game with friends",
+   "value": "The effect of playing a game with your friends is fun.",
+   "keywords": [
+    "playing game with friends",
+    "fun"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "procreating",
+   "value": "Something that might happen as a consequence of procreating is having children.",
+   "keywords": [
+    "procreating",
+    "having children"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tickling",
+   "value": "Something that might happen as a consequence of tickling is laughter.",
+   "keywords": [
+    "tickling",
+    "laughter"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dream",
+   "value": "Something you need to do before you dream is sleep.",
+   "keywords": [
+    "dream",
+    "sleep"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go for haircut",
+   "value": "If you want to go for a haircut then you should go to the barber.",
+   "keywords": [
+    "go for haircut",
+    "go to barber"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go for run",
+   "value": "Something you need to do before you go for a run is put on running shoes.",
+   "keywords": [
+    "go for run",
+    "put on running shoes"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "have physical exam",
+   "value": "If you want to have a physical exam then you should go to a doctor.",
+   "keywords": [
+    "have physical exam",
+    "go to doctor"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cars",
+   "value": "Some cars are expensive.",
+   "keywords": [
+    "cars",
+    "expensive"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "anger",
+   "value": "anger is a kind of emotion.",
+   "keywords": [
+    "anger",
+    "emotion"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ball",
+   "value": "a ball is a toy.",
+   "keywords": [
+    "ball",
+    "toy"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "computer",
+   "value": "a computer is an electronic device.",
+   "keywords": [
+    "computer",
+    "electronic device"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "horn",
+   "value": "A horn is a musical instrument.",
+   "keywords": [
+    "horn",
+    "musical instrument"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pistol",
+   "value": "a pistol is a gun.",
+   "keywords": [
+    "pistol",
+    "gun"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "roses",
+   "value": "Roses are flowers.",
+   "keywords": [
+    "roses",
+    "flowers"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "trout",
+   "value": "trout is a fish.",
+   "keywords": [
+    "trout",
+    "fish"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cloth",
+   "value": "You can use cloth to clean.",
+   "keywords": [
+    "cloth",
+    "clean"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fruit",
+   "value": "a fruit is for eating.",
+   "keywords": [
+    "fruit",
+    "eating"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "airplane",
+   "value": "*Something you find in the sky is airplane.",
+   "keywords": [
+    "airplane",
+    "sky"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "animal",
+   "value": "*Something you find at a zoo is an animal.",
+   "keywords": [
+    "animal",
+    "zoo"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bicycle",
+   "value": "You are likely to find a bicycle in the garage.",
+   "keywords": [
+    "bicycle",
+    "garage"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "capital",
+   "value": "You are likely to find a capital in a country.",
+   "keywords": [
+    "capital",
+    "country"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "car",
+   "value": "You are likely to find a car in the city.",
+   "keywords": [
+    "car",
+    "city"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "human",
+   "value": "You are likely to find a human in the school.",
+   "keywords": [
+    "human",
+    "school"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "motherboard",
+   "value": "You are likely to find a motherboard in a computer.",
+   "keywords": [
+    "motherboard",
+    "computer"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "phone",
+   "value": "*Something you find at a desk is your phone.",
+   "keywords": [
+    "phone",
+    "desk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "shoe",
+   "value": "*Something you find in a closet is a shoe.",
+   "keywords": [
+    "shoe",
+    "closet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cat",
+   "value": "Cat can hunt mice.",
+   "keywords": [
+    "cat",
+    "hunt mice"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "chicken",
+   "value": "the chicken can cross the road.",
+   "keywords": [
+    "chicken",
+    "cross road"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dealer",
+   "value": "dealer can deal cards.",
+   "keywords": [
+    "dealer",
+    "deal cards"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "applying for job",
+   "value": "The effect of applying for a job is getting a job.",
+   "keywords": [
+    "applying for job",
+    "getting job"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "smoking",
+   "value": "The effect of smoking is lung cancer.",
+   "keywords": [
+    "smoking",
+    "lung cancer"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "kill",
+   "value": "Something you need to do before you kill someone is get a weapon.",
+   "keywords": [
+    "kill",
+    "get weapon"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "swim",
+   "value": "If you want to swim then you should get into the water.",
+   "keywords": [
+    "swim",
+    "get into water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "circle",
+   "value": "A circle is round.",
+   "keywords": [
+    "circle",
+    "round"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "glue",
+   "value": "Glue is sticky.",
+   "keywords": [
+    "glue",
+    "sticky"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "butter",
+   "value": "butter is a food.",
+   "keywords": [
+    "butter",
+    "food"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "canada",
+   "value": "Canada is a country.",
+   "keywords": [
+    "canada",
+    "country"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "chess",
+   "value": "Chess is a game.",
+   "keywords": [
+    "chess",
+    "game"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "french",
+   "value": "French is a language.",
+   "keywords": [
+    "french",
+    "language"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "highway",
+   "value": "A highway is a type of road.",
+   "keywords": [
+    "highway",
+    "road"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "hockey",
+   "value": "hockey is a sport.",
+   "keywords": [
+    "hockey",
+    "sport"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "java",
+   "value": "java is a kind of programming language.",
+   "keywords": [
+    "java",
+    "programming language"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "restaurants",
+   "value": "restaurants are places.",
+   "keywords": [
+    "restaurants",
+    "places"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tuba",
+   "value": "A tuba is a musical instrument.",
+   "keywords": [
+    "tuba",
+    "musical instrument"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "yoyo",
+   "value": "A yoyo is a type of toy.",
+   "keywords": [
+    "yoyo",
+    "toy"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "camera",
+   "value": "You can use a camera to take pictures.",
+   "keywords": [
+    "camera",
+    "take pictures"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "computer",
+   "value": "a computer is for communication.",
+   "keywords": [
+    "computer",
+    "communication"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "net",
+   "value": "a net is used for catching fish.",
+   "keywords": [
+    "net",
+    "catching fish"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "playing sports",
+   "value": "playing sports is for fun.",
+   "keywords": [
+    "playing sports",
+    "fun"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "shoes",
+   "value": "shoes are used to protect feet.",
+   "keywords": [
+    "shoes",
+    "protect feet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "voice",
+   "value": "a voice is for Singing.",
+   "keywords": [
+    "voice",
+    "singing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bookshelf",
+   "value": "You are likely to find a bookshelf in the library.",
+   "keywords": [
+    "bookshelf",
+    "library"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bowl",
+   "value": "*Something you find in the cupboard is a bowl.",
+   "keywords": [
+    "bowl",
+    "cupboard"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dust bunny",
+   "value": "*Something you find under the bed is a dust bunny.",
+   "keywords": [
+    "dust bunny",
+    "bed"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "grass",
+   "value": "*Something you find at the park is grass.",
+   "keywords": [
+    "grass",
+    "park"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "nose",
+   "value": "You are likely to find a nose in your face.",
+   "keywords": [
+    "nose",
+    "face"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pen",
+   "value": "You are likely to find a pen in an office.",
+   "keywords": [
+    "pen",
+    "office"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "plate",
+   "value": "*Something you find on the table is a plate.",
+   "keywords": [
+    "plate",
+    "table"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "star",
+   "value": "*Something you find in space is a star.",
+   "keywords": [
+    "star",
+    "space"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "toilet",
+   "value": "You are likely to find a toilet in a bathroom.",
+   "keywords": [
+    "toilet",
+    "bathroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tongue",
+   "value": "*Something you find in your mouth is your tongue.",
+   "keywords": [
+    "tongue",
+    "mouth"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "baby",
+   "value": "a baby can wet his diaper.",
+   "keywords": [
+    "baby",
+    "wet diaper"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fire",
+   "value": "fire can burn things.",
+   "keywords": [
+    "fire",
+    "burn things"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "host",
+   "value": "a Host can welcome guests.",
+   "keywords": [
+    "host",
+    "welcome guests"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "screwdriver",
+   "value": "A screwdriver can turn a screw.",
+   "keywords": [
+    "screwdriver",
+    "turn screw"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "having sex",
+   "value": "Sometimes having sex causes babies.",
+   "keywords": [
+    "having sex",
+    "babies"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "walking in rain",
+   "value": "Sometimes walking in the rain causes you to get wet.",
+   "keywords": [
+    "walking in rain",
+    "get wet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cats",
+   "value": "Cats have whiskers.",
+   "keywords": [
+    "cats",
+    "whiskers"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "most pizza",
+   "value": "Most pizza has cheese on it.",
+   "keywords": [
+    "most pizza",
+    "cheese on"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bathe",
+   "value": "Something you need to do before you bathe is take your clothes off.",
+   "keywords": [
+    "bathe",
+    "take clothes off"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "diminish own hunger",
+   "value": "If you want to diminish your own hunger then you should eat.",
+   "keywords": [
+    "diminish own hunger",
+    "eat"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "drive",
+   "value": "If you want to drive then you should get in the car.",
+   "keywords": [
+    "drive",
+    "get in car"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "have haircut",
+   "value": "If you want to have a haircut then you should go to the barber.",
+   "keywords": [
+    "have haircut",
+    "go to barber"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "reproduce",
+   "value": "If you want to reproduce then you should have sex.",
+   "keywords": [
+    "reproduce",
+    "have sex"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "music",
+   "value": "Music can be soothing.",
+   "keywords": [
+    "music",
+    "soothing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "people",
+   "value": "people can be stupid.",
+   "keywords": [
+    "people",
+    "stupid"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "air",
+   "value": "Air is a gas.",
+   "keywords": [
+    "air",
+    "gas"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "chicken",
+   "value": "chicken is a type of food.",
+   "keywords": [
+    "chicken",
+    "food"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "china",
+   "value": "China is a country.",
+   "keywords": [
+    "china",
+    "country"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "flies",
+   "value": "Flies are insects.",
+   "keywords": [
+    "flies",
+    "insects"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "lion",
+   "value": "a lion is an animal.",
+   "keywords": [
+    "lion",
+    "animal"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "love",
+   "value": "love is a feeling.",
+   "keywords": [
+    "love",
+    "feeling"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "book",
+   "value": "a book is part of library.",
+   "keywords": [
+    "book",
+    "library"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "word",
+   "value": "a word is part of a sentence.",
+   "keywords": [
+    "word",
+    "sentence"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "boat",
+   "value": "You can use a boat to travel on the water.",
+   "keywords": [
+    "boat",
+    "travel on water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "canvas",
+   "value": "a canvas is for painting on.",
+   "keywords": [
+    "canvas",
+    "painting on"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cups",
+   "value": "Cups are used to drink from.",
+   "keywords": [
+    "cups",
+    "drink from"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "glass",
+   "value": "a glass is used for drinking.",
+   "keywords": [
+    "glass",
+    "drinking"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "gun",
+   "value": "You can use a gun to kill someone.",
+   "keywords": [
+    "gun",
+    "kill"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "hammer",
+   "value": "a hammer is for driving nails.",
+   "keywords": [
+    "hammer",
+    "driving nails"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pencil",
+   "value": "You can use a pencil to write something on paper.",
+   "keywords": [
+    "pencil",
+    "write on paper"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bread",
+   "value": "You are likely to find bread in breadbox.",
+   "keywords": [
+    "bread",
+    "breadbox"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "corner cupboard",
+   "value": "You are likely to find a corner cupboard in the kitchen.",
+   "keywords": [
+    "corner cupboard",
+    "kitchen"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "creek",
+   "value": "*Something you find in a forest is a creek.",
+   "keywords": [
+    "creek",
+    "forest"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "door",
+   "value": "You are likely to find a door in a building.",
+   "keywords": [
+    "door",
+    "building"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "floor",
+   "value": "*Something you find under the table is floor.",
+   "keywords": [
+    "floor",
+    "table"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "humans",
+   "value": "*Something you find in a country is humans.",
+   "keywords": [
+    "humans",
+    "country"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "knife",
+   "value": "*Something you find in the kitchen is a knife.",
+   "keywords": [
+    "knife",
+    "kitchen"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "peanut butter",
+   "value": "*Something you find in the jar is peanut butter.",
+   "keywords": [
+    "peanut butter",
+    "jar"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "post notes",
+   "value": "*Something you find at a desk is post it notes.",
+   "keywords": [
+    "post notes",
+    "desk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "potato",
+   "value": "You are likely to find a potato in kitchen.",
+   "keywords": [
+    "potato",
+    "kitchen"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sink",
+   "value": "*Something you find in the kitchen is a sink.",
+   "keywords": [
+    "sink",
+    "kitchen"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "slide",
+   "value": "*Something you find at a park is a slide.",
+   "keywords": [
+    "slide",
+    "park"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "toilet paper",
+   "value": "You are likely to find toilet paper in a bathroom.",
+   "keywords": [
+    "toilet paper",
+    "bathroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bombs",
+   "value": "bombs can destroy buildings.",
+   "keywords": [
+    "bombs",
+    "destroy buildings"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cars",
+   "value": "Cars can go fast.",
+   "keywords": [
+    "cars",
+    "go fast"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cup",
+   "value": "A cup can hold liquids.",
+   "keywords": [
+    "cup",
+    "hold liquids"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "person",
+   "value": "A person can cross a street.",
+   "keywords": [
+    "person",
+    "cross street"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pianist",
+   "value": "A pianist can play a piano.",
+   "keywords": [
+    "pianist",
+    "play piano"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "thief",
+   "value": "The thief can case the house.",
+   "keywords": [
+    "thief",
+    "case house"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "going to laundromat",
+   "value": "The effect of going to a laundromat is clean clothes.",
+   "keywords": [
+    "going to laundromat",
+    "clean clothes"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "going to zoo",
+   "value": "The effect of going to the zoo is seeing the animals.",
+   "keywords": [
+    "going to zoo",
+    "seeing animals"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "trees",
+   "value": "Trees have leaves.",
+   "keywords": [
+    "trees",
+    "leaves"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "wine",
+   "value": "Wine contains alcohol.",
+   "keywords": [
+    "wine",
+    "alcohol"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "clean clothing",
+   "value": "If you want to clean clothing then you should wash them.",
+   "keywords": [
+    "clean clothing",
+    "wash"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "eat",
+   "value": "Something you need to do before you eat is find food.",
+   "keywords": [
+    "eat",
+    "find food"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go to opera",
+   "value": "Something you need to do before you go to an opera is buy tickets.",
+   "keywords": [
+    "go to opera",
+    "buy tickets"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pass university exams",
+   "value": "Something you need to do before you pass your university exams is study.",
+   "keywords": [
+    "pass university exams",
+    "study"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sate hunger",
+   "value": "If you want to sate your hunger then you should eat.",
+   "keywords": [
+    "sate hunger",
+    "eat"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tape television show",
+   "value": "If you want to tape a television show then you should set your vcr.",
+   "keywords": [
+    "tape television show",
+    "set vcr"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dogs",
+   "value": "dogs are very loyal.",
+   "keywords": [
+    "dogs",
+    "very loyal"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "america",
+   "value": "America is a country.",
+   "keywords": [
+    "america",
+    "country"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "blue",
+   "value": "Blue is a color.",
+   "keywords": [
+    "blue",
+    "color"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "classrooms",
+   "value": "Classrooms are in schools.",
+   "keywords": [
+    "classrooms",
+    "in schools"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "coke",
+   "value": "Coke is a soda.",
+   "keywords": [
+    "coke",
+    "soda"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fly",
+   "value": "a fly is a insect.",
+   "keywords": [
+    "fly",
+    "insect"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "guitare",
+   "value": "A guitare is an instrument.",
+   "keywords": [
+    "guitare",
+    "instrument"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "iron",
+   "value": "iron is a metal.",
+   "keywords": [
+    "iron",
+    "metal"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "oxygen",
+   "value": "oxygen is a gas.",
+   "keywords": [
+    "oxygen",
+    "gas"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tv",
+   "value": "TV is an abbreviation for television.",
+   "keywords": [
+    "tv",
+    "abbreviation for television"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "woodwind",
+   "value": "woodwind is a kind of instrument.",
+   "keywords": [
+    "woodwind",
+    "instrument"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "galaxy",
+   "value": "A galaxy is part of the universe.",
+   "keywords": [
+    "galaxy",
+    "universe"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "god",
+   "value": "God is part of religion.",
+   "keywords": [
+    "god",
+    "religion"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bomb",
+   "value": "a bomb is used for blowing things up.",
+   "keywords": [
+    "bomb",
+    "blowing things up"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "computers",
+   "value": "Computers are used to work.",
+   "keywords": [
+    "computers",
+    "work"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "internet",
+   "value": "The internet can be used for research.",
+   "keywords": [
+    "internet",
+    "research"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pool",
+   "value": "a pool is used for swiming.",
+   "keywords": [
+    "pool",
+    "swiming"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "school",
+   "value": "school is for learning.",
+   "keywords": [
+    "school",
+    "learning"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sheet",
+   "value": "sheet is for covering bed.",
+   "keywords": [
+    "sheet",
+    "covering bed"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "spoon",
+   "value": "a spoon is for Eating.",
+   "keywords": [
+    "spoon",
+    "eating"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "table",
+   "value": "a table is for Putting things on.",
+   "keywords": [
+    "table",
+    "putting things on"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "weapon",
+   "value": "a weapon is for killing someone.",
+   "keywords": [
+    "weapon",
+    "killing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "wine",
+   "value": "wine is for Drinking.",
+   "keywords": [
+    "wine",
+    "drinking"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bedroom",
+   "value": "*Something you find in a house is your bedroom.",
+   "keywords": [
+    "bedroom",
+    "house"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "birds",
+   "value": "Somewhere birds can be is in the sky.",
+   "keywords": [
+    "birds",
+    "sky"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "buildings",
+   "value": "You are likely to find buildings in a city.",
+   "keywords": [
+    "buildings",
+    "city"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "child",
+   "value": "*Something you find at a school is a child.",
+   "keywords": [
+    "child",
+    "school"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "college",
+   "value": "You are likely to find a college in a city.",
+   "keywords": [
+    "college",
+    "city"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "commercial",
+   "value": "*Something you find on television is a commercial.",
+   "keywords": [
+    "commercial",
+    "television"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "crab",
+   "value": "You are likely to find a crab in sand.",
+   "keywords": [
+    "crab",
+    "sand"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "elephants",
+   "value": "*Something you find at a zoo is elephants.",
+   "keywords": [
+    "elephants",
+    "zoo"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "galaxy",
+   "value": "*Something you find in the universe is the galaxy.",
+   "keywords": [
+    "galaxy",
+    "universe"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "information",
+   "value": "*Something you find on the Internet is information.",
+   "keywords": [
+    "information",
+    "internet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "milk",
+   "value": "*Something you find on the fridge is milk.",
+   "keywords": [
+    "milk",
+    "fridge"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "movie",
+   "value": "*Something you find at the theater is a movie.",
+   "keywords": [
+    "movie",
+    "theater"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "opera singer",
+   "value": "*Something you find at an opera is a opera singer.",
+   "keywords": [
+    "opera singer",
+    "opera"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pickles",
+   "value": "*Something you find in a jar is pickles.",
+   "keywords": [
+    "pickles",
+    "jar"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "prisoner",
+   "value": "*Something you find in jail is a prisoner.",
+   "keywords": [
+    "prisoner",
+    "jail"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "teacher",
+   "value": "*Something you find in a classroom is a teacher.",
+   "keywords": [
+    "teacher",
+    "classroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bird",
+   "value": "An activity a bird can do is sing.",
+   "keywords": [
+    "bird",
+    "sing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "computer",
+   "value": "A computer can process information.",
+   "keywords": [
+    "computer",
+    "process information"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "computers",
+   "value": "An activity computers can do is compute.",
+   "keywords": [
+    "computers",
+    "compute"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "people",
+   "value": "People can talk to each other.",
+   "keywords": [
+    "people",
+    "talk to each other"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "post office",
+   "value": "a post office can forward your mail.",
+   "keywords": [
+    "post office",
+    "forward mail"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "teacher",
+   "value": "a teacher can school students.",
+   "keywords": [
+    "teacher",
+    "school students"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cashing in",
+   "value": "Sometimes cashing in causes you to get money.",
+   "keywords": [
+    "cashing in",
+    "get money"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "killing",
+   "value": "Sometimes killing causes death.",
+   "keywords": [
+    "killing",
+    "death"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "singing",
+   "value": "The effect of singing is a sore throat.",
+   "keywords": [
+    "singing",
+    "sore throat"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bicycle",
+   "value": "A bicycle has two wheels.",
+   "keywords": [
+    "bicycle",
+    "two wheels"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "horse",
+   "value": "A horse has four legs.",
+   "keywords": [
+    "horse",
+    "four legs"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "plants",
+   "value": "plants have leaves.",
+   "keywords": [
+    "plants",
+    "leaves"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "triangle",
+   "value": "A triangle has three sides.",
+   "keywords": [
+    "triangle",
+    "three sides"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "buy presents for others",
+   "value": "If you want to buy presents for others then you should have money.",
+   "keywords": [
+    "buy presents for others",
+    "have money"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "contemplate",
+   "value": "If you want to contemplate then you should think.",
+   "keywords": [
+    "contemplate",
+    "think"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "drink",
+   "value": "Something you need to do before you drink is open your mouth.",
+   "keywords": [
+    "drink",
+    "open mouth"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go to movie",
+   "value": "Something you need to do before you go to a movie is buy a ticket.",
+   "keywords": [
+    "go to movie",
+    "buy ticket"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "kissing",
+   "value": "kissing requires lips.",
+   "keywords": [
+    "kissing",
+    "lips"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "make people laugh",
+   "value": "If you want to make people laugh then you should tell joke.",
+   "keywords": [
+    "make people laugh",
+    "tell joke"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "program",
+   "value": "If you want to program then you should learn a programming language.",
+   "keywords": [
+    "program",
+    "learn programming language"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "read magazine",
+   "value": "If you want to read a magazine then you should buy a magazine.",
+   "keywords": [
+    "read magazine",
+    "buy magazine"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "remembering",
+   "value": "remembering something requires memory.",
+   "keywords": [
+    "remembering",
+    "memory"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "stop bicycle",
+   "value": "If you want to stop your bicycle then you should use its brakes.",
+   "keywords": [
+    "stop bicycle",
+    "use brakes"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "take bus",
+   "value": "If you want to take the bus then you should go to the bus stop.",
+   "keywords": [
+    "take bus",
+    "go to bus stop"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "type",
+   "value": "Something you need to do before you type is have a keyboard.",
+   "keywords": [
+    "type",
+    "have keyboard"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "visit other countries",
+   "value": "If you want to visit other countries then you should get a passport.",
+   "keywords": [
+    "visit other countries",
+    "get passport"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ball",
+   "value": "A ball is round.",
+   "keywords": [
+    "ball",
+    "round"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "canada",
+   "value": "canada is north of the united states.",
+   "keywords": [
+    "canada",
+    "north of united states"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "earth",
+   "value": "the earth is spherical.",
+   "keywords": [
+    "earth",
+    "spherical"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "box",
+   "value": "a box is a container.",
+   "keywords": [
+    "box",
+    "container"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "city",
+   "value": "A city is a place.",
+   "keywords": [
+    "city",
+    "place"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dog",
+   "value": "A dog is a loyal friend.",
+   "keywords": [
+    "dog",
+    "loyal friend"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dolphins",
+   "value": "dolphins are mammals.",
+   "keywords": [
+    "dolphins",
+    "mammals"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "finch",
+   "value": "A finch is a type of bird.",
+   "keywords": [
+    "finch",
+    "bird"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "france",
+   "value": "France is a country.",
+   "keywords": [
+    "france",
+    "country"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "high rise",
+   "value": "a high rise is a type of building.",
+   "keywords": [
+    "high rise",
+    "building"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "kissing",
+   "value": "Kissing is sign of affection.",
+   "keywords": [
+    "kissing",
+    "sign of affection"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "marijuana",
+   "value": "marijuana is a drug.",
+   "keywords": [
+    "marijuana",
+    "drug"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "saxophone",
+   "value": "a saxophone is a musical instrument.",
+   "keywords": [
+    "saxophone",
+    "musical instrument"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "soda",
+   "value": "soda is a drink.",
+   "keywords": [
+    "soda",
+    "drink"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "stone",
+   "value": "A stone is another word for a rock.",
+   "keywords": [
+    "stone",
+    "another word for rock"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bank",
+   "value": "a bank is for storing money.",
+   "keywords": [
+    "bank",
+    "storing money"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bar stool",
+   "value": "A bar stool is for sitting on.",
+   "keywords": [
+    "bar stool",
+    "sitting on"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bicycle",
+   "value": "a bicycle is for transportation.",
+   "keywords": [
+    "bicycle",
+    "transportation"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bicycle storage area",
+   "value": "a bicycle storage area is for storing bicycles.",
+   "keywords": [
+    "bicycle storage area",
+    "storing bicycles"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "carpeting",
+   "value": "carpeting is for covering the floor.",
+   "keywords": [
+    "carpeting",
+    "covering floor"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "kettle",
+   "value": "You can use a kettle to boil water.",
+   "keywords": [
+    "kettle",
+    "boil water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "kissing",
+   "value": "kissing someone is for expressing love.",
+   "keywords": [
+    "kissing",
+    "expressing love"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "library",
+   "value": "You can use a library to do research.",
+   "keywords": [
+    "library",
+    "do research"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "needle",
+   "value": "a needle can be used to sew.",
+   "keywords": [
+    "needle",
+    "sew"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ocean",
+   "value": "the ocean is for sailing.",
+   "keywords": [
+    "ocean",
+    "sailing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pub",
+   "value": "a pub is used for having a drink.",
+   "keywords": [
+    "pub",
+    "having drink"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "soap",
+   "value": "a soap can be used to clean something.",
+   "keywords": [
+    "soap",
+    "clean"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "toothbrush",
+   "value": "a toothbrush is for cleaning teeth.",
+   "keywords": [
+    "toothbrush",
+    "cleaning teeth"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "wings",
+   "value": "a wings is for flying.",
+   "keywords": [
+    "wings",
+    "flying"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "wood",
+   "value": "You can use wood to fence in a property.",
+   "keywords": [
+    "wood",
+    "fence in property"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "eiffel tower",
+   "value": "You are likely to find the Eiffel tower in Paris.",
+   "keywords": [
+    "eiffel tower",
+    "paris"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "book",
+   "value": "You are likely to find a book in a classroom.",
+   "keywords": [
+    "book",
+    "classroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cars",
+   "value": "*Something you find at a car show is cars.",
+   "keywords": [
+    "cars",
+    "car show"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "coffee cup",
+   "value": "*Something you find on a desk is a coffee cup.",
+   "keywords": [
+    "coffee cup",
+    "desk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "criminals",
+   "value": "*Something you find in jail is criminals.",
+   "keywords": [
+    "criminals",
+    "jail"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "family",
+   "value": "*Something you find at your house is your family.",
+   "keywords": [
+    "family",
+    "house"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "frisbees",
+   "value": "*Something you find at a park is frisbees.",
+   "keywords": [
+    "frisbees",
+    "park"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "furniture",
+   "value": "*Something you find in a house is furniture.",
+   "keywords": [
+    "furniture",
+    "house"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "lizard",
+   "value": "You are likely to find a lizard in your garden.",
+   "keywords": [
+    "lizard",
+    "garden"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "moon",
+   "value": "*Something you find in space is the moon.",
+   "keywords": [
+    "moon",
+    "space"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "mouse",
+   "value": "You are likely to find a mouse in a hole in a wall.",
+   "keywords": [
+    "mouse",
+    "hole in wall"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "plates",
+   "value": "*Something you find in the cupboard is plates.",
+   "keywords": [
+    "plates",
+    "cupboard"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ring",
+   "value": "*Something you find on your finger is ring.",
+   "keywords": [
+    "ring",
+    "finger"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "seat",
+   "value": "*Something you find at the theater is a seat.",
+   "keywords": [
+    "seat",
+    "theater"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "state",
+   "value": "*Something you find in a country is a state.",
+   "keywords": [
+    "state",
+    "country"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "student",
+   "value": "*Something you find at a university is a student.",
+   "keywords": [
+    "student",
+    "university"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "traveller",
+   "value": "*Something you find at an airport is a traveller.",
+   "keywords": [
+    "traveller",
+    "airport"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "babies",
+   "value": "Babies can cry loud.",
+   "keywords": [
+    "babies",
+    "cry loud"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "blood",
+   "value": "Blood can be coursing through your veins.",
+   "keywords": [
+    "blood",
+    "coursing through veins"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "car",
+   "value": "a car can crash.",
+   "keywords": [
+    "car",
+    "crash"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "children",
+   "value": "children can share toys.",
+   "keywords": [
+    "children",
+    "share toys"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "clocks",
+   "value": "Clocks can tell time.",
+   "keywords": [
+    "clocks",
+    "tell time"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "doctors",
+   "value": "Doctors can help sick people.",
+   "keywords": [
+    "doctors",
+    "help sick people"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dogs",
+   "value": "dogs can guide blind people.",
+   "keywords": [
+    "dogs",
+    "guide blind people"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "key",
+   "value": "A key can open a lock.",
+   "keywords": [
+    "key",
+    "open lock"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "keys",
+   "value": "keys can open locks.",
+   "keywords": [
+    "keys",
+    "open locks"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "living being",
+   "value": "A living being can die.",
+   "keywords": [
+    "living being",
+    "die"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "passenger",
+   "value": "A passenger can board a plane.",
+   "keywords": [
+    "passenger",
+    "board plane"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "police officer",
+   "value": "the police officer can direct traffic.",
+   "keywords": [
+    "police officer",
+    "direct traffic"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "radios",
+   "value": "Radios can play music.",
+   "keywords": [
+    "radios",
+    "play music"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "shovel",
+   "value": "a shovel can dig a hole.",
+   "keywords": [
+    "shovel",
+    "dig hole"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "buying hamburger",
+   "value": "Sometimes buying a hamburger causes you to eat.",
+   "keywords": [
+    "buying hamburger",
+    "eat"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "playing violin",
+   "value": "The effect of playing the violin is music.",
+   "keywords": [
+    "playing violin",
+    "music"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "seeing favorite show",
+   "value": "Something that might happen as a consequence of seeing your favorite show is laughing.",
+   "keywords": [
+    "seeing favorite show",
+    "laughing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "waiting in line",
+   "value": "Something that might happen as a consequence of waiting in line is boredom.",
+   "keywords": [
+    "waiting in line",
+    "boredom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "person",
+   "value": "a person wants a headache.",
+   "keywords": [
+    "person",
+    "headache"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "car",
+   "value": "a car has seats.",
+   "keywords": [
+    "car",
+    "seats"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cat",
+   "value": "A cat has four legs.",
+   "keywords": [
+    "cat",
+    "four legs"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "compete against",
+   "value": "If you want to compete against someone then you should enter a competition.",
+   "keywords": [
+    "compete against",
+    "enter competition"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cut hair",
+   "value": "If you want to cut your hair then you should go to the barber.",
+   "keywords": [
+    "cut hair",
+    "go to barber"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "diminishing own hunger",
+   "value": "diminishing your own hunger requires eating something.",
+   "keywords": [
+    "diminishing own hunger",
+    "eating"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "empty bladder",
+   "value": "If you want to empty your bladder then you should go to the bathroom.",
+   "keywords": [
+    "empty bladder",
+    "go to bathroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "get drunk",
+   "value": "If you want to get drunk then you should drink alcohol.",
+   "keywords": [
+    "get drunk",
+    "drink alcohol"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "get onto web",
+   "value": "Something you need to do before you get onto the web is turn on the computer.",
+   "keywords": [
+    "get onto web",
+    "turn on computer"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go jogging",
+   "value": "If you want to go jogging then you should put on your shoes.",
+   "keywords": [
+    "go jogging",
+    "put on shoes"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go to get haircut",
+   "value": "If you want to go to get a haircut then you should go to your barber.",
+   "keywords": [
+    "go to get haircut",
+    "go to barber"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "have bath",
+   "value": "Something you need to do before you have a bath is fill the tub with water.",
+   "keywords": [
+    "have bath",
+    "fill tub with water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pretending",
+   "value": "pretending requires imagining.",
+   "keywords": [
+    "pretending",
+    "imagining"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "see band",
+   "value": "Something you need to do before you see a band is buy tickets.",
+   "keywords": [
+    "see band",
+    "buy tickets"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "see old things",
+   "value": "If you want to see old things then you should go to museum.",
+   "keywords": [
+    "see old things",
+    "go to museum"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "water plant",
+   "value": "If you want to water a plant then you should get water.",
+   "keywords": [
+    "water plant",
+    "get water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fruit",
+   "value": "fruit is good for you.",
+   "keywords": [
+    "fruit",
+    "good for"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "needle",
+   "value": "A needle is sharp.",
+   "keywords": [
+    "needle",
+    "sharp"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "planet earth",
+   "value": "Planet Earth is round.",
+   "keywords": [
+    "planet earth",
+    "round"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "water",
+   "value": "Water is liquid.",
+   "keywords": [
+    "water",
+    "liquid"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "california",
+   "value": "California is a state.",
+   "keywords": [
+    "california",
+    "state"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cheese",
+   "value": "Cheese is a food.",
+   "keywords": [
+    "cheese",
+    "food"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "denim",
+   "value": "denim is a type of fabric.",
+   "keywords": [
+    "denim",
+    "fabric"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "green",
+   "value": "Green is a color.",
+   "keywords": [
+    "green",
+    "color"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "guitar",
+   "value": "guitar is a kind of string instrument.",
+   "keywords": [
+    "guitar",
+    "string instrument"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "islam",
+   "value": "Islam is a religion.",
+   "keywords": [
+    "islam",
+    "religion"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "math",
+   "value": "math is a subject.",
+   "keywords": [
+    "math",
+    "subject"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "physics",
+   "value": "physics is a science.",
+   "keywords": [
+    "physics",
+    "science"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "robin",
+   "value": "A robin is a kind of bird.",
+   "keywords": [
+    "robin",
+    "bird"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "salad",
+   "value": "a salad is food.",
+   "keywords": [
+    "salad",
+    "food"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "san francisco",
+   "value": "san francisco is a city.",
+   "keywords": [
+    "san francisco",
+    "city"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "skyscrapers",
+   "value": "Skyscrapers are buildings.",
+   "keywords": [
+    "skyscrapers",
+    "buildings"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "unix",
+   "value": "Unix is an operating system.",
+   "keywords": [
+    "unix",
+    "operating system"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "wine",
+   "value": "wine is a beverage.",
+   "keywords": [
+    "wine",
+    "beverage"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cpu",
+   "value": "*computer has CPU.",
+   "keywords": [
+    "cpu",
+    "computer"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bathtub",
+   "value": "A bathtub is for bathing.",
+   "keywords": [
+    "bathtub",
+    "bathing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bus stop",
+   "value": "You can use a bus stop to wait for a bus.",
+   "keywords": [
+    "bus stop",
+    "wait for bus"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "disco",
+   "value": "a disco is used for dancing.",
+   "keywords": [
+    "disco",
+    "dancing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dog",
+   "value": "a dog is for companionship.",
+   "keywords": [
+    "dog",
+    "companionship"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "floor",
+   "value": "You can use a floor to walk.",
+   "keywords": [
+    "floor",
+    "walk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "going to party",
+   "value": "going to a party is for fun.",
+   "keywords": [
+    "going to party",
+    "fun"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "going to sleep",
+   "value": "going to sleep is for rest.",
+   "keywords": [
+    "going to sleep",
+    "rest"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "guitar",
+   "value": "a guitar is used for making music.",
+   "keywords": [
+    "guitar",
+    "making music"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "having food",
+   "value": "having food is for eating,.",
+   "keywords": [
+    "having food",
+    "eating"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "parking area",
+   "value": "You can use a parking area to park the car.",
+   "keywords": [
+    "parking area",
+    "park car"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "razor",
+   "value": "A razor is used to shave with.",
+   "keywords": [
+    "razor",
+    "shave with"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "restaurant",
+   "value": "a restaurant is for eating out.",
+   "keywords": [
+    "restaurant",
+    "eating out"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "saddle",
+   "value": "a saddle is used for riding horses.",
+   "keywords": [
+    "saddle",
+    "riding horses"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "advertising",
+   "value": "*Something you find in the newspaper is advertising.",
+   "keywords": [
+    "advertising",
+    "newspaper"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "butter",
+   "value": "*Something you find in the refrigerator is butter.",
+   "keywords": [
+    "butter",
+    "refrigerator"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "carpet pad",
+   "value": "*Something you find under the carpet is the carpet pad.",
+   "keywords": [
+    "carpet pad",
+    "carpet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "clothes",
+   "value": "*Something you find at a store is clothes.",
+   "keywords": [
+    "clothes",
+    "store"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dust",
+   "value": "*Something you find under your bed is dust.",
+   "keywords": [
+    "dust",
+    "bed"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "hair",
+   "value": "You are likely to find hair in someone's head.",
+   "keywords": [
+    "hair",
+    "head"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "hamburger",
+   "value": "*Something you find at a fast-food restaurant is a hamburger.",
+   "keywords": [
+    "hamburger",
+    "fast food restaurant"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "mirror",
+   "value": "*Something you find in a bedroom is a mirror.",
+   "keywords": [
+    "mirror",
+    "bedroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "mouthwash",
+   "value": "You are likely to find a mouthwash in bathroom.",
+   "keywords": [
+    "mouthwash",
+    "bathroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "other planets",
+   "value": "*Something you find in outerspace is other planets.",
+   "keywords": [
+    "other planets",
+    "outerspace"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pencil sharpener",
+   "value": "*Something you find at a desk is a pencil sharpener.",
+   "keywords": [
+    "pencil sharpener",
+    "desk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "programs",
+   "value": "*Something you find on television is programs.",
+   "keywords": [
+    "programs",
+    "television"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "rope",
+   "value": "*Something you find in a boat is rope.",
+   "keywords": [
+    "rope",
+    "boat"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sand",
+   "value": "You are likely to find sand in desert.",
+   "keywords": [
+    "sand",
+    "desert"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "school",
+   "value": "You are likely to find a school in a town.",
+   "keywords": [
+    "school",
+    "town"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "seating",
+   "value": "*Something you find at the theatre is seating.",
+   "keywords": [
+    "seating",
+    "theatre"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sock",
+   "value": "*Something you find in a drawer is a sock.",
+   "keywords": [
+    "sock",
+    "drawer"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "stethoscope",
+   "value": "*Something you find at the doctor is a stethoscope.",
+   "keywords": [
+    "stethoscope",
+    "doctor"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "submarines",
+   "value": "*Something you find under water is submarines.",
+   "keywords": [
+    "submarines",
+    "water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tiling",
+   "value": "*Something you find on a roof is tiling.",
+   "keywords": [
+    "tiling",
+    "roof"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "towel rack",
+   "value": "You are likely to find a towel rack in bathroom.",
+   "keywords": [
+    "towel rack",
+    "bathroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "weasel",
+   "value": "You are likely to find a weasel in zoo.",
+   "keywords": [
+    "weasel",
+    "zoo"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "windows",
+   "value": "*Something you find in a house is windows.",
+   "keywords": [
+    "windows",
+    "house"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "author",
+   "value": "An author can write a book.",
+   "keywords": [
+    "author",
+    "write book"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "authors",
+   "value": "authors can write that book.",
+   "keywords": [
+    "authors",
+    "write book"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ball",
+   "value": "a ball can bounce.",
+   "keywords": [
+    "ball",
+    "bounce"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "gardeners",
+   "value": "Gardeners can water plants.",
+   "keywords": [
+    "gardeners",
+    "water plants"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "planes",
+   "value": "planes can crash.",
+   "keywords": [
+    "planes",
+    "crash"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "student",
+   "value": "A student can question their teacher.",
+   "keywords": [
+    "student",
+    "question teacher"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sun",
+   "value": "The sun can dry your laundry.",
+   "keywords": [
+    "sun",
+    "dry laundry"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "terrorist",
+   "value": "A terrorist can arm a bomb.",
+   "keywords": [
+    "terrorist",
+    "arm bomb"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tree",
+   "value": "An activity a tree can do is grow.",
+   "keywords": [
+    "tree",
+    "grow"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "visitor",
+   "value": "a visitor can ring a doorbell.",
+   "keywords": [
+    "visitor",
+    "ring doorbell"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "farting",
+   "value": "The effect of farting is bad smell.",
+   "keywords": [
+    "farting",
+    "bad smell"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "going to bed",
+   "value": "Sometimes going to bed causes sleep.",
+   "keywords": [
+    "going to bed",
+    "sleep"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "kissing",
+   "value": "Sometimes kissing causes an erection.",
+   "keywords": [
+    "kissing",
+    "erection"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "moving car",
+   "value": "Something that might happen as a consequence of moving a car is an accident.",
+   "keywords": [
+    "moving car",
+    "accident"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "opening gift",
+   "value": "The effect of opening a gift is surprise.",
+   "keywords": [
+    "opening gift",
+    "surprise"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "passing class",
+   "value": "Something that might happen as a consequence of passing a class is graduation.",
+   "keywords": [
+    "passing class",
+    "graduation"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "reading magazine",
+   "value": "The effect of reading a magazine is learning.",
+   "keywords": [
+    "reading magazine",
+    "learning"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "relaxing",
+   "value": "Sometimes relaxing causes sleeping.",
+   "keywords": [
+    "relaxing",
+    "sleeping"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "waiting on line",
+   "value": "Something that might happen as a consequence of waiting on line is boredom.",
+   "keywords": [
+    "waiting on line",
+    "boredom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "washing car",
+   "value": "Sometimes washing your car causes your car to be clean.",
+   "keywords": [
+    "washing car",
+    "car to clean"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "children",
+   "value": "Children like to play with toys.",
+   "keywords": [
+    "children",
+    "play with toys"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "all cars",
+   "value": "all cars have an engine.",
+   "keywords": [
+    "all cars",
+    "engine"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "arm",
+   "value": "an arm has one hand.",
+   "keywords": [
+    "arm",
+    "one hand"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "most birds",
+   "value": "Most birds have wings.",
+   "keywords": [
+    "most birds",
+    "wings"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "oceans",
+   "value": "Oceans have salt water.",
+   "keywords": [
+    "oceans",
+    "salt water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "people",
+   "value": "people have feelings.",
+   "keywords": [
+    "people",
+    "feelings"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bathing",
+   "value": "bathing requires water.",
+   "keywords": [
+    "bathing",
+    "water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "buying shirt",
+   "value": "buying a shirt requires money.",
+   "keywords": [
+    "buying shirt",
+    "money"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "drive car",
+   "value": "Something you need to do before you drive a car is get a license.",
+   "keywords": [
+    "drive car",
+    "get license"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "eat breakfast",
+   "value": "Something you need to do before you eat breakfast is wake up.",
+   "keywords": [
+    "eat breakfast",
+    "wake up"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "find lost item",
+   "value": "If you want to find a lost item then you should search for the lost item.",
+   "keywords": [
+    "find lost item",
+    "search for lost item"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "get paid",
+   "value": "If you want to get paid then you should work for someone.",
+   "keywords": [
+    "get paid",
+    "work for"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "have examination",
+   "value": "Something you need to do before you have an examination is see a doctor.",
+   "keywords": [
+    "have examination",
+    "see doctor"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "have food",
+   "value": "If you want to have food then you should eat it.",
+   "keywords": [
+    "have food",
+    "eat"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "hit bottle",
+   "value": "If you want to hit the bottle then you should drink some alcohol.",
+   "keywords": [
+    "hit bottle",
+    "drink alcohol"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pray",
+   "value": "If you want to pray then you should believe in god.",
+   "keywords": [
+    "pray",
+    "believe in god"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pretend",
+   "value": "Something you need to do before you pretend is have an imagination.",
+   "keywords": [
+    "pretend",
+    "have imagination"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "read news",
+   "value": "If you want to read the news then you should buy a newspaper.",
+   "keywords": [
+    "read news",
+    "buy newspaper"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "reading newspaper",
+   "value": "reading a newspaper requires literacy.",
+   "keywords": [
+    "reading newspaper",
+    "literacy"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "run errands",
+   "value": "Something you need to do before you run errands is make a list.",
+   "keywords": [
+    "run errands",
+    "make list"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "see movie",
+   "value": "If you want to see a movie then you should go to a cinema.",
+   "keywords": [
+    "see movie",
+    "go to cinema"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sending e mail",
+   "value": "sending e-mail requires computers.",
+   "keywords": [
+    "sending e mail",
+    "computers"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "stopping bicycle",
+   "value": "stopping your bicycle requires using your brakes.",
+   "keywords": [
+    "stopping bicycle",
+    "using brakes"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "thinking",
+   "value": "thinking requires a brain.",
+   "keywords": [
+    "thinking",
+    "brain"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "watch evening news",
+   "value": "Something you need to do before you watch the evening news is turn on the TV.",
+   "keywords": [
+    "watch evening news",
+    "turn on tv"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "watch movie",
+   "value": "If you want to watch a movie then you should buy a ticket.",
+   "keywords": [
+    "watch movie",
+    "buy ticket"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "watch television show",
+   "value": "If you want to watch a television show then you should turn on the TV.",
+   "keywords": [
+    "watch television show",
+    "turn on tv"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "write term paper",
+   "value": "Something you need to do before you write a term paper is research.",
+   "keywords": [
+    "write term paper",
+    "research"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "balls",
+   "value": "Balls are round.",
+   "keywords": [
+    "balls",
+    "round"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "exercise",
+   "value": "Exercise is very good for you.",
+   "keywords": [
+    "exercise",
+    "very good for"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "guns",
+   "value": "Guns are very dangerous.",
+   "keywords": [
+    "guns",
+    "very dangerous"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "most rocks",
+   "value": "Most rocks are hard.",
+   "keywords": [
+    "most rocks",
+    "hard"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ants",
+   "value": "ants are insects.",
+   "keywords": [
+    "ants",
+    "insects"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "beer",
+   "value": "Beer is an alcoholic beverage.",
+   "keywords": [
+    "beer",
+    "alcoholic beverage"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "brazil",
+   "value": "Brazil is a country.",
+   "keywords": [
+    "brazil",
+    "country"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cash",
+   "value": "Cash is another word for money.",
+   "keywords": [
+    "cash",
+    "another word for money"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "christianity",
+   "value": "Christianity is a religion.",
+   "keywords": [
+    "christianity",
+    "religion"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "colorado",
+   "value": "Colorado is a state.",
+   "keywords": [
+    "colorado",
+    "state"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "eiffel tower",
+   "value": "The Eiffel Tower is in Paris.",
+   "keywords": [
+    "eiffel tower",
+    "in paris"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fruit",
+   "value": "fruit is a good source of vitamins.",
+   "keywords": [
+    "fruit",
+    "good source of vitamins"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "mercury",
+   "value": "Mercury is the planet.",
+   "keywords": [
+    "mercury",
+    "planet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "orange",
+   "value": "Orange is a color.",
+   "keywords": [
+    "orange",
+    "color"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "orchids",
+   "value": "Orchids are flowers.",
+   "keywords": [
+    "orchids",
+    "flowers"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ostrich",
+   "value": "An ostrich is a kind of bird.",
+   "keywords": [
+    "ostrich",
+    "bird"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pocket knife",
+   "value": "a pocket knife is a useful tool.",
+   "keywords": [
+    "pocket knife",
+    "useful tool"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "saturn",
+   "value": "saturn is a planet.",
+   "keywords": [
+    "saturn",
+    "planet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "screwdriver",
+   "value": "A screwdriver is a drink.",
+   "keywords": [
+    "screwdriver",
+    "drink"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "slave",
+   "value": "A slave is a person.",
+   "keywords": [
+    "slave",
+    "person"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "spanish",
+   "value": "Spanish is a type of language.",
+   "keywords": [
+    "spanish",
+    "language"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "submarine",
+   "value": "A submarine is a boat.",
+   "keywords": [
+    "submarine",
+    "boat"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "water",
+   "value": "Water is a reflective surface.",
+   "keywords": [
+    "water",
+    "reflective surface"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "wicca",
+   "value": "Wicca is a religion.",
+   "keywords": [
+    "wicca",
+    "religion"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "death",
+   "value": "death is part of life.",
+   "keywords": [
+    "death",
+    "life"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "monitor",
+   "value": "the monitor is part of the computer.",
+   "keywords": [
+    "monitor",
+    "computer"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "aisle",
+   "value": "an aisle is for walking through.",
+   "keywords": [
+    "aisle",
+    "walking through"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ballpoint pen",
+   "value": "a ballpoint pen is used to write with.",
+   "keywords": [
+    "ballpoint pen",
+    "write with"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "beanbag chair",
+   "value": "a beanbag chair is for sitting down.",
+   "keywords": [
+    "beanbag chair",
+    "sitting down"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "chess board",
+   "value": "You can use a chess board to play chess.",
+   "keywords": [
+    "chess board",
+    "play chess"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "chest of drawers",
+   "value": "You can use a chest of drawers to store clothes.",
+   "keywords": [
+    "chest of drawers",
+    "store clothes"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "double edged razor",
+   "value": "a double edged razor is for shaving.",
+   "keywords": [
+    "double edged razor",
+    "shaving"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fan",
+   "value": "You can use a fan to cool off.",
+   "keywords": [
+    "fan",
+    "cool off"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "going to movie",
+   "value": "going to a movie is for being entertained.",
+   "keywords": [
+    "going to movie",
+    "being entertained"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "going to pub",
+   "value": "going to the pub is for having a drink.",
+   "keywords": [
+    "going to pub",
+    "having drink"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "key",
+   "value": "You can use a key to open a lock.",
+   "keywords": [
+    "key",
+    "open lock"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "playing games",
+   "value": "playing games is for having fun.",
+   "keywords": [
+    "playing games",
+    "having fun"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "quill",
+   "value": "a quill is used for writing.",
+   "keywords": [
+    "quill",
+    "writing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "saw",
+   "value": "a saw is for Cutting things such as wood.",
+   "keywords": [
+    "saw",
+    "cutting things such as wood"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "show",
+   "value": "You can use a show to entertain.",
+   "keywords": [
+    "show",
+    "entertain"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "skin",
+   "value": "skin is for covering the body.",
+   "keywords": [
+    "skin",
+    "covering body"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "apple",
+   "value": "You are likely to find an apple in apple tree.",
+   "keywords": [
+    "apple",
+    "apple tree"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "audience",
+   "value": "*Something you find at the theatre is an audience.",
+   "keywords": [
+    "audience",
+    "theatre"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bathroom",
+   "value": "*Something you find in a house is a bathroom.",
+   "keywords": [
+    "bathroom",
+    "house"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bills",
+   "value": "*Something you find in the mail box is bills.",
+   "keywords": [
+    "bills",
+    "mail box"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "check",
+   "value": "You are likely to find a check in counter in an airport.",
+   "keywords": [
+    "check",
+    "counter in airport"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "death",
+   "value": "*Something you find at a war is death.",
+   "keywords": [
+    "death",
+    "war"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "drawers",
+   "value": "*Something you find under a desk is drawers.",
+   "keywords": [
+    "drawers",
+    "desk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "finger",
+   "value": "You are likely to find a finger in hand.",
+   "keywords": [
+    "finger",
+    "hand"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "furnace",
+   "value": "*Something you find in the basement is the furnace.",
+   "keywords": [
+    "furnace",
+    "basement"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "hanger",
+   "value": "*Something you find in the closet is a hanger.",
+   "keywords": [
+    "hanger",
+    "closet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "horse",
+   "value": "You are likely to find a horse in a race track.",
+   "keywords": [
+    "horse",
+    "race track"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "keys",
+   "value": "*Something you find in a pocket is keys.",
+   "keywords": [
+    "keys",
+    "pocket"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "kitten",
+   "value": "You are likely to find a kitten in a lap.",
+   "keywords": [
+    "kitten",
+    "lap"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "large food store",
+   "value": "You are likely to find a large food store in a city.",
+   "keywords": [
+    "large food store",
+    "city"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "librarian",
+   "value": "*Something you find at the library is a librarian.",
+   "keywords": [
+    "librarian",
+    "library"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "mickey mouse",
+   "value": "*Something you find at disneyland is mickey mouse.",
+   "keywords": [
+    "mickey mouse",
+    "disneyland"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "planet",
+   "value": "You are likely to find a planet in outer space.",
+   "keywords": [
+    "planet",
+    "outer space"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "playground",
+   "value": "*Something you find in a park is a playground.",
+   "keywords": [
+    "playground",
+    "park"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "puck",
+   "value": "*Something you find at a hockey game is a puck.",
+   "keywords": [
+    "puck",
+    "hockey game"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "racks",
+   "value": "*Something you find in the oven is racks.",
+   "keywords": [
+    "racks",
+    "oven"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "science",
+   "value": "You are likely to find a science in a university.",
+   "keywords": [
+    "science",
+    "university"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "students",
+   "value": "*Something you find in a classroom is students.",
+   "keywords": [
+    "students",
+    "classroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tv",
+   "value": "*Something you find at your house is a tv.",
+   "keywords": [
+    "tv",
+    "house"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "violence",
+   "value": "*Something you find at a war is violence.",
+   "keywords": [
+    "violence",
+    "war"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "wallet",
+   "value": "You are likely to find a wallet in pockets.",
+   "keywords": [
+    "wallet",
+    "pockets"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "chickens",
+   "value": "Chickens can cross roads.",
+   "keywords": [
+    "chickens",
+    "cross roads"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "clerk",
+   "value": "The clerk can stock the shelves.",
+   "keywords": [
+    "clerk",
+    "stock shelves"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "drugs",
+   "value": "drugs can cloud your mind.",
+   "keywords": [
+    "drugs",
+    "cloud mind"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fruits",
+   "value": "Fruits can grow on a tree.",
+   "keywords": [
+    "fruits",
+    "grow on tree"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "good",
+   "value": "Good can battle evil.",
+   "keywords": [
+    "good",
+    "battle evil"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "hammer",
+   "value": "hammer can strike nail.",
+   "keywords": [
+    "hammer",
+    "strike nail"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ice",
+   "value": "Ice can cool a drink.",
+   "keywords": [
+    "ice",
+    "cool drink"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "lawyer",
+   "value": "a lawyer can rest his case.",
+   "keywords": [
+    "lawyer",
+    "rest case"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "lizard",
+   "value": "a lizard can sun itself on a rock.",
+   "keywords": [
+    "lizard",
+    "sun itself on rock"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "mop",
+   "value": "A mop can clean the floor.",
+   "keywords": [
+    "mop",
+    "clean floor"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "nurse",
+   "value": "A nurse can care for a patient.",
+   "keywords": [
+    "nurse",
+    "care for patient"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "parents",
+   "value": "parents can name children.",
+   "keywords": [
+    "parents",
+    "name children"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "policeman",
+   "value": "A policeman can direct traffic.",
+   "keywords": [
+    "policeman",
+    "direct traffic"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "president",
+   "value": "the president can govern the country.",
+   "keywords": [
+    "president",
+    "govern country"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sex",
+   "value": "sex can be making love.",
+   "keywords": [
+    "sex",
+    "making love"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "thermometer",
+   "value": "a thermometer can measure temperature.",
+   "keywords": [
+    "thermometer",
+    "measure temperature"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "chatting with friends",
+   "value": "Sometimes chatting with friends causes laughter.",
+   "keywords": [
+    "chatting with friends",
+    "laughter"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "crossing street",
+   "value": "The effect of crossing the street is you get to the other side.",
+   "keywords": [
+    "crossing street",
+    "get to other side"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "falling",
+   "value": "Sometimes falling causes injuries.",
+   "keywords": [
+    "falling",
+    "injuries"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "going to pub",
+   "value": "Something that might happen as a consequence of going to the pub is getting drunk.",
+   "keywords": [
+    "going to pub",
+    "getting drunk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "joining army",
+   "value": "Something that might happen as a consequence of joining the army is you go to war.",
+   "keywords": [
+    "joining army",
+    "go to war"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "seeing old things",
+   "value": "Something that might happen as a consequence of seeing old things is remembering your past.",
+   "keywords": [
+    "seeing old things",
+    "remembering past"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "smoking cigarettes",
+   "value": "Sometimes smoking cigarettes causes lung cancer.",
+   "keywords": [
+    "smoking cigarettes",
+    "lung cancer"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "striking match",
+   "value": "Sometimes striking a match causes fire.",
+   "keywords": [
+    "striking match",
+    "fire"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "working",
+   "value": "Sometimes working causes stress.",
+   "keywords": [
+    "working",
+    "stress"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dogs",
+   "value": "Dogs like to chew bones.",
+   "keywords": [
+    "dogs",
+    "chew bones"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "each hand",
+   "value": "Each hand has one thumb.",
+   "keywords": [
+    "each hand",
+    "one thumb"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "human",
+   "value": "Human have five fingers on each hand.",
+   "keywords": [
+    "human",
+    "five fingers on each hand"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "humans",
+   "value": "humans have brains.",
+   "keywords": [
+    "humans",
+    "brains"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "most cats",
+   "value": "Most cats have tails.",
+   "keywords": [
+    "most cats",
+    "tails"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "become inebriated",
+   "value": "If you want to become inebriated then you should drink alcohol.",
+   "keywords": [
+    "become inebriated",
+    "drink alcohol"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "buy food",
+   "value": "Something you need to do before you buy food is go to the store.",
+   "keywords": [
+    "buy food",
+    "go to store"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cross street",
+   "value": "Something you need to do before you cross the street is look both ways.",
+   "keywords": [
+    "cross street",
+    "look both ways"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dance",
+   "value": "If you want to dance then you should turn on some music.",
+   "keywords": [
+    "dance",
+    "turn on music"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "earn living",
+   "value": "If you want to earn a living then you should Work.",
+   "keywords": [
+    "earn living",
+    "work"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "enjoy film",
+   "value": "If you want to enjoy a film then you should go to a cinema.",
+   "keywords": [
+    "enjoy film",
+    "go to cinema"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "get divorce",
+   "value": "Something you need to do before you get a divorce is get married.",
+   "keywords": [
+    "get divorce",
+    "get married"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go to performance",
+   "value": "Something you need to do before you go to a performance is buy a ticket.",
+   "keywords": [
+    "go to performance",
+    "buy ticket"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go to school",
+   "value": "Something you need to do before you go to school is enroll.",
+   "keywords": [
+    "go to school",
+    "enroll"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go to sporting event",
+   "value": "If you want to go to a sporting event then you should buy a ticket.",
+   "keywords": [
+    "go to sporting event",
+    "buy ticket"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "learn about subject",
+   "value": "If you want to learn about a subject then you should study it.",
+   "keywords": [
+    "learn about subject",
+    "study"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "listen to radio",
+   "value": "If you want to listen to the radio then you should turn the radio on.",
+   "keywords": [
+    "listen to radio",
+    "turn radio on"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "meet people",
+   "value": "If you want to meet people then you should go to the bar.",
+   "keywords": [
+    "meet people",
+    "go to bar"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "print on printer",
+   "value": "If you want to print on the printer then you should Turn the printer on.",
+   "keywords": [
+    "print on printer",
+    "turn printer on"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "read newspaper",
+   "value": "Something you need to do before you read the newspaper is get the newspaper.",
+   "keywords": [
+    "read newspaper",
+    "get newspaper"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sating hunger",
+   "value": "sating your hunger requires eating.",
+   "keywords": [
+    "sating hunger",
+    "eating"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "see art",
+   "value": "Something you need to do before you see art is go to a museum.",
+   "keywords": [
+    "see art",
+    "go to museum"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "see favorite show",
+   "value": "If you want to see your favorite show then you should turn on TV.",
+   "keywords": [
+    "see favorite show",
+    "turn on tv"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "seeing band",
+   "value": "seeing a band requires buying a ticket.",
+   "keywords": [
+    "seeing band",
+    "buying ticket"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sew",
+   "value": "If you want to sew then you should thread a needle.",
+   "keywords": [
+    "sew",
+    "thread needle"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "surf net",
+   "value": "If you want to surf the net then you should turn on the computer.",
+   "keywords": [
+    "surf net",
+    "turn on computer"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "take phone call",
+   "value": "Something you need to do before you take a phone call is pick up the phone.",
+   "keywords": [
+    "take phone call",
+    "pick up phone"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "talk with far away",
+   "value": "If you want to talk with someone far away then you should phone someone.",
+   "keywords": [
+    "talk with far away",
+    "phone"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "wash clothes",
+   "value": "Something you need to do before you wash clothes is take them off.",
+   "keywords": [
+    "wash clothes",
+    "take off"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "watch television",
+   "value": "If you want to watch television then you should turn the television on.",
+   "keywords": [
+    "watch television",
+    "turn television on"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "butter",
+   "value": "Butter is yellow.",
+   "keywords": [
+    "butter",
+    "yellow"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "men and women",
+   "value": "men and women are different.",
+   "keywords": [
+    "men and women",
+    "different"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "mexico",
+   "value": "Mexico is south of the United States.",
+   "keywords": [
+    "mexico",
+    "south of united states"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "paper",
+   "value": "Paper can be crumpled.",
+   "keywords": [
+    "paper",
+    "crumpled"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "papers",
+   "value": "Papers are recyclable.",
+   "keywords": [
+    "papers",
+    "recyclable"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sailing",
+   "value": "sailing can be fun.",
+   "keywords": [
+    "sailing",
+    "fun"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "winter",
+   "value": "winter is cold.",
+   "keywords": [
+    "winter",
+    "cold"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "badminton",
+   "value": "Badminton is a sport.",
+   "keywords": [
+    "badminton",
+    "sport"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "being in love",
+   "value": "Being in love is a wonderful feeling.",
+   "keywords": [
+    "being in love",
+    "wonderful feeling"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bicycle",
+   "value": "A bicycle is a two wheel vehicle.",
+   "keywords": [
+    "bicycle",
+    "two wheel vehicle"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "chocolate",
+   "value": "chocolate is a food.",
+   "keywords": [
+    "chocolate",
+    "food"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "clarinet",
+   "value": "A clarinet is an instrument.",
+   "keywords": [
+    "clarinet",
+    "instrument"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "crappie",
+   "value": "A crappie is a type of fish.",
+   "keywords": [
+    "crappie",
+    "fish"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "elementary school",
+   "value": "an elementary school is a type of school.",
+   "keywords": [
+    "elementary school",
+    "school"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fear",
+   "value": "fear is an emotion.",
+   "keywords": [
+    "fear",
+    "emotion"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fire",
+   "value": "fire is combustion.",
+   "keywords": [
+    "fire",
+    "combustion"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "german",
+   "value": "German is a language.",
+   "keywords": [
+    "german",
+    "language"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "jupiter",
+   "value": "Jupiter is a planet.",
+   "keywords": [
+    "jupiter",
+    "planet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "massachusetts",
+   "value": "Massachusetts is a state.",
+   "keywords": [
+    "massachusetts",
+    "state"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "parakeet",
+   "value": "A parakeet is a kind of bird.",
+   "keywords": [
+    "parakeet",
+    "bird"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "piano",
+   "value": "the piano is an instrument of music.",
+   "keywords": [
+    "piano",
+    "instrument of music"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pianos",
+   "value": "Pianos are instruments.",
+   "keywords": [
+    "pianos",
+    "instruments"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "reading",
+   "value": "reading is an activity.",
+   "keywords": [
+    "reading",
+    "activity"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "rifle",
+   "value": "A rifle is a type of gun.",
+   "keywords": [
+    "rifle",
+    "gun"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "saxaphone",
+   "value": "A saxaphone is a musical instrument.",
+   "keywords": [
+    "saxaphone",
+    "musical instrument"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "steel",
+   "value": "Steel is a metal.",
+   "keywords": [
+    "steel",
+    "metal"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tea",
+   "value": "tea is a drink.",
+   "keywords": [
+    "tea",
+    "drink"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "telephone",
+   "value": "A telephone is a communication device.",
+   "keywords": [
+    "telephone",
+    "communication device"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "uranus",
+   "value": "Uranus is a planet.",
+   "keywords": [
+    "uranus",
+    "planet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "viola",
+   "value": "a viola is a kind of musical instrument.",
+   "keywords": [
+    "viola",
+    "musical instrument"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "leaf",
+   "value": "A leaf is part of a tree.",
+   "keywords": [
+    "leaf",
+    "tree"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sex",
+   "value": "Sex is part of the reproductive cycle.",
+   "keywords": [
+    "sex",
+    "reproductive cycle"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bath",
+   "value": "a bath is for relaxation.",
+   "keywords": [
+    "bath",
+    "relaxation"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bread",
+   "value": "bread  is for eating.",
+   "keywords": [
+    "bread",
+    "eating"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "condominium",
+   "value": "a condominium is used for living in.",
+   "keywords": [
+    "condominium",
+    "living in"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "diner",
+   "value": "a diner is used for eating.",
+   "keywords": [
+    "diner",
+    "eating"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dish",
+   "value": "You can use a dish to eat things off of.",
+   "keywords": [
+    "dish",
+    "eat things off of"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "feather",
+   "value": "a feather can be used to tickle someone.",
+   "keywords": [
+    "feather",
+    "tickle"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "horse",
+   "value": "a horse is used for riding.",
+   "keywords": [
+    "horse",
+    "riding"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "jump rope",
+   "value": "A jump rope is for exercising.",
+   "keywords": [
+    "jump rope",
+    "exercising"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "knife",
+   "value": "knife is for stabbing.",
+   "keywords": [
+    "knife",
+    "stabbing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "reading to children",
+   "value": "reading to your children is for educating them.",
+   "keywords": [
+    "reading to children",
+    "educating"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "scissors",
+   "value": "scissors are used to cut.",
+   "keywords": [
+    "scissors",
+    "cut"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "talking to",
+   "value": "talking to someone is for communication.",
+   "keywords": [
+    "talking to",
+    "communication"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "towel bar",
+   "value": "You can use a towel bar to hang towels.",
+   "keywords": [
+    "towel bar",
+    "hang towels"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "violin",
+   "value": "violin is for playing music.",
+   "keywords": [
+    "violin",
+    "playing music"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bee",
+   "value": "You are likely to find a bee in a meadow.",
+   "keywords": [
+    "bee",
+    "meadow"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bell",
+   "value": "*Something you find at church is a bell.",
+   "keywords": [
+    "bell",
+    "church"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bus",
+   "value": "*Something you find at a bus stop is a bus.",
+   "keywords": [
+    "bus",
+    "bus stop"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "canned food",
+   "value": "*Something you find in a pantry is canned food.",
+   "keywords": [
+    "canned food",
+    "pantry"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "captain",
+   "value": "*Something you find in a ship is a captain.",
+   "keywords": [
+    "captain",
+    "ship"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cavity",
+   "value": "You are likely to find a cavity in a tooth.",
+   "keywords": [
+    "cavity",
+    "tooth"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "closet",
+   "value": "You are likely to find a closet in a bedroom.",
+   "keywords": [
+    "closet",
+    "bedroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dance club",
+   "value": "You are likely to find a dance club in the city.",
+   "keywords": [
+    "dance club",
+    "city"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dental floss",
+   "value": "You are likely to find dental floss in the bathroom.",
+   "keywords": [
+    "dental floss",
+    "bathroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ducks",
+   "value": "You are likely to find ducks in a pond.",
+   "keywords": [
+    "ducks",
+    "pond"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "earth",
+   "value": "You are likely to find the Earth in the solar system.",
+   "keywords": [
+    "earth",
+    "solar system"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "feather",
+   "value": "You are likely to find a feather in bird.",
+   "keywords": [
+    "feather",
+    "bird"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "feet",
+   "value": "*Something you find under a desk is feet.",
+   "keywords": [
+    "feet",
+    "desk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fork",
+   "value": "*Something you find in the kitchen is a fork.",
+   "keywords": [
+    "fork",
+    "kitchen"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "hammer",
+   "value": "You are likely to find a hammer in tool box.",
+   "keywords": [
+    "hammer",
+    "tool box"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "heating elements",
+   "value": "*Something you find in the oven is heating elements.",
+   "keywords": [
+    "heating elements",
+    "oven"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ladder",
+   "value": "You are likely to find a ladder in the garage.",
+   "keywords": [
+    "ladder",
+    "garage"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "lamp",
+   "value": "*Something you find at your house is a lamp.",
+   "keywords": [
+    "lamp",
+    "house"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "lens",
+   "value": "You are likely to find a lens in the camera.",
+   "keywords": [
+    "lens",
+    "camera"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "news",
+   "value": "*Something you find on television is news.",
+   "keywords": [
+    "news",
+    "television"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "notebook",
+   "value": "You are likely to find a notebook in a desk.",
+   "keywords": [
+    "notebook",
+    "desk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "notepad",
+   "value": "*Something you find on your desk is a notepad.",
+   "keywords": [
+    "notepad",
+    "desk"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ocean",
+   "value": "You are likely to find an ocean in the earth.",
+   "keywords": [
+    "ocean",
+    "earth"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "opera glasses",
+   "value": "*Something you find at an opera is opera glasses.",
+   "keywords": [
+    "opera glasses",
+    "opera"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "paper clip",
+   "value": "You are likely to find a paper clip in a desk drawer.",
+   "keywords": [
+    "paper clip",
+    "desk drawer"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "planets",
+   "value": "*Something you find in space is planets.",
+   "keywords": [
+    "planets",
+    "space"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "plant",
+   "value": "*Something you find on the windowsill is a plant.",
+   "keywords": [
+    "plant",
+    "windowsill"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "puzzle",
+   "value": "You are likely to find a puzzle in the newspaper.",
+   "keywords": [
+    "puzzle",
+    "newspaper"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "rock",
+   "value": "You are likely to find a rock in a mountain.",
+   "keywords": [
+    "rock",
+    "mountain"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "rosebush",
+   "value": "You are likely to find a rosebush in a backyard.",
+   "keywords": [
+    "rosebush",
+    "backyard"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sheet",
+   "value": "You are likely to find a sheet in a linen closet.",
+   "keywords": [
+    "sheet",
+    "linen closet"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "staples",
+   "value": "You are likely to find a staples in a stapler.",
+   "keywords": [
+    "staples",
+    "stapler"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "table",
+   "value": "You are likely to find a table in a kitchen.",
+   "keywords": [
+    "table",
+    "kitchen"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "telephone booth",
+   "value": "You are likely to find a telephone booth in a city.",
+   "keywords": [
+    "telephone booth",
+    "city"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tenor",
+   "value": "*Something you find at the opera is a tenor.",
+   "keywords": [
+    "tenor",
+    "opera"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tool",
+   "value": "*Something you find in the garage is a tool.",
+   "keywords": [
+    "tool",
+    "garage"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tooth",
+   "value": "You are likely to find a tooth in your mouth.",
+   "keywords": [
+    "tooth",
+    "mouth"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "traffic",
+   "value": "*Something you find in the street is traffic.",
+   "keywords": [
+    "traffic",
+    "street"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "vacuum",
+   "value": "*Something you find in space is vacuum.",
+   "keywords": [
+    "vacuum",
+    "space"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "volume",
+   "value": "You are likely to find a volume in library.",
+   "keywords": [
+    "volume",
+    "library"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "weapons",
+   "value": "*Something you find at a war is weapons.",
+   "keywords": [
+    "weapons",
+    "war"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "white house",
+   "value": "You are likely to find the White House in Washington, D.C.",
+   "keywords": [
+    "white house",
+    "washington d.c"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "wine list",
+   "value": "You are likely to find a wine list in a restaurant.",
+   "keywords": [
+    "wine list",
+    "restaurant"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "apple",
+   "value": "an apple can fall from a tree.",
+   "keywords": [
+    "apple",
+    "fall from tree"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bad things",
+   "value": "Bad things can happen to good people.",
+   "keywords": [
+    "bad things",
+    "happen to good people"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "battery",
+   "value": "a battery can power a flashlight.",
+   "keywords": [
+    "battery",
+    "power flashlight"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "brewer",
+   "value": "A brewer can bottle beer.",
+   "keywords": [
+    "brewer",
+    "bottle beer"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "butter",
+   "value": "Butter can spread at room temperature.",
+   "keywords": [
+    "butter",
+    "spread at room temperature"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "camper",
+   "value": "a camper can sleep in a tent.",
+   "keywords": [
+    "camper",
+    "sleep in tent"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cheese",
+   "value": "cheese can age well.",
+   "keywords": [
+    "cheese",
+    "age well"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "couples",
+   "value": "An activity couples can do is have sex.",
+   "keywords": [
+    "couples",
+    "have sex"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "detectives",
+   "value": "detectives can piece together clues.",
+   "keywords": [
+    "detectives",
+    "piece together clues"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fan",
+   "value": "a fan can cool a person.",
+   "keywords": [
+    "fan",
+    "cool person"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "guard",
+   "value": "A guard can sound the alarm.",
+   "keywords": [
+    "guard",
+    "sound alarm"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "iron",
+   "value": "iron can press clothes.",
+   "keywords": [
+    "iron",
+    "press clothes"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "knight",
+   "value": "A knight can ride a horse.",
+   "keywords": [
+    "knight",
+    "ride horse"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "male",
+   "value": "A male can father a child.",
+   "keywords": [
+    "male",
+    "father child"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "match",
+   "value": "A match can light a candle.",
+   "keywords": [
+    "match",
+    "light candle"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "musician",
+   "value": "A musician can record a song.",
+   "keywords": [
+    "musician",
+    "record song"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "paint",
+   "value": "Paint can coat a wall.",
+   "keywords": [
+    "paint",
+    "coat wall"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "paper",
+   "value": "paper can burn.",
+   "keywords": [
+    "paper",
+    "burn"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "scissors",
+   "value": "scissors can cut that paper.",
+   "keywords": [
+    "scissors",
+    "cut paper"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "stove",
+   "value": "a stove can heat food.",
+   "keywords": [
+    "stove",
+    "heat food"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "teachers",
+   "value": "teachers can plan lessons.",
+   "keywords": [
+    "teachers",
+    "plan lessons"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "wood",
+   "value": "Wood can burn.",
+   "keywords": [
+    "wood",
+    "burn"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "driving",
+   "value": "Something that might happen as a consequence of driving is changing your location.",
+   "keywords": [
+    "driving",
+    "changing location"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "examining thing",
+   "value": "Sometimes examining a thing causes the thing to be changed.",
+   "keywords": [
+    "examining thing",
+    "thing to changed"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "expressing yourself",
+   "value": "Something that might happen as a consequence of expressing yourself is embarrassment.",
+   "keywords": [
+    "expressing yourself",
+    "embarrassment"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "finding lost item",
+   "value": "Sometimes finding a lost item causes happiness.",
+   "keywords": [
+    "finding lost item",
+    "happiness"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "flirting",
+   "value": "The effect of flirting is sex.",
+   "keywords": [
+    "flirting",
+    "sex"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "having rest",
+   "value": "Sometimes having a rest causes sleep.",
+   "keywords": [
+    "having rest",
+    "sleep"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "making phone call",
+   "value": "Sometimes making a phone call causes annoying.",
+   "keywords": [
+    "making phone call",
+    "annoying"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "masturbation",
+   "value": "Sometimes masturbation causes orgasm.",
+   "keywords": [
+    "masturbation",
+    "orgasm"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "proposing to woman",
+   "value": "The effect of proposing to a woman is marriage.",
+   "keywords": [
+    "proposing to woman",
+    "marriage"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "rain",
+   "value": "Something that might happen as a consequence of rain is flooding.",
+   "keywords": [
+    "rain",
+    "flooding"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "reproducing",
+   "value": "The effect of reproducing is children.",
+   "keywords": [
+    "reproducing",
+    "children"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "running marathon",
+   "value": "The effect of running a marathon is exhaustion.",
+   "keywords": [
+    "running marathon",
+    "exhaustion"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "studying",
+   "value": "The effect of studying is learning.",
+   "keywords": [
+    "studying",
+    "learning"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "taking exam",
+   "value": "Something that might happen as a consequence of taking an exam is getting a grade.",
+   "keywords": [
+    "taking exam",
+    "getting grade"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "taking examination",
+   "value": "Sometimes taking an examination causes passing a class.",
+   "keywords": [
+    "taking examination",
+    "passing class"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "urinating",
+   "value": "The effect of urinating is relief.",
+   "keywords": [
+    "urinating",
+    "relief"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dog",
+   "value": "a dog wants a bone.",
+   "keywords": [
+    "dog",
+    "bone"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dog",
+   "value": "A dog has four legs.",
+   "keywords": [
+    "dog",
+    "four legs"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ducks",
+   "value": "Ducks have a bill.",
+   "keywords": [
+    "ducks",
+    "bill"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "earth",
+   "value": "The Earth has an atmosphere.",
+   "keywords": [
+    "earth",
+    "atmosphere"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "toothbrush",
+   "value": "A toothbrush has bristles.",
+   "keywords": [
+    "toothbrush",
+    "bristles"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "attend classical concert",
+   "value": "If you want to attend a classical concert then you should buy tickets.",
+   "keywords": [
+    "attend classical concert",
+    "buy tickets"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bringing in verdict",
+   "value": "bringing in a verdict requires judgement.",
+   "keywords": [
+    "bringing in verdict",
+    "judgement"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "change society",
+   "value": "Something you need to do before you change society is change yourself.",
+   "keywords": [
+    "change society",
+    "change yourself"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "compete",
+   "value": "Something you need to do before you compete is train.",
+   "keywords": [
+    "compete",
+    "train"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "discover truth",
+   "value": "Something you need to do before you discover the truth is ask questions.",
+   "keywords": [
+    "discover truth",
+    "ask questions"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dive",
+   "value": "If you want to dive then you should go to a pool.",
+   "keywords": [
+    "dive",
+    "go to pool"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "drill hole",
+   "value": "Something you need to do before you drill a hole is get a drill.",
+   "keywords": [
+    "drill hole",
+    "get drill"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "eat ice cream",
+   "value": "If you want to eat ice cream then you should buy some ice cream.",
+   "keywords": [
+    "eat ice cream",
+    "buy ice cream"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "feed family",
+   "value": "If you want to feed your family then you should buy some groceries.",
+   "keywords": [
+    "feed family",
+    "buy groceries"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "finding lost item",
+   "value": "finding a lost item requires searching.",
+   "keywords": [
+    "finding lost item",
+    "searching"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fly in airplane",
+   "value": "If you want to fly in an airplane then you should buy a ticket.",
+   "keywords": [
+    "fly in airplane",
+    "buy ticket"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "fly kite",
+   "value": "Something you need to do before you fly a kite is go outside.",
+   "keywords": [
+    "fly kite",
+    "go outside"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "forgive",
+   "value": "If you want to forgive someone then you should tell them.",
+   "keywords": [
+    "forgive",
+    "tell"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "get fit",
+   "value": "If you want to get fit then you should lift weights.",
+   "keywords": [
+    "get fit",
+    "lift weights"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "getting in line",
+   "value": "getting in line requires PATIENCE.",
+   "keywords": [
+    "getting in line",
+    "patience"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go for walk",
+   "value": "If you want to go for a walk then you should stand up.",
+   "keywords": [
+    "go for walk",
+    "stand up"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "go into trance",
+   "value": "Something you need to do before you go into a trance is meditate.",
+   "keywords": [
+    "go into trance",
+    "meditate"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "have party",
+   "value": "If you want to have a party then you should invite your friends.",
+   "keywords": [
+    "have party",
+    "invite friends"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "have pee",
+   "value": "If you want to have a pee then you should go to a bathroom.",
+   "keywords": [
+    "have pee",
+    "go to bathroom"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "have shower",
+   "value": "If you want to have a shower then you should take off your clothes.",
+   "keywords": [
+    "have shower",
+    "take off clothes"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "hear testimony",
+   "value": "If you want to hear testimony then you should go to court.",
+   "keywords": [
+    "hear testimony",
+    "go to court"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "join army",
+   "value": "If you want to join the army then you should enlist.",
+   "keywords": [
+    "join army",
+    "enlist"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "jump out of window",
+   "value": "Something you need to do before you jump out of a window is open the window.",
+   "keywords": [
+    "jump out of window",
+    "open window"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "make friends",
+   "value": "Something you need to do before you make friends is smile.",
+   "keywords": [
+    "make friends",
+    "smile"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pass class",
+   "value": "If you want to pass a class then you should study.",
+   "keywords": [
+    "pass class",
+    "study"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "play basketball",
+   "value": "If you want to play basketball then you should go to a basketball court.",
+   "keywords": [
+    "play basketball",
+    "go to basketball court"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "play guitar",
+   "value": "If you want to play a guitar then you should take lessons.",
+   "keywords": [
+    "play guitar",
+    "take lessons"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "propose to woman",
+   "value": "If you want to propose to a woman then you should buy her a ring.",
+   "keywords": [
+    "propose to woman",
+    "buy ring"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "read book",
+   "value": "If you want to read a book then you should go to the library.",
+   "keywords": [
+    "read book",
+    "go to library"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "rest",
+   "value": "Something you need to do before you rest is lie down.",
+   "keywords": [
+    "rest",
+    "lie down"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ride horse",
+   "value": "If you want to ride a horse then you should get a saddle.",
+   "keywords": [
+    "ride horse",
+    "get saddle"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "send criminal to prison",
+   "value": "If you want to send a criminal to prison then you should convict him.",
+   "keywords": [
+    "send criminal to prison",
+    "convict"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "shop",
+   "value": "If you want to shop then you should go to a store.",
+   "keywords": [
+    "shop",
+    "go to store"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "skate",
+   "value": "Something you need to do before you skate is put skates on.",
+   "keywords": [
+    "skate",
+    "put skates on"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "smoke",
+   "value": "If you want to smoke then you should light the cigarette.",
+   "keywords": [
+    "smoke",
+    "light cigarette"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "spit",
+   "value": "If you want to spit then you should gather your saliva.",
+   "keywords": [
+    "spit",
+    "gather saliva"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "stay in bed",
+   "value": "Something you need to do before you stay in bed is turn off the alarm clock.",
+   "keywords": [
+    "stay in bed",
+    "turn off alarm clock"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "take finals",
+   "value": "If you want to take finals then you should attend a class.",
+   "keywords": [
+    "take finals",
+    "attend class"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "use television",
+   "value": "Something you need to do before you use a television is plug it in.",
+   "keywords": [
+    "use television",
+    "plug in"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "view video",
+   "value": "If you want to view a video then you should have a vcr.",
+   "keywords": [
+    "view video",
+    "have vcr"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "walking",
+   "value": "Walking requires legs.",
+   "keywords": [
+    "walking",
+    "legs"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "washing clothes",
+   "value": "washing clothes requires water.",
+   "keywords": [
+    "washing clothes",
+    "water"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "write story",
+   "value": "If you want to write a story then you should have imagination.",
+   "keywords": [
+    "write story",
+    "have imagination"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "grain of sand",
+   "value": "A grain of sand is very small.",
+   "keywords": [
+    "grain of sand",
+    "very small"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "sword",
+   "value": "a sword is sharp.",
+   "keywords": [
+    "sword",
+    "sharp"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "africa",
+   "value": "Africa is a continent.",
+   "keywords": [
+    "africa",
+    "continent"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "baby",
+   "value": "A baby is a very young child.",
+   "keywords": [
+    "baby",
+    "very young child"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "banjo",
+   "value": "A banjo is a stringed instrument.",
+   "keywords": [
+    "banjo",
+    "stringed instrument"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bar",
+   "value": "a bar is a place.",
+   "keywords": [
+    "bar",
+    "place"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bible",
+   "value": "the bible is a book.",
+   "keywords": [
+    "bible",
+    "book"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "bus",
+   "value": "bus is a form of public transportation.",
+   "keywords": [
+    "bus",
+    "form of public transportation"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "cappuccino",
+   "value": "Cappuccino is a drink.",
+   "keywords": [
+    "cappuccino",
+    "drink"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "coffee",
+   "value": "coffee is a stimulant.",
+   "keywords": [
+    "coffee",
+    "stimulant"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "copper",
+   "value": "copper is a good conductor of electricity.",
+   "keywords": [
+    "copper",
+    "good conductor of electricity"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "desert",
+   "value": "desert is a type of terrain.",
+   "keywords": [
+    "desert",
+    "terrain"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "dinner",
+   "value": "dinner is a kind of meal.",
+   "keywords": [
+    "dinner",
+    "meal"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "drum",
+   "value": "drum is a kind of percussion instrument.",
+   "keywords": [
+    "drum",
+    "percussion instrument"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "gorilla",
+   "value": "A gorilla is an ape.",
+   "keywords": [
+    "gorilla",
+    "ape"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "heart",
+   "value": "The heart is a muscle.",
+   "keywords": [
+    "heart",
+    "muscle"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "helium",
+   "value": "Helium is a gas.",
+   "keywords": [
+    "helium",
+    "gas"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "hibiscus",
+   "value": "A hibiscus is a flower.",
+   "keywords": [
+    "hibiscus",
+    "flower"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "ignorance",
+   "value": "Ignorance is bliss.",
+   "keywords": [
+    "ignorance",
+    "bliss"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "island",
+   "value": "An island is a body of land.",
+   "keywords": [
+    "island",
+    "body of land"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "knowledge",
+   "value": "knowledge is a powerful thing.",
+   "keywords": [
+    "knowledge",
+    "powerful thing"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "lisp",
+   "value": "lisp is a kind of programming language.",
+   "keywords": [
+    "lisp",
+    "programming language"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "london",
+   "value": "london is a city.",
+   "keywords": [
+    "london",
+    "city"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "milk",
+   "value": "Milk is a liquid.",
+   "keywords": [
+    "milk",
+    "liquid"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "mushroom",
+   "value": "a mushroom is a fungus.",
+   "keywords": [
+    "mushroom",
+    "fungus"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "new york",
+   "value": "New York is a state.",
+   "keywords": [
+    "new york",
+    "state"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pineapple",
+   "value": "Pineapple is a type of fruit.",
+   "keywords": [
+    "pineapple",
+    "fruit"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pink",
+   "value": "Pink is a color.",
+   "keywords": [
+    "pink",
+    "color"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "pizza",
+   "value": "Pizza is a disc-shaped food item.",
+   "keywords": [
+    "pizza",
+    "disc shaped food item"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "planet",
+   "value": "A planet is a large object.",
+   "keywords": [
+    "planet",
+    "large object"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "plastic",
+   "value": "plastic is a type of material.",
+   "keywords": [
+    "plastic",
+    "material"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "skiing",
+   "value": "Skiing is a activity.",
+   "keywords": [
+    "skiing",
+    "activity"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "soup",
+   "value": "soup is food.",
+   "keywords": [
+    "soup",
+    "food"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "swan",
+   "value": "a swan is a bird.",
+   "keywords": [
+    "swan",
+    "bird"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "swimming",
+   "value": "swimming is a sport.",
+   "keywords": [
+    "swimming",
+    "sport"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "tool",
+   "value": "a tool is an object.",
+   "keywords": [
+    "tool",
+    "object"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "verb",
+   "value": "a verb is a word.",
+   "keywords": [
+    "verb",
+    "word"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "windows",
+   "value": "windows is a kind of operating system.",
+   "keywords": [
+    "windows",
+    "operating system"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "writing",
+   "value": "writing is a form of communication.",
+   "keywords": [
+    "writing",
+    "form of communication"
+   ]
+  },
+  {
+   "type": "факт",
+   "key": "xylophone",
+   "value": "xylophone is a kind of percussion instrument.",
+   "keywords": [
+    "xylophone",
+    "percussion instrument"
+   ]
+  }
+ ]
+}

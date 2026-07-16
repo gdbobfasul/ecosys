@@ -1,4 +1,4 @@
-# Безопасност на данните — Рутина-робот (RUStore)
+# Безопасност на данните — KCY Routine Planner (RUStore)
 
 ## Обобщение
 - Всички потребителски данни се пазят **само на устройството** (Capacitor Preferences / localStorage).

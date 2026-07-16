@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.autoreplybot.hw",
-  "appName": "Auto-Reply Bot",
+  "appName": "KCY Auto Answer",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

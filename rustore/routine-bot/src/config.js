@@ -5,7 +5,7 @@
 export const APP_CONFIG = {
   store: 'rustore',
   appId: 'com.kcy.routinebot.rustore',
-  appName: 'Рутина-робот',
+  appName: 'KCY Routine Planner',
   storeName: 'RUStore',
   // Акцентен цвят на темата — RUStore издание (синьо).
   accent: '#2563eb',

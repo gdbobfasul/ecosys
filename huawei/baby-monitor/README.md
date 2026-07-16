@@ -1,4 +1,4 @@
-# Детегледачка (Huawei AppGallery) — baby/child monitor
+# KCY Baby Radar (Huawei AppGallery) — baby/child monitor
 
 Нает робот („robot for rent“), който пази спящото или играещото дете през камерата на телефона и
 подава сигнал на наемателя. Изцяло **on-device** и **безплатно**. Без акаунти, без реклами, без

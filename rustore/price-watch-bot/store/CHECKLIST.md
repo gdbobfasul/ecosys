@@ -1,4 +1,4 @@
-# Предпубликационен чеклист — Цена-робот (RUStore)
+# Предпубликационен чеклист — KCY Price Watch (RUStore)
 
 - [ ] `appId` = `com.kcy.pricewatchbot.rustore` (capacitor.config.json)
 - [ ] Версия вдигната в package.json

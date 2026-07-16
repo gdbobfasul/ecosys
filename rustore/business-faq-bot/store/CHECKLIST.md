@@ -1,4 +1,4 @@
-# Release CHECKLIST — Бизнес FAQ робот (RUStore)
+# Release CHECKLIST — KCY FAQ Desk (RUStore)
 
 ## Идентичност
 - [ ] App ID `com.kcy.businessfaqbot.rustore` (capacitor.config.json)

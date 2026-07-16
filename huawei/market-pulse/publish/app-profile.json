@@ -3,7 +3,7 @@
   "isGame": false,
   "generativeAI": false,
   "descKeys": [],
-  "pitchEn": "Market Pulse is an educational, multi-market analyzer. It reads public market data (cryptocurrencies, gold and metals, stock indices by country, and real-estate ETFs), market sentiment and news, and computes classic indicators (RSI, moving-average trend, momentum) for a period you choose. It is strictly educational and is NOT investment advice.",
+  "pitchEn": "KCY Market Pulse is an educational, multi-market analyzer. It reads public market data (cryptocurrencies, gold and metals, stock indices by country, and real-estate ETFs), market sentiment and news, and computes classic indicators (RSI, moving-average trend, momentum) for a period you choose. It is strictly educational and is NOT investment advice.",
   "newFeaturesEn": "First release: analyze crypto, gold, stock indices (by country) and real-estate markets; drill down market -> country -> instrument; pick a period (now / 1-5 years ago / custom dates such as May-August 2015) and see the reading plus what happened next; classic indicators and market sentiment (Fear & Greed); current news and news from the selected period. Educational only - not investment advice.",
   "dataHandling": {
     "collectsPersonalData": false,

@@ -1,4 +1,4 @@
-# Data Safety — Auto-Reply Bot (RUStore)
+# Data Safety — KCY Auto Answer (RUStore)
 
 **Сбор на данни:** НЯМА.
 **Споделяне на данни:** НЯМА.

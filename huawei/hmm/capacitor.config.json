@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.hmm.hw",
-  "appName": "Битка на терен HMM",
+  "appName": "KCY Field Battle",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

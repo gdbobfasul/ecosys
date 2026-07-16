@@ -1,4 +1,4 @@
-# Release checklist — Детегледачка (RUStore)
+# Release checklist — KCY Baby Radar (RUStore)
 
 - [ ] `npm install` минава без грешки.
 - [ ] `npm run build` минава (големият TF.js chunk е очакван — lazy-load).

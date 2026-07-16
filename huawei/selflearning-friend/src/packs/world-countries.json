@@ -1,0 +1,1190 @@
+{
+ "name": "Държавите по света",
+ "topic": "география",
+ "source": "Wikidata (свободни данни)",
+ "seedInterests": false,
+ "terms": [
+  {
+   "term": "Австралия",
+   "definition": "Държава в Океания. Столица: Канбера. Население: ~27,6 млн души. Площ: 7 692 024 км². (на английски: Australia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q408"
+  },
+  {
+   "term": "Австрия",
+   "definition": "Държава в Европа. Столица: Виена. Население: ~9 млн души. Площ: 83 879 км². (на английски: Austria)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q40"
+  },
+  {
+   "term": "Азербайджан",
+   "definition": "Държава в Азия. Столица: Баку. Население: ~10,2 млн души. Площ: 86 600 км². (на английски: Azerbaijan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q227"
+  },
+  {
+   "term": "Албания",
+   "definition": "Държава в Европа. Столица: Тирана. Население: ~2,8 млн души. Площ: 28 748 км². (на английски: Albania)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q222"
+  },
+  {
+   "term": "Алжир",
+   "definition": "Държава в Африка. Столица: Алжир. Население: ~46,2 млн души. Площ: 2 381 741 км². (на английски: Algeria)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q262"
+  },
+  {
+   "term": "Ангола",
+   "definition": "Държава в Африка. Столица: Луанда. Население: ~36,7 млн души. Площ: 1 246 700 км². (на английски: Angola)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q916"
+  },
+  {
+   "term": "Андора",
+   "definition": "Държава в Европа. Столица: Андора ла Веля. Население: ~87 хил. души. Площ: 468 км². (на английски: Andorra)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q228"
+  },
+  {
+   "term": "Антигуа и Барбуда",
+   "definition": "Държава в Северна Америка. Столица: Сейнт Джонс. Население: ~101 хил. души. Площ: 440 км². (на английски: Antigua and Barbuda)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q781"
+  },
+  {
+   "term": "Аржентина",
+   "definition": "Държава в Южна Америка. Столица: Буенос Айрес. Население: ~47,3 млн души. Площ: 2 780 400 км². (на английски: Argentina)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q414"
+  },
+  {
+   "term": "Армения",
+   "definition": "Държава в Азия. Столица: Ереван. Население: ~2,9 млн души. Площ: 29 743 км². (на английски: Armenia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q399"
+  },
+  {
+   "term": "Афганистан",
+   "definition": "Държава в Азия. Столица: Кабул. Население: ~41,5 млн души. Площ: 652 230 км². (на английски: Afghanistan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q889"
+  },
+  {
+   "term": "Бангладеш",
+   "definition": "Държава в Азия. Столица: Дака. Население: ~171,5 млн души. Площ: 147 570 км². (на английски: Bangladesh)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q902"
+  },
+  {
+   "term": "Барбадос",
+   "definition": "Държава в Северна Америка. Столица: Бриджтаун. Население: ~303 хил. души. Площ: 439 км². (на английски: Barbados)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q244"
+  },
+  {
+   "term": "Бахамски острови",
+   "definition": "Държава в Северна Америка. Столица: Насау. Население: ~399 хил. души. Площ: 13 878 км². (на английски: The Bahamas)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q778"
+  },
+  {
+   "term": "Бахрейн",
+   "definition": "Държава в Азия. Столица: Манама. Население: ~1,6 млн души. Площ: 787 км². (на английски: Bahrain)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q398"
+  },
+  {
+   "term": "Беларус",
+   "definition": "Държава в Европа. Столица: Минск. Население: ~9,1 млн души. Площ: 207 597 км². (на английски: Belarus)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q184"
+  },
+  {
+   "term": "Белгия",
+   "definition": "Държава в Европа. Столица: Брюксел. Население: ~11,8 млн души. Площ: 30 688 км². (на английски: Belgium)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q31"
+  },
+  {
+   "term": "Белиз",
+   "definition": "Държава в Северна Америка. Столица: Белмопан. Население: ~411 хил. души. Площ: 22 966 км². (на английски: Belize)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q242"
+  },
+  {
+   "term": "Бенин",
+   "definition": "Държава в Африка. Столица: Порто Ново. Население: ~14,1 млн души. Площ: 114 763 км². (на английски: Benin)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q962"
+  },
+  {
+   "term": "Боливия",
+   "definition": "Държава в Южна Америка. Столица: Сукре. Население: ~12,2 млн души. Площ: 1 098 581 км². (на английски: Bolivia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q750"
+  },
+  {
+   "term": "Босна и Херцеговина",
+   "definition": "Държава в Европа. Столица: Сараево. Население: ~3,8 млн души. Площ: 51 197 км². (на английски: Bosnia and Herzegovina)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q225"
+  },
+  {
+   "term": "Ботсвана",
+   "definition": "Държава в Африка. Столица: Габороне. Население: ~2,5 млн души. Площ: 581 737 км². (на английски: Botswana)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q963"
+  },
+  {
+   "term": "Бразилия",
+   "definition": "Държава в Южна Америка. Столица: Бразилия. Население: ~213,4 млн души. Площ: 8 515 767 км². (на английски: Brazil)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q155"
+  },
+  {
+   "term": "Бруней",
+   "definition": "Държава в Азия. Столица: Бандар Сери Бегаван. Население: ~459 хил. души. Площ: 5765 км². (на английски: Brunei)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q921"
+  },
+  {
+   "term": "Буркина Фасо",
+   "definition": "Държава в Африка. Столица: Уагадугу. Население: ~23 млн души. Площ: 274 200 км². (на английски: Burkina Faso)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q965"
+  },
+  {
+   "term": "Бурунди",
+   "definition": "Държава в Африка. Столица: Гитега. Население: ~13,7 млн души. Площ: 27 834 км². (на английски: Burundi)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q967"
+  },
+  {
+   "term": "Бутан",
+   "definition": "Държава в Азия. Столица: Тхимпху. Население: ~787 хил. души. Площ: 38 394 км². (на английски: Bhutan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q917"
+  },
+  {
+   "term": "България",
+   "definition": "Държава в Европа. Столица: София. Население: ~6,4 млн души. Площ: 110 994 км². (на английски: Bulgaria)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q219"
+  },
+  {
+   "term": "Вануату",
+   "definition": "Държава в Океания. Столица: Порт Вила. Население: ~300 хил. души. Площ: 12 190 км². (на английски: Vanuatu)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q686"
+  },
+  {
+   "term": "Ватикан",
+   "definition": "Държава в Европа. Столица: Ватикан. Население: 882. (на английски: Vatican City)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q237"
+  },
+  {
+   "term": "Венецуела",
+   "definition": "Държава в Южна Америка. Столица: Каракас. Население: ~31,3 млн души. Площ: 912 050 км². (на английски: Venezuela)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q717"
+  },
+  {
+   "term": "Виетнам",
+   "definition": "Държава в Азия. Столица: Ханой. Население: ~96,2 млн души. Площ: 331 690 км². (на английски: Vietnam)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q881"
+  },
+  {
+   "term": "Габон",
+   "definition": "Държава в Африка. Столица: Либревил. Население: ~2 млн души. Площ: 267 667 км². (на английски: Gabon)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1000"
+  },
+  {
+   "term": "Гамбия",
+   "definition": "Държава в Африка. Столица: Банджул. Население: ~2,6 млн души. Площ: 11 300 км². (на английски: The Gambia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1005"
+  },
+  {
+   "term": "Гана",
+   "definition": "Държава в Африка. Столица: Акра. Население: ~32,8 млн души. Площ: 238 535 км². (на английски: Ghana)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q117"
+  },
+  {
+   "term": "Гаяна",
+   "definition": "Държава в Южна Америка. Столица: Джорджтаун. Население: ~879 хил. души. Площ: 214 970 км². (на английски: Guyana)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q734"
+  },
+  {
+   "term": "Гватемала",
+   "definition": "Държава в Северна Америка. Столица: Гватемала. Население: ~17,3 млн души. Площ: 108 889 км². (на английски: Guatemala)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q774"
+  },
+  {
+   "term": "Гвинея",
+   "definition": "Държава в Африка. Столица: Конакри. Население: ~12,7 млн души. Площ: 245 857 км². (на английски: Guinea)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1006"
+  },
+  {
+   "term": "Гвинея-Бисау",
+   "definition": "Държава в Африка. Столица: Бисау. Население: ~1,9 млн души. Площ: 36 125 км². (на английски: Guinea-Bissau)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1007"
+  },
+  {
+   "term": "Германия",
+   "definition": "Държава в Европа. Столица: Берлин. Население: ~83,6 млн души. Площ: 357 588 км². (на английски: Germany)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q183"
+  },
+  {
+   "term": "Гренада",
+   "definition": "Държава в Северна Америка. Столица: Сейнт Джорджис. Население: ~114 хил. души. Площ: 349 км². (на английски: Grenada)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q769"
+  },
+  {
+   "term": "Грузия",
+   "definition": "Държава в Европа. Столица: Тбилиси. Население: ~3,7 млн души. Площ: 69 700 км². (на английски: Georgia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q230"
+  },
+  {
+   "term": "Гърция",
+   "definition": "Държава в Европа. Столица: Атина. Население: ~10,5 млн души. Площ: 131 957 км². (на английски: Greece)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q41"
+  },
+  {
+   "term": "Демократична република Конго",
+   "definition": "Държава в Африка. Столица: Киншаса. Население: ~105,8 млн души. Площ: 2 344 858 км². (на английски: Democratic Republic of the Congo)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q974"
+  },
+  {
+   "term": "Джибути",
+   "definition": "Държава в Африка. Столица: Джибути. Население: ~1,2 млн души. Площ: 23 200 км². (на английски: Djibouti)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q977"
+  },
+  {
+   "term": "Доминика",
+   "definition": "Държава в Северна Америка. Столица: Розо. Население: ~75 хил. души. Площ: 751 км². (на английски: Dominica)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q784"
+  },
+  {
+   "term": "Доминиканска република",
+   "definition": "Държава в Северна Америка. Столица: Санто Доминго. Население: ~10,8 млн души. Площ: 48 671 км². (на английски: Dominican Republic)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q786"
+  },
+  {
+   "term": "Държава Палестина",
+   "definition": "Държава в Азия. Столица: Източен Йерусалим. Население: ~5,2 млн души. Площ: 6020 км². (на английски: Palestine)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q219060"
+  },
+  {
+   "term": "Египет",
+   "definition": "Държава в Африка. Столица: Кайро. Население: ~114,5 млн души. Площ: 1 010 408 км². (на английски: Egypt)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q79"
+  },
+  {
+   "term": "Еквадор",
+   "definition": "Държава в Южна Америка. Столица: Кито. Население: ~16,9 млн души. Площ: 257 204 км². (на английски: Ecuador)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q736"
+  },
+  {
+   "term": "Екваториална Гвинея",
+   "definition": "Държава в Африка. Столица: Сиудад де ла Паз. Население: ~1,8 млн души. Площ: 28 051 км². (на английски: Equatorial Guinea)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q983"
+  },
+  {
+   "term": "Еритрея",
+   "definition": "Държава в Африка. Столица: Асмара. Население: ~3,5 млн души. Площ: 117 600 км². (на английски: Eritrea)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q986"
+  },
+  {
+   "term": "Есватини",
+   "definition": "Държава в Африка. Столица: Лобамба. Население: ~1,2 млн души. Площ: 17 364 км². (на английски: Eswatini)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1050"
+  },
+  {
+   "term": "Естония",
+   "definition": "Държава в Европа. Столица: Талин. Население: ~1,4 млн души. Площ: 45 335 км². (на английски: Estonia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q191"
+  },
+  {
+   "term": "Етиопия",
+   "definition": "Държава в Африка. Столица: Адис Абеба. Население: ~128,7 млн души. Площ: 1 104 300 км². (на английски: Ethiopia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q115"
+  },
+  {
+   "term": "Замбия",
+   "definition": "Държава в Африка. Столица: Лусака. Население: ~19,6 млн души. Площ: 752 618 км². (на английски: Zambia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q953"
+  },
+  {
+   "term": "Зимбабве",
+   "definition": "Държава в Африка. Столица: Хараре. Население: ~15,2 млн души. Площ: 390 757 км². (на английски: Zimbabwe)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q954"
+  },
+  {
+   "term": "Израел",
+   "definition": "Държава в Азия. Столица: Йерусалим. Население: ~9,8 млн души. Площ: 20 770 км². (на английски: Israel)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q801"
+  },
+  {
+   "term": "Източен Тимор",
+   "definition": "Държава в Азия. Столица: Дили. Население: ~1,2 млн души. Площ: 14 919 км². (на английски: Timor-Leste)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q574"
+  },
+  {
+   "term": "Индия",
+   "definition": "Държава в Азия. Столица: Ню Делхи. Население: ~1326,1 млн души. Площ: 3 287 263 км². (на английски: India)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q668"
+  },
+  {
+   "term": "Индонезия",
+   "definition": "Държава в Азия. Столица: Джакарта. Население: ~275,4 млн души. Площ: 1 904 570 км². (на английски: Indonesia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q252"
+  },
+  {
+   "term": "Ирак",
+   "definition": "Държава в Азия. Столица: Багдад. Население: ~38,3 млн души. Площ: 437 072 км². (на английски: Iraq)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q796"
+  },
+  {
+   "term": "Иран",
+   "definition": "Държава в Азия. Столица: Техеран. Население: ~92,4 млн души. Площ: 1 648 195 км². (на английски: Iran)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q794"
+  },
+  {
+   "term": "Ирландия",
+   "definition": "Държава в Европа. Столица: Дъблин. Население: ~5,1 млн души. Площ: 69 797 км². (на английски: Ireland)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q27"
+  },
+  {
+   "term": "Исландия",
+   "definition": "Държава в Европа. Столица: Рейкявик. Население: ~364 хил. души. Площ: 103 004 км². (на английски: Iceland)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q189"
+  },
+  {
+   "term": "Испания",
+   "definition": "Държава в Европа. Столица: Мадрид. Население: ~48,6 млн души. Площ: 505 990 км². (на английски: Spain)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q29"
+  },
+  {
+   "term": "Италия",
+   "definition": "Държава в Европа. Столица: Рим. Население: ~58,9 млн души. Площ: 302 068 км². (на английски: Italy)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q38"
+  },
+  {
+   "term": "Йемен",
+   "definition": "Държава в Азия. Столица: Аден. Население: ~28,3 млн души. Площ: 455 503 км². (на английски: Yemen)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q805"
+  },
+  {
+   "term": "Йордания",
+   "definition": "Държава в Азия. Столица: Аман. Население: ~10,4 млн души. Площ: 89 341 км². (на английски: Jordan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q810"
+  },
+  {
+   "term": "Кабо Верде",
+   "definition": "Държава в Африка. Столица: Прая. Население: ~556 хил. души. Площ: 4033 км². (на английски: Cape Verde)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1011"
+  },
+  {
+   "term": "Казахстан",
+   "definition": "Държава в Европа. Столица: Астана. Население: ~20,1 млн души. Площ: 2 724 900 км². (на английски: Kazakhstan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q232"
+  },
+  {
+   "term": "Камбоджа",
+   "definition": "Държава в Азия. Столица: Пном Пен. Население: ~17,4 млн души. Площ: 181 035 км². (на английски: Cambodia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q424"
+  },
+  {
+   "term": "Камерун",
+   "definition": "Държава в Африка. Столица: Яунде. Население: ~28,4 млн души. Площ: 475 442 км². (на английски: Cameroon)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1009"
+  },
+  {
+   "term": "Канада",
+   "definition": "Държава в Северна Америка. Столица: Отава. Население: ~37 млн души. Площ: 9 984 670 км². (на английски: Canada)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q16"
+  },
+  {
+   "term": "Катар",
+   "definition": "Държава в Азия. Столица: Доха. Население: ~2,6 млн души. Площ: 11 437 км². (на английски: Qatar)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q846"
+  },
+  {
+   "term": "Кения",
+   "definition": "Държава в Африка. Столица: Найроби. Население: ~48,5 млн души. Площ: 581 309 км². (на английски: Kenya)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q114"
+  },
+  {
+   "term": "Кипър",
+   "definition": "Държава в Европа. Столица: Никозия. Население: ~1,3 млн души. Площ: 9242 км². (на английски: Cyprus)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q229"
+  },
+  {
+   "term": "Киргизстан",
+   "definition": "Държава в Азия. Столица: Бишкек. Население: ~7,3 млн души. Площ: 199 951 км². (на английски: Kyrgyzstan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q813"
+  },
+  {
+   "term": "Кирибати",
+   "definition": "Държава в Океания. Столица: Южна Тарауа. Население: ~135 хил. души. Площ: 811 км². (на английски: Kiribati)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q710"
+  },
+  {
+   "term": "Китай",
+   "definition": "Държава в Азия. Столица: Пекин. Население: ~1404,9 млн души. Площ: 9 596 961 км². (на английски: People's Republic of China)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q148"
+  },
+  {
+   "term": "Колумбия",
+   "definition": "Държава в Южна Америка. Столица: Богота. Население: ~52,3 млн души. Площ: 1 141 748 км². (на английски: Colombia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q739"
+  },
+  {
+   "term": "Коморски острови",
+   "definition": "Държава в Африка. Столица: Морони. Население: ~902 хил. души. Площ: 2034 км². (на английски: Comoros)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q970"
+  },
+  {
+   "term": "Косово",
+   "definition": "Държава в Европа. Столица: Прищина. Население: ~1,6 млн души. Площ: 10 909 км². (на английски: Kosovo)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1246"
+  },
+  {
+   "term": "Коста Рика",
+   "definition": "Държава в Северна Америка. Столица: Сан Хосе. Население: ~5,3 млн души. Площ: 51 180 км². (на английски: Costa Rica)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q800"
+  },
+  {
+   "term": "Кот д'Ивоар",
+   "definition": "Държава в Африка. Столица: Ямусукро. Население: ~31,2 млн души. Площ: 322 463 км². (на английски: Ivory Coast)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1008"
+  },
+  {
+   "term": "Кралство Дания",
+   "definition": "Държава в Европа. Столица: Копенхаген. Население: ~5,9 млн души. Площ: 2 220 930 км². (на английски: Kingdom of Denmark)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q756617"
+  },
+  {
+   "term": "Кралство Нидерландия",
+   "definition": "Държава в Европа. Столица: Амстердам. Население: ~17,1 млн души. Площ: 42 201 км². (на английски: Kingdom of the Netherlands)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q29999"
+  },
+  {
+   "term": "Куба",
+   "definition": "Държава в Северна Америка. Столица: Хавана. Население: ~11 млн души. Площ: 109 884 км². (на английски: Cuba)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q241"
+  },
+  {
+   "term": "Кувейт",
+   "definition": "Държава в Азия. Столица: Кувейт. Население: ~4,5 млн души. Площ: 17 818 км². (на английски: Kuwait)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q817"
+  },
+  {
+   "term": "Лаос",
+   "definition": "Държава в Азия. Столица: Виентян. Население: ~6,9 млн души. Площ: 236 800 км². (на английски: Laos)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q819"
+  },
+  {
+   "term": "Латвия",
+   "definition": "Държава в Европа. Столица: Рига. Население: ~1,8 млн души. Площ: 64 594 км². (на английски: Latvia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q211"
+  },
+  {
+   "term": "Лесото",
+   "definition": "Държава в Африка. Столица: Масеру. Население: ~2 млн души. Площ: 30 355 км². (на английски: Lesotho)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1013"
+  },
+  {
+   "term": "Либерия",
+   "definition": "Държава в Африка. Столица: Монровия. Население: ~5,2 млн души. Площ: 111 369 км². (на английски: Liberia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1014"
+  },
+  {
+   "term": "Либия",
+   "definition": "Държава в Африка. Столица: Триполи. Население: ~7,4 млн души. Площ: 1 759 541 км². (на английски: Libya)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1016"
+  },
+  {
+   "term": "Ливан",
+   "definition": "Държава в Азия. Столица: Бейрут. Население: ~6,1 млн души. Площ: 10 452 км². (на английски: Lebanon)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q822"
+  },
+  {
+   "term": "Литва",
+   "definition": "Държава в Европа. Столица: Вилнюс. Население: ~2,9 млн души. Площ: 65 300 км². (на английски: Lithuania)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q37"
+  },
+  {
+   "term": "Лихтенщайн",
+   "definition": "Държава в Европа. Столица: Вадуц. Население: ~38 хил. души. Площ: 160 км². (на английски: Liechtenstein)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q347"
+  },
+  {
+   "term": "Люксембург",
+   "definition": "Държава в Европа. Столица: Люксембург. Население: ~682 хил. души. Площ: 2586 км². (на английски: Luxembourg)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q32"
+  },
+  {
+   "term": "Мавритания",
+   "definition": "Държава в Африка. Столица: Нуакшот. Население: ~4,7 млн души. Площ: 1 030 700 км². (на английски: Mauritania)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1025"
+  },
+  {
+   "term": "Мавриций",
+   "definition": "Държава в Африка. Столица: Порт Луи. Население: ~1,3 млн души. Площ: 2040 км². (на английски: Mauritius)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1027"
+  },
+  {
+   "term": "Мадагаскар",
+   "definition": "Държава в Африка. Столица: Антананариво. Население: ~32 млн души. Площ: 587 295 км². (на английски: Madagascar)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1019"
+  },
+  {
+   "term": "Малави",
+   "definition": "Държава в Африка. Столица: Лилонгве. Население: ~17,6 млн души. Площ: 118 484 км². (на английски: Malawi)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1020"
+  },
+  {
+   "term": "Малайзия",
+   "definition": "Държава в Азия. Столица: Куала Лумпур. Население: ~32,4 млн души. Площ: 330 803 км². (на английски: Malaysia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q833"
+  },
+  {
+   "term": "Малдиви",
+   "definition": "Държава в Азия. Столица: Мале. Население: ~436 хил. души. Площ: 298 км². (на английски: Maldives)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q826"
+  },
+  {
+   "term": "Мали",
+   "definition": "Държава в Африка. Столица: Бамако. Население: ~22,4 млн души. Площ: 1 240 192 км². (на английски: Mali)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q912"
+  },
+  {
+   "term": "Малта",
+   "definition": "Държава в Европа. Столица: Валета. Население: ~553 хил. души. Площ: 316 км². (на английски: Malta)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q233"
+  },
+  {
+   "term": "Мароко",
+   "definition": "Държава в Африка. Столица: Рабат. Население: ~36,8 млн души. Площ: 446 550 км². (на английски: Morocco)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1028"
+  },
+  {
+   "term": "Маршалови острови",
+   "definition": "Държава в Океания. Столица: Маджуро. Население: ~53 хил. души. Площ: 181 км². (на английски: Marshall Islands)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q709"
+  },
+  {
+   "term": "Мексико",
+   "definition": "Държава в Северна Америка. Столица: Мексико. Население: ~132,3 млн души. Площ: 1 972 550 км². (на английски: Mexico)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q96"
+  },
+  {
+   "term": "Мианмар",
+   "definition": "Държава в Азия. Столица: Найпидо. Население: ~53,4 млн души. Площ: 676 577 км². (на английски: Myanmar)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q836"
+  },
+  {
+   "term": "Микронезия (държава)",
+   "definition": "Държава в Океания. Столица: Паликир. Население: ~76 хил. души. Площ: 702 км². (на английски: Federated States of Micronesia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q702"
+  },
+  {
+   "term": "Мозамбик",
+   "definition": "Държава в Африка. Столица: Мапуто. Население: ~29,7 млн души. Площ: 801 590 км². (на английски: Mozambique)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1029"
+  },
+  {
+   "term": "Молдова",
+   "definition": "Държава в Европа. Столица: Кишинев. Население: ~2,4 млн души. Площ: 33 844 км². (на английски: Moldova)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q217"
+  },
+  {
+   "term": "Монако",
+   "definition": "Държава в Европа. Столица: Монако. Население: ~39 хил. души. Площ: 2 км². (на английски: Monaco)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q235"
+  },
+  {
+   "term": "Монголия",
+   "definition": "Държава в Азия. Столица: Улан Батор. Население: ~3,4 млн души. Площ: 1 564 116 км². (на английски: Mongolia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q711"
+  },
+  {
+   "term": "Намибия",
+   "definition": "Държава в Африка. Столица: Виндхук. Население: ~2,5 млн души. Площ: 825 615 км². (на английски: Namibia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1030"
+  },
+  {
+   "term": "Науру",
+   "definition": "Държава в Океания. Столица: Ярен. Население: ~14 хил. души. Площ: 21 км². (на английски: Nauru)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q697"
+  },
+  {
+   "term": "Непал",
+   "definition": "Държава в Азия. Столица: Катманду. Население: ~29,2 млн души. Площ: 147 181 км². (на английски: Nepal)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q837"
+  },
+  {
+   "term": "Нигер",
+   "definition": "Държава в Африка. Столица: Ниамей. Население: ~21,5 млн души. Площ: 1 267 000 км². (на английски: Niger)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1032"
+  },
+  {
+   "term": "Нигерия",
+   "definition": "Държава в Африка. Столица: Абуджа. Население: ~211,4 млн души. Площ: 923 768 км². (на английски: Nigeria)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1033"
+  },
+  {
+   "term": "Никарагуа",
+   "definition": "Държава в Северна Америка. Столица: Манагуа. Население: ~5,1 млн души. Площ: 120 340 км². (на английски: Nicaragua)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q811"
+  },
+  {
+   "term": "Нова Зеландия",
+   "definition": "Държава в Океания. Столица: Уелингтън. Население: ~5,3 млн души. Площ: 268 021 км². (на английски: New Zealand)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q664"
+  },
+  {
+   "term": "Норвегия",
+   "definition": "Държава в Европа. Столица: Осло. Население: ~5,6 млн души. Площ: 385 207 км². (на английски: Norway)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q20"
+  },
+  {
+   "term": "Обединени арабски емирства",
+   "definition": "Държава в Азия. Столица: Абу Даби. Население: ~9,9 млн души. Площ: 83 600 км². (на английски: United Arab Emirates)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q878"
+  },
+  {
+   "term": "Обединено кралство",
+   "definition": "Държава в Европа. Столица: Лондон. Население: ~67,3 млн души. Площ: 242 495 км². (на английски: United Kingdom)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q145"
+  },
+  {
+   "term": "Оман",
+   "definition": "Държава в Азия. Столица: Маскат. Население: ~4,8 млн души. Площ: 309 500 км². (на английски: Oman)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q842"
+  },
+  {
+   "term": "Пакистан",
+   "definition": "Държава в Азия. Столица: Исламабад. Население: ~223,8 млн души. Площ: 881 913 км². (на английски: Pakistan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q843"
+  },
+  {
+   "term": "Палау",
+   "definition": "Държава в Океания. Столица: Нгерулмуд. Население: ~22 хил. души. Площ: 466 км². (на английски: Palau)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q695"
+  },
+  {
+   "term": "Панама",
+   "definition": "Държава в Северна Америка. Столица: Панама. Население: ~4,6 млн души. Площ: 74 177 км². (на английски: Panama)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q804"
+  },
+  {
+   "term": "Папуа Нова Гвинея",
+   "definition": "Държава в Океания. Столица: Порт Морсби. Население: ~8,9 млн души. Площ: 462 840 км². (на английски: Papua New Guinea)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q691"
+  },
+  {
+   "term": "Парагвай",
+   "definition": "Държава в Южна Америка. Столица: Асунсион. Население: ~6,8 млн души. Площ: 406 756 км². (на английски: Paraguay)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q733"
+  },
+  {
+   "term": "Перу",
+   "definition": "Държава в Южна Америка. Столица: Лима. Население: ~34,2 млн души. Площ: 1 285 216 км². (на английски: Peru)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q419"
+  },
+  {
+   "term": "Полша",
+   "definition": "Държава в Европа. Столица: Варшава. Население: ~37,6 млн души. Площ: 312 683 км². (на английски: Poland)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q36"
+  },
+  {
+   "term": "Португалия",
+   "definition": "Държава в Европа. Столица: Лисабон. Население: ~10,3 млн души. Площ: 92 225 км². (на английски: Portugal)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q45"
+  },
+  {
+   "term": "Република Китай",
+   "definition": "Държава в Азия. Столица: Тайпей. Население: ~23,3 млн души. Площ: 36 193 км². (на английски: Taiwan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q865"
+  },
+  {
+   "term": "Република Конго",
+   "definition": "Държава в Африка. Столица: Бразавил. Население: ~6,1 млн души. Площ: 342 000 км². (на английски: Republic of the Congo)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q971"
+  },
+  {
+   "term": "Република Южна Африка",
+   "definition": "Държава в Африка. Столица: Блумфонтейн. Население: ~62 млн души. Площ: 1 221 037 км². (на английски: South Africa)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q258"
+  },
+  {
+   "term": "Руанда",
+   "definition": "Държава в Африка. Столица: Кигали. Население: ~14,6 млн души. Площ: 26 338 км². (на английски: Rwanda)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1037"
+  },
+  {
+   "term": "Румъния",
+   "definition": "Държава в Европа. Столица: Букурещ. Население: ~19,1 млн души. Площ: 238 397 км². (на английски: Romania)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q218"
+  },
+  {
+   "term": "Русия",
+   "definition": "Държава в Европа. Столица: Москва. Население: ~146,1 млн души. Площ: 17 075 400 км². (на английски: Russia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q159"
+  },
+  {
+   "term": "Салвадор",
+   "definition": "Държава в Северна Америка. Столица: Сан Салвадор. Население: ~6 млн души. Площ: 21 041 км². (на английски: El Salvador)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q792"
+  },
+  {
+   "term": "Самоа",
+   "definition": "Държава в Океания. Столица: Апия. Население: ~200 хил. души. Площ: 2842 км². (на английски: Samoa)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q683"
+  },
+  {
+   "term": "Сан Марино",
+   "definition": "Държава в Европа. Столица: Сан Марино. Население: ~34 хил. души. Площ: 61 км². (на английски: San Marino)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q238"
+  },
+  {
+   "term": "Сао Томе и Принсипи",
+   "definition": "Държава в Африка. Столица: Сао Томе. Население: ~204 хил. души. Площ: 1001 км². (на английски: São Tomé and Príncipe)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1039"
+  },
+  {
+   "term": "Саудитска Арабия",
+   "definition": "Държава в Азия. Столица: Рияд. Население: ~33 млн души. Площ: 2 250 000 км². (на английски: Saudi Arabia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q851"
+  },
+  {
+   "term": "САЩ",
+   "definition": "Държава в Северна Америка. Столица: Вашингтон. Население: ~340,1 млн души. Площ: 9 826 675 км². (на английски: United States)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q30"
+  },
+  {
+   "term": "Северна Корея",
+   "definition": "Държава в Азия. Столица: Пхенян. Население: ~26,4 млн души. Площ: 120 540 км². (на английски: North Korea)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q423"
+  },
+  {
+   "term": "Северна Македония",
+   "definition": "Държава в Европа. Столица: Скопие. Население: ~1,8 млн души. Площ: 25 713 км². (на английски: North Macedonia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q221"
+  },
+  {
+   "term": "Сейнт Винсент и Гренадини",
+   "definition": "Държава в Северна Америка. Столица: Кингстаун. Население: ~110 хил. души. Площ: 389 км². (на английски: Saint Vincent and the Grenadines)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q757"
+  },
+  {
+   "term": "Сейнт Китс и Невис",
+   "definition": "Държава в Северна Америка. Столица: Бастер. Население: ~47 хил. души. Площ: 269 км². (на английски: Saint Kitts and Nevis)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q763"
+  },
+  {
+   "term": "Сейнт Лусия",
+   "definition": "Държава в Северна Америка. Столица: Кастрийс. Население: ~168 хил. души. Площ: 617 км². (на английски: Saint Lucia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q760"
+  },
+  {
+   "term": "Сейшели",
+   "definition": "Държава в Африка. Столица: Виктория. Население: ~120 хил. души. Площ: 459 км². (на английски: Seychelles)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1042"
+  },
+  {
+   "term": "Сенегал",
+   "definition": "Държава в Африка. Столица: Дакар. Население: ~16,9 млн души. Площ: 196 722 км². (на английски: Senegal)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1041"
+  },
+  {
+   "term": "Сиера Леоне",
+   "definition": "Държава в Африка. Столица: Фрийтаун. Население: ~7,6 млн души. Площ: 71 740 км². (на английски: Sierra Leone)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1044"
+  },
+  {
+   "term": "Сингапур",
+   "definition": "Държава в Азия. Столица: Сингапур. Население: ~5,9 млн души. Площ: 719 км². (на английски: Singapore)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q334"
+  },
+  {
+   "term": "Сирия",
+   "definition": "Държава в Азия. Столица: Дамаск. Население: ~23,9 млн души. Площ: 185 180 км². (на английски: Syria)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q858"
+  },
+  {
+   "term": "Словакия",
+   "definition": "Държава в Европа. Столица: Братислава. Население: ~5,4 млн души. Площ: 49 034 км². (на английски: Slovakia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q214"
+  },
+  {
+   "term": "Словения",
+   "definition": "Държава в Европа. Столица: Любляна. Население: ~2,1 млн души. Площ: 20 271 км². (на английски: Slovenia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q215"
+  },
+  {
+   "term": "Соломонови острови",
+   "definition": "Държава в Океания. Столица: Хониара. Население: ~611 хил. души. Площ: 28 400 км². (на английски: Solomon Islands)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q685"
+  },
+  {
+   "term": "Сомалия",
+   "definition": "Държава в Африка. Столица: Могадишу. Население: ~11 млн души. Площ: 637 657 км². (на английски: Somalia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1045"
+  },
+  {
+   "term": "Судан",
+   "definition": "Държава в Африка. Столица: Хартум. Население: ~40,5 млн души. Площ: 1 886 068 км². (на английски: Sudan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1049"
+  },
+  {
+   "term": "Суринам",
+   "definition": "Държава в Южна Америка. Столица: Парамарибо. Население: ~563 хил. души. Площ: 163 270 км². (на английски: Suriname)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q730"
+  },
+  {
+   "term": "Сърбия",
+   "definition": "Държава в Европа. Столица: Белград. Население: ~6,6 млн души. Площ: 88 499 км². (на английски: Serbia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q403"
+  },
+  {
+   "term": "Таджикистан",
+   "definition": "Държава в Азия. Столица: Душанбе. Население: ~9,5 млн души. Площ: 143 100 км². (на английски: Tajikistan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q863"
+  },
+  {
+   "term": "Тайланд",
+   "definition": "Държава в Азия. Столица: Банкок. Население: ~66,2 млн души. Площ: 513 120 км². (на английски: Thailand)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q869"
+  },
+  {
+   "term": "Танзания",
+   "definition": "Държава в Африка. Столица: Додома. Население: ~57,3 млн души. Площ: 947 303 км². (на английски: Tanzania)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q924"
+  },
+  {
+   "term": "Того",
+   "definition": "Държава в Африка. Столица: Ломе. Население: ~7,8 млн души. Площ: 56 785 км². (на английски: Togo)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q945"
+  },
+  {
+   "term": "Тонга",
+   "definition": "Държава в Океания. Столица: Нукуалофа. Население: ~108 хил. души. Площ: 749 км². (на английски: Tonga)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q678"
+  },
+  {
+   "term": "Тринидад и Тобаго",
+   "definition": "Държава в Северна Америка. Столица: Порт ъф Спейн. Население: ~1,4 млн души. Площ: 5128 км². (на английски: Trinidad and Tobago)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q754"
+  },
+  {
+   "term": "Тувалу",
+   "definition": "Държава в Океания. Столица: Фунафути. Население: ~11 хил. души. Площ: 25 км². (на английски: Tuvalu)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q672"
+  },
+  {
+   "term": "Тунис",
+   "definition": "Държава в Африка. Столица: Тунис. Население: ~11,6 млн души. Площ: 163 610 км². (на английски: Tunisia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q948"
+  },
+  {
+   "term": "Туркменистан",
+   "definition": "Държава в Азия. Столица: Ашхабад. Население: ~6,1 млн души. Площ: 491 210 км². (на английски: Turkmenistan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q874"
+  },
+  {
+   "term": "Турция",
+   "definition": "Държава в Европа. Столица: Анкара. Население: ~85,4 млн души. Площ: 783 562 км². (на английски: Turkey)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q43"
+  },
+  {
+   "term": "Уганда",
+   "definition": "Държава в Африка. Столица: Кампала. Население: ~47,1 млн души. Площ: 241 038 км². (на английски: Uganda)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q1036"
+  },
+  {
+   "term": "Узбекистан",
+   "definition": "Държава в Азия. Столица: Ташкент. Население: ~34,9 млн души. Площ: 448 978 км². (на английски: Uzbekistan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q265"
+  },
+  {
+   "term": "Украйна",
+   "definition": "Държава в Европа. Столица: Киев. Население: ~41,2 млн души. Площ: 603 550 км². (на английски: Ukraine)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q212"
+  },
+  {
+   "term": "Унгария",
+   "definition": "Държава в Европа. Столица: Будапеща. Население: ~9,6 млн души. Площ: 93 011 км². (на английски: Hungary)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q28"
+  },
+  {
+   "term": "Уругвай",
+   "definition": "Държава в Южна Америка. Столица: Монтевидео. Население: ~3,4 млн души. Площ: 176 215 км². (на английски: Uruguay)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q77"
+  },
+  {
+   "term": "Фиджи",
+   "definition": "Държава в Океания. Столица: Сува. Население: ~926 хил. души. Площ: 18 274 км². (на английски: Fiji)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q712"
+  },
+  {
+   "term": "Филипини",
+   "definition": "Държава в Азия. Столица: Манила. Население: ~112,7 млн души. Площ: 343 448 км². (на английски: Philippines)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q928"
+  },
+  {
+   "term": "Финландия",
+   "definition": "Държава в Европа. Столица: Хелзинки. Население: ~5,7 млн души. Площ: 338 478 км². (на английски: Finland)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q33"
+  },
+  {
+   "term": "Франция",
+   "definition": "Държава в Европа. Столица: Париж. Население: ~68,6 млн души. Площ: 643 801 км². (на английски: France)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q142"
+  },
+  {
+   "term": "Хаити",
+   "definition": "Държава в Северна Америка. Столица: Порт о Пренс. Население: ~11 млн души. Площ: 27 750 км². (на английски: Haiti)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q790"
+  },
+  {
+   "term": "Хондурас",
+   "definition": "Държава в Северна Америка. Столица: Тегусигалпа. Население: ~8,3 млн души. Площ: 112 492 км². (на английски: Honduras)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q783"
+  },
+  {
+   "term": "Хърватия",
+   "definition": "Държава в Европа. Столица: Загреб. Население: ~3,9 млн души. Площ: 56 594 км². (на английски: Croatia)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q224"
+  },
+  {
+   "term": "Централноафриканска република",
+   "definition": "Държава в Африка. Столица: Банги. Население: ~5,2 млн души. Площ: 622 984 км². (на английски: Central African Republic)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q929"
+  },
+  {
+   "term": "Чад",
+   "definition": "Държава в Африка. Столица: Нджамена. Население: ~19,3 млн души. Площ: 1 284 000 км². (на английски: Chad)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q657"
+  },
+  {
+   "term": "Черна гора",
+   "definition": "Държава в Европа. Столица: Подгорица. Население: ~617 хил. души. Площ: 13 883 км². (на английски: Montenegro)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q236"
+  },
+  {
+   "term": "Чехия",
+   "definition": "Държава в Европа. Столица: Прага. Население: ~10,9 млн души. Площ: 78 871 км². (на английски: Czech Republic)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q213"
+  },
+  {
+   "term": "Чили",
+   "definition": "Държава в Южна Америка. Столица: Сантяго де Чиле. Население: ~19,5 млн души. Площ: 756 102 км². (на английски: Chile)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q298"
+  },
+  {
+   "term": "Швейцария",
+   "definition": "Държава в Европа. Столица: Берн. Население: ~9,1 млн души. Площ: 41 291 км². (на английски: Switzerland)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q39"
+  },
+  {
+   "term": "Швеция",
+   "definition": "Държава в Европа. Столица: Стокхолм. Население: ~10,6 млн души. Площ: 447 425 км². (на английски: Sweden)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q34"
+  },
+  {
+   "term": "Шри Ланка",
+   "definition": "Държава в Азия. Столица: Коломбо. Население: ~21,4 млн души. Площ: 65 610 км². (на английски: Sri Lanka)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q854"
+  },
+  {
+   "term": "Южен Судан",
+   "definition": "Държава в Африка. Столица: Джуба. Население: ~12,6 млн души. Площ: 644 329 км². (на английски: South Sudan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q958"
+  },
+  {
+   "term": "Южна Корея",
+   "definition": "Държава в Азия. Столица: Сеул. Население: ~51,5 млн души. Площ: 100 295 км². (на английски: South Korea)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q884"
+  },
+  {
+   "term": "Ямайка",
+   "definition": "Държава в Северна Америка. Столица: Кингстън. Население: ~2,7 млн души. Площ: 10 992 км². (на английски: Jamaica)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q766"
+  },
+  {
+   "term": "Япония",
+   "definition": "Държава в Азия. Столица: Токио. Население: ~123,8 млн души. Площ: 377 972 км². (на английски: Japan)",
+   "source": "Wikidata (свободни данни)",
+   "url": "http://www.wikidata.org/entity/Q17"
+  }
+ ]
+}

@@ -1,4 +1,4 @@
-# Auto-Reply Bot — RUStore Edition
+# KCY Auto Answer — RUStore Edition
 
 „Робот под наем", който автоматично отговаря на съобщения по твои правила — **изцяло на устройството**.
 

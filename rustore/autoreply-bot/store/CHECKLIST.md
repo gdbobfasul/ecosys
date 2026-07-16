@@ -1,4 +1,4 @@
-# Release Checklist — Auto-Reply Bot (RUStore)
+# Release Checklist — KCY Auto Answer (RUStore)
 
 ## Преди публикация
 - [ ] `npm install` минава без грешки.

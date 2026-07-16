@@ -1,4 +1,4 @@
-# Безопасност на данните — Рутина-робот (AppGallery)
+# Безопасност на данните — KCY Routine Planner (AppGallery)
 
 ## Обобщение
 - Всички потребителски данни се пазят **само на устройството** (Capacitor Preferences / localStorage).

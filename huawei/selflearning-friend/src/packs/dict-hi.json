@@ -1,0 +1,7707 @@
+{
+ "name": "Речник хинди↔английски (ядро)",
+ "topic": "езици",
+ "source": "Уикиречник през kaikki.org (CC BY-SA) + честотен списък",
+ "entries": [
+  {
+   "type": "превод",
+   "key": "तुझ",
+   "value": "„तुझ\" (tujh) на хинди = английски „you\" — The people spoken, or written to, as an object.",
+   "keywords": [
+    "तुझ",
+    "you",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "से",
+   "value": "„से\" (se) на хинди = английски „to\" — In the direction of; towards.",
+   "keywords": [
+    "से",
+    "to",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वह",
+   "value": "„वह\" (vah) на хинди = английски „it\" — The third-person singular neuter personal pronoun used to refer to an inanimate object,…",
+   "keywords": [
+    "वह",
+    "it",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "और",
+   "value": "„और\" (aur) на хинди = английски „and\" — As a coordinating conjunction; expressing two elements to be taken together or in addit…",
+   "keywords": [
+    "और",
+    "and",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कि",
+   "value": "„कि\" (ki) на хинди = английски „that\" — Introducing a clause that is the object of a verb, especially a reporting verb or verb …",
+   "keywords": [
+    "कि",
+    "that",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "... का",
+   "value": "„... का\" (... kā) на хинди = английски „of\" — Expressing distance or motion.",
+   "keywords": [
+    "... का",
+    "of",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बाद",
+   "value": "„बाद\" (bād) на хинди = английски „in\" — Used to indicate location, inclusion, or position within spatial, temporal or abstract …",
+   "keywords": [
+    "बाद",
+    "in",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "क्या",
+   "value": "„क्या\" (kyā) на хинди = английски „what\" — Which thing, event, circumstance, etc.: used in asking for the specification of an iden…",
+   "keywords": [
+    "क्या",
+    "what",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हम",
+   "value": "„हम\" (ham) на хинди = английски „we\" — Two or more people including or consisting of the speaker(s)/writer(s).",
+   "keywords": [
+    "हम",
+    "we",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मुझ",
+   "value": "„मुझ\" (mujh) на хинди = английски „me\" — The first-person singular, as the object (of a verb, preposition, etc).",
+   "keywords": [
+    "मुझ",
+    "me",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "यह",
+   "value": "„यह\" (yah) на хинди = английски „this\" — The thing, item, etc. being indicated.",
+   "keywords": [
+    "यह",
+    "this",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वह",
+   "value": "„वह\" (vah) на хинди = английски „he\" — A person who identifies as male, or animal already known or implied.",
+   "keywords": [
+    "वह",
+    "he",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "क्योंकि",
+   "value": "„क्योंकि\" (kyõki) на хинди = английски „for\" — Because.",
+   "keywords": [
+    "क्योंकि",
+    "for",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "... पर",
+   "value": "„... पर\" на хинди = английски „on\" — Indicating position or location.",
+   "keywords": [
+    "... पर",
+    "on",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रखना",
+   "value": "„रखना\" (rakhnā) на хинди = английски „have\" — To possess, own.",
+   "keywords": [
+    "रखना",
+    "have",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "क्या",
+   "value": "„क्या\" (kyā) на хинди = английски „do\" — A syntactic marker.",
+   "keywords": [
+    "क्या",
+    "do",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नहीं",
+   "value": "„नहीं\" (nahī̃) на хинди = английски „no\" — A negating expression; an answer that shows disagreement, denial, refusal, or disapproval.",
+   "keywords": [
+    "नहीं",
+    "no",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नहीं",
+   "value": "„नहीं\" (nahī̃) на хинди = английски „not\" — Negates the meaning of the modified verb.",
+   "keywords": [
+    "नहीं",
+    "not",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "होना",
+   "value": "„होना\" (honā) на хинди = английски „be\" — As an auxiliary verb:",
+   "keywords": [
+    "होना",
+    "be",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "डॉन",
+   "value": "„डॉन\" (ḍŏn) на хинди = английски „don\" — A university professor, particularly one at Oxford or Cambridge.",
+   "keywords": [
+    "डॉन",
+    "don",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जानना",
+   "value": "„जानना\" (jānnā) на хинди = английски „know\" — To perceive the truth or factuality of; to be certain of; to be certain that.",
+   "keywords": [
+    "जानना",
+    "know",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सकना",
+   "value": "„सकना\" (saknā) на хинди = английски „can\" — To know how to.",
+   "keywords": [
+    "सकना",
+    "can",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "से",
+   "value": "„से\" (se) на хинди = английски „with\" — Against.",
+   "keywords": [
+    "से",
+    "with",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लेकिन",
+   "value": "„लेकिन\" (lekin) на хинди = английски „but\" — However, although, nevertheless, on the other hand (introducing a clause contrary to pr…",
+   "keywords": [
+    "लेकिन",
+    "but",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ताकि",
+   "value": "„ताकि\" (tāki) на хинди = английски „so\" — As a result; for that reason; therefore; because of this; due to this.",
+   "keywords": [
+    "ताकि",
+    "so",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "न्यायोचित",
+   "value": "„न्यायोचित\" (nyāyocit) на хинди = английски „just\" — Factually right, correct; factual.",
+   "keywords": [
+    "न्यायोचित",
+    "just",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वहाँ",
+   "value": "„वहाँ\" (vahā̃) на хинди = английски „there\" — In or at a place or location (stated, implied or otherwise indicated) that is perceived…",
+   "keywords": [
+    "वहाँ",
+    "there",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "यहाँ",
+   "value": "„यहाँ\" (yahā̃) на хинди = английски „here\" — In, on, or at this place (a place perceived to be close to the speaker); compare there.",
+   "keywords": [
+    "यहाँ",
+    "here",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वे",
+   "value": "„वे\" (ve) на хинди = английски „they\" — A group of entities previously mentioned.",
+   "keywords": [
+    "वे",
+    "they",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पसंद करना",
+   "value": "„पसंद करना\" (pasand karnā) на хинди = английски „like\" — To enjoy, be pleased by; favor; be in favor of.",
+   "keywords": [
+    "पसंद करना",
+    "like",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पाना",
+   "value": "„पाना\" (pānā) на хинди = английски „get\" — To obtain; to acquire.",
+   "keywords": [
+    "पाना",
+    "get",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वह",
+   "value": "„वह\" (vah) на хинди = английски „she\" — The female (typically) person or animal previously mentioned or implied.",
+   "keywords": [
+    "वह",
+    "she",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जाना",
+   "value": "„जाना\" (jānā) на хинди = английски „go\" — To move, either physically or in an abstract sense:",
+   "keywords": [
+    "जाना",
+    "go",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अगर",
+   "value": "„अगर\" (agar) на хинди = английски „if\" — Supposing that, assuming that, in the circumstances that; used to introduce a condition…",
+   "keywords": [
+    "अगर",
+    "if",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दाहिना",
+   "value": "„दाहिना\" (dāhinā) на хинди = английски „right\" — Designating the side of the body which is positioned to the east if one is facing north…",
+   "keywords": [
+    "दाहिना",
+    "right",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "-नेवाला",
+   "value": "„-नेवाला\" (-nevālā) на хинди = английски „about\" — In a circle around; all round; on every side of; on the outside of; around.",
+   "keywords": [
+    "-नेवाला",
+    "about",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ऊपर",
+   "value": "„ऊपर\" (ūpar) на хинди = английски „up\" — Indicating movement towards or location at a higher place or position.",
+   "keywords": [
+    "ऊपर",
+    "up",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पर",
+   "value": "„पर\" (par) на хинди = английски „at\" — In, near, or in the general vicinity of (a particular place).",
+   "keywords": [
+    "पर",
+    "at",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "उसे",
+   "value": "„उसे\" (use) на хинди = английски „him\" — A masculine pronoun; he as a grammatical object.",
+   "keywords": [
+    "उसे",
+    "him",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अब",
+   "value": "„अब\" (ab) на хинди = английски „now\" — At the present time.",
+   "keywords": [
+    "अब",
+    "now",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अरे",
+   "value": "„अरे\" (are) на хинди = английски „oh\" — Expression of surprise.",
+   "keywords": [
+    "अरे",
+    "oh",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "एक",
+   "value": "„एक\" (ek) на хинди = английски „one\" — The number represented by the Arabic numeral 1; the numerical value equal to that cardi…",
+   "keywords": [
+    "एक",
+    "one",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आना",
+   "value": "„आना\" (ānā) на хинди = английски „come\" — To move nearer to the point of perspective.",
+   "keywords": [
+    "आना",
+    "come",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अच्छा",
+   "value": "„अच्छा\" (acchā) на хинди = английски „well\" — Accurately, competently, satisfactorily.",
+   "keywords": [
+    "अच्छा",
+    "well",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "इस",
+   "value": "„इस\" (is) на хинди = английски „her\"",
+   "keywords": [
+    "इस",
+    "her",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कैसे",
+   "value": "„कैसे\" (kaise) на хинди = английски „how\" — To what degree or extent.",
+   "keywords": [
+    "कैसे",
+    "how",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आशा",
+   "value": "„आशा\" (āśā) на хинди = английски „will\" — Used to express the future tense, sometimes with an implication of volition or determin…",
+   "keywords": [
+    "आशा",
+    "will",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चाहना",
+   "value": "„चाहना\" (cāhnā) на хинди = английски „want\" — To wish for or desire (something); to feel a need or desire for; to crave, hanker, or d…",
+   "keywords": [
+    "चाहना",
+    "want",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सोचना",
+   "value": "„सोचना\" (socnā) на хинди = английски „think\" — To ponder, to go over in one's mind.",
+   "keywords": [
+    "सोचना",
+    "think",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जैसा",
+   "value": "„जैसा\" (jaisā) на хинди = английски „as\" — In the (same) way or manner that; to the (same) degree that.",
+   "keywords": [
+    "जैसा",
+    "as",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "देखना",
+   "value": "„देखना\" (dekhnā) на хинди = английски „see\" — To perceive or detect someone or something with the eyes, or as if by sight.",
+   "keywords": [
+    "देखना",
+    "see",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ताज़ा",
+   "value": "„ताज़ा\" (tāzā) на хинди = английски „good\" — Of a person or an animal:",
+   "keywords": [
+    "ताज़ा",
+    "good",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जो",
+   "value": "„जो\" (jo) на хинди = английски „who\" — What person or people; which person or people; asks for the identity of someone; used i…",
+   "keywords": [
+    "जो",
+    "who",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "क्यों",
+   "value": "„क्यों\" (kyõ) на хинди = английски „why\" — For what cause, reason, or purpose.",
+   "keywords": [
+    "क्यों",
+    "why",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "से",
+   "value": "„से\" (se) на хинди = английски „from\" — Used to indicate source or provenance.",
+   "keywords": [
+    "से",
+    "from",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कब",
+   "value": "„कब\" (kab) на хинди = английски „when\" — At what time? At which time? Upon which occasion or circumstance? Used to introduce dir…",
+   "keywords": [
+    "कब",
+    "when",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "व्रजन",
+   "value": "„व्रजन\" (vrajan) на хинди = английски „going\" — A departure.",
+   "keywords": [
+    "व्रजन",
+    "going",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "समय",
+   "value": "„समय\" (samay) на хинди = английски „time\" — The inevitable progression into the future with the passing of present and past events.",
+   "keywords": [
+    "समय",
+    "time",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पश्व",
+   "value": "„पश्व\" (paśva) на хинди = английски „back\" — At or near the rear.",
+   "keywords": [
+    "पश्व",
+    "back",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "देखना",
+   "value": "„देखना\" (dekhnā) на хинди = английски „look\" — To try to see, to pay attention to with one’s eyes.",
+   "keywords": [
+    "देखना",
+    "look",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कहाँ",
+   "value": "„कहाँ\" (kahā̃) на хинди = английски „where\" — In, at or to what place.",
+   "keywords": [
+    "कहाँ",
+    "where",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लेना",
+   "value": "„लेना\" (lenā) на хинди = английски „take\" — To get into one's hands, possession, or control, with or without force.",
+   "keywords": [
+    "लेना",
+    "take",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तब",
+   "value": "„तब\" (tab) на хинди = английски „then\" — At that time.",
+   "keywords": [
+    "तब",
+    "then",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "या",
+   "value": "„या\" (yā) на хинди = английски „or\" — Connects at least two alternative words, phrases, clauses, sentences, etc., each of whi…",
+   "keywords": [
+    "या",
+    "or",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कहना",
+   "value": "„कहना\" (kahnā) на хинди = английски „tell\" — Mental senses related to determining, reckoning, or perceiving",
+   "keywords": [
+    "कहना",
+    "tell",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सचमुच",
+   "value": "„सचमुच\" (sacmuc) на хинди = английски „really\" — In a way or manner that is real, not unreal.",
+   "keywords": [
+    "सचमुच",
+    "really",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पुरुष",
+   "value": "„पुरुष\" (puruṣ) на хинди = английски „man\" — An adult male human.",
+   "keywords": [
+    "पुरुष",
+    "man",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "थोड़ा",
+   "value": "„थोड़ा\" (thoṛā) на хинди = английски „some\" — A certain number (multiple but not all).",
+   "keywords": [
+    "थोड़ा",
+    "some",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कहना",
+   "value": "„कहना\" (kahnā) на хинди = английски „say\" — To pronounce.",
+   "keywords": [
+    "कहना",
+    "say",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अरे",
+   "value": "„अरे\" (are) на хинди = английски „hey\" — An exclamation to get attention.",
+   "keywords": [
+    "अरे",
+    "hey",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जानिब",
+   "value": "„जानिब\" (jānib) на хинди = английски „by\" — Near or next to.",
+   "keywords": [
+    "जानिब",
+    "by",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आवश्यकता",
+   "value": "„आवश्यकता\" (āvaśyaktā) на хинди = английски „need\" — A requirement for something; something needed.",
+   "keywords": [
+    "आवश्यकता",
+    "need",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कुछ",
+   "value": "„कुछ\" (kuch) на хинди = английски „something\" — An uncertain or unspecified thing; one thing.",
+   "keywords": [
+    "कुछ",
+    "something",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भी",
+   "value": "„भी\" (bhī) на хинди = английски „too\" — Likewise.",
+   "keywords": [
+    "भी",
+    "too",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अधिक",
+   "value": "„अधिक\" (adhik) на хинди = английски „more\" — To a greater degree or extent.",
+   "keywords": [
+    "अधिक",
+    "more",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शैली",
+   "value": "„शैली\" (śailī) на хинди = английски „way\" — To do with a place or places.",
+   "keywords": [
+    "शैली",
+    "way",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नीचे",
+   "value": "„नीचे\" (nīce) на хинди = английски „down\" — From a higher position to a lower one; downwards.",
+   "keywords": [
+    "नीचे",
+    "down",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रचना",
+   "value": "„रचना\" (racnā) на хинди = английски „make\" — To create.",
+   "keywords": [
+    "रचना",
+    "make",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बहुत",
+   "value": "„बहुत\" (bahut) на хинди = английски „very\" — To a great extent or degree.",
+   "keywords": [
+    "बहुत",
+    "very",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कभी नहीं",
+   "value": "„कभी नहीं\" (kabhī nahī̃) на хинди = английски „never\" — At no time; on no occasion; in no circumstance.",
+   "keywords": [
+    "कभी नहीं",
+    "never",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "केवल",
+   "value": "„केवल\" (keval) на хинди = английски „only\" — Alone in a category.",
+   "keywords": [
+    "केवल",
+    "only",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लोग",
+   "value": "„लोग\" (log) на хинди = английски „people\" — Persons forming or belonging to a particular group, such as a nation, class, ethnic gro…",
+   "keywords": [
+    "लोग",
+    "people",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "क्योंकि",
+   "value": "„क्योंकि\" (kyõki) на хинди = английски „because\" — By or for the cause that; on this account that; for the reason that.",
+   "keywords": [
+    "क्योंकि",
+    "because",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "छोटा",
+   "value": "„छोटा\" (choṭā) на хинди = английски „little\" — Small, not large, limited, particularly",
+   "keywords": [
+    "छोटा",
+    "little",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पसंद करना",
+   "value": "„पसंद करना\" (pasand karnā) на хинди = английски „please\" — To make happy or satisfy; to give pleasure to.",
+   "keywords": [
+    "पसंद करना",
+    "please",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्यार",
+   "value": "„प्यार\" (pyār) на хинди = английски „love\" — A deep caring for the existence of another.",
+   "keywords": [
+    "प्यार",
+    "love",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चाहिए",
+   "value": "„चाहिए\" (cāhie) на хинди = английски „should\" — Ought to; indicating opinion, advice, or instruction, about what is required or desirable.",
+   "keywords": [
+    "चाहिए",
+    "should",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चाह",
+   "value": "„चाह\" (cāh) на хинди = английски „mean\" — To intend.",
+   "keywords": [
+    "चाह",
+    "mean",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "माफ़ कीजिए",
+   "value": "„माफ़ कीजिए\" (māf kījie) на хинди = английски „sorry\" — Expresses regret, remorse, or sorrow.",
+   "keywords": [
+    "माफ़ कीजिए",
+    "sorry",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "देना",
+   "value": "„देना\" (denā) на хинди = английски „give\" — To move, shift, provide something abstract or concrete to someone or something or somew…",
+   "keywords": [
+    "देना",
+    "give",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "धन्यवाद देना",
+   "value": "„धन्यवाद देना\" (dhanyavād denā) на хинди = английски „thank\" — To express appreciation or gratitude toward (someone or something).",
+   "keywords": [
+    "धन्यवाद देना",
+    "thank",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दो",
+   "value": "„दो\" (do) на хинди = английски „two\" — A numerical value equal to 2; this many dots (••).",
+   "keywords": [
+    "दो",
+    "two",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "समान",
+   "value": "„समान\" (samān) на хинди = английски „even\" — Flat and level.",
+   "keywords": [
+    "समान",
+    "even",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पक्का",
+   "value": "„पक्का\" (pakkā) на хинди = английски „sure\" — Physically secure and certain, non-failing, reliable.",
+   "keywords": [
+    "पक्का",
+    "sure",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वस्तु",
+   "value": "„वस्तु\" (vastu) на хинди = английски „thing\" — That which is considered to exist as a separate entity, object, quality or concept.",
+   "keywords": [
+    "वस्तु",
+    "thing",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मदद",
+   "value": "„मदद\" (madad) на хинди = английски „help\" — Action given to provide assistance; aid.",
+   "keywords": [
+    "मदद",
+    "help",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पहला",
+   "value": "„पहला\" (pahlā) на хинди = английски „first\" — Preceding all others of a series or kind; the ordinal of one; earliest.",
+   "keywords": [
+    "पहला",
+    "first",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कुछ",
+   "value": "„कुछ\" (kuch) на хинди = английски „anything\" — Any object, act, state, event, or fact whatsoever; a thing of any kind; something or ot…",
+   "keywords": [
+    "कुछ",
+    "anything",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "फिर भी",
+   "value": "„फिर भी\" (phir bhī) на хинди = английски „still\" — Without motion.",
+   "keywords": [
+    "फिर भी",
+    "still",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पाना",
+   "value": "„पाना\" (pānā) на хинди = английски „find\" — To locate",
+   "keywords": [
+    "पाना",
+    "find",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ज़िंदगी",
+   "value": "„ज़िंदगी\" (zindagī) на хинди = английски „life\" — The state of organisms preceding their death, characterized by biological processes suc…",
+   "keywords": [
+    "ज़िंदगी",
+    "life",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कुछ नहीं",
+   "value": "„कुछ नहीं\" (kuch nahī̃) на хинди = английски „nothing\" — Not any thing; no thing.",
+   "keywords": [
+    "कुछ नहीं",
+    "nothing",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "श्रीमान",
+   "value": "„श्रीमान\" (śrīmān) на хинди = английски „sir\" — A man of a higher rank or position.",
+   "keywords": [
+    "श्रीमान",
+    "sir",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दिन",
+   "value": "„दिन\" (din) на хинди = английски „day\" — The time when the Sun is above the horizon and it lights the sky.",
+   "keywords": [
+    "दिन",
+    "day",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "देवता",
+   "value": "„देवता\" (devtā) на хинди = английски „god\" — A deity or supreme being; a supernatural, typically immortal, being with superior power…",
+   "keywords": [
+    "देवता",
+    "god",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "काम",
+   "value": "„काम\" (kām) на хинди = английски „work\" — Employment.",
+   "keywords": [
+    "काम",
+    "work",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "फिर",
+   "value": "„फिर\" (phir) на хинди = английски „again\" — Another time: indicating a repeat of an action.",
+   "keywords": [
+    "फिर",
+    "again",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शायद",
+   "value": "„शायद\" (śāyad) на хинди = английски „maybe\" — Perhaps, possibly.",
+   "keywords": [
+    "शायद",
+    "maybe",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चाहिए",
+   "value": "„चाहिए\" (cāhie) на хинди = английски „must\" — To do as a requirement; indicates that the sentence subject is required as an imperativ…",
+   "keywords": [
+    "चाहिए",
+    "must",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "... से पहले",
+   "value": "„... से पहले\" (... se pahle) на хинди = английски „before\" — Earlier than (in time).",
+   "keywords": [
+    "... से पहले",
+    "before",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अन्य",
+   "value": "„अन्य\" (anya) на хинди = английски „other\" — See other (determiner) below.",
+   "keywords": [
+    "अन्य",
+    "other",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रतीक्षा करना",
+   "value": "„प्रतीक्षा करना\" (pratīkṣā karnā) на хинди = английски „wait\" — To delay movement or action until some event or time; to remain neglected or in readiness.",
+   "keywords": [
+    "प्रतीक्षा करना",
+    "wait",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रोकना",
+   "value": "„रोकना\" (roknā) на хинди = английски „stop\" — To cease moving.",
+   "keywords": [
+    "रोकना",
+    "stop",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पुकारना",
+   "value": "„पुकारना\" (pukārnā) на хинди = английски „call\" — To reach out with one's voice.",
+   "keywords": [
+    "पुकारना",
+    "call",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पश्चात",
+   "value": "„पश्चात\" (paścāt) на хинди = английски „after\" — Behind; later in time; following.",
+   "keywords": [
+    "पश्चात",
+    "after",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वॉन",
+   "value": "„वॉन\" (vŏn) на хинди = английски „won\" — The currency of Korea, worth 100 jun in North Korea and 100 jeon in South Korea.",
+   "keywords": [
+    "वॉन",
+    "won",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बात करना",
+   "value": "„बात करना\" (bāt karnā) на хинди = английски „talk\" — To communicate, usually by means of speech.",
+   "keywords": [
+    "बात करना",
+    "talk",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "की अपेक्षा",
+   "value": "„की अपेक्षा\" (kī apekṣā) на хинди = английски „than\" — Introduces a comparison, and is associated with comparatives, and with words such as mo…",
+   "keywords": [
+    "की अपेक्षा",
+    "than",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "विचार",
+   "value": "„विचार\" (vicār) на хинди = английски „thought\" — A representation created in the mind without the use of one's faculties of vision, soun…",
+   "keywords": [
+    "विचार",
+    "thought",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "घर",
+   "value": "„घर\" (ghar) на хинди = английски „home\" — A dwelling.",
+   "keywords": [
+    "घर",
+    "home",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रात",
+   "value": "„रात\" (rāt) на хинди = английски „night\" — The time when the Sun is below the horizon when the sky is dark.",
+   "keywords": [
+    "रात",
+    "night",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रखना",
+   "value": "„रखना\" (rakhnā) на хинди = английски „put\" — To physically place (sth or sb swh).",
+   "keywords": [
+    "रखना",
+    "put",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बड़ा",
+   "value": "„बड़ा\" (baṛā) на хинди = английски „great\" — Taking much space; large.",
+   "keywords": [
+    "बड़ा",
+    "great",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आखिरी",
+   "value": "„आखिरी\" (ākhirī) на хинди = английски „last\" — Final, ultimate, coming after all others of its kind.",
+   "keywords": [
+    "आखिरी",
+    "last",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बेहतर",
+   "value": "„बेहतर\" (behtar) на хинди = английски „better\" — Greater in amount or quantity",
+   "keywords": [
+    "बेहतर",
+    "better",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सब कुछ",
+   "value": "„सब कुछ\" (sab kuch) на хинди = английски „everything\" — All the things under discussion.",
+   "keywords": [
+    "सब कुछ",
+    "everything",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जी",
+   "value": "„जी\" (jī) на хинди = английски „mr.\" — Abbreviation of Mister.",
+   "keywords": [
+    "जी",
+    "mr.",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नया",
+   "value": "„नया\" (nayā) на хинди = английски „new\" — Recently made, or created.",
+   "keywords": [
+    "नया",
+    "new",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हमेशा",
+   "value": "„हमेशा\" (hameśā) на хинди = английски „always\" — At all times; throughout all time; since the beginning.",
+   "keywords": [
+    "हमेशा",
+    "always",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रक्खना",
+   "value": "„रक्खना\" (rakkhanā) на хинди = английски „keep\" — To continue in (a course or mode of action); to not intermit or fall from; to uphold or…",
+   "keywords": [
+    "रक्खना",
+    "keep",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लम्बा",
+   "value": "„लम्बा\" (lambā) на хинди = английски „long\" — Having much distance in space from one end to the other.",
+   "keywords": [
+    "लम्बा",
+    "long",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चला जाना",
+   "value": "„चला जाना\" (calā jānā) на хинди = английски „leave\" — To have a consequence or remnant.",
+   "keywords": [
+    "चला जाना",
+    "leave",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पैसा",
+   "value": "„पैसा\" (paisā) на хинди = английски „money\" — A generally accepted means of exchange.",
+   "keywords": [
+    "पैसा",
+    "money",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "... के आस-पास",
+   "value": "„... के आस-पास\" (... ke ās-pās) на хинди = английски „around\" — Forming a circle or closed curve containing (something).",
+   "keywords": [
+    "... के आस-पास",
+    "around",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नाम",
+   "value": "„नाम\" (nām) на хинди = английски „name\" — Any nounal word or phrase which indicates a particular person, place, class, or thing.",
+   "keywords": [
+    "नाम",
+    "name",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चौक",
+   "value": "„चौक\" (cauk) на хинди = английски „place\" — An area; somewhere within an area.",
+   "keywords": [
+    "चौक",
+    "place",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "महसूस करना",
+   "value": "„महसूस करना\" (mahsūs karnā) на хинди = английски „feel\" — To use or experience the sense of touch.",
+   "keywords": [
+    "महसूस करना",
+    "feel",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पिता",
+   "value": "„पिता\" (pitā) на хинди = английски „father\" — A male parent, especially of a human; a male who parents a child (which he has sired, a…",
+   "keywords": [
+    "पिता",
+    "father",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पुराना",
+   "value": "„पुराना\" (purānā) на хинди = английски „old\" — Of an object, concept, relationship, etc., having existed for a relatively long period …",
+   "keywords": [
+    "पुराना",
+    "old",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जो",
+   "value": "„जो\" (jo) на хинди = английски „which\" — What one or ones (of those mentioned or implied).",
+   "keywords": [
+    "जो",
+    "which",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वयस्क",
+   "value": "„वयस्क\" (vayask) на хинди = английски „big\" — Of great size, large.",
+   "keywords": [
+    "वयस्क",
+    "big",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नमस्ते",
+   "value": "„नमस्ते\" (namaste) на хинди = английски „hello\" — A greeting (salutation) said when meeting someone or acknowledging someone’s arrival or…",
+   "keywords": [
+    "नमस्ते",
+    "hello",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अच्छा",
+   "value": "„अच्छा\" (acchā) на хинди = английски „nice\" — Pleasant, satisfactory, complimentary.",
+   "keywords": [
+    "अच्छा",
+    "nice",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सच्चा",
+   "value": "„सच्चा\" (saccā) на хинди = английски „believe\" — To accept as true, particularly without absolute certainty (i.e., as opposed to knowing).",
+   "keywords": [
+    "सच्चा",
+    "believe",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लड़की",
+   "value": "„लड़की\" (laṛkī) на хинди = английски „girl\" — A female child.",
+   "keywords": [
+    "लड़की",
+    "girl",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कोई",
+   "value": "„कोई\" (koī) на хинди = английски „someone\" — One or some person of unspecified or indefinite identity.",
+   "keywords": [
+    "कोई",
+    "someone",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अर्थदंड",
+   "value": "„अर्थदंड\" (arthadaṇḍ) на хинди = английски „fine\" — A fee levied as punishment for breaking the law.",
+   "keywords": [
+    "अर्थदंड",
+    "fine",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "धन्यवाद",
+   "value": "„धन्यवाद\" (dhanyavād) на хинди = английски „thanks\" — Used to express appreciation or gratitude.",
+   "keywords": [
+    "धन्यवाद",
+    "thanks",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वांछित",
+   "value": "„वांछित\" (vāñchit) на хинди = английски „wanted\" — Wished for; desired; sought.",
+   "keywords": [
+    "वांछित",
+    "wanted",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तरह",
+   "value": "„तरह\" (tarah) на хинди = английски „kind\" — A type, race or category; a group of entities that have common characteristics such tha…",
+   "keywords": [
+    "तरह",
+    "kind",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आगमन",
+   "value": "„आगमन\" (āgman) на хинди = английски „coming\" — The act of arriving; an arrival.",
+   "keywords": [
+    "आगमन",
+    "coming",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "घर",
+   "value": "„घर\" (ghar) на хинди = английски „house\" — A structure built or serving as an abode of human beings.",
+   "keywords": [
+    "घर",
+    "house",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ठीक",
+   "value": "„ठीक\" (ṭhīk) на хинди = английски „ok\" — Endorsement; approval; acceptance; acquiescence.",
+   "keywords": [
+    "ठीक",
+    "ok",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "घटनाक्रम",
+   "value": "„घटनाक्रम\" (ghaṭnākram) на хинди = английски „course\" — A sequence of events.",
+   "keywords": [
+    "घटनाक्रम",
+    "course",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ठहरना",
+   "value": "„ठहरना\" (ṭhaharnā) на хинди = английски „stay\" — To remain in a particular place, especially for a definite or short period of time; soj…",
+   "keywords": [
+    "ठहरना",
+    "stay",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बायाँ",
+   "value": "„बायाँ\" (bāyā̃) на хинди = английски „left\" — Designating the side of the body toward the west when one is facing north; the side of …",
+   "keywords": [
+    "बायाँ",
+    "left",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बाप",
+   "value": "„बाप\" (bāp) на хинди = английски „dad\" — A father, a male parent.",
+   "keywords": [
+    "बाप",
+    "dad",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "काफ़ी",
+   "value": "„काफ़ी\" (kāfī) на хинди = английски „enough\" — Sufficiently.",
+   "keywords": [
+    "काफ़ी",
+    "enough",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "माता",
+   "value": "„माता\" (mātā) на хинди = английски „mother\" — A female parent, especially of a human; a female who parents a child (which she has giv…",
+   "keywords": [
+    "माता",
+    "mother",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अशुद्ध",
+   "value": "„अशुद्ध\" (aśuddh) на хинди = английски „wrong\" — Incorrect or untrue.",
+   "keywords": [
+    "अशुद्ध",
+    "wrong",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दुनिया",
+   "value": "„दुनिया\" (duniyā) на хинди = английски „world\" — The subjective human experience, regarded collectively; human collective existence; exi…",
+   "keywords": [
+    "दुनिया",
+    "world",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बुरा",
+   "value": "„बुरा\" (burā) на хинди = английски „bad\" — Bold, daring, and tough.",
+   "keywords": [
+    "बुरा",
+    "bad",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तीन",
+   "value": "„तीन\" (tīn) на хинди = английски „three\" — A numerical value after two and before four. Represented in Arabic digits as 3; this ma…",
+   "keywords": [
+    "तीन",
+    "three",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आज",
+   "value": "„आज\" (āj) на хинди = английски „today\" — On the current day or date.",
+   "keywords": [
+    "आज",
+    "today",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सुनना",
+   "value": "„सुनना\" (sunnā) на хинди = английски „listen\" — To use one's sense of hearing and auditory cognition in an intentional way; to make del…",
+   "keywords": [
+    "सुनना",
+    "listen",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "समझना",
+   "value": "„समझना\" (samajhnā) на хинди = английски „understand\" — To know the meaning of; to parse or have parsed correctly; to comprehend.",
+   "keywords": [
+    "समझना",
+    "understand",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सुनना",
+   "value": "„सुनना\" (sunnā) на хинди = английски „hear\" — To perceive sounds through the ear.",
+   "keywords": [
+    "सुनना",
+    "hear",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "स्मरण रखना",
+   "value": "„स्मरण रखना\" (smaraṇ rakhnā) на хинди = английски „remember\" — To recall from one's memory; to have an image in one's memory.",
+   "keywords": [
+    "स्मरण रखना",
+    "remember",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पूछना",
+   "value": "„पूछना\" (pūchnā) на хинди = английски „ask\" — To request or petition.",
+   "keywords": [
+    "पूछना",
+    "ask",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अपना",
+   "value": "„अपना\" (apnā) на хинди = английски „own\" — Belonging to; possessed; acquired and designated by; proper to; property of; titled to;…",
+   "keywords": [
+    "अपना",
+    "own",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वही",
+   "value": "„वही\" (vahī) на хинди = английски „same\" — Not different or other; not another or others; not different as regards self; selfsame;…",
+   "keywords": [
+    "वही",
+    "same",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दिखाना",
+   "value": "„दिखाना\" (dikhānā) на хинди = английски „show\" — To display or exhibit; to have somebody see (something); to direct attention to something.",
+   "keywords": [
+    "दिखाना",
+    "show",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मार डालना",
+   "value": "„मार डालना\" (mār ḍālnā) на хинди = английски „kill\" — To put to death; to extinguish the life of.",
+   "keywords": [
+    "मार डालना",
+    "kill",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अगला",
+   "value": "„अगला\" (aglā) на хинди = английски „next\" — Nearest in place or position, having nothing similar intervening; adjoining.",
+   "keywords": [
+    "अगला",
+    "next",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "परवाह",
+   "value": "„परवाह\" (parvāh) на хинди = английски „care\" — Close attention; concern; responsibility.",
+   "keywords": [
+    "परवाह",
+    "care",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गाड़ी",
+   "value": "„गाड़ी\" (gāṛī) на хинди = английски „car\" — A wheeled vehicle that moves independently, with at least three wheels, powered mechani…",
+   "keywords": [
+    "गाड़ी",
+    "car",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बेटा",
+   "value": "„बेटा\" (beṭā) на хинди = английски „son\" — One's male offspring.",
+   "keywords": [
+    "बेटा",
+    "son",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कोशिश करना",
+   "value": "„कोशिश करना\" (kośiś karnā) на хинди = английски „try\" — To attempt; to endeavour. Followed by infinitive.",
+   "keywords": [
+    "कोशिश करना",
+    "try",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "महिला",
+   "value": "„महिला\" (mahilā) на хинди = английски „woman\" — An adult female human.",
+   "keywords": [
+    "महिला",
+    "woman",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नमस्ते",
+   "value": "„नमस्ते\" (namaste) на хинди = английски „hi\" — A friendly, informal, casual greeting said upon someone's arrival.",
+   "keywords": [
+    "नमस्ते",
+    "hi",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मृत",
+   "value": "„मृत\" (mŕt) на хинди = английски „dead\" — No longer living; deceased. (Also used as a noun.)",
+   "keywords": [
+    "मृत",
+    "dead",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मन",
+   "value": "„मन\" (man) на хинди = английски „mind\" — The capability for rational thought.",
+   "keywords": [
+    "मन",
+    "mind",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दोस्त",
+   "value": "„दोस्त\" (dost) на хинди = английски „friend\" — A person, typically someone other than a family member, spouse or lover, whose company …",
+   "keywords": [
+    "दोस्त",
+    "friend",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "श्रेष्ठ",
+   "value": "„श्रेष्ठ\" (śreṣṭh) на хинди = английски „best\" — Most; largest.",
+   "keywords": [
+    "श्रेष्ठ",
+    "best",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नरक",
+   "value": "„नरक\" (narak) на хинди = английски „hell\" — A place or situation of great suffering in life.",
+   "keywords": [
+    "नरक",
+    "hell",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सुबह",
+   "value": "„सुबह\" (subah) на хинди = английски „morning\" — The early part of the day, especially from midnight to noon.",
+   "keywords": [
+    "सुबह",
+    "morning",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रयासरत",
+   "value": "„प्रयासरत\" (prayāsrat) на хинди = английски „trying\" — Difficult to endure; arduous.",
+   "keywords": [
+    "प्रयासरत",
+    "trying",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लड़का",
+   "value": "„लड़का\" (laṛkā) на хинди = английски „boy\" — A male child.",
+   "keywords": [
+    "लड़का",
+    "boy",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "एक साथ",
+   "value": "„एक साथ\" (ek sāth) на хинди = английски „together\" — At the same time, in the same place; in close association or proximity.",
+   "keywords": [
+    "एक साथ",
+    "together",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "काम",
+   "value": "„काम\" (kām) на хинди = английски „job\" — A task.",
+   "keywords": [
+    "काम",
+    "job",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आरा",
+   "value": "„आरा\" (ārā) на хинди = английски „saw\" — A tool used for cutting hard substances, in particular wood or metal.",
+   "keywords": [
+    "आरा",
+    "saw",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "परिवार",
+   "value": "„परिवार\" (parivār) на хинди = английски „family\" — A group of people who are closely related to one another (by blood, marriage or adoptio…",
+   "keywords": [
+    "परिवार",
+    "family",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सच्चा",
+   "value": "„सच्चा\" (saccā) на хинди = английски „real\" — True, genuine, not merely nominal or apparent.",
+   "keywords": [
+    "सच्चा",
+    "real",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "...के बिना",
+   "value": "„...के बिना\" (...ke binā) на хинди = английски „without\" — Not having, containing, characteristic of, etc.",
+   "keywords": [
+    "...के बिना",
+    "without",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शिशु",
+   "value": "„शिशु\" (śiśu) на хинди = английски „baby\" — A very young human, particularly from birth to a couple of years old or until walking i…",
+   "keywords": [
+    "शिशु",
+    "baby",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "स्थान",
+   "value": "„स्थान\" (sthān) на хинди = английски „room\" — Space for something, or to carry out an activity.",
+   "keywords": [
+    "स्थान",
+    "room",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पहले ही",
+   "value": "„पहले ही\" (pahle hī) на хинди = английски „already\" — Prior to some specified time, either past, present, or future; by this time; previously.",
+   "keywords": [
+    "पहले ही",
+    "already",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चलना",
+   "value": "„चलना\" (calnā) на хинди = английски „move\" — To change place or posture; to go, in any manner, from one place or position to another.",
+   "keywords": [
+    "चलना",
+    "move",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सबसे",
+   "value": "„सबसे\" (sabse) на хинди = английски „most\" — Forms the superlative of many adjectives.",
+   "keywords": [
+    "सबसे",
+    "most",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रहना",
+   "value": "„रहना\" (rahnā) на хинди = английски „live\" — To be alive; to have life.",
+   "keywords": [
+    "रहना",
+    "live",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सुश्री",
+   "value": "„सुश्री\" (suśrī) на хинди = английски „miss\" — Used in title of the (female) winner of a beauty contest, or certain other types of con…",
+   "keywords": [
+    "सुश्री",
+    "miss",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "यों",
+   "value": "„यों\" (yõ) на хинди = английски „actually\" — In act or in fact; really; in truth; positively.",
+   "keywords": [
+    "यों",
+    "actually",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मल",
+   "value": "„मल\" (mal) на хинди = английски „shit\" — Usually solid excretory product evacuated from the bowels; feces.",
+   "keywords": [
+    "मल",
+    "shit",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दोनों ... और ...",
+   "value": "„दोनों ... और ...\" (donõ ... aur ...) на хинди = английски „both\" — Including both of (used with and).",
+   "keywords": [
+    "दोनों ... और ...",
+    "both",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "एक बार",
+   "value": "„एक बार\" (ek bār) на хинди = английски „once\" — One and only one time.",
+   "keywords": [
+    "एक बार",
+    "once",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तैयार",
+   "value": "„तैयार\" (taiyār) на хинди = английски „ready\" — Prepared for immediate action or use.",
+   "keywords": [
+    "तैयार",
+    "ready",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सिर",
+   "value": "„सिर\" (sir) на хинди = английски „head\" — The part of the body of an animal or human which contains the brain, mouth, and main se…",
+   "keywords": [
+    "सिर",
+    "head",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रयुक्त",
+   "value": "„प्रयुक्त\" (prayukt) на хинди = английски „used\" — That is or has or have been used.",
+   "keywords": [
+    "प्रयुक्त",
+    "used",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "विचार",
+   "value": "„विचार\" (vicār) на хинди = английски „idea\" — An abstract archetype of a given thing, compared to which real-life examples are seen a…",
+   "keywords": [
+    "विचार",
+    "idea",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रखना",
+   "value": "„रखना\" (rakhnā) на хинди = английски „hold\" — To grasp or grip.",
+   "keywords": [
+    "रखना",
+    "hold",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सुखी",
+   "value": "„सुखी\" (sukhī) на хинди = английски „happy\" — Having a feeling arising from a consciousness of well-being or of enjoyment; enjoying g…",
+   "keywords": [
+    "सुखी",
+    "happy",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "किवाड़",
+   "value": "„किवाड़\" (kivāṛ) на хинди = английски „door\" — A portal of entry into a building, room, or vehicle, typically consisting of a rigid pl…",
+   "keywords": [
+    "किवाड़",
+    "door",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चोदना",
+   "value": "„चोदना\" (codnā) на хинди = английски „fuck\" — To have sexual intercourse; to copulate.",
+   "keywords": [
+    "चोदना",
+    "fuck",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भाई",
+   "value": "„भाई\" (bhāī) на хинди = английски „brother\" — Son of the same parents as another person.",
+   "keywords": [
+    "भाई",
+    "brother",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भी",
+   "value": "„भी\" (bhī) на хинди = английски „also\" — In addition; besides; as well; further; too.",
+   "keywords": [
+    "भी",
+    "also",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मनोरम",
+   "value": "„मनोरम\" (manoram) на хинди = английски „pretty\" — Pleasant to the sight or other senses; attractive, especially of women or children.",
+   "keywords": [
+    "मनोरम",
+    "pretty",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "टुकड़ा",
+   "value": "„टुकड़ा\" (ṭukṛā) на хинди = английски „bit\" — A piece of metal placed in a horse's mouth and connected to the reins to direct the ani…",
+   "keywords": [
+    "टुकड़ा",
+    "bit",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लोग",
+   "value": "„लोग\" (log) на хинди = английски „men\" — (The) people, humanity, man(kind).",
+   "keywords": [
+    "लोग",
+    "men",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सारा",
+   "value": "„सारा\" (sārā) на хинди = английски „whole\" — Entire, undivided.",
+   "keywords": [
+    "सारा",
+    "whole",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शुरू करना",
+   "value": "„शुरू करना\" (śurū karnā) на хинди = английски „start\" — To begin, commence, initiate.",
+   "keywords": [
+    "शुरू करना",
+    "start",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "उपयोग",
+   "value": "„उपयोग\" (upyog) на хинди = английски „use\" — The act of using.",
+   "keywords": [
+    "उपयोग",
+    "use",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "... से",
+   "value": "„... से\" на хинди = английски „since\" — From: referring to a period of time ending in the present and defining it by the point …",
+   "keywords": [
+    "... से",
+    "since",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पत्नी",
+   "value": "„पत्नी\" (patnī) на хинди = английски „wife\" — A married woman, especially in relation to her spouse.",
+   "keywords": [
+    "पत्नी",
+    "wife",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अनुमान",
+   "value": "„अनुमान\" (anumān) на хинди = английски „guess\" — To reach a partly (or totally) unconfirmed conclusion; to engage in conjecture; to spec…",
+   "keywords": [
+    "अनुमान",
+    "guess",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कल",
+   "value": "„कल\" (kal) на хинди = английски „tomorrow\" — On the day after the present day.",
+   "keywords": [
+    "कल",
+    "tomorrow",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पदार्थ",
+   "value": "„पदार्थ\" (padārth) на хинди = английски „matter\" — Material; substance.",
+   "keywords": [
+    "पदार्थ",
+    "matter",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मिलना",
+   "value": "„मिलना\" на хинди = английски „meet\" — To make contact (with someone) while in proximity.",
+   "keywords": [
+    "मिलना",
+    "meet",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लाना",
+   "value": "„लाना\" (lānā) на хинди = английски „bring\" — To transport toward somebody/somewhere.",
+   "keywords": [
+    "लाना",
+    "bring",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आज रात को",
+   "value": "„आज रात को\" (āj rāt ko) на хинди = английски „tonight\" — During the night following the current day; during the evening of today.",
+   "keywords": [
+    "आज रात को",
+    "tonight",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सब लोग",
+   "value": "„सब लोग\" (sab log) на хинди = английски „everyone\" — Every person.",
+   "keywords": [
+    "सब लोग",
+    "everyone",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दौड़ना",
+   "value": "„दौड़ना\" (dauṛnā) на хинди = английски „run\" — To move swiftly.",
+   "keywords": [
+    "दौड़ना",
+    "run",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कठिन",
+   "value": "„कठिन\" (kaṭhin) на хинди = английски „hard\" — Solid and firm.",
+   "keywords": [
+    "कठिन",
+    "hard",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आह",
+   "value": "„आह\" (āh) на хинди = английски „ah\" — An expression of relief, relaxation, comfort, confusion, understanding, wonder, awe, et…",
+   "keywords": [
+    "आह",
+    "ah",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अकेला",
+   "value": "„अकेला\" (akelā) на хинди = английски „alone\" — By oneself, solitary.",
+   "keywords": [
+    "अकेला",
+    "alone",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खुद",
+   "value": "„खुद\" (khud) на хинди = английски „myself\" — Me, as direct or indirect object the speaker as the object of a verb or preposition, wh…",
+   "keywords": [
+    "खुद",
+    "myself",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "विद्यालय",
+   "value": "„विद्यालय\" (vidyālay) на хинди = английски „school\" — An institution dedicated to teaching and learning; an educational institution.",
+   "keywords": [
+    "विद्यालय",
+    "school",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अंत",
+   "value": "„अंत\" (ant) на хинди = английски „end\" — The terminal point of something in space or time.",
+   "keywords": [
+    "अंत",
+    "end",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "फ़ोन करना",
+   "value": "„फ़ोन करना\" (fon karnā) на хинди = английски „phone\" — To call (someone) using a telephone.",
+   "keywords": [
+    "फ़ोन करना",
+    "phone",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खेलना",
+   "value": "„खेलना\" (khelnā) на хинди = английски „play\" — To act in a manner such that one has fun; to engage in activities expressly for the pur…",
+   "keywords": [
+    "खेलना",
+    "play",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चुदाई",
+   "value": "„चुदाई\" (cudāī) на хинди = английски „fucking\" — An act of sexual intercourse, especially one lacking passion or a feeling of sincere love.",
+   "keywords": [
+    "चुदाई",
+    "fucking",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "समस्या",
+   "value": "„समस्या\" (samasyā) на хинди = английски „problem\" — A difficulty that has to be resolved or dealt with.",
+   "keywords": [
+    "समस्या",
+    "problem",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खुला",
+   "value": "„खुला\" (khulā) на хинди = английски „open\" — Physically unobstructed, uncovered, etc.",
+   "keywords": [
+    "खुला",
+    "open",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आशा",
+   "value": "„आशा\" (āśā) на хинди = английски „hope\" — To want (something) to happen, with a sense of expectation that it might [with that (+ …",
+   "keywords": [
+    "आशा",
+    "hope",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चेहरा",
+   "value": "„चेहरा\" (cehrā) на хинди = английски „face\" — The front part of the head of a human or other animal, featuring the eyes, nose, and mo…",
+   "keywords": [
+    "चेहरा",
+    "face",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "... तक",
+   "value": "„... तक\" (... tak) на хинди = английски „until\" — Up to the time of (something happening); pending.",
+   "keywords": [
+    "... तक",
+    "until",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आरक्षी",
+   "value": "„आरक्षी\" (ārakṣī) на хинди = английски „police\" — A constituted body of officers representing the civil authority of government, empowere…",
+   "keywords": [
+    "आरक्षी",
+    "police",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बहाना",
+   "value": "„बहाना\" (bahānā) на хинди = английски „excuse\" — An explanation designed to avoid or alleviate guilt or negative judgment; a plea offere…",
+   "keywords": [
+    "बहाना",
+    "excuse",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मुड़ना",
+   "value": "„मुड़ना\" (muṛnā) на хинди = английски „turn\" — To make a non-linear physical movement.",
+   "keywords": [
+    "मुड़ना",
+    "turn",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "व्यापार",
+   "value": "„व्यापार\" (vyāpār) на хинди = английски „business\" — A specific commercial enterprise or establishment.",
+   "keywords": [
+    "व्यापार",
+    "business",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ठीक",
+   "value": "„ठीक\" (ṭhīk) на хинди = английски „true\" — Conforming to the actual state of reality or fact; factually correct.",
+   "keywords": [
+    "ठीक",
+    "true",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मरना",
+   "value": "„मरना\" (marnā) на хинди = английски „die\" — To stop living; to become dead; to undergo death.",
+   "keywords": [
+    "मरना",
+    "die",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दिल",
+   "value": "„दिल\" (dil) на хинди = английски „heart\" — A muscular organ that pumps blood through the body, traditionally thought to be the sea…",
+   "keywords": [
+    "दिल",
+    "heart",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जल्दी",
+   "value": "„जल्दी\" (jaldī) на хинди = английски „soon\" — Within a short time; quickly.",
+   "keywords": [
+    "जल्दी",
+    "soon",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बाद में",
+   "value": "„बाद में\" (bād mẽ) на хинди = английски „later\" — Afterward in time (used with than when comparing with another time).",
+   "keywords": [
+    "बाद में",
+    "later",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "साल",
+   "value": "„साल\" (sāl) на хинди = английски „year\" — A period of time akin to the time taken for the Earth to undergo a full cycle of seasons.",
+   "keywords": [
+    "साल",
+    "year",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "घड़ी",
+   "value": "„घड़ी\" (ghaṛī) на хинди = английски „watch\" — A portable or wearable timepiece.",
+   "keywords": [
+    "घड़ी",
+    "watch",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "संगीत",
+   "value": "„संगीत\" (saṅgīt) на хинди = английски „music\" — A series of sounds organized in time, usually employing some combination of harmony, me…",
+   "keywords": [
+    "संगीत",
+    "music",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हाथ",
+   "value": "„हाथ\" (hāth) на хинди = английски „hand\" — The part of the forelimb below the forearm or wrist in a human, and the corresponding p…",
+   "keywords": [
+    "हाथ",
+    "hand",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आकर्षक",
+   "value": "„आकर्षक\" (ākarṣak) на хинди = английски „beautiful\" — Possessing beauty, impressing the eye; attractive.",
+   "keywords": [
+    "आकर्षक",
+    "beautiful",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "डॉक्टर",
+   "value": "„डॉक्टर\" (ḍŏkṭar) на хинди = английски „doctor\" — A physician; a member of the medical profession; one who is trained and licensed to hea…",
+   "keywords": [
+    "डॉक्टर",
+    "doctor",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बैठना",
+   "value": "„बैठना\" (baiṭhnā) на хинди = английски „sit\" — To be in a position in which the upper body is upright and supported by the buttocks.",
+   "keywords": [
+    "बैठना",
+    "sit",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खाना",
+   "value": "„खाना\" (khānā) на хинди = английски „eat\" — To ingest.",
+   "keywords": [
+    "खाना",
+    "eat",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सोचना",
+   "value": "„सोचना\" (socnā) на хинди = английски „thinking\" — The action or process of using one's mind to consider or reason about something.",
+   "keywords": [
+    "सोचना",
+    "thinking",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "युवा",
+   "value": "„युवा\" (yuvā) на хинди = английски „young\" — In the early part of growth or life; born not long ago.",
+   "keywords": [
+    "युवा",
+    "young",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दूसरा",
+   "value": "„दूसरा\" (dūsrā) на хинди = английски „second\" — Number-two; following after the first one with nothing between them. The ordinal number…",
+   "keywords": [
+    "दूसरा",
+    "second",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पानी",
+   "value": "„पानी\" (pānī) на хинди = английски „water\" — An inorganic compound (of molecular formula H₂O) found at room temperature and pressure…",
+   "keywords": [
+    "पानी",
+    "water",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मनुष्य",
+   "value": "„मनुष्य\" (manuṣya) на хинди = английски „person\" — An individual who has been granted personhood; usually a human being.",
+   "keywords": [
+    "मनुष्य",
+    "person",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हिस्सा",
+   "value": "„हिस्सा\" (hissā) на хинди = английски „part\" — A portion; a component.",
+   "keywords": [
+    "हिस्सा",
+    "part",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "देर",
+   "value": "„देर\" (der) на хинди = английски „late\" — Near the end of a period of time.",
+   "keywords": [
+    "देर",
+    "late",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "... के नीचे",
+   "value": "„... के नीचे\" (... ke nīce) на хинди = английски „under\" — Beneath; below; at or to the bottom of, or the area covered or surmounted by.",
+   "keywords": [
+    "... के नीचे",
+    "under",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मृत्यु",
+   "value": "„मृत्यु\" (mŕtyu) на хинди = английски „death\" — The cessation of life and all associated processes; the end of an organism's existence …",
+   "keywords": [
+    "मृत्यु",
+    "death",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मिनट",
+   "value": "„मिनट\" (minaṭ) на хинди = английски „minute\" — A unit of time which is one sixtieth of an hour (sixty seconds).",
+   "keywords": [
+    "मिनट",
+    "minute",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पैसे देना",
+   "value": "„पैसे देना\" (paise denā) на хинди = английски „pay\" — To give money or other compensation to in exchange for goods or services.",
+   "keywords": [
+    "पैसे देना",
+    "pay",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पागल",
+   "value": "„पागल\" (pāgal) на хинди = английски „crazy\" — Of unsound mind; insane; demented.",
+   "keywords": [
+    "पागल",
+    "crazy",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भूलना",
+   "value": "„भूलना\" (bhūlnā) на хинди = английски „forget\" — To lose remembrance of.",
+   "keywords": [
+    "भूलना",
+    "forget",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सब लोग",
+   "value": "„सब लोग\" (sab log) на хинди = английски „everybody\" — All people.",
+   "keywords": [
+    "सब लोग",
+    "everybody",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बच्चा",
+   "value": "„बच्चा\" (baccā) на хинди = английски „kid\" — A child, adolescent, or (loosely) a young adult.",
+   "keywords": [
+    "बच्चा",
+    "kid",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बदलना",
+   "value": "„बदलना\" (badalnā) на хинди = английски „change\" — To become something different.",
+   "keywords": [
+    "बदलना",
+    "change",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बीतना",
+   "value": "„बीतना\" (bītnā) на хинди = английски „happen\" — To occur or take place.",
+   "keywords": [
+    "बीतना",
+    "happen",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अभिशाप देना",
+   "value": "„अभिशाप देना\" (abhiśāp denā) на хинди = английски „damn\" — To condemn.",
+   "keywords": [
+    "अभिशाप देना",
+    "damn",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पाँच",
+   "value": "„पाँच\" (pā̃c) на хинди = английски „five\" — A numerical value equal to 5; the number following four and preceding six.",
+   "keywords": [
+    "पाँच",
+    "five",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पीना",
+   "value": "„पीना\" (pīnā) на хинди = английски „drink\" — To consume (a liquid) through the mouth.",
+   "keywords": [
+    "पीना",
+    "drink",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दूर",
+   "value": "„दूर\" (dūr) на хинди = английски „far\" — Distant; remote in space.",
+   "keywords": [
+    "दूर",
+    "far",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बंद करना",
+   "value": "„बंद करना\" (band karnā) на хинди = английски „shut\" — To close, in various senses.",
+   "keywords": [
+    "बंद करना",
+    "shut",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मारना",
+   "value": "„मारना\" (mārnā) на хинди = английски „hit\" — To strike.",
+   "keywords": [
+    "मारना",
+    "hit",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सरल",
+   "value": "„सरल\" (saral) на хинди = английски „easy\" — Comfortable; at ease.",
+   "keywords": [
+    "सरल",
+    "easy",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शह",
+   "value": "„शह\" (śah) на хинди = английски „check\" — An inspection or examination.",
+   "keywords": [
+    "शह",
+    "check",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कार्यविवरण",
+   "value": "„कार्यविवरण\" (kāryavivraṇ) на хинди = английски „minutes\" — The official notes kept during a meeting.",
+   "keywords": [
+    "कार्यविवरण",
+    "minutes",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लेन-देन",
+   "value": "„लेन-देन\" (len-den) на хинди = английски „deal\" — The distribution of cards to players; a player's turn for this.",
+   "keywords": [
+    "लेन-देन",
+    "deal",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भिन्न",
+   "value": "„भिन्न\" (bhinn) на хинди = английски „different\" — Not the same; exhibiting a difference.",
+   "keywords": [
+    "भिन्न",
+    "different",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "साधन",
+   "value": "„साधन\" (sādhan) на хинди = английски „means\" — An instrument or condition to achieve a result.",
+   "keywords": [
+    "साधन",
+    "means",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बिंदु",
+   "value": "„बिंदु\" (bindu) на хинди = английски „point\" — A small dot or mark.",
+   "keywords": [
+    "बिंदु",
+    "point",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अंतः",
+   "value": "„अंतः\" (antaḥ) на хинди = английски „inside\" — The interior or inner part.",
+   "keywords": [
+    "अंतः",
+    "inside",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कोई",
+   "value": "„कोई\" (koī) на хинди = английски „somebody\" — Some unspecified person.",
+   "keywords": [
+    "कोई",
+    "somebody",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मेरा",
+   "value": "„मेरा\" (merā) на хинди = английски „mine\" — That or those belonging to me.",
+   "keywords": [
+    "मेरा",
+    "mine",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सृजन",
+   "value": "„सृजन\" (sŕjan) на хинди = английски „making\" — The act of forming, causing, or constituting; workmanship; construction.",
+   "keywords": [
+    "सृजन",
+    "making",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शरीर",
+   "value": "„शरीर\" (śarīr) на хинди = английски „body\" — Physical frame.",
+   "keywords": [
+    "शरीर",
+    "body",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सोना",
+   "value": "„सोना\" (sonā) на хинди = английски „sleep\" — To rest in a state of reduced consciousness.",
+   "keywords": [
+    "सोना",
+    "sleep",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अवसर",
+   "value": "„अवसर\" (avsar) на хинди = английски „chance\" — An opportunity or possibility.",
+   "keywords": [
+    "अवसर",
+    "chance",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्यारा",
+   "value": "„प्यारा\" (pyārā) на хинди = английски „dear\" — High in price; expensive.",
+   "keywords": [
+    "प्यारा",
+    "dear",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "काफ़ी",
+   "value": "„काफ़ी\" (kāfī) на хинди = английски „quite\" — To the greatest extent or degree; completely, entirely.",
+   "keywords": [
+    "काफ़ी",
+    "quite",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चार",
+   "value": "„चार\" (cār) на хинди = английски „four\" — A numerical value equal to 4; the number after three and before five; two plus two. Thi…",
+   "keywords": [
+    "चार",
+    "four",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ख़ैर",
+   "value": "„ख़ैर\" (xair) на хинди = английски „anyway\" — Regardless; anyhow.",
+   "keywords": [
+    "ख़ैर",
+    "anyway",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बंद करना",
+   "value": "„बंद करना\" (band karnā) на хинди = английски „close\" — To remove or block an opening, gap or passage through.",
+   "keywords": [
+    "बंद करना",
+    "close",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पक्ष",
+   "value": "„पक्ष\" (pakṣ) на хинди = английски „party\" — A person or group of people constituting one side in a legal proceeding, such as in a l…",
+   "keywords": [
+    "पक्ष",
+    "party",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मज़ा",
+   "value": "„मज़ा\" (mazā) на хинди = английски „fun\" — Amusement, enjoyment or pleasure.",
+   "keywords": [
+    "मज़ा",
+    "fun",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शब्द",
+   "value": "„शब्द\" (śabd) на хинди = английски „word\" — The smallest unit of language that has a particular meaning and can be expressed by its…",
+   "keywords": [
+    "शब्द",
+    "word",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "महत्वपूर्ण",
+   "value": "„महत्वपूर्ण\" (mahatvapūrṇ) на хинди = английски „important\" — Having relevant and crucial value; having import.",
+   "keywords": [
+    "महत्वपूर्ण",
+    "important",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कहानी",
+   "value": "„कहानी\" (kahānī) на хинди = английски „story\" — An account of real or fictional events.",
+   "keywords": [
+    "कहानी",
+    "story",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नंबर",
+   "value": "„नंबर\" (nambar) на хинди = английски „number\" — Quantity of countable things.",
+   "keywords": [
+    "नंबर",
+    "number",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बेटी",
+   "value": "„बेटी\" (beṭī) на хинди = английски „daughter\" — One’s female offspring.",
+   "keywords": [
+    "बेटी",
+    "daughter",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रतीक्षा",
+   "value": "„प्रतीक्षा\" (pratīkṣā) на хинди = английски „waiting\" — The act of staying or remaining in expectation.",
+   "keywords": [
+    "प्रतीक्षा",
+    "waiting",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दर्द करना",
+   "value": "„दर्द करना\" (dard karnā) на хинди = английски „hurt\" — To cause (a person or animal) physical pain and/or injury.",
+   "keywords": [
+    "दर्द करना",
+    "hurt",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आशा",
+   "value": "„आशा\" (āśā) на хинди = английски „wish\" — A desire, hope, or longing for something or for something to happen.",
+   "keywords": [
+    "आशा",
+    "wish",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आघूर्ण",
+   "value": "„आघूर्ण\" (āghūrṇ) на хинди = английски „moment\" — A particular point, or relatively small region.",
+   "keywords": [
+    "आघूर्ण",
+    "moment",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लड़ना",
+   "value": "„लड़ना\" (laṛnā) на хинди = английски „fight\" — Senses relating to physical conflict:",
+   "keywords": [
+    "लड़ना",
+    "fight",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सप्ताह",
+   "value": "„सप्ताह\" (saptāh) на хинди = английски „week\" — Any period of seven consecutive days.",
+   "keywords": [
+    "सप्ताह",
+    "week",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पति",
+   "value": "„पति\" (pati) на хинди = английски „husband\" — A man in a marriage or marital relationship, especially in relation to his spouse.",
+   "keywords": [
+    "पति",
+    "husband",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आराम",
+   "value": "„आराम\" (ārām) на хинди = английски „rest\" — Relief from work or activity by sleeping; sleep.",
+   "keywords": [
+    "आराम",
+    "rest",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "विवाहित",
+   "value": "„विवाहित\" (vivāhit) на хинди = английски „married\" — In a state of marriage; having a wife or a husband.",
+   "keywords": [
+    "विवाहित",
+    "married",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आग",
+   "value": "„आग\" (āg) на хинди = английски „fire\" — A (usually self-sustaining) chemical reaction involving the bonding of oxygen with carb…",
+   "keywords": [
+    "आग",
+    "fire",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खेल",
+   "value": "„खेल\" (khel) на хинди = английски „game\" — A playful or competitive activity.",
+   "keywords": [
+    "खेल",
+    "game",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तरफ़",
+   "value": "„तरफ़\" (taraf) на хинди = английски „side\" — A bounding straight edge of a two-dimensional shape.",
+   "keywords": [
+    "तरफ़",
+    "side",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खड़ा होना",
+   "value": "„खड़ा होना\" (khaṛā honā) на хинди = английски „stand\" — To position or be positioned physically:",
+   "keywords": [
+    "खड़ा होना",
+    "stand",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पढ़ना",
+   "value": "„पढ़ना\" (paṛhnā) на хинди = английски „read\" — To look at and interpret letters or other information that is written.",
+   "keywords": [
+    "पढ़ना",
+    "read",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "काटना",
+   "value": "„काटना\" (kāṭnā) на хинди = английски „cut\" — To incise, to cut into the surface of something.",
+   "keywords": [
+    "काटना",
+    "cut",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बहन",
+   "value": "„बहन\" (bahan) на хинди = английски „sister\" — A daughter of the same parents as another person; a female sibling.",
+   "keywords": [
+    "बहन",
+    "sister",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "... के बीच",
+   "value": "„... के बीच\" (... ke bīc) на хинди = английски „between\" — In the position or interval that separates (two things), or intermediate in quantity or…",
+   "keywords": [
+    "... के बीच",
+    "between",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बच्चा",
+   "value": "„बच्चा\" (baccā) на хинди = английски „child\" — A person who has not yet reached adulthood, whether natural (puberty), cultural (initia…",
+   "keywords": [
+    "बच्चा",
+    "child",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बोलना",
+   "value": "„बोलना\" (bolnā) на хинди = английски „speak\" — To communicate with one's voice, to say words out loud.",
+   "keywords": [
+    "बोलना",
+    "speak",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "के पीछे",
+   "value": "„के पीछे\" (ke pīche) на хинди = английски „behind\" — At or to the back or far side of.",
+   "keywords": [
+    "के पीछे",
+    "behind",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लगभग",
+   "value": "„लगभग\" (lagbhag) на хинди = английски „almost\" — Very close to, but not quite.",
+   "keywords": [
+    "लगभग",
+    "almost",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सच",
+   "value": "„सच\" (sac) на хинди = английски „truth\" — True facts, genuine depiction or statements of reality.",
+   "keywords": [
+    "सच",
+    "truth",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ख़ून",
+   "value": "„ख़ून\" (xūn) на хинди = английски „blood\" — A vital liquid flowing in the bodies of many types of animals that usually conveys nutr…",
+   "keywords": [
+    "ख़ून",
+    "blood",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "समर्थ",
+   "value": "„समर्थ\" (samarth) на хинди = английски „able\" — Having the necessary powers or the needed resources to accomplish a task.",
+   "keywords": [
+    "समर्थ",
+    "able",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "महिला",
+   "value": "„महिला\" (mahilā) на хинди = английски „lady\" — The mistress of a household.",
+   "keywords": [
+    "महिला",
+    "lady",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कारण",
+   "value": "„कारण\" (kāraṇ) на хинди = английски „reason\" — A cause:",
+   "keywords": [
+    "कारण",
+    "reason",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तकलीफ़",
+   "value": "„तकलीफ़\" (taklīf) на хинди = английски „trouble\" — A distressing or dangerous situation.",
+   "keywords": [
+    "तकलीफ़",
+    "trouble",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अंतराल",
+   "value": "„अंतराल\" (antrāl) на хинди = английски „break\" — To separate into two or more pieces, to fracture or crack, by a process that cannot eas…",
+   "keywords": [
+    "अंतराल",
+    "break",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "युद्ध",
+   "value": "„युद्ध\" (yuddh) на хинди = английски „war\" — Organized, large-scale, armed conflict between countries or between national, ethnic, o…",
+   "keywords": [
+    "युद्ध",
+    "war",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शहर",
+   "value": "„शहर\" (śahar) на хинди = английски „city\" — A large settlement, bigger than a town; sometimes with a specific legal definition, dep…",
+   "keywords": [
+    "शहर",
+    "city",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "टहलना",
+   "value": "„टहलना\" (ṭahalnā) на хинди = английски „walk\" — To move on the feet by alternately setting each foot (or pair or group of feet, in the …",
+   "keywords": [
+    "टहलना",
+    "walk",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शहर",
+   "value": "„शहर\" (śahar) на хинди = английски „town\" — A settlement; an area with residential districts, shops and amenities, and its own loca…",
+   "keywords": [
+    "शहर",
+    "town",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "विश्वास",
+   "value": "„विश्वास\" (viśvās) на хинди = английски „trust\" — Confidence in or reliance on some person or quality.",
+   "keywords": [
+    "विश्वास",
+    "trust",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कार्यालय",
+   "value": "„कार्यालय\" (kāryālay) на хинди = английски „office\" — A ceremonial duty or service, particularly",
+   "keywords": [
+    "कार्यालय",
+    "office",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रश्न",
+   "value": "„प्रश्न\" (praśna) на хинди = английски „question\" — A worded or expressed sentence, phrase, or only a word on its own, which asks for infor…",
+   "keywords": [
+    "प्रश्न",
+    "question",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "स्वागतम",
+   "value": "„स्वागतम\" (svāgtam) на хинди = английски „welcome\" — Greeting given upon someone's arrival.",
+   "keywords": [
+    "स्वागतम",
+    "welcome",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ऊँचा",
+   "value": "„ऊँचा\" (ū̃cā) на хинди = английски „high\" — Physically elevated, extending above a base or average level:",
+   "keywords": [
+    "ऊँचा",
+    "high",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वाह",
+   "value": "„वाह\" (vāh) на хинди = английски „wow\" — An indication of excitement, surprise, astonishment, or pleasure.",
+   "keywords": [
+    "वाह",
+    "wow",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "युगल",
+   "value": "„युगल\" (yugal) на хинди = английски „couple\" — Two of the same kind connected or considered together.",
+   "keywords": [
+    "युगल",
+    "couple",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आधा",
+   "value": "„आधा\" (ādhā) на хинди = английски „half\" — One of two usually roughly equal parts into which anything may be divided, or considere…",
+   "keywords": [
+    "आधा",
+    "half",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आज़ाद",
+   "value": "„आज़ाद\" (āzād) на хинди = английски „free\" — Unconstrained.",
+   "keywords": [
+    "आज़ाद",
+    "free",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शक्ति",
+   "value": "„शक्ति\" (śakti) на хинди = английски „power\" — The ability to do or undergo something.",
+   "keywords": [
+    "शक्ति",
+    "power",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वाह",
+   "value": "„वाह\" (vāh) на хинди = английски „whoa\" — Stop (especially when commanding a horse or imitative thereof); calm down; slow down.",
+   "keywords": [
+    "वाह",
+    "whoa",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अलविदा",
+   "value": "„अलविदा\" (alvidā) на хинди = английски „bye\" — Goodbye.",
+   "keywords": [
+    "अलविदा",
+    "bye",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "क्रय",
+   "value": "„क्रय\" (kray) на хинди = английски „buy\" — To obtain (something) in exchange for money or goods.",
+   "keywords": [
+    "क्रय",
+    "buy",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मधु",
+   "value": "„मधु\" (madhu) на хинди = английски „honey\" — A sweet, viscous, gold-colored fluid produced from plant nectar by bees, and often cons…",
+   "keywords": [
+    "मधु",
+    "honey",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "टीम",
+   "value": "„टीम\" (ṭīm) на хинди = английски „team\" — A set of draught animals, such as two horses in front of a carriage.",
+   "keywords": [
+    "टीम",
+    "team",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जवाब",
+   "value": "„जवाब\" (javāb) на хинди = английски „answer\" — A response or reply; something said or done in reaction to a statement or question.",
+   "keywords": [
+    "जवाब",
+    "answer",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बंदूक़",
+   "value": "„बंदूक़\" (bandūq) на хинди = английски „gun\" — A device for shooting projectiles or ditto (a shooter), functioning through stored ener…",
+   "keywords": [
+    "बंदूक़",
+    "gun",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रस्सी",
+   "value": "„रस्सी\" (rassī) на хинди = английски „line\" — A path through two or more points (compare ‘segment’); a continuous mark, including as …",
+   "keywords": [
+    "रस्सी",
+    "line",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भेजना",
+   "value": "„भेजना\" (bhejnā) на хинди = английски „send\" — To make something (such as an object or message) go from one place to another (or to so…",
+   "keywords": [
+    "भेजना",
+    "send",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ख़बर",
+   "value": "„ख़बर\" (xabar) на хинди = английски „news\" — New information of interest.",
+   "keywords": [
+    "ख़बर",
+    "news",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मूर्ख",
+   "value": "„मूर्ख\" (mūrkh) на хинди = английски „stupid\" — Without intelligence.",
+   "keywords": [
+    "मूर्ख",
+    "stupid",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पलंग",
+   "value": "„पलंग\" (palaṅg) на хинди = английски „bed\" — A piece of furniture, usually flat and soft, on which to rest or sleep.",
+   "keywords": [
+    "पलंग",
+    "bed",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पूर्ण",
+   "value": "„पूर्ण\" (pūrṇ) на хинди = английски „full\" — Containing the maximum possible amount that can fit in the space available.",
+   "keywords": [
+    "पूर्ण",
+    "full",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बचाना",
+   "value": "„बचाना\" (bacānā) на хинди = английски „save\" — To prevent harm or difficulty.",
+   "keywords": [
+    "बचाना",
+    "save",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कभी कभी",
+   "value": "„कभी कभी\" (kabhī kabhī) на хинди = английски „sometimes\" — On some occasions, over some periods, or in certain circumstances, but not always.",
+   "keywords": [
+    "कभी कभी",
+    "sometimes",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बनना",
+   "value": "„बनना\" (bannā) на хинди = английски „become\" — begin to be; turn into (often with permanent states).",
+   "keywords": [
+    "बनना",
+    "become",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "साथ",
+   "value": "„साथ\" (sāth) на хинди = английски „along\" — In company; together.",
+   "keywords": [
+    "साथ",
+    "along",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "घृणा करना",
+   "value": "„घृणा करना\" (ghŕṇā karnā) на хинди = английски „hate\" — To dislike intensely or greatly.",
+   "keywords": [
+    "घृणा करना",
+    "hate",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खाना",
+   "value": "„खाना\" (khānā) на хинди = английски „food\" — Any solid substance that can be consumed by living organisms, especially by eating, in …",
+   "keywords": [
+    "खाना",
+    "food",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बाहर",
+   "value": "„बाहर\" (bāhar) на хинди = английски „outside\" — To or in the outdoors or outside; to or in an area that is beyond the scope, limits, or…",
+   "keywords": [
+    "बाहर",
+    "outside",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रकाश",
+   "value": "„प्रकाश\" (prakāś) на хинди = английски „light\" — Electromagnetic radiation in the wavelength range visible to the human eye (about 400–7…",
+   "keywords": [
+    "प्रकाश",
+    "light",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कुत्ता",
+   "value": "„कुत्ता\" (kuttā) на хинди = английски „dog\" — A mammal of the family Canidae:",
+   "keywords": [
+    "कुत्ता",
+    "dog",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "देश",
+   "value": "„देश\" (deś) на хинди = английски „country\" — The territory of a nation; a sovereign state or a region once independent and still dis…",
+   "keywords": [
+    "देश",
+    "country",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पारदर्शी",
+   "value": "„पारदर्शी\" (pārdarśī) на хинди = английски „clear\" — Transparent in colour.",
+   "keywords": [
+    "पारदर्शी",
+    "clear",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नियम",
+   "value": "„नियम\" (niyam) на хинди = английски „order\" — Arrangement, disposition, or sequence.",
+   "keywords": [
+    "नियम",
+    "order",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "एम्",
+   "value": "„एम्\" (em) на хинди = английски „em\" — The name of the Latin script letter M/m.",
+   "keywords": [
+    "एम्",
+    "em",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तथ्य",
+   "value": "„तथ्य\" (tathya) на хинди = английски „fact\" — Something actual as opposed to invented.",
+   "keywords": [
+    "तथ्य",
+    "fact",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अधिपति",
+   "value": "„अधिपति\" (adhipti) на хинди = английски „lord\" — One possessing similar mastery over others; (historical) any feudal superior generally;…",
+   "keywords": [
+    "अधिपति",
+    "lord",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जहाज़रान",
+   "value": "„जहाज़रान\" (jahāzrān) на хинди = английски „captain\" — A chief or leader.",
+   "keywords": [
+    "जहाज़रान",
+    "captain",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "छह",
+   "value": "„छह\" (chah) на хинди = английски „six\" — A numerical value equal to 6; the number following five and preceding seven. This numbe…",
+   "keywords": [
+    "छह",
+    "six",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गरम",
+   "value": "„गरम\" (garam) на хинди = английски „hot\" — Relating to heat and conditions which produce it.",
+   "keywords": [
+    "गरम",
+    "hot",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मज़ाक़िया",
+   "value": "„मज़ाक़िया\" (mazāqiyā) на хинди = английски „funny\" — Amusing; humorous; comical.",
+   "keywords": [
+    "मज़ाक़िया",
+    "funny",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "काला",
+   "value": "„काला\" (kālā) на хинди = английски „black\" — Absorbing all light and reflecting none; dark and hueless.",
+   "keywords": [
+    "काला",
+    "black",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जीवित",
+   "value": "„जीवित\" (jīvit) на хинди = английски „alive\" — Having life; living; not dead.",
+   "keywords": [
+    "जीवित",
+    "alive",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गैंती",
+   "value": "„गैंती\" (ga͠itī) на хинди = английски „pick\" — A tool used for digging; a pickaxe.",
+   "keywords": [
+    "गैंती",
+    "pick",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "एहसास",
+   "value": "„एहसास\" (ehsās) на хинди = английски „feeling\" — Sensation, particularly through the skin.",
+   "keywords": [
+    "एहसास",
+    "feeling",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जीवित",
+   "value": "„जीवित\" (jīvit) на хинди = английски „living\" — Having life; alive.",
+   "keywords": [
+    "जीवित",
+    "living",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कारण",
+   "value": "„कारण\" (kāraṇ) на хинди = английски „cause\" — The source of, or reason for, an event or action; that which produces or effects a result.",
+   "keywords": [
+    "कारण",
+    "cause",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खोना",
+   "value": "„खोना\" (khonā) на хинди = английски „lose\" — To cease to have (something) in one's possession or capability.",
+   "keywords": [
+    "खोना",
+    "lose",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "राजा",
+   "value": "„राजा\" (rājā) на хинди = английски „king\" — A male monarch; a man who heads a monarchy; in an absolute monarchy, the supreme ruler …",
+   "keywords": [
+    "राजा",
+    "king",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मापचित्र",
+   "value": "„मापचित्र\" (māpcitra) на хинди = английски „plan\" — A drawing showing technical details of a building, machine, etc., with unwanted details…",
+   "keywords": [
+    "मापचित्र",
+    "plan",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रात का भोजन",
+   "value": "„रात का भोजन\" (rāt kā bhojan) на хинди = английски „dinner\" — The main meal of the day, often eaten in the evening.",
+   "keywords": [
+    "रात का भोजन",
+    "dinner",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तरह",
+   "value": "„तरह\" (tarah) на хинди = английски „sort\" — A general type.",
+   "keywords": [
+    "तरह",
+    "sort",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मालिक",
+   "value": "„मालिक\" (mālik) на хинди = английски „boss\" — One who is in charge or something.",
+   "keywords": [
+    "मालिक",
+    "boss",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वचन",
+   "value": "„वचन\" (vacan) на хинди = английски „promise\" — An oath or affirmation; a vow.",
+   "keywords": [
+    "वचन",
+    "promise",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सुरक्षित",
+   "value": "„सुरक्षित\" (surakṣit) на хинди = английски „safe\" — Not in danger; out of harm's reach.",
+   "keywords": [
+    "सुरक्षित",
+    "safe",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मा",
+   "value": "„मा\" (mā) на хинди = английски „ma\" — mother, mama",
+   "keywords": [
+    "मा",
+    "ma",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पुस्तक",
+   "value": "„पुस्तक\" (pustak) на хинди = английски „book\" — A collection of sheets of paper bound together to hinge at one edge, containing printed…",
+   "keywords": [
+    "पुस्तक",
+    "book",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सफ़ेद",
+   "value": "„सफ़ेद\" (safed) на хинди = английски „white\" — Bright and colourless; reflecting equal quantities of all frequencies of visible light.",
+   "keywords": [
+    "सफ़ेद",
+    "white",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "घंटा",
+   "value": "„घंटा\" (ghaṇṭā) на хинди = английски „hour\" — A unit of time of one twenty-fourth of a day (sixty minutes).",
+   "keywords": [
+    "घंटा",
+    "hour",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "छोटा",
+   "value": "„छोटा\" (choṭā) на хинди = английски „small\" — Not large or big; insignificant; few in number.",
+   "keywords": [
+    "छोटा",
+    "small",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "उत्तम",
+   "value": "„उत्तम\" (uttam) на хинди = английски „perfect\" — Fitting its definition precisely.",
+   "keywords": [
+    "उत्तम",
+    "perfect",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "विशिष्ट",
+   "value": "„विशिष्ट\" (viśiṣṭ) на хинди = английски „special\" — Distinguished by a unique, particular, or unusual quality.",
+   "keywords": [
+    "विशिष्ट",
+    "special",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कदाचित",
+   "value": "„कदाचित\" (kadācit) на хинди = английски „perhaps\" — Possibly.",
+   "keywords": [
+    "कदाचित",
+    "perhaps",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गंभीर",
+   "value": "„गंभीर\" (gambhīr) на хинди = английски „serious\" — Without humor or expression of happiness; grave in manner or disposition.",
+   "keywords": [
+    "गंभीर",
+    "serious",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अस्वस्थ",
+   "value": "„अस्वस्थ\" (asvasth) на хинди = английски „sick\" — In poor health; ill.",
+   "keywords": [
+    "अस्वस्थ",
+    "sick",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "समवाय",
+   "value": "„समवाय\" (samvāy) на хинди = английски „company\" — A team; a group of people who work together professionally.",
+   "keywords": [
+    "समवाय",
+    "company",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भयभीत",
+   "value": "„भयभीत\" (bhaybhīt) на хинди = английски „scared\" — Feeling fear; afraid, frightened.",
+   "keywords": [
+    "भयभीत",
+    "scared",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चाचा",
+   "value": "„चाचा\" (cācā) на хинди = английски „uncle\" — The brother or brother-in-law of one’s parent.",
+   "keywords": [
+    "चाचा",
+    "uncle",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ग़रीब",
+   "value": "„ग़रीब\" (ġarīb) на хинди = английски „poor\" — With no or few possessions or money, particularly in relation to contemporaries who do …",
+   "keywords": [
+    "ग़रीब",
+    "poor",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लाल",
+   "value": "„लाल\" (lāl) на хинди = английски „red\" — The colour of the setting sun, blood, and strawberries; the colour which is evoked by t…",
+   "keywords": [
+    "लाल",
+    "red",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अतीत",
+   "value": "„अतीत\" (atīt) на хинди = английски „past\" — The period of time that has already happened, in contrast to the present and the future.",
+   "keywords": [
+    "अतीत",
+    "past",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "धरती",
+   "value": "„धरती\" (dhartī) на хинди = английски „earth\" — Soil.",
+   "keywords": [
+    "धरती",
+    "earth",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "संभव",
+   "value": "„संभव\" (sambhav) на хинди = английски „possible\" — Able but not certain to happen; neither inevitable nor impossible.",
+   "keywords": [
+    "संभव",
+    "possible",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गोली चलाना",
+   "value": "„गोली चलाना\" (golī calānā) на хинди = английски „shoot\" — To launch (forcefully project) a projectile.",
+   "keywords": [
+    "गोली चलाना",
+    "shoot",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "छूना",
+   "value": "„छूना\" (chūnā) на хинди = английски „touch\" — Primarily physical senses.",
+   "keywords": [
+    "छूना",
+    "touch",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "स्वस्थ",
+   "value": "„स्वस्थ\" (svasth) на хинди = английски „sound\" — Healthy.",
+   "keywords": [
+    "स्वस्थ",
+    "sound",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चूतर",
+   "value": "„चूतर\" (cūtar) на хинди = английски „ass\" — The buttocks.",
+   "keywords": [
+    "चूतर",
+    "ass",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जीतना",
+   "value": "„जीतना\" (jītnā) на хинди = английски „win\" — To reach some destination or object, despite difficulty or toil (now usually intransiti…",
+   "keywords": [
+    "जीतना",
+    "win",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रसन्न",
+   "value": "„प्रसन्न\" (prasann) на хинди = английски „glad\" — Pleased; happy; gratified.",
+   "keywords": [
+    "प्रसन्न",
+    "glad",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नियंत्रण करना",
+   "value": "„नियंत्रण करना\" (niyantraṇ karnā) на хинди = английски „control\" — To exercise influence over; to suggest or dictate the behavior of.",
+   "keywords": [
+    "नियंत्रण करना",
+    "control",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "इंसान",
+   "value": "„इंसान\" (insān) на хинди = английски „human\" — Of or belonging to the species Homo sapiens or its closest relatives.",
+   "keywords": [
+    "इंसान",
+    "human",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चलाना",
+   "value": "„चलाना\" (calānā) на хинди = английски „drive\" — To operate a vehicle:",
+   "keywords": [
+    "चलाना",
+    "drive",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बाल",
+   "value": "„बाल\" (bāl) на хинди = английски „hair\" — A pigmented filament of keratin which grows from a follicle on the skin of humans and o…",
+   "keywords": [
+    "बाल",
+    "hair",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जैक",
+   "value": "„जैक\" (jaik) на хинди = английски „jack\" — A man.",
+   "keywords": [
+    "जैक",
+    "jack",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कुतिया",
+   "value": "„कुतिया\" (kutiyā) на хинди = английски „bitch\" — A female dog or other canine, particularly a recent mother.",
+   "keywords": [
+    "कुतिया",
+    "bitch",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भाग्य",
+   "value": "„भाग्य\" (bhāgya) на хинди = английски „luck\" — Something that happens to someone by chance, a chance occurrence.",
+   "keywords": [
+    "भाग्य",
+    "luck",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हत्या",
+   "value": "„हत्या\" (hatyā) на хинди = английски „murder\" — The crime of killing a person unlawfully, especially with predetermination.",
+   "keywords": [
+    "हत्या",
+    "murder",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हवा",
+   "value": "„हवा\" (havā) на хинди = английски „air\" — The substance constituting Earth's atmosphere: a gaseous mixture of nitrogen, oxygen, a…",
+   "keywords": [
+    "हवा",
+    "air",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दस",
+   "value": "„दस\" (das) на хинди = английски „ten\" — The number occurring after nine and before eleven, represented in Arabic numerals (base…",
+   "keywords": [
+    "दस",
+    "ten",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अब्बा",
+   "value": "„अब्बा\" (abbā) на хинди = английски „daddy\" — Also used as a term of address: a father; one's father.",
+   "keywords": [
+    "अब्बा",
+    "daddy",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अंततः",
+   "value": "„अंततः\" (antataḥ) на хинди = английски „finally\" — At the end or conclusion; ultimately.",
+   "keywords": [
+    "अंततः",
+    "finally",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तेज़",
+   "value": "„तेज़\" (tez) на хинди = английски „fast\" — Firmly or securely fixed in place; stable.",
+   "keywords": [
+    "तेज़",
+    "fast",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ठंडा",
+   "value": "„ठंडा\" (ṭhaṇḍā) на хинди = английски „cold\" — Having a low temperature.",
+   "keywords": [
+    "ठंडा",
+    "cold",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लगना",
+   "value": "„लगना\" (lagnā) на хинди = английски „seem\" — To appear; to look outwardly; to be perceived as.",
+   "keywords": [
+    "लगना",
+    "seem",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अस्पताल",
+   "value": "„अस्पताल\" (aspatāl) на хинди = английски „hospital\" — A large medical facility, usually in a building with multiple floors, where seriously i…",
+   "keywords": [
+    "अस्पताल",
+    "hospital",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गली",
+   "value": "„गली\" (galī) на хинди = английски „street\" — A paved part of road, usually in a village or a town.",
+   "keywords": [
+    "गली",
+    "street",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लटकना",
+   "value": "„लटकना\" (laṭaknā) на хинди = английски „hang\" — To be or remain suspended.",
+   "keywords": [
+    "लटकना",
+    "hang",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नाच",
+   "value": "„नाच\" (nāc) на хинди = английски „dance\" — A social gathering where dancing is the main activity.",
+   "keywords": [
+    "नाच",
+    "dance",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बैठक",
+   "value": "„बैठक\" (baiṭhak) на хинди = английски „meeting\" — The act of persons or things that meet.",
+   "keywords": [
+    "बैठक",
+    "meeting",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "... तक",
+   "value": "„... तक\" (... tak) на хинди = английски „till\" — Until; to, up to; as late as (a given time).",
+   "keywords": [
+    "... तक",
+    "till",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पकड़ना",
+   "value": "„पकड़ना\" (pakaṛnā) на хинди = английски „catch\" — To capture, overtake.",
+   "keywords": [
+    "पकड़ना",
+    "catch",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पीछा करना",
+   "value": "„पीछा करना\" (pīchā karnā) на хинди = английски „follow\" — To go after; to pursue; to move behind in the same path or direction, especially with t…",
+   "keywords": [
+    "पीछा करना",
+    "follow",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लिंग",
+   "value": "„लिंग\" (liṅg) на хинди = английски „sex\" — A category into which sexually-reproducing organisms are divided on the basis of their …",
+   "keywords": [
+    "लिंग",
+    "sex",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पड़ना",
+   "value": "„पड़ना\" (paṛnā) на хинди = английски „lie\" — To rest in a horizontal position on a surface.",
+   "keywords": [
+    "पड़ना",
+    "lie",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शाम",
+   "value": "„शाम\" (śām) на хинди = английски „evening\" — The time of day between afternoon and night.",
+   "keywords": [
+    "शाम",
+    "evening",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "स्वामी",
+   "value": "„स्वामी\" (svāmī) на хинди = английски „master\" — Someone who has control over something or someone.",
+   "keywords": [
+    "स्वामी",
+    "master",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "विदित",
+   "value": "„विदित\" (vidit) на хинди = английски „known\" — Identified as a specific type; famous, renowned.",
+   "keywords": [
+    "विदित",
+    "known",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सपना",
+   "value": "„सपना\" (sapnā) на хинди = английски „dream\" — Imaginary events seen in the mind while sleeping.",
+   "keywords": [
+    "सपना",
+    "dream",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लिखना",
+   "value": "„लिखना\" (likhnā) на хинди = английски „write\" — To form letters, words or symbols on a surface in order to communicate.",
+   "keywords": [
+    "लिखना",
+    "write",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दस लाख",
+   "value": "„दस लाख\" (das lākh) на хинди = английски „million\" — The cardinal number 1 000 000: 10⁶; a thousand thousand (1,000²).",
+   "keywords": [
+    "दस लाख",
+    "million",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आवाज़",
+   "value": "„आवाज़\" (āvāz) на хинди = английски „voice\" — Sound uttered by the mouth, especially by human beings in speech or song; sound thus ut…",
+   "keywords": [
+    "आवाज़",
+    "voice",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मीठा",
+   "value": "„मीठा\" (mīṭhā) на хинди = английски „sweet\" — Tasting of sugars.",
+   "keywords": [
+    "मीठा",
+    "sweet",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नमदा",
+   "value": "„नमदा\" (namdā) на хинди = английски „felt\" — A cloth or stuff made of matted fibres of wool, or wool and fur, fulled or wrought into…",
+   "keywords": [
+    "नमदा",
+    "felt",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "निशान",
+   "value": "„निशान\" (niśān) на хинди = английски „sign\" — A visible fact that shows that something exists or may happen.",
+   "keywords": [
+    "निशान",
+    "sign",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भाग्यशाली",
+   "value": "„भाग्यशाली\" (bhāgyaśālī) на хинди = английски „lucky\" — Favoured by luck; fortunate; having good success or good fortune.",
+   "keywords": [
+    "भाग्यशाली",
+    "lucky",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कहीं",
+   "value": "„कहीं\" (kahī̃) на хинди = английски „somewhere\" — In an uncertain or unspecified location.",
+   "keywords": [
+    "कहीं",
+    "somewhere",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बाज़ी",
+   "value": "„बाज़ी\" (bāzī) на хинди = английски „bet\" — To stake or pledge upon the outcome of an event; to wager.",
+   "keywords": [
+    "बाज़ी",
+    "bet",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शांत",
+   "value": "„शांत\" (śānt) на хинди = английски „quiet\" — With little or no sound; free of disturbing noise.",
+   "keywords": [
+    "शांत",
+    "quiet",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "न्यून",
+   "value": "„न्यून\" (nyūn) на хинди = английски „less\" — Used for constructing syntactic diminutive comparatives of adjectives and adverbs.",
+   "keywords": [
+    "न्यून",
+    "less",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खींचना",
+   "value": "„खींचना\" (khī̃cnā) на хинди = английски „pull\" — To apply a force to (an object) so that it comes toward the person or thing applying th…",
+   "keywords": [
+    "खींचना",
+    "pull",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पीटना",
+   "value": "„पीटना\" (pīṭnā) на хинди = английски „beat\" — To hit; to strike.",
+   "keywords": [
+    "पीटना",
+    "beat",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सावधान",
+   "value": "„सावधान\" (sāvdhān) на хинди = английски „careful\" — Taking care; attentive to potential danger, error or harm; cautious.",
+   "keywords": [
+    "सावधान",
+    "careful",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कहवा",
+   "value": "„कहवा\" (kahvā) на хинди = английски „coffee\" — A beverage made by infusing the beans of the coffee plant in hot water.",
+   "keywords": [
+    "कहवा",
+    "coffee",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लौटना",
+   "value": "„लौटना\" (lauṭnā) на хинди = английски „return\" — To come or go back (to a place or person).",
+   "keywords": [
+    "लौटना",
+    "return",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रहस्य",
+   "value": "„रहस्य\" (rahasya) на хинди = английски „secret\" — A piece of knowledge that is hidden and intended to be kept hidden.",
+   "keywords": [
+    "रहस्य",
+    "secret",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खजूर",
+   "value": "„खजूर\" (khajūr) на хинди = английски „date\" — The fruit of the date palm, Phoenix dactylifera, somewhat in the shape of an olive, con…",
+   "keywords": [
+    "खजूर",
+    "date",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गिरना",
+   "value": "„गिरना\" (girnā) на хинди = английски „fall\" — To be moved downwards.",
+   "keywords": [
+    "गिरना",
+    "fall",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खोट",
+   "value": "„खोट\" (khoṭ) на хинди = английски „fault\" — Culpability; the responsibility for a blameworthy event.",
+   "keywords": [
+    "खोट",
+    "fault",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सीधा",
+   "value": "„सीधा\" (sīdhā) на хинди = английски „straight\" — Not crooked, curly, or bent; having a constant direction throughout its length.",
+   "keywords": [
+    "सीधा",
+    "straight",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गाना",
+   "value": "„गाना\" (gānā) на хинди = английски „song\" — A musical composition with lyrics for voice or voices, performed by singing.",
+   "keywords": [
+    "गाना",
+    "song",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भविष्य",
+   "value": "„भविष्य\" (bhaviṣya) на хинди = английски „future\" — The time ahead; those moments yet to be experienced.",
+   "keywords": [
+    "भविष्य",
+    "future",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सड़क",
+   "value": "„सड़क\" (saṛak) на хинди = английски „road\" — A way used for travelling between places, originally one wide enough to allow foot pass…",
+   "keywords": [
+    "सड़क",
+    "road",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शांत",
+   "value": "„शांत\" (śānt) на хинди = английски „calm\" — Peaceful, quiet, especially free from anger and anxiety.",
+   "keywords": [
+    "शांत",
+    "calm",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अद्भुत",
+   "value": "„अद्भुत\" (adbhut) на хинди = английски „wonderful\" — Tending to excite wonder; surprising, extraordinary.",
+   "keywords": [
+    "अद्भुत",
+    "wonderful",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पागल",
+   "value": "„पागल\" (pāgal) на хинди = английски „mad\" — Insane; crazy, mentally deranged.",
+   "keywords": [
+    "पागल",
+    "mad",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बूंद",
+   "value": "„बूंद\" (būnd) на хинди = английски „drop\" — A small quantity of liquid, just large enough to hold its own rounded shape through sur…",
+   "keywords": [
+    "बूंद",
+    "drop",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सीखना",
+   "value": "„सीखना\" (sīkhnā) на хинди = английски „learn\" — To acquire, or attempt to acquire knowledge or an ability to do something.",
+   "keywords": [
+    "सीखना",
+    "learn",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पद",
+   "value": "„पद\" (pad) на хинди = английски „step\" — An advance or movement made from one foot to the other; a pace.",
+   "keywords": [
+    "पद",
+    "step",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बिलकुल",
+   "value": "„बिलकुल\" (bilkul) на хинди = английски „absolutely\" — In an absolute or unconditional manner; utterly, positively, wholly.",
+   "keywords": [
+    "बिलकुल",
+    "absolutely",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शीघ्र",
+   "value": "„शीघ्र\" (śīghra) на хинди = английски „early\" — At a time in advance of the usual or expected event.",
+   "keywords": [
+    "शीघ्र",
+    "early",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "समझाना",
+   "value": "„समझाना\" (samjhānā) на хинди = английски „explain\" — To make plain, manifest, or intelligible; to clear of obscurity; to illustrate the mean…",
+   "keywords": [
+    "समझाना",
+    "explain",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "साफ़",
+   "value": "„साफ़\" (sāf) на хинди = английски „clean\" — Free of dirt, filth, or impurities (extraneous matter); not dirty, filthy, or soiled.",
+   "keywords": [
+    "साफ़",
+    "clean",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "टुकड़ा",
+   "value": "„टुकड़ा\" (ṭukṛā) на хинди = английски „piece\" — A part of a larger whole, usually in such a form that it is able to be separated from o…",
+   "keywords": [
+    "टुकड़ा",
+    "piece",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कल",
+   "value": "„कल\" (kal) на хинди = английски „yesterday\" — The day immediately before today; one day ago.",
+   "keywords": [
+    "कल",
+    "yesterday",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भट्टा",
+   "value": "„भट्टा\" (bhaṭṭā) на хинди = английски „throw\" — To hurl; to release (an object) with some force from one’s hands, an apparatus, etc. so…",
+   "keywords": [
+    "भट्टा",
+    "throw",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चित्र",
+   "value": "„चित्र\" (citra) на хинди = английски „picture\" — A representation of anything (as a person, a landscape, a building) upon canvas, paper,…",
+   "keywords": [
+    "चित्र",
+    "picture",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भूमि",
+   "value": "„भूमि\" (bhūmi) на хинди = английски „land\" — The part of Earth which is not covered by oceans or other bodies of water.",
+   "keywords": [
+    "भूमि",
+    "land",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आश्चर्य",
+   "value": "„आश्चर्य\" (āścarya) на хинди = английски „wonder\" — A sense of awe, astonishment and curiosity, inspired by unexpected events, novel experi…",
+   "keywords": [
+    "आश्चर्य",
+    "wonder",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लायक़",
+   "value": "„लायक़\" (lāyaq) на хинди = английски „worth\" — Having a value of; proper to be exchanged for.",
+   "keywords": [
+    "लायक़",
+    "worth",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रिय",
+   "value": "„प्रिय\" (priya) на хинди = английски „darling\" — Often used as an affectionate term of address: a person who is very dear to one.",
+   "keywords": [
+    "प्रिय",
+    "darling",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बंदा",
+   "value": "„बंदा\" (bandā) на хинди = английски „dude\" — A man, generally a younger man.",
+   "keywords": [
+    "बंदा",
+    "dude",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "राष्ट्रपति",
+   "value": "„राष्ट्रपति\" (rāṣṭrapti) на хинди = английски „president\" — The head of state of a republic, sometimes also the head of government as well, particu…",
+   "keywords": [
+    "राष्ट्रपति",
+    "president",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आँख",
+   "value": "„आँख\" (ā̃kh) на хинди = английски „eye\" — An organ through which animals see (“perceive surroundings via light”).",
+   "keywords": [
+    "आँख",
+    "eye",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शीघ्र",
+   "value": "„शीघ्र\" (śīghra) на хинди = английски „quick\" — Moving with speed, rapidity or swiftness, or capable of doing so; rapid; fast.",
+   "keywords": [
+    "शीघ्र",
+    "quick",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गतिमान",
+   "value": "„गतिमान\" (gatimān) на хинди = английски „moving\" — That moves or move.",
+   "keywords": [
+    "गतिमान",
+    "moving",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अवस्था",
+   "value": "„अवस्था\" (avasthā) на хинди = английски „state\" — A condition; a set of circumstances applying at any given time.",
+   "keywords": [
+    "अवस्था",
+    "state",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बलवान",
+   "value": "„बलवान\" (balvān) на хинди = английски „strong\" — Capable of producing great physical force.",
+   "keywords": [
+    "बलवान",
+    "strong",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "व्यवहार",
+   "value": "„व्यवहार\" (vyavhār) на хинди = английски „act\" — Something done, a deed.",
+   "keywords": [
+    "व्यवहार",
+    "act",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "क़ानून",
+   "value": "„क़ानून\" (qānūn) на хинди = английски „law\" — The body of binding rules and regulations, customs, and standards established in a comm…",
+   "keywords": [
+    "क़ानून",
+    "law",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "परेशान",
+   "value": "„परेशान\" (pareśān) на хинди = английски „worried\" — Thinking about unpleasant things that have happened or that might happen; feeling afrai…",
+   "keywords": [
+    "परेशान",
+    "worried",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रिपोर्ट",
+   "value": "„रिपोर्ट\" (riporṭ) на хинди = английски „report\" — A piece of information describing, or an account of certain events given or presented t…",
+   "keywords": [
+    "रिपोर्ट",
+    "report",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नमस्ते",
+   "value": "„नमस्ते\" (namaste) на хинди = английски „goodbye\" — Farewell; a formula used to another person or persons when the speaker, writer, or pers…",
+   "keywords": [
+    "नमस्ते",
+    "goodbye",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चुनाव",
+   "value": "„चुनाव\" (cunāv) на хинди = английски „choice\" — An option; a decision; an opportunity to choose or select something.",
+   "keywords": [
+    "चुनाव",
+    "choice",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मुखिया",
+   "value": "„मुखिया\" (mukhiyā) на хинди = английски „chief\" — The leader or head of a tribe, organisation, business unit, or other group.",
+   "keywords": [
+    "मुखिया",
+    "chief",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "विवाह",
+   "value": "„विवाह\" (vivāh) на хинди = английски „wedding\" — A marriage ceremony; a ritual officially celebrating the beginning of a marriage.",
+   "keywords": [
+    "विवाह",
+    "wedding",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अजीब",
+   "value": "„अजीब\" (ajīb) на хинди = английски „strange\" — Not normal; odd, unusual, surprising, out of the ordinary, often with a negative connot…",
+   "keywords": [
+    "अजीब",
+    "strange",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "साधारण",
+   "value": "„साधारण\" (sādhāraṇ) на хинди = английски „general\" — Including or involving every part or member of a given or implied entity, whole, etc.; …",
+   "keywords": [
+    "साधारण",
+    "general",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दर्द",
+   "value": "„दर्द\" (dard) на хинди = английски „pain\" — An ache or bodily suffering, or an instance of this; an unpleasant sensation, resulting…",
+   "keywords": [
+    "दर्द",
+    "pain",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गुज़र करना",
+   "value": "„गुज़र करना\" (guzar karnā) на хинди = английски „pass\" — To change place.",
+   "keywords": [
+    "गुज़र करना",
+    "pass",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "थका",
+   "value": "„थका\" (thakā) на хинди = английски „tired\" — In need of some rest or sleep.",
+   "keywords": [
+    "थका",
+    "tired",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वर्ग",
+   "value": "„वर्ग\" (varg) на хинди = английски „class\" — A group, collection, category or set sharing characteristics or attributes.",
+   "keywords": [
+    "वर्ग",
+    "class",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अधिकारी",
+   "value": "„अधिकारी\" (adhikārī) на хинди = английски „officer\" — One who has a position of authority in a hierarchical organization, especially in milit…",
+   "keywords": [
+    "अधिकारी",
+    "officer",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "व्यस्त",
+   "value": "„व्यस्त\" (vyast) на хинди = английски „busy\" — Crowded with business or activities; having a great deal going on.",
+   "keywords": [
+    "व्यस्त",
+    "busy",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ग़लत समझना",
+   "value": "„ग़लत समझना\" (ġalat samajhnā) на хинди = английски „mistake\" — To understand wrongly, taking one thing or person for another.",
+   "keywords": [
+    "ग़लत समझना",
+    "mistake",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चूमना",
+   "value": "„चूमना\" (cūmnā) на хинди = английски „kiss\" — To touch with the lips or press the lips against, usually to show love or affection or …",
+   "keywords": [
+    "चूमना",
+    "kiss",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आंगन",
+   "value": "„आंगन\" (āṅgan) на хинди = английски „court\" — An enclosed space; a courtyard; an uncovered area shut in by the walls of a building, o…",
+   "keywords": [
+    "आंगन",
+    "court",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "निर्माण",
+   "value": "„निर्माण\" (nirmāṇ) на хинди = английски „building\" — The act or process by which something is built; construction.",
+   "keywords": [
+    "निर्माण",
+    "building",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अंत करना",
+   "value": "„अंत करना\" (ant karnā) на хинди = английски „finish\" — To complete (something).",
+   "keywords": [
+    "अंत करना",
+    "finish",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "युग",
+   "value": "„युग\" (yug) на хинди = английски „age\" — The amount of time that some being has been alive, or that some thing has been in exist…",
+   "keywords": [
+    "युग",
+    "age",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पोत",
+   "value": "„पोत\" (pot) на хинди = английски „ship\" — A water-borne vessel generally larger than a boat.",
+   "keywords": [
+    "पोत",
+    "ship",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ब्याहना",
+   "value": "„ब्याहना\" (byāhnā) на хинди = английски „marry\" — To enter into the conjugal or connubial state; to take a husband or a wife.",
+   "keywords": [
+    "ब्याहना",
+    "marry",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बेचना",
+   "value": "„बेचना\" (becnā) на хинди = английски „sell\" — To transfer goods or provide services in exchange for money.",
+   "keywords": [
+    "बेचना",
+    "sell",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अंधेरा",
+   "value": "„अंधेरा\" (andherā) на хинди = английски „dark\" — Having an absolute or (more often) relative lack of light.",
+   "keywords": [
+    "अंधेरा",
+    "dark",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रीति",
+   "value": "„रीति\" (rīti) на хинди = английски „system\" — A group or set of related things that operate together as a complex whole.",
+   "keywords": [
+    "रीति",
+    "system",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "साक्ष्य",
+   "value": "„साक्ष्य\" (sākṣya) на хинди = английски „evidence\" — Facts or observations presented in support of an assertion.",
+   "keywords": [
+    "साक्ष्य",
+    "evidence",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पिक्चर",
+   "value": "„पिक्चर\" (pikcar) на хинди = английски „movie\" — A recorded sequence of images displayed on a screen at a rate sufficiently fast to crea…",
+   "keywords": [
+    "पिक्चर",
+    "movie",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सवार होना",
+   "value": "„सवार होना\" (savār honā) на хинди = английски „ride\" — To transport oneself by sitting on and directing a horse, later also a bicycle etc.",
+   "keywords": [
+    "सवार होना",
+    "ride",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बिलकुल",
+   "value": "„बिलकुल\" (bilkul) на хинди = английски „completely\" — In a complete manner; thoroughly.",
+   "keywords": [
+    "बिलकुल",
+    "completely",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मुँह",
+   "value": "„मुँह\" (mũh) на хинди = английски „mouth\" — The front opening of a creature through which food is ingested.",
+   "keywords": [
+    "मुँह",
+    "mouth",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जन्मदिन",
+   "value": "„जन्मदिन\" (janmadin) на хинди = английски „birthday\" — The anniversary of the day on which someone is born.",
+   "keywords": [
+    "जन्मदिन",
+    "birthday",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "टीवी",
+   "value": "„टीवी\" (ṭīvī) на хинди = английски „tv\" — Abbreviation of television.",
+   "keywords": [
+    "टीवी",
+    "tv",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "माफ़ करना",
+   "value": "„माफ़ करना\" (māf karnā) на хинди = английски „forgive\" — To pardon (someone); to waive any negative feeling towards or desire for punishment or …",
+   "keywords": [
+    "माफ़ करना",
+    "forgive",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जाया",
+   "value": "„जाया\" (jāyā) на хинди = английски „born\" — Having from birth (or as if from birth) a certain quality or character; innate; inherited.",
+   "keywords": [
+    "जाया",
+    "born",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कल्पना करना",
+   "value": "„कल्पना करना\" (kalpanā karnā) на хинди = английски „imagine\" — To form a mental image of something; to envision or create something in one's mind.",
+   "keywords": [
+    "कल्पना करना",
+    "imagine",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जानकारी",
+   "value": "„जानकारी\" (jānkārī) на хинди = английски „information\" — Something that provides a definitive characterization or description of the nature and …",
+   "keywords": [
+    "जानकारी",
+    "information",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "के बजाय",
+   "value": "„के बजाय\" (ke bajāy) на хинди = английски „instead\" — In the place of something (usually mentioned earlier); as a substitute or alternative.",
+   "keywords": [
+    "के बजाय",
+    "instead",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सुरक्षा",
+   "value": "„सुरक्षा\" (surakṣā) на хинди = английски „security\" — The condition of not being threatened, especially physically, psychologically, emotiona…",
+   "keywords": [
+    "सुरक्षा",
+    "security",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अवश्य",
+   "value": "„अवश्य\" (avaśya) на хинди = английски „certainly\" — In a way which is certain; with certainty.",
+   "keywords": [
+    "अवश्य",
+    "certainly",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "झिल्ली",
+   "value": "„झिल्ली\" (jhillī) на хинди = английски „film\" — A thin layer of some substance; a pellicle; a membranous covering, causing opacity.",
+   "keywords": [
+    "झिल्ली",
+    "film",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "महीना",
+   "value": "„महीना\" (mahīnā) на хинди = английски „month\" — A period into which a year is divided, historically based on the phases of the moon.",
+   "keywords": [
+    "महीना",
+    "month",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जब तक",
+   "value": "„जब तक\" (jab tak) на хинди = английски „unless\" — Except on a specified condition; if not.",
+   "keywords": [
+    "जब तक",
+    "unless",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ट्रेन",
+   "value": "„ट्रेन\" (ṭren) на хинди = английски „train\" — Elongated or trailing portion.",
+   "keywords": [
+    "ट्रेन",
+    "train",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सात",
+   "value": "„सात\" (sāt) на хинди = английски „seven\" — A numerical value equal to 7; the number following six and preceding eight. This many d…",
+   "keywords": [
+    "सात",
+    "seven",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पहनना",
+   "value": "„पहनना\" (pahannā) на хинди = английски „wear\" — To have on:",
+   "keywords": [
+    "पहनना",
+    "wear",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कपड़े",
+   "value": "„कपड़े\" (kapṛe) на хинди = английски „clothes\" — Items of clothing; apparel.",
+   "keywords": [
+    "कपड़े",
+    "clothes",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "होटल",
+   "value": "„होटल\" (hoṭal) на хинди = английски „hotel\" — A large town house or mansion; a grand private residence, especially in France.",
+   "keywords": [
+    "होटल",
+    "hotel",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आक्रमण",
+   "value": "„आक्रमण\" (ākramaṇ) на хинди = английски „attack\" — An attempt to cause damage, injury to, or death of an opponent or enemy.",
+   "keywords": [
+    "आक्रमण",
+    "attack",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गोलाकार",
+   "value": "„गोलाकार\" (golākār) на хинди = английски „round\" — Of shape:",
+   "keywords": [
+    "गोलाकार",
+    "round",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गाना",
+   "value": "„गाना\" (gānā) на хинди = английски „sing\" — To produce musical or harmonious sounds with one’s voice.",
+   "keywords": [
+    "गाना",
+    "sing",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भयंकर",
+   "value": "„भयंकर\" (bhayaṅkar) на хинди = английски „terrible\" — Dreadful; causing terror, alarm and fear; awesome",
+   "keywords": [
+    "भयंकर",
+    "terrible",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "झोला",
+   "value": "„झोला\" (jholā) на хинди = английски „bag\" — A soft container made out of cloth, paper, thin plastic, etc. and open at the top, used…",
+   "keywords": [
+    "झोला",
+    "bag",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "इतिहास",
+   "value": "„इतिहास\" (itihās) на хинди = английски „history\" — The aggregate of past events, both unrecorded and recorded.",
+   "keywords": [
+    "इतिहास",
+    "history",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नीला",
+   "value": "„नीला\" (nīlā) на хинди = английски „blue\" — Of a blue hue.",
+   "keywords": [
+    "नीला",
+    "blue",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "निकट",
+   "value": "„निकट\" (nikaṭ) на хинди = английски „near\" — Physically close.",
+   "keywords": [
+    "निकट",
+    "near",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "स्टेशन",
+   "value": "„स्टेशन\" (sṭeśan) на хинди = английски „station\" — A stopping place.",
+   "keywords": [
+    "स्टेशन",
+    "station",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हमेशा के लिए",
+   "value": "„हमेशा के लिए\" (hameśā ke lie) на хинди = английски „forever\" — For all time, for all eternity; for a lifetime; for an infinite amount of time.",
+   "keywords": [
+    "हमेशा के लिए",
+    "forever",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मुँहफट",
+   "value": "„मुँहफट\" (mũhphaṭ) на хинди = английски „frank\" — Honest, especially in a manner that seems slightly blunt; candid; not reserved or disgu…",
+   "keywords": [
+    "मुँहफट",
+    "frank",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सिवाय",
+   "value": "„सिवाय\" (sivāy) на хинди = английски „except\" — Used to introduce a clause, phrase, verb infinitive, adverb or other non-noun complemen…",
+   "keywords": [
+    "सिवाय",
+    "except",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "संदेश",
+   "value": "„संदेश\" (sandeś) на хинди = английски „message\" — A communication, or what is communicated; any concept or information conveyed.",
+   "keywords": [
+    "संदेश",
+    "message",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पटल",
+   "value": "„पटल\" (paṭal) на хинди = английски „table\" — Furniture with a top surface to accommodate a variety of uses.",
+   "keywords": [
+    "पटल",
+    "table",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चट्टान",
+   "value": "„चट्टान\" (caṭṭān) на хинди = английски „rock\" — A formation of minerals, specifically:",
+   "keywords": [
+    "चट्टान",
+    "rock",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मनोहर",
+   "value": "„मनोहर\" (manohar) на хинди = английски „lovely\" — Delightful for beauty, harmony, or grace.",
+   "keywords": [
+    "मनोहर",
+    "lovely",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हत्था",
+   "value": "„हत्था\" (hatthā) на хинди = английски „handle\" — The part of an object which is (designed to be) held in the hand when used or moved.",
+   "keywords": [
+    "हत्था",
+    "handle",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मध्य",
+   "value": "„मध्य\" (madhya) на хинди = английски „middle\" — A centre, midpoint.",
+   "keywords": [
+    "मध्य",
+    "middle",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सशुल्क",
+   "value": "„सशुल्क\" (saśulk) на хинди = английски „paid\" — Not free of charge; costing money.",
+   "keywords": [
+    "सशुल्क",
+    "paid",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रक्षा करना",
+   "value": "„रक्षा करना\" (rakṣā karnā) на хинди = английски „protect\" — To keep safe; to defend; to guard; to prevent harm coming to.",
+   "keywords": [
+    "रक्षा करना",
+    "protect",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "फ़र्श",
+   "value": "„फ़र्श\" (farś) на хинди = английски „floor\" — The interior bottom or surface of a house or building; the supporting surface of a room.",
+   "keywords": [
+    "फ़र्श",
+    "floor",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कोसना",
+   "value": "„कोसना\" (kosnā) на хинди = английски „swear\" — To take an oath, to promise intensely, solemnly, and/or with legally binding effect.",
+   "keywords": [
+    "कोसना",
+    "swear",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ख़र्च करना",
+   "value": "„ख़र्च करना\" (xarc karnā) на хинди = английски „spend\" — To pay out (money).",
+   "keywords": [
+    "ख़र्च करना",
+    "spend",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "परिस्थिति",
+   "value": "„परिस्थिति\" (paristhiti) на хинди = английски „situation\" — The combination of circumstances at a given moment; a state of affairs.",
+   "keywords": [
+    "परिस्थिति",
+    "situation",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "घेरा",
+   "value": "„घेरा\" (gherā) на хинди = английски „ring\" — A solid object in the shape of a circle.",
+   "keywords": [
+    "घेरा",
+    "ring",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ख़तरनाक",
+   "value": "„ख़तरनाक\" (xatarnāk) на хинди = английски „dangerous\" — Full of danger.",
+   "keywords": [
+    "ख़तरनाक",
+    "dangerous",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "विधेयक",
+   "value": "„विधेयक\" (vidheyak) на хинди = английски „bill\" — A written list or inventory. (Now obsolete except in specific senses or set phrases; bi…",
+   "keywords": [
+    "विधेयक",
+    "bill",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सेना",
+   "value": "„सेना\" (senā) на хинди = английски „army\" — A large, highly organized military force, concerned mainly with ground (rather than air…",
+   "keywords": [
+    "सेना",
+    "army",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सीसा",
+   "value": "„सीसा\" (sīsā) на хинди = английски „lead\" — A heavy, pliable, inelastic metal element, having a bright, bluish color, but easily ta…",
+   "keywords": [
+    "सीसा",
+    "lead",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पूरा",
+   "value": "„पूरा\" (pūrā) на хинди = английски „finished\" — Processed or perfected.",
+   "keywords": [
+    "पूरा",
+    "finished",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मेला",
+   "value": "„मेला\" (melā) на хинди = английски „fair\" — A community gathering to celebrate and exhibit local achievements.",
+   "keywords": [
+    "मेला",
+    "fair",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सूरज",
+   "value": "„सूरज\" (sūraj) на хинди = английски „sun\" — A star, especially when seen as the centre of any single solar system.",
+   "keywords": [
+    "सूरज",
+    "sun",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अक्षर",
+   "value": "„अक्षर\" (akṣar) на хинди = английски „letter\" — A symbol in an alphabet.",
+   "keywords": [
+    "अक्षर",
+    "letter",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मूर्ख",
+   "value": "„मूर्ख\" (mūrkh) на хинди = английски „fool\" — A person with poor judgment or little intelligence.",
+   "keywords": [
+    "मूर्ख",
+    "fool",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ध्यान",
+   "value": "„ध्यान\" (dhyān) на хинди = английски „attention\" — Mental focus.",
+   "keywords": [
+    "ध्यान",
+    "attention",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "क्लब",
+   "value": "„क्लब\" (klab) на хинди = английски „club\" — A heavy object, often a kind of stick, intended for use as a bludgeoning weapon or a pl…",
+   "keywords": [
+    "क्लब",
+    "club",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सरल",
+   "value": "„सरल\" (saral) на хинди = английски „simple\" — Uncomplicated; lacking complexity; taken by itself, with nothing added.",
+   "keywords": [
+    "सरल",
+    "simple",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रुचिकर",
+   "value": "„रुचिकर\" (rucikar) на хинди = английски „interesting\" — Arousing or holding the attention or interest of someone.",
+   "keywords": [
+    "रुचिकर",
+    "interesting",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दिक्",
+   "value": "„दिक्\" (dik) на хинди = английски „space\" — Unlimited or generalized extent, physical or otherwise.",
+   "keywords": [
+    "दिक्",
+    "space",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चुनौती",
+   "value": "„चुनौती\" (cunautī) на хинди = английски „test\" — A challenge, trial.",
+   "keywords": [
+    "चुनौती",
+    "test",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "डिब्बा",
+   "value": "„डिब्बा\" (ḍibbā) на хинди = английски „box\" — Senses relating to a three-dimensional object or space.",
+   "keywords": [
+    "डिब्बा",
+    "box",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "समूह",
+   "value": "„समूह\" (samūh) на хинди = английски „group\" — A number of things or persons being in some relation to one another.",
+   "keywords": [
+    "समूह",
+    "group",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अकेला",
+   "value": "„अकेला\" (akelā) на хинди = английски „single\" — Not accompanied by anything else; one in number.",
+   "keywords": [
+    "अकेला",
+    "single",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शादी",
+   "value": "„शादी\" (śādī) на хинди = английски „marriage\" — The state of being married.",
+   "keywords": [
+    "शादी",
+    "marriage",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "जोड़ना",
+   "value": "„जोड़ना\" (joḍnā) на хинди = английски „join\" — To connect or combine into one; to put together.",
+   "keywords": [
+    "जोड़ना",
+    "join",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "डर",
+   "value": "„डर\" (ḍar) на хинди = английски „fear\" — A strong, unpleasant emotion or feeling caused by actual or perceived danger or threat.",
+   "keywords": [
+    "डर",
+    "fear",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "शांति",
+   "value": "„शांति\" (śānti) на хинди = английски „peace\" — A state of tranquility, quiet, and harmony. For instance, a state free from civil distu…",
+   "keywords": [
+    "शांति",
+    "peace",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बल",
+   "value": "„बल\" (bal) на хинди = английски „force\" — Ability to influence; strength or energy of body or mind; active power; vigour; might; …",
+   "keywords": [
+    "बल",
+    "force",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कम",
+   "value": "„कम\" (kam) на хинди = английски „short\" — Having a small distance from one end or edge to another, either horizontally or vertica…",
+   "keywords": [
+    "कम",
+    "short",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "साधारण",
+   "value": "„साधारण\" (sādhāraṇ) на хинди = английски „normal\" — According to norms or rules or to a regular pattern.",
+   "keywords": [
+    "साधारण",
+    "normal",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "वर्तमान",
+   "value": "„वर्तमान\" (vartamān) на хинди = английски „present\" — Relating to now, for the time being; current.",
+   "keywords": [
+    "वर्तमान",
+    "present",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आनंद लेना",
+   "value": "„आनंद लेना\" (ānand lenā) на хинди = английски „enjoy\" — To receive pleasure or satisfaction from something.",
+   "keywords": [
+    "आनंद लेना",
+    "enjoy",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अणुभाष",
+   "value": "„अणुभाष\" (aṇubhāṣ) на хинди = английски „mike\" — A microphone.",
+   "keywords": [
+    "अणुभाष",
+    "mike",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अपराध",
+   "value": "„अपराध\" (aprādh) на хинди = английски „crime\" — A specific act committed in violation of the law, especially criminal law.",
+   "keywords": [
+    "अपराध",
+    "crime",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "घोड़ा",
+   "value": "„घोड़ा\" (ghoṛā) на хинди = английски „horse\" — A hoofed mammal, Equus ferus caballus, often used throughout history for riding and dra…",
+   "keywords": [
+    "घोड़ा",
+    "horse",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ज़मीन",
+   "value": "„ज़मीन\" (zamīn) на хинди = английски „ground\" — The surface of the Earth, as opposed to the sky or water or underground.",
+   "keywords": [
+    "ज़मीन",
+    "ground",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अमेरिकन",
+   "value": "„अमेरिकन\" (amerikan) на хинди = английски „american\" — A citizen or national of the United States of America.",
+   "keywords": [
+    "अमेरिकन",
+    "american",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गिनना",
+   "value": "„गिनना\" (ginnā) на хинди = английски „count\" — To recite numbers in sequence.",
+   "keywords": [
+    "गिनना",
+    "count",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "क्षेत्र",
+   "value": "„क्षेत्र\" (kṣetra) на хинди = английски „area\" — A measure of the extent of a surface; it is measured in square units.",
+   "keywords": [
+    "क्षेत्र",
+    "area",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "धावा",
+   "value": "„धावा\" (dhāvā) на хинди = английски „charge\" — The amount of money levied for a service.",
+   "keywords": [
+    "धावा",
+    "charge",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सम्मान",
+   "value": "„सम्मान\" (sammān) на хинди = английски „honor\" — Recognition of importance or value; respect; veneration (of someone, usually for being …",
+   "keywords": [
+    "सम्मान",
+    "honor",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लंच",
+   "value": "„लंच\" (lañc) на хинди = английски „lunch\" — A light meal usually eaten around midday, notably when not as main meal of the day.",
+   "keywords": [
+    "लंच",
+    "lunch",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रेडियो",
+   "value": "„रेडियो\" (reḍiyo) на хинди = английски „radio\" — The technology that allows for the transmission of sound or other signals by modulation…",
+   "keywords": [
+    "रेडियो",
+    "radio",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मूर्ख",
+   "value": "„मूर्ख\" (mūrkh) на хинди = английски „idiot\" — A person of low general intelligence.",
+   "keywords": [
+    "मूर्ख",
+    "idiot",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गोला",
+   "value": "„गोला\" (golā) на хинди = английски „ball\" — A solid or hollow sphere, or roughly spherical mass.",
+   "keywords": [
+    "गोला",
+    "ball",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आश्चर्य",
+   "value": "„आश्चर्य\" (āścarya) на хинди = английски „surprise\" — Something unexpected.",
+   "keywords": [
+    "आश्चर्य",
+    "surprise",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "काग़ज़",
+   "value": "„काग़ज़\" (kāġaz) на хинди = английски „paper\" — A sheet material typically used for writing on or printing on (or as a non-waterproof c…",
+   "keywords": [
+    "काग़ज़",
+    "paper",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ताली",
+   "value": "„ताली\" (tālī) на хинди = английски „key\" — An object designed to open and close a lock or to activate or deactivate something, esp…",
+   "keywords": [
+    "ताली",
+    "key",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "नाव",
+   "value": "„नाव\" (nāv) на хинди = английски „boat\" — A craft used for transportation of goods, fishing, racing, recreational cruising, or mi…",
+   "keywords": [
+    "नाव",
+    "boat",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "झटपट",
+   "value": "„झटपट\" (jhaṭpaṭ) на хинди = английски „quickly\" — Rapidly; with speed; fast; with expedition.",
+   "keywords": [
+    "झटपट",
+    "quickly",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "स्वर्ण",
+   "value": "„स्वर्ण\" (svarṇ) на хинди = английски „gold\" — Made of gold.",
+   "keywords": [
+    "स्वर्ण",
+    "gold",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बार",
+   "value": "„बार\" (bār) на хинди = английски „bar\" — A solid, more or less rigid object of metal or wood with a uniform cross-section smalle…",
+   "keywords": [
+    "बार",
+    "bar",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मछली",
+   "value": "„मछली\" (machlī) на хинди = английски „fish\" — A typically cold-blooded vertebrate animal that lives in water, moving with the help of…",
+   "keywords": [
+    "मछली",
+    "fish",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अंक",
+   "value": "„अंक\" (aṅk) на хинди = английски „mark\" — Boundary, land within a boundary.",
+   "keywords": [
+    "अंक",
+    "mark",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बिल्ला",
+   "value": "„बिल्ला\" (billā) на хинди = английски „tom\" — The male of the domesticated cat, especially if not neutered.",
+   "keywords": [
+    "बिल्ला",
+    "tom",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दुर्घटना",
+   "value": "„दुर्घटना\" (durghaṭnā) на хинди = английски „accident\" — An unexpected event with negative consequences occurring without the intention of the o…",
+   "keywords": [
+    "दुर्घटना",
+    "accident",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सरकार",
+   "value": "„सरकार\" (sarkār) на хинди = английски „government\" — The body with the power to make and/or enforce laws to control a country, land area, pe…",
+   "keywords": [
+    "सरकार",
+    "government",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आठ",
+   "value": "„आठ\" (āṭh) на хинди = английски „eight\" — A numerical value equal to 8; the number occurring after seven and before nine.",
+   "keywords": [
+    "आठ",
+    "eight",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "निश्चित",
+   "value": "„निश्चित\" (niścit) на хинди = английски „certain\" — Sure in one's mind, positive; absolutely confident in the truth of something.",
+   "keywords": [
+    "निश्चित",
+    "certain",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गहरा",
+   "value": "„गहरा\" (gahrā) на хинди = английски „deep\" — Extending, reaching or positioned far from a point of reference, especially downwards.",
+   "keywords": [
+    "गहरा",
+    "deep",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तारा",
+   "value": "„तारा\" (tārā) на хинди = английски „star\" — Any small, natural and bright dot in the sky, most visible in the night or twilight sky…",
+   "keywords": [
+    "तारा",
+    "star",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सागर",
+   "value": "„सागर\" (sāgar) на хинди = английски „sea\" — A large body of salt water.",
+   "keywords": [
+    "सागर",
+    "sea",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सहमति",
+   "value": "„सहमति\" (sahamti) на хинди = английски „agree\" — To be in harmony about an opinion, statement, or action; to have a consistent idea betw…",
+   "keywords": [
+    "सहमति",
+    "agree",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अन्वेषक",
+   "value": "„अन्वेषक\" (anveṣak) на хинди = английски „detective\" — A police officer tasked with collecting evidence and information in order to solve a cr…",
+   "keywords": [
+    "अन्वेषक",
+    "detective",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कारागार",
+   "value": "„कारागार\" (kārāgār) на хинди = английски „prison\" — A place or institution where people are held against their will, in the US especially f…",
+   "keywords": [
+    "कारागार",
+    "prison",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बालिग़",
+   "value": "„बालिग़\" (bāliġ) на хинди = английски „major\" — Greater in dignity, rank, importance, significance, or interest.",
+   "keywords": [
+    "बालिग़",
+    "major",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "छड़ी",
+   "value": "„छड़ी\" (chaṛī) на хинди = английски „stick\" — An elongated piece of wood or similar material, typically put to some use, for example …",
+   "keywords": [
+    "छड़ी",
+    "stick",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रस्ताव",
+   "value": "„प्रस्ताव\" (prastāv) на хинди = английски „offer\" — A proposal that has been made.",
+   "keywords": [
+    "प्रस्ताव",
+    "offer",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कठिन",
+   "value": "„कठिन\" (kaṭhin) на хинди = английски „difficult\" — Hard, not easy, requiring much effort.",
+   "keywords": [
+    "कठिन",
+    "difficult",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चालाक",
+   "value": "„चालाक\" (cālāk) на хинди = английски „smart\" — Exhibiting social ability or cleverness.",
+   "keywords": [
+    "चालाक",
+    "smart",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "व्यक्तिगत",
+   "value": "„व्यक्तिगत\" (vyaktigat) на хинди = английски „personal\" — Pertaining to persons (human beings as opposed to things or animals).",
+   "keywords": [
+    "व्यक्तिगत",
+    "personal",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रिकॉर्ड",
+   "value": "„रिकॉर्ड\" (rikŏrḍ) на хинди = английски „record\" — An item of information put into a temporary or permanent physical medium.",
+   "keywords": [
+    "रिकॉर्ड",
+    "record",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "स्थिर",
+   "value": "„स्थिर\" (sthir) на хинди = английски „stopped\" — Not moving, but not properly parked or berthed; said also of the occupants of such a ve…",
+   "keywords": [
+    "स्थिर",
+    "stopped",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "छिपान",
+   "value": "„छिपान\" (chipān) на хинди = английски „hide\" — To put (something) in a place where it will be out of sight or harder to discover.",
+   "keywords": [
+    "छिपान",
+    "hide",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चाहे",
+   "value": "„चाहे\" (cāhe) на хинди = английски „whether\" — Introduces a simple indirect question (without a correlative).",
+   "keywords": [
+    "चाहे",
+    "whether",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बैंक",
+   "value": "„बैंक\" (baiṅk) на хинди = английски „bank\" — An institution where one can place and borrow money and take care of financial affairs.",
+   "keywords": [
+    "बैंक",
+    "bank",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "यात्रा",
+   "value": "„यात्रा\" (yātrā) на хинди = английски „trip\" — A journey; an excursion or jaunt.",
+   "keywords": [
+    "यात्रा",
+    "trip",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सार्वजनिक",
+   "value": "„सार्वजनिक\" (sārvajnik) на хинди = английски „public\" — Able to be known or seen by everyone; happening without concealment; open to general view.",
+   "keywords": [
+    "सार्वजनिक",
+    "public",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तालिका",
+   "value": "„तालिका\" (tālikā) на хинди = английски „list\" — A strip of fabric, especially from the edge of a piece of cloth.",
+   "keywords": [
+    "तालिका",
+    "list",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दोपहर",
+   "value": "„दोपहर\" (dopahar) на хинди = английски „afternoon\" — The part of the day from noon or lunchtime until sunset, evening, or suppertime or 6pm.",
+   "keywords": [
+    "दोपहर",
+    "afternoon",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भेजा",
+   "value": "„भेजा\" (bhejā) на хинди = английски „brain\" — The control center of the central nervous system of an animal located in the skull whic…",
+   "keywords": [
+    "भेजा",
+    "brain",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हरामज़ादा",
+   "value": "„हरामज़ादा\" (harāmzādā) на хинди = английски „bastard\" — A person who was born out of wedlock, and hence often considered an illegitimate descen…",
+   "keywords": [
+    "हरामज़ादा",
+    "bastard",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गौरव",
+   "value": "„गौरव\" (gaurav) на хинди = английски „proud\" — Feeling honoured (by something); feeling happy or satisfied about an event or fact; gra…",
+   "keywords": [
+    "गौरव",
+    "proud",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चायपत्ती",
+   "value": "„चायपत्ती\" (cāypattī) на хинди = английски „tea\" — The tea plant (Camellia sinensis); (countable) a variety of this plant.",
+   "keywords": [
+    "चायपत्ती",
+    "tea",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सेवा",
+   "value": "„सेवा\" (sevā) на хинди = английски „service\" — An act of being of assistance to someone.",
+   "keywords": [
+    "सेवा",
+    "service",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अगला",
+   "value": "„अगला\" (aglā) на хинди = английски „forward\" — Situated toward or at the front of something.",
+   "keywords": [
+    "अगला",
+    "forward",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रूठा",
+   "value": "„रूठा\" (rūṭhā) на хинди = английски „angry\" — Displaying or feeling anger.",
+   "keywords": [
+    "रूठा",
+    "angry",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "क्रीड़ास्थल",
+   "value": "„क्रीड़ास्थल\" (krīṛāsthal) на хинди = английски „park\" — An area of land set aside for environment preservation or recreation.",
+   "keywords": [
+    "क्रीड़ास्थल",
+    "park",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आत्मा",
+   "value": "„आत्मा\" (ātmā) на хинди = английски „soul\" — The spirit or essence of a person usually thought to consist of one's thoughts and pers…",
+   "keywords": [
+    "आत्मा",
+    "soul",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अमीर",
+   "value": "„अमीर\" (amīr) на хинди = английски „rich\" — Wealthy: having a lot of money and possessions.",
+   "keywords": [
+    "अमीर",
+    "rich",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गुप्तचर",
+   "value": "„गुप्तचर\" (guptacar) на хинди = английски „agent\" — One who exerts power, or has the power to act.",
+   "keywords": [
+    "गुप्तचर",
+    "agent",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पेहनाना",
+   "value": "„पेहनाना\" (pehnānā) на хинди = английски „dress\" — To put clothes (or, formerly, armour) on (oneself or someone, a doll, a mannequin, etc.…",
+   "keywords": [
+    "पेहनाना",
+    "dress",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "घातक",
+   "value": "„घातक\" (ghātak) на хинди = английски „killing\" — That literally deprives of life; lethal, deadly, fatal.",
+   "keywords": [
+    "घातक",
+    "killing",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सम्मान",
+   "value": "„सम्मान\" (sammān) на хинди = английски „respect\" — An attitude of consideration or high regard; a feeling of admiration or esteem.",
+   "keywords": [
+    "सम्मान",
+    "respect",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हत्यारा",
+   "value": "„हत्यारा\" (hatyārā) на хинди = английски „killer\" — One who or that which kills.",
+   "keywords": [
+    "हत्यारा",
+    "killer",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हिम",
+   "value": "„हिम\" (him) на хинди = английски „ice\" — Water in frozen (solid) form.",
+   "keywords": [
+    "हिम",
+    "ice",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "सख़्त",
+   "value": "„सख़्त\" (saxt) на хинди = английски „tough\" — Of a material, strong and resilient; sturdy.",
+   "keywords": [
+    "सख़्त",
+    "tough",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "चर्च",
+   "value": "„चर्च\" (carc) на хинди = английски „church\" — A Christian house of worship; a building where Christian religious services take place.",
+   "keywords": [
+    "चर्च",
+    "church",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "उदास",
+   "value": "„उदास\" (udās) на хинди = английски „sad\" — Emotionally negative.",
+   "keywords": [
+    "उदास",
+    "sad",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कोशिका",
+   "value": "„कोशिका\" (kośikā) на хинди = английски „cell\" — A single-room dwelling for a hermit.",
+   "keywords": [
+    "कोशिका",
+    "cell",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मतवाला",
+   "value": "„मतवाला\" (matvālā) на хинди = английски „drunk\" — Intoxicated as a result of excessive alcohol consumption, usually by drinking alcoholic…",
+   "keywords": [
+    "मतवाला",
+    "drunk",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हिस्सा",
+   "value": "„हिस्सा\" (hissā) на хинди = английски „share\" — A portion of something, especially a portion given or allotted to someone.",
+   "keywords": [
+    "हिस्सा",
+    "share",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कैमरा",
+   "value": "„कैमरा\" (kaimrā) на хинди = английски „camera\" — A device for taking still or moving pictures or photographs.",
+   "keywords": [
+    "कैमरा",
+    "camera",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अंतः",
+   "value": "„अंतः\" (antaḥ) на хинди = английски „within\" — In the inner part, spatially; physically inside.",
+   "keywords": [
+    "अंतः",
+    "within",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कार्ड",
+   "value": "„कार्ड\" (kārḍ) на хинди = английски „card\" — A playing card.",
+   "keywords": [
+    "कार्ड",
+    "card",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "मक्खी",
+   "value": "„मक्खी\" (makkhī) на хинди = английски „fly\" — Any insect of the order Diptera; characterized by having two wings (except for some win…",
+   "keywords": [
+    "मक्खी",
+    "fly",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रेमिका",
+   "value": "„प्रेमिका\" (premikā) на хинди = английски „girlfriend\" — A female partner in an unmarried romantic relationship.",
+   "keywords": [
+    "प्रेमिका",
+    "girlfriend",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "हँसना",
+   "value": "„हँसना\" (hãsnā) на хинди = английски „laugh\" — To show mirth, satisfaction, or derision, by peculiar movement of the muscles of the fa…",
+   "keywords": [
+    "हँसना",
+    "laugh",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "गंध",
+   "value": "„गंध\" (gandh) на хинди = английски „smell\" — A sensation, pleasant or unpleasant, detected by inhaling air (or, the case of water-br…",
+   "keywords": [
+    "गंध",
+    "smell",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "माँ",
+   "value": "„माँ\" (mā̃) на хинди = английски „mum\" — Mother.",
+   "keywords": [
+    "माँ",
+    "mum",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ईमानदार",
+   "value": "„ईमानदार\" (īmāndār) на хинди = английски „honest\" — Scrupulous with regard to telling the truth; not given to swindling, lying, or fraud; u…",
+   "keywords": [
+    "ईमानदार",
+    "honest",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रायः",
+   "value": "„प्रायः\" (prāyaḥ) на хинди = английски „often\" — Frequently; many times on different occasions.",
+   "keywords": [
+    "प्रायः",
+    "often",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "बीता",
+   "value": "„बीता\" (bītā) на хинди = английски „spent\" — Consumed, used up, exhausted, depleted.",
+   "keywords": [
+    "बीता",
+    "spent",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "तीसरा",
+   "value": "„तीसरा\" (tīsrā) на хинди = английски „third\"",
+   "keywords": [
+    "तीसरा",
+    "third",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "अंग्रेज़ी",
+   "value": "„अंग्रेज़ी\" (aṅgrezī) на хинди = английски „english\" — Of or pertaining to England.",
+   "keywords": [
+    "अंग्रेज़ी",
+    "english",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पधारना",
+   "value": "„पधारना\" (padhārnā) на хинди = английски „visit\" — To habitually go to (someone in distress, sickness etc.) to comfort them. (Now generall…",
+   "keywords": [
+    "पधारना",
+    "visit",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "न्यायाधीश",
+   "value": "„न्यायाधीश\" (nyāyādhīś) на хинди = английски „judge\" — A public official whose duty it is to administer the law, especially by presiding over …",
+   "keywords": [
+    "न्यायाधीश",
+    "judge",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "खिड़की",
+   "value": "„खिड़की\" (khiṛkī) на хинди = английски „window\" — An opening, usually covered by one or more panes of clear glass, to allow light and air…",
+   "keywords": [
+    "खिड़की",
+    "window",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "भूखा",
+   "value": "„भूखा\" (bhūkhā) на хинди = английски „hungry\" — Affected by hunger; having the physical need for food.",
+   "keywords": [
+    "भूखा",
+    "hungry",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "रिश्ता",
+   "value": "„रिश्ता\" (riśtā) на хинди = английски „relationship\" — Connection or association; the condition of being related.",
+   "keywords": [
+    "रिश्ता",
+    "relationship",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "प्रमाणित करना",
+   "value": "„प्रमाणित करना\" (pramāṇit karnā) на хинди = английски „prove\" — To demonstrate that something is true or viable; to give proof for; to bear out; to tes…",
+   "keywords": [
+    "प्रमाणित करना",
+    "prove",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "निजी",
+   "value": "„निजी\" (nijī) на хинди = английски „private\" — Belonging or pertaining to an individual person, group of people, or entity that is not…",
+   "keywords": [
+    "निजी",
+    "private",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "दीवार",
+   "value": "„दीवार\" (dīvār) на хинди = английски „wall\" — A rampart of earth, stones etc. built up for defensive purposes.",
+   "keywords": [
+    "दीवार",
+    "wall",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "आसन",
+   "value": "„आसन\" (āsan) на хинди = английски „seat\" — Something to be sat upon.",
+   "keywords": [
+    "आसन",
+    "seat",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "स्थान",
+   "value": "„स्थान\" (sthān) на хинди = английски „position\" — A place or location.",
+   "keywords": [
+    "स्थान",
+    "position",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "लेफ़्टिनेंट",
+   "value": "„लेफ़्टिनेंट\" (lefṭineṇṭ) на хинди = английски „lieutenant\" — The lowest junior commissioned officer rank(s) in many military forces, often Army and …",
+   "keywords": [
+    "लेफ़्टिनेंट",
+    "lieutenant",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "ख़ास तौर पर",
+   "value": "„ख़ास तौर पर\" (xās taur par) на хинди = английски „especially\" — In a special manner; specially.",
+   "keywords": [
+    "ख़ास तौर पर",
+    "especially",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "यंत्र",
+   "value": "„यंत्र\" (yantra) на хинди = английски „machine\" — A vehicle operated mechanically, such as an automobile or an airplane.",
+   "keywords": [
+    "यंत्र",
+    "machine",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "पदाचार",
+   "value": "„पदाचार\" (padācār) на хинди = английски „walking\"",
+   "keywords": [
+    "पदाचार",
+    "walking",
+    "превод",
+    "хинди"
+   ]
+  },
+  {
+   "type": "превод",
+   "key": "कला",
+   "value": "„कला\" (kalā) на хинди = английски „art\" — The conscious production or arrangement of sounds, colours, forms, movements, or other …",
+   "keywords": [
+    "कला",
+    "art",
+    "превод",
+    "хинди"
+   ]
+  }
+ ]
+}

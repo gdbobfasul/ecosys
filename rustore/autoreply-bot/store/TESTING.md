@@ -1,4 +1,4 @@
-# Testing — Auto-Reply Bot (RUStore)
+# Testing — KCY Auto Answer (RUStore)
 
 ## В браузъра (без Android SDK)
 1. `npm install`

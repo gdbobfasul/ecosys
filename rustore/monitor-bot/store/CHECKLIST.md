@@ -2,7 +2,7 @@
 
 ## Идентичност
 - App ID: `com.kcy.monitorbot.rustore`
-- Име: Монитор-робот
+- Име: KCY Site Monitor
 - Акцент: #0a84ff (RUStore син)
 
 ## Активи

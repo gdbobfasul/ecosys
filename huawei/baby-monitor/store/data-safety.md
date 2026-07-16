@@ -1,4 +1,4 @@
-# Data safety / Безопасност на данните — Детегледачка (Huawei AppGallery)
+# Data safety / Безопасност на данните — KCY Baby Radar (Huawei AppGallery)
 
 ## ВАЖНО ПРЕДУПРЕЖДЕНИЕ ЗА БЕЗОПАСНОСТ (прочети първо)
 

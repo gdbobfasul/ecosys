@@ -1,6 +1,6 @@
-# Дуел на ринга — Huawei AppGallery билд
+# KCY Ring Clash — Huawei AppGallery билд
 
-Самостоятелно мобилно приложение, което вгражда browser-играта **„Дуел на ринга"**
+Самостоятелно мобилно приложение, което вгражда browser-играта **„KCY Ring Clash"**
 (походова фентъзи битка 1 срещу 1) като нативно Capacitor приложение.
 
 - **Магазин:** Huawei AppGallery · **App ID:** `com.kcy.duel.huawei`

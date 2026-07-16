@@ -2,7 +2,7 @@
   "name": "price-watch-bot-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "Цена-робот (Price-Watch Bot) — самостоятелно мобилно приложение, което следи цени на крипто и валути и известява при достигнат праг (Huawei AppGallery издание).",
+  "description": "KCY Price Watch (Price-Watch Bot) — самостоятелно мобилно приложение, което следи цени на крипто и валути и известява при достигнат праг (Huawei AppGallery издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

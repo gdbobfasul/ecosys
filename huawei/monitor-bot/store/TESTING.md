@@ -1,4 +1,4 @@
-# Тестване — Монитор-робот (Huawei AppGallery)
+# Тестване — KCY Site Monitor (Huawei AppGallery)
 
 ## В браузър (най-бързо)
 1. `npm install`
