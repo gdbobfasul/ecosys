@@ -1,4 +1,4 @@
-// Version: 1.0021
+// Version: 1.0025
 // settings.js — настройки: безплатен AI enhancer, поведение на заключването, нулиране, бекъп/пренасяне,
 // секция „Пакети знание" (пълният списък + недостъпните с условията им).
 import { el, clear, toast } from '../ui/dom.js';
@@ -120,8 +120,9 @@ export function renderSettings(root, { rerender, openLangPicker }) {
     return sw;
   }
   const inSw = voiceSwitch(() => vc.inputEnabled, (v) => { vc.inputEnabled = v; if (v) { requestMicPermission().catch(() => {}); } });
-  // Диктовка чрез клавиатурата (Gboard) — по подразбиране ВКЛ. Само на телефон има смисъл.
-  const kbSw = voiceSwitch(() => vc.keyboardMic !== false, (v) => { vc.keyboardMic = v; });
+  // Диктовка чрез клавиатурата (Gboard) — по подразбиране ИЗКЛ: на телефони без микрофон
+  // на клавиатурата (често при Huawei) 🎤 не правеше НИЩО видимо. Вкл. я само по избор.
+  const kbSw = voiceSwitch(() => vc.keyboardMic === true, (v) => { vc.keyboardMic = v; });
   const outSw = voiceSwitch(() => vc.outputEnabled, (v) => { vc.outputEnabled = v; });
   const convSw = voiceSwitch(() => vc.conversationEnabled, (v) => { vc.conversationEnabled = v; if (v) { requestMicPermission().catch(() => {}); } });
   const convAutoSw = voiceSwitch(() => vc.conversationAutoStart, (v) => { vc.conversationAutoStart = v; });

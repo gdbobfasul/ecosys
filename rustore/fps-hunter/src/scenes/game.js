@@ -1,6 +1,6 @@
-// Version: 1.0001
+// Version: 1.0011
 // Игрова сцена: построява ниво, управлява спавн на цели, стрелба (hitscan +
-// проектили), HUD, лимити време/боеприпаси, точки и преход към следващо ниво.
+// проектили), HUD (вкл. минимапа-радар), лимити време/боеприпаси, точки и преход към следващо ниво.
 import * as THREE from 'three';
 import { applyAtmosphere } from '../engine/setup.js';
 import { Terrain } from '../terrain.js';
@@ -176,6 +176,9 @@ export class GameScene {
     const playerPos = this.engine.camera.position;
     for (const t of this.targets) t.update(dt, playerPos);
     this.effects.update(dt);
+
+    // Минимапа: играч + живите цели като червени точки (върти се по посоката на гледане).
+    if (this.hud.drawMap) this.hud.drawMap(playerPos.x, playerPos.z, this.controls.yaw, this.targets);
 
     // Огън
     if (this.controls.consumeFire()) this._fire();

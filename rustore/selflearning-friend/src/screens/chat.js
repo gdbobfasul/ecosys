@@ -1,4 +1,4 @@
-// Version: 1.0024
+// Version: 1.0025
 // chat.js — разговор със самообучаващия се приятел.
 import { el, clear, esc, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
@@ -139,20 +139,21 @@ export function renderChat(root, { navigate, rerender }) {
   }, '🎤');
   let listening = false;
   let pendingSend = false; // вдигнат от „Изпрати" по време на слушане → прати щом микрофонът спре
-  // Дали да ползваме КЛАВИАТУРНИЯ микрофон (Gboard) вместо вградения разпознавач. На телефона
-  // клавиатурата е ГЛАДКА (една непрекъсната сесия → един бийп, без загуба/дублиране на думи,
-  // правилно дописване), докато безплатният плъгин е за кратки команди и се рестартира на всяка
-  // пауза (оттам бийповете и загубените думи). По подразбиране ВКЛ на телефон; вграденият остава
-  // за „💬 Разговор" (hands-free, там няма клавиатура). Изключваш го от Настройки.
+  // Клавиатурният микрофон (Gboard) е само ПО ИЗБОР от Настройки (keyboardMic === true).
+  // ПО ПОДРАЗБИРАНЕ 🎤 пуска ВГРАДЕНОТО слушане: на телефони без микрофон на клавиатурата
+  // (често при Huawei) старото подразбиране „фокусирай полето и чакай клавиатурата" значеше
+  // буквално „натискам и нищо не става". Вграденият разпознавач е укрепен (сегменти, без
+  // загуба на думи) и дава ВИДИМА реакция: червен бутон + „Слушам…" в полето.
   function isNativePlatform() {
     try { return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); }
     catch (_) { return false; }
   }
   function preferKeyboardMic() {
-    return isNativePlatform() && !(st.settings.voice && st.settings.voice.keyboardMic === false);
+    return isNativePlatform() && !!(st.settings.voice && st.settings.voice.keyboardMic === true);
   }
-  // Клик на 🎤: на телефон (по подразбиране) → отваря клавиатурата, за да диктуваш през НЕЙНИЯ
-  // микрофон (най-точно). Иначе → вграденото ЕДНО слушане (само попълва полето, не праща сам).
+  // Клик на 🎤: вграденото ЕДНО слушане (само попълва полето, не праща сам). Ако потребителят
+  // изрично е избрал клавиатурния микрофон → отваря клавиатурата + подсказка ВСЕКИ път
+  // (еднократната подсказка оставяше следващите натискания без каквато и да е реакция).
   micBtn.addEventListener('click', () => {
     if (preferKeyboardMic()) {
       try {
@@ -160,10 +161,7 @@ export function renderChat(root, { navigate, rerender }) {
         autoGrow(); input.focus();
         const len = input.value.length; input.setSelectionRange(len, len);   // курсор в края → дописва
       } catch (_) {}
-      if (!(st.settings.voice && st.settings.voice.__kbHintShown)) {
-        toast(t('chat_kb_mic_hint'));
-        st.settings.voice = st.settings.voice || {}; st.settings.voice.__kbHintShown = true; persist();
-      }
+      toast(t('chat_kb_mic_hint'));
       return;
     }
     onMic({ autoSend: false });
@@ -204,7 +202,12 @@ export function renderChat(root, { navigate, rerender }) {
     } catch (e) {
       const msg = String(e && e.message || '');
       if (/denied|not-allowed|service-not-allowed/i.test(msg)) toast(t('chat_mic_denied'));
-      else toast(t('chat_no_hear'));
+      else if (/no-stt/i.test(msg)) {
+        // Устройството НЯМА услуга за разпознаване (Huawei без съответната услуга) →
+        // кажи го ясно и отвори клавиатурата (нейният микрофон/писане са резервата).
+        toast(t('chat_voice_unavailable'));
+        try { input.disabled = false; input.removeAttribute('inputmode'); input.focus(); } catch (_) {}
+      } else toast(t('chat_no_hear'));
     } finally {
       listening = false;
       micBtn.classList.remove('on');

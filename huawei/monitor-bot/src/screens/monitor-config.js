@@ -1,5 +1,5 @@
-// Version: 1.0001
-// Екран „Настройка на монитор" — добавяне/редакция на монитор + пресети.
+// Version: 1.0013
+// Екран „Настройка на монитор" — добавяне/редакция на монитор + пресети + попълване от каталога.
 import { el } from '../ui/styles.js';
 import { saveState, pushLog } from '../core/storage.js';
 import { PRESETS, newMonitorId, checkMonitor } from '../core/scheduler.js';
@@ -8,15 +8,17 @@ import { t, tf } from '../core/i18n.js';
 export function renderMonitorConfig(ctx) {
   const { state, go, params } = ctx;
   const editing = params && params.id ? state.monitors.find((m) => m.id === params.id) : null;
+  // Предварително попълване от каталога (екран „Каталог" → „Добави").
+  const prefill = (!editing && params && params.prefill) ? params.prefill : null;
 
   // Работен черновик.
   const draft = editing
     ? { ...editing }
     : {
         id: newMonitorId(),
-        name: '',
-        sourceType: 'rss',
-        url: '',
+        name: (prefill && prefill.name) || '',
+        sourceType: (prefill && prefill.sourceType) || 'rss',
+        url: (prefill && prefill.url) || '',
         jsonPath: '',
         idField: '',
         titleField: '',
@@ -140,6 +142,11 @@ export function renderMonitorConfig(ctx) {
 
   return el('div', { class: 'content' }, [
     el('h2', {}, editing ? t('cfg_edit_title') : t('cfg_new_title')),
+
+    // Каталогът: голямият списък с готови емисии по държави (търсачка + категории).
+    !editing
+      ? el('button', { class: 'btn', style: 'margin-bottom:8px', onclick: () => go('directory') }, t('cfg_from_catalog'))
+      : null,
 
     el('div', { class: 'card' }, [
       el('b', {}, t('cfg_presets_title')),

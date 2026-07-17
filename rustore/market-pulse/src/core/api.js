@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0014
 // Достъп до цени — САМО безплатни публични API без ключове и без акаунти.
 //
 // Крипто (основен):  https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT
@@ -6,8 +6,11 @@
 // Валути (FX):        https://open.er-api.com/v6/latest/USD
 //
 // Нито един от тези адреси НЕ изисква API ключ, токен или регистрация.
+// Мрежата минава през net.js (CapacitorHttp на телефон, БЕЗ AbortController — той чупи
+// патнатия fetch при включен CapacitorHttp; таймаутът е през Promise.race там).
 
 import { t, tf } from './i18n.js';
+import { httpGetJson } from './net.js';
 
 // Поддържани крипто символи → Binance двойка + CoinGecko id.
 export const CRYPTO = {
@@ -24,15 +27,7 @@ export const CRYPTO = {
 export const FX = ['EUR', 'GBP', 'JPY', 'RUB', 'CNY', 'TRY', 'BGN', 'CHF', 'INR', 'BRL'];
 
 async function fetchJson(url, timeoutMs = 8000) {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { signal: ctrl.signal, headers: { accept: 'application/json' } });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    return await res.json();
-  } finally {
-    clearTimeout(t);
-  }
+  return httpGetJson(url, timeoutMs);
 }
 
 // Връща цена в USD за крипто символ. Опитва Binance, после CoinGecko.

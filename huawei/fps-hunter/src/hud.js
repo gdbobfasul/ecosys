@@ -1,6 +1,6 @@
-// Version: 1.0009
+// Version: 1.0011
 // HUD: DOM overlay върху canvas-а — мерник, виртуален джойстик, бутон огън,
-// боеприпаси, ниво, точки, оставащи цели, таймер, оръжие.
+// боеприпаси, ниво, точки, оставащи цели, таймер, оръжие, минимапа (радар с врагове).
 import { THEME } from './theme.js';
 import { t } from './core/i18n.js';
 
@@ -42,6 +42,10 @@ export class HUD {
         <div>${esc(t('hud_time'))}: <span id="hud-time">0</span>${esc(t('time_suffix'))}</div>
       </div>
 
+      <!-- Минимапа (радар): горе вдясно под точките; играчът в центъра, враговете — червени точки -->
+      <canvas id="hud-map" width="220" height="220"
+              style="position:fixed;right:12px;top:86px;width:110px;height:110px;"></canvas>
+
       <!-- Боеприпаси долу вдясно над бутона -->
       <div id="hud-ammo" style="position:fixed;right:24px;bottom:140px;color:#fff;font-size:22px;font-weight:800;text-shadow:0 1px 3px #000;">—</div>
 
@@ -76,6 +80,7 @@ export class HUD {
       left: el.querySelector('#hud-left'),
       time: el.querySelector('#hud-time'),
       ammo: el.querySelector('#hud-ammo'),
+      map: el.querySelector('#hud-map'),
       fire: el.querySelector('#fire-btn'),
       joyBase: el.querySelector('#joy-base'),
       joyKnob: el.querySelector('#joy-knob'),
@@ -104,6 +109,49 @@ export class HUD {
     if (values.left != null) this.refs.left.textContent = values.left;
     if (values.time != null) this.refs.time.textContent = values.time;
     if (values.ammo != null) this.refs.ammo.textContent = values.ammo === 999 ? '∞' : values.ammo;
+  }
+
+  // Минимапа (радар): играчът е в центъра, гледаната посока сочи НАГОРЕ (завъртане по yaw),
+  // живите врагове са червени точки. Извън обхвата RANGE → точката се залепя по ръба (пак
+  // показва посоката). Рисува се всеки кадър от GameScene.update — само няколко дъги, евтино.
+  drawMap(px, pz, yaw, targets) {
+    const c = this.refs.map;
+    if (!c) return;
+    const ctx = this._mapCtx || (this._mapCtx = c.getContext('2d'));
+    const W = c.width;
+    const cx = W / 2, cy = W / 2, R = W / 2 - 6;
+    const RANGE = 170; // игрови единици до ръба (спавнът е на 40–160 от играча)
+    ctx.clearRect(0, 0, W, W);
+    // фон + рамка
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(8,18,12,0.45)'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.stroke();
+    // слаб вътрешен пръстен + кръст за ориентация
+    ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.beginPath(); ctx.arc(cx, cy, R / 2, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx - R, cy); ctx.lineTo(cx + R, cy);
+    ctx.moveTo(cx, cy - R); ctx.lineTo(cx, cy + R);
+    ctx.stroke();
+    // врагове: завъртаме световния офсет така, че forward (−sin yaw, −cos yaw) да е „нагоре"
+    const sin = Math.sin(yaw), cos = Math.cos(yaw);
+    for (const t of targets) {
+      if (!t.alive) continue;
+      const dx = t.x - px, dz = t.z - pz;
+      const rightD = dx * cos - dz * sin;      // проекция върху „дясно"
+      const fwdD = -dx * sin - dz * cos;       // проекция върху „напред"
+      let mx = (rightD / RANGE) * R;
+      let my = (-fwdD / RANGE) * R;            // напред = нагоре на екрана
+      const len = Math.hypot(mx, my);
+      if (len > R - 7) { mx *= (R - 7) / len; my *= (R - 7) / len; }
+      ctx.beginPath(); ctx.arc(cx + mx, cy + my, 6, 0, Math.PI * 2);
+      ctx.fillStyle = '#ff4040'; ctx.fill();
+    }
+    // играчът: светла стрелка в центъра, върхът сочи посоката на гледане (нагоре)
+    ctx.fillStyle = '#eaf5ff';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - 11); ctx.lineTo(cx - 7, cy + 8); ctx.lineTo(cx + 7, cy + 8);
+    ctx.closePath(); ctx.fill();
   }
 
   toast(text, ms = 1400) {

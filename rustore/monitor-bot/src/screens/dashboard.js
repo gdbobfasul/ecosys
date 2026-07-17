@@ -1,9 +1,10 @@
-// Version: 1.0001
+// Version: 1.0013
 // Екран „Табло" — главен ON/OFF, списък монитори (последна проверка/съвпадение),
-// редактиране/пауза/триене, дневник на активността, поле за CORS прокси.
+// редактиране/пауза/триене, дневник, CORS прокси, пренасяне на конфигурацията (файл).
 import { el, fmtTime } from '../ui/styles.js';
 import { saveState, pushLog } from '../core/storage.js';
 import { checkMonitor, startScheduler, stopScheduler } from '../core/scheduler.js';
+import { backupAvailable, backupNow, readBackup, applyBackup } from '../core/backup.js';
 import { t, tf } from '../core/i18n.js';
 
 export function renderDashboard(ctx) {
@@ -101,7 +102,10 @@ export function renderDashboard(ctx) {
 
     el('div', { class: 'row between' }, [
       el('h2', { style: 'margin:6px 0' }, t('dash_monitors')),
-      el('button', { class: 'btn small primary', onclick: () => go('monitor-config') }, t('dash_new_monitor'))
+      el('div', { class: 'row', style: 'gap:6px' }, [
+        el('button', { class: 'btn small', onclick: () => go('directory') }, '📚 ' + t('nav_directory')),
+        el('button', { class: 'btn small primary', onclick: () => go('monitor-config') }, t('dash_new_monitor'))
+      ])
     ]),
     el('div', { class: 'card' }, monitorList),
 
@@ -120,6 +124,37 @@ export function renderDashboard(ctx) {
         }
       }, t('dash_save_proxy'))
     ]),
+
+    // Пренасяне на конфигурацията: файл в Downloads/KCY, който оцелява преинсталация.
+    // Показва се само на устройство (в браузър няма Filesystem плъгин).
+    ...(backupAvailable() ? [
+      el('h2', { style: 'margin:14px 0 6px' }, '💾 ' + t('bk_title')),
+      el('div', { class: 'card' }, [
+        el('p', { class: 'small' }, t('bk_note')),
+        el('div', { class: 'row', style: 'gap:6px; flex-wrap:wrap' }, [
+          el('button', {
+            class: 'btn small',
+            onclick: async () => {
+              const r = await backupNow(state);
+              if (r.ok && r.survives) alert(tf('bk_saved', r.path));
+              else if (r.ok) alert(tf('bk_saved_temp', r.path));
+              else alert(tf('bk_save_fail', r.reason || '?'));
+            }
+          }, t('bk_save')),
+          el('button', {
+            class: 'btn small',
+            onclick: async () => {
+              const b = await readBackup();
+              if (!b) { alert(t('bk_none')); return; }
+              const n = applyBackup(state, b);
+              await saveState(state);
+              alert(tf('bk_restored', n));
+              refresh();
+            }
+          }, t('bk_restore'))
+        ])
+      ])
+    ] : []),
 
     el('h2', { style: 'margin:14px 0 6px' }, t('dash_log')),
     el('div', { class: 'card' }, logEntries)

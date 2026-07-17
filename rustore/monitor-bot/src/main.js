@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0013
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -18,13 +18,16 @@ import { injectStyles, el } from './ui/styles.js';
 import { loadState, defaultState } from './core/storage.js';
 import { startScheduler, tick } from './core/scheduler.js';
 import { APP_NAME } from './config.js';
-import { t, applyDir, hasLangChosen } from './core/i18n.js';
+import { t, tf, applyDir, hasLangChosen } from './core/i18n.js';
 
 import { renderOnboarding } from './screens/onboarding.js';
 import { renderPermissions } from './screens/permissions.js';
 import { renderMonitorConfig } from './screens/monitor-config.js';
 import { renderDashboard } from './screens/dashboard.js';
+import { renderDirectory } from './screens/directory.js';
 import { renderLanguage } from './screens/language.js';
+import { readBackup, applyBackup } from './core/backup.js';
+import { saveState } from './core/storage.js';
 
 const root = document.getElementById('app');
 let state = null;
@@ -37,12 +40,14 @@ const SCREENS = {
   onboarding: renderOnboarding,
   permissions: renderPermissions,
   'monitor-config': renderMonitorConfig,
+  directory: renderDirectory,
   dashboard: renderDashboard
 };
 
 // Долна навигация — само след онбординг. Етикетите се превеждат при всяко рисуване.
 const NAV = [
   { id: 'dashboard', ic: '📡', label: 'nav_dashboard' },
+  { id: 'directory', ic: '📚', label: 'nav_directory' },
   { id: 'monitor-config', ic: '＋', label: 'nav_monitor' },
   { id: 'permissions', ic: '🔔', label: 'nav_permissions' },
   { id: 'onboarding', ic: 'ℹ️', label: 'nav_about' }
@@ -109,6 +114,22 @@ async function boot() {
   if (!state) state = defaultState();
   current = state.onboarded ? 'dashboard' : 'onboarding';
   render();
+
+  // Свежа инсталация без монитори → ако в Downloads/KCY има запазен файл от предишна
+  // инсталация, ПИТАМЕ дали да възстановим (изборът е на потребителя; питаме еднократно).
+  if (!state.monitors.length && !state.restoreAsked) {
+    readBackup().then(async (b) => {
+      if (!b || !b.monitors.length) return;
+      state.restoreAsked = true;
+      const when = String(b.exportedAt || '').slice(0, 10);
+      if (confirm(tf('bk_restore_q', b.monitors.length, when))) {
+        const n = applyBackup(state, b);
+        alert(tf('bk_restored', n));
+      }
+      await saveState(state);
+      render();
+    }).catch(() => {});
+  }
 
   if (state.masterOn) {
     startScheduler(state, { onUpdate: refresh });

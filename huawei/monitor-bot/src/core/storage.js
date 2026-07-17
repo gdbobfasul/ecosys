@@ -1,7 +1,9 @@
-// Version: 1.0001
+// Version: 1.0013
 // Локално съхранение — БЕЗ акаунти, БЕЗ облак, БЕЗ контакти, БЕЗ проследяване.
 // На устройство (Capacitor) ползва @capacitor/preferences; в браузъра — localStorage.
 // Зарежда се динамично, за да работи и в чист уеб без Capacitor.
+
+import { scheduleAutoBackup } from './backup.js';
 
 const KEY = 'mob.state.v1';
 
@@ -80,6 +82,10 @@ export async function saveState(state) {
   } catch {
     try { localStorage.setItem(KEY, json); } catch {}
   }
+  // Авто-пренасяне: конфигурацията отива и във файл в Downloads/KCY (оцелява
+  // преинсталация; отложено с няколко секунди, fire-and-forget — виж core/backup.js).
+  // Статичен import (НЕ динамичен — виж предупреждението за chunk-ове по-горе).
+  try { scheduleAutoBackup(state); } catch { /* браузър/без плъгин — нищо */ }
 }
 
 export function pushLog(state, text, kind = 'info') {

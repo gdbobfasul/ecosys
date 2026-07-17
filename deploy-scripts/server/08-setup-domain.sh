@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0198
+# Version: 1.0199
 ##############################################################################
 # KCY — Отделните приложни домейни + SSL (чете private/configs/domains.conf).
 #
@@ -80,6 +80,11 @@ build_locations() {  # ползва $API $PORT $SERVE $NESTED от извикв�
     # главната"). `^~` + най-дълъг префикс → /api/portals/ печели пред /api/ на чата.
     printf '    location ^~ /api/portals/ { proxy_pass http://127.0.0.1:3002; proxy_http_version 1.1; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_read_timeout 86400; }\n'
     printf '    location ^~ /portals/ { proxy_pass http://127.0.0.1:3002; proxy_http_version 1.1; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_read_timeout 86400; }\n'
+    # WATCH релеят (Baby Radar / camera-watch, порт 3013 = selflearning relay) на ВСЕКИ
+    # приложен домейн: апът по подразбиране бие selflearning.bot.nu/api/watch/..., а този
+    # префикс досега падаше в SPA fallback-а (GET → index.html, POST → 405) → „не се връзват".
+    # client_max_body_size 3m — кадрите от детегледачката са JSON с base64 снимка.
+    printf '    location ^~ /api/watch/ { proxy_pass http://127.0.0.1:3013; proxy_http_version 1.1; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_read_timeout 60; client_max_body_size 3m; }\n'
     if [ "$NESTED" = "1" ]; then
         printf '    location ^~ /socket.io/ { proxy_pass http://127.0.0.1:%s; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; proxy_set_header Host $host; }\n' "$PORT"
         printf '    location ^~ /uploads/ { proxy_pass http://127.0.0.1:%s; proxy_set_header Host $host; }\n' "$PORT"
