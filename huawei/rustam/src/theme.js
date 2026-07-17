@@ -1,9 +1,8 @@
-// Version: 1.0001
-// Визуална тема за RUStore версията.
-// Тук държим акцентните цветове, които се различават между двата store-а.
-// (Huawei версията има различна палитра.)
+// Version: 1.0013
+// Визуална тема за Huawei (AppGallery) версията.
+// Палитрата е общата „градинарска" — различават се store маркерите (надпис/ключ за запис).
 export const THEME = {
-  store: 'rustore',
+  store: 'huawei',
   // Основни акценти — топла „градинарска/народна" палитра
   primary: 0xe0b34a,      // топло злато
   primaryHex: '#e0b34a',
@@ -21,7 +20,7 @@ export const THEME = {
   heroCloth: 0x4f7a2b,    // зелена риза на градинар
   // Заглавие на менюто
   titleText: 'РУСТАМ БЕРЕ\nКРАСТАВИЦИ',
-  titleSub: 'RUStore Edition',
+  titleSub: 'AppGallery Edition',
   // Ключ за localStorage (различен per-store, за да не се бъркат записите)
-  saveKey: 'rustam.rustore.save'
+  saveKey: 'rustam.huawei.save'
 };

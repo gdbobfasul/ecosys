@@ -1,4 +1,4 @@
-// Version: 1.0011
+// Version: 1.0024
 // chat.js — разговор със самообучаващия се приятел.
 import { el, clear, esc, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
@@ -441,7 +441,7 @@ export function renderChat(root, { navigate, rerender }) {
     // колко от позволеното пространство е заето с информация.
     try {
       const mb = dbSizeMB(); const mx = maxDbMB();
-      parts.unshift(`📦 ${mb.toFixed(1)}/${mx} MB (${Math.min(100, Math.round((mb / mx) * 100))}% от лимита)`);
+      parts.unshift('📦 ' + tf('chat_limit_used', mb.toFixed(1), mx, Math.min(100, Math.round((mb / mx) * 100))));
     } catch (_) {}
     const txt = parts.join('   •   ');
     if (txt === tickerText) return;            // същото съдържание → лентата продължава да си върви

@@ -40,8 +40,12 @@ async function clickIf(page, sel, t) { try { await page.waitForSelector(sel, { t
 
 (async () => {
   let browser;
-  try { browser = await PW.chromium.launch({ args: ['--use-gl=swiftshader', '--no-sandbox'] }); }
-  catch (e) { console.log('Chromium не тръгна: ' + e.message); process.exit(2); }
+  // Билднатият Playwright Chromium може да липсва → резерва: инсталиран Chrome/Edge (channel).
+  const LOPT = { args: ['--use-gl=swiftshader', '--no-sandbox'] };
+  for (const opt of [LOPT, { ...LOPT, channel: 'chrome' }, { ...LOPT, channel: 'msedge' }]) {
+    try { browser = await PW.chromium.launch(opt); break; } catch (e) { browser = null; }
+  }
+  if (!browser) { console.log('Chromium не тръгна (нито билднат, нито Chrome/Edge).'); process.exit(2); }
   const srv = await startServer();
   const port = srv.address().port;
   const URL = 'http://127.0.0.1:' + port + '/index.html';

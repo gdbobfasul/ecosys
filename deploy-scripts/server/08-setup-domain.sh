@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version: 1.0197
+# Version: 1.0198
 ##############################################################################
 # KCY — Отделните приложни домейни + SSL (чете private/configs/domains.conf).
 #
@@ -39,6 +39,20 @@ echo -e "  Главен домейн (от 05): ${GREEN}${MAIN_DOMAIN}${NC}"
 echo -e "  Имейл за Let's Encrypt: ${GREEN}${EMAIL}${NC}"
 read -p "  Enter за този имейл, или нов: " NE
 [ -n "$NE" ] && EMAIL="$NE"
+
+# ── IPv4 предпочитание за certbot ──
+# Машина с IPv6 адрес, но БЕЗ IPv6 маршрут (какъвто е VPS-ът) кара python/certbot
+# да пробва първо IPv6 → „Network is unreachable" и подновяването пада. curl оцелява
+# (пада сам на IPv4), certbot НЕ. Редът в /etc/gai.conf кара getaddrinfo да предпочита
+# IPv4 системно (certbot/apt/python), БЕЗ да пипа мрежата. Слага се само при нужда.
+if ! ip -6 route show default 2>/dev/null | grep -q .; then
+    if ! grep -q '^precedence ::ffff:0:0/96 100' /etc/gai.conf 2>/dev/null; then
+        echo 'precedence ::ffff:0:0/96 100' >> /etc/gai.conf
+        echo -e "  ${GREEN}✓ /etc/gai.conf: добавено IPv4 предпочитание (няма IPv6 маршрут → certbot падаше)${NC}"
+    else
+        echo -e "  ${GREEN}✓ /etc/gai.conf: IPv4 предпочитанието вече е налице${NC}"
+    fi
+fi
 
 # certbot (БЕЗ node/npm — конфликтват с NodeSource nodejs). Webroot не иска nginx-плъгина.
 if ! command -v certbot >/dev/null 2>&1; then

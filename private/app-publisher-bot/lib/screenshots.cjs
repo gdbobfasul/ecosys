@@ -13,6 +13,17 @@ const { loadPlaywright } = require('./util.cjs');
 const LANGS = ['bg','ru','uk','en','de','fr','es','es-MX','it','pt','ar','hi','ja','ky','zh-Hant'];
 const MM = { bg:'bg', ru:'ru', uk:'uk', en:'en', de:'de', fr:'fr', es:'es', 'es-MX':'es-MX', it:'it', pt:'pt', ar:'ar', hi:'hi', ja:'ja', ky:'ky', 'zh-Hant':'zh-TW' };
 
+// Билднатият Playwright Chromium може да липсва (обновена Playwright версия без
+// `playwright install`). Тогава минаваме на инсталиран браузър (Chrome → Edge)
+// през официалната опция channel — снимките са същите (Chromium двигател).
+async function launchChromium(pw) {
+  let err;
+  for (const opt of [{}, { channel: 'chrome' }, { channel: 'msedge' }]) {
+    try { return await pw.chromium.launch(opt); } catch (e) { err = e; }
+  }
+  throw err;
+}
+
 const trCache = new Map();
 async function translate(text, target) {
   if (target === 'en') return text;
@@ -79,7 +90,7 @@ async function generateScreenshots(appDir, opts = {}) {
   const port = server.address().port;
   const base = `http://127.0.0.1:${port}/`;
   const isLocal = (u) => u.startsWith('http://127.0.0.1:' + port);
-  const browser = await pw.chromium.launch();
+  const browser = await launchChromium(pw);
 
   // Преводи на примерните заглавия по език.
   const headlines = cfg.sampleHeadlines || [];
@@ -119,6 +130,16 @@ async function generateScreenshots(appDir, opts = {}) {
       await page.addInitScript((d) => {
         try { localStorage.clear(); } catch (e) {}
         try { window.__KCY_INTRO_OFF__ = true; } catch (e) {}   // без „KCY Ecosystem" интро в снимките
+        // legal-gate („екран 3") пази съгласието в kcy.legal.<ап>.v1 — ап-идентификаторът не е
+        // известен тук, затова прихващаме проверката. Снимките показват приложението, не портала;
+        // самият портал остава задължителен в реалния ап (и има отделна снимка при market-pulse).
+        try {
+          const g = Storage.prototype.getItem;
+          Storage.prototype.getItem = function (k) {
+            if (typeof k === 'string' && /^kcy\.legal\..+\.v1$/.test(k)) return '2026-01-01T00:00:00.000Z';
+            return g.apply(this, arguments);
+          };
+        } catch (e) {}
         if (d.lang) localStorage.setItem(d.langKey, d.lang);
         if (d.state) localStorage.setItem(d.stateKey, d.state);
       }, init);
