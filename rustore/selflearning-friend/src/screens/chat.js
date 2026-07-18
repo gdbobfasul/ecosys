@@ -1,4 +1,4 @@
-// Version: 1.0026
+// Version: 1.0029
 // chat.js — разговор със самообучаващия се приятел.
 import { el, clear, esc, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
@@ -198,6 +198,9 @@ export function renderChat(root, { navigate, rerender }) {
     try {
       transcript = await startListening({
         lang: (st.settings.voice && st.settings.voice.lang) || 'bg-BG',
+        // РЪЧЕН СТОП (изрично искане): говориш КОЛКОТО ИСКАШ — тишината не прекъсва;
+        // записът спира САМО с повторно натискане на 🎤 или с „Изпрати".
+        manualStop: true,
         onInterim: (tx) => { if (tx) { input.value = join(prefix, tx); autoGrow(); } } // ДОЛЕПЯ + расте (полето е disabled → без клавиатура)
       });
     } catch (e) {

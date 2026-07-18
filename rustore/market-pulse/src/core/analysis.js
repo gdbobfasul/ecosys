@@ -1,7 +1,7 @@
-// Version: 1.0002
+// Version: 1.0016
 // analysis.js — ОБРАЗОВАТЕЛЕН анализ върху РЕАЛНА история (без ключове):
-//   • Крипто → CoinGecko market_chart (days=max, дневно).
-//   • Злато/индекси/имоти → Stooq дневен CSV (пълна история).
+//   • Крипто → Binance klines (пълна дневна история на партиди; CoinGecko days=365 резерва).
+//   • Злато/индекси/имоти → Yahoo Finance v8 chart (range=10y, дневно).
 // Един и същ анализатор работи върху ценова серия за ИЗБРАН ПЕРИОД: „сега", „точно 1/2/3 г. назад"
 // или конкретен интервал (напр. май–август 2015). Смята RSI(14), кратка/дълга плъзгаща средна (тренд),
 // импулс за периода и (за минали периоди) „какво се случи СЛЕД това" — за да е ясно, че индикаторите
@@ -34,6 +34,25 @@ function rsi(arr, period = 14) {
   return 100 - 100 / (1 + rs);
 }
 
+// Пълна дневна история на крипто от Binance klines: партиди по 1000 дневни свещи от
+// началото на търговията (BTC ≈ 3000 дни → 3-4 заявки; таван 8 партиди ≈ 22 години).
+async function fetchBinanceDaily(symbol) {
+  const out = [];
+  let start = 0;
+  for (let i = 0; i < 8; i++) {
+    const url = 'https://api.binance.com/api/v3/klines?symbol=' + symbol + '&interval=1d&limit=1000' + (start ? '&startTime=' + start : '');
+    const arr = await httpGetJson(url, 12000);
+    if (!Array.isArray(arr) || !arr.length) break;
+    for (const k of arr) {
+      const t = k[0], close = parseFloat(k[4]);
+      if (isFinite(t) && isFinite(close)) out.push({ t, close });
+    }
+    if (arr.length < 1000) break;
+    start = arr[arr.length - 1][6] + 1;   // closeTime на последната свещ + 1мс
+  }
+  return out;
+}
+
 // Пълна дневна история като [{t:ms, close}] (възходящо по време). Кешира за 5 мин на инструмент.
 export async function fetchHistory(inst) {
   const key = inst.src + ':' + (inst.stooq || inst.id);
@@ -43,18 +62,31 @@ export async function fetchHistory(inst) {
   try {
     let series = [];
     if (inst.src === 'gecko') {
-      const d = await httpGetJson('https://api.coingecko.com/api/v3/coins/' + inst.id + '/market_chart?vs_currency=usd&days=max&interval=daily', 12000);
-      const arr = (d && d.prices) || [];
-      series = arr.map((p) => ({ t: p[0], close: p[1] })).filter((p) => isFinite(p.close));
+      // ИСТОРИЯ НА КРИПТО (сменено 2026-07-19): CoinGecko СПРЯ безплатния days=max
+      // (401: „limited to the past 365 days") → пълната дневна история идва от
+      // Binance klines (безплатно, на партиди по 1000 дни от началото на търговията).
+      // CoinGecko days=365 остава РЕЗЕРВА — покрива само последната година.
+      if (inst.binance) {
+        try { series = await fetchBinanceDaily(inst.binance); } catch (_) { series = []; }
+      }
+      if (!series.length) {
+        const d = await httpGetJson('https://api.coingecko.com/api/v3/coins/' + inst.id + '/market_chart?vs_currency=usd&days=365', 12000);
+        const arr = (d && d.prices) || [];
+        series = arr.map((p) => ({ t: p[0], close: p[1] })).filter((p) => isFinite(p.close));
+      }
     } else {
-      // Stooq дневен CSV: Date,Open,High,Low,Close,Volume
-      const csv = await httpGetText('https://stooq.com/q/d/l/?s=' + encodeURIComponent(inst.stooq) + '&i=d', 12000);
-      const lines = String(csv || '').trim().split(/\r?\n/);
-      for (let i = 1; i < lines.length; i++) {
-        const p = lines[i].split(',');
-        if (p.length < 5) continue;
-        const t = Date.parse(p[0]); const close = parseFloat(p[4]);
-        if (isFinite(t) && isFinite(close)) series.push({ t, close });
+      // ЗЛАТО/ИНДЕКСИ/ИМОТИ (сменено 2026-07-19): Stooq CSV вече връща анти-бот
+      // предизвикателство (JavaScript proof-of-work страница) вместо данни → Yahoo
+      // Finance v8 chart. range=10y дава ~2500 ДНЕВНИ точки (range=max Yahoo го реже
+      // до едри интервали) — стига за всичките периоди на приложението (до 5 г. назад).
+      const sym = inst.yahoo || inst.stooq;
+      const d = await httpGetJson('https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym) + '?range=10y&interval=1d', 15000);
+      const r0 = d && d.chart && d.chart.result && d.chart.result[0];
+      const ts = (r0 && r0.timestamp) || [];
+      const closes = (r0 && r0.indicators && r0.indicators.quote && r0.indicators.quote[0] && r0.indicators.quote[0].close) || [];
+      for (let i = 0; i < ts.length; i++) {
+        const close = closes[i];
+        if (isFinite(ts[i]) && close != null && isFinite(close)) series.push({ t: ts[i] * 1000, close });
       }
     }
     if (!series.length) throw new Error('empty');

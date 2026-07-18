@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Version: 1.0001
+# Version: 1.0220
 # Release билд на мобилните апове: ключ по ап + подписан APK за rustore И huawei.
 #
 # Какво прави за ВСЕКИ ап:
@@ -12,8 +12,14 @@
 #   4) gradlew assembleRelease с ключа от средата → apk/<ап>-<магазин>-release.apk.
 #
 # Употреба:
-#   deploy-scripts/release-apks.sh              # всички апове
-#   deploy-scripts/release-apks.sh newslator    # само един (двата магазина)
+#   deploy-scripts/release-apks.sh                        # всички апове
+#   deploy-scripts/release-apks.sh newslator              # само един (двата магазина)
+#   deploy-scripts/release-apks.sh newslator monitor-bot  # няколко наведнъж
+#
+# ПРАВИЛО (изрично искане): при ЧАСТИЧЕН билд (изброени апове, не всички) папката apk/
+# се ИЗЧИСТВА от APK/EXE на невключените апове — в нея остават САМО билдваните сега
+# („какво качвам/тествам сега"). KCY_KEEP_OTHERS=1 запазва чуждите (за съзнателно
+# допълване на пълен комплект). Изтритото се възстановява с пълен билд (без аргумент).
 set -u
 cd "$(dirname "$0")/.." || exit 1
 ROOT="$PWD"
@@ -27,7 +33,7 @@ mkdir -p keystores apk
 # ── списък апове (уникални имена от rustore/ + huawei/) ──
 declare -a NAMES=()
 if [ -n "${1:-}" ]; then
-  NAMES=("${1%/}")
+  for a in "$@"; do NAMES+=("${a%/}"); done      # един ИЛИ няколко апа като аргументи
 else
   for store in rustore huawei; do
     [ -d "$store" ] || continue
@@ -42,6 +48,20 @@ fi
 [ "${#NAMES[@]}" -eq 0 ] && { echo -e "${RED}✗ Няма апове за билд.${NC}"; exit 1; }
 
 echo -e "${BOLD}${CYAN}━━━ Release билд: ${#NAMES[@]} апа × (rustore + huawei) ━━━${NC}"
+
+# ЧАСТИЧЕН билд → изчисти apk/ от невключените апове (правилото по-горе).
+if [ -n "${1:-}" ] && [ "${KCY_KEEP_OTHERS:-0}" != "1" ]; then
+  shopt -s nullglob
+  for f in apk/*.apk apk/*.exe; do
+    base="$(basename "$f")"; keep=0
+    for n in "${NAMES[@]}"; do case "$base" in "${n}-"*) keep=1; break;; esac; done
+    if [ "$keep" = 0 ]; then rm -f "$f"; echo -e "  ${YELLOW}− изтрит (не е в избора): ${base}${NC}"; fi
+  done
+  shopt -u nullglob
+fi
+# Вътрешните извиквания на build-mobile-apps.sh са ап-по-ап → те НЕ бива да трият
+# резултатите на другите апове от СЪЩИЯ билд (чистенето вече стана тук).
+export KCY_KEEP_OTHERS=1
 
 # ── ключ по ап: съществуващ или нов ──
 ensure_key() {

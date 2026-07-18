@@ -1,4 +1,4 @@
-// Version: 1.0025
+// Version: 1.0030
 // voice.js — ГЛАС: STT (глас→текст) + TTS (текст→глас), безплатно и on-device.
 //
 // СТРАТЕГИЯ (без платена облачна услуга, без ключове):
@@ -99,7 +99,58 @@ function mergeText(base, add) {
   return a + ' ' + b;                    // няма застъпване → просто долепи
 }
 
+// --- Тиха детекция на реч (VAD) за ръчния режим ---------------------------
+// Проблемът на устройство (Huawei): всяко sr.start() пуска СИСТЕМЕН тон. Ръчният режим
+// по-рано пре-въоръжаваше разпознавача и при ТИШИНА → тонът се чуваше всяка секунда.
+// Затова при тишина разпознавачът се СПИРА напълно, а микрофонът остава наш през
+// getUserMedia + AudioContext: мерим нивото на звука БЕЗ никакви тонове; заговориш ли —
+// чак тогава пак sr.start() (един тон при подхващане). Първите ~половин секунда от
+// подновената реч може да се изгубят (разпознавачът тръгва след като те чуем) — цената
+// за тишината. Връща: true = чута реч · false = отменено · null = няма достъп/поддръжка.
+async function waitForSpeechVAD(isCancelled) {
+  let stream = null, ctx = null;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    try { await ctx.resume(); } catch (_) {}
+    const srcNode = ctx.createMediaStreamSource(stream);
+    const an = ctx.createAnalyser();
+    an.fftSize = 512;
+    srcNode.connect(an);
+    const buf = new Uint8Array(an.fftSize);
+    const rms = () => {
+      an.getByteTimeDomainData(buf);
+      let s = 0;
+      for (let i = 0; i < buf.length; i++) { const d = (buf[i] - 128) / 128; s += d * d; }
+      return Math.sqrt(s / buf.length);
+    };
+    // шумов под на стаята: първите ~250мс (без да броим реч — тъкмо е настъпила тишина)
+    let floor = 0, n = 0;
+    const t0 = Date.now();
+    while (Date.now() - t0 < 250) {
+      floor += rms(); n++;
+      if (isCancelled()) return false;
+      await new Promise((r) => setTimeout(r, 40));
+    }
+    floor = n ? floor / n : 0.01;
+    const TH = Math.max(0.035, floor * 3);   // праг: 3× шума, но не под разумния минимум
+    let hot = 0;
+    while (!isCancelled()) {
+      if (rms() >= TH) { hot++; if (hot >= 2) return true; }  // ~80мс над прага → реч
+      else hot = 0;
+      await new Promise((r) => setTimeout(r, 40));
+    }
+    return false;
+  } catch (_) {
+    return null;  // няма getUserMedia/AudioContext → викащият пада към рядък таймер
+  } finally {
+    try { if (stream) stream.getTracks().forEach((t) => { try { t.stop(); } catch (_) {} }); } catch (_) {}
+    try { if (ctx) ctx.close(); } catch (_) {}
+  }
+}
+
 let _webRecog = null;       // активна Web Speech инстанция (за stop)
+let _webStopRequested = false; // ръчен стоп в браузъра (спира авто-рестарта при manualStop)
 let _nativeListening = false;
 let _nativeStopRequested = false; // потребителят натисна „стоп" → не рестартирай сегмента
 let _nativeForceStop = null;      // МОМЕНТАЛЕН стоп на текущата нативна сесия (за stopListening)
@@ -133,11 +184,15 @@ export async function requestMicPermission() {
 
 // Стартира слушане и връща финалния транскрипт (Promise<string>).
 // onInterim(text) се вика с междинни (нефинални) резултати, ако платформата ги дава.
-export async function startListening({ lang = DEFAULT_LANG, onInterim = null } = {}) {
+// manualStop:true (микрофонът в чата) → говориш КОЛКОТО ИСКАШ; тишината НЕ приключва
+// диктовката — спира САМО повторното натискане на 🎤 / „Изпрати" (stopListening) или
+// таванът от 10 минути. Без manualStop (режим „Разговор") пазим автоматичния край при
+// пауза — там ботът трябва да разбере кога си свършил, за да ти отговори.
+export async function startListening({ lang = DEFAULT_LANG, onInterim = null, manualStop = false } = {}) {
   const sr = capPlugin('SpeechRecognition');
-  if (sr) return startNative(sr, lang, onInterim);
+  if (sr) return startNative(sr, lang, onInterim, manualStop);
   const Ctor = webSpeechRecognitionCtor();
-  if (Ctor) return startWeb(Ctor, lang, onInterim);
+  if (Ctor) return startWeb(Ctor, lang, onInterim, manualStop);
   throw new Error('no-stt'); // викащият показва дружелюбно съобщение и оставя писането
 }
 
@@ -154,7 +209,7 @@ export async function startListening({ lang = DEFAULT_LANG, onInterim = null } =
 // (предишният вариант ги махаше/добавяше на всеки сегмент → race, при който една дума се
 // губеше или не се изписваше). Моменталният стоп взима текста ПРЕДИ изчистване → нищо не се
 // губи и микрофонът гасне веднага (без „забиване" по минута).
-async function startNative(sr, lang, onInterim) {
+async function startNative(sr, lang, onInterim, manualStop) {
   // СЕРИАЛИЗАЦИЯ: втора сесия НЕ тръгва върху жива първа (двойно натискане на 🎤 или натискане,
   // докато диалогът за разрешение виси). Иначе два цикъла се борят за микрофона: тонът
   // „включване" се чува многократно подред, думите се губят, а допълването става невъзможно.
@@ -214,7 +269,7 @@ async function startNative(sr, lang, onInterim) {
     let restartTimer = null;
     let stopGrace = null;     // кратко изчакване на ФИНАЛНИЯ резултат (носи последните думи)
 
-    const MAX_SESSION_MS = 180000; // абсолютен таван на едно слушане
+    const MAX_SESSION_MS = manualStop ? 600000 : 180000; // таван: 10 мин при ръчен стоп, иначе 3 мин
     // За ДИКТОВКА на няколко изречения трябва по-голям търпеж към паузите между тях:
     // 3 поредни празни сегмента (а не 2) → така след „…космоса“ <пауза за мисъл> „…и Рим“
     // не приключваме рано. Спираш мигом по всяко време с 🎤 / „Изпрати“.
@@ -225,6 +280,13 @@ async function startNative(sr, lang, onInterim) {
     function fullText() {
       return mergeText(accumulated, seg);
     }
+    // ЗАЩИТА „изтри ми думите": натрупаният текст е МОНОТОНЕН — никога не приемаме
+    // по-къс вариант (закъснял финал от СТАР сегмент можеше да презапише и СЪКРАТИ
+    // вече показаното; наблюдавано на устройство: записана дума после изчезваше).
+    function adoptAccum(candidate) {
+      const c = String(candidate || '');
+      if (c.length >= accumulated.length) accumulated = c;
+    }
     // Прибира текущия сегмент в натрупания текст (с махане на припокриването — виж mergeText).
     // Връща true, ако сегментът е бил празен.
     function commitSegment() {
@@ -232,7 +294,7 @@ async function startNative(sr, lang, onInterim) {
       seg = '';
       // Мержваме върху segBase (НЕ върху текущото accumulated): ако после дойде по-пълен ФИНАЛ за
       // същия сегмент, той пак ще се сметне от segBase и ще ЗАМЕСТИ този частичен — без двойно лепене.
-      if (s) { accumulated = mergeText(segBase, s); emptyStreak = 0; return false; }
+      if (s) { adoptAccum(mergeText(segBase, s)); emptyStreak = 0; return false; }
       emptyStreak++;
       return true;
     }
@@ -276,13 +338,34 @@ async function startNative(sr, lang, onInterim) {
         if (!stopGrace) stopGrace = setTimeout(() => finish(), 600);
         return;
       }
-      // ⛔ КЛЮЧОВО срещу „картечния сигнал” и загубата на думи: НЕ пре-въоръжаваме микрофона при
-      // ТИШИНА. Ако вече има натрупан текст и настъпи празен сегмент (спрял си да говориш) →
-      // ПРИКЛЮЧВАМЕ чисто — БЕЗ нов sr.start() (тонът „вкл/изкл” се чуваше точно от тези рестарти,
-      // а прозорецът между тях гълташе думи). Пре-въоръжаваме САМО след РЕЧ, за да продължиш дълго
-      // изречение с паузи за дъх. Спираш по всяко време с 🎤 / „Изпрати”.
+      // Празен сегмент = тишина. ПОПРАВКА на „прекъсва на 3-4 дума": по-рано ЕДИН празен
+      // сегмент след реч приключваше цялата диктовка — но Android/Huawei разпознавачът
+      // често спира ПО СРЕДАТА на изречението, а следващият сегмент хваща началото на
+      // пауза за дъх и излиза празен → изречението се режеше на първите няколко думи.
+      // Сега след РЕЧ търпим ДО 2 поредни празни сегмента (≈4-6 сек тишина), чак тогава
+      // приключваме. Спираш мигом по всяко време с 🎤 / „Изпрати”.
       if (wasEmpty) {
-        if (accumulated.trim()) return finish();                 // пауза СЛЕД реч → край (без бийп)
+        // РЪЧЕН РЕЖИМ (микрофонът в чата): тишината НИКОГА не приключва диктовката —
+        // спира САМО повторното 🎤 / „Изпрати" (или таванът). НО не въртим разпознавача
+        // на празни обороти (тонът му се чуваше всяка секунда): при тишина той СПИРА,
+        // а тихата детекция (waitForSpeechVAD, без никакви тонове) чака да заговориш
+        // и чак тогава го пали пак. Без VAD поддръжка → рядък таймер (тон на ~4 сек).
+        if (manualStop) {
+          (async () => {
+            const r = await waitForSpeechVAD(() => settled || _nativeStopRequested);
+            if (settled) return;
+            if (_nativeStopRequested) { finish(); return; }
+            if (r === null) restartTimer = setTimeout(() => armSegment(), 4000);
+            else if (r === true) armSegment();
+            else finish();   // отменено междувременно
+          })();
+          return;
+        }
+        if (accumulated.trim()) {
+          if (emptyStreak >= 2) return finish();                 // истинска пауза СЛЕД реч → край
+          restartTimer = setTimeout(() => armSegment(), 250);    // 1 празен → дай още един шанс
+          return;
+        }
         if (emptyStreak >= MAX_EMPTY_SEGMENTS) return finish();  // само тишина от старта → откажи се
         // още нищо не е казано → изчакай малко реч (по-спокоен ре-старт, без картечница)
         restartTimer = setTimeout(() => armSegment(), 400);
@@ -312,7 +395,8 @@ async function startNative(sr, lang, onInterim) {
             // Сегментът вече е приключен (от 'stopped') с по-КРАТЪК partial (напр. „крип“), а ФИНАЛЪТ
             // носи цялата дума/израз (напр. „криптовалути“). ЗАМЕСТВАМЕ приноса на сегмента: смятаме
             // отново от segBase с финала → отрязаната опашка се връща, без дублиране на сричка.
-            accumulated = mergeText(segBase, finalTxt);
+            // (adoptAccum: закъснял/по-къс финал НЕ може да съкрати показаното.)
+            adoptAccum(mergeText(segBase, finalTxt));
             if (onInterim) { try { onInterim(fullText()); } catch (_) {} }
             if (_nativeStopRequested) finish();   // финалът дойде след ръчен стоп → приключи веднага (с цялата последна дума)
           } else {
@@ -324,11 +408,13 @@ async function startNative(sr, lang, onInterim) {
         // иначе чакаме 'partialResults' + 'stopped' (Android)
       } catch (e) {
         // Грешка при старт. Най-често е ТРАНЗИТНА („busy": предишната сесия още гасне при бързия
-        // рестарт) → НЕ убиваме цялата диктовка от първия път: до 2 повторни опита с малка пауза.
+        // рестарт) → НЕ убиваме цялата диктовка: до 4 повторни опита с растяща пауза (на Huawei
+        // услугата гасне по-бавно от 2×350мс — точно това довършваше „прекъсва на 3-4 дума":
+        // първият сегмент минаваше, вторият удряше „busy" 2 пъти и диктовката свършваше).
         // Едва след тях приключваме с каквото е натрупано.
-        if (!settled && !_nativeStopRequested && startFails < 2) {
+        if (!settled && !_nativeStopRequested && startFails < (manualStop ? 6 : 4)) {
           startFails++;
-          restartTimer = setTimeout(() => armSegment(), 350 * startFails); // 350мс → 700мс (услугата да догасне)
+          restartTimer = setTimeout(() => armSegment(), 350 * startFails); // 350→700→1050→1400мс…
         } else {
           finish();
         }
@@ -355,10 +441,11 @@ async function startNative(sr, lang, onInterim) {
               const status = data && (data.status || data.state);
               if (status === 'started' || status === 'listening') { segStarted = true; return; }
               if (status === 'stopped') {
-                // ЗАКЪСНЯЛО 'stopped' от ПРЕДИШНИЯ сегмент: идва веднага след re-arm, ПРЕДИ новият
+                // ЗАКЪСНЯЛО 'stopped' от ПРЕДИШНИЯ сегмент: идва след re-arm, ПРЕДИ новият
                 // да е стартирал. Ако го приемем, брои ФАЛШИВА тишина и въоръжава ВТОРИ паралелен
-                // start() („busy" → преждевременен край на диктовката). Затова го игнорираме.
-                if (!segStarted && (Date.now() - armAt) < 400) return;
+                // start() („busy" → каскада от тонове/преждевременен край). Игнорираме го — на
+                // бавни устройства (Huawei) идва и след 400мс, затова прозорецът е 1200мс.
+                if (!segStarted && (Date.now() - armAt) < 1200) return;
                 onSegmentStopped();
               }
             });
@@ -372,16 +459,18 @@ async function startNative(sr, lang, onInterim) {
   });
 }
 
-// Браузър (Web Speech API).
-function startWeb(Ctor, lang, onInterim) {
+// Браузър (Web Speech API). manualStop:true → continuous + авто-рестарт при тишина:
+// браузърът сам гасне след пауза, но ние го подпалваме наново, докато не натиснеш 🎤 пак.
+function startWeb(Ctor, lang, onInterim, manualStop) {
   return new Promise((resolve, reject) => {
     let recog;
     try { recog = new Ctor(); } catch (e) { reject(new Error('stt-init')); return; }
     _webRecog = recog;
+    _webStopRequested = false;
     recog.lang = lang || DEFAULT_LANG;
     recog.interimResults = !!onInterim;
     recog.maxAlternatives = 1;
-    recog.continuous = false;
+    recog.continuous = !!manualStop;
 
     let finalText = '';
     let settled = false;
@@ -391,18 +480,25 @@ function startWeb(Ctor, lang, onInterim) {
       let interim = '';
       for (let i = ev.resultIndex; i < ev.results.length; i++) {
         const r = ev.results[i];
-        if (r.isFinal) finalText += r[0].transcript;
+        if (r.isFinal) finalText += r[0].transcript + ' ';
         else interim += r[0].transcript;
       }
-      if (interim && onInterim) onInterim(interim);
+      if (onInterim && (interim || finalText)) onInterim((finalText + interim).trim());
     };
     recog.onerror = (ev) => {
       const err = (ev && ev.error) || 'unknown';
-      // „no-speech“/„aborted“ не са фатални — връщаме каквото имаме (вкл. празно).
-      if (err === 'no-speech' || err === 'aborted') done(resolve, finalText.trim());
-      else done(reject, new Error('stt-' + err));
+      // „no-speech“/„aborted“ не са фатални: в ръчен режим продължаваме да слушаме,
+      // иначе връщаме каквото имаме (вкл. празно).
+      if (err === 'no-speech' || err === 'aborted') {
+        if (manualStop && !_webStopRequested && !settled) { try { recog.start(); return; } catch (e) {} }
+        done(resolve, finalText.trim());
+      } else done(reject, new Error('stt-' + err));
     };
-    recog.onend = () => done(resolve, finalText.trim());
+    recog.onend = () => {
+      // ръчен режим: браузърът сам спря (тишина) → подпали наново; краят е само 🎤/„Изпрати"
+      if (manualStop && !_webStopRequested && !settled) { try { recog.start(); return; } catch (e) {} }
+      done(resolve, finalText.trim());
+    };
 
     try { recog.start(); }
     catch (e) { done(reject, new Error('stt-start')); }
@@ -411,6 +507,7 @@ function startWeb(Ctor, lang, onInterim) {
 
 // Спира текущото слушане (и в двата режима).
 export function stopListening() {
+  _webStopRequested = true;   // спира и авто-рестарта на браузърния ръчен режим
   if (_webRecog) {
     try { _webRecog.stop(); } catch (_) {}
   }

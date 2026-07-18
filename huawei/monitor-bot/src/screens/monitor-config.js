@@ -1,4 +1,4 @@
-// Version: 1.0013
+// Version: 1.0015
 // Екран „Настройка на монитор" — добавяне/редакция на монитор + пресети + попълване от каталога.
 import { el } from '../ui/styles.js';
 import { saveState, pushLog } from '../core/storage.js';
@@ -92,6 +92,9 @@ export function renderMonitorConfig(ctx) {
   async function save() {
     collect();
     if (!draft.url) { alert(t('cfg_need_url')); return; }
+    // Написани думи за търсене + правило „само нов запис" → думите нямаше да важат.
+    // Само включваме и тях (нов запис + ключова дума) — потребителят ги е написал, за да търсят.
+    if (draft.keywords && draft.rule === 'new') draft.rule = 'new+keyword';
     if (editing) {
       Object.assign(editing, draft);
       pushLog(state, tf('log_mon_updated', draft.name));
@@ -158,8 +161,11 @@ export function renderMonitorConfig(ctx) {
     el('label', {}, t('cfg_source_type')), typeSel,
     el('label', {}, t('cfg_url')), urlInput,
     jsonBlock,
-    el('label', {}, t('cfg_rule')), ruleSel,
+    // ТЪРСЕНЕТО НА ДУМИ — веднага под адреса, с ясно име и обяснение (потребителят не го
+    // намираше, когато беше „Ключови думи (CSV)" по средата на формуляра).
     el('label', {}, t('cfg_keywords')), kwInput,
+    el('p', { class: 'small', style: 'margin:4px 0 0' }, t('cfg_keywords_hint')),
+    el('label', {}, t('cfg_rule')), ruleSel,
     el('label', {}, t('cfg_freq')), freqSel,
 
     el('div', { class: 'gap' }),

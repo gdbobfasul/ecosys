@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0014
 // legal-gate.js — УНИВЕРСАЛЕН „ЕКРАН 3" (стандарт за ВСИЧКИ апове/билдове):
 //   Екран 1 = KCY Ecosystem интро (intro.js) · Екран 2 = избор на език · ЕКРАН 3 = ТУК:
 //   задължителните предупреждения/обяснения/политики, изисквани от Huawei/RuStore, ПРЕДИ апа.
@@ -79,8 +79,8 @@ export function mountLegalGate(appId, opts) {
         '<p style="font-size:14px;line-height:1.55;color:#c7d2de">' + tr('intro') + '</p>' +
         finBlock +
         '<div style="display:flex;flex-direction:column;gap:10px;margin:14px 0 18px">' +
-          '<button id="kcy-lg-priv" style="text-align:' + (lg === 'ar' ? 'right' : 'left') + ';padding:13px 14px;background:#141c2b;border:1px solid #26324a;border-radius:12px;color:#cfe0ff;font:600 14px system-ui;cursor:pointer">📄 ' + tr('privacy') + ' ›</button>' +
-          '<button id="kcy-lg-terms" style="text-align:' + (lg === 'ar' ? 'right' : 'left') + ';padding:13px 14px;background:#141c2b;border:1px solid #26324a;border-radius:12px;color:#cfe0ff;font:600 14px system-ui;cursor:pointer">📑 ' + tr('terms') + ' ›</button>' +
+          '<button id="kcy-lg-priv" style="text-align:' + (lg === 'ar' ? 'right' : 'left') + ';padding:13px 14px;background:#141c2b;border:1px solid #26324a;border-radius:12px;color:#cfe0ff;font:600 14px system-ui;cursor:pointer">' + tr('privacy') + ' ›</button>' +
+          '<button id="kcy-lg-terms" style="text-align:' + (lg === 'ar' ? 'right' : 'left') + ';padding:13px 14px;background:#141c2b;border:1px solid #26324a;border-radius:12px;color:#cfe0ff;font:600 14px system-ui;cursor:pointer">' + tr('terms') + ' ›</button>' +
         '</div>' +
         '<label id="kcy-lg-agree-row" style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:#0f1626;border:1px solid #26324a;border-radius:12px;cursor:pointer;margin-bottom:12px">' +
           '<input id="kcy-lg-chk" type="checkbox" style="width:20px;height:20px;margin-top:1px;flex-shrink:0">' +
@@ -105,14 +105,20 @@ export function mountLegalGate(appId, opts) {
     };
   }
 
-  // Апове БЕЗ езиков екран → показваме екран 3 веднага след интрото (~3.5с).
-  if (!hasLang) { setTimeout(build, 3500); return; }
-  // Апове С езиков екран → изчакваме избора на език (екран 2), после показваме екран 3.
-  if (langChosen()) { setTimeout(build, 400); return; }
+  // РЕД НА ЕКРАНИТЕ (изрично изискване): 1) интрото с логото KCY Ecosystem (като начало
+  // на филм) → 2) избор на език (ако апът има такъв екран) → 3) ТОЗИ екран с условията.
+  // Затова НЕ разчитаме на слепи таймери: чакаме слоят на интрото (#kcy-intro) да си е
+  // ЗАМИНАЛ (то върви ~1.8с при всяко пускане) и — при апове с езиков екран — езикът да е
+  // избран. Минимум ~2.1с изчакване покрива и късно монтирано интро. Предпазител ~120с.
+  function ready() {
+    try { if (document.getElementById('kcy-intro')) return false; } catch (e) {}
+    return hasLang ? langChosen() : true;
+  }
   let ticks = 0;
   const iv = setInterval(() => {
     ticks++;
-    if (langChosen()) { clearInterval(iv); build(); }
-    else if (ticks > 400) { clearInterval(iv); build(); }   // ~120с предпазител (да не преварим избора)
+    if (ticks < 7) return;                                  // мин. ~2.1с — логото да мине
+    if (ready()) { clearInterval(iv); build(); }
+    else if (ticks > 400) { clearInterval(iv); build(); }   // ~120с предпазител
   }, 300);
 }

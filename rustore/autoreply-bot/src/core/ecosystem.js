@@ -1,4 +1,4 @@
-// Version: 1.0013
+// Version: 1.0015
 // ecosystem.js — екран „Още от KCY Ecosystem": бутон „KCY Ecosystem" в ЕДИННАТА долна лента
 // (core/kcy-bar.js) + showcase списък на ДРУГИТЕ приложения (снимка + ИМЕ + описание 15 езика +
 // линк към приложението). Footer „KCY Ecosystem publisher 2026". БЕЗ изскачащи реклами

@@ -1,4 +1,4 @@
-// Version: 1.0017
+// Version: 1.0019
 // kcy-bar.js — ЕДИННА фиксирана лента НАЙ-ОТДОЛУ на всеки екран (универсален файл, еднакъв във
 // всяко приложение). Носи бутоните „KCY Ecosystem", „Помощ", „Поверителност", „Условия" (+
 // „Изтрий акаунта" при апове с акаунти) — покрива изискванията на Huawei/RuStore за правни
@@ -11,6 +11,8 @@
 //  (2) елементи, залепени за дъното на екрана (fixed/sticky с bottom под висината на лентата —
 //      долни навигации, композери), се повдигат с висината ѝ. MutationObserver ги хваща и след
 //      пре-рисуване. Модали/цели екрани (височина ≥50% от прозореца) НЕ се пипат.
+
+import { APP_VERSION } from '../version.js';
 
 const BAR_H = 28; // px — дръж я малка: стои на ВСЕКИ екран
 
@@ -31,6 +33,7 @@ function injectStyle() {
     'color:#c7d2de;font:600 11px system-ui,Segoe UI,Roboto,sans-serif;padding:4px 7px;border-radius:9px;text-decoration:none;line-height:1.4}' +
     '#kcy-bar .kcy-bar-btn:active{background:rgba(255,255,255,.08)}' +
     '#kcy-bar .kcy-bar-btn.kcy-accent{color:#8bd450}' +
+    '#kcy-bar-ver{flex:0 0 auto;margin-left:auto;color:#7f8c9b;font:600 10px system-ui,Segoe UI,Roboto,sans-serif;padding:4px 6px;white-space:nowrap}' +
     'body{padding-bottom:calc(' + BAR_H + 'px + env(safe-area-inset-bottom,0px)) !important}';
   (document.head || document.documentElement).appendChild(st);
 }
@@ -74,6 +77,14 @@ function ensureBar() {
   if (bar) return bar;
   injectStyle();
   bar = document.createElement('div'); bar.id = 'kcy-bar';
+  // ВЕРСИЯТА на приложението — винаги видима в края на лентата (изрично искане:
+  // „нека всички приложения да им се вижда версията"). Числото идва от src/version.js,
+  // който билдът генерира за всеки ап (= версията на APK-то).
+  const ver = document.createElement('span');
+  ver.id = 'kcy-bar-ver';
+  ver.dataset.kcyOrder = '99';
+  try { ver.textContent = 'v' + APP_VERSION; } catch (e) { ver.textContent = ''; }
+  bar.appendChild(ver);
   document.body.appendChild(bar);
   liftBottomPinned();
   // пре-рисуванията на приложенията пресъздават навигациите → повдигай ги наново (отложено)
