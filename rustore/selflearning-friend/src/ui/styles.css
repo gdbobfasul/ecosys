@@ -1,4 +1,4 @@
-/* Version: 1.0001 */
+/* Version: 1.0026 */
 /* styles.css — тема на „Самообучаващ се приятел“. Акцент: RUStore = #7b5cff. */
 :root {
   --accent: #7b5cff;
@@ -149,8 +149,11 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   max-width: 560px; margin: 0 auto;
   display: flex; background: var(--bg-2);
   border-top: 1px solid rgba(255,255,255,.08);
+  /* 8 таба не се събират на тесен екран -> лентата се скролва хоризонтално (без видим скролбар) */
+  overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none;
 }
-.tab { flex:1; background: transparent; color: var(--muted); border-radius:0; padding: 12px 4px; font-size: 13px; font-weight:500; }
+.tabbar::-webkit-scrollbar { display: none; }
+.tab { flex: 1 0 auto; white-space: nowrap; background: transparent; color: var(--muted); border-radius:0; padding: 12px 10px; font-size: 13px; font-weight:500; }
 .tab.active { color: var(--accent); }
 
 /* --- Toast --- */

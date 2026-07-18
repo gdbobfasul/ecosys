@@ -1,4 +1,4 @@
-// Version: 1.0011
+// Version: 1.0012
 // HUD: DOM overlay върху canvas-а — мерник, виртуален джойстик, бутон огън,
 // боеприпаси, ниво, точки, оставащи цели, таймер, оръжие, минимапа (радар с врагове).
 import { THEME } from './theme.js';
@@ -178,6 +178,38 @@ export class HUD {
     this.refs.joyBase.style.display = 'none';
     this.refs.joyKnob.style.left = '35px';
     this.refs.joyKnob.style.top = '35px';
+  }
+
+  // Насложен екран „Как се играе": показва ДВЕТЕ зони (ляво = движение, дясно = оглеждане/
+  // завъртане) + бутона ОГЪН. Затваря се с докосване/клик или сам след 12 секунди.
+  // Играта отдолу НЕ е спряна (нива 1–50 са без часовник, така че нищо не се губи).
+  showGuide(labels) {
+    if (document.getElementById('fps-guide')) return;
+    const touch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+    const ov = document.createElement('div');
+    ov.id = 'fps-guide';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:60;pointer-events:auto;background:rgba(4,10,16,.62);' +
+      'font-family:' + THEME.fontStack + ';color:#eaf5ff;display:flex;flex-direction:column;';
+    const zone = (txt, icon) =>
+      `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;text-align:center;gap:10px">` +
+      `<div style="font-size:44px">${icon}</div>` +
+      `<div style="font-size:15px;font-weight:700;max-width:300px;line-height:1.45">${esc(txt)}</div></div>`;
+    ov.innerHTML = touch
+      ? `<div style="flex:1;display:flex">` +
+          `<div style="flex:1;display:flex;border-right:2px dashed rgba(255,255,255,.35)">${zone(labels.move, '🕹️')}</div>` +
+          `<div style="flex:1;display:flex">${zone(labels.look, '👀')}</div>` +
+        `</div>` +
+        `<div style="text-align:center;padding:0 18px 6px;font-size:14px;font-weight:700">🔫 ${esc(labels.fire)}</div>` +
+        `<div style="text-align:center;padding:0 18px 26px;font-size:13px;opacity:.75">${esc(labels.dismiss)}</div>`
+      : `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;text-align:center">` +
+          `<div style="font-size:44px">⌨️🖱️</div>` +
+          `<div style="font-size:16px;font-weight:700;max-width:520px;line-height:1.5">${esc(labels.desktop)}</div>` +
+          `<div style="font-size:13px;opacity:.75">${esc(labels.dismiss)}</div>` +
+        `</div>`;
+    const close = () => { clearTimeout(tm); try { ov.remove(); } catch (e) {} };
+    const tm = setTimeout(close, 12000);
+    ov.addEventListener('pointerdown', close, { once: true });
+    document.body.appendChild(ov);
   }
 
   dispose() {

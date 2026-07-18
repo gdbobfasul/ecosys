@@ -1,4 +1,4 @@
-// Version: 1.0025
+// Version: 1.0026
 // chat.js — разговор със самообучаващия се приятел.
 import { el, clear, esc, toast } from '../ui/dom.js';
 import { getState, persist, resetAll } from '../core/storage.js';
@@ -8,6 +8,7 @@ import { isLockedDown } from '../core/device.js';
 import { sttAvailable, ttsAvailable, startListening, stopListening, speak, stopSpeaking } from '../core/voice.js';
 import { startConversation, stopConversation, conversationActive, consumeAutoListen } from '../core/conversation.js';
 import { learningFeed } from '../core/learning-loop.js';
+import { learnedStats } from '../core/subjects.js';
 import { pickAndIngestFile } from '../core/ingest.js';
 import { dbSizeMB, maxDbMB } from '../core/learn-budget.js';
 import {
@@ -431,6 +432,22 @@ export function renderChat(root, { navigate, rerender }) {
     document.head.appendChild(tickerCss);
   }
   let tickerText = '';
+  let pendingTicker = null;
+  function applyTicker(txt) {
+    tickerText = txt;
+    tickerInner.textContent = txt;
+    const dur = Math.max(14, Math.round(txt.length / 7));  // четима скорост: ~7 знака в секунда
+    tickerInner.style.animation = 'none';
+    void tickerInner.offsetWidth;              // принудителен рестарт на анимацията
+    tickerInner.style.animation = 'slfTicker ' + dur + 's linear infinite';
+  }
+  // НОВОТО съдържание НЕ прекъсва текущото превъртане: по-рано всяка промяна (напр. порасналият
+  // лимит в МБ) рестартираше анимацията и текстът ИЗЧЕЗВАШЕ по средата на четенето — не се
+  // разбираше какво е започнал да учи приятелят. Сега новият текст чака края на обиколката
+  // (animationiteration) и чак тогава сменя.
+  tickerInner.addEventListener('animationiteration', () => {
+    if (pendingTicker != null) { const p = pendingTicker; pendingTicker = null; applyTicker(p); }
+  });
   function updateLearnBanner() {
     // Самопочистване: ако банерът вече не е на екрана (сменен е екранът) → спри интервала.
     if (!learnBanner.isConnected && _learnBannerTimer) { clearInterval(_learnBannerTimer); _learnBannerTimer = null; return; }
@@ -440,6 +457,11 @@ export function renderChat(root, { navigate, rerender }) {
       return icon + a.note;
     });
     if (!parts.length) parts.push('🧠 ' + t('chat_learn_idle'));
+    // ЕДИННАТА статистика на наученото — същите числа като „Знание"/„Памет"/„Задачи".
+    try {
+      const stats = learnedStats();
+      parts.unshift('📚 ' + tf('learned_totals', stats.learned, stats.notes));
+    } catch (_) {}
     // ЗАПЪЛВАНЕ НА ЛИМИТА (плъзгача от Настройки): винаги първо в лентата, за да се вижда
     // колко от позволеното пространство е заето с информация.
     try {
@@ -447,13 +469,9 @@ export function renderChat(root, { navigate, rerender }) {
       parts.unshift('📦 ' + tf('chat_limit_used', mb.toFixed(1), mx, Math.min(100, Math.round((mb / mx) * 100))));
     } catch (_) {}
     const txt = parts.join('   •   ');
-    if (txt === tickerText) return;            // същото съдържание → лентата продължава да си върви
-    tickerText = txt;
-    tickerInner.textContent = txt;
-    const dur = Math.max(14, Math.round(txt.length / 7));  // четима скорост: ~7 знака в секунда
-    tickerInner.style.animation = 'none';
-    void tickerInner.offsetWidth;              // принудителен рестарт на анимацията
-    tickerInner.style.animation = 'slfTicker ' + dur + 's linear infinite';
+    if (txt === tickerText || txt === pendingTicker) return; // същото съдържание → лентата продължава да си върви
+    if (!tickerText) applyTicker(txt);         // първо съдържание → веднага
+    else pendingTicker = txt;                  // иначе: изчакай текущата обиколка да завърши
   }
   updateLearnBanner();
   if (_learnBannerTimer) clearInterval(_learnBannerTimer);

@@ -1,7 +1,8 @@
-// Version: 1.0001
+// Version: 1.0026
 // memory.js — екран „Памет“: преглед, ръчно добавяне, редакция и триене на наученото.
 import { el, clear, toast } from '../ui/dom.js';
 import { listMemory, addMemory, updateMemory, deleteMemory } from '../core/memory-store.js';
+import { learnedStats } from '../core/subjects.js';
 import { t, tf } from '../core/i18n.js';
 
 const TYPE_KEY = { qa: 'mem_type_qa', fact: 'mem_type_fact', pref: 'mem_type_pref' };
@@ -12,6 +13,13 @@ export function renderMemory(root, { rerender }) {
 
   root.appendChild(el('h2', {}, t('screen_memory')));
   root.appendChild(el('p', { class: 'muted' }, t('mem_intro')));
+
+  // ЕДИННАТА статистика на наученото (learnedStats) — същите числа като лентата на чата,
+  // „Знание" и „Задачи". „Памет" пази РЪЧНИТЕ записи; наученото по теми живее в „Задачи" —
+  // изписваме го тук изрично, за да няма впечатление за разминаване между секциите.
+  const stats = learnedStats();
+  root.appendChild(el('p', { class: 'muted', style: 'font-size:12px' },
+    tf('learned_totals', stats.learned, stats.notes) + ' · ' + t('learned_where')));
 
   // Ръчно добавяне.
   const keyInput = el('input', { type: 'text', placeholder: t('mem_key_ph') });

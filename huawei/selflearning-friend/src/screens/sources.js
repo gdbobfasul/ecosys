@@ -1,4 +1,4 @@
-// Version: 1.0014
+// Version: 1.0026
 // sources.js (екран) — „Източници на знание“: локалното е ВИНАГИ master.
 //
 // Секции: Локално (по подразбиране) · Запази знанието (бекъп) · Внеси от файл ·
@@ -6,6 +6,7 @@
 import { el, clear, toast } from '../ui/dom.js';
 import { pickTextFile } from '../core/filepick.js';
 import { memoryCount } from '../core/memory-store.js';
+import { learnedStats } from '../core/subjects.js';
 import {
   exportToFile, importFromJsonText, pullFromUrl, exportToServer,
   sourcesSettings, saveSourcesSettings, storageLocationLabel
@@ -67,9 +68,14 @@ export function renderSources(root, { rerender }) {
   ]));
 
   // --- Локално (master) — ТОЧКА 1, винаги първа и препоръчана ---
+  // ЕДИННАТА статистика (learnedStats) — същите числа като лентата на чата, „Памет" и „Задачи",
+  // за да няма разминаване между секциите („какво е научил" беше различно навсякъде).
+  const stats = learnedStats();
   root.appendChild(el('div', { class: 'card', style: 'border-left:3px solid var(--accent-2)' }, [
     el('h3', {}, t('sr_local_title')),
     el('p', { class: 'muted', style: 'font-size:13px' }, tf('sr_local_desc', memoryCount())),
+    el('p', { class: 'muted', style: 'font-size:13px' }, tf('learned_totals', stats.learned, stats.notes)),
+    el('p', { class: 'muted', style: 'font-size:12px' }, t('learned_where')),
     el('p', { class: 'muted', style: 'font-size:12px' }, t('sr_local_master'))
   ]));
 

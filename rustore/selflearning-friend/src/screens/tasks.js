@@ -1,10 +1,10 @@
-// Version: 1.0001
+// Version: 1.0026
 // tasks.js (screen) — екран „Задачи“: дай задача, виж резултат, виж научените теми
 // и потока „Какво уча сега“ + брояч на наученото.
 import { el, clear, toast } from '../ui/dom.js';
 import { parseTask, intakeAndRun } from '../core/tasks.js';
 import { listTasks, removeTask, clearFinished, statusLabel } from '../core/tasklist.js';
-import { listSubjects, deleteSubject, listInterests } from '../core/subjects.js';
+import { listSubjects, deleteSubject, listInterests, learnedStats } from '../core/subjects.js';
 import { learningFeed, learnedCount, currentlyLearning, learningEnabled, setLearningEnabled, tick } from '../core/learning-loop.js';
 import { t, tf } from '../core/i18n.js';
 
@@ -141,7 +141,14 @@ export function renderTasks(root, { rerender }) {
     clear(subjWrap);
     renderLearnCard();
     const subjects = listSubjects().sort((a, b) => b.updated - a.updated);
-    subjWrap.appendChild(el('h3', { style: 'margin-top:8px' }, tf('tasks_subjects_count', subjects.length)));
+    // ЕДИННАТА статистика (learnedStats): заглавието брои темите СЪС записи — същото число,
+    // което лентата на чата и „Знание"/„Памет" показват. Чакащите (празни) теми се изписват
+    // отделно, за да няма разминаване между секциите.
+    const stats = learnedStats();
+    subjWrap.appendChild(el('h3', { style: 'margin-top:8px' }, tf('tasks_subjects_count', stats.learned)));
+    if (stats.waiting > 0) {
+      subjWrap.appendChild(el('p', { class: 'muted', style: 'font-size:12px' }, tf('learned_waiting', stats.waiting)));
+    }
     if (!subjects.length) {
       subjWrap.appendChild(el('p', { class: 'muted' }, t('tasks_no_subjects')));
       subjWrap.appendChild(el('p', { class: 'muted', style: 'font-size:12px' },

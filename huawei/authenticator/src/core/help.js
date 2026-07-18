@@ -1,9 +1,12 @@
-// Version: 1.0001
+// Version: 1.0015
 // help.js — УНИВЕРСАЛЕН бутон „Помощ / HELP?" за ВСЯКО приложение (еднакъв файл навсякъде).
-// Плаващ бутон на екрана → модал → праща АНОНИМЕН доклад към порталната таблица
-// (portal_bug_reports) през /api/portals/bug-report/anon. Без вход. Полето `app` (подава се на
-// mountHelp) казва от кое приложение идва грешката. На телефон ползва CapacitorHttp (заобикаля
-// CORS); в браузър — fetch. БЕЗ AbortController (чупи CapacitorHttp — виж net.js бележките).
+// Бутонът вече живее в ЕДИННАТА долна лента (core/kcy-bar.js) → модал → праща АНОНИМЕН доклад
+// към порталната таблица (portal_bug_reports) през /api/portals/bug-report/anon. Без вход.
+// Полето `app` (подава се на mountHelp) казва от кое приложение идва грешката. На телефон ползва
+// CapacitorHttp (заобикаля CORS); в браузър — fetch. БЕЗ AbortController (чупи CapacitorHttp —
+// виж net.js бележките).
+import { kcyBarButton } from './kcy-bar.js';
+
 const ENDPOINT = 'https://selflearning.bot.nu/api/portals/bug-report/anon';
 
 // Кратки етикети на 15-те езика (fallback → en). Езикът се чете от <html lang> на приложението.
@@ -67,17 +70,5 @@ export function mountHelp(appId) {
     const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:8px;margin-top:12px'; row.append(cancel, send);
     box.append(h, ta, msg, row); ov.appendChild(box); document.body.appendChild(ov); ta.focus();
   }
-  function add() {
-    if (!document.body || document.getElementById('kcy-help-btn')) return;
-    const btn = document.createElement('button'); btn.id = 'kcy-help-btn';
-    const relabel = () => { btn.textContent = '❓ ' + tr('btn'); };
-    relabel();
-    btn.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:2147483000;background:#ee5a6f;color:#fff;border:none;border-radius:20px;padding:9px 14px;font:600 13px system-ui,Segoe UI,Roboto,sans-serif;box-shadow:0 3px 10px rgba(0,0,0,.35);cursor:pointer';
-    btn.onclick = openModal;
-    document.body.appendChild(btn);
-    // Езикът се задава от приложението СЛЕД качването на бутона (и се сменя от потребителя) →
-    // следим атрибута lang на <html> и пре-етикетираме бутона, за да съвпада винаги.
-    try { new MutationObserver(relabel).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] }); } catch (e) {}
-  }
-  if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
+  kcyBarButton({ id: 'kcy-help-btn', order: 20, label: () => '❓ ' + tr('btn'), onClick: openModal });
 }

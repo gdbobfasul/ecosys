@@ -1,4 +1,4 @@
-// Version: 1.0011
+// Version: 1.0012
 // Игрова сцена: построява ниво, управлява спавн на цели, стрелба (hitscan +
 // проектили), HUD (вкл. минимапа-радар), лимити време/боеприпаси, точки и преход към следващо ниво.
 import * as THREE from 'three';
@@ -82,10 +82,24 @@ export class GameScene {
       weapon: t('wpn_' + this.config.weapon.key),
       score: this.score,
       left: this.config.count,
-      time: Math.ceil(this.timeLeft),
+      time: this.config.timeLimit > 0 ? Math.ceil(this.timeLeft) : '∞',
       ammo: this.ammo
     });
-    this.hud.toast(tf('level_toast', this.config.level, targetName(this.config.target)));
+    this.hud.toast(tf('level_toast', this.config.level, targetName(this.config.target))
+      + (this.config.timeLimit > 0 ? '' : ' · ' + t('time_nolimit')));
+    // Обяснение на управлението: насложен екран с двете зони (движение/оглеждане) и бутона
+    // ОГЪН — показва се при първите 3 пускания (после играчът вече го знае).
+    if (this.hud.showGuide) {
+      let seen = 0;
+      try { seen = parseInt(localStorage.getItem('fps.guide.seen') || '0', 10) || 0; } catch (e) {}
+      if (seen < 3) {
+        try { localStorage.setItem('fps.guide.seen', String(seen + 1)); } catch (e) {}
+        this.hud.showGuide({
+          move: t('guide_move'), look: t('guide_look'), fire: t('guide_fire'),
+          desktop: t('guide_desktop'), dismiss: t('guide_dismiss')
+        });
+      }
+    }
   }
 
   _spawnTarget() {
@@ -183,14 +197,16 @@ export class GameScene {
     // Огън
     if (this.controls.consumeFire()) this._fire();
 
-    // Таймер
-    this.timeLeft -= dt;
-    this.hud.set({ time: Math.max(0, Math.ceil(this.timeLeft)) });
+    // Таймер: тече САМО ако нивото има лимит (нива 1–50 са без лимит → timeLimit = 0, HUD показва ∞)
+    if (this.config.timeLimit > 0) {
+      this.timeLeft -= dt;
+      this.hud.set({ time: Math.max(0, Math.ceil(this.timeLeft)) });
+    }
 
     // Край на нивото
     if (this.killed >= this.config.count) {
       this._end(true);
-    } else if (this.timeLeft <= 0) {
+    } else if (this.config.timeLimit > 0 && this.timeLeft <= 0) {
       this._end(false);
     } else if (this.ammo === 0 && this.reloadCd <= 0 &&
                this.effects.projectiles.length === 0 &&

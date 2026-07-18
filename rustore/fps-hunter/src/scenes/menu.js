@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0012
 // Меню сцена: заглавие, бутон Старт, избор на начално ниво, лидерборд, бутон 🌐.
 import { THEME } from '../theme.js';
 import { iconSVG, svgDataUrl } from '../branding.svg.js';
@@ -36,7 +36,17 @@ export function showMenu(root, leaderboard, onStart) {
     <button id="start-btn" style="padding:14px 40px;font-size:20px;font-weight:800;border:none;border-radius:12px;
       background:${a};color:#04121d;cursor:pointer;letter-spacing:2px">${escapeHtml(t('start_btn'))}</button>
 
-    <div style="margin-top:26px;width:min(420px,90vw)">
+    <!-- ЯСНО обяснение на управлението — видима карта, не ситна бележка под линия -->
+    <div style="margin-top:20px;width:min(420px,90vw);background:rgba(0,0,0,0.3);border:1px solid #2a3b4d;border-radius:12px;padding:12px 14px;text-align:left;font-size:13px;color:#c7d6e4;line-height:1.6">
+      <div style="font-weight:800;color:#fff;margin-bottom:6px">${escapeHtml(t('controls_title'))}</div>
+      <div>🕹️ ${escapeHtml(t('guide_move'))}</div>
+      <div>👀 ${escapeHtml(t('guide_look'))}</div>
+      <div>🔫 ${escapeHtml(t('guide_fire'))}</div>
+      <div>⌨️ ${escapeHtml(t('guide_desktop'))}</div>
+      <div style="margin-top:6px;color:#8fd48b">⏱ ${escapeHtml(t('time_nolimit'))}</div>
+    </div>
+
+    <div style="margin-top:22px;width:min(420px,90vw)">
       <div style="font-size:15px;color:#9fb0c0;margin-bottom:6px;text-align:center">${escapeHtml(t('top10_local'))}</div>
       <table style="width:100%;border-collapse:collapse;font-size:15px;background:rgba(0,0,0,0.25);border-radius:10px;overflow:hidden">
         <tbody>${rows}</tbody>
@@ -44,7 +54,6 @@ export function showMenu(root, leaderboard, onStart) {
     </div>
 
     <div style="margin-top:18px;max-width:420px;text-align:center;font-size:12px;color:#65788a;line-height:1.5">
-      ${escapeHtml(t('controls_help'))}<br/>
       ${escapeHtml(t('privacy_note'))}
     </div>
   `;

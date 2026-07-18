@@ -1,22 +1,27 @@
-// Version: 1.0001
-// legal.js — УНИВЕРСАЛЕН правен footer за ВСЯКО приложение (еднакъв файл навсякъде).
-// Слага малък постоянен линк „Поверителност" (долу-ляво), който отваря СПЕЦИФИЧНАТА за апа
-// хостната политика — Huawei/RuStore искат линк към политиката ДОСТЪПЕН ВЪТРЕ в приложението
-// (Huawei правило 7.1), не само в store listing. Линкът стои на всяка страница (footer), значи
-// покрива и „минимум на първата страница", и „на всяка страница".
+// Version: 1.0014
+// legal.js — УНИВЕРСАЛЕН правен модул за ВСЯКО приложение (еднакъв файл навсякъде).
+// Слага в ЕДИННАТА долна лента (core/kcy-bar.js) бутоните „Поверителност" и „Условия", които
+// отварят СПЕЦИФИЧНИТЕ за апа хостнати документи — Huawei/RuStore искат линкове, ДОСТЪПНИ ВЪТРЕ
+// в приложението (Huawei правило 7.1), не само в store listing. Лентата стои на всяка страница,
+// значи покрива и „минимум на първата страница", и „на всяка страница".
 //
-// Ако приложението има акаунти (opts.account:true — напр. chat, houselookbook), добавя и линк
+// Ако приложението има акаунти (opts.account:true — напр. chat, houselookbook), добавя и бутон
 // „Изтрий акаунта". ВАЖНО: потребителят НЕ трие акаунта сам (сигурност) — праща ЗАЯВКА до
 // администратора през същата анонимна система за доклади; само админ/модератор изпълнява триенето.
 //
 // Файлът с политиката е специфичен за магазина (инжектира се от add-privacy-link.cjs):
 //   Huawei → hw-privacy.html ; RuStore → rustore-privacy.html (newslator: ru-privacy.html).
+// Файлът с условията се извежда от него: hw-* → hw-terms.html, иначе rustore-terms.html.
+import { kcyBarButton } from './kcy-bar.js';
+
 const PRIVACY_BASE = 'https://selflearning.bot.nu/privacy';
 const PRIVACY_FILE = 'hw-privacy.html';           // заменя се при инжектиране (по магазин)
+const TERMS_FILE = PRIVACY_FILE.indexOf('hw') === 0 ? 'hw-terms.html' : 'rustore-terms.html';
 const REPORT_ENDPOINT = 'https://selflearning.bot.nu/api/portals/bug-report/anon';
 
 const L = {
   priv:   { bg:'Поверителност', ru:'Конфиденциальность', uk:'Конфіденційність', en:'Privacy', de:'Datenschutz', fr:'Confidentialité', es:'Privacidad', 'es-MX':'Privacidad', it:'Privacy', pt:'Privacidade', ar:'الخصوصية', hi:'गोपनीयता', ja:'プライバシー', ky:'Купуялык', 'zh-Hant':'私隱' },
+  terms:  { bg:'Условия', ru:'Условия', uk:'Умови', en:'Terms', de:'AGB', fr:'Conditions', es:'Términos', 'es-MX':'Términos', it:'Termini', pt:'Termos', ar:'الشروط', hi:'शर्तें', ja:'利用規約', ky:'Шарттар', 'zh-Hant':'條款' },
   del:    { bg:'Изтрий акаунта', ru:'Удалить аккаунт', uk:'Видалити акаунт', en:'Delete account', de:'Konto löschen', fr:'Supprimer le compte', es:'Eliminar cuenta', 'es-MX':'Eliminar cuenta', it:'Elimina account', pt:'Eliminar conta', ar:'حذف الحساب', hi:'खाता हटाएं', ja:'アカウント削除', ky:'Аккаунтту өчүрүү', 'zh-Hant':'刪除帳戶' },
   dtitle: { bg:'Заявка за изтриване на акаунт', ru:'Запрос на удаление аккаунта', uk:'Запит на видалення акаунта', en:'Account deletion request', de:'Antrag auf Kontolöschung', fr:'Demande de suppression de compte', es:'Solicitud de eliminación de cuenta', 'es-MX':'Solicitud de eliminación de cuenta', it:'Richiesta di eliminazione account', pt:'Pedido de eliminação de conta', ar:'طلب حذف الحساب', hi:'खाता हटाने का अनुरोध', ja:'アカウント削除リクエスト', ky:'Аккаунтту өчүрүү өтүнүчү', 'zh-Hant':'刪除帳戶請求' },
   ddesc:  { bg:'От съображения за сигурност акаунтите се изтриват само от администратор. Изпрати заявка (по избор посочи потребителско име/имейл) и екипът ще я обработи.', ru:'В целях безопасности аккаунты удаляет только администратор. Отправьте запрос (по желанию укажите имя пользователя/эл. почту), и команда его обработает.', uk:'З міркувань безпеки акаунти видаляє лише адміністратор. Надішліть запит (за бажанням вкажіть імʼя користувача/пошту), і команда його обробить.', en:'For security, accounts are deleted only by an administrator. Send a request (optionally include your username/email) and the team will process it.', de:'Aus Sicherheitsgründen werden Konten nur von einem Administrator gelöscht. Sende eine Anfrage (optional mit Benutzername/E-Mail) und das Team bearbeitet sie.', fr:'Pour des raisons de sécurité, les comptes ne sont supprimés que par un administrateur. Envoie une demande (nom d’utilisateur/e-mail en option) et l’équipe la traitera.', es:'Por seguridad, las cuentas solo las elimina un administrador. Envía una solicitud (opcionalmente con tu usuario/correo) y el equipo la procesará.', 'es-MX':'Por seguridad, las cuentas solo las elimina un administrador. Envía una solicitud (opcionalmente con tu usuario/correo) y el equipo la procesará.', it:'Per sicurezza, gli account vengono eliminati solo da un amministratore. Invia una richiesta (facoltativo: nome utente/email) e il team la elaborerà.', pt:'Por segurança, as contas só são eliminadas por um administrador. Envia um pedido (opcionalmente com o teu utilizador/email) e a equipa tratará dele.', ar:'لأسباب أمنية، لا يحذف الحسابات سوى المسؤول. أرسل طلبًا (اختياريًا مع اسم المستخدم/البريد) وسيقوم الفريق بمعالجته.', hi:'सुरक्षा के लिए, खाते केवल व्यवस्थापक द्वारा हटाए जाते हैं। अनुरोध भेजें (वैकल्पिक रूप से उपयोगकर्ता नाम/ईमेल दें) और टीम इसे संसाधित करेगी।', ja:'セキュリティのため、アカウントは管理者のみが削除します。リクエストを送信してください（任意でユーザー名/メール）。チームが対応します。', ky:'Коопсуздук үчүн аккаунттарды администратор гана өчүрөт. Өтүнүч жөнөт (каалоо боюнча колдонуучу аты/почта) жана команда аны иштетет.', 'zh-Hant':'基於安全，帳戶僅由管理員刪除。請發送請求（可選填使用者名稱/電郵），團隊將處理。' },
@@ -32,6 +37,12 @@ function lang() {
   return 'en';
 }
 function tr(k) { const m = L[k] || {}; return m[lang()] || m.en || m.bg || k; }
+
+// Отваряне на хостнат документ: на телефон през Capacitor Browser (ако е наличен), иначе window.open.
+function openDoc(url) {
+  try { if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) { window.Capacitor.Plugins.Browser.open({ url }); return; } } catch (e) {}
+  try { window.open(url, '_blank'); } catch (e) { try { location.href = url; } catch (e2) {} }
+}
 
 async function postReport(app, body) {
   const payload = { app: app, title: 'ACCOUNT_DELETION_REQUEST', body: body };
@@ -71,32 +82,11 @@ function openDeleteModal(app) {
 export function mountPrivacyLink(appId, opts) {
   const app = appId || 'unknown';
   const account = !!(opts && opts.account);
-  const url = `${PRIVACY_BASE}/${app}/${PRIVACY_FILE}`;
-  function add() {
-    if (!document.body || document.getElementById('kcy-legal-bar')) return;
-    const bar = document.createElement('div'); bar.id = 'kcy-legal-bar';
-    // Долу-ДЯСНО, НАД бутона „Помощ" (който е на bottom:12) — за да НЕ се блъска с балончето
-    // „✨ KCY" (долу-ляво) и да не закрива важни бутони. Ненатрапчиво, малко.
-    bar.style.cssText = 'position:fixed;right:12px;bottom:58px;z-index:2147483000;display:flex;flex-direction:column;gap:6px;align-items:flex-end;pointer-events:none';
-    // линк към политиката (винаги)
-    const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
-    const relabelP = () => { a.textContent = '🔒 ' + tr('priv'); };
-    relabelP();
-    a.style.cssText = 'pointer-events:auto;background:rgba(20,26,36,.72);color:#cdd6e0;text-decoration:none;border-radius:14px;padding:5px 10px;font:600 12px system-ui,Segoe UI,Roboto,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.3)';
-    a.onclick = (e) => { try { e.preventDefault(); window.open(url, '_blank'); } catch (_) { location.href = url; } };
-    bar.appendChild(a);
-    // по избор: заявка за изтриване на акаунт (само за апове с акаунти)
-    let relabelD = () => {};
-    if (account) {
-      const d = document.createElement('button');
-      relabelD = () => { d.textContent = '🗑️ ' + tr('del'); };
-      relabelD();
-      d.style.cssText = 'pointer-events:auto;background:rgba(90,20,26,.72);color:#f2c9c9;border:none;border-radius:14px;padding:5px 10px;font:600 12px system-ui;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer';
-      d.onclick = () => openDeleteModal(app);
-      bar.appendChild(d);
-    }
-    document.body.appendChild(bar);
-    try { new MutationObserver(() => { relabelP(); relabelD(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] }); } catch (e) {}
+  const privacyUrl = `${PRIVACY_BASE}/${app}/${PRIVACY_FILE}`;
+  const termsUrl = `${PRIVACY_BASE}/${app}/${TERMS_FILE}`;
+  kcyBarButton({ id: 'kcy-legal-priv', order: 30, label: () => '🔒 ' + tr('priv'), onClick: () => openDoc(privacyUrl) });
+  kcyBarButton({ id: 'kcy-legal-terms', order: 40, label: () => '📄 ' + tr('terms'), onClick: () => openDoc(termsUrl) });
+  if (account) {
+    kcyBarButton({ id: 'kcy-legal-del', order: 50, label: () => '🗑️ ' + tr('del'), onClick: () => openDeleteModal(app) });
   }
-  if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
 }

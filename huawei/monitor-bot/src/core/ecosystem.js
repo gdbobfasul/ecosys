@@ -1,8 +1,8 @@
-// Version: 1.0005
-// ecosystem.js — екран „Още от KCY Ecosystem": плаващ бутон + showcase списък на ДРУГИТЕ
-// приложения (снимка + ИМЕ + описание 15 езика + линк към приложението). Footer
-// „KCY Ecosystem publisher 2026". БЕЗ изскачащи реклами (доброволен екран → минава правилата на
-// магазините). Всеки апп подава своя id и се самоизключва.
+// Version: 1.0014
+// ecosystem.js — екран „Още от KCY Ecosystem": бутон „KCY Ecosystem" в ЕДИННАТА долна лента
+// (core/kcy-bar.js) + showcase списък на ДРУГИТЕ приложения (снимка + ИМЕ + описание 15 езика +
+// линк към приложението). Footer „KCY Ecosystem publisher 2026". БЕЗ изскачащи реклами
+// (доброволен екран → минава правилата на магазините). Всеки апп подава своя id и се самоизключва.
 //
 // Каталогът се тегли ПЪРВО ОТ СЪРВЪРА (public/promo/kcy-promo.json → https://…/promo/kcy-promo.json):
 // така СЛЕД издаване се управлява ЦЕНТРАЛНО кои приложения се рекламират (одобрени/качени в
@@ -10,6 +10,8 @@
 // на файла на сървъра. Ако сървърът не отговори (без интернет) → ЛОКАЛНОТО резервно копие
 // `kcy-promo.json`, вкарано в билда от `app-shared/promo-catalog.json`.
 // Само записи с `enabled:true` и различни от текущия апп се показват.
+import { kcyBarButton } from './kcy-bar.js';
+
 const CATALOG_URL_REMOTE = 'https://selflearning.bot.nu/promo/kcy-promo.json';
 const CATALOG_URL_LOCAL = './kcy-promo.json';
 let CACHE = null;
@@ -81,25 +83,5 @@ export function mountEcosystem(selfId) {
       list.querySelectorAll('.kcy-eco-card').forEach((c) => { c.onclick = () => openLink(c.getAttribute('data-url')); });
     });
   }
-  function add() {
-    if (!document.body || document.getElementById('kcy-eco-wrap')) return;
-    // Обвивка, за да носи и малкия ✕ (бутонът закрива съдържание → потребителят може да го
-    // скрие; появява се пак при следващото пускане на приложението).
-    const wrap = document.createElement('div'); wrap.id = 'kcy-eco-wrap';
-    wrap.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:2147483000;padding:9px 9px 0 0';
-    const b = document.createElement('button'); b.id = 'kcy-eco-btn';
-    b.textContent = '✨ KCY';
-    b.title = 'KCY Ecosystem';
-    b.style.cssText = 'background:#1b2536;color:#8bd450;border:1px solid #2a3550;border-radius:20px;padding:9px 13px;font:600 13px system-ui,Segoe UI,Roboto,sans-serif;box-shadow:0 3px 10px rgba(0,0,0,.35);cursor:pointer';
-    b.onclick = openShowcase;
-    const x = document.createElement('button'); x.id = 'kcy-eco-hide';
-    x.textContent = '✕';
-    x.title = 'Close';
-    x.setAttribute('aria-label', 'Close');
-    x.style.cssText = 'position:absolute;top:0;right:0;width:18px;height:18px;display:flex;align-items:center;justify-content:center;background:#2a3550;color:#cdd;border:1px solid #3a4560;border-radius:50%;font:600 10px/1 system-ui,Segoe UI,Roboto,sans-serif;padding:0;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.35)';
-    x.onclick = (e) => { e.stopPropagation(); try { wrap.remove(); } catch (err) {} };
-    wrap.appendChild(b); wrap.appendChild(x);
-    document.body.appendChild(wrap);
-  }
-  if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
+  kcyBarButton({ id: 'kcy-eco-btn', order: 10, accent: true, label: () => '✨ KCY Ecosystem', onClick: openShowcase });
 }

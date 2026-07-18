@@ -1,4 +1,4 @@
-// Version: 1.0012
+// Version: 1.0026
 // learning-loop.js — непрекъснат самообучаващ цикъл („НЯМА спирка“).
 //
 // Когато няма активна задача, ботът сам избира тема (ротира през интересите + темите,
@@ -15,7 +15,7 @@
 //     тук НЕ имплементираме. Документираме това честно (виж README/store/BACKGROUND.md).
 
 import { getState, persist } from './storage.js';
-import { listInterests, listSubjects, addNote, notesCount, getSubject, removeInterest, forgetSubjects, DEFAULT_INTERESTS } from './subjects.js';
+import { listInterests, listSubjects, addNote, notesCount, learnedStats, getSubject, removeInterest, forgetSubjects, DEFAULT_INTERESTS } from './subjects.js';
 import { fetchCrypto, fetchFx, gatherTreeAnswer, netCounters, wikiSearch, relatedTopics, extractTermsFromText, validateTermsViaWiki } from './sources.js';
 import { listLearnFeeds, refreshNextFeed, refreshTopicFeeds } from './ingest.js';
 import { learnBudget, dbSizeBytes, dbSizeMB, perTopicNotes } from './learn-budget.js';
@@ -228,8 +228,8 @@ export async function tick() {
     if (bound.length) {
       const fr = await refreshTopicFeeds(topic);
       if (fr && fr.added > 0) {
-        const totT = listSubjects().filter((s) => s.notes && s.notes.length).length;
-        pushActivity({ status: 'done', topic, note: `Научих още ${fr.added} от твоите източници за „${topic}“ (${fr.feed}). Общо: ${totT} теми · ${notesCount()} бележки.` });
+        const stats = learnedStats();   // ЕДИННАТА статистика — същите числа като „Знание"/„Памет"/„Задачи"
+        pushActivity({ status: 'done', topic, note: `Научих още ${fr.added} от твоите източници за „${topic}“ (${fr.feed}). Общо: ${stats.learned} теми · ${stats.notes} бележки.` });
         if (_onTick) _onTick();
         return currentlyLearning();       // приоритетният източник даде ново → това е тактът
       }
@@ -336,8 +336,9 @@ export async function tick() {
     const reached = after.reached > before.reached;   // стигнахме ли изобщо до сървър (офлайн ли сме)
 
     if (added > 0) {
-      const totTopics = listSubjects().filter((s) => s.notes && s.notes.length).length;
-      const totNotes = notesCount();
+      const stats = learnedStats();     // ЕДИННАТА статистика — същите числа като „Знание"/„Памет"/„Задачи"
+      const totTopics = stats.learned;
+      const totNotes = stats.notes;
       const usedMB = dbSizeMB();
       const pct = Math.min(100, Math.round((usedMB / budget.maxDbMB) * 100));
       const where = node === topic ? `за „${topic}“` : `по клона „${node}“ от дървото на „${topic}“`;

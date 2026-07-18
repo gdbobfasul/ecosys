@@ -1,4 +1,4 @@
-// Version: 1.0010
+// Version: 1.0026
 // subjects.js — теми за учене + интереси на собственика + дневник на наученото.
 //
 // Държи списък „теми“ (subjects), всяка с натрупани наставки от източници. Това е
@@ -136,6 +136,19 @@ export function deleteSubject(id) {
 // Общ брой научени наставки (за брояча „научени неща“).
 export function notesCount() {
   return (getState().subjects || []).reduce((acc, s) => acc + s.notes.length, 0);
+}
+
+// ЕДИННАТА статистика на наученото — ЕДИНСТВЕНИЯТ източник на истина за броячите,
+// показвани в лентата на чата, „Знание", „Памет" и „Задачи". Преди всяка секция си
+// смяташе своето (теми С записи vs всички теми vs ръчната памет) → различни числа.
+//   learned  = теми, по които ИМА научени записи;
+//   waiting  = теми в опашката, още БЕЗ записи;
+//   notes    = общ брой научени записи по всички теми.
+export function learnedStats() {
+  const subjects = getState().subjects || [];
+  let learned = 0;
+  for (const s of subjects) { if (s.notes && s.notes.length) learned++; }
+  return { learned, waiting: subjects.length - learned, all: subjects.length, notes: notesCount() };
 }
 
 // Приблизителен размер на ЕДНА тема в байтове (UTF-8) — за „дай списък с темите по МБ".
