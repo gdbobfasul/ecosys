@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0018
 // styles.js — инжектира CSS-а на приложението. Цветовете идват от THEME през
 // CSS променливи (зададени на :root в main.js), за да съвпадат с магазина.
 export const CSS = `
@@ -64,7 +64,9 @@ input:focus, select:focus { border-color: var(--primary); }
 .hotp-next { background: var(--bgInput); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 6px 10px; cursor: pointer; }
 
 .fab {
-  position: fixed; right: calc(50% - 280px + 20px); bottom: 24px;
+  /* НАД лентата с табовете (~58px) — иначе кръгът „+" ляга върху таба „Портфейли"
+     и прихваща натисканията му (бъг, хванат от тест робота). */
+  position: fixed; right: calc(50% - 280px + 20px); bottom: 92px;
   width: 58px; height: 58px; border-radius: 50%; border: none; cursor: pointer;
   background: var(--accent); color: #fff; font-size: 2em; line-height: 1;
   box-shadow: 0 6px 18px rgba(0,0,0,.4); z-index: 6;

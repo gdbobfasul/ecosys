@@ -1,6 +1,6 @@
 # Проверка на име: KCY Site Monitor
 
-_2026-07-16T21:28:06.383Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-19T15:07:21.566Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 
@@ -12,17 +12,17 @@ _Условия: търсено по думата „KCY Site Monitor" във В
 **Намерени приложения: 12** · точни съвпадения на името: **0** · подобни (съдържат името): **0**
 _Условия: търсено в App Store на 2 държави — САЩ (us) и Китай (cn), на английски по думата „KCY Site Monitor" (тип „software")._
 - Site24x7 — Zoho Corporation (Business)
+- PRTG - Monitoring — Paessler AG (Productivity)
 - System Status: hw monitor — Jiri Techet (Utilities)
 - Scott's Pinger: Uptime Monitor — Scott DeSapio (Developer Tools)
-- PRTG - Monitoring — Paessler AG (Productivity)
 - UptimeRobot: Monitor anything! — itrinity, s.r.o. (Utilities)
-- Distill Web Monitor — Neemb LLC (Utilities)
 - Battery Widget: CPU x Monitor — LE NGUYEN QUANG PHUOC (Utilities)
+- Distill Web Monitor — Neemb LLC (Utilities)
 - Battery Level — Kenneth Kao (Utilities)
-- QTAKE Monitor — IN2CORE s.r.o. (Photo & Video)
 - Hosts Monitor — Bytes Cove SRLS (Utilities)
+- QTAKE Monitor — IN2CORE s.r.o. (Photo & Video)
 - SYSTEM UTIL Dashboard — Sohel Mazumder (Utilities)
-- Status Monitor — 伟航 黄 (Utilities)
+- CPU Z: Device Monitor x Dasher — LE NGUYEN QUANG PHUOC (Utilities)
 
 ## Huawei AppGallery
 **Намерени заглавия: 0** · точни съвпадения на името: **0**
@@ -41,13 +41,13 @@ _Условия: прочетено от JSON API-то на AppGallery (getTabDe
 ╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **1** · свободни: **44** · несигурни: **4**
+**Проверени разширения: 49** · заети: **1** · свободни: **46** · несигурни: **2**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „KCY Site Monitor". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 
 Заети (малко — оглед на съдържание и ниша):
 - **kcysitemonitor.so** → сайтът не отговаря
-Свободни: 44 (напр. kcysitemonitor.com, kcysitemonitor.net, kcysitemonitor.org, kcysitemonitor.ai, kcysitemonitor.app, kcysitemonitor.news, kcysitemonitor.media, kcysitemonitor.press …)
-Несигурни (RDAP без отговор + без DNS): kcysitemonitor.co, kcysitemonitor.io, kcysitemonitor.me, kcysitemonitor.ac
+Свободни: 46 (напр. kcysitemonitor.com, kcysitemonitor.net, kcysitemonitor.org, kcysitemonitor.co, kcysitemonitor.io, kcysitemonitor.ai, kcysitemonitor.app, kcysitemonitor.news …)
+Несигурни (RDAP без отговор + без DNS): kcysitemonitor.me, kcysitemonitor.ac
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

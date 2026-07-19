@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0016
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -12,7 +12,7 @@ playIntro(); // кратко „KCY Ecosystem" интро при старт
 startPromoAds('hmm'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('hmm'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('hmm'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
-mountLegalGate('hmm', { hasLang: false }); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
+mountLegalGate('hmm'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 // HMM — Битка на терен (самостоятелно мобилно приложение, RUStore)
 // Зарежда вградения двигател и пуска отборната (HMM) битка 3 срещу 3.
 // Без portals backend, без мрежа: всичко е локално (offline).

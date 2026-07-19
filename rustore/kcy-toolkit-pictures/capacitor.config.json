@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.toolkitpictures.rustore",
+  "appName": "KCY Toolkit Pictures",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

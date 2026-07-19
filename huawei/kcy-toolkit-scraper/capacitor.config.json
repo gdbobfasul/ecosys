@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.toolkitscraper.hw",
+  "appName": "KCY Toolkit Scraper",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

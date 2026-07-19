@@ -1,4 +1,4 @@
-// Version: 1.0016
+// Version: 1.0018
 // analysis.js — ОБРАЗОВАТЕЛЕН анализ върху РЕАЛНА история (без ключове):
 //   • Крипто → Binance klines (пълна дневна история на партиди; CoinGecko days=365 резерва).
 //   • Злато/индекси/имоти → Yahoo Finance v8 chart (range=10y, дневно).
@@ -126,6 +126,75 @@ export function analyzeWindow(series, fromTs, toTs, fng) {
   const high = Math.max.apply(null, closes), low = Math.min.apply(null, closes);
   const reasons = []; let score = 0;
 
+  // ПРАВИЛО (важно, зададено от потребителя): „когато дългосрочните притежатели са на
+  // значителна загуба — това е дъното на пазара". Без платени on-chain данни се
+  // приближава така: себестойността на дългосрочните ≈ СРЕДНАТА цена за последната
+  // година преди края на прозореца; текущата цена ≥20% ПОД нея → те са на значителна
+  // загуба → силен белег за дъно (образователно).
+  // ── ЙЕРАРХИЯ НА РЕАЛИЗИРАНИТЕ ЦЕНИ (правилата на потребителя, финална форма) ──
+  // • Под цената на КРАТКОСРОЧНИТЕ притежатели (те губят) → сигнал евентуално само за
+  //   КРАТКА печалба (отскок).
+  // • Под цената на ДЪЛГОСРОЧНИТЕ притежатели → ЗЛАТНАТА ВЪЗМОЖНОСТ — В СЛУЧАЙ че
+  //   активът НЕ изчезне, а се запази → затова първо се преценява ВЕРОЯТНОСТТА ЗА
+  //   ИЗЧЕЗВАНЕ (срив ≥85% от върха + все още падащ тренд) и тя БЛОКИРА златния сигнал.
+  // Приближения без on-chain данни: краткосрочните ≈ средната цена от последните ~90
+  // дни; дългосрочните ≈ средната от последните 365 дни.
+  const upto = series.filter((p) => p.t <= toTs);
+  const yearAgo = toTs - 365 * DAY;
+  const yearWin = upto.filter((p) => p.t >= yearAgo);
+  const sthWin = upto.slice(-90);
+  if (yearWin.length >= 120 && sthWin.length >= 60) {
+    let sum = 0; for (const p of yearWin) sum += p.close;
+    const lthBasis = sum / yearWin.length;                 // реализираната цена на дългосрочните
+    let sSth = 0; for (const p of sthWin) sSth += p.close;
+    const sthBasis = sSth / sthWin.length;                 // реализираната цена на краткосрочните
+    const lthPct = (endPrice / lthBasis - 1) * 100;
+
+    // Вероятност активът да ИЗЧЕЗНЕ: срив ≥85% от историческия връх + трендът още пада.
+    let ath = 0; for (const p of upto) if (p.close > ath) ath = p.close;
+    const ddPct = ath > 0 ? (endPrice / ath - 1) * 100 : 0;
+    const vanishing = ddPct <= -85 && sShort != null && sLong != null && sShort < sLong;
+
+    if (endPrice <= lthBasis * 0.97) {
+      if (vanishing) {
+        // под дългосрочните, НО активът изглежда пред изчезване → златното правило НЕ важи
+        score -= 25; reasons.unshift({ k: 'vanish_risk', v: Math.round(ddPct) });
+      } else {
+        score += 50; reasons.unshift({ k: 'golden_buy', v: Math.round(lthPct) });
+        if (lthPct <= -30) { score += 15; reasons.push({ k: 'lth_loss', v: Math.round(lthPct) }); }
+        else if (lthPct <= -20) { score += 10; reasons.push({ k: 'lth_loss', v: Math.round(lthPct) }); }
+      }
+    } else if (endPrice <= sthBasis * 0.97) {
+      // под краткосрочните, но НАД дългосрочните → евентуално само кратка печалба
+      score += 15; reasons.push({ k: 'sth_loss', v: Math.round((endPrice / sthBasis - 1) * 100) });
+    } else if (lthPct >= 40 && changePct >= 20) {
+      // БИЧИ пазар: дългосрочните реализират търсената цена много бързо → ПРОДАВАНЕ
+      score -= 30; reasons.push({ k: 'lth_profit_fast', v: Math.round(lthPct) });
+    } else {
+      // ПРАВИЛО (потребителя): „когато започне да ПРОБИВА НАД краткосрочната
+      // реализирана цена — мечият пазар / падането на цената СВЪРШВА" → обръщане
+      // на тренда: сега сме ≥2% над нея, а само преди дни (последните 30) бяхме под.
+      const last30 = upto.slice(-30);
+      let min30 = Infinity; for (const p of last30) if (p.close < min30) min30 = p.close;
+      if (endPrice >= sthBasis * 1.02 && min30 < sthBasis) {
+        score += 25; reasons.push({ k: 'sth_breakout', v: Math.round((endPrice / sthBasis - 1) * 100) });
+      }
+    }
+  }
+
+  // ПРАВИЛО (зададено от потребителя): падне ли цената ПОД 200-дневната плъзгаща
+  // средна, вероятността да последва покачване се покачва — ОСВЕН ако активът се
+  // срива към нулата (пред изчезване). Затова: умерено под MA200 → плюс; свободно
+  // падане (≥60% под нея) → НЕ е сигнал за купуване, а предупреждение.
+  const ma200win = series.filter((p) => p.t <= toTs).slice(-200);
+  if (ma200win.length >= 150) {
+    let s200 = 0; for (const p of ma200win) s200 += p.close;
+    const ma200 = s200 / ma200win.length;
+    const ma200Pct = (endPrice / ma200 - 1) * 100;
+    if (ma200Pct <= -60) { score -= 15; reasons.push({ k: 'freefall_warn', v: Math.round(ma200Pct) }); }
+    else if (ma200Pct < -3) { score += 15; reasons.push({ k: 'below_ma200', v: Math.round(ma200Pct) }); }
+  }
+
   if (r != null) {
     if (r < 30) { score += 25; reasons.push({ k: 'rsi_low', v: Math.round(r) }); }
     else if (r > 70) { score -= 25; reasons.push({ k: 'rsi_high', v: Math.round(r) }); }
@@ -138,7 +207,11 @@ export function analyzeWindow(series, fromTs, toTs, fng) {
   if (changePct < -15) { score += 10; reasons.push({ k: 'dip', v: Math.round(changePct) }); }
   else if (changePct > 25) { score -= 10; reasons.push({ k: 'peak', v: Math.round(changePct) }); }
   if (fng && isFinite(fng.value)) {
-    if (fng.value <= 25) { score += 20; reasons.push({ k: 'fear', v: fng.value }); }
+    // ПРАВИЛО (зададено от потребителя): „когато индексът на страха е НАЙ-ГОЛЯМ —
+    // тогава трябва да се купува, защото ще следва покачване" → крайният страх (≤12)
+    // тежи много повече от обикновения.
+    if (fng.value <= 12) { score += 35; reasons.push({ k: 'extreme_fear', v: fng.value }); }
+    else if (fng.value <= 25) { score += 20; reasons.push({ k: 'fear', v: fng.value }); }
     else if (fng.value >= 75) { score -= 20; reasons.push({ k: 'greed', v: fng.value }); }
   }
   score = Math.max(-100, Math.min(100, score));

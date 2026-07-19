@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.toolkittext.rustore",
+  "appName": "KCY Toolkit Text",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

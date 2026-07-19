@@ -2,7 +2,7 @@
   "name": "services-toolkit-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "Services Toolkit — самостоятелно офлайн мобилно приложение с полезни инструменти (RUStore издание).",
+  "description": "KCY Toolkit — самостоятелно офлайн мобилно приложение с полезни инструменти (RUStore издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,8 +13,13 @@
     "cap:open": "cap open android"
   },
   "dependencies": {
+    "@capacitor/filesystem": "^6.0.4",
     "@capacitor/local-notifications": "^6.1.0",
+    "@capacitor/share": "^6.0.4",
     "@capawesome/capacitor-file-picker": "^6.2.0",
+    "@ffmpeg/core": "^0.12.6",
+    "@ffmpeg/ffmpeg": "^0.12.10",
+    "@ffmpeg/util": "^0.12.1",
     "@pdf-lib/fontkit": "^1.1.1",
     "dejavu-fonts-ttf": "^2.37.3",
     "jsqr": "^1.4.0",

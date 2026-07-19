@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0014
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -12,7 +12,7 @@ playIntro(); // кратко „KCY Ecosystem" интро при старт
 startPromoAds('dodge-master'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('dodge-master'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('dodge-master'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
-mountLegalGate('dodge-master', { hasLang: false }); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
+mountLegalGate('dodge-master'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 // Входна точка на играта Dodge Master.
 // Top-down dodge/survival: човек в центъра, отвсякъде летят старовремски снаряди,
 // играчът се движи свободно и ги избягва. 10 нива с нарастваща трудност.

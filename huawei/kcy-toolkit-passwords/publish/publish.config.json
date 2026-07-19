@@ -1,0 +1,18 @@
+{
+  "_comment": "Snapshot конфиг (kcy-toolkit-passwords). Език=servicestoolkit.lang (наследен от KCY Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "webDir": "dist",
+  "viewport": {
+    "width": 360,
+    "height": 760
+  },
+  "deviceScaleFactor": 3,
+  "langKey": "servicestoolkit.lang",
+  "sharedShot": "1-language-picker.png",
+  "screens": [
+    {
+      "name": "main.png",
+      "state": "full",
+      "wait": 1500
+    }
+  ]
+}

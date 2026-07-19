@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0016
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -12,7 +12,7 @@ playIntro(); // кратко „KCY Ecosystem" интро при старт
 startPromoAds('services-toolkit'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('services-toolkit'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('services-toolkit'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
-mountLegalGate('services-toolkit', { hasLang: false }); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
+mountLegalGate('services-toolkit'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 import './core/styles.css';
 import { tools, findTool } from './core/registry.js';
 import { iconHTML } from './core/icons.js';
@@ -63,7 +63,7 @@ function renderHome() {
     <div class="view">
       <div class="hero">
         <button class="lang-toggle" id="langbtn" title="${esc(t('lang_btn'))}">${esc(t('lang_btn'))}</button>
-        <h1>Services Toolkit</h1>
+        <h1>KCY Toolkit</h1>
         <p>${esc(t('home_sub'))}</p>
       </div>
       <input class="search" id="search" type="search" placeholder="${esc(t('search_ph'))}" autocomplete="off" />

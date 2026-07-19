@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.toolkitsound.rustore",
+  "appName": "KCY Toolkit Sound",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

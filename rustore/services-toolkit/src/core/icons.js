@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0015
 // Inline SVG икони (stroke-базирани, наследяват currentColor).
 // Без външни файлове — всичко е код.
 const svg = (inner) =>
@@ -17,7 +17,12 @@ export const icons = {
   ai: svg('<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h.01M15 9h.01M9 14c.8.8 4.2.8 5 0"/><path d="M2 10v4M22 10v4"/>'),
   watch: svg('<circle cx="12" cy="12" r="7"/><path d="M12 9v3l2 2"/><path d="M8 3 6 5M16 3l2 2"/>'),
   search: svg('<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>'),
-  bell: svg('<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>')
+  bell: svg('<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>'),
+  doc: svg('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="m8 13 1.5 5L12 13l2.5 5L16 13"/>'),
+  pricetag: svg('<path d="M12 2H4v8l10 10 8-8z"/><circle cx="8" cy="6" r="1.4"/><path d="m11 15 4-4"/>'),
+  video: svg('<rect x="2" y="5" width="14" height="14" rx="2"/><path d="m16 10 6-3v10l-6-3z"/>'),
+  sound: svg('<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>'),
+  shield: svg('<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>')
 };
 
 export function iconHTML(name) {

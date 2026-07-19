@@ -5,7 +5,7 @@
     {
       "id": "authenticator",
       "enabled": true,
-      "name": "KCY Authenticator",
+      "name": "KCY Toolkit Authenticator",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/authenticator.png",
       "text": {
@@ -29,7 +29,7 @@
     {
       "id": "autoreply-bot",
       "enabled": false,
-      "name": "Auto-Reply Bot",
+      "name": "KCY Auto Answer",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/autoreply-bot.png",
       "text": {
@@ -53,7 +53,7 @@
     {
       "id": "baby-monitor",
       "enabled": false,
-      "name": "Детегледачка",
+      "name": "KCY Baby Radar",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/baby-monitor.png",
       "text": {
@@ -77,7 +77,7 @@
     {
       "id": "business-faq-bot",
       "enabled": false,
-      "name": "Бизнес FAQ робот",
+      "name": "KCY FAQ Desk",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/business-faq-bot.png",
       "text": {
@@ -173,7 +173,7 @@
     {
       "id": "duel",
       "enabled": false,
-      "name": "Дуел на ринга",
+      "name": "KCY Ring Clash",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/duel.png",
       "text": {
@@ -221,7 +221,7 @@
     {
       "id": "hmm",
       "enabled": false,
-      "name": "Битка на терен HMM",
+      "name": "KCY Field Battle",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/hmm.png",
       "text": {
@@ -268,8 +268,8 @@
     },
     {
       "id": "monitor-bot",
-      "enabled": false,
-      "name": "Монитор-робот",
+      "enabled": true,
+      "name": "KCY Site Monitor",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/monitor-bot.png",
       "text": {
@@ -292,7 +292,7 @@
     },
     {
       "id": "newslator",
-      "enabled": false,
+      "enabled": true,
       "name": "NewsLator",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/newslator.png",
@@ -340,8 +340,8 @@
     },
     {
       "id": "price-watch-bot",
-      "enabled": false,
-      "name": "Цена-робот",
+      "enabled": true,
+      "name": "KCY Toolkit Price Watch",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/price-watch-bot.png",
       "text": {
@@ -365,7 +365,7 @@
     {
       "id": "routine-bot",
       "enabled": false,
-      "name": "Рутина-робот",
+      "name": "KCY Routine Planner",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/routine-bot.png",
       "text": {
@@ -389,7 +389,7 @@
     {
       "id": "rustam",
       "enabled": true,
-      "name": "Рустам",
+      "name": "Рустам бере краставици",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/rustam.png",
       "text": {
@@ -412,8 +412,8 @@
     },
     {
       "id": "selflearning-friend",
-      "enabled": true,
-      "name": "Самообучаващ се приятел",
+      "enabled": false,
+      "name": "KCY Learning Buddy",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/selflearning-friend.png",
       "text": {
@@ -436,8 +436,8 @@
     },
     {
       "id": "services-toolkit",
-      "enabled": false,
-      "name": "Services Toolkit",
+      "enabled": true,
+      "name": "KCY Toolkit",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/services-toolkit.png",
       "text": {
@@ -480,6 +480,246 @@
         "ja": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
         "ky": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
         "zh-Hant": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved "
+      }
+    },
+    {
+      "id": "kcy-toolkit-pdf",
+      "enabled": true,
+      "name": "KCY Toolkit PDF",
+      "storeUrl": "https://appgallery.huawei.com/",
+      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-pdf.png",
+      "text": {
+        "bg": "Сливане, разделяне, воден знак · Растеризира страниците за по-малък размер · Извлича текста и прави .docx файл",
+        "ru": "Объединение, разделение, водяной знак · Растрирует страницы для меньшего размера · Извлекает текст и создаёт файл .docx",
+        "uk": "Об’єднання, поділ, водяний знак · Растеризує сторінки для меншого розміру · Витягує текст і створює файл .docx",
+        "en": "Merge, split, watermark · Rasterizes pages for a smaller size · Extracts the text into a .docx file",
+        "de": "Zusammenführen, teilen, Wasserzeichen · Rastert Seiten für kleinere Größe · Extrahiert den Text in eine .docx-Datei",
+        "fr": "Fusionner, diviser, filigrane · Rastérise les pages pour réduire la taille · Extrait le texte vers un fichier .docx",
+        "es": "Unir, dividir, marca de agua · Rasteriza páginas para reducir tamaño · Extrae el texto a un archivo .docx",
+        "es-MX": "Unir, dividir, marca de agua · Rasteriza páginas para reducir tamaño · Extrae el texto a un archivo .docx",
+        "it": "Unisci, dividi, filigrana · Rasterizza le pagine per ridurre la dimensione · Estrae il testo in un file .docx",
+        "pt": "Juntar, dividir, marca d’água · Rasteriza páginas para reduzir o tamanho · Extrai o texto para um arquivo .docx",
+        "ar": "دمج، تقسيم، علامة مائية · يحوّل الصفحات إلى صور لتصغير الحجم · يستخرج النص إلى ملف ‎.docx",
+        "hi": "मर्ज, विभाजन, वॉटरमार्क · छोटे आकार हेतु पेज रास्टराइज़ करता है · टेक्स्ट निकालकर .docx फ़ाइल बनाता है",
+        "ja": "結合・分割・透かし · ページをラスタライズして縮小 · テキストを .docx に抽出",
+        "ky": "Бириктирүү, бөлүү, суу белгиси · Барактарды кичирейтүү үчүн растрлайт · Текстти .docx файлга чыгарат",
+        "zh-Hant": "合併、分割、浮水印 · 點陣化頁面以縮小體積 · 將文字擷取為 .docx 檔"
+      }
+    },
+    {
+      "id": "kcy-toolkit-qr",
+      "enabled": true,
+      "name": "KCY Toolkit QR",
+      "storeUrl": "https://appgallery.huawei.com/",
+      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-qr.png",
+      "text": {
+        "bg": "Генерирай и разчети QR кодове",
+        "ru": "Создавай и сканируй QR-коды",
+        "uk": "Створюй і скануй QR-коди",
+        "en": "Generate and read QR codes",
+        "de": "QR-Codes erstellen und lesen",
+        "fr": "Générer et lire des codes QR",
+        "es": "Genera y lee códigos QR",
+        "es-MX": "Genera y lee códigos QR",
+        "it": "Genera e leggi codici QR",
+        "pt": "Gere e leia códigos QR",
+        "ar": "أنشئ واقرأ رموز QR",
+        "hi": "QR कोड बनाएं और पढ़ें",
+        "ja": "QRコードの生成と読み取り",
+        "ky": "QR коддорду түзүү жана окуу",
+        "zh-Hant": "產生與讀取 QR 碼"
+      }
+    },
+    {
+      "id": "kcy-toolkit-ai-announcement",
+      "enabled": true,
+      "name": "KCY Toolkit AI Announcement",
+      "storeUrl": "https://appgallery.huawei.com/",
+      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-ai-announcement.png",
+      "text": {
+        "bg": "Пиши, обобщавай, превеждай (безплатно)",
+        "ru": "Пиши, обобщай, переводи (бесплатно)",
+        "uk": "Пиши, узагальнюй, перекладай (безкоштовно)",
+        "en": "Write, summarize, translate (free)",
+        "de": "Schreiben, zusammenfassen, übersetzen (gratis)",
+        "fr": "Écrire, résumer, traduire (gratuit)",
+        "es": "Escribe, resume, traduce (gratis)",
+        "es-MX": "Escribe, resume, traduce (gratis)",
+        "it": "Scrivi, riassumi, traduci (gratis)",
+        "pt": "Escreva, resuma, traduza (grátis)",
+        "ar": "اكتب، لخّص، ترجم (مجانًا)",
+        "hi": "लिखें, सारांश, अनुवाद (मुफ़्त)",
+        "ja": "作成・要約・翻訳（無料）",
+        "ky": "Жаз, жыйынтыкта, котор (акысыз)",
+        "zh-Hant": "撰寫、摘要、翻譯（免費）"
+      }
+    },
+    {
+      "id": "kcy-toolkit-text",
+      "enabled": true,
+      "name": "KCY Toolkit Text",
+      "storeUrl": "https://appgallery.huawei.com/",
+      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-text.png",
+      "text": {
+        "bg": "Брояч, форматиране, Base64",
+        "ru": "Счётчик, форматирование, Base64",
+        "uk": "Лічильник, форматування, Base64",
+        "en": "Counter, formatting, Base64",
+        "de": "Zähler, Formatierung, Base64",
+        "fr": "Compteur, mise en forme, Base64",
+        "es": "Contador, formato, Base64",
+        "es-MX": "Contador, formato, Base64",
+        "it": "Contatore, formattazione, Base64",
+        "pt": "Contador, formatação, Base64",
+        "ar": "عدّاد، تنسيق، Base64",
+        "hi": "काउंटर, फ़ॉर्मेटिंग, Base64",
+        "ja": "カウント・整形・Base64",
+        "ky": "Эсептегич, форматтоо, Base64",
+        "zh-Hant": "計數、格式化、Base64"
+      }
+    },
+    {
+      "id": "kcy-toolkit-finance",
+      "enabled": true,
+      "name": "KCY Toolkit Finance",
+      "storeUrl": "https://appgallery.huawei.com/",
+      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-finance.png",
+      "text": {
+        "bg": "RSI, Fibonacci, BTC/ETH по периоди (Binance/CoinGecko) · Конвертор и курсове на живо · Прагове с известие и звук за до 20 двойки · Заем, ДДС, лихва, проценти",
+        "ru": "RSI, Фибоначчи, BTC/ETH по периодам (Binance/CoinGecko) · Конвертер и курсы в реальном времени · Пороги с уведомлением и звуком до 20 пар · Кредит, НДС, проценты",
+        "uk": "RSI, Фібоначчі, BTC/ETH за періоди (Binance/CoinGecko) · Конвертер і курси в реальному часі · Пороги зі сповіщенням і звуком до 20 пар · Кредит, ПДВ, відсотки",
+        "en": "RSI, Fibonacci, BTC/ETH over periods (Binance/CoinGecko) · Converter and live rates · Alert + sound thresholds for up to 20 pairs · Loan, VAT, interest, percentages",
+        "de": "RSI, Fibonacci, BTC/ETH über Zeiträume (Binance/CoinGecko) · Umrechner und Live-Kurse · Schwellen mit Hinweis und Ton für bis zu 20 Paare · Kredit, MwSt., Zinsen, Prozente",
+        "fr": "RSI, Fibonacci, BTC/ETH par périodes (Binance/CoinGecko) · Convertisseur et taux en direct · Seuils avec alerte et son pour 20 paires · Prêt, TVA, intérêts, pourcentages",
+        "es": "RSI, Fibonacci, BTC/ETH por periodos (Binance/CoinGecko) · Conversor y tasas en vivo · Umbrales con aviso y sonido para hasta 20 pares · Préstamo, IVA, interés, porcentajes",
+        "es-MX": "RSI, Fibonacci, BTC/ETH por periodos (Binance/CoinGecko) · Conversor y tasas en vivo · Umbrales con aviso y sonido para hasta 20 pares · Préstamo, IVA, interés, porcentajes",
+        "it": "RSI, Fibonacci, BTC/ETH per periodi (Binance/CoinGecko) · Convertitore e tassi live · Soglie con avviso e suono fino a 20 coppie · Prestito, IVA, interessi, percentuali",
+        "pt": "RSI, Fibonacci, BTC/ETH por períodos (Binance/CoinGecko) · Conversor e taxas ao vivo · Limiares com aviso e som para até 20 pares · Empréstimo, IVA, juros, percentagens",
+        "ar": "RSI، فيبوناتشي، BTC/ETH عبر الفترات (Binance/CoinGecko) · محوّل وأسعار حية · حدود مع تنبيه وصوت حتى ٢٠ زوجًا · قرض، ضريبة، فائدة، نسب",
+        "hi": "RSI, फिबोनाची, BTC/ETH अवधि अनुसार (Binance/CoinGecko) · कन्वर्टर और लाइव दरें · 20 जोड़ियों तक अलर्ट + ध्वनि सीमाएं · ऋण, वैट, ब्याज, प्रतिशत",
+        "ja": "RSI・フィボナッチ・BTC/ETH 期間別（Binance/CoinGecko） · コンバーターとライブレート · 最大20ペアの通知・音しきい値 · ローン・税・利息・割合",
+        "ky": "RSI, Фибоначчи, BTC/ETH мезгилдер боюнча (Binance/CoinGecko) · Конвертер жана түз курстар · 20 жупка чейин эскертүү жана үн чеги · Насыя, КНС, пайыз",
+        "zh-Hant": "RSI、費波那契、BTC/ETH 各週期（Binance/CoinGecko） · 換算器與即時匯率 · 最多 20 組的提醒與聲音門檻 · 貸款、增值稅、利息、百分比"
+      }
+    },
+    {
+      "id": "kcy-toolkit-pictures",
+      "enabled": true,
+      "name": "KCY Toolkit Pictures",
+      "storeUrl": "https://appgallery.huawei.com/",
+      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-pictures.png",
+      "text": {
+        "bg": "Намали JPEG / PNG / WebP",
+        "ru": "Уменьши JPEG / PNG / WebP",
+        "uk": "Зменши JPEG / PNG / WebP",
+        "en": "Shrink JPEG / PNG / WebP",
+        "de": "JPEG / PNG / WebP verkleinern",
+        "fr": "Réduire JPEG / PNG / WebP",
+        "es": "Reduce JPEG / PNG / WebP",
+        "es-MX": "Reduce JPEG / PNG / WebP",
+        "it": "Riduci JPEG / PNG / WebP",
+        "pt": "Reduza JPEG / PNG / WebP",
+        "ar": "صغّر JPEG / PNG / WebP",
+        "hi": "JPEG / PNG / WebP छोटा करें",
+        "ja": "JPEG / PNG / WebP を縮小",
+        "ky": "JPEG / PNG / WebP кичирейтүү",
+        "zh-Hant": "縮小 JPEG / PNG / WebP"
+      }
+    },
+    {
+      "id": "kcy-toolkit-videos",
+      "enabled": true,
+      "name": "KCY Toolkit Videos",
+      "storeUrl": "https://appgallery.huawei.com/",
+      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-videos.png",
+      "text": {
+        "bg": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройството",
+        "ru": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройстве",
+        "uk": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, на пристрої",
+        "en": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, on-device",
+        "de": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, auf dem Gerät",
+        "fr": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, sur l’appareil",
+        "es": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, en el dispositivo",
+        "es-MX": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, en el dispositivo",
+        "it": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, sul dispositivo",
+        "pt": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, no aparelho",
+        "ar": "MP4 ↔ WebM / AVI / MOV / MKV / GIF، على الجهاز",
+        "hi": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, डिवाइस पर",
+        "ja": "MP4 ↔ WebM / AVI / MOV / MKV / GIF、端末内で",
+        "ky": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, түзмөктө",
+        "zh-Hant": "MP4 ↔ WebM / AVI / MOV / MKV / GIF，於裝置上"
+      }
+    },
+    {
+      "id": "kcy-toolkit-sound",
+      "enabled": true,
+      "name": "KCY Toolkit Sound",
+      "storeUrl": "https://appgallery.huawei.com/",
+      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-sound.png",
+      "text": {
+        "bg": "Телефонни звукови формати → MP4 / MP3 / WAV / OGG",
+        "ru": "Телефонные аудиоформаты → MP4 / MP3 / WAV / OGG",
+        "uk": "Телефонні аудіоформати → MP4 / MP3 / WAV / OGG",
+        "en": "Phone audio formats → MP4 / MP3 / WAV / OGG",
+        "de": "Telefon-Audioformate → MP4 / MP3 / WAV / OGG",
+        "fr": "Formats audio du téléphone → MP4 / MP3 / WAV / OGG",
+        "es": "Formatos de audio del teléfono → MP4 / MP3 / WAV / OGG",
+        "es-MX": "Formatos de audio del teléfono → MP4 / MP3 / WAV / OGG",
+        "it": "Formati audio del telefono → MP4 / MP3 / WAV / OGG",
+        "pt": "Formatos de áudio do telefone → MP4 / MP3 / WAV / OGG",
+        "ar": "صيغ صوت الهاتف ← MP4 / MP3 / WAV / OGG",
+        "hi": "फ़ोन ऑडियो फ़ॉर्मेट → MP4 / MP3 / WAV / OGG",
+        "ja": "電話の音声フォーマット → MP4 / MP3 / WAV / OGG",
+        "ky": "Телефон аудио форматтары → MP4 / MP3 / WAV / OGG",
+        "zh-Hant": "手機音訊格式 → MP4 / MP3 / WAV / OGG"
+      }
+    },
+    {
+      "id": "kcy-toolkit-passwords",
+      "enabled": true,
+      "name": "KCY Toolkit Passwords",
+      "storeUrl": "https://appgallery.huawei.com/",
+      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-passwords.png",
+      "text": {
+        "bg": "Силни пароли с 4 метода",
+        "ru": "Надёжные пароли, 4 метода",
+        "uk": "Надійні паролі, 4 методи",
+        "en": "Strong passwords, 4 methods",
+        "de": "Starke Passwörter, 4 Methoden",
+        "fr": "Mots de passe forts, 4 méthodes",
+        "es": "Contraseñas fuertes, 4 métodos",
+        "es-MX": "Contraseñas fuertes, 4 métodos",
+        "it": "Password forti, 4 metodi",
+        "pt": "Senhas fortes, 4 métodos",
+        "ar": "كلمات مرور قوية، ٤ طرق",
+        "hi": "मज़बूत पासवर्ड, 4 तरीके",
+        "ja": "強力なパスワード・4方式",
+        "ky": "Күчтүү сырсөздөр, 4 ыкма",
+        "zh-Hant": "強密碼，4 種方式"
+      }
+    },
+    {
+      "id": "kcy-toolkit-scraper",
+      "enabled": true,
+      "name": "KCY Toolkit Scraper",
+      "storeUrl": "https://appgallery.huawei.com/",
+      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-scraper.png",
+      "text": {
+        "bg": "Извличане на заглавие/текст/връзки",
+        "ru": "Извлечение заголовка/текста/ссылок",
+        "uk": "Витяг заголовка/тексту/посилань",
+        "en": "Extract title/text/links",
+        "de": "Titel/Text/Links extrahieren",
+        "fr": "Extraire titre/texte/liens",
+        "es": "Extraer título/texto/enlaces",
+        "es-MX": "Extraer título/texto/enlaces",
+        "it": "Estrai titolo/testo/link",
+        "pt": "Extrair título/texto/links",
+        "ar": "استخراج العنوان/النص/الروابط",
+        "hi": "शीर्षक/टेक्स्ट/लिंक निकालें",
+        "ja": "タイトル/本文/リンクを抽出",
+        "ky": "Аталыш/текст/шилтемелерди алуу",
+        "zh-Hant": "擷取標題／文字／連結"
       }
     }
   ]

@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.servicestoolkit.hw",
-  "appName": "Services Toolkit",
+  "appName": "KCY Toolkit",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

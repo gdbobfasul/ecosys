@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.toolkitpasswords.rustore",
+  "appName": "KCY Toolkit Passwords",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

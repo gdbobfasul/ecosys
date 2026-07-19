@@ -1,9 +1,9 @@
-// Version: 1.0013
+// Version: 1.0018
 // Екран „Табло" — главен ON/OFF, списък монитори (последна проверка/съвпадение),
 // редактиране/пауза/триене, дневник, CORS прокси, пренасяне на конфигурацията (файл).
 import { el, fmtTime } from '../ui/styles.js';
 import { saveState, pushLog } from '../core/storage.js';
-import { checkMonitor, startScheduler, stopScheduler } from '../core/scheduler.js';
+import { checkMonitor, startScheduler, stopScheduler, searchAllNow } from '../core/scheduler.js';
 import { backupAvailable, backupNow, readBackup, applyBackup } from '../core/backup.js';
 import { t, tf } from '../core/i18n.js';
 
@@ -89,7 +89,63 @@ export function renderDashboard(ctx) {
   // CORS прокси поле
   const proxyInput = el('input', { value: state.proxyBase || '', placeholder: t('dash_cors_ph') });
 
+  // ── ГЛОБАЛНО ТЪРСЕНЕ — НАЙ-ОТГОРЕ, над всички RSS-и и сайтове ──
+  // Дума, словосъчетание или цял израз, който се търси в новините от ВСИЧКИ монитори.
+  const gsInput = el('input', { value: state.globalSearch || '', placeholder: t('gs_ph') });
+  const gsResults = el('div', {});
+  const gsCard = el('div', { class: 'card', style: 'border:1px solid #2a86d8' }, [
+    el('b', {}, '🔍 ' + t('gs_title')),
+    el('p', { class: 'small', style: 'margin:4px 0 8px' }, t('gs_hint')),
+    gsInput,
+    el('div', { class: 'gap' }),
+    el('div', { class: 'row', style: 'gap:6px; flex-wrap:wrap' }, [
+      el('button', {
+        class: 'btn small primary',
+        onclick: async (e) => {
+          const btn = e.target;
+          state.globalSearch = gsInput.value.trim();
+          state.globalSeen = [];                    // нова фраза → ново броене
+          await saveState(state);
+          if (!state.globalSearch) { gsResults.replaceChildren(); return; }
+          btn.disabled = true; btn.textContent = t('gs_searching');
+          const r = await searchAllNow(state, state.globalSearch);
+          btn.disabled = false; btn.textContent = t('gs_search_now');
+          const kids = [];
+          kids.push(el('p', { class: 'small', style: 'margin:8px 0 4px' },
+            tf('gs_results', r.hits.length) + (r.errors ? ' · ' + tf('gs_errors', r.errors) : '')));
+          for (const h of r.hits.slice(0, 30)) {
+            const kidsRow = [
+              el('b', {}, h.source + ': '),
+              h.link
+                ? el('a', { href: h.link, target: '_blank', style: 'color:#9fc3ff' }, h.title || h.link)
+                : el('span', {}, h.title || '—')
+            ];
+            // съвпадение ЧРЕЗ ПРЕВОД → показваме и оригиналното заглавие (дребно)
+            if (h.translated && h.original) {
+              kidsRow.push(el('div', { class: 'small', style: 'color:#8aa0b4; margin-top:2px' }, h.original));
+            }
+            kids.push(el('div', { class: 'log-entry match' }, kidsRow));
+          }
+          if (!r.hits.length) kids.push(el('p', { class: 'muted' }, t('gs_no_results')));
+          gsResults.replaceChildren(...kids);
+        }
+      }, t('gs_search_now')),
+      el('button', {
+        class: 'btn small',
+        onclick: async () => {
+          state.globalSearch = gsInput.value.trim();
+          state.globalSeen = [];
+          await saveState(state);
+          pushLog(state, state.globalSearch ? tf('log_gs_set', state.globalSearch) : t('log_gs_clear'));
+          alert(t('gs_saved'));
+        }
+      }, t('gs_save'))
+    ]),
+    gsResults
+  ]);
+
   return el('div', { class: 'content' }, [
+    gsCard,
     el('div', { class: 'card' }, [
       el('div', { class: 'row between' }, [
         el('div', {}, [el('b', {}, t('dash_bot')), el('p', { class: 'small', style: 'margin:4px 0 0' }, state.masterOn ? t('dash_running') : t('dash_stopped'))]),

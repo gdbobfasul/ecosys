@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.toolkitqr.rustore",
+  "appName": "KCY Toolkit QR",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

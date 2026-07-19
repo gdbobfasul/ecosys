@@ -1,5 +1,5 @@
 // KCY Portals — Portal Services routes (НОВ файл — не пипа services.js)
-// Version: 1.0156
+// Version: 1.0158
 // 7 услуги БЕЗ изкуствен интелект. Повечето работят изцяло в браузъра.
 // Само "crypto" има нужда от backend — за валутните курсове.
 
@@ -23,6 +23,9 @@ const PORTAL_SERVICES = [
     { slug: 'calc',     title: 'Калкулатори',         icon: 'CALC', file: '/portals/services/calc.html',     description: 'Заем, лихва, ДДС, проценти — по държава.' },
     { slug: 'text',     title: 'Текстови инструменти', icon: 'TXT', file: '/portals/services/text.html',     description: 'Брояч на думи, форматиране, Base64.' },
     { slug: 'pdf-compress', title: 'Свиване на PDF',   icon: 'ZIP',  file: '/portals/services/pdf-compress.html', description: 'Намали размера на голям PDF (сканирани страници, големи снимки).' },
+    { slug: 'pdf-to-doc', title: 'PDF към Word',     icon: 'DOC',  file: '/portals/services/pdf-to-doc.html', description: 'Извлича текста от PDF и прави Word файл (.docx) — изцяло в браузъра, нищо не се качва.' },
+    { slug: 'video-convert', title: 'Видео конвертор', icon: 'VID',  file: '/portals/services/video-convert.html', description: 'MP4 ↔ WebM / AVI / MOV / MKV / GIF — изцяло в браузъра (ffmpeg.wasm), нищо не се качва.' },
+    { slug: 'sound-convert', title: 'Звуков конвертор', icon: 'SND', file: '/portals/services/sound-convert.html', description: 'Телефонни звукови формати → MP4 / MP3 / WAV / OGG — изцяло в браузъра, нищо не се качва.' },
     { slug: 'charts',   title: 'Финансови графики',   icon: 'CHRT', file: '/portals/services/charts.html',   description: 'BTC RSI, Fibonacci, liquidation heatmap, S&P 500, индекси, BTC/ETH по периоди.' },
     { slug: 'watch20',  title: 'Наблюдавай 20 валути', icon: 'WTCH', file: '/portals/services/watch20.html',  description: '20 валути/крипто спрямо USD/USDC, прагове с известие и звук.' },
     { slug: 'ai-listing', title: 'AI обява за имот', icon: 'AI', file: '/portals/services/ai-listing.html', description: 'Генерирай обява за продажба на имот по няколко ключови думи чрез Claude AI (включено в месечния абонамент).' },

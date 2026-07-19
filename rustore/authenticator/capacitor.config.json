@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.authenticator.rustore",
-  "appName": "KCY Authenticator",
+  "appName": "KCY Toolkit Authenticator",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

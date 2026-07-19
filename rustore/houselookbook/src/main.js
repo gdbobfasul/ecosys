@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0014
 // main.js — офлайн bootstrap на HouseLookBook обвивката.
 // В ПРОДУКЦИЯ Capacitor зарежда живия сайт директно през `server.url`
 // (look.myhousesetup.com), затова този код НЕ се изпълнява на устройство — WebView-ът вече е на
@@ -6,6 +6,9 @@
 // или ако server.url е недостъпен: splash + пренасочване към живия сайт; без връзка → „офлайн".
 import { HLB_URL, PING_TIMEOUT_MS } from './config.js';
 import { mountHelp } from './core/help.js';
+import { playIntro } from './core/intro.js';
+import { mountEcosystem } from './core/ecosystem.js';
+import { startPromoAds } from './core/promo-ads.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
 import { APP_VERSION } from './version.js';
@@ -43,7 +46,10 @@ async function boot() {
   if (await reachable()) window.location.replace(HLB_URL);
   else offline();
 }
-try { mountHelp('houselookbook'); } catch (e) {}
+try { playIntro(); // екран 1: интрото „KCY Ecosystem“ (като начало на филм)
+mountEcosystem('houselookbook'); // футър/каталог „Още от KCY Ecosystem“
+startPromoAds('houselookbook');
+mountHelp('houselookbook'); } catch (e) {}
 mountPrivacyLink('houselookbook', { account: true }); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
-mountLegalGate('houselookbook', { hasLang: false }); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
+mountLegalGate('houselookbook'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 boot();

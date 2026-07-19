@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Version: 1.0219
+# Version: 1.0221
 # Споделен завършващ надпис за деплой скриптовете.
 #
 # ПРАВИЛО (изрично искане на потребителя): в КРАЯ на всяка точка се изписва
@@ -21,9 +21,10 @@ done_banner() {
     local key="$1" server="$2" label="$3" name head
     local PURPLE=$'\033[1;35m' BOLD=$'\033[1m' NC=$'\033[0m'
     case "$key" in
-        prod|production|PROD|prodts|prodTS|PRODTS) name="основния сървър" ;;
-        vm|VM|virtualmachine)                      name="виртуалната машина" ;;
-        *)                                         name="${label:-сървъра}" ;;
+        prodts|prodTS|PRODTS)     name="production чрез Tailscale" ;;
+        prod|production|PROD)     name="production" ;;
+        vm|VM|virtualmachine)     name="виртуалната машина" ;;
+        *)                        name="${label:-сървъра}" ;;
     esac
     if [ -n "${KCY_MENU_OPT:-}" ]; then
         head="Точка ${KCY_MENU_OPT} от старт менюто${KCY_MENU_TITLE:+ — „${KCY_MENU_TITLE}“}"

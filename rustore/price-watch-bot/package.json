@@ -2,7 +2,7 @@
   "name": "price-watch-bot-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Price Watch (Price-Watch Bot) — самостоятелно мобилно приложение, което следи цени на крипто и валути и известява при достигнат праг (RUStore издание).",
+  "description": "KCY Toolkit Price Watch (Price-Watch Bot) — самостоятелно мобилно приложение, което следи цени на крипто и валути и известява при достигнат праг (RUStore издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

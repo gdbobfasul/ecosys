@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.toolkitpdf.hw",
+  "appName": "KCY Toolkit PDF",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

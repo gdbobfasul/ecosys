@@ -1,0 +1,20 @@
+# huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
+# Приложение: KCY Toolkit AI Announcement (huawei издание). Част от семейството KCY Toolkit.
+
+[Set basic app information]
+App type: App (приложение, НЕ игра)
+App name: KCY Toolkit AI Announcement            # 27 / 30 знака
+App package name: com.kcy.toolkitai.hw
+Level-1 app category: Tools
+
+[Integrate open capabilities]
+# Open capabilities: няма (без Account Kit, IAP, Push, Ads, Game Service).
+
+[Support / Поддръжка]
+Support email: dai.group.ltd.support@gmail.com
+
+[Localization]
+Languages: bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant (15)
+Listing: publish/store-listing/<език>.txt
+Screenshots: publish/1-language-picker.png + publish/2..8-*.png (gen-screens.cjs)
+# Политики: publish/hw-privacy.html + hw-terms.html (хостват се на selflearning.bot.nu/privacy/kcy-toolkit-ai-announcement/)

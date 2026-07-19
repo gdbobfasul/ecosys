@@ -1,4 +1,4 @@
-# Документи за публикуване — KCY Price Watch
+# Документи за публикуване — KCY Toolkit Price Watch
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 

@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.toolkitvideos.hw",
+  "appName": "KCY Toolkit Videos",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

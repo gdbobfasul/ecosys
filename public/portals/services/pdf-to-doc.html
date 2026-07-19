@@ -1,0 +1,432 @@
+<!-- Version: 1.0003 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF към Word | KCY услуги</title>
+<style>
+  :root { --pri:#2a86d8; --sec:#6ec1e4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:#f0f4f8; color:#222; }
+  .head { background:linear-gradient(135deg,var(--pri),var(--sec)); color:#fff; padding:28px 20px; text-align:center; }
+  .head h1 { font-size:1.7em; margin-bottom:6px; }
+  .head a { color:#fff; text-decoration:none; background:rgba(255,255,255,.2); padding:6px 14px; border-radius:8px; display:inline-block; margin-top:10px; font-size:.9em; }
+  .wrap { max-width:680px; margin:24px auto; padding:0 16px; }
+  .card { background:#fff; border-radius:12px; padding:22px; box-shadow:0 4px 16px rgba(0,0,0,.08); }
+  label { display:block; font-weight:600; margin:12px 0 5px; font-size:.9em; }
+  input[type=file] { width:100%; padding:10px; border:1px solid #cdd7e1; border-radius:8px; font-size:1em; }
+  .chk { display:flex; align-items:center; gap:8px; margin-top:12px; font-size:.95em; }
+  .chk input { width:18px; height:18px; }
+  .hint { color:#567; font-size:.88em; margin:6px 0; }
+  .btn { background:var(--pri); color:#fff; border:none; padding:11px 20px; border-radius:8px; font-size:1em; cursor:pointer; margin-top:14px; font-weight:600; }
+  .btn:disabled { opacity:.5; cursor:not-allowed; }
+  .status { margin-top:16px; padding:12px; border-radius:8px; font-size:.92em; }
+  .status.ok { background:#e6f5e9; color:#256b34; }
+  .status.err { background:#fbe6e6; color:#a12727; }
+  .status.work { background:#eef6ff; color:#2a86d8; }
+  .bar { height:8px; background:#dde6ef; border-radius:4px; overflow:hidden; margin-top:8px; }
+  .bar > div { height:100%; background:var(--pri); width:0%; transition:width .2s; }
+</style>
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
+</head>
+<body>
+<div class="head">
+  <h1 data-i18n="pdfd.title">PDF към Word</h1>
+  <p data-i18n="pdfd.subtitle">Извлича текста от PDF и прави Word файл (.docx) — изцяло в браузъра, нищо не се качва</p>
+  <a href="/portals/services/" data-i18n="common.all_services">← Всички услуги</a>
+</div>
+<div class="wrap">
+  <div class="card">
+    <label data-i18n="pdfd.choose">Избери PDF файл</label>
+    <input type="file" id="pdfFile" accept="application/pdf">
+
+    <label data-i18n="pdfd.mode">Режим</label>
+    <select id="pdfMode">
+      <option value="exact" data-i18n="pdfd.mode_exact">Точно копие — страниците влизат като картинки (пази шрифтове, таблици, знаци 1:1; текстът не се редактира)</option>
+      <option value="editable" data-i18n="pdfd.mode_edit">Редактируем текст — запазва размер/удебелен/курсив/шрифт и разпознава таблици (сложните подредби може да се разместят)</option>
+    </select>
+
+    <div class="chk" id="pbWrap" style="display:none">
+      <input type="checkbox" id="pageBreaks" checked>
+      <label for="pageBreaks" style="margin:0" data-i18n="pdfd.pagebreaks">Нова страница в Word за всяка страница от PDF-а</label>
+    </div>
+
+    <p class="hint" data-i18n="pdfd.hint">
+      Текстът се чете страница по страница и се подрежда в абзаци. Работи за PDF-и с ИСТИНСКИ текст.
+      Сканирани документи (снимки на страници) нямат текст за извличане — за тях резултатът ще е празен.
+      Форматирането (шрифтове, таблици, картинки) не се пренася — пренася се текстът.
+    </p>
+
+    <button class="btn" id="goBtn" onclick="convert()" data-i18n="pdfd.convert">Направи Word файл</button>
+    <div class="bar" id="barWrap" style="display:none;"><div id="bar"></div></div>
+    <div class="status" id="status" style="display:none;"></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+"use strict";
+if (window.pdfjsLib) { pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }
+
+function T(key, fallback) {
+  try { if (window.KCY_I18N && KCY_I18N.t) { var v = KCY_I18N.t(key); if (v && v !== key) return v; } } catch (e) {}
+  return fallback;
+}
+function setStatus(cls, msg) {
+  var s = document.getElementById('status');
+  s.style.display = 'block'; s.className = 'status ' + cls; s.textContent = msg;
+}
+
+var CRC_TABLE = null;
+function crcTable() {
+  if (CRC_TABLE) return CRC_TABLE;
+  var t = new Uint32Array(256);
+  for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); t[n] = c >>> 0; }
+  CRC_TABLE = t; return t;
+}
+function crc32(bytes) {
+  var t = crcTable(), c = 0xFFFFFFFF;
+  for (var i = 0; i < bytes.length; i++) c = t[(c ^ bytes[i]) & 0xff] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function zipStore(files) {
+  var enc = new TextEncoder();
+  var parts = [], central = [], offset = 0;
+  for (var f = 0; f < files.length; f++) {
+    var nameBytes = enc.encode(files[f].name);
+    var data = files[f].data;
+    var crc = crc32(data), size = data.length;
+    var lh = new Uint8Array(30 + nameBytes.length); var lv = new DataView(lh.buffer);
+    lv.setUint32(0, 0x04034b50, true); lv.setUint16(4, 20, true); lv.setUint16(6, 0x0800, true);
+    lv.setUint16(8, 0, true); lv.setUint32(14, crc, true); lv.setUint32(18, size, true); lv.setUint32(22, size, true);
+    lv.setUint16(26, nameBytes.length, true); lh.set(nameBytes, 30);
+    parts.push(lh, data);
+    var ch = new Uint8Array(46 + nameBytes.length); var cv = new DataView(ch.buffer);
+    cv.setUint32(0, 0x02014b50, true); cv.setUint16(4, 20, true); cv.setUint16(6, 20, true); cv.setUint16(8, 0x0800, true);
+    cv.setUint32(16, crc, true); cv.setUint32(20, size, true); cv.setUint32(24, size, true);
+    cv.setUint16(28, nameBytes.length, true); cv.setUint32(42, offset, true); ch.set(nameBytes, 46);
+    central.push(ch);
+    offset += lh.length + data.length;
+  }
+  var centralSize = 0; for (var c2 = 0; c2 < central.length; c2++) centralSize += central[c2].length;
+  var eocd = new Uint8Array(22); var ev = new DataView(eocd.buffer);
+  ev.setUint32(0, 0x06054b50, true); ev.setUint16(8, files.length, true); ev.setUint16(10, files.length, true);
+  ev.setUint32(12, centralSize, true); ev.setUint32(16, offset, true);
+  return new Blob([].concat(parts, central, [eocd]), { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+}
+// ── Извличане С ФОРМАТ: страница → модел { blocks: [ {type:'p',runs}|{type:'table',rows} ] }
+function pageToModel(textContent) {
+  var styles = textContent.styles || {};
+  // 1) редове по y (толеранс 3)
+  var lineMap = {};
+  for (var ii = 0; ii < textContent.items.length; ii++) {
+    var it = textContent.items[ii];
+    if (!it.str || !it.str.trim()) continue;
+    var key = Math.round(it.transform[5] / 3) * 3;
+    if (!lineMap[key]) lineMap[key] = { y: it.transform[5], items: [] };
+    var st = styles[it.fontName] || {};
+    var fam = String(st.fontFamily || '');
+    var size = Math.abs(it.transform[3]) || Math.abs(it.transform[0]) || 11;
+    lineMap[key].items.push({
+      x: it.transform[4],
+      w: it.width || 0,
+      str: it.str,
+      size: size,
+      bold: /bold|black|heavy/i.test((it.realFont || '') + ' ' + it.fontName + ' ' + fam),
+      italic: /italic|oblique/i.test((it.realFont || '') + ' ' + it.fontName + ' ' + fam),
+      font: (it.realFont ? String(it.realFont).replace(/^[A-Z]{6}\+/, '').replace(/[-,](Bold|Italic|Oblique|Regular|Light|Medium).*$/i, '') : '') || fam.replace(/^["']|["']$/g, '').split(',')[0] || null
+    });
+  }
+  var lines = Object.keys(lineMap).map(function (k) { return lineMap[k]; });
+  lines.sort(function (a, b) { return b.y - a.y; });
+  lines.forEach(function (ln) { ln.items.sort(function (a, b) { return a.x - b.x; }); });
+
+  // 2) „клетки" в реда: разцепваме при ХОРИЗОНТАЛНА дупка ≥ 12 (координати на PDF)
+  function lineCells(ln) {
+    var cells = []; var cur = null; var prevEnd = null;
+    for (var i2 = 0; i2 < ln.items.length; i2++) {
+      var t2 = ln.items[i2];
+      if (cur && prevEnd != null && (t2.x - prevEnd) < 12) {
+        cur.items.push(t2);
+      } else {
+        cur = { x: t2.x, items: [t2] }; cells.push(cur);
+      }
+      prevEnd = t2.x + (t2.w || t2.str.length * t2.size * 0.5);
+    }
+    return cells;
+  }
+
+  // 3) ТАБЛИЦИ чрез КОЛОННА РЕКОНСТРУКЦИЯ (v3): последователните редове с ≥2 клетки
+  // се събират в блок; от ВСИЧКИ техни клетки се клъстерират началните x-та → колоните
+  // на таблицата; всяка клетка отива в най-близката колона. Така работи и с OCR слой
+  // (сканирани документи), където колоните не са идеално подравнени, а клетка може да
+  // се пренася на следващ ред (влиза като отделен ред от таблицата — приемливо).
+  var pageLeft = Infinity, pageRight = 0;
+  for (var pl = 0; pl < lines.length; pl++) {
+    var ln0 = lines[pl];
+    var first = ln0.items[0], last = ln0.items[ln0.items.length - 1];
+    if (first.x < pageLeft) pageLeft = first.x;
+    var re2 = last.x + (last.w || last.str.length * last.size * 0.5);
+    if (re2 > pageRight) pageRight = re2;
+  }
+  if (!isFinite(pageLeft)) { pageLeft = 0; pageRight = 612; }
+
+  function clusterColumns(rows) {
+    var xs = [];
+    rows.forEach(function (cells) { cells.forEach(function (c) { xs.push(c.x); }); });
+    xs.sort(function (a, b) { return a - b; });
+    var cols = [];
+    for (var xi = 0; xi < xs.length; xi++) {
+      if (!cols.length || xs[xi] - cols[cols.length - 1].sum / cols[cols.length - 1].n > 22) {
+        cols.push({ sum: xs[xi], n: 1 });
+      } else { cols[cols.length - 1].sum += xs[xi]; cols[cols.length - 1].n++; }
+    }
+    return cols.map(function (c) { return c.sum / c.n; });
+  }
+
+  function lineAlign(ln) {
+    var first = ln.items[0], last = ln.items[ln.items.length - 1];
+    var leftGap = first.x - pageLeft;
+    var rightGap = pageRight - (last.x + (last.w || last.str.length * last.size * 0.5));
+    if (leftGap > 40 && rightGap > 40 && Math.abs(leftGap - rightGap) < Math.max(30, (leftGap + rightGap) * 0.25)) return 'center';
+    if (rightGap < 25 && leftGap > 120) return 'right';
+    return null;
+  }
+
+  var blocks = [];
+  var i3 = 0;
+  var gaps = [];
+  for (var g = 1; g < lines.length; g++) gaps.push(lines[g - 1].y - lines[g].y);
+  var sortedG = gaps.slice().sort(function (a, b) { return a - b; });
+  var median = sortedG.length ? sortedG[Math.floor((sortedG.length - 1) / 2)] : 14;
+
+  while (i3 < lines.length) {
+    var cells0 = lineCells(lines[i3]);
+    if (cells0.length >= 2) {
+      // събери блока от последователни многоклетъчни редове
+      var rawRows = [cells0]; var j3 = i3 + 1;
+      while (j3 < lines.length) {
+        var cj = lineCells(lines[j3]);
+        if (cj.length >= 2) { rawRows.push(cj); j3++; }
+        else if (cj.length === 1 && j3 + 1 < lines.length && lineCells(lines[j3 + 1]).length >= 2) {
+          // единичен ред МЕЖДУ табличните (пренесена клетка, напр. втори ред от име) —
+          // влиза като ред на таблицата в своята колона, без да я къса
+          rawRows.push(cj); j3++;
+        }
+        else break;
+      }
+      if (rawRows.length >= 2) {
+        var colXs = clusterColumns(rawRows);
+        if (colXs.length >= 2) {
+          var grid = rawRows.map(function (cells) {
+            var row = new Array(colXs.length);
+            cells.forEach(function (c) {
+              var best = 0, bd = Infinity;
+              for (var ci = 0; ci < colXs.length; ci++) {
+                var d = Math.abs(c.x - colXs[ci]);
+                if (d < bd) { bd = d; best = ci; }
+              }
+              if (row[best]) row[best].items = row[best].items.concat(c.items);
+              else row[best] = { x: c.x, items: c.items };
+            });
+            return row;
+          });
+          blocks.push({ type: 'table', grid: grid, nCols: colXs.length });
+          i3 = j3; continue;
+        }
+      }
+    }
+    // обикновен ред → абзац (слепване по вертикалната дупка), с подравняване
+    var para = { type: 'p', lines: [lines[i3]], align: lineAlign(lines[i3]) };
+    var k3 = i3 + 1;
+    while (k3 < lines.length) {
+      var gap = lines[k3 - 1].y - lines[k3].y;
+      if (gap > median * 1.8) break;
+      if (lineCells(lines[k3]).length >= 2) break;
+      para.lines.push(lines[k3]); k3++;
+    }
+    blocks.push(para);
+    i3 = k3;
+  }
+  return blocks;
+}
+
+// ── WordprocessingML ──
+function xmlEsc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '');
+}
+function runXml(t2) {
+  var sz = Math.max(2, Math.round(t2.size * 2));     // половин пунктове
+  var pr = '<w:rPr>' +
+    (t2.font ? '<w:rFonts w:ascii="' + xmlEsc(t2.font) + '" w:hAnsi="' + xmlEsc(t2.font) + '"/>' : '') +
+    (t2.bold ? '<w:b/>' : '') + (t2.italic ? '<w:i/>' : '') +
+    '<w:sz w:val="' + sz + '"/><w:szCs w:val="' + sz + '"/></w:rPr>';
+  return '<w:r>' + pr + '<w:t xml:space="preserve">' + xmlEsc(t2.str) + '</w:t></w:r>';
+}
+function itemsToRuns(items) {
+  // съседни парчета с еднакъв стил → един пас; интервал между отдалечени
+  var out = ''; var prev = null;
+  for (var i4 = 0; i4 < items.length; i4++) {
+    var t3 = items[i4];
+    if (prev && !/\s$/.test(prev.str) && !/^\s/.test(t3.str)) {
+      out += runXml({ str: ' ', size: t3.size, bold: false, italic: false, font: t3.font });
+    }
+    out += runXml(t3); prev = t3;
+  }
+  return out;
+}
+function paraXml(lines, align) {
+  // редовете на един абзац се сливат; всеки ред пази своите стилови пасове
+  var runs = '';
+  for (var i5 = 0; i5 < lines.length; i5++) {
+    if (i5 > 0) runs += runXml({ str: ' ', size: lines[i5].items[0].size, bold: false, italic: false, font: null });
+    runs += itemsToRuns(lines[i5].items);
+  }
+  var pr = align ? '<w:pPr><w:jc w:val="' + align + '"/></w:pPr>' : '';
+  return '<w:p>' + pr + runs + '</w:p>';
+}
+function tableXml(grid, nCols) {
+  var xml = '<w:tbl><w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:w="0" w:type="auto"/>' +
+    '<w:tblBorders><w:top w:val="single" w:sz="4" w:color="999999"/><w:left w:val="single" w:sz="4" w:color="999999"/>' +
+    '<w:bottom w:val="single" w:sz="4" w:color="999999"/><w:right w:val="single" w:sz="4" w:color="999999"/>' +
+    '<w:insideH w:val="single" w:sz="4" w:color="999999"/><w:insideV w:val="single" w:sz="4" w:color="999999"/></w:tblBorders></w:tblPr>';
+  grid.forEach(function (row) {
+    xml += '<w:tr>';
+    for (var c5 = 0; c5 < nCols; c5++) {
+      var cell = row[c5];
+      xml += '<w:tc><w:tcPr><w:tcW w:w="0" w:type="auto"/></w:tcPr><w:p>' +
+        (cell ? itemsToRuns(cell.items) : '') + '</w:p></w:tc>';
+    }
+    xml += '</w:tr>';
+  });
+  xml += '</w:tbl><w:p/>';
+  return xml;
+}
+
+// ── Сглобяване на .docx (двата режима). images = [{data:Uint8Array,wPx,hPx}] при 'exact'.
+function buildDocx2(opts) {
+  var enc = new TextEncoder();
+  var files = [];
+  var rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  var docRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
+  var body = '';
+  if (opts.mode === 'exact') {
+    for (var p5 = 0; p5 < opts.images.length; p5++) {
+      var img = opts.images[p5];
+      var rid = 'rImg' + (p5 + 1);
+      docRels += '<Relationship Id="' + rid + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/page' + (p5 + 1) + '.png"/>';
+      files.push({ name: 'word/media/page' + (p5 + 1) + '.png', data: img.data });
+      // ~16.5cm печатна ширина → EMU (9525 на пиксел при 96dpi мащабираме към ширината)
+      var maxW = 5940000;   // ~15.7 см
+      var scale = maxW / (img.wPx * 9525);
+      var cx = Math.round(img.wPx * 9525 * Math.min(1, scale));
+      var cy = Math.round(img.hPx * 9525 * Math.min(1, scale));
+      if (p5 > 0) body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+      body += '<w:p><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0">' +
+        '<wp:extent cx="' + cx + '" cy="' + cy + '"/><wp:docPr id="' + (p5 + 1) + '" name="page' + (p5 + 1) + '"/>' +
+        '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">' +
+        '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">' +
+        '<pic:nvPicPr><pic:cNvPr id="' + (p5 + 1) + '" name="page' + (p5 + 1) + '"/><pic:cNvPicPr/></pic:nvPicPr>' +
+        '<pic:blipFill><a:blip r:embed="' + rid + '" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>' +
+        '<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr>' +
+        '</pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>';
+    }
+  } else {
+    for (var p6 = 0; p6 < opts.pages.length; p6++) {
+      if (p6 > 0 && opts.pageBreaks) body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+      var blocks = opts.pages[p6];
+      for (var b6 = 0; b6 < blocks.length; b6++) {
+        var blk = blocks[b6];
+        body += blk.type === 'table' ? tableXml(blk.grid, blk.nCols) : paraXml(blk.lines, blk.align);
+      }
+    }
+  }
+  if (!body) body = '<w:p/>';
+  docRels += '</Relationships>';
+  var documentXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" ' +
+    'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" ' +
+    'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+    '<w:body>' + body + '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/></w:sectPr></w:body></w:document>';
+  var contentTypes = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+    '<Default Extension="xml" ContentType="application/xml"/>' +
+    '<Default Extension="png" ContentType="image/png"/>' +
+    '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+    '</Types>';
+  files.unshift({ name: '[Content_Types].xml', data: enc.encode(contentTypes) });
+  files.push({ name: '_rels/.rels', data: enc.encode(rels) });
+  files.push({ name: 'word/_rels/document.xml.rels', data: enc.encode(docRels) });
+  files.push({ name: 'word/document.xml', data: enc.encode(documentXml) });
+  return files;   // подава се на zipStore(...)
+}
+
+// ── Главното действие ──────────────────────────────────────────────────────────
+async function convert() {
+  var f = document.getElementById('pdfFile').files[0];
+  if (!f) { setStatus('err', T('pdfd.choose_msg', 'Избери PDF файл.')); return; }
+  if (!window.pdfjsLib) { setStatus('err', T('pdfd.nolib', 'pdf.js не е зареден (мрежа?).')); return; }
+  var mode = document.getElementById('pdfMode').value;
+  var pageBreaks = document.getElementById('pageBreaks').checked;
+  var btn = document.getElementById('goBtn'); btn.disabled = true;
+  document.getElementById('barWrap').style.display = 'block';
+  var bar = document.getElementById('bar');
+  setStatus('work', T('pdfd.processing', 'Обработвам…'));
+  try {
+    var buf = await f.arrayBuffer();
+    var pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    var filesOut;
+    if (mode === 'exact') {
+      var images = [];
+      for (var i = 1; i <= pdf.numPages; i++) {
+        var page = await pdf.getPage(i);
+        var vp = page.getViewport({ scale: 2 });
+        var canvas = document.createElement('canvas');
+        canvas.width = Math.floor(vp.width); canvas.height = Math.floor(vp.height);
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: ctx, viewport: vp }).promise;
+        var blob0 = await new Promise(function (res) { canvas.toBlob(res, 'image/png'); });
+        images.push({ data: new Uint8Array(await blob0.arrayBuffer()), wPx: canvas.width, hPx: canvas.height });
+        bar.style.width = Math.round(i / pdf.numPages * 100) + '%';
+      }
+      filesOut = buildDocx2({ mode: 'exact', images: images });
+    } else {
+      var pages = []; var total = 0;
+      for (var j = 1; j <= pdf.numPages; j++) {
+        var pg = await pdf.getPage(j);
+        var tc = await pg.getTextContent();
+        try { await pg.getOperatorList(); } catch (e) {}   // зарежда шрифтовете в commonObjs (за bold/името)
+        try { for (var q6 = 0; q6 < tc.items.length; q6++) { var it6 = tc.items[q6]; if (it6.fontName && pg.commonObjs.has(it6.fontName)) { var fo = pg.commonObjs.get(it6.fontName); if (fo && fo.name) it6.realFont = fo.name; } } } catch (e) {}
+        var blocks = pageToModel(tc);
+        total += blocks.length; pages.push(blocks);
+        bar.style.width = Math.round(j / pdf.numPages * 100) + '%';
+      }
+      if (!total) { setStatus('err', T('pdfd.empty', 'В този PDF няма текст за извличане.')); btn.disabled = false; return; }
+      filesOut = buildDocx2({ mode: 'editable', pages: pages, pageBreaks: pageBreaks });
+    }
+    var blob = zipStore(filesOut);
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (f.name.replace(/\.pdf$/i, '') || 'document') + '.docx';
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+    setStatus('ok', T('pdfd.done', 'Готово! Word файлът (.docx) е свален: ') + pdf.numPages + ' стр.');
+  } catch (e) {
+    setStatus('err', T('common.error', 'Грешка') + ': ' + (e.message || e));
+  } finally {
+    btn.disabled = false;
+  }
+}
+document.getElementById('pdfMode').addEventListener('change', function () {
+  document.getElementById('pbWrap').style.display = this.value === 'editable' ? '' : 'none';
+});
+</script>
+    <script src="/shared/js/navigation.js?v=1.0195"></script>
+</body>
+</html>

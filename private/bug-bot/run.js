@@ -52,6 +52,7 @@ const JOURNEYS = {
   services: require('./journeys/services'),
   games: require('./journeys/games'),
   failover: require('./journeys/failover'),
+  authenticator: require('./journeys/authenticator'), // ЛОКАЛНО: билд + собствен сървър (без прод)
 };
 
 // ── аргументи ───────────────────────────────────────────────────────────────
@@ -148,7 +149,13 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   const launchArgs = process.env.ROBOT_NO_SANDBOX
     ? ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--single-process', '--disable-setuid-sandbox']
     : [];
-  const browser = await chromium.launch({ headless: !headed, args: launchArgs });
+  // Резерва (както в gen-screens): ако сваленият Playwright браузър липсва (дев машина),
+  // пробвай системния Chrome, после Edge — иначе ясна инструкция за install.
+  let browser = null;
+  for (const channel of [undefined, 'chrome', 'msedge']) {
+    try { browser = await chromium.launch({ headless: !headed, args: launchArgs, channel }); break; }
+    catch (e) { if (channel === 'msedge') throw e; }
+  }
   const context = await browser.newContext({ ignoreHTTPSErrors: target.ignoreHTTPSErrors });
   context.setDefaultTimeout(cfg.navTimeoutMs);
 
@@ -207,14 +214,19 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
     for (const jr of selectedJourneys) {
       await context.clearCookies().catch(() => {}); // чисто между приложенията
       const ctx = { runToken, runNum: startedAt.getTime() % 100000000 };
-      if (jr.setup) jr.setup(ctx, env);
+      // setup може да е async (журита с ЛОКАЛЕН сървър — напр. authenticator — вдигат
+      // билд + мини сървър тук). Синхронните журита не се влияят от await.
+      if (jr.setup) await jr.setup(ctx, env);
       console.log(`\n   ▣ ${jr.label}`);
+      // Локално журито (jr.local) тества СОБСТВЕН сървър (ctx.localBase), не целта prod/vm.
+      const jrBase = (jr.local && ctx.localBase) ? ctx.localBase : target.base;
       const page = await context.newPage();
       const ctxLabel = { app: jr.app, scenario: jr.label, targetUrl: null };
       const sink = attachMonitor(page, () => ctxLabel);
-      const results = await runJourney(jr, page, ctx, target.base, cfg.navTimeoutMs, sink, (m) => console.log(m));
+      const results = await runJourney(jr, page, ctx, jrBase, cfg.navTimeoutMs, sink, (m) => console.log(m));
       findings.push(...sink);
       await page.close();
+      if (jr.teardown) { try { await jr.teardown(ctx); } catch (e) { /* чистенето не проваля рана */ } }
       journeysData.push({ app: jr.app, label: jr.label, scenarios: results });
       urlsChecked += results.reduce((s, r) => s + r.steps.length, 0);
     }

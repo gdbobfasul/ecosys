@@ -2,7 +2,7 @@
   "name": "authenticator-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Authenticator — двуфакторни кодове (TOTP/HOTP/Steam) с шифриран сейф. Huawei издание.",
+  "description": "KCY Toolkit Authenticator — двуфакторни кодове (TOTP/HOTP/Steam) с шифриран сейф. Huawei издание.",
   "type": "module",
   "scripts": {
     "dev": "vite",

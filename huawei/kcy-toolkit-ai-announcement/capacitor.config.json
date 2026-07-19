@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.toolkitai.hw",
+  "appName": "KCY Toolkit AI Announcement",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

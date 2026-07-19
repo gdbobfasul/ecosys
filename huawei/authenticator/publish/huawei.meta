@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: KCY Authenticator (huawei издание). Генерирано от AppPublisherBot.
+# Приложение: KCY Toolkit Authenticator (huawei издание). Генерирано от AppPublisherBot.
 
 [Set basic app information]
 App type: App (приложение, НЕ игра)
-App name: KCY Authenticator            # 17 / 30 знака
+App name: KCY Toolkit Authenticator            # 17 / 30 знака
 App package name: com.kcy.authenticator.hw   # 24 / 128 знака
 Level-1 app category: Tools
 

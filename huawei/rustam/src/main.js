@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0017
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -12,7 +12,7 @@ playIntro(); // кратко „KCY Ecosystem" интро при старт
 startPromoAds('rustam'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('rustam'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('rustam'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
-mountLegalGate('rustam', { hasLang: false }); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
+mountLegalGate('rustam'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 // Входна точка на играта „Рустам".
 // Рустам стои насред поле и бере краставици, които изскачат от земята. До всяка
 // краставица започва да расте дупка (от малка точица нагоре); стигне ли пълен размер,

@@ -1,0 +1,137 @@
+<!-- Version: 1.0001 -->
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Звуков конвертор | KCY услуги</title>
+<style>
+  :root { --pri:#2a86d8; --sec:#6ec1e4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:#f0f4f8; color:#222; }
+  .head { background:linear-gradient(135deg,var(--pri),var(--sec)); color:#fff; padding:28px 20px; text-align:center; }
+  .head h1 { font-size:1.7em; margin-bottom:6px; }
+  .head a { color:#fff; text-decoration:none; background:rgba(255,255,255,.2); padding:6px 14px; border-radius:8px; display:inline-block; margin-top:10px; font-size:.9em; }
+  .wrap { max-width:680px; margin:24px auto; padding:0 16px; }
+  .card { background:#fff; border-radius:12px; padding:22px; box-shadow:0 4px 16px rgba(0,0,0,.08); }
+  label { display:block; font-weight:600; margin:12px 0 5px; font-size:.9em; }
+  input[type=file],select { width:100%; padding:10px; border:1px solid #cdd7e1; border-radius:8px; font-size:1em; }
+  .hint { color:#567; font-size:.88em; margin:6px 0; }
+  .btn { background:var(--pri); color:#fff; border:none; padding:11px 20px; border-radius:8px; font-size:1em; cursor:pointer; margin-top:14px; font-weight:600; }
+  .btn:disabled { opacity:.5; cursor:not-allowed; }
+  .status { margin-top:16px; padding:12px; border-radius:8px; font-size:.92em; }
+  .status.ok { background:#e6f5e9; color:#256b34; }
+  .status.err { background:#fbe6e6; color:#a12727; }
+  .status.work { background:#eef6ff; color:#2a86d8; }
+  .bar { height:8px; background:#dde6ef; border-radius:4px; overflow:hidden; margin-top:8px; }
+  .bar > div { height:100%; background:var(--pri); width:0%; transition:width .2s; }
+</style>
+    <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
+</head>
+<body>
+<div class="head">
+  <h1 data-i18n="sndc.title">Звуков конвертор</h1>
+  <p data-i18n="sndc.subtitle">Телефонни звукови формати → MP4 / MP3 / WAV / OGG — изцяло в браузъра</p>
+  <a href="/portals/services/" data-i18n="common.all_services">← Всички услуги</a>
+</div>
+<div class="wrap">
+  <div class="card">
+    <label data-i18n="sndc.choose">Избери звуков файл</label>
+    <input type="file" id="sndFile" accept="audio/*,video/3gpp,video/webm">
+    <label data-i18n="sndc.target">Целеви формат</label>
+    <select id="sndTarget">
+      <option value="mp4">MP4 (AAC звук)</option>
+      <option value="mp3">MP3</option>
+      <option value="wav">WAV</option>
+      <option value="ogg">OGG (Vorbis)</option>
+    </select>
+    <p class="hint" data-i18n="sndc.hint">
+      Конвертирането става изцяло в браузъра (ffmpeg.wasm) — файлът не напуска устройството ти.
+      Поддържани входове: MP3, M4A/AAC, WAV, OGG/Opus, FLAC, звук от WebM/3GP видео.
+    </p>
+    <button class="btn" id="goBtn" onclick="convert()" data-i18n="sndc.convert">Конвертирай</button>
+    <div class="bar" id="barWrap" style="display:none;"><div id="bar"></div></div>
+    <div class="status" id="status" style="display:none;"></div>
+  </div>
+</div>
+<!-- ffmpeg.wasm обвивката е НАША (vendor) — worker-ът е module worker и иска същия origin;
+     тежкият core (~30 MB) идва от CDN като ESM (module worker зарежда само ESM). -->
+<script src="/portals/services/vendor/ffmpeg/ffmpeg.js"></script>
+<script src="/portals/services/vendor/ffmpeg/util.js"></script>
+<script>
+"use strict";
+function T(key, fallback) {
+  try { if (window.KCY_I18N && KCY_I18N.t) { var v = KCY_I18N.t(key); if (v && v !== key) return v; } } catch (e) {}
+  return fallback;
+}
+function setStatus(cls, msg) {
+  var s = document.getElementById('status');
+  s.style.display = 'block'; s.className = 'status ' + cls; s.textContent = msg;
+}
+function fmt(b) { if (b < 1024) return b + ' B'; if (b < 1048576) return (b / 1024).toFixed(1) + ' KB'; return (b / 1048576).toFixed(2) + ' MB'; }
+
+var TARGETS = {
+  mp4: { args: function (i, o) { return ['-i', i, '-vn', '-c:a', 'aac', '-b:a', '192k', o]; }, mime: 'audio/mp4' },
+  mp3: { args: function (i, o) { return ['-i', i, '-vn', '-c:a', 'libmp3lame', '-b:a', '192k', o]; }, mime: 'audio/mpeg' },
+  wav: { args: function (i, o) { return ['-i', i, '-vn', '-c:a', 'pcm_s16le', o]; }, mime: 'audio/wav' },
+  ogg: { args: function (i, o) { return ['-i', i, '-vn', '-c:a', 'libvorbis', '-q:a', '5', o]; }, mime: 'audio/ogg' }
+};
+
+var CORE = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm';
+var ffmpeg = null;
+
+async function getFF(onProgress) {
+  var U = window.FFmpegUtil;
+  if (!ffmpeg) {
+    ffmpeg = new FFmpegWASM.FFmpeg();
+    await ffmpeg.load({
+      coreURL: CORE + '/ffmpeg-core.js',
+      wasmURL: CORE + '/ffmpeg-core.wasm',
+      classWorkerURL: location.origin + '/portals/services/vendor/ffmpeg/814.ffmpeg.js'
+    });
+  }
+  ffmpeg.on('progress', function (e) { onProgress(Math.max(0, Math.min(1, e.progress || 0))); });
+  return ffmpeg;
+}
+
+async function convert() {
+  var f = document.getElementById('sndFile').files[0];
+  if (!f) { setStatus('err', T('sndc.choose_msg', 'Избери звуков файл.')); return; }
+  if (!window.FFmpegWASM || !window.FFmpegUtil) { setStatus('err', T('sndc.nolib', 'ffmpeg.wasm не е зареден (мрежа?).')); return; }
+  var target = document.getElementById('sndTarget').value;
+  var cfg = TARGETS[target];
+  var btn = document.getElementById('goBtn'); btn.disabled = true;
+  document.getElementById('barWrap').style.display = 'block';
+  var bar = document.getElementById('bar');
+  setStatus('work', T('sndc.engine', 'Зареждам звуковия двигател (~30 MB, само първия път)…'));
+  try {
+    var ff = await getFF(function (p) {
+      var pct = Math.round(p * 100);
+      bar.style.width = pct + '%';
+      setStatus('work', T('sndc.processing', 'Конвертирам… ') + pct + '%');
+    });
+    var inName = 'in_' + f.name.replace(/[^\w.\-]+/g, '_');
+    var outName = 'out.' + target;
+    var inSize = f.size;
+    await ff.writeFile(inName, new Uint8Array(await f.arrayBuffer()));
+    await ff.exec(cfg.args(inName, outName));
+    var out = await ff.readFile(outName);
+    try { await ff.deleteFile(inName); await ff.deleteFile(outName); } catch (e) {}
+    if (!out || !out.length) throw new Error('empty output');
+    var blob = new Blob([out], { type: cfg.mime });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (f.name.replace(/\.[^.]+$/, '') || 'audio') + '.' + target;
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+    setStatus('ok', T('sndc.done', 'Готово! ') + fmt(inSize) + ' → ' + fmt(out.length) + '. ' + T('sndc.downloaded', 'Файлът е свален.'));
+  } catch (e) {
+    setStatus('err', T('common.error', 'Грешка') + ': ' + (e.message || e) + ' ' + T('sndc.amr_note', '(AMR/3GP записите може да не се поддържат)'));
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+    <script src="/shared/js/navigation.js?v=1.0195"></script>
+</body>
+</html>

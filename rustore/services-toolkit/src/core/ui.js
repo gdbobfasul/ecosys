@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0015
 // Малки помощни функции за UI — без външни зависимости.
 
 // Безопасно екраниране на текст за вмъкване в HTML.
@@ -22,16 +22,13 @@ export function setStatus(node, kind, msg) {
   node.textContent = msg;
 }
 
-// Сваля Blob/bytes като файл.
+// Сваля Blob/bytes като файл. На ТЕЛЕФОНА `<a download>` не прави нищо (WebView го
+// гълта тихо) → минава през надеждния saveFile (Filesystem + Споделяне); в браузъра
+// saveFile сам пада към класическото сваляне. Огън-и-забрави (интерфейсът не чака).
+import { saveFile } from './filesave.js';
 export function downloadBlob(data, filename, type) {
   const blob = data instanceof Blob ? data : new Blob([data], { type: type || 'application/octet-stream' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  saveFile(filename, blob, type).catch(() => {});
 }
 
 // Форматира размер в байтове.

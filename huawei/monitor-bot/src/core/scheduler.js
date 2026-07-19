@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0018
 // Планировчик + оркестрация на една проверка.
 //
 // Формат на МОНИТОР:
@@ -28,6 +28,7 @@ import { notify } from './notifier.js';
 import { saveState, pushLog } from './storage.js';
 import { WEB_TICK_MS } from '../config.js';
 import { t, tf } from './i18n.js';
+import { translateTitle, phraseMatches } from './translate.js';
 
 export const FREQ_MS = {
   '15min': 15 * 60 * 1000,
@@ -83,8 +84,13 @@ export async function checkMonitor(state, monitor, { force = false } = {}) {
   monitor.lastError = false;
   try {
     const items = await fetchItems(monitor, state.proxyBase);
-    const { matched, firstRun } = diffAndMatch(monitor, items);
+    const { newItems, matched, firstRun } = diffAndMatch(monitor, items);
     rememberSeen(monitor, items);
+
+    // ГЛОБАЛНОТО ТЪРСЕНЕ (полето най-отгоре на таблото): дума/словосъчетание/цял израз,
+    // който се търси в новините от ВСИЧКИ монитори — независимо от правилото на монитора.
+    // Хваща само НОВИ записи (не повтаря аларми за едно и също), помни алармираните id-та.
+    await checkGlobalSearch(state, monitor, firstRun ? [] : newItems);
 
     if (firstRun) {
       monitor.lastStatus = tf('status_learned', items.length);
@@ -116,6 +122,58 @@ export async function checkMonitor(state, monitor, { force = false } = {}) {
   } finally {
     await saveState(state);
   }
+}
+
+// ── Глобално търсене: съвпадение на фразата в заглавие/линк на НОВИТЕ записи ──
+function globalPhrase(state) { return String(state.globalSearch || '').trim().toLowerCase(); }
+async function checkGlobalSearch(state, monitor, newItems) {
+  const q = globalPhrase(state);
+  if (!q || !newItems.length) return;
+  if (!state.globalSeen) state.globalSeen = [];
+  const seen = new Set(state.globalSeen);
+  // ПРЕВОДЪТ Е ЗАДЪЛЖИТЕЛЕН ЕТАП: фразата се търси и в ОРИГИНАЛА, и в ПРЕВЕДЕНОТО
+  // заглавие (към езика на приложението) — иначе „президента на България" никога
+  // няма да съвпадне в арабски/японски сайт. Преводите се кешират (translate.js).
+  const hits = [];
+  for (const it of newItems) {
+    if (seen.has(it.id)) continue;
+    const raw = (it.title || '') + ' ' + (it.link || '');
+    if (phraseMatches(q, raw)) { hits.push(it); continue; }
+    const tr = await translateTitle(it.title);
+    if (tr !== it.title && phraseMatches(q, tr)) { it.titleShown = tr; hits.push(it); }
+  }
+  if (!hits.length) return;
+  for (const h of hits) seen.add(h.id);
+  state.globalSeen = [...seen].slice(-800);
+  const top = hits.slice(0, 3).map((h) => '• ' + (h.titleShown || h.title)).join('\n');
+  pushLog(state, tf('log_gs_match', hits.length, monitor.name) + ' — „' + state.globalSearch + '"', 'match');
+  if (state.permissions.notifications) {
+    notify(tf('gs_notif_title', state.globalSearch), top).catch(() => {});
+  }
+}
+
+// „Търси сега" от таблото: минава през ВСИЧКИ монитори и връща съвпаденията на фразата
+// (по ВСИЧКИ текущи записи, не само новите). Връща { hits:[{title,link,source}], errors }.
+export async function searchAllNow(state, phrase) {
+  const q = String(phrase || '').trim().toLowerCase();
+  const hits = [];
+  let errors = 0;
+  if (!q) return { hits, errors };
+  for (const m of state.monitors) {
+    try {
+      const items = await fetchItems(m, state.proxyBase);
+      for (const it of items) {
+        const raw = (it.title || '') + ' ' + (it.link || '');
+        if (phraseMatches(q, raw)) { hits.push({ title: it.title, link: it.link, source: m.name }); continue; }
+        // фразата се търси и в ПРЕВЕДЕНОТО заглавие (виж checkGlobalSearch по-горе)
+        const tr = await translateTitle(it.title);
+        if (tr !== it.title && phraseMatches(q, tr)) {
+          hits.push({ title: tr, original: it.title, link: it.link, source: m.name, translated: true });
+        }
+      }
+    } catch (e) { errors++; }
+  }
+  return { hits, errors };
 }
 
 // Кои монитори трябва да се проверят сега (по интервал)?

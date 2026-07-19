@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: Services Toolkit (huawei издание). Генерирано от AppPublisherBot.
+# Приложение: KCY Toolkit (huawei издание). Генерирано от AppPublisherBot.
 
 [Set basic app information]
 App type: App (приложение, НЕ игра)
-App name: Services Toolkit            # 16 / 30 знака
+App name: KCY Toolkit            # 16 / 30 знака
 App package name: com.kcy.servicestoolkit.hw   # 26 / 128 знака
 Level-1 app category: Tools
 

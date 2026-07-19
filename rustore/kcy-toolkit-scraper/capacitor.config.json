@@ -1,0 +1,12 @@
+{
+  "appId": "com.kcy.toolkitscraper.rustore",
+  "appName": "KCY Toolkit Scraper",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

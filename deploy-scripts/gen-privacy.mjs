@@ -326,7 +326,7 @@ const APPS = [
 
   // ── authenticator ──
   {
-    id: 'authenticator', name: 'KCY Authenticator', hwPkg: 'com.kcy.authenticator.hw', ruPkg: 'com.kcy.authenticator.rustore',
+    id: 'authenticator', name: 'KCY Toolkit Authenticator', hwPkg: 'com.kcy.authenticator.hw', ruPkg: 'com.kcy.authenticator.rustore',
     pitch: {
       en: 'KCY Authenticator is a private two-factor authentication (2FA) app that generates TOTP/HOTP/Steam one-time codes and keeps all secrets in an encrypted, biometric-locked vault on your device.',
       ru: 'KCY Authenticator — приложение двухфакторной аутентификации (2FA): генерирует одноразовые коды TOTP/HOTP/Steam и хранит все секреты в зашифрованном хранилище на устройстве, защищённом биометрией.'
@@ -410,7 +410,7 @@ const APPS = [
 
   // ── price-watch-bot ──
   {
-    id: 'price-watch-bot', name: 'KCY Price Watch', hwPkg: 'com.kcy.pricewatchbot.hw', ruPkg: 'com.kcy.pricewatchbot.rustore',
+    id: 'price-watch-bot', name: 'KCY Toolkit Price Watch', hwPkg: 'com.kcy.pricewatchbot.hw', ruPkg: 'com.kcy.pricewatchbot.rustore',
     pitch: {
       en: 'KCY Price Watch tracks selected crypto and currency rates and sends a local notification when a price crosses a threshold you set. It only reads prices from free public sources and never handles wallets or payments.',
       ru: 'KCY Price Watch отслеживает выбранные крипто- и валютные курсы и присылает локальное уведомление, когда цена пересекает заданный вами порог. Он только читает цены из бесплатных публичных источников и не работает с кошельками или платежами.'
@@ -513,7 +513,7 @@ const APPS = [
 
   // ── services-toolkit ──
   {
-    id: 'services-toolkit', name: 'Services Toolkit', hwPkg: 'com.kcy.servicestoolkit.hw', ruPkg: 'com.kcy.servicestoolkit.rustore',
+    id: 'services-toolkit', name: 'KCY Toolkit', hwPkg: 'com.kcy.servicestoolkit.hw', ruPkg: 'com.kcy.servicestoolkit.rustore',
     genAI: {
       en: 'One tool is a free AI text helper. When (and only when) you use it, the prompt text you type is sent to a free third-party generative-AI service, <code>text.pollinations.ai</code>, which returns the generated text. Do not enter personal or sensitive information into that tool. All other tools work without AI.',
       ru: 'Один из инструментов — бесплатный ИИ-помощник для текста. Когда (и только когда) вы им пользуетесь, введённый вами текст запроса отправляется в бесплатный сторонний сервис генеративного ИИ <code>text.pollinations.ai</code>, который возвращает сгенерированный текст. Не вводите в него личную или конфиденциальную информацию. Остальные инструменты работают без ИИ.'
@@ -545,6 +545,176 @@ const APPS = [
       PERM.files({ en: 'used only when you pick a file to compress or process; files are handled locally.', ru: 'используется только когда вы выбираете файл для сжатия или обработки; файлы обрабатываются локально.' }),
       PERM.notif()
     ]
+  },
+
+
+  // ── kcy-toolkit-pdf ──
+  {
+    id: 'kcy-toolkit-pdf', name: 'KCY Toolkit PDF', hwPkg: 'com.kcy.toolkitpdf.hw', ruPkg: 'com.kcy.toolkitpdf.rustore',
+    pitch: {
+      en: 'KCY Toolkit PDF is a complete PDF toolbox: merge, split and watermark PDFs, compress large scans, and convert PDF text to a Word (.docx) file — everything runs on-device.',
+      ru: 'KCY Toolkit PDF — полный набор для PDF: объединение, разделение и водяные знаки, сжатие больших сканов и преобразование текста PDF в файл Word (.docx) — всё работает на устройстве.'
+    },
+    device: {
+      en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
+      ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
+    },
+    thirdParties: [],
+    permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
+  },
+
+  // ── kcy-toolkit-qr ──
+  {
+    id: 'kcy-toolkit-qr', name: 'KCY Toolkit QR', hwPkg: 'com.kcy.toolkitqr.hw', ruPkg: 'com.kcy.toolkitqr.rustore',
+    pitch: {
+      en: 'KCY Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.',
+      ru: 'KCY Toolkit QR создаёт QR-коды из текста или ссылок и читает существующие QR-коды камерой или из изображения — полностью на устройстве.'
+    },
+    device: {
+      en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
+      ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
+    },
+    thirdParties: [],
+    permissions: [PERM.camera({ en: 'used only when you open the QR-scanner; the image is processed on-device.', ru: 'используется только при открытии сканера QR; изображение обрабатывается на устройстве.' }), PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
+  },
+
+  // ── kcy-toolkit-ai-announcement ──
+  {
+    id: 'kcy-toolkit-ai-announcement', name: 'KCY Toolkit AI Announcement', hwPkg: 'com.kcy.toolkitai.hw', ruPkg: 'com.kcy.toolkitai.rustore',
+    genAI: {
+      en: 'The app is a free AI text helper. The prompt text you type is sent to a free third-party generative-AI service, <code>text.pollinations.ai</code>, which returns the generated text. Do not enter personal or sensitive information.',
+      ru: 'Приложение — бесплатный ИИ-помощник для текста. Введённый вами текст запроса отправляется в бесплатный сторонний сервис генеративного ИИ <code>text.pollinations.ai</code>, который возвращает сгенерированный текст. Не вводите личную или конфиденциальную информацию.'
+    },
+    pitch: {
+      en: 'KCY Toolkit AI Announcement writes a ready-to-post property or product announcement from a few keywords, using a free AI text service.',
+      ru: 'KCY Toolkit AI Announcement пишет готовое объявление о недвижимости или товаре по нескольким ключевым словам с помощью бесплатного ИИ-сервиса.'
+    },
+    device: {
+      en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
+      ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
+    },
+    thirdParties: [{
+      recipient: 'text.pollinations.ai (free AI text)',
+      data: { en: 'Only when you generate a listing: the prompt text you type, and your IP address.', ru: 'Только при генерации объявления: введённый текст запроса и ваш IP-адрес.' },
+      purpose: { en: 'To generate the announcement text you asked for.', ru: 'Генерация запрошенного вами текста объявления.' },
+      policy: '<a href="https://pollinations.ai">pollinations.ai</a>'
+    }],
+    permissions: []
+  },
+
+  // ── kcy-toolkit-text ──
+  {
+    id: 'kcy-toolkit-text', name: 'KCY Toolkit Text', hwPkg: 'com.kcy.toolkittext.hw', ruPkg: 'com.kcy.toolkittext.rustore',
+    pitch: {
+      en: 'KCY Toolkit Text is a set of text utilities: word and character counters, case and formatting helpers, Base64 encoding — fully on-device.',
+      ru: 'KCY Toolkit Text — набор текстовых утилит: счётчики слов и символов, форматирование, кодирование Base64 — полностью на устройстве.'
+    },
+    device: {
+      en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
+      ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
+    },
+    thirdParties: [],
+    permissions: []
+  },
+
+  // ── kcy-toolkit-finance ──
+  {
+    id: 'kcy-toolkit-finance', name: 'KCY Toolkit Finance', hwPkg: 'com.kcy.toolkitfinance.hw', ruPkg: 'com.kcy.toolkitfinance.rustore',
+    pitch: {
+      en: 'KCY Toolkit Finance bundles the money tools: live currency rates and a converter, crypto charts with indicators, a 20-currency watchlist with alerts, and loan/VAT/interest calculators.',
+      ru: 'KCY Toolkit Finance объединяет денежные инструменты: курсы валют и конвертер, графики крипты с индикаторами, список наблюдения из 20 валют с оповещениями и калькуляторы кредита/НДС/процентов.'
+    },
+    device: {
+      en: 'Watch lists, thresholds and settings are stored <strong>only on your device</strong>. There is no account. The app only reads public market data.',
+      ru: 'Списки наблюдения, пороги и настройки хранятся <strong>только на устройстве</strong>. Аккаунта нет. Приложение только читает публичные рыночные данные.'
+    },
+    thirdParties: [{
+      recipient: 'Public data APIs: Binance, CoinGecko, exchangerate.host, open.er-api.com',
+      data: { en: 'Only when you use the online tools: a standard read-only request and your IP address. No personal data is added.', ru: 'Только при использовании онлайн-инструментов: стандартный запрос только на чтение и ваш IP-адрес. Персональные данные не добавляются.' },
+      purpose: { en: 'To fetch live currency rates and crypto charts.', ru: 'Получение актуальных курсов валют и графиков крипты.' },
+      policy: 'Each provider’s own policy'
+    }],
+    permissions: [PERM.notif()]
+  },
+
+  // ── kcy-toolkit-pictures ──
+  {
+    id: 'kcy-toolkit-pictures', name: 'KCY Toolkit Pictures', hwPkg: 'com.kcy.toolkitpictures.hw', ruPkg: 'com.kcy.toolkitpictures.rustore',
+    pitch: {
+      en: 'KCY Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.',
+      ru: 'KCY Toolkit Pictures уменьшает изображения JPEG, PNG и WebP прямо на устройстве — ничего не выгружается.'
+    },
+    device: {
+      en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
+      ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
+    },
+    thirdParties: [],
+    permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
+  },
+
+  // ── kcy-toolkit-videos ──
+  {
+    id: 'kcy-toolkit-videos', name: 'KCY Toolkit Videos', hwPkg: 'com.kcy.toolkitvideos.hw', ruPkg: 'com.kcy.toolkitvideos.rustore',
+    pitch: {
+      en: 'KCY Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.',
+      ru: 'KCY Toolkit Videos конвертирует видео между MP4, WebM, AVI, MOV, MKV и GIF полностью на устройстве с помощью встроенного движка — ничего не выгружается.'
+    },
+    device: {
+      en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
+      ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
+    },
+    thirdParties: [],
+    permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
+  },
+
+  // ── kcy-toolkit-sound ──
+  {
+    id: 'kcy-toolkit-sound', name: 'KCY Toolkit Sound', hwPkg: 'com.kcy.toolkitsound.hw', ruPkg: 'com.kcy.toolkitsound.rustore',
+    pitch: {
+      en: 'KCY Toolkit Sound converts audio files from phone formats (MP3, M4A/AAC, WAV, OGG, FLAC) to MP4, MP3, WAV or OGG entirely on your device — nothing is uploaded.',
+      ru: 'KCY Toolkit Sound конвертирует аудиофайлы из телефонных форматов (MP3, M4A/AAC, WAV, OGG, FLAC) в MP4, MP3, WAV или OGG полностью на устройстве — ничего не выгружается.'
+    },
+    device: {
+      en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
+      ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
+    },
+    thirdParties: [],
+    permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
+  },
+
+  // ── kcy-toolkit-passwords ──
+  {
+    id: 'kcy-toolkit-passwords', name: 'KCY Toolkit Passwords', hwPkg: 'com.kcy.toolkitpasswords.hw', ruPkg: 'com.kcy.toolkitpasswords.rustore',
+    pitch: {
+      en: 'KCY Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.',
+      ru: 'KCY Toolkit Passwords генерирует надёжные пароли несколькими способами (случайные, произносимые, PIN, фразы) — полностью на устройстве, ничего не сохраняется и не отправляется.'
+    },
+    device: {
+      en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
+      ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
+    },
+    thirdParties: [],
+    permissions: []
+  },
+
+  // ── kcy-toolkit-scraper ──
+  {
+    id: 'kcy-toolkit-scraper', name: 'KCY Toolkit Scraper', hwPkg: 'com.kcy.toolkitscraper.hw', ruPkg: 'com.kcy.toolkitscraper.rustore',
+    pitch: {
+      en: 'KCY Toolkit Scraper downloads a web page you point it to and extracts the parts you asked for (text, links, tables) so you can copy or save them.',
+      ru: 'KCY Toolkit Scraper загружает указанную вами веб-страницу и извлекает нужные части (текст, ссылки, таблицы), чтобы вы могли их скопировать или сохранить.'
+    },
+    device: {
+      en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
+      ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
+    },
+    thirdParties: [{
+      recipient: 'The web pages you choose to scrape (their hosting servers), optionally via a public CORS proxy',
+      data: { en: 'The URL you enter and your IP address — the same as opening that page in a browser.', ru: 'Введённый вами URL и ваш IP-адрес — как при открытии этой страницы в браузере.' },
+      purpose: { en: 'To download the page content you asked to scrape.', ru: 'Загрузка содержимого страницы, которую вы попросили скрапить.' },
+      policy: 'Each site’s own policy'
+    }],
+    permissions: []
   },
 
   // ── selflearning-friend ──

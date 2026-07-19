@@ -1,0 +1,701 @@
+{
+  "target": "prod",
+  "base": "https://take.offbitch.com",
+  "runId": "20260719-180841",
+  "mode": "journey:authenticator",
+  "startedAt": "2026-07-19T12:08:41.855Z",
+  "durationMs": 93641,
+  "scenarios": 7,
+  "urlsChecked": 84,
+  "counts": {
+    "error": 2,
+    "warn": 0,
+    "info": 0
+  },
+  "findings": [
+    {
+      "ts": "2026-07-19T12:09:16.865Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "authenticator",
+      "scenario": "Крипто портфейли: 12 плочки, добавяне с „око\", бекъп кръг",
+      "targetUrl": "http://127.0.0.1:55279/",
+      "detail": "label таб „Портфейли\": 12 плочки; + без избран портфейл → подсказка: page.click: Timeout 25000ms exceeded."
+    },
+    {
+      "ts": "2026-07-19T12:09:43.890Z",
+      "severity": "error",
+      "kind": "journey",
+      "app": "authenticator",
+      "scenario": "Презареждане: всичко е ШИФРОВАНО запазено и иска парола",
+      "targetUrl": "http://127.0.0.1:55279/",
+      "detail": "label отключване → 6 кода, 1 колекция, 2 пароли, 1 портфейл — всичко си е там: page.click: Timeout 25000ms exceeded."
+    }
+  ],
+  "serverLog": {
+    "ok": true,
+    "status": 200,
+    "hits": [
+      "    2026/06/18 16:44:17 [error] 1926610#1926610: *8141 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 16:44:29 [error] 1926610#1926610: *8141 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 16:44:29 [error] 1926610#1926610: *8141 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:25:07 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:25:18 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:25:18 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:25:30 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:25:30 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:25:30 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:25:37 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:25:42 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:25:42 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:25:55 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:25:55 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:26:00 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:26:07 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:26:07 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:26:07 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:26:20 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:26:20 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:26:31 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:26:32 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:26:32 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:25:42 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:25:55 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:25:55 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:26:00 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:26:07 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:26:07 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:26:07 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:26:20 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:26:20 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:26:31 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 17:26:32 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 17:26:32 [error] 1960656#1960656: *9298 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 18:20:49 [error] 1967661#1967661: *10186 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 18:20:52 [error] 1967661#1967661: *10186 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 18:20:57 [error] 1967661#1967661: *10186 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 18:20:57 [error] 1967661#1967661: *10186 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 18:21:01 [error] 1967661#1967661: *10186 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 18:21:05 [error] 1967661#1967661: *10186 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/18 18:21:16 [error] 1970048#1970048: *10233 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/18 18:21:17 [error] 1970048#1970048: *10233 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/19 03:32:09 [error] 1974943#1974943: *15719 open() \"/var/www/html/assets/js/qr_modal.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/qr_modal.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 03:32:15 [error] 1974943#1974943: *15722 open() \"/var/www/html/assets/js/message.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/message.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 03:32:17 [error] 1974943#1974943: *15723 open() \"/var/www/html/assets/js/auth.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/auth.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 07:11:26 [error] 1974943#1974943: *16288 open() \"/var/www/html/assets/js/auth.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/auth.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 07:11:26 [error] 1974943#1974943: *16288 open() \"/var/www/html/assets/js/qr_modal.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/qr_modal.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 07:11:27 [error] 1974943#1974943: *16288 open() \"/var/www/html/assets/js/message.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/message.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 10:04:16 [error] 1974943#1974943: *16547 open() \"/var/www/html/chat/public/' + l.href + '\" failed (2: No such file or directory), client: 74.7.242.18, server: kaji.kak.si, request: \"GET /chat/public/'%20+%20l.href%20+%20' HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/public/chat-footer.js?v=1.0001\"",
+      "    2026/06/19 10:04:26 [error] 1974943#1974943: *16547 open() \"/var/www/html/chat/assets/icon-192.png\" failed (2: No such file or directory), client: 74.7.242.18, server: kaji.kak.si, request: \"GET /chat/assets/icon-192.png HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/public/profile.html\"",
+      "    2026/06/19 10:04:28 [error] 1974943#1974943: *16547 open() \"/var/www/html/chat/assets/manifest.json\" failed (2: No such file or directory), client: 74.7.242.18, server: kaji.kak.si, request: \"GET /chat/assets/manifest.json HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/public/profile.html\"",
+      "    2026/06/19 10:37:32 [error] 1974943#1974943: *16565 directory index of \"/var/www/html/.well-known/acme-challenge/\" is forbidden, client: 195.178.110.199, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/ HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 10:37:32 [error] 1974943#1974943: *16565 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 195.178.110.199, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/* HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 10:37:39 [error] 1974943#1974943: *16565 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 195.178.110.199, server: selflearning.bot.nu, request: \"GET /shared/.env HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 10:37:44 [error] 1974943#1974943: *16581 directory index of \"/var/www/html/.well-known/acme-challenge/\" is forbidden, client: 195.178.110.199, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/ HTTP/1.1\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 10:37:44 [error] 1974943#1974943: *16585 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 195.178.110.199, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/* HTTP/1.1\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 18:45:12 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/19 18:45:14 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/19 18:45:14 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/19 18:45:18 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/19 18:45:27 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/19 18:45:27 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/19 10:04:28 [error] 1974943#1974943: *16547 open() \"/var/www/html/chat/assets/manifest.json\" failed (2: No such file or directory), client: 74.7.242.18, server: kaji.kak.si, request: \"GET /chat/assets/manifest.json HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/public/profile.html\"",
+      "    2026/06/19 10:37:32 [error] 1974943#1974943: *16565 directory index of \"/var/www/html/.well-known/acme-challenge/\" is forbidden, client: 195.178.110.199, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/ HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 10:37:32 [error] 1974943#1974943: *16565 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 195.178.110.199, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/* HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 10:37:39 [error] 1974943#1974943: *16565 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 195.178.110.199, server: selflearning.bot.nu, request: \"GET /shared/.env HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 10:37:44 [error] 1974943#1974943: *16581 directory index of \"/var/www/html/.well-known/acme-challenge/\" is forbidden, client: 195.178.110.199, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/ HTTP/1.1\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 10:37:44 [error] 1974943#1974943: *16585 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 195.178.110.199, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/* HTTP/1.1\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 18:45:12 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/19 18:45:14 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/19 18:45:14 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/19 18:45:18 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/19 18:45:27 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/19 18:45:27 [error] 2010954#2010954: *17117 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/19 19:07:48 [error] 2019739#2019739: *18113 open() \"/var/www/html/assets/js/qr_modal.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/qr_modal.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 19:07:48 [error] 2019739#2019739: *18113 open() \"/var/www/html/assets/js/message.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/message.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 19:07:49 [error] 2019739#2019739: *18113 open() \"/var/www/html/assets/js/auth.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/auth.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/19 20:57:24 [error] 2022412#2022412: *18949 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/19 20:57:30 [error] 2022412#2022412: *18949 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/19 20:57:35 [error] 2022412#2022412: *18949 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html\"",
+      "    2026/06/19 20:57:42 [error] 2022412#2022412: *18949 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/verification-requests?status=pending HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/verification-requests?status=pending\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/19 20:57:43 [error] 2022412#2022412: *18949 connect() failed (111: Connection refused) while connecting to upstream, client: 95.87.73.224, server: kaji.kak.si, request: \"GET /api/admin/stats HTTP/2.0\", upstream: \"http://127.0.0.1:3000/api/admin/stats\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/chat/admin/admin.html?view=all\"",
+      "    2026/06/19 21:39:01 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.local\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.local HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:01 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.production\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.production HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:01 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.prod\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.prod HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:01 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.development\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.development HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:01 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.dev\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.dev HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:01 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.staging\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.staging HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:01 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.stage\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.stage HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:02 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.test\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.test HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:02 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.uat\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.uat HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:02 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.qa\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.qa HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:02 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.preprod\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.preprod HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:02 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.live\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.live HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:02 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.example\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.example HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:03 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.sample\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.sample HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:03 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.dist\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.dist HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:03 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.bak\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.bak HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:03 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.backup\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.backup HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:03 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.old\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.old HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:03 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.save\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.save HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/19 21:39:03 [error] 2029640#2029640: *20428 open() \"/var/www/html/shared/.env.swp\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.swp HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/20 05:13:41 [error] 2044186#2044186: *21053 directory index of \"/var/www/html/selflearning/1/\" is forbidden, client: 95.87.73.224, server: selflearning.bot.nu, request: \"GET /1/ HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/20 05:13:41 [error] 2044186#2044186: *21053 directory index of \"/var/www/html/selflearning/1/\" is forbidden, client: 95.87.73.224, server: selflearning.bot.nu, request: \"GET /1/ HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/20 05:13:41 [error] 2044186#2044186: *21053 directory index of \"/var/www/html/selflearning/1/\" is forbidden, client: 95.87.73.224, server: selflearning.bot.nu, request: \"GET /1/ HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/20 05:13:41 [error] 2044186#2044186: *21053 directory index of \"/var/www/html/selflearning/1/\" is forbidden, client: 95.87.73.224, server: selflearning.bot.nu, request: \"GET /1/ HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/20 18:56:07 [error] 2053417#2053417: *21983 open() \"/var/www/html/assets/js/auth.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/auth.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/20 18:56:08 [error] 2053417#2053417: *21983 open() \"/var/www/html/assets/js/message.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/message.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/20 18:56:08 [error] 2053417#2053417: *21983 open() \"/var/www/html/assets/js/qr_modal.js\" failed (2: No such file or directory), client: 155.2.228.196, server: selflearning.bot.nu, request: \"GET /assets/js/qr_modal.js HTTP/2.0\", host: \"selflearning.bot.nu\"",
+      "    2026/06/21 03:32:55 [error] 2074919#2074919: *23050 \"/var/www/html/.well-known/acme-challenge/index.html\" is not found (2: No such file or directory), client: 45.148.10.67, server: look.myhousesetup.com, request: \"GET /.well-known/acme-challenge/ HTTP/2.0\", host: \"look.myhousesetup.com\"",
+      "    2026/06/21 03:32:55 [error] 2074919#2074919: *23050 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 45.148.10.67, server: look.myhousesetup.com, request: \"GET /.well-known/acme-challenge/* HTTP/2.0\", host: \"look.myhousesetup.com\"",
+      "    2026/06/21 03:33:02 [error] 2074919#2074919: *23050 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 45.148.10.67, server: look.myhousesetup.com, request: \"GET /shared/.env HTTP/2.0\", host: \"look.myhousesetup.com\"",
+      "    2026/06/21 03:33:08 [error] 2074919#2074919: *23069 \"/var/www/html/.well-known/acme-challenge/index.html\" is not found (2: No such file or directory), client: 45.148.10.67, server: look.myhousesetup.com, request: \"GET /.well-known/acme-challenge/ HTTP/1.1\", host: \"look.myhousesetup.com\"",
+      "    2026/06/21 03:33:08 [error] 2074919#2074919: *23079 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 45.148.10.67, server: look.myhousesetup.com, request: \"GET /.well-known/acme-challenge/* HTTP/1.1\", host: \"look.myhousesetup.com\"",
+      "    2026/06/21 05:39:03 [error] 2074919#2074919: *23242 \"/var/www/html/.well-known/acme-challenge/index.html\" is not found (2: No such file or directory), client: 45.148.10.67, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/ HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/06/21 05:39:03 [error] 2074919#2074919: *23253 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 45.148.10.67, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/* HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/06/21 08:25:02 [error] 2074919#2074919: *23387 open() \"/var/www/html/assets/credentials.json\" failed (2: No such file or directory), client: 152.42.217.112, server: look.myhousesetup.com, request: \"GET /assets/credentials.json HTTP/2.0\", host: \"143.198.212.195\"",
+      "    2026/06/21 16:54:07 [error] 2074919#2074919: *23930 open() \"/var/www/html/.well-known/acme-challenge/9vJhTGbhieD0gtLGxO3BE7auE1GO779eawvejJ-a0uA\" failed (2: No such file or directory), client: 23.178.112.106, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/9vJhTGbhieD0gtLGxO3BE7auE1GO779eawvejJ-a0uA HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/06/21 19:23:03 [error] 2074919#2074919: *23993 open() \"/var/www/html/.well-known/acme-challenge/llBQ6W5F8iD2ysdPzLZWP6cKoPIWTYTbLyuFzaVjGcs\" failed (2: No such file or directory), client: 23.178.112.104, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/llBQ6W5F8iD2ysdPzLZWP6cKoPIWTYTbLyuFzaVjGcs HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/06/21 20:10:41 [error] 2074919#2074919: *24009 open() \"/var/www/html/.well-known/acme-challenge/qIbEijEjr1j0YZDQ7T7-wVcE2UAIfKYnJDAa3e0_nC0\" failed (2: No such file or directory), client: 23.178.112.107, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/qIbEijEjr1j0YZDQ7T7-wVcE2UAIfKYnJDAa3e0_nC0 HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/06/23 08:42:37 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.local\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.local HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:37 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.production\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.production HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.prod\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.prod HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.development\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.development HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.dev\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.dev HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.staging\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.staging HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.stage\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.stage HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.test\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.test HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.uat\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.uat HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.qa\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.qa HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.preprod\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.preprod HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.live\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.live HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.example\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.example HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.sample\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.sample HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.dist\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.dist HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.bak\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.bak HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:40 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.backup\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.backup HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:40 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.old\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.old HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:40 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.save\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.save HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:40 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.swp\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.swp HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/25 01:28:16 [error] 2241018#2241018: *1855 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 80.94.95.211, server: look.myhousesetup.com, request: \"GET /shared/.env HTTP/1.1\", host: \"143.198.212.195:443\"",
+      "    2026/06/25 03:03:17 [error] 2241018#2241018: *1902 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 34.175.168.164, server: look.myhousesetup.com, request: \"GET /shared/.env HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/25 03:03:37 [error] 2241018#2241018: *1902 open() \"/var/www/html/assets/.env\" failed (2: No such file or directory), client: 34.175.168.164, server: look.myhousesetup.com, request: \"GET /assets/.env HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/25 06:27:53 [error] 2241018#2241018: *1982 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 185.200.116.211, server: look.myhousesetup.com, request: \"GET /shared/.env HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/25 12:31:34 [error] 2241018#2241018: *2604 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 185.200.116.211, server: look.myhousesetup.com, request: \"GET /shared/.env HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/25 14:30:58 [error] 2241018#2241018: *3026 open() \"/var/www/html/assets/.git/config\" failed (2: No such file or directory), client: 34.80.85.78, server: look.myhousesetup.com, request: \"GET /assets/.git/config HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/07 11:57:29 [error] 2353664#2353664: *38925 \"/var/www/html/.well-known/acme-challenge/index.html\" is not found (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /.well-known/acme-challenge/ HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/07/07 11:57:29 [error] 2353664#2353664: *38925 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /.well-known/acme-challenge/* HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/07/07 11:57:35 [error] 2353664#2353664: *38925 open() \"/var/www/html/chat/*\" failed (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /chat/* HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/07/07 11:57:41 [error] 2353664#2353664: *38925 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /shared/.env HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/07/07 11:57:48 [error] 2353664#2353664: *38974 \"/var/www/html/.well-known/acme-challenge/index.html\" is not found (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /.well-known/acme-challenge/ HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/07/07 11:57:48 [error] 2353664#2353664: *38986 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /.well-known/acme-challenge/* HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/07/12 21:20:15 [error] 2833983#2833983: *49785 directory index of \"/var/www/html/House-Look-Book/js/\" is forbidden, client: 101.47.9.217, server: look.myhousesetup.com, request: \"HEAD /js/ HTTP/1.1\", host: \"143.198.212.195\", referrer: \"https://143.198.212.195/js\"",
+      "    2026/07/12 21:20:32 [error] 2833983#2833983: *49970 directory index of \"/var/www/html/House-Look-Book/js/\" is forbidden, client: 101.47.9.217, server: look.myhousesetup.com, request: \"HEAD /js/ HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/12 21:20:34 [error] 2833983#2833983: *50015 \"/var/www/html/assets/js/index.html\" is not found (2: No such file or directory), client: 101.47.9.217, server: look.myhousesetup.com, request: \"HEAD /assets/js/ HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/12 21:20:35 [error] 2833983#2833983: *50022 open() \"/var/www/html/assets/js\" failed (2: No such file or directory), client: 101.47.9.217, server: look.myhousesetup.com, request: \"HEAD /assets/js HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:27 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.prod\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.prod HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.development\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.development HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.dev\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.dev HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.staging\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.staging HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.stage\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.stage HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.test\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.test HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.uat\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.uat HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.qa\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.qa HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.preprod\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.preprod HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.live\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.live HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.example\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.example HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.sample\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.sample HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.dist\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.dist HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.bak\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.bak HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:30 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.backup\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.backup HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:30 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.old\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.old HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:30 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.save\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.save HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:30 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.swp\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.swp HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 12:39:55 [error] 3307087#3307087: *58116 open() \"/var/www/html/assets/png/favicon-abe32304.png\" failed (2: No such file or directory), client: 139.162.33.108, server: look.myhousesetup.com, request: \"GET /assets/png/favicon-abe32304.png HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 12:40:04 [error] 3307087#3307087: *58175 open() \"/var/www/html/assets/img/favicon.ico\" failed (2: No such file or directory), client: 139.162.33.108, server: look.myhousesetup.com, request: \"GET /assets/img/favicon.ico HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/18 06:55:49 [error] 3349474#3349474: *63356 open() \"/var/www/html/shared/js/' + CFG.legal.policy + '\" failed (2: No such file or directory), client: 74.7.227.173, server: my.girl.place, request: \"GET /shared/js/'%20+%20CFG.legal.policy%20+%20' HTTP/2.0\", host: \"my.girl.place\", referrer: \"https://my.girl.place/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 06:55:51 [error] 3349474#3349474: *63356 open() \"/var/www/html/shared/js/' + CFG.legal.payment + '\" failed (2: No such file or directory), client: 74.7.227.173, server: my.girl.place, request: \"GET /shared/js/'%20+%20CFG.legal.payment%20+%20' HTTP/2.0\", host: \"my.girl.place\", referrer: \"https://my.girl.place/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 08:33:32 [error] 3349474#3349474: *63412 open() \"/var/www/html/shared/js/' + CFG.legal.payment + '\" failed (2: No such file or directory), client: 74.7.227.42, server: kaji.kak.si, request: \"GET /shared/js/'%20+%20CFG.legal.payment%20+%20' HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 08:33:33 [error] 3349474#3349474: *63412 open() \"/var/www/html/shared/js/' + CFG.legal.policy + '\" failed (2: No such file or directory), client: 74.7.227.42, server: kaji.kak.si, request: \"GET /shared/js/'%20+%20CFG.legal.policy%20+%20' HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 06:55:49 [error] 3349474#3349474: *63356 open() \"/var/www/html/shared/js/' + CFG.legal.policy + '\" failed (2: No such file or directory), client: 74.7.227.173, server: my.girl.place, request: \"GET /shared/js/'%20+%20CFG.legal.policy%20+%20' HTTP/2.0\", host: \"my.girl.place\", referrer: \"https://my.girl.place/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 06:55:51 [error] 3349474#3349474: *63356 open() \"/var/www/html/shared/js/' + CFG.legal.payment + '\" failed (2: No such file or directory), client: 74.7.227.173, server: my.girl.place, request: \"GET /shared/js/'%20+%20CFG.legal.payment%20+%20' HTTP/2.0\", host: \"my.girl.place\", referrer: \"https://my.girl.place/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 08:33:32 [error] 3349474#3349474: *63412 open() \"/var/www/html/shared/js/' + CFG.legal.payment + '\" failed (2: No such file or directory), client: 74.7.227.42, server: kaji.kak.si, request: \"GET /shared/js/'%20+%20CFG.legal.payment%20+%20' HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 08:33:33 [error] 3349474#3349474: *63412 open() \"/var/www/html/shared/js/' + CFG.legal.policy + '\" failed (2: No such file or directory), client: 74.7.227.42, server: kaji.kak.si, request: \"GET /shared/js/'%20+%20CFG.legal.policy%20+%20' HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/shared/js/kg-compliance.js?v=1.0001\""
+    ]
+  },
+  "forms": [],
+  "fuzz": null,
+  "journeys": [
+    {
+      "app": "authenticator",
+      "label": "KCY Authenticator (ЛОКАЛНО: пълен тест на всички функции, без телефон)",
+      "scenarios": [
+        {
+          "name": "Старт: интро → език → правен екран (ред + без иконите-чекбокси)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label диалозите (confirm) се приемат автоматично",
+              "ok": true
+            },
+            {
+              "step": "goto /",
+              "ok": true
+            },
+            {
+              "step": "label интрото „KCY Ecosystem\" се показва и си заминава",
+              "ok": true
+            },
+            {
+              "step": "label екран за език: 15 езика + видима версия",
+              "ok": true
+            },
+            {
+              "step": "click button.lang-btn:has-text(\"Български\")",
+              "ok": true
+            },
+            {
+              "step": "label правният екран излиза СЛЕД езика; без 📄/📑 икони; бутонът е заключен до отметката",
+              "ok": true
+            },
+            {
+              "step": "expect button:has-text(\"Създай сейф\")",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Сейф: валидации на паролата + създаване",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label къса парола → „Поне 6 символа\"",
+              "ok": true
+            },
+            {
+              "step": "label различни пароли → „Паролите не съвпадат\"",
+              "ok": true
+            },
+            {
+              "step": "label вярна парола → главният екран с 4-те таба",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "TOTP еталон (RFC 6238): кодът на екрана = независимо изчисление",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "click .fab",
+              "ok": true
+            },
+            {
+              "step": "label ръчно: издател RFC, тайна — еталонната",
+              "ok": true
+            },
+            {
+              "step": "label кодът съвпада с RFC изчислението (±1 период) и има отброяване",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "otpauth:// адрес попълва формата сам",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "click .fab",
+              "ok": true
+            },
+            {
+              "step": "label поставяне на otpauth://…GitHub → полетата се попълват",
+              "ok": true
+            },
+            {
+              "step": "label и този код съвпада с еталона",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "HOTP еталон (RFC 4226): 755224 → бутон ↻ → 287082",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "click .fab",
+              "ok": true
+            },
+            {
+              "step": "label ръчно: тип HOTP, брояч 0",
+              "ok": true
+            },
+            {
+              "step": "label кодът за брояч 0 е ТОЧНО 755224 (RFC 4226 еталон)",
+              "ok": true
+            },
+            {
+              "step": "label ↻ следващ код → ТОЧНО 287082",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Steam Guard: 5 знака от Steam азбуката = еталона",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "click .fab",
+              "ok": true
+            },
+            {
+              "step": "label ръчно: тип Steam",
+              "ok": true
+            },
+            {
+              "step": "label кодът е 5 знака и съвпада с еталонното Steam изчисление",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Търсене, копиране, редакция и преместване",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label търсене „github\" филтрира до 1 ред",
+              "ok": true
+            },
+            {
+              "step": "label докосване на кода → „Копирано\"",
+              "ok": true
+            },
+            {
+              "step": "label редакция: GitHub → GitHub2",
+              "ok": true
+            },
+            {
+              "step": "label преместване ↑: редът се качва",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Дубликати: еднаква тайна се открива и се трие",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "click .fab",
+              "ok": true
+            },
+            {
+              "step": "label добави копие със същата тайна",
+              "ok": true
+            },
+            {
+              "step": "label Настройки → Намери дубликати → групата е намерена → изтрий избраните",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Заключване: грешна парола отказва, вярната отключва",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label Настройки → Заключи сега → грешна парола → „Грешна парола\"",
+              "ok": true
+            },
+            {
+              "step": "label вярната парола отключва и записите са си там",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Смяна на master паролата",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label Настройки → нова парола → заключи → отключи с НОВАТА",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Експорти: 6 реални файла се свалят и са верни",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label отвори Настройки",
+              "ok": true
+            },
+            {
+              "step": "label .json бекъп: 4 записа с верните тайни",
+              "ok": true
+            },
+            {
+              "step": "label Aegis експорт: валиден JSON с db.entries",
+              "ok": true
+            },
+            {
+              "step": "label 2FAS експорт: валиден JSON със services",
+              "ok": true
+            },
+            {
+              "step": "label otpauth:// списък: 4 реда, съдържа тайните",
+              "ok": true
+            },
+            {
+              "step": "label Google Authenticator QR: истински PNG (Steam се прескача)",
+              "ok": true
+            },
+            {
+              "step": "label „Експортирай всички (QR)\": .zip с 4 PNG файла",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Импорт кръг: изтрий запис → върни го от .json; списъците ловят дубликати",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label изтрий RFC записа (с потвърждение)",
+              "ok": true
+            },
+            {
+              "step": "label „+\" → Импорт от файл → .json → RFC се връща",
+              "ok": true
+            },
+            {
+              "step": "label Настройки → импорт на otpauth списъка → само дубликати, нищо ново",
+              "ok": true
+            },
+            {
+              "step": "label Настройки → импорт от 2FAS файла → пак само дубликати",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "QR от картинка: качен PNG се разчита и внася акаунт",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "click .fab",
+              "ok": true
+            },
+            {
+              "step": "label „Качи файл с QR\" → PNG → акаунт QRTest се появява",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Сканиране с камера (фалшив видеопоток с QR код)",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label подмени камерата с платно, което показва QR кода",
+              "ok": true
+            },
+            {
+              "step": "click .fab",
+              "ok": true
+            },
+            {
+              "step": "label „Сканирай QR код\" → кодът се хваща от потока → акаунт CamTest",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Колекция: QR картинка със заглавие се пази и отваря",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label таб „Колекция\" → + → качи QR → Запази",
+              "ok": true
+            },
+            {
+              "step": "label записът се отваря с картинка и разчетено съдържание",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Пароли: ръчен запис + импорт от Chrome CSV (с дубликат) + експорти",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label таб „Пароли\" → + → нов запис",
+              "ok": true
+            },
+            {
+              "step": "label Настройки → CSV импорт: 1 нов + 1 дубликат прескочен",
+              "ok": true
+            },
+            {
+              "step": "label експорт Chrome/Edge CSV и Firefox CSV — двата формата са верни",
+              "ok": true
+            },
+            {
+              "step": "label дубликати на пароли: копие → намира се → трие се",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Крипто портфейли: 12 плочки, добавяне с „око\", бекъп кръг",
+          "ok": false,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label таб „Портфейли\": 12 плочки; + без избран портфейл → подсказка",
+              "ok": false,
+              "error": "page.click: Timeout 25000ms exceeded."
+            },
+            {
+              "step": "label Binance → + → акаунт със seed фраза → запазен, брой 1/20",
+              "skipped": true
+            },
+            {
+              "step": "label „окото\": seed фразата е замъглена, окото я показва",
+              "skipped": true
+            },
+            {
+              "step": "label бекъп: експорт .json → импорт същия → само дубликат",
+              "skipped": true
+            }
+          ]
+        },
+        {
+          "name": "Презареждане: всичко е ШИФРОВАНО запазено и иска парола",
+          "ok": false,
+          "steps": [
+            {
+              "step": "label reload → интро → екран за отключване (не пуска без парола)",
+              "ok": true
+            },
+            {
+              "step": "label тайните в localStorage НЕ са в чист вид (шифровани са)",
+              "ok": true
+            },
+            {
+              "step": "label отключване → 6 кода, 1 колекция, 2 пароли, 1 портфейл — всичко си е там",
+              "ok": false,
+              "error": "page.click: Timeout 25000ms exceeded."
+            }
+          ]
+        },
+        {
+          "name": "Смяна на езика: български → English → обратно",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label Настройки → език → English → интерфейсът е на английски",
+              "ok": true
+            },
+            {
+              "step": "label и обратно на български",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Долната KCY лента: версия + бутони на всеки екран",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label лентата е долу, версията съвпада с билда",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "name": "Изтриване на сейфа: чисто начало",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label изходна позиция: главният екран",
+              "ok": true
+            },
+            {
+              "step": "label Настройки → „Изтрий целия сейф\" (потвърдено) → екранът за нов сейф",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "seed": null
+}
