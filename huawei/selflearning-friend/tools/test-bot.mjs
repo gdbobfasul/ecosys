@@ -1,5 +1,5 @@
 // Version: 1.0001
-// test-bot.mjs — БОТ, който ТЕСТВА „Самообучаващ се приятел".
+// test-bot.mjs — БОТ, който ТЕСТВА „Pupikes Learning Buddy".
 //
 // Дава на мозъка (responder.respond) 100 РАЗНОПОСОЧНИ задачи от много области и наблюдава
 // как ги изпълнява: какъв е източникът на отговора, колко източника/свързани клона е събрал,
@@ -56,7 +56,7 @@ const rows = [];
 const byCat = {};
 let idx = 0;
 
-console.log(`\n🤖 Тест-бот: ${QUERIES.length} задачи към „Самообучаващ се приятел" (AI изключен → реално ровене)\n`);
+console.log(`\n🤖 Тест-бот: ${QUERIES.length} задачи към „Pupikes Learning Buddy" (AI изключен → реално ровене)\n`);
 
 for (const { cat, q } of QUERIES) {
   idx++;

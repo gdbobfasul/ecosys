@@ -2,7 +2,7 @@
   "name": "kcy-toolkit-passwords-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Toolkit Passwords — част от KCY Toolkit семейството (Huawei издание).",
+  "description": "Pupikes Toolkit Passwords — част от Pupikes Toolkit семейството (Huawei издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

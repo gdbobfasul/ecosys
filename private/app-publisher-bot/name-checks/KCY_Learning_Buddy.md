@@ -1,6 +1,6 @@
 # Проверка на име: KCY Learning Buddy
 
-_2026-07-16T21:28:34.649Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:38:11.665Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 
@@ -13,14 +13,14 @@ _Условия: търсено по думата „KCY Learning Buddy" във 
 _Условия: търсено в App Store на 2 държави — САЩ (us) и Китай (cn), на английски по думата „KCY Learning Buddy" (тип „software")._
 - Learn Korean & Study Hangul — PLANB LABS OU (Education)
 - 360Learning — 360Learning (Education)
+- HelloTalk - Language Learning — HELLOTALK FOREIGN LANGUAGE EXCHANGE LEARNING TALK CHAT APP (Education)
 - Cake - Learn English & Korean — Cake Company Limited (Education)
 - Teuida: Learn Languages — TEUIDA Inc, (Education)
+- Voxy - Learn English — Voxy, Inc. (Education)
 - Classera — Classera Inc. (Education)
-- MLO Study Buddy — Rocco Loguercio (Education)
-- UKG Ready Learning — Kronos Incorporated (Education)
 - Kajabi — Kajabi, LLC (Business)
 - GoKollab — LEADCONNECTOR LLC (Education)
-- Schoology — PowerSchool Group LLC (Education)
+- UKG Ready Learning — Kronos Incorporated (Education)
 - Korean! - Learn Hangul & Speak — Luli Languages LLC (Education)
 - Learn Korean for Beginners, A1 — Mobiteach LLC (Education)
 

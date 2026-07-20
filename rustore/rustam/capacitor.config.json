@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.rustam.rustore",
-  "appName": "Рустам бере краставици",
+  "appName": "Rustam picks cucumbers",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

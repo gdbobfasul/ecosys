@@ -1,4 +1,4 @@
-A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.
+A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.
 
 Support: dai.group.ltd.support@gmail.com
 For questions and support, write to: dai.group.ltd.support@gmail.com

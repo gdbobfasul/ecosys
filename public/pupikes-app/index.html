@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- Version: 1.0001 -->
+<!-- pupikes.app — каталог на екосистемата Pupikes. Data-driven от catalog.json
+     (мастер: app-shared/pupikes-catalog.json; деплоят го копира тук като catalog.json).
+     Показва САМО приложения с show:true, групирани по семейства. Готовите се свалят
+     директно (download:true → /apk/<файл>), останалите APK-та в /apk са зад парола (nginx).
+     ?preview=1 → показва ВСИЧКИ (за собственика, за преглед преди публикуване). -->
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pupikes — екосистема от приложения</title>
+<style>
+  :root{ --bg:#0f1115; --card:#181b22; --ink:#eef1f6; --dim:#9aa4b2; --acc:#ffb703; --acc2:#8ecae6; --line:#252a33; }
+  @media (prefers-color-scheme:light){ :root{ --bg:#f6f7fa; --card:#fff; --ink:#1a1d24; --dim:#5c6672; --acc:#e08a00; --acc2:#2a7fa6; --line:#e6e9ef; } }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;-webkit-text-size-adjust:100%}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 18px 80px}
+  header.hero{text-align:center;padding:34px 12px 10px}
+  .logo{font-size:44px;font-weight:800;letter-spacing:-1px;margin:0}
+  .logo .paw{color:var(--acc)}
+  .tagline{color:var(--dim);margin:8px 0 0;font-size:17px}
+  .short{display:inline-block;margin-top:12px;font-size:13px;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:3px 12px}
+  .group{margin:34px 0 0}
+  .group h2{font-size:20px;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+  .group .gnote{color:var(--dim);font-size:14px;margin:0 0 14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+  .card h3{margin:0;font-size:16px}
+  .badges{display:flex;gap:6px;flex-wrap:wrap}
+  .b{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
+  .b.hw{border-color:#c1272d55;color:#e0616a} .b.ru{border-color:#0a84ff55;color:#5aa9ff}
+  .b.soon{opacity:.7}
+  .actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+  a.btn{flex:1;text-align:center;text-decoration:none;font-size:13px;font-weight:600;padding:9px 10px;border-radius:10px;border:1px solid var(--line);color:var(--ink);background:transparent}
+  a.btn.dl{background:var(--acc);color:#1a1d24;border-color:var(--acc)}
+  a.btn.store{color:var(--acc2);border-color:var(--acc2)}
+  .empty{text-align:center;color:var(--dim);padding:60px 20px}
+  .preview-note{text-align:center;background:#ffb70322;border:1px solid var(--acc);border-radius:10px;padding:10px;margin:18px 0;font-size:14px}
+  footer{text-align:center;color:var(--dim);font-size:13px;margin-top:50px;border-top:1px solid var(--line);padding-top:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1 class="logo"><span style="display:inline-block;width:52px;height:52px;vertical-align:middle;margin-right:6px"><svg width="64" height="64" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="padMain" cx="0.42" cy="0.35" r="0.85"><stop offset="0" stop-color="#B07A4E"/><stop offset="0.55" stop-color="#8A5A32"/><stop offset="1" stop-color="#5E3B20"/></radialGradient><radialGradient id="toe" cx="0.40" cy="0.32" r="0.9"><stop offset="0" stop-color="#C08A5A"/><stop offset="0.6" stop-color="#93613A"/><stop offset="1" stop-color="#603A1F"/></radialGradient><linearGradient id="claw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A2414"/><stop offset="1" stop-color="#20140A"/></linearGradient></defs><g transform="translate(12 -12)"><g transform="translate(300 520) rotate(-64)"><path d="M0 -70 C 34 -70, 52 -34, 52 8 C 52 44, 30 66, 0 66 C -30 66, -52 44, -52 8 C -52 -34, -34 -70, 0 -70 Z" fill="url(#toe)"/><path d="M-6 -74 C -14 -96, -4 -112, 8 -104 C 2 -96, 0 -84, 4 -72 Z" fill="url(#claw)"/></g><g transform="translate(372 402) rotate(-42)"><path d="M0 -74 C 34 -74, 54 -36, 54 8 C 54 46, 30 70, 0 70 C -30 70, -54 46, -54 8 C -54 -36, -34 -74, 0 -74 Z" fill="url(#toe)"/><path d="M-5 -78 C -13 -101, -2 -117, 9 -108 C 3 -100, 1 -88, 5 -76 Z" fill="url(#claw)"/></g><g transform="translate(486 344) rotate(-20)"><path d="M0 -76 C 35 -76, 56 -37, 56 9 C 56 48, 31 72, 0 72 C -31 72, -56 48, -56 9 C -56 -37, -35 -76, 0 -76 Z" fill="url(#toe)"/><path d="M-4 -80 C -11 -104, 0 -120, 10 -110 C 4 -102, 3 -90, 6 -78 Z" fill="url(#claw)"/></g><g transform="translate(612 340) rotate(2)"><path d="M0 -74 C 34 -74, 54 -36, 54 8 C 54 46, 30 70, 0 70 C -30 70, -54 46, -54 8 C -54 -36, -34 -74, 0 -74 Z" fill="url(#toe)"/><path d="M-3 -78 C -9 -102, 2 -117, 12 -107 C 6 -99, 5 -87, 7 -76 Z" fill="url(#claw)"/></g><g transform="translate(590 610)"><path d="M0 -160 C -120 -160, -205 -92, -205 6 C -205 92, -150 168, -70 196 C -30 210, 30 210, 70 196 C 150 168, 205 92, 205 6 C 205 -92, 120 -160, 0 -160 Z" fill="url(#padMain)"/></g></g></svg></span>Pupikes</h1>
+    <p class="tagline" id="tagline">Приложения, които ти служат вярно.</p>
+    <span class="short" id="short">Екосистема от приложения</span>
+  </header>
+  <div id="preview" class="preview-note" style="display:none">👁 Режим за преглед — показани са ВСИЧКИ приложения (вкл. непубликуваните). Публично се виждат само тези с включен флаг.</div>
+  <main id="catalog"><div class="empty">Зареждам каталога…</div></main>
+  <footer>
+    <div>🐾 <b>Pupikes</b> — <span id="ftag">верни приложения</span></div>
+    <div style="margin-top:6px" id="counts"></div>
+  </footer>
+</div>
+<script>
+(async function(){
+  var preview = /[?&]preview=1/.test(location.search);
+  var lang = (navigator.language||'bg').slice(0,2);
+  var L = function(o){ return o && (o[lang]||o.bg||o.en||'') || ''; };
+  var host = document.getElementById('catalog');
+  var cat;
+  try { cat = await (await fetch('catalog.json?v='+Date.now())).json(); }
+  catch(e){ host.innerHTML = '<div class="empty">Каталогът не е зареден (catalog.json).</div>'; return; }
+
+  if(cat.brand){ document.getElementById('tagline').textContent = L(cat.brand.tagline); document.getElementById('short').textContent = 'Екосистема · '+cat.brand.short; document.getElementById('ftag').textContent = L(cat.brand.tagline); }
+  if(preview) document.getElementById('preview').style.display='block';
+
+  var shownTotal=0, pubTotal=0;
+  host.innerHTML='';
+  (cat.groups||[]).forEach(function(g){
+    var apps = (g.apps||[]).filter(function(a){ return preview || a.show; });
+    apps.forEach(function(a){ if(a.published && (a.published.huawei||a.published.rustore)) pubTotal++; });
+    if(!apps.length) return;
+    shownTotal += apps.length;
+    var sec = document.createElement('section'); sec.className='group';
+    sec.innerHTML = '<h2>'+L(g.title)+'</h2>'+(L(g.note)?'<p class="gnote">'+L(g.note)+'</p>':'');
+    var grid = document.createElement('div'); grid.className='grid';
+    apps.forEach(function(a){
+      var pub = a.published||{};
+      var badges='';
+      if(pub.huawei) badges+='<span class="b hw">Huawei ✓</span>'; else badges+='<span class="b hw soon">Huawei скоро</span>';
+      if(pub.rustore) badges+='<span class="b ru">RuStore ✓</span>'; else badges+='<span class="b ru soon">RuStore скоро</span>';
+      var acts='';
+      if(a.download && a.apk){
+        if(a.apk.rustore) acts+='<a class="btn dl" href="/apk/'+a.apk.rustore+'">Свали APK</a>';
+      }
+      if(pub.huawei && a.storeUrl && a.storeUrl.huawei) acts+='<a class="btn store" href="'+a.storeUrl.huawei+'">AppGallery</a>';
+      if(pub.rustore && a.storeUrl && a.storeUrl.rustore) acts+='<a class="btn store" href="'+a.storeUrl.rustore+'">RuStore</a>';
+      if(!acts) acts='<span class="b soon">Очаквайте скоро</span>';
+      var card=document.createElement('div'); card.className='card';
+      card.innerHTML='<h3>'+a.name+'</h3><div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>';
+      grid.appendChild(card);
+    });
+    sec.appendChild(grid); host.appendChild(sec);
+  });
+  if(!shownTotal) host.innerHTML='<div class="empty">Още няма публикувани приложения тук.<br>Скоро 🐾</div>';
+  document.getElementById('counts').textContent = shownTotal+' приложения · '+pubTotal+' в магазините'+(preview?' (преглед)':'');
+})();
+</script>
+</body>
+</html>

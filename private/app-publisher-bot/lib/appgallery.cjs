@@ -4,7 +4,7 @@
 // скролваме за следващите страници и вадим РЕАЛНИТЕ имена на приложения (без китайските
 // етикети за секции „相关应用"/„搜索应用N-M"). Работи и за търсене по ИМЕ, и по ФУНКЦИЯ
 // (двойка думи, напр. „news translator").
-const { loadPlaywright, norm } = require('./util.cjs');
+const { loadPlaywright, launchChromium, norm } = require('./util.cjs');
 
 // Етикети/шум, които API-то връща като заглавия на секции — не са приложения
 // (напр. „相关应用" = свързани, „搜索应用7-10"/„搜索应用11-200" = секции с резултати).
@@ -16,7 +16,7 @@ async function searchAppGallery(term, opts = {}) {
   const url = 'https://appgallery.huawei.com/search/' + encodeURIComponent(term);
   let browser;
   try {
-    browser = await pw.chromium.launch();
+    browser = await launchChromium(pw);
     const ctx = await browser.newContext({ userAgent: 'Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Mobile Safari/537.36' });
     const page = await ctx.newPage();
     const names = [];

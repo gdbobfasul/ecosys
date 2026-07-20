@@ -1,4 +1,4 @@
-KCY Toolkit Scraper — タイトル/本文/リンクを抽出.
+Pupikes Toolkit Scraper — タイトル/本文/リンクを抽出.
 
 ウェブスクレイパー — タイトル/本文/リンクを抽出
 

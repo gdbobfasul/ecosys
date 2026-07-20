@@ -1,4 +1,4 @@
-# Тестване — KCY Learning Buddy (RUStore)
+# Тестване — Pupikes Learning Buddy (RUStore)
 
 ## Браузър (бързо)
 1. `npm install`

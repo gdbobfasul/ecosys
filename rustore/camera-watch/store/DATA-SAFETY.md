@@ -1,4 +1,4 @@
-# Камера-страж — Декларация за данните (Data Safety)
+# MotionHawk — Декларация за данните (Data Safety)
 
 App ID: `com.kcy.camerawatch.rustore`
 

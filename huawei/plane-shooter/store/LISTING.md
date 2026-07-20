@@ -1,10 +1,10 @@
-# Huawei AppGallery — данни за обявата (Plane Shooter)
+# Huawei AppGallery — данни за обявата (Warbird Rush)
 
 > Магазин: **Huawei AppGallery** (https://appgallery.huawei.com). Без Google
 > Play Services / GMS — Huawei устройствата нямат GMS.
 
 ## Основни данни
-- **Име на приложението:** Plane Shooter
+- **Име на приложението:** Warbird Rush
 - **App ID (package):** `com.kcy.planeshooter.huawei`
 - **Категория:** Games → Arcade
 - **Възрастов рейтинг:** PEGI 7 / 6+ (леко аркадно насилие, без кръв)
@@ -36,6 +36,6 @@ plane, shooter, arcade, space, missiles, offline, boss
 
 ## Политика за поверителност
 Приложението е офлайн и **не събира лични данни**. Текст-образец:
-„Plane Shooter не събира, не съхранява и не предава лични данни. Цялата
+„Warbird Rush не събира, не съхранява и не предава лични данни. Цялата
 игрова логика се изпълнява локално на устройството." AppGallery изисква
 публично достъпен URL на политиката при подаване.

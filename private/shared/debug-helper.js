@@ -1,5 +1,5 @@
 // Version: 1.0093
-// KCY Ecosystem — Debug helper за services
+// Pupikes — Debug helper за services
 //
 // Пише в:
 //   1. console (отива в journalctl)

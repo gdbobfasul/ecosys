@@ -1,5 +1,5 @@
 id: business-faq-bot
-name: Бизнес FAQ робот
+name: Pupikes FAQ Desk
 folders:
   - rustore/business-faq-bot
   - huawei/business-faq-bot
@@ -51,10 +51,10 @@ listings:
       Engine: input is normalized and key phrases are weighted by length, so the most
       specific answer wins; with no match, a fallback reply is sent.
   bg:
-    title: Бизнес FAQ робот
+    title: Pupikes FAQ Desk
     short: Робот отговаря на чести въпроси по ключови думи — офлайн
     full: |
-      Бизнес FAQ робот е „робот под наем" за малък бизнес: отговаря на честите въпроси
+      Pupikes FAQ Desk е „робот под наем" за малък бизнес: отговаря на честите въпроси
       на клиентите по правила (съвпадение на ключови думи), без платен LLM, без акаунти,
       без контакти и без проследяване. Всичко е на устройството.
 

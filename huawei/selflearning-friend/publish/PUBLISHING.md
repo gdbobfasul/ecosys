@@ -1,4 +1,4 @@
-# Документи за публикуване — KCY Learning Buddy
+# Документи за публикуване — Pupikes Learning Buddy
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 

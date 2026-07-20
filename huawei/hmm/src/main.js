@@ -7,8 +7,8 @@ import { mountHelp } from './core/help.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
-mountEcosystem('hmm'); // „Още от KCY Ecosystem" showcase
-playIntro(); // кратко „KCY Ecosystem" интро при старт
+mountEcosystem('hmm'); // „Още от Pupikes" showcase
+playIntro(); // кратко „Pupikes" интро при старт
 startPromoAds('hmm'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('hmm'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('hmm'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт

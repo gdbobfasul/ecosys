@@ -1,4 +1,4 @@
-/* KCY Portals — Battle Heroes v2 (video-базирано)
+/* Pupikes Portals — Battle Heroes v2 (video-базирано)
    Version: 1.0001
 
    Данни за всеки герой:

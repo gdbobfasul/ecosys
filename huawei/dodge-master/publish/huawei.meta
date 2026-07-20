@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: Dodge Master (huawei издание). Генерирано от AppPublisherBot.
+# Приложение: EvadeArena (huawei издание). Генерирано от AppPublisherBot.
 
 [Set basic app information]
 App type: Game (игра)
-App name: Dodge Master            # 12 / 30 знака
+App name: EvadeArena            # 10 / 30 знака
 App package name: com.kcy.dodgemaster.hw   # 22 / 128 знака
 Level-1 app category: Games
 

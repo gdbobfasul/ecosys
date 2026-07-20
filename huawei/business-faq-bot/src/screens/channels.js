@@ -7,7 +7,7 @@
 //     нотификации + direct-reply). Работи само в NATIVE билд (sideload APK). Тук
 //     виждаш реалния статус (нужен native билд / дай достъп / готово / свързан) и
 //     бутон към системния екран.
-//   • Нашият чат (KCY) — реална HTTP връзка към чат бекенда. Настройваш адрес +
+//   • Нашият чат (Pupikes) — реална HTTP връзка към чат бекенда. Настройваш адрес +
 //     телефон/парола (или готов токен); ботът чете новите съобщения и авто-отговаря
 //     през СЪЩИЯ FAQ rule-engine.
 //   • Демо чат (local) — вграден sandbox, винаги работи (таб „Демо чат").
@@ -36,7 +36,7 @@ export function renderChannels(root, { navigate, rerender }) {
   // 1) Месинджъри (WhatsApp/Viber/Messenger) през Notification access.
   root.appendChild(messengersBlock(rerender));
 
-  // 2) Нашият чат (KCY) — реална HTTP връзка.
+  // 2) Нашият чат (Pupikes) — реална HTTP връзка.
   root.appendChild(kcyBlock(rerender));
 
   // 3) Демо чат (винаги работи).
@@ -151,7 +151,7 @@ function messengersBlock(rerender) {
   return wrap;
 }
 
-// --- Нашият чат (KCY) ---------------------------------------------------------
+// --- Нашият чат (Pupikes) ---------------------------------------------------------
 function kcyBlock(rerender) {
   const cfg = (getState().channels && getState().channels.kcy) || {};
 

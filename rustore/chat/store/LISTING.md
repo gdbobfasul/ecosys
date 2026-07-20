@@ -1,17 +1,17 @@
-# KCY Chat — RUStore listing
+# Pupikes Chat — RUStore listing
 
-**App name:** KCY Chat
+**App name:** Pupikes Chat
 **App id:** `com.kcy.chat.rustore`
 **Category:** Communication / Social
 
 ## Short description (RU)
-Мобильный клиент чата KCY. Безопасное общение и заявки на помощь.
+Мобильный клиент чата Pupikes. Безопасное общение и заявки на помощь.
 
 ## Short description (BG)
-Мобилен клиент за чата KCY. Сигурно общуване и заявки за помощ.
+Мобилен клиент за чата Pupikes. Сигурно общуване и заявки за помощ.
 
 ## Full description
-KCY Chat е официалната мобилна обвивка за чат платформата KCY. Приложението
+Pupikes Chat е официалната мобилна обвивка за чат платформата Pupikes. Приложението
 зарежда живия чат сървър и предлага същото изживяване като уеб версията —
 съобщения, услуги, профил — директно на телефона.
 

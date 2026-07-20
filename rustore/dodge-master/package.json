@@ -2,7 +2,7 @@
   "name": "dodge-master-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "Dodge Master - top-down dodge/survival game (RUStore build). Self-contained Phaser 3 + Capacitor game.",
+  "description": "EvadeArena - top-down dodge/survival game (RUStore build). Self-contained Phaser 3 + Capacitor game.",
   "type": "module",
   "scripts": {
     "dev": "vite",

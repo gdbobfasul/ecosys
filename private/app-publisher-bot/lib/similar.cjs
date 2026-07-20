@@ -1,7 +1,7 @@
 // similar.cjs — ФУНКЦИОНАЛЕН анализ на конкуренцията: намира подобни по ФУНКЦИЯ (не по име)
 // приложения и сайтове. За всеки: име/URL, в кои магазини е, популярност (оценки/брой), в кои
 // държави е наличен. Ограничава до 5 най-релевантни/популярни. За секцията „Подобни" в анализа.
-const { loadPlaywright, ddg, norm } = require('./util.cjs');
+const { loadPlaywright, launchChromium, ddg, norm } = require('./util.cjs');
 const { searchAppGallery } = require('./appgallery.cjs');
 
 // Превод на име към английски САМО ако е на друга азбука (CJK/кирилица/арабски) — за да можем
@@ -101,7 +101,7 @@ async function similarApps(queries, opts = {}) {
   if (pw) {
     let browser;
     try {
-      browser = await pw.chromium.launch();
+      browser = await launchChromium(pw);
       for (const q of queries.slice(0, 2)) {
         const page = await (await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36' })).newPage();
         await page.goto('https://play.google.com/store/search?q=' + encodeURIComponent(q) + '&c=apps', { waitUntil: 'domcontentloaded', timeout: 25000 }).catch(() => {});

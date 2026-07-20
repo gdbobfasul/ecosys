@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.monitorbot.rustore",
-  "appName": "KCY Site Monitor",
+  "appName": "Pupikes Site Monitor",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

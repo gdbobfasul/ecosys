@@ -26,6 +26,6 @@ export const THEME = {
   heroEdge: 0xd0ffe6,
 
   // Заглавие на менюто
-  titleText: 'TITANS FIGHT',
+  titleText: 'GODFIST ARENA',
   titleSub: 'AppGallery Edition'
 };

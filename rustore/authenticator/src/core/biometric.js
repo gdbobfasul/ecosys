@@ -35,7 +35,7 @@ export async function biometricVerify(reason) {
       reason: reason || 'Отключи сейфа',
       cancelTitle: 'Отказ',
       allowDeviceCredential: true,
-      androidTitle: 'KCY Authenticator'
+      androidTitle: 'Pupikes Authenticator'
     });
     return true;
   } catch (e) { return false; }

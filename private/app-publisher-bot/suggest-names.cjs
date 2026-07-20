@@ -23,6 +23,7 @@ const CANDIDATES = {
   'monitor-bot':        ['FeedPinger', 'FeedHawk', 'WatchWire', 'FeedNudge', 'PingFeed', 'FeedSignal', 'Feedwatch', 'AlertWire', 'FeedPulse', 'Watchping'],
   'price-watch-bot':    ['RateBeacon', 'PriceHawk', 'RatePing', 'CoinBeacon', 'PricePulse', 'RateHawk', 'Ratewatch', 'TickAlert', 'PriceNudge', 'RateSignal'],
   'routine-bot':        ['DayNest Routine', 'DayGroove', 'MorningKick', 'RoutineFlow', 'DayCadence', 'RiseRoutine', 'DayNudge', 'FlowDay', 'RoutineNest', 'DayPilot Routine'],
+  'plane-shooter':      ['Aero Barrage', 'Skyfire Squad', 'Wingstorm Run', 'Bullet Skies', 'Sky Strafe', 'Jetfire Alley', 'Warbird Rush', 'Aces Barrage', 'Propfire', 'Skybound Guns'],
   'rustam':             ['Cucumber Rush', 'Cuke Dash', 'Garden Rush', 'Pickle Panic', 'Cucumber Dash', 'Mole Escape', 'Veggie Rush', 'Cuke Rush', 'Garden Dodger', 'Mole & Cukes'],
   'selflearning-friend':['Learnling', 'Braincub', 'TeachPal', 'Mindsprig', 'Studybud', 'Learnkin', 'Braincharm', 'Mindly Pal', 'Learnly Pal', 'Mindkin'],
   'titans-fight':       ['Titan Fist Arena', 'Titanbout', 'Godfist Arena', 'Titan Rumble', 'Fist of Titans', 'Titanclash', 'Titan Legends', 'Colossus Fists', 'Titanforge', 'Warfist Arena'],

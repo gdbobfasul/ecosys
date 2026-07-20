@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.servicestoolkit.rustore",
-  "appName": "KCY Toolkit",
+  "appName": "Pupikes Toolkit",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

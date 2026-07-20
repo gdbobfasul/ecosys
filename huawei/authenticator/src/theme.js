@@ -3,7 +3,7 @@
 // Цветовете се различават от RUStore версията (своя палитра).
 export const THEME = {
   store: 'huawei',
-  appName: 'KCY Toolkit Authenticator',
+  appName: 'Pupikes Toolkit Authenticator',
   // Акценти — по-хладен индигов + смарагдов за Huawei
   primary: '#5b6cf0',
   accent: '#2bbf7a',

@@ -3,7 +3,7 @@
 // Показва 15-те езика на екосистемата с родните им имена; изборът се пази и
 // после се отваря менюто. Заглавието „Избери език" се изписва на текущия език.
 //
-// Titans Fight ползва Phaser.Scale.RESIZE — размерът се взема живо от
+// Godfist Arena ползва Phaser.Scale.RESIZE — размерът се взема живо от
 // this.scale.gameSize (а не от изнесени GAME_WIDTH/GAME_HEIGHT като при rustam).
 import Phaser from 'phaser';
 import { THEME } from '../theme.js';

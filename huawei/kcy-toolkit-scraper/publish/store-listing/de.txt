@@ -1,4 +1,4 @@
-KCY Toolkit Scraper — Titel/Text/Links extrahieren.
+Pupikes Toolkit Scraper — Titel/Text/Links extrahieren.
 
 Web-Scraper — Titel/Text/Links extrahieren
 

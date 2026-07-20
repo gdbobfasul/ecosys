@@ -1,7 +1,7 @@
 // Version: 1.0019
-// ecosystem.js — екран „Още от KCY Ecosystem": бутон „KCY Ecosystem" в ЕДИННАТА долна лента
+// ecosystem.js — екран „Още от Pupikes": бутон „Pupikes" в ЕДИННАТА долна лента
 // (core/kcy-bar.js) + showcase списък на ДРУГИТЕ приложения (снимка + ИМЕ + описание 15 езика +
-// линк към приложението). Footer „KCY Ecosystem publisher 2026". БЕЗ изскачащи реклами
+// линк към приложението). Footer „Pupikes publisher 2026". БЕЗ изскачащи реклами
 // (доброволен екран → минава правилата на магазините). Всеки апп подава своя id и се самоизключва.
 //
 // Каталогът се тегли ПЪРВО ОТ СЪРВЪРА (public/promo/kcy-promo.json → https://…/promo/kcy-promo.json):
@@ -53,6 +53,14 @@ function openLink(url) {
 function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
 export function mountEcosystem(selfId) {
+  try {
+    if (!document.getElementById('kcy-paw-halo-style')) {
+      const st = document.createElement('style'); st.id = 'kcy-paw-halo-style';
+      st.textContent = '#kcy-eco-btn{font-size:17px;line-height:1;border-radius:50%;animation:kcyPawHalo 1.8s ease-in-out infinite}' +
+        '@keyframes kcyPawHalo{0%,100%{box-shadow:0 0 5px 1px rgba(130,195,255,.35)}50%{box-shadow:0 0 13px 5px rgba(130,195,255,.75)}}';
+      (document.head || document.documentElement).appendChild(st);
+    }
+  } catch (e) {}
   const self = selfId || '';
   function openShowcase() {
     if (document.getElementById('kcy-eco-ov')) return;
@@ -60,10 +68,10 @@ export function mountEcosystem(selfId) {
     ov.style.cssText = 'position:fixed;inset:0;z-index:2147483200;background:#0b1220;color:#e6edf3;font-family:system-ui,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column';
     ov.innerHTML =
       '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #1b2536">' +
-        '<div style="font-weight:800;font-size:16px;background:linear-gradient(90deg,#4a9eff,#8bd450);-webkit-background-clip:text;background-clip:text;color:transparent">KCY Ecosystem</div>' +
+        '<div style="font-weight:800;font-size:16px;background:linear-gradient(90deg,#4a9eff,#8bd450);-webkit-background-clip:text;background-clip:text;color:transparent">Pupikes</div>' +
         '<button id="kcy-eco-x" style="background:#1b2536;color:#cdd;border:none;border-radius:8px;padding:8px 12px;font-size:16px;cursor:pointer">✕</button></div>' +
       '<div id="kcy-eco-list" style="flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:12px"><div style="text-align:center;opacity:.55;padding:30px">…</div></div>' +
-      '<div style="text-align:center;padding:10px;font-size:12px;opacity:.55;border-top:1px solid #1b2536">KCY Ecosystem publisher 2026</div>';
+      '<div style="text-align:center;padding:10px;font-size:12px;opacity:.55;border-top:1px solid #1b2536">Pupikes publisher 2026</div>';
     document.body.appendChild(ov);
     document.getElementById('kcy-eco-x').onclick = () => ov.remove();
     loadCatalog().then((cat) => {
@@ -83,5 +91,5 @@ export function mountEcosystem(selfId) {
       list.querySelectorAll('.kcy-eco-card').forEach((c) => { c.onclick = () => openLink(c.getAttribute('data-url')); });
     });
   }
-  kcyBarButton({ id: 'kcy-eco-btn', order: 10, accent: true, label: () => '✨ KCY Ecosystem', onClick: openShowcase });
+  kcyBarButton({ id: 'kcy-eco-btn', order: 10, accent: true, label: () => '🐾', onClick: openShowcase });
 }

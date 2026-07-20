@@ -181,7 +181,7 @@ export function renderDashboard(ctx) {
       }, t('dash_save_proxy'))
     ]),
 
-    // Пренасяне на конфигурацията: файл в Downloads/KCY, който оцелява преинсталация.
+    // Пренасяне на конфигурацията: файл в Downloads/Pupikes, който оцелява преинсталация.
     // Показва се само на устройство (в браузър няма Filesystem плъгин).
     ...(backupAvailable() ? [
       el('h2', { style: 'margin:14px 0 6px' }, '💾 ' + t('bk_title')),

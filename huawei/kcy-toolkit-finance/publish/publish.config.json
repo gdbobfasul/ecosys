@@ -1,5 +1,5 @@
 {
-  "_comment": "Snapshot конфиг (kcy-toolkit-finance). Език=servicestoolkit.lang (наследен от KCY Toolkit основата); без състояние — снима се началният екран с инструментите.",
+  "_comment": "Snapshot конфиг (kcy-toolkit-finance). Език=servicestoolkit.lang (наследен от Pupikes Toolkit основата); без състояние — снима се началният екран с инструментите.",
   "webDir": "dist",
   "viewport": {
     "width": 360,

@@ -1,5 +1,5 @@
 // Version: 1.0001
-// i18n.js — преводен слой на „KCY Toolkit Price Watch" за 15-те езика на екосистемата.
+// i18n.js — преводен слой на „Pupikes Toolkit Price Watch" за 15-те езика на екосистемата.
 // Език по подразбиране: руски (до избор от потребителя при първо стартиране).
 // Резервна верига при липсващ ключ: текущ → ru → en → самият ключ.
 // Бележка: приложението показва САМО ценова информация и известия — без търговия,
@@ -18,7 +18,7 @@ const STR = {
   delete: { bg:'Изтрий', ru:'Удалить', uk:'Видалити', en:'Delete', de:'Löschen', fr:'Supprimer', es:'Eliminar', 'es-MX':'Eliminar', it:'Elimina', pt:'Excluir', ar:'حذف', hi:'हटाएं', ja:'削除', ky:'Өчүрүү', 'zh-Hant':'刪除' },
 
   // --- Заглавие на приложението ---
-  app_name: { bg:'KCY Toolkit Price Watch', ru:'KCY Toolkit Price Watch', uk:'Цінова-стежка', en:'Price-Watch Bot', de:'Preis-Robot', fr:'Robot des prix', es:'Robot de precios', 'es-MX':'Robot de precios', it:'Robot dei prezzi', pt:'Robô de preços', ar:'روبوت مراقبة الأسعار', hi:'मूल्य-निगरानी बॉट', ja:'価格ウォッチボット', ky:'Баа-робот', 'zh-Hant':'價格監看機器人' },
+  app_name: { bg:'Pupikes Toolkit Price Watch', ru:'Pupikes Toolkit Price Watch', uk:'Цінова-стежка', en:'Price-Watch Bot', de:'Preis-Robot', fr:'Robot des prix', es:'Robot de precios', 'es-MX':'Robot de precios', it:'Robot dei prezzi', pt:'Robô de preços', ar:'روبوت مراقبة الأسعار', hi:'मूल्य-निगरानी बॉट', ja:'価格ウォッチボット', ky:'Баа-робот', 'zh-Hant':'價格監看機器人' },
 
   // --- Онбординг ---
   ob_headline: { bg:'Робот, който следи цените вместо теб', ru:'Робот, который следит за ценами вместо вас', uk:'Робот, який стежить за цінами замість вас', en:'A robot that watches prices for you', de:'Ein Roboter, der die Preise für dich beobachtet', fr:'Un robot qui surveille les prix pour vous', es:'Un robot que vigila los precios por ti', 'es-MX':'Un robot que vigila los precios por ti', it:'Un robot che controlla i prezzi al posto tuo', pt:'Um robô que vigia os preços por você', ar:'روبوت يراقب الأسعار نيابةً عنك', hi:'एक बॉट जो आपके लिए कीमतों पर नज़र रखता है', ja:'あなたの代わりに価格を見張るロボット', ky:'Сиздин ордуңузга бааларды көзөмөлдөгөн робот', 'zh-Hant':'替你盯緊價格的機器人' },
@@ -95,7 +95,7 @@ const STR = {
   nav_permissions: { bg:'Разрешения', ru:'Разрешения', uk:'Дозволи', en:'Permissions', de:'Berechtigungen', fr:'Autorisations', es:'Permisos', 'es-MX':'Permisos', it:'Permessi', pt:'Permissões', ar:'الأذونات', hi:'अनुमतियाँ', ja:'権限', ky:'Уруксаттар', 'zh-Hant':'權限' },
 
   // --- Известия и журнал на планировчика ---
-  notif_title: { bg:'KCY Toolkit Price Watch: праг достигнат', ru:'KCY Toolkit Price Watch: порог достигнут', uk:'Цінова-стежка: поріг досягнуто', en:'Price-Watch Bot: threshold reached', de:'Preis-Robot: Schwelle erreicht', fr:'Robot des prix : seuil atteint', es:'Robot de precios: umbral alcanzado', 'es-MX':'Robot de precios: umbral alcanzado', it:'Robot dei prezzi: soglia raggiunta', pt:'Robô de preços: limite atingido', ar:'روبوت الأسعار: بلغ الحدّ', hi:'मूल्य-निगरानी बॉट: सीमा पर पहुँचा', ja:'価格ウォッチボット：しきい値到達', ky:'Баа-робот: чекке жетти', 'zh-Hant':'價格監看機器人：已達門檻' },
+  notif_title: { bg:'Pupikes Toolkit Price Watch: праг достигнат', ru:'Pupikes Toolkit Price Watch: порог достигнут', uk:'Цінова-стежка: поріг досягнуто', en:'Price-Watch Bot: threshold reached', de:'Preis-Robot: Schwelle erreicht', fr:'Robot des prix : seuil atteint', es:'Robot de precios: umbral alcanzado', 'es-MX':'Robot de precios: umbral alcanzado', it:'Robot dei prezzi: soglia raggiunta', pt:'Robô de preços: limite atingido', ar:'روبوت الأسعار: بلغ الحدّ', hi:'मूल्य-निगरानी बॉट: सीमा पर पहुँचा', ja:'価格ウォッチボット：しきい値到達', ky:'Баа-робот: чекке жетти', 'zh-Hant':'價格監看機器人：已達門檻' },
   notif_body: { bg:'{0} — сега {1}', ru:'{0} — сейчас {1}', uk:'{0} — зараз {1}', en:'{0} — now {1}', de:'{0} — jetzt {1}', fr:'{0} — maintenant {1}', es:'{0} — ahora {1}', 'es-MX':'{0} — ahora {1}', it:'{0} — ora {1}', pt:'{0} — agora {1}', ar:'{0} — الآن {1}', hi:'{0} — अभी {1}', ja:'{0} — 現在 {1}', ky:'{0} — азыр {1}', 'zh-Hant':'{0} — 目前 {1}' },
   log_hit: { bg:'🔔 {0} достигнат — стойност {1}', ru:'🔔 {0} достигнут — значение {1}', uk:'🔔 {0} досягнуто — значення {1}', en:'🔔 {0} reached — value {1}', de:'🔔 {0} erreicht — Wert {1}', fr:'🔔 {0} atteint — valeur {1}', es:'🔔 {0} alcanzado — valor {1}', 'es-MX':'🔔 {0} alcanzado — valor {1}', it:'🔔 {0} raggiunto — valore {1}', pt:'🔔 {0} atingido — valor {1}', ar:'🔔 {0} تحقق — القيمة {1}', hi:'🔔 {0} पहुँचा — मान {1}', ja:'🔔 {0} 到達 — 値 {1}', ky:'🔔 {0} жетти — маани {1}', 'zh-Hant':'🔔 {0} 已達 — 數值 {1}' },
   log_error: { bg:'⚠️ {0}: {1}', ru:'⚠️ {0}: {1}', uk:'⚠️ {0}: {1}', en:'⚠️ {0}: {1}', de:'⚠️ {0}: {1}', fr:'⚠️ {0} : {1}', es:'⚠️ {0}: {1}', 'es-MX':'⚠️ {0}: {1}', it:'⚠️ {0}: {1}', pt:'⚠️ {0}: {1}', ar:'⚠️ {0}: {1}', hi:'⚠️ {0}: {1}', ja:'⚠️ {0}：{1}', ky:'⚠️ {0}: {1}', 'zh-Hant':'⚠️ {0}：{1}' },

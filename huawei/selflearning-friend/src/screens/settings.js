@@ -561,7 +561,7 @@ export function renderSettings(root, { rerender, openLangPicker }) {
 
   // ── Пренасяне / Бекъп (оцеляване след деинсталация) ────────────────────────────────
   const rc = getRecoveryCfg();
-  const dirIn = el('input', { type: 'text', value: rc.dir, placeholder: 'KCY', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
+  const dirIn = el('input', { type: 'text', value: rc.dir, placeholder: 'Pupikes', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
   const setNameIn = el('input', { type: 'text', value: rc.settingsName, placeholder: 'slf-settings', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
   const knNameIn = el('input', { type: 'text', value: rc.knowledgeName, placeholder: 'slf-knowledge', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
   const autoSaveChk = el('input', { type: 'checkbox' }); if (rc.autoSave) autoSaveChk.checked = true;
@@ -574,7 +574,7 @@ export function renderSettings(root, { rerender, openLangPicker }) {
 
   function persistCfg() {
     setRecoveryCfg({
-      dir: dirIn.value.trim() || 'KCY',
+      dir: dirIn.value.trim() || 'Pupikes',
       settingsName: setNameIn.value.trim() || 'slf-settings',
       knowledgeName: knNameIn.value.trim() || 'slf-knowledge',
       autoSave: !!autoSaveChk.checked,

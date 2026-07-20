@@ -1,7 +1,7 @@
 {
   "name": "kcy-mobile-chat",
   "version": "2.0.0",
-  "description": "KCY Mobile Chat - React Native Application",
+  "description": "Pupikes Mobile Chat - React Native Application",
   "main": "index.js",
   "scripts": {
     "start": "expo start",

@@ -1,4 +1,4 @@
-# Release Checklist — KCY Auto Answer (RUStore)
+# Release Checklist — Pupikes Auto Answer (RUStore)
 
 ## Преди публикация
 - [ ] `npm install` минава без грешки.

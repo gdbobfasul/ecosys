@@ -1,4 +1,4 @@
-# Документи за публикуване — KCY Routine Planner
+# Документи за публикуване — Pupikes Routine Planner
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 

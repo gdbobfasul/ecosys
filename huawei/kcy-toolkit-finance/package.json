@@ -2,7 +2,7 @@
   "name": "kcy-toolkit-finance-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Toolkit Finance — част от KCY Toolkit семейството (Huawei издание).",
+  "description": "Pupikes Toolkit Finance — част от Pupikes Toolkit семейството (Huawei издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

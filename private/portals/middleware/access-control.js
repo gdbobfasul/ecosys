@@ -1,4 +1,4 @@
-// KCY Portals — Access Control Middleware
+// Pupikes Portals — Access Control Middleware
 // Version: 1.0171
 //
 // 4 варианта за достъп до порталите (GAMES + SERVICES):

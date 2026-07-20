@@ -13,5 +13,5 @@
   <path d="M512 512 L512 132 A380 380 0 0 1 820 330 Z" fill="url(#bg)" fill-opacity="0.85"/>
   <circle cx="512" cy="512" r="46" fill="url(#bg)"/>
   <text x="512" y="930" text-anchor="middle" font-family="system-ui,Arial" font-size="96"
-        font-weight="800" fill="#3ad7b5">Монитор-робот</text>
+        font-weight="800" fill="#3ad7b5">Pupikes Site Monitor</text>
 </svg>

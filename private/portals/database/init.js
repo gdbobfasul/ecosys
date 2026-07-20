@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// KCY Portals — Database init
+// Pupikes Portals — Database init
 // Version: 1.0093
 
 const Database = require('better-sqlite3');
@@ -15,7 +15,7 @@ const path = require('path');
 const DB_PATH = process.env.PORTALS_DB_PATH || path.join(__dirname, 'portals.db');
 const SCHEMA = path.join(__dirname, 'schema.sql');
 
-console.log('🗄️  KCY Portals DB Init');
+console.log('🗄️  Pupikes Portals DB Init');
 console.log('   Path:', DB_PATH);
 
 if (!fs.existsSync(SCHEMA)) {

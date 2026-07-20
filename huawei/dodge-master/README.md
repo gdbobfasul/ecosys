@@ -1,4 +1,4 @@
-# Dodge Master — Huawei AppGallery Edition
+# EvadeArena — Huawei AppGallery Edition
 
 Top-down аркадна игра за избягване. Стоиш на полето; от всички страни летят
 старовремски снаряди (камъчета, стрели, камъни, кал, гърнета, зеленчуци,

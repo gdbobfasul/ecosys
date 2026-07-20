@@ -1,4 +1,4 @@
-// KCY Portals — Billing routes
+// Pupikes Portals — Billing routes
 // Version: 1.0105
 //
 // Месечна такса, декларация на плащане (Stripe webhook или crypto tx hash),
@@ -209,7 +209,7 @@ router.post('/create-checkout', requireLoginAPI, async (req, res) => {
             line_items: [{
                 price_data: {
                     currency: 'usd',
-                    product_data: { name: `KCY Портали — месечен достъп (${month})` },
+                    product_data: { name: `Pupikes Портали — месечен достъп (${month})` },
                     unit_amount: Math.round(usd * 100), // в центове
                 },
                 quantity: 1,

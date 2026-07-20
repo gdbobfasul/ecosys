@@ -1,4 +1,4 @@
-# KCY Ecosystem — Debug & Diagnostics
+# Pupikes — Debug & Diagnostics
 
 ## Накратко
 
@@ -35,7 +35,7 @@
 | `chat-errors.log` | kcy-chat stage логове (от debug-helper) + последни 20 реда journalctl |
 | `eco3-errors.log` | kcy-eco3 stage логове + journalctl |
 | `portal-errors.log` | kcy-portals stage логове + journalctl |
-| `token-errors.log` | KCY token deploy логове (placeholder) |
+| `token-errors.log` | Pupikes token deploy логове (placeholder) |
 | `berich1-errors.log` | BRCH1 deploy логове (placeholder) |
 | `multisig-errors.log` | Multi-sig deploy логове (placeholder) |
 | `status.json` | Machine-readable snapshot (за UI cards) |

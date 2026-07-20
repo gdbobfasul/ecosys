@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: Камера-страж (huawei издание). Генерирано от AppPublisherBot.
+# Приложение: MotionHawk (huawei издание). Генерирано от AppPublisherBot.
 
 [Set basic app information]
 App type: App (приложение, НЕ игра)
-App name: Камера-страж            # 12 / 30 знака
+App name: MotionHawk            # 10 / 30 знака
 App package name: com.kcy.camerawatch.hw   # 22 / 128 знака
 Level-1 app category: Tools
 

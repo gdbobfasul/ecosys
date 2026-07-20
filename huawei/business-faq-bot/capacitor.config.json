@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.businessfaqbot.hw",
-  "appName": "KCY FAQ Desk",
+  "appName": "Pupikes FAQ Desk",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

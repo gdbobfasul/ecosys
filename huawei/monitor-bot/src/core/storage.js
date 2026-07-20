@@ -82,7 +82,7 @@ export async function saveState(state) {
   } catch {
     try { localStorage.setItem(KEY, json); } catch {}
   }
-  // Авто-пренасяне: конфигурацията отива и във файл в Downloads/KCY (оцелява
+  // Авто-пренасяне: конфигурацията отива и във файл в Downloads/Pupikes (оцелява
   // преинсталация; отложено с няколко секунди, fire-and-forget — виж core/backup.js).
   // Статичен import (НЕ динамичен — виж предупреждението за chunk-ове по-горе).
   try { scheduleAutoBackup(state); } catch { /* браузър/без плъгин — нищо */ }

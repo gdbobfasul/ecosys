@@ -1,6 +1,6 @@
 # Проверка на име: KCY Toolkit
 
-_2026-07-19T15:07:28.591Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:38:20.307Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **СРЕДЕН**
 - близки имена в App Store/марки (Toolkit)
@@ -40,13 +40,13 @@ _Условия: прочетено от JSON API-то на AppGallery (getTabDe
 ╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **1** · свободни: **44** · несигурни: **4**
+**Проверени разширения: 49** · заети: **1** · свободни: **34** · несигурни: **14**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „KCY Toolkit". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 
 Заети (малко — оглед на съдържание и ниша):
 - **kcytoolkit.so** → сайтът не отговаря
-Свободни: 44 (напр. kcytoolkit.com, kcytoolkit.net, kcytoolkit.org, kcytoolkit.ai, kcytoolkit.app, kcytoolkit.news, kcytoolkit.media, kcytoolkit.press …)
-Несигурни (RDAP без отговор + без DNS): kcytoolkit.co, kcytoolkit.io, kcytoolkit.me, kcytoolkit.ac
+Свободни: 34 (напр. kcytoolkit.com, kcytoolkit.net, kcytoolkit.org, kcytoolkit.co, kcytoolkit.io, kcytoolkit.ai, kcytoolkit.app, kcytoolkit.news …)
+Несигурни (RDAP без отговор + без DNS): kcytoolkit.tv, kcytoolkit.me, kcytoolkit.biz, kcytoolkit.wiki, kcytoolkit.ink, kcytoolkit.design, kcytoolkit.club, kcytoolkit.vip, kcytoolkit.work, kcytoolkit.fit, kcytoolkit.health, kcytoolkit.fashion, kcytoolkit.us, kcytoolkit.ac
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

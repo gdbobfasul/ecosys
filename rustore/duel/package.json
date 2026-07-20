@@ -2,7 +2,7 @@
   "name": "duel-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Ring Clash — походова 1v1 битка с видео-анимации (RUStore билд). Самостоятелна vanilla JS + Capacitor игра, офлайн, без реклами/покупки.",
+  "description": "Pupikes Ring Clash — походова 1v1 битка с видео-анимации (RUStore билд). Самостоятелна vanilla JS + Capacitor игра, офлайн, без реклами/покупки.",
   "type": "module",
   "scripts": {
     "dev": "vite",

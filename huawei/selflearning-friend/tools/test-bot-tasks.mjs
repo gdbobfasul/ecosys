@@ -1,5 +1,5 @@
 // Version: 1.0001
-// test-bot-tasks.mjs — РАЗШИРЕН тест-бот: дава на „Самообучаващ се приятел" РАЗНИ ЗАДАЧИ
+// test-bot-tasks.mjs — РАЗШИРЕН тест-бот: дава на „Pupikes Learning Buddy" РАЗНИ ЗАДАЧИ
 // (не само търсене) и наблюдава изпълнението:
 //   A) YouTube: търси клип → вади субтитри (timedtext) → превежда на 15-те ни езика.
 //   B) Google/статия: намира 1-2 статии → превежда резюмето на 15-те езика.
@@ -164,7 +164,7 @@ st.settings = st.settings || {};
 st.settings.useAi = false;
 persist();
 
-line(`\n🤖 РАЗШИРЕН тест-бот за „Самообучаващ се приятел"  (${LIVE ? 'LIVE' : 'DRY-RUN'})`);
+line(`\n🤖 РАЗШИРЕН тест-бот за „Pupikes Learning Buddy"  (${LIVE ? 'LIVE' : 'DRY-RUN'})`);
 await testYouTube();
 await testArticleTranslate();
 await testAccumulate();

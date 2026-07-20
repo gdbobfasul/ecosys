@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// add-intro.cjs — разпространява „KCY Ecosystem" интрото във ВСЯКО приложение.
+// add-intro.cjs — разпространява „Pupikes" интрото във ВСЯКО приложение.
 // Копира src/core/intro.js и вкарва playIntro() след enforceLock() в src/main.js. Идемпотентно.
 const fs = require('fs');
 const path = require('path');
@@ -20,7 +20,7 @@ function patch(appDir) {
     `$1import { playIntro } from './core/intro.js';\n`);
   if (!main.includes("from './core/intro.js'")) main = `import { playIntro } from './core/intro.js';\n` + main;
   // вик — веднага след enforceLock(); (преди mountHelp)
-  main = main.replace(/(enforceLock\(\);?)/, `$1\nplayIntro(); // кратко „KCY Ecosystem" интро при старт`);
+  main = main.replace(/(enforceLock\(\);?)/, `$1\nplayIntro(); // кратко „Pupikes" интро при старт`);
   fs.writeFileSync(mainPath, main, 'utf8');
   return 'закърпено';
 }

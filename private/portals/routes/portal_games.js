@@ -1,4 +1,4 @@
-// KCY Portals — Portal Games routes (НОВ файл — не пипа games.js)
+// Pupikes Portals — Portal Games routes (НОВ файл — не пипа games.js)
 // Version: 1.0093
 // Игри с нива/точки/прогрес + МЕСЕЧНА ранг листа + реклама за топ 5.
 
@@ -32,10 +32,10 @@ const GAMES = [
     { slug: 'hero-run', title: 'Герой — Бягане', theme: 'hero',
       goal: 'Бягай и прескачай препятствията. Колкото по-далеч — повече точки.',
       controls: 'Space или ↑ за скок.', levels: 10 },
-    { slug: 'battle-team', title: 'Битка на терен — 3 срещу 3', theme: 'battle',
+    { slug: 'battle-team', title: 'Pupikes Field Battle — 3 срещу 3', theme: 'battle',
       goal: 'Походова битка. 3 произволни героя срещу 3 вражески. Изтреби вражеския отбор.',
       controls: 'Клавиши V / B за удари. Скрита 4-буквена комбинация (други букви) за специален удар.', levels: 10 },
-    { slug: 'battle-duel', title: 'Дуел на ринга — 1 срещу 1', theme: 'battle',
+    { slug: 'battle-duel', title: 'Pupikes Ring Clash — 1 срещу 1', theme: 'battle',
       goal: 'Походов дуел. Твой произволен герой срещу противник. Победи го.',
       controls: 'Клавиши V / B за удари. Скрита 4-буквена комбинация (други букви) за специален удар.', levels: 10 },
 ];

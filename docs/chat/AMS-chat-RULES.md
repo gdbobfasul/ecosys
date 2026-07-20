@@ -74,7 +74,7 @@ NS4.YOURBUSINESS.COM
 - ✅ Мониторинг на критични думи (child protection)
 - ✅ Admin panel за управление
 - ✅ Stripe плащания (карти)
-- ✅ **Crypto плащания с KCY1 токени (300 KCY)**
+- ✅ **Crypto плащания с KCY1 токени (300 Pupikes)**
 
 #### Restrictions:
 - ❌ Без търсене по име/град/улица/работа
@@ -168,7 +168,7 @@ NS4.YOURBUSINESS.COM
 - User flow:
   1. Click "Connect MetaMask"
   2. MetaMask popup
-  3. Click "Pay 300 KCY"
+  3. Click "Pay 300 Pupikes"
   4. Confirm transaction
   5. Auto-verification on success
 
@@ -257,7 +257,7 @@ critical_words
 
 -- Crypto payments записват в:
 payment_logs (
-  currency = 'KCY',
+  currency = 'Pupikes',
   stripe_payment_id = txHash,  -- Reusing field
   amount = 300,
   payment_type = 'crypto_payment'
@@ -327,7 +327,7 @@ Return to app → Tap "Verify" → Backend checks → Login
 #### Web:
 ```
 User → payment.html → Click "Connect MetaMask" → 
-MetaMask popup → Approve → Click "Pay 300 KCY" → 
+MetaMask popup → Approve → Click "Pay 300 Pupikes" → 
 Confirm → Auto-verify → Login
 ```
 

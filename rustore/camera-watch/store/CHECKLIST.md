@@ -1,4 +1,4 @@
-# Камера-страж — чеклист преди подаване (RUStore)
+# MotionHawk — чеклист преди подаване (RUStore)
 
 App ID: `com.kcy.camerawatch.rustore`
 

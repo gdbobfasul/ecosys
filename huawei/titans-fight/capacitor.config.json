@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.titansfight.hw",
-  "appName": "Titans Fight",
+  "appName": "Godfist Arena",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

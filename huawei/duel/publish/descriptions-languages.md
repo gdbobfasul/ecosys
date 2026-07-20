@@ -1,4 +1,4 @@
-# KCY Ring Clash — описание по език (Brief + Full + New features)
+# Pupikes Ring Clash — описание по език (Brief + Full + New features)
 
 _За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
 
@@ -13,7 +13,7 @@ A 1-vs-1 turn-based
 ```
 A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
 
-KCY Ring Clash — 1 срещу 1
+Pupikes Ring Clash — 1 срещу 1
 
 Походова битка. Героите ти излизат <b>произволно</b> на всяко ниво.
 

@@ -1,4 +1,4 @@
-/* KCY Portals — Battle Heroes (дефиниции + рисуване)
+/* Pupikes Portals — Battle Heroes (дефиниции + рисуване)
    Version: 1.0093
    7 героя, нарисувани с canvas форми. Координатна система: центриран в (0,0),
    стъпил на земята около y=+40, височина ~80px. facing се прави от engine-а.

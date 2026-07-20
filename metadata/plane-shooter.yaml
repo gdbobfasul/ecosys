@@ -1,5 +1,5 @@
 id: plane-shooter
-name: Plane Shooter
+name: Warbird Rush
 folders:
   - rustore/plane-shooter
   - huawei/plane-shooter
@@ -23,10 +23,10 @@ website: https://bgmasters.net
 
 listings:
   ru:
-    title: Plane Shooter
+    title: Warbird Rush
     short: "Аркадный самолётный шутёр: 3 оружия, боссы, 10 уровней"
     full: |
-      Plane Shooter — классический 2D аркадный самолётный шутёр. Управляй маленьким
+      Warbird Rush — классический 2D аркадный самолётный шутёр. Управляй маленьким
       самолётом пальцем (перетаскивание), стрельба автоматическая. Уворачивайся от врагов,
       собирай очки и проходи уровни.
 
@@ -37,10 +37,10 @@ listings:
       • Полностью офлайн: вся графика в коде, без рекламы и покупок. Рекорды хранятся
         только на устройстве.
   en:
-    title: Plane Shooter
+    title: Warbird Rush
     short: "Arcade plane shooter: 3 weapons, bosses, 10 levels"
     full: |
-      Plane Shooter is a classic 2D arcade plane shooter. Steer a small plane with your
+      Warbird Rush is a classic 2D arcade plane shooter. Steer a small plane with your
       finger (drag), firing is automatic. Dodge enemies, rack up points and clear levels.
 
       • 3 weapons unlocked as you progress: bullets → bombs (area damage) → homing
@@ -50,10 +50,10 @@ listings:
       • Fully offline: all graphics are in code, no ads, no purchases. High scores stay
         on your device only.
   bg:
-    title: Plane Shooter
+    title: Warbird Rush
     short: "Аркаден самолетен шутър: 3 оръжия, босове, 10 нива"
     full: |
-      Plane Shooter е класически 2D аркаден самолетен шутър. Управляваш малък самолет с
+      Warbird Rush е класически 2D аркаден самолетен шутър. Управляваш малък самолет с
       пръст (влачене), огънят е автоматичен. Избягвай враговете, трупай точки и минавай
       нивата.
 

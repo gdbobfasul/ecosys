@@ -20,7 +20,7 @@ export const THEME = {
   heroSkin: 0xe8b894,
   heroCloth: 0x7a4a2b,
   // Заглавие на менюто
-  titleText: 'DODGE MASTER',
+  titleText: 'EVADE ARENA',
   titleSub: 'RUStore Edition',
   // Ключ за localStorage (различен per-store, за да не се бъркат записите)
   saveKey: 'dodgemaster.rustore.save'

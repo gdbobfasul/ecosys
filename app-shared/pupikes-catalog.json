@@ -1,0 +1,675 @@
+{
+  "_comment": "Каталог на екосистемата Pupikes. pupikes.app чете groups (мобилни, по семейства); pupikes.com чете web (уеб хъб). show=false → скрито. published/download → виж gen-pupikes-catalog. Регенерира се от scratchpad/gen-pupikes-catalog.mjs.",
+  "updated": "2026-07-20",
+  "brand": {
+    "name": "Pupikes",
+    "short": "PuP",
+    "tagline": {
+      "bg": "Приложения, които ти служат вярно.",
+      "en": "Apps that serve you faithfully."
+    }
+  },
+  "groups": [
+    {
+      "key": "toolkit",
+      "title": {
+        "bg": "Pupikes Toolkit",
+        "en": "Pupikes Toolkit"
+      },
+      "note": {
+        "bg": "Семейство инструменти",
+        "en": "A family of tools"
+      },
+      "apps": [
+        {
+          "id": "services-toolkit",
+          "name": "Pupikes Toolkit",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "services-toolkit-rustore-release.apk",
+            "huawei": "services-toolkit-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "kcy-toolkit-pdf",
+          "name": "Pupikes Toolkit PDF",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "kcy-toolkit-pdf-rustore-release.apk",
+            "huawei": "kcy-toolkit-pdf-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "kcy-toolkit-qr",
+          "name": "Pupikes Toolkit QR",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "kcy-toolkit-qr-rustore-release.apk",
+            "huawei": "kcy-toolkit-qr-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "kcy-toolkit-ai-announcement",
+          "name": "Pupikes Toolkit AI Announcement",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "kcy-toolkit-ai-announcement-rustore-release.apk",
+            "huawei": "kcy-toolkit-ai-announcement-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "kcy-toolkit-text",
+          "name": "Pupikes Toolkit Text",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "kcy-toolkit-text-rustore-release.apk",
+            "huawei": "kcy-toolkit-text-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "kcy-toolkit-finance",
+          "name": "Pupikes Toolkit Finance",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "kcy-toolkit-finance-rustore-release.apk",
+            "huawei": "kcy-toolkit-finance-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "kcy-toolkit-pictures",
+          "name": "Pupikes Toolkit Pictures",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "kcy-toolkit-pictures-rustore-release.apk",
+            "huawei": "kcy-toolkit-pictures-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "kcy-toolkit-videos",
+          "name": "Pupikes Toolkit Videos",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "kcy-toolkit-videos-rustore-release.apk",
+            "huawei": "kcy-toolkit-videos-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "kcy-toolkit-sound",
+          "name": "Pupikes Toolkit Sound",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "kcy-toolkit-sound-rustore-release.apk",
+            "huawei": "kcy-toolkit-sound-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "kcy-toolkit-passwords",
+          "name": "Pupikes Toolkit Passwords",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "kcy-toolkit-passwords-rustore-release.apk",
+            "huawei": "kcy-toolkit-passwords-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "kcy-toolkit-scraper",
+          "name": "Pupikes Toolkit Scraper",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "kcy-toolkit-scraper-rustore-release.apk",
+            "huawei": "kcy-toolkit-scraper-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "price-watch-bot",
+          "name": "Pupikes Toolkit Price Watch",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "price-watch-bot-rustore-release.apk",
+            "huawei": "price-watch-bot-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "authenticator",
+          "name": "Pupikes Toolkit Authenticator",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "authenticator-rustore-release.apk",
+            "huawei": "authenticator-huawei-release.apk"
+          },
+          "download": true
+        }
+      ]
+    },
+    {
+      "key": "games",
+      "title": {
+        "bg": "Игри",
+        "en": "Games"
+      },
+      "note": {
+        "bg": "",
+        "en": ""
+      },
+      "apps": [
+        {
+          "id": "dodge-master",
+          "name": "EvadeArena",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "dodge-master-rustore-release.apk",
+            "huawei": "dodge-master-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "titans-fight",
+          "name": "Godfist Arena",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "titans-fight-rustore-release.apk",
+            "huawei": "titans-fight-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "fps-hunter",
+          "name": "Huntline 3D",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "fps-hunter-rustore-release.apk",
+            "huawei": "fps-hunter-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "plane-shooter",
+          "name": "Warbird Rush",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "plane-shooter-rustore-release.apk",
+            "huawei": "plane-shooter-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "rustam",
+          "name": "Rustam picks cucumbers",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "rustam-rustore-release.apk",
+            "huawei": "rustam-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "duel",
+          "name": "Pupikes Ring Clash",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "duel-rustore-release.apk",
+            "huawei": "duel-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "hmm",
+          "name": "Pupikes Field Battle",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "hmm-rustore-release.apk",
+            "huawei": "hmm-huawei-release.apk"
+          },
+          "download": false
+        }
+      ]
+    },
+    {
+      "key": "news",
+      "title": {
+        "bg": "Новини и следене",
+        "en": "News & monitoring"
+      },
+      "note": {
+        "bg": "",
+        "en": ""
+      },
+      "apps": [
+        {
+          "id": "newslator",
+          "name": "NewsLator",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "newslator-rustore-release.apk",
+            "huawei": "newslator-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "monitor-bot",
+          "name": "Pupikes Site Monitor",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "monitor-bot-rustore-release.apk",
+            "huawei": "monitor-bot-huawei-release.apk"
+          },
+          "download": true
+        }
+      ]
+    },
+    {
+      "key": "tools",
+      "title": {
+        "bg": "Помощници",
+        "en": "Assistants"
+      },
+      "note": {
+        "bg": "",
+        "en": ""
+      },
+      "apps": [
+        {
+          "id": "baby-monitor",
+          "name": "Pupikes Baby Radar",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "baby-monitor-rustore-release.apk",
+            "huawei": "baby-monitor-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "camera-watch",
+          "name": "MotionHawk",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "camera-watch-rustore-release.apk",
+            "huawei": "camera-watch-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "routine-bot",
+          "name": "Pupikes Routine Planner",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "routine-bot-rustore-release.apk",
+            "huawei": "routine-bot-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "market-pulse",
+          "name": "Pupikes Market Pulse",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "market-pulse-rustore-release.apk",
+            "huawei": "market-pulse-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "selflearning-friend",
+          "name": "Pupikes LB",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "selflearning-friend-rustore-release.apk",
+            "huawei": "selflearning-friend-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "business-faq-bot",
+          "name": "Pupikes FAQ Desk",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "business-faq-bot-rustore-release.apk",
+            "huawei": "business-faq-bot-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "autoreply-bot",
+          "name": "Pupikes Auto Answer",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "autoreply-bot-rustore-release.apk",
+            "huawei": "autoreply-bot-huawei-release.apk"
+          },
+          "download": false
+        }
+      ]
+    },
+    {
+      "key": "social",
+      "title": {
+        "bg": "Общност и дом",
+        "en": "Community & home"
+      },
+      "note": {
+        "bg": "",
+        "en": ""
+      },
+      "apps": [
+        {
+          "id": "chat",
+          "name": "Pupikes Chat",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "chat-rustore-release.apk",
+            "huawei": "chat-huawei-release.apk"
+          },
+          "download": false
+        },
+        {
+          "id": "houselookbook",
+          "name": "HouseLookBook",
+          "show": false,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "houselookbook-rustore-release.apk",
+            "huawei": "houselookbook-huawei-release.apk"
+          },
+          "download": false
+        }
+      ]
+    }
+  ],
+  "web": [
+    {
+      "id": "portals",
+      "name": "Pupikes Portals",
+      "path": "/portals/",
+      "show": false
+    },
+    {
+      "id": "chat",
+      "name": "Pupikes Chat",
+      "path": "/chat/",
+      "show": false
+    },
+    {
+      "id": "houselookbook",
+      "name": "HouseLookBook",
+      "path": "/houselookbook/",
+      "show": false
+    },
+    {
+      "id": "wherenobiz",
+      "name": "WhereNoBiz",
+      "path": "/wherenobiz/",
+      "show": false
+    },
+    {
+      "id": "find-best-price",
+      "name": "Find Best Price",
+      "path": "/find-best-price/",
+      "show": false
+    },
+    {
+      "id": "eco-3",
+      "name": "ECO-3 Studio",
+      "path": "/eco-3/",
+      "show": false
+    }
+  ]
+}

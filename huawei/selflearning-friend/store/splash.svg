@@ -10,6 +10,6 @@
   <circle cx="486" cy="452" r="28" fill="#0b1020"/>
   <circle cx="594" cy="452" r="28" fill="#0b1020"/>
   <path d="M476 524 q64 60 128 0" stroke="#0b1020" stroke-width="16" fill="none" stroke-linecap="round"/>
-  <text x="540" y="760" font-family="sans-serif" font-size="52" fill="#e8ecf5" text-anchor="middle">Самообучаващ се приятел</text>
+  <text x="540" y="760" font-family="sans-serif" font-size="52" fill="#e8ecf5" text-anchor="middle">Pupikes Learning Buddy</text>
   <text x="540" y="820" font-family="sans-serif" font-size="30" fill="#9aa6c4" text-anchor="middle">личен • локален • само твой</text>
 </svg>

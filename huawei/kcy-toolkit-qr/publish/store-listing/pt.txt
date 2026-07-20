@@ -1,4 +1,4 @@
-KCY Toolkit QR — Gere e leia códigos QR.
+Pupikes Toolkit QR — Gere e leia códigos QR.
 
 Ferramentas offline úteis — tudo roda no dispositivo.
 

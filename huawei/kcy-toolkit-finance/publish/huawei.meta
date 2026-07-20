@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: KCY Toolkit Finance (huawei издание). Част от семейството KCY Toolkit.
+# Приложение: Pupikes Toolkit Finance (huawei издание). Част от семейството Pupikes Toolkit.
 
 [Set basic app information]
 App type: App (приложение, НЕ игра)
-App name: KCY Toolkit Finance            # 19 / 30 знака
+App name: Pupikes Toolkit Finance            # 19 / 30 знака
 App package name: com.kcy.toolkitfinance.hw
 Level-1 app category: Finance
 

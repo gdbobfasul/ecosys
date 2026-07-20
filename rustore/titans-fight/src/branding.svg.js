@@ -9,7 +9,7 @@ export const BRAND = {
   bg2: '#0a0612',
   accent: '#ff7a3c',
   accent2: '#ffd24a',
-  name: 'TITANS FIGHT'
+  name: 'GODFIST ARENA'
 };
 
 // Квадратна икона (1024x1024 по подразбиране за store-ресурси).
@@ -46,7 +46,7 @@ export function iconSVG(size = 1024) {
     </g>
   </g>
   <text x="512" y="900" text-anchor="middle" font-family="system-ui,Arial" font-size="120"
-        font-weight="800" fill="${c.accent2}">TITANS</text>
+        font-weight="800" fill="${c.accent2}">GODFIST</text>
 </svg>`;
 }
 
@@ -67,9 +67,9 @@ export function splashSVG(w = 1080, h = 1920) {
   <rect width="${w}" height="${h}" fill="url(#bg)"/>
   <circle cx="${w / 2}" cy="${h * 0.42}" r="${w * 0.55}" fill="url(#glow)"/>
   <text x="${w / 2}" y="${h * 0.46}" text-anchor="middle" font-family="system-ui,Arial"
-        font-size="130" font-weight="800" fill="${c.accent}">TITANS</text>
+        font-size="130" font-weight="800" fill="${c.accent}">GODFIST</text>
   <text x="${w / 2}" y="${h * 0.46 + 150}" text-anchor="middle" font-family="system-ui,Arial"
-        font-size="130" font-weight="800" fill="${c.accent2}">FIGHT</text>
+        font-size="130" font-weight="800" fill="${c.accent2}">ARENA</text>
   <text x="${w / 2}" y="${h * 0.92}" text-anchor="middle" font-family="system-ui,Arial"
         font-size="44" fill="#cfcfd8">RUStore Edition</text>
 </svg>`;

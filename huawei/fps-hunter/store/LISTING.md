@@ -1,7 +1,7 @@
-# FPS Hunter — Huawei AppGallery Listing Notes
+# Huntline 3D — Huawei AppGallery Listing Notes
 
 App ID: `com.kcy.fpshunter.huawei`
-Name: FPS Hunter
+Name: Huntline 3D
 Category: Games / Action (Shooter)
 
 ## Кратко описание (BG)

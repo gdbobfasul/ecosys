@@ -1,5 +1,5 @@
 id: duel
-name: Дуел на ринга
+name: Pupikes Ring Clash
 folders:
   - rustore/duel
   - huawei/duel
@@ -52,10 +52,10 @@ listings:
       • Fully offline and free: the engine and videos are embedded in the app. No ads, no
         purchases, no accounts, no tracking.
   bg:
-    title: Дуел на ринга
+    title: Pupikes Ring Clash
     short: Походова фентъзи битка 1 срещу 1, познай комбото — 10 нива
     full: |
-      Дуел на ринга е походова фентъзи битка един срещу един с видео-анимации на героите.
+      Pupikes Ring Clash е походова фентъзи битка един срещу един с видео-анимации на героите.
       На всяко ниво получаваш произволен герой (мечоносец, магьосник, змийска жена, чукар)
       на жив анимиран горски ринг.
 

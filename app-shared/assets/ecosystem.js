@@ -1,7 +1,7 @@
 // Version: 1.0001
-// ecosystem.js — екран „Още от KCY Ecosystem": плаващ бутон + showcase списък на ДРУГИТЕ
+// ecosystem.js — екран „Още от Pupikes": плаващ бутон + showcase списък на ДРУГИТЕ
 // приложения (снимка + ИМЕ + описание 15 езика + линк към приложението). Footer
-// „KCY Ecosystem publisher 2026". БЕЗ изскачащи реклами (доброволен екран → минава правилата на
+// „Pupikes publisher 2026". БЕЗ изскачащи реклами (доброволен екран → минава правилата на
 // магазините). Всеки апп подава своя id и се самоизключва.
 //
 // Каталогът е ЛОКАЛЕН файл `kcy-promo.json`, вкаран в билда от `promo-catalog.json` (редактира се
@@ -41,10 +41,10 @@ export function mountEcosystem(selfId) {
     ov.style.cssText = 'position:fixed;inset:0;z-index:2147483200;background:#0b1220;color:#e6edf3;font-family:system-ui,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column';
     ov.innerHTML =
       '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #1b2536">' +
-        '<div style="font-weight:800;font-size:16px;background:linear-gradient(90deg,#4a9eff,#8bd450);-webkit-background-clip:text;background-clip:text;color:transparent">KCY Ecosystem</div>' +
+        '<div style="font-weight:800;font-size:16px;background:linear-gradient(90deg,#4a9eff,#8bd450);-webkit-background-clip:text;background-clip:text;color:transparent">Pupikes</div>' +
         '<button id="kcy-eco-x" style="background:#1b2536;color:#cdd;border:none;border-radius:8px;padding:8px 12px;font-size:16px;cursor:pointer">✕</button></div>' +
       '<div id="kcy-eco-list" style="flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:12px"><div style="text-align:center;opacity:.55;padding:30px">…</div></div>' +
-      '<div style="text-align:center;padding:10px;font-size:12px;opacity:.55;border-top:1px solid #1b2536">KCY Ecosystem publisher 2026</div>';
+      '<div style="text-align:center;padding:10px;font-size:12px;opacity:.55;border-top:1px solid #1b2536">Pupikes publisher 2026</div>';
     document.body.appendChild(ov);
     document.getElementById('kcy-eco-x').onclick = () => ov.remove();
     loadCatalog().then((cat) => {
@@ -67,8 +67,8 @@ export function mountEcosystem(selfId) {
   function add() {
     if (!document.body || document.getElementById('kcy-eco-btn')) return;
     const b = document.createElement('button'); b.id = 'kcy-eco-btn';
-    b.textContent = '✨ KCY';
-    b.title = 'KCY Ecosystem';
+    b.textContent = '✨ Pupikes';
+    b.title = 'Pupikes';
     b.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:2147483000;background:#1b2536;color:#8bd450;border:1px solid #2a3550;border-radius:20px;padding:9px 13px;font:600 13px system-ui,Segoe UI,Roboto,sans-serif;box-shadow:0 3px 10px rgba(0,0,0,.35);cursor:pointer';
     b.onclick = openShowcase;
     document.body.appendChild(b);

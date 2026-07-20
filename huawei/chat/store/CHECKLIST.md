@@ -1,4 +1,4 @@
-# KCY Chat — Release checklist (Huawei AppGallery)
+# Pupikes Chat — Release checklist (Huawei AppGallery)
 
 - [ ] `npm install` минава без грешки
 - [ ] `npm run build` създава `dist/`

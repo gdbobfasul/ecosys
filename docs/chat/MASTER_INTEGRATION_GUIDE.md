@@ -219,7 +219,7 @@ export const PAYMENT_OPTIONS = {
 1. User clicks "Свържи MetaMask"
 2. MetaMask popup → Connect
 3. App shows balance
-4. User clicks "Плати 300 KCY"
+4. User clicks "Плати 300 Pupikes"
 5. MetaMask popup → Confirm transaction
 6. Wait for blockchain confirmation
 7. Backend receives notification
@@ -247,7 +247,7 @@ export const PAYMENT_OPTIONS = {
 ```sql
 -- payment_logs
 INSERT (
-  currency = 'KCY',
+  currency = 'Pupikes',
   stripe_payment_id = txHash,
   amount = 300,
   payment_type = 'crypto_payment'
@@ -256,7 +256,7 @@ INSERT (
 -- users
 UPDATE users SET
   paid_until = paid_until + 1 month,
-  payment_currency = 'KCY',
+  payment_currency = 'Pupikes',
   is_blocked = 0
 ```
 
@@ -321,7 +321,7 @@ UPDATE users SET
 **Solution:** App automatically prompts to switch to BSC. User clicks "Switch" in MetaMask.
 
 ### "Insufficient balance"
-**Solution:** User needs at least 300 KCY + small BNB for gas
+**Solution:** User needs at least 300 Pupikes + small BNB for gas
 
 ### "Transaction failed"
 **Solution:** Check:
@@ -372,7 +372,7 @@ Backend API:          http://localhost:3000/api/payment/crypto-confirm
 ```
 Treasury (correct):    0x58ec63d31b8e4D6624B5c88338027a54Be1AE28A
 Token (change!):       0xYOUR_KCY1_TOKEN_ADDRESS
-Payment Amount:        300 KCY
+Payment Amount:        300 Pupikes
 Network:               BSC Mainnet (Chain ID: 56)
 ```
 
@@ -476,7 +476,7 @@ export const PAYMENT_OPTIONS = {
 ### Dynamic Pricing:
 
 ```javascript
-// Fetch current KCY price
+// Fetch current Pupikes price
 const price = await fetchKCYPrice();
 const requiredKcy = 5 / price; // $5 worth
 ```

@@ -1,4 +1,4 @@
-# FPS Hunter — описание по език (Brief + Full + New features)
+# Huntline 3D — описание по език (Brief + Full + New features)
 
 _За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
 
@@ -22,7 +22,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -43,7 +43,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -64,7 +64,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -85,7 +85,7 @@ For questions and support, write to: dai.group.ltd.support@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
@@ -106,7 +106,7 @@ Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -127,7 +127,7 @@ Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -148,7 +148,7 @@ Para preguntas y soporte, escribe a: dai.group.ltd.support@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -169,7 +169,7 @@ Para dudas y soporte, escribe a: dai.group.ltd.support@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
@@ -190,7 +190,7 @@ Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -211,7 +211,7 @@ Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -232,7 +232,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -253,7 +253,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -274,7 +274,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -295,5 +295,5 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
 ```

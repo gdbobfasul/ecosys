@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const STORE = join(ROOT, 'store');
 const ACCENT = '#c83a7a'; // AppGallery акцент (маджента)
-const APP_TITLE = 'Камера-страж';
+const APP_TITLE = 'MotionHawk';
 
 function hexToRgb(hex) {
   const h = hex.replace('#', '');

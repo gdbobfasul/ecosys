@@ -1,4 +1,4 @@
-# Titans Fight — Huawei AppGallery Edition
+# Godfist Arena — Huawei AppGallery Edition
 
 Самостоятелна 2D файтинг игра: два титана се бият на **10 нарастващо трудни нива**.
 Изцяло на **Phaser 3** (HTML5 canvas) + **Vite**, опакована с **Capacitor** за Android.

@@ -1,4 +1,4 @@
-# Камера-страж — чеклист преди подаване (Huawei AppGallery)
+# MotionHawk — чеклист преди подаване (Huawei AppGallery)
 
 App ID: `com.kcy.camerawatch.huawei`
 

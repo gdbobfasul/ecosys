@@ -1,6 +1,6 @@
 # Проверка на име: Камера-страж
 
-_2026-07-03T21:37:37.039Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:34:49.512Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **СРЕДЕН**
 - близки имена в App Store/марки (The Escapists: Prison Escape)
@@ -15,14 +15,20 @@ _Условия: търсено в App Store на 2 държави — САЩ (u
 - The Escapists: Prison Escape — Team17 Digital Limited (Games)
 
 ## Huawei AppGallery
-**Намерени заглавия: 1** · точни съвпадения на името: **0**
+**Намерени заглавия: 0** · точни съвпадения на името: **0**
 _Условия: прочетено от JSON API-то на AppGallery (getTabDetail, всички AJAX страници при скролване), глобално по думата „Камера-страж". Резултатите са РАЗМИТИ (свързани/препоръчани приложения), затова значение има само ТОЧНОТО съвпадение на името._
-→ ReadEra - четец на книги pdf, epub, word
+→ Няма резултати (или регионално блокирано) — провери ръчно: https://appgallery.huawei.com/search/%D0%9A%D0%B0%D0%BC%D0%B5%D1%80%D0%B0-%D1%81%D1%82%D1%80%D0%B0%D0%B6
 
 ## Google Play (Android)
-**Намерени приложения: 15** · възможни съвпадения на името: **0**
-_Условия: търсено в Google Play (уеб), на английски, по думата „Камера-страж" (без конкретна държава)._
-→ Security Camera CZSCamera4.5star · SafeCam - Security CameraTrackView3.9star · Third Eye Hidden Camera RecordDOSA Apps4.6star · Stabilization cameraNewave Apps · Horizon CameraPZ Mobile4.0star · Background Camera ~ Very SafeWeixi Inc.3.7star · DashCam Car Auto Record CameraMONIQ TAP., CO LTD · Ring Lord: Shadow ghost Cameraziro div · DarkCam - Black screen CameraTry the Colors s.r.o. · Camera FV-5 LiteFGAE Apps4.7star · Droid Dashcam - Video RecorderDroidCoolApps4.8star · DarkLens: Night Mode CameraYohan Cassaigne · ReLens Camera-Focus &DSLR Bluraccordion4.2star · Camera Motion Alarmgraphtoweb.com · CamGuard: Hidden Camera ScanMobover
+**Намерени приложения: 0** (не успях автоматично: browserType.launch: Executable doesn't exist at C:\Users\ai-ag\AppData\Local\ms-playwright\chromium_headless_shell-1223\chrome-headless-shell-win64\chrome-headless-shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     npx playwright install                                 ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
 **Проверени разширения: 49** · заети: **1** · свободни: **22** · несигурни: **26**

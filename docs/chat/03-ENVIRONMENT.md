@@ -1,7 +1,7 @@
 <!-- Version: 001.00002 -->
 # 03 - Environment Variables
 
-> **⚠️ KCY Ecosystem:** `.env` е глобален файл за ВСИЧКИ проекти.
+> **⚠️ Pupikes:** `.env` е глобален файл за ВСИЧКИ проекти.
 > Живее в `private/configs/.env`. Виж `docs/ENV-EXAMPLE.env` за пълен списък.
 
 ## ⚙️ .env файл конфигурация

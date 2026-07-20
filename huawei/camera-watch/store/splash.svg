@@ -10,6 +10,6 @@
   <circle cx="540" cy="470" r="70" fill="#0b1020"/>
   <circle cx="540" cy="470" r="42" fill="url(#g)"/>
   <circle cx="540" cy="470" r="18" fill="#0b1020"/>
-  <text x="540" y="760" font-family="sans-serif" font-size="56" fill="#e8ecf5" text-anchor="middle">Камера-страж</text>
+  <text x="540" y="760" font-family="sans-serif" font-size="56" fill="#e8ecf5" text-anchor="middle">MotionHawk</text>
   <text x="540" y="822" font-family="sans-serif" font-size="30" fill="#9aa6c4" text-anchor="middle">следи • засича • разпознава — локално</text>
 </svg>

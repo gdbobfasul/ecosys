@@ -1,5 +1,5 @@
 id: price-watch-bot
-name: Цена-робот
+name: Pupikes Toolkit Price Watch
 folders:
   - rustore/price-watch-bot
   - huawei/price-watch-bot
@@ -23,10 +23,10 @@ website: https://bgmasters.net
 
 listings:
   ru:
-    title: Цена-робот
+    title: Pupikes Toolkit Price Watch
     short: Следит за курсами крипто и валют — локальные уведомления о пороге
     full: |
-      Цена-робот — это «робот в аренду», который следит за ценами на криптовалюты
+      Pupikes Toolkit Price Watch — это «робот в аренду», который следит за ценами на криптовалюты
       и фиатные курсы и присылает локальное уведомление при достижении заданного
       порога. Без аккаунта, без облака, без слежки. Все цены — из бесплатных
       публичных API без ключей.
@@ -55,10 +55,10 @@ listings:
       • Notifications are fully local — no server, no push. Data stays on device.
       • No crypto payments — price information only. UI in 15 languages.
   bg:
-    title: Цена-робот
+    title: Pupikes Toolkit Price Watch
     short: Следи курсове на крипто и валути — локални известия при праг
     full: |
-      Цена-робот е „робот под наем", който следи цени на криптовалути и валутни
+      Pupikes Toolkit Price Watch е „робот под наем", който следи цени на криптовалути и валутни
       курсове и праща локално известие при достигнат праг. Без акаунт, без облак,
       без проследяване. Всички цени идват от безплатни публични API без ключове.
 

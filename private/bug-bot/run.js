@@ -1,6 +1,6 @@
 // Version: 1.0173
 // ──────────────────────────────────────────────────────────────────────────
-// BugBot — KCY тест робот (Фаза 1 MVP)
+// BugBot — Pupikes тест робот (Фаза 1 MVP)
 //
 // Обхожда критичните пътища на всяко приложение с Playwright, лови клиентски
 // грешки (console/изключения/мрежа/HTTP 4xx-5xx), пинга health endpoint-ите,
@@ -140,7 +140,7 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   const shotsDir = path.join(reportDir, 'screenshots');
   fs.mkdirSync(shotsDir, { recursive: true });
 
-  console.log(`\n🤖 KCY робот — цел: ${targetName} (${target.base})`);
+  console.log(`\n🤖 Pupikes робот — цел: ${targetName} (${target.base})`);
   const modeLabel = populateMode ? `МАСОВ СИЙДЪР (${seedUsers} потребителя)` : journeyMode ? `работни сценарии: ${journeyArg}` : fuzzMode ? `fuzz (само VM, seed ${seed})` : crawlMode ? `crawler (BFS, макс ${maxPages}, дълбочина ${maxDepth})` : has('--all') ? 'пълно обхождане (дървото)' : 'критични пътища';
   console.log(`   ${populateMode ? `сийд: ${seedUsers} потребителя` : journeyMode ? `журита: ${selectedJourneys.length}` : crawlMode ? 'crawler' : `сценарии: ${scenarios.length}`}${onlyApp ? ` (само ${onlyApp})` : ''}  ·  режим: ${modeLabel}\n`);
 

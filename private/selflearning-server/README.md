@@ -1,7 +1,7 @@
 # Selflearning Friend — server-side relay
 
 Лек server-side компонент за **„Selflearning Friend"** sync + безплатния **„Слушай"** учебен канал.
-Самостоятелна Express услуга на **порт 3013** (`kcy-selflearning`), част от KCY екосистемата —
+Самостоятелна Express услуга на **порт 3013** (`kcy-selflearning`), част от Pupikes екосистемата —
 **отделна** от изолираните `/rustore` / `/huawei` мобилни папки.
 
 Стек: Node + Express + `better-sqlite3` (както token-monitor). Единствена база: `data/selflearning.db`.

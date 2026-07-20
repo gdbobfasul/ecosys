@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.routinebot.hw",
-  "appName": "KCY Routine Planner",
+  "appName": "Pupikes Routine Planner",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

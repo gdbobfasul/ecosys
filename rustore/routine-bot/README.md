@@ -1,4 +1,4 @@
-# KCY Routine Planner (Daily Routine Bot) — RUStore издание
+# Pupikes Routine Planner (Daily Routine Bot) — RUStore издание
 
 Самостоятелно мобилно приложение „робот под наем". Наемаш робот, който всеки ден
 изпълнява твоята рутина (сутрешен брифинг, напомняния, вечерно резюме) и те известява

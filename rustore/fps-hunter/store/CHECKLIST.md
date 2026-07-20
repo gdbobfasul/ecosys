@@ -1,4 +1,4 @@
-# RUStore — Чеклист за подаване (FPS Hunter)
+# RUStore — Чеклист за подаване (Huntline 3D)
 
 ## Ресурси (генерирай от `src/branding.svg.js`)
 - [ ] Икона 512x512 PNG (от `iconSVG(512)`, рендирай SVG -> PNG).
@@ -13,7 +13,7 @@
 - Splash фон: `#0b1018` (съвпада с `capacitor.config.json` backgroundColor) — акцент `#4fc3f7`.
 
 ## Метаданни
-- [ ] Заглавие: FPS Hunter
+- [ ] Заглавие: Huntline 3D
 - [ ] Кратко + пълно описание (виж `LISTING.md`)
 - [ ] Категория: Игри / Екшън (Шутър)
 - [ ] Възрастов рейтинг: 12+

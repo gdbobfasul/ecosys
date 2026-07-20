@@ -1,8 +1,8 @@
 // Version: 1.0015
-// Authenticator — ЦЕЛИЯТ KCY Toolkit Authenticator, вграден като инструмент.
+// Authenticator — ЦЕЛИЯТ Pupikes Toolkit Authenticator, вграден като инструмент.
 // Зарежда се готовият билд на приложението от public/authenticator/ (копие на неговия
 // dist) в iframe с ?embedded=1 → там се пропускат интро/реклами/правен екран/долна лента,
-// защото обвивката (KCY Toolkit) вече ги има. Сейфът е в СЪЩИЯ localStorage (същия origin) —
+// защото обвивката (Pupikes Toolkit) вече ги има. Сейфът е в СЪЩИЯ localStorage (същия origin) —
 // самостоятелният апп и инструментът виждат ЕДИН И СЪЩ шифрован сейф на устройството.
 import { t, register } from '../core/i18n.js';
 

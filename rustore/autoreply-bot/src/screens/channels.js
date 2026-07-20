@@ -6,7 +6,7 @@
 //     нотификации + direct-reply). Работи само в sideload native билд. Тук виждаш
 //     реалния статус (свързан / нужно е разрешение / нужен е native билд) и бутон
 //     за даване на разрешението. БЕЗ фалшиво „свързано".
-//   • Нашият чат (KCY) — реална HTTP връзка към нашия чат бекенд. Настройваш адрес,
+//   • Нашият чат (Pupikes) — реална HTTP връзка към нашия чат бекенд. Настройваш адрес,
 //     твой идентификатор и (по избор) токен; ботът чете нови съобщения и авто-отговаря.
 //
 import { el, toast } from '../ui/dom.js';
@@ -34,7 +34,7 @@ export function ChannelsScreen({ render }) {
   // --- Месинджъри (WhatsApp/Viber/Messenger) през Notification access ---
   root.appendChild(messengersBlock(render));
 
-  // --- Нашият чат (KCY) ---
+  // --- Нашият чат (Pupikes) ---
   root.appendChild(kcyBlock(render));
 
   // --- Демо чат (винаги работи) ---
@@ -148,7 +148,7 @@ function messengersBlock(render) {
   return wrap;
 }
 
-// --- Нашият чат (KCY) ---------------------------------------------------------
+// --- Нашият чат (Pupikes) ---------------------------------------------------------
 function kcyBlock(render) {
   const st = getState();
   const cfg = (st.channels && st.channels.kcy) || {};

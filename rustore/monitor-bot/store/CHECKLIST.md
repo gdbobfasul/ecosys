@@ -2,7 +2,7 @@
 
 ## Идентичност
 - App ID: `com.kcy.monitorbot.rustore`
-- Име: KCY Site Monitor
+- Име: Pupikes Site Monitor
 - Акцент: #0a84ff (RUStore син)
 
 ## Активи

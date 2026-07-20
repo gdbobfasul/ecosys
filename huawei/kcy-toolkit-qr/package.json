@@ -2,7 +2,7 @@
   "name": "kcy-toolkit-qr-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Toolkit QR — част от KCY Toolkit семейството (Huawei издание).",
+  "description": "Pupikes Toolkit QR — част от Pupikes Toolkit семейството (Huawei издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

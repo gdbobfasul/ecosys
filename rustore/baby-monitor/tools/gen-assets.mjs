@@ -15,7 +15,7 @@ const STORE = join(ROOT, 'store');
 const ACCENT = '#5cc8b0'; // RUStore акцент (мента)
 const ACCENT_2 = '#8fe0cf';
 const BG = '#0e1a17';
-const APP_TITLE = 'Детегледачка';
+const APP_TITLE = 'Pupikes Baby Radar';
 
 function hexToRgb(hex) {
   const h = hex.replace('#', '');

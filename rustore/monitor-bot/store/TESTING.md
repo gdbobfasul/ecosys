@@ -1,4 +1,4 @@
-# Тестване — KCY Site Monitor (RUStore)
+# Тестване — Pupikes Site Monitor (RUStore)
 
 ## В браузър (най-бързо)
 1. `npm install`

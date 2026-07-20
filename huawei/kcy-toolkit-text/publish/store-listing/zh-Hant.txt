@@ -1,4 +1,4 @@
-KCY Toolkit Text — 計數、格式化、Base64.
+Pupikes Toolkit Text — 計數、格式化、Base64.
 
 實用的離線工具 — 一切都在裝置上執行。
 

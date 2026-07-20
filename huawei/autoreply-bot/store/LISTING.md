@@ -1,4 +1,4 @@
-# KCY Auto Answer — Store Listing (Huawei AppGallery)
+# Pupikes Auto Answer — Store Listing (Huawei AppGallery)
 
 **App ID:** `com.kcy.autoreplybot.huawei`
 **Category:** Productivity / Utilities
@@ -7,7 +7,7 @@
 Наеми робот, който отговаря автоматично на съобщения по твои правила — изцяло на устройството.
 
 ## Full description
-KCY Auto Answer е „робот под наем", който отговаря вместо теб по предварително зададени
+Pupikes Auto Answer е „робот под наем", който отговаря вместо теб по предварително зададени
 правила: ключови думи, готови шаблони с променливи ({name}, {time}, {date}), работно
 време (office-hours) и бели/черни списъци по подател.
 

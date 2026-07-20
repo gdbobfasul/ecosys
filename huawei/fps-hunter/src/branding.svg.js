@@ -36,7 +36,7 @@ export function splashSVG(w = 1080, h = 1920) {
   <g transform="translate(284,720) scale(1.0)">${iconSVG(512).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g>
   <text x="540" y="1320" text-anchor="middle" fill="${a}"
         font-family="${THEME.fontStack}" font-size="72" font-weight="800"
-        letter-spacing="6">FPS HUNTER</text>
+        letter-spacing="6">HUNTLINE 3D</text>
   <text x="540" y="1390" text-anchor="middle" fill="#7a8a9a"
         font-family="${THEME.fontStack}" font-size="30" letter-spacing="4">100 LEVELS</text>
 </svg>`;

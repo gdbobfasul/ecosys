@@ -1,4 +1,4 @@
-// main.js — Electron обвивка за десктоп клонинга на „Самообучаващ се приятел".
+// main.js — Electron обвивка за десктоп клонинга на „Pupikes Learning Buddy".
 //
 // Зарежда построения Vite renderer (dist/index.html) в BrowserWindow.
 // За да избегнем особеностите на file:// + ES модули, вдигаме мъничък ЛОКАЛЕН
@@ -91,7 +91,7 @@ async function createWindow() {
     minWidth: 360,
     minHeight: 560,
     backgroundColor: '#0b1020',
-    title: 'Самообучаващ се приятел (десктоп)',
+    title: 'Pupikes Learning Buddy (десктоп)',
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),

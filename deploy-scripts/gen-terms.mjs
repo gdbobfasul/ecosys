@@ -33,6 +33,8 @@ function sectionsEN(name, finance) {
   return `
 <h1>Terms &amp; Conditions — ${name}</h1>
 <p><small>Provider: ${PROVIDER} · Effective: ${EFFECTIVE}</small></p>
+<h2>About Pupikes — how our apps work</h2>
+<p>Pupikes apps are built to be like a good dog: a faithful friend that serves you reliably and can be <strong>trained</strong>. Through the in-app feedback button you can tell us what is missing or wrong, and we improve the app accordingly. But — just as you cannot ask a dog to do the impossible — each app helps you <strong>only within the limits of its purpose</strong>. Reasonable requests within an app's function are welcome; requests beyond what the app is meant to do (for example, asking an authenticator app to order food) cannot be fulfilled. Improvements are made at our discretion, within what is reasonable and technically possible.</p>
 <h2>1. Acceptance</h2>
 <p>By installing or using ${name} (the "app"), published by ${PROVIDER}, you agree to these Terms &amp; Conditions and to the Privacy Policy. If you do not agree, do not use the app.</p>
 <h2>2. Licence</h2>
@@ -61,6 +63,8 @@ function sectionsRU(name, finance) {
   return `
 <h1>Условия использования — ${name}</h1>
 <p><small>Поставщик: ${PROVIDER} · Действует с: ${EFFECTIVE}</small></p>
+<h2>О Pupikes — как работают наши приложения</h2>
+<p>Приложения Pupikes созданы как хороший пёс: верный друг, который надёжно вам служит и которого можно <strong>обучать</strong>. Через кнопку обратной связи в приложении вы сообщаете, чего не хватает или что не так, и мы улучшаем приложение. Но — как и от собаки нельзя требовать невозможного — каждое приложение помогает <strong>только в пределах своего назначения</strong>. Разумные пожелания в рамках функций приложения приветствуются; просьбы вне того, для чего приложение предназначено (например, заказать еду через приложение-аутентификатор), выполнить нельзя. Улучшения вносятся по нашему усмотрению, в разумных и технически возможных пределах.</p>
 <h2>1. Принятие</h2>
 <p>Устанавливая или используя ${name} («приложение»), издаваемое ${PROVIDER}, вы принимаете настоящие Условия использования и Политику конфиденциальности. Если вы не согласны — не используйте приложение.</p>
 <h2>2. Лицензия</h2>

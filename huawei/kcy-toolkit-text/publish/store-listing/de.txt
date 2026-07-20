@@ -1,4 +1,4 @@
-KCY Toolkit Text — Zähler, Formatierung, Base64.
+Pupikes Toolkit Text — Zähler, Formatierung, Base64.
 
 Praktische Offline-Tools — alles läuft auf dem Gerät.
 

@@ -1,4 +1,4 @@
-// KCY Portals — Auth routes
+// Pupikes Portals — Auth routes
 // Version: 1.0202
 
 const express = require('express');

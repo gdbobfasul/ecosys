@@ -19,6 +19,6 @@ export const THEME = {
   planeBody: 0x3aa0ff,
   planeEdge: 0xcdefff,
   // Заглавие на менюто
-  titleText: 'PLANE SHOOTER',
+  titleText: 'WARBIRD RUSH',
   titleSub: 'RUStore Edition'
 };

@@ -1,4 +1,4 @@
-KCY Toolkit Text — Counter, formatting, Base64.
+Pupikes Toolkit Text — Counter, formatting, Base64.
 
 Handy offline tools — everything runs on your device.
 

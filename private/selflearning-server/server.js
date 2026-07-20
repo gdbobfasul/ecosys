@@ -332,7 +332,7 @@ app.post('/api/selflearning/ai/:token', withToken, async (req, res) => {
 });
 
 // ── WATCH (детегледачка / camera-watch): сдвояване по „pair" ключ ────────────
-// Телефонът до детето (Детегледачка) праща събития/кадри; наблюдаващият ги тегли.
+// Телефонът до детето (Pupikes Baby Radar) праща събития/кадри; наблюдаващият ги тегли.
 // pair = таен ключ за двойка (като token — лек namespace, не втвърдена автентикация).
 function withPair(req, res, next) {
   const pair = cleanToken(req.params.pair);
@@ -345,7 +345,7 @@ function watchPending(pair) {
   return db.prepare('SELECT COUNT(*) AS c FROM watch_queue WHERE pair = ?').get(pair).c;
 }
 
-// Детегледачката праща събитие.
+// Pupikes Baby Radar праща събитие.
 app.post('/api/watch/alert/:pair', withPair, (req, res) => {
   const b = req.body || {};
   const appName = b.app != null ? String(b.app).slice(0, 40) : '';
@@ -375,7 +375,7 @@ app.post('/api/watch/alert/:pair/ack', withPair, (req, res) => {
   res.json({ ok: true, cleared: info.changes, pending: watchPending(req.pair) });
 });
 
-// Детегледачката качва последния кадър (малка компресирана снимка).
+// Pupikes Baby Radar качва последния кадър (малка компресирана снимка).
 app.post('/api/watch/frame/:pair', withPair, (req, res) => {
   const b = req.body || {};
   const dataurl = b.dataurl != null ? String(b.dataurl) : '';

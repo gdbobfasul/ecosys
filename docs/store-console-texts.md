@@ -31,8 +31,8 @@ Huawei AGC пита „защо апът иска това разрешение"
 - **RECORD_AUDIO (RU):** Микрофон используется только для голосовых команд и диктовки ассистенту. Распознавание речи выполняется системным сервисом; аудио не сохраняется и не отправляется на наши серверы.
 - **CAMERA (EN):** The camera is used only when the user explicitly asks the assistant to "look" at something; the picture is analyzed for the answer and is not stored or shared.
 - **CAMERA (RU):** Камера используется только когда пользователь сам просит ассистента «посмотреть»; снимок анализируется для ответа и не сохраняется и не передаётся.
-- **STORAGE (EN):** Storage access is used only to save/restore the user's own settings and learned-knowledge backup files (Downloads/KCY) and to import documents the user picks for learning. No other files are read.
-- **STORAGE (RU):** Доступ к памяти используется только для сохранения/восстановления файлов настроек и знаний пользователя (Downloads/KCY) и для импорта документов, которые пользователь сам выбирает. Другие файлы не читаются.
+- **STORAGE (EN):** Storage access is used only to save/restore the user's own settings and learned-knowledge backup files (Downloads/Pupikes) and to import documents the user picks for learning. No other files are read.
+- **STORAGE (RU):** Доступ к памяти используется только для сохранения/восстановления файлов настроек и знаний пользователя (Downloads/Pupikes) и для импорта документов, которые пользователь сам выбирает. Другие файлы не читаются.
 
 ### services-toolkit (POST_NOTIFICATIONS)
 - **EN:** Notifications are used only to alert the user about events they configured in the toolkit (timers/reminders). No marketing notifications are sent.

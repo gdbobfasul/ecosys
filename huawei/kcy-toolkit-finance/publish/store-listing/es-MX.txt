@@ -1,4 +1,4 @@
-KCY Toolkit Finance — RSI, Fibonacci, BTC/ETH por periodos (Binance/CoinGecko) · Conversor y tasas en vivo · Umbrales con aviso y sonido para hasta 20 pares · Préstamo, IVA, interés, porcentajes.
+Pupikes Toolkit Finance — RSI, Fibonacci, BTC/ETH por periodos (Binance/CoinGecko) · Conversor y tasas en vivo · Umbrales con aviso y sonido para hasta 20 pares · Préstamo, IVA, interés, porcentajes.
 
 Gráficos cripto — RSI, Fibonacci, BTC/ETH por periodos (Binance/CoinGecko)
 

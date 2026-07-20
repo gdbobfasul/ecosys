@@ -1,4 +1,4 @@
-# Plane Shooter — Huawei AppGallery Edition
+# Warbird Rush — Huawei AppGallery Edition
 
 Самостоятелна 2D аркадна игра (самолетен шутър) на **Phaser 3**, опакована с
 **Capacitor** за Android. Без Google Play Services / GMS — подходяща за

@@ -2,7 +2,7 @@
   "name": "services-toolkit-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Toolkit — самостоятелно офлайн мобилно приложение с полезни инструменти (Huawei AppGallery издание).",
+  "description": "Pupikes Toolkit — самостоятелно офлайн мобилно приложение с полезни инструменти (Huawei AppGallery издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

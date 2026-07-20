@@ -1,4 +1,4 @@
-# Чеклист за публикуване — Битка на терен (HMM), RUStore
+# Чеклист за публикуване — Pupikes Field Battle (HMM), RUStore
 
 ## Преди билд
 

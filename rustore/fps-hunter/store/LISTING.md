@@ -1,7 +1,7 @@
-# FPS Hunter — RUStore Listing Notes
+# Huntline 3D — RUStore Listing Notes
 
 App ID: `com.kcy.fpshunter.rustore`
-Name: FPS Hunter
+Name: Huntline 3D
 Category: Games / Action (Аркада / Шутър)
 
 ## Кратко описание (BG)

@@ -1,4 +1,4 @@
-KCY Toolkit QR — 產生與讀取 QR 碼.
+Pupikes Toolkit QR — 產生與讀取 QR 碼.
 
 實用的離線工具 — 一切都在裝置上執行。
 

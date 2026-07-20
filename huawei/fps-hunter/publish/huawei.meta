@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: FPS Hunter (huawei издание). Генерирано от AppPublisherBot.
+# Приложение: Huntline 3D (huawei издание). Генерирано от AppPublisherBot.
 
 [Set basic app information]
 App type: Game (игра)
-App name: FPS Hunter            # 10 / 30 знака
+App name: Huntline 3D            # 11 / 30 знака
 App package name: com.kcy.fpshunter.hw   # 20 / 128 знака
 Level-1 app category: Games
 

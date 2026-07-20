@@ -1,4 +1,4 @@
-# Plane Shooter — RUStore Edition
+# Warbird Rush — RUStore Edition
 
 Самостоятелна 2D аркадна игра (самолетен шутър) на **Phaser 3**, опакована с
 **Capacitor** за Android. Без Google Play Services / GMS — подходяща за **RUStore**.

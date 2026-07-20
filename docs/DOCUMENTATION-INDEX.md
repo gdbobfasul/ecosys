@@ -1,5 +1,5 @@
 <!-- Version: 1.0056 -->
-# 📚 KCY ECOSYSTEM - DOCUMENTATION INDEX
+# 📚 Pupikes ECOSYSTEM - DOCUMENTATION INDEX
 
 **Version:** 3.0.0 - Matchmaking Edition  
 **Last Updated:** February 14, 2026
@@ -10,7 +10,7 @@
 
 ### 🌐 Глобална документация (`/docs/`)
 
-Тук се намират всички общи документи за целия KCY Ecosystem:
+Тук се намират всички общи документи за целия Pupikes:
 
 - **README.md** - Кратък преглед на системата
 - **README-COMPLETE.md** - Пълен преглед на всички проекти
@@ -21,12 +21,12 @@
 - **MATCHMAKING-IMPLEMENTATION-SUMMARY.md** - Matchmaking имплементация (v3.0)
 - **ADMIN-PAGES-ACCESS.md** - Достъп до админ страниците (IP whitelist + URL параметър)
 - **DOCKER-WSL2-VMCOMPUTE-FIX.md** - Docker/WSL2 не тръгват (vmcompute „General access denied") — диагностика, in-place repair на Windows, алтернатива нативен PostgreSQL
-- **apps/MONETIZACIA-I-REKLAMI.md** - 💰 Монетизация на мобилните приложения (publish/monetization.json: free/one_time/subscription/iap; released → никакво пробно заключване) + рекламна функционалност (интро, „Още от KCY" каталог от сървъра — кой файл се редактира) + месечен абонамент в Huawei AGC
-- **SELFLEARNING-KNOWLEDGE-PACKS.md** - 📦 Selflearning Friend: как се зареждат пакетите знание (26-те вградени, каталогът /dict/ от сървъра, пакет от линк/файл, админските речници) — команди в чата, екран „Източници", нужни настройки, лимити
+- **apps/MONETIZACIA-I-REKLAMI.md** - 💰 Монетизация на мобилните приложения (publish/monetization.json: free/one_time/subscription/iap; released → никакво пробно заключване) + рекламна функционалност (интро, „Още от Pupikes" каталог от сървъра — кой файл се редактира) + месечен абонамент в Huawei AGC
+- **LEARNING-BUDDY-KNOWLEDGE-PACKS.md** - 📦 Selflearning Friend: как се зареждат пакетите знание (26-те вградени, каталогът /dict/ от сървъра, пакет от линк/файл, админските речници) — команди в чата, екран „Източници", нужни настройки, лимити
 
 ### 🪙 Token Project (`/private/token/docs/`)
 
-Документация за KCY-meme-1 token:
+Документация за Pupikes-meme-1 token:
 
 ```
 private/token/docs/

@@ -65,6 +65,71 @@ mkdir -p /var/www/html/.well-known/acme-challenge
 chmod -R 755 /var/www/html/.well-known 2>/dev/null || true
 
 APP_CONF="/etc/nginx/sites-available/kcy-app-domains.conf"
+APK_HTPASSWD="/etc/nginx/pupikes-apk.htpasswd"
+
+# APK gating за pupikes.app: всички .apk/.exe в /apk са зад ПАРОЛА, освен публичните
+# (show+download от app-shared/pupikes-catalog.json). Емитва nginx location-и (ползва се
+# в build_locations само когато ключът има APKGATE=1). ROOTът на домейна е /var/www/html/apk,
+# затова файловете са на КОРЕНА (pupikes.app/<файл>.apk), не под /apk/ префикс.
+apk_gate_locations() {
+    local catalog="$PROJECT_DIR/app-shared/pupikes-catalog.json"
+    # публичните файлове → без парола (exact-match location, бие regex-а долу)
+    if [ -f "$catalog" ] && command -v node >/dev/null 2>&1; then
+        node -e '
+            const c=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));
+            const files=new Set();
+            (c.groups||[]).forEach(g=>(g.apps||[]).forEach(a=>{ if(a.show&&a.download&&a.apk){ if(a.apk.rustore)files.add(a.apk.rustore); if(a.apk.huawei)files.add(a.apk.huawei);} }));
+            [...files].forEach(f=>process.stdout.write("    location = /"+f+" { auth_basic off; }\n"));
+        ' "$catalog" 2>/dev/null
+    fi
+    # всичко останало .apk/.exe → парола
+    printf '    location ~* \\.(apk|exe)$ { auth_basic "Pupikes - po pokana"; auth_basic_user_file %s; }\n' "$APK_HTPASSWD"
+}
+
+# pupikes.app КАТАЛОГ: root=/var/www/html/apk. САМО каталог index.html + сваляне на APK
+# (публичните свободно, скритите зад парола). БЕЗ портали/чат/нищо друго.
+catalog_locations() {
+    apk_gate_locations
+    printf '    location / { try_files $uri $uri/ /index.html; }\n'
+}
+
+# pupikes.com ХЪБ: РАЗРЕШЕНИ само приложенията в $HUB_ALLOW (напр. portals chat) — работят
+# заедно с поддиректориите си; ВСЕКИ друг път → 301 към $HUB_REDIRECT_ELSE (pupikes.app).
+# Приложение на СОБСТВЕН път (портали, DIR=/portals/) → проксира се тук. Приложение-корен
+# със СОБСТВЕН домейн (чат, има APP_chat_PUBLIC) → пътят му води на неговия домейн.
+hub_locations() {
+    local akey aDIR aPORT aAPI aSERVE aPUBLIC
+    local PH='proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_read_timeout 86400;'
+    for akey in $HUB_ALLOW; do
+        aDIR=$(eval "echo \${APP_${akey}_DIR}")
+        aPORT=$(eval "echo \${APP_${akey}_PORT}")
+        aAPI=$(eval "echo \${APP_${akey}_API}")
+        aPUBLIC=$(eval "echo \${APP_${akey}_PUBLIC:-}")
+        [ -z "$aDIR" ] && continue
+        aSERVE="${aDIR%public/}"
+        case "$aDIR" in
+          */public/)  # приложение-корен (чат): води пътя към собствения му домейн, ако има
+            if [ -n "$aPUBLIC" ]; then
+                printf '    location = %s { return 301 https://%s/; }\n' "${aSERVE%/}" "$aPUBLIC"
+                printf '    location ^~ %s { return 301 https://%s/; }\n' "$aSERVE" "$aPUBLIC"
+            else
+                printf '    location ^~ %s { proxy_pass http://127.0.0.1:%s; %s }\n' "$aSERVE" "$aPORT" "$PH"
+                printf '    location ^~ %s { proxy_pass http://127.0.0.1:%s; %s }\n' "$aAPI" "$aPORT" "$PH"
+                printf '    location ^~ /socket.io/ { proxy_pass http://127.0.0.1:%s; %s }\n' "$aPORT" "$PH"
+            fi
+            ;;
+          *)  # приложение на собствен път (портали): проксира се на пътя + API-то му
+            printf '    location ^~ %s { proxy_pass http://127.0.0.1:%s; %s }\n' "$aAPI" "$aPORT" "$PH"
+            printf '    location ^~ %s { proxy_pass http://127.0.0.1:%s; %s }\n' "$aSERVE" "$aPORT" "$PH"
+            ;;
+        esac
+    done
+    printf '    location ^~ /shared/       { root /var/www/html; }\n'
+    printf '    location ^~ /translations/ { root /var/www/html; }\n'
+    printf '    location ^~ /assets/       { root /var/www/html; }\n'
+    # ВСИЧКО ДРУГО (голият домейн + всеки неразрешен път) → pupikes.app (пази пътя)
+    printf '    location / { return 301 %s$request_uri; }\n' "$HUB_REDIRECT_ELSE"
+}
 
 # Роля на машината за X-Served-By: PROD (живия ams-chat) или VM (всичко друго)
 case "$(hostname)" in ams-chat*) KCY_ROLE="PROD" ;; *) KCY_ROLE="VM" ;; esac
@@ -111,17 +176,63 @@ generate_conf() {
     : > "$APP_CONF"
     printf '%s\n' "$APP_DOMAIN_MAP" | while read -r dom key; do
         [ -z "$dom" ] && continue
-        DIR=$(eval "echo \${APP_${key}_DIR}")
-        PORT=$(eval "echo \${APP_${key}_PORT}")
-        API=$(eval "echo \${APP_${key}_API}")
-        if [ -z "$DIR" ] || [ -z "$PORT" ] || [ -z "$API" ]; then
-            echo -e "  ${YELLOW}! непознат ключ '$key' за $dom — пропускам${NC}"; continue
+        # ── Пренасочващ домейн (само 301 към друг адрес, не сервира приложение) ──
+        REDIR=$(eval "echo \${APP_${key}_REDIRECT:-}")
+        if [ -n "$REDIR" ]; then
+            CERT="/etc/letsencrypt/live/$dom/fullchain.pem"
+            if [ -f "$CERT" ]; then
+                cat >> "$APP_CONF" <<EOF
+server {
+    listen 80; server_name $dom;
+    location ^~ /.well-known/acme-challenge/ { root /var/www/html; allow all; default_type "text/plain"; }
+    location / { return 301 ${REDIR}\$request_uri; }
+}
+server {
+    listen 443 ssl; server_name $dom;
+    ssl_certificate     /etc/letsencrypt/live/$dom/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$dom/privkey.pem;
+    location ^~ /.well-known/acme-challenge/ { root /var/www/html; allow all; default_type "text/plain"; }
+    location / { return 301 ${REDIR}\$request_uri; }
+}
+EOF
+                echo -e "  ${GREEN}✓ $dom → 301 ${REDIR} (HTTPS)${NC}"
+            else
+                cat >> "$APP_CONF" <<EOF
+server {
+    listen 80; server_name $dom;
+    location ^~ /.well-known/acme-challenge/ { root /var/www/html; allow all; default_type "text/plain"; }
+    location / { return 301 ${REDIR}\$request_uri; }
+}
+EOF
+                echo -e "  ${GREEN}✓ $dom → 301 ${REDIR} (HTTP само — чака SSL)${NC}"
+            fi
+            continue
         fi
-        SERVE="${DIR%public/}"
-        FS=$(eval "echo \${APP_${key}_FS}"); [ -z "$FS" ] && FS="${DIR#/}"
-        ROOTDIR="/var/www/html/${FS%/}"
-        case "$DIR" in */public/) NESTED=1 ;; *) NESTED=0 ;; esac
-        LOC="$(build_locations)"
+        # ── ХЪБ домейн (pupikes.com): разрешени приложения + redirect-else ──
+        ALLOW=$(eval "echo \${APP_${key}_ALLOW:-}")
+        if [ -n "$ALLOW" ]; then
+            HUB_ALLOW="$ALLOW"
+            HUB_REDIRECT_ELSE=$(eval "echo \${APP_${key}_REDIRECT_ELSE:-https://pupikes.app}")
+            ROOTDIR="/var/www/html"
+            LOC="$(hub_locations)"
+        else
+            DIR=$(eval "echo \${APP_${key}_DIR}")
+            PORT=$(eval "echo \${APP_${key}_PORT}")
+            API=$(eval "echo \${APP_${key}_API}")
+            if [ -z "$DIR" ] || [ -z "$PORT" ] || [ -z "$API" ]; then
+                echo -e "  ${YELLOW}! непознат ключ '$key' за $dom — пропускам${NC}"; continue
+            fi
+            SERVE="${DIR%public/}"
+            FS=$(eval "echo \${APP_${key}_FS}"); [ -z "$FS" ] && FS="${DIR#/}"
+            ROOTDIR="/var/www/html/${FS%/}"
+            case "$DIR" in */public/) NESTED=1 ;; *) NESTED=0 ;; esac
+            # КАТАЛОГ домейн (pupikes.app, APKGATE=1): само каталог + APK; иначе нормалното приложение
+            if [ "$(eval "echo \${APP_${key}_APKGATE:-}")" = "1" ]; then
+                LOC="$(catalog_locations)"
+            else
+                LOC="$(build_locations)"
+            fi
+        fi
         CERT="/etc/letsencrypt/live/$dom/fullchain.pem"
         if [ -f "$CERT" ]; then
             cat >> "$APP_CONF" <<EOF
@@ -190,6 +301,17 @@ EOF
 # ── Публикувай правните страници (privacy + terms) за магазините ──
 echo -e "${CYAN}Публикувам правни страници (privacy + terms)...${NC}"
 sync_privacy_pages
+
+# ── APK парола: осигури htpasswd файла (иначе auth_basic_user_file → nginx -t пада) ──
+NEED_HTPASSWD=0
+printf '%s\n' "$APP_DOMAIN_MAP" | while read -r dom key; do [ -n "$key" ] && [ "$(eval "echo \${APP_${key}_APKGATE:-}")" = "1" ] && exit 7; done; [ $? -eq 7 ] && NEED_HTPASSWD=1
+if [ "$NEED_HTPASSWD" = "1" ] && [ ! -f "$APK_HTPASSWD" ]; then
+    echo "pupikes:$(openssl passwd -apr1 'pupikes' 2>/dev/null)" > "$APK_HTPASSWD"
+    chmod 640 "$APK_HTPASSWD" 2>/dev/null || true
+    echo -e "  ${YELLOW}! създадох $APK_HTPASSWD (временно: потребител ${GREEN}pupikes${YELLOW} / парола ${GREEN}pupikes${YELLOW}) — СМЕНИ Я: htpasswd $APK_HTPASSWD pupikes${NC}"
+elif [ "$NEED_HTPASSWD" = "1" ]; then
+    echo -e "  ${GREEN}✓ $APK_HTPASSWD вече съществува (паролата за скритите APK-та)${NC}"
+fi
 
 # ── Пас 1: HTTP блокове (за да тръгне ACME webroot) ──
 echo -e "${CYAN}nginx блокове — пас 1 (HTTP)...${NC}"

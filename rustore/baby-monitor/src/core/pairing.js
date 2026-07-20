@@ -3,7 +3,7 @@
 //
 // Режими (role):
 //   • 'solo'    — един телефон: гледа и сам си вдига алармата (по подразбиране).
-//   • 'monitor' — „KCY Baby Radar": до детето; гледа и ПРАЩА събития/кадри към релея.
+//   • 'monitor' — „Pupikes Baby Radar": до детето; гледа и ПРАЩА събития/кадри към релея.
 //   • 'watcher' — „Наблюдаващ"/„Майка Тереза": при родителя; ПОЛВА релея и вдига известията.
 //
 // ЧЕСТНО: телефон не може да прати известие на друг телефон само on-device — затова
@@ -49,7 +49,7 @@ function urls() {
   return { alert: `${base}/alert/${k}`, frame: `${base}/frame/${k}` };
 }
 
-// --- KCY Baby Radar (monitor) праща ---
+// --- Pupikes Baby Radar (monitor) праща ---
 export async function sendAlert(app, type, label) {
   if (!pairingConfigured()) return { ok: false, reason: 'not-configured' };
   try {

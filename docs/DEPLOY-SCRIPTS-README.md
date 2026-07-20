@@ -1,4 +1,4 @@
-# KCY Ecosystem - Deployment Guide
+# Pupikes - Deployment Guide
 
 **Version:** 1.0085
 

@@ -1,4 +1,4 @@
-# Тестване — Битка на терен (HMM), RUStore
+# Тестване — Pupikes Field Battle (HMM), RUStore
 
 ## Бърз тест в браузър (без Android)
 

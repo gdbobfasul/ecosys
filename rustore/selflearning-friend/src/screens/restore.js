@@ -72,13 +72,13 @@ export function renderRestore(root, { done }) {
     status.textContent = t('rst_none');
     clear(body);
 
-    const dirIn = el('input', { type: 'text', value: cfg.dir, placeholder: 'KCY', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
+    const dirIn = el('input', { type: 'text', value: cfg.dir, placeholder: 'Pupikes', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
     const nameIn = el('input', { type: 'text', value: cfg.settingsName, placeholder: 'slf-settings', autocapitalize: 'none', autocomplete: 'off', style: 'width:100%' });
 
     const saveBtn = el('button', { class: 'primary-btn' }, t('rst_keep_here'));
     saveBtn.addEventListener('click', () => {
-      setRecoveryCfg({ dir: dirIn.value.trim() || 'KCY', settingsName: nameIn.value.trim() || 'slf-settings' });
-      toast(tf('rst_will_keep', dirIn.value.trim() || 'KCY'));
+      setRecoveryCfg({ dir: dirIn.value.trim() || 'Pupikes', settingsName: nameIn.value.trim() || 'slf-settings' });
+      toast(tf('rst_will_keep', dirIn.value.trim() || 'Pupikes'));
       markRestorePrompted(); done();
     });
 

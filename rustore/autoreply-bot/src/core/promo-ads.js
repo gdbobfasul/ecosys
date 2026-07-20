@@ -1,8 +1,8 @@
 // Version: 1.0012
 // promo-ads.js — ИЗСКАЧАЩА реклама във ВСИЧКИ апове (изискване на собственика): показва ~3–4с
 // промо на ПРОИЗВОЛНО одобрено приложение от каталога: снимка + ИМЕ + описание + бутон „Open"
-// (линк към приложението) + „KCY Ecosystem publisher 2026". Затворима (× се появява веднага;
-// авто-затваря след ~4с). Ред: 2-сек интро „KCY Ecosystem" (intro.js) → СТАРТ реклама → апът;
+// (линк към приложението) + „Pupikes publisher 2026". Затворима (× се появява веднага;
+// авто-затваря след ~4с). Ред: 2-сек интро „Pupikes" (intro.js) → СТАРТ реклама → апът;
 // после по СРЕДАТА (таймер) и в КРАЯ (игрите викат window.KCY_END_AD() при game over).
 //
 // Каталогът се тегли ПЪРВО ОТ СЪРВЪРА (public/promo/kcy-promo.json) — така се управлява
@@ -12,7 +12,7 @@ import { MONETIZATION } from '../monetize.js';
 // версии). В ПЛАТЕН ап (one_time/subscription/iap) са ИЗКЛ. — реклами в платен ап дразнят ревюто на
 // Huawei/RuStore. Управлява се от МОДЕЛА в publish/monetization.json (билдът го вгражда в monetize.js):
 // смениш ли model → "free", рекламите се включват сами. Кодът е цял (нищо не е махнато). Балончето
-// „✨ KCY" + showcase-ът (ecosystem.js) са ОТДЕЛНИ, ненатрапчиви и затваряеми — те остават ВИНАГИ.
+// „✨ Pupikes" + showcase-ът (ecosystem.js) са ОТДЕЛНИ, ненатрапчиви и затваряеми — те остават ВИНАГИ.
 const PROMO_ADS_ENABLED = !!(MONETIZATION && MONETIZATION.model === 'free');
 const CATALOG_URL_REMOTE = 'https://selflearning.bot.nu/promo/kcy-promo.json';
 const CATALOG_URL_LOCAL = './kcy-promo.json';
@@ -72,7 +72,7 @@ async function showAd() {
         '<div style="font-weight:800;font-size:17px;color:#e6edf3">' + esc(a.name || '') + '</div>' +
         '<div style="opacity:.82;font-size:13px;color:#cdd9e5;margin-top:5px">' + esc(desc) + '</div>' +
         '<button id="kcy-ad-open" style="margin-top:12px;width:100%;padding:12px;border:none;border-radius:10px;background:#2ea043;color:#fff;font-weight:700;font-size:15px;cursor:pointer">Open ›</button>' +
-        '<div style="text-align:center;margin-top:10px;font-size:11px;opacity:.55;color:#cdd9e5">KCY Ecosystem publisher 2026</div>' +
+        '<div style="text-align:center;margin-top:10px;font-size:11px;opacity:.55;color:#cdd9e5">Pupikes publisher 2026</div>' +
       '</div>' +
     '</div>';
   document.body.appendChild(ov);
@@ -83,7 +83,7 @@ async function showAd() {
   setTimeout(close, 4200);                                            // авто-затваря след ~4с
 }
 
-// СТАРТ (СЛЕД 2-сек интрото „KCY Ecosystem" — не върху него) + СРЕДА (на всеки ~120с докато е
+// СТАРТ (СЛЕД 2-сек интрото „Pupikes" — не върху него) + СРЕДА (на всеки ~120с докато е
 // активно). КРАЯТ се вика от играта при game over през window.KCY_END_AD().
 export function startPromoAds(selfId) {
   // ДЕАКТИВИРАНО: нищо не се показва. Неутрализираме и window.KCY_END_AD (игрите го викат на game

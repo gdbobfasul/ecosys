@@ -1,4 +1,4 @@
-# Data Safety — KCY FAQ Desk (RUStore)
+# Data Safety — Pupikes FAQ Desk (RUStore)
 
 | Тип данни | Събира ли се? | Споделя ли се? | Бележка |
 |-----------|---------------|----------------|---------|

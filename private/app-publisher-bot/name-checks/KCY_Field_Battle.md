@@ -1,6 +1,6 @@
 # Проверка на име: KCY Field Battle
 
-_2026-07-16T21:27:59.989Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:35:29.214Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 
@@ -11,15 +11,15 @@ _Условия: търсено по думата „KCY Field Battle" във В
 ## Apple App Store (iTunes Search)
 **Намерени приложения: 12** · точни съвпадения на името: **0** · подобни (съдържат името): **0**
 _Условия: търсено в App Store на 2 държави — САЩ (us) и Китай (cn), на английски по думата „KCY Field Battle" (тип „software")._
-- Ancient Battle — Lion Studios LLC (Games)
-- Top War: Battle Game — River Game HK Limited (Games)
-- Kingdom Clash：Medieval Defense — AI GAMES FZ LLC (Games)
-- Blaze of Battle — Shenzhen Leyi Network Co., Ltd. (Games)
 - War Planet Online: MMO Battle — Gameloft (Games)
+- Ancient Battle — Lion Studios LLC (Games)
+- Kingdom Clash：Medieval Defense — AI GAMES FZ LLC (Games)
+- Top War: Battle Game — River Game HK Limited (Games)
+- Blaze of Battle — Shenzhen Leyi Network Co., Ltd. (Games)
 - League of War: Mercenaries — Jirolabs LLC (Games)
-- Rush Arena - Clash Battle TD — Keystorm Holdings Limited (Games)
+- Tower War - Tactical Conquest — SayGames LTD (Games)
 - War and Order — Hong Kong Ke Mo software Co., Limited (Games)
-- Army Battle Simulator — Rappid Studios PC (Games)
+- The Grand Frontier — Babil Games LLC (Games)
 - War of Colony — GAME KNIGHT NETWORK TECHNOLOGY LIMITED (Games)
 - Hero Squad: Battle Siege — Kwalee Ltd (Games)
 - Clash of Kings - CoK — ELEX Technology Holdings Co., Ltd. (Games)
@@ -41,13 +41,13 @@ _Условия: прочетено от JSON API-то на AppGallery (getTabDe
 ╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **1** · свободни: **46** · несигурни: **2**
+**Проверени разширения: 49** · заети: **1** · свободни: **34** · несигурни: **14**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „KCY Field Battle". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 
 Заети (малко — оглед на съдържание и ниша):
 - **kcyfieldbattle.so** → сайтът не отговаря
-Свободни: 46 (напр. kcyfieldbattle.com, kcyfieldbattle.net, kcyfieldbattle.org, kcyfieldbattle.co, kcyfieldbattle.io, kcyfieldbattle.ai, kcyfieldbattle.app, kcyfieldbattle.news …)
-Несигурни (RDAP без отговор + без DNS): kcyfieldbattle.me, kcyfieldbattle.ac
+Свободни: 34 (напр. kcyfieldbattle.com, kcyfieldbattle.net, kcyfieldbattle.org, kcyfieldbattle.co, kcyfieldbattle.io, kcyfieldbattle.ai, kcyfieldbattle.app, kcyfieldbattle.news …)
+Несигурни (RDAP без отговор + без DNS): kcyfieldbattle.tv, kcyfieldbattle.me, kcyfieldbattle.biz, kcyfieldbattle.wiki, kcyfieldbattle.ink, kcyfieldbattle.design, kcyfieldbattle.club, kcyfieldbattle.vip, kcyfieldbattle.work, kcyfieldbattle.fit, kcyfieldbattle.health, kcyfieldbattle.fashion, kcyfieldbattle.us, kcyfieldbattle.ac
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

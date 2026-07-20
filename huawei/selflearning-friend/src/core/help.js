@@ -1,5 +1,5 @@
 // Version: 1.0031
-// help.js — УНИВЕРСАЛЕН бутон „Помощ / HELP?" за ВСЯКО приложение (еднакъв файл навсякъде).
+// help.js — УНИВЕРСАЛЕН бутон „Обратна връзка" за ВСЯКО приложение (еднакъв файл навсякъде).
 // Бутонът вече живее в ЕДИННАТА долна лента (core/kcy-bar.js) → модал → праща АНОНИМЕН доклад
 // към порталната таблица (portal_bug_reports) през /api/portals/bug-report/anon. Без вход.
 // Полето `app` (подава се на mountHelp) казва от кое приложение идва грешката. На телефон ползва
@@ -11,7 +11,7 @@ const ENDPOINT = 'https://selflearning.bot.nu/api/portals/bug-report/anon';
 
 // Кратки етикети на 15-те езика (fallback → en). Езикът се чете от <html lang> на приложението.
 const L = {
-  btn:    { bg:'Помощ', ru:'Помощь', uk:'Допомога', en:'Help', de:'Hilfe', fr:'Aide', es:'Ayuda', 'es-MX':'Ayuda', it:'Aiuto', pt:'Ajuda', ar:'مساعدة', hi:'मदद', ja:'ヘルプ', ky:'Жардам', 'zh-Hant':'幫助' },
+  btn:    { bg:'Обратна връзка', ru:'Обратная связь', uk:'Відгук', en:'Feedback', de:'Feedback', fr:'Commentaires', es:'Comentarios', 'es-MX':'Comentarios', it:'Feedback', pt:'Feedback', ar:'ملاحظات', hi:'प्रतिक्रिया', ja:'フィードバック', ky:'Пикир', 'zh-Hant':'意見回饋' },
   title:  { bg:'Изпрати ни съобщение', ru:'Напишите нам', uk:'Напишіть нам', en:'Send us a message', de:'Schreib uns', fr:'Écris-nous', es:'Envíanos un mensaje', 'es-MX':'Envíanos un mensaje', it:'Scrivici', pt:'Envia-nos uma mensagem', ar:'أرسل لنا رسالة', hi:'हमें संदेश भेजें', ja:'メッセージを送る', ky:'Бизге жазыңыз', 'zh-Hant':'傳訊息給我們' },
   ph:     { bg:'Опиши проблема или въпроса…', ru:'Опиши проблему или вопрос…', uk:'Опиши проблему або питання…', en:'Describe the problem or question…', de:'Beschreibe das Problem oder die Frage…', fr:'Décris le problème ou la question…', es:'Describe el problema o la pregunta…', 'es-MX':'Describe el problema o la pregunta…', it:'Descrivi il problema o la domanda…', pt:'Descreve o problema ou a pergunta…', ar:'صف المشكلة أو السؤال…', hi:'समस्या या प्रश्न बताएं…', ja:'問題や質問を書いてください…', ky:'Маселени же суроону жазыңыз…', 'zh-Hant':'描述問題或提問…' },
   send:   { bg:'Изпрати', ru:'Отправить', uk:'Надіслати', en:'Send', de:'Senden', fr:'Envoyer', es:'Enviar', 'es-MX':'Enviar', it:'Invia', pt:'Enviar', ar:'إرسال', hi:'भेजें', ja:'送信', ky:'Жөнөтүү', 'zh-Hant':'傳送' },
@@ -70,5 +70,5 @@ export function mountHelp(appId) {
     const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:8px;margin-top:12px'; row.append(cancel, send);
     box.append(h, ta, msg, row); ov.appendChild(box); document.body.appendChild(ov); ta.focus();
   }
-  kcyBarButton({ id: 'kcy-help-btn', order: 20, label: () => '❓ ' + tr('btn'), onClick: openModal });
+  kcyBarButton({ id: 'kcy-help-btn', order: 20, label: () => '💬 ' + tr('btn'), onClick: openModal });
 }

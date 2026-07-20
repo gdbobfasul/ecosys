@@ -34,7 +34,7 @@
       "pages": [
         {
           "url": "/",
-          "title": "KCY Ecosystem - Communication, Games & Services",
+          "title": "Pupikes - Communication, Games & Services",
           "type": "page",
           "params": []
         }
@@ -65,13 +65,13 @@
         },
         {
           "url": "/portals/billing.html",
-          "title": "Плащане — KCY Portals",
+          "title": "Плащане — Pupikes Portals",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/games/ads/ad_battle.html",
-          "title": "Битка на терен — вход",
+          "title": "Pupikes Field Battle — вход",
           "type": "page",
           "params": []
         },
@@ -83,7 +83,7 @@
         },
         {
           "url": "/portals/games/battle-duel.html",
-          "title": "Дуел на ринга | KCY игри",
+          "title": "Pupikes Ring Clash | Pupikes игри",
           "type": "page",
           "params": []
         },
@@ -95,61 +95,61 @@
         },
         {
           "url": "/portals/games/battle-team.html",
-          "title": "Битка на терен — отбори | KCY игри",
+          "title": "Pupikes Field Battle — отбори | Pupikes игри",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/games/car-drift.html",
-          "title": "Кола — Дрифт | KCY игри",
+          "title": "Кола — Дрифт | Pupikes игри",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/games/car-race.html",
-          "title": "Кола — Надбягване | KCY игри",
+          "title": "Кола — Надбягване | Pupikes игри",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/games/hero-jump.html",
-          "title": "Герой — Скачане | KCY игри",
+          "title": "Герой — Скачане | Pupikes игри",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/games/hero-run.html",
-          "title": "Герой — Бягане | KCY игри",
+          "title": "Герой — Бягане | Pupikes игри",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/games/plane-dodge.html",
-          "title": "Самолет — Избягвай | KCY игри",
+          "title": "Самолет — Избягвай | Pupikes игри",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/games/plane-shoot.html",
-          "title": "Самолет — Стрелба | KCY игри",
+          "title": "Самолет — Стрелба | Pupikes игри",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/index-games.html",
-          "title": "Портал за игри — KCY",
+          "title": "Портал за игри — Pupikes",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/index-services.html",
-          "title": "Портал за услуги — KCY",
+          "title": "Портал за услуги — Pupikes",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/login.html",
-          "title": "Вход — KCY Portals",
+          "title": "Вход — Pupikes Portals",
           "type": "page",
           "params": [
             {
@@ -160,13 +160,13 @@
         },
         {
           "url": "/portals/register.html",
-          "title": "Регистрация — KCY Portals",
+          "title": "Регистрация — Pupikes Portals",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/report-bug.html",
-          "title": "Докладвай грешка — KCY Ecosystem",
+          "title": "Докладвай грешка — Pupikes",
           "type": "page",
           "params": []
         },
@@ -178,49 +178,49 @@
         },
         {
           "url": "/portals/services/calc.html",
-          "title": "Калкулатори | KCY услуги",
+          "title": "Калкулатори | Pupikes услуги",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/services/charts.html",
-          "title": "Финансови графики | KCY услуги",
+          "title": "Финансови графики | Pupikes услуги",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/services/crypto.html",
-          "title": "Валутен конвертор | KCY услуги",
+          "title": "Валутен конвертор | Pupikes услуги",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/services/image.html",
-          "title": "Компресор на снимки | KCY услуги",
+          "title": "Компресор на снимки | Pupikes услуги",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/services/password.html",
-          "title": "Генератор на пароли | KCY услуги",
+          "title": "Генератор на пароли | Pupikes услуги",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/services/pdf-compress.html",
-          "title": "Свиване на PDF | KCY услуги",
+          "title": "Свиване на PDF | Pupikes услуги",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/services/pdf.html",
-          "title": "PDF инструменти | KCY услуги",
+          "title": "PDF инструменти | Pupikes услуги",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/services/qr.html",
-          "title": "QR код — генератор и четец | KCY услуги",
+          "title": "QR код — генератор и четец | Pupikes услуги",
           "type": "page",
           "params": []
         },
@@ -232,13 +232,13 @@
         },
         {
           "url": "/portals/services/text.html",
-          "title": "Текстови инструменти | KCY услуги",
+          "title": "Текстови инструменти | Pupikes услуги",
           "type": "page",
           "params": []
         },
         {
           "url": "/portals/services/watch20.html",
-          "title": "Наблюдавай 20 валути и криптовалути | KCY услуги",
+          "title": "Наблюдавай 20 валути и криптовалути | Pupikes услуги",
           "type": "page",
           "params": []
         }
@@ -257,7 +257,7 @@
         },
         {
           "url": "/chat/",
-          "title": "AMS Chat - KCY Ecosystem",
+          "title": "AMS Chat - Pupikes",
           "type": "page",
           "params": []
         },
@@ -384,13 +384,13 @@
         },
         {
           "url": "/eco-3/",
-          "title": "ECO-3 AI Studio - KCY Ecosystem",
+          "title": "ECO-3 AI Studio - Pupikes",
           "type": "page",
           "params": []
         },
         {
           "url": "/eco-3/admin/",
-          "title": "ECO-3 Admin - KCY Ecosystem",
+          "title": "ECO-3 Admin - Pupikes",
           "type": "admin",
           "params": []
         }
@@ -573,25 +573,25 @@
       "pages": [
         {
           "url": "/crypto/",
-          "title": "KCY Ecosystem - Crypto",
+          "title": "Pupikes - Crypto",
           "type": "page",
           "params": []
         },
         {
           "url": "/crypto/brch1/",
-          "title": "BeRicH 1 (BRCH1) — KCY Ecosystem",
+          "title": "BeRicH 1 (BRCH1) — Pupikes",
           "type": "page",
           "params": []
         },
         {
           "url": "/crypto/brch1/admin/",
-          "title": "BRCH1 Admin — KCY Ecosystem",
+          "title": "BRCH1 Admin — Pupikes",
           "type": "admin",
           "params": []
         },
         {
           "url": "/crypto/multisig/",
-          "title": "Multi-Sig Wallet - KCY Ecosystem",
+          "title": "Multi-Sig Wallet - Pupikes",
           "type": "page",
           "params": []
         },
@@ -603,7 +603,7 @@
         },
         {
           "url": "/crypto/multisig/kcy1-website.html",
-          "title": "KCY1 Token - KCY-meme-1 | Official Documentation v1.0093",
+          "title": "KCY1 Token - Pupikes-meme-1 | Official Documentation v1.0093",
           "type": "page",
           "params": []
         },
@@ -615,7 +615,7 @@
         },
         {
           "url": "/crypto/token/",
-          "title": "KCY-meme-1 Token",
+          "title": "Pupikes-meme-1 Token",
           "type": "page",
           "params": []
         },
@@ -627,7 +627,7 @@
         },
         {
           "url": "/crypto/token/website/",
-          "title": "KCY1 Token - KCY-meme-1 | Official Documentation v1.0093",
+          "title": "KCY1 Token - Pupikes-meme-1 | Official Documentation v1.0093",
           "type": "page",
           "params": []
         },
@@ -671,13 +671,13 @@
         },
         {
           "url": "/shared/admin-status.html",
-          "title": "KCY Ecosystem — System Status",
+          "title": "Pupikes — System Status",
           "type": "admin",
           "params": []
         },
         {
           "url": "/shared/robot.html",
-          "title": "🤖 Тест робот — KCY Админ",
+          "title": "🤖 Тест робот — Pupikes Админ",
           "type": "admin",
           "params": []
         }

@@ -1,5 +1,5 @@
 // Version: 1.0001
-// i18n.js — преводен слой за играта „Dodge Master" на 15-те езика на екосистемата.
+// i18n.js — преводен слой за играта „EvadeArena" на 15-те езика на екосистемата.
 // Изборът на език се пази в localStorage. При първо стартиране играта показва
 // екран за избор на език (scenes/language.js), после се отваря менюто.
 import { LANGUAGES, languageByCode } from './languages.js';

@@ -2,7 +2,7 @@
   "name": "hmm-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "Битка на терен (HMM) — самостоятелна походова битка с видео-анимации. Vanilla JS + canvas, бъндната с Vite + Capacitor. Huawei AppGallery издание. Без backend, без IAP, без tracking, без HMS — напълно безплатна и offline.",
+  "description": "Pupikes Field Battle (HMM) — самостоятелна походова битка с видео-анимации. Vanilla JS + canvas, бъндната с Vite + Capacitor. Huawei AppGallery издание. Без backend, без IAP, без tracking, без HMS — напълно безплатна и offline.",
   "type": "module",
   "scripts": {
     "dev": "vite",

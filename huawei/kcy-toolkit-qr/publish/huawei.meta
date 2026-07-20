@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: KCY Toolkit QR (huawei издание). Част от семейството KCY Toolkit.
+# Приложение: Pupikes Toolkit QR (huawei издание). Част от семейството Pupikes Toolkit.
 
 [Set basic app information]
 App type: App (приложение, НЕ игра)
-App name: KCY Toolkit QR            # 14 / 30 знака
+App name: Pupikes Toolkit QR            # 14 / 30 знака
 App package name: com.kcy.toolkitqr.hw
 Level-1 app category: Tools
 

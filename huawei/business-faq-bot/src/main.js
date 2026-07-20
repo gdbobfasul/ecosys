@@ -7,8 +7,8 @@ import { mountHelp } from './core/help.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
-mountEcosystem('business-faq-bot'); // „Още от KCY Ecosystem" showcase
-playIntro(); // кратко „KCY Ecosystem" интро при старт
+mountEcosystem('business-faq-bot'); // „Още от Pupikes" showcase
+playIntro(); // кратко „Pupikes" интро при старт
 startPromoAds('business-faq-bot'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('business-faq-bot'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('business-faq-bot'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
@@ -94,6 +94,6 @@ window.addEventListener('DOMContentLoaded', render);
 // При незабавно зареждане (модулите се изпълняват след DOM в повечето случаи):
 if (document.readyState !== 'loading') render();
 
-// Стартираме „двигателя" на реалните канали (KCY polling + native слушател).
+// Стартираме „двигателя" на реалните канали (Pupikes polling + native слушател).
 // Деградира честно: ако нищо не е настроено/налично, просто не прави нищо.
 startPump(render);

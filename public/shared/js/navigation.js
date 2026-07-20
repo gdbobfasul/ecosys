@@ -1,6 +1,6 @@
 // Version: 1.0193
 /**
- * KCY Ecosystem - Navigation System
+ * Pupikes - Navigation System
  * Admin dropdown visible ONLY with ?adm=bgmasters-set
  */
 
@@ -24,7 +24,7 @@ const KCY_NAV = {
     
     projects: {
         home: { name: "Home", url: "/", icon: "🏠" },
-        token: { name: "KCY Token", url: "/crypto/token/", admin: "/crypto/token/admin/scripts.html", icon: "🪙" },
+        token: { name: "Pupikes Token", url: "/crypto/token/", admin: "/crypto/token/admin/scripts.html", icon: "🪙" },
         brch1: { name: "BRCH1", url: "/crypto/brch1/", admin: "/crypto/brch1/admin/", icon: "💰" },
         multisig: { name: "Multi-Sig", url: "/crypto/multisig/", admin: "/crypto/multisig/admin/", icon: "🔐" },
         chat: { name: "AMS Chat", url: "/chat/", admin: "/chat/admin/", icon: "💬" },
@@ -83,7 +83,7 @@ const KCY_NAV = {
             <div class="nav-container">
                 <a href="/" class="nav-logo">
                     <span>🚀</span>
-                    <span>KCY Ecosystem</span>
+                    <span>Pupikes</span>
                 </a>
                 <div class="nav-links">${navLinks}</div>
                 <div class="nav-auth" id="kcy-nav-auth">

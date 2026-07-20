@@ -1,4 +1,4 @@
-KCY Toolkit QR — Générer et lire des codes QR.
+Pupikes Toolkit QR — Générer et lire des codes QR.
 
 Outils hors-ligne pratiques — tout fonctionne sur l’appareil.
 

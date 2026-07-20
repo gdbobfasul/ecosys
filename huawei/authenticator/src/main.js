@@ -6,26 +6,26 @@ import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
-// ВГРАДЕН режим (?embedded=1): аутентикаторът живее КАТО ИНСТРУМЕНТ вътре в „KCY Toolkit"
+// ВГРАДЕН режим (?embedded=1): аутентикаторът живее КАТО ИНСТРУМЕНТ вътре в „Pupikes Toolkit"
 // (iframe). Обвиващото приложение вече има интро/реклами/правен екран/долна лента → тук се
 // пропускат, за да не излизат двойно. Самостоятелното приложение остава непроменено.
 const KCY_EMBEDDED = /(^|[?&])embedded=1/.test(location.search);
 enforceLock();
 if (!KCY_EMBEDDED) {
-  mountEcosystem('authenticator'); // „Още от KCY Ecosystem" showcase
-  playIntro(); // кратко „KCY Ecosystem" интро при старт
+  mountEcosystem('authenticator'); // „Още от Pupikes" showcase
+  playIntro(); // кратко „Pupikes" интро при старт
   startPromoAds('authenticator'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
   mountHelp('authenticator'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
   mountPrivacyLink('authenticator'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
   mountLegalGate('authenticator'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 } else {
-  // скрий долната KCY лента (kcy-bar се самомонтира при import от другите модули)
+  // скрий долната Pupikes лента (kcy-bar се самомонтира при import от другите модули)
   const st = document.createElement('style');
   st.textContent = '#kcy-bar{display:none !important} body{padding-bottom:0 !important}';
   document.addEventListener('DOMContentLoaded', () => document.head.appendChild(st));
   if (document.head) document.head.appendChild(st);
 }
-// main.js — входна точка и рутер на „KCY Authenticator".
+// main.js — входна точка и рутер на „Pupikes Authenticator".
 // Поток при старт:
 //   1) още не е избран език → екран за избор на език (15-те езика);
 //   2) няма сейф → екран за създаване на master парола;

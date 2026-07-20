@@ -1,4 +1,4 @@
-# Безопасност на данните — KCY Site Monitor (Huawei AppGallery)
+# Безопасност на данните — Pupikes Site Monitor (Huawei AppGallery)
 
 ## Събиране на данни: НИКАКВИ
 Приложението не събира, не изпраща и не споделя лични данни.

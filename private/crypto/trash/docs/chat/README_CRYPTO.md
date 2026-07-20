@@ -46,7 +46,7 @@ http://localhost:3000
 ### ✅ Crypto Payment Support:
 - MetaMask интеграция
 - KCY1 токен плащания
-- 300 KCY = 1 месец достъп
+- 300 Pupikes = 1 месец достъп
 - Автоматично към treasury: `0x58ec63d31b8e4D6624B5c88338027a54Be1AE28A`
 
 ### ✅ Global Configuration:
@@ -110,7 +110,7 @@ const CRYPTO_CONFIG = {
 
 1. Отвори `public/config.js`
 2. Промени: `USE_TESTNET: true`
-3. Get testnet BNB & KCY
+3. Get testnet BNB & Pupikes
 4. Test payments
 
 ### Production Mode:
@@ -132,7 +132,7 @@ const CRYPTO_CONFIG = {
    - Click "Свържи MetaMask"
    - MetaMask connects
    - Shows balance
-   - Click "Плати 300 KCY"
+   - Click "Плати 300 Pupikes"
    - Confirm in MetaMask
    - Wait for confirmation
    - Logged in!
@@ -147,7 +147,7 @@ const CRYPTO_CONFIG = {
 ```sql
 -- Crypto payments записват в:
 payment_logs (
-  currency = 'KCY',
+  currency = 'Pupikes',
   stripe_payment_id = txHash,
   amount = 300
 )
@@ -155,7 +155,7 @@ payment_logs (
 -- Users update:
 users (
   paid_until = +1 month,
-  payment_currency = 'KCY'
+  payment_currency = 'Pupikes'
 )
 ```
 

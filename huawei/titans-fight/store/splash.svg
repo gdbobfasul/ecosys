@@ -12,9 +12,9 @@
   <rect width="1080" height="1920" fill="url(#bg)"/>
   <circle cx="540" cy="806.4" r="594" fill="url(#glow)"/>
   <text x="540" y="883.2" text-anchor="middle" font-family="system-ui,Arial"
-        font-size="130" font-weight="800" fill="#2ecf8f">TITANS</text>
+        font-size="130" font-weight="800" fill="#2ecf8f">GODFIST</text>
   <text x="540" y="1033.2" text-anchor="middle" font-family="system-ui,Arial"
-        font-size="130" font-weight="800" fill="#ffd24a">FIGHT</text>
+        font-size="130" font-weight="800" fill="#ffd24a">ARENA</text>
   <text x="540" y="1766.4" text-anchor="middle" font-family="system-ui,Arial"
         font-size="44" fill="#cfcfd8">AppGallery Edition</text>
 </svg>

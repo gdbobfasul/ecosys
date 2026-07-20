@@ -1,4 +1,4 @@
-# KCY Baby Radar (RUStore) — baby/child monitor
+# Pupikes Baby Radar (RUStore) — baby/child monitor
 
 Нает робот („robot for rent“), който пази спящото или играещото дете през камерата на телефона и
 подава сигнал на наемателя. Изцяло **on-device** и **безплатно**. Без акаунти, без реклами, без

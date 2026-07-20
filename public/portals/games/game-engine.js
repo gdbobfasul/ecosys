@@ -1,4 +1,4 @@
-/* KCY Portals — Game Engine (споделен)
+/* Pupikes Portals — Game Engine (споделен)
    Version: 1.0093
    Дава: старт екран с обяснения, HUD (точки/ниво/живот), преход между нива,
    game-over екран, запис на резултата, плавен render loop, частици.

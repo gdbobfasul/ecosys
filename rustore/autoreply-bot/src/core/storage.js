@@ -31,7 +31,7 @@ function defaultState() {
 
     // Канали, към които роботът се връзва. Всеки канал може да се включи/изключи
     // отделно. WhatsApp/Viber/Messenger работят само в native билд + „Notification
-    // access". KCY е нашият собствен чат (връзка по HTTP към чат бекенда).
+    // access". Pupikes е нашият собствен чат (връзка по HTTP към чат бекенда).
     channels: {
       local: { enabled: true },        // вграденият демо чат — винаги наличен
       whatsapp: { enabled: true },     // авто-отговор иска „Notification access"

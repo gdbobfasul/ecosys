@@ -20,7 +20,7 @@
     <circle cx="540" cy="1080" r="18" fill="#4ad991"/>
     <circle cx="607.5" cy="1080" r="18" fill="#4ad991"/>
   <text x="540" y="1420" font-family="system-ui, sans-serif" font-size="84"
-        font-weight="bold" fill="#4ad991" text-anchor="middle">Auto-Reply Bot</text>
+        font-weight="bold" fill="#4ad991" text-anchor="middle">Pupikes Auto Answer</text>
   <text x="540" y="1485" font-family="system-ui, sans-serif" font-size="38"
         fill="#9be37a" text-anchor="middle">AppGallery Edition</text>
 </svg>

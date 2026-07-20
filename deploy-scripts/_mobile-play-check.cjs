@@ -1,5 +1,5 @@
 // Version: 1.0215
-// KCY — помощник за „тест-робота": зарежда URL в безглав Chromium (Playwright от
+// Pupikes — помощник за „тест-робота": зарежда URL в безглав Chromium (Playwright от
 // private/bug-bot) и проверява дали приложението наистина се РЕНДИРА без реални грешки.
 // Изход: 0 = чисто; 1 = реални console/page грешки или не се рендира; 2 = Playwright липсва.
 // Употреба: node _mobile-play-check.cjs <url> <screenshotPath>

@@ -16,7 +16,7 @@ const VERSION_COMMENT = `/**
 `;
 
 const SOLIDITY_VERSION_COMMENT = `/**
- * @title KCY-meme-1 Token (KCY1) - ${VERSION}
+ * @title Pupikes-meme-1 Token (KCY1) - ${VERSION}
  */
 `;
 

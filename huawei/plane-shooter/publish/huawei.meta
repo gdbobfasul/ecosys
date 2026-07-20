@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: Plane Shooter (huawei издание). Генерирано от AppPublisherBot.
+# Приложение: Warbird Rush (huawei издание). Генерирано от AppPublisherBot.
 
 [Set basic app information]
 App type: Game (игра)
-App name: Plane Shooter            # 13 / 30 знака
+App name: Warbird Rush            # 12 / 30 знака
 App package name: com.kcy.planeshooter.hw   # 23 / 128 знака
 Level-1 app category: Games
 

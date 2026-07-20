@@ -3,8 +3,8 @@
   "isGame": false,
   "generativeAI": false,
   "descKeys": [],
-  "pitchEn": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-  "newFeaturesEn": "First release of KCY Chat: real-time messaging in 15 languages with a clean connect/offline experience.",
+  "pitchEn": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+  "newFeaturesEn": "First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.",
   "dataHandling": {
     "collectsPersonalData": true,
     "accountsOrLogin": true,

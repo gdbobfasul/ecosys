@@ -16,6 +16,16 @@ function loadPlaywright() {
   throw new Error('Playwright липсва. Очаквах го в private/bug-bot/node_modules.');
 }
 
+// Билднатият Playwright Chromium може да липсва (обновена Playwright версия без
+// `playwright install`) → резерва: инсталираният Chrome, после Edge (същият двигател).
+async function launchChromium(pw) {
+  let err;
+  for (const opt of [{}, { channel: 'chrome' }, { channel: 'msedge' }]) {
+    try { return await pw.chromium.launch(opt); } catch (e) { err = e; }
+  }
+  throw err;
+}
+
 // fetch с таймаут и браузърен User-Agent. Връща { ok, status, text }.
 async function fetchText(url, ms = 12000, extraHeaders = {}) {
   const ctl = new AbortController();
@@ -131,4 +141,4 @@ async function appleSearch(term, country = 'us', limit = 12) {
 
 function norm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ''); }
 
-module.exports = { UA, loadPlaywright, fetchText, fetchJson, domainTaken, domainStatus, inspectDomain, anyDns, pool, ddg, appleSearch, norm };
+module.exports = { UA, loadPlaywright, launchChromium, fetchText, fetchJson, domainTaken, domainStatus, inspectDomain, anyDns, pool, ddg, appleSearch, norm };

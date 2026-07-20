@@ -1,4 +1,4 @@
-# KCY Authenticator (RUStore)
+# Pupikes Authenticator (RUStore)
 
 Двуфакторен автентикатор (като Google Authenticator / Aegis), напълно офлайн.
 

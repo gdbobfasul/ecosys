@@ -1,4 +1,4 @@
-KCY Toolkit Text — Compteur, mise en forme, Base64.
+Pupikes Toolkit Text — Compteur, mise en forme, Base64.
 
 Outils hors-ligne pratiques — tout fonctionne sur l’appareil.
 

@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.authenticator.hw",
-  "appName": "KCY Toolkit Authenticator",
+  "appName": "Pupikes Toolkit Authenticator",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

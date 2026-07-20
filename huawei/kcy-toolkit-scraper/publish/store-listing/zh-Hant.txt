@@ -1,4 +1,4 @@
-KCY Toolkit Scraper — 擷取標題／文字／連結.
+Pupikes Toolkit Scraper — 擷取標題／文字／連結.
 
 網頁擷取器 — 擷取標題／文字／連結
 

@@ -1,5 +1,5 @@
 // Version: 1.0001
-/* KCY Ring Clash — локална РАНГ ЛИСТА (leaderboard).
+/* Pupikes Ring Clash — локална РАНГ ЛИСТА (leaderboard).
    ВЕРСИЯ: 1.0001
 
    ПОВЕРИТЕЛНОСТ: пази САМО { name, score } — нула контакти, нула идентификатори,

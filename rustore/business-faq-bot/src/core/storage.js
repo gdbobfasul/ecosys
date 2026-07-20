@@ -61,7 +61,7 @@ function defaultState() {
       whatsapp: false,      // изисква native plugin + Notification access
       viber: false,
       messenger: false,
-      // НАШИЯТ чат (KCY) — реална HTTP връзка (виж kcy-chat.js). Настройките се
+      // НАШИЯТ чат (Pupikes) — реална HTTP връзка (виж kcy-chat.js). Настройките се
       // пазят само на устройството. enabled=false докато не е настроен и включен.
       kcy: {
         enabled: false,

@@ -1,5 +1,5 @@
 id: dodge-master
-name: Dodge Master
+name: EvadeArena
 folders:
   - rustore/dodge-master
   - huawei/dodge-master
@@ -23,10 +23,10 @@ website: https://bgmasters.net
 
 listings:
   ru:
-    title: Dodge Master
+    title: EvadeArena
     short: Уворачивайся от летящих снарядов и выживай — 10 уровней
     full: |
-      Dodge Master — динамичная аркада-уворачивание с видом сверху. Ты стоишь на поле,
+      EvadeArena — динамичная аркада-уворачивание с видом сверху. Ты стоишь на поле,
       а со всех сторон летят старинные снаряды: камешки, стрелы, камни, грязь, горшки,
       овощи, снежки, палки и самонаводящиеся камни. Двигайся свободно и уворачивайся!
 
@@ -38,10 +38,10 @@ listings:
       • Полностью офлайн: вся графика сгенерирована в коде, без рекламы и покупок.
         Рекорды хранятся только на устройстве.
   en:
-    title: Dodge Master
+    title: EvadeArena
     short: Dodge the incoming projectiles and survive — 10 levels
     full: |
-      Dodge Master is a fast top-down dodge-and-survive arcade game. You stand in the
+      EvadeArena is a fast top-down dodge-and-survive arcade game. You stand in the
       field while old-school projectiles fly in from every side: pebbles, arrows, rocks,
       mud, pots, vegetables, snowballs, sticks and homing stones. Move freely and dodge!
 
@@ -52,10 +52,10 @@ listings:
       • Fully offline: all graphics are generated in code, no ads, no purchases. High
         scores stay on your device only.
   bg:
-    title: Dodge Master
+    title: EvadeArena
     short: Избягвай летящите снаряди и оцелявай — 10 нива
     full: |
-      Dodge Master е динамична аркада за избягване с изглед отгоре. Стоиш на полето, а
+      EvadeArena е динамична аркада за избягване с изглед отгоре. Стоиш на полето, а
       от всички страни летят старовремски снаряди: камъчета, стрели, камъни, кал, гърнета,
       зеленчуци, снежни топки, пръчки и самонасочващи се камъни. Движи се свободно и ги
       избягвай!

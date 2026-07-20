@@ -122,7 +122,7 @@ function splashSvg(accent) {
     <circle cx="70" cy="80" r="22" fill="#fff"/>
     <circle cx="170" cy="80" r="22" fill="#fff"/>
   </g>
-  <text x="540" y="700" font-family="sans-serif" font-size="46" fill="#e8ecf5" text-anchor="middle">Бизнес FAQ робот</text>
+  <text x="540" y="700" font-family="sans-serif" font-size="46" fill="#e8ecf5" text-anchor="middle">Pupikes FAQ Desk</text>
 </svg>`;
 }
 

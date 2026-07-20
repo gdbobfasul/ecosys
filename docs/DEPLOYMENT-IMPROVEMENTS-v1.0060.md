@@ -1,4 +1,4 @@
-# ✅ KCY v1.0060 - DEPLOYMENT IMPROVEMENTS
+# ✅ Pupikes v1.0060 - DEPLOYMENT IMPROVEMENTS
 
 **Date:** February 15, 2026  
 **Version:** 1.0059 → 1.0060  
@@ -55,7 +55,7 @@ Are you SURE? Type 'DELETE' to confirm: _
 .\deploy.ps1
 
 # Output:
-Where is your KCY ecosystem located?
+Where is your Pupikes ecosystem located?
   Example: C:\Users\peshо\kcy-ecosystem
   Example: .\kcy-complete-v3.0-matchmaking
 
@@ -273,7 +273,7 @@ View logs: pm2 logs kcy-chat
 ```
 ✅ SETUP COMPLETE!
 
-Your KCY Ecosystem is now configured!
+Your Pupikes is now configured!
 
 Next steps:
 

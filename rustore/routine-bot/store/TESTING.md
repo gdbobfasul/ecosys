@@ -1,4 +1,4 @@
-# Тестване — KCY Routine Planner (RUStore)
+# Тестване — Pupikes Routine Planner (RUStore)
 
 ## В браузър (бързо, без Android SDK)
 1. `npm install`

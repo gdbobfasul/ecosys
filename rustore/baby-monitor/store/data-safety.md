@@ -1,4 +1,4 @@
-# Data safety / Безопасност на данните — KCY Baby Radar (RUStore)
+# Data safety / Безопасност на данните — Pupikes Baby Radar (RUStore)
 
 ## ВАЖНО ПРЕДУПРЕЖДЕНИЕ ЗА БЕЗОПАСНОСТ (прочети първо)
 

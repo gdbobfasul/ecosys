@@ -74,7 +74,7 @@ const CRYPTO_CONFIG = {
 ```
 1. User отива на Payment page
 
-2. User избира cryptocurrency (BTC/ETH/BNB/KCY)
+2. User избира cryptocurrency (BTC/ETH/BNB/Pupikes)
 
 3. System показва:
    ✅ QR код

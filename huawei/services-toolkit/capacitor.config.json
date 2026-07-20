@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.servicestoolkit.hw",
-  "appName": "KCY Toolkit",
+  "appName": "Pupikes Toolkit",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

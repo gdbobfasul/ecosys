@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.duel.hw",
-  "appName": "KCY Ring Clash",
+  "appName": "Pupikes Ring Clash",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

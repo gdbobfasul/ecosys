@@ -1,4 +1,4 @@
-// KCY Portals — Anthropic AI service
+// Pupikes Portals — Anthropic AI service
 // Version: 1.0093
 //
 // Генерира обява за продажба на имот по зададени няколко думи.

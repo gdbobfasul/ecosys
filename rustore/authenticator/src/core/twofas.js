@@ -112,5 +112,5 @@ export function build2FAS(entries) {
       icon: { selected: 'Label', label: { text: '', backgroundColor: 'Default' } }
     };
   });
-  return JSON.stringify({ services, schemaVersion: 4, appOrigin: 'android', appVersionCode: 0, appVersionName: 'KCY Authenticator', groups: [] }, null, 2);
+  return JSON.stringify({ services, schemaVersion: 4, appOrigin: 'android', appVersionCode: 0, appVersionName: 'Pupikes Authenticator', groups: [] }, null, 2);
 }

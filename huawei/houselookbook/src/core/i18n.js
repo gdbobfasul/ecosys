@@ -1,5 +1,5 @@
 // Version: 1.0001
-// i18n.js — преводен слой за обвивката на „KCY Chat" на 15-те езика на екосистемата.
+// i18n.js — преводен слой за обвивката на „Pupikes Chat" на 15-те езика на екосистемата.
 // Обвивката е малка: локализират се само нейните собствени низове (зареждане,
 // липса на връзка, „Опитай пак", избор на език). Самият чат е сървърен.
 // Език по подразбиране: руски (до избор от потребителя при първо стартиране).
@@ -13,7 +13,7 @@ const FALLBACK_LANG = 'en';
 // Само низовете на обвивката (shell). Всичко останало е сървърно.
 const STR = {
   // Марка (показва се горе на всеки екран).
-  brand: { bg:'KCY Чат', ru:'KCY Чат', uk:'KCY Чат', en:'KCY Chat', de:'KCY Chat', fr:'KCY Chat', es:'KCY Chat', 'es-MX':'KCY Chat', it:'KCY Chat', pt:'KCY Chat', ar:'دردشة KCY', hi:'KCY चैट', ja:'KCY チャット', ky:'KCY Чат', 'zh-Hant':'KCY 聊天' },
+  brand: { bg:'Pupikes Чат', ru:'Pupikes Чат', uk:'Pupikes Чат', en:'Pupikes Chat', de:'Pupikes Chat', fr:'Pupikes Chat', es:'Pupikes Chat', 'es-MX':'Pupikes Chat', it:'Pupikes Chat', pt:'Pupikes Chat', ar:'دردشة Pupikes', hi:'Pupikes चैट', ja:'Pupikes チャット', ky:'Pupikes Чат', 'zh-Hant':'Pupikes 聊天' },
 
   // Екран на зареждане.
   connecting: { bg:'Свързване със сървъра…', ru:'Подключение к серверу…', uk:'Підключення до сервера…', en:'Connecting to the server…', de:'Verbindung zum Server…', fr:'Connexion au serveur…', es:'Conectando al servidor…', 'es-MX':'Conectando al servidor…', it:'Connessione al server…', pt:'Conectando ao servidor…', ar:'جارٍ الاتصال بالخادم…', hi:'सर्वर से कनेक्ट हो रहा है…', ja:'サーバーに接続中…', ky:'Серверге туташууда…', 'zh-Hant':'正在連線到伺服器…' },

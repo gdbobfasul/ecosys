@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.marketpulse.hw",
-  "appName": "KCY Market Pulse",
+  "appName": "Pupikes Market Pulse",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

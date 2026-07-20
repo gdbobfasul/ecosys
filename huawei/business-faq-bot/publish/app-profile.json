@@ -17,7 +17,7 @@
     "location": false,
     "notifications": true,
     "storesLocalOnly": true,
-    "notes": "The FAQ knowledge base and settings are stored only on the device. Core answering works fully offline; network is used only for the optional KCY chat channel over HTTP. No accounts, no contacts, no tracking."
+    "notes": "The FAQ knowledge base and settings are stored only on the device. Core answering works fully offline; network is used only for the optional Pupikes chat channel over HTTP. No accounts, no contacts, no tracking."
   },
   "reviewerRemarksEn": "No account or login is needed. On first launch choose a language and tap 'Activate the bot'. Keep the sample knowledge base, then open the Demo chat and type a question containing a keyword; the bot replies from the FAQ, respects office hours, and offers escalation. All evaluation can be done offline in the demo chat.",
   "pricing": {

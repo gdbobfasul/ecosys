@@ -24,7 +24,7 @@ export function showMenu(root, leaderboard, onStart) {
       border:1px solid #2a3b4d;border-radius:10px;background:rgba(14,23,34,0.85);color:#dfe7ee;cursor:pointer">${escapeHtml(t('lang_btn'))}</button>
 
     <img src="${svgDataUrl(iconSVG(160))}" width="120" height="120" alt="" style="margin-bottom:8px"/>
-    <h1 style="margin:0;font-size:38px;letter-spacing:4px;color:#fff">FPS HUNTER</h1>
+    <h1 style="margin:0;font-size:38px;letter-spacing:4px;color:#fff">HUNTLINE 3D</h1>
     <p style="margin:6px 0 18px;color:#9fb0c0">${escapeHtml(t('tagline'))}</p>
 
     <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px">

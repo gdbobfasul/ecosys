@@ -2,7 +2,7 @@
   "name": "autoreply-bot-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Auto Answer - rent/activate an on-device robot that auto-replies to messages by rules, inside a sandboxed in-app inbox (RUStore build). Fully self-contained, no network, no contacts, no system SMS.",
+  "description": "Pupikes Auto Answer - rent/activate an on-device robot that auto-replies to messages by rules, inside a sandboxed in-app inbox (RUStore build). Fully self-contained, no network, no contacts, no system SMS.",
   "type": "module",
   "scripts": {
     "dev": "vite",

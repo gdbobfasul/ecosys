@@ -1,4 +1,4 @@
-KCY Toolkit Text — Contatore, formattazione, Base64.
+Pupikes Toolkit Text — Contatore, formattazione, Base64.
 
 Comodi strumenti offline — tutto gira sul dispositivo.
 

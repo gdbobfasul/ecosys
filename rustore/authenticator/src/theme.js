@@ -3,7 +3,7 @@
 // Цветовете се различават между двата магазина (Huawei има своя палитра).
 export const THEME = {
   store: 'rustore',
-  appName: 'KCY Toolkit Authenticator',
+  appName: 'Pupikes Toolkit Authenticator',
   // Акценти — „сигурен/доверен" тъмно-син + тюркоазен
   primary: '#2a86d8',
   accent: '#28c08a',

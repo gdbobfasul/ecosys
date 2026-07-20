@@ -1,4 +1,4 @@
-# Детегледачка — как функционира
+# Pupikes Baby Radar — как функционира
 
 Нает робот, който пази спящото или играещото дете през камерата на телефона и подава сигнал на наемателя. Изцяло **on-device** и **безплатно**, без акаунти, реклами, контакти или проследяване, без GMS/HMS/Firebase. Мобилно приложение за RUStore и Huawei AppGallery (Vite + Capacitor). App ID: `com.kcy.babymonitor.rustore` / `com.kcy.babymonitor.huawei`.
 

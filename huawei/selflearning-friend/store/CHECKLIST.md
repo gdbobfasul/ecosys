@@ -1,8 +1,8 @@
-# Чеклист за публикуване — KCY Learning Buddy (Huawei)
+# Чеклист за публикуване — Pupikes Learning Buddy (Huawei)
 
 ## Идентичност
 - [ ] App ID: `com.kcy.selflearningfriend.huawei`
-- [ ] Име: „KCY Learning Buddy“
+- [ ] Име: „Pupikes Learning Buddy“
 - [ ] Версия и versionCode зададени
 
 ## Ресурси

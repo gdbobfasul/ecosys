@@ -247,7 +247,7 @@ Relay-ят (`node private/selflearning-server/server.js`) + Ollama вървят 
 base   = https://<домейн>/api/selflearning
 sync   = <base>/sync/<token>      (износ на знание към сървъра)
 listen = <base>/listen/<token>    (режим „Слушай")
-exec   = <base>/exec/<token>      (команди — OPT-IN, виж SELFLEARNING-REMOTE-EXEC.md)
+exec   = <base>/exec/<token>      (команди — OPT-IN, виж LEARNING-BUDDY-REMOTE-EXEC.md)
 ai     = <base>/ai/<token>        (локален модел — OPT-IN, ниво 3)
 health = <base>/health            (проверка на живо — без token)
 ```
@@ -261,7 +261,7 @@ health = <base>/health            (проверка на живо — без tok
 ИЗКЛЮЧЕНО по подразбиране. Включва се с `SELFLEARNING_EXEC_ENABLED=1` в `private/configs/.env`
 (+ деплой/рестарт). **Безопасен режим** пуска само `mkdir/ls/rm/rmdir/echo/cat/stat/pwd` и САМО в
 пясъчника `SELFLEARNING_EXEC_SANDBOX` (по подразбиране `${DATA_DIR}/exec-sandbox`, защото `/tmp` е
-read-only заради `ProtectSystem=strict`). Подробно: **`docs/SELFLEARNING-REMOTE-EXEC.md`**.
+read-only заради `ProtectSystem=strict`). Подробно: **`docs/LEARNING-BUDDY-REMOTE-EXEC.md`**.
 
 ---
 

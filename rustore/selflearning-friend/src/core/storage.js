@@ -113,7 +113,7 @@ function defaultState() {
       },
       // Пренасяне на настройки/знание извън апа, за да ОЦЕЛЯВАТ деинсталация (виж recovery.js).
       recovery: {
-        dir: 'KCY',                    // подпапка в Downloads
+        dir: 'Pupikes',                    // подпапка в Downloads
         settingsName: 'slf-settings',  // име на файла с настройките (без .json)
         knowledgeName: 'slf-knowledge',// име на файла със знанието
         autoSave: true,                // авто-запис на настройките при промяна (по подразбиране ВКЛ.)

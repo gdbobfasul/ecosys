@@ -2,7 +2,7 @@
   "name": "price-watch-bot-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Toolkit Price Watch (Price-Watch Bot) — самостоятелно мобилно приложение, което следи цени на крипто и валути и известява при достигнат праг (Huawei AppGallery издание).",
+  "description": "Pupikes Toolkit Price Watch (Price-Watch Bot) — самостоятелно мобилно приложение, което следи цени на крипто и валути и известява при достигнат праг (Huawei AppGallery издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

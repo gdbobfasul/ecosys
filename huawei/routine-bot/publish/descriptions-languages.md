@@ -1,4 +1,4 @@
-# KCY Routine Planner — описание по език (Brief + Full + New features)
+# Pupikes Routine Planner — описание по език (Brief + Full + New features)
 
 _За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
 

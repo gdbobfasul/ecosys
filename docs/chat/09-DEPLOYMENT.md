@@ -1,7 +1,7 @@
 <!-- Version: 001.00002 -->
 # 09 - Production Deployment
 
-> **⚠️ KCY Ecosystem:** Deployment вече е автоматизиран.
+> **⚠️ Pupikes:** Deployment вече е автоматизиран.
 > Виж `docs/DEPLOY-SCRIPTS-README.md` за пълната процедура:
 > `04-deploy.sh` → `05-server-install.sh` → `07-setup-database.sh` → `kcy-restart`
 

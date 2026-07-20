@@ -1,9 +1,9 @@
 {
   "name": "selflearning-friend-desktop",
-  "productName": "Самообучаващ се приятел",
+  "productName": "Pupikes Learning Buddy",
   "version": "1.0.0",
   "private": true,
-  "description": "Десктоп клонинг (Windows .exe, Electron) на „Самообучаващ се приятел“ — независим клонинг със собствена локална памет на компютъра, отделна от телефона. Изцяло on-device, без акаунти/контакти/проследяване.",
+  "description": "Десктоп клонинг (Windows .exe, Electron) на „Pupikes Learning Buddy“ — независим клонинг със собствена локална памет на компютъра, отделна от телефона. Изцяло on-device, без акаунти/контакти/проследяване.",
   "type": "module",
   "main": "electron/main.cjs",
   "author": "DAI GROUP",
@@ -32,7 +32,7 @@
   },
   "build": {
     "appId": "com.daigroup.selflearningfriend.desktop",
-    "productName": "Самообучаващ се приятел",
+    "productName": "Pupikes Learning Buddy",
     "directories": {
       "output": "dist-exe"
     },

@@ -1,9 +1,9 @@
 # Документация на приложенията (не-игрови)
 
-Описания „как функционира" за приложенията от KCY екосистемата, които не са игри. Метаданните за магазините (Google Play / RUStore / Huawei AppGallery) са в главната папка [`/metadata`](../../metadata/README.md).
+Описания „как функционира" за приложенията от Pupikes екосистемата, които не са игри. Метаданните за магазините (Google Play / RUStore / Huawei AppGallery) са в главната папка [`/metadata`](../../metadata/README.md).
 
 ## Сигурност / 2FA
-- [KCY Authenticator](authenticator.md) — двуфакторни кодове (TOTP/HOTP/Steam), шифриран сейф, колекция от QR кодове, пароли. Мобилно + уеб.
+- [Pupikes Toolkit Authenticator](authenticator.md) — двуфакторни кодове (TOTP/HOTP/Steam), шифриран сейф, колекция от QR кодове, пароли. Мобилно + уеб.
 
 ## Ботове и асистенти
 - [autoreply-bot](autoreply-bot.md) — авто-отговори по правила за пясъчна (sandbox) пощенска кутия.
@@ -21,4 +21,4 @@
 - [services-toolkit](services-toolkit.md) — офлайн инструменти (QR, PDF, изображения и др.).
 - [chat](chat.md) — обвивка към сървъра за анонимен чат.
 
-> Бележка за езиците: част от тези приложения все още имат интерфейс на един език (текстовете са вградени). Извежда се отделна задача за добавяне на 15-езичния избор навсякъде (по модела на [KCY Authenticator](authenticator.md) и игрите rustam/dodge-master). Виж паметта `kcy-app-i18n-language-picker`.
+> Бележка за езиците: част от тези приложения все още имат интерфейс на един език (текстовете са вградени). Извежда се отделна задача за добавяне на 15-езичния избор навсякъде (по модела на [Pupikes Toolkit Authenticator](authenticator.md) и игрите rustam/dodge-master). Виж паметта `kcy-app-i18n-language-picker`.

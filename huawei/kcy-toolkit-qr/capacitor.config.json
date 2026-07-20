@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.toolkitqr.hw",
-  "appName": "KCY Toolkit QR",
+  "appName": "Pupikes Toolkit QR",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

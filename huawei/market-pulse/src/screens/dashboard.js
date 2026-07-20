@@ -21,7 +21,7 @@ export function renderDashboard(root, go) {
           '</button>'
         ).join('') +
       '</div>' +
-      '<div style="text-align:center;font-size:11px;color:#6b7787;margin-top:18px">KCY Ecosystem</div>' +
+      '<div style="text-align:center;font-size:11px;color:#6b7787;margin-top:18px">Pupikes</div>' +
     '</div>';
 
   document.getElementById('cp-lang').onclick = () => { try { if (window.__mpOpenLang) window.__mpOpenLang(); } catch (_) {} };

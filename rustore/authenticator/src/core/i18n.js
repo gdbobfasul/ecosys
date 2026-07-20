@@ -1,5 +1,5 @@
 // Version: 1.0013
-// i18n.js — преводен слой за „KCY Authenticator" на 15-те езика на екосистемата.
+// i18n.js — преводен слой за „Pupikes Authenticator" на 15-те езика на екосистемата.
 // Език по подразбиране: руски (до избор от потребителя при първо стартиране).
 import { LANGUAGES, languageByCode, RTL_CODES } from './languages.js';
 

@@ -66,7 +66,7 @@ function splash() {
   <rect width="1080" height="1920" fill="url(#sky)"/>
   <path d="${planePath(540, 820, 180)}" fill="url(#body)" filter="url(#glow)"/>
   <text x="540" y="1180" font-family="system-ui, sans-serif" font-size="84"
-        font-weight="bold" fill="#ffffff" text-anchor="middle">PLANE SHOOTER</text>
+        font-weight="bold" fill="#ffffff" text-anchor="middle">WARBIRD RUSH</text>
   <text x="540" y="1250" font-family="system-ui, sans-serif" font-size="40"
         fill="${THEME.accent}" text-anchor="middle">RUStore Edition</text>
 </svg>`;

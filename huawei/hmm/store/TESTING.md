@@ -1,4 +1,4 @@
-# Тестване — Битка на терен (HMM), Huawei AppGallery
+# Тестване — Pupikes Field Battle (HMM), Huawei AppGallery
 
 ## Бърз тест в браузър (без Android)
 

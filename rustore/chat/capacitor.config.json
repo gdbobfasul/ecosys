@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.chat.rustore",
-  "appName": "KCY Chat",
+  "appName": "Pupikes Chat",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "server": {

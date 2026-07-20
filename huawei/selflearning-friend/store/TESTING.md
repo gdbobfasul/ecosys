@@ -1,4 +1,4 @@
-# Тестване — KCY Learning Buddy (Huawei)
+# Тестване — Pupikes Learning Buddy (Huawei)
 
 ## Браузър (бързо)
 1. `npm install`

@@ -1,5 +1,5 @@
 id: chat
-name: KCY Chat
+name: Pupikes Chat
 folders:
   - rustore/chat
   - huawei/chat
@@ -23,42 +23,42 @@ website: https://bgmasters.net
 
 listings:
   ru:
-    title: KCY Chat
-    short: Мобильный клиент чата KCY — общение, сообщения, задачи
+    title: Pupikes Chat
+    short: Мобильный клиент чата Pupikes — общение, сообщения, задачи
     full: |
-      KCY Chat — официальный мобильный клиент чата KCY. Приложение загружает рабочий
+      Pupikes Chat — официальный мобильный клиент чата Pupikes. Приложение загружает рабочий
       чат-сервер во встроенном WebView, поэтому вы всегда видите актуальную версию
       сервиса.
 
       • Общение и обмен сообщениями между пользователями.
       • При отсутствии связи показывается экран «Нет связи с сервером» с кнопкой «Повторить».
       • Соединение только по HTTPS.
-      Сообщения отправляются на чат-сервер KCY (требуется интернет). Это коммуникационный
+      Сообщения отправляются на чат-сервер Pupikes (требуется интернет). Это коммуникационный
       сервис с пользовательским контентом.
   en:
-    title: KCY Chat
-    short: KCY chat mobile client — messaging, conversations, tasks
+    title: Pupikes Chat
+    short: Pupikes chat mobile client — messaging, conversations, tasks
     full: |
-      KCY Chat is the official mobile client for the KCY chat. The app loads the live
+      Pupikes Chat is the official mobile client for the Pupikes chat. The app loads the live
       chat server inside an embedded WebView, so you always get the current version of
       the service.
 
       • Conversations and messaging between users.
       • If the connection drops, an offline screen shows "No connection to server" with a "Retry" button.
       • HTTPS-only connection.
-      Messages are sent to the KCY chat server (internet required). This is a communication
+      Messages are sent to the Pupikes chat server (internet required). This is a communication
       service with user-generated content.
   bg:
-    title: KCY Chat
-    short: Мобилен клиент за чата на KCY — общуване, съобщения, задачи
+    title: Pupikes Chat
+    short: Мобилен клиент за чата на Pupikes — общуване, съобщения, задачи
     full: |
-      KCY Chat е официалният мобилен клиент за чата на KCY. Приложението зарежда живия
+      Pupikes Chat е официалният мобилен клиент за чата на Pupikes. Приложението зарежда живия
       чат сървър във вграден WebView, така че винаги виждаш актуалната версия на услугата.
 
       • Общуване и обмен на съобщения между потребители.
       • При липса на връзка се показва екран „Няма връзка със сървъра" с бутон „Опитай пак".
       • Връзка само по HTTPS.
-      Съобщенията се изпращат към чат сървъра на KCY (изисква интернет). Това е
+      Съобщенията се изпращат към чат сървъра на Pupikes (изисква интернет). Това е
       комуникационна услуга с потребителско съдържание.
 
 permissions:
@@ -68,9 +68,9 @@ permissions:
 data_safety:
   collects_personal_data: true          # съобщения и профил се обработват от чат сървъра
   data_stored:
-    - Съобщения, профил и сесия — на чат сървъра на KCY (не локално в приложението)
+    - Съобщения, профил и сесия — на чат сървъра на Pupikes (не локално в приложението)
     - Локално: само bootstrap/офлайн състояние на обвивката
-  shared_with_third_parties: none        # данните остават в услугата KCY
+  shared_with_third_parties: none        # данните остават в услугата Pupikes
   encrypted_in_transit: true             # само HTTPS (cleartext:false)
   encrypted_at_rest: server_side         # управлява се от чат сървъра
   user_can_delete: true                  # през самата чат услуга (акаунт/съобщения)
@@ -81,4 +81,4 @@ assets:
   feature_graphic: 1024x500 (Google Play)
   screenshots: мин. 2 (Чат списък, Разговор, Офлайн екран „Опитай пак")
 
-keywords: [chat, messaging, communication, KCY, conversations, tasks]
+keywords: [chat, messaging, communication, Pupikes, conversations, tasks]

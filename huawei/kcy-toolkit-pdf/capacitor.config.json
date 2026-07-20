@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.toolkitpdf.hw",
-  "appName": "KCY Toolkit PDF",
+  "appName": "Pupikes Toolkit PDF",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

@@ -88,7 +88,7 @@ npm test
 3. **Payments** - Stripe & Crypto (KCY1)
 4. **Friend System** - Adding, listing friends
 5. **Messaging** - Send/receive, size limits
-6. **Crypto Payments** - KCY token integration
+6. **Crypto Payments** - Pupikes token integration
 7. **Sessions** - Token generation, validation
 8. **Content Moderation** - Critical words flagging
 9. **File Uploads** - 100MB limit, auto-delete
@@ -97,7 +97,7 @@ npm test
 ### Web App Tests (35+ тестове):
 1. **Database Operations** - Schema validation
 2. **Web Files** - HTML, config.js, PWA files
-3. **Crypto Payments** - KCY payment recording
+3. **Crypto Payments** - Pupikes payment recording
 4. **Crypto Listener** - Blockchain monitoring
 5. **Sessions** - Web-specific session handling
 6. **WebSocket** - Connection authentication

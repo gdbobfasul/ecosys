@@ -1,6 +1,6 @@
 # Проверка на име: KCY Site Monitor
 
-_2026-07-19T15:07:21.566Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:37:11.691Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 
@@ -41,13 +41,13 @@ _Условия: прочетено от JSON API-то на AppGallery (getTabDe
 ╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **1** · свободни: **46** · несигурни: **2**
+**Проверени разширения: 49** · заети: **1** · свободни: **33** · несигурни: **15**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „KCY Site Monitor". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 
 Заети (малко — оглед на съдържание и ниша):
 - **kcysitemonitor.so** → сайтът не отговаря
-Свободни: 46 (напр. kcysitemonitor.com, kcysitemonitor.net, kcysitemonitor.org, kcysitemonitor.co, kcysitemonitor.io, kcysitemonitor.ai, kcysitemonitor.app, kcysitemonitor.news …)
-Несигурни (RDAP без отговор + без DNS): kcysitemonitor.me, kcysitemonitor.ac
+Свободни: 33 (напр. kcysitemonitor.com, kcysitemonitor.net, kcysitemonitor.org, kcysitemonitor.ai, kcysitemonitor.app, kcysitemonitor.news, kcysitemonitor.media, kcysitemonitor.press …)
+Несигурни (RDAP без отговор + без DNS): kcysitemonitor.co, kcysitemonitor.io, kcysitemonitor.tv, kcysitemonitor.me, kcysitemonitor.biz, kcysitemonitor.wiki, kcysitemonitor.ink, kcysitemonitor.design, kcysitemonitor.club, kcysitemonitor.vip, kcysitemonitor.work, kcysitemonitor.fit, kcysitemonitor.health, kcysitemonitor.fashion, kcysitemonitor.ac
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

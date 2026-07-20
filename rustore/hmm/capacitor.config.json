@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.hmm.rustore",
-  "appName": "KCY Field Battle",
+  "appName": "Pupikes Field Battle",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

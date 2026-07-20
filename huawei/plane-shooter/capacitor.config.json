@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.planeshooter.hw",
-  "appName": "Plane Shooter",
+  "appName": "Warbird Rush",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

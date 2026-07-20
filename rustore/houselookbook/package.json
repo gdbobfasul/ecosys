@@ -2,7 +2,7 @@
   "name": "kcy-houselookbook",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Chat — мобилна обвивка (Capacitor WebView), която зарежда продукционния чат сървър (RUStore издание).",
+  "description": "Pupikes Chat — мобилна обвивка (Capacitor WebView), която зарежда продукционния чат сървър (RUStore издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

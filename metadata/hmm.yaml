@@ -1,5 +1,5 @@
 id: hmm
-name: Битка на терен HMM
+name: Pupikes Field Battle
 folders:
   - rustore/hmm
   - huawei/hmm
@@ -53,10 +53,10 @@ listings:
       • Best score is kept locally. Fully offline and free: no backend, no ads, no
         purchases, no tracking.
   bg:
-    title: Битка на терен HMM
+    title: Pupikes Field Battle
     short: Походова битка 3 срещу 3 с видео-анимации, познай комбото
     full: |
-      Битка на терен (HMM) е походова битка 3 срещу 3 с реални видео-анимации в стил
+      Pupikes Field Battle (HMM) е походова битка 3 срещу 3 с реални видео-анимации в стил
       Heroes of Might & Magic. На всяко ниво излизат произволни герои на жив анимиран терен.
 
       • Обикновени удари — бутоните V/B (0–20% щета).

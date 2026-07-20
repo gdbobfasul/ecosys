@@ -1,4 +1,4 @@
-# KCY Ecosystem — Deploy & Install Scripts
+# Pupikes — Deploy & Install Scripts
 
 ## ⭐ Бърз вход — интерактивно меню
 

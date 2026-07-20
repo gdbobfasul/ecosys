@@ -1,6 +1,6 @@
 # Проверка на име: KCY Ring Clash
 
-_2026-07-16T21:27:53.448Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:35:13.927Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **СРЕДЕН**
 - близки имена в App Store/марки (Ring Clash)
@@ -14,16 +14,16 @@ _Условия: търсено по думата „KCY Ring Clash" във ВС
 _Условия: търсено в App Store на 2 държави — САЩ (us) и Китай (cn), на английски по думата „KCY Ring Clash" (тип „software")._
 - Ring Clash — Rollic Games Oyun Yazilim ve Pazarlama Anonim Sirketi (Games)
 - Clash of Clans — Supercell Oy (Games)
-- Clash of Lords 2: Guild Castle — IGG SINGAPORE PTE. LTD. (Games)
+- Clash Royale — Supercell Oy (Games)
 - Glove Clash: Boxing Fight — Bulky Sports (Games)
-- Bitcoin Ring Breaker — MOBILE ESPORTS Sp. z o.o. (Games)
 - Merge Clash: Tower Defense — Block Puzzle Games Inc. (Games)
 - Rings. — Kamil Kucma (Games)
 - Ring Color Puzzle Match 3 Game — Xuan khac Vu (Games)
+- Bitcoin Ring Breaker — MOBILE ESPORTS Sp. z o.o. (Games)
 - KOF'98 UM OL- Collab — FingerFun (HK) Limited (Games)
-- Our Ring Finder — Nogirea AB (Health & Fitness)
 - Diamond Ring Chaser — Mintah Games Inc. (Games)
 - Clash of Kings: The West — Galaxy Play Technology Limited (Games)
+- Boxing - Fighting Clash — STEFAN MILOJKOVIC PR IMPERIUM MULTIMEDIA GAMES (Games)
 
 ## Huawei AppGallery
 **Намерени заглавия: 0** · точни съвпадения на името: **0**
@@ -42,11 +42,13 @@ _Условия: прочетено от JSON API-то на AppGallery (getTabDe
 ╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **0** · свободни: **46** · несигурни: **3**
+**Проверени разширения: 49** · заети: **1** · свободни: **46** · несигурни: **2**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „KCY Ring Clash". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
-Заети: няма.
-Свободни: 46 (напр. kcyringclash.com, kcyringclash.net, kcyringclash.org, kcyringclash.ai, kcyringclash.app, kcyringclash.news, kcyringclash.media, kcyringclash.press …)
-Несигурни (RDAP без отговор + без DNS): kcyringclash.co, kcyringclash.io, kcyringclash.me
+
+Заети (малко — оглед на съдържание и ниша):
+- **kcyringclash.so** → сайтът не отговаря
+Свободни: 46 (напр. kcyringclash.com, kcyringclash.net, kcyringclash.org, kcyringclash.co, kcyringclash.io, kcyringclash.ai, kcyringclash.app, kcyringclash.news …)
+Несигурни (RDAP без отговор + без DNS): kcyringclash.me, kcyringclash.ac
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

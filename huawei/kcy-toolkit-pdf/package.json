@@ -2,7 +2,7 @@
   "name": "kcy-toolkit-pdf-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Toolkit PDF — част от KCY Toolkit семейството (Huawei издание).",
+  "description": "Pupikes Toolkit PDF — част от Pupikes Toolkit семейството (Huawei издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -2,7 +2,7 @@
 // Конфигурация на токените за мониторинг (отделно за всеки). Адресите/RPC идват от
 // .env — докато токенът не е деплойнат, адресът е празен и индексаторът стои в готовност.
 // Всеки токен се пуска като ОТДЕЛЕН сървис с ОТДЕЛНА база (виж server.js / db.js).
-const NAMES = { token: 'KCY-meme-1', brch1: 'BeRicH 1', multisig: 'Multi-Sig Wallet' };
+const NAMES = { token: 'Pupikes-meme-1', brch1: 'BeRicH 1', multisig: 'Multi-Sig Wallet' };
 const DEFAULT_PORT = { token: 3020, brch1: 3021, multisig: 3022 };
 
 function isValidAddress(a) { return /^0x[a-fA-F0-9]{40}$/.test((a || '').trim()); }

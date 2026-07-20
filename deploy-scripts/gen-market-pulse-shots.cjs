@@ -1,4 +1,4 @@
-// gen-market-pulse-shots.cjs — реални скрийншоти на Market Pulse: минава ПРЕЗ целия поток
+// gen-market-pulse-shots.cjs — реални скрийншоти на Pupikes Market Pulse: минава ПРЕЗ целия поток
 // (интро → избор на език → legal-gate „екран 3" с отметка → табло → пазар → анализ) и снима.
 // Така е и END-TO-END тест на новия legal-gate стандарт. Пуска се СЛЕД `npm run build`.
 //   node deploy-scripts/gen-market-pulse-shots.cjs

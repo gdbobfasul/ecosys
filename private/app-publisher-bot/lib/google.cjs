@@ -3,14 +3,14 @@
 //     Това е „Google" частта за сблъсък на име на приложение (допълва Apple App Store + AppGallery).
 //   googleWeb(query) — опит за общо Google търсене; headless често дава consent/празно →
 //     при неуспех викащият пада към DuckDuckGo.
-const { loadPlaywright, ddg, norm } = require('./util.cjs');
+const { loadPlaywright, launchChromium, ddg, norm } = require('./util.cjs');
 
 async function googlePlay(name) {
   let pw;
   try { pw = loadPlaywright(); } catch (e) { return { ok: false, titles: [], note: e.message, exactish: [] }; }
   let browser;
   try {
-    browser = await pw.chromium.launch();
+    browser = await launchChromium(pw);
     const ctx = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36' });
     const page = await ctx.newPage();
     await page.goto('https://play.google.com/store/search?q=' + encodeURIComponent(name) + '&c=apps', { waitUntil: 'domcontentloaded', timeout: 25000 }).catch(() => {});
@@ -44,7 +44,7 @@ async function googleWeb(query, limit = 6) {
   try { pw = loadPlaywright(); } catch (_) { return ddg(query, limit); }
   let browser;
   try {
-    browser = await pw.chromium.launch();
+    browser = await launchChromium(pw);
     const ctx = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36' });
     const page = await ctx.newPage();
     await page.goto('https://www.google.com/search?q=' + encodeURIComponent(query) + '&num=10&hl=en', { waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {});

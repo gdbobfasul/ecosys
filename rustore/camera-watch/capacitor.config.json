@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.camerawatch.rustore",
-  "appName": "Камера-страж",
+  "appName": "MotionHawk",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

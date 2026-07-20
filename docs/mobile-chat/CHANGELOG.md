@@ -322,7 +322,7 @@ Bulgaria, Russia, Lithuania, Latvia, Estonia, Kyrgyzstan, USA, UK, Germany, Fran
 
 ### Payment
 - Stripe integration (€5/month EU, $5/month non-EU)
-- Crypto payments (300 KCY tokens)
+- Crypto payments (300 Pupikes tokens)
 - Auto-detection of user country
 
 ---

@@ -1,9 +1,9 @@
 # Проверка на име: Dodge Master
 
-_2026-07-03T21:39:08.854Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:35:04.108Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **СРЕДЕН**
-- съвпадение в AppGallery
+- близки имена в App Store/марки (Dodge®, DodgeMaster K)
 
 ## Търговска марка — TMview (ЕС/Китай/Русия/България/САЩ + др.)
 **Намерени марки: 1** · точни съвпадения на името: **0** · точни в релевантен клас (9/38/41/42): **0**
@@ -14,41 +14,47 @@ _Условия: търсено по думата „Dodge Master" във ВСИ
 | DODGE RAM TOOLMASTER | US | 12 | CHRYSLER LLC | Ended |
 
 ## Apple App Store (iTunes Search)
-**Намерени приложения: 13** · точни съвпадения на името: **0** · подобни (съдържат името): **2**
+**Намерени приложения: 11** · точни съвпадения на името: **0** · подобни (съдържат името): **2**
 _Условия: търсено в App Store на 2 държави — САЩ (us) и Китай (cn), на английски по думата „Dodge Master" (тип „software")._
 - Slow Mo' Run — SUPERSONIC STUDIOS LTD (Games)
-- RACE THE SUN CHALLENGE EDITION — FlippFly LLC (Games)
 - Dodge Action 3D — Lion Studios LLC (Games)
+- RACE THE SUN CHALLENGE EDITION — FlippFly LLC (Games)
 - Ultimate Dodgeball 3D — SVC Games inc. (Games)
 - Dodge Agent — Lion Studios LLC (Games)
 - Doge Car — jared ward (Games)
-- Dodge The Ball 3D — ALICTUS YAZILIM A.S. (Games)
-- Vector: Parkour Run — Nekki Limited (Games)
 - Dodge® — FCA US LLC (Lifestyle)
+- Dodge The Ball 3D — ALICTUS YAZILIM A.S. (Games)
 - DodgeMaster K — GANA Holdings Co., Ltd. (Games)
-- Duel Master - Pistol Fight — DOGSTER TECHNOLOGIES PRIVATE LIMITED (Games)
 - Dodge Giant - Emergency Runner — Hanh Dao Duc (Games)
+- Block Master - The Block Dodger — Ravneet Nagpal (Games)
 
 ## Huawei AppGallery
-**Намерени заглавия: 95** · точни съвпадения на името: **1**
+**Намерени заглавия: 0** · точни съвпадения на името: **0**
 _Условия: прочетено от JSON API-то на AppGallery (getTabDetail, всички AJAX страници при скролване), глобално по думата „Dodge Master". Резултатите са РАЗМИТИ (свързани/препоръчани приложения), затова значение има само ТОЧНОТО съвпадение на името._
-→ Dodge Master!, Perfect Shape Pass, Puzzle Mini Game, PDF Reader-Pdf Viewer, Balloon Pop, пасьянс маджонг, Lock Master, Bus Master, AppLock Master, all games Rolling, 456 Проблемы выживания, street racing master, Симулятор вождения по бездорожью, гта выживание игры, Car Driving Test Sim, Календар, настоящая гоночная игра, CRAFT MASTER, Runner Racing, Gun Shooting War, Ultimate racing, Obst Kampf, Moto Rush Race, Notepad Master, Игры для детей на английском … (+70 още)
+→ Няма резултати (или регионално блокирано) — провери ръчно: https://appgallery.huawei.com/search/Dodge%20Master
 
 ## Google Play (Android)
-**Намерени приложения: 15** · възможни съвпадения на името: **0**
-_Условия: търсено в Google Play (уеб), на английски, по думата „Dodge Master" (без конкретна държава)._
-→ Dodge Agent and Hop MasterWeave Games · Car Dodge MasterKanpep CK · Minion MastersBetadwarf · Dodge Dodge GoSnow Dragon Games · Race Master 3D: Car RacingBeresnev Games4.2star · DragonMaster - Metaverse gameMagic Hat Studio · Forge MasterLessmore GmbH · Dodge AgentLion Studios3.7star · Yu-Gi-Oh! Master DuelKONAMI4.0star · Mafia GO - Dice MasterWhaleApp LTD · Match MastersCandivore4.7star · Lumi MasterBILIBILI · Tycoon MasterIGG.COM · League of Masters: Auto ChessActionPay · Queens Master: Sudoku PuzzleKwalee Ltd5.0star
+**Намерени приложения: 0** (не успях автоматично: browserType.launch: Executable doesn't exist at C:\Users\ai-ag\AppData\Local\ms-playwright\chromium_headless_shell-1223\chrome-headless-shell-win64\chrome-headless-shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     npx playwright install                                 ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **3** · свободни: **42** · несигурни: **4**
+**Проверени разширения: 49** · заети: **4** · свободни: **43** · несигурни: **2**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „Dodge Master". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 
 Заети (малко — оглед на съдържание и ниша):
 - **dodgemaster.com** → няма достъпно съдържание (HTTP 200)
 - **dodgemaster.net** → нишата неясна
 - **dodgemaster.online** — "DODGE MASTER" → нишата неясна
-Свободни: 42 (напр. dodgemaster.org, dodgemaster.co, dodgemaster.io, dodgemaster.ai, dodgemaster.app, dodgemaster.news, dodgemaster.media, dodgemaster.press …)
-Несигурни (RDAP без отговор + без DNS): dodgemaster.me, dodgemaster.so, dodgemaster.ac, dodgemaster.cx
+- **dodgemaster.so** → сайтът не отговаря
+Свободни: 43 (напр. dodgemaster.org, dodgemaster.co, dodgemaster.io, dodgemaster.ai, dodgemaster.app, dodgemaster.news, dodgemaster.media, dodgemaster.press …)
+Несигурни (RDAP без отговор + без DNS): dodgemaster.me, dodgemaster.ac
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

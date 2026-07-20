@@ -1,4 +1,4 @@
-# Тестване — Цена-робот (RUStore)
+# Тестване — Pupikes Market Pulse (RUStore)
 
 ## В браузър (без Android SDK)
 1. `npm install`

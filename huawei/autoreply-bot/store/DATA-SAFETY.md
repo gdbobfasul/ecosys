@@ -1,4 +1,4 @@
-# Data Safety — KCY Auto Answer (Huawei AppGallery)
+# Data Safety — Pupikes Auto Answer (Huawei AppGallery)
 
 **Сбор на данни:** НЯМА.
 **Споделяне на данни:** НЯМА.

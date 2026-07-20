@@ -1,0 +1,52 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="padMain" cx="0.42" cy="0.35" r="0.85">
+      <stop offset="0"    stop-color="#B07A4E"/>
+      <stop offset="0.55" stop-color="#8A5A32"/>
+      <stop offset="1"    stop-color="#5E3B20"/>
+    </radialGradient>
+    <radialGradient id="toe" cx="0.40" cy="0.32" r="0.9">
+      <stop offset="0"   stop-color="#C08A5A"/>
+      <stop offset="0.6" stop-color="#93613A"/>
+      <stop offset="1"   stop-color="#603A1F"/>
+    </radialGradient>
+    <linearGradient id="claw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3A2414"/>
+      <stop offset="1" stop-color="#20140A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer centring transform for the whole composition -->
+  <g transform="translate(12 -12)">
+
+    <!-- ===== TOES (original left-fan, 9 -> 12 o'clock), each with a claw ===== -->
+    <g transform="translate(300 520) rotate(-64)">
+      <path d="M0 -70 C 34 -70, 52 -34, 52 8 C 52 44, 30 66, 0 66 C -30 66, -52 44, -52 8 C -52 -34, -34 -70, 0 -70 Z" fill="url(#toe)"/>
+      <path d="M-6 -74 C -14 -96, -4 -112, 8 -104 C 2 -96, 0 -84, 4 -72 Z" fill="url(#claw)"/>
+    </g>
+    <g transform="translate(372 402) rotate(-42)">
+      <path d="M0 -74 C 34 -74, 54 -36, 54 8 C 54 46, 30 70, 0 70 C -30 70, -54 46, -54 8 C -54 -36, -34 -74, 0 -74 Z" fill="url(#toe)"/>
+      <path d="M-5 -78 C -13 -101, -2 -117, 9 -108 C 3 -100, 1 -88, 5 -76 Z" fill="url(#claw)"/>
+    </g>
+    <g transform="translate(486 344) rotate(-20)">
+      <path d="M0 -76 C 35 -76, 56 -37, 56 9 C 56 48, 31 72, 0 72 C -31 72, -56 48, -56 9 C -56 -37, -35 -76, 0 -76 Z" fill="url(#toe)"/>
+      <path d="M-4 -80 C -11 -104, 0 -120, 10 -110 C 4 -102, 3 -90, 6 -78 Z" fill="url(#claw)"/>
+    </g>
+    <g transform="translate(612 340) rotate(2)">
+      <path d="M0 -74 C 34 -74, 54 -36, 54 8 C 54 46, 30 70, 0 70 C -30 70, -54 46, -54 8 C -54 -36, -34 -74, 0 -74 Z" fill="url(#toe)"/>
+      <path d="M-3 -78 C -9 -102, 2 -117, 12 -107 C 6 -99, 5 -87, 7 -76 Z" fill="url(#claw)"/>
+    </g>
+
+    <!-- ===== MAIN PAD moved up + right for symmetry under the toes ===== -->
+    <g transform="translate(590 610)">
+      <path d="M0 -160
+               C -120 -160, -205 -92, -205 6
+               C -205 92, -150 168, -70 196
+               C -30 210, 30 210, 70 196
+               C 150 168, 205 92, 205 6
+               C 205 -92, 120 -160, 0 -160 Z"
+            fill="url(#padMain)"/>
+    </g>
+
+  </g>
+</svg>

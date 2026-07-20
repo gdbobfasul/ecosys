@@ -26,6 +26,6 @@ export const THEME = {
   heroEdge: 0xffe0b0,
 
   // Заглавие на менюто
-  titleText: 'TITANS FIGHT',
+  titleText: 'GODFIST ARENA',
   titleSub: 'RUStore Edition'
 };

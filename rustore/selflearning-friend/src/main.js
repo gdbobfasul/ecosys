@@ -1,4 +1,4 @@
-// Version: 1.0016
+// Version: 1.0032
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -7,8 +7,8 @@ import { mountHelp } from './core/help.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
-mountEcosystem('selflearning-friend'); // „Още от KCY Ecosystem" showcase
-playIntro(); // кратко „KCY Ecosystem" интро при старт
+mountEcosystem('selflearning-friend'); // „Още от Pupikes" showcase
+playIntro(); // кратко „Pupikes" интро при старт
 startPromoAds('selflearning-friend'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('selflearning-friend'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('selflearning-friend'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт

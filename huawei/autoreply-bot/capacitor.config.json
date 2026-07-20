@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.autoreplybot.hw",
-  "appName": "KCY Auto Answer",
+  "appName": "Pupikes Auto Answer",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

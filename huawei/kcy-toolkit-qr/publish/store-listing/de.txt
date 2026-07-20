@@ -1,4 +1,4 @@
-KCY Toolkit QR — QR-Codes erstellen und lesen.
+Pupikes Toolkit QR — QR-Codes erstellen und lesen.
 
 Praktische Offline-Tools — alles läuft auf dem Gerät.
 

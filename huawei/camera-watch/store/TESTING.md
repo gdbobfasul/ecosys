@@ -1,4 +1,4 @@
-# Камера-страж — тестов сценарий (AppGallery ревю)
+# MotionHawk — тестов сценарий (AppGallery ревю)
 
 App ID: `com.kcy.camerawatch.huawei`
 

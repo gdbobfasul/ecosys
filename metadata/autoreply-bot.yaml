@@ -1,5 +1,5 @@
 id: autoreply-bot
-name: Auto-Reply Bot
+name: Pupikes Auto Answer
 folders:
   - rustore/autoreply-bot
   - huawei/autoreply-bot
@@ -23,10 +23,10 @@ website: https://bgmasters.net
 
 listings:
   ru:
-    title: Auto-Reply Bot
+    title: Pupikes Auto Answer
     short: Робот, который автоотвечает на сообщения по правилам — офлайн, в песочнице
     full: |
-      Auto-Reply Bot — «робот в аренду», который автоматически отвечает на сообщения
+      Pupikes Auto Answer — «робот в аренду», который автоматически отвечает на сообщения
       по вашим правилам, полностью на устройстве. Без интернета, без контактов, без
       доступа к SMS, без аккаунтов и без отслеживания.
 
@@ -38,10 +38,10 @@ listings:
       Android не разрешает сторонним приложениям автоматизировать чужие мессенджеры/SMS,
       поэтому робот работает в собственной песочнице внутри приложения.
   en:
-    title: Auto-Reply Bot
+    title: Pupikes Auto Answer
     short: A robot that auto-replies to messages by rules — offline, sandboxed
     full: |
-      Auto-Reply Bot is a "robot for rent" that automatically answers messages by your
+      Pupikes Auto Answer is a "robot for rent" that automatically answers messages by your
       rules, entirely on-device. No internet, no contacts, no SMS access, no accounts,
       no tracking.
 
@@ -53,10 +53,10 @@ listings:
       Android does not let third-party apps automate other messengers/SMS, so the robot
       runs inside its own sandbox in the app.
   bg:
-    title: Auto-Reply Bot
+    title: Pupikes Auto Answer
     short: Робот, който авто-отговаря на съобщения по правила — офлайн, в пясъчник
     full: |
-      Auto-Reply Bot е „робот под наем", който автоматично отговаря на съобщения по
+      Pupikes Auto Answer е „робот под наем", който автоматично отговаря на съобщения по
       твои правила, изцяло на устройството. Без интернет, без контакти, без достъп до
       SMS, без акаунти и без проследяване.
 

@@ -2,7 +2,7 @@
   "name": "plane-shooter-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "Plane Shooter - 2D arcade shooter (RUStore build). Self-contained Phaser 3 + Capacitor game.",
+  "description": "Warbird Rush - 2D arcade shooter (RUStore build). Self-contained Phaser 3 + Capacitor game.",
   "type": "module",
   "scripts": {
     "dev": "vite",

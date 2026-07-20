@@ -129,7 +129,7 @@ async function generateScreenshots(appDir, opts = {}) {
       const init = initFor(screen, cfg, lang, rss);
       await page.addInitScript((d) => {
         try { localStorage.clear(); } catch (e) {}
-        try { window.__KCY_INTRO_OFF__ = true; } catch (e) {}   // без „KCY Ecosystem" интро в снимките
+        try { window.__KCY_INTRO_OFF__ = true; } catch (e) {}   // без „Pupikes" интро в снимките
         // legal-gate („екран 3") пази съгласието в kcy.legal.<ап>.v1 — ап-идентификаторът не е
         // известен тук, затова прихващаме проверката. Снимките показват приложението, не портала;
         // самият портал остава задължителен в реалния ап (и има отделна снимка при market-pulse).

@@ -1,5 +1,5 @@
 // Version: 1.0173
-// KCY Ecosystem — Diag Helper Service
+// Pupikes — Diag Helper Service
 //
 // Малка standalone услуга която:
 //   • Регенерира diagnostic логовете когато admin-status страницата ги поиска
@@ -104,7 +104,7 @@ const server = http.createServer(async (req, res) => {
             const LOG_DIR = '/var/www/html/last-errors';
             try {
                 const files = fs.readdirSync(LOG_DIR).filter(f => f.endsWith('.log') || f === 'status.json').sort();
-                let out = `KCY Diagnostics Bundle\nGenerated: ${new Date().toISOString()}\nHostname: ${require('os').hostname()}\n\n`;
+                let out = `Pupikes Diagnostics Bundle\nGenerated: ${new Date().toISOString()}\nHostname: ${require('os').hostname()}\n\n`;
                 for (const f of files) {
                     out += `═══════════════════════════════════════════════════\n`;
                     out += `  ${f}\n`;

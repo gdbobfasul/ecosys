@@ -2,7 +2,7 @@
   "name": "titans-fight-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "Titans Fight - 2D fighting game (Huawei AppGallery build). Self-contained Phaser 3 + Capacitor game. No GMS/HMS required.",
+  "description": "Godfist Arena - 2D fighting game (Huawei AppGallery build). Self-contained Phaser 3 + Capacitor game. No GMS/HMS required.",
   "type": "module",
   "scripts": {
     "dev": "vite",

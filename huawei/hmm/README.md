@@ -1,7 +1,7 @@
-# Битка на терен (HMM) — Huawei AppGallery издание
+# Pupikes Field Battle (HMM) — Huawei AppGallery издание
 
 Самостоятелна походова битка 3 срещу 3 с реални видео-анимации (Heroes of Might &
-Magic стил). Вградена (vendored) версия на браузърната игра от KCY — **без backend,
+Magic стил). Вградена (vendored) версия на браузърната игра от Pupikes — **без backend,
 без IAP, без реклами, без tracking, без HMS, напълно offline и безплатна**.
 
 - App ID: `com.kcy.hmm.huawei`

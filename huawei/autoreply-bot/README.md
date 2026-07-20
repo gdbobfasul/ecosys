@@ -1,4 +1,4 @@
-# KCY Auto Answer — Huawei AppGallery Edition
+# Pupikes Auto Answer — Huawei AppGallery Edition
 
 „Робот под наем", който автоматично отговаря на съобщения по твои правила — **изцяло на устройството**.
 

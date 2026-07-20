@@ -1,6 +1,6 @@
 # Проверка на име: KCY Routine Planner
 
-_2026-07-16T21:28:21.979Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:37:55.089Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 
@@ -15,14 +15,14 @@ _Условия: търсено в App Store на 2 държави — САЩ (u
 - Digital Planner – Task Journal — TULSTAIL, OOO (Productivity)
 - Structured: Daily Planner Todo — unorderly GmbH (Productivity)
 - Me+ Lifestyle Routine — ENERJOY PTE. LTD. (Health & Fitness)
-- TimeBloc - Daily Planner — Kodeon, Inc. (Productivity)
-- Dear Me: Daily Routine Tracker — Fitself Dijital Hizmetler Anonim Sirketi (Health & Fitness)
-- Any.do: To do list & Planner — Any.DO inc. (Productivity)
 - 2026 Planner & Agenda - Floret — Akash Jain (Productivity)
+- Any.do: To do list & Planner — Any.DO inc. (Productivity)
 - Planner Pro - Daily Planner — Hangzhou Beesoft Information Technology Co., Ltd. (Productivity)
 - Calendars: Schedule Planner — Readdle Technologies Limited (Productivity)
+- Dear Me: Daily Routine Tracker — Fitself Dijital Hizmetler Anonim Sirketi (Health & Fitness)
 - AJournal - Planner & Journal — WonderApps AB (Lifestyle)
 - Routine Planner, Habit Tracker — Routinery Corp. (Productivity)
+- 24me: Calendar・Planner & To Do — 24me Ltd (Productivity)
 
 ## Huawei AppGallery
 **Намерени заглавия: 0** · точни съвпадения на името: **0**
@@ -41,13 +41,13 @@ _Условия: прочетено от JSON API-то на AppGallery (getTabDe
 ╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **1** · свободни: **44** · несигурни: **4**
+**Проверени разширения: 49** · заети: **1** · свободни: **32** · несигурни: **16**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „KCY Routine Planner". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 
 Заети (малко — оглед на съдържание и ниша):
 - **kcyroutineplanner.so** → сайтът не отговаря
-Свободни: 44 (напр. kcyroutineplanner.com, kcyroutineplanner.net, kcyroutineplanner.org, kcyroutineplanner.ai, kcyroutineplanner.app, kcyroutineplanner.news, kcyroutineplanner.media, kcyroutineplanner.press …)
-Несигурни (RDAP без отговор + без DNS): kcyroutineplanner.co, kcyroutineplanner.io, kcyroutineplanner.me, kcyroutineplanner.ac
+Свободни: 32 (напр. kcyroutineplanner.com, kcyroutineplanner.net, kcyroutineplanner.org, kcyroutineplanner.ai, kcyroutineplanner.app, kcyroutineplanner.news, kcyroutineplanner.media, kcyroutineplanner.press …)
+Несигурни (RDAP без отговор + без DNS): kcyroutineplanner.co, kcyroutineplanner.io, kcyroutineplanner.tv, kcyroutineplanner.me, kcyroutineplanner.biz, kcyroutineplanner.wiki, kcyroutineplanner.ink, kcyroutineplanner.design, kcyroutineplanner.club, kcyroutineplanner.vip, kcyroutineplanner.work, kcyroutineplanner.fit, kcyroutineplanner.health, kcyroutineplanner.fashion, kcyroutineplanner.us, kcyroutineplanner.ac
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

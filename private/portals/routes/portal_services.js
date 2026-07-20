@@ -1,4 +1,4 @@
-// KCY Portals — Portal Services routes (НОВ файл — не пипа services.js)
+// Pupikes Portals — Portal Services routes (НОВ файл — не пипа services.js)
 // Version: 1.0158
 // 7 услуги БЕЗ изкуствен интелект. Повечето работят изцяло в браузъра.
 // Само "crypto" има нужда от backend — за валутните курсове.
@@ -44,7 +44,7 @@ let ratesCache = { data: null, ts: 0 };
 
 function fetchJSON(url) {
     return new Promise((resolve, reject) => {
-        https.get(url, { headers: { 'User-Agent': 'KCY-Portals' } }, (r) => {
+        https.get(url, { headers: { 'User-Agent': 'Pupikes-Portals' } }, (r) => {
             let body = '';
             r.on('data', (c) => { body += c; });
             r.on('end', () => {
@@ -107,7 +107,7 @@ function fetchCMC(apiKey) {
         const opts = {
             host: 'pro-api.coinmarketcap.com',
             path: '/v1/cryptocurrency/listings/latest?limit=300&sort=market_cap',
-            headers: { 'X-CMC_PRO_API_KEY': apiKey, 'Accept': 'application/json', 'User-Agent': 'KCY-Portals' },
+            headers: { 'X-CMC_PRO_API_KEY': apiKey, 'Accept': 'application/json', 'User-Agent': 'Pupikes-Portals' },
         };
         https.get(opts, (r) => {
             let body = '';

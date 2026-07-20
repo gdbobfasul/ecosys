@@ -1,4 +1,4 @@
-KCY Toolkit PDF — Juntar, dividir, marca d’água · Rasteriza páginas para reduzir o tamanho · Extrai o texto para um arquivo .docx.
+Pupikes Toolkit PDF — Juntar, dividir, marca d’água · Rasteriza páginas para reduzir o tamanho · Extrai o texto para um arquivo .docx.
 
 Ferramentas offline úteis — tudo roda no dispositivo.
 

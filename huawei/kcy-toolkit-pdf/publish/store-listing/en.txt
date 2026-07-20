@@ -1,4 +1,4 @@
-KCY Toolkit PDF — Merge, split, watermark · Rasterizes pages for a smaller size · Extracts the text into a .docx file.
+Pupikes Toolkit PDF — Merge, split, watermark · Rasterizes pages for a smaller size · Extracts the text into a .docx file.
 
 Handy offline tools — everything runs on your device.
 

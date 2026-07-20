@@ -1,9 +1,9 @@
 # huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
-# Приложение: KCY Auto Answer (huawei издание). Генерирано от AppPublisherBot.
+# Приложение: Pupikes Auto Answer (huawei издание). Генерирано от AppPublisherBot.
 
 [Set basic app information]
 App type: App (приложение, НЕ игра)
-App name: KCY Auto Answer            # 15 / 30 знака
+App name: Pupikes Auto Answer            # 15 / 30 знака
 App package name: com.kcy.autoreplybot.hw   # 23 / 128 знака
 Level-1 app category: Communication
 

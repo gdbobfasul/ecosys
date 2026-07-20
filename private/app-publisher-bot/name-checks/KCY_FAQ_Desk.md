@@ -1,6 +1,6 @@
 # Проверка на име: KCY FAQ Desk
 
-_2026-07-16T21:27:45.622Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:34:42.659Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 
@@ -11,16 +11,16 @@ _Условия: търсено по думата „KCY FAQ Desk" във ВСИ
 ## Apple App Store (iTunes Search)
 **Намерени приложения: 10** · точни съвпадения на името: **0** · подобни (съдържат името): **0**
 _Условия: търсено в App Store на 2 държави — САЩ (us) и Китай (cn), на английски по думата „KCY FAQ Desk" (тип „software")._
+- KMBC 9 News - Kansas City — Hearst Television (News)
 - KCTV5 News — Gray Television Group, Inc. (News)
 - Clearooms Desk Booking — Clearooms Limited (Business)
-- myKCMO — City of Kansas City, MO (Utilities)
-- KU Admissions Guidebook — The University of Kansas (Business)
-- Desky — Desky Pty Ltd (Utilities)
+- The Daily Desk — The Daily Desk, LLC (Productivity)
+- 94.9 KCMO — Cumulus Media (Music)
 - Bartlesville Radio — KCD Enterprises (Music)
-- Broadway in Kansas City — John Gore Theatrical Group, Inc. (Entertainment)
 - KCMO 710 AM — Cumulus Media (News)
 - floorsense — Agile Workspace Limited (Business)
 - 96.7 KCMQ — Zimmer Radio Group (Music)
+- Mix 93.3 KC — WPNT Media Subsidiary, LLC (Music)
 
 ## Huawei AppGallery
 **Намерени заглавия: 0** · точни съвпадения на името: **0**
@@ -39,13 +39,13 @@ _Условия: прочетено от JSON API-то на AppGallery (getTabDe
 ╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **1** · свободни: **46** · несигурни: **2**
+**Проверени разширения: 49** · заети: **1** · свободни: **44** · несигурни: **4**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „KCY FAQ Desk". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 
 Заети (малко — оглед на съдържание и ниша):
 - **kcyfaqdesk.so** → сайтът не отговаря
-Свободни: 46 (напр. kcyfaqdesk.com, kcyfaqdesk.net, kcyfaqdesk.org, kcyfaqdesk.co, kcyfaqdesk.io, kcyfaqdesk.ai, kcyfaqdesk.app, kcyfaqdesk.news …)
-Несигурни (RDAP без отговор + без DNS): kcyfaqdesk.me, kcyfaqdesk.ac
+Свободни: 44 (напр. kcyfaqdesk.com, kcyfaqdesk.net, kcyfaqdesk.org, kcyfaqdesk.ai, kcyfaqdesk.app, kcyfaqdesk.news, kcyfaqdesk.media, kcyfaqdesk.press …)
+Несигурни (RDAP без отговор + без DNS): kcyfaqdesk.co, kcyfaqdesk.io, kcyfaqdesk.me, kcyfaqdesk.ac
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

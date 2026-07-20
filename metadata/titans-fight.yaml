@@ -1,5 +1,5 @@
 id: titans-fight
-name: Titans Fight
+name: Godfist Arena
 folders:
   - rustore/titans-fight
   - huawei/titans-fight
@@ -23,10 +23,10 @@ website: https://bgmasters.net
 
 listings:
   ru:
-    title: Titans Fight
+    title: Godfist Arena
     short: "2D файтинг: два титана, арсенал оружия, 10 уровней"
     full: |
-      Titans Fight — 2D файтинг, где два титана бьются на 10 уровнях растущей сложности.
+      Godfist Arena — 2D файтинг, где два титана бьются на 10 уровнях растущей сложности.
       Сражайся против всё более умного и агрессивного ИИ, открывай новое оружие и
       продвигайся к финалу.
 
@@ -39,10 +39,10 @@ listings:
       • Полностью офлайн: вся графика сгенерирована в коде, без рекламы и покупок.
         Прогресс хранится только на устройстве.
   en:
-    title: Titans Fight
+    title: Godfist Arena
     short: "2D fighting: two titans, a weapon arsenal, 10 levels"
     full: |
-      Titans Fight is a 2D fighting game where two titans clash across 10 levels of
+      Godfist Arena is a 2D fighting game where two titans clash across 10 levels of
       rising difficulty. Battle an ever smarter and more aggressive AI, unlock new
       weapons and push toward the finale.
 
@@ -55,10 +55,10 @@ listings:
       • Fully offline: all graphics are generated in code, no ads, no purchases. Progress
         stays on your device only.
   bg:
-    title: Titans Fight
+    title: Godfist Arena
     short: "2D файтинг: два титана, арсенал оръжия, 10 нива"
     full: |
-      Titans Fight е 2D файтинг, в който два титана се бият на 10 нива с нарастваща
+      Godfist Arena е 2D файтинг, в който два титана се бият на 10 нива с нарастваща
       трудност. Бий се срещу все по-умен и по-агресивен AI, отключвай нови оръжия и
       върви към финала.
 

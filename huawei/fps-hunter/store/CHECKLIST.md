@@ -1,4 +1,4 @@
-# Huawei AppGallery — Чеклист за подаване (FPS Hunter)
+# Huawei AppGallery — Чеклист за подаване (Huntline 3D)
 
 ## Ресурси (генерирай от `src/branding.svg.js`)
 - [ ] Икона 512x512 PNG (от `iconSVG(512)`, рендирай SVG -> PNG).
@@ -13,7 +13,7 @@
 - Splash фон: `#08120c` (съвпада с `capacitor.config.json` backgroundColor) — акцент `#66bb6a`.
 
 ## Метаданни
-- [ ] Заглавие: FPS Hunter
+- [ ] Заглавие: Huntline 3D
 - [ ] Кратко + пълно описание (виж `LISTING.md`)
 - [ ] Категория: Games / Action (Shooter)
 - [ ] Възрастов рейтинг: 12+

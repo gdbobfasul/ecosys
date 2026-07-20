@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.pricewatchbot.hw",
-  "appName": "KCY Toolkit Price Watch",
+  "appName": "Pupikes Toolkit Price Watch",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "android": {

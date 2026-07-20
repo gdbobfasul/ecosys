@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const STORE = join(ROOT, 'store');
 const ACCENT = '#10b981'; // Huawei акцент (тюркоаз)
-const APP_TITLE = 'Самообучаващ се приятел';
+const APP_TITLE = 'Pupikes Learning Buddy';
 
 function hexToRgb(hex) {
   const h = hex.replace('#', '');

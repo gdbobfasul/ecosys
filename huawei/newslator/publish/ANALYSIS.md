@@ -1,6 +1,6 @@
 # Проверка на име: NewsLator
 
-_2026-07-03T21:43:08.456Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:37:19.013Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 
@@ -9,40 +9,45 @@ _2026-07-03T21:43:08.456Z — твърди сигнали: App Store, TMview, д
 _Условия: търсено по думата „NewsLator" във ВСИЧКИ ведомства (ЕС/Китай/Русия/България/САЩ + 70+ др.), без филтър по клас. „Релевантен клас" = 9/38/41/42 (софтуер/предаване/новини/SaaS)._
 
 ## Apple App Store (iTunes Search)
-**Намерени приложения: 11** · точни съвпадения на името: **0** · подобни (съдържат името): **0**
+**Намерени приложения: 10** · точни съвпадения на името: **0** · подобни (съдържат името): **0**
 _Условия: търсено в App Store на 2 държави — САЩ (us) и Китай (cn), на английски по думата „NewsLator" (тип „software")._
 - Newslater: Personal newsletter — Asa Harland (Productivity)
 - The Guardian - US & World News — Guardian News & Media Ltd (News)
-- PressReader: News & Magazines — PressReader Inc (News)
 - Reuters - Breaking World News — Thomson Reuters Enterprise Centre GmbH (News)
 - Google News — Google LLC (News)
-- Daily Mail: Breaking News — dmg media ltd (News)
+- PressReader: News & Magazines — PressReader Inc (News)
+- TOI Breaking News App & ePaper — Times Internet Limited (News)
 - AP News — The Associated Press (News)
+- Scripps News — Media Convergence Group, Inc. (News)
 - Opera News: Breaking & Local — Opera Norway AS (News)
-- NewsBlur — NewsBlur, Inc. (News)
-- USA News Updates — MONETIZEGO LTD (Entertainment)
 - NewsNation: Unbiased News — Nexstar Broadcasting, Inc. (News)
 
 ## Huawei AppGallery
-**Намерени заглавия: 97** · точни съвпадения на името: **0**
+**Намерени заглавия: 0** · точни съвпадения на името: **0**
 _Условия: прочетено от JSON API-то на AppGallery (getTabDetail, всички AJAX страници при скролване), глобално по думата „NewsLator". Резултатите са РАЗМИТИ (свързани/препоръчани приложения), затова значение има само ТОЧНОТО съвпадение на името._
-→ NewSpaper Boy, Newspapers Delivery Boy, Jang Newspaper, Sky News Arabia, Roya News, Netease News, GMA News, Newspapers -local & world news, News Africa, Geo News, News App, iFeng News, PressReader, The Star ePaper, NewssQ - местни новини, световни новини, последни новини, XINHUA NEWS, Newspaper Reader, Nasa News, GB News, IPL News, Aleph News, Weather News Pro, Tech News, China News, World News … (+72 още)
+→ Няма резултати (или регионално блокирано) — провери ръчно: https://appgallery.huawei.com/search/NewsLator
 
 ## Google Play (Android)
-**Намерени приложения: 13** · възможни съвпадения на името: **0**
-_Условия: търсено в Google Play (уеб), на английски, по думата „NewsLator" (без конкретна държава)._
-→ Newslater: Personal newsletterHatch Software · Newsletter.ist - Reading Appnewsletter.ist · Google News - Daily HeadlinesGoogle LLC4.2star · Kagi NewsKagi Inc. · Reuters - Breaking World NewsThomson Reuters · NewsSQ – USA NewspapersSM techq - news apps · Haystack News: Local TV NewsHaystack News2.6star · Breaking News: Local & AlertsBeloud.com4.4star · Newsgram: Smart News with AIMVSOFT. · NewsMaker 23NewsMaker 23 · Sky News ArabiaSky News Arabia FZ LLC · Tessera News - RSS ReaderArchbox · PressReader: News & MagazinesPressReader Inc.
+**Намерени приложения: 0** (не успях автоматично: browserType.launch: Executable doesn't exist at C:\Users\ai-ag\AppData\Local\ms-playwright\chromium_headless_shell-1223\chrome-headless-shell-win64\chrome-headless-shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     npx playwright install                                 ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **3** · свободни: **32** · несигурни: **14**
+**Проверени разширения: 49** · заети: **3** · свободни: **30** · несигурни: **16**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „NewsLator". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 
 Заети (малко — оглед на съдържание и ниша):
 - **newslator.com** → нишата неясна
 - **newslator.org** → нишата неясна
 - **newslator.so** → сайтът не отговаря
-Свободни: 32 (напр. newslator.net, newslator.co, newslator.io, newslator.ai, newslator.app, newslator.news, newslator.media, newslator.press …)
-Несигурни (RDAP без отговор + без DNS): newslator.tv, newslator.me, newslator.biz, newslator.wiki, newslator.ink, newslator.design, newslator.club, newslator.vip, newslator.work, newslator.fit, newslator.health, newslator.fashion, newslator.us, newslator.ac
+Свободни: 30 (напр. newslator.net, newslator.ai, newslator.app, newslator.news, newslator.media, newslator.press, newslator.live, newslator.xyz …)
+Несигурни (RDAP без отговор + без DNS): newslator.co, newslator.io, newslator.tv, newslator.me, newslator.biz, newslator.wiki, newslator.ink, newslator.design, newslator.club, newslator.vip, newslator.work, newslator.fit, newslator.health, newslator.fashion, newslator.us, newslator.ac
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>Наблюдавай 20 валути и криптовалути | KCY услуги</title>
+<title>Наблюдавай 20 валути и криптовалути | Pupikes услуги</title>
 <style>
   :root { --pri:#2a86d8; --sec:#6ec1e4; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -319,7 +319,7 @@ function notify(idx, rate, a, up){
   var msg='Слот #'+(idx+1)+' ('+label+') '+dir+fmtRate(a.val)+' — текущо '+fmtRate(rate);
   try{
     if('Notification' in window && Notification.permission==='granted'){
-      new Notification('KCY — праг пресечен', { body: msg });
+      new Notification('Pupikes — праг пресечен', { body: msg });
     }
   }catch(e){}
   setStatus(msg);

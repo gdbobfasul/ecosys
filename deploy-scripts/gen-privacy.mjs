@@ -10,7 +10,7 @@
 // (08-setup-domain.sh ги копира от */publish/*-privacy.html в /var/www/html/privacy/<app>/).
 //
 // Съдържанието НЕ е сляпо копие — всяко приложение описва РЕАЛНИТЕ си потоци (проверени в кода):
-// универсалният слой KCY (анонимен доклад към selflearning.bot.nu + сваляне на промо каталог +
+// универсалният слой Pupikes (анонимен доклад към selflearning.bot.nu + сваляне на промо каталог +
 // вградена самореклама), плюс конкретните трети страни/разрешения на всяко приложение.
 //
 // Пускане:  node deploy-scripts/gen-privacy.mjs
@@ -25,7 +25,7 @@ const EFFECTIVE = '2026-07-12';
 const CONTACT = 'dai.group.ltd.support@gmail.com';
 const PROVIDER = 'Dai Grup Ltd.';
 
-// ── Универсални трети страни (важат за ВСЯКО приложение заради общия слой KCY) ────────────────
+// ── Универсални трети страни (важат за ВСЯКО приложение заради общия слой Pupikes) ────────────────
 function kcyRows() {
   return [
     {
@@ -35,8 +35,8 @@ function kcyRows() {
         ru: 'Только если вы нажмёте кнопку «Помощь» в приложении и отправите сообщение: написанный вами текст и название приложения (анонимно — без аккаунта, имени и идентификатора устройства). IP-адрес, как при любом интернет-запросе.'
       },
       purpose: {
-        en: 'To receive and answer your support/feedback message, and to download our own catalogue of other KCY apps to display (see “In-app promotion” below).',
-        ru: 'Приём и обработка вашего обращения в поддержку и загрузка нашего собственного каталога других приложений KCY для показа (см. «Реклама внутри приложения» ниже).'
+        en: 'To receive and answer your support/feedback message, and to download our own catalogue of other Pupikes apps to display (see “In-app promotion” below).',
+        ru: 'Приём и обработка вашего обращения в поддержку и загрузка нашего собственного каталога других приложений Pupikes для показа (см. «Реклама внутри приложения» ниже).'
       },
       policy: `<a href="mailto:${CONTACT}">${CONTACT}</a>`
     }
@@ -92,8 +92,8 @@ const T = {
   th: { en: ['Recipient', 'Data sent', 'Purpose', 'Their policy'], ru: ['Получатель', 'Передаваемые данные', 'Цель', 'Их политика'] },
   s_promo: { en: 'In-app promotion', ru: 'Реклама внутри приложения' },
   promo_txt: {
-    en: `The app occasionally shows a full-screen card promoting <strong>another app by the same publisher</strong> (${PROVIDER} / “KCY Ecosystem”). The promoted app is chosen at random from a catalogue we download from our own server — it is <strong>not personalised</strong>, is not based on any profile of you, and uses <strong>no third-party advertising network, no advertising identifier and no tracking SDK</strong>. You can close the card immediately.`,
-    ru: `Приложение иногда показывает полноэкранную карточку, рекламирующую <strong>другое приложение того же издателя</strong> (${PROVIDER} / «KCY Ecosystem»). Рекламируемое приложение выбирается случайно из каталога, который мы загружаем с нашего собственного сервера — реклама <strong>не персонализирована</strong>, не основана на вашем профиле и <strong>не использует сторонние рекламные сети, рекламные идентификаторы или трекинговые SDK</strong>. Карточку можно сразу закрыть.`
+    en: `The app occasionally shows a full-screen card promoting <strong>another app by the same publisher</strong> (${PROVIDER} / “Pupikes”). The promoted app is chosen at random from a catalogue we download from our own server — it is <strong>not personalised</strong>, is not based on any profile of you, and uses <strong>no third-party advertising network, no advertising identifier and no tracking SDK</strong>. You can close the card immediately.`,
+    ru: `Приложение иногда показывает полноэкранную карточку, рекламирующую <strong>другое приложение того же издателя</strong> (${PROVIDER} / «Pupikes»). Рекламируемое приложение выбирается случайно из каталога, который мы загружаем с нашего собственного сервера — реклама <strong>не персонализирована</strong>, не основана на вашем профиле и <strong>не использует сторонние рекламные сети, рекламные идентификаторы или трекинговые SDK</strong>. Карточку можно сразу закрыть.`
   },
   s_perm: { en: 'Device permissions', ru: 'Разрешения устройства' },
   perm_intro: { en: 'The app requests a permission only when a feature needs it:', ru: 'Приложение запрашивает разрешение только когда функция этого требует:' },
@@ -237,6 +237,9 @@ function sections(app, lang, pkg, storeLabel) {
   parts.push(`<h1>${T.h_title[lang](app.name)}</h1>`);
   parts.push(`<p class="muted">${T.meta[lang](app.name, pkg, storeLabel)}</p>`);
   parts.push(introSection(app, lang));
+  parts.push(`<p>${lang === 'ru'
+    ? 'Приложения Pupikes — как верный, обучаемый пёс: их можно улучшать через кнопку обратной связи в приложении, но каждое приложение помогает лишь в пределах своего назначения.'
+    : 'Pupikes apps are like a faithful, trainable dog — you can improve them through the in-app feedback button, but each app helps only within the limits of its purpose.'}</p>`);
   parts.push(deviceSection(app, lang));
   parts.push(tableSection(app, lang));
   parts.push(promoSection(lang));
@@ -291,30 +294,30 @@ function game(id, name, pitchEn, pitchRu, extraTP) {
 }
 
 const APPS = [
-  // ── 7 офлайн игри (мрежа = само слоят KCY) ──
-  game('dodge-master', 'Dodge Master',
-    'Dodge Master is a top-down survival arcade game: you dodge projectiles across 10 levels of rising difficulty and climb a local leaderboard.',
-    'Dodge Master — аркадная игра на выживание: вы уворачиваетесь от снарядов на 10 уровнях растущей сложности и поднимаетесь в локальной таблице рекордов.'),
-  game('fps-hunter', 'FPS Hunter',
-    'FPS Hunter is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.',
-    'FPS Hunter — 3D-шутер от первого лица со 100 уровнями, разным оружием и целями и локальной таблицей рекордов.'),
-  game('plane-shooter', 'Plane Shooter',
-    'Plane Shooter is a fast arcade shoot-’em-up: pilot a plane and survive 10 increasingly difficult levels. Fully offline single-player action.',
-    'Plane Shooter — быстрый аркадный шутер: пилотируйте самолёт и пройдите 10 уровней растущей сложности. Полностью офлайн, одиночная игра.'),
-  game('titans-fight', 'Titans Fight',
-    'Titans Fight is a single-player arcade fighting game across 10 levels: pick your weapon, beat each foe and climb from Rookie to God of War, saving scores to a local leaderboard.',
-    'Titans Fight — одиночный аркадный файтинг на 10 уровней: выберите оружие, побеждайте противников и пройдите путь от новичка до Бога войны; результаты сохраняются в локальной таблице.'),
-  game('rustam', 'Рустам бере краставици',
+  // ── 7 офлайн игри (мрежа = само слоят Pupikes) ──
+  game('dodge-master', 'EvadeArena',
+    'EvadeArena is a top-down survival arcade game: you dodge projectiles across 10 levels of rising difficulty and climb a local leaderboard.',
+    'EvadeArena — аркадная игра на выживание: вы уворачиваетесь от снарядов на 10 уровнях растущей сложности и поднимаетесь в локальной таблице рекордов.'),
+  game('fps-hunter', 'Huntline 3D',
+    'Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.',
+    'Huntline 3D — 3D-шутер от первого лица со 100 уровнями, разным оружием и целями и локальной таблицей рекордов.'),
+  game('plane-shooter', 'Warbird Rush',
+    'Warbird Rush is a fast arcade shoot-’em-up: pilot a plane and survive 10 increasingly difficult levels. Fully offline single-player action.',
+    'Warbird Rush — быстрый аркадный шутер: пилотируйте самолёт и пройдите 10 уровней растущей сложности. Полностью офлайн, одиночная игра.'),
+  game('titans-fight', 'Godfist Arena',
+    'Godfist Arena is a single-player arcade fighting game across 10 levels: pick your weapon, beat each foe and climb from Rookie to God of War, saving scores to a local leaderboard.',
+    'Godfist Arena — одиночный аркадный файтинг на 10 уровней: выберите оружие, побеждайте противников и пройдите путь от новичка до Бога войны; результаты сохраняются в локальной таблице.'),
+  game('rustam', 'Rustam picks cucumbers',
     'Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.',
     'Rustam — казуальная аркада: помогите садовнику собрать все огурцы, пока их не забрали кроты, на 10 уровнях. Лёгкая офлайн-игра для одного игрока.'),
-  game('hmm', 'KCY Field Battle',
+  game('hmm', 'Pupikes Field Battle',
     'HMM is a 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels, each with a hidden 4-key special combo.',
     'HMM — пошаговая командная битва 3 на 3: случайно назначенные герои сражаются на 10 уровнях, у каждого есть скрытая спецкомбинация из 4 клавиш.'),
   // Дуел — офлайн игра, но зарежда Google шрифт
   (() => {
-    const g = game('duel', 'KCY Ring Clash',
-      'KCY Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.',
-      'KCY Ring Clash — пошаговый файтинг 1 на 1: случайно назначенный герой сражается на 10 уровнях, у каждого есть скрытая спецкомбинация из 4 клавиш.');
+    const g = game('duel', 'Pupikes Ring Clash',
+      'Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.',
+      'Pupikes Ring Clash — пошаговый файтинг 1 на 1: случайно назначенный герой сражается на 10 уровнях, у каждого есть скрытая спецкомбинация из 4 клавиш.');
     g.thirdParties = [{
       recipient: 'Google Fonts (Google LLC), <code>fonts.googleapis.com</code>',
       data: { en: 'Your IP address and a standard request to download the display fonts used in the game.', ru: 'IP-адрес и стандартный запрос на загрузку экранных шрифтов, используемых в игре.' },
@@ -326,10 +329,10 @@ const APPS = [
 
   // ── authenticator ──
   {
-    id: 'authenticator', name: 'KCY Toolkit Authenticator', hwPkg: 'com.kcy.authenticator.hw', ruPkg: 'com.kcy.authenticator.rustore',
+    id: 'authenticator', name: 'Pupikes Toolkit Authenticator', hwPkg: 'com.kcy.authenticator.hw', ruPkg: 'com.kcy.authenticator.rustore',
     pitch: {
-      en: 'KCY Authenticator is a private two-factor authentication (2FA) app that generates TOTP/HOTP/Steam one-time codes and keeps all secrets in an encrypted, biometric-locked vault on your device.',
-      ru: 'KCY Authenticator — приложение двухфакторной аутентификации (2FA): генерирует одноразовые коды TOTP/HOTP/Steam и хранит все секреты в зашифрованном хранилище на устройстве, защищённом биометрией.'
+      en: 'Pupikes Toolkit Authenticator is a private two-factor authentication (2FA) app that generates TOTP/HOTP/Steam one-time codes and keeps all secrets in an encrypted, biometric-locked vault on your device.',
+      ru: 'Pupikes Toolkit Authenticator — приложение двухфакторной аутентификации (2FA): генерирует одноразовые коды TOTP/HOTP/Steam и хранит все секреты в зашифрованном хранилище на устройстве, защищённом биометрией.'
     },
     device: {
       en: 'All 2FA secrets, your master password verifier, imported browser passwords and any wallet notes you add are stored <strong>only in an encrypted vault on your device</strong>. Nothing is uploaded to any server by us. This data is removed when you uninstall the app.',
@@ -344,10 +347,10 @@ const APPS = [
 
   // ── baby-monitor ──
   {
-    id: 'baby-monitor', name: 'KCY Baby Radar', hwPkg: 'com.kcy.babymonitor.hw', ruPkg: 'com.kcy.babymonitor.rustore',
+    id: 'baby-monitor', name: 'Pupikes Baby Radar', hwPkg: 'com.kcy.babymonitor.hw', ruPkg: 'com.kcy.babymonitor.rustore',
     pitch: {
-      en: 'KCY Baby Radar is a camera-based awareness assistant that watches your child through the phone camera and alerts you on motion. Detection runs on-device. It is <strong>not a certified safety device</strong>.',
-      ru: 'KCY Baby Radar — помощник наблюдения на основе камеры: следит за ребёнком через камеру телефона и уведомляет о движении. Распознавание выполняется на устройстве. Это <strong>не сертифицированное устройство безопасности</strong>.'
+      en: 'Pupikes Baby Radar is a camera-based awareness assistant that watches your child through the phone camera and alerts you on motion. Detection runs on-device. It is <strong>not a certified safety device</strong>.',
+      ru: 'Pupikes Baby Radar — помощник наблюдения на основе камеры: следит за ребёнком через камеру телефона и уведомляет о движении. Распознавание выполняется на устройстве. Это <strong>не сертифицированное устройство безопасности</strong>.'
     },
     device: {
       en: 'The camera video is analysed <strong>on the device and is never uploaded</strong>. Event snapshots, logs and settings stay in local storage on your device and are removed when you uninstall the app.',
@@ -390,10 +393,10 @@ const APPS = [
 
   // ── monitor-bot ──
   {
-    id: 'monitor-bot', name: 'KCY Site Monitor', hwPkg: 'com.kcy.monitorbot.hw', ruPkg: 'com.kcy.monitorbot.rustore',
+    id: 'monitor-bot', name: 'Pupikes Site Monitor', hwPkg: 'com.kcy.monitorbot.hw', ruPkg: 'com.kcy.monitorbot.rustore',
     pitch: {
-      en: 'KCY Site Monitor is an on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches.',
-      ru: 'KCY Site Monitor — наблюдатель на устройстве за любыми RSS/Atom-лентами или публичными JSON-API по вашему выбору: присылает локальное уведомление при появлении новой записи или совпадении ключевого слова.'
+      en: 'Pupikes Site Monitor is an on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches.',
+      ru: 'Pupikes Site Monitor — наблюдатель на устройстве за любыми RSS/Atom-лентами или публичными JSON-API по вашему выбору: присылает локальное уведомление при появлении новой записи или совпадении ключевого слова.'
     },
     device: {
       en: 'The monitors you create, their logs and your settings are stored <strong>only on your device</strong>. There is no account and no cloud sync.',
@@ -410,10 +413,10 @@ const APPS = [
 
   // ── price-watch-bot ──
   {
-    id: 'price-watch-bot', name: 'KCY Toolkit Price Watch', hwPkg: 'com.kcy.pricewatchbot.hw', ruPkg: 'com.kcy.pricewatchbot.rustore',
+    id: 'price-watch-bot', name: 'Pupikes Toolkit Price Watch', hwPkg: 'com.kcy.pricewatchbot.hw', ruPkg: 'com.kcy.pricewatchbot.rustore',
     pitch: {
-      en: 'KCY Price Watch tracks selected crypto and currency rates and sends a local notification when a price crosses a threshold you set. It only reads prices from free public sources and never handles wallets or payments.',
-      ru: 'KCY Price Watch отслеживает выбранные крипто- и валютные курсы и присылает локальное уведомление, когда цена пересекает заданный вами порог. Он только читает цены из бесплатных публичных источников и не работает с кошельками или платежами.'
+      en: 'Pupikes Toolkit Price Watch tracks selected crypto and currency rates and sends a local notification when a price crosses a threshold you set. It only reads prices from free public sources and never handles wallets or payments.',
+      ru: 'Pupikes Toolkit Price Watch отслеживает выбранные крипто- и валютные курсы и присылает локальное уведомление, когда цена пересекает заданный вами порог. Он только читает цены из бесплатных публичных источников и не работает с кошельками или платежами.'
     },
     device: {
       en: 'Your watch list, thresholds and logs are stored <strong>only on your device</strong>. No wallet, no trading, no account.',
@@ -430,10 +433,10 @@ const APPS = [
 
   // ── market-pulse (образователен финансов анализатор) ──
   {
-    id: 'market-pulse', name: 'KCY Market Pulse', hwPkg: 'com.kcy.marketpulse.hw', ruPkg: 'com.kcy.marketpulse.rustore',
+    id: 'market-pulse', name: 'Pupikes Market Pulse', hwPkg: 'com.kcy.marketpulse.hw', ruPkg: 'com.kcy.marketpulse.rustore',
     pitch: {
-      en: 'KCY Market Pulse is an EDUCATIONAL market analyzer. It reads public market data (crypto, gold, stock indices, real-estate ETFs), market sentiment and news, computes classic indicators for a period you choose, and shows an educational reading. It is NOT investment advice, handles no wallets or payments, and has no account.',
-      ru: 'KCY Market Pulse — ОБРАЗОВАТЕЛЬНЫЙ анализатор рынков. Он читает публичные рыночные данные (крипто, золото, биржевые индексы, ETF на недвижимость), настроение рынка и новости, рассчитывает классические индикаторы за выбранный период и показывает образовательный вывод. Это НЕ инвестиционный совет; нет кошельков, платежей и аккаунта.'
+      en: 'Pupikes Market Pulse is an EDUCATIONAL market analyzer. It reads public market data (crypto, gold, stock indices, real-estate ETFs), market sentiment and news, computes classic indicators for a period you choose, and shows an educational reading. It is NOT investment advice, handles no wallets or payments, and has no account.',
+      ru: 'Pupikes Market Pulse — ОБРАЗОВАТЕЛЬНЫЙ анализатор рынков. Он читает публичные рыночные данные (крипто, золото, биржевые индексы, ETF на недвижимость), настроение рынка и новости, рассчитывает классические индикаторы за выбранный период и показывает образовательный вывод. Это НЕ инвестиционный совет; нет кошельков, платежей и аккаунта.'
     },
     device: {
       en: 'Your language and app preferences are stored <strong>only on your device</strong>. There is no account, no wallet, no trading and no payments. All analysis is educational.',
@@ -450,10 +453,10 @@ const APPS = [
 
   // ── routine-bot ──
   {
-    id: 'routine-bot', name: 'KCY Routine Planner', hwPkg: 'com.kcy.routinebot.hw', ruPkg: 'com.kcy.routinebot.rustore',
+    id: 'routine-bot', name: 'Pupikes Routine Planner', hwPkg: 'com.kcy.routinebot.hw', ruPkg: 'com.kcy.routinebot.rustore',
     pitch: {
-      en: 'KCY Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.',
-      ru: 'KCY Routine Planner — личный ежедневный помощник: утренний брифинг (погода, план, мотивация), напоминания о лекарствах, привычках и задачах, необязательное вечернее резюме и чтение ваших заметок вслух на 15 языках.'
+      en: 'Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.',
+      ru: 'Pupikes Routine Planner — личный ежедневный помощник: утренний брифинг (погода, план, мотивация), напоминания о лекарствах, привычках и задачах, необязательное вечернее резюме и чтение ваших заметок вслух на 15 языках.'
     },
     device: {
       en: 'Your reminders, notes, habits and settings are stored <strong>only on your device</strong>. Text-to-speech uses your device’s speaker. There is no account and no cloud.',
@@ -473,17 +476,17 @@ const APPS = [
 
   // ── autoreply-bot ──
   {
-    id: 'autoreply-bot', name: 'KCY Auto Answer', hwPkg: 'com.kcy.autoreplybot.hw', ruPkg: 'com.kcy.autoreplybot.rustore',
+    id: 'autoreply-bot', name: 'Pupikes Auto Answer', hwPkg: 'com.kcy.autoreplybot.hw', ruPkg: 'com.kcy.autoreplybot.rustore',
     pitch: {
-      en: 'KCY Auto Answer answers messages for you by your own rules: keyword triggers with ready replies, office hours, away messages and allow/block lists, with a built-in demo inbox to test everything.',
-      ru: 'KCY Auto Answer отвечает на сообщения за вас по вашим правилам: триггеры по ключевым словам с готовыми ответами, рабочие часы, сообщения об отсутствии и списки разрешённых/заблокированных, со встроенным демо-ящиком для проверки.'
+      en: 'Pupikes Auto Answer answers messages for you by your own rules: keyword triggers with ready replies, office hours, away messages and allow/block lists, with a built-in demo inbox to test everything.',
+      ru: 'Pupikes Auto Answer отвечает на сообщения за вас по вашим правилам: триггеры по ключевым словам с готовыми ответами, рабочие часы, сообщения об отсутствии и списки разрешённых/заблокированных, со встроенным демо-ящиком для проверки.'
     },
     device: {
       en: 'Your rules and reply logs are stored <strong>only on your device</strong>. The core works fully offline; no contacts are read.',
       ru: 'Ваши правила и журналы ответов хранятся <strong>только на устройстве</strong>. Основная работа полностью офлайн; контакты не читаются.'
     },
     thirdParties: [{
-      recipient: 'A KCY chat channel you choose to connect (e.g. <code>my.girl.place</code>, <code>kaji.kak.si</code>)',
+      recipient: 'A Pupikes chat channel you choose to connect (e.g. <code>my.girl.place</code>, <code>kaji.kak.si</code>)',
       data: { en: 'Only if you connect a channel: the messages of that channel and your replies pass over HTTP to the server you configured, plus your IP address.', ru: 'Только если вы подключите канал: сообщения этого канала и ваши ответы передаются по HTTP на настроенный вами сервер, плюс ваш IP-адрес.' },
       purpose: { en: 'To let the bot read incoming messages of the channel you connected and post your automatic replies. This is optional.', ru: 'Чтобы бот читал входящие сообщения подключённого канала и отправлял ваши автоответы. Это необязательно.' },
       policy: 'The connected service’s own policy'
@@ -493,17 +496,17 @@ const APPS = [
 
   // ── business-faq-bot ──
   {
-    id: 'business-faq-bot', name: 'KCY FAQ Desk', hwPkg: 'com.kcy.businessfaqbot.hw', ruPkg: 'com.kcy.businessfaqbot.rustore',
+    id: 'business-faq-bot', name: 'Pupikes FAQ Desk', hwPkg: 'com.kcy.businessfaqbot.hw', ruPkg: 'com.kcy.businessfaqbot.rustore',
     pitch: {
-      en: 'KCY FAQ Desk automatically answers your customers’ frequently asked questions from a keyword FAQ knowledge base, with greetings, office-hours messages, quick replies and a fallback to a human. It runs entirely on-device with no paid AI.',
-      ru: 'KCY FAQ Desk автоматически отвечает на частые вопросы клиентов из базы FAQ по ключевым словам, с приветствиями, сообщениями о рабочих часах, быстрыми ответами и передачей человеку. Работает полностью на устройстве без платного ИИ.'
+      en: 'Pupikes FAQ Desk automatically answers your customers’ frequently asked questions from a keyword FAQ knowledge base, with greetings, office-hours messages, quick replies and a fallback to a human. It runs entirely on-device with no paid AI.',
+      ru: 'Pupikes FAQ Desk автоматически отвечает на частые вопросы клиентов из базы FAQ по ключевым словам, с приветствиями, сообщениями о рабочих часах, быстрыми ответами и передачей человеку. Работает полностью на устройстве без платного ИИ.'
     },
     device: {
       en: 'The FAQ knowledge base and settings are stored <strong>only on your device</strong>. Answering works fully offline.',
       ru: 'База FAQ и настройки хранятся <strong>только на устройстве</strong>. Ответы работают полностью офлайн.'
     },
     thirdParties: [{
-      recipient: 'A KCY chat channel you choose to connect (e.g. <code>my.girl.place</code>)',
+      recipient: 'A Pupikes chat channel you choose to connect (e.g. <code>my.girl.place</code>)',
       data: { en: 'Only if you connect a channel: its incoming messages and your answers pass over HTTP to the server you configured, plus your IP address.', ru: 'Только если вы подключите канал: его входящие сообщения и ваши ответы передаются по HTTP на настроенный вами сервер, плюс ваш IP-адрес.' },
       purpose: { en: 'To let the bot answer messages on the channel you connected. This is optional.', ru: 'Чтобы бот отвечал на сообщения подключённого канала. Это необязательно.' },
       policy: 'The connected service’s own policy'
@@ -513,14 +516,14 @@ const APPS = [
 
   // ── services-toolkit ──
   {
-    id: 'services-toolkit', name: 'KCY Toolkit', hwPkg: 'com.kcy.servicestoolkit.hw', ruPkg: 'com.kcy.servicestoolkit.rustore',
+    id: 'services-toolkit', name: 'Pupikes Toolkit', hwPkg: 'com.kcy.servicestoolkit.hw', ruPkg: 'com.kcy.servicestoolkit.rustore',
     genAI: {
       en: 'One tool is a free AI text helper. When (and only when) you use it, the prompt text you type is sent to a free third-party generative-AI service, <code>text.pollinations.ai</code>, which returns the generated text. Do not enter personal or sensitive information into that tool. All other tools work without AI.',
       ru: 'Один из инструментов — бесплатный ИИ-помощник для текста. Когда (и только когда) вы им пользуетесь, введённый вами текст запроса отправляется в бесплатный сторонний сервис генеративного ИИ <code>text.pollinations.ai</code>, который возвращает сгенерированный текст. Не вводите в него личную или конфиденциальную информацию. Остальные инструменты работают без ИИ.'
     },
     pitch: {
-      en: 'Services Toolkit is an all-in-one utility box: QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a free AI text helper. Most tools run entirely on-device; a few fetch live online data.',
-      ru: 'Services Toolkit — универсальный набор инструментов: QR-коды, инструменты для паролей и текста, калькуляторы, сжатие изображений и PDF, курсы валют и графики крипты, веб-скрапер и бесплатный ИИ-помощник для текста. Большинство инструментов работают на устройстве; некоторые загружают данные онлайн.'
+      en: 'Pupikes Toolkit is an all-in-one utility box: QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a free AI text helper. Most tools run entirely on-device; a few fetch live online data.',
+      ru: 'Pupikes Toolkit — универсальный набор инструментов: QR-коды, инструменты для паролей и текста, калькуляторы, сжатие изображений и PDF, курсы валют и графики крипты, веб-скрапер и бесплатный ИИ-помощник для текста. Большинство инструментов работают на устройстве; некоторые загружают данные онлайн.'
     },
     device: {
       en: 'The offline tools (QR, passwords, calculators, text tools, image/PDF compression) run <strong>fully on-device</strong>. Your settings stay local. There is no account.',
@@ -550,10 +553,10 @@ const APPS = [
 
   // ── kcy-toolkit-pdf ──
   {
-    id: 'kcy-toolkit-pdf', name: 'KCY Toolkit PDF', hwPkg: 'com.kcy.toolkitpdf.hw', ruPkg: 'com.kcy.toolkitpdf.rustore',
+    id: 'kcy-toolkit-pdf', name: 'Pupikes Toolkit PDF', hwPkg: 'com.kcy.toolkitpdf.hw', ruPkg: 'com.kcy.toolkitpdf.rustore',
     pitch: {
-      en: 'KCY Toolkit PDF is a complete PDF toolbox: merge, split and watermark PDFs, compress large scans, and convert PDF text to a Word (.docx) file — everything runs on-device.',
-      ru: 'KCY Toolkit PDF — полный набор для PDF: объединение, разделение и водяные знаки, сжатие больших сканов и преобразование текста PDF в файл Word (.docx) — всё работает на устройстве.'
+      en: 'Pupikes Toolkit PDF is a complete PDF toolbox: merge, split and watermark PDFs, compress large scans, and convert PDF text to a Word (.docx) file — everything runs on-device.',
+      ru: 'Pupikes Toolkit PDF — полный набор для PDF: объединение, разделение и водяные знаки, сжатие больших сканов и преобразование текста PDF в файл Word (.docx) — всё работает на устройстве.'
     },
     device: {
       en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
@@ -565,10 +568,10 @@ const APPS = [
 
   // ── kcy-toolkit-qr ──
   {
-    id: 'kcy-toolkit-qr', name: 'KCY Toolkit QR', hwPkg: 'com.kcy.toolkitqr.hw', ruPkg: 'com.kcy.toolkitqr.rustore',
+    id: 'kcy-toolkit-qr', name: 'Pupikes Toolkit QR', hwPkg: 'com.kcy.toolkitqr.hw', ruPkg: 'com.kcy.toolkitqr.rustore',
     pitch: {
-      en: 'KCY Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.',
-      ru: 'KCY Toolkit QR создаёт QR-коды из текста или ссылок и читает существующие QR-коды камерой или из изображения — полностью на устройстве.'
+      en: 'Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.',
+      ru: 'Pupikes Toolkit QR создаёт QR-коды из текста или ссылок и читает существующие QR-коды камерой или из изображения — полностью на устройстве.'
     },
     device: {
       en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
@@ -580,14 +583,14 @@ const APPS = [
 
   // ── kcy-toolkit-ai-announcement ──
   {
-    id: 'kcy-toolkit-ai-announcement', name: 'KCY Toolkit AI Announcement', hwPkg: 'com.kcy.toolkitai.hw', ruPkg: 'com.kcy.toolkitai.rustore',
+    id: 'kcy-toolkit-ai-announcement', name: 'Pupikes Toolkit AI Announcement', hwPkg: 'com.kcy.toolkitai.hw', ruPkg: 'com.kcy.toolkitai.rustore',
     genAI: {
       en: 'The app is a free AI text helper. The prompt text you type is sent to a free third-party generative-AI service, <code>text.pollinations.ai</code>, which returns the generated text. Do not enter personal or sensitive information.',
       ru: 'Приложение — бесплатный ИИ-помощник для текста. Введённый вами текст запроса отправляется в бесплатный сторонний сервис генеративного ИИ <code>text.pollinations.ai</code>, который возвращает сгенерированный текст. Не вводите личную или конфиденциальную информацию.'
     },
     pitch: {
-      en: 'KCY Toolkit AI Announcement writes a ready-to-post property or product announcement from a few keywords, using a free AI text service.',
-      ru: 'KCY Toolkit AI Announcement пишет готовое объявление о недвижимости или товаре по нескольким ключевым словам с помощью бесплатного ИИ-сервиса.'
+      en: 'Pupikes Toolkit AI Announcement writes a ready-to-post property or product announcement from a few keywords, using a free AI text service.',
+      ru: 'Pupikes Toolkit AI Announcement пишет готовое объявление о недвижимости или товаре по нескольким ключевым словам с помощью бесплатного ИИ-сервиса.'
     },
     device: {
       en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
@@ -604,10 +607,10 @@ const APPS = [
 
   // ── kcy-toolkit-text ──
   {
-    id: 'kcy-toolkit-text', name: 'KCY Toolkit Text', hwPkg: 'com.kcy.toolkittext.hw', ruPkg: 'com.kcy.toolkittext.rustore',
+    id: 'kcy-toolkit-text', name: 'Pupikes Toolkit Text', hwPkg: 'com.kcy.toolkittext.hw', ruPkg: 'com.kcy.toolkittext.rustore',
     pitch: {
-      en: 'KCY Toolkit Text is a set of text utilities: word and character counters, case and formatting helpers, Base64 encoding — fully on-device.',
-      ru: 'KCY Toolkit Text — набор текстовых утилит: счётчики слов и символов, форматирование, кодирование Base64 — полностью на устройстве.'
+      en: 'Pupikes Toolkit Text is a set of text utilities: word and character counters, case and formatting helpers, Base64 encoding — fully on-device.',
+      ru: 'Pupikes Toolkit Text — набор текстовых утилит: счётчики слов и символов, форматирование, кодирование Base64 — полностью на устройстве.'
     },
     device: {
       en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
@@ -619,10 +622,10 @@ const APPS = [
 
   // ── kcy-toolkit-finance ──
   {
-    id: 'kcy-toolkit-finance', name: 'KCY Toolkit Finance', hwPkg: 'com.kcy.toolkitfinance.hw', ruPkg: 'com.kcy.toolkitfinance.rustore',
+    id: 'kcy-toolkit-finance', name: 'Pupikes Toolkit Finance', hwPkg: 'com.kcy.toolkitfinance.hw', ruPkg: 'com.kcy.toolkitfinance.rustore',
     pitch: {
-      en: 'KCY Toolkit Finance bundles the money tools: live currency rates and a converter, crypto charts with indicators, a 20-currency watchlist with alerts, and loan/VAT/interest calculators.',
-      ru: 'KCY Toolkit Finance объединяет денежные инструменты: курсы валют и конвертер, графики крипты с индикаторами, список наблюдения из 20 валют с оповещениями и калькуляторы кредита/НДС/процентов.'
+      en: 'Pupikes Toolkit Finance bundles the money tools: live currency rates and a converter, crypto charts with indicators, a 20-currency watchlist with alerts, and loan/VAT/interest calculators.',
+      ru: 'Pupikes Toolkit Finance объединяет денежные инструменты: курсы валют и конвертер, графики крипты с индикаторами, список наблюдения из 20 валют с оповещениями и калькуляторы кредита/НДС/процентов.'
     },
     device: {
       en: 'Watch lists, thresholds and settings are stored <strong>only on your device</strong>. There is no account. The app only reads public market data.',
@@ -639,10 +642,10 @@ const APPS = [
 
   // ── kcy-toolkit-pictures ──
   {
-    id: 'kcy-toolkit-pictures', name: 'KCY Toolkit Pictures', hwPkg: 'com.kcy.toolkitpictures.hw', ruPkg: 'com.kcy.toolkitpictures.rustore',
+    id: 'kcy-toolkit-pictures', name: 'Pupikes Toolkit Pictures', hwPkg: 'com.kcy.toolkitpictures.hw', ruPkg: 'com.kcy.toolkitpictures.rustore',
     pitch: {
-      en: 'KCY Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.',
-      ru: 'KCY Toolkit Pictures уменьшает изображения JPEG, PNG и WebP прямо на устройстве — ничего не выгружается.'
+      en: 'Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.',
+      ru: 'Pupikes Toolkit Pictures уменьшает изображения JPEG, PNG и WebP прямо на устройстве — ничего не выгружается.'
     },
     device: {
       en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
@@ -654,10 +657,10 @@ const APPS = [
 
   // ── kcy-toolkit-videos ──
   {
-    id: 'kcy-toolkit-videos', name: 'KCY Toolkit Videos', hwPkg: 'com.kcy.toolkitvideos.hw', ruPkg: 'com.kcy.toolkitvideos.rustore',
+    id: 'kcy-toolkit-videos', name: 'Pupikes Toolkit Videos', hwPkg: 'com.kcy.toolkitvideos.hw', ruPkg: 'com.kcy.toolkitvideos.rustore',
     pitch: {
-      en: 'KCY Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.',
-      ru: 'KCY Toolkit Videos конвертирует видео между MP4, WebM, AVI, MOV, MKV и GIF полностью на устройстве с помощью встроенного движка — ничего не выгружается.'
+      en: 'Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.',
+      ru: 'Pupikes Toolkit Videos конвертирует видео между MP4, WebM, AVI, MOV, MKV и GIF полностью на устройстве с помощью встроенного движка — ничего не выгружается.'
     },
     device: {
       en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
@@ -669,10 +672,10 @@ const APPS = [
 
   // ── kcy-toolkit-sound ──
   {
-    id: 'kcy-toolkit-sound', name: 'KCY Toolkit Sound', hwPkg: 'com.kcy.toolkitsound.hw', ruPkg: 'com.kcy.toolkitsound.rustore',
+    id: 'kcy-toolkit-sound', name: 'Pupikes Toolkit Sound', hwPkg: 'com.kcy.toolkitsound.hw', ruPkg: 'com.kcy.toolkitsound.rustore',
     pitch: {
-      en: 'KCY Toolkit Sound converts audio files from phone formats (MP3, M4A/AAC, WAV, OGG, FLAC) to MP4, MP3, WAV or OGG entirely on your device — nothing is uploaded.',
-      ru: 'KCY Toolkit Sound конвертирует аудиофайлы из телефонных форматов (MP3, M4A/AAC, WAV, OGG, FLAC) в MP4, MP3, WAV или OGG полностью на устройстве — ничего не выгружается.'
+      en: 'Pupikes Toolkit Sound converts audio files from phone formats (MP3, M4A/AAC, WAV, OGG, FLAC) to MP4, MP3, WAV or OGG entirely on your device — nothing is uploaded.',
+      ru: 'Pupikes Toolkit Sound конвертирует аудиофайлы из телефонных форматов (MP3, M4A/AAC, WAV, OGG, FLAC) в MP4, MP3, WAV или OGG полностью на устройстве — ничего не выгружается.'
     },
     device: {
       en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
@@ -684,10 +687,10 @@ const APPS = [
 
   // ── kcy-toolkit-passwords ──
   {
-    id: 'kcy-toolkit-passwords', name: 'KCY Toolkit Passwords', hwPkg: 'com.kcy.toolkitpasswords.hw', ruPkg: 'com.kcy.toolkitpasswords.rustore',
+    id: 'kcy-toolkit-passwords', name: 'Pupikes Toolkit Passwords', hwPkg: 'com.kcy.toolkitpasswords.hw', ruPkg: 'com.kcy.toolkitpasswords.rustore',
     pitch: {
-      en: 'KCY Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.',
-      ru: 'KCY Toolkit Passwords генерирует надёжные пароли несколькими способами (случайные, произносимые, PIN, фразы) — полностью на устройстве, ничего не сохраняется и не отправляется.'
+      en: 'Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.',
+      ru: 'Pupikes Toolkit Passwords генерирует надёжные пароли несколькими способами (случайные, произносимые, PIN, фразы) — полностью на устройстве, ничего не сохраняется и не отправляется.'
     },
     device: {
       en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
@@ -699,10 +702,10 @@ const APPS = [
 
   // ── kcy-toolkit-scraper ──
   {
-    id: 'kcy-toolkit-scraper', name: 'KCY Toolkit Scraper', hwPkg: 'com.kcy.toolkitscraper.hw', ruPkg: 'com.kcy.toolkitscraper.rustore',
+    id: 'kcy-toolkit-scraper', name: 'Pupikes Toolkit Scraper', hwPkg: 'com.kcy.toolkitscraper.hw', ruPkg: 'com.kcy.toolkitscraper.rustore',
     pitch: {
-      en: 'KCY Toolkit Scraper downloads a web page you point it to and extracts the parts you asked for (text, links, tables) so you can copy or save them.',
-      ru: 'KCY Toolkit Scraper загружает указанную вами веб-страницу и извлекает нужные части (текст, ссылки, таблицы), чтобы вы могли их скопировать или сохранить.'
+      en: 'Pupikes Toolkit Scraper downloads a web page you point it to and extracts the parts you asked for (text, links, tables) so you can copy or save them.',
+      ru: 'Pupikes Toolkit Scraper загружает указанную вами веб-страницу и извлекает нужные части (текст, ссылки, таблицы), чтобы вы могли их скопировать или сохранить.'
     },
     device: {
       en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
@@ -719,14 +722,14 @@ const APPS = [
 
   // ── selflearning-friend ──
   {
-    id: 'selflearning-friend', name: 'KCY Learning Buddy', hwPkg: 'com.kcy.selflearningfriend.hw', ruPkg: 'com.kcy.selflearningfriend.rustore',
+    id: 'selflearning-friend', name: 'Pupikes Learning Buddy', hwPkg: 'com.kcy.selflearningfriend.hw', ruPkg: 'com.kcy.selflearningfriend.rustore',
     genAI: {
       en: 'The app is a self-learning AI companion. It generates conversation and learns from public web knowledge on-device. It has <strong>no developer AI backend collecting your data</strong>; knowledge and translation come from the public sources listed above, and everything the companion learns and remembers stays on your device.',
       ru: 'Приложение — самообучающийся ИИ-компаньон. Он ведёт беседу и учится из публичных веб-знаний на устройстве. У него <strong>нет разработческого ИИ-бэкенда, собирающего ваши данные</strong>; знания и перевод берутся из перечисленных выше публичных источников, а всё, что компаньон выучил и запомнил, остаётся на вашем устройстве.'
     },
     pitch: {
-      en: 'KCY Learning Buddy is a private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns stays on your device, tied to a secret code word only you know.',
-      ru: 'KCY Learning Buddy — личный ИИ-компаньон, которого вы называете и обучаете сами: общается голосом или текстом, учится из интернета и может «видеть» через камеру. Всё, что он узнаёт, остаётся на вашем устройстве и защищено секретным кодовым словом, известным только вам.'
+      en: 'Pupikes Learning Buddy is a private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns stays on your device, tied to a secret code word only you know.',
+      ru: 'Pupikes Learning Buddy — личный ИИ-компаньон, которого вы называете и обучаете сами: общается голосом или текстом, учится из интернета и может «видеть» через камеру. Всё, что он узнаёт, остаётся на вашем устройстве и защищено секретным кодовым словом, известным только вам.'
     },
     device: {
       en: 'There is <strong>no developer account or sign-in</strong>; access is guarded by a code word you choose. The companion’s name, everything it learns, your conversations and habits are stored <strong>only on your device</strong> and are not uploaded by us.',
@@ -760,7 +763,7 @@ const APPS = [
 
   // ── chat (обвивка към сървър) ──
   {
-    id: 'chat', name: 'KCY Chat', hwPkg: 'com.kcy.chat.hw', ruPkg: 'com.kcy.chat.rustore',
+    id: 'chat', name: 'Pupikes Chat', hwPkg: 'com.kcy.chat.hw', ruPkg: 'com.kcy.chat.rustore',
     serverWrapper: {
       domain: 'my.girl.place',
       content_en: 'the messages you send, and profile/service details you choose to add',
@@ -768,10 +771,10 @@ const APPS = [
       extra_en: 'Messages are delivered to the people you chat with. Do not share more personal data than you are comfortable with.',
       extra_ru: 'Сообщения доставляются вашим собеседникам. Не делитесь большим объёмом персональных данных, чем вам комфортно.'
     },
-    name_ru: 'KCY Chat',
+    name_ru: 'Pupikes Chat',
     pitch: {
-      en: 'KCY Chat is a real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.',
-      ru: 'KCY Chat — приложение для обмена сообщениями в реальном времени, подключающее вас к сервису чата KCY. Выберите один из 15 языков и начните общение, когда вы онлайн.'
+      en: 'Pupikes Chat is a real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.',
+      ru: 'Pupikes Chat — приложение для обмена сообщениями в реальном времени, подключающее вас к сервису чата Pupikes. Выберите один из 15 языков и начните общение, когда вы онлайн.'
     },
     device: {
       en: 'On the device itself the app stores essentially only your chosen interface language. Your account and messages live on the server so the service can deliver them.',

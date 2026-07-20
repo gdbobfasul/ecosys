@@ -1,5 +1,5 @@
 // Version: 1.0193
-// KCY i18n — лек преводен слой.
+// Pupikes i18n — лек преводен слой.
 // Текстовете се маркират с data-i18n="ключ" (за textContent) или
 // data-i18n-attr="placeholder:ключ" (за атрибути). Преводите се теглят от
 // /translations/<lang>.json. По подразбиране английски ('en').

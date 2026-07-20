@@ -1,8 +1,8 @@
-# KCY-meme-1 (KCY1) Token - Документация v30
+# Pupikes-meme-1 (KCY1) Token - Документация v30
 
 ## 📊 ОСНОВНА ИНФОРМАЦИЯ
 
-**Име:** KCY-meme-1  
+**Име:** Pupikes-meme-1  
 **Символ:** KCY1  
 **Decimals:** 18  
 **Total Supply:** 1,000,000 токена  

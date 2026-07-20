@@ -1,4 +1,4 @@
-// KCY Portals — Main Server
+// Pupikes Portals — Main Server
 // Version: 1.0171
 //
 // Разпределя:
@@ -274,7 +274,7 @@ debug.stage('starting HTTP server on port', PORT);
 debug.stage('DB path:', DB_PATH, fs.existsSync(DB_PATH) ? '✓' : '✗ NOT FOUND');
 app.listen(PORT, () => {
     debug.stage('✓ listening on port', PORT);
-    console.log(`🎮 KCY Portals running on http://localhost:${PORT}`);
+    console.log(`🎮 Pupikes Portals running on http://localhost:${PORT}`);
     console.log(`   DB:   ${DB_PATH}`);
     console.log(`   Public: ${PUBLIC_DIR}`);
     const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();

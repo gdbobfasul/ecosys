@@ -1,4 +1,4 @@
-// KCY Portals — Admin routes (НОВ файл)
+// Pupikes Portals — Admin routes (НОВ файл)
 // Version: 1.0171
 // Списък потребители + точки/нива по игри + триене.
 // Достъп: ?adm=bgmasters-set И IP whitelist (както изисква access-control).

@@ -1,4 +1,4 @@
-/* KCY Portals — Battle Engine v2 (DOM + WebM с alpha)
+/* Pupikes Portals — Battle Engine v2 (DOM + WebM с alpha)
    Version: 1.0001
 
    Походова битка с реални видео анимации (вместо canvas рисуване).

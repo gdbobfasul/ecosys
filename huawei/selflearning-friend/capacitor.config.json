@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.selflearningfriend.hw",
-  "appName": "KCY Learning Buddy",
+  "appName": "Pupikes LB",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

@@ -19,7 +19,7 @@ export const THEME = {
   heroSkin: 0xe8b894,
   heroCloth: 0x6a3a52,
   // Заглавие на менюто
-  titleText: 'DODGE MASTER',
+  titleText: 'EVADE ARENA',
   titleSub: 'AppGallery Edition',
   // Ключ за localStorage (различен per-store, за да не се бъркат записите)
   saveKey: 'dodgemaster.huawei.save'

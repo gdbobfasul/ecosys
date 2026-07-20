@@ -1,4 +1,4 @@
-# Auto-Reply Bot — как функционира
+# Pupikes Auto Answer — как функционира
 
 „Робот под наем", който автоматично отговаря на съобщения по твои правила — **изцяло на устройството**. Мобилно приложение за RUStore и Huawei AppGallery (Vite + Capacitor, без Google Mobile Services). App ID: `com.kcy.autoreplybot.rustore` (RUStore) / `com.kcy.autoreplybot.huawei` (Huawei).
 

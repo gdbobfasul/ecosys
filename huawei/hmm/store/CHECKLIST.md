@@ -1,4 +1,4 @@
-# Чеклист за публикуване — Битка на терен (HMM), Huawei AppGallery
+# Чеклист за публикуване — Pupikes Field Battle (HMM), Huawei AppGallery
 
 ## Преди билд
 

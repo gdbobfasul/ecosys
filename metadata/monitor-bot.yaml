@@ -1,5 +1,5 @@
 id: monitor-bot
-name: Монитор-робот
+name: Pupikes Site Monitor
 folders:
   - rustore/monitor-bot
   - huawei/monitor-bot
@@ -23,10 +23,10 @@ website: https://bgmasters.net
 
 listings:
   ru:
-    title: Монитор-робот
+    title: Pupikes Site Monitor
     short: Следит RSS/Atom и JSON API — локальные уведомления о новых записях
     full: |
-      Монитор-робот — это «робот в аренду», который следит за источником (RSS/Atom
+      Pupikes Site Monitor — это «робот в аренду», который следит за источником (RSS/Atom
       лента или публичный JSON API) и присылает локальное уведомление, когда
       появляется новая запись или совпадает ключевое слово. Без аккаунта, без
       облака, без слежки, без рекламы.
@@ -54,10 +54,10 @@ listings:
       • Notifications are fully local — no server, no push. Data stays on device.
       • UI in 15 languages.
   bg:
-    title: Монитор-робот
+    title: Pupikes Site Monitor
     short: Следи RSS/Atom и JSON API — локални известия за нови записи
     full: |
-      Монитор-робот е „робот под наем", който следи източник (RSS/Atom емисия или
+      Pupikes Site Monitor е „робот под наем", който следи източник (RSS/Atom емисия или
       публично JSON API) и праща локално известие, когато се появи нов запис или
       съвпадне ключова дума. Без акаунт, без облак, без проследяване, без реклами.
 

@@ -1,4 +1,4 @@
-# Release checklist — KCY Baby Radar (Huawei AppGallery)
+# Release checklist — Pupikes Baby Radar (Huawei AppGallery)
 
 - [ ] `npm install` минава без грешки.
 - [ ] `npm run build` минава (големият TF.js chunk е очакван — lazy-load).

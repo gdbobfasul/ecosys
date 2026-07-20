@@ -1,4 +1,4 @@
-// Version: 1.0014
+// Version: 1.0015
 import { enforceLock } from './core/lock.js';
 import { startPromoAds } from './core/promo-ads.js';
 import { mountEcosystem } from './core/ecosystem.js';
@@ -8,8 +8,8 @@ import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
 startPromoAds('plane-shooter'); // 3 реклами: старт/среда/край (само тази безплатна игра)
-mountEcosystem('plane-shooter'); // „Още от KCY Ecosystem" showcase
-playIntro(); // кратко „KCY Ecosystem" интро при старт
+mountEcosystem('plane-shooter'); // „Още от Pupikes" showcase
+playIntro(); // кратко „Pupikes" интро при старт
 mountHelp('plane-shooter'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('plane-shooter'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
 mountLegalGate('plane-shooter'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)

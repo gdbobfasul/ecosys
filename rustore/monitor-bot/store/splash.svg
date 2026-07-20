@@ -13,7 +13,7 @@
     <circle r="40" fill="#0a84ff"/>
   </g>
   <text x="621" y="1480" text-anchor="middle" font-family="system-ui,Arial" font-size="84"
-        font-weight="800" fill="#5ac8fa">Монитор-робот</text>
+        font-weight="800" fill="#5ac8fa">Pupikes Site Monitor</text>
   <text x="621" y="1560" text-anchor="middle" font-family="system-ui,Arial" font-size="40"
         fill="#9aa6b5">следи източник · известява локално</text>
 </svg>

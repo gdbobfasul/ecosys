@@ -1,4 +1,4 @@
-# Тестване — KCY Price Watch (RUStore)
+# Тестване — Pupikes Price Watch (RUStore)
 
 ## В браузър (без Android SDK)
 1. `npm install`

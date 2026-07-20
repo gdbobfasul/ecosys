@@ -1,4 +1,4 @@
-# KCY Chat — Release checklist (RUStore)
+# Pupikes Chat — Release checklist (RUStore)
 
 - [ ] `npm install` минава без грешки
 - [ ] `npm run build` създава `dist/`

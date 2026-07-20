@@ -1,6 +1,6 @@
 # BeRicH 1 (BRCH1)
 
-BEP-20 deflationary токен на Binance Smart Chain — част от KCY Ecosystem.
+BEP-20 deflationary токен на Binance Smart Chain — част от Pupikes.
 
 | Параметър | Стойност |
 |-----------|----------|

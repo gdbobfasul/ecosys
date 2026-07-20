@@ -1,4 +1,4 @@
-# Тестване — Цена-робот (Huawei AppGallery)
+# Тестване — Pupikes Market Pulse (Huawei AppGallery)
 
 ## В браузър (без Android SDK)
 1. `npm install`

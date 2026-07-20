@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token (KCY-MEME-1) - Тестове
+# KCY1 Token (Pupikes-MEME-1) - Тестове
 
 ## 📋 Инструкции за Инсталация и Изпълнение
 

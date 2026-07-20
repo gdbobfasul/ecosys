@@ -1,6 +1,6 @@
 # Проверка на име: KCY Baby Radar
 
-_2026-07-16T21:29:37.651Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:34:35.694Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 - нула марки + всички домейни свободни — отличително, нисък риск
@@ -14,16 +14,16 @@ _Условия: търсено по думата „KCY Baby Radar" във ВС
 _Условия: търсено в App Store на 2 държави — САЩ (us) и Китай (cn), на английски по думата „KCY Baby Radar" (тип „software")._
 - MyRadar Weather Radar Pro — Aviation Data Systems, Inc (Weather)
 - NOAA Radar US — Shuksan Software, LLC (Weather)
+- NOAA SuperRes Radar US — Shuksan Software, LLC (Weather)
 - MyRadar Accurate Weather Radar — Aviation Data Systems, Inc (Weather)
+- Baby + | Your Baby Tracker — Philips Digital UK Limited (Medical)
 - Lollipop - Smart baby monitor — Masterwork Aoitek Tech Corp Ltd (Lifestyle)
 - WTOC First Alert Radar — Gray Television Group, Inc. (Weather)
-- Babylist Baby Registry — Baby List Inc. (Shopping)
+- Sense-U Baby — LEDO Network Inc. (Lifestyle)
+- BabyLab - Baby Maker Generator — Sociaaal LLC (Photo & Video)
+- MyVTech Baby Pro — VTech Telecommunications Limited (Lifestyle)
+- KPLC 7 First Alert Weather — Gray Television Group, Inc. (Weather)
 - KMBC 9 News - Kansas City — Hearst Television (News)
-- KFVS12 StormTeam Weather — Gray Television Group, Inc. (Weather)
-- KCRG-TV9 First Alert Weather — Gray Television Group, Inc. (Weather)
-- KCBD News Channel 11 — Gray Television Group, Inc. (News)
-- WJAR Radar — Sinclair Broadcast Group, Inc (Weather)
-- KETV NewsWatch 7 - Omaha — Hearst Television (News)
 
 ## Huawei AppGallery
 **Намерени заглавия: 0** · точни съвпадения на името: **0**
@@ -42,11 +42,11 @@ _Условия: прочетено от JSON API-то на AppGallery (getTabDe
 ╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **0** · свободни: **35** · несигурни: **14**
+**Проверени разширения: 49** · заети: **0** · свободни: **46** · несигурни: **3**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „KCY Baby Radar". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 Заети: няма.
-Свободни: 35 (напр. kcybabyradar.com, kcybabyradar.net, kcybabyradar.org, kcybabyradar.ai, kcybabyradar.app, kcybabyradar.news, kcybabyradar.media, kcybabyradar.press …)
-Несигурни (RDAP без отговор + без DNS): kcybabyradar.co, kcybabyradar.io, kcybabyradar.tv, kcybabyradar.me, kcybabyradar.biz, kcybabyradar.wiki, kcybabyradar.ink, kcybabyradar.design, kcybabyradar.club, kcybabyradar.vip, kcybabyradar.work, kcybabyradar.fit, kcybabyradar.health, kcybabyradar.fashion
+Свободни: 46 (напр. kcybabyradar.com, kcybabyradar.net, kcybabyradar.org, kcybabyradar.ai, kcybabyradar.app, kcybabyradar.news, kcybabyradar.media, kcybabyradar.press …)
+Несигурни (RDAP без отговор + без DNS): kcybabyradar.co, kcybabyradar.io, kcybabyradar.me
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

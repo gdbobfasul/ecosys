@@ -1,4 +1,4 @@
-# Release CHECKLIST — KCY FAQ Desk (Huawei AppGallery)
+# Release CHECKLIST — Pupikes FAQ Desk (Huawei AppGallery)
 
 ## Идентичност
 - [ ] App ID `com.kcy.businessfaqbot.huawei` (capacitor.config.json)

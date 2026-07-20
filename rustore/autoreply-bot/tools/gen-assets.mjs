@@ -65,7 +65,7 @@ function splash() {
   ${robot(540, 760, 170)}
   ${bubble(540, 1080, 150)}
   <text x="540" y="1420" font-family="system-ui, sans-serif" font-size="84"
-        font-weight="bold" fill="${THEME.accent2}" text-anchor="middle">Auto-Reply Bot</text>
+        font-weight="bold" fill="${THEME.accent2}" text-anchor="middle">Pupikes Auto Answer</text>
   <text x="540" y="1485" font-family="system-ui, sans-serif" font-size="38"
         fill="${THEME.ok}" text-anchor="middle">RUStore Edition</text>
 </svg>`;

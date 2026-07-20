@@ -1,6 +1,6 @@
-# KCY Ring Clash — RUStore билд
+# Pupikes Ring Clash — RUStore билд
 
-Самостоятелно мобилно приложение, което вгражда browser-играта **„KCY Ring Clash"**
+Самостоятелно мобилно приложение, което вгражда browser-играта **„Pupikes Ring Clash"**
 (походова фентъзи битка 1 срещу 1) като нативно Capacitor приложение.
 
 - **Магазин:** RUStore · **App ID:** `com.kcy.duel.rustore`

@@ -2,7 +2,7 @@
   "name": "titans-fight-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "Titans Fight - 2D fighting game (RUStore build). Self-contained Phaser 3 + Capacitor game. No GMS.",
+  "description": "Godfist Arena - 2D fighting game (RUStore build). Self-contained Phaser 3 + Capacitor game. No GMS.",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -1,4 +1,4 @@
-# Release Checklist — KCY Auto Answer (Huawei AppGallery)
+# Release Checklist — Pupikes Auto Answer (Huawei AppGallery)
 
 ## Преди публикация
 - [ ] `npm install` минава без грешки.

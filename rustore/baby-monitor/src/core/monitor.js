@@ -60,9 +60,9 @@ export function createMonitor({ videoEl, canvasEl, onTick, onEvent } = {}) {
     const ev = addEvent({ type, label, snapshot });
     // КРИТИЧНИ събития (опасност) → алармена мелодия + силна вибрация. Иначе мек сигнал.
     const critical = (type === 'stranger' || type === 'fire');
-    // Известие + звук (на ТОЗИ телефон — по избор; ако сме „KCY Baby Radar" може да няма кой да чуе).
+    // Известие + звук (на ТОЗИ телефон — по избор; ако сме „Pupikes Baby Radar" може да няма кой да чуе).
     notify({ title: t('app_title'), body: label, sound: st.sound, vibrate: st.vibrate, critical });
-    // ДВУФОНОВ режим: „KCY Baby Radar" праща събитието + смалена снимка към наблюдаващия телефон.
+    // ДВУФОНОВ режим: „Pupikes Baby Radar" праща събитието + смалена снимка към наблюдаващия телефон.
     if (isMonitor()) {
       sendAlert('babymonitor', type, label);
       try { const f = smallFrame(canvasEl); if (f) sendFrame(f, label); } catch (_) {}

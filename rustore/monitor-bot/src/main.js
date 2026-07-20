@@ -7,8 +7,8 @@ import { mountHelp } from './core/help.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
-mountEcosystem('monitor-bot'); // „Още от KCY Ecosystem" showcase
-playIntro(); // кратко „KCY Ecosystem" интро при старт
+mountEcosystem('monitor-bot'); // „Още от Pupikes" showcase
+playIntro(); // кратко „Pupikes" интро при старт
 startPromoAds('monitor-bot'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('monitor-bot'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('monitor-bot'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
@@ -115,7 +115,7 @@ async function boot() {
   current = state.onboarded ? 'dashboard' : 'onboarding';
   render();
 
-  // Свежа инсталация без монитори → ако в Downloads/KCY има запазен файл от предишна
+  // Свежа инсталация без монитори → ако в Downloads/Pupikes има запазен файл от предишна
   // инсталация, ПИТАМЕ дали да възстановим (изборът е на потребителя; питаме еднократно).
   if (!state.monitors.length && !state.restoreAsked) {
     readBackup().then(async (b) => {

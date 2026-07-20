@@ -1,4 +1,4 @@
-# Data Safety — KCY Auto Answer (RUStore)
+# Data Safety — Pupikes Auto Answer (RUStore)
 
 **Сбор на данни:** НЯМА.
 **Споделяне на данни:** НЯМА.

@@ -1,5 +1,5 @@
 id: authenticator
-name: KCY Authenticator
+name: Pupikes Authenticator
 folders:
   - rustore/authenticator
   - huawei/authenticator
@@ -24,10 +24,10 @@ website: https://bgmasters.net
 
 listings:
   ru:
-    title: KCY Authenticator
+    title: Pupikes Authenticator
     short: Коды 2FA (TOTP/HOTP/Steam) с шифрованным хранилищем — офлайн
     full: |
-      KCY Authenticator — это двухфакторная аутентификация (как Google Authenticator
+      Pupikes Authenticator — это двухфакторная аутентификация (как Google Authenticator
       и Aegis), полностью офлайн. Генерирует одноразовые коды TOTP, HOTP и Steam Guard.
 
       • Хранилище зашифровано: AES-GCM + PBKDF2 (мастер-пароль), плюс биометрия.
@@ -37,10 +37,10 @@ listings:
       • Экспорт всех аккаунтов в виде QR-картинок (.zip) и поиск дубликатов.
       • Интерфейс на 15 языках. Секреты не покидают устройство.
   en:
-    title: KCY Authenticator
+    title: Pupikes Authenticator
     short: 2FA codes (TOTP/HOTP/Steam) with an encrypted vault — offline
     full: |
-      KCY Authenticator is a two-factor authentication app (like Google Authenticator
+      Pupikes Authenticator is a two-factor authentication app (like Google Authenticator
       and Aegis), fully offline. It generates one-time TOTP, HOTP and Steam Guard codes.
 
       • Encrypted vault: AES-GCM + PBKDF2 (master password) plus biometric unlock.
@@ -50,10 +50,10 @@ listings:
       • Export all accounts as QR images (.zip) and find duplicates.
       • UI in 15 languages. Secrets never leave your device.
   bg:
-    title: KCY Authenticator
+    title: Pupikes Authenticator
     short: 2FA кодове (TOTP/HOTP/Steam) с шифриран сейф — офлайн
     full: |
-      KCY Authenticator е приложение за двуфакторно удостоверяване (като Google
+      Pupikes Authenticator е приложение за двуфакторно удостоверяване (като Google
       Authenticator и Aegis), напълно офлайн. Генерира еднократни TOTP, HOTP и Steam кодове.
 
       • Шифриран сейф: AES-GCM + PBKDF2 (master парола) и биометрия.

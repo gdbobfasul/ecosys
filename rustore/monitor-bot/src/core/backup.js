@@ -1,14 +1,14 @@
 // Version: 1.0013
 // backup.js — КОНФИГУРАЦИЯТА ВЪВ ФАЙЛ, който ОЦЕЛЯВА деинсталация (по модела на
 // selflearning-friend/recovery.js): мониторите + прокси адреса се записват в публичната
-// папка Downloads/KCY/site-monitor-config.json (Directory.ExternalStorage). При нова
+// папка Downloads/Pupikes/site-monitor-config.json (Directory.ExternalStorage). При нова
 // инсталация апът намира файла и ПИТА дали да възстанови. Резерв: Documents на апа
 // (видима, но се трие при деинсталация) — тогава го казваме честно.
 //
 // Плъгинът се взима СИНХРОННО от window.Capacitor.Plugins (НЕ динамичен import —
 // отделният chunk понякога увисва в WebView, виж бележката в storage.js).
 
-const DIR = 'KCY';
+const DIR = 'Pupikes';
 const FILE = 'site-monitor-config.json';
 const PUBLIC_PATH = `Download/${DIR}/${FILE}`;
 
@@ -52,7 +52,7 @@ export async function backupNow(state) {
   }
 }
 
-// Чете запазената конфигурация (или null). Търси първо в Downloads/KCY, после в Documents.
+// Чете запазената конфигурация (или null). Търси първо в Downloads/Pupikes, после в Documents.
 export async function readBackup() {
   const fs = fsPlugin();
   if (!fs) return null;

@@ -13,7 +13,7 @@
 - Splash фон: `#0a0612` (съвпада с `capacitor.config.json` backgroundColor).
 
 ## Метаданни
-- [ ] Заглавие: Titans Fight
+- [ ] Заглавие: Godfist Arena
 - [ ] Кратко + пълно описание (виж `LISTING.md`)
 - [ ] Категория: Игри / Екшън
 - [ ] Възрастов рейтинг: 6+

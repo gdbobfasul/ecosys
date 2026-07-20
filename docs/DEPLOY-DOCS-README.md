@@ -1,5 +1,5 @@
 <!-- Version: 1.0056 -->
-# 🚀 KCY Ecosystem - Deployment Scripts
+# 🚀 Pupikes - Deployment Scripts
 
 ## 📁 Структура:
 
@@ -148,7 +148,7 @@ kcy-restart
 ```
 
 Restarts:
-- KCY Chat service
+- Pupikes Chat service
 - Nginx
 
 ### View Logs

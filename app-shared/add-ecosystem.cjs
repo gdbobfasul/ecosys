@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// add-ecosystem.cjs — разпространява бутона/екрана „Още от KCY Ecosystem" във ВСЯКО приложение.
+// add-ecosystem.cjs — разпространява бутона/екрана „Още от Pupikes" във ВСЯКО приложение.
 // Копира src/core/ecosystem.js и вкарва mountEcosystem('<ап>') след enforceLock() в main.js.
 const fs = require('fs');
 const path = require('path');
@@ -18,7 +18,7 @@ function patch(appDir, appId) {
   main = main.replace(/(import\s*\{[^}]*\}\s*from\s*['"]\.\/core\/lock\.js['"];?\n)/,
     `$1import { mountEcosystem } from './core/ecosystem.js';\n`);
   if (!main.includes("from './core/ecosystem.js'")) main = `import { mountEcosystem } from './core/ecosystem.js';\n` + main;
-  main = main.replace(/(enforceLock\(\);?)/, `$1\nmountEcosystem('${appId}'); // „Още от KCY Ecosystem" showcase`);
+  main = main.replace(/(enforceLock\(\);?)/, `$1\nmountEcosystem('${appId}'); // „Още от Pupikes" showcase`);
   fs.writeFileSync(mainPath, main, 'utf8');
   return 'закърпено';
 }

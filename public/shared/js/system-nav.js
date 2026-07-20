@@ -1,4 +1,4 @@
-// KCY Ecosystem — СИСТЕМНО меню (различно от ecosystem nav-а).
+// Pupikes — СИСТЕМНО меню (различно от ecosystem nav-а).
 // За служебните/инструментални страници: System Status, Робот, Дърво.
 // Дава: 🏠 Начало + връзки между 3-те страници + админ dropdown за прескачане
 // между админските панели + "ЛОГНАТ АДМИН" бадж + бутон "изключи".
@@ -75,7 +75,7 @@
     var nav = document.createElement('nav');
     nav.className = 'kcy-sysnav';
     nav.innerHTML =
-      '<span class="brand">🚀 KCY</span>' +
+      '<span class="brand">🚀 Pupikes</span>' +
       toolsHtml +
       '<span class="sys-admin" id="sysAdmin">' +
         '<span class="sys-badge" id="sysBadge">🔴 ЛОГНАТ АДМИН</span>' +

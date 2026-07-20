@@ -1,7 +1,7 @@
 {
   "name": "kcy-portals",
   "version": "1.0093",
-  "description": "KCY Portals — Games & Services portal backend with auth + monthly fee + 4-variant access control",
+  "description": "Pupikes Portals — Games & Services portal backend with auth + monthly fee + 4-variant access control",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

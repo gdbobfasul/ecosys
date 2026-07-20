@@ -15,7 +15,7 @@ const STORE = join(ROOT, 'store');
 const ACCENT = '#f0a35c'; // Huawei акцент (праскова)
 const ACCENT_2 = '#ffc89a';
 const BG = '#0e1a17';
-const APP_TITLE = 'Детегледачка';
+const APP_TITLE = 'Pupikes Baby Radar';
 
 function hexToRgb(hex) {
   const h = hex.replace('#', '');

@@ -1,4 +1,4 @@
-# KCY Auto Answer — RUStore Edition
+# Pupikes Auto Answer — RUStore Edition
 
 „Робот под наем", който автоматично отговаря на съобщения по твои правила — **изцяло на устройството**.
 

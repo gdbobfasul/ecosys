@@ -1,6 +1,6 @@
 // summary.cjs — генерира обобщение за публикуване (`publish/SUMMARY.md`) за даден ап:
 // докъде сме стигнали (име, пакет, версия, готовност на скрийншоти/описания/meta) + ИСТОРИЯ
-// на всички пробвани имена (от docs/huawei/name-checks/). Така в папката на приложението
+// на всички пробвани имена (от docs/publish/huawei/name-checks/). Така в папката на приложението
 // винаги се вижда текущото състояние и какво сме пробвали.
 const fs = require('fs');
 const path = require('path');
@@ -22,7 +22,7 @@ function parseNameChecks(dir) {
     const name = (s.match(/#\s*Проверка на име:\s*(.+)/) || [])[1] || f.replace(/\.md$/, '');
     const risk = (s.match(/##\s*Оценка на риска:\s*\*\*(.+?)\*\*/) || [])[1] || '?';
     const why = (s.match(/##\s*Оценка на риска:[^\n]*\n-\s*(.+)/) || [])[1] || '';
-    return { name: name.trim(), risk: risk.trim(), why: why.trim().replace(/\|/g, '/'), file: 'docs/huawei/name-checks/' + f };
+    return { name: name.trim(), risk: risk.trim(), why: why.trim().replace(/\|/g, '/'), file: 'docs/publish/huawei/name-checks/' + f };
   });
 }
 

@@ -1,4 +1,4 @@
-# KCY Authenticator — как функционира
+# Pupikes Toolkit Authenticator — как функционира
 
 Двуфакторен автентикатор (като Google Authenticator / Aegis), напълно офлайн. Налично като мобилно приложение (RUStore + Huawei AppGallery) и като уеб услуга в Portal Services (`/portals/services/authenticator.html`). Една и съща логика и на трите цели.
 

@@ -1,4 +1,4 @@
-# Предпубликационен чеклист — Цена-робот (RUStore)
+# Предпубликационен чеклист — Pupikes Market Pulse (RUStore)
 
 - [ ] `appId` = `com.kcy.pricewatchbot.rustore` (capacitor.config.json)
 - [ ] Версия вдигната в package.json

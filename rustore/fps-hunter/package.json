@@ -2,7 +2,7 @@
   "name": "fps-hunter-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "FPS Hunter - 3D first-person shooter (RUStore build). Self-contained Three.js + Capacitor game. 100 procedural levels, local SQLite leaderboard. No GMS.",
+  "description": "Huntline 3D - 3D first-person shooter (RUStore build). Self-contained Three.js + Capacitor game. 100 procedural levels, local SQLite leaderboard. No GMS.",
   "type": "module",
   "scripts": {
     "dev": "vite",

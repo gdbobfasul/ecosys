@@ -1,4 +1,4 @@
-# KCY Ecosystem - Test Suite
+# Pupikes - Test Suite
 
 **⚠️ ВАЖНО: Тестовете се пускат САМО на сървъра!**
 

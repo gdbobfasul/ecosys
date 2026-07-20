@@ -74,7 +74,7 @@ function splash() {
   ${projectile(260, 1020, 32, '#eaf4ff')}
   ${projectile(820, 1000, 38, THEME.danger)}
   <text x="540" y="1320" font-family="system-ui, sans-serif" font-size="96"
-        font-weight="bold" fill="${THEME.primary}" text-anchor="middle">DODGE MASTER</text>
+        font-weight="bold" fill="${THEME.primary}" text-anchor="middle">EVADE ARENA</text>
   <text x="540" y="1390" font-family="system-ui, sans-serif" font-size="40"
         fill="${THEME.accent}" text-anchor="middle">RUStore Edition</text>
 </svg>`;

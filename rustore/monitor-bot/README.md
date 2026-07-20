@@ -1,4 +1,4 @@
-# KCY Site Monitor (Source-Watch Bot) — RUStore издание
+# Pupikes Site Monitor (Source-Watch Bot) — RUStore издание
 
 Самостоятелно мобилно приложение от типа „робот под наем": активираш робот, който
 следи източник (RSS/Atom емисия или публично JSON API) и те известява локално,

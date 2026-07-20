@@ -1,11 +1,11 @@
 {
-  "_comment": "Каталог за екрана „Още от KCY Ecosystem\". Редактирай ПРЕДИ билд: enabled:true за одобрените/публикуваните, финално name и storeUrl (линк за сваляне). Билдът го копира в dist/kcy-promo.json на всеки апп.",
+  "_comment": "Каталог за екрана „Още от Pupikes\". Редактирай ПРЕДИ билд: enabled:true за одобрените/публикуваните, финално name и storeUrl (линк за сваляне). Билдът го копира в dist/kcy-promo.json на всеки апп.",
   "updated": "",
   "apps": [
     {
       "id": "authenticator",
       "enabled": true,
-      "name": "KCY Toolkit Authenticator",
+      "name": "Pupikes Toolkit Authenticator",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/authenticator.png",
       "text": {
@@ -29,7 +29,7 @@
     {
       "id": "autoreply-bot",
       "enabled": false,
-      "name": "KCY Auto Answer",
+      "name": "Pupikes Auto Answer",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/autoreply-bot.png",
       "text": {
@@ -53,7 +53,7 @@
     {
       "id": "baby-monitor",
       "enabled": false,
-      "name": "KCY Baby Radar",
+      "name": "Pupikes Baby Radar",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/baby-monitor.png",
       "text": {
@@ -77,7 +77,7 @@
     {
       "id": "business-faq-bot",
       "enabled": false,
-      "name": "KCY FAQ Desk",
+      "name": "Pupikes FAQ Desk",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/business-faq-bot.png",
       "text": {
@@ -101,7 +101,7 @@
     {
       "id": "camera-watch",
       "enabled": false,
-      "name": "Камера-страж",
+      "name": "MotionHawk",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/camera-watch.png",
       "text": {
@@ -125,31 +125,31 @@
     {
       "id": "chat",
       "enabled": false,
-      "name": "KCY Chat",
+      "name": "Pupikes Chat",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/chat.png",
       "text": {
-        "bg": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "ru": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "uk": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "en": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "de": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "fr": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "es": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "es-MX": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "it": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "pt": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "ar": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "hi": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "ja": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "ky": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-        "zh-Hant": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online."
+        "bg": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "ru": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "uk": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "en": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "de": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "fr": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "es": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "es-MX": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "it": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "pt": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "ar": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "hi": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "ja": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "ky": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+        "zh-Hant": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online."
       }
     },
     {
       "id": "dodge-master",
       "enabled": false,
-      "name": "Dodge Master",
+      "name": "EvadeArena",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/dodge-master.png",
       "text": {
@@ -173,7 +173,7 @@
     {
       "id": "duel",
       "enabled": false,
-      "name": "KCY Ring Clash",
+      "name": "Pupikes Ring Clash",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/duel.png",
       "text": {
@@ -197,7 +197,7 @@
     {
       "id": "fps-hunter",
       "enabled": false,
-      "name": "FPS Hunter",
+      "name": "Huntline 3D",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/fps-hunter.png",
       "text": {
@@ -221,7 +221,7 @@
     {
       "id": "hmm",
       "enabled": false,
-      "name": "KCY Field Battle",
+      "name": "Pupikes Field Battle",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/hmm.png",
       "text": {
@@ -269,7 +269,7 @@
     {
       "id": "monitor-bot",
       "enabled": true,
-      "name": "KCY Site Monitor",
+      "name": "Pupikes Site Monitor",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/monitor-bot.png",
       "text": {
@@ -317,7 +317,7 @@
     {
       "id": "plane-shooter",
       "enabled": false,
-      "name": "Plane Shooter",
+      "name": "Warbird Rush",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/plane-shooter.png",
       "text": {
@@ -341,7 +341,7 @@
     {
       "id": "price-watch-bot",
       "enabled": true,
-      "name": "KCY Toolkit Price Watch",
+      "name": "Pupikes Toolkit Price Watch",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/price-watch-bot.png",
       "text": {
@@ -365,7 +365,7 @@
     {
       "id": "routine-bot",
       "enabled": false,
-      "name": "KCY Routine Planner",
+      "name": "Pupikes Routine Planner",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/routine-bot.png",
       "text": {
@@ -389,7 +389,7 @@
     {
       "id": "rustam",
       "enabled": true,
-      "name": "Рустам бере краставици",
+      "name": "Rustam picks cucumbers",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/rustam.png",
       "text": {
@@ -413,7 +413,7 @@
     {
       "id": "selflearning-friend",
       "enabled": false,
-      "name": "KCY Learning Buddy",
+      "name": "Pupikes Learning Buddy",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/selflearning-friend.png",
       "text": {
@@ -437,7 +437,7 @@
     {
       "id": "services-toolkit",
       "enabled": true,
-      "name": "KCY Toolkit",
+      "name": "Pupikes Toolkit",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/services-toolkit.png",
       "text": {
@@ -461,7 +461,7 @@
     {
       "id": "titans-fight",
       "enabled": false,
-      "name": "Titans Fight",
+      "name": "Godfist Arena",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/titans-fight.png",
       "text": {
@@ -485,7 +485,7 @@
     {
       "id": "kcy-toolkit-pdf",
       "enabled": true,
-      "name": "KCY Toolkit PDF",
+      "name": "Pupikes Toolkit PDF",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/kcy-toolkit-pdf.png",
       "text": {
@@ -509,7 +509,7 @@
     {
       "id": "kcy-toolkit-qr",
       "enabled": true,
-      "name": "KCY Toolkit QR",
+      "name": "Pupikes Toolkit QR",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/kcy-toolkit-qr.png",
       "text": {
@@ -533,7 +533,7 @@
     {
       "id": "kcy-toolkit-ai-announcement",
       "enabled": true,
-      "name": "KCY Toolkit AI Announcement",
+      "name": "Pupikes Toolkit AI Announcement",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/kcy-toolkit-ai-announcement.png",
       "text": {
@@ -557,7 +557,7 @@
     {
       "id": "kcy-toolkit-text",
       "enabled": true,
-      "name": "KCY Toolkit Text",
+      "name": "Pupikes Toolkit Text",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/kcy-toolkit-text.png",
       "text": {
@@ -581,7 +581,7 @@
     {
       "id": "kcy-toolkit-finance",
       "enabled": true,
-      "name": "KCY Toolkit Finance",
+      "name": "Pupikes Toolkit Finance",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/kcy-toolkit-finance.png",
       "text": {
@@ -605,7 +605,7 @@
     {
       "id": "kcy-toolkit-pictures",
       "enabled": true,
-      "name": "KCY Toolkit Pictures",
+      "name": "Pupikes Toolkit Pictures",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/kcy-toolkit-pictures.png",
       "text": {
@@ -629,7 +629,7 @@
     {
       "id": "kcy-toolkit-videos",
       "enabled": true,
-      "name": "KCY Toolkit Videos",
+      "name": "Pupikes Toolkit Videos",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/kcy-toolkit-videos.png",
       "text": {
@@ -653,7 +653,7 @@
     {
       "id": "kcy-toolkit-sound",
       "enabled": true,
-      "name": "KCY Toolkit Sound",
+      "name": "Pupikes Toolkit Sound",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/kcy-toolkit-sound.png",
       "text": {
@@ -677,7 +677,7 @@
     {
       "id": "kcy-toolkit-passwords",
       "enabled": true,
-      "name": "KCY Toolkit Passwords",
+      "name": "Pupikes Toolkit Passwords",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/kcy-toolkit-passwords.png",
       "text": {
@@ -701,7 +701,7 @@
     {
       "id": "kcy-toolkit-scraper",
       "enabled": true,
-      "name": "KCY Toolkit Scraper",
+      "name": "Pupikes Toolkit Scraper",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/kcy-toolkit-scraper.png",
       "text": {

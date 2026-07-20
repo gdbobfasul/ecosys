@@ -46,8 +46,8 @@ async function boot() {
   if (await reachable()) window.location.replace(HLB_URL);
   else offline();
 }
-try { playIntro(); // екран 1: интрото „KCY Ecosystem“ (като начало на филм)
-mountEcosystem('houselookbook'); // футър/каталог „Още от KCY Ecosystem“
+try { playIntro(); // екран 1: интрото „Pupikes“ (като начало на филм)
+mountEcosystem('houselookbook'); // футър/каталог „Още от Pupikes“
 startPromoAds('houselookbook');
 mountHelp('houselookbook'); } catch (e) {}
 mountPrivacyLink('houselookbook', { account: true }); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт

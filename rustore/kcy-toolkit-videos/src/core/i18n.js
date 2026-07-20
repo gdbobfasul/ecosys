@@ -1,5 +1,5 @@
 // Version: 1.0015
-// i18n.js — преводен слой за KCY Toolkit на 15-те езика. Дефолт руски.
+// i18n.js — преводен слой за Pupikes Toolkit на 15-те езика. Дефолт руски.
 import { LANGUAGES } from './languages.js';
 
 const LS_KEY = 'servicestoolkit.lang';

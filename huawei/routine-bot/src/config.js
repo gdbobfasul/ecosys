@@ -5,7 +5,7 @@
 export const APP_CONFIG = {
   store: 'huawei',
   appId: 'com.kcy.routinebot.hw',
-  appName: 'KCY Routine Planner',
+  appName: 'Pupikes Routine Planner',
   storeName: 'AppGallery',
   // Акцентен цвят на темата — Huawei издание (тийл/зелено).
   accent: '#0d9488',

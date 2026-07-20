@@ -2,7 +2,7 @@
   "name": "services-toolkit-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Toolkit — самостоятелно офлайн мобилно приложение с полезни инструменти (RUStore издание).",
+  "description": "Pupikes Toolkit — самостоятелно офлайн мобилно приложение с полезни инструменти (RUStore издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

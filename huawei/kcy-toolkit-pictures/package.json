@@ -2,7 +2,7 @@
   "name": "kcy-toolkit-pictures-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Toolkit Pictures — част от KCY Toolkit семейството (Huawei издание).",
+  "description": "Pupikes Toolkit Pictures — част от Pupikes Toolkit семейството (Huawei издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

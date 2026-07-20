@@ -7,8 +7,8 @@ import { mountHelp } from './core/help.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
-mountEcosystem('kcy-toolkit-sound'); // „Още от KCY Ecosystem" showcase
-playIntro(); // кратко „KCY Ecosystem" интро при старт
+mountEcosystem('kcy-toolkit-sound'); // „Още от Pupikes" showcase
+playIntro(); // кратко „Pupikes" интро при старт
 startPromoAds('kcy-toolkit-sound'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
 mountHelp('kcy-toolkit-sound'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('kcy-toolkit-sound'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
@@ -63,7 +63,7 @@ function renderHome() {
     <div class="view">
       <div class="hero">
         <button class="lang-toggle" id="langbtn" title="${esc(t('lang_btn'))}">${esc(t('lang_btn'))}</button>
-        <h1>KCY Toolkit Sound</h1>
+        <h1>Pupikes Toolkit Sound</h1>
         <p>${esc(t('home_sub'))}</p>
       </div>
       <input class="search" id="search" type="search" placeholder="${esc(t('search_ph'))}" autocomplete="off" />

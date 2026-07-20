@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.dodgemaster.hw",
-  "appName": "Dodge Master",
+  "appName": "EvadeArena",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

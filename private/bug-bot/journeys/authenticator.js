@@ -1,5 +1,5 @@
 // Version: 1.0174
-// KCY AUTHENTICATOR — ЛОКАЛНО журито (без телефон, без прод):
+// Pupikes AUTHENTICATOR — ЛОКАЛНО журито (без телефон, без прод):
 //   1) Ползва ГОТОВИЯ билд rustore/authenticator/dist (същият код, който влиза в APK-то;
 //      ако липсва → билдва го с vite).
 //   2) Вдига собствен мини уеб сървър на случаен порт и кара Playwright да мине през
@@ -136,7 +136,7 @@ const PASS2 = 'kcyrobot456';
 
 module.exports = {
   app: 'authenticator',
-  label: 'KCY Authenticator (ЛОКАЛНО: пълен тест на всички функции, без телефон)',
+  label: 'Pupikes Toolkit Authenticator (ЛОКАЛНО: пълен тест на всички функции, без телефон)',
   writes: false,           // пише само в собствения си локален сървър/временни файлове
   local: true,             // база = ctx.localBase (не целта prod/vm)
 
@@ -163,7 +163,7 @@ module.exports = {
     ctx.csvFile = path.join(ctx.tmp, 'chrome-import.csv');
     fs.writeFileSync(ctx.csvFile,
       'name,url,username,password\n' +
-      'KCY Portal,https://portal.kcy/login,robot,s3cretX\n' +          // дубликат на ръчния запис
+      'Pupikes Portal,https://portal.kcy/login,robot,s3cretX\n' +          // дубликат на ръчния запис
       'NewsSite,https://news.example.com/login,reader,readpass1\n');
   },
 
@@ -180,7 +180,7 @@ module.exports = {
           page.on('dialog', (d) => d.accept().catch(() => {}));
         } },
         { goto: '/' },
-        { label: 'интрото „KCY Ecosystem" се показва и си заминава', run: async (page) => {
+        { label: 'интрото „Pupikes" се показва и си заминава', run: async (page) => {
           await page.waitForSelector('#kcy-intro', { state: 'attached', timeout: 6000 }).catch(() => {});
           await page.waitForSelector('#kcy-intro', { state: 'detached', timeout: 15000 });
         } },
@@ -574,12 +574,12 @@ module.exports = {
           await page.click('.tabbar .tab:has-text("Пароли")');
           await page.click('.fab');
           await page.waitForSelector('.content input[type=text]', { timeout: 5000 });
-          await page.fill('.content input[type=text] >> nth=0', 'KCY Portal');
+          await page.fill('.content input[type=text] >> nth=0', 'Pupikes Portal');
           await page.fill('.content input[type=text] >> nth=1', 'https://portal.kcy/login');
           await page.fill('.content input[type=text] >> nth=2', 'robot');
           await page.fill('.content input[type=password] >> nth=0', 's3cretX');
           await page.click('button:has-text("Запази")');
-          await page.waitForSelector('.entry:has-text("KCY Portal")', { timeout: 5000 });
+          await page.waitForSelector('.entry:has-text("Pupikes Portal")', { timeout: 5000 });
         } },
         { label: 'Настройки → CSV импорт: 1 нов + 1 дубликат прескочен', run: async (page, c) => {
           await page.click('.topbar .icon-btn');
@@ -597,7 +597,7 @@ module.exports = {
         { label: 'дубликати на пароли: копие → намира се → трие се', run: async (page) => {
           await page.click('button.icon-btn:has-text("←")');
           await page.click('.fab');
-          await page.fill('.content input[type=text] >> nth=0', 'KCY Portal Copy');
+          await page.fill('.content input[type=text] >> nth=0', 'Pupikes Portal Copy');
           await page.fill('.content input[type=text] >> nth=1', 'https://portal.kcy/other');
           await page.fill('.content input[type=text] >> nth=2', 'robot');
           await page.click('button:has-text("Запази")');
@@ -719,7 +719,7 @@ module.exports = {
       ],
     },
     {
-      name: 'Долната KCY лента: версия + бутони на всеки екран',
+      name: 'Долната Pupikes лента: версия + бутони на всеки екран',
       steps: [
         NORM,
         { label: 'лентата е долу, версията съвпада с билда', run: async (page, c) => {
@@ -729,7 +729,7 @@ module.exports = {
             const ver = (await page.locator('#kcy-bar-ver').innerText().catch(() => '')).trim();
             if (ver !== 'v' + c.appVersion) throw new Error(`версията в лентата е „${ver}", очаквах v${c.appVersion}`);
           }
-          for (const txt of ['KCY Ecosystem', 'Помощ', 'Поверителност', 'Условия']) {
+          for (const txt of ['Pupikes', 'Помощ', 'Поверителност', 'Условия']) {
             const ok = await page.locator('#kcy-bar >> text=' + txt).first().isVisible().catch(() => false);
             if (!ok) throw new Error('в лентата липсва бутон „' + txt + '"');
           }

@@ -1,4 +1,4 @@
-# TESTING — KCY FAQ Desk (RUStore)
+# TESTING — Pupikes FAQ Desk (RUStore)
 
 ## Тест в браузър (работи СЕГА, без Android SDK)
 1. `npm install`

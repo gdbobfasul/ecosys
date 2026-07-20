@@ -1,5 +1,5 @@
 id: fps-hunter
-name: FPS Hunter
+name: Huntline 3D
 folders:
   - rustore/fps-hunter
   - huawei/fps-hunter
@@ -23,10 +23,10 @@ website: https://bgmasters.net
 
 listings:
   ru:
-    title: FPS Hunter
+    title: Huntline 3D
     short: "3D шутер от первого лица: 100 уровней охоты, разное оружие"
     full: |
-      FPS Hunter — 3D охотничий шутер от первого лица. Двигайся по разным ландшафтам
+      Huntline 3D — 3D охотничий шутер от первого лица. Двигайся по разным ландшафтам
       (лес, поле, снег, пустыня, холмы, болото, городские руины), процедурно меняющимся
       от уровня к уровню, и поражай цели.
 
@@ -40,10 +40,10 @@ listings:
         кнопка ОГОНЬ; ПК — WASD + мышь, ЛКМ стрельба.
       • Локальный рекорд (SQLite на устройстве). Полностью офлайн, без рекламы и покупок.
   en:
-    title: FPS Hunter
+    title: Huntline 3D
     short: "3D first-person shooter: 100 hunting levels, varied weapons"
     full: |
-      FPS Hunter is a 3D first-person hunting shooter. Move across varied terrains
+      Huntline 3D is a 3D first-person hunting shooter. Move across varied terrains
       (forest, field, snow, desert, hills, swamp, city ruins) that change procedurally
       level to level, and take down the targets.
 
@@ -58,10 +58,10 @@ listings:
         desktop — WASD + mouse, left click to shoot.
       • Local high score (on-device SQLite). Fully offline, no ads, no purchases.
   bg:
-    title: FPS Hunter
+    title: Huntline 3D
     short: "3D шутър от първо лице: 100 нива лов, различни оръжия"
     full: |
-      FPS Hunter е 3D ловен шутър от първо лице. Движиш се по различни терени (гора,
+      Huntline 3D е 3D ловен шутър от първо лице. Движиш се по различни терени (гора,
       поле, сняг, пустиня, хълмове, блато, градски руини), които се менят процедурно по
       ниво, и поразяваш целите.
 

@@ -1,4 +1,4 @@
-# KCY Chat — Testing notes (Huawei AppGallery)
+# Pupikes Chat — Testing notes (Huawei AppGallery)
 
 ## Какво прави приложението
 WebView обвивка, която зарежда продукционния чат `https://my.girl.place`.

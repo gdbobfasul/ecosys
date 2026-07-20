@@ -10,7 +10,7 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 const ACCENT = '#c8102e';
 const ACCENT2 = '#ff5252';
 const BG = '#1a0608';
-const LABEL = 'KCY Chat';
+const LABEL = 'Pupikes Chat';
 
 mkdirSync('store', { recursive: true });
 

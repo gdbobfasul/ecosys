@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0019
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -7,8 +7,8 @@ import { mountHelp } from './core/help.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
-mountEcosystem('market-pulse');            // балонче „✨ KCY" + showcase (ненатрапчиво)
-playIntro();                               // ЕКРАН 1: 2-3 сек интро „KCY Ecosystem" (кой е производителят)
+mountEcosystem('market-pulse');            // балонче „✨ Pupikes" + showcase (ненатрапчиво)
+playIntro();                               // ЕКРАН 1: 2-3 сек интро „Pupikes" (кой е производителят)
 startPromoAds('market-pulse');             // реклами — гейтнати по модел (платен → изкл)
 mountHelp('market-pulse');                 // универсален бутон „Помощ"
 mountPrivacyLink('market-pulse');          // footer линк към политиката (per-store)

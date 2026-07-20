@@ -3,12 +3,12 @@
 //
 // Защо: на Android (особено Huawei/RuStore без Google) при деинсталация ОС-ът трие всичко
 // приложенско (Preferences/localStorage). За да не се губят настройките и знанието, ги записваме
-// във ФАЙЛ в публична папка Downloads/KCY (оцелява деинсталация) + предлагаме Споделяне (потребителят
+// във ФАЙЛ в публична папка Downloads/Pupikes (оцелява деинсталация) + предлагаме Споделяне (потребителят
 // го премества където иска). При нова инсталация апът ПИТА и зарежда файла (изборът е на потребителя).
 //
 // Канали (по решение на собственика — опция „В"):
-//   • Запис: Filesystem → Downloads/KCY/<име>.json (публично, оцелява); резерв Documents; + Share.
-//   • Възстановяване: избор на файл през filepick (надеждно четене в WebView) ИЛИ авто-намиране в Downloads/KCY.
+//   • Запис: Filesystem → Downloads/Pupikes/<име>.json (публично, оцелява); резерв Documents; + Share.
+//   • Възстановяване: избор на файл през filepick (надеждно четене в WebView) ИЛИ авто-намиране в Downloads/Pupikes.
 //
 // Разпознаване на АДМИНА: бекъп файлът носи подписан админ-маркер (виж packs.adminMarker). Ако при
 // зареждане маркерът е валиден → апът разпознава админа и отключва админските речници автоматично.
@@ -27,7 +27,7 @@ import {
   importBundledPack, importPackFromUrl, importFromCatalog, loadedThemes
 } from './packs.js';
 
-const DEFAULT_FOLDER = 'KCY';                 // подпапка в Downloads
+const DEFAULT_FOLDER = 'Pupikes';                 // подпапка в Downloads
 const DEFAULT_SETTINGS_NAME = 'slf-settings'; // без .json
 const DEFAULT_KNOWLEDGE_NAME = 'slf-knowledge';
 
@@ -88,7 +88,7 @@ export function buildKnowledgeBundle() {
   };
 }
 
-// ── Запис на файл (публична папка Downloads/KCY + резерв + Share) ────────────────────────
+// ── Запис на файл (публична папка Downloads/Pupikes + резерв + Share) ────────────────────────
 async function writeFile(fileName, json) {
   const mod = await fsMod();
   if (!mod) return { ok: false, reason: 'Липсва Filesystem плъгинът (нужен билд с cap sync).' };
@@ -221,7 +221,7 @@ export async function restoreFromPickedFile() {
   return applyBundle(data);
 }
 
-// ── Авто-намиране на бекъп в Downloads/KCY (за питане при нова инсталация) ───────────────
+// ── Авто-намиране на бекъп в Downloads/Pupikes (за питане при нова инсталация) ───────────────
 // Връща { found, settings?, knowledge? } със суровия JSON текст на всеки намерен файл.
 export async function findLocalRecovery() {
   if (!isNative()) return { found: false };

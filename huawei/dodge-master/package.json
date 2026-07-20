@@ -2,7 +2,7 @@
   "name": "dodge-master-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "Dodge Master - top-down dodge/survival game (Huawei AppGallery build). Self-contained Phaser 3 + Capacitor game.",
+  "description": "EvadeArena - top-down dodge/survival game (Huawei AppGallery build). Self-contained Phaser 3 + Capacitor game.",
   "type": "module",
   "scripts": {
     "dev": "vite",

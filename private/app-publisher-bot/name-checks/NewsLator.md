@@ -1,6 +1,6 @@
 # Проверка на име: NewsLator
 
-_2026-07-19T15:07:00.383Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:37:19.013Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 
@@ -18,9 +18,9 @@ _Условия: търсено в App Store на 2 държави — САЩ (u
 - PressReader: News & Magazines — PressReader Inc (News)
 - TOI Breaking News App & ePaper — Times Internet Limited (News)
 - AP News — The Associated Press (News)
+- Scripps News — Media Convergence Group, Inc. (News)
 - Opera News: Breaking & Local — Opera Norway AS (News)
 - NewsNation: Unbiased News — Nexstar Broadcasting, Inc. (News)
-- Scripps News — Media Convergence Group, Inc. (News)
 
 ## Huawei AppGallery
 **Намерени заглавия: 0** · точни съвпадения на името: **0**
@@ -39,32 +39,25 @@ _Условия: прочетено от JSON API-то на AppGallery (getTabDe
 ╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **3** · свободни: **44** · несигурни: **2**
+**Проверени разширения: 49** · заети: **3** · свободни: **30** · несигурни: **16**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „NewsLator". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 
 Заети (малко — оглед на съдържание и ниша):
 - **newslator.com** → нишата неясна
 - **newslator.org** → нишата неясна
 - **newslator.so** → сайтът не отговаря
-Свободни: 44 (напр. newslator.net, newslator.co, newslator.io, newslator.ai, newslator.app, newslator.news, newslator.media, newslator.press …)
-Несигурни (RDAP без отговор + без DNS): newslator.me, newslator.ac
+Свободни: 30 (напр. newslator.net, newslator.ai, newslator.app, newslator.news, newslator.media, newslator.press, newslator.live, newslator.xyz …)
+Несигурни (RDAP без отговор + без DNS): newslator.co, newslator.io, newslator.tv, newslator.me, newslator.biz, newslator.wiki, newslator.ink, newslator.design, newslator.club, newslator.vip, newslator.work, newslator.fit, newslator.health, newslator.fashion, newslator.us, newslator.ac
 
 ## Интернет страници и ниши (в кои области се ползва името)
-**Намерени страници: 4**
+**Намерени страници: 0**
 _Условия: общо уеб търсене по ТОЧНОТО име „NewsLator" (в кавички), на английски, без конкретна държава._
-Разпознати ниши: социални мрежи (3), новини/медия (2), софтуер/ИТ (2), право/имиграция (1)
-
-| Сайт | Заглавие | Ниши |
-|---|---|---|
-| instagram.com | NewsLator (@newslator) • Instagram photos and videos | социални мрежи |
-| facebook.com | NewsLator - Facebook | социални мрежи |
-| ghidini-associati.it | NEWSLATOR - La Rassegna di marzo-aprile 2026 | — |
-| github.com | desaroger/newslator: Newspaper aggregator made with Symfony  | новини/медия, софтуер/ИТ |
+→ Няма ясни резултати за точното име.
 
 ## Сигнали за патент (ориентировъчно)
-**Намерени сигнали: 1**
+**Намерени сигнали: 0**
 _Условия: уеб търсене „NewsLator patent" (на английски). Ориентировъчно — потвърждава се в Google Patents/официалните бази._
-- [Ghidini, Girino &amp; Associati Law Firm: NewsLator archives](https://www.ghidini-associati.it/en/newslator-en/)
+→ Няма ясни сигнали.
 
 ## Връзки за РЪЧНА официална проверка
 - WIPO Global Brand Database: https://branddb.wipo.int/  (търси: NewsLator, филтър China/Russia)

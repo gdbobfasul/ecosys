@@ -1,6 +1,6 @@
 A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to turn the fight.
 
-Битка на терен — 3 срещу 3
+Pupikes Field Battle — 3 срещу 3
 
 Походова битка. Героите ти излизат <b>произволно</b> на всяко ниво.
 

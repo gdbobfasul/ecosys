@@ -17,7 +17,7 @@
     "location": false,
     "notifications": true,
     "storesLocalOnly": true,
-    "notes": "Rules and reply logs are stored on the device only. Network is used optionally to connect the KCY chat channel over HTTP. No account, no contacts, no tracking."
+    "notes": "Rules and reply logs are stored on the device only. Network is used optionally to connect the Pupikes chat channel over HTTP. No account, no contacts, no tracking."
   },
   "reviewerRemarksEn": "No account or login is needed. On first launch choose a language, then tap 'Activate the robot — free' on the onboarding screen. Open the 'Demo' (inbox) tab and send a test message; the bot matches your rules and auto-replies, and the reply appears in the dashboard log. Nothing external is required to evaluate the app.",
   "pricing": {

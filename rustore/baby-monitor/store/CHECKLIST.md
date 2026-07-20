@@ -1,4 +1,4 @@
-# Release checklist — KCY Baby Radar (RUStore)
+# Release checklist — Pupikes Baby Radar (RUStore)
 
 - [ ] `npm install` минава без грешки.
 - [ ] `npm run build` минава (големият TF.js chunk е очакван — lazy-load).

@@ -1,4 +1,4 @@
-# KCY Chat — Testing notes (RUStore)
+# Pupikes Chat — Testing notes (RUStore)
 
 ## Какво прави приложението
 WebView обвивка, която зарежда продукционния чат `https://my.girl.place`.

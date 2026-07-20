@@ -47,7 +47,7 @@
         "location": false,
         "notifications": true,
         "storesLocalOnly": true,
-        "notes": "Rules and reply logs are stored on the device only. Network is used optionally to connect the KCY chat channel over HTTP. No account, no contacts, no tracking."
+        "notes": "Rules and reply logs are stored on the device only. Network is used optionally to connect the Pupikes chat channel over HTTP. No account, no contacts, no tracking."
       },
       "reviewerRemarksEn": "No account or login is needed. On first launch choose a language, then tap 'Activate the robot — free' on the onboarding screen. Open the 'Demo' (inbox) tab and send a test message; the bot matches your rules and auto-replies, and the reply appears in the dashboard log. Nothing external is required to evaluate the app."
     },
@@ -93,7 +93,7 @@
         "location": false,
         "notifications": true,
         "storesLocalOnly": true,
-        "notes": "The FAQ knowledge base and settings are stored only on the device. Core answering works fully offline; network is used only for the optional KCY chat channel over HTTP. No accounts, no contacts, no tracking."
+        "notes": "The FAQ knowledge base and settings are stored only on the device. Core answering works fully offline; network is used only for the optional Pupikes chat channel over HTTP. No accounts, no contacts, no tracking."
       },
       "reviewerRemarksEn": "No account or login is needed. On first launch choose a language and tap 'Activate the bot'. Keep the sample knowledge base, then open the Demo chat and type a question containing a keyword; the bot replies from the FAQ, respects office hours, and offers escalation. All evaluation can be done offline in the demo chat."
     },
@@ -125,8 +125,8 @@
       "isGame": false,
       "generativeAI": false,
       "descKeys": [],
-      "pitchEn": "A real-time messaging app that connects you to the KCY chat service. Pick from 15 languages and start chatting once you are online.",
-      "newFeaturesEn": "First release of KCY Chat: real-time messaging in 15 languages with a clean connect/offline experience.",
+      "pitchEn": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
+      "newFeaturesEn": "First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.",
       "dataHandling": {
         "collectsPersonalData": true,
         "accountsOrLogin": true,
@@ -148,7 +148,7 @@
         "tagline"
       ],
       "pitchEn": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficulty. Beat your best score and climb a local leaderboard.",
-      "newFeaturesEn": "First release of Dodge Master: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.",
+      "newFeaturesEn": "First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.",
       "dataHandling": {
         "collectsPersonalData": false,
         "accountsOrLogin": false,
@@ -196,7 +196,7 @@
         "controls_help"
       ],
       "pitchEn": "A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.",
-      "newFeaturesEn": "First release of FPS Hunter: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.",
+      "newFeaturesEn": "First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.",
       "dataHandling": {
         "collectsPersonalData": false,
         "accountsOrLogin": false,

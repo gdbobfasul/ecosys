@@ -1,5 +1,5 @@
 id: selflearning-friend
-name: Самообучаващ се приятел
+name: Pupikes Learning Buddy
 folders:
   - rustore/selflearning-friend
   - huawei/selflearning-friend
@@ -65,10 +65,10 @@ listings:
       • No accounts, no contacts, no tracking. Optionally link your own server
         (domain + token) that you provide yourself.
   bg:
-    title: Самообучаващ се приятел
+    title: Pupikes Learning Buddy
     short: Личен бот за един собственик — учи се локално, глас и зрение
     full: |
-      Самообучаващ се приятел е личен бот-приятел, който се учи локално и е заключен
+      Pupikes Learning Buddy е личен бот-приятел, който се учи локално и е заключен
       за един собственик. При първо отваряне пита „Как да се нарека?"; тази дума е
       твоята кодова фраза за достъп (пази се като SHA-256 хеш, без подсказка). На
       всяко отваряне пита „Как се казвам?" и допуска само собственика.

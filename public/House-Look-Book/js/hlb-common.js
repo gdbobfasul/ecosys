@@ -109,7 +109,7 @@ const HLB = (function () {
   return { api, me, mountNav, esc };
 })();
 
-// ── „Още от KCY Ecosystem" — плаващ бутон със ✕ (Version: 1.0005) ─────────────────────────
+// ── „Още от Pupikes" — плаващ бутон със ✕ (Version: 1.0005) ─────────────────────────
 // Зарежда js/kcy-eco-web.js (копие на public/shared/kcy-eco-web.js) САМО когато сайтът е
 // отворен ВЪТРЕ в мобилното приложение (Capacitor) — посетителите в браузър не го виждат.
 (function () {

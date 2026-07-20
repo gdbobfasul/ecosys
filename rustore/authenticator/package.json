@@ -2,7 +2,7 @@
   "name": "authenticator-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Toolkit Authenticator — двуфакторни кодове (TOTP/HOTP/Steam) с шифриран сейф. RUStore издание.",
+  "description": "Pupikes Toolkit Authenticator — двуфакторни кодове (TOTP/HOTP/Steam) с шифриран сейф. RUStore издание.",
   "type": "module",
   "scripts": {
     "dev": "vite",

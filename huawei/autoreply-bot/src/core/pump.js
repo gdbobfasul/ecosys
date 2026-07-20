@@ -2,7 +2,7 @@
 // pump.js — „двигателят" на реалните канали.
 //
 // Свързва входа от каналите с rule-engine-а и изпраща авто-отговорите:
-//   • KCY (нашият чат)            — polling по HTTP (kcy-chat.js)
+//   • Pupikes (нашият чат)            — polling по HTTP (kcy-chat.js)
 //   • WhatsApp/Viber/Messenger    — push event от native плъгина (native-reply.js)
 //
 // Стартира се веднъж от main.js. Не дублира отговори (пази „seen"). Деградира
@@ -70,9 +70,9 @@ function channelLabel(id) {
   return ({ kcy: t('chan_our_chat'), whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: t('chan_demo') })[id] || id;
 }
 
-// --- KCY polling --------------------------------------------------------------
+// --- Pupikes polling --------------------------------------------------------------
 
-// Един такт на KCY: намираме разговори с непрочетени → авто-отговор на новите
+// Един такт на Pupikes: намираме разговори с непрочетени → авто-отговор на новите
 // ПОЛУЧЕНИ съобщения, на които още не сме отговаряли.
 async function kcyTick(render) {
   if (_kcyBusy) return;
@@ -198,7 +198,7 @@ export function startPump(render) {
     _started = true;
     startNativeListener(render);
   }
-  // KCY-таймерът се пуска/спира при всяка промяна в настройките.
+  // Pupikes-таймерът се пуска/спира при всяка промяна в настройките.
   startKcyPolling(render);
 }
 

@@ -47,8 +47,8 @@
 - **10) Chat DB migrations** — прилага pending миграции за chat базата.
 
 ## ━━━ SMART CONTRACTS ━━━
-- **11) Compile contracts** — Solidity → ABI + bytecode в `artifacts/` (всички / KCY / BRCH1).
-- **12) Deploy KCY token (mainnet)** — деплой на KCY-meme-1 на BSC Mainnet. ⚠ реален BNB за gas, изисква `DEPLOY` confirm.
+- **11) Compile contracts** — Solidity → ABI + bytecode в `artifacts/` (всички / Pupikes / BRCH1).
+- **12) Deploy Pupikes token (mainnet)** — деплой на Pupikes-meme-1 на BSC Mainnet. ⚠ реален BNB за gas, изисква `DEPLOY` confirm.
 - **13) Deploy Multi-Sig (mainnet)** — деплой на Multi-Sig wallet на BSC Mainnet. ⚠ реален BNB. Адресът се записва в production `.env`.
 - **14) Deploy BRCH1 token** — деплой на BeRicH 1. testnet = безплатно / mainnet = реален BNB. Пита коя мрежа.
 - **15) Verify BRCH1 on BscScan** — качва source code за публична проверка.
@@ -148,9 +148,9 @@
 | Режим | prod / dev (nodemon) | prod / dev | background |
 
 ## 12 / 13 / 14 — деплой на контракти (BSC)
-| | **12** KCY token | **13** Multi-Sig | **14** BRCH1 token |
+| | **12** Pupikes token | **13** Multi-Sig | **14** BRCH1 token |
 |---|---|---|---|
-| Какво | KCY-meme-1 token | Multi-Sig wallet | BeRicH 1 token |
+| Какво | Pupikes-meme-1 token | Multi-Sig wallet | BeRicH 1 token |
 | Мрежа | mainnet | mainnet | пита: testnet / mainnet |
 | Реален BNB | ⚠ да | ⚠ да | само на mainnet |
 | Confirm | `DEPLOY` | `DEPLOY` | — |

@@ -1,4 +1,4 @@
-# Камера-страж — тестов сценарий (RUStore ревю)
+# MotionHawk — тестов сценарий (RUStore ревю)
 
 App ID: `com.kcy.camerawatch.rustore`
 

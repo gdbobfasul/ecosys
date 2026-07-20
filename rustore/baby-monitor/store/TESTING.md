@@ -1,4 +1,4 @@
-# Testing — KCY Baby Radar (RUStore)
+# Testing — Pupikes Baby Radar (RUStore)
 
 ## Уеб (dev) с истинска уеб камера
 1. `npm install`

@@ -1,7 +1,7 @@
-// names-report.cjs — събира ВСИЧКИ доклади за имена (docs/huawei/name-checks/*.md) в ЕДИН
+// names-report.cjs — събира ВСИЧКИ доклади за имена (docs/publish/huawei/name-checks/*.md) в ЕДИН
 // файл за анализ: сравнителна таблица + детайли по име (риск, марки, App Store, домейни
 // заети/свободни, ниши, сигнали). За да се вижда на едно място пълната и вярна информация
-// преди да заковем име. Резултат: docs/huawei/name-checks/_ANALYSIS.md
+// преди да заковем име. Резултат: docs/publish/huawei/name-checks/_ANALYSIS.md
 const fs = require('fs');
 const path = require('path');
 const similar = require('./similar.cjs');

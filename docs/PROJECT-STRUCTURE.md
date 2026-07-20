@@ -1,5 +1,5 @@
 <!-- Version: 1.0057 -->
-# 📁 KCY ECOSYSTEM - PROJECT STRUCTURE
+# 📁 Pupikes ECOSYSTEM - PROJECT STRUCTURE
 
 **Version:** 1.0057  
 **Date:** February 15, 2026  
@@ -210,7 +210,7 @@ private/mobile-chat/  ← Преименуван от mobile-app
 
 ### 4 Main Projects:
 
-**1. Token (KCY-meme-1)**
+**1. Token (Pupikes-meme-1)**
 ```
 Location: private/token/
 Type: Smart Contract (Solidity)

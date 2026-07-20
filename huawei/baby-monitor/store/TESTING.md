@@ -1,4 +1,4 @@
-# Testing — KCY Baby Radar (Huawei AppGallery)
+# Testing — Pupikes Baby Radar (Huawei AppGallery)
 
 ## Уеб (dev) с истинска уеб камера
 1. `npm install`

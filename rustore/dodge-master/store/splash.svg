@@ -23,7 +23,7 @@
   <circle cx="820" cy="1000" r="38" fill="#d0432b"/>
           <circle cx="808.6" cy="988.6" r="13.299999999999999" fill="#fff" opacity="0.4"/>
   <text x="540" y="1320" font-family="system-ui, sans-serif" font-size="96"
-        font-weight="bold" fill="#e0b34a" text-anchor="middle">DODGE MASTER</text>
+        font-weight="bold" fill="#e0b34a" text-anchor="middle">EVADE ARENA</text>
   <text x="540" y="1390" font-family="system-ui, sans-serif" font-size="40"
         fill="#6fae3a" text-anchor="middle">RUStore Edition</text>
 </svg>

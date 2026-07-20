@@ -2,7 +2,7 @@
   "name": "kcy-bugbot",
   "version": "1.0173",
   "private": true,
-  "description": "KCY тест робот — Playwright обхождане на критичните пътища + сървърна лог-корелация. Плюс генератор на /tree.",
+  "description": "Pupikes тест робот — Playwright обхождане на критичните пътища + сървърна лог-корелация. Плюс генератор на /tree.",
   "main": "run.js",
   "scripts": {
     "tree": "node tree-gen.js",

@@ -1,4 +1,4 @@
-KCY Toolkit Text — عدّاد، تنسيق، Base64.
+Pupikes Toolkit Text — عدّاد، تنسيق، Base64.
 
 أدوات مفيدة دون اتصال — كل شيء يعمل على جهازك.
 

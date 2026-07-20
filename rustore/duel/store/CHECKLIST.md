@@ -1,4 +1,4 @@
-# RUStore — чеклист за подаване (KCY Ring Clash)
+# RUStore — чеклист за подаване (Pupikes Ring Clash)
 
 ## Преди билд
 - [ ] `npm install` минава

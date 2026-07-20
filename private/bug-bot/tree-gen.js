@@ -206,7 +206,7 @@ const html = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Дърво на екосистемата — KCY</title>
+<title>Дърво на екосистемата — Pupikes</title>
 <style>
   :root{--bg:#0d1117;--card:#161b22;--bd:#30363d;--fg:#c9d1d9;--mut:#8b949e;--ac:#58a6ff;--adm:#f0883e;--api:#3fb950;}
   *{box-sizing:border-box}

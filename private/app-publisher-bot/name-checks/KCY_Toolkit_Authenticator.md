@@ -1,6 +1,6 @@
 # Проверка на име: KCY Toolkit Authenticator
 
-_2026-07-19T15:07:36.682Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:34:16.119Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **СРЕДЕН**
 - близки имена в App Store/марки (Authenticator ·)
@@ -15,14 +15,14 @@ _Условия: търсено в App Store на 2 държави — САЩ (u
 - ID.me Authenticator — ID.me, Inc. (Productivity)
 - Google Authenticator — Google LLC (Utilities)
 - LastPass Authenticator — LastPass US LP (Productivity)
-- RSA Authenticator (SecurID) — RSA Security (Business)
 - Microsoft Authenticator — Microsoft Corporation (Productivity)
+- RSA Authenticator (SecurID) — RSA Security (Business)
+- Authenticator+ App — ENGIN MEYVE VE SEBZE GIDA NAKLIYE TURIZM SANAYI TICARET LIMITED SIRKETI (Productivity)
 - 2FA Authenticator (2FAS) — Two Factor Authentication Service, Inc. (Productivity)
-- Authenticator ℠ App — BEGAMOB GLOBAL LIMITED (Utilities)
 - Authenticator · — SMM service, s.r.o. (Utilities)
 - Authenticator App ™ — Codenhagen.IO ApS (Utilities)
 - Authenticator App - Authkey — SKYRISE LIMITED (Utilities)
-- Authenticator+ App — ENGIN MEYVE VE SEBZE GIDA NAKLIYE TURIZM SANAYI TICARET LIMITED SIRKETI (Productivity)
+- Authenticator ℠ App — BEGAMOB GLOBAL LIMITED (Utilities)
 - Authenticator App† — Appqe LLC (Utilities)
 
 ## Huawei AppGallery

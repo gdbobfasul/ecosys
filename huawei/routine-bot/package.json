@@ -2,7 +2,7 @@
   "name": "routine-bot-huawei",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Routine Planner (Daily Routine Bot) — самостоятелно мобилно приложение: наемаш робот, който всеки ден изпълнява рутина (сутрешен брифинг, напомняния, вечерно резюме) и известява локално. Huawei AppGallery издание.",
+  "description": "Pupikes Routine Planner (Daily Routine Bot) — самостоятелно мобилно приложение: наемаш робот, който всеки ден изпълнява рутина (сутрешен брифинг, напомняния, вечерно резюме) и известява локално. Huawei AppGallery издание.",
   "type": "module",
   "scripts": {
     "dev": "vite",

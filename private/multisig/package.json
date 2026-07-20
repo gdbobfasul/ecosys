@@ -1,7 +1,7 @@
 {
   "name": "kcy-multisig",
   "version": "1.0093",
-  "description": "KCY SimpleMultiSig wallet",
+  "description": "Pupikes SimpleMultiSig wallet",
   "scripts": {
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",

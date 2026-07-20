@@ -1,4 +1,4 @@
-# Huawei AppGallery — чеклист за подаване (KCY Ring Clash)
+# Huawei AppGallery — чеклист за подаване (Pupikes Ring Clash)
 
 ## Преди билд
 - [ ] `npm install` минава

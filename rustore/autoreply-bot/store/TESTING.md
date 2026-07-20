@@ -1,4 +1,4 @@
-# Testing — KCY Auto Answer (RUStore)
+# Testing — Pupikes Auto Answer (RUStore)
 
 ## В браузъра (без Android SDK)
 1. `npm install`

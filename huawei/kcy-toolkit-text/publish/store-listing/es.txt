@@ -1,4 +1,4 @@
-KCY Toolkit Text — Contador, formato, Base64.
+Pupikes Toolkit Text — Contador, formato, Base64.
 
 Útiles herramientas sin conexión — todo funciona en el dispositivo.
 

@@ -1,6 +1,6 @@
-# KCY Ring Clash — Huawei AppGallery билд
+# Pupikes Ring Clash — Huawei AppGallery билд
 
-Самостоятелно мобилно приложение, което вгражда browser-играта **„KCY Ring Clash"**
+Самостоятелно мобилно приложение, което вгражда browser-играта **„Pupikes Ring Clash"**
 (походова фентъзи битка 1 срещу 1) като нативно Capacitor приложение.
 
 - **Магазин:** Huawei AppGallery · **App ID:** `com.kcy.duel.huawei`

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // gen-promo-catalog.cjs — създава/опреснява app-shared/promo-catalog.json (каталог за екрана
-// „Още от KCY Ecosystem"). Този файл се РЕДАКТИРА ЛЕСНО ПРЕДИ БИЛД: за всеки апп сложи
+// „Още от Pupikes"). Този файл се РЕДАКТИРА ЛЕСНО ПРЕДИ БИЛД: за всеки апп сложи
 // `enabled:true` щом е одобрен/публикуван, финалното `name` и `storeUrl` (линка за сваляне).
 // Билдът копира каталога във всеки апп (dist/kcy-promo.json). Само enabled записи (≠ текущия) се
 // показват. Снимките се сервират от сървъра (public/promo/<id>.png след деплой).
@@ -58,7 +58,7 @@ const apps = ids.map((id) => {
 });
 
 const out = {
-  _comment: 'Каталог за екрана „Още от KCY Ecosystem". Редактирай ПРЕДИ билд: enabled:true за одобрените/публикуваните, финално name и storeUrl (линк за сваляне). Билдът го копира в dist/kcy-promo.json на всеки апп.',
+  _comment: 'Каталог за екрана „Още от Pupikes". Редактирай ПРЕДИ билд: enabled:true за одобрените/публикуваните, финално name и storeUrl (линк за сваляне). Билдът го копира в dist/kcy-promo.json на всеки апп.',
   updated: '',
   apps
 };

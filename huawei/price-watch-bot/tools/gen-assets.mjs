@@ -44,7 +44,7 @@ const splash = `<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="204
     <rect width="640" height="640" rx="140" fill="url(#g)"/>
     <g transform="scale(0.625)">${glyph(34)}</g>
   </g>
-  <text x="1024" y="1480" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="92" font-weight="700" fill="#e6edf3" text-anchor="middle">Цена-робот</text>
+  <text x="1024" y="1480" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="92" font-weight="700" fill="#e6edf3" text-anchor="middle">Pupikes Toolkit Price Watch</text>
 </svg>`;
 
 writeFileSync(join(storeDir, 'icon.svg'), icon);

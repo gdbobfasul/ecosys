@@ -4,7 +4,7 @@
 // НЕ ползва камера. Периодично полва релея за нови събития от камерата-страж и при
 // събитие вдига локална нотификация + дърпа последния кадър.
 //
-// Камера-страж различава категории person | animal | other. „Човек/нарушител" е
+// MotionHawk различава категории person | animal | other. „Човек/нарушител" е
 // критичното събитие; останалите са обикновени.
 
 import { pollAlerts, getFrame, getPairing, pairingConfigured } from './pairing.js';
@@ -30,7 +30,7 @@ export function startWatching({ onAlert = null, onFrame = null, onStatus = null 
       for (const a of r.alerts) {
         const critical = (a.type === 'person');
         // Локална нотификация на твоя телефон (notify(title, body) — без флаг за критичност).
-        try { notify('Камера-страж' + (critical ? ' — ВНИМАНИЕ' : ''), a.label || a.type); } catch (_) {}
+        try { notify('MotionHawk' + (critical ? ' — ВНИМАНИЕ' : ''), a.label || a.type); } catch (_) {}
         // Запиши в журнала, за да се вижда историята и тук.
         try { await addEvent({ kind: 'detection', category: a.type, label: a.label || a.type, score: 0, thumb: null }); } catch (_) {}
         if (onAlert) { try { onAlert(a); } catch (_) {} }

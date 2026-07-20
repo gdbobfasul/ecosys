@@ -1,6 +1,6 @@
 {
   "appId": "com.kcy.babymonitor.hw",
-  "appName": "KCY Baby Radar",
+  "appName": "Pupikes Baby Radar",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

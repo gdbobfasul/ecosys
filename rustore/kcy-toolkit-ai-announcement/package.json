@@ -2,7 +2,7 @@
   "name": "kcy-toolkit-ai-announcement-rustore",
   "version": "1.0.0",
   "private": true,
-  "description": "KCY Toolkit AI Announcement — част от KCY Toolkit семейството (RUStore издание).",
+  "description": "Pupikes Toolkit AI Announcement — част от Pupikes Toolkit семейството (RUStore издание).",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -76,7 +76,7 @@ export function mountPrivacyLink(appId, opts) {
     if (!document.body || document.getElementById('kcy-legal-bar')) return;
     const bar = document.createElement('div'); bar.id = 'kcy-legal-bar';
     // Долу-ДЯСНО, НАД бутона „Помощ" (който е на bottom:12) — за да НЕ се блъска с балончето
-    // „✨ KCY" (долу-ляво) и да не закрива важни бутони. Ненатрапчиво, малко.
+    // „✨ Pupikes" (долу-ляво) и да не закрива важни бутони. Ненатрапчиво, малко.
     bar.style.cssText = 'position:fixed;right:12px;bottom:58px;z-index:2147483000;display:flex;flex-direction:column;gap:6px;align-items:flex-end;pointer-events:none';
     // линк към политиката (винаги)
     const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';

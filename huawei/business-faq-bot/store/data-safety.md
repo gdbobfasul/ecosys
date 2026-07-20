@@ -1,4 +1,4 @@
-# Data Safety — KCY FAQ Desk (Huawei AppGallery)
+# Data Safety — Pupikes FAQ Desk (Huawei AppGallery)
 
 | Тип данни | Събира ли се? | Споделя ли се? | Бележка |
 |-----------|---------------|----------------|---------|

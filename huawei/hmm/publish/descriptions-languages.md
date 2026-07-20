@@ -1,4 +1,4 @@
-# KCY Field Battle — описание по език (Brief + Full + New features)
+# Pupikes Field Battle — описание по език (Brief + Full + New features)
 
 _За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
 
@@ -13,7 +13,7 @@ A 3-vs-3 turn-based team
 ```
 A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to turn the fight.
 
-Битка на терен — 3 срещу 3
+Pupikes Field Battle — 3 срещу 3
 
 Походова битка. Героите ти излизат <b>произволно</b> на всяко ниво.
 

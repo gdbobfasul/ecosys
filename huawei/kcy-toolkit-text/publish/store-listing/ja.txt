@@ -1,4 +1,4 @@
-KCY Toolkit Text — カウント・整形・Base64.
+Pupikes Toolkit Text — カウント・整形・Base64.
 
 便利なオフラインツール — すべて端末上で動作。
 

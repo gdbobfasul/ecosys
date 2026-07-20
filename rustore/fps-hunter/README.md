@@ -1,4 +1,4 @@
-# FPS Hunter — RUStore build
+# Huntline 3D — RUStore build
 
 Самостоятелен 3D ловен шутър от първо лице. Three.js (3D) + Vite + Capacitor 6.
 100 процедурно генерирани нива, локален лидерборд (SQLite/sql.js). Без GMS/HMS/Firebase,

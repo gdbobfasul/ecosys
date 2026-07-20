@@ -5,7 +5,7 @@ import { THEME } from '../theme.js';
 import { t, tf } from '../core/i18n.js';
 
 export function showGameOver(root, leaderboard, result, onMenu, onRetry) {
-  // Реклама „в края" (изискване): при всеки край на ниво — 1 промо на друго KCY приложение.
+  // Реклама „в края" (изискване): при всеки край на ниво — 1 промо на друго Pupikes приложение.
   try { if (typeof window.KCY_END_AD === 'function') window.KCY_END_AD(); } catch (e) {}
   const a = THEME.accent;
   const wrap = document.createElement('div');

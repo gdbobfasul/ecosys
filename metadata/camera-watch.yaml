@@ -1,5 +1,5 @@
 id: camera-watch
-name: Камера-страж
+name: MotionHawk
 folders:
   - rustore/camera-watch
   - huawei/camera-watch
@@ -23,10 +23,10 @@ website: https://bgmasters.net
 
 listings:
   ru:
-    title: Камера-страж
+    title: MotionHawk
     short: "Детектор движения с распознаванием: человек, собака, кошка — на устройстве"
     full: |
-      Камера-страж — «робот в аренду», который следит за камерой, фиксирует движение и
+      MotionHawk — «робот в аренду», который следит за камерой, фиксирует движение и
       распознаёт, что именно шевельнулось (человек/нарушитель, собака, кошка, другое
       животное). Всё на устройстве, бесплатно, без аккаунтов, контактов и отслеживания.
 
@@ -51,10 +51,10 @@ listings:
       • Local notification + an event log with a snapshot; a cooldown limits frequency.
       • Optional "other camera" by URL (a browser-playable stream with CORS; RTSP is not supported directly).
   bg:
-    title: Камера-страж
+    title: MotionHawk
     short: "Детектор на движение с разпознаване: човек, куче, котка — на устройството"
     full: |
-      Камера-страж е „робот под наем", който следи камера, засича движение и разпознава
+      MotionHawk е „робот под наем", който следи камера, засича движение и разпознава
       какво е помръднало (човек/нарушител, куче, котка, друго животно). Изцяло на
       устройството, безплатно, без акаунти, контакти и проследяване.
 

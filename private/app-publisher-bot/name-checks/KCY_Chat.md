@@ -1,6 +1,6 @@
 # Проверка на име: KCY Chat
 
-_2026-07-03T21:38:11.697Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:34:57.271Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 
@@ -13,34 +13,41 @@ _Условия: търсено по думата „KCY Chat" във ВСИЧК
 | UKCycleChat | GB | 25, 35 | Joseph Williams | Registered |
 
 ## Apple App Store (iTunes Search)
-**Намерени приложения: 9** · точни съвпадения на името: **0** · подобни (съдържат името): **0**
+**Намерени приложения: 10** · точни съвпадения на името: **0** · подобни (съдържат името): **0**
 _Условия: търсено в App Store на 2 държави — САЩ (us) и Китай (cn), на английски по думата „KCY Chat" (тип „software")._
 - Kik Messaging & Chat App — Ai Medialab Inc (Social Networking)
+- Moco - Chat, Meet People — JNJ Mobile, Inc. (Lifestyle)
 - TeasyChat: Make New Chat Room — ALPHASCALE MEDIA GMBH (Social Networking)
 - ChatSpace - Chat, Talk & Fun — Coshi B.V. (Social Networking)
-- YoHo - Group Voice Chat — MOBILE ALPHA LIMITED (Social Networking)
-- KakaoTalk : Messenger — Kakao Corp. (Social Networking)
-- Nyme Chat: Calls & Messages — Maksim Tukhbatullin (Social Networking)
-- Web Messenger - Dual Chat — Pravin Gondaliya (Social Networking)
 - Hiya - Group Voice Chatroom — FUNI. PTE. LTD. (Entertainment)
+- DooTalk:AI Chat — 昊竑 唐 (Entertainment)
+- Nyme Chat: Calls & Messages — Maksim Tukhbatullin (Social Networking)
 - ShareChat - Videos & Status — MOHALLA TECH PRIVATE LIMITED (Social Networking)
+- Kiki: Local Chat & People Near — RADEMADE TECHNOLOGIES OU (News)
+- KakaoTalk : Messenger — Kakao Corp. (Social Networking)
 
 ## Huawei AppGallery
-**Намерени заглавия: 98** · точни съвпадения на името: **0**
+**Намерени заглавия: 0** · точни съвпадения на името: **0**
 _Условия: прочетено от JSON API-то на AppGallery (getTabDetail, всички AJAX страници при скролване), глобално по думата „KCY Chat". Резултатите са РАЗМИТИ (свързани/препоръчани приложения), затова значение има само ТОЧНОТО съвпадение на името._
-→ Ola - enjoy video chat, Hi Chat, Kimmy Superstar Talking Cat, Chat-in, Говорейки котка., My Cat Tooth, TalkyChat - Rooms & Chat, 火花Chat, Celebrity Chat, Chat GC, Tetatet Chat, Phiz Chat, keychat, Mik Chat, ZEE CHAT, Atomix chat, C-chat, OG1.Chat, Chat! Happy 3D, meow chat, Dudu chat, GIS Chat, PHK Chat, ArtSoft Chat, Chat ISB … (+73 още)
+→ Няма резултати (или регионално блокирано) — провери ръчно: https://appgallery.huawei.com/search/KCY%20Chat
 
 ## Google Play (Android)
-**Намерени приложения: 15** · възможни съвпадения на името: **0**
-_Условия: търсено в Google Play (уеб), на английски, по думата „KCY Chat" (без конкретна държава)._
-→ NiuChat voice chat roomNiuChat Co., Ltd. · KKchat-Play Game & Voice ChatSC Team · Kik — Messaging & Chat AppMediaLab AI - Kik3.3star · KChat: Secure Talk & CommunityUney GmbH · KChatITC HCMC · Infomaniak kChatInfomaniak · Hichat- Game & Chat friendsPartyjoy Limited3.4star · SimpleX ChatSimpleX Chat · Karak chatLawafe Tech · DankChatFelix Schmid · KickChat: Soccer Fan CommunityKickChat Inc. · Kito - Chat Video CallKito Team · JoyChat–Live Video Call & ChatJoyChat Team HK · Keet - Private Encrypted Chatholepunch3.4star · Chatway Live ChatChatway
+**Намерени приложения: 0** (не успях автоматично: browserType.launch: Executable doesn't exist at C:\Users\ai-ag\AppData\Local\ms-playwright\chromium_headless_shell-1223\chrome-headless-shell-win64\chrome-headless-shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     npx playwright install                                 ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝).
 
 ## Домейни — статистика (RDAP, DNS резерва)
-**Проверени разширения: 49** · заети: **0** · свободни: **45** · несигурни: **4**
+**Проверени разширения: 49** · заети: **0** · свободни: **46** · несигурни: **3**
 _Условия: за всяко от 49-те разширения (TLD) — заетост през RDAP (авторитетно) с WHOIS (порт 43) резерва по името „KCY Chat". „Несигурни" = TLD, които нито RDAP, нито WHOIS покриват (изискват ръчна проверка)._
 Заети: няма.
-Свободни: 45 (напр. kcychat.com, kcychat.net, kcychat.org, kcychat.co, kcychat.io, kcychat.ai, kcychat.app, kcychat.news …)
-Несигурни (RDAP без отговор + без DNS): kcychat.me, kcychat.so, kcychat.ac, kcychat.cx
+Свободни: 46 (напр. kcychat.com, kcychat.net, kcychat.org, kcychat.ai, kcychat.app, kcychat.news, kcychat.media, kcychat.press …)
+Несигурни (RDAP без отговор + без DNS): kcychat.co, kcychat.io, kcychat.me
 
 ## Интернет страници и ниши (в кои области се ползва името)
 **Намерени страници: 0**

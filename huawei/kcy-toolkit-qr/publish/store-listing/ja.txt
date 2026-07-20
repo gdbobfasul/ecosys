@@ -1,4 +1,4 @@
-KCY Toolkit QR — QRコードの生成と読み取り.
+Pupikes Toolkit QR — QRコードの生成と読み取り.
 
 便利なオフラインツール — すべて端末上で動作。
 

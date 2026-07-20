@@ -207,7 +207,7 @@ MetaMask Extension: Connects
     ↓
 App: Shows balance
     ↓
-User: "Плати 300 KCY"
+User: "Плати 300 Pupikes"
     ↓
 MetaMask: Confirm transaction
     ↓
@@ -299,7 +299,7 @@ grep "TOKEN_ADDRESS" src/config/index.js
 USE_TESTNET: true
 ```
 
-### 2. Get testnet BNB & KCY:
+### 2. Get testnet BNB & Pupikes:
 - https://testnet.binance.org/faucet-smart
 
 ### 3. Test web:
@@ -342,7 +342,7 @@ USE_TESTNET: false
 ```
 Treasury:  0x58ec63d31b8e4D6624B5c88338027a54Be1AE28A ✅
 Token:     0xYOUR_KCY1_TOKEN_ADDRESS ⚠️ CHANGE!
-Amount:    300 KCY ✅
+Amount:    300 Pupikes ✅
 Network:   BSC Mainnet (56) ✅
 ```
 

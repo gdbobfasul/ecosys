@@ -1,4 +1,4 @@
-KCY Toolkit QR — Generate and read QR codes.
+Pupikes Toolkit QR — Generate and read QR codes.
 
 Handy offline tools — everything runs on your device.
 

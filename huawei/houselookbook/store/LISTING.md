@@ -1,17 +1,17 @@
-# KCY Chat — Huawei AppGallery listing
+# Pupikes Chat — Huawei AppGallery listing
 
-**App name:** KCY Chat
+**App name:** Pupikes Chat
 **App id:** `com.kcy.chat.huawei`
 **Category:** Communication / Social
 
 ## Short description (EN)
-Mobile client for the KCY chat. Secure messaging and help requests.
+Mobile client for the Pupikes chat. Secure messaging and help requests.
 
 ## Short description (BG)
-Мобилен клиент за чата KCY. Сигурно общуване и заявки за помощ.
+Мобилен клиент за чата Pupikes. Сигурно общуване и заявки за помощ.
 
 ## Full description
-KCY Chat е официалната мобилна обвивка за чат платформата KCY. Приложението
+Pupikes Chat е официалната мобилна обвивка за чат платформата Pupikes. Приложението
 зарежда живия чат сървър и предлага същото изживяване като уеб версията —
 съобщения, услуги, профил — директно на телефона.
 

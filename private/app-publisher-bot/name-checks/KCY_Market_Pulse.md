@@ -1,6 +1,6 @@
 # Проверка на име: KCY Market Pulse
 
-_2026-07-16T21:29:29.152Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
+_2026-07-20T10:37:03.769Z — твърди сигнали: App Store, TMview, домейни, AppGallery. Марка/патент финално се потвърждават в официалните бази (виж долу). Не е правна expertise._
 
 ## Оценка на риска: **НИСЪК**
 
@@ -12,17 +12,17 @@ _Условия: търсено по думата „KCY Market Pulse" във В
 **Намерени приложения: 12** · точни съвпадения на името: **0** · подобни (съдържат името): **0**
 _Условия: търсено в App Store на 2 държави — САЩ (us) и Китай (cn), на английски по думата „KCY Market Pulse" (тип „software")._
 - Cattle Market Mobile — CattleSync, LLC (Business)
-- CNBC: Stock Market & Business — Versant Media LLC (News)
-- Localize - Farmers Market — OnePace LLC (Food & Drink)
 - MarketWatch - News & Data — Dow Jones & Company, Inc., publisher of The Wall Street Journal. (Finance)
+- Localize - Farmers Market — OnePace LLC (Food & Drink)
 - Central Market by H-E-B — H-E-B, LP (Shopping)
 - Market Basket Grocery — Retail Investors of Texas, Ltd. (Shopping)
 - Metro Market — The Kroger Co. (Shopping)
 - City Market Food & Pharmacy — The Kroger Co. (Shopping)
+- KMBC 9 News - Kansas City — Hearst Television (News)
 - Stock Scanner Screener AI — SAGAMILL PTE. LTD. (Finance)
-- Market Price Pro — Khaing Myo Win (Finance)
-- Market Street for U — Albertsons Companies, LLC (Shopping)
+- The Market Reward — The Market At Mountain Village LLC (Shopping)
 - USDA Market News — USDA MRPBS IT (News)
+- Koyfin: Market Data & Analysis — Koyfin Inc (Finance)
 
 ## Huawei AppGallery
 **Намерени заглавия: 0** · точни съвпадения на името: **0**

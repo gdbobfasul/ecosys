@@ -1,4 +1,4 @@
-# Testing — KCY Auto Answer (Huawei AppGallery)
+# Testing — Pupikes Auto Answer (Huawei AppGallery)
 
 ## В браузъра (без Android SDK)
 1. `npm install`

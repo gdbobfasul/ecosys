@@ -1,5 +1,5 @@
 id: baby-monitor
-name: Детегледачка
+name: Pupikes Baby Radar
 folders:
   - rustore/baby-monitor
   - huawei/baby-monitor
@@ -51,10 +51,10 @@ listings:
       IMPORTANT: this is NOT a certified safety device and not a replacement for a real
       baby monitor or smoke detector. Use it only as a helper.
   bg:
-    title: Детегледачка
+    title: Pupikes Baby Radar
     short: "Камера-бавачка: движение, сън/събуждане, втори човек — на устройството"
     full: |
-      Детегледачка, която през камерата на телефона пази спящото или играещото дете и
+      Pupikes Baby Radar, която през камерата на телефона пази спящото или играещото дете и
       подава сигнал. Всичко се обработва на устройството и е безплатно — видеото не се
       качва никъде.
 

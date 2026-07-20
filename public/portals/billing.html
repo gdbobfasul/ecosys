@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Плащане — KCY Portals</title>
+    <title>Плащане — Pupikes Portals</title>
     <link rel="stylesheet" href="/shared/css/common.css?v=1.0115">
     <style>
         .bill-wrap { max-width: 660px; margin: 40px auto; padding: 36px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.12); }
@@ -62,7 +62,7 @@
     <script>
         var FEES = {};
         // Само фиатни валути се показват (без крипто).
-        var FIAT_ONLY = function (k) { return ['BTC', 'ETH', 'BNB', 'USDT', 'USDC', 'BSC', 'KCY'].indexOf(String(k).toUpperCase()) === -1; };
+        var FIAT_ONLY = function (k) { return ['BTC', 'ETH', 'BNB', 'USDT', 'USDC', 'BSC', 'Pupikes'].indexOf(String(k).toUpperCase()) === -1; };
         function cardMsg(t, k) { var m = document.getElementById('card-msg'); m.textContent = t; m.className = 'msg ' + (k || 'err'); }
 
         async function loadStatus() {

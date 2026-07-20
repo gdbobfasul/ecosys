@@ -15,7 +15,7 @@
 ## 🆕 New Features
 
 Version 00014 adds:
-- ✅ Multi-cryptocurrency payment support (BTC, ETH, BNB, KCY tokens)
+- ✅ Multi-cryptocurrency payment support (BTC, ETH, BNB, Pupikes tokens)
 - ✅ Free chat mode (10 messages/day, limited features)
 - ✅ Paid chat mode (unlimited messages, 50MB files)
 - ✅ Admin manual payment override
