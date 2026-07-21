@@ -4,43 +4,46 @@ _Прясна проверка: 2026-07-20. Източници: Apple App Store 
 
 Оценка: 🟢 НИСЪК = чисто; 🟡 СРЕДЕН = има БЛИЗКИ (не точни) имена или родова дума — търпимо, но има и по-чисти варианти; 🔴 ВИСОК = точно съвпадение/марка в релевантен клас — да не се ползва.
 
-## Резултат: 22 × 🟢 НИСЪК, 9 × 🟡 СРЕДЕН, 0 × 🔴 ВИСОК
+## Резултат (текущи имена след ребранда Pupikes): 27 × 🟢 НИСЪК, 5 × 🟡 СРЕДЕН, 0 × 🔴 ВИСОК
 
-## Текущите имена — всичките 31 приложения
+_Марката вече е **Pupikes** (представката „KCY" е заменена навсякъде видимо). Игрите получиха собствени чисти имена. Рисковете по-долу са за ТЕКУЩИТЕ (Pupikes) имена._
+
+## Текущите имена — всичките 32 приложения
 
 | Папка | Текущо име | Риск | Защо |
 |---|---|---|---|
-| dodge-master | Dodge Master | 🟡 СРЕДЕН | близки: Dodge® (марка на колите, клас 12 — НЕ софтуер), DodgeMaster K (Google Play) |
-| titans-fight | Titans Fight | 🟡 СРЕДЕН | близки: Titans Fight Attack Slayer, TITANS FIGHT CLUB 2020 |
-| fps-hunter | FPS Hunter | 🟡 СРЕДЕН | близки: FPS Hunter: Bird Hunting 2020, 狙击射击枪 FPS 游戏 |
-| plane-shooter | Plane Shooter | 🟡 СРЕДЕН | близко: 1941 Air Attack: Plane Shooter |
-| duel | KCY Ring Clash | 🟡 СРЕДЕН | съществува ап „Ring Clash" (без KCY) |
-| camera-watch | Камера-страж | 🟡 СРЕДЕН | размито близко съвпадение; отделно: кирилско име — извън RuStore не се чете |
-| services-toolkit | KCY Toolkit | 🟡 СРЕДЕН | родовата дума „Toolkit" се среща широко |
-| price-watch-bot | KCY Toolkit Price Watch | 🟡 СРЕДЕН | родовата дума „Toolkit" |
-| kcy-toolkit-scraper | KCY Toolkit Scraper | 🟡 СРЕДЕН | родовата дума „Toolkit" |
-| authenticator | KCY Toolkit Authenticator | 🟡 СРЕДЕН | родовата дума „Authenticator" |
-| autoreply-bot | KCY Auto Answer | 🟢 НИСЪК | — |
-| baby-monitor | KCY Baby Radar | 🟢 НИСЪК | нула марки + всички домейни свободни |
-| business-faq-bot | KCY FAQ Desk | 🟢 НИСЪК | — |
-| chat | KCY Chat | 🟢 НИСЪК | — |
-| hmm | KCY Field Battle | 🟢 НИСЪК | — |
+| dodge-master | EvadeArena | 🟢 НИСЪК | чисто ново име (0 марки, 0 точни) |
+| titans-fight | Godfist Arena | 🟢 НИСЪК | чисто ново име |
+| fps-hunter | Huntline 3D | 🟢 НИСЪК | чисто ново име |
+| plane-shooter | Warbird Rush | 🟢 НИСЪК | чисто ново име |
+| camera-watch | MotionHawk | 🟢 НИСЪК | чисто ново име (една марка на 15-те езика) |
+| rustam | Rustam picks cucumbers | 🟢 НИСЪК | героят в играта си остава Рустам |
+| duel | Pupikes Ring Clash | 🟡 СРЕДЕН | съществува чужд ап „Ring Clash"; представката Pupikes отличава |
+| services-toolkit | Pupikes Toolkit | 🟡 СРЕДЕН | родовата дума „Toolkit" се среща широко |
+| price-watch-bot | Pupikes Toolkit Price Watch | 🟡 СРЕДЕН | родовата дума „Toolkit" |
+| kcy-toolkit-scraper | Pupikes Toolkit Scraper | 🟡 СРЕДЕН | родовата дума „Toolkit" |
+| authenticator | Pupikes Toolkit Authenticator | 🟡 СРЕДЕН | родовата дума „Authenticator" |
+| autoreply-bot | Pupikes Auto Answer | 🟢 НИСЪК | — |
+| baby-monitor | Pupikes Baby Radar | 🟢 НИСЪК | нула марки + всички домейни свободни |
+| business-faq-bot | Pupikes FAQ Desk | 🟢 НИСЪК | — |
+| chat | Pupikes Chat | 🟢 НИСЪК | — |
+| hmm | Pupikes Field Battle | 🟢 НИСЪК | — |
 | houselookbook | HouseLookBook | 🟢 НИСЪК | нула марки + всички домейни свободни |
-| kcy-toolkit-ai-announcement | KCY Toolkit AI Announcement | 🟢 НИСЪК | — |
-| kcy-toolkit-finance | KCY Toolkit Finance | 🟢 НИСЪК | — |
-| kcy-toolkit-passwords | KCY Toolkit Passwords | 🟢 НИСЪК | — |
-| kcy-toolkit-pdf | KCY Toolkit PDF | 🟢 НИСЪК | — |
-| kcy-toolkit-pictures | KCY Toolkit Pictures | 🟢 НИСЪК | — |
-| kcy-toolkit-qr | KCY Toolkit QR | 🟢 НИСЪК | нула марки + всички домейни свободни |
-| kcy-toolkit-sound | KCY Toolkit Sound | 🟢 НИСЪК | — |
-| kcy-toolkit-text | KCY Toolkit Text | 🟢 НИСЪК | нула марки + всички домейни свободни |
-| kcy-toolkit-videos | KCY Toolkit Videos | 🟢 НИСЪК | — |
-| market-pulse | KCY Market Pulse | 🟢 НИСЪК | — |
-| monitor-bot | KCY Site Monitor | 🟢 НИСЪК | — |
+| kcy-toolkit-3drotate | Pupikes Toolkit 3D Rotate | 🟢 НИСЪК | ново приложение (WebGL въртене на картинка) |
+| kcy-toolkit-ai-announcement | Pupikes Toolkit AI Announcement | 🟢 НИСЪК | — |
+| kcy-toolkit-finance | Pupikes Toolkit Finance | 🟢 НИСЪК | — |
+| kcy-toolkit-passwords | Pupikes Toolkit Passwords | 🟢 НИСЪК | — |
+| kcy-toolkit-pdf | Pupikes Toolkit PDF | 🟢 НИСЪК | — |
+| kcy-toolkit-pictures | Pupikes Toolkit Pictures | 🟢 НИСЪК | — |
+| kcy-toolkit-qr | Pupikes Toolkit QR | 🟢 НИСЪК | нула марки + всички домейни свободни |
+| kcy-toolkit-sound | Pupikes Toolkit Sound | 🟢 НИСЪК | — |
+| kcy-toolkit-text | Pupikes Toolkit Text | 🟢 НИСЪК | нула марки + всички домейни свободни |
+| kcy-toolkit-videos | Pupikes Toolkit Videos | 🟢 НИСЪК | — |
+| market-pulse | Pupikes Market Pulse | 🟢 НИСЪК | — |
+| monitor-bot | Pupikes Site Monitor | 🟢 НИСЪК | — |
 | newslator | NewsLator | 🟢 НИСЪК | — |
-| routine-bot | KCY Routine Planner | 🟢 НИСЪК | — |
-| rustam | Рустам бере краставици | 🟢 НИСЪК | — |
-| selflearning-friend | KCY Learning Buddy | 🟢 НИСЪК | — |
+| routine-bot | Pupikes Routine Planner | 🟢 НИСЪК | — |
+| selflearning-friend | Pupikes LB | 🟢 НИСЪК | под иконата съкратено „Pupikes LB" |
 
 ## Кандидати за деветте 🟡 (проверени от робота, подредени по риск)
 
@@ -128,8 +131,8 @@ _Прясна проверка: 2026-07-20. Източници: Apple App Store 
 | GuardLens | 🔴 ВИСОК | марка в релевантен клас (DE кл.35/42) |
 | VigilCam | 🔴 ВИСОК | точно съвпадение в App Store |
 
-### Семейството „KCY Toolkit" (4 апа със 🟡 от родовата дума)
-🟡-то тук идва само от това, че „Toolkit"/„Authenticator" са широко срещани РОДОВИ думи — точни съвпадения с „KCY …" няма и представката KCY отличава семейството. Може да се остави. Ако все пак искаме по-чиста семейна дума, проверени алтернативи (за ЦЯЛОТО семейство, напр. „KCY Toolbox PDF"):
+### Семейството „Pupikes Toolkit" (апове със 🟡 от родовата дума)
+🟡-то тук идва само от това, че „Toolkit"/„Authenticator" са широко срещани РОДОВИ думи — точни съвпадения с „Pupikes …" няма и представката Pupikes отличава семейството. Може да се остави. Ако все пак искаме по-чиста семейна дума, проверени алтернативи (за ЦЯЛОТО семейство, напр. „KCY Toolbox PDF"):
 
 | Семейна дума | Риск |
 |---|---|

@@ -22,7 +22,7 @@ function parseNameChecks(dir) {
     const name = (s.match(/#\s*Проверка на име:\s*(.+)/) || [])[1] || f.replace(/\.md$/, '');
     const risk = (s.match(/##\s*Оценка на риска:\s*\*\*(.+?)\*\*/) || [])[1] || '?';
     const why = (s.match(/##\s*Оценка на риска:[^\n]*\n-\s*(.+)/) || [])[1] || '';
-    return { name: name.trim(), risk: risk.trim(), why: why.trim().replace(/\|/g, '/'), file: 'docs/name-checks/' + f };
+    return { name: name.trim(), risk: risk.trim(), why: why.trim().replace(/\|/g, '/'), file: 'docs/publish/name-checks/' + f };
   });
 }
 
@@ -52,7 +52,7 @@ function generateSummary(appDir) {
   const shots = countScreens(path.join(pub, 'screenshots'));
   let listings = 0;
   try { listings = fs.readdirSync(path.join(pub, 'store-listing')).filter((f) => /\.txt$/.test(f) && f !== '_index.txt').length; } catch (_) {}
-  const names = parseNameChecks(path.join(appDir, '..', '..', 'docs', 'name-checks'));
+  const names = parseNameChecks(path.join(appDir, '..', '..', 'docs', 'publish', 'name-checks'));
 
   const L = [];
   L.push('# Обобщение за публикуване — ' + (metaField(meta, 'App name') || cap.appName || path.basename(appDir)));

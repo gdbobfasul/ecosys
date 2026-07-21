@@ -1,4 +1,4 @@
-# 🧪 AMS Chat Testing Guide - Version 00018
+# 🧪 Pupikes Chat Testing Guide - Version 00018
 
 ## Quick Verification
 

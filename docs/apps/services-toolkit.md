@@ -2,7 +2,7 @@
 
 Самостоятелно (offline-first) мобилно приложение с набор от полезни инструменти. Всеки инструмент работи изцяло на устройството — без бекенд и без външни заявки, освен инструментите, които изрично са обозначени като „онлайн". Без акаунт, без проследяване, без реклами, без GMS/Firebase. Издава се за **RUStore** и **Huawei AppGallery** като две идентични, независими приложения.
 
-- **App ID:** `com.pupikes.servicestoolkit.rustore` (RUStore) / `com.pupikes.servicestoolkit.huawei` (Huawei)
+- **App ID:** `com.pupikes.servicestoolkit.rustore` (RUStore) / `com.pupikes.servicestoolkit.hw` (Huawei)
 - **Стек:** Vanilla JS + Vite + Capacitor. Зависимости: `jsqr`, `qrcode`, `pdf-lib` (+ `@pdf-lib/fontkit`, `dejavu-fonts-ttf`), `pdfjs-dist`, `@capacitor/local-notifications`.
 
 ## Инструменти

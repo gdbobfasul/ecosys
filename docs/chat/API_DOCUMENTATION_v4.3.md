@@ -1,4 +1,4 @@
-# AMS Chat System - API Documentation v4.3
+# Pupikes Chat System - API Documentation v4.3
 
 ## 🆕 NEW FEATURES (Version 4.3)
 

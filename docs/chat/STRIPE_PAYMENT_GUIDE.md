@@ -3,7 +3,7 @@
 
 ## 📋 Общ Преглед
 
-Твоят AMS Chat System поддържа **ДВА начина за плащане**:
+Твоят Pupikes Chat System поддържа **ДВА начина за плащане**:
 
 1. **Stripe** (кредитни/дебитни карти) → €5 или $5
 2. **Crypto** (KCY1 токени) → 300 Pupikes
@@ -434,7 +434,7 @@ Stripe такса: ~€390
 - **Документация:** https://stripe.com/docs
 - **Status:** https://status.stripe.com/
 
-### AMS Chat Support:
+### Pupikes Chat Support:
 - Виж `/docs/10-TROUBLESHOOTING.md`
 - Виж `/docs/07-STRIPE.md`
 
@@ -471,5 +471,5 @@ Stripe такса: ~€390
 ---
 
 *Version: 001.00001*
-*AMS Chat System - Stripe Payment Documentation*
+*Pupikes Chat System - Stripe Payment Documentation*
 *Последна актуализация: Януари 2026*

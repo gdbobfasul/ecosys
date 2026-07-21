@@ -1,6 +1,6 @@
 # Pupikes FAQ Desk — как функционира
 
-Self-contained приложение „robot for rent": малък бизнес **наема/активира** робот, който отговаря автоматично на честите въпроси на клиентите **по правила (ключови думи)** — **без платен LLM, без акаунти, без контакти, без проследяване**. Vite + Capacitor 6, без Google Mobile Services. App ID: `com.pupikes.businessfaqbot.rustore` / `com.pupikes.businessfaqbot.huawei`.
+Self-contained приложение „robot for rent": малък бизнес **наема/активира** робот, който отговаря автоматично на честите въпроси на клиентите **по правила (ключови думи)** — **без платен LLM, без акаунти, без контакти, без проследяване**. Vite + Capacitor 6, без Google Mobile Services. App ID: `com.pupikes.businessfaqbot.rustore` / `com.pupikes.businessfaqbot.hw`.
 
 ## Поток на работа
 **Активирай робота → Разрешения → База знания → Демо чат.**

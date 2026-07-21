@@ -1,4 +1,4 @@
-# 🧪 Пълен Testing Guide - AMS Chat
+# 🧪 Пълен Testing Guide - Pupikes Chat
 
 ## 📋 БЪРЗ ПРЕГЛЕД
 

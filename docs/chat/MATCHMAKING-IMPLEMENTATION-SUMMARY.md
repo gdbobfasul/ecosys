@@ -9,7 +9,7 @@
 
 ## 📋 КАКВО БЕШЕ НАПРАВЕНО
 
-След последния delivery (v2.0 - 4 projects), днес беше добавена напълно нова **AI Matchmaking / Dating система** към AMS Chat приложението.
+След последния delivery (v2.0 - 4 projects), днес беше добавена напълно нова **AI Matchmaking / Dating система** към Pupikes Chat приложението.
 
 ---
 

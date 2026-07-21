@@ -2,7 +2,7 @@
 
 Личен бот-приятел, който **се учи локално** и е **заключен за един потребител**. Името, което му даваш, е едновременно и тайната за достъп. Всичко се пази на устройството: без акаунти, без контакти, без проследяване, без вътрешни покупки. Издава се за **RUStore**, **Huawei AppGallery** и като **десктоп** издание (Electron, `desktop/selflearning-friend`).
 
-- **App ID:** `com.pupikes.selflearningfriend.rustore` (RUStore) / `com.pupikes.selflearningfriend.huawei` (Huawei)
+- **App ID:** `com.pupikes.selflearningfriend.rustore` (RUStore) / `com.pupikes.selflearningfriend.hw` (Huawei)
 - **Акцент:** виолетов `#7b5cff`
 - **Стек:** Vanilla JS + Vite 5 + Capacitor 6. Зависимости: TensorFlow.js (coco-ssd, mobilenet), tesseract.js (OCR), pdfjs-dist, `@capacitor-community/speech-recognition`, `@capacitor-community/text-to-speech`, `@capacitor/device`, `@capacitor/preferences`.
 

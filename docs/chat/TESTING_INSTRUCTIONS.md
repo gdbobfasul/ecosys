@@ -1,5 +1,5 @@
 <!-- Version: 001.00001 -->
-# 🧪 Стартиране на Локални Тестове - AMS Chat System
+# 🧪 Стартиране на Локални Тестове - Pupikes Chat System
 
 ## 📋 Предварителни Изисквания
 
@@ -34,7 +34,7 @@ npm test
 
 **Очакван резултат:**
 ```
-  AMS Chat Mobile App - Test Suite
+  Pupikes Chat Mobile App - Test Suite
     Database Tests
       ✓ should create all required tables (XX ms)
       ✓ should insert a test user (XX ms)
@@ -66,7 +66,7 @@ npm test
 
 **Очакван резултат:**
 ```
-  AMS Chat Web App - Test Suite
+  Pupikes Chat Web App - Test Suite
     Database Tests
       ✓ should create all required tables (XX ms)
     Web-Specific Tests

@@ -2,7 +2,7 @@
 
 Самостоятелно мобилно приложение „робот под наем", което следи **цени на криптовалути и валути** и праща **локални** известия при достигнат праг. Без акаунт, без облак, без проследяване. Всички цени идват от **безплатни публични API без ключове**. Без крипто плащания — само информация за цени. Издава се за **RUStore** и **Huawei AppGallery** като две идентични, независими приложения.
 
-- **App ID:** `com.pupikes.pricewatchbot.rustore` (RUStore) / `com.pupikes.pricewatchbot.huawei` (Huawei)
+- **App ID:** `com.pupikes.pricewatchbot.rustore` (RUStore) / `com.pupikes.pricewatchbot.hw` (Huawei)
 - **Стек:** Vanilla JS + Vite 5 + Capacitor 6
 
 ## Поток (наеми → настрой → разреши → следи)

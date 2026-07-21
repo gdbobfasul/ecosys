@@ -47,7 +47,7 @@ function parseReport(file, src) {
     appleExact, dTaken: dTaken || '?', dFree: dFree || '?', dUnknown: dUnknown || '?',
     niches, takenDomains, sameNicheNews, current: hasWebSection && hasRdap,
     raw: src,
-    file: 'docs/name-checks/' + path.basename(file)
+    file: 'docs/publish/name-checks/' + path.basename(file)
   };
 }
 

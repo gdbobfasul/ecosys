@@ -30,8 +30,8 @@ const TARGET = parseInt(process.argv[3] || '25', 10);
 // Семе на генератора (3-ти аргумент): различно семе = ИЗЦЯЛО нови кандидати
 // (същото семе превърта вече намерените). Докладът е отделен файл на семе.
 const SEED = parseInt(process.argv[4] || '20260720', 10);
-// Ghost имената НЕ принадлежат на приложение → в docs/name-checks/ (правило на потребителя).
-const OUT = path.join(__dirname, '..', '..', 'docs', 'name-checks', SEED === 20260720 ? `GHOST-NAMES-${LENSPEC}.md` : `GHOST-NAMES-${LENSPEC}-seed${SEED}.md`);
+// Ghost имената НЕ принадлежат на приложение → в docs/publish/name-checks/ (правило на потребителя).
+const OUT = path.join(__dirname, '..', '..', 'docs', 'publish', 'name-checks', SEED === 20260720 ? `GHOST-NAMES-${LENSPEC}.md` : `GHOST-NAMES-${LENSPEC}-seed${SEED}.md`);
 try { fs.mkdirSync(path.dirname(OUT), { recursive: true }); } catch (e) {}
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 

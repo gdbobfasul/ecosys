@@ -26,7 +26,7 @@ const REPO = path.join(__dirname, '..', '..');
 
 // ПРАВИЛО (потребителят): резултатите на бота се пазят в папка, която ПРИНАДЛЕЖИ на приложение
 // (<ап>/publish/) — а само когато НЯМА приложение, към което да ги отнесем, в docs/name-checks/.
-const DOCS_NAME_CHECKS = path.join(REPO, 'docs', 'name-checks');
+const DOCS_NAME_CHECKS = path.join(REPO, 'docs', 'publish', 'name-checks');
 // Връща huawei/<ап>/publish, ако името съответства на съществуващо приложение; иначе null.
 function appPublishFor(name) {
   const norm = (x) => String(x).toLowerCase().replace(/[^a-z0-9]/g, '');

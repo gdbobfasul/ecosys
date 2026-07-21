@@ -1,4 +1,4 @@
-# 📁 AMS Chat - Project Structure (Web + Mobile)
+# 📁 Pupikes Chat - Project Structure (Web + Mobile)
 
 **Version:** 00030  
 **Last Updated:** 2026-01-31  

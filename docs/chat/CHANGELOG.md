@@ -1,4 +1,4 @@
-# CHANGELOG - AMS Chat System
+# CHANGELOG - Pupikes Chat System
 
 ## Version 00017 (January 29, 2026) - Clean File Structure
 

@@ -1,4 +1,4 @@
-# 📁 AMS Chat - File Structure (Web)
+# 📁 Pupikes Chat - File Structure (Web)
 
 ## 📂 Directory Layout
 
