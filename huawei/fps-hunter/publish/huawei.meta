@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: Game (игра)
 App name: Huntline 3D            # 11 / 30 знака
-App package name: com.kcy.fpshunter.hw   # 20 / 128 знака
+App package name: com.pupikes.fpshunter.hw   # 20 / 128 знака
 Level-1 app category: Games
 
 [Integrate open capabilities]

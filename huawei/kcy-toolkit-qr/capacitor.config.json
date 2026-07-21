@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.toolkitqr.hw",
+  "appId": "com.pupikes.toolkitqr.hw",
   "appName": "Pupikes Toolkit QR",
   "webDir": "dist",
   "bundledWebRuntime": false,

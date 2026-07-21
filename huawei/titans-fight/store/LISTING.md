@@ -1,6 +1,6 @@
 # Godfist Arena — Huawei AppGallery Listing Notes
 
-App ID (Capacitor): `com.kcy.titansfight.huawei`
+App ID (Capacitor): `com.pupikes.titansfight.huawei`
 Name: Godfist Arena
 Category: Games / Action (Аркада / Файтинг)
 

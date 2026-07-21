@@ -71,5 +71,5 @@ No account or internet is required. On first launch pick a language, then tap a 
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/titans-fight-huawei-release.apk` (release, подписан). Пакет: `com.kcy.titansfight.hw`.
+APK за качване: `apk/titans-fight-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.titansfight.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/titans-fight/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

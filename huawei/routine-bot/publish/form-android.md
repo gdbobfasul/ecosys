@@ -69,5 +69,5 @@ No account or login is required. On first launch pick a language and activate th
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/routine-bot-huawei-release.apk` (release, подписан). Пакет: `com.kcy.routinebot.hw`.
+APK за качване: `apk/routine-bot-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.routinebot.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/routine-bot/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

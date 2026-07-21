@@ -5,8 +5,8 @@ folders:
   - huawei/duel
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.duel.rustore
-  huawei:  com.kcy.duel.huawei
+  rustore: com.pupikes.duel.rustore
+  huawei:  com.pupikes.duel.huawei
 category:
   google_play: Games / Action
   rustore: Игры

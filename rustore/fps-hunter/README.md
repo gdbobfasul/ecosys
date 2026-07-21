@@ -4,7 +4,7 @@
 100 процедурно генерирани нива, локален лидерборд (SQLite/sql.js). Без GMS/HMS/Firebase,
 без мрежа.
 
-App ID: `com.kcy.fpshunter.rustore`
+App ID: `com.pupikes.fpshunter.rustore`
 
 ## Геймплей накратко
 - 3D от първо лице; играчът се движи по различни терени (гора, поле, сняг, пустиня,
@@ -80,7 +80,7 @@ viewmodel на оръжието долу на екрана. Без външни 
 index.html
 package.json            # dev/build скриптове
 vite.config.js
-capacitor.config.json   # appId com.kcy.fpshunter.rustore
+capacitor.config.json   # appId com.pupikes.fpshunter.rustore
 src/
   main.js               # оркестрация на сцените + главен цикъл
   theme.js              # акцентни цветове (RUStore)

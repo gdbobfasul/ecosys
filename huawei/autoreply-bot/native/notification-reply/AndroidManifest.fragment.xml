@@ -10,7 +10,7 @@
   (то е system|signature и се enforce-ва от системата за тоя intent-filter).
 -->
 <service
-    android:name="com.kcy.notificationreply.KcyNotificationListener"
+    android:name="com.pupikes.notificationreply.KcyNotificationListener"
     android:label="@string/app_name"
     android:exported="false"
     android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">

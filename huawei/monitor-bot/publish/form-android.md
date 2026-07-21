@@ -69,5 +69,5 @@ No account or login is required. On first launch pick a language, tap through th
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/monitor-bot-huawei-release.apk` (release, подписан). Пакет: `com.kcy.monitorbot.hw`.
+APK за качване: `apk/monitor-bot-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.monitorbot.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/monitor-bot/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

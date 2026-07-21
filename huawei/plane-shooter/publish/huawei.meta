@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: Game (игра)
 App name: Warbird Rush            # 12 / 30 знака
-App package name: com.kcy.planeshooter.hw   # 23 / 128 знака
+App package name: com.pupikes.planeshooter.hw   # 23 / 128 знака
 Level-1 app category: Games
 
 [Integrate open capabilities]

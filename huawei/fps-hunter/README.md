@@ -4,7 +4,7 @@
 100 процедурно генерирани нива, локален лидерборд (SQLite/sql.js). Без HMS/GMS/Firebase,
 без мрежа.
 
-App ID: `com.kcy.fpshunter.huawei`
+App ID: `com.pupikes.fpshunter.huawei`
 
 ## Геймплей накратко
 - 3D от първо лице; играчът се движи по различни терени (гора, поле, сняг, пустиня,
@@ -80,7 +80,7 @@ viewmodel на оръжието долу на екрана. Без външни 
 index.html
 package.json            # dev/build скриптове
 vite.config.js
-capacitor.config.json   # appId com.kcy.fpshunter.huawei
+capacitor.config.json   # appId com.pupikes.fpshunter.huawei
 src/
   main.js               # оркестрация на сцените + главен цикъл
   theme.js              # акцентни цветове (Huawei)

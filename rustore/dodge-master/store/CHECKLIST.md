@@ -1,6 +1,6 @@
 # Чеклист за подаване в RUStore
 
-- [ ] appId = `com.kcy.dodgemaster.rustore` (capacitor.config.json)
+- [ ] appId = `com.pupikes.dodgemaster.rustore` (capacitor.config.json)
 - [ ] `npm run build` минава без грешки
 - [ ] Геймплеят тестван в браузър (`npm run dev`) — 10 нива играеми
 - [ ] Икона PNG 512×512 (от `store/icon.svg`)

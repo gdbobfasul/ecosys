@@ -17,7 +17,7 @@ Huawei AppGallery Connect поддържа:
 ### Стъпки
 1. Регистрирай се в AppGallery Connect: https://developer.huawei.com/consumer/
    (изисква верификация на акаунт за разработчик).
-2. Създай ново приложение → Package name `com.kcy.servicestoolkit.huawei`.
+2. Създай ново приложение → Package name `com.pupikes.servicestoolkit.huawei`.
 3. Качи подписан APK/AAB (debug е достатъчен за вътрешен тест; за публикуване —
    release с keystore — виж submission-checklist.md).
 4. Попълни листинга (listing-notes.md), икона, екранни снимки и privacy policy URL.

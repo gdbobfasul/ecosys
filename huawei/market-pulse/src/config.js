@@ -4,7 +4,7 @@
 export const STORE = 'huawei';
 export const ACCENT = '#1aa06d';   // Huawei зелен акцент
 export const ACCENT2 = '#3ddc97';
-export const APP_ID = 'com.kcy.marketpulse.hw';
+export const APP_ID = 'com.pupikes.marketpulse.hw';
 export const APP_NAME = 'Pupikes Market Pulse';
 
 // Колко често роботът прави реална проверка в браузъра (демо таймер).

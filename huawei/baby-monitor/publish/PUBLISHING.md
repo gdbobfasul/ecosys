@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.babymonitor.hw`
-- **RuStore пакет:** `com.kcy.babymonitor.rustore`
+- **Huawei пакет:** `com.pupikes.babymonitor.hw`
+- **RuStore пакет:** `com.pupikes.babymonitor.rustore`
 - **Билд (APK/AAB):** идва от `apk/baby-monitor-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

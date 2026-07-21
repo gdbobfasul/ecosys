@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.pricewatchbot.rustore",
+  "appId": "com.pupikes.pricewatchbot.rustore",
   "appName": "Pupikes Toolkit Price Watch",
   "webDir": "dist",
   "bundledWebRuntime": false,

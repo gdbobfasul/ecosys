@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.fpshunter.hw`
-- **RuStore пакет:** `com.kcy.fpshunter.rustore`
+- **Huawei пакет:** `com.pupikes.fpshunter.hw`
+- **RuStore пакет:** `com.pupikes.fpshunter.rustore`
 - **Билд (APK/AAB):** идва от `apk/fps-hunter-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

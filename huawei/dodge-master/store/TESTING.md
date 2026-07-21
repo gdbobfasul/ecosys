@@ -28,7 +28,7 @@ cd android
 
 ## 4. Затворено тестване в AppGallery Connect
 1. Влез в AppGallery Connect (https://developer.huawei.com/consumer/en/console).
-2. Създай ново приложение с package name `com.kcy.dodgemaster.huawei`.
+2. Създай ново приложение с package name `com.pupikes.dodgemaster.huawei`.
 3. Качи подписан release APK/AAB (без HMS зависимости — играта е чисто уеб).
 4. Раздел „Testing" → „Open/Closed testing" → добави тестери (HUAWEI ID/имейли).
 5. Сподели линка/QR; тестерите инсталират през AppGallery.

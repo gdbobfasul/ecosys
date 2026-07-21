@@ -1,7 +1,7 @@
 # Контролен лист за публикуване — Huawei AppGallery
 
 ## Идентичност
-- App ID: `com.kcy.monitorbot.huawei`
+- App ID: `com.pupikes.monitorbot.huawei`
 - Име: Pupikes Site Monitor
 - Акцент: #16c79a (Huawei тюркоаз)
 

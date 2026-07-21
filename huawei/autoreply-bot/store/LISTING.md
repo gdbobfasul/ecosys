@@ -1,6 +1,6 @@
 # Pupikes Auto Answer — Store Listing (Huawei AppGallery)
 
-**App ID:** `com.kcy.autoreplybot.huawei`
+**App ID:** `com.pupikes.autoreplybot.huawei`
 **Category:** Productivity / Utilities
 
 ## Short description

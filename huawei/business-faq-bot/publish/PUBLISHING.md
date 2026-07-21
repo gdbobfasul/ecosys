@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.businessfaqbot.hw`
-- **RuStore пакет:** `com.kcy.businessfaqbot.rustore`
+- **Huawei пакет:** `com.pupikes.businessfaqbot.hw`
+- **RuStore пакет:** `com.pupikes.businessfaqbot.rustore`
 - **Билд (APK/AAB):** идва от `apk/business-faq-bot-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

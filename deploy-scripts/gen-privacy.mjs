@@ -285,7 +285,7 @@ const GAMES_DEVICE = {
 // ── СПЕЦИФИКАЦИИ ЗА ВСИЧКИ 19 ПРИЛОЖЕНИЯ ────────────────────────────────────────────────────────
 function game(id, name, pitchEn, pitchRu, extraTP) {
   return {
-    id, name, hwPkg: `com.kcy.${id.replace(/-/g, '')}.hw`, ruPkg: `com.kcy.${id.replace(/-/g, '')}.rustore`,
+    id, name, hwPkg: `com.pupikes.${id.replace(/-/g, '')}.hw`, ruPkg: `com.pupikes.${id.replace(/-/g, '')}.rustore`,
     pitch: { en: pitchEn, ru: pitchRu },
     device: GAMES_DEVICE,
     thirdParties: extraTP || [],
@@ -329,7 +329,7 @@ const APPS = [
 
   // ── authenticator ──
   {
-    id: 'authenticator', name: 'Pupikes Toolkit Authenticator', hwPkg: 'com.kcy.authenticator.hw', ruPkg: 'com.kcy.authenticator.rustore',
+    id: 'authenticator', name: 'Pupikes Toolkit Authenticator', hwPkg: 'com.pupikes.authenticator.hw', ruPkg: 'com.pupikes.authenticator.rustore',
     pitch: {
       en: 'Pupikes Toolkit Authenticator is a private two-factor authentication (2FA) app that generates TOTP/HOTP/Steam one-time codes and keeps all secrets in an encrypted, biometric-locked vault on your device.',
       ru: 'Pupikes Toolkit Authenticator — приложение двухфакторной аутентификации (2FA): генерирует одноразовые коды TOTP/HOTP/Steam и хранит все секреты в зашифрованном хранилище на устройстве, защищённом биометрией.'
@@ -347,7 +347,7 @@ const APPS = [
 
   // ── baby-monitor ──
   {
-    id: 'baby-monitor', name: 'Pupikes Baby Radar', hwPkg: 'com.kcy.babymonitor.hw', ruPkg: 'com.kcy.babymonitor.rustore',
+    id: 'baby-monitor', name: 'Pupikes Baby Radar', hwPkg: 'com.pupikes.babymonitor.hw', ruPkg: 'com.pupikes.babymonitor.rustore',
     pitch: {
       en: 'Pupikes Baby Radar is a camera-based awareness assistant that watches your child through the phone camera and alerts you on motion. Detection runs on-device. It is <strong>not a certified safety device</strong>.',
       ru: 'Pupikes Baby Radar — помощник наблюдения на основе камеры: следит за ребёнком через камеру телефона и уведомляет о движении. Распознавание выполняется на устройстве. Это <strong>не сертифицированное устройство безопасности</strong>.'
@@ -370,7 +370,7 @@ const APPS = [
 
   // ── camera-watch ──
   {
-    id: 'camera-watch', name: 'Camera Watch', hwPkg: 'com.kcy.camerawatch.hw', ruPkg: 'com.kcy.camerawatch.rustore',
+    id: 'camera-watch', name: 'Camera Watch', hwPkg: 'com.pupikes.camerawatch.hw', ruPkg: 'com.pupikes.camerawatch.rustore',
     pitch: {
       en: 'Camera Watch is a camera-guard assistant that watches a camera feed and warns you on movement, telling you what moved (a person, dog, cat or other). Motion is detected on-device.',
       ru: 'Camera Watch — помощник-охранник на основе камеры: следит за видеопотоком и предупреждает о движении, сообщая, что двигалось (человек, собака, кошка и т. п.). Движение распознаётся на устройстве.'
@@ -393,7 +393,7 @@ const APPS = [
 
   // ── monitor-bot ──
   {
-    id: 'monitor-bot', name: 'Pupikes Site Monitor', hwPkg: 'com.kcy.monitorbot.hw', ruPkg: 'com.kcy.monitorbot.rustore',
+    id: 'monitor-bot', name: 'Pupikes Site Monitor', hwPkg: 'com.pupikes.monitorbot.hw', ruPkg: 'com.pupikes.monitorbot.rustore',
     pitch: {
       en: 'Pupikes Site Monitor is an on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches.',
       ru: 'Pupikes Site Monitor — наблюдатель на устройстве за любыми RSS/Atom-лентами или публичными JSON-API по вашему выбору: присылает локальное уведомление при появлении новой записи или совпадении ключевого слова.'
@@ -413,7 +413,7 @@ const APPS = [
 
   // ── price-watch-bot ──
   {
-    id: 'price-watch-bot', name: 'Pupikes Toolkit Price Watch', hwPkg: 'com.kcy.pricewatchbot.hw', ruPkg: 'com.kcy.pricewatchbot.rustore',
+    id: 'price-watch-bot', name: 'Pupikes Toolkit Price Watch', hwPkg: 'com.pupikes.pricewatchbot.hw', ruPkg: 'com.pupikes.pricewatchbot.rustore',
     pitch: {
       en: 'Pupikes Toolkit Price Watch tracks selected crypto and currency rates and sends a local notification when a price crosses a threshold you set. It only reads prices from free public sources and never handles wallets or payments.',
       ru: 'Pupikes Toolkit Price Watch отслеживает выбранные крипто- и валютные курсы и присылает локальное уведомление, когда цена пересекает заданный вами порог. Он только читает цены из бесплатных публичных источников и не работает с кошельками или платежами.'
@@ -433,7 +433,7 @@ const APPS = [
 
   // ── market-pulse (образователен финансов анализатор) ──
   {
-    id: 'market-pulse', name: 'Pupikes Market Pulse', hwPkg: 'com.kcy.marketpulse.hw', ruPkg: 'com.kcy.marketpulse.rustore',
+    id: 'market-pulse', name: 'Pupikes Market Pulse', hwPkg: 'com.pupikes.marketpulse.hw', ruPkg: 'com.pupikes.marketpulse.rustore',
     pitch: {
       en: 'Pupikes Market Pulse is an EDUCATIONAL market analyzer. It reads public market data (crypto, gold, stock indices, real-estate ETFs), market sentiment and news, computes classic indicators for a period you choose, and shows an educational reading. It is NOT investment advice, handles no wallets or payments, and has no account.',
       ru: 'Pupikes Market Pulse — ОБРАЗОВАТЕЛЬНЫЙ анализатор рынков. Он читает публичные рыночные данные (крипто, золото, биржевые индексы, ETF на недвижимость), настроение рынка и новости, рассчитывает классические индикаторы за выбранный период и показывает образовательный вывод. Это НЕ инвестиционный совет; нет кошельков, платежей и аккаунта.'
@@ -453,7 +453,7 @@ const APPS = [
 
   // ── routine-bot ──
   {
-    id: 'routine-bot', name: 'Pupikes Routine Planner', hwPkg: 'com.kcy.routinebot.hw', ruPkg: 'com.kcy.routinebot.rustore',
+    id: 'routine-bot', name: 'Pupikes Routine Planner', hwPkg: 'com.pupikes.routinebot.hw', ruPkg: 'com.pupikes.routinebot.rustore',
     pitch: {
       en: 'Pupikes Routine Planner is a personal daily assistant: a morning briefing (weather, agenda, motivation), reminders for medication, habits and tasks, an optional evening summary, and it can read your notes aloud in 15 languages.',
       ru: 'Pupikes Routine Planner — личный ежедневный помощник: утренний брифинг (погода, план, мотивация), напоминания о лекарствах, привычках и задачах, необязательное вечернее резюме и чтение ваших заметок вслух на 15 языках.'
@@ -476,7 +476,7 @@ const APPS = [
 
   // ── autoreply-bot ──
   {
-    id: 'autoreply-bot', name: 'Pupikes Auto Answer', hwPkg: 'com.kcy.autoreplybot.hw', ruPkg: 'com.kcy.autoreplybot.rustore',
+    id: 'autoreply-bot', name: 'Pupikes Auto Answer', hwPkg: 'com.pupikes.autoreplybot.hw', ruPkg: 'com.pupikes.autoreplybot.rustore',
     pitch: {
       en: 'Pupikes Auto Answer answers messages for you by your own rules: keyword triggers with ready replies, office hours, away messages and allow/block lists, with a built-in demo inbox to test everything.',
       ru: 'Pupikes Auto Answer отвечает на сообщения за вас по вашим правилам: триггеры по ключевым словам с готовыми ответами, рабочие часы, сообщения об отсутствии и списки разрешённых/заблокированных, со встроенным демо-ящиком для проверки.'
@@ -496,7 +496,7 @@ const APPS = [
 
   // ── business-faq-bot ──
   {
-    id: 'business-faq-bot', name: 'Pupikes FAQ Desk', hwPkg: 'com.kcy.businessfaqbot.hw', ruPkg: 'com.kcy.businessfaqbot.rustore',
+    id: 'business-faq-bot', name: 'Pupikes FAQ Desk', hwPkg: 'com.pupikes.businessfaqbot.hw', ruPkg: 'com.pupikes.businessfaqbot.rustore',
     pitch: {
       en: 'Pupikes FAQ Desk automatically answers your customers’ frequently asked questions from a keyword FAQ knowledge base, with greetings, office-hours messages, quick replies and a fallback to a human. It runs entirely on-device with no paid AI.',
       ru: 'Pupikes FAQ Desk автоматически отвечает на частые вопросы клиентов из базы FAQ по ключевым словам, с приветствиями, сообщениями о рабочих часах, быстрыми ответами и передачей человеку. Работает полностью на устройстве без платного ИИ.'
@@ -516,7 +516,7 @@ const APPS = [
 
   // ── services-toolkit ──
   {
-    id: 'services-toolkit', name: 'Pupikes Toolkit', hwPkg: 'com.kcy.servicestoolkit.hw', ruPkg: 'com.kcy.servicestoolkit.rustore',
+    id: 'services-toolkit', name: 'Pupikes Toolkit', hwPkg: 'com.pupikes.servicestoolkit.hw', ruPkg: 'com.pupikes.servicestoolkit.rustore',
     genAI: {
       en: 'One tool is a free AI text helper. When (and only when) you use it, the prompt text you type is sent to a free third-party generative-AI service, <code>text.pollinations.ai</code>, which returns the generated text. Do not enter personal or sensitive information into that tool. All other tools work without AI.',
       ru: 'Один из инструментов — бесплатный ИИ-помощник для текста. Когда (и только когда) вы им пользуетесь, введённый вами текст запроса отправляется в бесплатный сторонний сервис генеративного ИИ <code>text.pollinations.ai</code>, который возвращает сгенерированный текст. Не вводите в него личную или конфиденциальную информацию. Остальные инструменты работают без ИИ.'
@@ -553,7 +553,7 @@ const APPS = [
 
   // ── kcy-toolkit-pdf ──
   {
-    id: 'kcy-toolkit-pdf', name: 'Pupikes Toolkit PDF', hwPkg: 'com.kcy.toolkitpdf.hw', ruPkg: 'com.kcy.toolkitpdf.rustore',
+    id: 'kcy-toolkit-pdf', name: 'Pupikes Toolkit PDF', hwPkg: 'com.pupikes.toolkitpdf.hw', ruPkg: 'com.pupikes.toolkitpdf.rustore',
     pitch: {
       en: 'Pupikes Toolkit PDF is a complete PDF toolbox: merge, split and watermark PDFs, compress large scans, and convert PDF text to a Word (.docx) file — everything runs on-device.',
       ru: 'Pupikes Toolkit PDF — полный набор для PDF: объединение, разделение и водяные знаки, сжатие больших сканов и преобразование текста PDF в файл Word (.docx) — всё работает на устройстве.'
@@ -568,7 +568,7 @@ const APPS = [
 
   // ── kcy-toolkit-qr ──
   {
-    id: 'kcy-toolkit-qr', name: 'Pupikes Toolkit QR', hwPkg: 'com.kcy.toolkitqr.hw', ruPkg: 'com.kcy.toolkitqr.rustore',
+    id: 'kcy-toolkit-qr', name: 'Pupikes Toolkit QR', hwPkg: 'com.pupikes.toolkitqr.hw', ruPkg: 'com.pupikes.toolkitqr.rustore',
     pitch: {
       en: 'Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.',
       ru: 'Pupikes Toolkit QR создаёт QR-коды из текста или ссылок и читает существующие QR-коды камерой или из изображения — полностью на устройстве.'
@@ -583,7 +583,7 @@ const APPS = [
 
   // ── kcy-toolkit-ai-announcement ──
   {
-    id: 'kcy-toolkit-ai-announcement', name: 'Pupikes Toolkit AI Announcement', hwPkg: 'com.kcy.toolkitai.hw', ruPkg: 'com.kcy.toolkitai.rustore',
+    id: 'kcy-toolkit-ai-announcement', name: 'Pupikes Toolkit AI Announcement', hwPkg: 'com.pupikes.toolkitai.hw', ruPkg: 'com.pupikes.toolkitai.rustore',
     genAI: {
       en: 'The app is a free AI text helper. The prompt text you type is sent to a free third-party generative-AI service, <code>text.pollinations.ai</code>, which returns the generated text. Do not enter personal or sensitive information.',
       ru: 'Приложение — бесплатный ИИ-помощник для текста. Введённый вами текст запроса отправляется в бесплатный сторонний сервис генеративного ИИ <code>text.pollinations.ai</code>, который возвращает сгенерированный текст. Не вводите личную или конфиденциальную информацию.'
@@ -607,7 +607,7 @@ const APPS = [
 
   // ── kcy-toolkit-text ──
   {
-    id: 'kcy-toolkit-text', name: 'Pupikes Toolkit Text', hwPkg: 'com.kcy.toolkittext.hw', ruPkg: 'com.kcy.toolkittext.rustore',
+    id: 'kcy-toolkit-text', name: 'Pupikes Toolkit Text', hwPkg: 'com.pupikes.toolkittext.hw', ruPkg: 'com.pupikes.toolkittext.rustore',
     pitch: {
       en: 'Pupikes Toolkit Text is a set of text utilities: word and character counters, case and formatting helpers, Base64 encoding — fully on-device.',
       ru: 'Pupikes Toolkit Text — набор текстовых утилит: счётчики слов и символов, форматирование, кодирование Base64 — полностью на устройстве.'
@@ -622,7 +622,7 @@ const APPS = [
 
   // ── kcy-toolkit-finance ──
   {
-    id: 'kcy-toolkit-finance', name: 'Pupikes Toolkit Finance', hwPkg: 'com.kcy.toolkitfinance.hw', ruPkg: 'com.kcy.toolkitfinance.rustore',
+    id: 'kcy-toolkit-finance', name: 'Pupikes Toolkit Finance', hwPkg: 'com.pupikes.toolkitfinance.hw', ruPkg: 'com.pupikes.toolkitfinance.rustore',
     pitch: {
       en: 'Pupikes Toolkit Finance bundles the money tools: live currency rates and a converter, crypto charts with indicators, a 20-currency watchlist with alerts, and loan/VAT/interest calculators.',
       ru: 'Pupikes Toolkit Finance объединяет денежные инструменты: курсы валют и конвертер, графики крипты с индикаторами, список наблюдения из 20 валют с оповещениями и калькуляторы кредита/НДС/процентов.'
@@ -642,7 +642,7 @@ const APPS = [
 
   // ── kcy-toolkit-pictures ──
   {
-    id: 'kcy-toolkit-pictures', name: 'Pupikes Toolkit Pictures', hwPkg: 'com.kcy.toolkitpictures.hw', ruPkg: 'com.kcy.toolkitpictures.rustore',
+    id: 'kcy-toolkit-pictures', name: 'Pupikes Toolkit Pictures', hwPkg: 'com.pupikes.toolkitpictures.hw', ruPkg: 'com.pupikes.toolkitpictures.rustore',
     pitch: {
       en: 'Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.',
       ru: 'Pupikes Toolkit Pictures уменьшает изображения JPEG, PNG и WebP прямо на устройстве — ничего не выгружается.'
@@ -657,7 +657,7 @@ const APPS = [
 
   // ── kcy-toolkit-videos ──
   {
-    id: 'kcy-toolkit-videos', name: 'Pupikes Toolkit Videos', hwPkg: 'com.kcy.toolkitvideos.hw', ruPkg: 'com.kcy.toolkitvideos.rustore',
+    id: 'kcy-toolkit-videos', name: 'Pupikes Toolkit Videos', hwPkg: 'com.pupikes.toolkitvideos.hw', ruPkg: 'com.pupikes.toolkitvideos.rustore',
     pitch: {
       en: 'Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.',
       ru: 'Pupikes Toolkit Videos конвертирует видео между MP4, WebM, AVI, MOV, MKV и GIF полностью на устройстве с помощью встроенного движка — ничего не выгружается.'
@@ -672,7 +672,7 @@ const APPS = [
 
   // ── kcy-toolkit-sound ──
   {
-    id: 'kcy-toolkit-sound', name: 'Pupikes Toolkit Sound', hwPkg: 'com.kcy.toolkitsound.hw', ruPkg: 'com.kcy.toolkitsound.rustore',
+    id: 'kcy-toolkit-sound', name: 'Pupikes Toolkit Sound', hwPkg: 'com.pupikes.toolkitsound.hw', ruPkg: 'com.pupikes.toolkitsound.rustore',
     pitch: {
       en: 'Pupikes Toolkit Sound converts audio files from phone formats (MP3, M4A/AAC, WAV, OGG, FLAC) to MP4, MP3, WAV or OGG entirely on your device — nothing is uploaded.',
       ru: 'Pupikes Toolkit Sound конвертирует аудиофайлы из телефонных форматов (MP3, M4A/AAC, WAV, OGG, FLAC) в MP4, MP3, WAV или OGG полностью на устройстве — ничего не выгружается.'
@@ -687,7 +687,7 @@ const APPS = [
 
   // ── kcy-toolkit-passwords ──
   {
-    id: 'kcy-toolkit-passwords', name: 'Pupikes Toolkit Passwords', hwPkg: 'com.kcy.toolkitpasswords.hw', ruPkg: 'com.kcy.toolkitpasswords.rustore',
+    id: 'kcy-toolkit-passwords', name: 'Pupikes Toolkit Passwords', hwPkg: 'com.pupikes.toolkitpasswords.hw', ruPkg: 'com.pupikes.toolkitpasswords.rustore',
     pitch: {
       en: 'Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.',
       ru: 'Pupikes Toolkit Passwords генерирует надёжные пароли несколькими способами (случайные, произносимые, PIN, фразы) — полностью на устройстве, ничего не сохраняется и не отправляется.'
@@ -702,7 +702,7 @@ const APPS = [
 
   // ── kcy-toolkit-scraper ──
   {
-    id: 'kcy-toolkit-scraper', name: 'Pupikes Toolkit Scraper', hwPkg: 'com.kcy.toolkitscraper.hw', ruPkg: 'com.kcy.toolkitscraper.rustore',
+    id: 'kcy-toolkit-scraper', name: 'Pupikes Toolkit Scraper', hwPkg: 'com.pupikes.toolkitscraper.hw', ruPkg: 'com.pupikes.toolkitscraper.rustore',
     pitch: {
       en: 'Pupikes Toolkit Scraper downloads a web page you point it to and extracts the parts you asked for (text, links, tables) so you can copy or save them.',
       ru: 'Pupikes Toolkit Scraper загружает указанную вами веб-страницу и извлекает нужные части (текст, ссылки, таблицы), чтобы вы могли их скопировать или сохранить.'
@@ -722,7 +722,7 @@ const APPS = [
 
   // ── selflearning-friend ──
   {
-    id: 'selflearning-friend', name: 'Pupikes Learning Buddy', hwPkg: 'com.kcy.selflearningfriend.hw', ruPkg: 'com.kcy.selflearningfriend.rustore',
+    id: 'selflearning-friend', name: 'Pupikes Learning Buddy', hwPkg: 'com.pupikes.selflearningfriend.hw', ruPkg: 'com.pupikes.selflearningfriend.rustore',
     genAI: {
       en: 'The app is a self-learning AI companion. It generates conversation and learns from public web knowledge on-device. It has <strong>no developer AI backend collecting your data</strong>; knowledge and translation come from the public sources listed above, and everything the companion learns and remembers stays on your device.',
       ru: 'Приложение — самообучающийся ИИ-компаньон. Он ведёт беседу и учится из публичных веб-знаний на устройстве. У него <strong>нет разработческого ИИ-бэкенда, собирающего ваши данные</strong>; знания и перевод берутся из перечисленных выше публичных источников, а всё, что компаньон выучил и запомнил, остаётся на вашем устройстве.'
@@ -763,7 +763,7 @@ const APPS = [
 
   // ── chat (обвивка към сървър) ──
   {
-    id: 'chat', name: 'Pupikes Chat', hwPkg: 'com.kcy.chat.hw', ruPkg: 'com.kcy.chat.rustore',
+    id: 'chat', name: 'Pupikes Chat', hwPkg: 'com.pupikes.chat.hw', ruPkg: 'com.pupikes.chat.rustore',
     serverWrapper: {
       domain: 'my.girl.place',
       content_en: 'the messages you send, and profile/service details you choose to add',
@@ -786,7 +786,7 @@ const APPS = [
 
   // ── houselookbook (обвивка към сървър) ──
   {
-    id: 'houselookbook', name: 'HouseLookBook', hwPkg: 'com.kcy.houselookbook.hw', ruPkg: 'com.kcy.houselookbook.rustore',
+    id: 'houselookbook', name: 'HouseLookBook', hwPkg: 'com.pupikes.houselookbook.hw', ruPkg: 'com.pupikes.houselookbook.rustore',
     serverWrapper: {
       domain: 'look.myhousesetup.com',
       content_en: 'the home designs, room layouts, colours and any photos you upload',

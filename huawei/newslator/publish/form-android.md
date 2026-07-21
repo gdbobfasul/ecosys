@@ -69,5 +69,5 @@ Note: this build includes a 4-day trial; after 4 days it asks for a code word to
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/newslator-huawei-release.apk` (release, подписан). Пакет: `com.kcy.newslator.hw`.
+APK за качване: `apk/newslator-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.newslator.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/newslator/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

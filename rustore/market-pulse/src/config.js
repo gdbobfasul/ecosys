@@ -4,7 +4,7 @@
 export const STORE = 'rustore';
 export const ACCENT = '#0a84ff';   // RUStore син акцент
 export const ACCENT2 = '#5ac8fa';
-export const APP_ID = 'com.kcy.marketpulse.rustore';
+export const APP_ID = 'com.pupikes.marketpulse.rustore';
 export const APP_NAME = 'Pupikes Market Pulse';
 
 // Колко често роботът прави реална проверка в браузъра (демо таймер).

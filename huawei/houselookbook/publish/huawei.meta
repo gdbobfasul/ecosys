@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: App (приложение, НЕ игра)
 App name: HouseLookBook            # 13 / 30 знака
-App package name: com.kcy.houselookbook.hw   # 24 / 128 знака
+App package name: com.pupikes.houselookbook.hw   # 24 / 128 знака
 Level-1 app category: Lifestyle
 
 [Integrate open capabilities]

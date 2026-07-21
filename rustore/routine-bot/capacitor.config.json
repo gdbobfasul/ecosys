@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.routinebot.rustore",
+  "appId": "com.pupikes.routinebot.rustore",
   "appName": "Pupikes Routine Planner",
   "webDir": "dist",
   "bundledWebRuntime": false,

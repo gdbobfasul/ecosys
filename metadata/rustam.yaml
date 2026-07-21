@@ -5,8 +5,8 @@ folders:
   - huawei/rustam
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.rustam.rustore
-  huawei:  com.kcy.rustam.huawei
+  rustore: com.pupikes.rustam.rustore
+  huawei:  com.pupikes.rustam.huawei
 category:
   google_play: Games / Arcade
   rustore: Игры

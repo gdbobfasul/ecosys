@@ -5,8 +5,8 @@ folders:
   - huawei/hmm
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.hmm.rustore
-  huawei:  com.kcy.hmm.huawei
+  rustore: com.pupikes.hmm.rustore
+  huawei:  com.pupikes.hmm.huawei
 category:
   google_play: Games / Action
   rustore: Игры

@@ -1,7 +1,7 @@
 # Чеклист за публикуване — Pupikes Learning Buddy (Huawei)
 
 ## Идентичност
-- [ ] App ID: `com.kcy.selflearningfriend.huawei`
+- [ ] App ID: `com.pupikes.selflearningfriend.huawei`
 - [ ] Име: „Pupikes Learning Buddy“
 - [ ] Версия и versionCode зададени
 

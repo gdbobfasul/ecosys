@@ -69,5 +69,5 @@ No account or registration is needed. On first launch pick a UI language, then o
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/selflearning-friend-huawei-release.apk` (release, подписан). Пакет: `com.kcy.selflearningfriend.hw`.
+APK за качване: `apk/selflearning-friend-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.selflearningfriend.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/selflearning-friend/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.authenticator.hw",
+  "appId": "com.pupikes.authenticator.hw",
   "appName": "Pupikes Toolkit Authenticator",
   "webDir": "dist",
   "bundledWebRuntime": false,

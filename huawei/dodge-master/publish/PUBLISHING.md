@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.dodgemaster.hw`
-- **RuStore пакет:** `com.kcy.dodgemaster.rustore`
+- **Huawei пакет:** `com.pupikes.dodgemaster.hw`
+- **RuStore пакет:** `com.pupikes.dodgemaster.rustore`
 - **Билд (APK/AAB):** идва от `apk/dodge-master-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: App (приложение, НЕ игра)
 App name: Pupikes Toolkit Finance            # 19 / 30 знака
-App package name: com.kcy.toolkitfinance.hw
+App package name: com.pupikes.toolkitfinance.hw
 Level-1 app category: Finance
 
 [Integrate open capabilities]

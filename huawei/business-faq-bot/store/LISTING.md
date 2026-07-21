@@ -1,6 +1,6 @@
 # Store Listing — Pupikes FAQ Desk (Huawei AppGallery)
 
-**App ID:** `com.kcy.businessfaqbot.huawei`
+**App ID:** `com.pupikes.businessfaqbot.huawei`
 **Категория:** Бизнес / Производителност
 **Цена:** Безплатно (с по избор демо „Premium наем" — STUB, без реално плащане)
 

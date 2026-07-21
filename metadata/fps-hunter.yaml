@@ -5,8 +5,8 @@ folders:
   - huawei/fps-hunter
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.fpshunter.rustore
-  huawei:  com.kcy.fpshunter.huawei
+  rustore: com.pupikes.fpshunter.rustore
+  huawei:  com.pupikes.fpshunter.huawei
 category:
   google_play: Games / Action
   rustore: Игры

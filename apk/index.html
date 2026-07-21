@@ -84,7 +84,7 @@
       if(pub.rustore) badges+='<span class="b ru">RuStore ✓</span>'; else badges+='<span class="b ru soon">RuStore скоро</span>';
       var acts='';
       if(a.download && a.apk){
-        if(a.apk.rustore) acts+='<a class="btn dl" href="/apk/'+a.apk.rustore+'">Свали APK</a>';
+        if(a.apk.rustore) acts+='<a class="btn dl" href="/'+a.apk.rustore+'">Свали APK</a>';
       }
       if(pub.huawei && a.storeUrl && a.storeUrl.huawei) acts+='<a class="btn store" href="'+a.storeUrl.huawei+'">AppGallery</a>';
       if(pub.rustore && a.storeUrl && a.storeUrl.rustore) acts+='<a class="btn store" href="'+a.storeUrl.rustore+'">RuStore</a>';

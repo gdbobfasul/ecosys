@@ -60,7 +60,7 @@ GitHub Actions с `android-actions/setup-android`, или Docker image
 cd android && ./gradlew assembleDebug`. APK артефактът се сваля от CI.
 
 ## App ID
-`com.kcy.planeshooter.rustore` (виж `capacitor.config.json`).
+`com.pupikes.planeshooter.rustore` (виж `capacitor.config.json`).
 
 ## RUStore SDK (TODO стъбове)
 Реален билинг/push НЕ е имплементиран. Точките за бъдеща интеграция са в

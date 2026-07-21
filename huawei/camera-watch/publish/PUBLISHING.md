@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.camerawatch.hw`
-- **RuStore пакет:** `com.kcy.camerawatch.rustore`
+- **Huawei пакет:** `com.pupikes.camerawatch.hw`
+- **RuStore пакет:** `com.pupikes.camerawatch.rustore`
 - **Билд (APK/AAB):** идва от `apk/camera-watch-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

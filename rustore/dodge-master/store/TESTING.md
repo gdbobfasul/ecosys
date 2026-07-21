@@ -28,7 +28,7 @@ cd android
 
 ## 4. Затворено тестване в RUStore
 1. Влез в RUStore Console (https://console.rustore.ru).
-2. Създай ново приложение с appId `com.kcy.dodgemaster.rustore`.
+2. Създай ново приложение с appId `com.pupikes.dodgemaster.rustore`.
 3. Качи подписан release APK/AAB.
 4. Раздел „Тестване" → създай списък с тестери (имейли) → „Затворено тестване".
 5. Сподели линка за тестери; те инсталират през RUStore клиента.

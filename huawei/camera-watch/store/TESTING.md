@@ -1,6 +1,6 @@
 # MotionHawk — тестов сценарий (AppGallery ревю)
 
-App ID: `com.kcy.camerawatch.huawei`
+App ID: `com.pupikes.camerawatch.huawei`
 
 ## Без акаунт
 Приложението не изисква регистрация/вход. Отваряш и ползваш.

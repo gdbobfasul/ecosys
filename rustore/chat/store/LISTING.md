@@ -1,7 +1,7 @@
 # Pupikes Chat — RUStore listing
 
 **App name:** Pupikes Chat
-**App id:** `com.kcy.chat.rustore`
+**App id:** `com.pupikes.chat.rustore`
 **Category:** Communication / Social
 
 ## Short description (RU)

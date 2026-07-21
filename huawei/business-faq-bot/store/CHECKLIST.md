@@ -1,7 +1,7 @@
 # Release CHECKLIST — Pupikes FAQ Desk (Huawei AppGallery)
 
 ## Идентичност
-- [ ] App ID `com.kcy.businessfaqbot.huawei` (capacitor.config.json)
+- [ ] App ID `com.pupikes.businessfaqbot.huawei` (capacitor.config.json)
 - [ ] Икона/сплаш генерирани: `npm run gen:assets` (акцент #d92b2b)
 - [ ] Версия в package.json
 

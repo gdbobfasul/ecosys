@@ -71,5 +71,5 @@ No account, login or internet connection is needed. Launch the app, pick a langu
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/plane-shooter-huawei-release.apk` (release, подписан). Пакет: `com.kcy.planeshooter.hw`.
+APK за качване: `apk/plane-shooter-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.planeshooter.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/plane-shooter/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

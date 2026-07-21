@@ -1,6 +1,6 @@
 # Предпубликационен чеклист — Pupikes Price Watch (RUStore)
 
-- [ ] `appId` = `com.kcy.pricewatchbot.rustore` (capacitor.config.json)
+- [ ] `appId` = `com.pupikes.pricewatchbot.rustore` (capacitor.config.json)
 - [ ] Версия вдигната в package.json
 - [ ] `npm run build` минава без грешки
 - [ ] Икона и splash генерирани (`npm run gen:assets`) и конвертирани към PNG

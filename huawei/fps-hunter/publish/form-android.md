@@ -71,5 +71,5 @@ Launch the app; on first run pick a language and tap Start, then choose a starti
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/fps-hunter-huawei-release.apk` (release, подписан). Пакет: `com.kcy.fpshunter.hw`.
+APK за качване: `apk/fps-hunter-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.fpshunter.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/fps-hunter/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

@@ -5,8 +5,8 @@ folders:
   - huawei/price-watch-bot
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.pricewatchbot.rustore
-  huawei:  com.kcy.pricewatchbot.huawei
+  rustore: com.pupikes.pricewatchbot.rustore
+  huawei:  com.pupikes.pricewatchbot.huawei
 category:
   google_play: Finance
   rustore: Финансы

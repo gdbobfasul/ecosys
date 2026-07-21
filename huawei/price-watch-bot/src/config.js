@@ -4,7 +4,7 @@
 export const STORE = 'huawei';
 export const ACCENT = '#1aa06d';   // Huawei зелен акцент
 export const ACCENT2 = '#3ddc97';
-export const APP_ID = 'com.kcy.pricewatchbot.hw';
+export const APP_ID = 'com.pupikes.pricewatchbot.hw';
 export const APP_NAME = 'Pupikes Toolkit Price Watch';
 
 // Колко често роботът прави реална проверка в браузъра (демо таймер).

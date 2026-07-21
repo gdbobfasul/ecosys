@@ -5,8 +5,8 @@ folders:
   - huawei/baby-monitor
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.babymonitor.rustore
-  huawei:  com.kcy.babymonitor.huawei
+  rustore: com.pupikes.babymonitor.rustore
+  huawei:  com.pupikes.babymonitor.huawei
 category:
   google_play: Parenting
   rustore: Дети

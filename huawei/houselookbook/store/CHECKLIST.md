@@ -4,7 +4,7 @@
 - [ ] `npm run build` създава `dist/`
 - [ ] `npm run assets` генерира `store/icon.svg` + `store/splash.svg`
 - [ ] icon.svg / splash.svg → PNG (1024 / 2048) за Android
-- [ ] App id = `com.kcy.chat.huawei`
+- [ ] App id = `com.pupikes.chat.huawei`
 - [ ] `capacitor.config.json` → `server.url = https://my.girl.place`
 - [ ] `npx cap add android` + `npx cap sync`
 - [ ] Тест на реално устройство: чатът се зарежда от продукция

@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.routinebot.hw`
-- **RuStore пакет:** `com.kcy.routinebot.rustore`
+- **Huawei пакет:** `com.pupikes.routinebot.hw`
+- **RuStore пакет:** `com.pupikes.routinebot.rustore`
 - **Билд (APK/AAB):** идва от `apk/routine-bot-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

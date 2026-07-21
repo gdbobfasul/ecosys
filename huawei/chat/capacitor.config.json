@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.chat.hw",
+  "appId": "com.pupikes.chat.hw",
   "appName": "Pupikes Chat",
   "webDir": "dist",
   "bundledWebRuntime": false,

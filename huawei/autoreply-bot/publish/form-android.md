@@ -69,5 +69,5 @@ No account or login is needed. On first launch choose a language, then tap 'Acti
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/autoreply-bot-huawei-release.apk` (release, подписан). Пакет: `com.kcy.autoreplybot.hw`.
+APK за качване: `apk/autoreply-bot-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.autoreplybot.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/autoreply-bot/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

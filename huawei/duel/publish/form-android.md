@@ -71,5 +71,5 @@ Launch the app; on first run choose a language and tap Start, then press Start/B
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/duel-huawei-release.apk` (release, подписан). Пакет: `com.kcy.duel.hw`.
+APK за качване: `apk/duel-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.duel.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/duel/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

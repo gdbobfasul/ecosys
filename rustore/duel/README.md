@@ -3,7 +3,7 @@
 Самостоятелно мобилно приложение, което вгражда browser-играта **„Pupikes Ring Clash"**
 (походова фентъзи битка 1 срещу 1) като нативно Capacitor приложение.
 
-- **Магазин:** RUStore · **App ID:** `com.kcy.duel.rustore`
+- **Магазин:** RUStore · **App ID:** `com.pupikes.duel.rustore`
 - **Стек:** Vite 5 + Capacitor 6, оригиналният vanilla-JS движок (DOM + WebM видеа)
 - **Офлайн:** да — движок и активи са вградени локално
 - **Монетизация:** няма (безплатно, без реклами, без покупки, без GMS/HMS/Firebase,

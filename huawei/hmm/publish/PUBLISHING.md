@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.hmm.hw`
-- **RuStore пакет:** `com.kcy.hmm.rustore`
+- **Huawei пакет:** `com.pupikes.hmm.hw`
+- **RuStore пакет:** `com.pupikes.hmm.rustore`
 - **Билд (APK/AAB):** идва от `apk/hmm-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

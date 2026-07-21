@@ -2,13 +2,13 @@ NotificationReply — регистрация на плъгина
 ==========================================
 
 Capacitor плъгин клас (за ръчна регистрация, ако трябва):
-    com.kcy.notificationreply.NotificationReplyPlugin
+    com.pupikes.notificationreply.NotificationReplyPlugin
 
 JS име (registerPlugin):
     NotificationReply
 
 NotificationListenerService:
-    com.kcy.notificationreply.KcyNotificationListener
+    com.pupikes.notificationreply.KcyNotificationListener
 
 Целеви package имена:
     com.whatsapp        (WhatsApp)
@@ -21,7 +21,7 @@ Capacitor 6 авто-открива @CapacitorPlugin класове, които 
 ИЛИ изрично регистрирани в MainActivity. install-into-android.sh добавя изрична
 регистрация в MainActivity.java за по-голяма сигурност:
 
-    import com.kcy.notificationreply.NotificationReplyPlugin;
+    import com.pupikes.notificationreply.NotificationReplyPlugin;
     ...
     public class MainActivity extends BridgeActivity {
       @Override

@@ -22,7 +22,7 @@ docs/store-console-texts.md          ← готови текстове за по
 
 ### Пакетно име — суфикс `.rustore` (важи за ВСИЧКИ rustore апове)
 `appId` в `rustore/<име>/capacitor.config.json` завършва на **`.rustore`**
-(напр. `com.kcy.newslator.rustore`, `com.kcy.dodgemaster.rustore`). Така RuStore и
+(напр. `com.pupikes.newslator.rustore`, `com.pupikes.dodgemaster.rustore`). Така RuStore и
 AppGallery изданията (`.hw`) никога не се сблъскват на едно устройство.
 Пакетът се пипа САМО в `capacitor.config.json` — `android/` се регенерира при билд.
 
@@ -63,7 +63,7 @@ Google Play, AppGallery, търговски марки (TMview), домейни.
 | Поле | Какво попълваме |
 |------|-----------------|
 | Название | търговското име (виж `capacitor.config.json` → `appName`) |
-| Пакет | `com.kcy.<име>.rustore` — трябва да съвпада с подписания APK |
+| Пакет | `com.pupikes.<име>.rustore` — трябва да съвпада с подписания APK |
 | Категория | по приложение (игра/новини/инструменти…) |
 | Возрастная маркировка | по съдържанието (повечето наши: 12+) |
 | Описание | от `store-listing/ru.txt` (+ останалите езици където може) |

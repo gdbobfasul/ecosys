@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.servicestoolkit.rustore",
+  "appId": "com.pupikes.servicestoolkit.rustore",
   "appName": "Pupikes Toolkit",
   "webDir": "dist",
   "bundledWebRuntime": false,

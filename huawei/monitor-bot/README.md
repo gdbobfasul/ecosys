@@ -12,7 +12,7 @@
 - Vanilla JS + Vite 5 + Capacitor 6
 - `@capacitor/local-notifications` (локални известия), `@capacitor/preferences` (локално съхранение)
 - Мъничък RSS/Atom парсер чрез `DOMParser` (без тежки зависимости)
-- App ID: `com.kcy.monitorbot.huawei`
+- App ID: `com.pupikes.monitorbot.huawei`
 
 ## Стартиране в браузър
 ```bash

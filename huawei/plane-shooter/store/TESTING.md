@@ -3,7 +3,7 @@
 ## 1. Регистрация на разработчик
 1. Влез в AppGallery Connect: https://developer.huawei.com/consumer/en/console
 2. Завърши верификацията на акаунта (физическо/юридическо лице).
-3. Създай ново приложение (My apps → New) с package `com.kcy.planeshooter.huawei`.
+3. Създай ново приложение (My apps → New) с package `com.pupikes.planeshooter.huawei`.
 
 ## 2. Качване на тестов APK/AAB
 - AppGallery приема **APK** и **AAB**. За тест качи `app-debug.apk` или

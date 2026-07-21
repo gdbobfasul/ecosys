@@ -71,5 +71,5 @@ No account, login or internet connection is needed. Launch the app, choose a lan
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/rustam-huawei-release.apk` (release, подписан). Пакет: `com.kcy.rustam.hw`.
+APK за качване: `apk/rustam-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.rustam.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/rustam/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

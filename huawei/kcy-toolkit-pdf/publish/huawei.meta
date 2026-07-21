@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: App (приложение, НЕ игра)
 App name: Pupikes Toolkit PDF            # 15 / 30 знака
-App package name: com.kcy.toolkitpdf.hw
+App package name: com.pupikes.toolkitpdf.hw
 Level-1 app category: Tools
 
 [Integrate open capabilities]

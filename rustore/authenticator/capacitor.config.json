@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.authenticator.rustore",
+  "appId": "com.pupikes.authenticator.rustore",
   "appName": "Pupikes Toolkit Authenticator",
   "webDir": "dist",
   "bundledWebRuntime": false,

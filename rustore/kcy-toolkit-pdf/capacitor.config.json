@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.toolkitpdf.rustore",
+  "appId": "com.pupikes.toolkitpdf.rustore",
   "appName": "Pupikes Toolkit PDF",
   "webDir": "dist",
   "bundledWebRuntime": false,

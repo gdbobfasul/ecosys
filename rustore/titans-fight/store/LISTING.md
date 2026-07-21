@@ -1,6 +1,6 @@
 # Godfist Arena — RUStore Listing Notes
 
-App ID: `com.kcy.titansfight.rustore`
+App ID: `com.pupikes.titansfight.rustore`
 Name: Godfist Arena
 Category: Games / Action (Аркада / Файтинг)
 

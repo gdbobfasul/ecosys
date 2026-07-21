@@ -5,8 +5,8 @@ folders:
   - huawei/chat
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.chat.rustore
-  huawei:  com.kcy.chat.huawei
+  rustore: com.pupikes.chat.rustore
+  huawei:  com.pupikes.chat.huawei
 category:
   google_play: Communication
   rustore: Общение

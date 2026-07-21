@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: Game (игра)
 App name: Pupikes Field Battle            # 16 / 30 знака
-App package name: com.kcy.hmm.hw   # 14 / 128 знака
+App package name: com.pupikes.hmm.hw   # 14 / 128 знака
 Level-1 app category: Games
 
 [Integrate open capabilities]

@@ -4,7 +4,7 @@
 Magic стил). Вградена (vendored) версия на браузърната игра от Pupikes — **без backend,
 без IAP, без реклами, без tracking, напълно offline и безплатна**.
 
-- App ID: `com.kcy.hmm.rustore`
+- App ID: `com.pupikes.hmm.rustore`
 - Акцент по темата: топло злато/мед (`#caa45a`)
 - Двигател: vanilla JS + DOM/canvas + `<video>` (WebM с alpha), бъндван с Vite 5
 - Обвивка: Capacitor 6 (Android)

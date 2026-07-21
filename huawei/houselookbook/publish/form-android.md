@@ -69,5 +69,5 @@ The app is a thin wrapper that loads the live web app at https://look.myhouseset
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/houselookbook-huawei-release.apk` (release, подписан). Пакет: `com.kcy.houselookbook.hw`.
+APK за качване: `apk/houselookbook-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.houselookbook.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/houselookbook/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

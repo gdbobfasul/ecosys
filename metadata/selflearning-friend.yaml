@@ -6,8 +6,8 @@ folders:
   - desktop/selflearning-friend          # десктоп издание (Electron)
 stores: [rustore, huawei, desktop]
 package:
-  rustore: com.kcy.selflearningfriend.rustore
-  huawei:  com.kcy.selflearningfriend.huawei
+  rustore: com.pupikes.selflearningfriend.rustore
+  huawei:  com.pupikes.selflearningfriend.huawei
 category:
   google_play: Education
   rustore: Образование

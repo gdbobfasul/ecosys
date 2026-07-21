@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.monitorbot.hw`
-- **RuStore пакет:** `com.kcy.monitorbot.rustore`
+- **Huawei пакет:** `com.pupikes.monitorbot.hw`
+- **RuStore пакет:** `com.pupikes.monitorbot.rustore`
 - **Билд (APK/AAB):** идва от `apk/monitor-bot-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

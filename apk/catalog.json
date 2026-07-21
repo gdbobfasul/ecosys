@@ -148,6 +148,24 @@
           "download": true
         },
         {
+          "id": "kcy-toolkit-3drotate",
+          "name": "Pupikes Toolkit 3D Rotate",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "kcy-toolkit-3drotate-rustore-release.apk",
+            "huawei": "kcy-toolkit-3drotate-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
           "id": "kcy-toolkit-videos",
           "name": "Pupikes Toolkit Videos",
           "show": true,

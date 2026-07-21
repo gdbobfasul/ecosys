@@ -3,14 +3,14 @@
 ## Преди билд
 - [ ] `npm install` минава без грешки.
 - [ ] `npm run build` създава `dist/` без грешки.
-- [ ] App ID в `capacitor.config.json` = `com.kcy.servicestoolkit.huawei`.
+- [ ] App ID в `capacitor.config.json` = `com.pupikes.servicestoolkit.huawei`.
 - [ ] Версия в `package.json` е вдигната (versionName/versionCode за Android).
 
 ## Android проект (на машина с JDK 17 + Android SDK или в CI)
 - [ ] `npx cap add android` (еднократно).
 - [ ] `npx cap sync` след всеки `npm run build`.
 - [ ] Икони/splash генерирани (виж icon-splash-specs.md).
-- [ ] `android/app/build.gradle`: `applicationId "com.kcy.servicestoolkit.huawei"`,
+- [ ] `android/app/build.gradle`: `applicationId "com.pupikes.servicestoolkit.huawei"`,
       `minSdkVersion` ≥ 23, актуален `targetSdkVersion`.
 - [ ] CAMERA разрешението в `AndroidManifest.xml` (по желание; без краш при отказ).
 - [ ] Без GMS/Firebase; без задължителна зависимост от HMS Core.

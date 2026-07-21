@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: App (приложение, НЕ игра)
 App name: Pupikes Baby Radar            # 14 / 30 знака
-App package name: com.kcy.babymonitor.hw   # 22 / 128 знака
+App package name: com.pupikes.babymonitor.hw   # 22 / 128 знака
 Level-1 app category: Lifestyle
 
 [Integrate open capabilities]

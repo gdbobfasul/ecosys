@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.monitorbot.hw",
+  "appId": "com.pupikes.monitorbot.hw",
   "appName": "Pupikes Site Monitor",
   "webDir": "dist",
   "bundledWebRuntime": false,

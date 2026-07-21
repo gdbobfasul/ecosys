@@ -47,7 +47,7 @@ dodge-master/
 ├─ index.html
 ├─ package.json            # scripts: dev, build, preview, cap:add, cap:sync
 ├─ vite.config.js
-├─ capacitor.config.json   # appId: com.kcy.dodgemaster.huawei
+├─ capacitor.config.json   # appId: com.pupikes.dodgemaster.huawei
 ├─ tools/gen-assets.js      # генератор на icon.svg / splash.svg
 ├─ store/                   # listing, testing, assets, checklist, icon/splash
 └─ src/
@@ -85,7 +85,7 @@ pellet (прашка), bolt (арбалет), stone, dirt (буца кал), mud
 snowball, stick (върти се), homingStone (леко самонасочващ).
 
 ## Per-store разлики (срещу RUStore копието)
-- appId: `com.kcy.dodgemaster.huawei` (RUStore: `…rustore`)
+- appId: `com.pupikes.dodgemaster.huawei` (RUStore: `…rustore`)
 - Тема/акцент: кехлибар `#ff7a3c` / тюркоаз (RUStore: злато/зелено)
 - store/ бележки и SDK стъб (`huawei-sdk.js` с HMS, vs `rustore-sdk.js`)
 - Vite dev порт 5175 (RUStore: 5174), localStorage ключ per-store

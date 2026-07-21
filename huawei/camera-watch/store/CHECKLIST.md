@@ -1,6 +1,6 @@
 # MotionHawk — чеклист преди подаване (Huawei AppGallery)
 
-App ID: `com.kcy.camerawatch.huawei`
+App ID: `com.pupikes.camerawatch.huawei`
 
 ## Технически
 - [ ] `npm install` минава.

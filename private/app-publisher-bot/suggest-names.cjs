@@ -7,7 +7,9 @@ const path = require('path');
 const { nameCheck } = require('./lib/name-check.cjs');
 const { pool } = require('./lib/util.cjs');
 
-const OUT_DIR = path.join(__dirname, 'name-checks');
+// Комбинираният файл NAME-SUGGESTIONS.md е за ВСИЧКИ апове (без едно конкретно) → docs/name-checks/.
+// Per-app предложенията отиват в huawei/<ап>/publish/ (по-долу). Правило на потребителя.
+const OUT_DIR = path.join(__dirname, '..', '..', 'docs', 'name-checks');
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 // 10 кандидата на приложение (отличителни/измислени → минават clearance по-лесно от речникови думи).

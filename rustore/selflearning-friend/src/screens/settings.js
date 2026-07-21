@@ -23,7 +23,7 @@ import { getRecoveryCfg, setRecoveryCfg, saveSettingsFile, saveKnowledgeFile, re
 import { listBundledPacks, importBundledPack, loadedThemes, catalogUrl, isAdminUnlocked } from '../core/packs.js';
 import { t, tf } from '../core/i18n.js';
 
-const APP_ID = 'com.kcy.selflearningfriend.rustore';
+const APP_ID = 'com.pupikes.selflearningfriend.rustore';
 
 export function renderSettings(root, { rerender, openLangPicker }) {
   clear(root);

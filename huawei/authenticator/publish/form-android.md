@@ -69,5 +69,5 @@ No account or sign-in is required. On first launch pick a language and create a 
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/authenticator-huawei-release.apk` (release, подписан). Пакет: `com.kcy.authenticator.hw`.
+APK за качване: `apk/authenticator-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.authenticator.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/authenticator/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

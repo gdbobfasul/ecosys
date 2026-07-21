@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.toolkitpdf.hw",
+  "appId": "com.pupikes.toolkitpdf.hw",
   "appName": "Pupikes Toolkit PDF",
   "webDir": "dist",
   "bundledWebRuntime": false,

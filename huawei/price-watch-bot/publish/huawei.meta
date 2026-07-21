@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: App (приложение, НЕ игра)
 App name: Pupikes Toolkit Price Watch            # 15 / 30 знака
-App package name: com.kcy.pricewatchbot.hw   # 24 / 128 знака
+App package name: com.pupikes.pricewatchbot.hw   # 24 / 128 знака
 Level-1 app category: Tools
 
 [Integrate open capabilities]

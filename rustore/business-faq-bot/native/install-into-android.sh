@@ -38,7 +38,7 @@ cp "$SRC/NotificationReplyPlugin.kt" "$DEST/"
 echo "    -> $DEST"
 
 echo "==> 2/3 Вмъквам <service> в AndroidManifest.xml"
-if grep -q "com.kcy.notificationreply.KcyNotificationListener" "$MANIFEST"; then
+if grep -q "com.pupikes.notificationreply.KcyNotificationListener" "$MANIFEST"; then
   echo "    (вече е вмъкнат — пропускам)"
 else
   # Извличаме съдържанието на фрагмента без коментара (от първия <service до </service>).
@@ -75,7 +75,7 @@ p = sys.argv[1]
 s = open(p, encoding="utf-8").read()
 if "NotificationReplyPlugin" not in s:
     s = re.sub(r'(package [^\n]+\n)',
-               r'\1\nimport com.kcy.notificationreply.NotificationReplyPlugin;\n',
+               r'\1\nimport com.pupikes.notificationreply.NotificationReplyPlugin;\n',
                s, count=1)
     if "super.onCreate" in s:
         s = s.replace("super.onCreate(savedInstanceState);",

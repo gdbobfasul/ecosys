@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.servicestoolkit.hw",
+  "appId": "com.pupikes.servicestoolkit.hw",
   "appName": "Pupikes Toolkit",
   "webDir": "dist",
   "bundledWebRuntime": false,

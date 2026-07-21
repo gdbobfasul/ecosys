@@ -1,6 +1,6 @@
 # MotionHawk — Декларация за данните (Data Safety)
 
-App ID: `com.kcy.camerawatch.huawei`
+App ID: `com.pupikes.camerawatch.huawei`
 
 ## Накратко
 - **Събираме ли данни?** Не.

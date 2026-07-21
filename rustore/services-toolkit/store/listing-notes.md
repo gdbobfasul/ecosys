@@ -1,6 +1,6 @@
 # RUStore — текст за листинга (Services Toolkit)
 
-**App ID:** `com.kcy.servicestoolkit.rustore`
+**App ID:** `com.pupikes.servicestoolkit.rustore`
 **Категория:** Инструменти / Utilities
 **Възрастов рейтинг:** 0+ (без потребителско съдържание, без реклами, без покупки)
 

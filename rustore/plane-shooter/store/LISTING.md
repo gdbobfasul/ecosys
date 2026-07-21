@@ -4,7 +4,7 @@
 
 ## Основни данни
 - **Име на приложението:** Warbird Rush
-- **App ID (package):** `com.kcy.planeshooter.rustore`
+- **App ID (package):** `com.pupikes.planeshooter.rustore`
 - **Категория:** Игри → Аркадни (Arcade)
 - **Възрастов рейтинг:** 6+ (леко аркадно насилие, без кръв)
 - **Цена:** Безплатно

@@ -7,7 +7,7 @@
 |---|---|
 | App type | HarmonyOS app |
 | App name | името на приложението (източник: `capacitor.config.json` → `appName`) |
-| App package name | com.kcy.duel |
+| App package name | com.pupikes.duel |
 | Level-1 app category | Games |
 
 → Next

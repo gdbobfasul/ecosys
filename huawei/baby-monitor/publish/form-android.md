@@ -69,5 +69,5 @@ No account or login is required. On first launch pick a language, read the onboa
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/baby-monitor-huawei-release.apk` (release, подписан). Пакет: `com.kcy.babymonitor.hw`.
+APK за качване: `apk/baby-monitor-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.babymonitor.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/baby-monitor/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

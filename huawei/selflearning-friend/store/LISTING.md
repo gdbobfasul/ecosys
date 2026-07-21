@@ -1,6 +1,6 @@
 # Pupikes Learning Buddy (Huawei)
 
-**App ID:** `com.kcy.selflearningfriend.huawei`
+**App ID:** `com.pupikes.selflearningfriend.huawei`
 
 ## Кратко описание
 Личен бот-приятел, който се учи само от теб и принадлежи само на теб. Ти му даваш име — то е и тайната за достъп. Всичко се пази на устройството ти.

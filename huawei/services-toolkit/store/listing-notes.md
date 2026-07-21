@@ -1,6 +1,6 @@
 # Huawei AppGallery — текст за листинга (Services Toolkit)
 
-**App ID:** `com.kcy.servicestoolkit.huawei`
+**App ID:** `com.pupikes.servicestoolkit.huawei`
 **Категория:** Tools / Утилити
 **Възрастов рейтинг:** 3+ / „Всички" (без потребителско съдържание, без реклами, без покупки)
 

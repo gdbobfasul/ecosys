@@ -2,7 +2,7 @@
 
 Самостоятелно мобилно приложение „робот под наем". Наемаш робот, който всеки ден изпълнява твоята рутина (сутрешен брифинг, напомняния, вечерно резюме) и те известява с **локални** известия. Без акаунти, без проследяване, без крипто — всичко е на устройството. Издава се за **RUStore** и **Huawei AppGallery** като две идентични, независими приложения.
 
-- **App ID:** `com.kcy.routinebot.rustore` (RUStore) / `com.kcy.routinebot.huawei` (Huawei)
+- **App ID:** `com.pupikes.routinebot.rustore` (RUStore) / `com.pupikes.routinebot.huawei` (Huawei)
 - **Стек:** Vanilla JS + Vite 5 + Capacitor 6. Плъгини: `@capacitor/local-notifications`, `@capacitor/preferences`, `@capacitor/geolocation`, `@capacitor-community/text-to-speech`.
 
 ## Поток (наеми → конфигурирай → разреши → стартирай)

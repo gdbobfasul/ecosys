@@ -3,7 +3,7 @@
 - [ ] `npm install` минава без грешки
 - [ ] `npm run build` създава `dist/`
 - [ ] `npm run gen:assets` създава икони/сплаш (или плейсхолдъри; за PNG: `npm i -D sharp`)
-- [ ] App ID = `com.kcy.routinebot.rustore` (capacitor.config.json)
+- [ ] App ID = `com.pupikes.routinebot.rustore` (capacitor.config.json)
 - [ ] Версия в package.json вдигната
 - [ ] Икона 512x512 и сплаш качени (store/icon-512.png, store/splash-1080x1920.png)
 - [ ] Описание (LISTING.md) попълнено

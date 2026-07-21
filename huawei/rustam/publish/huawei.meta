@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: Game (игра)
 App name: Rustam picks cucumbers            # 22 / 30 знака
-App package name: com.kcy.rustam.hw   # 17 / 128 знака
+App package name: com.pupikes.rustam.hw   # 17 / 128 знака
 Level-1 app category: Games
 
 [Integrate open capabilities]

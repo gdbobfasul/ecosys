@@ -85,7 +85,7 @@ dai.group.ltd.support@gmail.com
 |------|---------------------------|
 | App type | App (приложение, не игра) |
 | App name | NewsLator (9 / 30 знака) |
-| App package name | com.kcy.stayinformed.hw (23 / 128) — суфиксът `.hw`, не запазеното `.huawei` |
+| App package name | com.pupikes.stayinformed.hw (23 / 128) — суфиксът `.hw`, не запазеното `.huawei` |
 | Level-1 app category | News (Новини) |
 
 Точните стойности за всяко приложение се пазят в неговия `publish/huawei.meta`.
@@ -96,7 +96,7 @@ dai.group.ltd.support@gmail.com
 > The package name must end with `.huawei` or `.HUAWEI` only for joint operations games.
 
 Тоест суфиксът **`.huawei` е запазен само за joint-operations ИГРИ**. Затова за цялата
-huawei серия сменихме суфикса **`.huawei` → `.hw`** (напр. `com.kcy.stayinformed.hw`) —
+huawei серия сменихме суфикса **`.huawei` → `.hw`** (напр. `com.pupikes.stayinformed.hw`) —
 кратко, различава huawei от RUStore изданието и не се сблъсква със запазения суфикс.
 
 Смяната се нанася **само** в източника: `appId` в `huawei/<ап>/capacitor.config.json`.
@@ -133,6 +133,6 @@ dodge-master) НЕ се пипат — те са per-store ключ за localSt
 
 | Приложение | publish/ готова | Скрийншоти 15 ез. | Описания 15 ез. | huawei.meta | Качено | Бележки |
 |------------|:---:|:---:|:---:|:---:|:---:|---------|
-| stay-informed (**NewsLator**) | ✅ | ✅ | ✅ | ✅ | ⬜ | Име заковано **NewsLator**; пакет `com.kcy.stayinformed.hw`; билд 1.0255; за качване в Huawei |
+| stay-informed (**NewsLator**) | ✅ | ✅ | ✅ | ✅ | ⬜ | Име заковано **NewsLator**; пакет `com.pupikes.stayinformed.hw`; билд 1.0255; за качване в Huawei |
 
 (Редовете се добавят с подготовката на всяко следващо приложение.)

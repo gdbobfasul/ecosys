@@ -1,4 +1,4 @@
-package com.kcy.notificationreply
+package com.pupikes.notificationreply
 
 import android.app.Notification
 import android.app.RemoteInput

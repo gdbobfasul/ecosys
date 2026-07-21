@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: App (приложение, НЕ игра)
 App name: Pupikes Toolkit AI Announcement            # 27 / 30 знака
-App package name: com.kcy.toolkitai.hw
+App package name: com.pupikes.toolkitai.hw
 Level-1 app category: Tools
 
 [Integrate open capabilities]

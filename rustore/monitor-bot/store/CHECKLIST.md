@@ -1,7 +1,7 @@
 # Контролен лист за публикуване — RUStore
 
 ## Идентичност
-- App ID: `com.kcy.monitorbot.rustore`
+- App ID: `com.pupikes.monitorbot.rustore`
 - Име: Pupikes Site Monitor
 - Акцент: #0a84ff (RUStore син)
 

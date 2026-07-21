@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.routinebot.hw",
+  "appId": "com.pupikes.routinebot.hw",
   "appName": "Pupikes Routine Planner",
   "webDir": "dist",
   "bundledWebRuntime": false,

@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.selflearningfriend.hw",
+  "appId": "com.pupikes.selflearningfriend.hw",
   "appName": "Pupikes LB",
   "webDir": "dist",
   "server": {
@@ -13,7 +13,7 @@
       "enabled": true
     },
     "BackgroundRunner": {
-      "label": "com.kcy.selflearningfriend.hw.learn",
+      "label": "com.pupikes.selflearningfriend.hw.learn",
       "src": "runners/learn-runner.js",
       "event": "learnTick",
       "repeat": true,

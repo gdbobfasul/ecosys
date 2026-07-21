@@ -102,7 +102,7 @@ function generatePrivacy(appDir, repoRoot, profile) {
   let capHw = {}; try { capHw = JSON.parse(fs.readFileSync(path.join(appDir, 'capacitor.config.json'), 'utf8')); } catch (_) {}
   let capRu = {}; try { capRu = JSON.parse(fs.readFileSync(path.join(repoRoot, 'rustore', appBase, 'capacitor.config.json'), 'utf8')); } catch (_) {}
   const appName = capHw.appName || appBase;
-  const pkgHw = capHw.appId || ('com.kcy.' + appBase.replace(/-/g, '') + '.hw');
+  const pkgHw = capHw.appId || ('com.pupikes.' + appBase.replace(/-/g, '') + '.hw');
   const pkgRu = capRu.appId || pkgHw.replace(/\.hw$/, '.rustore');
 
   const hw = page(appName, pkgHw, 'HUAWEI AppGallery', profile);

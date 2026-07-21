@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 // clearance-all.cjs — проверка на името (марки/магазини/домейни/ниши) за ВСЯКО huawei приложение.
-// Пише per-app доклад в huawei/<ап>/publish/ANALYSIS.md (+ суровия в name-checks/). НЕ преименува.
+// Пише per-app доклад в huawei/<ап>/publish/ANALYSIS.md (има приложение → в неговата папка,
+// правило на потребителя). НЕ преименува. НЕ пише в папката на бота.
 const fs = require('fs');
 const path = require('path');
 const { nameCheck, toMarkdown } = require('./lib/name-check.cjs');
 
 const REPO = path.join(__dirname, '..', '..');
-const NAME_CHECKS = path.join(__dirname, 'name-checks');
-fs.mkdirSync(NAME_CHECKS, { recursive: true });
 
 function appNameOf(appBase) {
   try { return JSON.parse(fs.readFileSync(path.join(REPO, 'huawei', appBase, 'capacitor.config.json'), 'utf8')).appName || appBase; }
@@ -29,7 +28,6 @@ function appNameOf(appBase) {
       const pub = path.join(REPO, 'huawei', appBase, 'publish');
       fs.mkdirSync(pub, { recursive: true });
       fs.writeFileSync(path.join(pub, 'ANALYSIS.md'), md, 'utf8');
-      fs.writeFileSync(path.join(NAME_CHECKS, name.replace(/[^a-zA-Z0-9._-]+/g, '_') + '.md'), md, 'utf8');
       const line = '✅ ' + appBase + '  „' + name + '" → ' + r.risk + (r.riskWhy && r.riskWhy.length ? ' (' + r.riskWhy.join('; ') + ')' : '');
       console.log(line);
       summary.push({ appBase, name, risk: r.risk });

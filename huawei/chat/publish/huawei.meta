@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: App (приложение, НЕ игра)
 App name: Pupikes Chat            # 8 / 30 знака
-App package name: com.kcy.chat.hw   # 15 / 128 знака
+App package name: com.pupikes.chat.hw   # 15 / 128 знака
 Level-1 app category: Communication
 
 [Integrate open capabilities]

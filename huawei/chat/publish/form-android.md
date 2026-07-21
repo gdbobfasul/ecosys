@@ -69,5 +69,5 @@ Launch the app; on first run choose a language and tap Start. It connects to the
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/chat-huawei-release.apk` (release, подписан). Пакет: `com.kcy.chat.hw`.
+APK за качване: `apk/chat-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.chat.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/chat/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

@@ -30,7 +30,9 @@ const TARGET = parseInt(process.argv[3] || '25', 10);
 // Семе на генератора (3-ти аргумент): различно семе = ИЗЦЯЛО нови кандидати
 // (същото семе превърта вече намерените). Докладът е отделен файл на семе.
 const SEED = parseInt(process.argv[4] || '20260720', 10);
-const OUT = path.join(__dirname, 'name-checks', SEED === 20260720 ? `GHOST-NAMES-${LENSPEC}.md` : `GHOST-NAMES-${LENSPEC}-seed${SEED}.md`);
+// Ghost имената НЕ принадлежат на приложение → в docs/name-checks/ (правило на потребителя).
+const OUT = path.join(__dirname, '..', '..', 'docs', 'name-checks', SEED === 20260720 ? `GHOST-NAMES-${LENSPEC}.md` : `GHOST-NAMES-${LENSPEC}-seed${SEED}.md`);
+try { fs.mkdirSync(path.dirname(OUT), { recursive: true }); } catch (e) {}
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 
 // ── 1) Генератор: произносими думи от срички ──────────────────────────────────
@@ -215,6 +217,17 @@ async function sweepEngines(term) {
   let checked = 0;
   const MAX_CANDIDATES = 4000;
 
+  // ── ВЪЗОБНОВЯВАНЕ: зареди вече намерените имена от предишен запис и ги прескачай,
+  // за да не пресъздаваме скъпата браузърна обиколка (същият сийд → същия ред).
+  const resumed = new Set();
+  try {
+    const prev = fs.readFileSync(OUT, 'utf8');
+    const re = /^\s*\d+\.\s+\*\*([A-Za-z]+)\*\*\s*$/gm;
+    let m;
+    while ((m = re.exec(prev))) { const nm = m[1]; if (!ghosts.includes(nm)) { ghosts.push(nm); resumed.add(nm.toLowerCase()); } }
+    if (ghosts.length) console.log(`↻ Възобновявам: ${ghosts.length} вече намерени имена (прескачам ги).`);
+  } catch (_) { /* няма предишен файл — старт от нулата */ }
+
   console.log(`Търся ${TARGET} „призрачни" имена от ${LENSPEC} букви (гласни+съгласни, произносими)…`);
 
   while (ghosts.length < TARGET && checked < MAX_CANDIDATES) {
@@ -227,6 +240,7 @@ async function sweepEngines(term) {
 
     for (const w of dnsOk) {
       if (ghosts.length >= TARGET) break;
+      if (resumed.has(w.toLowerCase())) continue; // вече намерено в предишен запис → прескачаме проверката
 
       // Б) бърз предфилтър: DDG + Bing по HTML (пази браузърното време).
       const d = await quickDDG(w); await sleep(600);

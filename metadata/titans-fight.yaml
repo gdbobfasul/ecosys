@@ -5,8 +5,8 @@ folders:
   - huawei/titans-fight
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.titansfight.rustore
-  huawei:  com.kcy.titansfight.huawei
+  rustore: com.pupikes.titansfight.rustore
+  huawei:  com.pupikes.titansfight.huawei
 category:
   google_play: Games / Action
   rustore: Игры

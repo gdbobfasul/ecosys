@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: Game (игра)
 App name: EvadeArena            # 10 / 30 знака
-App package name: com.kcy.dodgemaster.hw   # 22 / 128 знака
+App package name: com.pupikes.dodgemaster.hw   # 22 / 128 знака
 Level-1 app category: Games
 
 [Integrate open capabilities]

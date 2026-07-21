@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.selflearningfriend.rustore",
+  "appId": "com.pupikes.selflearningfriend.rustore",
   "appName": "Pupikes LB",
   "webDir": "dist",
   "server": {
@@ -11,7 +11,7 @@
   "plugins": {
     "CapacitorHttp": { "enabled": true },
     "BackgroundRunner": {
-      "label": "com.kcy.selflearningfriend.rustore.learn",
+      "label": "com.pupikes.selflearningfriend.rustore.learn",
       "src": "runners/learn-runner.js",
       "event": "learnTick",
       "repeat": true,

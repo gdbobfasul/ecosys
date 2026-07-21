@@ -5,7 +5,7 @@
 - [ ] `npm run build` създава `dist/`.
 - [ ] `node tools/gen-assets.mjs` → `store/icon.svg`, `store/splash.svg`.
 - [ ] Конвертирай SVG → PNG за store: икона 512×512, feature/splash по изискване.
-- [ ] App ID = `com.kcy.autoreplybot.huawei` (в `capacitor.config.json`).
+- [ ] App ID = `com.pupikes.autoreplybot.huawei` (в `capacitor.config.json`).
 - [ ] Версия в `package.json` вдигната.
 
 ## Нативен билд (на машина с Android SDK/JDK — НЕ в тази среда)

@@ -10,6 +10,7 @@ export const tools = [
   { id: 'calc',     icon: 'calc',    online: false, name: 't_calc_name',     desc: 't_calc_desc',     load: () => import('../tools/calc.js') },
   { id: 'text',     icon: 'text',    online: false, name: 't_text_name',     desc: 't_text_desc',     load: () => import('../tools/text.js') },
   { id: 'image',    icon: 'image',   online: false, name: 't_image_name',    desc: 't_image_desc',    load: () => import('../tools/image.js') },
+  { id: 'rotate3d', icon: 'image',   online: false, name: 't_rotate3d_name', desc: 't_rotate3d_desc', load: () => import('../tools/rotate3d.js') },
   { id: 'pdf',      icon: 'pdf',     online: false, name: 't_pdf_name',      desc: 't_pdf_desc',      load: () => import('../tools/pdf.js') },
   { id: 'pdfc',     icon: 'pdfc',    online: false, name: 't_pdfc_name',     desc: 't_pdfc_desc',     load: () => import('../tools/pdfcompress.js') },
   { id: 'crypto',   icon: 'chart',   online: true,  name: 't_crypto_name',   desc: 't_crypto_desc',   load: () => import('../tools/crypto-chart.js') },

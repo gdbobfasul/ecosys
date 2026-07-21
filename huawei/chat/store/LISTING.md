@@ -1,7 +1,7 @@
 # Pupikes Chat — Huawei AppGallery listing
 
 **App name:** Pupikes Chat
-**App id:** `com.kcy.chat.huawei`
+**App id:** `com.pupikes.chat.huawei`
 **Category:** Communication / Social
 
 ## Short description (EN)

@@ -4,7 +4,7 @@
 (човек/нарушител, куче, котка, друго животно), праща локален сигнал и води журнал със
 снимка. Изцяло **на устройството**, безплатно, без акаунти/контакти/проследяване, без IAP.
 
-- **App ID:** `com.kcy.camerawatch.rustore`
+- **App ID:** `com.pupikes.camerawatch.rustore`
 - **Акцент:** тюркоаз `#00c2a8`
 - **Стек:** Vanilla JS + Vite + Capacitor; TensorFlow.js (`@tensorflow/tfjs`) +
   `@tensorflow-models/coco-ssd` (lazy-load).

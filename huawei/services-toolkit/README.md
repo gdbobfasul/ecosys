@@ -4,7 +4,7 @@
 Всеки инструмент работи изцяло на устройството — без бекенд, без външни заявки
 (освен инструментите, които изрично са обозначени като „онлайн").
 
-- **App ID:** `com.kcy.servicestoolkit.huawei`
+- **App ID:** `com.pupikes.servicestoolkit.huawei`
 - **Стек:** Vanilla JS + Vite (bundling) + Capacitor (Android обвивка)
 - **Без GMS/Firebase/Google Play Services** — съвместимо с Huawei устройства без Google услуги (HMS-friendly: приложението не зависи и от HMS — чист web + Capacitor).
 - **Тема:** червен акцент (`#c8102e`), за разлика от RUStore изданието (синьо).

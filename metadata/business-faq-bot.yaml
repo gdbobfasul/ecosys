@@ -5,8 +5,8 @@ folders:
   - huawei/business-faq-bot
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.businessfaqbot.rustore
-  huawei:  com.kcy.businessfaqbot.huawei
+  rustore: com.pupikes.businessfaqbot.rustore
+  huawei:  com.pupikes.businessfaqbot.huawei
 category:
   google_play: Business
   rustore: Бизнес

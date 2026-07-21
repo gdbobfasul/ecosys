@@ -478,6 +478,16 @@ WANT_DESKTOP=0
 for d in "${APPS[@]}"; do [ "$(basename "$d")" = "selflearning-friend" ] && WANT_DESKTOP=1; done
 [ "$WANT_DESKTOP" = 1 ] && build_desktop_slf
 
+# ── Каталогът на pupikes.app ЖИВЕЕ В /apk (index.html + catalog.json + лого са в git) ──
+# /apk е папката на pupikes.app: каталог + инсталируеми файлове заедно. Чистенето по-горе пипа
+# САМО *.apk/*.exe → каталожната страница НИКОГА не се трие при билд (изискване на потребителя).
+# Тук само ОПРЕСНЯВАМЕ catalog.json от мастера app-shared/pupikes-catalog.json; index.html и
+# логото са статични жители на /apk. Деплоят (08) копира цялата /apk → /var/www/html/apk.
+if [ -f "$ROOT/app-shared/pupikes-catalog.json" ]; then
+  cp -f "$ROOT/app-shared/pupikes-catalog.json" "$ROOT/apk/catalog.json" 2>/dev/null \
+    && echo -e "  ${GREEN}✓ каталог на pupikes.app опреснен → /apk/catalog.json${NC}"
+fi
+
 # ── Обобщение ──
 echo -e "${BOLD}${CYAN}━━━ Обобщение ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 for r in "${RESULTS[@]}"; do echo -e "  $r"; done

@@ -3,14 +3,14 @@
 ## Преди билд
 - [ ] `npm install` минава без грешки.
 - [ ] `npm run build` създава `dist/` без грешки.
-- [ ] App ID в `capacitor.config.json` = `com.kcy.servicestoolkit.rustore`.
+- [ ] App ID в `capacitor.config.json` = `com.pupikes.servicestoolkit.rustore`.
 - [ ] Версия в `package.json` е вдигната (versionName/versionCode за Android).
 
 ## Android проект (на машина с JDK 17 + Android SDK или в CI)
 - [ ] `npx cap add android` (еднократно).
 - [ ] `npx cap sync` след всеки `npm run build`.
 - [ ] Икони/splash генерирани (виж icon-splash-specs.md).
-- [ ] `android/app/build.gradle`: `applicationId "com.kcy.servicestoolkit.rustore"`,
+- [ ] `android/app/build.gradle`: `applicationId "com.pupikes.servicestoolkit.rustore"`,
       `minSdkVersion` ≥ 23, актуален `targetSdkVersion`.
 - [ ] CAMERA разрешението присъства в `AndroidManifest.xml` (за QR камерата),
       но е по желание — приложението не бива да крашва без него.

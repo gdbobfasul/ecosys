@@ -5,8 +5,8 @@ folders:
   - huawei/autoreply-bot
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.autoreplybot.rustore
-  huawei:  com.kcy.autoreplybot.huawei
+  rustore: com.pupikes.autoreplybot.rustore
+  huawei:  com.pupikes.autoreplybot.huawei
 category:
   google_play: Tools
   rustore: Инструменты

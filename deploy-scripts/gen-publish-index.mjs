@@ -45,8 +45,8 @@ const apps = fs.readdirSync(huaweiRoot).filter((d) => fs.existsSync(path.join(hu
 let written = 0;
 for (const app of apps) {
   const pub = path.join(huaweiRoot, app, 'publish');
-  const hwPkg = readAppId(path.join(huaweiRoot, app, 'capacitor.config.json')) || `com.kcy.${app.replace(/-/g, '')}.hw`;
-  const ruPkg = readAppId(path.join(ROOT, 'rustore', app, 'capacitor.config.json')) || `com.kcy.${app.replace(/-/g, '')}.rustore`;
+  const hwPkg = readAppId(path.join(huaweiRoot, app, 'capacitor.config.json')) || `com.pupikes.${app.replace(/-/g, '')}.hw`;
+  const ruPkg = readAppId(path.join(ROOT, 'rustore', app, 'capacitor.config.json')) || `com.pupikes.${app.replace(/-/g, '')}.rustore`;
   const name = readAppName(path.join(pub, 'huawei.meta'), app);
 
   // Кой е файлът с RuStore политиката (новите апове = rustore-privacy.html; newslator = ru-privacy.html).

@@ -1,7 +1,7 @@
 # Release CHECKLIST — Pupikes FAQ Desk (RUStore)
 
 ## Идентичност
-- [ ] App ID `com.kcy.businessfaqbot.rustore` (capacitor.config.json)
+- [ ] App ID `com.pupikes.businessfaqbot.rustore` (capacitor.config.json)
 - [ ] Икона/сплаш генерирани: `npm run gen:assets` (акцент #7b5cff)
 - [ ] Версия в package.json
 

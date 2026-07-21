@@ -47,9 +47,9 @@ server {
 
 `pupikes.app` е **сборна витрина**, не едно приложение. Групирана по семейства (Pupikes
 Toolkit, Игри, Новини, Помощници, Общност). Страницата е построена:
-`public/pupikes-app/index.html` — чете `catalog.json`, показва само `show:true`, бутон „Свали
-APK" (при `download:true`) + линкове към Huawei/RuStore (при `published`). `?preview=1` показва
-всичко (само за собственика).
+`apk/index.html` (каталогът живее В `apk/` — папката на pupikes.app) — чете `catalog.json`,
+показва само `show:true`, бутон „Свали APK" (при `download:true`) + линкове към Huawei/RuStore
+(при `published`). `?preview=1` показва всичко (само за собственика).
 
 ### Паролната защита на /apk (ключовото изискване)
 
@@ -81,8 +81,8 @@ APK" (при `download:true`) + линкове към Huawei/RuStore (при `pu
 
 ## 3. Данни (какво контролираш с един файл)
 
-Мастер: `app-shared/pupikes-catalog.json` (регенерира се от scratchpad/gen-pupikes-catalog.mjs;
-деплоят го копира като `public/pupikes-app/catalog.json`, както при промо каталога):
+Мастер: `app-shared/pupikes-catalog.json`; билдът (build-mobile-apps.sh) го копира като
+`apk/catalog.json` (каталогът живее в `apk/`, заедно с `index.html` + логото — всички в git):
 - `groups[].apps[]` — мобилните, по семейства. На всяко приложение:
   - `show` — вижда ли се изобщо в pupikes.app;
   - `published.{huawei,rustore}` + `storeUrl.{…}` — бутони към магазините;
@@ -101,12 +101,12 @@ APK" (при `download:true`) + линкове към Huawei/RuStore (при `pu
    или ръчни server блокове по горните образци + WEBROOT ACME сертификат (`.app` иска HTTPS!).
 3. Генераторът на публичните `location =` редове за /apk се захранва от каталога (готовите файлове).
 4. `htpasswd` файл за непубличните APK-та.
-5. Деплой копира `pupikes-hub/` и `pupikes-app/` в `/var/www/html/`, plus `catalog.json`.
+5. Деплой (08 sync_pupikes_catalog) копира каталога + APK-тата от `apk/` → `/var/www/html/apk`.
 
 ## 5. Състояние
 
 - ✅ Построено: `app-shared/pupikes-catalog.json` (31 мобилни в 5 семейства + 6 уеб),
-  `public/pupikes-app/index.html` (каталог страница, преглед с `?preview=1`).
+  `apk/index.html` (каталог страница в `apk/`, преглед с `?preview=1`).
 - ⬜ Чака: покупка на домейните + брандово решение (Pupikes→Pupikes, виж `Pupikes-TO-PUPIKES-PLAN.md`)
   + nginx блоковете на прод (не е деплойнато) + `pupikes-hub/index.html` (хъб landing — прави
   се, щом решиш кои уеб апове влизат).

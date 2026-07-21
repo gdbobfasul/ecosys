@@ -7,7 +7,7 @@
 |---|---|
 | App type | HarmonyOS app |
 | App name | името на приложението (източник: `capacitor.config.json` → `appName`) |
-| App package name | com.kcy.monitorbot |
+| App package name | com.pupikes.monitorbot |
 | Level-1 app category | Tools |
 
 → Next

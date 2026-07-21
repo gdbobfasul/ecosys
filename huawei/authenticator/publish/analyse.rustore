@@ -1,6 +1,6 @@
 # Анализ за качване в RuStore — KCY Authenticator
 
-Пакет: `com.kcy.authenticator.rustore`  ·  тип: приложение
+Пакет: `com.pupikes.authenticator.rustore`  ·  тип: приложение
 
 Списък на слабите места и вероятните причини за връщане при качване/ъпдейт. Оправи ❗ и прегледай ⚠️ преди подаване.
 

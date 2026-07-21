@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: App (приложение, НЕ игра)
 App name: Pupikes FAQ Desk            # 12 / 30 знака
-App package name: com.kcy.businessfaqbot.hw   # 25 / 128 знака
+App package name: com.pupikes.businessfaqbot.hw   # 25 / 128 знака
 Level-1 app category: Business
 
 [Integrate open capabilities]

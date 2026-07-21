@@ -4,7 +4,7 @@
 Всеки инструмент работи изцяло на устройството — без бекенд, без външни заявки
 (освен инструментите, които изрично са обозначени като „онлайн").
 
-- **App ID:** `com.kcy.servicestoolkit.rustore`
+- **App ID:** `com.pupikes.servicestoolkit.rustore`
 - **Стек:** Vanilla JS + Vite (bundling) + Capacitor (Android обвивка)
 - **Без GMS/Firebase/Google Play Services** — съвместимо с RUStore и устройства без Google услуги.
 

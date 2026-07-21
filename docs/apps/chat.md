@@ -1,6 +1,6 @@
 # Pupikes Chat — как функционира
 
-Самостоятелна Capacitor + Vite обвивка (shell), която **зарежда продукционния чат** на Pupikes. Не е преимплементация — webview-ът сочи към живия чат сървър. Мобилно приложение за RUStore и Huawei AppGallery. App ID: `com.kcy.chat.rustore` / `com.kcy.chat.huawei`.
+Самостоятелна Capacitor + Vite обвивка (shell), която **зарежда продукционния чат** на Pupikes. Не е преимплементация — webview-ът сочи към живия чат сървър. Мобилно приложение за RUStore и Huawei AppGallery. App ID: `com.pupikes.chat.rustore` / `com.pupikes.chat.huawei`.
 
 ## Подход на зареждане
 - В **продукция** Capacitor зарежда чата директно през `server.url` в `capacitor.config.json` (`https://my.girl.place`). Така приложението **буквално е** живият чат — без iframe, без mixed content.

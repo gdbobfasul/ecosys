@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.pricewatchbot.hw",
+  "appId": "com.pupikes.pricewatchbot.hw",
   "appName": "Pupikes Toolkit Price Watch",
   "webDir": "dist",
   "bundledWebRuntime": false,

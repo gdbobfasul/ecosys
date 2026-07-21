@@ -69,5 +69,5 @@ No account or login is required. On first launch pick a language, read the onboa
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/camera-watch-huawei-release.apk` (release, подписан). Пакет: `com.kcy.camerawatch.hw`.
+APK за качване: `apk/camera-watch-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.camerawatch.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/camera-watch/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.houselookbook.hw`
-- **RuStore пакет:** `com.kcy.houselookbook.rustore`
+- **Huawei пакет:** `com.pupikes.houselookbook.hw`
+- **RuStore пакет:** `com.pupikes.houselookbook.rustore`
 - **Билд (APK/AAB):** идва от `apk/houselookbook-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

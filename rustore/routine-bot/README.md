@@ -4,7 +4,7 @@
 изпълнява твоята рутина (сутрешен брифинг, напомняния, вечерно резюме) и те известява
 с **локални** известия. Без акаунти, без проследяване, без крипто. Всичко е на устройството.
 
-App ID: `com.kcy.routinebot.rustore`
+App ID: `com.pupikes.routinebot.rustore`
 
 ## Стек
 Vanilla JS + Vite 5 + Capacitor 6. Плъгини: `@capacitor/local-notifications`,

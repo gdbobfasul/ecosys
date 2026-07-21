@@ -24,18 +24,34 @@ const { generateForms } = require('./lib/forms.cjs');
 function abs(p) { return path.isAbsolute(p) ? p : path.join(process.cwd(), p); }
 const REPO = path.join(__dirname, '..', '..');
 
-// Суровите доклади по име са работни данни на бота (НЕ в папката на приложението).
-// Единственият консолидиран анализ отива в <ап>/publish/ANALYSIS.md (виж names-report).
-const NAME_CHECKS_DIR = path.join(__dirname, 'name-checks');
+// ПРАВИЛО (потребителят): резултатите на бота се пазят в папка, която ПРИНАДЛЕЖИ на приложение
+// (<ап>/publish/) — а само когато НЯМА приложение, към което да ги отнесем, в docs/name-checks/.
+const DOCS_NAME_CHECKS = path.join(REPO, 'docs', 'name-checks');
+// Връща huawei/<ап>/publish, ако името съответства на съществуващо приложение; иначе null.
+function appPublishFor(name) {
+  const norm = (x) => String(x).toLowerCase().replace(/[^a-z0-9]/g, '');
+  const keys = [norm(name), norm(String(name).replace(/^KCY[_\- ]?/i, ''))];
+  for (const store of ['huawei', 'rustore']) {
+    const base = path.join(REPO, store);
+    if (!fs.existsSync(base)) continue;
+    for (const d of fs.readdirSync(base)) {
+      if (!fs.existsSync(path.join(base, d, 'capacitor.config.json'))) continue;
+      if (keys.includes(norm(d))) return path.join(REPO, 'huawei', d, 'publish');
+    }
+  }
+  return null;
+}
 async function cmdName(names) {
   if (!names.length) { console.error('Дай поне едно име: name "<Име>"'); process.exit(1); }
-  const outDir = NAME_CHECKS_DIR;
-  fs.mkdirSync(outDir, { recursive: true });
   for (const name of names) {
     console.log('\n=== Проверка на име: ' + name + ' ===');
     const r = await nameCheck(name);
     const md = toMarkdown(r);
-    const file = path.join(outDir, name.replace(/[^a-zA-Z0-9._-]+/g, '_') + '.md');
+    const pub = appPublishFor(name);                       // има ли приложение с това име?
+    const outDir = pub || DOCS_NAME_CHECKS;                // да → publish/; не → docs/
+    fs.mkdirSync(outDir, { recursive: true });
+    const fname = (pub ? 'NAME-CHECK-' : '') + name.replace(/[^a-zA-Z0-9._-]+/g, '_') + '.md';
+    const file = path.join(outDir, fname);
     fs.writeFileSync(file, md, 'utf8');
     console.log('Риск: ' + r.risk + (r.riskWhy.length ? ' — ' + r.riskWhy.join('; ') : ''));
     if (r.appleExact.length) console.log('⚠️ Точно съвпадение в App Store: ' + r.appleExact.map((a) => a.name + ' (' + (a.seller || '?') + ')').join(', '));
@@ -71,7 +87,7 @@ function cmdSummary(appDir) {
     else if (cmd === 'names-report') {
       const appDir = abs(rest[0] || 'huawei/newslator');
       const outFile = path.join(appDir, 'publish', 'ANALYSIS.md');
-      const r = await generateNamesReport(NAME_CHECKS_DIR, { outFile, appDir });
+      const r = await generateNamesReport(DOCS_NAME_CHECKS, { outFile, appDir });
       console.log('Анализ (1 файл): ' + path.relative(REPO, r.path) + ' (' + r.count + ' имена' + (r.stale ? ', ' + r.stale + ' стари' : '') + ')');
     }
     else if (cmd === 'forms') {

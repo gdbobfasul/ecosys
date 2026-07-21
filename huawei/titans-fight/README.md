@@ -5,7 +5,7 @@
 Работи **без HMS Core / GMS / Firebase**. Без външни картинки — **цялата графика се
 генерира в кода** (градиенти, частици, glow, процедурни спрайтове на титаните).
 
-App ID: `com.kcy.titansfight.huawei`
+App ID: `com.pupikes.titansfight.huawei`
 
 ---
 

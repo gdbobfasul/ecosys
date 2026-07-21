@@ -18,7 +18,7 @@ import { dataMode, setDataMode, personalMemoryCount, forgetPersonalData } from '
 import { LANGUAGES } from '../core/languages.js';
 import { t, getLang, languageByCode } from '../core/i18n.js';
 
-const APP_ID = 'com.kcy.selflearningfriend.rustore';
+const APP_ID = 'com.pupikes.selflearningfriend.rustore';
 
 export function renderSettings(root, { rerender, openLangPicker }) {
   clear(root);

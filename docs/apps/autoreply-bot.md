@@ -1,6 +1,6 @@
 # Pupikes Auto Answer — как функционира
 
-„Робот под наем", който автоматично отговаря на съобщения по твои правила — **изцяло на устройството**. Мобилно приложение за RUStore и Huawei AppGallery (Vite + Capacitor, без Google Mobile Services). App ID: `com.kcy.autoreplybot.rustore` (RUStore) / `com.kcy.autoreplybot.huawei` (Huawei).
+„Робот под наем", който автоматично отговаря на съобщения по твои правила — **изцяло на устройството**. Мобилно приложение за RUStore и Huawei AppGallery (Vite + Capacitor, без Google Mobile Services). App ID: `com.pupikes.autoreplybot.rustore` (RUStore) / `com.pupikes.autoreplybot.huawei` (Huawei).
 
 ## Защо „пясъчник" (sandbox)
 Android **не позволява** на трети приложения да автоматизират системните SMS или чужди месинджъри. Затова роботът работи в **собствен симулиран вход (Demo Inbox)** вътре в приложението — там виждаш и тестваш как би отговарял. Без интернет, без контакти, без достъп до SMS, без акаунти, без проследяване.

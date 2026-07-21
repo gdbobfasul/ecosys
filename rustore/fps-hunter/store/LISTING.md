@@ -1,6 +1,6 @@
 # Huntline 3D — RUStore Listing Notes
 
-App ID: `com.kcy.fpshunter.rustore`
+App ID: `com.pupikes.fpshunter.rustore`
 Name: Huntline 3D
 Category: Games / Action (Аркада / Шутър)
 

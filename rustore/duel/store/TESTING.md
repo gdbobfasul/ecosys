@@ -3,7 +3,7 @@
 ## 1. Регистрация на разработчик
 1. Влез в RUStore Console: https://console.rustore.ru
 2. Потвърди акаунт на юридическо лице/самозаето (изисква се за Русия).
-3. Създай ново приложение с package `com.kcy.duel.rustore`.
+3. Създай ново приложение с package `com.pupikes.duel.rustore`.
 
 ## 2. Качване на тестов APK/AAB
 - RUStore приема **APK** и **AAB**. За тестване качи `app-debug.apk` или подписан

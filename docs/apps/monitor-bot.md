@@ -2,7 +2,7 @@
 
 Самостоятелно мобилно приложение от типа „робот под наем": активираш робот, който следи **източник** (RSS/Atom емисия или публично JSON API) и те известява **локално**, когато се появи нов запис или съвпадне ключова дума. Без акаунт, без облак, без проследяване, без реклами, без ключове. Издава се за **RUStore** и **Huawei AppGallery** като две идентични, независими приложения (различават се само по app id и акцент на иконата).
 
-- **App ID:** `com.kcy.monitorbot.rustore` (RUStore) / `com.kcy.monitorbot.huawei` (Huawei)
+- **App ID:** `com.pupikes.monitorbot.rustore` (RUStore) / `com.pupikes.monitorbot.huawei` (Huawei)
 - **Стек:** Vanilla JS + Vite 5 + Capacitor 6
 
 ## Поток (наеми → настрой → разреши → следи)

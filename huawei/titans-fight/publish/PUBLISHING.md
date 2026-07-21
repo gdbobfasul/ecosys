@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.titansfight.hw`
-- **RuStore пакет:** `com.kcy.titansfight.rustore`
+- **Huawei пакет:** `com.pupikes.titansfight.hw`
+- **RuStore пакет:** `com.pupikes.titansfight.rustore`
 - **Билд (APK/AAB):** идва от `apk/titans-fight-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

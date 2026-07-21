@@ -45,8 +45,8 @@ for (const app of apps) {
   const hasInAppPrivacy = /mountPrivacyLink/.test(mainJs);                       // footer линк към политиката (legal.js)
   const hasDeletionChannel = /mountPrivacyLink\([^)]*account:\s*true/.test(mainJs); // „Изтрий акаунта" → заявка до админ
   const name = metaField(meta, 'App name') || app;
-  const hwPkg = metaField(meta, 'App package name') || (readJson(path.join(huaweiRoot, app, 'capacitor.config.json')) || {}).appId || `com.kcy.${app.replace(/-/g, '')}.hw`;
-  const ruPkg = (readJson(path.join(ROOT, 'rustore', app, 'capacitor.config.json')) || {}).appId || `com.kcy.${app.replace(/-/g, '')}.rustore`;
+  const hwPkg = metaField(meta, 'App package name') || (readJson(path.join(huaweiRoot, app, 'capacitor.config.json')) || {}).appId || `com.pupikes.${app.replace(/-/g, '')}.hw`;
+  const ruPkg = (readJson(path.join(ROOT, 'rustore', app, 'capacitor.config.json')) || {}).appId || `com.pupikes.${app.replace(/-/g, '')}.rustore`;
 
   const shots = countDir(pub, 'screenshots');
   const listings = countDir(pub, 'store-listing');

@@ -5,7 +5,7 @@
 - [ ] `npm install` минава без грешки.
 - [ ] `npm run build` създава `dist/` (вкл. `assets/animations/HMM/`).
 - [ ] `npm run gen:assets` създава `store/icon.svg` + `store/splash.svg`.
-- [ ] App ID е `com.kcy.hmm.rustore` (в `capacitor.config.json`).
+- [ ] App ID е `com.pupikes.hmm.rustore` (в `capacitor.config.json`).
 
 ## Активи за магазина
 

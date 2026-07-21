@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.newslator.hw",
+  "appId": "com.pupikes.newslator.hw",
   "appName": "NewsLator",
   "webDir": "dist",
   "bundledWebRuntime": false,

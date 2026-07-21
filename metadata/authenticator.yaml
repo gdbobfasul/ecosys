@@ -6,8 +6,8 @@ folders:
   - public/portals/services/authenticator.html   # уеб версия (Portal Services)
 stores: [rustore, huawei, web]
 package:
-  rustore: com.kcy.authenticator.rustore
-  huawei:  com.kcy.authenticator.huawei
+  rustore: com.pupikes.authenticator.rustore
+  huawei:  com.pupikes.authenticator.huawei
 category:
   google_play: Tools
   rustore: Инструменты

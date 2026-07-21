@@ -61,7 +61,7 @@ GitHub Actions с `android-actions/setup-android`, или Docker image
 cd android && ./gradlew assembleDebug`. APK артефактът се сваля от CI.
 
 ## App ID
-`com.kcy.planeshooter.huawei` (виж `capacitor.config.json`).
+`com.pupikes.planeshooter.huawei` (виж `capacitor.config.json`).
 
 ## HMS SDK (TODO стъбове)
 Реален IAP/push НЕ е имплементиран. Точките за бъдеща интеграция с Huawei

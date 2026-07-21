@@ -1,0 +1,12 @@
+{
+  "appId": "com.pupikes.toolkit3drotate.rustore",
+  "appName": "Pupikes Toolkit 3D Rotate",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

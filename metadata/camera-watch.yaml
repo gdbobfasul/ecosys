@@ -5,8 +5,8 @@ folders:
   - huawei/camera-watch
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.camerawatch.rustore
-  huawei:  com.kcy.camerawatch.huawei
+  rustore: com.pupikes.camerawatch.rustore
+  huawei:  com.pupikes.camerawatch.huawei
 category:
   google_play: Tools
   rustore: Инструменты

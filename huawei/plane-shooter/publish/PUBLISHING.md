@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.planeshooter.hw`
-- **RuStore пакет:** `com.kcy.planeshooter.rustore`
+- **Huawei пакет:** `com.pupikes.planeshooter.hw`
+- **RuStore пакет:** `com.pupikes.planeshooter.rustore`
 - **Билд (APK/AAB):** идва от `apk/plane-shooter-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

@@ -1,6 +1,6 @@
 # MotionHawk — Декларация за данните (Data Safety)
 
-App ID: `com.kcy.camerawatch.rustore`
+App ID: `com.pupikes.camerawatch.rustore`
 
 ## Накратко
 - **Събираме ли данни?** Не.

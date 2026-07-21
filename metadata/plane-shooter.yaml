@@ -5,8 +5,8 @@ folders:
   - huawei/plane-shooter
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.planeshooter.rustore
-  huawei:  com.kcy.planeshooter.huawei
+  rustore: com.pupikes.planeshooter.rustore
+  huawei:  com.pupikes.planeshooter.huawei
 category:
   google_play: Games / Arcade
   rustore: Игры

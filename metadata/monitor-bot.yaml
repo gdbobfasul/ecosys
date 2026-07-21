@@ -5,8 +5,8 @@ folders:
   - huawei/monitor-bot
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.monitorbot.rustore
-  huawei:  com.kcy.monitorbot.huawei
+  rustore: com.pupikes.monitorbot.rustore
+  huawei:  com.pupikes.monitorbot.huawei
 category:
   google_play: Productivity
   rustore: Инструменты

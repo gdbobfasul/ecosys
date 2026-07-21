@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: App (приложение, НЕ игра)
 App name: Pupikes Toolkit Scraper            # 19 / 30 знака
-App package name: com.kcy.toolkitscraper.hw
+App package name: com.pupikes.toolkitscraper.hw
 Level-1 app category: Tools
 
 [Integrate open capabilities]

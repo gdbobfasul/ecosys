@@ -1,6 +1,6 @@
 # Store listing — Pupikes Baby Radar (RUStore)
 
-**App ID:** `com.kcy.babymonitor.rustore`
+**App ID:** `com.pupikes.babymonitor.rustore`
 **Акцент:** мента `#5cc8b0`
 
 ## Кратко описание

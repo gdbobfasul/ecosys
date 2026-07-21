@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: App (приложение, НЕ игра)
 App name: Pupikes Toolkit Text            # 16 / 30 знака
-App package name: com.kcy.toolkittext.hw
+App package name: com.pupikes.toolkittext.hw
 Level-1 app category: Tools
 
 [Integrate open capabilities]

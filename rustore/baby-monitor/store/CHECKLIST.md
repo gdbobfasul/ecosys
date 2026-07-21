@@ -3,7 +3,7 @@
 - [ ] `npm install` минава без грешки.
 - [ ] `npm run build` минава (големият TF.js chunk е очакван — lazy-load).
 - [ ] `npm run gen:assets` генерира icon/splash PNG + SVG.
-- [ ] App ID = `com.kcy.babymonitor.rustore` (capacitor.config.json).
+- [ ] App ID = `com.pupikes.babymonitor.rustore` (capacitor.config.json).
 - [ ] Акцент = мента `#5cc8b0` (styles.css, gen-assets.mjs, theme-color в index.html).
 - [ ] Камера работи в dev (уеб камера); състояние спи/размърда/събуди се се сменя реално.
 - [ ] „Втори човек“ дава сигнал след зареждане на coco-ssd.

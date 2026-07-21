@@ -69,5 +69,5 @@ No account needed. On first launch choose a language and tap Start to reach the 
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/services-toolkit-huawei-release.apk` (release, подписан). Пакет: `com.kcy.servicestoolkit.hw`.
+APK за качване: `apk/services-toolkit-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.servicestoolkit.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/services-toolkit/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

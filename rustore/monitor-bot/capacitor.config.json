@@ -1,5 +1,5 @@
 {
-  "appId": "com.kcy.monitorbot.rustore",
+  "appId": "com.pupikes.monitorbot.rustore",
   "appName": "Pupikes Site Monitor",
   "webDir": "dist",
   "bundledWebRuntime": false,

@@ -5,8 +5,8 @@ folders:
   - huawei/services-toolkit
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.servicestoolkit.rustore
-  huawei:  com.kcy.servicestoolkit.huawei
+  rustore: com.pupikes.servicestoolkit.rustore
+  huawei:  com.pupikes.servicestoolkit.huawei
 category:
   google_play: Tools
   rustore: Инструменты

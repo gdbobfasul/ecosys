@@ -4,7 +4,7 @@
 - [ ] `npm install` минава
 - [ ] `npm run build` създава `dist/`
 - [ ] Игра тествана в браузър (`npm run dev`) — всичките 10 нива достижими
-- [ ] App ID = `com.kcy.planeshooter.huawei` (capacitor.config.json)
+- [ ] App ID = `com.pupikes.planeshooter.huawei` (capacitor.config.json)
 - [ ] Версия вдигната (versionCode/versionName в android/app/build.gradle)
 
 ## Графики

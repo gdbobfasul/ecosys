@@ -4,7 +4,7 @@
 // Различия: app id, акцентен цвят на темата, име на магазина, store SDK.
 export const APP_CONFIG = {
   store: 'rustore',
-  appId: 'com.kcy.routinebot.rustore',
+  appId: 'com.pupikes.routinebot.rustore',
   appName: 'Pupikes Routine Planner',
   storeName: 'RUStore',
   // Акцентен цвят на темата — RUStore издание (синьо).

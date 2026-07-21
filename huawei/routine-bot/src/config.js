@@ -4,7 +4,7 @@
 // Различия: app id, акцентен цвят на темата, име на магазина, store SDK.
 export const APP_CONFIG = {
   store: 'huawei',
-  appId: 'com.kcy.routinebot.hw',
+  appId: 'com.pupikes.routinebot.hw',
   appName: 'Pupikes Routine Planner',
   storeName: 'AppGallery',
   // Акцентен цвят на темата — Huawei издание (тийл/зелено).

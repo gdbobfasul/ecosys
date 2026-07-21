@@ -4,7 +4,7 @@
 Magic стил). Вградена (vendored) версия на браузърната игра от Pupikes — **без backend,
 без IAP, без реклами, без tracking, без HMS, напълно offline и безплатна**.
 
-- App ID: `com.kcy.hmm.huawei`
+- App ID: `com.pupikes.hmm.huawei`
 - Акцент по темата: хладен нефрит/тюркоаз (`#2aa07a`)
 - Двигател: vanilla JS + DOM/canvas + `<video>` (WebM с alpha), бъндван с Vite 5
 - Обвивка: Capacitor 6 (Android)

@@ -1,6 +1,6 @@
 # MotionHawk — чеклист преди подаване (RUStore)
 
-App ID: `com.kcy.camerawatch.rustore`
+App ID: `com.pupikes.camerawatch.rustore`
 
 ## Технически
 - [ ] `npm install` минава.

@@ -5,8 +5,8 @@ folders:
   - huawei/routine-bot
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.routinebot.rustore
-  huawei:  com.kcy.routinebot.huawei
+  rustore: com.pupikes.routinebot.rustore
+  huawei:  com.pupikes.routinebot.huawei
 category:
   google_play: Productivity
   rustore: Продуктивность

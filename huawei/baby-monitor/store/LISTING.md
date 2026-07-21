@@ -1,6 +1,6 @@
 # Store listing — Pupikes Baby Radar (Huawei AppGallery)
 
-**App ID:** `com.kcy.babymonitor.huawei`
+**App ID:** `com.pupikes.babymonitor.huawei`
 **Акцент:** праскова `#f0a35c`
 
 ## Кратко описание

@@ -5,7 +5,7 @@
 
 ## Основни данни
 - **Име на приложението:** Pupikes Ring Clash
-- **App ID (package):** `com.kcy.duel.huawei`
+- **App ID (package):** `com.pupikes.duel.huawei`
 - **Категория:** Games → Action / Casual
 - **Възрастов рейтинг:** 12+ (фентъзи бой, лека стилизирана кръв)
 - **Цена:** Безплатно

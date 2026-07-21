@@ -69,5 +69,5 @@ No account or login is required. On first launch choose a language and activate 
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/price-watch-bot-huawei-release.apk` (release, подписан). Пакет: `com.kcy.pricewatchbot.hw`.
+APK за качване: `apk/price-watch-bot-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.pricewatchbot.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/price-watch-bot/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

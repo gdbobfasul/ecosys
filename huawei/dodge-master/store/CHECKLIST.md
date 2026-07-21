@@ -1,6 +1,6 @@
 # Чеклист за подаване в Huawei AppGallery
 
-- [ ] package name = `com.kcy.dodgemaster.huawei` (capacitor.config.json)
+- [ ] package name = `com.pupikes.dodgemaster.huawei` (capacitor.config.json)
 - [ ] `npm run build` минава без грешки
 - [ ] Геймплеят тестван в браузър (`npm run dev`) — 10 нива играеми
 - [ ] Икона PNG (216×216 + 512×512, от `store/icon.svg`)

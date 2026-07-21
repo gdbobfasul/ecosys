@@ -1,6 +1,6 @@
 # MotionHawk — тестов сценарий (RUStore ревю)
 
-App ID: `com.kcy.camerawatch.rustore`
+App ID: `com.pupikes.camerawatch.rustore`
 
 ## Без акаунт
 Приложението не изисква регистрация/вход. Отваряш и ползваш.

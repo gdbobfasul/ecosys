@@ -1,7 +1,7 @@
 # Чеклист за публикуване — Pupikes Learning Buddy (RUStore)
 
 ## Идентичност
-- [ ] App ID: `com.kcy.selflearningfriend.rustore`
+- [ ] App ID: `com.pupikes.selflearningfriend.rustore`
 - [ ] Име: „Pupikes Learning Buddy“
 - [ ] Версия и versionCode зададени
 

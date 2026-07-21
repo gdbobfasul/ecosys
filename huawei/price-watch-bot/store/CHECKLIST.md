@@ -1,6 +1,6 @@
 # Предпубликационен чеклист — Pupikes Price Watch (Huawei AppGallery)
 
-- [ ] `appId` = `com.kcy.pricewatchbot.huawei` (capacitor.config.json)
+- [ ] `appId` = `com.pupikes.pricewatchbot.huawei` (capacitor.config.json)
 - [ ] Версия вдигната в package.json
 - [ ] `npm run build` минава без грешки
 - [ ] Икона и splash генерирани (`npm run gen:assets`) и конвертирани към PNG

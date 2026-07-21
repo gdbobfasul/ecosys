@@ -17,7 +17,7 @@ RUStore поддържа разпространение чрез:
 
 ### Стъпки
 1. Регистрирай разработчик в https://www.rustore.ru/ (RUStore Console).
-2. Създай ново приложение → App ID `com.kcy.servicestoolkit.rustore`.
+2. Създай ново приложение → App ID `com.pupikes.servicestoolkit.rustore`.
 3. Качи подписан APK/AAB (debug е достатъчен за вътрешно тестване; за публикуване —
    release с твой keystore — виж submission-checklist.md).
 4. Попълни листинга (listing-notes.md), икона и екранни снимки.

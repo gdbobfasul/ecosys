@@ -7,7 +7,7 @@
 |---|---|
 | App type | HarmonyOS app |
 | App name | името на приложението (източник: `capacitor.config.json` → `appName`) |
-| App package name | com.kcy.planeshooter |
+| App package name | com.pupikes.planeshooter |
 | Level-1 app category | Games |
 
 → Next

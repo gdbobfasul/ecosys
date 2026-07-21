@@ -2,8 +2,8 @@
 
 _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). Отвори го при публикуване, за да знаеш кой документ къде се прикача._
 
-- **Huawei пакет:** `com.kcy.pricewatchbot.hw`
-- **RuStore пакет:** `com.kcy.pricewatchbot.rustore`
+- **Huawei пакет:** `com.pupikes.pricewatchbot.hw`
+- **RuStore пакет:** `com.pupikes.pricewatchbot.rustore`
 - **Билд (APK/AAB):** идва от `apk/price-watch-bot-{huawei,rustore}-debug.apk` след меню 57 (не е в тази папка).
 
 ---

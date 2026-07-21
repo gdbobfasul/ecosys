@@ -5,7 +5,7 @@
 
 ## Основни данни
 - **Име на приложението:** Warbird Rush
-- **App ID (package):** `com.kcy.planeshooter.huawei`
+- **App ID (package):** `com.pupikes.planeshooter.huawei`
 - **Категория:** Games → Arcade
 - **Възрастов рейтинг:** PEGI 7 / 6+ (леко аркадно насилие, без кръв)
 - **Цена:** Безплатно

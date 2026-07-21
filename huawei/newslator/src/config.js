@@ -3,7 +3,7 @@
 // Единственото място, което се различава между rustore и huawei в src/.
 export const STORE = {
   id: 'huawei',
-  appId: 'com.kcy.newslator.hw',
+  appId: 'com.pupikes.newslator.hw',
   // Показва се само в „За приложението“ (диагностика), не е критично.
   label: 'Huawei AppGallery',
   // Хостнатата политика за поверителност — вграден линк в „Относно“ (изискване 7.1 на AppGallery).

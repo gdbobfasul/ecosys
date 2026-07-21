@@ -71,5 +71,5 @@ Launch the app; on first run choose a language, then start the battle from the m
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/hmm-huawei-release.apk` (release, подписан). Пакет: `com.kcy.hmm.hw`.
+APK за качване: `apk/hmm-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.hmm.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/hmm/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

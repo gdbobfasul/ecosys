@@ -5,7 +5,7 @@
 Без Google Mobile Services / Firebase / GMS. Без външни картинки — **цялата графика се
 генерира в кода** (градиенти, частици, glow, процедурни спрайтове на титаните).
 
-App ID: `com.kcy.titansfight.rustore`
+App ID: `com.pupikes.titansfight.rustore`
 
 ---
 

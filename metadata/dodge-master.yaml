@@ -5,8 +5,8 @@ folders:
   - huawei/dodge-master
 stores: [rustore, huawei]
 package:
-  rustore: com.kcy.dodgemaster.rustore
-  huawei:  com.kcy.dodgemaster.huawei
+  rustore: com.pupikes.dodgemaster.rustore
+  huawei:  com.pupikes.dodgemaster.huawei
 category:
   google_play: Games / Arcade
   rustore: Игры

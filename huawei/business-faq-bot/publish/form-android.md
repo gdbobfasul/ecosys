@@ -69,5 +69,5 @@ No account or login is needed. On first launch choose a language and tap 'Activa
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/business-faq-bot-huawei-release.apk` (release, подписан). Пакет: `com.kcy.businessfaqbot.hw`.
+APK за качване: `apk/business-faq-bot-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.businessfaqbot.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/business-faq-bot/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

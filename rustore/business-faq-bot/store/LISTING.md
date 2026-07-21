@@ -1,6 +1,6 @@
 # Store Listing — Pupikes FAQ Desk (RUStore)
 
-**App ID:** `com.kcy.businessfaqbot.rustore`
+**App ID:** `com.pupikes.businessfaqbot.rustore`
 **Категория:** Бизнес / Производителност
 **Цена:** Безплатно (с по избор демо „Premium наем" — STUB, без реално плащане)
 

@@ -71,5 +71,5 @@ Launch the app; on first run pick a language and tap Start, then choose a level 
 → **Save** → **Submit**.
 
 ---
-APK за качване: `apk/dodge-master-huawei-release.apk` (release, подписан). Пакет: `com.kcy.dodgemaster.hw`.
+APK за качване: `apk/dodge-master-huawei-release.apk` (release, подписан). Пакет: `com.pupikes.dodgemaster.hw`.
 Privacy е хостнат на `https://selflearning.bot.nu/privacy/dodge-master/hw-privacy.html` (RuStore: `.../ru-privacy.html`) — публичен след деплой.

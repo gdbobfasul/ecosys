@@ -1,6 +1,6 @@
 # Pupikes Auto Answer — Store Listing (RUStore)
 
-**App ID:** `com.kcy.autoreplybot.rustore`
+**App ID:** `com.pupikes.autoreplybot.rustore`
 **Category:** Productivity / Utilities
 
 ## Short description

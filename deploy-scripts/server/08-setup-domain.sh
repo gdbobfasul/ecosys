@@ -90,7 +90,10 @@ apk_gate_locations() {
 # (публичните свободно, скритите зад парола). БЕЗ портали/чат/нищо друго.
 catalog_locations() {
     apk_gate_locations
-    printf '    location / { try_files $uri $uri/ /index.html; }\n'
+    # Каталог (НЕ SPA): голият домейн → index.html (през `index`); липсващ път → 404.
+    # НЕ ползваме /index.html като try_files fallback — при липсващ index.html това прави
+    # вътрешен редирект-цикъл → nginx връща 500. С =404 такъв цикъл е невъзможен.
+    printf '    location / { try_files $uri $uri/ =404; }\n'
 }
 
 # pupikes.com ХЪБ: РАЗРЕШЕНИ само приложенията в $HUB_ALLOW (напр. portals chat) — работят
@@ -298,9 +301,39 @@ EOF
     fi
 }
 
+# Пълни root-а на pupikes.app (/var/www/html/apk): каталог index.html + catalog.json + лого
+# + всички построени APK/EXE от репо-папката apk/. Без това root-ът е празен → голият домейн
+# прави редирект-цикъл (500). Публичните APK се свалят свободно, скритите искат парола (nginx).
+sync_pupikes_catalog() {
+    # има ли изобщо APKGATE домейн? ако не → нищо за правене
+    printf '%s\n' "$APP_DOMAIN_MAP" | while read -r dom key; do [ -n "$key" ] && [ "$(eval "echo \${APP_${key}_APKGATE:-}")" = "1" ] && exit 7; done
+    [ $? -ne 7 ] && return 0
+    local dest="/var/www/html/apk" apks="$PROJECT_DIR/apk"
+    mkdir -p "$dest"
+    # 1) каталог страница + данни + лого — ЖИВЕЯТ В apk/ (в git); apk/ е папката на pupikes.app.
+    local got=0 cf
+    for cf in index.html catalog.json pupikes-logo.svg; do
+        [ -f "$apks/$cf" ] && cp -f "$apks/$cf" "$dest/$cf" 2>/dev/null && got=$((got+1))
+    done
+    if [ "$got" -gt 0 ]; then echo -e "  ${GREEN}✓ каталог ($got файла) → $dest${NC}"
+    else echo -e "  ${YELLOW}! няма каталог в $apks — качи папката apk/ (index.html/catalog.json/лого) на сървъра${NC}"; fi
+    # 2) всички построени APK/EXE → root-а (nginx решава кои са публични/зад парола)
+    local n=0 f
+    if [ -d "$apks" ]; then
+        for f in "$apks"/*.apk "$apks"/*.exe; do [ -f "$f" ] && { cp -f "$f" "$dest/" && n=$((n+1)); }; done
+    fi
+    chmod -R 755 "$dest" 2>/dev/null || true
+    if [ "$n" -gt 0 ]; then echo -e "  ${GREEN}✓ $n APK/EXE → $dest (публичните свободно, скритите с парола)${NC}"
+    else echo -e "  ${YELLOW}! няма построени APK в $apks — каталогът зарежда, но свалянето ще е 404, докато не билднеш+качиш${NC}"; fi
+}
+
 # ── Публикувай правните страници (privacy + terms) за магазините ──
 echo -e "${CYAN}Публикувам правни страници (privacy + terms)...${NC}"
 sync_privacy_pages
+
+# ── Пълни pupikes.app root-а (каталог + APK) — иначе голият домейн 500 (редирект-цикъл) ──
+echo -e "${CYAN}Пълня pupikes.app каталога (/var/www/html/apk)...${NC}"
+sync_pupikes_catalog
 
 # ── APK парола: осигури htpasswd файла (иначе auth_basic_user_file → nginx -t пада) ──
 NEED_HTPASSWD=0

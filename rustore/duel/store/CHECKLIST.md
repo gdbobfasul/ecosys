@@ -5,7 +5,7 @@
 - [ ] `npm run gen-assets` създава `store/icon.svg`, `store/splash.svg`
 - [ ] `npm run build` създава `dist/` (вкл. копирани `assets/animations/`)
 - [ ] Игра тествана в браузър (`npm run dev`) — менюто тръгва, удар/комбо работят с докосване
-- [ ] App ID = `com.kcy.duel.rustore` (capacitor.config.json)
+- [ ] App ID = `com.pupikes.duel.rustore` (capacitor.config.json)
 - [ ] Версия вдигната (versionCode/versionName в android/app/build.gradle)
 
 ## Графики

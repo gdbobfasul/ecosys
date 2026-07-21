@@ -4,7 +4,7 @@
 [Set basic app information]
 App type: App (приложение, НЕ игра)
 App name: MotionHawk            # 10 / 30 знака
-App package name: com.kcy.camerawatch.hw   # 22 / 128 знака
+App package name: com.pupikes.camerawatch.hw   # 22 / 128 знака
 Level-1 app category: Tools
 
 [Integrate open capabilities]
