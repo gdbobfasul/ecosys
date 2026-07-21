@@ -486,10 +486,14 @@ START_TIME=$SECONDS
 
 # ЗАБЕЛЕЖКА: .env файловете СЕ включват — те са нужни на сървъра (конфигурация).
 # Архивът пътува криптирано по SSH до твоя сървър, не отива публично.
+# ЗАБЕЛЕЖКА: папката apk/ вече НЕ се изключва цялата — каталожната страница на pupikes.app
+# живее в нея (index.html + catalog.json + лого, малки) и трябва да стигне сървъра. Тежките
+# инсталационни файлове пак се изключват (*.apk/*.aab/*.exe по-долу), затова пътува само
+# каталогът, не гигабайтите.
 tar -czf "$ARCHIVE_NAME" \
     --exclude='node_modules' \
     --exclude='.git' \
-    --exclude='rustore' --exclude='huawei' --exclude='apk' --exclude='desktop' \
+    --exclude='rustore' --exclude='huawei' --exclude='desktop' \
     --exclude='node_modules2' --exclude='patch' \
     --exclude='*.apk' --exclude='*.aab' --exclude='*.exe' \
     ${ASSET_EXCLUDE} \

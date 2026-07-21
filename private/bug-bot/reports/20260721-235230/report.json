@@ -1,0 +1,352 @@
+{
+  "target": "prod",
+  "base": "https://take.offbitch.com",
+  "runId": "20260721-235230",
+  "mode": "journey:mobilesmoke",
+  "startedAt": "2026-07-21T17:52:30.286Z",
+  "durationMs": 69382,
+  "scenarios": 7,
+  "urlsChecked": 32,
+  "counts": {
+    "error": 0,
+    "warn": 0,
+    "info": 0
+  },
+  "findings": [],
+  "serverLog": {
+    "ok": true,
+    "status": 200,
+    "hits": [
+      "[2026-07-21T17:53:22]   nginx /portals/register.html: HTTP 502",
+      "[2026-07-21T17:53:22]   billing/status СЪС сесия (nginx HTTPS): <html>\r <head><title>502 Bad Gateway</title></head>\r <body>\r <center><h1>502 Bad Gateway</h1></center>\r <hr><center>nginx/1.24.0 (Ubuntu)</center>\r </body>\r </html>\r  [HTTP 502]",
+      "    2026/06/21 03:33:08 [error] 2074919#2074919: *23069 \"/var/www/html/.well-known/acme-challenge/index.html\" is not found (2: No such file or directory), client: 45.148.10.67, server: look.myhousesetup.com, request: \"GET /.well-known/acme-challenge/ HTTP/1.1\", host: \"look.myhousesetup.com\"",
+      "    2026/06/21 03:33:08 [error] 2074919#2074919: *23079 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 45.148.10.67, server: look.myhousesetup.com, request: \"GET /.well-known/acme-challenge/* HTTP/1.1\", host: \"look.myhousesetup.com\"",
+      "    2026/06/21 05:39:03 [error] 2074919#2074919: *23242 \"/var/www/html/.well-known/acme-challenge/index.html\" is not found (2: No such file or directory), client: 45.148.10.67, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/ HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/06/21 05:39:03 [error] 2074919#2074919: *23253 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 45.148.10.67, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/* HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/06/21 08:25:02 [error] 2074919#2074919: *23387 open() \"/var/www/html/assets/credentials.json\" failed (2: No such file or directory), client: 152.42.217.112, server: look.myhousesetup.com, request: \"GET /assets/credentials.json HTTP/2.0\", host: \"143.198.212.195\"",
+      "    2026/06/21 16:54:07 [error] 2074919#2074919: *23930 open() \"/var/www/html/.well-known/acme-challenge/9vJhTGbhieD0gtLGxO3BE7auE1GO779eawvejJ-a0uA\" failed (2: No such file or directory), client: 23.178.112.106, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/9vJhTGbhieD0gtLGxO3BE7auE1GO779eawvejJ-a0uA HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/06/21 19:23:03 [error] 2074919#2074919: *23993 open() \"/var/www/html/.well-known/acme-challenge/llBQ6W5F8iD2ysdPzLZWP6cKoPIWTYTbLyuFzaVjGcs\" failed (2: No such file or directory), client: 23.178.112.104, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/llBQ6W5F8iD2ysdPzLZWP6cKoPIWTYTbLyuFzaVjGcs HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/06/21 20:10:41 [error] 2074919#2074919: *24009 open() \"/var/www/html/.well-known/acme-challenge/qIbEijEjr1j0YZDQ7T7-wVcE2UAIfKYnJDAa3e0_nC0\" failed (2: No such file or directory), client: 23.178.112.107, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/qIbEijEjr1j0YZDQ7T7-wVcE2UAIfKYnJDAa3e0_nC0 HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/06/23 08:42:37 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.local\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.local HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:37 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.production\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.production HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.prod\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.prod HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.development\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.development HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.dev\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.dev HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.staging\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.staging HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.stage\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.stage HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.test\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.test HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:38 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.uat\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.uat HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.qa\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.qa HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.preprod\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.preprod HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.live\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.live HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.example\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.example HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.sample\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.sample HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.dist\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.dist HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:39 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.bak\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.bak HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:40 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.backup\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.backup HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:40 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.old\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.old HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:40 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.save\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.save HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/23 08:42:40 [error] 2125044#2125044: *29222 open() \"/var/www/html/shared/.env.swp\" failed (2: No such file or directory), client: 179.43.168.58, server: look.myhousesetup.com, request: \"GET /shared/.env.swp HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/25 01:28:16 [error] 2241018#2241018: *1855 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 80.94.95.211, server: look.myhousesetup.com, request: \"GET /shared/.env HTTP/1.1\", host: \"143.198.212.195:443\"",
+      "    2026/06/25 03:03:17 [error] 2241018#2241018: *1902 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 34.175.168.164, server: look.myhousesetup.com, request: \"GET /shared/.env HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/25 03:03:37 [error] 2241018#2241018: *1902 open() \"/var/www/html/assets/.env\" failed (2: No such file or directory), client: 34.175.168.164, server: look.myhousesetup.com, request: \"GET /assets/.env HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/25 06:27:53 [error] 2241018#2241018: *1982 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 185.200.116.211, server: look.myhousesetup.com, request: \"GET /shared/.env HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/25 12:31:34 [error] 2241018#2241018: *2604 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 185.200.116.211, server: look.myhousesetup.com, request: \"GET /shared/.env HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/06/25 14:30:58 [error] 2241018#2241018: *3026 open() \"/var/www/html/assets/.git/config\" failed (2: No such file or directory), client: 34.80.85.78, server: look.myhousesetup.com, request: \"GET /assets/.git/config HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/07 11:57:29 [error] 2353664#2353664: *38925 \"/var/www/html/.well-known/acme-challenge/index.html\" is not found (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /.well-known/acme-challenge/ HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/07/07 11:57:29 [error] 2353664#2353664: *38925 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /.well-known/acme-challenge/* HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/07/07 11:57:35 [error] 2353664#2353664: *38925 open() \"/var/www/html/chat/*\" failed (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /chat/* HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/07/07 11:57:41 [error] 2353664#2353664: *38925 open() \"/var/www/html/shared/.env\" failed (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /shared/.env HTTP/2.0\", host: \"my.girl.place\"",
+      "    2026/07/07 11:57:48 [error] 2353664#2353664: *38974 \"/var/www/html/.well-known/acme-challenge/index.html\" is not found (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /.well-known/acme-challenge/ HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/07/07 11:57:48 [error] 2353664#2353664: *38986 open() \"/var/www/html/.well-known/acme-challenge/*\" failed (2: No such file or directory), client: 45.148.10.67, server: my.girl.place, request: \"GET /.well-known/acme-challenge/* HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/07/12 21:20:15 [error] 2833983#2833983: *49785 directory index of \"/var/www/html/House-Look-Book/js/\" is forbidden, client: 101.47.9.217, server: look.myhousesetup.com, request: \"HEAD /js/ HTTP/1.1\", host: \"143.198.212.195\", referrer: \"https://143.198.212.195/js\"",
+      "    2026/07/12 21:20:32 [error] 2833983#2833983: *49970 directory index of \"/var/www/html/House-Look-Book/js/\" is forbidden, client: 101.47.9.217, server: look.myhousesetup.com, request: \"HEAD /js/ HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/12 21:20:34 [error] 2833983#2833983: *50015 \"/var/www/html/assets/js/index.html\" is not found (2: No such file or directory), client: 101.47.9.217, server: look.myhousesetup.com, request: \"HEAD /assets/js/ HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/12 21:20:35 [error] 2833983#2833983: *50022 open() \"/var/www/html/assets/js\" failed (2: No such file or directory), client: 101.47.9.217, server: look.myhousesetup.com, request: \"HEAD /assets/js HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:27 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.prod\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.prod HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.development\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.development HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.dev\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.dev HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.staging\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.staging HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.stage\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.stage HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.test\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.test HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.uat\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.uat HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:28 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.qa\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.qa HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.preprod\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.preprod HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.live\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.live HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.example\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.example HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.sample\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.sample HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.dist\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.dist HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:29 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.bak\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.bak HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:30 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.backup\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.backup HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:30 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.old\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.old HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:30 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.save\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.save HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 10:35:30 [error] 3307087#3307087: *57876 open() \"/var/www/html/shared/.env.swp\" failed (2: No such file or directory), client: 81.17.28.130, server: look.myhousesetup.com, request: \"GET /shared/.env.swp HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 12:39:55 [error] 3307087#3307087: *58116 open() \"/var/www/html/assets/png/favicon-abe32304.png\" failed (2: No such file or directory), client: 139.162.33.108, server: look.myhousesetup.com, request: \"GET /assets/png/favicon-abe32304.png HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/17 12:40:04 [error] 3307087#3307087: *58175 open() \"/var/www/html/assets/img/favicon.ico\" failed (2: No such file or directory), client: 139.162.33.108, server: look.myhousesetup.com, request: \"GET /assets/img/favicon.ico HTTP/1.1\", host: \"143.198.212.195\"",
+      "    2026/07/18 06:55:49 [error] 3349474#3349474: *63356 open() \"/var/www/html/shared/js/' + CFG.legal.policy + '\" failed (2: No such file or directory), client: 74.7.227.173, server: my.girl.place, request: \"GET /shared/js/'%20+%20CFG.legal.policy%20+%20' HTTP/2.0\", host: \"my.girl.place\", referrer: \"https://my.girl.place/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 06:55:51 [error] 3349474#3349474: *63356 open() \"/var/www/html/shared/js/' + CFG.legal.payment + '\" failed (2: No such file or directory), client: 74.7.227.173, server: my.girl.place, request: \"GET /shared/js/'%20+%20CFG.legal.payment%20+%20' HTTP/2.0\", host: \"my.girl.place\", referrer: \"https://my.girl.place/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 08:33:32 [error] 3349474#3349474: *63412 open() \"/var/www/html/shared/js/' + CFG.legal.payment + '\" failed (2: No such file or directory), client: 74.7.227.42, server: kaji.kak.si, request: \"GET /shared/js/'%20+%20CFG.legal.payment%20+%20' HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 08:33:33 [error] 3349474#3349474: *63412 open() \"/var/www/html/shared/js/' + CFG.legal.policy + '\" failed (2: No such file or directory), client: 74.7.227.42, server: kaji.kak.si, request: \"GET /shared/js/'%20+%20CFG.legal.policy%20+%20' HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 06:55:49 [error] 3349474#3349474: *63356 open() \"/var/www/html/shared/js/' + CFG.legal.policy + '\" failed (2: No such file or directory), client: 74.7.227.173, server: my.girl.place, request: \"GET /shared/js/'%20+%20CFG.legal.policy%20+%20' HTTP/2.0\", host: \"my.girl.place\", referrer: \"https://my.girl.place/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 06:55:51 [error] 3349474#3349474: *63356 open() \"/var/www/html/shared/js/' + CFG.legal.payment + '\" failed (2: No such file or directory), client: 74.7.227.173, server: my.girl.place, request: \"GET /shared/js/'%20+%20CFG.legal.payment%20+%20' HTTP/2.0\", host: \"my.girl.place\", referrer: \"https://my.girl.place/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 08:33:32 [error] 3349474#3349474: *63412 open() \"/var/www/html/shared/js/' + CFG.legal.payment + '\" failed (2: No such file or directory), client: 74.7.227.42, server: kaji.kak.si, request: \"GET /shared/js/'%20+%20CFG.legal.payment%20+%20' HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/18 08:33:33 [error] 3349474#3349474: *63412 open() \"/var/www/html/shared/js/' + CFG.legal.policy + '\" failed (2: No such file or directory), client: 74.7.227.42, server: kaji.kak.si, request: \"GET /shared/js/'%20+%20CFG.legal.policy%20+%20' HTTP/2.0\", host: \"kaji.kak.si\", referrer: \"https://kaji.kak.si/shared/js/kg-compliance.js?v=1.0001\"",
+      "    2026/07/19 13:20:04 [error] 3398699#3398699: *65231 connect() failed (111: Connection refused) while connecting to upstream, client: 114.119.149.91, server: look.myhousesetup.com, request: \"GET /portals/games/ads/ad_battle.html HTTP/1.1\", upstream: \"http://127.0.0.1:3002/portals/games/ads/ad_battle.html\", host: \"143.198.212.195\", referrer: \"https://143.198.212.195/portals/games/\"",
+      "    2026/07/19 13:20:04 [error] 3398699#3398699: *65231 connect() failed (111: Connection refused) while connecting to upstream, client: 114.119.149.91, server: look.myhousesetup.com, request: \"GET /portals/games/ads/ad_battle.html HTTP/1.1\", upstream: \"http://127.0.0.1:3002/portals/games/ads/ad_battle.html\", host: \"143.198.212.195\", referrer: \"https://143.198.212.195/portals/games/\"",
+      "    2026/07/19 16:05:55 [error] 3429498#3429498: *65569 open() \"/var/www/html/.well-known/acme-challenge/1PgXC-eeNBSg7Hjtpuz7RPO9cRy_50892dafvu5GzGo\" failed (2: No such file or directory), client: 23.178.112.105, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/1PgXC-eeNBSg7Hjtpuz7RPO9cRy_50892dafvu5GzGo HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/07/19 13:20:04 [error] 3398699#3398699: *65231 connect() failed (111: Connection refused) while connecting to upstream, client: 114.119.149.91, server: look.myhousesetup.com, request: \"GET /portals/games/ads/ad_battle.html HTTP/1.1\", upstream: \"http://127.0.0.1:3002/portals/games/ads/ad_battle.html\", host: \"143.198.212.195\", referrer: \"https://143.198.212.195/portals/games/\"",
+      "    2026/07/19 16:05:55 [error] 3429498#3429498: *65569 open() \"/var/www/html/.well-known/acme-challenge/1PgXC-eeNBSg7Hjtpuz7RPO9cRy_50892dafvu5GzGo\" failed (2: No such file or directory), client: 23.178.112.105, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/1PgXC-eeNBSg7Hjtpuz7RPO9cRy_50892dafvu5GzGo HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/07/19 13:20:04 [error] 3398699#3398699: *65231 connect() failed (111: Connection refused) while connecting to upstream, client: 114.119.149.91, server: look.myhousesetup.com, request: \"GET /portals/games/ads/ad_battle.html HTTP/1.1\", upstream: \"http://127.0.0.1:3002/portals/games/ads/ad_battle.html\", host: \"143.198.212.195\", referrer: \"https://143.198.212.195/portals/games/\"",
+      "    2026/07/19 16:05:55 [error] 3429498#3429498: *65569 open() \"/var/www/html/.well-known/acme-challenge/1PgXC-eeNBSg7Hjtpuz7RPO9cRy_50892dafvu5GzGo\" failed (2: No such file or directory), client: 23.178.112.105, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/1PgXC-eeNBSg7Hjtpuz7RPO9cRy_50892dafvu5GzGo HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/07/19 17:46:54 [error] 3444794#3444794: *65704 open() \"/var/www/html/.well-known/acme-challenge/bfPncfOP7D9s24lXpn9TEtBa8y-WMntjjSMpQXK9Ds4\" failed (2: No such file or directory), client: 23.178.112.106, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/bfPncfOP7D9s24lXpn9TEtBa8y-WMntjjSMpQXK9Ds4 HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/07/19 17:53:51 [error] 3445221#3445221: *65705 open() \"/var/www/html/.well-known/acme-challenge/wHdzzHjDlcrGOaxDbVgXHNArxFaoDW0WqJNODSawwfs\" failed (2: No such file or directory), client: 23.178.112.104, server: look.myhousesetup.com, request: \"GET /.well-known/acme-challenge/wHdzzHjDlcrGOaxDbVgXHNArxFaoDW0WqJNODSawwfs HTTP/1.1\", host: \"look.myhousesetup.com\"",
+      "    2026/07/19 17:53:56 [error] 3445221#3445221: *65706 open() \"/var/www/html/.well-known/acme-challenge/ofBqbFO7IJUXtlWfiDjjK_jUNRcpSElLhtq8dEqF_rU\" failed (2: No such file or directory), client: 23.178.112.105, server: my.girl.place, request: \"GET /.well-known/acme-challenge/ofBqbFO7IJUXtlWfiDjjK_jUNRcpSElLhtq8dEqF_rU HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/07/19 17:54:00 [error] 3445221#3445221: *65707 open() \"/var/www/html/.well-known/acme-challenge/GOlKLS90Vb2DXGzjMNzL4mph6dzMPoNq_FECxF9CoZs\" failed (2: No such file or directory), client: 23.178.112.105, server: kaji.kak.si, request: \"GET /.well-known/acme-challenge/GOlKLS90Vb2DXGzjMNzL4mph6dzMPoNq_FECxF9CoZs HTTP/1.1\", host: \"kaji.kak.si\"",
+      "    2026/07/19 17:54:04 [error] 3445221#3445221: *65708 open() \"/var/www/html/.well-known/acme-challenge/1Aq61J9queDtvml-x4nsVqs-zn1dVpHs-VJcJlmjPY0\" failed (2: No such file or directory), client: 23.178.112.108, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/1Aq61J9queDtvml-x4nsVqs-zn1dVpHs-VJcJlmjPY0 HTTP/1.1\", host: \"selflearning.bot.nu\"",
+      "    2026/07/21 12:38:27 [error] 3518013#3518013: *69988 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 205.169.39.22, server: pupikes.app, request: \"GET /favicon.ico HTTP/2.0\", host: \"pupikes.app\", referrer: \"https://pupikes.app/\"",
+      "    2026/07/21 12:40:49 [error] 3518013#3518013: *69990 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 5.78.140.151, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 12:42:41 [error] 3518013#3518013: *70007 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.196.42.94, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 12:42:42 [error] 3518013#3518013: *70008 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.196.42.94, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\", referrer: \"https://pupikes.com/\"",
+      "    2026/07/21 12:42:44 [error] 3518013#3518013: *70012 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.196.42.94, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 12:42:46 [error] 3518013#3518013: *70015 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.196.42.94, server: pupikes.app, request: \"HEAD /favicon.ico HTTP/1.1\", host: \"pupikes.app\", referrer: \"https://pupikes.com/favicon.ico\"",
+      "    2026/07/21 12:50:05 [error] 3518013#3518013: *70019 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 185.53.231.224, server: www.pupikes.app, request: \"GET / HTTP/2.0\", host: \"www.pupikes.app\"",
+      "    2026/07/21 12:50:05 [error] 3518013#3518013: *70019 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 185.53.231.224, server: www.pupikes.app, request: \"GET /favicon.ico HTTP/2.0\", host: \"www.pupikes.app\", referrer: \"https://www.pupikes.app/\"",
+      "    2026/07/21 12:50:10 [error] 3518013#3518013: *70019 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 185.53.231.224, server: www.pupikes.app, request: \"GET / HTTP/2.0\", host: \"www.pupikes.app\"",
+      "    2026/07/21 12:50:39 [error] 3518013#3518013: *70029 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 185.53.231.224, server: pupikes.app, request: \"GET /api/hlb/me HTTP/2.0\", host: \"pupikes.app\", referrer: \"https://www.pupikes.com/\"",
+      "    2026/07/21 12:53:33 [error] 3518013#3518013: *70039 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 34.83.255.153, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\", referrer: \"http://pupikes.app\"",
+      "    2026/07/21 12:56:51 [error] 3518013#3518013: *70047 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 34.77.119.42, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\", referrer: \"https://pupikes.com/\"",
+      "    2026/07/21 12:58:39 [error] 3518013#3518013: *70050 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 18.234.93.175, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 12:58:39 [error] 3518013#3518013: *70050 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 18.234.93.175, server: pupikes.app, request: \"GET /favicon.ico HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 12:58:39 [error] 3518013#3518013: *70050 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 18.234.93.175, server: pupikes.app, request: \"GET /favicon.png HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:08:34 [error] 3518013#3518013: *70052 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 178.156.249.178, server: pupikes.app, request: \"HEAD / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:08:35 [error] 3518013#3518013: *70052 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 178.156.249.178, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:11:58 [error] 3518013#3518013: *70060 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 185.53.231.224, server: www.pupikes.app, request: \"HEAD / HTTP/1.1\", host: \"www.pupikes.app\"",
+      "    2026/07/21 13:11:59 [error] 3518013#3518013: *70061 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 185.53.231.224, server: pupikes.app, request: \"HEAD / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:23:53 [error] 3525322#3525322: *70065 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 43.165.167.72, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\", referrer: \"http://pupikes.app\"",
+      "    2026/07/21 13:11:58 [error] 3518013#3518013: *70060 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 185.53.231.224, server: www.pupikes.app, request: \"HEAD / HTTP/1.1\", host: \"www.pupikes.app\"",
+      "    2026/07/21 13:11:59 [error] 3518013#3518013: *70061 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 185.53.231.224, server: pupikes.app, request: \"HEAD / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:23:53 [error] 3525322#3525322: *70065 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 43.165.167.72, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\", referrer: \"http://pupikes.app\"",
+      "    2026/07/21 13:26:16 [error] 3529217#3529217: *70073 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.213.249.200, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:26:17 [error] 3529217#3529217: *70073 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.213.249.200, server: pupikes.app, request: \"GET /favicon.ico HTTP/2.0\", host: \"pupikes.app\", referrer: \"https://pupikes.app/\"",
+      "    2026/07/21 13:26:21 [error] 3529217#3529217: *70075 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.213.249.200, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:26:21 [error] 3529217#3529217: *70075 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.213.249.200, server: pupikes.app, request: \"GET /favicon.ico HTTP/2.0\", host: \"pupikes.app\", referrer: \"https://pupikes.app/\"",
+      "    2026/07/21 13:31:10 [error] 3529771#3529771: *70086 directory index of \"/var/www/html/apk/\" is forbidden, client: 45.45.237.8, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\", referrer: \"https://pupikes.com/\"",
+      "    2026/07/21 13:35:12 [error] 3529771#3529771: *70090 directory index of \"/var/www/html/apk/\" is forbidden, client: 5.253.247.27, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:35:17 [error] 3529771#3529771: *70091 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.129.61.9, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:39:25 [error] 3529771#3529771: *70100 open() \"/var/www/html/.well-known/acme-challenge/K_NZMvM_lGBna4nlgY-fqpj3IhiidA23_Od0bSsu1j0\" failed (2: No such file or directory), client: 23.178.112.108, server: look.myhousesetup.com, request: \"GET /.well-known/acme-challenge/K_NZMvM_lGBna4nlgY-fqpj3IhiidA23_Od0bSsu1j0 HTTP/1.1\", host: \"look.myhousesetup.com\"",
+      "    2026/07/21 13:39:30 [error] 3529771#3529771: *70101 open() \"/var/www/html/.well-known/acme-challenge/ZQtxFZH1OHlmoS0JFc0-SYpvkRAUGZjKh5FuRCivQPw\" failed (2: No such file or directory), client: 23.178.112.107, server: my.girl.place, request: \"GET /.well-known/acme-challenge/ZQtxFZH1OHlmoS0JFc0-SYpvkRAUGZjKh5FuRCivQPw HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/07/21 13:39:34 [error] 3529771#3529771: *70102 open() \"/var/www/html/.well-known/acme-challenge/ey6g3_hL7jnuoMvw4xwYYUnKfoPw1g8tUbJXf8es5xI\" failed (2: No such file or directory), client: 23.178.112.105, server: kaji.kak.si, request: \"GET /.well-known/acme-challenge/ey6g3_hL7jnuoMvw4xwYYUnKfoPw1g8tUbJXf8es5xI HTTP/1.1\", host: \"kaji.kak.si\"",
+      "    2026/07/21 13:39:38 [error] 3529771#3529771: *70103 open() \"/var/www/html/.well-known/acme-challenge/CBjGujArrAkulM86kVofvCY50c5x5u7fcKiREp8Vcvw\" failed (2: No such file or directory), client: 23.178.112.107, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/CBjGujArrAkulM86kVofvCY50c5x5u7fcKiREp8Vcvw HTTP/1.1\", host: \"selflearning.bot.nu\"",
+      "    2026/07/21 13:41:46 [error] 3529771#3529771: *70110 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:42:19 [error] 3529771#3529771: *70110 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:43:41 [error] 3529771#3529771: *70115 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:47:28 [error] 3529771#3529771: *70121 directory index of \"/var/www/html/apk/\" is forbidden, client: 193.70.113.250, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:48:25 [error] 3529771#3529771: *70128 directory index of \"/var/www/html/apk/\" is forbidden, client: 34.254.175.216, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:49:27 [error] 3529771#3529771: *70130 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:11:58 [error] 3518013#3518013: *70060 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 185.53.231.224, server: www.pupikes.app, request: \"HEAD / HTTP/1.1\", host: \"www.pupikes.app\"",
+      "    2026/07/21 13:11:59 [error] 3518013#3518013: *70061 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 185.53.231.224, server: pupikes.app, request: \"HEAD / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:23:53 [error] 3525322#3525322: *70065 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 43.165.167.72, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\", referrer: \"http://pupikes.app\"",
+      "    2026/07/21 13:26:16 [error] 3529217#3529217: *70073 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.213.249.200, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:26:17 [error] 3529217#3529217: *70073 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.213.249.200, server: pupikes.app, request: \"GET /favicon.ico HTTP/2.0\", host: \"pupikes.app\", referrer: \"https://pupikes.app/\"",
+      "    2026/07/21 13:26:21 [error] 3529217#3529217: *70075 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.213.249.200, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:26:21 [error] 3529217#3529217: *70075 rewrite or internal redirection cycle while internally redirecting to \"/index.html\", client: 54.213.249.200, server: pupikes.app, request: \"GET /favicon.ico HTTP/2.0\", host: \"pupikes.app\", referrer: \"https://pupikes.app/\"",
+      "    2026/07/21 13:31:10 [error] 3529771#3529771: *70086 directory index of \"/var/www/html/apk/\" is forbidden, client: 45.45.237.8, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\", referrer: \"https://pupikes.com/\"",
+      "    2026/07/21 13:35:12 [error] 3529771#3529771: *70090 directory index of \"/var/www/html/apk/\" is forbidden, client: 5.253.247.27, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:35:17 [error] 3529771#3529771: *70091 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.129.61.9, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:39:25 [error] 3529771#3529771: *70100 open() \"/var/www/html/.well-known/acme-challenge/K_NZMvM_lGBna4nlgY-fqpj3IhiidA23_Od0bSsu1j0\" failed (2: No such file or directory), client: 23.178.112.108, server: look.myhousesetup.com, request: \"GET /.well-known/acme-challenge/K_NZMvM_lGBna4nlgY-fqpj3IhiidA23_Od0bSsu1j0 HTTP/1.1\", host: \"look.myhousesetup.com\"",
+      "    2026/07/21 13:39:30 [error] 3529771#3529771: *70101 open() \"/var/www/html/.well-known/acme-challenge/ZQtxFZH1OHlmoS0JFc0-SYpvkRAUGZjKh5FuRCivQPw\" failed (2: No such file or directory), client: 23.178.112.107, server: my.girl.place, request: \"GET /.well-known/acme-challenge/ZQtxFZH1OHlmoS0JFc0-SYpvkRAUGZjKh5FuRCivQPw HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/07/21 13:39:34 [error] 3529771#3529771: *70102 open() \"/var/www/html/.well-known/acme-challenge/ey6g3_hL7jnuoMvw4xwYYUnKfoPw1g8tUbJXf8es5xI\" failed (2: No such file or directory), client: 23.178.112.105, server: kaji.kak.si, request: \"GET /.well-known/acme-challenge/ey6g3_hL7jnuoMvw4xwYYUnKfoPw1g8tUbJXf8es5xI HTTP/1.1\", host: \"kaji.kak.si\"",
+      "    2026/07/21 13:39:38 [error] 3529771#3529771: *70103 open() \"/var/www/html/.well-known/acme-challenge/CBjGujArrAkulM86kVofvCY50c5x5u7fcKiREp8Vcvw\" failed (2: No such file or directory), client: 23.178.112.107, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/CBjGujArrAkulM86kVofvCY50c5x5u7fcKiREp8Vcvw HTTP/1.1\", host: \"selflearning.bot.nu\"",
+      "    2026/07/21 13:41:46 [error] 3529771#3529771: *70110 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:42:19 [error] 3529771#3529771: *70110 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:43:41 [error] 3529771#3529771: *70115 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:47:28 [error] 3529771#3529771: *70121 directory index of \"/var/www/html/apk/\" is forbidden, client: 193.70.113.250, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:48:25 [error] 3529771#3529771: *70128 directory index of \"/var/www/html/apk/\" is forbidden, client: 34.254.175.216, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:49:27 [error] 3529771#3529771: *70130 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:35:12 [error] 3529771#3529771: *70090 directory index of \"/var/www/html/apk/\" is forbidden, client: 5.253.247.27, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:35:17 [error] 3529771#3529771: *70091 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.129.61.9, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:39:25 [error] 3529771#3529771: *70100 open() \"/var/www/html/.well-known/acme-challenge/K_NZMvM_lGBna4nlgY-fqpj3IhiidA23_Od0bSsu1j0\" failed (2: No such file or directory), client: 23.178.112.108, server: look.myhousesetup.com, request: \"GET /.well-known/acme-challenge/K_NZMvM_lGBna4nlgY-fqpj3IhiidA23_Od0bSsu1j0 HTTP/1.1\", host: \"look.myhousesetup.com\"",
+      "    2026/07/21 13:39:30 [error] 3529771#3529771: *70101 open() \"/var/www/html/.well-known/acme-challenge/ZQtxFZH1OHlmoS0JFc0-SYpvkRAUGZjKh5FuRCivQPw\" failed (2: No such file or directory), client: 23.178.112.107, server: my.girl.place, request: \"GET /.well-known/acme-challenge/ZQtxFZH1OHlmoS0JFc0-SYpvkRAUGZjKh5FuRCivQPw HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/07/21 13:39:34 [error] 3529771#3529771: *70102 open() \"/var/www/html/.well-known/acme-challenge/ey6g3_hL7jnuoMvw4xwYYUnKfoPw1g8tUbJXf8es5xI\" failed (2: No such file or directory), client: 23.178.112.105, server: kaji.kak.si, request: \"GET /.well-known/acme-challenge/ey6g3_hL7jnuoMvw4xwYYUnKfoPw1g8tUbJXf8es5xI HTTP/1.1\", host: \"kaji.kak.si\"",
+      "    2026/07/21 13:39:38 [error] 3529771#3529771: *70103 open() \"/var/www/html/.well-known/acme-challenge/CBjGujArrAkulM86kVofvCY50c5x5u7fcKiREp8Vcvw\" failed (2: No such file or directory), client: 23.178.112.107, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/CBjGujArrAkulM86kVofvCY50c5x5u7fcKiREp8Vcvw HTTP/1.1\", host: \"selflearning.bot.nu\"",
+      "    2026/07/21 13:41:46 [error] 3529771#3529771: *70110 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:42:19 [error] 3529771#3529771: *70110 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:43:41 [error] 3529771#3529771: *70115 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:47:28 [error] 3529771#3529771: *70121 directory index of \"/var/www/html/apk/\" is forbidden, client: 193.70.113.250, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:48:25 [error] 3529771#3529771: *70128 directory index of \"/var/www/html/apk/\" is forbidden, client: 34.254.175.216, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:49:27 [error] 3529771#3529771: *70130 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 15:39:40 [error] 3544496#3544496: *70293 open() \"/var/www/html/.well-known/acme-challenge/0B4CLbamXxP-Tb4j3A6tjP81FzGX4u_smwCVj-XP1pc\" failed (2: No such file or directory), client: 23.178.112.108, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/0B4CLbamXxP-Tb4j3A6tjP81FzGX4u_smwCVj-XP1pc HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/07/21 15:41:02 [error] 3544496#3544496: *70296 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 15:41:27 [error] 3544496#3544496: *70296 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 15:41:35 [error] 3544496#3544496: *70302 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 15:50:17 [error] 3544496#3544496: *70311 directory index of \"/var/www/html/apk/\" is forbidden, client: 35.89.226.184, server: www.pupikes.app, request: \"GET / HTTP/1.1\", host: \"www.pupikes.app\", referrer: \"http://www.pupikes.app\"",
+      "    2026/07/21 15:50:18 [error] 3544496#3544496: *70313 directory index of \"/var/www/html/apk/\" is forbidden, client: 35.89.226.184, server: www.pupikes.app, request: \"GET / HTTP/1.1\", host: \"www.pupikes.app\", referrer: \"http://www.pupikes.app\"",
+      "    2026/07/21 15:57:47 [error] 3544496#3544496: *70315 directory index of \"/var/www/html/apk/\" is forbidden, client: 54.190.17.28, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 15:57:51 [error] 3544496#3544496: *70317 directory index of \"/var/www/html/apk/\" is forbidden, client: 54.190.17.28, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:39:30 [error] 3529771#3529771: *70101 open() \"/var/www/html/.well-known/acme-challenge/ZQtxFZH1OHlmoS0JFc0-SYpvkRAUGZjKh5FuRCivQPw\" failed (2: No such file or directory), client: 23.178.112.107, server: my.girl.place, request: \"GET /.well-known/acme-challenge/ZQtxFZH1OHlmoS0JFc0-SYpvkRAUGZjKh5FuRCivQPw HTTP/1.1\", host: \"my.girl.place\"",
+      "    2026/07/21 13:39:34 [error] 3529771#3529771: *70102 open() \"/var/www/html/.well-known/acme-challenge/ey6g3_hL7jnuoMvw4xwYYUnKfoPw1g8tUbJXf8es5xI\" failed (2: No such file or directory), client: 23.178.112.105, server: kaji.kak.si, request: \"GET /.well-known/acme-challenge/ey6g3_hL7jnuoMvw4xwYYUnKfoPw1g8tUbJXf8es5xI HTTP/1.1\", host: \"kaji.kak.si\"",
+      "    2026/07/21 13:39:38 [error] 3529771#3529771: *70103 open() \"/var/www/html/.well-known/acme-challenge/CBjGujArrAkulM86kVofvCY50c5x5u7fcKiREp8Vcvw\" failed (2: No such file or directory), client: 23.178.112.107, server: selflearning.bot.nu, request: \"GET /.well-known/acme-challenge/CBjGujArrAkulM86kVofvCY50c5x5u7fcKiREp8Vcvw HTTP/1.1\", host: \"selflearning.bot.nu\"",
+      "    2026/07/21 13:41:46 [error] 3529771#3529771: *70110 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:42:19 [error] 3529771#3529771: *70110 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 13:43:41 [error] 3529771#3529771: *70115 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:47:28 [error] 3529771#3529771: *70121 directory index of \"/var/www/html/apk/\" is forbidden, client: 193.70.113.250, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:48:25 [error] 3529771#3529771: *70128 directory index of \"/var/www/html/apk/\" is forbidden, client: 34.254.175.216, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 13:49:27 [error] 3529771#3529771: *70130 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 15:39:40 [error] 3544496#3544496: *70293 open() \"/var/www/html/.well-known/acme-challenge/0B4CLbamXxP-Tb4j3A6tjP81FzGX4u_smwCVj-XP1pc\" failed (2: No such file or directory), client: 23.178.112.108, server: take.offbitch.com, request: \"GET /.well-known/acme-challenge/0B4CLbamXxP-Tb4j3A6tjP81FzGX4u_smwCVj-XP1pc HTTP/1.1\", host: \"take.offbitch.com\"",
+      "    2026/07/21 15:41:02 [error] 3544496#3544496: *70296 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 15:41:27 [error] 3544496#3544496: *70296 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 15:41:35 [error] 3544496#3544496: *70302 directory index of \"/var/www/html/apk/\" is forbidden, client: 185.53.231.224, server: pupikes.app, request: \"GET / HTTP/1.1\", host: \"pupikes.app\"",
+      "    2026/07/21 15:50:17 [error] 3544496#3544496: *70311 directory index of \"/var/www/html/apk/\" is forbidden, client: 35.89.226.184, server: www.pupikes.app, request: \"GET / HTTP/1.1\", host: \"www.pupikes.app\", referrer: \"http://www.pupikes.app\"",
+      "    2026/07/21 15:50:18 [error] 3544496#3544496: *70313 directory index of \"/var/www/html/apk/\" is forbidden, client: 35.89.226.184, server: www.pupikes.app, request: \"GET / HTTP/1.1\", host: \"www.pupikes.app\", referrer: \"http://www.pupikes.app\"",
+      "    2026/07/21 15:57:47 [error] 3544496#3544496: *70315 directory index of \"/var/www/html/apk/\" is forbidden, client: 54.190.17.28, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 15:57:51 [error] 3544496#3544496: *70317 directory index of \"/var/www/html/apk/\" is forbidden, client: 54.190.17.28, server: pupikes.app, request: \"GET / HTTP/2.0\", host: \"pupikes.app\"",
+      "    2026/07/21 17:50:33 [error] 3544496#3544496: *70444 connect() failed (111: Connection refused) while connecting to upstream, client: 127.0.0.1, server: look.myhousesetup.com, request: \"GET /portals/register.html HTTP/2.0\", upstream: \"http://127.0.0.1:3002/portals/register.html\", host: \"ams-chat\"",
+      "    2026/07/21 17:50:34 [error] 3544496#3544496: *70446 connect() failed (111: Connection refused) while connecting to upstream, client: 127.0.0.1, server: look.myhousesetup.com, request: \"POST /api/portals/register HTTP/2.0\", upstream: \"http://127.0.0.1:3002/api/portals/register\", host: \"ams-chat\"",
+      "    2026/07/21 17:50:34 [error] 3544496#3544496: *70448 connect() failed (111: Connection refused) while connecting to upstream, client: 127.0.0.1, server: look.myhousesetup.com, request: \"GET /api/portals/billing/status HTTP/2.0\", upstream: \"http://127.0.0.1:3002/api/portals/billing/status\", host: \"ams-chat\""
+    ]
+  },
+  "forms": [],
+  "fuzz": null,
+  "journeys": [
+    {
+      "app": "mobilesmoke",
+      "scenarios": [
+        {
+          "name": "Всеки мобилен ап зарежда без крах и рендира",
+          "ok": true,
+          "steps": [
+            {
+              "step": "label смоук: authenticator",
+              "ok": true
+            },
+            {
+              "step": "label смоук: autoreply-bot",
+              "ok": true
+            },
+            {
+              "step": "label смоук: baby-monitor",
+              "ok": true
+            },
+            {
+              "step": "label смоук: business-faq-bot",
+              "ok": true
+            },
+            {
+              "step": "label смоук: camera-watch",
+              "ok": true
+            },
+            {
+              "step": "label смоук: chat",
+              "ok": true
+            },
+            {
+              "step": "label смоук: dodge-master",
+              "ok": true
+            },
+            {
+              "step": "label смоук: duel",
+              "ok": true
+            },
+            {
+              "step": "label смоук: fps-hunter",
+              "ok": true
+            },
+            {
+              "step": "label смоук: hmm",
+              "ok": true
+            },
+            {
+              "step": "label смоук: houselookbook",
+              "ok": true
+            },
+            {
+              "step": "label смоук: kcy-toolkit-3drotate",
+              "ok": true
+            },
+            {
+              "step": "label смоук: kcy-toolkit-ai-announcement",
+              "ok": true
+            },
+            {
+              "step": "label смоук: kcy-toolkit-finance",
+              "ok": true
+            },
+            {
+              "step": "label смоук: kcy-toolkit-passwords",
+              "ok": true
+            },
+            {
+              "step": "label смоук: kcy-toolkit-pdf",
+              "ok": true
+            },
+            {
+              "step": "label смоук: kcy-toolkit-pictures",
+              "ok": true
+            },
+            {
+              "step": "label смоук: kcy-toolkit-qr",
+              "ok": true
+            },
+            {
+              "step": "label смоук: kcy-toolkit-scraper",
+              "ok": true
+            },
+            {
+              "step": "label смоук: kcy-toolkit-sound",
+              "ok": true
+            },
+            {
+              "step": "label смоук: kcy-toolkit-text",
+              "ok": true
+            },
+            {
+              "step": "label смоук: kcy-toolkit-videos",
+              "ok": true
+            },
+            {
+              "step": "label смоук: market-pulse",
+              "ok": true
+            },
+            {
+              "step": "label смоук: monitor-bot",
+              "ok": true
+            },
+            {
+              "step": "label смоук: newslator",
+              "ok": true
+            },
+            {
+              "step": "label смоук: plane-shooter",
+              "ok": true
+            },
+            {
+              "step": "label смоук: price-watch-bot",
+              "ok": true
+            },
+            {
+              "step": "label смоук: routine-bot",
+              "ok": true
+            },
+            {
+              "step": "label смоук: rustam",
+              "ok": true
+            },
+            {
+              "step": "label смоук: selflearning-friend",
+              "ok": true
+            },
+            {
+              "step": "label смоук: services-toolkit",
+              "ok": true
+            },
+            {
+              "step": "label смоук: titans-fight",
+              "ok": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "seed": null
+}

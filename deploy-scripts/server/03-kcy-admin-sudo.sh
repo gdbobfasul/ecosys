@@ -97,6 +97,15 @@ deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/15-sync-assets
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/15-sync-assets.sh *
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/15-sync-assets.sh *
 
+# 17-sync-apps.sh — прехвърля приложенията (apk/: каталог + инсталационни файлове) към
+# /var/www/html/apk. Приема архива като аргумент (*). И двата пътя (deploy staging + проекта).
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/17-sync-apps.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/17-sync-apps.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/17-sync-apps.sh *
+deploy ALL=(root) NOPASSWD: /var/www/kcy-ecosystem/deploy-scripts/server/17-sync-apps.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/17-sync-apps.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/17-sync-apps.sh *
+
 # Нови приложения — setup на отделните PostgreSQL бази (House-Look-Book / WhereNoBiz).
 # 16 приема аргумент (houselookbook|wherenobiz|all [--reset]); 17 е без аргумент (или --reset).
 # Затова има и bare форма (без аргумент), и форма с "*" (с аргументи).

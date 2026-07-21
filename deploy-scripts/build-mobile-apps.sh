@@ -488,6 +488,27 @@ if [ -f "$ROOT/app-shared/pupikes-catalog.json" ]; then
     && echo -e "  ${GREEN}✓ каталог на pupikes.app опреснен → /apk/catalog.json${NC}"
 fi
 
+# ── Версионен маркер на приложенията: apk/versions.json ──
+# Обновява се при ВСЕКИ билд — записва версията на билднатите СЕГА апове (останалите записи
+# се пазят). Сървърът го сравнява преди ъпдейт: ако версията на един ап е същата → не го
+# презаписва (не пипа старите, качва само реално по-новите). Ключ = име на папката на апа.
+if command -v node >/dev/null 2>&1 && [ "${#APPS[@]}" -gt 0 ]; then
+  node -e '
+    const fs = require("fs");
+    const built = process.argv.slice(1);               // пътищата на билднатите апове (store/app)
+    const out = "apk/versions.json";
+    let v = {}; try { v = JSON.parse(fs.readFileSync(out, "utf8")); } catch (e) {}
+    for (const p of built) {
+      const name = p.split(/[\\/]/).pop();
+      let ver = ""; try { ver = fs.readFileSync(p + "/app.version", "utf8").trim(); } catch (e) {}
+      if (ver) v[name] = ver;
+    }
+    fs.mkdirSync("apk", { recursive: true });
+    fs.writeFileSync(out, JSON.stringify(v, null, 2) + "\n");
+    process.stdout.write("versions.json: " + Object.keys(v).length + " апа\n");
+  ' "${APPS[@]}" && echo -e "  ${GREEN}✓ версионен маркер обновен → /apk/versions.json${NC}"
+fi
+
 # ── Обобщение ──
 echo -e "${BOLD}${CYAN}━━━ Обобщение ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 for r in "${RESULTS[@]}"; do echo -e "  $r"; done

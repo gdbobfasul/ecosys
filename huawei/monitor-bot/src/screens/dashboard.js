@@ -103,12 +103,12 @@ export function renderDashboard(ctx) {
         class: 'btn small primary',
         onclick: async (e) => {
           const btn = e.target;
-          state.globalSearch = gsInput.value.trim();
-          state.globalSeen = [];                    // нова фраза → ново броене
-          await saveState(state);
-          if (!state.globalSearch) { gsResults.replaceChildren(); return; }
+          // ТРАНЗИТНО търсене: НЕ пипа запазената фраза, НЕ нулира броенето, НЕ записва състояние
+          // и НЕ трие/пресъздава входа — фразата ОСТАВА, за да я търсиш пак или да я запазиш.
+          const phrase = gsInput.value.trim();
+          if (!phrase) { gsResults.replaceChildren(); return; }
           btn.disabled = true; btn.textContent = t('gs_searching');
-          const r = await searchAllNow(state, state.globalSearch);
+          const r = await searchAllNow(state, phrase);
           btn.disabled = false; btn.textContent = t('gs_search_now');
           const kids = [];
           kids.push(el('p', { class: 'small', style: 'margin:8px 0 4px' },

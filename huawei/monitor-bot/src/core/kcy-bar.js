@@ -114,7 +114,7 @@ export function kcyBarButton(opts) {
     const b = document.createElement('button');
     b.id = opts.id;
     b.className = 'kcy-bar-btn' + (opts.accent ? ' kcy-accent' : '');
-    const relabel = () => { try { b.textContent = opts.label(); } catch (e) {} };
+    const relabel = () => { try { if (opts.html) b.innerHTML = opts.label(); else b.textContent = opts.label(); } catch (e) {} };
     relabel();
     relabels.push(relabel);
     b.onclick = opts.onClick;

@@ -141,3 +141,7 @@ deploy-scripts/play-reports/
 rustore/**/assets/animations/
 huawei/**/assets/animations/
 /keystores/
+
+# Локални отговори от опция 2 (пълна инсталация) — не в git
+.full-install-answers
+apk/versions.json

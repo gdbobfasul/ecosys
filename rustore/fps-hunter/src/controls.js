@@ -80,13 +80,15 @@ export class Controls {
 
     const onStart = (e) => {
       for (const t of e.changedTouches) {
-        const left = t.clientX < window.innerWidth * 0.45;
-        if (left && this.joyId === null) {
+        // РАЗМЕНЕНО (искане на потребителя): ДВИЖЕНИЕТО (джойстик) е вече ВДЯСНО,
+        // оглеждането/прицелът — ВЛЯВО. Бутонът ОГЪН остава ВДЯСНО (в HUD, не се пипа).
+        const moveSide = t.clientX > window.innerWidth * 0.55;
+        if (moveSide && this.joyId === null) {
           this.joyId = t.identifier;
           this.joyOrigin = { x: t.clientX, y: t.clientY };
           this.hud?.showJoystick(t.clientX, t.clientY);
-        } else if (!left && this.lookId === null) {
-          // десният бутон огън се обработва от HUD; влаченето тук е оглеждане
+        } else if (!moveSide && this.lookId === null) {
+          // ЛЯВАТА страна = оглеждане (влачене). Огънят е отделен бутон ВДЯСНО (HUD).
           this.lookId = t.identifier;
           this.lookLast = { x: t.clientX, y: t.clientY };
         }

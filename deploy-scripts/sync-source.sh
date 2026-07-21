@@ -67,7 +67,7 @@ tar -czf "$TAR" \
     --exclude='public/assets' \
     --exclude='node_modules' \
     --exclude='.git' \
-    --exclude='rustore' --exclude='huawei' --exclude='apk' --exclude='desktop' \
+    --exclude='rustore' --exclude='huawei' --exclude='desktop' \
     --exclude='node_modules2' --exclude='patch' \
     --exclude='*.apk' --exclude='*.aab' --exclude='*.exe' \
     --exclude='*.log' --exclude='.cache' --exclude='tmp' \

@@ -209,7 +209,13 @@ export async function renderDashboard(root, { go }) {
   armBtn.addEventListener('click', async () => {
     if (!armed) {
       const ok = await startSource();
-      if (!ok) { setArmedUI(); return; }
+      if (!ok) {
+        // startSource ВЕЧЕ показа КОНКРЕТНАТА причина (напр. „Разреши камерата и опитай пак").
+        // НЕ я презаписвай с общото „камера изкл." (иначе бутонът изглежда „мъртъв"/не реагира).
+        // Само върни бутона във вид „Активирай", за да натисне пак след като разреши.
+        armBtn.textContent = t('dash_arm'); armBtn.className = 'btn grow';
+        return;
+      }
       armed = true; running = true;
       setArmedUI();
       setStatus('idle', t('st_on_guard'));

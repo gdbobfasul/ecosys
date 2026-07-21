@@ -51,6 +51,10 @@ const JOURNEYS = {
   portalsx: require('./journeys/portals-extra'),    // плащания/модерация/админ триене/класация/услуги
   services: require('./journeys/services'),
   games: require('./journeys/games'),
+  pupikes: require('./journeys/pupikes-sites'), // pupikes.com хъб + pupikes.app каталог (live, read-only)
+  mobilesmoke: require('./journeys/mobile-smoke'), // ВСИЧКИ мобилни апове — смоук от локалния билд
+  gamesmobile: require('./journeys/games-mobile'), // Phaser игрите — дълбоко (canvas/взаимодействие)
+  marketpulse: require('./journeys/market-pulse'), // Market Pulse — дълбоко (навигация+графика)
   failover: require('./journeys/failover'),
   authenticator: require('./journeys/authenticator'), // ЛОКАЛНО: билд + собствен сървър (без прод)
 };
