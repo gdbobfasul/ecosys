@@ -1,0 +1,60 @@
+{
+  "id": "swelling",
+  "langs": {
+    "bg": {
+      "title": "Подуване",
+      "extract": "Подуването е преходно ненормално уголемяване на част от тялото или област, причинено от натрупване на интерстициална течност в тъканите. То може да засегне цялото тяло или да повлияе на определена част или орган от него. Подуването обикновено не е опасно и е често срещана реакция при възпаление или нараняване.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/6c/MyParonychia.jpg"
+    },
+    "en": {
+      "title": "Swelling (medical)",
+      "extract": "Edema or oedema, also known as dropsy, hydropsy, fluid retention, or simply swelling, is the buildup of fluid in a bodily tissue. Most commonly, the legs or arms are affected. Besides observable swelling, symptoms may include skin that feels tight, the area feeling heavy, and joint stiffness. Other symptoms depend on the underlying cause.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Combinpedal.jpg/3840px-Combinpedal.jpg"
+    },
+    "fr": {
+      "title": "Tuméfaction",
+      "extract": "Une tuméfaction est une augmentation de volume ou un gonflement d'une partie du corps sans préjuger de son siège exact et de sa nature.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/6c/MyParonychia.jpg"
+    },
+    "es": {
+      "title": "Hinchazón",
+      "extract": "En medicina y especialmente en semiología clínica, hinchazón, tumefacción intumescencia o abultamiento son conceptos que describen una protuberancia blanda en el cuerpo. Según la causa, puede ser congénito, traumático, inflamatorio, neoplásico u otro diverso.",
+      "image": ""
+    },
+    "it": {
+      "title": "Tumefazione",
+      "extract": "La tumefazione è, in campo medico, un aumento del volume dei tessuti causato dalla presenza di edema e/o ematoma. In patologia generale corrisponde al tumor.",
+      "image": ""
+    },
+    "pt": {
+      "title": "Turgidez",
+      "extract": "Em medicina, turgidez, turgência, turgescência ou inchaço são termos que designam o aumento da dimensão de um ou mais órgãos, causado pelo acúmulo excessivo de fluidos nos tecidos, denominado de edema. Mais comummente, as pernas ou os braços são afetados. Os sintomas podem incluir pele esticada, sensação de peso na zona e rigidez nas articulações. Outros sintomas dependem da causa subjacente.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/6c/MyParonychia.jpg"
+    },
+    "ar": {
+      "title": "تورم",
+      "extract": "تورم في مجال الطب هو توسّع وإنتفاخ غير طبيعي لجزء من الجسم أو منطقة ما، لا تسبب ورماً دائم للخلايا. وهو ناتج عن تراكم السوائل في الأنسجة. يُمكن أن يحدث التورّم في جميع أنحاء الجسم ، أو جزء أو جهاز معين يمكن أن تتأثر (موضعي).",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/6c/MyParonychia.jpg"
+    },
+    "hi": {
+      "title": "फुल्लन",
+      "extract": "शरीर के किसी भाग का अस्थायी रूप से (transient) बढ़ जाना आयुर्विज्ञान में फुल्लन (स्वेलिंग) कहा जाता है। हिन्दी में इसे उत्सेध, फूलना और सूजन भी कहते हैं। ट्यूमर भी इसमें सम्मिलित है। सूजन, प्रदाह के पाँच लक्षणों में से एक है।",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/6c/MyParonychia.jpg"
+    },
+    "ja": {
+      "title": "腫れ",
+      "extract": "腫れ（はれ、英:Swelling）とは、身体の一部が膨らみ隆起することであり、腫れ物を形成する。原因には先天性、外傷性、炎症性、新生物などがある。「腫脹」（しゅちょう）ともいう。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/6c/MyParonychia.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/swelling-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/6/6c/MyParonychia.jpg"
+    },
+    {
+      "file": "img/swelling-1.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Combinpedal.jpg/3840px-Combinpedal.jpg"
+    }
+  ]
+}

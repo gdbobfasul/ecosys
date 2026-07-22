@@ -1,0 +1,54 @@
+{
+  "id": "loratadine",
+  "langs": {
+    "ru": {
+      "title": "Лоратадин",
+      "extract": "Лоратади́н (МНН) — блокатор H1-гистаминовых рецепторов, препарат длительного действия."
+    },
+    "uk": {
+      "title": "Лоратадин",
+      "extract": "Лоратадин — протиалергічний засіб другого покоління, антигістамінний засіб для системного застосування."
+    },
+    "en": {
+      "title": "Loratadine",
+      "extract": "Loratadine, sold under the brand name Claritin among others, is a medication used to treat allergies. This includes allergic rhinitis and hives. It is also available in drug combinations such as loratadine/pseudoephedrine, in which it is combined with pseudoephedrine, a nasal decongestant. It is taken orally."
+    },
+    "de": {
+      "title": "Loratadin",
+      "extract": "Loratadin ist ein Arzneistoff aus der Gruppe der Antihistaminika, der zur Linderung der Beschwerden bei Allergien und beim atopischen Ekzem (Neurodermitis) eingesetzt wird. Es wurde 1989 in Deutschland eingeführt und ist seit 1994 nicht mehr verschreibungspflichtig. In Österreich ist es in Dosierungen bis 10 mg pro Tag für Jugendliche über 12 Jahren und Erwachsene ohne Rezept erhältlich. In Deutschland sind Fertigarzneimittel mit Loratadin als Tablette oder Brausetablette erhältlich, in den USA und Großbritannien gibt es zusätzlich Saft. Seit 2013 steht es auf der Liste der unentbehrlichen Arzneimittel der WHO."
+    },
+    "fr": {
+      "title": "Loratadine",
+      "extract": "La loratadine est un antihistaminique H1 de deuxième génération (dépourvue d'effet sédatif et anticholinergique). \nLa posologie moyenne est de 10 mg par jour. L'indication retenue par l'AMM est le traitement symptomatique de la rhinite allergique (rhume des foins) et l'urticaire chronique idiopathique."
+    },
+    "es": {
+      "title": "Loratadina",
+      "extract": "La loratadina es un fármaco antihistamínico prescrito para tratar síntomas de resfriados y reacciones alérgicas como estornudos, picazón, congestión nasal, ojos llorosos, enrojecimiento ocular y/o sarpullidos con erupción o urticaria. Es un antihistamínico de segunda generación que cruza poco la barrera hematoencefálica y no actúa en receptores muscarínicos, α-adrenérgicos ni serotoninérgicos. Por esta razón, los pacientes reportan menos efectos adversos y menos sedación. El fármaco suele ser bien tolerado por el paciente y en el hígado se metaboliza en otro fármaco denominado desloratadina."
+    },
+    "it": {
+      "title": "Loratadina",
+      "extract": "La loratadina è un farmaco antistaminico di seconda generazione comunemente utilizzato per il trattamento di diversi tipi di allergie. Strutturalmente la molecola è correlata agli antidepressivi di tipo triciclico, come ad esempio l'imipramina o la amitriptilina e meno correlata con gli antipsicotici quali la quetiapina. Loratadina è commercializzata in Italia dalla società farmaceutica Schering-Plough con il nome di Claritin. Poiché il brevetto è scaduto diverse società farmaceutiche commercializzano la molecola come medicinale equivalente. In commercio esistono inoltre associazioni precostituite con la pseudoefedrina, un decongestionante, utilizzate nel trattamento della rinite comune ed allergica."
+    },
+    "pt": {
+      "title": "Loratadina",
+      "extract": "Loratadina é um fármaco utilizado para o tratamento de alergias. Pertence a classe dos anti-histamínicos antagonizando os receptores H1."
+    },
+    "ar": {
+      "title": "لوراتادين",
+      "extract": "لوراتادين هو دواء من الجيل الثاني لمضادات مستقبلات الهستامين يُستخدم لعلاج حالات الحساسية.يرتبط بتركيبه الكيميائي ارتباطاً وثيقاً بمضادات الاكتئاب ثلاثية الحلقة مثل إيميبرامين، وارتباطاً بعيداً بمضاد الذهان المهدئ كيوتيابين."
+    },
+    "hi": {
+      "title": "लोराटेडिन",
+      "extract": "लोराटेडिन एक कार्बनिक यौगिक है।"
+    },
+    "ja": {
+      "title": "ロラタジン",
+      "extract": "ロラタジン（Loratadine）は、持続性選択ヒスタミンH1受容体拮抗薬で、アレルギー性鼻炎や蕁麻疹・皮膚湿疹に用いられる。商品名はクラリチン。成分特許が切れており、後発医薬品も存在する。また日本で2017年より一般用医薬品も発売。肝臓のCYP3A4、2D6によって代謝され活性成分となるが、このデスロラタジン（デザレックス）には代謝の競合はなく、続いて医薬品として承認された。"
+    },
+    "zh": {
+      "title": "氯雷他定",
+      "extract": "樂雷他定 (INN:loratadine)，以Claritin 等品牌名稱於市場上銷售，是一種用於治療過敏 的藥物。也有將其與其他藥物組合，成為複方藥的形式，例如與鼻腔去充血劑偽麻黃鹼結合，成為偽麻黃鹼 /樂雷他定。\n"
+    }
+  },
+  "images": []
+}

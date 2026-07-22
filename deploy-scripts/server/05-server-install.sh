@@ -628,7 +628,10 @@ echo -e "  ${CYAN}  Staging public/: ${STAGING_PUB_COUNT} файла за коп
 # Иначе (0) → изключи ги (качват се отделно с опция 6). Без интервали → unquoted split.
 EXCL_ASSETS="--exclude=assets/"
 [ "${WITH_ASSETS:-0}" = "1" ] && { EXCL_ASSETS=""; echo -e "  ${CYAN}  (WITH_ASSETS=1 → качвам и assets/ с кода)${NC}"; }
-if ! rsync -av --delete --exclude='last-errors/' $EXCL_ASSETS "$STAGING/public/" "$WEB_ROOT/" 2>&1 | tail -5; then
+# ВАЖНО: --exclude='apk/' — папката apk (коренът на pupikes.app: каталог + инсталационни
+# файлове) НЕ е част от public/, а живее в WEB_ROOT. Без това изключване `--delete` я ТРИЕ
+# при всеки деплой (точка 4 → pupikes.app 404). Аповете се качват отделно (точка 2/57 → 17-sync-apps).
+if ! rsync -av --delete --exclude='last-errors/' --exclude='apk/' $EXCL_ASSETS "$STAGING/public/" "$WEB_ROOT/" 2>&1 | tail -5; then
     echo -e "  ${RED}✗ FATAL: rsync public/ се провали${NC}"
     diag_log services-errors.log "install: rsync public FAILED"
     safe_exit 1
@@ -728,6 +731,13 @@ deploy ALL=(root) NOPASSWD: /bin/bash /var/www/kcy-ecosystem/deploy-scripts/serv
 deploy ALL=(root) NOPASSWD: /var/www/kcy-ecosystem/deploy-scripts/server/15-sync-assets.sh *
 deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/15-sync-assets.sh *
 deploy ALL=(root) NOPASSWD: /bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/15-sync-assets.sh *
+# 17-sync-apps.sh — прехвърля приложенията (apk/: каталог + инсталационни файлове) в /var/www/html/apk.
+deploy ALL=(root) NOPASSWD: /var/www/kcy-ecosystem/deploy-scripts/server/17-sync-apps.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/17-sync-apps.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/kcy-ecosystem/deploy-scripts/server/17-sync-apps.sh *
+deploy ALL=(root) NOPASSWD: /var/www/deploy/deploy-scripts/server/17-sync-apps.sh *
+deploy ALL=(root) NOPASSWD: /usr/bin/bash /var/www/deploy/deploy-scripts/server/17-sync-apps.sh *
+deploy ALL=(root) NOPASSWD: /bin/bash /var/www/deploy/deploy-scripts/server/17-sync-apps.sh *
 
 # Нови приложения — setup на отделните PostgreSQL бази (House-Look-Book / WhereNoBiz).
 # Менюто (опции 5/6) ги вика от /var/www/deploy. 16 приема аргумент, 17 е без (или --reset).
@@ -838,7 +848,7 @@ Defaults:deploy !requiretty
 SUDO_EOF
 if visudo -c -f "$TMP_SUDOERS" >/dev/null 2>&1; then
     install -m 0440 -o root -g root "$TMP_SUDOERS" "$SUDOERS_FILE"
-    echo -e "  ${GREEN}✓ deploy sudoers whitelist обновен (вкл. 14/15 sync)${NC}"
+    echo -e "  ${GREEN}✓ deploy sudoers whitelist обновен (вкл. 14/15/17 sync)${NC}"
 else
     echo -e "  ${YELLOW}↷ sudoers whitelist НЕ е обновен (visudo validation fail) — оставям стария${NC}"
 fi
@@ -935,7 +945,11 @@ cd "$PROJECT_DIR"
 NPM_PICK=""
 if [ "${AUTO_NPM:-0}" = "1" ]; then
     NPM_PICK="y"
-    echo -e "  ${CYAN}► Пълна инсталация — npm install автоматично (без питане)${NC}"
+    echo -e "  ${CYAN}► npm install автоматично (по избор от началото)${NC}"
+elif [ "${AUTO_DEFAULTS:-0}" = "1" ]; then
+    # Пълна инсталация (опция 2): въпросът е зададен В НАЧАЛОТО. AUTO_NPM=0 → ПРОПУСКАМ без питане.
+    NPM_PICK=""
+    echo -e "  ${CYAN}► npm install ПРОПУСНАТ (по избор от началото)${NC}"
 elif [ -t 0 ]; then
     read -p "  Да пребилдвам ли npm modules? [y/N, Enter = Не]: " NPM_PICK
 elif [ -e /dev/fd/3 ]; then

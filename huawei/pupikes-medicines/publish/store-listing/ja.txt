@@ -1,0 +1,8 @@
+Pupikes Medicines — 薬の箱をスキャンして説明を表示。
+
+情報提供のみ — リスクのある成分を強調表示。医療アドバイスではありません。
+
+端末内でのラベル読み取り(OCR)と医薬品情報、15言語対応
+
+サポート: dai.group.ltd.support@gmail.com
+ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com

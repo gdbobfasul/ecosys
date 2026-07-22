@@ -804,6 +804,89 @@ const APPS = [
     },
     thirdParties: [],
     permissions: []
+  },
+
+  // ── kcy-toolkit-3drotate ──
+  {
+    id: 'kcy-toolkit-3drotate', name: 'Pupikes Toolkit 3D Rotate', hwPkg: 'com.pupikes.toolkit3drotate.hw', ruPkg: 'com.pupikes.toolkit3drotate.rustore',
+    pitch: {
+      en: 'Pupikes Toolkit 3D Rotate loads an image you pick and rotates it in 3D on four axes with WebGL, letting you save the result as a PNG — fully on your device.',
+      ru: 'Pupikes Toolkit 3D Rotate загружает выбранное вами изображение и вращает его в 3D по четырём осям с помощью WebGL, позволяя сохранить результат в PNG — полностью на устройстве.'
+    },
+    device: {
+      en: 'The tools run <strong>fully on-device</strong>. Your files and settings stay local. There is no account and nothing is uploaded.',
+      ru: 'Инструменты работают <strong>полностью на устройстве</strong>. Ваши файлы и настройки остаются локальными. Аккаунта нет, ничего не выгружается.'
+    },
+    thirdParties: [],
+    permissions: [PERM.files({ en: 'used only when you pick an image to rotate or save the result; files are handled locally.', ru: 'используется только когда вы выбираете изображение для вращения или сохраняете результат; файлы обрабатываются локально.' })]
+  },
+
+  // ── pupikes-medicines (медицинско — само информативно) ──
+  {
+    id: 'pupikes-medicines', name: 'Pupikes Medicines', hwPkg: 'com.pupikes.medicines.hw', ruPkg: 'com.pupikes.medicines.rustore',
+    pitch: {
+      en: 'Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. It is <strong>informational only and never diagnoses, prescribes or replaces a doctor or pharmacist</strong>.',
+      ru: 'Pupikes Medicines позволяет отсканировать упаковку лекарства камерой, распознаёт крупнейший текст этикетки на устройстве и показывает информационное описание лекарства и его состава, выделяя рискованные компоненты (опиаты, контролируемые или опасные при передозировке вещества). Приложение носит <strong>исключительно информационный характер и не ставит диагноз, не назначает лечение и не заменяет врача или фармацевта</strong>.'
+    },
+    device: {
+      en: 'Text recognition runs <strong>on the device</strong>. The camera image is processed locally and is not uploaded by us. Your chosen language and settings stay local; there is no account.',
+      ru: 'Распознавание текста выполняется <strong>на устройстве</strong>. Изображение с камеры обрабатывается локально и нами не выгружается. Выбранный язык и настройки остаются локальными; аккаунта нет.'
+    },
+    thirdParties: [
+      {
+        recipient: 'openFDA (U.S. Food & Drug Administration) drug database',
+        data: { en: 'The medicine name read from the label and your IP address, when an online lookup is made.', ru: 'Название лекарства, распознанное с этикетки, и ваш IP-адрес при онлайн-поиске.' },
+        purpose: { en: 'To fetch public drug information for the medicine you scanned.', ru: 'Получение публичной информации о лекарстве, которое вы отсканировали.' },
+        policy: '<a href="https://open.fda.gov/terms/">open.fda.gov/terms</a>'
+      },
+      {
+        recipient: 'On-device text-recognition engine (downloaded once)',
+        data: { en: 'Your IP address and a standard request to download the recognition data once; recognition then runs locally.', ru: 'IP-адрес и стандартный запрос на однократную загрузку данных распознавания; далее распознавание работает локально.' },
+        purpose: { en: 'To read the label text from the package photo on your device.', ru: 'Чтение текста этикетки с фотографии упаковки на вашем устройстве.' },
+        policy: '—'
+      },
+      {
+        recipient: 'MyMemory translation (Translated S.r.l.)',
+        data: { en: 'The text to translate, the language pair, a fixed developer contact email used only to raise the free quota (not your email), and your IP address.', ru: 'Текст для перевода, пара языков, фиксированный контактный e-mail разработчика для повышения бесплатной квоты (не ваш e-mail) и ваш IP-адрес.' },
+        purpose: { en: 'To translate the description into your chosen language when translation is used.', ru: 'Перевод описания на выбранный язык, когда используется перевод.' },
+        policy: '<a href="https://mymemory.translated.net/doc/en/privacy.php">mymemory.translated.net privacy</a>'
+      }
+    ],
+    permissions: [
+      PERM.camera({ en: 'used only to scan a medicine package; the image is processed on-device to read the label and is not uploaded by us.', ru: 'используется только для сканирования упаковки лекарства; изображение обрабатывается на устройстве для чтения этикетки и нами не выгружается.' }),
+      PERM.files({ en: 'used only when you choose a package photo from your gallery instead of the camera; handled locally.', ru: 'используется только когда вы выбираете фото упаковки из галереи вместо камеры; обрабатывается локально.' })
+    ]
+  },
+
+  // ── pupikes-doctor (медицинско — само информативно, БЕЗ диагноза) ──
+  {
+    id: 'pupikes-doctor', name: 'Pupikes Doctor', hwPkg: 'com.pupikes.doctor.hw', ruPkg: 'com.pupikes.doctor.rustore',
+    pitch: {
+      en: 'Pupikes Doctor lets you photograph a visible problem or describe symptoms and, by comparing against a pre-downloaded reference library on-device (<strong>not an AI diagnosis</strong>), shows possible matches and general first-step advice. It is <strong>informational only and never diagnoses, prescribes treatment or replaces a doctor</strong>; in an emergency, seek immediate medical help.',
+      ru: 'Pupikes Doctor позволяет сфотографировать видимую проблему или описать симптомы и, сравнивая с заранее загруженной справочной библиотекой на устройстве (<strong>без ИИ-диагностики</strong>), показывает возможные совпадения и общие советы по первым шагам. Приложение носит <strong>исключительно информационный характер, не ставит диагноз, не назначает лечение и не заменяет врача</strong>; при неотложном состоянии немедленно обратитесь за медицинской помощью.'
+    },
+    device: {
+      en: 'The photo comparison runs <strong>on the device</strong> against a reference library the app downloads once. The camera image is processed locally and is not uploaded by us. Your chosen language and inputs stay local; there is no account.',
+      ru: 'Сравнение фотографий выполняется <strong>на устройстве</strong> с справочной библиотекой, которую приложение загружает один раз. Изображение с камеры обрабатывается локально и нами не выгружается. Выбранный язык и введённые данные остаются локальными; аккаунта нет.'
+    },
+    thirdParties: [
+      {
+        recipient: 'Our own server (reference image/text library download)',
+        data: { en: 'Your IP address and a standard request to download the reference library once.', ru: 'IP-адрес и стандартный запрос на однократную загрузку справочной библиотеки.' },
+        purpose: { en: 'To fetch the on-device reference library used for the comparison.', ru: 'Загрузка справочной библиотеки на устройстве для сравнения.' },
+        policy: '—'
+      },
+      {
+        recipient: 'MyMemory translation (Translated S.r.l.)',
+        data: { en: 'The text to translate, the language pair, a fixed developer contact email used only to raise the free quota (not your email), and your IP address.', ru: 'Текст для перевода, пара языков, фиксированный контактный e-mail разработчика для повышения бесплатной квоты (не ваш e-mail) и ваш IP-адрес.' },
+        purpose: { en: 'To translate the advice into your chosen language when translation is used.', ru: 'Перевод советов на выбранный язык, когда используется перевод.' },
+        policy: '<a href="https://mymemory.translated.net/doc/en/privacy.php">mymemory.translated.net privacy</a>'
+      }
+    ],
+    permissions: [
+      PERM.camera({ en: 'used only to photograph the visible problem you want to compare; the image is processed on-device and is not uploaded by us.', ru: 'используется только для фотографирования видимой проблемы для сравнения; изображение обрабатывается на устройстве и нами не выгружается.' }),
+      PERM.files({ en: 'used only when you choose a photo from your gallery instead of the camera; handled locally.', ru: 'используется только когда вы выбираете фото из галереи вместо камеры; обрабатывается локально.' })
+    ]
   }
 ];
 

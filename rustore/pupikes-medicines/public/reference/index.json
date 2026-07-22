@@ -1,0 +1,283 @@
+{
+  "items": [
+    {
+      "id": "paracetamol",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "ibuprofen",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "aspirin",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "ky",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "metamizole",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "amoxicillin",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "diclofenac",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "omeprazole",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "loratadine",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "cetirizine",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "naproxen",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "codeine",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "tramadol",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "azithromycin",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "dexamethasone",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "ky",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "diphenhydramine",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ],
+      "images": 0
+    }
+  ],
+  "source": "Wikipedia/Wikimedia Commons (CC/PD)",
+  "updated": "2026-07-22"
+}

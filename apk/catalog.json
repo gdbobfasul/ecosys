@@ -325,7 +325,7 @@
         {
           "id": "fps-hunter",
           "name": "Huntline 3D",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -338,12 +338,12 @@
             "rustore": "fps-hunter-rustore-release.apk",
             "huawei": "fps-hunter-huawei-release.apk"
           },
-          "download": false
+          "download": true
         },
         {
           "id": "plane-shooter",
           "name": "Warbird Rush",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -356,12 +356,12 @@
             "rustore": "plane-shooter-rustore-release.apk",
             "huawei": "plane-shooter-huawei-release.apk"
           },
-          "download": false
+          "download": true
         },
         {
           "id": "rustam",
           "name": "Rustam picks cucumbers",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -374,7 +374,7 @@
             "rustore": "rustam-rustore-release.apk",
             "huawei": "rustam-huawei-release.apk"
           },
-          "download": false
+          "download": true
         },
         {
           "id": "duel",
@@ -477,7 +477,7 @@
         {
           "id": "baby-monitor",
           "name": "Pupikes Baby Radar",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -490,7 +490,7 @@
             "rustore": "baby-monitor-rustore-release.apk",
             "huawei": "baby-monitor-huawei-release.apk"
           },
-          "download": false
+          "download": true
         },
         {
           "id": "camera-watch",

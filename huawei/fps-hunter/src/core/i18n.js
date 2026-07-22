@@ -267,6 +267,12 @@ const STR = {
     it: 'Livello {0}: {1}', pt: 'Nível {0}: {1}', ar: 'المستوى {0}: {1}', hi: 'स्तर {0}: {1}',
     ja: 'レベル {0}：{1}', ky: 'Деңгээл {0}: {1}', 'zh-Hant': '第 {0} 關：{1}'
   },
+  weapon_picked: {
+    bg: 'Ново оръжие: {0}', ru: 'Новое оружие: {0}', uk: 'Нова зброя: {0}', en: 'New weapon: {0}',
+    de: 'Neue Waffe: {0}', fr: 'Nouvelle arme : {0}', es: 'Nueva arma: {0}', 'es-MX': 'Nueva arma: {0}',
+    it: 'Nuova arma: {0}', pt: 'Nova arma: {0}', ar: 'سلاح جديد: {0}', hi: 'नया हथियार: {0}',
+    ja: '新しい武器：{0}', ky: 'Жаңы курал: {0}', 'zh-Hant': '新武器：{0}'
+  },
 
   // ---- Game over ----
   win_title: {

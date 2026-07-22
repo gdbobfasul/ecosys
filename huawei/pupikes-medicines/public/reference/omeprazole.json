@@ -1,0 +1,54 @@
+{
+  "id": "omeprazole",
+  "langs": {
+    "bg": {
+      "title": "Омепразол",
+      "extract": "Омепразол, продаван под търговските наименования Prilosec и Losec, наред с други, е лекарство, използвано за лечение на гастроезофагеална рефлуксна болест (ГЕРБ), пептична язва и синдром на Золингер – Елисън. Използва се и за предотвратяване на кървене от горната част на стомашно-чревния тракт при хора с висок риск. Омепразол е инхибитор на протонната помпа (ИПП) и неговата ефективност е подобна на тази на други ИПП. Може да се приема през устата или чрез инжектиране във вена."
+    },
+    "ru": {
+      "title": "Омепразол",
+      "extract": "Омепразо́л — лекарственное средство, угнетающее секрецию желудочной кислоты и используемое в том числе при лечении язвы желудка и синдрома Золлингера — Эллисона."
+    },
+    "uk": {
+      "title": "Омепразол",
+      "extract": "Омепразол — синтетичний препарат, що є похідним бензімідазолу та належить до групи інгібіторів протонної помпи, для перорального та парентерального застосування. Омепразол використовується при лікуванні диспепсії, пептичної виразки, гастроезофагеальної рефлюксної хвороби і синдрому Золлінгера — Еллісона. Препарат був розроблений у 1979 році у Швеції компанією «AstraZeneca» під назвою Лосек (Losec) і Прилосек (Prilosec), та зараз продається багатьма виробниками під різними назвами. Омепразол є одним з найпоширеніших ліків, що прописується у всьому світі та знаходиться у вільному продажу в деяких країнах."
+    },
+    "en": {
+      "title": "Omeprazole",
+      "extract": "Omeprazole, sold under the brand names Prilosec and Losec among others, is a medication used in the treatment of gastroesophageal reflux disease (GERD), peptic ulcer disease, and Zollinger–Ellison syndrome. It is also used to prevent upper gastrointestinal bleeding in people who are at high risk. Omeprazole is a proton-pump inhibitor (PPI) and its effectiveness is similar to that of other PPIs. It can be taken by mouth or by injection into a vein. It is also available in the fixed-dose combination medication omeprazole/sodium bicarbonate as Zegerid and as Konvomep."
+    },
+    "de": {
+      "title": "Omeprazol",
+      "extract": "Omeprazol ist ein Arzneistoff aus der Gruppe der Protonenpumpenhemmer, der zur Behandlung von Magen- und Zwölffingerdarmgeschwüren sowie bei Refluxösophagitis eingesetzt wird."
+    },
+    "fr": {
+      "title": "Oméprazole",
+      "extract": "L'oméprazole (DCI) est une substance active médicamenteuse de la famille des inhibiteurs de la pompe à protons (IPP) qui réduit la sécrétion acide de l'estomac."
+    },
+    "es": {
+      "title": "Omeprazol",
+      "extract": "El omeprazol es un inhibidor de la bomba de protones (IBP), que actúa sobre las células de la mucosa gástrica, inhibiendo hasta un 80% la secreción de ácido clorhídrico (HCl), mediante la inhibición de la salida de protones en la bomba H+/K+- ATPasa de las células parietales de la pared gástrica."
+    },
+    "it": {
+      "title": "Omeprazolo",
+      "extract": "L'omeprazolo è un principio attivo utilizzato per la terapia di patologie gastriche, quali l'ulcera e la malattia da reflusso gastroesofageo (GERD), oltre che per la prevenzione di possibili lesioni gastriche derivanti dall'assunzione di farmaci FANS. L'omeprazolo è il capostipite della classe degli inibitori di pompa protonica (IPP) ed è uno dei farmaci più usati nel trattamento della gastrite. L'omeprazolo è commercializzato sotto il nome di diverse specialità registrate: Antra, Omeprazen, Omolin, Nansen, Protec e altri; si può comunque trovare in vendita anche come farmaco generico sotto il nome di Omeprazolo."
+    },
+    "pt": {
+      "title": "Omeprazol",
+      "extract": "Omeprazol é um medicamento protótipo da classe dos inibidores da bomba de protões (ou prótons), que diminuem a secreção gástrica alterando a atividade da H+/K+-ATPase. Fora até a década de 80 (junto ao pantoprazol) o remédio dessa família mais receitado quotidianamente. É um pó branco ou quase branco, muito pouco solúvel na água."
+    },
+    "ar": {
+      "title": "أوميبرازول",
+      "extract": "الأوميبرازول هو دواء يتأثر بمدى حموضة المعدة ويعد من الأدوية المثبطة لإفراز الحموض في المعدة. ولذلك يتم تغليف الدواء بغليفة معوية لكونه دواء غير مستقر."
+    },
+    "ja": {
+      "title": "オメプラゾール",
+      "extract": "オメプラゾール(Omeprazole)は、プロトンポンプ阻害薬に属する胃酸抑制薬の一つである。商品名はオメプラールでアストラゼネカ株式会社から、オメプラゾンで三菱ウェルファーマ株式会社から発売されている。胃の壁細胞に存在するプロトンポンプを直接抑制することによりH+の放出を阻害し、胃酸の産生を抑制する。胃食道逆流症や消化性潰瘍などの治療に使用される。リスクの高い患者に対して上部消化管出血を予防するためにも用いられる。錠剤のほか、点滴静注で用いられる。"
+    },
+    "zh": {
+      "title": "奥美拉唑",
+      "extract": "奧美拉唑（INN:omeprazole）是第一个上市的质子泵抑制劑（氫離子幫浦阻斷劑），用於治療胃食道逆流、胃及十二指腸潰瘍和佐林格-埃里森症候群（一系列由胃泌素瘤所導致的症狀組合）。它同時也用於上消化道出血高危人群的預防性治療。\n"
+    }
+  },
+  "images": []
+}

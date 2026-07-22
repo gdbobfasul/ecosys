@@ -1,0 +1,101 @@
+{
+  "id": "nosebleed",
+  "langs": {
+    "bg": {
+      "title": "Епистаксис",
+      "extract": "Епистаксис представлява кръвотечение от носа.",
+      "image": ""
+    },
+    "ru": {
+      "title": "Носовое кровотечение",
+      "extract": "Носовое кровотечение (эпистаксис) — кровотечение из полости носа, которое обычно можно увидеть при истечении крови через ноздри. Различают два типа носовых кровотечений: переднее и заднее. Иногда, в более тяжёлых случаях, кровь может подниматься по носослёзному каналу и вытекать наружу через глазницу. Свежая и свернувшаяся кровь может также стекать в желудок, провоцируя тошноту и рвоту. Носовое кровотечение крайне редко заканчивается летальным исходом; так, в США за 1999 год зафиксировано лишь 4 смерти от эпистаксиса из 2,4 миллионов смертей. Возможно, наиболее известная смерть от носового кровотечения — смерть правителя гуннов Аттилы, захлебнувшегося кровью во сне после бурного застолья по поводу собственной свадьбы.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/09/Epistaxis1.jpg"
+    },
+    "uk": {
+      "title": "Носова кровотеча",
+      "extract": "Носова кровотеча (епістаксис) — кровотеча з порожнини носа, яку, зазвичай, можна побачити при виділенні крові через ніздрі. Розрізняють два типи носових кровотеч: передній (найчастіший) та задній. Іноді, у важчих випадках, кров може підніматися по носослізному каналу та витікати назовні через очну ямку. Свіжа та зсіла кров може також стікати в шлунок, провокуючи нудоту та блювання. Носова кровотеча вкрай рідко закінчується смертю; так, в США за 1999 рік зафіксовано лише 4 смерті від епістаксису з 2400000 смертей. Можливо, найвідоміша смерть від носової кровотечі — смерть Аттіли, що захлинувся кров'ю уві сні після бурхливого застілля з приводу власного весілля.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/09/Epistaxis1.jpg"
+    },
+    "en": {
+      "title": "Nosebleed",
+      "extract": "A nosebleed, also known medically as epistaxis, is bleeding from the nasal cavity caused by rupture of small blood vessels in the nasal mucosa. Most cases are minor and stop spontaneously with simple first-aid or medical care. In some cases, blood may flow down into the stomach, and cause nausea and vomiting. In more severe cases, blood may come out of both nostrils. Rarely, bleeding may be so significant that low blood pressure occurs. Blood may also be forced to flow up and through the nasolacrimal duct and out of the eye, producing bloody tears.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Young_child_with_nosebleed%2C_smiling_cropped.jpg"
+    },
+    "de": {
+      "title": "Nasenbluten",
+      "extract": "Nasenbluten oder Epistaxis bezeichnet den Austritt von Blut aus der Nase. Es ist in den meisten Fällen nicht gefährlich, kann jedoch in Einzelfällen kaum zu beherrschen oder auch lebensbedrohlich sein. Gefährliche Blutungen stammen meist aus den hinteren Nasenabschnitten. In über 80 % der Fälle wird das Nasenbluten durch lokale Gefäßverletzungen der Schleimhaut der vorderen Nasenscheidewand ausgelöst.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/09/Epistaxis1.jpg"
+    },
+    "fr": {
+      "title": "Épistaxis",
+      "extract": "Une épistaxis est une hémorragie extériorisée par les fosses nasales. On l'appelle communément un saignement de nez. Bien que très fréquente et sans gravité dans la grande majorité des cas, certaines épistaxis peuvent comporter un risque vital par leur importance ou la fragilité du terrain sur lequel elles surviennent.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Epistaxis_%28Nose_Bleed%29.jpg"
+    },
+    "es": {
+      "title": "Epistaxis",
+      "extract": "La epistaxis o sangrado nasal es un suceso común, no grave, resultante de la ruptura de pequeños capilares de la membrana mucosa nasal. Las rupturas ocurren comúnmente en el tabique nasal anterior, llamado área de Kiesselbach. El sangrado nasal es el que se origina de la mucosa de las fosas nasales, mientras que la hemorragia nasal se exterioriza por las fosas nasales, independientemente del origen.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/7e/BrokenNose.jpg"
+    },
+    "it": {
+      "title": "Epistassi",
+      "extract": "L'epistassi [dal greco ἐπίσταξις, lezione erronea per στάξις, \"gocciolamento\", dovuta all'influenza di ἐπιστάζω, \"far gocciare\"] o rinorragia, comunemente sangue dal naso, è un'emorragia originatasi all'interno delle fosse nasali. Il sangue può fuoriuscire anteriormente attraverso le narici oppure può transitare posteriormente nella faringe.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/09/Epistaxis1.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Epistaxe",
+      "extract": "Epistaxe ou sangramento nasal é uma ocorrência comum, não grave, decorrente da ruptura de pequenos capilares da membrana mucosa nasal. As rupturas acontecem comumente no septo nasal anterior, chamado de área de Kiesselbach. O sangramento nasal é o que se origina da mucosa das fossas nasais enquanto que a hemorragia nasal se exterioriza pelas fossas nasais, independente da origem.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d2/En_Pyrrhus-Sejr.jpg"
+    },
+    "ar": {
+      "title": "رعاف",
+      "extract": "الرُّعاف ويُسمى أيضًا النزف الأنفي هو نزيف دم من الأنف، يدرك عند خروج الدم من مناخر الانف، يوجد منه نوعان: نزيف أمامي، ونزيف خلفي.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Young_child_with_nosebleed%2C_smiling_cropped.jpg"
+    },
+    "hi": {
+      "title": "नकसीर फूटना",
+      "extract": "नाक से अचानक रक्त निकलने लगना नासा रक्तस्राव (nosebleed) या 'नकसीर फूटना' कहलाता है। यह रक्त आमाशय में भी जा सकता है जिससे उल्टी जैसा मन हो सकता है या उल्टी भी आ सकती है। कुछ गम्भीर मामलों में दोनों नासाछिद्रों से रक्त निकलता है।",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/09/Epistaxis1.jpg"
+    },
+    "ja": {
+      "title": "鼻血",
+      "extract": "鼻血（はなぢ）とは鼻、特に鼻腔からの出血を意味する。医学的には鼻出血 と呼称される。",
+      "image": ""
+    },
+    "ky": {
+      "title": "Мурундан кан агуу",
+      "extract": "Мурундан кан агуу - мурун бир нерсеге катуу урунганда же анын былжыр чели жабыркаганда, жугуштуу ооруларда, кан басымы жогорулаганда, жүрөк, бөйрөк, боор ооруларында, ошондой эле кээ бир кан оорусунда болот.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/09/Epistaxis1.jpg"
+    },
+    "zh": {
+      "title": "流鼻血",
+      "extract": "鼻衄，俗称流鼻血、淌大寒，称鼻出血，是指由于鼻孔内的毛细血管脆弱，血管受到破坏后，血液从鼻孔裡流出，是一种医学上的疑难病症。流鼻血有经常性流鼻血和偶尔流鼻血之分。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/09/Epistaxis1.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/nosebleed-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/0/09/Epistaxis1.jpg"
+    },
+    {
+      "file": "img/nosebleed-1.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Young_child_with_nosebleed%2C_smiling_cropped.jpg"
+    },
+    {
+      "file": "img/nosebleed-2.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Epistaxis_%28Nose_Bleed%29.jpg"
+    },
+    {
+      "file": "img/nosebleed-3.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/7/7e/BrokenNose.jpg"
+    },
+    {
+      "file": "img/nosebleed-4.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/0/09/Epistaxis1.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    {
+      "file": "img/nosebleed-5.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/d/d2/En_Pyrrhus-Sejr.jpg"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "appId": "com.pupikes.doctor.hw",
+  "appName": "Pupikes Doctor",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

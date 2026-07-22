@@ -1,0 +1,101 @@
+{
+  "id": "burn",
+  "langs": {
+    "bg": {
+      "title": "Изгаряне",
+      "extract": "Изгарянето представлява увреждане на кожата или на други тъкани, понякога съчетано с общи реакции от страна на организма, в резултат от действието на различни физични или химични фактори, като топлина, електричество, химикали, триене или радиация. Изгаряния, които засягат само повърхностния слой на кожата (епидермиса), са известни като епидермални или изгаряния от първа степен. Когато увреждането засегне някои от подлежащите слоеве на дермата, изгарянето е частично дермално или изгаряне от втора степен. При изгаряне с разрушаване на дермата в пълна дълбочина или трета степен, увреждането се разпростира до всички слоеве на кожата. Изгарянето от четвърта степен включва увреждане на разположени още по-дълбоко тъкани като мускул или кост.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg"
+    },
+    "ru": {
+      "title": "Ожог",
+      "extract": "Ожо́г — повреждение тканей организма, вызванное действием высокой температуры, волновым воздействием, ионизирующим облучением, а также действием некоторых химических веществ. Различают 4 степени ожога:покраснение кожи,\nобразование пузырей,\nомертвение всей толщи кожи,\nобугливание тканей.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Brandwond-graad2.JPG"
+    },
+    "uk": {
+      "title": "Опік",
+      "extract": "О́пік — різновид травми тканин тіла, яку спричинює дія тепла, електричного струму, хімічних речовин та випромінювання. Опіки, які впливають тільки на поверхню шкіри, відомі як поверхневі або опіки першого ступеня. Коли пошкодження проникає в деякі з нижчих шарів, це частково проникаючий опік або опік другого ступеня. Глибокий опік або опік третього ступеня — це травма, яка поширюється на всі шари шкіри. З опіком четвертого ступеня пов'язане ушкодження глибших тканин, таких, як м'язи або кістки.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg"
+    },
+    "en": {
+      "title": "Burn",
+      "extract": "A burn is an injury to skin, or other tissues, caused by heat, electricity, chemicals, friction, or ionizing radiation. Most burns are thermal burns caused by contact with heat from hot fluids, solids, or fire. Burns occur mainly in the home or the workplace. In the home, risks are associated with domestic kitchens, including stoves, flames, and hot liquids. In the workplace, risks are associated with fire and chemical and electric burns. Alcoholism and smoking are other risk factors. Burns can also occur as a result of self-harm or violence between people (assault).",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg"
+    },
+    "de": {
+      "title": "Verbrennung (Medizin)",
+      "extract": "Eine Verbrennung ist in der Medizin eine Schädigung von Gewebe durch übermäßige Hitzeeinwirkung. Diese kann durch heiße Gegenstände, Flüssigkeiten (Verbrühung), Dämpfe oder Gase, Flammeneinwirkung (Brand) und Explosionen, starke Sonneneinstrahlung (Sonnenbrand), elektrischen Strom (Strommarke) oder Reibung entstehen. Bei der Verbrennung werden primär Haut und Schleimhaut geschädigt. Davon abzugrenzen ist die Kälteverbrennung, eine Sonderform der Erfrierung, die lokal mit der Verbrennung vergleichbare Schäden verursacht.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Burn_Degree_Diagram-de.png"
+    },
+    "fr": {
+      "title": "Brûlure",
+      "extract": "La brûlure est une destruction partielle ou totale pouvant concerner la peau, les parties molles des tissus, ou même les os.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Scaldburn.jpg"
+    },
+    "es": {
+      "title": "Quemadura",
+      "extract": "La quemadura es un tipo de lesión en un organismo vivo provocada por el calor, o una corrosión de efecto similar, sobre la piel u otros tejidos. Sus daños pueden ir desde un simple eritema hasta una inutilización de sus estructuras que las deje completamente consumidas y destruidas.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg"
+    },
+    "it": {
+      "title": "Ustione",
+      "extract": "L'ustione è una lesione dei tessuti tegumentari causata dall'esposizione del tessuto stesso a fonti termiche, a sostanze chimiche (causticazione), a sorgenti elettriche o a radiazioni. Le ustioni che interessano solo il primo strato di pelle sono definite «ustioni superficiali» o «di primo grado»; quando il danno penetra in alcuni degli strati sottostanti, la lesione è denominata «ustione a spessore parziale» o «di secondo grado»; se invece l'alterazione coinvolge tutti gli strati della cute, si classifica come «ustione a tutto spessore» o «di terzo grado»; un'ustione che comporta lesioni ai tessuti più profondi, come muscoli o ossa si classifica di quarto grado.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Queimadura",
+      "extract": "Queimadura é uma lesão na pele ou noutros tecidos causada por calor, eletricidade, substâncias químicas, atrito ou radiação. A maior parte das queimaduras são causadas pelo contacto com o fogo ou com líquidos e objetos muito quentes. Entre os principais fatores de risco estão a falta de segurança ao cozinhar com fogo, a falta de segurança em locais de trabalho perigosos, o alcoolismo e fumar. As queimaduras podem ainda ocorrer como resultado de episódios de automutilação ou violência entre pessoas.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/2/2a/VerbrennungGrad2a.jpg"
+    },
+    "ar": {
+      "title": "حرق (إصابة)",
+      "extract": "الحرق هو نوع من الإصابة في النسيج العضلي أو الجلد بسبب الحرارة، الكهرباء، المواد الكيميائية، الاحتكاك، أو الإشعاع. تعرف الحروق التي تؤثر فقط على الطبقة السطحية من الجلد باسم الحروق السطحية أو حروق الدرجة الأولى. عندما يصل الضرر إلى بعض الطبقات الواقعة تحت الجلد، يعرف بالحرق العميق جزئيا أو الحرق من الدرجة الثانية. في الحرق الذي يصيب كافة الطبقات أو الحرق من الدرجة الثالثة، تمتد الإصابات إلى جميع طبقات الجلد. أما حرق الدرجة الرابعة فهو يشمل إضافة إلى ذلك إصابة الأنسجة الأعمق، مثل العضلات أو العظام.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg"
+    },
+    "hi": {
+      "title": "जलना (चिकित्सा)",
+      "extract": "शरीर के किसी एक या अनेक अंगों का जलना एक प्रकार की दुर्घटना है जो उष्मा, विद्युत, रसायन, प्रकाश, विकिरण या घर्षण .वहाँ भी है जलने का रोग .\nआदि से हो सकती है। बहुत ठण्डी चीजों के सम्पर्क में आने से भी शरीर \"जल\" सकता है जिसे \"शीत-जलन\" कहते हैं। विश्व में प्रति वर्ष सहस्त्रों व्यक्ति दाह से मरते हैं और इससे बहुत अधिक संख्या में अपंग होकर समाज के भार बन जाते हैं। दाह रोग प्राय: असाध्य नहीं होता।.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg"
+    },
+    "ja": {
+      "title": "熱傷",
+      "extract": "熱傷（ねっしょう）とは、火や高温の液体などの熱、放射線、化学物質、または電気の接触によって生じる損傷を言う。通称は火傷（やけど）である。より低い温度で長時間晒されることによる低温やけどもある。化学物質・放射線などが原因で生じる組織の損傷は化学損傷という。",
+      "image": ""
+    },
+    "ky": {
+      "title": "Күйүк",
+      "extract": "Күйүк — жогорку температуранын, химиялык заттардын, электр тогунун жана радиоактивдүү нурлануунун таасиринен ткандын жабыркашы. Ошого байлап, өз алдынча дарыланууга болбойт, инфекция түшүп, дарылоону кыйындатат. 3-даражадагы күйүктө тери жансызданып, карттанат, 4-даражасында тери гана эмес тереңиндеги эт да жансызданат, ал тургай көмүргө айланат. Акыркы эки даражасында жабыркаган кишини дароо медициналык мекемеге жеткирүү зарыл. Күйүктүн оордугу анын даражасына гана эмес, аянтына да жараша болот. Эгер күйүктүн аянты чоң болсо 1-даражадагы күйүктө да шок болушу мүмкүн. Химиялык заттардан күйгөн жерди ошол замат муздак суунун агымы менен 15—20 минут жууш керек.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg"
+    },
+    "zh": {
+      "title": "烧伤",
+      "extract": "灼傷是指皮膚或其他組織因熱力、電力、化學物質、摩擦力或輻射所造成的創傷。大部分的灼傷是因接觸滾燙液體、固體或火焰的高溫。儘管男性和女性的發病率相似，但其根本原因常常不同。在某些地區，女性的風險與暴露在烹飪的火焰或不安全的爐灶有關。男性的風險與工作環境有關。酗酒和吸菸也都是危險因子。自殘或暴力行為也可能造成灼傷。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/burn-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg"
+    },
+    {
+      "file": "img/burn-1.JPG",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Brandwond-graad2.JPG"
+    },
+    {
+      "file": "img/burn-2.png",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/8/86/Burn_Degree_Diagram-de.png"
+    },
+    {
+      "file": "img/burn-3.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Scaldburn.jpg"
+    },
+    {
+      "file": "img/burn-4.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/8/87/Hand2ndburn.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    {
+      "file": "img/burn-5.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/2/2a/VerbrennungGrad2a.jpg"
+    }
+  ]
+}

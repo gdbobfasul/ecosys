@@ -262,6 +262,26 @@ if ! visudo -c >/dev/null 2>&1; then
 fi
 echo "  ✓ Цялата sudo конфигурация е валидна"
 
+# ── Права за СВАЛЯНЕ от pupikes.app (оправя 500 при сваляне на APK) ──────────────
+# Пуска се тук, защото опция 30 върви като root и е бърз начин да се оправят правата
+# БЕЗ пълна пренастройка на домейна. Оправя два неща:
+#   1) папката /apk (директория + файлове) → четими от nginx;
+#   2) htpasswd файла с паролата → четим от воркера на nginx (www-data). Ако не е —
+#      auth_basic_user_file гърми с „Permission denied" → 500 СЛЕД въвеждане на паролата.
+APK_DIR="/var/www/html/apk"
+APK_HTPASSWD="/etc/nginx/pupikes-apk.htpasswd"
+NGINX_GRP="$(id -gn www-data 2>/dev/null || echo www-data)"
+if [ -d "$APK_DIR" ]; then
+    chown -R root:kcy "$APK_DIR" 2>/dev/null || true
+    chmod -R 755 "$APK_DIR" 2>/dev/null || true
+    echo "  ✓ права на $APK_DIR (папка + файлове) → 755, root:kcy"
+fi
+if [ -f "$APK_HTPASSWD" ]; then
+    chown "root:$NGINX_GRP" "$APK_HTPASSWD" 2>/dev/null || true
+    chmod 644 "$APK_HTPASSWD" 2>/dev/null || true
+    echo "  ✓ права на паролата ($APK_HTPASSWD) → 644, четима от nginx — оправя 500 при сваляне"
+fi
+
 echo ""
 echo "════════════════════════════════════════════════════════════"
 echo "  ✓ Готово!"

@@ -1,0 +1,25 @@
+# huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
+# Приложение: Pupikes Medicines (huawei издание). Част от семейството Pupikes Medikit.
+
+[Set basic app information]
+App type: App (приложение, НЕ игра)
+App name: Pupikes Medicines                   # 17 / 30 знака
+App package name: com.pupikes.medicines.hw
+Level-1 app category: Health & Fitness
+
+[Integrate open capabilities]
+# Open capabilities: няма (без Account Kit, IAP, Push, Ads, Game Service).
+
+[Support / Поддръжка]
+Support email: dai.group.ltd.support@gmail.com
+
+[Localization]
+Languages: bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant (15)
+Listing: publish/store-listing/<език>.txt
+Screenshots: publish/1-language-picker.png + publish/2..8-*.png
+# Политики: publish/hw-privacy.html + hw-terms.html (хостват се на selflearning.bot.nu/privacy/pupikes-medicines/)
+
+[Health / медицинско — ЗАДЪЛЖИТЕЛНО за прегледа]
+# Само информативно приложение. НЕ поставя диагноза, НЕ предписва лекарства, НЕ замества лекар/фармацевт.
+# Задължителен медицински дисклеймър при старт (legal-gate) + кратка версия във футъра.
+# Сканира опаковка (OCR на устройството) → информативно описание + открояване на рискови съставки.

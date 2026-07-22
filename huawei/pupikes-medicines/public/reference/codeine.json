@@ -1,0 +1,54 @@
+{
+  "id": "codeine",
+  "langs": {
+    "bg": {
+      "title": "Кодеин",
+      "extract": "Кодеинът (метилморфинът) е опиев алкалоид, извличан от мака."
+    },
+    "ru": {
+      "title": "Кодеин",
+      "extract": "Кодеи́н — 3-метилморфин, пролекарство к морфину, наркотический анальгетик, алкалоид опиума, используется в первую очередь как обезболивающее и как противокашлевое лекарственное средство центрального действия, обычно в сочетании с другими веществами. Обладает умеренно выраженным наркотическим (опиатным) и болеутоляющим эффектом, в связи с чем используется также как компонент болеутоляющих лекарств."
+    },
+    "uk": {
+      "title": "Кодеїн",
+      "extract": "Кодеї́н, або 3-метилморфі́н — природний алкалоїд опіуму (опіат)."
+    },
+    "en": {
+      "title": "Codeine",
+      "extract": "Codeine is an opiate and prodrug of morphine mainly used to treat pain, coughing, and diarrhea. It is commonly used as a recreational drug. It is found naturally in the sap of the opium poppy, Papaver somniferum. It is typically used to treat mild to moderate degrees of pain. Greater benefit may occur when combined with paracetamol (acetaminophen) as codeine/paracetamol or a nonsteroidal anti-inflammatory drug (NSAID) such as aspirin or ibuprofen. Evidence does not support its use for acute cough suppression in children. In Europe, it is not recommended as a cough medicine for those under 12 years of age. It is generally taken orally. It usually starts working after half an hour, with maximum effect at two hours. Its effects last for about four to six hours. Codeine exhibits abuse potential similar to other opioid medications, including a risk of addiction and overdose."
+    },
+    "de": {
+      "title": "Codein",
+      "extract": "Codein oder Kodein ist eine natürlich vorkommende chemische Verbindung aus der Gruppe der Opiate. In der Medizin wird Codein als Arzneistoff eingesetzt. Es wird als Schmerzmittel meist in Kombination mit Paracetamol sowie als Hustenstiller verwendet. Es steht auf der Liste der unentbehrlichen Arzneimittel der Weltgesundheitsorganisation."
+    },
+    "fr": {
+      "title": "Codéine",
+      "extract": "La codéine, ou 3-méthylmorphine, est l'un des alcaloïdes contenus dans le pavot somnifère. Elle est utilisée comme analgésique et comme antitussif narcotique. Elle a été isolée pour la première fois en 1832 par le chimiste français Pierre Jean Robiquet. Son nom provient du nom en grec de la tête de pavot : κώδεια, kốdeia."
+    },
+    "es": {
+      "title": "Codeína",
+      "extract": "La codeína es un fármaco opiáceo que se prescribe en el tratamiento del dolor (analgésico) y la tos (antitusígeno). Se encuentra naturalmente en la savia de la adormidera o amapola (Papaver somniferum)."
+    },
+    "it": {
+      "title": "Codeina",
+      "extract": "La codeina (3-Metilmorfina), è un alcaloide, un isomero naturale di morfina metilato; è un oppiaceo usato per l'analgesia. Viene ottenuta prevalentemente tramite metilazione della morfina, l'alcaloide principale del Papaver somniferum."
+    },
+    "pt": {
+      "title": "Codeína",
+      "extract": "A codeína é um fármaco alcaloide do grupo dos opioides, sendo ela um pró-fármaco da morfina que é utilizada no tratamento da dor de leve à moderada, diarréia e como antitússico. A codeína é encontrada naturalmente na seiva da papoula do ópio, Papaver somniferum. Grande parte da codeína utilizada com finalidades médicas é preparada através da metilação da morfina. De potência doze vezes menor que a morfina, utiliza-se também em combinação com outros analgésicos da classe dos não opioides, como ácido acetilsalicílico e paracetamol. Maior benefício pode ocorrer quando combinado com paracetamol (acetaminofeno) ou um medicamento anti-inflamatório não esteroidal (AINE), como aspirina ou ibuprofeno. As evidências não apoiam seu uso para supressão da tosse aguda em crianças ou adultos. Geralmente começa a funcionar após meia hora, com efeito máximo em duas horas. Seus efeitos duram cerca de quatro a seis horas. A codeína apresenta potencial de abuso semelhante a outros medicamentos opióides."
+    },
+    "ar": {
+      "title": "كودين",
+      "extract": "كودين أو ميثيلمورفين ويسمى احياناً كودايين مادة أفيونية ومادة أولية للمورفين، تُستخدم بشكل رئيسي لعلاج الألم والسعال والإسهال. يتواجد بشكل طبيعي في عصارة نبات الخشخاش الأفيوني. ويُستخدم عادةً لعلاج درجات الألم الخفيفة إلى المتوسطة. قد تحدث فائدة أكبر عند دمجه مع الباراسيتامول (الأسيتامينوفين) على شكل كوديين/باراسيتامول أو دواء مضاد للالتهابات غير الستيرويدية (NSAID) مثل الأسبرين أو الإيبوبروفين. لا تدعم الأدلة استخدامه لقمع السعال الحاد لدى الأطفال. في أوروبا، لا يُنصح به كدواء للسعال لمن تقل أعمارهم عن 12 عامًا. يُؤخذ عادةً عن طريق الفم. يبدأ مفعوله عادةً بعد نصف ساعة، ويبلغ أقصى تأثير له بعد ساعتين. تستمر آثاره لمدة تتراوح بين أربع وست ساعات تقريبًا. يُظهر الكوديين إمكانية إساءة استخدام بشكل مشابه للعقاقير الأفيونيه الأخرى، بما في ذلك خطر الإدمان والجرعة الزائده."
+    },
+    "ja": {
+      "title": "コデイン",
+      "extract": "コデイン またはメチルモルヒネは鎮痛、鎮咳、および下痢止めの作用のある、μ受容体アゴニストのオピオイドである。塩の形態の硫酸コデインもしくはリン酸コデインとして製品化されている。リン酸コデインは鎮痛剤（疼痛の緩和ケア）や下痢止めとして用いられるが、コデインを還元して製造したジヒドロコデインを鎮咳薬（咳止め薬）として風邪薬に配合するのが一般的である。コデインは1832年にアヘンから単離された。プロドラッグであり、代謝産物の約10%がモルヒネとなる。"
+    },
+    "zh": {
+      "title": "可待因",
+      "extract": "可待因 是一種阿片劑，也是嗎啡的前體藥物，主要用於治療疼痛、咳嗽和腹瀉。它也常被用作娛樂性用藥。可待因天然存於罌粟的汁液中。通常用於治療輕度至中度的疼痛。當與对乙酰氨基酚（撲熱息痛）或非類固醇消炎藥 (NSAID) 聯合使用時，可能會產生更大的療效。沒證據支持其可用於抑制兒童急性咳嗽。歐洲方面並不建議12歲以下的個體使用它作為止咳藥。\n"
+    }
+  },
+  "images": []
+}

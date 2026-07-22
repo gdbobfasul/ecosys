@@ -1,0 +1,58 @@
+{
+  "id": "bite",
+  "langs": {
+    "ru": {
+      "title": "Ужаления и укусы насекомых",
+      "extract": "Ужаления и укусы насекомых — болезненные состояния, связанные с укусами насекомых.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/4/48/Aedes_aegypti_biting_human.jpg"
+    },
+    "en": {
+      "title": "Insect bites and stings",
+      "extract": "Many species of arthropods can bite or sting human beings. These bites and stings generally occur as a defense mechanism or during normal arthropod feeding. While most cases cause self-limited irritation, medically relevant complications include envenomation, allergic reactions, and transmission of vector-borne diseases.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Tick_bite.jpg"
+    },
+    "de": {
+      "title": "Insektenstich",
+      "extract": "Ein Insektenstich oder Giftstich ist eine Abwehrhandlung von mit einem Giftstachel bewehrten Insekten, meist Hautflüglern wie etwa Honigbienen, Wespen und Hornissen, seltener auch Ameisen. Dabei wird dem Feind mit dem Stachel ein giftiges Sekret unter die Haut injiziert. Es kann sich um die unmittelbare Verteidigungsreaktion eines einzelnen Insekts, aber auch um die kollektive Reaktion auf eine Bedrohung der Niststätte handeln.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Vespula_germanica_SEM_Sting_01.jpg"
+    },
+    "fr": {
+      "title": "Piqûre d'insecte",
+      "extract": "Une piqûre d'insecte est une lésion, qui résulte de l'insertion dans le corps d'un autre animal soit d'un dard, soit d'un rostre. Dans le premier cas, il s'agit d'hyménoptères comme les guêpes, les abeilles et les fourmis au comportement de prédation ou de défense. Il y a alors inoculation de venin paralysant ou mortel pour les proies et plus ou moins toxique et douloureux pour les mammifères. Une faible proportion de ces espèces est dangereuse et provoque des allergies chez les hommes. Dans le second cas, il s'agit d'un comportement alimentaire, l'hématophagie, de diptères comme les mouches et les moustiques ainsi que de puces où les insectes se nourrissent du sang de mammifères. Leur piqûre est généralement indolore et accompagnée de l'inoculation d'un anticoagulant qui provoque des démangeaisons.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/4/48/Aedes_aegypti_biting_human.jpg"
+    },
+    "it": {
+      "title": "Puntura di insetto",
+      "extract": "Alcuni insetti sono in grado di pungere l'uomo. La puntura è seguita da sintomi particolari, a volte eruzioni cutanee, e in alcuni casi la puntura può risultare letale a causa del veleno inoculato o a causa di un'allergia.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/97/Xylocopa_kleptolektie.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "ar": {
+      "title": "لسعات الحشرات ولدغاتها",
+      "extract": "لسعات الحشرات  ولدغاتها تقسم لسع ولدغ الحشرات إلى مجموعتين: سامة وغير سامة. اللدغة تكون عادة من هجوم حشرة سامة مثل النحلة أو الدبور، حيث يستخدم هذا كوسيلة دفاعية بحقن الزعاف السام والمؤلم من خلال لدغته. بينما لسعة الحشرة غير السامة تثقب الجلد للتغذي على دمك؛ هذا عادة يتسبب بالهرش الشديد.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Tick_bite.jpg"
+    },
+    "ja": {
+      "title": "虫刺症",
+      "extract": "虫刺症（ちゅうししょう）とは、昆虫類を含む虫に刺された時にできる傷であり、外傷の一つである。この他に刺咬症（しこうしょう）、蜂の場合は蜂刺症（はちししょう）ともよばれる。症状が日常的には「虫刺され」といわれることが多い。便宜上、刺された場合のみではなく咬まれた場合も下記に記す。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/4/48/Aedes_aegypti_biting_human.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/bite-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/4/48/Aedes_aegypti_biting_human.jpg"
+    },
+    {
+      "file": "img/bite-1.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Tick_bite.jpg"
+    },
+    {
+      "file": "img/bite-2.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Vespula_germanica_SEM_Sting_01.jpg"
+    },
+    {
+      "file": "img/bite-3.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/9/97/Xylocopa_kleptolektie.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    }
+  ]
+}

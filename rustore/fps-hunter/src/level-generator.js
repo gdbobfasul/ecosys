@@ -1,4 +1,4 @@
-// Version: 1.0012
+// Version: 1.0013
 // Генератор на 100 нива (data-driven / процедурно).
 // За ниво N (1..100): избира тип цел (ескалация през ростера), мащабира
 // брой/скорост/уклончивост/спавн темп, терен, лимити време/боеприпаси.
@@ -25,6 +25,21 @@ const TARGET_ROSTER = [
 
 // Биоми по групи нива (за разнообразие).
 const BIOME_CYCLE = ['forest', 'field', 'snow', 'desert', 'hills', 'marsh', 'urban'];
+
+// Оръжия, които на ниво 30+ стават с БЕЗКРАЕН боезапас (пушка/пистолет/прашка).
+const INFINITE_AT_30 = ['rifle', 'pistol', 'slingshot'];
+
+// Боеприпаси (КАПАЦИТЕТ) за дадено оръжие на дадено ниво. Добавката расте с +10 на всеки 5 нива:
+//   нива 1–5 → +10/ниво, 6–10 → +20/ниво … 26–30 → +60/ниво (кумулативно; над 30 остава +60/ниво).
+// weapon.mag >= 999 (прашката) ИЛИ пушка/пистолет/прашка на ниво 30+ → 999 (безкрайно).
+// count = брой цели за нивото, d = трудност (0..1). Ползва се и при СМЯНА на оръжие (взимане в нивото).
+export function ammoForWeapon(level, weapon, count, d) {
+  let ammoBonus = 0;
+  for (let l = 1; l <= level; l++) ammoBonus += 10 * Math.ceil(Math.min(l, 30) / 5);
+  if (weapon.mag >= 999) return 999;
+  if (level >= 30 && INFINITE_AT_30.indexOf(weapon.key) >= 0) return 999;
+  return count + Math.max(2, Math.round(8 - d * 5)) + ammoBonus;
+}
 
 // Прост детерминиран PRNG (mulberry32) за повторяеми нива.
 function rng(seed) {
@@ -84,9 +99,10 @@ export function generateLevel(n) {
   // (старият беше твърде кратък). Играта третира timeLimit <= 0 като „без часовник".
   const timeLimit = level <= 50 ? 0 : Math.round(40 + count * 2.5 - d * 15) * 10;
 
-  // Боеприпаси: достатъчно + буфер, който се свива.
-  const ammoBuffer = Math.round(8 - d * 5);
-  const ammo = weapon.mag >= 999 ? 999 : count + Math.max(2, ammoBuffer);
+  // Боеприпаси (КАПАЦИТЕТ) — расте с ВСЯКО ниво (виж ammoForWeapon горе). Същата прогресия
+  // важи и при взимане на ново оръжие в нивото (смяна). На ниво 30+ пушка/пистолет/прашка
+  // са с безкраен боезапас; тежките (ракетомет/зенитни) остават ограничени — презареждане от 30-то.
+  const ammo = ammoForWeapon(level, weapon, count, d);
 
   // Точки на цел: по-трудните цели струват повече.
   const targetIdx = TARGET_ROSTER.indexOf(target);

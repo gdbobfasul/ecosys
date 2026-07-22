@@ -1,0 +1,54 @@
+{
+  "id": "cetirizine",
+  "langs": {
+    "ru": {
+      "title": "Цетиризин",
+      "extract": "Цетиризи́н — лекарственное средство, конкурентный антагонист гистамина, метаболит гидроксизина, блокирует H1-гистаминовые рецепторы. Является рацемической смесью L- и D- энантиомеров, физиологической активностью обладает R-энантиомер — левоцетиризин, действующие дозы для которого в два раза ниже, чем у рацемического цетиризина."
+    },
+    "uk": {
+      "title": "Цетиризин",
+      "extract": "Цетиризин — синтетичний препарат, що є похідним піперазину та належить до антигістамінних препаратів II покоління, для перорального застосування. Цетиризин створений у 1987 році та тривалий час розповсюджувався виключно під торговою маркою «Зіртек»."
+    },
+    "en": {
+      "title": "Cetirizine",
+      "extract": "Cetirizine is a second-generation peripherally selective antihistamine used to treat allergic rhinitis, dermatitis, urticaria (hives), and runny nose. It is taken by mouth. Effects generally begin within thirty minutes and last for about a day. The degree of benefit is similar to other antihistamines such as diphenhydramine, which is a first-generation antihistamine."
+    },
+    "de": {
+      "title": "Cetirizin",
+      "extract": "Cetirizin ist ein Arzneistoff aus der Gruppe der Antihistaminika der 2. Generation, der zur Linderung von Beschwerden allergischer Erkrankungen eingesetzt wird. Die Substanz ist ausgehend von Hydroxyzin, einem Antihistaminikum der ersten Generation, entwickelt worden. Chemisch leitet sich Cetirizin vom Diphenylmethan ab und zählt zu den Derivaten des Piperazins."
+    },
+    "fr": {
+      "title": "Cétirizine",
+      "extract": "La cétirizine est un antihistaminique H1 de deuxième génération utilisé dans le traitement de l'allergie, du rhume des foins et de l'angiœdème."
+    },
+    "es": {
+      "title": "Cetirizina",
+      "extract": "La cetirizina es un fármaco antihistamínico de segunda generación que no genera efectos a nivel de sistema nervioso central. Está indicado para aliviar los síntomas de enfermedades alérgicas como: rinitis alérgica estacional, rinitis alérgica perenne, urticaria crónica idiopática."
+    },
+    "it": {
+      "title": "Cetirizina",
+      "extract": "La cetirizina è un farmaco antistaminico di seconda generazione, antagonista dei recettori H1. Si tratta del metabolita maggiore dell'idrossizina e ne condivide la maggior parte degli effetti. Il farmaco è distribuito in Italia con diversi nomi commerciali, Zirtec, Cerchio, Formistin, Reactine, Stamidix e Ceteris e funziona bloccando i recettori dell'istamina H1."
+    },
+    "pt": {
+      "title": "Cetirizina",
+      "extract": "A cetirizina é uma droga anti-histamínica dotada de alta afinidade e seletividade para os receptores H1\nda histamina, sem apresentar efeitos anticolinérgicos e antiserotonínicos de importância. Comercializada pelos nomes de Zyrtec, Zysterc-D, CetiHexal, entre outros."
+    },
+    "ar": {
+      "title": "سيتريزين",
+      "extract": "سيتريزين الأسماء التجارية: زيرتيك ZYRTEC، أرتيز ARTIZ، سيترولين CETRALON، سيترو CETRO، فيناليرغ FINALLERG، نوهيست NOHIST، أومسيت OMCET، زيرتازين ZERTAZINE، غلوتريزين. هي مضادات الهستامين من الجيل الثاني التي تستخدم في علاج حمى القش والحساسية وتورمات باطن الجلد والشرى. تعتبر من نواتج الأيض الأساسية لمضاد الحساسية الهيدروكسيزين كما ويعتبر معارض لمستقبل راسيمي انتقائي ل.H1\nمضادات الهستامين من الجيل الثاني مثل سيتريزين لها قدرة أقل على اختراق الحاجز الذي يفصل الدم عن السائل المحيط بالخلايا في الجهاز العصبي المركزي وبالتالي فقد قللت التأثيرات على الجهاز العصبي المركزي مقارنة مع أدوية الجيل الأول فمثلا لا تحث الجسم على النعاس أو التدخل في تشكيل الذاكرة."
+    },
+    "hi": {
+      "title": "सेटिरिज़िन",
+      "extract": "सेटिरिज़िन एक द्वितीय पीढ़ी का एंटीहिस्टामिन है, जिसका उपयोग एलर्जी के लक्षणों को कम करने के लिए किया जाता है, जैसे कि हे फीवर, एलर्जिक राइनाइटिस, और अर्टिकेरिया। यह हिस्टामिन नामक रसायन को अवरुद्ध करके काम करता है, जो शरीर में एलर्जी के लक्षण पैदा करता है।सेटिरिज़िन एक गैर-बेहोश करने वाला एंटीहिस्टामाइन है जो कोशिकाओं में हिस्टामाइन (H-1) रिसेप्टर्स को अवरुद्ध करके काम करता है। यह दूसरी पीढ़ी के अन्य एंटीहिस्टामाइन लोराटाडाइन, फ़ेक्सोफेनाडाइन और एज़ेलास्टाइन के समान है।"
+    },
+    "ja": {
+      "title": "セチリジン",
+      "extract": "セチリジン(英:cetirizine)は、第二世代抗ヒスタミン薬のひとつで、アレルギー反応を抑制する作用を持つ化合物である。日本では商品名ジルテックが販売されている。適応はアレルギー性鼻炎や蕁麻疹、皮膚の発疹、湿疹である。"
+    },
+    "zh": {
+      "title": "西替利嗪",
+      "extract": "西替利嗪（qín） 是一种第二代抗组织胺，为长效的具选择性的口服强效抗過敏反应药。商品名有去敏定、司特寧、仙特明、協帝、CETIN或CETY。治疗过敏性鼻炎、由过敏原引起的荨麻疹及皮肤瘙痒有较好疗效。此藥物經由口服方式給藥。通常在服用後三十分鐘內開始作用，可持續約一天。其效力與第一代的H1-組織胺拮抗劑苯海拉明相似。\n"
+    }
+  },
+  "images": []
+}

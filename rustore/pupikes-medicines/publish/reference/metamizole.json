@@ -1,0 +1,58 @@
+{
+  "id": "metamizole",
+  "langs": {
+    "bg": {
+      "title": "Норамидопирин",
+      "extract": "Норамидопирин, познат още с търговските наименования Аналгин (Analgin), Algozone, Biopyrin, Novalgin, Pyralgin, Sulpyrin, Dipyron, е обезболяващо лекарствено средство, което спада към групата на пиразолоните. Пълното химическо наименование е „Натриева сол на (2.3-диметил-5-оксо-1-фенил-3-пиразолин-4-ил) метиламино)-метансулфоновата киселина“, а медицинското „Метамизол натрий“."
+    },
+    "ru": {
+      "title": "Метамизол натрия",
+      "extract": "Метамизо́л на́трия — один из самых сильных неопиоидных анальгетиков, используемый как в медицине, так и в ветеринарии. В некоторых случаях это средство до сих пор неправильно классифицируется как нестероидное противовоспалительное средство (НПВС). Метамизол является пролекарством, которое спонтанно распадается после перорального приёма на структурно родственные соединения пиразолона. Помимо болеутоляющего действия, препарат обладает жаропонижающим и спазмолитическим действием. Во многих странах выведен из оборота в связи с риском развития агранулоцитоза, хотя более поздние анализы показали, что риск агранулоцитоза, вызванного метамизолом, преувеличен."
+    },
+    "uk": {
+      "title": "Анальгін",
+      "extract": "Анальгі́н — болезнижувальний препарат. Застосовується для лікування легкого та помірного болю."
+    },
+    "en": {
+      "title": "Metamizole",
+      "extract": "Metamizole or dipyrone is a painkiller, spasm reliever, and fever reliever drug. It is most commonly given by mouth or by intravenous infusion. It belongs to the ampyrone sulfonate family of medicines and was patented in 1922. Metamizole is marketed under various trade names. It was first used medically in Germany under the brand name Novalgin, later becoming widely known in Slavic nations and India under the brand name Analgin."
+    },
+    "de": {
+      "title": "Metamizol-Natrium",
+      "extract": "Metamizol-Natrium, kurz Metamizol genannt, ist ein schmerzstillender und fiebersenkender Wirkstoff mit krampflösender Komponente aus der Gruppe der nichtsauren Nichtopioid-Analgetika. Weitere geläufige Namen des Wirkstoffs sind Dipyron, Novaminsulfon und der Handelsname Novalgin. Chemisch handelt es sich um ein Pyrazolon-Derivat, der Name Metamizol leitet sich aus Methyl, Amino und Pyrazol ab. Im Organismus entsteht durch hydrolytische Spaltung der eigentliche Wirkstoff 4-Methylaminophenazon (4-Methylamino-1,5-dimethyl-2-phenyl-1,2-dihydro-3H-pyrazol-3-on)."
+    },
+    "fr": {
+      "title": "Noramidopyrine",
+      "extract": "La noramidopyrine, dipyrone ou métamizole selon la dénomination commune internationale (DCI) est un dérivé de la pyrazolone agissant comme antipyrétique et offrant des propriétés analgésiques et spasmolytiques modérées. Il n’exerce pas d’effet anti-inflammatoire."
+    },
+    "es": {
+      "title": "Metamizol",
+      "extract": "El metamizol (DCI), también conocido como dipirona, pertenece a la familia de las pirazolonas. No pertenece al grupo de los AINEs. Aunque es un inhibidor de las ciclo-oxigenasas, el efecto antiinflamatorio es limitado. Se indica en muchos países como analgésico, antipirético y espasmolítico."
+    },
+    "it": {
+      "title": "Metamizolo",
+      "extract": "Il metamizolo è un farmaco analgesico non steroideo. Il più noto nome commerciale è Novalgina. Viene utilizzato come antipiretico e antidolorifico contro cefalee, febbre, dolori dentari, dolori mestruali e altri."
+    },
+    "pt": {
+      "title": "Metamizol",
+      "extract": "Metamizol, comumente chamado de dipirona, é um medicamento ainda utilizado principalmente como analgésico e antipirético. Embora ainda esteja disponível em balcão de um modo geral em todo o mundo, em alguns países como os Estados Unidos da América, a sua venda é proibida, pelo suposto risco de agranulocitose. Porém, no Brasil, efetivamente ainda é um dos analgésicos mais populares."
+    },
+    "ar": {
+      "title": "ميتاميزول",
+      "extract": "ميتاميزول هو دواء له آثار مسكنة وخافضة للحرارة ومضادة للتقلص والالتهاب تشتمل هذه الفئة من الأدوية على مجموعة من المركبات المسكنة للألم الناجم عن التنبيهات المحدثة للألم في المحيط وتدعى أيضاً بمسكنات الألم المحيطية غير المورفينية. وقدم لأول مرة للاستخدام السريري في ألمانيا عام 1922 تحت تسانغ \"Novalgin\" ولسنوات عديدة كانت متاحة من دون وصفة طبية في معظم البلدان، حتى ظهرت السميات\nوهو يسوق تحت أسماء كثيرة."
+    },
+    "hi": {
+      "title": "मेटामिजोल",
+      "extract": "मेटामिजोल एक कार्बनिक यौगिक है।"
+    },
+    "ja": {
+      "title": "スルピリン",
+      "extract": "スルピリン は、鎮痛薬、鎮痙薬、解熱薬であり、抗炎症薬でもある。一般的な投与方法は、経口または注射である。日本では皮下注射または筋肉内注射で用いられる。アンピロンスルホン酸系の医薬品である。いわゆるピリン系薬剤の一つである。"
+    },
+    "zh": {
+      "title": "安乃近",
+      "extract": "安乃近，西方通用名美他米唑 或迪派隆（dipyrone），日韩通用名sulpyrine，是一种镇痛药、解痙藥和退烧药。它最常通过口服或静脉输注给药。它属于4-氨基安替比林磺酸酯家族的药物，1920年被德国霍伊斯特公司公司合成，1922年获得专利、开始批量生产。美他米唑在市场上有各种商品名。它首次在德国以“Novalgin”品牌名称用于医疗，后来在斯拉夫国家和印度广为人知，名为“Antalgin”。\n"
+    }
+  },
+  "images": []
+}

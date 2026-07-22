@@ -258,9 +258,12 @@ else
     printf "    %2d) %-22s ${GRAY}(%s)${NC}\n" "$i" "$n" "$tags"; i=$((i+1))
   done
   echo -e "     a) ВСИЧКИ апове × двата магазина"
+  echo -e "     0) НИЩО — не билдвай (продължи направо, напр. само към качване)"
   echo ""
-  read -p "  Избери [1-$((i-1)) / a]: " pick
-  if [ "$pick" = "a" ] || [ "$pick" = "A" ]; then
+  read -p "  Избери [1-$((i-1)) / a / 0]: " pick
+  if [ "$pick" = "0" ] || [ "$pick" = "n" ] || [ "$pick" = "N" ]; then
+    echo -e "  ${YELLOW}Нищо за билдване — прескачам билда.${NC}"; exit 0
+  elif [ "$pick" = "a" ] || [ "$pick" = "A" ]; then
     for n in "${NAMES[@]}"; do add_app_both "$n"; done
   elif [[ "$pick" =~ ^[0-9]+$ ]] && [ "$pick" -ge 1 ] && [ "$pick" -lt "$i" ]; then
     add_app_both "${NAMES[$((pick-1))]}"             # избраното име → двата магазина

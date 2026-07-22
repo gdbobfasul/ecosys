@@ -38,10 +38,14 @@
   .empty{text-align:center;color:var(--dim);padding:60px 20px}
   .preview-note{text-align:center;background:#ffb70322;border:1px solid var(--acc);border-radius:10px;padding:10px;margin:18px 0;font-size:14px}
   footer{text-align:center;color:var(--dim);font-size:13px;margin-top:50px;border-top:1px solid var(--line);padding-top:22px}
+  .langbar{text-align:right;margin:2px 0 -20px}
+  .langbar select{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:14px system-ui;cursor:pointer}
+  html[dir=rtl] .langbar{text-align:left}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <div class="langbar"><select id="langsel" aria-label="Language / Език"></select></div>
   <header class="hero">
     <h1 class="logo"><span style="display:inline-block;width:52px;height:52px;vertical-align:middle;margin-right:6px"><svg width="64" height="64" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="padMain" cx="0.42" cy="0.35" r="0.85"><stop offset="0" stop-color="#B07A4E"/><stop offset="0.55" stop-color="#8A5A32"/><stop offset="1" stop-color="#5E3B20"/></radialGradient><radialGradient id="toe" cx="0.40" cy="0.32" r="0.9"><stop offset="0" stop-color="#C08A5A"/><stop offset="0.6" stop-color="#93613A"/><stop offset="1" stop-color="#603A1F"/></radialGradient><linearGradient id="claw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A2414"/><stop offset="1" stop-color="#20140A"/></linearGradient></defs><g transform="translate(12 -12)"><g transform="translate(300 520) rotate(-64)"><path d="M0 -70 C 34 -70, 52 -34, 52 8 C 52 44, 30 66, 0 66 C -30 66, -52 44, -52 8 C -52 -34, -34 -70, 0 -70 Z" fill="url(#toe)"/><path d="M-6 -74 C -14 -96, -4 -112, 8 -104 C 2 -96, 0 -84, 4 -72 Z" fill="url(#claw)"/></g><g transform="translate(372 402) rotate(-42)"><path d="M0 -74 C 34 -74, 54 -36, 54 8 C 54 46, 30 70, 0 70 C -30 70, -54 46, -54 8 C -54 -36, -34 -74, 0 -74 Z" fill="url(#toe)"/><path d="M-5 -78 C -13 -101, -2 -117, 9 -108 C 3 -100, 1 -88, 5 -76 Z" fill="url(#claw)"/></g><g transform="translate(486 344) rotate(-20)"><path d="M0 -76 C 35 -76, 56 -37, 56 9 C 56 48, 31 72, 0 72 C -31 72, -56 48, -56 9 C -56 -37, -35 -76, 0 -76 Z" fill="url(#toe)"/><path d="M-4 -80 C -11 -104, 0 -120, 10 -110 C 4 -102, 3 -90, 6 -78 Z" fill="url(#claw)"/></g><g transform="translate(612 340) rotate(2)"><path d="M0 -74 C 34 -74, 54 -36, 54 8 C 54 46, 30 70, 0 70 C -30 70, -54 46, -54 8 C -54 -36, -34 -74, 0 -74 Z" fill="url(#toe)"/><path d="M-3 -78 C -9 -102, 2 -117, 12 -107 C 6 -99, 5 -87, 7 -76 Z" fill="url(#claw)"/></g><g transform="translate(590 610)"><path d="M0 -160 C -120 -160, -205 -92, -205 6 C -205 92, -150 168, -70 196 C -30 210, 30 210, 70 196 C 150 168, 205 92, 205 6 C 205 -92, 120 -160, 0 -160 Z" fill="url(#padMain)"/></g></g></svg></span>Pupikes</h1>
     <p class="tagline" id="tagline">Приложения, които ти служат вярно.</p>
@@ -55,48 +59,71 @@
   </footer>
 </div>
 <script>
-(async function(){
+(function(){
   var preview = /[?&]preview=1/.test(location.search);
-  var lang = (navigator.language||'bg').slice(0,2);
-  var L = function(o){ return o && (o[lang]||o.bg||o.en||'') || ''; };
-  var host = document.getElementById('catalog');
-  var cat;
-  try { cat = await (await fetch('catalog.json?v='+Date.now())).json(); }
-  catch(e){ host.innerHTML = '<div class="empty">Каталогът не е зареден (catalog.json).</div>'; return; }
+  // 15-те езика на екосистемата (код + родно име за селектора).
+  var LANGS = [['bg','Български'],['ru','Русский'],['uk','Українська'],['en','English'],['de','Deutsch'],['fr','Français'],['es','Español'],['es-MX','Español (MX)'],['it','Italiano'],['pt','Português'],['ar','العربية'],['hi','हिन्दी'],['ja','日本語'],['ky','Кыргызча'],['zh-Hant','繁體中文']];
+  var T = {
+    tagline:{bg:'Приложения, които ти служат вярно.',ru:'Приложения, которые служат тебе верно.',uk:'Застосунки, що служать тобі вірно.',en:'Apps that serve you faithfully.',de:'Apps, die dir treu dienen.',fr:'Des applis qui te servent fidèlement.',es:'Apps que te sirven con fidelidad.','es-MX':'Apps que te sirven con fidelidad.',it:'App che ti servono fedelmente.',pt:'Apps que te servem com fidelidade.',ar:'تطبيقات تخدمك بإخلاص.',hi:'ऐप्स जो आपकी वफ़ादारी से सेवा करते हैं।',ja:'あなたに忠実に役立つアプリ。',ky:'Сага ишенимдүү кызмат кылган колдонмолор.','zh-Hant':'忠實為你服務的應用程式。'},
+    eco:{bg:'Екосистема',ru:'Экосистема',uk:'Екосистема',en:'Ecosystem',de:'Ökosystem',fr:'Écosystème',es:'Ecosistema','es-MX':'Ecosistema',it:'Ecosistema',pt:'Ecossistema',ar:'منظومة',hi:'इकोसिस्टम',ja:'エコシステム',ky:'Экосистема','zh-Hant':'生態系'},
+    dl:{bg:'Свали APK',ru:'Скачать APK',uk:'Завантажити APK',en:'Download APK',de:'APK laden',fr:'Télécharger APK',es:'Descargar APK','es-MX':'Descargar APK',it:'Scarica APK',pt:'Baixar APK',ar:'تنزيل APK',hi:'APK डाउनलोड',ja:'APKをダウンロード',ky:'APK жүктөө','zh-Hant':'下載 APK'},
+    soon_w:{bg:'скоро',ru:'скоро',uk:'скоро',en:'soon',de:'bald',fr:'bientôt',es:'pronto','es-MX':'pronto',it:'presto',pt:'em breve',ar:'قريبًا',hi:'जल्द',ja:'近日',ky:'жакында','zh-Hant':'即將'},
+    soon:{bg:'Очаквайте скоро',ru:'Скоро',uk:'Незабаром',en:'Coming soon',de:'Demnächst',fr:'Bientôt disponible',es:'Próximamente','es-MX':'Próximamente',it:'Prossimamente',pt:'Em breve',ar:'قريبًا',hi:'जल्द आ रहा है',ja:'近日公開',ky:'Жакында','zh-Hant':'即將推出'},
+    loading:{bg:'Зареждам каталога…',ru:'Загружаю каталог…',uk:'Завантажую каталог…',en:'Loading catalog…',de:'Katalog wird geladen…',fr:'Chargement du catalogue…',es:'Cargando catálogo…','es-MX':'Cargando catálogo…',it:'Caricamento catalogo…',pt:'A carregar catálogo…',ar:'جارٍ تحميل الكتالوج…',hi:'कैटलॉग लोड हो रहा…',ja:'カタログを読み込み中…',ky:'Каталог жүктөлүүдө…','zh-Hant':'正在載入目錄…'},
+    load_err:{bg:'Каталогът не е зареден.',ru:'Каталог не загружен.',uk:'Каталог не завантажено.',en:'Catalog not loaded.',de:'Katalog nicht geladen.',fr:'Catalogue non chargé.',es:'Catálogo no cargado.','es-MX':'Catálogo no cargado.',it:'Catalogo non caricato.',pt:'Catálogo não carregado.',ar:'لم يُحمّل الكتالوج.',hi:'कैटलॉग लोड नहीं हुआ।',ja:'カタログを読み込めません。',ky:'Каталог жүктөлгөн жок.','zh-Hant':'目錄未載入。'},
+    apps:{bg:'приложения',ru:'приложений',uk:'застосунків',en:'apps',de:'Apps',fr:'applis',es:'apps','es-MX':'apps',it:'app',pt:'apps',ar:'تطبيقات',hi:'ऐप्स',ja:'アプリ',ky:'колдонмо','zh-Hant':'個應用'},
+    stores:{bg:'в магазините',ru:'в магазинах',uk:'у магазинах',en:'in stores',de:'in Stores',fr:'en magasins',es:'en tiendas','es-MX':'en tiendas',it:'negli store',pt:'nas lojas',ar:'في المتاجر',hi:'स्टोर में',ja:'ストアに',ky:'дүкөндөрдө','zh-Hant':'在商店'},
+    ftag:{bg:'верни приложения',ru:'верные приложения',uk:'вірні застосунки',en:'faithful apps',de:'treue Apps',fr:'applis fidèles',es:'apps fieles','es-MX':'apps fieles',it:'app fedeli',pt:'apps fiéis',ar:'تطبيقات مخلصة',hi:'वफ़ादार ऐप्स',ja:'忠実なアプリ',ky:'ишенимдүү колдонмолор','zh-Hant':'忠實的應用'},
+    empty:{bg:'Още няма публикувани приложения тук.',ru:'Здесь пока нет опубликованных приложений.',en:'No published apps here yet.',uk:'Тут ще немає опублікованих застосунків.',de:'Noch keine veröffentlichten Apps.',fr:'Pas encore d’applis publiées ici.',es:'Aún no hay apps publicadas aquí.','es-MX':'Aún no hay apps publicadas aquí.',it:'Nessuna app pubblicata qui ancora.',pt:'Ainda sem apps publicadas aqui.',ar:'لا تطبيقات منشورة هنا بعد.',hi:'यहाँ अभी कोई प्रकाशित ऐप नहीं।',ja:'まだ公開アプリはありません。',ky:'Бул жерде азырынча жарыяланган колдонмо жок.','zh-Hant':'這裡尚無已發佈的應用。'},
+    preview_note:{bg:'👁 Режим за преглед — показани са ВСИЧКИ приложения (вкл. непубликуваните).',ru:'👁 Режим предпросмотра — показаны ВСЕ приложения.',en:'👁 Preview mode — ALL apps shown (incl. unpublished).'}
+  };
+  var lang = (function(){ try{ var s=localStorage.getItem('pupikes.catalog.lang'); if(s) return s; }catch(e){} var n=(navigator.language||'bg'); for(var i=0;i<LANGS.length;i++){ if(LANGS[i][0]===n) return n; } var two=n.slice(0,2); for(var j=0;j<LANGS.length;j++){ if(LANGS[j][0].slice(0,2)===two) return LANGS[j][0]; } return 'bg'; })();
+  function t(k){ var o=T[k]||{}; return o[lang]||o[lang.split('-')[0]]||o.en||o.bg||k; }
+  function L(o){ return o && (o[lang]||o[lang.split('-')[0]]||o.bg||o.en||'') || ''; }
+  var cat=null;
+  var sel=document.getElementById('langsel');
+  sel.innerHTML=LANGS.map(function(l){return '<option value="'+l[0]+'"'+(l[0]===lang?' selected':'')+'>'+l[1]+'</option>';}).join('');
+  sel.onchange=function(){ lang=sel.value; try{localStorage.setItem('pupikes.catalog.lang',lang);}catch(e){} applyDir(); render(); };
+  function applyDir(){ document.documentElement.lang=lang; document.documentElement.dir=(lang==='ar'?'rtl':'ltr'); }
+  applyDir();
 
-  if(cat.brand){ document.getElementById('tagline').textContent = L(cat.brand.tagline); document.getElementById('short').textContent = 'Екосистема · '+cat.brand.short; document.getElementById('ftag').textContent = L(cat.brand.tagline); }
-  if(preview) document.getElementById('preview').style.display='block';
-
-  var shownTotal=0, pubTotal=0;
-  host.innerHTML='';
-  (cat.groups||[]).forEach(function(g){
-    var apps = (g.apps||[]).filter(function(a){ return preview || a.show; });
-    apps.forEach(function(a){ if(a.published && (a.published.huawei||a.published.rustore)) pubTotal++; });
-    if(!apps.length) return;
-    shownTotal += apps.length;
-    var sec = document.createElement('section'); sec.className='group';
-    sec.innerHTML = '<h2>'+L(g.title)+'</h2>'+(L(g.note)?'<p class="gnote">'+L(g.note)+'</p>':'');
-    var grid = document.createElement('div'); grid.className='grid';
-    apps.forEach(function(a){
-      var pub = a.published||{};
-      var badges='';
-      if(pub.huawei) badges+='<span class="b hw">Huawei ✓</span>'; else badges+='<span class="b hw soon">Huawei скоро</span>';
-      if(pub.rustore) badges+='<span class="b ru">RuStore ✓</span>'; else badges+='<span class="b ru soon">RuStore скоро</span>';
-      var acts='';
-      if(a.download && a.apk){
-        if(a.apk.rustore) acts+='<a class="btn dl" href="/'+a.apk.rustore+'">Свали APK</a>';
-      }
-      if(pub.huawei && a.storeUrl && a.storeUrl.huawei) acts+='<a class="btn store" href="'+a.storeUrl.huawei+'">AppGallery</a>';
-      if(pub.rustore && a.storeUrl && a.storeUrl.rustore) acts+='<a class="btn store" href="'+a.storeUrl.rustore+'">RuStore</a>';
-      if(!acts) acts='<span class="b soon">Очаквайте скоро</span>';
-      var card=document.createElement('div'); card.className='card';
-      card.innerHTML='<h3>'+a.name+'</h3><div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>';
-      grid.appendChild(card);
+  function render(){
+    var host=document.getElementById('catalog');
+    document.getElementById('preview').textContent = t('preview_note');
+    document.getElementById('preview').style.display = preview ? 'block' : 'none';
+    if(cat && cat.brand){ document.getElementById('tagline').textContent = L(cat.brand.tagline)||t('tagline'); document.getElementById('short').textContent = t('eco')+' · '+cat.brand.short; document.getElementById('ftag').textContent = t('ftag'); }
+    else { document.getElementById('tagline').textContent = t('tagline'); document.getElementById('ftag').textContent = t('ftag'); }
+    if(!cat){ host.innerHTML='<div class="empty">'+t('loading')+'</div>'; return; }
+    var shownTotal=0, pubTotal=0; host.innerHTML='';
+    (cat.groups||[]).forEach(function(g){
+      var apps=(g.apps||[]).filter(function(a){ return preview || a.show; });
+      apps.forEach(function(a){ if(a.published && (a.published.huawei||a.published.rustore)) pubTotal++; });
+      if(!apps.length) return;
+      shownTotal += apps.length;
+      var sec=document.createElement('section'); sec.className='group';
+      sec.innerHTML='<h2>'+L(g.title)+'</h2>'+(L(g.note)?'<p class="gnote">'+L(g.note)+'</p>':'');
+      var grid=document.createElement('div'); grid.className='grid';
+      apps.forEach(function(a){
+        var pub=a.published||{}; var badges='';
+        badges += pub.huawei ? '<span class="b hw">Huawei ✓</span>' : '<span class="b hw soon">Huawei '+t('soon_w')+'</span>';
+        badges += pub.rustore ? '<span class="b ru">RuStore ✓</span>' : '<span class="b ru soon">RuStore '+t('soon_w')+'</span>';
+        var acts='';
+        if(a.download && a.apk && a.apk.rustore) acts+='<a class="btn dl" href="/'+a.apk.rustore+'">'+t('dl')+'</a>';
+        if(pub.huawei && a.storeUrl && a.storeUrl.huawei) acts+='<a class="btn store" href="'+a.storeUrl.huawei+'">AppGallery</a>';
+        if(pub.rustore && a.storeUrl && a.storeUrl.rustore) acts+='<a class="btn store" href="'+a.storeUrl.rustore+'">RuStore</a>';
+        if(!acts) acts='<span class="b soon">'+t('soon')+'</span>';
+        var card=document.createElement('div'); card.className='card';
+        card.innerHTML='<h3>'+a.name+'</h3><div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>';
+        grid.appendChild(card);
+      });
+      sec.appendChild(grid); host.appendChild(sec);
     });
-    sec.appendChild(grid); host.appendChild(sec);
-  });
-  if(!shownTotal) host.innerHTML='<div class="empty">Още няма публикувани приложения тук.<br>Скоро 🐾</div>';
-  document.getElementById('counts').textContent = shownTotal+' приложения · '+pubTotal+' в магазините'+(preview?' (преглед)':'');
+    if(!shownTotal) host.innerHTML='<div class="empty">'+t('empty')+' 🐾</div>';
+    document.getElementById('counts').textContent = shownTotal+' '+t('apps')+' · '+pubTotal+' '+t('stores')+(preview?' ('+t('soon_w')+')':'');
+  }
+
+  render(); // първоначален изглед (loading)
+  fetch('catalog.json?v='+Date.now()).then(function(r){return r.json();}).then(function(j){ cat=j; render(); }).catch(function(){ document.getElementById('catalog').innerHTML='<div class="empty">'+t('load_err')+'</div>'; });
 })();
 </script>
 </body>

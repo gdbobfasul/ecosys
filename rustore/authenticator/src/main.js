@@ -49,6 +49,9 @@ import { renderCollectionAdd } from './screens/collection-add.js';
 import { renderCollectionView } from './screens/collection-view.js';
 import { renderPasswordEdit } from './screens/password-edit.js';
 import { renderSeedEdit } from './screens/seed-edit.js';
+import { renderSshEdit } from './screens/ssh-edit.js';
+import { renderNetworkEdit } from './screens/network-edit.js';
+import { renderTokenEdit } from './screens/token-edit.js';
 
 // --- Инжектиране на стилове + цветовете на темата като CSS променливи ---
 function injectStyles() {
@@ -80,7 +83,10 @@ const SCREENS = {
   'collection-add': renderCollectionAdd,
   'collection-view': renderCollectionView,
   'password-edit': renderPasswordEdit,
-  'seed-edit': renderSeedEdit
+  'seed-edit': renderSeedEdit,
+  'ssh-edit': renderSshEdit,
+  'network-edit': renderNetworkEdit,
+  'token-edit': renderTokenEdit
 };
 
 // Навигационен обект, подаван на всеки екран.

@@ -145,3 +145,11 @@ huawei/**/assets/animations/
 # Локални отговори от опция 2 (пълна инсталация) — не в git
 .full-install-answers
 apk/versions.json
+
+# Pupikes Doctor — свалена референтна снимкова библиотека (~4.5GB, скрапната от ISIC/Wikipedia/
+# Open-i/Commons). Сервира се/сваля се от сървъра, НЕ влиза в git и НЕ в APK. Регенерируема
+# от private/medikit-harvester/*. Индексът също (манифест на игнорираните снимки).
+rustore/**/publish/reference/images/
+huawei/**/publish/reference/images/
+rustore/**/publish/reference/images-index.json
+huawei/**/publish/reference/images-index.json

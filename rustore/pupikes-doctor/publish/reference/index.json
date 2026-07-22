@@ -1,0 +1,178 @@
+{
+  "items": [
+    {
+      "id": "bruise",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 5
+    },
+    {
+      "id": "fracture",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 4
+    },
+    {
+      "id": "sprain",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 2
+    },
+    {
+      "id": "cut",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "ky",
+        "zh"
+      ],
+      "images": 7
+    },
+    {
+      "id": "burn",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "ky",
+        "zh"
+      ],
+      "images": 6
+    },
+    {
+      "id": "bite",
+      "langs": [
+        "ru",
+        "en",
+        "de",
+        "fr",
+        "it",
+        "ar",
+        "ja"
+      ],
+      "images": 4
+    },
+    {
+      "id": "rash",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "ar",
+        "ja",
+        "ky",
+        "zh"
+      ],
+      "images": 4
+    },
+    {
+      "id": "infection",
+      "langs": [
+        "en",
+        "es",
+        "pt",
+        "ar",
+        "zh"
+      ],
+      "images": 0
+    },
+    {
+      "id": "swelling",
+      "langs": [
+        "bg",
+        "en",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja"
+      ],
+      "images": 2
+    },
+    {
+      "id": "nosebleed",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "ky",
+        "zh"
+      ],
+      "images": 6
+    }
+  ],
+  "source": "Wikipedia/Wikimedia Commons (CC/PD)",
+  "updated": "2026-07-22"
+}

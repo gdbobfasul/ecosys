@@ -1,0 +1,54 @@
+{
+  "id": "tramadol",
+  "langs": {
+    "bg": {
+      "title": "Трамадол",
+      "extract": "Трамадолът е лекарство с упойващо действие."
+    },
+    "ru": {
+      "title": "Трамадол",
+      "extract": "Трамадо́л — лекарственное средство, сильнодействующий наркотический опиоидный анальгетик, имеющий низкое сродство с опиоидными рецепторами. Относится к группе неселективных полных агонистов опиоидных рецепторов. Обладает общей анальгезирующей активностью, даёт быстрый и длительный эффект. Уступает по активности морфину примерно в 10 раз. Анальгезирующее действие развивается через 15—30 мин после приема внутрь и продолжается до 6 часов. Применяется в виде отдельного препарата, а также в сочетании с парацетамолом. При использовании минимальной эффективной дозы побочные эффекты при длительном применении сводятся к минимуму. Некоторые справочники классифицируют трамадол как «наркотический анальгетик», другие — как «опиоидный ненаркотический анальгетик». В России трамадол включён в список сильнодействующих и ядовитых веществ."
+    },
+    "uk": {
+      "title": "Трамадол",
+      "extract": "Трамадол — лікарський засіб, центрально-активний опіоїдний знеболювальний, має змішаний механізм дії."
+    },
+    "en": {
+      "title": "Tramadol",
+      "extract": "Tramadol, sold under the brand name Tramal among others, is an opioid pain medication and a serotonin–norepinephrine reuptake inhibitor (SNRI) used to treat moderate to severe pain. When taken by mouth in an immediate-release formulation, the onset of pain relief usually begins within an hour. It is also available by injection. It is available in combination with paracetamol (acetaminophen)."
+    },
+    "de": {
+      "title": "Tramadol",
+      "extract": "Tramadol ist ein Arzneistoff aus der Gruppe der Opioide und wird zur Behandlung mäßig starker bis starker Schmerzen verwendet. Von Grünenthal wurde die Substanz synthetisch entwickelt und 1977 als Arzneimittel (Tramadol-HCl) unter dem Namen Tramal auf den Markt gebracht."
+    },
+    "fr": {
+      "title": "Tramadol",
+      "extract": "Le tramadol est un analgésique central développé par la firme allemande Grünenthal GmbH (en) dans les années 1970. Il est classé dans la catégorie des analgésiques de niveau 2, catégorie comprenant également la codéine, les extraits d'opium et anciennement le dextropropoxyphène."
+    },
+    "es": {
+      "title": "Tramadol",
+      "extract": "El tramadol es un analgésico opioide atípico, indicado en dolor moderado, o cuando los AINE no son suficientes para calmar el dolor.\nEs agonista en receptores opioides postsinápticos y alfa-2 presinápticos."
+    },
+    "it": {
+      "title": "Tramadolo",
+      "extract": "Il tramadolo è un oppioide sintetico antidolorifico. È un farmaco utilizzato per stati dolorosi acuti e cronici e dolori indotti da interventi chirurgici e diagnostici particolarmente dolorosi."
+    },
+    "pt": {
+      "title": "Tramadol",
+      "extract": "Tramadol é um opioide, usado principalmente como analgésico de ação central, que alivia a dor atuando sobre células nervosas específicas da medula espinhal e do cérebro. O tramadol se combina com os receptores opioides do cérebro e bloqueia a transmissão de estímulos de dor. É indicado para o tratamento de dores de intensidade moderada a severa."
+    },
+    "ar": {
+      "title": "ترامادول",
+      "extract": "ترامادول. ، ، هو مسكن ألم أفيوني ومثبط إعادة امتصاص السيروتونين والنورإبينفرين (SNRI) يستخدم لعلاج الألم الشديد والمعتدل. له مفعول مقارب للكودين، وهو نظير هذا الأخير. ويصنف ضمن مسكنات الألم من النوع الثاني. يؤثر على نفس مستقبلات اشباه الأفيونات، وهو ناهظ المستقبلات الأفيونية. هو لا يحدد مفعول المواد الافيونية الأخرى، وهو يسبب الإدمان والأعتماد الجسدي والنفسي ولكن بصفة أقل من باقي المواد الأفيونية المنافسة على نفس المستقبلات ويحذر الأطباء من تناوله دون إرشادات طبية لأن له خطورة بالغة جدا ويسبب الكثير من الأمراض العصبية."
+    },
+    "ja": {
+      "title": "トラマドール",
+      "extract": "トラマドール（tramadol）は、オピオイド系の鎮痛剤の1つである。弱オピオイドに分類される。トラマドールには主な2つの機序があり、μオピオイド受容体の部分アゴニストとしての作用と、セロトニン・ノルアドレナリンの再取り込み阻害作用とを併せ持つ。"
+    },
+    "zh": {
+      "title": "曲马多",
+      "extract": "曲马多 是一种阿片类药物，属作用于中枢的镇痛药，可缓解普通到严重的疼痛。该药是人工合成的，至少有两种作用机理：曲马多的活性代谢物对μ-阿片类受体具强亲和力、曲马多原型则为弱的5-羟色胺和去甲肾上腺素再摄取抑制剂（SNRI）。 \n"
+    }
+  },
+  "images": []
+}

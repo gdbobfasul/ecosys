@@ -38,13 +38,15 @@ echo ""
 
 # ── Настройки от миналото пускане (за „използвай старите") ──
 ANSWERS_FILE="$PROJECT_ROOT/.full-install-answers"
-LAST_TARGET=""; LAST_ASSETS=0; LAST_DROP=0; LAST_BUILD=0; LAST_UPDATE=0
+LAST_TARGET=""; LAST_ASSETS=0; LAST_DROP=0; LAST_BUILD=0; LAST_UPDATE=0; LAST_NPM=0
 [ -f "$ANSWERS_FILE" ] && . "$ANSWERS_FILE"
 
 # помощник: въпрос да/не с дефолт (0/1) → резултат в глобалната ANS
 ask_yn() {
-    local d_lbl="НЕ"; [ "$2" = 1 ] && d_lbl="ДА"
-    read -p "  $1 [y/N, Enter=$d_lbl]: " _r
+    # Показваме голямата буква = стойността по подразбиране (от миналото пускане), за да НЕ е
+    # подвеждащо: default ДА → „[Y/n, Enter=ДА]"; default НЕ → „[y/N, Enter=НЕ]".
+    local d_lbl="НЕ" yn="y/N"; [ "$2" = 1 ] && { d_lbl="ДА"; yn="Y/n"; }
+    read -p "  $1 [$yn, Enter=$d_lbl]: " _r
     if [ -z "$_r" ]; then ANS="$2"; else case "${_r,,}" in y|yes|да|д) ANS=1;; *) ANS=0;; esac; fi
 }
 yn() { [ "$1" = 1 ] && echo ДА || echo НЕ; }
@@ -58,7 +60,7 @@ resolve_target() {  # $1 = име на target → SRV/USR/PRT + t
 # ── Първи въпрос: „Да използвам ли старите настройки?" (само ако има запис и няма подаден target) ──
 USE_OLD=0
 if [ -f "$ANSWERS_FILE" ] && [ -z "$1" ]; then
-    echo -e "  ${CYAN}Последно пускане:${NC} цел=${GREEN}${LAST_TARGET:-?}${NC} · билд=$(yn $LAST_BUILD) · асети=$(yn $LAST_ASSETS) · drop=$(yn $LAST_DROP) · обнови апове=$(yn $LAST_UPDATE)"
+    echo -e "  ${CYAN}Последно пускане:${NC} цел=${GREEN}${LAST_TARGET:-?}${NC} · билд=$(yn $LAST_BUILD) · npm=$(yn $LAST_NPM) · асети=$(yn $LAST_ASSETS) · drop=$(yn $LAST_DROP) · обнови апове=$(yn $LAST_UPDATE)"
     read -p "  Да използвам ли старите настройки? [Y/n]: " _ro
     case "${_ro,,}" in n|no|не|н) USE_OLD=0;; *) USE_OLD=1;; esac
     echo ""
@@ -103,10 +105,11 @@ echo ""
 
 # ── Всички въпроси отпред (при „старите настройки" се приемат наготово) ──
 if [ "$USE_OLD" = 1 ]; then
-    BUILD_APPS=$LAST_BUILD; WITH_ASSETS=$LAST_ASSETS; DROP_DB=$LAST_DROP; UPDATE_APPS=$LAST_UPDATE
+    BUILD_APPS=$LAST_BUILD; NPM_BUILD=$LAST_NPM; WITH_ASSETS=$LAST_ASSETS; DROP_DB=$LAST_DROP; UPDATE_APPS=$LAST_UPDATE
     echo -e "  ${CYAN}Ползвам старите настройки.${NC}"
 else
     ask_yn "Да билдна ли приложенията (всички, подписани)?" "$LAST_BUILD"; BUILD_APPS=$ANS
+    ask_yn "Да пребилдна ли npm пакетите (node_modules) на сървъра?" "$LAST_NPM"; NPM_BUILD=$ANS
     ask_yn "Да кача и асети (видеа/картинки)?" "$LAST_ASSETS"; WITH_ASSETS=$ANS
     ask_yn "Drop Databases — трия ВСИЧКИ бази (chat/portals/eco3/HLB/WNB) и създавам от 0?" "$LAST_DROP"; DROP_DB=$ANS
     ask_yn "Да обновя ли приложенията на сървъра (само по-новите, НЕ трие старите)?" "$LAST_UPDATE"; UPDATE_APPS=$ANS
@@ -121,10 +124,11 @@ LAST_ASSETS=$WITH_ASSETS
 LAST_DROP=$DROP_DB
 LAST_BUILD=$BUILD_APPS
 LAST_UPDATE=$UPDATE_APPS
+LAST_NPM=$NPM_BUILD
 EOF
 
 echo ""
-echo -e "  ${YELLOW}Билд апове: $(yn $BUILD_APPS)  ·  Асети: $(yn $WITH_ASSETS)  ·  Drop бази: $(yn $DROP_DB)  ·  Обнови апове на сървъра: $(yn $UPDATE_APPS)${NC}"
+echo -e "  ${YELLOW}Билд апове: $(yn $BUILD_APPS)  ·  npm пакети: $(yn $NPM_BUILD)  ·  Асети: $(yn $WITH_ASSETS)  ·  Drop бази: $(yn $DROP_DB)  ·  Обнови апове на сървъра: $(yn $UPDATE_APPS)${NC}"
 echo -e "  ${CYAN}[checkpoint] Пълна инсталация започва: $(date '+%H:%M:%S') → ${SRV}${NC}"
 
 SSH_OPTS="-o ConnectTimeout=90 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -p ${PRT}"
@@ -157,7 +161,7 @@ fi
 
 step "1/5  Deploy + npm + бази chat/portals/eco3${RESET:+ (DROP)} + услуги chat/eco3/portals"
 # KCY_IN_FULL_INSTALL=1 → 04 да НЕ възстановява failover тук (правим го накрая на 02, след услугите)
-if ! KCY_AUTO_DEFAULTS=1 KCY_WITH_ASSETS=$WITH_ASSETS KCY_DROP_DB=$DROP_DB DEPLOY_NO_PAUSE=1 \
+if ! KCY_AUTO_DEFAULTS=1 KCY_AUTO_NPM=$NPM_BUILD KCY_WITH_ASSETS=$WITH_ASSETS KCY_DROP_DB=$DROP_DB DEPLOY_NO_PAUSE=1 \
         KCY_SUPPRESS_DONE=1 KCY_IN_FULL_INSTALL=1 \
         bash ./deploy-scripts/04-deploy.sh "$SRV" "$USR" "$PRT"; then
     echo -e "${RED}✗ Deploy-ът се провали — спирам пълната инсталация.${NC}"

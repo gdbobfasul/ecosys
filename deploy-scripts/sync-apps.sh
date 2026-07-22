@@ -55,10 +55,25 @@ for t in "${TARGETS[@]}"; do
 done
 [ "${#VALID[@]}" -eq 0 ] && { echo -e "${RED}Няма валидна цел.${NC}"; exit 1; }
 
-# ── архивирай папката apk веднъж (каталог + инсталационни файлове) ──
+# ── архивирай apk/ веднъж. По подразбиране ЦЯЛАТА папка (каталог + всички инсталационни файлове).
+#    Ако е зададен KCY_APPS_ONLY (имена, напр. "fps-hunter market-pulse") → само техните APK/EXE
+#    + каталожните файлове (index/catalog/versions/лого — за да остане страницата консистентна). ──
 TAR="${HOME}/pupikes-apps-$(date +%Y%m%d-%H%M%S).tar.gz"
-echo ""; echo -e "${YELLOW}[1] Архивиране на apk/ (каталог + инсталационни файлове)...${NC}"
-tar -czf "$TAR" apk || { echo -e "${RED}tar се провали${NC}"; exit 1; }
+echo ""; echo -e "${YELLOW}[1] Архивиране на apk/ ...${NC}"
+if [ -n "$KCY_APPS_ONLY" ]; then
+    declare -a FILES=()
+    # Каталожни файлове (всичко в apk/ БЕЗ .apk/.exe) — винаги.
+    while IFS= read -r f; do FILES+=("$f"); done < <(find apk -maxdepth 1 -type f ! -name '*.apk' ! -name '*.exe')
+    # APK/EXE само на избраните имена (двата магазина + евентуален десктоп .exe).
+    for nm in $KCY_APPS_ONLY; do
+        while IFS= read -r f; do FILES+=("$f"); done < <(find apk -maxdepth 1 -type f \( -name "${nm}-*.apk" -o -name "${nm}-*.exe" \))
+    done
+    [ "${#FILES[@]}" -eq 0 ] && { echo -e "${RED}Няма файлове за избраните апове: $KCY_APPS_ONLY${NC}"; exit 1; }
+    echo -e "  ${CYAN}само избрани: ${KCY_APPS_ONLY}${NC}"
+    tar -czf "$TAR" "${FILES[@]}" || { echo -e "${RED}tar се провали${NC}"; exit 1; }
+else
+    tar -czf "$TAR" apk || { echo -e "${RED}tar се провали${NC}"; exit 1; }
+fi
 echo -e "  ${GREEN}✓ $(du -h "$TAR" | cut -f1)${NC}"
 
 # ── качи към всяка цел последователно ──

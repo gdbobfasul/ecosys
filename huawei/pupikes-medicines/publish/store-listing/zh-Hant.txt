@@ -1,0 +1,8 @@
+Pupikes Medicines — 掃描藥盒即可閱讀說明。
+
+僅供參考 — 標示高風險成分；並非醫療建議。
+
+在裝置上讀取標籤（OCR）並提供藥品資訊，支援 15 種語言
+
+支援: dai.group.ltd.support@gmail.com
+如有問題或需要支援，請來信: dai.group.ltd.support@gmail.com

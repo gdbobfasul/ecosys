@@ -403,9 +403,9 @@ show_menu() {
     item "56" "Инсталирай мобилна среда (Android) → ЛОКАЛНО" \
         "JDK 17 + Android SDK + емулатор (headless) на ТАЗИ машина. Иска UAC (админ)." \
         "Проверки на версии + дискове + избор диск/папка за SDK. (Android Studio IDE е по избор.)"
-    item "57" "Билд/компилирай мобилните апове (rustore/huawei)" \
-        "web bundle + APK в /apk. Интерактивно: избор на 1 апп → билдва за ДВАТА магазина; или 'a' = всички." \
-        "При selflearning-friend билдва И десктоп .exe-то (electron) → /apk. Preflight проверява средата от опция 56."
+    item "57" "Билд/компилирай мобилните апове (rustore/huawei) + качване" \
+        "В началото пита за качване след билда: всички / избрани апове / без; и къде (prod / VM / Tailscale)." \
+        "После билд (1 апп → двата магазина или 'a' = всички; selflearning-friend + десктоп .exe), после качва избраното."
     item "58" "Тест RUStore апове — консистентност + тест-робот" \
         "Статични проверки + безглав браузър над всички /rustore апове." \
         "Дали се билдват, дали стартират/'играят' + console грешки + скрийншоти."
@@ -1410,7 +1410,45 @@ run_choice() {
             press_enter
             ;;
         57)
+            # ── Въпроси В НАЧАЛОТО: (1) дали/кои да кача след билда, (2) къде. После билд, после качване. ──
+            echo ""
+            echo "  Да кача ли аповете на сървъра?"
+            echo "    1) Да — ВСИЧКИ апове (цялата папка apk/)"
+            echo "    2) Да — само ИЗБРАНИ апове (ще въведа имената)"
+            echo "    3) Не качвай"
+            read -p "  Избери [1-3, Enter=3]: " UPMODE
+            UP_DO=0; UP_APPS=""
+            case "$UPMODE" in
+                1) UP_DO=1 ;;
+                2) UP_DO=1
+                   read -p "  Имена на апове (интервал между тях, напр. fps-hunter market-pulse): " UP_APPS
+                   [ -z "$UP_APPS" ] && { echo "  Няма избрани — няма да качвам."; UP_DO=0; } ;;
+                *) UP_DO=0 ;;
+            esac
+            UP_TARGETS=""
+            if [ "$UP_DO" = 1 ]; then
+                echo ""
+                echo "  Къде да ги кача?"
+                echo "    1) production + виртуалната машина"
+                echo "    2) production + Tailscale (частен път)"
+                echo "    3) само production"
+                echo "    4) само виртуалната машина"
+                read -p "  Избери [1-4, Enter=3]: " UPT
+                case "$UPT" in
+                    1) UP_TARGETS="prod vm" ;;
+                    2) UP_TARGETS="prod prodts" ;;
+                    4) UP_TARGETS="vm" ;;
+                    *) UP_TARGETS="prod" ;;
+                esac
+            fi
+            # Билд (интерактивно пита кой апп — за rustore И huawei)
             bash "$SCRIPT_DIR/build-mobile-apps.sh"
+            # Качване според отговорите от началото
+            if [ "$UP_DO" = 1 ]; then
+                echo ""
+                echo -e "  ${CYAN}→ Качване на сървъра (${UP_TARGETS}${UP_APPS:+ · само: $UP_APPS})...${NC}"
+                KCY_NO_PAUSE=1 KCY_APPS_ONLY="$UP_APPS" bash "$SCRIPT_DIR/sync-apps.sh" $UP_TARGETS
+            fi
             press_enter
             ;;
         58)

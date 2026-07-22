@@ -11,8 +11,9 @@ export function renderPasswordEdit(root, nav, item) {
 
   const title = h('input', { type: 'text', maxlength: '256', value: (item && item.title) || '' });
   const url = h('input', { type: 'text', maxlength: '256', value: (item && item.url) || '', placeholder: 'https://…' });
-  const login = h('input', { type: 'text', maxlength: '256', value: (item && item.login) || '' });
+  const login = h('input', { type: 'text', maxlength: '256', value: (item && item.login) || '', placeholder: 'me@example.com' });
   const password = h('input', { type: 'password', maxlength: '256', value: (item && item.password) || '' });
+  const otherCode = h('input', { type: 'text', maxlength: '256', value: (item && item.otherCode) || '' });
   const note = h('textarea', { maxlength: '256' });
   note.value = (item && item.note) || '';
   const err = h('div', { class: 'err' });
@@ -35,7 +36,7 @@ export function renderPasswordEdit(root, nav, item) {
 
   const save = async () => {
     if (!title.value.trim()) { err.textContent = t('title_required'); return; }
-    const data = { title: title.value.trim(), url: url.value.trim(), login: login.value, password: password.value, note: note.value };
+    const data = { title: title.value.trim(), url: url.value.trim(), login: login.value, password: password.value, otherCode: otherCode.value, note: note.value };
     if (editing) await updatePassword(item.id, data); else await addPassword(data);
     nav.go('list');
   };
@@ -49,8 +50,9 @@ export function renderPasswordEdit(root, nav, item) {
   const content = [
     h('label', { text: t('title') }), title,
     h('label', { text: t('pw_url') }), copyField(url),
-    h('label', { text: t('login') }), copyField(login),
+    h('label', { text: t('pw_email') }), copyField(login),
     h('label', { text: t('password') }), pwdRow,
+    h('label', { text: t('pw_other_code') }), copyField(otherCode),
     h('label', { text: t('note') }), note,
     err,
     h('button', { class: 'btn accent', onclick: save, text: t('save') })

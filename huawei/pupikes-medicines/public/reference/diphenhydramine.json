@@ -1,0 +1,54 @@
+{
+  "id": "diphenhydramine",
+  "langs": {
+    "bg": {
+      "title": "Дифенхидрамин",
+      "extract": "Дифенхидраминът е вид антихистамин, използван главно за лечение на алергии. Използва се също при инсомния, при симптоми на настинка, при тремор, причинен от Синдрома на Паркинсон, и при гадене. Приема се перорално, чрез инжектиране във вена или чрез инжектиране в мускул. Максималният ефект обикновено е около два часа след приема на доза, а ефектите продължават най-много седем часа."
+    },
+    "ru": {
+      "title": "Дифенгидрамин",
+      "extract": "Дифенгидрами́н («Димедро́л») — антигистаминный препарат первого поколения. В практике обычно используется в форме гидрохлорида."
+    },
+    "uk": {
+      "title": "Димедрол",
+      "extract": "Димедро́л — протиалергійний лікарський препарат, що знімає спазми бронхів і кишечника, розширює кровоносні судини, при лікуванні кропивниці, деяких дерматитів та при розладах сну як снодійний засіб."
+    },
+    "en": {
+      "title": "Diphenhydramine",
+      "extract": "Diphenhydramine, or Diphenylhydramine, sold under the brand name Benadryl among others, is an antihistamine and sedative. Although generally considered sedating, diphenhydramine can cause paradoxical central nervous system stimulation in some individuals, particularly at higher doses. This may manifest as agitation, anxiety, or restlessness rather than sedation. It is a first-generation H1-antihistamine (i.e. it blocks histamine) with sedative effects. Diphenhydramine is also a potent anticholinergic. It is mainly used to treat allergies, insomnia, and symptoms of the common cold. It is also less commonly used for tremors in parkinsonism, and nausea. It is taken by mouth, injected into a vein, injected into a muscle, or applied to the skin. Maximal effect is typically around two hours after an oral dose, and effects can last for up to seven hours."
+    },
+    "de": {
+      "title": "Diphenhydramin",
+      "extract": "Diphenhydramin ist ein Arzneistoff aus der Klasse der H1-Antihistaminika. Er wirkt gleichzeitig stark anticholinerg."
+    },
+    "fr": {
+      "title": "Diphénhydramine",
+      "extract": "La diphénhydramine (DHM) est une substance chimique utilisée comme antihistaminique H1 de première génération, de la famille pharmacologique des aminoalkyl-éthers (comme la doxylamine) qui n'est plus guère utilisée contre les allergies à proprement parler (à cause de la somnolence qu'elle génère) mais surtout :sous forme de spécialité pour application locale contre les piqûres d'insectes (Butix, R Calm, Diphamine, Azaron…) ;\npréventivement contre le mal des transports (Nautamine, R Calm, Bénadryl) ;\npour lutter contre le rhume (Actifed jour / nuit) ;\npour le soulagement de l'insomnie occasionnelle (Nustasium, Sleep-Eze) ;\npour le sevrage des opiacés (Azicalm)."
+    },
+    "es": {
+      "title": "Difenhidramina",
+      "extract": "El clorhidrato de difenhidramina es una droga antihistamínica, sedante e hipnótica. Suele ser recetada como un medicamento anticolinérgico con efectos antimuscarínicos, descubierto como alternativa sintética de la escopolamina. De igual modo, es utilizada como tratamiento del insomnio y de la enfermedad de Parkinson. En su consumo recreativo, la difenhidramina actúa como alucinógeno cuando las dosis son mayores a las clínicamente recomendadas."
+    },
+    "it": {
+      "title": "Difenidramina",
+      "extract": "La  difenidramina è un farmaco antistaminico di prima generazione appartenente al gruppo degli H1 antagonisti, in grado cioè di competere con l'istamina a livello dei recettori H1 presenti nella muscolatura liscia dell'albero respiratorio, dei vasi, dei capillari e di alcune ghiandole esocrine, come quelle annesse ai bronchi, le salivari e le lacrimali. Ha quindi azione broncodilatante, spasmolitica e antisecretiva."
+    },
+    "pt": {
+      "title": "Difenidramina",
+      "extract": "Difenidramina é um anti-histamínico derivado da etanolamina. Compete com a histamina pelos receptores H1, agindo como agonista inverso. Desta forma evita, porém não reverte, as respostas mediadas unicamente pela histamina."
+    },
+    "ar": {
+      "title": "ديفينهيدرامين",
+      "extract": " ديفينهيدرامين  و هو من الجيل الأول من مضادات الهيستامين التي تملك مضادات الكولين، مضاد للسعال، مضاد للقئ، ومهدئ الخصائص التي تستخدم أساسا لعلاج الحساسية."
+    },
+    "ja": {
+      "title": "ジフェンヒドラミン",
+      "extract": "ジフェンヒドラミン (Diphenhydramine) は、H1受容体拮抗薬のうち、古い第一世代抗ヒスタミン薬に属する化合物のひとつである。製品名はレスタミンコーワ錠（興和創薬販売）。"
+    },
+    "zh": {
+      "title": "苯海拉明",
+      "extract": "苯海拉明 是一種第一代抗組織胺藥，主要用於治療過敏症，也可以用於治療失眠、感冒症狀、帕金森氏症震顫和噁心、防止暈車及錐體外症候群，亦具備局部麻醉藥的效果。苯海拉明具有鎮靜劑作用，被部分用於助眠或抗焦慮藥。給藥方式包括口服、靜脈注射及肌肉注射。最大效果通常在給藥後約兩小時，效果可持續長達七小時。\n"
+    }
+  },
+  "images": []
+}

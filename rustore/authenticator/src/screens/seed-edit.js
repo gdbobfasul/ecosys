@@ -35,6 +35,22 @@ export function renderSeedEdit(root, nav, item) {
   const derivationPath = inp((item && item.derivationPath), "m/44'/60'/0'/0");
   const note = area(item && item.note);
 
+  // Адресна таблица: двойки {етикет : адрес} В СЪЩИЯ портфейл (напр. „bnb" : „0x…"). Динамични редове.
+  const pairsWrap = h('div', {});
+  function pairRow(p) {
+    const lbl = h('input', { type: 'text', maxlength: '256', value: (p && p.label) || '', placeholder: t('crypto_pair_label_ph'), style: 'flex:0 0 30%' });
+    const addr = h('input', { type: 'text', maxlength: '256', value: (p && p.address) || '', placeholder: '0x…', style: 'flex:1' });
+    const cp = h('button', { class: 'copy-btn', title: t('copy'), onclick: () => { copyText(addr.value); toast(t('copied')); } }, '⧉');
+    const row = h('div', { class: 'copyfield', style: 'gap:6px' }, lbl, addr, cp);
+    const del = h('button', { class: 'copy-btn', title: t('delete'), onclick: () => row.remove() }, '🗑');
+    row.appendChild(del);
+    row.dataset.pair = '1';
+    row._get = () => ({ label: lbl.value.trim(), address: addr.value.trim() });
+    return row;
+  }
+  ((item && Array.isArray(item.addressPairs)) ? item.addressPairs : []).forEach((p) => pairsWrap.appendChild(pairRow(p)));
+  const addPairBtn = h('button', { class: 'btn ghost', style: 'margin:6px 0 0', onclick: () => pairsWrap.appendChild(pairRow()) }, '+ ' + t('crypto_add_pair'));
+
   // Поле „копирай" (за адрес/логин).
   function copyField(input) {
     return h('div', { class: 'copyfield' }, input,
@@ -68,7 +84,8 @@ export function renderSeedEdit(root, nav, item) {
       label: label.value.trim(), account: account.value.trim(),
       seedPhrase: seedPhrase.value, passphrase: passphrase.value, password: password.value,
       pin: pin.value, privateKey: privateKey.value, publicAddress: publicAddress.value.trim(),
-      derivationPath: derivationPath.value.trim(), note: note.value
+      derivationPath: derivationPath.value.trim(), note: note.value,
+      addressPairs: [...pairsWrap.querySelectorAll('[data-pair]')].map((r) => r._get()).filter((p) => p.label || p.address)
     };
     if (editing) await updateSeed(item.id, data); else await addSeed(data);
     nav.go('list');
@@ -95,6 +112,9 @@ export function renderSeedEdit(root, nav, item) {
     h('label', { text: t('crypto_private_key') }), secretArea(privateKey),
     h('label', { text: t('crypto_public_address') }), copyField(publicAddress),
     h('label', { text: t('crypto_derivation') }), copyField(derivationPath),
+    h('label', { text: t('crypto_address_table') }),
+    h('p', { class: 'muted', style: 'font-size:.78em;margin:0 0 4px', text: t('crypto_address_table_hint') }),
+    pairsWrap, addPairBtn,
     h('label', { text: t('note') }), note,
     err,
     h('button', { class: 'btn accent', onclick: save, text: t('save') })

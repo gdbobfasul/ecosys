@@ -1,11 +1,14 @@
-// Version: 1.0012
+// Version: 1.0013
 // Игрова сцена: построява ниво, управлява спавн на цели, стрелба (hitscan +
 // проектили), HUD (вкл. минимапа-радар), лимити време/боеприпаси, точки и преход към следващо ниво.
+// Из нивото се пръскат 1–2 оръжейни pickup-а: доближиш ли ги, героят СМЕНЯ оръжието (изхвърля
+// текущото) и получава боезапас за новото. Всяко оръжие поразява всяка цел (само усещането е различно).
 import * as THREE from 'three';
 import { applyAtmosphere } from '../engine/setup.js';
 import { Terrain } from '../terrain.js';
 import { Target } from '../targets.js';
-import { generateLevel } from '../level-generator.js';
+import { generateLevel, ammoForWeapon } from '../level-generator.js';
+import { WEAPONS } from '../weapons.js';
 import { buildViewmodel, muzzleFlash, fadeFlash, EffectsPool } from '../engine/effects.js';
 import { t, tf } from '../core/i18n.js';
 
@@ -87,6 +90,9 @@ export class GameScene {
     });
     this.hud.toast(tf('level_toast', this.config.level, targetName(this.config.target))
       + (this.config.timeLimit > 0 ? '' : ' · ' + t('time_nolimit')));
+
+    // Оръжейни pickup-и из нивото (смяна на оръжие при доближаване).
+    this._spawnPickups();
     // Обяснение на управлението: насложен екран с двете зони (движение/оглеждане) и бутона
     // ОГЪН — показва се при първите 3 пускания (после играчът вече го знае).
     if (this.hud.showGuide) {
@@ -109,6 +115,69 @@ export class GameScene {
     const t = new Target(this.engine.scene, this.terrain, this.config);
     this.targets.push(t);
     this.spawned++;
+  }
+
+  // Пръска 1–2 оръжейни pickup-а (различни от текущото оръжие) из нивото. Взимането им
+  // СМЕНЯ оръжието на героя (изхвърля текущото) и презарежда боезапас за новото.
+  _spawnPickups() {
+    this.pickups = [];
+    const others = Object.keys(WEAPONS).filter((k) => k !== this.config.weapon.key);
+    // Разбъркваме (Fisher–Yates), за да не е винаги едно и също оръжие.
+    for (let i = others.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = others[i]; others[i] = others[j]; others[j] = tmp;
+    }
+    const n = Math.min(2, others.length);
+    for (let i = 0; i < n; i++) {
+      const key = others[i];
+      const ang = Math.random() * Math.PI * 2;
+      const rad = 18 + Math.random() * 42;                          // 18–60 м от центъра
+      const x = THREE.MathUtils.clamp(Math.cos(ang) * rad, -170, 170);
+      const z = THREE.MathUtils.clamp(Math.sin(ang) * rad, -170, 170);
+      this.pickups.push({ key, group: this._buildPickup(key, x, z), taken: false });
+    }
+  }
+
+  // Видим pickup: сандък в цвета на оръжието + ярка сфера и вертикален лъч-маяк (да се засича
+  // отдалеч). Върти се в update() за забележимост. Ползва само MeshBasic (без светлини), както играта.
+  _buildPickup(weaponKey, x, z) {
+    const g = new THREE.Group();
+    const color = (WEAPONS[weaponKey] && WEAPONS[weaponKey].color) || 0x888888;
+    const crate = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.5, 0.9), new THREE.MeshBasicMaterial({ color }));
+    crate.position.y = 0.5;
+    g.add(crate);
+    const orb = new THREE.Mesh(new THREE.SphereGeometry(0.28, 8, 8), new THREE.MeshBasicMaterial({ color: 0x66ffff }));
+    orb.position.y = 1.3;
+    g.add(orb);
+    const beam = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.12, 0.12, 24, 6, 1, true),
+      new THREE.MeshBasicMaterial({ color: 0x66ffff, transparent: true, opacity: 0.22, side: THREE.DoubleSide, depthWrite: false })
+    );
+    beam.position.y = 12;
+    g.add(beam);
+    const gy = this.terrain.heightAt(x, z);
+    g.position.set(x, isFinite(gy) ? gy : 0, z);
+    this.engine.scene.add(g);
+    return g;
+  }
+
+  // Смяна на оръжието на героя: изхвърля текущото (viewmodel), слага новото и дава боезапас
+  // за него по същата прогресия по нива. Викa се при взимане на pickup.
+  _switchWeapon(key) {
+    if (!WEAPONS[key]) return;
+    if (this.viewmodel) {
+      this.engine.camera.remove(this.viewmodel);
+      this.viewmodel.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
+    }
+    this.config.weapon = { key, ...WEAPONS[key] };
+    const vm = buildViewmodel(key, this.config.weapon.color);
+    this.engine.camera.add(vm);
+    this.viewmodel = vm;
+    this.reloadCd = 0;
+    const d = (this.config.level - 1) / 99;
+    this.ammo = ammoForWeapon(this.config.level, this.config.weapon, this.config.count, d);
+    this.hud.set({ weapon: t('wpn_' + key), ammo: this.ammo });
+    this.hud.toast(tf('weapon_picked', t('wpn_' + key)), 1200);
   }
 
   // Стрелба: hitscan (пушка/пистолет) или проектил (ракета/прашка).
@@ -191,6 +260,22 @@ export class GameScene {
     for (const t of this.targets) t.update(dt, playerPos);
     this.effects.update(dt);
 
+    // Оръжейни pickup-и: въртим за видимост + взимане при близост (смяна на оръжие).
+    if (this.pickups) {
+      for (const pk of this.pickups) {
+        if (pk.taken) continue;
+        pk.group.rotation.y += dt * 1.5;
+        const dx = pk.group.position.x - playerPos.x;
+        const dz = pk.group.position.z - playerPos.z;
+        if (dx * dx + dz * dz < 6.25) {                 // ~2.5 м радиус на взимане
+          pk.taken = true;
+          this.engine.scene.remove(pk.group);
+          pk.group.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
+          this._switchWeapon(pk.key);
+        }
+      }
+    }
+
     // Минимапа: играч + живите цели като червени точки (върти се по посоката на гледане).
     if (this.hud.drawMap) this.hud.drawMap(playerPos.x, playerPos.z, this.controls.yaw, this.targets);
 
@@ -246,6 +331,15 @@ export class GameScene {
     // добавянето при следващия start() симетрично и чисто (без двойно водене).
     if (this.engine.camera.parent) this.engine.camera.removeFromParent();
     if (this.targets) { this.targets.forEach((t) => t.dispose()); this.targets = []; }
+    // Невзетите оръжейни pickup-и се махат и освобождават (взетите вече са премахнати).
+    if (this.pickups) {
+      this.pickups.forEach((pk) => {
+        if (pk.taken) return;
+        this.engine.scene.remove(pk.group);
+        pk.group.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
+      });
+      this.pickups = [];
+    }
     if (this.effects) this.effects.clear();
     if (this.terrain) { this.terrain.dispose(); this.terrain = null; }
   }

@@ -1,0 +1,54 @@
+{
+  "id": "amoxicillin",
+  "langs": {
+    "bg": {
+      "title": "Амоксицилин",
+      "extract": "Амоксицилинът е бета-лактамен антибиотик от групата на пеницилините. В България е регистриран под марките Amopen, Duomox, Ospamox, Ranoxyl, Helicocin, Upsamox. Освен в тях амоксицилин се съдържа в редица комбинирани медикаменти като Augmentin, Amoxiclav, Forcid Solutab, Curam и други. Някои наименования на медикаментите може да са вече на друга фирма и лекарството вече да е под различно наименование, но със същите съставки."
+    },
+    "ru": {
+      "title": "Амоксициллин",
+      "extract": "Амоксицилли́н — лекарственное средство, полусинтетический антибиотик широкого спектра действия группы пенициллинов для лечения бактериальных инфекции. Его принимают внутрь или, реже, путём инъекции."
+    },
+    "uk": {
+      "title": "Амоксицилін",
+      "extract": "Амоксицилін — β-лактамний антибіотик широкого спектра дії, що використовується для лікування інфекцій ряду сприятливих до нього бактерій. Зазвичай цей препарат рекомендується серед всіх представників класу через кращу абсорбцію після перорального прийняття, ніж решта бета-лактамових антибіотиків. Амоксицилін руйнується бактеріями, що виробляють β-лактамазу; для запобігання цього ефекту амоксицилін часто приймається разом з клавулановою кислотою. Препарат був розроблений компанією Beecham в 1972 році і зараз продається компанією GlaxoSmithKline під назвою Амоксил (Amoxil), який випускається без кислоти, проте патент на препарат вже закінчився, й інші виробники продають його під низкою інших назв."
+    },
+    "en": {
+      "title": "Amoxicillin",
+      "extract": "Amoxicillin is an antibiotic medication belonging to the aminopenicillin class of the penicillin family. The drug is used to treat bacterial infections such as middle ear infection, strep throat, pneumonia, skin infections, odontogenic infections, and urinary tract infections. It is taken orally, or less commonly by either intramuscular injection or by an IV bolus injection, which is a relatively quick intravenous injection lasting from a couple of seconds to a few minutes."
+    },
+    "de": {
+      "title": "Amoxicillin",
+      "extract": "Amoxicillin ist ein Breitbandantibiotikum aus der Gruppe der Aminopenicilline und gehört damit zur Wirkstoffgruppe der β-Lactam-Antibiotika. Das Medikament ist seit 1981 zur Behandlung von Infektionen zugelassen und kann oral oder parenteral angewendet werden. Fertigarzneimittel sind unter verschiedenen Namen im Handel."
+    },
+    "fr": {
+      "title": "Amoxicilline",
+      "extract": "L'amoxicilline est un antibiotique β-lactamine bactéricide de la famille des aminopénicillines indiqué dans le traitement des infections bactériennes à germes sensibles. L'amoxicilline est l'antibiotique le plus couramment utilisé, notamment chez les enfants, car elle présente une bonne absorption par voie orale, un spectre d'action antimicrobien large et un coût faible. Elle fait partie de la liste des médicaments essentiels de l'Organisation mondiale de la santé."
+    },
+    "es": {
+      "title": "Amoxicilina",
+      "extract": "La amoxicilina es un antibiótico semisintético de la penicilina derivado de la penicilina. Se trata de una amino penicilina."
+    },
+    "it": {
+      "title": "Amoxicillina",
+      "extract": "L'amoxicillina è un antibiotico appartenente al gruppo delle penicilline semisintetiche il quale fa parte della classe dei β-lattamici. Viene usata da sola o in associazione con l'acido clavulanico come antibiotico in molte infezioni sostenute da batteri sensibili, che colpiscono l'orecchio, la faringe, le vie respiratorie inferiori, la cute, infiammazioni dentali e l'apparato urinario."
+    },
+    "pt": {
+      "title": "Amoxicilina",
+      "extract": "Amoxicilina é um antibiótico de amplo espectro utilizado no tratamento de diversas infeções bacterianas. Entre estas infeções estão a otite média, faringite estreptocócica, infeções da pele e infeções do trato urinário. É geralmente administrada por via oral, embora também possa ser administrada por injeção."
+    },
+    "hi": {
+      "title": "एमॉक्सिसिलिन",
+      "extract": "एमॉक्सिसिलिन (amoxicillin) पेनिसिलिन परिवार के एमिनोपेनिसिलीन वर्ग से सम्बंधित एक प्रतिजैविक औषधि है। इस औषधि का उपयोग मध्यकर्णशोथ, गले में खराश, निमोनिया, त्वचा संक्रमण, ओडोंटोजेनिक संक्रमण और मूत्र मार्ग संक्रमण जैसे जीवाणु संक्रमणों के निदान के लिए किया जाता है। इसे मुख्यतः मुख से लिया जाता है या कभी-कभी इंट्रामस्क्युलर सुई अथवा बोलस सुई द्वारा भी दिया जाता है। सुई से इसे अन्तःशिरा में पहुँचाना त्वरित परिणामों के लिए किया जाता है जो कुछ सेकण्ड से कुछ मिनट में किया जा सकता है।"
+    },
+    "ja": {
+      "title": "アモキシシリン",
+      "extract": "アモキシシリン (amoxicillin) は、細菌感染症の治療に用いられる、β-ラクタム系抗生物質の一つである。ペニシリン系抗生物質に属する。"
+    },
+    "zh": {
+      "title": "阿莫西林",
+      "extract": "阿莫西林（INN:amoxicillin）是一種抗生素藥物，屬於青黴素家族的氨基青黴素類，用於治療細菌感染，如中耳炎、鏈球菌性咽炎、肺炎、皮膚感染、牙源性感染和泌尿道感染。此藥物通常透過口服方式給藥，較少的情況下有使用靜脈注射或是靜脈點滴的方式給藥。\n"
+    }
+  },
+  "images": []
+}

@@ -1,0 +1,8 @@
+Pupikes Medicines — scansiona una confezione per leggerne la descrizione.
+
+Solo informativo — evidenzia gli ingredienti a rischio; non è un consiglio medico.
+
+Lettura dell’etichetta sul dispositivo (OCR) e informazioni sul farmaco, in 15 lingue
+
+Assistenza: dai.group.ltd.support@gmail.com
+Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com

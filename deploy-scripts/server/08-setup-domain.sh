@@ -338,12 +338,19 @@ sync_pupikes_catalog
 # ── APK парола: осигури htpasswd файла (иначе auth_basic_user_file → nginx -t пада) ──
 NEED_HTPASSWD=0
 printf '%s\n' "$APP_DOMAIN_MAP" | while read -r dom key; do [ -n "$key" ] && [ "$(eval "echo \${APP_${key}_APKGATE:-}")" = "1" ] && exit 7; done; [ $? -eq 7 ] && NEED_HTPASSWD=1
-if [ "$NEED_HTPASSWD" = "1" ] && [ ! -f "$APK_HTPASSWD" ]; then
-    echo "pupikes:$(openssl passwd -apr1 'pupikes' 2>/dev/null)" > "$APK_HTPASSWD"
-    chmod 640 "$APK_HTPASSWD" 2>/dev/null || true
-    echo -e "  ${YELLOW}! създадох $APK_HTPASSWD (временно: потребител ${GREEN}pupikes${YELLOW} / парола ${GREEN}pupikes${YELLOW}) — СМЕНИ Я: htpasswd $APK_HTPASSWD pupikes${NC}"
-elif [ "$NEED_HTPASSWD" = "1" ]; then
-    echo -e "  ${GREEN}✓ $APK_HTPASSWD вече съществува (паролата за скритите APK-та)${NC}"
+if [ "$NEED_HTPASSWD" = "1" ]; then
+    if [ ! -f "$APK_HTPASSWD" ]; then
+        echo "pupikes:$(openssl passwd -apr1 'pupikes' 2>/dev/null)" > "$APK_HTPASSWD"
+        echo -e "  ${YELLOW}! създадох $APK_HTPASSWD (временно: потребител ${GREEN}pupikes${YELLOW} / парола ${GREEN}pupikes${YELLOW}) — СМЕНИ Я: htpasswd $APK_HTPASSWD pupikes${NC}"
+    else
+        echo -e "  ${GREEN}✓ $APK_HTPASSWD вече съществува (паролата за скритите APK-та)${NC}"
+    fi
+    # ВАЖНО: nginx воркерът (www-data) ТРЯБВА да чете файла, иначе auth_basic_user_file →
+    # „Permission denied" → 500 при сваляне СЛЕД въвеждане на паролата. Затова — винаги
+    # (и при нов, и при вече съществуващ файл) осигуряваме четимост от групата на nginx.
+    NGINX_GRP="$(id -gn www-data 2>/dev/null || echo www-data)"
+    chown "root:$NGINX_GRP" "$APK_HTPASSWD" 2>/dev/null || true
+    chmod 644 "$APK_HTPASSWD" 2>/dev/null || true
 fi
 
 # ── Пас 1: HTTP блокове (за да тръгне ACME webroot) ──

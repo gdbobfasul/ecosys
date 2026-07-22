@@ -1,0 +1,54 @@
+{
+  "id": "diclofenac",
+  "langs": {
+    "bg": {
+      "title": "Диклофенак",
+      "extract": "Диклофенакът е нестероиден противовъзпалителен препарат."
+    },
+    "ru": {
+      "title": "Диклофенак",
+      "extract": "Диклофена́к — нестероидный противовоспалительный препарат (НПВП) из группы производных фенилуксусной кислоты. В лекарственных формах используется в виде натриевой соли."
+    },
+    "uk": {
+      "title": "Диклофенак",
+      "extract": "Диклофенак — похідне фенілоцтової кислоти, група нестероїдні протизапальні засоби. Має протизапальну, анальгезовану та жарознижувальну дію завдяки пригніченню синтезу простагландинів і зменшення таким чином усіх проявів запалення. Застосовується у вигляді ін'єкцій, таблеток, свічок по 0,05 г та 0,1 г, зазвичай по 25-75 мг, пролонговані форми — капсули по 100—150 мг. Зовнішня лікарська форма — гель, та емульгель (Вольтарен)."
+    },
+    "en": {
+      "title": "Diclofenac",
+      "extract": "Diclofenac, sold under the brand name Voltaren among others, is a nonsteroidal anti-inflammatory drug (NSAID) used to treat pain and inflammatory diseases such as gout. It can be taken orally, inserted rectally as a suppository, injected intramuscularly, injected intravenously, applied to the skin topically, or through eye drops. Improvements in pain last up to eight hours. It is also available as the fixed-dose combination diclofenac/misoprostol (Arthrotec) to help protect the stomach; however, proton pump inhibitors such as omeprazole are typically first-line since they are at least as effective as misoprostol, but with better tolerability."
+    },
+    "de": {
+      "title": "Diclofenac",
+      "extract": "Diclofenac ist ein Arzneistoff aus der Gruppe der nichtsteroidalen Antirheumatika, der bei leichten bis mittleren Schmerzen und Entzündungen eingesetzt wird, beispielsweise bei Rheuma, Prellungen, Zerrungen, Hexenschuss, Arthrose, Arthritis und Schweißdrüsenabszessen. Seine Wirkung beruht auf einer nichtselektiven Hemmung der Cyclooxygenasen (COX), die im Körper die Entzündungsmediatoren, die Prostaglandine, bilden. Chemisch gehört es zu den Phenylessigsäuren. In Arzneimitteln wird Diclofenac in Form verschiedener Salze verwendet, z. B. als Natriumsalz oder Diethylammoniumsalz."
+    },
+    "fr": {
+      "title": "Diclofénac",
+      "extract": "Le diclofénac est un dérivé arylacétique, produit qui entre dans la classe des anti-inflammatoires non stéroïdiens (AINS) et qui est largement diffusé dans la pharmacopée mondiale sous diverses appellations."
+    },
+    "es": {
+      "title": "Diclofenaco",
+      "extract": "El diclofenaco es un fármaco inhibidor relativamente no selectivo de la ciclooxigenasa y miembro de la familia de los antiinflamatorios no esteroideos (AINE). Está indicado para reducir inflamaciones y como analgésico. Se puede usar para reducir los cólicos menstruales."
+    },
+    "it": {
+      "title": "Diclofenac",
+      "extract": "Il diclofenac è un farmaco anti-infiammatorio non steroideo (FANS) tra i più utilizzati come anti-infiammatorio, antireumatico e soprattutto come analgesico."
+    },
+    "pt": {
+      "title": "Diclofenaco",
+      "extract": "O diclofenaco é um anti-inflamatório não-esteroide (AINE) com ação sobretudo analgésica e anti-inflamatória e com pouca ação antipirética. Apresenta-se nas formas químicas de sal sódico, sal potássico, e de complexo com colestiramina."
+    },
+    "ar": {
+      "title": "ديكلوفيناك",
+      "extract": "ديكلوفيناك المعروف تجارياً باسم الفولتارين هو مادة صيدلانية مصنفة ضمن مضادات الالتهاب اللاسترويدية وهو منتشر في الصيدليات حول العالم تحت تسميات مختلفة. بدأ أول تداول له في المملكة المتحدة عام 1979. يستخدم لعلاج الألم والأمراض الالتهابية مثل النقرس. يؤخذ عن طريق الفم أو عن طريق المستقيم على شكل تحميلة أو عن طريق الحقن أو يوضع على الجلد. يستمر تسكين الألم لمدة تصل إلى ثماني ساعات. كما أنه متوفر في تركيبة مع الميزوبروستول من أجل تقليل مشاكل المعدة."
+    },
+    "ja": {
+      "title": "ジクロフェナク",
+      "extract": "ジクロフェナク は、フェニル酢酸系の非ステロイド性抗炎症薬（NSAIDs）の1種である。主に解熱、鎮痛のために用いられる。"
+    },
+    "zh": {
+      "title": "双氯芬酸",
+      "extract": "双氯芬酸 是一种邻氨基苯甲酸类的非甾体抗炎药，具镇痛、消炎、解热作用。可以缓解风湿性、类风湿性、痛风性等多种关节性及非关节性软组织疼痛，以及治疗急性轻中度疼痛。\n"
+    }
+  },
+  "images": []
+}

@@ -1,0 +1,62 @@
+{
+  "id": "dexamethasone",
+  "langs": {
+    "bg": {
+      "title": "Дексаметазон",
+      "extract": "Дексаметазонът е глюкокортикоид, използван за лечението на различни заболявания."
+    },
+    "ru": {
+      "title": "Дексаметазон",
+      "extract": "Дексаметазо́н — фармацевтический препарат, синтетический глюкокортикостероид, оказывает противовоспалительное и иммунодепрессивное действие, с 1960-х годов применяется при лечении аутоиммунных заболеваний, в настоящее время используется в терапии множества болезней и патологических состояний."
+    },
+    "uk": {
+      "title": "Дексаметазон",
+      "extract": "Дексаметазо́н — синтетичний препарат з групи глюкокортикоїдних гормонів для парентерального, перорального та місцевого застосування. За хімічною структурою він є фторованим похідним гідрокортизону, та є активнішим за преднізолон або кортизон. Дексаметазон уперше синтезований у 1957 році."
+    },
+    "en": {
+      "title": "Dexamethasone",
+      "extract": "Dexamethasone is a fluorinated glucocorticoid medication used to treat rheumatic problems, a number of skin diseases, severe allergies, asthma, chronic obstructive pulmonary disease (COPD), croup, brain swelling, eye pain following eye surgery, superior vena cava syndrome, and along with antibiotics in tuberculosis. In adrenocortical insufficiency, it may be used in combination with a mineralocorticoid medication such as fludrocortisone. In preterm labor, it may be used to improve outcomes in the baby. It may be given by mouth, as an injection into a muscle, as an injection into a vein, as a topical cream or ointment for the skin or as a topical ophthalmic solution to the eye. The effects of dexamethasone are frequently seen within a day and last for about three days."
+    },
+    "de": {
+      "title": "Dexamethason",
+      "extract": "Dexamethason (9-Fluor-16α-methylprednisolon), als Präparatname auch kurz Dexa, ist ein künstliches Glucocorticoid, das entzündungshemmend und dämpfend auf das Immunsystem wirkt. Es gehört zu den langwirkenden Glucocortikoiden und wirkt rund 25-mal stärker als das körpereigene Cortisol. Es besitzt keine relevante mineralkortikoide Wirkung."
+    },
+    "fr": {
+      "title": "Dexaméthasone",
+      "extract": "La dexaméthasone est une hormone glucocorticoïde de synthèse. Elle a un effet anti-inflammatoire et immunosuppresseur."
+    },
+    "es": {
+      "title": "Dexametasona",
+      "extract": "La dexametasona es un potente glucocorticoide sintético con acciones que se asemejan a las de las hormonas esteroides. Actúa como antiinflamatorio e inmunosupresor. Su potencia de 20-30 veces la de la hidrocortisona y 4-5 veces mayor que la prednisona."
+    },
+    "it": {
+      "title": "Desametasone",
+      "extract": "Il desametasone è un potente glucocorticoide di sintesi, farmaco appartenente alla classe degli antinfiammatori steroidei."
+    },
+    "pt": {
+      "title": "Dexametasona",
+      "extract": "Dexametasona é um medicamento corticosteroide usado no tratamento de diversas doenças, entre as quais reumatismo, várias doenças de peles, alergias graves, asma, doença pulmonar obstrutiva crónica, crupe, edema cerebral, dor ocular pós-cirúrgica e, em combinação com antibióticos, tuberculose. Em caso de insuficiência adrenal, é administrado associado a um medicamento com maior efeito mineralocorticoide, como a fludrocortisona. Pode ainda ser usado durante um parto pré-termo para melhorar o prognóstico do bebé. Pode ser administrado por via oral, injeção intramuscular ou injeção intravenosa. A dexametasona faz geralmente efeito passado um dia e o efeito dura cerca de três dias."
+    },
+    "ar": {
+      "title": "ديكساميثازون",
+      "extract": "ديكساميثازون هو كورتيكوستيرويد اصطناعي طويل المفعول، يمنع إفراز المواد المسؤولة عن الالتهاب بما في ذلك البروستاغلاندين، كينين، الهستامين، والإنزيمات الشحمية، وهو يغير أيضا استجابة الجسم المناعية. يتم استخدامه في علاج العديد من الحالات منها، المشاكل الروماتيزمية، وعدد من الأمراض الجلدية، والحساسية الشديدة، والربو، وداء الانسداد الرئوي المزمن، والخانوق، والوذمة الدماغية، وآلام العين بعد جراحة العيون، إلى جانب المضادات الحيوية في السل. يجب استخدامه مع دواء له تأثيرات قشرية معدنية أكبر مثل فلودروكورتيزون في قصور القشرة الكظرية. ويمكن استخدامه لتحسين النتائج في الطفل عند المخاض المبكرة. يمكن تناوله عن طريق الفم أو حقن عضلي، أو عن طريق الوريد. غالبًا ما تُرى تأثيرات الديكساميثازون في غضون يوم وتستمر لمدة ثلاثة أيام تقريبًا. وقد ثبتت فعاليته في علاج بعض الحالات الشديدة من كوفيد-19."
+    },
+    "hi": {
+      "title": "डेक्सामेथाजोन",
+      "extract": "डेक्सामेथाजोन एक कार्बनिक यौगिक है।"
+    },
+    "ja": {
+      "title": "デキサメタゾン",
+      "extract": "デキサメタゾン は、ステロイド系抗炎症薬 (SAID) の一つである。炎症の原因に関係なく炎症反応・免疫反応を強力に抑制する。急性炎症、慢性炎症、自己免疫疾患、アレルギー性疾患などの際に使用される。内服薬の商品名デカドロン。ステロイド外用薬として使われ、日本での格付けで5段階中2-3のストロングとミディアムの医薬品がある。デキサメタゾンは1957年に発見された。WHO必須医薬品モデル・リストに収載されている。"
+    },
+    "ky": {
+      "title": "Дексаметазон",
+      "extract": "Дексаметазон — медициналык жана ветеринардык дары-дармек, сезгенүүгө каршы жана иммуносупрессиялык таасири бар, синтетикалык глюкокортикостероид. Ал ар кандай ооруларды дарылоодо колдонулат."
+    },
+    "zh": {
+      "title": "地塞米松",
+      "extract": "地塞米松 简称地米，是一种人工合成的糖皮质激素，作为弱效抗炎类固醇藥物，可治療多種疾病，包含風濕性疾病，某些皮膚病、嚴重過敏、哮喘、慢性阻塞性肺病、膜性喉炎、腦水腫，也可能與抗细菌药合併用於結核病患者。對於腎上腺皮質機能不全的患者須併服具有盐皮质激素的藥物，例如富能錠等等。早產嬰兒使用地塞米松能改善預後。本品通常一天內即開始發揮藥效，藥效可維持約三天左右。\n"
+    }
+  },
+  "images": []
+}

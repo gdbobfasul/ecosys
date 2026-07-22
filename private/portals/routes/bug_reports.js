@@ -3,6 +3,9 @@
 // БЕЗ снимки. Само за логнати портални потребители. Записите са в порталната база.
 const express = require('express');
 const { requireLoginAPI, isIpWhitelisted, isEnvStaff, userRole } = require('../middleware/access-control');
+// Известяване по имейл при нов доклад (през HTTP API — виж services/mailer.js). Fire-and-forget:
+// ако липсва конфигурация или писмото не мине, докладът пак се записва нормално.
+const { notifyNewBugReport } = require('../services/mailer');
 
 // Преглед на докладите: админ ИЛИ модератор (ИЛИ IP whitelist).
 function requireStaffView(req, res, next) {
@@ -26,6 +29,32 @@ catch (e) { debug = { scoped: () => () => {} }; }
 
 const router = express.Router();
 
+// Родни имена на 15-те езика (за реда „<Приложение> — <език>" в текста на имейла).
+const LANG_NAMES = {
+    bg: 'Български', ru: 'Русский', uk: 'Українська', en: 'English', de: 'Deutsch', fr: 'Français',
+    es: 'Español', 'es-MX': 'Español (MX)', it: 'Italiano', pt: 'Português', ar: 'العربية',
+    hi: 'हिन्दी', ja: '日本語', ky: 'Кыргызча', 'zh-Hant': '繁體中文'
+};
+function langLabel(code) { code = String(code || '').trim(); return code ? ((LANG_NAMES[code] || code) + ' (' + code + ')') : '—'; }
+// Сглобява ТЕКСТА на доклада: започва с ЦЯЛОТО име на приложението + избрания език, после
+// От кого / Телефон-имейл / [Акаунт, ако е логнат] и накрая самото съобщение.
+function composeBody(o) {
+    const lines = [];
+    lines.push((o.displayName || 'Pupikes') + ' — ' + langLabel(o.lang));
+    lines.push('');
+    if (o.name) lines.push('От: ' + o.name);
+    if (o.contact) lines.push('Телефон/имейл: ' + o.contact);
+    if (o.username) lines.push('Акаунт (логнат): ' + o.username);
+    if (o.name || o.contact || o.username) lines.push('');
+    lines.push(String(o.text || ''));
+    return lines.join('\n');
+}
+// Логин идентификатор (за тест) — ако има активна сесия с потребител.
+function loggedUsername(db, req) {
+    try { const uid = req.session && req.session.userId; if (!uid) return ''; const u = db.prepare('SELECT username FROM portal_users WHERE id = ?').get(uid); return (u && u.username) || ''; }
+    catch (e) { return ''; }
+}
+
 // GET /api/portals/bug-report/mine — моят доклад (или null), за да се попълни за редакция
 router.get('/mine', requireLoginAPI, (req, res) => {
     const db = req.app.locals.db;
@@ -47,6 +76,9 @@ router.post('/', requireLoginAPI, (req, res) => {
     if (title.length > 200) title = title.slice(0, 200);
     if (body.length > 5000) body = body.slice(0, 5000);
 
+    // Дали вече има доклад от този потребител — за да известим по имейл САМО при НОВ (не при редакция).
+    const existed = db.prepare('SELECT 1 FROM portal_bug_reports WHERE user_id = ?').get(uid);
+
     // UPSERT по user_id → гарантира 1 доклад на потребител (повторно = редакция).
     // ВАЖНО: при редакция нулираме `fixed = 0` — щом потребителят е променил доклада,
     // той пак отива при „неоправени/непрегледани" за нов преглед от админ/модератор.
@@ -54,6 +86,14 @@ router.post('/', requireLoginAPI, (req, res) => {
         `INSERT INTO portal_bug_reports (user_id, title, body) VALUES (?, ?, ?)
          ON CONFLICT(user_id) DO UPDATE SET title = excluded.title, body = excluded.body, fixed = 0, updated_at = datetime('now')`
     ).run(uid, title, body);
+
+    // Само при ПЪРВИ доклад от този потребител → имейл известие (редакциите не спамят).
+    // В базата пазим СУРОВИЯ текст (за редакция), но в имейла сглобяваме заглавие+акаунт+текст.
+    if (!existed) {
+        const username = loggedUsername(db, req);
+        // Порталният потребител може да е писал на своя език; мейлърът превежда за писмото.
+        notifyNewBugReport({ app: 'portal', displayName: 'Pupikes Портал', lang: '', name: '', contact: '', username, title, text: body, source: 'portal' });
+    }
 
     const row = db.prepare(
         'SELECT id, title, body, created_at, updated_at FROM portal_bug_reports WHERE user_id = ?'
@@ -86,17 +126,27 @@ router.post('/anon', (req, res) => {
     const db = req.app.locals.db;
     const ip = (req.headers['x-forwarded-for'] || req.ip || '').toString().split(',')[0].trim();
     if (!anonRateOk(ip)) return res.status(429).json({ error: 'too_many', message: 'Твърде много доклади. Опитай пак след минута.' });
-    let { app, title, body } = req.body || {};
+    let { app, appName, lang, name, contact, title, body } = req.body || {};
     app = String(app || '').trim().slice(0, 60) || 'unknown';
+    appName = String(appName || '').trim().slice(0, 120);
+    lang = String(lang || '').trim().slice(0, 12);
+    name = String(name || '').trim().slice(0, 120);
+    contact = String(contact || '').trim().slice(0, 160);
     title = String(title || '').trim();
     body = String(body || '').trim();
     if (!body) return res.status(400).json({ error: 'body_required', message: 'Опиши проблема.' });
     if (!title) title = body.slice(0, 60);   // ако няма заглавие → първите думи от текста
     if (title.length > 200) title = title.slice(0, 200);
     if (body.length > 5000) body = body.slice(0, 5000);
+    // Сглобеният ТЕКСТ (в базата и в имейла): пълно име на апа + език + от кого/контакт/[логин] + съобщение.
+    const username = loggedUsername(db, req);
+    const composed = composeBody({ displayName: appName || app, lang, name, contact, username, text: body });
     db.prepare(
         'INSERT INTO portal_bug_reports (user_id, app, title, body) VALUES (NULL, ?, ?, ?)'
-    ).run(app, title, body);
+    ).run(app, title, composed);
+    // Веднага щом записът е в базата (в ОРИГИНАЛ) → известие по имейл (не блокира отговора).
+    // Подаваме структурираните полета в оригинал; мейлърът ги ПРЕВЕЖДА на български за писмото.
+    notifyNewBugReport({ app, displayName: appName || app, lang, name, contact, username, title, text: body, source: 'app' });
     res.json({ ok: true, message: 'Благодарим! Докладът е изпратен.' });
 });
 

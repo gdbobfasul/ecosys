@@ -1,0 +1,80 @@
+{
+  "id": "sprain",
+  "langs": {
+    "bg": {
+      "title": "Навяхване",
+      "extract": "Навяхването е травма на меките тъкани на лигамента в ставата. Обикновено възниква вследствие на рязко движение, което принуждава ставата да надхвърли своя функционален обхват на движение. Лигаментът е здрава нееластична тъкан, съставена от колаген, която свързва две или повече кости, образувайки става. Той е важен за стабилността на ставата и за чувството на проприоцепция. Навяхванията могат да бъдат леки, средни и тежки, като последните два типа включват разкъсване на лигамента. Този тип травма може да се причини във всяка става, но най-често се среща при глезена, коляното и китката. Подобна травма в мускулната тъкан или сухожилието се нарича разтежение.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg"
+    },
+    "ru": {
+      "title": "Растяжение связок",
+      "extract": "Растяже́ние свя́зок — распространённый вид травмы. Растяжение обычно возникает при резких движениях в суставе, превышающих его нормальную амплитуду. Чаще всего растяжению подвергаются связки голеностопного и коленного суставов.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg"
+    },
+    "uk": {
+      "title": "Розтягнення зв'язок",
+      "extract": "Розтягнення зв'язок — травма, яка виникає при дії на тканини сили у вигляді тяги, яка незначно перевищує фізіологічні властивості та не порушує анатомічну безперервність таких еластичних утворень як зв'язки. Найчастіше розтягнення виникає в зоні суглобів — надп'ятково-гомілкового, променево-зап'ясткового, колінного. Основною функцією зв'язки є забезпечення пасивної стабілізації суглоба, і вона відіграє важливу роль у пропріоцептивній функції.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg"
+    },
+    "en": {
+      "title": "Sprain",
+      "extract": "A sprain is a soft tissue injury of the ligaments within a joint, often caused by a sudden movement abruptly forcing the joint to exceed its functional range of motion. Ligaments are tough, inelastic fibers made of collagen that connect two or more bones to form a joint and are important for joint stability and proprioception, which is the body's sense of limb position and movement. Sprains may be mild, moderate, or severe, with the latter two classes involving some degree of tearing of the ligament. Sprains can occur at any joint but most commonly occur in the ankle, knee, or wrist. An equivalent injury to a muscle or tendon is known as a strain.",
+      "image": ""
+    },
+    "de": {
+      "title": "Verstauchung",
+      "extract": "Eine Verstauchung oder Distorsion ist eine Verletzung eines Bandes (Ligamentum) oder einer Gelenkkapsel, bei der die Kollagenfasern dieser Strukturen stark überdehnt werden.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg"
+    },
+    "fr": {
+      "title": "Entorse (médecine)",
+      "extract": "L’entorse est un traumatisme des ligaments causé par la sollicitation excessive d'une articulation. Un ligament est en général étiré ou distendu, éventuellement déchiré, avec encore une aggravation liée à des arrachements osseux.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg"
+    },
+    "es": {
+      "title": "Esguince",
+      "extract": "Un esguince, torcedura o distensión ligamentosa es una lesión de los ligamentos por distensión, estiramiento excesivo, torsión o rasgadura, acompañada de hematoma, inflamación y dolor que impide continuar moviendo la parte lesionada.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg"
+    },
+    "it": {
+      "title": "Distorsione (medicina)",
+      "extract": "Una distorsione è la perdita momentanea e reversibile della congruità articolare dovuta ad una spinta anomala a carico dell'articolazione; è causata da traumi o contusioni soprattutto delle ossa più sporgenti, o di movimenti innaturali delle ossa mobili, ma anche un insufficiente tono muscolare può facilitarla. Consiste in una temporanea modificazione dell'articolazione che non comporta però una perdita di contatto tra le superfici articolari come una lussazione.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Entorse",
+      "extract": "Entorse é a perda momentânea da congruência articular, cápsula articular e/ou ligamento de uma articulação. Também pode ser definida como uma lesão traumática de uma articulação, com alongamento, arrancamento ou ruptura de um ou mais ligamentos, sem deslocamento das superfícies articulares.",
+      "image": ""
+    },
+    "ar": {
+      "title": "التواء المفصل",
+      "extract": "التواء المفصل أو هو إصابة رباط المفصل أو وتر العضل القريب من المفصل، وينتج عادةً عن إصابة رضّية، بالتالي فهو إصابة الأربطة وهي أنسجة ضامة كثيفة وقابلة للتمدد تربط العظام ببعضها عند التقائها بالمفصل تمدده أكثر من قدرته الطبيعية وقد تسبب تمزقه.تحدث عادة نتيجة حركة مفاجئة عن السقوط أو القفز أو الالتواء الحاد تفوق المدى الطبيعي للمفصل، والوثء قد يسبب فقدان الحركة وقد يحتاج لعلاج جراحي., والوثء بطبيعة الإصابة يشبه تمزق الوتر وهو نسيج مكون من الياف عضلية التي تربط العضلات بالعظام، من أكثر أنواع الوثء شيوعا التواء الكاحل.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg"
+    },
+    "hi": {
+      "title": "मोच",
+      "extract": "किसी अस्थिसंधि (ज्वाइंट) के स्नायु (लिगामेन्ट) जब अपनी क्षमता से अधिक खिंच जाते हैं तो इस प्रकार की चोट को मोच (sprain) कहते हैं। चोट लगने के साथ ही सूजन शुरू हो जाती है। मोच किसी भी जोड़ में हो सकता है पर एड़ी और कलाई के जोड़ पर ज्यादा मोच आती है।",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg"
+    },
+    "ja": {
+      "title": "捻挫",
+      "extract": "捻挫 は、関節に関節の許容範囲を超えた動きが与えられた為におきる損傷の一つである。多くは患部に痛みと腫脹、熱感を伴う。一般用語として多用されるが、医学用語としては更に損傷部位を限局し、○○靭帯損傷ということが多い。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg"
+    },
+    "zh": {
+      "title": "扭伤",
+      "extract": "扭伤，也被称为韧带撕裂，是指关节内韧带的拉扯或撕裂，通常是由于外伤突然迫使关节活动超出其功能性范围而引起的。韧带是由膠原蛋白组成的坚韧的非弹性纤维，它将两个或多个骨骼连接到一个关节上，对关节的稳定性和本体感觉非常重要，本体感觉是身体对肢體位置和运动的感觉。\n大多数扭伤是轻微的，造成轻微肿胀和瘀伤，可以通过保守治疗解决。然而，严重扭伤包括完全韧带撕裂和断裂、骨折，通常导致关节不稳、剧烈疼痛和功能下降。这些扭伤需要手术固定、长期制动和物理治疗。扭伤可以发生在任何关节，但最常见的发生在脚踝、膝盖或手腕。发生在肌肉或肌腱的等效损伤称为拉伤（strain）。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/sprain-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg"
+    },
+    {
+      "file": "img/sprain-1.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Sprained_foot.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    }
+  ]
+}

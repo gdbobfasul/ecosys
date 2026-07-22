@@ -1,0 +1,54 @@
+{
+  "id": "ibuprofen",
+  "langs": {
+    "bg": {
+      "title": "Ибупрофен",
+      "extract": "Ибупрофен е нестероидно противовъзпалително средство с изразен противоревматичен ефект. Аналгетик и антипиретик."
+    },
+    "ru": {
+      "title": "Ибупрофен",
+      "extract": "Ибупрофе́н — лекарственное средство, нестероидный противовоспалительный препарат из группы производных пропионовой кислоты, обладающий болеутоляющим и жаропонижающим действием."
+    },
+    "uk": {
+      "title": "Ібупрофен",
+      "extract": "Ібупрофе́н — лікарський засіб, нестероїдний протизапальний препарат, з групи похідних пропіонової кислоти, має болезаспокійливу і жарознижувальну дію."
+    },
+    "en": {
+      "title": "Ibuprofen",
+      "extract": "Ibuprofen is a nonsteroidal anti-inflammatory drug (NSAID) that is used to relieve pain, fever, and inflammation. This includes painful menstrual periods, migraines, and rheumatoid arthritis. It can be taken orally or intravenously. It typically begins working within an hour."
+    },
+    "de": {
+      "title": "Ibuprofen",
+      "extract": "Ibuprofen ist ein Arzneistoff aus der Gruppe der nichtsteroidalen Antirheumatika (NSAR), der zur Behandlung von Schmerzen, Entzündungen und Fieber eingesetzt wird. Es steht auf der Liste der unentbehrlichen Arzneimittel der Weltgesundheitsorganisation und zählt in Deutschland neben Paracetamol und Acetylsalicylsäure zu den am häufigsten verwendeten Analgetika."
+    },
+    "fr": {
+      "title": "Ibuprofène",
+      "extract": "Ibuprofène est la dénomination commune internationale de l'acide 2-[4-(2-méthyl)propyl]phénylpropanoïque. Il s'agit de la substance active d'un médicament AINS utilisé pour soulager les symptômes de l'arthrite, de la dysménorrhée primaire, de la pyrexie et comme analgésique, spécialement en cas d'inflammation."
+    },
+    "es": {
+      "title": "Ibuprofeno",
+      "extract": "El ibuprofeno es un antiinflamatorio no esteroideo (AINE), utilizado frecuentemente como antipirético, analgésico y antiinflamatorio. Se utiliza para el alivio sintomático de la fiebre, dolor de cabeza (cefalea), dolor dental (odontalgia), dolor muscular o mialgia, molestias de la menstruación (dismenorrea), dolor neurológico de carácter leve o moderado y dolor postquirúrgico. También se usa para tratar cuadros inflamatorios, como los que se presentan en artritis, artritis reumatoide (AR), hinchazón muscular, dolor de garganta y artritis gotosa. Es usado en ocasiones para tratar el acné debido a sus propiedades antiinflamatorias y ha sido expendido en Japón en forma tópica para acné de adultos."
+    },
+    "it": {
+      "title": "Ibuprofene",
+      "extract": "L'ibuprofene è un principio attivo che rientra nella famiglia dei farmaci antinfiammatori non steroidei (FANS). Il farmaco è dotato di proprietà analgesica, antinfiammatoria e antipiretica. Questa classe di farmaci rappresenta la categoria di più largo impiego nel trattamento delle malattie reumatiche."
+    },
+    "pt": {
+      "title": "Ibuprofeno",
+      "extract": "Ibuprofeno, nome que deriva das iniciais do ácido isobutilpropanoicofenólico (isobutilfenilpropanóico), é um fármaco do grupo dos anti-inflamatórios não esteróides (AINE) utilizado para o tratamento da dor, febre e inflamação. Pode ser utilizado para o alívio sintomático de enxaquecas, moléstias da menstruação, dor dentária, dores do parto, dor muscular, febre e dor pós-cirúrgica; e para quadros inflamatórios como os que se apresentam em artrites, artrite reumatóide e artrite gotosa. Cerca de 60% das pessoas melhoram com a administração de qualquer AINE, e se a primeira medicação não funcionar, recomenda-se que seja tentado outro AINE. O fármaco pode também ser utilizado para fechar um ducto arterioso persistente num bebê prematuro. Pode ser tomado por via oral ou por via intravenosa. Normalmente começa a actuar dentro de uma hora."
+    },
+    "ar": {
+      "title": "إيبوبروفين",
+      "extract": "إيبوبروفين أو ايبوبروفين أو آيبوبروفين هو دواء من زمرة مضادات الالتهاب غير الستيرويدية (NSAID) يستعمل لعلاج الألم والحمى والالتهاب. متضمنة آلام الدورة الشهرية والشَّقيقَة والتهاب المفاصل الروماتويدي. ويمكن استعماله لإغلاق قناة شريانية مفتوحة عند الأطفال الخُدَّج. يؤخذ بالطريق الفموي أو وريديا، ويبدأ مفعوله خلال ساعة تقريبا."
+    },
+    "ja": {
+      "title": "イブプロフェン",
+      "extract": "イブプロフェン は、プロピオン酸系に分類される非ステロイド系消炎鎮痛剤 (NSAIDs) の1種である。日本では商標名ブルフェンで知られ、医療用だけでなく一般医薬品としても広く流通している。関節炎、生理痛および発熱の症状を緩和し、また炎症部位の鎮痛に用いる。イブプロフェンは1960年代に英Boots Groupの研究部門によりプロピオン酸の誘導体として創薬された。"
+    },
+    "zh": {
+      "title": "布洛芬",
+      "extract": "布洛芬 是一种非類固醇消炎止痛藥（NSAID），常用來止痛、解热、消炎。可用於缓解經痛、头痛、偏頭痛、牙痛、劳损后疼痛，以及风湿性、类风湿性、骨性、痛风性疼痛及炎症。\n"
+    }
+  },
+  "images": []
+}

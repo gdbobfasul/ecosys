@@ -1,0 +1,87 @@
+{
+  "id": "bruise",
+  "langs": {
+    "ru": {
+      "title": "Ушиб",
+      "extract": "Уши́б — закрытое повреждение тканей и органов без существенного нарушения их структуры. Чаще повреждаются поверхностно расположенные ткани. Особенно страдают при сильном ударе мягкие ткани, придавливаемые в момент травмы к костям.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/Pferdekuss.jpg"
+    },
+    "uk": {
+      "title": "Забій (медицина)",
+      "extract": "Забій, також забиття — пошкодження тканин без порушення їх цілісності. Виникає внаслідок удару тупим предметом або удару об предмет, дії повітряної хвилі (контузія). Характеризується болем, набряком, крововиливом, стійкими порушеннями функцій уражених тканин, органів.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/Pferdekuss.jpg"
+    },
+    "en": {
+      "title": "Bruise",
+      "extract": "A bruise, also known as a contusion, is a type of hematoma of tissue, the most common cause being capillaries damaged by trauma, causing localized bleeding that extravasates into the surrounding interstitial tissues. Most bruises occur close enough to the epidermis such that the bleeding causes a visible discoloration. The bruise then remains visible until the blood is either absorbed by tissues or cleared by immune system action. Bruises which do not blanch under pressure can involve capillaries at the level of skin, subcutaneous tissue, muscle, or bone.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/Pferdekuss.jpg"
+    },
+    "de": {
+      "title": "Prellung",
+      "extract": "Eine Prellung oder Kontusion, genannt auch Kontusionsverletzung, ist die Schädigung von Organen oder Körperteilen durch Gewalt von außen, die nicht mit sichtbaren Hautverletzungen einhergehen muss. Die Folge sind Ödeme des Gewebes und Blutaustritt aus beschädigten Kapillaren in das umliegende Gewebe, was als Bluterguss oder Prellmarke sichtbar werden kann und mit Schmerzen und Schwellung der betroffenen Region verbunden ist.",
+      "image": ""
+    },
+    "fr": {
+      "title": "Contusion",
+      "extract": "Une contusion est une lésion sans rupture de la peau ni fissure des tissus qui se caractérise par une décoloration initiale puis un renflement. On parle d'ecchymose seulement lorsqu'il y a une extravasation sanguine dermique, autrement dit, lorsque du sang quitte les vaisseaux. C'est une variété de purpura réalisant des taches de largeur variable aux contours irréguliers. Elle apparaît généralement à la suite d'un choc sur les parties molles de l'organisme et résulte de l'endommagement des capillaires sanguins, ce qui permet au sang de diffuser dans les tissus avoisinants. Généralement bénignes, les ecchymoses peuvent néanmoins résulter ou être associées à des traumatismes plus graves : troubles de la coagulation, fractures, etc.",
+      "image": ""
+    },
+    "es": {
+      "title": "Contusión",
+      "extract": "Una contusión o moretón es un tipo de lesión física de tejido, hematoma, no penetrante sobre un cuerpo, causada por la acción de objetos duros, de superficie obtusa o roma, que actúan sobre el organismo por intermedio de una fuerza \nconsiderable. Los efectos de un golpe contuso varían según la fuerza y energía aplicada sobre el organismo dando lugar a una lesión superficial, como una equimosis, o lesiones sobre órganos y vísceras que pueden comprometer la vida del sujeto, como una fractura.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Pulmonary_contusion_CT_arrow.jpg"
+    },
+    "it": {
+      "title": "Contusione",
+      "extract": "Le contusioni sono lesioni conseguenza di un trauma diretto che non provoca una discontinuità dei tessuti biologici.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Bruising.JPG?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Contusão muscular",
+      "extract": "Contusão muscular é considerada uma lesão traumática aguda, sem corte, decorrente de trauma direto aos tecidos moles, e que provoca dor e edema. A contusão vai de leve até uma grande infiltração de sangue nos tecidos circundantes, levando a equimose e, em casos graves, a síndrome compartimental.",
+      "image": ""
+    },
+    "ar": {
+      "title": "رضة",
+      "extract": "إن الرَّضة هي نَوع ورم دموي في الأنسجة تتمزق الشعيرات الدموية وتتمزق الأوردة أحيانًا) بسبب إصابة، ما يتيح للدم إمكانية التسرب إلى الأنسجة الداخلية المحيطة. يمكن للرضوض أن تشمل شعيرات دموية بمستوى الجلد أو نسيج تحت الجلد أو عضلات أو عظام. يمكن تسمية الرضة أيضًا وفقًا لطول قطرها باسم حبرة أو فرفرية أو كدمة ، على الرغم من أن هذه المصطلحات قد تشير أيضًا إلى نزيف داخلي لم تتسبب فيه رضة.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Bruising.JPG"
+    },
+    "hi": {
+      "title": "कुचलन",
+      "extract": "जब किसी बिना धार वाली वस्तु से शरीर पर चोट पहुँचती है, तो उस जगह रक्त कोशिकाएँ फट जाती हैं पर कोई कटाव नही होता। रक्त कोशिकाओं के फटने से आस पास रक्त भर जाता है और उस जगह का सूजन आ जाती है। यह सूजन शुरुआत में नीले रंग की होती है और वक्त के साथ-साथ इसका रंग भी बदलता है। इस सूजन को नील या कुचलना कहते हैं! इस नील का आकर उस वस्तु के अनुसार पाया जाता है जिससे उसे चोट पहुँची है। नील और सूजन शरीर के नाज़ुक अंगो में ज़्यादा दिखती है, जैसे कि पलकें, कान, होंठ आदि। कई बार सूजन जिस जगह चोट लगी है उस स्थान पर न होकर नाज़ुक स्थानो पर दिखाई देती है, जैसे; सर पर चोंट का अभाव आँखों पर दिखाई देता है! इस प्रकार के नील को स्थानांतरित नील कहते हैं।",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/Pferdekuss.jpg"
+    },
+    "ja": {
+      "title": "痣",
+      "extract": "痣 は、皮膚に現れる赤や青などの変色のこと。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Myk-haematoma.jpg"
+    },
+    "zh": {
+      "title": "瘀伤",
+      "extract": "瘀伤 又称挫伤（contusion），是钝力直接作用于身体某部位引起的组织闭合性损伤。主要是局部皮下或深部组织受损，组织的连续性受到损害，但从解剖上连续性未全中断，因此为非开放性损伤。瘀伤的症状轻者有局部血肿、瘀血，重者可致肌肉、肌腱断裂，关节错缝或血管神经严重损伤。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Myk-haematoma.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/bruise-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/6/63/Pferdekuss.jpg"
+    },
+    {
+      "file": "img/bruise-1.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Pulmonary_contusion_CT_arrow.jpg"
+    },
+    {
+      "file": "img/bruise-2.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Bruising.JPG?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    {
+      "file": "img/bruise-3.JPG",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Bruising.JPG"
+    },
+    {
+      "file": "img/bruise-4.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Myk-haematoma.jpg"
+    }
+  ]
+}

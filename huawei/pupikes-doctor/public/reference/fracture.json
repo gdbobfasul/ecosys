@@ -1,0 +1,88 @@
+{
+  "id": "fracture",
+  "langs": {
+    "bg": {
+      "title": "Фрактура",
+      "extract": "Фрактура е медицинско състояние, при което е налично частично или пълно счупване на целостта на костта. При по-тежки случаи, костта може да бъде счупена на няколко места. Фрактурата може да е вследствие от силен удар или голямо натоварване, както и от някои малки травми в резултат на заболявания, отслабващи костите, като например остеопороза, остеопения, несъвършена остеогенеза или тумор в костта.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/5/55/Claviculafraktur_median_tangential.jpg"
+    },
+    "ru": {
+      "title": "Перелом кости",
+      "extract": "Перело́м ко́сти — полное или частичное нарушение целостности кости при нагрузке, превышающей прочность травмируемого участка скелета. Переломы могут возникать как вследствие травмы, так и в результате различных заболеваний, сопровождающихся изменениями в прочностных характеристиках костной ткани.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg"
+    },
+    "uk": {
+      "title": "Переломи кісток",
+      "extract": "Перело́м — часткове або повне порушення цілісності кістки, яке спричинює вплив на неї механічної сили: насильно або в результаті падіння, удару, а також внаслідок патологічного процесу, пухлини, запалення.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg"
+    },
+    "en": {
+      "title": "Bone fracture",
+      "extract": "A bone fracture is a medical condition in which there is a partial or complete break in the continuity of any bone in the body. In more severe cases, the bone may be broken into several fragments, known as a comminuted fracture. An open fracture is a bone fracture where the broken bone breaks through the skin.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg"
+    },
+    "de": {
+      "title": "Knochenbruch",
+      "extract": "Ein Knochenbruch oder eine Fraktur, veraltet auch Beinbruch und kurz auch Bruch, ist eine Unterbrechung der Kontinuität eines Knochens unter Bildung zweier oder mehrerer Bruchstücke (Fragmente) mit oder ohne Verschiebung (Dislokation).\nIn der ärztlichen Dokumentation wird eine Fraktur oft durch das Zeichen # (Rautezeichen) abgekürzt.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg"
+    },
+    "fr": {
+      "title": "Fracture",
+      "extract": "Une fracture (Fx) est une rupture partielle ou complète d'un os. Dans les cas plus graves, l'os peut être cassé en plusieurs morceaux.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Gunshot_Fracture_of_the_Left_Femur_1863.jpg/3840px-Gunshot_Fracture_of_the_Left_Femur_1863.jpg"
+    },
+    "es": {
+      "title": "Fractura ósea",
+      "extract": "Una fractura produce una ruptura parcial o completa en la continuidad del hueso. En los casos más graves, este puede romperse en varios pedazos. Pueden ser el resultado de un golpe, fuerza o tracción de gran fuerza, o una lesión por traumatismos mínimos como consecuencia de ciertos trastornos que debilitan los huesos, como la osteoporosis, la osteopenia, la enfermedad celíaca no diagnosticada, el cáncer óseo o la osteogénesis imperfecta, en cuyo caso se denomina fractura patológica.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg"
+    },
+    "it": {
+      "title": "Frattura (medicina)",
+      "extract": "La frattura in medicina è l'interruzione dell'integrità parziale o totale di un osso. Se la frattura riguarda solo l'osso è detta \"isolata\", mentre se coinvolge anche i legamenti è detta \"associata\".",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Fratura óssea",
+      "extract": "Fratura óssea é uma situação em que há perda da continuidade óssea, com a separação de um osso em dois ou mais fragmentos após um traumatismo.",
+      "image": ""
+    },
+    "ar": {
+      "title": "كسر العظم",
+      "extract": "كسر العظم هو حالةٌ طبية يحدث فيها خلل في تكامل العظم كقطعة واحدة، ويمكن أن يحدث كسر العظم عن تأثّر العظم بقوة شديدة أو شِدّة أو أذية خفيفة بعد حالات طبية معينة مثلاً حيث تضعف العظام وتصاب بتخلل العظام أو أورام العظام، وفي هذه الحالة يسمى الكسر بالكسر المرضي.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg"
+    },
+    "hi": {
+      "title": "अस्थिभंग",
+      "extract": "किसी अस्थि के टूटने या उसमें दरार पड़ने को अस्थिभंग कहते हैं। हड्डियों पर एक सीमा से अधिक बल या झटका लगने से या अस्थि-कैंसर एवं अन्य रोगों के कारण अस्थिभंग हो सकता है। यह एक चिकित्सकीय स्थिति है।",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg"
+    },
+    "ja": {
+      "title": "骨折",
+      "extract": "骨折 とは、直達外力や介達外力により骨が変形、破壊を起こす外傷であり、構造の連続性が絶たれた状態のことである。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg"
+    },
+    "zh": {
+      "title": "骨折",
+      "extract": "骨折 或骨裂，是因外伤、疾病所引发的骨骼或骨小梁连续性的中断与完整性的破坏。例如：腰椎的压缩性骨折、四肢长管状骨的断裂。骨裂口语指“裂纹骨折”，临床医学中并没有这术语，属一种闭合、稳定、不完全性骨折。骨折以疼痛、肿胀、功能障碍、畸形及骨擦音等为主要表现。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/fracture-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/5/55/Claviculafraktur_median_tangential.jpg"
+    },
+    {
+      "file": "img/fracture-1.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg"
+    },
+    {
+      "file": "img/fracture-2.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Gunshot_Fracture_of_the_Left_Femur_1863.jpg/3840px-Gunshot_Fracture_of_the_Left_Femur_1863.jpg"
+    },
+    {
+      "file": "img/fracture-3.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Broken_fixed_arm.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    }
+  ]
+}

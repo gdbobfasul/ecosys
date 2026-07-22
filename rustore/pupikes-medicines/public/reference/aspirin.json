@@ -1,0 +1,62 @@
+{
+  "id": "aspirin",
+  "langs": {
+    "bg": {
+      "title": "Ацетилсалицилова киселина",
+      "extract": "Ацетилсалициловата киселина, позната още с търговските наименования аспирин, ацетизал, ацетилин и мн. др., е лекарство от семейството на салицилатите. Успокоява болката, сваля високата температура, премахва възпалението при ревматични и други заболявания. Тя е типично нестероидно противовъзпалително средство. Има противосъсирващо действие и се използва дългосрочно в ниски дози за предпазване от сърдечен удар и рак."
+    },
+    "ru": {
+      "title": "Ацетилсалициловая кислота",
+      "extract": "Ацетилсалици́ловая кислота́ — лекарственное средство, оказывающее обезболивающее, жаропонижающее, противовоспалительное действие. Также ацетилсалициловая кислота является блокатором циклооксигеназы тромбоцитов."
+    },
+    "uk": {
+      "title": "Ацетилсаліцилова кислота",
+      "extract": "Ацетилсаліцилова кислота (аспірин) — безбарвні голчасті кристали моноклінної структури, у чистому вигляді без запаху, але у вологому середовищі набуває запаху оцтової кислоти. Одержують взаємодією оцтового ангідриду та саліцилової кислоти. Вживають як протизапальний, знеболювальний, жарознижувальний та антиагрегантний засіб."
+    },
+    "en": {
+      "title": "Aspirin",
+      "extract": "Aspirin is the genericized trademark for acetylsalicylic acid (ASA), a nonsteroidal anti-inflammatory drug (NSAID) used to reduce pain, fever, and inflammation, and as an antithrombotic. Aspirin is used to treat inflammatory conditions including Kawasaki disease, pericarditis, and rheumatic fever."
+    },
+    "de": {
+      "title": "Acetylsalicylsäure",
+      "extract": "Acetylsalicylsäure ist ein weit verbreiteter schmerzstillender, entzündungshemmender, fiebersenkender und thrombozytenaggregationshemmender (TAH) Arzneistoff aus der Gruppe der nichtsteroidalen Antirheumatika (NSAR). ASS wird seit 1977 auf der Liste der unentbehrlichen Arzneimittel der WHO aufgeführt. Der Stoff wird seit Anfang des 20. Jahrhunderts in diversen Produkten von Pharmaherstellern vertrieben."
+    },
+    "fr": {
+      "title": "Acide acétylsalicylique",
+      "extract": "L’acide acétylsalicylique (AAS), plus connu sous le nom commercial d’aspirine, est un antiagrégant plaquettaire. C’est la substance active de nombreux médicaments aux propriétés antalgiques, antipyrétiques et anti-inflammatoires. Il est surtout utilisé comme antiagrégant plaquettaire. C’est un acide faible, dont la base conjuguée est l’anion acétylsalicylate. Il fait encore partie des médicaments les plus consommés au monde, mais pour certains usages, il tend, en raison de ses effets secondaires potentiels à être remplacé par le paracétamol ou l'ibuprofène."
+    },
+    "es": {
+      "title": "Ácido acetilsalicílico",
+      "extract": "El ácido acetilsalicílico o AAS (C9H8O4), conocido popularmente como aspirina, nombre de una marca que pasó al uso común, es un fármaco de la familia de los salicilatos. Se utiliza como medicamento para tratar el dolor (analgésico), la fiebre (antipirético) y la inflamación (antiinflamatorio), debido a su efecto inhibitorio, no selectivo, de la ciclooxigenasa."
+    },
+    "it": {
+      "title": "Acido acetilsalicilico",
+      "extract": "L'acido acetilsalicilico (ASA), comunemente noto con il nome commerciale di Aspirina, italianizzato da Aspirin, il primo nome commerciale di larga diffusione tedesco, è un farmaco antinfiammatorio non steroideo (FANS) della famiglia dei salicilati, utilizzato per il trattamento del dolore e della febbre dovuti a varie cause. L'acido acetilsalicilico ha sia effetti antinfiammatori sia antipiretici. Questo farmaco inibisce anche l'aggregazione delle piastrine ed è utilizzato nella prevenzione di coaguli di sangue, ictus e infarto miocardico (MI)."
+    },
+    "pt": {
+      "title": "Ácido acetilsalicílico",
+      "extract": "O ácido acetilsalicílico ou AAS (C9H8O4), conhecido popularmente como aspirina, nome de uma marca que se tornou de uso comum, é um fármaco da família dos salicilatos. É utilizado como medicamento para tratar a dor (analgésico), a febre (antipirético) e a inflamação (anti-inflamatório não esteroide), devido ao seu efeito inibidor, não selectivo, da ciclo-oxigenase."
+    },
+    "ar": {
+      "title": "أسبرين",
+      "extract": "الأَسْبِرِين أو أسيتيل حمض الساليسيليك هو أحد أشهر الأدوية وأكثرها شعبية. يستخدم لعلاج أعراض الحمى والآلام الرثوية خلال القرن الماضي وما زال حتى الآن علاجاً متميزاً على بدائله. كما يستخدم لتجنب تكون الجلطات المسببة للنوبات القلبية."
+    },
+    "hi": {
+      "title": "एस्पिरिन",
+      "extract": "एस्पिरिन (यूएसएएन)(USAN), जिसे एसिटाइलसैलिसाइलिक एसिड, भी कहते हैं, एक सैलिसिलेट औषधि है, जो अकसर हल्के दर्दों से छुटकारा पाने के लिये दर्दनिवारक के रूप में, ज्वर कम करने के लिये ज्वरशामक के रूप में और शोथ-निरोधी दवा के रूप में प्रयोग में लाई जाती है।"
+    },
+    "ja": {
+      "title": "アセチルサリチル酸",
+      "extract": "アセチルサリチル酸 は、代表的な解熱鎮痛剤のひとつで非ステロイド性抗炎症薬の代名詞とも言うべき医薬品。ドイツのバイエルが名付けた商標名のアスピリン がよく知られ、日本薬局方ではアスピリンが正式名称になっている。"
+    },
+    "ky": {
+      "title": "Аспирин",
+      "extract": "Аспирин — ацетилсалицил кислотасынын коммерциялык аталышы. Бул зат салицил кислотасынан алынган жана 1853-жылы биринчи жолу синтезделген."
+    },
+    "zh": {
+      "title": "乙酰水杨酸",
+      "extract": "乙酰水杨酸 又稱乙醯柳酸，以商品名阿司匹林（Aspirin）闻名于世，是一種水杨酸类药物，通常用作止痛剂、退烧药和消炎药。\n"
+    }
+  },
+  "images": []
+}

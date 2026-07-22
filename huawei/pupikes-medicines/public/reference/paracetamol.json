@@ -1,0 +1,58 @@
+{
+  "id": "paracetamol",
+  "langs": {
+    "bg": {
+      "title": "Парацетамол",
+      "extract": "Парацетамолът (Paracetamol) е нестероидно обезболяващо и температуропонижаващо средство. Има много слабо противъзпалително действие. Фармакологично представлява COX-2 инхибитор."
+    },
+    "ru": {
+      "title": "Парацетамол",
+      "extract": "Парацетамо́л , ацетаминофен — действующее вещество, анальгетик и антипиретик из группы анилидов. Белый или белый с кремовым или розовым оттенком кристаллический порошок. Легко растворим в спирте, нерастворим в воде."
+    },
+    "uk": {
+      "title": "Парацетамол",
+      "extract": "Парацетамол (Ацетамінофен) — лікарський засіб, що має знеболювальну та жарознижувальну та слабку протизапальну дію."
+    },
+    "en": {
+      "title": "Paracetamol",
+      "extract": "Paracetamol, or acetaminophen, is an analgesic and antipyretic agent used to treat fever and mild to moderate pain. It is a widely available over-the-counter drug sold generically or under various brand names, including Tylenol and Panadol."
+    },
+    "de": {
+      "title": "Paracetamol",
+      "extract": "Paracetamol ist ein schmerzlindernder und fiebersenkender Arzneistoff aus der Gruppe der Nichtopioid-Analgetika."
+    },
+    "fr": {
+      "title": "Paracétamol",
+      "extract": "Le paracétamol, aussi appelé acétaminophène, est un composé chimique utilisé comme antalgique (anti-douleur) et antipyrétique (anti-fièvre), qui figure depuis le début des années 1950 parmi les médicaments les plus communément utilisés et prescrits au monde."
+    },
+    "es": {
+      "title": "Paracetamol",
+      "extract": "El paracetamol (DCI), también conocido como acetaminofén o acetaminofeno, es un fármaco con propiedades analgésicas y antipiréticas utilizado principalmente para tratar la fiebre y el dolor leve y moderado, aunque su eficacia en el alivio de la fiebre en niños no está clara."
+    },
+    "it": {
+      "title": "Paracetamolo",
+      "extract": "Il paracetamolo è un farmaco ad azione analgesica e antipiretica; è largamente utilizzato, sia da solo sia in associazione ad altre sostanze, nei comuni preparati da banco per le forme virali da raffreddamento o nei farmaci destinati al trattamento del dolore acuto e cronico."
+    },
+    "pt": {
+      "title": "Paracetamol",
+      "extract": "O paracetamolDCI, também conhecido por acetaminofeno e, comercialmente, por Tylenol, Panadol e Ben-u-ron, é um fármaco com propriedades analgésicas e antipiréticas utilizado essencialmente para tratar a febre e a dor leve e moderada, embora existam poucas evidências de que o seu uso seja realmente eficaz no alívio da febre em crianças. É geralmente vendido em combinação com outros princípios activos, como nos antitussígenos, ou em medicamentos para o alívio da dor com opiáceos, onde o paracetamol é usado para o alívio da dor severa, como a dor oncológica ou pós-operatória. Geralmente é administrado por via oral embora também esteja disponível para uso por via rectal ou intravenosa, pelo que pode apresentar-se na forma de cápsulas, comprimidos, supositórios ou gotas. Os efeitos duram entre duas e quatro horas."
+    },
+    "ar": {
+      "title": "باراسيتامول",
+      "extract": "الپاراسیتامول أو الأسيتامينوفين، وهو الاسم المعتمد في الولايات المتحدة ، هو مسكن وخافض للحرارة واسع الاستخدام. مُستخلص من القطران، وهو المُستقلَب النشط للفيناسيتين، وعلى عكس الفيناسيتين فإن الباراسيتامول لم يَظهر أنه مسرطن بأي شكل من الأشكال. الباراسيتامول يُتحمل جيداً، وليس له العديد من الأعراض الجانبية للأسبرين، وهو متاح غالباً في الصيدليات دون وصفة طبّية. وهو يُستخدم عموماً لعلاج الحمى، والصداع، والألم والأوجاع الخفيفة. يكون الباراسيتامول مفيداً أيضاً في التعامل مع الآلام الشديدة الأخرى بالاشتراك مع مضادات الالتهاب اللاستيرويدية أو مع المسكنات الأفيونية. ويدخل الباراسيتامول كمكون أساسي في العديد من وصفات البرد والإنفلونزا. وعلى الرغم من أنه آمن للبشر في حدود الجرعات المُوصى بها، إلا أن الجرعات المفرطة يحتمل أن تسبب تسمم كبدي؛ والسبب الأول للفشل الكبدي في الغرب هو التسمم بالباراسيتامول، وهو وراء معظم حالات زيادة الجرعة في الولايات المتحدة، المملكة المتحدة، أستراليا ونيوزيلندا. ويزيد خطره بتناول المشروبات الكحولية."
+    },
+    "hi": {
+      "title": "पेरासिटामोल",
+      "extract": "पेरासिटामोल  (INN)(उच्चारित/paracetamol /) या एसिटामिनोफेन  (USAN) व्यापक रूप से प्रयुक्त की जाने वाली काउंटर पर उपलब्ध एनाल्जेसिक और एंटीपायरेटिक दवा है। इसका प्रयोग सामान्यतः बुखार, सर दर्द और अन्य छोटे मोटे दर्द से राहत पाने के लिए किया जाता है। यह सर्दी और फ्लू के उपचार में काम में ली जाने वाली असंख्य दवाओं का प्रमुख अव्यव है। स्टेरोयड रहित प्रति-शोथ दवाओं (NSAIDs) और ओपिओइड एनाल्जेसिक के साथ संयोजन में पेरासिटामोल का प्रयोग अधिक गंभीर दर्द के इलाज में भी किया जाता है ।"
+    },
+    "ja": {
+      "title": "アセトアミノフェン",
+      "extract": "アセトアミノフェン またはパラセタモール は、解熱・鎮痛薬の一つである。非ステロイド性抗炎症薬（NSAIDs）には分類されない。主に発熱、悪寒、頭痛などの症状改善に用いられ、一般用医薬品の感冒薬にも広く含有される。"
+    },
+    "zh": {
+      "title": "对乙酰氨基酚",
+      "extract": "对乙酰氨基酚，音译扑热息痛，又称乙醯胺酚 是一种常见的乙酰苯胺类（非阿片類）解热镇痛药。\n"
+    }
+  },
+  "images": []
+}

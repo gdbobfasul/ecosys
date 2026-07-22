@@ -13,6 +13,8 @@ import { WALLETS, walletByKey, maxForWallet } from '../core/wallets.js';
 let tickTimer = null;
 let activeTab = 'auth';       // запазва се между влизанията
 let selectedWallet = null;    // в таб „Портфейли": избраният портфейл (null = решетката)
+let pwdSort = 'name';         // подредба на паролите: 'name' (азбучно) | 'site' (по сайт)
+let sshSort = 'ip';           // подредба на SSH: 'ip' (по хост/IP) | 'name' (по име)
 
 export function renderList(root, nav) {
   if (tickTimer) { clearInterval(tickTimer); tickTimer = null; }
@@ -28,11 +30,17 @@ export function renderList(root, nav) {
     { key: 'auth', icon: '🔐', label: t('tab_auth') },
     { key: 'collection', icon: '🗂', label: t('tab_collection') },
     { key: 'passwords', icon: '🔑', label: t('tab_passwords') },
-    { key: 'crypto', icon: '👛', label: t('tab_crypto') }
+    { key: 'crypto', icon: '👛', label: t('tab_crypto') },
+    { key: 'ssh', icon: '🖥', label: t('tab_ssh') },
+    { key: 'networks', icon: '🌐', label: t('tab_networks') },
+    { key: 'tokens', icon: '🪙', label: t('tab_tokens') }
   ];
-  const tabbar = h('div', { class: 'tabbar' },
+  // Табовете вече са много → лентата е ХОРИЗОНТАЛНО ПЛЪЗГАЩА СЕ (flex-nowrap + overflow-x), а
+  // всеки бутон е с фиксирана минимална ширина, за да не се смачкват.
+  const tabbar = h('div', { class: 'tabbar', style: 'overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;-webkit-overflow-scrolling:touch' },
     ...tabs.map((tb) => h('button', {
       class: 'tab' + (activeTab === tb.key ? ' on' : ''),
+      style: 'flex:0 0 auto;min-width:62px',
       onclick: () => { activeTab = tb.key; if (tb.key !== 'crypto') selectedWallet = null; draw(); }
     }, h('div', {}, tb.icon), h('div', { class: 'tablabel', text: tb.label })))
   );
@@ -43,6 +51,9 @@ export function renderList(root, nav) {
     if (activeTab === 'auth') nav.go('add');
     else if (activeTab === 'collection') nav.go('collection-add');
     else if (activeTab === 'passwords') nav.go('password-edit');
+    else if (activeTab === 'ssh') nav.go('ssh-edit');
+    else if (activeTab === 'networks') nav.go('network-edit');
+    else if (activeTab === 'tokens') nav.go('token-edit');
     else { // крипто: добавя за избрания портфейл (ако е избран), иначе подсказва
       if (!selectedWallet) { toast(t('crypto_pick_wallet')); return; }
       if (seedCountFor(selectedWallet) >= maxForWallet(selectedWallet)) { toast(t('crypto_limit_reached')); return; }
@@ -56,7 +67,18 @@ export function renderList(root, nav) {
     if (activeTab === 'auth') drawAuth();
     else if (activeTab === 'collection') drawCollection();
     else if (activeTab === 'passwords') drawPasswords();
+    else if (activeTab === 'ssh') drawSsh();
+    else if (activeTab === 'networks') drawNetworks();
+    else if (activeTab === 'tokens') drawTokens();
     else drawCrypto();
+  }
+
+  // Сортиране: азбучно/числово, независимо от регистъра.
+  function byText(a, b) { return String(a || '').localeCompare(String(b || ''), undefined, { numeric: true, sensitivity: 'base' }); }
+  // Хост без протокол/www (за подредба на пароли „по сайт").
+  function siteOf(p) {
+    const u = String(p.url || p.title || '');
+    try { return new URL(u).hostname.replace(/^www\./, ''); } catch (_) { return u.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]; }
   }
 
   // ---------- Таб „Аутентикация" ----------
@@ -135,12 +157,72 @@ export function renderList(root, nav) {
   // ---------- Таб „Пароли" ----------
   function drawPasswords() {
     if (!session.passwords.length) { mount(container, emptyBox('🔑', t('empty_pwd_title'), t('empty_pwd_desc'))); return; }
-    const rows = session.passwords.map((p) => {
-      const badge = h('div', { class: 'badge' }, ((p.title || '?').trim().charAt(0) || '?').toUpperCase());
-      const info = h('div', { class: 'info' }, h('div', { class: 'issuer', text: p.title || '—' }),
-        h('div', { class: 'acct', text: p.login || '' }));
+    // Превключвател на подредбата: по име (азбучно) ⇄ по сайт.
+    const sortBtn = h('button', { class: 'btn ghost', style: 'margin:0 0 8px',
+      onclick: () => { pwdSort = pwdSort === 'name' ? 'site' : 'name'; drawPasswords(); } },
+      pwdSort === 'name' ? '🔤 ' + t('sort_by_name') : '🌐 ' + t('sort_by_site'));
+    const sorted = [...session.passwords].sort((a, b) => pwdSort === 'site'
+      ? (byText(siteOf(a), siteOf(b)) || byText(a.login, b.login))
+      : byText(a.title || siteOf(a), b.title || siteOf(b)));
+    const rows = sorted.map((p) => {
+      const badge = h('div', { class: 'badge' }, ((p.title || siteOf(p) || '?').trim().charAt(0) || '?').toUpperCase());
+      const info = h('div', { class: 'info' }, h('div', { class: 'issuer', text: p.title || siteOf(p) || '—' }),
+        h('div', { class: 'acct', text: p.login || siteOf(p) || '' }));
       const row = h('div', { class: 'entry', style: 'cursor:pointer' }, badge, info, h('div', { class: 'muted' }, '›'));
       row.addEventListener('click', () => nav.go('password-edit', p));
+      return row;
+    });
+    mount(container, sortBtn, ...rows);
+  }
+
+  // ---------- Таб „SSH" (отдалечен достъп) ----------
+  function drawSsh() {
+    if (!session.ssh.length) { mount(container, emptyBox('🖥', t('empty_ssh_title'), t('empty_ssh_desc'))); return; }
+    const sortBtn = h('button', { class: 'btn ghost', style: 'margin:0 0 8px',
+      onclick: () => { sshSort = sshSort === 'ip' ? 'name' : 'ip'; drawSsh(); } },
+      sshSort === 'ip' ? '🌐 ' + t('sort_by_ip') : '🔤 ' + t('sort_by_name'));
+    const sorted = [...session.ssh].sort((a, b) => sshSort === 'name'
+      ? byText(a.name || a.host, b.name || b.host)
+      : (byText(a.host, b.host) || byText(a.name, b.name)));
+    const rows = sorted.map((s) => {
+      const badge = h('div', { class: 'badge' }, '🖥');
+      const hostLine = (s.user ? s.user + '@' : '') + (s.host || '') + (s.port ? ':' + s.port : '');
+      const info = h('div', { class: 'info' }, h('div', { class: 'issuer', text: s.name || s.host || '—' }),
+        h('div', { class: 'acct', text: hostLine }));
+      const row = h('div', { class: 'entry', style: 'cursor:pointer' }, badge, info, h('div', { class: 'muted' }, '›'));
+      row.addEventListener('click', () => nav.go('ssh-edit', s));
+      return row;
+    });
+    mount(container, sortBtn, ...rows);
+  }
+
+  // ---------- Таб „Мрежи" (EVM RPC) ----------
+  function drawNetworks() {
+    if (!session.networks.length) { mount(container, emptyBox('🌐', t('empty_net_title'), t('empty_net_desc'))); return; }
+    const sorted = [...session.networks].sort((a, b) => byText(a.name, b.name));
+    const rows = sorted.map((n) => {
+      const badge = h('div', { class: 'badge' }, '🌐');
+      const sub = [n.currencySymbol, n.chainId ? 'chain ' + n.chainId : ''].filter(Boolean).join(' · ');
+      const info = h('div', { class: 'info' }, h('div', { class: 'issuer', text: n.name || '—' }),
+        h('div', { class: 'acct', text: sub || n.rpcUrl || '' }));
+      const row = h('div', { class: 'entry', style: 'cursor:pointer' }, badge, info, h('div', { class: 'muted' }, '›'));
+      row.addEventListener('click', () => nav.go('network-edit', n));
+      return row;
+    });
+    mount(container, ...rows);
+  }
+
+  // ---------- Таб „Токени" (custom ERC-20) ----------
+  function drawTokens() {
+    if (!session.tokens.length) { mount(container, emptyBox('🪙', t('empty_tok_title'), t('empty_tok_desc'))); return; }
+    const sorted = [...session.tokens].sort((a, b) => byText(a.symbol || a.name, b.symbol || b.name));
+    const rows = sorted.map((tk) => {
+      const badge = h('div', { class: 'badge' }, ((tk.symbol || tk.name || '?').trim().charAt(0) || '?').toUpperCase());
+      const sub = [tk.network, tk.decimals ? 'dec ' + tk.decimals : ''].filter(Boolean).join(' · ');
+      const info = h('div', { class: 'info' }, h('div', { class: 'issuer', text: (tk.symbol || tk.name || '—') }),
+        h('div', { class: 'acct', text: sub || tk.contractAddress || '' }));
+      const row = h('div', { class: 'entry', style: 'cursor:pointer' }, badge, info, h('div', { class: 'muted' }, '›'));
+      row.addEventListener('click', () => nav.go('token-edit', tk));
       return row;
     });
     mount(container, ...rows);

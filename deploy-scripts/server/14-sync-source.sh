@@ -113,6 +113,24 @@ if [ -f "$TREE_GEN" ] && command -v node >/dev/null 2>&1; then
     fi
 fi
 
+# .env: ако клиентът (опция 5) е качил обновен .env, го прилагаме върху живия — source of
+# truth, точно като пълния деплой (05-server-install СТЪПКА 5), с бекъп на стария. Прави се
+# ПРЕДИ рестарта, за да го прочетат услугите. Ако не е подаден → живият .env остава непокътнат.
+SYNC_ENV="$STAGING/_sync_env"
+GLOBAL_ENV="$PRIVATE_DIR/configs/.env"
+if [ -f "$SYNC_ENV" ]; then
+    mkdir -p "$(dirname "$GLOBAL_ENV")"
+    if [ -f "$GLOBAL_ENV" ] && ! cmp -s "$GLOBAL_ENV" "$SYNC_ENV"; then
+        cp "$GLOBAL_ENV" "${GLOBAL_ENV}.replaced-$(date +%s)" 2>/dev/null || true
+        echo -e "  ${YELLOW}Старият .env → ${GLOBAL_ENV}.replaced-*${NC}"
+    fi
+    cp "$SYNC_ENV" "$GLOBAL_ENV" && chmod 640 "$GLOBAL_ENV" && chown root:"$SVC_GROUP" "$GLOBAL_ENV"
+    rm -f "$SYNC_ENV"
+    echo -e "  ${GREEN}✓ .env синхронизиран (source of truth; старият е в .replaced-*)${NC}"
+else
+    echo -e "  ${CYAN}  .env не е подаден за тази синхронизация — оставям текущия непокътнат${NC}"
+fi
+
 # рестарт на node сървисите (nginx НЕ се пипа)
 echo -e "${YELLOW}Рестарт на node сървисите...${NC}"
 for svc in kcy-chat kcy-eco3 kcy-portals kcy-hlb kcy-wnb kcy-fbp kcy-diag; do
@@ -150,4 +168,4 @@ TS_CHECK="$PROJECT_DIR/deploy-scripts/server/tailscale-check.sh"
 
 echo ""
 echo -e "${GREEN}OK Сорсът обновен (overlay). БЕЗ npm install, БЕЗ реконфигурация.${NC}"
-echo -e "${CYAN}   nginx не е пипан. Базите/uploads/.env са непокътнати.${NC}"
+echo -e "${CYAN}   nginx не е пипан. Базите/uploads са непокътнати. .env — обновен, ако е подаден (с бекъп).${NC}"

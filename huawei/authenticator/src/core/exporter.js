@@ -22,8 +22,8 @@ function dataURLtoBytes(durl) {
 // Наш .json бекъп.
 export async function exportJsonFile() {
   if (!session.entries.length) return { ok: false, reason: 'empty' };
-  const data = JSON.stringify({ app: 'kcy-authenticator', version: 1, entries: session.entries }, null, 2);
-  await saveFile('kcy-authenticator-export.json', data, 'application/json', { isText: true });
+  const data = JSON.stringify({ app: 'pupikes-authenticator', version: 1, entries: session.entries }, null, 2);
+  await saveFile('pupikes-authenticator-export.json', data, 'application/json', { isText: true });
   return { ok: true, count: session.entries.length };
 }
 
@@ -38,7 +38,7 @@ export async function exportAegisFile() {
 // 2FAS експорт (некриптиран .2fas JSON) — внася се в 2FAS Auth → Settings → Import.
 export async function export2FASFile() {
   if (!session.entries.length) return { ok: false, reason: 'empty' };
-  await saveFile('kcy-export.2fas', build2FAS(session.entries), 'application/json', { isText: true });
+  await saveFile('pupikes-export.2fas', build2FAS(session.entries), 'application/json', { isText: true });
   return { ok: true, count: session.entries.length };
 }
 
@@ -54,12 +54,12 @@ export async function exportOtpauthListFile() {
 // Chrome и Microsoft Edge ползват ЕДИН И СЪЩ Chromium CSV → един файл за двата.
 export async function exportChromiumCsv() {
   if (!session.passwords.length) return { ok: false, reason: 'empty' };
-  await saveFile('kcy-passwords-chrome-edge.csv', buildChromiumCsv(session.passwords), 'text/csv', { isText: true });
+  await saveFile('pupikes-passwords-chrome-edge.csv', buildChromiumCsv(session.passwords), 'text/csv', { isText: true });
   return { ok: true, count: session.passwords.length };
 }
 export async function exportFirefoxCsv() {
   if (!session.passwords.length) return { ok: false, reason: 'empty' };
-  await saveFile('kcy-passwords-firefox.csv', buildFirefoxCsv(session.passwords), 'text/csv', { isText: true });
+  await saveFile('pupikes-passwords-firefox.csv', buildFirefoxCsv(session.passwords), 'text/csv', { isText: true });
   return { ok: true, count: session.passwords.length };
 }
 
@@ -68,8 +68,8 @@ export async function exportFirefoxCsv() {
 // тайните В ЧИСТ ВИД → предупреждаваме потребителя (UI) да го пази като златото си.
 export async function exportSeedsJson() {
   if (!session.seeds.length) return { ok: false, reason: 'empty' };
-  const data = JSON.stringify({ app: 'kcy-authenticator', kind: 'wallets', version: 1, seeds: session.seeds }, null, 2);
-  await saveFile('kcy-wallets-backup.json', data, 'application/json', { isText: true });
+  const data = JSON.stringify({ app: 'pupikes-authenticator', kind: 'wallets', version: 1, seeds: session.seeds }, null, 2);
+  await saveFile('pupikes-wallets-backup.json', data, 'application/json', { isText: true });
   return { ok: true, count: session.seeds.length };
 }
 
