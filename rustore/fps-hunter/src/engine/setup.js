@@ -116,29 +116,25 @@ export function createEngine(container) {
 export function applyAtmosphere(engine, { skyTop, skyBottom, fogColor, fogNear, fogFar, sunColor, sunIntensity }) {
   const { scene, sun, hemi } = engine;
 
-  // Градиентно небе чрез голяма сфера с шейдър-материал по vertex Y.
+  // Градиентно небе чрез голяма сфера. ВАЖНО (черен екран на телефона): по-рано ползвахме
+  // потребителски ShaderMaterial (custom GLSL) — някои мобилни GPU (Mali/Adreno) отказват да
+  // го компилират без явна версия/precision → цялата сцена излизаше ЧЕРНА. Затова сега градиентът
+  // е ЗАПЕЧЕН във VERTEX ЦВЕТОВЕ + обикновен MeshBasicMaterial (без custom GLSL → работи навсякъде).
   if (engine._sky) { scene.remove(engine._sky); engine._sky.geometry.dispose(); engine._sky.material.dispose(); }
   const skyGeo = new THREE.SphereGeometry(900, 24, 16);
-  const skyMat = new THREE.ShaderMaterial({
-    side: THREE.BackSide,
-    uniforms: {
-      top: { value: new THREE.Color(skyTop) },
-      bottom: { value: new THREE.Color(skyBottom) }
-    },
-    vertexShader: `
-      varying vec3 vPos;
-      void main(){ vPos = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }
-    `,
-    fragmentShader: `
-      varying vec3 vPos;
-      uniform vec3 top; uniform vec3 bottom;
-      void main(){
-        float h = clamp((normalize(vPos).y + 0.2) / 1.0, 0.0, 1.0);
-        gl_FragColor = vec4(mix(bottom, top, h), 1.0);
-      }
-    `
-  });
+  const spos = skyGeo.attributes.position;
+  const scol = new Float32Array(spos.count * 3);
+  const cTop = new THREE.Color(skyTop), cBot = new THREE.Color(skyBottom), tmp = new THREE.Color();
+  for (let i = 0; i < spos.count; i++) {
+    const yN = spos.getY(i) / 900;                       // -1..1
+    const h = Math.min(1, Math.max(0, (yN + 0.2) / 1.0));
+    tmp.copy(cBot).lerp(cTop, h);
+    scol[i * 3] = tmp.r; scol[i * 3 + 1] = tmp.g; scol[i * 3 + 2] = tmp.b;
+  }
+  skyGeo.setAttribute('color', new THREE.BufferAttribute(scol, 3));
+  const skyMat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false });
   const sky = new THREE.Mesh(skyGeo, skyMat);
+  sky.frustumCulled = false;                             // винаги рисувай небето (обгражда камерата)
   scene.add(sky);
   engine._sky = sky;
 

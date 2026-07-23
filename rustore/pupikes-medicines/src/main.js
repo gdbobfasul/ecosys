@@ -40,23 +40,27 @@ function loadTesseract() {
     document.head.appendChild(s);
   });
 }
-async function ocrLargest(file) {
+// OCR → връща СПИСЪК от кандидати (най-едрите надписи по височина, най-голям пръв), защото
+// името на лекарството невинаги е абсолютно най-едрото — така пробваме няколко, докато уцелим.
+function cleanTok(s) { return String(s || '').replace(/[^A-Za-z0-9 +\-]/g, ' ').replace(/\s+/g, ' ').trim(); }
+async function ocrCandidates(file) {
   const Tesseract = await loadTesseract();
-  if (!Tesseract) return null;
+  if (!Tesseract) return [];
   const url = URL.createObjectURL(file);
   try {
     const res = await Tesseract.recognize(url, 'eng');
     URL.revokeObjectURL(url);
     const data = res && res.data;
-    const lines = (data && data.lines) || [];
-    let best = '', bestH = 0;
-    for (const ln of lines) {
-      const b = ln.bbox || {}; const hgt = (b.y1 - b.y0) || 0; const txt = (ln.text || '').trim();
-      if (txt && hgt > bestH) { bestH = hgt; best = txt; }
-    }
-    if (!best) best = ((data && data.text) || '').trim().split('\n')[0] || '';
-    return best.replace(/[^A-Za-z0-9 +\-]/g, ' ').replace(/\s+/g, ' ').trim();
-  } catch (e) { try { URL.revokeObjectURL(url); } catch (_) {} return null; }
+    const lines = ((data && data.lines) || [])
+      .map((ln) => ({ h: ((ln.bbox || {}).y1 - (ln.bbox || {}).y0) || 0, txt: cleanTok(ln.text) }))
+      .filter((x) => x.txt && x.txt.length >= 3)
+      .sort((a, b) => b.h - a.h);
+    const cands = [];
+    for (const l of lines) { if (!cands.includes(l.txt)) cands.push(l.txt); if (cands.length >= 5) break; }
+    // Резерв: първите думи от целия текст, ако редовете са празни.
+    if (!cands.length) { const t = cleanTok(((data && data.text) || '').split('\n')[0]); if (t) cands.push(t); }
+    return cands;
+  } catch (e) { try { URL.revokeObjectURL(url); } catch (_) {} return []; }
 }
 
 // ---------- Език ----------
@@ -118,11 +122,23 @@ function renderHome() {
   app.querySelector('#langbtn').addEventListener('click', renderLanguage);
 
   app.querySelector('#photo').addEventListener('change', async (e) => {
-    const file = e.target.files && e.target.files[0]; if (!file) return;
+    const file = e.target.files && e.target.files[0];
+    // ВАЖНО: нулираме стойността, за да СЕ ПУСНЕ пак 'change' при СЪЩАТА снимка (иначе втория
+    // път нищо не се случва — класически бъг на <input type=file>). Затова „спираше" след 1 път.
+    e.target.value = '';
+    if (!file) return;
     statusEl.textContent = M('ocr_running'); resultEl.innerHTML = '';
-    const text = await ocrLargest(file);
-    if (text) { nameEl.value = text; statusEl.textContent = ''; doSearch(text); }
-    else statusEl.textContent = M('ocr_none');
+    const cands = await ocrCandidates(file);
+    if (!cands.length) { statusEl.textContent = M('ocr_none'); return; }
+    // Пробваме кандидатите (най-едрият пръв) докато някой намери лекарство; ако никой — показваме
+    // първия в полето, за да може потребителят да коригира ръчно.
+    nameEl.value = cands[0];
+    for (const c of cands) {
+      statusEl.textContent = M('searching');
+      let res = null; try { res = await lookupMedicine(c, getLang()); } catch (_) { res = null; }
+      if (res) { nameEl.value = c; statusEl.textContent = ''; resultEl.innerHTML = renderResult(res); return; }
+    }
+    statusEl.textContent = ''; resultEl.innerHTML = `<div class="notice">${esc(M('not_found'))}</div>`;
   });
   app.querySelector('#searchbtn').addEventListener('click', () => doSearch(nameEl.value));
   nameEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(nameEl.value); });

@@ -7,12 +7,12 @@ import { mountHelp } from './core/help.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
-mountEcosystem('kcy-toolkit-pictures'); // „Още от Pupikes" showcase
+mountEcosystem('kcy-toolkit-3drotate'); // „Още от Pupikes" showcase
 playIntro(); // кратко „Pupikes" интро при старт
-startPromoAds('kcy-toolkit-pictures'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
-mountHelp('kcy-toolkit-pictures'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
-mountPrivacyLink('kcy-toolkit-pictures'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
-mountLegalGate('kcy-toolkit-pictures'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
+startPromoAds('kcy-toolkit-3drotate'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
+mountHelp('kcy-toolkit-3drotate'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
+mountPrivacyLink('kcy-toolkit-3drotate'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
+mountLegalGate('kcy-toolkit-3drotate'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)
 import './core/styles.css';
 import { tools, findTool } from './core/registry.js';
 import { iconHTML } from './core/icons.js';
@@ -63,7 +63,7 @@ function renderHome() {
     <div class="view">
       <div class="hero">
         <button class="lang-toggle" id="langbtn" title="${esc(t('lang_btn'))}">${esc(t('lang_btn'))}</button>
-        <h1>Pupikes Toolkit Pictures</h1>
+        <h1>Pupikes Toolkit 3D Rotate</h1>
         <p>${esc(t('home_sub'))}</p>
       </div>
       <input class="search" id="search" type="search" placeholder="${esc(t('search_ph'))}" autocomplete="off" />

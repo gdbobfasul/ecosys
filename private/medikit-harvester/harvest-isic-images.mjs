@@ -39,12 +39,15 @@ async function main() {
       let k = 0;
       for (const it of j.results) {
         if (got >= MAXDL) break;
-        const f = it.files && (it.files.full || it.files.thumbnail_256);
+        const f = it.files && (it.files.thumbnail_256 || it.files.full);   // thumbnail = малък → без препълване на диска
         const iurl = f && f.url; if (!iurl) continue;
         const key = iurl.split('?')[0];
         if (seen.has(key)) continue; seen.add(key);
         const dx = (it.metadata && it.metadata.clinical && (it.metadata.clinical.diagnosis || it.metadata.clinical.benign_malignant)) || 'skin lesion';
         const name = `isic${SHARD_ID}_${it.isic_id || (page + '_' + k)}.jpg`;
+        // Пропусни, ако вече е свален този isic_id (thumbnail URL се различава от стария full → иначе
+        // презаписваме същия файл и НЕ растем; така обхождаме НАДЪЛБОЧ към нови снимки).
+        if (fs.existsSync(path.join(IMGDIR, name))) continue;
         if (await download(iurl, path.join(IMGDIR, name))) { items.push({ file: 'images/' + name, article: 'dermatology: ' + dx, url: key, source: 'ISIC Archive' }); got++; k++; }
         await sleep(IMG_MS);
       }

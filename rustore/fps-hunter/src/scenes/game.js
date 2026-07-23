@@ -84,7 +84,9 @@ export class GameScene {
       target: targetName(this.config.target),
       weapon: t('wpn_' + this.config.weapon.key),
       score: this.score,
-      left: this.config.count,
+      // Нива 1–50 (без времеви лимит) са „безкрайни/спокойни" → „останали" показва ∞ (нивото пак
+      // приключва при избиване на целите, но броячът не плаши). 51+ показва реалния брой мишени.
+      left: this.config.timeLimit > 0 ? this.config.count : '∞',
       time: this.config.timeLimit > 0 ? Math.ceil(this.timeLeft) : '∞',
       ammo: this.ammo
     });
@@ -240,11 +242,13 @@ export class GameScene {
     this.killed++;
     this.score += this.config.pointsPerTarget;
     this.levelScore += this.config.pointsPerTarget;
-    this.hud.set({ score: this.score, left: Math.max(0, this.config.count - this.killed) });
+    this.hud.set({ score: this.score, left: this.config.timeLimit > 0 ? Math.max(0, this.config.count - this.killed) : '∞' });
   }
 
   update(dt) {
-    if (this.ended) return;
+    // Guard: ако сцената е приключила ИЛИ е разглобена (cleanup() занули controls/config),
+    // не прави нищо — главният цикъл може да ни повика между cleanup() и следващия start().
+    if (this.ended || !this.controls || !this.config) return;
     this.controls.update(dt);
     fadeFlash(this.viewmodel, dt);
     if (this.reloadCd > 0) this.reloadCd -= dt;

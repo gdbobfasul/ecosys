@@ -55,10 +55,17 @@ export function render(root) {
   const status = root.querySelector('#status');
 
   root.querySelector('#sndPick').addEventListener('click', async () => {
-    const f = await pickBinaryFile('audio/*');
-    if (!f || (!f.base64 && !f.dataUrl)) return;
-    picked = { name: f.name || 'audio', bytes: base64ToBytes(f.base64 || f.dataUrl) };
-    root.querySelector('#sndFile').textContent = tf('snd_picked', picked.name, fmtSize(picked.bytes.length));
+    try {
+      const f = await pickBinaryFile('audio/*');
+      if (!f) return;                                   // отказан избор
+      const bytes = base64ToBytes(f.base64 || (f.dataUrl && f.dataUrl.split(',')[1]) || '');
+      if (!bytes || !bytes.length) { setStatus(status, 'err', tf('snd_error', 'празен файл')); return; }
+      picked = { name: f.name || 'audio', bytes };
+      root.querySelector('#sndFile').textContent = tf('snd_picked', picked.name, fmtSize(picked.bytes.length));
+    } catch (e) {
+      // pickBinaryFile хвърля ЯСНА причина, ако файлът е избран, но не се чете (напр. .aac от Downloads).
+      setStatus(status, 'err', (e && e.message) || tf('snd_error', 'четенето се провали'));
+    }
   });
 
   root.querySelector('#sndGo').addEventListener('click', async () => {

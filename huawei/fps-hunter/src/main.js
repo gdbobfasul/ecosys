@@ -48,7 +48,10 @@ async function boot() {
   function toMenu() {
     try {
       if (hud) { hud.dispose(); hud = null; }
-      if (game) { game.cleanup(); }
+      // cleanup() занулява this.controls; ВАЖНО е и да маркираме сцената като приключила,
+      // за да НЕ я вика главният цикъл (иначе update() пада с „controls e null" → черен екран
+      // + „грешка при старт"). Виж guard-а в GameScene.update() и loop() по-долу.
+      if (game) { game.cleanup(); game.ended = true; }
       // Камерата вече е извън сцената след cleanup(); връщаме я в неутрална поза.
       engine.camera.position.set(0, 1.7, 0);
       engine.camera.quaternion.identity();

@@ -27,6 +27,15 @@ ROOT="$PWD"
 GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
 is_app() { [ -f "$1/package.json" ] && [ -f "$1/capacitor.config.json" ]; }
 
+# Име на APK файла = МАГАЗИННОТО име на приложението, slug-нато до ASCII (напр. Pupikes-Toolkit-PDF,
+# Huntline-3D, Godfist-Arena), а не по вътрешната папка (kcy-toolkit-pdf…). Източникът е ЕДИНЕН —
+# deploy-scripts/apk-slug.mjs (каталожното "name" → index.html <title> → името на папката) — за да
+# съвпада ТОЧНО с каталозите (update-apk-naming.mjs ползва същия резолвер).
+store_slug() {
+  local s; s="$(node deploy-scripts/apk-slug.mjs "$1" 2>/dev/null)"
+  [ -n "$s" ] && printf '%s' "$s" || printf '%s' "$1"
+}
+
 DNAME="CN=DAI GROUP OOD, OU=Mobile, O=DAI GROUP OOD, L=Bishkek, ST=Chuy, C=KG"
 mkdir -p keystores apk
 
@@ -54,7 +63,9 @@ if [ -n "${1:-}" ] && [ "${KCY_KEEP_OTHERS:-0}" != "1" ]; then
   shopt -s nullglob
   for f in apk/*.apk apk/*.exe; do
     base="$(basename "$f")"; keep=0
-    for n in "${NAMES[@]}"; do case "$base" in "${n}-"*) keep=1; break;; esac; done
+    # Пази файла, ако е на ИЗБРАН ап — по МАГАЗИННОТО (slug) ИЛИ по старото име на папката
+    # (за да не изтрием легитимен файл по време на прехода към новото именуване).
+    for n in "${NAMES[@]}"; do s="$(store_slug "$n")"; case "$base" in "${s}-"*|"${n}-"*) keep=1; break;; esac; done
     if [ "$keep" = 0 ]; then rm -f "$f"; echo -e "  ${YELLOW}− изтрит (не е в избора): ${base}${NC}"; fi
   done
   shopt -u nullglob
@@ -69,7 +80,7 @@ ensure_key() {
   if [ ! -f "$jks" ]; then
     # НОВ ключ се прави САМО ако апът никога не е билдван release. Ако вече има release APK
     # (т.е. апът може да е КАЧЕН в магазин), нов ключ = невъзможен ъпдейт → спираме шумно.
-    if ls "apk/${app}-"*"-release.apk" >/dev/null 2>&1; then
+    if ls "apk/$(store_slug "$app")-"*"-release.apk" "apk/${app}-"*"-release.apk" >/dev/null 2>&1; then
       echo -e "${RED}✗ $app: има съществуващ release APK, но ЛИПСВА ключът $jks!${NC}"
       echo -e "${RED}  НЕ правя нов ключ (с нов подпис ъпдейтът в магазина е невъзможен).${NC}"
       echo -e "${RED}  Върни ключа от резервно копие в keystores/ и пусни пак.${NC}"
@@ -105,6 +116,7 @@ for app in "${NAMES[@]}"; do
     FAIL+=("$app (подготвителен билд)"); continue
   fi
 
+  slug="$(store_slug "$app")"                         # магазинното име за файла (напр. Huntline-3D)
   for store in rustore huawei; do
     d="$store/$app"
     is_app "$d" || continue
@@ -115,9 +127,10 @@ for app in "${NAMES[@]}"; do
       ./gradlew assembleRelease -q ) || { FAIL+=("$app-$store (assembleRelease)"); continue; }
     out="$d/android/app/build/outputs/apk/release/app-release.apk"
     if [ -f "$out" ]; then
-      # Подписът на новия APK трябва да СЪВПАДА с предишния release (иначе магазинът
-      # отказва ъпдейта). При разминаване НЕ презаписваме — старият остава като доказателство.
-      prev="apk/${app}-${store}-release.apk"
+      dest="apk/${slug}-${store}-release.apk"
+      # Подписът на новия APK трябва да СЪВПАДА с предишния release (иначе магазинът отказва
+      # ъпдейта). Търсим предишния по новото ИЛИ старото (по папка) име — за прехода.
+      prev="$dest"; [ -f "$prev" ] || prev="apk/${app}-${store}-release.apk"
       if [ -f "$prev" ] && [ -n "$APKSIGNER" ]; then
         oldc="$(cert_of "$prev")"; newc="$(cert_of "$out")"
         if [ -n "$oldc" ] && [ -n "$newc" ] && [ "$oldc" != "$newc" ]; then
@@ -125,9 +138,11 @@ for app in "${NAMES[@]}"; do
           FAIL+=("$app-$store (сменен подпис!)"); continue
         fi
       fi
-      cp "$out" "apk/${app}-${store}-release.apk"
-      echo -e "  ${GREEN}✓ apk/${app}-${store}-release.apk${NC}"
-      OK+=("${app}-${store}")
+      cp "$out" "$dest"
+      # Изчисти старото (по папка) име, ако е различно от новото — за да не остават дубли.
+      [ "$slug" != "$app" ] && rm -f "apk/${app}-${store}-release.apk"
+      echo -e "  ${GREEN}✓ ${dest}${NC}"
+      OK+=("${slug}-${store}")
     else
       FAIL+=("$app-$store (няма изходен APK)")
     fi
@@ -141,6 +156,6 @@ if [ "${#FAIL[@]}" -gt 0 ]; then
   echo -e "  ${RED}✗ провали: ${#FAIL[@]}${NC}"
   for f in "${FAIL[@]}"; do echo -e "    ${RED}✗${NC} $f"; done
 fi
-echo -e "\n  Подписаните APK-та са в: ${BOLD}apk/<ап>-<магазин>-release.apk${NC}"
+echo -e "\n  Подписаните APK-та са в: ${BOLD}apk/<Магазинно-Име>-<магазин>-release.apk${NC}"
 echo -e "  Ключовете и паролите: ${BOLD}keystores/${NC} (влизат в резервните копия — НЕ ги губи)"
 [ "${#FAIL[@]}" -eq 0 ]

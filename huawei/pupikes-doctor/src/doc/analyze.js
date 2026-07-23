@@ -39,7 +39,9 @@ export async function conditionText(id, lang) {
 }
 
 // Оценка на състоянията спрямо входа. input = { area, painLevel(0-3), size(0-2), text }.
-export function score(input) {
+// boosts (по избор) = карта {id: точки} от анализа на СНИМКАТА (виж photoBoost) — прибавя се.
+export function score(input, boosts) {
+  boosts = boosts || {};
   const nText = norm(input.text);
   const results = [];
   for (const c of CONDITIONS) {
@@ -49,10 +51,54 @@ export function score(input) {
     for (const sg of c.signs) { if (nText && nText.includes(norm(sg))) s += 2; }
     if (c.painRelevant && input.painLevel >= 2) s += 1;              // силна болка → по-вероятни болезнените
     if (c.sizeRelevant && input.size >= 2) s += 1;                   // голям размер → тежест
+    if (boosts[c.id]) s += boosts[c.id];                             // сигнал от снимката (център + цвят)
     if (s > 0) results.push({ c, s });
   }
   results.sort((a, b) => b.s - a.s);
   return results.slice(0, 5).map((r) => r.c);
+}
+
+// ── Анализ на СНИМКАТА (център-изрязване + цветови сигнал) ───────────────────────
+// Проблемът обикновено е в СРЕДАТА на кадъра и е най-ясен там → анализираме централните ~60%.
+// Без AI/библиотека: смятаме цветови характеристики (червенина, тъмнина/синьо, наситеност) и от
+// тях подсказваме вероятни състояния (изгаряне/обрив/инфекция/рана срещу натъртване/оток).
+function loadImg(file) {
+  return new Promise((res, rej) => {
+    const img = new Image(); const u = URL.createObjectURL(file);
+    img.onload = () => { URL.revokeObjectURL(u); res(img); };
+    img.onerror = () => { URL.revokeObjectURL(u); rej(new Error('img')); };
+    img.src = u;
+  });
+}
+export async function photoSignal(file) {
+  if (!file) return null;
+  let img; try { img = await loadImg(file); } catch (_) { return null; }
+  const S = 64, c = document.createElement('canvas'); c.width = S; c.height = S;
+  const cx = c.getContext('2d');
+  const w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+  const cw = Math.max(1, Math.floor(w * 0.6)), ch = Math.max(1, Math.floor(h * 0.6));   // центъра
+  cx.drawImage(img, Math.floor((w - cw) / 2), Math.floor((h - ch) / 2), cw, ch, 0, 0, S, S);
+  let d; try { d = cx.getImageData(0, 0, S, S).data; } catch (_) { return null; }
+  let r = 0, g = 0, b = 0, redSpots = 0, darkSpots = 0; const n = S * S;
+  for (let i = 0; i < d.length; i += 4) {
+    const R = d[i], G = d[i + 1], B = d[i + 2];
+    r += R; g += G; b += B;
+    if (R > 120 && R - (G + B) / 2 > 35) redSpots++;              // силно червено (кръв/възпаление/изгаряне)
+    if ((R + G + B) / 3 < 70 && B >= R) darkSpots++;              // тъмно/синкаво (натъртване)
+  }
+  r /= n; g /= n; b /= n;
+  const bright = (r + g + b) / 3, max = Math.max(r, g, b), min = Math.min(r, g, b);
+  return { r, g, b, bright, redness: r - (g + b) / 2, sat: max ? (max - min) / max : 0, redFrac: redSpots / n, darkFrac: darkSpots / n };
+}
+// Превръща цветовия сигнал в подсказки към състоянията (id → допълнителни точки).
+export function photoBoost(sig) {
+  const b = {}; if (!sig) return b;
+  const add = (id, v) => { b[id] = (b[id] || 0) + v; };
+  if (sig.redness > 18 || sig.redFrac > 0.06) { add('burn', 3); add('rash', 3); add('infection', 3); add('bite', 2); add('cut', 2); add('sunburn', 3); add('hives', 2); add('eczema', 2); add('abrasion', 2); add('boil', 2); }
+  if (sig.redFrac > 0.18) { add('cut', 3); add('burn', 2); }                 // концентрирано ярко червено → кръв/рана
+  if (sig.darkFrac > 0.12 || (sig.bright < 95 && sig.b >= sig.r)) { add('bruise', 4); add('swelling', 2); add('frostbite', 2); }
+  if (sig.r > 150 && sig.g > 130 && sig.b < 110) { add('infection', 2); add('boil', 2); }    // жълтеникаво (гной)
+  return b;
 }
 
 // ── Снимкова библиотека (референтни снимки на състояния, СВАЛЯТ се предварително) ──
