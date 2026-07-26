@@ -16,7 +16,7 @@ const {
 const exemptConfig = require("../config/exempts-slots");
 
 async function main() {
-  console.log("=== KCY1 Token Configuration ===\n");
+  console.log("=== PUPIKES1 Token Configuration ===\n");
   
   await displayNetworkInfo();
   

@@ -1,0 +1,91 @@
+{
+  "id": "ingrown_nail",
+  "langs": {
+    "ru": {
+      "title": "Онихокриптоз",
+      "extract": "Вросший ноготь — врастание ногтевой пластины в боковой край ногтевого валика. Это весьма распространённое заболевание. При этом ногтевой валик становится красным и отёчным, начинается воспаление, вызывающее сильную боль. В дальнейшем возможно развитие хронического воспалительного процесса.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Ingrown_nail_002.jpg"
+    },
+    "uk": {
+      "title": "Врослий ніготь",
+      "extract": "Врослий ніготь — вростання нігтьової пластини в край нігтьового валика. Це захворювання може вражати нігті, як на руках, так і на ногах. Але найчастіше уражається великий палець ноги. Ніготь може вростати, як з внутрішнього, так і з зовнішнього боку. Рідко зустрічаються випадки, коли процес вростання проходить відразу з двох сторін.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Ingrown_nail_002_cropped.jpg"
+    },
+    "en": {
+      "title": "Ingrown nail",
+      "extract": "An ingrown nail, also known as onychocryptosis is a common form of nail disease. It is an often painful condition in which the nail grows so that it cuts into one or both sides of the paronychium or nail bed. While any nail can become ingrown, wearing shoes causes the toenails to grow in more often.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Ingrown_nail_002_cropped.jpg"
+    },
+    "de": {
+      "title": "Unguis incarnatus",
+      "extract": "Unguis incarnatus, auch Onychocryptosis, ist der medizinische Fachausdruck für einen eingewachsenen Nagel. Dabei drückt sich entweder der seitliche Nagelrand tief in die Nagelfalz und führt zu schmerzhaften Beschwerden, oder die verbreiterte Nagelfalz überwuchert den seitlichen Nagelrand.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Unguis.jpg"
+    },
+    "fr": {
+      "title": "Ongle incarné",
+      "extract": "Un ongle incarné est une inflammation de la peau due à un enfoncement anormal de l'ongle dans la chair.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Ongle_coupe_sagittale.tif/lossless-page1-1920px-Ongle_coupe_sagittale.tif.png"
+    },
+    "es": {
+      "title": "Uña encarnada",
+      "extract": " Oniconicopisis también llamada uña encarnada, uñero u onicocriptosis, consiste en la penetración anómala de la uña en los tejidos blandos adyacentes, lo cual origina inflamación, infección secundaria, dolor al caminar o ante pequeños traumas y en ocasiones formación de tejido de granulación. Se presenta sobre todo en la uña del dedo gordo del pie.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Ingrown_nail_002_cropped.jpg"
+    },
+    "it": {
+      "title": "Onicocriptosi",
+      "extract": "L'onicocriptosi, comunemente chiamata unghia incarnita, è una affezione della lamina ungueale che porta ad una penetrazione della stessa nelle carni vicine.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Ingrown_nail_002_cropped.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Onicocriptose",
+      "extract": "A onicocriptose, ou o termo popular unha encravada, é uma dor ou inflamação que ocorre no dedo quando a borda lateral da unha fere a pele adjacente, enterrando-a ao seu redor. Isto acontece porque a pele forma uma barreira ao crescimento da unha e, como esta é mais dura e não pára de crescer, ela adentra a pele causando os sintomas mais comuns como dor e inflamação. As causas mais prováveis são o corte de maneira incorreta da ponta das unhas e sapatos apertados. Ocorre mais comumente nas unhas dos pés mas também raramente afeta as mãos.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Ingrown_nail_002.jpg"
+    },
+    "ar": {
+      "title": "ظفر ناشب",
+      "extract": "الظفر الناشب المعروف أيضا باسم الظفر المغروس باللحم هو شكل شائع من أشكال أمراض الأظافر. تعتبر هذه هي حالة غالبا مؤلمة لإن الظفر يكون نموه بتجاه الجلد مما يجعل الطبيب يقطع الجزء المغروس في الجلد ويبقى الآخر ولذلك عن طريق إجراء العملية الجراحية.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Ingrown_nail_002.jpg"
+    },
+    "ja": {
+      "title": "陥入爪",
+      "extract": "陥入爪（かんにゅうそう）とは、爪甲側縁が周囲の軟部組織に食い込んでしまい、疼痛、炎症、肉芽形成、二次感染を引き起こした状態。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/3a/AnIngrownNail_Front.JPG"
+    },
+    "ky": {
+      "title": "Онихокриптоз",
+      "extract": "Буттун өскөн тырмактары, онихокриптоз — тырмак бүктөмүнүн каптал кырынын өсүшү. Бул аябай кеңири таралган оору. Бул учурда тырмак тарап кызарып, шишип кетет, сезгенүү башталат, катуу оору пайда болот. Кийинчерээк өнөкөт сезгенүү процесси пайда болушу мүмкүн. Эгерде туура дарыланбаса, оору кайталанат.",
+      "image": ""
+    },
+    "zh": {
+      "title": "嵌甲",
+      "extract": "\n嵌甲，俗稱凍甲，又稱甲溝嵌甲症，是一種常見的甲部疾病。常造成疼痛，其特徵為指甲生長方向異常，切入單側或雙側的甲床。雖然，嵌甲可發生在手指甲與腳趾甲，但腳趾甲的最常見。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Ingrown_nail_002_cropped.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/ingrown_nail-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/8/86/Ingrown_nail_002.jpg"
+    },
+    {
+      "file": "img/ingrown_nail-1.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Ingrown_nail_002_cropped.jpg"
+    },
+    {
+      "file": "img/ingrown_nail-2.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Unguis.jpg"
+    },
+    {
+      "file": "img/ingrown_nail-3.png",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Ongle_coupe_sagittale.tif/lossless-page1-1920px-Ongle_coupe_sagittale.tif.png"
+    },
+    {
+      "file": "img/ingrown_nail-4.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Ingrown_nail_002_cropped.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    {
+      "file": "img/ingrown_nail-5.JPG",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/3/3a/AnIngrownNail_Front.JPG"
+    }
+  ]
+}

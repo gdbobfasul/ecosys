@@ -1,0 +1,18 @@
+{
+  "_note": "Курирани РЕАЛНИ снимки на лекарствени опаковки (ръчно прегледани, четимо име), за ЧЕСТНО измерване на OCR стъпката на Pupikes Medicines. Латински + КИРИЛСКИ (bg/ru/sr) опаковки. Източник: Wikimedia Commons (свободен лиценз). names = приемливи имена за уцелване (ground truth); names[0] е ЛАТИНСКОТО генерично (за директната проверка на базата, която е на латиница). Суфикс -cyr = кирилска опаковка. САМИТЕ СНИМКИ НЕ СА В GIT (виж .gitignore) — свали ги с `node fetch.mjs` (тегли от точните url-и по-долу).",
+  "items": [
+    { "file": "aspirin.jpg",         "names": ["aspirin", "acetylsalicylic", "bayer"],      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Bayer_Aspirin_and_store-brand_generic_on_Canadian_drugstore_shelf.jpg" },
+    { "file": "amoxicillin.jpg",     "names": ["amoxicillin", "amoxil"],                    "url": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Amoxicillin.JPG" },
+    { "file": "paracetamol.jpg",     "names": ["panadol", "paracetamol", "acetaminophen"],  "url": "https://upload.wikimedia.org/wikipedia/commons/0/07/Panadol_500_mg.jpg" },
+    { "file": "diclofenac.jpg",      "names": ["diclofenac"],                               "url": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Diclofenac_Twelve%2Bhalf_mg.jpg" },
+    { "file": "naproxen.jpg",        "names": ["naproxen", "pronaxen"],                     "url": "https://upload.wikimedia.org/wikipedia/commons/7/75/Pronaxen.jpg" },
+    { "file": "ciprofloxacin.jpg",   "names": ["ciprofloxacin", "ciprofloxacino", "cipro"], "url": "https://upload.wikimedia.org/wikipedia/commons/1/17/Ciprofloxacino.png" },
+    { "file": "amlodipine.jpg",      "names": ["amlodipine", "norvasc"],                    "url": "https://upload.wikimedia.org/wikipedia/commons/9/96/Norvasc_Amlodipine.jpg" },
+    { "file": "metronidazole.jpg",   "names": ["metronidazole"],                            "url": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Metronidazole.jpg" },
+    { "file": "loperamide.jpg",      "names": ["loperamide", "loperamid", "lopex"],         "url": "https://upload.wikimedia.org/wikipedia/commons/1/15/Lopex.jpg" },
+    { "file": "cetirizine.jpg",      "names": ["cetirizine", "zyrtec"],                     "url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Zyrtec-D_blister_pack.png" },
+    { "file": "salbutamol.jpg",      "names": ["salbutamol", "ventolin", "salvent"],        "url": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Salbutamol2.JPG" },
+    { "file": "diclofenac-cyr.jpg",  "names": ["diclofenac", "диклофенак", "диклак"],        "url": "https://upload.wikimedia.org/wikipedia/commons/5/50/Diklak.jpg" },
+    { "file": "azithromycin-cyr.jpg","names": ["azithromycin", "азитромицин", "хемомицин"], "url": "https://upload.wikimedia.org/wikipedia/commons/c/c9/%D0%A5%D0%B5%D0%BC%D0%BE%D0%BC%D0%B8%D1%86%D0%B8%D0%BD.jpg" }
+  ]
+}

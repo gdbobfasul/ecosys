@@ -195,6 +195,6 @@ REPORT_GAS=true npx hardhat test
 
 ---
 
-**Файл:** kcy-meme-1-tests.js  
+**Файл:** pupikes-meme-1-tests.js  
 **Документация:** docs/TESTS_README_BG.md  
 **Статус:** ✅ Ready

@@ -83,7 +83,7 @@ export function buildAegisExport(entries) {
     else info.period = parseInt(e.period, 10) || 30;
     return {
       type,
-      uuid: 'kcy-' + (e.id || i),
+      uuid: 'pupikes-' + (e.id || i),
       name: String(e.account || ''),
       issuer: String(e.issuer || ''),
       note: '',

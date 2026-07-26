@@ -16,6 +16,7 @@
 - **README-COMPLETE.md** - Пълен преглед на всички проекти
 - **DATABASES-BY-PROJECT.md** - 🗄️ ЕДИНСТВЕН каноничен източник: кой проект на каква БД работи (Chat/Eco-3 двоен, FBP/HLB/WNB само PG, Portals/Token-Monitor само SQLite)
 - **INDEX.md** - Този файл (index на документацията)
+- **APPS-AND-ROBOTS.md** - 🤖 Пълен преглед: какво правят и какво НЕ правят всичките 34 приложения (готовност за публикуване), всички помощни роботи (BugBot тест-робот, AppPublisherBot, Medikit Harvester, SelfLearning събирач, kcy-diag) с „какво още се желае", и честно обяснение на 404-проблема с правните страници
 - **DEPLOYMENT-CHECKLIST.md** - Deployment checklist
 - **WHATS-NEW-v2.0.md** - Промени във версия 2.0
 - **MATCHMAKING-IMPLEMENTATION-SUMMARY.md** - Matchmaking имплементация (v3.0)

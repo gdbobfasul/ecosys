@@ -1,7 +1,7 @@
 <!-- Version: 1.0093 -->
 <!-- @version v34 -->
 
-# KCY1 Token - Version 34 (v34) Changelog
+# PUPIKES1 Token - Version 34 (v34) Changelog
 
 ## 📅 Дата: 26 Ноември 2025
 
@@ -13,7 +13,7 @@
 - ✅ `fromAI/` директория (стари AI файлове, ZIP архиви)
 - ✅ `addrs.txt` (адресите са в `config/addresses.js`)
 - ✅ `package1.json` (backup файл)
-- ✅ `docs/KCY1-TOKEN-DOCUMENTATION-v30-BG.md.pdf` (може да се регенерира)
+- ✅ `docs/PUPIKES1-TOKEN-DOCUMENTATION-v30-BG.md.pdf` (може да се регенерира)
 
 **Резултат**: Проектът е по-чист и по-лесен за поддръжка.
 
@@ -82,17 +82,17 @@
 
 #### Tests (6 файла):
 - `test/distribution_test_helper.js`
-- `test/kcy-meme-1-edge-cases.js`
-- `test/kcy-meme-1-high-priority-tests-v33.js`
-- `test/kcy-meme-1-medium-priority-tests-v33.js`
-- `test/kcy-meme-1-tests.js`
+- `test/pupikes-meme-1-edge-cases.js`
+- `test/pupikes-meme-1-high-priority-tests-v33.js`
+- `test/pupikes-meme-1-medium-priority-tests-v33.js`
+- `test/pupikes-meme-1-tests.js`
 - `test/test-real-distribution.js`
 
 #### Utils (1 файл):
 - `utils/helpers.js`
 
 #### Contracts (1 файл):
-- `contracts/kcy-meme-1.sol` - Актуализиран на v34
+- `contracts/pupikes-meme-1.sol` - Актуализиран на v34
 
 **Общо**: 25+ файла с версия v34
 
@@ -251,5 +251,5 @@
 **Версия**: v34  
 **Пълна версия**: v3.4  
 **Дата**: 26 Ноември 2025  
-**Автор**: KCY1 Team  
+**Автор**: PUPIKES1 Team  
 **Следваща версия**: v35 (при следваща значителна промяна)

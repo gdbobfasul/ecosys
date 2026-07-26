@@ -1,0 +1,61 @@
+{
+  "id": "lower_back",
+  "langs": {
+    "bg": {
+      "title": "Лумбаго",
+      "extract": "Лумбагото или болка в кръста е често срещан проблем на мускулите и костите на гърба. То засяга около 40% от хората в даден период от живота им. В зависимост от продължителността на болката, лумбагото може да се класифицира като остро, нехронично или хронично. Състоянието може да бъде класифицирано и въз основа на подлежащата причина като механично, немеханично или рефлексивна болка."
+    },
+    "ru": {
+      "title": "Люмбаго",
+      "extract": "Люмба́го ; также простре́л или постре́л — острая боль в нижней части спины (пояснице) независимо от причин её возникновения и характера проявления. Люмбаго часто путают с радикулитом."
+    },
+    "uk": {
+      "title": "Люмбаго",
+      "extract": "Люмбаго, також гострий попереково-крижовий радикуліт, поперековий простріл, простріл в спині — гострий біль («простріл») у нижній частині спини (попереку) незалежно від причин її виникнення та характеру прояви. Часто плутають з радикулітом."
+    },
+    "en": {
+      "title": "Low back pain",
+      "extract": "Low back pain or lumbago is a common disorder involving the muscles, nerves, and bones of the back, in between the lower edge of the ribs and the lower fold of the buttocks. Pain can vary from a dull constant ache to a sudden sharp feeling. Low back pain may be classified by duration as acute, sub-acute, or chronic. The symptoms of low back pain usually improve within a few weeks from the time they start, with 40–90% of people recovered by six weeks."
+    },
+    "de": {
+      "title": "Hexenschuss",
+      "extract": "Unter einem Hexenschuss, veraltet auch Albschoss/Alpschoss  oder Mahrschuss, versteht die volkstümliche Sprache einen plötzlich auftretenden, stechenden und anhaltenden Schmerz, insbesondere im Lendenwirbelbereich mit nachfolgenden Bewegungseinschränkungen. Fachsprachlich heißt es Lumbalgie, Lumbago oder lokales Lumbalsyndrom."
+    },
+    "fr": {
+      "title": "Lombalgie",
+      "extract": "Une lombalgie est un état douloureux du rachis lombaire. Lorsqu'elle est aiguë, il s'agit d'un lumbago ou lombago."
+    },
+    "es": {
+      "title": "Lumbalgia",
+      "extract": "El dolor lumbar, dolor lumbosacro, lumbalgia o lumbago es el dolor localizado en la parte baja de la espalda, correspondiente a la zona lumbar de la columna vertebral y que afecta la región que se extiende desde la parte más baja de las costillas posteriores hasta la zona más alta de los glúteos, con o sin compromiso de las extremidades inferiores. Es uno de los motivos principales de consulta a los servicios médicos y se estima que aproximadamente el 80% de las personas lo presentará al menos una vez en la vida."
+    },
+    "it": {
+      "title": "Lombalgia",
+      "extract": "La lombalgia, più comunemente detta mal di schiena, è un disturbo comune che coinvolge i muscoli e le ossa della schiena e che può durare fino a 4 anni. Essa colpisce, ad un certo punto della loro vita, circa il 40% delle persone. La lombalgia può essere classificata per durata, come acuta, sub-cronica o cronica ; la lombalgia acuta è anche nota popolarmente come colpo della strega. La condizione può essere ulteriormente classificata dalla causa di fondo del dolore, che può essere meccanica o non."
+    },
+    "pt": {
+      "title": "Lombalgia",
+      "extract": "Lombalgia ou dor na região lombar é um sintoma comum que pode resultar de várias causas distintas, pondendo ser conhecidas ou desconhecidas. A dor lombar é definida como dor ou desconforto localizado na região posterior do tronco entre a margem inferior da última costela e a dobra inferior dos glúteos, podendo ter presença ou não de dor nos membros inferiores. A dor é de intensidade variável, desde um desconforto constante até dor súbita e intensa."
+    },
+    "ar": {
+      "title": "ألم أسفل الظهر",
+      "extract": "ألم أسفل الظهر أو ألم الظهر أو القُطَان أو ألم القَطن أو الزُّلَّخَة هو اضطرابٌ شائعٌ ينطوي على العضلات والأعصاب والعظام في الظهر. يمكن أن يتنوع الألم من ألم خفيف إلى شعور حاد مفاجئ. حيث يمكن تصنيف آلام أسفل الظهر حسب المدة على أنها حادة أو شبه مزمنة أو مزمنة . يمكن تصنيف الحالة بشكل أكبر حسب السبب الأساسي على أنها ألم ميكانيكيه أو غير ميكانيكيه أو ألم رجيع. عادة ما تتحسن أعراض آلام أسفل الظهر في غضون أسابيع قليلة من وقت ظهورها، حيث يتعافى 40-90% من الأشخاص بحلول ستة أسابيع."
+    },
+    "hi": {
+      "title": "निम्न पृष्ठ वेदना",
+      "extract": "निम्न पृष्ठ वेदना एक सर्वसामान्य विकार है जिसमें पीठ की पेशियाँ, तंत्रिकाएँ और अस्थियाँ सम्मिलित होतीं हैं। इस विकार के कारण धीमा किन्तु लगातार दर्द से लेकर अचानक तेज दर्द हो सकता है।"
+    },
+    "ja": {
+      "title": "腰痛",
+      "extract": "腰痛 とは、腰に痛みや張り、しびれ、違和感などを感じる状態を指す一般的な語句。 その期間によって、急性（6週間まで）、亜急性（6-12週間）、慢性（12週間以上）に分類される。"
+    },
+    "ky": {
+      "title": "Люмбаго",
+      "extract": "Люмбаго — оор нерсе көтөргөндө же олдоксон кыймылдап алганда арка булчуңдарына өтө күч келип, белдин катуу оорушу. Организмдин суукка урунуусу түрткү берет. Ал көбүнчө куяң, омуртканын остеохондроз ооруларынын жана башкалар белгиси болушу мүмкүн. Люмбаго бир аз күч келгенде, кыймылдаганда, жөтөлгөндө, чүчкүргөндө күчөйт. Белди басканда катуу ооруйт. Оорулуу бүкүрөйүп басат.\nЭгер люмбаго ишиалгия менен болсо, анын пайда болгон себеби бул - омуртка кепилдеринин түшүшү.\nАнда-санда ревматизмге таандык оорулар, кээ бир инфекциялык оорулар же шишиктер да люмбаго оорусунун себеби болот.\nАзыркы ыкмалар менен люмбаго менен ооругандардын 30% себебин билинбей калууда.\nЛюмбаго оорусунда оору феномени пайда болушуна, жаракат болгон кепилдеринин фиброз шакекчесинде жана ага кыналып турган байламталардын кабыл алгычтарынын дүүлүгүшү себеп. Жыйынтыгында булчуңдарда тоникалык шыкалуу (напяжение) пайда болот.\nЛюмбаго көбүнчө 30-40 жаштардагы эркектерде жолугат. Ал көбүнчө интенсивдүү физикалык күч болгондо же андан кийин, өтө ысып(тердеп) кайра муздаганда пайда болот. \nКокустан пайда болгон белдеги оорунун мүнөзү - пульсациялоочу, \nПриступ убагында киши алсызболуп, аргасыз катып калат, кыймыл аракет ого бетер ооруну күчөтөт, бел жактагы спазм күчөйт.Оорунун уланышы бир нече мүнөттөн бир нече саатка жана суткага чейин болот. Бул курч оору тынч, кыймылсыз катуу жерде жатканда айыгат. Кээде оору өзү эле кандай кокустан пайда болсо ошондой кокустук менен жоголуп кетет. Ушундай учурда оорулуунун лелинде \"бир нерсе өзүнүн ордуна тургандай\" болуп калат.\nКөп учурларда 4-8 жумалык дарылануудан кийин оору өтүп кетет. Катуу ооруганда ооручу сезимдерди жок кылуучу, спазмолитикалык каражаттарды, функционалдуу методдорду колдонушат."
+    },
+    "zh": {
+      "title": "下背痛",
+      "extract": "下背痛 也稱腰痛、下腰痛、腰骶痛，是一种涉及背部肌肉、神经和骨骼的常见疼痛疾病，位于自背后肋缘下方至臀褶之间。疼痛性质，可从持续钝痛至突然刺痛不等。\n"
+    }
+  }
+}

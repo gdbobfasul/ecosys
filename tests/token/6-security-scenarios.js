@@ -27,7 +27,7 @@ describe("SECURITY SCENARIOS", function() {
     beforeEach(async function() {
         [owner, exempt1, exempt2, normal1, normal2, attacker, multiSig] = await ethers.getSigners();
         
-        const Token = await ethers.getContractFactory("KCY1Token");
+        const Token = await ethers.getContractFactory("PUPIKES1Token");
         token = await Token.deploy();
         await token.waitForDeployment();
         
@@ -208,7 +208,7 @@ describe("SECURITY SCENARIOS", function() {
         
         it("Should require multi-sig to be set before using slots 1-5", async function() {
             // Deploy fresh token
-            const Token = await ethers.getContractFactory("KCY1Token");
+            const Token = await ethers.getContractFactory("PUPIKES1Token");
             const freshToken = await Token.deploy();
             
             // Multi-sig tries to use slot 2 without being set
@@ -284,7 +284,7 @@ describe("SECURITY SCENARIOS", function() {
         
         it("Should enforce trading lock for first 48h", async function() {
             // Deploy fresh token
-            const Token = await ethers.getContractFactory("KCY1Token");
+            const Token = await ethers.getContractFactory("PUPIKES1Token");
             const freshToken = await Token.deploy();
             
             // Make owner exempt (owner is already in slot 1 by constructor)
@@ -301,7 +301,7 @@ describe("SECURITY SCENARIOS", function() {
     describe("Emergency Functions", function() {
         it("Should allow owner to rescue stuck tokens", async function() {
             // Create mock ERC20
-            const MockToken = await ethers.getContractFactory("KCY1Token");
+            const MockToken = await ethers.getContractFactory("PUPIKES1Token");
             const mockToken = await MockToken.deploy();
             
             const contractAddress = await token.getAddress();
@@ -311,7 +311,7 @@ describe("SECURITY SCENARIOS", function() {
             await mockToken.updateExemptSlot(7, contractAddress);
             await time.increase(PAUSE_DURATION + 1);
             
-            // Send mock tokens to KCY1 contract (owner→exempt = no limit)
+            // Send mock tokens to PUPIKES1 contract (owner→exempt = no limit)
             await mockToken.transfer(contractAddress, ethers.parseEther("1000"));
             
             // Owner rescues them
@@ -320,10 +320,10 @@ describe("SECURITY SCENARIOS", function() {
             ).to.not.be.reverted;
         });
         
-        it("Should NOT allow rescuing KCY1 tokens themselves", async function() {
+        it("Should NOT allow rescuing PUPIKES1 tokens themselves", async function() {
             await expect(
                 token.rescueTokens(await token.getAddress(), ethers.parseEther("1000"))
-            ).to.be.revertedWith("No rescue KCY1");
+            ).to.be.revertedWith("No rescue PUPIKES1");
         });
     });
 });

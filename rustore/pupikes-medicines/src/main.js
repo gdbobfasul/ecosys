@@ -40,27 +40,67 @@ function loadTesseract() {
     document.head.appendChild(s);
   });
 }
-// OCR → връща СПИСЪК от кандидати (най-едрите надписи по височина, най-голям пръв), защото
-// името на лекарството невинаги е абсолютно най-едрото — така пробваме няколко, докато уцелим.
-function cleanTok(s) { return String(s || '').replace(/[^A-Za-z0-9 +\-]/g, ' ').replace(/\s+/g, ' ').trim(); }
-async function ocrCandidates(file) {
+// Пази латиница И кирилица (опаковки на bg/ru/sr) — само пунктуацията се маха.
+function cleanTok(s) { return String(s || '').replace(/[^A-Za-z0-9А-Яа-яЁёІіЇїЈјЉљЊњ +\-]/g, ' ').replace(/\s+/g, ' ').trim(); }
+
+// Предобработка на снимката преди OCR: разумен размер (уголеми дребните, смали огромните),
+// сива скала + разтягане на контраста. Това чувствително подобрява четенето на надписи на
+// опаковки (цветен фон, лога). Връща <canvas>; при проблем — хвърля и се пада на суровия файл.
+async function preprocess(file) {
+  let bmp;
+  if (self.createImageBitmap) bmp = await createImageBitmap(file);
+  else bmp = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(file); });
+  const w = bmp.width, h = bmp.height; if (!w || !h) throw new Error('no dim');
+  const longest = Math.max(w, h); const MAX = 1800, MIN = 1000;
+  let scale = 1; if (longest > MAX) scale = MAX / longest; else if (longest < MIN) scale = MIN / longest;
+  const cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
+  const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+  const ctx = c.getContext('2d'); ctx.drawImage(bmp, 0, 0, cw, ch);
+  try {
+    const id = ctx.getImageData(0, 0, cw, ch); const p = id.data;
+    for (let i = 0; i < p.length; i += 4) {
+      const g = 0.299 * p[i] + 0.587 * p[i + 1] + 0.114 * p[i + 2];
+      let v = (g - 128) * 1.35 + 140; v = v < 0 ? 0 : v > 255 ? 255 : v;
+      p[i] = p[i + 1] = p[i + 2] = v;
+    }
+    ctx.putImageData(id, 0, 0);
+  } catch (_) { /* tainted canvas → оставяме цветната скала */ }
+  return c;
+}
+
+// От OCR данните сглобява подредени кандидати: първо ЕДРИ ДУМИ (по височина, най-надеждни за
+// името на лекарството), после цели редове (за двусловни имена), после всички дълги буквени
+// токени от текста (резерв). Пробват се в тази подредба, докато уцелим лекарство.
+function buildCandidates(data) {
+  if (!data) return [];
+  const scored = [];
+  const push = (txt, h) => { const t = cleanTok(txt); if (t && t.length >= 3) scored.push({ t, h: h || 0 }); };
+  for (const wd of (data.words || [])) { if ((wd.confidence || 0) < 45) continue; const bb = wd.bbox || {}; push(wd.text, (bb.y1 - bb.y0) || 0); }
+  for (const ln of (data.lines || [])) { const bb = ln.bbox || {}; push(ln.text, (bb.y1 - bb.y0) || 0); }
+  scored.sort((a, b) => b.h - a.h);
+  // кандидат влиза само ако има буквена дума ≥4 знака (латиница ИЛИ кирилица) — маха „250"/„4 i"/„mg"
+  const WORD = /[A-Za-zА-Яа-яЁё]{4,}/;
+  const out = []; const add = (s) => { const v = cleanTok(s); if (v && WORD.test(v) && !out.includes(v)) out.push(v); };
+  for (const s of scored) add(s.t);
+  // резерв: всички буквени токени с ≥4 знака от целия текст (лови името дори при разбити редове)
+  for (const m of String((data.text) || '').matchAll(/[A-Za-zА-Яа-яЁё][A-Za-zА-Яа-яЁё-]{3,}/g)) add(m[0]);
+  return out.slice(0, 12);
+}
+
+// OCR → списък кандидати (едри думи → редове → дълги токени). Пуска се върху ПРЕДОБРАБОТЕНАТА снимка,
+// с подадения езиков пакет. Извиква се двупроходно (латиница → кирилица) от обработчика по-долу.
+async function ocrCandidates(file, lang) {
   const Tesseract = await loadTesseract();
   if (!Tesseract) return [];
-  const url = URL.createObjectURL(file);
+  let source = null, objurl = null;
+  try { source = await preprocess(file); } catch (_) { objurl = URL.createObjectURL(file); source = objurl; }
   try {
-    const res = await Tesseract.recognize(url, 'eng');
-    URL.revokeObjectURL(url);
-    const data = res && res.data;
-    const lines = ((data && data.lines) || [])
-      .map((ln) => ({ h: ((ln.bbox || {}).y1 - (ln.bbox || {}).y0) || 0, txt: cleanTok(ln.text) }))
-      .filter((x) => x.txt && x.txt.length >= 3)
-      .sort((a, b) => b.h - a.h);
-    const cands = [];
-    for (const l of lines) { if (!cands.includes(l.txt)) cands.push(l.txt); if (cands.length >= 5) break; }
-    // Резерв: първите думи от целия текст, ако редовете са празни.
-    if (!cands.length) { const t = cleanTok(((data && data.text) || '').split('\n')[0]); if (t) cands.push(t); }
-    return cands;
-  } catch (e) { try { URL.revokeObjectURL(url); } catch (_) {} return []; }
+    // Езиковите данни се теглят от CDN веднъж и се кешират. Кирилицата се свързва с латинската
+    // база чрез транслитерация+фонетика (matchScore). Латинското INN на чужди опаковки се лови от прохода 'eng'.
+    const res = await Tesseract.recognize(source, lang || 'eng');
+    if (objurl) URL.revokeObjectURL(objurl);
+    return buildCandidates(res && res.data);
+  } catch (e) { try { if (objurl) URL.revokeObjectURL(objurl); } catch (_) {} return []; }
 }
 
 // ---------- Език ----------
@@ -128,17 +168,40 @@ function renderHome() {
     e.target.value = '';
     if (!file) return;
     statusEl.textContent = M('ocr_running'); resultEl.innerHTML = '';
-    const cands = await ocrCandidates(file);
-    if (!cands.length) { statusEl.textContent = M('ocr_none'); return; }
-    // Пробваме кандидатите (най-едрият пръв) докато някой намери лекарство; ако никой — показваме
-    // първия в полето, за да може потребителят да коригира ръчно.
-    nameEl.value = cands[0];
-    for (const c of cands) {
-      statusEl.textContent = M('searching');
-      let res = null; try { res = await lookupMedicine(c, getLang()); } catch (_) { res = null; }
-      if (res) { nameEl.value = c; statusEl.textContent = ''; resultEl.innerHTML = renderResult(res); return; }
-    }
-    statusEl.textContent = ''; resultEl.innerHTML = `<div class="notice">${esc(M('not_found'))}</div>`;
+    // Отладъчен канал: какво прочете OCR-ът и какво намери базата за всеки кандидат (за диагностика).
+    const dbg = { cands: [], tries: [], matched: null };
+    try { window.__medDbg = dbg; } catch (_) {}
+    let partial = null, partialCand = null;
+    // Пробва списък кандидати; ПРЕДПОЧИТА ТОЧНО име (за да бие „Amoxicillin" случаен частичен шум).
+    // Връща true при точно съвпадение (спира веднага); частичното се пази за накрая.
+    const tryList = async (list) => {
+      for (const c of list) {
+        if (dbg.cands.indexOf(c) < 0) dbg.cands.push(c);
+        if (!nameEl.value) nameEl.value = c;
+        statusEl.textContent = M('searching');
+        let res = null; try { res = await lookupMedicine(c, getLang()); } catch (_) { res = null; }
+        try { const t = { cand: c, found: !!res, source: res && res.source, title: res && res.title, exact: !!(res && res.exact) }; dbg.tries.push(t); console.log('[MedDbg]', t); } catch (_) {}
+        if (res && res.exact) { dbg.matched = c; nameEl.value = c; statusEl.textContent = ''; resultEl.innerHTML = renderResult(res); return true; }
+        if (res && !partial) { partial = res; partialCand = c; }
+      }
+      return false;
+    };
+    // Разпознаване на ПИСМЕНОСТТА първо: четем с eng+bul+rus и броим кирилица срещу латиница по ВСИЧКИ
+    // кандидати. Кирилска кутия = кирилицата ПРЕОБЛАДАВА (не просто няколко сбъркани знака в латинска).
+    const cCyr = await ocrCandidates(file, 'eng+bul+rus');
+    let cyrN = 0, latN = 0;
+    for (const c of cCyr) { cyrN += (c.match(/[А-Яа-яЁё]/g) || []).length; latN += (c.match(/[A-Za-z]/g) || []).length; }
+    const isCyr = cyrN > latN && cyrN >= 6;
+    // Търсим по РАЗПОЗНАТАТА писменост ПЪРВО (кирилска кутия → кирилицата уцелва и връща, преди
+    // латинският боклук изобщо да се пробва), а другият проход е РЕЗЕРВ (ако детекцията е сбъркала).
+    const engList = async () => tryList((await ocrCandidates(file, 'eng')).filter((c) => dbg.cands.indexOf(c) < 0));
+    const cyrList = async () => tryList(cCyr.filter((c) => dbg.cands.indexOf(c) < 0));
+    if (isCyr) { if (await cyrList()) return; if (await engList()) return; }
+    else { if (await engList()) return; if (await cyrList()) return; }
+    // Няма точно → първо частично; иначе „не е намерено" / „нищо не се прочете".
+    if (partial) { dbg.matched = partialCand; nameEl.value = partialCand; statusEl.textContent = ''; resultEl.innerHTML = renderResult(partial); return; }
+    statusEl.textContent = '';
+    resultEl.innerHTML = dbg.cands.length ? `<div class="notice">${esc(M('not_found'))}</div>` : `<div class="notice">${esc(M('ocr_none'))}</div>`;
   });
   app.querySelector('#searchbtn').addEventListener('click', () => doSearch(nameEl.value));
   nameEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(nameEl.value); });

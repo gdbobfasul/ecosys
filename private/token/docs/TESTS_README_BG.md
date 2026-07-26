@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token (Pupikes-MEME-1) - Тестове
+# PUPIKES1 Token (Pupikes-MEME-1) - Тестове
 
 ## 📋 Инструкции за Инсталация и Изпълнение
 
@@ -16,9 +16,9 @@ npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox chai ethers
 ```
 project/
 ├── contracts/
-│   └── kcy-meme-1.sol          ← Вашият token contract
+│   └── pupikes-meme-1.sol          ← Вашият token contract
 ├── test/
-│   └── kcy-meme-1-tests.js     ← Тестовият файл
+│   └── pupikes-meme-1-tests.js     ← Тестовият файл
 ├── hardhat.config.js
 └── package.json
 ```
@@ -55,7 +55,7 @@ module.exports = {
 npx hardhat test
 
 # Изпълни конкретен тест файл
-npx hardhat test test/kcy-meme-1-tests.js
+npx hardhat test test/pupikes-meme-1-tests.js
 
 # Показва подробна информация (verbose)
 npx hardhat test --verbose
@@ -136,7 +136,7 @@ REPORT_GAS=true npx hardhat test
 Всички 50+ теста трябва да минат успешно:
 
 ```
-  KCY1 Token - Complete Test Suite
+  PUPIKES1 Token - Complete Test Suite
     1. Deployment & Initialization
       ✓ 1.1 Should set correct token metadata
       ✓ 1.2 Should mint correct total supply
@@ -202,7 +202,7 @@ npx hardhat compile
 
 ```json
 {
-  "name": "kcy1-token-tests",
+  "name": "pupikes1-token-tests",
   "version": "1.0.0",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",

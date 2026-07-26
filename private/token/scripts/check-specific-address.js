@@ -11,7 +11,7 @@ async function main() {
   
   console.log("=== Balance Check for Specific Address ===\n");
   
-  const token = await hre.ethers.getContractAt("KCY1Token", tokenAddress);
+  const token = await hre.ethers.getContractAt("PUPIKES1Token", tokenAddress);
   
   // Get basic token info
   const name = await token.name();
@@ -28,7 +28,7 @@ async function main() {
   // Check balance
   const balance = await token.balanceOf(checkAddress);
   console.log("Address:", checkAddress);
-  console.log("Balance:", hre.ethers.formatEther(balance), "KCY1");
+  console.log("Balance:", hre.ethers.formatEther(balance), "PUPIKES1");
   console.log("Balance (raw):", balance.toString());
   console.log("");
   

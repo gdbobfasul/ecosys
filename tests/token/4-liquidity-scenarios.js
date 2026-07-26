@@ -33,7 +33,7 @@ describe("ТАБЛИЦА 4: Liquidity Scenarios (DEX Operations)", function() {
     beforeEach(async function() {
         [owner, exempt1, exempt2, normal1, normal2, router, factory, liquidityPair] = await ethers.getSigners();
         
-        const Token = await ethers.getContractFactory("KCY1Token");
+        const Token = await ethers.getContractFactory("PUPIKES1Token");
         token = await Token.deploy();
         await token.waitForDeployment();
         

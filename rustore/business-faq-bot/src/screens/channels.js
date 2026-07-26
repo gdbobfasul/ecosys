@@ -17,7 +17,7 @@ import { getState, setState } from '../core/storage.js';
 import {
   isNativeReplyAvailable, isAccessGranted, openAccessSettings, getRecent
 } from '../core/native-reply.js';
-import { kcyConfigured, kcyCheck } from '../core/kcy-chat.js';
+import { pupikesConfigured, pupikesCheck } from '../core/pupikes-chat.js';
 import { reloadChannels } from '../core/pump.js';
 import { t, tf } from '../core/i18n.js';
 
@@ -37,7 +37,7 @@ export function renderChannels(root, { navigate, rerender }) {
   root.appendChild(messengersBlock(rerender));
 
   // 2) Нашият чат (Pupikes) — реална HTTP връзка.
-  root.appendChild(kcyBlock(rerender));
+  root.appendChild(pupikesBlock(rerender));
 
   // 3) Демо чат (винаги работи).
   root.appendChild(localBlock(rerender));
@@ -152,10 +152,10 @@ function messengersBlock(rerender) {
 }
 
 // --- Нашият чат (Pupikes) ---------------------------------------------------------
-function kcyBlock(rerender) {
-  const cfg = (getState().channels && getState().channels.kcy) || {};
+function pupikesBlock(rerender) {
+  const cfg = (getState().channels && getState().channels.pupikes) || {};
 
-  const statusEl = el('span', { class: 'pill pending' }, kcyConfigured(cfg) ? t('ch_access_checking') : t('ch_not_configured'));
+  const statusEl = el('span', { class: 'pill pending' }, pupikesConfigured(cfg) ? t('ch_access_checking') : t('ch_not_configured'));
 
   const baseInput = el('input', { class: 'input', type: 'text', value: cfg.baseUrl || '', placeholder: 'https://my.girl.place' });
   const phoneInput = el('input', { class: 'input', type: 'text', value: cfg.phone || '', placeholder: t('ch_phone_ph') });
@@ -166,7 +166,7 @@ function kcyBlock(rerender) {
   function readForm() {
     const cur = getState();
     return {
-      ...(cur.channels.kcy || {}),
+      ...(cur.channels.pupikes || {}),
       baseUrl: baseInput.value.trim(),
       phone: phoneInput.value.trim(),
       password: passInput.value.trim(),
@@ -177,9 +177,9 @@ function kcyBlock(rerender) {
 
   const save = () => {
     const cur = getState();
-    setState({ channels: { ...cur.channels, kcy: readForm() } });
+    setState({ channels: { ...cur.channels, pupikes: readForm() } });
     reloadChannels(rerender);
-    toast(t('ch_kcy_saved'));
+    toast(t('ch_pupikes_saved'));
   };
 
   const testBtn = el('button', { class: 'btn tiny' }, t('ch_check'));
@@ -187,7 +187,7 @@ function kcyBlock(rerender) {
     save();
     statusEl.className = 'pill pending';
     statusEl.textContent = t('ch_access_checking');
-    const res = await kcyCheck(getState().channels.kcy);
+    const res = await pupikesCheck(getState().channels.pupikes);
     if (res.ok) {
       statusEl.className = 'pill ok';
       statusEl.textContent = t('ch_connected');
@@ -199,45 +199,45 @@ function kcyBlock(rerender) {
     }
   });
 
-  const kcyToggle = (() => {
+  const pupikesToggle = (() => {
     const input = el('input', { type: 'checkbox' });
     input.checked = !!cfg.enabled;
     input.addEventListener('change', () => {
       const on = input.checked;
-      if (on && !kcyConfigured(readForm())) {
-        toast(t('ch_kcy_need_config'));
+      if (on && !pupikesConfigured(readForm())) {
+        toast(t('ch_pupikes_need_config'));
         input.checked = false;
         return;
       }
       const cur = getState();
       // Записваме и формата, и флага наведнъж, за да не се губят неспазените полета.
-      setState({ channels: { ...cur.channels, kcy: { ...readForm(), enabled: on } } });
+      setState({ channels: { ...cur.channels, pupikes: { ...readForm(), enabled: on } } });
       reloadChannels(rerender);
-      toast(on ? t('ch_kcy_on') : t('ch_kcy_off'));
+      toast(on ? t('ch_pupikes_on') : t('ch_pupikes_off'));
     });
     return el('label', { class: 'switch' }, [input, el('span', {}, '')]);
   })();
 
   // Асинхронна първоначална проверка, ако е настроен.
-  if (kcyConfigured(cfg)) {
+  if (pupikesConfigured(cfg)) {
     (async () => {
-      const res = await kcyCheck(cfg);
+      const res = await pupikesCheck(cfg);
       statusEl.className = 'pill ' + (res.ok ? 'ok' : 'fallback');
       statusEl.textContent = res.ok ? t('ch_connected') : reasonShort(res.reason);
     })();
   }
 
   return el('div', {}, [
-    el('h2', { style: 'margin-top:6px' }, t('ch_kcy_title')),
+    el('h2', { style: 'margin-top:6px' }, t('ch_pupikes_title')),
     el('section', { class: 'card' }, [
       el('div', { class: 'channel-head' }, [
         el('span', { class: 'channel-icon' }, '💠'),
-        el('strong', {}, t('ch_kcy_name')),
+        el('strong', {}, t('ch_pupikes_name')),
         statusEl,
-        kcyToggle
+        pupikesToggle
       ]),
-      el('p', { class: 'muted small' }, t('ch_kcy_desc')),
-      el('label', {}, t('ch_kcy_baseurl')), baseInput,
+      el('p', { class: 'muted small' }, t('ch_pupikes_desc')),
+      el('label', {}, t('ch_pupikes_baseurl')), baseInput,
       el('label', {}, t('ch_phone')), phoneInput,
       el('label', {}, t('ch_password')), passInput,
       el('label', {}, t('ch_token')), tokenInput,
@@ -246,7 +246,7 @@ function kcyBlock(rerender) {
         el('button', { class: 'btn tiny primary', onclick: save }, t('save')),
         testBtn
       ]),
-      el('p', { class: 'muted small', style: 'margin-top:8px' }, t('ch_kcy_cors_note'))
+      el('p', { class: 'muted small', style: 'margin-top:8px' }, t('ch_pupikes_cors_note'))
     ])
   ]);
 }

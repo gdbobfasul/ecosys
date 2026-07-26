@@ -45,7 +45,7 @@ function lang() {
 }
 function tr(k) { const m = L[k] || {}; return m[lang()] || m.en || m.bg || k; }
 function openDoc(file) {
-  const url = BASE + '/' + (window.__KCY_APP__ || 'app') + '/' + file;
+  const url = BASE + '/' + (window.__PUPIKES_APP__ || 'app') + '/' + file;
   try { if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) { window.Capacitor.Plugins.Browser.open({ url }); return; } } catch (e) {}
   try { window.open(url, '_blank'); } catch (e) { try { location.href = url; } catch (e2) {} }
 }
@@ -54,8 +54,8 @@ export function mountLegalGate(appId, opts) {
   const app = appId || 'unknown';
   const finance = !!(opts && opts.finance);
   const hasLang = !opts || opts.hasLang !== false;   // има ли апът екран за избор на език (екран 2)
-  try { window.__KCY_APP__ = app; } catch (e) {}
-  const KEY = 'kcy.legal.' + app + '.v1';
+  try { window.__PUPIKES_APP__ = app; } catch (e) {}
+  const KEY = 'pupikes.legal.' + app + '.v1';
   try { if (localStorage.getItem(KEY)) return; } catch (e) {}
   let shown = false;
 
@@ -64,10 +64,10 @@ export function mountLegalGate(appId, opts) {
     return false;
   }
   function build() {
-    if (shown || !document.body || document.getElementById('kcy-legal-gate')) return;
+    if (shown || !document.body || document.getElementById('pupikes-legal-gate')) return;
     shown = true;
     const lg = lang();
-    const ov = document.createElement('div'); ov.id = 'kcy-legal-gate';
+    const ov = document.createElement('div'); ov.id = 'pupikes-legal-gate';
     ov.style.cssText = 'position:fixed;inset:0;z-index:2147483350;background:#0b1220;color:#e6edf3;font-family:system-ui,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column;overflow:auto;' + (lg === 'ar' ? 'direction:rtl;' : '');
     const finBlock = finance
       ? '<div style="background:#3a1720;border:1px solid #6b2531;border-radius:12px;padding:12px;margin:12px 0;font-size:13px;line-height:1.5;color:#ffd7dd">' + (FIN[lg] || FIN.en) + '</div>'
@@ -79,20 +79,20 @@ export function mountLegalGate(appId, opts) {
         '<p style="font-size:14px;line-height:1.55;color:#c7d2de">' + tr('intro') + '</p>' +
         finBlock +
         '<div style="display:flex;flex-direction:column;gap:10px;margin:14px 0 18px">' +
-          '<button id="kcy-lg-priv" style="text-align:' + (lg === 'ar' ? 'right' : 'left') + ';padding:13px 14px;background:#141c2b;border:1px solid #26324a;border-radius:12px;color:#cfe0ff;font:600 14px system-ui;cursor:pointer">' + tr('privacy') + ' ›</button>' +
-          '<button id="kcy-lg-terms" style="text-align:' + (lg === 'ar' ? 'right' : 'left') + ';padding:13px 14px;background:#141c2b;border:1px solid #26324a;border-radius:12px;color:#cfe0ff;font:600 14px system-ui;cursor:pointer">' + tr('terms') + ' ›</button>' +
+          '<button id="pupikes-lg-priv" style="text-align:' + (lg === 'ar' ? 'right' : 'left') + ';padding:13px 14px;background:#141c2b;border:1px solid #26324a;border-radius:12px;color:#cfe0ff;font:600 14px system-ui;cursor:pointer">' + tr('privacy') + ' ›</button>' +
+          '<button id="pupikes-lg-terms" style="text-align:' + (lg === 'ar' ? 'right' : 'left') + ';padding:13px 14px;background:#141c2b;border:1px solid #26324a;border-radius:12px;color:#cfe0ff;font:600 14px system-ui;cursor:pointer">' + tr('terms') + ' ›</button>' +
         '</div>' +
-        '<label id="kcy-lg-agree-row" style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:#0f1626;border:1px solid #26324a;border-radius:12px;cursor:pointer;margin-bottom:12px">' +
-          '<input id="kcy-lg-chk" type="checkbox" style="width:20px;height:20px;margin-top:1px;flex-shrink:0">' +
+        '<label id="pupikes-lg-agree-row" style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:#0f1626;border:1px solid #26324a;border-radius:12px;cursor:pointer;margin-bottom:12px">' +
+          '<input id="pupikes-lg-chk" type="checkbox" style="width:20px;height:20px;margin-top:1px;flex-shrink:0">' +
           '<span style="font-size:14px;font-weight:600;color:#e6edf3">' + tr('agree') + '</span>' +
         '</label>' +
-        '<button id="kcy-lg-accept" disabled style="width:100%;padding:15px;border:none;border-radius:12px;background:#2b3444;color:#8b98a8;font:800 16px system-ui;cursor:not-allowed;opacity:.7">' + tr('cont') + '</button>' +
+        '<button id="pupikes-lg-accept" disabled style="width:100%;padding:15px;border:none;border-radius:12px;background:#2b3444;color:#8b98a8;font:800 16px system-ui;cursor:not-allowed;opacity:.7">' + tr('cont') + '</button>' +
       '</div>';
     document.body.appendChild(ov);
-    document.getElementById('kcy-lg-priv').onclick = () => openDoc(PRIVACY_FILE);
-    document.getElementById('kcy-lg-terms').onclick = () => openDoc(TERMS_FILE);
-    const chk = document.getElementById('kcy-lg-chk');
-    const btn = document.getElementById('kcy-lg-accept');
+    document.getElementById('pupikes-lg-priv').onclick = () => openDoc(PRIVACY_FILE);
+    document.getElementById('pupikes-lg-terms').onclick = () => openDoc(TERMS_FILE);
+    const chk = document.getElementById('pupikes-lg-chk');
+    const btn = document.getElementById('pupikes-lg-accept');
     // Бутонът „Продължи" е активен САМО след като отметката е сложена.
     chk.addEventListener('change', () => {
       if (chk.checked) { btn.disabled = false; btn.style.background = '#2ea043'; btn.style.color = '#fff'; btn.style.cursor = 'pointer'; btn.style.opacity = '1'; }
@@ -107,11 +107,11 @@ export function mountLegalGate(appId, opts) {
 
   // РЕД НА ЕКРАНИТЕ (изрично изискване): 1) интрото с логото Pupikes (като начало
   // на филм) → 2) избор на език (ако апът има такъв екран) → 3) ТОЗИ екран с условията.
-  // Затова НЕ разчитаме на слепи таймери: чакаме слоят на интрото (#kcy-intro) да си е
+  // Затова НЕ разчитаме на слепи таймери: чакаме слоят на интрото (#pupikes-intro) да си е
   // ЗАМИНАЛ (то върви ~1.8с при всяко пускане) и — при апове с езиков екран — езикът да е
   // избран. Минимум ~2.1с изчакване покрива и късно монтирано интро. Предпазител ~120с.
   function ready() {
-    try { if (document.getElementById('kcy-intro')) return false; } catch (e) {}
+    try { if (document.getElementById('pupikes-intro')) return false; } catch (e) {}
     return hasLang ? langChosen() : true;
   }
   let ticks = 0;

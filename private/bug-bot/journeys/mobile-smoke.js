@@ -6,7 +6,7 @@
 // За всеки ап: вдига мини уеб сървър на случаен порт → Playwright зарежда → проверява:
 //   • НЯМА некаутната JS грешка (счупен бъндъл/краш);
 //   • страницата реално рендира съдържание (не е бяла);
-//   • интрото се прескача (флаг __KCY_INTRO_OFF__), за да стигнем до самото приложение.
+//   • интрото се прескача (флаг __PUPIKES_INTRO_OFF__), за да стигнем до самото приложение.
 // Прави екранна снимка при провал. НЕ пипа прод — всичко е локално.
 //
 // Пускане:  node run.js --journey mobilesmoke     (целта prod/vm е без значение — локално е)
@@ -72,7 +72,7 @@ function smokeStep(app, dist) {
       await page.route('**/*', stub);
       try {
         // прескочи интрото, за да стигнем до самото приложение
-        await page.addInitScript(() => { try { window.__KCY_INTRO_OFF__ = true; } catch (e) {} });
+        await page.addInitScript(() => { try { window.__PUPIKES_INTRO_OFF__ = true; } catch (e) {} });
         const resp = await page.goto('http://127.0.0.1:' + port + '/', { waitUntil: 'load', timeout: 30000 });
         if (!resp || resp.status() >= 400) throw new Error(app + ' не зареди (HTTP ' + (resp ? resp.status() : 0) + ')');
         await page.waitForTimeout(1800);                    // време бъндълът да се инициализира и да гръмне, ако ще

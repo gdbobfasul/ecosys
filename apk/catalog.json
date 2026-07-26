@@ -40,7 +40,7 @@
           "download": true
         },
         {
-          "id": "kcy-toolkit-pdf",
+          "id": "pupikes-toolkit-pdf",
           "name": "Pupikes Toolkit PDF",
           "show": true,
           "published": {
@@ -58,7 +58,7 @@
           "download": true
         },
         {
-          "id": "kcy-toolkit-qr",
+          "id": "pupikes-toolkit-qr",
           "name": "Pupikes Toolkit QR",
           "show": true,
           "published": {
@@ -76,7 +76,7 @@
           "download": true
         },
         {
-          "id": "kcy-toolkit-ai-announcement",
+          "id": "pupikes-toolkit-ai-announcement",
           "name": "Pupikes Toolkit AI Announcement",
           "show": true,
           "published": {
@@ -94,7 +94,7 @@
           "download": true
         },
         {
-          "id": "kcy-toolkit-text",
+          "id": "pupikes-toolkit-text",
           "name": "Pupikes Toolkit Text",
           "show": true,
           "published": {
@@ -112,7 +112,7 @@
           "download": true
         },
         {
-          "id": "kcy-toolkit-finance",
+          "id": "pupikes-toolkit-finance",
           "name": "Pupikes Toolkit Finance",
           "show": true,
           "published": {
@@ -130,7 +130,7 @@
           "download": true
         },
         {
-          "id": "kcy-toolkit-pictures",
+          "id": "pupikes-toolkit-pictures",
           "name": "Pupikes Toolkit Pictures",
           "show": true,
           "published": {
@@ -148,7 +148,7 @@
           "download": true
         },
         {
-          "id": "kcy-toolkit-3drotate",
+          "id": "pupikes-toolkit-3drotate",
           "name": "Pupikes Toolkit 3D Rotate",
           "show": true,
           "published": {
@@ -166,7 +166,7 @@
           "download": true
         },
         {
-          "id": "kcy-toolkit-videos",
+          "id": "pupikes-toolkit-videos",
           "name": "Pupikes Toolkit Videos",
           "show": true,
           "published": {
@@ -184,7 +184,7 @@
           "download": true
         },
         {
-          "id": "kcy-toolkit-sound",
+          "id": "pupikes-toolkit-sound",
           "name": "Pupikes Toolkit Sound",
           "show": true,
           "published": {
@@ -202,7 +202,7 @@
           "download": true
         },
         {
-          "id": "kcy-toolkit-passwords",
+          "id": "pupikes-toolkit-passwords",
           "name": "Pupikes Toolkit Passwords",
           "show": true,
           "published": {
@@ -220,7 +220,7 @@
           "download": true
         },
         {
-          "id": "kcy-toolkit-scraper",
+          "id": "pupikes-toolkit-scraper",
           "name": "Pupikes Toolkit Scraper",
           "show": true,
           "published": {

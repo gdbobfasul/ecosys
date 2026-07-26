@@ -10,7 +10,7 @@ import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
 
 /**
- * NotificationReplyPlugin — Capacitor мост към KcyNotificationListener.
+ * NotificationReplyPlugin — Capacitor мост към PupikesNotificationListener.
  *
  * Методи, видими в JS (registerPlugin('NotificationReply')):
  *   isAccessGranted()  -> { value: Boolean }   — дали е даден „Notification access".
@@ -26,7 +26,7 @@ class NotificationReplyPlugin : Plugin() {
 
     override fun load() {
         // Закачаме се за потока от нови съобщения и ги препращаме към JS като event.
-        KcyNotificationListener.onMessage = { msg ->
+        PupikesNotificationListener.onMessage = { msg ->
             try {
                 notifyListeners("message", JSObject.fromJSONObject(msg.toJson()))
             } catch (_: Exception) {
@@ -36,7 +36,7 @@ class NotificationReplyPlugin : Plugin() {
 
     override fun handleOnDestroy() {
         super.handleOnDestroy()
-        KcyNotificationListener.onMessage = null
+        PupikesNotificationListener.onMessage = null
     }
 
     /** Дали нашият пакет е сред enabled notification listeners. */
@@ -65,8 +65,8 @@ class NotificationReplyPlugin : Plugin() {
     @PluginMethod
     fun getRecent(call: PluginCall) {
         val res = JSObject()
-        res.put("messages", KcyNotificationListener.recentAsJson())
-        res.put("connected", KcyNotificationListener.connected)
+        res.put("messages", PupikesNotificationListener.recentAsJson())
+        res.put("connected", PupikesNotificationListener.connected)
         call.resolve(res)
     }
 
@@ -79,7 +79,7 @@ class NotificationReplyPlugin : Plugin() {
             call.reject("Изискват се 'key' и 'text'.")
             return
         }
-        val ok = KcyNotificationListener.replyTo(context, key, text)
+        val ok = PupikesNotificationListener.replyTo(context, key, text)
         if (ok) {
             call.resolve(JSObject().put("ok", true))
         } else {

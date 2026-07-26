@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token v3.4 FINAL - Резюме на Корекциите
+# PUPIKES1 Token v3.4 FINAL - Резюме на Корекциите
 
 ## ✅ Коригирано
 
@@ -113,20 +113,20 @@ console.log("Exempt Slot 4:", addresses[3]);
 ## 📦 Файлове
 
 ### Contract:
-**[kcy1_token_v3.4_FINAL.sol](computer:///mnt/user-data/outputs/kcy1_token_v3.4_FINAL.sol)** ⭐
+**[pupikes1_token_v3.4_FINAL.sol](computer:///mnt/user-data/outputs/pupikes1_token_v3.4_FINAL.sol)** ⭐
 
 ### Документация:
 - **[docs/CHANGELOG_v3.4_BG.md](computer:///mnt/user-data/outputs/docs/CHANGELOG_v3.4_BG.md)** - Детайлни промени
 - **[docs/LOGIC_VERIFICATION_BG.md](computer:///mnt/user-data/outputs/docs/LOGIC_VERIFICATION_BG.md)** - Логика
 
 ### Архив:
-**[kcy1_token_v3.4_FINAL.zip](computer:///mnt/user-data/outputs/kcy1_token_v3.4_FINAL.zip)** 📦
+**[pupikes1_token_v3.4_FINAL.zip](computer:///mnt/user-data/outputs/pupikes1_token_v3.4_FINAL.zip)** 📦
 
 ---
 
 ## 📋 Deployment Checklist
 
-1. ✅ Deploy kcy1_token_v3.4_FINAL.sol
+1. ✅ Deploy pupikes1_token_v3.4_FINAL.sol
 2. ✅ Провери: DEV_WALLET_mm_vis има 600,000
 3. ✅ Провери: Contract има 400,000
 4. ✅ Извикай: `distributeInitialAllocations()`

@@ -1,0 +1,61 @@
+{
+  "id": "head",
+  "langs": {
+    "bg": {
+      "title": "Главоболие",
+      "extract": "Главоболието е обединяващо понятие за различни болки и болезнени усещания в областта на главата. То винаги е признак или резултат на някаква болест или реакция на организма към дадени условия на живот. Трудно е да се диагностицират причините на главоболието, за което е необходимо всеки болен да проследи общото състояние на организма си, периодичността на болките, областта, в която се явяват, времето на явяване и обстановката, при която болките са най-силни."
+    },
+    "ru": {
+      "title": "Головная боль",
+      "extract": "Головна́я боль (цефалгия) — боль, возникающая в области головы выше линии, которая соединяет наружный угол глаза, наружный слуховой проход и первый шейный позвонок. Такое разделение принято для различения от лицевой и шейной боли."
+    },
+    "uk": {
+      "title": "Головний біль",
+      "extract": "Головни́й біль є симптомом болю в обличчі, голові або шиї. Це може виникати як мігрень, головний біль напруги або кластерний головний біль. Існує підвищений ризик депресії у людей з сильними головними болями."
+    },
+    "en": {
+      "title": "Headache",
+      "extract": "A headache, also known as cephalalgia, is the symptom of pain in the face, head, or neck. It can occur as a migraine, tension-type headache, or cluster headache. There is an increased risk of depression in those with severe headaches."
+    },
+    "de": {
+      "title": "Kopfschmerz",
+      "extract": "Als Kopfschmerz oder Kopfweh werden Schmerzempfindungen im Bereich des Kopfes bezeichnet. Sie beruhen auf der Reizung von schmerzempfindlichen Kopforganen. Die eigentliche Gehirnsubstanz ist nicht schmerzempfindlich. Nach ICD-10 R50-R69 zählt Kopfschmerz zu den Allgemeinsymptomen."
+    },
+    "fr": {
+      "title": "Céphalée",
+      "extract": "Une céphalée, familièrement appelée mal de tête, est une douleur locale ressentie au niveau de la boîte crânienne ou parfois de la nuque. Cette douleur peut être latérale, souvent unilatérale, ou bien diffuse et généralisée. Elle se manifeste de façon très variée par des sensations d'oppression ou de compression, de martèlement, enfoncement, brûlure, picotement, fourmillement, écrasement[réf. souhaitée] ; et s'accompagne d'une sensibilité accrue au bruit et à la lumière, souvent source d'une tendance au repli."
+    },
+    "es": {
+      "title": "Cefalea",
+      "extract": "El término cefalea hace referencia a los dolores y molestias localizadas en cualquier parte de la cabeza, en los diferentes tejidos de la cavidad craneana, en las estructuras que lo unen a la base del cráneo, los músculos y vasos sanguíneos que rodean el cuero cabelludo, cara y cuello. En el lenguaje coloquial, cefalea es sinónimo de dolor de cabeza."
+    },
+    "it": {
+      "title": "Cefalea",
+      "extract": "Per mal di testa o cefalea si intende il dolore provato in qualsiasi parte della testa o del collo. Può essere un sintomo di diverse patologie. Il tessuto cerebrale di per sé non è sensibile al dolore, poiché manca di recettori adatti, perciò il dolore è percepito per via della perturbazione delle strutture sensibili che si trovano intorno al cervello. Nove zone della testa e del collo hanno queste strutture: il cranio, muscoli, nervi, arterie e vene, tessuti sottocutanei, occhi, orecchie, seni paranasali e le mucose."
+    },
+    "pt": {
+      "title": "Cefaleia",
+      "extract": "Cefaleia ou cefalgia são os termos médicos para dor de cabeça. É um dos sintomas mais comuns na medicina. É uma das queixas mais frequentes de consultas a profissionais de saúde, e também um dos motivos mais comuns de falta ao trabalho. A cefaleia é um sintoma universal no ser humano."
+    },
+    "ar": {
+      "title": "صداع",
+      "extract": "الصداع هو ألم في الرأس أو الفروة أو الرقبة، والسبب الرئيسي لكافة أنواع الصداع غير معلوم وقد يتحسن معظم الأشخاص لو غيروا أسلوب حياتهم وتدربوا على كيفية الاسترخاء أو بتناولهم أدوية له."
+    },
+    "hi": {
+      "title": "सिरदर्द",
+      "extract": "सिरदर्द या शिरपीड़ा (शिरपीड़ा सिर, गर्दन या कभी-कभी पीठ के उपरी भाग के दर्द की अवस्था है। यह सबसे अधिक होने वाली तकलीफ है, जो कुछ व्यक्तियों में बार बार होता है। सिरदर्द की आमतौर पर कोई गंभीर वजह नहीं होती, इसलिए लाइफस्टाइल में बदलाव और रिलैक्सेशन के तरीके सीखकर इसे दूर किया जा सकता है। इसके अलावा कुछ घरेलू उपाय भी होते हैं, जिन्हें अपनाकर सिरदर्द से राहत मिल सकती है।"
+    },
+    "ja": {
+      "title": "頭痛",
+      "extract": "頭痛（ずつう）とは、頭部に感じる痛みのうち、表面痛でないもの。様々なタイプの痛みを含んだ幅の広い症状概念である。ありふれた症状である一方、これを主症状とする致命的疾患もあり、他方で原因が特定できないことも多いという、症候学上非常に重要な症状。"
+    },
+    "ky": {
+      "title": "Баш оору",
+      "extract": "Баш оору — ар кандай оорулардын көп кезигүүчү белгилеринин бири."
+    },
+    "zh": {
+      "title": "頭痛",
+      "extract": "頭痛，又叫頭疼，是一種在頭部、頸部或肩膊以上位置發生的局部疼痛。許多頭部和頸部問題的症狀都是頭痛。頭痛表现种类繁多，可能是偏頭痛、緊縮型頭痛或丛集性头痛等。有時候頸痛也可解釋為頭痛的一種，因爲頸部的肌肉、關節或是枕骨神經受到壓迫。頻繁的頭痛會影響人際關係及工作。有嚴重頭痛的人，患有憂鬱症的風險也比較高。\n"
+    }
+  }
+}

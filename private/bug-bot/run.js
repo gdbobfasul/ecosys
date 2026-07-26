@@ -11,6 +11,7 @@
 //   node run.js                      # цел: prod, критични пътища (read-only)
 //   node run.js --target vm          # срещу VM (самоподписан TLS се игнорира)
 //   node run.js --all                # обходи ВСИЧКИ публични страници от tree.json
+//   node run.js --consistency        # сверява каталога с реалните APK на сървера + правните страници
 //   node run.js --include-admin      # включи и админ страниците (изискват достъп)
 //   node run.js --headed             # с видим браузър
 //   node run.js --app portals        # само едно приложение
@@ -80,11 +81,35 @@ if (!target) { console.error(`Непозната цел: ${targetName}. Нали
 const onlyApp = val('--app', null);
 const headed = has('--headed');
 const crawlMode = has('--crawl');                 // Фаза 2: следва линковете (BFS)
+const consistencyMode = has('--consistency') || has('--apk'); // каталог ↔ /apk на сървера + правни страници
+const complianceMode = has('--compliance'); // статичен одит на всеки ап спрямо Huawei/RuStore изисквания
+const authcompatMode = has('--authcompat'); // импорт/експорт съвместимост на Authenticator с други апове
+const authroundtripMode = has('--authroundtrip'); // РЕАЛНИ външни файлове → импорт → експорт → сравнение
+const medAccuracyMode = has('--medaccuracy'); // реални клинични снимки → анализ на медицинските апове → съвпадение
+const scriptCheckMode = has('--scriptcheck'); // фейлнала ли е някоя точка от старт менюто (чете start-menu-logs)
 const fuzzMode = has('--fuzz');                   // Фаза 3: попълва+изпраща форми (само VM)
 const journeyArg = val('--journey', null);        // Фази 5+: работни сценарии по приложение (app|all)
 const maxPages = Number(val('--max', 120));       // таван страници за crawl/fuzz
 const maxDepth = Number(val('--depth', 3));       // дълбочина на crawl
 const seed = Number(val('--seed', 0)) || (Date.now() & 0x7fffffff); // fuzz seed (възпроизводимост)
+
+// ── Дневна проверка на старт-меню логовете (без браузър) ─────────────────────
+// `--scriptcheck` → само проверява и излиза. Иначе при ВСЯКО пускане, ако е минал ден от
+// последната проверка, показва накратко фейлналите точки (изискване: „поне веднъж на ден").
+try {
+  const { runScriptCheck, isDueForCheck } = require('./lib/scriptcheck');
+  if (scriptCheckMode) {
+    console.log('\n━━━ Проверка: фейлнали точки от старт менюто ━━━');
+    const r = runScriptCheck({ log: (m) => console.log(m) });
+    console.log(`\n→ ${r.fails} провалени от ${r.total} изпълнения`);
+    process.exit(r.fails > 0 ? 2 : 0);
+  } else if (isDueForCheck()) {
+    console.log('\n━━━ Дневна проверка: логове на старт менюто ━━━');
+    const r = runScriptCheck({ log: (m) => console.log(m) });
+    if (r.fails) console.log(`   ⚠ ${r.fails} фейлнали точки (виж горе; `+`node lib/scriptcheck.js за подробно)`);
+    console.log('');
+  }
+} catch (e) { /* липсва лог/индекс — просто пропускаме */ }
 
 // Защита: fuzz е разрушителен → САМО срещу VM (target.allowFuzz).
 if (fuzzMode && !target.allowFuzz) {
@@ -145,10 +170,10 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   fs.mkdirSync(shotsDir, { recursive: true });
 
   console.log(`\n🤖 Pupikes робот — цел: ${targetName} (${target.base})`);
-  const modeLabel = populateMode ? `МАСОВ СИЙДЪР (${seedUsers} потребителя)` : journeyMode ? `работни сценарии: ${journeyArg}` : fuzzMode ? `fuzz (само VM, seed ${seed})` : crawlMode ? `crawler (BFS, макс ${maxPages}, дълбочина ${maxDepth})` : has('--all') ? 'пълно обхождане (дървото)' : 'критични пътища';
-  console.log(`   ${populateMode ? `сийд: ${seedUsers} потребителя` : journeyMode ? `журита: ${selectedJourneys.length}` : crawlMode ? 'crawler' : `сценарии: ${scenarios.length}`}${onlyApp ? ` (само ${onlyApp})` : ''}  ·  режим: ${modeLabel}\n`);
+  const modeLabel = consistencyMode ? 'неконсистентност (каталог ↔ /apk + правни страници)' : populateMode ? `МАСОВ СИЙДЪР (${seedUsers} потребителя)` : journeyMode ? `работни сценарии: ${journeyArg}` : fuzzMode ? `fuzz (само VM, seed ${seed})` : crawlMode ? `crawler (BFS, макс ${maxPages}, дълбочина ${maxDepth})` : has('--all') ? 'пълно обхождане (дървото)' : 'критични пътища';
+  console.log(`   ${consistencyMode ? 'проверка на каталога срещу сървера' : populateMode ? `сийд: ${seedUsers} потребителя` : journeyMode ? `журита: ${selectedJourneys.length}` : crawlMode ? 'crawler' : `сценарии: ${scenarios.length}`}${onlyApp ? ` (само ${onlyApp})` : ''}  ·  режим: ${modeLabel}\n`);
 
-  // Памет-безопасни флагове при пускане като root на сървъра (kcy-diag) —
+  // Памет-безопасни флагове при пускане като root на сървъра (pupikes-diag) —
   // ROBOT_NO_SANDBOX=1 ги включва: без sandbox (root), пести RAM на малък сървър.
   const launchArgs = process.env.ROBOT_NO_SANDBOX
     ? ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--single-process', '--disable-setuid-sandbox']
@@ -198,7 +223,67 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
     return status;
   }
 
-  if (populateMode) {
+  if (medAccuracyMode) {
+    // ── ТОЧНОСТ на медицинските апове: реални клинични снимки (ISIC) → анализ → съвпадение с етикета ──
+    console.log('   🩺 реални клинични снимки (ISIC) → анализ на Pupikes Doctor → съвпадение с диагнозата\n');
+    try {
+      const { runMedAccuracy } = await import('./lib/medaccuracy.mjs');
+      const seed = (Date.now() % 9) + 1;   // „спорадично": различен старт всеки път
+      const r = await runMedAccuracy({ log: (m) => console.log(m), samples: 25, skipPages: seed });
+      findings.push(...r.findings);
+    } catch (e) {
+      findings.push({ ts: new Date().toISOString(), severity: 'error', kind: 'medaccuracy', app: 'pupikes-doctor', detail: 'тестът гръмна: ' + (e.message || e) });
+    }
+    // Medicines: реална снимка на опаковка → същинския OCR на апа (в браузъра на робота) → съвпадение
+    console.log('\n   💊 реална снимка на опаковка (Wikimedia Commons) → OCR на Pupikes Medicines → съвпадение с името\n');
+    try {
+      const { runMedicinesOcr } = require('./lib/medocr');
+      const rm = await runMedicinesOcr({ context, log: (m) => console.log(m) });
+      findings.push(...rm.findings);
+    } catch (e) {
+      findings.push({ ts: new Date().toISOString(), severity: 'error', kind: 'medocr', app: 'pupikes-medicines', detail: 'OCR тестът гръмна: ' + (e.message || e) });
+    }
+  } else if (authroundtripMode) {
+    // ── РЕАЛНИ ВЪНШНИ ФАЙЛОВЕ → импорт през истинския сейф → експорт → сравнение (данни 1:1) ──
+    console.log('   🔁 РЕАЛНИ външни файлове (Aegis/otpauth/Google) → импорт → експорт от Pupikes → сравнение\n');
+    try {
+      const { runAuthRoundtrip } = await import('./lib/authroundtrip.mjs');
+      const r = await runAuthRoundtrip({ log: (m) => console.log(m) });
+      findings.push(...r.findings);
+    } catch (e) {
+      findings.push({ ts: new Date().toISOString(), severity: 'error', kind: 'authroundtrip', app: 'authenticator', detail: 'тестът гръмна: ' + (e.message || e) });
+    }
+  } else if (authcompatMode) {
+    // ── СЪВМЕСТИМОСТ ИМПОРТ/ЕКСПОРТ на Authenticator с други апове (без инсталиране) ──
+    console.log('   🔑 тествам импорт/експорт на Authenticator ↔ Aegis / 2FAS / Google / otpauth\n');
+    try {
+      const { runAuthCompat } = await import('./lib/authcompat.mjs');
+      const r = await runAuthCompat({ log: (m) => console.log(m) });
+      findings.push(...r.findings);
+    } catch (e) {
+      findings.push({ ts: new Date().toISOString(), severity: 'error', kind: 'authcompat', app: 'authenticator', detail: 'тестът гръмна: ' + (e.message || e) });
+    }
+  } else if (complianceMode) {
+    // ── СПАЗВАНЕ НА ИЗИСКВАНИЯТА: статичен одит на всеки ап (Huawei AppGallery + RuStore) ──
+    const { checkCompliance } = require('./lib/compliance');
+    console.log('   📋 одит на всяко приложение спрямо изискванията на Huawei/RuStore\n');
+    try {
+      const cf = checkCompliance({ log: (m) => console.log(m) });
+      findings.push(...cf);
+    } catch (e) {
+      findings.push({ ts: new Date().toISOString(), severity: 'error', kind: 'compliance', app: 'compliance', detail: 'одитът гръмна: ' + (e.message || e) });
+    }
+  } else if (consistencyMode) {
+    // ── НЕКОНСИСТЕНТНОСТ: каталог ↔ реални APK на сървера + правни страници (само четене) ──
+    const { checkConsistency, APP_BASE, LEGAL_BASE } = require('./lib/consistency');
+    console.log(`   🔎 сверявам каталога (${APP_BASE}) с реалните файлове на сървера и правните страници (${LEGAL_BASE})\n`);
+    try {
+      const cf = await checkConsistency({ request: context.request, timeout: cfg.navTimeoutMs, log: (m) => console.log(m) });
+      findings.push(...cf);
+    } catch (e) {
+      findings.push({ ts: new Date().toISOString(), severity: 'error', kind: 'consistency', app: 'consistency', detail: 'проверката гръмна: ' + (e.message || e) });
+    }
+  } else if (populateMode) {
     // ── МАСОВ СИЙДЪР: стотици потребители + реални данни (чат/постове/къщи/картинки/портал) ──
     const env = loadEnv();
     const actions = parseActions(actionsArg);
@@ -323,7 +408,7 @@ if (!scenarios.length) { console.error(`Няма сценарии за app=${onl
   };
   const data = {
     target: targetName, base: target.base, runId,
-    mode: populateMode ? 'populate' : journeyMode ? `journey:${journeyArg}` : fuzzMode ? 'fuzz' : crawlMode ? 'crawl' : has('--all') ? 'all' : 'critical',
+    mode: medAccuracyMode ? 'medaccuracy' : authroundtripMode ? 'authroundtrip' : authcompatMode ? 'authcompat' : complianceMode ? 'compliance' : consistencyMode ? 'consistency' : populateMode ? 'populate' : journeyMode ? `journey:${journeyArg}` : fuzzMode ? 'fuzz' : crawlMode ? 'crawl' : has('--all') ? 'all' : 'critical',
     startedAt: startedAt.toISOString(), durationMs: Date.now() - startedAt.getTime(),
     scenarios: scenarios.length, urlsChecked, counts, findings, serverLog,
     forms, fuzz: fuzzData, journeys: journeysData, seed: seedSummary,

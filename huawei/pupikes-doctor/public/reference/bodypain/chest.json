@@ -1,0 +1,49 @@
+{
+  "id": "chest",
+  "langs": {
+    "ru": {
+      "title": "Кардиалгический синдром",
+      "extract": "Кардиалги́ческий синдро́м — одно из основных проявлений вегетативной дисфункции, так называемые «боли в сердце», чувство давления, сжатия, парестезии и т. п. в области сердца, или более широко в области левой, а иногда и правой, части грудной клетки. Кардиалгический синдром относится к расстройствам функции сердечно-сосудистой системы с разнообразными клиническими проявлениями, субъективного и объективно-функционального характера, не имеющих при этом органических изменений в кардиоваскулярной системе. "
+    },
+    "uk": {
+      "title": "Біль за грудиною",
+      "extract": "Біль за груди́ною — один із основних симптомів захворювань органів грудної клітки, особливо серця. Є ознакою як коронарогенних хвороб серця, так й некоронарогенних. Зустрічається також при плевритах, пневмоніях, які перебігають з плевритами, медіастеніті, грипі тощо."
+    },
+    "en": {
+      "title": "Chest pain",
+      "extract": "Chest pain is pain or discomfort in the chest, typically the front of the chest. It may be described as sharp, dull, pressure, heaviness or squeezing. Associated symptoms may include pain in the shoulder, arm, upper abdomen, or jaw, along with nausea, sweating, or shortness of breath. It can be divided into heart-related and non-heart-related pain. Pain due to insufficient blood flow to the heart is also called angina pectoris. Those with diabetes or the elderly may have less clear symptoms."
+    },
+    "de": {
+      "title": "Brustschmerz",
+      "extract": "Der Brustschmerz ist ein häufiges Symptom in der Medizin mit einer Vielfalt von Ursachen unterschiedlicher Gefährlichkeit. Beteiligte Organe sind in erster Linie Herz, Lunge, Speiseröhre, Muskel- und Skelettsystem des Brustkorbes. Der zeitnahe Ausschluss einer gefährlichen oder lebensbedrohlichen Ursache kann in spezialisierten Notaufnahmen kardiologischer Abteilungen, den sogenannten Chest Pain Units, erfolgen."
+    },
+    "fr": {
+      "title": "Douleur thoracique",
+      "extract": "La douleur thoracique est un symptôme clinique, généralement associé à un trouble cardiaque mais pouvant être d’origine vasculaire (aortique), pulmonaire, digestive (œsophagienne), pariétale (musculaire), névralgique ou fonctionnelle. Comme toute douleur, elle peut être accompagnée d'un malaise vagal, voire d'une syncope."
+    },
+    "es": {
+      "title": "Dolor torácico",
+      "extract": "El dolor torácico o dolor en el tórax es un síntoma que puede estar asociado a diversas enfermedades. Generalmente está considerado una emergencia causada por una angina de pecho, un infarto de miocardio, las cuales son enfermedades cardíacas. Pero el dolor torácico también puede suceder por causas distintas que las patologías del corazón."
+    },
+    "it": {
+      "title": "Dolore toracico",
+      "extract": "Il dolore toracico è un sintomo a cui possono essere associate numerose anomalie e malattie, generalmente viene considerato un'emergenza per via dell'angina instabile o dell'infarto miocardico acuto. Quando il dolore toracico non è attribuibile a patologie a carico del cuore tale dolore prende il nome di dolore toracico non cardiaco.\nLe recenti linee guida raccomandano di attribuire in fase di triage il codice rosso ad un dolore toracico di sospetta origine cardiaca."
+    },
+    "pt": {
+      "title": "Dor torácica",
+      "extract": "A dor torácica é uma dor ou desconforto no tórax, geralmente na parte da frente deste. Pode ser descrita como aguda, maçante, pressão, peso ou aperto. Os sintomas associados podem incluir dor no ombro, braço, abdome superior ou mandíbula, juntamente com náusea, sudorese ou falta de ar. Ela pode ser ou não relacionada ao coração. A dor devido ao fluxo sanguíneo insuficiente para o coração também é chamada de angina pectoris. Aqueles com diabetes ou os idosos podem ter sintomas menos claros."
+    },
+    "ar": {
+      "title": "ألم الصدر",
+      "extract": "ألم الصدر هو ألم في أي منطقة في الصدر. ألم الصدر من الممكن أن يكون عرضًا مرضيًا لعدد من الاضطرابات المرضية الخطيرة وعموما يعتبر حالة طارئة. ألم الصدر من الممكن تمييزه إلى ما هو مرتبط بالقلب وإلى ما هو غير مرتبط به. ألم الصدر القلبي يسمى بالذبحة الصدرية. بعض أسباب ألم الصدر غير القلبي تتضمن مشاكل معدية-معوية أو عضلية أو رئوية. على الرغم من أن ألم الصدر قد لا يكون مرتبطا بمشكلة في القلب إلا أن ألم الصدر غير القلبي قد يكون نتيجة مرض خطير. من الممكن أن تصاحب ألم الصدر أنواع مختلفة من الآلام والأعراض تبعا لعمر الشخص وجنسه وحالاته الطبية السابقة. تحديد سبب ألم الصدر يتم عبر مراجعة التاريخ الطبي للشخص والقيام بالفحص البدني وغيرها من الفحوص الطبية. التدبير العلاجي لألم الصدر يعتمد على السبب الرئيسي له."
+    },
+    "ja": {
+      "title": "胸痛",
+      "extract": "胸痛 とは、胸部の痛みや不快感などである。"
+    },
+    "zh": {
+      "title": "胸痛",
+      "extract": "胸痛 或胸部疼痛、胸口疼痛，是颈部与胸廓下缘之间的疼痛；可由多种疾病所致，如胸壁软组织、肌肉、肋骨、胸骨病变；或肋间神经与脊柱病变；也可以是呼吸系统如胸膜、气管、支气管及肺部等病变；还可以是心血管病变如心绞痛、心肌梗死、心包炎及心肌炎等；甚至消化系统疾病如食管炎、胃食管反流病、肝胆疾病等也可引起胸痛。\n"
+    }
+  }
+}

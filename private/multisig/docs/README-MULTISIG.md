@@ -1,8 +1,8 @@
-# 🔐 KCY1 Multi-Sig Setup Guide
+# 🔐 PUPIKES1 Multi-Sig Setup Guide
 
 **Version 1.0093**
 
-**Най-простият 3-of-5 multi-signature контрол за KCY1 token**
+**Най-простият 3-of-5 multi-signature контрол за PUPIKES1 token**
 
 Поддържа: Trezor, Tangem, MetaMask
 
@@ -33,9 +33,9 @@ Multi-Sig може да вика ВСИЧКИ admin функции!
 ## 📁 ФАЙЛОВЕ
 
 ```
-KCY1/
+PUPIKES1/
 ├── contracts/
-│   ├── kcy-meme-1.sol          # KCY1 Token (existing)
+│   ├── pupikes-meme-1.sol          # PUPIKES1 Token (existing)
 │   └── SimpleMultiSig.sol       # Multi-Sig Contract (NEW!)
 ├── scripts/
 │   └── deploy-multisig.js       # Deployment script (NEW!)
@@ -115,7 +115,7 @@ npx hardhat run scripts/deploy-multisig.js --network bscTestnet
 
 # 3. Save addresses!
 # Multi-Sig: 0x...
-# KCY1 Token: 0x...
+# PUPIKES1 Token: 0x...
 ```
 
 **Mainnet (BSC Mainnet):**
@@ -134,7 +134,7 @@ npx hardhat verify --network bscTestnet \
   MULTISIG_ADDRESS \
   "TREZOR1_ADDRESS" "TREZOR2_ADDRESS" "TANGEM1_ADDRESS" "TANGEM2_ADDRESS" "METAMASK_ADDRESS"
 
-# Verify KCY1 Token
+# Verify PUPIKES1 Token
 npx hardhat verify --network bscTestnet TOKEN_ADDRESS
 ```
 
@@ -162,7 +162,7 @@ const TOKEN_ADDRESS = "0xYOUR_TOKEN_ADDRESS";        // From deployment
 # 1. Create GitHub repo
 # 2. Push frontend folder
 # 3. Settings → Pages → Deploy from main/frontend
-# 4. Your site: https://yourusername.github.io/kcy1-multisig/
+# 4. Your site: https://yourusername.github.io/pupikes1-multisig/
 ```
 
 **Вариант 2: Local (Testing)**
@@ -334,8 +334,8 @@ vercel
                     │ Controls via exempt slot
                     ▼
          ┌─────────────────────┐
-         │   KCY1 Token        │
-         │   (kcy-meme-1.sol)  │
+         │   PUPIKES1 Token        │
+         │   (pupikes-meme-1.sol)  │
          └─────────────────────┘
 ```
 
@@ -346,7 +346,7 @@ vercel
 ### Security
 
 ```
-✅ Multi-sig е exempt slot в KCY1
+✅ Multi-sig е exempt slot в PUPIKES1
 ✅ Може да контролира всички onlyOwner функции
 ✅ Immutable owner остава deployer (backup)
 ✅ 3-of-5 threshold - няма single point of failure
@@ -357,7 +357,7 @@ vercel
 ```
 ❌ Не може да променя owners след deployment
 ❌ Не може да променя threshold (винаги 3-of-5)
-❌ Immutable owner в KCY1 не може да се премахне
+❌ Immutable owner в PUPIKES1 не може да се премахне
 ```
 
 ### Best Practices
@@ -507,7 +507,7 @@ Tangem:
 ✅ Beautiful web interface
 ✅ Auto-execute at threshold
 ✅ View pending transactions
-✅ Secure ownership of KCY1 token
+✅ Secure ownership of PUPIKES1 token
 ✅ No external dependencies (self-contained)
 ```
 

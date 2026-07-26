@@ -1,0 +1,45 @@
+{
+  "id": "upper_back",
+  "langs": {
+    "ru": {
+      "title": "Боль в спине",
+      "extract": "Боль в спине — это боль, ощущаемая в спине. Большинство болей в спине неспецифичны и идиопатичны. К распространенным основным причинам относятся дегенеративные или травматические изменения межпозвоночных дисков и фасеточных суставов, которые затем могут вызывать вторичную боль в мышцах и нервах, а также отражённую боль в костях, суставах и конечностях. Заболевания и воспаления желчного пузыря, поджелудочной железы, аорты и почек также могут вызывать отраженную боль в спине. Также могут проявляться болью в спине опухоли позвонков, нервных тканей и смежных структур."
+    },
+    "en": {
+      "title": "Back pain",
+      "extract": "Back pain is pain felt in the back. It may be classified as neck pain (cervical), middle back pain (thoracic), lower back pain (lumbar) or coccydynia based on the segment affected. The lumbar region is the most commonly affected area. An episode of back pain may be acute, subacute or chronic depending on the duration. The pain may be characterized as a dull ache, shooting or piercing pain or a burning sensation. Discomfort can radiate to the arms and hands as well as the legs or feet, and may include numbness or weakness in the legs and arms."
+    },
+    "de": {
+      "title": "Rückenschmerzen",
+      "extract": "Als Rückenschmerzen (Notalgie) werden alle mehr oder minder starken Schmerzen im Bereich des Rückens bezeichnet, völlig unabhängig von deren Ursache. Fachsprachlich werden Schmerzen im Bereich der Lendenwirbelsäule oft als Kreuzschmerzen (Lumbalgie/Lumbago) oder LWS-Syndrom bezeichnet, während die Dorsalgie entweder unspezifisch Rückenschmerzen oder im engeren Sinne Schmerzen im Bereich der Brustwirbelsäule bezeichnet. Schmerzen der Halswirbelsäule werden oft als Nackenschmerzen, Zervikalgie oder HWS-Syndrom bezeichnet. Bei ausstrahlenden Schmerzen in die Extremitäten spricht man im Bereich der Lendenwirbelsäule von einer (Lumbo-)Ischialgie und an der Halswirbelsäule von einer (Zerviko-)Brachialgie."
+    },
+    "fr": {
+      "title": "Mal de dos",
+      "extract": "Un mal de dos, une dorsalgie ou une rachialgie désigne toute douleur siégeant au niveau de la colonne vertébrale ou à proximité de celle-ci, quelles que soient l’origine, la nature et l’intensité de la douleur. Selon le point d'origine de la douleur, on distingue les cervicalgies, les thoracalgies vertébrales et les lombalgies. Ces dernières sont les plus fréquentes, en particulier chez les travailleurs manuels tandis que les cervicalgies touchent davantage les personnes travaillant dans les bureaux."
+    },
+    "es": {
+      "title": "Dolor de espalda",
+      "extract": "El dolor de espalda puede presentarse por episodios muy breves o puede tratarse del síntoma de una enfermedad aguda, subaguda o crónica. El dolor puede ser leve, de pinchazo o lacerante o una sensación de ardor; puede irradiarse hacia los brazos, las manos, las piernas y los pies, y puede incluir una sensación de parestesia, debilidad o insensibilidad en las piernas y los brazos. La clasificación anatómica sigue los segmentos de la espina dorsal: dolor de cuello (cervical), dolor de espalda media o lumbago central, lumbalgia y dolor de cóccix, y el dolor más común se presenta en las vértebras lumbares. Puede originarse en los músculos, los nervios, los huesos, las articulaciones o en otras estructuras de la columna vertebral. Estructuras internas como la vesícula biliar y el páncreas también pueden causar dolor referido en la espalda. Es muy común, y más o menos nueve de cada diez adultos lo padecen en algún momento, y al año cinco de cada diez trabajadores se presentan con dolor de espalda. Puede originarse a partir de una hernia discal, una hernia cervical, estenosis, y existen tratamientos como el descanso, inyecciones, tratamientos vibracionales, termoterapia o incluso la cirugía con diferentes resultados en el plazo de un año. En los Estados Unidos, la lumbalgia es la quinta razón más común para que un paciente acuda a su médico y es la causa del 40 por ciento de bajas laborales. También es la mayor causa de incapacidad en el mundo."
+    },
+    "it": {
+      "title": "Dorsopatia",
+      "extract": "Il mal di schiena è quella sensazione di dolore sentita sul dorso che può provenire dai muscoli, nervi, ossa, superfici articolari o da altre strutture nella colonna vertebrale."
+    },
+    "pt": {
+      "title": "Dorsalgia",
+      "extract": "Dor nas costas é a dor sentida nas costas. Pode provir dos músculos, nervos, ossos, articulações ou outras estruturas ligadas à coluna vertebral. A dor pode ser constante ou intermitente, localizada ou difusa. Pode ter características em picada ou ardor. A dor cervical pode deslocar-se pelo braço e mão e parte superior das costas. Na parte inferior pode deslocar-se pela perna e pé e incluir fraqueza e dormência."
+    },
+    "ar": {
+      "title": "ألم الظهر",
+      "extract": "آلام الظهر أو الظُّهَار هي الآلام التي يشعر بها المصاب في ظهره، وهي عادةً تكون بسبب العضلات أو الأعصاب أو العظام أو المفاصل أو انزلاق غضروفي ضمن العمود الفقري. يمكن أن تحدث بصورة مفاجأة وسريعة أو بصورة تدريجية، ويمكن أيضا ان تكون بشكل مستمر أو بشكل متقطع، يمكنها أيضا ان تنتشر من مكان إلى آخر. وتختلف نوعية الألم حيث أنه قد يكون ألم حاد، أو باهت، أو كالإحساس بالاحتراق. يمكن وجود أعراض أخرى مصاحبه للألم كمثل ضعف العضلات، والتنميل، والإحساس بالوخز."
+    },
+    "hi": {
+      "title": "पीठ दर्द",
+      "extract": "पीठ दर्द, पीठ में होनेवाला वह दर्द है, जो आम तौर पर मांसपेशियों, तंत्रिका, हड्डियों, जोड़ों या रीढ़ की अन्य संरचनाओं में महसूस किया जाता है।"
+    },
+    "zh": {
+      "title": "背痛",
+      "extract": "背痛包括有肌肉、神经、骨骼、关节或与脊柱相关的其它方面的疼痛。背痛可以分为颈部疼痛、腰部疼痛和尾椎疼痛，又可分为急性或慢性、持续或间歇性、同一部位或多个部位的疼痛。麻木、刺痛或者是灼烧感都是常见的症状。背痛也可能会扩散到手臂、双手、肩部、或者腰部，甚至是下肢或者脚部。背痛是患者问诊最常见的原因之一。在美国，急性腰痛是第五大问诊的疾病，平均每10个成年人中有9人一生都至少会有一次背痛的经历，而每10个工人中有一半每年都会患有背痛。脊柱是人体中结构复杂的中轴骨，连接丰富的神经、关节、肌肉、筋腱和韧带，而这些组织都会引起或触发疼痛。脊柱内的中枢神经连通到手臂和腿部，因此疼痛会转移到四肢。\n"
+    }
+  }
+}

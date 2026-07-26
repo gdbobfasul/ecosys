@@ -1,0 +1,21 @@
+{
+  "id": "knee",
+  "langs": {
+    "en": {
+      "title": "Knee pain",
+      "extract": "Knee pain is pain in or around the knee."
+    },
+    "es": {
+      "title": "Dolor de rodilla",
+      "extract": "El dolor de rodilla es un dolor en o alrededor de la rodilla."
+    },
+    "ar": {
+      "title": "ألم الركبة",
+      "extract": "ألم الركبة هو ألم في الركبة أو ما حولها."
+    },
+    "hi": {
+      "title": "घुटनों का दर्द",
+      "extract": "घुटनों का दर्द से आशय घुटने में या उसके आसपास होने वाला दर्द।"
+    }
+  }
+}

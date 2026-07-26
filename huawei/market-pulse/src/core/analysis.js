@@ -255,6 +255,39 @@ export function forecast(series, horizon) {
   return { lean, upPct, avg, samples: tot };
 }
 
+// ── BITCOIN ВОДИ ПАЗАРА (искане на потребителя) ─────────────────────────────────────────────
+// Близостта на Bitcoin до неговия минимум за ДЕН/МЕСЕЦ/ГОДИНА е сигнал за КУПУВАНЕ, който важи за
+// ВСИЧКИ криптовалути — но само за съответния хоризонт (1 ден / 2 седмици / 3 месеца). При активен
+// сигнал шансът за бъдеща печалба за тоя хоризонт се увеличава с 40%. Образователно, НЕ съвет.
+const BTC_INST = { id: 'bitcoin', sym: 'BTC', src: 'gecko', binance: 'BTCUSDT' };
+export const NEARLOW = {
+  day:   { win: 3,   thr: 2, horizon: 1,  hkey: 'bs_1d', lkey: 'bs_daylow' },   // мин. за ~ден → до 1 ден
+  month: { win: 30,  thr: 5, horizon: 14, hkey: 'bs_2w', lkey: 'bs_monthlow' }, // мин. за месец → до 2 седмици
+  year:  { win: 365, thr: 9, horizon: 90, hkey: 'bs_3m', lkey: 'bs_yearlow' }   // мин. за година → до 3 месеца
+};
+// Изчислява сигналите на Bitcoin. Връща { price, day:{near,low,pct,horizon,...}, month, year } или null.
+export async function btcNearLowSignals() {
+  let series = null;
+  try { series = await fetchHistory(BTC_INST); } catch (_) { return null; }
+  if (!series || series.length < 5) return null;
+  const closes = series.map((p) => p.close);
+  const price = closes[closes.length - 1];
+  const out = { price };
+  for (const k of Object.keys(NEARLOW)) {
+    const cfg = NEARLOW[k];
+    const seg = closes.slice(Math.max(0, closes.length - cfg.win));
+    const low = Math.min.apply(null, seg);
+    const pct = (price / low - 1) * 100;                       // на колко % НАД минимума сме
+    out[k] = { near: isFinite(pct) && pct <= cfg.thr, low, pct, horizon: cfg.horizon, hkey: cfg.hkey, lkey: cfg.lkey };
+  }
+  return out;
+}
+// +40% към шанса за печалба, когато сигналът е активен (таван 97%). Иначе връща базовия шанс.
+export function boostChance(upPct, active) {
+  if (upPct == null) return null;
+  return active ? Math.min(97, Math.round(upPct * 1.4)) : Math.round(upPct);
+}
+
 // Готови прозорци спрямо последната налична дата (lastTs). Всеки период е ~2 месеца (60 дни),
 // завършващ в съответната точка: 'now', 'y1' (точно 1 г. назад), 'y2', 'y3', 'y5'.
 export function presetRange(preset, lastTs) {

@@ -551,9 +551,9 @@ const APPS = [
   },
 
 
-  // ── kcy-toolkit-pdf ──
+  // ── pupikes-toolkit-pdf ──
   {
-    id: 'kcy-toolkit-pdf', name: 'Pupikes Toolkit PDF', hwPkg: 'com.pupikes.toolkitpdf.hw', ruPkg: 'com.pupikes.toolkitpdf.rustore',
+    id: 'pupikes-toolkit-pdf', name: 'Pupikes Toolkit PDF', hwPkg: 'com.pupikes.toolkitpdf.hw', ruPkg: 'com.pupikes.toolkitpdf.rustore',
     pitch: {
       en: 'Pupikes Toolkit PDF is a complete PDF toolbox: merge, split and watermark PDFs, compress large scans, and convert PDF text to a Word (.docx) file — everything runs on-device.',
       ru: 'Pupikes Toolkit PDF — полный набор для PDF: объединение, разделение и водяные знаки, сжатие больших сканов и преобразование текста PDF в файл Word (.docx) — всё работает на устройстве.'
@@ -566,9 +566,9 @@ const APPS = [
     permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
   },
 
-  // ── kcy-toolkit-qr ──
+  // ── pupikes-toolkit-qr ──
   {
-    id: 'kcy-toolkit-qr', name: 'Pupikes Toolkit QR', hwPkg: 'com.pupikes.toolkitqr.hw', ruPkg: 'com.pupikes.toolkitqr.rustore',
+    id: 'pupikes-toolkit-qr', name: 'Pupikes Toolkit QR', hwPkg: 'com.pupikes.toolkitqr.hw', ruPkg: 'com.pupikes.toolkitqr.rustore',
     pitch: {
       en: 'Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.',
       ru: 'Pupikes Toolkit QR создаёт QR-коды из текста или ссылок и читает существующие QR-коды камерой или из изображения — полностью на устройстве.'
@@ -581,9 +581,9 @@ const APPS = [
     permissions: [PERM.camera({ en: 'used only when you open the QR-scanner; the image is processed on-device.', ru: 'используется только при открытии сканера QR; изображение обрабатывается на устройстве.' }), PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
   },
 
-  // ── kcy-toolkit-ai-announcement ──
+  // ── pupikes-toolkit-ai-announcement ──
   {
-    id: 'kcy-toolkit-ai-announcement', name: 'Pupikes Toolkit AI Announcement', hwPkg: 'com.pupikes.toolkitai.hw', ruPkg: 'com.pupikes.toolkitai.rustore',
+    id: 'pupikes-toolkit-ai-announcement', name: 'Pupikes Toolkit AI Announcement', hwPkg: 'com.pupikes.toolkitai.hw', ruPkg: 'com.pupikes.toolkitai.rustore',
     genAI: {
       en: 'The app is a free AI text helper. The prompt text you type is sent to a free third-party generative-AI service, <code>text.pollinations.ai</code>, which returns the generated text. Do not enter personal or sensitive information.',
       ru: 'Приложение — бесплатный ИИ-помощник для текста. Введённый вами текст запроса отправляется в бесплатный сторонний сервис генеративного ИИ <code>text.pollinations.ai</code>, который возвращает сгенерированный текст. Не вводите личную или конфиденциальную информацию.'
@@ -605,9 +605,9 @@ const APPS = [
     permissions: []
   },
 
-  // ── kcy-toolkit-text ──
+  // ── pupikes-toolkit-text ──
   {
-    id: 'kcy-toolkit-text', name: 'Pupikes Toolkit Text', hwPkg: 'com.pupikes.toolkittext.hw', ruPkg: 'com.pupikes.toolkittext.rustore',
+    id: 'pupikes-toolkit-text', name: 'Pupikes Toolkit Text', hwPkg: 'com.pupikes.toolkittext.hw', ruPkg: 'com.pupikes.toolkittext.rustore',
     pitch: {
       en: 'Pupikes Toolkit Text is a set of text utilities: word and character counters, case and formatting helpers, Base64 encoding — fully on-device.',
       ru: 'Pupikes Toolkit Text — набор текстовых утилит: счётчики слов и символов, форматирование, кодирование Base64 — полностью на устройстве.'
@@ -620,9 +620,9 @@ const APPS = [
     permissions: []
   },
 
-  // ── kcy-toolkit-finance ──
+  // ── pupikes-toolkit-finance ──
   {
-    id: 'kcy-toolkit-finance', name: 'Pupikes Toolkit Finance', hwPkg: 'com.pupikes.toolkitfinance.hw', ruPkg: 'com.pupikes.toolkitfinance.rustore',
+    id: 'pupikes-toolkit-finance', name: 'Pupikes Toolkit Finance', hwPkg: 'com.pupikes.toolkitfinance.hw', ruPkg: 'com.pupikes.toolkitfinance.rustore',
     pitch: {
       en: 'Pupikes Toolkit Finance bundles the money tools: live currency rates and a converter, crypto charts with indicators, a 20-currency watchlist with alerts, and loan/VAT/interest calculators.',
       ru: 'Pupikes Toolkit Finance объединяет денежные инструменты: курсы валют и конвертер, графики крипты с индикаторами, список наблюдения из 20 валют с оповещениями и калькуляторы кредита/НДС/процентов.'
@@ -640,9 +640,9 @@ const APPS = [
     permissions: [PERM.notif()]
   },
 
-  // ── kcy-toolkit-pictures ──
+  // ── pupikes-toolkit-pictures ──
   {
-    id: 'kcy-toolkit-pictures', name: 'Pupikes Toolkit Pictures', hwPkg: 'com.pupikes.toolkitpictures.hw', ruPkg: 'com.pupikes.toolkitpictures.rustore',
+    id: 'pupikes-toolkit-pictures', name: 'Pupikes Toolkit Pictures', hwPkg: 'com.pupikes.toolkitpictures.hw', ruPkg: 'com.pupikes.toolkitpictures.rustore',
     pitch: {
       en: 'Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.',
       ru: 'Pupikes Toolkit Pictures уменьшает изображения JPEG, PNG и WebP прямо на устройстве — ничего не выгружается.'
@@ -655,9 +655,9 @@ const APPS = [
     permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
   },
 
-  // ── kcy-toolkit-videos ──
+  // ── pupikes-toolkit-videos ──
   {
-    id: 'kcy-toolkit-videos', name: 'Pupikes Toolkit Videos', hwPkg: 'com.pupikes.toolkitvideos.hw', ruPkg: 'com.pupikes.toolkitvideos.rustore',
+    id: 'pupikes-toolkit-videos', name: 'Pupikes Toolkit Videos', hwPkg: 'com.pupikes.toolkitvideos.hw', ruPkg: 'com.pupikes.toolkitvideos.rustore',
     pitch: {
       en: 'Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.',
       ru: 'Pupikes Toolkit Videos конвертирует видео между MP4, WebM, AVI, MOV, MKV и GIF полностью на устройстве с помощью встроенного движка — ничего не выгружается.'
@@ -670,9 +670,9 @@ const APPS = [
     permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
   },
 
-  // ── kcy-toolkit-sound ──
+  // ── pupikes-toolkit-sound ──
   {
-    id: 'kcy-toolkit-sound', name: 'Pupikes Toolkit Sound', hwPkg: 'com.pupikes.toolkitsound.hw', ruPkg: 'com.pupikes.toolkitsound.rustore',
+    id: 'pupikes-toolkit-sound', name: 'Pupikes Toolkit Sound', hwPkg: 'com.pupikes.toolkitsound.hw', ruPkg: 'com.pupikes.toolkitsound.rustore',
     pitch: {
       en: 'Pupikes Toolkit Sound converts audio files from phone formats (MP3, M4A/AAC, WAV, OGG, FLAC) to MP4, MP3, WAV or OGG entirely on your device — nothing is uploaded.',
       ru: 'Pupikes Toolkit Sound конвертирует аудиофайлы из телефонных форматов (MP3, M4A/AAC, WAV, OGG, FLAC) в MP4, MP3, WAV или OGG полностью на устройстве — ничего не выгружается.'
@@ -685,9 +685,9 @@ const APPS = [
     permissions: [PERM.files({ en: 'used only when you pick a file to process; files are handled locally.', ru: 'используется только когда вы выбираете файл для обработки; файлы обрабатываются локально.' })]
   },
 
-  // ── kcy-toolkit-passwords ──
+  // ── pupikes-toolkit-passwords ──
   {
-    id: 'kcy-toolkit-passwords', name: 'Pupikes Toolkit Passwords', hwPkg: 'com.pupikes.toolkitpasswords.hw', ruPkg: 'com.pupikes.toolkitpasswords.rustore',
+    id: 'pupikes-toolkit-passwords', name: 'Pupikes Toolkit Passwords', hwPkg: 'com.pupikes.toolkitpasswords.hw', ruPkg: 'com.pupikes.toolkitpasswords.rustore',
     pitch: {
       en: 'Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.',
       ru: 'Pupikes Toolkit Passwords генерирует надёжные пароли несколькими способами (случайные, произносимые, PIN, фразы) — полностью на устройстве, ничего не сохраняется и не отправляется.'
@@ -700,9 +700,9 @@ const APPS = [
     permissions: []
   },
 
-  // ── kcy-toolkit-scraper ──
+  // ── pupikes-toolkit-scraper ──
   {
-    id: 'kcy-toolkit-scraper', name: 'Pupikes Toolkit Scraper', hwPkg: 'com.pupikes.toolkitscraper.hw', ruPkg: 'com.pupikes.toolkitscraper.rustore',
+    id: 'pupikes-toolkit-scraper', name: 'Pupikes Toolkit Scraper', hwPkg: 'com.pupikes.toolkitscraper.hw', ruPkg: 'com.pupikes.toolkitscraper.rustore',
     pitch: {
       en: 'Pupikes Toolkit Scraper downloads a web page you point it to and extracts the parts you asked for (text, links, tables) so you can copy or save them.',
       ru: 'Pupikes Toolkit Scraper загружает указанную вами веб-страницу и извлекает нужные части (текст, ссылки, таблицы), чтобы вы могли их скопировать или сохранить.'
@@ -806,9 +806,9 @@ const APPS = [
     permissions: []
   },
 
-  // ── kcy-toolkit-3drotate ──
+  // ── pupikes-toolkit-3drotate ──
   {
-    id: 'kcy-toolkit-3drotate', name: 'Pupikes Toolkit 3D Rotate', hwPkg: 'com.pupikes.toolkit3drotate.hw', ruPkg: 'com.pupikes.toolkit3drotate.rustore',
+    id: 'pupikes-toolkit-3drotate', name: 'Pupikes Toolkit 3D Rotate', hwPkg: 'com.pupikes.toolkit3drotate.hw', ruPkg: 'com.pupikes.toolkit3drotate.rustore',
     pitch: {
       en: 'Pupikes Toolkit 3D Rotate loads an image you pick and rotates it in 3D on four axes with WebGL, letting you save the result as a PNG — fully on your device.',
       ru: 'Pupikes Toolkit 3D Rotate загружает выбранное вами изображение и вращает его в 3D по четырём осям с помощью WebGL, позволяя сохранить результат в PNG — полностью на устройстве.'

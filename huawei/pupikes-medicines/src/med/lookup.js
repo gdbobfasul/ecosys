@@ -2,7 +2,7 @@
 // lookup.js — търсене на лекарство: 1) онлайн openFDA (+ уеб), 2) резерв офлайн база;
 // после превод на описанието (MyMemory, keyless). На телефон ползва CapacitorHttp (заобикаля
 // CORS); в браузър — fetch. БЕЗ AbortController (чупи CapacitorHttp) — таймаут през Promise.race.
-import { offlineLookup, findRisky, norm } from './data.js';
+import { offlineLookup, findRisky, norm, matchScore } from './data.js';
 
 function timeout(ms) { return new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms)); }
 
@@ -50,10 +50,15 @@ async function openFdaLookup(query) {
   const first = (a) => Array.isArray(a) && a.length ? a[0] : (a || '');
   const title = first(ofda.brand_name) || first(ofda.generic_name) || String(query);
   const active = [].concat(ofda.substance_name || [], r.active_ingredient || []).map((x) => String(x));
+  // ПОТВЪРДИ, че върнатото наистина съответства на заявката (openFDA връща свързани продукти и за
+  // общи думи като „oral suspension" → без потвърждение това са фалшиви положителни).
+  const names = [first(ofda.brand_name), first(ofda.generic_name)].concat(ofda.substance_name || [], r.active_ingredient || []);
+  let best = 0; for (const nm of names) { const s = matchScore(nm, query); if (s > best) best = s; }
+  if (!best) return null;
   const description = [first(r.purpose), first(r.indications_and_usage)].filter(Boolean).join(' ').slice(0, 1200)
     || first(r.description) || '';
   const warnings = (first(r.warnings) || '').slice(0, 800);
-  return { source: 'openFDA', title, active, description, warnings };
+  return { source: 'openFDA', title, active, description, warnings, exact: best === 2 };
 }
 
 // Локален (вграден) многоезичен пакет — събран чрез скрапване (Wikipedia, per език). Чете се
@@ -61,24 +66,85 @@ async function openFdaLookup(query) {
 async function fetchLocal(p) { try { const r = await fetch(p); return r.ok ? await r.json() : null; } catch (_) { return null; } }
 async function refLookup(query, lang) {
   const idx = await fetchLocal('reference/index.json'); if (!idx || !idx.items) return null;
-  const nq = norm(query); const target = String(lang || 'en').split('-')[0];
+  const target = String(lang || 'en').split('-')[0];
+  // Първо мини-обхождане на индекса (само id-та) за най-добра оценка; предпочитаме ТОЧНО име.
+  let exact = null, partial = null;
   for (const it of idx.items) {
-    const rec = await fetchLocal('reference/' + it.id + '.json'); if (!rec || !rec.langs) continue;
-    const titles = Object.values(rec.langs).map((l) => norm(l.title));
-    const hit = norm(it.id).includes(nq) || nq.includes(norm(it.id)) || titles.some((tt) => tt && (tt.includes(nq) || nq.includes(tt)));
-    if (!hit) continue;
-    const L = rec.langs[lang] || rec.langs[target] || rec.langs.en || Object.values(rec.langs)[0];
-    if (L && L.extract) return { source: 'Wikipedia', title: L.title, active: [], description: L.extract, warnings: '', translated: true };
+    let best = matchScore(it.id, query);
+    if (best === 2) { exact = it; break; }
+    if (best === 1 && !partial) partial = it;
   }
+  const chosen = exact || partial; if (!chosen) return null;
+  const rec = await fetchLocal('reference/' + chosen.id + '.json'); if (!rec || !rec.langs) return null;
+  // потвърди по заглавията (ако id е частично, заглавието може да е точно)
+  const L = rec.langs[lang] || rec.langs[target] || rec.langs.en || Object.values(rec.langs)[0];
+  if (L && L.extract) return { source: 'Wikipedia', title: L.title, active: [], description: L.extract, warnings: '', translated: true, exact: !!exact };
   return null;
 }
 
-// Основно търсене: 1) наш многоезичен пакет (автентичен текст), 2) openFDA, 3) офлайн база.
-// Добавя рисковите съставки (за открояване). Превежда САМО ако текстът не е вече на езика.
+// Голяма ВГРАДЕНА база (хиляди лекарства, събрани от openFDA) — работи БЕЗ интернет.
+// Зарежда се веднъж и се търси по всяко от имената/съставките (двупосочно съвпадение).
+let BIG_DB = null;
+async function loadBigDb() {
+  if (BIG_DB !== null) return BIG_DB;
+  const j = await fetchLocal('reference/meds-db.json');
+  BIG_DB = (j && j.items) || [];
+  return BIG_DB;
+}
+// Сглобява едно по-плътно описание от наличните полета (за какво е + дозировка).
+function bigDbDesc(m) {
+  const parts = [];
+  if (m.description) parts.push(m.description);
+  if (m.usage && (!m.description || !m.description.startsWith(m.usage.slice(0, 40)))) parts.push('Показания: ' + m.usage);
+  if (m.dosage) parts.push('Прием: ' + m.dosage);
+  return parts.join('\n\n');
+}
+function bigDbHit(m, exact) {
+  return { source: 'offline-db', title: m.title, active: m.active || [], description: bigDbDesc(m), warnings: m.warnings || '', exact: !!exact };
+}
+// Обхожда ГОЛЯМАТА база (8005 записа, вкл. обскурни/хомеопатични имена) — приема САМО ТОЧНО/почти-точно
+// съвпадение (score 2). Свободно частично тук е опасно: къс OCR-шум („hoton") улучва случайни записи
+// („Hottonia") = фалшив резултат. Честите лекарства с непълно четене минават през курираните/ref (там е ок).
+function scanDb(items, query, hit) {
+  if (!norm(query)) return null;
+  for (const m of items) {
+    for (const nm of (m.names || [])) { if (matchScore(nm, query) === 2) return hit(m, true); }
+  }
+  return null;
+}
+async function bigDbLookup(query) {
+  const items = await loadBigDb(); if (!items.length) return null;
+  return scanDb(items, query, bigDbHit);
+}
+
+// ГОЛЯМАТА база живее на СЪРВЕРА (production), разделена по първа буква — апът тегли само нужния
+// шард ОНЛАЙН (лек товар), кешира го за сесията. Офлайн ползва компактното вградено ядро.
+const MEDIKIT_BASE = 'https://selflearning.bot.nu/medikit';
+const SHARD_CACHE = {};
+function shardKey(query) { const c = String(query || '').trim()[0]; return c && /[a-zA-Z]/.test(c) ? c.toLowerCase() : '0'; }
+async function loadShard(letter) {
+  if (SHARD_CACHE[letter] !== undefined) return SHARD_CACHE[letter];
+  try { const j = await getJson(`${MEDIKIT_BASE}/meds/${letter}.json`); SHARD_CACHE[letter] = (j && j.items) || []; }
+  catch (_) { SHARD_CACHE[letter] = null; }   // няма интернет/шард → маркирай, не пробвай пак
+  return SHARD_CACHE[letter];
+}
+async function remoteDbLookup(query) {
+  const items = await loadShard(shardKey(query)); if (!items || !items.length) return null;
+  return scanDb(items, query, bigDbHit);
+}
+
+// Основно търсене: 1) наш многоезичен пакет, 2) курирани, 3) вградено ядро (офлайн),
+// 4) ПЪЛНАТА база от сървъра (онлайн, по буква), 5) openFDA (съвсем редки).
 export async function lookupMedicine(query, lang) {
   let res = await refLookup(query, lang);
+  // курираните 50+ (локализирани имена + добри описания) са с приоритет за често срещаните
+  if (!res) { const off = offlineLookup(query); if (off) { const ex = (off.names || []).some((nm) => matchScore(nm, query) === 2); res = { source: 'offline', title: off.title, active: off.active || [], description: off.description, warnings: '', exact: ex }; } }
+  // после компактното вградено ядро (хиляди, офлайн)
+  if (!res) { try { res = await bigDbLookup(query); } catch (_) { res = null; } }
+  // после ПЪЛНАТА база от production сървъра (онлайн — тегли само шарда за буквата)
+  if (!res) { try { res = await remoteDbLookup(query); } catch (_) { res = null; } }
+  // накрая онлайн openFDA (за съвсем редки, ако има интернет)
   if (!res) { try { res = await openFdaLookup(query); } catch (_) { res = null; } }
-  if (!res) { const off = offlineLookup(query); if (off) res = { source: 'offline', title: off.title, active: off.active || [], description: off.description, warnings: '' }; }
   if (!res) return null;
   const scanText = [res.title, res.description, ...(res.active || [])].join(' ');
   res.risky = findRisky(scanText);

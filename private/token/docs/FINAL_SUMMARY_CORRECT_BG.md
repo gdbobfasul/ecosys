@@ -1,9 +1,9 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token v3.3 FINAL - ФИНАЛНО Обобщение ✅
+# PUPIKES1 Token v3.3 FINAL - ФИНАЛНО Обобщение ✅
 
 ## ✅ КОДЪТ Е ПРАВИЛЕН!
 
-Кодът в **kcy1_token_v3.3_FINAL.sol** е напълно коректен и работи точно както трябва!
+Кодът в **pupikes1_token_v3.3_FINAL.sol** е напълно коректен и работи точно както трябва!
 
 ---
 
@@ -34,7 +34,7 @@
 
 ### При Deployment:
 ```
-1,000,000 KCY1 Tokens
+1,000,000 PUPIKES1 Tokens
         │
         ├─► DEV_WALLET_mm_vis: 600,000 (Собственик)
         └─► Contract: 400,000 (Резерв - НЕ се разпределят!)
@@ -102,7 +102,7 @@ DEV_WALLET_mm_vis започва с: 600,000
 ## 📁 Файлове за Deployment
 
 ### Главен Файл:
-**[kcy1_token_v3.3_FINAL.sol](computer:///mnt/user-data/outputs/kcy1_token_v3.3_FINAL.sol)** ✅
+**[pupikes1_token_v3.3_FINAL.sol](computer:///mnt/user-data/outputs/pupikes1_token_v3.3_FINAL.sol)** ✅
 
 ### Документация:
 **[CORRECTED_LOGIC_EXPLANATION_BG.md](computer:///mnt/user-data/outputs/CORRECTED_LOGIC_EXPLANATION_BG.md)** - Пълно обяснение

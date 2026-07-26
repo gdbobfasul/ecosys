@@ -3,7 +3,7 @@
 // Език по подразбиране: руски (до избор от потребителя при първо стартиране).
 import { LANGUAGES, languageByCode, RTL_CODES } from './languages.js';
 
-const LS_KEY = 'kcyauth.lang';
+const LS_KEY = 'pupikesauth.lang';
 const DEFAULT_LANG = 'ru';
 const FALLBACK_LANG = 'en';
 

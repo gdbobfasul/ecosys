@@ -43,8 +43,8 @@ async function postReport(app, body) {
 }
 
 function openDeleteModal(app) {
-  if (document.getElementById('kcy-del-ov')) return;
-  const ov = document.createElement('div'); ov.id = 'kcy-del-ov';
+  if (document.getElementById('pupikes-del-ov')) return;
+  const ov = document.createElement('div'); ov.id = 'pupikes-del-ov';
   ov.style.cssText = 'position:fixed;inset:0;z-index:2147483011;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px';
   const box = document.createElement('div');
   box.style.cssText = 'max-width:360px;width:100%;background:#141a24;color:#e6edf3;border-radius:14px;padding:16px;box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,sans-serif';
@@ -73,8 +73,8 @@ export function mountPrivacyLink(appId, opts) {
   const account = !!(opts && opts.account);
   const url = `${PRIVACY_BASE}/${app}/${PRIVACY_FILE}`;
   function add() {
-    if (!document.body || document.getElementById('kcy-legal-bar')) return;
-    const bar = document.createElement('div'); bar.id = 'kcy-legal-bar';
+    if (!document.body || document.getElementById('pupikes-legal-bar')) return;
+    const bar = document.createElement('div'); bar.id = 'pupikes-legal-bar';
     // Долу-ДЯСНО, НАД бутона „Помощ" (който е на bottom:12) — за да НЕ се блъска с балончето
     // „✨ Pupikes" (долу-ляво) и да не закрива важни бутони. Ненатрапчиво, малко.
     bar.style.cssText = 'position:fixed;right:12px;bottom:58px;z-index:2147483000;display:flex;flex-direction:column;gap:6px;align-items:flex-end;pointer-events:none';

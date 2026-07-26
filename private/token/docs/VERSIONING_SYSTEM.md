@@ -1,7 +1,7 @@
 <!-- Version: 1.0093 -->
 <!-- @version v34 -->
 
-# Версионна Система на KCY1 Проекта
+# Версионна Система на PUPIKES1 Проекта
 
 ## Как Работи
 
@@ -194,7 +194,7 @@ head -5 config/addresses.js
 **Пример:**
 - `config/addresses.js` → v35 (променен адрес)
 - `scripts/deploy.js` → v34 (непроменен)
-- `test/kcy-meme-1-tests.js` → v34 (непроменен)
+- `test/pupikes-meme-1-tests.js` → v34 (непроменен)
 
 ### Как да проверя версията на файл?
 ```bash
@@ -205,7 +205,7 @@ head -5 config/addresses.js | grep @version
 head -1 docs/README.md
 
 # Solidity
-head -10 contracts/kcy-meme-1.sol | grep @version
+head -10 contracts/pupikes-meme-1.sol | grep @version
 ```
 
 ### Трябва ли да актуализирам всички файлове наведнъж?
@@ -230,7 +230,7 @@ head -10 contracts/kcy-meme-1.sol | grep @version
 - Всички config файлове
 - Всички scripts
 - Всички tests
-- Contract (kcy-meme-1.sol)
+- Contract (pupikes-meme-1.sol)
 - Utils
 
 **Следваща версия (v35):**

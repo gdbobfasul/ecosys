@@ -15,7 +15,7 @@ exemptSlots: [
   "0x0000000000000000000000000000000000000000"
 ]
 
-// contracts/kcy-meme-1.sol
+// contracts/pupikes-meme-1.sol
 eAddr1 = address(0);
 eAddr2 = address(0);
 eAddr3 = address(0);
@@ -32,7 +32,7 @@ exemptSlots: [
   "0x8d95d56436Eb58ee3f9209e8cc4BfD59cfBE8b87"   // Same as Advisor
 ]
 
-// contracts/kcy-meme-1.sol
+// contracts/pupikes-meme-1.sol
 eAddr1 = DEVw_mv;      // Same as DEV wallet
 eAddr2 = Mw_tng;       // Same as Marketing wallet
 eAddr3 = Tw_trz_hdn;   // Same as Team wallet
@@ -88,7 +88,7 @@ Distribution & Exempt Slots:
 - Exempt slots за всички мрежи са същите като distribution адресите
 - Премахнати ZeroAddress стойности
 
-### 2. contracts/kcy-meme-1.sol
+### 2. contracts/pupikes-meme-1.sol
 **Версия**: v34 → v35
 
 **Промени:**

@@ -14,8 +14,8 @@
 // Карта на маршрутите (както ги сервира nginx на главния домейн):
 //   public/<път>            → /<път>            (статично, location /)
 //   <папка>/index.html      → /<папка>/         (директория)
-//   House-Look-Book/<x>     → /houselookbook/<x> (приложение kcy-hlb :3010)
-//   WhereNoBiz/<x>          → /wherenobiz/<x>    (приложение kcy-wnb :3011)
+//   House-Look-Book/<x>     → /houselookbook/<x> (приложение pupikes-hlb :3010)
+//   WhereNoBiz/<x>          → /wherenobiz/<x>    (приложение pupikes-wnb :3011)
 // ──────────────────────────────────────────────────────────────────────────
 'use strict';
 const fs = require('fs');
@@ -48,7 +48,7 @@ const FOLDER_URL_REMAP = { 'House-Look-Book': 'houselookbook', 'WhereNoBiz': 'wh
 // Курирани ДОПЪЛНИТЕЛНИ адреси, които НЕ са статични .html файлове
 // (динамични/прокси маршрути) — за пълнота на дървото и за робота.
 const EXTRAS = [
-  { app: 'shared', url: '/last-errors-bundle',    title: 'Логове (грешки + дебъг) — слети', type: 'admin', note: 'kcy-diag :4400' },
+  { app: 'shared', url: '/last-errors-bundle',    title: 'Логове (грешки + дебъг) — слети', type: 'admin', note: 'pupikes-diag :4400' },
   { app: 'shared', url: '/last-errors-bundle-vm', title: 'Логове от VM',                     type: 'admin', note: 'само ако VM е вдигнат' },
   // health endpoint-и (за робота; връщат JSON, не HTML)
   { app: 'chat',    url: '/api/health',       title: 'health (chat)',    type: 'api' },

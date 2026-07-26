@@ -32,7 +32,7 @@ async function main() {
     console.log("❌ Pair doesn't exist yet!");
     console.log("\nYou need to:");
     console.log("1. Go to PancakeSwap (testnet/mainnet)");
-    console.log("2. Add liquidity for KCY1/WBNB");
+    console.log("2. Add liquidity for PUPIKES1/WBNB");
     console.log("3. Then run this script again");
     return;
   }

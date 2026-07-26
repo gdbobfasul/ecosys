@@ -13,7 +13,7 @@ import { el, toast } from '../ui/dom.js';
 import { t, tf } from '../core/i18n.js';
 import { getState, setState } from '../core/storage.js';
 import { isNativeReplyAvailable, isAccessGranted, openAccessSettings, getRecent } from '../core/native-reply.js';
-import { kcyConfigured, kcyCheck } from '../core/kcy-chat.js';
+import { pupikesConfigured, pupikesCheck } from '../core/pupikes-chat.js';
 import { reloadChannels } from '../core/pump.js';
 
 const NATIVE_CHANNELS = [
@@ -35,7 +35,7 @@ export function ChannelsScreen({ render }) {
   root.appendChild(messengersBlock(render));
 
   // --- Нашият чат (Pupikes) ---
-  root.appendChild(kcyBlock(render));
+  root.appendChild(pupikesBlock(render));
 
   // --- Демо чат (винаги работи) ---
   root.appendChild(localBlock(render));
@@ -149,11 +149,11 @@ function messengersBlock(render) {
 }
 
 // --- Нашият чат (Pupikes) ---------------------------------------------------------
-function kcyBlock(render) {
+function pupikesBlock(render) {
   const st = getState();
-  const cfg = (st.channels && st.channels.kcy) || {};
+  const cfg = (st.channels && st.channels.pupikes) || {};
 
-  const statusEl = el('span', { class: 'pill off' }, kcyConfigured(cfg) ? t('ch_status_checking') : t('ch_status_not_configured'));
+  const statusEl = el('span', { class: 'pill off' }, pupikesConfigured(cfg) ? t('ch_status_checking') : t('ch_status_not_configured'));
 
   const baseInput = el('input', { type: 'text', value: cfg.baseUrl || 'https://my.girl.place', placeholder: 'https://my.girl.place' });
   // Бързи бутони за двата домейна на нашия чат.
@@ -169,14 +169,14 @@ function kcyBlock(render) {
   const save = () => {
     const cur = getState();
     const next = {
-      ...(cur.channels.kcy || {}),
+      ...(cur.channels.pupikes || {}),
       baseUrl: baseInput.value.trim(),
       phone: phoneInput.value.trim(),
       password: passInput.value.trim(),
       token: tokenInput.value.trim(),
       pollSeconds: Math.max(5, parseInt(pollInput.value, 10) || 20)
     };
-    setState({ channels: { ...cur.channels, kcy: next } });
+    setState({ channels: { ...cur.channels, pupikes: next } });
     reloadChannels(render);
     toast(t('ch_saved'));
   };
@@ -186,7 +186,7 @@ function kcyBlock(render) {
     save();
     statusEl.className = 'pill away';
     statusEl.textContent = t('ch_status_checking');
-    const res = await kcyCheck(getState().channels.kcy);
+    const res = await pupikesCheck(getState().channels.pupikes);
     if (res.ok) {
       statusEl.className = 'pill on';
       statusEl.textContent = t('ch_status_connected');
@@ -200,8 +200,8 @@ function kcyBlock(render) {
 
   const enabled = !!(cfg.enabled);
   const body = [
-    el('p', { class: 'muted' }, t('ch_kcy_note')),
-    el('label', {}, t('ch_kcy_addr')),
+    el('p', { class: 'muted' }, t('ch_pupikes_note')),
+    el('label', {}, t('ch_pupikes_addr')),
     baseInput,
     pickRow,
     el('label', {}, t('ch_phone')),
@@ -219,31 +219,31 @@ function kcyBlock(render) {
   ];
 
   // Асинхронна първоначална проверка на статуса, ако е настроен.
-  if (kcyConfigured(cfg)) {
+  if (pupikesConfigured(cfg)) {
     (async () => {
-      const res = await kcyCheck(cfg);
+      const res = await pupikesCheck(cfg);
       statusEl.className = 'pill ' + (res.ok ? 'on' : 'off');
       statusEl.textContent = res.ok ? t('ch_status_connected') : reasonShort(res.reason);
     })();
   }
 
   return el('div', {}, [
-    el('h2', {}, t('ch_kcy_title')),
+    el('h2', {}, t('ch_pupikes_title')),
     channelCard({
       ic: '💠',
-      title: t('ch_kcy_name'),
+      title: t('ch_pupikes_name'),
       statusEl,
       enabled,
       onToggle: (on) => {
-        if (on && !kcyConfigured(getState().channels.kcy)) {
+        if (on && !pupikesConfigured(getState().channels.pupikes)) {
           toast(t('ch_need_config'));
           render();
           return;
         }
         const cur = getState();
-        setState({ channels: { ...cur.channels, kcy: { ...(cur.channels.kcy || {}), enabled: on } } });
+        setState({ channels: { ...cur.channels, pupikes: { ...(cur.channels.pupikes || {}), enabled: on } } });
         reloadChannels(render);
-        toast(on ? t('ch_kcy_on') : t('ch_kcy_off'));
+        toast(on ? t('ch_pupikes_on') : t('ch_pupikes_off'));
       },
       children: body
     })

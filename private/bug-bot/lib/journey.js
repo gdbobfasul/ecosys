@@ -29,7 +29,7 @@ function loadEnv() {
   const candidates = [
     process.env.ROBOT_ENV_FILE,
     path.join(__dirname, '..', '..', 'configs', '.env'),       // repo / сървър: private/configs/.env
-    '/var/www/kcy-ecosystem/private/configs/.env',
+    '/var/www/pupikes-ecosystem/private/configs/.env',
   ].filter(Boolean);
   for (const f of candidates) {
     try {

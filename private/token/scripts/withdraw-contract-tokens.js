@@ -35,7 +35,7 @@ async function main() {
   
   // Check contract balance
   const contractBalance = await token.balanceOf(config.tokenAddress);
-  console.log("Contract balance:", formatTokens(contractBalance), "KCY1");
+  console.log("Contract balance:", formatTokens(contractBalance), "PUPIKES1");
   
   if (contractBalance === 0n) {
     console.log("❌ Contract has no tokens to withdraw!");
@@ -55,7 +55,7 @@ async function main() {
   console.log("");
   
   // Withdraw
-  console.log(`💰 Withdrawing ${formatTokens(contractBalance)} KCY1 to owner...`);
+  console.log(`💰 Withdrawing ${formatTokens(contractBalance)} PUPIKES1 to owner...`);
   const tx = await token.withdrawCirculationTokens(contractBalance);
   await waitForTx(tx, "Withdrawal");
   
@@ -64,8 +64,8 @@ async function main() {
   const newContractBalance = await token.balanceOf(config.tokenAddress);
   
   console.log("\n📊 New Balances:");
-  console.log("  Owner:", formatTokens(newOwnerBalance), "KCY1");
-  console.log("  Contract:", formatTokens(newContractBalance), "KCY1");
+  console.log("  Owner:", formatTokens(newOwnerBalance), "PUPIKES1");
+  console.log("  Contract:", formatTokens(newContractBalance), "PUPIKES1");
   console.log("\n✅ Withdrawal complete!");
 }
 

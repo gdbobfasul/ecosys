@@ -17,7 +17,7 @@
     ],
     "log": [
       { "at": 1751610000000, "sender": "Anna", "channel": "whatsapp", "mode": "normal", "incoming": "hello, are you there?", "reply": "Hi Anna! Thanks for your message, I'll reply soon." },
-      { "at": 1751612400000, "sender": "Mark", "channel": "kcy", "mode": "normal", "incoming": "what is the price?", "reply": "Our price list is on the way, Mark." },
+      { "at": 1751612400000, "sender": "Mark", "channel": "pupikes", "mode": "normal", "incoming": "what is the price?", "reply": "Our price list is on the way, Mark." },
       { "at": 1751614800000, "sender": "Lena", "channel": "whatsapp", "mode": "away", "incoming": "are you open now?", "reply": "I'm away right now, I'll get back to you soon." }
     ]
   },

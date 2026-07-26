@@ -74,7 +74,7 @@ export function DashboardScreen({ navigate, render, openLanguage }) {
 }
 
 function channelLabel(id) {
-  return ({ kcy: t('ch_kcy_name'), whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: t('tab_demo') })[id] || id || t('tab_demo');
+  return ({ pupikes: t('ch_pupikes_name'), whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: t('tab_demo') })[id] || id || t('tab_demo');
 }
 
 function logRow(entry) {

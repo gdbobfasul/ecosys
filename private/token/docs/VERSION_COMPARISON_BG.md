@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token - Сравнение на Версиите
+# PUPIKES1 Token - Сравнение на Версиите
 
 ## 📊 Версия 3.0 → 3.1 → 3.2 Еволюция
 
@@ -181,14 +181,14 @@
 ## 📄 Налични Файлове
 
 ### Версия 3.2 (Препоръчва се):
-- `kcy1_token_v3.2.sol` - Основен contract
+- `pupikes1_token_v3.2.sol` - Основен contract
 - `CHANGELOG_v3.2_BG.md` - Документация на български
 - `TECHNICAL_SUMMARY_v3.2.md` - Техническа документация
 
 ### Версия 3.1 (За справка):
-- `kcy1_token_v3.1.sol` - Основен contract
+- `pupikes1_token_v3.1.sol` - Основен contract
 - `CHANGELOG_BG.md` - Документация на български
 - `TECHNICAL_SUMMARY.md` - Техническа документация
 
 ### Оригинал:
-- `kcy1_token.sol` - Версия 3.0
+- `pupikes1_token.sol` - Версия 3.0

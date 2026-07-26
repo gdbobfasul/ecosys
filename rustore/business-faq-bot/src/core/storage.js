@@ -61,9 +61,9 @@ function defaultState() {
       whatsapp: false,      // изисква native plugin + Notification access
       viber: false,
       messenger: false,
-      // НАШИЯТ чат (Pupikes) — реална HTTP връзка (виж kcy-chat.js). Настройките се
+      // НАШИЯТ чат (Pupikes) — реална HTTP връзка (виж pupikes-chat.js). Настройките се
       // пазят само на устройството. enabled=false докато не е настроен и включен.
-      kcy: {
+      pupikes: {
         enabled: false,
         baseUrl: 'https://my.girl.place',
         phone: '',
@@ -73,7 +73,7 @@ function defaultState() {
       }
     },
     // Проследяване на вече обработени входящи съобщения по канал (за да не дублираме).
-    seen: { kcy: {} },
+    seen: { pupikes: {} },
     log: [],                // дневник на отговорените въпроси (без лични данни)
     stats: { answered: 0, fallback: 0, away: 0 } // само броячи
   };
@@ -100,7 +100,7 @@ function load() {
       channels: {
         ...base.channels,
         ...(parsed.channels || {}),
-        kcy: { ...base.channels.kcy, ...((parsed.channels || {}).kcy || {}) }
+        pupikes: { ...base.channels.pupikes, ...((parsed.channels || {}).pupikes || {}) }
       },
       seen: { ...base.seen, ...(parsed.seen || {}) },
       stats: { ...base.stats, ...(parsed.stats || {}) }

@@ -1,0 +1,57 @@
+{
+  "id": "thigh",
+  "langs": {
+    "bg": {
+      "title": "Ишиас",
+      "extract": "Ишиасът е заболяване, при което се наблюдава силна болка в кръста, поясния отдел, бедрото или стъпалото. Понякога има и нарушения на сетивността или мускулна атрофия. Това е заболяване на седалищния нерв, говорещо за проблем в поясно-кръстния отдел."
+    },
+    "ru": {
+      "title": "Ишиас",
+      "extract": "Ишиас — боли в пояснично-крестцовой области, могут быть вызваны:Воспаление седалищного нерва.\nПоясной радикулит.\nОстеохондроз позвоночника.\nСиндром грушевидной мышцы."
+    },
+    "uk": {
+      "title": "Ішіалгія",
+      "extract": "Ішіалгія, ішіас, також сіднична невралгія — це біль, що йде вниз по нозі від поперекової частини спини. Цей біль може поширюватися на задню, зовнішню або передню частину ноги. Виникає раптово після таких дій, як підняття важких речей, також може починатись поступово. Біль часто описують як стріляючий. Частіше симптоми проявляються лише на одній стороні тіла. Проте певні причини можуть призвести до болю з обох боків. Іноді спостерігається біль у попереку. Слабкість або оніміння можуть виникнути в різних частинах ураженої ноги та стопи."
+    },
+    "en": {
+      "title": "Sciatica",
+      "extract": "Sciatica is pain going down the leg from the lower back. This pain may extend down the back, outside, or front of the leg. The onset is often sudden following activities such as heavy lifting, although it may also occur gradually. The pain is often described as shooting. Typically, symptoms occur on only one side of the body; certain causes, however, may result in pain on both sides. Lower back pain is sometimes present. Weakness or numbness may occur in different parts of the affected leg and foot."
+    },
+    "de": {
+      "title": "Ischialgie",
+      "extract": "Als Ischialgie, auch kurz Ischias, werden Schmerzen und Missempfindungen bezeichnet, die dem Hauptnerv des Beines, dem Ischiasnerv, zuzuordnen sind und durch Reizung oder Schädigung seiner Nervenfasern hervorgerufen werden. Treten neben der Neuralgie (Nervenschmerz) im Versorgungsgebiet dieses Nervs weitere neuropathische Beeinträchtigungen auf, zum Beispiel Muskelschwächen oder Sensibilitätsstörungen, wird auch von Ischiassyndrom gesprochen; ungebräuchliche ältere Benennungen sind Cotugno-Syndrom und (nervöses) Hüftweh."
+    },
+    "fr": {
+      "title": "Lombosciatique",
+      "extract": "La lombosciatique est une douleur vive suivant le territoire du nerf spinal S1 ou L5 atteint au niveau de la colonne vertébrale ou à sa proximité immédiate. Elle doit être distinguée du nerf sciatique, appelé parfois « (le) sciatique » tout court et qui naît de la réunion de plusieurs racines nerveuses. Une lésion du (nerf) sciatique peut donc provoquer une (névralgie) sciatique. Les symptômes sont habituellement localisés dans un seul côté du corps. La douleur peut s'intensifier en cas d'exposition à une basse température."
+    },
+    "es": {
+      "title": "Ciática",
+      "extract": "La ciática es un conjunto de síntomas que incluye, sobre todo, el dolor en el territorio del recorrido de la espalda por el nervio ciático, que puede estar acompañado de alteraciones en la función neurológica local."
+    },
+    "it": {
+      "title": "Sciatalgia",
+      "extract": "In medicina per sciatalgia o sciatica si intende un dolore che si estende alla gamba partendo dalla parte bassa della schiena. Questo dolore può estendersi alla parte posteriore, esterna o anteriore della gamba. Tipicamente, questi sintomi appaiono solo su un lato del corpo. Alcune cause, tuttavia, possono provocare dolore su entrambi i lati. A volte, ma non sempre, è presente anche il mal di schiena e lombalgia. Sintomi neurologici come debolezza anche cronica o intorpidimento possono verificarsi in varie parti della gamba e del piede."
+    },
+    "pt": {
+      "title": "Ciática",
+      "extract": "Ciática é uma condição médica caracterizada por dor que percorre a perna a partir da parte inferior das costas. A dor pode descer pela parte de trás, pelo lado ou pela parte da frente da perna. Na maior parte dos casos, a dor é de início súbito e ocorre na sequência de esforços, como levantar objetos pesados. No entanto, em alguns casos é de início gradual. Geralmente os sintomas só se manifestam de um dos lados do corpo, embora algumas causas possam dar origem a dor de ambos os lados. Por vezes está também presente dor na parte de baixo das costas, embora nem sempre. Em várias partes da perna e pé afetados pode ocorrer fraqueza ou formigueiro."
+    },
+    "ar": {
+      "title": "عرق النسا",
+      "extract": "عرق النسا هو ألم يمتد من أسفل الظهر إلى أسفل الساق. وقد يمتد هذا الألم على طول الظهر أو الجزء الخارجي أو الأمامي من الساق. وغالبًا ما يبدأ الألم فجأة بعد القيام بأنشطة مثل رفع الأشياء الثقيلة، على الرغم من أنه قد يبدأ تدريجيًا أيضًا. وغالبًا ما يوصف الألم بأنه حاد. وعادةً ما تكون الأعراض على جانب واحد فقط من الجسم. ومع ذلك، قد تؤدي أسباب معينة إلى الألم على كلا الجانبين. قد يحدث ضعف أو خدر في أجزاء مختلفة من الساق والقدم المصابة."
+    },
+    "hi": {
+      "title": "सायटिका",
+      "extract": "कमर से संबंधित नसों में से अगर किसी एक में भी सूजन आ जाए तो पूरे पैर में असहनीय दर्द होने लगता है, जिसे गृध्रसी या सायटिका (Sciatica) कहा जाता है। यह तंत्रिकाशूल (Neuralgia) का एक प्रकार है, जो बड़ी गृघ्रसी तंत्रिका में सर्दी लगने से या अधिक चलने से अथवा मलावरोध और गर्भ, अर्बुद (Tumour) तथा मेरुदंड (spine) की विकृतियाँ, इनमें से किसी का दबाव तंत्रिका या तंत्रिकामूलों पर पड़ने से उत्पन्न होता है। कभी-कभी यह तंत्रिकाशोथ (Neuritis) से भी होता है|"
+    },
+    "ja": {
+      "title": "坐骨神経痛",
+      "extract": "坐骨神経痛 とは、\n腰から足を下っていく痛みを特徴とする病状である。あくまで症状であり、病名ではない。人の体においてさまざまな原因により、坐骨神経が刺激されることに起因する神経痛である。痛みは、足の後ろ、外側、前方などでも起こる可能性がある。発症は重いものを持ち上げるような活動の後に突然起こることが多いが、徐々に発症することもある。痛みはよく、撃たれるような感覚と言われる。通常、症状は体の片側だけに現れる。しかしながら特定の原因によって両側に痛みが生じることもある。腰痛が時々見られる。患部の足、足のさまざまな部分などで脱力感やしびれが生じることもある。"
+    },
+    "zh": {
+      "title": "坐骨神經痛",
+      "extract": "坐骨神經痛，也被稱為坐骨神經炎或腰椎神經根病變，它的症狀是背部與腿部的疼痛。疼痛的範圍上自背部，下至腿部的背側、外側、或正面。一般而言，症狀只出現在身體的一側，但部分原因造成的坐骨神經痛則可能兩側都有症狀。坐骨神經痛患者有時同時會患有下背痛，有時腿部與足部也會有無力或麻木的症狀。\n"
+    }
+  }
+}

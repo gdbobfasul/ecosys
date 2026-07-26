@@ -14,7 +14,7 @@ const {
 } = require("../utils/helpers");
 
 async function main() {
-  console.log("=== KCY1 Token Full Status ===\n");
+  console.log("=== PUPIKES1 Token Full Status ===\n");
   
   await displayNetworkInfo();
   
@@ -115,15 +115,15 @@ async function main() {
   const maxTx = await token.MAX_TRANSACTION();
   const maxWallet = await token.MAX_WALLET();
   const cooldown = await token.COOLDOWN_PERIOD();
-  console.log("  Max Transaction:", formatTokens(maxTx), "KCY1");
-  console.log("  Max Wallet:", formatTokens(maxWallet), "KCY1");
+  console.log("  Max Transaction:", formatTokens(maxTx), "PUPIKES1");
+  console.log("  Max Wallet:", formatTokens(maxWallet), "PUPIKES1");
   console.log("  Cooldown:", Number(cooldown) / 3600, "hours");
   console.log("");
   
   console.log("🎯 Exempt → Normal Limits:");
   const maxExemptToNormal = await token.MAX_EXEMPT_TO_NORMAL();
   const exemptCooldown = await token.EXEMPT_TO_NORMAL_COOLDOWN();
-  console.log("  Max Amount:", formatTokens(maxExemptToNormal), "KCY1");
+  console.log("  Max Amount:", formatTokens(maxExemptToNormal), "PUPIKES1");
   console.log("  Cooldown:", Number(exemptCooldown) / 3600, "hours");
   console.log("");
   

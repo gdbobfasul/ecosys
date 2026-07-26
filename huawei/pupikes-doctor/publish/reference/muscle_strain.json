@@ -1,0 +1,78 @@
+{
+  "id": "muscle_strain",
+  "langs": {
+    "bg": {
+      "title": "Разтежение",
+      "extract": "Разтежението е остро или хронично увреждане на мускул, сухожилие или и на двете. Известно е още като мускулно разтежение или сухожилно разтежение, мускулно разкъсване или сухожилно разкъсване, както и с понятията разтегнато сухожилие или разтегнат мускул, скъсано сухожилие или скъсан мускул.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/76/2010-10-02_pulled_hamstring.jpg"
+    },
+    "en": {
+      "title": "Strain (injury)",
+      "extract": "A strain is an acute soft tissue injury that occurs to a muscle. The equivalent injury to a ligament is a sprain. A strain is tearing of some of the muscle fibers. Strains are usually the result of an eccentric contraction, meaning that the muscle is lengthened while it is contracting. Strains most commonly occur in the foot, leg, or back. Initial treatment typically includes rest, ice, compression, and elevation (RICE).",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/76/2010-10-02_pulled_hamstring.jpg"
+    },
+    "de": {
+      "title": "Muskelzerrung",
+      "extract": "Eine Muskelzerrung, auch Distension genannt, bezeichnet den Vorgang einer unphysiologisch ablaufenden Muskeldehnung. Im Gegensatz zum Muskelfaserriss liegt eine in der Kernspintomographie sichtbare Ödembildung in der Muskulatur vor. Makroskopisch sind keine Risse der Muskelfasern sichtbar.",
+      "image": ""
+    },
+    "fr": {
+      "title": "Déchirure musculaire",
+      "extract": "La déchirure musculaire correspond à l'élongation traumatique d'un muscle avec destruction d'une ou plusieurs fibres musculaires et éventuellement de tendons.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Torn_hammie.JPG"
+    },
+    "es": {
+      "title": "Desgarro muscular",
+      "extract": "El desgarro muscular o rotura fibrilar es la lesión del tejido, que va acompañada de hemorragia provocada por la rotura de los vasos sanguíneos que recorren el músculo o tendón afectado, provocando un dolor de leve a intenso que dificulta o impide contraerlo.",
+      "image": ""
+    },
+    "it": {
+      "title": "Strappo muscolare",
+      "extract": "Lo strappo è una lacerazione delle fibre muscolari che appare durante una contrazione violenta.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/76/2010-10-02_pulled_hamstring.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Distensão",
+      "extract": "Uma distensão ou estiramento muscular, caracteriza-se por um rompimento parcial ou completo de fibras ou feixes musculares, resultante de um esforço extremo realizado pelo músculo em questão. Junto com os feixes, são rompidos também capilares sanguíneos, resultando numa infiltração de sangue no local da lesão, formando posteriormente um hematoma. Em casos graves, onde muitos feixes são rompidos, o músculo pode sofrer uma ruptura analógica. As distensões são mais facilmente reconhecidas que as contraturas musculares, uma vez que a dor causada pela ruptura dos feixes é imediata, impossibilitando a continuidade do exercício.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/76/2010-10-02_pulled_hamstring.jpg"
+    },
+    "ar": {
+      "title": "إجهاد (إصابة)",
+      "extract": "الإجهاد العضلي أو التمزق العضلي هي حالة تستطيل فيها عضلة أو أحد أوتارها استطالة غير طبيعية مفاجئة، مثل الدوس على حافة حجر أو حافة سلم فيحدث التواء للقدم. وقد يصل الإجهاد لدرجة التمزق العضلي حيث تتمزق الأنسجة العضلية. وإذا لم يراعِ المرء المصاب بشد عضلي سوء حالته وقلل من إجهاده للعضلة المصابة فقد يصاب بتمزق عضلي وتسوء حالته. وتسمى الإصابة المماثلة لهذه الإصابة في الأربطة بالوثء أو الالتواء.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/76/2010-10-02_pulled_hamstring.jpg"
+    },
+    "hi": {
+      "title": "पेशियों का खिंचाव",
+      "extract": "जब अत्यधिक खिंचाव के कारण पेशियों के फाइबर फट जाते हैं तो इसे पेशियों का खिंचाव कहते हैं। इसी तरह का घाव यदि स्नायुओं (लिगामेन्ट्स) में हो तो उसे मोच (स्प्रेन) कहते हैं।",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Torn_hammie.JPG"
+    },
+    "ja": {
+      "title": "肉離れ",
+      "extract": "肉離れ（にくばなれ）とは、急激または反復的に筋肉（骨格筋）が収縮した結果、筋膜や筋線維が損傷すること。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/76/2010-10-02_pulled_hamstring.jpg"
+    },
+    "zh": {
+      "title": "拉傷",
+      "extract": "拉傷是指肌肉、腱等地方發生的急性或慢性软组织损伤，而韧带處如果受伤則稱之為扭伤。通常肌肉或腱都可以適度拉伸，但如果人在鍛煉或參與其他活动時的時長、强度或频率突然增加，會導致肌肉、腱承受的壓力過大，從而導致拉傷。扭伤最常發生的部位是脚、腿或背部。拉傷後通常要採取五个步骤來緩解，即保护（protection）、休息（rest）、冰敷（ice）、壓迫（compression）、抬高（elevation）。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/64/3D_Medical_Animation_Depicting_Strain-Tendon.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/muscle_strain-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/7/76/2010-10-02_pulled_hamstring.jpg"
+    },
+    {
+      "file": "img/muscle_strain-1.JPG",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Torn_hammie.JPG"
+    },
+    {
+      "file": "img/muscle_strain-2.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/7/76/2010-10-02_pulled_hamstring.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    {
+      "file": "img/muscle_strain-3.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/6/64/3D_Medical_Animation_Depicting_Strain-Tendon.jpg"
+    }
+  ]
+}

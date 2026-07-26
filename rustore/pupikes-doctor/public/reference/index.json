@@ -171,8 +171,190 @@
         "zh"
       ],
       "images": 6
+    },
+    {
+      "id": "blister",
+      "langs": [
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 4
+    },
+    {
+      "id": "abrasion",
+      "langs": [
+        "en"
+      ],
+      "images": 1
+    },
+    {
+      "id": "boil",
+      "langs": [
+        "en",
+        "de"
+      ],
+      "images": 0
+    },
+    {
+      "id": "eczema",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "ky",
+        "zh"
+      ],
+      "images": 6
+    },
+    {
+      "id": "fungal",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "ky",
+        "zh"
+      ],
+      "images": 6
+    },
+    {
+      "id": "hives",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "ky",
+        "zh"
+      ],
+      "images": 3
+    },
+    {
+      "id": "sunburn",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 7
+    },
+    {
+      "id": "frostbite",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "ky",
+        "zh"
+      ],
+      "images": 3
+    },
+    {
+      "id": "dislocation",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ],
+      "images": 5
+    },
+    {
+      "id": "muscle_strain",
+      "langs": [
+        "bg",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ],
+      "images": 4
+    },
+    {
+      "id": "ingrown_nail",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "ky",
+        "zh"
+      ],
+      "images": 6
     }
   ],
   "source": "Wikipedia/Wikimedia Commons (CC/PD)",
-  "updated": "2026-07-22"
+  "updated": "2026-07-23"
 }

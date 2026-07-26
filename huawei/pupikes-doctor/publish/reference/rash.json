@@ -1,0 +1,78 @@
+{
+  "id": "rash",
+  "langs": {
+    "ru": {
+      "title": "Сыпь",
+      "extract": "Сыпь — патологические элементы на коже и слизистых оболочках, отличающиеся от нормальной кожи цветом, текстурой, внешним видом и многим другим. Сыпь может состоять из первичных элементов, которые возникают непосредственно на здоровой коже, и из вторичных, появляющихся на месте первичных. Различные сочетания первичных и вторичных элементов обуславливают специфическую картину сыпей при различных заболеваниях.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Amoxicillin_rash_11_hours_after_17th_dose.JPG"
+    },
+    "uk": {
+      "title": "Висип",
+      "extract": "Ви́сип, ви́сипка, висипа́ння — патологічні елементи на шкіри і слизових оболонках, які відрізняються від нормальної шкіри або слизової оболонки забарвленням, текстурою, зовнішнім виглядом. Висип може існувати у вигляді первинних елементів, які з'являються безпосередньо на здоровій шкірі чи слизовій оболонці, у вигляді вторинних, які з'являються на місці виникнення первинних. Можливі одночасні різні сполучення первинних і вторинних елементів.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Severerash.jpg"
+    },
+    "en": {
+      "title": "Rash",
+      "extract": "A rash is a change of the skin that affects its color, appearance, or texture.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Severerash.jpg"
+    },
+    "de": {
+      "title": "Effloreszenz",
+      "extract": "Als Effloreszenz wird in der Dermatologie ein Grundelement krankhafter Hautveränderungen bezeichnet. Die Effloreszenzenlehre entstand schon im 17. Jahrhundert. Man unterscheidet zwischen Primär- und Sekundäreffloreszenzen.",
+      "image": ""
+    },
+    "fr": {
+      "title": "Rash (médecine)",
+      "extract": "Un exanthème ou une éruption cutanée est une éruption érythémateuse cutanée diffuse d'apparition aiguë, le plus souvent transitoire. Il peut s’accompagner d'un énanthème, c'est-à-dire d'une atteinte muqueuse.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/00/Measles_and_Scarlet_Fever_%283796080398%29.jpg"
+    },
+    "es": {
+      "title": "Eflorescencia (dermatología)",
+      "extract": "En medicina, la eflorescencia es cualquier lesión cutánea eruptiva, un cambio en la epidermis que puede afectar a su color, apariencia o textura. Puede estar provocado por numerosas causas, entre ellas procesos alérgicos e infecciones virales.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Severerash.jpg"
+    },
+    "it": {
+      "title": "Rash",
+      "extract": "In medicina un rash è un improvviso cambiamento del colore, consistenza o aspetto della cute che spesso anticipa la comparsa di un esantema tipico delle malattie esantematiche come, ad esempio, varicella e morbillo.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Severerash.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "ar": {
+      "title": "طفح",
+      "extract": "الطفح الجلدي هو مصطلح طبي يراد به وصف المنطقة المصابة بالاحمرار أو البقع التي تظهر على الجلد. ويتخذ الطفح أشكالًا مختلفة ومتنوعة، تبعًا لسببه. أغلب الطفح لا يستمر سوى لفترات قصيرة ولا يشكل خطراً، مثل الطفح المصاحب لأغلب حالات العدوى الشائعة أثناء الطفولة.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Severerash.jpg"
+    },
+    "ja": {
+      "title": "皮疹",
+      "extract": "皮疹（ひしん）とは、皮膚に出現する肉眼的変化である発疹 の表現方法のことである。以下に示す用語は、皮膚科学をはじめ医療分野で一般的に使用される言葉である。また、口などの粘膜に生じるものを粘膜疹（ねんまくしん）と特別に言う。",
+      "image": ""
+    },
+    "ky": {
+      "title": "Исиркек",
+      "extract": "Исиркек – бул теридеги жана былжырлуу кабыкчадагы ар түрдүү бүдүрлөрдүн пайда болушу. Алар көлөмдүү, жалпак же теринин деңгээлинде болушу мүмкүн.",
+      "image": ""
+    },
+    "zh": {
+      "title": "疹",
+      "extract": "疹（rash）又稱皮疹，是人体皮肤的变化，影响其颜色、外观或质地，通常是皮膚上的紅腫、癢或皮膚粗糙。疹並沒有特定的病因，可以是任何疾病所引起的。通常的病因包括病毒、免疫系統失調、食物或環境過敏所引起的。引起疹子的病毒可包括德國麻疹、水痘、麻疹等。外界非病情因素也有可能，如太陽曬傷、緊張、摩擦等也可引起。\n",
+      "image": ""
+    }
+  },
+  "images": [
+    {
+      "file": "img/rash-0.JPG",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Amoxicillin_rash_11_hours_after_17th_dose.JPG"
+    },
+    {
+      "file": "img/rash-1.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Severerash.jpg"
+    },
+    {
+      "file": "img/rash-2.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/0/00/Measles_and_Scarlet_Fever_%283796080398%29.jpg"
+    },
+    {
+      "file": "img/rash-3.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Severerash.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    }
+  ]
+}

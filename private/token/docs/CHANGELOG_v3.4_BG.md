@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token v3.4 FINAL - Промени
+# PUPIKES1 Token v3.4 FINAL - Промени
 
 ## 🔄 v3.3 → v3.4 Промени
 
@@ -254,4 +254,4 @@ console.log(result.locked);
 **Версия:** 3.4 FINAL  
 **Промени:** Премахнат exemptAddress5 (от 5 на 4 слота)  
 **Статус:** ✅ Production Ready  
-**Файл:** kcy1_token_v3.4_FINAL.sol
+**Файл:** pupikes1_token_v3.4_FINAL.sol

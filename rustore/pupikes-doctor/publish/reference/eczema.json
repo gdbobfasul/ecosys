@@ -1,0 +1,101 @@
+{
+  "id": "eczema",
+  "langs": {
+    "bg": {
+      "title": "Дерматит",
+      "extract": "Дерматит или екзема е възпаление на кожата, която е покривката на тялото при хора и животни. Характеризира се с болка, зачервяване, подуване, парене и сърбеж, а в тежки случаи напукване и кървене. Терминът екзема се използва за описание на атопичния дерматит.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Human_hand_with_dermatitis.jpg"
+    },
+    "ru": {
+      "title": "Дерматит",
+      "extract": "Дермати́т — воспаление кожи, развивающееся в месте непосредственного действия на неё внешнего физического или химического фактора. Иногда термин используется в более широком смысле как название любого воспаления кожи. Для уменьшения путаницы в медицине принят термин «контактный дерматит», а поражения кожи, вызванные иными причинами, относят к токсидермиям.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/af/Hands_damaged_by_kerosene.jpg"
+    },
+    "uk": {
+      "title": "Дерматит",
+      "extract": "Дермати́т — гостре запалення шкіри, яке виникає під впливом різних екзогенних факторів.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/af/Hands_damaged_by_kerosene.jpg"
+    },
+    "en": {
+      "title": "Dermatitis",
+      "extract": "Dermatitis is a term used for different types of skin inflammation, typically characterized by itchiness, redness and a rash. In cases of short duration, there may be small blisters, while in long-term cases the skin may become thickened. The area of skin involved can vary from small to covering the entire body. Dermatitis is also called eczema, but \"eczema\" is often used for the most common type of skin inflammation, atopic dermatitis.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/de/Dermatitis2015.jpg"
+    },
+    "de": {
+      "title": "Dermatitis",
+      "extract": "Als Dermatitis wird eine entzündliche Reaktion der Haut bezeichnet, die vornehmlich die Dermis (Lederhaut) erfasst. Ein Synonym dafür ist über weite Bereiche der Begriff „Ekzem“. Allerdings handelt es sich bei der Dermatitis um eine breiter gefasste Definition und ein Ekzem müsste genauer als Dermatitis ekzematosa benannt werden.",
+      "image": ""
+    },
+    "fr": {
+      "title": "Dermatite",
+      "extract": "Les dermatites sont des maladies de la peau.\nElles peuvent avoir des causes multiples, éventuellement conjointes.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/de/Dermatitis2015.jpg"
+    },
+    "es": {
+      "title": "Dermatitis",
+      "extract": "La dermatitis es un término que designa a cualquier inflamación cutánea con afectación dermoepidérmica. El eccema es un cuadro clínico que cursa con signos variables, principalmente prurito, vesiculización y exudación en las formas agudas. En las formas crónicas se presenta descamación y liquenificación con engrosamiento de la piel en la región afectada.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/de/Dermatitis2015.jpg"
+    },
+    "it": {
+      "title": "Dermatite",
+      "extract": "Per dermatite si intende una patologia che riguarda la pelle.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Dermatite.png?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Dermatite",
+      "extract": "Dermatite, também denominada eczema, é um grupo de doenças que causa inflamação da pele. Estas doenças são caracterizadas por prurido e vermelhidão da pele. Nos casos de curta duração podem ocorrer pequenas bolhas, enquanto nos casos de longa duração a pele se pode tornar mais espessa. A área de pele afetada pode variar entre muito pequena e o corpo inteiro.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/de/Dermatitis2015.jpg"
+    },
+    "ar": {
+      "title": "التهاب الجلد",
+      "extract": "التهاب الجلد هو مصطلح يطلق على عدد من أمراض الجلد المختلفة، الشيء الأساسي، المشترك بينها هو السيرورة المرضية -أي الالتهاب - التي تؤدي إلى ظهور الأعراض والظواهر السريرية الأساسية في المرض.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/de/Dermatitis2015.jpg"
+    },
+    "hi": {
+      "title": "त्वचाशोथ",
+      "extract": "त्वचाशोथ या 'डर्मेटाइटिस' (Dermatitis) में त्वचा में लाली, शोथ, खुजलाहट आदि होती है। इसका कारण त्वचा की किसी परत या परतों में जलन उत्पन्न करने वाले घावों का होना है। त्वचाशोथ विश्व में सभी जगह, विशेषतया गरम, आर्द्र और उद्योग प्रधान देशों में तथा सभी उम्र के लोगों में हुआ करता है। स्त्रियों को यह रोग कम होता है।",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Dermatitis.jpg"
+    },
+    "ja": {
+      "title": "皮膚炎",
+      "extract": "皮膚炎（ひふえん）とは、皮膚に起こる炎症のこと。湿疹 ともいう。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/5/56/Eczema.jpg"
+    },
+    "ky": {
+      "title": "Дерматит",
+      "extract": "Дерматит — теринин сезгениши. Оору физиологиялык, химиялык, механикалык таасирлерден пайда болот. Дерматит жөнөкөй жана өнөкөт түргө бөлүнөт. Жөнөкөй түрү көпчүлүк учурда дүүлүктүргүч таасир эткен жерде, башкача айтканда теринин ачык жерлеринде болот. Химиялык заттар менен иштегендерде көп жолугат. Дерматит өтө сезгич териге йод, сымап, новокаин, синтомицин жана башкалар дарыларды жана алардын майын, эмульсиясын, эритмелерин колдонгондо болот. Кийимдин туура эмес тандалышы Дерматиттин өнүгүшүнө көмөк берет. Өндүрүш шартында жумушчулардын терисине металл, жыгач, айнек, таш көмүр чаңдары да таасир этүүдөн дерматит болот. Жогорку жана төмөнкү температурадан болгон Дерматитке күйүк, үшүк алуу кирет. Дүүлүктүргүч таасир эткенден бир аз убакыт өткөндөн кийин тери кызарып, шишип, тунук сары суюктуктуу ыйлаакчалар пайда болот. Эгерде дүүлүктүргүчтүн таасири токтотулса, анда кабылдабай дерматит тез өтүп кетет, ыйлаакчалар жарылат же кургап, кийин үбөлөнүп түшүп, бир нече күндөн кийин айыгат. Ал эми дүүлүктүргүч аз жана начар таасир эткен болсо, тери кызарып, бат эле кургап кетет.",
+      "image": ""
+    },
+    "zh": {
+      "title": "皮膚炎",
+      "extract": "皮膚炎（Dermatitis）或皮炎，中医及俗称湿疹（eczema），是不同类型的皮膚炎症的统称。這些疾病的特點是瘙癢、皮膚紅和皮疹。如果病程初期，可能會有小水泡，若是長期的皮膚炎，皮膚可能會變厚。影響的皮膚區域可以從局部到整個身體。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Human_hand_with_dermatitis.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/eczema-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/8/86/Human_hand_with_dermatitis.jpg"
+    },
+    {
+      "file": "img/eczema-1.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/a/af/Hands_damaged_by_kerosene.jpg"
+    },
+    {
+      "file": "img/eczema-2.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/d/de/Dermatitis2015.jpg"
+    },
+    {
+      "file": "img/eczema-3.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Dermatite.png?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    {
+      "file": "img/eczema-4.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Dermatitis.jpg"
+    },
+    {
+      "file": "img/eczema-5.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/5/56/Eczema.jpg"
+    }
+  ]
+}

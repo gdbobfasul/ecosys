@@ -28,7 +28,7 @@ GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; BO
 is_app() { [ -f "$1/package.json" ] && [ -f "$1/capacitor.config.json" ]; }
 
 # Име на APK файла = МАГАЗИННОТО име на приложението, slug-нато до ASCII (напр. Pupikes-Toolkit-PDF,
-# Huntline-3D, Godfist-Arena), а не по вътрешната папка (kcy-toolkit-pdf…). Източникът е ЕДИНЕН —
+# Huntline-3D, Godfist-Arena), а не по вътрешната папка (pupikes-toolkit-pdf…). Източникът е ЕДИНЕН —
 # deploy-scripts/apk-slug.mjs (каталожното "name" → index.html <title> → името на папката) — за да
 # съвпада ТОЧНО с каталозите (update-apk-naming.mjs ползва същия резолвер).
 store_slug() {

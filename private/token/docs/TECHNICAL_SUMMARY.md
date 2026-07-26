@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token v3.1 - Technical Summary
+# PUPIKES1 Token v3.1 - Technical Summary
 
 ## Modified: Exempt-to-Normal Transfer Restrictions
 

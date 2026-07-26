@@ -16,7 +16,7 @@ describe("10. Multi-Sig Functionality Tests", function() {
         [owner, admin1, admin2, admin3, admin4, admin5, msig1, msig2, msig3, msig4, msig5, normal1, normal2] = await ethers.getSigners();
         
         // Deploy Token
-        const Token = await ethers.getContractFactory("KCY1Token");
+        const Token = await ethers.getContractFactory("PUPIKES1Token");
         token = await Token.deploy();
         await token.waitForDeployment();
         

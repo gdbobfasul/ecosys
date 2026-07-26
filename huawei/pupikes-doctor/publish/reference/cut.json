@@ -1,0 +1,105 @@
+{
+  "id": "cut",
+  "langs": {
+    "bg": {
+      "title": "Рана",
+      "extract": "Раната е вредно въздействие на кожата, причинено от разкъсване, разрязване, пробождане или въздействие с предмет или сила, при което се нарушава външната цялост на кожата.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Chapter1figure1-Superficial_bullet_wound.jpg"
+    },
+    "ru": {
+      "title": "Рана",
+      "extract": "Ра́на — нарушение анатомической целостности покровных или внутренних тканей на всю их толщину, а иногда также и внутренних органов, вызванное механическим воздействием. Отличительные признаки: боль, кровотечение, зияние.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Bleeding_wound_on_thumb.jpg"
+    },
+    "uk": {
+      "title": "Рана",
+      "extract": "Ра́на, пора́нення — наслідок травми з порушенням цілісності покровів. Додатково можливе пошкодження прилеглих тканин.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Chapter1figure1-Superficial_bullet_wound.jpg"
+    },
+    "en": {
+      "title": "Wound",
+      "extract": "A wound is any disruption of or damage to living tissue, such as skin, mucous membranes, or organs. Wounds can either be the sudden result of direct trauma, or can develop slowly over time due to underlying disease processes such as diabetes mellitus, venous/arterial insufficiency, or immunologic disease. Wounds can vary greatly in their appearance depending on wound location, injury mechanism, depth of injury, timing of onset, and wound sterility, among other factors. Treatment strategies for wounds will vary based on the classification of the wound, therefore it is essential that wounds be thoroughly evaluated by a healthcare professional for proper management. In normal physiology, all wounds will undergo a series of steps collectively known as the wound healing process, which include hemostasis, inflammation, proliferation, and tissue remodeling. Age, tissue oxygenation, stress, underlying medical conditions, and certain medications are just a few of the many factors known to affect the rate of wound healing.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/06/Bicycle_injury_-_Hand_Abrasion%2C_Day_1.jpg"
+    },
+    "de": {
+      "title": "Wunde",
+      "extract": "Eine Wunde ist ein Defekt des schützenden Deckgewebes an äußeren (Haut) oder inneren (Schleimhaut) Körperoberflächen mit oder ohne Gewebsverlust. Zumeist ist sie durch äußere Gewalt verursacht, kann aber auch alleinige Folge einer Krankheit sein, wie als Geschwür (Ulkus).",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/06/Sutures_a_patients_hand.jpg"
+    },
+    "fr": {
+      "title": "Plaie",
+      "extract": "Une plaie est une interruption de la continuité des tissus. Il y a une plaie quand la peau ou la muqueuse est éraflée, coupée ou arrachée. Outre la lésion d'organes sous-jacents qui peut se produire lors de l'accident, la plaie peut entraîner la pénétration d'agents infectieux dans un organisme ; le principal risque pathogène est alors le tétanos. Une plaie de pression ou escarre est une lésion causée par une pression non soulagée qui endommage les tissus sous-jacents.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Chapter1figure1-Superficial_bullet_wound.jpg"
+    },
+    "es": {
+      "title": "Herida",
+      "extract": "Una herida es una lesión que se produce en el cuerpo. Puede ser producida por múltiples razones, aunque generalmente es debido a golpes o desgarros en la piel. Dependiendo de su gravedad, es necesaria asistencia médica.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/82/Bleeding.jpg"
+    },
+    "it": {
+      "title": "Ferita",
+      "extract": "Per ferita si intende l'interruzione dei tessuti causata da agenti esterni.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/09/Cdm_hip_staples_376.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Ferida",
+      "extract": "Uma ferida é uma interrupção na continuidade de um tecido corpóreo. Tal interrupção pode ser provocada por algum trauma, ou ainda ser desencadeada por uma afecção que acione as defesas do organismo.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Cut%2C_leg.jpg"
+    },
+    "ar": {
+      "title": "جرح",
+      "extract": "الجرح هو انشقاق على مستوى الحاجز الجلدي للجسم، وهو النوع الموجود في غالب الإصابات، ويعود السبب إلى تمزق، أو قطع، أو ثقب في الجلد.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Chapter1figure1-Superficial_bullet_wound.jpg"
+    },
+    "hi": {
+      "title": "घाव",
+      "extract": "शरीर मे किसी हथियार या किसी कारण से चोट लग जाये, या शरीर के अन्दर किसी बाहरी वस्तु का प्रवेश कर दिया जाये या फ़िर अपने आप ही करा दिया जाये तो शरीर मे होने वाली क्षति से आहत जीव को घायल कहा जाता है।",
+      "image": ""
+    },
+    "ja": {
+      "title": "創傷",
+      "extract": "創傷 は、外的、内的要因によって起こる体表組織の物理的な損傷を指す。創（そう）と傷（しょう）という異なるタイプの損傷をまとめて指す総称である。日常語では、体以外の物に対するものも含めて傷（きず）と呼ばれる。\nその形状や原因（機転）などによって擦過傷、切創、裂創、刺創 等々に分類している。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Chapter1figure1-Superficial_bullet_wound.jpg"
+    },
+    "ky": {
+      "title": "Жараат",
+      "extract": "Жараат – дене ткандарынын механикалык жол менен майып болушу. Ал сайылган, кесилген, тиштелген, ок тийген жана башка болуп бөлүнөт. Терең жараатта анын май катмары, сөөк, ири кан тамырлар, нервдер жабыркашы мүмкүн. Жарааттын оордугу жабыркаган жерде ткандардын бузулуу өлчөмүнө, булганышына жана кандын агышына жана башка жараша болот. Баштын, көөдөн менен ичтин жарааты айрыкча коркунучтуу. Бардык жараатта кан агат, ооруйт, ири кан тамырлар, ички органдар жарадар болгондо кан көп агып, катуу ооруп, өмүргө коркунучтуу шокко алып келет. Курч нерсе менен кесилген жарааттын тегерегинде жанчылган ткань азыраак болуп, жараат инфекциясы болбойт. Айрылган, урулган, жанчылган, тиштелген, ошондой эле ок жарааттарынын айланасындагы ткандар көп жанчылат. Ал жерде жанчылган же бузулган ткань, ошондой эле уюган кан, ар кандай таза эмес нерселер көп болот. Булар инфекция коркунучун газ гангренасын, флегмона, абсцесс же жарааттын бүтүндөй эле ириңдеп кетүү коркунучун туудурат. Оор учурда сепсис болушу мүмкүн. Биринчи жардам көрсөтүүдө барыдан мурда кан агууну токтотуп, булганбас үчүн асептикалык эрежени сактап, таза даки менен бекем таңуу керек. Жараатты жууганга болбойт, себеби ириңдетүүчү микроб кирип кетүүсү мүмкүн. Буттун жарааттарында аны кыймылдатпоо үчүн шакшак коюп таңып, медициналык мекемеге жеткирип, селеймеге каршы эмдетүү зарыл.",
+      "image": ""
+    },
+    "zh": {
+      "title": "傷口",
+      "extract": "傷口 是相對快速發生的創傷引发的皮膚撕裂、割傷和刺穿以及相应的皮下组织、结缔组织或器官损伤。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/86/Chapter1figure1-Superficial_bullet_wound.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/cut-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/8/86/Chapter1figure1-Superficial_bullet_wound.jpg"
+    },
+    {
+      "file": "img/cut-1.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/8/87/Bleeding_wound_on_thumb.jpg"
+    },
+    {
+      "file": "img/cut-2.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/0/06/Bicycle_injury_-_Hand_Abrasion%2C_Day_1.jpg"
+    },
+    {
+      "file": "img/cut-3.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/0/06/Sutures_a_patients_hand.jpg"
+    },
+    {
+      "file": "img/cut-4.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/8/82/Bleeding.jpg"
+    },
+    {
+      "file": "img/cut-5.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/0/09/Cdm_hip_staples_376.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    {
+      "file": "img/cut-6.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Cut%2C_leg.jpg"
+    }
+  ]
+}

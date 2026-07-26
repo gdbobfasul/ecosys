@@ -22,7 +22,7 @@ import { esc } from './core/ui.js';
 import { getLang, setLang, hasLangChosen, applyDir, LANGUAGES } from './core/i18n.js';
 import { APP_VERSION } from './version.js';
 import { D, optLabel, condName, AREA_OPTS, SIZE_OPTS, PAIN_OPTS, PAINTYPE_OPTS, FREQ_OPTS } from './doc/i18n-doc.js';
-import { score, translate, imageMatches, conditionText, photoSignal, photoBoost } from './doc/analyze.js';
+import { score, translate, imageMatches, conditionText, bodyPainText, photoSignal, photoBoost } from './doc/analyze.js';
 import { BODY_TYPES, renderBodySVG, causesFor, zoneLabel, EXTRA_ZONE_CHIPS } from './doc/body.js';
 
 const app = document.getElementById('app');
@@ -32,6 +32,29 @@ let photoFile = null;
 function selHTML(id, opts) {
   return `<select id="${id}" class="search" style="margin:4px 0 8px">` +
     opts.map((o) => `<option value="${esc(o.v)}">${esc(optLabel(o))}</option>`).join('') + `</select>`;
+}
+
+// Превод на най-честите дерматологични диагнози от снимковия корпус на разбираем български.
+const DERMA_BG = {
+  'nevus': 'бенка (невус)', 'melanoma': 'меланом', 'melanoma in situ': 'меланом (начален)',
+  'melanoma invasive': 'инвазивен меланом', 'melanoma metastasis': 'меланомна метастаза',
+  'seborrheic keratosis': 'себорейна кератоза', 'basal cell carcinoma': 'базоцелуларен карцином',
+  'squamous cell carcinoma': 'плоскоклетъчен карцином', 'solar or actinic keratosis': 'слънчева (актинична) кератоза',
+  'lichen planus like keratosis': 'кератоза', 'lentigo nos': 'лентиго (петно)', 'solar lentigo': 'слънчево петно',
+  'lentigo simplex': 'лентиго', 'ink-spot lentigo': 'тъмно петно', 'dermatofibroma': 'дерматофибром',
+  'hemangioma': 'хемангиом (съдово)', 'angiokeratoma': 'ангиокератом', 'neurofibroma': 'неврофибром',
+  'scar': 'белег', 'verruca': 'брадавица', 'sebaceous hyperplasia': 'мастна хиперплазия',
+  'clear cell acanthoma': 'акантом', 'skin lesion': 'кожна лезия', 'benign': 'доброкачествено образувание'
+};
+function dermaNameBg(lab) {
+  const s = String(lab || '').toLowerCase().trim();
+  if (DERMA_BG[s]) return DERMA_BG[s];
+  if (/melanoma/.test(s)) return 'меланом';
+  if (/carcinoma/.test(s)) return 'карцином (кожен)';
+  if (/keratosis/.test(s)) return 'кератоза';
+  if (/nevus|naevus/.test(s)) return 'бенка (невус)';
+  if (/lentigo/.test(s)) return 'лентиго (петно)';
+  return s;
 }
 
 // ---------- Език ----------
@@ -120,10 +143,13 @@ function renderBody(host) {
     const tr = await translate('• ' + info.causes.join('\n• '), lang);
     let redHtml = '';
     if (info.red) { const rtr = await translate(info.red, lang); redHtml = `<div style="margin-top:10px;border-left:4px solid #e5484d;background:rgba(229,72,77,.08);border-radius:8px;padding:8px 10px"><b style="color:#e5484d">${esc(D('body_redflag'))}</b> ${esc(rtr)}</div>`; }
+    // Авторитетен текст от онлайн пакета (Wikipedia, per език) — ако е наличен за зоната.
+    let infoHtml = '';
+    try { const wt = await bodyPainText(zid, lang); if (wt) infoHtml = `<div style="margin-top:10px;opacity:.9;line-height:1.5;border-top:1px solid rgba(127,127,127,.2);padding-top:8px">${esc(wt)}<div style="opacity:.55;font-size:.8em;margin-top:4px">Wikipedia</div></div>`; } catch (_) {}
     result.innerHTML = `<div class="card" style="display:block;text-align:left;cursor:default">
       <h3 style="margin:0 0 6px">${esc(title)}</h3>
       <div style="font-weight:600;margin-bottom:4px">${esc(D('body_causes_title'))}:</div>
-      <div style="line-height:1.6;white-space:pre-line">${esc(tr)}</div>${redHtml}</div>`;
+      <div style="line-height:1.6;white-space:pre-line">${esc(tr)}</div>${redHtml}${infoHtml}</div>`;
   }
   typesEl.querySelectorAll('.btype').forEach((b) => b.addEventListener('click', () => { bodyType = b.dataset.t; paintTypes(); drawFig(); result.innerHTML = ''; }));
   chips.querySelectorAll('.bchip').forEach((b) => b.addEventListener('click', () => showZone(b.dataset.z)));
@@ -166,17 +192,35 @@ function renderSymptoms(host) {
       text: app.querySelector('#text').value
     };
     statusEl.textContent = D('analyzing'); resultEl.innerHTML = '';
-    // Снимкова библиотека (когато е свалена) → съвпадения по изображение; засега [].
-    let imgHits = []; try { imgHits = await imageMatches(photoFile); } catch (_) {}
+    // Снимката се сравнява с числовия опис на ~22 000 дерматологични снимки (без да ги носим).
+    // imageMatches връща { conds, top, dermat }: conds=състояния за първа помощ, top=най-близки
+    // диагнози от корпуса, dermat=прилича на кожно образувание/бенка (изисква дерматолог).
+    let im = { conds: [], top: [], dermat: false };
+    try { const r = await imageMatches(photoFile); if (r) im = r; } catch (_) {}
+    const imgHits = im.conds || [];
     // Анализ на снимката: център-изрязване + цветови сигнал → подсказва вероятни състояния.
     let boosts = {}; try { const sig = await photoSignal(photoFile); boosts = photoBoost(sig); } catch (_) {}
     let matches = score(input, boosts);
     // Съюз: първо снимковите съвпадения, после по признаци (без дубли).
     const seen = new Set();
     const all = [...imgHits, ...matches].filter((c) => c && !seen.has(c.id) && seen.add(c.id));
-    if (!all.length) { statusEl.textContent = ''; resultEl.innerHTML = `<div class="notice">${esc(D('no_match'))}</div>`; return; }
-    // Превод на съветите на избрания език.
     const lang = getLang();
+    // Дерматологичен банер: най-близките снимки са бенки/лезии → честно предупреждение + топ-диагнози.
+    let dermaCard = '';
+    if (im.dermat && im.top && im.top.length) {
+      const names = im.top.slice(0, 4).map((t) => dermaNameBg(t.label)).filter((v, i, a) => v && a.indexOf(v) === i);
+      const bg = `Снимката прилича на кожно образувание (бенка/лезия). Такива се преглеждат от дерматолог. Ако образуванието бързо променя размер или цвят, има неравни ръбове, сърби, кърви или не зараства — потърси лекар скоро.`;
+      const warn = await translate(bg, lang);
+      const near = await translate('Най-близки от базата: ' + names.join(', '), lang);
+      dermaCard = `
+        <div class="card" style="display:block;text-align:left;cursor:default;border-left:3px solid #e5a54d">
+          <h3 style="margin:0 0 6px">🔬 ${esc(await translate('Кожно образувание', lang))}</h3>
+          <div style="opacity:.92;line-height:1.5">${esc(warn)}</div>
+          ${names.length ? `<div style="margin-top:8px;opacity:.7;font-size:.9em">${esc(near)}</div>` : ''}
+        </div>`;
+    }
+    if (!all.length && !dermaCard) { statusEl.textContent = ''; resultEl.innerHTML = `<div class="notice">${esc(D('no_match'))}</div>`; return; }
+    // Превод на съветите на избрания език.
     const cards = [];
     for (const c of all) {
       const advice = await translate(c.advice, lang);

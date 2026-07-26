@@ -1,0 +1,45 @@
+{
+  "id": "shin",
+  "langs": {
+    "ru": {
+      "title": "Шинсплинт",
+      "extract": "Шинсплинт — боль вдоль внутреннего края голени из-за воспаления тканей в области.\nОбычно боль ощущается между серединой голени и голеностопным суставом.\nБоль может быть тупой или острой и обычно вызывается физическими упражнениями.\nОбычно боль затихает во время отдыха. Осложнения могут включать стрессовые переломы."
+    },
+    "en": {
+      "title": "Shin splints",
+      "extract": "A shin splint, also known as medial tibial stress syndrome, is pain along the inside edge of the shinbone (tibia) due to inflammation of tissue in the area. Generally this is between the middle of the lower leg and the ankle. The pain may be dull or sharp, and is generally brought on by high-impact exercise that overloads the tibia. It generally resolves during periods of rest. Complications may include stress fractures."
+    },
+    "de": {
+      "title": "Schienbeinkantensyndrom",
+      "extract": "Das Schienbeinkantensyndrom ist die Bezeichnung für eine schmerzhafte Empfindung in den Schienbeinen. Das auch als mediales Tibiakantensyndrom oder umgangssprachlich als Shin splints bekannte Leiden tritt meist nach sportlicher Aktivität auf. Hervorgerufen werden kann dieser Zustand beispielsweise durch intensives Joggen oder prinzipiell jede andere Sportart, in der Belastungen auf die Schienbein- und Fußmuskulatur wirken. Unangenehm ist zudem das oft langsame Abheilen. Von Seiten mancher Mediziner wird angezweifelt, dass es sich bei Shin Splints um ein eigenständiges Krankheitsbild handelt oder ob andere Ursachen zum Krankheitsbild führen. Eine Auffassung in der Sportmedizin ist es, Shin Splints als Symptom mit mehreren möglichen Ursachen und nicht als fertige Diagnose einzustufen."
+    },
+    "fr": {
+      "title": "Attelle de tibia",
+      "extract": "Une attelle de tibia est une douleur le long du bord interne du tibia due à une inflammation des tissus dans cette région. Généralement, elle s'entend entre le milieu de la jambe et la cheville. Cette douleur est souvent sourde ou aiguë, et elle est couramment provoquée par l’exercice physique. Elle disparaît généralement lors des périodes de repos. Les complications peuvent inclure des fractures de stress."
+    },
+    "es": {
+      "title": "Dolor en las espinillas",
+      "extract": "El dolor en las espinillas es un término general usado para referirse a una condición dolorosa en la parte anterior de la pierna. Cualquier dolor entre la rodilla y el tobillo que no sea en la pantorrilla."
+    },
+    "it": {
+      "title": "Sindrome da stress tibiale mediale",
+      "extract": "La sindrome da stress tibiale mediale è un dolore provocato da un'infiammazione dei tessuti lungo la parte interna della tibia. L'area interessata si estende approssimativamente dalla metà della tibia fino alla caviglia. Il dolore, solitamente provocato dall'attività fisica, può essere acuto o cronico, ed è alleviabile attraverso al riposo. Le fratture da stress sono tra le possibili complicanze."
+    },
+    "pt": {
+      "title": "Canelite",
+      "extract": "Canelite é o nome popular da síndrome de estresse do medial tibial ou periostite medial de tíbia, que é uma inflamação do principal osso da canela, a tíbia, ou dos tendões e músculos da tíbia, podendo se tornar fratura por estresse. É comum em atletas que praticam futebol, tênis, ciclismo, corrida, ginástica olímpica e Corfebol."
+    },
+    "ar": {
+      "title": "جبائر قصبة الساق",
+      "extract": "جبائر قصبة الساق المعروفة أيضاً بمتلازمة الإجهاد الظنبوبي الإنسي وهو ألم على امتداد الحافة الإنسية (الداخلية) لعظمة الظنبوب بسبب التهاب الانسجة في تلك المنطقة. تكون شائعة في العدائين، الراقصين وكذلك المجندين العسكريين. ويكون الألم عادة بين منتصف الساق والكاحل. وقد يكون الألم خفيفًا أو حادًا، وغالبًا ما يظهر نتيجة التمارين عالية الشدة التي تُجهد عظم الظنبوب. وعادة ما يزول أثناء فترات الراحة. وقد تشمل المضاعفات حدوث كسور إجهادية. تحدث آلام قصبة الساق عادة بسبب الإفراط في النشاط البدني. تتراوح معدلات الإصابة بين 4% و35% لدى الفئات المعرضة للخطر. وتُصاب النساء بهذه الحالة أكثر من الرجال. تشمل الفئات الأكثر عرضة للإصابة العدائين، والراقصين، ولاعبي الجمباز، والأفراد العسكريين."
+    },
+    "ja": {
+      "title": "シンスプリント",
+      "extract": "シンスプリント は、下腿内側に位置する脛骨の下方1/3に痛みが発生する症状。骨折した時のような激しい痛みではなく、鈍痛なのが特徴である。脛骨過労性骨膜炎（けいこつかろうせいこつまくえん）とも言う。"
+    },
+    "zh": {
+      "title": "脛前疼痛",
+      "extract": "脛前疼痛又名脛骨疼痛症候群，也稱脛骨內側壓力症候群，是該區域組織發炎所引起，沿脛骨 內側邊緣出現的疼痛。 通常疼痛部位在小腿中段至踝部之間。 疼痛可能是鈍痛或刺痛，通常由高衝擊運動造成，這些活動會使脛骨承受過度負荷。 在休息期間症狀通常會緩解。 併發症包括可能疲勞性骨折。\n"
+    }
+  }
+}

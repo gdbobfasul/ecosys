@@ -1,0 +1,78 @@
+{
+  "id": "blister",
+  "langs": {
+    "uk": {
+      "title": "Пухир",
+      "extract": "Пухи́р — порожнинне утворення епідермісу, наповнений рідиною кулястий виступ на поверхні шкіри або слизової оболонки, який виникає як окремий симптом при опіках, потертості або при деяких захворюваннях, таких як гострі дерматити. У медичній практиці часто називають цей елемент «буллою».",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Smlp6860.jpg"
+    },
+    "en": {
+      "title": "Blister",
+      "extract": "A blister is a small pocket of body fluid within the upper layers of the skin, usually caused by forceful rubbing (friction), burning, freezing, chemical exposure or infection. Most blisters are filled with a clear fluid, either serum or plasma. However, blisters can be filled with blood or with pus.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Smlp6860.jpg"
+    },
+    "de": {
+      "title": "Hautblase",
+      "extract": "Eine Hautblase oder lateinisch Bulla, kurz auch Blase, ist in der Dermatologie ein über das Hautniveau erhabener flüssigkeitsgefüllter Hohlraum, der wenigstens erbsengroß (> 5 mm) ist. Kleinere Flüssigkeitsansammlungen werden als Bläschen bezeichnet. Unterschieden werden subkorneale, intraepidermale und subdermale Blasen. Blasen zählen zu den primären Effloreszenzen.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Blister_from_burns_%28top%29.png"
+    },
+    "fr": {
+      "title": "Phlyctène",
+      "extract": "En médecine, une phlyctène, ampoule, cloche ou cloque est une lésion de la peau, élévation circonscrite de l'épiderme, due à une collection de liquide clair contenu dans une cavité néo-formée.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Smlp6860.jpg"
+    },
+    "es": {
+      "title": "Ampolla (piel)",
+      "extract": "Una ampolla, ámpula, bambolla, vejiga, o boja, es un mecanismo de defensa del cuerpo humano consistente en una lesión elevada (inflamación), palpable y circunscrita, llena de líquido linfático y otros fluidos corporales, que se forma en la epidermis. Esta lesión se forma para proteger el tejido tegumentario interior. Se conocen técnicamente con el nombre de ampollas o bulas si son mayores de 0,5 cm de diámetro y como vesículas o flictenas si su tamaño es menor. Puede producirse como reacción a quemaduras o fricción y ayuda a reparar el daño producido en la piel. Las ampollas figuran entre las eflorescencias primarias.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/96/Blister.jpg"
+    },
+    "it": {
+      "title": "Bolla (dermatologia)",
+      "extract": "Una bolla è una lesione cutanea elementare, rappresentata da un rilievo di varia forma e grandezza a contenuto sieroso o sieroematico, dovuta a scollamento (acantolisi) degli strati epidermici per cause fisiche o tossinfettive. Può essere di varie dimensioni, ma comunque con un diametro maggiore di 5 mm.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Smlp6860.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Bolha (medicina)",
+      "extract": "Uma bolha é uma pequena bolsa de fluido corporal dentro das camadas superiores da pele, tipicamente causadas por fricção forçada, queimaduras, congelamento, exposição a produtos químicos ou infecção. A maioria das bolhas é preenchida com um líquido claro, seja soro ou plasma.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/96/Blister.jpg"
+    },
+    "ar": {
+      "title": "تبثر",
+      "extract": "التنَفُّط أو التبثر أو البطباطة أو  البثرة أو النفطة أو الفقفوقة هو وجود تجمع سائل كالبثرة في جيب في الطبقات العلوية للجلد يحدث عادة بسبب احتكاك أو حرق أو تعرض كيميائي أو التهاب. يكون فيها عادة سائل شفاف هو بلازما الدم وأحيانًا فيها دم أو قيح.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Smlp6860.jpg"
+    },
+    "hi": {
+      "title": "फफोला",
+      "extract": "फफोला त्वचा की ऊपरी परतों के भीतर शरीर के तरल पदार्थ एक छोटी थैली होती है, जो सामान्यतः त्वचा को हुई क्षति या जलन के परिणामस्वरूप विकसित होती है। यह प्रायः अत्यधिक रगड़ या घर्षण, जलने, अत्यधिक शीत के संपर्क (शीतदंश), रासायनिक पदार्थों के प्रभाव अथवा विभिन्न संक्रमणों के कारण उत्पन्न होता है। फफोला शरीर की एक प्राकृतिक सुरक्षात्मक प्रतिक्रिया है, जिसका उद्देश्य क्षतिग्रस्त त्वचा के नीचे स्थित ऊतकों को बाहरी आघात और संक्रमण से बचाना होता है।",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Smlp6860.jpg"
+    },
+    "ja": {
+      "title": "水疱",
+      "extract": "水疱（すいほう）とは、皮膚疾患などでみられる皮疹の一つ。一般に水膨れ、水ぶくれ（みずぶくれ）と呼ばれる。皮膚が皮膚の表皮中または表皮下にサラサラとした水分がたまったことにより半球状に隆起した状態を指す。中の水分は損傷した組織からしみ出た血清やタンパク質などである。ふつうは表皮にでき治りも早く痕も残らないが、全身性疾患に伴って皮膚の深い層にできた水疱は治癒に時間がかかり痕が残ることがある。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/96/Blister.jpg"
+    },
+    "zh": {
+      "title": "水疱",
+      "extract": "水疱（blister）俗作“水泡”，是皮肤损伤后形成的局限性、腔隙性突起；一般内含炎性浆液性渗出，但也可含有血液、血清、血漿、淋巴液、膿等。有小疱（vesicle）、大疱（bulla）之分，前者小于5–10毫米，后者大于5–10毫米，各学者定义不一。水疱可位于表皮内、表皮下或真皮上部。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Smlp6860.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/blister-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Smlp6860.jpg"
+    },
+    {
+      "file": "img/blister-1.png",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Blister_from_burns_%28top%29.png"
+    },
+    {
+      "file": "img/blister-2.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/9/96/Blister.jpg"
+    },
+    {
+      "file": "img/blister-3.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Smlp6860.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    }
+  ]
+}

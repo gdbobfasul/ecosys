@@ -4,7 +4,7 @@ const ADDR = require("../../shared/js/addresses");
 
 async function main() {
     console.log("=".repeat(60));
-    console.log("MULTI-SIG + KCY1 DEPLOYMENT");
+    console.log("MULTI-SIG + PUPIKES1 DEPLOYMENT");
     console.log("=".repeat(60));
     
     // Get signers
@@ -71,28 +71,28 @@ async function main() {
     console.log("   Threshold: 3-of-5 signatures required");
     
     // ========================================================================
-    // STEP 3: DEPLOY KCY1 TOKEN FROM MULTI-SIG
+    // STEP 3: DEPLOY PUPIKES1 TOKEN FROM MULTI-SIG
     // ========================================================================
     
     console.log("\n" + "=".repeat(60));
-    console.log("STEP 3: Deploy KCY1 Token");
+    console.log("STEP 3: Deploy PUPIKES1 Token");
     console.log("=".repeat(60));
     
-    // IMPORTANT: KCY1 owner will be msg.sender (deployer)
+    // IMPORTANT: PUPIKES1 owner will be msg.sender (deployer)
     // We need to transfer ownership to multi-sig after deployment
-    // BUT our KCY1 has immutable owner! So we deploy from deployer first
+    // BUT our PUPIKES1 has immutable owner! So we deploy from deployer first
     
-    console.log("\n⚠️  NOTE: KCY1 has immutable owner!");
+    console.log("\n⚠️  NOTE: PUPIKES1 has immutable owner!");
     console.log("   We'll deploy with deployer as owner, then update exempt slots");
     console.log("   to include multi-sig address for control");
     
-    const KCY1 = await ethers.getContractFactory("KCY1Token");
-    const token = await KCY1.deploy();
+    const PUPIKES1 = await ethers.getContractFactory("PUPIKES1Token");
+    const token = await PUPIKES1.deploy();
     
     await token.waitForDeployment();
     const tokenAddress = await token.getAddress();
     
-    console.log("\n✅ KCY1 Token deployed at:", tokenAddress);
+    console.log("\n✅ PUPIKES1 Token deployed at:", tokenAddress);
     console.log("   Owner:", deployer.address);
     console.log("   Total Supply:", ethers.formatEther(await token.totalSupply()), "tokens");
     
@@ -129,7 +129,7 @@ async function main() {
     
     console.log("\n📋 Contract Addresses:");
     console.log("   Multi-Sig:", multiSigAddress);
-    console.log("   KCY1 Token:", tokenAddress);
+    console.log("   PUPIKES1 Token:", tokenAddress);
     
     console.log("\n🔐 Security Status:");
     console.log("   Token Owner:", await token.owner());

@@ -1,0 +1,101 @@
+{
+  "id": "fungal",
+  "langs": {
+    "bg": {
+      "title": "Трихофития",
+      "extract": "Трихофитията е силно заразна кожна инфекция, причинена от гъбички. Засяга кожата, косата и ноктите. Разпознава се по характерния кръгъл обрив.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Dermatophytosis_20190815-02ASD.jpg/3840px-Dermatophytosis_20190815-02ASD.jpg"
+    },
+    "ru": {
+      "title": "Трихофития",
+      "extract": "Дерматофити́я, трихофити́я, также дерматомикоз, дерматофитоз, стригущий лишай, парша — кожные инфекционные заболевания, вызываемые грибами Trichophyton, Microsporum и Epidermophyton. Как правило, носителями возбудителей этой болезни являются дети младшего и среднего возраста, а также животные, при этом болезнь, вызванная заражением от животных, проходит в более тяжёлой форме. Заражение происходит при непосредственном контакте с больным, при пользовании общими головными уборами, одеждой и другими предметами. Заболевание распространяется по всей поверхности кожи, на коже головы под волосяным покровом, на теле, на ступнях, а иногда также и на ногтях. Главными симптомами болезни являются следующие: появление очагов болезни — красноватых кольцеобразных пятен, вызывающих зуд и чесотку, поражение корней волос и облысение передней области черепа. Симптоматика заболевания, проявляющаяся на коже головы в передней области черепа, обычно сопровождается перхотью. В более серьёзных случаях возможны гнойные, и даже инфекционные выделения в поражённых местах. Хотя, с одной стороны, заболевание и не считается особо заразным, с другой стороны, оно может передаваться от одного человека другому через прикосновение и близкий контакт или же посредством пользования одними и теми же средствами личной гигиены, в том числе, одним полотенцем или одной расчёской. Помимо этого, болезнь также передаётся человеку от поражённых стригущим лишаём домашних животных.",
+      "image": ""
+    },
+    "uk": {
+      "title": "Дерматофітоз",
+      "extract": "Дерматофітоз (також дерматофітія, трихофітія, дерматомікоз, заст. «стригучий лишай» — грибкова інфекція шкіри. Зазвичай призводить до червоного, сверблячого, лускоподібного, кругового висипу. В області ураження може випадати волосся. Симптоми починаються від 4 до 14 днів після зараження. У певний час можуть бути уражені кілька областей.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Yeartinfection.JPG/1920px-Yeartinfection.JPG"
+    },
+    "en": {
+      "title": "Dermatophytosis",
+      "extract": "Dermatophytosis, also known as tinea and ringworm, is a fungal infection of the skin, that may affect skin, hair, and nails. Typically it results in a red, itchy, scaly, circular rash. Hair loss may occur in the area affected. Symptoms begin four to fourteen days after exposure. The types of dermatophytoses are typically named for the area of the body that they affect. Multiple areas can be affected at a given time.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Yeartinfection.JPG/1920px-Yeartinfection.JPG"
+    },
+    "de": {
+      "title": "Dermatophytose",
+      "extract": "Die Dermatophytose oder Tinea ist eine durch spezielle Pilze (Dermatophyten) hervorgerufene Hautpilzerkrankung. Sie ist beschränkt auf keratinhaltige Gebilde wie die Hornschicht der Haut (Epidermomykose), Haare oder Nägel bzw. Krallen. Dermatophytosen zählen zu den häufigsten Infektionskrankheiten überhaupt und treten weltweit auf.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Tinea_pedis_interdigitalis.jpg"
+    },
+    "fr": {
+      "title": "Dermatophytose",
+      "extract": "Les dermatophytoses sont des mycoses. La teigne en est l'une des nombreuses formes. Au début du XXIe siècle Trichophyton rubrum est le premier responsable de mycoses à dermatophytes dans le monde.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/Dermatophytosis.jpg"
+    },
+    "es": {
+      "title": "Dermatofitosis",
+      "extract": "Las dermatofitosis, comúnmente llamadas tiñas, son un conjunto de micosis zoonósicas superficiales que afectan a la piel, específicamente a la epidermis, y sus anexos. Son causadas por el grupo de hongos parásitos de la queratina llamados dermatofitos. Las más habituales son las que afectan a las uñas, ingles, planta y espacios interdigitales de pies, cuero cabelludo y cualquier zona de piel lampiña en cualquier localización anatómica. Producen cuadros clínicos muy variados, desde síntomas leves hasta lesiones inflamatorias intensas.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Yeartinfection.JPG/1920px-Yeartinfection.JPG"
+    },
+    "it": {
+      "title": "Dermatofitosi",
+      "extract": "La dermatofitosi è una infezione micotica superficiale della cute, causata dalle specie di dermatofiti Microsporum, Epidermophyton o Tricophyton in grado di parassitare esclusivamente strutture morte, ricche di materiale cheratinico. A trasmetterla all'uomo possono essere altri uomini o un animale.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Yeartinfection.JPG/1920px-Yeartinfection.JPG?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    "pt": {
+      "title": "Dermatofitose",
+      "extract": "Dermatofitoses são infeções fúngicas da pele. Geralmente resultam em pele vermelha e escamosa, prurido e erupções cutâneas circulares. Na área afetada pode ocorrer queda de pelo. Os sintomas têm início de 4 a 14 dias após exposição ao fungo. A condição pode afetar várias áreas da pele em simultâneo.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Yeartinfection.JPG/1920px-Yeartinfection.JPG"
+    },
+    "ar": {
+      "title": "قوباء حلقية",
+      "extract": "القوباء الحلقية هي عدوى جلدية تتميز ببقع محمرة أو مائلة للبني على الجلد حيث تكون أقل تلوناً في المركز مما يعطي شكل الخاتم. يمكن لهذه البقع أن تتواجد في أي مكان في الجسم حيث تأخذ مسميات عديدة بناءً على مكان الإصابة. ففي الأقدام تدعى الإصابة بمرض قدم الرياضي ، وتدعى حكة جوك عندما تصيب المنطقة العجانية. عندما تتواجد على الجسم يشار إليها بالقوباء الحلقية كما وتدعى سعفة الرأس عندما تصيب فروة الرأس. يسبب هذا المرض فطريات طفيلية تنتمي لمجموعة الفطور الجلدية. تتغذى هذه الفطريات على الكيراتين ولذلك فهي تتواجد على الطبقة الخارجية للجلد والأظافر بشكل طفيلي. أكثر الأماكن المحببة لهذه الفطريات هي الأماكن الرطبة والدافئة والمحمية من أشعة الشمس.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Ringworm_on_the_arm%2C_or_tinea_corporis_due_to_Trichophyton_mentagrophytes_PHIL_2938_lores.jpg"
+    },
+    "hi": {
+      "title": "दाद",
+      "extract": "दाद या दद्रु कुछ विशेष जाति का फफूँदों के कारण उत्पन्न त्वचाप्रदाह है। ये फफूंदें माइक्रोस्पोरोन (Microsporon), ट्राइकॉफ़ाइटॉन (Trichophyton), एपिडर्मोफ़ाइटॉन (Epidermophyton) या टीनिया जाति की होती है। दद्रु रोग कई रूपों में शरीर के अंगों पर आक्रमण करता है। खोपड़ी का दद्रु फफूंद द्वारा केश की जड़ में आक्रमण के कारण होता है। यह बालों और नववयस्कों में अधिक होता है। खोपड़ी पर गोल चकत्तियों में गंगाजल हो जाता है। केश जड़ के पास से टूट जाते हैं। सूक्ष्मदर्शी से देखने पर केश के चारों ओर फफूंद जीवाणु का जाला सा दिखाई पड़ता है। इसकी चिकित्सा कठिन है। एक्स-किरणों से चिकित्सा की जाती है।",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Ringworm_on_the_arm%2C_or_tinea_corporis_due_to_Trichophyton_mentagrophytes_PHIL_2938_lores.jpg"
+    },
+    "ja": {
+      "title": "白癬",
+      "extract": "白癬（はくせん）とは、皮膚糸状菌によって生じる皮膚感染症の一つである。原因菌は主にトリコフィトン属（白癬菌属）に属する種いわゆる白癬菌と呼ばれる一群の真菌によって生じる。",
+      "image": ""
+    },
+    "ky": {
+      "title": "Трихофития",
+      "extract": "Трихофития (темирөткү) — теринин мите козу карындар пайда кылуучу жугуштуу оорусу.",
+      "image": ""
+    },
+    "zh": {
+      "title": "皮癬菌病",
+      "extract": "皮癬菌病（Dermatophytosis）是由角蛋白特异性皮癣菌感染角蛋白组织引起的皮肤真菌病。 皮癣菌是一组进化上相对保守的分节癣菌科致病真菌，其共同特征是角蛋白特异性，通过分解角蛋白获得营养。人体的角蛋白组织包括皮肤表皮的角化层、毛发与指甲。皮癣菌病不是单一的疾病，依据受累皮肤部位与致病菌种类不同而有不同的皮损、症状、治疗与预后。通常它會導致皮膚發紅、發癢、脫屑圓形皮疹，受影響的區域可能會脫髮，感染後四到十四天開始出現症狀。皮癣菌病的因感染不同區域的皮肤而有不同名称，如头癣、足癣、手癣、体癣、股癣、甲癣等，国际疾病分类ICD-10中还包括肉芽肿性皮癣菌病 和播散性皮肤癣菌病。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Yeartinfection.JPG/1920px-Yeartinfection.JPG"
+    }
+  },
+  "images": [
+    {
+      "file": "img/fungal-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Dermatophytosis_20190815-02ASD.jpg/3840px-Dermatophytosis_20190815-02ASD.jpg"
+    },
+    {
+      "file": "img/fungal-1.JPG",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Yeartinfection.JPG/1920px-Yeartinfection.JPG"
+    },
+    {
+      "file": "img/fungal-2.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Tinea_pedis_interdigitalis.jpg"
+    },
+    {
+      "file": "img/fungal-3.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/6/63/Dermatophytosis.jpg"
+    },
+    {
+      "file": "img/fungal-4.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Yeartinfection.JPG/1920px-Yeartinfection.JPG?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    },
+    {
+      "file": "img/fungal-5.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Ringworm_on_the_arm%2C_or_tinea_corporis_due_to_Trichophyton_mentagrophytes_PHIL_2938_lores.jpg"
+    }
+  ]
+}

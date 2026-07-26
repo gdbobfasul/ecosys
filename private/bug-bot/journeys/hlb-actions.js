@@ -65,7 +65,7 @@ async function freshRequest(page, extraHeaders) {
 }
 
 // HTTP контекст за АДМИН: ако има .env админ → ползваме сесия (вход). Иначе → универсалния
-// токен ?adm=bgmasters-set чрез бисквитка kcy_adm (минава requireRole, но id:null).
+// токен ?adm=bgmasters-set чрез бисквитка pupikes_adm (минава requireRole, но id:null).
 // Връща { request, dispose, byEnv } — byEnv=true ако влязохме с реален админ акаунт.
 async function adminContext(page, c) {
   if (c.adminEmail && c.adminPass) {
@@ -79,7 +79,7 @@ async function adminContext(page, c) {
   }
   // Резервен вариант: универсален токен (бисквитка). Достатъчно за approve/reports/resolve/generate,
   // но НЕ за бан/списък-потребители по реален id (там actor е id:null).
-  const f = await freshRequest(page, { Cookie: 'kcy_adm=bgmasters-set' });
+  const f = await freshRequest(page, { Cookie: 'pupikes_adm=bgmasters-set' });
   return { request: f.request, dispose: f.dispose, byEnv: false };
 }
 

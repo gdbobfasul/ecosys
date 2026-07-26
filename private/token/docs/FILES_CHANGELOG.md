@@ -75,7 +75,7 @@
 ## 🗂️ Структура на Файловете
 
 ```
-KCY1-Project/
+PUPIKES1-Project/
 ├── config/
 │   ├── addresses.js                  ✨ НОВ - Главен файл
 │   ├── exempts-slots.js              🔄 МОДИФИЦИРАН
@@ -170,7 +170,7 @@ const MARKETING_WALLET = MAINNET_ADDRESSES.marketing;
 ## ✅ Проверка на Съвместимост
 
 ### Файлове които НЕ са променени (но работят с новите)
-- `contracts/kcy-meme-1.sol` ✅ Не е променен
+- `contracts/pupikes-meme-1.sol` ✅ Не е променен
 - `scripts/deploy.js` ✅ Не е променен
 - `scripts/full-configuration.js` ✅ Не е променен
 - `scripts/full-status.js` ✅ Не е променен

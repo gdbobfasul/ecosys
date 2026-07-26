@@ -11,7 +11,7 @@
 //      втори за деня → 429), и админ модерация: pending списък, ОТКАЖИ (нулира деня), ОДОБРИ
 //      (създава статичен обект), повторно одобрение → 400.
 //   6) UI „като човек": попълва формата verification.html (чекбокс + име + бутон) и проверява, че
-//      падащото меню в signal.html НЕ показва суровия литерал KCY_I18N.t(... (регресия за преводите).
+//      падащото меню в signal.html НЕ показва суровия литерал PUPIKES_I18N.t(... (регресия за преводите).
 //   7) Изход.
 //
 // Всичко best-effort: без .env админ → админ частите се пропускат грациозно (не са провал).
@@ -349,13 +349,13 @@ module.exports = {
           const msg = await page.textContent('#formMsg').catch(() => '');
           if (!/✅|⚠️/.test(msg || '')) throw new Error('UI формата за верификация не върна резултат (нито успех, нито отказ)');
         } },
-        { label: 'signal.html: падащото меню НЕ показва суровия литерал „KCY_I18N.t("', run: async (page, c, h) => {
+        { label: 'signal.html: падащото меню НЕ показва суровия литерал „PUPIKES_I18N.t("', run: async (page, c, h) => {
           if (c.rateLimited || !c.tokenA) return;
           await page.evaluate((t) => { try { localStorage.setItem('token', t); } catch (e) {} }, c.tokenA).catch(() => {});
           await page.goto(h.base + '/chat/public/signal.html', { waitUntil: 'domcontentloaded' });
           await page.waitForSelector('#signalType optgroup', { timeout: 8000 }).catch(() => {});
           const labels = await page.$$eval('#signalType optgroup', els => els.map(e => e.getAttribute('label') || '')).catch(() => []);
-          const broken = labels.filter(l => /KCY_I18N\.t\(/.test(l));
+          const broken = labels.filter(l => /PUPIKES_I18N\.t\(/.test(l));
           if (broken.length) throw new Error('падащото меню показва суров литерал вместо превод: ' + broken.join(' | '));
           if (!labels.length) throw new Error('signal.html: няма групи в падащото меню (#signalType optgroup)');
         } },

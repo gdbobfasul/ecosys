@@ -9,7 +9,7 @@ import { langButton } from './lang-button.js';
 
 // Кратък етикет на канала за дневника.
 function channelBadge(id) {
-  return ({ kcy: t('ch_kcy'), whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: t('ch_demo') })[id] || id;
+  return ({ pupikes: t('ch_pupikes'), whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: t('ch_demo') })[id] || id;
 }
 
 export function renderDashboard(root, { navigate, rerender }) {

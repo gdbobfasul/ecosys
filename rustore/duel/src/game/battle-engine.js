@@ -118,12 +118,12 @@ function BattleEngine(opts) {
 
     // admin debug (логовете отляво/отдясно + LOG): показва се при ?adm=bgmasters-set,
     // ?debug=1, opts.debug, ИЛИ когато сесията вече е разпозната като админска
-    // (sessionStorage kcy-adm — слага се от navigation.js при админ IP). Допълнително
+    // (sessionStorage pupikes-adm — слага се от navigation.js при админ IP). Допълнително
     // по-долу има async проверка по IP, която пали панелите дори без тези условия.
     this.debug = !!opts.debug || /[?&](adm=bgmasters-set|debug=1)\b/.test(
         (global.location && global.location.search) || '');
     if (!this.debug) {
-        try { if (sessionStorage.getItem('kcy-adm') === 'bgmasters-set') this.debug = true; } catch (e) {}
+        try { if (sessionStorage.getItem('pupikes-adm') === 'bgmasters-set') this.debug = true; } catch (e) {}
     }
     this._logLines = [];
     this._idleLogged = {};   // idle файлове логнати веднъж за играта
@@ -140,12 +140,12 @@ function BattleEngine(opts) {
 BattleEngine.prototype._buildDOM = function () {
     var c = this.container;
     c.innerHTML = '';
-    c.classList.add('kcy-battle');
+    c.classList.add('pupikes-battle');
 
     // Inject CSS once
-    if (!document.getElementById('kcy-battle-css')) {
+    if (!document.getElementById('pupikes-battle-css')) {
         var css = document.createElement('style');
-        css.id = 'kcy-battle-css';
+        css.id = 'pupikes-battle-css';
         css.textContent = BATTLE_CSS;
         document.head.appendChild(css);
     }
@@ -400,7 +400,7 @@ BattleEngine.prototype.start = function () {
     this._loadKeyLabels();
     this.genCombos();
     try {
-        console.log('%cKCY Battle v2 (1.0095) — всеки герой: свои 6 клавиша, комбо 4 от тях (произволен ред)',
+        console.log('%cPupikes Battle v2 (1.0095) — всеки герой: свои 6 клавиша, комбо 4 от тях (произволен ред)',
                     'color:#f8c450;font-weight:bold');
         var cs = {};
         for (var id in this.heroCombos) {
@@ -419,7 +419,7 @@ BattleEngine.prototype.start = function () {
 
 /* Local best-score persistence (replaces portals gms API).
    Стои локално на устройството — нула мрежа, нула събиране на данни. */
-BattleEngine.prototype._bestKey = 'kcy-duel-best';
+BattleEngine.prototype._bestKey = 'pupikes-duel-best';
 BattleEngine.prototype.loadBest = function () {
     try {
         var raw = localStorage.getItem(this._bestKey);
@@ -1536,7 +1536,7 @@ BattleEngine.prototype._submitScore = function (name) {
 /* ── CSS ── */
 var BATTLE_CSS = [
 '@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap");',
-'.kcy-battle{font-family:"Cormorant Garamond",Georgia,serif;color:#e8d6a5;}',
+'.pupikes-battle{font-family:"Cormorant Garamond",Georgia,serif;color:#e8d6a5;}',
 '.kbb-wrap{position:relative;width:100%;max-width:1280px;margin:0 auto;background:radial-gradient(ellipse at center,#241a1a 0%,#0a0708 80%);border:2px solid #5a3a1e;border-radius:8px;box-shadow:0 0 60px rgba(0,0,0,.8),inset 0 0 80px rgba(0,0,0,.6);overflow:hidden;}',
 '.kbb-hmm{max-width:720px;}',  // portrait по-малък на screen
 '.kbb-stage{position:absolute;left:50%;top:50%;transform-origin:center center;}',

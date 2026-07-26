@@ -13,7 +13,7 @@ async function main() {
     console.log("🔥 TOKEN ОПЕРАЦИИ");
     console.log("========================================\n");
     
-    const token = await ethers.getContractAt("KCY1Token", config.TOKEN_ADDRESS);
+    const token = await ethers.getContractAt("PUPIKES1Token", config.TOKEN_ADDRESS);
     const [signer] = await ethers.getSigners();
     
     console.log("🔗 Използван адрес:", signer.address);
@@ -267,17 +267,17 @@ async function main() {
             console.log("─────────────────────────────────────");
             console.log("Тази функция е за спасяване на токени");
             console.log("които са били изпратени по грешка към");
-            console.log("контракта на KCY1 токена.");
+            console.log("контракта на PUPIKES1 токена.");
             console.log("\n");
             
             console.log("❌ НЕ МОЖЕШ ДА RESCUE-НЕШ:");
-            console.log("  • KCY1 токени (самият токен)");
+            console.log("  • PUPIKES1 токени (самият токен)");
             console.log("  • Използвай withdrawCirculationTokens()");
             console.log("\n");
             
-            // Провери дали не е KCY1 token
+            // Провери дали не е PUPIKES1 token
             if (RESCUE_TOKEN_ADDRESS.toLowerCase() === config.TOKEN_ADDRESS.toLowerCase()) {
-                throw new Error("Не можеш да rescue-неш KCY1! Използвай withdrawCirculationTokens()");
+                throw new Error("Не можеш да rescue-неш PUPIKES1! Използвай withdrawCirculationTokens()");
             }
             
             console.log("📋 Какво ще се случи:");
@@ -327,7 +327,7 @@ async function main() {
         
         console.log("2. withdrawCirculationTokens(uint256 amount)");
         console.log("   • Права: onlyAdmin");
-        console.log("   • Изтегля KCY1 токени от контракта");
+        console.log("   • Изтегля PUPIKES1 токени от контракта");
         console.log("   • Total Supply НЕ се променя");
         console.log("\n");
         
@@ -340,7 +340,7 @@ async function main() {
         console.log("4. rescueTokens(address token, uint256 amount)");
         console.log("   • Права: onlyAdmin");
         console.log("   • Спасява объркани токени");
-        console.log("   • НЕ работи за KCY1 токени!");
+        console.log("   • НЕ работи за PUPIKES1 токени!");
         console.log("\n");
         
         console.log("💡 ЗА ИЗПЪЛНЕНИЕ:");

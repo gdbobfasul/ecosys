@@ -1,0 +1,290 @@
+{
+  "items": [
+    {
+      "id": "head",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "ky",
+        "zh"
+      ]
+    },
+    {
+      "id": "face",
+      "langs": [
+        "en",
+        "ar"
+      ]
+    },
+    {
+      "id": "ear",
+      "langs": [
+        "ru",
+        "en",
+        "de",
+        "fr",
+        "it",
+        "pt",
+        "ar",
+        "zh"
+      ]
+    },
+    {
+      "id": "throat",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "pt",
+        "ar",
+        "zh"
+      ]
+    },
+    {
+      "id": "chest",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ]
+    },
+    {
+      "id": "stomach",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ]
+    },
+    {
+      "id": "lower_abdomen",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ]
+    },
+    {
+      "id": "pelvis",
+      "langs": [
+        "en",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ]
+    },
+    {
+      "id": "shoulder",
+      "langs": [
+        "en",
+        "ar",
+        "hi",
+        "ja"
+      ]
+    },
+    {
+      "id": "upper_arm",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ]
+    },
+    {
+      "id": "forearm",
+      "langs": [
+        "en",
+        "de",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "zh"
+      ]
+    },
+    {
+      "id": "hand",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ]
+    },
+    {
+      "id": "hip",
+      "langs": [
+        "en"
+      ]
+    },
+    {
+      "id": "thigh",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "zh"
+      ]
+    },
+    {
+      "id": "knee",
+      "langs": [
+        "en",
+        "es",
+        "ar",
+        "hi"
+      ]
+    },
+    {
+      "id": "shin",
+      "langs": [
+        "ru",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "zh"
+      ]
+    },
+    {
+      "id": "foot",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "ja",
+        "ky",
+        "zh"
+      ]
+    },
+    {
+      "id": "upper_back",
+      "langs": [
+        "ru",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "zh"
+      ]
+    },
+    {
+      "id": "lower_back",
+      "langs": [
+        "bg",
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "ja",
+        "ky",
+        "zh"
+      ]
+    },
+    {
+      "id": "tooth",
+      "langs": [
+        "ru",
+        "uk",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "ar",
+        "hi",
+        "zh"
+      ]
+    }
+  ],
+  "source": "Wikipedia (CC BY-SA)",
+  "updated": "2026-07-23"
+}

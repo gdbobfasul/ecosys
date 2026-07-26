@@ -131,8 +131,8 @@ const SECRET_GH = 'JBSWY3DPEHPK3PXP';
 const SECRET_STEAM = 'MFRGGZDFMZTWQ2LK';
 const SECRET_QR = 'NBSWY3DPO5XXE3DE';
 const SECRET_CAM = 'MFZWIZLTORSWC2DB';
-const PASS1 = 'kcyrobot123';
-const PASS2 = 'kcyrobot456';
+const PASS1 = 'pupikesrobot123';
+const PASS2 = 'pupikesrobot456';
 
 module.exports = {
   app: 'authenticator',
@@ -155,15 +155,15 @@ module.exports = {
     ctx.localBase = 'http://127.0.0.1:' + ctx._server.address().port;
 
     // 3) Временна папка + подготвени файлове (QR кодове и CSV за импортите).
-    ctx.tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'kcy-auth-robot-'));
+    ctx.tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pupikes-auth-robot-'));
     const QR = require(path.join(APP_DIR, 'node_modules', 'qrcode'));
     ctx.qrFile = path.join(ctx.tmp, 'qr-import.png');
-    await QR.toFile(ctx.qrFile, 'otpauth://totp/QRTest:qr%40kcy?secret=' + SECRET_QR + '&issuer=QRTest', { width: 480, margin: 2 });
-    ctx.camQrDataUrl = await QR.toDataURL('otpauth://totp/CamTest:cam%40kcy?secret=' + SECRET_CAM + '&issuer=CamTest', { width: 480, margin: 2 });
+    await QR.toFile(ctx.qrFile, 'otpauth://totp/QRTest:qr%40pupikes?secret=' + SECRET_QR + '&issuer=QRTest', { width: 480, margin: 2 });
+    ctx.camQrDataUrl = await QR.toDataURL('otpauth://totp/CamTest:cam%40pupikes?secret=' + SECRET_CAM + '&issuer=CamTest', { width: 480, margin: 2 });
     ctx.csvFile = path.join(ctx.tmp, 'chrome-import.csv');
     fs.writeFileSync(ctx.csvFile,
       'name,url,username,password\n' +
-      'Pupikes Portal,https://portal.kcy/login,robot,s3cretX\n' +          // дубликат на ръчния запис
+      'Pupikes Portal,https://portal.pupikes/login,robot,s3cretX\n' +          // дубликат на ръчния запис
       'NewsSite,https://news.example.com/login,reader,readpass1\n');
   },
 
@@ -181,8 +181,8 @@ module.exports = {
         } },
         { goto: '/' },
         { label: 'интрото „Pupikes" се показва и си заминава', run: async (page) => {
-          await page.waitForSelector('#kcy-intro', { state: 'attached', timeout: 6000 }).catch(() => {});
-          await page.waitForSelector('#kcy-intro', { state: 'detached', timeout: 15000 });
+          await page.waitForSelector('#pupikes-intro', { state: 'attached', timeout: 6000 }).catch(() => {});
+          await page.waitForSelector('#pupikes-intro', { state: 'detached', timeout: 15000 });
         } },
         { label: 'екран за език: 15 езика + видима версия', run: async (page, c) => {
           const n = await page.locator('.lang-btn').count();
@@ -194,15 +194,15 @@ module.exports = {
         } },
         { click: 'button.lang-btn:has-text("Български")' },
         { label: 'правният екран излиза СЛЕД езика; без 📄/📑 икони; бутонът е заключен до отметката', run: async (page) => {
-          await page.waitForSelector('#kcy-legal-gate', { timeout: 20000 });
-          const priv = await page.locator('#kcy-lg-priv').innerText();
-          const terms = await page.locator('#kcy-lg-terms').innerText();
+          await page.waitForSelector('#pupikes-legal-gate', { timeout: 20000 });
+          const priv = await page.locator('#pupikes-lg-priv').innerText();
+          const terms = await page.locator('#pupikes-lg-terms').innerText();
           if (/📄|📑/.test(priv + terms)) throw new Error('документните бутони пак съдържат иконите 📄/📑');
-          if (!(await page.locator('#kcy-lg-accept').isDisabled())) throw new Error('„Продължи" е активен ПРЕДИ отметката');
-          await page.check('#kcy-lg-chk');
-          if (await page.locator('#kcy-lg-accept').isDisabled()) throw new Error('„Продължи" остана заключен СЛЕД отметката');
-          await page.click('#kcy-lg-accept');
-          await page.waitForSelector('#kcy-legal-gate', { state: 'detached', timeout: 8000 });
+          if (!(await page.locator('#pupikes-lg-accept').isDisabled())) throw new Error('„Продължи" е активен ПРЕДИ отметката');
+          await page.check('#pupikes-lg-chk');
+          if (await page.locator('#pupikes-lg-accept').isDisabled()) throw new Error('„Продължи" остана заключен СЛЕД отметката');
+          await page.click('#pupikes-lg-accept');
+          await page.waitForSelector('#pupikes-legal-gate', { state: 'detached', timeout: 8000 });
         } },
         { expect: 'button:has-text("Създай сейф")' },
       ],
@@ -575,7 +575,7 @@ module.exports = {
           await page.click('.fab');
           await page.waitForSelector('.content input[type=text]', { timeout: 5000 });
           await page.fill('.content input[type=text] >> nth=0', 'Pupikes Portal');
-          await page.fill('.content input[type=text] >> nth=1', 'https://portal.kcy/login');
+          await page.fill('.content input[type=text] >> nth=1', 'https://portal.pupikes/login');
           await page.fill('.content input[type=text] >> nth=2', 'robot');
           await page.fill('.content input[type=password] >> nth=0', 's3cretX');
           await page.click('button:has-text("Запази")');
@@ -598,7 +598,7 @@ module.exports = {
           await page.click('button.icon-btn:has-text("←")');
           await page.click('.fab');
           await page.fill('.content input[type=text] >> nth=0', 'Pupikes Portal Copy');
-          await page.fill('.content input[type=text] >> nth=1', 'https://portal.kcy/other');
+          await page.fill('.content input[type=text] >> nth=1', 'https://portal.pupikes/other');
           await page.fill('.content input[type=text] >> nth=2', 'robot');
           await page.click('button:has-text("Запази")');
           await page.waitForSelector('.tabbar', { timeout: 5000 });
@@ -630,7 +630,7 @@ module.exports = {
           await page.click('.fab');
           await page.waitForSelector('.content input[type=text]', { timeout: 5000 });
           await page.fill('.content input[type=text] >> nth=0', 'Основен');
-          await page.fill('.content input[type=text] >> nth=1', 'robot@kcy');
+          await page.fill('.content input[type=text] >> nth=1', 'robot@pupikes');
           await page.fill('.content textarea >> nth=0', 'abandon ability able about above absent absorb abstract absurd abuse access accident');
           await page.click('button:has-text("Запази")');
           await page.waitForSelector('.entry:has-text("Основен")', { timeout: 5000 });
@@ -668,7 +668,7 @@ module.exports = {
       steps: [
         { label: 'reload → интро → екран за отключване (не пуска без парола)', run: async (page) => {
           await page.reload({ waitUntil: 'domcontentloaded' });
-          await page.waitForSelector('#kcy-intro', { state: 'detached', timeout: 15000 }).catch(() => {});
+          await page.waitForSelector('#pupikes-intro', { state: 'detached', timeout: 15000 }).catch(() => {});
           await page.waitForSelector('button:has-text("Отключи")', { timeout: 10000 });
         } },
         { label: 'тайните в localStorage НЕ са в чист вид (шифровани са)', run: async (page) => {
@@ -723,14 +723,14 @@ module.exports = {
       steps: [
         NORM,
         { label: 'лентата е долу, версията съвпада с билда', run: async (page, c) => {
-          const bar = await page.locator('#kcy-bar').isVisible().catch(() => false);
-          if (!bar) throw new Error('#kcy-bar липсва');
+          const bar = await page.locator('#pupikes-bar').isVisible().catch(() => false);
+          if (!bar) throw new Error('#pupikes-bar липсва');
           if (c.appVersion) {
-            const ver = (await page.locator('#kcy-bar-ver').innerText().catch(() => '')).trim();
+            const ver = (await page.locator('#pupikes-bar-ver').innerText().catch(() => '')).trim();
             if (ver !== 'v' + c.appVersion) throw new Error(`версията в лентата е „${ver}", очаквах v${c.appVersion}`);
           }
           for (const txt of ['Pupikes', 'Помощ', 'Поверителност', 'Условия']) {
-            const ok = await page.locator('#kcy-bar >> text=' + txt).first().isVisible().catch(() => false);
+            const ok = await page.locator('#pupikes-bar >> text=' + txt).first().isVisible().catch(() => false);
             if (!ok) throw new Error('в лентата липсва бутон „' + txt + '"');
           }
         } },

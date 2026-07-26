@@ -1,0 +1,53 @@
+{
+  "id": "hand",
+  "langs": {
+    "bg": {
+      "title": "Синдром на карпалния тунел",
+      "extract": "Синдромът на карпалния тунел е медицинско състояние, дължащо се на притискането на медианния нерв, преминаващ през китката на ръката обвит в т.нар. карпален тунел. Основните симптоми са болка, изтръпване, бодежи (мравучкане) в палеца, показалеца и средния пръст и вътрешната страна на четвъртия и петия пръсти. Обичайно симптомите започват постепенно и през нощните часове. Болката може да засегне и останалата част на ръката. Възможна е поява на слабост на захвата и в продължение на голям период от време мускулите в основата на палеца могат да се износят."
+    },
+    "ru": {
+      "title": "Синдром запястного канала",
+      "extract": "Синдро́м запя́стного кана́ла — неврологическое заболевание, проявляющееся длительной болью и онемением пальцев кисти. Относится к туннельной невропатии. Причиной заболевания является сдавление срединного нерва между костями, поперечной кистевой связкой и сухожилиями мышц запястья."
+    },
+    "uk": {
+      "title": "Синдром зап'ястного каналу",
+      "extract": "Синдро́м зап'я́стного кана́лу — патологічний стан, що характеризується болем, відчуттям оніміння і поколювання в пальцях руки й самої кисті та виникає в результаті здавлювання серединного нерва в зап'ястковому каналі. Синдром частіше розвивається після 40 років, водночас страждають більше від нього жінки."
+    },
+    "en": {
+      "title": "Carpal tunnel syndrome",
+      "extract": "Carpal tunnel syndrome (CTS) is the symptoms and signs characteristic of compressive median neuropathy at the carpal tunnel of the wrist. Compressive median neuropathy is a structural, largely hereditary condition that is usually measurable in both wrists. Most cases of median neuropathy at the carpal tunnel are idiopathic, meaning there is no known cause. Other causes of median nerve compression at the carpal tunnel include bleeding, swelling, and deformity associated with a wrist fracture. Carpal tunnel syndrome can also occur with rheumatoid arthritis, due to the enlarged synovial lining of the tendons causing median nerve compression."
+    },
+    "de": {
+      "title": "Karpaltunnelsyndrom",
+      "extract": "Das Karpaltunnelsyndrom ist ein sehr häufiges Nervenkompressionssyndrom. Der durch den Karpaltunnel am Handgelenk verlaufende Nervus medianus wird an dieser Engstelle durch Druck geschädigt, wodurch es vor allem nachts zu Missempfindungen und Schmerzen, insbesondere im Daumen, Zeige- und Mittelfinger kommt. Im Verlauf ist auch eine Abnahme des Tastgefühls sowie eine Störung der vom Nervus medianus versorgten Muskulatur mit Lähmungserscheinungen und Muskelschwund (Atrophie) möglich. Die Verdachtsdiagnose wird mittels einer elektroneurografischen Untersuchung gesichert. Die Behandlung kann konservativ, insbesondere durch das Tragen von Handgelenksschienen, und operativ erfolgen."
+    },
+    "fr": {
+      "title": "Syndrome du canal carpien",
+      "extract": "Le syndrome du canal carpien est un ensemble de signes fonctionnels et physiques lié à la souffrance du nerf médian au niveau du poignet par sa compression."
+    },
+    "es": {
+      "title": "Síndrome del túnel carpiano",
+      "extract": "El síndrome del túnel carpiano es una neuropatía periférica que ocurre cuando el nervio mediano se comprime dentro del túnel carpiano, a nivel de la muñeca."
+    },
+    "it": {
+      "title": "Sindrome del tunnel carpale",
+      "extract": "La sindrome del tunnel carpale è una neuropatia dovuta all'irritazione o alla compressione del nervo mediano nel suo passaggio attraverso il canale carpale."
+    },
+    "pt": {
+      "title": "Síndrome do túnel cárpico",
+      "extract": "Síndrome do túnel cárpico (STC) é uma condição médica causada pela compressão do nervo mediano no ponto em que passa pelo túnel cárpico do pulso. Os sintomas mais comuns são dor, falta de sensibilidade, formigueiro nos dedos polegar, indicador, e do lado do polegar do dedo anelar. Os sintomas geralmente começam-se a manifestar de forma gradual e durante a noite. Em alguns casos a dor pode-se espalhar para o braço. Após um longo período de tempo, o desgaste dos músculos na base do polegar pode causar diminuição da força necessária para agarrar objetos. Em mais da metade dos casos, ambos lados são afetados."
+    },
+    "ar": {
+      "title": "متلازمة النفق الرسغي",
+      "extract": "متلازمة النفق الرسغي هي حالة طبية تنتج من انضغاط العصب المتوسط في النفق الرسغي، والذي ينتج عنه اعتلال هذا العصب. وتظهر الأعراض الرئيسية في شكل ألم، وتنميل، وخدران في الإبهام، والسبابة، والوسطى، والجانب الإبهامي من إصبع البنصر. وعادة ما تبدأ الأعراض تدريجيا خلال الليل. وقد يمتد الألم للذراع. قد يحدث ضعف في قوة قبضة اليد، وبعد فترة طويلة من الزمن قد تضمر عضلات قاعدة الإبهام. وغالبا ما يتأثر كلا الجانبين في أكثر من نصف الحالات."
+    },
+    "ja": {
+      "title": "手根管症候群",
+      "extract": "手根管症候群 とは、手根管（腱と神経が通っている手首内の管）の中を走る正中神経が何らかの原因で手根管内圧が上がり、圧迫されて引き起こされる疾患群のこと。"
+    },
+    "zh": {
+      "title": "腕隧道症候群",
+      "extract": "腕隧道症候群，縮寫：CTS）又稱腕道症候群，俗稱滑鼠手，是指正中神經在穿過腕部的腕隧道處受到神經壓迫的疾病。主要症狀為大拇指、食指、中指及無名指靠中指側會發生疼痛、麻木感、刺痛感，典型症狀通常是漸進式的，而且發生於晚上。疼痛感可能延伸至手臂。患者抓握力量可能减弱且在長時間後大魚際肌（拇指根部肌肉）会萎缩。超過一半的病例是兩手都有症狀。\n"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "id": "foot",
+  "langs": {
+    "ru": {
+      "title": "Плантарный фасциит",
+      "extract": "Плантарный фасциит — заболевание, основным симптомом которого является боль в пятке, возникающая или усиливающаяся при нагрузке. В большинстве случаев болевой синдром обусловлен воспалительно-дегенеративными изменениями плантарной (подошвенной) фасции. Реже пяточная боль непосредственно связана с травматизацией окружающих мягких тканей костными разрастаниями. Это заболевание ещё также имеет простонародное название пяточная шпора или шпора на пятке, хотя этот термин не совсем верен, ведь пяточная шпора — это следствие плантарного фасциита."
+    },
+    "uk": {
+      "title": "Плантарний фасциїт",
+      "extract": "Плантарний фасциїт або підошовний фасціоз — це захворювання, спричинене запально-дегенеративними змінами плантарної (підошовної) фасції. Найбільш розповсюдженими симптомами є колючий біль у п'яті чи підйомі стопи, що посилюється при ходінні."
+    },
+    "en": {
+      "title": "Plantar fasciitis",
+      "extract": "Plantar fasciitis or plantar heel pain is a disorder of the plantar fascia, which is the connective tissue that supports the arch of the foot. It results in pain in the heel and bottom of the foot that is usually most severe with the first steps of the day or following a period of rest. Pain is also frequently brought on by bending the foot and toes up towards the shin. The pain typically comes on gradually. It affects both feet in about one-third of cases."
+    },
+    "de": {
+      "title": "Plantarfasziitis",
+      "extract": "Plantarfasziitis ist eine schmerzhafte Reizung der namensgebenden Plantarfaszie an der Fußsohle. Die Plantarfaszie oder auch Aponeurosis plantaris ist eine vom Fersenbein ausgehende und zur Fußspitze fächerförmig verlaufende Faszienplatte. Bei einer chronischen Reizung des Faszienansatzes am Fersenbein kann es zu Kalziumeinlagerungen kommen. Die resultierende Veränderung imponiert im Röntgenbild als vermeintlicher Fersensporn. Im Gegensatz zur schmerzhaften Plantarfasziitis stellt der Fersensporn an der Fußsohle einen häufig symptomlosen Zufallsbefund bei der Röntgendiagnostik des Fußes dar."
+    },
+    "fr": {
+      "title": "Aponévrosite plantaire",
+      "extract": "L'aponévrosite plantaire, également dénommée fasciite plantaire, épine calcanéenne ou épine de Lenoir, est une affection douloureuse du pied par inflammation du fascia plantaire, l’enveloppe fibreuse du tendon qui forme l'arche du pied .\nLe rôle du fascia plantaire consiste à soutenir et à protéger le tendon de la plante du pied."
+    },
+    "es": {
+      "title": "Fascitis plantar",
+      "extract": "La fascitis plantar es un cuadro de síntomas inespecíficos caracterizado principalmente por el dolor en la zona de aponeurosis plantar del pie."
+    },
+    "it": {
+      "title": "Fasciosi plantare",
+      "extract": "Per fasciosi o fascite plantare si intende un insieme di sintomi a prevalenza dolorosa che coinvolge la fascia plantare. È la più diffusa fra le cause che comportano dolore alla base del calcagno."
+    },
+    "pt": {
+      "title": "Fascite plantar",
+      "extract": "Fibromatose da fáscia plantar, fasciíte plantar ou fascite plantar é um distúrbio doloroso comum que afeta o calcanhar e a planta do pé. Trata-se de uma desordem no local de inserção dos ligamentos no osso e se caracteriza pela cicatrização, inflamação ou destruição estrutural da fáscia plantar do pé. É frequentemente causada pela lesão por esforço repetitivo da fáscia plantar, que se intensifica com exercício físico, peso ou idade. Embora originalmente a fascite plantar tenha sido pensada como um processo inflamatório, estudos recentes têm demonstrado alterações estruturais mais condizentes com processos degenerativos. Como resultado das novas observações, parte da comunidade acadêmica tem defendido a mudança do nome desta condição para \"fasciose plantar\"."
+    },
+    "ar": {
+      "title": "التهاب اللفافة الأخمصية",
+      "extract": "التهاب اللفافة الأخمصية هو اضطرابٌ في النسيج الضام الداعِم لقوس القدم، حيثُ يؤدي إلى ألمٍ في العَقِب(1) وأسفلِ القدم، ويكون الألم عادةً شديدًا مع الخطوات الأولى في اليوم أو بعد الحصول على فترةٍ من الراحة، كما يحصل الألم أيضًا عند ثني القدم وأصابع القدم نحو قصبة الساق. يحدث الألمُ تدريجيًا، ويؤثر على كلتا القَدمين في حوالي ثُلث الحالات."
+    },
+    "ja": {
+      "title": "足底筋膜炎",
+      "extract": "足底筋膜炎（そくていきんまくえん）または足底腱膜炎（そくていけんまくえん）とは、足の指の付け根からかかとまで、足の裏に膜のように張っている腱組織・足底筋膜（足底腱膜とも。以降、足底筋膜に表記統一する）に炎症が起き、小さな断裂を起こして痛みをもたらす病気。多くはかかとの骨の前あたりに痛みが起こる。主に40～50歳代以上で発症するが、若い世代でもスポーツ選手などに多い。"
+    },
+    "ky": {
+      "title": "Согончок текөөрү",
+      "extract": "Согончок текөөрү — согончок сөөгүндө өсүп чыккан өсүндү. \nКөп учурда жалпак тамандуулук өтө күчөп кеткенде, согончоктун сөөк чели, анын булчуң жана байламталары жабыркаганда болот. Бийчилерде, күлүк спортсмендерде көп жолугат. Кээде грипп, ангина, ириңдетүүчү инфекция, подаградан кийин болушу мүмкүн. Согончок текөөрү өсүп кеткенде согончок бастырбай өтө катуу ооруйт. Ал катуу ооругандыктан бутунун учу менен же бут кетменинин кыры менен басат. Көпчүлүк мындай оорулуу кишилерге таяк же балдак менен басууга туура келет."
+    },
+    "zh": {
+      "title": "足底筋膜炎",
+      "extract": "足底筋膜炎，又稱跑者足，是一種發生在支撐足弓的結締組織著骨點（肌腱和韌帶附著於骨頭處）病變。患者會有腳跟或腳底疼痛，每天起床或是休息後開始走路的第一步，症狀最嚴重。若將腳掌及腳趾向脛骨方向彎曲（背屈），也會引發疼痛。一般症狀都是緩慢漸進出現，且約三分之一的患者雙腳都有類似症狀。\n"
+    }
+  }
+}

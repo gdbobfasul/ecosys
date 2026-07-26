@@ -1,0 +1,100 @@
+{
+  "id": "sunburn",
+  "langs": {
+    "bg": {
+      "title": "Слънчево изгаряне",
+      "extract": "Слънчевото изгаряне е изгаряне на тъканта, поради излагане на ултравиолетови лъчи, обикновено от Слънцето. Обичайните симптоми при хора и животни са зачервена болезнена кожа, която е топла на допир, обща умора и слаба замаяност. Излагането на Слънце при по-малки количества ултравиолетова радиация произвежда не червенина, а слънчев тен.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/38/Sunburn.jpg"
+    },
+    "ru": {
+      "title": "Солнечный ожог",
+      "extract": "Зага́р — изменение цвета кожи под воздействием ультрафиолетовых лучей вследствие образования и накопления в нижних слоях кожи специфического пигмента — меланина.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/98/Sunbathing_icon.png"
+    },
+    "uk": {
+      "title": "Сонячний опік",
+      "extract": "Сонячний опік — це почервоніння та набряк шкіри внаслідок надмірного впливу ультрафіолетового випромінювання (УФ). Симптоми опіку часто проявляються через 2–6 годин після впливу сонця. Інші симптоми можуть включати біль, відчуття тепла та пухирі. Через кілька днів може з'явитися лущення шкіри. Ускладнення можуть включати зневоднення, інфекцію, рак шкіри, старіння шкіри та пігментні плями.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Sunburn_Treatment_Practices.jpg"
+    },
+    "en": {
+      "title": "Sunburn",
+      "extract": "Sunburn is a form of radiation burn that affects living tissue, such as skin, that results from an overexposure to ultraviolet (UV) radiation, usually from the Sun. Common symptoms in humans and other animals include red or reddish skin that is hot to the touch or painful, general fatigue, and mild dizziness. Other symptoms include blistering, peeling skin, swelling, itching, and nausea. Excessive UV radiation is the leading cause of (primarily) non-malignant skin tumors, which in extreme cases can be life-threatening. Sunburn is an inflammatory response in the tissue triggered by the nucleic acid damage caused by UV radiation.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Sunburn_Treatment_Practices.jpg"
+    },
+    "de": {
+      "title": "Sonnenbrand",
+      "extract": "Der Sonnenbrand ähnelt einer Verbrennung der Haut ersten bis zweiten Grades. Er wird verursacht durch die Ultraviolett-Strahlung der Sonne oder anderer Strahlungsquellen. Dabei kommt es innerhalb von 1–6 Stunden nach der Bestrahlung zu scharf begrenzter Rötung, Hitzegefühl, Juckreiz, Schmerzen, gelegentlich Blasenbildung und Ödemen der bestrahlten Haut. Die Symptome erreichen ihr Maximum nach 12–24 Stunden und bilden sich innerhalb von drei bis sieben Tagen ggf. mit Abschuppung zurück. Im Gesicht kann es auch zu Binde- und Hornhautentzündung des Auges kommen. Bei großflächigem Sonnenbrand können auch Fieber, Schwäche und Kopfschmerzen auftreten. Durch Anamnese und Klinik ist der Sonnenbrand von anderen Photodermatosen wie Wiesengräserdermatitis, phototoxischen Dermatitiden, Lichturtikaria u. Ä. gut unterscheidbar.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Sonnenbrand_20030612.jpg"
+    },
+    "fr": {
+      "title": "Coup de soleil",
+      "extract": "Un coup de soleil ou érythème actinique est une brûlure causée par une exposition de la peau au rayonnement du Soleil. On le distingue de l'allergie solaire ou lucite, et de la photosensibilisation.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Sunburnt_neck_and_shoulders.jpg"
+    },
+    "es": {
+      "title": "Quemadura solar",
+      "extract": "Se denomina quemadura de sol o quemadura solar al enrojecimiento y la hinchazón de la piel que se produce debido a la sobreexposición a la radiación ultravioleta (UV) del sol. El inicio suele ser de 2 a 6 horas después de la exposición. Otros síntomas pueden incluir dolor, calor y ampollas. Después de unos días se puede observar descamación de la piel. Las complicaciones pueden incluir deshidratación, infecciones, cáncer de piel, envejecimiento de la piel y manchas marrones., no debe confundirse con el Bronceado.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Sunburn_Treatment_Practices.jpg"
+    },
+    "it": {
+      "title": "Eritema solare",
+      "extract": "Per eritema solare nella sua forma diretta acuta, in campo medico si intende una ustione di primo grado che si manifesta successivamente ad una prolungata esposizione ai raggi UV, senza la dovuta protezione o comunque con una protezione inadeguata. Per la comparsa di tale eritema, di solito si attendono diverse ore (6-12) dopo l'esposizione, che variano a seconda della gravità. Istologicamente compaiono delle discheratosi, e solitamente l'eritema si risolve in 4-5 giorni, lasciando una iperpigmentazione conosciuta come abbronzatura.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Sunburn_%28131417495%29.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Queimadura solar",
+      "extract": "Uma queimadura solar é uma queimadura na pele produzida pela superexposição à radiação ultravioleta (UV), geralmente dos raios solares. Uma queimadura semelhante pode ser produzida por uma superexposição a outras fontes de UV como lâmpadas de bronzeamento, ou profissionalmente, em soldadores. Os sintomas usuais são pele avermelhada e quente ao toque, sensação de ardor e leve tontura.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/38/Sunburn.jpg"
+    },
+    "ar": {
+      "title": "حرق شمسي",
+      "extract": "لفح الشمس أو السفعة أو حروق الشمس. هو شكل من أشكال الإشعاع الذي تبثه اشعة الشمس, ويصيب الأنسجة الحية للإنسان، مثل الجلد،بحروق نتيجة للتعرض المفرط للأشعة فوق البنفسجية ،ممايسبب التهاب واحمرار بالجلد. وهذا الالتهاب هو رد فعل من جهاز المناعة تجاه خلايا الجلد التالفة، وفي بعض الحالات، الأوعية الدموية التالفة.\nوقد تصاب بحرق شمسي في أي وقت من أوقات النهار وفي أي فصل من الفصول، برغم أن الشمس تكون في أقصى شدتها ظهرا وفي فصل الصيف. وقد لا تفعل السحب الكثير لاحتجاز الأشعة فوق البنفسجية، حتى الظلال لا تضمن الحماية من الأشعة فوق البنفسجية.فالماء، والرمال والجليد والأماكن ذات الألوان الفاتحة تعكس هذه الأشعة، وهي ضارة بنفس قدر أشعة الشمس المباشرة تقريبا. وبرغم أن أشعة شمسالشتاء تكون أضعف إلا أنها قد تسبب حرقا بالجلد الذي لا يتمتع بالحماية، وبخاصة إذا انعكست من الجليد أو من الماء.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Sunburnt_neck_and_shoulders.jpg"
+    },
+    "hi": {
+      "title": "सनबर्न",
+      "extract": "सनबर्न विकिरण से होने वाली जलन का एक प्रकार है जो त्वचा जैसे जीवित ऊतकों को प्रभावित करता है। यह आमतौर पर सूरज से निकलने वाली पराबैंगनी किरणों के ज़्यादा संपर्क में आने से होता है। इंसानों और दूसरे जानवरों में आम लक्षणों में त्वचा का लाल या लालिमा-युक्त होना, सामान्य थकान और हल्का चक्कर आना शामिल हैं।",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Sunburn_Treatment_Practices.jpg"
+    },
+    "ja": {
+      "title": "日焼け",
+      "extract": "日焼け（ひやけ）は、紫外線を皮膚に浴びることにより、皮膚が赤く炎症を起こす急性症状 と、人体の色素のメラニンが皮膚表面に色素沈着すること である。サンバーンでは日焼けから2-6時間後には赤くなり次第に痛みを増し、しばしば後日に皮剥けを起こすが、サンタンは数日後に見られやや遅い。日焼けの影響として皮膚がんが知られる。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/38/Sunburn.jpg"
+    },
+    "zh": {
+      "title": "曬傷",
+      "extract": "曬傷是一種由于過度暴露于紫外線（通常為日光）下導致的輻射灼傷。它促進細胞凋亡，引起的症狀為皮膚發紅、發痛，在少數極端案例中會導致生命危險，而輕度暴露于紫外線下則只會導致曬黑，而稍微有些曬黑的皮膚對紫外線的抵禦力更強一些。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Sunburnt_woman.jpeg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/sunburn-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/3/38/Sunburn.jpg"
+    },
+    {
+      "file": "img/sunburn-1.png",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/9/98/Sunbathing_icon.png"
+    },
+    {
+      "file": "img/sunburn-2.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Sunburn_Treatment_Practices.jpg"
+    },
+    {
+      "file": "img/sunburn-3.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Sonnenbrand_20030612.jpg"
+    },
+    {
+      "file": "img/sunburn-4.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Sunburnt_neck_and_shoulders.jpg"
+    },
+    {
+      "file": "img/sunburn-5.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Sunburn_%28131417495%29.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    {
+      "file": "img/sunburn-6.jpeg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Sunburnt_woman.jpeg"
+    }
+  ]
+}

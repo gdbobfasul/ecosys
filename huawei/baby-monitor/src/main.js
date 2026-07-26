@@ -9,7 +9,7 @@ import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
 mountEcosystem('baby-monitor'); // „Още от Pupikes" showcase
 playIntro(); // кратко „Pupikes" интро при старт
-startPromoAds('baby-monitor'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
+startPromoAds('baby-monitor'); // реклами: старт (след интрото) + среда + край (PUPIKES_END_AD)
 mountHelp('baby-monitor'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('baby-monitor'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
 mountLegalGate('baby-monitor'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)

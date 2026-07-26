@@ -1,13 +1,13 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token - Project Files
+# PUPIKES1 Token - Project Files
 
 ## 📁 Структура на Файловете
 
 ```
 /outputs/
-├── kcy1_token_v3.4_FINAL.sol   ⭐ ГЛАВЕН CONTRACT (използвай този!)
-├── kcy1_token_v3.2.sol         (предишна версия - за справка)
-├── kcy1_token_v3.1.sol         (предишна версия - за справка)
+├── pupikes1_token_v3.4_FINAL.sol   ⭐ ГЛАВЕН CONTRACT (използвай този!)
+├── pupikes1_token_v3.2.sol         (предишна версия - за справка)
+├── pupikes1_token_v3.1.sol         (предишна версия - за справка)
 └── docs/                       📚 ДОКУМЕНТАЦИЯ
     ├── CHANGELOG_v3.4_BG.md          (Промени в v3.4)
     ├── LOGIC_VERIFICATION_BG.md      (Потвърждение на логиката)
@@ -21,7 +21,7 @@
 
 ### За Deployment:
 
-1. **Използвай:** `kcy1_token_v3.4_FINAL.sol`
+1. **Използвай:** `pupikes1_token_v3.4_FINAL.sol`
 2. **Прочети:** `docs/CHANGELOG_v3.4_BG.md` (нови промени)
 3. **Прочети:** `docs/LOGIC_VERIFICATION_BG.md`
 4. **Deploy** на BSC mainnet/testnet
@@ -32,7 +32,7 @@
 
 ### При Deployment:
 ```
-1,000,000 KCY1 Tokens
+1,000,000 PUPIKES1 Tokens
 ├─► 600,000 → DEV_WALLET_mm_vis (резервирани за exempt портфейли)
 └─► 400,000 → Contract (за продажба/ликвидност)
 ```
@@ -72,4 +72,4 @@ DEV_WALLET_mm_vis (600,000):
 
 **Версия:** 3.4 FINAL  
 **Статус:** ✅ Production Ready  
-**Contract:** kcy1_token_v3.4_FINAL.sol
+**Contract:** pupikes1_token_v3.4_FINAL.sol

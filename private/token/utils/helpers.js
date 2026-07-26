@@ -32,7 +32,7 @@ async function getTokenContract(address = null) {
     address = config.tokenAddress;
   }
   
-  return await hre.ethers.getContractAt("KCY1Token", address);
+  return await hre.ethers.getContractAt("PUPIKES1Token", address);
 }
 
 /**
@@ -132,14 +132,14 @@ async function displayBalances(balances = null, distAddrs = null) {
   }
   
   console.log("💰 Balances:");
-  console.log(`  DEV (${distAddrs.dev}):`, formatTokens(balances.dev), "KCY1");
-  console.log(`  Marketing (${distAddrs.marketing}):`, formatTokens(balances.marketing), "KCY1");
-  console.log(`  Team (${distAddrs.team}):`, formatTokens(balances.team), "KCY1");
-  console.log(`  Advisor (${distAddrs.advisor}):`, formatTokens(balances.advisor), "KCY1");
-  console.log("  Contract:", formatTokens(balances.contract), "KCY1");
-  console.log("  Owner:", formatTokens(balances.owner), "KCY1");
+  console.log(`  DEV (${distAddrs.dev}):`, formatTokens(balances.dev), "PUPIKES1");
+  console.log(`  Marketing (${distAddrs.marketing}):`, formatTokens(balances.marketing), "PUPIKES1");
+  console.log(`  Team (${distAddrs.team}):`, formatTokens(balances.team), "PUPIKES1");
+  console.log(`  Advisor (${distAddrs.advisor}):`, formatTokens(balances.advisor), "PUPIKES1");
+  console.log("  Contract:", formatTokens(balances.contract), "PUPIKES1");
+  console.log("  Owner:", formatTokens(balances.owner), "PUPIKES1");
   console.log("");
-  console.log("📊 Total Supply:", formatTokens(balances.totalSupply), "KCY1");
+  console.log("📊 Total Supply:", formatTokens(balances.totalSupply), "PUPIKES1");
 }
 
 /**

@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 
 /**
  * @title SimpleMultiSig
- * @notice Minimal 3-of-5 multi-sig wallet for controlling KCY1 token
+ * @notice Minimal 3-of-5 multi-sig wallet for controlling PUPIKES1 token
  * @dev v1.0093 - план addresses1: 1 Trezor + 1 Tangem + 3 Ledger
  */
 contract SimpleMultiSig {
@@ -17,7 +17,7 @@ contract SimpleMultiSig {
     uint256 public constant REQUIRED = 3;  // 3-of-5 signatures
     
     struct Transaction {
-        address to;           // Target contract (KCY1)
+        address to;           // Target contract (PUPIKES1)
         bytes data;           // Function call data
         bool executed;        // Executed?
         uint256 confirmations; // Count
@@ -96,7 +96,7 @@ contract SimpleMultiSig {
     
     /**
      * @notice Submit a new transaction
-     * @param to Target contract address (KCY1 token)
+     * @param to Target contract address (PUPIKES1 token)
      * @param data Function call data (encoded)
      * @return txId Transaction ID
      */

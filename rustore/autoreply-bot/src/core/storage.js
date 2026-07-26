@@ -37,7 +37,7 @@ function defaultState() {
       whatsapp: { enabled: true },     // авто-отговор иска „Notification access"
       viber: { enabled: true },
       messenger: { enabled: true },
-      kcy: {
+      pupikes: {
         enabled: false,                // изключен по подразбиране, докато не се настрои
         baseUrl: '',                   // напр. https://my.girl.place
         phone: '',                     // телефон за вход в чата
@@ -50,7 +50,7 @@ function defaultState() {
 
     // Обработени съобщения по канал/разговор (за да не отговаряме два пъти на едно).
     seen: {
-      kcy: {}                          // { [friendId]: { lastTs, ids: [...] } }
+      pupikes: {}                          // { [friendId]: { lastTs, ids: [...] } }
     }
   };
 }

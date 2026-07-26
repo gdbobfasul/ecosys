@@ -13,9 +13,20 @@ const IMGDIR = path.join(OUT, 'images');
 const TARGET = parseInt(process.env.TARGET || '10000', 10);
 
 const SEED_CATS = [
+  // Кожа/травми (както преди)
   'Category:Injuries', 'Category:Cutaneous conditions', 'Category:Skin conditions',
   'Category:Symptoms and signs', 'Category:Medical signs', 'Category:Dermatologic terminology',
-  'Category:Bone fractures', 'Category:Burns', 'Category:Wounds', 'Category:Bites and stings'
+  'Category:Bone fractures', 'Category:Burns', 'Category:Wounds', 'Category:Bites and stings',
+  // РАЗНООБРАЗИЕ по системи на тялото (за да не е всичко „бенка")
+  'Category:Eye diseases', 'Category:Disorders of conjunctiva', 'Category:Eyelid disorders',
+  'Category:Oral diseases', 'Category:Tooth disorders', 'Category:Diseases of oral cavity, salivary glands and jaws',
+  'Category:Disorders of ear', 'Category:Otolaryngology', 'Category:Nail diseases',
+  'Category:Bacterial diseases', 'Category:Viral exanthems', 'Category:Fungal diseases',
+  'Category:Parasitic infestations, stings, and bites of the skin', 'Category:Tropical diseases',
+  'Category:Sexually transmitted diseases and infections', 'Category:Vascular-related cutaneous conditions',
+  'Category:Foot diseases', 'Category:Hand diseases', 'Category:Lip disorders',
+  'Category:Allergic conditions', 'Category:Autoimmune diseases', 'Category:Connective tissue diseases',
+  'Category:Sports injuries', 'Category:Poisoning', 'Category:Swelling'
 ];
 const UA = { 'User-Agent': 'PupikesMedikit/1.0 (educational; contact ltd.dai.grup@gmail.com)' };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -82,13 +93,16 @@ async function main() {
       if (n >= TARGET) break;
       if (seenUrl.has(url)) continue; seenUrl.add(url);
       const ext = (url.split('?')[0].split('.').pop() || 'jpg').toLowerCase();
-      const name = `${slug}_${k}.${ext}`;
+      const name = `wd_${slug}_${k}.${ext}`;
+      if (fs.existsSync(path.join(IMGDIR, name))) { k++; continue; }   // вече свалено → не дублирай
       if (await download(url, path.join(IMGDIR, name))) { index.push({ file: 'images/' + name, article: title, url }); n++; k++; }
       await sleep(80);
     }
     if (index.length && index.length % 200 < 2) console.log(`  ...${n} снимки (${title})`);
   }
-  fs.writeFileSync(path.join(OUT, 'images-index.json'), JSON.stringify({ count: index.length, items: index, source: 'Wikipedia/Wikimedia Commons (CC/PD)', updated: new Date().toISOString().slice(0, 10) }, null, 2));
+  // ВАЖНО: пиши в ОТДЕЛЕН индекс (НЕ в master), за да не изтрием истинските ISIC диагнози.
+  // merge-doctor-images.mjs чете всички images-index*.json за етикети и сглобява master наново.
+  fs.writeFileSync(path.join(OUT, 'images-index.diverse.json'), JSON.stringify({ count: index.length, items: index, source: 'Wikipedia/Wikimedia Commons (CC/PD)', updated: new Date().toISOString().slice(0, 10) }, null, 2));
   console.log(`DONE — ${index.length} снимки → ${IMGDIR}`);
 }
 main().catch((e) => { console.error('FATAL', e.message); process.exit(1); });

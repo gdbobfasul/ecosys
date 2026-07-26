@@ -5,7 +5,7 @@
 //   • @aparajita/capacitor-secure-storage   — пази master паролата в Android Keystore
 // Ако плъгините липсват (напр. в браузъра при разработка) → биометрията просто се
 // скрива и приложението работи само с парола. НИКОГА не чупим заради липсващ плъгин.
-const SECURE_KEY = 'kcyauth.master';
+const SECURE_KEY = 'pupikesauth.master';
 
 let _bio = null, _sec = null, _probed = false;
 

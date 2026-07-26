@@ -81,7 +81,7 @@ function gameStep(app, dist) {
       };
       await page.route('**/*', stub);
       try {
-        await page.addInitScript(() => { try { window.__KCY_INTRO_OFF__ = true; } catch (e) {} });
+        await page.addInitScript(() => { try { window.__PUPIKES_INTRO_OFF__ = true; } catch (e) {} });
         const resp = await page.goto('http://127.0.0.1:' + port + '/', { waitUntil: 'load', timeout: 30000 });
         if (!resp || resp.status() >= 400) throw new Error(app + ' не зареди (HTTP ' + (resp ? resp.status() : 0) + ')');
         await page.waitForTimeout(1000);

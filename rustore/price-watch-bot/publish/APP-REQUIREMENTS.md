@@ -25,7 +25,7 @@
    „Поверителност", „Условия" + видимата версия на приложението.
    Каталогът на препратките е СЪРВЪРЕН (`public/promo/kcy-promo.json`) и включва:
    **всички новинарски приложения, всички приложения от семейството Pupikes Toolkit
-   (kcy-toolkit-…) и играта „Rustam picks cucumbers"**.
+   (pupikes-toolkit-…) и играта „Rustam picks cucumbers"**.
 
 ## Други глобални правила
 

@@ -13,7 +13,7 @@ async function main() {
     console.log("🔧 EXEMPT SLOTS УПРАВЛЕНИЕ");
     console.log("========================================\n");
     
-    const token = await ethers.getContractAt("KCY1Token", config.TOKEN_ADDRESS);
+    const token = await ethers.getContractAt("PUPIKES1Token", config.TOKEN_ADDRESS);
     const [signer] = await ethers.getSigners();
     
     console.log("🔗 Използван адрес:", signer.address);

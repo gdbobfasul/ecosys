@@ -37,6 +37,12 @@ export async function conditionText(id, lang) {
   const L = rec.langs[lang] || rec.langs[String(lang).split('-')[0]] || rec.langs.en;
   return (L && L.extract) || '';
 }
+// Авторитетен текст за БОЛКА В ЗОНА (режим „Къде боли") — от bodypain пакета (Wikipedia, per език).
+export async function bodyPainText(zoneId, lang) {
+  const rec = await fetchLocal('reference/bodypain/' + zoneId + '.json'); if (!rec || !rec.langs) return '';
+  const L = rec.langs[lang] || rec.langs[String(lang).split('-')[0]] || rec.langs.en;
+  return (L && L.extract) || '';
+}
 
 // Оценка на състоянията спрямо входа. input = { area, painLevel(0-3), size(0-2), text }.
 // boosts (по избор) = карта {id: точки} от анализа на СНИМКАТА (виж photoBoost) — прибавя се.
@@ -109,8 +115,113 @@ export async function loadReference() {
   try { const j = await getJson('reference/index.json'); return (j && j.items) || []; }
   catch (_) { return []; }
 }
-export async function imageMatches(/* file */) {
-  const ref = await loadReference();
-  if (!ref.length) return [];        // няма свалена референтна библиотека още
-  return [];                          // TODO: MobileNet embedding + косинус срещу ref (следваща стъпка)
+
+// ── РЕАЛНО сравнение срещу снимковия корпус (21 971 снимки) ──────────────────────────
+// В апа НЕ носим снимките (226 MB), а ЧИСЛОВ ОПИС: 128 байта на снимка (8×8 сива структура +
+// 4×4×4 цветова хистограма), сметнати от ЦЕНТЪРА на кадъра. Тук смятаме същия отпечатък за
+// заснетата снимка и търсим най-близките (L1 разстояние) → етикетите им подсказват състояния.
+// ПО-БОГАТИЯТ опис (по-висок таван на снимки/диагноза → по-точен мач) живее на СЪРВЪРА и се тегли
+// ОНЛАЙН. Офлайн ползваме вградения (по-лек) опис от бъндъла. Така апът е лек, но по-точен с интернет.
+const MEDIKIT_BASE = 'https://selflearning.bot.nu/medikit';
+function parseSigs(j) {
+  if (!j || !j.items || !j.items.length) return null;
+  const dim = j.dim || 128, n = j.items.length;
+  const flat = new Uint8Array(n * dim), labs = new Int32Array(n);
+  for (let i = 0; i < n; i++) {
+    const b = atob(j.items[i].v);
+    for (let k = 0; k < dim; k++) flat[i * dim + k] = b.charCodeAt(k);
+    labs[i] = j.items[i].l | 0;
+  }
+  return { dim, n, flat, labs, labels: j.labels || [] };
+}
+let SIGS = null;
+async function loadSignatures() {
+  if (SIGS !== null) return SIGS;
+  // Телефонът е ОСНОВЕН (вграденият опис се събира под бюджета) → пробвай първо него (мигновено, офлайн).
+  try { const loc = parseSigs(await fetchLocal('reference/image-signatures.json')); if (loc) { SIGS = loc; return SIGS; } } catch (_) {}
+  // Резерв: ако вграденият липсва/е празен → по-богатия от сървъра (изисква интернет).
+  try { const srv = parseSigs(await getJson(MEDIKIT_BASE + '/image-signatures.json')); SIGS = srv || false; } catch (_) { SIGS = false; }
+  return SIGS;
+}
+// Същият алгоритъм като офлайн описа, но през canvas.
+async function photoSignature(file) {
+  if (!file) return null;
+  let img; try { img = await loadImg(file); } catch (_) { return null; }
+  const w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+  const cw = Math.max(2, Math.floor(w * 0.6)), ch = Math.max(2, Math.floor(h * 0.6));
+  const sx = Math.floor((w - cw) / 2), sy = Math.floor((h - ch) / 2);
+  const out = new Uint8Array(128);
+  // 8×8 сива структура, нормализирана по min/max
+  const c1 = document.createElement('canvas'); c1.width = 8; c1.height = 8;
+  const x1 = c1.getContext('2d'); x1.drawImage(img, sx, sy, cw, ch, 0, 0, 8, 8);
+  let d1; try { d1 = x1.getImageData(0, 0, 8, 8).data; } catch (_) { return null; }
+  const gray = new Array(64);
+  for (let i = 0; i < 64; i++) gray[i] = 0.299 * d1[i * 4] + 0.587 * d1[i * 4 + 1] + 0.114 * d1[i * 4 + 2];
+  let mn = Infinity, mx = -Infinity;
+  for (let i = 0; i < 64; i++) { if (gray[i] < mn) mn = gray[i]; if (gray[i] > mx) mx = gray[i]; }
+  const rng = (mx - mn) || 1;
+  for (let i = 0; i < 64; i++) out[i] = Math.max(0, Math.min(255, Math.round(((gray[i] - mn) / rng) * 255)));
+  // 4×4×4 цветова хистограма от 32×32
+  const c2 = document.createElement('canvas'); c2.width = 32; c2.height = 32;
+  const x2 = c2.getContext('2d'); x2.drawImage(img, sx, sy, cw, ch, 0, 0, 32, 32);
+  let d2; try { d2 = x2.getImageData(0, 0, 32, 32).data; } catch (_) { return null; }
+  const hist = new Array(64).fill(0), px = 32 * 32;
+  for (let i = 0; i < px; i++) { const r = d2[i * 4] >> 6, g = d2[i * 4 + 1] >> 6, b = d2[i * 4 + 2] >> 6; hist[r * 16 + g * 4 + b]++; }
+  for (let i = 0; i < 64; i++) out[64 + i] = Math.min(255, Math.round((hist[i] / px) * 255 * 8));
+  return out;
+}
+// Етикет от корпуса → id на състояние (където има смислово съответствие).
+function condFromLabel(lab) {
+  const s = String(lab || '').toLowerCase();
+  if (/sunburn/.test(s)) return 'sunburn';
+  if (/burn|scald/.test(s)) return 'burn';
+  if (/bruis|contusion|h(a)?ematoma|ecchymos/.test(s)) return 'bruise';
+  if (/abrasion|graze/.test(s)) return 'abrasion';
+  if (/wound|laceration|\bcut\b|incision/.test(s)) return 'cut';
+  if (/urticaria|hives/.test(s)) return 'hives';
+  if (/dermatitis|eczema/.test(s)) return 'eczema';
+  if (/tinea|dermatophyt|fungal|candid|mycos/.test(s)) return 'fungal';
+  if (/furuncle|boil|abscess|carbuncle/.test(s)) return 'boil';
+  if (/cellulitis|impetigo|infect|pyoderma/.test(s)) return 'infection';
+  if (/blister|bulla|vesic/.test(s)) return 'blister';
+  if (/frostbite|chilblain|pernio/.test(s)) return 'frostbite';
+  if (/fracture/.test(s)) return 'fracture';
+  if (/sprain/.test(s)) return 'sprain';
+  if (/dislocation/.test(s)) return 'dislocation';
+  if (/bite|sting/.test(s)) return 'bite';
+  if (/edema|oedema|swelling/.test(s)) return 'swelling';
+  if (/ingrown/.test(s)) return 'ingrown_nail';
+  if (/rash|exanthem|erythema/.test(s)) return 'rash';
+  return '';
+}
+// Връща { conds:[condition обекти], top:[{label,count}], dermat:bool }.
+export async function imageMatches(file) {
+  const empty = { conds: [], top: [], dermat: false };
+  const S = await loadSignatures(); if (!S) return empty;
+  const q = await photoSignature(file); if (!q) return empty;
+  const K = 15, dim = S.dim, n = S.n, flat = S.flat;
+  const bestD = new Array(K).fill(Infinity), bestI = new Array(K).fill(-1);
+  for (let i = 0; i < n; i++) {
+    let d = 0; const off = i * dim;
+    for (let k = 0; k < dim; k++) { const diff = q[k] - flat[off + k]; d += diff < 0 ? -diff : diff; }
+    if (d < bestD[K - 1]) {                       // вмъкване в подредения топ-K
+      let j = K - 1;
+      while (j > 0 && bestD[j - 1] > d) { bestD[j] = bestD[j - 1]; bestI[j] = bestI[j - 1]; j--; }
+      bestD[j] = d; bestI[j] = i;
+    }
+  }
+  const counts = new Map(), condCount = new Map();
+  for (let t = 0; t < K; t++) {
+    const i = bestI[t]; if (i < 0) continue;
+    const lab = S.labels[S.labs[i]] || '';
+    counts.set(lab, (counts.get(lab) || 0) + 1);
+    const cid = condFromLabel(lab);
+    if (cid) condCount.set(cid, (condCount.get(cid) || 0) + 1);
+  }
+  const top = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([label, count]) => ({ label, count }));
+  const ids = [...condCount.entries()].sort((a, b) => b[1] - a[1]).map(([id]) => id);
+  const conds = ids.map((id) => CONDITIONS.find((c) => c.id === id)).filter(Boolean);
+  // Дерматологичен характер (бенки/лезии) — корпусът е предимно такъв; отбелязва се отделно.
+  const dermat = top.some((t) => /melanom|nevus|naevus|carcinom|keratos|lesion|mole|dysplas|lentigo|dermatofibrom|hemangiom|angiokeratom|neurofibrom|acanthoma|verruca|melanocytic|benign|malignant/.test(t.label));
+  return { conds, top, dermat };
 }

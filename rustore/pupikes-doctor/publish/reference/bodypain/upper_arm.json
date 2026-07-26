@@ -1,0 +1,49 @@
+{
+  "id": "upper_arm",
+  "langs": {
+    "ru": {
+      "title": "Миалгия",
+      "extract": "Миалги́я — симптом, выраженный болью мышц. Может быть вызван разными причинами; возможна связь с нарушением проницаемости клеточной мембраны, воспалительными процессами. Часто сопровождается слабостью, отёками. В зависимости от этиологии, боль может носить разный характер, чаще всего — ноющий, давящий. Часто название используют как наименование некоторых видов миозита."
+    },
+    "uk": {
+      "title": "Міалгія",
+      "extract": "Міалгія — в медицині симптом, який супроводжується больовими відчуттями різного характеру та генезу у м'язах."
+    },
+    "en": {
+      "title": "Myalgia",
+      "extract": "Myalgia or muscle pain is a painful sensation evolving from muscle tissue. It is a symptom of many diseases. The most common cause of acute myalgia is the overuse of a muscle or group of muscles; another likely cause is viral infection, especially when there has been no injury."
+    },
+    "de": {
+      "title": "Myalgie",
+      "extract": "Myalgie ist der medizinische Fachbegriff für Muskelschmerz."
+    },
+    "fr": {
+      "title": "Myalgie",
+      "extract": "Une myalgie est une douleur musculaire. C'est le terme générique englobant toutes les douleurs musculaires du corps charnu du muscle."
+    },
+    "es": {
+      "title": "Mialgia",
+      "extract": "Las mialgias o dolores musculares consisten en dolores o molestias que pueden afectar a uno o varios músculos del cuerpo. También pueden estar implicados ligamentos, tendones y fascias. Las causas son muy variadas. Las principales incluyen sobrecarga, tensión o lesiones musculares por ejercicios o trabajos físicos intensos. Asimismo, el dolor muscular puede ser un síntoma de ciertas enfermedades que afectan a todo el cuerpo, entre las cuales destaca la fibromialgia."
+    },
+    "it": {
+      "title": "Mialgia",
+      "extract": "La mialgìa è un dolore localizzato in uno o in più muscoli. I muscoli colpiti appaiono contratti, dolenti se toccati o usati. Solitamente l'insorgere del dolore è dovuto a una improvvisa contrazione involontaria del muscolo, ma può anche essere dovuta ad una rottura parziale della struttura muscolare dovuta ad un trauma. Il dolore ai muscoli si riscontra anche in alcune forme virali come l'influenza, reumatiche o nella tensione continuata cui il muscolo è sottoposto a causa dello stress."
+    },
+    "pt": {
+      "title": "Mialgia",
+      "extract": "Mialgia é um termo utilizado para caracterizar dores musculares em qualquer parte do corpo."
+    },
+    "ar": {
+      "title": "ألم عضلي",
+      "extract": "الألم العضلي أو الوجع العضلي هو عرض يظهرُ في العديد من الأمراض والاضطرابات. من الأسباب الأكثر شيوعا هي الاستخدام المفرط أو الإفراط في تمدد عضلة أو مجموعة من العضلات. الألم العضلي دون تاريخ ضربة غالبا ما تكون بسبب عدوى فيروسية. على المدى الطويل قد يكون مؤشرا لوهن عضلي أيضي، وبعض حالات نقص التغذية أو متلازمة التعب المزمن."
+    },
+    "ja": {
+      "title": "筋肉痛",
+      "extract": "筋肉痛 は、筋肉に生じる痛みであり、その原因はさまざまである。"
+    },
+    "zh": {
+      "title": "肌肉痛",
+      "extract": "肌肉痛 简称肌痛，如字面意思所言——肌肉的疼痛，是多种疾病的症狀，其最常见的成因是肌肉（群）的過度使用。没有肌肉创伤史的肌肉痛则通常是由病毒感染所引起，而长期肌肉痛则可能是代謝性肌肉病變、營養不良或慢性疲勞症候群。另外，接受某些藥物或疫苗的肌肉注射後也可能會在注射部位造成短暫的肌肉痛。\n"
+    }
+  }
+}

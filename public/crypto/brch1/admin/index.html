@@ -897,10 +897,10 @@ function clearSnapshots() {
 // Init
 // ============================================================
 window.addEventListener('DOMContentLoaded', () => {
-    // Pre-fill from KCY_CONFIG if available
-    if (window.KCY_CONFIG && window.KCY_CONFIG.contracts && window.KCY_CONFIG.contracts.brch1
-        && window.KCY_CONFIG.contracts.brch1.startsWith('0x') && window.KCY_CONFIG.contracts.brch1.length === 42) {
-        document.getElementById('tokenAddr').value = window.KCY_CONFIG.contracts.brch1;
+    // Pre-fill from PUPIKES_CONFIG if available
+    if (window.PUPIKES_CONFIG && window.PUPIKES_CONFIG.contracts && window.PUPIKES_CONFIG.contracts.brch1
+        && window.PUPIKES_CONFIG.contracts.brch1.startsWith('0x') && window.PUPIKES_CONFIG.contracts.brch1.length === 42) {
+        document.getElementById('tokenAddr').value = window.PUPIKES_CONFIG.contracts.brch1;
     } else {
         const saved = localStorage.getItem(STORAGE_KEY_ADDR);
         if (saved) document.getElementById('tokenAddr').value = saved;

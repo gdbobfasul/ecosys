@@ -9,7 +9,7 @@ import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
 mountEcosystem('titans-fight'); // „Още от Pupikes" showcase
 playIntro(); // кратко „Pupikes" интро при старт
-startPromoAds('titans-fight'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
+startPromoAds('titans-fight'); // реклами: старт (след интрото) + среда + край (PUPIKES_END_AD)
 mountHelp('titans-fight'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('titans-fight'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
 mountLegalGate('titans-fight'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)

@@ -25,7 +25,18 @@ const CONDITIONS = [
   { id: 'rash', title: 'Rash' },
   { id: 'infection', title: 'Skin infection' },
   { id: 'swelling', title: 'Swelling (medical)' },
-  { id: 'nosebleed', title: 'Nosebleed' }
+  { id: 'nosebleed', title: 'Nosebleed' },
+  { id: 'blister', title: 'Blister' },
+  { id: 'abrasion', title: 'Abrasion (medical)' },
+  { id: 'boil', title: 'Boil' },
+  { id: 'eczema', title: 'Dermatitis' },
+  { id: 'fungal', title: 'Dermatophytosis' },
+  { id: 'hives', title: 'Hives' },
+  { id: 'sunburn', title: 'Sunburn' },
+  { id: 'frostbite', title: 'Frostbite' },
+  { id: 'dislocation', title: 'Joint dislocation' },
+  { id: 'muscle_strain', title: 'Strain (injury)' },
+  { id: 'ingrown_nail', title: 'Ingrown nail' }
 ];
 
 const UA = { 'User-Agent': 'PupikesMedikit/1.0 (educational; contact ltd.dai.grup@gmail.com)' };

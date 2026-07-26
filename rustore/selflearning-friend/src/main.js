@@ -9,7 +9,7 @@ import { mountLegalGate } from './core/legal-gate.js';
 enforceLock();
 mountEcosystem('selflearning-friend'); // „Още от Pupikes" showcase
 playIntro(); // кратко „Pupikes" интро при старт
-startPromoAds('selflearning-friend'); // реклами: старт (след интрото) + среда + край (KCY_END_AD)
+startPromoAds('selflearning-friend'); // реклами: старт (след интрото) + среда + край (PUPIKES_END_AD)
 mountHelp('selflearning-friend'); // универсален бутон „Помощ" (анонимен доклад → портал) // 4-дневно пробно заключване (виж core/lock.js)
 mountPrivacyLink('selflearning-friend'); // footer линк към политиката (Huawei 7.1) + заявка за изтриване на акаунт
 mountLegalGate('selflearning-friend'); // ЕКРАН 3: задължителни политики/предупреждения + отметка (стандарт)

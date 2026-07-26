@@ -2,7 +2,7 @@
 // pump.js — „двигателят" на реалните канали.
 //
 // Свързва входа от каналите с rule-engine-а и изпраща авто-отговорите:
-//   • Pupikes (нашият чат)            — polling по HTTP (kcy-chat.js)
+//   • Pupikes (нашият чат)            — polling по HTTP (pupikes-chat.js)
 //   • WhatsApp/Viber/Messenger    — push event от native плъгина (native-reply.js)
 //
 // Стартира се веднъж от main.js. Не дублира отговори (пази „seen"). Деградира
@@ -13,12 +13,12 @@ import { t, tf } from './i18n.js';
 import { decideReply } from './rule-engine.js';
 import { notifyAutoReply } from './notifier.js';
 import { toast } from '../ui/dom.js';
-import { kcyConfigured, kcyFetchFriends, kcyFetchConversation, kcySend, kcyResetSession } from './kcy-chat.js';
+import { pupikesConfigured, pupikesFetchFriends, pupikesFetchConversation, pupikesSend, pupikesResetSession } from './pupikes-chat.js';
 import { isNativeReplyAvailable, isAccessGranted, onMessage, replyTo } from './native-reply.js';
 
 let _started = false;
-let _kcyTimer = null;
-let _kcyBusy = false;
+let _pupikesTimer = null;
+let _pupikesBusy = false;
 let _unsubNative = null;
 
 // Помощник: добавя ред в дневника.
@@ -67,23 +67,23 @@ async function processIncoming({ channel, sender, text }, deliver, onRendered) {
 }
 
 function channelLabel(id) {
-  return ({ kcy: t('chan_our_chat'), whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: t('chan_demo') })[id] || id;
+  return ({ pupikes: t('chan_our_chat'), whatsapp: 'WhatsApp', viber: 'Viber', messenger: 'Messenger', local: t('chan_demo') })[id] || id;
 }
 
 // --- Pupikes polling --------------------------------------------------------------
 
 // Един такт на Pupikes: намираме разговори с непрочетени → авто-отговор на новите
 // ПОЛУЧЕНИ съобщения, на които още не сме отговаряли.
-async function kcyTick(render) {
-  if (_kcyBusy) return;
+async function pupikesTick(render) {
+  if (_pupikesBusy) return;
   const st = getState();
-  const cfg = st.channels && st.channels.kcy;
-  if (!st.robotOn || !cfg || cfg.enabled === false || !kcyConfigured(cfg)) return;
+  const cfg = st.channels && st.channels.pupikes;
+  if (!st.robotOn || !cfg || cfg.enabled === false || !pupikesConfigured(cfg)) return;
 
-  _kcyBusy = true;
+  _pupikesBusy = true;
   let didReply = false;
   try {
-    const fr = await kcyFetchFriends(cfg);
+    const fr = await pupikesFetchFriends(cfg);
     if (!fr.ok) return; // статусът се вижда в екран „Връзки"
 
     // Само разговори с непрочетени съобщения (естественият сигнал за „ново").
@@ -91,11 +91,11 @@ async function kcyTick(render) {
 
     for (const friend of pending) {
       const friendId = String(friend.userId);
-      const conv = await kcyFetchConversation(cfg, friendId);
+      const conv = await pupikesFetchConversation(cfg, friendId);
       if (!conv.ok) continue;
 
       const seenAll = getState().seen || {};
-      const fseen = (seenAll.kcy && seenAll.kcy[friendId]) || { lastTs: 0, ids: [] };
+      const fseen = (seenAll.pupikes && seenAll.pupikes[friendId]) || { lastTs: 0, ids: [] };
 
       // Само ПОЛУЧЕНИ (sent === false), още необработени, в реда на пристигане.
       const incoming = conv.messages
@@ -111,8 +111,8 @@ async function kcyTick(render) {
       const senderName = friend.displayName || friend.fullName || friendId;
 
       await processIncoming(
-        { channel: 'kcy', sender: senderName, text: last.text },
-        (reply) => kcySend(cfg, { friendId, text: reply })
+        { channel: 'pupikes', sender: senderName, text: last.text },
+        (reply) => pupikesSend(cfg, { friendId, text: reply })
       );
       didReply = true;
 
@@ -123,31 +123,31 @@ async function kcyTick(render) {
         if ((m.timestamp || 0) > lastTs) lastTs = m.timestamp || 0;
       }
       const curSeen = getState().seen || {};
-      const curKcy = curSeen.kcy || {};
+      const curPupikes = curSeen.pupikes || {};
       setState({
-        seen: { ...curSeen, kcy: { ...curKcy, [friendId]: { lastTs, ids: ids.slice(-200) } } }
+        seen: { ...curSeen, pupikes: { ...curPupikes, [friendId]: { lastTs, ids: ids.slice(-200) } } }
       });
     }
 
     if (didReply && typeof render === 'function') render();
   } finally {
-    _kcyBusy = false;
+    _pupikesBusy = false;
   }
 }
 
-function startKcyPolling(render) {
-  stopKcyPolling();
-  kcyResetSession(); // нова настройка → нова сесия (re-login при нужда)
+function startPupikesPolling(render) {
+  stopPupikesPolling();
+  pupikesResetSession(); // нова настройка → нова сесия (re-login при нужда)
   const st = getState();
-  const cfg = st.channels && st.channels.kcy;
+  const cfg = st.channels && st.channels.pupikes;
   const secs = Math.max(5, parseInt((cfg && cfg.pollSeconds) || 20, 10) || 20);
   // Веднага един такт, после на интервал.
-  kcyTick(render);
-  _kcyTimer = setInterval(() => kcyTick(render), secs * 1000);
+  pupikesTick(render);
+  _pupikesTimer = setInterval(() => pupikesTick(render), secs * 1000);
 }
 
-function stopKcyPolling() {
-  if (_kcyTimer) { clearInterval(_kcyTimer); _kcyTimer = null; }
+function stopPupikesPolling() {
+  if (_pupikesTimer) { clearInterval(_pupikesTimer); _pupikesTimer = null; }
 }
 
 // --- Native месинджъри (push event) ------------------------------------------
@@ -199,11 +199,11 @@ export function startPump(render) {
     startNativeListener(render);
   }
   // Pupikes-таймерът се пуска/спира при всяка промяна в настройките.
-  startKcyPolling(render);
+  startPupikesPolling(render);
 }
 
 // Презарежда каналите след промяна в настройките (адрес/токен/интервал/вкл-изкл).
 export function reloadChannels(render) {
   startNativeListener(render);
-  startKcyPolling(render);
+  startPupikesPolling(render);
 }

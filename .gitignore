@@ -103,6 +103,17 @@ private/robot/reports/
 private/robot/robot-logs/
 private/robot/node_modules/
 
+# BugBot — доклади/скрийншоти/логове (генерирани изходи) + третостранни тест-СНИМКИ.
+# Кодът и manifest.json/fetch.mjs ОСТАВАТ в git; самите снимки се свалят с `node fetch.mjs`
+# (възпроизводими 1:1 от точните url-и в manifest.json) — не тежат бинарни файлове в git.
+private/bug-bot/reports/
+private/bug-bot/node_modules/
+# логове на старт менюто (генерирани изходи) — четат се от scriptcheck.js, но не в git
+private/bug-bot/start-menu-logs/
+private/bug-bot/fixtures/medicines/*.jpg
+private/bug-bot/fixtures/medicines/*.jpeg
+private/bug-bot/fixtures/medicines/*.png
+
 # Анимации/видеа — огромни (~610 MB), стоят само локално на диска и се деплойват
 # отделно (НЕ през git). Махнати от цялата git история с filter-repo. НЕ ги връщай в git.
 public/assets/animations/

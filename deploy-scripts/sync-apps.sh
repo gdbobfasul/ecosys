@@ -33,18 +33,17 @@ if [ "$#" -gt 0 ]; then
     TARGETS=("$@")                                  # подадени наготово (напр. от билда)
 else
     echo ""; echo "  Къде да кача приложенията (2 последователни места)?"
-    echo "    1) production + виртуалната машина"
-    echo "    2) production + Tailscale (частен път)"
-    echo "    3) само production"
-    echo "    4) само виртуалната машина"
+    echo "  (production ВИНАГИ през Tailscale — стабилно; пада на публичния само ако TS е спрян)"
+    echo "    1) само production (Tailscale) — препоръчано"
+    echo "    2) production (Tailscale) + виртуалната машина"
+    echo "    3) само виртуалната машина"
     echo "    5) отказ"
-    echo ""; read -p "  Избери [1-5]: " PICK
+    echo ""; read -p "  Избери [1-3/5, Enter=1]: " PICK
     case "$PICK" in
-        1) TARGETS=(prod vm) ;;
-        2) TARGETS=(prod prodts) ;;
-        3) TARGETS=(prod) ;;
-        4) TARGETS=(vm) ;;
-        *) echo "Отказано"; exit 0 ;;
+        2) TARGETS=(prodts vm) ;;
+        3) TARGETS=(vm) ;;
+        5) echo "Отказано"; exit 0 ;;
+        *) TARGETS=(prodts) ;;
     esac
 fi
 
@@ -55,56 +54,92 @@ for t in "${TARGETS[@]}"; do
 done
 [ "${#VALID[@]}" -eq 0 ] && { echo -e "${RED}Няма валидна цел.${NC}"; exit 1; }
 
-# ── архивирай apk/ веднъж. По подразбиране ЦЯЛАТА папка (каталог + всички инсталационни файлове).
-#    Ако е зададен KCY_APPS_ONLY (имена, напр. "fps-hunter market-pulse") → само техните APK/EXE
-#    + каталожните файлове (index/catalog/versions/лого — за да остане страницата консистентна). ──
-TAR="${HOME}/pupikes-apps-$(date +%Y%m%d-%H%M%S).tar.gz"
-echo ""; echo -e "${YELLOW}[1] Архивиране на apk/ ...${NC}"
+# ── ДЕЛТА КАЧВАНЕ (мащабируемо). НЕ тарваме всичко наведнъж (расте → таймаут при 2-4+ GB), а
+#    качваме само ПРОМЕНЕНИТЕ/новите release файлове спрямо това, което сървърът ВЕЧЕ има
+#    (сравнение по sha1 през ssh — без нужда от rsync на клиента). Дори при 10 GB общо, ако са
+#    се сменили 2 апа → качват се само те. Каталожните файлове вървят ВИНАГИ (малки). DEBUG — никога.
+#    Кандидати: release .apk (по slug при KCY_APPS_ONLY) + десктоп .exe.
+WEB_APK="/var/www/html/apk"
+declare -a CAND_CAT=() CAND_BIN=()
+while IFS= read -r f; do CAND_CAT+=("$f"); done < <(find apk -maxdepth 1 -type f ! -name '*.apk' ! -name '*.exe')
 if [ -n "$KCY_APPS_ONLY" ]; then
-    declare -a FILES=()
-    # Каталожни файлове (всичко в apk/ БЕЗ .apk/.exe) — винаги.
-    while IFS= read -r f; do FILES+=("$f"); done < <(find apk -maxdepth 1 -type f ! -name '*.apk' ! -name '*.exe')
-    # APK/EXE само на избраните имена (двата магазина + евентуален десктоп .exe).
     for nm in $KCY_APPS_ONLY; do
-        while IFS= read -r f; do FILES+=("$f"); done < <(find apk -maxdepth 1 -type f \( -name "${nm}-*.apk" -o -name "${nm}-*.exe" \))
+        slug="$(node deploy-scripts/apk-slug.mjs "$nm" 2>/dev/null)"; [ -z "$slug" ] && slug="$nm"
+        while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -maxdepth 1 -type f \( -name "${slug}-*-release.apk" -o -name "${nm}-*.exe" \))
     done
-    [ "${#FILES[@]}" -eq 0 ] && { echo -e "${RED}Няма файлове за избраните апове: $KCY_APPS_ONLY${NC}"; exit 1; }
     echo -e "  ${CYAN}само избрани: ${KCY_APPS_ONLY}${NC}"
-    tar -czf "$TAR" "${FILES[@]}" || { echo -e "${RED}tar се провали${NC}"; exit 1; }
 else
-    tar -czf "$TAR" apk || { echo -e "${RED}tar се провали${NC}"; exit 1; }
+    while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -maxdepth 1 -type f \( -name '*-release.apk' -o -name '*.exe' \))
 fi
-echo -e "  ${GREEN}✓ $(du -h "$TAR" | cut -f1)${NC}"
+# локални sha1 на бинарните кандидати (за сравнение със сървъра)
+declare -A LH=()
+for f in "${CAND_BIN[@]}"; do LH["$(basename "$f")"]="$(sha1sum "$f" | cut -d' ' -f1)"; done
+echo ""; echo -e "  ${CYAN}[1] кандидати: ${#CAND_BIN[@]} release/exe + ${#CAND_CAT[@]} каталожни (качва се само делтата спрямо сървъра)${NC}"
 
 # ── качи към всяка цел последователно ──
 FAILED=()
 for TNAME in "${VALID[@]}"; do
     sv="TARGET_${TNAME}_SERVER"; uv="TARGET_${TNAME}_USER"; pv="TARGET_${TNAME}_PORT"; lv="TARGET_${TNAME}_LABEL"
     SERVER="${!sv}"; USER="${!uv:-deploy}"; PORT="${!pv:-2222}"
+    # production ВИНАГИ през Tailscale; ако TS е спрян (100.x недостъпен) → падни на публичния prod
+    # (СЪЩИЯТ сървър, друг път). Така не удряме публичния fail2ban, освен когато няма избор.
+    if [ "$TNAME" = "prodts" ] && ! timeout 4 bash -c "exec 3<>/dev/tcp/${SERVER}/${PORT}" 2>/dev/null; then
+        if [ -n "${TARGET_prod_SERVER:-}" ]; then
+            echo -e "  ${YELLOW}⚠ Tailscale (${SERVER}) недостъпен → падам на публичния път (${TARGET_prod_SERVER})${NC}"
+            SERVER="${TARGET_prod_SERVER}"; USER="${TARGET_prod_USER:-deploy}"; PORT="${TARGET_prod_PORT:-2222}"
+        fi
+    fi
     echo ""; echo -e "${CYAN}══ $TNAME — ${!lv:-$TNAME} (${USER}@${SERVER}:${PORT}) ══${NC}"
 
     if ! timeout 3 bash -c "exec 3<>/dev/tcp/${SERVER}/${PORT}" 2>/dev/null; then
         for p in 22 2222; do timeout 3 bash -c "exec 3<>/dev/tcp/${SERVER}/${p}" 2>/dev/null && { PORT="$p"; break; }; done
     fi
+    # keepalive държи връзката жива при мрежов трепет. (ControlMaster НЕ се ползва — този ssh на
+    # Windows не мултиплексира надеждно. На Tailscale/VM няма fail2ban, тъй че файл-по-файл е ок.)
     SSH="ssh -o ConnectTimeout=90 -o ServerAliveInterval=30 -p ${PORT}"
-    SCP="scp -o ConnectTimeout=90 -P ${PORT}"
+    SCP="scp -o ConnectTimeout=90 -o ServerAliveInterval=15 -o ServerAliveCountMax=8 -o TCPKeepAlive=yes -P ${PORT}"
 
-    echo -e "${YELLOW}  [2] Качване в staging...${NC}"
     if ! $SSH "${USER}@${SERVER}" "mkdir -p ${STAGING}"; then echo -e "${RED}  ✗ няма достъп до ${STAGING}${NC}"; FAILED+=("$TNAME"); continue; fi
-    REMOTE_TAR="${STAGING}/$(basename "$TAR")"
-    OK=false
-    for a in 1 2 3 4; do $SCP "$TAR" "${USER}@${SERVER}:${REMOTE_TAR}" && { OK=true; break; }; echo "    опит $a неуспешен, чакам 5с..."; sleep 5; done
-    if ! $OK; then echo -e "${RED}  ✗ scp се провали${NC}"; FAILED+=("$TNAME"); continue; fi
+
+    # ДЕЛТА: вземи sha1 на вече качените release/exe на ТОЗИ сървър, тарни само различните/новите.
+    declare -A SH=(); while read -r _h _n; do [ -n "$_n" ] && SH["$_n"]="$_h"; done < <($SSH "${USER}@${SERVER}" "cd ${WEB_APK} 2>/dev/null && sha1sum *-release.apk *.exe 2>/dev/null" 2>/dev/null)
+    declare -a FILES=("${CAND_CAT[@]}")
+    for f in "${CAND_BIN[@]}"; do b="$(basename "$f")"; [ "${SH[$b]:-x}" = "${LH[$b]}" ] || FILES+=("$f"); done
+    _nbin=$(( ${#FILES[@]} - ${#CAND_CAT[@]} ))
+    echo -e "${YELLOW}  [2] Делта за ${TNAME}: ${_nbin} нови/променени release + ${#CAND_CAT[@]} каталожни${NC}"
+    # Качваме ФАЙЛ ПО ФАЙЛ в staging папка (НЕ един голям тар): голям APK или мрежов трепет
+    # проваля само СЕБЕ СИ (retry за файла), не целия трансфер. Каналът се държи жив (keepalive).
+    # Липсналите файлове се доизкачат при следващо пускане (делтата пак ще ги включи).
+    STAGE="${STAGING}/apk-stage"
+    $SSH "${USER}@${SERVER}" "rm -rf '${STAGE}' && mkdir -p '${STAGE}/apk'" >/dev/null 2>&1
+    # По-малките първо (каталог + леки апове) → бърз видим напредък; големите игри накрая.
+    IFS=$'\n' FILES=($(for f in "${FILES[@]}"; do printf '%s\t%s\n' "$(stat -c%s "$f" 2>/dev/null || echo 0)" "$f"; done | sort -n | cut -f2-)); unset IFS
+    ntot=${#FILES[@]}; ni=0; nfail=0
+    echo -e "  ${CYAN}качвам ${ntot} файла ФАЙЛ ПО ФАЙЛ (големите APK отнемат време — прогрес по-долу)${NC}"
+    for f in "${FILES[@]}"; do
+        ni=$((ni+1)); b="$(basename "$f")"; sz="$(du -h "$f" 2>/dev/null | cut -f1)"; up=false
+        echo -e "    ${CYAN}↑ [${ni}/${ntot}] ${b} (${sz})…${NC}"
+        for a in 1 2 3; do $SCP "$f" "${USER}@${SERVER}:${STAGE}/apk/${b}" && { up=true; break; }; echo -e "      ${YELLOW}опит $a неуспешен, чакам 5с…${NC}"; sleep 5; done
+        $up || { echo -e "      ${RED}✗ ${b} не се качи${NC}"; nfail=$((nfail+1)); }
+    done
+    [ "$nfail" -gt 0 ] && echo -e "  ${YELLOW}⚠ ${nfail} файла не се качиха — прилагам качените; липсващите ще се доизкачат при следващо пускане${NC}"
+
+    # Сглоби apk/-архива НА СЪРВЪРА (бързо, локален диск) → подай на приемника. Така работи и със
+    # СТАРИЯ приемник (очаква архив), без нужда от нов деплой. Само 1 малка ssh команда, не трансфер.
+    REMOTE_TAR="${STAGING}/pupikes-apps-$(date +%s)-${TNAME}.tgz"
+    if ! $SSH "${USER}@${SERVER}" "cd '${STAGE}' && tar czf '${REMOTE_TAR}' apk && rm -rf apk"; then
+        echo -e "  ${RED}✗ $TNAME — сглобяването на архива на сървъра се провали${NC}"; FAILED+=("$TNAME"); continue
+    fi
 
     echo -e "${YELLOW}  [3] Прилагане на сървъра (overlay в /var/www/html/apk)...${NC}"
-    if ssh -t -o ConnectTimeout=90 -p ${PORT} "${USER}@${SERVER}" "sudo ${REMOTE_SCRIPT} '${REMOTE_TAR}'"; then
-        echo -e "  ${GREEN}✓ $TNAME — приложенията са прехвърлени${NC}"
+    if ssh -t -o ConnectTimeout=90 -o ServerAliveInterval=15 -p ${PORT} "${USER}@${SERVER}" "sudo ${REMOTE_SCRIPT} '${REMOTE_TAR}'"; then
+        if [ "$nfail" -eq 0 ]; then echo -e "  ${GREEN}✓ $TNAME — приложенията са прехвърлени${NC}"; else echo -e "  ${YELLOW}◑ $TNAME — частично (${nfail} липсват, пусни пак за тях)${NC}"; FAILED+=("$TNAME (частично)"); fi
     else
         echo -e "  ${RED}✗ $TNAME — сървърната стъпка върна грешка${NC}"; FAILED+=("$TNAME")
     fi
+    $SSH "${USER}@${SERVER}" "rm -rf '${STAGE}'" >/dev/null 2>&1
 done
 
-rm -f "$TAR"
 echo ""
 if [ "${#FAILED[@]}" -eq 0 ]; then
     echo -e "${GREEN}✓ ГОТОВО — приложенията са качени на: ${VALID[*]}${NC}"

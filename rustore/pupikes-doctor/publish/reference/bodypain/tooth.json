@@ -1,0 +1,49 @@
+{
+  "id": "tooth",
+  "langs": {
+    "ru": {
+      "title": "Зубная боль",
+      "extract": "Зубная боль, или денталгия, — боль, которая возникает в зубе или тканях, непосредственно окружающих его. Обычно возникает в результате распада или заболеваний пульпы зуба, а также может быть связана с проблемами дёсен, челюсти или травмой в связи с механическим повреждением зубов и т. п. Также происходят случаи зубной боли, вызванные изменениями атмосферного давления (бароденталгия)."
+    },
+    "uk": {
+      "title": "Зубний біль",
+      "extract": "Зубний біль — це, як правило, сигнал про захворювання зубів. Зуб, що є кістково-мінеральним утворенням, сам по собі боліти не може, проте при його руйнуванні оголяється пульпа, що містить велику кількість кровоносних, лімфатичних судин та нервів.\nНайпоширеніші причини включають запалення пульпи, як правило, внаслідок карієсу або зубної травми, та запалення навколозубних тканин. Іноді зубний біль викликаний запаленням окістя, щелепи або м'яких тканин, що оточують щелепу."
+    },
+    "en": {
+      "title": "Toothache",
+      "extract": "Toothaches, also known as dental pain or tooth pain, is pain in the teeth or their supporting structures, caused by dental diseases or pain referred to the teeth by non-dental diseases. When severe it may impact sleep, eating, and other daily activities."
+    },
+    "de": {
+      "title": "Zahnschmerzen",
+      "extract": "Als Zahnschmerzen oder Zahnschmerz bezeichnet man ein meist starkes, kontinuierliches Schmerzgefühl, das von den Zähnen ausgeht. Auch werden indirekte Problemzonen, etwa Entzündungen des Zahnfleisches/Zahnhalteapparates, häufig dazu gezählt, wobei Befallzonen und Nervenreizung sich meist verbunden zeigen. Vom Zahn oder Zahnhalteapparat ausgehende Entzündungen werden als odontogene Infektionen bezeichnet."
+    },
+    "fr": {
+      "title": "Mal de dent",
+      "extract": "Le mal de dent, également connu sous le nom de douleur dentaire, est une douleur dans les dents ou leurs structures de soutien, causée par des maladies dentaires ou une douleur renvoyée aux dents par des maladies non dentaires. Lorsque sévère, cela peut avoir une incidence sur le sommeil, l'alimentation et d'autres activités quotidiennes."
+    },
+    "es": {
+      "title": "Dolor de muela",
+      "extract": "El dolor de muela, también conocido como dolor dental, es un dolor en los dientes, muelas o sus estructuras de soporte, causado por enfermedades dentales o dolor referido a los dientes por enfermedades de otra índole. Cuando es grave, puede afectar el sueño, la alimentación y otras actividades diarias. Debido a su fisiopatología y con base en su lugar de aparición, se considera uno de los dolores más fuertes que los seres humanos pueden experimentar."
+    },
+    "it": {
+      "title": "Odontalgia",
+      "extract": "L'odontalgia, meglio nota come mal di denti, è un dolore ai denti o alle loro strutture di supporto, causato da malattie dentali o riferito ai denti ma causato da malattie non dentali. Quando è grave può influire sul sonno, sull'alimentazione e su altre attività quotidiane."
+    },
+    "pt": {
+      "title": "Dor de dente",
+      "extract": "Dor de dente é a dor nos dentes ou em suas estruturas de suporte, causada por doenças dentárias [en] ou dor referida aos dentes por doenças não dentárias. Quando grave, pode afetar o sono, a alimentação e outras atividades diárias."
+    },
+    "ar": {
+      "title": "ألم الأسنان",
+      "extract": "ألم الأسنان (toothache) يُعرف أيضًا باسم الألم السني (odontalgia) أو (odontalgy)، هو ألم يصيب الأسنان أو التراكيب الداعمة لها بسبب بعض الأمراض السنية أو الألم الذي قد يصيب الأسنان عن طريق الأمراض غير السنية."
+    },
+    "hi": {
+      "title": "दाँत दर्द",
+      "extract": "दाँतों में या दांतों के आसपास होने वले दर्द को दाँत का दर्द या दन्तशूल (toothache) कहते हैं।"
+    },
+    "zh": {
+      "title": "牙痛",
+      "extract": "牙痛 是牙科的常见症状之一，无论是牙齿或牙齿周围的疾病都可能導致疼痛，如常见的龋齿、牙痈、牙宣、牙齿交痈、骨槽风等病，都会有不同程度的牙痛。所以，它包括了西医的龋齿、急慢性牙髓炎、急慢性根尖周炎、牙周病等引起的牙痛。\n"
+    }
+  }
+}

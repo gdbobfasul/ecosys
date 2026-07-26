@@ -10,6 +10,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
+# Централно логване + сума на грешките за всяка точка (лог в private/bug-bot/start-menu-logs/ +
+# лилав банер с броя грешки накрая). Виж lib/run-logger.sh.
+[ -f "$SCRIPT_DIR/lib/run-logger.sh" ] && . "$SCRIPT_DIR/lib/run-logger.sh"
+
 # Домейни от ЕДИННАТА конфигурация (private/configs/domains.conf) — нищо хардкоднато.
 [ -f "private/configs/domains.conf" ] && . "private/configs/domains.conf"
 # Зареди deploy таргетите (адреси/портове) — за да се показват в пикерите (опция 3/4 и т.н.)
@@ -1428,17 +1432,16 @@ run_choice() {
             UP_TARGETS=""
             if [ "$UP_DO" = 1 ]; then
                 echo ""
-                echo "  Къде да ги кача?"
-                echo "    1) production + виртуалната машина"
-                echo "    2) production + Tailscale (частен път)"
-                echo "    3) само production"
-                echo "    4) само виртуалната машина"
-                read -p "  Избери [1-4, Enter=3]: " UPT
+                echo "  Къде да ги кача?  (production ВИНАГИ през Tailscale — стабилно, без публичния fail2ban;"
+                echo "   пада на публичния път само ако Tailscale е спрян)"
+                echo "    1) само production (Tailscale) — препоръчано"
+                echo "    2) production (Tailscale) + виртуалната машина"
+                echo "    3) само виртуалната машина"
+                read -p "  Избери [1-3, Enter=1]: " UPT
                 case "$UPT" in
-                    1) UP_TARGETS="prod vm" ;;
-                    2) UP_TARGETS="prod prodts" ;;
-                    4) UP_TARGETS="vm" ;;
-                    *) UP_TARGETS="prod" ;;
+                    2) UP_TARGETS="prodts vm" ;;
+                    3) UP_TARGETS="vm" ;;
+                    *) UP_TARGETS="prodts" ;;
                 esac
             fi
             # Билд (интерактивно пита кой апп — за rustore И huawei)
@@ -1581,7 +1584,9 @@ while true; do
         ''|q|Q|quit|exit|изход) : ;;
         *) print_start_banner "$choice" ;;
     esac
-    run_choice "$choice"
+    # slog_run обгръща run_choice: логва цялото изпълнение + сумира грешките + лилав банер.
+    # (ако логърът липсва — пада към директния run_choice). Логва ВСЯКО пускане, вкл. „q" (изход).
+    if type slog_run >/dev/null 2>&1; then slog_run "$choice"; else run_choice "$choice"; fi
     # завършващ банер за ВСЯКА реална точка: коя точка + на коя машина (никога име на скрипт)
     case "$choice" in
         ''|q|Q|quit|exit|изход) : ;;

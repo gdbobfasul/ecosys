@@ -27,8 +27,8 @@ function trialCfg() {
     afterMs: (Number(tl.days) > 0 ? Number(tl.days) : 4) * 24 * 60 * 60 * 1000
   };
 }
-const K_FIRST = 'kcy.lock.first';                  // времеви печат на първото пускане
-const K_OK = 'kcy.lock.ok';                        // „1" = вече отключено (остава отключено)
+const K_FIRST = 'pupikes.lock.first';                  // времеви печат на първото пускане
+const K_OK = 'pupikes.lock.ok';                        // „1" = вече отключено (остава отключено)
 
 // Само надписите, нужни за екрана за парола — на 15-те езика на екосистемата.
 const T = {
@@ -75,10 +75,10 @@ function isLocked() {
 function renderLockScreen() {
   const lang = detectLang();
   const host = document.body || document.documentElement;
-  if (!host || document.getElementById('kcy-lock')) return;
+  if (!host || document.getElementById('pupikes-lock')) return;
 
   const ov = document.createElement('div');
-  ov.id = 'kcy-lock';
+  ov.id = 'pupikes-lock';
   ov.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
   ov.setAttribute('style', 'position:fixed;inset:0;width:100vw;height:100vh;z-index:2147483647;' +
     'background:#0b1220;color:#eef2f8;display:flex;align-items:center;justify-content:center;' +
@@ -138,7 +138,7 @@ function renderLockScreen() {
 // покрива и заключващия екран, и полетата за парола/ключ/тайна вътре в приложението.
 let _eyeInstalled = false;
 function enhancePasswordField(input) {
-  if (!input || input.nodeType !== 1 || input.tagName !== 'INPUT' || input.__kcyEye) return;
+  if (!input || input.nodeType !== 1 || input.tagName !== 'INPUT' || input.__pupikesEye) return;
   const masked = input.type === 'password' || input.getAttribute('data-mask') === '1';
   if (!masked) return;
   const parent = input.parentNode;
@@ -147,10 +147,10 @@ function enhancePasswordField(input) {
   try {
     const near = parent.querySelectorAll('button');
     for (let i = 0; i < near.length; i++) {
-      if ((near[i].textContent || '').indexOf('👁') > -1) { input.__kcyEye = true; return; }
+      if ((near[i].textContent || '').indexOf('👁') > -1) { input.__pupikesEye = true; return; }
     }
   } catch (e) {}
-  input.__kcyEye = true;
+  input.__pupikesEye = true;
 
   // Обвиваме полето, за да позиционираме бутона в десния му край без да чупим оформлението.
   const wrap = document.createElement('span');
@@ -217,5 +217,5 @@ export function enforceLock() {
   if (!isLocked()) return;
   renderLockScreen();
   scanForPasswordFields(document);  // веднага озареди и полето на заключващия екран
-  throw new Error('kcy-locked');   // спира по-нататъшната инициализация на приложението
+  throw new Error('pupikes-locked');   // спира по-нататъшната инициализация на приложението
 }

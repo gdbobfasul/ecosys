@@ -3,7 +3,7 @@
 // + „какво се случи след това" + ТЕКУЩИ новини и НОВИНИ ЗА ПЕРИОДА (политически/икономически).
 import { t, getLang } from '../core/i18n.js';
 import { instrument, marketById, newsQuery } from '../core/markets.js';
-import { fetchHistory, fetchFng, analyzeWindow, presetRange, customRange, lastLoadWasCached, forecast } from '../core/analysis.js';
+import { fetchHistory, fetchFng, analyzeWindow, presetRange, customRange, lastLoadWasCached, forecast, btcNearLowSignals, boostChance, NEARLOW } from '../core/analysis.js';
 import { eventsFor, recentSentiment } from '../core/events.js';
 import { currentNews, periodNews } from '../core/news.js';
 import { fetchPredictions, competitorRead, buildProbabilityTable } from '../core/probability.js';
@@ -116,7 +116,7 @@ export function renderDetail(root, marketId, instId, go) {
   const inst = instrument(marketId, instId);
   if (!inst) return go('market', { marketId });
   const isCrypto = m && m.id === 'crypto';
-  let series = null, fng = null, preset = 'now';
+  let series = null, fng = null, preset = 'now', btcSig = null;
 
   root.innerHTML =
     '<div style="max-width:560px;margin:0 auto;padding:14px 12px 90px;box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,sans-serif;color:#e6edf3">' +
@@ -203,9 +203,31 @@ export function renderDetail(root, marketId, instId, go) {
         (sent.tilt > 0.15 ? '<b style="color:#2ea043">↑</b>' : sent.tilt < -0.15 ? '<b style="color:#e5534b">↓</b>' : '≈') +
         ' <span style="color:#6b7787">(' + sent.count + ')</span></div>'
       : '';
+    // ── Сигнали за КУПУВАНЕ, водени от Bitcoin (важат за всички крипто, по хоризонт) ──
+    let buyBlock = '';
+    if (isCrypto && btcSig) {
+      const flags = [];
+      for (const k of ['day', 'month', 'year']) {
+        const s = btcSig[k];
+        if (!s || !s.near) continue;
+        const f = forecast(series, s.horizon);                 // шанс за печалба на ТОЗИ актив за хоризонта
+        const chance = boostChance(f && f.upPct != null ? f.upPct : null, true);   // +40% (сигналът е активен)
+        const chanceTxt = chance != null ? chance + '% ↑' : '—';
+        flags.push(
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #143025">' +
+          '<div style="font-size:13px;color:#c7d2de">🟢 ' + t('bs_buy') + ' · ' + t(s.lkey) + '</div>' +
+          '<div style="text-align:right"><div style="font-weight:700;color:#2ea043">' + t(s.hkey) + '</div>' +
+          '<div style="font-size:11px;color:#8b98a8">' + chanceTxt + ' <span style="color:#2ea043">(+40%)</span></div></div>' +
+          '</div>');
+      }
+      const body = flags.length ? flags.join('') : '<div style="font-size:12px;color:#6b7787;padding:8px 0">' + t('bs_none') + '</div>';
+      buyBlock = '<div style="font-weight:700;margin:14px 0 4px">🟢 ' + t('bs_title') + '</div>' +
+        '<div style="background:#0f1f16;border:1px solid #1e3a2a;border-radius:14px;padding:4px 12px">' + body +
+        '<div style="font-size:11px;color:#6b7787;margin:6px 0">' + t('bs_note') + '</div></div>';
+    }
     el.innerHTML = '<div style="font-weight:700;margin:16px 0 4px">🔮 ' + t('fc_title') + '</div>' +
       '<div style="background:#111a2b;border:1px solid #24314a;border-radius:14px;padding:4px 12px">' + sentLine + rows +
-      '<div style="font-size:11px;color:#e08a2b;margin:8px 0 6px">' + t('fc_disc') + '</div></div>';
+      '<div style="font-size:11px;color:#e08a2b;margin:8px 0 6px">' + t('fc_disc') + '</div></div>' + buyBlock;
   }
 
   let lastNews = null;       // за таблицата на вероятностите
@@ -314,7 +336,7 @@ export function renderDetail(root, marketId, instId, go) {
     try {
       series = await fetchHistory(inst);
       const cc = document.getElementById('cp-cached'); if (cc) cc.textContent = lastLoadWasCached() ? t('an_cached') : '';
-      if (isCrypto) { try { fng = await fetchFng(); } catch (_) {} }
+      if (isCrypto) { try { fng = await fetchFng(); } catch (_) {} try { btcSig = await btcNearLowSignals(); } catch (_) {} }
       applyPreset('now');
       renderForecast();
       loadCurrentNews();

@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token v3.3 FINAL - КОРИГИРАНА Документация
+# PUPIKES1 Token v3.3 FINAL - КОРИГИРАНА Документация
 
 ## 🎯 ПРАВИЛНА Логика на Разпределението
 
@@ -142,7 +142,7 @@ function distributeInitialAllocations() external onlyOwner {
 
 ### Deployment:
 ```
-           [Mint 1,000,000 KCY1]
+           [Mint 1,000,000 PUPIKES1]
                      │
         ┌────────────┴────────────┐
         │                         │
@@ -224,7 +224,7 @@ await contract.balanceOf(contractAddress)
 ## 💰 Финално Разпределение
 
 ```
-Общо: 1,000,000 KCY1 токена
+Общо: 1,000,000 PUPIKES1 токена
 
 След Distribute:
 ├─ DEV_WALLET_mm_vis (собственик): 100,000 (10%)

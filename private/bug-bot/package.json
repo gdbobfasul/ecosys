@@ -1,5 +1,5 @@
 {
-  "name": "kcy-bugbot",
+  "name": "pupikes-bugbot",
   "version": "1.0173",
   "private": true,
   "description": "Pupikes тест робот — Playwright обхождане на критичните пътища + сървърна лог-корелация. Плюс генератор на /tree.",

@@ -13,7 +13,7 @@ async function main() {
     console.log("💧 LIQUIDITY PAIRS УПРАВЛЕНИЕ");
     console.log("========================================\n");
     
-    const token = await ethers.getContractAt("KCY1Token", config.TOKEN_ADDRESS);
+    const token = await ethers.getContractAt("PUPIKES1Token", config.TOKEN_ADDRESS);
     const [signer] = await ethers.getSigners();
     
     console.log("🔗 Използван адрес:", signer.address);
@@ -104,14 +104,14 @@ async function main() {
             console.log(`💎 WBNB: ${wbnb}`);
             console.log("\n");
             
-            console.log("🔍 Търсене на KCY1/WBNB pair...");
+            console.log("🔍 Търсене на PUPIKES1/WBNB pair...");
             const pair = await factoryContract.getPair(config.TOKEN_ADDRESS, wbnb);
             
             if (pair === ethers.ZeroAddress) {
                 console.log("\n❌ PAIR НЕ Е СЪЗДАДЕН!");
                 console.log("\n📋 СЛЕДВАЩИ СТЪПКИ:");
                 console.log("  1. Отиди на PancakeSwap");
-                console.log("  2. Добави liquidity (KCY1 + BNB)");
+                console.log("  2. Добави liquidity (PUPIKES1 + BNB)");
                 console.log("  3. PancakeSwap ще създаде pair автоматично");
                 console.log("  4. Върни се и пусни този скрипт отново");
                 console.log("\n💡 ЛИНК:");

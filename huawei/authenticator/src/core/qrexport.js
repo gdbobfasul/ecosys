@@ -39,6 +39,6 @@ export async function exportAllQR() {
     files.push({ name: name + '.png', data: dataURLtoBytes(durl) });
   }
 
-  await saveFile('kcy-authenticator-qr.zip', zipStore(files), 'application/zip');
+  await saveFile('pupikes-authenticator-qr.zip', zipStore(files), 'application/zip');
   return { ok: true, count: files.length };
 }

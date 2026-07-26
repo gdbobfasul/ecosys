@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token v3.3 FINAL - Кратко Резюме
+# PUPIKES1 Token v3.3 FINAL - Кратко Резюме
 
 ## ✅ Направени Корекции
 
@@ -51,7 +51,7 @@ DEV_WALLET_mm_vis изпраща:
 ## 📁 Файлове
 
 ### Основен Contract:
-- **kcy1_token_v3.3_FINAL.sol** - Готов за deployment ✅
+- **pupikes1_token_v3.3_FINAL.sol** - Готов за deployment ✅
 
 ### Документация на Български:
 - **FINAL_v3.3_DOCUMENTATION_BG.md** - Пълна документация
@@ -61,7 +61,7 @@ DEV_WALLET_mm_vis изпраща:
 
 ## 🚀 Deployment Стъпки
 
-1. **Deploy contract** - KCY1Token v3.3
+1. **Deploy contract** - PUPIKES1Token v3.3
 2. **Провери:** DEV_WALLET_mm_vis има 600,000 токена
 3. **Извикай:** `distributeInitialAllocations()`
 4. **Провери:** 

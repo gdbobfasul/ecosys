@@ -1,6 +1,6 @@
 // Version: 1.0031
 // legal.js — УНИВЕРСАЛЕН правен модул за ВСЯКО приложение (еднакъв файл навсякъде).
-// Слага в ЕДИННАТА долна лента (core/kcy-bar.js) бутоните „Поверителност" и „Условия", които
+// Слага в ЕДИННАТА долна лента (core/pupikes-bar.js) бутоните „Поверителност" и „Условия", които
 // отварят СПЕЦИФИЧНИТЕ за апа хостнати документи — Huawei/RuStore искат линкове, ДОСТЪПНИ ВЪТРЕ
 // в приложението (Huawei правило 7.1), не само в store listing. Лентата стои на всяка страница,
 // значи покрива и „минимум на първата страница", и „на всяка страница".
@@ -12,7 +12,7 @@
 // Файлът с политиката е специфичен за магазина (инжектира се от add-privacy-link.cjs):
 //   Huawei → hw-privacy.html ; RuStore → rustore-privacy.html (newslator: ru-privacy.html).
 // Файлът с условията се извежда от него: hw-* → hw-terms.html, иначе rustore-terms.html.
-import { kcyBarButton } from './kcy-bar.js';
+import { pupikesBarButton } from './pupikes-bar.js';
 
 const PRIVACY_BASE = 'https://selflearning.bot.nu/privacy';
 const PRIVACY_FILE = 'hw-privacy.html';           // заменя се при инжектиране (по магазин)
@@ -54,8 +54,8 @@ async function postReport(app, body) {
 }
 
 function openDeleteModal(app) {
-  if (document.getElementById('kcy-del-ov')) return;
-  const ov = document.createElement('div'); ov.id = 'kcy-del-ov';
+  if (document.getElementById('pupikes-del-ov')) return;
+  const ov = document.createElement('div'); ov.id = 'pupikes-del-ov';
   ov.style.cssText = 'position:fixed;inset:0;z-index:2147483011;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px';
   const box = document.createElement('div');
   box.style.cssText = 'max-width:360px;width:100%;background:#141a24;color:#e6edf3;border-radius:14px;padding:16px;box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,sans-serif';
@@ -84,9 +84,9 @@ export function mountPrivacyLink(appId, opts) {
   const account = !!(opts && opts.account);
   const privacyUrl = `${PRIVACY_BASE}/${app}/${PRIVACY_FILE}`;
   const termsUrl = `${PRIVACY_BASE}/${app}/${TERMS_FILE}`;
-  kcyBarButton({ id: 'kcy-legal-priv', order: 30, label: () => '🔒 ' + tr('priv'), onClick: () => openDoc(privacyUrl) });
-  kcyBarButton({ id: 'kcy-legal-terms', order: 40, label: () => '📄 ' + tr('terms'), onClick: () => openDoc(termsUrl) });
+  pupikesBarButton({ id: 'pupikes-legal-priv', order: 30, label: () => '🔒 ' + tr('priv'), onClick: () => openDoc(privacyUrl) });
+  pupikesBarButton({ id: 'pupikes-legal-terms', order: 40, label: () => '📄 ' + tr('terms'), onClick: () => openDoc(termsUrl) });
   if (account) {
-    kcyBarButton({ id: 'kcy-legal-del', order: 50, label: () => '🗑️ ' + tr('del'), onClick: () => openDeleteModal(app) });
+    pupikesBarButton({ id: 'pupikes-legal-del', order: 50, label: () => '🗑️ ' + tr('del'), onClick: () => openDeleteModal(app) });
   }
 }

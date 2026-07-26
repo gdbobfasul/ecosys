@@ -155,7 +155,7 @@ function simpleHash(s) {
   for (let i = 0; i < str.length; i++) { h = ((h << 5) + h + str.charCodeAt(i)) >>> 0; }
   return 'kadm-' + h.toString(36);
 }
-export function adminMarker() { return simpleHash('kcy-admin::' + ADMIN_UNLOCK_PHRASE.toLowerCase()); }
+export function adminMarker() { return simpleHash('pupikes-admin::' + ADMIN_UNLOCK_PHRASE.toLowerCase()); }
 export function verifyAdminMarker(tok) { return String(tok || '') === adminMarker(); }
 export function unlockAdminByMarker(tok) {
   if (!verifyAdminMarker(tok)) return { ok: false };

@@ -8,7 +8,7 @@
 #  и се „инсталира" с този скрипт.)
 #
 # Какво прави:
-#   1. Копира .kt файловете в android/app/src/main/java/com/kcy/notificationreply/
+#   1. Копира .kt файловете в android/app/src/main/java/com/pupikes/notificationreply/
 #   2. Вмъква <service> фрагмента в <application> на AndroidManifest.xml
 #   3. Регистрира плъгина в MainActivity (registerPlugin(NotificationReplyPlugin.class))
 #
@@ -21,7 +21,7 @@ APP_DIR="$(cd "$HERE/.." && pwd)"
 ANDROID="$APP_DIR/android"
 SRC="$HERE/notification-reply"
 
-PKG_PATH="com/kcy/notificationreply"
+PKG_PATH="com/pupikes/notificationreply"
 JAVA_ROOT="$ANDROID/app/src/main/java"
 DEST="$JAVA_ROOT/$PKG_PATH"
 MANIFEST="$ANDROID/app/src/main/AndroidManifest.xml"
@@ -33,12 +33,12 @@ fi
 
 echo "==> 1/3 Копирам Kotlin източниците"
 mkdir -p "$DEST"
-cp "$SRC/KcyNotificationListener.kt" "$DEST/"
+cp "$SRC/PupikesNotificationListener.kt" "$DEST/"
 cp "$SRC/NotificationReplyPlugin.kt" "$DEST/"
 echo "    -> $DEST"
 
 echo "==> 2/3 Вмъквам <service> в AndroidManifest.xml"
-if grep -q "com.pupikes.notificationreply.KcyNotificationListener" "$MANIFEST"; then
+if grep -q "com.pupikes.notificationreply.PupikesNotificationListener" "$MANIFEST"; then
   echo "    (вече е вмъкнат — пропускам)"
 else
   # Извличаме съдържанието на фрагмента без коментара (от първия <service до </service>).

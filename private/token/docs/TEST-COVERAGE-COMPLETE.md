@@ -311,7 +311,7 @@ npx hardhat test test/pause-security-tests.js
 
 **Expected Output:**
 ```
-  KCY1 Token - Pause, Security & Cooldown Tests
+  PUPIKES1 Token - Pause, Security & Cooldown Tests
     1. unpause() Function Does NOT Exist
       ✓ Should NOT have unpause() function
       ✓ Should auto-unpause after 48 hours

@@ -170,6 +170,11 @@ build_locations() {  # ползва $API $PORT $SERVE $NESTED от извикв�
     #   /privacy/newslator/ru-privacy.html  (RuStore)
     # Сервира се от /var/www/html/privacy/ на ВСЕКИ приложен домейн (вкл. selflearning.bot.nu).
     printf '    location ^~ /privacy/      { root /var/www/html; }\n'
+    # /medikit/ — медицинските данни (пълна база лекарства по буква + богат снимков опис). НЕ се
+    # копират никъде — сервират се ДИРЕКТНО от деплойнатия код (public/medikit), който идва с деплоя.
+    # Специални настройки за тази директория: gzip (JSON се свива силно) + дневен кеш (данните са
+    # статични, менят се рядко → телефонът не тегли пак), + CORS (апът тегли от друг домейн).
+    printf '    location ^~ /medikit/ { alias %s/public/medikit/; gzip on; gzip_types application/json; add_header Cache-Control "public, max-age=86400"; add_header Access-Control-Allow-Origin "*"; default_type application/json; }\n' "$PROJECT_DIR"
     printf '    location / { try_files $uri $uri/ /index.html; }\n'
 }
 

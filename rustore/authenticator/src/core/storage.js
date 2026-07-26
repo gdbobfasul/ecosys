@@ -6,8 +6,8 @@
 //   е отключен (за да можем да пишем нови записи и да ги шифроваме отново).
 import { encryptVault, decryptVault } from './vault.js';
 
-const VAULT_KEY = 'kcyauth.vault';
-const SETTINGS_KEY = 'kcyauth.settings';
+const VAULT_KEY = 'pupikesauth.vault';
+const SETTINGS_KEY = 'pupikesauth.settings';
 
 const DEFAULT_SETTINGS = {
   lang: null,            // null = още не е избран (показваме избор на език)

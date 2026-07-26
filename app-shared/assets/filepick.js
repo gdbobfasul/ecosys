@@ -8,7 +8,7 @@
 // pickTextFile()            → { name, text, size } | null            (за .json/Aegis/2FAS/otpauth и т.н.)
 // pickBinaryFile(accept)    → { name, dataUrl, base64, mimeType, size } | null   (за картинки/PDF)
 //
-// И двете вдигат window.__KCY_SUSPEND_LOCK__ около нативния picker — той изкарва апа на заден план,
+// И двете вдигат window.__PUPIKES_SUSPEND_LOCK__ около нативния picker — той изкарва апа на заден план,
 // а някои апове авто-заключват при background (виж main.js), което би счупило операцията.
 function isNative() {
   try { return !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()); }
@@ -24,10 +24,10 @@ async function nativePick(readData) {
   const { FilePicker } = await import('@capawesome/capacitor-file-picker');
   let res;
   try {
-    try { window.__KCY_SUSPEND_LOCK__ = true; } catch (e) {}
+    try { window.__PUPIKES_SUSPEND_LOCK__ = true; } catch (e) {}
     res = await FilePicker.pickFiles({ readData: readData, limit: 1 });
   } finally {
-    try { setTimeout(() => { window.__KCY_SUSPEND_LOCK__ = false; }, 500); } catch (e) {}
+    try { setTimeout(() => { window.__PUPIKES_SUSPEND_LOCK__ = false; }, 500); } catch (e) {}
   }
   return res && res.files && res.files[0];
 }

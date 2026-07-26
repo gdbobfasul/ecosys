@@ -1,0 +1,37 @@
+{
+  "id": "ear",
+  "langs": {
+    "ru": {
+      "title": "Оталгия",
+      "extract": "Оталги́я — болевые ощущения в области уха, которые могут служить симптомом заболеваний самого уха, включая его наружную часть и внутреннее ухо, или симптомом патологических процессов, развивающихся в другой части тела. Является распространённым симптомом, наблюдаемым в общей медицинской практике, у отоларингологов и в отделениях неотложной помощи. Наиболее частой причиной оталгии в случае заболеваний уха являются инфекции."
+    },
+    "en": {
+      "title": "Ear pain",
+      "extract": "Ear pain, also known as earache or otalgia, is pain in the ear. Primary ear pain is pain that originates from the ear. Secondary ear pain is a type of referred pain, meaning that the source of the pain differs from the location where the pain is felt."
+    },
+    "de": {
+      "title": "Otalgie",
+      "extract": "Als Otalgie bezeichnet man in der Medizin Ohrenschmerzen verschiedener – auch unbekannter – Ursache. Die Otalgie ist das Leitsymptom aller entzündlichen Erkrankungen des Mittelohrs und des äußeren Ohres. Man unterscheidet zwischen primärer und sekundärer Otalgie. Ohrenschmerzen werden durch den Plexus tympanicus über den Nervus glossopharyngeus vermittelt. Auch der Nervus vagus ist in Trommelfellnähe beteiligt."
+    },
+    "fr": {
+      "title": "Otalgie",
+      "extract": "L'otalgie désigne une douleur située au niveau de l'oreille. L'otalgie primaire trouve son origine dans l'oreille même, tandis que l'otalgie secondaire peut être liée à diverses causes extérieures à l'oreille. L'otalgie n'est donc pas toujours liée à une maladie de l'oreille telle qu'une otite."
+    },
+    "it": {
+      "title": "Otalgia",
+      "extract": "L'otalgia è un dolore dell'orecchio legato a patologie che colpiscono altri apparati: il dolore derivato da alterazione auricolare è invece detto \"otodinia\"."
+    },
+    "pt": {
+      "title": "Otalgia",
+      "extract": "A Otalgia é definida como uma dor no ouvido. Essa dor pode ser um complicador na vida do indivíduo, visto que pode prejudicar as atividades diárias e os comportamentos pessoais por ser desagradável e até perturbadora. Além disso, pode ter consequências na funcionalidade da audição e em situações extremas, levar a incapacidade completa."
+    },
+    "ar": {
+      "title": "ألم الأذن",
+      "extract": "ألم الاذن أو الأُذان هو حالة شائعة، في الاساس لدى الأطفال. قد ينبع الم الاذن من التهاب مباني الاذن المختلفة أو قد يكون ألماً من مكان اخر، بشكل عام يكون مصدره البلعوم أو الغدة الدرقية. بالرغم من ان تشخيص الم الاذن الحاد سهلا، الا ان الم الاذن المزمن أصعب للتشخيص ويشكل تحديا للطبيب المعالج."
+    },
+    "zh": {
+      "title": "耳痛",
+      "extract": "耳痛是指耳朵内出現的疼痛。大多数耳痛都不会危及生命。 耳痛可以分為原发性和继发性。原发性耳痛是指直接由耳朵感染（耳朵被細菌感染）或聽力损伤引起的疼痛；而继发性耳痛是一种牵涉痛，这意味着疼痛並非由耳朵引起，而是由其他部位引起的疼痛。原发性耳痛比继发性耳痛更常见。\n"
+    }
+  }
+}

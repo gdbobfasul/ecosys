@@ -18,17 +18,17 @@ _Съставено: 2026-07-22. Отразява кои приложения п
 | 2 | services-toolkit | **Pupikes Toolkit** | Toolkit семейство | ✅ ГОТОВО |
 | 3 | authenticator | **Pupikes Toolkit Authenticator** | Toolkit семейство | ✅ ГОТОВО |
 | 4 | price-watch-bot | **Pupikes Toolkit Price Watch** | Toolkit семейство | ✅ ГОТОВО |
-| 5 | kcy-toolkit-scraper | **Pupikes Toolkit Scraper** | Toolkit семейство | ✅ ГОТОВО |
-| 6 | kcy-toolkit-3drotate | **Pupikes Toolkit 3D Rotate** | Toolkit семейство | ✅ ГОТОВО |
-| 7 | kcy-toolkit-ai-announcement | **Pupikes Toolkit AI Announcement** | Toolkit семейство | ✅ ГОТОВО |
-| 8 | kcy-toolkit-finance | **Pupikes Toolkit Finance** | Toolkit семейство | ✅ ГОТОВО |
-| 9 | kcy-toolkit-passwords | **Pupikes Toolkit Passwords** | Toolkit семейство | ✅ ГОТОВО |
-| 10 | kcy-toolkit-pdf | **Pupikes Toolkit PDF** | Toolkit семейство | ✅ ГОТОВО |
-| 11 | kcy-toolkit-pictures | **Pupikes Toolkit Pictures** | Toolkit семейство | ✅ ГОТОВО |
-| 12 | kcy-toolkit-qr | **Pupikes Toolkit QR** | Toolkit семейство | ✅ ГОТОВО |
-| 13 | kcy-toolkit-sound | **Pupikes Toolkit Sound** | Toolkit семейство | ✅ ГОТОВО |
-| 14 | kcy-toolkit-text | **Pupikes Toolkit Text** | Toolkit семейство | ✅ ГОТОВО |
-| 15 | kcy-toolkit-videos | **Pupikes Toolkit Videos** | Toolkit семейство | ✅ ГОТОВО |
+| 5 | pupikes-toolkit-scraper | **Pupikes Toolkit Scraper** | Toolkit семейство | ✅ ГОТОВО |
+| 6 | pupikes-toolkit-3drotate | **Pupikes Toolkit 3D Rotate** | Toolkit семейство | ✅ ГОТОВО |
+| 7 | pupikes-toolkit-ai-announcement | **Pupikes Toolkit AI Announcement** | Toolkit семейство | ✅ ГОТОВО |
+| 8 | pupikes-toolkit-finance | **Pupikes Toolkit Finance** | Toolkit семейство | ✅ ГОТОВО |
+| 9 | pupikes-toolkit-passwords | **Pupikes Toolkit Passwords** | Toolkit семейство | ✅ ГОТОВО |
+| 10 | pupikes-toolkit-pdf | **Pupikes Toolkit PDF** | Toolkit семейство | ✅ ГОТОВО |
+| 11 | pupikes-toolkit-pictures | **Pupikes Toolkit Pictures** | Toolkit семейство | ✅ ГОТОВО |
+| 12 | pupikes-toolkit-qr | **Pupikes Toolkit QR** | Toolkit семейство | ✅ ГОТОВО |
+| 13 | pupikes-toolkit-sound | **Pupikes Toolkit Sound** | Toolkit семейство | ✅ ГОТОВО |
+| 14 | pupikes-toolkit-text | **Pupikes Toolkit Text** | Toolkit семейство | ✅ ГОТОВО |
+| 15 | pupikes-toolkit-videos | **Pupikes Toolkit Videos** | Toolkit семейство | ✅ ГОТОВО |
 | 16 | fps-hunter | **Huntline 3D** | Игра (FPS) | ✅ ГОТОВО |
 | 17 | plane-shooter | **Warbird Rush** | Игра (Plane Shooter) | ✅ ГОТОВО |
 | 18 | autoreply-bot | Pupikes Auto Answer | Бот/услуга | ⏳ ОЩЕ НЕ |

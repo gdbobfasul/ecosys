@@ -1,13 +1,13 @@
 // Version: 1.0018
 // help.js — УНИВЕРСАЛЕН бутон „Обратна връзка" за ВСЯКО приложение (еднакъв файл навсякъде).
-// Бутонът вече живее в ЕДИННАТА долна лента (core/kcy-bar.js) → модал → праща АНОНИМЕН доклад
+// Бутонът вече живее в ЕДИННАТА долна лента (core/pupikes-bar.js) → модал → праща АНОНИМЕН доклад
 // към порталната таблица (portal_bug_reports) през /api/portals/bug-report/anon. Без вход.
 // Полета: От кого / Телефон-имейл / Заглавие (едноредови) + Съобщение (многоредово). Заглавието
 // става „относно" в имейла; От кого + контакт се добавят пред текста на съобщението.
 // Полето `app` (подава се на mountHelp) казва от кое приложение идва грешката. На телефон ползва
 // CapacitorHttp (заобикаля CORS); в браузър — fetch. БЕЗ AbortController (чупи CapacitorHttp —
 // виж net.js бележките).
-import { kcyBarButton } from './kcy-bar.js';
+import { pupikesBarButton } from './pupikes-bar.js';
 
 const ENDPOINT = 'https://selflearning.bot.nu/api/portals/bug-report/anon';
 
@@ -61,8 +61,8 @@ async function post(app, data) {
 export function mountHelp(appId) {
   const app = appId || 'unknown';
   function openModal() {
-    if (document.getElementById('kcy-help-ov')) return;
-    const ov = document.createElement('div'); ov.id = 'kcy-help-ov';
+    if (document.getElementById('pupikes-help-ov')) return;
+    const ov = document.createElement('div'); ov.id = 'pupikes-help-ov';
     ov.style.cssText = 'position:fixed;inset:0;z-index:2147483001;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px';
     const box = document.createElement('div');
     box.style.cssText = 'max-width:360px;width:100%;background:#141a24;color:#e6edf3;border-radius:14px;padding:16px;box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,sans-serif';
@@ -92,5 +92,5 @@ export function mountHelp(appId) {
     const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:8px;margin-top:12px'; row.append(cancel, send);
     box.append(h, inFrom, inContact, inSubject, ta, msg, row); ov.appendChild(box); document.body.appendChild(ov); inFrom.focus();
   }
-  kcyBarButton({ id: 'kcy-help-btn', order: 20, label: () => '💬 ' + tr('btn'), onClick: openModal });
+  pupikesBarButton({ id: 'pupikes-help-btn', order: 20, label: () => '💬 ' + tr('btn'), onClick: openModal });
 }

@@ -21,7 +21,7 @@ _Марката вече е **Pupikes** (представката „KCY" е з�
 | duel | Pupikes Ring Clash | 🟡 СРЕДЕН | съществува чужд ап „Ring Clash"; представката Pupikes отличава |
 | services-toolkit | Pupikes Toolkit | 🟡 СРЕДЕН | родовата дума „Toolkit" се среща широко |
 | price-watch-bot | Pupikes Toolkit Price Watch | 🟡 СРЕДЕН | родовата дума „Toolkit" |
-| kcy-toolkit-scraper | Pupikes Toolkit Scraper | 🟡 СРЕДЕН | родовата дума „Toolkit" |
+| pupikes-toolkit-scraper | Pupikes Toolkit Scraper | 🟡 СРЕДЕН | родовата дума „Toolkit" |
 | authenticator | Pupikes Toolkit Authenticator | 🟡 СРЕДЕН | родовата дума „Authenticator" |
 | autoreply-bot | Pupikes Auto Answer | 🟢 НИСЪК | — |
 | baby-monitor | Pupikes Baby Radar | 🟢 НИСЪК | нула марки + всички домейни свободни |
@@ -29,16 +29,16 @@ _Марката вече е **Pupikes** (представката „KCY" е з�
 | chat | Pupikes Chat | 🟢 НИСЪК | — |
 | hmm | Pupikes Field Battle | 🟢 НИСЪК | — |
 | houselookbook | HouseLookBook | 🟢 НИСЪК | нула марки + всички домейни свободни |
-| kcy-toolkit-3drotate | Pupikes Toolkit 3D Rotate | 🟢 НИСЪК | ново приложение (WebGL въртене на картинка) |
-| kcy-toolkit-ai-announcement | Pupikes Toolkit AI Announcement | 🟢 НИСЪК | — |
-| kcy-toolkit-finance | Pupikes Toolkit Finance | 🟢 НИСЪК | — |
-| kcy-toolkit-passwords | Pupikes Toolkit Passwords | 🟢 НИСЪК | — |
-| kcy-toolkit-pdf | Pupikes Toolkit PDF | 🟢 НИСЪК | — |
-| kcy-toolkit-pictures | Pupikes Toolkit Pictures | 🟢 НИСЪК | — |
-| kcy-toolkit-qr | Pupikes Toolkit QR | 🟢 НИСЪК | нула марки + всички домейни свободни |
-| kcy-toolkit-sound | Pupikes Toolkit Sound | 🟢 НИСЪК | — |
-| kcy-toolkit-text | Pupikes Toolkit Text | 🟢 НИСЪК | нула марки + всички домейни свободни |
-| kcy-toolkit-videos | Pupikes Toolkit Videos | 🟢 НИСЪК | — |
+| pupikes-toolkit-3drotate | Pupikes Toolkit 3D Rotate | 🟢 НИСЪК | ново приложение (WebGL въртене на картинка) |
+| pupikes-toolkit-ai-announcement | Pupikes Toolkit AI Announcement | 🟢 НИСЪК | — |
+| pupikes-toolkit-finance | Pupikes Toolkit Finance | 🟢 НИСЪК | — |
+| pupikes-toolkit-passwords | Pupikes Toolkit Passwords | 🟢 НИСЪК | — |
+| pupikes-toolkit-pdf | Pupikes Toolkit PDF | 🟢 НИСЪК | — |
+| pupikes-toolkit-pictures | Pupikes Toolkit Pictures | 🟢 НИСЪК | — |
+| pupikes-toolkit-qr | Pupikes Toolkit QR | 🟢 НИСЪК | нула марки + всички домейни свободни |
+| pupikes-toolkit-sound | Pupikes Toolkit Sound | 🟢 НИСЪК | — |
+| pupikes-toolkit-text | Pupikes Toolkit Text | 🟢 НИСЪК | нула марки + всички домейни свободни |
+| pupikes-toolkit-videos | Pupikes Toolkit Videos | 🟢 НИСЪК | — |
 | market-pulse | Pupikes Market Pulse | 🟢 НИСЪК | — |
 | monitor-bot | Pupikes Site Monitor | 🟢 НИСЪК | — |
 | newslator | NewsLator | 🟢 НИСЪК | — |

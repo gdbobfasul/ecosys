@@ -10,13 +10,13 @@ const path = require('path');
 
 const VERSION = 'v34';
 const VERSION_COMMENT = `/**
- * @version ${VERSION} - KCY1 Token - Centralized Addresses
+ * @version ${VERSION} - PUPIKES1 Token - Centralized Addresses
  */
 
 `;
 
 const SOLIDITY_VERSION_COMMENT = `/**
- * @title Pupikes-meme-1 Token (KCY1) - ${VERSION}
+ * @title Pupikes-meme-1 Token (PUPIKES1) - ${VERSION}
  */
 `;
 

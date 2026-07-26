@@ -1,0 +1,16 @@
+{
+  "id": "abrasion",
+  "langs": {
+    "en": {
+      "title": "Abrasion (medical)",
+      "extract": "An abrasion is a partial thickness wound caused by damage to the skin. It can be superficial, which involves only the epidermis, or deep, which involves the deep dermis. Abrasions usually involve minimal bleeding. Mild abrasions, also known as grazes or scrapes, do not scar or bleed because the dermis is left intact, but deep abrasions that disrupt the normal dermal structures may lead to the formation of scar tissue. A more traumatic abrasion that removes all layers of skin is called an avulsion.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Abrasion_on_hand_20050906.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/abrasion-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Abrasion_on_hand_20050906.jpg"
+    }
+  ]
+}

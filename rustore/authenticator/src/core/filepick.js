@@ -24,10 +24,10 @@ export async function pickTextFile() {
     // (флагът се чете от main.js). Изчистваме със закъснение, за да покрием прехода при връщане.
     let res;
     try {
-      try { window.__KCY_SUSPEND_LOCK__ = true; } catch (e) {}
+      try { window.__PUPIKES_SUSPEND_LOCK__ = true; } catch (e) {}
       res = await FilePicker.pickFiles({ readData: true, limit: 1 });
     } finally {
-      try { setTimeout(() => { window.__KCY_SUSPEND_LOCK__ = false; }, 500); } catch (e) {}
+      try { setTimeout(() => { window.__PUPIKES_SUSPEND_LOCK__ = false; }, 500); } catch (e) {}
     }
     const f = res && res.files && res.files[0];
     if (!f) return null;                                  // потребителят отказа
@@ -70,10 +70,10 @@ export async function pickBinaryFile(accept) {
     const { FilePicker } = await import('@capawesome/capacitor-file-picker');
     let res;
     try {
-      try { window.__KCY_SUSPEND_LOCK__ = true; } catch (e) {}
+      try { window.__PUPIKES_SUSPEND_LOCK__ = true; } catch (e) {}
       res = await FilePicker.pickFiles({ readData: true, limit: 1 });
     } finally {
-      try { setTimeout(() => { window.__KCY_SUSPEND_LOCK__ = false; }, 500); } catch (e) {}
+      try { setTimeout(() => { window.__PUPIKES_SUSPEND_LOCK__ = false; }, 500); } catch (e) {}
     }
     const f = res && res.files && res.files[0];
     if (!f) return null;                                  // потребителят отказа

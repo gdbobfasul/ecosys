@@ -1,0 +1,89 @@
+{
+  "id": "hives",
+  "langs": {
+    "bg": {
+      "title": "Уртикария",
+      "extract": "Уртикария, още копривна треска, е кожно заболяване, което представлява неочаквано и внезапно появяващ се обрив със зачервяване и силен сърбеж на кожата, най-често предизвикан от алергична реакция. Той наподобява ужилване с коприва. В народната медицина за лечението се използват корен от коприва, великденче и други.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/EMminor2010.JPG"
+    },
+    "ru": {
+      "title": "Крапивница",
+      "extract": "Крапи́вница, называемая иногда крапивная лихорадка, крапивная сыпь, уртикария, — кожное заболевание, дерматит преимущественно аллергического происхождения, характеризующееся быстрым появлением сильно зудящих, плоско приподнятых бледно-розовых волдырей, сходных по виду с волдырями от ожога крапивой.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/EMminor2010.JPG"
+    },
+    "uk": {
+      "title": "Кропив'янка (хвороба)",
+      "extract": "Кропи́в'янка, рідше — уртика́рія, кропи́вниця, кропи́в'яна пропа́сниця, жалю́чка кропив'я́ста — шкірне захворювання, дерматит переважно алергійного походження, яке характеризується свербінням та швидкою появою пласких піднесених блідо-рожевих піхурів, схожих на ті утвори, які виникають на шкірі від жаління кропивою. Піхури при кропив'янці утворюються на різних ділянках шкіри та рідше — на слизових оболонках.\nКропивниця може бути самостійною реакцією на якийсь подразник, або одним з проявів якого-небудь захворювання. Кропив'янка займає третє місце за поширенням серед алергічних захворювань після медикаментозної алергії та бронхіальної астми, та, згідно з даними статистики, приблизно чверть населення переносить кропив'янку щонайменше один раз протягом життя.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/5/57/Urtikaria_Fuss.jpg"
+    },
+    "en": {
+      "title": "Hives",
+      "extract": "Hives, also known as urticaria, is a kind of skin rash with red or flesh-colored, raised, itchy bumps. Hives may burn or sting. The patches of rash may appear on different body parts, with variable duration from minutes to days, and typically do not leave any long-lasting skin change. Fewer than 5% of cases last for more than six weeks. The condition frequently recurs.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/EMminor2010.JPG"
+    },
+    "de": {
+      "title": "Nesselsucht",
+      "extract": "Nesselsucht oder Nesselfieber, auch Urtikaria genannt, ist eine krankhafte Reaktion der Haut mit Rötungen, Quaddeln und Juckreiz.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/EMminor2010.JPG"
+    },
+    "fr": {
+      "title": "Urticaire",
+      "extract": "L'urticaire est une dermatose inflammatoire marquée par un œdème dermique ou dermo-hypodermique. La forme superficielle est la plus fréquente. Elle s'exprime par une éruption cutanée érythémateuse et papuleuse dont les lésions sont typiquement fugaces, migratrices et prurigineuses. Le diagnostic est clinique.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/5/57/Urtikaria_Fuss.jpg"
+    },
+    "es": {
+      "title": "Urticaria",
+      "extract": "La urticaria es una enfermedad de la piel caracterizada por lesiones cutáneas edematosas, de contornos delimitados y con un halo eritematoso, generalmente evanescentes y cambiantes. La urticaria va acompañada, generalmente, de prurito, conocido también como picazón.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/EMminor2010.JPG"
+    },
+    "it": {
+      "title": "Orticaria",
+      "extract": "L'orticaria è una dermatosi infiammatoria pruriginosa caratterizzata dall'improvvisa comparsa di pomfi associati o meno ad angioedema.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Urticaria_2.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Urticária",
+      "extract": "Urticária é uma reação alérgica da pele caracterizada pela erupção de pápulas salientes, avermelhadas e muito pruriginosas. Em alguns casos, a sensação pode ser semelhante a queimaduras ou picadas. As pápulas formam manchas cuja posição se vai alterando. Geralmente duram apenas alguns dias e não causam alterações permanentes na pele. Menos de 5% dos casos têm duração superior a seis semanas. Em muitos casos a condição é recorrente.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/EMminor2010.JPG"
+    },
+    "ar": {
+      "title": "شرى",
+      "extract": "الشَّرَى أو الشرية هي مرض حساسي جلدي. يحدث عادة نتيجة التعرض لمادة مؤرجة مما بسبب آفة جلدية مميزة تسمى اللحبة أو الانتبار الشروي. يكمن أن تحدث هذه الآفة في أي مكان من الجسم بقياسات مختلفة حيث يتراوح نصف قطر اللحبة من 0.5 وقد يصل لمرحلة يغطي فيها كل سطح الجسم.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/EMminor2010.JPG"
+    },
+    "hi": {
+      "title": "शीतपित्त",
+      "extract": "शीतपित्त या पित्ती त्वचा में होने वाले एक प्रकार के चकत्ते होते हैं। इस रोग के कारण त्वचा पर सुर्ख लाल रंग के उभरे हुए दाने हो जाते हैं जिनमे लगातार खुजली होती रहती है। ये अक्सर एलर्जी के कारण होते है हालाँकि कई मामलो में बिना एलर्जी के भी शीत पित्ति हो सकती है। इसके चलते शरीर में हमेशा जलने एवं चुभने की अनुभूति होते रहती है। तीक्ष्ण शीत पित्ति के ज़्यादातर मामले एलर्जिक होते हैं। चीरकलिक शीत पित्ति गैर-एलर्जिक भी हो सकती है।",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/EMminor2010.JPG"
+    },
+    "ja": {
+      "title": "蕁麻疹",
+      "extract": "蕁麻疹 は、急性皮膚病の一つ。痒みを伴う紅斑・膨疹が生じる。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/EMminor2010.JPG"
+    },
+    "ky": {
+      "title": "Бөрү жатыш",
+      "extract": "Бөрү жатыш – тери жана былжыр челдин күдүрөйүп кычышма аллергия оорусу. Дененин аллергия реакциясынан, айрым тамак-аш, дары жакпаганда жана сууктан да болот. Өнөкөт бөрү жатыш ички органдардын ооруларына, зат алмашуунун бузулушуна, ичте мите курттардын болушуна же солгун өтүп жаткан өнөкөт сезгенүү ооруларына да байланыштуу. Ал капысынан башталат. Кол, бут, бетке ар түрдүү көлөмдө ачык мала кызыл, кээде ак түстө ортосу томпогой бүдүрлөр чыгат. Аябай кычышып, дүүлүктүрөт. Көп учурда бүдүрлөр бир нече сааттан кийин эле эч так калтырбай жок болуп кетет. Оорулуунун эти ысыйт, алы кетет. Кээде бөрү жатыш катуу кармап, жумшак таңдайдын, кулкундун, бронхтордун, ички органдардын былжыр чели шишип кетип, аба жетпей муунтат. Мындай учурда токтоосуз врач чакыруу керек. Бөрү жатышты врачтын көрсөтмөсү боюнча дарылайт. Мүнөздөп тамак ичип, аллергия пайда кылуучу тамак-аш, сүрсүгөн, туздалган тамакты жегенге болбойт. Катуу кармаган бөрү жатышта денеден аллергенди тез чыгаруу, суюктукту көп берүү керек.",
+      "image": ""
+    },
+    "zh": {
+      "title": "荨麻疹",
+      "extract": "蕁麻疹 是由于皮肤和黏膜的小血管反应性扩张及渗透性增加，导致局限性水肿的一种过敏性皮肤病。蕁麻疹通常分為急性與慢性兩種，急性蕁麻疹一般只發作1至3天，而慢性蕁麻疹（持續6週以上）則可能反覆發生，並可長達數年。症状是局部皮肤忽然成块地红肿，发痒或刺癢，皮膚有類似蚊子咬的紅腫塊。病灶時常會在身上其他區域輪流出現。一般來說，蕁麻疹會持續數日，且不會留下任何疤痕。只有小於百分之五的案例會持續六周以上，蕁麻疹的症狀常會復發。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/EMminor2010.JPG"
+    }
+  },
+  "images": [
+    {
+      "file": "img/hives-0.JPG",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/6/63/EMminor2010.JPG"
+    },
+    {
+      "file": "img/hives-1.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/5/57/Urtikaria_Fuss.jpg"
+    },
+    {
+      "file": "img/hives-2.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Urticaria_2.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    }
+  ]
+}

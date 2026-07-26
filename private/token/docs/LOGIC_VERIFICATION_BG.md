@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token v3.3 - ПОТВЪРЖДЕНИЕ НА ЛОГИКАТА ✅
+# PUPIKES1 Token v3.3 - ПОТВЪРЖДЕНИЕ НА ЛОГИКАТА ✅
 
 ## 🔍 ПРОВЕРКА НА КОДА
 
@@ -78,7 +78,7 @@ balanceOf[DEV_WALLET_mm_vis] -= 150_000;  // към ADVISOR
 
 ### DEPLOYMENT:
 ```
-        [Mint 1,000,000 KCY1]
+        [Mint 1,000,000 PUPIKES1]
                  │
     ┌────────────┴────────────┐
     │                         │

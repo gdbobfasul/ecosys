@@ -1,0 +1,82 @@
+{
+  "id": "dislocation",
+  "langs": {
+    "bg": {
+      "title": "Изкълчване",
+      "extract": "Изкълчването е увреждане на ставите, което се характеризира с трайно и значително разместване на ставните повърхности спрямо нормалното им положение. Частичното изкълчване е познато като сублуксация. Изкълчванията често се причиняват от внезапни травми по ставата, например вследствие на удар или падане. Изкълчването може да причини щети по околните връзки, сухожилия, мускули и нерви. Луксация може да настъпи при всяка голяма или малка става. Едно от най-често срещаните изкълчвания е това на рамото.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/39/Ankledislocation.JPG"
+    },
+    "ru": {
+      "title": "Вывих",
+      "extract": "Вывих — нарушение конгруэнтности суставных поверхностей костей, как с нарушением целостности суставной капсулы, так и без нарушения, под действием механических сил (травма) либо деструктивных процессов в суставе.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/39/Ankledislocation.JPG"
+    },
+    "uk": {
+      "title": "Вивих",
+      "extract": "Вивих — різновид травм, що характеризується як порушення конфігурації суглобових поверхонь.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/39/Ankledislocation.JPG"
+    },
+    "en": {
+      "title": "Joint dislocation",
+      "extract": "A joint dislocation, also called luxation, occurs when there is an abnormal separation in the joint, where two or more bones meet. A partial dislocation is referred to as a subluxation. Dislocations are commonly caused by sudden trauma to the joint like during a car accident or fall. A joint dislocation can damage the surrounding ligaments, tendons, muscles, and nerves. Dislocations can occur in any major joint or minor joint. The most common joint dislocation is a shoulder dislocation.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/39/Ankledislocation.JPG"
+    },
+    "de": {
+      "title": "Luxation",
+      "extract": "Eine Luxation oder Verrenkung ist ein vollständiger oder unvollständiger (Subluxation) Kontaktverlust gelenkbildender Knochenenden oder eine Verlagerung anderer anatomischer Strukturen aus ihrer physiologischen Position. Sie ist eine medizinisch definierte Form der Dislokation mit vorübergehender oder dauerhafter Fehlstellung der gelenkbildenden Knochen zueinander. Als luxierter Knochen wird immer der körperfernere Knochen bezeichnet.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Luxation_epaule.PNG"
+    },
+    "es": {
+      "title": "Luxación",
+      "extract": "Una luxación o dislocación es toda lesión cápsulo-ligamentosa con pérdida del contacto de las superficies articulares por causa de un trauma grave, que puede ser total (luxación) o parcial (subluxación). En semiología clínica, el término se conoce como abartrosis o abarticulación.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/39/Ankledislocation.JPG"
+    },
+    "it": {
+      "title": "Lussazione",
+      "extract": "Una lussazione è uno spostamento permanente delle superfici articolari l'una rispetto all'altra.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/39/Ankledislocation.JPG?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Luxação",
+      "extract": "Uma luxação é o deslocamento repentino e duradouro, parcial ou completo de um ou mais ossos de uma articulação. Sucede quando uma força atua diretamente ou indiretamente numa articulação, empurrando o osso para uma posição anormal. Ele pode ser confundido com entorse.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/32/Dislocated_finger.jpg"
+    },
+    "ar": {
+      "title": "خلع المفصل",
+      "extract": "انخلاع المفصل أو خلع المفصل هي حالةٌ تحدث عندما يكون هناك انفصال غير طبيعى في المفصل،(حيث تجتمع عظمتين أو أكثر). الانخلاع الجزئى هو خلع جزئي .الانخلاع عادة ما تسببه صدمة مفاجئة على المفصل مثل الصدم أو السقوط.خلع المفصل يمكن أن يسبب الضرر للمكونات المحيطة بالمفصل مثل للأربطة، والأوتار، والعضلات والأعصاب. الخلع يمكن أن يحدث في أي مفصل رئيسى مثل أو ثانوية مثل. الأكثر شيوعا هو خلع الكتف.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/39/Ankledislocation.JPG"
+    },
+    "ja": {
+      "title": "脱臼",
+      "extract": "脱臼 とは、関節を構成する骨同士の関節面が正しい位置関係を失っている状態。\n程度により完全脱臼と不完全脱臼（亜脱臼）に分類される。\n靭帯や軟骨、骨が損傷を受けるため、骨を正しい位置に戻しただけでは治らず、ギプスでの固定か手術が必要で、後遺症が残る可能性もある。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/9c/PIPjointdislocation2008.jpg"
+    },
+    "zh": {
+      "title": "脫臼",
+      "extract": "脫臼是指骨頭末端因跌倒或骨頭受撞擊等外力影響而脫離關節的位置，常發生在臀部、肩膀（肩脫臼）、肘部、指頭和膝蓋（膝關節脫位）。意外脱臼時須將患處以夾板或吊帶等物固定，不可貿然自行移動脫臼處，並就醫治療。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/39/Ankledislocation.JPG"
+    }
+  },
+  "images": [
+    {
+      "file": "img/dislocation-0.JPG",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/3/39/Ankledislocation.JPG"
+    },
+    {
+      "file": "img/dislocation-1.PNG",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Luxation_epaule.PNG"
+    },
+    {
+      "file": "img/dislocation-2.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/3/39/Ankledislocation.JPG?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    {
+      "file": "img/dislocation-3.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/3/32/Dislocated_finger.jpg"
+    },
+    {
+      "file": "img/dislocation-4.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/9/9c/PIPjointdislocation2008.jpg"
+    }
+  ]
+}

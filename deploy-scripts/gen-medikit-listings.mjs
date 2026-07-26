@@ -1,6 +1,6 @@
 // gen-medikit-listings.mjs — генерира store-listing/<език>.txt за двата медицински апа
 // (Pupikes Doctor, Pupikes Medicines) на 15-те езика. Заменя плейсхолдърите, наследени при
-// клонирането от kcy-toolkit-pictures. Формат = както при останалите апове:
+// клонирането от pupikes-toolkit-pictures. Формат = както при останалите апове:
 //   ред1 (име — кратко).  //  ред3 (едноредово).  //  ред5 (функция)  //  2 support реда.
 // Пуск: node deploy-scripts/gen-medikit-listings.mjs
 import fs from 'fs';

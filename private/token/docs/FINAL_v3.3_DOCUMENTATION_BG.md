@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# KCY1 Token v3.3 FINAL - Документация
+# PUPIKES1 Token v3.3 FINAL - Документация
 
 ## 🎯 Финална Структура на Разпределението
 
@@ -48,7 +48,7 @@ DEV_WALLET_mm_vis (600,000 токена)
 
 ### Deployment Момент:
 ```
-[Mint 1,000,000 KCY1]
+[Mint 1,000,000 PUPIKES1]
          │
          ├──► DEV_WALLET_mm_vis: 600,000 токена
          └──► Contract: 400,000 токена

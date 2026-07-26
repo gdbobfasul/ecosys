@@ -29,7 +29,7 @@ describe("DISTRIBUTION SCENARIOS", function() {
     beforeEach(async function() {
         [owner, wallet1, wallet2, wallet3] = await ethers.getSigners();
         
-        const Token = await ethers.getContractFactory("KCY1Token");
+        const Token = await ethers.getContractFactory("PUPIKES1Token");
         token = await Token.deploy();
         await token.waitForDeployment();
     });

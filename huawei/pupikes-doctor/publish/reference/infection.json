@@ -1,0 +1,31 @@
+{
+  "id": "infection",
+  "langs": {
+    "en": {
+      "title": "Skin infection",
+      "extract": "A skin infection is an infection of the skin in humans and other animals, that can also affect the associated soft tissues such as loose connective tissue and mucous membranes. They comprise a category of infections termed skin and skin structure infections (SSSIs), or skin and soft tissue infections (SSTIs), and acute bacterial SSSIs (ABSSSIs). They are distinguished from dermatitis, although skin infections can result in skin inflammation.",
+      "image": ""
+    },
+    "es": {
+      "title": "Infección cutánea",
+      "extract": "Una infección de la piel es una infección de la piel en humanos y otros animales, que también puede afectar los tejidos blandos asociados, como el tejido conectivo laxo y las membranas mucosas. Comprenden una categoría de infecciones denominadas infecciones de la piel y las estructuras de la piel (SSSI), o infecciones de la piel y tejidos blandos (SSTI), y SSSI bacterianas agudas (ABSSSI). Se distinguen de la dermatitis, aunque las infecciones de la piel pueden provocar inflamación de la piel.",
+      "image": ""
+    },
+    "pt": {
+      "title": "Infecção cutânea",
+      "extract": "As infecções cutâneas ou infecções da pele podem ser causadas por vírus, bactérias, fungos ou pequenos animais. Muitas espécies bacterianas colonizam a pele como flora normal. Staphylococcus aureus e Streptococcus pyogenes são uma flora pouco frequente, mas são as causas mais comuns das infecções cutâneas bacterianas. Os fatores predisponentes para a infecção incluem lesões da pele, doenças de pele preexistentes, má higiene e, raramente, imunidade baixa do hospedeiro.",
+      "image": ""
+    },
+    "ar": {
+      "title": "عدوى الجلد",
+      "extract": "عدوى الجلد هي عدوى تصيب الجلد عند البشر والعديد من الحيوانات، ويمكن أن تؤثر أيضًا على الأنسجة الرخوة المصاحبة مثل النسيج الضام الرخو والأغشية المخاطية. وهي تشتمل على فئة من العدوى تسمى التهابات الجلد وبنية الجلد (SSSIs)، أو عدوى الجلد والأنسجة الرخوة (SSTIs)، والتهابات الجلد والأنسجة الرخوة (ABSSSIs). تتميز عن التهاب الجلد. على الرغم من أن الالتهابات الجلدية يمكن أن تؤدي إلى التهاب الجلد.",
+      "image": ""
+    },
+    "zh": {
+      "title": "皮肤感染",
+      "extract": "皮肤感染 是人类或其他动物的皮肤受到感染。皮肤感染不仅会影响皮肤，它还会影响相关的软组织，例如疏鬆結締組織和黏膜。皮肤感染包括一类称为皮肤和皮肤结构感染（SSSI）或皮肤和软组织感染（SSTI），以及急性细菌性SSSI（ABSSSI）的感染。\n",
+      "image": ""
+    }
+  },
+  "images": []
+}

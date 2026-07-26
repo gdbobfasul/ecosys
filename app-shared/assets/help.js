@@ -43,8 +43,8 @@ async function post(app, body) {
 export function mountHelp(appId) {
   const app = appId || 'unknown';
   function openModal() {
-    if (document.getElementById('kcy-help-ov')) return;
-    const ov = document.createElement('div'); ov.id = 'kcy-help-ov';
+    if (document.getElementById('pupikes-help-ov')) return;
+    const ov = document.createElement('div'); ov.id = 'pupikes-help-ov';
     ov.style.cssText = 'position:fixed;inset:0;z-index:2147483001;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px';
     const box = document.createElement('div');
     box.style.cssText = 'max-width:360px;width:100%;background:#141a24;color:#e6edf3;border-radius:14px;padding:16px;box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,sans-serif';
@@ -68,8 +68,8 @@ export function mountHelp(appId) {
     box.append(h, ta, msg, row); ov.appendChild(box); document.body.appendChild(ov); ta.focus();
   }
   function add() {
-    if (!document.body || document.getElementById('kcy-help-btn')) return;
-    const btn = document.createElement('button'); btn.id = 'kcy-help-btn';
+    if (!document.body || document.getElementById('pupikes-help-btn')) return;
+    const btn = document.createElement('button'); btn.id = 'pupikes-help-btn';
     const relabel = () => { btn.textContent = '❓ ' + tr('btn'); };
     relabel();
     btn.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:2147483000;background:#ee5a6f;color:#fff;border:none;border-radius:20px;padding:9px 14px;font:600 13px system-ui,Segoe UI,Roboto,sans-serif;box-shadow:0 3px 10px rgba(0,0,0,.35);cursor:pointer';

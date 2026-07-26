@@ -1,0 +1,53 @@
+{
+  "id": "stomach",
+  "langs": {
+    "ru": {
+      "title": "Боли в области живота и таза",
+      "extract": "Боли́ в обла́сти живота́ и та́за или Гастралги́я — неприятное чувство, связанное с действительным или возможным повреждением тканей или описанное в терминах этого повреждения."
+    },
+    "uk": {
+      "title": "Біль у животі",
+      "extract": "Біль у животі — симптом, пов'язаний як з незначними, так і з серйозними медичними станами та захворюваннями."
+    },
+    "en": {
+      "title": "Abdominal pain",
+      "extract": "Abdominal pain, also known as a stomach ache, is a symptom associated with both non-serious and serious medical issues. Since the abdomen contains most of the body's vital organs, it can be an indicator of a wide variety of diseases. Given that, approaching the examination of a person and planning of a differential diagnosis is extremely important."
+    },
+    "de": {
+      "title": "Bauchschmerz",
+      "extract": "Der Bauchschmerz, Abdominalschmerz oder abdomineller Schmerz ist eines der häufigsten Symptome, die zur Inanspruchnahme ärztlicher Hilfe führen. Bauchschmerz kann durch eine Vielzahl von Ursachen ausgelöst werden. Zu diesen Ursachen gehören konkrete Erkrankungen von Organen des Bauchraumes, Krankheiten, die sich außerhalb des Bauchraumes abspielen, aber auch Missempfindungen, die durch psychische Erkrankungen ausgelöst werden. Die Ursachen des Symptoms Bauchschmerz reichen von harmlosen Befindlichkeitsstörungen wie Blähungen über krampfartige Koliken bis zu akut lebensbedrohlichen Erkrankungen wie dem Mesenterialinfarkt. Entsprechend der Vielzahl der im Bauchraum liegenden Organe und weil auch Erkrankungen außerhalb des Bauchraumes Bauchschmerzen verursachen können, kann die Differentialdiagnostik von Bauchschmerzen sehr schwierig sein und bedarf nicht selten des Einsatzes umfangreicher klinischer, laborchemischer, bildgebender und medizintechnischer Verfahren."
+    },
+    "fr": {
+      "title": "Douleur abdominale",
+      "extract": "Une douleur abdominale peut être l'un des symptômes associés à des troubles passagers ou à une maladie grave. Établir un diagnostic définitif de la cause des douleurs abdominales d'un patient peut être assez difficile, vu le nombre de maladies susceptibles de comporter ce symptôme."
+    },
+    "es": {
+      "title": "Dolor abdominal",
+      "extract": "El dolor abdominal es el dolor que se siente en el área entre el pecho y la ingle."
+    },
+    "it": {
+      "title": "Dolore addominale",
+      "extract": "Il dolore addominale è un sintomo avvertito nell'addome, regione delimitata superiormente dal torace ed inferiormente dall'inguine. Il dolore addominale può essere acuto o cronico, localizzato o diffuso, crampiforme o continuo, urente o trafittivo."
+    },
+    "pt": {
+      "title": "Dor abdominal",
+      "extract": "Dor abdominal pode ser um sintoma associado a distúrbios transitórios ou a doenças mais graves. O diagnóstico definitivo da causa da dor pode ser difícil, pois muitas doenças podem apresentar sintomas semelhantes, incluindo doenças funcionais, que podem levar a dores crônicas de localização variada e até migratória, sem qualquer anormalidade em exames complementares."
+    },
+    "ar": {
+      "title": "ألم البطن",
+      "extract": "ألم البطن المعروف أيضاً باسم آلام المعدة هو ألم يصيب منطقة البطن، وهي المنطقة الممتدة من أسفل الصدر إلى نهاية الجذع.وتشمل الأسباب الشائعة للألم في البطن التهاب المعدة والأمعاء ومتلازمة القولون العصبي. يعاني حوالي 10% من الأشخاص من حالة أكثر خطورة مثل التهاب الزائدة الدودية أو تسريب أو تمزق تمدد الأوعية الدموية الأبهري أو التهاب الرتج أو الحمل خارج الرحم. في الثلث من الحالات، السبب الدقيق غير واضح؛ وذلك لتشابه العديد من الأمراض في نفس الأعراض والصفات."
+    },
+    "hi": {
+      "title": "पेट दर्द",
+      "extract": "पेट दर्द अथवा उदरीय दर्द, क्षणिक बीमारी अथवा गंभीर बीमारी का एक लक्षण हो शकता है। पेट दर्द के कारण से एक निश्चित निदान करना कठिन हो सकता है, क्योंकि कई बीमारियों में ये लक्षण देखा जा शकता है। पेट दर्द एक आम समस्या है। पेट दर्द में सबसे अक्सर कारण सौम्य और / या आत्म - सीमित है, लेकिन और अधिक गंभीर कारण के अन्दर तत्काल हस्तक्षेप की आवश्यकता हो सकती है।"
+    },
+    "ja": {
+      "title": "腹痛",
+      "extract": "腹痛 とは、腹部に感じる痛みとして自覚される症状である。主に「内臓性腹痛」、「体性痛」、「関連痛」、「心因性腹痛」などに分けられる。腹痛を発生させる要因も様々なものがあり、体内で発生した何らかの異常を知らせる情報がまず痛みとして自覚される。またこれらの痛みは、異常に対する一種の防御反応とも言えるものである。"
+    },
+    "zh": {
+      "title": "腹痛",
+      "extract": "腹痛 俗稱“肚子疼”、“肚子痛”，泛指腹部及其周圍部分的疼痛症狀，常見的病因包括腸胃炎、大腸激躁症。約有10% 的人可能是因更緊急的原因引起，例如闌尾炎、腹主動脈瘤破裂、憩室炎，或異位妊娠。三分之一的病患原因則未明。\n"
+    }
+  }
+}

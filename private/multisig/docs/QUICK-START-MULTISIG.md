@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# ⚡ БЪРЗ СТАРТ - Multi-Sig за KCY1
+# ⚡ БЪРЗ СТАРТ - Multi-Sig за PUPIKES1
 
 ## 🎯 КАКВО ИМАШ:
 
@@ -72,10 +72,10 @@ const TOKEN_ADDRESS = "0x...";     // ← FROM STEP 3
 
 **GitHub Pages (free):**
 ```bash
-1. Create repo: kcy1-multisig
+1. Create repo: pupikes1-multisig
 2. Upload multisig-control.html
 3. Settings → Pages → Deploy
-4. URL: https://yourusername.github.io/kcy1-multisig/multisig-control.html
+4. URL: https://yourusername.github.io/pupikes1-multisig/multisig-control.html
 ```
 
 **Local (testing):**
@@ -133,8 +133,8 @@ python -m http.server 8000
                │ Controls via exempt slot
                ▼
     ┌─────────────────────┐
-    │   KCY1 Token        │
-    │  (kcy-meme-1.sol)   │
+    │   PUPIKES1 Token        │
+    │  (pupikes-meme-1.sol)   │
     └─────────────────────┘
 ```
 
@@ -296,7 +296,7 @@ cd frontend && python -m http.server 8000
 
 ## ✅ ТОВА Е!
 
-Имаш **работещ 3-of-5 multi-sig** за KCY1 token!
+Имаш **работещ 3-of-5 multi-sig** за PUPIKES1 token!
 
 **Следващи стъпки:**
 1. Deploy на testnet

@@ -7,7 +7,7 @@ const hre = require("hardhat");
 const { getSigner, formatTokens, waitForTx, getExplorerUrl } = require("../utils/helpers");
 
 async function main() {
-  console.log("=== KCY1 Token Deployment ===\n");
+  console.log("=== PUPIKES1 Token Deployment ===\n");
   
   const signer = await getSigner();
   const networkName = hre.network.name;
@@ -20,9 +20,9 @@ async function main() {
   console.log("");
   
   // Deploy
-  console.log("📦 Deploying KCY1Token...");
-  const KCY1 = await hre.ethers.getContractFactory("KCY1Token");
-  const token = await KCY1.deploy();
+  console.log("📦 Deploying PUPIKES1Token...");
+  const PUPIKES1 = await hre.ethers.getContractFactory("PUPIKES1Token");
+  const token = await PUPIKES1.deploy();
   await token.waitForDeployment();
   
   const address = await token.getAddress();
@@ -44,8 +44,8 @@ async function main() {
   const contractBalance = await token.balanceOf(address);
   
   console.log("💵 Initial Balances:");
-  console.log("  DEV:", formatTokens(devBalance), "KCY1");
-  console.log("  Contract:", formatTokens(contractBalance), "KCY1");
+  console.log("  DEV:", formatTokens(devBalance), "PUPIKES1");
+  console.log("  Contract:", formatTokens(contractBalance), "PUPIKES1");
   console.log("");
   
   // Trading lock info

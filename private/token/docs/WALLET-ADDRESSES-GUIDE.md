@@ -1,5 +1,5 @@
 <!-- Version: 1.0093 -->
-# АДРЕСИ/ПОРТФЕЙЛИ ЗА KCY1 И MULTI-SIG ПРОЕКТИТЕ
+# АДРЕСИ/ПОРТФЕЙЛИ ЗА PUPIKES1 И MULTI-SIG ПРОЕКТИТЕ
 
 ## ОБОБЩЕНИЕ
 
@@ -25,7 +25,7 @@
 | 7 | **FACTORY** | PancakeSwap Factory | Exempt | `0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73` | ⚠️ Официален |
 | 8 | **WBNB** | Wrapped BNB | - | `0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c` | ⚠️ Официален |
 | 9 | **MULTI-SIG** | Multi-Sig Contract | Exempt | *deploy след токена* | ❌ Автоматично |
-| 10 | **LIQUIDITY PAIR** | KCY1/WBNB Pair | Exempt (Slot 9) | *създава се от Router* | ❌ Автоматично |
+| 10 | **LIQUIDITY PAIR** | PUPIKES1/WBNB Pair | Exempt (Slot 9) | *създава се от Router* | ❌ Автоматично |
 
 ---
 
@@ -137,7 +137,7 @@ const MULTISIG_OWNERS = {
 - [ ] Създай 8 MetaMask accounts
 - [ ] Вземи Testnet BNB от faucet
 - [ ] Обнови `Addresses.sol` с твоите testnet адреси
-- [ ] Deploy KCY1 Token
+- [ ] Deploy PUPIKES1 Token
 - [ ] Deploy Multi-Sig с 5 owners
 - [ ] Извикай `setMultiSigAddress()` на токена
 - [ ] Тествай всички функции
@@ -179,7 +179,7 @@ const MULTISIG_OWNERS = {
 ### Файлове за редакция:
 
 ```
-2026-01-05-KCY1/
+2026-01-05-PUPIKES1/
 ├── contracts/
 │   └── Addresses.sol          ← РЕДАКТИРАЙ ТУК адресите
 ├── scripts/
@@ -214,7 +214,7 @@ npx hardhat run scripts/deploy-multisig.js --network bscTestnet
 ### Стъпка 4: Link Multi-Sig към Token
 ```javascript
 // В Hardhat console
-const token = await ethers.getContractAt("KCY1Token", "TOKEN_ADDRESS");
+const token = await ethers.getContractAt("PUPIKES1Token", "TOKEN_ADDRESS");
 await token.setMultiSigAddress("MULTISIG_ADDRESS");
 ```
 
@@ -231,7 +231,7 @@ await token.setMultiSigAddress("MULTISIG_ADDRESS");
    - Трябва да deploy-неш с правилния wallet!
 
 3. **Multi-Sig се deploy-ва ОТДЕЛНО**
-   - Първо deploy-ваш KCY1 Token
+   - Първо deploy-ваш PUPIKES1 Token
    - После deploy-ваш Multi-Sig
    - После линкваш Multi-Sig към Token с `setMultiSigAddress()`
 

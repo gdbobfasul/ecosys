@@ -13,7 +13,7 @@ const {
 } = require("../utils/helpers");
 
 async function main() {
-  console.log("=== KCY1 Token Balance Check ===\n");
+  console.log("=== PUPIKES1 Token Balance Check ===\n");
   
   await displayNetworkInfo();
   

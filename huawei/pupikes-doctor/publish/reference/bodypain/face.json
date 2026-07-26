@@ -1,0 +1,13 @@
+{
+  "id": "face",
+  "langs": {
+    "en": {
+      "title": "Facial pain",
+      "extract": "Orofacial pain (OFP) is a general term covering any pain which is felt in the mouth, jaws and the face. Orofacial pain is a common symptom, and there are many causes."
+    },
+    "ar": {
+      "title": "ألم وجهي فموي",
+      "extract": "الألم الوجهي الفموي مصطلح عام يغطي أي ألم يتوضع في الفم والفكين والوجه. يعتبر الألم الوجهي الفموي عرض شائع وله عدة أسباب."
+    }
+  }
+}

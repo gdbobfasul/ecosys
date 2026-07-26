@@ -10,7 +10,7 @@
 config/addresses.js                    (JS адреси)
 config/generate-solidity-addresses.js  (Generator)
 contracts/AddressConstants.sol         (Генериран)
-contracts/kcy-meme-1.sol               (Използва константите)
+contracts/pupikes-meme-1.sol               (Използва константите)
 ```
 
 ### Сега (v37) ✅

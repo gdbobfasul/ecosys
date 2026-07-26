@@ -1,0 +1,84 @@
+{
+  "id": "frostbite",
+  "langs": {
+    "bg": {
+      "title": "Измръзване",
+      "extract": "Измръзването е състояние, което настъпва, когато излагането на ниски температури причини замръзване на кожата или други тъкани. Първоначалният симптом обикновено е хипестезия (вкочаненост). Това може да бъде последвано от тромавост, несръчност и бяло-синкаво цвят на кожата. След лечение може да настъпят подуване и поява на мехури. Най-често се засягат ръцете, ходилата и лицето.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Frostbitten_hands.jpg"
+    },
+    "ru": {
+      "title": "Отморожение",
+      "extract": "Отмороже́ние, или обмороже́ние — повреждение тканей организма под воздействием низких температур. Нередко сопровождается общим переохлаждением организма и особенно часто затрагивает выступающие части тела, такие как ушные раковины, нос, недостаточно защищённые конечности, прежде всего пальцы рук и ног. Распространяется от более удалённых областей органов к менее удалённым. Чаще всего отморожения возникают в холодное зимнее время при температуре окружающей среды ниже −15 °C. При длительном пребывании вне помещения, особенно при высокой влажности и сильном ветре, отморожение можно получить и при более высокой температуре воздуха.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Frostbitten_hands.jpg"
+    },
+    "uk": {
+      "title": "Обмороження",
+      "extract": "Обморо́ження або відморо́ження — ушкодження тканин організму під дією холоду. Нерідко супроводжується загальним переохолодженням організму, особливо часто уражає такі частини тіла як вушні раковини, ніс, недостатньо захищені кінцівки, в першу чергу пальці рук та ніг.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Frost_bite.jpg"
+    },
+    "en": {
+      "title": "Frostbite",
+      "extract": "Frostbite is an injury to skin or other living tissue that is allowed to freeze, especially affecting the fingers, toes, nose, ears, cheeks and chin. Most often, frostbite occurs in the hands and feet, often preceded by frostnip, a paling or reddening of a body part as its blood vessels constrict that tingles, feels very cold, or simply feels numb. This may be followed by the clumsiness and white or bluish, waxy-looking skin that evidence full-blown frostbite. Swelling or blistering may occur following treatment. Complications may include hypothermia or compartment syndrome.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Frost_bite.jpg"
+    },
+    "de": {
+      "title": "Erfrierung",
+      "extract": "Unter Erfrierung versteht man eine Schädigung des Gewebes von Lebewesen durch Kälteeinwirkung, also Temperatur. Sie tritt besonders häufig an kälteexponierten Körperstellen, ungenügend kältegeschützten Gliedmaßen und unter Umständen zugleich mit einer allgemeinen Unterkühlung auf. Dagegen führt ein örtlich begrenzter direkter Kontakt mit extrem kalten Substanzen, wie beispielsweise Trockeneis oder Flüssigstickstoff, bei mangelhaft isolierendem Transportbehälter oder technisch verursachten Unfällen als örtlicher Kälteschaden zu Symptomen, die einer Verbrennung ähneln und deshalb als Kälteverbrennung bezeichnet werden.",
+      "image": ""
+    },
+    "fr": {
+      "title": "Gelure",
+      "extract": "La gelure est une brûlure par le froid. Comme pour une brûlure, la gelure peut être superficielle ou profonde. Elle peut parfois atteindre les muscles et les os.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Frostbitten_hands.jpg"
+    },
+    "es": {
+      "title": "Congelamiento",
+      "extract": "El congelamiento o las lesiones por congelación es la condición médica donde la piel y otros tejidos son dañados a causa del frío extremo. A temperaturas iguales o inferiores a 0 °C los vasos sanguíneos comienzan a estrecharse. Esto ayuda a preservar la temperatura corporal. En caso de frío extremo o cuando el cuerpo es expuesto al frío por periodos prolongados, esta estrategia protectora puede reducir el flujo sanguíneo en algunas áreas del cuerpo a niveles peligrosamente bajos. Las áreas donde esto ocurre se congelarán. La combinación de temperaturas frías y bajo flujo sanguíneo pueden causar lesiones graves en los tejidos que sufren congelación.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Frost_bite.jpg"
+    },
+    "it": {
+      "title": "Congelamento (medicina)",
+      "extract": "Il congelamento è una lesione locale che interessa una o più parti del corpo di un organismo vivente in seguito all'azione del freddo sui tessuti. Tale evento si manifesta quando la temperatura del corpo scende a -3,9 gradi Celsius.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Frost_bite.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    },
+    "pt": {
+      "title": "Geladura",
+      "extract": "Geladura ou úlcera de frio é uma condição caracterizada pela congelação da pele ou de outros tecidos causada pela exposição a baixas temperaturas. O sintoma inicial é geralmente Perda de sensibilidade na área afetada, que pode ser seguido de entorpecimento e pele de tom azul ou branco. Durante o tratamento pode ocorrer tumefação ou aparecimento de bolhas. As áreas afetadas com maior frequência são as mãos, pés e rosto. Entre as possíveis complicações estão a hipotermia e síndrome compartimental.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Frost_bite.jpg"
+    },
+    "ar": {
+      "title": "قضمة الصقيع",
+      "extract": "قَضْمَةُ الصَّقِيعِ أو  تثليج هي إصابة جلدية تحدث عند التعرض لدرجات حرارة منخفضة للغاية، مسببةً تجمد الجلد أو الأنسجة الأخرى، وعادةً ما تؤثر على أصابع اليدين والقدمين والأنف والأذنين والخدين ومناطق الذقن. غالبًا ما تحدث قضمة الصقيع في اليدين والقدمين. العَرَض الأوَّلي هو الخَدَر عادةً. وقد يعقب ذلك خرق في الجلد لونه أبيض أو مزرق. قد يحدث تورم أو تقرحات بعد العلاج. قد تشمل المضاعفات انخفاض حرارة الجسم أو متلازمة المقصورة.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Frostbitten_hands.jpg"
+    },
+    "ja": {
+      "title": "凍傷",
+      "extract": "凍傷（とうしょう）は、低温が原因で生じる皮膚や皮下組織の傷害である。極度の低温はもちろん、0℃を少々下回る程度の温度でも長時間さらされると生じ、痛みを伴う。瘃（ちょく）は凍傷の意味である。",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Frost_bite.jpg"
+    },
+    "ky": {
+      "title": "Үшүккө алдыруу",
+      "extract": "Үшүккө алдыруу — сууктун таасиринен дене тканынын жабыркашы. \nҮшүккө алдыруу аба ырайынын ызгаардуу суугунда гана эмес, нөлгө жакын температурада да болушу ыктымал. Үшүккө алдырууга шамал, нымдуу аба, ным жана тар кийим, мээлей, мас абалында болуу, организмдин начарлашы түрткү берет. Көбүнчө кол-буттун манжаларын, мурун, кулакты үшүк алат.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Frostbitten_hands.jpg"
+    },
+    "zh": {
+      "title": "凍傷",
+      "extract": "凍傷是由於長期處於極為寒冷的狀態下，而引起的人體局部或全身性的傷害。輕時可造成皮膚組織的紅腫、局部血液流通不暢，並會產生發癢、刺痛、麻木等感覺，需要治療；重時則會伴隨失溫，皮膚發黑、血管壞死，然後喪失知覺，造成全身永久性的損傷，可能危及性命，需及早進行治療。\n",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Frostbitten_hands.jpg"
+    }
+  },
+  "images": [
+    {
+      "file": "img/frostbite-0.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Frostbitten_hands.jpg"
+    },
+    {
+      "file": "img/frostbite-1.jpg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Frost_bite.jpg"
+    },
+    {
+      "file": "img/frostbite-2.org&",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Frost_bite.jpg?utm_source=it.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    }
+  ]
+}

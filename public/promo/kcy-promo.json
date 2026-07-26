@@ -1,5 +1,5 @@
 {
-  "_comment": "Каталог за екрана „Още от Pupikes\". Редактирай ПРЕДИ билд: enabled:true за одобрените/публикуваните, финално name и storeUrl (линк за сваляне). Билдът го копира в dist/kcy-promo.json на всеки апп.",
+  "_comment": "Каталог за екрана „Още от Pupikes\". Редактирай ПРЕДИ билд: enabled:true за одобрените/публикуваните, финално name и storeUrl (линк за сваляне). Билдът го копира в dist/pupikes-promo.json на всеки апп.",
   "updated": "",
   "apps": [
     {
@@ -483,11 +483,11 @@
       }
     },
     {
-      "id": "kcy-toolkit-pdf",
+      "id": "pupikes-toolkit-pdf",
       "enabled": true,
       "name": "Pupikes Toolkit PDF",
       "storeUrl": "https://appgallery.huawei.com/",
-      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-pdf.png",
+      "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-pdf.png",
       "text": {
         "bg": "Сливане, разделяне, воден знак · Растеризира страниците за по-малък размер · Извлича текста и прави .docx файл",
         "ru": "Объединение, разделение, водяной знак · Растрирует страницы для меньшего размера · Извлекает текст и создаёт файл .docx",
@@ -507,11 +507,11 @@
       }
     },
     {
-      "id": "kcy-toolkit-qr",
+      "id": "pupikes-toolkit-qr",
       "enabled": true,
       "name": "Pupikes Toolkit QR",
       "storeUrl": "https://appgallery.huawei.com/",
-      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-qr.png",
+      "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-qr.png",
       "text": {
         "bg": "Генерирай и разчети QR кодове",
         "ru": "Создавай и сканируй QR-коды",
@@ -531,11 +531,11 @@
       }
     },
     {
-      "id": "kcy-toolkit-ai-announcement",
+      "id": "pupikes-toolkit-ai-announcement",
       "enabled": true,
       "name": "Pupikes Toolkit AI Announcement",
       "storeUrl": "https://appgallery.huawei.com/",
-      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-ai-announcement.png",
+      "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-ai-announcement.png",
       "text": {
         "bg": "Пиши, обобщавай, превеждай (безплатно)",
         "ru": "Пиши, обобщай, переводи (бесплатно)",
@@ -555,11 +555,11 @@
       }
     },
     {
-      "id": "kcy-toolkit-text",
+      "id": "pupikes-toolkit-text",
       "enabled": true,
       "name": "Pupikes Toolkit Text",
       "storeUrl": "https://appgallery.huawei.com/",
-      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-text.png",
+      "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-text.png",
       "text": {
         "bg": "Брояч, форматиране, Base64",
         "ru": "Счётчик, форматирование, Base64",
@@ -579,11 +579,11 @@
       }
     },
     {
-      "id": "kcy-toolkit-finance",
+      "id": "pupikes-toolkit-finance",
       "enabled": true,
       "name": "Pupikes Toolkit Finance",
       "storeUrl": "https://appgallery.huawei.com/",
-      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-finance.png",
+      "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-finance.png",
       "text": {
         "bg": "RSI, Fibonacci, BTC/ETH по периоди (Binance/CoinGecko) · Конвертор и курсове на живо · Прагове с известие и звук за до 20 двойки · Заем, ДДС, лихва, проценти",
         "ru": "RSI, Фибоначчи, BTC/ETH по периодам (Binance/CoinGecko) · Конвертер и курсы в реальном времени · Пороги с уведомлением и звуком до 20 пар · Кредит, НДС, проценты",
@@ -603,11 +603,11 @@
       }
     },
     {
-      "id": "kcy-toolkit-pictures",
+      "id": "pupikes-toolkit-pictures",
       "enabled": true,
       "name": "Pupikes Toolkit Pictures",
       "storeUrl": "https://appgallery.huawei.com/",
-      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-pictures.png",
+      "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-pictures.png",
       "text": {
         "bg": "Намали JPEG / PNG / WebP",
         "ru": "Уменьши JPEG / PNG / WebP",
@@ -627,11 +627,11 @@
       }
     },
     {
-      "id": "kcy-toolkit-videos",
+      "id": "pupikes-toolkit-videos",
       "enabled": true,
       "name": "Pupikes Toolkit Videos",
       "storeUrl": "https://appgallery.huawei.com/",
-      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-videos.png",
+      "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-videos.png",
       "text": {
         "bg": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройството",
         "ru": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройстве",
@@ -651,11 +651,11 @@
       }
     },
     {
-      "id": "kcy-toolkit-sound",
+      "id": "pupikes-toolkit-sound",
       "enabled": true,
       "name": "Pupikes Toolkit Sound",
       "storeUrl": "https://appgallery.huawei.com/",
-      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-sound.png",
+      "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-sound.png",
       "text": {
         "bg": "Телефонни звукови формати → MP4 / MP3 / WAV / OGG",
         "ru": "Телефонные аудиоформаты → MP4 / MP3 / WAV / OGG",
@@ -675,11 +675,11 @@
       }
     },
     {
-      "id": "kcy-toolkit-passwords",
+      "id": "pupikes-toolkit-passwords",
       "enabled": true,
       "name": "Pupikes Toolkit Passwords",
       "storeUrl": "https://appgallery.huawei.com/",
-      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-passwords.png",
+      "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-passwords.png",
       "text": {
         "bg": "Силни пароли с 4 метода",
         "ru": "Надёжные пароли, 4 метода",
@@ -699,11 +699,11 @@
       }
     },
     {
-      "id": "kcy-toolkit-scraper",
+      "id": "pupikes-toolkit-scraper",
       "enabled": true,
       "name": "Pupikes Toolkit Scraper",
       "storeUrl": "https://appgallery.huawei.com/",
-      "img": "https://selflearning.bot.nu/promo/kcy-toolkit-scraper.png",
+      "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-scraper.png",
       "text": {
         "bg": "Извличане на заглавие/текст/връзки",
         "ru": "Извлечение заголовка/текста/ссылок",

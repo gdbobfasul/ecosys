@@ -21,6 +21,15 @@ const UA = { 'User-Agent': 'PupikesMedikit/1.0 (educational; contact ltd.dai.gru
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function getJson(url) { for (let a = 0; a < 4; a++) { try { const r = await fetch(url, { headers: UA }); if (r.status === 429) { await sleep(20000); continue; } if (!r.ok) return null; return await r.json(); } catch (_) { await sleep(3000); } } return null; }
+// Истинската диагноза е в йерархичните полета diagnosis_3→2→1 (старото `diagnosis` вече не съществува).
+function pickDx(cl) {
+  if (!cl) return null;
+  const d = cl.diagnosis_3 || cl.diagnosis_2 || cl.diagnosis_1 || cl.benign_malignant;
+  if (!d) return null;
+  let t = String(d).trim().replace(/,\s*(nos|not otherwise specified).*$/i, '');
+  t = t.split(',')[0].trim().toLowerCase().replace(/\s*\(melanoma\)\s*/i, ' melanoma').replace(/\s+/g, ' ').trim();
+  return t || null;
+}
 async function download(url, dest) { try { const r = await fetch(url, { headers: UA }); if (!r.ok) return false; const b = Buffer.from(await r.arrayBuffer()); if (b.length < 4000) return false; fs.writeFileSync(dest, b); return true; } catch (_) { return false; } }
 
 async function main() {
@@ -43,7 +52,7 @@ async function main() {
         const iurl = f && f.url; if (!iurl) continue;
         const key = iurl.split('?')[0];
         if (seen.has(key)) continue; seen.add(key);
-        const dx = (it.metadata && it.metadata.clinical && (it.metadata.clinical.diagnosis || it.metadata.clinical.benign_malignant)) || 'skin lesion';
+        const dx = pickDx(it.metadata && it.metadata.clinical) || 'skin lesion';
         const name = `isic${SHARD_ID}_${it.isic_id || (page + '_' + k)}.jpg`;
         // Пропусни, ако вече е свален този isic_id (thumbnail URL се различава от стария full → иначе
         // презаписваме същия файл и НЕ растем; така обхождаме НАДЪЛБОЧ към нови снимки).

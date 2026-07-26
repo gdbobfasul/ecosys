@@ -1,0 +1,33 @@
+{
+  "id": "throat",
+  "langs": {
+    "ru": {
+      "title": "Боль в горле",
+      "extract": "Больно́е го́рло — боль, першение или раздражение в горле, часто усиливающиеся при глотании. Это часто встречающийся симптом, обычно вызван острым фарингитом, обычно является симптомом острых респираторных вирусных инфекций, ларингита, тонзиллита, стрептококкового фарингита или инфекционного мононуклеоза. Может быть также и по другим причинам, включая воздействие на горло раздражителей, таких как дым, воздействие кислоты, попадающей в горло из желудка при гастроэзофагеальной рефлюксной болезни, и в результате аллергии."
+    },
+    "uk": {
+      "title": "Біль у горлі",
+      "extract": "Біль у горлі — біль або подразнення, що виникає у горлі. Біль у горлі, як правило, спричинений вірусною або бактеріальною інфекцією стрептокока групи А. Іншими причинами болю у горлі є фарингіт, тонзиліт або зневоднення, що призводить до пересихання горла. Біль у горлі також може бути наслідком травми. Найчастіше болі у горлі викликані вірусом, для якого антибіотики не є ефективними. Дослідження свідчать про сильний зв'язок між зловживанням антибіотиками при болі у горлі та резистентністю до антибіотиків."
+    },
+    "en": {
+      "title": "Sore throat",
+      "extract": "Sore throat, also known as throat pain, is pain or irritation of the throat. The majority of sore throats are caused by a virus, for which antibiotics are not helpful."
+    },
+    "de": {
+      "title": "Halsschmerzen",
+      "extract": "Halsschmerzen sind ein häufig auftretendes Symptom bei krankhaften Veränderungen im Hals-, Mund- und Rachenraum. Bis zu 5 % der Patienten beim Kinderarzt klagen über Halsschmerzen, in einer allgemeinmedizinischen Praxis werden im Durchschnitt zwei Patienten pro Woche aufgrund von Halsschmerzen behandelt. Der wichtigste Schritt ist die Unterscheidung zwischen einer mit Antibiotika zu behandelnden bakteriellen Erkrankung von anderen Ursachen."
+    },
+    "pt": {
+      "title": "Inflamação da garganta",
+      "extract": "Inflamação da garganta é a ocorrência de dor ou irritação na garganta. A causa mais comum (80%) das inflamações da garganta é a faringite, uma infeção viral aguda da garganta. Entre outras possíveis causas estão outras infeções como faringite estreptocócica, amigdalite, traumatismo ou tumores. Em pessoas com doença de refluxo gastroesofágico, o refluxo de ácido do estômago pode irritar a garganta. Em crianças, a faringite estreptocócica é a causa de 37% das inflamações da garganta."
+    },
+    "ar": {
+      "title": "التهاب الحلق",
+      "extract": "التهاب في الحلق أو اِلْتِهاب الحنجرة هو ألم أو تهيج الحلق. وتعتبر أعراض جسدية شائعة، وعادة ما ينتج هذا الالتهاب عن التهاب البلعوم الحاد ، وعلى الرغم من أنه يمكن أن يظهر الالتهاب نتيجة لصدمة، أو بسبب بكتريا الدفتيريا، أو غيرها من الحالات.\nتكثر الإصابة به في فصل الشتاء، ويرتبط بالعديد من المسببات له وأكثرها شيوعاً الإصابة بالتهابات الجهاز التنفسي مثل الزكام أو الإصابة بفيروس الإنفلونزا."
+    },
+    "zh": {
+      "title": "咽喉痛",
+      "extract": "咽喉痛，是指咽喉出現痛楚的徵狀，最主要的成因是咽喉炎（喉嚨發炎），但可由其他原因引致，例如白喉和傷風感冒。服用非類固醇消炎止痛藥及乙醯氨基酚有助紓緩喉嚨痛。\n"
+    }
+  }
+}

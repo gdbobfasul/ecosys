@@ -1,0 +1,37 @@
+{
+  "id": "pelvis",
+  "langs": {
+    "en": {
+      "title": "Pelvic pain",
+      "extract": "Pelvic pain is pain in the area of the pelvis. Acute pain is more common than chronic pain. If the pain lasts for more than six months, it is deemed to be chronic pelvic pain. It can affect both the male and female pelvis."
+    },
+    "fr": {
+      "title": "Douleur pelvienne",
+      "extract": "La douleur pelvienne est une douleur située entre les hanches. La douleur peut être aiguë ou chronique. Si la douleur dure moins de 3 mois, elle est généralement considérée comme aiguë ; tandis que si elle dure plus de six mois, elle est généralement considérée comme chronique. La dépression peut aggraver les symptômes. Elle est distincte de la douleur périnéale."
+    },
+    "es": {
+      "title": "Dolor pélvico",
+      "extract": "El dolor pélvico es un dolor en el área de la pelvis. El dolor agudo es más común que el dolor crónico. Si el dolor dura más de seis meses, se considera dolor pélvico crónico. Puede afectar tanto a mujeres como a hombres."
+    },
+    "it": {
+      "title": "Dolore pelvico",
+      "extract": "Il dolore pelvico è un dolore che si verifica nella regione del bacino. Il dolore può essere acuto, cioè ha un esordio improvviso, o cronico, cioè rimane presente in modo intermittente o continuo per un periodo di tempo prolungato. Se il dolore dura meno di 3 mesi è generalmente classificato come acuto; mentre se dura più di sei mesi è generalmente classificato come cronico. La depressione può peggiorare i sintomi. È distinto dal dolore perineale."
+    },
+    "pt": {
+      "title": "Dor pélvica",
+      "extract": "A dor pélvica é uma dor na área da pelve. A dor aguda é mais comum do que a dor crônica. Se a dor durar mais de seis meses, é considerada uma dor pélvica crônica. Pode afetar a pelve masculina e feminina."
+    },
+    "ar": {
+      "title": "ألم حوضي",
+      "extract": "خط الألم الحوضي هو ألم يُصيب حوض الإنسان. يُعتبر الألم الحاد أكثر شيوعًا من الألم المُزمن. يُعتبر الألم من النوع المُزمن في حالة تجاوز فترة الألم لستة أشهر. وتُصيب النساء والرجال."
+    },
+    "ja": {
+      "title": "骨盤痛",
+      "extract": "骨盤痛 は、股関節部分に生じる痛みである。骨盤痛は、突然起こる急性の場合、または、断続的や長期間にわたる慢性の場合がある。痛みの継続が3ヶ月未の場合は一般的に急性と分類される、一方、痛みが6ヶ月以上続く場合は一般的に慢性と分類される。うつ病によって症状を悪化させる可能性がある。骨盤痛は会陰痛とは異なる。"
+    },
+    "zh": {
+      "title": "骨盆腔疼痛",
+      "extract": "骨盆腔疼痛 簡稱骨盆痛或盆腔痛是指臀部之間区域的疼痛。疼痛可能是急性，突然发作；也可能是慢性，即间歇性或持续性地存在很长一段时间。如果疼痛持续时间少于 3 个月，常归於急性； 若症狀持续超过 6 个月，常归為慢性。抑郁症可能使症状恶化。与會陰疼痛不同。\n"
+    }
+  }
+}
