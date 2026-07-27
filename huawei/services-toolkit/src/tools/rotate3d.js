@@ -112,6 +112,15 @@ function lumGrid(img, G) {
   }
   return out;
 }
+// RGB мрежа (0..255) — за оценка кой е ОБЕКТ и кой е ФОН (по разлика от цвета на ръба на кадъра).
+function rgbGrid(img, G) {
+  const d = imgPixels(img, G); const out = new Float32Array(G * G * 3);
+  for (let j = 0; j < G; j++) for (let i = 0; i < G; i++) {
+    const src = ((G - 1 - j) * G + i) * 4, k = (j * G + i) * 3;
+    out[k] = d[src]; out[k+1] = d[src+1]; out[k+2] = d[src+2];
+  }
+  return out;
+}
 
 export function render(root) {
   root.innerHTML = `
@@ -180,7 +189,8 @@ export function render(root) {
 
   const HALF = 0.9;                  // половин размер на най-дългата страна
   const THICK = 0.05;                // половин дебелина на плочката (Метод 1)
-  const RELIEF = 0.22;               // амплитуда на релефа (Метод 2)
+  const RELIEF = 0.22;               // амплитуда на релефа (повърхностна текстура, Метод 2)
+  const BULGE = 0.6;                  // амплитуда на радиалния КУПОЛ (обектът изпъква в средата)
   const GRID = 96;                   // резолюция на релефната мрежа
 
   function quadSize(imgW, imgH) {
@@ -220,9 +230,36 @@ export function render(root) {
   }
   function buildRelief(qw, qh) {
     const G = GRID, lum = curImg ? lumGrid(curImg, G) : new Float32Array(G * G);
+    const rgb = curImg ? rgbGrid(curImg, G) : new Float32Array(G * G * 3);
     const n = G * G;
+    // ── ОБЕМ НА ОБЕКТА (а не на цялата снимка): радиален КУПОЛ, модулиран от „преден план". ──
+    // Фонов цвят = среден по РЪБА на кадъра (там обикновено е фонът). Клетка, която се различава
+    // силно от фона → ОБЕКТ (тегло 1); близка до фона → ФОН (тегло 0). Куполът (центърът изпъква)
+    // се прилага само върху обекта → кръгло кошче изпъква в средата, фонът остава плосък.
+    let br = 0, bgc = 0, bb = 0, bc = 0;
+    for (let j = 0; j < G; j++) for (let i = 0; i < G; i++) {
+      if (i === 0 || j === 0 || i === G - 1 || j === G - 1) { const k = (j*G+i)*3; br += rgb[k]; bgc += rgb[k+1]; bb += rgb[k+2]; bc++; }
+    }
+    br /= bc || 1; bgc /= bc || 1; bb /= bc || 1;
+    const fgRaw = new Float32Array(n);
+    for (let p = 0; p < n; p++) { const k = p*3; const dist = Math.hypot(rgb[k]-br, rgb[k+1]-bgc, rgb[k+2]-bb); fgRaw[p] = Math.min(1, dist / 85); }
+    // изглаждане на маската (3×3) → меки граници, без стъпала
+    const fg = new Float32Array(n);
+    for (let j = 0; j < G; j++) for (let i = 0; i < G; i++) {
+      let s = 0, c = 0;
+      for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) { const jj = j+dj, ii = i+di; if (ii<0||jj<0||ii>=G||jj>=G) continue; s += fgRaw[jj*G+ii]; c++; }
+      fg[j*G+i] = s / (c || 1);
+    }
+    const cx = (G-1)/2, cy = (G-1)/2;
+    const heights = new Float32Array(n);
+    for (let j = 0; j < G; j++) for (let i = 0; i < G; i++) {
+      const rx = (i-cx)/cx, ry = (j-cy)/cy, r2 = Math.min(1, rx*rx + ry*ry);
+      const dome = Math.sqrt(1 - r2);                              // 1 в центъра → 0 в ръба
+      const p = j*G+i;
+      heights[p] = dome * BULGE * fg[p] + (lum[p] - 0.5) * RELIEF * 0.45;   // купол по обекта + фина текстура
+    }
     const pos = new Float32Array(n * 3), uv = new Float32Array(n * 2), sh = new Float32Array(n);
-    const H = (i, j) => (lum[Math.max(0, Math.min(G-1, j)) * G + Math.max(0, Math.min(G-1, i))] - 0.5) * RELIEF;
+    const H = (i, j) => heights[Math.max(0, Math.min(G-1, j)) * G + Math.max(0, Math.min(G-1, i))];
     const dx = (2 * qw) / (G - 1), dy = (2 * qh) / (G - 1);
     const Lx = 0.35, Ly = 0.45, Lz = 0.82, Ll = Math.hypot(Lx, Ly, Lz);
     for (let j = 0; j < G; j++) for (let i = 0; i < G; i++) {

@@ -1,7 +1,10 @@
-// Version: 1.0004
+// Version: 1.0005
 // intro.js — брандова РЕКЛАМА при СТАРТ: лапата Pupikes + защо „Pupikes" (кучета: верни и
 // обучаеми) + границата (искай само в разумни граници). 15 езика; докосване/~3.8s я затваря.
 // СВЕТЪЛ стил (избран вариант) — фокус върху логото, името и текста. Универсален DOM слой.
+// РЕД (1.0005): ПЪРВО избор на език, ПОСЛЕ лого-интрото — за да не се показва текст на грешен
+// език (напр. руски на арабин). Интрото ИЗЧАКВА да е избран език (както legal-gate), после играе
+// вече на верния език. Ред при старт: избор на език → лого-интро → правен екран → апът.
 const WHY = {"bg":"Pupikes — кучета: верни и обучаеми. Приложенията ти служат и се учат от теб.","ru":"Pupikes — собаки: верные и обучаемые. Приложения служат вам и учатся у вас.","uk":"Pupikes — собаки: вірні та навчувані. Застосунки служать тобі й вчаться від тебе.","en":"Pupikes — dogs: loyal and trainable. The apps serve you and learn from you.","de":"Pupikes — Hunde: treu und lernfähig. Die Apps dienen dir und lernen von dir.","fr":"Pupikes — des chiens : fidèles et dressables. Les apps te servent et apprennent de toi.","es":"Pupikes — perros: leales y adiestrables. Las apps te sirven y aprenden de ti.","es-MX":"Pupikes — perros: leales y adiestrables. Las apps te sirven y aprenden de ti.","it":"Pupikes — cani: fedeli e addestrabili. Le app ti servono e imparano da te.","pt":"Pupikes — cães: leais e treináveis. Os apps te servem e aprendem contigo.","ar":"Pupikes — كلاب: مخلصة وقابلة للتدريب. التطبيقات تخدمك وتتعلّم منك.","hi":"Pupikes — कुत्ते: वफ़ादार और सिखाने योग्य। ऐप्स आपकी सेवा करते हैं और आपसे सीखते हैं।","ja":"Pupikes — 犬：忠実で、しつけられる。アプリはあなたに仕え、あなたから学びます。","ky":"Pupikes — иттер: ишенимдүү жана үйрөтүүгө болот. Колдонмолор сага кызмат кылып, сенден үйрөнөт.","zh-Hant":"Pupikes — 狗：忠誠且可訓練。應用程式為你服務，並向你學習。"};
 const LIMIT = {"bg":"Кажи какво липсва — подобряват се. Но както от кучето, искай само в разумни граници.","ru":"Скажи, чего не хватает — они улучшатся. Но как от собаки, проси лишь в разумных пределах.","uk":"Скажи, чого бракує — вони покращаться. Але як від собаки, проси лише в розумних межах.","en":"Tell them what's missing — they improve. But like a dog, ask only within reason.","de":"Sag, was fehlt — sie verbessern sich. Aber wie vom Hund: verlange nur im Rahmen.","fr":"Dis ce qui manque — elles s'améliorent. Mais comme un chien, demande raisonnablement.","es":"Di qué falta — mejoran. Pero como a un perro, pide solo dentro de lo razonable.","es-MX":"Di qué falta — mejoran. Pero como a un perro, pide solo dentro de lo razonable.","it":"Dì cosa manca — migliorano. Ma come a un cane, chiedi solo entro il ragionevole.","pt":"Diz o que falta — melhoram. Mas como a um cão, pede só dentro do razoável.","ar":"قل ما ينقص — تتحسّن. لكن كما من الكلب، اطلب ضمن حدود المعقول فقط.","hi":"बताएँ क्या कमी है — वे सुधरते हैं। पर कुत्ते की तरह, बस उचित सीमा में माँगें।","ja":"足りないものを伝えれば改善します。でも犬と同じく、無理のない範囲でお願いを。","ky":"Эмне жетишпейт — айт, жакшырышат. Бирок иттей эле, акылга сыярлык гана сура.","zh-Hant":"說出缺少什麼 — 它們會改進。但就像對狗，只在合理範圍內要求。"};
 const LANGS = Object.keys(WHY);
@@ -10,6 +13,12 @@ function pickLang() {
   try { const h = document.documentElement.getAttribute('lang'); if (h && LANGS.indexOf(h) >= 0) return h; } catch (e) {}
   try { const n = (navigator.language || 'en').slice(0, 2); if (LANGS.indexOf(n) >= 0) return n; } catch (e) {}
   return 'en';
+}
+// Избран ли е вече език? (наличен `*.lang` ключ в localStorage със стойност) — същата логика
+// като в legal-gate.js, за да се задейства интрото веднага след избора на екрана за език.
+function langChosen() {
+  try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && /\.lang$/.test(k) && localStorage.getItem(k)) return true; } } catch (e) {}
+  return false;
 }
 export function playIntro() {
   const build = () => {
@@ -34,5 +43,14 @@ export function playIntro() {
     ov.addEventListener('click', close);           // докосване → затваря веднага
     setTimeout(close, 3800);                        // иначе се затваря само (кратко, четимо)
   };
-  if (document.body) build(); else document.addEventListener('DOMContentLoaded', build);
+  const run = () => { if (document.body) build(); else document.addEventListener('DOMContentLoaded', build); };
+  // ПЪРВО ЕЗИК, ПОСЛЕ ИНТРО: ако още не е избран език, изчакваме избора (полиг като legal-gate),
+  // за да не покажем лого-текста на грешен език. Избран ли е вече → играем веднага.
+  if (langChosen()) { run(); return; }
+  let ticks = 0;
+  const iv = setInterval(() => {
+    ticks++;
+    if (langChosen()) { clearInterval(iv); run(); }
+    else if (ticks > 400) { clearInterval(iv); run(); }   // ~120с предпазител (да не увисне ако липсва език)
+  }, 300);
 }

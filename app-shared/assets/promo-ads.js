@@ -24,7 +24,7 @@ async function fetchCatalog(url, timeoutMs) {
   const load = (async () => {
     try {
       const CH = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) || window.CapacitorHttp;
-      if (CH && CH.get) { const r = await CH.get({ url }); return typeof r.data === 'string' ? JSON.parse(r.data) : r.data; }
+      if (CH && CH.get && /^https?:/i.test(url)) { const r = await CH.get({ url }); return typeof r.data === 'string' ? JSON.parse(r.data) : r.data; }
     } catch (e) { /* пада към fetch */ }
     try { const r = await fetch(url, { cache: 'no-store' }); return await r.json(); } catch (e) { return null; }
   })();
@@ -85,9 +85,15 @@ async function showAd() {
 
 // СТАРТ (СЛЕД 2-сек интрото „Pupikes" — не върху него) + СРЕДА (на всеки ~120с докато е
 // активно). КРАЯТ се вика от играта при game over през window.PUPIKES_END_AD().
+// ЕДИНСТВЕНИТЕ апове с ИЗСКАЧАЩИ реклами (изрично правило на собственика): само БЕЗПЛАТНАТА игра
+// Plane Shooter. ВСИЧКИ останали апове — БЕЗ попъп реклами (магазините ги флагват като „disruptive";
+// в платен ап са двойно зле). Ненатрапчивият showcase „Още от Pupikes" (ecosystem.js) остава ВСЯКЪДЕ.
+const POPUP_ADS_ALLOW = ['plane-shooter'];
+
 export function startPromoAds(selfId) {
-  // ДЕАКТИВИРАНО: нищо не се показва. Неутрализираме и window.PUPIKES_END_AD (игрите го викат на game
-  // over) → без реклама на края. Балончето/showcase (ecosystem.js) е отделно и остава.
+  // ДЕАКТИВИРАНО за всичко извън allowlist-а: нищо не се показва. Неутрализираме и window.PUPIKES_END_AD
+  // (игрите го викат на game over) → без реклама на края. Балончето/showcase (ecosystem.js) е отделно.
+  if (POPUP_ADS_ALLOW.indexOf(selfId) < 0) { try { window.PUPIKES_END_AD = function () {}; } catch (e) {} return; }
   if (!PROMO_ADS_ENABLED) { try { window.PUPIKES_END_AD = function () {}; } catch (e) {} return; }
   SELF = selfId || '';
   loadCatalog();                                                     // предзареди

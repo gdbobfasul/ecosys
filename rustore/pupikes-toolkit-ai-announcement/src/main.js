@@ -133,7 +133,7 @@ function route() {
   const r = parseRoute();
   window.scrollTo(0, 0);
   // При първо стартиране първо избор на език (само на началния маршрут).
-  if (r.name !== 'tool' && !hasLangChosen()) { renderLanguage(); return; }
+  if (!hasLangChosen()) { renderLanguage(); return; }   // ПЪРВО избор на език (като всички апове) — и при апове с един инструмент
   if (r.name === 'tool') renderTool(r.id);
   else renderHome();
 }

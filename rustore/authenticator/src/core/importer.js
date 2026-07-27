@@ -3,7 +3,8 @@
 // Authenticator миграция). Прави ДЕДУПЛИКАЦИЯ (прескача вече съществуващи кодове) и връща
 // единен резултат { ok, imported, duplicates, method, reason }, който UI-ят описва еднакво
 // навсякъде с describeResult() — за да се изписва КОЛКО кода и ПО КАКЪВ начин при ВСЕКИ импорт.
-import { session, addEntry, addPassword, addSeed } from './storage.js';
+import { session, addEntry, addPassword, addSeed, persist } from './storage.js';
+import { decryptVault } from './vault.js';
 import { parseOtpauthURI } from './otp.js';
 import { parseGoogleMigration } from './gauth-migration.js';
 import { parseAegisExport, decryptAegisExport, looksLikeAegis } from './aegis.js';
@@ -175,6 +176,36 @@ export async function importSeedsJson(text) {
     imported++;
   }
   return { ok: true, method: 'seeds', imported, duplicates };
+}
+
+// ПЪЛЕН бекъп → възстановява ВСИЧКИ табове наведнъж. Декриптира с паролата (тази отпреди export-а),
+// после слива в текущия сейф (дедуп по id) и persist-ва под ТЕКУЩАТА master парола. Работи и при
+// нова инсталация (празен сейф — просто вкарва всичко), и при сливане със съществуващ.
+const FULL_TABS = ['entries', 'collection', 'passwords', 'seeds', 'ssh', 'networks', 'tokens'];
+export async function importFullBackup(text, password) {
+  let file;
+  try { file = JSON.parse(text); } catch (_) { return { ok: false, method: 'full', reason: 'json' }; }
+  const blob = (file && file.blob) ? file.blob : file;      // приема увития формат ИЛИ суров сейф-blob
+  if (!blob || typeof blob !== 'object') return { ok: false, method: 'full', reason: 'format' };
+  let data;
+  try { data = await decryptVault(blob, password); }
+  catch (e) { return { ok: false, method: 'full', reason: 'password' }; }
+  if (!data || typeof data !== 'object') return { ok: false, method: 'full', reason: 'format' };
+  let imported = 0, duplicates = 0;
+  for (const tab of FULL_TABS) {
+    const incoming = Array.isArray(data[tab]) ? data[tab] : [];
+    if (!Array.isArray(session[tab])) session[tab] = [];
+    const seen = new Set(session[tab].map((x) => x && x.id).filter((v) => v != null));
+    for (const item of incoming) {
+      if (!item || typeof item !== 'object') continue;
+      if (item.id != null && seen.has(item.id)) { duplicates++; continue; }
+      if (item.id != null) seen.add(item.id);
+      session[tab].push(item);
+      imported++;
+    }
+  }
+  try { await persist(); } catch (e) { return { ok: false, method: 'full', reason: 'locked' }; }
+  return { ok: true, method: 'full', imported, duplicates };
 }
 
 const METHOD_KEY = {

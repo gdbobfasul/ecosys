@@ -154,6 +154,8 @@ let _webStopRequested = false; // ръчен стоп в браузъра (сп�
 let _nativeListening = false;
 let _nativeStopRequested = false; // потребителят натисна „стоп" → не рестартирай сегмента
 let _nativeForceStop = null;      // МОМЕНТАЛЕН стоп на текущата нативна сесия (за stopListening)
+let _voskStop = null;             // моментален стоп на текуща Vosk сесия
+let _voskListening = false;
 
 // Иска разрешение за микрофон (best-effort). Никога не хвърля.
 export async function requestMicPermission() {
@@ -182,6 +184,69 @@ export async function requestMicPermission() {
   return sttAvailable();
 }
 
+// ── Vosk (офлайн, непрекъснат стрийминг) — capacitor-offline-speech-recognition ──
+// Достъпва се през Capacitor глобала (без статичен импорт) → ако нативната част липсва, кодът
+// пада към сегашния път и нищо не се чупи.
+function voskPlugin() { return capPlugin('OfflineSpeechRecognition'); }
+// Резолвира нашия 2-буквен код към ТОЧНИЯ код на модел, който плъгинът поддържа.
+async function voskResolveCode(vosk, lang) {
+  const want = String(lang || 'en').toLowerCase().split('-')[0];
+  try {
+    const r = await vosk.getSupportedLanguages();
+    const list = ((r && r.languages) || []).map((l) => String((l && (l.code || l.language)) || l));
+    return list.find((c) => c.toLowerCase() === want)
+        || list.find((c) => c.toLowerCase().startsWith(want))
+        || list.find((c) => c.toLowerCase().includes(want)) || want;
+  } catch (_) { return want; }
+}
+async function voskModelReady(vosk, code) {
+  try {
+    const r = await vosk.getDownloadedLanguageModels();
+    const list = ((r && r.models) || []).map((m) => String((m && (m.language || m.code)) || m).toLowerCase());
+    return list.includes(String(code).toLowerCase());
+  } catch (_) { return false; }
+}
+// Гарантира модел за езика. Има интернет → сваля го (веднъж). Няма интернет и няма модел → false.
+async function ensureVoskModel(vosk, code, onStatus) {
+  if (await voskModelReady(vosk, code)) return true;
+  const online = (typeof navigator !== 'undefined' && 'onLine' in navigator) ? navigator.onLine : true;
+  if (!online) return false;
+  let prog = null;
+  try {
+    if (onStatus) { try { prog = await vosk.addListener('downloadProgress', (p) => onStatus(p && p.progress, p && p.message)); } catch (_) {} }
+    const r = await vosk.downloadLanguageModel({ language: code });
+    return !!(r && (r.success || r.language));
+  } catch (_) { return false; }
+  finally { try { if (prog) await prog.remove(); } catch (_) {} }
+}
+// Непрекъснато Vosk слушане → Promise<финален текст>. Натрупва финалните сегменти в цяло изречение.
+async function startVosk(vosk, code, onInterim, manualStop) {
+  return new Promise(async (resolve) => {
+    let full = '', settled = false, lis = null;
+    const finish = async () => {
+      if (settled) return; settled = true;
+      try { await vosk.stopRecognition(); } catch (_) {}
+      try { if (lis) await lis.remove(); } catch (_) {}
+      _voskStop = null; _voskListening = false;
+      resolve(full.trim());
+    };
+    _voskStop = finish; _voskListening = true;
+    try {
+      lis = await vosk.addListener('recognitionResult', (res) => {
+        const txt = String((res && res.text) || '').trim();
+        if (!txt) return;
+        if (res.isFinal) {
+          full = mergeText(full, txt);                                   // цяло изречение
+          if (onInterim) { try { onInterim(full); } catch (_) {} }
+          if (!manualStop) finish();                                     // режим „разговор": финал → край
+        } else if (onInterim) { try { onInterim(mergeText(full, txt)); } catch (_) {} }  // междинен
+      });
+    } catch (_) {}
+    try { await vosk.startRecognition({ language: code }); }
+    catch (_) { finish(); }
+  });
+}
+
 // Стартира слушане и връща финалния транскрипт (Promise<string>).
 // onInterim(text) се вика с междинни (нефинални) резултати, ако платформата ги дава.
 // manualStop:true (микрофонът в чата) → говориш КОЛКОТО ИСКАШ; тишината НЕ приключва
@@ -190,7 +255,21 @@ export async function requestMicPermission() {
 // пауза — там ботът трябва да разбере кога си свършил, за да ти отговори.
 export async function startListening({ lang = DEFAULT_LANG, onInterim = null, manualStop = false } = {}) {
   const sr = capPlugin('SpeechRecognition');
-  if (sr) return startNative(sr, lang, onInterim, manualStop);
+  const vosk = voskPlugin();
+  const online = (typeof navigator !== 'undefined' && 'onLine' in navigator) ? navigator.onLine : true;
+  // ОНЛАЙН → Google нативния онлайн разпознавач (voice typing). Докато има интернет, подготвяме
+  // офлайн Vosk модела за езика на ЗАДЕН план, за да работи после без мрежа.
+  if (online && sr) {
+    if (vosk) { voskResolveCode(vosk, lang).then((c) => ensureVoskModel(vosk, c)).catch(() => {}); }
+    return startNative(sr, lang, onInterim, manualStop);
+  }
+  // ОФЛАЙН → Vosk офлайн пакет (непрекъснат). Ако моделът не е готов и няма мрежа → пада надолу.
+  if (vosk) {
+    const code = await voskResolveCode(vosk, lang);
+    const ready = await ensureVoskModel(vosk, code, onInterim ? (p, m) => { try { onInterim('⬇ ' + (m || ('модел ' + (p | 0) + '%'))); } catch (_) {} } : null);
+    if (ready) return startVosk(vosk, code, onInterim, manualStop);
+  }
+  if (sr) return startNative(sr, lang, onInterim, manualStop);       // резерв: офлайн нативен (по-слаб)
   const Ctor = webSpeechRecognitionCtor();
   if (Ctor) return startWeb(Ctor, lang, onInterim, manualStop);
   throw new Error('no-stt'); // викащият показва дружелюбно съобщение и оставя писането
@@ -508,6 +587,7 @@ function startWeb(Ctor, lang, onInterim, manualStop) {
 // Спира текущото слушане (и в двата режима).
 export function stopListening() {
   _webStopRequested = true;   // спира и авто-рестарта на браузърния ръчен режим
+  if (_voskListening && typeof _voskStop === 'function') { try { _voskStop(); } catch (_) {} }
   if (_webRecog) {
     try { _webRecog.stop(); } catch (_) {}
   }

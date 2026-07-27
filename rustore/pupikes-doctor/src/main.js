@@ -201,13 +201,17 @@ function renderSymptoms(host) {
     // Анализ на снимката: център-изрязване + цветови сигнал → подсказва вероятни състояния.
     let boosts = {}; try { const sig = await photoSignal(photoFile); boosts = photoBoost(sig); } catch (_) {}
     let matches = score(input, boosts);
-    // Съюз: първо снимковите съвпадения, после по признаци (без дубли).
+    // Съюз без дубли. РЕД според УВЕРЕНОСТТА на корпуса: при СИЛНО съвпадение (много от най-близките
+    // сочат едно състояние) водят снимковите съвпадения; при СЛАБО/двусмислено (напр. следоперативна
+    // рана — няма аналог в дерматологичния корпус) водят цветовите/текстовите състояния (рана/разрез/
+    // натъртване от сигнала), за да не показваме уверено грешна дерматологична диагноза.
     const seen = new Set();
-    const all = [...imgHits, ...matches].filter((c) => c && !seen.has(c.id) && seen.add(c.id));
+    const ordered = im.strong ? [...imgHits, ...matches] : [...matches, ...imgHits];
+    const all = ordered.filter((c) => c && !seen.has(c.id) && seen.add(c.id));
     const lang = getLang();
-    // Дерматологичен банер: най-близките снимки са бенки/лезии → честно предупреждение + топ-диагнози.
+    // Дерматологичен банер — САМО при силно съвпадение (иначе е гадаене върху случайни съседи).
     let dermaCard = '';
-    if (im.dermat && im.top && im.top.length) {
+    if (im.dermat && im.strong && im.top && im.top.length) {
       const names = im.top.slice(0, 4).map((t) => dermaNameBg(t.label)).filter((v, i, a) => v && a.indexOf(v) === i);
       const bg = `Снимката прилича на кожно образувание (бенка/лезия). Такива се преглеждат от дерматолог. Ако образуванието бързо променя размер или цвят, има неравни ръбове, сърби, кърви или не зараства — потърси лекар скоро.`;
       const warn = await translate(bg, lang);

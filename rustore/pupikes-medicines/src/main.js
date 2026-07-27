@@ -234,13 +234,21 @@ function renderResult(r) {
   const active = (r.active || []).length
     ? `<div style="margin-top:10px"><b>${esc(M('res_ingredients'))}:</b> ${esc((r.active || []).join(', '))}</div>` : '';
   const warn = r.warningsT ? `<div style="margin-top:10px"><b>${esc(M('res_warnings'))}:</b> ${esc(r.warningsT)}</div>` : '';
+  // ПЪЛНА ЛИСТОВКА: структурирани секции (официален FDA етикет), подредени като в реална листовка.
+  const secOrder = ['indications', 'dosage', 'contraindications', 'sideeffects', 'interactions', 'storage', 'warnings'];
+  const sections = (r.sections && r.sections.length)
+    ? `<div style="margin-top:14px;border-top:1px solid rgba(127,127,127,.25);padding-top:10px"><b>📄 ${esc(M('res_leaflet'))}</b>` +
+      r.sections.slice().sort((a, b) => secOrder.indexOf(a.key) - secOrder.indexOf(b.key)).map((s) => `
+        <div style="margin-top:9px"><div style="font-weight:600">${esc(M('res_' + s.key) || s.key)}</div>
+        <div style="line-height:1.5;opacity:.92;white-space:pre-wrap">${esc(s.text)}</div></div>`).join('') + `</div>`
+    : '';
   return `
     <div class="card" style="display:block;text-align:left;cursor:default">
       <h3 style="margin:0 0 6px">${esc(r.title)}</h3>
       <div style="line-height:1.5">${esc(r.descriptionT || r.description || '')}</div>
       ${active}
       ${risky ? `<div style="margin-top:12px"><b>${esc(M('res_risky'))}</b>${risky}</div>` : ''}
-      ${warn}
+      ${sections || warn}
       <div style="margin-top:10px;font-size:.8em;opacity:.6">${esc(M('res_source'))}: ${esc(r.source)}</div>
     </div>`;
 }

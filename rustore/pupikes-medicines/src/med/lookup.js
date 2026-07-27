@@ -61,6 +61,38 @@ async function openFdaLookup(query) {
   return { source: 'openFDA', title, active, description, warnings, exact: best === 2 };
 }
 
+// ПЪЛНА ЛИСТОВКА от официалния FDA етикет: структурирани секции (показания, дозировка,
+// противопоказания, странични, взаимодействия, съхранение, предупреждения). Английски текст —
+// превежда се към избрания език при показване. Работи ОНЛАЙН; офлайн остава краткото описание.
+export async function openFdaSections(query) {
+  const q = encodeURIComponent(String(query).trim());
+  const url = 'https://api.fda.gov/drug/label.json?search=' +
+    '(openfda.brand_name:"' + q + '"+openfda.generic_name:"' + q + '"+active_ingredient:"' + q + '")&limit=1';
+  const j = await getJson(url);
+  const r = j && j.results && j.results[0]; if (!r) return null;
+  const ofda = r.openfda || {};
+  const first = (a) => Array.isArray(a) && a.length ? String(a[0]) : (a ? String(a) : '');
+  // потвърди, че записът наистина е за търсеното (openFDA връща свързани продукти за общи думи)
+  const names = [].concat(ofda.brand_name || [], ofda.generic_name || [], ofda.substance_name || [], r.active_ingredient || []);
+  let best = 0; for (const nm of names) { const s = matchScore(nm, query); if (s > best) best = s; }
+  if (!best) return null;
+  const SEC = [
+    ['indications', r.indications_and_usage],
+    ['dosage', r.dosage_and_administration],
+    ['contraindications', r.contraindications],
+    ['sideeffects', r.adverse_reactions],
+    ['interactions', r.drug_interactions],
+    ['storage', r.how_supplied_storage_and_handling || r.storage_and_handling || r.how_supplied],
+    ['warnings', r.warnings_and_cautions || r.warnings]
+  ];
+  const out = [];
+  for (const [key, val] of SEC) {
+    const t = first(val).replace(/\s+/g, ' ').trim();
+    if (t) out.push({ key, text: t.slice(0, 900) });   // таван на секция → четимо + разумен превод
+  }
+  return out.length ? out : null;
+}
+
 // Локален (вграден) многоезичен пакет — събран чрез скрапване (Wikipedia, per език). Чете се
 // през обикновен fetch (бъндъл-асет), НЕ CapacitorHttp (той е за абсолютни URL-и).
 async function fetchLocal(p) { try { const r = await fetch(p); return r.ok ? await r.json() : null; } catch (_) { return null; } }
@@ -150,5 +182,17 @@ export async function lookupMedicine(query, lang) {
   res.risky = findRisky(scanText);
   if (res.translated) { res.descriptionT = res.description; res.warningsT = res.warnings; }
   else { res.descriptionT = await translate(res.description, lang); res.warningsT = res.warnings ? await translate(res.warnings, lang) : ''; }
+  // ПЪЛНА ЛИСТОВКА (ОНЛАЙН): независимо кой източник е уловил лекарството, издърпваме
+  // структурираните секции от официалния FDA етикет и ги показваме ПРЕВЕДЕНИ на избрания език
+  // (показания, дозировка, противопоказания, странични, взаимодействия, съхранение). Офлайн/при
+  // липса на съвпадение — тихо се пропуска и остава краткото описание.
+  try {
+    const secs = await openFdaSections(res.title || query);
+    if (secs && secs.length) {
+      const outT = [];
+      for (const s of secs) { try { outT.push({ key: s.key, text: await translate(s.text, lang) }); } catch (_) { outT.push(s); } }
+      res.sections = outT;
+    }
+  } catch (_) { /* без интернет/съвпадение → само краткото */ }
   return res;
 }

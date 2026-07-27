@@ -3,6 +3,7 @@
 // QR като PNG), „всички като QR" (.zip), браузърни пароли (CSV) и крипто портфейли (.json).
 // Сваля файл на устройството (Blob + native saveFile). Нищо не се качва навън.
 import { session } from './storage.js';
+import { encryptVault } from './vault.js';
 import { buildAegisExport } from './aegis.js';
 import { build2FAS } from './twofas.js';
 import { buildOtpauthURI } from './otp.js';
@@ -19,12 +20,30 @@ function dataURLtoBytes(durl) {
   return arr;
 }
 
-// Наш .json бекъп.
+// Наш .json бекъп (само таб „Аутентикация").
 export async function exportJsonFile() {
   if (!session.entries.length) return { ok: false, reason: 'empty' };
   const data = JSON.stringify({ app: 'pupikes-authenticator', version: 1, entries: session.entries }, null, 2);
   await saveFile('pupikes-authenticator-export.json', data, 'application/json', { isText: true });
   return { ok: true, count: session.entries.length };
+}
+
+// ПЪЛЕН бекъп — ВСИЧКИ табове наведнъж: 2FA/QR (entries), Колекция QR, Пароли, Портфейли (seeds),
+// SSH, Мрежи, Токени. ШИФРИРАН с master паролата (същата криптография като сейфа) — съдържа тайни
+// (пароли/seed фрази/частни ключове), затова НЕ е обикновен JSON. При нова инсталация →
+// „Възстанови всичко" + СЪЩАТА парола → всичко се връща.
+export async function exportFullBackup() {
+  if (!session.unlocked || session.password == null) return { ok: false, reason: 'locked' };
+  const payload = {
+    entries: session.entries || [], collection: session.collection || [], passwords: session.passwords || [],
+    seeds: session.seeds || [], ssh: session.ssh || [], networks: session.networks || [], tokens: session.tokens || []
+  };
+  const total = Object.values(payload).reduce((n, a) => n + (Array.isArray(a) ? a.length : 0), 0);
+  if (!total) return { ok: false, reason: 'empty' };
+  const blob = await encryptVault(payload, session.password);
+  const file = JSON.stringify({ app: 'pupikes-authenticator', kind: 'full-backup', version: 1, blob }, null, 2);
+  await saveFile('pupikes-authenticator-FULL-backup.json', file, 'application/json', { isText: true });
+  return { ok: true, count: total };
 }
 
 // Aegis JSON експорт (некриптиран) — отваря се директно в Aegis → Импорт.

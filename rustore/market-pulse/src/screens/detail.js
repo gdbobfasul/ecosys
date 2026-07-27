@@ -125,6 +125,7 @@ export function renderDetail(root, marketId, instId, go) {
         '<div style="font-weight:800;font-size:18px">' + (inst.country ? inst.country.flag + ' ' : '') + inst.sym + '</div>' +
         '<div style="color:#8b98a8;font-size:13px">' + (inst.name || '') + '</div>' +
       '</div>' +
+      '<div id="cp-cur-price" style="font-size:30px;font-weight:800;letter-spacing:.3px;margin:2px 0 10px;color:#e6edf3">—</div>' +
       '<div style="font-size:12px;color:#e08a2b;background:#241a10;border:1px solid #4a361a;border-radius:10px;padding:8px 10px;margin-bottom:12px">' + t('an_edu_note') + '</div>' +
       '<div id="cp-cached" style="font-size:12px;color:#9aa7b4;margin-bottom:8px"></div>' +
       '<div style="font-size:13px;color:#9aa7b4;margin-bottom:6px">' + t('an_period') + '</div>' +
@@ -335,6 +336,15 @@ export function renderDetail(root, marketId, instId, go) {
     anEl.innerHTML = '<div style="color:#8b98a8;padding:14px">' + t('an_loading') + '</div>';
     try {
       series = await fetchHistory(inst);
+      // ТЕКУЩА цена горе (ясно, едро) + дневна промяна спрямо предишното затваряне.
+      const cpEl = document.getElementById('cp-cur-price');
+      if (cpEl && series && series.length) {
+        const last = series[series.length - 1].close;
+        const prev = series.length > 1 ? series[series.length - 2].close : null;
+        const chg = (last != null && prev) ? ((last - prev) / prev) * 100 : null;
+        cpEl.innerHTML = money(last) +
+          (chg != null ? ' <span style="font-size:15px;font-weight:700;color:' + pctColor(chg) + '">' + pctTxt(chg) + '</span>' : '');
+      }
       const cc = document.getElementById('cp-cached'); if (cc) cc.textContent = lastLoadWasCached() ? t('an_cached') : '';
       if (isCrypto) { try { fng = await fetchFng(); } catch (_) {} try { btcSig = await btcNearLowSignals(); } catch (_) {} }
       applyPreset('now');

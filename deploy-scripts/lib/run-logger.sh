@@ -34,8 +34,10 @@ slog_run() {
     local ofd efd opid epid
     exec {ofd}> >(stdbuf -o0 tee -a "$log"); opid=$!
     exec {efd}> >(stdbuf -o0 tee -a "$log" >&2); epid=$!
+    export KCY_NO_PAUSE=1              # точката да НЕ прави своята пауза — тя е СЛЕД обобщението (за да се вижда банерът)
     run_choice "$choice" >&$ofd 2>&$efd
     local rc=$?
+    unset KCY_NO_PAUSE
     exec {ofd}>&- {efd}>&-
     # НЕ чакаме tee процесите: билд-демони (gradle) остават на заден фон и държат fd-а отворен →
     # `wait` би висял вечно и обобщението нямаше да се стигне. stdbuf -o0 вече е записал всичко.

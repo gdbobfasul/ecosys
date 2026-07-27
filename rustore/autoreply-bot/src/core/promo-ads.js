@@ -24,7 +24,7 @@ async function fetchCatalog(url, timeoutMs) {
   const load = (async () => {
     try {
       const CH = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) || window.CapacitorHttp;
-      if (CH && CH.get) { const r = await CH.get({ url }); return typeof r.data === 'string' ? JSON.parse(r.data) : r.data; }
+      if (CH && CH.get && /^https?:/i.test(url)) { const r = await CH.get({ url }); return typeof r.data === 'string' ? JSON.parse(r.data) : r.data; }
     } catch (e) { /* пада към fetch */ }
     try { const r = await fetch(url, { cache: 'no-store' }); return await r.json(); } catch (e) { return null; }
   })();
@@ -88,6 +88,7 @@ async function showAd() {
 export function startPromoAds(selfId) {
   // ДЕАКТИВИРАНО: нищо не се показва. Неутрализираме и window.PUPIKES_END_AD (игрите го викат на game
   // over) → без реклама на края. Балончето/showcase (ecosystem.js) е отделно и остава.
+  if (['plane-shooter'].indexOf(selfId) < 0) { try { window.PUPIKES_END_AD = function () {}; } catch (e) {} return; }  // САМО безплатната игра Plane Shooter има изскачащи реклами
   if (!PROMO_ADS_ENABLED) { try { window.PUPIKES_END_AD = function () {}; } catch (e) {} return; }
   SELF = selfId || '';
   loadCatalog();                                                     // предзареди

@@ -14,7 +14,7 @@ async function loadCatalog() {
   if (CACHE) return CACHE;
   try {
     const CH = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) || window.CapacitorHttp;
-    if (CH && CH.get) { const r = await CH.get({ url: CATALOG_URL }); CACHE = typeof r.data === 'string' ? JSON.parse(r.data) : r.data; return CACHE; }
+    if (CH && CH.get && /^https?:/i.test(url)) { const r = await CH.get({ url: CATALOG_URL }); CACHE = typeof r.data === 'string' ? JSON.parse(r.data) : r.data; return CACHE; }
   } catch (e) { /* fetch */ }
   try { const r = await fetch(CATALOG_URL, { cache: 'no-store' }); CACHE = await r.json(); return CACHE; } catch (e) { return null; }
 }
@@ -55,7 +55,7 @@ export function mountEcosystem(selfId) {
       list.innerHTML = apps.map((a) => {
         const desc = (a.text && (a.text[lg] || a.text.en)) || '';
         const img = a.img ? esc(a.img) : '';
-        return '<div class="pupikes-eco-card" data-url="' + esc(a.storeUrl || '') + '" style="background:#111a2b;border:1px solid #1b2536;border-radius:12px;overflow:hidden;cursor:pointer">' +
+        return '<div class="pupikes-eco-card" data-url="' + esc(a.storeUrl || '') + '" style="background:#111a2b;border:1px solid #1b2536;border-radius:12px;overflow:hidden;cursor:pointer;flex-shrink:0">' +
           (img ? '<img src="' + img + '" style="width:100%;display:block" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
           '<div style="padding:12px"><div style="font-weight:700;font-size:15px">' + esc(a.name || '') + '</div>' +
           '<div style="opacity:.82;font-size:13px;margin-top:4px">' + esc(desc) + '</div>' +

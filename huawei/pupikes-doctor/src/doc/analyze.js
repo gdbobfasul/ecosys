@@ -15,14 +15,18 @@ async function getJson(url) {
   const r = await Promise.race([fetch(url, { headers: { accept: 'application/json' } }), timeout(12000)]);
   if (!r.ok) throw new Error('http ' + r.status); return r.json();
 }
-// bg → lang (MyMemory). За eng target/празно връща оригинала. Реже на части (лимит ~450).
-export async function translate(text, lang) {
+// source → lang (MyMemory). Ако target == source (или празно) връща оригинала. Реже на части (лимит ~450).
+// source по подразбиране 'bg' (съветите ни са на български); при статиен текст, паднал на английски,
+// подаваме source='en', за да превеждаме от ПРАВИЛНИЯ език към избрания.
+export async function translate(text, lang, source) {
   const t = String(text || '').trim(); if (!t) return '';
-  const target = String(lang || 'bg').split('-')[0]; if (target === 'bg') return t;
+  const target = String(lang || 'bg').split('-')[0];
+  const src = String(source || 'bg').split('-')[0];
+  if (!target || target === src) return t;
   try {
     const parts = t.match(/[\s\S]{1,450}(\s|$)/g) || [t]; const out = [];
     for (const p of parts) {
-      const j = await getJson('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(p.trim()) + '&langpair=bg|' + encodeURIComponent(target));
+      const j = await getJson('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(p.trim()) + '&langpair=' + encodeURIComponent(src) + '|' + encodeURIComponent(target));
       out.push((j && j.responseData && j.responseData.translatedText) || p);
     }
     return out.join(' ');
@@ -32,10 +36,19 @@ export async function translate(text, lang) {
 // Вграден многоезичен пакет (скрапнат, Wikipedia). Чете се с обикновен fetch (бъндъл-асет).
 async function fetchLocal(p) { try { const r = await fetch(p); return r.ok ? await r.json() : null; } catch (_) { return null; } }
 // Автентичен текст за състоянието на избрания език (описание/симптоми/лечение от статията).
+// Ако липсва точно на избрания език → взима наличния (en/bg) и ГО ПРЕВЕЖДА към избрания, за да не
+// показваме английски текст на български потребител (изискване: резултатът е на избрания език).
 export async function conditionText(id, lang) {
   const rec = await fetchLocal('reference/' + id + '.json'); if (!rec || !rec.langs) return '';
-  const L = rec.langs[lang] || rec.langs[String(lang).split('-')[0]] || rec.langs.en;
-  return (L && L.extract) || '';
+  const want = String(lang || '').split('-')[0] || 'en';
+  const exact = rec.langs[lang] || rec.langs[want];
+  if (exact && exact.extract) return exact.extract;                 // има го на избрания език
+  // няма → вземи наличния (предпочети en, после bg, после кой да е) и преведи от НЕГОВИЯ език
+  let srcLang = 'en', src = rec.langs.en;
+  if (!src || !src.extract) { srcLang = 'bg'; src = rec.langs.bg; }
+  if (!src || !src.extract) { for (const k in rec.langs) { if (rec.langs[k] && rec.langs[k].extract) { srcLang = String(k).split('-')[0]; src = rec.langs[k]; break; } } }
+  if (!src || !src.extract) return '';
+  return await translate(src.extract, want, srcLang);
 }
 // Авторитетен текст за БОЛКА В ЗОНА (режим „Къде боли") — от bodypain пакета (Wikipedia, per език).
 export async function bodyPainText(zoneId, lang) {
@@ -223,5 +236,10 @@ export async function imageMatches(file) {
   const conds = ids.map((id) => CONDITIONS.find((c) => c.id === id)).filter(Boolean);
   // Дерматологичен характер (бенки/лезии) — корпусът е предимно такъв; отбелязва се отделно.
   const dermat = top.some((t) => /melanom|nevus|naevus|carcinom|keratos|lesion|mole|dysplas|lentigo|dermatofibrom|hemangiom|angiokeratom|neurofibrom|acanthoma|verruca|melanocytic|benign|malignant/.test(t.label));
-  return { conds, top, dermat };
+  // УВЕРЕНОСТ: колко от 15-те най-близки сочат ЕДНО И СЪЩО състояние. Малко съгласие → съвпадението
+  // е несигурно (напр. следоперативна рана няма аналог в дерматологичния корпус → случайни съседи).
+  // Тогава НЕ бива да водим уверено с корпусната диагноза (виж main.js: слаб корпус → водят цвят/текст).
+  const topCondVotes = ids.length ? (condCount.get(ids[0]) || 0) : 0;
+  const strong = topCondVotes >= 6;
+  return { conds, top, dermat, strong, topCondVotes, minDist: bestD[0] };
 }

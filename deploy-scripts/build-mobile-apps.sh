@@ -371,9 +371,10 @@ build_one() {
     # РЕЗЕРВА без интернет. Затова опресняваме И public/promo/kcy-promo.json — при деплой на сайта
     # то става живият сървърен каталог.
     if [ -f "$ROOT/app-shared/promo-catalog.json" ] && [ -d dist ]; then
-      cp "$ROOT/app-shared/promo-catalog.json" dist/kcy-promo.json
-      mkdir -p "$ROOT/public/promo" && cp "$ROOT/app-shared/promo-catalog.json" "$ROOT/public/promo/kcy-promo.json"
-      echo -e "  ${GREEN}✓ каталог → dist/kcy-promo.json + public/promo/kcy-promo.json (сървърен)${NC}"
+      # ИМЕТО трябва да съвпада с това, което ecosystem.js тегли: pupikes-promo.json (след KCY→Pupikes).
+      cp "$ROOT/app-shared/promo-catalog.json" dist/pupikes-promo.json
+      mkdir -p "$ROOT/public/promo" && cp "$ROOT/app-shared/promo-catalog.json" "$ROOT/public/promo/pupikes-promo.json"
+      echo -e "  ${GREEN}✓ каталог → dist/pupikes-promo.json + public/promo/pupikes-promo.json (сървърен)${NC}"
     fi
     # Capacitor WebView (вкл. Xiaomi/MIUI) понякога НЕ зарежда модулен скрипт с crossorigin
     # на https://localhost схемата → черен екран. Махаме crossorigin от index.html (безопасно).
@@ -403,9 +404,10 @@ build_one() {
       # CWD е $d (subshell-ът вече cd-на в апа) → APK-ът е спрямо текущата папка.
       APK="android/app/build/outputs/apk/debug/app-debug.apk"
       if [ -f "$APK" ]; then
-        mkdir -p "$ROOT/apk"
-        OUT="$ROOT/apk/$(basename "$d")-${d%%/*}-debug.apk"
-        if cp -f "$APK" "$OUT"; then echo -e "  ${GREEN}✓ APK → apk/$(basename "$OUT")${NC}"; else echo -e "  ${YELLOW}! не копирах APK в /apk${NC}"; fi
+        # НОВА структура: apk/<магазин>/debug/<файл>  (локално подредено; сървърът взима само release)
+        mkdir -p "$ROOT/apk/${d%%/*}/debug"
+        OUT="$ROOT/apk/${d%%/*}/debug/$(basename "$d")-${d%%/*}-debug.apk"
+        if cp -f "$APK" "$OUT"; then echo -e "  ${GREEN}✓ APK → apk/${d%%/*}/debug/$(basename "$OUT")${NC}"; else echo -e "  ${YELLOW}! не копирах APK в /apk${NC}"; fi
       else echo -e "  ${YELLOW}! APK не е намерен — виж изхода на gradle горе${NC}"; fi
     else
       echo -e "  ${YELLOW}↷ APK пропуснат (няма Android SDK/JDK)${NC}"
@@ -452,7 +454,7 @@ if [ "$ANDROID_READY" = 1 ] && [ "${#APPS[@]}" -gt 0 ]; then
   # застоял APK от предишен билд.
   for d in "${APPS[@]}"; do
     st="${d%%/*}"; nm="$(basename "$d")"
-    rm -f "$ROOT/apk/${nm}-${st}-debug.apk" 2>/dev/null
+    rm -f "$ROOT/apk/${st}/debug/${nm}-${st}-debug.apk" 2>/dev/null
   done
   echo -e "  ${CYAN}↻ изчистих старите APK само на избраните апове в /apk${NC}"
 fi
@@ -463,7 +465,7 @@ fi
 # ползва го release-apks.sh (вика този скрипт ап-по-ап и чисти сам в началото си),
 # или ръчно при съзнателно допълване на пълен комплект.
 if [ "${#APPS[@]}" -gt 0 ] && [ "${KCY_KEEP_OTHERS:-0}" != "1" ]; then
-  for f in "$ROOT"/apk/*.apk "$ROOT"/apk/*.exe; do
+  for f in "$ROOT"/apk/*/*/*.apk "$ROOT"/apk/*.exe; do
     [ -f "$f" ] || continue
     base="$(basename "$f")"; keep=0
     for d in "${APPS[@]}"; do
@@ -516,5 +518,5 @@ fi
 echo -e "${BOLD}${CYAN}━━━ Обобщение ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 for r in "${RESULTS[@]}"; do echo -e "  $r"; done
 echo ""
-[ "$ANDROID_READY" = 1 ] && echo -e "  APK-тата са в: ${CYAN}/apk/<апп>-<магазин>-debug.apk${NC}" \
+[ "$ANDROID_READY" = 1 ] && echo -e "  APK-тата са в: ${CYAN}/apk/<магазин>/debug/<апп>-...-debug.apk${NC}" \
   || echo -e "  ${YELLOW}Само web билд (dist/). За APK → опция 56 (инсталирай средата) + нов терминал.${NC}"

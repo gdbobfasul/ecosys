@@ -1,6 +1,6 @@
 {
   "_comment": "Каталог на екосистемата Pupikes. pupikes.app чете groups (мобилни, по семейства); pupikes.com чете web (уеб хъб). show=false → скрито. published/download → виж gen-pupikes-catalog. Регенерира се от scratchpad/gen-pupikes-catalog.mjs.",
-  "updated": "2026-07-20",
+  "updated": "2026-07-26",
   "brand": {
     "name": "Pupikes",
     "short": "PuP",
@@ -648,6 +648,55 @@
             "huawei": "HouseLookBook-huawei-release.apk"
           },
           "download": false
+        }
+      ]
+    },
+    {
+      "key": "health",
+      "title": {
+        "bg": "Здраве",
+        "en": "Health"
+      },
+      "note": {
+        "bg": "Медицински помощници",
+        "en": "Medical helpers"
+      },
+      "apps": [
+        {
+          "id": "pupikes-doctor",
+          "name": "Pupikes Doctor",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "Pupikes-Doctor-rustore-release.apk",
+            "huawei": "Pupikes-Doctor-huawei-release.apk"
+          },
+          "download": true
+        },
+        {
+          "id": "pupikes-medicines",
+          "name": "Pupikes Medicines",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "Pupikes-Medicines-rustore-release.apk",
+            "huawei": "Pupikes-Medicines-huawei-release.apk"
+          },
+          "download": true
         }
       ]
     }

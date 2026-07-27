@@ -26,12 +26,13 @@ for tree in rustore huawei; do
 done
 
 n=0
-for f in apk/*.apk; do
+# Сканира и подпапките (apk/<магазин>/<debug|release>/) + евентуални плоски (за прехода).
+while IFS= read -r f; do
   [ -f "$f" ] || continue
   b="$(basename "$f")"
   if [ -z "${OK[$b]:-}" ]; then
     if [ "${DRY:-0}" = "1" ]; then echo "  (dry) сирак: $b"; else rm -f "$f"; echo "  − сирак изтрит: $b"; fi
     n=$((n+1))
   fi
-done
+done < <(find apk -type f -name '*.apk')
 if [ "$n" -gt 0 ]; then echo "  ↻ ${DRY:+(dry) }${n} APK със стари имена"; else echo "  ✓ няма сираци в /apk"; fi

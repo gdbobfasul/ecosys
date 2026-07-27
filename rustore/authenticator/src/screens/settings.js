@@ -9,10 +9,10 @@ import {
 import {
   biometricAvailable, biometricVerify, biometricStorePassword, biometricClear
 } from '../core/biometric.js';
-import { importJsonText, import2FASText, import2FASEncrypted, importOtpauthList, importPasswordsCsv, importSeedsJson, describeResult } from '../core/importer.js';
+import { importJsonText, import2FASText, import2FASEncrypted, importOtpauthList, importPasswordsCsv, importSeedsJson, importFullBackup, describeResult } from '../core/importer.js';
 import { importAegisFile } from './aegis-import.js';
 import { pickTextFile } from '../core/filepick.js';
-import { exportJsonFile, exportAegisFile, export2FASFile, exportOtpauthListFile, exportGoogleQR, exportChromiumCsv, exportFirefoxCsv, exportSeedsJson } from '../core/exporter.js';
+import { exportJsonFile, exportAegisFile, export2FASFile, exportOtpauthListFile, exportGoogleQR, exportChromiumCsv, exportFirefoxCsv, exportSeedsJson, exportFullBackup } from '../core/exporter.js';
 import { exportAllQR } from '../core/qrexport.js';
 
 // Опции за авто-заключване при бездействие (В СЕКУНДИ; 0 = никога). По молба:
@@ -152,6 +152,21 @@ export function renderSettings(root, nav) {
     }
   }
 
+  // ПЪЛЕН бекъп/възстановяване — ВСИЧКИ табове наведнъж (2FA/QR, пароли, портфейли, SSH, мрежи, токени).
+  async function pickAndImportFull() {
+    try {
+      const picked = await pickTextFile();
+      if (!picked || !picked.text) return;
+      const pw = await promptPassword(t('full_pw_prompt'), t('save'), t('cancel'));
+      if (!pw) return;
+      const res = await importFullBackup(picked.text, pw);
+      if (res && res.ok) { toast(tf('full_done', res.imported)); nav.go('list'); }
+      else if (res && res.reason === 'password') { toast(t('full_bad_pw')); }
+      else if (res && res.reason === 'empty') { toast(t('nothing_to_export')); }
+      else { toast(t('import_failed')); }
+    } catch (e) { showAlert('Full restore', String((e && (e.stack || e.message)) || e)); }
+  }
+
   // --- Помощни диалози „❓" (какво е 2FAS / какво е otpauth списък) ---
   // Потребителят трябва да ЗНАЕ кои приложения четат нашите експорти и откъде да ги свали.
   function openUrl(u) {
@@ -244,6 +259,12 @@ export function renderSettings(root, nav) {
     h('label', { text: t('confirm_password') }), np2,
     npErr,
     h('button', { class: 'btn', onclick: changePw, text: t('change_password') }),
+
+    // ПЪЛЕН бекъп — ВСИЧКО наведнъж (най-важното за нова инсталация: 1 шифриран файл)
+    h('h1', { style: 'font-size:1em;margin-top:22px', text: '🛡 ' + t('full_title') }),
+    h('p', { class: 'muted', text: t('full_desc') }),
+    h('button', { class: 'btn', onclick: () => runExport(exportFullBackup), text: '⬇ ' + t('full_export') }),
+    h('button', { class: 'btn ghost', onclick: () => pickAndImportFull(), text: '⬆ ' + t('full_import') }),
 
     // ── ИМПОРТ ──
     h('h1', { style: 'font-size:1em;margin-top:22px', text: '⬆ ' + t('import_title') }),

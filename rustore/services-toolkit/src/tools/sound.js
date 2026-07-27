@@ -56,7 +56,7 @@ export function render(root) {
 
   root.querySelector('#sndPick').addEventListener('click', async () => {
     try {
-      const f = await pickBinaryFile('audio/*');
+      const f = await pickBinaryFile();
       if (!f) return;                                   // отказан избор
       const bytes = base64ToBytes(f.base64 || (f.dataUrl && f.dataUrl.split(',')[1]) || '');
       if (!bytes || !bytes.length) { setStatus(status, 'err', tf('snd_error', 'празен файл')); return; }

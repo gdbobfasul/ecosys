@@ -54,22 +54,31 @@ for t in "${TARGETS[@]}"; do
 done
 [ "${#VALID[@]}" -eq 0 ] && { echo -e "${RED}Няма валидна цел.${NC}"; exit 1; }
 
+# ── Покритие ПРЕДИ качване: кои апове изобщо нямат построен release APK (значи няма да се качат
+#    и ще дадат 404 на сайта). Информативно — пропуска се, ако node липсва. ──
+node deploy-scripts/apk-coverage.mjs --summary 2>/dev/null || true
+echo ""
+
 # ── ДЕЛТА КАЧВАНЕ (мащабируемо). НЕ тарваме всичко наведнъж (расте → таймаут при 2-4+ GB), а
 #    качваме само ПРОМЕНЕНИТЕ/новите release файлове спрямо това, което сървърът ВЕЧЕ има
 #    (сравнение по sha1 през ssh — без нужда от rsync на клиента). Дори при 10 GB общо, ако са
 #    се сменили 2 апа → качват се само те. Каталожните файлове вървят ВИНАГИ (малки). DEBUG — никога.
 #    Кандидати: release .apk (по slug при KCY_APPS_ONLY) + десктоп .exe.
 WEB_APK="/var/www/html/apk"
+# НОВА структура: release APK са в apk/<магазин>/release/ ; каталог + .exe са в apk/ (най-горе).
+# СЪРВЪРЪТ получава ПЛОСКО (само release, по basename) — затова качваме apk/*/release/*.apk + каталога.
 declare -a CAND_CAT=() CAND_BIN=()
 while IFS= read -r f; do CAND_CAT+=("$f"); done < <(find apk -maxdepth 1 -type f ! -name '*.apk' ! -name '*.exe')
 if [ -n "$KCY_APPS_ONLY" ]; then
     for nm in $KCY_APPS_ONLY; do
         slug="$(node deploy-scripts/apk-slug.mjs "$nm" 2>/dev/null)"; [ -z "$slug" ] && slug="$nm"
-        while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -maxdepth 1 -type f \( -name "${slug}-*-release.apk" -o -name "${nm}-*.exe" \))
+        while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -type f -path '*/release/*' -name "${slug}-*-release.apk")
+        while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -maxdepth 1 -type f -name "${nm}-*.exe")
     done
     echo -e "  ${CYAN}само избрани: ${KCY_APPS_ONLY}${NC}"
 else
-    while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -maxdepth 1 -type f \( -name '*-release.apk' -o -name '*.exe' \))
+    while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -type f -path '*/release/*' -name '*-release.apk')
+    while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -maxdepth 1 -type f -name '*.exe')
 fi
 # локални sha1 на бинарните кандидати (за сравнение със сървъра)
 declare -A LH=()

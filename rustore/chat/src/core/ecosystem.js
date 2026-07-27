@@ -26,7 +26,7 @@ async function fetchCatalog(url, timeoutMs) {
   const load = (async () => {
     try {
       const CH = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) || window.CapacitorHttp;
-      if (CH && CH.get) { const r = await CH.get({ url }); return typeof r.data === 'string' ? JSON.parse(r.data) : r.data; }
+      if (CH && CH.get && /^https?:/i.test(url)) { const r = await CH.get({ url }); return typeof r.data === 'string' ? JSON.parse(r.data) : r.data; }
     } catch (e) { /* пада към fetch */ }
     try { const r = await fetch(url, { cache: 'no-store' }); return await r.json(); } catch (e) { return null; }
   })();
@@ -85,7 +85,7 @@ export function mountEcosystem(selfId) {
       list.innerHTML = apps.map((a) => {
         const desc = (a.text && (a.text[lg] || a.text.en)) || '';
         const img = a.img ? esc(a.img) : '';
-        return '<div class="pupikes-eco-card" data-url="' + esc(a.storeUrl || '') + '" style="background:#111a2b;border:1px solid #1b2536;border-radius:12px;overflow:hidden;cursor:pointer">' +
+        return '<div class="pupikes-eco-card" data-url="' + esc(a.storeUrl || '') + '" style="background:#111a2b;border:1px solid #1b2536;border-radius:12px;overflow:hidden;cursor:pointer;flex-shrink:0">' +
           (img ? '<img src="' + img + '" style="width:100%;max-height:150px;object-fit:cover;display:block" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
           '<div style="padding:14px"><div style="font-weight:700;font-size:16px;line-height:1.3">' + esc(a.name || '') + '</div>' +
           '<div style="opacity:.9;font-size:14px;line-height:1.5;margin-top:6px">' + esc(desc) + '</div>' +

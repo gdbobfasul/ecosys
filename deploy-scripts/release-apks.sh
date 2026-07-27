@@ -61,7 +61,7 @@ echo -e "${BOLD}${CYAN}━━━ Release билд: ${#NAMES[@]} апа × (rusto
 # ЧАСТИЧЕН билд → изчисти apk/ от невключените апове (правилото по-горе).
 if [ -n "${1:-}" ] && [ "${KCY_KEEP_OTHERS:-0}" != "1" ]; then
   shopt -s nullglob
-  for f in apk/*.apk apk/*.exe; do
+  for f in apk/*/*/*.apk apk/*.exe; do
     base="$(basename "$f")"; keep=0
     # Пази файла, ако е на ИЗБРАН ап — по МАГАЗИННОТО (slug) ИЛИ по старото име на папката
     # (за да не изтрием легитимен файл по време на прехода към новото именуване).
@@ -80,7 +80,7 @@ ensure_key() {
   if [ ! -f "$jks" ]; then
     # НОВ ключ се прави САМО ако апът никога не е билдван release. Ако вече има release APK
     # (т.е. апът може да е КАЧЕН в магазин), нов ключ = невъзможен ъпдейт → спираме шумно.
-    if ls "apk/$(store_slug "$app")-"*"-release.apk" "apk/${app}-"*"-release.apk" >/dev/null 2>&1; then
+    if ls apk/*/release/"$(store_slug "$app")-"*"-release.apk" apk/*/release/"${app}-"*"-release.apk" >/dev/null 2>&1; then
       echo -e "${RED}✗ $app: има съществуващ release APK, но ЛИПСВА ключът $jks!${NC}"
       echo -e "${RED}  НЕ правя нов ключ (с нов подпис ъпдейтът в магазина е невъзможен).${NC}"
       echo -e "${RED}  Върни ключа от резервно копие в keystores/ и пусни пак.${NC}"
@@ -127,10 +127,12 @@ for app in "${NAMES[@]}"; do
       ./gradlew assembleRelease -q ) || { FAIL+=("$app-$store (assembleRelease)"); continue; }
     out="$d/android/app/build/outputs/apk/release/app-release.apk"
     if [ -f "$out" ]; then
-      dest="apk/${slug}-${store}-release.apk"
+      # НОВА структура: apk/<магазин>/release/<файл>  (локално; сървърът взима плоско само release)
+      mkdir -p "apk/${store}/release"
+      dest="apk/${store}/release/${slug}-${store}-release.apk"
       # Подписът на новия APK трябва да СЪВПАДА с предишния release (иначе магазинът отказва
       # ъпдейта). Търсим предишния по новото ИЛИ старото (по папка) име — за прехода.
-      prev="$dest"; [ -f "$prev" ] || prev="apk/${app}-${store}-release.apk"
+      prev="$dest"; [ -f "$prev" ] || prev="apk/${store}/release/${app}-${store}-release.apk"
       if [ -f "$prev" ] && [ -n "$APKSIGNER" ]; then
         oldc="$(cert_of "$prev")"; newc="$(cert_of "$out")"
         if [ -n "$oldc" ] && [ -n "$newc" ] && [ "$oldc" != "$newc" ]; then
@@ -139,8 +141,14 @@ for app in "${NAMES[@]}"; do
         fi
       fi
       cp "$out" "$dest"
-      # Изчисти старото (по папка) име, ако е различно от новото — за да не остават дубли.
-      [ "$slug" != "$app" ] && rm -f "apk/${app}-${store}-release.apk"
+      # Изчисти старото (по папка) име, ако е РАЗЛИЧЕН файл — за да не остават дубли. ВНИМАНИЕ:
+      # на Windows файловата система е case-insensitive → ако slug се различава от името на папката
+      # САМО по регистър (newslator→NewsLator, pupikes-toolkit-pdf→Pupikes-Toolkit-PDF), старото име
+      # е СЪЩИЯТ файл като новото → това rm би изтрило току-що копирания APK. Затова сравняваме без
+      # оглед на регистъра и трием само ако наистина е друг файл.
+      slug_lc="$(printf '%s' "$slug" | tr '[:upper:]' '[:lower:]')"
+      app_lc="$(printf '%s' "$app" | tr '[:upper:]' '[:lower:]')"
+      [ "$slug_lc" != "$app_lc" ] && rm -f "apk/${store}/release/${app}-${store}-release.apk"
       echo -e "  ${GREEN}✓ ${dest}${NC}"
       OK+=("${slug}-${store}")
     else
@@ -156,6 +164,11 @@ if [ "${#FAIL[@]}" -gt 0 ]; then
   echo -e "  ${RED}✗ провали: ${#FAIL[@]}${NC}"
   for f in "${FAIL[@]}"; do echo -e "    ${RED}✗${NC} $f"; done
 fi
-echo -e "\n  Подписаните APK-та са в: ${BOLD}apk/<Магазинно-Име>-<магазин>-release.apk${NC}"
+
+# ── Покритие: пълният списък апове спрямо построените release APK-та (кои ЛИПСВАТ, дори да
+#    не сме ги строили сега). Информативно — не проваля билда. ──
+echo ""
+node deploy-scripts/apk-coverage.mjs --summary 2>/dev/null || true
+echo -e "\n  Подписаните APK-та са в: ${BOLD}apk/<магазин>/release/<Име>-<магазин>-release.apk${NC}"
 echo -e "  Ключовете и паролите: ${BOLD}keystores/${NC} (влизат в резервните копия — НЕ ги губи)"
 [ "${#FAIL[@]}" -eq 0 ]

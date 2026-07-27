@@ -26,7 +26,7 @@ BOLD=$'\033[1m'; NC=$'\033[0m'
 
 trap 'echo ""; echo "Натисни Enter за затваряне..."; read DUMMY' EXIT
 
-press_enter() { echo ""; read -p "Натисни Enter да продължиш... " _; }
+press_enter() { [ "${KCY_NO_PAUSE:-0}" = "1" ] && return 0; echo ""; read -p "Натисни Enter да продължиш... " _; }
 run_cmd()     { echo ""; echo -e "${YELLOW}► $*${NC}"; echo ""; "$@"; press_enter; }
 
 # ── ОБОБЩЕНИЕ след всеки отдалечен (SSH) скрипт от менюто ────────────────────
@@ -1446,6 +1446,9 @@ run_choice() {
             fi
             # Билд (интерактивно пита кой апп — за rustore И huawei)
             bash "$SCRIPT_DIR/build-mobile-apps.sh"
+            # Покритие: пълният списък апове спрямо построените release APK-та (кои ЛИПСВАТ).
+            echo ""
+            node "$SCRIPT_DIR/apk-coverage.mjs" --summary 2>/dev/null || true
             # Качване според отговорите от началото
             if [ "$UP_DO" = 1 ]; then
                 echo ""
@@ -1588,8 +1591,9 @@ while true; do
     # (ако логърът липсва — пада към директния run_choice). Логва ВСЯКО пускане, вкл. „q" (изход).
     if type slog_run >/dev/null 2>&1; then slog_run "$choice"; else run_choice "$choice"; fi
     # завършващ банер за ВСЯКА реална точка: коя точка + на коя машина (никога име на скрипт)
+    # + ЕДНА пауза СЛЕД банерите (точките вече не паузират сами) — за да се види лилавото обобщение.
     case "$choice" in
         ''|q|Q|quit|exit|изход) : ;;
-        *) print_end_banner "$choice" ;;
+        *) print_end_banner "$choice"; press_enter ;;
     esac
 done
