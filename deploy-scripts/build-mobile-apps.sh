@@ -98,6 +98,13 @@ inject_app_icon() {
 #     ги инструментира със стар ASM → „Unsupported class file major version 65". Вдигаме wrapper-а
 #     на 8.7 (нов ASM, чете Java 21 класове; съвместим с AGP 8.2.1).
 harden_gradle_toolchain() {
+  local capmaj="${1:-6}"
+  # Cap7+ (напр. selflearning-friend): шаблонът вече носи gradle 8.11 + AGP 8.7 + compileSdk 35 +
+  # Java 21. НЕ смъкваме нищо — билд средата е JDK 21. Само това връща.
+  if [ "$capmaj" -ge 7 ]; then
+    echo -e "  ${GREEN}✓ gradle верига: Capacitor ${capmaj} шаблон (gradle 8.11 + Java 21) — без смъкване${NC}"
+    return 0
+  fi
   local wrap="android/gradle/wrapper/gradle-wrapper.properties"
   [ -f "$wrap" ] && sed -i 's#gradle-8\.2\.1-all\.zip#gradle-8.7-all.zip#' "$wrap"
   local root="android/build.gradle"
@@ -288,6 +295,12 @@ build_one() {
     APK_VERSION_NAME="$(compute_app_version)"
     printf '%s\n' "$APK_VERSION_NAME" > app.version
     echo -e "  ${GREEN}✓ версия на апа: ${APK_VERSION_NAME} → app.version${NC}"
+    # Кой мажор на Capacitor обявява апът (@capacitor/core в package.json). Повечето апове са на 6;
+    # някои (напр. selflearning-friend заради офлайн диктовката) са на 8 → друга верига (JDK 21,
+    # gradle 8.11, AGP 8.7, БЕЗ смъкване до Java 17). Останалите апове не се променят.
+    CAP_MAJOR="$(node -e "try{const p=require('./package.json');const v=(p.devDependencies&&p.devDependencies['@capacitor/core'])||(p.dependencies&&p.dependencies['@capacitor/core'])||'^6';process.stdout.write(String((v.match(/([0-9]+)/)||['6'])[1]))}catch(e){process.stdout.write('6')}" 2>/dev/null)"
+    [ -z "$CAP_MAJOR" ] && CAP_MAJOR=6
+    echo -e "  ${GREEN}✓ Capacitor мажор: ${CAP_MAJOR}${NC}"
     if [ ! -d node_modules ]; then
       echo -e "  ${CYAN}→ npm install…${NC}"; npm install || { echo -e "  ${RED}✗ npm install се провали${NC}"; exit 2; }
     fi
@@ -382,10 +395,15 @@ build_one() {
 
     if [ "$ANDROID_READY" = 1 ]; then
       # Осигуряваме Capacitor Android платформата (апповете обявяват core/cli, но често НЕ android).
-      echo -e "  ${CYAN}→ осигурявам @capacitor/android…${NC}"; npm i @capacitor/core@^6 @capacitor/cli@^6 @capacitor/android@^6 >/dev/null 2>&1 || true
+      echo -e "  ${CYAN}→ осигурявам @capacitor/android (мажор ${CAP_MAJOR})…${NC}"; npm i "@capacitor/core@^${CAP_MAJOR}" "@capacitor/cli@^${CAP_MAJOR}" "@capacitor/android@^${CAP_MAJOR}" >/dev/null 2>&1 || true
+      # Cap7+: ако съществуващата android/ е от по-стар шаблон (стар gradle wrapper), я пресъздаваме
+      # наново, за да вземе новите gradle/AGP/compileSdk/Java от текущия @capacitor/android шаблон.
+      if [ "${CAP_MAJOR:-6}" -ge 7 ] && [ -d android ] && ! grep -q "gradle-8\.1[0-9]" android/gradle/wrapper/gradle-wrapper.properties 2>/dev/null; then
+        echo -e "  ${CYAN}→ пресъздавам android/ за Capacitor ${CAP_MAJOR}…${NC}"; rm -rf android
+      fi
       [ -d android ] || { echo -e "  ${CYAN}→ npx cap add android…${NC}"; npx cap add android || { echo -e "  ${RED}✗ cap add android се провали${NC}"; exit 4; }; }
       echo -e "  ${CYAN}→ npx cap sync android…${NC}"; npx cap sync android || { echo -e "  ${RED}✗ cap sync се провали${NC}"; exit 5; }
-      harden_gradle_toolchain      # wrapper 8.7 + Java 17 за всички subprojects (плъгини с Java 21)
+      harden_gradle_toolchain "$CAP_MAJOR"   # Cap6: wrapper 8.7 + Java 17; Cap7+: без смъкване (JDK 21)
       inject_android_permissions   # добавя CAMERA/RECORD_AUDIO и т.н. от android-permissions.txt
       inject_version               # versionCode (монотонен) + versionName → Android вижда ъпдейт
       inject_app_icon              # икона от store/icon.svg → android/res (sharp), ако има

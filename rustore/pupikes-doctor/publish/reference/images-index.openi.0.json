@@ -1,5 +1,5 @@
 {
-  "count": 350,
+  "count": 357,
   "items": [
     {
       "file": "images/oi0_rash_201_0.png",
@@ -2100,6 +2100,50 @@
       "article": "rash",
       "url": "https://openi.nlm.nih.gov/imgs/512/76/2803868/PMC2803868_1757-1626-2-9071-3.png",
       "source": "Open-i (NIH/NLM)"
+    },
+    {
+      "file": "images/oi0_rash_1_0.png",
+      "article": "rash",
+      "url": "https://openi.nlm.nih.gov/imgs/512/278/3047878/PMC3047878_12245_2010_187_Fig1_HTML.png",
+      "source": "Open-i (NIH/NLM)"
+    },
+    {
+      "file": "images/oi0_rash_1_1.png",
+      "article": "rash",
+      "url": "https://openi.nlm.nih.gov/imgs/512/311/4808702/PMC4808702_gr1.png",
+      "source": "Open-i (NIH/NLM)"
+    },
+    {
+      "file": "images/oi0_rash_1_2.png",
+      "article": "rash",
+      "url": "https://openi.nlm.nih.gov/imgs/512/111/3791967/PMC3791967_dp0303a06g001.png",
+      "source": "Open-i (NIH/NLM)"
+    },
+    {
+      "file": "images/oi0_rash_1_3.png",
+      "article": "rash",
+      "url": "https://openi.nlm.nih.gov/imgs/512/132/3263069/PMC3263069_IJN-22-62-g001.png",
+      "source": "Open-i (NIH/NLM)"
+    },
+    {
+      "file": "images/oi0_rash_1_4.png",
+      "article": "rash",
+      "url": "https://openi.nlm.nih.gov/imgs/512/74/2707626/PMC2707626_pone.0006303.g008.png",
+      "source": "Open-i (NIH/NLM)"
+    },
+    {
+      "file": "images/oi0_rash_101_0.png",
+      "article": "rash",
+      "url": "https://openi.nlm.nih.gov/imgs/512/83/2137814/PMC2137814_JCB.32755f1c.png",
+      "source": "Open-i (NIH/NLM)"
+    },
+    {
+      "file": "images/oi0_rash_101_1.png",
+      "article": "rash",
+      "url": "https://openi.nlm.nih.gov/imgs/512/193/5260511/PMC5260511_cde-0008-0369-g02.png",
+      "source": "Open-i (NIH/NLM)"
     }
-  ]
+  ],
+  "source": "Open-i (NIH/NLM, open access)",
+  "updated": "2026-07-27"
 }

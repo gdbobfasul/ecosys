@@ -13,23 +13,24 @@
     "cap:sync": "vite build && cap sync android"
   },
   "dependencies": {
-    "@capacitor-community/speech-recognition": "^6.0.0",
-    "@capacitor-community/text-to-speech": "^5.0.0",
-    "@capacitor/device": "^6.0.2",
-    "@capacitor/filesystem": "^6.0.4",
-    "@capacitor/preferences": "^6.0.2",
-    "@capacitor/share": "^6.0.4",
-    "@capawesome/capacitor-file-picker": "^6.2.0",
+    "@capacitor-community/speech-recognition": "^7.0.1",
+    "@capacitor-community/text-to-speech": "^8.0.2",
+    "@capacitor/device": "^8.0.0",
+    "@capacitor/filesystem": "^8.0.0",
+    "@capacitor/preferences": "^8.0.0",
+    "@capacitor/share": "^8.0.0",
+    "@capawesome/capacitor-file-picker": "^8.0.3",
     "@tensorflow-models/coco-ssd": "^2.2.3",
     "@tensorflow-models/mobilenet": "^2.1.1",
     "@tensorflow/tfjs": "^4.22.0",
+    "capacitor-offline-speech-recognition": "^3.0.0",
     "pdfjs-dist": "^4.10.38",
     "tesseract.js": "^5.1.1"
   },
   "devDependencies": {
-    "@capacitor/android": "^6.2.1",
-    "@capacitor/cli": "^6.2.1",
-    "@capacitor/core": "^6.2.1",
+    "@capacitor/android": "^8.4.2",
+    "@capacitor/cli": "^8.4.2",
+    "@capacitor/core": "^8.4.2",
     "vite": "^5.4.8"
   }
 }

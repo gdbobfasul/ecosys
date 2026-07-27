@@ -1,4 +1,4 @@
-// Version: 1.0001
+// Version: 1.0002
 // lookup.js — търсене на лекарство: 1) онлайн openFDA (+ уеб), 2) резерв офлайн база;
 // после превод на описанието (MyMemory, keyless). На телефон ползва CapacitorHttp (заобикаля
 // CORS); в браузър — fetch. БЕЗ AbortController (чупи CapacitorHttp) — таймаут през Promise.race.
@@ -131,8 +131,26 @@ function bigDbDesc(m) {
   if (m.dosage) parts.push('Прием: ' + m.dosage);
   return parts.join('\n\n');
 }
+// ПЪЛНА ЛИСТОВКА ОФЛАЙН: сглобява секциите от обогатената офлайн база (същите ключове като
+// онлайн openFdaSections → рендерът и преводът ги третират еднакво). Ако онлайн намерим FDA
+// етикет, той презаписва тези (по-пълен); офлайн остават тези.
+function bigDbSections(m) {
+  const S = [
+    ['indications', m.usage],
+    ['dosage', m.dosage],
+    ['contraindications', m.contraindications],
+    ['sideeffects', m.sideeffects],
+    ['interactions', m.interactions],
+    ['storage', m.storage],
+    ['warnings', m.warnings]
+  ];
+  const out = [];
+  for (const [key, val] of S) { const t = String(val || '').replace(/\s+/g, ' ').trim(); if (t) out.push({ key, text: t.slice(0, 900) }); }
+  return out;
+}
 function bigDbHit(m, exact) {
-  return { source: 'offline-db', title: m.title, active: m.active || [], description: bigDbDesc(m), warnings: m.warnings || '', exact: !!exact };
+  const secs = bigDbSections(m);
+  return { source: 'offline-db', title: m.title, active: m.active || [], description: bigDbDesc(m), warnings: m.warnings || '', exact: !!exact, sections: secs.length ? secs : undefined };
 }
 // Обхожда ГОЛЯМАТА база (8005 записа, вкл. обскурни/хомеопатични имена) — приема САМО ТОЧНО/почти-точно
 // съвпадение (score 2). Свободно частично тук е опасно: къс OCR-шум („hoton") улучва случайни записи
@@ -188,11 +206,14 @@ export async function lookupMedicine(query, lang) {
   // липса на съвпадение — тихо се пропуска и остава краткото описание.
   try {
     const secs = await openFdaSections(res.title || query);
-    if (secs && secs.length) {
-      const outT = [];
-      for (const s of secs) { try { outT.push({ key: s.key, text: await translate(s.text, lang) }); } catch (_) { outT.push(s); } }
-      res.sections = outT;
-    }
-  } catch (_) { /* без интернет/съвпадение → само краткото */ }
+    if (secs && secs.length) res.sections = secs;   // ОНЛАЙН FDA (по-пълен) презаписва офлайн секциите
+  } catch (_) { /* без интернет/съвпадение → остават офлайн секциите (ако има) */ }
+  // Превод на секциите (откъдето и да идват: офлайн база или онлайн FDA). Офлайн MyMemory връща
+  // оригинала (английски) — консистентно с описанието, което също остава непреведено без мрежа.
+  if (res.sections && res.sections.length) {
+    const outT = [];
+    for (const s of res.sections) { try { outT.push({ key: s.key, text: await translate(s.text, lang) }); } catch (_) { outT.push(s); } }
+    res.sections = outT;
+  }
   return res;
 }

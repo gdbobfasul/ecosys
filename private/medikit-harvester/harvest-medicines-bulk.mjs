@@ -22,6 +22,9 @@ async function getJson(url) {
 function clean(s, max) {
   let t = String(s || '').replace(/\s+/g, ' ').trim();
   t = t.replace(/^(\d+(\.\d+)?\s*)?(uses?|purpose|indications?( and usage)?|warnings?|dosage( and administration)?|directions?|do not use|when using this product|ask a doctor)\s*:?\s*/i, '');
+  // FDA секциите често започват с номер + ГЛАВНИ БУКВИ заглавие ("4 CONTRAINDICATIONS …",
+  // "6 ADVERSE REACTIONS …") — махаме го до началото на същинското изречение (Дума с малки букви).
+  t = t.replace(/^\d+(\.\d+)?\s+[A-Z][A-Z0-9 ,/&'()-]{2,48}?\s+(?=[A-Z][a-z])/, '');
   return t.slice(0, max || 180).trim();
 }
 function cleanDesc(s) { return clean(s, 420); }   // „за какво е" — по-дълго, същинска информация
@@ -58,7 +61,13 @@ async function main() {
         const warnings = clean((x.warnings || x.warnings_and_cautions || [])[0], 500);
         const dosage = clean((x.dosage_and_administration || [])[0], 300);
         const usage = clean((x.indications_and_usage || [])[0], 300);
-        seen.set(key, { names, title: titleCase(generic), active, description: desc, usage, dosage, warnings });
+        // ПЪЛНА ЛИСТОВКА и ОФЛАЙН: противопоказания, странични, взаимодействия, съхранение — за да
+        // работи целият лист без интернет (не само онлайн). Удвоява информацията на лекарство.
+        const contraindications = clean((x.contraindications || [])[0], 450);
+        const sideeffects = clean((x.adverse_reactions || x.stop_use || [])[0], 450);
+        const interactions = clean((x.drug_interactions || x.drug_and_or_laboratory_test_interactions || [])[0], 450);
+        const storage = clean((x.how_supplied_storage_and_handling || x.storage_and_handling || x.how_supplied || [])[0], 300);
+        seen.set(key, { names, title: titleCase(generic), active, description: desc, usage, dosage, warnings, contraindications, sideeffects, interactions, storage });
       }
       skip += 100;
       if (seen.size % 500 < 100) console.log(`[meds] ${type}: уникални ${seen.size}/${TARGET} (сканирани ${scanned})`);
