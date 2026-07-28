@@ -192,6 +192,7 @@ function condFromLabel(lab) {
   if (/abrasion|graze/.test(s)) return 'abrasion';
   if (/wound|laceration|\bcut\b|incision/.test(s)) return 'cut';
   if (/urticaria|hives/.test(s)) return 'hives';
+  if (/psorias/.test(s)) return 'psoriasis';
   if (/dermatitis|eczema/.test(s)) return 'eczema';
   if (/tinea|dermatophyt|fungal|candid|mycos/.test(s)) return 'fungal';
   if (/furuncle|boil|abscess|carbuncle/.test(s)) return 'boil';
@@ -212,7 +213,7 @@ export async function imageMatches(file) {
   const empty = { conds: [], top: [], dermat: false };
   const S = await loadSignatures(); if (!S) return empty;
   const q = await photoSignature(file); if (!q) return empty;
-  const K = 15, dim = S.dim, n = S.n, flat = S.flat;
+  const K = 24, dim = S.dim, n = S.n, flat = S.flat;   // повече съседи → рядко-но-близки класове (напр. псориазис) също се появяват
   const bestD = new Array(K).fill(Infinity), bestI = new Array(K).fill(-1);
   for (let i = 0; i < n; i++) {
     let d = 0; const off = i * dim;

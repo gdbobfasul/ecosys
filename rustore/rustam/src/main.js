@@ -1,3 +1,6 @@
+import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
+import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
+__mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 // Version: 1.0018
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';

@@ -180,8 +180,9 @@ export class HUD {
     this.refs.joyKnob.style.top = '35px';
   }
 
-  // Насложен екран „Как се играе": показва ДВЕТЕ зони (ляво = движение, дясно = оглеждане/
-  // завъртане) + бутона ОГЪН. Затваря се с докосване/клик или сам след 12 секунди.
+  // Насложен екран „Как се играе": показва ДВЕТЕ зони спрямо РЕАЛНОТО управление (разменено по
+  // искане): ЛЯВО = оглеждане/завъртане, ДЯСНО = движение (джойстик) + бутона ОГЪН. Затваря се
+  // с докосване/клик или сам след 12 секунди.
   // Играта отдолу НЕ е спряна (нива 1–50 са без часовник, така че нищо не се губи).
   showGuide(labels) {
     if (document.getElementById('fps-guide')) return;
@@ -196,8 +197,8 @@ export class HUD {
       `<div style="font-size:15px;font-weight:700;max-width:300px;line-height:1.45">${esc(txt)}</div></div>`;
     ov.innerHTML = touch
       ? `<div style="flex:1;display:flex">` +
-          `<div style="flex:1;display:flex;border-right:2px dashed rgba(255,255,255,.35)">${zone(labels.move, '🕹️')}</div>` +
-          `<div style="flex:1;display:flex">${zone(labels.look, '👀')}</div>` +
+          `<div style="flex:1;display:flex;border-right:2px dashed rgba(255,255,255,.35)">${zone(labels.look, '👀')}</div>` +
+          `<div style="flex:1;display:flex">${zone(labels.move, '🕹️')}</div>` +
         `</div>` +
         `<div style="text-align:center;padding:0 18px 6px;font-size:14px;font-weight:700">🔫 ${esc(labels.fire)}</div>` +
         `<div style="text-align:center;padding:0 18px 26px;font-size:13px;opacity:.75">${esc(labels.dismiss)}</div>`

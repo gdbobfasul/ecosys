@@ -188,16 +188,18 @@ export async function requestMicPermission() {
 // Достъпва се през Capacitor глобала (без статичен импорт) → ако нативната част липсва, кодът
 // пада към сегашния път и нищо не се чупи.
 function voskPlugin() { return capPlugin('OfflineSpeechRecognition'); }
-// Резолвира нашия 2-буквен код към ТОЧНИЯ код на модел, който плъгинът поддържа.
-async function voskResolveCode(vosk, lang) {
+// Резолвира нашия 2-буквен код към ТОЧНИЯ код на модел, който плъгинът поддържа — или null, ако
+// НЯМА модел за този език (Vosk покрива 17 езика: ar,de,en,es,fr,gu,hi,it,ja,ko,pt,ru,te,tr,vi,zh…,
+// но НЕ български/украински/киргизки). За тях връщаме null → викащият пада към нативния разпознавач.
+async function voskSupportedCode(vosk, lang) {
   const want = String(lang || 'en').toLowerCase().split('-')[0];
   try {
     const r = await vosk.getSupportedLanguages();
-    const list = ((r && r.languages) || []).map((l) => String((l && (l.code || l.language)) || l));
-    return list.find((c) => c.toLowerCase() === want)
-        || list.find((c) => c.toLowerCase().startsWith(want))
-        || list.find((c) => c.toLowerCase().includes(want)) || want;
-  } catch (_) { return want; }
+    const list = ((r && r.languages) || []).map((l) => String((l && (l.code || l.language)) || l).toLowerCase());
+    return list.find((c) => c === want)
+        || list.find((c) => c.split('-')[0] === want)
+        || list.find((c) => c.startsWith(want)) || null;
+  } catch (_) { return null; }
 }
 async function voskModelReady(vosk, code) {
   try {
@@ -256,20 +258,21 @@ async function startVosk(vosk, code, onInterim, manualStop) {
 export async function startListening({ lang = DEFAULT_LANG, onInterim = null, manualStop = false } = {}) {
   const sr = capPlugin('SpeechRecognition');
   const vosk = voskPlugin();
-  const online = (typeof navigator !== 'undefined' && 'onLine' in navigator) ? navigator.onLine : true;
-  // ОНЛАЙН → Google нативния онлайн разпознавач (voice typing). Докато има интернет, подготвяме
-  // офлайн Vosk модела за езика на ЗАДЕН план, за да работи после без мрежа.
-  if (online && sr) {
-    if (vosk) { voskResolveCode(vosk, lang).then((c) => ensureVoskModel(vosk, c)).catch(() => {}); }
-    return startNative(sr, lang, onInterim, manualStop);
-  }
-  // ОФЛАЙН → Vosk офлайн пакет (непрекъснат). Ако моделът не е готов и няма мрежа → пада надолу.
+  // ПРЕДПОЧИТАН: офлайн Vosk (НЕПРЕКЪСНАТ стрийминг, надежден, спира чисто) за езиците, които той
+  // поддържа. Нативният Android разпознавач е за КРАТКИ команди (къса изречението, зацикля) — ползва
+  // се само където Vosk НЯМА модел (напр. български). Има интернет и няма модел → сваля го веднъж
+  // (показва прогреса); след това работи и офлайн.
   if (vosk) {
-    const code = await voskResolveCode(vosk, lang);
-    const ready = await ensureVoskModel(vosk, code, onInterim ? (p, m) => { try { onInterim('⬇ ' + (m || ('модел ' + (p | 0) + '%'))); } catch (_) {} } : null);
-    if (ready) return startVosk(vosk, code, onInterim, manualStop);
+    const code = await voskSupportedCode(vosk, lang);   // null за bg/uk/ky → пропускаме Vosk
+    if (code) {
+      const ready = await ensureVoskModel(vosk, code, onInterim ? (p, m) => { try { onInterim('⬇ ' + (m || ('модел ' + (p | 0) + '%'))); } catch (_) {} } : null);
+      if (ready) return startVosk(vosk, code, onInterim, manualStop);
+      // няма модел и няма мрежа → падаме към нативния/уеб по-долу
+    }
   }
-  if (sr) return startNative(sr, lang, onInterim, manualStop);       // резерв: офлайн нативен (по-слаб)
+  // Езици без Vosk модел (български, украински, киргизки) ИЛИ Vosk липсва → нативен онлайн Google
+  // (voice typing), после уеб (dev/браузър).
+  if (sr) return startNative(sr, lang, onInterim, manualStop);
   const Ctor = webSpeechRecognitionCtor();
   if (Ctor) return startWeb(Ctor, lang, onInterim, manualStop);
   throw new Error('no-stt'); // викащият показва дружелюбно съобщение и оставя писането

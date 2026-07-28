@@ -1,3 +1,6 @@
+import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
+import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
+__mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
 // Version: 1.0001
 // main.js — Pupikes Medicines: сканираш опаковка (камера) → OCR взима най-едрия надпис →
 // търси лекарството (онлайн openFDA + офлайн резерв) → описание + СЪСТАВКИ с цветово
@@ -87,19 +90,44 @@ function buildCandidates(data) {
   return out.slice(0, 12);
 }
 
+// Завърта <canvas> на 90/180/270°, за да прочете ВЕРТИКАЛЕН надпис (Tesseract не чете надолу).
+function rotateCanvas(src, deg) {
+  const w = src.width, h = src.height;
+  const rc = document.createElement('canvas');
+  if (deg === 90 || deg === 270) { rc.width = h; rc.height = w; } else { rc.width = w; rc.height = h; }
+  const ctx = rc.getContext('2d');
+  ctx.translate(rc.width / 2, rc.height / 2);
+  ctx.rotate(deg * Math.PI / 180);
+  ctx.drawImage(src, -w / 2, -h / 2);
+  return rc;
+}
+
 // OCR → списък кандидати (едри думи → редове → дълги токени). Пуска се върху ПРЕДОБРАБОТЕНАТА снимка,
 // с подадения езиков пакет. Извиква се двупроходно (латиница → кирилица) от обработчика по-долу.
 async function ocrCandidates(file, lang) {
   const Tesseract = await loadTesseract();
   if (!Tesseract) return [];
-  let source = null, objurl = null;
-  try { source = await preprocess(file); } catch (_) { objurl = URL.createObjectURL(file); source = objurl; }
+  let base = null, objurl = null;
+  try { base = await preprocess(file); } catch (_) { objurl = URL.createObjectURL(file); base = objurl; }
+  const runOne = async (src) => {
+    try { const res = await Tesseract.recognize(src, lang || 'eng'); return buildCandidates(res && res.data); }
+    catch (_) { return []; }
+  };
   try {
-    // Езиковите данни се теглят от CDN веднъж и се кешират. Кирилицата се свързва с латинската
-    // база чрез транслитерация+фонетика (matchScore). Латинското INN на чужди опаковки се лови от прохода 'eng'.
-    const res = await Tesseract.recognize(source, lang || 'eng');
+    // Езиковите данни се теглят от CDN веднъж и се кешират. Кирилицата се свързва с латинската база
+    // чрез транслитерация+фонетика (matchScore). Латинското INN на чужди опаковки се лови от 'eng'.
+    let cands = await runOne(base);
+    // ВЕРТИКАЛЕН/завъртян надпис: ако хоризонталният прочит е слаб (<2 кандидата), пробвай ±90°
+    // (само тогава — за да не бавим нормалния хоризонтален случай с 3× OCR).
+    if (cands.length < 2 && base && base.getContext) {
+      for (const deg of [90, 270]) {
+        const more = await runOne(rotateCanvas(base, deg));
+        for (const m of more) if (cands.indexOf(m) < 0) cands.push(m);
+        if (cands.length >= 3) break;
+      }
+    }
     if (objurl) URL.revokeObjectURL(objurl);
-    return buildCandidates(res && res.data);
+    return cands.slice(0, 14);
   } catch (e) { try { if (objurl) URL.revokeObjectURL(objurl); } catch (_) {} return []; }
 }
 

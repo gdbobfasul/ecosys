@@ -118,6 +118,7 @@ const COND_NAMES = {
   abrasion: { bg: 'Ожулване / охлузване', ru: 'Ссадина', en: 'Abrasion / graze' },
   boil: { bg: 'Цирей / абсцес', ru: 'Фурункул / абсцесс', en: 'Boil / abscess' },
   eczema: { bg: 'Екзема / дерматит', ru: 'Экзема / дерматит', en: 'Eczema / dermatitis' },
+  psoriasis: { bg: 'Псориазис', ru: 'Псориаз', en: 'Psoriasis' },
   fungal: { bg: 'Гъбична инфекция', ru: 'Грибковая инфекция', en: 'Fungal infection' },
   hives: { bg: 'Уртикария (копривна треска)', ru: 'Крапивница', en: 'Hives (urticaria)' },
   sunburn: { bg: 'Слънчево изгаряне', ru: 'Солнечный ожог', en: 'Sunburn' },

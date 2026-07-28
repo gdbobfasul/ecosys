@@ -85,6 +85,8 @@ export const OFFLINE_MEDS = [
     description: 'Свързва токсини в стомаха; при леко отравяне/подуване. При отравяне — потърси и лекар.' },
   { names: ['amoxicillin', 'amoxil', 'ospamox', 'амоксицилин'], title: 'Amoxicillin (антибиотик)', active: ['amoxicillin'],
     description: 'Антибиотик (пеницилин) — САМО по лекарско предписание. Изкарай пълния курс.' },
+  { names: ['amoxicillin clavulanate', 'amoxicillin/clavulanic acid', 'co-amoxiclav', 'coamoxiclav', 'amoxiclav', 'amoksiklav', 'augmentin', 'амоксиклав', 'аугментин', 'клавуланова киселина', 'clavulanic acid', 'clavulanate'], title: 'Amoxicillin + клавуланова киселина (Амоксиклав / Augmentin)', active: ['amoxicillin', 'clavulanic acid'],
+    description: 'Антибиотик — пеницилин (amoxicillin) с клавуланова киселина срещу устойчиви бактерии. САМО по лекарско предписание. Изкарай ПЪЛНИЯ курс; приемай в началото на хранене за по-малко стомашно дразнене. Кажи на лекаря при алергия към пеницилин.' },
   { names: ['azithromycin', 'sumamed', 'azibiot', 'азитромицин'], title: 'Azithromycin (антибиотик)', active: ['azithromycin'],
     description: 'Антибиотик — САМО по лекарско предписание. Не спирай преждевременно.' },
   { names: ['ketoprofen', 'ketonal', 'кетонал', 'oki'], title: 'Ketoprofen (Кетонал)', active: ['ketoprofen'],
