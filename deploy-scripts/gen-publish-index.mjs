@@ -47,6 +47,10 @@ for (const app of apps) {
   const pub = path.join(huaweiRoot, app, 'publish');
   const hwPkg = readAppId(path.join(huaweiRoot, app, 'capacitor.config.json')) || `com.pupikes.${app.replace(/-/g, '')}.hw`;
   const ruPkg = readAppId(path.join(ROOT, 'rustore', app, 'capacitor.config.json')) || `com.pupikes.${app.replace(/-/g, '')}.rustore`;
+  // Старият (KCY) пакет = същият край, само доставчикът е сменен pupikes→kcy. При апове, които
+  // НЯКОГА са били в магазина под това име, магазинът пази стария пакет и отказва новия (виж стъпката).
+  const oldHwPkg = hwPkg.replace('com.pupikes.', 'com.kcy.');
+  const oldRuPkg = ruPkg.replace('com.pupikes.', 'com.kcy.');
   const name = readAppName(path.join(pub, 'huawei.meta'), app);
 
   // Кой е файлът с RuStore политиката (новите апове = rustore-privacy.html; newslator = ru-privacy.html).
@@ -95,7 +99,16 @@ _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). О�
 ---
 
 ## 🟥 Huawei AppGallery
-Портал: **AppGallery Connect** → My apps → (създай/избери приложението).
+Портал: **AppGallery Connect** → My apps → **създай НОВО приложение** (виж стъпката веднага отдолу).
+
+> ⚠️ **Нов пакет (Pupikes) — създай НОВ запис, не обновявай стария.**
+> Пакетът вече е \`${hwPkg}\` (сменен от стария \`${oldHwPkg}\`). AppGallery **не позволява** смяна на
+> пакета на съществуващ запис — ако качиш в стария, отказва с „_the name of the uploaded package is
+> different from the existing package name ${oldHwPkg}_". Затова:
+> 1. **My apps → New app** и задай **Package name = \`${hwPkg}\`** (фиксира се веднъж — трябва да е точно това).
+> 2. Попълни данните по таблицата долу и качи APK-то в **новия** запис.
+> 3. Ако старият \`${oldHwPkg}\` е бил публикуван — свали го от продажба СЛЕД одобрение на новия.
+>    Отзиви, инсталации и история **не се пренасят** между два различни пакета (магазините не поддържат това).
 
 | Документ | За какво | Файл |
 |---|---|---|
@@ -107,6 +120,12 @@ ${huaweiRows}
 
 ## 🟦 RuStore
 Портал: **RuStore Console** (rustore.ru/developer). Няма отделен файл-форма — полетата се попълват директно в конзолата; източниците са:
+
+> ⚠️ **Нов пакет (Pupikes) — създай НОВО приложение, не обновявай старото.**
+> Пакетът вече е \`${ruPkg}\` (сменен от стария \`${oldRuPkg}\`). RuStore, както и Huawei, **не позволява**
+> смяна на пакета на съществуващ запис. Затова: създай **ново приложение** с
+> **applicationId = \`${ruPkg}\`** и качи APK-то там. Ако старият \`${oldRuPkg}\` е бил публикуван — свали
+> го от продажба след одобрение на новия; отзивите/инсталациите не се пренасят.
 
 | Поле в конзолата | Източник | Файл |
 |---|---|---|

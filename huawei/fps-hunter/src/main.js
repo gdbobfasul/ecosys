@@ -1,7 +1,7 @@
 import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
-// Version: 1.0016
+// Version: 1.0017
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
 import { playIntro } from './core/intro.js';
@@ -152,9 +152,21 @@ async function boot() {
   let loopErrored = false;
   let blackProbe = 0;        // броим кадри докато тече игра, за да хванем „нищо не се рисува"
   let blackReported = false;
+  // УСТОЙЧИВОСТ: една ПРЕХОДНА грешка в кадър (моментен трепет на GPU, кратка загуба на
+  // контекста, надпревара при разглобяване на сцена) НЕ бива да изхвърля играча на червен
+  // екран и да го връща в менюто. Броим ПОРЕДНИ провалени кадри; успешен кадър нулира брояча.
+  // Само при УСТОЙЧИВ провал (реално счупено състояние) показваме екрана с грешката.
+  let errStreak = 0;
+  const ERR_FATAL_STREAK = 90;   // ~1.5 сек непрекъснат провал → тогава е истинска грешка
   function loop() {
+    requestAnimationFrame(loop);              // ПЪРВО планираме следващия кадър — цикълът никога не спира
+    if (loopErrored) return;
+    // Ако WebGL контекстът е ВРЕМЕННО загубен (слаб мобилен GPU/връщане от заден план) —
+    // изобщо не рисуваме този кадър (иначе render хвърля грешка след грешка). При
+    // 'webglcontextrestored' продължаваме сами. Слоят „графиката прекъсна…" вече е показан.
+    if (engine.isLost && engine.isLost()) { clock.getDelta(); return; }
     const dt = Math.min(clock.getDelta(), 0.05); // ограничаваме скока при лаг
-    if (!loopErrored) {
+    {
       try {
         // Синхронизирай размера на платното с реалния (поправя черен екран, когато
         // WebView-ът установи innerHeight чак няколко кадъра след старта).
@@ -186,16 +198,21 @@ async function boot() {
             }
           }
         }
+        errStreak = 0;   // успешен кадър → серията провали е нулева
       } catch (err) {
-        // Грешка по време на игра/рендер: спираме цикъла и показваме причината,
-        // вместо да рендираме мълчаливо черен екран кадър след кадър.
-        loopErrored = true;
-        console.error('[loop] грешка по време на игра', err);
-        if (game) game.ended = true;
-        showErrorOverlay(root, err);
+        // ПРЕХОДНА грешка: логваме първите няколко и ПРОДЪЛЖАВАМЕ — рисуваме следващия кадър.
+        // Играчът остава в играта. Показваме червения екран САМО ако провалът е УСТОЙЧИВ
+        // (същото се къса кадър след кадър ≈ 1.5 сек), т.е. реално счупено състояние.
+        errStreak++;
+        if (errStreak <= 3) console.error('[loop] преходна грешка (' + errStreak + ')', err);
+        if (errStreak >= ERR_FATAL_STREAK) {
+          loopErrored = true;
+          console.error('[loop] устойчива грешка — спирам цикъла', err);
+          if (game) game.ended = true;
+          showErrorOverlay(root, err);
+        }
       }
     }
-    requestAnimationFrame(loop);
   }
   loop();
 

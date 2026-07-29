@@ -45,9 +45,13 @@ export function createEngine(container) {
   // ЗАВИНАГИ и ГЪЛТАШЕ всички докосвания, а възстановяването на контекста изобщо не се
   // слушаше. preventDefault() ПОЗВОЛЯВА автоматично възстановяване → при
   // 'webglcontextrestored' слоят се МАХА и играта продължава сама.
+  // Флаг „контекстът е временно загубен". Докато е вдигнат, главният цикъл НЕ рисува
+  // (иначе renderer.render хвърля всеки кадър → грешка след грешка). При възстановяване се сваля.
+  const ctx = { lost: false };
   let lostNote = null;
   renderer.domElement.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();                 // позволи на браузъра да възстанови контекста
+    ctx.lost = true;
     console.error('[engine] WebGL контекстът беше загубен');
     if (lostNote) return;
     lostNote = document.createElement('div');
@@ -65,6 +69,7 @@ export function createEngine(container) {
     document.body.appendChild(lostNote);
   }, false);
   renderer.domElement.addEventListener('webglcontextrestored', () => {
+    ctx.lost = false;
     console.warn('[engine] WebGL контекстът се възстанови — продължаваме');
     if (lostNote) { try { lostNote.remove(); } catch (_) {} lostNote = null; }
     try { applySize(); } catch (_) {}   // главният цикъл продължава да рендира
@@ -109,7 +114,7 @@ export function createEngine(container) {
     if (w !== _lastW || h !== _lastH) applySize();
   }
 
-  return { renderer, scene, camera, hemi, sun, syncSize, onResize: applySize };
+  return { renderer, scene, camera, hemi, sun, syncSize, onResize: applySize, isLost: () => ctx.lost };
 }
 
 // Прилага атмосфера на терена: цвят на небето + мъгла. Извиква се при смяна на ниво.

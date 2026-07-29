@@ -90,45 +90,31 @@ function buildCandidates(data) {
   return out.slice(0, 12);
 }
 
-// Завърта <canvas> на 90/180/270°, за да прочете ВЕРТИКАЛЕН надпис (Tesseract не чете надолу).
+// Завърта <canvas> на ПРОИЗВОЛЕН ъгъл: 90/180/270° за ВЕРТИКАЛЕН/обърнат надпис, 45/135/225/315°
+// за КОСО заснета опаковка (Tesseract чете само хоризонтален текст). Платното се уголемява до
+// обхващащия правоъгълник, за да не се отрязва надписът при въртенето.
 function rotateCanvas(src, deg) {
   const w = src.width, h = src.height;
+  const rad = deg * Math.PI / 180;
+  const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
   const rc = document.createElement('canvas');
-  if (deg === 90 || deg === 270) { rc.width = h; rc.height = w; } else { rc.width = w; rc.height = h; }
+  rc.width = Math.max(1, Math.round(w * cos + h * sin));
+  rc.height = Math.max(1, Math.round(w * sin + h * cos));
   const ctx = rc.getContext('2d');
   ctx.translate(rc.width / 2, rc.height / 2);
-  ctx.rotate(deg * Math.PI / 180);
+  ctx.rotate(rad);
   ctx.drawImage(src, -w / 2, -h / 2);
   return rc;
 }
 
-// OCR → списък кандидати (едри думи → редове → дълги токени). Пуска се върху ПРЕДОБРАБОТЕНАТА снимка,
-// с подадения езиков пакет. Извиква се двупроходно (латиница → кирилица) от обработчика по-долу.
-async function ocrCandidates(file, lang) {
+// OCR върху ВЕЧЕ ГОТОВ източник (предобработено/завъртяно платно, URL или файл) с подадения
+// езиков пакет → списък кандидати (едри думи → редове → дълги токени). Предобработката и
+// въртенето се правят от викащия, за да въртим САМАТА снимка етап по етап (виж скенера по-долу).
+async function ocrOn(src, lang) {
   const Tesseract = await loadTesseract();
-  if (!Tesseract) return [];
-  let base = null, objurl = null;
-  try { base = await preprocess(file); } catch (_) { objurl = URL.createObjectURL(file); base = objurl; }
-  const runOne = async (src) => {
-    try { const res = await Tesseract.recognize(src, lang || 'eng'); return buildCandidates(res && res.data); }
-    catch (_) { return []; }
-  };
-  try {
-    // Езиковите данни се теглят от CDN веднъж и се кешират. Кирилицата се свързва с латинската база
-    // чрез транслитерация+фонетика (matchScore). Латинското INN на чужди опаковки се лови от 'eng'.
-    let cands = await runOne(base);
-    // ВЕРТИКАЛЕН/завъртян надпис: ако хоризонталният прочит е слаб (<2 кандидата), пробвай ±90°
-    // (само тогава — за да не бавим нормалния хоризонтален случай с 3× OCR).
-    if (cands.length < 2 && base && base.getContext) {
-      for (const deg of [90, 270]) {
-        const more = await runOne(rotateCanvas(base, deg));
-        for (const m of more) if (cands.indexOf(m) < 0) cands.push(m);
-        if (cands.length >= 3) break;
-      }
-    }
-    if (objurl) URL.revokeObjectURL(objurl);
-    return cands.slice(0, 14);
-  } catch (e) { try { if (objurl) URL.revokeObjectURL(objurl); } catch (_) {} return []; }
+  if (!Tesseract || !src) return [];
+  try { const res = await Tesseract.recognize(src, lang || 'eng'); return (buildCandidates(res && res.data) || []).slice(0, 14); }
+  catch (_) { return []; }
 }
 
 // ---------- Език ----------
@@ -197,7 +183,7 @@ function renderHome() {
     if (!file) return;
     statusEl.textContent = M('ocr_running'); resultEl.innerHTML = '';
     // Отладъчен канал: какво прочете OCR-ът и какво намери базата за всеки кандидат (за диагностика).
-    const dbg = { cands: [], tries: [], matched: null };
+    const dbg = { cands: [], tries: [], matched: null, angles: [] };
     try { window.__medDbg = dbg; } catch (_) {}
     let partial = null, partialCand = null;
     // Пробва списък кандидати; ПРЕДПОЧИТА ТОЧНО име (за да бие „Amoxicillin" случаен частичен шум).
@@ -214,22 +200,44 @@ function renderHome() {
       }
       return false;
     };
-    // Разпознаване на ПИСМЕНОСТТА първо: четем с eng+bul+rus и броим кирилица срещу латиница по ВСИЧКИ
-    // кандидати. Кирилска кутия = кирилицата ПРЕОБЛАДАВА (не просто няколко сбъркани знака в латинска).
-    const cCyr = await ocrCandidates(file, 'eng+bul+rus');
-    let cyrN = 0, latN = 0;
-    for (const c of cCyr) { cyrN += (c.match(/[А-Яа-яЁё]/g) || []).length; latN += (c.match(/[A-Za-z]/g) || []).length; }
-    const isCyr = cyrN > latN && cyrN >= 6;
-    // Търсим по РАЗПОЗНАТАТА писменост ПЪРВО (кирилска кутия → кирилицата уцелва и връща, преди
-    // латинският боклук изобщо да се пробва), а другият проход е РЕЗЕРВ (ако детекцията е сбъркала).
-    const engList = async () => tryList((await ocrCandidates(file, 'eng')).filter((c) => dbg.cands.indexOf(c) < 0));
-    const cyrList = async () => tryList(cCyr.filter((c) => dbg.cands.indexOf(c) < 0));
-    if (isCyr) { if (await cyrList()) return; if (await engList()) return; }
-    else { if (await engList()) return; if (await cyrList()) return; }
-    // Няма точно → първо частично; иначе „не е намерено" / „нищо не се прочете".
+    // Сканира ЕДНО завъртане на снимката: разпознава ПИСМЕНОСТТА (eng+bul+rus, брои кирилица срещу
+    // латиница), после търси по разпознатата писменост ПЪРВО, а другата е резерв. true = точно намерено.
+    const scanAt = async (src) => {
+      const cCyr = await ocrOn(src, 'eng+bul+rus');
+      let cyrN = 0, latN = 0;
+      for (const c of cCyr) { cyrN += (c.match(/[А-Яа-яЁё]/g) || []).length; latN += (c.match(/[A-Za-z]/g) || []).length; }
+      const isCyr = cyrN > latN && cyrN >= 6;
+      const engList = async () => tryList((await ocrOn(src, 'eng')).filter((c) => dbg.cands.indexOf(c) < 0));
+      const cyrList = async () => tryList(cCyr.filter((c) => dbg.cands.indexOf(c) < 0));
+      if (isCyr) { if (await cyrList()) return true; if (await engList()) return true; }
+      else { if (await engList()) return true; if (await cyrList()) return true; }
+      return false;
+    };
+    // Предобработваме СНИМКАТА веднъж; после ВЪРТИМ самото платно етап по етап.
+    let base = null, objurl = null;
+    try { base = await preprocess(file); } catch (_) { objurl = URL.createObjectURL(file); base = objurl; }
+    const canRotate = !!(base && base.getContext);
+    // ЕТАПИ на разчитане (спираме при ПЪРВОТО намерено лекарство):
+    //   1) 0°               — хоризонтален надпис
+    //   2) 90° и 270°       — ВЕРТИКАЛЕН надпис (двете посоки на четене)
+    //   3) 180°             — обърната опаковка
+    //   4) 45/135/225/315°  — КОСО заснето (четирите диагонала)
+    // Ако след ВСИЧКИ завъртания нищо не се намери → подканваме потребителя да напише името ръчно.
+    const angles = canRotate ? [0, 90, 270, 180, 45, 135, 225, 315] : [0];
+    let done = false;
+    for (const deg of angles) {
+      dbg.angles.push(deg);
+      statusEl.textContent = M('ocr_running');
+      const src = deg === 0 ? base : rotateCanvas(base, deg);
+      if (await scanAt(src)) { done = true; break; }
+    }
+    if (objurl) { try { URL.revokeObjectURL(objurl); } catch (_) {} }
+    if (done) return;
+    // Няма точно → първо частично; иначе подканяме за РЪЧНО въвеждане (насочваме към полето).
     if (partial) { dbg.matched = partialCand; nameEl.value = partialCand; statusEl.textContent = ''; resultEl.innerHTML = renderResult(partial); return; }
     statusEl.textContent = '';
-    resultEl.innerHTML = dbg.cands.length ? `<div class="notice">${esc(M('not_found'))}</div>` : `<div class="notice">${esc(M('ocr_none'))}</div>`;
+    resultEl.innerHTML = `<div class="notice">${esc(M(dbg.cands.length ? 'not_found' : 'ocr_none'))}</div>`;
+    try { nameEl.focus(); if (nameEl.scrollIntoView) nameEl.scrollIntoView({ block: 'center' }); } catch (_) {}
   });
   app.querySelector('#searchbtn').addEventListener('click', () => doSearch(nameEl.value));
   nameEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(nameEl.value); });
