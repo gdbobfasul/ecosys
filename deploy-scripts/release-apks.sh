@@ -111,12 +111,32 @@ for app in "${NAMES[@]}"; do
   echo -e "\n${BOLD}${CYAN}━━━ $app ━━━${NC}"
   ensure_key "$app" || { FAIL+=("$app (ключ)"); continue; }
 
+  # Java според Capacitor мажора — определя се ПРЕДИ подготовката, защото И debug
+  # (build-mobile-apps.sh), И release (assembleRelease по-долу) трябва да ползват СЪЩИЯ JDK.
+  # gradle избира JVM от JAVA_HOME (не от `java` на PATH). Cap7+ (напр. selflearning-friend заради
+  # офлайн диктовката) декларира Java 21 и НЕ се смъква → иска JDK 21, иначе „invalid source release: 21".
+  # Cap6 се смъква до Java 17 от веригата и върви на средата както досега. Възстановяваме JAVA_HOME след апа.
+  cap_major=6
+  for cfg in "rustore/$app/package.json" "huawei/$app/package.json"; do
+    [ -f "$cfg" ] || continue
+    cap_major="$(node -e "try{const p=require('./$cfg');const v=(p.devDependencies&&p.devDependencies['@capacitor/core'])||(p.dependencies&&p.dependencies['@capacitor/core'])||'^6';process.stdout.write(String((v.match(/([0-9]+)/)||['6'])[1]))}catch(e){process.stdout.write('6')}" 2>/dev/null)"
+    [ -n "$cap_major" ] && break
+  done
+  [ -z "$cap_major" ] && cap_major=6
+  SAVED_JH="${JAVA_HOME:-}"
+  if [ "$cap_major" -ge 7 ]; then
+    JH21="$(ls -d "/c/Program Files/Eclipse Adoptium"/jdk-21*/ 2>/dev/null | sort -V | tail -1)"; JH21="${JH21%/}"
+    if [ -n "$JH21" ]; then export JAVA_HOME="$JH21"; echo -e "  ${CYAN}→ Capacitor ${cap_major}: JDK 21 за debug+release ($JH21)${NC}";
+    else echo -e "  ${YELLOW}! Capacitor ${cap_major} иска JDK 21, но не намерих jdk-21* в Eclipse Adoptium — билдът може да падне${NC}"; fi
+  fi
+
   # пълната подготовка (web билд, cap sync, версия, debug APK за двата магазина)
   if ! bash deploy-scripts/build-mobile-apps.sh "$app" </dev/null; then
-    FAIL+=("$app (подготвителен билд)"); continue
+    FAIL+=("$app (подготвителен билд)"); export JAVA_HOME="$SAVED_JH"; continue
   fi
 
   slug="$(store_slug "$app")"                         # магазинното име за файла (напр. Huntline-3D)
+
   for store in rustore huawei; do
     d="$store/$app"
     is_app "$d" || continue
@@ -155,6 +175,7 @@ for app in "${NAMES[@]}"; do
       FAIL+=("$app-$store (няма изходен APK)")
     fi
   done
+  export JAVA_HOME="$SAVED_JH"   # върни средата за следващия ап (Cap7+ вдигна JDK 21 за този)
 done
 
 echo -e "\n${BOLD}${CYAN}━━━ Обобщение (release) ━━━${NC}"
