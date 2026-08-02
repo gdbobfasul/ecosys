@@ -20,7 +20,7 @@ Design and arrange your dream home floor by floor: choose the footprint, roof st
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+Първо издание: дизайнер на домове етаж по етаж, качване на снимки, обществена галерия и класация на най - харесваните места на 15 езика.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -39,7 +39,7 @@ Design and arrange your dream home floor by floor: choose the footprint, roof st
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+Первый выпуск: поэтажный дизайн дома, загрузка фотографий, публичная галерея и рейтинг самых популярных на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -58,7 +58,7 @@ Design and arrange your dream home floor by floor: choose the footprint, roof st
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+Перший реліз: поповерховий дизайн помешкання, завантаження фотографій, загальнодоступна галерея та рейтинг найпопулярніших на 15 мовах.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -96,7 +96,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+Erste Veröffentlichung: Floor-by-Floor-Home-Designer, Foto-Uploads, eine öffentliche Galerie und ein beliebtes Ranking in 15 Sprachen.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -115,7 +115,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+Première version : concepteur de maison étage par étage, téléchargements de photos, galerie publique et classement le plus apprécié, en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -134,7 +134,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+Primer lanzamiento: diseñador de casas piso por piso, cargas de fotos, una galería pública y un ranking de los más populares, en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -170,7 +170,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+Prima uscita: designer di case piano per piano, caricamenti di foto, una galleria pubblica e una classifica dei preferiti, in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -189,7 +189,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+Primeiro lançamento: designer de casas andar a andar, uploads de fotos, uma galeria pública e um ranking dos mais apreciados, em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -208,7 +208,7 @@ Design and arrange your dream home floor by floor: choose the footprint, roof st
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+الإصدار الأول: مصمم منزل من طابق إلى طابق، وتحميلات صور، ومعرض عام، وترتيب أكثر شعبية، بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -227,7 +227,7 @@ Design and arrange your dream home floor by floor: choose the footprint, roof st
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+पहली रिलीज़: फ़्लोर - दर - फ़्लोर होम डिज़ाइनर, फ़ोटो अपलोड, एक पब्लिक गैलरी और 15 भाषाओं में सबसे ज़्यादा पसंद की जाने वाली रैंकिंग।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -246,7 +246,7 @@ Design and arrange your dream home floor by floor: choose the footprint, roof st
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+最初のリリース：フロアバイフロアのホームデザイナー、写真のアップロード、公開ギャラリー、15の言語で最も人気のあるランキング。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -265,5 +265,5 @@ Design and arrange your dream home floor by floor: choose the footprint, roof st
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+首次推出： 15種語言的逐層房源設計師、相片上傳、公開圖片庫和最受歡迎的排名。
 ```

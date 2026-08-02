@@ -27,7 +27,7 @@ A single-player arcade fighting game across 10 levels: pick your weapon, beat ea
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+Първо издание: бойна игра на 10 нива с отключващи се оръжия, комбинации и местна класация с високи резултати, която може да се играе напълно офлайн на 15 езика.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -53,7 +53,7 @@ A single-player arcade fighting game across 10 levels: pick your weapon, beat ea
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+Первый релиз: 10-уровневый файтинг один на один с разблокируемым оружием, комбо и локальным рейтингом лидеров, играемый полностью в автономном режиме на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -79,7 +79,7 @@ A single-player arcade fighting game across 10 levels: pick your weapon, beat ea
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+Перший випуск: 10-рівневий файтинг один на один зі зброєю, яку можна розблокувати, комбо та місцевою таблицею лідерів з найвищими балами, який можна грати повністю в автономному режимі на 15 мовах.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -131,7 +131,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+Erste Veröffentlichung: ein 10-stufiges Einzelkampfspiel mit freischaltbaren Waffen, Kombos und einer lokalen Highscore-Bestenliste, das vollständig offline in 15 Sprachen gespielt werden kann.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -157,7 +157,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+Première version : un jeu de combat individuel à 10 niveaux avec des armes déverrouillables, des combos et un classement local haut de gamme, jouable entièrement hors ligne en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -183,7 +183,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+Primer lanzamiento: un juego de lucha individual de 10 niveles con armas desbloqueables, combos y una tabla de clasificación local de alta puntuación, que se puede jugar completamente sin conexión en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -233,7 +233,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+Prima versione: un gioco di combattimento one-to-one a 10 livelli con armi sbloccabili, combo e una classifica locale di alto livello, giocabile completamente offline in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -259,7 +259,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+Primeiro lançamento: um jogo de luta individual de 10 níveis com armas desbloqueáveis, combos e uma tabela de classificação local de alta pontuação, jogável totalmente offline em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -285,7 +285,7 @@ A single-player arcade fighting game across 10 levels: pick your weapon, beat ea
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+الإصدار الأول: لعبة قتال فردية من 10 مستويات مع أسلحة قابلة للفتح ومجموعات ولوحة متصدرين محلية عالية الدرجات، قابلة للعب بشكل كامل في وضع عدم الاتصال بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -311,7 +311,7 @@ A single-player arcade fighting game across 10 levels: pick your weapon, beat ea
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+पहली रिलीज़: 10 - स्तरीय वन - ऑन - वन फाइटिंग गेम जिसमें अनलॉक करने योग्य हथियार, कॉम्बो और एक स्थानीय हाई - स्कोर लीडरबोर्ड है, जो 15 भाषाओं में पूरी तरह से ऑफ़लाइन खेला जा सकता है।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -337,7 +337,7 @@ A single-player arcade fighting game across 10 levels: pick your weapon, beat ea
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+初リリース：アンロック可能な武器、コンボ、ローカルハイスコアリーダーボードを備えた10レベルの1対1の格闘ゲームで、15の言語で完全にオフラインでプレイできます。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -363,5 +363,5 @@ A single-player arcade fighting game across 10 levels: pick your weapon, beat ea
 ```
 **New features (до 1000 знака):**
 ```
-First release: a 10-level one-on-one fighting game with unlockable weapons, combos and a local high-score leaderboard, playable fully offline in 15 languages.
+首次發布： 10級一對一格鬥遊戲，擁有可解鎖的武器、連擊和當地高分排行榜，可完全離線玩15種語言。
 ```

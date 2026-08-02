@@ -28,7 +28,7 @@ An all-in-one utility box with QR codes, password and text tools, calculators, i
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+Първо издание: едно приложение, включващо QR кодове, генератор на пароли, калкулатори, текстови/графични/PDF инструменти, живи валутни и криптографски диаграми, уеб скрепер и AI текстов генератор, на 15 езика.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -55,7 +55,7 @@ An all-in-one utility box with QR codes, password and text tools, calculators, i
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+Первый выпуск: единое приложение, объединяющее QR-коды, генератор паролей, калькуляторы, инструменты для работы с текстом/изображениями/PDF, живые валютные и криптографические графики, веб-скребок и текстовый генератор AI на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -82,7 +82,7 @@ An all-in-one utility box with QR codes, password and text tools, calculators, i
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+Перший випуск: один додаток, що об 'єднує QR-коди, генератор паролів, калькулятори, інструменти для роботи з текстом/зображенням/PDF, живі валютні та криптографічні діаграми, веб-скребок та текстовий генератор AI на 15 мовах.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -136,7 +136,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+Erste Version: eine einzige App, die QR-Codes, Passwortgenerator, Taschenrechner, Text-/Bild-/PDF-Tools, Live-Währungs- und Kryptodiagramme, Web Scraper und einen KI-Textgenerator in 15 Sprachen bündelt.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -163,7 +163,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+Première version : une application unique regroupant des codes QR, un générateur de mot de passe, des calculatrices, des outils texte/image/PDF, des graphiques de devises et de crypto en direct, un grattoir Web et un générateur de texte AI, en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -190,7 +190,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+Primera versión: una sola aplicación que incluye códigos QR, generador de contraseñas, calculadoras, herramientas de texto/imagen/PDF, moneda en vivo y gráficos criptográficos, raspador web y un generador de texto AI, en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -242,7 +242,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+Prima versione: un'unica app che raggruppa codici QR, generatore di password, calcolatrici, strumenti di testo/immagine/PDF, grafici di valute e criptovalute in tempo reale, web scraper e un generatore di testo AI, in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -269,7 +269,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+Primeira versão: um único aplicativo que agrupa códigos QR, gerador de senhas, calculadoras, ferramentas de texto/imagem/PDF, gráficos de moedas e criptomoedas ao vivo, raspador da web e um gerador de texto de IA, em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -296,7 +296,7 @@ An all-in-one utility box with QR codes, password and text tools, calculators, i
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+الإصدار الأول: تطبيق واحد يجمع رموز الاستجابة السريعة، ومولد كلمات المرور، والآلات الحاسبة، وأدوات النص/الصورة/PDF، والعملات الحية ومخططات التشفير، ومكشطة الويب، ومولد نصوص الذكاء الاصطناعي، بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -323,7 +323,7 @@ QR कोड बनाएं और पढ़ें
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+पहला रिलीज़: 15 भाषाओं में क्यूआर कोड, पासवर्ड जनरेटर, कैलकुलेटर, टेक्स्ट/इमेज/पीडीएफ टूल, लाइव करेंसी और क्रिप्टो चार्ट, वेब स्क्रैपर और एक एआई टेक्स्ट जनरेटर को बंडल करने वाला एक ऐप।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -350,7 +350,7 @@ QRコードの生成と読み取り
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+最初のリリース： QRコード、パスワードジェネレータ、電卓、テキスト/画像/PDFツール、ライブ通貨と暗号チャート、ウェブスクレーパー、AIテキストジェネレータを15言語でバンドルしたシングルアプリ。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -377,5 +377,5 @@ An all-in-one utility box with QR codes, password and text tools, calculators, i
 ```
 **New features (до 1000 знака):**
 ```
-First release: a single app bundling QR codes, password generator, calculators, text/image/PDF tools, live currency and crypto charts, web scraper and an AI text generator, in 15 languages.
+首次發行：單一應用程式捆綁QR碼、密碼產生器、計算器、文字/圖片/PDF工具、即時貨幣和加密圖表、網頁擷取器和人工智慧文字產生器，提供15種語言版本。
 ```

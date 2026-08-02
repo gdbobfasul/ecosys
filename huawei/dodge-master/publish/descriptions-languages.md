@@ -22,7 +22,7 @@ A top-down survival arcade game: you stand in the middle while projectiles fly i
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+Първо издание на EvadeArena: 10 нива на оцеляване при избягване на снаряди отгоре - надолу с местна класация Top -100 на 15 езика.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -43,7 +43,7 @@ A top-down survival arcade game: you stand in the middle while projectiles fly i
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+Первый релиз EvadeArena: 10 уровней выживания при уклонении от снарядов сверху вниз с локальным рейтингом топ-100 на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -64,7 +64,7 @@ A top-down survival arcade game: you stand in the middle while projectiles fly i
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+Перший випуск EvadeArena: 10 рівнів виживання при ухиленні від снарядів зверху вниз з місцевим рейтингом топ-100 на 15 мовах.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -106,7 +106,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+Erste Veröffentlichung von EvadeArena: 10 Level des Überlebens von Top-Down-Projektilen mit einer lokalen Top-100-Bestenliste in 15 Sprachen.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -127,7 +127,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+Première version d'EvadeArena : 10 niveaux de survie à l'évitement de projectiles du haut vers le bas avec un classement local du top 100 en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -148,7 +148,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+Primer lanzamiento de EvadeArena: 10 niveles de supervivencia de evasión de proyectiles de arriba hacia abajo con una tabla de clasificación local de los 100 mejores en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -188,7 +188,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+Prima versione di EvadeArena: 10 livelli di sopravvivenza dall'alto verso il basso con una classifica top-100 locale in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -209,7 +209,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+Primeiro lançamento do EvadeArena: 10 níveis de sobrevivência de esquiva de projéteis de cima para baixo com uma tabela de classificação local dos 100 melhores em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -230,7 +230,7 @@ A top-down survival arcade game: you stand in the middle while projectiles fly i
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+الإصدار الأول من EvadeArena: 10 مستويات من البقاء على قيد الحياة من أعلى إلى أسفل للتهرب من المقذوفات مع لوحة متصدرين محلية من أعلى 100 في 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -251,7 +251,7 @@ A top-down survival arcade game: you stand in the middle while projectiles fly i
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+EvadeArena की पहली रिलीज़: 15 भाषाओं में स्थानीय टॉप -100 लीडरबोर्ड के साथ टॉप - डाउन प्रोजेक्टाइल - डॉजिंग सर्वाइवल के 10 स्तर।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -272,7 +272,7 @@ A top-down survival arcade game: you stand in the middle while projectiles fly i
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+EvadeArenaの最初のリリース： 15の言語で地元のトップ100リーダーボードで10レベルのトップダウン発射物回避サバイバル。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -293,5 +293,5 @@ A top-down survival arcade game: you stand in the middle while projectiles fly i
 ```
 **New features (до 1000 знака):**
 ```
-First release of EvadeArena: 10 levels of top-down projectile-dodging survival with a local top-100 leaderboard in 15 languages.
+EvadeArena首次發布： 15種語言的本地前100名排行榜提供10個自上而下的彈丸閃避生存等級。
 ```

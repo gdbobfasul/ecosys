@@ -22,7 +22,7 @@ A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies a
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+Първо издание: 10 нива на аркадни стрелби с ескалиращи трудности и електрически прозорци, които могат да се играят напълно офлайн.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -43,7 +43,7 @@ A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies a
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+Первый релиз: 10 уровней аркадной плоской стрельбы с возрастающей сложностью и бонусами, играбельно полностью в автономном режиме.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -64,7 +64,7 @@ A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies a
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+Перший випуск: 10 рівнів аркадної дії зі стрільби з площини з ескалацією складності та бонусами, що відтворюється повністю в автономному режимі.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -106,7 +106,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+Erste Veröffentlichung: 10 Stufen Arcade-Flugzeugschießen mit eskalierendem Schwierigkeitsgrad und Power-Ups, vollständig offline spielbar.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -127,7 +127,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+Première version : 10 niveaux d'action de tir en avion d'arcade avec une difficulté croissante et des power-ups, jouables entièrement hors ligne.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -148,7 +148,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+Primera versión: 10 niveles de acción de disparo de aviones arcade con dificultad creciente y potenciadores, jugables completamente fuera de línea.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -188,7 +188,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+Prima versione: 10 livelli di azione arcade di tiro aereo con difficoltà e potenziamenti crescenti, giocabili completamente offline.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -209,7 +209,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+Primeiro lançamento: 10 níveis de ação de tiro ao avião arcade com dificuldade crescente e power-ups, jogáveis totalmente offline.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -230,7 +230,7 @@ A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies a
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+الإصدار الأول: 10 مستويات من إطلاق النار في الممرات مع صعوبة متصاعدة وشكا من الطاقة، يمكن تشغيلها بشكل كامل دون اتصال بالإنترنت.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -251,7 +251,7 @@ A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies a
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+पहली रिलीज़: बढ़ती कठिनाई और पावर - अप के साथ आर्केड प्लेन - शूटिंग एक्शन के 10 स्तर, पूरी तरह से ऑफ़लाइन खेलने योग्य।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -272,7 +272,7 @@ A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies a
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+初リリース：難易度の上昇とパワーアップを伴う10レベルのアーケードプレーンシューティングアクション。完全オフラインでプレイ可能。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -293,5 +293,5 @@ A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies a
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of arcade plane-shooting action with escalating difficulty and power-ups, playable fully offline.
+首次發布： 10個級別的街機飛機射擊動作，難度升級和強化，可完全離線遊玩。
 ```

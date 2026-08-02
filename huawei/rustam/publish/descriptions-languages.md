@@ -22,7 +22,7 @@ A casual arcade game where you help a gardener pick all the cucumbers before the
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+Първо издание: 10 нива на аркадно забавление за бране на краставици със състезателни бенки и таймер за свиване на дупки, който може да се играе напълно офлайн.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -43,7 +43,7 @@ A casual arcade game where you help a gardener pick all the cucumbers before the
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+Первый релиз: 10 уровней аркадного веселья со сбором огурцов с гоночными кротами и таймером сжимающейся дыры, играбельно полностью в автономном режиме.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -64,7 +64,7 @@ A casual arcade game where you help a gardener pick all the cucumbers before the
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+Перший випуск: 10 рівнів аркадного задоволення від збору огірків з гоночними кротами та таймером скорочення отвору, що відтворюється повністю в автономному режимі.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -106,7 +106,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+Erste Veröffentlichung: 10 Stufen Gurkenpflück-Arcade-Spaß mit rasenden Maulwürfen und einem Schrumpfloch-Timer, der vollständig offline spielbar ist.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -127,7 +127,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+Première version : 10 niveaux de plaisir d'arcade de cueillette de concombres avec des taupes de course et une minuterie à trou rétrécissant, jouable entièrement hors ligne.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -148,7 +148,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+Primer lanzamiento: 10 niveles de diversión arcade de recolección de pepinos con topos de carreras y un temporizador de agujero encogedor, jugable completamente fuera de línea.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -188,7 +188,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+Prima versione: 10 livelli di divertimento arcade per la raccolta dei cetrioli con talpe da corsa e un timer a foro restringente, giocabile completamente offline.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -209,7 +209,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+Primeiro lançamento: 10 níveis de diversão arcade de colheita de pepino com toupeiras de corrida e um temporizador de buraco encolhido, jogável totalmente offline.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -230,7 +230,7 @@ A casual arcade game where you help a gardener pick all the cucumbers before the
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+الإصدار الأول: 10 مستويات من متعة قطف الخيار مع شامات السباق ومؤقت تقلص الفتحة، يمكن تشغيله بالكامل في وضع عدم الاتصال.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -251,7 +251,7 @@ A casual arcade game where you help a gardener pick all the cucumbers before the
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+पहली रिलीज़: रेसिंग मॉल और सिकुड़ते - छेद वाले टाइमर के साथ ककड़ी - पिकिंग आर्केड मस्ती के 10 स्तर, पूरी तरह से ऑफ़लाइन खेलने योग्य।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -272,7 +272,7 @@ A casual arcade game where you help a gardener pick all the cucumbers before the
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+初リリース：レーシングモールとシュリンクホールタイマーで10レベルのキュウリ摘みアーケードを楽しみ、完全にオフラインでプレイできます。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -293,5 +293,5 @@ A casual arcade game where you help a gardener pick all the cucumbers before the
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+首次發布： 10個級別的黃瓜採摘街機樂趣，搭配賽車痣和縮孔計時器，可完全離線遊玩。
 ```

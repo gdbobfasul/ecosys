@@ -24,7 +24,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+Първо издание: създайте неограничени монитори за емисии и JSON с съвпадение на ключови думи и местни сигнали по график, всички работещи изцяло на Вашето устройство.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -47,7 +47,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+Первый выпуск: создайте неограниченное количество фидов и JSON-мониторов с подбором ключевых слов и локальными оповещениями по расписанию, которые будут полностью работать на вашем устройстве.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -70,7 +70,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+Перший випуск: створіть необмежену кількість каналів і моніторів JSON з відповідністю ключових слів і локальними сповіщеннями за графіком, які повністю працюють на вашому пристрої.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -116,7 +116,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+Erste Version: Erstellen Sie unbegrenzte Feed- und JSON-Monitore mit Keyword-Matching und planmäßigen lokalen Warnungen, die alle vollständig auf Ihrem Gerät ausgeführt werden.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -139,7 +139,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+Première version : créez un flux illimité et des moniteurs JSON avec une correspondance de mots clés et des alertes locales programmées, le tout fonctionnant entièrement sur votre appareil.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -162,7 +162,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+Primera versión: crea monitores JSON y feed ilimitados con coincidencia de palabras clave y alertas locales programadas, todo ejecutándose completamente en tu dispositivo.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -206,7 +206,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+Prima versione: crea feed illimitati e monitor JSON con corrispondenza delle parole chiave e avvisi locali programmati, tutti in esecuzione interamente sul tuo dispositivo.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -229,7 +229,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+Primeira versão: crie feeds ilimitados e monitores JSON com correspondência de palavras-chave e alertas locais programados, todos executados inteiramente no seu dispositivo.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -252,7 +252,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+الإصدار الأول: أنشئ خلاصة غير محدودة وشاشات JSON مع مطابقة الكلمات الرئيسية والتنبيهات المحلية في الموعد المحدد، وكلها تعمل بالكامل على جهازك.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -275,7 +275,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+पहला रिलीज़: कीवर्ड मैचिंग और ऑन - शेड्यूल लोकल अलर्ट के साथ असीमित फ़ीड और JSON मॉनिटर बनाएं, सभी पूरी तरह से आपके डिवाइस पर चल रहे हैं।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -298,7 +298,7 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+最初のリリース：キーワードマッチングとスケジュール通りのローカルアラートを備えた無制限のフィードとJSONモニターを作成し、すべてデバイス上で実行します。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -321,5 +321,5 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 ```
 **New features (до 1000 знака):**
 ```
-First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.
+第一個版本：使用關鍵字匹配和按時本地警報創建無限制的Feed和JSON監視器，所有這些都完全在您的設備上運行。
 ```

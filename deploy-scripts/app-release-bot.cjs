@@ -92,20 +92,22 @@ const langFillLabels = ['English (UK)', ...hwLabels];
 function log(s) { console.log('  ' + s); }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// ── попълване по близък етикет (видимо, без клик по бутони за потвърждение) ──
-async function fillNear(page, labelRe, value, tag) {
+// ── попълване на ВИДИМОТО поле по етикет ──
+// ВАЖНО: всеки език има СВОЙ скрит комплект полета (App name/Brief/Full/New features). Само полетата
+// на АКТИВНИЯ език (избрания в Language) са ВИДИМИ. Затова таргетираме `:visible` — иначе хващаме
+// скрито поле на друг език и попълването „не намира" полето.
+async function fillNear(frame, labelRe, value, tag) {
   if (!value) return false;
   tag = tag || 'input';
-  const xp = `xpath=//*[self::label or self::span or self::div][contains(normalize-space(.),${JSON.stringify(labelRe)})]/following::${tag}[1]`;
   try {
-    const el = page.locator(xp).first();
-    await el.waitFor({ timeout: 2500 });
+    const el = frame.locator(`.el-form-item:has(.el-form-item__label:has-text(${JSON.stringify(labelRe)})) ${tag}:visible`).first();
+    await el.waitFor({ state: 'visible', timeout: 3500 });
     await el.scrollIntoViewIfNeeded().catch(() => {});
     await el.fill('');
     await el.fill(value);
     log('✓ „' + labelRe + '" ← ' + value.slice(0, 48).replace(/\n/g, ' ') + (value.length > 48 ? '…' : ''));
     return true;
-  } catch (_) { log('↷ „' + labelRe + '" — полето не е на този екран'); return false; }
+  } catch (_) { log('↷ „' + labelRe + '" — няма видимо поле'); return false; }
 }
 async function clickText(scope, txt, timeout) {
   try {

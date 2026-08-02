@@ -24,7 +24,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Първо издание на Huntline 3D: 3D ловен шутър от първо лице със 100 нива, множество оръжия, сензорни контроли и локална топ 10 класация на 15 езика.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -47,7 +47,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Первый выпуск Huntline 3D: охотничий 3D шутер от первого лица со 100 уровнями, несколькими видами оружия, сенсорным управлением и локальным топ-10 списком лидеров на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -70,7 +70,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Перший реліз Huntline 3D: мисливський 3D-шутер від першої особи зі 100 рівнями, декількома видами зброї, сенсорним керуванням та місцевим рейтингом топ-10 на 15 мовах.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -116,7 +116,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Erste Veröffentlichung von Huntline 3D: ein 3D-First-Person-Jagd-Shooter mit 100 Levels, mehreren Waffen, Touch-Bedienelementen und einer lokalen Top-10-Bestenliste in 15 Sprachen.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -139,7 +139,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Première version de Huntline 3D : un jeu de tir à la première personne en 3D avec 100 niveaux, plusieurs armes, des commandes tactiles et un classement local du top 10 en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -162,7 +162,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Primer lanzamiento de Huntline 3D: un juego de disparos de caza en primera persona en 3D con 100 niveles, múltiples armas, controles táctiles y una clasificación local de los 10 mejores en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -206,7 +206,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Prima versione di Huntline 3D: uno sparatutto in prima persona in 3D con 100 livelli, più armi, controlli touch e una classifica top-10 locale in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -229,7 +229,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Primeiro lançamento do Huntline 3D: um jogo de tiro em primeira pessoa 3D com 100 níveis, várias armas, controles de toque e uma tabela de classificação local dos 10 melhores em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -252,7 +252,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+الإصدار الأول من Huntline 3D: مطلق نار ثلاثي الأبعاد للصيد من منظور الشخص الأول مع 100 مستوى، وأسلحة متعددة، وعناصر تحكم باللمس، ولوحة متصدرين محلية من أفضل 10 لغات بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -275,7 +275,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Huntline 3D की पहली रिलीज़: 100 लेवल, कई हथियार, टच कंट्रोल और 15 भाषाओं में एक स्थानीय टॉप -10 लीडरबोर्ड के साथ एक 3D फ़र्स्ट - पर्सन हंटिंग शूटर।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -298,7 +298,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Huntline 3 Dの最初のリリース： 100レベル、複数の武器、タッチコントロール、15言語のローカルトップ10リーダーボードを備えた3 Dファーストパーソン・ハンティングシューティングゲーム。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -321,5 +321,5 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Huntline 3D首次發布：擁有100個關卡、多種武器、觸摸控件和15種語言的當地前十名排行榜的3D第一人稱狩獵射擊遊戲。
 ```

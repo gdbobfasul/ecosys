@@ -28,7 +28,7 @@ Pupikes Ring Clash — 1 срещу 1
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Първо издание на Ring Duel: 1 - vs -1 походова битка на 10 нива със скрити комбинации от специални движения и местна класация на 15 езика.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -55,7 +55,7 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Первый выпуск Ring Duel: 1-vs-1 пошаговый бой на 10 уровней со скрытыми комбо-комбинациями специальных движений и локальной таблицей лидеров на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -82,7 +82,7 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Перший випуск Ring Duel: покроковий бій 1 на 1 протягом 10 рівнів з прихованими комбінаціями спеціальних рухів та місцевою таблицею лідерів на 15 мовах.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -136,7 +136,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Erste Veröffentlichung von Ring Duel: 1-gegen-1 rundenbasierter Kampf über 10 Level mit versteckten Spezialzug-Kombos und einer lokalen Bestenliste in 15 Sprachen.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -163,7 +163,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Première version de Ring Duel : combat au tour par tour 1 contre 1 sur 10 niveaux avec des combos de mouvements spéciaux cachés et un classement local en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -190,7 +190,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Primer lanzamiento de Ring Duel: combate por turnos de 1 contra 1 en 10 niveles con combos ocultos de movimientos especiales y una tabla de clasificación local en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -242,7 +242,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Prima versione di Ring Duel: combattimento a turni 1 contro 1 su 10 livelli con combo di mosse speciali nascoste e una classifica locale in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -269,7 +269,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Primeiro lançamento do Ring Duel: combate baseado em turnos de 1 contra 1 em 10 níveis com combos ocultos de movimentos especiais e uma tabela de classificação local em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -296,7 +296,7 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+الإصدار الأول من Ring Duel: 1 - vs -1 قتال قائم على الدوران على 10 مستويات مع مجموعات حركة خاصة مخفية ولوحة متصدرين محلية بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -323,7 +323,7 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+रिंग ड्यूल की पहली रिलीज़: छिपी हुई स्पेशल - मूव कॉम्बो और 15 भाषाओं में एक स्थानीय लीडरबोर्ड के साथ 10 से अधिक स्तरों पर 1 - बनाम -1 टर्न - आधारित मुकाबला।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -350,7 +350,7 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+リングデュエルの最初のリリース：隠されたスペシャルムーブコンボと15言語のローカルリーダーボードを備えた10レベルにわたる1対1のターン制戦闘。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -377,5 +377,5 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+首次發布戒指決鬥： 1對1回合基礎戰鬥，超過10級，具有隱藏的特別動作組合和15種語言的當地排行榜。
 ```

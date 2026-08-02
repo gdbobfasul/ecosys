@@ -24,7 +24,7 @@ NewsLator събира публични новини за всяка държа�
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+Първо издание. Прочетете световните новини от много страни, автоматично преведени на вашия език и чуйте заглавията, прочетени на глас.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -47,7 +47,7 @@ NewsLator собирает публичные новости по каждой �
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+Первый выпуск. Читайте мировые новости из многих стран, автоматически переведенные на ваш язык, и слушайте заголовки, зачитанные вслух.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -70,7 +70,7 @@ NewsLator збирає публічні новини щодо кожної кр�
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+Перший реліз. Читайте світові новини з багатьох країн, автоматично перекладені на вашу мову, і слухайте заголовки, прочитані вголос.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -116,7 +116,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+Erste Veröffentlichung. Lesen Sie Weltnachrichten aus vielen Ländern, die automatisch in Ihre Sprache übersetzt werden, und hören Sie sich die vorgelesenen Schlagzeilen an.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -139,7 +139,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+Première version. Lisez les nouvelles mondiales de nombreux pays, traduites automatiquement dans votre langue, et écoutez les titres lus à haute voix.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -162,7 +162,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+Primer lanzamiento. Lea noticias mundiales de muchos países, traducidas automáticamente a su idioma, y escuche los titulares leídos en voz alta.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -206,7 +206,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+Prima uscita. Leggi le notizie del mondo da molti paesi, tradotte automaticamente nella tua lingua e ascolta i titoli letti ad alta voce.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -229,7 +229,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+Primeiro lançamento. Leia notícias mundiais de muitos países, traduzidas automaticamente para o seu idioma e ouça as manchetes lidas em voz alta.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -252,7 +252,7 @@ First release. Read world news from many countries, automatically translated int
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+الإصدار الأول. اقرأ أخبار العالم من العديد من البلدان، وترجمها تلقائيًا إلى لغتك، واستمع إلى العناوين الرئيسية المقروءة بصوت عالٍ.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -275,7 +275,7 @@ NewsLator हर देश की सार्वजनिक खबरें �
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+पहला रिलीज़। कई देशों से विश्व समाचार पढ़ें, स्वचालित रूप से आपकी भाषा में अनुवाद करें, और सुर्खियों को ज़ोर से पढ़ें।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -298,7 +298,7 @@ NewsLator は、各国の公開ニュースを公式および一部の非公式�
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+最初のリリース。多くの国からの世界のニュースを読んで、自動的にあなたの言語に翻訳され、見出しが大声で読まれるのを聞きます。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -321,5 +321,5 @@ NewsLator 從官方及少數非官方來源彙整每個國家的公開新聞。�
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+首次發布。閱讀來自許多國家的世界新聞，自動翻譯成您的語言，並大聲聆聽標題。
 ```

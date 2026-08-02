@@ -26,7 +26,7 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+Първо издание: назовете и отгледайте свой собствен частен приятел с изкуствен интелект, който се учи от Вас чрез глас, събира знания и пази цялата памет на устройството Ви зад тайна кодова дума.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -51,7 +51,7 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+Первый релиз: назовите и поднимите своего личного друга по искусственному интеллекту, который учится у вас голосом, собирает знания и хранит всю память на вашем устройстве за секретным кодовым словом.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -76,7 +76,7 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+Перший реліз: назвіть і підніміть власного приватного друга зі ШІ, який навчається у вас голосом, збирає знання та зберігає всю пам 'ять на вашому пристрої за секретним кодовим словом.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -126,7 +126,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+Erste Veröffentlichung: Nenne und erhöhe deinen eigenen privaten KI-Freund, der von dir per Stimme lernt, Wissen sammelt und den gesamten Speicher auf deinem Gerät hinter einem geheimen Codewort aufbewahrt.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -151,7 +151,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+Première version : nommez et élevez votre propre ami IA privé qui apprend de vous par la voix, recueille des connaissances et conserve toute la mémoire sur votre appareil derrière un mot de code secret.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -176,7 +176,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+Primera versión: nombra y cría a tu propio amigo privado de IA que aprende de ti por voz, recopila conocimientos y mantiene toda la memoria en tu dispositivo detrás de una palabra de código secreta.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -224,7 +224,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+Prima versione: nomina e cresci il tuo amico AI privato che impara da te a voce, raccoglie conoscenze e mantiene tutta la memoria sul tuo dispositivo dietro una parola in codice segreta.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -249,7 +249,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+Primeiro lançamento: nomeie e crie seu próprio amigo de IA privado que aprende com você por voz, reúne conhecimento e mantém toda a memória do seu dispositivo por trás de uma palavra de código secreta.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -274,7 +274,7 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+الإصدار الأول: قم بتسمية ورفع صديق الذكاء الاصطناعي الخاص بك الذي يتعلم منك عن طريق الصوت، ويجمع المعرفة، ويحافظ على كل الذاكرة على جهازك خلف كلمة رمزية سرية.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -299,7 +299,7 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+पहला रिलीज़: अपने निजी AI दोस्त को नाम दें और उठाएँ जो आपसे आवाज़ से सीखता है, ज्ञान इकट्ठा करता है, और एक गुप्त कोड शब्द के पीछे आपके डिवाइस पर सभी मेमोरी रखता है।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -324,7 +324,7 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+最初のリリース：声であなたから学び、知識を集め、秘密のコードワードの背後にあるデバイス上のすべてのメモリを保持する、あなた自身のプライベートAIフレンドに名前を付けて育てます。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -349,5 +349,5 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 ```
 **New features (до 1000 знака):**
 ```
-First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.
+首次發布：命名並培養你自己的私人AI朋友，通過語音向你學習，收集知識，並將設備上的所有記憶保存在祕密密碼字後面。
 ```

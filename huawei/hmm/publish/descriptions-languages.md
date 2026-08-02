@@ -28,7 +28,7 @@ Pupikes Field Battle — 3 срещу 3
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Първо издание на Battlefield HMM: 3 - vs -3 походов отбор се бие на 10 нива със скрити комбинации от специални движения и местна класация на 15 езика.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -55,7 +55,7 @@ A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Первый выпуск Battlefield HMM: 3-vs-3 пошаговые командные битвы на протяжении 10 уровней со скрытыми комбо-комбинациями специальных движений и локальной таблицей лидеров на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -82,7 +82,7 @@ A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Перший випуск Battlefield HMM: покрокові битви команди 3-vs-3 протягом 10 рівнів з прихованими комбінаціями спеціальних рухів та місцевою таблицею лідерів на 15 мовах.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -136,7 +136,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Erste Veröffentlichung von Battlefield HMM: 3-vs-3 rundenbasierte Teamkämpfe über 10 Level mit versteckten Spezialzug-Kombos und einer lokalen Bestenliste in 15 Sprachen.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -163,7 +163,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Première version de Battlefield HMM : une équipe 3 contre 3 au tour par tour se bat sur 10 niveaux avec des combos de mouvements spéciaux cachés et un classement local en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -190,7 +190,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Primera versión de Battlefield HMM: batallas por equipos por turnos de 3 contra 3 en 10 niveles con combos ocultos de movimientos especiales y una tabla de clasificación local en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -242,7 +242,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Prima versione di Battlefield HMM: battaglie a squadre a turni 3 contro 3 su 10 livelli con combo di mosse speciali nascoste e una classifica locale in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -269,7 +269,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Primeiro lançamento do Battlefield HMM: batalhas em equipe por turnos de 3 contra 3 em mais de 10 níveis com combos ocultos de movimentos especiais e uma tabela de classificação local em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -296,7 +296,7 @@ A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+الإصدار الأول من Battlefield HMM: 3 - vs -3 يتنافس الفريق القائم على الدوران على 10 مستويات مع مجموعات خاصة مخفية ولوحة متصدرين محلية بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -323,7 +323,7 @@ A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+बैटलफील्ड एचएमएम: 3 - बनाम -3 टर्न - आधारित टीम की पहली रिलीज़ 10 से अधिक स्तरों पर छिपी हुई स्पेशल - मूव कॉम्बो और 15 भाषाओं में एक स्थानीय लीडरबोर्ड के साथ लड़ती है।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -350,7 +350,7 @@ A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+「バトルフィールドHMM」の初リリース：隠されたスペシャルムーブコンボと15言語のローカルリーダーボードで、3対3のターン制チームバトルが10レベルを超えます。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -377,5 +377,5 @@ A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across
 ```
 **New features (до 1000 знака):**
 ```
-First release of Battlefield HMM: 3-vs-3 turn-based team battles over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+《Battlefield HMM》首次發布： 3對3回合隊伍戰鬥超過10個關卡，內含15種語言的隱藏特別動作組合和當地排行榜。
 ```

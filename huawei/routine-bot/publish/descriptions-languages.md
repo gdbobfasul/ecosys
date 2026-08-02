@@ -28,7 +28,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+Първо издание: ежедневен сутрешен брифинг с времето, планирани напомняния за задачи и навици, незадължително вечерно резюме и бележки, прочетени на глас чрез текст към реч на устройството.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -55,7 +55,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+Первый выпуск: ежедневный утренний брифинг с погодой, запланированные напоминания о задачах и привычках, дополнительное вечернее резюме и заметки, прочитанные вслух с помощью синтеза речи на устройстве.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -82,7 +82,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+Перший реліз: щоденний ранковий інструктаж з погодою, заплановані нагадування про завдання та звички, необов 'язковий вечірній підсумок та нотатки, прочитані вголос через текстове мовлення на пристрої.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -136,7 +136,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+Erste Veröffentlichung: tägliches Morgenbriefing mit Wetter, geplante Erinnerungen an Aufgaben und Gewohnheiten, eine optionale Abendzusammenfassung und Notizen, die über Text-to-Speech auf dem Gerät vorgelesen werden.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -163,7 +163,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+Première version : briefing quotidien du matin avec la météo, rappels programmés pour les tâches et les habitudes, un résumé optionnel du soir et des notes lues à haute voix via la synthèse vocale sur l'appareil.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -190,7 +190,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+Primer lanzamiento: sesión informativa matutina diaria con el clima, recordatorios programados de tareas y hábitos, un resumen nocturno opcional y notas leídas en voz alta a través de texto a voz en el dispositivo.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -242,7 +242,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+Prima versione: briefing mattutino giornaliero con il meteo, promemoria programmati per attività e abitudini, un riepilogo serale opzionale e note lette ad alta voce tramite sintesi vocale sul dispositivo.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -269,7 +269,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+Primeiro lançamento: briefing matinal diário com o clima, lembretes agendados para tarefas e hábitos, um resumo opcional da noite e notas lidas em voz alta por meio de conversão de texto em fala no dispositivo.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -296,7 +296,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+الإصدار الأول: إحاطة صباحية يومية مع الطقس، وتذكيرات مجدولة للمهام والعادات، وملخص مسائي اختياري، وملاحظات تُقرأ بصوت عالٍ عبر تحويل النص إلى كلام على الجهاز.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -323,7 +323,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+पहली रिलीज़: मौसम के साथ दैनिक सुबह की जानकारी, कार्यों और आदतों के लिए निर्धारित अनुस्मारक, शाम का एक वैकल्पिक सारांश, और ऑन - डिवाइस टेक्स्ट - टू - स्पीच के माध्यम से जोर से पढ़े जाने वाले नोट।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -350,7 +350,7 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+最初のリリース：天気予報を含む毎日の朝のブリーフィング、タスクと習慣の予定されたリマインダー、オプションの夕方のサマリー、およびデバイス上のテキスト読み上げによるメモ。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -377,5 +377,5 @@ A personal daily assistant that runs a morning briefing (weather, agenda and mot
 ```
 **New features (до 1000 знака):**
 ```
-First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.
+首次發佈：每日早間天氣簡報、任務和習慣的預定提醒、可選的晚間摘要，以及透過裝置內文字轉語音朗讀的筆記。
 ```

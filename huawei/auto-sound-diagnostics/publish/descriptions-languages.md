@@ -62,7 +62,7 @@ No AI, analysis runs on-device — the audio is not recorded to a file or upload
 **New features:**
 
 ```
-First release: record the sound, pick where (engine/wheels/brakes/suspension/exhaust/cabin) and when (idle/accelerating/braking/turning/cold start/bumps); on-device acoustic analysis with ranked possible causes, urgency and advice, in 15 languages.
+Перший випуск: запис звуку, вибір де (двигун/колеса/гальма/підвіска/вихлопні гази/кабіна) та коли (холостий хід/прискорення/гальмування/поворот/холодний запуск/удари); акустичний аналіз на пристрої з ранжуванням можливих причин, терміновістю та порадами на 15 мовах.
 ```
 
 ## English (en)
@@ -104,7 +104,7 @@ No AI, analysis runs on-device — the audio is not recorded to a file or upload
 **New features:**
 
 ```
-First release: record the sound, pick where (engine/wheels/brakes/suspension/exhaust/cabin) and when (idle/accelerating/braking/turning/cold start/bumps); on-device acoustic analysis with ranked possible causes, urgency and advice, in 15 languages.
+Erste Freigabe: Aufzeichnung des Geräuschs, Auswahl wo (Motor/Räder/Bremsen/Federung/Auspuff/Kabine) und wann (Leerlauf/Beschleunigen/Bremsen/Drehen/Kaltstart/Bodenwellen); akustische Analyse auf dem Gerät mit geordneten möglichen Ursachen, Dringlichkeit und Ratschlägen in 15 Sprachen.
 ```
 
 ## Français (fr)
@@ -125,7 +125,7 @@ No AI, analysis runs on-device — the audio is not recorded to a file or upload
 **New features:**
 
 ```
-First release: record the sound, pick where (engine/wheels/brakes/suspension/exhaust/cabin) and when (idle/accelerating/braking/turning/cold start/bumps); on-device acoustic analysis with ranked possible causes, urgency and advice, in 15 languages.
+Première version : enregistrez le son, choisissez où (moteur/roues/freins/suspension/échappement/cabine) et quand (ralenti/accélération/freinage/virage/démarrage à froid/chocs) ; analyse acoustique sur l'appareil avec les causes possibles classées, l'urgence et les conseils, en 15 langues.
 ```
 
 ## Español (es)
@@ -146,7 +146,7 @@ No AI, analysis runs on-device — the audio is not recorded to a file or upload
 **New features:**
 
 ```
-First release: record the sound, pick where (engine/wheels/brakes/suspension/exhaust/cabin) and when (idle/accelerating/braking/turning/cold start/bumps); on-device acoustic analysis with ranked possible causes, urgency and advice, in 15 languages.
+Primera liberación: registrar el sonido, elegir dónde (motor/ruedas/frenos/suspensión/escape/cabina) y cuándo (ralentí/aceleración/frenado/giro/arranque en frío/golpes); análisis acústico en el dispositivo con posibles causas clasificadas, urgencia y asesoramiento, en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX)
@@ -186,7 +186,7 @@ No AI, analysis runs on-device — the audio is not recorded to a file or upload
 **New features:**
 
 ```
-First release: record the sound, pick where (engine/wheels/brakes/suspension/exhaust/cabin) and when (idle/accelerating/braking/turning/cold start/bumps); on-device acoustic analysis with ranked possible causes, urgency and advice, in 15 languages.
+Prima emissione: registrare il suono, scegliere dove (motore/ruote/freni/sospensioni/scarico/cabina) e quando (minimo/accelerazione/frenata/svolta/avviamento a freddo/urti); analisi acustica sul dispositivo con classificate le possibili cause, urgenza e consigli, in 15 lingue.
 ```
 
 ## Português (pt)
@@ -207,7 +207,7 @@ No AI, analysis runs on-device — the audio is not recorded to a file or upload
 **New features:**
 
 ```
-First release: record the sound, pick where (engine/wheels/brakes/suspension/exhaust/cabin) and when (idle/accelerating/braking/turning/cold start/bumps); on-device acoustic analysis with ranked possible causes, urgency and advice, in 15 languages.
+Primeira versão: registre o som, escolha onde (motor/rodas/freios/suspensão/escape/cabine) e quando (marcha lenta/aceleração/frenagem/giro/partida a frio/solavancos); análise acústica no dispositivo com possíveis causas classificadas, urgência e conselhos, em 15 idiomas.
 ```
 
 ## العربية (ar)
@@ -228,7 +228,7 @@ No AI, analysis runs on-device — the audio is not recorded to a file or upload
 **New features:**
 
 ```
-First release: record the sound, pick where (engine/wheels/brakes/suspension/exhaust/cabin) and when (idle/accelerating/braking/turning/cold start/bumps); on-device acoustic analysis with ranked possible causes, urgency and advice, in 15 languages.
+الإصدار الأول: تسجيل الصوت، واختيار مكان (المحرك/العجلات/الفرامل/التعليق/العادم/المقصورة) ومتى (الخمول/التسارع/الكبح/الدوران/التشغيل البارد/المطبات )؛ التحليل الصوتي على الجهاز مع تصنيف الأسباب المحتملة والإلحاح والمشورة، في 15 لغة.
 ```
 
 ## हिन्दी (hi)
@@ -249,7 +249,7 @@ No AI, analysis runs on-device — the audio is not recorded to a file or upload
 **New features:**
 
 ```
-First release: record the sound, pick where (engine/wheels/brakes/suspension/exhaust/cabin) and when (idle/accelerating/braking/turning/cold start/bumps); on-device acoustic analysis with ranked possible causes, urgency and advice, in 15 languages.
+पहला रिलीज़: ध्वनि रिकॉर्ड करें, चुनें कि कहाँ (इंजन/पहियों/ब्रेक/निलंबन/निकास/केबिन) और कब (निष्क्रिय/त्वरित/ब्रेकिंग/मोड़/ठंड शुरू/टक्कर); 15 भाषाओं में रैंक किए गए संभावित कारणों, तात्कालिकता और सलाह के साथ ऑन - डिवाइस ध्वनिक विश्लेषण।
 ```
 
 ## 日本語 (ja)
@@ -270,7 +270,7 @@ No AI, analysis runs on-device — the audio is not recorded to a file or upload
 **New features:**
 
 ```
-First release: record the sound, pick where (engine/wheels/brakes/suspension/exhaust/cabin) and when (idle/accelerating/braking/turning/cold start/bumps); on-device acoustic analysis with ranked possible causes, urgency and advice, in 15 languages.
+最初のリリース：音を記録し、場所（エンジン/ホイール/ブレーキ/サスペンション/排気/キャビン）と時間（アイドル/加速/ブレーキ/ターニング/コールドスタート/バンプ）を選択します。15言語で、考えられる原因、緊急性、アドバイスをランク付けしたデバイス上の音響分析。
 ```
 
 ## Кыргызча (ky)
@@ -291,7 +291,7 @@ No AI, analysis runs on-device — the audio is not recorded to a file or upload
 **New features:**
 
 ```
-First release: record the sound, pick where (engine/wheels/brakes/suspension/exhaust/cabin) and when (idle/accelerating/braking/turning/cold start/bumps); on-device acoustic analysis with ranked possible causes, urgency and advice, in 15 languages.
+Биринчи чыгарылыш: үн жаздыруу, кайда (кыймылдаткыч/дөңгөлөк/токтото туруу/чыгуу/кабина) жана качан (бош/ылдамдатуу/тормоз/бурулуу/муздак баштоо/бумс); 15 тилдерде мүмкүн болгон себептер, шашылыштык жана кеңештер менен түзмөктөгү акустикалык талдоо.
 ```
 
 ## 繁體中文 (zh-Hant)
@@ -312,6 +312,6 @@ No AI, analysis runs on-device — the audio is not recorded to a file or upload
 **New features:**
 
 ```
-First release: record the sound, pick where (engine/wheels/brakes/suspension/exhaust/cabin) and when (idle/accelerating/braking/turning/cold start/bumps); on-device acoustic analysis with ranked possible causes, urgency and advice, in 15 languages.
+首次發布：記錄聲音，選擇位置（引擎/車輪/剎車/懸吊系統/排氣系統/客艙）和時間（閒置/加速/剎車/轉向/冷啟動/碰撞） ；以15種語言進行裝置聲學分析，並列出可能的原因、緊急程度和建議。
 ```
 

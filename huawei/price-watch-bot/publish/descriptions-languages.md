@@ -26,7 +26,7 @@ A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE)
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+Първо издание: задайте високи/ниски ценови прагове за крипто и валутните курсове и получавайте местни известия на устройството с проверки на всеки 15 минути, на всеки час или всеки ден.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -51,7 +51,7 @@ A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE)
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+Первый релиз: установите максимальные/минимальные ценовые пороги для курсов криптовалют и валют и получайте локальные оповещения на устройстве с проверками каждые 15 минут, ежечасно или ежедневно.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -76,7 +76,7 @@ A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE)
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+Перша версія: встановлюйте порогові значення високих/низьких цін на криптовалюти та валютні курси та отримуйте локальні сповіщення на пристрої, перевіряючи їх кожні 15 хвилин, щогодини або щодня.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -126,7 +126,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+Erste Veröffentlichung: Legen Sie hohe/niedrige Preisschwellenwerte für Krypto- und Währungskurse fest und erhalten Sie lokale Benachrichtigungen auf dem Gerät, mit Überprüfungen alle 15 Minuten, stündlich oder täglich.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -151,7 +151,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+Première version : définissez des seuils de prix élevés/bas sur les taux de crypto et de devise et obtenez des alertes locales sur l'appareil, avec des contrôles toutes les 15 minutes, toutes les heures ou tous les jours.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -176,7 +176,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+Primera versión: establece umbrales de precios altos/bajos en las tasas de criptomonedas y divisas y recibe alertas locales en el dispositivo, con controles cada 15 minutos, por hora o por día.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -224,7 +224,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+Prima release: imposta soglie di prezzo alte/basse sui tassi di criptovaluta e di valuta e ricevi avvisi locali sul dispositivo, con controlli ogni 15 minuti, ogni ora o ogni giorno.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -249,7 +249,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+Primeira versão: defina limites de preço alto/baixo nas taxas de criptomoedas e moedas e receba alertas locais no dispositivo, com verificações a cada 15 minutos, por hora ou diariamente.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -274,7 +274,7 @@ A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE)
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+الإصدار الأول: ضع عتبات سعر عالية/منخفضة على أسعار العملات المشفرة والعملات واحصل على تنبيهات محلية على الجهاز، مع عمليات فحص كل 15 دقيقة، كل ساعة أو يوميًا.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -299,7 +299,7 @@ A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE)
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+पहली रिलीज़: क्रिप्टो और करेंसी दरों पर ऊँची/कम कीमत की सीमाएँ सेट करें और हर 15 मिनट, हर घंटे या रोज़ की जाँच के साथ ऑन - डिवाइस लोकल अलर्ट पाएँ।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -324,7 +324,7 @@ A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE)
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+最初のリリース：暗号通貨と通貨レートに高/低の価格しきい値を設定し、15分ごと、1時間ごと、または1日ごとにチェックして、デバイス上のローカルアラートを取得します。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -349,5 +349,5 @@ A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE)
 ```
 **New features (до 1000 знака):**
 ```
-First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.
+首次發布：設定加密貨幣匯率的高/低價格門檻，並獲得設備上的本地警報，每15分鐘、每小時或每天檢查一次。
 ```

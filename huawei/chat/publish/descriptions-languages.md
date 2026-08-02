@@ -20,7 +20,7 @@ A real-time messaging app that connects you to the Pupikes chat service. Pick fr
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+Първо издание на Pupikes Chat: съобщения в реално време на 15 езика с чисто свързване/офлайн изживяване.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
@@ -39,7 +39,7 @@ A real-time messaging app that connects you to the Pupikes chat service. Pick fr
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+Первый выпуск Pupikes Chat: обмен сообщениями в режиме реального времени на 15 языках с чистым подключением/офлайн.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
@@ -58,7 +58,7 @@ A real-time messaging app that connects you to the Pupikes chat service. Pick fr
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+Перша версія чату Pupikes: обмін повідомленнями в режимі реального часу на 15 мовах з чистим підключенням/офлайн.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
@@ -96,7 +96,7 @@ Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+Erste Version von Pupikes Chat: Echtzeit-Messaging in 15 Sprachen mit einem sauberen Connect/Offline-Erlebnis.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
@@ -115,7 +115,7 @@ Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+Première version de Pupikes Chat : messagerie en temps réel en 15 langues avec une expérience de connexion/hors ligne propre.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
@@ -134,7 +134,7 @@ Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+Primer lanzamiento de Pupikes Chat: mensajería en tiempo real en 15 idiomas con una experiencia de conexión/desconexión limpia.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
@@ -170,7 +170,7 @@ Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+Prima release di Pupikes Chat: messaggistica in tempo reale in 15 lingue con un'esperienza di connessione/offline pulita.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
@@ -189,7 +189,7 @@ Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+Primeira versão do Pupikes Chat: mensagens em tempo real em 15 idiomas com uma experiência limpa de conexão/offline.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
@@ -208,7 +208,7 @@ A real-time messaging app that connects you to the Pupikes chat service. Pick fr
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+الإصدار الأول من Pupikes Chat: مراسلة في الوقت الفعلي بـ 15 لغة مع تجربة اتصال نظيفة/غير متصلة بالإنترنت.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
@@ -227,7 +227,7 @@ A real-time messaging app that connects you to the Pupikes chat service. Pick fr
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+Pupikes Chat का पहला रिलीज़: एक साफ़ - सुथरा कनेक्ट/ऑफ़लाइन अनुभव के साथ 15 भाषाओं में रीयल - टाइम मैसेजिंग।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
@@ -246,7 +246,7 @@ A real-time messaging app that connects you to the Pupikes chat service. Pick fr
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+Pupikesチャットの最初のリリース：クリーンな接続/オフライン体験で15言語でリアルタイムメッセージング。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
@@ -265,5 +265,5 @@ A real-time messaging app that connects you to the Pupikes chat service. Pick fr
 ```
 **New features (до 1000 знака):**
 ```
-First release of Pupikes Chat: real-time messaging in 15 languages with a clean connect/offline experience.
+Pupikes Chat首次推出：以15種語言傳送即時訊息，提供乾淨的連線/離線體驗。
 ```
