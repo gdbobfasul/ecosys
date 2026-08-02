@@ -169,3 +169,4 @@ deploy-scripts/node_modules/
 deploy-scripts/.promo-tmp/
 deploy-scripts/.store-names-cache.json
 deploy-scripts/.newfeatures-cache.json
+deploy-scripts/.rustore-profile/

@@ -10,21 +10,21 @@ const LANG_NAME = { bg:'Български', ru:'Русский', uk:'Украї
 const SUPPORT_EMAIL = 'miroljubkalaydjiev177@gmail.com';
 const SUPPORT_LABEL = { bg:'Поддръжка', ru:'Поддержка', uk:'Підтримка', en:'Support', de:'Support', fr:'Assistance', es:'Soporte', 'es-MX':'Soporte', it:'Assistenza', pt:'Suporte', ar:'الدعم', hi:'सहायता', ja:'サポート', ky:'Колдоо', 'zh-Hant':'支援' };
 const SUPPORT_LINE = {
-  bg:`За въпроси и поддръжка пишете на: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  ru:`По вопросам и поддержке пишите на: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  uk:`З питань і підтримки пишіть на: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  en:`For questions and support, write to: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  de:`Bei Fragen und für Support schreiben Sie an: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  fr:`Pour toute question ou assistance, écrivez à : ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  es:`Para preguntas y soporte, escribe a: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  'es-MX':`Para dudas y soporte, escribe a: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  it:`Per domande e assistenza, scrivi a: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  pt:`Para dúvidas e suporte, escreva para: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  ar:`للأسئلة والدعم، راسلونا على: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  hi:`प्रश्नों और सहायता के लिए लिखें: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  ja:`ご質問・サポートは次のメールへ: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  ky:`Суроолор жана колдоо үчүн жазыңыз: ${SUPPORT_EMAIL} (Subject: Pupikes.com)`,
-  'zh-Hant':`如有問題或需要支援，請來信：${SUPPORT_EMAIL} (Subject: Pupikes.com)`
+  bg:`За въпроси и поддръжка пишете на: ${SUPPORT_EMAIL}`,
+  ru:`По вопросам и поддержке пишите на: ${SUPPORT_EMAIL}`,
+  uk:`З питань і підтримки пишіть на: ${SUPPORT_EMAIL}`,
+  en:`For questions and support, write to: ${SUPPORT_EMAIL}`,
+  de:`Bei Fragen und für Support schreiben Sie an: ${SUPPORT_EMAIL}`,
+  fr:`Pour toute question ou assistance, écrivez à : ${SUPPORT_EMAIL}`,
+  es:`Para preguntas y soporte, escribe a: ${SUPPORT_EMAIL}`,
+  'es-MX':`Para dudas y soporte, escribe a: ${SUPPORT_EMAIL}`,
+  it:`Per domande e assistenza, scrivi a: ${SUPPORT_EMAIL}`,
+  pt:`Para dúvidas e suporte, escreva para: ${SUPPORT_EMAIL}`,
+  ar:`للأسئلة والدعم، راسلونا على: ${SUPPORT_EMAIL}`,
+  hi:`प्रश्नों और सहायता के लिए लिखें: ${SUPPORT_EMAIL}`,
+  ja:`ご質問・サポートは次のメールへ: ${SUPPORT_EMAIL}`,
+  ky:`Суроолор жана колдоо үчүн жазыңыз: ${SUPPORT_EMAIL}`,
+  'zh-Hant':`如有問題或需要支援，請來信：${SUPPORT_EMAIL}`
 };
 
 // Вади обект-литерал `key: { ... },` от i18n.js (записите са на един ред).

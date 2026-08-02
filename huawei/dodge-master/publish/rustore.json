@@ -1,0 +1,8 @@
+{
+  "_comment": "RuStore данни за стъпка Information (rustore-release-bot). type Application|Game; category=точен руски надпис от Main; age 0+/6+/12+/16+/18+; priceRub=цена в рубли (закръглена нагоре); tags=Search Tags (английски, до 5).",
+  "type": "Game",
+  "category": "",
+  "age": "6+",
+  "priceRub": 111,
+  "tags": []
+}

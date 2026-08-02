@@ -87,7 +87,7 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 Controls: phone — left joystick to move, drag on the right to look, FIRE button. Desktop — WASD + mouse (click to lock cursor) + click to shoot.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com
 
 ⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```

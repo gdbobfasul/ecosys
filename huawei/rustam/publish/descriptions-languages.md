@@ -79,7 +79,7 @@ A casual arcade game where you help a gardener pick all the cucumbers before the
 Pick the cucumbers before the moles!
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com
 
 ⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```

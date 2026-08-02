@@ -1,6 +1,7 @@
 import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
+enforceLicense('auto-sound-diagnostics', 'huawei'); // лог на инсталация СЛЕД езика (huawei билд)
 // Version: 1.0001
 // main.js — Auto Sound Diagnostics: слушаш колата с микрофона, записваш звука (двигател/ходова/
 // спирачки/купе) и приложението показва ВЪЗМОЖНИ причини по акустичните признаци — БЕЗ AI, всичко
@@ -13,6 +14,7 @@ import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
+import { enforceLicense } from './core/license.js';
 enforceLock();
 mountEcosystem('auto-sound-diagnostics');
 playIntro();

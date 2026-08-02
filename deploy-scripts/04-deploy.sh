@@ -507,6 +507,7 @@ tar -czf "$ARCHIVE_NAME" \
     --exclude='.git' \
     --exclude='rustore' --exclude='huawei' --exclude='desktop' \
     --exclude='node_modules2' --exclude='patch' \
+    --exclude='*-profile' --exclude='.promo-tmp' \
     --exclude='*.apk' --exclude='*.aab' --exclude='*.exe' \
     ${ASSET_EXCLUDE} \
     --exclude='*.log' \

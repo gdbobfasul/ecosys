@@ -71,7 +71,7 @@ Design and arrange your
 Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com
 
 ⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```

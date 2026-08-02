@@ -103,7 +103,7 @@ Special: each hero has <b>their own 6 keys</b>; guess the hidden <b>combo of 4</
 Discover the combos by trying. They stay the same all game.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com
 
 ⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```

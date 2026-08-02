@@ -340,16 +340,24 @@ sync_privacy_pages
 echo -e "${CYAN}Пълня pupikes.app каталога (/var/www/html/apk)...${NC}"
 sync_pupikes_catalog
 
+# ── APK потребител/парола от .env (ако са зададени) — .env е източникът на истината ──
+APK_ENV_FILE="$PROJECT_DIR/private/configs/.env"
+if [ -f "$APK_ENV_FILE" ]; then
+    _agu=$(grep -E '^APK_GATE_USER=' "$APK_ENV_FILE" | tail -1 | cut -d= -f2-)
+    _agp=$(grep -E '^APK_GATE_PASS=' "$APK_ENV_FILE" | tail -1 | cut -d= -f2-)
+    [ -n "$_agu" ] && APK_GATE_USER="$_agu"
+    [ -n "$_agp" ] && APK_GATE_PASS="$_agp"
+fi
 # ── APK парола: осигури htpasswd файла (иначе auth_basic_user_file → nginx -t пада) ──
 NEED_HTPASSWD=0
 printf '%s\n' "$APP_DOMAIN_MAP" | while read -r dom key; do [ -n "$key" ] && [ "$(eval "echo \${APP_${key}_APKGATE:-}")" = "1" ] && exit 7; done; [ $? -eq 7 ] && NEED_HTPASSWD=1
 if [ "$NEED_HTPASSWD" = "1" ]; then
-    if [ ! -f "$APK_HTPASSWD" ]; then
-        echo "pupikes:$(openssl passwd -apr1 'pupikes' 2>/dev/null)" > "$APK_HTPASSWD"
-        echo -e "  ${YELLOW}! създадох $APK_HTPASSWD (временно: потребител ${GREEN}pupikes${YELLOW} / парола ${GREEN}pupikes${YELLOW}) — СМЕНИ Я: htpasswd $APK_HTPASSWD pupikes${NC}"
-    else
-        echo -e "  ${GREEN}✓ $APK_HTPASSWD вече съществува (паролата за скритите APK-та)${NC}"
-    fi
+    # СИЛНА парола за скритите (платени) APK-та — раздава се само на купувачи/по покана. Може да се
+    # смени през APK_GATE_PASS в configs/.env. ВИНАГИ се записва (за да замести старата слаба „pupikes").
+    APK_GATE_USER="${APK_GATE_USER:-pupikes}"
+    APK_GATE_PASS="${APK_GATE_PASS:-Pup1kes.Paw.2026#Kq7mZ9x}"
+    echo "${APK_GATE_USER}:$(openssl passwd -apr1 "$APK_GATE_PASS" 2>/dev/null)" > "$APK_HTPASSWD"
+    echo -e "  ${GREEN}✓ APK парола зададена (потребител ${APK_GATE_USER}) — СИЛНА; раздавай я само на купувачи. (смяна: APK_GATE_PASS в .env)${NC}"
     # ВАЖНО: nginx воркерът (www-data) ТРЯБВА да чете файла, иначе auth_basic_user_file →
     # „Permission denied" → 500 при сваляне СЛЕД въвеждане на паролата. Затова — винаги
     # (и при нов, и при вече съществуващ файл) осигуряваме четимост от групата на nginx.

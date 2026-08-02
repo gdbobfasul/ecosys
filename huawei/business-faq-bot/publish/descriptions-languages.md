@@ -87,7 +87,7 @@ A bot that automatically answers your customers’ common questions — by rules
 Privacy: no contacts, no accounts, no location, no tracking. The knowledge base stays only on this device.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com
 
 ⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```

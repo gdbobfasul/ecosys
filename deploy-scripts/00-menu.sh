@@ -439,16 +439,19 @@ show_menu() {
         "За 1× 3090 (VirtualBox/VMware не подават картата на госта). Обратимо. Без преинсталация."
 
     echo ""
-    echo -e "${BOLD}${CYAN}━━━ БОТОВЕ ЗА ПУБЛИКУВАНЕ (Huawei AppGallery) ━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BOLD}${CYAN}━━━ БОТОВЕ ЗА ПУБЛИКУВАНЕ (Huawei AppGallery + RuStore) ━━━━━━━━━━━━━━${NC}"
     echo ""
-    item "90" "AppReleaseBot — попълни конзолата на Huawei" \
+    item "90" "HuaweiReleaseBot — попълни конзолата на Huawei" \
         "Вдига браузъра при нужда (влизаш РЪЧНО веднъж — парола+капча), пита кое приложение и" \
         "попълва ВИДИМО полетата от publish/, БЕЗ да натиска бутони. Режим ENTER: отваряш екран → ENTER → попълва."
     item "91" "AppPreparePublishingBot — подготви приложение за публикуване" \
         "Проверка на име + локализирани скрийншоти/описания (15 езика) + скеле на huawei.meta." \
         "Пълни publish/. Пита кое приложение (huawei/<ап>)."
+    item "92" "RuStoreReleaseBot — попълни конзолата на RuStore" \
+        "Като 90, но за console.rustore.ru: вдига браузъра при нужда (влизаш РЪЧНО веднъж), пита кое" \
+        "приложение (от каталога с цените) и попълва ВИДИМО, БЕЗ да натиска бутони. Режим ENTER."
 
-    echo -e "  ${GRAY}Свободни номера: 77-79, 83, 92   ·   запазени: 60-70 (FILL DATA), 71-76 (мобилни), 80-84 (selflearning), 90-91 (ботове)${NC}"
+    echo -e "  ${GRAY}Свободни номера: 77-79, 83   ·   запазени: 60-70 (FILL DATA), 71-76 (мобилни), 80-84 (selflearning), 90-92 (ботове)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -941,20 +944,29 @@ run_choice() {
         # ── БОТОВЕ ЗА ПУБЛИКУВАНЕ ──
         90)
             echo ""
-            echo -e "${BOLD}${CYAN}  AppReleaseBot — попълни конзолата на Huawei${NC}"
+            echo -e "${BOLD}${CYAN}  HuaweiReleaseBot — попълни конзолата на Huawei${NC}"
             echo ""
-            # 1) ВИНАГИ стартирай ЧИСТ ВИДИМ браузър (затваря стари debug-браузъри, логинът се пази
-            #    в профила — без нов вход). Така всеки път виждаш прозореца.
-            echo -e "  ${GRAY}Стартирам чист видим браузър (логинът се пази — влизаш само първия път).${NC}"
+            # 1) ЕДИН браузър, ЕДНО логване: ако вече има отворен браузър (порт 9222) — ПРЕИЗПОЛЗВА се
+            #    (без ново отваряне/затваряне/логване). Пуска нов САМО ако няма никакъв. Така избягваме
+            #    блокировки от много логвания.
+            echo -e "  ${GRAY}Преизползвам вече отворения браузър (ако има). Нов се пуска само ако липсва.${NC}"
             echo ""
-            ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/app-release-bot-launch.cjs" )
+            ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/huawei-release-bot-launch.cjs" )
             echo ""
             read -p "  Отвори приложението в браузъра (или остави да е на списъка). После натисни ENTER: " _
-            # 2) Избор на приложение (веднъж)
+            # 2) Избор на приложение (веднъж) — САМО приложенията за публикуване, взети от каталога с
+            #    цените (рекламата след „лапата"). Каталогът вече изключва тези, които няма да пускаме,
+            #    затова не пълнят списъка тук.
             echo ""
+            echo -e "  ${GRAY}Показвам само приложенията за публикуване (от каталога с цените):${NC}"
             declare -a BAPPS=(); bi=1
-            for d in "$SCRIPT_DIR/../huawei"/*/; do
-                ba=$(basename "$d"); [ -f "$SCRIPT_DIR/../huawei/$ba/publish/PUBLISHING-HUAWEI.md" ] || continue
+            CATLIST=$(node -e 'const fs=require("fs");try{const j=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));for(const a of (j.apps||[]))console.log(a.id)}catch(e){}' "$SCRIPT_DIR/../app-shared/promo-catalog.json" 2>/dev/null)
+            if [ -z "$CATLIST" ]; then
+                echo -e "  ${YELLOW}Каталогът с цените липсва — показвам всички.${NC}"
+                CATLIST=$(for d in "$SCRIPT_DIR/../huawei"/*/; do basename "$d"; done)
+            fi
+            for ba in $CATLIST; do
+                [ -f "$SCRIPT_DIR/../huawei/$ba/publish/PUBLISHING-HUAWEI.md" ] || continue
                 BAPPS[$bi]="$ba"; printf "    %2d) %s\n" "$bi" "$ba"; bi=$((bi+1))
             done
             echo ""
@@ -963,9 +975,9 @@ run_choice() {
             if [ -z "$BAPP" ] || [ ! -d "$SCRIPT_DIR/../huawei/$BAPP" ]; then echo "  Няма такова приложение."; press_enter; continue; fi
             # 3) Попълва в режим ENTER (видимо, без натискане на бутони)
             echo ""
-            echo -e "  ${YELLOW}► AppReleaseBot: ${BAPP} (режим ENTER — попълва ВИДИМО, не натиска бутони)${NC}"
+            echo -e "  ${YELLOW}► HuaweiReleaseBot: ${BAPP} (режим ENTER — попълва ВИДИМО, не натиска бутони)${NC}"
             echo ""
-            ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/app-release-bot.cjs" "$BAPP" --loop )
+            ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/huawei-release-bot.cjs" "$BAPP" --loop )
             press_enter
             ;;
         91)
@@ -993,6 +1005,40 @@ run_choice() {
             echo -e "  ${YELLOW}► AppPreparePublishingBot: ${PCMD} huawei/${PAPP}${NC}"
             echo ""
             ( cd "$SCRIPT_DIR/.." && node private/app-publisher-bot/app-publisher-bot.cjs "$PCMD" "huawei/$PAPP" )
+            press_enter
+            ;;
+        92)
+            echo ""
+            echo -e "${BOLD}${CYAN}  RuStoreReleaseBot — попълни конзолата на RuStore${NC}"
+            echo ""
+            # 1) ЕДИН браузър, ЕДНО логване: преизползва отворения (порт 9222); нов само ако липсва.
+            echo -e "  ${GRAY}Преизползвам вече отворения браузър (ако има). Нов се пуска само ако липсва.${NC}"
+            echo ""
+            ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/rustore-release-bot-launch.cjs" )
+            echo ""
+            read -p "  Влез в RuStore и отвори нужния екран. После натисни ENTER: " _
+            # 2) Избор на приложение — само тези за публикуване (от каталога с цените)
+            echo ""
+            echo -e "  ${GRAY}Показвам само приложенията за публикуване (от каталога с цените):${NC}"
+            declare -a RAPPS=(); ri=1
+            RCATLIST=$(node -e 'const fs=require("fs");try{const j=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));for(const a of (j.apps||[]))console.log(a.id)}catch(e){}' "$SCRIPT_DIR/../app-shared/promo-catalog.json" 2>/dev/null)
+            if [ -z "$RCATLIST" ]; then
+                echo -e "  ${YELLOW}Каталогът с цените липсва — показвам всички.${NC}"
+                RCATLIST=$(for d in "$SCRIPT_DIR/../huawei"/*/; do basename "$d"; done)
+            fi
+            for ra in $RCATLIST; do
+                [ -d "$SCRIPT_DIR/../huawei/$ra" ] || continue
+                RAPPS[$ri]="$ra"; printf "    %2d) %s\n" "$ri" "$ra"; ri=$((ri+1))
+            done
+            echo ""
+            read -p "  Кое приложение? [номер или име]: " RPICK
+            RAPP="${RAPPS[$RPICK]}"; [ -z "$RAPP" ] && RAPP="$RPICK"
+            if [ -z "$RAPP" ] || [ ! -d "$SCRIPT_DIR/../huawei/$RAPP" ]; then echo "  Няма такова приложение."; press_enter; continue; fi
+            # 3) Попълва в режим ENTER (видимо, без натискане на бутони)
+            echo ""
+            echo -e "  ${YELLOW}► RuStoreReleaseBot: ${RAPP} (режим ENTER — попълва ВИДИМО, не натиска бутони)${NC}"
+            echo ""
+            ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/rustore-release-bot.cjs" "$RAPP" --loop )
             press_enter
             ;;
         45|46|47|48|49)

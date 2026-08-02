@@ -3,4 +3,4 @@ A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies a
 Shoot down enemies and survive 10 levels!
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com

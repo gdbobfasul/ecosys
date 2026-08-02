@@ -40,6 +40,8 @@ async function translate(text, mm) {
 
 // извлечи New features блока за език (между **New features…** ``` … ```)
 function nfOf(section) { const m = section.match(/\*\*New features[^\n]*\*\*\s*\n+```\n([\s\S]*?)\n```/); return m ? m[1].trim() : ''; }
+// код по езиков шаблон от заглавния ред (за „Español (MX) (es-MX)" → es-MX, не MX)
+function codeOf(section) { const h = section.split('\n')[0]; return (h.match(/\(([a-z]{2}(?:-[A-Za-z]+)?)\)/) || [])[1]; }
 
 const only = process.argv[2];
 const apps = fs.readdirSync(path.join(ROOT, 'huawei')).filter((a) => fs.existsSync(path.join(ROOT, 'huawei', a, 'publish', 'descriptions-languages.md')) && (!only || a === only));

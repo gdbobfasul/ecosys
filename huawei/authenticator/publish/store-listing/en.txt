@@ -5,7 +5,7 @@ The vault is encrypted with this password. Without it there is no access to your
 Downloads each account as a separate QR image in one .zip.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com
 
 Compatible with your favorite apps — import and export in both directions:
 • Browser passwords: Google Chrome, Microsoft Edge, Mozilla Firefox.

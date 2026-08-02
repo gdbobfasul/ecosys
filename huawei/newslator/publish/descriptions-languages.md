@@ -87,7 +87,7 @@ Read the news of any country in the world — translated into your language, or 
 NewsLator gathers public news for every country from official and a few unofficial sources. The sources belong to their owners; this app is an independent reader and is not affiliated with them.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com
 
 ⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
@@ -183,7 +183,7 @@ Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release. Read world news from many countries, automatically translated into your language, and listen to the headlines read aloud.
+Primer lanzamiento. Lea noticias mundiales de muchos países, traducidas automáticamente a su idioma, y escuche los titulares leídos en voz alta.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**

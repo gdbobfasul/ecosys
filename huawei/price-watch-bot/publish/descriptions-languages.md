@@ -95,7 +95,7 @@ This robot watches selected crypto and currency rates and notifies you as soon a
 Everything runs on the device. No account, no contacts, no tracking. Prices come from free public sources.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com
 
 ⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```

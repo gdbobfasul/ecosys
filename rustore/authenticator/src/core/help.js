@@ -1,4 +1,4 @@
-// Version: 1.0018
+// Version: 1.0019
 // help.js — УНИВЕРСАЛЕН бутон „Обратна връзка" за ВСЯКО приложение (еднакъв файл навсякъде).
 // Бутонът вече живее в ЕДИННАТА долна лента (core/pupikes-bar.js) → модал → праща АНОНИМЕН доклад
 // към порталната таблица (portal_bug_reports) през /api/portals/bug-report/anon. Без вход.
@@ -36,13 +36,16 @@ function tr(k) { const m = L[k] || {}; return m[lang()] || m.en || m.bg || k; }
 async function post(app, data) {
   let appName = '';
   try { appName = (document.title || '').trim(); } catch (e) {}
+  // Заглавието се долепя АВТОМАТИЧНО: „Pupikes <име на приложението>" — потребителят НЕ го пише
+  // (апът си знае името → без грешки). Ако името вече почва с „Pupikes" — без дублиране.
+  const subj = !appName ? 'Pupikes' : (/^pupikes/i.test(appName) ? appName : ('Pupikes ' + appName));
   const payload = {
     app: app,
     appName: appName,          // ЦЯЛОТО име на приложението (от <title>) — водещо в имейла
     lang: lang(),              // избраният език (код) — показва се в имейла
     name: (data && data.name) || '',
     contact: (data && data.contact) || '',
-    title: (data && data.title) || '',
+    title: subj,               // авто „Pupikes <име>" — няма поле за заглавие във формата
     body: (data && data.body) || ''
   };
   try {
@@ -72,7 +75,7 @@ export function mountHelp(appId) {
     const mkInput = (ph) => { const i = document.createElement('input'); i.type = 'text'; i.placeholder = ph; i.style.cssText = inputCss; return i; };
     const inFrom = mkInput(tr('from'));
     const inContact = mkInput(tr('contact'));
-    const inSubject = mkInput(tr('subject'));
+    // (Полето „Заглавие" е премахнато — заглавието „Pupikes <име>" се долепя автоматично при изпращане.)
     // Многоредово поле: съобщение
     const ta = document.createElement('textarea'); ta.placeholder = tr('ph');
     ta.style.cssText = 'width:100%;height:110px;box-sizing:border-box;background:#0d1117;color:#e6edf3;border:1px solid #2a3550;border-radius:10px;padding:10px;font:14px system-ui;resize:none';
@@ -85,12 +88,12 @@ export function mountHelp(appId) {
     send.onclick = async () => {
       const v = ta.value.trim(); if (!v) { ta.focus(); return; }
       send.disabled = true; msg.style.color = '#8b949e'; msg.textContent = '…';
-      const okr = await post(app, { name: inFrom.value.trim(), contact: inContact.value.trim(), title: inSubject.value.trim(), body: v });
+      const okr = await post(app, { name: inFrom.value.trim(), contact: inContact.value.trim(), body: v });
       if (okr) { msg.style.color = '#3fb950'; msg.textContent = tr('thanks'); setTimeout(() => ov.remove(), 1300); }
       else { send.disabled = false; msg.style.color = '#f85149'; msg.textContent = tr('err'); }
     };
     const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:8px;margin-top:12px'; row.append(cancel, send);
-    box.append(h, inFrom, inContact, inSubject, ta, msg, row); ov.appendChild(box); document.body.appendChild(ov); inFrom.focus();
+    box.append(h, inFrom, inContact, ta, msg, row); ov.appendChild(box); document.body.appendChild(ov); inFrom.focus();
   }
   pupikesBarButton({ id: 'pupikes-help-btn', order: 20, label: () => '💬 ' + tr('btn'), onClick: openModal });
 }

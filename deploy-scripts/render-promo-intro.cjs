@@ -17,7 +17,9 @@ const OUTDIR = path.resolve('app-shared');
 const TMPDIR = path.resolve('deploy-scripts/.promo-tmp');
 fs.mkdirSync(OUTDIR, { recursive: true });
 fs.mkdirSync(TMPDIR, { recursive: true });
-const W = 1280, H = 720;   // Huawei introduction video: 16:9 landscape, 1280×720, 15s–2min
+// Huawei иска промо-видеото и скрийншотовете да са в ЕДНАКВА ориентация. Скрийншотовете ни са
+// ВЕРТИКАЛНИ (телефон, 1080×2280), затова и видеото е ВЕРТИКАЛНО 720×1280 (9:16), 15s–2min.
+const W = 720, H = 1280;
 
 const http = require('http');
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml' };
@@ -68,5 +70,5 @@ async function clickIf(page, sel, t) { try { await page.waitForSelector(sel, { t
     { stdio: 'ignore' });
   try { fs.rmSync(TMPDIR, { recursive: true, force: true }); } catch (_) {}
   const kb = Math.round(fs.statSync(outMp4).size / 1024);
-  console.log('✓ готово: app-shared/promo-pupikes.mp4 (' + kb + ' KB, ' + W + '×' + H + ' 16:9, 20s (интро + застой))');
+  console.log('✓ готово: app-shared/promo-pupikes.mp4 (' + kb + ' KB, ' + W + '×' + H + ' 9:16 вертикално, 20s (интро + застой))');
 })();

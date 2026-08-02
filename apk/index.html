@@ -27,6 +27,7 @@
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
   .card h3{margin:0;font-size:16px}
+  .price{font-weight:800;color:var(--acc);font-size:15px;margin:-2px 0 2px}
   .badges{display:flex;gap:6px;flex-wrap:wrap}
   .b{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
   .b.hw{border-color:#c1272d55;color:#e0616a} .b.ru{border-color:#0a84ff55;color:#5aa9ff}
@@ -114,7 +115,7 @@
         if(pub.rustore && a.storeUrl && a.storeUrl.rustore) acts+='<a class="btn store" href="'+a.storeUrl.rustore+'">RuStore</a>';
         if(!acts) acts='<span class="b soon">'+t('soon')+'</span>';
         var card=document.createElement('div'); card.className='card';
-        card.innerHTML='<h3>'+a.name+'</h3><div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>';
+        card.innerHTML='<h3>'+a.name+'</h3>'+(a.price?'<div class="price">'+a.price+'</div>':'')+'<div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>';
         grid.appendChild(card);
       });
       sec.appendChild(grid); host.appendChild(sec);

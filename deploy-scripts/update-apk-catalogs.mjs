@@ -14,6 +14,12 @@ function rootVersion() {
   return '';
 }
 const CUR_VERSION = rootVersion();
+// Цени от каталога с цените (app-shared/promo-catalog.json). Показват се в кутийката на всяко
+// приложение на pupikes.app. Апове без запис → стандартната цена $1.3.
+const priceById = (() => {
+  try { const p = JSON.parse(fs.readFileSync(path.join(ROOT, 'app-shared', 'promo-catalog.json'), 'utf8')); const m = {}; for (const a of (p.apps || [])) m[a.id] = a.price; return m; }
+  catch (_) { return {}; }
+})();
 let changed = 0;
 function walk(node) {
   if (Array.isArray(node)) { node.forEach(walk); return; }
@@ -27,6 +33,8 @@ function walk(node) {
           if (v !== nv) { node.apk[store] = nv; changed++; }
         }
       }
+      const pr = priceById[node.id] != null ? priceById[node.id] : '$1.3';   // цена за кутийката
+      if (node.price !== pr) { node.price = pr; changed++; }
     }
     for (const k of Object.keys(node)) walk(node[k]);
   }

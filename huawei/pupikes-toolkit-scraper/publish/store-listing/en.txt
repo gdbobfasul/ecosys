@@ -3,4 +3,4 @@ Pupikes Toolkit Scraper — Extract title/text/links.
 Web scraper — Extract title/text/links
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com

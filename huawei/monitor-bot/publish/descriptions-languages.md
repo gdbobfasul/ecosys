@@ -87,7 +87,7 @@ The bot watches a source you choose (an RSS/Atom feed or a public JSON API) and 
 Unlimited monitors, local notifications, diffing on new entries and keywords.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com
 
 ⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```

@@ -1,6 +1,7 @@
 import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
+enforceLicense('price-watch-bot', 'rustore'); // лог на инсталация СЛЕД езика (rustore билд)
 // Version: 1.0001
 import { enforceLock } from './core/lock.js';
 import { mountEcosystem } from './core/ecosystem.js';
@@ -9,6 +10,7 @@ import { startPromoAds } from './core/promo-ads.js';
 import { mountHelp } from './core/help.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
+import { enforceLicense } from './core/license.js';
 enforceLock();
 mountEcosystem('price-watch-bot'); // „Още от Pupikes" showcase
 playIntro(); // кратко „Pupikes" интро при старт

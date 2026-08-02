@@ -1,4 +1,4 @@
-<!-- Version: 1.0158 -->
+<!-- Version: 1.0159 -->
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -177,14 +177,63 @@
         </div>
     </div>
 
+    <!-- Обратна връзка — като в приложенията: анонимен доклад към портала (/api/portals/bug-report/anon) -->
+    <div class="features" id="feedback" style="background:#eef2f7;">
+        <div style="max-width:560px;margin:0 auto;text-align:center;">
+            <h2 style="font-size:2em;margin-bottom:8px;">📨 Обратна връзка</h2>
+            <p style="color:#555;margin-bottom:20px;">Въпрос, идея или проблем? Пиши ни — четем всяко съобщение.</p>
+            <form id="feedback-form" style="display:grid;gap:10px;text-align:left;">
+                <input type="text" id="fb-name" placeholder="От кого (име)" style="padding:12px;border:1px solid #ccc;border-radius:8px;font-size:1em;">
+                <input type="text" id="fb-contact" placeholder="Телефон или имейл (за да ти отговорим)" style="padding:12px;border:1px solid #ccc;border-radius:8px;font-size:1em;">
+                <input type="text" id="fb-app" placeholder="За кое приложение? (напр. NewsLator — по избор)" style="padding:12px;border:1px solid #ccc;border-radius:8px;font-size:1em;">
+                <textarea id="fb-msg" rows="5" placeholder="Опиши проблема или въпроса…" style="padding:12px;border:1px solid #ccc;border-radius:8px;font-size:1em;resize:vertical;"></textarea>
+                <button type="submit" class="btn" style="border:none;cursor:pointer;">Изпрати</button>
+                <div id="fb-status" style="min-height:20px;font-size:.95em;"></div>
+            </form>
+            <p style="color:#555;font-size:.9em;margin-top:14px;">
+                Или ни пиши на <a href="mailto:miroljubkalaydjiev177@gmail.com?subject=Pupikes.com"><strong>miroljubkalaydjiev177@gmail.com</strong></a>
+                — със <strong>Subject: Pupikes.com</strong>.
+            </p>
+        </div>
+    </div>
+
     <div class="footer">
         <div class="footer-content">
             <div class="footer-section"><h3>Projects</h3><a href="/chat/">Chat</a><a href="/eco-3/">ECO-3 AI</a><a href="/houselookbook/">House-Look-Book</a><a href="/wherenobiz/">WhereNoBiz</a><a href="/find-best-price/">Find Best Price</a></div>
             <div class="footer-section"><h3>Admin</h3><a href="/chat/admin/">Chat Admin</a><a href="/eco-3/admin/">ECO-3 Admin</a><a href="/houselookbook/admin.html">House-Look-Book Admin</a><a href="/wherenobiz/admin.html">WhereNoBiz Admin</a></div>
+            <div class="footer-section"><h3>Контакти / Обратна връзка</h3><a href="#feedback">Форма за обратна връзка</a><a href="mailto:miroljubkalaydjiev177@gmail.com?subject=Pupikes.com">miroljubkalaydjiev177@gmail.com</a><span style="color:rgba(255,255,255,.7);font-size:.85em;display:block;margin-top:4px;">Subject: Pupikes.com</span></div>
             <div class="footer-section"><h3>Community</h3><a href="https://twitter.com/kcy_ecosystem" target="_blank">Twitter</a><a href="https://t.me/kcy_ecosystem" target="_blank">Telegram</a><a href="https://discord.gg/kcy" target="_blank">Discord</a><a href="https://github.com/kcy-ecosystem" target="_blank">GitHub</a></div>
         </div>
         <div class="footer-bottom"><p>&copy; 2026 Pupikes. All rights reserved.</p></div>
     </div>
+
+    <script>
+        // Обратна връзка — като в приложенията: анонимен доклад към портала (/api/portals/bug-report/anon).
+        // Заглавието се съставя АВТОМАТИЧНО: „Pupikes " + приложението (ако е попълнено), иначе „Pupikes.com".
+        // Потребителят НЕ пише subject.
+        (function () {
+            var f = document.getElementById('feedback-form');
+            if (!f) return;
+            var st = document.getElementById('fb-status');
+            f.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var body = (document.getElementById('fb-msg').value || '').trim();
+                if (!body) { st.style.color = '#c0392b'; st.textContent = 'Моля, напиши съобщение.'; return; }
+                var appName = (document.getElementById('fb-app').value || '').trim();
+                var title = appName ? ('Pupikes ' + appName) : 'Pupikes.com';
+                var payload = {
+                    app: 'pupikes.com', appName: title, lang: 'bg',
+                    name: (document.getElementById('fb-name').value || '').trim(),
+                    contact: (document.getElementById('fb-contact').value || '').trim(),
+                    title: title, body: body
+                };
+                st.style.color = '#555'; st.textContent = '…';
+                fetch('/api/portals/bug-report/anon', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+                    .then(function (r) { if (r.ok) { st.style.color = '#2e7d32'; st.textContent = 'Благодарим! Изпратено.'; f.reset(); } else { st.style.color = '#c0392b'; st.textContent = 'Грешка. Опитай пак.'; } })
+                    .catch(function () { st.style.color = '#c0392b'; st.textContent = 'Мрежова грешка. Опитай пак.'; });
+            });
+        })();
+    </script>
 
     <script src="/shared/js/config.js?v=1.0195"></script>
     <script src="/shared/js/app-domains.js?v=1.0193"></script>

@@ -95,7 +95,7 @@ I will be your personal assistant: I remember your name, habits, preferences —
 I collect NOTHING personal about you. You teach me general knowledge, I get smart, and then you can sell/transfer me "clean". The new owner, if they wish, will tell me about themselves.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com
 
 ⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```

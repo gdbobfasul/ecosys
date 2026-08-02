@@ -54,6 +54,44 @@ inject_version() {
   echo -e "  ${GREEN}✓ версия: versionCode ${APK_VERSION_CODE} · versionName ${APK_VERSION_NAME}${NC}"
 }
 
+# Нативен мост за ИНСТАЛАТОРА: добавя window.PupikesNative.getInstaller() към WebView, за да знае
+# license.js от кой източник е сложен апът (пакет на магазина = свалено от магазина; друго/празно =
+# sideload/прехвърлено копие). Пренаписва MainActivity СЛЕД cap sync (android/ се пресъздава всеки
+# билд). Тихо пропуска, ако няма MainActivity. Забележка: интерфейсът е активен от следващото
+# зареждане на страницата (license.js се вика след избора на език → има зареждане дотогава).
+inject_installer_bridge() {
+  local mainact
+  mainact="$(find android/app/src/main/java -name 'MainActivity.java' 2>/dev/null | head -1)"
+  [ -f "$mainact" ] || return 0
+  local pkg
+  pkg="$(grep -m1 '^package ' "$mainact" | sed -E 's/^package[[:space:]]+([^;]+);.*/\1/')"
+  [ -z "$pkg" ] && return 0
+  cat > "$mainact" <<EOF
+package ${pkg};
+import android.os.Bundle;
+import android.webkit.JavascriptInterface;
+import com.getcapacitor.BridgeActivity;
+public class MainActivity extends BridgeActivity {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    try { getBridge().getWebView().addJavascriptInterface(new InstallerBridge(), "PupikesNative"); } catch (Exception e) {}
+  }
+  public class InstallerBridge {
+    @JavascriptInterface
+    public String getInstaller() {
+      try {
+        String p = getPackageName();
+        if (android.os.Build.VERSION.SDK_INT >= 30) return getPackageManager().getInstallSourceInfo(p).getInstallingPackageName();
+        return getPackageManager().getInstallerPackageName(p);
+      } catch (Exception e) { return null; }
+    }
+  }
+}
+EOF
+  echo -e "  ${GREEN}✓ нативен мост за инсталатора (PupikesNative)${NC}"
+}
+
 # Икона на приложението: генерира launcher иконите от store/icon.svg в android/res (СЛЕД cap
 # sync, защото android/ се пресъздава всеки билд → ръчна икона там не оцелява, затова е тук, в
 # кода). Ползва sharp (libvips) за SVG→PNG в 5-те плътности. Маха adaptive XML (anydpi-v26),
@@ -407,6 +445,7 @@ build_one() {
       inject_android_permissions   # добавя CAMERA/RECORD_AUDIO и т.н. от android-permissions.txt
       inject_version               # versionCode (монотонен) + versionName → Android вижда ъпдейт
       inject_app_icon              # икона от store/icon.svg → android/res (sharp), ако има
+      inject_installer_bridge      # нативен мост PupikesNative.getInstaller() (магазин vs sideload)
       echo -e "  ${CYAN}→ gradle assembleDebug (APK)…${NC}"
       (
         cd android || exit 6

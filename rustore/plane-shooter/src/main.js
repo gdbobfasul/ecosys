@@ -1,6 +1,7 @@
 import { mountLangGate as __mountLangGate } from './core/lang-gate.js';
 import { LANGUAGES as __LG_L, getLang as __LG_G, setLang as __LG_S } from './core/i18n.js';
 __mountLangGate({ languages: __LG_L, current: __LG_G(), setLang: __LG_S });
+enforceLicense('plane-shooter', 'rustore'); // лог на инсталация СЛЕД езика (rustore билд)
 // Version: 1.0015
 import { enforceLock } from './core/lock.js';
 import { startPromoAds } from './core/promo-ads.js';
@@ -9,6 +10,7 @@ import { playIntro } from './core/intro.js';
 import { mountHelp } from './core/help.js';
 import { mountPrivacyLink } from './core/legal.js';
 import { mountLegalGate } from './core/legal-gate.js';
+import { enforceLicense } from './core/license.js';
 enforceLock();
 startPromoAds('plane-shooter'); // 3 реклами: старт/среда/край (само тази безплатна игра)
 mountEcosystem('plane-shooter'); // „Още от Pupikes" showcase

@@ -5,4 +5,4 @@ A hired robot that watches a camera and warns you on movement — and tells you 
 <b>Honest and no hidden fees:</b> everything runs on the device and is free. No account, no contacts, no tracking, no in-app purchases. The only network use: a one-time free download of the AI model and, optionally, your URL for "another camera".
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com

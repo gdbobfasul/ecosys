@@ -37,7 +37,8 @@
             "rustore": "Pupikes-Toolkit-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-toolkit-pdf",
@@ -55,7 +56,8 @@
             "rustore": "Pupikes-Toolkit-PDF-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-PDF-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-toolkit-qr",
@@ -73,7 +75,8 @@
             "rustore": "Pupikes-Toolkit-QR-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-QR-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-toolkit-ai-announcement",
@@ -91,7 +94,8 @@
             "rustore": "Pupikes-Toolkit-AI-Announcement-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-AI-Announcement-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-toolkit-text",
@@ -109,7 +113,8 @@
             "rustore": "Pupikes-Toolkit-Text-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-Text-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-toolkit-finance",
@@ -127,7 +132,8 @@
             "rustore": "Pupikes-Toolkit-Finance-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-Finance-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-toolkit-pictures",
@@ -145,7 +151,8 @@
             "rustore": "Pupikes-Toolkit-Pictures-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-Pictures-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-toolkit-3drotate",
@@ -163,7 +170,8 @@
             "rustore": "Pupikes-Toolkit-3D-Rotate-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-3D-Rotate-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-toolkit-videos",
@@ -181,7 +189,8 @@
             "rustore": "Pupikes-Toolkit-Videos-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-Videos-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-toolkit-sound",
@@ -199,7 +208,8 @@
             "rustore": "Pupikes-Toolkit-Sound-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-Sound-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-toolkit-passwords",
@@ -217,7 +227,8 @@
             "rustore": "Pupikes-Toolkit-Passwords-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-Passwords-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-toolkit-scraper",
@@ -235,7 +246,8 @@
             "rustore": "Pupikes-Toolkit-Scraper-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-Scraper-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "price-watch-bot",
@@ -253,7 +265,8 @@
             "rustore": "Pupikes-Toolkit-Price-Watch-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-Price-Watch-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "authenticator",
@@ -271,7 +284,8 @@
             "rustore": "Pupikes-Toolkit-Authenticator-rustore-release.apk",
             "huawei": "Pupikes-Toolkit-Authenticator-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$4.44"
         }
       ]
     },
@@ -302,7 +316,8 @@
             "rustore": "EvadeArena-rustore-release.apk",
             "huawei": "EvadeArena-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$1.3"
         },
         {
           "id": "titans-fight",
@@ -320,7 +335,8 @@
             "rustore": "Godfist-Arena-rustore-release.apk",
             "huawei": "Godfist-Arena-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$1.3"
         },
         {
           "id": "fps-hunter",
@@ -338,7 +354,8 @@
             "rustore": "Huntline-3D-rustore-release.apk",
             "huawei": "Huntline-3D-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "plane-shooter",
@@ -356,7 +373,8 @@
             "rustore": "Warbird-Rush-rustore-release.apk",
             "huawei": "Warbird-Rush-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "rustam",
@@ -374,7 +392,8 @@
             "rustore": "Rustam-picks-cucumbers-rustore-release.apk",
             "huawei": "Rustam-picks-cucumbers-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "duel",
@@ -392,7 +411,8 @@
             "rustore": "Pupikes-Ring-Clash-rustore-release.apk",
             "huawei": "Pupikes-Ring-Clash-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$1.3"
         },
         {
           "id": "hmm",
@@ -410,7 +430,8 @@
             "rustore": "Pupikes-Field-Battle-rustore-release.apk",
             "huawei": "Pupikes-Field-Battle-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$1.3"
         }
       ]
     },
@@ -441,7 +462,8 @@
             "rustore": "NewsLator-rustore-release.apk",
             "huawei": "NewsLator-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "monitor-bot",
@@ -459,7 +481,8 @@
             "rustore": "Pupikes-Site-Monitor-rustore-release.apk",
             "huawei": "Pupikes-Site-Monitor-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         }
       ]
     },
@@ -490,7 +513,8 @@
             "rustore": "Pupikes-Baby-Radar-rustore-release.apk",
             "huawei": "Pupikes-Baby-Radar-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$4.44"
         },
         {
           "id": "camera-watch",
@@ -508,7 +532,8 @@
             "rustore": "MotionHawk-rustore-release.apk",
             "huawei": "MotionHawk-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$4.44"
         },
         {
           "id": "routine-bot",
@@ -526,7 +551,8 @@
             "rustore": "Pupikes-Routine-Planner-rustore-release.apk",
             "huawei": "Pupikes-Routine-Planner-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$1.3"
         },
         {
           "id": "market-pulse",
@@ -544,7 +570,8 @@
             "rustore": "Pupikes-Market-Pulse-rustore-release.apk",
             "huawei": "Pupikes-Market-Pulse-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$1.3"
         },
         {
           "id": "selflearning-friend",
@@ -562,7 +589,8 @@
             "rustore": "Pupikes-LB-rustore-release.apk",
             "huawei": "Pupikes-LB-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$1.3"
         },
         {
           "id": "business-faq-bot",
@@ -580,7 +608,8 @@
             "rustore": "Pupikes-FAQ-Desk-rustore-release.apk",
             "huawei": "Pupikes-FAQ-Desk-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$1.3"
         },
         {
           "id": "autoreply-bot",
@@ -598,7 +627,8 @@
             "rustore": "Pupikes-Auto-Answer-rustore-release.apk",
             "huawei": "Pupikes-Auto-Answer-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$1.3"
         }
       ]
     },
@@ -629,7 +659,8 @@
             "rustore": "Pupikes-Chat-rustore-release.apk",
             "huawei": "Pupikes-Chat-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$1.3"
         },
         {
           "id": "houselookbook",
@@ -647,7 +678,8 @@
             "rustore": "HouseLookBook-rustore-release.apk",
             "huawei": "HouseLookBook-huawei-release.apk"
           },
-          "download": false
+          "download": false,
+          "price": "$1.3"
         }
       ]
     },
@@ -678,7 +710,8 @@
             "rustore": "Pupikes-Doctor-rustore-release.apk",
             "huawei": "Pupikes-Doctor-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         },
         {
           "id": "pupikes-medicines",
@@ -696,7 +729,8 @@
             "rustore": "Pupikes-Medicines-rustore-release.apk",
             "huawei": "Pupikes-Medicines-huawei-release.apk"
           },
-          "download": true
+          "download": true,
+          "price": "$1.3"
         }
       ]
     }

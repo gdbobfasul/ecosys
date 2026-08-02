@@ -9,4 +9,4 @@ PDF compress — Rasterizes pages for a smaller size
 PDF to Word — Extracts the text into a .docx file
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com

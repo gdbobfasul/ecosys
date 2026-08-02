@@ -87,7 +87,7 @@ A robot for rent that watches your sleeping or playing child through the phone c
 Free and on-device. No accounts, no contacts, no tracking. The only network is optional (another camera / relay) and the free model weights.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+For questions and support, write to: miroljubkalaydjiev177@gmail.com
 
 ⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
