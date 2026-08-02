@@ -6,5 +6,5 @@ A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE)
 
 Баары түзмөктө иштейт. Аккаунтсуз, байланыштарсыз, көзөмөлсүз. Баалар акысыз ачык булактардан алынат.
 
-Колдоо: dai.group.ltd.support@gmail.com
-Суроолор жана колдоо үчүн жазыңыз: dai.group.ltd.support@gmail.com
+Колдоо: miroljubkalaydjiev177@gmail.com
+Суроолор жана колдоо үчүн жазыңыз: miroljubkalaydjiev177@gmail.com

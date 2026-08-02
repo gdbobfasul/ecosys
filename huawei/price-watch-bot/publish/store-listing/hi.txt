@@ -6,5 +6,5 @@ A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE)
 
 सब कुछ डिवाइस पर चलता है। कोई खाता नहीं, कोई संपर्क नहीं, कोई ट्रैकिंग नहीं। कीमतें मुफ़्त सार्वजनिक स्रोतों से आती हैं।
 
-सहायता: dai.group.ltd.support@gmail.com
-प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com
+सहायता: miroljubkalaydjiev177@gmail.com
+प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com

@@ -4,8 +4,8 @@ Der Tresor wird mit diesem Passwort verschlüsselt. Ohne es gibt es keinen Zugri
 
 Lädt jedes Konto als separates QR-Bild in einer .zip herunter.
 
-Support: dai.group.ltd.support@gmail.com
-Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 
 Kompatibel mit deinen Lieblings-Apps — Import und Export in beide Richtungen:
 • Browser-Passwörter: Google Chrome, Microsoft Edge, Mozilla Firefox.

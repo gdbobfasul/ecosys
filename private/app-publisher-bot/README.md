@@ -1,4 +1,4 @@
-# AppPublisherBot — робот за подготовка на апове за Huawei AppGallery
+# AppPreparePublishingBot — робот за подготовка на апове за Huawei AppGallery
 
 Автоматизира подготовката преди публикуване в developer.huawei.com:
 

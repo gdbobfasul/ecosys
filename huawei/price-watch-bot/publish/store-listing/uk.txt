@@ -6,5 +6,5 @@ A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE)
 
 Усе працює на пристрої. Без акаунта, без контактів, без стеження. Ціни беруться з безкоштовних публічних джерел.
 
-Підтримка: dai.group.ltd.support@gmail.com
-З питань і підтримки пишіть на: dai.group.ltd.support@gmail.com
+Підтримка: miroljubkalaydjiev177@gmail.com
+З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com

@@ -532,6 +532,17 @@ if command -v node >/dev/null 2>&1 && [ "${#APPS[@]}" -gt 0 ]; then
   ' "${APPS[@]}" && echo -e "  ${GREEN}✓ версионен маркер обновен → /apk/versions.json${NC}"
 fi
 
+# ── ЗАДЪЛЖИТЕЛНО: качи правната документация на билднатите апове на сървъра ──
+# Щом апът е пребилдан, задължителните за Huawei/RuStore документи (Поверителност, Условия,
+# © и всеки друг от publish/) се качват/обновяват в /var/www/html/privacy/<ап>/ — за да работят
+# правните линкове ВЪТРЕ в апа. Автоматично, без питане. Не проваля билда при липса на връзка.
+# (При release билд вътрешните извиквания се пропускат с KCY_NO_LEGAL_SYNC=1 и се качва накуп.)
+if [ "${#APPS[@]}" -gt 0 ] && [ -f "deploy-scripts/sync-legal-pages.sh" ]; then
+  echo ""
+  echo -e "${BOLD}${CYAN}━━━ Задължителна документация (Huawei/RuStore) → сървър ━━━${NC}"
+  bash deploy-scripts/sync-legal-pages.sh "${APPS[@]}" || true
+fi
+
 # ── Обобщение ──
 echo -e "${BOLD}${CYAN}━━━ Обобщение ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 for r in "${RESULTS[@]}"; do echo -e "  $r"; done

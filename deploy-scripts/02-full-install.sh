@@ -72,8 +72,13 @@ if [ -n "$1" ] && [ -n "$(eval echo \${TARGET_${1}_SERVER:-})" ]; then
     resolve_target "$1"
 elif [ "$USE_OLD" = 1 ] && [ -n "$LAST_TARGET" ] && [ -n "$(eval echo \${TARGET_${LAST_TARGET}_SERVER:-})" ]; then
     resolve_target "$LAST_TARGET"
+elif [ "$USE_OLD" = 1 ] && [ "$LAST_TARGET" = "__both__" ]; then
+    MULTI=1
 else
     declare -a DT=(); IDX=1
+    # Избор 1 (най-често): ДВЕТЕ едновременно — production по Tailscale (prodts) + виртуалната машина (vm).
+    echo -e "    $IDX) ${GREEN}ДВЕТЕ едновременно${NC} — production по Tailscale (prodts) + виртуалната машина (vm)  ${YELLOW}(най-често)${NC}"
+    DT[$IDX]="__both__"; IDX=$((IDX+1))
     if [ -f .deploy-targets ]; then
         for tt in $(grep -oE "^TARGET_[a-zA-Z0-9_]+_SERVER" .deploy-targets | sed -E 's/^TARGET_(.+)_SERVER$/\1/' | sort -u); do
             s_var="TARGET_${tt}_SERVER"; u_var="TARGET_${tt}_USER"; p_var="TARGET_${tt}_PORT"
@@ -84,23 +89,48 @@ else
     fi
     echo -e "    $IDX) ${GREEN}custom${NC} — ръчно server / user / port"
     CUSTOM_IDX=$IDX; echo ""
-    read -p "  Избери сървър [1-${IDX}]: " PICK
-    [ -z "$PICK" ] && { echo "  Отказано."; exit 1; }
+    read -p "  Избери сървър [1-${IDX}, Enter=1]: " PICK
+    PICK="${PICK:-1}"
     if [ "$PICK" = "$CUSTOM_IDX" ]; then
         read -p "  Server (IP/hostname): " SRV; read -p "  Username: " USR; read -p "  SSH port: " PRT; t=""
+    elif [ "${DT[$PICK]}" = "__both__" ]; then
+        MULTI=1
     elif [ -n "${DT[$PICK]}" ]; then
         resolve_target "${DT[$PICK]}"
     else
         echo "  Невалиден избор."; exit 1
     fi
 fi
-[ -z "$USR" ] && USR=deploy
-[ -z "$PRT" ] && PRT=22
-[ -z "$SRV" ] && { echo "  Няма сървър."; exit 1; }
-source "$(dirname "$0")/lib/banner.sh" 2>/dev/null && arm_done_banner "$t" "$SRV"
+
+# ── Изгради списъка цели (една ИЛИ двете) ──
+declare -a DEPLOY_SET=()
+if [ "${MULTI:-0}" = 1 ]; then
+    _bt="prod"; grep -q '^TARGET_prodts_SERVER=' .deploy-targets 2>/dev/null && _bt="prodts"
+    for tgt in "$_bt" vm; do
+        resolve_target "$tgt"; USR="${USR:-deploy}"; PRT="${PRT:-22}"
+        [ -n "$SRV" ] && DEPLOY_SET+=("$SRV|$USR|$PRT|$tgt")
+    done
+    [ "${#DEPLOY_SET[@]}" -eq 0 ] && { echo "  Няма дефинирани цели за ДВЕТЕ (липсва .deploy-targets)."; exit 1; }
+    t="__both__"
+else
+    USR="${USR:-deploy}"; PRT="${PRT:-22}"
+    [ -z "$SRV" ] && { echo "  Няма сървър."; exit 1; }
+    DEPLOY_SET+=("$SRV|$USR|$PRT|$t")
+fi
+# Завършващ банер: при „двете" показва двата адреса; иначе — единствения сървър.
+if [ "${#DEPLOY_SET[@]}" -gt 1 ]; then
+    _BANNER_SRV="$(for e in "${DEPLOY_SET[@]}"; do printf '%s ' "${e%%|*}"; done | sed 's/ $//')"
+else
+    _BANNER_SRV="${DEPLOY_SET[0]%%|*}"
+fi
+source "$(dirname "$0")/lib/banner.sh" 2>/dev/null && arm_done_banner "${t:-target}" "$_BANNER_SRV"
 
 echo ""
-echo -e "  Цел: ${GREEN}${USR}@${SRV}:${PRT}${NC}"
+if [ "${#DEPLOY_SET[@]}" -gt 1 ]; then
+    echo -e "  Цели (ДВЕТЕ): ${GREEN}$(for e in "${DEPLOY_SET[@]}"; do IFS='|' read -r _s _u _p _t <<< "$e"; printf '%s(%s@%s:%s) ' "$_t" "$_u" "$_s" "$_p"; done)${NC}"
+else
+    echo -e "  Цел: ${GREEN}${USR}@${SRV}:${PRT}${NC}"
+fi
 echo ""
 
 # ── Всички въпроси отпред (при „старите настройки" се приемат наготово) ──
@@ -159,11 +189,28 @@ if [ "$BUILD_APPS" = 1 ]; then
     fi
 fi
 
+# ── Сървърната инсталация се изпълнява за ВСЯКА избрана цел (една ИЛИ двете: prodts + vm). ──
+# Билдът на приложенията горе (0/5) е ВЕДНЪЖ — тук само деплой + бази + услуги за всяка цел.
+_multi=0; [ "${#DEPLOY_SET[@]}" -gt 1 ] && _multi=1
+for _entry in "${DEPLOY_SET[@]}"; do
+  IFS='|' read -r SRV USR PRT t <<< "$_entry"
+  SSH_OPTS="-o ConnectTimeout=90 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -p ${PRT}"
+  [ -f "$HOME/.ssh/id_ed25519" ] && SSH_OPTS="-o IdentitiesOnly=yes -i $HOME/.ssh/id_ed25519 $SSH_OPTS"
+  if [ "$_multi" = 1 ]; then
+    echo ""
+    echo -e "${BOLD}${CYAN}╔══════════════════════════════════════════════╗${NC}"
+    echo -e "${BOLD}${CYAN}║  ЦЕЛ: ${t}  →  ${USR}@${SRV}:${PRT}${NC}"
+    echo -e "${BOLD}${CYAN}╚══════════════════════════════════════════════╝${NC}"
+  fi
+
 step "1/5  Deploy + npm + бази chat/portals/eco3${RESET:+ (DROP)} + услуги chat/eco3/portals"
 # KCY_IN_FULL_INSTALL=1 → 04 да НЕ възстановява failover тук (правим го накрая на 02, след услугите)
 if ! KCY_AUTO_DEFAULTS=1 KCY_AUTO_NPM=$NPM_BUILD KCY_WITH_ASSETS=$WITH_ASSETS KCY_DROP_DB=$DROP_DB DEPLOY_NO_PAUSE=1 \
         KCY_SUPPRESS_DONE=1 KCY_IN_FULL_INSTALL=1 \
         bash ./deploy-scripts/04-deploy.sh "$SRV" "$USR" "$PRT"; then
+    if [ "$_multi" = 1 ]; then
+        echo -e "${RED}✗ Deploy-ът към ${t} се провали — прескачам към следващата цел.${NC}"; continue
+    fi
     echo -e "${RED}✗ Deploy-ът се провали — спирам пълната инсталация.${NC}"
     exit 1
 fi
@@ -218,6 +265,8 @@ if [ "$UPDATE_APPS" = 1 ]; then
         echo -e "  ${YELLOW}! custom цел без име — качи приложенията ръчно към този сървър${NC}"
     fi
 fi
+
+done   # ← край на цикъла по цели (една ИЛИ двете: prodts + vm)
 
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"

@@ -42,7 +42,7 @@
 |---|---|
 | Provider / Developer | Dai Grup Ltd. (вече попълнено) |
 | Website | празно |
-| Support email | dai.group.ltd.support@gmail.com |
+| Support email | miroljubkalaydjiev177@gmail.com |
 
 ## 6. New version
 | Поле | Попълни |

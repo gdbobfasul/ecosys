@@ -4,5 +4,5 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 
 無制限のモニター、ローカル通知、新着項目とキーワードの差分検出。
 
-サポート: dai.group.ltd.support@gmail.com
-ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com
+サポート: miroljubkalaydjiev177@gmail.com
+ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com

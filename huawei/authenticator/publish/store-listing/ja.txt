@@ -4,8 +4,8 @@ TOTP/HOTP/Steamワンタイムコードを生成し、デバイス上の暗号�
 
 各アカウントを個別のQR画像として1つの.zipでダウンロード。
 
-サポート: dai.group.ltd.support@gmail.com
-ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com
+サポート: miroljubkalaydjiev177@gmail.com
+ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
 
 お気に入りのアプリと互換 — 双方向でインポート／エクスポート：
 • ブラウザのパスワード：Google Chrome, Microsoft Edge, Mozilla Firefox。

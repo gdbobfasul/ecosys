@@ -4,5 +4,5 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Управление: телефон — ляв джойстик за движение, влачи вдясно за оглеждане, бутон ОГЪН. Десктоп — WASD + мишка (клик за заключване на курсора) + клик за стрелба.
 
-Поддръжка: dai.group.ltd.support@gmail.com
-За въпроси и поддръжка пишете на: dai.group.ltd.support@gmail.com
+Поддръжка: miroljubkalaydjiev177@gmail.com
+За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com

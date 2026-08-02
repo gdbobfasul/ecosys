@@ -4,5 +4,5 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Commandes : téléphone — joystick gauche pour bouger, glisser à droite pour regarder, bouton FEU. PC — WASD + souris (clic pour verrouiller le curseur) + clic pour tirer.
 
-Assistance: dai.group.ltd.support@gmail.com
-Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com
+Assistance: miroljubkalaydjiev177@gmail.com
+Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com

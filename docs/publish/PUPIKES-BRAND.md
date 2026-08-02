@@ -1,6 +1,6 @@
 # Pupikes — марково досие (кандидат за наследник на „Pupikes")
 
-_Проверено 2026-07-20 с AppPublisherBot (`private/app-publisher-bot/`). Суровите доклади:
+_Проверено 2026-07-20 с AppPreparePublishingBot (`private/app-publisher-bot/`). Суровите доклади:
 `private/app-publisher-bot/name-checks/Pupikes.md` и `PuP.md`._
 
 ## Резюме на решението

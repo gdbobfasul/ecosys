@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// app-publisher-bot.cjs — AppPublisherBot: робот за подготовка на приложения за Huawei AppGallery.
+// app-publisher-bot.cjs — AppPreparePublishingBot: робот за подготовка на приложения за Huawei AppGallery.
 // Прави: проверка на име (марка/патент/уебсайтове и ниши/AppGallery/App Store/Google Play),
 // локализирани скрийншоти (15 езика), локализирано описание (15 езика) и скеле на huawei.meta.
 //

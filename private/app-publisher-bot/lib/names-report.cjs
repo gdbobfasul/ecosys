@@ -82,7 +82,7 @@ async function generateNamesReport(reportsDir, opts = {}) {
   const L = [];
   L.push('# Анализ на имената — NewsLator / „Stay Informed"');
   L.push('');
-  L.push('_Генерирано от AppPublisherBot (`names-report`). Събира всички проверки на едно място. ' +
+  L.push('_Генерирано от AppPreparePublishingBot (`names-report`). Събира всички проверки на едно място. ' +
     'Твърди сигнали: App Store (iTunes), TMview (марки), домейни (RDAP, 49 разширения), Google Play. ' +
     'Ниши/патент са ориентировъчни. НЕ е правна expertise — финалната марка се потвърждава в официалните бази._');
   L.push('');

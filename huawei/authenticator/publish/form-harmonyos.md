@@ -16,7 +16,7 @@
 
 | Поле | Попълни |
 |---|---|
-| Support email | dai.group.ltd.support@gmail.com |
+| Support email | miroljubkalaydjiev177@gmail.com |
 | Описания | `publish/descriptions-languages.md` |
 | Снимки | `publish/screenshots/` |
 | Категория | Tools |

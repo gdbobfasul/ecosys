@@ -57,7 +57,7 @@ function generateSummary(appDir) {
   const L = [];
   L.push('# Обобщение за публикуване — ' + (metaField(meta, 'App name') || cap.appName || path.basename(appDir)));
   L.push('');
-  L.push('_Генерирано от AppPublisherBot. Показва докъде сме стигнали преди качване в Huawei AppGallery._');
+  L.push('_Генерирано от AppPreparePublishingBot. Показва докъде сме стигнали преди качване в Huawei AppGallery._');
   L.push('');
   L.push('## Решение');
   L.push('- **Име (App name):** ' + (metaField(meta, 'App name') || cap.appName || '?'));

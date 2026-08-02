@@ -17,8 +17,10 @@ _За AppGallery: **Manage languages** → добави език (по коло�
 
 Безплатно и on-device. Без акаунти, без контакти, без проследяване. Единствената мрежа е по избор (друга камера / relay) и безплатните тегла на модела.
 
-Поддръжка: dai.group.ltd.support@gmail.com
-За въпроси и поддръжка пишете на: dai.group.ltd.support@gmail.com
+Поддръжка: miroljubkalaydjiev177@gmail.com
+За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
 ```
 **New features (до 1000 знака):**
 ```
@@ -38,8 +40,10 @@ _За AppGallery: **Manage languages** → добави език (по коло�
 
 Бесплатно и на устройстве. Без аккаунтов, без контактов, без слежки. Единственная сеть — по желанию (другая камера / relay) и бесплатные веса модели.
 
-Поддержка: dai.group.ltd.support@gmail.com
-По вопросам и поддержке пишите на: dai.group.ltd.support@gmail.com
+Поддержка: miroljubkalaydjiev177@gmail.com
+По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
 ```
 **New features (до 1000 знака):**
 ```
@@ -59,8 +63,10 @@ _За AppGallery: **Manage languages** → добави език (по коло�
 
 Безкоштовно й на пристрої. Без акаунтів, без контактів, без стеження. Єдина мережа — за бажанням (інша камера / relay) і безкоштовні ваги моделі.
 
-Підтримка: dai.group.ltd.support@gmail.com
-З питань і підтримки пишіть на: dai.group.ltd.support@gmail.com
+Підтримка: miroljubkalaydjiev177@gmail.com
+З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
 ```
 **New features (до 1000 знака):**
 ```
@@ -80,8 +86,10 @@ A robot for rent that watches your sleeping or playing child through the phone c
 
 Free and on-device. No accounts, no contacts, no tracking. The only network is optional (another camera / relay) and the free model weights.
 
-Support: dai.group.ltd.support@gmail.com
-For questions and support, write to: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+
+⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -101,8 +109,10 @@ Ein gemieteter Roboter, der dein schlafendes oder spielendes Kind über die Tele
 
 Kostenlos und auf dem Gerät. Keine Konten, keine Kontakte, kein Tracking. Das einzige Netz ist optional (andere Kamera / Relay) und die kostenlosen Modellgewichte.
 
-Support: dai.group.ltd.support@gmail.com
-Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
+
+⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
@@ -122,8 +132,10 @@ Un robot en location qui surveille votre enfant endormi ou en train de jouer via
 
 Gratuit et sur l’appareil. Sans comptes, sans contacts, sans suivi. Le seul réseau est optionnel (autre caméra / relais) et les poids gratuits du modèle.
 
-Assistance: dai.group.ltd.support@gmail.com
-Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com
+Assistance: miroljubkalaydjiev177@gmail.com
+Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+
+⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
 ```
 **New features (до 1000 знака):**
 ```
@@ -143,8 +155,10 @@ Un robot de alquiler que vigila a tu hijo dormido o jugando a través de la cám
 
 Gratis y en el dispositivo. Sin cuentas, sin contactos, sin rastreo. La única red es opcional (otra cámara / relay) y los pesos gratuitos del modelo.
 
-Soporte: dai.group.ltd.support@gmail.com
-Para preguntas y soporte, escribe a: dai.group.ltd.support@gmail.com
+Soporte: miroljubkalaydjiev177@gmail.com
+Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+
+⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -164,8 +178,8 @@ Un robot de alquiler que vigila a tu hijo dormido o jugando a través de la cám
 
 Gratis y en el dispositivo. Sin cuentas, sin contactos, sin rastreo. La única red es opcional (otra cámara / relay) y los pesos gratuitos del modelo.
 
-Soporte: dai.group.ltd.support@gmail.com
-Para dudas y soporte, escribe a: dai.group.ltd.support@gmail.com
+Soporte: miroljubkalaydjiev177@gmail.com
+Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
@@ -185,8 +199,10 @@ Un robot a noleggio che sorveglia il tuo bambino che dorme o gioca tramite la fo
 
 Gratis e sul dispositivo. Nessun account, nessun contatto, nessun tracciamento. L’unica rete è opzionale (altra fotocamera / relay) e i pesi gratuiti del modello.
 
-Assistenza: dai.group.ltd.support@gmail.com
-Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com
+Assistenza: miroljubkalaydjiev177@gmail.com
+Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+
+⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -206,8 +222,10 @@ Um robô de aluguel que vigia seu filho dormindo ou brincando pela câmera do te
 
 Grátis e no dispositivo. Sem contas, sem contatos, sem rastreamento. A única rede é opcional (outra câmera / relay) e os pesos gratuitos do modelo.
 
-Suporte: dai.group.ltd.support@gmail.com
-Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com
+Suporte: miroljubkalaydjiev177@gmail.com
+Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+
+⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -227,8 +245,10 @@ Primeira versão: observação de movimento no dispositivo com alertas sensívei
 
 مجاني وعلى الجهاز. بلا حسابات، بلا جهات اتصال، بلا تتبّع. الشبكة الوحيدة اختيارية (كاميرا أخرى / relay) وأوزان النموذج المجانية.
 
-الدعم: dai.group.ltd.support@gmail.com
-للأسئلة والدعم، راسلونا على: dai.group.ltd.support@gmail.com
+الدعم: miroljubkalaydjiev177@gmail.com
+للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+
+⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
 ```
 **New features (до 1000 знака):**
 ```
@@ -248,8 +268,10 @@ Primeira versão: observação de movimento no dispositivo com alertas sensívei
 
 मुफ़्त और डिवाइस पर। कोई खाता नहीं, कोई संपर्क नहीं, कोई ट्रैकिंग नहीं। एकमात्र नेटवर्क वैकल्पिक है (दूसरा कैमरा / relay) और मुफ़्त मॉडल वेट।
 
-सहायता: dai.group.ltd.support@gmail.com
-प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com
+सहायता: miroljubkalaydjiev177@gmail.com
+प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+
+⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
 ```
 **New features (до 1000 знака):**
 ```
@@ -269,8 +291,10 @@ Primeira versão: observação de movimento no dispositivo com alertas sensívei
 
 無料・端末内処理。アカウント・連絡先・追跡なし。唯一のネットワークは任意（別カメラ / relay）と無料のモデル重みのみ。
 
-サポート: dai.group.ltd.support@gmail.com
-ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com
+サポート: miroljubkalaydjiev177@gmail.com
+ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+
+⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
 ```
 **New features (до 1000 знака):**
 ```
@@ -290,8 +314,10 @@ Primeira versão: observação de movimento no dispositivo com alertas sensívei
 
 免費且在裝置上執行。無帳戶、無聯絡人、無追蹤。唯一的網路為選用（另一相機 / relay）與免費的模型權重。
 
-支援: dai.group.ltd.support@gmail.com
-如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com
+支援: miroljubkalaydjiev177@gmail.com
+如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+
+⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
 ```
 **New features (до 1000 знака):**
 ```

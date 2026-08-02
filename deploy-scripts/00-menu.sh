@@ -438,7 +438,17 @@ show_menu() {
         "ВИРТУАЛКА: relay-ят сочи към Ollama на хоста (ai.env), спира локалния CPU модел, рестарт+проба." \
         "За 1× 3090 (VirtualBox/VMware не подават картата на госта). Обратимо. Без преинсталация."
 
-    echo -e "  ${GRAY}Свободни номера: 77-79, 83   ·   запазени: 60-70 (FILL DATA), 71-76 (мобилни), 80-84 (selflearning)${NC}"
+    echo ""
+    echo -e "${BOLD}${CYAN}━━━ БОТОВЕ ЗА ПУБЛИКУВАНЕ (Huawei AppGallery) ━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    item "90" "AppReleaseBot — попълни конзолата на Huawei" \
+        "Вдига браузъра при нужда (влизаш РЪЧНО веднъж — парола+капча), пита кое приложение и" \
+        "попълва ВИДИМО полетата от publish/, БЕЗ да натиска бутони. Режим ENTER: отваряш екран → ENTER → попълва."
+    item "91" "AppPreparePublishingBot — подготви приложение за публикуване" \
+        "Проверка на име + локализирани скрийншоти/описания (15 езика) + скеле на huawei.meta." \
+        "Пълни publish/. Пита кое приложение (huawei/<ап>)."
+
+    echo -e "  ${GRAY}Свободни номера: 77-79, 83, 92   ·   запазени: 60-70 (FILL DATA), 71-76 (мобилни), 80-84 (selflearning), 90-91 (ботове)${NC}"
     echo ""
     echo -e "  ${BOLD}q${NC})  Изход"
     echo ""
@@ -519,13 +529,19 @@ run_choice() {
             echo ""
             IDX=1
             declare -a DT_ARR=()
+            # Избор 1 (най-често): ДВЕТЕ едновременно — production по Tailscale (prodts) + виртуалната машина (vm).
+            echo -e "    $IDX) ${GREEN}ДВЕТЕ едновременно${NC} — production по Tailscale (prodts) + виртуалната машина (vm)"
+            echo "        качва на двете една след друга"
+            DT_ARR[$IDX]="__both__"
+            IDX=$((IDX+1))
             if [ -f .deploy-targets ]; then
                 for t in $(grep -oE "^TARGET_[a-zA-Z0-9_]+_SERVER" .deploy-targets | sed -E 's/^TARGET_(.+)_SERVER$/\1/' | sort -u); do
                     s_var="TARGET_${t}_SERVER"; p_var="TARGET_${t}_PORT"; l_var="TARGET_${t}_LABEL"
                     case "$t" in
-                        prod) DESC="истинският production сървър (живият сайт, който виждат хората)";;
-                        vm)   DESC="локална тестова виртуална машина (за проба преди prod)";;
-                        *)    DESC="${!l_var:-$t}";;
+                        prod)   DESC="истинският production сървър (живият сайт, който виждат хората)";;
+                        prodts) DESC="production по Tailscale (частен 100.x път)";;
+                        vm)     DESC="локална тестова виртуална машина (за проба преди prod)";;
+                        *)      DESC="${!l_var:-$t}";;
                     esac
                     echo -e "    $IDX) ${GREEN}$t${NC} — $DESC"
                     echo "        ${!s_var}:${!p_var}"
@@ -539,6 +555,20 @@ run_choice() {
             read -p "  Избери [1-${IDX}, default=1]: " PICK
             PICK="${PICK:-1}"
             if [ -z "$PICK" ]; then echo "Отказано"; press_enter
+            elif [ "${DT_ARR[$PICK]}" = "__both__" ]; then
+                # ДВЕТЕ: production по Tailscale (или обикновен prod, ако Tailscale не е настроен) + VM
+                BOTH="prod"; grep -q '^TARGET_prodts_SERVER=' .deploy-targets 2>/dev/null && BOTH="prodts"
+                echo ""
+                echo -e "${YELLOW}► Deploy към ДВЕТЕ: ${BOTH} + vm${NC}"
+                _both_rc=0
+                for _tgt in "$BOTH" vm; do
+                    echo ""
+                    echo -e "${BOLD}${CYAN}  ▶ ${_tgt}...${NC}"
+                    DEPLOY_NO_PAUSE=1 ./deploy-scripts/04-deploy.sh "$_tgt" || _both_rc=1
+                done
+                [ "$_both_rc" = 0 ] && echo -e "\n${GREEN}✓ Двата деплоя завършиха${NC}" \
+                                    || echo -e "\n${RED}✗ Един от двата деплоя върна грешка (виж по-горе)${NC}"
+                press_enter
             elif [ "$PICK" = "$CUSTOM_IDX" ]; then
                 run_cmd ./deploy-scripts/04-deploy.sh
             elif [ -n "${DT_ARR[$PICK]}" ]; then
@@ -905,6 +935,64 @@ run_choice() {
                     echo -e "  ${RED}✗ Скриптът върна грешка (exit ${RC}) — виж изхода по-горе${NC}"
                 fi
             else echo "  Отказано (хостът е настроен; виртуалката — не)"; fi
+            press_enter
+            ;;
+
+        # ── БОТОВЕ ЗА ПУБЛИКУВАНЕ ──
+        90)
+            echo ""
+            echo -e "${BOLD}${CYAN}  AppReleaseBot — попълни конзолата на Huawei${NC}"
+            echo ""
+            # 1) ВИНАГИ стартирай ЧИСТ ВИДИМ браузър (затваря стари debug-браузъри, логинът се пази
+            #    в профила — без нов вход). Така всеки път виждаш прозореца.
+            echo -e "  ${GRAY}Стартирам чист видим браузър (логинът се пази — влизаш само първия път).${NC}"
+            echo ""
+            ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/app-release-bot-launch.cjs" )
+            echo ""
+            read -p "  Отвори приложението в браузъра (или остави да е на списъка). После натисни ENTER: " _
+            # 2) Избор на приложение (веднъж)
+            echo ""
+            declare -a BAPPS=(); bi=1
+            for d in "$SCRIPT_DIR/../huawei"/*/; do
+                ba=$(basename "$d"); [ -f "$SCRIPT_DIR/../huawei/$ba/publish/PUBLISHING-HUAWEI.md" ] || continue
+                BAPPS[$bi]="$ba"; printf "    %2d) %s\n" "$bi" "$ba"; bi=$((bi+1))
+            done
+            echo ""
+            read -p "  Кое приложение? [номер или име]: " BPICK
+            BAPP="${BAPPS[$BPICK]}"; [ -z "$BAPP" ] && BAPP="$BPICK"
+            if [ -z "$BAPP" ] || [ ! -d "$SCRIPT_DIR/../huawei/$BAPP" ]; then echo "  Няма такова приложение."; press_enter; continue; fi
+            # 3) Попълва в режим ENTER (видимо, без натискане на бутони)
+            echo ""
+            echo -e "  ${YELLOW}► AppReleaseBot: ${BAPP} (режим ENTER — попълва ВИДИМО, не натиска бутони)${NC}"
+            echo ""
+            ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/app-release-bot.cjs" "$BAPP" --loop )
+            press_enter
+            ;;
+        91)
+            echo ""
+            echo -e "${BOLD}${CYAN}  AppPreparePublishingBot — подготовка за публикуване${NC}"
+            echo ""
+            declare -a PAPPS=(); pi=1
+            for d in "$SCRIPT_DIR/../huawei"/*/; do
+                pa=$(basename "$d"); [ -f "$SCRIPT_DIR/../huawei/$pa/capacitor.config.json" ] || continue
+                PAPPS[$pi]="$pa"; printf "    %2d) %s\n" "$pi" "$pa"; pi=$((pi+1))
+            done
+            echo ""
+            read -p "  Кое приложение? [номер или име]: " PPICK
+            PAPP="${PAPPS[$PPICK]}"; [ -z "$PAPP" ] && PAPP="$PPICK"
+            if [ -z "$PAPP" ] || [ ! -d "$SCRIPT_DIR/../huawei/$PAPP" ]; then echo "  Няма такова приложение."; press_enter; continue; fi
+            echo ""
+            echo -e "  ${GRAY}Какво да подготвя? (изборът е сега; после върви без прекъсване до края)${NC}"
+            echo "    1) Всичко (описания + скрийншоти + meta)"
+            echo "    2) Само локализирани описания (15 езика)"
+            echo "    3) Само локализирани скрийншоти (15 езика)"
+            echo "    4) Само скеле на huawei.meta"
+            read -p "  Избери [1-4, Enter=1]: " PACT; PACT="${PACT:-1}"
+            case "$PACT" in 2) PCMD="listing";; 3) PCMD="screenshots";; 4) PCMD="meta";; *) PCMD="prep";; esac
+            echo ""
+            echo -e "  ${YELLOW}► AppPreparePublishingBot: ${PCMD} huawei/${PAPP}${NC}"
+            echo ""
+            ( cd "$SCRIPT_DIR/.." && node private/app-publisher-bot/app-publisher-bot.cjs "$PCMD" "huawei/$PAPP" )
             press_enter
             ;;
         45|46|47|48|49)

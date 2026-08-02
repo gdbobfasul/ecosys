@@ -17,8 +17,10 @@ _За AppGallery: **Manage languages** → добави език (по коло�
 
 NewsLator събира публични новини за всяка държава от официални и няколко неофициални източника. Източниците принадлежат на своите собственици; това приложение е независим четец и не е свързано с тях.
 
-Поддръжка: dai.group.ltd.support@gmail.com
-За въпроси и поддръжка пишете на: dai.group.ltd.support@gmail.com
+Поддръжка: miroljubkalaydjiev177@gmail.com
+За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
 ```
 **New features (до 1000 знака):**
 ```
@@ -38,8 +40,10 @@ First release. Read world news from many countries, automatically translated int
 
 NewsLator собирает публичные новости по каждой стране из официальных и нескольких неофициальных источников. Источники принадлежат их владельцам; это приложение — независимая читалка и не связано с ними.
 
-Поддержка: dai.group.ltd.support@gmail.com
-По вопросам и поддержке пишите на: dai.group.ltd.support@gmail.com
+Поддержка: miroljubkalaydjiev177@gmail.com
+По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
 ```
 **New features (до 1000 знака):**
 ```
@@ -59,8 +63,10 @@ First release. Read world news from many countries, automatically translated int
 
 NewsLator збирає публічні новини щодо кожної країни з офіційних і кількох неофіційних джерел. Джерела належать їхнім власникам; цей застосунок — незалежний читач і не пов’язаний з ними.
 
-Підтримка: dai.group.ltd.support@gmail.com
-З питань і підтримки пишіть на: dai.group.ltd.support@gmail.com
+Підтримка: miroljubkalaydjiev177@gmail.com
+З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
 ```
 **New features (до 1000 знака):**
 ```
@@ -80,8 +86,10 @@ Read the news of any country in the world — translated into your language, or 
 
 NewsLator gathers public news for every country from official and a few unofficial sources. The sources belong to their owners; this app is an independent reader and is not affiliated with them.
 
-Support: dai.group.ltd.support@gmail.com
-For questions and support, write to: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+
+⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -101,8 +109,10 @@ Lies die Nachrichten jedes Landes der Welt — in deine Sprache übersetzt oder 
 
 NewsLator sammelt öffentliche Nachrichten für jedes Land aus offiziellen und einigen inoffiziellen Quellen. Die Quellen gehören ihren Eigentümern; diese App ist ein unabhängiger Reader und steht in keiner Verbindung zu ihnen.
 
-Support: dai.group.ltd.support@gmail.com
-Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
+
+⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
@@ -122,8 +132,10 @@ Lisez l’actualité de n’importe quel pays du monde — traduite dans votre l
 
 NewsLator rassemble l’actualité publique de chaque pays à partir de sources officielles et de quelques sources non officielles. Les sources appartiennent à leurs propriétaires ; cette application est un lecteur indépendant et n’y est pas affiliée.
 
-Assistance: dai.group.ltd.support@gmail.com
-Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com
+Assistance: miroljubkalaydjiev177@gmail.com
+Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+
+⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
 ```
 **New features (до 1000 знака):**
 ```
@@ -143,8 +155,10 @@ Lee las noticias de cualquier país del mundo — traducidas a tu idioma o leíd
 
 NewsLator reúne noticias públicas de cada país a partir de fuentes oficiales y algunas no oficiales. Las fuentes pertenecen a sus propietarios; esta app es un lector independiente y no está afiliada a ellas.
 
-Soporte: dai.group.ltd.support@gmail.com
-Para preguntas y soporte, escribe a: dai.group.ltd.support@gmail.com
+Soporte: miroljubkalaydjiev177@gmail.com
+Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+
+⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -164,8 +178,8 @@ Lee las noticias de cualquier país del mundo — traducidas a tu idioma o leíd
 
 NewsLator reúne noticias públicas de cada país a partir de fuentes oficiales y algunas no oficiales. Las fuentes pertenecen a sus propietarios; esta app es un lector independiente y no está afiliada a ellas.
 
-Soporte: dai.group.ltd.support@gmail.com
-Para dudas y soporte, escribe a: dai.group.ltd.support@gmail.com
+Soporte: miroljubkalaydjiev177@gmail.com
+Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
@@ -185,8 +199,10 @@ Leggi le notizie di qualsiasi Paese del mondo — tradotte nella tua lingua o le
 
 NewsLator raccoglie notizie pubbliche di ogni Paese da fonti ufficiali e da alcune fonti non ufficiali. Le fonti appartengono ai rispettivi proprietari; questa app è un lettore indipendente e non è affiliata ad esse.
 
-Assistenza: dai.group.ltd.support@gmail.com
-Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com
+Assistenza: miroljubkalaydjiev177@gmail.com
+Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+
+⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -206,8 +222,10 @@ Leia as notícias de qualquer país do mundo — traduzidas para o seu idioma ou
 
 O NewsLator reúne notícias públicas de cada país a partir de fontes oficiais e de algumas não oficiais. As fontes pertencem aos seus proprietários; esta aplicação é um leitor independente e não tem qualquer afiliação com elas.
 
-Suporte: dai.group.ltd.support@gmail.com
-Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com
+Suporte: miroljubkalaydjiev177@gmail.com
+Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+
+⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -227,8 +245,10 @@ First release. Read world news from many countries, automatically translated int
 
 يجمع NewsLator الأخبار العامة لكل دولة من مصادر رسمية وبعض المصادر غير الرسمية. تعود المصادر إلى أصحابها؛ وهذا التطبيق قارئ مستقل وغير تابع لها.
 
-الدعم: dai.group.ltd.support@gmail.com
-للأسئلة والدعم، راسلونا على: dai.group.ltd.support@gmail.com
+الدعم: miroljubkalaydjiev177@gmail.com
+للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+
+⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
 ```
 **New features (до 1000 знака):**
 ```
@@ -248,8 +268,10 @@ First release. Read world news from many countries, automatically translated int
 
 NewsLator हर देश की सार्वजनिक खबरें आधिकारिक और कुछ अनौपचारिक स्रोतों से एकत्र करता है। स्रोत उनके मालिकों के हैं; यह ऐप एक स्वतंत्र रीडर है और उनसे संबद्ध नहीं है।
 
-सहायता: dai.group.ltd.support@gmail.com
-प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com
+सहायता: miroljubkalaydjiev177@gmail.com
+प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+
+⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
 ```
 **New features (до 1000 знака):**
 ```
@@ -269,8 +291,10 @@ First release. Read world news from many countries, automatically translated int
 
 NewsLator は、各国の公開ニュースを公式および一部の非公式ソースから集めます。ソースはそれぞれの所有者に帰属します。本アプリは独立したリーダーであり、それらと提携していません。
 
-サポート: dai.group.ltd.support@gmail.com
-ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com
+サポート: miroljubkalaydjiev177@gmail.com
+ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+
+⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
 ```
 **New features (до 1000 знака):**
 ```
@@ -290,8 +314,10 @@ First release. Read world news from many countries, automatically translated int
 
 NewsLator 從官方及少數非官方來源彙整每個國家的公開新聞。這些來源歸其各自所有者所有；本應用程式為獨立閱讀器，與其並無隸屬關係。
 
-支援: dai.group.ltd.support@gmail.com
-如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com
+支援: miroljubkalaydjiev177@gmail.com
+如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+
+⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
 ```
 **New features (до 1000 знака):**
 ```

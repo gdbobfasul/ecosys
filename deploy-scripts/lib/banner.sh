@@ -21,6 +21,7 @@ done_banner() {
     local key="$1" server="$2" label="$3" name head
     local PURPLE=$'\033[1;35m' BOLD=$'\033[1m' NC=$'\033[0m'
     case "$key" in
+        __both__|both|BOTH)       name="ДВЕТЕ машини — production чрез Tailscale + виртуалната машина" ;;
         prodts|prodTS|PRODTS)     name="production чрез Tailscale" ;;
         prod|production|PROD)     name="production" ;;
         vm|VM|virtualmachine)     name="виртуалната машина" ;;

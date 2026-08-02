@@ -14,7 +14,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const EFFECTIVE = '2026-07-13';
 const PROVIDER = 'Dai Grup Ltd.';
-const CONTACT = 'dai.group.ltd.support@gmail.com';
+const CONTACT = 'miroljubkalaydjiev177@gmail.com';
 
 function readJson(f) { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch (_) { return null; } }
 function metaName(file, fb) { try { const m = fs.readFileSync(file, 'utf8').match(/^App name:\s*(.+?)\s*(?:#.*)?$/m); if (m) return m[1].trim(); } catch (_) {} return fb; }

@@ -164,3 +164,7 @@ rustore/**/publish/reference/images/
 huawei/**/publish/reference/images/
 rustore/**/publish/reference/images-index.json
 huawei/**/publish/reference/images-index.json
+deploy-scripts/.huawei-profile/
+deploy-scripts/node_modules/
+deploy-scripts/.promo-tmp/
+deploy-scripts/.store-names-cache.json

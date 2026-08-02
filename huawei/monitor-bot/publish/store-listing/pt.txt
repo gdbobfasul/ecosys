@@ -4,5 +4,5 @@ O bot monitora uma fonte à sua escolha (um feed RSS/Atom ou uma API JSON públi
 
 Monitores ilimitados, notificações locais, comparação por novas entradas e palavras-chave.
 
-Suporte: dai.group.ltd.support@gmail.com
-Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com
+Suporte: miroljubkalaydjiev177@gmail.com
+Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com

@@ -268,7 +268,7 @@ if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
     CERT_EXPIRY=$(openssl x509 -enddate -noout -in "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" 2>/dev/null | cut -d= -f2)
     echo -e "    ${GREEN}●${NC} SSL сертификат: ${CERT_EXPIRY}"
 else
-    echo -e "    ${RED}✗${NC} Няма SSL сертификат"
+    echo -e "    ${YELLOW}◦${NC} Няма Let's Encrypt сертификат все още (self-signed; издава се по-долу, ако домейнът сочи насам)"
 fi
 
 # ── Version ──
@@ -1332,7 +1332,7 @@ server {
     listen 80;
     listen [::]:80;
     server_name ${DOMAIN};
-    location /.well-known/acme-challenge/ { root ${WEB_ROOT}; }
+    location ^~ /.well-known/acme-challenge/ { root ${WEB_ROOT}; allow all; default_type "text/plain"; }
     location / { return 301 https://\$host\$request_uri; }
 }
 
@@ -1632,11 +1632,30 @@ if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
     systemctl enable certbot.timer 2>/dev/null || true
 elif command -v certbot &>/dev/null || apt-get install -y -qq certbot python3-certbot-nginx 2>/dev/null; then
     if host "$DOMAIN" > /dev/null 2>&1; then
-        echo -e "  ${YELLOW}SSL сертификат...${NC}"
-        certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos -m "$EMAIL" 2>/dev/null || {
-            echo -e "  ${YELLOW}! SSL не успя — certbot --nginx -d ${DOMAIN}${NC}"
-        }
-        systemctl enable certbot.timer 2>/dev/null || true
+        # WEBROOT ACME (НЕ --nginx): конфигът по-горе обслужва
+        #   location ^~ /.well-known/acme-challenge/ { root $WEB_ROOT; }
+        mkdir -p "$WEB_ROOT/.well-known/acme-challenge"
+        # ── ПРЕ-ПРОВЕРКА: сочи ли домейнът към ТАЗИ машина? Пишем тестов токен в webroot-а и се
+        # опитваме да го изтеглим по http://$DOMAIN. Ако НЕ се върне (напр. виртуалка, където
+        # take.offbitch.com сочи прода) → certbot би паднал с 404. Затова го ПРЕСКАЧАМЕ с ИНФО
+        # (self-signed остава) — нормално за непублична машина, НЕ е грешка. Иначе издаваме. ──
+        nginx -t >/dev/null 2>&1 && systemctl reload nginx >/dev/null 2>&1
+        _acme_tok="kcy-acme-selfcheck-$$"
+        printf '%s' "$_acme_tok" > "$WEB_ROOT/.well-known/acme-challenge/$_acme_tok"
+        _acme_got="$(curl -fsS --max-time 8 "http://$DOMAIN/.well-known/acme-challenge/$_acme_tok" 2>/dev/null)"
+        rm -f "$WEB_ROOT/.well-known/acme-challenge/$_acme_tok"
+        if [ "$_acme_got" = "$_acme_tok" ]; then
+            echo -e "  ${YELLOW}SSL сертификат...${NC}"
+            if certbot certonly --webroot -w "$WEB_ROOT" -d "$DOMAIN" --non-interactive --agree-tos -m "$EMAIL" 2>/dev/null; then
+                certbot install --nginx -d "$DOMAIN" --non-interactive 2>/dev/null || true
+                echo -e "  ${GREEN}✓ SSL сертификат издаден (webroot) — ${DOMAIN}${NC}"
+            else
+                echo -e "  ${YELLOW}! SSL: издаването не мина; ръчно: certbot certonly --webroot -w ${WEB_ROOT} -d ${DOMAIN}${NC}"
+            fi
+            systemctl enable certbot.timer 2>/dev/null || true
+        else
+            echo -e "  ${CYAN}◦ SSL прескочен: ${DOMAIN} не сочи към тази машина (self-signed остава). Нормално за непублична машина/виртуалка — не е грешка.${NC}"
+        fi
     fi
 fi
 # Reload nginx след SSL промени

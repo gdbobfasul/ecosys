@@ -17,8 +17,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Управление: телефон — ляв джойстик за движение, влачи вдясно за оглеждане, бутон ОГЪН. Десктоп — WASD + мишка (клик за заключване на курсора) + клик за стрелба.
 
-Поддръжка: dai.group.ltd.support@gmail.com
-За въпроси и поддръжка пишете на: dai.group.ltd.support@gmail.com
+Поддръжка: miroljubkalaydjiev177@gmail.com
+За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
 ```
 **New features (до 1000 знака):**
 ```
@@ -38,8 +40,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Управление: телефон — левый джойстик для движения, тяни справа для обзора, кнопка ОГОНЬ. Десктоп — WASD + мышь (клик для захвата курсора) + клик для выстрела.
 
-Поддержка: dai.group.ltd.support@gmail.com
-По вопросам и поддержке пишите на: dai.group.ltd.support@gmail.com
+Поддержка: miroljubkalaydjiev177@gmail.com
+По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
 ```
 **New features (до 1000 знака):**
 ```
@@ -59,8 +63,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Керування: телефон — лівий джойстик для руху, тягни праворуч для огляду, кнопка ВОГОНЬ. Десктоп — WASD + миша (клік для захоплення курсора) + клік для пострілу.
 
-Підтримка: dai.group.ltd.support@gmail.com
-З питань і підтримки пишіть на: dai.group.ltd.support@gmail.com
+Підтримка: miroljubkalaydjiev177@gmail.com
+З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
 ```
 **New features (до 1000 знака):**
 ```
@@ -80,8 +86,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Controls: phone — left joystick to move, drag on the right to look, FIRE button. Desktop — WASD + mouse (click to lock cursor) + click to shoot.
 
-Support: dai.group.ltd.support@gmail.com
-For questions and support, write to: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+
+⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -101,8 +109,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Steuerung: Handy — linker Joystick zum Bewegen, rechts ziehen zum Umsehen, FEUER-Taste. Desktop — WASD + Maus (Klick zum Sperren des Cursors) + Klick zum Schießen.
 
-Support: dai.group.ltd.support@gmail.com
-Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
+
+⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
@@ -122,8 +132,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Commandes : téléphone — joystick gauche pour bouger, glisser à droite pour regarder, bouton FEU. PC — WASD + souris (clic pour verrouiller le curseur) + clic pour tirer.
 
-Assistance: dai.group.ltd.support@gmail.com
-Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com
+Assistance: miroljubkalaydjiev177@gmail.com
+Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+
+⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
 ```
 **New features (до 1000 знака):**
 ```
@@ -143,8 +155,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Controles: móvil — joystick izquierdo para moverte, arrastra a la derecha para mirar, botón FUEGO. PC — WASD + ratón (clic para bloquear el cursor) + clic para disparar.
 
-Soporte: dai.group.ltd.support@gmail.com
-Para preguntas y soporte, escribe a: dai.group.ltd.support@gmail.com
+Soporte: miroljubkalaydjiev177@gmail.com
+Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+
+⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -164,8 +178,8 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Controles: celular — joystick izquierdo para moverte, arrastra a la derecha para mirar, botón FUEGO. PC — WASD + mouse (clic para fijar el cursor) + clic para disparar.
 
-Soporte: dai.group.ltd.support@gmail.com
-Para dudas y soporte, escribe a: dai.group.ltd.support@gmail.com
+Soporte: miroljubkalaydjiev177@gmail.com
+Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
@@ -185,8 +199,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Comandi: telefono — joystick sinistro per muoverti, trascina a destra per guardare, pulsante FUOCO. PC — WASD + mouse (clic per bloccare il cursore) + clic per sparare.
 
-Assistenza: dai.group.ltd.support@gmail.com
-Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com
+Assistenza: miroljubkalaydjiev177@gmail.com
+Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+
+⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -206,8 +222,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 Controles: celular — joystick esquerdo para mover, arraste à direita para olhar, botão FOGO. PC — WASD + mouse (clique para travar o cursor) + clique para atirar.
 
-Suporte: dai.group.ltd.support@gmail.com
-Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com
+Suporte: miroljubkalaydjiev177@gmail.com
+Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+
+⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -227,8 +245,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 التحكم: الهاتف — العصا اليسرى للحركة، اسحب يمينًا للنظر، زر إطلاق النار. الكمبيوتر — WASD + الفأرة (انقر لقفل المؤشر) + انقر لإطلاق النار.
 
-الدعم: dai.group.ltd.support@gmail.com
-للأسئلة والدعم، راسلونا على: dai.group.ltd.support@gmail.com
+الدعم: miroljubkalaydjiev177@gmail.com
+للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+
+⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
 ```
 **New features (до 1000 знака):**
 ```
@@ -248,8 +268,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 नियंत्रण: फ़ोन — चलने के लिए बायाँ जॉयस्टिक, देखने के लिए दाईं ओर खींचें, फायर बटन। डेस्कटॉप — WASD + माउस (कर्सर लॉक करने के लिए क्लिक) + गोली के लिए क्लिक।
 
-सहायता: dai.group.ltd.support@gmail.com
-प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com
+सहायता: miroljubkalaydjiev177@gmail.com
+प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+
+⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
 ```
 **New features (до 1000 знака):**
 ```
@@ -269,8 +291,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 操作: スマホ — 左ジョイスティックで移動、右をドラッグで視点、発射ボタン。PC — WASD + マウス（クリックでカーソルロック）+ クリックで射撃。
 
-サポート: dai.group.ltd.support@gmail.com
-ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com
+サポート: miroljubkalaydjiev177@gmail.com
+ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+
+⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
 ```
 **New features (до 1000 знака):**
 ```
@@ -290,8 +314,10 @@ A 3D first-person hunting shooter with 100 levels, a range of weapons, and anima
 
 操作：手機 — 左搖桿移動，右側拖曳環視，開火按鈕。電腦 — WASD + 滑鼠（點擊鎖定游標）+ 點擊射擊。
 
-支援: dai.group.ltd.support@gmail.com
-如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com
+支援: miroljubkalaydjiev177@gmail.com
+如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+
+⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
 ```
 **New features (до 1000 знака):**
 ```

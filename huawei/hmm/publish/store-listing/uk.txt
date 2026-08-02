@@ -8,5 +8,5 @@ A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across
 
 Комбінації відкриваєш підбором. Вони не змінюються всю гру.
 
-Підтримка: dai.group.ltd.support@gmail.com
-З питань і підтримки пишіть на: dai.group.ltd.support@gmail.com
+Підтримка: miroljubkalaydjiev177@gmail.com
+З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com

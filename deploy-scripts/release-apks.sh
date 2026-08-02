@@ -131,7 +131,9 @@ for app in "${NAMES[@]}"; do
   fi
 
   # пълната подготовка (web билд, cap sync, версия, debug APK за двата магазина)
-  if ! bash deploy-scripts/build-mobile-apps.sh "$app" </dev/null; then
+  # KCY_NO_LEGAL_SYNC=1 → вътрешният етап за правна документация се пропуска тук; качва се
+  # НАКУП веднъж накрая (по-бързо от 34 отделни SSH качвания).
+  if ! KCY_NO_LEGAL_SYNC=1 bash deploy-scripts/build-mobile-apps.sh "$app" </dev/null; then
     FAIL+=("$app (подготвителен билд)"); export JAVA_HOME="$SAVED_JH"; continue
   fi
 
@@ -192,4 +194,13 @@ echo ""
 node deploy-scripts/apk-coverage.mjs --summary 2>/dev/null || true
 echo -e "\n  Подписаните APK-та са в: ${BOLD}apk/<магазин>/release/<Име>-<магазин>-release.apk${NC}"
 echo -e "  Ключовете и паролите: ${BOLD}keystores/${NC} (влизат в резервните копия — НЕ ги губи)"
+
+# ── ЗАДЪЛЖИТЕЛНО: качи правната документация на всички билднати сега апове (накуп, веднъж) ──
+# Вътрешните build-mobile-apps.sh извиквания я пропуснаха (KCY_NO_LEGAL_SYNC=1). Тук качваме
+# документите за всички построени апове наведнъж → /var/www/html/privacy/<ап>/. Без питане.
+if [ -f "deploy-scripts/sync-legal-pages.sh" ] && [ "${#NAMES[@]}" -gt 0 ]; then
+  echo -e "\n${BOLD}${CYAN}━━━ Задължителна документация (Huawei/RuStore) → сървър ━━━${NC}"
+  bash deploy-scripts/sync-legal-pages.sh "${NAMES[@]}" || true
+fi
+
 [ "${#FAIL[@]}" -eq 0 ]

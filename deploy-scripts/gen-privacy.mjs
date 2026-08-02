@@ -22,7 +22,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const EFFECTIVE = '2026-07-12';
-const CONTACT = 'dai.group.ltd.support@gmail.com';
+const CONTACT = 'miroljubkalaydjiev177@gmail.com';
 const PROVIDER = 'Dai Grup Ltd.';
 
 // ── Универсални трети страни (важат за ВСЯКО приложение заради общия слой Pupikes) ────────────────
@@ -118,7 +118,7 @@ const T = {
   },
   s_contact: { en: 'Contact', ru: 'Контакт' },
   contact_txt: {
-    en: `For any privacy question, request or complaint, write to: <a href="mailto:${CONTACT}">${CONTACT}</a> (${PROVIDER}).`,
+    en: `For any privacy question, request or complaint, write to: <a href="mailto:${CONTACT}">${CONTACT}</a> (${PROVIDER}). Please put "Pupikes.com" in the subject.`,
     ru: `По любым вопросам, запросам или жалобам о конфиденциальности пишите: <a href="mailto:${CONTACT}">${CONTACT}</a> (${PROVIDER}).`
   },
   rights_feedback: {
@@ -886,6 +886,30 @@ const APPS = [
     permissions: [
       PERM.camera({ en: 'used only to photograph the visible problem you want to compare; the image is processed on-device and is not uploaded by us.', ru: 'используется только для фотографирования видимой проблемы для сравнения; изображение обрабатывается на устройстве и нами не выгружается.' }),
       PERM.files({ en: 'used only when you choose a photo from your gallery instead of the camera; handled locally.', ru: 'используется только когда вы выбираете фото из галереи вместо камеры; обрабатывается локально.' })
+    ]
+  },
+
+  // ── auto-sound-diagnostics ──
+  {
+    id: 'auto-sound-diagnostics', name: 'Auto Sound Diagnostics', hwPkg: 'com.pupikes.autosound.hw', ruPkg: 'com.pupikes.autosound.rustore',
+    pitch: {
+      en: 'Auto Sound Diagnostics records the sound of your car with the microphone (engine, running gear, brakes, cabin) and, by analysing acoustic features <strong>on the device</strong> (<strong>not an AI diagnosis</strong>), suggests possible causes and general advice. It is <strong>informational only, can be wrong and never replaces a qualified mechanic</strong>.',
+      ru: 'Auto Sound Diagnostics записывает звук вашей машины через микрофон (двигатель, ходовая, тормоза, салон) и, анализируя акустические признаки <strong>на устройстве</strong> (<strong>без ИИ-диагностики</strong>), предлагает возможные причины и общие советы. Приложение носит <strong>исключительно информационный характер, может ошибаться и не заменяет квалифицированного автомеханика</strong>.'
+    },
+    device: {
+      en: 'The microphone audio is analysed <strong>on the device in real time and is never recorded to a file or uploaded by us</strong>. Your chosen language, the selected context and results stay local; there is no account.',
+      ru: 'Звук с микрофона анализируется <strong>на устройстве в реальном времени, не записывается в файл и нами не выгружается</strong>. Выбранный язык, контекст и результаты остаются локальными; аккаунта нет.'
+    },
+    thirdParties: [
+      {
+        recipient: 'MyMemory translation (Translated S.r.l.)',
+        data: { en: 'The result text to translate, the language pair, a fixed developer contact email used only to raise the free quota (not your email), and your IP address.', ru: 'Текст результата для перевода, пара языков, фиксированный контактный e-mail разработчика для повышения бесплатной квоты (не ваш e-mail) и ваш IP-адрес.' },
+        purpose: { en: 'To translate the results into your chosen language when translation is used (skipped for Bulgarian and when offline).', ru: 'Перевод результатов на выбранный язык, когда используется перевод (пропускается для болгарского и без сети).' },
+        policy: '<a href="https://mymemory.translated.net/doc/en/privacy.php">mymemory.translated.net privacy</a>'
+      }
+    ],
+    permissions: [
+      PERM.mic({ en: 'used only to listen to and analyse the car sound while you record; the audio is processed on-device in real time and is not stored or uploaded by us.', ru: 'используется только для прослушивания и анализа звука машины во время записи; звук обрабатывается на устройстве в реальном времени, не сохраняется и не выгружается нами.' })
     ]
   }
 ];

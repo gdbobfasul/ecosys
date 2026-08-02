@@ -19,8 +19,10 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 
 НЕ събирам нищо лично за теб. Учиш ме на общи знания, ставам умен и после можеш да ме продадеш/прехвърлиш „чист“. Новият собственик, ако иска, ще ми разказва за себе си.
 
-Поддръжка: dai.group.ltd.support@gmail.com
-За въпроси и поддръжка пишете на: dai.group.ltd.support@gmail.com
+Поддръжка: miroljubkalaydjiev177@gmail.com
+За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
 ```
 **New features (до 1000 знака):**
 ```
@@ -42,8 +44,10 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 
 Я НЕ собираю ничего личного о тебе. Ты учишь меня общим знаниям, я становлюсь умным, и потом ты можешь продать/передать меня «чистым». Новый владелец, если захочет, расскажет мне о себе.
 
-Поддержка: dai.group.ltd.support@gmail.com
-По вопросам и поддержке пишите на: dai.group.ltd.support@gmail.com
+Поддержка: miroljubkalaydjiev177@gmail.com
+По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
 ```
 **New features (до 1000 знака):**
 ```
@@ -65,8 +69,10 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 
 Я НЕ збираю нічого особистого про тебе. Ти вчиш мене загальних знань, я розумнішаю, і потім ти можеш продати/передати мене «чистим». Новий власник, якщо схоче, розповість мені про себе.
 
-Підтримка: dai.group.ltd.support@gmail.com
-З питань і підтримки пишіть на: dai.group.ltd.support@gmail.com
+Підтримка: miroljubkalaydjiev177@gmail.com
+З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
 ```
 **New features (до 1000 знака):**
 ```
@@ -88,8 +94,10 @@ I will be your personal assistant: I remember your name, habits, preferences —
 
 I collect NOTHING personal about you. You teach me general knowledge, I get smart, and then you can sell/transfer me "clean". The new owner, if they wish, will tell me about themselves.
 
-Support: dai.group.ltd.support@gmail.com
-For questions and support, write to: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+
+⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -111,8 +119,10 @@ Ich bin dein persönlicher Assistent: Ich merke mir deinen Namen, Gewohnheiten, 
 
 Ich sammle NICHTS Persönliches über dich. Du bringst mir Allgemeinwissen bei, ich werde klug, und dann kannst du mich „sauber" verkaufen/übergeben. Der neue Besitzer erzählt mir, wenn er möchte, von sich.
 
-Support: dai.group.ltd.support@gmail.com
-Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
+
+⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
@@ -134,8 +144,10 @@ Je serai ton assistant personnel : je retiens ton nom, tes habitudes, tes préf�
 
 Je ne collecte RIEN de personnel sur toi. Tu m’enseignes des connaissances générales, je deviens intelligent, puis tu peux me vendre/transférer « propre ». Le nouveau propriétaire, s’il veut, me parlera de lui.
 
-Assistance: dai.group.ltd.support@gmail.com
-Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com
+Assistance: miroljubkalaydjiev177@gmail.com
+Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+
+⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
 ```
 **New features (до 1000 знака):**
 ```
@@ -157,8 +169,10 @@ Seré tu asistente personal: recuerdo tu nombre, hábitos, preferencias — todo
 
 NO recopilo nada personal sobre ti. Me enseñas conocimientos generales, me vuelvo inteligente y luego puedes venderme/transferirme «limpio». El nuevo dueño, si quiere, me hablará de sí mismo.
 
-Soporte: dai.group.ltd.support@gmail.com
-Para preguntas y soporte, escribe a: dai.group.ltd.support@gmail.com
+Soporte: miroljubkalaydjiev177@gmail.com
+Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+
+⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -180,8 +194,8 @@ Seré tu asistente personal: recuerdo tu nombre, hábitos, preferencias — todo
 
 NO recopilo nada personal sobre ti. Me enseñas conocimientos generales, me vuelvo inteligente y luego puedes venderme/transferirme «limpio». El nuevo dueño, si quiere, me hablará de sí mismo.
 
-Soporte: dai.group.ltd.support@gmail.com
-Para dudas y soporte, escribe a: dai.group.ltd.support@gmail.com
+Soporte: miroljubkalaydjiev177@gmail.com
+Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
@@ -203,8 +217,10 @@ Sarò il tuo assistente personale: ricordo il tuo nome, abitudini, preferenze �
 
 NON raccolgo nulla di personale su di te. Mi insegni nozioni generali, divento intelligente, e poi puoi vendermi/trasferirmi «pulito». Il nuovo proprietario, se vuole, mi parlerà di sé.
 
-Assistenza: dai.group.ltd.support@gmail.com
-Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com
+Assistenza: miroljubkalaydjiev177@gmail.com
+Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+
+⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -226,8 +242,10 @@ Serei seu assistente pessoal: lembro seu nome, hábitos, preferências — tudo 
 
 NÃO coleto nada pessoal sobre você. Você me ensina conhecimento geral, fico inteligente, e depois pode me vender/transferir "limpo". O novo dono, se quiser, me contará sobre si.
 
-Suporte: dai.group.ltd.support@gmail.com
-Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com
+Suporte: miroljubkalaydjiev177@gmail.com
+Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+
+⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -249,8 +267,10 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 
 لا أجمع أي شيء شخصي عنك. تعلّمني المعارف العامة فأصبح ذكيًا، ثم يمكنك بيعي/نقلي «نظيفًا». المالك الجديد، إن أراد، سيحدثني عن نفسه.
 
-الدعم: dai.group.ltd.support@gmail.com
-للأسئلة والدعم، راسلونا على: dai.group.ltd.support@gmail.com
+الدعم: miroljubkalaydjiev177@gmail.com
+للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+
+⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
 ```
 **New features (до 1000 знака):**
 ```
@@ -272,8 +292,10 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 
 मैं तुम्हारे बारे में कुछ भी निजी इकट्ठा नहीं करता। तुम मुझे सामान्य ज्ञान सिखाते हो, मैं समझदार बनता हूँ, और फिर तुम मुझे «साफ» बेच/स्थानांतरित कर सकते हो। नया मालिक, चाहे तो, अपने बारे में बताएगा।
 
-सहायता: dai.group.ltd.support@gmail.com
-प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com
+सहायता: miroljubkalaydjiev177@gmail.com
+प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+
+⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
 ```
 **New features (до 1000 знака):**
 ```
@@ -295,8 +317,10 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 
 あなたについて個人的なことは一切集めません。一般的な知識を教えてもらい賢くなり、その後「クリーンな」まま売却/譲渡できます。新しい持ち主が望めば、自分のことを話してくれます。
 
-サポート: dai.group.ltd.support@gmail.com
-ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com
+サポート: miroljubkalaydjiev177@gmail.com
+ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+
+⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
 ```
 **New features (до 1000 знака):**
 ```
@@ -318,8 +342,10 @@ A private AI companion that you name and teach yourself: it talks with you by vo
 
 我不收集任何關於你的個人資料。你教我通用知識，我變聰明，之後你可以把我「乾淨」地出售／轉讓。新主人若願意，會告訴我關於他的事。
 
-支援: dai.group.ltd.support@gmail.com
-如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com
+支援: miroljubkalaydjiev177@gmail.com
+如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+
+⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
 ```
 **New features (до 1000 знака):**
 ```

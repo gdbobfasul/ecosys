@@ -41,8 +41,12 @@ try { prev = JSON.parse(fs.readFileSync(OUT, 'utf8')); } catch (_) {}
 const prevById = {};
 for (const a of (prev.apps || [])) prevById[a.id] = a;
 
+// Рекламният каталог е САМО за приложения, които ще се release-нат в Huawei/RuStore. Приложения,
+// които още НЕ пускаме, се пропускат (добави ги тук; махни от списъка щом решиш да ги пуснеш).
+const EXCLUDE = new Set(['auto-sound-diagnostics', 'pupikes-doctor', 'pupikes-medicines', 'selflearning-friend', 'dodge-master', 'duel', 'hmm', 'titans-fight', 'chat', 'services-toolkit', 'market-pulse']);
 const ids = fs.readdirSync(path.join(REPO, 'huawei'))
   .filter((a) => fs.existsSync(path.join(REPO, 'huawei', a, 'capacitor.config.json')))
+  .filter((a) => !EXCLUDE.has(a) || prevById[a])   // изключените не се добавят (но ако вече са в каталога — пазят се)
   .sort();
 
 const apps = ids.map((id) => {
@@ -53,6 +57,7 @@ const apps = ids.map((id) => {
     name: old.name != null ? old.name : appName(id),               // финално име (ръчно)
     storeUrl: old.storeUrl != null ? old.storeUrl : '',            // линк за сваляне (ръчно)
     img: old.img != null ? old.img : (PROMO_IMG_BASE + id + '.png'),
+    price: old.price != null ? old.price : 'Free',                 // цена в рекламата (ръчно — редактирай тук)
     text: (old.text && Object.keys(old.text).length) ? old.text : textFor(id)
   };
 });

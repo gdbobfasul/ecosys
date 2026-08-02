@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const EMAIL = 'dai.group.ltd.support@gmail.com';
+const EMAIL = 'miroljubkalaydjiev177@gmail.com';
 const LANGS = ['en', 'bg', 'ru', 'uk', 'de', 'fr', 'es', 'es-MX', 'it', 'pt', 'ar', 'hi', 'ja', 'ky', 'zh-Hant'];
 
 // Локализирани етикети за поддръжка (взети от истинските 15-езични обяви на newslator).

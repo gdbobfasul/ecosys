@@ -89,7 +89,7 @@ export function mountEcosystem(selfId) {
           (img ? '<img src="' + img + '" style="width:100%;max-height:150px;object-fit:cover;display:block" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
           '<div style="padding:14px"><div style="font-weight:700;font-size:16px;line-height:1.3">' + esc(a.name || '') + '</div>' +
           '<div style="opacity:.9;font-size:14px;line-height:1.5;margin-top:6px">' + esc(desc) + '</div>' +
-          '<div style="margin-top:10px"><span style="display:inline-block;background:#2ea043;color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;font-size:13px">Open ›</span></div></div></div>';
+          '<div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:8px">' + (a.price ? '<span style="background:#1f6feb;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700;font-size:14px">' + esc(a.price) + '</span>' : '<span></span>') + '<span style="display:inline-block;background:#2ea043;color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;font-size:13px">Open ›</span></div></div></div>';
       }).join('');
       list.querySelectorAll('.pupikes-eco-card').forEach((c) => { c.onclick = () => openLink(c.getAttribute('data-url')); });
     });

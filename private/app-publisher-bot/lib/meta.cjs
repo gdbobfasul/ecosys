@@ -15,7 +15,7 @@ function generateMeta(appDir, opts = {}) {
 
   const lines = [];
   lines.push('# huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)');
-  lines.push('# Приложение: ' + appName + ' (huawei издание). Генерирано от AppPublisherBot.');
+  lines.push('# Приложение: ' + appName + ' (huawei издание). Генерирано от AppPreparePublishingBot.');
   lines.push('');
   lines.push('[Set basic app information]');
   lines.push('App type: ' + type);
@@ -27,7 +27,7 @@ function generateMeta(appDir, opts = {}) {
   lines.push('# Open capabilities: няма (без Account Kit, IAP, Push, Ads, Game Service) — освен ако не е отбелязано друго.');
   lines.push('');
   lines.push('[Support / Поддръжка]');
-  lines.push('Support email: dai.group.ltd.support@gmail.com');
+  lines.push('Support email: miroljubkalaydjiev177@gmail.com');
   lines.push('# Влиза и в описанието на 15-те езика (publish/store-listing/<език>.txt).');
   lines.push('');
   lines.push('[Localization]');

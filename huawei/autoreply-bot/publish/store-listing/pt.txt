@@ -4,5 +4,5 @@ Um robô que responde por você — pelas suas regras.
 
 Ative o robô, defina regras (palavras-chave → respostas prontas, horário, listas de permissão/bloqueio) e ligue-o. Quando chega uma mensagem, o robô responde sozinho e avisa você.
 
-Suporte: dai.group.ltd.support@gmail.com
-Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com
+Suporte: miroljubkalaydjiev177@gmail.com
+Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com

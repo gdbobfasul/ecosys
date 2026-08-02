@@ -8,7 +8,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUB = path.resolve(__dirname, '..', 'huawei', 'market-pulse', 'publish');
-const SUPPORT = 'dai.group.ltd.support@gmail.com';
+const SUPPORT = 'miroljubkalaydjiev177@gmail.com';
 
 const LANGS = ['bg', 'ru', 'uk', 'en', 'de', 'fr', 'es', 'es-MX', 'it', 'pt', 'ar', 'hi', 'ja', 'ky', 'zh-Hant'];
 const NAME = { bg: 'Български', ru: 'Русский', uk: 'Українська', en: 'English', de: 'Deutsch', fr: 'Français', es: 'Español', 'es-MX': 'Español (MX)', it: 'Italiano', pt: 'Português', ar: 'العربية', hi: 'हिन्दी', ja: '日本語', ky: 'Кыргызча', 'zh-Hant': '繁體中文' };
@@ -37,7 +37,7 @@ let md = '# Pupikes Market Pulse — описание по език (Brief + Ful
 let n = 0;
 for (const lg of LANGS) {
   const d = D[lg] || D.en;
-  const full = `${d.intro}\n\n${d.tag}\n\n${d.note}\n\nSupport: ${SUPPORT}`;
+  const full = `${d.intro}\n\n${d.tag}\n\n${d.note}\n\nSupport: ${SUPPORT} (Subject: Pupikes.com)`;
   const brief = d.tag;
   fs.writeFileSync(path.join(PUB, 'store-listing', lg + '.txt'), full + '\n');
   md += `## ${NAME[lg]} (${lg})\n**Brief:**\n\n> ${brief}\n\n**Full:**\n\n\`\`\`\n${d.intro}\n\n${d.note}\n\`\`\`\n\n`;

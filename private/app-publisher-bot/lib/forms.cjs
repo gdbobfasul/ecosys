@@ -94,7 +94,7 @@ function metaField(meta, label) {
   return m ? m[1].split('#')[0].trim() : '';
 }
 
-const SUPPORT_EMAIL = 'dai.group.ltd.support@gmail.com';
+const SUPPORT_EMAIL = 'miroljubkalaydjiev177@gmail.com';
 
 function androidForm(opts) {
   const { name, pkg, cat, appBase } = opts;

@@ -4,5 +4,5 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 
 असीमित मॉनिटर, स्थानीय सूचनाएँ, नई प्रविष्टियों और कीवर्ड पर तुलना।
 
-सहायता: dai.group.ltd.support@gmail.com
-प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com
+सहायता: miroljubkalaydjiev177@gmail.com
+प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com

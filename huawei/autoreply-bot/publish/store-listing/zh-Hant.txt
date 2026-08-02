@@ -4,5 +4,5 @@
 
 啟用機器人，設定規則（關鍵字 → 現成回覆、工作時間、白/黑名單）後開啟。訊息一到，機器人會自動回覆並通知你。
 
-支援: dai.group.ltd.support@gmail.com
-如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com
+支援: miroljubkalaydjiev177@gmail.com
+如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com

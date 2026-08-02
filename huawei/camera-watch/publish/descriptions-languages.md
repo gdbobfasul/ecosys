@@ -17,8 +17,10 @@ _За AppGallery: **Manage languages** → добави език (по коло�
 
 <b>Честно и без скрити такси:</b> всичко работи на устройството и е безплатно. Без акаунт, без контакти, без проследяване, без покупки в приложението. Единствена мрежа: еднократно безплатно сваляне на AI модела и по избор твоят URL за „друга камера“.
 
-Поддръжка: dai.group.ltd.support@gmail.com
-За въпроси и поддръжка пишете на: dai.group.ltd.support@gmail.com
+Поддръжка: miroljubkalaydjiev177@gmail.com
+За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
 ```
 **New features (до 1000 знака):**
 ```
@@ -38,8 +40,10 @@ _За AppGallery: **Manage languages** → добави език (по коло�
 
 <b>Честно и без скрытых сборов:</b> всё работает на устройстве и бесплатно. Без аккаунта, без контактов, без отслеживания, без покупок в приложении. Единственная сеть: разовая бесплатная загрузка ИИ-модели и по желанию твой URL для «другой камеры».
 
-Поддержка: dai.group.ltd.support@gmail.com
-По вопросам и поддержке пишите на: dai.group.ltd.support@gmail.com
+Поддержка: miroljubkalaydjiev177@gmail.com
+По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
 ```
 **New features (до 1000 знака):**
 ```
@@ -59,8 +63,10 @@ _За AppGallery: **Manage languages** → добави език (по коло�
 
 <b>Чесно й без прихованих платежів:</b> усе працює на пристрої та безкоштовно. Без акаунта, без контактів, без відстеження, без покупок у застосунку. Єдина мережа: разове безкоштовне завантаження ШІ-моделі та за бажанням твій URL для «іншої камери».
 
-Підтримка: dai.group.ltd.support@gmail.com
-З питань і підтримки пишіть на: dai.group.ltd.support@gmail.com
+Підтримка: miroljubkalaydjiev177@gmail.com
+З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+
+⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
 ```
 **New features (до 1000 знака):**
 ```
@@ -80,8 +86,10 @@ A hired robot that watches a camera and warns you on movement — and tells you 
 
 <b>Honest and no hidden fees:</b> everything runs on the device and is free. No account, no contacts, no tracking, no in-app purchases. The only network use: a one-time free download of the AI model and, optionally, your URL for "another camera".
 
-Support: dai.group.ltd.support@gmail.com
-For questions and support, write to: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)
+
+⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -101,8 +109,10 @@ Ein angeheuerter Roboter, der eine Kamera überwacht und dich bei Bewegung warnt
 
 <b>Ehrlich und ohne versteckte Gebühren:</b> Alles läuft auf dem Gerät und ist kostenlos. Kein Konto, keine Kontakte, kein Tracking, keine In-App-Käufe. Einzige Netznutzung: einmaliger kostenloser Download des KI-Modells und optional deine URL für „andere Kamera“.
 
-Support: dai.group.ltd.support@gmail.com
-Bei Fragen und für Support schreiben Sie an: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
+
+⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
@@ -122,8 +132,10 @@ Un robot engagé qui surveille une caméra et vous alerte en cas de mouvement �
 
 <b>Honnête et sans frais cachés :</b> tout fonctionne sur l’appareil et c’est gratuit. Pas de compte, pas de contacts, pas de suivi, pas d’achats intégrés. Seule utilisation du réseau : un téléchargement gratuit unique du modèle IA et, en option, ton URL pour « autre caméra ».
 
-Assistance: dai.group.ltd.support@gmail.com
-Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com
+Assistance: miroljubkalaydjiev177@gmail.com
+Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+
+⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
 ```
 **New features (до 1000 знака):**
 ```
@@ -143,8 +155,10 @@ Un robot contratado que vigila una cámara y te avisa al detectar movimiento —
 
 <b>Honesto y sin cargos ocultos:</b> todo funciona en el dispositivo y es gratis. Sin cuenta, sin contactos, sin rastreo, sin compras en la app. Único uso de red: una descarga gratuita única del modelo de IA y, opcionalmente, tu URL para «otra cámara».
 
-Soporte: dai.group.ltd.support@gmail.com
-Para preguntas y soporte, escribe a: dai.group.ltd.support@gmail.com
+Soporte: miroljubkalaydjiev177@gmail.com
+Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+
+⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -164,8 +178,8 @@ Un robot contratado que vigila una cámara y te avisa al detectar movimiento —
 
 <b>Honesto y sin cargos ocultos:</b> todo funciona en el dispositivo y es gratis. Sin cuenta, sin contactos, sin rastreo, sin compras en la app. Único uso de red: una descarga gratuita única del modelo de IA y, opcionalmente, tu URL para «otra cámara».
 
-Soporte: dai.group.ltd.support@gmail.com
-Para dudas y soporte, escribe a: dai.group.ltd.support@gmail.com
+Soporte: miroljubkalaydjiev177@gmail.com
+Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
@@ -185,8 +199,10 @@ Un robot ingaggiato che sorveglia una telecamera e ti avvisa al movimento — e 
 
 <b>Onesto e senza costi nascosti:</b> tutto funziona sul dispositivo ed è gratuito. Nessun account, nessun contatto, nessun tracciamento, nessun acquisto in-app. Unico uso di rete: un download gratuito una tantum del modello IA e, facoltativamente, il tuo URL per «altra telecamera».
 
-Assistenza: dai.group.ltd.support@gmail.com
-Per domande e assistenza, scrivi a: dai.group.ltd.support@gmail.com
+Assistenza: miroljubkalaydjiev177@gmail.com
+Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+
+⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -206,8 +222,10 @@ Um robô contratado que vigia uma câmera e avisa você ao detectar movimento �
 
 <b>Honesto e sem taxas ocultas:</b> tudo funciona no dispositivo e é grátis. Sem conta, sem contatos, sem rastreamento, sem compras no app. Único uso de rede: um download gratuito único do modelo de IA e, opcionalmente, sua URL para «outra câmera».
 
-Suporte: dai.group.ltd.support@gmail.com
-Para dúvidas e suporte, escreva para: dai.group.ltd.support@gmail.com
+Suporte: miroljubkalaydjiev177@gmail.com
+Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+
+⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
 ```
 **New features (до 1000 знака):**
 ```
@@ -227,8 +245,10 @@ Primeira versão: detecção de movimento no dispositivo com reconhecimento de o
 
 <b>صادق وبلا رسوم خفية:</b> كل شيء يعمل على الجهاز ومجاني. بلا حساب، بلا جهات اتصال، بلا تتبّع، بلا مشتريات داخل التطبيق. الاستخدام الوحيد للشبكة: تنزيل مجاني لمرة واحدة لنموذج الذكاء الاصطناعي، واختيارياً رابطك لـ«كاميرا أخرى».
 
-الدعم: dai.group.ltd.support@gmail.com
-للأسئلة والدعم، راسلونا على: dai.group.ltd.support@gmail.com
+الدعم: miroljubkalaydjiev177@gmail.com
+للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+
+⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
 ```
 **New features (до 1000 знака):**
 ```
@@ -248,8 +268,10 @@ Primeira versão: detecção de movimento no dispositivo com reconhecimento de o
 
 <b>ईमानदार और कोई छिपा शुल्क नहीं:</b> सब कुछ डिवाइस पर चलता है और मुफ़्त है। कोई खाता नहीं, कोई संपर्क नहीं, कोई ट्रैकिंग नहीं, कोई इन-ऐप खरीद नहीं। नेटवर्क का एकमात्र उपयोग: AI मॉडल का एक बार मुफ़्त डाउनलोड और वैकल्पिक रूप से «दूसरे कैमरे» के लिए आपका URL।
 
-सहायता: dai.group.ltd.support@gmail.com
-प्रश्नों और सहायता के लिए लिखें: dai.group.ltd.support@gmail.com
+सहायता: miroljubkalaydjiev177@gmail.com
+प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+
+⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
 ```
 **New features (до 1000 знака):**
 ```
@@ -269,8 +291,10 @@ Primeira versão: detecção de movimento no dispositivo com reconhecimento de o
 
 <b>正直で隠れた料金なし：</b> すべて端末上で動作し無料です。アカウント・連絡先・追跡・アプリ内課金は一切なし。ネットワーク利用は唯一、AIモデルの一度きりの無料ダウンロードと、任意で「別のカメラ」用のあなたのURLのみ。
 
-サポート: dai.group.ltd.support@gmail.com
-ご質問・サポートは次のメールへ: dai.group.ltd.support@gmail.com
+サポート: miroljubkalaydjiev177@gmail.com
+ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+
+⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
 ```
 **New features (до 1000 знака):**
 ```
@@ -290,8 +314,10 @@ Primeira versão: detecção de movimento no dispositivo com reconhecimento de o
 
 <b>誠實且無隱藏費用：</b>一切都在裝置上運行且免費。無帳號、無聯絡人、無追蹤、無應用程式內購。唯一的網路使用：一次性免費下載 AI 模型，以及可選的你的「其他相機」網址。
 
-支援: dai.group.ltd.support@gmail.com
-如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com
+支援: miroljubkalaydjiev177@gmail.com
+如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+
+⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
 ```
 **New features (до 1000 знака):**
 ```

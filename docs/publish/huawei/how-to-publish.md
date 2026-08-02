@@ -41,7 +41,7 @@ huawei/<име>/publish/
 Във всяко описание задължително слагаме имейл за поддръжка:
 
 ```
-dai.group.ltd.support@gmail.com
+miroljubkalaydjiev177@gmail.com
 ```
 
 ---

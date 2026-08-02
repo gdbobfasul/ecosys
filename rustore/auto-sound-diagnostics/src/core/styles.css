@@ -1,0 +1,183 @@
+/* Version: 1.0001 */
+/* ====================================================================
+   Pupikes Toolkit — споделени стилове (тъмна тема + акцент).
+   Акцентът се задава през --accent (различен за RUStore / Huawei).
+   ==================================================================== */
+:root {
+  --accent: #1f6feb;        /* RUStore синьо; Huawei копието го сменя */
+  --accent-2: #58a6ff;
+  --bg: #0d1117;
+  --bg-2: #161b22;
+  --bg-3: #21262d;
+  --line: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --ok: #2ea043;
+  --warn: #d29922;
+  --err: #f85149;
+  --radius: 14px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  overscroll-behavior-y: none;
+}
+#app { min-height: 100%; display: flex; flex-direction: column; }
+
+/* ---- Заглавна лента ---- */
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  padding: calc(var(--safe-top) + 14px) 16px 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.4);
+}
+.topbar .back {
+  background: rgba(255,255,255,.18); border: none; color: #fff;
+  width: 38px; height: 38px; border-radius: 10px; font-size: 20px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.topbar .ttl { font-size: 1.15em; font-weight: 700; }
+.topbar .sub { font-size: .78em; opacity: .9; }
+.topbar .ttlwrap { min-width: 0; }
+.topbar .ttl, .topbar .sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- Контейнер ---- */
+.view { flex: 1; padding: 16px; padding-bottom: calc(24px + var(--safe-bottom)); max-width: 760px; margin: 0 auto; width: 100%; }
+
+/* ---- Начален екран ---- */
+.hero { text-align: center; padding: 8px 0 18px; }
+.hero h1 { font-size: 1.6em; }
+.hero p { color: var(--text-dim); font-size: .92em; margin-top: 4px; }
+
+.search {
+  width: 100%; padding: 13px 14px; font-size: 1em;
+  background: var(--bg-2); border: 1px solid var(--line);
+  border-radius: var(--radius); color: var(--text); margin-bottom: 18px;
+}
+.search:focus { outline: none; border-color: var(--accent); }
+
+.grid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+.card {
+  background: var(--bg-2); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 16px 14px; cursor: pointer;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: transform .08s ease, border-color .15s ease;
+}
+.card:active { transform: scale(.97); }
+.card.online { opacity: .85; }
+.card .ic { width: 38px; height: 38px; color: var(--accent-2); }
+.card .ic svg { width: 100%; height: 100%; }
+.card h3 { font-size: 1em; }
+.card p { font-size: .82em; color: var(--text-dim); }
+.card .tag {
+  font-size: .68em; color: var(--warn); border: 1px solid var(--warn);
+  border-radius: 6px; padding: 1px 6px; align-self: flex-start;
+}
+.empty { text-align: center; color: var(--text-dim); padding: 40px 0; }
+
+/* ---- Общи елементи в инструментите ---- */
+.tool-card {
+  background: var(--bg-2); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 18px; margin-bottom: 14px;
+}
+label { display: block; font-weight: 600; font-size: .9em; margin: 12px 0 6px; }
+label:first-child { margin-top: 0; }
+input, select, textarea {
+  width: 100%; padding: 11px 12px; font-size: 1em; font-family: inherit;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+  color: var(--text);
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+textarea { min-height: 110px; resize: vertical; }
+input[type=range] { padding: 0; }
+input[type=file] { padding: 9px; }
+.btn {
+  background: var(--accent); color: #fff; border: none; cursor: pointer;
+  padding: 12px 20px; border-radius: 10px; font-size: 1em; font-weight: 600;
+  margin-top: 14px; width: 100%;
+}
+.btn:active { filter: brightness(.9); }
+.btn:disabled { background: var(--bg-3); color: var(--text-dim); cursor: not-allowed; }
+.btn.sec { background: var(--bg-3); }
+.btn.inline { width: auto; display: inline-block; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.row > div { flex: 1; min-width: 130px; }
+.hint { font-size: .82em; color: var(--text-dim); margin-top: 6px; }
+
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.tab {
+  flex: 1; min-width: 80px; padding: 10px; border: 1px solid var(--line);
+  border-radius: 10px; background: var(--bg-2); color: var(--text-dim);
+  cursor: pointer; font-weight: 600; font-size: .88em;
+}
+.tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.check { display: flex; align-items: center; gap: 9px; margin: 9px 0; font-weight: 400; }
+.check input { width: auto; }
+
+.out-block {
+  margin-top: 16px; padding: 14px; background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px;
+}
+.out-block .line { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--line); }
+.out-block .line:last-child { border: none; font-weight: 700; color: var(--accent-2); }
+
+.status { margin-top: 14px; padding: 12px; border-radius: 10px; font-size: .9em; display: none; }
+.status.show { display: block; }
+.status.ok { background: rgba(46,160,67,.15); color: #56d364; border: 1px solid rgba(46,160,67,.4); }
+.status.err { background: rgba(248,81,73,.15); color: #ff7b72; border: 1px solid rgba(248,81,73,.4); }
+.status.work { background: rgba(31,111,235,.15); color: var(--accent-2); border: 1px solid rgba(31,111,235,.4); }
+
+.bar { height: 8px; background: var(--bg-3); border-radius: 4px; overflow: hidden; margin-top: 10px; }
+.bar > div { height: 100%; background: var(--accent); width: 0; transition: width .2s; }
+
+.notice {
+  background: rgba(210,153,34,.12); border: 1px solid rgba(210,153,34,.4);
+  color: #e3b341; padding: 14px; border-radius: 10px; font-size: .9em;
+}
+.notice b { color: #f0c674; }
+
+/* Резултат — парола / моноширинен изход */
+.mono-out {
+  margin-top: 16px; padding: 16px; background: #0a0e14; border: 1px solid var(--line);
+  border-radius: 10px; color: var(--accent-2); font-family: ui-monospace, monospace;
+  font-size: 1.2em; text-align: center; word-break: break-all; cursor: pointer;
+}
+.strength { height: 8px; border-radius: 4px; margin-top: 10px; background: var(--bg-3); overflow: hidden; }
+.strength > div { height: 100%; border-radius: 4px; transition: .3s; width: 0; }
+.slabel { font-size: .85em; margin-top: 6px; text-align: center; }
+
+video { width: 100%; max-width: 360px; border-radius: 12px; background: #000; }
+.center { text-align: center; }
+.qr-out { display: inline-block; padding: 14px; background: #fff; border-radius: 12px; margin-top: 16px; }
+.qr-out canvas, .qr-out img { display: block; }
+.readout {
+  margin-top: 16px; padding: 14px; background: var(--bg);
+  border-left: 4px solid var(--accent); border-radius: 8px; word-break: break-all;
+}
+.readout.empty { border-color: var(--err); }
+.readout a { color: var(--accent-2); }
+.cmp { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+.cmp > div { flex: 1; min-width: 140px; background: var(--bg); border-radius: 10px; padding: 12px; text-align: center; border: 1px solid var(--line); }
+.cmp img { max-width: 100%; max-height: 160px; border-radius: 6px; }
+.sz { font-weight: 700; color: var(--accent-2); margin-top: 6px; }
+.save-msg { text-align: center; margin-top: 8px; color: var(--ok); font-weight: 700; }
+
+/* Избор на език (i18n) */
+.lang-toggle { position:absolute; right:12px; top:12px; background:rgba(0,0,0,.15); border:1px solid rgba(255,255,255,.25); color:inherit; padding:6px 12px; border-radius:8px; cursor:pointer; font-size:.85em; }
+.lang-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+.lang-btn { padding:14px; border-radius:10px; border:1px solid rgba(0,0,0,.15); background:#fff; cursor:pointer; font-weight:600; font-size:1em; }
+.lang-btn.cur { background:#2a86d8; color:#fff; border-color:#2a86d8; }
+[dir="rtl"] .lang-toggle { right:auto; left:12px; }

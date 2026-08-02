@@ -8,6 +8,7 @@
       "name": "Pupikes Toolkit Authenticator",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/authenticator.png",
+      "price": "$4.44",
       "text": {
         "bg": "Частно приложение за двуфакторно удостоверяване (2FA), което генерира еднократни TOTP/HOTP/Steam кодове и пази всички тайни в криптиран, биометрично заключен тр",
         "ru": "Приложение для частной двухфакторной аутентификации (2FA), которое генерирует одноразовые коды TOTP/HOTP/Steam и хранит все секреты в зашифрованном биометрическ",
@@ -32,6 +33,7 @@
       "name": "Pupikes Auto Answer",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/autoreply-bot.png",
+      "price": "$1.3",
       "text": {
         "bg": "Автоматичен асистент за отговор на съобщения, който отговаря вместо Вас по Ваши собствени правила: задействания на ключови думи с готови отговори, работно време",
         "ru": "Автоматический помощник по ответам на сообщения, который отвечает за вас по вашим собственным правилам: триггеры ключевых слов с готовыми ответами, часы работы,",
@@ -56,6 +58,7 @@
       "name": "Pupikes Baby Radar",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/baby-monitor.png",
+      "price": "$4.44",
       "text": {
         "bg": "Асистент за осведоменост, базиран на камера, който наблюдава вашето спящо или играещо дете през камерата на телефона и ви предупреждава при движение: той сигнал",
         "ru": "Помощник по повышению осведомленности на основе камеры, который наблюдает за вашим спящим или играющим ребенком через камеру телефона и предупреждает вас о движ",
@@ -80,6 +83,7 @@
       "name": "Pupikes FAQ Desk",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/business-faq-bot.png",
+      "price": "$1.3",
       "text": {
         "bg": "Бот, базиран на правила, който автоматично отговаря на често задаваните въпроси на клиентите ви, като използва база от знания за често задавани въпроси за ключо",
         "ru": "Бот на основе правил, который автоматически отвечает на часто задаваемые вопросы ваших клиентов, используя базу знаний FAQ по ключевым словам, приветствия, сооб",
@@ -104,6 +108,7 @@
       "name": "MotionHawk",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/camera-watch.png",
+      "price": "$4.44",
       "text": {
         "bg": "Асистент за охрана на камерата, който гледа как камерата се захранва и ви предупреждава при движение, като ви казва какво се движи: човек/нарушител, куче, котка",
         "ru": "Помощник охранника камеры, который наблюдает за подачей камеры и предупреждает вас о движении, сообщая вам, что движется: человек/злоумышленник, собака, кошка и",
@@ -123,83 +128,12 @@
       }
     },
     {
-      "id": "chat",
-      "enabled": false,
-      "name": "Pupikes Chat",
-      "storeUrl": "",
-      "img": "https://selflearning.bot.nu/promo/chat.png",
-      "text": {
-        "bg": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "ru": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "uk": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "en": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "de": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "fr": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "es": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "es-MX": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "it": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "pt": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "ar": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "hi": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "ja": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "ky": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online.",
-        "zh-Hant": "A real-time messaging app that connects you to the Pupikes chat service. Pick from 15 languages and start chatting once you are online."
-      }
-    },
-    {
-      "id": "dodge-master",
-      "enabled": false,
-      "name": "EvadeArena",
-      "storeUrl": "",
-      "img": "https://selflearning.bot.nu/promo/dodge-master.png",
-      "text": {
-        "bg": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "ru": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "uk": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "en": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "de": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "fr": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "es": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "es-MX": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "it": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "pt": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "ar": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "hi": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "ja": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "ky": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul",
-        "zh-Hant": "A top-down survival arcade game: you stand in the middle while projectiles fly in from every side and you move to dodge them across 10 levels of rising difficul"
-      }
-    },
-    {
-      "id": "duel",
-      "enabled": false,
-      "name": "Pupikes Ring Clash",
-      "storeUrl": "",
-      "img": "https://selflearning.bot.nu/promo/duel.png",
-      "text": {
-        "bg": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "ru": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "uk": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "en": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "de": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "fr": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "es": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "es-MX": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "it": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "pt": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "ar": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "hi": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "ja": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "ky": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo ",
-        "zh-Hant": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo "
-      }
-    },
-    {
       "id": "fps-hunter",
       "enabled": false,
       "name": "Huntline 3D",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/fps-hunter.png",
+      "price": "$1.3",
       "text": {
         "bg": "A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, an",
         "ru": "A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, an",
@@ -219,35 +153,12 @@
       }
     },
     {
-      "id": "hmm",
-      "enabled": false,
-      "name": "Pupikes Field Battle",
-      "storeUrl": "",
-      "img": "https://selflearning.bot.nu/promo/hmm.png",
-      "text": {
-        "bg": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "ru": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "uk": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "en": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "de": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "fr": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "es": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "es-MX": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "it": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "pt": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "ar": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "hi": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "ja": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "ky": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to",
-        "zh-Hant": "A 3-vs-3 turn-based team battle where your randomly assigned heroes fight across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to"
-      }
-    },
-    {
       "id": "houselookbook",
       "enabled": false,
       "name": "HouseLookBook",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/houselookbook.png",
+      "price": "$1.3",
       "text": {
         "bg": "Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then",
         "ru": "Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then",
@@ -272,6 +183,7 @@
       "name": "Pupikes Site Monitor",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/monitor-bot.png",
+      "price": "$1.3",
       "text": {
         "bg": "An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everythin",
         "ru": "An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everythin",
@@ -296,6 +208,7 @@
       "name": "NewsLator",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/newslator.png",
+      "price": "$1.3",
       "text": {
         "bg": "Световни новини, по държави, на твоя език",
         "ru": "Мировые новости, по странам, на вашем языке",
@@ -320,6 +233,7 @@
       "name": "Warbird Rush",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/plane-shooter.png",
+      "price": "$1.3",
       "text": {
         "bg": "A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies and survive 10 increasingly difficult levels. Fully offline single-player action.",
         "ru": "A fast arcade shoot-em-up where you pilot a plane, shoot down waves of enemies and survive 10 increasingly difficult levels. Fully offline single-player action.",
@@ -344,6 +258,7 @@
       "name": "Pupikes Toolkit Price Watch",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/price-watch-bot.png",
+      "price": "$1.3",
       "text": {
         "bg": "A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a ",
         "ru": "A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a ",
@@ -368,6 +283,7 @@
       "name": "Pupikes Routine Planner",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/routine-bot.png",
+      "price": "$1.3",
       "text": {
         "bg": "A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optiona",
         "ru": "A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optiona",
@@ -392,6 +308,7 @@
       "name": "Rustam picks cucumbers",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/rustam.png",
+      "price": "$1.3",
       "text": {
         "bg": "A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with ",
         "ru": "A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with ",
@@ -411,83 +328,12 @@
       }
     },
     {
-      "id": "selflearning-friend",
-      "enabled": false,
-      "name": "Pupikes Learning Buddy",
-      "storeUrl": "https://appgallery.huawei.com/",
-      "img": "https://selflearning.bot.nu/promo/selflearning-friend.png",
-      "text": {
-        "bg": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "ru": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "uk": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "en": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "de": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "fr": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "es": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "es-MX": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "it": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "pt": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "ar": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "hi": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "ja": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "ky": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever",
-        "zh-Hant": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Ever"
-      }
-    },
-    {
-      "id": "services-toolkit",
-      "enabled": true,
-      "name": "Pupikes Toolkit",
-      "storeUrl": "",
-      "img": "https://selflearning.bot.nu/promo/services-toolkit.png",
-      "text": {
-        "bg": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "ru": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "uk": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "en": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "de": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "fr": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "es": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "es-MX": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "it": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "pt": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "ar": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "hi": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "ja": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "ky": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a ",
-        "zh-Hant": "An all-in-one utility box with QR codes, password and text tools, calculators, image and PDF compression, currency rates and crypto charts, a web scraper and a "
-      }
-    },
-    {
-      "id": "titans-fight",
-      "enabled": false,
-      "name": "Godfist Arena",
-      "storeUrl": "",
-      "img": "https://selflearning.bot.nu/promo/titans-fight.png",
-      "text": {
-        "bg": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "ru": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "uk": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "en": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "de": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "fr": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "es": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "es-MX": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "it": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "pt": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "ar": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "hi": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "ja": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "ky": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved ",
-        "zh-Hant": "A single-player arcade fighting game across 10 levels: pick your weapon, beat each foe to unlock the next and climb from Rookie to God of War. Scores are saved "
-      }
-    },
-    {
       "id": "pupikes-toolkit-pdf",
       "enabled": true,
       "name": "Pupikes Toolkit PDF",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-pdf.png",
+      "price": "$1.3",
       "text": {
         "bg": "Сливане, разделяне, воден знак · Растеризира страниците за по-малък размер · Извлича текста и прави .docx файл",
         "ru": "Объединение, разделение, водяной знак · Растрирует страницы для меньшего размера · Извлекает текст и создаёт файл .docx",
@@ -512,6 +358,7 @@
       "name": "Pupikes Toolkit QR",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-qr.png",
+      "price": "$1.3",
       "text": {
         "bg": "Генерирай и разчети QR кодове",
         "ru": "Создавай и сканируй QR-коды",
@@ -536,6 +383,7 @@
       "name": "Pupikes Toolkit AI Announcement",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-ai-announcement.png",
+      "price": "$1.3",
       "text": {
         "bg": "Пиши, обобщавай, превеждай (безплатно)",
         "ru": "Пиши, обобщай, переводи (бесплатно)",
@@ -560,6 +408,7 @@
       "name": "Pupikes Toolkit Text",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-text.png",
+      "price": "$1.3",
       "text": {
         "bg": "Брояч, форматиране, Base64",
         "ru": "Счётчик, форматирование, Base64",
@@ -584,6 +433,7 @@
       "name": "Pupikes Toolkit Finance",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-finance.png",
+      "price": "$1.3",
       "text": {
         "bg": "RSI, Fibonacci, BTC/ETH по периоди (Binance/CoinGecko) · Конвертор и курсове на живо · Прагове с известие и звук за до 20 двойки · Заем, ДДС, лихва, проценти",
         "ru": "RSI, Фибоначчи, BTC/ETH по периодам (Binance/CoinGecko) · Конвертер и курсы в реальном времени · Пороги с уведомлением и звуком до 20 пар · Кредит, НДС, проценты",
@@ -608,6 +458,7 @@
       "name": "Pupikes Toolkit Pictures",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-pictures.png",
+      "price": "$1.3",
       "text": {
         "bg": "Намали JPEG / PNG / WebP",
         "ru": "Уменьши JPEG / PNG / WebP",
@@ -632,6 +483,7 @@
       "name": "Pupikes Toolkit Videos",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-videos.png",
+      "price": "$1.3",
       "text": {
         "bg": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройството",
         "ru": "MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройстве",
@@ -656,6 +508,7 @@
       "name": "Pupikes Toolkit Sound",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-sound.png",
+      "price": "$1.3",
       "text": {
         "bg": "Телефонни звукови формати → MP4 / MP3 / WAV / OGG",
         "ru": "Телефонные аудиоформаты → MP4 / MP3 / WAV / OGG",
@@ -680,6 +533,7 @@
       "name": "Pupikes Toolkit Passwords",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-passwords.png",
+      "price": "$1.3",
       "text": {
         "bg": "Силни пароли с 4 метода",
         "ru": "Надёжные пароли, 4 метода",
@@ -704,6 +558,7 @@
       "name": "Pupikes Toolkit Scraper",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-scraper.png",
+      "price": "$1.3",
       "text": {
         "bg": "Извличане на заглавие/текст/връзки",
         "ru": "Извлечение заголовка/текста/ссылок",
@@ -720,6 +575,31 @@
         "ja": "タイトル/本文/リンクを抽出",
         "ky": "Аталыш/текст/шилтемелерди алуу",
         "zh-Hant": "擷取標題／文字／連結"
+      }
+    },
+    {
+      "id": "pupikes-toolkit-3drotate",
+      "enabled": true,
+      "name": "Pupikes Toolkit 3D Rotate",
+      "storeUrl": "https://appgallery.huawei.com/",
+      "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-3drotate.png",
+      "price": "$1.3",
+      "text": {
+        "bg": "Pupikes Toolkit Pictures — Намали JPEG / PNG / WebP.",
+        "ru": "Pupikes Toolkit Pictures — Уменьши JPEG / PNG / WebP.",
+        "uk": "Pupikes Toolkit Pictures — Зменши JPEG / PNG / WebP.",
+        "en": "Pupikes Toolkit Pictures — Shrink JPEG / PNG / WebP.",
+        "de": "Pupikes Toolkit Pictures — JPEG / PNG / WebP verkleinern.",
+        "fr": "Pupikes Toolkit Pictures — Réduire JPEG / PNG / WebP.",
+        "es": "Pupikes Toolkit Pictures — Reduce JPEG / PNG / WebP.",
+        "es-MX": "Pupikes Toolkit Pictures — Reduce JPEG / PNG / WebP.",
+        "it": "Pupikes Toolkit Pictures — Riduci JPEG / PNG / WebP.",
+        "pt": "Pupikes Toolkit Pictures — Reduza JPEG / PNG / WebP.",
+        "ar": "Pupikes Toolkit Pictures — صغّر JPEG / PNG / WebP.",
+        "hi": "Pupikes Toolkit Pictures — JPEG / PNG / WebP छोटा करें.",
+        "ja": "Pupikes Toolkit Pictures — JPEG / PNG / WebP を縮小.",
+        "ky": "Pupikes Toolkit Pictures — JPEG / PNG / WebP кичирейтүү.",
+        "zh-Hant": "Pupikes Toolkit Pictures — 縮小 JPEG / PNG / WebP."
       }
     }
   ]

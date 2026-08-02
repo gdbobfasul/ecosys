@@ -8,6 +8,12 @@ import { slugForApp } from './apk-slug.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const catalogs = ['app-shared/pupikes-catalog.json', 'apk/catalog.json', 'public/pupikes-app/catalog.json'];
+// Текущата ОБЩА версия — от главния версионен файл (NNNNN.version в ROOT). Показва се най-отгоре на pupikes.app.
+function rootVersion() {
+  try { const f = fs.readdirSync(ROOT).filter((x) => /^\d+\.version$/.test(x)).sort().pop(); if (f) return fs.readFileSync(path.join(ROOT, f), 'utf8').trim(); } catch (_) {}
+  return '';
+}
+const CUR_VERSION = rootVersion();
 let changed = 0;
 function walk(node) {
   if (Array.isArray(node)) { node.forEach(walk); return; }
@@ -31,7 +37,8 @@ for (const c of catalogs) {
   const j = JSON.parse(fs.readFileSync(p, 'utf8'));
   const before = changed;
   walk(j);
+  if (CUR_VERSION) j.version = CUR_VERSION;                   // текущата обща версия за pupikes.app
   fs.writeFileSync(p, JSON.stringify(j, null, 2) + '\n');
-  console.log(`обновен: ${c} (+${changed - before})`);
+  console.log(`обновен: ${c} (+${changed - before})${CUR_VERSION ? ' · version ' + CUR_VERSION : ''}`);
 }
 console.log('ОБЩО APK референции сменени:', changed);

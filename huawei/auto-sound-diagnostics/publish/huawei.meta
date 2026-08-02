@@ -1,0 +1,31 @@
+# huawei.meta — основни данни за публикуване в developer.huawei.com (AppGallery Connect)
+# Приложение: Auto Sound Diagnostics (huawei издание).
+
+[Set basic app information]
+App type: App (приложение, НЕ игра)
+App name: Auto Sound Diagnostics              # 22 / 30 знака
+App package name: com.pupikes.autosound.hw
+Level-1 app category: Auto & Vehicles
+
+[Integrate open capabilities]
+# Open capabilities: няма (без Account Kit, IAP, Push, Ads, Game Service).
+
+[Support / Поддръжка]
+Support email: miroljubkalaydjiev177@gmail.com
+
+[Localization]
+Languages: bg, ru, uk, en, de, fr, es, es-MX, it, pt, ar, hi, ja, ky, zh-Hant (15)
+Listing: publish/store-listing/<език>.txt
+Screenshots: publish/1-language-picker.png + publish/2..8-*.png
+# Политики: publish/hw-privacy.html + hw-terms.html (хостват се на selflearning.bot.nu/privacy/auto-sound-diagnostics/)
+
+[Permissions / разрешения — за прегледа]
+# RECORD_AUDIO (Микрофон) — единствено разрешение. Използва се САМО докато потребителят натисне
+# „Запиши и анализирай"; звукът се обработва на устройството в реално време, НЕ се записва във файл
+# и НЕ се качва никъде. Обосновка за прегледа: анализ на звука на автомобила за ориентировъчна
+# звукова диагностика.
+
+[Disclaimer / ЗАДЪЛЖИТЕЛНО]
+# Само информативно приложение. НЕ поставя точна диагноза, НЕ заменя автомонтьор. Задължителен
+# екран за съгласие при старт (legal-gate) + кратка версия във футъра. Анализът е сравнение по
+# акустични признаци на устройството — БЕЗ AI.

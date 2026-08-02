@@ -4,5 +4,5 @@ A robot that replies for you — by your rules.
 
 Activate the robot, set rules (keywords → ready replies, office hours, allow/block lists) and turn it on. When a message arrives, the robot replies automatically and notifies you.
 
-Support: dai.group.ltd.support@gmail.com
-For questions and support, write to: dai.group.ltd.support@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
+For questions and support, write to: miroljubkalaydjiev177@gmail.com (Subject: Pupikes.com)

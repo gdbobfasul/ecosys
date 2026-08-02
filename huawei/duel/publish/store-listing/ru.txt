@@ -8,5 +8,5 @@ A 1-vs-1 turn-based fighting game where your randomly assigned hero battles acro
 
 Комбинации находишь подбором. Не меняются всю игру.
 
-Поддержка: dai.group.ltd.support@gmail.com
-По вопросам и поддержке пишите на: dai.group.ltd.support@gmail.com
+Поддержка: miroljubkalaydjiev177@gmail.com
+По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com

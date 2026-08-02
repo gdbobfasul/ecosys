@@ -4,5 +4,5 @@ An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sen
 
 無限監控、本機通知、依新項目與關鍵字比對。
 
-支援: dai.group.ltd.support@gmail.com
-如有問題或需要支援，請來信：dai.group.ltd.support@gmail.com
+支援: miroljubkalaydjiev177@gmail.com
+如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com

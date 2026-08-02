@@ -4,5 +4,5 @@ Le bot surveille une source de ton choix (flux RSS/Atom ou API JSON publique) et
 
 Moniteurs illimités, notifications locales, comparaison sur nouvelles entrées et mots-clés.
 
-Assistance: dai.group.ltd.support@gmail.com
-Pour toute question ou assistance, écrivez à : dai.group.ltd.support@gmail.com
+Assistance: miroljubkalaydjiev177@gmail.com
+Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
