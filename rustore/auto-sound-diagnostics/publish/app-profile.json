@@ -1,0 +1,22 @@
+{
+  "categoryHuawei": "Auto & Vehicles",
+  "categoryRustore": "Авто",
+  "isGame": false,
+  "generativeAI": false,
+  "descKeys": [],
+  "pitchEn": "Auto Sound Diagnostics listens to your car through the microphone (engine, running gear, brakes, cabin), analyses acoustic features on-device and suggests possible causes with general advice. It is a rough guide only, NOT an exact diagnosis, and it never replaces a qualified mechanic.",
+  "newFeaturesEn": "First release: record the car sound with the microphone; pick where the sound comes from (engine / wheels / brakes / suspension / exhaust / cabin) and when you hear it (idle / accelerating / braking / turning / cold start / bumps); on-device acoustic analysis (frequency bands, knocking/ticking, squeal, grind, hiss, rough running) ranks possible causes with an urgency flag and advice, in 15 languages. No AI, analysis runs on-device.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": true,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "The microphone is used only while you tap 'Record & analyze'; the audio is processed on-device in real time and is NEVER recorded to a file or uploaded. Network is used only to translate the result text into your chosen language via MyMemory (free, keyless) — skipped for Bulgarian and when offline — plus the common Pupikes layer (optional anonymous help report and self-promotion catalogue). No account, no personal data. Only your language and app preferences are stored on-device."
+  },
+  "reviewerRemarksEn": "No login or account. On first launch: a short Pupikes intro, then choose a language, then a MANDATORY disclaimer screen (informational only, not an exact diagnosis, not a replacement for a mechanic; do not use while driving) with an 'I understand' checkbox that must be ticked to continue. Then pick where/when the sound occurs and tap 'Record & analyze' — the app listens for a few seconds and shows possible causes with advice. The microphone permission (RECORD_AUDIO) is the only permission and is used solely for this on-device analysis; audio is not stored or transmitted.",
+  "pricing": { "type": "Free" }
+}

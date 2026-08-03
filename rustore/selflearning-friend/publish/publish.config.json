@@ -1,0 +1,16 @@
+{
+  "webDir": "dist",
+  "viewport": { "width": 360, "height": 760 },
+  "deviceScaleFactor": 3,
+  "langKey": "slf.lang",
+  "stateKey": "slf.state.v1",
+  "state": {
+    "version": 1,
+    "identity": { "named": true, "nameHash": "demo", "nameHint": null, "avatarSeed": 123456, "bornAt": 1700000000000, "dataMode": "personal" },
+    "lock": { "unlockedAt": 1700000000000, "failCount": 0, "cooldownUntil": null }
+  },
+  "sharedShot": "1-language-picker.png",
+  "screens": [
+    { "name": "main.png", "state": "full", "wait": 2000 }
+  ]
+}

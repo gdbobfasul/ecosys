@@ -1,0 +1,27 @@
+{
+  "categoryHuawei": "Tools",
+  "isGame": false,
+  "generativeAI": false,
+  "descKeys": [
+    "setup_desc",
+    "export_all_desc"
+  ],
+  "pitchEn": "A private two-factor authentication (2FA) app that generates TOTP/HOTP/Steam one-time codes and keeps all secrets in an encrypted, biometric-locked vault on your device. Add accounts by scanning a QR code, pasting an otpauth:// link, entering keys manually, or importing from Aegis and Google Authenticator, and export everything as QR images in a .zip.",
+  "newFeaturesEn": "First release: encrypted local 2FA vault with TOTP/HOTP/Steam codes, QR/manual/Aegis/Google Authenticator import, biometric unlock, and duplicate detection.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": true,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "All 2FA secrets are stored in an encrypted on-device vault; nothing is sent to any server. Camera is used only to scan otpauth QR codes. No login, no network."
+  },
+  "reviewerRemarksEn": "No account or sign-in is required. On first launch pick a language and create a master password, which encrypts the local vault. Tap the + button and choose 'Scan QR code' (grant camera permission when asked) or 'Enter manually' to add a test account, then view the rotating 6-digit code on the list screen. All data stays on the device.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

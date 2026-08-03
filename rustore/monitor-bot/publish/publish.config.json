@@ -1,0 +1,56 @@
+{
+  "_comment": "Snapshot конфиг (monitor-bot). Език=monitorbot.lang; таблото се показва при onboarded:true. Засяваме 2 монитора + дневник, за да изглежда пълно.",
+  "webDir": "dist",
+  "viewport": { "width": 360, "height": 760 },
+  "deviceScaleFactor": 3,
+  "langKey": "monitorbot.lang",
+  "stateKey": "mob.state.v1",
+  "state": {
+    "onboarded": true,
+    "masterOn": false,
+    "permissions": { "notifications": true, "internet": true },
+    "proxyBase": "",
+    "monitors": [
+      {
+        "id": "m-seed-hn",
+        "name": "Hacker News (RSS)",
+        "sourceType": "rss",
+        "url": "https://hnrss.org/frontpage",
+        "rule": "new",
+        "keywords": "",
+        "freq": "1h",
+        "paused": false,
+        "lastCheck": 1719952200000,
+        "lastMatch": 1719952200000,
+        "lastStatus": "3 new matches",
+        "seenIds": []
+      },
+      {
+        "id": "m-seed-reddit",
+        "name": "Reddit r/worldnews",
+        "sourceType": "json",
+        "url": "https://www.reddit.com/r/worldnews/new.json?limit=25",
+        "jsonPath": "data.children",
+        "idField": "data.id",
+        "titleField": "data.title",
+        "rule": "new",
+        "keywords": "",
+        "freq": "15min",
+        "paused": false,
+        "lastCheck": 1719951000000,
+        "lastMatch": null,
+        "lastStatus": "No changes",
+        "seenIds": []
+      }
+    ],
+    "log": [
+      { "ts": 1719952200000, "text": "Hacker News (RSS): 3 new matches", "kind": "match" },
+      { "ts": 1719951000000, "text": "Reddit r/worldnews: no changes", "kind": "info" },
+      { "ts": 1719950400000, "text": "Monitoring started", "kind": "info" }
+    ]
+  },
+  "sharedShot": "1-language-picker.png",
+  "screens": [
+    { "name": "main.png", "state": "full", "wait": 1800 }
+  ]
+}

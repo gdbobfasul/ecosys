@@ -1,0 +1,27 @@
+{
+  "categoryHuawei": "Lifestyle",
+  "isGame": false,
+  "generativeAI": false,
+  "descKeys": [
+    "ob_tagline",
+    "ob_note"
+  ],
+  "pitchEn": "A camera-based awareness assistant that watches your sleeping or playing child through the phone camera and alerts you on motion: it flags stirring/waking, a second person appearing in the room, or the child leaving the frame. Detection runs on-device with a local notification, sound, and a photo log for each event.",
+  "newFeaturesEn": "First release: on-device motion watching with child-aware alerts (stirring, stranger in room, left frame), local notifications, and an event log with snapshots.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": true,
+    "microphone": false,
+    "location": false,
+    "notifications": true,
+    "storesLocalOnly": true,
+    "notes": "Video is processed on the device and never uploaded; event snapshots and logs stay local. Network is used only for a one-time free AI-model download and optionally a user-supplied camera/relay URL. In-app disclaimer states it is NOT a certified safety device."
+  },
+  "reviewerRemarksEn": "No account or login is required. On first launch pick a language, read the onboarding (including the safety disclaimer that it is not a certified baby monitor), and continue to Permissions. Grant Camera (and optionally Notifications), point the phone camera at a scene, and start the watcher; moving in front of the camera triggers a local alert and a logged snapshot. Everything runs on-device.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "_comment": "Конфиг за AppPublisherBot (screenshots). Специфичен за този ап (навигация/състояние).",
+  "webDir": "dist",
+  "viewport": { "width": 360, "height": 760 },
+  "deviceScaleFactor": 3,
+  "langKey": "newslator.lang",
+  "stateKey": "si.state.v1",
+  "state": { "onboarded": true, "country": "BG", "settings": { "autoTranslate": false, "tts": true, "officialOnly": false } },
+  "tabSelector": ".tabbar button",
+  "sharedShot": "screen1.png",
+  "sampleHeadlines": [
+    "Parliament approves the budget for next year",
+    "Sunny weather expected across the country this weekend",
+    "National team wins the international friendly match",
+    "New technology park opens in the capital",
+    "Inflation slows for the second month in a row"
+  ],
+  "screens": [
+    { "name": "screen2.png", "state": "langOnly", "wait": 900 },
+    { "name": "screen3.png", "state": "full", "wait": 2200 },
+    { "name": "screen4.png", "state": "full", "wait": 2000, "tab": 1 },
+    { "name": "screen5.png", "state": "full", "wait": 2000, "tab": 2 }
+  ]
+}

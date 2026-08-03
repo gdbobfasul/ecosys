@@ -1,0 +1,26 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [
+    "tagline"
+  ],
+  "pitchEn": "A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.",
+  "newFeaturesEn": "First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline game. No network, no hardware permissions, no accounts. Only local game settings/progress are kept on the device."
+  },
+  "reviewerRemarksEn": "No account, login or internet connection is needed. Launch the app, choose a language on first run, and tap Start to play. Collect the cucumbers before the moles reach them and advance through the 10 levels. Everything runs offline on the device.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

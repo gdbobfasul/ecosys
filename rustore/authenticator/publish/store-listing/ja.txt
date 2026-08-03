@@ -1,0 +1,14 @@
+TOTP/HOTP/Steamワンタイムコードを生成し、デバイス上の暗号化された生体認証ロックされた保管庫にすべての秘密を保持するプライベート二要素認証（ 2 FA ）アプリ。QRコードをスキャンしたり、otpauth ://リンクを貼り付けたり、キーを手動で入力したり、AegisやGoogle Authenticatorからインポートしたりしてアカウントを追加し、すべてをQR画像として.zipにエクスポートします。
+
+保管庫はこのパスワードで暗号化されます。これがないとコードにアクセスできません。
+
+各アカウントを個別のQR画像として1つの.zipでダウンロード。
+
+サポート: miroljubkalaydjiev177@gmail.com
+ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+
+お気に入りのアプリと互換 — 双方向でインポート／エクスポート：
+• ブラウザのパスワード：Google Chrome, Microsoft Edge, Mozilla Firefox。
+• 2FA コード：Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass、および任意の otpauth アプリ。
+• 暗号ウォレットのシードフレーズと鍵：MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet。
+すべてのデータは端末内にのみ暗号化して保存されます。

@@ -1,0 +1,29 @@
+{
+  "categoryHuawei": "Productivity",
+  "isGame": false,
+  "generativeAI": false,
+  "descKeys": [
+    "onb_intro",
+    "onb_feat_morning",
+    "onb_feat_reminders",
+    "onb_feat_evening"
+  ],
+  "pitchEn": "A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.",
+  "newFeaturesEn": "First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": true,
+    "storesLocalOnly": true,
+    "notes": "Network is used only to fetch weather from a public service by a city NAME the user types (no GPS/device location). Text-to-speech uses the device speaker. Reminders, notes and settings are stored locally; local notifications only, no account, no cloud."
+  },
+  "reviewerRemarksEn": "No account or login is required. On first launch pick a language and activate the robot, then grant the notification permission. Add reminders (with time and days), notes, and optionally type a city name to enable the weather part of the morning briefing. Use the briefing preview to see it immediately. Internet is used only for weather lookups by city name; location/GPS is never accessed.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

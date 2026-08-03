@@ -1,0 +1,14 @@
+Une application privée d'authentification à deux facteurs (2FA) qui génère des codes à usage unique TOTP/HOTP/Steam et conserve tous les secrets dans un coffre-fort crypté et biométrique verrouillé sur votre appareil. Ajoutez des comptes en scannant un code QR, en collant un lien otpauth ://, en saisissant les clés manuellement ou en les important à partir d'Aegis et de Google Authenticator, et exportez le tout sous forme d'images QR dans un fichier .zip.
+
+Le coffre est chiffré avec ce mot de passe. Sans lui, aucun accès aux codes.
+
+Télécharge chaque compte en image QR séparée dans un .zip.
+
+Assistance: miroljubkalaydjiev177@gmail.com
+Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+
+Compatible avec tes applis préférées — import et export dans les deux sens :
+• Mots de passe des navigateurs : Google Chrome, Microsoft Edge, Mozilla Firefox.
+• Codes 2FA : Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass, ainsi que toute appli otpauth.
+• Phrases seed et clés de portefeuilles crypto : MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
+Toutes les données restent chiffrées uniquement sur ton appareil.

@@ -8,9 +8,11 @@ const path = require('path');
 const fs = require('fs');
 
 const app = (process.argv[2] || '').replace(/^-+/, '') || 'newslator';
-const pub = path.resolve('huawei', app, 'publish');
+// RuStore ботът чете ВСИЧКИ данни от rustore/ дърво (отделно от Huawei — дори съдържанието да е дублирано).
+// Huawei ботът (huawei-release-bot.cjs) чете от huawei/. Публикуване в даден магазин = данни от неговата папка.
+const pub = path.resolve('rustore', app, 'publish');
 function readJson(p) { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch (_) { return {}; } }
-const cfg = readJson(path.resolve('huawei', app, 'capacitor.config.json'));
+const cfg = readJson(path.resolve('rustore', app, 'capacitor.config.json'));
 const brand = cfg.appName || app;
 const storeNames = readJson(path.join(pub, 'store-names.json'));
 const baseName = storeNames._default || brand;
@@ -53,7 +55,9 @@ function moderatorComment() {
   return s.join(' ');
 }
 
-// Руски Short/Full описание от descriptions-languages.md (RuStore listing-ът е на руски).
+// Руски Short/Full описание. Основен източник: descriptions-languages.md (ru блок). Резерва за тулкит
+// фамилията (pupikes-toolkit-*), която ползва store-listing/<език>.txt: 1-ви абзац=заглавие,
+// 2-ри=постоянно кратко мото, 3+=функции, накрая поддръжка.
 function ruDesc() {
   try {
     const md = require('fs').readFileSync(path.join(pub, 'descriptions-languages.md'), 'utf8');
@@ -63,9 +67,18 @@ function ruDesc() {
         const briefQ = (b.match(/\*\*Brief[^\n]*\*\*\s*\n>\s*([^\n]+)/) || [])[1];
         const brief = (briefQ || (b.match(/\*\*Brief[^\n]*\*\*[\s\S]*?```\n([\s\S]*?)\n```/) || [])[1] || '').trim();
         const full = ((b.match(/\*\*Full[^\n]*\*\*[\s\S]*?```\n([\s\S]*?)\n```/) || [])[1] || '').trim();
-        return { brief, full };
+        if (full) return { brief, full };
       }
     }
+  } catch (_) {}
+  // Резерва: store-listing/ru.txt (тулкит фамилията)
+  try {
+    const txt = require('fs').readFileSync(path.join(pub, 'store-listing', 'ru.txt'), 'utf8').replace(/\r/g, '').trim();
+    const paras = txt.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+    const body = paras.filter((p) => !/^(Поддержка|По вопросам|Support|For questions)/i.test(p));
+    const brief = (body[1] && body[1].length <= 80) ? body[1] : (body[0] || '').slice(0, 80);
+    const full = body.join('\n\n');
+    if (full) return { brief, full };
   } catch (_) {}
   return { brief: '', full: '' };
 }
@@ -108,8 +121,20 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
       console.log('Екран: New app (Add an app)');
       // deviceType → MOBILE (Universal). ВНИМАНИЕ: „Monetization strategy" е НЕОБРАТИМА (cannot be
       // changed) → приложението е ПЛАТЕНО (PAID), не Free. „Console name" също е неизменяемо.
-      await page.locator('input[type="radio"][name="deviceType"][value="MOBILE"]').check({ force: true }).then(() => log('✓ Тип устройство: Universal (MOBILE)')).catch(() => log('↷ deviceType — избери Universal ръчно'));
-      await page.locator('input[type="radio"][name="monetizationType"][value="PAID"]').check({ force: true }).then(() => log('✓ Монетизация: Paid (продажба на самото приложение) — НЕОБРАТИМО')).catch(() => log('↷ monetizationType — избери Paid ръчно'));
+      // RuStore ползва custom радиа със СКРИТ <input> → .check() на входа не задейства React. Кликваме
+      // ОБВИВАЩИЯ етикет и ПРОВЕРЯВАМЕ, че input-ът е избран (резерва: клик по видимия текст).
+      async function pickRadioByLabel(name, value, human) {
+        const input = page.locator('input[name="' + name + '"][value="' + value + '"]');
+        const label = page.locator('label').filter({ has: input }).first();
+        if (await label.count().catch(() => 0)) { await label.click({ force: true }).catch(() => {}); await sleep(300); }
+        let ok = await input.isChecked().catch(() => false);
+        if (!ok) { await page.getByText(human, { exact: false }).first().click({ force: true }).catch(() => {}); await sleep(300); ok = await input.isChecked().catch(() => false); }
+        return ok;
+      }
+      const okDev = await pickRadioByLabel('deviceType', 'MOBILE', 'Universal');
+      log(okDev ? '✓ Тип устройство: Universal (MOBILE)' : '↷ deviceType — избери Universal ръчно');
+      const okPaid = await pickRadioByLabel('monetizationType', 'PAID', 'Paid');
+      log(okPaid ? '✓ Монетизация: Paid (продажба на самото приложение) — НЕОБРАТИМО' : '⚠ monetizationType — НЕ успях да маркирам Paid, направи го РЪЧНО (иначе остава Free — необратимо!)');
       await nameInput.fill(''); await nameInput.fill(appName);
       log('✓ Console name ← ' + appName + ' (неизменяемо)');
       log('■ Прегледай (Paid ли е!) и натисни „Add“ сам, за да създадеш приложението.');
@@ -135,6 +160,20 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
     // Нашите приложения НЕ събират лични данни → нищо не се избира (остава 0/38).
     if (/\/versions\/add/.test(url) && (await page.locator('text=/Requested data|Data types/i').count().catch(() => 0))) {
       console.log('Екран: Upload app version — Safety (Requested data)');
+      // „Sensitive Permissions" (напр. POST_NOTIFICATIONS) — ако APK-то иска чувствително разрешение,
+      // RuStore показва поле „Reasons" и иска обяснение. Попълваме неутрална причина (локални известия,
+      // без лични данни), за да мине модерацията. Ако полето липсва — пропускаме.
+      // Причината идва от файла-форма: rustore/<app>/publish/rustore.json → "sensitivePermissionReason".
+      const reasonTa = page.locator('textarea:visible').first();
+      if (await reasonTa.count().catch(() => 0)) {
+        const reason = rustoreCfg.sensitivePermissionReason || '';
+        if (!reason) log('↷ няма „sensitivePermissionReason" в rustore.json — ако RuStore иска причина, добави я във файла');
+        else {
+          const cur = await reasonTa.inputValue().catch(() => '');
+          if (!cur.trim()) await reasonTa.fill(reason).then(() => log('✓ Причина за чувствителното разрешение ← от файла')).catch(() => log('↷ причина — попълни ръчно'));
+          else log('↷ причината вече е попълнена — не пипам');
+        }
+      }
       log('■ Приложението НЕ събира лични данни → „Data types" остава празно (0/38). Натисни „Continue" сам.');
       return;
     }
@@ -200,29 +239,40 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         const tcontrol = tanchor.locator('xpath=following::*[contains(@class,"react-select__control")][1]');
         // ВАЖНО: клик по ВЕЧЕ избран таг го МАХА (react-select toggle). Затова първо четем избраните
         // и НИКОГА не пипаме съществуващ — само добавяме липсващите, с проверка след всяко добавяне.
-        const already = (await tcontrol.locator('.react-select__multi-value').allInnerTexts().catch(() => [])).map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase());
+        // Избраните чипове са с клас „react-select__multi-value__label" (НЕ „…multi-value").
+        const chips = () => page.locator('.react-select__multi-value__label').allInnerTexts().catch(() => []);
+        // Ботът е авторитетен спрямо файла. Чиповете НЯМАТ бутон „×"; махат се с Backspace (маха последния
+        // при празно поле). Ако текущите тагове ≠ желаните → изчиства всички и добавя наново точно тези от
+        // файла (RuStore приема макс 5, затова първо се чисти, иначе добавянето се блокира на 5).
+        const want = tags.map((t) => t.toLowerCase());
+        const curNow = (await chips()).map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase());
+        const same = curNow.length === want.length && want.every((w) => curNow.includes(w));
+        if (!same && curNow.length) {
+          await tcontrol.click({ timeout: 3000 }).catch(() => {}); await sleep(300);
+          for (let g = 0; g < 12 && (await chips()).length; g++) { await page.keyboard.press('Backspace'); await sleep(300); }
+          await page.keyboard.press('Escape').catch(() => {});
+          log('✗ изчистих старите тагове (не съвпадаха с файла)');
+        }
+        const already = (await chips()).map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase());
         for (const tag of tags) {
           if (already.includes(tag.toLowerCase())) { log('↷ таг „' + tag + '" вече е избран — не пипам'); continue; }
           try {
             await tcontrol.scrollIntoViewIfNeeded().catch(() => {});
             await tcontrol.click({ timeout: 3000 }); await sleep(500);
-            const tinp = tcontrol.locator('input').first();
-            await tinp.fill(tag).catch(async () => { await page.keyboard.type(tag); });
+            // Въвеждане през клавиатурата (истински React събития — fill не филтрира react-select).
+            await page.keyboard.type(tag, { delay: 25 });
             await sleep(900);
             const topt = page.locator('.react-select__option').filter({ hasText: new RegExp('^' + esc(tag) + '$', 'i') }).first();
             if (await topt.count().catch(() => 0)) {
               await topt.click({ timeout: 2500 }); await sleep(400);
-              const now = (await tcontrol.locator('.react-select__multi-value').allInnerTexts().catch(() => [])).map((t) => t.trim().toLowerCase());
+              const now = (await chips()).map((t) => t.trim().toLowerCase());
               if (now.some((e) => e.includes(tag.toLowerCase()))) { log('✓ таг ← ' + tag); already.push(tag.toLowerCase()); }
               else { log('↷ таг „' + tag + '" — не се потвърди, сложи го ръчно'); await page.keyboard.press('Escape').catch(() => {}); }
             } else { log('↷ таг „' + tag + '" — няма в списъка, сложи го ръчно'); await page.keyboard.press('Escape').catch(() => {}); }
           } catch (e) { log('↷ таг „' + tag + '" — добави ръчно'); }
         }
       }
-      log('■ Прегледай всичко (цена ' + (priceRub || '?') + '₽, категория, възраст, тагове). Пазя като чернова…');
-      // По изрично искане: запази като чернова (Save as draft)
-      await page.locator('button:has-text("Save as draft"), a:has-text("Save as draft")').first().click({ timeout: 4000 }).then(() => log('✓ Натиснах „Save as draft".')).catch(() => log('↷ „Save as draft" — натисни ръчно'));
-      await sleep(2000);
+      log('■ Прегледай всичко (цена ' + (priceRub || '?') + '₽, категория, възраст, тагове) и натисни „Continue" сам. (Не пазя чернова — ти преглеждаш и публикуваш.)');
       return;
     }
 
@@ -274,16 +324,66 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
     log('Съвет: кажи ми на кой екран си (напр. „ru-ekran1“) и ще добавя попълването му.');
   }
 
+  // Намира ВИДИМИЯ активен бутон за „напред" на текущия екран (по приоритет). RuStore крие бутона в
+  // дъното на дълга форма → потребителят понякога не го вижда. Ботът пита и, при „да", го натиска сам.
+  async function advanceButton() {
+    const page = rsPage();
+    const labels = ['Submit for Moderation', 'Continue', 'Add', 'Select', 'OK', 'Confirm'];
+    const btns = page.locator('button:visible');
+    const n = await btns.count().catch(() => 0);
+    for (const lb of labels) {
+      for (let i = 0; i < n; i++) {
+        const btn = btns.nth(i);
+        const txt = ((await btn.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim();
+        if (txt.toLowerCase() === lb.toLowerCase()) {
+          const disabled = await btn.isDisabled().catch(() => false);
+          if (!disabled) return { loc: btn, label: lb };
+        }
+      }
+    }
+    return null;
+  }
+
   const loop = process.argv.includes('--loop');
   if (loop) {
-    console.log('\n   РЕЖИМ ENTER (RuStore): отвори екран в браузъра и натисни ENTER тук да го попълня. „q“+ENTER = изход.\n');
+    console.log('\n   РЕЖИМ ENTER (RuStore): отвори екран, натисни ENTER да го попълня. После питам за бутона за напред. „q“ = изход.\n');
     const rl = require('readline').createInterface({ input: process.stdin, output: process.stdout });
-    const ask = () => rl.question('ENTER = попълни текущия екран (или q за изход): ', async (a) => {
-      if (a.trim().toLowerCase() === 'q') { rl.close(); process.exit(0); }
-      try { await fillCurrent(); } catch (e) { console.log('грешка: ' + e.message); }
-      ask();
+    // Устойчиво четене: опашка от редове, за да НЕ се губят при подаване през pipe (async паузи между
+    // екрани иначе затварят readline и глътват буферираните редове).
+    const queue = []; let waiter = null; let closed = false;
+    rl.on('line', (l) => { if (waiter) { const w = waiter; waiter = null; w(l); } else queue.push(l); });
+    rl.on('close', () => { closed = true; if (waiter) { const w = waiter; waiter = null; w(null); } });
+    const question = (q) => new Promise((res) => {
+      process.stdout.write(q);
+      if (queue.length) return res(queue.shift());
+      if (closed) return res(null);
+      waiter = res;
     });
-    ask();
+    (async function runLoop() {
+      for (;;) {
+        const a = await question('ENTER = попълни текущия екран (или q за изход): ');
+        if (a === null || a.trim().toLowerCase() === 'q') { try { rl.close(); } catch (_) {} process.exit(0); }
+        try { await fillCurrent(); } catch (e) { console.log('грешка: ' + e.message); }
+        // ПРАВИЛО: след като екранът е попълнен, ВИНАГИ проверявай бутона за напред.
+        //  • има АКТИВЕН бутон → питай дали да го натисна;
+        //  • НЯМА активен бутон → вероятно нещо не е попълнено/готово (или още се обработва) = ГРЕШКА,
+        //    обяви я (не мълчи), за да се провери екранът.
+        let btn = null;
+        try { btn = await advanceButton(); } catch (e) { console.log('   (проверка на бутон: ' + e.message + ')'); }
+        if (!btn) {
+          console.log('   ⚠ ГРЕШКА? Няма АКТИВЕН бутон за напред (Continue/Submit…) на този екран — вероятно');
+          console.log('     нещо не е попълнено/готово (или файл още се обработва). Провери екрана, после ENTER пак.');
+          continue;
+        }
+        const yn = await question('   Да натисна ли бутона „' + btn.label + '"? (да/y = натискам, друго = не) : ');
+        if (yn === null) { try { rl.close(); } catch (_) {} process.exit(0); }
+        if (/^(да|d|y|yes|д)$/i.test(yn.trim())) {
+          await btn.loc.scrollIntoViewIfNeeded().catch(() => {});
+          await btn.loc.click({ timeout: 6000 }).then(() => console.log('   ✓ натиснах „' + btn.label + '"')).catch((e) => console.log('   ↷ не можах да натисна: ' + e.message));
+          await sleep(2500);
+        } else { console.log('   ↷ ок, не го натискам.'); }
+      }
+    })();
   } else {
     await fillCurrent();
     // НЕ затваряме браузъра — пазим едно логване. Излизаме чисто (CDP връзката иначе държи процеса жив).

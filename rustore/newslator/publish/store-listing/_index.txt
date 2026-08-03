@@ -1,0 +1,15 @@
+bg (Български) -> bg.txt
+ru (Русский) -> ru.txt
+uk (Українська) -> uk.txt
+en (English) -> en.txt
+de (Deutsch) -> de.txt
+fr (Français) -> fr.txt
+es (Español) -> es.txt
+es-MX (Español (MX)) -> es-MX.txt
+it (Italiano) -> it.txt
+pt (Português) -> pt.txt
+ar (العربية) -> ar.txt
+hi (हिन्दी) -> hi.txt
+ja (日本語) -> ja.txt
+ky (Кыргызча) -> ky.txt
+zh-Hant (繁體中文) -> zh-Hant.txt

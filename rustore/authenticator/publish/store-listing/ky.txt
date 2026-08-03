@@ -1,0 +1,14 @@
+TOTP/HOTP/Steam бир жолку коддорду жараткан жана түзмөгүңүздөгү шифрленген, биометрикалык кулпуланган кампада бардык сырларды сактаган жеке эки факторлуу аутентификация (2FA) колдонмосу. QR кодун сканерлөө менен эсептерди кошуу, otpauth чаптоо:// шилтеме, кол менен ачкычтарды киргизүү, же Aegis жана Google Authenticator импорттоо, жана .zip-жылы QR сүрөттөр катары баарын экспорттоо.
+
+Сейф ушул сырсөз менен шифрленет. Ансыз коддорго мүмкүндүк жок.
+
+Ар бир аккаунтту өзүнчө QR сүрөт катары бир .zip ичинде жүктөйт.
+
+Колдоо: miroljubkalaydjiev177@gmail.com
+Суроолор жана колдоо үчүн жазыңыз: miroljubkalaydjiev177@gmail.com
+
+Сүйүктүү колдонмолоруңуз менен шайкеш — эки тарапка импорт жана экспорт:
+• Браузердин сырсөздөрү: Google Chrome, Microsoft Edge, Mozilla Firefox.
+• 2FA коддору: Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass, ошондой эле каалаган otpauth колдонмосу.
+• Крипто капчыктардын seed фразалары жана ачкычтары: MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
+Бардык маалымат түзмөгүңүздө гана шифрленген бойдон калат.

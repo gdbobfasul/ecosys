@@ -1,0 +1,18 @@
+{
+  "_comment": "Snapshot конфиг (Pupikes Medicines). Език=servicestoolkit.lang; снима се началният екран (след дисклеймъра). Скрийншотите се презаснемат при билд.",
+  "webDir": "dist",
+  "viewport": {
+    "width": 360,
+    "height": 760
+  },
+  "deviceScaleFactor": 3,
+  "langKey": "servicestoolkit.lang",
+  "sharedShot": "1-language-picker.png",
+  "screens": [
+    {
+      "name": "main.png",
+      "state": "full",
+      "wait": 1500
+    }
+  ]
+}

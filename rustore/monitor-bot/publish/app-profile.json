@@ -1,0 +1,27 @@
+{
+  "categoryHuawei": "Tools",
+  "isGame": false,
+  "generativeAI": false,
+  "descKeys": [
+    "onb_intro",
+    "onb_free_desc"
+  ],
+  "pitchEn": "An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everything runs on the device with unlimited monitors, scheduled checks and change-diffing.",
+  "newFeaturesEn": "First release: create unlimited feed and JSON monitors with keyword matching and on-schedule local alerts, all running entirely on your device.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": true,
+    "storesLocalOnly": true,
+    "notes": "Fetches only the RSS/Atom or JSON sources the user enters (optionally via a user-supplied CORS proxy). Monitors, logs and settings are stored locally; no account, no cloud, no analytics. Local notifications only."
+  },
+  "reviewerRemarksEn": "No account or login is required. On first launch pick a language, tap through the onboarding, then grant the notification permission and add a monitor by pasting a public RSS/Atom feed URL or a JSON API URL. Use 'Check now' to fetch immediately; a match is written to the log and shown as a local notification. Internet is used only to download the source you entered.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

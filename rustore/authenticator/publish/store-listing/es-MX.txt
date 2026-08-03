@@ -1,0 +1,14 @@
+Una aplicación privada de autenticación de dos factores (2FA) que genera códigos TOTP/HOTP/Steam de un solo uso y guarda todos los secretos en una bóveda cifrada y con bloqueo biométrico en su dispositivo. Agregue cuentas escaneando un código QR, pegando un enlace otpauth://, ingresando claves manualmente o importando desde Aegis y Google Authenticator, y exporte todo como imágenes QR en un .zip.
+
+La bóveda se cifra con esta contraseña. Sin ella no hay acceso a tus códigos.
+
+Descarga cada cuenta como imagen QR separada en un .zip.
+
+Soporte: miroljubkalaydjiev177@gmail.com
+Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+
+Compatible con tus apps favoritas: importa y exporta en ambos sentidos:
+• Contraseñas de navegadores: Google Chrome, Microsoft Edge, Mozilla Firefox.
+• Códigos 2FA: Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass, además de cualquier app otpauth.
+• Frases semilla y claves de carteras cripto: MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
+Todos los datos quedan cifrados solo en tu dispositivo.

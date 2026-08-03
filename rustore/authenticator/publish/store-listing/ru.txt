@@ -1,0 +1,14 @@
+Приложение для частной двухфакторной аутентификации (2FA), которое генерирует одноразовые коды TOTP/HOTP/Steam и хранит все секреты в зашифрованном биометрически заблокированном хранилище на вашем устройстве. Добавьте учетные записи, отсканировав QR-код, вставив ссылку otpauth://, введя ключи вручную или импортировав их из Aegis и Google Authenticator, и экспортируйте все в виде QR-изображений в формате .zip.
+
+Хранилище шифруется этим паролем. Без него доступа к кодам нет.
+
+Скачивает каждую запись отдельной QR-картинкой в одном .zip.
+
+Поддержка: miroljubkalaydjiev177@gmail.com
+По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+
+Совместим с любимыми приложениями — импорт и экспорт в обе стороны:
+• Пароли из браузеров: Google Chrome, Microsoft Edge, Mozilla Firefox.
+• 2FA-коды: Google Authenticator, Aegis, 2FAS, Microsoft Authenticator, FreeOTP, Bitwarden, 1Password, KeePass, а также любое приложение otpauth.
+• Seed-фразы и ключи криптокошельков: MetaMask, Ledger, Trezor, Binance, Trust Wallet, Uniswap, OKX Wallet, Exodus, Guarda, Electrum, Edge Wallet.
+Все данные остаются зашифрованными только на вашем устройстве.

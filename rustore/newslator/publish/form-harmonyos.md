@@ -1,0 +1,24 @@
+# HarmonyOS форма — newslator
+
+Път: **Apps and atomic services → таб HarmonyOS → New app ID.**
+
+## New app ID
+| Поле | Попълни |
+|---|---|
+| App type | HarmonyOS app |
+| App name | името на приложението (източник: `capacitor.config.json` → `appName`) |
+| App package name | com.pupikes.newslator |
+| Level-1 app category | News (Новини) |
+
+→ Next
+
+Останалите форми (описания, икона, снимки, цена, privacy, държави) — **същите стойности като `form-android.md`**.
+
+| Поле | Попълни |
+|---|---|
+| Support email | miroljubkalaydjiev177@gmail.com |
+| Описания | `publish/descriptions-languages.md` |
+| Снимки | `publish/screenshots/` |
+| Категория | News (Новини) |
+
+⚠️ HarmonyOS иска отделен билд (HAP през DevEco Studio), не Android APK. Състояние: чака DevEco Studio.

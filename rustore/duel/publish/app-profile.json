@@ -1,0 +1,29 @@
+{
+  "categoryHuawei": "Games",
+  "isGame": true,
+  "generativeAI": false,
+  "descKeys": [
+    "game_title",
+    "rules_turnbased",
+    "rules_special",
+    "rules_discover"
+  ],
+  "pitchEn": "A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.",
+  "newFeaturesEn": "First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": false,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "Fully offline standalone game. No accounts, no network. Only a self-entered nickname, score and language are stored on-device."
+  },
+  "reviewerRemarksEn": "Launch the app; on first run choose a language and tap Start, then press Start/Begin in the menu. Fight turn by turn: pick a basic attack, or try key combinations to discover the hero's hidden special move. No account, login, or internet is required; it runs entirely offline and only asks for an optional leaderboard name.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

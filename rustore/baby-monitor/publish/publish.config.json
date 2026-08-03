@@ -1,0 +1,35 @@
+{
+  "_comment": "Snapshot конфиг (специфичен за baby-monitor). Език=babymonitor.lang; готов dashboard=babymon.state.v1 с activated:true + onboarded:true + примерни събития.",
+  "webDir": "dist",
+  "viewport": { "width": 360, "height": 760 },
+  "deviceScaleFactor": 3,
+  "langKey": "babymonitor.lang",
+  "stateKey": "babymon.state.v1",
+  "state": {
+    "version": 1,
+    "activated": true,
+    "activatedAt": 1751600000000,
+    "onboarded": true,
+    "settings": {
+      "cameraSource": "front",
+      "motionSensitivity": 55,
+      "sleepSeconds": 20,
+      "sound": true,
+      "vibrate": true,
+      "alertWake": true,
+      "alertStranger": true,
+      "alertLeftFrame": true,
+      "alertFireHeuristic": false
+    },
+    "events": [
+      { "id": "e1", "type": "wake", "label": "Baby woke up", "at": 1751614800000 },
+      { "id": "e2", "type": "left", "label": "Left the frame", "at": 1751613000000 },
+      { "id": "e3", "type": "stranger", "label": "Second person detected", "at": 1751611200000 },
+      { "id": "e4", "type": "wake", "label": "Movement detected", "at": 1751609400000 }
+    ]
+  },
+  "sharedShot": "1-language-picker.png",
+  "screens": [
+    { "name": "main.png", "state": "full", "wait": 1800 }
+  ]
+}

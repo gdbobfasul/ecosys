@@ -1,0 +1,28 @@
+{
+  "categoryHuawei": "Education",
+  "isGame": false,
+  "generativeAI": true,
+  "descKeys": [
+    "birth_intro",
+    "birth_personal_desc",
+    "birth_impersonal_desc"
+  ],
+  "pitchEn": "A private AI companion that you name and teach yourself: it talks with you by voice or text, learns knowledge from the web, and can see through the camera. Everything it learns and remembers stays on your own device, tied to a secret code word only you know.",
+  "newFeaturesEn": "First release: name and raise your own private AI friend that learns from you by voice, gathers knowledge, and keeps all memory on your device behind a secret code word.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": true,
+    "microphone": true,
+    "location": false,
+    "notifications": false,
+    "storesLocalOnly": true,
+    "notes": "No developer account or sign-in; access is guarded by a user-chosen local code word. Personal data (name, habits, memory) is stored only on the device and not uploaded by default. Microphone is used for voice conversation and camera for the optional Vision feature. Network fetches general knowledge and translations and can optionally sync with a user-supplied server; there is no developer backend collecting data."
+  },
+  "reviewerRemarksEn": "No account or registration is needed. On first launch pick a UI language, then on the 'birth' screen choose a one-word secret code (remember it — there is no hint) and give the friend a name; the app opens to Chat. To review, type in Chat or grant microphone permission to talk by voice; the Vision tab requests camera. All data stays on the device and the optional server link can be left empty.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}

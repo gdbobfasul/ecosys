@@ -1,0 +1,28 @@
+{
+  "categoryHuawei": "Tools",
+  "isGame": false,
+  "generativeAI": false,
+  "descKeys": [
+    "ob_headline",
+    "ob_intro",
+    "ob_privacy"
+  ],
+  "pitchEn": "A price watcher that tracks selected crypto (BTC, ETH, BNB, SOL, XRP, ADA, DOGE) and currency rates and sends a local notification the moment a price crosses a threshold you set. It only reads prices from free public sources and never handles payments or wallets.",
+  "newFeaturesEn": "First release: set high/low price thresholds on crypto and currency rates and get on-device local alerts, with checks every 15 minutes, hourly or daily.",
+  "dataHandling": {
+    "collectsPersonalData": false,
+    "accountsOrLogin": false,
+    "network": true,
+    "camera": false,
+    "microphone": false,
+    "location": false,
+    "notifications": true,
+    "storesLocalOnly": true,
+    "notes": "Reads read-only public price data from public exchange APIs. No wallet, no trading, no payments, no personal data. Watch list, thresholds and logs are stored locally; local notifications only."
+  },
+  "reviewerRemarksEn": "No account or login is required. On first launch choose a language and activate the robot, then grant notifications and add a watch by picking a crypto or currency, a threshold and a direction. Internet is only used to read public exchange rates. Use 'Check now' to test; when a threshold is crossed a local notification is shown. The app only monitors prices; it does not buy, sell or hold assets.",
+  "pricing": {
+    "type": "Paid",
+    "price": "1.00 USD"
+  }
+}
