@@ -265,19 +265,59 @@ async function checkByText(page, txt) {
     } catch (e) { log('↷ „' + name + '" — разотметни ръчно'); }
   }
 
+  // Държавите се рендерират само след РАЗГЪВАНЕ на региона. Belarus и Russia са в „Europe" (Huawei ги
+  // слага там); China („Chinese mainland") се вижда ВИНАГИ. Затова разгъваме само Europe.
+  async function expandEurope(frame) {
+    try {
+      // вече разгъната? (ако Belarus се вижда като чекбокс)
+      if (await frame.locator('.el-checkbox').filter({ hasText: /^Belarus/ }).count().catch(() => 0)) return true;
+      // разгъва се с клик по името „Europe" (не по чекбокса на региона)
+      const lbl = frame.locator('div.flex-1', { hasText: /^Europe$/ }).first();
+      if (await lbl.count().catch(() => 0)) { await lbl.click({ force: true, timeout: 2500 }).catch(() => {}); await sleep(1200); }
+      else { await frame.locator(':text("Europe")').first().click({ force: true, timeout: 2000 }).catch(() => {}); await sleep(1200); }
+      return await frame.locator('.el-checkbox').filter({ hasText: /^Belarus/ }).count().catch(() => 0) > 0;
+    } catch (_) { return false; }
+  }
+
   // Избери ВСИЧКИ държави („All"), после махни China/Belarus/Russia. Ползва се на екран 17 и 24.
+  // ИДЕМПОТЕНТНО: ако трите вече са изключени (а другите избрани → „All" е indeterminate), НЕ пипа
+  // (иначе повторно „All" би върнало Belarus/Russia). Разгъва Europe, за да ги достигне.
   async function selectCountriesExcept(frame) {
+    const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    await expandEurope(frame);
     const allCb = frame.locator('.el-checkbox').filter({ hasText: /^All/ }).first();
-    if (await allCb.count().catch(() => 0)) {
-      const on = await allCb.evaluate((e) => e.classList.contains('is-checked')).catch(() => false);
-      if (!on) { await allCb.click({ force: true, timeout: 2500 }).catch(() => {}); log('✓ отметнах „All" (всички държави)'); await sleep(1200); }
-      else log('✓ „All" вече е отметнат');
-    } else log('↷ не намерих „All" — отметни всички ръчно');
+    if (!(await allCb.count().catch(() => 0))) { log('↷ не намерих „All" — отметни всички ръчно'); return; }
+    let anyIncluded = false;
+    for (const c of REMOVE_COUNTRIES) {
+      const cb = frame.locator('.el-checkbox').filter({ hasText: new RegExp('^' + esc(c)) }).first();
+      if (await cb.count().catch(() => 0) && await cb.evaluate((e) => e.classList.contains('is-checked')).catch(() => false)) anyIncluded = true;
+    }
+    const allOn = await allCb.evaluate((e) => e.classList.contains('is-checked')).catch(() => false);
+    const allInd = await allCb.evaluate((e) => e.classList.contains('is-indeterminate')).catch(() => false);
+    if (!anyIncluded && allInd) { log('✓ China/Belarus/Russia вече изключени (All=indeterminate) — не пипам'); return; }
+    if (!allOn) { await allCb.click({ force: true, timeout: 2500 }).catch(() => {}); log('✓ отметнах „All" (всички държави)'); await sleep(1200); await expandEurope(frame); }
+    else log('✓ „All" вече е отметнат');
     for (const c of REMOVE_COUNTRIES) await uncheckCb(frame, c);
   }
 
-  // Качи Huawei release APK през „Manage packages" (Upload → избор на файл → Select).
-  async function uploadHwApk(frame) {
+  // Чете видимите грешки на екрана (валидация на полета + съобщения/тостове), за да е ботът управляван
+  // от състоянието — вижда какво липсва/греши и действа според него.
+  async function getErrors(frame) {
+    try {
+      return await frame.evaluate(() => {
+        const out = new Set();
+        document.querySelectorAll('.el-form-item__error, .el-message__content, .el-notification__content, [class*="error-tip"]').forEach((e) => {
+          const t = (e.textContent || '').replace(/\s+/g, ' ').trim();
+          if (t && t.length > 6 && t.length < 300) out.add(t);
+        });
+        return [...out];
+      });
+    } catch (_) { return []; }
+  }
+
+  // Качи Huawei release APK през „Manage packages" (Upload → избор на файл → Select). force=true → качва
+  // наново дори versionCode да съвпада (напр. Huawei иска повторно качване след смяна на държавите).
+  async function uploadHwApk(frame, force) {
     if (!hwApkPath) { log('↷ няма huawei release APK в apk/huawei/release — качи ръчно'); return; }
     try {
       let dlg = frame.locator('.el-dialog:visible').filter({ hasText: 'Manage packages' }).first();
@@ -287,7 +327,27 @@ async function checkByText(page, txt) {
         dlg = frame.locator('.el-dialog:visible').filter({ hasText: 'Manage packages' }).first();
       }
       if (!(await dlg.count().catch(() => 0))) { log('↷ не се отвори „Manage packages" — качи APK ръчно'); return; }
-      if (await dlg.locator('text=/\\.apk/i').count().catch(() => 0)) { log('↷ вече има качен пакет — не качвам пак (натисни Select ръчно при нужда)'); return; }
+      // versionCode на ТЕКУЩИЯ APK (от билд метаданните). Ако вече има качен пакет: сравни — при съвпадение
+      // го оставяме (и го избираме); при разлика (каченият е ПО-СТАР) → ТРИЕМ стария и качваме новия.
+      let apkVc = '';
+      try { apkVc = String(JSON.parse(fs.readFileSync(path.resolve('huawei', app, 'android/app/build/intermediates/merged_manifests/release/output-metadata.json'), 'utf8')).elements[0].versionCode || ''); } catch (_) {}
+      const hasPkg = await dlg.locator('text=/\\.apk/i').count().catch(() => 0);
+      if (hasPkg) {
+        const dlgText = await dlg.innerText().catch(() => '');
+        const upVc = (dlgText.match(/\((\d{6,})\)/) || [])[1] || '';
+        if (apkVc && upVc && upVc === apkVc && !force) {
+          log('↷ каченият пакет е НАЙ-НОВИЯТ (versionCode ' + apkVc + ') — не качвам пак; уверявам се, че е избран.');
+          await dlg.locator('.el-radio, input[type="radio"]').first().click({ force: true, timeout: 1500 }).catch(() => {});
+          await sleep(300);
+          await dlg.locator('button:has-text("Select")').first().click({ force: true, timeout: 2500 }).then(() => log('✓ Пакетът е избран (Select).')).catch(() => {});
+          return;
+        }
+        log((force ? '↑ (грешка иска повторно качване) ' : '↑ каченият пакет (' + (upVc || '?') + ') ≠ текущия APK (' + (apkVc || '?') + ') → ') + 'ТРИЯ стария и качвам новия.');
+        await dlg.locator('a:has-text("Delete"), button:has-text("Delete")').first().click({ force: true, timeout: 2500 }).catch(() => {});
+        await sleep(1000);
+        await frame.locator('.el-message-box__btns button, .el-dialog:visible button').filter({ hasText: /^(Confirm|OK|Delete|Yes)$/ }).last().click({ force: true, timeout: 2500 }).catch(() => {});
+        await sleep(2500);
+      }
       // APK полето (accept „apk", в диалога) се РЕНДИРА/АКТИВИРА след клик по „Upload". Предпазка: ако
       // „Upload" отвори native избор на файл — подаваме APK-то и там. НЕ ползваме image полетата (.jpg/.png).
       let chooserHandled = false;
@@ -303,8 +363,22 @@ async function checkByText(page, txt) {
       }
       try { frame.page().off('filechooser', onChooser); } catch (_) {}
       log('⏳ качвам APK: ' + path.basename(hwApkPath) + ' — изчаквам обработката (може дълго)…');
-      await sleep(14000);
-      await dlg.locator('button:has-text("Select")').first().click({ force: true, timeout: 3000 }).then(() => log('✓ Пакетът е избран (Select).')).catch(() => log('↷ „Select" още не е активен — изчакай обработката и натисни Select сам.'));
+      // Поллинг: изчакай „Select" да се АКТИВИРА (обработката отнема време) и го натисни — така
+      // НАЙ-НОВИЯТ пакет става избраният/активен. До ~80с.
+      let selected = false;
+      for (let k = 0; k < 20 && !selected; k++) {
+        await sleep(4000);
+        // Маркирай радиото на пакета (иначе „Select" е неактивен), после натисни „Select".
+        await dlg.locator('.el-radio, input[type="radio"]').first().click({ force: true, timeout: 1500 }).catch(() => {});
+        await sleep(300);
+        const sel = dlg.locator('button:has-text("Select")').first();
+        if (!(await sel.count().catch(() => 0))) continue;
+        const disabled = await sel.isDisabled().catch(() => false);
+        const aria = await sel.getAttribute('aria-disabled').catch(() => null);
+        if (disabled || aria === 'true') continue;
+        await sel.click({ force: true, timeout: 3000 }).then(() => { selected = true; }).catch(() => {});
+      }
+      log(selected ? '✓ Най-новият пакет е ИЗБРАН (Select).' : '↷ „Select" не се активира навреме — изчакай обработката и натисни Select сам.');
     } catch (e) { log('↷ качване на APK — направи ръчно (' + e.message + ')'); }
   }
 
@@ -320,7 +394,9 @@ async function checkByText(page, txt) {
 
     // ── СПИСЪК С ПРИЛОЖЕНИЯ: разбери дали приложението е СЪЗДАДЕНО, и действай ──
     const isVersionPage = on('Country/Region for release') || on('Payment information') || on('Privacy tags') || on('For reviewer') || on('App price') || on('Default price');
-    const isList = (url.includes('#/myApp') || on('Release')) && !on('Brief introduction') && !on('Package type') && !isVersionPage;
+    // САМО реалната страница-списък има URL завършващ на „#/myApp" (без /id). Вътре в приложението URL е
+    // „#/myApp/<id>/<id>" — затова НЕ ползваме includes (то бъркаше Workspace със списък и зацикляше).
+    const isList = /#\/myApp\/?$/.test(url) && !isVersionPage;
     if (isList && !on('Compatible devices')) {
       const exists = (appId && text.includes(appId)) || (brand && text.includes(brand));
       console.log('Екран: списък с приложения (My apps). „' + brand + '" → ' + (exists ? 'СЪЗДАДЕНО ✓ — отварям го' : 'НЕ е създадено — създавам нов запис'));
@@ -339,6 +415,19 @@ async function checkByText(page, txt) {
         await sleep(1200);
       }
       continue;   // ← верижи към попълването на достигнатия екран (без нов ENTER)
+    }
+
+    // ── Вътре в приложението, на „Workspace/Release" тракера → отиди на ВЕРСИЯТА „Draft" (вляво), за
+    //    да попълним екраните за релийз (страни, APK, плащане, поверителност…). App info може вече да е
+    //    готово (зелена отметка „Enter app info"); версията е следващата задача.
+    const insideApp = /#\/myApp\/[^/]+/.test(url);
+    if (insideApp && (on('Release your app') || on('Tasks completed') || on('Enter version info') || on('Enter app info')) && !on('Brief introduction') && !on('Compatible devices') && !isVersionPage) {
+      console.log('Екран: Workspace/Release тракер — отивам на версията „Draft" (екрани за релийз).');
+      let okv = await clickAnywhere('Draft');
+      if (!okv) { await clickAnywhere('Version information'); await sleep(800); okv = await clickAnywhere('Draft'); }
+      if (okv) { await sleep(2800); log('→ отворих версията „Draft" — попълвам…'); continue; }
+      log('↷ не намерих „Draft" вляво (Version information → Draft) — отвори го ръчно и натисни ENTER.');
+      return;
     }
 
     if (on('New app') || (on('Package type') && on('Default language'))) {
@@ -492,13 +581,29 @@ async function checkByText(page, txt) {
     } else if (on('Country/Region for release') || on('Payment information') || on('Privacy tags') || on('For reviewer')) {
       // ── ЕКРАНИ 17–23: Version — Draft (настройки за релийз) ──
       console.log('Екран: Version — Draft (настройки за релийз)');
+      // Управлявано от състоянието: затвори информационни модали (напр. „upload package again"), прочети
+      // ги + грешките по полетата, и действай според тях.
+      let modalMsg = '';
+      const mbox = frame.locator('.el-message-box:visible, .el-dialog:visible').filter({ hasText: /upload an app package|signing entity|Information/i }).first();
+      if (await mbox.count().catch(() => 0)) {
+        modalMsg = ((await mbox.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim();
+        await mbox.locator('button:has-text("OK"), button:has-text("Confirm")').first().click({ force: true, timeout: 2000 }).catch(() => {});
+        await sleep(600);
+        log('ⓘ модал: ' + modalMsg.slice(0, 80) + ' → затворих го');
+      }
+      const errs = await getErrors(frame);
+      if (errs.length) log('⚠ Конзолата показва: ' + errs.slice(0, 4).join(' | '));
+      // Huawei иска ново качване на пакета след смяна на държавите/договорния субект → форсирай re-upload.
+      const reUploadRe = /upload.*(app )?package|package.*again|contract signing entity|re-?upload|signing entity has changed/i;
+      const pkgErr = reUploadRe.test(modalMsg) || errs.some((e) => reUploadRe.test(e));
       // 17) Държави: „Selected" + „All" (ВСИЧКИ), после махни China/Belarus/Russia.
       await clickText(frame, 'Selected countries/regions');
       await sleep(500);
       await selectCountriesExcept(frame);
-      // 18) Open testing: No + качи RELEASE APK (Manage packages → Upload → Select)
+      // 18) Open testing: No + качи RELEASE APK (Manage packages → Upload → Select). При грешка за пакета
+      //     (или по-стар versionCode) → трие стария и качва най-новия, после Select.
       await pickRadio(frame, 'Use testing version', 'No');
-      await uploadHwApk(frame);
+      await uploadHwApk(frame, pkgErr);
       // 20) Плащане: Paid + валута USD
       await pickRadio(frame, 'Payment type', 'Paid');
       await ensureCurrency(frame);
