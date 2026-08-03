@@ -148,7 +148,12 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         await page.locator('input[name="icon"]').first().setInputFiles(iconPath).then(() => log('✓ Икона качена: ' + path.basename(iconPath))).catch(() => log('↷ икона — качи ръчно'));
         await sleep(3000);
       } else log('↷ няма икона в publish/');
-      if (shotPaths.length) {
+      // Предпазител: ако телефонните скрийншоти ВЕЧЕ са качени (брояч „N/10" с N>0), НЕ качвай пак —
+      // иначе се дублират. (Иконата се заменя при повторно качване, затова нея я качваме винаги.)
+      const shotsPresent = await page.locator('text=/[1-9]\\d*\\s*\\/\\s*10/').count().catch(() => 0);
+      if (shotsPresent > 0) {
+        log('↷ скрийншоти вече качени — не качвам повторно');
+      } else if (shotPaths.length) {
         await page.locator('input[name="screens"]').first().setInputFiles(shotPaths).then(() => log('✓ Скрийншоти качени (' + shotPaths.length + ')')).catch(() => log('↷ скрийншоти — качи ръчно'));
         await sleep(4500);
       } else log('↷ няма скрийншоти в publish/');
@@ -253,24 +258,37 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
           await page.keyboard.press('Escape').catch(() => {});
           log('✗ изчистих старите тагове (не съвпадаха с файла)');
         }
-        const already = (await chips()).map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase());
-        for (const tag of tags) {
-          if (already.includes(tag.toLowerCase())) { log('↷ таг „' + tag + '" вече е избран — не пипам'); continue; }
+        // Помощник: добавя ЕДИН таг (клавиатура + клик по опцията) и връща дали е наличен след това.
+        // БЕЗ Backspace (той трие чип при празно поле). Escape затваря менюто без да пипа избраните.
+        const addOne = async (tag) => {
           try {
             await tcontrol.scrollIntoViewIfNeeded().catch(() => {});
-            await tcontrol.click({ timeout: 3000 }); await sleep(500);
-            // Въвеждане през клавиатурата (истински React събития — fill не филтрира react-select).
+            await tcontrol.click({ timeout: 3000 }); await sleep(450);
             await page.keyboard.type(tag, { delay: 25 });
             await sleep(900);
             const topt = page.locator('.react-select__option').filter({ hasText: new RegExp('^' + esc(tag) + '$', 'i') }).first();
-            if (await topt.count().catch(() => 0)) {
-              await topt.click({ timeout: 2500 }); await sleep(400);
-              const now = (await chips()).map((t) => t.trim().toLowerCase());
-              if (now.some((e) => e.includes(tag.toLowerCase()))) { log('✓ таг ← ' + tag); already.push(tag.toLowerCase()); }
-              else { log('↷ таг „' + tag + '" — не се потвърди, сложи го ръчно'); await page.keyboard.press('Escape').catch(() => {}); }
-            } else { log('↷ таг „' + tag + '" — няма в списъка, сложи го ръчно'); await page.keyboard.press('Escape').catch(() => {}); }
-          } catch (e) { log('↷ таг „' + tag + '" — добави ръчно'); }
+            if (await topt.count().catch(() => 0)) { await topt.click({ timeout: 2500 }).catch(() => {}); await sleep(450); }
+            await page.keyboard.press('Escape').catch(() => {});
+          } catch (_) {}
+          const have = (await chips()).map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase());
+          return have.includes(tag.toLowerCase());
+        };
+        // Добавя липсващите (спрямо файла) с до 3 паса — react-select понякога „изпуска" таг (потвърден,
+        // после изчезнал). Всеки пас се сверява с реалните чипове, не с локален брояч.
+        for (let pass = 0; pass < 3; pass++) {
+          const have = (await chips()).map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase());
+          const missing = tags.filter((t) => !have.includes(t.toLowerCase()));
+          if (!missing.length) break;
+          for (const tag of missing) {
+            const ok = await addOne(tag);
+            log(ok ? '✓ таг ← ' + tag : '↷ таг „' + tag + '" — не се потвърди (пас ' + (pass + 1) + ')');
+          }
         }
+        // Финална проверка спрямо файла (правилото „ако не е готово → грешка").
+        const finalChips = (await chips()).map((t) => t.replace(/\s+/g, ' ').trim());
+        const stillMissing = tags.filter((t) => !finalChips.map((c) => c.toLowerCase()).includes(t.toLowerCase()));
+        if (stillMissing.length) log('⚠ ГРЕШКА: липсват тагове след 3 паса: ' + stillMissing.join(', ') + ' — добави ги ръчно');
+        else log('✓ тагове ОК (' + finalChips.length + '/' + tags.length + '): ' + finalChips.join(', '));
       }
       log('■ Прегледай всичко (цена ' + (priceRub || '?') + '₽, категория, възраст, тагове) и натисни „Continue" сам. (Не пазя чернова — ти преглеждаш и публикуваш.)');
       return;
@@ -300,9 +318,19 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
       }
     }
 
+    // ── Екран: последна стъпка на съветника „Publishing version" (Settings) — нищо за попълване:
+    // „Automatically (right after approval)" е по подразбиране. НЕ навигираме; бутонът „Submit for
+    // Moderation" се натиска от advance-логиката. (Без този клон падаше в „App page" → диалог „save?".)
+    if (/\/versions\//.test(url) && (await page.locator('text=/Publishing version|Submit for Moderation/i').count().catch(() => 0))) {
+      console.log('Екран: Publishing version (Settings) — „Automatically" по подразбиране, нищо за попълване.');
+      return;
+    }
+
     // ── Екран: приложението е отворено, но не на „App page" → отиди на „App page" (root) ──
+    // ВАЖНО: НЕ пипай докато си във версийния съветник (/versions/…) — там „App page" линкът води до
+    // диалог „save changes?", който покрива бутоните.
     const mId = url.match(/\/apps\/(\d+)/);
-    if (mId && !/\/apps\/\d+\/?$/.test(url)) {
+    if (mId && !/\/apps\/\d+\/?$/.test(url) && !/\/versions\//.test(url)) {
       const appPageLink = page.locator('a[href$="/apps/' + mId[1] + '"]').first();
       if (await appPageLink.count().catch(() => 0)) {
         console.log('Екран: отивам на „App page" (описание/снимки)');
