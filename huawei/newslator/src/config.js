@@ -7,5 +7,5 @@ export const STORE = {
   // Показва се само в „За приложението“ (диагностика), не е критично.
   label: 'Huawei AppGallery',
   // Хостнатата политика за поверителност — вграден линк в „Относно“ (изискване 7.1 на AppGallery).
-  privacyUrl: 'https://selflearning.bot.nu/privacy/newslator/hw-privacy.html'
+  privacyUrl: 'https://pupikes.app/privacy/newslator/hw-privacy.html'
 };

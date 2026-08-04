@@ -11,7 +11,7 @@
 //
 // Файлът с политиката е специфичен за магазина (инжектира се от add-privacy-link.cjs):
 //   Huawei → hw-privacy.html ; RuStore → rustore-privacy.html (newslator: ru-privacy.html).
-const PRIVACY_BASE = 'https://selflearning.bot.nu/privacy';
+const PRIVACY_BASE = 'https://pupikes.app/privacy';
 const PRIVACY_FILE = '__PRIVACY_FILE__';           // заменя се при инжектиране (по магазин)
 const REPORT_ENDPOINT = 'https://selflearning.bot.nu/api/portals/bug-report/anon';
 
