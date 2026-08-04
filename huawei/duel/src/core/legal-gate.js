@@ -8,7 +8,7 @@
 // приемане, преди да пусне апа. Per-store: сочи hw-* или rustore-* документите (инжектира се).
 //
 // opts.finance:true → добавя ЗАДЪЛЖИТЕЛНИЯ финансов disclaimer (крипто/финанси апове).
-const BASE = 'https://selflearning.bot.nu/privacy';
+const BASE = 'https://pupikes.app/privacy';
 const PRIVACY_FILE = 'hw-privacy.html';   // заменя се по магазин при инжектиране
 const TERMS_FILE = 'hw-terms.html';       // заменя се по магазин при инжектиране
 

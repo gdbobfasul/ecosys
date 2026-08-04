@@ -20,6 +20,8 @@ const app = (process.argv[2] || '').replace(/\/$/, '');
 if (!app) { console.log('Употреба: node deploy-scripts/huawei-release-bot.cjs <app>'); process.exit(1); }
 const pub = path.resolve('huawei', app, 'publish');
 if (!fs.existsSync(pub)) { console.log('Няма publish папка за ' + app); process.exit(1); }
+// РЕЖИМ ЦЕНА: `node ... <app> price` → ботът сам отива на екрана „App price", попълва цената и НАТИСКА Save.
+const PRICE_MODE = (process.argv[3] || '') === 'price' || process.argv.includes('--price');
 
 // ── данни за приложението (от publish/, единствен източник) ──
 function readJson(f) { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch (_) { return {}; } }
@@ -83,7 +85,9 @@ const priceUsd = (() => {
   return '1.3';
 })();
 // Хостнат Privacy policy / Terms URL (за екрана Privacy statement).
-const privacyUrl = 'https://selflearning.bot.nu/privacy/' + app + '/hw-privacy.html';
+// Домейнът е от ЕДИНСТВЕНИЯ източник app-shared/legal-domain.json (Huawei: нищо не е качено → pupikes.app).
+const LEGAL_BASE = (() => { try { return readJson(path.resolve('app-shared/legal-domain.json')).domain || 'https://pupikes.app/privacy'; } catch (_) { return 'https://pupikes.app/privacy'; } })();
+const privacyUrl = LEGAL_BASE + '/' + app + '/hw-privacy.html';
 // Държави, които се махат навсякъде (регистрационни/санкционни проблеми): Китай + Беларус + Русия.
 const REMOVE_COUNTRIES = ['Chinese mainland', 'China mainland', 'Belarus', 'Russia'];
 // AI декларация (Huawei): апове с ГЕНЕРАТИВЕН AI → „Involved"; останалите → „Not involved".
@@ -173,13 +177,79 @@ async function checkByText(page, txt) {
   } catch (_) { return false; }
 }
 
+// ── браузър: САМ го вдигам (debug порт 9222 + постоянен профил), закачам се и ЧАКАМ да се логнеш ──
+const HTTP = require('http');
+const { spawn: spawnProc } = require('child_process');
+const HW_PROFILE = path.resolve('deploy-scripts/.huawei-profile');
+const AGC_URL = 'https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp';
+function portAlive() {
+  return new Promise((res) => {
+    const req = HTTP.get({ host: '127.0.0.1', port: 9222, path: '/json/version', timeout: 1200 }, (r) => { r.resume(); res(r.statusCode === 200); });
+    req.on('error', () => res(false));
+    req.on('timeout', () => { req.destroy(); res(false); });
+  });
+}
+function spawnBrowser() {
+  const cands = [
+    'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+    (process.env.LOCALAPPDATA || '') + '/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
+    'C:/Program Files/Microsoft/Edge/Application/msedge.exe'
+  ];
+  const bin = cands.find((p) => { try { return fs.existsSync(p); } catch (_) { return false; } });
+  if (!bin) { console.log('✗ Не намерих Chrome/Edge на машината.'); process.exit(1); }
+  fs.mkdirSync(HW_PROFILE, { recursive: true });
+  const child = spawnProc(bin, ['--remote-debugging-port=9222', '--user-data-dir=' + HW_PROFILE, '--no-first-run', '--no-default-browser-check', AGC_URL], { detached: true, stdio: 'ignore' });
+  child.unref();
+  console.log('🌐 Вдигнах браузъра сам (PID ' + child.pid + ', порт 9222).');
+}
+
 (async () => {
   let browser;
+  if (!(await portAlive())) {
+    spawnBrowser();
+    for (let i = 0; i < 40 && !(await portAlive()); i++) await sleep(1000);
+  } else {
+    console.log('✓ Има вече отворен браузър (порт 9222) — закачам се за него.');
+  }
   try { browser = await PW.chromium.connectOverCDP('http://127.0.0.1:9222'); }
-  catch (e) { console.log('✗ Не мога да се закача за браузъра (порт 9222). Първо пусни: node deploy-scripts/huawei-release-bot-launch.cjs, влез и отвори приложението.'); process.exit(2); }
+  catch (e) { console.log('✗ Не успях да вдигна/закача браузъра: ' + e.message); process.exit(2); }
 
   console.log('\n🤖 HuaweiReleaseBot — ' + brand + '  (пакет ' + appId + ')');
   console.log('   Правило: попълвам видимо, НЕ натискам бутони. Ти преглеждаш и продължаваш.');
+
+  // ── ЧАКАМ да се логнеш (капча е ръчна). Логнати сме, щом конзолата на AGC е достъпна (не логин формата). ──
+  const isLoginUrl = (u) => /id\d*\.cloud\.huawei\.com|loginAuth|oauth-login|account\.huawei|CAS\/portal/i.test(u || '');
+  async function consoleReady() {
+    for (const ctx of browser.contexts()) for (const p of ctx.pages()) {
+      const u = p.url() || '';
+      if (isLoginUrl(u) || !u.includes('developer.huawei.com')) continue;
+      if (!/#\//.test(u)) continue;   // конзолата е hash-рутирана (#/myApp, #/app/...); логинът няма #/
+      let t = ''; try { t = await p.evaluate(() => (document.body ? document.body.innerText : '')); } catch (_) {}
+      if (/Sign in with|Verification code|Enter password|Forgot password/i.test(t)) continue;
+      // логнати сме: конзолно съдържание (списък апове или самата форма на апа)
+      if (/Apps and atomic services|My apps|My projects|App information|Users and permissions|Analytics|Devices supported|Distribute|Release your app|Total\s*\d|New app/i.test(t)) return p;
+      if (t.replace(/\s+/g, '').length > 120) return p;   // непразна конзолна страница (не логин)
+    }
+    return null;
+  }
+  async function waitForLogin() {
+    // ако никъде няма отворена страница на huawei — отвори конзолата
+    let anyHw = false;
+    for (const ctx of browser.contexts()) for (const p of ctx.pages()) if ((p.url() || '').includes('huawei.com')) anyHw = true;
+    if (!anyHw) {
+      try { const pg = await browser.contexts()[0].newPage(); await pg.goto(AGC_URL, { waitUntil: 'load' }).catch(() => {}); } catch (_) {}
+    }
+    let announced = false;
+    for (let i = 0; i < 700; i++) {   // ~35 мин таван
+      if (await consoleReady()) { if (announced) console.log('✓ Влезе — продължавам да попълвам.'); return true; }
+      if (!announced) { console.log('⏳ Чакам да се логнеш в Huawei (парола + капча)… отворил съм ти конзолата.'); announced = true; }
+      await sleep(3000);
+    }
+    console.log('✗ Не се логна навреме — спирам.'); process.exit(2);
+  }
+  await waitForLogin();
 
   const MARKERS = ['App information', 'Package type', 'Brief introduction', 'Manage languages', 'Compatible devices', 'Categorization', 'New app',
     'Country/Region for release', 'Payment information', 'Privacy tags', 'For reviewer', 'Use testing version', 'App price', 'Default price', 'Privacy statement'];
@@ -252,30 +322,63 @@ async function checkByText(page, txt) {
   }
   // Разотмети чекбокс(и) по име (напр. държава), само ако е отметнат.
   async function uncheckCb(frame, name) {
+    let done = 0;
     try {
+      // СТРУКТУРА 1 (разгънати държави под регион: Belarus, Russia…): чекбоксът съдържа името →
+      // Playwright локатор по текст (ДОКАЗАНО работи). Кликаме само отметнатите.
       const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const cbs = frame.locator('.el-checkbox').filter({ hasText: new RegExp('^' + esc(name)) });
-      const n = await cbs.count().catch(() => 0); let done = 0;
+      const n = await cbs.count().catch(() => 0);
       for (let i = 0; i < n; i++) {
         const cb = cbs.nth(i);
         const checked = await cb.evaluate((e) => e.classList.contains('is-checked')).catch(() => false);
         if (checked) { await cb.click({ force: true, timeout: 2000 }).catch(() => {}); done++; await sleep(200); }
       }
+      // СТРУКТУРА 2 (топ-редове: Chinese mainland — име в отделен <div.flex-1>, чекбоксът е ПРАЗЕН съсед).
+      // Само ако структура 1 не е намерила нищо → намираме реда по собствения текст и кликаме area-checkbox.
+      if (!done) {
+        done += await frame.evaluate((nm) => {
+          let c = 0;
+          const rows = [...document.querySelectorAll('div,span,label,td')].filter((el) => [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim() === nm);
+          const seen = new Set();
+          for (const el of rows) {
+            let row = el, cb = null;
+            for (let i = 0; i < 4 && row; i++) { cb = row.querySelector('.area-checkbox, .el-checkbox'); if (cb) break; row = row.parentElement; }
+            if (cb && !seen.has(cb)) { seen.add(cb); if (cb.classList.contains('is-checked')) { cb.click(); c++; } }
+          }
+          return c;
+        }, name).catch(() => 0);
+      }
       if (done) log('✓ разотметнах „' + name + '" (' + done + ')');
     } catch (e) { log('↷ „' + name + '" — разотметни ръчно'); }
+    return done;
   }
 
   // Държавите се рендерират само след РАЗГЪВАНЕ на региона. Belarus и Russia са в „Europe" (Huawei ги
   // слага там); China („Chinese mainland") се вижда ВИНАГИ. Затова разгъваме само Europe.
   async function expandEurope(frame) {
+    const belarusVisible = async () => await frame.locator('.el-checkbox').filter({ hasText: /^Belarus/ }).count().catch(() => 0) > 0;
     try {
-      // вече разгъната? (ако Belarus се вижда като чекбокс)
-      if (await frame.locator('.el-checkbox').filter({ hasText: /^Belarus/ }).count().catch(() => 0)) return true;
-      // разгъва се с клик по името „Europe" (не по чекбокса на региона)
-      const lbl = frame.locator('div.flex-1', { hasText: /^Europe$/ }).first();
-      if (await lbl.count().catch(() => 0)) { await lbl.click({ force: true, timeout: 2500 }).catch(() => {}); await sleep(1200); }
-      else { await frame.locator(':text("Europe")').first().click({ force: true, timeout: 2000 }).catch(() => {}); await sleep(1200); }
-      return await frame.locator('.el-checkbox').filter({ hasText: /^Belarus/ }).count().catch(() => 0) > 0;
+      if (await belarusVisible()) return true;   // вече разгъната
+      // „просто селектирай Europe" — кликни реда на региона, за да се разгъне дървото му.
+      // Пробвам няколко надеждни начина да уцеля точно реда „Europe" и потвърждавам с появата на Belarus.
+      const tries = [
+        () => frame.getByText('Europe', { exact: true }),
+        () => frame.locator('div.flex-1', { hasText: /^Europe$/ }),
+        () => frame.locator('.el-tree-node__content', { hasText: /^Europe/ }),
+        () => frame.locator('span,div,label', { hasText: /^Europe$/ })
+      ];
+      for (const mk of tries) {
+        let loc; try { loc = mk(); } catch (_) { continue; }
+        const n = await loc.count().catch(() => 0);
+        for (let i = 0; i < n && i < 4; i++) {
+          await loc.nth(i).click({ force: true, timeout: 2000 }).catch(() => {});
+          await sleep(1000);
+          if (await belarusVisible()) { log('✓ разгънах „Europe" (Belarus/Russia видими)'); return true; }
+        }
+      }
+      log('↷ не успях да разгъна „Europe" автоматично');
+      return await belarusVisible();
     } catch (_) { return false; }
   }
 
@@ -283,6 +386,7 @@ async function checkByText(page, txt) {
   // ИДЕМПОТЕНТНО: ако трите вече са изключени (а другите избрани → „All" е indeterminate), НЕ пипа
   // (иначе повторно „All" би върнало Belarus/Russia). Разгъва Europe, за да ги достигне.
   async function selectCountriesExcept(frame) {
+    if (process.env.HW_SKIP_COUNTRIES === '1') { log('↷ прескачам release-държавите (HW_SKIP_COUNTRIES=1) — вече са нагласени'); return; }
     const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     await expandEurope(frame);
     const allCb = frame.locator('.el-checkbox').filter({ hasText: /^All/ }).first();
@@ -430,6 +534,26 @@ async function checkByText(page, txt) {
       return;
     }
 
+    // ── РЕЖИМ ЦЕНА: от версията отвори ценовия редактор през „View and edit" до реда „Price (tax included)" ──
+    if (PRICE_MODE && isVersionPage && !on('App price') && !on('Default price')) {
+      console.log('Екран: Version — режим ЦЕНА → отварям ценовия редактор (View and edit до „Price").');
+      // 1) затвори евентуален блокиращ модал „Information / Data saved successfully" (прехваща кликовете)
+      const info = frame.locator('.el-message-box:visible, .el-dialog:visible').filter({ hasText: /Data saved|successfully|Information/i }).first();
+      if (await info.count().catch(() => 0)) {
+        await info.locator('button:has-text("OK"), button:has-text("Confirm")').first().click({ force: true, timeout: 2000 }).catch(() => {});
+        await sleep(900); log('затворих модала „Data saved"');
+      }
+      // 2) кликни „View and edit" на реда „Price (tax included)"
+      const priceItem = frame.locator('.el-form-item').filter({ hasText: /Price \(tax included\)|Price/i }).filter({ hasText: /View and edit/i }).first();
+      let clicked = false;
+      if (await priceItem.count().catch(() => 0)) {
+        await priceItem.locator('text=/View and edit/i').first().click({ force: true, timeout: 3000 }).then(() => { clicked = true; }).catch(() => {});
+      }
+      if (!clicked) clicked = await clickText(frame, 'View and edit');
+      if (clicked) { await sleep(2800); log('→ отворих ценовия редактор — попълвам цената…'); continue; }
+      log('↷ не намерих „View and edit" до Price — отвори ценовия редактор ръчно.'); return;
+    }
+
     if (on('New app') || (on('Package type') && on('Default language'))) {
       console.log('Екран: New app (попъп)');
       const dlg = frame.locator('.el-dialog').filter({ hasText: 'Package type' }).first();
@@ -574,32 +698,53 @@ async function checkByText(page, txt) {
       console.log('Екран: App price (цена)');
       await ensureCurrency(frame);
       await fillNear(frame, 'Default price', priceUsd);
-      // цената важи за ВСИЧКИ държави без China/Belarus/Russia (както на екран 17)
-      await selectCountriesExcept(frame);
+      // НЕ деселектираме държави тук: цената за държава, в която приложението НЕ се пуска
+      // (China/Belarus/Russia са извън release), просто се игнорира — безвредно е. Само конвертираме.
       await clickText(frame, 'Convert prices');
-      log('✓ Цена ' + priceUsd + ' USD + махнати China/Belarus + Convert. Прегледай и натисни Save сам.');
+      await sleep(600);
+      if (PRICE_MODE) {
+        const saveBtn = frame.locator('button:has-text("Save")').filter({ hasNotText: /Submit|Cancel/ }).last();
+        if (await saveBtn.count().catch(() => 0)) {
+          await saveBtn.scrollIntoViewIfNeeded().catch(() => {});
+          await saveBtn.click({ force: true, timeout: 5000 }).then(() => log('✓ натиснах Save на цената')).catch((e) => log('↷ Save: ' + e.message));
+          await sleep(3000);
+          let toast = ''; try { toast = await frame.evaluate(() => { const el = document.querySelector('.el-message, .el-notification__content'); return el ? el.innerText.trim() : ''; }); } catch (_) {}
+          if (toast) log('ⓘ ' + toast.slice(0, 60));
+        } else log('↷ не намерих Save на екрана на цената');
+      }
+      log('✓ Цена ' + priceUsd + ' USD + махнати China/Belarus + Convert' + (PRICE_MODE ? ' + Save' : '') + '.');
     } else if (on('Country/Region for release') || on('Payment information') || on('Privacy tags') || on('For reviewer')) {
       // ── ЕКРАНИ 17–23: Version — Draft (настройки за релийз) ──
       console.log('Екран: Version — Draft (настройки за релийз)');
       // Управлявано от състоянието: затвори информационни модали (напр. „upload package again"), прочети
       // ги + грешките по полетата, и действай според тях.
-      let modalMsg = '';
-      const mbox = frame.locator('.el-message-box:visible, .el-dialog:visible').filter({ hasText: /upload an app package|signing entity|Information/i }).first();
-      if (await mbox.count().catch(() => 0)) {
-        modalMsg = ((await mbox.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim();
-        await mbox.locator('button:has-text("OK"), button:has-text("Confirm")').first().click({ force: true, timeout: 2000 }).catch(() => {});
-        await sleep(600);
-        log('ⓘ модал: ' + modalMsg.slice(0, 80) + ' → затворих го');
+      // Затваря информационния модал „upload an app package again / signing entity changed" (ако е отворен)
+      // и връща текста му (или ''), за да преценим дали трябва ново качване на пакета.
+      const reUploadRe = /upload.*(app )?package|package.*again|contract signing entity|re-?upload|signing entity has changed/i;
+      async function closeUploadModal() {
+        const mb = frame.locator('.el-message-box:visible, .el-dialog:visible').filter({ hasText: /upload an app package|signing entity|Information/i }).first();
+        if (!(await mb.count().catch(() => 0))) return '';
+        const msg = ((await mb.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim();
+        await mb.locator('button:has-text("OK"), button:has-text("Confirm")').first().click({ force: true, timeout: 2000 }).catch(() => {});
+        await sleep(700);
+        log('ⓘ модал: ' + msg.slice(0, 80) + ' → затворих го');
+        return msg;
       }
+      // 1) евентуален ЗАВАРЕН модал (от предишна смяна на държави)
+      let modalMsg = await closeUploadModal();
       const errs = await getErrors(frame);
       if (errs.length) log('⚠ Конзолата показва: ' + errs.slice(0, 4).join(' | '));
-      // Huawei иска ново качване на пакета след смяна на държавите/договорния субект → форсирай re-upload.
-      const reUploadRe = /upload.*(app )?package|package.*again|contract signing entity|re-?upload|signing entity has changed/i;
-      const pkgErr = reUploadRe.test(modalMsg) || errs.some((e) => reUploadRe.test(e));
       // 17) Държави: „Selected" + „All" (ВСИЧКИ), после махни China/Belarus/Russia.
+      //     Идемпотентно: ако вече е вярно, НЕ пипа (за да НЕ роди нов модал/ново качване).
       await clickText(frame, 'Selected countries/regions');
       await sleep(500);
       await selectCountriesExcept(frame);
+      // 2) смяната на държавите РАЖДА модала „upload package again" → затвори го СЕГА и форсирай качване
+      await sleep(800);
+      const modalAfter = await closeUploadModal();
+      if (modalAfter) modalMsg = modalAfter;
+      // Huawei иска ново качване на пакета след смяна на държавите/договорния субект → форсирай re-upload.
+      const pkgErr = reUploadRe.test(modalMsg) || errs.some((e) => reUploadRe.test(e));
       // 18) Open testing: No + качи RELEASE APK (Manage packages → Upload → Select). При грешка за пакета
       //     (или по-стар versionCode) → трие стария и качва най-новия, после Select.
       await pickRadio(frame, 'Use testing version', 'No');
