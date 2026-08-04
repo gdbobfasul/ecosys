@@ -1,0 +1,13 @@
+{
+  "_comment": "ЕДИНСТВЕН ИЗТОЧНИК за отговорите на въпросника за ВЪЗРАСТОВ РЕЙТИНГ (Huawei/RuStore) ПЕР-ПРИЛОЖЕНИЕ. Ботът ги чете и попълва — ти не пълниш ръчно. Въпросникът е двойки 'Yes/No' по категории. По подразбиране всичко е 'No' (новини, инструменти, помощни). За приложение с реално съдържание (напр. игри с насилие) изброй в 'yes' точните КАТЕГОРИИ, на които отговорът е 'Yes' — ботът маха 'No' само на тях. Категории на Huawei: Violence, Fear, Sexuality, Strong language, Controlled substances and activities, Simulated gambling / real gambling or payments, Legal and ethical compliance, Interactions among users, User information collection, Others, Finance.",
+  "_default": { "all": "No", "yes": [] },
+  "newslator": { "all": "No", "yes": [] },
+  "monitor-bot": { "all": "No", "yes": [] },
+  "market-pulse": { "all": "No", "yes": [] },
+  "stay-informed": { "all": "No", "yes": [] },
+  "auto-sound-diagnostics": { "all": "No", "yes": [] },
+  "fps-hunter": { "all": "No", "yes": ["Violence"] },
+  "titans-fight": { "all": "No", "yes": ["Violence"] },
+  "rustam-game": { "all": "No", "yes": [] },
+  "plane-shooter": { "all": "No", "yes": ["Violence"] }
+}

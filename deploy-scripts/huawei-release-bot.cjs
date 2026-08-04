@@ -93,6 +93,10 @@ const REMOVE_COUNTRIES = ['Chinese mainland', 'China mainland', 'Belarus', 'Russ
 // AI декларация (Huawei): апове с ГЕНЕРАТИВЕН AI → „Involved"; останалите → „Not involved".
 const GENERATIVE_AI = new Set(['pupikes-toolkit-ai-announcement']);
 const aiDecl = GENERATIVE_AI.has(app) ? 'Involved' : 'Not involved';
+// Отговори на въпросника за възрастов рейтинг — ПЕР-ПРИЛОЖЕНИЕ, от app-shared/content-ratings.json
+// (единствен източник). По подразбиране всичко „No"; игри с насилие → категории в „yes".
+const ratingCfg = (() => { try { const c = readJson(path.resolve('app-shared/content-ratings.json')); return c[app] || c._default || { all: 'No', yes: [] }; } catch (_) { return { all: 'No', yes: [] }; } })();
+const ratingYes = (ratingCfg.yes || []).map((s) => String(s).toLowerCase());
 
 // ── Езици за добавяне в Manage languages (само РЕАЛНО преведените + регионални удвоявания) ──
 // English (UK) е по подразбиране (не се добавя). Всеки наш код → точните Huawei етикети.
@@ -151,6 +155,30 @@ async function clickText(scope, txt, timeout) {
     log('✓ кликнах: ' + txt);
     return true;
   } catch (_) { return false; }
+}
+// Native in-page клик по бутон/връзка по РЕГЕКС на текста. Playwright .click() понякога НЕ задейства
+// Vue router/handler-ите на Huawei-конзолата (напр. „View and edit", „Set"), докато native .click() върши
+// работа. `reSrc` е ИЗТОЧНИК на регекс (низ), пр. '^View and edit$'.
+async function nativeClick(frame, reSrc) {
+  return await frame.evaluate((src) => {
+    const rx = new RegExp(src, 'i');
+    const el = [...document.querySelectorAll('button, a, span, .el-button, .el-link')].find((x) => rx.test((x.innerText || '').trim()) && x.offsetParent !== null);
+    if (el) { el.scrollIntoView({ block: 'center' }); el.click(); return true; }
+    return false;
+  }, reSrc).catch(() => false);
+}
+// „Fill out questionnaire" отваря въпросника САМО с Playwright-клик (истински mouse events); native
+// .click() НЕ задейства неговия Vue-handler (обратно на Set/View-and-edit). Затова отделен помощник:
+// пробва Playwright локатор-клик, после native като резерва.
+async function clickFillOut(frame) {
+  const btn = frame.locator('button:has-text("Fill out questionnaire"), button:has-text("Fill out")').first();
+  if (await btn.count().catch(() => 0)) {
+    let ok = false;
+    await btn.scrollIntoViewIfNeeded().catch(() => {});
+    await btn.click({ timeout: 4000 }).then(() => { ok = true; }).catch(() => {});
+    if (ok) return true;
+  }
+  return await nativeClick(frame, 'Fill out questionnaire|Fill out');
 }
 // Element-UI падащо меню: кликва селекта след етикета, после опцията по видим текст.
 async function selectByLabel(frame, labelText, optionText) {
@@ -275,6 +303,45 @@ function spawnBrowser() {
     for (const ctx of browser.contexts()) for (const p of ctx.pages()) if ((p.url() || '').includes('huawei.com')) return p;
     return null;
   }
+  // Клик ТОЧНО по връзка от ЛЯВОТО меню: `<a>`, чийто `.item-text` е точно етикетът (напр. „Draft",
+  // „App information"). По-надеждно от clickAnywhere('Draft') — има и статус-баджове „Draft", които не
+  // навигират. Router-ът на конзолата сменя hash-route → съдържанието се зарежда в amp iframe.
+  async function clickLeftMenu(label) {
+    const p = getHuaweiPage(); if (!p) return false;
+    for (const f of p.frames()) {
+      const done = await f.evaluate((lbl) => {
+        const a = [...document.querySelectorAll('a')].find((a) => {
+          const s = a.querySelector('.item-text');
+          return s && s.textContent.trim() === lbl;
+        });
+        if (a) { a.scrollIntoView({ block: 'center' }); a.click(); return true; }
+        return false;
+      }, label).catch(() => false);
+      if (done) return true;
+    }
+    return false;
+  }
+  // Отива на ВЕРСИЯТА „Draft" през нейния СОБСТВЕН route (.../v<digits>) — програмният `a.click()` по
+  // router-връзката на Vue не навигира надеждно, затова сменяме direktno window.location.href (hash-
+  // router-ът реагира на hashchange и зарежда съдържанието на версията в amp iframe).
+  async function gotoVersionDraft() {
+    const p = getHuaweiPage(); if (!p) return false;
+    let href = '';
+    for (const f of p.frames()) {
+      href = await f.evaluate(() => {
+        const a = [...document.querySelectorAll('a')].find((a) => {
+          const s = a.querySelector('.item-text');
+          return s && s.textContent.trim() === 'Draft' && /\/v\d/.test(a.getAttribute('href') || a.href || '');
+        });
+        return a ? (a.getAttribute('href') || a.href) : '';
+      }).catch(() => '');
+      if (href) break;
+    }
+    if (!href) return false;
+    await p.evaluate((h) => { window.location.href = h; }, href).catch(() => {});
+    await sleep(3500);
+    return true;
+  }
   // клик по видим текст навсякъде (всички рамки на всички табове)
   async function clickAnywhere(label) {
     for (const ctx of browser.contexts()) for (const p of ctx.pages()) {
@@ -312,13 +379,32 @@ function spawnBrowser() {
   }
   // Осигури валутата Kyrgyzstan (USD) — ако вече е такава, не пипай (el-select структурата не се
   // хваща от selectByLabel, но стойността по подразбиране обикновено е правилната).
+  // Валутата ВИНАГИ Kyrgyzstan (USD) — за ВСИЧКИ приложения (по искане, само Huawei). Ако вече е такава,
+  // не пипа. ВАЖНО: селектът се populate-ва при ПИСАНЕ (клик сам не показва опции); опцията се избира с
+  // Playwright клик (той сам скролва до нея). Проверяваме резултата, като прочетем текста на селекта.
   async function ensureCurrency(frame) {
     try {
-      const sel = frame.locator(':text("Default currency")').first().locator('xpath=following::*[contains(@class,"el-select")][1]');
-      const cur = (await sel.innerText().catch(() => '')) || '';
-      if (/Kyrgyzstan|USD/i.test(cur)) { log('✓ Default currency вече е Kyrgyzstan (USD)'); return; }
-      await ensureCurrency(frame);
-    } catch (e) { log('↷ Default currency — избери Kyrgyzstan (USD) ръчно'); }
+      const lbl = frame.locator(':text("Default currency")').first();
+      if (!(await lbl.count().catch(() => 0))) return;   // няма валута на този екран (напр. версията) — нищо
+      const sel = lbl.locator('xpath=following::*[contains(@class,"el-select")][1]');
+      if (/Kyrgyzstan/i.test((await sel.innerText().catch(() => '')) || '')) { log('✓ Валута вече е Kyrgyzstan (USD)'); return; }
+      // ПИСАНЕ НЕ работи — само СКРОЛВАНЕ. Отвори менюто (само ако не е вече отворено, за да не го затворим
+      // с повторен клик), после Playwright клик по „Kyrgyzstan (USD)" — той сам скролва до опцията.
+      for (let attempt = 0; attempt < 4; attempt++) {
+        const openNow = (await frame.locator('.el-select-dropdown__item:visible').count().catch(() => 0)) > 5;
+        if (!openNow) { await sel.click({ force: true, timeout: 2500 }).catch(() => {}); await sleep(1100); }
+        const opt = frame.locator('.el-select-dropdown__item').filter({ hasText: /^Kyrgyzstan \(USD\)/i }).first();
+        if (await opt.count().catch(() => 0)) {
+          await opt.scrollIntoViewIfNeeded().catch(() => {});
+          await sleep(300);
+          await opt.click({ force: true, timeout: 2500 }).catch(() => {});
+          await sleep(1000);
+          if (/Kyrgyzstan/i.test((await sel.innerText().catch(() => '')) || '')) { log('✓ Валута → Kyrgyzstan (USD)'); return; }
+        } else log('· валута опит ' + (attempt + 1) + ': менюто още не е готово');
+        await sleep(600);
+      }
+      log('↷ не успях да сложа „Kyrgyzstan (USD)" — избери ръчно');
+    } catch (e) { log('↷ Валута — избери Kyrgyzstan (USD) ръчно'); }
   }
   // Разотмети чекбокс(и) по име (напр. държава), само ако е отметнат.
   async function uncheckCb(frame, name) {
@@ -381,26 +467,50 @@ function spawnBrowser() {
     } catch (_) { return false; }
   }
 
-  // Избери ВСИЧКИ държави („All"), после махни China/Belarus/Russia. Ползва се на екран 17 и 24.
-  // ИДЕМПОТЕНТНО: ако трите вече са изключени (а другите избрани → „All" е indeterminate), НЕ пипа
-  // (иначе повторно „All" би върнало Belarus/Russia). Разгъва Europe, за да ги достигне.
+  // Изключи China/Belarus/Russia от държавите за релийз. ЧИСТО и ИДЕМПОТЕНТНО: при избор на „Selected
+  // countries/regions" Huawei слага по подразбиране ВСИЧКИ 200 държави — затова НЕ пипаме „All" (точно
+  // повторният клик по „All" трупаше бъркотия и раждаше модала). Само ПРОВЕРЯВАМЕ състоянието и махаме
+  // онова, което е включено. China е топ-ниво (винаги видима); Belarus/Russia са в „Europe" (разгъва се).
   async function selectCountriesExcept(frame) {
     if (process.env.HW_SKIP_COUNTRIES === '1') { log('↷ прескачам release-държавите (HW_SKIP_COUNTRIES=1) — вече са нагласени'); return; }
-    const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    await expandEurope(frame);
-    const allCb = frame.locator('.el-checkbox').filter({ hasText: /^All/ }).first();
-    if (!(await allCb.count().catch(() => 0))) { log('↷ не намерих „All" — отметни всички ръчно'); return; }
-    let anyIncluded = false;
-    for (const c of REMOVE_COUNTRIES) {
-      const cb = frame.locator('.el-checkbox').filter({ hasText: new RegExp('^' + esc(c)) }).first();
-      if (await cb.count().catch(() => 0) && await cb.evaluate((e) => e.classList.contains('is-checked')).catch(() => false)) anyIncluded = true;
+    // Модалът „signing entity changed" изскача при ВСЯКА смяна и ПОКРИВА панела → затваряме след всеки toggle.
+    const closeCountryModal = async () => {
+      const mb = frame.locator('.el-message-box:visible, .el-dialog:visible').filter({ hasText: /signing entity|upload an app package|change of countr|Information/i }).first();
+      if (await mb.count().catch(() => 0)) { await mb.locator('button:has-text("OK"), button:has-text("Confirm")').first().click({ force: true, timeout: 2000 }).catch(() => {}); await sleep(700); return true; }
+      return false;
+    };
+    await closeCountryModal();
+    // ВАЖНО: списъкът с региони (Chinese mainland, Europe…) се рендира със ЗАКЪСНЕНИЕ след „Data saved"
+    // модал/навигация. Ако пипнем преди това — expandEurope/isChecked се провалят тихо. Затова ИЗЧАКВАМЕ.
+    let listReady = false;
+    for (let k = 0; k < 15; k++) {
+      listReady = (await frame.locator('.el-checkbox').filter({ hasText: /^Chinese mainland/ }).count().catch(() => 0)) > 0;
+      if (listReady) break;
+      await sleep(1000);
     }
-    const allOn = await allCb.evaluate((e) => e.classList.contains('is-checked')).catch(() => false);
-    const allInd = await allCb.evaluate((e) => e.classList.contains('is-indeterminate')).catch(() => false);
-    if (!anyIncluded && allInd) { log('✓ China/Belarus/Russia вече изключени (All=indeterminate) — не пипам'); return; }
-    if (!allOn) { await allCb.click({ force: true, timeout: 2500 }).catch(() => {}); log('✓ отметнах „All" (всички държави)'); await sleep(1200); await expandEurope(frame); }
-    else log('✓ „All" вече е отметнат');
-    for (const c of REMOVE_COUNTRIES) await uncheckCb(frame, c);
+    if (!listReady) { log('↷ списъкът с държави не се появи навреме — виж ръчно'); return; }
+    // Състояние на държава по име: true=избрана, false=не, null=не е в DOM (регионът не е разгънат).
+    const isChecked = async (name) => await frame.evaluate((nm) => {
+      const cbs = [...document.querySelectorAll('.el-checkbox')].filter((cb) => (cb.innerText || '').trim().startsWith(nm));
+      const cb = cbs.find((c) => c.classList.contains('country-checkbox')) || cbs[0];
+      return cb ? cb.classList.contains('is-checked') : null;
+    }, name).catch(() => null);
+
+    await closeCountryModal();
+    // China („Chinese mainland") — топ-ниво, ВИНАГИ видима. Махни само ако е избрана.
+    if ((await isChecked('Chinese mainland')) === true) {
+      await uncheckCb(frame, 'Chinese mainland'); await uncheckCb(frame, 'China mainland');
+      await closeCountryModal();
+    } else log('✓ China вече е изключена (или не е избрана)');
+    // Belarus/Russia — в „Europe". Разгъни, после махни само избраните (клик по China може да е свил Europe).
+    await sleep(400);
+    await expandEurope(frame);
+    for (const c of ['Belarus', 'Russia']) {
+      const st = await isChecked(c);
+      if (st === true) { await uncheckCb(frame, c); await closeCountryModal(); await expandEurope(frame); }
+      else if (st === false) log('✓ ' + c + ' вече е изключена');
+      else log('↷ ' + c + ' не е в DOM (Europe не се разгъна) — виж ръчно');
+    }
   }
 
   // Чете видимите грешки на екрана (валидация на полета + съобщения/тостове), за да е ботът управляван
@@ -422,7 +532,22 @@ function spawnBrowser() {
   // наново дори versionCode да съвпада (напр. Huawei иска повторно качване след смяна на държавите).
   async function uploadHwApk(frame, force) {
     if (!hwApkPath) { log('↷ няма huawei release APK в apk/huawei/release — качи ръчно'); return; }
+    // Затваря диалога „Manage packages" през бутона „Select" (ПРИЛАГА пакета + затваря). НИКОГА Cancel/X —
+    // те ОТМЕНЯТ качения пакет (затова „Released packages: No data"!). Playwright-клик, после native.
+    const closeMgmt = async () => {
+      const open = await frame.evaluate(() => !!([...document.querySelectorAll('.el-dialog')].find((x) => x.offsetParent !== null && /Manage packages/i.test(x.innerText || '')))).catch(() => false);
+      if (!open) return;
+      const dlg = frame.locator('.el-dialog:visible').filter({ hasText: 'Manage packages' }).first();
+      const selBtn = dlg.locator('button:has-text("Select")').first();
+      let ok = false;
+      if (await selBtn.count().catch(() => 0)) { await selBtn.scrollIntoViewIfNeeded().catch(() => {}); await selBtn.click({ timeout: 3000 }).then(() => { ok = true; }).catch(() => {}); }
+      if (!ok) await nativeClick(frame, '^Select$');
+      await sleep(1000);
+    };
     try {
+      // Затвори евентуален информационен модал (signing entity/upload package), който покрива бутона.
+      const mb = frame.locator('.el-message-box:visible, .el-dialog:visible').filter({ hasText: /signing entity|upload an app package|change of countr|Information/i }).first();
+      if (await mb.count().catch(() => 0)) { await mb.locator('button:has-text("OK"), button:has-text("Confirm")').first().click({ force: true, timeout: 2000 }).catch(() => {}); await sleep(800); }
       let dlg = frame.locator('.el-dialog:visible').filter({ hasText: 'Manage packages' }).first();
       if (!(await dlg.count().catch(() => 0))) {
         await frame.locator('button:has-text("Manage packages")').first().click({ force: true, timeout: 3000 }).catch(() => {});
@@ -439,10 +564,15 @@ function spawnBrowser() {
         const dlgText = await dlg.innerText().catch(() => '');
         const upVc = (dlgText.match(/\((\d{6,})\)/) || [])[1] || '';
         if (apkVc && upVc && upVc === apkVc && !force) {
-          log('↷ каченият пакет е НАЙ-НОВИЯТ (versionCode ' + apkVc + ') — не качвам пак; уверявам се, че е избран.');
+          log('↷ каченият пакет е НАЙ-НОВИЯТ (versionCode ' + apkVc + ') — не качвам пак; избирам го.');
           await dlg.locator('.el-radio, input[type="radio"]').first().click({ force: true, timeout: 1500 }).catch(() => {});
           await sleep(300);
-          await dlg.locator('button:has-text("Select")').first().click({ force: true, timeout: 2500 }).then(() => log('✓ Пакетът е избран (Select).')).catch(() => {});
+          let sok = false;
+          await dlg.locator('button:has-text("Select")').first().click({ timeout: 3000 }).then(() => { sok = true; }).catch(() => {});
+          if (!sok) await nativeClick(frame, '^Select$');
+          await sleep(1200);
+          await closeMgmt();            // затваря през „Select" (прилага) — не отменя
+          log('✓ Пакетът е избран (Select), „Manage packages" затворен.');
           return;
         }
         log((force ? '↑ (грешка иска повторно качване) ' : '↑ каченият пакет (' + (upVc || '?') + ') ≠ текущия APK (' + (apkVc || '?') + ') → ') + 'ТРИЯ стария и качвам новия.');
@@ -479,16 +609,37 @@ function spawnBrowser() {
         const disabled = await sel.isDisabled().catch(() => false);
         const aria = await sel.getAttribute('aria-disabled').catch(() => null);
         if (disabled || aria === 'true') continue;
-        await sel.click({ force: true, timeout: 3000 }).then(() => { selected = true; }).catch(() => {});
+        await sel.click({ timeout: 3000 }).then(() => { selected = true; }).catch(() => {});   // Playwright (истински клик)
+        if (!selected) selected = await nativeClick(frame, '^Select$');
       }
-      log(selected ? '✓ Най-новият пакет е ИЗБРАН (Select).' : '↷ „Select" не се активира навреме — изчакай обработката и натисни Select сам.');
+      await sleep(1000);
+      await closeMgmt();            // затваря през „Select" (прилага пакета) — не отменя
+      log(selected ? '✓ Най-новият пакет е ИЗБРАН (Select), „Manage packages" затворен.' : '↷ „Select" не се активира навреме — изчакай обработката и натисни Select сам.');
     } catch (e) { log('↷ качване на APK — направи ръчно (' + e.message + ')'); }
   }
 
+  // Натиска основния бутон за НАПРЕД (Next/Save/OK/Confirm) — само АКТИВЕН и ВИДИМ. НИКОГА
+  // Submit/Cancel/Delete/Back (точен текст → Submit не съвпада). Приоритет: Next > Save > OK > Confirm.
+  async function clickAdvance(frame) {
+    return await frame.evaluate(() => {
+      const ok = (t) => /^(Next|Save|OK|Confirm)$/i.test(t);
+      const btns = [...document.querySelectorAll('button')].filter((b) => {
+        const t = (b.innerText || '').trim();
+        return t && ok(t) && b.offsetParent !== null && !b.disabled && b.getAttribute('aria-disabled') !== 'true';
+      });
+      const rank = (t) => (/^Next$/i.test(t) ? 0 : /^Save$/i.test(t) ? 1 : /^OK$/i.test(t) ? 2 : 3);
+      btns.sort((a, b) => rank((a.innerText || '').trim()) - rank((b.innerText || '').trim()));
+      if (!btns.length) return false;
+      btns[0].scrollIntoView({ block: 'center' }); btns[0].click(); return true;
+    }).catch(() => false);
+  }
+
   async function fillCurrent() {
-   // Верижи навигацията: списък → отвори приложението → App information → попълни — БЕЗ да чакаш
-   // ENTER между стъпките. ENTER е само за прегледните екрани (попълване). Макс. няколко стъпки.
-   for (let _step = 0; _step < 4; _step++) {
+   // АВТОНОМНО: попълва екрана → сам натиска основния бутон → минава на следващия. Спира при засядане
+   // (същият екран 3 пъти) или на последната стъпка (Submit = човешко решение, не се натиска тук).
+   let _lastSig = '', _stall = 0, _appInfoDone = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false;
+   for (let _step = 0; _step < 40; _step++) {
+    let autoNext = true;
     let { frame, text, score } = await navToForm();
     if (!frame) { console.log('✗ Няма отворена страница на Huawei.'); return; }
     const on = (s) => text.includes(s);
@@ -496,19 +647,28 @@ function spawnBrowser() {
     // (Иначе думите „Violence/Sexuality/Fear" остават в текста на версийната страница и хващат погрешно
     //  content-rating клона, вместо да минем държавите.)
     const ratingOpen = await frame.evaluate(() => {
+      // Новият формат: клик „Set" отваря ДИАЛОГ „Complete age rating" (с бутон „Fill out questionnaire"),
+      // после ИСТИНСКИЯТ въпросник (No/Yes групи). Засичаме и двете състояния по заглавието на диалога/drawer
+      // ИЛИ по въпросни групи вътре в отворен диалог/drawer. (Старият формат: .agc-question-group.)
+      const dlgTitle = [...document.querySelectorAll('.el-dialog__title, .el-drawer__title')]
+        .some((t) => t.offsetParent !== null && /age rating|content rating|questionnaire/i.test(t.innerText || ''));
       const groups = document.querySelectorAll('.agc-question-group__title, .agc-question-group').length;
+      const qInDlg = !!document.querySelector('.el-dialog .el-radio-group, .el-drawer .el-radio-group');
       const noYes = [...document.querySelectorAll('.el-radio:not(.area-checkbox)')].filter((r) => /^(No|Yes)\b/.test((r.innerText || '').trim())).length;
-      return groups >= 2 && noYes >= 2;
+      return dlgTitle || (qInDlg && noYes >= 2) || (groups >= 2 && noYes >= 2);
     }).catch(() => false);
     let url = ''; try { url = frame.page().url(); } catch (_) {}
     console.log('\n── екран (маркери: ' + score + ') ──');
 
     // ── СПИСЪК С ПРИЛОЖЕНИЯ: разбери дали приложението е СЪЗДАДЕНО, и действай ──
     const isVersionPage = on('Country/Region for release') || on('Payment information') || on('Privacy tags') || on('For reviewer') || on('App price') || on('Default price');
+    if (isVersionPage || ratingOpen) _appInfoDone = true;   // веднъж стигнали версията/рейтинга → app info е готово (навигаторът да сочи „Draft", не „App information")
     // САМО реалната страница-списък има URL завършващ на „#/myApp" (без /id). Вътре в приложението URL е
     // „#/myApp/<id>/<id>" — затова НЕ ползваме includes (то бъркаше Workspace със списък и зацикляше).
     const isList = /#\/myApp\/?$/.test(url) && !isVersionPage;
-    if (isList && !on('Compatible devices')) {
+    // ВАЖНО: когато попъпът „New app" е ВЕЧЕ отворен, URL-ът пак е „#/myApp" (попъпът не сменя адреса).
+    // Затова НЕ влизаме в клона за списъка (иначе кликкаме Release пак и пак) — падаме към попълването.
+    if (isList && !on('Compatible devices') && !(on('New app') && on('Package type'))) {
       const exists = (appId && text.includes(appId)) || (brand && text.includes(brand));
       console.log('Екран: списък с приложения (My apps). „' + brand + '" → ' + (exists ? 'СЪЗДАДЕНО ✓ — отварям го' : 'НЕ е създадено — създавам нов запис'));
       if (exists) {
@@ -528,17 +688,20 @@ function spawnBrowser() {
       continue;   // ← верижи към попълването на достигнатия екран (без нов ENTER)
     }
 
-    // ── Вътре в приложението, на „Workspace/Release" тракера → отиди на ВЕРСИЯТА „Draft" (вляво), за
-    //    да попълним екраните за релийз (страни, APK, плащане, поверителност…). App info може вече да е
-    //    готово (зелена отметка „Enter app info"); версията е следващата задача.
-    const insideApp = /#\/myApp\/[^/]+/.test(url);
-    if (insideApp && (on('Release your app') || on('Tasks completed') || on('Enter version info') || on('Enter app info')) && !on('Brief introduction') && !on('Compatible devices') && !isVersionPage) {
-      console.log('Екран: Workspace/Release тракер — отивам на версията „Draft" (екрани за релийз).');
-      let okv = await clickAnywhere('Draft');
-      if (!okv) { await clickAnywhere('Version information'); await sleep(800); okv = await clickAnywhere('Draft'); }
-      if (okv) { await sleep(2800); log('→ отворих версията „Draft" — попълвам…'); continue; }
-      log('↷ не намерих „Draft" вляво (Version information → Draft) — отвори го ръчно и натисни ENTER.');
-      return;
+    // ── Вътре в приложението, но формата ОЩЕ НЕ Е заредена (тя идва в iframe със закъснение, особено
+    //    веднага след създаване). Навигираме сами през ЛЯВОТО меню: първо „App information", а щом то е
+    //    попълнено — „Draft" (версията: държави, APK, плащане, поверителност…). onForm = вече сме на форма.
+    const insideApp = /#\/myApp\/[^/]+\/[^/]+/.test(url);
+    const onForm = on('Brief introduction') || on('Compatible devices') || isVersionPage || (on('New app') && on('Package type'));
+    if (insideApp && !onForm) {
+      const target = _appInfoDone ? 'Draft' : 'App information';
+      console.log('Екран: вътре в приложението, формата още не е заредена → отварям „' + target + '".');
+      await sleep(2500);                                  // изчакай iframe-ът да дозареди
+      const opened = target === 'Draft'
+        ? (await gotoVersionDraft() || await clickLeftMenu('Draft'))
+        : (await clickLeftMenu(target) || await clickAnywhere(target));
+      if (opened) { await sleep(3500); log('→ отворих „' + target + '".'); continue; }
+      log('↷ не намерих „' + target + '" вляво — изчаквам да зареди…'); await sleep(2500); continue;
     }
 
     // ── РЕЖИМ ЦЕНА: от версията отвори ценовия редактор през „View and edit" до реда „Price (tax included)" ──
@@ -571,8 +734,8 @@ function spawnBrowser() {
       await clickText(dlg, 'Mobile phone');
       await selectByLabel(frame, 'App category', 'App');
       await selectByLabel(frame, 'Default language', 'English (UK)');
-      log('→ Прегледай попъпа и натисни OK сам (ботът не натиска). После App information.');
-    } else if (on('App information') || on('Brief introduction') || on('Compatible devices')) {
+      log('✓ Попъпът „New app" попълнен → сега натискам OK сам и минавам на App information.');
+    } else if (!_appInfoDone && (on('App information') || on('Brief introduction') || on('Compatible devices'))) {
       console.log('Екран: App information');
       // Compatible devices → Mobile phone (el-checkbox). Клик с force + проверка да НЕ размята вече отметнато.
       try {
@@ -680,55 +843,111 @@ function spawnBrowser() {
           }
         } else log('↷ Manage languages — попъпът не се отвори');
       }
-    } else if (ratingOpen && ((on('Violence') && on('Sexuality')) || (on('Content rating') && on('Fear')))) {
-      // ── ЕКРАНИ 25–28: Content rating (възрастов въпросник) ──
+      // App info попълнено → запиши (Save, НЕ Next/Submit) и мини към ВЕРСИЯТА „Draft" (държави/APK/…).
+      await frame.locator('button:has-text("Save")').filter({ hasNotText: /Submit|Next/ }).first().click({ force: true, timeout: 4000 }).then(() => log('✓ натиснах Save на App information')).catch(() => log('↷ Save на App info — не се натисна (виж ръчно)'));
+      await sleep(3000);
+      _appInfoDone = true;
+      if (await gotoVersionDraft()) log('→ App info записано → отивам на версията „Draft" (route на версията).');
+      else log('↷ не намерих route на версията „Draft" — виж ръчно.');
+      autoNext = false;   // App info сам натиска Save и навигира — без общия авто-напред
+    } else if (ratingOpen) {
+      // ── Content rating (възрастов въпросник). НОВ формат: „Set" → диалог „Complete age rating" →
+      //    бутон „Fill out questionnaire" → въпроси (Yes/No двойки) → Verify → Submit. За newslator/инструменти
+      //    всичко е „No"; ИГРИ (насилие) → категории в „yes" (content-ratings.json)! ──
       console.log('Екран: Content rating (възрастов въпросник)');
-      // Секциите са АКОРДЕОН (отваряне на една сваля другата) → разгъваме СЕКЦИЯ по СЕКЦИЯ и
-      // отговаряме „No" ДОКАТО е отворена. За newslator/инструменти всеки въпрос е „No". ИГРИ (напр.
-      // fps-hunter) имат насилие → там РЪЧНА проверка (не всичко е No)!
-      // 1) Разгъни ВСЯКА акордеон-секция (за да се рендират въпросите в DOM).
-      const titles = frame.locator('.agc-question-group__title');
-      const nt = await titles.count().catch(() => 0);
-      for (let s = 0; s < nt; s++) { await titles.nth(s).click({ timeout: 1500 }).catch(() => {}); await sleep(250); }
-      // 2) JS-клик „No" на ВСЯКА неотговорена радио-група (работи и на скрити от акордеона), в ЦИКЪЛ
-      //    докато не останат неотговорени — така покритието е ПЪЛНО и стабилно (не зависи от видимост).
-      let ans = 0, lastUnanswered = -1, totalQ = 0;
-      for (let round = 0; round < 8; round++) {
-        const res = await frame.evaluate(() => {
-          let clicked = 0;
-          document.querySelectorAll('.el-radio-group').forEach((rg) => {
-            if (rg.querySelector('.el-radio.is-checked')) return;
-            const no = [...rg.querySelectorAll('.el-radio')].find((r) => /^No\b/i.test((r.innerText || r.textContent || '').trim()));
-            if (no) { no.click(); clicked++; }
-          });
-          let unanswered = 0; const rgs = document.querySelectorAll('.el-radio-group');
-          rgs.forEach((rg) => { if (!rg.querySelector('.el-radio.is-checked')) unanswered++; });
-          return { clicked, unanswered, total: rgs.length };
-        }).catch(() => ({ clicked: 0, unanswered: -1, total: 0 }));
-        ans += res.clicked; lastUnanswered = res.unanswered; totalQ = res.total;
-        if (res.unanswered === 0) break;
-        await sleep(500);
+      // Ако рейтингът ВЕЧЕ е финализиран — само затвори остатъчния диалог (да не зациклим на „Fill out").
+      if (_ratingDone) {
+        await frame.evaluate(() => { [...document.querySelectorAll('.el-dialog, .el-drawer')].filter((x) => x.offsetParent !== null).forEach((d) => { const x = d.querySelector('.el-dialog__headerbtn, .el-drawer__close-btn'); if (x) x.click(); else { const c = [...d.querySelectorAll('button')].find((b) => /^(Cancel|Close)$/i.test((b.innerText || '').trim())); if (c) c.click(); } }); }).catch(() => {});
+        await sleep(1000); log('· рейтингът е готов — затворих остатъчния диалог'); autoNext = false; continue;
       }
-      if (lastUnanswered === 0) log('✓ рейтинг: „No" на ВСИЧКИ ' + totalQ + ' въпроса (пълно покритие).');
-      else log('⚠ рейтинг: отговорих ' + ans + ', но останаха ' + lastUnanswered + ' неотговорени — структурата е различна, виж ръчно.');
-      log('⚠ За ИГРИ (насилие) НЕ е всичко „No" — там провери ръчно!');
-      // Завършваме рейтинга: Verify → (декларация) → Save. Без това въпросникът ОСТАВА отворен и блокира
-      // следващите секции (държави и т.н.). Затова тук ботът натиска тези бутони (по изрично искане).
-      const rbtn = async (lbl) => await frame.evaluate((l) => {
-        // търси в ЦЯЛАТА рамка (бутоните на рейтинга са под линията, извън drawer-scope). Взима само АКТИВЕН.
-        const btn = [...document.querySelectorAll('button')].find((x) => new RegExp('^\\s*' + l + '\\s*$').test((x.innerText || '').trim()) && x.getAttribute('aria-disabled') !== 'true' && !x.disabled && x.offsetParent !== null);
-        if (btn) { btn.scrollIntoView({ block: 'center' }); btn.click(); return true; }
-        return false;
-      }, lbl).catch(() => false);
-      await sleep(500);
-      if (await rbtn('Verify')) { log('✓ натиснах „Verify" (изчислявам рейтинга)'); await sleep(3500); }
-      // евентуална отметка-декларация преди Save (достоверност на рейтинга)
-      await frame.evaluate(() => { const d = document.querySelector('.el-drawer:not([style*="display: none"]), .el-dialog:not([style*="display: none"])'); if (!d) return; d.querySelectorAll('.el-checkbox:not(.area-checkbox)').forEach((c) => { if (!c.classList.contains('is-checked') && /authentic|declare|confirm|responsib|accurate/i.test(c.innerText || '')) c.click(); }); }).catch(() => {});
-      await sleep(400);
-      if (await rbtn('Save')) { log('✓ натиснах „Save" — рейтингът е записан.'); await sleep(3000); }
-      else log('↷ „Save" на рейтинга не се активира — прегледай и запиши сам.');
-    } else if (on('App price') || (on('Default price') && (on('Convert prices') || on('Default currency')))) {
-      // ── ЕКРАН 24: App price (от „View and edit") — цена + махни China/Belarus + Convert ──
+      // Въпросите са ГОЛИ радиа „Yes/No" (НЕ el-radio-group; radio-групите „Rated X+" идват чак на Verify).
+      // Затова засичаме реалните въпроси по броя „Yes/No" радиа в отворения диалог.
+      const hasQuestions = await frame.evaluate(() => {
+        const d = [...document.querySelectorAll('.el-dialog, .el-drawer')].find((x) => x.offsetParent !== null && /Content rating/i.test((x.querySelector('.el-dialog__title,.el-drawer__title') || {}).innerText || ''));
+        if (!d) return false;
+        return [...d.querySelectorAll('.el-radio')].filter((r) => /^(Yes|No)$/i.test((r.innerText || '').trim())).length >= 4;
+      }).catch(() => false);
+      if (!hasQuestions) {
+        // Стъпка 1: отвори самите въпроси през „Fill out questionnaire" (native клик; може да се рендира
+        //   със ЗАКЪСНЕНИЕ → изчакай и опитай няколко пъти).
+        let fq = false;
+        for (let k = 0; k < 4 && !fq; k++) { fq = await clickFillOut(frame); if (!fq) await sleep(700); }
+        if (fq) {
+          await sleep(3200);
+          log('→ натиснах „Fill out questionnaire" — отварям въпросите.');
+          autoNext = false; continue;
+        }
+        // ДЕБЪГ: какви бутони вижда в диалога (за да разбера защо „Fill out" не се хваща)
+        const dbg = await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-dialog, .el-drawer')].find((x) => x.offsetParent !== null); return d ? { title: (d.querySelector('.el-dialog__title,.el-drawer__title') || {}).innerText || '', btns: [...d.querySelectorAll('button, a')].map((b) => (b.innerText || '').trim()).filter(Boolean).slice(0, 12) } : { title: 'НЯМА ДИАЛОГ', btns: [] }; }).catch(() => ({}));
+        log('↷ рейтинг „Fill out" не се хвана. Диалог „' + (dbg.title || '') + '" бутони: ' + JSON.stringify(dbg.btns || []));
+        // Нито въпроси, нито бутон „Fill out" (напр. рейтингът е готов, или страничен/остатъчен диалог) →
+        // ЗАТВОРИ диалога (X/Cancel), за да НЕ зациклим (ratingOpen да падне), и продължи.
+        await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-dialog, .el-drawer')].find((x) => x.offsetParent !== null); if (!d) return; const x = d.querySelector('.el-dialog__headerbtn, .el-drawer__close-btn'); if (x) x.click(); const c = [...d.querySelectorAll('button')].find((b) => /^(Cancel|Close)$/i.test((b.innerText || '').trim())); if (c) c.click(); }).catch(() => {});
+        await sleep(1000);
+        log('· рейтинг: няма въпроси/бутон — затворих диалога и продължавам (ако не е зададен, виж ръчно)');
+        _ratingDone = true; autoNext = false;
+      } else {
+        // Стъпка 2: въпросите са ДВОЙКИ радиа „Yes/No" (НЕ el-radio-group!) по категории. Отговаряме „No"
+        //   на всяка двойка (за newslator/инструменти), ОСВЕН категориите в ratingYes (напр. игри → „Violence"
+        //   = „Yes"). Категорията се чете от текста около въпроса. Стойностите идват от content-ratings.json.
+        let ans = 0, lastUnanswered = -1, totalQ = 0;
+        for (let round = 0; round < 8; round++) {
+          const res = await frame.evaluate((yesCats) => {
+            const dlg = [...document.querySelectorAll('.el-dialog, .el-drawer')].find((d) => d.offsetParent !== null && /Content rating/i.test((d.querySelector('.el-dialog__title,.el-drawer__title') || {}).innerText || ''))
+              || [...document.querySelectorAll('.el-dialog, .el-drawer')].find((d) => d.offsetParent !== null);
+            if (!dlg) return { clicked: 0, unanswered: -1, total: 0 };
+            const radios = [...dlg.querySelectorAll('.el-radio')].filter((r) => /^(Yes|No)$/i.test((r.innerText || '').trim()));
+            const catOf = (r) => { let el = r; for (let i = 0; i < 8 && el; i++) { el = el.parentElement; if (!el) break; const t = (el.innerText || '').toLowerCase(); const hit = yesCats.find((c) => t.includes(c)); if (hit) return hit; } return ''; };
+            let clicked = 0, answered = 0, total = 0;
+            for (let i = 0; i + 1 < radios.length; i += 2) {   // двойки [Yes,No]
+              const yes = /^Yes$/i.test((radios[i].innerText || '').trim()) ? radios[i] : radios[i + 1];
+              const no = yes === radios[i] ? radios[i + 1] : radios[i];
+              total++;
+              const target = catOf(no) ? yes : no;            // категория в yesCats → „Yes", иначе „No"
+              if (target.classList.contains('is-checked')) { answered++; continue; }
+              target.click(); clicked++; answered++;
+            }
+            return { clicked, unanswered: total - answered, total };
+          }, ratingYes).catch(() => ({ clicked: 0, unanswered: -1, total: 0 }));
+          ans += res.clicked; lastUnanswered = res.unanswered; totalQ = res.total;
+          if (res.unanswered === 0) break;
+          await sleep(500);
+        }
+        if (lastUnanswered === 0) log('✓ рейтинг: попълних ВСИЧКИ ' + totalQ + ' въпроса (от content-ratings.json; „yes" категории: ' + (ratingYes.join(', ') || 'няма') + ').');
+        else log('⚠ рейтинг: отговорих ' + ans + ', останаха ' + lastUnanswered + ' — виж ръчно.');
+        // Verify → (декларация) → Save/OK/Confirm. Взима само АКТИВЕН бутон (в диалога, после в рамката).
+        const rbtn = async (lbl) => await frame.evaluate((l) => {
+          const scope = [...document.querySelectorAll('.el-dialog, .el-drawer')].find((d) => d.offsetParent !== null);
+          const pool = scope ? [...scope.querySelectorAll('button'), ...document.querySelectorAll('button')] : [...document.querySelectorAll('button')];
+          const btn = pool.find((x) => new RegExp('^\\s*' + l + '\\s*$', 'i').test((x.innerText || '').trim()) && x.getAttribute('aria-disabled') !== 'true' && !x.disabled && x.offsetParent !== null);
+          if (btn) { btn.scrollIntoView({ block: 'center' }); btn.click(); return true; }
+          return false;
+        }, lbl).catch(() => false);
+        await sleep(500);
+        if (await rbtn('Verify')) { log('✓ натиснах „Verify" (изчислявам рейтинга)'); await sleep(3500); }
+        // евентуална декларация-отметка преди финализиране
+        await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-drawer, .el-dialog')].find((x) => x.offsetParent !== null); if (!d) return; d.querySelectorAll('.el-checkbox:not(.area-checkbox)').forEach((c) => { if (!c.classList.contains('is-checked') && /authentic|declare|confirm|responsib|accurate/i.test(c.innerText || '')) c.click(); }); }).catch(() => {});
+        await sleep(800);
+        // След Verify финализиращият бутон е „Submit" — това е Submit на ВЪПРОСНИКА (запазва възрастовия
+        // рейтинг; НЕ подава приложението за ревю!). Playwright-клик в диалога (по-надежден) + native резерва.
+        let saved = false;
+        const rdlg = frame.locator('.el-dialog:visible, .el-drawer:visible').filter({ hasText: /Content rating/i }).first();
+        const subBtn = rdlg.locator('button:has-text("Submit"), button:has-text("Save"), button:has-text("OK")').first();
+        if (await subBtn.count().catch(() => 0)) { await subBtn.scrollIntoViewIfNeeded().catch(() => {}); await subBtn.click({ timeout: 4000 }).then(() => { saved = true; }).catch(() => {}); }
+        if (!saved) saved = (await rbtn('Submit')) || (await rbtn('Save')) || (await rbtn('OK')) || (await rbtn('Confirm'));
+        await sleep(2500);
+        // възможно потвърждение след Submit (Are you sure/OK)
+        await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-message-box, .el-dialog')].find((x) => x.offsetParent !== null && /sure|confirm|submit the questionnaire|rating/i.test(x.innerText || '')); if (d) { const ok = [...d.querySelectorAll('button')].find((b) => /^(OK|Confirm|Yes|Submit)$/i.test((b.innerText || '').trim())); if (ok) ok.click(); } }).catch(() => {});
+        await sleep(2000);
+        // затвори диалозите на рейтинга (Content rating / Complete age rating), за да НЕ зациклим
+        await frame.evaluate(() => { [...document.querySelectorAll('.el-dialog, .el-drawer')].filter((x) => x.offsetParent !== null && /rating/i.test(x.innerText || '')).forEach((d) => { const x = d.querySelector('.el-dialog__headerbtn, .el-drawer__close-btn'); if (x) x.click(); else { const c = [...d.querySelectorAll('button')].find((b) => /^(Cancel|Close)$/i.test((b.innerText || '').trim())); if (c) c.click(); } }); }).catch(() => {});
+        await sleep(1200);
+        log(saved ? '✓ финализирах рейтинга (Submit на въпросника) и затворих диалога.' : '↷ рейтингът не се финализира — виж ръчно.');
+        _ratingDone = true;
+      }
+      autoNext = false;   // рейтингът се управлява сам — да не го дублира авто-напредът
+    } else if (!_priceDone && (on('App price') || (on('Default price') && (on('Convert prices') || on('Default currency'))))) {
+      // ── App price (от „View and edit") — валута Kyrgyzstan (USD) + цена + Convert + Save ──
       console.log('Екран: App price (цена)');
       await ensureCurrency(frame);
       await fillNear(frame, 'Default price', priceUsd);
@@ -736,17 +955,19 @@ function spawnBrowser() {
       // (China/Belarus/Russia са извън release), просто се игнорира — безвредно е. Само конвертираме.
       await clickText(frame, 'Convert prices');
       await sleep(600);
-      if (PRICE_MODE) {
-        const saveBtn = frame.locator('button:has-text("Save")').filter({ hasNotText: /Submit|Cancel/ }).last();
-        if (await saveBtn.count().catch(() => 0)) {
-          await saveBtn.scrollIntoViewIfNeeded().catch(() => {});
-          await saveBtn.click({ force: true, timeout: 5000 }).then(() => log('✓ натиснах Save на цената')).catch((e) => log('↷ Save: ' + e.message));
-          await sleep(3000);
-          let toast = ''; try { toast = await frame.evaluate(() => { const el = document.querySelector('.el-message, .el-notification__content'); return el ? el.innerText.trim() : ''; }); } catch (_) {}
-          if (toast) log('ⓘ ' + toast.slice(0, 60));
-        } else log('↷ не намерих Save на екрана на цената');
-      }
-      log('✓ Цена ' + priceUsd + ' USD + махнати China/Belarus + Convert' + (PRICE_MODE ? ' + Save' : '') + '.');
+      // Натисни Save (ВИНАГИ — автономно; НЕ Submit/Cancel).
+      const saveBtn = frame.locator('button:has-text("Save")').filter({ hasNotText: /Submit|Cancel/ }).last();
+      if (await saveBtn.count().catch(() => 0)) {
+        await saveBtn.scrollIntoViewIfNeeded().catch(() => {});
+        await saveBtn.click({ force: true, timeout: 5000 }).then(() => log('✓ натиснах Save на цената')).catch((e) => log('↷ Save: ' + e.message));
+        await sleep(3000);
+        let toast = ''; try { toast = await frame.evaluate(() => { const el = document.querySelector('.el-message, .el-notification__content'); return el ? el.innerText.trim() : ''; }); } catch (_) {}
+        if (toast) log('ⓘ ' + toast.slice(0, 60));
+      } else log('↷ не намерих Save на екрана на цената');
+      log('✓ Цена ' + priceUsd + ' USD (Kyrgyzstan) + Convert + Save.');
+      autoNext = false;
+      _priceDone = true;
+      log('✅ ГОТОВО автономно: App info + версия (държави/APK/плащане/поверителност) + рейтинг + цена. Остава РЪЧНО: Proof of copyright + финалният Submit.');
     } else if (on('Country/Region for release') || on('Payment information') || on('Privacy tags') || on('For reviewer')) {
       // ── ЕКРАНИ 17–23: Version — Draft (настройки за релийз) ──
       console.log('Екран: Version — Draft (настройки за релийз)');
@@ -768,10 +989,16 @@ function spawnBrowser() {
       let modalMsg = await closeUploadModal();
       const errs = await getErrors(frame);
       if (errs.length) log('⚠ Конзолата показва: ' + errs.slice(0, 4).join(' | '));
+      // ── ОСНОВНОТО на версията се попълва и ЗАПИСВА ВЕДНЪЖ (после НЕ се пре-пълва, за да не маркира пак
+      //    „незаписани промени" — рейтингът/цената НЕ се отварят при незаписана версия!). ──
+      if (!_versionSaved) {
       // 17) Държави: „Selected" + „All" (ВСИЧКИ), после махни China/Belarus/Russia.
       //     Идемпотентно: ако вече е вярно, НЕ пипа (за да НЕ роди нов модал/ново качване).
-      await clickText(frame, 'Selected countries/regions');
-      await sleep(500);
+      // Кликни „Selected countries/regions" САМО ако още НЕ е избрано — клик по радиото НУЛИРА подбора
+      // обратно до всичките 200 държави (затова при рестарт „всичко пак селектирано")!
+      const selectedOn = await frame.evaluate(() => { const r = [...document.querySelectorAll('.el-radio')].find((x) => /Selected countries\/regions/i.test(x.innerText || '')); return r ? r.classList.contains('is-checked') : false; }).catch(() => false);
+      if (!selectedOn) { await clickText(frame, 'Selected countries/regions'); await sleep(800); }
+      else log('· „Selected countries/regions" вече е избрано — не го пипам (иначе нулира държавите)');
       await selectCountriesExcept(frame);
       // 2) смяната на държавите РАЖДА модала „upload package again" → затвори го СЕГА и форсирай качване
       await sleep(800);
@@ -794,18 +1021,69 @@ function spawnBrowser() {
       await pickRadio(frame, 'Generative AI', aiDecl);
       // 23) Release: веднага след одобрение
       await pickRadio(frame, 'Release time', 'Immediately once approved');
-      log('■ Остават РЪЧНО: цената (Price → View and edit = екран App price), Proof of copyright (файл). После Save/Submit.');
+      log('✓ Версията попълнена — ЗАПИСВАМ я (за да се отворят рейтинг „Fill out questionnaire" и цена „View and edit").');
+      // ЗАПИШИ версията: Playwright-клик (истински), после native. Провери дали Save е АКТИВЕН (при липсващ
+      // пакет е disabled → нищо не се записва → държавите/пакетът се губят!).
+      const vSave = frame.locator('button:has-text("Save")').filter({ hasNotText: /Submit/ }).first();
+      const vDisabled = await vSave.isDisabled().catch(() => false);
+      if (vDisabled) log('⚠ „Save" на версията е НЕАКТИВЕН (вероятно липсва пакет/задължително поле) — записът няма да мине!');
+      let vsaved = false;
+      await vSave.click({ timeout: 4000 }).then(() => { vsaved = true; }).catch(() => {});
+      if (!vsaved) await nativeClick(frame, '^Save$');
+      await sleep(3800);
+      const savedToast = await frame.evaluate(() => { const m = document.querySelector('.el-message, .el-message-box__content, .el-notification__content'); return m ? (m.innerText || '').trim().slice(0, 50) : ''; }).catch(() => '');
+      if (savedToast) log('ⓘ ' + savedToast);
+      await closeUploadModal();
+      _versionSaved = true;
+      autoNext = false; continue;   // презареди записаната версия, после отваряме рейтинг/цена
+      }
+      // ── Версията е ЗАПИСАНА → 1) Content rating („Set" → въпросник), 2) цена („View and edit"), после стоп.
+      if (!_ratingDone) {
+        if (_ratingTries++ >= 5) { log('↷ рейтингът не се отвори след 5 опита — виж ръчно'); _ratingDone = true; }
+        else {
+          // ЕДНА стъпка: „Set" (отваря „Complete age rating") → „Fill out questionnaire" (отваря въпросите).
+          // Прави се тук заедно, за да не куца двустъпковото засичане. Скролва до бутоните (native клик).
+          const s = await nativeClick(frame, '^Set$');
+          await sleep(s ? 2600 : 1200);
+          let fq = false;
+          for (let k = 0; k < 5 && !fq; k++) { fq = await clickFillOut(frame); if (!fq) await sleep(700); }
+          await sleep(fq ? 3200 : 800);
+          log('→ рейтинг опит ' + _ratingTries + ': „Set"=' + s + ', „Fill out questionnaire"=' + fq);
+          if (!s && !fq) { const dbg = await frame.evaluate(() => [...document.querySelectorAll('button')].filter((b) => b.offsetParent !== null && /set|fill|rating/i.test(b.innerText || '')).map((b) => (b.innerText || '').trim()).slice(0, 10)).catch(() => []); log('  ↷ видими бутони (set/fill/rating): ' + JSON.stringify(dbg)); }
+          autoNext = false; continue;
+        }
+      }
+      if (!_priceDone) {
+        if (_priceTries++ >= 5) { log('↷ цената не се отвори след 5 опита — задай я ръчно'); _priceDone = true; }
+        else {
+          const opened = await nativeClick(frame, '^View and edit$');   // native клик — Playwright не задейства
+          await sleep(opened ? 3500 : 1500);
+          log(opened ? '→ отворих ценовия редактор (View and edit).' : '↷ опит ' + _priceTries + ' да отворя цената…');
+          autoNext = false; continue;   // ВИНАГИ continue докато цената не е готова — да не Save-ва/засяда преди това
+        }
+      }
+      log('✓ Версия + рейтинг + цена готови → натискам Save. Остава РЪЧНО само: Proof of copyright + Submit.');
     } else {
       let url = ''; try { url = frame.page().url(); } catch (_) {}
       console.log('Екран: не разпознат (маркери: ' + score + '). Трябва да си на ФОРМАТА „App information".');
       log('Адрес: ' + url);
       log('Видим текст (начало): ' + text.slice(0, 160).replace(/\n/g, ' '));
-      log('Съвет: в браузъра отвори приложението → вляво „App information" (или таба „Android"), после ENTER пак.');
+      autoNext = false;   // непознат екран — НЕ натискаме нищо наслуки
     }
-    console.log('✓ Готово с този екран — прегледай и натисни бутона сам.');
-    return;   // попълването приключи за този екран — чакаме нов ENTER
+    // ── АВТО-НАПРЕД: ботът сам натиска основния бутон (Next/Save/OK), за да мине на следващия екран.
+    //    НЕ натиска Submit (последната стъпка е човешко решение + чака pupikes.app страниците да са живи).
+    if (autoNext) {
+      const advanced = await clickAdvance(frame);
+      console.log(advanced ? '→ натиснах основния бутон — минавам на следващия екран.' : '· няма активен бутон за напред тук.');
+      await sleep(2800);
+    }
+    // ── СТОП при засядане: ако екранът не се сменя 3 пъти подред → спри (за да не върти безкрайно).
+    let _sig = ''; try { _sig = frame.page().url(); } catch (_) {}
+    _sig += '|' + score + '|' + text.slice(0, 70);
+    if (_sig === _lastSig) _stall++; else { _stall = 0; _lastSig = _sig; }
+    if (_stall >= 3) { console.log('■ Екранът не се сменя — стигнах докъдето мога автономно (вероятно чака Submit/ръчно: цена, Proof of copyright). Спирам.'); return; }
    }  // ← край на верижния цикъл
-   console.log('(навигацията мина няколко стъпки — натисни ENTER пак, ако не е стигнала до формата)');
+   console.log('■ Достигнат лимит стъпки — спирам.');
   }
 
   const loop = process.argv.includes('--loop');
