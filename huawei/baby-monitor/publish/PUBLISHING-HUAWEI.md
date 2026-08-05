@@ -102,7 +102,7 @@ _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). С�
 | 2 (категория) | **Kids** |
 | 3 (под-категория) | **Mom and Baby** |
 
-**Пълен път:** `Apps > Kids > Mom and Baby`
+**Пълен път:** `Apps > Kids > Mom & baby`
 
 ### 5. Service information
 | Поле | Стойност |

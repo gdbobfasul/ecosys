@@ -589,11 +589,22 @@ function spawnBrowser() {
       if (!ok) await nativeClick(frame, '^Select$');
       await sleep(1000);
     };
-    // Маркира радиото В РЕДА на пакета (.apk) с ★ИСТИНСКА МИШКА (иначе Vue-моделът не се обновява и пакетът
-    // НЕ се закача реално — „button-text-disabled" Select / не се задържа след запис). Не .first() (грешно радио).
+    // Маркира радиото В РЕДА на НАЙ-НОВИЯ пакет (.apk) с ★ИСТИНСКА МИШКА (иначе Vue-моделът не се обновява).
+    // ВАЖНО: избира реда с НАЙ-ВИСОК versionCode (най-новия), НЕ .first() — иначе можеше да активира СТАР пакет.
+    // versionCode се показва в реда в скоби „(NNNNNN)". Ако не се разчете — резерва последния ред (най-скоро качен).
     const selectPkgRadio = async () => {
-      const row = frame.locator('.el-dialog:visible tr, .el-dialog:visible .el-table__row').filter({ hasText: /\.apk/i }).first();
-      const rad = row.locator('.el-radio, .el-radio__inner, span.el-radio__input').first();
+      const rows = frame.locator('.el-dialog:visible tr, .el-dialog:visible .el-table__row').filter({ hasText: /\.apk/i });
+      const n = await rows.count().catch(() => 0);
+      if (!n) return false;
+      let bestIdx = n - 1, bestVc = -1, anyVc = false;   // резерва: последния ред
+      for (let i = 0; i < n; i++) {
+        const t = ((await rows.nth(i).innerText().catch(() => '')) || '');
+        const vc = parseInt((t.match(/\((\d{5,})\)/) || [])[1] || '0', 10);
+        if (vc > 0) anyVc = true;
+        if (vc > bestVc) { bestVc = vc; bestIdx = i; }
+      }
+      if (n > 1) log('  → избирам НАЙ-НОВИЯ пакет' + (anyVc ? ' (versionCode ' + bestVc + ')' : ' (последния ред)') + ' от ' + n + ' пакета');
+      const rad = rows.nth(bestIdx).locator('.el-radio, .el-radio__inner, span.el-radio__input').first();
       return await mouseClick(rad);
     };
     // Натиска „Select" в Manage packages с истинска мишка.
@@ -802,6 +813,18 @@ function spawnBrowser() {
       const exists = (appId && text.includes(appId)) || (brand && text.includes(brand));
       console.log('Екран: списък с приложения (My apps). „' + brand + '" → ' + (exists ? 'СЪЗДАДЕНО ✓ — отварям го' : 'НЕ е създадено — създавам нов запис'));
       if (exists) {
+        // ── СТАТУС: ако апът е ВЕЧЕ пуснат за МОДЕРАЦИЯ (Reviewing/Under review/Releasing/Pending) — НЕ го
+        //    отваряй, НЕ ъпдейтвай, НЕ пресъздавай. Само обяви и спри. (Draft/To modify са редактируеми → минаваме.)
+        const rowStatus = await frame.evaluate((needle) => {
+          const rows = [...document.querySelectorAll('tr, .el-table__row, [class*="app-item"], [class*="list-item"], li')];
+          const row = rows.find((r) => r.offsetParent !== null && (r.innerText || '').includes(needle));
+          return row ? (row.innerText || '').replace(/\s+/g, ' ').trim() : '';
+        }, (appId && text.includes(appId)) ? appId : brand).catch(() => '');
+        if (/Reviewing|Under review|In review|Pending review|Releasing|На модерац|审核中/i.test(rowStatus)) {
+          const st = (rowStatus.match(/Reviewing|Under review|In review|Pending review|Releasing/i) || [''])[0];
+          log('⏸ „' + brand + '" е ВЕЧЕ пуснат за МОДЕРАЦИЯ (статус: ' + st + ') → НЕ отварям/ъпдейтвам/пресъздавам. Спирам.');
+          return;
+        }
         await clickText(frame, brand);
         await sleep(4000);                       // изчакай да зареди детайла на приложението
         // отиди САМ на „App information" (вляво) — с ИЗЧАКВАНЕ и РЕТРАЙ (менюто/детайлът зареждат бавно)
@@ -898,7 +921,9 @@ function spawnBrowser() {
           for (const part of catParts) {
             let done = false;
             for (let k = 0; k < 5 && !done; k++) {
-              done = await frame.evaluate((t) => { const cols = [...document.querySelectorAll('.el-cascader-menu')].filter((m) => m.offsetParent !== null); for (let ci = cols.length - 1; ci >= 0; ci--) { const n = [...cols[ci].querySelectorAll('.el-cascader-menu__item, .el-cascader-node')].find((i) => ((i.querySelector('.el-cascader-node__label') || i).innerText || '').trim().replace(/\s+/g, ' ') === t); if (n) { n.click(); return true; } } return false; }, part).catch(() => false);
+              // ТОЛЕРАНТНО съвпадение: & ↔ and, без регистър, свити интервали — за да не се чупи от дреболии
+              // (напр. файлът „Mom and Baby" vs Huawei „Mom & baby").
+              done = await frame.evaluate((t) => { const norm = (s) => (s || '').toLowerCase().replace(/\s*&\s*/g, ' and ').replace(/\s+/g, ' ').trim(); const target = norm(t); const cols = [...document.querySelectorAll('.el-cascader-menu')].filter((m) => m.offsetParent !== null); for (let ci = cols.length - 1; ci >= 0; ci--) { const n = [...cols[ci].querySelectorAll('.el-cascader-menu__item, .el-cascader-node')].find((i) => norm((i.querySelector('.el-cascader-node__label') || i).innerText || '') === target); if (n) { n.click(); return true; } } return false; }, part).catch(() => false);
               if (!done) await sleep(800);
             }
             await sleep(1200);
