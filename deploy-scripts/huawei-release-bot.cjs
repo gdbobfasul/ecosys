@@ -129,6 +129,9 @@ const langFillLabels = ['English (UK)', ...hwLabels];
 
 function log(s) { console.log('  ' + s); }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// Човешка пауза (в СЕКУНДИ, случайно между min и max) — за да не личи, че е бот. По-дълга за големи
+// секции, по-кратка за отделни полета. Вика се след всяко видимо действие.
+const human = (min = 1.5, max = 4) => sleep(Math.floor((min + Math.random() * (max - min)) * 1000));
 
 // ── попълване на ВИДИМОТО поле по етикет ──
 // ВАЖНО: всеки език има СВОЙ скрит комплект полета (App name/Brief/Full/New features). Само полетата
@@ -659,6 +662,7 @@ function spawnBrowser() {
     }).catch(() => false);
     let url = ''; try { url = frame.page().url(); } catch (_) {}
     console.log('\n── екран (маркери: ' + score + ') ──');
+    await human(2, 5);   // „оглеждане" на екрана преди действие (човешко темпо)
 
     // ── СПИСЪК С ПРИЛОЖЕНИЯ: разбери дали приложението е СЪЗДАДЕНО, и действай ──
     const isVersionPage = on('Country/Region for release') || on('Payment information') || on('Privacy tags') || on('For reviewer') || on('App price') || on('Default price');
@@ -836,6 +840,7 @@ function spawnBrowser() {
               if (d.full) await fillNear(frame, 'Full introduction', d.full, 'textarea');
               if (d.nf) await fillNear(frame, 'New features', d.nf, 'textarea');
               langsFilled++;
+              await human(2, 4);   // пауза СЛЕД цял език (секция), не след всяко поле
             }
             log('✓ описания/име попълнени за ' + langsFilled + ' езика (+ English).');
           } else {
@@ -1000,6 +1005,7 @@ function spawnBrowser() {
       if (!selectedOn) { await clickText(frame, 'Selected countries/regions'); await sleep(800); }
       else log('· „Selected countries/regions" вече е избрано — не го пипам (иначе нулира държавите)');
       await selectCountriesExcept(frame);
+      await human(2, 4);   // пауза след секция „Държави"
       // 2) смяната на държавите РАЖДА модала „upload package again" → затвори го СЕГА и форсирай качване
       await sleep(800);
       const modalAfter = await closeUploadModal();
@@ -1010,6 +1016,7 @@ function spawnBrowser() {
       //     (или по-стар versionCode) → трие стария и качва най-новия, после Select.
       await pickRadio(frame, 'Use testing version', 'No');
       await uploadHwApk(frame, pkgErr);
+      await human(2, 4);   // пауза след секция „Пакет/APK"
       // 20) Плащане: Paid + валута USD
       await pickRadio(frame, 'Payment type', 'Paid');
       await ensureCurrency(frame);
@@ -1021,6 +1028,7 @@ function spawnBrowser() {
       await pickRadio(frame, 'Generative AI', aiDecl);
       // 23) Release: веднага след одобрение
       await pickRadio(frame, 'Release time', 'Immediately once approved');
+      await human(2, 4);   // пауза след секция „Плащане/Поверителност/AI/Release"
       log('✓ Версията попълнена — ЗАПИСВАМ я (за да се отворят рейтинг „Fill out questionnaire" и цена „View and edit").');
       // ЗАПИШИ версията: Playwright-клик (истински), после native. Провери дали Save е АКТИВЕН (при липсващ
       // пакет е disabled → нищо не се записва → държавите/пакетът се губят!).
