@@ -692,7 +692,7 @@ function spawnBrowser() {
   async function fillCurrent() {
    // АВТОНОМНО: попълва екрана → сам натиска основния бутон → минава на следващия. Спира при засядане
    // (същият екран 3 пъти) или на последната стъпка (Submit = човешко решение, не се натиска тук).
-   let _lastSig = '', _stall = 0, _appInfoDone = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0, _finalDone = false;
+   let _lastSig = '', _stall = 0, _appInfoDone = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0, _finalDone = false, _modalSeen = {};
    for (let _step = 0; _step < 40; _step++) {
     let autoNext = true;
     let { frame, text, score } = await navToForm();
@@ -703,8 +703,11 @@ function spawnBrowser() {
     // ВАЖНО: блокиращите предупреждения на Huawei са `.el-message-box` (НЕ `.el-dialog`!) — те стоят ОТГОРЕ и
     // прихващат всички кликове (селекти/Save не работят). Ловим И двата типа. (Popup „New app" е `.el-dialog`
     // с „Package type" — НЕГО не го затваряме тук.)
+    // CAUSE-AWARE: ЕДИН модал може да излиза по РАЗНИ причини — разпознаваме причината по текста, ДЕЙСТВАМЕ
+    // за отстраняване (не само затваряме), с ANTI-LOOP: ако същата причина се върне 3+ пъти → спираме да я
+    // „поправяме" (за да не циклим безкрайно), само затваряме и обявяваме за ръчна проверка.
     let _needCategory = false;
-    for (let m = 0; m < 6; m++) {
+    for (let m = 0; m < 8; m++) {
       const mbox = frame.locator('.el-message-box:visible').first();
       const isMsgBox = await mbox.count().catch(() => 0);
       const dlg = isMsgBox ? mbox : frame.locator('.el-dialog:visible, [role="dialog"]:visible').filter({ hasNotText: 'Package type' }).first();
@@ -712,21 +715,44 @@ function spawnBrowser() {
       const dtxt = ((await dlg.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim();
       if (!dtxt) break;
       const lc = dtxt.toLowerCase();
-      // Класификация на известните модали:
-      let kind = 'инфо';
-      if (/categoriz|app category|app categorization/.test(lc) && /first|complete|before/.test(lc)) { kind = 'ИЗИСКВА КАТЕГОРИЯ'; _needCategory = true; }
-      else if (/3 to 8 screenshots|modify and try again/.test(lc)) kind = 'ГРЕШКА СКРИЙНШОТИ';
-      else if (/leave this page|has not been saved/.test(lc)) kind = 'напускане на страница';
-      else if (/mandatory|marked in red|fill in or correct|empty or incorrect|required/.test(lc)) kind = 'ЗАДЪЛЖИТЕЛНИ ПОЛЕТА';
-      else if (/successfully|saved|submitted for review/.test(lc)) kind = 'успех';
-      log('⚠ Модал [' + kind + ']: ' + dtxt.slice(0, 150));
-      // el-message-box: основният бутон е `.el-message-box__btns .el-button--primary`; иначе OK/Confirm.
+      // РАЗПОЗНАЙ ПРИЧИНАТА (всички известни варианти):
+      let cause = 'инфо';
+      if (/3 to 8 screenshots|modify and try again/.test(lc)) cause = 'СКРИЙНШОТИ';
+      else if (/categoriz|app categorization/.test(lc) && /first|complete|before/.test(lc)) cause = 'КАТЕГОРИЯ';
+      else if (/leave this page|has not been saved/.test(lc)) cause = 'НАПУСКАНЕ';
+      else if (/empty or incorrect|is required|mandatory|marked in red|fill in or correct/.test(lc)) cause = 'ЗАДЪЛЖИТЕЛНИ';
+      else if (/successfully|saved|submitted for review/.test(lc)) cause = 'УСПЕХ';
+      _modalSeen[cause] = (_modalSeen[cause] || 0) + 1;
+      const tries = _modalSeen[cause];
+      log('⚠ Модал [' + cause + ' ×' + tries + ']: ' + dtxt.slice(0, 130));
+      // ДЕЙСТВИЕ ЗА ОТСТРАНЯВАНЕ (само първите 2 срещания — после anti-loop само затваря):
+      if (tries <= 2) {
+        if (cause === 'КАТЕГОРИЯ') _needCategory = true;
+        else if (cause === 'СКРИЙНШОТИ') {
+          // >8 → изтрий излишните до 8 (dispatchEvent — заобикаля overlay-а на message-box-а, който
+          // блокира нормален клик). ≤8 → нищо не трием (валидно; ако пак дава грешка → размер, ръчно).
+          const cnt = async () => await frame.locator('.appinfo-multiple-upload-box img.upload-img').count().catch(() => 0);
+          let have = await cnt();
+          if (have > 8) {
+            log('  → има ' + have + ' скрийншота (>8) → трия излишните до 8…');
+            let g = 0;
+            while ((await cnt()) > 8 && g++ < 25) {
+              await frame.evaluate(() => { const ds = document.querySelectorAll('.appinfo-multiple-upload-box .appinfo-uploader-delete'); if (ds.length) ds[ds.length - 1].dispatchEvent(new MouseEvent('click', { bubbles: true })); }).catch(() => {});
+              await sleep(500);
+              const cf = frame.locator('.el-message-box:visible').filter({ hasText: /delete|remove|sure|confirm|удал/i }).first();
+              if (await cf.count().catch(() => 0)) { await cf.locator('.el-message-box__btns .el-button--primary').first().click({ force: true }).catch(() => {}); await sleep(400); }
+            }
+            log('  → скрийншоти сега: ' + (await cnt()));
+          } else log('  → скрийншоти: ' + have + ' (валидно 3-8; ако грешката остане → провери размера 1080×2280 ръчно)');
+        }
+      } else if (tries === 3) log('  ⚠ „' + cause + '" се повтаря 3× — спирам да го поправям (провери РЪЧНО); само затварям.');
+      // ЗАТВОРИ модала (el-message-box → primary бутон; иначе OK/Confirm; резерва Cancel)
       const okBtn = dlg.locator('.el-message-box__btns .el-button--primary, button:has-text("OK"), button:has-text("Confirm")').first();
       const cancelBtn = dlg.locator('button:has-text("Cancel")').first();
-      if (await okBtn.count().catch(() => 0)) { await okBtn.click({ force: true, timeout: 2000 }).catch(() => {}); log('  → затворих с OK'); }
-      else if (await cancelBtn.count().catch(() => 0)) { await cancelBtn.click({ force: true, timeout: 2000 }).catch(() => {}); log('  → затворих с Cancel'); }
-      else { log('  → модалът няма бутон — оставям го'); break; }
-      await sleep(1200);
+      if (await okBtn.count().catch(() => 0)) await okBtn.click({ force: true, timeout: 2000 }).catch(() => {});
+      else if (await cancelBtn.count().catch(() => 0)) await cancelBtn.click({ force: true, timeout: 2000 }).catch(() => {});
+      else break;
+      await sleep(1000);
     }
     // „Complete app categorization first" → категорията НЕ е записана. Върни се на App information (там ботът
     // задава категорията от PUBLISHING-HUAWEI.md) вместо да блъскаш рейтинга и да въртиш същия модал.
