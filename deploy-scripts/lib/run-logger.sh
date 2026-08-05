@@ -17,7 +17,7 @@
 
 # Силни маркери за РЕАЛНА грешка (без безобидните „0 errors"/„без грешки"/успешни редове).
 _SLOG_ERR_RE='BUILD FAILED|FAILURE:|KeytoolException|No key with alias|npm ERR!|fatal:|Traceback|Exception:|Permission denied|command not found|Cannot find module|ENOSPC|ECONNREFUSED|✗ |ГРЕШКА|ОШИБКА| error TS[0-9]|[[:space:]]error:|^error:|FAILED|lost connection|Connection closed|Connection refused|Connection timed out|scp: |rsync: |не се качи|се провали'
-_SLOG_OK_RE='без грешки|0 error|no errors|errorlevel 0|BUILD SUCCESSFUL|свеж backup|✓'
+_SLOG_OK_RE='без грешки|не е грешка|не е реална грешка|not an error|no error|0 error|no errors|errorlevel 0|BUILD SUCCESSFUL|свеж backup|✓'
 
 # slog_run <choice> — пуска run_choice със захванат изход (екран + лог), после обобщава.
 slog_run() {

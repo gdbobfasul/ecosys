@@ -129,6 +129,9 @@ const langFillLabels = ['English (UK)', ...hwLabels];
 
 function log(s) { console.log('  ' + s); }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// Човешка пауза (в СЕКУНДИ, случайно между min и max) — за да не личи, че е бот. По-дълга за големи
+// секции, по-кратка за отделни полета. Вика се след всяко видимо действие.
+const human = (min = 1.5, max = 4) => sleep(Math.floor((min + Math.random() * (max - min)) * 1000));
 
 // ── попълване на ВИДИМОТО поле по етикет ──
 // ВАЖНО: всеки език има СВОЙ скрит комплект полета (App name/Brief/Full/New features). Само полетата
@@ -171,14 +174,16 @@ async function nativeClick(frame, reSrc) {
 // .click() НЕ задейства неговия Vue-handler (обратно на Set/View-and-edit). Затова отделен помощник:
 // пробва Playwright локатор-клик, после native като резерва.
 async function clickFillOut(frame) {
-  const btn = frame.locator('button:has-text("Fill out questionnaire"), button:has-text("Fill out")').first();
+  // Бутонът е „Fill out questionnaire" (нов рейтинг) ИЛИ „Complete questionnaire" (започнат, но НЕ финализиран
+  //   рейтинг — Your current rating: No data). И двата отварят въпросите.
+  const btn = frame.locator('button:has-text("Fill out questionnaire"), button:has-text("Complete questionnaire"), button:has-text("Fill out"), button:has-text("Complete quest")').first();
   if (await btn.count().catch(() => 0)) {
     let ok = false;
     await btn.scrollIntoViewIfNeeded().catch(() => {});
     await btn.click({ timeout: 4000 }).then(() => { ok = true; }).catch(() => {});
     if (ok) return true;
   }
-  return await nativeClick(frame, 'Fill out questionnaire|Fill out');
+  return await nativeClick(frame, 'Fill out questionnaire|Complete questionnaire|Fill out');
 }
 // Element-UI падащо меню: кликва селекта след етикета, после опцията по видим текст.
 async function selectByLabel(frame, labelText, optionText) {
@@ -637,7 +642,7 @@ function spawnBrowser() {
   async function fillCurrent() {
    // АВТОНОМНО: попълва екрана → сам натиска основния бутон → минава на следващия. Спира при засядане
    // (същият екран 3 пъти) или на последната стъпка (Submit = човешко решение, не се натиска тук).
-   let _lastSig = '', _stall = 0, _appInfoDone = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false;
+   let _lastSig = '', _stall = 0, _appInfoDone = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0;
    for (let _step = 0; _step < 40; _step++) {
     let autoNext = true;
     let { frame, text, score } = await navToForm();
@@ -659,6 +664,7 @@ function spawnBrowser() {
     }).catch(() => false);
     let url = ''; try { url = frame.page().url(); } catch (_) {}
     console.log('\n── екран (маркери: ' + score + ') ──');
+    await human(2, 5);   // „оглеждане" на екрана преди действие (човешко темпо)
 
     // ── СПИСЪК С ПРИЛОЖЕНИЯ: разбери дали приложението е СЪЗДАДЕНО, и действай ──
     const isVersionPage = on('Country/Region for release') || on('Payment information') || on('Privacy tags') || on('For reviewer') || on('App price') || on('Default price');
@@ -669,14 +675,24 @@ function spawnBrowser() {
     // ВАЖНО: когато попъпът „New app" е ВЕЧЕ отворен, URL-ът пак е „#/myApp" (попъпът не сменя адреса).
     // Затова НЕ влизаме в клона за списъка (иначе кликкаме Release пак и пак) — падаме към попълването.
     if (isList && !on('Compatible devices') && !(on('New app') && on('Package type'))) {
+      // ВАЖНО: списъкът по подразбиране е на таб „HarmonyOS" — нашите приложения са ANDROID! Затова първо
+      //   превключваме на таба „Android" и ПРЕПРОЧИТАМЕ текста (иначе не виждаме апа → фалшиво „не е създадено").
+      await frame.locator('#tab-android, .el-tabs__item:has-text("Android"), text="Android"').first().click({ force: true, timeout: 2000 }).catch(() => {});
+      await sleep(2000);
+      try { text = await frame.evaluate(() => (document.body ? document.body.innerText : '')); } catch (_) {}
+      // изчакай списъкът да ЗАРЕДИ — иначе на незареден списък бъркаме „не е създадено" и правим дубликат.
+      const listLoaded = (appId && text.includes(appId)) || (brand && text.includes(brand)) || /No data available|Package name|Total\s*\d/.test(text);
+      if (!listLoaded && _listWaits < 6) { _listWaits++; console.log('· списъкът с приложения още се зарежда — изчаквам (' + _listWaits + '/6)…'); await sleep(2500); continue; }
       const exists = (appId && text.includes(appId)) || (brand && text.includes(brand));
       console.log('Екран: списък с приложения (My apps). „' + brand + '" → ' + (exists ? 'СЪЗДАДЕНО ✓ — отварям го' : 'НЕ е създадено — създавам нов запис'));
       if (exists) {
         await clickText(frame, brand);
-        await sleep(3000);                       // изчакай да зареди детайла на приложението
-        // отиди САМ на „App information" (вляво)
-        if (await clickAnywhere('App information')) { await sleep(2500); log('→ отидох сам на „App information" — попълвам…'); }
-        else { log('↷ не намерих „App information" вляво — отвори го ръчно и натисни ENTER.'); return; }
+        await sleep(4000);                       // изчакай да зареди детайла на приложението
+        // отиди САМ на „App information" (вляво) — с ИЗЧАКВАНЕ и РЕТРАЙ (менюто/детайлът зареждат бавно)
+        let opened = false;
+        for (let k = 0; k < 8 && !opened; k++) { opened = (await clickLeftMenu('App information')) || (await clickAnywhere('App information')); if (!opened) await sleep(1500); }
+        if (opened) { await sleep(3000); log('→ отидох сам на „App information" — попълвам…'); }
+        else { log('↷ не намерих „App information" — отвори го ръчно.'); return; }
       } else {
         // нов запис: таб Android → бутон Release (#MyAppListNewApp, force — тултип прехваща) → попъп „New app"
         await frame.locator('text="Android"').first().click({ force: true, timeout: 2500 }).catch(() => {});
@@ -836,6 +852,7 @@ function spawnBrowser() {
               if (d.full) await fillNear(frame, 'Full introduction', d.full, 'textarea');
               if (d.nf) await fillNear(frame, 'New features', d.nf, 'textarea');
               langsFilled++;
+              await human(2, 4);   // пауза СЛЕД цял език (секция), не след всяко поле
             }
             log('✓ описания/име попълнени за ' + langsFilled + ' езика (+ English).');
           } else {
@@ -928,21 +945,31 @@ function spawnBrowser() {
         // евентуална декларация-отметка преди финализиране
         await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-drawer, .el-dialog')].find((x) => x.offsetParent !== null); if (!d) return; d.querySelectorAll('.el-checkbox:not(.area-checkbox)').forEach((c) => { if (!c.classList.contains('is-checked') && /authentic|declare|confirm|responsib|accurate/i.test(c.innerText || '')) c.click(); }); }).catch(() => {});
         await sleep(800);
-        // След Verify финализиращият бутон е „Submit" — това е Submit на ВЪПРОСНИКА (запазва възрастовия
-        // рейтинг; НЕ подава приложението за ревю!). Playwright-клик в диалога (по-надежден) + native резерва.
+        // ── ФИНАЛИЗИРАНЕ (запазва рейтинга; НЕ подава апа за ревю!) ──
+        // 1) „Submit" на въпросника — САМО с PLAYWRIGHT-клик (native НЕ задейства този бутон!).
         let saved = false;
-        const rdlg = frame.locator('.el-dialog:visible, .el-drawer:visible').filter({ hasText: /Content rating/i }).first();
-        const subBtn = rdlg.locator('button:has-text("Submit"), button:has-text("Save"), button:has-text("OK")').first();
-        if (await subBtn.count().catch(() => 0)) { await subBtn.scrollIntoViewIfNeeded().catch(() => {}); await subBtn.click({ timeout: 4000 }).then(() => { saved = true; }).catch(() => {}); }
-        if (!saved) saved = (await rbtn('Submit')) || (await rbtn('Save')) || (await rbtn('OK')) || (await rbtn('Confirm'));
-        await sleep(2500);
-        // възможно потвърждение след Submit (Are you sure/OK)
-        await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-message-box, .el-dialog')].find((x) => x.offsetParent !== null && /sure|confirm|submit the questionnaire|rating/i.test(x.innerText || '')); if (d) { const ok = [...d.querySelectorAll('button')].find((b) => /^(OK|Confirm|Yes|Submit)$/i.test((b.innerText || '').trim())); if (ok) ok.click(); } }).catch(() => {});
-        await sleep(2000);
-        // затвори диалозите на рейтинга (Content rating / Complete age rating), за да НЕ зациклим
-        await frame.evaluate(() => { [...document.querySelectorAll('.el-dialog, .el-drawer')].filter((x) => x.offsetParent !== null && /rating/i.test(x.innerText || '')).forEach((d) => { const x = d.querySelector('.el-dialog__headerbtn, .el-drawer__close-btn'); if (x) x.click(); else { const c = [...d.querySelectorAll('button')].find((b) => /^(Cancel|Close)$/i.test((b.innerText || '').trim())); if (c) c.click(); } }); }).catch(() => {});
+        const qdlg = frame.locator('.el-dialog.age-rating-questionnaire:visible, .el-dialog:visible, .el-drawer:visible').filter({ hasText: /Verify your age rating|Content rating/i }).first();
+        await qdlg.locator('button:has-text("Submit")').first().click({ timeout: 4000 }).then(() => { saved = true; }).catch(() => {});
+        if (!saved) saved = await nativeClick(frame, '^Submit$');
+        await sleep(3000);
+        // 2) Потвърждение „children-confirm-dialog": въпрос „intended ONLY for children?" → за нашите апове
+        //    (новини, инструменти, игри) отговорът е „No" (НЕ само за деца). Само истинско детско → „Yes"
+        //    (ratingCfg.kidsOnly). После OK.
+        const kidsAns = ratingCfg.kidsOnly ? 'Yes' : 'No';
+        await frame.evaluate((ans) => {
+          const d = [...document.querySelectorAll('.el-dialog, .el-message-box')].find((x) => x.offsetParent !== null && (/children-confirm/.test(x.className || '') || /intended only for children|choose this rating/i.test(x.innerText || '')));
+          if (!d) return;
+          const r = [...d.querySelectorAll('.el-radio')].find((x) => new RegExp('^' + ans + '$', 'i').test((x.innerText || '').trim()));
+          if (r) r.click();
+        }, kidsAns).catch(() => {});
         await sleep(1200);
-        log(saved ? '✓ финализирах рейтинга (Submit на въпросника) и затворих диалога.' : '↷ рейтингът не се финализира — виж ръчно.');
+        // 3) OK на потвърждението (Playwright)
+        await frame.locator('.el-dialog.children-confirm-dialog button:has-text("OK"), .el-dialog:visible button:has-text("OK"), .el-message-box button:has-text("OK")').first().click({ timeout: 3500 }).catch(() => {});
+        await sleep(3500);
+        // 4) затвори остатъчния диалог „Complete age rating" (показва вече записания рейтинг)
+        await frame.evaluate(() => { [...document.querySelectorAll('.el-dialog, .el-drawer')].filter((x) => x.offsetParent !== null && /age rating/i.test(x.innerText || '')).forEach((d) => { const x = d.querySelector('.el-dialog__headerbtn, .el-drawer__close-btn'); if (x) x.click(); }); }).catch(() => {});
+        await sleep(1200);
+        log(saved ? '✓ рейтингът е ФИНАЛИЗИРАН (въпроси → Verify → Submit → „само за деца: ' + kidsAns + '" → OK).' : '↷ рейтингът не се финализира — виж ръчно.');
         _ratingDone = true;
       }
       autoNext = false;   // рейтингът се управлява сам — да не го дублира авто-напредът
@@ -1000,6 +1027,7 @@ function spawnBrowser() {
       if (!selectedOn) { await clickText(frame, 'Selected countries/regions'); await sleep(800); }
       else log('· „Selected countries/regions" вече е избрано — не го пипам (иначе нулира държавите)');
       await selectCountriesExcept(frame);
+      await human(2, 4);   // пауза след секция „Държави"
       // 2) смяната на държавите РАЖДА модала „upload package again" → затвори го СЕГА и форсирай качване
       await sleep(800);
       const modalAfter = await closeUploadModal();
@@ -1010,6 +1038,7 @@ function spawnBrowser() {
       //     (или по-стар versionCode) → трие стария и качва най-новия, после Select.
       await pickRadio(frame, 'Use testing version', 'No');
       await uploadHwApk(frame, pkgErr);
+      await human(2, 4);   // пауза след секция „Пакет/APK"
       // 20) Плащане: Paid + валута USD
       await pickRadio(frame, 'Payment type', 'Paid');
       await ensureCurrency(frame);
@@ -1021,6 +1050,7 @@ function spawnBrowser() {
       await pickRadio(frame, 'Generative AI', aiDecl);
       // 23) Release: веднага след одобрение
       await pickRadio(frame, 'Release time', 'Immediately once approved');
+      await human(2, 4);   // пауза след секция „Плащане/Поверителност/AI/Release"
       log('✓ Версията попълнена — ЗАПИСВАМ я (за да се отворят рейтинг „Fill out questionnaire" и цена „View and edit").');
       // ЗАПИШИ версията: Playwright-клик (истински), после native. Провери дали Save е АКТИВЕН (при липсващ
       // пакет е disabled → нищо не се записва → държавите/пакетът се губят!).
