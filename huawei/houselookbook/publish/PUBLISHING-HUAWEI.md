@@ -102,7 +102,7 @@ _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). С�
 | 2 (категория) | **Lifestyle** |
 | 3 (под-категория) | **House Refurbishment** |
 
-**Пълен път:** `Apps > Lifestyle > House Refurbishment`
+**Пълен път:** `Apps > Lifestyle > House refurbishment`
 
 ### 5. Service information
 | Поле | Стойност |

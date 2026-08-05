@@ -89,7 +89,7 @@ _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). С�
 | 2 (категория) | **Cars** |
 | 3 (под-категория) | **Car Care** |
 
-**Пълен път:** `Apps > Cars > Car Care`
+**Пълен път:** `Apps > Cars > Car care`
 
 ### 5. Service information
 | Поле | Стойност |

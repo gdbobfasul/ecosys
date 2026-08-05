@@ -102,7 +102,7 @@ _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). С�
 | 2 (категория) | **Business** |
 | 3 (под-категория) | **Business** |
 
-**Пълен път:** `Apps > Business > Business`
+**Пълен път:** `Apps > Business > Business software`
 
 ### 5. Service information
 | Поле | Стойност |

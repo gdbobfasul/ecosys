@@ -356,9 +356,11 @@ function spawnBrowser() {
     const p = getHuaweiPage(); if (!p) return false;
     for (const f of p.frames()) {
       const done = await f.evaluate((lbl) => {
+        // Точно съвпадение ИЛИ завършва на етикета (напр. „1.0019 Draft" за lbl „Draft").
         const a = [...document.querySelectorAll('a')].find((a) => {
-          const s = a.querySelector('.item-text');
-          return s && s.textContent.trim() === lbl;
+          const s = a.querySelector('.item-text'); if (!s) return false;
+          const t = (s.textContent || '').trim();
+          return t === lbl || t.endsWith(lbl);
         });
         if (a) { a.scrollIntoView({ block: 'center' }); a.click(); return true; }
         return false;
@@ -375,9 +377,10 @@ function spawnBrowser() {
     let href = '';
     for (const f of p.frames()) {
       href = await f.evaluate(() => {
+        // Линкът е с текст напр. „1.0019 Draft" (версия + Draft), НЕ само „Draft" → хващай СЪДЪРЖА „Draft".
         const a = [...document.querySelectorAll('a')].find((a) => {
           const s = a.querySelector('.item-text');
-          return s && s.textContent.trim() === 'Draft' && /\/v\d/.test(a.getAttribute('href') || a.href || '');
+          return s && /\bDraft\b/i.test(s.textContent || '') && /\/v\d/.test(a.getAttribute('href') || a.href || '');
         });
         return a ? (a.getAttribute('href') || a.href) : '';
       }).catch(() => '');

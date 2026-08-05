@@ -98,7 +98,7 @@ _Автоматичен индекс (deploy-scripts/gen-publish-index.mjs). С�
 | 2 (категория) | **Finance** |
 | 3 (под-категория) | **Equity Funds** |
 
-**Пълен път:** `Apps > Finance > Equity Funds`
+**Пълен път:** `Apps > Finance > Equity funds`
 
 ### 5. Service information
 | Поле | Стойност |
