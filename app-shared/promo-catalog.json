@@ -8,7 +8,7 @@
       "name": "Pupikes Toolkit Authenticator",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/authenticator.png",
-      "price": "$4.44",
+      "price": "$6",
       "text": {
         "bg": "Частно приложение за двуфакторно удостоверяване (2FA), което генерира еднократни TOTP/HOTP/Steam кодове и пази всички тайни в криптиран, биометрично заключен тр",
         "ru": "Приложение для частной двухфакторной аутентификации (2FA), которое генерирует одноразовые коды TOTP/HOTP/Steam и хранит все секреты в зашифрованном биометрическ",
@@ -333,7 +333,7 @@
       "name": "Pupikes Toolkit PDF",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-pdf.png",
-      "price": "$1.3",
+      "price": "$2.5",
       "text": {
         "bg": "Сливане, разделяне, воден знак · Растеризира страниците за по-малък размер · Извлича текста и прави .docx файл",
         "ru": "Объединение, разделение, водяной знак · Растрирует страницы для меньшего размера · Извлекает текст и создаёт файл .docx",
