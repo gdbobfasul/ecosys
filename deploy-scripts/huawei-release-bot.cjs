@@ -885,24 +885,32 @@ function spawnBrowser() {
       const fileInputs = frame.locator('input[type="file"]');
       if (iconPath) { await fileInputs.nth(0).setInputFiles(iconPath).then(() => log('✓ Икона качена')).catch(() => log('↷ икона — качи ръчно')); await sleep(3500); }   // качването е async — изчакай да се регистрира
       if (shotPaths.length) {
-        await fileInputs.nth(1).setInputFiles(shotPaths).then(() => log('✓ Скрийншоти подадени (' + shotPaths.length + ')')).catch(() => log('↷ скрийншоти — качи ръчно'));
-        await sleep(5000);   // изчакай обработката
-        // След обработка Huawei показва ИЛИ преглед (натисни OK веднъж), ИЛИ ГРЕШКА „Upload 3 to 8 /
-        // Modify and try again" (когато вече има качени → надхвърля 8, или грешен размер). При ГРЕШКА:
-        // затвори я ВЕДНЪЖ и СПРИ (не спами 20× OK — това блокира Manage languages/Save).
-        let handled = false;
-        for (let k = 0; k < 8; k++) {
-          const errDlg = frame.locator('.el-dialog:visible').filter({ hasText: /3 to 8 screenshots|Modify and try again/i }).first();
-          if (await errDlg.count().catch(() => 0)) {
-            await errDlg.locator('button:has-text("OK")').first().click({ force: true, timeout: 2000 }).catch(() => {});
-            log('⚠ Huawei: „Upload 3 to 8 screenshots" — не се приеха (вероятно ВЕЧЕ качени от предишен опит, или грешен размер). Затворих грешката, НЕ качвам повторно. Провери ги ръчно.');
-            handled = true; await sleep(800); break;
+        // ★ ИДЕМПОТЕНТНО: преброй ВЕЧЕ качените (стабилен контейнер `.appinfo-multiple-upload-box`, превюта
+        // `img.upload-img`). Huawei иска 3-8. Ако вече има ≥3 → НЕ качвай пак (иначе се ТРУПАТ 8+8=16 →
+        // „Upload 3 to 8 screenshots" и блокира Manage languages/Save). Качваме само ако са под 3.
+        const haveShots = await frame.locator('.appinfo-multiple-upload-box img.upload-img').count().catch(() => 0);
+        if (haveShots >= 3) {
+          log('↷ вече има ' + haveShots + ' скрийншота — НЕ качвам повторно (идемпотентно).');
+          if (haveShots > 8) log('⚠ има >8 скрийншота (' + haveShots + ') — махни излишните ръчно до 8.');
+        } else {
+          await fileInputs.nth(1).setInputFiles(shotPaths).then(() => log('✓ Скрийншоти подадени (' + shotPaths.length + ')')).catch(() => log('↷ скрийншоти — качи ръчно'));
+          await sleep(5000);   // изчакай обработката
+          // След обработка Huawei показва преглед (OK веднъж) ИЛИ грешка „Upload 3 to 8". И двете са
+          // `.el-message-box` ИЛИ `.el-dialog` — затвори веднъж и спри (без спам).
+          let handled = false;
+          for (let k = 0; k < 8; k++) {
+            const errDlg = frame.locator('.el-message-box:visible, .el-dialog:visible').filter({ hasText: /3 to 8 screenshots|Modify and try again/i }).first();
+            if (await errDlg.count().catch(() => 0)) {
+              await errDlg.locator('.el-message-box__btns .el-button--primary, button:has-text("OK")').first().click({ force: true, timeout: 2000 }).catch(() => {});
+              log('⚠ „Upload 3 to 8 screenshots" — затворих; провери размер/брой ръчно.');
+              handled = true; await sleep(800); break;
+            }
+            const okDlg = frame.locator('.el-message-box:visible .el-button--primary, .el-dialog:visible button:has-text("OK"), .el-dialog:visible button:has-text("Confirm")').first();
+            if (await okDlg.count().catch(() => 0)) { await okDlg.click({ force: true, timeout: 2000 }).catch(() => {}); log('✓ Затворих попъпа за преглед на скрийншотите.'); handled = true; await sleep(1000); break; }
+            await sleep(1000);
           }
-          const okDlg = frame.locator('.el-dialog:visible button:has-text("OK"), .el-dialog:visible button:has-text("Confirm")').first();
-          if (await okDlg.count().catch(() => 0)) { await okDlg.click({ force: true, timeout: 2000 }).catch(() => {}); log('✓ Затворих попъпа за преглед на скрийншотите.'); handled = true; await sleep(1000); break; }
-          await sleep(1000);
+          if (!handled) log('↷ няма попъп на скрийншотите (ако изскочи — натисни OK сам).');
         }
-        if (!handled) log('↷ няма попъп на скрийншотите (ако изскочи — натисни OK сам).');
       }
       // Промо-видео (Pupikes): НЕ се качва на Huawei за НИТО едно приложение — дава проблем (по искане).
       // (Оставяме кратка пауза, за да се уталожат икона/скрийншоти, преди Manage languages.)

@@ -33,7 +33,7 @@
       "name": "Pupikes Auto Answer",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/autoreply-bot.png",
-      "price": "$1.3",
+      "price": "$50",
       "text": {
         "bg": "Автоматичен асистент за отговор на съобщения, който отговаря вместо Вас по Ваши собствени правила: задействания на ключови думи с готови отговори, работно време",
         "ru": "Автоматический помощник по ответам на сообщения, который отвечает за вас по вашим собственным правилам: триггеры ключевых слов с готовыми ответами, часы работы,",
@@ -58,7 +58,7 @@
       "name": "Pupikes Baby Radar",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/baby-monitor.png",
-      "price": "$4.44",
+      "price": "$2.5",
       "text": {
         "bg": "Асистент за осведоменост, базиран на камера, който наблюдава вашето спящо или играещо дете през камерата на телефона и ви предупреждава при движение: той сигнал",
         "ru": "Помощник по повышению осведомленности на основе камеры, который наблюдает за вашим спящим или играющим ребенком через камеру телефона и предупреждает вас о движ",
@@ -83,7 +83,7 @@
       "name": "Pupikes FAQ Desk",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/business-faq-bot.png",
-      "price": "$1.3",
+      "price": "$50",
       "text": {
         "bg": "Бот, базиран на правила, който автоматично отговаря на често задаваните въпроси на клиентите ви, като използва база от знания за често задавани въпроси за ключо",
         "ru": "Бот на основе правил, который автоматически отвечает на часто задаваемые вопросы ваших клиентов, используя базу знаний FAQ по ключевым словам, приветствия, сооб",
@@ -183,7 +183,7 @@
       "name": "Pupikes Site Monitor",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/monitor-bot.png",
-      "price": "$1.3",
+      "price": "$10",
       "text": {
         "bg": "An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everythin",
         "ru": "An on-device watcher for any RSS/Atom feed or public JSON API you choose: it sends a local notification when a new entry appears or a keyword matches. Everythin",
@@ -283,7 +283,7 @@
       "name": "Pupikes Routine Planner",
       "storeUrl": "",
       "img": "https://selflearning.bot.nu/promo/routine-bot.png",
-      "price": "$1.3",
+      "price": "$10",
       "text": {
         "bg": "A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optiona",
         "ru": "A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optiona",
@@ -358,7 +358,7 @@
       "name": "Pupikes Toolkit QR",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-qr.png",
-      "price": "$1.3",
+      "price": "$4",
       "text": {
         "bg": "Генерирай и разчети QR кодове",
         "ru": "Создавай и сканируй QR-коды",
@@ -433,7 +433,7 @@
       "name": "Pupikes Toolkit Finance",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-finance.png",
-      "price": "$1.3",
+      "price": "$10 ",
       "text": {
         "bg": "RSI, Fibonacci, BTC/ETH по периоди (Binance/CoinGecko) · Конвертор и курсове на живо · Прагове с известие и звук за до 20 двойки · Заем, ДДС, лихва, проценти",
         "ru": "RSI, Фибоначчи, BTC/ETH по периодам (Binance/CoinGecko) · Конвертер и курсы в реальном времени · Пороги с уведомлением и звуком до 20 пар · Кредит, НДС, проценты",
@@ -558,7 +558,7 @@
       "name": "Pupikes Toolkit Scraper",
       "storeUrl": "https://appgallery.huawei.com/",
       "img": "https://selflearning.bot.nu/promo/pupikes-toolkit-scraper.png",
-      "price": "$1.3",
+      "price": "$5",
       "text": {
         "bg": "Извличане на заглавие/текст/връзки",
         "ru": "Извлечение заголовка/текста/ссылок",
