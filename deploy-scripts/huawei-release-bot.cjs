@@ -202,14 +202,15 @@ async function clickFillOut(frame) {
   }
   return await nativeClick(frame, 'Fill out questionnaire|Complete questionnaire|Fill out');
 }
-// Element-UI падащо меню: кликва селекта след етикета, после опцията по видим текст.
+// Element-UI падащо меню: кликва селекта след етикета, после опцията. ★ Истинска мишка — Playwright-клик
+// падаше интермитентно за App category/Default language в New app попъпа (OK оставаше неактивен → цикъл).
 async function selectByLabel(frame, labelText, optionText) {
   try {
     const sel = frame.locator(`xpath=//*[contains(normalize-space(.),${JSON.stringify(labelText)})]/following::div[contains(@class,"el-select")][1]`).first();
-    await sel.click({ timeout: 2500 });
-    await new Promise((r) => setTimeout(r, 600));
+    await mouseClick(sel);
+    await new Promise((r) => setTimeout(r, 700));
     const opt = frame.locator('.el-select-dropdown__item').filter({ hasText: optionText }).first();
-    await opt.click({ timeout: 2500 });
+    await mouseClick(opt);
     log('✓ ' + labelText + ' ← ' + optionText);
     return true;
   } catch (_) { log('↷ ' + labelText + ' — избери ръчно: ' + optionText); return false; }
@@ -668,7 +669,7 @@ function spawnBrowser() {
   async function fillCurrent() {
    // АВТОНОМНО: попълва екрана → сам натиска основния бутон → минава на следващия. Спира при засядане
    // (същият екран 3 пъти) или на последната стъпка (Submit = човешко решение, не се натиска тук).
-   let _lastSig = '', _stall = 0, _appInfoDone = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0;
+   let _lastSig = '', _stall = 0, _appInfoDone = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0, _finalDone = false;
    for (let _step = 0; _step < 40; _step++) {
     let autoNext = true;
     let { frame, text, score } = await navToForm();
@@ -776,7 +777,12 @@ function spawnBrowser() {
       await clickText(dlg, 'Mobile phone');
       await selectByLabel(frame, 'App category', 'App');
       await selectByLabel(frame, 'Default language', 'English (UK)');
-      log('✓ Попъпът „New app" попълнен → сега натискам OK сам и минавам на App information.');
+      await sleep(500);
+      // OK с ★ истинска мишка (native auto-advance НЕ затваря попъпа → цикли).
+      await mouseClick(dlg.locator('button:has-text("OK"), button:has-text("Confirm")').filter({ hasNotText: /Cancel/ }).first());
+      await sleep(2800);
+      log('✓ Попъпът „New app" попълнен + OK (истинска мишка) → App information.');
+      autoNext = false; continue;
     } else if (!_appInfoDone && (on('App information') || on('Brief introduction') || on('Compatible devices'))) {
       console.log('Екран: App information');
       // Compatible devices → Mobile phone (el-checkbox). Клик с force + проверка да НЕ размята вече отметнато.
@@ -1032,6 +1038,10 @@ function spawnBrowser() {
       // ★ НАКРАЯ: държавите се нулират по време на рейтинг/цена → връщам се на версията за ФИНАЛНО махане+запис.
       log('→ връщам се на версията за финално махане на China/Belarus/Russia + запис…');
       await gotoVersionDraft();
+      // ценовият редактор е „лепкав" — само location.href не стига → ПЪЛЕН RELOAD чисти под-състоянието.
+      await frame.page().reload({ waitUntil: 'load' }).catch(() => {});
+      await sleep(6000);
+      continue;
     } else if (on('Country/Region for release') || on('Payment information') || on('Privacy tags') || on('For reviewer')) {
       // ── ЕКРАНИ 17–23: Version — Draft (настройки за релийз) ──
       console.log('Екран: Version — Draft (настройки за релийз)');
@@ -1053,6 +1063,22 @@ function spawnBrowser() {
       let modalMsg = await closeUploadModal();
       const errs = await getErrors(frame);
       if (errs.length) log('⚠ Конзолата показва: ' + errs.slice(0, 4).join(' | '));
+      // ★ ФИНАЛЕН ПРОХОД: след рейтинг+цена държавите се нулират → тук ги махаме ПАК (China/Belarus/Russia)
+      //    и записваме с истинска мишка. Това е последното действие (после спираме — остава само Submit).
+      if (_priceDone && !_finalDone) {
+        console.log('★ ФИНАЛНО махане на China/Belarus/Russia + запис (държавите се бяха нулирали).');
+        const selOn = await frame.evaluate(() => { const r = [...document.querySelectorAll('.el-radio')].find((x) => /Selected countries\/regions/i.test(x.innerText || '')); return r ? r.classList.contains('is-checked') : false; }).catch(() => false);
+        if (!selOn) { await mouseClick(frame.locator('.el-radio').filter({ hasText: /Selected countries\/regions/i }).first()); await sleep(1000); }
+        await selectCountriesExcept(frame);
+        await sleep(800);
+        await closeUploadModal();
+        await mouseClick(frame.locator('button:has-text("Save")').filter({ hasNotText: /Submit/ }).first());   // ★ истинска мишка
+        await sleep(3800);
+        await closeUploadModal();
+        _finalDone = true; autoNext = false;
+        log('✅ ГОТОВО автономно: app info + версия + рейтинг + цена + ФИНАЛНО държави. Остава РЪЧНО: Proof of copyright + Submit.');
+        continue;
+      }
       // ── ОСНОВНОТО на версията се попълва и ЗАПИСВА ВЕДНЪЖ (после НЕ се пре-пълва, за да не маркира пак
       //    „незаписани промени" — рейтингът/цената НЕ се отварят при незаписана версия!). ──
       if (!_versionSaved) {
