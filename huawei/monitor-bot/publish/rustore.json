@@ -1,15 +1,14 @@
 {
-  "_comment": "RuStore данни за стъпка Information (rustore-release-bot). type Application|Game; category=точен руски надпис от Main; age 0+/6+/12+/16+/18+; priceRub=цена в рубли (закръглена нагоре); tags=Search Tags (английски, до 5). sensitivePermissionReason=причина за чувствителни разрешения (POST_NOTIFICATIONS) на екран Safety.",
+  "_comment": "RuStore данни за стъпка Information (rustore-release-bot). type Application|Game; category=точен руски надпис от Main; age 0+/6+/12+/16+/18+; priceRub=цена в рубли (закръглена нагоре); tags=Search Tags (английски, до 5).",
   "type": "Application",
   "category": "Полезные инструменты",
   "age": "0+",
   "priceRub": 111,
   "tags": [
-    "News",
-    "Blogs",
     "Web browsers",
+    "Work",
+    "Personal assistants",
     "Communication",
-    "Encyclopedias"
-  ],
-  "sensitivePermissionReason": "Разрешение POST_NOTIFICATIONS используется только для отправки локальных уведомлений об обновлениях отслеживаемых сайтов и новостных лент. Персональные данные не собираются и не передаются."
+    "Email"
+  ]
 }

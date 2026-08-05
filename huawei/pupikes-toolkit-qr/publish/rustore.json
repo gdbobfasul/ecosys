@@ -6,10 +6,9 @@
   "priceRub": 111,
   "tags": [
     "Work",
-    "Messaging",
+    "Personal assistants",
     "Mobile payments",
     "Communication",
     "Web browsers"
-  ],
-  "sensitivePermissionReason": "Разрешение POST_NOTIFICATIONS используется только для локальных уведомлений в приложении (например, о завершении задач, напоминаниях или обновлениях). Персональные данные не собираются и не передаются."
+  ]
 }

@@ -49,15 +49,16 @@ const M = {
   'routine-bot':            { t: 'A', cat: 'Образ жизни', age: '0+', tags: ['Calendar', 'Self-improvement', 'Personal assistants', 'Notepads', 'Clocks, alarms, and timers'] },
   'selflearning-friend':    { t: 'A', cat: 'Образование', age: '0+', tags: ['Language learning', 'Self-improvement', 'Encyclopedias', 'Grammar', 'Mathematics'] },
   'services-toolkit':       { t: 'A', cat: 'Полезные инструменты', age: '0+', tags: ['Work', 'Photo editors', 'Video editors', 'Calculators', 'Personal assistants'] },
-  // Игри (type Game): категория/тагове са с ДРУГ (игрален) речник → празни; попълват се по 5 при
-  // първата игра (след като огледам игралния списък).
-  'dodge-master':           { t: 'G', cat: '', age: '6+', tags: [] },
-  'duel':                   { t: 'G', cat: '', age: '12+', tags: [] },
-  'fps-hunter':             { t: 'G', cat: '', age: '12+', tags: [] },
-  'hmm':                    { t: 'G', cat: '', age: '12+', tags: [] },
-  'plane-shooter':          { t: 'G', cat: '', age: '6+', tags: [] },
-  'rustam':                 { t: 'G', cat: '', age: '0+', tags: [] },
-  'titans-fight':           { t: 'G', cat: '', age: '12+', tags: [] }
+  // Игри (type Game): категория/тагове са с ДРУГ (игрален) речник. Попълнени с общи RuStore игрови
+  // жанрове (Экшен/Аркады/Стратегии) + до 5 английски игрови тага. ⚠ ТОЧНИТЕ руски надписи и тагове
+  // трябва да се сверят с ЖИВИЯ dropdown при първата игра — ботът иска точно съвпадение (иначе ръчно).
+  'dodge-master':           { t: 'G', cat: 'Аркады',     age: '6+',  tags: ['Arcade', 'Casual', 'Puzzles', 'Action', 'Adventure'] },
+  'duel':                   { t: 'G', cat: 'Экшен',      age: '12+', tags: ['Action', 'Fighting', 'Arcade', 'Adventure', 'Sports'] },
+  'fps-hunter':             { t: 'G', cat: 'Экшен',      age: '12+', tags: ['Action', 'Shooters', 'Arcade', 'Adventure', 'Simulators'] },
+  'hmm':                    { t: 'G', cat: 'Стратегии',  age: '12+', tags: ['Strategy', 'Puzzles', 'Adventure', 'Arcade', 'Simulators'] },
+  'plane-shooter':          { t: 'G', cat: 'Аркады',     age: '6+',  tags: ['Arcade', 'Action', 'Shooters', 'Adventure', 'Casual'] },
+  'rustam':                 { t: 'G', cat: 'Аркады',     age: '0+',  tags: ['Arcade', 'Casual', 'Puzzles', 'Adventure', 'Kids'] },
+  'titans-fight':           { t: 'G', cat: 'Экшен',      age: '12+', tags: ['Action', 'Fighting', 'Arcade', 'Adventure', 'Sports'] }
 };
 
 const apps = fs.readdirSync(path.join(ROOT, 'huawei')).filter((a) => fs.existsSync(path.join(ROOT, 'huawei', a, 'capacitor.config.json')));
