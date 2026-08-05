@@ -32,7 +32,9 @@ const website = 'https://pupikes.com';
 // категория (пълен път) от документа
 let catPath = '';
 try { const md = fs.readFileSync(path.join(pub, 'PUBLISHING-HUAWEI.md'), 'utf8'); const m = md.match(/\*\*Пълен път:\*\*\s*`([^`]+)`/); if (m) catPath = m[1]; } catch (_) {}
-const catParts = catPath.split('>').map((s) => s.trim()).filter(Boolean);   // [Apps, News & reading, News]
+const catParts = catPath.split('>').map((s) => s.trim()).filter(Boolean);   // [Apps, News & reading, News] или [Games, …]
+// ИГРА ли е — по първото ниво на категорията („Games > …"). Влияе на New app попъпа: App category = „Game".
+const isGame = /^Games?$/i.test(catParts[0] || '');
 // описания по език от descriptions-languages.md → { en: {brief, full, nf}, ... }
 function parseDescriptions() {
   const out = {}; let md = '';
@@ -775,7 +777,7 @@ function spawnBrowser() {
       // Package type: APK (Android app) · Devices: Mobile phone — радио бутони по видим текст
       await clickText(dlg, 'APK (Android app)');
       await clickText(dlg, 'Mobile phone');
-      await selectByLabel(frame, 'App category', 'App');
+      await selectByLabel(frame, 'App category', isGame ? 'Game' : 'App');   // игрите → „Game" (иначе Categorization „Games>…" не пасва)
       await selectByLabel(frame, 'Default language', 'English (UK)');
       await sleep(500);
       // OK с ★ истинска мишка (native auto-advance НЕ затваря попъпа → цикли).

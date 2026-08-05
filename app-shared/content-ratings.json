@@ -8,6 +8,9 @@
   "auto-sound-diagnostics": { "all": "No", "yes": [] },
   "fps-hunter": { "all": "No", "yes": ["Violence"] },
   "titans-fight": { "all": "No", "yes": ["Violence"] },
-  "rustam-game": { "all": "No", "yes": [] },
-  "plane-shooter": { "all": "No", "yes": ["Violence"] }
+  "duel": { "all": "No", "yes": ["Violence"] },
+  "plane-shooter": { "all": "No", "yes": ["Violence"] },
+  "dodge-master": { "all": "No", "yes": [] },
+  "hmm": { "all": "No", "yes": [] },
+  "rustam": { "all": "No", "yes": [] }
 }
