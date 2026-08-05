@@ -10,5 +10,6 @@
     "Work",
     "Personal assistants",
     "Investments"
-  ]
+  ],
+  "sensitivePermissionReason": "Разрешение POST_NOTIFICATIONS используется только для локальных уведомлений об изменении отслеживаемых цен. Персональные данные не собираются и не передаются."
 }

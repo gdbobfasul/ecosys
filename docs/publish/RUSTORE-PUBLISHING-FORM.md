@@ -132,15 +132,15 @@ Per-app стойностите (type/category/age/priceRub) са в `huawei/<app
 | business-faq-bot | Application | Бизнес-сервисы | 0+ | 111 | Work, Communication, Personal assistants, Email, Job search |
 | camera-watch | Application | Полезные инструменты | 0+ | 378 | Home assistant, Photography, Photo editors, Personal assistants, Work |
 | chat | Application | Общение | 12+ | 111 | Messaging, Communication, Video calls, Social, Email |
-| dodge-master | Game | Аркады | 6+ | 111 | Arcade, Casual, Puzzles, Action, Adventure |
-| duel | Game | Экшен | 12+ | 111 | Action, Fighting, Arcade, Adventure, Sports |
-| fps-hunter | Game | Экшен | 12+ | 111 | Action, Shooters, Arcade, Adventure, Simulators |
-| hmm | Game | Стратегии | 12+ | 111 | Strategy, Puzzles, Adventure, Arcade, Simulators |
+| dodge-master | Game | Аркады | 6+ | 111 | Hypercasual games, Runners, Logic games, Singleplayer, Offline |
+| duel | Game | Экшен | 12+ | 111 | Fighting, Battles, Competitive, Singleplayer, Offline |
+| fps-hunter | Game | Экшен | 12+ | 111 | Tactical shooters, Hero shooters, SHMUP, Singleplayer, Offline |
+| hmm | Game | Стратегии | 12+ | 111 | Turn-based RPG, Tactical games, War games, Singleplayer, Offline |
 | houselookbook | Application | Объявления и услуги | 0+ | 111 | Interior design, Blogs, Lifestyle, Photography, Personal assistants |
 | market-pulse | Application | Финансы | 0+ | 111 | Investments, Personal finance, News, Calculators, Work |
 | monitor-bot | Application | Полезные инструменты | 0+ | 111 | Web browsers, Work, Personal assistants, Communication, Email |
 | newslator | Application | Новости и события | 16+ | 111 | News, Blogs, Language learning, Communication, Encyclopedias |
-| plane-shooter | Game | Аркады | 6+ | 111 | Arcade, Action, Shooters, Adventure, Casual |
+| plane-shooter | Game | Аркады | 6+ | 111 | Airplanes, Flight, SHMUP, Singleplayer, Offline |
 | price-watch-bot | Application | Покупки | 0+ | 111 | Loyalty & rewards, Personal finance, Work, Personal assistants, Investments |
 | pupikes-doctor | Application | Здоровье | 12+ | 111 | Medicine, Fitness trackers, Self-improvement, Encyclopedias, Personal assistants |
 | pupikes-medicines | Application | Здоровье | 12+ | 111 | Medicine, Encyclopedias, Personal assistants, Fitness trackers, Self-improvement |
@@ -156,10 +156,10 @@ Per-app стойностите (type/category/age/priceRub) са в `huawei/<app
 | pupikes-toolkit-text | Application | Полезные инструменты | 0+ | 111 | Grammar, Notepads, Work, Language learning, Personal assistants |
 | pupikes-toolkit-videos | Application | Полезные инструменты | 0+ | 111 | Video editors, Video players, Video downloaders, Video streaming, Photography |
 | routine-bot | Application | Образ жизни | 0+ | 111 | Calendar, Self-improvement, Personal assistants, Notepads, Clocks, alarms, and timers |
-| rustam | Game | Аркады | 0+ | 111 | Arcade, Casual, Puzzles, Adventure, Kids |
+| rustam | Game | Аркады | 0+ | 111 | Hypercasual games, Logic games, Puzzle, Singleplayer, Offline |
 | selflearning-friend | Application | Образование | 0+ | 111 | Language learning, Self-improvement, Encyclopedias, Grammar, Mathematics |
 | services-toolkit | Application | Полезные инструменты | 0+ | 111 | Work, Photo editors, Video editors, Calculators, Personal assistants |
-| titans-fight | Game | Экшен | 12+ | 111 | Action, Fighting, Arcade, Adventure, Sports |
+| titans-fight | Game | Экшен | 12+ | 111 | Fighting, Battles, Competitive, Singleplayer, Offline |
 
 ## Ключове / подписване (обобщено)
 - Release APK-тата са **подписани** при билда (`release-apks.sh`, ключ пер-ап).

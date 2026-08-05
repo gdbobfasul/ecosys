@@ -52,13 +52,14 @@ const M = {
   // Игри (type Game): категория/тагове са с ДРУГ (игрален) речник. Попълнени с общи RuStore игрови
   // жанрове (Экшен/Аркады/Стратегии) + до 5 английски игрови тага. ⚠ ТОЧНИТЕ руски надписи и тагове
   // трябва да се сверят с ЖИВИЯ dropdown при първата игра — ботът иска точно съвпадение (иначе ръчно).
-  'dodge-master':           { t: 'G', cat: 'Аркады',     age: '6+',  tags: ['Arcade', 'Casual', 'Puzzles', 'Action', 'Adventure'] },
-  'duel':                   { t: 'G', cat: 'Экшен',      age: '12+', tags: ['Action', 'Fighting', 'Arcade', 'Adventure', 'Sports'] },
-  'fps-hunter':             { t: 'G', cat: 'Экшен',      age: '12+', tags: ['Action', 'Shooters', 'Arcade', 'Adventure', 'Simulators'] },
-  'hmm':                    { t: 'G', cat: 'Стратегии',  age: '12+', tags: ['Strategy', 'Puzzles', 'Adventure', 'Arcade', 'Simulators'] },
-  'plane-shooter':          { t: 'G', cat: 'Аркады',     age: '6+',  tags: ['Arcade', 'Action', 'Shooters', 'Adventure', 'Casual'] },
-  'rustam':                 { t: 'G', cat: 'Аркады',     age: '0+',  tags: ['Arcade', 'Casual', 'Puzzles', 'Adventure', 'Kids'] },
-  'titans-fight':           { t: 'G', cat: 'Экшен',      age: '12+', tags: ['Action', 'Fighting', 'Arcade', 'Adventure', 'Sports'] }
+  // Тагове = ТОЧНО от игровия списък на RuStore (110 опции, свалени от живия dropdown 05.08).
+  'dodge-master':           { t: 'G', cat: 'Аркады',     age: '6+',  tags: ['Hypercasual games', 'Runners', 'Logic games', 'Singleplayer', 'Offline'] },
+  'duel':                   { t: 'G', cat: 'Экшен',      age: '12+', tags: ['Fighting', 'Battles', 'Competitive', 'Singleplayer', 'Offline'] },
+  'fps-hunter':             { t: 'G', cat: 'Экшен',      age: '12+', tags: ['Tactical shooters', 'Hero shooters', 'SHMUP', 'Singleplayer', 'Offline'] },
+  'hmm':                    { t: 'G', cat: 'Стратегии',  age: '12+', tags: ['Turn-based RPG', 'Tactical games', 'War games', 'Singleplayer', 'Offline'] },
+  'plane-shooter':          { t: 'G', cat: 'Аркады',     age: '6+',  tags: ['Airplanes', 'Flight', 'SHMUP', 'Singleplayer', 'Offline'] },
+  'rustam':                 { t: 'G', cat: 'Аркады',     age: '0+',  tags: ['Hypercasual games', 'Logic games', 'Puzzle', 'Singleplayer', 'Offline'] },
+  'titans-fight':           { t: 'G', cat: 'Экшен',      age: '12+', tags: ['Fighting', 'Battles', 'Competitive', 'Singleplayer', 'Offline'] }
 };
 
 const apps = fs.readdirSync(path.join(ROOT, 'huawei')).filter((a) => fs.existsSync(path.join(ROOT, 'huawei', a, 'capacitor.config.json')));
@@ -76,6 +77,11 @@ for (const app of apps) {
   };
   const pub = path.join(ROOT, 'huawei', app, 'publish');
   fs.mkdirSync(pub, { recursive: true });
+  // ПАЗИ ръчно добавени полета (напр. sensitivePermissionReason — причина за чувствително разрешение),
+  // за да НЕ се губят при регенерат. Търси ги в съществуващия huawei файл ИЛИ в rustore дървото (там чете ботът).
+  for (const ex of [path.join(pub, 'rustore.json'), path.join(ROOT, 'rustore', app, 'publish', 'rustore.json')]) {
+    try { const j = JSON.parse(fs.readFileSync(ex, 'utf8')); if (j.sensitivePermissionReason && !cfg.sensitivePermissionReason) cfg.sensitivePermissionReason = j.sensitivePermissionReason; } catch (_) {}
+  }
   fs.writeFileSync(path.join(pub, 'rustore.json'), JSON.stringify(cfg, null, 2) + '\n', 'utf8');
   n++;
   rows.push({ app, type: cfg.type, cat: cfg.category || '(игра)', age: cfg.age, price: cfg.priceRub, tags: cfg.tags.join(', ') || '(игра — ръчно)' });

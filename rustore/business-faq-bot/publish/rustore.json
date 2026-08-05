@@ -10,5 +10,6 @@
     "Personal assistants",
     "Email",
     "Job search"
-  ]
+  ],
+  "sensitivePermissionReason": "Разрешение POST_NOTIFICATIONS используется только для локальных уведомлений о новых вопросах и ответах. Персональные данные не собираются и не передаются."
 }

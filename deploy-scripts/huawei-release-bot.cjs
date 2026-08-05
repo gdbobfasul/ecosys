@@ -207,15 +207,36 @@ async function clickFillOut(frame) {
 // Element-UI падащо меню: кликва селекта след етикета, после опцията. ★ Истинска мишка — Playwright-клик
 // падаше интермитентно за App category/Default language в New app попъпа (OK оставаше неактивен → цикъл).
 async function selectByLabel(frame, labelText, optionText) {
-  try {
-    const sel = frame.locator(`xpath=//*[contains(normalize-space(.),${JSON.stringify(labelText)})]/following::div[contains(@class,"el-select")][1]`).first();
-    await mouseClick(sel);
-    await new Promise((r) => setTimeout(r, 700));
-    const opt = frame.locator('.el-select-dropdown__item').filter({ hasText: optionText }).first();
-    await mouseClick(opt);
-    log('✓ ' + labelText + ' ← ' + optionText);
-    return true;
-  } catch (_) { log('↷ ' + labelText + ' — избери ръчно: ' + optionText); return false; }
+  // Element PLUS (Vue3): тригерът е `.el-select__wrapper` (НЕ външния `.el-select`). Някои селекти са
+  // `is-filterable` → трябва да СЕ ПИШЕ за филтриране. Опциите (`.el-select-dropdown__item`) се показват
+  // в ВИДИМИЯ dropdown панел. Опитваме до 3 пъти и ПРОВЕРЯВАМЕ, че стойността е избрана.
+  const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      // тригер: „.el-select__wrapper" СЛЕД етикета (резерва: старият „.el-select")
+      let trig = frame.locator(`xpath=//*[contains(normalize-space(.),${JSON.stringify(labelText)})]/following::div[contains(@class,"el-select__wrapper")][1]`).first();
+      if (!(await trig.count().catch(() => 0))) trig = frame.locator(`xpath=//*[contains(normalize-space(.),${JSON.stringify(labelText)})]/following::div[contains(@class,"el-select")][1]`).first();
+      await mouseClick(trig);
+      await new Promise((r) => setTimeout(r, 600));
+      const filterable = await trig.evaluate((e) => e.classList.contains('is-filterable') || !!e.querySelector('input:not([readonly])')).catch(() => false);
+      if (filterable) { await frame.page().keyboard.type(optionText.split(' (')[0], { delay: 35 }); await new Promise((r) => setTimeout(r, 900)); }
+      // ★ ИЗЧАКАЙ опцията да СЕ ВИДИ преди клик (това беше флаки-причината — кликахме преди да се появи).
+      let opt = frame.locator('.el-select-dropdown__item').filter({ hasText: new RegExp('^\\s*' + esc(optionText) + '\\s*$') }).first();
+      await opt.waitFor({ state: 'visible', timeout: 2500 }).catch(() => {});
+      if (!(await opt.isVisible().catch(() => false))) opt = frame.locator('.el-select-dropdown__item:visible').filter({ hasText: optionText }).first();
+      if (await opt.isVisible().catch(() => false)) {
+        await mouseClick(opt);
+        await new Promise((r) => setTimeout(r, 600));
+        // проверка: стойността се е появила в тригера
+        const cur = ((await trig.innerText().catch(() => '')) || '');
+        if (cur.includes(optionText) || cur.includes(optionText.split(' (')[0])) { log('✓ ' + labelText + ' ← ' + optionText); return true; }
+      }
+      await frame.page().keyboard.press('Escape').catch(() => {});
+    } catch (_) {}
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  log('⚠ ' + labelText + ' — НЕ се избра (' + optionText + '); избери ръчно');
+  return false;
 }
 async function checkByText(page, txt) {
   try {
@@ -676,6 +697,46 @@ function spawnBrowser() {
     let autoNext = true;
     let { frame, text, score } = await navToForm();
     if (!frame) { console.log('✗ Няма отворена страница на Huawei.'); return; }
+    // ── ★ БЛОКИРАЩИ МОДАЛИ: провери ги ПРЕДИ всичко (иначе ботът засяда „екранът не се сменя"). ──
+    // Логваме текста + КЛАСИФИЦИРАМЕ известните (за да знаем ПРИЧИНАТА), после затваряме и, ако модалът е
+    // изискване за предусловие („complete category first"), ЗАПОМНЯМЕ да оправим това предусловие.
+    // ВАЖНО: блокиращите предупреждения на Huawei са `.el-message-box` (НЕ `.el-dialog`!) — те стоят ОТГОРЕ и
+    // прихващат всички кликове (селекти/Save не работят). Ловим И двата типа. (Popup „New app" е `.el-dialog`
+    // с „Package type" — НЕГО не го затваряме тук.)
+    let _needCategory = false;
+    for (let m = 0; m < 6; m++) {
+      const mbox = frame.locator('.el-message-box:visible').first();
+      const isMsgBox = await mbox.count().catch(() => 0);
+      const dlg = isMsgBox ? mbox : frame.locator('.el-dialog:visible, [role="dialog"]:visible').filter({ hasNotText: 'Package type' }).first();
+      if (!isMsgBox && !(await dlg.count().catch(() => 0))) break;
+      const dtxt = ((await dlg.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim();
+      if (!dtxt) break;
+      const lc = dtxt.toLowerCase();
+      // Класификация на известните модали:
+      let kind = 'инфо';
+      if (/categoriz|app category|app categorization/.test(lc) && /first|complete|before/.test(lc)) { kind = 'ИЗИСКВА КАТЕГОРИЯ'; _needCategory = true; }
+      else if (/3 to 8 screenshots|modify and try again/.test(lc)) kind = 'ГРЕШКА СКРИЙНШОТИ';
+      else if (/leave this page|has not been saved/.test(lc)) kind = 'напускане на страница';
+      else if (/mandatory|marked in red|fill in or correct|empty or incorrect|required/.test(lc)) kind = 'ЗАДЪЛЖИТЕЛНИ ПОЛЕТА';
+      else if (/successfully|saved|submitted for review/.test(lc)) kind = 'успех';
+      log('⚠ Модал [' + kind + ']: ' + dtxt.slice(0, 150));
+      // el-message-box: основният бутон е `.el-message-box__btns .el-button--primary`; иначе OK/Confirm.
+      const okBtn = dlg.locator('.el-message-box__btns .el-button--primary, button:has-text("OK"), button:has-text("Confirm")').first();
+      const cancelBtn = dlg.locator('button:has-text("Cancel")').first();
+      if (await okBtn.count().catch(() => 0)) { await okBtn.click({ force: true, timeout: 2000 }).catch(() => {}); log('  → затворих с OK'); }
+      else if (await cancelBtn.count().catch(() => 0)) { await cancelBtn.click({ force: true, timeout: 2000 }).catch(() => {}); log('  → затворих с Cancel'); }
+      else { log('  → модалът няма бутон — оставям го'); break; }
+      await sleep(1200);
+    }
+    // „Complete app categorization first" → категорията НЕ е записана. Върни се на App information (там ботът
+    // задава категорията от PUBLISHING-HUAWEI.md) вместо да блъскаш рейтинга и да въртиш същия модал.
+    if (_needCategory) {
+      log('↳ Предусловие: категорията липсва → отивам на App information да я задам, после пак рейтинг.');
+      _appInfoDone = false;
+      const appInfoLink = frame.locator('a:has-text("App information"), li:has-text("App information")').first();
+      if (await appInfoLink.count().catch(() => 0)) { await appInfoLink.click({ force: true, timeout: 3000 }).catch(() => {}); await sleep(2500); }
+      continue;
+    }
     const on = (s) => text.includes(s);
     // Въпросникът за рейтинг е РЕАЛНО отворен само ако има интерактивни групи въпроси с радио „No/Yes".
     // (Иначе думите „Violence/Sexuality/Fear" остават в текста на версийната страница и хващат погрешно
@@ -824,50 +885,41 @@ function spawnBrowser() {
       const fileInputs = frame.locator('input[type="file"]');
       if (iconPath) { await fileInputs.nth(0).setInputFiles(iconPath).then(() => log('✓ Икона качена')).catch(() => log('↷ икона — качи ръчно')); await sleep(3500); }   // качването е async — изчакай да се регистрира
       if (shotPaths.length) {
-        await fileInputs.nth(1).setInputFiles(shotPaths).then(() => log('✓ Скрийншоти качени (' + shotPaths.length + ')')).catch(() => log('↷ скрийншоти — качи ръчно'));
-        await sleep(4000);
-        // Huawei показва попъп (преглед/потвърждение) СЛЕД ОБРАБОТКА на скрийншотите — понякога със
-        // ЗАКЪСНЕНИЕ. Затова НЕ спираме при първа липса (иначе го изпускаме, преди да е изскочил):
-        // изчакваме появата до ~10 сек, натискаме OK/Confirm/Save, и приключваме след като го затворим.
-        let sawPopup = false, emptyStreak = 0;
-        for (let k = 0; k < 20; k++) {
-          const dlgBtn = frame.locator('.el-dialog:visible button:has-text("OK"), .el-dialog:visible button:has-text("Confirm"), .el-dialog:visible button:has-text("Save"), [role="dialog"]:visible button:has-text("OK")').first();
-          if (await dlgBtn.count().catch(() => 0)) {
-            await dlgBtn.click({ force: true, timeout: 2500 }).catch(() => {});
-            sawPopup = true; emptyStreak = 0;
-            log('✓ Затворих попъпа на скрийншотите с OK.');
-            await sleep(1200);
-          } else {
-            emptyStreak++;
-            if (sawPopup && emptyStreak >= 2) break;      // затворихме и няма повече попъпи → готово
-            if (!sawPopup && emptyStreak >= 10) break;     // не се появи за ~10с → вероятно няма попъп
-            await sleep(1000);
+        await fileInputs.nth(1).setInputFiles(shotPaths).then(() => log('✓ Скрийншоти подадени (' + shotPaths.length + ')')).catch(() => log('↷ скрийншоти — качи ръчно'));
+        await sleep(5000);   // изчакай обработката
+        // След обработка Huawei показва ИЛИ преглед (натисни OK веднъж), ИЛИ ГРЕШКА „Upload 3 to 8 /
+        // Modify and try again" (когато вече има качени → надхвърля 8, или грешен размер). При ГРЕШКА:
+        // затвори я ВЕДНЪЖ и СПРИ (не спами 20× OK — това блокира Manage languages/Save).
+        let handled = false;
+        for (let k = 0; k < 8; k++) {
+          const errDlg = frame.locator('.el-dialog:visible').filter({ hasText: /3 to 8 screenshots|Modify and try again/i }).first();
+          if (await errDlg.count().catch(() => 0)) {
+            await errDlg.locator('button:has-text("OK")').first().click({ force: true, timeout: 2000 }).catch(() => {});
+            log('⚠ Huawei: „Upload 3 to 8 screenshots" — не се приеха (вероятно ВЕЧЕ качени от предишен опит, или грешен размер). Затворих грешката, НЕ качвам повторно. Провери ги ръчно.');
+            handled = true; await sleep(800); break;
           }
+          const okDlg = frame.locator('.el-dialog:visible button:has-text("OK"), .el-dialog:visible button:has-text("Confirm")').first();
+          if (await okDlg.count().catch(() => 0)) { await okDlg.click({ force: true, timeout: 2000 }).catch(() => {}); log('✓ Затворих попъпа за преглед на скрийншотите.'); handled = true; await sleep(1000); break; }
+          await sleep(1000);
         }
-        if (!sawPopup) log('↷ не видях попъп на скрийншотите (ако изскочи — натисни OK сам).');
+        if (!handled) log('↷ няма попъп на скрийншотите (ако изскочи — натисни OK сам).');
       }
-      if (promoPath && NO_VIDEO.has(app)) {
-        log('↷ промо-видео ПРОПУСНАТО за ' + app + ' (по искане — проблемно на Huawei).');
-        await sleep(4000);   // изчакай икона/скрийншоти да се уталожат, преди Manage languages (иначе езиците падат)
-      } else if (promoPath) {
-        await fileInputs.nth(2).setInputFiles(promoPath).catch(() => log('↷ промо-видео — качи ръчно'));
-        log('⏳ качвам промо-видео… изчаквам качването (по-бавно от снимки)');
-        await sleep(8000);                               // видеото се качва по-бавно
-        // ако е изскочил попъп (преглед/потвърждение на видеото) — натисни OK/Confirm/Save САМ (по искане)
-        try {
-          const btn = frame.locator('.el-dialog button:has-text("OK"), .el-dialog button:has-text("Confirm"), .el-dialog button:has-text("Save")').first();
-          if (await btn.count()) { await btn.click({ force: true, timeout: 2500 }); await sleep(1000); log('✓ Промо-видео качено → натиснах OK на попъпа сам.'); }
-          else log('✓ Промо-видео качено.');
-        } catch (_) { log('✓ Промо-видео качено (ако има попъп — натисни OK сам).'); }
-      }
+      // Промо-видео (Pupikes): НЕ се качва на Huawei за НИТО едно приложение — дава проблем (по искане).
+      // (Оставяме кратка пауза, за да се уталожат икона/скрийншоти, преди Manage languages.)
+      await sleep(4000);
       // ── Попълни ТЕКУЩИЯ език (English UK по подразбиране) веднага ──
       await fillNear(frame, 'App name', enName);
       { const en = desc.en || {}; if (en.brief) await fillNear(frame, 'Brief introduction', en.brief); if (en.full) await fillNear(frame, 'Full introduction', en.full, 'textarea'); if (en.nf) await fillNear(frame, 'New features', en.nf, 'textarea'); }
       // ── Manage languages: добави езиците (ИДЕМПОТЕНТНО), после ботът натиска OK и попълва описанията им ──
       if (hwLabels.length) {
-        await frame.locator('button:has-text("Manage languages")').first().click({ force: true, timeout: 3000 }).catch(() => {});
-        await sleep(2200);
-        const dlg = frame.locator('.el-dialog:visible').filter({ hasText: 'Manage languages' }).first();
+        // Опитай да отвориш „Manage languages" до 3 пъти (понякога от 1 клик не се отваря / е зает).
+        let dlg = frame.locator('.el-dialog:visible').filter({ hasText: 'Manage languages' }).first();
+        for (let attempt = 0; attempt < 3 && !(await dlg.count().catch(() => 0)); attempt++) {
+          await frame.locator('button:has-text("Manage languages")').first().scrollIntoViewIfNeeded().catch(() => {});
+          await frame.locator('button:has-text("Manage languages")').first().click({ force: true, timeout: 3000 }).catch(() => {});
+          await sleep(2200);
+          dlg = frame.locator('.el-dialog:visible').filter({ hasText: 'Manage languages' }).first();
+        }
         if (await dlg.count()) {
           const search = dlg.locator('input').first();
           let added = 0, have = 0, missing = 0;

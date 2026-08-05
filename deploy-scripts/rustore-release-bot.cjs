@@ -192,9 +192,20 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         const already = await page.locator('text=' + JSON.stringify(path.basename(apkPath))).count().catch(() => 0);
         if (already) { log('↷ APK вече е качен (' + path.basename(apkPath) + ') — не качвам повторно.'); }
         else {
-          await fileInput.setInputFiles(apkPath).then(() => log('✓ Качих APK: ' + path.basename(apkPath))).catch((e) => log('↷ качване неуспешно: ' + e.message));
-          log('⏳ изчаквам обработката на файла (може да отнеме)…');
-          await sleep(8000);
+          await fileInput.setInputFiles(apkPath).then(() => log('✓ Подадох APK: ' + path.basename(apkPath))).catch((e) => log('↷ качване неуспешно: ' + e.message));
+          // ЧАКАЙ реалното потвърждение „Uploaded/Загружено" (до 60с), а не фиксирани секунди — така
+          // съобщението е вярно и „Continue" е готов. Иначе изглежда „файлът не е качен".
+          log('⏳ изчаквам обработката на файла (до 2 мин)…');
+          let done = false;
+          for (let i = 0; i < 80; i++) {
+            // „Uploaded/Загружено" = готово. (БЕЗ детекция за „грешка" — беше фалшиво-позитивна и
+            // прекъсваше рано, макар качването да успяваше след няколко секунди.)
+            const ok = await page.locator('text=/Uploaded|Загружено/i').count().catch(() => 0);
+            if (ok) { done = true; break; }
+            await sleep(1500);
+          }
+          if (done) log('✓ APK е качен (потвърдено „Uploaded").');
+          else log('↷ още не виждам „Uploaded" — файлът вероятно още се обработва; изчакай малко и виж екрана, после ENTER пак.');
         }
       }
       // Коментар за модератора (акаунт? лични данни?) — попълва се ВИНАГИ (APK-то не иска подпис)
@@ -294,6 +305,18 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
       return;
     }
 
+    // ── Екран: страница на приложението (/apps/<id>) → „Upload the version" за първата версия ──
+    if (/\/apps\/\d+\/?$/.test(url)) {
+      const upBtn = page.locator('button:has-text("Upload the version"), a:has-text("Upload the version"), button:has-text("Загрузить версию")').first();
+      if (await upBtn.count().catch(() => 0)) {
+        console.log('Екран: страница на приложението → отварям „Upload the version"');
+        await upBtn.click({ timeout: 4000 }).catch(() => log('↷ не намерих „Upload the version" — натисни го ръчно'));
+        await sleep(2500);
+        log('✓ Отворих съветника за качване на версия → продължавам автоматично с APK-то…');
+        return 'navigated';
+      }
+    }
+
     // ── Екран: списък с версии (/versions) → отвори формата за качване ──
     if (/\/versions\/?$/.test(url)) {
       const upBtn = page.locator('button:has-text("Upload the version"), a:has-text("Upload the version")').first();
@@ -301,20 +324,29 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         console.log('Екран: версии → отварям „Upload the version"');
         await upBtn.click({ timeout: 4000 }).catch(() => log('↷ не намерих бутона — натисни го ръчно'));
         await sleep(2500);
-        log('✓ Отворих формата за качване. Натисни ENTER пак, за да кача APK-то.');
-        return;
+        log('✓ Отворих формата за качване → продължавам автоматично с APK-то…');
+        return 'navigated';
       }
     }
 
-    // ── Екран: списък с приложения → отвори нашето (по console name) ──
+    // ── Екран: списък с приложения → отвори нашето (по console name) ИЛИ отвори „Add an app" за ново ──
     if (/\/apps\/?$/.test(url)) {
       const row = page.locator('text=' + JSON.stringify(appName)).first();
       if (await row.count().catch(() => 0)) {
         console.log('Екран: списък с приложения → отварям „' + appName + '"');
         await row.click({ timeout: 4000 }).catch(() => log('↷ не можах да кликна приложението — отвори го ръчно'));
         await sleep(2500);
-        log('✓ Отворих приложението. Натисни ENTER пак за следващия екран.');
-        return;
+        log('✓ Отворих приложението → продължавам автоматично…');
+        return 'navigated';
+      }
+      // Няма такъв ред → приложението още не съществува → отвори формата „Add an app".
+      const addBtn = page.locator('button:has-text("Add an app"), a:has-text("Add an app"), button:has-text("Создать"), a:has-text("Создать")').first();
+      if (await addBtn.count().catch(() => 0)) {
+        console.log('Екран: списък → „' + appName + '" още не съществува → отварям „Add an app"');
+        await addBtn.click({ timeout: 4000 }).catch(() => log('↷ не намерих „Add an app" — натисни го ръчно'));
+        await sleep(2500);
+        log('✓ Отворих формата за ново приложение → попълвам автоматично (Universal / Paid / име)…');
+        return 'navigated';
       }
     }
 
@@ -336,8 +368,8 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         console.log('Екран: отивам на „App page" (описание/снимки)');
         await appPageLink.click({ timeout: 4000 }).catch(() => log('↷ не намерих линка „App page" — кликни го ръчно вляво'));
         await sleep(2500);
-        log('✓ На „App page". Натисни ENTER пак.');
-        return;
+        log('✓ На „App page" → продължавам автоматично…');
+        return 'navigated';
       }
     }
 
@@ -356,17 +388,19 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
   // дъното на дълга форма → потребителят понякога не го вижда. Ботът пита и, при „да", го натиска сам.
   async function advanceButton() {
     const page = rsPage();
-    const labels = ['Submit for Moderation', 'Continue', 'Add', 'Select', 'OK', 'Confirm'];
+    // Приоритет: първо истинските „напред"/финал бутони; „Add"/„Select" НАКРАЯ (само ако няма друг).
+    const labels = ['Submit for Moderation', 'Continue', 'Save changes', 'Save', 'Confirm', 'OK', 'Add', 'Select'];
     const btns = page.locator('button:visible');
     const n = await btns.count().catch(() => 0);
     for (const lb of labels) {
       for (let i = 0; i < n; i++) {
         const btn = btns.nth(i);
         const txt = ((await btn.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim();
-        if (txt.toLowerCase() === lb.toLowerCase()) {
-          const disabled = await btn.isDisabled().catch(() => false);
-          if (!disabled) return { loc: btn, label: lb };
-        }
+        if (txt.toLowerCase() !== lb.toLowerCase()) continue;   // ТОЧНО съвпадение (не „Add an app"/„Select files")
+        // Пропусни бутони-миниатюри (скрийншот/икона със снимка) — да не се бъркат с „напред".
+        if (await btn.locator('img').count().catch(() => 0)) continue;
+        const disabled = await btn.isDisabled().catch(() => false);
+        if (!disabled) return { loc: btn, label: lb };
       }
     }
     return null;
@@ -389,27 +423,45 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
     });
     (async function runLoop() {
       for (;;) {
-        const a = await question('ENTER = попълни текущия екран (или q за изход): ');
-        if (a === null || a.trim().toLowerCase() === 'q') { try { rl.close(); } catch (_) {} process.exit(0); }
-        try { await fillCurrent(); } catch (e) { console.log('грешка: ' + e.message); }
-        // ПРАВИЛО: след като екранът е попълнен, ВИНАГИ проверявай бутона за напред.
-        //  • има АКТИВЕН бутон → питай дали да го натисна;
-        //  • НЯМА активен бутон → вероятно нещо не е попълнено/готово (или още се обработва) = ГРЕШКА,
-        //    обяви я (не мълчи), за да се провери екранът.
+        // АВТО-ПОПЪЛВАНЕ БЕЗ ENTER (до 6 стъпки навигация/зареждане): ботът разпознава екрана и го попълва.
+        //  • fillCurrent върне 'navigated' (кликнал е бутон/линк, който ОТВАРЯ форма) → изчакай и попълни
+        //    новоотворения екран, БЕЗ да чакаш ENTER (иначе показва „готов", а формата е празна).
+        //  • няма бутон за напред (форма още зарежда/обработва) → изчакай и опитай пак.
+        //  • има бутон за напред → спри и питай за напред.
         let btn = null;
-        try { btn = await advanceButton(); } catch (e) { console.log('   (проверка на бутон: ' + e.message + ')'); }
+        for (let step = 0; step < 6; step++) {
+          let status;
+          try { status = await fillCurrent(); } catch (e) { console.log('грешка: ' + e.message); }
+          if (status === 'navigated') { await sleep(3000); continue; }   // отвори форма → попълни новия екран
+          try { btn = await advanceButton(); } catch (e) { console.log('   (проверка на бутон: ' + e.message + ')'); }
+          if (btn) break;
+          await sleep(2500);   // форма още зарежда → авто-попълни пак
+        }
         if (!btn) {
-          console.log('   ⚠ ГРЕШКА? Няма АКТИВЕН бутон за напред (Continue/Submit…) на този екран — вероятно');
-          console.log('     нещо не е попълнено/готово (или файл още се обработва). Провери екрана, после ENTER пак.');
+          const r = await question('   ⚠ Няма активен бутон за напред след няколко опита (провери екрана). ENTER = пробвай пак · q = изход: ');
+          if (r === null || r.trim().toLowerCase() === 'q') { try { rl.close(); } catch (_) {} process.exit(0); }
           continue;
         }
-        const yn = await question('   Да натисна ли бутона „' + btn.label + '"? (да/y = натискам, друго = не) : ');
-        if (yn === null) { try { rl.close(); } catch (_) {} process.exit(0); }
-        if (/^(да|d|y|yes|д)$/i.test(yn.trim())) {
+        const pressNow = async () => {
           await btn.loc.scrollIntoViewIfNeeded().catch(() => {});
-          await btn.loc.click({ timeout: 6000 }).then(() => console.log('   ✓ натиснах „' + btn.label + '"')).catch((e) => console.log('   ↷ не можах да натисна: ' + e.message));
-          await sleep(2500);
-        } else { console.log('   ↷ ок, не го натискам.'); }
+          await btn.loc.click({ timeout: 6000 }).then(() => console.log('   ✓ натиснах „' + btn.label + '" → минавам нататък')).catch((e) => console.log('   ↷ не можах да натисна: ' + e.message));
+          await sleep(3500); // изчакай новия екран; после цикълът авто-попълва
+        };
+        // Финалната стъпка вече също е с ENTER (по желание на потребителя) — само с ясен надпис.
+        const isFinal = btn.label.toLowerCase() === 'submit for moderation';
+        const q = isFinal
+          ? '   🚀 ПОСЛЕДНА СТЪПКА — всичко е попълнено. ENTER (или y/да) = ПОДАЙ за модерация („Submit for Moderation") · n = не · q = изход: '
+          : '   ✅ Екранът е попълнен. Бутон „' + btn.label + '" → ENTER (или y/да) = продължи · n = не · q = изход: ';
+        const yn = await question(q);
+        if (yn === null) { try { rl.close(); } catch (_) {} process.exit(0); }
+        const v = yn.trim().toLowerCase();
+        if (v === 'q') { try { rl.close(); } catch (_) {} process.exit(0); }
+        if (v === '' || /^(да|d|y|yes|д)$/i.test(v)) {
+          await pressNow();
+          // След ФИНАЛНОТО подаване за модерация → излизаме (връщаме се в стартовото меню), не оставаме активни.
+          if (isFinal) { console.log('\n   🎉 Подадено за модерация. Излизам — обратно в менюто.'); try { rl.close(); } catch (_) {} process.exit(0); }
+        }
+        else { const z = await question('   ↷ не натискам. ENTER когато си готов (или q = изход): '); if (z !== null && z.trim().toLowerCase() === 'q') { try { rl.close(); } catch (_) {} process.exit(0); } }
       }
     })();
   } else {
