@@ -1021,20 +1021,17 @@ function spawnBrowser() {
       await fillNear(frame, 'Default price', priceUsd);
       await clickText(frame, 'Convert prices');
       await sleep(600);
-      // ★ ВАЖНО (по прозрение): ценовият редактор задава цена на ВСИЧКИ държави → при Save ги ВРЪЩА в release!
-      //   Затова деселектирай China/Belarus/Russia И ТУК (с истинска мишка) ПРЕДИ да запазиш цената.
-      await uncheckCb(frame, 'Chinese mainland'); await uncheckCb(frame, 'China mainland');
-      await expandEurope(frame); await uncheckCb(frame, 'Belarus'); await uncheckCb(frame, 'Russia');
-      await sleep(800);
-      // Save с ★ ИСТИНСКА МИШКА (иначе не комитва).
+      // Цената е за ВСИЧКИ държави (деселект тук ЗАКЛЮЧВА Save — не пипаме държави в цената). Save с ★мишка.
       await mouseClick(frame.locator('button:has-text("Save")').filter({ hasNotText: /Submit|Cancel/ }).last());
       await sleep(3000);
       let toast = ''; try { toast = await frame.evaluate(() => { const el = document.querySelector('.el-message, .el-notification__content'); return el ? el.innerText.trim() : ''; }); } catch (_) {}
       if (toast) log('ⓘ ' + toast.slice(0, 60));
-      log('✓ Цена ' + priceUsd + ' USD (Kyrgyzstan), −China/Belarus/Russia + Convert + Save (истинска мишка).');
+      log('✓ Цена ' + priceUsd + ' USD (Kyrgyzstan) + Convert + Save (истинска мишка).');
       autoNext = false;
       _priceDone = true;
-      log('✅ ГОТОВО автономно: App info + версия (държави/APK/плащане/поверителност) + рейтинг + цена. Остава РЪЧНО: Proof of copyright + финалният Submit.');
+      // ★ НАКРАЯ: държавите се нулират по време на рейтинг/цена → връщам се на версията за ФИНАЛНО махане+запис.
+      log('→ връщам се на версията за финално махане на China/Belarus/Russia + запис…');
+      await gotoVersionDraft();
     } else if (on('Country/Region for release') || on('Payment information') || on('Privacy tags') || on('For reviewer')) {
       // ── ЕКРАНИ 17–23: Version — Draft (настройки за релийз) ──
       console.log('Екран: Version — Draft (настройки за релийз)');
