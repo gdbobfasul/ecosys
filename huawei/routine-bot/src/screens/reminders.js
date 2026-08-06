@@ -3,23 +3,28 @@
 // Този модул се ползва и като стъпка от съветника, и в таблото.
 import { h, esc, clear, dayNames } from '../ui/dom.js';
 import { storage, KEYS } from '../core/storage.js';
-import { t } from '../core/i18n.js';
+import { t, tf } from '../core/i18n.js';
 
 function uid() {
   return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }
 
 // Стъпка от съветника (с бутон „Готово" → разрешения).
+// Съдържа ГЛАСОВО въвеждане (робот-секретарка) + ръчни повтарящи напомняния.
 export async function renderRemindersSetup(root, { go }) {
   const el = h(`
     <div>
       <div class="steps"><span class="s on"></span><span class="s on"></span><span class="s"></span></div>
       <h1>${esc(t('rem_title'))}</h1>
       <p class="muted">${esc(t('rem_setup_sub'))}</p>
+      <div id="voice-mount"></div>
+      <h2>${esc(t('rem_manual_title'))}</h2>
       <div id="mount"></div>
       <button class="btn" id="next">${esc(t('rem_next'))}</button>
     </div>
   `);
+  const { mountVoiceTask } = await import('./voice-task.js');
+  await mountVoiceTask(el.querySelector('#voice-mount'), { onSaved: () => {} });
   await mountReminders(el.querySelector('#mount'));
   el.querySelector('#next').addEventListener('click', () => go('permissions'));
   root.appendChild(el);
@@ -53,13 +58,15 @@ export async function mountReminders(container) {
   });
 
   editor.querySelector('#r-add').addEventListener('click', async () => {
-    const title = editor.querySelector('#r-title').value.trim();
-    if (!title) return;
+    const titleEl = editor.querySelector('#r-title');
+    const noteEl = editor.querySelector('#r-note');
+    const title = titleEl.value.trim();
+    if (!title) { titleEl.focus(); return; }
     const list = await storage.get(KEYS.reminders, []);
     list.push({
       id: uid(),
       title,
-      note: editor.querySelector('#r-note').value.trim(),
+      note: noteEl.value.trim(),
       time: editor.querySelector('#r-time').value || '09:00',
       repeatDays: [...selDays].sort(),
       paused: false
@@ -67,6 +74,8 @@ export async function mountReminders(container) {
     await storage.set(KEYS.reminders, list);
     const { scheduler } = await import('../core/scheduler.js');
     await scheduler.reschedule();
+    // Изчисти формата, за да е ЯСНО, че може да се добави ОЩE едно.
+    titleEl.value = ''; noteEl.value = ''; titleEl.focus();
     await mountReminders(container);
   });
   container.appendChild(editor);
@@ -74,6 +83,8 @@ export async function mountReminders(container) {
   const listWrap = h(`<div></div>`);
   if (!reminders.length) {
     listWrap.appendChild(h(`<p class="muted">${esc(t('rem_empty'))}</p>`));
+  } else {
+    listWrap.appendChild(h(`<p class="muted">${esc(tf('rem_count', reminders.length))}</p>`));
   }
   reminders.forEach((r) => {
     const days = (r.repeatDays && r.repeatDays.length === 7) ? t('rem_everyday')

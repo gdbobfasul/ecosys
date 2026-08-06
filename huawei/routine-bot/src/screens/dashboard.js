@@ -26,8 +26,15 @@ export async function renderDashboard(root, { go }) {
         <div class="spacer"></div>
         <button class="btn" id="power">${state.active ? t('dash_stop') : t('dash_start')}</button>
         <div class="spacer"></div>
-        <button class="btn secondary" id="preview">${t('dash_preview')}</button>
+        <div class="row" style="gap:8px">
+          <button class="btn secondary" id="preview" style="flex:1">${t('dash_preview')}</button>
+          <button class="btn secondary" id="preview-read">🔊 ${t('dash_read')}</button>
+        </div>
       </div>
+
+      <h2>${t('vt_title')}</h2>
+      <div id="voice-mount"></div>
+
 
       <div class="card">
         <h2>${t('dash_bg_title')}</h2>
@@ -90,6 +97,10 @@ export async function renderDashboard(root, { go }) {
     const text = await scheduler.previewBriefingNow();
     toast(t('toast_preview_title'), text);
   });
+  el.querySelector('#preview-read').addEventListener('click', async () => {
+    const text = await scheduler.previewBriefingNow({ speak: true });
+    toast(t('toast_preview_title'), text);
+  });
 
   // Фонов режим — честно обяснение според средата.
   const isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
@@ -114,4 +125,8 @@ export async function renderDashboard(root, { go }) {
   await mountEventsTasks(el.querySelector('#events-mount'));
 
   root.appendChild(el);
+
+  // Гласово добавяне на задача направо от таблото.
+  const { mountVoiceTask } = await import('./voice-task.js');
+  await mountVoiceTask(el.querySelector('#voice-mount'), { onSaved: () => { clear(root); renderDashboard(root, { go }); } });
 }

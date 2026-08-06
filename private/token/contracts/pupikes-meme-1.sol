@@ -133,7 +133,7 @@ abstract contract ReentrancyGuard {
 contract PUPIKES1Token is IERC20, ReentrancyGuard {
     string public constant name = "PUPIKES-meme-1";
     string public constant symbol = "PUPIKES1";
-    string public constant website = "https://pupikes1.io";
+    string public constant website = "https://pupikes.com";
     uint8 public constant decimals = 18;
     uint256 public override totalSupply;
     

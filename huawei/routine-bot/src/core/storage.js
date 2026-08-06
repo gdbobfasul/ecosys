@@ -77,6 +77,7 @@ const KEYS = {
   perms: 'perms',
   log: 'activity_log',
   location: 'location',
+  cities: 'cities',        // градове за времето в брифинга (по избор, без GPS)
   notes: 'notes',          // бележки, които роботът помни и изговаря
   ttsLang: 'tts_lang'      // избран език за изговаряне (код от 15-те)
 };

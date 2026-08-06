@@ -41,6 +41,8 @@ export async function renderRoutineConfig(root, { go }) {
         </div>
       </div>
 
+      <div id="cities-mount"></div>
+
       <button class="btn" id="next">${esc(t('cfg_next'))}</button>
     </div>
   `);
@@ -65,4 +67,8 @@ export async function renderRoutineConfig(root, { go }) {
   });
 
   root.appendChild(el);
+
+  // Градове за времето (по име, БЕЗ GPS) — показват се всяка сутрин в брифинга.
+  const { mountCities } = await import('./cities.js');
+  await mountCities(el.querySelector('#cities-mount'));
 }

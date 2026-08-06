@@ -6,22 +6,23 @@
     "onb_intro",
     "onb_feat_morning",
     "onb_feat_reminders",
+    "onb_feat_voice",
     "onb_feat_evening"
   ],
-  "pitchEn": "A personal daily assistant that runs a morning briefing (weather, agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. It can also read your notes aloud in any of 15 languages.",
-  "newFeaturesEn": "First release: daily morning briefing with weather, scheduled reminders for tasks and habits, an optional evening summary, and notes read aloud via on-device text-to-speech.",
+  "pitchEn": "A personal daily assistant that runs a morning briefing (weather for several of your cities with sharp-change warnings, your agenda and motivation), fires reminders for medication, habits and tasks, and gives an optional evening summary. Dictate a task in any of 15 languages — the robot notes it like a secretary and reads it back aloud on the day. Everything stays on the device.",
+  "newFeaturesEn": "Voice task input: dictate WHEN and the TASK in any of 15 languages; the robot schedules it and reads it aloud on the day. Multi-city morning weather with afternoon/evening change warnings. Streamlined 3-step setup. Speech recognition runs on the device; nothing is uploaded.",
   "dataHandling": {
     "collectsPersonalData": false,
     "accountsOrLogin": false,
     "network": true,
     "camera": false,
-    "microphone": false,
+    "microphone": true,
     "location": false,
     "notifications": true,
     "storesLocalOnly": true,
-    "notes": "Network is used only to fetch weather from a public service by a city NAME the user types (no GPS/device location). Text-to-speech uses the device speaker. Reminders, notes and settings are stored locally; local notifications only, no account, no cloud."
+    "notes": "Microphone is used ONLY for optional on-device speech-to-text when the user taps the mic to dictate a reminder/task; the audio is transcribed on the device and never uploaded or stored. Network is used only to fetch weather from a public service by a city NAME the user types (no GPS/device location). Text-to-speech uses the device speaker. Reminders, notes and settings are stored locally; local notifications only, no account, no cloud."
   },
-  "reviewerRemarksEn": "No account or login is required. On first launch pick a language and activate the robot, then grant the notification permission. Add reminders (with time and days), notes, and optionally type a city name to enable the weather part of the morning briefing. Use the briefing preview to see it immediately. Internet is used only for weather lookups by city name; location/GPS is never accessed.",
+  "reviewerRemarksEn": "No account or login is required. On first launch pick a language and activate the robot, then grant the notification permission. Setup is 3 steps: 1) morning briefing time + add cities for weather (by name, no GPS); 2) tasks & reminders — you can type them or tap the mic to DICTATE (on-device speech recognition, so it asks for microphone once); 3) allow notifications. The dictated text is read back aloud on the day via on-device text-to-speech. Internet is used only for weather lookups by city name; location/GPS is never accessed; microphone is used only while dictating and audio is never uploaded.",
   "pricing": {
     "type": "Paid",
     "price": "1.00 USD"

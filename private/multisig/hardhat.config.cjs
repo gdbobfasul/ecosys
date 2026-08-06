@@ -1,5 +1,6 @@
 require("dotenv").config();
 require("@nomicfoundation/hardhat-toolbox");
+const path = require("path");
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -38,10 +39,14 @@ module.exports = {
   },
 
   paths: {
-    sources: "./contracts",
-    tests: "../../tests/multisig",
-    cache: "./cache",
-    artifacts: "./artifacts"
+    // Разширяваме root до private/, за да е в обхват централният
+    // configs/Addresses.sol, който pupikes-meme-1.sol импортира през
+    // "../../configs/Addresses.sol" (иначе HH408 import outside project).
+    root: path.join(__dirname, ".."),
+    sources: "multisig/contracts",
+    tests: "../tests/multisig",
+    cache: "multisig/cache",
+    artifacts: "multisig/artifacts"
   },
 
   mocha: {

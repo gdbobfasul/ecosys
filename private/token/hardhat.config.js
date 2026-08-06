@@ -1,5 +1,6 @@
 // Version: 1.0093
 require("@nomicfoundation/hardhat-toolbox");
+const path = require("path");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -33,9 +34,14 @@ module.exports = {
     }
   },
   paths: {
-    sources: "./contracts",
-    tests: "../../tests/token",
-    cache: "./cache",
-    artifacts: "./artifacts"
+    // Разширяваме root до private/, за да е в обхват централният
+    // configs/Addresses.sol (единствен източник за адресите), който
+    // pupikes-meme-1.sol импортира през "../../configs/Addresses.sol".
+    // Иначе Hardhat дава HH408 (import outside of project).
+    root: path.join(__dirname, ".."),
+    sources: "token/contracts",
+    tests: "../tests/token",
+    cache: "token/cache",
+    artifacts: "token/artifacts"
   }
 };

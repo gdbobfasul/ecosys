@@ -22,8 +22,8 @@ describe("SimpleMultiSig - 3-of-5 Control Tests", function() {
         );
         await multiSig.waitForDeployment();
         
-        // Deploy KCY1 Token
-        const Token = await ethers.getContractFactory("KCY1Token");
+        // Deploy PUPIKES1 Token
+        const Token = await ethers.getContractFactory("PUPIKES1Token");
         token = await Token.deploy();
         await token.waitForDeployment();
         
@@ -149,7 +149,7 @@ describe("SimpleMultiSig - 3-of-5 Control Tests", function() {
         });
     });
     
-    describe("5. Multi-Sig Controls KCY1 Functions", function() {
+    describe("5. Multi-Sig Controls PUPIKES1 Functions", function() {
         
         // Wait 48h before EACH test (admin functions trigger cooldown)
         beforeEach(async function() {

@@ -1,0 +1,5 @@
+# scraper-bot зависимости. Инсталация на машината, която ВЪРТИ бекенда:
+#   pip install -r requirements.txt
+#   python -m playwright install chromium
+playwright>=1.44
+# python-dotenv не е задължителен — config.py има собствен .env четец.

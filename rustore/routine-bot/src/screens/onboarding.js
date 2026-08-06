@@ -16,7 +16,9 @@ export function renderOnboarding(root, { go }) {
         <h2>${esc(t('onb_what_title'))}</h2>
         <p>${esc(t('onb_feat_morning'))}</p>
         <p>${esc(t('onb_feat_reminders'))}</p>
+        <p>${esc(t('onb_feat_voice'))}</p>
         <p>${esc(t('onb_feat_evening'))}</p>
+        <p class="muted">${esc(t('onb_steps3'))}</p>
         <p class="muted">${esc(t('onb_privacy'))}</p>
       </div>
 

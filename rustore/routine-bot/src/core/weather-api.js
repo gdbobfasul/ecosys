@@ -49,6 +49,96 @@ export function describeCode(code) {
   return entry ? [t(entry[0]), entry[1]] : [t('weather_unknown'), '❓'];
 }
 
+// Категория на WMO код — за откриване на „рязка смяна" и подходящо предупреждение.
+export function classifyCode(code) {
+  if (code == null) return 'unknown';
+  if (code >= 95) return 'thunder';
+  if (code >= 71 && code <= 77) return 'snow';
+  if (code === 85 || code === 86) return 'snow';
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return 'rain';
+  if (code >= 45 && code <= 48) return 'fog';
+  if (code >= 1 && code <= 3) return 'clouds';
+  if (code === 0) return 'clear';
+  return 'other';
+}
+
+// „Лошите" категории, за които предупреждаваме в брифинга.
+const ALERTS = { rain: 1, snow: 2, thunder: 3 };
+
+// Прогноза за няколко дни + почасово (за рязка смяна). Keyless Open-Meteo.
+export async function fetchForecast(latitude, longitude, days = 7) {
+  if (latitude == null || longitude == null) return { ok: false, error: t('err_no_coords') };
+  try {
+    const url = `${BASE}?latitude=${latitude}&longitude=${longitude}` +
+      `&current=temperature_2m,weather_code` +
+      `&hourly=temperature_2m,weather_code,precipitation_probability` +
+      `&daily=temperature_2m_max,temperature_2m_min,weather_code` +
+      `&forecast_days=${Math.min(16, Math.max(1, days))}&timezone=auto`;
+    const res = await fetch(url);
+    if (!res.ok) return { ok: false, error: 'HTTP ' + res.status };
+    const data = await res.json();
+    const cur = data.current || {};
+    const daily = data.daily || {};
+    const hourly = data.hourly || {};
+    return {
+      ok: true,
+      unit: (data.current_units && data.current_units.temperature_2m) || '°C',
+      current: { temp: cur.temperature_2m, code: cur.weather_code },
+      daily: (daily.time || []).map((date, i) => ({
+        date, code: daily.weather_code ? daily.weather_code[i] : null,
+        max: daily.temperature_2m_max ? daily.temperature_2m_max[i] : null,
+        min: daily.temperature_2m_min ? daily.temperature_2m_min[i] : null
+      })),
+      hourly: (hourly.time || []).map((time, i) => ({
+        time, temp: hourly.temperature_2m ? hourly.temperature_2m[i] : null,
+        code: hourly.weather_code ? hourly.weather_code[i] : null,
+        precip: hourly.precipitation_probability ? hourly.precipitation_probability[i] : null
+      }))
+    };
+  } catch (e) {
+    return { ok: false, error: t('err_no_network') };
+  }
+}
+
+// Най-тежкото явление в даден часови интервал за дадена дата.
+function worstInRange(hourly, dateStr, fromH, toH) {
+  let worst = null, worstRank = 0;
+  for (const hr of hourly) {
+    if (!hr.time || hr.time.slice(0, 10) !== dateStr) continue;
+    const h = parseInt(hr.time.slice(11, 13), 10);
+    if (h < fromH || h > toH) continue;
+    const cat = classifyCode(hr.code);
+    const rank = ALERTS[cat] || 0;
+    if (rank > worstRank && (hr.precip == null || hr.precip >= 40)) { worstRank = rank; worst = { cat, code: hr.code, part: null }; }
+  }
+  return worst;
+}
+
+/**
+ * Обобщение за конкретен ден и град: макс/мин, общ код, текуща температура (само
+ * ако дата = днес), и рязки смени следобед/привечер (за предупреждение „вземи чадър").
+ * @returns {{ok, date, max, min, code, emoji, desc, current:number|null, alerts:Array<{part,cat,code}>}}
+ */
+export function summarizeDay(forecast, dateStr) {
+  if (!forecast || !forecast.ok) return { ok: false };
+  const day = (forecast.daily || []).find((d) => d.date === dateStr) || null;
+  const today = new Date().toISOString().slice(0, 10);
+  const [desc, emoji] = describeCode(day ? day.code : (forecast.current && forecast.current.code));
+  const alerts = [];
+  const aft = worstInRange(forecast.hourly, dateStr, 12, 17);
+  const eve = worstInRange(forecast.hourly, dateStr, 18, 23);
+  if (aft) alerts.push({ ...aft, part: 'afternoon' });
+  if (eve && (!aft || eve.cat !== aft.cat)) alerts.push({ ...eve, part: 'evening' });
+  return {
+    ok: true, date: dateStr,
+    max: day ? day.max : null, min: day ? day.min : null,
+    code: day ? day.code : (forecast.current && forecast.current.code), emoji, desc,
+    current: dateStr === today && forecast.current ? forecast.current.temp : null,
+    unit: forecast.unit || '°C',
+    alerts
+  };
+}
+
 // Геокодиране на име на град → координати (също keyless Open-Meteo).
 const GEO = 'https://geocoding-api.open-meteo.com/v1/search';
 

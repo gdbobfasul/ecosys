@@ -15,9 +15,11 @@ module.exports = {
 
   // Реюзваме готовия токен проект (контракт, artifacts, адреси на PancakeSwap).
   tokenProjectDir: path.join(__dirname, '..', 'token'),
-  contractName: 'KCY1Token',
+  contractName: 'PUPIKES1Token',
   // Hardhat artifact (abi + bytecode) — генерира се с `npx hardhat compile` в ../token.
-  artifactPath: path.join(__dirname, '..', 'token', 'artifacts', 'contracts', 'kcy-meme-1.sol', 'KCY1Token.json'),
+  // Пътят е вложен (…/artifacts/token/contracts/…), защото token/hardhat.config.js
+  // разширява root до private/, за да вижда централния configs/Addresses.sol.
+  artifactPath: path.join(__dirname, '..', 'token', 'artifacts', 'token', 'contracts', 'pupikes-meme-1.sol', 'PUPIKES1Token.json'),
   // Мрежовите конфиги (router/factory/WBNB/rpc/explorer) идват от токен проекта.
   networksModule: path.join(__dirname, '..', 'token', 'config', 'networks.js'),
 
