@@ -1,27 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!--pupikes-icon-->
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#132542"/>
-      <stop offset="1" stop-color="#0a1120"/>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#047857"/>
     </linearGradient>
-    <linearGradient id="line" x1="0" y1="1" x2="1" y2="0">
-      <stop offset="0" stop-color="#3ddc97"/>
-      <stop offset="1" stop-color="#4a9eff"/>
-    </linearGradient>
-    <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#3ddc97" stop-opacity="0.35"/>
-      <stop offset="1" stop-color="#3ddc97" stop-opacity="0"/>
-    </linearGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.20)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
   </defs>
-  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#bg)"/>
-  <path d="M64 360 L128 300 L192 330 L256 210 L320 250 L384 150 L448 190 L448 400 L64 400 Z" fill="url(#area)"/>
-  <path d="M64 360 L128 300 L192 330 L256 210 L320 250 L384 150 L448 190" fill="none" stroke="url(#line)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="384" cy="150" r="18" fill="#3ddc97"/>
-  <circle cx="384" cy="150" r="30" fill="none" stroke="#3ddc97" stroke-width="6" opacity="0.5"/>
-  <g stroke="#4a9eff" stroke-width="8" opacity="0.9">
-    <line x1="150" y1="392" x2="150" y2="440"/>
-    <line x1="360" y1="392" x2="360" y2="452"/>
-  </g>
-  <rect x="140" y="404" width="20" height="26" rx="4" fill="#4a9eff"/>
-  <rect x="350" y="408" width="20" height="34" rx="4" fill="#e5534b"/>
+  <rect width="1024" height="1024" fill="url(#g)"/>
+  <rect width="1024" height="1024" fill="url(#hi)"/>
+  <g fill="#fff"><rect x="384" y="382" width="54" height="150" rx="10"/><rect x="486" y="330" width="54" height="214" rx="10"/><rect x="588" y="418" width="54" height="122" rx="10"/></g><g stroke="#fff" stroke-width="14"><line x1="411" y1="344" x2="411" y2="560"/><line x1="513" y1="300" x2="513" y2="566"/><line x1="615" y1="388" x2="615" y2="580"/></g>
+  <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

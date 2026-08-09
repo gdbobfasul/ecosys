@@ -83,6 +83,29 @@ check_app() {
 
 for d in "${APPS[@]}"; do check_app "$d"; done
 
+# ── Правни документи: важат ли (200, не 404) И сочат ли към ТОВА приложение (не чужди)? ──
+# Изискване на Huawei/RuStore; тук роботът пада в червено, ако документ липсва/е чужд.
+# По подразбиране онлайн (проверява и 404); ROBOT_LEGAL_OFFLINE=1 → само локални файлове.
+if [ -f deploy-scripts/check-legal-links.mjs ] && command -v node >/dev/null 2>&1; then
+  echo ""
+  echo -e "${BOLD}${CYAN}═══ Правни документи — важат ли + на ТОВА приложение ═══${NC}"
+  declare -a LN=()
+  for d in "${APPS[@]}"; do
+    n="$(basename "$d")"; dup=0
+    for x in "${LN[@]}"; do [ "$x" = "$n" ] && { dup=1; break; }; done
+    [ "$dup" = 0 ] && LN+=("$n")
+  done
+  LEGAL_FLAGS=""; [ "${ROBOT_LEGAL_OFFLINE:-0}" = "1" ] && LEGAL_FLAGS="--offline"
+  node deploy-scripts/check-legal-links.mjs $LEGAL_FLAGS "${LN[@]}" || { echo -e "  ${RED}✗ правни документи с проблем (липсва/чуждо/404)${NC}"; FAILS=$((FAILS+1)); }
+fi
+
+# ── Сървиси: пуснати ли са бекендите, нужни на приложенията? (истински JSON, не SPA HTML) ──
+if [ -f deploy-scripts/check-services.mjs ] && [ "${ROBOT_LEGAL_OFFLINE:-0}" != "1" ] && command -v node >/dev/null 2>&1; then
+  echo ""
+  echo -e "${BOLD}${CYAN}═══ Сървиси на приложенията — живи ли са ═══${NC}"
+  node deploy-scripts/check-services.mjs || { echo -e "  ${RED}✗ очакван сървис е ДОЛУ${NC}"; FAILS=$((FAILS+1)); }
+fi
+
 echo -e "${BOLD}${CYAN}═══ Резултат ═══${NC}"
 echo -e "  апове: ${#APPS[@]}  ·  ${RED}провалени: ${FAILS}${NC}  ·  ${YELLOW}с предупреждения: ${WARNS}${NC}"
 if [ "$FAILS" = 0 ]; then echo -e "  ${GREEN}✓ всички консистентни${NC}"; exit 0; else echo -e "  ${RED}✗ има провали — виж по-горе${NC}"; exit 1; fi

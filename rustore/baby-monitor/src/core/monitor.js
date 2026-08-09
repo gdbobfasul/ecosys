@@ -42,6 +42,7 @@ export function createMonitor({ videoEl, canvasEl, onTick, onEvent } = {}) {
 
   let raf = null;
   let running = false;
+  let _hb = null;            // таймер „пулс онлайн" (двуфонов режим)
   let lastPersonCheck = 0;
   let lastSeenChildAt = Date.now();
   let lastStrangerAt = 0;
@@ -138,6 +139,18 @@ export function createMonitor({ videoEl, canvasEl, onTick, onEvent } = {}) {
     raf = scheduleNext(loop);
   }
 
+  // Пулс „онлайн": в двуфонов режим „Baby Radar" праща лек сигнал, че мониторът Е онлайн,
+  // за да види наблюдаващият „✓ Свързан" ВЕДНАГА — без да чака реално събитие (движение/звук).
+  // Точно това объркваше ревюто: сдвоено, но „Waiting…", защото нямаше събитие.
+  function startHeartbeat() {
+    stopHeartbeat();
+    if (!isMonitor()) return;
+    const beat = () => { try { sendAlert('babymonitor', 'online', 'online'); } catch (_) {} };
+    beat();                                                   // веднага при старт
+    _hb = setInterval(() => { if (running) beat(); }, 15000); // и на всеки 15 сек
+  }
+  function stopHeartbeat() { if (_hb) { clearInterval(_hb); _hb = null; } }
+
   function start() {
     if (running) return;
     running = true;
@@ -146,10 +159,12 @@ export function createMonitor({ videoEl, canvasEl, onTick, onEvent } = {}) {
     lastPersonCount = null;
     leftFlagged = false;
     raf = scheduleNext(loop);
+    startHeartbeat();
   }
 
   function stop() {
     running = false;
+    stopHeartbeat();
     if (raf) { cancelNext(raf); raf = null; }
   }
 

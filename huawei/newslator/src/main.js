@@ -28,6 +28,7 @@ import { renderLanguage } from './screens/language.js';
 import { renderOnboarding } from './screens/onboarding.js';
 import { renderNews } from './screens/news.js';
 import { renderCountries } from './screens/countries.js';
+import { renderSaved } from './screens/saved.js';
 import { renderSettings } from './screens/settings.js';
 import { privacyFooter } from './core/privacy.js';
 
@@ -61,6 +62,7 @@ function tabBar() {
   return el('div', { class: 'tabbar' }, [
     mk('news', '📰', 'nav_news'),
     mk('countries', '🗺️', 'nav_countries'),
+    mk('saved', '⭐', 'nav_saved'),
     mk('settings', '⚙️', 'nav_settings')
   ]);
 }
@@ -92,10 +94,12 @@ function render() {
   rootEl.appendChild(tabBar());
 
   if (tab === 'countries') {
-    renderCountries(content, app.country, (code) => {
+    renderCountries(content, app, nav, (code) => {
       app.country = code; persist();
       tab = 'news'; render();
     });
+  } else if (tab === 'saved') {
+    renderSaved(content, app, nav);
   } else if (tab === 'settings') {
     renderSettings(content, app, nav);
   } else {

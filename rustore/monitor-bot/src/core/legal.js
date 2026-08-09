@@ -14,7 +14,7 @@
 // Файлът с условията се извежда от него: hw-* → hw-terms.html, иначе rustore-terms.html.
 import { pupikesBarButton } from './pupikes-bar.js';
 
-const PRIVACY_BASE = 'https://selflearning.bot.nu/privacy';
+const PRIVACY_BASE = 'https://pupikes.app/privacy';
 const PRIVACY_FILE = 'rustore-privacy.html';           // заменя се при инжектиране (по магазин)
 const TERMS_FILE = PRIVACY_FILE.indexOf('hw') === 0 ? 'hw-terms.html' : 'rustore-terms.html';
 const REPORT_ENDPOINT = 'https://selflearning.bot.nu/api/portals/bug-report/anon';

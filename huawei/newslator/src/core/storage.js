@@ -26,6 +26,9 @@ export function defaultState() {
   return {
     onboarded: false,        // мина ли потребителят през началния екран
     country: '',             // избран код на държава (напр. 'BG'); празно = още няма избор
+    following: [],           // следвани държави (кодове) за „Моята емисия"
+    saved: [],               // запазени статии [{title,link,source,srcLang,date,savedAt}]
+    history: [],             // последно отваряни статии (за таб „История")
     settings: {
       autoTranslate: true,   // авто-превод на заглавията към езика на интерфейса
       tts: true,             // позволено четене на глас
@@ -49,6 +52,10 @@ export async function loadState() {
       const parsed = JSON.parse(raw);
       cache = Object.assign(defaultState(), parsed);
       cache.settings = Object.assign(defaultState().settings, parsed.settings || {});
+      // Масивите да са винаги налични (стар запис без тези ключове).
+      if (!Array.isArray(cache.following)) cache.following = [];
+      if (!Array.isArray(cache.saved)) cache.saved = [];
+      if (!Array.isArray(cache.history)) cache.history = [];
     } catch { cache = defaultState(); }
   } else {
     cache = defaultState();

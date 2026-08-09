@@ -1,8 +1,21 @@
-Pupikes Toolkit Text — Contador, formato, Base64.
+Pupikes Kit de texto — Un banco de trabajo de texto completo — sin conexión, en tu dispositivo.
 
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
+Herramientas incluidas:
+• Herramientas de texto — Contador, formato, Base64
+• Mayúsculas y líneas — MAYÚS/minús/Título, ordenar, duplicados, numeración, slug
+• Codificar/Decodificar — URL, HTML, ROT13, Morse, binario, hex
+• Generadores — Contraseña, UUID, Lorem ipsum, hashes SHA
+• Extraer — Correos, URLs, números, hashtags, menciones, IP
+• Diff — Compara dos textos línea por línea — añadido/eliminado
+• Estilo Unicode — 𝐍𝐞𝐠𝐫𝐢𝐭𝐚, tachado, subrayado, ancho — para redes sociales
+• JSON / CSV — Formatear/minificar/validar JSON y JSON↔CSV
+• Frecuencia de palabras — Palabras frecuentes con barras + total/únicas/caracteres
+• Números romanos — Número ↔ romano (1–3999), autodetección
+• Bases numéricas — Binario / octal / decimal / hex (BigInt)
+• Ajuste y prefijo — Ajuste a N caracteres, prefijo por línea (cita/comentario), desenvolver
+• Colores — HEX ↔ RGB ↔ HSL con muestra y selector
+• Marca de tiempo — Unix ↔ fecha (local/UTC/ISO), botón «Ahora»
 
-Herramientas de texto — Contador, formato, Base64
+Sin anuncios emergentes ni rastreo — tus datos se quedan en tu dispositivo.
 
-Soporte: miroljubkalaydjiev177@gmail.com
 Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com

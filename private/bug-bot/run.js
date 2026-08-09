@@ -58,6 +58,8 @@ const JOURNEYS = {
   marketpulse: require('./journeys/market-pulse'), // Market Pulse — дълбоко (навигация+графика)
   failover: require('./journeys/failover'),
   authenticator: require('./journeys/authenticator'), // ЛОКАЛНО: билд + собствен сървър (без прод)
+  adminstatus: require('./journeys/admin-status'), // админ-страница: per-app документи+сървиси + централните проверки
+  mobileactions: require('./journeys/mobile-actions'), // мобилни апове ДЪЛБОКО: онбординг→главен екран→взаимодействие (локално dist, БЕЗ живи данни)
 };
 
 // ── аргументи ───────────────────────────────────────────────────────────────

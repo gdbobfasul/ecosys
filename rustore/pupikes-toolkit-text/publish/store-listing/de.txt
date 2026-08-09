@@ -1,8 +1,21 @@
-Pupikes Toolkit Text — Zähler, Formatierung, Base64.
+Pupikes Text-Werkzeuge — Eine komplette Text-Werkbank — offline, auf dem Gerät.
 
-Praktische Offline-Tools — alles läuft auf dem Gerät.
+Enthaltene Werkzeuge:
+• Text-Werkzeuge — Zähler, Formatierung, Base64
+• Groß/Klein & Zeilen — GROSS/klein/Titel, sortieren, Duplikate, Nummerierung, Slug
+• Kodieren/Dekodieren — URL, HTML, ROT13, Morse, binär, hex
+• Generatoren — Passwort, UUID, Lorem ipsum, SHA-Hashes
+• Extrahieren — E-Mails, URLs, Zahlen, Hashtags, Erwähnungen, IPs
+• Diff — Zwei Texte zeilenweise vergleichen — hinzugefügt/entfernt
+• Unicode-Stil — 𝐅𝐞𝐭𝐭, durchgestrichen, unterstrichen, breit — für soziale Medien
+• JSON / CSV — JSON formatieren/minimieren/prüfen und JSON↔CSV
+• Worthäufigkeit — Häufigste Wörter mit Balken + gesamt/eindeutig/Zeichen
+• Römische Zahlen — Zahl ↔ Römisch (1–3999), Auto-Erkennung
+• Zahlensysteme — Binär / oktal / dezimal / hex (BigInt)
+• Umbruch & Präfix — Umbruch bei N Zeichen, Zeilen-Präfix (Zitat/Kommentar), entfalten
+• Farben — HEX ↔ RGB ↔ HSL mit Muster & Auswahl
+• Zeitstempel — Unix ↔ Datum (lokal/UTC/ISO), „Jetzt"-Taste
 
-Text-Werkzeuge — Zähler, Formatierung, Base64
+Keine Pop-up-Werbung, kein Tracking — deine Daten bleiben auf deinem Gerät.
 
-Support: miroljubkalaydjiev177@gmail.com
 Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com

@@ -253,8 +253,13 @@ export const OUTLETS = {
     { name: 'CBC News', type: 'tv', official: true, lang: 'en', url: 'https://www.cbc.ca/cmlink/rss-topstories' }
   ],
   RU: [
-    { name: 'TASS', type: 'agency', official: true, lang: 'en', url: 'https://tass.com/rss/v2.xml' },
-    { name: 'Meduza', type: 'site', official: false, lang: 'ru', url: 'https://meduza.io/rss/all' }
+    // Само източници, достъпни ВЪТРЕ в Русия (рецензентите на RuStore са там). Без Meduza —
+    // блокирана/нежелана организация в РФ, носи риск и не се зарежда там.
+    { name: 'ТАСС', type: 'agency', official: true, lang: 'ru', url: 'https://tass.ru/rss/v2.xml' },
+    { name: 'РИА Новости', type: 'agency', official: true, lang: 'ru', url: 'https://ria.ru/export/rss2/archive/index.xml' },
+    { name: 'Lenta.ru', type: 'newspaper', official: false, lang: 'ru', url: 'https://lenta.ru/rss/news' },
+    { name: 'РБК', type: 'newspaper', official: false, lang: 'ru', url: 'https://rssexport.rbc.ru/rbcnews/news/30/full.rss' },
+    { name: 'Газета.Ru', type: 'newspaper', official: false, lang: 'ru', url: 'https://www.gazeta.ru/export/rss/first.xml' }
   ],
   UA: [
     { name: 'Ukrinform', type: 'agency', official: true, lang: 'uk', url: 'https://www.ukrinform.net/rss/' },
@@ -379,6 +384,77 @@ export function googleNewsUrl(country) {
     '&gl=' + encodeURIComponent(gl) + '&ceid=' + encodeURIComponent(ceid);
 }
 
+// РЕЗЕРВЕН агрегатор: Bing News RSS. Работи там, където Google News е недостъпен (напр.
+// Русия), затова гарантира новини и за държавите БЕЗ поименни източници. Пазарът е
+// `<език>-<държава>`, заявката е името на държавата → връща актуални новини за нея.
+export function bingNewsUrl(country) {
+  const lang = (country.hl || 'en').split('-')[0];
+  const mkt = lang + '-' + country.code;
+  const q = country.name || country.code;
+  return 'https://www.bing.com/news/search?q=' + encodeURIComponent(q) +
+    '&format=RSS&setmkt=' + encodeURIComponent(mkt);
+}
+
+// ── Рубрики (категории) ──────────────────────────────────────────────────────
+// Google News дава секции по тема. key = вътрешен код (за i18n cat_<key>), g = Google топик.
+export const TOPICS = [
+  { key: 'world', g: 'WORLD' },
+  { key: 'nation', g: 'NATION' },
+  { key: 'business', g: 'BUSINESS' },
+  { key: 'technology', g: 'TECHNOLOGY' },
+  { key: 'sports', g: 'SPORTS' },
+  { key: 'science', g: 'SCIENCE' },
+  { key: 'health', g: 'HEALTH' },
+  { key: 'entertainment', g: 'ENTERTAINMENT' }
+];
+
+// Google News RSS по секция/тема за държавата.
+export function topicUrl(country, gTopic) {
+  const hl = country.hl || 'en';
+  const gl = country.code;
+  const ceid = gl + ':' + hl;
+  return 'https://news.google.com/rss/headlines/section/topic/' + encodeURIComponent(gTopic) +
+    '?hl=' + encodeURIComponent(hl) + '&gl=' + encodeURIComponent(gl) + '&ceid=' + encodeURIComponent(ceid);
+}
+
+// Google News RSS търсене по ключова дума за държавата.
+export function searchUrl(country, query) {
+  const hl = country.hl || 'en';
+  const gl = country.code;
+  const ceid = gl + ':' + hl;
+  return 'https://news.google.com/rss/search?q=' + encodeURIComponent(query) +
+    '&hl=' + encodeURIComponent(hl) + '&gl=' + encodeURIComponent(gl) + '&ceid=' + encodeURIComponent(ceid);
+}
+
+// Bing News RSS търсене по произволна заявка (резерва, работи и в РФ).
+export function bingSearchUrl(country, query) {
+  const lang = (country.hl || 'en').split('-')[0];
+  const mkt = lang + '-' + country.code;
+  return 'https://www.bing.com/news/search?q=' + encodeURIComponent(query) +
+    '&format=RSS&setmkt=' + encodeURIComponent(mkt);
+}
+
+// Източници за РУБРИКА: Google топик + Bing резерва (по английския ключ на топика).
+export function feedsForTopic(code, topic) {
+  const c = byCode[code];
+  if (!c) return [];
+  const gTopic = (TOPICS.find((tp) => tp.key === topic) || {}).g || 'WORLD';
+  return [
+    { name: 'Google News', type: 'agency', official: false, aggregator: true, lang: (c.hl || 'en').split('-')[0], url: topicUrl(c, gTopic), kind: 'aggregator' },
+    { name: 'Bing News', type: 'agency', official: false, aggregator: true, lang: (c.hl || 'en').split('-')[0], url: bingSearchUrl(c, topic), kind: 'aggregator' }
+  ];
+}
+
+// Източници за ТЪРСЕНЕ: Google search + Bing search (и двата по потребителската заявка).
+export function feedsForSearch(code, query) {
+  const c = byCode[code];
+  if (!c || !query) return [];
+  return [
+    { name: 'Google News', type: 'agency', official: false, aggregator: true, lang: (c.hl || 'en').split('-')[0], url: searchUrl(c, query), kind: 'aggregator' },
+    { name: 'Bing News', type: 'agency', official: false, aggregator: true, lang: (c.hl || 'en').split('-')[0], url: bingSearchUrl(c, query), kind: 'aggregator' }
+  ];
+}
+
 // Пълният списък източници за държава: агрегаторът (винаги) + поименните (ако има).
 // Всеки запис: { name, type, official, lang, url, kind:'aggregator'|'outlet' }.
 export function feedsForCountry(code) {
@@ -391,6 +467,15 @@ export function feedsForCountry(code) {
     aggregator: true,
     lang: (c.hl || 'en').split('-')[0],
     url: googleNewsUrl(c),
+    kind: 'aggregator'
+  }, {
+    // Резервен агрегатор — покрива случаите, в които Google News е блокиран/бавен.
+    name: 'Bing News',
+    type: 'agency',
+    official: false,
+    aggregator: true,
+    lang: (c.hl || 'en').split('-')[0],
+    url: bingNewsUrl(c),
     kind: 'aggregator'
   }];
   (OUTLETS[code] || []).forEach((o) => list.push(Object.assign({ kind: 'outlet' }, o)));

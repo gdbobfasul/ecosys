@@ -1,12 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!--pupikes-icon-->
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#4a8bd4"/>
-      <stop offset="1" stop-color="#2b5488"/>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#d97706"/>
     </linearGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.20)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
-  <path d="M152 236 L152 392 L216 392 L216 300 L296 300 L296 392 L360 392 L360 236 Z" fill="#ffffff"/>
-  <rect x="232" y="196" width="48" height="44" rx="6" fill="#3b6ea5"/>
-  <path d="M256 108 L410 240 L360 240 L256 150 L152 240 L102 240 Z" fill="#e8d9c0"/>
+  <rect width="1024" height="1024" fill="url(#g)"/>
+  <rect width="1024" height="1024" fill="url(#hi)"/>
+  <path d="M512 296 l194 164 h-42 v168 a22 22 0 0 1 -22 22 h-260 a22 22 0 0 1 -22 -22 v-168 h-42 z" fill="#fff"/><rect x="474" y="474" width="76" height="112" rx="6" fill="url(#g)"/>
+  <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

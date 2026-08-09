@@ -1,8 +1,15 @@
-Pupikes Toolkit QR — Générer et lire des codes QR.
+Pupikes Boîte à outils QR — Créez, enregistrez et lisez des QR — hors ligne, sur l’appareil.
 
-Outils hors-ligne pratiques — tout fonctionne sur l’appareil.
+Outils inclus :
+• Code QR — Générer et lire des codes QR
+• Mes codes QR — Codes nommés : paiements, Wi-Fi, contacts — enregistrés et organisés
+• QR par lot — Plusieurs codes d’un coup — un par ligne, téléchargement individuel ou tout
+• QR stylisé — Couleur code/fond + logo central
+• QR Wi-Fi — Partage le Wi-Fi — scanner et le téléphone se connecte seul
+• QR contact — Carte de visite (vCard) : nom, société, téléphone, e-mail — le scan enregistre le contact
+• QR événement — Événement (titre, lieu, début/fin) — le scan ajoute au calendrier
+• QR localisation — Coordonnées (geo:) ou lien carte ; « Ma position » via GPS
 
-Code QR — Générer et lire des codes QR
+Pas de pubs pop-up, pas de suivi — vos données restent sur votre appareil.
 
-Assistance: miroljubkalaydjiev177@gmail.com
 Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com

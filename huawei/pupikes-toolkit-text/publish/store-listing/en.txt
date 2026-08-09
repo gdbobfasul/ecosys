@@ -1,8 +1,21 @@
-Pupikes Toolkit Text — Counter, formatting, Base64.
+Pupikes Text toolkit — A complete text workbench — offline, on your device.
 
-Handy offline tools — everything runs on your device.
+Tools included:
+• Text tools — Counter, formatting, Base64
+• Case & lines — UPPER/lower/Title, sort, dedupe, numbering, slug
+• Encode/Decode — URL, HTML, ROT13, Morse, binary, hex
+• Generators — Password, UUID, Lorem ipsum, SHA hashes
+• Extract — Emails, URLs, numbers, hashtags, mentions, IPs
+• Diff — Compare two texts line by line — added/removed
+• Unicode style — 𝐁𝐨𝐥𝐝, s̶t̶r̶i̶k̶e̶, u̲n̲d̲e̲r̲l̲i̲n̲e̲, wide — for social media
+• JSON / CSV — Prettify/minify/validate JSON and JSON↔CSV
+• Word frequency — Top words with bars + total/unique/characters
+• Roman numerals — Number ↔ Roman (1–3999), auto-detect
+• Number bases — Binary / octal / decimal / hex (BigInt)
+• Wrap & prefix — Wrap at N chars, per-line prefix (quote/comment), unwrap
+• Colors — HEX ↔ RGB ↔ HSL with swatch & picker
+• Timestamp — Unix ↔ date (local/UTC/ISO), “Now” button
 
-Text tools — Counter, formatting, Base64
+No pop-up ads, no tracking — your data stays on your device.
 
-Support: miroljubkalaydjiev177@gmail.com
 For questions and support, write to: miroljubkalaydjiev177@gmail.com

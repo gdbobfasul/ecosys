@@ -1,0 +1,216 @@
+{
+  "updated": "",
+  "count": 35,
+  "apps": [
+    {
+      "id": "authenticator",
+      "name": "Pupikes Toolkit Authenticator",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "auto-sound-diagnostics",
+      "name": "auto-sound-diagnostics",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "autoreply-bot",
+      "name": "Pupikes Auto Answer",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "baby-monitor",
+      "name": "Pupikes Baby Radar",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "business-faq-bot",
+      "name": "Pupikes FAQ Desk",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "camera-watch",
+      "name": "MotionHawk",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "chat",
+      "name": "Pupikes Chat",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "dodge-master",
+      "name": "EvadeArena",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "duel",
+      "name": "Pupikes Ring Clash",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "fps-hunter",
+      "name": "Huntline 3D",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "hmm",
+      "name": "Pupikes Field Battle",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "houselookbook",
+      "name": "HouseLookBook",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "market-pulse",
+      "name": "Pupikes Market Pulse",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "monitor-bot",
+      "name": "Pupikes Site Monitor",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "newslator",
+      "name": "Pupikes NewsLator",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "plane-shooter",
+      "name": "Warbird Rush",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "price-watch-bot",
+      "name": "Pupikes Toolkit Price Watch",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-doctor",
+      "name": "Pupikes Doctor",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-medicines",
+      "name": "Pupikes Medicines",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-toolkit-3drotate",
+      "name": "Pupikes Toolkit 3D Rotate",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-toolkit-ai-announcement",
+      "name": "Pupikes Toolkit AI Announcement",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-toolkit-finance",
+      "name": "Pupikes Toolkit Finance",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-toolkit-passwords",
+      "name": "Pupikes Toolkit Passwords",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-toolkit-pdf",
+      "name": "Pupikes Toolkit PDF",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-toolkit-pictures",
+      "name": "Pupikes Toolkit Pictures",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-toolkit-qr",
+      "name": "Pupikes Toolkit QR",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-toolkit-scraper",
+      "name": "Pupikes Toolkit Scraper",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-toolkit-sound",
+      "name": "Pupikes Toolkit Sound",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-toolkit-text",
+      "name": "Pupikes Toolkit Text",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "pupikes-toolkit-videos",
+      "name": "Pupikes Toolkit Videos",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "routine-bot",
+      "name": "Pupikes Routine Planner",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "rustam",
+      "name": "Rustam picks cucumbers",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "selflearning-friend",
+      "name": "Pupikes LB",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "services-toolkit",
+      "name": "Pupikes Toolkit",
+      "hw": true,
+      "ru": true
+    },
+    {
+      "id": "titans-fight",
+      "name": "Godfist Arena",
+      "hw": true,
+      "ru": true
+    }
+  ]
+}

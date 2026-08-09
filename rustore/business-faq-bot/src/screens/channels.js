@@ -18,6 +18,7 @@ import {
   isNativeReplyAvailable, isAccessGranted, openAccessSettings, getRecent
 } from '../core/native-reply.js';
 import { pupikesConfigured, pupikesCheck } from '../core/pupikes-chat.js';
+import { gatewayConfigured, checkHealth, publishKb } from '../core/gateway-sync.js';
 import { reloadChannels } from '../core/pump.js';
 import { t, tf } from '../core/i18n.js';
 
@@ -32,6 +33,10 @@ export function renderChannels(root, { navigate, rerender }) {
     el('h1', {}, t('ch_title')),
     el('p', { class: 'lead' }, t('ch_lead'))
   ]));
+
+  // 0) Облачен шлюз — РЕАЛНИТЕ отговори по WhatsApp/Messenger/Viber през официалните
+  //    (безплатни за тест) API-та. Това е основният път; показваме го пръв.
+  root.appendChild(gatewayBlock());
 
   // 1) Месинджъри (WhatsApp/Viber/Messenger) през Notification access.
   root.appendChild(messengersBlock(rerender));
@@ -55,6 +60,79 @@ function flatSwitch(id, onToggle) {
   input.checked = enabled;
   input.addEventListener('change', () => onToggle(input.checked));
   return el('label', { class: 'switch' }, [input, el('span', {}, input.checked ? t('on') : t('off'))]);
+}
+
+// --- Облачен шлюз (WhatsApp/Messenger/Viber през официалните API-та) -----------
+function gatewayBlock() {
+  const cfg = (getState().channels && getState().channels.gateway) || {};
+
+  const statusEl = el('span', { class: 'pill pending' }, gatewayConfigured(cfg) ? t('ch_access_checking') : t('ch_not_configured'));
+  const baseInput = el('input', { class: 'input', type: 'text', value: cfg.baseUrl || '', placeholder: 'https://pupikes.com/api/faq' });
+  const tokenInput = el('input', { class: 'input', type: 'text', value: cfg.adminToken || '', placeholder: t('ch_gw_token') });
+
+  function readForm() {
+    return { baseUrl: baseInput.value.trim(), adminToken: tokenInput.value.trim() };
+  }
+  function save() {
+    const cur = getState();
+    setState({ channels: { ...cur.channels, gateway: readForm() } });
+    toast(t('save'));
+  }
+
+  const checkBtn = el('button', { class: 'btn tiny' }, t('ch_gw_check'));
+  checkBtn.addEventListener('click', async () => {
+    save();
+    statusEl.className = 'pill pending';
+    statusEl.textContent = t('ch_access_checking');
+    const res = await checkHealth(getState().channels.gateway);
+    if (res.ok) {
+      statusEl.className = 'pill ok';
+      statusEl.textContent = t('ch_gw_online');
+      const chans = (res.channels || []).join(', ') || '—';
+      toast(t('ch_gw_online') + ': ' + chans);
+    } else {
+      statusEl.className = 'pill fallback';
+      statusEl.textContent = t('ch_gw_offline');
+    }
+  });
+
+  const publishBtn = el('button', { class: 'btn tiny primary' }, t('ch_gw_publish'));
+  publishBtn.addEventListener('click', async () => {
+    if (!gatewayConfigured(readForm())) { toast(t('ch_gw_need_config')); return; }
+    save();
+    const res = await publishKb(getState().channels.gateway);
+    if (res.ok) toast(tf('ch_gw_published', res.entries));
+    else toast(t('ch_gw_offline'));
+  });
+
+  // Първоначална проверка, ако е настроен.
+  if (gatewayConfigured(cfg)) {
+    (async () => {
+      const res = await checkHealth(cfg);
+      statusEl.className = 'pill ' + (res.ok ? 'ok' : 'fallback');
+      statusEl.textContent = res.ok ? t('ch_gw_online') : t('ch_gw_offline');
+    })();
+  }
+
+  return el('div', {}, [
+    el('h2', { style: 'margin-top:6px' }, t('ch_gw_title')),
+    el('section', { class: 'card' }, [
+      el('div', { class: 'channel-head' }, [
+        el('span', { class: 'channel-icon' }, '☁️'),
+        el('strong', {}, t('ch_gw_sub')),
+        statusEl
+      ]),
+      el('p', { class: 'muted small' }, t('ch_gw_desc')),
+      el('p', { class: 'muted small' }, t('ch_gw_hint')),
+      el('label', {}, t('ch_gw_baseurl')), baseInput,
+      el('label', {}, t('ch_gw_token')), tokenInput,
+      el('div', { class: 'row gap', style: 'margin-top:10px' }, [
+        el('button', { class: 'btn tiny', onclick: save }, t('save')),
+        checkBtn,
+        publishBtn
+      ])
+    ])
+  ]);
 }
 
 // --- Месинджъри ---------------------------------------------------------------

@@ -133,6 +133,19 @@ for TNAME in "${VALID[@]}"; do
     done
     [ "$nfail" -gt 0 ] && echo -e "  ${YELLOW}⚠ ${nfail} файла не се качиха — прилагам качените; липсващите ще се доизкачат при следващо пускане${NC}"
 
+    # Икони на приложенията (apk/icons/*.png) — качват се В ПОДПАПКА (пътят се пази), защото
+    # началната страница и админът ги четат от /icons/<ап>.png. Основният цикъл сплесква по basename,
+    # затова тук отделен трансфер със запазен път apk/icons/.
+    if [ -d apk/icons ]; then
+        $SSH "${USER}@${SERVER}" "mkdir -p '${STAGE}/apk/icons'" >/dev/null 2>&1
+        _ic=0
+        for f in apk/icons/*; do
+            [ -f "$f" ] || continue; b="$(basename "$f")"
+            for a in 1 2 3; do $SCP "$f" "${USER}@${SERVER}:${STAGE}/apk/icons/${b}" && { _ic=$((_ic+1)); break; }; sleep 3; done
+        done
+        echo -e "  ${CYAN}↑ икони: ${_ic} файла → apk/icons/${NC}"
+    fi
+
     # Сглоби apk/-архива НА СЪРВЪРА (бързо, локален диск) → подай на приемника. Така работи и със
     # СТАРИЯ приемник (очаква архив), без нужда от нов деплой. Само 1 малка ssh команда, не трансфер.
     REMOTE_TAR="${STAGING}/pupikes-apps-$(date +%s)-${TNAME}.tgz"
@@ -155,4 +168,14 @@ if [ "${#FAILED[@]}" -eq 0 ]; then
 else
     echo -e "${RED}✗ Неуспешни: ${FAILED[*]}${NC}"
     echo -e "${YELLOW}  Ако иска и отказва парола (ПЪРВО ползване): пусни веднъж деплой на проекта + опцията за обновяване на правата (sudoers), после пак.${NC}"
+fi
+
+# ── В КРАЯ: правните документи на приложенията важат ли ОНЛАЙН (200, не 404) и конкретни ли са? ──
+# Изисквано от Huawei/RuStore; хваща 404/чуждо ВЕДНАГА след качване на приложенията.
+if [ -f "deploy-scripts/check-legal-links.mjs" ] && command -v node >/dev/null 2>&1; then
+  echo ""
+  echo -e "${CYAN}━━━ Правни документи (Privacy/Terms) — онлайн проверка ━━━${NC}"
+  # shellcheck disable=SC2086
+  node deploy-scripts/check-legal-links.mjs ${KCY_APPS_ONLY:-} || \
+    echo -e "  ${YELLOW}⚠ правни документи с проблем (липсва/чуждо/404) — виж горе; пусни точка 33 и провери пак${NC}"
 fi

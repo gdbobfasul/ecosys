@@ -1,8 +1,15 @@
-Pupikes Toolkit QR — 產生與讀取 QR 碼.
+Pupikes QR 工具箱 — 建立、儲存與讀取 QR 碼 — 離線、在裝置上。
 
-實用的離線工具 — 一切都在裝置上執行。
+包含的工具：
+• QR 碼 — 產生與讀取 QR 碼
+• 我的 QR 碼 — 具名代碼：付款、Wi-Fi、聯絡人 — 已儲存並分類
+• 批次 QR — 一次多個代碼 — 每行一個，可個別或全部下載
+• 樣式 QR — 代碼/背景顏色＋中央標誌
+• Wi-Fi QR — 分享 Wi-Fi — 掃描後手機自動連線
+• 聯絡人 QR — 名片 (vCard)：姓名、公司、電話、電子郵件 — 掃描即存聯絡人
+• 活動 QR — 行事曆活動（標題、地點、起訖）— 掃描加入行事曆
+• 位置 QR — 座標 (geo:) 或地圖連結；GPS「我的位置」
 
-QR 碼 — 產生與讀取 QR 碼
+無彈出式廣告、無追蹤 — 您的資料留在裝置上。
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+如有問題或需要支援，請來信： miroljubkalaydjiev177@gmail.com

@@ -1,21 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!--pupikes-icon-->
   <defs>
-    <radialGradient id="bg" cx="50%" cy="40%" r="75%">
-      <stop offset="0%" stop-color="#2a160b"/>
-      <stop offset="100%" stop-color="#0f0a05"/>
-    </radialGradient>
-    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#fff0d6"/>
-      <stop offset="100%" stop-color="#ff8a3c"/>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#1d4ed8"/>
     </linearGradient>
-    <filter id="glow"><feGaussianBlur stdDeviation="10" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.20)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
   </defs>
-  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  <circle cx="120" cy="110" r="3" fill="#fff" opacity="0.8"/>
-  <circle cx="400" cy="160" r="2.5" fill="#9fd8ff" opacity="0.7"/>
-  <circle cx="360" cy="380" r="3" fill="#fff" opacity="0.6"/>
-  <circle cx="150" cy="400" r="2" fill="#9fd8ff" opacity="0.6"/>
-  <path d="M 256 106 L 391 361 L 256 301 L 121 361 Z" fill="url(#body)" filter="url(#glow)"/>
-  <ellipse cx="256" cy="200" rx="14" ry="26" fill="#ffffff" opacity="0.9"/>
+  <rect width="1024" height="1024" fill="url(#g)"/>
+  <rect width="1024" height="1024" fill="url(#hi)"/>
+  <path d="M512 292 l58 220 l-58 -34 l-58 34 z" fill="#fff"/><path d="M512 392 l168 128 l-168 -56 l-168 56 z" fill="#fff"/><rect x="496" y="560" width="32" height="46" rx="10" fill="#fff"/>
+  <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

@@ -317,6 +317,22 @@ else
   fi
 fi
 
+# ── Оригинални икони (pupikes): опресни store/icon.svg + миниатюрите за избраните апове ──
+# Идемпотентно и пази ръчни икони (тези без нашия маркер). Така ВСеки билд ползва НАШИ
+# оригинални икони (характерен символ + „pupikes") — иначе магазините флагват чужди икони.
+if [ -f "$ROOT/deploy-scripts/gen-app-icons.mjs" ] && command -v node >/dev/null 2>&1; then
+  declare -a _UNAMES=()
+  for _e in "${APPS[@]}"; do
+    _n="$(basename "$_e")"; _dup=0
+    for _u in "${_UNAMES[@]}"; do [ "$_u" = "$_n" ] && { _dup=1; break; }; done
+    [ "$_dup" = 0 ] && _UNAMES+=("$_n")
+  done
+  if [ "${#_UNAMES[@]}" -gt 0 ]; then
+    echo -e "${BOLD}${CYAN}━━━ Оригинални икони (pupikes) ━━━${NC}"
+    ( cd "$ROOT" && node deploy-scripts/gen-app-icons.mjs "${_UNAMES[@]}" ) || echo -e "  ${YELLOW}↷ генерирането на икони прескочено${NC}"
+  fi
+fi
+
 echo ""
 echo -e "  За билд: ${GREEN}${#APPS[@]}${NC} апп(а)"
 echo ""
@@ -403,6 +419,15 @@ build_one() {
         printf "export const DEFAULT_PRESET_DOMAIN = '%s';\n" "$SLF_PUB"
       } > src/core/server-presets.js
       echo -e "  ${GREEN}✓ src/core/server-presets.js ← .env (${SLF_PUB}${SLF_VMH:+, ${SLF_VMH}.${SLF_TNET}}${SLF_EXTRA:+, +доп.})${NC}"
+    fi
+    # Магазинна политика: обезвреди анти-sideload предупреждението ПРЕДИ vite build (гейтът е JS →
+    # влиза в бъндъла). RuStore/Huawei отхвърлят приложения, които „предлагат да свалиш оригинала
+    # от магазина"; модераторът тества със сурово APK → гейтът гръмва → отхвърляне. В магазинните
+    # билдове enforceLicense() става no-op. Идемпотентно (маркер). Не чупи билда при липса на файла.
+    # ИЗКЛЮЧЕНИЕ: за нарочно САМОРАЗДАВАН билд (KCY_SELFDIST=1) гейтът се ЗАПАЗВА (анти-пиратство
+    # за APK-та извън магазините, зад парола на pupikes.app).
+    if [ "${KCY_SELFDIST:-0}" != "1" ] && [ -f src/core/license.js ] && command -v node >/dev/null 2>&1; then
+      node "$ROOT/deploy-scripts/neutralize-store-gate.mjs" . || true
     fi
     echo -e "  ${CYAN}→ npm run build (web)…${NC}"
     npm run build || { echo -e "  ${RED}✗ web билдът се провали${NC}"; exit 3; }
@@ -533,7 +558,26 @@ if [ "${#APPS[@]}" -gt 0 ] && [ "${KCY_KEEP_OTHERS:-0}" != "1" ]; then
   done
 fi
 
-for d in "${APPS[@]}"; do build_one "$d"; done
+# ── Прогрес индикатор (като точка 2): ЖИВ брояч на дъното + оставащо време ПЕР приложение ──
+# Долният ред показва: колко остава общо, кое приложение се билдва СЕГА и кои предстоят (четими
+# имена, не кодове). Времената се учат ПЕР приложение×профил (apk/web) в $HOME/.kcy-progress →
+# оценката се калибрира след 1-2 билда. Изключване: KCY_PROGRESS_NOBOTTOM=1.
+_PROG_ON=0
+if [ -f "$ROOT/deploy-scripts/lib/progress.sh" ] && [ "${#APPS[@]}" -gt 0 ]; then
+  # shellcheck source=/dev/null
+  source "$ROOT/deploy-scripts/lib/progress.sh" && _PROG_ON=1
+fi
+if [ "$_PROG_ON" = 1 ]; then
+  _PROG_PROFILE="web"; [ "${ANDROID_READY:-0}" = 1 ] && _PROG_PROFILE="apk"
+  progress_start buildmobile "${APPS[*]}" "$_PROG_PROFILE"
+fi
+
+for d in "${APPS[@]}"; do
+  [ "$_PROG_ON" = 1 ] && progress_step buildmobile "$d"
+  build_one "$d"
+done
+
+[ "$_PROG_ON" = 1 ] && progress_finish buildmobile ok
 
 # Ако в избора има selflearning-friend → билдни И десктоп .exe-то (същият апп, не отделно).
 WANT_DESKTOP=0
@@ -576,10 +620,26 @@ fi
 # © и всеки друг от publish/) се качват/обновяват в /var/www/html/privacy/<ап>/ — за да работят
 # правните линкове ВЪТРЕ в апа. Автоматично, без питане. Не проваля билда при липса на връзка.
 # (При release билд вътрешните извиквания се пропускат с KCY_NO_LEGAL_SYNC=1 и се качва накуп.)
+# Подготви документите (ГЕНЕРИРАЙ + СЪБЕРИ в public/privacy) — ЕДНО място, викано от 2/4/5/57.
+# Така пътуват в следващия деплой (05/14 root ги слагат), без да зависим само от sync-legal-pages (root SSH).
+[ -f deploy-scripts/prepare-legal-docs.sh ] && bash deploy-scripts/prepare-legal-docs.sh || true
+
 if [ "${#APPS[@]}" -gt 0 ] && [ -f "deploy-scripts/sync-legal-pages.sh" ]; then
   echo ""
   echo -e "${BOLD}${CYAN}━━━ Задължителна документация (Huawei/RuStore) → сървър ━━━${NC}"
   bash deploy-scripts/sync-legal-pages.sh "${APPS[@]}" || true
+fi
+
+# ── ПРОВЕРКА НА ПРАВНИТЕ ЛИНКОВЕ (Privacy/Terms) — точно каквото апът отваря ──
+# За всеки билднат апп проверява, че линковете, изисквани от RuStore/Huawei, връщат 200
+# (не 404!) И че хостнатото съдържание е на ТОВА приложение (не чуждо). Хваща разминаване
+# домейн↔хостинг ПРЕДИ подаване. Не проваля билда (само предупреждава силно).
+if [ -f "deploy-scripts/check-legal-links.mjs" ] && command -v node >/dev/null 2>&1; then
+  echo ""
+  echo -e "${BOLD}${CYAN}━━━ Проверка на правните линкове (Privacy/Terms) — ВСИЧКИ приложения ━━━${NC}"
+  # БЕЗ аргументи = проверява ВСИЧКИ апове (не само построените сега) — по изрично искане.
+  node deploy-scripts/check-legal-links.mjs || \
+    echo -e "  ${RED}${BOLD}⚠ Правни линкове с проблем — НЕ подавай в магазина, докато не са зелени!${NC}"
 fi
 
 # ── Обобщение ──

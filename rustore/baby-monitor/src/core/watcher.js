@@ -24,7 +24,15 @@ export function startWatching({ onAlert = null, onFrame = null, onStatus = null 
     const r = await pollAlerts({ ack: true });
     if (onStatus) { try { onStatus({ ok: r.ok, reason: r.reason }); } catch (_) {} }
     if (r.ok && r.alerts.length) {
+      let sawEvent = false;
       for (const a of r.alerts) {
+        // Пулс „онлайн"/тест — това е ДОКАЗАТЕЛСТВО, че мониторът е свързан, НЕ е събитие:
+        // не вдигаме известие/дневник, а само маркираме „✓ Свързан — мониторът е онлайн".
+        if (a.type === 'online' || a.type === 'test') {
+          if (onStatus) { try { onStatus({ ok: true, connected: true, at: Date.now() }); } catch (_) {} }
+          continue;
+        }
+        sawEvent = true;
         const critical = (a.type === 'stranger' || a.type === 'fire');
         // Известие на родителския телефон (критичните — с мелодия).
         notify({ title: 'Pupikes Baby Radar', body: a.label || a.type, critical });
@@ -32,9 +40,11 @@ export function startWatching({ onAlert = null, onFrame = null, onStatus = null 
         try { addEvent({ type: a.type, label: a.label, snapshot: null }); } catch (_) {}
         if (onAlert) { try { onAlert(a); } catch (_) {} }
       }
-      // При събитие дръпни последния кадър от стаята.
-      const f = await getFrame();
-      if (f && f.ok && f.frame && onFrame) { try { onFrame(f); } catch (_) {} }
+      // Само при РЕАЛНО събитие дръпни последния кадър от стаята.
+      if (sawEvent) {
+        const f = await getFrame();
+        if (f && f.ok && f.frame && onFrame) { try { onFrame(f); } catch (_) {} }
+      }
     }
     if (_running) _timer = setTimeout(tick, getPairing().pollSeconds * 1000);
   };

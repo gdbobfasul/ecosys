@@ -167,7 +167,7 @@ SSH_OPTS="-o ConnectTimeout=90 -o ServerAliveInterval=30 -o ServerAliveCountMax=
 REMOTE_BASE="/var/www/deploy/deploy-scripts/server"
 PROJECT_DIR="/var/www/kcy-ecosystem"
 
-step()  { echo ""; echo -e "${BOLD}${CYAN}━━━ $* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"; echo ""; }
+step()  { echo ""; echo -e "${BOLD}${CYAN}━━━ $* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"; echo ""; command -v progress_step >/dev/null 2>&1 && progress_step fullinstall "$*"; }
 rstep() { # дистанционна стъпка с проверка на изхода
     local label="$1"; shift
     echo -e "  ${CYAN}→ ${label}${NC}"
@@ -177,6 +177,19 @@ rstep() { # дистанционна стъпка с проверка на из�
         echo -e "  ${RED}✗ ${label} — грешка (виж изхода по-горе). Продължавам нататък.${NC}"
     fi
 }
+
+# Индикатор за напредък (лента + % + ~оставащи минути), самокалибриращ се ПО СЕКЦИИ.
+# Планът зависи от ВКЛЮЧЕНИТЕ опции: изпълняват се само тези секции → общото време се коригира
+# (напр. без качване на приложения → секцията „Обновяване" не влиза → по-малко общо време).
+_PROG_PLAN=""
+[ "${BUILD_APPS:-0}" = 1 ] && _PROG_PLAN="0/5"   # билдът е ВЕДНЪЖ (локално, не per server)
+for _pe in "${DEPLOY_SET[@]}"; do
+  IFS='|' read -r _ _ _ _pt <<< "$_pe"           # името на целта (prodts/vm) → per-server времена
+  _PROG_PLAN="$_PROG_PLAN 1/5#${_pt} 2/5#${_pt} 3/5#${_pt} 4/5#${_pt} 5/5#${_pt}"
+  [ "${UPDATE_APPS:-0}" = 1 ] && _PROG_PLAN="$_PROG_PLAN Обновяване#${_pt}"
+done
+_PROG_PROFILE="b${BUILD_APPS:-0}n${NPM_BUILD:-0}a${WITH_ASSETS:-0}d${DROP_DB:-0}"   # опциите влияят на времената
+source "$SCRIPT_DIR/lib/progress.sh" 2>/dev/null && progress_start fullinstall "$_PROG_PLAN" "$_PROG_PROFILE"
 
 # ══ 1/5  DEPLOY (код+.env [+асети], npm ПИТА, бази chat/portals/eco3 [+DROP], chat/eco3/portals услуги) ══
 # 0/5 БИЛД на приложенията (по избор — отговорът е взет в началото)
@@ -202,6 +215,9 @@ for _entry in "${DEPLOY_SET[@]}"; do
     echo -e "${BOLD}${CYAN}║  ЦЕЛ: ${t}  →  ${USR}@${SRV}:${PRT}${NC}"
     echo -e "${BOLD}${CYAN}╚══════════════════════════════════════════════╝${NC}"
   fi
+
+  # Времената на секциите се пазят ПО СЪРВЪР (prod ≠ VM) — задаваме контекста за тази цел.
+  command -v progress_context >/dev/null 2>&1 && progress_context fullinstall "$t"
 
 step "1/5  Deploy + npm + бази chat/portals/eco3${RESET:+ (DROP)} + услуги chat/eco3/portals"
 # KCY_IN_FULL_INSTALL=1 → 04 да НЕ възстановява failover тук (правим го накрая на 02, след услугите)
@@ -268,6 +284,8 @@ fi
 
 done   # ← край на цикъла по цели (една ИЛИ двете: prodts + vm)
 
+command -v progress_finish >/dev/null 2>&1 && progress_finish fullinstall ok
+
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"
 echo -e "${GREEN}  ✓ ПЪЛНАТА ИНСТАЛАЦИЯ ЗАВЪРШИ${NC}"
@@ -279,3 +297,10 @@ echo -e "            (чакат адрес на токена в .env — без
 echo ""
 echo -e "  Следва (по желание): опция 33 — домейн/SSL (nginx + Let's Encrypt)."
 echo ""
+
+# ── ПРОВЕРКА НАКРАЯ: правните документи важат ли ОНЛАЙН (200 + на ТОВА приложение)? ──
+if [ -f deploy-scripts/check-legal-links.mjs ] && command -v node >/dev/null 2>&1; then
+    echo -e "${BOLD}${CYAN}━━━ Правни документи (Privacy/Terms) — онлайн проверка ━━━${NC}"
+    node deploy-scripts/check-legal-links.mjs || echo -e "  ${RED}⚠ правни документи с проблем — виж горе; пусни точка 33 и провери пак${NC}"
+    echo ""
+fi

@@ -1,8 +1,15 @@
-Pupikes Toolkit QR — Genera y lee códigos QR.
+Pupikes Kit de QR — Crea, guarda y lee códigos QR — sin conexión, en tu dispositivo.
 
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
+Herramientas incluidas:
+• Código QR — Genera y lee códigos QR
+• Mis códigos QR — Códigos con nombre: pagos, Wi-Fi, contactos — guardados y ordenados
+• QR por lotes — Muchos códigos a la vez — uno por línea, descarga individual o todos
+• QR con estilo — Color de código/fondo + logo central
+• QR Wi-Fi — Comparte Wi-Fi — escanea y el teléfono se conecta solo
+• QR de contacto — Tarjeta (vCard): nombre, empresa, teléfono, correo — escanear guarda el contacto
+• QR de evento — Evento (título, lugar, inicio/fin) — escanear añade al calendario
+• QR de ubicación — Coordenadas (geo:) o enlace de mapa; «Mi ubicación» por GPS
 
-Código QR — Genera y lee códigos QR
+Sin anuncios emergentes ni rastreo — tus datos se quedan en tu dispositivo.
 
-Soporte: miroljubkalaydjiev177@gmail.com
 Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com

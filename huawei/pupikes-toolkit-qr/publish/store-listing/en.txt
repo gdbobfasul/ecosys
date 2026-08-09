@@ -1,8 +1,15 @@
-Pupikes Toolkit QR — Generate and read QR codes.
+Pupikes QR toolkit — Create, save and read QR codes — offline, on your device.
 
-Handy offline tools — everything runs on your device.
+Tools included:
+• QR code — Generate and read QR codes
+• My QR codes — Named codes: payments, Wi-Fi, contacts — saved and organized
+• Batch QR — Many codes at once — one per line, download individually or all
+• Styled QR — Code/background color + center logo
+• Wi-Fi QR — Share Wi-Fi — scan and the phone connects itself
+• Contact QR — Business card (vCard): name, company, phone, email — scan saves the contact
+• Event QR — Calendar event (title, place, start/end) — scan adds to calendar
+• Location QR — Coordinates (geo:) or map link; “My location” via GPS
 
-QR code — Generate and read QR codes
+No pop-up ads, no tracking — your data stays on your device.
 
-Support: miroljubkalaydjiev177@gmail.com
 For questions and support, write to: miroljubkalaydjiev177@gmail.com

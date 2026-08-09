@@ -215,7 +215,17 @@ const server = http.createServer(async (req, res) => {
                 env.ROBOT_VM_URL = vmUrl;
             }
             robot = { running: true, runId, target, mode, startedAt: new Date().toISOString(), exitCode: null, reportDir: null, tail: [], child: null };
-            const child = spawn('node', args, { cwd: ROBOT_DIR, env });
+            // DB-guard (опционално): за журита които ПИШАТ данни → бекъп на базите → робот →
+            // връщане при чисто (иначе LOCK). Вкл. с ROBOT_DB_GUARD=1 (иска sudo -u postgres права).
+            // По подразбиране ИЗКЛЮЧЕНО → държи се както досега (без регресия). failover/critical/crawl са само четене.
+            let spawnCmd = 'node', spawnArgs = args;
+            const writesData = (mode.startsWith('journey:') && mode !== 'journey:failover') || mode === 'fuzz' || mode === 'all';
+            const guardSh = process.env.ROBOT_DB_GUARD_SH || path.join(ROBOT_DIR, '..', '..', 'deploy-scripts', 'robot-db-guard.sh');
+            if (process.env.ROBOT_DB_GUARD === '1' && writesData && fs.existsSync(guardSh)) {
+                spawnCmd = 'bash'; spawnArgs = [guardSh, 'guard', '--', 'node', ...args];
+                pushTail('🛡 DB-guard: бекъп на базите → робот → връщане САМО при чисто (иначе LOCK)');
+            }
+            const child = spawn(spawnCmd, spawnArgs, { cwd: ROBOT_DIR, env });
             robot.child = child; // пази процеса → бутон „Спри робота" може да го убие
             const onData = (buf) => String(buf).split(/\r?\n/).forEach((l) => {
                 if (!l.trim()) return;

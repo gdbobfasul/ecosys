@@ -1,8 +1,15 @@
-Pupikes Toolkit QR — QR-Codes erstellen und lesen.
+Pupikes QR-Werkzeuge — QR-Codes erstellen, speichern und lesen — offline, auf dem Gerät.
 
-Praktische Offline-Tools — alles läuft auf dem Gerät.
+Enthaltene Werkzeuge:
+• QR-Code — QR-Codes erstellen und lesen
+• Meine QR-Codes — Benannte Codes: Zahlungen, WLAN, Kontakte — gespeichert und geordnet
+• Stapel-QR — Viele Codes auf einmal — einer pro Zeile, einzeln oder alle laden
+• Stil-QR — Code-/Hintergrundfarbe + Logo in der Mitte
+• WLAN-QR — WLAN teilen — scannen und das Handy verbindet sich selbst
+• Kontakt-QR — Visitenkarte (vCard): Name, Firma, Telefon, E-Mail — Scan speichert Kontakt
+• Termin-QR — Kalendertermin (Titel, Ort, Beginn/Ende) — Scan fügt zum Kalender hinzu
+• Standort-QR — Koordinaten (geo:) oder Karten-Link; „Mein Standort" per GPS
 
-QR-Code — QR-Codes erstellen und lesen
+Keine Pop-up-Werbung, kein Tracking — deine Daten bleiben auf deinem Gerät.
 
-Support: miroljubkalaydjiev177@gmail.com
 Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com

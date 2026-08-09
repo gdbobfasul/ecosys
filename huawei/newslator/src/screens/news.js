@@ -1,53 +1,32 @@
-// Version: 1.0001
-// Екран „Новини“ — събира новините за избраната държава, показва ги (по избор преведени
-// на езика на интерфейса) и може да ги чете на глас. Без избрана държава подканва за избор.
+// Version: 1.0002
+// Екран „Новини“ — източник (държава / „Моята емисия"), рубрики, търсене; показва
+// новините (по избор преведени) и може да ги чете на глас. Картите са в article-card.js.
 import { el, clear } from '../ui/dom.js';
 import { t, tf, getLang } from '../core/i18n.js';
-import { countryByCode } from '../data/feeds.js';
-import { loadCountryNews } from '../core/news.js';
+import { countryByCode, TOPICS } from '../data/feeds.js';
+import { loadCountryNews, loadMyFeed } from '../core/news.js';
 import { translateText } from '../core/translate.js';
 import { ttsAvailable, speak, speakList, stop as ttsStop } from '../core/tts.js';
+import { makeCard } from './article-card.js';
 
 let SESSION = 0;     // нараства при всяко зареждане → отменя закъснели заявки
 let reading = false;
 
-// „преди N мин/ч/дни“ от времеви печат.
-function timeAgo(ms) {
-  if (!ms) return '';
-  const diff = Date.now() - ms;
-  if (diff < 0) return t('just_now');
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return t('just_now');
-  if (m < 60) return tf('minutes_ago', m);
-  const h = Math.floor(m / 60);
-  if (h < 24) return tf('hours_ago', h);
-  return tf('days_ago', Math.floor(h / 24));
-}
-
-// Отваря връзката навън (външен браузър при Capacitor, иначе нов раздел).
-function openUrl(url) {
-  if (!url) return;
-  try {
-    const cap = window.Capacitor;
-    if (cap && cap.Plugins && cap.Plugins.Browser && typeof cap.Plugins.Browser.open === 'function') {
-      cap.Plugins.Browser.open({ url });
-      return;
-    }
-  } catch (_) {}
-  try { window.open(url, '_system'); } catch (_) { try { window.open(url, '_blank'); } catch (e) {} }
-}
-
-function badgeFor(it) {
-  if (it.aggregator) return el('span', { class: 'badge aggregator' }, t('source_aggregator'));
-  if (it.official) return el('span', { class: 'badge official' }, t('source_official'));
-  return el('span', { class: 'badge unofficial' }, t('source_unofficial'));
+// Хоризонтален „чип" бутон (за режим/рубрика).
+function chip(label, active, onClick) {
+  const b = el('button', { class: 'btn sm' + (active ? '' : ' secondary'), style: 'white-space:nowrap;flex:0 0 auto', onclick: onClick }, label);
+  return b;
 }
 
 export function renderNews(root, app, nav) {
   clear(root);
   const lang = getLang();
 
-  if (!app.country) {
+  const hasCountry = !!app.country;
+  const following = Array.isArray(app.following) ? app.following : [];
+  const hasFollowing = following.length > 0;
+
+  if (!hasCountry && !hasFollowing) {
     root.appendChild(el('div', { class: 'pad center', style: 'margin-top:50px' }, [
       el('div', { class: 'big' }, '🗺️'),
       el('p', { class: 'muted', style: 'font-size:15px;margin:14px 0 18px' }, t('empty_pick_country')),
@@ -56,13 +35,47 @@ export function renderNews(root, app, nav) {
     return;
   }
 
-  const country = countryByCode(app.country);
+  let mode = hasCountry ? 'country' : 'myfeed';   // 'country' | 'myfeed'
+  let category = 'all';                            // 'all' | topic.key
+  let query = '';                                  // активна търсеща заявка
+
   let items = [];
   let cards = [];
-
   const statusEl = el('div', { class: 'muted', style: 'font-size:13px;margin:2px 2px 10px' }, '');
   const listEl = el('div', {});
 
+  // ── Ред 1: източник (Моята емисия / държава) ──
+  const country = hasCountry ? countryByCode(app.country) : null;
+  const srcRow = el('div', { class: 'row', style: 'gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:6px' });
+  function drawSrcRow() {
+    clear(srcRow);
+    if (hasFollowing) srcRow.appendChild(chip('🌟 ' + t('my_feed'), mode === 'myfeed', () => { mode = 'myfeed'; drawSrcRow(); load(); }));
+    if (hasCountry) srcRow.appendChild(chip('📍 ' + country.name, mode === 'country', () => { mode = 'country'; drawSrcRow(); load(); }));
+  }
+  drawSrcRow();
+
+  // ── Ред 2: рубрики ──
+  const catRow = el('div', { class: 'row', style: 'gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:6px' });
+  function drawCatRow() {
+    clear(catRow);
+    const cats = [{ key: 'all' }].concat(TOPICS);
+    cats.forEach((c) => catRow.appendChild(chip(t('cat_' + c.key), category === c.key && !query, () => {
+      category = c.key; query = ''; searchInput.value = ''; drawCatRow(); load();
+    })));
+  }
+
+  // ── Ред 3: търсене ──
+  const searchInput = el('input', { class: 'search', type: 'search', placeholder: t('search_ph'), style: 'flex:1' });
+  function doSearch() {
+    const q = searchInput.value.trim();
+    query = q; drawCatRow(); load();
+  }
+  searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
+  const searchBtn = el('button', { class: 'btn sm', onclick: doSearch }, '🔍');
+  const clearBtn = el('button', { class: 'btn sm secondary', onclick: () => { searchInput.value = ''; query = ''; drawCatRow(); load(); } }, '✕');
+  const searchRow = el('div', { class: 'row', style: 'gap:6px;margin-bottom:8px' }, [searchInput, searchBtn, clearBtn]);
+
+  // ── Ред 4: действия (обнови / чети всички / само официални) ──
   const readAllBtn = el('button', { class: 'btn sm secondary', onclick: () => toggleReadAll() }, '🔊 ' + t('read_all'));
   const refreshBtn = el('button', { class: 'btn sm secondary', onclick: () => load() }, '↻ ' + t('refresh'));
   const offSwitch = el('div', { class: 'switch' + (app.settings.officialOnly ? ' on' : '') });
@@ -71,90 +84,59 @@ export function renderNews(root, app, nav) {
     offSwitch.className = 'switch' + (app.settings.officialOnly ? ' on' : '');
     nav.persist(); load();
   } }, [offSwitch, el('span', { class: 'muted', style: 'font-size:12px' }, t('filter_official'))]);
-
-  root.appendChild(el('h2', {}, tf('country_chosen', country.name)));
   const controls = el('div', { class: 'row', style: 'gap:8px;flex-wrap:wrap;margin-bottom:8px' }, [refreshBtn]);
   if (ttsAvailable()) controls.appendChild(readAllBtn);
   controls.appendChild(el('div', { class: 'spacer' }));
   controls.appendChild(offWrap);
+
+  root.appendChild(srcRow);
+  root.appendChild(catRow);
+  root.appendChild(searchRow);
   root.appendChild(controls);
   root.appendChild(statusEl);
   root.appendChild(listEl);
-
+  drawCatRow();
   load();
 
   function setStatus(s) { statusEl.textContent = s; }
+
+  // Ясни действия при празна лента/грешка — да не изглежда „счупено".
+  function showRetry() {
+    clear(listEl);
+    listEl.appendChild(el('div', { class: 'pad center', style: 'margin-top:24px' }, [
+      el('div', { class: 'big' }, '📰'),
+      el('div', { class: 'row', style: 'gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px' }, [
+        el('button', { class: 'btn', onclick: () => load() }, '↻ ' + t('refresh')),
+        el('button', { class: 'btn secondary', onclick: () => nav.go('countries') }, t('choose_country'))
+      ])
+    ]));
+  }
 
   async function load() {
     const my = ++SESSION;
     stopReading();
     clear(listEl);
     setStatus(t('loading_news'));
+    const opts = { officialOnly: app.settings.officialOnly, topic: category, query: query };
     let res;
     try {
-      res = await loadCountryNews(app.country, { officialOnly: app.settings.officialOnly });
-    } catch (e) { if (my === SESSION) setStatus(t('news_error')); return; }
+      res = (mode === 'myfeed')
+        ? await loadMyFeed(following, opts)
+        : await loadCountryNews(app.country, opts);
+    } catch (e) { if (my === SESSION) { setStatus(t('news_error')); showRetry(); } return; }
     if (my !== SESSION) return;
     items = res.items;
-    if (!items.length) { setStatus(t('no_news')); return; }
-    const okSources = res.sources.filter((s) => s.ok).length;
-    setStatus(tf('sources_count', okSources));
+    if (!items.length) { setStatus(t('no_news')); showRetry(); return; }
+    const label = (mode === 'myfeed') ? tf('my_feed_of', following.length) : tf('sources_count', res.sources.filter((s) => s.ok).length);
+    setStatus(label);
     drawList();
     if (app.settings.autoTranslate) translateAll(my);
   }
 
   function drawList() {
     clear(listEl);
-    cards = items.map((it) => makeCard(it));
+    cards = items.map((it) => makeCard(it, { lang, app, persist: nav.persist }));
     cards.forEach((c) => listEl.appendChild(c.node));
-  }
-
-  function makeCard(it) {
-    const titleNode = el('div', { class: 'title' }, it.titleShown || it.title);
-    const trBadge = el('span', { class: 'badge tr', style: 'display:none' }, t('translated_label'));
-
-    const meta = el('div', { class: 'meta' }, [
-      badgeFor(it),
-      el('span', {}, it.source || ''),
-      el('span', {}, '· ' + timeAgo(it.date)),
-      trBadge
-    ]);
-
-    const trBtn = el('button', { class: 'btn sm secondary' }, '🌐 ' + t('translate'));
-    let showingOriginal = !it.titleShown || it.titleShown === it.title;
-    function refreshTrLabel() {
-      const translated = it.titleShown && it.titleShown !== it.title;
-      trBadge.style.display = (translated && !showingOriginal) ? '' : 'none';
-      trBtn.textContent = showingOriginal ? ('🌐 ' + t('translate')) : ('↩ ' + t('show_original'));
-      titleNode.textContent = showingOriginal ? it.title : (it.titleShown || it.title);
-    }
-    trBtn.addEventListener('click', async () => {
-      if (!showingOriginal) { showingOriginal = true; refreshTrLabel(); return; }
-      if (!it.titleShown || it.titleShown === it.title) {
-        trBtn.disabled = true; trBtn.textContent = t('translating');
-        const tr = await translateText(it.title, it.srcLang, lang);
-        it.titleShown = tr; trBtn.disabled = false;
-      }
-      showingOriginal = false; refreshTrLabel();
-    });
-
-    const actions = el('div', { class: 'actions' }, [
-      el('button', { class: 'btn sm', onclick: () => openUrl(it.link) }, '↗ ' + t('open_article'))
-    ]);
-    if (ttsAvailable()) {
-      actions.appendChild(el('button', { class: 'btn sm secondary', onclick: () => speak(titleNode.textContent, lang) }, '🔊'));
-    }
-    actions.appendChild(trBtn);
-
-    const node = el('div', { class: 'art' }, [titleNode, meta, actions]);
-    refreshTrLabel();
-    return {
-      node, titleNode, trBadge,
-      applyTranslation() {
-        showingOriginal = false;
-        refreshTrLabel();
-      }
-    };
   }
 
   // Авто-превод на всички заглавия едно по едно (щади безплатния лимит), с обновяване наживо.
@@ -181,7 +163,7 @@ export function renderNews(root, app, nav) {
     speakList(
       items, lang,
       (it) => it.titleShown || it.title,
-      (idx) => { /* може да се подчертае текущото; държим просто */ },
+      () => {},
       () => reading && my === SESSION
     ).then(() => { if (reading) stopReading(); });
   }

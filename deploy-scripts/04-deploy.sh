@@ -23,6 +23,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
+# Пълен списък на ВСИЧКИ приложения за админ-страницата (admin-status.html детектва всички,
+# не само каталога на pupikes.app). Регенерира се при всеки деплой → public/shared/all-apps.json.
+command -v node >/dev/null 2>&1 && [ -f deploy-scripts/gen-all-apps.mjs ] && node deploy-scripts/gen-all-apps.mjs >/dev/null 2>&1 || true
+
+# Подготви задължителните документи (ГЕНЕРИРАЙ + СЪБЕРИ в public/privacy) — ЕДНО място, викано от
+# 2/4/5/57. Пътуват в деплоя, а 05 (root) ги слага в /var/www/html/privacy (виж prepare-legal-docs.sh).
+[ -f deploy-scripts/prepare-legal-docs.sh ] && bash deploy-scripts/prepare-legal-docs.sh || true
+
 # ═══ ДОМЕЙНИ ОТ ЕДИННАТА КОНФИГУРАЦИЯ (нищо хардкоднато) ═══
 [ -f "private/configs/domains.conf" ] && . "private/configs/domains.conf"
 
@@ -549,18 +557,38 @@ for ATTEMPT in 1 2 3 4; do
     [ "$ATTEMPT" -lt 4 ] && sleep 60
 done || die "Не мога да създам ${STAGING}"
 
+# Твърд таймаут на прехвърляне: ако scp „увисне" (връзка жива, но нула байти),
+# убиваме го след XFER_TIMEOUT → минаваме на следващ опит, вместо да виси до безкрай.
+# Портируемо за Git Bash — НЕ ползваме `timeout` бинарника (на Windows е друг, интерактивен).
+run_with_timeout() {
+    local secs="$1"; shift
+    "$@" &
+    local cmd_pid=$!
+    ( sleep "$secs"; kill -TERM "$cmd_pid" 2>/dev/null; sleep 3; kill -KILL "$cmd_pid" 2>/dev/null ) &
+    local killer=$!
+    wait "$cmd_pid"; local rc=$?
+    kill -TERM "$killer" 2>/dev/null; wait "$killer" 2>/dev/null
+    return $rc
+}
+# Таймаутът е спрямо размера (консервативно ~50 KB/s под), за да НЕ убива реален бавен трансфер:
+#   байтове/50000 + 120с буфер; под 240с, таван 1200с; override с KCY_SCP_TIMEOUT.
+ARCHIVE_BYTES=$(wc -c < "$ARCHIVE_NAME" 2>/dev/null || echo 0)
+XFER_TIMEOUT="${KCY_SCP_TIMEOUT:-$(( ARCHIVE_BYTES/50000 + 120 ))}"
+[ "$XFER_TIMEOUT" -lt 240 ] && XFER_TIMEOUT=240
+[ "$XFER_TIMEOUT" -gt 1200 ] && XFER_TIMEOUT=1200
+
 START_TIME=$SECONDS
 SCP_OK=false
 for ATTEMPT in 1 2 3 4; do
-    log "  ${YELLOW}[опит ${ATTEMPT}/4]${NC}"
-    if scp ${SCP_OPTS} "$ARCHIVE_NAME" "${USER}@${SERVER}:${STAGING}/"; then
+    log "  ${YELLOW}[опит ${ATTEMPT}/4 · таймаут ${XFER_TIMEOUT}с]${NC}"
+    if run_with_timeout "$XFER_TIMEOUT" scp ${SCP_OPTS} "$ARCHIVE_NAME" "${USER}@${SERVER}:${STAGING}/"; then
         SCP_OK=true
         break
     else
-        log "  ${RED}  ✗ Неуспешно${NC}"
+        log "  ${RED}  ✗ Неуспешно (грешка или увисна над ${XFER_TIMEOUT}с — прекъснато)${NC}"
         if [ "$ATTEMPT" -lt 4 ]; then
-            log "  ${YELLOW}  Изчакване 1 минута...${NC}"
-            sleep 60
+            log "  ${YELLOW}  Изчакване 15с преди нов опит...${NC}"
+            sleep 15
         fi
     fi
 done
@@ -798,6 +826,42 @@ elif [ ! -f "docs/ENV-EXAMPLE.env" ]; then
     log "  ${RED}✗ docs/ENV-EXAMPLE.env не е намерен!${NC}"
 else
     log "  ${YELLOW}(прескочено — за показване на шаблона: DEPLOY_SHOW_ENV=1 ./deploy-scripts/04-deploy.sh)${NC}"
+fi
+
+# ═══ ПРАВНИ ДОКУМЕНТИ (Privacy/Terms и др., изисквани от Huawei/RuStore) ═══
+# В КРАЯ на деплоя проверяваме ОНЛАЙН дали документите на всяко приложение са ЖИВИ
+# (връщат 200, не 404) и са КОНКРЕТНИ за приложението (не чуждо съдържание).
+# Не проваля деплоя — само докладва силно, за да не подаваш в магазина с 404.
+log ""
+log "${YELLOW}═══════════════════════════════════════════════════${NC}"
+log "${YELLOW}  ПРАВНИ ДОКУМЕНТИ — проверка онлайн (Huawei/RuStore)${NC}"
+log "${YELLOW}═══════════════════════════════════════════════════${NC}"
+log ""
+if command -v node >/dev/null 2>&1 && [ -f "$PROJECT_ROOT/deploy-scripts/check-legal-links.mjs" ]; then
+    if ( cd "$PROJECT_ROOT" && node deploy-scripts/check-legal-links.mjs ); then
+        log "  ${GREEN}✓ Всички правни документи са живи и конкретни за приложенията.${NC}"
+    else
+        log "  ${RED}⚠ Има приложения с проблемни/липсващи документи (виж горе).${NC}"
+        log "  ${RED}  НЕ подавай в магазина, докато не станат зелени! Пусни точка 33 и провери пак.${NC}"
+    fi
+else
+    log "  ${YELLOW}(пропуснато — липсва node или скриптът за проверка)${NC}"
+fi
+
+# ═══ СЪРВИСИ (бекендите, нужни на приложенията) — живи ли са? ═══
+log ""
+log "${YELLOW}═══════════════════════════════════════════════════${NC}"
+log "${YELLOW}  СЪРВИЗИ — живи ли са бекендите на приложенията    ${NC}"
+log "${YELLOW}═══════════════════════════════════════════════════${NC}"
+log ""
+if command -v node >/dev/null 2>&1 && [ -f "$PROJECT_ROOT/deploy-scripts/check-services.mjs" ]; then
+    if ( cd "$PROJECT_ROOT" && node deploy-scripts/check-services.mjs ); then
+        log "  ${GREEN}✓ Всички очаквани сървиси са живи.${NC}"
+    else
+        log "  ${RED}⚠ Очакван сървис е ДОЛУ — приложенията му няма да работят пълноценно (виж горе).${NC}"
+    fi
+else
+    log "  ${YELLOW}(пропуснато — липсва node или скриптът за проверка)${NC}"
 fi
 
 log ""

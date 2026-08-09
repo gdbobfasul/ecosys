@@ -1,33 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!--pupikes-icon-->
   <defs>
-    <radialGradient id="bg" cx="50%" cy="38%" r="75%">
-      <stop offset="0%" stop-color="#0e3322"/>
-      <stop offset="100%" stop-color="#05120c"/>
-    </radialGradient>
-    <linearGradient id="blade" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#eaf6ff"/>
-      <stop offset="100%" stop-color="#8ab4d8"/>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#94a3b8"/><stop offset="1" stop-color="#475569"/>
     </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#2ecf8f" stop-opacity="0.9"/>
-      <stop offset="100%" stop-color="#2ecf8f" stop-opacity="0"/>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.20)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
     </radialGradient>
   </defs>
-  <rect width="1024" height="1024" rx="200" fill="url(#bg)"/>
-  <circle cx="512" cy="470" r="360" fill="url(#glow)"/>
-  <!-- две кръстосани остриета -->
-  <g transform="translate(512,500)">
-    <g transform="rotate(35)">
-      <rect x="-26" y="-300" width="52" height="430" rx="20" fill="url(#blade)"/>
-      <rect x="-70" y="120" width="140" height="40" rx="14" fill="#ffd24a"/>
-      <rect x="-22" y="150" width="44" height="120" rx="14" fill="#6a4a2a"/>
-    </g>
-    <g transform="rotate(-35)">
-      <rect x="-26" y="-300" width="52" height="430" rx="20" fill="url(#blade)"/>
-      <rect x="-70" y="120" width="140" height="40" rx="14" fill="#ffd24a"/>
-      <rect x="-22" y="150" width="44" height="120" rx="14" fill="#6a4a2a"/>
-    </g>
-  </g>
-  <text x="512" y="900" text-anchor="middle" font-family="system-ui,Arial" font-size="120"
-        font-weight="800" fill="#ffd24a">GODFIST</text>
+  <rect width="1024" height="1024" fill="url(#g)"/>
+  <rect width="1024" height="1024" fill="url(#hi)"/>
+  <rect x="404" y="366" width="212" height="176" rx="58" fill="#fff"/><rect x="428" y="330" width="160" height="72" rx="34" fill="#fff"/><rect x="596" y="404" width="72" height="112" rx="34" fill="#fff"/><g stroke="rgba(0,0,0,.34)" stroke-width="12"><line x1="452" y1="384" x2="452" y2="470"/><line x1="512" y1="384" x2="512" y2="470"/><line x1="572" y1="384" x2="572" y2="470"/></g>
+  <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

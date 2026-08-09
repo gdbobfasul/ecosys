@@ -12,6 +12,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
+# Подготви задължителните документи (генерирай + събери в public/privacy) — ЕДНО място (2/4/5/57).
+# Пътуват в архива, а 14-sync-source (root) ги слага в /var/www/html/privacy при overlay.
+[ -f deploy-scripts/prepare-legal-docs.sh ] && bash deploy-scripts/prepare-legal-docs.sh || true
+
 RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
 STAGING="/var/www/deploy"
 PROJECT_DIR="/var/www/kcy-ecosystem"
@@ -85,8 +89,24 @@ echo -e "  ${GREEN}✓ $(du -h "$TAR" | cut -f1)${NC}"
 echo -e "${YELLOW}[2/3] Качване...${NC}"
 $SSH "${USER}@${SERVER}" "mkdir -p ${STAGING}" || { echo -e "${RED}няма достъп до ${STAGING}${NC}"; rm -f "$TAR"; exit 1; }
 REMOTE_TAR="${STAGING}/$(basename "$TAR")"
+# Твърд таймаут на прехвърляне (портируемо за Git Bash — без `timeout` бинарника):
+# ако scp „увисне", убиваме го и минаваме на следващ опит вместо да виси до безкрай.
+run_with_timeout() {
+    local secs="$1"; shift
+    "$@" &
+    local cmd_pid=$!
+    ( sleep "$secs"; kill -TERM "$cmd_pid" 2>/dev/null; sleep 3; kill -KILL "$cmd_pid" 2>/dev/null ) &
+    local killer=$!
+    wait "$cmd_pid"; local rc=$?
+    kill -TERM "$killer" 2>/dev/null; wait "$killer" 2>/dev/null
+    return $rc
+}
+TAR_BYTES=$(wc -c < "$TAR" 2>/dev/null || echo 0)
+XFER_TIMEOUT="${KCY_SCP_TIMEOUT:-$(( TAR_BYTES/50000 + 120 ))}"
+[ "$XFER_TIMEOUT" -lt 240 ] && XFER_TIMEOUT=240
+[ "$XFER_TIMEOUT" -gt 1200 ] && XFER_TIMEOUT=1200
 OK=false
-for a in 1 2 3 4; do $SCP "$TAR" "${USER}@${SERVER}:${REMOTE_TAR}" && { OK=true; break; }; echo "  опит $a неуспешен, чакам 5с..."; sleep 5; done
+for a in 1 2 3 4; do run_with_timeout "$XFER_TIMEOUT" $SCP "$TAR" "${USER}@${SERVER}:${REMOTE_TAR}" && { OK=true; break; }; echo "  опит $a неуспешен (грешка/увисна над ${XFER_TIMEOUT}с), чакам 15с..."; sleep 15; done
 $OK || { echo -e "${RED}scp се провали${NC}"; rm -f "$TAR"; exit 1; }
 echo -e "  ${GREEN}✓ Качено${NC}"
 
@@ -112,6 +132,12 @@ rm -f "$TAR"
 echo ""
 if [ $RC -eq 0 ]; then
     echo -e "${GREEN}✓ ГОТОВО — сорсът и .env са прехвърлени, сървисите рестартирани.${NC}"
+    # Проверка НАКРАЯ: правните документи важат ли ОНЛАЙН (200 + на ТОВА приложение, не чужди)?
+    if [ -f deploy-scripts/check-legal-links.mjs ] && command -v node >/dev/null 2>&1; then
+        echo ""
+        echo -e "${CYAN}  ━━━ Правни документи (Privacy/Terms) — онлайн проверка ━━━${NC}"
+        node deploy-scripts/check-legal-links.mjs || echo -e "  ${RED}⚠ правни документи с проблем — виж горе (пусни точка 4/33 и провери пак)${NC}"
+    fi
     echo ""
     echo -e "${CYAN}  .env също се синхронизира с тази опция (върху живия, с бекъп на стария → .replaced-*).${NC}"
     echo -e "${CYAN}  Тоест промени в ключове/пароли/DB настройки влизат и оттук — не е нужна отделна опция 4.${NC}"

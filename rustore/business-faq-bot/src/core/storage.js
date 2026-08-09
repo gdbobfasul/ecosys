@@ -70,6 +70,12 @@ function defaultState() {
         password: '',
         token: '',
         pollSeconds: 20
+      },
+      // ОБЛАЧЕН ШЛЮЗ (private/faq-gateway) — реални отговори по WhatsApp/Messenger/Viber
+      // през официалните им БЕЗПЛАТНИ API-та. Приложението публикува базата натам.
+      gateway: {
+        baseUrl: '',
+        adminToken: ''
       }
     },
     // Проследяване на вече обработени входящи съобщения по канал (за да не дублираме).
@@ -100,7 +106,8 @@ function load() {
       channels: {
         ...base.channels,
         ...(parsed.channels || {}),
-        pupikes: { ...base.channels.pupikes, ...((parsed.channels || {}).pupikes || {}) }
+        pupikes: { ...base.channels.pupikes, ...((parsed.channels || {}).pupikes || {}) },
+        gateway: { ...base.channels.gateway, ...((parsed.channels || {}).gateway || {}) }
       },
       seen: { ...base.seen, ...(parsed.seen || {}) },
       stats: { ...base.stats, ...(parsed.stats || {}) }

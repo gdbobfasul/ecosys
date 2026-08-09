@@ -1,8 +1,15 @@
-Pupikes Toolkit QR — Gere e leia códigos QR.
+Pupikes Kit de QR — Crie, salve e leia QR — offline, no seu dispositivo.
 
-Ferramentas offline úteis — tudo roda no dispositivo.
+Ferramentas incluídas:
+• Código QR — Gere e leia códigos QR
+• Meus códigos QR — Códigos nomeados: pagamentos, Wi-Fi, contatos — salvos e organizados
+• QR em lote — Vários códigos de uma vez — um por linha, baixar individual ou todos
+• QR estilizado — Cor do código/fundo + logo central
+• QR Wi-Fi — Compartilhe Wi-Fi — escaneie e o telefone conecta sozinho
+• QR de contato — Cartão (vCard): nome, empresa, telefone, e-mail — escanear salva o contato
+• QR de evento — Evento (título, local, início/fim) — escanear adiciona ao calendário
+• QR de local — Coordenadas (geo:) ou link do mapa; “Minha localização” via GPS
 
-Código QR — Gere e leia códigos QR
+Sem anúncios pop-up nem rastreamento — seus dados ficam no seu dispositivo.
 
-Suporte: miroljubkalaydjiev177@gmail.com
 Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com

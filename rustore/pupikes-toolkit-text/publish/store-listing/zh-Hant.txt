@@ -1,8 +1,21 @@
-Pupikes Toolkit Text — 計數、格式化、Base64.
+Pupikes 文字工具箱 — 完整的文字工作台 — 離線、在裝置上。
 
-實用的離線工具 — 一切都在裝置上執行。
+包含的工具：
+• 文字工具 — 計數、格式化、Base64
+• 大小寫與行 — 大寫/小寫/標題、排序、去重、行號、slug
+• 編碼/解碼 — URL、HTML、ROT13、摩斯、二進位、十六進位
+• 產生器 — 密碼、UUID、Lorem ipsum、SHA 雜湊
+• 擷取 — 電子郵件、網址、數字、標籤、提及、IP
+• 差異 — 逐行比較兩段文字 — 新增/移除
+• Unicode 樣式 — 粗體、刪除線、底線、全形 — 用於社群
+• JSON / CSV — JSON 美化/壓縮/驗證與 JSON↔CSV
+• 字詞頻率 — 高頻字詞含長條＋總數/不重複/字元
+• 羅馬數字 — 數字 ↔ 羅馬 (1–3999)，自動辨識
+• 進位轉換 — 二/八/十/十六進位 (BigInt)
+• 換行與前綴 — 於 N 字換行、每行前綴（引用/註解）、取消換行
+• 顏色 — HEX ↔ RGB ↔ HSL 附色樣與選色器
+• 時間戳 — Unix ↔ 日期（當地/UTC/ISO），「現在」鈕
 
-文字工具 — 計數、格式化、Base64
+無彈出式廣告、無追蹤 — 您的資料留在裝置上。
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+如有問題或需要支援，請來信： miroljubkalaydjiev177@gmail.com

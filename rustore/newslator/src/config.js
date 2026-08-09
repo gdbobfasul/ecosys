@@ -7,5 +7,5 @@ export const STORE = {
   // Показва се само в „За приложението“ (диагностика), не е критично.
   label: 'RUStore',
   // Хостнатата политика за поверителност — вграден линк в „Относно“ (изискване 7.1 на AppGallery/магазините).
-  privacyUrl: 'https://selflearning.bot.nu/privacy/newslator/ru-privacy.html'
+  privacyUrl: 'https://pupikes.app/privacy/newslator/ru-privacy.html'
 };

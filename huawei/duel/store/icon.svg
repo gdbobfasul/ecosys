@@ -1,20 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!--pupikes-icon-->
   <defs>
-    <radialGradient id="bg" cx="50%" cy="40%" r="80%">
-      <stop offset="0%" stop-color="#0c1b3a"/>
-      <stop offset="100%" stop-color="#06060a"/>
-    </radialGradient>
-    <linearGradient id="blade" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#cfe2ff"/>
-      <stop offset="100%" stop-color="#1f6feb"/>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#94a3b8"/><stop offset="1" stop-color="#475569"/>
     </linearGradient>
-    <filter id="glow"><feGaussianBlur stdDeviation="9" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.20)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
   </defs>
-  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  <circle cx="120" cy="110" r="3" fill="#cfe2ff" opacity="0.7"/>
-  <circle cx="400" cy="150" r="2.5" fill="#4d9aff" opacity="0.7"/>
-  <circle cx="150" cy="400" r="2" fill="#cfe2ff" opacity="0.6"/>
-  <path d="M 126 386 L 386 126 L 405.5 145.5 L 145.5 405.5 Z M 386 386 L 126 126 L 106.5 145.5 L 366.5 405.5 Z" fill="url(#blade)" filter="url(#glow)"/>
-  <circle cx="256" cy="256" r="26" fill="#4d9aff" opacity="0.85"/>
+  <rect width="1024" height="1024" fill="url(#g)"/>
+  <rect width="1024" height="1024" fill="url(#hi)"/>
+  <g stroke="#fff" stroke-width="30" stroke-linecap="round"><line x1="360" y1="318" x2="644" y2="562"/><line x1="644" y1="318" x2="360" y2="562"/></g><g fill="#fff"><rect x="330" y="544" width="74" height="30" rx="8"/><rect x="620" y="544" width="74" height="30" rx="8"/></g>
+  <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

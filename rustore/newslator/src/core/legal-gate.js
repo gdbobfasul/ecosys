@@ -8,7 +8,7 @@
 // приемане, преди да пусне апа. Per-store: сочи hw-* или rustore-* документите (инжектира се).
 //
 // opts.finance:true → добавя ЗАДЪЛЖИТЕЛНИЯ финансов disclaimer (крипто/финанси апове).
-const BASE = 'https://selflearning.bot.nu/privacy';
+const BASE = 'https://pupikes.app/privacy';
 const PRIVACY_FILE = 'ru-privacy.html';   // заменя се по магазин при инжектиране
 const TERMS_FILE = 'rustore-terms.html';       // заменя се по магазин при инжектиране
 
@@ -75,6 +75,7 @@ export function mountLegalGate(appId, opts) {
     ov.innerHTML =
       '<div style="max-width:520px;width:100%;margin:0 auto;padding:22px 18px 26px;box-sizing:border-box">' +
         '<div style="text-align:center;font-weight:800;font-size:18px;background:linear-gradient(90deg,#4a9eff,#8bd450);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px">Pupikes</div>' +
+        '<div style="text-align:center;font-size:15px;font-weight:700;color:#cfe0ff;margin-bottom:2px">' + (document.title || '') + '</div>' +
         '<h2 style="text-align:center;margin:6px 0 12px;font-size:20px">' + tr('title') + '</h2>' +
         '<p style="font-size:14px;line-height:1.55;color:#c7d2de">' + tr('intro') + '</p>' +
         finBlock +

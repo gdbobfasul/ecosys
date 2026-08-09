@@ -27,6 +27,15 @@
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
   .card h3{margin:0;font-size:16px}
+  .card .hd{display:flex;align-items:center;gap:12px}
+  .card .ic{width:50px;height:50px;border-radius:13px;flex:0 0 auto;background:var(--line);object-fit:cover}
+  .card .legal{margin-top:8px;display:flex;gap:14px;flex-wrap:wrap}
+  .card .legal a{color:var(--dim);font-size:12px;text-decoration:underline}
+  .card .legal a.bad{color:#ff6b6b;font-weight:700}
+  .card .legal .warn{margin-left:3px;color:#ff3b30;font-weight:800;text-decoration:none}
+  .card .hd .stat{margin-left:6px;font-size:13px;opacity:.45;cursor:default}
+  .card .hd .stat.bad{opacity:1;color:#ff3b30}
+  .card .hd .stat.ok{opacity:.8;color:#59c26b}
   .price{font-weight:800;color:var(--acc);font-size:15px;margin:-2px 0 2px}
   .badges{display:flex;gap:6px;flex-wrap:wrap}
   .b{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
@@ -77,7 +86,20 @@
     stores:{bg:'в магазините',ru:'в магазинах',uk:'у магазинах',en:'in stores',de:'in Stores',fr:'en magasins',es:'en tiendas','es-MX':'en tiendas',it:'negli store',pt:'nas lojas',ar:'في المتاجر',hi:'स्टोर में',ja:'ストアに',ky:'дүкөндөрдө','zh-Hant':'在商店'},
     ftag:{bg:'верни приложения',ru:'верные приложения',uk:'вірні застосунки',en:'faithful apps',de:'treue Apps',fr:'applis fidèles',es:'apps fieles','es-MX':'apps fieles',it:'app fedeli',pt:'apps fiéis',ar:'تطبيقات مخلصة',hi:'वफ़ादार ऐप्स',ja:'忠実なアプリ',ky:'ишенимдүү колдонмолор','zh-Hant':'忠實的應用'},
     empty:{bg:'Още няма публикувани приложения тук.',ru:'Здесь пока нет опубликованных приложений.',en:'No published apps here yet.',uk:'Тут ще немає опублікованих застосунків.',de:'Noch keine veröffentlichten Apps.',fr:'Pas encore d’applis publiées ici.',es:'Aún no hay apps publicadas aquí.','es-MX':'Aún no hay apps publicadas aquí.',it:'Nessuna app pubblicata qui ancora.',pt:'Ainda sem apps publicadas aqui.',ar:'لا تطبيقات منشورة هنا بعد.',hi:'यहाँ अभी कोई प्रकाशित ऐप नहीं।',ja:'まだ公開アプリはありません。',ky:'Бул жерде азырынча жарыяланган колдонмо жок.','zh-Hant':'這裡尚無已發佈的應用。'},
-    preview_note:{bg:'👁 Режим за преглед — показани са ВСИЧКИ приложения (вкл. непубликуваните).',ru:'👁 Режим предпросмотра — показаны ВСЕ приложения.',en:'👁 Preview mode — ALL apps shown (incl. unpublished).'}
+    preview_note:{bg:'👁 Режим за преглед — показани са ВСИЧКИ приложения (вкл. непубликуваните).',ru:'👁 Режим предпросмотра — показаны ВСЕ приложения.',en:'👁 Preview mode — ALL apps shown (incl. unpublished).'},
+    priv:{bg:'Поверителност',ru:'Конфиденциальность',uk:'Конфіденційність',en:'Privacy',de:'Datenschutz',fr:'Confidentialité',es:'Privacidad','es-MX':'Privacidad',it:'Privacy',pt:'Privacidade',ar:'الخصوصية',hi:'गोपनीयता',ja:'プライバシー',ky:'Купуялык','zh-Hant':'隱私權'},
+    terms:{bg:'Условия',ru:'Условия',uk:'Умови',en:'Terms',de:'Nutzungsbedingungen',fr:'Conditions',es:'Términos','es-MX':'Términos',it:'Termini',pt:'Termos',ar:'الشروط',hi:'शर्तें',ja:'利用規約',ky:'Шарттар','zh-Hant':'使用條款'},
+    doc_missing:{bg:'Липсва документ — има проблем',ru:'Документ отсутствует — есть проблема',uk:'Документ відсутній — є проблема',en:'Document missing — there is a problem',de:'Dokument fehlt — es gibt ein Problem',fr:'Document manquant — il y a un problème',es:'Falta el documento — hay un problema','es-MX':'Falta el documento — hay un problema',it:'Documento mancante — c’è un problema',pt:'Documento em falta — há um problema',ar:'المستند مفقود — هناك مشكلة',hi:'दस्तावेज़ गायब — समस्या है',ja:'書類がありません — 問題があります',ky:'Документ жок — көйгөй бар','zh-Hant':'缺少文件 — 有問題'},
+    icon_missing:{bg:'Липсва иконата на приложението (на сървъра)',ru:'Отсутствует иконка приложения (на сервере)',uk:'Відсутня іконка застосунку (на сервері)',en:'App icon missing (on server)',de:'App-Icon fehlt (auf dem Server)',fr:'Icône de l’app manquante (sur le serveur)',es:'Falta el icono de la app (en el servidor)','es-MX':'Falta el icono de la app (en el servidor)',it:'Icona dell’app mancante (sul server)',pt:'Ícone do app em falta (no servidor)',ar:'أيقونة التطبيق مفقودة (على الخادم)',hi:'ऐप आइकन गायब (सर्वर पर)',ja:'アプリのアイコンがありません（サーバー）',ky:'Колдонмонун иконкасы жок (серверде)','zh-Hant':'缺少應用圖示（伺服器）'},
+    st_docs:{bg:'Документи и икона (сървър)',ru:'Документы и иконка (сервер)',uk:'Документи та іконка (сервер)',en:'Documents & icon (server)',de:'Dokumente & Icon (Server)',fr:'Documents et icône (serveur)',es:'Documentos e icono (servidor)','es-MX':'Documentos e icono (servidor)',it:'Documenti e icona (server)',pt:'Documentos e ícone (servidor)',ar:'المستندات والأيقونة (الخادم)',hi:'दस्तावेज़ और आइकन (सर्वर)',ja:'書類とアイコン（サーバー）',ky:'Документтер жана иконка (сервер)','zh-Hant':'文件與圖示（伺服器）'},
+    st_svc:{bg:'Сървиз на приложението',ru:'Сервис приложения',uk:'Сервіс застосунку',en:'App service',de:'App-Dienst',fr:'Service de l’app',es:'Servicio de la app','es-MX':'Servicio de la app',it:'Servizio dell’app',pt:'Serviço do app',ar:'خدمة التطبيق',hi:'ऐप सेवा',ja:'アプリのサービス',ky:'Колдонмонун сервиси','zh-Hant':'應用服務'},
+    svc_down:{bg:'Сървизът не отговаря / не е пуснат',ru:'Сервис не отвечает / не запущен',uk:'Сервіс не відповідає / не запущено',en:'Service not responding / not running',de:'Dienst antwortet nicht / läuft nicht',fr:'Service ne répond pas / non lancé',es:'El servicio no responde / no iniciado','es-MX':'El servicio no responde / no iniciado',it:'Servizio non risponde / non avviato',pt:'Serviço não responde / não iniciado',ar:'الخدمة لا تستجيب / غير مشغّلة',hi:'सेवा उत्तर नहीं दे रही / नहीं चल रही',ja:'サービスが応答しません／未起動',ky:'Сервис жооп бербейт / иштебей жатат','zh-Hant':'服務無回應／未執行'}
+  };
+  // Сървиси по приложение (health URL с CORS). Само апове с реален бекенд; останалите нямат сървиз.
+  var SVC = {
+    'baby-monitor':'https://selflearning.bot.nu/api/selflearning/health',
+    'camera-watch':'https://selflearning.bot.nu/api/selflearning/health',
+    'business-faq-bot':'https://selflearning.bot.nu/api/faq/health'
   };
   var lang = (function(){ try{ var s=localStorage.getItem('pupikes.catalog.lang'); if(s) return s; }catch(e){} var n=(navigator.language||'bg'); for(var i=0;i<LANGS.length;i++){ if(LANGS[i][0]===n) return n; } var two=n.slice(0,2); for(var j=0;j<LANGS.length;j++){ if(LANGS[j][0].slice(0,2)===two) return LANGS[j][0]; } return 'bg'; })();
   function t(k){ var o=T[k]||{}; return o[lang]||o[lang.split('-')[0]]||o.en||o.bg||k; }
@@ -114,14 +136,65 @@
         if(pub.huawei && a.storeUrl && a.storeUrl.huawei) acts+='<a class="btn store" href="'+a.storeUrl.huawei+'">AppGallery</a>';
         if(pub.rustore && a.storeUrl && a.storeUrl.rustore) acts+='<a class="btn store" href="'+a.storeUrl.rustore+'">RuStore</a>';
         if(!acts) acts='<span class="b soon">'+t('soon')+'</span>';
+        // Задължителни правни документи — конкретни за ТОВА приложение (папка = a.id).
+        // hw-* когато има Huawei издание, иначе rustore-*; сервира се от pupikes.app/privacy/.
+        var lid=a.id||''; var _hw=!!(a.apk&&a.apk.huawei);
+        var _pf=_hw?'hw-privacy.html':'rustore-privacy.html', _tf=_hw?'hw-terms.html':'rustore-terms.html';
+        var legal=lid?('<div class="legal">'+
+          '<a class="lg" data-lg href="/privacy/'+lid+'/'+_pf+'">'+t('priv')+'</a>'+
+          '<a class="lg" data-lg href="/privacy/'+lid+'/'+_tf+'">'+t('terms')+'</a></div>'):'';
+        var icon=lid?'<img class="ic" src="/icons/'+lid+'.png" alt="" loading="lazy" onerror="this.style.display=\'none\';var c=this.closest(\'.card\');if(window.markStat)window.markStat(c,\'.sdoc\',\'icon\');">':'';
+        // Две ❗-полета: 📄 = документи/икона на сървъра; ⚙ = сървизът на приложението.
+        // Няма ❗ = наред. Сървиз показваме само за апове с реален бекенд (SVC).
+        var svcUrl=SVC[lid]||'';
+        var stat='<span class="stat sdoc" title="'+t('st_docs')+'">📄</span>'+(svcUrl?'<span class="stat ssvc" data-svc="'+svcUrl+'" title="'+t('st_svc')+'">⚙</span>':'');
         var card=document.createElement('div'); card.className='card';
-        card.innerHTML='<h3>'+a.name+'</h3>'+(a.price?'<div class="price">'+a.price+'</div>':'')+'<div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>';
+        card.innerHTML='<div class="hd">'+icon+'<h3>'+a.name+'</h3>'+stat+'</div>'+(a.price?'<div class="price">'+a.price+'</div>':'')+'<div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>'+legal;
         grid.appendChild(card);
       });
       sec.appendChild(grid); host.appendChild(sec);
     });
     if(!shownTotal) host.innerHTML='<div class="empty">'+t('empty')+' 🐾</div>';
     document.getElementById('counts').textContent = shownTotal+' '+t('apps')+' · '+pubTotal+' '+t('stores')+(preview?' ('+t('soon_w')+')':'');
+    verifyLegal(); verifyServices();
+  }
+
+  // Card-level статус: слага ❗ на 📄 (документи/икона) или ⚙ (сървиз) при проблем.
+  function markStat(card, sel, reason){
+    var el = card && card.querySelector(sel);
+    if(!el || el.getAttribute('data-checked')==='bad') return;
+    el.setAttribute('data-checked','bad'); el.classList.add('bad');
+    el.title = (sel.indexOf('svc')>=0 ? t('svc_down') : (reason==='icon' ? t('icon_missing') : t('doc_missing')));
+    if(el.textContent.indexOf('❗')<0) el.textContent = el.textContent + '❗';
+  }
+  window.markStat = markStat; // за inline onerror на иконата
+
+  // Жива проверка: всеки правен документ (под-линк) трябва да връща 200; иначе ❗ (линк + 📄).
+  function markBad(el){
+    if(el.getAttribute('data-checked')==='bad') return;
+    el.setAttribute('data-checked','bad'); el.classList.add('bad');
+    if(!el.querySelector('.warn')){ var w=document.createElement('span'); w.className='warn'; w.textContent='❗'; w.title=t('doc_missing'); el.appendChild(w); }
+    var c=el.closest('.card'); if(c) markStat(c,'.sdoc');
+  }
+  function verifyLegal(){
+    var links=document.querySelectorAll('#catalog a[data-lg]');
+    Array.prototype.forEach.call(links,function(el){
+      var url=el.getAttribute('href');
+      fetch(url,{method:'HEAD',cache:'no-store'}).then(function(r){
+        if(r.ok){ el.setAttribute('data-checked','ok'); } else { markBad(el); }
+      }).catch(function(){ markBad(el); });
+    });
+  }
+  // Сървиз на приложението: health URL връща 200 → ⚙ зелено; иначе ❗ на ⚙.
+  function verifyServices(){
+    var svc=document.querySelectorAll('#catalog .ssvc[data-svc]');
+    Array.prototype.forEach.call(svc,function(el){
+      var url=el.getAttribute('data-svc'); var c=el.closest('.card');
+      // Жив сървис = истински JSON ({…}); HTML (SPA fallback) или блокиран → ❗ (не е пуснат).
+      fetch(url,{method:'GET',cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.text(); }).then(function(b){
+        if(/^\s*\{/.test(b)){ el.classList.add('ok'); el.setAttribute('data-checked','ok'); } else { markStat(c,'.ssvc'); }
+      }).catch(function(){ markStat(c,'.ssvc'); });
+    });
   }
 
   render(); // първоначален изглед (loading)

@@ -189,7 +189,7 @@ show_menu() {
 
     item " 3" "SSH връзка към сървър (директно)" \
         "Отваря интерактивна SSH сесия в терминала. След избор питам коя машина:" \
-        "1) прод — root@take.offbitch.com:2222   2) VM — deploy@192.168.0.108:2222 (ключ id_ed25519)."
+        "1) прод — root@take.offbitch.com:2222   2) VM — deploy@192.168.0.108:22 (ключ id_ed25519)."
 
     # (Новите приложения House-Look-Book / WhereNoBiz са на 41–44 по-долу.)
 
@@ -512,12 +512,12 @@ run_choice() {
             echo -e "${BOLD}${CYAN}  SSH връзка — към коя машина?${NC}"
             echo ""
             echo -e "    1) ${GREEN}прод${NC} — root@take.offbitch.com:2222"
-            echo -e "    2) ${GREEN}VM${NC}   — deploy@192.168.0.108:2222  (ключ id_ed25519)"
+            echo -e "    2) ${GREEN}VM${NC}   — deploy@192.168.0.108:22  (ключ id_ed25519)"
             echo ""
             read -p "  Избери [1-2]: " SSHPICK
             case "$SSHPICK" in
                 1) PICK_SRV="take.offbitch.com"; PICK_USER="root"; PICK_PORT="2222"; run_cmd ssh -v -p 2222 root@take.offbitch.com ;;
-                2) PICK_SRV="192.168.0.108"; PICK_USER="deploy"; PICK_PORT="2222"; run_cmd ssh -i ~/.ssh/id_ed25519 -p 2222 deploy@192.168.0.108 ;;
+                2) PICK_SRV="192.168.0.108"; PICK_USER="deploy"; PICK_PORT="22"; run_cmd ssh -i ~/.ssh/id_ed25519 -p 22 deploy@192.168.0.108 ;;
                 *) echo "  Отказано"; press_enter ;;
             esac
             ;;
@@ -974,6 +974,12 @@ run_choice() {
             BAPP="${BAPPS[$BPICK]}"; [ -z "$BAPP" ] && BAPP="$BPICK"
             if [ -z "$BAPP" ] || [ ! -d "$SCRIPT_DIR/../huawei/$BAPP" ]; then echo "  Няма такова приложение."; press_enter; continue; fi
             # 3) Попълва в режим ENTER (видимо, без натискане на бутони)
+            # Последна врата преди магазина: правните документи на ТОВА приложение
+            # живи ли са (200, не 404) и конкретни за него (не чуждо съдържание)?
+            echo ""
+            echo -e "  ${BOLD}${CYAN}━━━ Проверка на правните документи (Huawei): ${BAPP} ━━━${NC}"
+            ( cd "$SCRIPT_DIR/.." && node deploy-scripts/check-legal-links.mjs --store huawei "$BAPP" ) || \
+                echo -e "  ${RED}${BOLD}⚠ Документите на ${BAPP} имат проблем — НЕ подавай в магазина, докато не станат зелени!${NC}"
             echo ""
             echo -e "  ${YELLOW}► HuaweiReleaseBot: ${BAPP} (режим ENTER — попълва ВИДИМО, не натиска бутони)${NC}"
             echo ""
@@ -1035,6 +1041,12 @@ run_choice() {
             RAPP="${RAPPS[$RPICK]}"; [ -z "$RAPP" ] && RAPP="$RPICK"
             if [ -z "$RAPP" ] || [ ! -d "$SCRIPT_DIR/../huawei/$RAPP" ]; then echo "  Няма такова приложение."; press_enter; continue; fi
             # 3) Попълва в режим ENTER (видимо, без натискане на бутони)
+            # Последна врата преди магазина: правните документи на ТОВА приложение
+            # живи ли са (200, не 404) и конкретни за него (не чуждо съдържание)?
+            echo ""
+            echo -e "  ${BOLD}${CYAN}━━━ Проверка на правните документи (RuStore): ${RAPP} ━━━${NC}"
+            ( cd "$SCRIPT_DIR/.." && node deploy-scripts/check-legal-links.mjs --store rustore "$RAPP" ) || \
+                echo -e "  ${RED}${BOLD}⚠ Документите на ${RAPP} имат проблем — НЕ подавай в магазина, докато не станат зелени!${NC}"
             echo ""
             echo -e "  ${YELLOW}► RuStoreReleaseBot: ${RAPP} (режим ENTER — попълва ВИДИМО, не натиска бутони)${NC}"
             echo ""

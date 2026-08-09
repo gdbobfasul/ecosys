@@ -1,8 +1,21 @@
-Pupikes Toolkit Text — Compteur, mise en forme, Base64.
+Pupikes Boîte à outils texte — Un atelier de texte complet — hors ligne, sur l’appareil.
 
-Outils hors-ligne pratiques — tout fonctionne sur l’appareil.
+Outils inclus :
+• Outils de texte — Compteur, mise en forme, Base64
+• Casse et lignes — MAJ/min/Titre, tri, doublons, numérotation, slug
+• Encoder/Décoder — URL, HTML, ROT13, Morse, binaire, hex
+• Générateurs — Mot de passe, UUID, Lorem ipsum, hachages SHA
+• Extraction — E-mails, URL, nombres, hashtags, mentions, IP
+• Diff — Compare deux textes ligne par ligne — ajouté/supprimé
+• Style Unicode — 𝐆𝐫𝐚𝐬, barré, souligné, large — pour réseaux sociaux
+• JSON / CSV — Formater/minifier/valider JSON et JSON↔CSV
+• Fréquence des mots — Mots fréquents avec barres + total/uniques/caractères
+• Chiffres romains — Nombre ↔ romain (1–3999), détection auto
+• Bases numériques — Binaire / octal / décimal / hex (BigInt)
+• Retour à la ligne et préfixe — Retour à N car., préfixe par ligne (citation/commentaire), déplier
+• Couleurs — HEX ↔ RGB ↔ HSL avec échantillon et sélecteur
+• Horodatage — Unix ↔ date (locale/UTC/ISO), bouton « Maintenant »
 
-Outils de texte — Compteur, mise en forme, Base64
+Pas de pubs pop-up, pas de suivi — vos données restent sur votre appareil.
 
-Assistance: miroljubkalaydjiev177@gmail.com
 Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com

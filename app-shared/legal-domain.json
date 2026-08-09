@@ -2,6 +2,6 @@
   "_comment": "ЕДИНСТВЕН ИЗТОЧНИК НА ИСТИНА за домейна на правните документи (privacy/terms). Смени тук и пусни: node deploy-scripts/set-legal-domain.mjs — разнася го във всички src/core/legal.js (двете дървета) + ботовете. НЕ пипай API за обратна връзка (ENDPOINT/PORT_ENDPOINT) — това е друг сървър.",
   "domain": "https://pupikes.app/privacy",
   "oldDomain": "https://selflearning.bot.nu/privacy",
-  "keepOldForRustore": ["newslator", "monitor-bot", "pupikes-toolkit-pdf", "pupikes-toolkit-qr"],
-  "_keepReason": "Тези 4 са ВЕЧЕ подадени в RuStore със стария домейн — остават selflearning.bot.nu, за да съвпадат с това, което е в модерация. Всички останали (и всичко за Huawei) → pupikes.app."
+  "keepOldForRustore": [],
+  "_keepReason": "МИГРИРАНО 09.08: и 4-те (newslator, monitor-bot, pupikes-toolkit-pdf, pupikes-toolkit-qr) вече сочат pupikes.app — блокерът падна (pupikes.app/privacy заработи; всичките им файлове връщат 200). Старите selflearning страници остават живи, вече подадените APK-та не се пипат; новият линк влиза при следващ билд. Ако някой ап е в АКТИВНА RuStore модерация — изчакай нейния изход преди ребилд."
 }

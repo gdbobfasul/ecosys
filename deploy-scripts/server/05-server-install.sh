@@ -631,7 +631,11 @@ EXCL_ASSETS="--exclude=assets/"
 # ВАЖНО: --exclude='apk/' — папката apk (коренът на pupikes.app: каталог + инсталационни
 # файлове) НЕ е част от public/, а живее в WEB_ROOT. Без това изключване `--delete` я ТРИЕ
 # при всеки деплой (точка 4 → pupikes.app 404). Аповете се качват отделно (точка 2/57 → 17-sync-apps).
-if ! rsync -av --delete --exclude='last-errors/' --exclude='apk/' $EXCL_ASSETS "$STAGING/public/" "$WEB_ROOT/" 2>&1 | tail -5; then
+# СЪЩО --exclude='privacy/' — правните документи (Privacy/Terms) живеят в WEB_ROOT/privacy,
+# качват се ОТДЕЛНО (sync-legal-pages.sh), НЕ са в public/. Без този exclude `--delete` ги
+# ТРИЕ при всеки пълен деплой → всички правни линкове стават 404. Това беше причината за
+# повтарящите се 404 след точка 2/4.
+if ! rsync -av --delete --exclude='last-errors/' --exclude='apk/' --exclude='privacy/' $EXCL_ASSETS "$STAGING/public/" "$WEB_ROOT/" 2>&1 | tail -5; then
     echo -e "  ${RED}✗ FATAL: rsync public/ се провали${NC}"
     diag_log services-errors.log "install: rsync public FAILED"
     safe_exit 1
@@ -639,6 +643,20 @@ fi
 PUB_COUNT=$(find "$WEB_ROOT" -type f 2>/dev/null | wc -l)
 echo -e "  ${GREEN}✓ public/: ${PUB_COUNT} файла в ${WEB_ROOT}${NC}"
 diag_log services-errors.log "install: rsync public — staging=${STAGING_PUB_COUNT} → web_root=${PUB_COUNT}"
+
+# ── ЗАДЪЛЖИТЕЛНИ ДОКУМЕНТИ (privacy/terms) — слагаме ги ИЗРИЧНО (root) ──
+# rsync-ът горе ИЗКЛЮЧВА privacy/ (за да НЕ ги трие). Документите пътуват в public/privacy
+# (collect-legal-to-public.mjs при деплоя). Тук ги копираме в WEB_ROOT/privacy → всеки деплой
+# ги (пре)populate-ва БЕЗ нужда от root SSH от локалната машина (това чупеше и връщаше 404-ките).
+if [ -d "$STAGING/public/privacy" ]; then
+    mkdir -p "$WEB_ROOT/privacy"
+    if cp -rf "$STAGING/public/privacy/." "$WEB_ROOT/privacy/" 2>/dev/null; then
+        chmod -R 755 "$WEB_ROOT/privacy" 2>/dev/null
+        echo -e "  ${GREEN}✓ правни документи → ${WEB_ROOT}/privacy ($(find "$WEB_ROOT/privacy" -type f 2>/dev/null | wc -l) файла)${NC}"
+    else
+        echo -e "  ${YELLOW}! не успях да копирам правните документи в ${WEB_ROOT}/privacy${NC}"
+    fi
+fi
 
 # private/ → project/private/
 # --delete с excludes за runtime data (node_modules, databases, uploads, logs, .env)

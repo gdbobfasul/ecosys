@@ -1,30 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!--pupikes-icon-->
   <defs>
-    <radialGradient id="bg" cx="50%" cy="40%" r="75%">
-      <stop offset="0%" stop-color="#2a1a10"/>
-      <stop offset="100%" stop-color="#06060a"/>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#94a3b8"/><stop offset="1" stop-color="#475569"/>
+    </linearGradient>
+    <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="rgba(255,255,255,0.20)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
     </radialGradient>
-    <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#f0d896"/>
-      <stop offset="100%" stop-color="#9a8862"/>
-    </linearGradient>
-    <linearGradient id="shield" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#caa45a"/>
-      <stop offset="100%" stop-color="#5a3a1e"/>
-    </linearGradient>
-    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>
-  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  <path d="M 256 96 L 392 150 L 392 300 Q 392 400 256 432 Q 120 400 120 300 L 120 150 Z"
-        fill="url(#shield)" stroke="#f8c450" stroke-width="6" opacity="0.92"/>
-  <g filter="url(#glow)"><g transform="rotate(45 256 256)">
-      <rect x="248.5" y="106" width="15" height="225" rx="4.5" fill="url(#steel)"/>
-      <rect x="229" y="308.5" width="54" height="12" rx="3" fill="#caa45a"/>
-      <rect x="250" y="316" width="12" height="45" fill="#caa45a"/>
-    </g><g transform="rotate(-45 256 256)">
-      <rect x="248.5" y="106" width="15" height="225" rx="4.5" fill="url(#steel)"/>
-      <rect x="229" y="308.5" width="54" height="12" rx="3" fill="#caa45a"/>
-      <rect x="250" y="316" width="12" height="45" fill="#caa45a"/>
-    </g></g>
+  <rect width="1024" height="1024" fill="url(#g)"/>
+  <rect width="1024" height="1024" fill="url(#hi)"/>
+  <rect x="382" y="288" width="28" height="326" rx="10" fill="#fff"/><path d="M410 300 h196 l-44 58 l44 58 h-196 z" fill="#fff"/>
+  <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

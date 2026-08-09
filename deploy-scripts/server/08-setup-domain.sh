@@ -29,16 +29,19 @@ PROJECT_DIR="/var/www/kcy-ecosystem"
 DOMAINS_CONF="$PROJECT_DIR/private/configs/domains.conf"
 [ -f "$DOMAINS_CONF" ] || { echo -e "${RED}Липсва $DOMAINS_CONF — пусни деплой (опция 4) първо.${NC}"; exit 1; }
 . "$DOMAINS_CONF"
-EMAIL="${SSL_EMAIL:-admin@${MAIN_DOMAIN:-localhost}}"
+EMAIL="${SSL_EMAIL:-ltd.dai.grup@gmail.com}"
 
 if [ -z "${APP_DOMAIN_MAP:-}" ]; then
     echo -e "${YELLOW}Няма APP_DOMAIN_MAP в конфига — нищо за правене.${NC}"; exit 0
 fi
 
 echo -e "  Главен домейн (от 05): ${GREEN}${MAIN_DOMAIN}${NC}"
-echo -e "  Имейл за Let's Encrypt: ${GREEN}${EMAIL}${NC}"
-read -p "  Enter за този имейл, или нов: " NE
-[ -n "$NE" ] && EMAIL="$NE"
+echo -e "  Имейл за Let's Encrypt: ${GREEN}${EMAIL}${NC}  ${GRAY}(авто; смяна: SSL_EMAIL=… или SSL_EMAIL_ASK=1)${NC}"
+# По подразбиране НЕ пита (за да не губиш време). За ръчна смяна: SSL_EMAIL_ASK=1
+if [ "${SSL_EMAIL_ASK:-0}" = "1" ]; then
+    read -p "  Enter за този имейл, или нов: " NE
+    [ -n "$NE" ] && EMAIL="$NE"
+fi
 
 # ── IPv4 предпочитание за certbot ──
 # Машина с IPv6 адрес, но БЕЗ IPv6 маршрут (какъвто е VPS-ът) кара python/certbot
@@ -90,6 +93,11 @@ apk_gate_locations() {
 # (публичните свободно, скритите зад парола). БЕЗ портали/чат/нищо друго.
 catalog_locations() {
     apk_gate_locations
+    # ПРАВНИ ДОКУМЕНТИ (Privacy/Terms) — ПУБЛИЧНИ, изисквани от RuStore/Huawei. Аповете ги
+    # отварят от <pupikes.app>/privacy/<ап>/... (виж app-shared/legal-domain.json). root тук е
+    # /var/www/html/apk (каталогът), затова изрично сервираме /privacy/ от /var/www/html/privacy.
+    # БЕЗ парола — модераторите трябва да ги четат. `^~` бие каталожния `location /`.
+    printf '    location ^~ /privacy/ { root /var/www/html; }\n'
     # Каталог (НЕ SPA): голият домейн → index.html (през `index`); липсващ път → 404.
     # НЕ ползваме /index.html като try_files fallback — при липсващ index.html това прави
     # вътрешен редирект-цикъл → nginx връща 500. С =404 такъв цикъл е невъзможен.
@@ -130,6 +138,8 @@ hub_locations() {
     printf '    location ^~ /shared/       { root /var/www/html; }\n'
     printf '    location ^~ /translations/ { root /var/www/html; }\n'
     printf '    location ^~ /assets/       { root /var/www/html; }\n'
+    # Правни документи (Privacy/Terms) — ПУБЛИЧНИ; сервират се директно (не редирект).
+    printf '    location ^~ /privacy/      { root /var/www/html; }\n'
     # ВСИЧКО ДРУГО (голият домейн + всеки неразрешен път) → pupikes.app (пази пътя)
     printf '    location / { return 301 %s$request_uri; }\n' "$HUB_REDIRECT_ELSE"
 }

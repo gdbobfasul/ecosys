@@ -33,6 +33,13 @@ export function renderWatcher(root, { navigate } = {}) {
 
   startWatching({
     onStatus: (s) => {
+      // Пулс от монитора → „✓ Свързан — мониторът е онлайн" (доказва двойката).
+      if (s && s.connected) {
+        statusEl.className = 'pill on';
+        statusEl.textContent = '✓ ' + t('w_monitor_online');
+        if (lastEl.textContent === t('w_no_events')) lastEl.textContent = t('w_monitor_online');
+        return;
+      }
       statusEl.className = 'pill ' + (s.ok ? 'on' : 'off');
       statusEl.textContent = s.ok ? t('w_listening') : (t('pair_none') + (s.reason ? ' (' + s.reason + ')' : ''));
     },
