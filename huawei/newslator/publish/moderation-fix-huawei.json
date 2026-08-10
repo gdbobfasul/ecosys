@@ -1,0 +1,9 @@
+{
+  "_note": "Кои СЕКЦИИ да препубликува ботът в --fix режим (по анализа на модерацията). APK се качва ВИНАГИ. Секция извън списъка → ботът НЕ я пипа (спестено време). Секции: description | content | countries | price | appinfo.",
+  "sections": ["description"],
+  "contentRating": "",
+  "reasons": [
+    "7.1 — Privacy policy URL връщаше 404 → ПОПРАВЕНО сървърно (сега HTTP 200 с реален privacy текст). Няма конзолна секция за смяна.",
+    "4.1 — 'Only simple content' → обогатено Full introduction (всичките 15 езика) с пълен списък функции. Секция: description."
+  ]
+}

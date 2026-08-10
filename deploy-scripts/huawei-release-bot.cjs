@@ -22,6 +22,28 @@ const pub = path.resolve('huawei', app, 'publish');
 if (!fs.existsSync(pub)) { console.log('Няма publish папка за ' + app); process.exit(1); }
 // РЕЖИМ ЦЕНА: `node ... <app> price` → ботът сам отива на екрана „App price", попълва цената и НАТИСКА Save.
 const PRICE_MODE = (process.argv[3] || '') === 'price' || process.argv.includes('--price');
+// РЕЖИМ „ОБНОВИ СЛЕД МОДЕРАЦИЯ": `node ... <app> --fix` → качва НОВОТО APK + описания + „For reviewer" бележка;
+// ПРОПУСКА рейтинг и цена (вече зададени, не са причина за отхвърляне) → без излишно губене на време.
+// ВАЖНО: APK-то ВИНАГИ се прекачва (след поправка на грешки апът почти винаги е променен).
+const FIX_MODE = process.argv.includes('--fix');
+// ── ДЕКЛАРАТИВНО: кои СЕКЦИИ да препубликува ботът в --fix режим (заради модерацията) ──
+// publish/moderation-fix-huawei.json: { "sections":["description"|"content"|"countries"|"price"|"appinfo"],
+//   "contentRating":"15+"|"" }. APK се качва ВИНАГИ. Секция извън списъка → НЕ се пипа (спестено време).
+let FIX_SECTIONS = [], FIX_RATING = '';
+try {
+  const _fx = JSON.parse(fs.readFileSync(path.join(pub, 'moderation-fix-huawei.json'), 'utf8'));
+  FIX_SECTIONS = (_fx.sections || []).map((s) => String(s).toLowerCase());
+  FIX_RATING = _fx.contentRating || '';
+} catch (_) {}
+// Извън FIX режим → прави всичко; в FIX режим → само изброените секции.
+const fixWants = (sec) => !FIX_MODE || FIX_SECTIONS.includes(String(sec).toLowerCase());
+// Бележка за модератора (полето „For reviewer") — какво е направено по всяка забележка. От publish/reviewer-note-huawei.md.
+let REVIEWER_NOTE = '';
+try {
+  const _rn = fs.readFileSync(path.join(pub, 'reviewer-note-huawei.md'), 'utf8');
+  const _m = _rn.match(/##\s*For reviewer[^\n]*\n([\s\S]+?)(?:\n#|$)/i);
+  REVIEWER_NOTE = (_m ? _m[1] : '').replace(/[`>#*]/g, '').replace(/\s+/g, ' ').trim().slice(0, 500);
+} catch (_) {}
 
 // ── данни за приложението (от publish/, единствен източник) ──
 function readJson(f) { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch (_) { return {}; } }
@@ -431,6 +453,42 @@ function spawnBrowser() {
     return await findBest();
   }
 
+  // АВТО-НАВИГАЦИЯ до ЦЕЛЕВИЯ ап (по пакет appId): #/myApp → таб Android → ред с пакета → Edit.
+  // Така ботът НЕ зависи от това какво е случайно отворено (иначе пълни ГРЕШЕН ап — виж гарда по-долу).
+  async function navigateToApp() {
+    if (!appId) return false;
+    const p = getHuaweiPage(); if (!p) return false;
+    let onApp = false;
+    try { const cur = await findBest(); onApp = new RegExp(appId.replace(/\./g, '\\.'), 'i').test(cur.text || ''); } catch (_) {}
+    if (onApp) { log('вече съм на верния ап (' + appId + ')'); }
+    else {
+      log('навигирам до ' + app + ' (' + appId + ')…');
+      await p.goto(APP_LIST_URL, { waitUntil: 'load' }).catch(() => {});
+      await sleep(2600);
+      await p.evaluate(() => { const el = [...document.querySelectorAll('.el-tabs__item')].find((e) => /^\s*Android\s*$/.test((e.innerText || '').trim())); if (el) el.click(); }).catch(() => {});
+      await sleep(2600);
+      const ok = await p.evaluate((pkg) => {
+        const r = [...document.querySelectorAll('tr, .el-table__row')].find((x) => (x.innerText || '').includes(pkg));
+        if (!r) return false;
+        const e = [...r.querySelectorAll('a, button, span')].find((x) => /^\s*Edit\s*$/.test(x.innerText || ''));
+        if (!e) return false; e.scrollIntoView({ block: 'center' }); e.click(); return true;
+      }, appId).catch(() => false);
+      if (!ok) { log('↷ не намерих реда на ' + appId + ' в списъка (таб Android) — отвори апа ръчно.'); return false; }
+      for (let k = 0; k < 15 && !/#\/myApp\/\d+\//.test(p.url() || ''); k++) await sleep(600);
+      await sleep(2500);
+    }
+    // Ако ще пипаме описания → отвори „App information" (там са Brief/Full/New features + Manage languages).
+    // ВАЖНО: Vue-router не навигира от a.click() → сменяме window.location.href (като версията).
+    if (fixWants('description') || fixWants('appinfo')) {
+      let aiHref = '';
+      for (const f of p.frames()) { aiHref = await f.evaluate(() => { const a = [...document.querySelectorAll('a')].find((a) => { const s = a.querySelector('.item-text'); return s && /^App information$/i.test((s.textContent || '').trim()); }); return a ? (a.getAttribute('href') || a.href) : ''; }).catch(() => ''); if (aiHref) break; }
+      if (aiHref) { await p.evaluate((h) => { window.location.href = h; }, aiHref).catch(() => {}); await sleep(4200); log('→ отворих „App information" (route ' + aiHref.replace(/^.*#/, '#') + ') за описанията.'); }
+      else { await clickLeftMenu('App information').catch(() => {}); await sleep(3000); log('→ „App information" (клик — href не намерих).'); }
+    }
+    log('✓ отворих ' + app + ' в конзолата (' + appId + ').');
+    return true;
+  }
+
   // Избери el-radio по текст на опцията, близо до етикета на секцията.
   async function pickRadio(frame, near, option) {
     try {
@@ -721,7 +779,7 @@ function spawnBrowser() {
    // АВТОНОМНО: попълва екрана → сам натиска основния бутон → минава на следващия. Спира при засядане
    // (същият екран 3 пъти) или на последната стъпка (Submit = човешко решение, не се натиска тук).
    let _lastSig = '', _stall = 0, _appInfoDone = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0, _finalDone = false, _modalSeen = {};
-   for (let _step = 0; _step < 40; _step++) {
+   for (let _step = 0; _step < 120; _step++) {   // 120 (не 40): попълването на 15 езика в App info иска много стъпки
     let autoNext = true;
     let { frame, text, score } = await navToForm();
     if (!frame) { console.log('✗ Няма отворена страница на Huawei.'); return; }
@@ -864,6 +922,18 @@ function spawnBrowser() {
     //    веднага след създаване). Навигираме сами през ЛЯВОТО меню: първо „App information", а щом то е
     //    попълнено — „Draft" (версията: държави, APK, плащане, поверителност…). onForm = вече сме на форма.
     const insideApp = /#\/myApp\/[^/]+\/[^/]+/.test(url);
+    // ── ГАРД СРЕЩУ ГРЕШЕН АП: ботът пълни ОТВОРЕНИЯ ап. Ако страницата показва ДРУГ пакет (≠ appId) и
+    //    целевият appId НЕ е на нея → СПИРАМ, за да не замърся чужд ап с данните на този. ──
+    if (insideApp && appId) {
+      const _pt = text || '';
+      const _others = (_pt.match(/com\.pupikes\.[a-z0-9]+\.hw/ig) || []).map((s) => s.toLowerCase()).filter((p) => p !== appId.toLowerCase());
+      const _hasTarget = new RegExp(appId.replace(/\./g, '\\.'), 'i').test(_pt);
+      if (_others.length && !_hasTarget) {
+        console.log('\n🛑 ГРЕШЕН АП! Отворената страница е на „' + _others[0] + '", а целта е „' + appId + '" (' + app + ').');
+        console.log('   СПИРАМ — да не замърся чужд ап. Отвори ' + app + ' в конзолата (или ме остави да навигирам) и пусни пак.\n');
+        break;
+      }
+    }
     const onForm = on('Brief introduction') || on('Compatible devices') || isVersionPage || (on('New app') && on('Package type'));
     if (insideApp && !onForm) {
       const target = _appInfoDone ? 'Draft' : 'App information';
@@ -985,9 +1055,10 @@ function spawnBrowser() {
       await sleep(4000);
       // ── Попълни ТЕКУЩИЯ език (English UK по подразбиране) веднага ──
       await fillNear(frame, 'App name', enName);
-      { const en = desc.en || {}; if (en.brief) await fillNear(frame, 'Brief introduction', en.brief); if (en.full) await fillNear(frame, 'Full introduction', en.full, 'textarea'); if (en.nf) await fillNear(frame, 'New features', en.nf, 'textarea'); }
+      if (fixWants('description')) { const en = desc.en || {}; if (en.brief) await fillNear(frame, 'Brief introduction', en.brief); if (en.full) await fillNear(frame, 'Full introduction', en.full, 'textarea'); if (en.nf) await fillNear(frame, 'New features', en.nf, 'textarea'); }
+      else log('↷ FIX режим: „description" не е в секциите — не пипам описанията');
       // ── Manage languages: добави езиците (ИДЕМПОТЕНТНО), после ботът натиска OK и попълва описанията им ──
-      if (hwLabels.length) {
+      if (hwLabels.length && fixWants('description')) {
         // Опитай да отвориш „Manage languages" до 3 пъти (понякога от 1 клик не се отваря / е зает).
         let dlg = frame.locator('.el-dialog:visible').filter({ hasText: 'Manage languages' }).first();
         for (let attempt = 0; attempt < 3 && !(await dlg.count().catch(() => 0)); attempt++) {
@@ -1049,6 +1120,11 @@ function spawnBrowser() {
       //    бутон „Fill out questionnaire" → въпроси (Yes/No двойки) → Verify → Submit. За newslator/инструменти
       //    всичко е „No"; ИГРИ (насилие) → категории в „yes" (content-ratings.json)! ──
       console.log('Екран: Content rating (възрастов въпросник)');
+      if (FIX_MODE && !fixWants('content')) {
+        // FIX режим + „content" НЕ е сред секциите за корекция → не пипай рейтинга, само затвори диалога.
+        await frame.evaluate(() => { [...document.querySelectorAll('.el-dialog, .el-drawer')].filter((x) => x.offsetParent !== null).forEach((d) => { const x = d.querySelector('.el-dialog__headerbtn, .el-drawer__close-btn'); if (x) x.click(); }); }).catch(() => {});
+        await sleep(700); log('↷ FIX режим: „content" не е в секциите — пропускам рейтинга (спестявам време)'); _ratingDone = true; autoNext = false; continue;
+      }
       // Ако рейтингът ВЕЧЕ е финализиран — само затвори остатъчния диалог (да не зациклим на „Fill out").
       if (_ratingDone) {
         await frame.evaluate(() => { [...document.querySelectorAll('.el-dialog, .el-drawer')].filter((x) => x.offsetParent !== null).forEach((d) => { const x = d.querySelector('.el-dialog__headerbtn, .el-drawer__close-btn'); if (x) x.click(); else { const c = [...d.querySelectorAll('button')].find((b) => /^(Cancel|Close)$/i.test((b.innerText || '').trim())); if (c) c.click(); } }); }).catch(() => {});
@@ -1175,6 +1251,8 @@ function spawnBrowser() {
     } else if (on('Country/Region for release') || on('Payment information') || on('Privacy tags') || on('For reviewer')) {
       // ── ЕКРАНИ 17–23: Version — Draft (настройки за релийз) ──
       console.log('Екран: Version — Draft (настройки за релийз)');
+      // Бележка за модератора (полето „For reviewer") — какво е направено по забележките (idempotent fill).
+      if (REVIEWER_NOTE && on('For reviewer')) { await fillNear(frame, 'For reviewer', REVIEWER_NOTE, 'textarea').then(() => log('✓ For reviewer ← бележка за модератора')).catch(() => {}); }
       // Управлявано от състоянието: затвори информационни модали (напр. „upload package again"), прочети
       // ги + грешките по полетата, и действай според тях.
       // Затваря информационния модал „upload an app package again / signing entity changed" (ако е отворен)
@@ -1257,6 +1335,11 @@ function spawnBrowser() {
       _versionSaved = true;
       autoNext = false; continue;   // презареди записаната версия, после отваряме рейтинг/цена
       }
+      // FIX режим: рейтинг/цена НЕ са сред секциите за корекция → не ги пипай (спести време), мини към финала.
+      if (FIX_MODE && !fixWants('content') && !fixWants('price') && (!_ratingDone || !_priceDone)) {
+        _ratingDone = true; _priceDone = true; log('↷ FIX режим: рейтинг/цена не са в секциите — пропускам ги');
+        autoNext = false; continue;
+      }
       // ── Версията е ЗАПИСАНА → 1) Content rating („Set" → въпросник), 2) цена („View and edit"), после стоп.
       if (!_ratingDone) {
         if (_ratingTries++ >= 5) { log('↷ рейтингът не се отвори след 5 опита — виж ръчно'); _ratingDone = true; }
@@ -1325,6 +1408,8 @@ function spawnBrowser() {
    console.log('■ Достигнат лимит стъпки — спирам.');
   }
 
+  // ЗАДЪЛЖИТЕЛНО преди пълнене: отиди на ВЕРНИЯ ап (иначе рискуваме да пълним чужд отворен ап).
+  await navigateToApp();
   const loop = process.argv.includes('--loop');
   if (loop) {
     console.log('\n   РЕЖИМ ENTER: отвори екран в браузъра и натисни ENTER тук да го попълня. „q"+ENTER = изход.\n');
