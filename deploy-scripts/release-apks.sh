@@ -43,6 +43,8 @@ mkdir -p keystores apk
 declare -a NAMES=()
 if [ -n "${1:-}" ]; then
   for a in "$@"; do NAMES+=("${a%/}"); done      # един ИЛИ няколко апа като аргументи
+elif [ -n "${KCY_APPS_ONLY:-}" ]; then
+  for a in ${KCY_APPS_ONLY//,/ }; do NAMES+=("${a%/}"); done   # само изброените (напр. „Само Релийз") от менюто
 else
   for store in rustore huawei; do
     [ -d "$store" ] || continue

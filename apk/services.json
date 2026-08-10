@@ -1,0 +1,47 @@
+{
+  "_note": "ЕДИНСТВЕН ИЗТОЧНИК за бекенд сървисите на приложенията. Четат го: deploy-scripts/check-all-app-services.mjs (край на точки 2/4/5/57 + тестовия робот), public/shared/admin-status.html (админ), apk/index.html (pupikes.app) и сървър setup-ите. Всяка промяна тук се отразява НАВСЯКЪДЕ.",
+  "_legend": "perApp:true → показва ⚙ на реда на всяко изброено приложение (двете страници). deployed:true → ако е долу → ❗ (червено, очаква се да работи); false → ⏳ (още не е пуснат). softHealth:true → 4xx с JSON също се брои за жив (иска токен). unit/setup = как се вдига на сървъра.",
+  "services": [
+    {
+      "id": "relay",
+      "name": "Selflearning релей (учене/глас/сдвояване)",
+      "healthUrl": "https://selflearning.bot.nu/api/selflearning/health",
+      "apps": ["baby-monitor", "camera-watch", "selflearning-friend"],
+      "deployed": true,
+      "perApp": true,
+      "unit": "kcy-selflearning",
+      "setup": "22-setup-selflearning-server.sh",
+      "note": "Същият релей обслужва и /api/watch/ (сдвояване на Baby Radar / MotionHawk). Ако точка 2 не пусне setup-а → сдвояването пада."
+    },
+    {
+      "id": "faq",
+      "name": "FAQ шлюз (WhatsApp/Messenger/Viber)",
+      "healthUrl": "https://selflearning.bot.nu/api/faq/health",
+      "apps": ["business-faq-bot"],
+      "deployed": true,
+      "perApp": true,
+      "unit": "kcy-faq",
+      "setup": "25-setup-faq-server.sh"
+    },
+    {
+      "id": "scraper",
+      "name": "Скрейпър бекенд (търсене/контакти/имейли)",
+      "healthUrl": "https://selflearning.bot.nu/api/scraper/health",
+      "apps": ["pupikes-toolkit-scraper"],
+      "deployed": true,
+      "perApp": true,
+      "unit": "kcy-scraper",
+      "setup": "26-setup-scraper-server.sh"
+    },
+    {
+      "id": "portals",
+      "name": "Портал API (Обратна връзка/услуги)",
+      "healthUrl": "https://selflearning.bot.nu/api/portals/health",
+      "apps": ["всички (бутон „Обратна връзка\")"],
+      "deployed": true,
+      "perApp": false,
+      "softHealth": true,
+      "unit": "kcy-portals"
+    }
+  ]
+}

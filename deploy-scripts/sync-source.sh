@@ -67,7 +67,14 @@ echo ""
 # ── архив само със сорс (БЕЗ public/assets...), С водеща папка — точно като Deploy (04) ──
 TAR="${HOME}/kcy-source-$(date +%Y%m%d-%H%M%S).tar.gz"
 echo -e "${YELLOW}[1/3] Архивиране на сорса...${NC}"
+_APPEXC=""
+if [ -n "${KCY_APPS_ONLY:-}" ]; then
+    _APPEXC="$(mktemp 2>/dev/null || echo "$HOME/.kcy-appexc.$$")"
+    bash deploy-scripts/lib/app-excludes.sh > "$_APPEXC" 2>/dev/null || true
+    echo -e "  ${CYAN}Ограничавам до приложения: ${KCY_APPS_ONLY}${NC}"
+fi
 tar -czf "$TAR" \
+    ${_APPEXC:+--exclude-from=$_APPEXC} \
     --exclude='public/assets' \
     --exclude='node_modules' \
     --exclude='.git' \
@@ -137,6 +144,12 @@ if [ $RC -eq 0 ]; then
         echo ""
         echo -e "${CYAN}  ━━━ Правни документи (Privacy/Terms) — онлайн проверка ━━━${NC}"
         node deploy-scripts/check-legal-links.mjs || echo -e "  ${RED}⚠ правни документи с проблем — виж горе (пусни точка 4/33 и провери пак)${NC}"
+    fi
+    # Проверка НАКРАЯ и за сървисите на ВСИЧКИ приложения (живи ли са бекендите).
+    if [ -f deploy-scripts/check-all-app-services.mjs ] && command -v node >/dev/null 2>&1; then
+        echo ""
+        echo -e "${CYAN}  ━━━ Сървиси на приложенията — живи ли са ━━━${NC}"
+        node deploy-scripts/check-all-app-services.mjs || echo -e "  ${RED}⚠ очакван сървис е ДОЛУ — виж горе${NC}"
     fi
     echo ""
     echo -e "${CYAN}  .env също се синхронизира с тази опция (върху живия, с бекъп на стария → .replaced-*).${NC}"

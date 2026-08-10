@@ -510,7 +510,16 @@ START_TIME=$SECONDS
 # живее в нея (index.html + catalog.json + лого, малки) и трябва да стигне сървъра. Тежките
 # инсталационни файлове пак се изключват (*.apk/*.aab/*.exe по-долу), затова пътува само
 # каталогът, не гигабайтите.
+# Ограничаване до „само Релийз"/избрани приложения (по желание от менюто): изключваме ПЕР-АП
+# съдържанието (правни докове/икони/пер-ап анимации) на приложенията ИЗВЪН списъка. Празно → пълен деплой.
+_APPEXC=""
+if [ -n "${KCY_APPS_ONLY:-}" ]; then
+    _APPEXC="$(mktemp 2>/dev/null || echo "$HOME/.kcy-appexc.$$")"
+    bash deploy-scripts/lib/app-excludes.sh > "$_APPEXC" 2>/dev/null || true
+    log "  ${CYAN}Деплой ограничен до приложения: ${KCY_APPS_ONLY}${NC}"
+fi
 tar -czf "$ARCHIVE_NAME" \
+    ${_APPEXC:+--exclude-from=$_APPEXC} \
     --exclude='node_modules' \
     --exclude='.git' \
     --exclude='rustore' --exclude='huawei' --exclude='desktop' \
@@ -854,8 +863,8 @@ log "${YELLOW}══════════════════════
 log "${YELLOW}  СЪРВИЗИ — живи ли са бекендите на приложенията    ${NC}"
 log "${YELLOW}═══════════════════════════════════════════════════${NC}"
 log ""
-if command -v node >/dev/null 2>&1 && [ -f "$PROJECT_ROOT/deploy-scripts/check-services.mjs" ]; then
-    if ( cd "$PROJECT_ROOT" && node deploy-scripts/check-services.mjs ); then
+if command -v node >/dev/null 2>&1 && [ -f "$PROJECT_ROOT/deploy-scripts/check-all-app-services.mjs" ]; then
+    if ( cd "$PROJECT_ROOT" && node deploy-scripts/check-all-app-services.mjs ); then
         log "  ${GREEN}✓ Всички очаквани сървиси са живи.${NC}"
     else
         log "  ${RED}⚠ Очакван сървис е ДОЛУ — приложенията му няма да работят пълноценно (виж горе).${NC}"

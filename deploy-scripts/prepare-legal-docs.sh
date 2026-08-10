@@ -23,3 +23,12 @@ echo -e "  ${C}→ Подготвям задължителните докуме�
 if [ -f deploy-scripts/collect-legal-to-public.mjs ]; then
   node deploy-scripts/collect-legal-to-public.mjs || echo -e "  ${Y}! събирането в public/privacy върна грешка${X}"
 fi
+
+# Синхронизирай списъка със сървиси (ЕДИН източник: public/shared/services.json) до каталога на
+# pupikes.app (apk/services.json), за да го чете каталогът относително (same-origin). Така админ
+# страницата и pupikes.app показват ⚙❗ за сървисите на ВСИЧКИ приложения от едно и също място.
+if [ -f public/shared/services.json ]; then
+  cp -f public/shared/services.json apk/services.json 2>/dev/null && \
+    echo -e "  ${G}✓ services.json → apk/ (за pupikes.app)${X}" || \
+    echo -e "  ${Y}! не копирах services.json в apk/${X}"
+fi

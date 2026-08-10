@@ -54,9 +54,9 @@ module.exports = {
             throw new Error('правни документи с проблем:\n' + out.split('\n').filter((l) => /✗|ЧУЖДО|ЛИПСВА|HTTP|ПРАВНА/.test(l)).join('\n'));
           }
         } },
-        { label: 'check-services.mjs (бекендите на приложенията живи ли са)', run: async () => {
+        { label: 'check-all-app-services.mjs (бекендите на приложенията живи ли са)', run: async () => {
           try {
-            execFileSync('node', ['deploy-scripts/check-services.mjs'], { cwd: REPO, stdio: 'pipe' });
+            execFileSync('node', ['deploy-scripts/check-all-app-services.mjs'], { cwd: REPO, stdio: 'pipe' });
           } catch (e) {
             const out = (e.stdout ? e.stdout.toString() : '') + (e.stderr ? e.stderr.toString() : '');
             throw new Error('очакван сървис е ДОЛУ:\n' + out.split('\n').filter((l) => /✗|ДОЛУ|СЪРВИЗИ/.test(l)).join('\n'));

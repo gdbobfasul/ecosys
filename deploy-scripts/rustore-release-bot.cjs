@@ -108,6 +108,20 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
 
   function rsPage() { return ctx.pages().find((p) => /rustore\.ru/.test(p.url())) || ctx.pages()[0]; }
 
+  // ── ЗАБЕЛЕЖКИ ОТ МОДЕРАЦИЯТА: чета отворената конзола (през твоята сесия) и записвам НОВИТЕ ──
+  // → app-shared/moderation-rustore.json. После ги показвам, за да ги СЪОБРАЗЯВАШ. Само реалното
+  // от платформата — не пълни с външни данни.
+  try {
+    const { collectModeration } = require('./lib/moderation.cjs');
+    const mod = await collectModeration({ browser, store: 'rustore', app });
+    if (mod.added) console.log('📋 Събрах ' + mod.added + ' нови забележки от модерацията (общо ' + mod.total + ') → app-shared/moderation-rustore.json');
+    else console.log('📋 Няма нови забележки от модерацията (записани: ' + mod.total + ').');
+    if (mod.total) {
+      console.log('   Забележки за „' + app + '" — СЪОБРАЗЯВАЙ ги, докато попълваш:');
+      mod.notes.forEach((n, i) => console.log('     ' + (i + 1) + '. [' + (n.seenAt || '?') + '] ' + String(n.text).slice(0, 200)));
+    }
+  } catch (e) { console.log('  (събирачът на забележки прескочен: ' + (e.message || e) + ')'); }
+
   async function fillCurrent() {
     const page = rsPage();
     let url = ''; try { url = page.url(); } catch (_) {}

@@ -277,11 +277,18 @@ if [ -n "$ARG" ]; then
     APPS+=("$ARG")                                   # точен път на апп (само този)
   elif [ "$ARG" = "rustore" ] || [ "$ARG" = "huawei" ]; then
     for d in "$ARG"/*/; do d="${d%/}"; is_app "$d" && APPS+=("$d"); done   # цял магазин
+  elif [ "$ARG" = "all" ]; then
+    for s in rustore huawei; do [ -d "$s" ] || continue; for d in "$s"/*/; do d="${d%/}"; is_app "$d" && APPS+=("$d"); done; done   # ВСИЧКИ × двата магазина (без интерактивен въпрос)
   elif [[ "$ARG" != */* ]] && { is_app "rustore/$ARG" || is_app "huawei/$ARG"; }; then
     add_app_both "$ARG"                              # само ИМЕ → двата магазина
   else
     echo -e "  ${RED}✗ Няма такъв път/апп/име: $ARG${NC}"; exit 1
   fi
+elif [ -n "${KCY_APPS_ONLY:-}" ]; then
+  # НЕинтерактивно: билдвай САМО изброените (от менюто: „Само Релийз" или избрани) — за двата магазина.
+  for n in ${KCY_APPS_ONLY//,/ }; do add_app_both "$n"; done
+  [ "${#APPS[@]}" -eq 0 ] && { echo -e "  ${RED}✗ KCY_APPS_ONLY не съвпадна с нито един апп: ${KCY_APPS_ONLY}${NC}"; exit 1; }
+  echo -e "  ${CYAN}Билдвам само (${#APPS[@]} издания): ${KCY_APPS_ONLY}${NC}"
 else
   # интерактивно — УНИКАЛНИ имена на апове (обхожда rustore/ и huawei/).
   # Избор на едно име билдва за ДВАТА магазина (rustore + huawei).
@@ -471,6 +478,11 @@ build_one() {
       inject_version               # versionCode (монотонен) + versionName → Android вижда ъпдейт
       inject_app_icon              # икона от store/icon.svg → android/res (sharp), ако има
       inject_installer_bridge      # нативен мост PupikesNative.getInstaller() (магазин vs sideload)
+      # ВАРИАНТ: при „само Релийз" (KCY_BUILD_VARIANT=release) пропускаме дебъг APK — assembleRelease
+      # го прави release-apks.sh. Така не се билдва два пъти (дебъг+релийз). debug/both → правим дебъг.
+      if [ "${KCY_BUILD_VARIANT:-debug}" = "release" ]; then
+        echo -e "  ${CYAN}↷ Дебъг APK пропуснат (вариант само Релийз) — web+cap sync готови за assembleRelease${NC}"
+      else
       echo -e "  ${CYAN}→ gradle assembleDebug (APK)…${NC}"
       (
         cd android || exit 6
@@ -491,6 +503,7 @@ build_one() {
         OUT="$ROOT/apk/${d%%/*}/debug/$(basename "$d")-${d%%/*}-debug.apk"
         if cp -f "$APK" "$OUT"; then echo -e "  ${GREEN}✓ APK → apk/${d%%/*}/debug/$(basename "$OUT")${NC}"; else echo -e "  ${YELLOW}! не копирах APK в /apk${NC}"; fi
       else echo -e "  ${YELLOW}! APK не е намерен — виж изхода на gradle горе${NC}"; fi
+      fi
     else
       echo -e "  ${YELLOW}↷ APK пропуснат (няма Android SDK/JDK)${NC}"
     fi
@@ -640,6 +653,16 @@ if [ -f "deploy-scripts/check-legal-links.mjs" ] && command -v node >/dev/null 2
   # БЕЗ аргументи = проверява ВСИЧКИ апове (не само построените сега) — по изрично искане.
   node deploy-scripts/check-legal-links.mjs || \
     echo -e "  ${RED}${BOLD}⚠ Правни линкове с проблем — НЕ подавай в магазина, докато не са зелени!${NC}"
+fi
+
+# ── ПРОВЕРКА НА СЪРВИСИТЕ НА ВСИЧКИ ПРИЛОЖЕНИЯ (живи ли са бекендите) ──
+# 57 е локален билд (няма достъп до сървъра, за да ГИ ВДИГА — това го прави точка 2/4/5), но
+# проверява ОНЛАЙН дали са живи, точно като правните линкове — за да се вижда веднага кой е долу.
+if [ -f "deploy-scripts/check-all-app-services.mjs" ] && command -v node >/dev/null 2>&1; then
+  echo ""
+  echo -e "${BOLD}${CYAN}━━━ Сървиси на приложенията — живи ли са (онлайн) ━━━${NC}"
+  node deploy-scripts/check-all-app-services.mjs || \
+    echo -e "  ${RED}${BOLD}⚠ Очакван сървис е ДОЛУ — приложението му няма да работи пълноценно (виж горе)${NC}"
 fi
 
 # ── Обобщение ──

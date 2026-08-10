@@ -150,41 +150,63 @@
     <script>
     // Огледало на проверките от pupikes.app, но same-origin (този домейн сервира и /privacy, и каталога).
     (function(){
-      var SVC={ 'baby-monitor':'https://selflearning.bot.nu/api/selflearning/health','camera-watch':'https://selflearning.bot.nu/api/selflearning/health','business-faq-bot':'https://selflearning.bot.nu/api/faq/health' };
       var isJson=function(b){ return /^\s*\{/.test(String(b||'')); };
+      // SVCMAP: appId → [{name,url,deployed}] — попълва се от /shared/services.json (единствен източник).
+      // Същия списък четат: check-all-app-services.mjs, деплой setup-ите и pupikes.app.
+      var SVCMAP={};
+      function buildSvcMap(sj){
+        SVCMAP={};
+        var arr=(sj&&Array.isArray(sj.services))?sj.services:[];
+        arr.forEach(function(s){
+          if(s.perApp===false) return;
+          (s.apps||[]).forEach(function(app){
+            if(!/^[a-z0-9\-]+$/i.test(app)) return; // само реални app id-та (не „всички …")
+            (SVCMAP[app]=SVCMAP[app]||[]).push({ name:s.name, url:s.healthUrl, deployed:s.deployed!==false });
+          });
+        });
+      }
       function row(app){
         var id=app.id, hw=!!app.hw;
         var pf=hw?'hw-privacy.html':'rustore-privacy.html', tf=hw?'hw-terms.html':'rustore-terms.html';
+        var svcs=SVCMAP[id]||[];
         var el=document.createElement('div');
         el.style.cssText='background:#161b22;border:1px solid #30363d;border-radius:6px;padding:8px 10px;display:flex;align-items:center;gap:8px;font-size:0.85em;';
         el.setAttribute('data-app', id);
+        var svcHtml = svcs.length
+          ? svcs.map(function(s,i){ return '<span class="sv sv'+i+'" title="сървиз: '+(s.name||'')+'">⚙</span>'; }).join('')
+          : '<span style="opacity:.2">·</span>';
         el.innerHTML='<span style="flex:1;color:#e1e4e8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(app.name||id)+'</span>'+
-          '<span class="sd" title="документи/икона">📄</span>'+
-          (SVC[id]?'<span class="sv" title="сървиз">⚙</span>':'<span style="opacity:.2">·</span>');
-        var sd=el.querySelector('.sd'), sv=el.querySelector('.sv');
+          '<span class="sd" title="документи/икона">📄</span>'+svcHtml;
+        var sd=el.querySelector('.sd');
         function badDoc(){ sd.textContent='📄❗'; sd.style.color='#f85149'; el.setAttribute('data-doc','bad'); }
         var docs=['/privacy/'+id+'/'+pf,'/privacy/'+id+'/'+tf];
         Promise.all(docs.map(function(u){ return fetch(u,{method:'HEAD',cache:'no-store'}).then(function(r){return r.ok;}).catch(function(){return false;}); }))
           .then(function(res){ if(res.indexOf(false)>=0) badDoc(); else { sd.style.color='#3fb950'; } });
         fetch('/apk/icons/'+id+'.png',{method:'HEAD',cache:'no-store'}).then(function(r){ if(!r.ok) badDoc(); }).catch(function(){});
-        if(sv){ fetch(SVC[id],{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.text(); }).then(function(b){ if(isJson(b)){ sv.style.color='#3fb950'; } else { throw 0; } }).catch(function(){ sv.textContent='⚙❗'; sv.style.color='#f85149'; el.setAttribute('data-svc','bad'); }); }
+        // Всеки сървиз на този ап: жив (JSON+2xx) → зелено ⚙; не е деплойнат → ⏳; долу → ⚙❗ (червено).
+        svcs.forEach(function(s,i){
+          var sv=el.querySelector('.sv'+i); if(!sv) return;
+          fetch(s.url,{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.text(); })
+            .then(function(b){ if(isJson(b)){ sv.style.color='#3fb950'; } else { throw 0; } })
+            .catch(function(){ if(!s.deployed){ sv.textContent='⏳'; sv.style.color='#d29922'; } else { sv.textContent='⚙❗'; sv.style.color='#f85149'; el.setAttribute('data-svc','bad'); } });
+        });
         return el;
       }
-      // Обединява ДВАТА списъка: пълния (всички апове) + каталога (за публикуване/публикувани).
-      // Ап в каталога → секция „За публикуване/публикувани"; иначе → „Оставащи". Обявиш ли ап за
-      // качване (влезе в каталога) → автоматично се мести между секциите.
+      // Обединява ТРИТЕ списъка: сървисите + всички апове + каталога (за публикуване/публикувани).
       Promise.all([
+        fetch('/shared/services.json?t='+Date.now()).then(function(r){return r.json();}).catch(function(){return null;}),
         fetch('/shared/all-apps.json?t='+Date.now()).then(function(r){return r.json();}).catch(function(){return null;}),
         fetch('/pupikes-app/catalog.json?t='+Date.now()).then(function(r){return r.json();}).catch(function(){return null;})
       ]).then(function(res){
-        var all=res[0], cat=res[1];
+        buildSvcMap(res[0]);
+        var all=res[1], cat=res[2];
         if(!all||!all.apps){ document.getElementById('apps-status').textContent='Пълният списък не е достъпен (/shared/all-apps.json — пусни генератора/деплой).'; return; }
         var pub={}; if(cat&&cat.groups){ cat.groups.forEach(function(g){ (g.apps||[]).forEach(function(a){ if(a.id) pub[a.id]=1; }); }); }
         var gp=document.getElementById('apps-grid-pub'), gr=document.getElementById('apps-grid-rest'), np=0, nr=0;
         all.apps.forEach(function(a){ if(pub[a.id]){ gp.appendChild(row(a)); np++; } else { gr.appendChild(row(a)); nr++; } });
         document.getElementById('cnt-pub').textContent='('+np+')';
         document.getElementById('cnt-rest').textContent='('+nr+')';
-        document.getElementById('apps-status').textContent = all.apps.length+' приложения общо · 📄 документи/икона · ⚙ сървиз (❗ = проблем)';
+        document.getElementById('apps-status').textContent = all.apps.length+' приложения общо · 📄 документи/икона · ⚙ сървиз (❗ = долу · ⏳ = още не е пуснат)';
       });
     })();
     </script>

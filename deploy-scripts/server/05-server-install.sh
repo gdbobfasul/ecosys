@@ -2086,5 +2086,15 @@ echo ""
 TS_CHECK="${PROJECT_DIR}/deploy-scripts/server/tailscale-check.sh"
 [ -f "$TS_CHECK" ] && bash "$TS_CHECK" || true
 
+# ── Сървиси на приложенията (релей + FAQ + скрейпър) — за да ги вдига и точка 2 ──
+# Всеки е самостоятелен, failsafe (сам маха nginx include при -t грешка) и изолиран.
+# Релеят (22) пуска и /api/watch/ → сдвояването на Baby Radar / MotionHawk (затова, ако
+# точка 2 не го е пускала досега, сдвояването е падало). </dev/null → без интерактивни въпроси.
+echo -e "\n${CYAN}━━━ Сървиси на приложенията (релей / FAQ / скрейпър) ━━━${NC}"
+for _svc_setup in 22-setup-selflearning-server.sh 25-setup-faq-server.sh 26-setup-scraper-server.sh; do
+  _SS="${PROJECT_DIR}/deploy-scripts/server/${_svc_setup}"
+  [ -f "$_SS" ] && { bash "$_SS" </dev/null || echo -e "  ${YELLOW}! ${_svc_setup} върна грешка — продължавам${NC}"; }
+done
+
 # kcy-admin sudo управление — премахнато от инсталацията.
 # Достъпно като отделна меню опция (с double-confirm) в DANGEROUS секцията.

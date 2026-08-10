@@ -325,6 +325,20 @@ function spawnBrowser() {
   }
   await waitForLogin();
 
+  // ── ЗАБЕЛЕЖКИ ОТ МОДЕРАЦИЯТА: чета отворената конзола (през твоята сесия) и записвам НОВИТЕ ──
+  // Записва се в app-shared/moderation-huawei.json. После ги показвам, за да ги СЪОБРАЗЯВАШ при
+  // попълването. НЕ пълни с външни данни — само реалното от платформата.
+  try {
+    const { collectModeration } = require('./lib/moderation.cjs');
+    const mod = await collectModeration({ browser, store: 'huawei', app });
+    if (mod.added) console.log('📋 Събрах ' + mod.added + ' нови забележки от модерацията (общо ' + mod.total + ') → app-shared/moderation-huawei.json');
+    else console.log('📋 Няма нови забележки от модерацията (записани: ' + mod.total + ').');
+    if (mod.total) {
+      console.log('   Забележки за „' + app + '" — СЪОБРАЗЯВАЙ ги, докато попълваш:');
+      mod.notes.forEach((n, i) => console.log('     ' + (i + 1) + '. [' + (n.seenAt || '?') + '] ' + String(n.text).slice(0, 200)));
+    }
+  } catch (e) { console.log('  (събирачът на забележки прескочен: ' + (e.message || e) + ')'); }
+
   const MARKERS = ['App information', 'Package type', 'Brief introduction', 'Manage languages', 'Compatible devices', 'Categorization', 'New app',
     'Country/Region for release', 'Payment information', 'Privacy tags', 'For reviewer', 'Use testing version', 'App price', 'Default price', 'Privacy statement'];
   // Намери НАЙ-подходящата рамка измежду ВСИЧКИ табове/рамки (съдържанието е в iframe; може да има

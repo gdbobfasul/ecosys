@@ -304,3 +304,9 @@ if [ -f deploy-scripts/check-legal-links.mjs ] && command -v node >/dev/null 2>&
     node deploy-scripts/check-legal-links.mjs || echo -e "  ${RED}⚠ правни документи с проблем — виж горе; пусни точка 33 и провери пак${NC}"
     echo ""
 fi
+# ── ПРОВЕРКА НАКРАЯ: сървисите на ВСИЧКИ приложения живи ли са (истински JSON, не SPA HTML)? ──
+if [ -f deploy-scripts/check-all-app-services.mjs ] && command -v node >/dev/null 2>&1; then
+    echo -e "${BOLD}${CYAN}━━━ Сървиси на приложенията — живи ли са ━━━${NC}"
+    node deploy-scripts/check-all-app-services.mjs || echo -e "  ${RED}⚠ очакван сървис е ДОЛУ — виж горе (пусни пак точка 2 или провери услугата)${NC}"
+    echo ""
+fi

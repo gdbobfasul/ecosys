@@ -100,10 +100,10 @@ if [ -f deploy-scripts/check-legal-links.mjs ] && command -v node >/dev/null 2>&
 fi
 
 # ── Сървиси: пуснати ли са бекендите, нужни на приложенията? (истински JSON, не SPA HTML) ──
-if [ -f deploy-scripts/check-services.mjs ] && [ "${ROBOT_LEGAL_OFFLINE:-0}" != "1" ] && command -v node >/dev/null 2>&1; then
+if [ -f deploy-scripts/check-all-app-services.mjs ] && [ "${ROBOT_LEGAL_OFFLINE:-0}" != "1" ] && command -v node >/dev/null 2>&1; then
   echo ""
   echo -e "${BOLD}${CYAN}═══ Сървиси на приложенията — живи ли са ═══${NC}"
-  node deploy-scripts/check-services.mjs || { echo -e "  ${RED}✗ очакван сървис е ДОЛУ${NC}"; FAILS=$((FAILS+1)); }
+  node deploy-scripts/check-all-app-services.mjs || { echo -e "  ${RED}✗ очакван сървис е ДОЛУ${NC}"; FAILS=$((FAILS+1)); }
 fi
 
 echo -e "${BOLD}${CYAN}═══ Резултат ═══${NC}"

@@ -95,12 +95,21 @@
     st_svc:{bg:'Сървиз на приложението',ru:'Сервис приложения',uk:'Сервіс застосунку',en:'App service',de:'App-Dienst',fr:'Service de l’app',es:'Servicio de la app','es-MX':'Servicio de la app',it:'Servizio dell’app',pt:'Serviço do app',ar:'خدمة التطبيق',hi:'ऐप सेवा',ja:'アプリのサービス',ky:'Колдонмонун сервиси','zh-Hant':'應用服務'},
     svc_down:{bg:'Сървизът не отговаря / не е пуснат',ru:'Сервис не отвечает / не запущен',uk:'Сервіс не відповідає / не запущено',en:'Service not responding / not running',de:'Dienst antwortet nicht / läuft nicht',fr:'Service ne répond pas / non lancé',es:'El servicio no responde / no iniciado','es-MX':'El servicio no responde / no iniciado',it:'Servizio non risponde / non avviato',pt:'Serviço não responde / não iniciado',ar:'الخدمة لا تستجيب / غير مشغّلة',hi:'सेवा उत्तर नहीं दे रही / नहीं चल रही',ja:'サービスが応答しません／未起動',ky:'Сервис жооп бербейт / иштебей жатат','zh-Hant':'服務無回應／未執行'}
   };
-  // Сървиси по приложение (health URL с CORS). Само апове с реален бекенд; останалите нямат сървиз.
-  var SVC = {
-    'baby-monitor':'https://selflearning.bot.nu/api/selflearning/health',
-    'camera-watch':'https://selflearning.bot.nu/api/selflearning/health',
-    'business-faq-bot':'https://selflearning.bot.nu/api/faq/health'
-  };
+  // Сървиси по приложение — от services.json (ЕДИНСТВЕН източник; същия четат админ страницата
+  // и check-all-app-services.mjs). SVCMAP: appId → [{name,url,deployed}]. Показва ⚙ на всеки ап
+  // с реален бекенд; ❗ ако е долу, ⏳ ако още не е пуснат.
+  var SVCMAP = {};
+  function buildSvcMap(sj){
+    SVCMAP={};
+    var arr=(sj&&sj.services)||[];
+    arr.forEach(function(s){
+      if(s.perApp===false) return;
+      (s.apps||[]).forEach(function(app){
+        if(!/^[a-z0-9\-]+$/i.test(app)) return;
+        (SVCMAP[app]=SVCMAP[app]||[]).push({name:s.name,url:s.healthUrl,deployed:s.deployed!==false});
+      });
+    });
+  }
   var lang = (function(){ try{ var s=localStorage.getItem('pupikes.catalog.lang'); if(s) return s; }catch(e){} var n=(navigator.language||'bg'); for(var i=0;i<LANGS.length;i++){ if(LANGS[i][0]===n) return n; } var two=n.slice(0,2); for(var j=0;j<LANGS.length;j++){ if(LANGS[j][0].slice(0,2)===two) return LANGS[j][0]; } return 'bg'; })();
   function t(k){ var o=T[k]||{}; return o[lang]||o[lang.split('-')[0]]||o.en||o.bg||k; }
   function L(o){ return o && (o[lang]||o[lang.split('-')[0]]||o.bg||o.en||'') || ''; }
@@ -144,10 +153,11 @@
           '<a class="lg" data-lg href="/privacy/'+lid+'/'+_pf+'">'+t('priv')+'</a>'+
           '<a class="lg" data-lg href="/privacy/'+lid+'/'+_tf+'">'+t('terms')+'</a></div>'):'';
         var icon=lid?'<img class="ic" src="/icons/'+lid+'.png" alt="" loading="lazy" onerror="this.style.display=\'none\';var c=this.closest(\'.card\');if(window.markStat)window.markStat(c,\'.sdoc\',\'icon\');">':'';
-        // Две ❗-полета: 📄 = документи/икона на сървъра; ⚙ = сървизът на приложението.
-        // Няма ❗ = наред. Сървиз показваме само за апове с реален бекенд (SVC).
-        var svcUrl=SVC[lid]||'';
-        var stat='<span class="stat sdoc" title="'+t('st_docs')+'">📄</span>'+(svcUrl?'<span class="stat ssvc" data-svc="'+svcUrl+'" title="'+t('st_svc')+'">⚙</span>':'');
+        // Две ❗-полета: 📄 = документи/икона на сървъра; ⚙ = сървизът(ите) на приложението.
+        // Няма ❗ = наред. По един ⚙ за всеки бекенд сървиз на този ап (от SVCMAP).
+        var svcs=SVCMAP[lid]||[];
+        var stat='<span class="stat sdoc" title="'+t('st_docs')+'">📄</span>'+
+          svcs.map(function(s){ return '<span class="stat ssvc" data-svc="'+s.url+'" data-deployed="'+(s.deployed?'1':'0')+'" title="'+t('st_svc')+': '+String(s.name||'').replace(/"/g,'')+'">⚙</span>'; }).join('');
         var card=document.createElement('div'); card.className='card';
         card.innerHTML='<div class="hd">'+icon+'<h3>'+a.name+'</h3>'+stat+'</div>'+(a.price?'<div class="price">'+a.price+'</div>':'')+'<div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>'+legal;
         grid.appendChild(card);
@@ -185,19 +195,28 @@
       }).catch(function(){ markBad(el); });
     });
   }
-  // Сървиз на приложението: health URL връща 200 → ⚙ зелено; иначе ❗ на ⚙.
+  // Сървиз на приложението: health URL връща истински JSON → ⚙ зелено; долу → ❗ (ако се очаква да
+  // работи), ⏳ (ако още не е деплойнат). Маркира КОНКРЕТНИЯ ⚙ (един ап може да има няколко сървиза).
   function verifyServices(){
     var svc=document.querySelectorAll('#catalog .ssvc[data-svc]');
     Array.prototype.forEach.call(svc,function(el){
-      var url=el.getAttribute('data-svc'); var c=el.closest('.card');
-      // Жив сървис = истински JSON ({…}); HTML (SPA fallback) или блокиран → ❗ (не е пуснат).
+      var url=el.getAttribute('data-svc');
+      var deployed=el.getAttribute('data-deployed')!=='0';
+      function down(){
+        if(el.getAttribute('data-checked')==='bad') return;
+        el.setAttribute('data-checked','bad'); el.classList.add('bad'); el.title=t('svc_down');
+        if(deployed){ if(el.textContent.indexOf('❗')<0) el.textContent=el.textContent+'❗'; }
+        else { el.textContent='⏳'; }
+      }
       fetch(url,{method:'GET',cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.text(); }).then(function(b){
-        if(/^\s*\{/.test(b)){ el.classList.add('ok'); el.setAttribute('data-checked','ok'); } else { markStat(c,'.ssvc'); }
-      }).catch(function(){ markStat(c,'.ssvc'); });
+        if(/^\s*\{/.test(b)){ el.classList.add('ok'); el.setAttribute('data-checked','ok'); } else { down(); }
+      }).catch(function(){ down(); });
     });
   }
 
   render(); // първоначален изглед (loading)
+  // Списъкът със сървиси (един източник) — щом дойде, преначертаваме, за да излязат ⚙-тата.
+  fetch('services.json?v='+Date.now()).then(function(r){return r.json();}).then(function(j){ buildSvcMap(j); if(cat) render(); }).catch(function(){});
   fetch('catalog.json?v='+Date.now()).then(function(r){return r.json();}).then(function(j){ cat=j; try{ if(j.version){ var _v=document.getElementById('appver'); if(_v) _v.textContent='v'+j.version+' · '+({bg:'текуща версия',ru:'текущая версия',uk:'поточна версія',en:'current version',de:'aktuelle Version',fr:'version actuelle',es:'versión actual','es-MX':'versión actual',it:'versione attuale',pt:'versão atual',ar:'الإصدار الحالي',hi:'मौजूदा संस्करण',ja:'現在のバージョン',ky:'учурдагы версия','zh-Hant':'目前版本'}[lang]||'current version'); } }catch(e){} render(); }).catch(function(){ document.getElementById('catalog').innerHTML='<div class="empty">'+t('load_err')+'</div>'; });
 })();
 </script>

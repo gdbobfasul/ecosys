@@ -17,6 +17,10 @@ _P_DEFAULT="${KCY_PROGRESS_DEFAULT:-60}"
 _p_srv() { case "$1" in prodts|prod|production) printf 'Production';; vm|VM) printf 'Виртуална машина';; —|""|local) printf 'локално';; *) printf '%s' "$1";; esac; }
 
 progress_start() {
+  # ВЛОЖЕНОСТ: ако вече има активен прогрес (напр. точка 2 вика билда на приложенията), този е
+  # no-op — иначе се появяват ДВА долни реда (тикера), които се бият. Само най-външният рисува.
+  if [ "${KCY_PROGRESS_ACTIVE:-0}" = 1 ]; then _P_NESTED=1; return 0; fi
+  _P_NESTED=0; export KCY_PROGRESS_ACTIVE=1
   _P_NAME="$1"; _P_PLAN="${2:-}"; _P_PROFILE="${3:-def}"; _P_T0="$(date +%s)"
   _P_SEC="$_P_DIR/$1.sec"; _P_LIVE="$_P_DIR/$1.live"; _P_CURF="$_P_DIR/$1.cur"; _P_LBLF="$_P_DIR/$1.labels"
   declare -gA _P_TBL=() _P_RUN=() _P_LBL=() _P_RUNLBL=()
@@ -41,7 +45,7 @@ progress_start() {
   fi
 }
 
-progress_context() { _P_CTX="${2:-}"; }
+progress_context() { [ "${_P_NESTED:-0}" = 1 ] && return 0; _P_CTX="${2:-}"; }
 
 _p_bar() { local pct="$1" w="${2:-26}" i f; f=$(( pct * w / 100 )); [ "$f" -lt 0 ] && f=0; [ "$f" -gt "$w" ] && f=$w
   printf '['; for ((i=0;i<w;i++)); do [ "$i" -lt "$f" ] && printf '■' || printf '·'; done; printf ']'; }
@@ -54,6 +58,7 @@ _p_close_prev() {
 }
 
 progress_step() {
+  [ "${_P_NESTED:-0}" = 1 ] && return 0
   local name="$1"; shift; local label="$*"; local sec="${label%% *}"
   local key="${sec}${_P_CTX:+#$_P_CTX}@${_P_PROFILE}"
   local disp="$label"; [ -n "${_P_CTX:-}" ] && disp="$label · $(_p_srv "$_P_CTX")"
@@ -80,9 +85,11 @@ progress_step() {
 }
 
 progress_finish() {
+  [ "${_P_NESTED:-0}" = 1 ] && return 0
   local name="$1"; local ok="${2:-}"; local now=$(( $(date +%s) - _P_T0 ))
   _p_close_prev "$now"
   [ -n "${_P_TICK_PID:-}" ] && kill "$_P_TICK_PID" 2>/dev/null
+  export KCY_PROGRESS_ACTIVE=0   # външният прогрес приключи → пуска следващ да рисува
   [ "${KCY_PROGRESS_NOBOTTOM:-0}" != 1 ] && [ -w /dev/tty ] && printf '\e[r' > /dev/tty 2>/dev/null
   local G=$'\e[32m' X=$'\e[0m'
   printf '   %sГЛОБАЛНО%s %s 100%% · готово за %s (еталонът по секции×сървър×профил е обновен)\n' "$G" "$X" "$(_p_bar 100)" "$(_p_fmt "$now")"

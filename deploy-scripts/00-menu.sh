@@ -29,6 +29,26 @@ trap 'echo ""; echo "Натисни Enter за затваряне..."; read DUMM
 press_enter() { [ "${KCY_NO_PAUSE:-0}" = "1" ] && return 0; echo ""; read -p "Натисни Enter да продължиш... " _; }
 run_cmd()     { echo ""; echo -e "${YELLOW}► $*${NC}"; echo ""; "$@"; press_enter; }
 
+# Обхват на приложенията за билд/качване/деплой. Печата на STDOUT: „__ALL__" (всички) ИЛИ списък
+# имена (интервал). Подсказките отиват на STDERR, за да не влизат в резултата. „Релийз" = видимите
+# на pupikes.app (apk/catalog.json show:true). „Избрани" приема и ЕДНО име (както в точка 57).
+release_scope() {
+  local title="${1:-Кои приложения?}" pick names rel
+  { echo ""; echo "  $title"
+    echo "    1) Само приложенията за Релийз (видимите на pupikes.app)"
+    echo "    2) ВСИЧКИ приложения"
+    echo "    3) Избрани — едно или няколко имена (поименно, както в 57)"
+    read -p "  Избери [1-3, Enter=1]: " pick
+  } 1>&2
+  case "$pick" in
+    2) printf '__ALL__' ;;
+    3) read -p "  Име(на) (интервал между тях, напр. newslator market-pulse): " names 1>&2; printf '%s' "$names" ;;
+    *) rel="$(node "$SCRIPT_DIR/release-apps.mjs" 2>/dev/null | tr '\n' ' ')"
+       if [ -z "${rel// /}" ]; then echo "  (не намерих релийз списъка → ВСИЧКИ)" 1>&2; printf '__ALL__'
+       else echo "  → Релийз приложения ($(echo "$rel" | wc -w)): $rel" 1>&2; printf '%s' "$rel"; fi ;;
+  esac
+}
+
 # ── ОБОБЩЕНИЕ след всеки отдалечен (SSH) скрипт от менюто ────────────────────
 # Печата в КРАЯ ясен ред: коя опция/скрипт е пуснат, на кой сървър е качено/
 # изпълнено, дроп на база данни (да/не) и резултат. Ползва глобалните CURRENT_OPT,
@@ -505,7 +525,17 @@ run_choice() {
             fi
             ;;
         2)
+            # Обхват (кои приложения) + вариант на билда вътре в точка 2.
+            BUILD_SCOPE="$(release_scope "Точка 2 — кои приложения да билдне (подписани)?")"
+            echo ""
+            echo "  Вариант на билда в точка 2?"
+            echo "    1) Само Релийз (подписан) — по-бързо (НЕ билдва и дебъг)"
+            echo "    2) Релийз + Дебъг (и двете)"
+            read -p "  Избери [1-2, Enter=1]: " VARMODE2
+            case "$VARMODE2" in 2) export KCY_BUILD_VARIANT=both ;; *) export KCY_BUILD_VARIANT=release ;; esac
+            [ "$BUILD_SCOPE" != "__ALL__" ] && export KCY_APPS_ONLY="$BUILD_SCOPE"
             run_cmd ./deploy-scripts/02-full-install.sh
+            unset KCY_APPS_ONLY KCY_BUILD_VARIANT
             ;;
         3)
             echo ""
@@ -583,10 +613,18 @@ run_choice() {
 
         # ── DEPLOY (леки трансфери) ──
         5)
+            # Деплой на КОД — обхват: Само Релийз / Всички / Избрани. Ограничава пер-ап докове/икони.
+            DEPLOY_SCOPE="$(release_scope "Деплой на код — кои приложения (пер-ап докове/икони)?")"
+            [ "$DEPLOY_SCOPE" != "__ALL__" ] && export KCY_APPS_ONLY="$DEPLOY_SCOPE"
             run_cmd ./deploy-scripts/sync-source.sh
+            unset KCY_APPS_ONLY
             ;;
         6)
+            # Деплой на КАРТИНКИ/АСЕТИ — обхват. Ограничава пер-ап анимации (общите асети пак се качват).
+            DEPLOY_SCOPE="$(release_scope "Деплой на картинки/асети — кои приложения (пер-ап анимации)?")"
+            [ "$DEPLOY_SCOPE" != "__ALL__" ] && export KCY_APPS_ONLY="$DEPLOY_SCOPE"
             run_cmd ./deploy-scripts/sync-assets.sh
+            unset KCY_APPS_ONLY
             ;;
 
         # ── НОВИ ПРИЛОЖЕНИЯ (бази + услуги) — точки 5/6 са свободни, всичко е на 41–44 ──
@@ -1564,13 +1602,16 @@ run_choice() {
             echo ""
             echo "  Да кача ли аповете на сървъра?"
             echo "    1) Да — ВСИЧКИ апове (цялата папка apk/)"
-            echo "    2) Да — само ИЗБРАНИ апове (ще въведа имената)"
-            echo "    3) Не качвай"
-            read -p "  Избери [1-3, Enter=3]: " UPMODE
+            echo "    2) Да — само приложенията за Релийз (видимите на pupikes.app)"
+            echo "    3) Да — само ИЗБРАНИ апове (ще въведа имената)"
+            echo "    4) Не качвай"
+            read -p "  Избери [1-4, Enter=4]: " UPMODE
             UP_DO=0; UP_APPS=""
             case "$UPMODE" in
                 1) UP_DO=1 ;;
-                2) UP_DO=1
+                2) UP_DO=1; UP_APPS="$(node "$SCRIPT_DIR/release-apps.mjs" 2>/dev/null | tr '\n' ' ')"
+                   [ -z "${UP_APPS// /}" ] && { echo "  Не намерих релийз списъка — качвам ВСИЧКИ."; UP_APPS=""; } ;;
+                3) UP_DO=1
                    read -p "  Имена на апове (интервал между тях, напр. fps-hunter market-pulse): " UP_APPS
                    [ -z "$UP_APPS" ] && { echo "  Няма избрани — няма да качвам."; UP_DO=0; } ;;
                 *) UP_DO=0 ;;
@@ -1590,8 +1631,22 @@ run_choice() {
                     *) UP_TARGETS="prodts" ;;
                 esac
             fi
-            # Билд (интерактивно пита кой апп — за rustore И huawei)
-            bash "$SCRIPT_DIR/build-mobile-apps.sh"
+            # Билд — обхват (кои приложения) + вариант (дебъг/релийз/двете)
+            BUILD_SCOPE="$(release_scope "Какво да билдвам?")"
+            echo ""
+            echo "  Кой вариант да билдна?"
+            echo "    1) Само Дебъг (бързо — за тест на телефон)"
+            echo "    2) Само Релийз (подписан — за магазина; НЕ билдва дебъг → по-бързо)"
+            echo "    3) Дебъг + Релийз (и двете)"
+            read -p "  Избери [1-3, Enter=1]: " VARMODE
+            [ "$BUILD_SCOPE" != "__ALL__" ] && export KCY_APPS_ONLY="$BUILD_SCOPE"
+            case "$VARMODE" in
+                2) export KCY_BUILD_VARIANT=release; bash "$SCRIPT_DIR/release-apks.sh" ;;
+                3) export KCY_BUILD_VARIANT=both;    bash "$SCRIPT_DIR/release-apks.sh" ;;
+                *) if [ "$BUILD_SCOPE" = "__ALL__" ]; then bash "$SCRIPT_DIR/build-mobile-apps.sh" all
+                   else bash "$SCRIPT_DIR/build-mobile-apps.sh"; fi ;;
+            esac
+            unset KCY_APPS_ONLY KCY_BUILD_VARIANT
             # Покритие: пълният списък апове спрямо построените release APK-та (кои ЛИПСВАТ).
             echo ""
             node "$SCRIPT_DIR/apk-coverage.mjs" --summary 2>/dev/null || true

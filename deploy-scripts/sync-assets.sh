@@ -65,7 +65,13 @@ echo -e "  ${CYAN}работна папка: $PROJECT_ROOT${NC}"
 # покажи примерен файл — за да видиш ТОЧНО какво се качва (размер = коя версия)
 _smpl="public/assets/animations/Duel/Closes-Attacks/right-swordsman-Walks-StrikeButcher-StrikeTop-Mellee/right-swordsman-idle.webm"
 [ -f "$_smpl" ] && echo -e "  ${CYAN}пример (right-swordsman-idle): $(du -h "$_smpl" | cut -f1) — $(date -r "$_smpl" '+%H:%M' 2>/dev/null)${NC}"
-tar -czf "$TAR" --exclude='public/assets/animations/raw' public/assets || { echo -e "${RED}tar се провали${NC}"; exit 1; }
+_APPEXC=""
+if [ -n "${KCY_APPS_ONLY:-}" ]; then
+    _APPEXC="$(mktemp 2>/dev/null || echo "$HOME/.kcy-appexc.$$")"
+    bash deploy-scripts/lib/app-excludes.sh > "$_APPEXC" 2>/dev/null || true
+    echo -e "  ${CYAN}Асети ограничени до приложения: ${KCY_APPS_ONLY} (споделените асети пак се качват)${NC}"
+fi
+tar -czf "$TAR" ${_APPEXC:+--exclude-from=$_APPEXC} --exclude='public/assets/animations/raw' public/assets || { echo -e "${RED}tar се провали${NC}"; exit 1; }
 echo -e "  ${GREEN}✓ $(du -h "$TAR" | cut -f1)${NC}"
 
 # ── качване ──
