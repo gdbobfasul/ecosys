@@ -666,7 +666,10 @@ fi
 # За всеки билднат апп проверява, че линковете, изисквани от RuStore/Huawei, връщат 200
 # (не 404!) И че хостнатото съдържание е на ТОВА приложение (не чуждо). Хваща разминаване
 # домейн↔хостинг ПРЕДИ подаване. Не проваля билда (само предупреждава силно).
-if [ -f "deploy-scripts/check-legal-links.mjs" ] && command -v node >/dev/null 2>&1; then
+# ГАРД: при ПОД-БИЛД (release-apks вика build-mobile-apps ПЕР приложение → изнася KCY_KEEP_OTHERS=1)
+# проверката се ПРОПУСКА — иначе гърми веднъж на всеки ап (напр. 22×70 линка). Пуска се ВЕДНЪЖ
+# накрая (release-apks / точка 2). Самостоятелен build-mobile (интерактивно/дебъг) си я пуска.
+if [ -z "${KCY_KEEP_OTHERS:-}" ] && [ -f "deploy-scripts/check-legal-links.mjs" ] && command -v node >/dev/null 2>&1; then
   echo ""
   echo -e "${BOLD}${CYAN}━━━ Проверка на правните линкове (Privacy/Terms) — ВСИЧКИ приложения ━━━${NC}"
   # БЕЗ аргументи = проверява ВСИЧКИ апове (не само построените сега) — по изрично искане.
@@ -677,7 +680,7 @@ fi
 # ── ПРОВЕРКА НА СЪРВИСИТЕ НА ВСИЧКИ ПРИЛОЖЕНИЯ (живи ли са бекендите) ──
 # 57 е локален билд (няма достъп до сървъра, за да ГИ ВДИГА — това го прави точка 2/4/5), но
 # проверява ОНЛАЙН дали са живи, точно като правните линкове — за да се вижда веднага кой е долу.
-if [ -f "deploy-scripts/check-all-app-services.mjs" ] && command -v node >/dev/null 2>&1; then
+if [ -z "${KCY_KEEP_OTHERS:-}" ] && [ -f "deploy-scripts/check-all-app-services.mjs" ] && command -v node >/dev/null 2>&1; then
   echo ""
   echo -e "${BOLD}${CYAN}━━━ Сървиси на приложенията — живи ли са (онлайн) ━━━${NC}"
   node deploy-scripts/check-all-app-services.mjs || \
