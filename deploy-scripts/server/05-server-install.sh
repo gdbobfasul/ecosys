@@ -628,6 +628,17 @@ echo -e "  ${CYAN}  Staging public/: ${STAGING_PUB_COUNT} файла за коп
 # Иначе (0) → изключи ги (качват се отделно с опция 6). Без интервали → unquoted split.
 EXCL_ASSETS="--exclude=assets/"
 [ "${WITH_ASSETS:-0}" = "1" ] && { EXCL_ASSETS=""; echo -e "  ${CYAN}  (WITH_ASSETS=1 → качвам и assets/ с кода)${NC}"; }
+# ── ТРИЕНЕ САМО ПРИ ПЪЛЕН ДЕПЛОЙ ──────────────────────────────────────────────
+# ЗЛАТНО ПРАВИЛО: rsync --delete трие от сървъра всичко, което липсва в пакета. При
+# ЧАСТИЧЕН деплой (само Релийз / избрани приложения — PARTIAL_DEPLOY=1) пакетът НЕ носи
+# всички апове → --delete би изтрил чуждите (код/картинки/документи), които РАБОТЯТ. Затова:
+#   • Частичен деплой → БЕЗ --delete (overlay: само добавя/обновява качените).
+#   • Пълен деплой (всички приложения) → --delete чисти реално премахнатото.
+DEL_FLAG="--delete"
+if [ "${PARTIAL_DEPLOY:-0}" = "1" ]; then
+    DEL_FLAG=""
+    echo -e "  ${YELLOW}  ⚠ ЧАСТИЧЕН деплой (избрани приложения) → БЕЗ --delete: чуждите файлове се ПАЗЯТ${NC}"
+fi
 # ВАЖНО: --exclude='apk/' — папката apk (коренът на pupikes.app: каталог + инсталационни
 # файлове) НЕ е част от public/, а живее в WEB_ROOT. Без това изключване `--delete` я ТРИЕ
 # при всеки деплой (точка 4 → pupikes.app 404). Аповете се качват отделно (точка 2/57 → 17-sync-apps).
@@ -635,7 +646,7 @@ EXCL_ASSETS="--exclude=assets/"
 # качват се ОТДЕЛНО (sync-legal-pages.sh), НЕ са в public/. Без този exclude `--delete` ги
 # ТРИЕ при всеки пълен деплой → всички правни линкове стават 404. Това беше причината за
 # повтарящите се 404 след точка 2/4.
-if ! rsync -av --delete --exclude='last-errors/' --exclude='apk/' --exclude='privacy/' $EXCL_ASSETS "$STAGING/public/" "$WEB_ROOT/" 2>&1 | tail -5; then
+if ! rsync -av $DEL_FLAG --exclude='last-errors/' --exclude='apk/' --exclude='privacy/' $EXCL_ASSETS "$STAGING/public/" "$WEB_ROOT/" 2>&1 | tail -5; then
     echo -e "  ${RED}✗ FATAL: rsync public/ се провали${NC}"
     diag_log services-errors.log "install: rsync public FAILED"
     safe_exit 1
@@ -644,24 +655,41 @@ PUB_COUNT=$(find "$WEB_ROOT" -type f 2>/dev/null | wc -l)
 echo -e "  ${GREEN}✓ public/: ${PUB_COUNT} файла в ${WEB_ROOT}${NC}"
 diag_log services-errors.log "install: rsync public — staging=${STAGING_PUB_COUNT} → web_root=${PUB_COUNT}"
 
-# ── ЗАДЪЛЖИТЕЛНИ ДОКУМЕНТИ (privacy/terms) — слагаме ги ИЗРИЧНО (root) ──
-# rsync-ът горе ИЗКЛЮЧВА privacy/ (за да НЕ ги трие). Документите пътуват в public/privacy
-# (collect-legal-to-public.mjs при деплоя). Тук ги копираме в WEB_ROOT/privacy → всеки деплой
-# ги (пре)populate-ва БЕЗ нужда от root SSH от локалната машина (това чупеше и връщаше 404-ките).
-if [ -d "$STAGING/public/privacy" ]; then
+# ── ЗАДЪЛЖИТЕЛНИ ДОКУМЕНТИ (privacy/terms) — САМО ДОБАВЯНЕ, НИКОГА ТРИЕНЕ ──
+# ЗЛАТНО ПРАВИЛО: веднъж качен правен документ НЕ СЕ ТРИЕ от никого и отникъде.
+#   • rsync-ът на public/ горе ИЗКЛЮЧВА privacy/ (--exclude='privacy/') → не ги пипа/трие.
+#   • Тук публикуваме ПЕР-АП и САМО за приложенията, чиито документи РЕАЛНО пристигат в
+#     свежия staging (= „новоъплоуднати"). Ап без документ в staging → живите му документи
+#     остават НЕПОКЪТНАТИ (никакъв --delete, никакво презаписване с празно).
+#   • Празен/липсващ комплект в staging → изобщо НЕ пипаме живите документи.
+_SRC_PRIV="$STAGING/public/privacy"
+if [ -d "$_SRC_PRIV" ] && [ -n "$(find "$_SRC_PRIV" -type f -name '*.html' 2>/dev/null | head -1)" ]; then
     mkdir -p "$WEB_ROOT/privacy"
-    if cp -rf "$STAGING/public/privacy/." "$WEB_ROOT/privacy/" 2>/dev/null; then
-        chmod -R 755 "$WEB_ROOT/privacy" 2>/dev/null
-        echo -e "  ${GREEN}✓ правни документи → ${WEB_ROOT}/privacy ($(find "$WEB_ROOT/privacy" -type f 2>/dev/null | wc -l) файла)${NC}"
-    else
-        echo -e "  ${YELLOW}! не успях да копирам правните документи в ${WEB_ROOT}/privacy${NC}"
-    fi
+    _pub_apps=0; _pub_files=0
+    for _appdir in "$_SRC_PRIV"/*/; do
+        [ -d "$_appdir" ] || continue
+        _app="$(basename "$_appdir")"
+        # има ли изобщо .html за този ап? ако не → пропускаме (не пипаме живите)
+        [ -n "$(find "$_appdir" -maxdepth 1 -type f -name '*.html' 2>/dev/null | head -1)" ] || continue
+        mkdir -p "$WEB_ROOT/privacy/$_app"
+        # cp -f = ОБНОВЯВА наличните (новоъплоуднати) + ДОБАВЯ нови; НЕ трие липсващите.
+        # Точно исканото: обновен документ → презаписва се; документ извън партидата → остава.
+        if cp -f "$_appdir"*.html "$WEB_ROOT/privacy/$_app/" 2>/dev/null; then
+            _pub_apps=$((_pub_apps+1))
+            _pub_files=$((_pub_files+$(find "$_appdir" -maxdepth 1 -type f -name '*.html' | wc -l)))
+        fi
+    done
+    chmod -R 755 "$WEB_ROOT/privacy" 2>/dev/null
+    _live_files=$(find "$WEB_ROOT/privacy" -type f 2>/dev/null | wc -l)
+    echo -e "  ${GREEN}✓ правни документи: обновени/добавени ${_pub_files} файла за ${_pub_apps} прил. (без триене); живи общо: ${_live_files}${NC}"
+else
+    echo -e "  ${YELLOW}! staging няма правни документи (privacy празно) → НЕ пипам живите (пазя ги)${NC}"
 fi
 
 # private/ → project/private/
-# --delete с excludes за runtime data (node_modules, databases, uploads, logs, .env)
-echo -e "  ${YELLOW}private/ → ${PRIVATE_DIR} (with --delete)${NC}"
-rsync -a --delete \
+# --delete (само пълен деплой) с excludes за runtime data (node_modules, databases, uploads, logs, .env)
+echo -e "  ${YELLOW}private/ → ${PRIVATE_DIR} (${DEL_FLAG:-overlay})${NC}"
+rsync -a $DEL_FLAG \
     --exclude='node_modules/' \
     --exclude='*.db' \
     --exclude='*.db-wal' \
@@ -688,12 +716,12 @@ if [ -f "$GLOBAL_ENV" ]; then
     echo -e "  ${GREEN}✓ .env: CHAT_DB_TYPE=${DB_TYPE}, CHAT_SQLITE_DB_FILE=${ENV_DB_FILE:-amschat.db}${NC}"
 fi
 
-# deploy-scripts/, docs/, tests/ — пълен sync с --delete (нямат runtime data)
+# deploy-scripts/, docs/, tests/ — sync с --delete САМО при пълен деплой (нямат runtime data)
 for dir in deploy-scripts docs tests; do
     if [ -d "$STAGING/$dir" ]; then
-        rsync -a --delete "$STAGING/$dir/" "$PROJECT_DIR/$dir/" 2>/dev/null
+        rsync -a $DEL_FLAG "$STAGING/$dir/" "$PROJECT_DIR/$dir/" 2>/dev/null
         DIR_COUNT=$(find "$PROJECT_DIR/$dir" -type f | wc -l)
-        echo -e "  ${GREEN}✓ $dir/: ${DIR_COUNT} файла (with --delete)${NC}"
+        echo -e "  ${GREEN}✓ $dir/: ${DIR_COUNT} файла (${DEL_FLAG:-overlay})${NC}"
     else
         # Ако директорията липсва в staging, изтрий я и от project (full clean)
         if [ -d "$PROJECT_DIR/$dir" ]; then

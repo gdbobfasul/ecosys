@@ -341,6 +341,12 @@ if [ -f "$ROOT/deploy-scripts/gen-app-icons.mjs" ] && command -v node >/dev/null
 fi
 
 echo ""
+# Домейн на УСЛУГИТЕ (API) → всички апове от ЕДИНСТВЕНИЯ източник public/shared/services.json (поле
+# `domain`). Смениш домейна там → следващ билд го разнася в кода (faq/scraper/selflearning/watch/portals).
+# Така услугите не зависят от стари домейни и се управляват от ЕДНО място.
+if [ -f "$ROOT/deploy-scripts/set-service-domain.mjs" ] && command -v node >/dev/null 2>&1; then
+  ( cd "$ROOT" && node deploy-scripts/set-service-domain.mjs ) || echo -e "  ${YELLOW}↷ разнасянето на домейна на услугите прескочено${NC}"
+fi
 echo -e "  За билд: ${GREEN}${#APPS[@]}${NC} апп(а)"
 echo ""
 

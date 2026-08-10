@@ -70,7 +70,11 @@ progress_step() {
   local C=$'\e[36m' G=$'\e[32m' X=$'\e[0m'
   local sec_exp="${_P_TBL[$key]:-$_P_DEFAULT}"
   local cnt_pct=$(( (_P_I - 1) * 100 / _P_NPLAN ))
-  if [ "${_P_HAVE:-0}" = 1 ]; then
+  if [ -n "${_P_TICK_PID:-}" ]; then
+    # Долният ЖИВ тикер вече показва бара → тук печатаме САМО кратък маркер за секцията (без
+    # дублиран прогрес-бар, който после се качва нагоре и обърква). Единственият бар е долу.
+    printf '   %s▶ Секция %d/%d · %s%s\n' "$C" "$_P_I" "$_P_NPLAN" "$disp" "$X"
+  elif [ "${_P_HAVE:-0}" = 1 ]; then
     local remaining=$(( _P_TOTAL - _P_DONE_EXP )); [ "$remaining" -lt 0 ] && remaining=0
     local pct=$(( _P_DONE_EXP * 100 / _P_TOTAL )); [ "$pct" -gt 99 ] && pct=99
     local eta="$remaining"; [ "$_P_DONE_EXP" -gt 0 ] && [ "$now" -gt 0 ] && eta=$(( remaining * now / _P_DONE_EXP ))

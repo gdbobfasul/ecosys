@@ -7,7 +7,7 @@
 // сбърка пътят: всичко освен домейна е фиксирано и еднакво.
 //
 // Каноничната схема (трябва да съвпада 1:1 с deploy-scripts/server/23-link-selflearning-robot.sh):
-//   base   = https://<домейн>/api/selflearning
+//   base   = https://pupikes.app/api/selflearning
 //   sync   = <base>/sync/<token>     (export-to-server)
 //   listen = <base>/listen/<token>   (режим „Слушай“)
 //   health = <base>/health           (проверка на живо)

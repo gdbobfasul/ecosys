@@ -525,17 +525,9 @@ run_choice() {
             fi
             ;;
         2)
-            # Обхват (кои приложения) + вариант на билда вътре в точка 2.
-            BUILD_SCOPE="$(release_scope "Точка 2 — кои приложения да билдне (подписани)?")"
-            echo ""
-            echo "  Вариант на билда в точка 2?"
-            echo "    1) Само Релийз (подписан) — по-бързо (НЕ билдва и дебъг)"
-            echo "    2) Релийз + Дебъг (и двете)"
-            read -p "  Избери [1-2, Enter=1]: " VARMODE2
-            case "$VARMODE2" in 2) export KCY_BUILD_VARIANT=both ;; *) export KCY_BUILD_VARIANT=release ;; esac
-            [ "$BUILD_SCOPE" != "__ALL__" ] && export KCY_APPS_ONLY="$BUILD_SCOPE"
+            # Всички въпроси (обхват на билд + вариант + обхват на асети/качване) са ВЪТРЕ в
+            # 02-full-install → покрити от неговото „Да използвам ли старите настройки? [Y/n]".
             run_cmd ./deploy-scripts/02-full-install.sh
-            unset KCY_APPS_ONLY KCY_BUILD_VARIANT
             ;;
         3)
             echo ""
@@ -1525,6 +1517,17 @@ run_choice() {
                 RC=$?
                 print_run_summary
                 [ "$RC" -eq 0 ] && echo -e "  ${GREEN}✓ Домейните/SSL са настроени${NC}" || echo -e "  ${RED}✗ грешка (exit ${RC})${NC}"
+                # ── ПРОВЕРКИ НАКРАЯ (както 2/4/5/57): правни документи + сървиси на всички приложения ──
+                if command -v node >/dev/null 2>&1; then
+                    if [ -f "$SCRIPT_DIR/check-legal-links.mjs" ]; then
+                        echo ""; echo -e "${CYAN}  ━━━ Правни документи — живи ли са ━━━${NC}"
+                        ( cd "$SCRIPT_DIR/.." && node deploy-scripts/check-legal-links.mjs ) || echo -e "  ${RED}⚠ правни документи с проблем — виж горе${NC}"
+                    fi
+                    if [ -f "$SCRIPT_DIR/check-all-app-services.mjs" ]; then
+                        echo ""; echo -e "${CYAN}  ━━━ Сървиси на приложенията — живи ли са ━━━${NC}"
+                        ( cd "$SCRIPT_DIR/.." && node deploy-scripts/check-all-app-services.mjs ) || echo -e "  ${RED}⚠ очакван сървис е ДОЛУ — виж горе${NC}"
+                    fi
+                fi
             else echo "  Отказано"; fi
             press_enter
             ;;
@@ -1636,7 +1639,7 @@ run_choice() {
             echo ""
             echo "  Кой вариант да билдна?"
             echo "    1) Само Дебъг (бързо — за тест на телефон)"
-            echo "    2) Само Релийз (подписан — за магазина; НЕ билдва дебъг → по-бързо)"
+            echo "    2) Само Релийз (подписан, за магазина) — ПО-БЪРЗО (без дебъг)"
             echo "    3) Дебъг + Релийз (и двете)"
             read -p "  Избери [1-3, Enter=1]: " VARMODE
             [ "$BUILD_SCOPE" != "__ALL__" ] && export KCY_APPS_ONLY="$BUILD_SCOPE"

@@ -9,7 +9,7 @@
 // виж net.js бележките).
 import { pupikesBarButton } from './pupikes-bar.js';
 
-const ENDPOINT = 'https://selflearning.bot.nu/api/portals/bug-report/anon';
+const ENDPOINT = 'https://pupikes.app/api/portals/bug-report/anon';
 
 // Кратки етикети на 15-те езика (fallback → en). Езикът се чете от <html lang> на приложението.
 const L = {

@@ -29,6 +29,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
   }
 })();
 
+// ── УСТОЙЧИВОСТ: сървисът НЕ бива да умира от единична необработена грешка ──
+// Без това всяка unhandled грешка убива процеса → systemd (Restart=always) го рестартира →
+// мигаща наличност (health ту 200, ту 000). Логваме и продължаваме да работим.
+process.on('uncaughtException', (e) => { try { console.error('[faq-gateway] uncaughtException:', e && e.stack || e); } catch (_) {} });
+process.on('unhandledRejection', (e) => { try { console.error('[faq-gateway] unhandledRejection:', e && e.stack || e); } catch (_) {} });
+
 const { config, enabledChannels } = await import('./config.js');
 const { respond } = await import('./lib/respond.js');
 const store = await import('./lib/store.js');

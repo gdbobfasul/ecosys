@@ -38,7 +38,10 @@ echo ""
 
 # ── Настройки от миналото пускане (за „използвай старите") ──
 ANSWERS_FILE="$PROJECT_ROOT/.full-install-answers"
-LAST_TARGET=""; LAST_ASSETS=0; LAST_DROP=0; LAST_BUILD=0; LAST_UPDATE=0; LAST_NPM=0
+LAST_TARGET=""; LAST_NPM=0; LAST_DROP=0; LAST_ANSWERS_V=""
+LAST_BUILD=0; LAST_BUILD_LIST=""; LAST_BUILD_VARIANT="both"
+LAST_ASSETS=0; LAST_ASSET_LIST=""
+LAST_UPDATE=0; LAST_UPDATE_LIST=""
 [ -f "$ANSWERS_FILE" ] && . "$ANSWERS_FILE"
 
 # помощник: въпрос да/не с дефолт (0/1) → резултат в глобалната ANS
@@ -50,6 +53,24 @@ ask_yn() {
     if [ -z "$_r" ]; then ANS="$2"; else case "${_r,,}" in y|yes|да|д) ANS=1;; *) ANS=0;; esac; fi
 }
 yn() { [ "$1" = 1 ] && echo ДА || echo НЕ; }
+# Списък „приложения за Релийз" (видимите на pupikes.app) — от apk/catalog.json.
+release_list() { node "$PROJECT_ROOT/deploy-scripts/release-apps.mjs" 2>/dev/null | tr '\n' ' ' | sed 's/ *$//'; }
+# Обхват: печата „__ALL__" (всички) | списък имена (избрани) | релийз списъка (по подр.). Подсказки→stderr.
+ask_scope() {
+    local title="${1:-Кои приложения?}" pick names rel
+    { echo ""; echo "  $title"
+      echo "    1) Само приложенията за Релийз (видимите на pupikes.app)  [по подразбиране]"
+      echo "    2) ВСИЧКИ приложения"
+      echo "    3) Избрани (едно или няколко имена)"
+      echo "    0) Никое (пропусни тази стъпка)"
+      read -p "  Избери [0-3, Enter=1]: " pick; } 1>&2
+    case "$pick" in
+        0) printf '__NONE__' ;;
+        2) printf '__ALL__' ;;
+        3) read -p "  Име(на) (интервал между тях): " names 1>&2; printf '%s' "$names" ;;
+        *) rel="$(release_list)"; [ -z "${rel// /}" ] && printf '__ALL__' || printf '%s' "$rel" ;;
+    esac
+}
 
 [ -f .deploy-targets ] && . .deploy-targets
 resolve_target() {  # $1 = име на target → SRV/USR/PRT + t
@@ -59,8 +80,9 @@ resolve_target() {  # $1 = име на target → SRV/USR/PRT + t
 
 # ── Първи въпрос: „Да използвам ли старите настройки?" (само ако има запис и няма подаден target) ──
 USE_OLD=0
-if [ -f "$ANSWERS_FILE" ] && [ -z "$1" ]; then
+if [ -f "$ANSWERS_FILE" ] && [ "$LAST_ANSWERS_V" = 3 ] && [ -z "$1" ]; then
     echo -e "  ${CYAN}Последно пускане:${NC} цел=${GREEN}${LAST_TARGET:-?}${NC} · билд=$(yn $LAST_BUILD) · npm=$(yn $LAST_NPM) · асети=$(yn $LAST_ASSETS) · drop=$(yn $LAST_DROP) · обнови апове=$(yn $LAST_UPDATE)"
+    echo -e "  ${CYAN}Обхвати:${NC} билд=${GREEN}${LAST_BUILD_LIST:-всички}/${LAST_BUILD_VARIANT}${NC} · асети=${GREEN}${LAST_ASSET_LIST:-всички}${NC} · обнови=${GREEN}${LAST_UPDATE_LIST:-всички}${NC}"
     read -p "  Да използвам ли старите настройки? [Y/n]: " _ro
     case "${_ro,,}" in n|no|не|н) USE_OLD=0;; *) USE_OLD=1;; esac
     echo ""
@@ -135,26 +157,45 @@ echo ""
 
 # ── Всички въпроси отпред (при „старите настройки" се приемат наготово) ──
 if [ "$USE_OLD" = 1 ]; then
-    BUILD_APPS=$LAST_BUILD; NPM_BUILD=$LAST_NPM; WITH_ASSETS=$LAST_ASSETS; DROP_DB=$LAST_DROP; UPDATE_APPS=$LAST_UPDATE
+    NPM_BUILD=$LAST_NPM; DROP_DB=$LAST_DROP
+    BUILD_APPS=$LAST_BUILD; BUILD_APPS_LIST="$LAST_BUILD_LIST"; BUILD_VARIANT="$LAST_BUILD_VARIANT"
+    WITH_ASSETS=$LAST_ASSETS; ASSET_APPS_LIST="$LAST_ASSET_LIST"
+    UPDATE_APPS=$LAST_UPDATE; UPDATE_APPS_LIST="$LAST_UPDATE_LIST"
     echo -e "  ${CYAN}Ползвам старите настройки.${NC}"
 else
-    ask_yn "Да билдна ли приложенията (всички, подписани)?" "$LAST_BUILD"; BUILD_APPS=$ANS
+    # Всяка ап-операция е ЕДИН директен избор „за кои приложения" (или 0 = пропусни) — без отделно да/не.
+    _pk="$(ask_scope "Кои приложения да билдна (подписани)?")"
+    if [ "$_pk" = "__NONE__" ]; then BUILD_APPS=0; BUILD_APPS_LIST=""; BUILD_VARIANT="both"
+    else
+        BUILD_APPS=1; [ "$_pk" = "__ALL__" ] && BUILD_APPS_LIST="" || BUILD_APPS_LIST="$_pk"
+        { echo "    Вариант на билда:"; echo "      1) Без дебъг (само подписан) — ПО-БЪРЗО"; echo "      2) С дебъг (подписан + дебъг)"; read -p "    Избери [1-2, Enter=1]: " _bv; } 1>&2
+        [ "$_bv" = 2 ] && BUILD_VARIANT="both" || BUILD_VARIANT="release"
+    fi
     ask_yn "Да пребилдна ли npm пакетите (node_modules) на сървъра?" "$LAST_NPM"; NPM_BUILD=$ANS
-    ask_yn "Да кача и асети (видеа/картинки)?" "$LAST_ASSETS"; WITH_ASSETS=$ANS
+    _pk="$(ask_scope "Кои приложения да качат асети (видеа/картинки · общите винаги се качват)?")"
+    if [ "$_pk" = "__NONE__" ]; then WITH_ASSETS=0; ASSET_APPS_LIST=""
+    else WITH_ASSETS=1; [ "$_pk" = "__ALL__" ] && ASSET_APPS_LIST="" || ASSET_APPS_LIST="$_pk"; fi
     ask_yn "Drop Databases — трия ВСИЧКИ бази (chat/portals/eco3/HLB/WNB) и създавам от 0?" "$LAST_DROP"; DROP_DB=$ANS
-    ask_yn "Да обновя ли приложенията на сървъра (само по-новите, НЕ трие старите)?" "$LAST_UPDATE"; UPDATE_APPS=$ANS
+    _pk="$(ask_scope "Кои приложения да обновя на сървъра (само по-новите, НЕ трие старите)?")"
+    if [ "$_pk" = "__NONE__" ]; then UPDATE_APPS=0; UPDATE_APPS_LIST=""
+    else UPDATE_APPS=1; [ "$_pk" = "__ALL__" ] && UPDATE_APPS_LIST="" || UPDATE_APPS_LIST="$_pk"; fi
 fi
 RESET=""; [ "$DROP_DB" = 1 ] && RESET=" --reset"
 
-# ── Запази отговорите за следващия път ──
+# ── Запази отговорите за следващия път (вкл. обхватите на всяка операция) ──
 cat > "$ANSWERS_FILE" <<EOF
 # Авто-запис от 02-full-install.sh — отговорите от последното пускане.
 LAST_TARGET="$t"
-LAST_ASSETS=$WITH_ASSETS
+LAST_NPM=$NPM_BUILD
 LAST_DROP=$DROP_DB
 LAST_BUILD=$BUILD_APPS
+LAST_BUILD_LIST="$BUILD_APPS_LIST"
+LAST_BUILD_VARIANT="$BUILD_VARIANT"
+LAST_ASSETS=$WITH_ASSETS
+LAST_ASSET_LIST="$ASSET_APPS_LIST"
 LAST_UPDATE=$UPDATE_APPS
-LAST_NPM=$NPM_BUILD
+LAST_UPDATE_LIST="$UPDATE_APPS_LIST"
+LAST_ANSWERS_V=3
 EOF
 
 echo ""
@@ -194,8 +235,8 @@ source "$SCRIPT_DIR/lib/progress.sh" 2>/dev/null && progress_start fullinstall "
 # ══ 1/5  DEPLOY (код+.env [+асети], npm ПИТА, бази chat/portals/eco3 [+DROP], chat/eco3/portals услуги) ══
 # 0/5 БИЛД на приложенията (по избор — отговорът е взет в началото)
 if [ "$BUILD_APPS" = 1 ]; then
-    step "0/5  Билд на приложенията (всички, подписани)"
-    if bash ./deploy-scripts/release-apks.sh; then
+    step "0/5  Билд на приложенията (вариант: ${BUILD_VARIANT} · обхват: ${BUILD_APPS_LIST:-всички})"
+    if KCY_APPS_ONLY="$BUILD_APPS_LIST" KCY_BUILD_VARIANT="$BUILD_VARIANT" bash ./deploy-scripts/release-apks.sh; then
         echo -e "  ${GREEN}✓ билдът готов (apk/ + версионен маркер)${NC}"
     else
         echo -e "  ${RED}✗ билдът върна грешка — продължавам с деплоя${NC}"
@@ -222,7 +263,7 @@ for _entry in "${DEPLOY_SET[@]}"; do
 step "1/5  Deploy + npm + бази chat/portals/eco3${RESET:+ (DROP)} + услуги chat/eco3/portals"
 # KCY_IN_FULL_INSTALL=1 → 04 да НЕ възстановява failover тук (правим го накрая на 02, след услугите)
 if ! KCY_AUTO_DEFAULTS=1 KCY_AUTO_NPM=$NPM_BUILD KCY_WITH_ASSETS=$WITH_ASSETS KCY_DROP_DB=$DROP_DB DEPLOY_NO_PAUSE=1 \
-        KCY_SUPPRESS_DONE=1 KCY_IN_FULL_INSTALL=1 \
+        KCY_SUPPRESS_DONE=1 KCY_IN_FULL_INSTALL=1 KCY_APPS_ONLY="$ASSET_APPS_LIST" \
         bash ./deploy-scripts/04-deploy.sh "$SRV" "$USR" "$PRT"; then
     if [ "$_multi" = 1 ]; then
         echo -e "${RED}✗ Deploy-ът към ${t} се провали — прескачам към следващата цел.${NC}"; continue
@@ -274,9 +315,9 @@ rstep "Чат админи/модератори от .env (пас 2/2)" "sudo ${
 # Само по-новите се качват върху старите; старите приложения НЕ се трият (наслагване + проверка
 # по съдържание). Ако версиите са същите → нищо не се презаписва.
 if [ "$UPDATE_APPS" = 1 ]; then
-    step "Обновяване на приложенията на pupikes.app (само по-новите)"
+    step "Обновяване на приложенията на pupikes.app (само по-новите · обхват: ${UPDATE_APPS_LIST:-всички})"
     if [ -n "$t" ]; then
-        KCY_NO_PAUSE=1 bash ./deploy-scripts/sync-apps.sh "$t"
+        KCY_NO_PAUSE=1 KCY_APPS_ONLY="$UPDATE_APPS_LIST" bash ./deploy-scripts/sync-apps.sh "$t"
     else
         echo -e "  ${YELLOW}! custom цел без име — качи приложенията ръчно към този сървър${NC}"
     fi

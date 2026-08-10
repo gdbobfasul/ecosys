@@ -17,7 +17,7 @@ import { pupikesBarButton } from './pupikes-bar.js';
 const PRIVACY_BASE = 'https://pupikes.app/privacy';
 const PRIVACY_FILE = 'ru-privacy.html';           // заменя се при инжектиране (по магазин)
 const TERMS_FILE = PRIVACY_FILE.indexOf('hw') === 0 ? 'hw-terms.html' : 'rustore-terms.html';
-const REPORT_ENDPOINT = 'https://selflearning.bot.nu/api/portals/bug-report/anon';
+const REPORT_ENDPOINT = 'https://pupikes.app/api/portals/bug-report/anon';
 
 const L = {
   priv:   { bg:'Поверителност', ru:'Конфиденциальность', uk:'Конфіденційність', en:'Privacy', de:'Datenschutz', fr:'Confidentialité', es:'Privacidad', 'es-MX':'Privacidad', it:'Privacy', pt:'Privacidade', ar:'الخصوصية', hi:'गोपनीयता', ja:'プライバシー', ky:'Купуялык', 'zh-Hant':'私隱' },

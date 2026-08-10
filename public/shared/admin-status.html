@@ -156,12 +156,14 @@
       var SVCMAP={};
       function buildSvcMap(sj){
         SVCMAP={};
+        var DOM=((sj&&sj.domain)||'').replace(/\/+$/,'');   // домейнът е на ЕДНО място в services.json
         var arr=(sj&&Array.isArray(sj.services))?sj.services:[];
         arr.forEach(function(s){
           if(s.perApp===false) return;
+          var url=s.healthUrl||(DOM+(s.healthPath||''));   // URL = domain + healthPath
           (s.apps||[]).forEach(function(app){
             if(!/^[a-z0-9\-]+$/i.test(app)) return; // само реални app id-та (не „всички …")
-            (SVCMAP[app]=SVCMAP[app]||[]).push({ name:s.name, url:s.healthUrl, deployed:s.deployed!==false });
+            (SVCMAP[app]=SVCMAP[app]||[]).push({ name:s.name, url:url, deployed:s.deployed!==false });
           });
         });
       }

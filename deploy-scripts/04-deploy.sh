@@ -692,6 +692,9 @@ if [ "$RUN_INSTALL" = "y" ] || [ "$RUN_INSTALL" = "Y" ]; then
     # за да направи правилни предложения (server_name = IP/domain/both)
     # nginx server_name = главния домейн от domains.conf (НЕ SSH хоста).
     PROD_DOMAIN="${MAIN_DOMAIN:-$TARGET_prod_SERVER}"
+    # ЧАСТИЧЕН ДЕПЛОЙ: ако е ограничен до избрани/само-Релийз приложения (KCY_APPS_ONLY),
+    # пакетът НЕ носи всички апове → 05 НЕ бива да пуска rsync --delete (иначе трие чуждите).
+    _PARTIAL_DEPLOY=0; [ -n "${KCY_APPS_ONLY:-}" ] && _PARTIAL_DEPLOY=1
     ssh ${SSH_OPTS} "${USER}@${SERVER}" "cat > /tmp/deploy_target_info << TARGETINFO
 TARGET_NAME=${TARGET_NAME:-custom}
 TARGET_SERVER=${SERVER}
@@ -700,6 +703,7 @@ AUTO_NPM=${KCY_AUTO_NPM:-0}
 AUTO_DEFAULTS=${KCY_AUTO_DEFAULTS:-0}
 DROP_DB=${KCY_DROP_DB:-0}
 WITH_ASSETS=${KCY_WITH_ASSETS:-0}
+PARTIAL_DEPLOY=${_PARTIAL_DEPLOY}
 TARGETINFO
 " 2>/dev/null
 

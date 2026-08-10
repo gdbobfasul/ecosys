@@ -17,7 +17,7 @@
 # Usage: sudo ./08-setup-domain.sh
 ##############################################################################
 set -u
-RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; NC=$'\033[0m'
+RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'; CYAN=$'\033[0;36m'; GRAY=$'\033[0;90m'; NC=$'\033[0m'
 
 echo -e "${CYAN}========================================"
 echo "  KCY — Приложни домейни + SSL (webroot)"
@@ -98,6 +98,11 @@ catalog_locations() {
     # /var/www/html/apk (каталогът), затова изрично сервираме /privacy/ от /var/www/html/privacy.
     # БЕЗ парола — модераторите трябва да ги четат. `^~` бие каталожния `location /`.
     printf '    location ^~ /privacy/ { root /var/www/html; }\n'
+    # УСЛУГИ на pupikes.app: проксираме /api/* към локалните бекенди, за да НЕ зависят услугите
+    # от стари домейни (всичко под pupikes.app — единствен домейн). kcy-apps/*.conf носи
+    # /api/selflearning/, /api/watch/, /api/faq/, /api/scraper/ (+ hlb/wnb/fbp). Портал = :3002.
+    printf '    include /etc/nginx/kcy-apps/*.conf;\n'
+    printf '    location ^~ /api/portals/ { proxy_pass http://127.0.0.1:3002; proxy_http_version 1.1; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_read_timeout 86400; }\n'
     # Каталог (НЕ SPA): голият домейн → index.html (през `index`); липсващ път → 404.
     # НЕ ползваме /index.html като try_files fallback — при липсващ index.html това прави
     # вътрешен редирект-цикъл → nginx връща 500. С =404 такъв цикъл е невъзможен.

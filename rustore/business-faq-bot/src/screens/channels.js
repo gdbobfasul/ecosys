@@ -67,7 +67,7 @@ function gatewayBlock() {
   const cfg = (getState().channels && getState().channels.gateway) || {};
 
   const statusEl = el('span', { class: 'pill pending' }, gatewayConfigured(cfg) ? t('ch_access_checking') : t('ch_not_configured'));
-  const baseInput = el('input', { class: 'input', type: 'text', value: cfg.baseUrl || '', placeholder: 'https://pupikes.com/api/faq' });
+  const baseInput = el('input', { class: 'input', type: 'text', value: cfg.baseUrl || '', placeholder: 'https://pupikes.app/api/faq' });
   const tokenInput = el('input', { class: 'input', type: 'text', value: cfg.adminToken || '', placeholder: t('ch_gw_token') });
 
   function readForm() {

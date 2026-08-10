@@ -1,22 +1,23 @@
 {
-  "_note": "ЕДИНСТВЕН ИЗТОЧНИК за бекенд сървисите на приложенията. Четат го: deploy-scripts/check-all-app-services.mjs (край на точки 2/4/5/57 + тестовия робот), public/shared/admin-status.html (админ), apk/index.html (pupikes.app) и сървър setup-ите. Всяка промяна тук се отразява НАВСЯКЪДЕ.",
-  "_legend": "perApp:true → показва ⚙ на реда на всяко изброено приложение (двете страници). deployed:true → ако е долу → ❗ (червено, очаква се да работи); false → ⏳ (още не е пуснат). softHealth:true → 4xx с JSON също се брои за жив (иска токен). unit/setup = как се вдига на сървъра.",
+  "_note": "ЕДИНСТВЕН ИЗТОЧНИК за бекенд сървисите на приложенията. Четат го: deploy-scripts/check-all-app-services.mjs (край на 2/4/5/57 + робот), public/shared/admin-status.html, apk/index.html (pupikes.app) и сървър setup-ите.",
+  "_domainNote": "ДОМЕЙНЪТ Е НА ЕДНО МЯСТО — полето `domain` по-долу. Всеки health URL се строи като domain + healthPath. Смениш `domain` ТУК → сменя се навсякъде (проверка + админ + pupikes.app). Апове: пусни set-service-domain.mjs. nginx: pupikes.app проксира /api/* (08-setup-domain.sh, точка 33).",
+  "_legend": "perApp:true → показва ⚙ на реда на всяко изброено приложение. deployed:true → долу=❗; false=⏳. softHealth:true → 4xx с JSON също е живо.",
+  "domain": "https://pupikes.app",
   "services": [
     {
       "id": "relay",
       "name": "Selflearning релей (учене/глас/сдвояване)",
-      "healthUrl": "https://selflearning.bot.nu/api/selflearning/health",
+      "healthPath": "/api/selflearning/health",
       "apps": ["baby-monitor", "camera-watch", "selflearning-friend"],
       "deployed": true,
       "perApp": true,
       "unit": "kcy-selflearning",
-      "setup": "22-setup-selflearning-server.sh",
-      "note": "Същият релей обслужва и /api/watch/ (сдвояване на Baby Radar / MotionHawk). Ако точка 2 не пусне setup-а → сдвояването пада."
+      "setup": "22-setup-selflearning-server.sh"
     },
     {
       "id": "faq",
       "name": "FAQ шлюз (WhatsApp/Messenger/Viber)",
-      "healthUrl": "https://selflearning.bot.nu/api/faq/health",
+      "healthPath": "/api/faq/health",
       "apps": ["business-faq-bot"],
       "deployed": true,
       "perApp": true,
@@ -26,7 +27,7 @@
     {
       "id": "scraper",
       "name": "Скрейпър бекенд (търсене/контакти/имейли)",
-      "healthUrl": "https://selflearning.bot.nu/api/scraper/health",
+      "healthPath": "/api/scraper/health",
       "apps": ["pupikes-toolkit-scraper"],
       "deployed": true,
       "perApp": true,
@@ -36,7 +37,7 @@
     {
       "id": "portals",
       "name": "Портал API (Обратна връзка/услуги)",
-      "healthUrl": "https://selflearning.bot.nu/api/portals/health",
+      "healthPath": "/api/portals/health",
       "apps": ["всички (бутон „Обратна връзка\")"],
       "deployed": true,
       "perApp": false,

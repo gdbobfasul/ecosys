@@ -16,15 +16,17 @@ const C = { r: '\x1b[31m', g: '\x1b[32m', y: '\x1b[33m', gray: '\x1b[90m', b: '\
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const MANIFEST = path.join(HERE, '..', 'public', 'shared', 'services.json');
 
-function loadServices() {
+function loadManifest() {
   try {
     const j = JSON.parse(fs.readFileSync(MANIFEST, 'utf8'));
-    return Array.isArray(j.services) ? j.services : [];
+    return { domain: (j.domain || '').replace(/\/+$/, ''), services: Array.isArray(j.services) ? j.services : [] };
   } catch (e) {
     console.log(`${C.r}Не мога да прочета ${MANIFEST}: ${e.message}${C.x}`);
-    return [];
+    return { domain: '', services: [] };
   }
 }
+// Здравният URL: абсолютен (s.healthUrl) ИЛИ domain + s.healthPath (ЕДИНСТВЕН източник на домейна).
+function healthUrlOf(domain, s) { return s.healthUrl || (domain + (s.healthPath || '')); }
 
 async function ping(url) {
   try {
@@ -43,12 +45,12 @@ function isJson(body) { return /^\s*\{/.test(String(body || '')); }
 
 async function main() {
   console.log(`${C.b}Проверка на сървисите на ВСИЧКИ приложения (важат ли за апповете)${C.x}`);
-  const services = loadServices();
+  const { domain, services } = loadManifest();
   if (!services.length) { console.log(`${C.y}Няма дефинирани сървиси в списъка.${C.x}`); process.exit(0); }
   let downExpected = 0;
   for (const s of services) {
     const apps = Array.isArray(s.apps) ? s.apps.join(', ') : String(s.apps || '');
-    const r = await ping(s.healthUrl);
+    const r = await ping(healthUrlOf(domain, s));
     const live = isJson(r.body) && (r.status === 200 || (s.softHealth && r.status >= 200 && r.status < 500));
     if (live) {
       console.log(`  ${C.g}✓ ${s.name}${C.x}  ${C.gray}(${apps})${C.x}`);

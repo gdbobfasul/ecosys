@@ -131,6 +131,15 @@ else
     echo -e "  ${CYAN}  .env не е подаден за тази синхронизация — оставям текущия непокътнат${NC}"
 fi
 
+# ── Вдигане на ап-услугите (релей/FAQ/скрейпър) — за ВСИЧКИ приложения, идемпотентно ──
+# Точка 5 също гарантира, че услугите съществуват и вървят (не само рестарт). Ако unit-ът
+# липсва (нов сървър/нова услуга), setup-ът го създава; ако е налице — само го подсигурява.
+echo -e "${YELLOW}Подсигуряване на ап-услугите (релей/FAQ/скрейпър)...${NC}"
+for _svc_setup in 22-setup-selflearning-server.sh 25-setup-faq-server.sh 26-setup-scraper-server.sh; do
+    _SS="${PROJECT_DIR}/deploy-scripts/server/${_svc_setup}"
+    [ -f "$_SS" ] && { bash "$_SS" </dev/null >/dev/null 2>&1 && echo -e "  ${GREEN}OK ${_svc_setup}${NC}" || echo -e "  ${YELLOW}! ${_svc_setup} върна грешка — продължавам${NC}"; }
+done
+
 # рестарт на node сървисите (nginx НЕ се пипа)
 echo -e "${YELLOW}Рестарт на node сървисите...${NC}"
 for svc in kcy-chat kcy-eco3 kcy-portals kcy-hlb kcy-wnb kcy-fbp kcy-diag kcy-selflearning kcy-faq kcy-scraper; do
