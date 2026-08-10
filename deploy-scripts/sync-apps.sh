@@ -69,17 +69,23 @@ WEB_APK="/var/www/html/apk"
 # СЪРВЪРЪТ получава ПЛОСКО (само release, по basename) — затова качваме apk/*/release/*.apk + каталога.
 declare -a CAND_CAT=() CAND_BIN=()
 while IFS= read -r f; do CAND_CAT+=("$f"); done < <(find apk -maxdepth 1 -type f ! -name '*.apk' ! -name '*.exe')
+# САМО избраните магазини (KCY_STORES): избереш Huawei → нула RuStore в качването. По подр. двата.
+STORES="${KCY_STORES:-rustore huawei}"
 if [ -n "$KCY_APPS_ONLY" ]; then
     for nm in $KCY_APPS_ONLY; do
         slug="$(node deploy-scripts/apk-slug.mjs "$nm" 2>/dev/null)"; [ -z "$slug" ] && slug="$nm"
         # ТОЧЕН суфикс на магазина (НЕ „${slug}-*-release.apk" — то заглъща под-аповете:
         # напр. slug „Pupikes-Toolkit" хващаше и „Pupikes-Toolkit-Scraper-…" → двойно качване).
-        while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -type f -path '*/release/*' \( -name "${slug}-huawei-release.apk" -o -name "${slug}-rustore-release.apk" \))
+        for st in $STORES; do
+            while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -type f -path '*/release/*' -name "${slug}-${st}-release.apk")
+        done
         while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -maxdepth 1 -type f -name "${nm}-*.exe")
     done
-    echo -e "  ${CYAN}само избрани: ${KCY_APPS_ONLY}${NC}"
+    echo -e "  ${CYAN}само избрани: ${KCY_APPS_ONLY} · магазини: ${STORES}${NC}"
 else
-    while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -type f -path '*/release/*' -name '*-release.apk')
+    for st in $STORES; do
+        while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -type f -path '*/release/*' -name "*-${st}-release.apk")
+    done
     while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -maxdepth 1 -type f -name '*.exe')
 fi
 # дедупликация по basename (предпазна мрежа: един и същ APK да не влиза в списъка два пъти)

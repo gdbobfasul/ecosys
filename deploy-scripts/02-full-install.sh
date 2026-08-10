@@ -338,7 +338,7 @@ rstep "Чат админи/модератори от .env (пас 2/2)" "sudo ${
 if [ "$UPDATE_APPS" = 1 ]; then
     step "Обновяване на приложенията на pupikes.app (само по-новите · обхват: ${UPDATE_APPS_LIST:-всички})"
     if [ -n "$t" ]; then
-        KCY_NO_PAUSE=1 KCY_APPS_ONLY="$UPDATE_APPS_LIST" KCY_IN_FULL_INSTALL=1 bash ./deploy-scripts/sync-apps.sh "$t"
+        KCY_NO_PAUSE=1 KCY_APPS_ONLY="$UPDATE_APPS_LIST" KCY_STORES="${BUILD_STORES:-rustore huawei}" KCY_IN_FULL_INSTALL=1 bash ./deploy-scripts/sync-apps.sh "$t"
     else
         echo -e "  ${YELLOW}! custom цел без име — качи приложенията ръчно към този сървър${NC}"
     fi

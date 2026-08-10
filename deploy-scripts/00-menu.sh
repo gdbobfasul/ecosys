@@ -1653,6 +1653,7 @@ run_choice() {
                 3) export KCY_STORES="rustore huawei" ;;
                 *) export KCY_STORES="huawei" ;;
             esac
+            UP_STORES="$KCY_STORES"   # пази избора за качването (KCY_STORES се unset-ва след билда)
             [ "$BUILD_SCOPE" != "__ALL__" ] && export KCY_APPS_ONLY="$BUILD_SCOPE"
             case "$VARMODE" in
                 2) export KCY_BUILD_VARIANT=release; bash "$SCRIPT_DIR/release-apks.sh" ;;
@@ -1668,7 +1669,7 @@ run_choice() {
             if [ "$UP_DO" = 1 ]; then
                 echo ""
                 echo -e "  ${CYAN}→ Качване на сървъра (${UP_TARGETS}${UP_APPS:+ · само: $UP_APPS})...${NC}"
-                KCY_NO_PAUSE=1 KCY_APPS_ONLY="$UP_APPS" bash "$SCRIPT_DIR/sync-apps.sh" $UP_TARGETS
+                KCY_NO_PAUSE=1 KCY_APPS_ONLY="$UP_APPS" KCY_STORES="${UP_STORES:-rustore huawei}" bash "$SCRIPT_DIR/sync-apps.sh" $UP_TARGETS
             fi
             press_enter
             ;;
