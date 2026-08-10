@@ -39,7 +39,7 @@ echo ""
 # ── Настройки от миналото пускане (за „използвай старите") ──
 ANSWERS_FILE="$PROJECT_ROOT/.full-install-answers"
 LAST_TARGET=""; LAST_NPM=0; LAST_DROP=0; LAST_ANSWERS_V=""
-LAST_BUILD=0; LAST_BUILD_LIST=""; LAST_BUILD_VARIANT="both"
+LAST_BUILD=0; LAST_BUILD_LIST=""; LAST_BUILD_VARIANT="both"; LAST_BUILD_STORES="rustore huawei"
 LAST_ASSETS=0; LAST_ASSET_LIST=""
 LAST_UPDATE=0; LAST_UPDATE_LIST=""
 [ -f "$ANSWERS_FILE" ] && . "$ANSWERS_FILE"
@@ -55,6 +55,14 @@ ask_yn() {
 yn() { [ "$1" = 1 ] && echo ДА || echo НЕ; }
 # Списък „приложения за Релийз" (видимите на pupikes.app) — от apk/catalog.json.
 release_list() { node "$PROJECT_ROOT/deploy-scripts/release-apps.mjs" 2>/dev/null | tr '\n' ' ' | sed 's/ *$//'; }
+# Четим етикет за обхват: „РЕЛИЙЗ ПРИЛОЖЕНИЯ (N)" / „ВСИЧКИ приложения" / „Избрани (N): имена…"
+sdesc() { node "$PROJECT_ROOT/deploy-scripts/scope-desc.mjs" "$1" 2>/dev/null || echo "${1:-всички}"; }
+# Обобщен четим обхват (билд+асети+обнови). Аргументи: bOn variant bList aOn aList uOn uList
+scope_summary() {
+    node "$PROJECT_ROOT/deploy-scripts/scope-summary.mjs" \
+        --buildOn "${1:-0}" --variant "${2:-both}" --build "${3:-}" \
+        --assetsOn "${4:-0}" --assets "${5:-}" --updateOn "${6:-0}" --update "${7:-}" 2>/dev/null
+}
 # Обхват: печата „__ALL__" (всички) | списък имена (избрани) | релийз списъка (по подр.). Подсказки→stderr.
 ask_scope() {
     local title="${1:-Кои приложения?}" pick names rel
@@ -82,7 +90,8 @@ resolve_target() {  # $1 = име на target → SRV/USR/PRT + t
 USE_OLD=0
 if [ -f "$ANSWERS_FILE" ] && [ "$LAST_ANSWERS_V" = 3 ] && [ -z "$1" ]; then
     echo -e "  ${CYAN}Последно пускане:${NC} цел=${GREEN}${LAST_TARGET:-?}${NC} · билд=$(yn $LAST_BUILD) · npm=$(yn $LAST_NPM) · асети=$(yn $LAST_ASSETS) · drop=$(yn $LAST_DROP) · обнови апове=$(yn $LAST_UPDATE)"
-    echo -e "  ${CYAN}Обхвати:${NC} билд=${GREEN}${LAST_BUILD_LIST:-всички}/${LAST_BUILD_VARIANT}${NC} · асети=${GREEN}${LAST_ASSET_LIST:-всички}${NC} · обнови=${GREEN}${LAST_UPDATE_LIST:-всички}${NC}"
+    echo -e "  ${CYAN}Обхват:${NC}"
+    scope_summary "$LAST_BUILD" "$LAST_BUILD_VARIANT" "$LAST_BUILD_LIST" "$LAST_ASSETS" "$LAST_ASSET_LIST" "$LAST_UPDATE" "$LAST_UPDATE_LIST" | sed "s/^/    ${GREEN}/;s/\$/${NC}/"
     read -p "  Да използвам ли старите настройки? [Y/n]: " _ro
     case "${_ro,,}" in n|no|не|н) USE_OLD=0;; *) USE_OLD=1;; esac
     echo ""
@@ -158,18 +167,20 @@ echo ""
 # ── Всички въпроси отпред (при „старите настройки" се приемат наготово) ──
 if [ "$USE_OLD" = 1 ]; then
     NPM_BUILD=$LAST_NPM; DROP_DB=$LAST_DROP
-    BUILD_APPS=$LAST_BUILD; BUILD_APPS_LIST="$LAST_BUILD_LIST"; BUILD_VARIANT="$LAST_BUILD_VARIANT"
+    BUILD_APPS=$LAST_BUILD; BUILD_APPS_LIST="$LAST_BUILD_LIST"; BUILD_VARIANT="$LAST_BUILD_VARIANT"; BUILD_STORES="$LAST_BUILD_STORES"
     WITH_ASSETS=$LAST_ASSETS; ASSET_APPS_LIST="$LAST_ASSET_LIST"
     UPDATE_APPS=$LAST_UPDATE; UPDATE_APPS_LIST="$LAST_UPDATE_LIST"
     echo -e "  ${CYAN}Ползвам старите настройки.${NC}"
 else
     # Всяка ап-операция е ЕДИН директен избор „за кои приложения" (или 0 = пропусни) — без отделно да/не.
     _pk="$(ask_scope "Кои приложения да билдна (подписани)?")"
-    if [ "$_pk" = "__NONE__" ]; then BUILD_APPS=0; BUILD_APPS_LIST=""; BUILD_VARIANT="both"
+    if [ "$_pk" = "__NONE__" ]; then BUILD_APPS=0; BUILD_APPS_LIST=""; BUILD_VARIANT="both"; BUILD_STORES="rustore huawei"
     else
         BUILD_APPS=1; [ "$_pk" = "__ALL__" ] && BUILD_APPS_LIST="" || BUILD_APPS_LIST="$_pk"
         { echo "    Вариант на билда:"; echo "      1) Без дебъг (само подписан) — ПО-БЪРЗО"; echo "      2) С дебъг (подписан + дебъг)"; read -p "    Избери [1-2, Enter=1]: " _bv; } 1>&2
         [ "$_bv" = 2 ] && BUILD_VARIANT="both" || BUILD_VARIANT="release"
+        { echo "    За кои магазини да се билдва:"; echo "      1) Само Huawei"; echo "      2) Само RuStore"; echo "      3) Двата (Huawei + RuStore)"; read -p "    Избери [1-3, Enter=3]: " _sv; } 1>&2
+        case "$_sv" in 1) BUILD_STORES="huawei";; 2) BUILD_STORES="rustore";; *) BUILD_STORES="rustore huawei";; esac
     fi
     ask_yn "Да пребилдна ли npm пакетите (node_modules) на сървъра?" "$LAST_NPM"; NPM_BUILD=$ANS
     _pk="$(ask_scope "Кои приложения да качат асети (видеа/картинки · общите винаги се качват)?")"
@@ -191,6 +202,7 @@ LAST_DROP=$DROP_DB
 LAST_BUILD=$BUILD_APPS
 LAST_BUILD_LIST="$BUILD_APPS_LIST"
 LAST_BUILD_VARIANT="$BUILD_VARIANT"
+LAST_BUILD_STORES="${BUILD_STORES:-rustore huawei}"
 LAST_ASSETS=$WITH_ASSETS
 LAST_ASSET_LIST="$ASSET_APPS_LIST"
 LAST_UPDATE=$UPDATE_APPS
@@ -199,7 +211,8 @@ LAST_ANSWERS_V=3
 EOF
 
 echo ""
-echo -e "  ${YELLOW}Билд апове: $(yn $BUILD_APPS)  ·  npm пакети: $(yn $NPM_BUILD)  ·  Асети: $(yn $WITH_ASSETS)  ·  Drop бази: $(yn $DROP_DB)  ·  Обнови апове на сървъра: $(yn $UPDATE_APPS)${NC}"
+echo -e "  ${YELLOW}npm пакети: $(yn $NPM_BUILD)  ·  Drop бази: $(yn $DROP_DB)${NC}"
+scope_summary "$BUILD_APPS" "$BUILD_VARIANT" "$BUILD_APPS_LIST" "$WITH_ASSETS" "$ASSET_APPS_LIST" "$UPDATE_APPS" "$UPDATE_APPS_LIST" | sed "s/^/  ${GREEN}/;s/\$/${NC}/"
 echo -e "  ${CYAN}[checkpoint] Пълна инсталация започва: $(date '+%H:%M:%S') → ${SRV}${NC}"
 
 SSH_OPTS="-o ConnectTimeout=90 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -p ${PRT}"
@@ -235,8 +248,8 @@ source "$SCRIPT_DIR/lib/progress.sh" 2>/dev/null && progress_start fullinstall "
 # ══ 1/5  DEPLOY (код+.env [+асети], npm ПИТА, бази chat/portals/eco3 [+DROP], chat/eco3/portals услуги) ══
 # 0/5 БИЛД на приложенията (по избор — отговорът е взет в началото)
 if [ "$BUILD_APPS" = 1 ]; then
-    step "0/5  Билд на приложенията (вариант: ${BUILD_VARIANT} · обхват: ${BUILD_APPS_LIST:-всички})"
-    if KCY_APPS_ONLY="$BUILD_APPS_LIST" KCY_BUILD_VARIANT="$BUILD_VARIANT" bash ./deploy-scripts/release-apks.sh; then
+    step "0/5  Билд на приложенията (вариант: ${BUILD_VARIANT} · магазини: ${BUILD_STORES:-rustore huawei} · обхват: $(sdesc "$BUILD_APPS_LIST"))"
+    if KCY_APPS_ONLY="$BUILD_APPS_LIST" KCY_BUILD_VARIANT="$BUILD_VARIANT" KCY_STORES="${BUILD_STORES:-rustore huawei}" bash ./deploy-scripts/release-apks.sh; then
         echo -e "  ${GREEN}✓ билдът готов (apk/ + версионен маркер)${NC}"
     else
         echo -e "  ${RED}✗ билдът върна грешка — продължавам с деплоя${NC}"

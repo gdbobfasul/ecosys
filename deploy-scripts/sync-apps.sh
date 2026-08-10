@@ -72,7 +72,9 @@ while IFS= read -r f; do CAND_CAT+=("$f"); done < <(find apk -maxdepth 1 -type f
 if [ -n "$KCY_APPS_ONLY" ]; then
     for nm in $KCY_APPS_ONLY; do
         slug="$(node deploy-scripts/apk-slug.mjs "$nm" 2>/dev/null)"; [ -z "$slug" ] && slug="$nm"
-        while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -type f -path '*/release/*' -name "${slug}-*-release.apk")
+        # ТОЧЕН суфикс на магазина (НЕ „${slug}-*-release.apk" — то заглъща под-аповете:
+        # напр. slug „Pupikes-Toolkit" хващаше и „Pupikes-Toolkit-Scraper-…" → двойно качване).
+        while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -type f -path '*/release/*' \( -name "${slug}-huawei-release.apk" -o -name "${slug}-rustore-release.apk" \))
         while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -maxdepth 1 -type f -name "${nm}-*.exe")
     done
     echo -e "  ${CYAN}само избрани: ${KCY_APPS_ONLY}${NC}"
@@ -80,6 +82,13 @@ else
     while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -type f -path '*/release/*' -name '*-release.apk')
     while IFS= read -r f; do CAND_BIN+=("$f"); done < <(find apk -maxdepth 1 -type f -name '*.exe')
 fi
+# дедупликация по basename (предпазна мрежа: един и същ APK да не влиза в списъка два пъти)
+if [ "${#CAND_BIN[@]}" -gt 0 ]; then
+    declare -A _seen_bn=(); declare -a _uniq_bin=()
+    for f in "${CAND_BIN[@]}"; do b="$(basename "$f")"; [ -n "${_seen_bn[$b]:-}" ] && continue; _seen_bn["$b"]=1; _uniq_bin+=("$f"); done
+    CAND_BIN=("${_uniq_bin[@]}")
+fi
+
 # локални sha1 на бинарните кандидати (за сравнение със сървъра)
 declare -A LH=()
 for f in "${CAND_BIN[@]}"; do LH["$(basename "$f")"]="$(sha1sum "$f" | cut -d' ' -f1)"; done

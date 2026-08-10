@@ -1642,6 +1642,17 @@ run_choice() {
             echo "    2) Само Релийз (подписан, за магазина) — ПО-БЪРЗО (без дебъг)"
             echo "    3) Дебъг + Релийз (и двете)"
             read -p "  Избери [1-3, Enter=1]: " VARMODE
+            echo ""
+            echo "  За кои магазини да се билдва?"
+            echo "    1) Само Huawei"
+            echo "    2) Само RuStore"
+            echo "    3) Двата (Huawei + RuStore)"
+            read -p "  Избери [1-3, Enter=3]: " STOREMODE
+            case "$STOREMODE" in
+                1) export KCY_STORES="huawei" ;;
+                2) export KCY_STORES="rustore" ;;
+                *) export KCY_STORES="rustore huawei" ;;
+            esac
             [ "$BUILD_SCOPE" != "__ALL__" ] && export KCY_APPS_ONLY="$BUILD_SCOPE"
             case "$VARMODE" in
                 2) export KCY_BUILD_VARIANT=release; bash "$SCRIPT_DIR/release-apks.sh" ;;
@@ -1649,7 +1660,7 @@ run_choice() {
                 *) if [ "$BUILD_SCOPE" = "__ALL__" ]; then bash "$SCRIPT_DIR/build-mobile-apps.sh" all
                    else bash "$SCRIPT_DIR/build-mobile-apps.sh"; fi ;;
             esac
-            unset KCY_APPS_ONLY KCY_BUILD_VARIANT
+            unset KCY_APPS_ONLY KCY_BUILD_VARIANT KCY_STORES
             # Покритие: пълният списък апове спрямо построените release APK-та (кои ЛИПСВАТ).
             echo ""
             node "$SCRIPT_DIR/apk-coverage.mjs" --summary 2>/dev/null || true

@@ -58,7 +58,12 @@ else
 fi
 [ "${#NAMES[@]}" -eq 0 ] && { echo -e "${RED}✗ Няма апове за билд.${NC}"; exit 1; }
 
-echo -e "${BOLD}${CYAN}━━━ Release билд: ${#NAMES[@]} апа × (rustore + huawei) ━━━${NC}"
+# ── избор на магазин(и): KCY_STORES="rustore huawei" (двата, по подр.) | "huawei" | "rustore" ──
+# Така „само Huawei" билдва по 1 APK на ап (напр. 22), а не за двата магазина (44).
+STORES="${KCY_STORES:-rustore huawei}"
+_nstore=0; for _s in $STORES; do _nstore=$((_nstore+1)); done
+
+echo -e "${BOLD}${CYAN}━━━ Release билд: ${#NAMES[@]} апа × (${STORES}) = $(( ${#NAMES[@]} * _nstore )) APK ━━━${NC}"
 
 # ЧАСТИЧЕН билд → изчисти apk/ от невключените апове (правилото по-горе).
 if [ -n "${1:-}" ] && [ "${KCY_KEEP_OTHERS:-0}" != "1" ]; then
@@ -141,7 +146,7 @@ for app in "${NAMES[@]}"; do
 
   slug="$(store_slug "$app")"                         # магазинното име за файла (напр. Huntline-3D)
 
-  for store in rustore huawei; do
+  for store in $STORES; do
     d="$store/$app"
     is_app "$d" || continue
     [ -d "$d/android" ] || { FAIL+=("$app-$store (няма android/)"); continue; }
