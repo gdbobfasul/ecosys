@@ -115,18 +115,31 @@ function localFor(appDir, url) {
 }
 
 async function httpCheck(url, pkg, name, app) {
-  try {
-    const res = await fetch(url, { redirect: 'follow' });
-    if (res.status !== 200) return { ok: false, why: `HTTP ${res.status}` };
-    const body = await res.text();
-    const isPrivacy = /privacy/i.test(url);
-    const { present, foreign } = identityCheck(body, pkg, name, app);
-    if (foreign) return { ok: false, why: `ЧУЖДО приложение на живо (${foreign})` };
-    if (isPrivacy && !present) return { ok: false, why: 'на живо без идентичност (нито пакет, нито име)' };
-    return { ok: true };
-  } catch (e) {
-    return { ok: false, why: 'мрежа: ' + (e.message || e) };
+  // RETRY при ТРАНЗИЕНТНИ грешки (мрежа/таймаут/5xx/429) — по време на тежък деплой сървърът е
+  // претоварен и дава лъжливи „fetch failed". Реален 404 / чуждо приложение → веднага ✗ (без retry).
+  let lastWhy = 'мрежа: неизвестна грешка';
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      // ТАЙМАУТ: без него fetch виси БЕЗКРАЙНО при претоварен/бавен сървър → цялата проверка
+      // (и точка 2) замръзва. AbortSignal.timeout хвърля след 10с → влиза в retry-то долу.
+      const res = await fetch(url, { redirect: 'follow', signal: AbortSignal.timeout(10000) });
+      if (res.status === 200) {
+        const body = await res.text();
+        const isPrivacy = /privacy/i.test(url);
+        const { present, foreign } = identityCheck(body, pkg, name, app);
+        if (foreign) return { ok: false, why: `ЧУЖДО приложение на живо (${foreign})` };
+        if (isPrivacy && !present) return { ok: false, why: 'на живо без идентичност (нито пакет, нито име)' };
+        return { ok: true };
+      }
+      lastWhy = `HTTP ${res.status}`;
+      if (res.status >= 500 || res.status === 429) { if (attempt < 3) { await new Promise(r => setTimeout(r, 1500)); continue; } }
+      else return { ok: false, why: lastWhy };   // 404 и др. реални статуси → без retry
+    } catch (e) {
+      lastWhy = 'мрежа: ' + (e.message || e);
+      if (attempt < 3) { await new Promise(r => setTimeout(r, 1500)); continue; }
+    }
   }
+  return { ok: false, why: lastWhy + ' (след 3 опита)' };
 }
 
 async function main() {

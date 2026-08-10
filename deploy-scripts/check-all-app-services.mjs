@@ -50,8 +50,14 @@ async function main() {
   let downExpected = 0;
   for (const s of services) {
     const apps = Array.isArray(s.apps) ? s.apps.join(', ') : String(s.apps || '');
-    const r = await ping(healthUrlOf(domain, s));
-    const live = isJson(r.body) && (r.status === 200 || (s.softHealth && r.status >= 200 && r.status < 500));
+    // RETRY: по време на тежък деплой сървърът е претоварен → таймаути/лъжливи ✗. Пробвай до 3 пъти.
+    let r, live = false;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      r = await ping(healthUrlOf(domain, s));
+      live = isJson(r.body) && (r.status === 200 || (s.softHealth && r.status >= 200 && r.status < 500));
+      if (live) break;
+      if (attempt < 3) await new Promise(res => setTimeout(res, 1500));
+    }
     if (live) {
       console.log(`  ${C.g}✓ ${s.name}${C.x}  ${C.gray}(${apps})${C.x}`);
     } else if (s.deployed === false) {

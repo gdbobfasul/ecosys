@@ -179,8 +179,8 @@ else
         BUILD_APPS=1; [ "$_pk" = "__ALL__" ] && BUILD_APPS_LIST="" || BUILD_APPS_LIST="$_pk"
         { echo "    Вариант на билда:"; echo "      1) Без дебъг (само подписан) — ПО-БЪРЗО"; echo "      2) С дебъг (подписан + дебъг)"; read -p "    Избери [1-2, Enter=1]: " _bv; } 1>&2
         [ "$_bv" = 2 ] && BUILD_VARIANT="both" || BUILD_VARIANT="release"
-        { echo "    За кои магазини да се билдва:"; echo "      1) Само Huawei"; echo "      2) Само RuStore"; echo "      3) Двата (Huawei + RuStore)"; read -p "    Избери [1-3, Enter=3]: " _sv; } 1>&2
-        case "$_sv" in 1) BUILD_STORES="huawei";; 2) BUILD_STORES="rustore";; *) BUILD_STORES="rustore huawei";; esac
+        { echo "    За кои магазини да се билдва:"; echo "      1) Само Huawei  [по подразбиране]"; echo "      2) Само RuStore"; echo "      3) Двата (Huawei + RuStore)"; read -p "    Избери [1-3, Enter=1 Huawei]: " _sv; } 1>&2
+        case "$_sv" in 2) BUILD_STORES="rustore";; 3) BUILD_STORES="rustore huawei";; *) BUILD_STORES="huawei";; esac
     fi
     ask_yn "Да пребилдна ли npm пакетите (node_modules) на сървъра?" "$LAST_NPM"; NPM_BUILD=$ANS
     _pk="$(ask_scope "Кои приложения да качат асети (видеа/картинки · общите винаги се качват)?")"
@@ -242,14 +242,22 @@ for _pe in "${DEPLOY_SET[@]}"; do
   _PROG_PLAN="$_PROG_PLAN 1/5#${_pt} 2/5#${_pt} 3/5#${_pt} 4/5#${_pt} 5/5#${_pt}"
   [ "${UPDATE_APPS:-0}" = 1 ] && _PROG_PLAN="$_PROG_PLAN Обновяване#${_pt}"
 done
-_PROG_PROFILE="b${BUILD_APPS:-0}n${NPM_BUILD:-0}a${WITH_ASSETS:-0}d${DROP_DB:-0}"   # опциите влияят на времената
+# Броят магазини влияе силно на билд-времето (1 магазин ≈ ½ от 2) → влиза в профила, за да се
+# калибрира ОТДЕЛНО за 1 срещу 2 магазина (оценката „общо ~Xм" отчита избора).
+_nstores=0; for _s in ${BUILD_STORES:-rustore huawei}; do _nstores=$((_nstores+1)); done
+_PROG_PROFILE="b${BUILD_APPS:-0}n${NPM_BUILD:-0}a${WITH_ASSETS:-0}d${DROP_DB:-0}s${_nstores}"   # опциите+магазини влияят на времената
+# Брой приложения за качване → показва се в дъното на лентата (Targets: N)
+if [ "${UPDATE_APPS:-0}" = 1 ]; then
+  if [ -n "$UPDATE_APPS_LIST" ]; then _upn=0; for _u in $UPDATE_APPS_LIST; do _upn=$((_upn+1)); done; export KCY_PROGRESS_TARGETS="$_upn"
+  else export KCY_PROGRESS_TARGETS="всички"; fi
+else export KCY_PROGRESS_TARGETS="0"; fi
 source "$SCRIPT_DIR/lib/progress.sh" 2>/dev/null && progress_start fullinstall "$_PROG_PLAN" "$_PROG_PROFILE"
 
 # ══ 1/5  DEPLOY (код+.env [+асети], npm ПИТА, бази chat/portals/eco3 [+DROP], chat/eco3/portals услуги) ══
 # 0/5 БИЛД на приложенията (по избор — отговорът е взет в началото)
 if [ "$BUILD_APPS" = 1 ]; then
     step "0/5  Билд на приложенията (вариант: ${BUILD_VARIANT} · магазини: ${BUILD_STORES:-rustore huawei} · обхват: $(sdesc "$BUILD_APPS_LIST"))"
-    if KCY_APPS_ONLY="$BUILD_APPS_LIST" KCY_BUILD_VARIANT="$BUILD_VARIANT" KCY_STORES="${BUILD_STORES:-rustore huawei}" bash ./deploy-scripts/release-apks.sh; then
+    if KCY_APPS_ONLY="$BUILD_APPS_LIST" KCY_BUILD_VARIANT="$BUILD_VARIANT" KCY_STORES="${BUILD_STORES:-rustore huawei}" KCY_IN_FULL_INSTALL=1 bash ./deploy-scripts/release-apks.sh; then
         echo -e "  ${GREEN}✓ билдът готов (apk/ + версионен маркер)${NC}"
     else
         echo -e "  ${RED}✗ билдът върна грешка — продължавам с деплоя${NC}"
@@ -330,7 +338,7 @@ rstep "Чат админи/модератори от .env (пас 2/2)" "sudo ${
 if [ "$UPDATE_APPS" = 1 ]; then
     step "Обновяване на приложенията на pupikes.app (само по-новите · обхват: ${UPDATE_APPS_LIST:-всички})"
     if [ -n "$t" ]; then
-        KCY_NO_PAUSE=1 KCY_APPS_ONLY="$UPDATE_APPS_LIST" bash ./deploy-scripts/sync-apps.sh "$t"
+        KCY_NO_PAUSE=1 KCY_APPS_ONLY="$UPDATE_APPS_LIST" KCY_IN_FULL_INSTALL=1 bash ./deploy-scripts/sync-apps.sh "$t"
     else
         echo -e "  ${YELLOW}! custom цел без име — качи приложенията ръчно към този сървър${NC}"
     fi

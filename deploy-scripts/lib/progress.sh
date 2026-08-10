@@ -127,6 +127,7 @@ _p_frame() {  # $1=live $2=cur $3=now → 2 реда: глобално + per ser
   [ "$tot" -le 0 ] && tot=1; local dn=$(( tot - totrem )); [ "$dn" -lt 0 ] && dn=0
   local pct=$(( dn * 100 / tot )); [ "$pct" -gt 99 ] && pct=99; [ "$pct" -lt 0 ] && pct=0
   local g="⏱ ГЛОБАЛНО $(_p_bar "$pct") ${pct}% · остават ~$(_p_fmt "$totrem") · общо ~$(_p_fmt "$tot")"
+  [ -n "${KCY_PROGRESS_TARGETS:-}" ] && [ "${KCY_PROGRESS_TARGETS}" != 0 ] && g="$g · Targets: ${KCY_PROGRESS_TARGETS}"
   local line1="  " s
   for s in $order; do line1="$line1 $(_p_srv "$s") ~$(_p_fmt "${srvrem[$s]:-0}") ·"; done
   if [ -n "$cs" ]; then local cr=$(( cexp-(now-curstart) )); [ "$cr" -lt 0 ] && cr=0; line1="$line1 СЕГА: ${cs} на $(_p_srv "$cserver") ~$(_p_fmt "$cr")"; fi

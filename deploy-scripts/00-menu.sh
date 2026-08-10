@@ -1644,14 +1644,14 @@ run_choice() {
             read -p "  Избери [1-3, Enter=1]: " VARMODE
             echo ""
             echo "  За кои магазини да се билдва?"
-            echo "    1) Само Huawei"
+            echo "    1) Само Huawei  [по подразбиране]"
             echo "    2) Само RuStore"
             echo "    3) Двата (Huawei + RuStore)"
-            read -p "  Избери [1-3, Enter=3]: " STOREMODE
+            read -p "  Избери [1-3, Enter=1 Huawei]: " STOREMODE
             case "$STOREMODE" in
-                1) export KCY_STORES="huawei" ;;
                 2) export KCY_STORES="rustore" ;;
-                *) export KCY_STORES="rustore huawei" ;;
+                3) export KCY_STORES="rustore huawei" ;;
+                *) export KCY_STORES="huawei" ;;
             esac
             [ "$BUILD_SCOPE" != "__ALL__" ] && export KCY_APPS_ONLY="$BUILD_SCOPE"
             case "$VARMODE" in

@@ -181,7 +181,7 @@ fi
 
 # ── В КРАЯ: правните документи на приложенията важат ли ОНЛАЙН (200, не 404) и конкретни ли са? ──
 # Изисквано от Huawei/RuStore; хваща 404/чуждо ВЕДНАГА след качване на приложенията.
-if [ -f "deploy-scripts/check-legal-links.mjs" ] && command -v node >/dev/null 2>&1; then
+if [ -z "${KCY_IN_FULL_INSTALL:-}" ] && [ -f "deploy-scripts/check-legal-links.mjs" ] && command -v node >/dev/null 2>&1; then
   echo ""
   echo -e "${CYAN}━━━ Правни документи (Privacy/Terms) — онлайн проверка ━━━${NC}"
   # shellcheck disable=SC2086

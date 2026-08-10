@@ -211,7 +211,7 @@ if [ -f "deploy-scripts/sync-legal-pages.sh" ] && [ "${#NAMES[@]}" -gt 0 ]; then
 fi
 
 # ── Проверка: документите на построените апове важат ли (200, не 404) и са на ТОВА приложение? ──
-if [ -f "deploy-scripts/check-legal-links.mjs" ] && [ "${#NAMES[@]}" -gt 0 ] && command -v node >/dev/null 2>&1; then
+if [ -z "${KCY_IN_FULL_INSTALL:-}" ] && [ -f "deploy-scripts/check-legal-links.mjs" ] && [ "${#NAMES[@]}" -gt 0 ] && command -v node >/dev/null 2>&1; then
   echo -e "\n${BOLD}${CYAN}━━━ Проверка на правните линкове (Privacy/Terms) ━━━${NC}"
   node deploy-scripts/check-legal-links.mjs "${NAMES[@]}" || \
     echo -e "  ${RED}${BOLD}⚠ Правни линкове с проблем — НЕ подавай в магазина, докато не са зелени!${NC}"
