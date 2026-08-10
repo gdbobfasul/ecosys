@@ -139,6 +139,9 @@ _p_ticker() {
   rows=$(tput lines 2>/dev/null || echo 40); [ "$rows" -lt 10 ] && rows=40
   cols=$(tput cols 2>/dev/null || echo 120); [ "$cols" -lt 20 ] && cols=120
   { printf '\e[1;%dr' $((rows-3)); printf '\e[%d;1H' $((rows-3)); } > /dev/tty 2>/dev/null
+  # При Ctrl+C / kill: върни scroll region-а и изчисти заделените долни редове, за да не
+  # замръзне „статус лента" с промпта. Без това терминалът остава счупен след прекъсване.
+  trap 'printf "\e[r\e['"$((rows-3))"';1H\e[0J\e[?25h" > /dev/tty 2>/dev/null; exit 0' INT TERM
   while kill -0 "$mainpid" 2>/dev/null; do
     now=$(date +%s)
     { IFS= read -r L1; IFS= read -r L2; IFS= read -r L3; } < <(_p_frame "$live" "$curf" "$now")
