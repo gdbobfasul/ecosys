@@ -7,7 +7,7 @@ Outils inclus :
 • Générateurs — Mot de passe, UUID, Lorem ipsum, hachages SHA
 • Extraction — E-mails, URL, nombres, hashtags, mentions, IP
 • Diff — Compare deux textes ligne par ligne — ajouté/supprimé
-• Style Unicode — 𝐆𝐫𝐚𝐬, barré, souligné, large — pour réseaux sociaux
+• Style Unicode — Gras, barré, souligné, large — pour réseaux sociaux
 • JSON / CSV — Formater/minifier/valider JSON et JSON↔CSV
 • Fréquence des mots — Mots fréquents avec barres + total/uniques/caractères
 • Chiffres romains — Nombre ↔ romain (1–3999), détection auto

@@ -7,7 +7,7 @@ Strumenti inclusi:
 • Generatori — Password, UUID, Lorem ipsum, hash SHA
 • Estrai — E-mail, URL, numeri, hashtag, menzioni, IP
 • Diff — Confronta due testi riga per riga — aggiunto/rimosso
-• Stile Unicode — 𝐆𝐫𝐚𝐬𝐬𝐞𝐭𝐭𝐨, barrato, sottolineato, largo — per i social
+• Stile Unicode — Grassetto, barrato, sottolineato, largo — per i social
 • JSON / CSV — Formatta/minimizza/valida JSON e JSON↔CSV
 • Frequenza parole — Parole frequenti con barre + totale/uniche/caratteri
 • Numeri romani — Numero ↔ romano (1–3999), rilevamento auto

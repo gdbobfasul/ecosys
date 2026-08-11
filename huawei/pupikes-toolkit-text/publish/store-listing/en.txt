@@ -7,7 +7,7 @@ Tools included:
 • Generators — Password, UUID, Lorem ipsum, SHA hashes
 • Extract — Emails, URLs, numbers, hashtags, mentions, IPs
 • Diff — Compare two texts line by line — added/removed
-• Unicode style — 𝐁𝐨𝐥𝐝, s̶t̶r̶i̶k̶e̶, u̲n̲d̲e̲r̲l̲i̲n̲e̲, wide — for social media
+• Unicode style — Bold, strike, underline, wide — for social media
 • JSON / CSV — Prettify/minify/validate JSON and JSON↔CSV
 • Word frequency — Top words with bars + total/unique/characters
 • Roman numerals — Number ↔ Roman (1–3999), auto-detect

@@ -57,6 +57,8 @@ const SYM = {
   // сигурност
   shield: `<path d="M512 252 l152 56 v148 c0 122 -82 194 -152 230 c-70 -36 -152 -108 -152 -230 v-148 z" fill="#fff"/><path d="M444 452 l46 46 l96 -108" fill="none" stroke="${D}" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>`,
   key: `<circle cx="446" cy="396" r="96" fill="#fff"/><circle cx="446" cy="396" r="40" fill="url(#g)"/><rect x="486" y="470" width="190" height="46" rx="16" fill="#fff" transform="rotate(45 486 470)"/><rect x="628" y="556" width="60" height="40" rx="10" fill="#fff"/><rect x="592" y="520" width="60" height="40" rx="10" fill="#fff"/>`,
+  // катинар (за authenticator — умишлено НЕ щит, за да не се бърка със Samsung Security Policy Update, правило 9.3)
+  lock: `<path d="M430 434 v-52 a82 82 0 0 1 164 0 v52" fill="none" stroke="#fff" stroke-width="40"/><rect x="380" y="430" width="264" height="220" rx="40" fill="#fff"/><circle cx="512" cy="516" r="40" fill="${D}"/><path d="M512 516 v72" stroke="${D}" stroke-width="30" stroke-linecap="round"/>`,
   // финанси
   coin: `<circle cx="512" cy="440" r="150" fill="#fff"/><circle cx="512" cy="440" r="150" fill="none" stroke="rgba(0,0,0,.16)" stroke-width="14"/><path d="M440 486 l46 -48 l40 40 l74 -84" fill="none" stroke="#0a7d4d" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/><path d="M600 386 h-46 M600 386 v46" fill="none" stroke="#0a7d4d" stroke-width="26" stroke-linecap="round"/>`,
   candles: `<g fill="#fff"><rect x="384" y="382" width="54" height="150" rx="10"/><rect x="486" y="330" width="54" height="214" rx="10"/><rect x="588" y="418" width="54" height="122" rx="10"/></g><g stroke="#fff" stroke-width="14"><line x1="411" y1="344" x2="411" y2="560"/><line x1="513" y1="300" x2="513" y2="566"/><line x1="615" y1="388" x2="615" y2="580"/></g>`,
@@ -107,7 +109,7 @@ const APP = {
   'pupikes-toolkit-passwords': ['auth', 'key'],
   'pupikes-toolkit-scraper': ['tools', 'search'],
   'price-watch-bot': ['finance', 'tag'],
-  'authenticator': ['auth', 'shield'],
+  'authenticator': ['auth', 'lock'],
   // игри
   'dodge-master': ['util', 'dodge'],
   'titans-fight': ['util', 'fist'],
@@ -141,7 +143,7 @@ function guess(id) {
   const has = (...w) => w.some((x) => s.includes(x));
   if (has('medic', 'doctor', 'health', 'pharm')) return ['medical', 'cross'];
   if (has('news')) return ['news', 'globe'];
-  if (has('auth', 'password', 'secure', '2fa')) return ['auth', 'shield'];
+  if (has('auth', 'password', 'secure', '2fa')) return ['auth', 'lock'];
   if (has('finance', 'price', 'money', 'market', 'coin', 'pay')) return ['finance', 'coin'];
   if (has('pdf')) return ['pdf', 'pdf'];
   if (has('qr')) return ['tools', 'qr'];

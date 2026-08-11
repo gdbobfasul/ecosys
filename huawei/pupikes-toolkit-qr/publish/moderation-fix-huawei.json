@@ -1,5 +1,8 @@
 {
-  "_note": "CLEANUP: toolkitqr Draft-ът беше замърсен с newslator privacy URL от ранни слепи run-ове. sections=[] → само версия-полетата (правилен toolkitqr privacy URL + APK), без да пипа описания. НЕ е реална модерация.",
-  "sections": [],
+  "_note": "Втори проход: описанията вече записани (App info). Сега само страницата на версията — APK 1.0020 + държави + цена + Submit.",
+  "sections": [
+    "countries",
+    "price"
+  ],
   "contentRating": ""
 }

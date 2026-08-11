@@ -7,7 +7,7 @@ Ferramentas incluídas:
 • Geradores — Senha, UUID, Lorem ipsum, hashes SHA
 • Extrair — E-mails, URLs, números, hashtags, menções, IPs
 • Diff — Compare dois textos linha a linha — adicionado/removido
-• Estilo Unicode — 𝐍𝐞𝐠𝐫𝐢𝐭𝐨, tachado, sublinhado, largo — para redes sociais
+• Estilo Unicode — Negrito, tachado, sublinhado, largo — para redes sociais
 • JSON / CSV — Formatar/minificar/validar JSON e JSON↔CSV
 • Frequência de palavras — Palavras frequentes com barras + total/únicas/caracteres
 • Números romanos — Número ↔ romano (1–3999), autodetecção

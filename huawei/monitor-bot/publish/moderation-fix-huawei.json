@@ -1,0 +1,7 @@
+{
+  "_note": "Корекция след модерация. Причини 7.1+3.1: privacy/terms 404 → РЕШЕНО сървърно (hw-privacy.html+hw-terms.html вече 200; апът сочи тях). Само нова версия + reviewer note + APK.",
+  "sections": [
+    "price"
+  ],
+  "contentRating": ""
+}

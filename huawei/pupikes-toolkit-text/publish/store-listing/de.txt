@@ -7,7 +7,7 @@ Enthaltene Werkzeuge:
 • Generatoren — Passwort, UUID, Lorem ipsum, SHA-Hashes
 • Extrahieren — E-Mails, URLs, Zahlen, Hashtags, Erwähnungen, IPs
 • Diff — Zwei Texte zeilenweise vergleichen — hinzugefügt/entfernt
-• Unicode-Stil — 𝐅𝐞𝐭𝐭, durchgestrichen, unterstrichen, breit — für soziale Medien
+• Unicode-Stil — Fett, durchgestrichen, unterstrichen, breit — für soziale Medien
 • JSON / CSV — JSON formatieren/minimieren/prüfen und JSON↔CSV
 • Worthäufigkeit — Häufigste Wörter mit Balken + gesamt/eindeutig/Zeichen
 • Römische Zahlen — Zahl ↔ Römisch (1–3999), Auto-Erkennung

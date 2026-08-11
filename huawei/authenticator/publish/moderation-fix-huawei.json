@@ -1,0 +1,7 @@
+{
+  "_note": "Корекция след модерация. APK винаги. Причини: 7.1 privacy 404 (решено сървърно, вече 200) + 9.3 икона прилича на Samsung Security Policy Update → нова оригинална икона (катинар, не щит). Секция description → App info качва новата икона + описания.",
+  "sections": [
+    "description"
+  ],
+  "contentRating": ""
+}

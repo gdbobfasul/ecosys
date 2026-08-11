@@ -20,7 +20,7 @@ Pupikes Текстови инструменти — Пълен текстов р
 • Генератори — Парола, UUID, Lorem ipsum, SHA хешове
 • Извличане — Имейли, URL-и, числа, хаштагове, споменавания, IP
 • Разлика (diff) — Сравни два текста ред по ред — добавени/премахнати
-• Unicode стил — 𝐔𝐝𝐞𝐛𝐞𝐥𝐞𝐧, з̶а̶ч̶е̶р̶т̶а̶н̶, п̲о̲д̲ч̲е̲р̲т̲а̲н̲, широк — за социални мрежи
+• Unicode стил — Udebelen, зачертан, подчертан, широк — за социални мрежи
 • JSON / CSV — Форматирай/сгъсти/провери JSON и превърни JSON↔CSV
 • Честота на думи — Най-чести думи с ленти + общо/уникални/знаци
 • Римски цифри — Число ↔ римско (1–3999), авто-разпознаване
@@ -54,7 +54,7 @@ Pupikes Текстовые инструменты — Полный тексто�
 • Генераторы — Пароль, UUID, Lorem ipsum, SHA-хеши
 • Извлечение — Эл. почты, URL, числа, хэштеги, упоминания, IP
 • Разница (diff) — Сравни два текста построчно — добавлено/удалено
-• Unicode стиль — 𝐖𝐢𝐫𝐧𝐰𝐟, з̶а̶ч̶ё̶р̶к̶н̶у̶т̶о̶, п̲о̲д̲ч̲ё̲р̲к̲н̲у̲т̲о̲ — для соцсетей
+• Unicode стиль — Wirnwf, зачёркнуто, подчёркнуто — для соцсетей
 • JSON / CSV — Формат/сжатие/проверка JSON и JSON↔CSV
 • Частота слов — Самые частые слова с полосами + всего/уникальных/символов
 • Римские цифры — Число ↔ римское (1–3999), автоопределение
@@ -88,7 +88,7 @@ Pupikes Текстові інструменти — Повний текстов�
 • Генератори — Пароль, UUID, Lorem ipsum, SHA-хеші
 • Витягання — Ел. пошти, URL, числа, хештеги, згадки, IP
 • Різниця (diff) — Порівняй два тексти по рядках — додано/видалено
-• Unicode стиль — жирний, з̶а̶к̶р̶е̶с̶л̶е̶н̶о̶, п̲і̲д̲к̲р̲е̲с̲л̲е̲н̲о̲ — для соцмереж
+• Unicode стиль — жирний, закреслено, підкреслено — для соцмереж
 • JSON / CSV — Формат/стиснення/перевірка JSON та JSON↔CSV
 • Частота слів — Найчастіші слова зі смугами + всього/унікальних/символів
 • Римські цифри — Число ↔ римське (1–3999), автовизначення
@@ -122,7 +122,7 @@ Tools included:
 • Generators — Password, UUID, Lorem ipsum, SHA hashes
 • Extract — Emails, URLs, numbers, hashtags, mentions, IPs
 • Diff — Compare two texts line by line — added/removed
-• Unicode style — 𝐁𝐨𝐥𝐝, s̶t̶r̶i̶k̶e̶, u̲n̲d̲e̲r̲l̲i̲n̲e̲, wide — for social media
+• Unicode style — Bold, strike, underline, wide — for social media
 • JSON / CSV — Prettify/minify/validate JSON and JSON↔CSV
 • Word frequency — Top words with bars + total/unique/characters
 • Roman numerals — Number ↔ Roman (1–3999), auto-detect
@@ -156,7 +156,7 @@ Enthaltene Werkzeuge:
 • Generatoren — Passwort, UUID, Lorem ipsum, SHA-Hashes
 • Extrahieren — E-Mails, URLs, Zahlen, Hashtags, Erwähnungen, IPs
 • Diff — Zwei Texte zeilenweise vergleichen — hinzugefügt/entfernt
-• Unicode-Stil — 𝐅𝐞𝐭𝐭, durchgestrichen, unterstrichen, breit — für soziale Medien
+• Unicode-Stil — Fett, durchgestrichen, unterstrichen, breit — für soziale Medien
 • JSON / CSV — JSON formatieren/minimieren/prüfen und JSON↔CSV
 • Worthäufigkeit — Häufigste Wörter mit Balken + gesamt/eindeutig/Zeichen
 • Römische Zahlen — Zahl ↔ Römisch (1–3999), Auto-Erkennung
@@ -190,7 +190,7 @@ Outils inclus :
 • Générateurs — Mot de passe, UUID, Lorem ipsum, hachages SHA
 • Extraction — E-mails, URL, nombres, hashtags, mentions, IP
 • Diff — Compare deux textes ligne par ligne — ajouté/supprimé
-• Style Unicode — 𝐆𝐫𝐚𝐬, barré, souligné, large — pour réseaux sociaux
+• Style Unicode — Gras, barré, souligné, large — pour réseaux sociaux
 • JSON / CSV — Formater/minifier/valider JSON et JSON↔CSV
 • Fréquence des mots — Mots fréquents avec barres + total/uniques/caractères
 • Chiffres romains — Nombre ↔ romain (1–3999), détection auto
@@ -224,7 +224,7 @@ Herramientas incluidas:
 • Generadores — Contraseña, UUID, Lorem ipsum, hashes SHA
 • Extraer — Correos, URLs, números, hashtags, menciones, IP
 • Diff — Compara dos textos línea por línea — añadido/eliminado
-• Estilo Unicode — 𝐍𝐞𝐠𝐫𝐢𝐭𝐚, tachado, subrayado, ancho — para redes sociales
+• Estilo Unicode — Negrita, tachado, subrayado, ancho — para redes sociales
 • JSON / CSV — Formatear/minificar/validar JSON y JSON↔CSV
 • Frecuencia de palabras — Palabras frecuentes con barras + total/únicas/caracteres
 • Números romanos — Número ↔ romano (1–3999), autodetección
@@ -258,7 +258,7 @@ Herramientas incluidas:
 • Generadores — Contraseña, UUID, Lorem ipsum, hashes SHA
 • Extraer — Correos, URLs, números, hashtags, menciones, IP
 • Diff — Compara dos textos línea por línea — añadido/eliminado
-• Estilo Unicode — 𝐍𝐞𝐠𝐫𝐢𝐭𝐚, tachado, subrayado, ancho — para redes sociales
+• Estilo Unicode — Negrita, tachado, subrayado, ancho — para redes sociales
 • JSON / CSV — Formatear/minificar/validar JSON y JSON↔CSV
 • Frecuencia de palabras — Palabras frecuentes con barras + total/únicas/caracteres
 • Números romanos — Número ↔ romano (1–3999), autodetección
@@ -292,7 +292,7 @@ Strumenti inclusi:
 • Generatori — Password, UUID, Lorem ipsum, hash SHA
 • Estrai — E-mail, URL, numeri, hashtag, menzioni, IP
 • Diff — Confronta due testi riga per riga — aggiunto/rimosso
-• Stile Unicode — 𝐆𝐫𝐚𝐬𝐬𝐞𝐭𝐭𝐨, barrato, sottolineato, largo — per i social
+• Stile Unicode — Grassetto, barrato, sottolineato, largo — per i social
 • JSON / CSV — Formatta/minimizza/valida JSON e JSON↔CSV
 • Frequenza parole — Parole frequenti con barre + totale/uniche/caratteri
 • Numeri romani — Numero ↔ romano (1–3999), rilevamento auto
@@ -326,7 +326,7 @@ Ferramentas incluídas:
 • Geradores — Senha, UUID, Lorem ipsum, hashes SHA
 • Extrair — E-mails, URLs, números, hashtags, menções, IPs
 • Diff — Compare dois textos linha a linha — adicionado/removido
-• Estilo Unicode — 𝐍𝐞𝐠𝐫𝐢𝐭𝐨, tachado, sublinhado, largo — para redes sociais
+• Estilo Unicode — Negrito, tachado, sublinhado, largo — para redes sociais
 • JSON / CSV — Formatar/minificar/validar JSON e JSON↔CSV
 • Frequência de palavras — Palavras frequentes com barras + total/únicas/caracteres
 • Números romanos — Número ↔ romano (1–3999), autodetecção

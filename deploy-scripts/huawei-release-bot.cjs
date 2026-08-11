@@ -26,6 +26,12 @@ const PRICE_MODE = (process.argv[3] || '') === 'price' || process.argv.includes(
 // ПРОПУСКА рейтинг и цена (вече зададени, не са причина за отхвърляне) → без излишно губене на време.
 // ВАЖНО: APK-то ВИНАГИ се прекачва (след поправка на грешки апът почти винаги е променен).
 const FIX_MODE = process.argv.includes('--fix');
+// РЕЖИМ AUTO-SUBMIT: `--submit` → след като попълни ВСИЧКО (app info + версия + APK), натиска Submit
+// (+ обработва Proof of copyright/потвърждение). Реален магазин — ползвай само когато страниците са верни.
+const SUBMIT_MODE = process.argv.includes('--submit');
+// РЕЖИМ ЧЕТЕНЕ НА ПРИЧИНИ: `--reasons` → навигира до апа, отваря Workspace, чете „App review results" и СПИРА
+// (не пълни нищо). За да анализирам защо е отхвърлен, преди да задам секциите/съдържанието.
+const REASONS_MODE = process.argv.includes('--reasons');
 // ── ДЕКЛАРАТИВНО: кои СЕКЦИИ да препубликува ботът в --fix режим (заради модерацията) ──
 // publish/moderation-fix-huawei.json: { "sections":["description"|"content"|"countries"|"price"|"appinfo"],
 //   "contentRating":"15+"|"" }. APK се качва ВИНАГИ. Секция извън списъка → НЕ се пипа (спестено време).
@@ -413,11 +419,15 @@ function spawnBrowser() {
     let href = '';
     for (const f of p.frames()) {
       href = await f.evaluate(() => {
-        // Линкът е с текст напр. „1.0019 Draft" (версия + Draft), НЕ само „Draft" → хващай СЪДЪРЖА „Draft".
-        const a = [...document.querySelectorAll('a')].find((a) => {
+        // Линкът е с текст напр. „1.0019 Draft"/„1.0019 Rejected"/„To modify" (версия + състояние) и href с /vN.
+        // Хващай ВСЯКО редактируемо състояние (не само Draft) — иначе за отхвърлени/за-редакция апове не намираме версията.
+        const editable = /\b(Draft|Rejected|To modify|To be released|Not released|Unpublished|Approved)\b/i;
+        const links = [...document.querySelectorAll('a')].filter((a) => {
           const s = a.querySelector('.item-text');
-          return s && /\bDraft\b/i.test(s.textContent || '') && /\/v\d/.test(a.getAttribute('href') || a.href || '');
+          return s && /\/v\d{6,}/.test(a.getAttribute('href') || a.href || '') && (editable.test(s.textContent || '') || /\d\.\d{3,}/.test(s.textContent || ''));
         });
+        // предпочети НЕ-Reviewing (редактируем); ако няма — първия версиен линк
+        const a = links.find((x) => !/Reviewing|Under review|In review/i.test((x.querySelector('.item-text') || {}).textContent || '')) || links[0];
         return a ? (a.getAttribute('href') || a.href) : '';
       }).catch(() => '');
       if (href) break;
@@ -458,32 +468,50 @@ function spawnBrowser() {
   async function navigateToApp() {
     if (!appId) return false;
     const p = getHuaweiPage(); if (!p) return false;
+    // ВАЖНО: „вече на верния ап" САМО ако URL е страница на АПА (#/myApp/<id>/…) И текстът има пакета.
+    // Инак списъкът My Apps (който съдържа ВСИЧКИ пакети) дава фалшив положителен → пропуска навигацията.
     let onApp = false;
-    try { const cur = await findBest(); onApp = new RegExp(appId.replace(/\./g, '\\.'), 'i').test(cur.text || ''); } catch (_) {}
+    try { const _u = p.url() || ''; const cur = await findBest(); onApp = /#\/myApp\/\d+\/[^/]/.test(_u) && new RegExp(appId.replace(/\./g, '\\.'), 'i').test(cur.text || ''); } catch (_) {}
     if (onApp) { log('вече съм на верния ап (' + appId + ')'); }
     else {
       log('навигирам до ' + app + ' (' + appId + ')…');
       await p.goto(APP_LIST_URL, { waitUntil: 'load' }).catch(() => {});
       await sleep(2600);
-      await p.evaluate(() => { const el = [...document.querySelectorAll('.el-tabs__item')].find((e) => /^\s*Android\s*$/.test((e.innerText || '').trim())); if (el) el.click(); }).catch(() => {});
-      await sleep(2600);
-      const ok = await p.evaluate((pkg) => {
-        const r = [...document.querySelectorAll('tr, .el-table__row')].find((x) => (x.innerText || '').includes(pkg));
-        if (!r) return false;
-        const e = [...r.querySelectorAll('a, button, span')].find((x) => /^\s*Edit\s*$/.test(x.innerText || ''));
-        if (!e) return false; e.scrollIntoView({ block: 'center' }); e.click(); return true;
-      }, appId).catch(() => false);
-      if (!ok) { log('↷ не намерих реда на ' + appId + ' в списъка (таб Android) — отвори апа ръчно.'); return false; }
+      // RETRY: списъкът зарежда БАВНО (особено след свеж логин), а табът може да е HarmonyOS (Total 0).
+      // Пробвай таб Android + търсене на реда до 8 пъти (~28с), докато пакетът се появи.
+      let ok = false;
+      for (let tryN = 0; tryN < 8 && !ok; tryN++) {
+        await p.evaluate(() => { const el = [...document.querySelectorAll('.el-tabs__item')].find((e) => /^\s*Android\s*$/.test((e.innerText || '').trim())); if (el) el.click(); }).catch(() => {});
+        await sleep(2200);
+        ok = await p.evaluate((pkg) => {
+          const r = [...document.querySelectorAll('tr, .el-table__row')].find((x) => (x.innerText || '').includes(pkg));
+          if (!r) return false;
+          const e = [...r.querySelectorAll('a, button, span')].find((x) => /^\s*Edit\s*$/.test(x.innerText || ''));
+          if (!e) return false; e.scrollIntoView({ block: 'center' }); e.click(); return true;
+        }, appId).catch(() => false);
+        if (!ok) await sleep(1400);
+      }
+      if (!ok) { log('↷ не намерих реда на ' + appId + ' в списъка (таб Android) след опити — отвори апа ръчно.'); return false; }
       for (let k = 0; k < 15 && !/#\/myApp\/\d+\//.test(p.url() || ''); k++) await sleep(600);
       await sleep(2500);
     }
     // Ако ще пипаме описания → отвори „App information" (там са Brief/Full/New features + Manage languages).
     // ВАЖНО: Vue-router не навигира от a.click() → сменяме window.location.href (като версията).
     if (fixWants('description') || fixWants('appinfo')) {
+      // РЕТРАЙ: линкът „App information" в лявото меню зарежда БАВНО след Edit → търси до 8× (~14с),
+      // иначе „href не намерих" и иконата/описанията НЕ се качват (както се случи с authenticator).
       let aiHref = '';
-      for (const f of p.frames()) { aiHref = await f.evaluate(() => { const a = [...document.querySelectorAll('a')].find((a) => { const s = a.querySelector('.item-text'); return s && /^App information$/i.test((s.textContent || '').trim()); }); return a ? (a.getAttribute('href') || a.href) : ''; }).catch(() => ''); if (aiHref) break; }
-      if (aiHref) { await p.evaluate((h) => { window.location.href = h; }, aiHref).catch(() => {}); await sleep(4200); log('→ отворих „App information" (route ' + aiHref.replace(/^.*#/, '#') + ') за описанията.'); }
-      else { await clickLeftMenu('App information').catch(() => {}); await sleep(3000); log('→ „App information" (клик — href не намерих).'); }
+      for (let k = 0; k < 8 && !aiHref; k++) {
+        for (const f of p.frames()) { aiHref = await f.evaluate(() => { const a = [...document.querySelectorAll('a')].find((a) => { const s = a.querySelector('.item-text'); return s && /^App information$/i.test((s.textContent || '').trim()); }); return a ? (a.getAttribute('href') || a.href) : ''; }).catch(() => ''); if (aiHref) break; }
+        if (!aiHref) await sleep(1700);
+      }
+      if (aiHref) {
+        await p.evaluate((h) => { window.location.href = h; }, aiHref).catch(() => {});
+        await sleep(4200);
+        // ПОТВЪРДИ, че формата е заредена (има „Brief introduction"/„Manage languages"); ако не → изчакай още.
+        for (let k = 0; k < 6; k++) { const loaded = await p.evaluate(() => [...document.querySelectorAll('*')].some((e) => /Brief introduction|Manage languages|App icon/i.test(e.textContent || ''))).catch(() => false); if (loaded) break; await sleep(1800); }
+        log('→ отворих „App information" (route ' + aiHref.replace(/^.*#/, '#') + ') за иконата/описанията.');
+      } else { await clickLeftMenu('App information').catch(() => {}); await sleep(3500); log('↷ „App information" href не намерих след ретрай — виж ръчно (иконата може да не се качи).'); }
     }
     log('✓ отворих ' + app + ' в конзолата (' + appId + ').');
     return true;
@@ -648,9 +676,14 @@ function spawnBrowser() {
     } catch (_) { return []; }
   }
 
+  // ★ БЕЗОПАСНОСТ: true САМО когато НОВОТО APK е потвърдено закачено (versionCode съвпада с билднатото).
+  // Auto-submit НЕ подава, ако това е false (иначе подаваме старо APK — както се случи с authenticator 1.0019).
+  let _apkOk = false;
+  let _apkExpectedVc = '';   // очакван versionCode (от билд метаданните)
   // Качи Huawei release APK през „Manage packages" (Upload → избор на файл → Select). force=true → качва
   // наново дори versionCode да съвпада (напр. Huawei иска повторно качване след смяна на държавите).
   async function uploadHwApk(frame, force) {
+    _apkOk = false;   // до доказано закачване на новото APK
     if (!hwApkPath) { log('↷ няма huawei release APK в apk/huawei/release — качи ръчно'); return; }
     // Затваря диалога „Manage packages" през бутона „Select" (ПРИЛАГА пакета + затваря). НИКОГА Cancel/X —
     // те ОТМЕНЯТ качения пакет (затова „Released packages: No data"!). Playwright-клик, после native.
@@ -699,6 +732,7 @@ function spawnBrowser() {
       // го оставяме (и го избираме); при разлика (каченият е ПО-СТАР) → ТРИЕМ стария и качваме новия.
       let apkVc = '';
       try { apkVc = String(JSON.parse(fs.readFileSync(path.resolve('huawei', app, 'android/app/build/intermediates/merged_manifests/release/output-metadata.json'), 'utf8')).elements[0].versionCode || ''); } catch (_) {}
+      _apkExpectedVc = apkVc;
       const hasPkg = await dlg.locator('text=/\\.apk/i').count().catch(() => 0);
       if (hasPkg) {
         const dlgText = await dlg.innerText().catch(() => '');
@@ -716,14 +750,14 @@ function spawnBrowser() {
             if (!sel2) await sleep(800);
           }
           if (!sel2) await closeMgmt();
+          _apkOk = sel2;   // ★ вярното (най-ново) APK вече е закачено
           log(sel2 ? '✓ Пакетът е ИЗБРАН и ЗАКАЧЕН (Released packages), диалогът затворен.' : '↷ пакетът не се закачи — виж ръчно.');
           return;
         }
-        log((force ? '↑ (грешка иска повторно качване) ' : '↑ каченият пакет (' + (upVc || '?') + ') ≠ текущия APK (' + (apkVc || '?') + ') → ') + 'ТРИЯ стария и качвам новия.');
-        await dlg.locator('a:has-text("Delete"), button:has-text("Delete")').first().click({ force: true, timeout: 2500 }).catch(() => {});
-        await sleep(1000);
-        await frame.locator('.el-message-box__btns button, .el-dialog:visible button').filter({ hasText: /^(Confirm|OK|Delete|Yes)$/ }).last().click({ force: true, timeout: 2500 }).catch(() => {});
-        await sleep(2500);
+        // НЕ трием стария пакет: изтриването пада с „Failed to delete… It is in use" (когато е released/в ревю)
+        // И нулира държавите (signing entity). Вместо това КАЧВАМЕ новия ДО него и после избираме НАЙ-НОВИЯ
+        // (selectPkgRadio избира реда с най-висок versionCode). Така новото APK винаги става закаченото.
+        log('↑ каченият пакет (' + (upVc || '?') + ') ≠ текущия APK (' + (apkVc || '?') + ') → качвам новия ДО него и избирам най-новия (без триене).');
       }
       // APK полето (accept „apk", в диалога) се РЕНДИРА/АКТИВИРА след клик по „Upload". Предпазка: ако
       // „Upload" отвори native избор на файл — подаваме APK-то и там. НЕ ползваме image полетата (.jpg/.png).
@@ -742,20 +776,27 @@ function spawnBrowser() {
       log('⏳ качвам APK: ' + path.basename(hwApkPath) + ' — изчаквам обработката (може дълго)…');
       // Поллинг: изчакай „Select" да се АКТИВИРА (обработката отнема време) и го натисни — така
       // НАЙ-НОВИЯТ пакет става избраният/активен. До ~80с.
-      let selected = false;
-      for (let k = 0; k < 20 && !selected; k++) {
+      let selected = false, expSeen = false;
+      for (let k = 0; k < 30 && !selected; k++) {   // до ~120с (обработката на Huawei понякога е бавна)
         await sleep(4000);
-        // Изчакай пакетът да се появи в реда (обработка), после ★ истинска мишка: радио → Select.
-        const hasRow = await frame.locator('.el-dialog:visible tr, .el-dialog:visible .el-table__row').filter({ hasText: /\.apk/i }).count().catch(() => 0);
-        if (!hasRow) continue;
-        await selectPkgRadio();   // ★ истинска мишка по радиото (обновява Vue-модела)
+        // ★ Изчакай реда с ОЧАКВАНИЯ versionCode (новото APK) — НЕ какъвто и да е .apk ред. Ако качването
+        //   пропадне и остане само старият пакет, редът с новия versionCode няма да се появи → НЕ закачаме
+        //   стария (иначе подаваме старо APK, както стана със Site Monitor 1.0019).
+        const expRow = _apkExpectedVc
+          ? await frame.locator('.el-dialog:visible tr, .el-dialog:visible .el-table__row').filter({ hasText: new RegExp('\\(' + _apkExpectedVc + '\\)') }).count().catch(() => 0)
+          : await frame.locator('.el-dialog:visible tr, .el-dialog:visible .el-table__row').filter({ hasText: /\.apk/i }).count().catch(() => 0);
+        if (!expRow) continue;
+        expSeen = true;
+        await selectPkgRadio();   // ★ истинска мишка по радиото (най-висок versionCode = новия)
         await sleep(600);
         await clickSelectBtn();   // ★ истинска мишка по „Select"
         await sleep(2500);
         selected = !(await frame.evaluate(() => [...document.querySelectorAll('.el-dialog')].some((x) => x.offsetParent !== null && /Manage packages/i.test(x.innerText || ''))).catch(() => false));
       }
       if (!selected) await closeMgmt();
-      log(selected ? '✓ Пакетът е ИЗБРАН и ЗАКАЧЕН към версията (Released packages).' : '↷ „Select" не се активира/закача навреме — виж ръчно.');
+      _apkOk = selected && (expSeen || !_apkExpectedVc);   // ★ закачено САМО ако ОЧАКВАНИЯТ versionCode се появи и Select мина
+      log(_apkOk ? '✓ Пакетът (versionCode ' + (_apkExpectedVc || '?') + ') е ИЗБРАН и ЗАКАЧЕН към версията.'
+        : (selected ? '⚠ Select мина, но ОЧАКВАНИЯТ versionCode ' + _apkExpectedVc + ' не се появи (качването пропадна?) — НЕ подавам.' : '↷ „Select"/качване не стана навреме — качи APK ръчно.'));
     } catch (e) { log('↷ качване на APK — направи ръчно (' + e.message + ')'); }
   }
 
@@ -778,7 +819,7 @@ function spawnBrowser() {
   async function fillCurrent() {
    // АВТОНОМНО: попълва екрана → сам натиска основния бутон → минава на следващия. Спира при засядане
    // (същият екран 3 пъти) или на последната стъпка (Submit = човешко решение, не се натиска тук).
-   let _lastSig = '', _stall = 0, _appInfoDone = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0, _finalDone = false, _modalSeen = {};
+   let _lastSig = '', _stall = 0, _appInfoDone = false, _appInfoFilled = false, _ratingDone = false, _priceDone = false, _ratingTries = 0, _priceTries = 0, _versionSaved = false, _listWaits = 0, _finalDone = false, _submitDone = false, _modalSeen = {};
    for (let _step = 0; _step < 120; _step++) {   // 120 (не 40): попълването на 15 езика в App info иска много стъпки
     let autoNext = true;
     let { frame, text, score } = await navToForm();
@@ -808,6 +849,24 @@ function spawnBrowser() {
       else if (/leave this page|has not been saved/.test(lc)) cause = 'НАПУСКАНЕ';
       else if (/empty or incorrect|is required|mandatory|marked in red|fill in or correct/.test(lc)) cause = 'ЗАДЪЛЖИТЕЛНИ';
       else if (/successfully|saved|submitted for review/.test(lc)) cause = 'УСПЕХ';
+      // ★ ФИНАЛЕН МОДАЛ „Confirm release information" (Submit-ът мина валидацията, чака потвърждение).
+      //   Общият клон долу би натиснал Cancel (primary е „Submit", не OK/Confirm) → би ОТМЕНИЛ подаването.
+      //   Затова тук: в --submit режим → потвърждаваме (Submit); иначе → отказваме (не подаваме сами).
+      if (/confirm release information|before submitting|key details for this release/i.test(lc)) {
+        // ★ БЕЗОПАСНОСТ: подавай САМО ако новото APK е потвърдено закачено (иначе подаваме старо — както
+        //   authenticator тръгна с 1.0019). При --submit без закачено APK → ОТКАЗ + ясна грешка.
+        if (SUBMIT_MODE && _apkOk) {
+          const sb = dlg.locator('button:has-text("Submit"), .el-button--primary, button:has-text("Confirm"), button:has-text("OK")').first();
+          if (await sb.count().catch(() => 0)) { await sb.click({ force: true, timeout: 3000 }).catch(() => {}); _submitDone = true; log('✅ „Confirm release information" → потвърдих. Приложението е ПОДАДЕНО за преглед.'); await sleep(2600); }
+        } else {
+          const cb = dlg.locator('button:has-text("Cancel")').first();
+          if (await cb.count().catch(() => 0)) await cb.click({ force: true, timeout: 2000 }).catch(() => {});
+          if (SUBMIT_MODE && !_apkOk) log('⛔ НЕ подавам: новото APK (versionCode ' + (_apkExpectedVc || '?') + ') не е потвърдено закачено — отказах диалога. Оправи APK-то и пусни пак.');
+          else log('↷ „Confirm release information" (без --submit) → отказах (не подавам сам).');
+          await sleep(1000);
+        }
+        continue;
+      }
       _modalSeen[cause] = (_modalSeen[cause] || 0) + 1;
       const tries = _modalSeen[cause];
       log('⚠ Модал [' + cause + ' ×' + tries + ']: ' + dtxt.slice(0, 130));
@@ -867,6 +926,32 @@ function spawnBrowser() {
     let url = ''; try { url = frame.page().url(); } catch (_) {}
     console.log('\n── екран (маркери: ' + score + ') ──');
     await human(2, 5);   // „оглеждане" на екрана преди действие (човешко темпо)
+
+    // ── МОСТ App info → Версия: след запис на App information Huawei вади попъп
+    //    „The app information has been modified. Please continue to fill in the version information."
+    //    с бутон „Submit version". Той НЕ подава — само отваря формата на версията. Натисни го, иначе бота
+    //    забива на „екран не разпознат". (Специфични фрази, за да не се задейства другаде.)
+    // ГЕЙТ: ако ще пълним App info (икона+описания), НЕ пускай моста преди да сме напълнили и записали App info —
+    // иначе банерът „app information has been modified" прескача формата и иконата НЕ се качва (беше бъгът на authenticator).
+    if (_appInfoFilled || !fixWants('description')) {
+      // Пробвай ВСИЧКИ frame-ове (диалогът е в ГЛАВНИЯ документ, не в amp-iframe → не разчитаме на `text`).
+      // Щракваме само ако диалогът наистина съдържа фразите на моста → безопасно (не изкача по време на нормалното пълнене).
+      let clicked = false;
+      const hp = getHuaweiPage();
+      const frames = hp ? [hp.mainFrame(), ...hp.frames()] : [frame];
+      for (const f of frames) {
+        const ok = await f.evaluate(() => {
+          const t = document.body ? document.body.innerText : '';
+          if (!/app information has been modified|continue to fill in the version information/i.test(t)) return false;
+          // „Submit version" е ЛИНК (a.el-link) в agc-alert банер, НЕ диалог → търсим по текст сред a/button/link.
+          const el = [...document.querySelectorAll('a, button, .el-link, .el-button, span[role="button"]')].find((x) => x.offsetParent !== null && /^\s*Submit version\s*$/i.test(x.innerText || ''));
+          if (el) { el.click(); return true; }
+          return false;
+        }).catch(() => false);
+        if (ok) { clicked = true; break; }
+      }
+      if (clicked) { console.log('↪ попъп „App info modified" → натиснах „Submit version" (минавам на формата на версията).'); _appInfoDone = true; _stall = 0; await sleep(3800); continue; }
+    }
 
     // ── СПИСЪК С ПРИЛОЖЕНИЯ: разбери дали приложението е СЪЗДАДЕНО, и действай ──
     const isVersionPage = on('Country/Region for release') || on('Payment information') || on('Privacy tags') || on('For reviewer') || on('App price') || on('Default price');
@@ -1111,7 +1196,7 @@ function spawnBrowser() {
       // App info попълнено → запиши (Save, НЕ Next/Submit) и мини към ВЕРСИЯТА „Draft" (държави/APK/…).
       await frame.locator('button:has-text("Save")').filter({ hasNotText: /Submit|Next/ }).first().click({ force: true, timeout: 4000 }).then(() => log('✓ натиснах Save на App information')).catch(() => log('↷ Save на App info — не се натисна (виж ръчно)'));
       await sleep(3000);
-      _appInfoDone = true;
+      _appInfoDone = true; _appInfoFilled = true;   // ★ App info (икона+описания) реално попълнено и записано
       if (await gotoVersionDraft()) log('→ App info записано → отивам на версията „Draft" (route на версията).');
       else log('↷ не намерих route на версията „Draft" — виж ръчно.');
       autoNext = false;   // App info сам натиска Save и навигира — без общия авто-напред
@@ -1195,6 +1280,30 @@ function spawnBrowser() {
         }, lbl).catch(() => false);
         await sleep(500);
         if (await rbtn('Verify')) { log('✓ натиснах „Verify" (изчислявам рейтинга)'); await sleep(3500); }
+        // ── ОЧАКВАН ВЪЗРАСТОВ РЕЙТИНГ (напр. 18+): ако content-ratings.json има expectedAge, избери го от
+        //    „expected age rating" секцията (Huawei иска това при крипто/чувствително съдържание, правило 1.10).
+        if (ratingCfg.expectedAge) {
+          await sleep(800);
+          const want = String(ratingCfg.expectedAge);
+          const num = (want.match(/\d+/) || [''])[0];
+          let picked = await frame.evaluate((n) => {
+            const d = [...document.querySelectorAll('.el-drawer, .el-dialog')].find((x) => x.offsetParent !== null);
+            if (!d) return false;
+            const re = new RegExp('(^|\\D)' + n + '\\s*\\+|Ages?\\s*' + n + '|' + n + '\\s*(and older|years)', 'i');
+            // радио/бутон/опция с възрастта в „expected"-секцията
+            const opt = [...d.querySelectorAll('.el-radio, .el-radio-button, label, li, .el-select-dropdown__item, .el-button')].find((x) => x.offsetParent !== null && re.test((x.innerText || '').trim()) && !x.classList.contains('is-checked'));
+            if (opt) { opt.click(); return true; }
+            return false;
+          }, num).catch(() => false);
+          if (!picked) {
+            // може да е DROPDOWN (el-select) — отвори го и после избери
+            await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-drawer,.el-dialog')].find((x) => x.offsetParent !== null); if (!d) return; const sel = [...d.querySelectorAll('.el-select, .el-input')].find((s) => /expected|age/i.test((s.closest('.el-form-item') || s).innerText || '')); if (sel) { const inp = sel.querySelector('input'); if (inp) inp.click(); } }).catch(() => {});
+            await sleep(900);
+            picked = await frame.evaluate((n) => { const re = new RegExp('(^|\\D)' + n + '\\s*\\+|Ages?\\s*' + n, 'i'); const opt = [...document.querySelectorAll('.el-select-dropdown__item, li')].find((x) => x.offsetParent !== null && re.test((x.innerText || '').trim())); if (opt) { opt.click(); return true; } return false; }, num).catch(() => false);
+          }
+          log(picked ? '✓ Expected age rating ← ' + want : '↷ expected age ' + want + ' — не намерих опцията (виж ръчно/пробвам пак)');
+          await sleep(1000);
+        }
         // евентуална декларация-отметка преди финализиране
         await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-drawer, .el-dialog')].find((x) => x.offsetParent !== null); if (!d) return; d.querySelectorAll('.el-checkbox:not(.area-checkbox)').forEach((c) => { if (!c.classList.contains('is-checked') && /authentic|declare|confirm|responsib|accurate/i.test(c.innerText || '')) c.click(); }); }).catch(() => {});
         await sleep(800);
@@ -1284,8 +1393,51 @@ function spawnBrowser() {
         await sleep(3800);
         await closeUploadModal();
         _finalDone = true; autoNext = false;
-        log('✅ ГОТОВО автономно: app info + версия + рейтинг + цена + ФИНАЛНО държави. Остава РЪЧНО: Proof of copyright + Submit.');
+        log(SUBMIT_MODE ? '✅ Попълнено — сега AUTO-SUBMIT…' : '✅ ГОТОВО автономно: app info + версия + рейтинг + цена + ФИНАЛНО държави. Остава РЪЧНО: Proof of copyright + Submit.');
         continue;
+      }
+      // ── AUTO-SUBMIT (--submit): след финалния запис → Proof of copyright (ако има чекбокс) + Submit + потвърждение. ──
+      if (_finalDone && SUBMIT_MODE && !_submitDone) {
+        _submitDone = true;
+        if (!_apkOk) { log('⛔ НЕ подавам: новото APK (versionCode ' + (_apkExpectedVc || '?') + ') не е потвърдено закачено. Оправи APK-то (виж горе) и пусни пак.'); autoNext = false; continue; }
+        await sleep(1500);
+        await closeUploadModal();
+        // ★ Стики Submit валидира ЦЯЛАТА страница → тестовата настройка ТРЯБВА да е „No",
+        //   иначе иска тестери/дати/version code. Форсирам No по няколко възможни надписа + DOM резерва.
+        for (const lbl of ['Use testing version', 'Set as test version', 'Release for open testing', 'Open testing', 'Whether to release for open testing']) {
+          await pickRadio(frame, lbl, 'No').catch(() => {});
+        }
+        await frame.evaluate(() => {
+          for (const g of document.querySelectorAll('.el-form-item, tr, .field, .form-item')) {
+            const t = g.innerText || '';
+            if (/test(ing)?\s*version|open testing/i.test(t)) {
+              const no = [...g.querySelectorAll('.el-radio, label')].find((r) => /^\s*No\s*$/i.test(r.innerText || ''));
+              if (no && !no.classList.contains('is-checked')) no.click();
+            }
+          }
+        }).catch(() => {});
+        await sleep(1200);
+        // Proof of copyright: ако има чекбокс „I have obtained… / authorized" — отметни го (за резубмит често е налично).
+        await frame.evaluate(() => { [...document.querySelectorAll('.el-checkbox')].filter((c) => /copyright|authorized|obtained|intellectual|авторск|интелектуал/i.test(c.innerText || '')).forEach((c) => { if (!c.classList.contains('is-checked')) c.click(); }); }).catch(() => {});
+        await sleep(800);
+        const sub = frame.locator('button:has-text("Submit")').filter({ hasNotText: /Cancel/ }).first();
+        if (await sub.count().catch(() => 0)) {
+          await mouseClick(sub);
+          await sleep(2600);
+          for (let k = 0; k < 3; k++) {   // потвърждение (Confirm/Submit/OK в диалог)
+            const cf = frame.locator('.el-dialog:visible button:has-text("Confirm"), .el-dialog:visible button:has-text("Submit"), .el-message-box:visible .el-button--primary, .el-message-box:visible button:has-text("OK")').first();
+            if (await cf.count().catch(() => 0)) { await cf.click({ force: true, timeout: 3000 }).catch(() => {}); await sleep(2200); } else break;
+          }
+          const errs2 = await getErrors(frame);
+          if (errs2.length) {
+            const testing = errs2.some((e) => /open testing|start time|user list|version code later|released version/i.test(e));
+            if (testing) log('⚠ Submit-ът закача ОСТАТЪЧЕН „Open testing" трак на този ап (start time / user list / version code). Това е състояние в конзолата, не бота: в раздела за тестова версия махни/довърши тестовия трак (или го изтрий), после Submit само за Release. Другото (описание+APK 1.00xx+privacy+reviewer) е попълнено.');
+            else log('⚠ след Submit: ' + errs2.slice(0, 4).join(' | ') + ' — ако иска „Proof of copyright" → качи ръчно и Submit пак.');
+          } else log('✅ SUBMIT натиснат (авто). Провери статуса в конзолата (трябва „Under review").');
+        } else {
+          log('↷ Submit бутон не се намери (вероятно чака Proof of copyright ръчно) — виж екрана.');
+        }
+        autoNext = false; continue;
       }
       // ── ОСНОВНОТО на версията се попълва и ЗАПИСВА ВЕДНЪЖ (после НЕ се пре-пълва, за да не маркира пак
       //    „незаписани промени" — рейтингът/цената НЕ се отварят при незаписана версия!). ──
@@ -1406,6 +1558,42 @@ function spawnBrowser() {
     if (_stall >= 3) { console.log('■ Екранът не се сменя — стигнах докъдето мога автономно (вероятно чака Submit/ръчно: цена, Proof of copyright). Спирам.'); return; }
    }  // ← край на верижния цикъл
    console.log('■ Достигнат лимит стъпки — спирам.');
+  }
+
+  // ── РЕЖИМ --reasons: навигирай до апа → Workspace → прочети „App review results" и спри (без пълнене). ──
+  if (REASONS_MODE) {
+    const p = getHuaweiPage();
+    await navigateToApp();
+    let wsHref = '';
+    for (const f of p.frames()) { wsHref = await f.evaluate(() => { const a = [...document.querySelectorAll('a')].find((a) => { const s = a.querySelector('.item-text'); return s && /^Workspace$/i.test((s.textContent || '').trim()); }); return a ? (a.getAttribute('href') || a.href) : ''; }).catch(() => ''); if (wsHref) break; }
+    if (wsHref) { await p.evaluate((h) => { window.location.href = h; }, wsHref).catch(() => {}); await sleep(4800); console.log('→ Workspace (' + wsHref.replace(/^.*#/, '#') + ')'); }
+    else { await clickLeftMenu('Workspace').catch(() => {}); await sleep(3500); }
+    let printed = false;
+    for (const f of [p.mainFrame(), ...p.frames()]) {
+      const t = await f.evaluate(() => (document.body ? document.body.innerText : '')).catch(() => '');
+      const idx = t.search(/App review results/i);
+      if (idx >= 0) {
+        const review = t.slice(idx, idx + 1400).replace(/\n{2,}/g, '\n').trim();
+        console.log('\n===== App review results (' + app + ') =====\n' + review + '\n===== край =====');
+        // ★ ИСТОРИЯ: запиши ревюто в publish/moderation-history.md на приложението — НИКОГА не се трие
+        //   (история на приложението + поука за бъдещи апове). Дедуп: не дублира същото ревю.
+        try {
+          const hp = path.resolve('huawei', app, 'publish', 'moderation-history.md');
+          const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
+          const prev = fs.existsSync(hp) ? fs.readFileSync(hp, 'utf8') : '';
+          if (!prev) fs.writeFileSync(hp, '# История на модерацията — ' + app + ' (Huawei)\n\nТози файл НЕ се трие. Пази реалните ревюта на модераторите (дословно) и как са отстранени — история на приложението и поука за бъдещи апове.\n');
+          if (norm(prev).indexOf(norm(review).slice(0, 120)) === -1) {
+            const stamp = new Date().toISOString().slice(0, 10);
+            fs.appendFileSync(hp, '\n## ' + stamp + ' — ревю от модерацията (дословно)\n\n```\n' + review + '\n```\n');
+            console.log('🗂  записах ревюто в huawei/' + app + '/publish/moderation-history.md (история — не се трие)');
+          } else console.log('🗂  това ревю вече е в историята (moderation-history.md) — не дублирам.');
+        } catch (e) { console.log('  (историята не се записа: ' + (e.message || e) + ')'); }
+        printed = true; break;
+      }
+    }
+    if (!printed) console.log('↷ Не намерих „App review results" на Workspace — виж ръчно.');
+    try { const { collectModeration } = require('./lib/moderation.cjs'); const mod = await collectModeration({ browser, store: 'huawei', app }); console.log('📋 записани забележки за ' + app + ': ' + mod.total); } catch (_) {}
+    process.exit(0);
   }
 
   // ЗАДЪЛЖИТЕЛНО преди пълнене: отиди на ВЕРНИЯ ап (иначе рискуваме да пълним чужд отворен ап).

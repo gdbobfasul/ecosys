@@ -1003,17 +1003,50 @@ run_choice() {
             read -p "  Кое приложение? [номер или име]: " BPICK
             BAPP="${BAPPS[$BPICK]}"; [ -z "$BAPP" ] && BAPP="$BPICK"
             if [ -z "$BAPP" ] || [ ! -d "$SCRIPT_DIR/../huawei/$BAPP" ]; then echo "  Няма такова приложение."; press_enter; continue; fi
-            # 3) Попълва в режим ENTER (видимо, без натискане на бутони)
-            # Последна врата преди магазина: правните документи на ТОВА приложение
-            # живи ли са (200, не 404) и конкретни за него (не чуждо съдържание)?
+            # 3) Режим: пълно качване ИЛИ корекция след модерация
+            echo ""
+            echo -e "  ${BOLD}Какво правим с ${BAPP}?${NC}"
+            echo "    1) Качване ИЗЦЯЛО (ново/пълно приложение) — режим ENTER, попълва всички екрани"
+            echo "    2) КОРЕКЦИЯ след модерация — избираш секции, bump версия + ребилд + Submit"
+            read -p "  Избери [1-2, Enter=2]: " PMODE
+            # Правни документи (важат и за двата режима)
             echo ""
             echo -e "  ${BOLD}${CYAN}━━━ Проверка на правните документи (Huawei): ${BAPP} ━━━${NC}"
             ( cd "$SCRIPT_DIR/.." && node deploy-scripts/check-legal-links.mjs --store huawei "$BAPP" ) || \
-                echo -e "  ${RED}${BOLD}⚠ Документите на ${BAPP} имат проблем — НЕ подавай в магазина, докато не станат зелени!${NC}"
+                echo -e "  ${RED}${BOLD}⚠ Документите на ${BAPP} имат проблем — НЕ подавай, докато не станат зелени!${NC}"
+            if [ "$PMODE" = 1 ]; then
+                echo ""
+                echo -e "  ${YELLOW}► HuaweiReleaseBot: ${BAPP} (режим ENTER — попълва ВИДИМО, не натиска бутони)${NC}"
+                ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/huawei-release-bot.cjs" "$BAPP" --loop )
+                press_enter; continue
+            fi
+            # ── КОРЕКЦИЯ: кои секции да качим наново (APK ВИНАГИ) ──
             echo ""
-            echo -e "  ${YELLOW}► HuaweiReleaseBot: ${BAPP} (режим ENTER — попълва ВИДИМО, не натиска бутони)${NC}"
+            echo -e "  ${BOLD}Кои секции да коригираме и качим наново?${NC}  ${GRAY}(APK се качва ВИНАГИ)${NC}"
+            echo "    1) Описания (Brief/Full/New features — всички езици)"
+            echo "    2) Съдържание/рейтинг (content rating)"
+            echo "    3) Държави (Country/Region)"
+            echo "    4) Цена (App price)"
+            read -p "  Секции — номерата през интервал [Enter=1 описания]: " SECS
+            SECS="${SECS:-1}"
+            SECLIST=""
+            for s in $SECS; do case "$s" in
+                1) SECLIST="$SECLIST description";; 2) SECLIST="$SECLIST content";;
+                3) SECLIST="$SECLIST countries";; 4) SECLIST="$SECLIST price";; esac; done
+            SECLIST="$(echo "$SECLIST" | sed 's/^ *//')"
+            ( cd "$SCRIPT_DIR/.." && node -e 'const fs=require("fs");const app=process.argv[1];const secs=process.argv.slice(2);fs.writeFileSync("huawei/"+app+"/publish/moderation-fix-huawei.json",JSON.stringify({_note:"Секции за препубликуване (--fix, от точка 90). APK винаги.",sections:secs,contentRating:""},null,2)+"\n")' "$BAPP" $SECLIST )
+            echo -e "  ${GREEN}✓ секции за корекция: ${SECLIST}${NC}"
+            # bump версия +1 + ребилд (новото APK носи новата версия)
+            echo -e "  ${YELLOW}► Bump версия +1…${NC}"
+            ( cd "$SCRIPT_DIR/.." && node deploy-scripts/bump-app-version.mjs "$BAPP" )
+            echo -e "  ${YELLOW}► Ребилд ${BAPP} (Huawei, release)…${NC}"
+            ( cd "$SCRIPT_DIR/.." && KCY_APPS_ONLY="$BAPP" KCY_STORES=huawei KCY_BUILD_VARIANT=release KCY_KEEP_OTHERS=1 bash deploy-scripts/release-apks.sh "$BAPP" )
+            # Submit автоматично?
             echo ""
-            ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/huawei-release-bot.cjs" "$BAPP" --loop )
+            read -p "  Да Submit-не ли за модериране след попълване? [y/N]: " DOSUB
+            SUBFLAG=""; case "${DOSUB,,}" in y|yes|да|д) SUBFLAG="--submit";; esac
+            echo -e "  ${YELLOW}► Бот --fix ${SUBFLAG} — навигира до ${BAPP}, качва секциите + новото APK…${NC}"
+            ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/huawei-release-bot.cjs" "$BAPP" --fix $SUBFLAG )
             press_enter
             ;;
         91)
