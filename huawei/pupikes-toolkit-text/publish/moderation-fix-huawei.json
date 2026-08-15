@@ -1,7 +1,7 @@
 {
-  "_note": "Втори проход: описанията записани (App info). Само версията — APK 1.0020 + Submit.",
+  "_note": "v20→v21: иконата качена отделно (App info); тук само рейтинг 18+ + APK + Submit.",
   "sections": [
-    "price"
+    "content"
   ],
-  "contentRating": ""
+  "contentRating": "18+"
 }

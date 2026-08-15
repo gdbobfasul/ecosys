@@ -1,7 +1,7 @@
 {
-  "_note": "Корекция след модерация. Причини 7.1+3.1: privacy/terms URL връщаха 404 → РЕШЕНО сървърно (hw-privacy.html и hw-terms.html вече 200; апът сочи точно тях). Само нова версия + reviewer note + APK. Без смяна на App info/икона.",
+  "_note": "Преподаване v20→v21 (16.08). Секции = какво Релийзботът препубликува; APK ВИНАГИ.",
   "sections": [
-    "price"
+    "appinfo"
   ],
   "contentRating": ""
 }

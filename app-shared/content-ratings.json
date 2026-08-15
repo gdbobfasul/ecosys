@@ -77,5 +77,13 @@
   "rustam": {
     "all": "No",
     "yes": []
+  },
+  "pupikes-toolkit-text": {
+    "all": "No",
+    "yes": [
+      "Finance"
+    ],
+    "expectedAge": "18+",
+    "_note": "virtual currency price tracking → Finance=Yes + expected age 18+ (Huawei 1.10)"
   }
 }

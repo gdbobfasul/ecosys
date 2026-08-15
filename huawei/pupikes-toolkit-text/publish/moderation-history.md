@@ -36,3 +36,16 @@ Tests the compatibility, stability, performance, power cons
 ПОУКА (техническа): описанието съдържаше специални Unicode знаци (математически bold 𝐁𝐨𝐥𝐝 + комбиниращи зачертаване/подчертаване) в редовете „Unicode стил" — Huawei ги отказва при Save на App info („special characters are not allowed"). Почистени (NFKC + махане на U+0300–036F) в descriptions-languages.md И store-listing/*.txt. Правило: описанията само с нормални знаци.
 
 Подадено наново: **v1.0020** (2026-08-12) → Reviewing.
+
+## 2026-08-15 — ревю от модерацията (дословно)
+
+```
+App review results：
+1.Your app contains virtual currency price tracking content that does not match the age rating. The current rating fails to accurately represent the suitable age group for the app, making it harder for users to find apps appropriate for their age.
+Modification suggestion: Complete the age rating questionnaire based on the app functions and content. If the age rating result in the questionnaire does not meet the review requirements, you can select the applicable age rating [18+] from the expected age rating section of the questionnaire. Alternatively, delete the content that does not match the age rating.
+For details, please refer to rule 1.10 of the AppGallery Review Guidelines at the following website: https://developer.huawei.com/consumer/en/doc/app/50104-01
+For details about the Age Rating Questionnaire FAQs, please visit the following website: https://developer.huawei.com/consumer/en/doc/app/50142
+2.The app icon you submitted is different from that displayed on users' mobile phones after the app is installed, which affects user experience.
+Modification suggestion: Ensure that the app icon you submitted is the same as that displayed on users' mobile phones after the app is installed, and ensure this issue does not exist in other languages.
+For details, please refer to rule 1.20 of the AppGallery Review Guidelines at the following website: https://develope
+```

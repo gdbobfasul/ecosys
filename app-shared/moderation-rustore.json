@@ -1,5 +1,149 @@
 {
   "_note": "Забележки от модераторите на RuStore — събрани АВТОМАТИЧНО от бота (точка 92) от платформата през логнатата сесия. НЕ редактирай ръчно и НЕ пълни с външни данни. Ботът добавя само НОВИ забележки при всяко пускане. Ключ = id на приложението.",
   "store": "rustore",
-  "apps": {}
+  "apps": {
+    "rustam": {
+      "notes": [
+        {
+          "text": "Приложение не прошло модерацию, поскольку его иконка на витрине RuStore не совпадает с иконкой установленного приложения. Просим вас упорядочить визуальное оформление приложения перед повторной отправкой на модерацию. Также, появляется сообщение \"Неоригинальная копия\". Пожалуйста, добавьте скриншоты с наполнением приложения и уберите дублирующие, оставив русский язык.",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063742340/versions/2064748083",
+          "version": "1.0019(1785922917)"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-08-12",
+          "url": "https://console.rustore.ru/apps/2063742340/versions"
+        },
+        {
+          "text": "Comment for moderator Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-08-12",
+          "url": "https://console.rustore.ru/apps/2063742340/versions/2064748083/edit"
+        },
+        {
+          "text": "Provide any information that will help the moderator review the app. Comment (optional) 93/180 Continue Cancel",
+          "seenAt": "2026-08-12",
+          "url": "https://console.rustore.ru/apps/2063742340/versions/2064748083/edit"
+        }
+      ],
+      "collectedAt": "2026-08-12"
+    },
+    "authenticator": {
+      "notes": [
+        {
+          "text": "Приложение не прошло модерацию из-за некорректных скриншотов. Просьба перезалить скриншоты, выбрав изображения в соотношении 9:16/16:9, как указано в консоли разработчика. В текущем соотношении скриншоты режутся. Например: 720:1280, 1080:1920 или 1440:2560. https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063742333/versions/2064748064",
+          "version": "1.0019(1785921364)"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-08-12",
+          "url": "https://console.rustore.ru/apps/2063742333/versions"
+        }
+      ],
+      "collectedAt": "2026-08-12"
+    },
+    "baby-monitor": {
+      "notes": [
+        {
+          "text": "Приложение не прошло модерацию из-за некорректных скриншотов. Просьба перезалить скриншоты, выбрав изображения в соотношении 9:16/16:9, как указано в консоли разработчика. В текущем соотношении скриншоты режутся. Например: 720:1280, 1080:1920 или 1440:2560. https://help.rustore.ru/rustore/for_developers/publishing_and_verifying_apps/requirement_apps",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063742330/versions/2064748029",
+          "version": "1.0019(1785921612)"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-08-12",
+          "url": "https://console.rustore.ru/apps/2063742330/versions"
+        }
+      ],
+      "collectedAt": "2026-08-12"
+    },
+    "pupikes-toolkit-text": {
+      "notes": [
+        {
+          "text": "Приложение не прошло модерацию, так как появляется данное окно после запуска. (Скриншот: https://vk.cc/d0lqUZ). Также просьба перевести скриншоты на русский или английский язык.",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063742323/versions/2064748015",
+          "version": "1.0019(1785922783)"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-08-12",
+          "url": "https://console.rustore.ru/apps/2063742323/versions"
+        },
+        {
+          "text": "Waiting for moderation Automatic 100% Icon Chevron Down 16 Publish Icon More Horizontal 24 1.0019(1785921612)",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063742330/versions"
+        }
+      ],
+      "collectedAt": "2026-08-13"
+    },
+    "pupikes-toolkit-qr": {
+      "notes": [
+        {
+          "text": "Приложение не прошло модерацию, поскольку после установки приложение предлагает установить оригинальную версию из магазинов.",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063741380/versions/2064744307",
+          "version": "1.0019(1785776346)"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-08-12",
+          "url": "https://console.rustore.ru/apps/2063741380/versions"
+        }
+      ],
+      "collectedAt": "2026-08-12"
+    },
+    "pupikes-toolkit-pdf": {
+      "notes": [
+        {
+          "text": "Приложение не прошло модерацию, поскольку после установки приложение предлагает установить оригинальную версию из магазинов.",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063741371/versions/2064744277",
+          "version": "1.0019(1785776247)"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063741371/versions"
+        }
+      ],
+      "collectedAt": "2026-08-13"
+    },
+    "monitor-bot": {
+      "notes": [
+        {
+          "text": "Приложение не прошло модерацию, поскольку после установки приложение предлагает установить оригинальную версию из магазинов, скриншот https://vk.cc/d0ijGt",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063741350/versions/2064744150",
+          "version": "1.0019(1785775827)"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063741350/versions"
+        }
+      ],
+      "collectedAt": "2026-08-13"
+    },
+    "newslator": {
+      "notes": [
+        {
+          "text": "Приложение не прошло модерацию, поскольку его функциональность на данном этапе сильно ограничена. Из-за этого приложение не воспринимается пользователем как завершённый, самостоятельный продукт. В приложении используются загрузочные экраны и правовые документы от другого приложения - https://vk.cc/d0fZHa / https://vk.cc/d0fZIk. Также новостная лента не загружается - https://vk.cc/d0fZLh",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063740748/versions/2064741755",
+          "version": "1.0018(1785646263)"
+        },
+        {
+          "text": "Moderation not passed Icon Edit 20 Icon More Horizontal 24 Icon Archive 16 Version archive",
+          "seenAt": "2026-08-13",
+          "url": "https://console.rustore.ru/apps/2063740748/versions"
+        }
+      ],
+      "collectedAt": "2026-08-13"
+    }
+  }
 }

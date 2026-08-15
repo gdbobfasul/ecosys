@@ -1,0 +1,7 @@
+{
+  "_note": "Преподаване след Huawei ревю (осн. правило 9.3): магазинната икона не съвпадаше с launcher-а/приличаше на чужда. Новата ОРИГИНАЛНА pupikes-икона (надпис „pupikes\", уникален символ) вече е в publish/icon-512.png = launcher-а. Секция appinfo → App information качва новата икона; APK се качва ВИНАГИ.",
+  "sections": [
+    "appinfo"
+  ],
+  "contentRating": ""
+}

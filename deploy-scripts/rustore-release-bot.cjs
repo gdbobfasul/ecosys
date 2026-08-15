@@ -240,24 +240,77 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
         await el.fill('').catch(() => {}); await el.fill(val).then(() => log('✓ ' + name + ' ← ' + String(val).slice(0, 40))).catch(() => log('↷ не попълних ' + name));
       };
       const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // Новата конзола (нов собственик от 03.08.2026) ползва react-select с ТЪРСЕНЕ: клик → пиши →
+      // избери опция (руски надписи). Старият xpath-подход не работеше. Категорията „Main" стартира
+      // с „Category not selected" (нова версия). Опциите зависят от Type (Game/Application) — Type се
+      // избира ПРЕДИ това. Пробва: клик по тригера → ArrowDown → пиши текста → клик по опцията / Enter.
+      // react-select с ТЪРСЕНЕ е ИНТЕРМИТЕНТЕН (понякога не се закача) → ПОВТАРЯЙ до потвърждение
+      // на скритото поле (verifyName). До 4 опита. verifyName: скрито input име (mainCategory/ageLegal);
+      // verifyExact: очаквана стойност (за възраст „0+"); за категория проверяваме само НЕ-празно.
+      // КЛЮЧОВО (13.08): react-select показва ЦЕЛИЯ списък при отваряне — НЕ пиши (писането прави race,
+      // затова падаше). Само отвори → клик по точната опция (role=option, започваща с текста; надписът
+      // има суфикс „ Icon Done 20"). Писането остава само като резерва. Проверка по скритото поле.
+      const pickSelect = async (label, triggerLoc, optionText, verifyName, verifyExact) => {
+        const val = async () => { try { return (await page.locator('[name="' + verifyName + '"]').inputValue()) || ''; } catch (_) { return ''; } };
+        const good = (v) => verifyExact ? (v === verifyExact) : (!!v && v !== 'null');
+        const optLoc = () => page.locator('.react-select__option, [role="option"]').filter({ hasText: new RegExp('^' + esc(optionText) + '(\\s|$)') }).first();
+        for (let attempt = 1; attempt <= 5; attempt++) {
+          if (good(await val())) { log('✓ ' + label + ' ← ' + optionText + (attempt > 1 ? ' (опит ' + attempt + ')' : '')); return true; }
+          try {
+            await triggerLoc.scrollIntoViewIfNeeded().catch(() => {});
+            await triggerLoc.click({ timeout: 4000 }); await sleep(900);
+            // 1) чист клик по опцията от целия списък (без писане) — надеждният път
+            let opt = optLoc();
+            if (await opt.count().catch(() => 0)) {
+              await opt.scrollIntoViewIfNeeded().catch(() => {});
+              await opt.hover().catch(() => {}); await sleep(150);
+              await opt.click({ timeout: 3000, force: true }).catch(() => {});
+            } else {
+              // 2) резерва: писане филтрира списъка, после клик/Enter
+              await page.keyboard.type(optionText.slice(0, 14), { delay: 45 }); await sleep(1000);
+              opt = optLoc();
+              if (await opt.count().catch(() => 0)) { await opt.hover().catch(() => {}); await sleep(150); await opt.click({ timeout: 3000, force: true }).catch(() => {}); }
+              else await page.keyboard.press('Enter').catch(() => {});
+            }
+            await sleep(900);
+          } catch (e) { await page.keyboard.press('Escape').catch(() => {}); }
+        }
+        const ok = good(await val());
+        log(ok ? '✓ ' + label + ' ← ' + optionText : '↷ ' + label + ' (' + optionText + ') — НЕ се закачи след 5 опита — избери ръчно');
+        return ok;
+      };
+      // Категория „Main": тригер = САМИЯТ контрол (testid). ВАЖНО (13.08): по-рано клякахме първо по
+      // ТЕКСТА „Category not selected" — span, който НЕ отваря менюто надеждно → падаше. Контролът отваря
+      // целия списък и pickSelect клика точната опция без писане.
+      const catTrigger = page.locator('[data-testid=mainCategorySelect]').first();
       const selectDropdown = async (labelText, optionText) => {
         if (!optionText) return;
-        try {
-          const trigger = page.locator(':text("' + labelText + '")').first().locator('xpath=following::*[self::input or @role="combobox" or contains(@class,"select")][1]');
-          await trigger.click({ timeout: 3000 }); await sleep(1000);
-          const opt = page.locator('[role="option"]:visible, .el-select-dropdown__item:visible, li:visible').filter({ hasText: new RegExp('^' + esc(optionText)) }).first();
-          await opt.click({ timeout: 3000 });
-          log('✓ ' + labelText + ' ← ' + optionText);
-          await sleep(500);
-        } catch (e) { log('↷ „' + labelText + '" (' + optionText + ') — избери ръчно'); await page.keyboard.press('Escape').catch(() => {}); }
+        await pickSelect(labelText, catTrigger, optionText, 'mainCategory', null);
       };
       // Име (публично), Тип, Цена
       await fillByName('appName', baseName);
-      await page.locator('input[type="radio"][name="appTypeOption"][value="' + (appType === 'Game' ? 'GAMES' : 'MAIN') + '"]').check({ force: true }).then(() => log('✓ Type ← ' + appType)).catch(() => log('↷ Type — избери ръчно'));
+      // Type: Application(MAIN) е по подразбиране; Game(GAMES) иска изричен избор (иначе категорията
+      // показва APP-категории, не игрови → „Category not selected" + предупреждение). Клик по етикета,
+      // после проверка (както при rustam ръчно).
+      {
+        const val = appType === 'Game' ? 'GAMES' : 'MAIN';
+        const radio = page.locator('input[type="radio"][name="appTypeOption"][value="' + val + '"]');
+        const lbl = page.locator('label').filter({ has: radio }).first();
+        if (await lbl.count().catch(() => 0)) await lbl.click({ force: true }).catch(() => {});
+        else await radio.check({ force: true }).catch(() => {});
+        await sleep(600);
+        const ok = await radio.isChecked().catch(() => false);
+        log(ok ? '✓ Type ← ' + appType : '↷ Type — избери ръчно (' + appType + ')');
+      }
       await fillByName('priceValue', priceRub);
-      // Категория (Main) + Възрастово ограничение
+      // Категория (Main): react-select с търсене; зависи от Type (избран горе).
       await selectDropdown('Main', catMain);
-      await selectDropdown('Age restriction', ageR);
+      // Възраст (ЗАДЪЛЖИТЕЛНО! НЕ е 0+ по подразбиране — празно → предупреждение „Warning" на Info и
+      // подаването пада). Контролът е react-select с testid=ageLegalSelect; избираме по стойност.
+      if (ageR) {
+        const ageTrigger = page.locator('[data-testid=ageLegalSelect]').first();
+        await pickSelect('Age', ageTrigger, ageR, 'ageLegal', ageR);
+      }
       // Описания (руски) + Контакти
       await fillByName('shortDescription', RU.brief);
       await fillByName('fullDescription', RU.full);
@@ -298,22 +351,18 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
           const have = (await chips()).map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase());
           return have.includes(tag.toLowerCase());
         };
-        // Добавя липсващите (спрямо файла) с до 3 паса — react-select понякога „изпуска" таг (потвърден,
-        // после изчезнал). Всеки пас се сверява с реалните чипове, не с локален брояч.
-        for (let pass = 0; pass < 3; pass++) {
-          const have = (await chips()).map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase());
-          const missing = tags.filter((t) => !have.includes(t.toLowerCase()));
-          if (!missing.length) break;
+        // Таговете са ПО ИЗБОР (не блокират подаването) → best-effort 1 пас, за да не бавим/зациклим
+        // на нестабилния react-select. Каквото се закачи — добре; липсващите НЕ са грешка.
+        try {
+          const have0 = (await chips()).map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase());
+          const missing = tags.filter((t) => !have0.includes(t.toLowerCase()));
           for (const tag of missing) {
             const ok = await addOne(tag);
-            log(ok ? '✓ таг ← ' + tag : '↷ таг „' + tag + '" — не се потвърди (пас ' + (pass + 1) + ')');
+            log(ok ? '✓ таг ← ' + tag : '↷ таг „' + tag + '" — прескачам (по избор)');
           }
-        }
-        // Финална проверка спрямо файла (правилото „ако не е готово → грешка").
-        const finalChips = (await chips()).map((t) => t.replace(/\s+/g, ' ').trim());
-        const stillMissing = tags.filter((t) => !finalChips.map((c) => c.toLowerCase()).includes(t.toLowerCase()));
-        if (stillMissing.length) log('⚠ ГРЕШКА: липсват тагове след 3 паса: ' + stillMissing.join(', ') + ' — добави ги ръчно');
-        else log('✓ тагове ОК (' + finalChips.length + '/' + tags.length + '): ' + finalChips.join(', '));
+          const finalChips = (await chips()).map((t) => t.replace(/\s+/g, ' ').trim());
+          log('✓ тагове (по избор): ' + finalChips.length + '/' + tags.length + (finalChips.length ? ' — ' + finalChips.join(', ') : ''));
+        } catch (e) { log('↷ тагове прескочени (по избор): ' + String(e.message || e).split('\n')[0]); }
       }
       log('■ Прегледай всичко (цена ' + (priceRub || '?') + '₽, категория, възраст, тагове) и натисни „Continue" сам. (Не пазя чернова — ти преглеждаш и публикуваш.)');
       return;
@@ -420,9 +469,15 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
     return null;
   }
 
-  const loop = process.argv.includes('--loop');
+  // --auto = авто-напред БЕЗ ENTER (аз оркестрирам целия поток за отхвърлените апове, по искане на
+  // потребителя „ти правиш всичко"). --submit = авто-натискане и на финалния „Submit for Moderation".
+  // Без --submit авто-режимът СПИРА на финалната стъпка (за да проверя APK+скрийншоти преди подаване).
+  const AUTO = process.argv.includes('--auto');
+  const SUBMIT = process.argv.includes('--submit');
+  const loop = process.argv.includes('--loop') || AUTO;
   if (loop) {
-    console.log('\n   РЕЖИМ ENTER (RuStore): отвори екран, натисни ENTER да го попълня. После питам за бутона за напред. „q“ = изход.\n');
+    if (AUTO) console.log('\n   РЕЖИМ АВТО (RuStore)' + (SUBMIT ? ' + SUBMIT' : ' — спира преди подаване') + ': сам попълвам и минавам екраните.\n');
+    else console.log('\n   РЕЖИМ ENTER (RuStore): отвори екран, натисни ENTER да го попълня. После питам за бутона за напред. „q“ = изход.\n');
     const rl = require('readline').createInterface({ input: process.stdin, output: process.stdout });
     // Устойчиво четене: опашка от редове, за да НЕ се губят при подаване през pipe (async паузи между
     // екрани иначе затварят readline и глътват буферираните редове).
@@ -436,6 +491,7 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
       waiter = res;
     });
     (async function runLoop() {
+      let noBtnTries = 0;
       for (;;) {
         // АВТО-ПОПЪЛВАНЕ БЕЗ ENTER (до 6 стъпки навигация/зареждане): ботът разпознава екрана и го попълва.
         //  • fillCurrent върне 'navigated' (кликнал е бутон/линк, който ОТВАРЯ форма) → изчакай и попълни
@@ -452,17 +508,44 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
           await sleep(2500);   // форма още зарежда → авто-попълни пак
         }
         if (!btn) {
+          if (AUTO) {
+            noBtnTries++;
+            if (noBtnTries >= 4) { console.log('   ⛔ АВТО: няма бутон за напред след 4 опита — спирам (провери екрана ръчно).'); try { rl.close(); } catch (_) {} process.exit(0); }
+            console.log('   ⏳ АВТО: чакам бутон за напред (опит ' + noBtnTries + '/4)…'); await sleep(4000); continue;
+          }
           const r = await question('   ⚠ Няма активен бутон за напред след няколко опита (провери екрана). ENTER = пробвай пак · q = изход: ');
           if (r === null || r.trim().toLowerCase() === 'q') { try { rl.close(); } catch (_) {} process.exit(0); }
           continue;
         }
+        noBtnTries = 0;
         const pressNow = async () => {
+          // ВАЖНО: качването на икона/скрийншот отваря full-screen preview overlay
+          // (data-testid=modalPagePortal-fullScreenPreview-id), който ПРЕХВАЩА кликовете върху „Continue"
+          // → ботът забива. Затваряме го (Escape) преди всяко натискане.
+          const page2 = rsPage();
+          try { if (await page2.locator('[data-testid=modalPagePortal-fullScreenPreview-id]').count().catch(() => 0)) { await page2.keyboard.press('Escape').catch(() => {}); await sleep(500); } } catch (_) {}
           await btn.loc.scrollIntoViewIfNeeded().catch(() => {});
-          await btn.loc.click({ timeout: 6000 }).then(() => console.log('   ✓ натиснах „' + btn.label + '" → минавам нататък')).catch((e) => console.log('   ↷ не можах да натисна: ' + e.message));
+          await btn.loc.click({ timeout: 6000 }).then(() => console.log('   ✓ натиснах „' + btn.label + '" → минавам нататък')).catch((e) => console.log('   ↷ не можах да натисна: ' + e.message.split('\n')[0]));
           await sleep(3500); // изчакай новия екран; после цикълът авто-попълва
         };
         // Финалната стъпка вече също е с ENTER (по желание на потребителя) — само с ясен надпис.
         const isFinal = btn.label.toLowerCase() === 'submit for moderation';
+        // ── АВТО режим: сам натискам напред; на финала подавам само при --submit ──
+        if (AUTO) {
+          if (isFinal) {
+            // ГАРД: не подавай, ако някоя стъпка има „Warning triangle" (непълна — напр. празна възраст).
+            const warns = await rsPage().locator('i[class*="Warning_triangle" i]').count().catch(() => 0);
+            if (warns > 0) { console.log('   ⛔ АВТО: ' + warns + ' предупреждение(я) по стъпките (непълни) — НЕ подавам. Провери ръчно.'); try { rl.close(); } catch (_) {} process.exit(0); }
+            if (!SUBMIT) {
+              console.log('   ⏸ АВТО: стигнах „Submit for Moderation", всички стъпки ✓ — СПИРАМ (без --submit).');
+              try { rl.close(); } catch (_) {} process.exit(0);
+            }
+          }
+          console.log('   ▶ АВТО: натискам „' + btn.label + '"…');
+          await pressNow();
+          if (isFinal) { console.log('\n   🎉 АВТО: подадено за модерация. Излизам.'); try { rl.close(); } catch (_) {} process.exit(0); }
+          continue;
+        }
         const q = isFinal
           ? '   🚀 ПОСЛЕДНА СТЪПКА — всичко е попълнено. ENTER (или y/да) = ПОДАЙ за модерация („Submit for Moderation") · n = не · q = изход: '
           : '   ✅ Екранът е попълнен. Бутон „' + btn.label + '" → ENTER (или y/да) = продължи · n = не · q = изход: ';

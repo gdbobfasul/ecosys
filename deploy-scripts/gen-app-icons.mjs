@@ -4,7 +4,10 @@
 // вектор, не взет отникъде) + надпис „pupikes". Целта: разпознаваемо ЗА приложението
 // и достатъчно оригинално, че магазините (Huawei/RuStore) да не го засекат като чужда икона.
 //
-// Пише в: rustore/<ап>/store/icon.svg И huawei/<ап>/store/icon.svg  (билдът прави PNG-тата оттам)
+// Пише в: rustore/<ап>/store/icon.svg И huawei/<ап>/store/icon.svg  (билдът прави launcher PNG-тата оттам)
+//          rustore/<ап>/publish/icon-512.png + icon-216.png И huawei/... (магазинната икона — качва се в
+//            AppGallery/RuStore; ВИНАГИ се синхронизира със store/icon.svg, за да съвпада с launcher-а,
+//            който потребителят вижда — иначе Huawei 9.3: „иконата не е като за потребителите")
 //          apk/icons/<ап>.png   (миниатюра за началната страница pupikes.app)
 //
 // Пуск от repo ROOT:  node deploy-scripts/gen-app-icons.mjs [--thumbs-only] [ап ...]
@@ -19,6 +22,7 @@ const ROOT = path.resolve(__dirname, '..');
 const require = createRequire(path.join(ROOT, 'package.json'));
 let sharp = null;
 try { sharp = require('sharp'); } catch (e) { console.error('! sharp липсва — правя само SVG:', e.message); }
+let okPubPng = 0; // брояч на регенерираните магазинни икони (publish/icon-*.png)
 
 const args = process.argv.slice(2);
 const THUMBS_ONLY = args.includes('--thumbs-only');
@@ -200,6 +204,23 @@ function appList() {
 
 function read(p) { try { return fs.readFileSync(p, 'utf8'); } catch { return null; } }
 
+// Магазинната икона (publish/icon-512.png + icon-216.png) се качва в Huawei/RuStore. Тя ТРЯБВА да е
+// същата като launcher-а (генериран от store/icon.svg), иначе изглежда като чужда икона за магазина
+// (Huawei 9.3). Затова я регенерираме от СЪЩИЯ svg при всяко пускане. Само където има publish/ папка.
+async function writePublishIcons(appDir, svgStr) {
+  if (!sharp) return;
+  const pubDir = path.join(appDir, 'publish');
+  if (!fs.existsSync(pubDir)) return; // само апове с готов магазинен пакет
+  const buf = Buffer.from(svgStr);
+  try {
+    await sharp(buf).resize(512, 512).png().toFile(path.join(pubDir, 'icon-512.png'));
+    await sharp(buf).resize(216, 216).png().toFile(path.join(pubDir, 'icon-216.png'));
+    const webp = path.join(pubDir, 'icon-512.webp');
+    if (fs.existsSync(webp)) await sharp(buf).resize(512, 512).webp().toFile(webp);
+    okPubPng++;
+  } catch (e) { console.error(`  ! магазинна икона ${appDir}: ${e.message}`); }
+}
+
 async function main() {
   const apps = appList();
   fs.mkdirSync(path.join(ROOT, 'apk', 'icons'), { recursive: true });
@@ -214,11 +235,12 @@ async function main() {
         const sd = path.join(appDir, 'store');
         const p = path.join(sd, 'icon.svg');
         const cur = read(p);
-        // Ръчна икона (без нашия маркер) → НЕ застъпвай; пази я и я ползвай за миниатюрата.
-        if (cur && !cur.includes(MARK) && !FORCE) { thumbSvg = cur; skipped++; continue; }
-        fs.mkdirSync(sd, { recursive: true });
-        fs.writeFileSync(p, gen);
-        okSvg++;
+        let effSvg;
+        // Ръчна икона (без нашия маркер) → НЕ застъпвай svg-то; пази го и го ползвай за миниатюрата.
+        if (cur && !cur.includes(MARK) && !FORCE) { effSvg = cur; thumbSvg = cur; skipped++; }
+        else { fs.mkdirSync(sd, { recursive: true }); fs.writeFileSync(p, gen); effSvg = gen; okSvg++; }
+        // Магазинната икона ВИНАГИ се синхронизира с текущото store/icon.svg (ръчно или генерирано).
+        await writePublishIcons(appDir, effSvg);
       }
     }
     // миниатюра за началната страница
@@ -231,7 +253,7 @@ async function main() {
     const [tk, sk] = APP[id] || guess(id);
     console.log(`  ✓ ${id}  →  ${tk}/${sk}`);
   }
-  console.log(`\nГотово: ${okSvg} SVG · ${okPng} PNG · ${skipped} запазени ръчни, за ${apps.length} приложения.`);
+  console.log(`\nГотово: ${okSvg} SVG · ${okPng} миниатюри · ${okPubPng} магазинни икони · ${skipped} запазени ръчни, за ${apps.length} приложения.`);
 }
 
 main();
