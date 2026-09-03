@@ -12,6 +12,11 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsInlineLimit: 0,
-    target: 'es2017'
-  }
+    // es2020: нужно за BigInt литералите на Transformers.js (Whisper on-device). Модерните Android
+    // WebView (вкл. Huawei) поддържат es2020.
+    target: 'es2020'
+  },
+  // Transformers.js/onnxruntime-web ползват eval + голям пакет → не ги пре-оптимизирай (по-бърз, чист билд).
+  optimizeDeps: { exclude: ['@xenova/transformers'] },
+  worker: { format: 'es' }
 });

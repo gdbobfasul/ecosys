@@ -1,0 +1,102 @@
+{
+ "store": "huawei",
+ "collectedAt": "2026-09-02T19:53:00.457Z",
+ "apps": [
+  {
+   "name": "Pupikes Toolkit Authenticator",
+   "pkg": "com.pupikes.authenticator.hw",
+   "id": "118543051",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit PDF",
+   "pkg": "com.pupikes.toolkitpdf.hw",
+   "id": "118542809",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes NewsLator",
+   "pkg": "com.pupikes.newslator.hw",
+   "id": "118541397",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit Text",
+   "pkg": "com.pupikes.toolkittext.hw",
+   "id": "118543111",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Site Monitor",
+   "pkg": "com.pupikes.monitorbot.hw",
+   "id": "118542769",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit Price Watch",
+   "pkg": "com.pupikes.pricewatchbot.hw",
+   "id": "118543155",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Baby Radar",
+   "pkg": "com.pupikes.babymonitor.hw",
+   "id": "118543187",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  },
+  {
+   "name": "Pupikes Toolkit QR",
+   "pkg": "com.pupikes.toolkitqr.hw",
+   "id": "118542875",
+   "status": "Reviewing",
+   "metrics": {
+    "rating": "",
+    "reviews": 0,
+    "comments": [],
+    "purchases": ""
+   }
+  }
+ ]
+}

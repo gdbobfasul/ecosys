@@ -48,3 +48,6 @@ Distribution analysis
 Distribution analysis
 Collects and reveals how your app is distributed and used, enhancing your decision-ma
 ```
+
+## 2026-08-22 — нова икона (Стил A) + пресъбмит подготвен
+- **1.20** — нова икона Стил A в конзолата (проверено) + ново APK + поправен превод (safety banner). Чернова записана. Остава ръчно: Proof of copyright + Submit (batch: APK-guard спря авто-Submit).

@@ -36,9 +36,27 @@ const PROBE_KEY = 'retry';
 
 let current = detect();
 
+// Език по локала на устройството (навигатора) → наш код от 15-те; '' ако няма съвпадение.
+function deviceLang() {
+  var SUP = ['bg','ru','uk','en','de','fr','es','es-MX','it','pt','ar','hi','ja','ky','zh-Hant'];
+  function pick(tag) {
+    if (!tag) return ''; var low = String(tag).toLowerCase();
+    if (low.indexOf('zh') === 0) return 'zh-Hant';           // наличен е само традиционен китайски
+    if (low.indexOf('pt') === 0) return 'pt';
+    if (low.indexOf('es') === 0) return (low.indexOf('mx') > -1 || low.indexOf('419') > -1 || low.indexOf('us') > -1) ? 'es-MX' : 'es';
+    var two = low.slice(0, 2);
+    for (var i = 0; i < SUP.length; i++) if (SUP[i] === two) return SUP[i];
+    return '';
+  }
+  try {
+    var arr = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || navigator.userLanguage || navigator.browserLanguage || ''];
+    for (var i = 0; i < arr.length; i++) { var m = pick(arr[i]); if (m) return m; }
+  } catch (e) {}
+  return '';
+}
 function detect() {
   try { const s = localStorage.getItem(LS_KEY); if (s && STR[PROBE_KEY][s] != null) return s; } catch (e) {}
-  return DEFAULT_LANG;
+  return deviceLang() || DEFAULT_LANG;
 }
 
 export function hasLangChosen() {

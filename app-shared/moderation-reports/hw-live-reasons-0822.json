@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Pupikes Toolkit Price Watch",
+    "pkg": "com.pupikes.pricewatchbot.hw",
+    "id": "118543155",
+    "hasReview": false,
+    "block": ""
+  },
+  {
+    "name": "Pupikes Toolkit Authenticator",
+    "pkg": "com.pupikes.authenticator.hw",
+    "id": "118543051",
+    "hasReview": false,
+    "block": ""
+  },
+  {
+    "name": "Pupikes NewsLator",
+    "pkg": "com.pupikes.newslator.hw",
+    "id": "118541397",
+    "hasReview": false,
+    "block": ""
+  },
+  {
+    "name": "Pupikes Toolkit PDF",
+    "pkg": "com.pupikes.toolkitpdf.hw",
+    "id": "118542809",
+    "hasReview": false,
+    "block": ""
+  },
+  {
+    "name": "Pupikes Toolkit Text",
+    "pkg": "com.pupikes.toolkittext.hw",
+    "id": "118543111",
+    "hasReview": false,
+    "block": ""
+  },
+  {
+    "name": "Pupikes Baby Radar",
+    "pkg": "com.pupikes.babymonitor.hw",
+    "id": "118543187",
+    "hasReview": false,
+    "block": ""
+  },
+  {
+    "name": "Pupikes Toolkit QR",
+    "pkg": "com.pupikes.toolkitqr.hw",
+    "id": "118542875",
+    "hasReview": false,
+    "block": ""
+  },
+  {
+    "name": "Pupikes Site Monitor",
+    "pkg": "com.pupikes.monitorbot.hw",
+    "id": "118542769",
+    "hasReview": false,
+    "block": ""
+  }
+]

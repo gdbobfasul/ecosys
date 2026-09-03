@@ -10,6 +10,8 @@
   </defs>
   <rect width="1024" height="1024" fill="url(#g)"/>
   <rect width="1024" height="1024" fill="url(#hi)"/>
-  <circle cx="446" cy="396" r="96" fill="#fff"/><circle cx="446" cy="396" r="40" fill="url(#g)"/><rect x="486" y="470" width="190" height="46" rx="16" fill="#fff" transform="rotate(45 486 470)"/><rect x="628" y="556" width="60" height="40" rx="10" fill="#fff"/><rect x="592" y="520" width="60" height="40" rx="10" fill="#fff"/>
+  <rect x="236" y="196" width="552" height="470" rx="120" fill="#fff"/>
+  <circle cx="742" cy="250" r="46" fill="#8b93ff"/>
+  <g transform="translate(512 431) scale(0.84) translate(-512 -440)"><circle cx="446" cy="396" r="96" fill="#3730a3"/><circle cx="446" cy="396" r="40" fill="url(#g)"/><rect x="486" y="470" width="190" height="46" rx="16" fill="#3730a3" transform="rotate(45 486 470)"/><rect x="628" y="556" width="60" height="40" rx="10" fill="#3730a3"/><rect x="592" y="520" width="60" height="40" rx="10" fill="#3730a3"/></g>
   <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

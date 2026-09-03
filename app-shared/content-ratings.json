@@ -17,7 +17,8 @@
     "yes": [
       "Finance"
     ],
-    "_note": "крипто цени/курсове → Finance=Yes; ако рейтингът не стане 18+, избери 18+ в 'expected age rating' (Huawei правило 1.10)"
+    "_note": "крипто цени/курсове → Finance=Yes + expected age 18+ (Huawei правило 1.10)",
+    "expectedAge": "18+"
   },
   "price-watch-bot": {
     "all": "No",
@@ -32,7 +33,16 @@
     "yes": [
       "Finance"
     ],
-    "_note": "FX/крипто → Finance=Yes; при нужда 18+ expected"
+    "_note": "FX/крипто цени → Finance=Yes + expected age 18+ (Huawei правило 1.10)",
+    "expectedAge": "18+"
+  },
+  "services-toolkit": {
+    "all": "No",
+    "yes": [
+      "Finance"
+    ],
+    "_note": "crypto-chart + fx-rates + pricewatch → Finance=Yes + expected age 18+ (Huawei правило 1.10)",
+    "expectedAge": "18+"
   },
   "stay-informed": {
     "all": "No",

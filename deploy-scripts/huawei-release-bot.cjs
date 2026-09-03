@@ -47,6 +47,13 @@ const REASONS_MODE = process.argv.includes('--reasons');
 // → потвърждение). НЕОБРАТИМО. По избор точен таргет с `--id=<appId>` (иначе намира апа по име в списъка).
 const DELETE_MODE = process.argv.includes('--delete');
 const DELETE_ID = (process.argv.find((a) => /^--id=/.test(a)) || '').replace('--id=', '');
+// РЕЖИМ СТАТУСИ: `--status` → чете ЦЕЛИЯ списък приложения (таб Android) и печата име+пакет+версия+статус за
+// всяко. Само чете — не пипа нищо. (app аргументът е формален; списъкът е общ.)
+const STATUS_MODE = process.argv.includes('--status');
+// РЕЖИМ МЕТРИКИ: `--metrics` → за ВСЕКИ ап събира от конзолата отзиви (Operate → Comments) + покупки
+// (In-App Purchases) + статус, и записва отчет в docs/store-metrics/huawei-<дата>.json (+ .md резюме).
+// Само чете. Отделно от RuStore (различен бот) — за да не се смесват магазините.
+const METRICS_MODE = process.argv.includes('--metrics') || process.argv.includes('--insights');
 // ── ДЕКЛАРАТИВНО: кои СЕКЦИИ да препубликува ботът в --fix режим (заради модерацията) ──
 // publish/moderation-fix-huawei.json: { "sections":["description"|"content"|"countries"|"price"|"appinfo"],
 //   "contentRating":"15+"|"" }. APK се качва ВИНАГИ. Секция извън списъка → НЕ се пипа (спестено време).
@@ -232,12 +239,19 @@ async function forceTestingNo(frame) {
     const yes = grp.locator('label.el-radio, .el-radio').filter({ hasText: /^\s*Yes\s*$/i }).first();
     const no = grp.locator('label.el-radio, .el-radio').filter({ hasText: /^\s*No\s*$/i }).first();
     const isNo0 = await no.evaluate((e) => e.classList.contains('is-checked')).catch(() => false);
-    if (isNo0) {   // визуално вече No, но моделът може да е Yes → форсирай Yes→No да го committнеш
-      if (await yes.count().catch(() => 0)) { await mouseClick(yes); await new Promise((r) => setTimeout(r, 500)); }
-    }
-    if (await no.count().catch(() => 0)) { await mouseClick(no); await new Promise((r) => setTimeout(r, 600)); }
+    // ★ CAUSE-AWARE (ключово): реши по РЕАЛНОТО състояние, не само по вида на радиото.
+    //   • Ако пише „No" И НЯМА open-testing грешки → моделът е чист → НЕ пипай (иначе Yes→No само за миг
+    //     ВКЛЮЧВА open-testing и ражда фалшиви полета). Това пази 7-те чисти апа.
+    //   • Ако пише „No" НО има open-testing грешки (Vue десинхрон: моделът реално е „Yes", както при
+    //     authenticator) → форсирай Yes→No с истинска мишка да committнеш „No". После Save (по-надолу) го
+    //     записва и грешките падат.
+    const otErr = await frame.evaluate(() => /open testing version must be later|select a user list|enter a start time and an end time|users to be invited cannot exceed|version code later than the released/i.test(document.body ? document.body.innerText : '')).catch(() => false);
+    if (isNo0 && !otErr) { log('✓ Use testing version = No (без open-testing грешки) — не пипам.'); return true; }
+    if (isNo0 && otErr) log('  ⚠ open-testing валидация активна въпреки вид „No" → форсирам Yes→No да committна модела.');
+    if (await yes.count().catch(() => 0)) { await mouseClick(yes); await new Promise((r) => setTimeout(r, 600)); }
+    if (await no.count().catch(() => 0)) { await mouseClick(no); await new Promise((r) => setTimeout(r, 700)); }
     const isNo = await no.evaluate((e) => e.classList.contains('is-checked')).catch(() => false);
-    log(isNo ? '✓ Use testing version = No (истинска мишка → Vue committнат)' : '↷ „Use testing version" — задай „No" ръчно');
+    log(isNo ? '✓ Use testing version → No (истинска мишка, committнат).' : '↷ „Use testing version" — задай „No" ръчно');
     return isNo;
   } catch (_) { return false; }
 }
@@ -1698,29 +1712,166 @@ function spawnBrowser() {
   }
   // (2) Магазинната икона през App info route (фиксиран 97458334310914199) — НАДЕЖДНО (заобикаля
   //     засядащия amp-iframe в основния поток). Качва publish/icon-512.png, изчаква src да се смени, Save.
+  //     ★ КОРЕН НА ПРАВИЛО 1.20: App Information пази ОТДЕЛНА икона за ВСЕКИ ЕЗИК (до 17). Ако обновим
+  //       само default-а (English UK), другите езици остават със СТАРАТА икона → модераторът тества случаен
+  //       език и вижда разминаване с launcher-а → пак 1.20. Затова обхождаме ВСИЧКИ езици. Save detach-ва
+  //       iframe-а → навигираме НАНОВО за всеки език (чиста рамка).
+  const APPINFO_ROUTE = '97458334310914199';
+  async function appInfoFrame(p, cid) {
+    await p.goto(AGC_URL.replace('#/myApp', '#/myApp/' + cid + '/' + APPINFO_ROUTE), { waitUntil: 'domcontentloaded', timeout: 40000 }).catch(() => {});
+    await sleep(6000);
+    for (let t = 0; t < 8; t++) { for (const f of p.frames()) { try { if (await f.evaluate(() => /App icon|Manage languages/i.test(document.body ? document.body.innerText : ''))) return f; } catch (_) {} } await sleep(2500); }
+    return null;
+  }
+  async function iconImgSrc(frame) { return frame.evaluate(() => { const fi = [...document.querySelectorAll('.el-form-item')].find((e) => /App icon/i.test(e.innerText || '')); const im = fi && fi.querySelector('img'); return im ? (im.src || '') : ''; }).catch(() => ''); }
   async function uploadStoreIconReliable(p, cid, icon) {
     try {
-      await p.goto(AGC_URL.replace('#/myApp', '#/myApp/' + cid + '/97458334310914199'), { waitUntil: 'domcontentloaded' }).catch(() => {});
-      await sleep(6000);
-      let frame = null;
-      for (let t = 0; t < 8 && !frame; t++) { for (const f of p.frames()) { if (/appInfo/i.test(f.url())) { const h = await f.evaluate(() => /App icon/i.test(document.body ? document.body.innerText : '')).catch(() => false); if (h) { frame = f; break; } } } if (!frame) await sleep(2500); }
+      // 1) вземи списъка езици от език-падащото меню в App info
+      let frame = await appInfoFrame(p, cid);
       if (!frame) { log('↷ магазинна икона: App info не зареди — ще пробвам в основния поток.'); return false; }
-      const cur0 = async () => await frame.evaluate(() => { const im = [...document.querySelectorAll('img')].find((x) => /obs|myhuaweicloud/i.test(x.src || '')); return im ? im.src : ''; }).catch(() => '');
-      const old = await cur0();
-      let fi = frame.locator('.el-form-item:has-text("App icon") input[type="file"]').first();
-      if (!(await fi.count().catch(() => 0))) fi = frame.locator('input[type="file"]').first();
-      if (!(await fi.count().catch(() => 0))) return false;
-      await fi.setInputFiles(icon).catch(() => {});
-      let changed = false;
-      for (let i = 0; i < 18; i++) { await sleep(2000); const c = await cur0(); if (c && c !== old) { changed = true; break; } }
-      await p.keyboard.press('Escape').catch(() => {});
-      await sleep(500);
-      const save = frame.locator('button:has-text("Save")').filter({ hasNotText: /Submit|Next/ }).first();
-      if (await save.count().catch(() => 0)) { await save.click({ force: true, timeout: 4000 }).catch(() => {}); await sleep(3000); }
-      for (let k = 0; k < 2; k++) { const dlg = frame.locator('.el-message-box:visible, .el-dialog:visible').first(); if (!(await dlg.count().catch(() => 0))) break; await dlg.locator('button:has-text("OK"), .el-button--primary').first().click({ force: true, timeout: 2000 }).catch(() => {}); await sleep(1200); }
-      log(changed ? '✓ магазинната икона обновена (App info route) + Save.' : '↷ магазинна икона: src не се смени — виж ръчно.');
-      return changed;
+      await frame.evaluate(() => { const s = document.querySelector('.el-select'); if (s) s.click(); }).catch(() => {});
+      await sleep(1200);
+      let langs = await frame.evaluate(() => [...document.querySelectorAll('.el-select-dropdown__item')].map((e) => (e.innerText || '').trim()).filter(Boolean)).catch(() => []);
+      langs = [...new Set(langs)];
+      if (!langs.length) langs = ['English (UK)'];   // резерва: поне default-а
+      log('  магазинна икона: ' + langs.length + ' езика за обновяване…');
+      // 2) за всеки език — навигирай наново, избери език, качи икона, изчакай src, Save (истинска мишка)
+      let done = 0;
+      for (const lang of langs) {
+        try {
+          frame = await appInfoFrame(p, cid);
+          if (!frame) { log('    ⛔ ' + lang + ' — няма рамка'); continue; }
+          // избери езика в падащото меню
+          await frame.evaluate(() => { const s = document.querySelector('.el-select .el-input, .el-select'); if (s) s.click(); }).catch(() => {});
+          await sleep(900);
+          const sel = await frame.evaluate((L) => { const o = [...document.querySelectorAll('.el-select-dropdown__item')].find((x) => (x.innerText || '').trim() === L); if (o) { o.click(); return true; } return false; }, lang).catch(() => false);
+          await sleep(2500);
+          if (!sel && langs.length > 1) { log('    ↷ ' + lang + ' — не се избра'); continue; }
+          const before = await iconImgSrc(frame);
+          let fi = frame.locator('.el-form-item:has-text("App icon") input[type="file"]').first();
+          if (!(await fi.count().catch(() => 0))) fi = frame.locator('input[type="file"]').first();
+          if (!(await fi.count().catch(() => 0))) { log('    ✗ ' + lang + ' — няма file input'); continue; }
+          await fi.setInputFiles(icon).catch(() => {});
+          let changed = false;
+          for (let k = 0; k < 18; k++) { await sleep(1000); const now = await iconImgSrc(frame); if (now && now !== before) { changed = true; break; } }
+          if (!changed) { log('    ✗ ' + lang + ' — src не се смени'); continue; }
+          await p.keyboard.press('Escape').catch(() => {});
+          await sleep(400);
+          const save = frame.locator('button:has-text("Save")').filter({ hasNotText: /Submit|Next/ }).first();
+          if (await save.count().catch(() => 0)) await mouseClick(save);
+          await sleep(3000);
+          for (let k = 0; k < 2; k++) { const dlg = frame.locator('.el-message-box:visible, .el-dialog:visible').first(); if (!(await dlg.count().catch(() => 0))) break; await dlg.locator('button:has-text("OK"), .el-button--primary').first().click({ force: true, timeout: 2000 }).catch(() => {}); await sleep(1200); }
+          log('    ✓ ' + lang);
+          done++;
+        } catch (e) { log('    ⚠ ' + lang + ' — ' + (e.message || '').slice(0, 45)); }
+      }
+      log(done === langs.length ? ('✓ магазинната икона обновена за ВСИЧКИ ' + done + ' езика.') : ('↷ магазинна икона: ' + done + '/' + langs.length + ' езика — виж останалите ръчно.'));
+      return done > 0;
     } catch (_) { return false; }
+  }
+
+  // ── РЕЖИМ СТАТУСИ (--status): прочети ЦЕЛИЯ списък (таб Android) и излез. Само чете. ──
+  if (STATUS_MODE) {
+    const p = getHuaweiPage();
+    // Пълен goto + reload — SPA hash-навигацията сама НЕ презарежда списъка (иначе reload-ва текущия ап).
+    await p.goto(AGC_URL, { waitUntil: 'domcontentloaded', timeout: 40000 }).catch(() => {});
+    await sleep(3000);
+    await p.reload({ waitUntil: 'domcontentloaded', timeout: 40000 }).catch(() => {});
+    await sleep(8000);
+    // Poll до ~30s: намери рамката с таблицата, кликни Android таба, прочети `.el-table__row` td-клетките.
+    // (След пълен reload таблицата се пълни лениво — затова повтаряме, вместо фиксирано изчакване.)
+    let rows = [];
+    for (let t = 0; t < 12 && !rows.length; t++) {
+      let fr = p.frames().find((f) => /#\/myApp$/.test(f.url()));
+      if (!fr) { for (const f of p.frames()) { try { if (await f.evaluate(() => !!document.querySelector('.el-table__row, .el-tabs__item'))) { fr = f; break; } } catch (_) {} } }
+      if (fr) {
+        await fr.locator('#tab-android, .el-tabs__item:has-text("Android")').first().click({ force: true, timeout: 2500 }).catch(() => {});
+        await sleep(2000);
+        rows = await fr.evaluate(() => [...document.querySelectorAll('.el-table__row')].map((r) => [...r.querySelectorAll('td')].map((td) => (td.innerText || '').replace(/\s+/g, ' ').trim()).filter(Boolean).join(' | ')).filter(Boolean)).catch(() => []);
+      }
+      if (!rows.length) await sleep(2500);
+    }
+    console.log('\n════════ HUAWEI СТАТУСИ (таб Android) ════════');
+    if (!rows.length) console.log('  (не прочетох редове — виж ръчно в конзолата)');
+    let _rev = 0;
+    for (const r of rows) {
+      const st = (r.match(/To modify|Rejected|Reviewing|Under review|In review|Pending review|Releasing|Released|Draft/i) || ['?'])[0];
+      const name = (r.split('|')[0] || '').trim();
+      const ver = (r.match(/\b\d+\.\d{3,4}\b/) || [''])[0];
+      if (/Review/i.test(st)) _rev++;
+      const mark = /Review|Released|Releasing/i.test(st) ? '✅' : (/To modify|Rejected/i.test(st) ? '⛔' : '·');
+      console.log('  ' + mark + ' ' + name + (ver ? '  v' + ver : '') + '  →  ' + st);
+    }
+    if (rows.length) console.log('  ──  ' + _rev + '/' + rows.length + ' в модерация');
+    console.log('════════════════════════════════════════════\n');
+    process.exit(0);
+  }
+
+  // ── РЕЖИМ МЕТРИКИ (--metrics): за всеки ап → отзиви + покупки + статус → отчет в docs/. Само чете. ──
+  if (METRICS_MODE) {
+    const OPERATE = '97458334310914211';   // Operate route (Comments + In-App Purchases)
+    const p = getHuaweiPage();
+    // 1) инвентар: списък с ИМЕ + numeric id + статус (от таб Android)
+    await p.goto(AGC_URL, { waitUntil: 'domcontentloaded', timeout: 40000 }).catch(() => {});
+    await sleep(3000); await p.reload({ waitUntil: 'domcontentloaded', timeout: 40000 }).catch(() => {});
+    await sleep(8000);
+    let apps = [];
+    for (let t = 0; t < 12 && !apps.length; t++) {
+      let fr = p.frames().find((f) => /#\/myApp$/.test(f.url()));
+      if (!fr) { for (const f of p.frames()) { try { if (await f.evaluate(() => !!document.querySelector('.el-table__row, .el-tabs__item'))) { fr = f; break; } } catch (_) {} } }
+      if (fr) {
+        await fr.locator('#tab-android, .el-tabs__item:has-text("Android")').first().click({ force: true, timeout: 2500 }).catch(() => {});
+        await sleep(2000);
+        apps = await fr.evaluate(() => [...document.querySelectorAll('.el-table__row')].map((r) => {
+          const tds = [...r.querySelectorAll('td')];
+          const name = (tds[0] && tds[0].innerText || '').replace(/\s+/g, ' ').trim();
+          const pkg = (tds[1] && tds[1].innerText || '').replace(/\s+/g, ' ').trim();
+          const a = r.querySelector('a[href*="/myApp/"]');
+          const id = a ? ((a.getAttribute('href') || '').match(/\/myApp\/(\d+)/) || [])[1] : '';
+          const st = (r.innerText.match(/To modify|Rejected|Reviewing|Under review|Released|Releasing|Draft/i) || [''])[0];
+          return { name, pkg, id: id || '', status: st };
+        }).filter((x) => x.name)).catch(() => []);
+      }
+      if (!apps.length) await sleep(2500);
+    }
+    log('метрики: ' + apps.length + ' приложения — чета отзиви + покупки…');
+    // 2) за всеки ап → Operate route → Comments + In-App Purchases (best-effort текст)
+    for (const app of apps) {
+      if (!app.id) continue;
+      try {
+        await p.goto(AGC_URL.replace('#/myApp', '#/myApp/' + app.id + '/' + OPERATE), { waitUntil: 'domcontentloaded', timeout: 40000 }).catch(() => {});
+        await sleep(7000);
+        // намери рамка на Operate и прочети рейтинг/брой отзиви/последни коментари
+        let data = { rating: '', reviews: 0, comments: [], purchases: '' };
+        for (const f of p.frames()) {
+          const d = await f.evaluate(() => {
+            const body = document.body ? document.body.innerText : '';
+            if (!/Comment|Rating|Purchas|review/i.test(body)) return null;
+            const rating = (body.match(/(\d\.\d)\s*(?:\/\s*5|stars?|★)/i) || [])[1] || '';
+            const reviews = (body.match(/(\d+)\s*(?:comments?|reviews?)/i) || [])[1] || '';
+            // редове на коментари в таблица
+            const rows = [...document.querySelectorAll('.el-table__row')].map((r) => (r.innerText || '').replace(/\s+/g, ' ').trim()).filter(Boolean).slice(0, 10);
+            const purchases = (body.match(/(\d+)\s*(?:purchases?|purchased|orders?)/i) || [])[1] || '';
+            return { rating, reviews: parseInt(reviews, 10) || 0, comments: rows, purchases };
+          }).catch(() => null);
+          if (d && (d.rating || d.reviews || d.comments.length || d.purchases)) { data = d; break; }
+        }
+        app.metrics = data;
+        log('  • ' + app.name + ': рейтинг ' + (data.rating || '—') + ', отзиви ' + (data.reviews || 0) + ', покупки ' + (data.purchases || '0') + ', коментари ' + data.comments.length);
+      } catch (e) { app.metricsError = (e.message || '').slice(0, 60); log('  ⚠ ' + app.name + ' — ' + app.metricsError); }
+    }
+    // 3) запиши отчета
+    const date = new Date().toISOString().slice(0, 10);
+    const outDir = path.resolve('docs/store-metrics');
+    try { fs.mkdirSync(outDir, { recursive: true }); } catch (_) {}
+    const report = { store: 'huawei', collectedAt: new Date().toISOString(), apps };
+    fs.writeFileSync(path.join(outDir, 'huawei-' + date + '.json'), JSON.stringify(report, null, 1), 'utf8');
+    // .md резюме
+    const md = ['# Huawei метрики — ' + date, '', '| Приложение | Статус | Рейтинг | Отзиви | Покупки |', '|---|---|---|---|---|',
+      ...apps.map((a) => '| ' + a.name.slice(0, 30) + ' | ' + (a.status || '') + ' | ' + ((a.metrics && a.metrics.rating) || '—') + ' | ' + ((a.metrics && a.metrics.reviews) || 0) + ' | ' + ((a.metrics && a.metrics.purchases) || '0') + ' |')].join('\n');
+    fs.writeFileSync(path.join(outDir, 'huawei-' + date + '.md'), md + '\n', 'utf8');
+    console.log('\n💾 Отчет: docs/store-metrics/huawei-' + date + '.json (+ .md)');
+    process.exit(0);
   }
 
   // ЗАДЪЛЖИТЕЛНО преди пълнене: отиди на ВЕРНИЯ ап (иначе рискуваме да пълним чужд отворен ап).

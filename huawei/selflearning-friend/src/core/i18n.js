@@ -115,6 +115,9 @@ const STR = {
   chat_conv_unlocked_only: { bg:'Разговор е достъпен само при отключен достъп.', ru:'Разговор доступен только при разблокированном доступе.', uk:'Розмова доступна лише за розблокованого доступу.', en:'Conversation is available only when unlocked.', de:'Das Gespräch ist nur bei entsperrtem Zugang verfügbar.', fr:'La conversation n’est disponible que déverrouillée.', es:'La conversación está disponible solo cuando está desbloqueado.', 'es-MX':'La conversación está disponible solo cuando está desbloqueado.', it:'La conversazione è disponibile solo da sbloccato.', pt:'A conversa está disponível só quando desbloqueado.', ar:'المحادثة متاحة فقط عند فتح القفل.', hi:'बातचीत केवल अनलॉक होने पर उपलब्ध है।', ja:'会話はロック解除時のみ利用できます。', ky:'Маек кулпусу ачылганда гана жеткиликтүү.', 'zh-Hant':'對話僅在解鎖時可用。' },
   chat_conv_on: { bg:'Разговор включен. Говори свободно — за да спра, натисни „Спри разговора“.', ru:'Разговор включён. Говори свободно — чтобы остановить, нажми «Остановить разговор».', uk:'Розмову ввімкнено. Говори вільно — щоб зупинити, натисни «Зупинити розмову».', en:'Conversation on. Speak freely — to stop, tap "Stop conversation".', de:'Gespräch an. Sprich frei — zum Beenden „Gespräch beenden" tippen.', fr:'Conversation activée. Parle librement — pour arrêter, appuie sur « Arrêter la conversation ».', es:'Conversación activada. Habla libremente — para detener, pulsa «Detener conversación».', 'es-MX':'Conversación activada. Habla libremente — para detener, pulsa «Detener conversación».', it:'Conversazione attiva. Parla liberamente — per fermare, tocca «Ferma la conversazione».', pt:'Conversa ligada. Fale à vontade — para parar, toque "Parar conversa".', ar:'تم تشغيل المحادثة. تحدّث بحرية — للإيقاف اضغط «إيقاف المحادثة».', hi:'बातचीत चालू। खुलकर बोलो — रोकने के लिए «बातचीत रोको» दबाओ।', ja:'会話オン。自由に話してください — 止めるには「会話を停止」をタップ。', ky:'Маек күйгүзүлдү. Эркин сүйлө — токтотуу үчүн «Маекти токтот» бас.', 'zh-Hant':'對話已開啟。自由說話——要停止，點「停止對話」。' },
   chat_conv_fail: { bg:'Не успях да включа разговора.', ru:'Не удалось включить разговор.', uk:'Не вдалося ввімкнути розмову.', en:'I couldn’t start the conversation.', de:'Ich konnte das Gespräch nicht starten.', fr:'Je n’ai pas pu démarrer la conversation.', es:'No pude iniciar la conversación.', 'es-MX':'No pude iniciar la conversación.', it:'Non sono riuscito ad avviare la conversazione.', pt:'Não consegui iniciar a conversa.', ar:'لم أتمكن من بدء المحادثة.', hi:'मैं बातचीत शुरू नहीं कर पाया।', ja:'会話を開始できませんでした。', ky:'Маекти баштай алган жокмун.', 'zh-Hant':'我無法開始對話。' },
+  w_model_load: { bg:'⬇ Свалям гласов модел…', ru:'⬇ Загружаю голосовую модель…', uk:'⬇ Завантажую голосову модель…', en:'⬇ Downloading voice model…', de:'⬇ Lade Sprachmodell…', fr:'⬇ Téléchargement du modèle vocal…', es:'⬇ Descargando modelo de voz…', 'es-MX':'⬇ Descargando modelo de voz…', it:'⬇ Scarico il modello vocale…', pt:'⬇ Baixando modelo de voz…', ar:'⬇ جاري تنزيل النموذج الصوتي…', hi:'⬇ वॉइस मॉडल डाउनलोड हो रहा है…', ja:'⬇ 音声モデルをダウンロード中…', ky:'⬇ Үн моделин жүктөп жатам…', 'zh-Hant':'⬇ 下載語音模型中…' },
+  w_model_pct: { bg:'⬇ гласов модел {0}%', ru:'⬇ голосовая модель {0}%', uk:'⬇ голосова модель {0}%', en:'⬇ voice model {0}%', de:'⬇ Sprachmodell {0}%', fr:'⬇ modèle vocal {0}%', es:'⬇ modelo de voz {0}%', 'es-MX':'⬇ modelo de voz {0}%', it:'⬇ modello vocale {0}%', pt:'⬇ modelo de voz {0}%', ar:'⬇ النموذج الصوتي {0}%', hi:'⬇ वॉइस मॉडल {0}%', ja:'⬇ 音声モデル {0}%', ky:'⬇ үн модели {0}%', 'zh-Hant':'⬇ 語音模型 {0}%' },
+  w_recognizing: { bg:'…разпознавам', ru:'…распознаю', uk:'…розпізнаю', en:'…recognizing', de:'…erkenne', fr:'…reconnaissance', es:'…reconociendo', 'es-MX':'…reconociendo', it:'…riconosco', pt:'…reconhecendo', ar:'…جارٍ التعرف', hi:'…पहचान रहा हूँ', ja:'…認識中', ky:'…таанып жатам', 'zh-Hant':'…辨識中' },
   chat_voice_unavailable_here: { bg:'Гласът не е наличен тук — пиши на ръка.', ru:'Голос здесь недоступен — пиши вручную.', uk:'Голос тут недоступний — пиши вручну.', en:'Voice is not available here — type by hand.', de:'Sprache ist hier nicht verfügbar — tippe von Hand.', fr:'La voix n’est pas disponible ici — écris à la main.', es:'La voz no está disponible aquí — escribe a mano.', 'es-MX':'La voz no está disponible aquí — escribe a mano.', it:'La voce non è disponibile qui — scrivi a mano.', pt:'A voz não está disponível aqui — digite à mão.', ar:'الصوت غير متاح هنا — اكتب يدويًا.', hi:'यहाँ आवाज़ उपलब्ध नहीं — हाथ से टाइप करो।', ja:'ここでは音声は使えません — 手で入力してください。', ky:'Үн бул жерде жок — кол менен жаз.', 'zh-Hant':'此處無法使用語音——請手動輸入。' },
 
   // ---- Чат: гласов профил / баджове / подсказки ----
@@ -634,12 +637,30 @@ const STR = {
 let current = detect();
 applyDir();
 
+// Език по локала на устройството (навигатора) → наш код от 15-те; '' ако няма съвпадение.
+function deviceLang() {
+  var SUP = ['bg','ru','uk','en','de','fr','es','es-MX','it','pt','ar','hi','ja','ky','zh-Hant'];
+  function pick(tag) {
+    if (!tag) return ''; var low = String(tag).toLowerCase();
+    if (low.indexOf('zh') === 0) return 'zh-Hant';           // наличен е само традиционен китайски
+    if (low.indexOf('pt') === 0) return 'pt';
+    if (low.indexOf('es') === 0) return (low.indexOf('mx') > -1 || low.indexOf('419') > -1 || low.indexOf('us') > -1) ? 'es-MX' : 'es';
+    var two = low.slice(0, 2);
+    for (var i = 0; i < SUP.length; i++) if (SUP[i] === two) return SUP[i];
+    return '';
+  }
+  try {
+    var arr = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || navigator.userLanguage || navigator.browserLanguage || ''];
+    for (var i = 0; i < arr.length; i++) { var m = pick(arr[i]); if (m) return m; }
+  } catch (e) {}
+  return '';
+}
 function detect() {
   try {
     const saved = localStorage.getItem(LS_KEY);
     if (saved && STR.save[saved] != null) return saved;
   } catch (e) {}
-  return DEFAULT_LANG;
+  return deviceLang() || DEFAULT_LANG;
 }
 
 // Дали потребителят вече е избирал UI език (за да решим дали да показваме екрана при старт).

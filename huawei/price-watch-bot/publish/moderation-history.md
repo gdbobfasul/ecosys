@@ -20,3 +20,6 @@ For details, please refer to rule 7.1 of the AppGallery Review Guidelines at the
 - **7.1** — предният privacy URL сочеше ЧУЖД ап (authenticator); ботът пълни правилния price-watch-bot/hw-privacy.html (200).
 
 Подадено наново: **v1.0020** (2026-08-12) → Reviewing.
+
+## 2026-08-22 — нова икона (Стил A) + пресъбмит подготвен
+- **1.10/1.20** — нова икона Стил A в конзолата (проверено) + ново APK + рейтинг 18+ (крипто). Чернова записана. Остава ръчно: Proof of copyright + Submit.

@@ -47,3 +47,6 @@ Distribution analysis
 Distribution analysis
 Collects and reveals how your app is distributed and use
 ```
+
+## 2026-08-22 — нова икона (Стил A) + пресъбмит подготвен
+- **1.20** — нова икона Стил A (QR в марков цвят на бяла плочка) в конзолата (проверено) + ново APK + описание 8 инструмента (4.1). Чернова записана. Остава ръчно: Proof of copyright + Submit.

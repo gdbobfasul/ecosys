@@ -6,6 +6,20 @@ import { offlineLookup, findRisky, norm, matchScore } from './data.js';
 
 function timeout(ms) { return new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms)); }
 
+// openFDA е АНГЛОЕЗИЧНА база (US) — заявка с локализирано име (напр. кирилица „Парацетамол") връща 400.
+// Латинско ли е името (само ASCII букви/цифри/интервали и обичайни знаци)? Ако не → openFDA се пропуска.
+function isLatinName(s) { const t = String(s || '').trim(); return !!t && /[A-Za-z]/.test(t) && !/[^ -ɏ]/.test(t) && !/[Ѐ-ӿ]/.test(t); }
+// Най-доброто АНГЛИЙСКО име за openFDA от резултата/заявката: активна съставка (обикновено латиница),
+// иначе самата заявка ако е латиница, иначе заглавието ако е латиница; иначе '' (→ пропусни openFDA).
+function englishName(res, query) {
+  const active = (res && Array.isArray(res.active) ? res.active : []).map((x) => String(x || '').trim()).filter(Boolean);
+  const cand = active.find(isLatinName);
+  if (cand) return cand;
+  if (isLatinName(query)) return String(query).trim();
+  if (res && isLatinName(res.title)) return String(res.title).trim();
+  return '';
+}
+
 // GET на JSON, с CapacitorHttp когато е налично, иначе fetch. Връща обект или хвърля.
 async function getJson(url) {
   const CH = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) || window.CapacitorHttp;
@@ -40,9 +54,10 @@ export async function translate(text, lang) {
 
 // openFDA: търси етикет на лекарство по име/съставка. Връща нормализиран резултат или null.
 async function openFdaLookup(query) {
+  if (!isLatinName(query)) return null;   // openFDA е англоезична → нелатинско име дава 400; пропусни
   const q = encodeURIComponent(String(query).trim());
   const url = 'https://api.fda.gov/drug/label.json?search=' +
-    '(openfda.brand_name:"' + q + '"+openfda.generic_name:"' + q + '"+active_ingredient:"' + q + '")&limit=1';
+    '(openfda.brand_name:"' + q + '"+OR+openfda.generic_name:"' + q + '"+OR+active_ingredient:"' + q + '")&limit=1';
   const j = await getJson(url);
   const r = j && j.results && j.results[0];
   if (!r) return null;
@@ -65,9 +80,10 @@ async function openFdaLookup(query) {
 // противопоказания, странични, взаимодействия, съхранение, предупреждения). Английски текст —
 // превежда се към избрания език при показване. Работи ОНЛАЙН; офлайн остава краткото описание.
 export async function openFdaSections(query) {
+  if (!isLatinName(query)) return null;   // англоезична база → нелатинско име дава 400; пропусни тихо
   const q = encodeURIComponent(String(query).trim());
   const url = 'https://api.fda.gov/drug/label.json?search=' +
-    '(openfda.brand_name:"' + q + '"+openfda.generic_name:"' + q + '"+active_ingredient:"' + q + '")&limit=1';
+    '(openfda.brand_name:"' + q + '"+OR+openfda.generic_name:"' + q + '"+OR+active_ingredient:"' + q + '")&limit=1';
   const j = await getJson(url);
   const r = j && j.results && j.results[0]; if (!r) return null;
   const ofda = r.openfda || {};
@@ -205,7 +221,9 @@ export async function lookupMedicine(query, lang) {
   // (показания, дозировка, противопоказания, странични, взаимодействия, съхранение). Офлайн/при
   // липса на съвпадение — тихо се пропуска и остава краткото описание.
   try {
-    const secs = await openFdaSections(res.title || query);
+    // openFDA е англоезична → подавай АНГЛИЙСКО име (не локализираното заглавие, напр. кирилица → 400).
+    const enName = englishName(res, query);
+    const secs = enName ? await openFdaSections(enName) : null;
     if (secs && secs.length) res.sections = secs;   // ОНЛАЙН FDA (по-пълен) презаписва офлайн секциите
   } catch (_) { /* без интернет/съвпадение → остават офлайн секциите (ако има) */ }
   // Превод на секциите (откъдето и да идват: офлайн база или онлайн FDA). Офлайн MyMemory връща

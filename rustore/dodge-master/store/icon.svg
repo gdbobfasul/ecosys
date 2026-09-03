@@ -10,6 +10,8 @@
   </defs>
   <rect width="1024" height="1024" fill="url(#g)"/>
   <rect width="1024" height="1024" fill="url(#hi)"/>
-  <path d="M398 300 v88 h92 v88 h92 v88" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/><path d="M582 520 l38 44 l38 -44" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="236" y="196" width="552" height="470" rx="120" fill="#fff"/>
+  <circle cx="742" cy="250" r="46" fill="#94a3b8"/>
+  <g transform="translate(512 431) scale(0.84) translate(-512 -440)"><path d="M398 300 v88 h92 v88 h92 v88" fill="none" stroke="#475569" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/><path d="M582 520 l38 44 l38 -44" fill="none" stroke="#475569" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/></g>
   <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

@@ -1,0 +1,8 @@
+newslator              → Reviewing
+monitor-bot            → Draft
+pupikes-toolkit-pdf    → Draft
+pupikes-toolkit-qr     → Draft
+authenticator          → Draft
+pupikes-toolkit-text   → Draft
+price-watch-bot        → Reviewing
+baby-monitor           → Draft

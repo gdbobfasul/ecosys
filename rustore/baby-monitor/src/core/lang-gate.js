@@ -20,6 +20,7 @@ const FALLBACK = [
   { code: 'pt', native: 'Português' }, { code: 'ar', native: 'العربية' }, { code: 'hi', native: 'हिन्दी' },
   { code: 'ja', native: '日本語' }, { code: 'ky', native: 'Кыргызча' }, { code: 'zh-Hant', native: '繁體中文' }
 ];
+const CONT = { bg:'Продължи', ru:'Продолжить', uk:'Продовжити', en:'Continue', de:'Weiter', fr:'Continuer', es:'Continuar', 'es-MX':'Continuar', it:'Continua', pt:'Continuar', ar:'متابعة', hi:'जारी रखें', ja:'続ける', ky:'Улантуу', 'zh-Hant':'繼續' };
 function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
 // opts = { languages:[{code,native}], current:'bg', setLang:fn }
@@ -57,7 +58,7 @@ export function mountLangGate(opts) {
         '<div style="opacity:.85;font-size:15px;margin-top:8px">🌐 Избери език · Choose your language</div>' +
       '</div>' +
       '<div id="pupikes-lg-grid" style="flex:1;overflow:auto;padding:12px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;align-content:start">' + btns + '</div>' +
-      '<div style="padding:12px 16px 22px;flex-shrink:0"><button id="pupikes-lg-go" style="width:100%;padding:16px;border:none;border-radius:12px;background:#2ea043;color:#fff;font-weight:800;font-size:17px;cursor:pointer">Продължи ▶ · Continue</button></div>';
+      '<div style="padding:12px 16px 22px;flex-shrink:0"><button id="pupikes-lg-go" style="width:100%;padding:16px;border:none;border-radius:12px;background:#2ea043;color:#fff;font-weight:800;font-size:17px;cursor:pointer">' + esc((CONT[selected] || CONT.en)) + ' ▶</button></div>';
     document.body.appendChild(ov);
 
     const mark = () => {
@@ -67,6 +68,7 @@ export function mountLangGate(opts) {
         b.style.background = on ? '#12351f' : '#111a2b';
         b.style.fontWeight = on ? '800' : '400';
       });
+      try { var __go = document.getElementById('pupikes-lg-go'); if (__go) __go.textContent = (CONT[selected] || CONT.en) + ' \u25B6'; } catch (e) {}
     };
     mark();
     ov.querySelectorAll('.pupikes-lg-b').forEach((b) => b.addEventListener('click', () => {

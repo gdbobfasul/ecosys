@@ -1,7 +1,8 @@
 {
-  "_note": "v20→v21: иконата качена отделно (App info); тук само рейтинг 18+ + APK + Submit.",
   "sections": [
+    "appinfo",
     "content"
   ],
-  "contentRating": "18+"
+  "contentRating": "18+",
+  "_note": "22.08: нова икона (1.20) + рейтинг 18+ (1.10 крипто) + описание (4.1). Re-upload App info + рейтинг + APK + Submit."
 }

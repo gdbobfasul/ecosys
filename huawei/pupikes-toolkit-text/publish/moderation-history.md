@@ -49,3 +49,6 @@ For details about the Age Rating Questionnaire FAQs, please visit the following 
 Modification suggestion: Ensure that the app icon you submitted is the same as that displayed on users' mobile phones after the app is installed, and ensure this issue does not exist in other languages.
 For details, please refer to rule 1.20 of the AppGallery Review Guidelines at the following website: https://develope
 ```
+
+## 2026-08-22 — нова икона (Стил A) + пресъбмит подготвен
+- **1.10/1.20** — нова икона Стил A в конзолата (проверено) + ново APK + рейтинг 18+ (крипто) + описание (4.1). Чернова записана. Остава ръчно: Proof of copyright + Submit.

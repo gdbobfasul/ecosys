@@ -176,13 +176,21 @@ export async function incrementCounter(id) {
 // Ограничава текстово поле до 256 знака (заглавия/логин/парола/описание).
 function cap256(s) { return String(s == null ? '' : s).slice(0, 256); }
 
-// ── Таб „Колекция" (запазени QR кодове) ──
+// ── Таб „Колекция" (запазени QR кодове + придружаващи данни за вход) ──
+// Освен картинката/съдържанието на QR-а, пази и полета за ВХОД в приложението, за което е QR-ът:
+// login (имейл/потребител), password, appName (име на приложението, напр. „видеокамери"), note.
+// Така „Колекция" става място за ВСЯКО приложение с QR за връзване + начин за вход. (Всички опционални.)
+export const COLLECTION_FIELDS = ['title', 'content', 'image', 'appName', 'login', 'password', 'note'];
 export async function addCollectionItem(item) {
   const it = {
     id: newId(),
     title: cap256(item && item.title),
     content: String(item && item.content || ''),   // декодираният текст на QR-а
-    image: String(item && item.image || '')         // картинката (dataURL) за повторно показване
+    image: String(item && item.image || ''),        // картинката (dataURL) за повторно показване
+    appName: cap256(item && item.appName),          // име на приложението (напр. „видеокамери")
+    login: cap256(item && item.login),              // имейл/потребител за това приложение
+    password: cap256(item && item.password),        // парола за това приложение
+    note: cap256(item && item.note)                 // свободна бележка
   };
   session.collection.push(it);
   await persist();
@@ -191,7 +199,7 @@ export async function addCollectionItem(item) {
 export async function updateCollectionItem(id, patch) {
   const x = session.collection.find((c) => c.id === id);
   if (!x) return;
-  if (patch.title != null) patch.title = cap256(patch.title);
+  ['title', 'appName', 'login', 'password', 'note'].forEach((k) => { if (patch[k] != null) patch[k] = cap256(patch[k]); });
   Object.assign(x, patch);
   await persist();
 }

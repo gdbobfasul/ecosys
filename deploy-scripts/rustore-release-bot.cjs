@@ -2,7 +2,12 @@
 // за вече отворения ти браузър (debug порт 9222). Не натиска финалните бутони (Add/Save/Submit) —
 // ти ги натискаш, след като прегледаш. Данните идват от publish/ на приложението (един източник).
 //
-// Пускане (режим ENTER):  node deploy-scripts/rustore-release-bot.cjs <app> --loop
+// Режими (наравно):
+//   <app> --loop        попълване в режим ENTER (ти отваряш екран, ENTER = попълни; „q“ = изход)
+//   <app> --auto        авто-попълва и минава екраните сам (спира преди подаване)
+//   <app> --auto --submit  като --auto, но натиска и „Submit for Moderation" на финала
+//   <app> --insights    РАЗВИТИЕ: чете от конзолата рейтинг/мнения/инсталации/приходи (само чете, нищо не подава)
+// При всяко пускане ботът събира и НОВИТЕ модераторски забележки (moderation-rustore.json) — отделно от --insights.
 // После: отвори нужния екран в браузъра и натисни ENTER тук, за да го попълня. „q“+ENTER = изход.
 const path = require('path');
 const fs = require('fs');
@@ -107,6 +112,35 @@ if (!PW) { console.log('Playwright липсва.'); process.exit(2); }
   const ctx = browser.contexts()[0];
 
   function rsPage() { return ctx.pages().find((p) => /rustore\.ru/.test(p.url())) || ctx.pages()[0]; }
+
+  // ── РЕЖИМ „РАЗВИТИЕ" (--insights): чета от конзолата как се развива апът — рейтинг, мнения на
+  // потребители, инсталации, приходи/плащания/продажби — РАЗЛИЧНО от модераторските коментари.
+  // Само чете (нищо не въвежда/подава). Записва в app-shared/rustore-insights.json + publish/insights.md.
+  if (process.argv.includes('--insights')) {
+    try {
+      const { collectInsights } = require('./lib/insights.cjs');
+      // Обхват: KCY_INSIGHTS_APPS (интервал/запетая) = едно/няколко/всички; иначе само подаденото.
+      const scope = (process.env.KCY_INSIGHTS_APPS || '').split(/[\s,]+/).map((s) => s.trim()).filter(Boolean);
+      const apps = scope.length ? scope : [app];
+      console.log('\n   РЕЖИМ РАЗВИТИЕ (RuStore): чета рейтинг/мнения/инсталации/приходи за ' + apps.length + ' приложение(я)…\n');
+      const r = await collectInsights({ browser, app, appName, apps });
+      if (!r.ok) { console.log('  ✗ ' + (r.error || 'не успях да прочета конзолата')); process.exit(0); }
+      console.log('   Общо приложения в конзолата (преглед): ' + (r.overviewCount || 0) + '\n');
+      const show = (t, arr) => { console.log('     ' + t + ':'); if (!arr || !arr.length) console.log('       —'); else arr.slice(0, 6).forEach((x) => console.log('       • ' + String(x).slice(0, 140))); };
+      for (const res of (r.results || [])) {
+        const rec = res.rec || {};
+        console.log('  ── ' + res.appName + (rec.id ? ' (id ' + rec.id + ')' : ' — НЕ е намерено в списъка') + ' ──');
+        show('Статус', rec.status);
+        show('Рейтинг / оценки', rec.rating);
+        show('Мнения на потребители', rec.reviews);
+        show('Инсталации / сваляния', rec.installs);
+        show('Приходи / плащания / продажби', rec.money);
+        console.log('');
+      }
+      console.log('   📄 Записах: app-shared/rustore-insights.json + по един publish/insights.md на приложение.');
+    } catch (e) { console.log('  ✗ Режим „развитие" пропаднал: ' + (e.message || e)); }
+    process.exit(0);
+  }
 
   // ── ЗАБЕЛЕЖКИ ОТ МОДЕРАЦИЯТА: чета отворената конзола (през твоята сесия) и записвам НОВИТЕ ──
   // → app-shared/moderation-rustore.json. После ги показвам, за да ги СЪОБРАЗЯВАШ. Само реалното

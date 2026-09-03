@@ -21,7 +21,14 @@
 //   stopSpeaking()                       → спира говоренето
 //   requestMicPermission()               → Promise<bool>  (best-effort, не чупи)
 
+import { startWhisper, stopWhisper, abortWhisper, isWhisperListening, whisperAvailable, loadWhisper } from './whisper-stt.js';
+
 const DEFAULT_LANG = 'bg-BG';
+
+// Езици БЕЗ Vosk модел → за тях ползваме on-device Whisper (надежден на Huawei/офлайн). Останалите
+// езици пазят своя метод (Vosk/native). Всеки език → своя най-добър двигател.
+const WHISPER_LANGS = ['bg', 'uk', 'ky'];
+function needsWhisper(lang) { return WHISPER_LANGS.includes(String(lang || '').toLowerCase().split('-')[0]); }
 
 // --- Достъп до Capacitor нативни плъгини (само в WebView; в браузър липсват) ---
 function capPlugin(name) {
@@ -56,7 +63,14 @@ function webSynth() {
 // =========================================================================
 export function sttAvailable() {
   if (capPlugin('SpeechRecognition')) return true;
+  if (capPlugin('OfflineSpeechRecognition')) return true;   // Vosk
+  if (whisperAvailable()) return true;                       // on-device Whisper (bg/uk/ky + резерв)
   return !!webSpeechRecognitionCtor();
+}
+// Наличен ли е STT за КОНКРЕТНИЯ език (не изобщо)? За bg/uk/ky → Whisper (WASM) винаги е наличен.
+export function sttAvailableFor(lang) {
+  if (needsWhisper(lang) && whisperAvailable()) return true;
+  return sttAvailable();
 }
 export function ttsAvailable() {
   if (capPlugin('TextToSpeech')) return true;
@@ -270,12 +284,38 @@ export async function startListening({ lang = DEFAULT_LANG, onInterim = null, ma
       // няма модел и няма мрежа → падаме към нативния/уеб по-долу
     }
   }
-  // Езици без Vosk модел (български, украински, киргизки) ИЛИ Vosk липсва → нативен онлайн Google
-  // (voice typing), после уеб (dev/браузър).
+  // Езици БЕЗ Vosk модел (bg/uk/ky): нативният онлайн Google разпознавач работи САМО ако устройството
+  // реално има гласова услуга (напр. Huawei С Google). На Huawei БЕЗ Google няма услуга → ползваме
+  // on-device Whisper (WASM в апа: разбира български, офлайн след сваляне на модела, без Google).
+  if (needsWhisper(lang)) {
+    let nativeOk = false;
+    if (sr && typeof sr.available === 'function') { try { const a = await sr.available(); nativeOk = !!(a && (a.available ?? a)); } catch (_) { nativeOk = false; } }
+    if (nativeOk) return startNative(sr, lang, onInterim, manualStop);
+    if (whisperAvailable()) return startWhisperListen({ lang, onInterim, manualStop });
+  }
+  // Езици с работеща услуга (Vosk липсва/неприложим) → нативен, после уеб (dev/браузър).
   if (sr) return startNative(sr, lang, onInterim, manualStop);
   const Ctor = webSpeechRecognitionCtor();
   if (Ctor) return startWeb(Ctor, lang, onInterim, manualStop);
+  // КРАЕН РЕЗЕРВ (всеки език): on-device Whisper преди да се откажем.
+  if (whisperAvailable()) return startWhisperListen({ lang, onInterim, manualStop });
   throw new Error('no-stt'); // викащият показва дружелюбно съобщение и оставя писането
+}
+
+// On-device Whisper обвивка (глас→текст в апа). Записва до stopListening() (ръчен режим) ИЛИ таван/тишина
+// (разговор), после транскрибира на избрания език и връща текста. Грешките се препращат ясно (denied →
+// няма разрешение; whisper-load → моделът не се свали (няма интернет при първо ползване); иначе 'no-stt').
+async function startWhisperListen({ lang, onInterim, manualStop }) {
+  try {
+    const text = await startWhisper({ lang, onInterim, manualStop });
+    return String(text || '').trim();
+  } catch (e) {
+    const m = String((e && e.message) || '');
+    if (/denied/i.test(m)) throw new Error('denied');
+    if (/whisper-load/i.test(m)) throw new Error('no-stt');   // моделът не се свали (офлайн при първо ползване)
+    if (/busy/i.test(m)) { try { stopWhisper(); } catch (_) {} return ''; }
+    throw new Error('no-stt');
+  }
 }
 
 // Нативно (Capacitor community speech-recognition) — НЕПРЕКЪСНАТА ДИКТОВКА (цяло изречение).
@@ -590,6 +630,7 @@ function startWeb(Ctor, lang, onInterim, manualStop) {
 // Спира текущото слушане (и в двата режима).
 export function stopListening() {
   _webStopRequested = true;   // спира и авто-рестарта на браузърния ръчен режим
+  if (isWhisperListening()) { try { stopWhisper(); } catch (_) {} }   // Whisper: спри записа → транскрибира
   if (_voskListening && typeof _voskStop === 'function') { try { _voskStop(); } catch (_) {} }
   if (_webRecog) {
     try { _webRecog.stop(); } catch (_) {}

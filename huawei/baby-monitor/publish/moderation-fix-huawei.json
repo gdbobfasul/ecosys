@@ -1,7 +1,7 @@
 {
-  "_note": "Преподаване v20→v21 (16.08). Секции = какво Релийзботът препубликува; APK ВИНАГИ.",
   "sections": [
     "appinfo"
   ],
-  "contentRating": ""
+  "contentRating": "",
+  "_note": "22.08: нова икона (1.20 fix) + превод banner. Re-upload App info + APK + Submit."
 }

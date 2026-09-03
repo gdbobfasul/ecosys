@@ -2,7 +2,7 @@
   <!--pupikes-icon-->
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#fb7185"/><stop offset="1" stop-color="#be123c"/>
+      <stop offset="0" stop-color="#818cf8"/><stop offset="1" stop-color="#4338ca"/>
     </linearGradient>
     <radialGradient id="hi" cx="0.32" cy="0.24" r="0.9">
       <stop offset="0" stop-color="rgba(255,255,255,0.20)"/><stop offset="0.6" stop-color="rgba(255,255,255,0)"/>
@@ -10,6 +10,8 @@
   </defs>
   <rect width="1024" height="1024" fill="url(#g)"/>
   <rect width="1024" height="1024" fill="url(#hi)"/>
-  <path d="M370 278 h176 l108 108 v212 a26 26 0 0 1 -26 26 h-258 a26 26 0 0 1 -26 -26 v-294 a26 26 0 0 1 26 -26z" fill="#fff"/><path d="M546 278 v108 h108z" fill="rgba(0,0,0,.18)"/><rect x="388" y="470" width="248" height="72" rx="14" fill="#c81e1e"/>
+  <rect x="236" y="196" width="552" height="470" rx="120" fill="#fff"/>
+  <circle cx="742" cy="250" r="46" fill="#818cf8"/>
+  <g transform="translate(512 431) scale(0.84) translate(-512 -440)"><path d="M370 278 h176 l108 108 v212 a26 26 0 0 1 -26 26 h-258 a26 26 0 0 1 -26 -26 v-294 a26 26 0 0 1 26 -26z" fill="#4338ca"/><path d="M546 278 v108 h108z" fill="rgba(67,56,202,.5)"/><rect x="388" y="470" width="248" height="72" rx="14" fill="#c81e1e"/></g>
   <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

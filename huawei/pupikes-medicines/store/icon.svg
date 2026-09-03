@@ -10,6 +10,8 @@
   </defs>
   <rect width="1024" height="1024" fill="url(#g)"/>
   <rect width="1024" height="1024" fill="url(#hi)"/>
-  <g transform="rotate(45 512 440)"><rect x="372" y="360" width="280" height="160" rx="80" fill="#fff"/><path d="M512 360 h60 a80 80 0 0 1 80 80 a80 80 0 0 1 -80 80 h-60 z" fill="rgba(255,255,255,.55)"/><rect x="372" y="360" width="280" height="160" rx="80" fill="none" stroke="rgba(0,0,0,.12)" stroke-width="8"/></g>
+  <rect x="236" y="196" width="552" height="470" rx="120" fill="#fff"/>
+  <circle cx="742" cy="250" r="46" fill="#ff6a6a"/>
+  <g transform="translate(512 431) scale(0.84) translate(-512 -440)"><g transform="rotate(45 512 440)"><rect x="372" y="360" width="280" height="160" rx="80" fill="#c81e1e"/><path d="M512 360 h60 a80 80 0 0 1 80 80 a80 80 0 0 1 -80 80 h-60 z" fill="rgba(200,30,30,.55)"/><rect x="372" y="360" width="280" height="160" rx="80" fill="none" stroke="rgba(200,30,30,.4)" stroke-width="8"/></g></g>
   <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

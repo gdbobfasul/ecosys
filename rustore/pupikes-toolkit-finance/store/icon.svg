@@ -10,6 +10,8 @@
   </defs>
   <rect width="1024" height="1024" fill="url(#g)"/>
   <rect width="1024" height="1024" fill="url(#hi)"/>
-  <circle cx="512" cy="440" r="150" fill="#fff"/><circle cx="512" cy="440" r="150" fill="none" stroke="rgba(0,0,0,.16)" stroke-width="14"/><path d="M440 486 l46 -48 l40 40 l74 -84" fill="none" stroke="#0a7d4d" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/><path d="M600 386 h-46 M600 386 v46" fill="none" stroke="#0a7d4d" stroke-width="26" stroke-linecap="round"/>
+  <rect x="236" y="196" width="552" height="470" rx="120" fill="#fff"/>
+  <circle cx="742" cy="250" r="46" fill="#34d399"/>
+  <g transform="translate(512 431) scale(0.84) translate(-512 -440)"><circle cx="512" cy="440" r="150" fill="#047857"/><circle cx="512" cy="440" r="150" fill="none" stroke="rgba(4,120,87,.45)" stroke-width="14"/><path d="M440 486 l46 -48 l40 40 l74 -84" fill="none" stroke="#0a7d4d" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/><path d="M600 386 h-46 M600 386 v46" fill="none" stroke="#0a7d4d" stroke-width="26" stroke-linecap="round"/></g>
   <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

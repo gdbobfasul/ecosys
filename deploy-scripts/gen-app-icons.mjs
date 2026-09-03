@@ -39,7 +39,7 @@ const THEME = {
   garden:  ['#86e06a', '#2f8f2f'],
   tools:   ['#2dd4bf', '#0f766e'],
   media:   ['#c084fc', '#7c3aed'],
-  pdf:     ['#fb7185', '#be123c'],
+  pdf:     ['#818cf8', '#4338ca'],
   baby:    ['#fca5d3', '#db2777'],
   home:    ['#fbbf24', '#d97706'],
   comm:    ['#a78bfa', '#6d28d9'],
@@ -166,10 +166,32 @@ function guess(id) {
   return ['tools', 'gear'];
 }
 
+// hex → "r,g,b" (за пребоядисване на полупрозрачните бели акценти в марков тон)
+function hexRgb(h) {
+  const m = String(h).replace('#', '');
+  const s = m.length === 3 ? m.split('').map((x) => x + x).join('') : m;
+  const n = parseInt(s, 16);
+  return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+}
+
+// ── СТИЛ „Стикер" (срещу Huawei 9.3): бяла заоблена плочка + глиф в МАРКОВ цвят
+//    (не бял стоков глиф) + акцентна точка + надпис „pupikes". Отличителен марков вид,
+//    не се бърка с чужди приложения. Глифовете са зададени като бели (за тъмен фон) →
+//    тук ги пребоядисваме: бялото → марковия цвят c2; тъмните „изрезки" (D) → бели. ──
 function svgFor(id) {
   const [themeKey, symKey] = APP[id] || guess(id);
   const [c1, c2] = THEME[themeKey] || THEME.util;
-  const sym = SYM[symKey] || SYM.gear;
+  const rgb2 = hexRgb(c2);
+  let sym = SYM[symKey] || SYM.gear;
+  sym = sym
+    .replace(/#fff\b/g, c2)                                   // бял глиф → марков цвят
+    .replace(/#ffffff\b/gi, c2)
+    .replace(/rgba\(0,0,0,\.34\)/g, '#ffffff')                // тъмните акценти (D) → бели изрезки
+    .replace(/rgba\(0,0,0,\.28\)/g, 'rgba(255,255,255,.62)')
+    .replace(/rgba\(0,0,0,\.18\)/g, 'rgba(255,255,255,.5)')
+    .replace(/rgba\(0,0,0,\.16\)/g, 'rgba(255,255,255,.45)')
+    .replace(/rgba\(0,0,0,\.12\)/g, 'rgba(255,255,255,.4)')
+    .replace(/rgba\(255,255,255,/g, `rgba(${rgb2},`);         // полу-бели слоеве (обем) → полу-марков тон
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
   ${MARK}
   <defs>
@@ -182,7 +204,9 @@ function svgFor(id) {
   </defs>
   <rect width="1024" height="1024" fill="url(#g)"/>
   <rect width="1024" height="1024" fill="url(#hi)"/>
-  ${sym}
+  <rect x="236" y="196" width="552" height="470" rx="120" fill="#fff"/>
+  <circle cx="742" cy="250" r="46" fill="${c1}"/>
+  <g transform="translate(512 431) scale(0.84) translate(-512 -440)">${sym}</g>
   <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>`;
 }

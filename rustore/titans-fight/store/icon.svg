@@ -10,6 +10,8 @@
   </defs>
   <rect width="1024" height="1024" fill="url(#g)"/>
   <rect width="1024" height="1024" fill="url(#hi)"/>
-  <rect x="404" y="366" width="212" height="176" rx="58" fill="#fff"/><rect x="428" y="330" width="160" height="72" rx="34" fill="#fff"/><rect x="596" y="404" width="72" height="112" rx="34" fill="#fff"/><g stroke="rgba(0,0,0,.34)" stroke-width="12"><line x1="452" y1="384" x2="452" y2="470"/><line x1="512" y1="384" x2="512" y2="470"/><line x1="572" y1="384" x2="572" y2="470"/></g>
+  <rect x="236" y="196" width="552" height="470" rx="120" fill="#fff"/>
+  <circle cx="742" cy="250" r="46" fill="#94a3b8"/>
+  <g transform="translate(512 431) scale(0.84) translate(-512 -440)"><rect x="404" y="366" width="212" height="176" rx="58" fill="#475569"/><rect x="428" y="330" width="160" height="72" rx="34" fill="#475569"/><rect x="596" y="404" width="72" height="112" rx="34" fill="#475569"/><g stroke="#ffffff" stroke-width="12"><line x1="452" y1="384" x2="452" y2="470"/><line x1="512" y1="384" x2="512" y2="470"/><line x1="572" y1="384" x2="572" y2="470"/></g></g>
   <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

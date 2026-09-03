@@ -1,0 +1,19 @@
+езици: 17
+DEFAULT src: bd920d455c86bf3077f835d66170e802cb786418513f
+  = English (UK) - default                     bd920d455c86bf3077f835d66170e802cb786418513f
+  ✗ Arabic                                     f98b7126706a12310ebac6b3fb0c30423c8becc7cd41  ← РАЗЛИЧНА (стара)
+  ✗ Bulgarian                                  a71390f4c6246f637a85fe03b215e6d73bc6146da6a7  ← РАЗЛИЧНА (стара)
+  ✗ German                                     ceafe5fbb17f0728effb3b321eb7d4059ac691e663cc  ← РАЗЛИЧНА (стара)
+  ✗ English (US)                               3afd43492a6b65f976d0d5f1c5d5a544be47d1b92760  ← РАЗЛИЧНА (стара)
+  ✗ Spanish (Latin America)                    19aa0a256808432ae76527b9ef24f885a1239a5dbac9  ← РАЗЛИЧНА (стара)
+  ✗ Spanish (Spain)                            fece91c4df3bfc9563242af00a96f138e2ca86b9c581  ← РАЗЛИЧНА (стара)
+  ✗ French (France)                            5cf7b722167730ef9417045ad9cc8779d2047382d448  ← РАЗЛИЧНА (стара)
+  ✗ Hindi                                      1db1c27e052f6108f4f4fb34ac2406427c00016e365e  ← РАЗЛИЧНА (стара)
+  ✗ Italian                                    a8ad8993b32fcfca2081264975ff29c974550b33c148  ← РАЗЛИЧНА (стара)
+  ✗ Japanese                                   110fe2614468b1a57f71f09cd3d277962ef6660ff6a9  ← РАЗЛИЧНА (стара)
+  ✗ Portuguese (Brazil)                        a71390f4c6246f637a85fe03b215e6d73bc6146da6a7  ← РАЗЛИЧНА (стара)
+  ✗ Portuguese (Portugal)                      a71390f4c6246f637a85fe03b215e6d73bc6146da6a7  ← РАЗЛИЧНА (стара)
+  ✗ Russian                                    a71390f4c6246f637a85fe03b215e6d73bc6146da6a7  ← РАЗЛИЧНА (стара)
+  ✗ Ukrainian                                  a71390f4c6246f637a85fe03b215e6d73bc6146da6a7  ← РАЗЛИЧНА (стара)
+  ✗ Traditional Chinese (Hong Kong, China)     1db1c27e052f6108f4f4fb34ac2406427c00016e365e  ← РАЗЛИЧНА (стара)
+  ✗ Traditional Chinese (Taiwan, China)        a71390f4c6246f637a85fe03b215e6d73bc6146da6a7  ← РАЗЛИЧНА (стара)

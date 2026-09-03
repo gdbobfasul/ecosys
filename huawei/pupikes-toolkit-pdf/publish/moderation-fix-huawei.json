@@ -1,5 +1,7 @@
 {
-  "_note": "v20→v21 (16.08): ревюто отменено; иконата се качва ОТДЕЛНО (App info); тук само нова версия 1.0021 + APK + Submit.",
-  "sections": [],
-  "contentRating": ""
+  "sections": [
+    "appinfo"
+  ],
+  "contentRating": "",
+  "_note": "22.08: нова икона (индиго, не Adobe-червено) + privacy 200. Re-upload App info + APK + Submit."
 }

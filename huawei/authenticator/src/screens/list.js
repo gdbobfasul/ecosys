@@ -21,6 +21,7 @@ export function renderList(root, nav) {
 
   const topbar = h('div', { class: 'topbar' },
     h('h1', { text: THEME.appName }),
+    h('button', { class: 'icon-btn', title: t('search_all_title') || 'Търсене', onclick: () => nav.go('search') }, '🔎'),
     h('button', { class: 'icon-btn', title: t('settings_title'), onclick: () => nav.go('settings') }, '⚙️')
   );
   const container = h('div', { class: 'content' });
@@ -145,8 +146,9 @@ export function renderList(root, nav) {
       const thumb = c.image
         ? h('img', { src: c.image, style: 'width:42px;height:42px;border-radius:8px;object-fit:cover;background:#fff' })
         : h('div', { class: 'badge' }, '▦');
+      const sub = [c.appName, c.login].filter(Boolean).join(' · ') || c.content || '';
       const info = h('div', { class: 'info' }, h('div', { class: 'issuer', text: c.title || '—' }),
-        h('div', { class: 'acct', text: c.content || '' }));
+        h('div', { class: 'acct', text: sub }));
       const row = h('div', { class: 'entry', style: 'cursor:pointer' }, thumb, info, h('div', { class: 'muted' }, '›'));
       row.addEventListener('click', () => nav.go('collection-view', c));
       return row;

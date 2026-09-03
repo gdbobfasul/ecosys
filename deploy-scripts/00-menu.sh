@@ -266,9 +266,9 @@ show_menu() {
 
     echo -e "${BOLD}${CYAN}━━━ EXPORT / BACKUP ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
-    item "20" "Archive проекта" \
-        "Създава tar.gz архив в \$HOME с целия проект (без node_modules, artifacts, cache)." \
-        "Полезно преди риско́ва операция (миграция, refactor)."
+    item "20" "Archive проекта (авто ОС)" \
+        "Сам разпознава ОС: Windows → 2 RAR в G:\\wrk (make-backup.ps1); Linux → tar.gz в \$HOME." \
+        "Без билд артефакти. Работи от Git Bash/PowerShell/cmd/Linux. Полезно преди рискова операция."
     item "21" "SQLite DB → SQL dump" \
         "Експортира portal.db и eco3.db като .sql файлове в \$HOME/kcy-db-backup/." \
         "SQL dump-овете могат да се възстановят с 'sqlite3 db.sqlite < dump.sql'."
@@ -468,8 +468,8 @@ show_menu() {
         "Проверка на име + локализирани скрийншоти/описания (15 езика) + скеле на huawei.meta." \
         "Пълни publish/. Пита кое приложение (huawei/<ап>)."
     item "92" "RuStoreReleaseBot — попълни конзолата на RuStore" \
-        "Като 90, но за console.rustore.ru: вдига браузъра при нужда (влизаш РЪЧНО веднъж), пита кое" \
-        "приложение (от каталога с цените) и попълва ВИДИМО, БЕЗ да натиска бутони. Режим ENTER."
+        "Като 90: избираш обхват ВЕДНЪЖ (Само Релийз/Всички/Избрани), после апп по апп — Пълно качване /" \
+        "Корекция+Submit (bump+ребилд) / Развитие (рейтинг, мнения, инсталации, приходи). console.rustore.ru."
 
     echo -e "  ${GRAY}Свободни номера: 77-79, 83   ·   запазени: 60-70 (FILL DATA), 71-76 (мобилни), 80-84 (selflearning), 90-92 (ботове)${NC}"
     echo ""
@@ -1085,35 +1085,72 @@ run_choice() {
             echo ""
             ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/rustore-release-bot-launch.cjs" )
             echo ""
-            read -p "  Влез в RuStore и отвори нужния екран. После натисни ENTER: " _
-            # 2) Избор на приложение — само тези за публикуване (от каталога с цените)
-            echo ""
-            echo -e "  ${GRAY}Показвам само приложенията за публикуване (от каталога с цените):${NC}"
-            declare -a RAPPS=(); ri=1
-            RCATLIST=$(node -e 'const fs=require("fs");try{const j=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));for(const a of (j.apps||[]))console.log(a.id)}catch(e){}' "$SCRIPT_DIR/../app-shared/promo-catalog.json" 2>/dev/null)
-            if [ -z "$RCATLIST" ]; then
-                echo -e "  ${YELLOW}Каталогът с цените липсва — показвам всички.${NC}"
-                RCATLIST=$(for d in "$SCRIPT_DIR/../huawei"/*/; do basename "$d"; done)
+            read -p "  Влез в RuStore (сесията обикновено помни логина). После натисни ENTER: " _
+            # 2) Обхват ВЕДНЪЖ — Само Релийз / Всички / Избрани (както точка 90 и билд/деплой).
+            #    После работиш върху този набор, апп по апп: коригирай / коментирай / публикувай.
+            R_SCOPE="$(release_scope "RuStore — с кои приложения да работя (избираш веднъж)?")"
+            if [ "$R_SCOPE" = "__ALL__" ]; then
+                R_LIST="$(for d in "$SCRIPT_DIR/../rustore"/*/; do [ -d "${d}publish" ] && basename "$d"; done | tr '\n' ' ')"
+            else
+                R_LIST="$R_SCOPE"
             fi
-            for ra in $RCATLIST; do
-                [ -d "$SCRIPT_DIR/../huawei/$ra" ] || continue
-                RAPPS[$ri]="$ra"; printf "    %2d) %s\n" "$ri" "$ra"; ri=$((ri+1))
+            # само реално съществуващи rustore апове
+            R_LIST="$(for a in $R_LIST; do [ -d "$SCRIPT_DIR/../rustore/$a" ] && echo "$a"; done | tr '\n' ' ')"
+            if [ -z "${R_LIST// /}" ]; then echo "  Няма приложения в обхвата."; press_enter; continue; fi
+            # 3) Цикъл: избери приложение от набора и действие. Наборът остава избран.
+            while true; do
+                echo ""
+                echo -e "  ${BOLD}Приложения в обхвата ($(echo "$R_LIST" | wc -w)):${NC}"
+                declare -a RAPPS=(); ri=1
+                for ra in $R_LIST; do RAPPS[$ri]="$ra"; printf "    %2d) %s\n" "$ri" "$ra"; ri=$((ri+1)); done
+                echo ""
+                read -p "  Кое приложение? [номер/име · r=Развитие за целия набор · q=изход]: " RPICK
+                case "$RPICK" in
+                    q|Q|"") break ;;
+                    r|R)
+                        F="$(echo "$R_LIST" | awk '{print $1}')"
+                        echo -e "  ${BOLD}${CYAN}━━━ Развитие (RuStore): $(echo "$R_LIST" | wc -w) бр. ━━━${NC}"
+                        ( cd "$SCRIPT_DIR/.." && KCY_INSIGHTS_APPS="$R_LIST" node "$SCRIPT_DIR/rustore-release-bot.cjs" "$F" --insights )
+                        press_enter; continue ;;
+                esac
+                RAPP="${RAPPS[$RPICK]}"; [ -z "$RAPP" ] && RAPP="$RPICK"
+                if [ ! -d "$SCRIPT_DIR/../rustore/$RAPP" ]; then echo "  Няма такова приложение."; continue; fi
+                # Действие с това приложение
+                echo ""
+                echo -e "  ${BOLD}Какво правим с ${RAPP}?${NC}"
+                echo "    1) Пълно качване (нова версия — попълва всички екрани, режим ENTER)"
+                echo "    2) Корекция + Submit — bump версия + ребилд + подава (заменя висящата в модерация)"
+                echo -e "    3) ${CYAN}Развитие${NC} (само това приложение) — рейтинг/мнения/инсталации/приходи"
+                read -p "  Избери [1-3, Enter=1]: " RACT
+                RACT="${RACT:-1}"
+                if [ "$RACT" != 3 ]; then
+                    echo ""
+                    echo -e "  ${BOLD}${CYAN}━━━ Проверка на правните документи (RuStore): ${RAPP} ━━━${NC}"
+                    ( cd "$SCRIPT_DIR/.." && node deploy-scripts/check-legal-links.mjs --store rustore "$RAPP" ) || \
+                        echo -e "  ${RED}${BOLD}⚠ Документите на ${RAPP} имат проблем — внимавай преди подаване.${NC}"
+                fi
+                case "$RACT" in
+                    1)
+                        echo -e "  ${YELLOW}► RuStoreReleaseBot: ${RAPP} (режим ENTER — попълва ВИДИМО, ти натискаш бутоните)${NC}"
+                        ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/rustore-release-bot.cjs" "$RAPP" --loop ) ;;
+                    2)
+                        echo -e "  ${YELLOW}► Bump версия +1…${NC}"
+                        ( cd "$SCRIPT_DIR/.." && node deploy-scripts/bump-app-version.mjs "$RAPP" )
+                        echo -e "  ${YELLOW}► Ребилд ${RAPP} (RuStore, release)…${NC}"
+                        ( cd "$SCRIPT_DIR/.." && KCY_APPS_ONLY="$RAPP" KCY_STORES=rustore KCY_KEEP_OTHERS=1 bash deploy-scripts/release-apks.sh "$RAPP" )
+                        echo ""
+                        echo -e "  ${GRAY}Отвори в браузъра страницата с версиите на ${RAPP} (apps/<id>/versions), после ENTER.${NC}"
+                        read -p "  ENTER когато си на нужната страница: " _
+                        read -p "  Да Submit-не ли автоматично за модериране? [Y/n]: " DOSUB
+                        SUBFLAG="--auto --submit"; case "${DOSUB,,}" in n|no|не|н) SUBFLAG="--auto" ;; esac
+                        echo -e "  ${YELLOW}► RuStore бот ${SUBFLAG} (нова версия заменя висящата)…${NC}"
+                        ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/rustore-release-bot.cjs" "$RAPP" $SUBFLAG ) ;;
+                    3)
+                        echo -e "  ${BOLD}${CYAN}━━━ Развитие (RuStore): ${RAPP} ━━━${NC}"
+                        ( cd "$SCRIPT_DIR/.." && KCY_INSIGHTS_APPS="$RAPP" node "$SCRIPT_DIR/rustore-release-bot.cjs" "$RAPP" --insights ) ;;
+                esac
+                press_enter
             done
-            echo ""
-            read -p "  Кое приложение? [номер или име]: " RPICK
-            RAPP="${RAPPS[$RPICK]}"; [ -z "$RAPP" ] && RAPP="$RPICK"
-            if [ -z "$RAPP" ] || [ ! -d "$SCRIPT_DIR/../huawei/$RAPP" ]; then echo "  Няма такова приложение."; press_enter; continue; fi
-            # 3) Попълва в режим ENTER (видимо, без натискане на бутони)
-            # Последна врата преди магазина: правните документи на ТОВА приложение
-            # живи ли са (200, не 404) и конкретни за него (не чуждо съдържание)?
-            echo ""
-            echo -e "  ${BOLD}${CYAN}━━━ Проверка на правните документи (RuStore): ${RAPP} ━━━${NC}"
-            ( cd "$SCRIPT_DIR/.." && node deploy-scripts/check-legal-links.mjs --store rustore "$RAPP" ) || \
-                echo -e "  ${RED}${BOLD}⚠ Документите на ${RAPP} имат проблем — НЕ подавай в магазина, докато не станат зелени!${NC}"
-            echo ""
-            echo -e "  ${YELLOW}► RuStoreReleaseBot: ${RAPP} (режим ENTER — попълва ВИДИМО, не натиска бутони)${NC}"
-            echo ""
-            ( cd "$SCRIPT_DIR/.." && node "$SCRIPT_DIR/rustore-release-bot.cjs" "$RAPP" --loop )
             press_enter
             ;;
         45|46|47|48|49)
@@ -1399,34 +1436,55 @@ run_choice() {
 
         # ── EXPORT ──
         20)
-            NAME="kcy-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
-            # БЕКЪП НА КОДА — БЕЗ билд артефактите (те се регенерират от кода и подуваха архива
-            # до ~7 GB). Изключваме: зависимости, Gradle/Android билд изход, уеб/десктоп билдове,
-            # готови APK/EXE, вграденото копие на dist в APK-а, кешове и логове. Остават source-ът,
-            # иконите/ресурсите, публичните ассети и историята (.git).
-            run_cmd tar -czf "$HOME/${NAME}" \
-                --exclude='node_modules' \
-                --exclude='build' \
-                --exclude='.gradle' \
-                --exclude='.cxx' \
-                --exclude='captures' \
-                --exclude='dist' \
-                --exclude='dist-exe' \
-                --exclude='dist-electron' \
-                --exclude='dist-ssr' \
-                --exclude='.vite' \
-                --exclude='apk' \
-                --exclude='*/main/assets/public' \
-                --exclude='artifacts' \
-                --exclude='cache' \
-                --exclude='.cache' \
-                --exclude='*.log' \
-                --exclude='*.apk' \
-                --exclude='*.aab' \
-                --exclude='*.keystore' \
-                -C "$PROJECT_ROOT/.." "$(basename "$PROJECT_ROOT")"
-            echo "  ✓ $HOME/${NAME}"
-            echo "  (без билд артефакти: android build, dist, dist-exe, apk — регенерират се от кода)"
+            # БЕКЪП НА КОДА — избор ОС (автоусет по shell-а): Linux → tar.gz в $HOME; Windows → 2 RAR
+            # (проект + видеа) в G:\wrk чрез make-backup.ps1 (изисква WinRAR). И в двата случая БЕЗ билд
+            # артефактите (регенерират се от кода и подуваха архива): зависимости, Gradle/Android изход,
+            # уеб/десктоп билдове, готови APK/EXE, вграденото dist в APK-а, кешове, логове.
+            # АВТОМАТИЧНО: разпознава ОС по обвивката (Git Bash/MINGW/MSYS/Cygwin → Windows RAR;
+            # иначе Linux tar.gz) и пуска верния бекъп БЕЗ да пита. Ако все пак искаш да наложиш ръчно:
+            # KCY_BACKUP_OS=windows|linux пред командата.
+            bos="linux"
+            case "$(uname -s 2>/dev/null)" in *MINGW*|*MSYS*|*CYGWIN*) bos="windows" ;; esac
+            [ -n "${KCY_BACKUP_OS:-}" ] && bos="$KCY_BACKUP_OS"
+            echo "  ОС разпозната: $bos → пускам съответния бекъп автоматично."
+            if [ "$bos" = "windows" ]; then
+                # Windows: 2 RAR архива чрез make-backup.ps1 (вика се и от Git Bash — powershell.exe).
+                # От Git Bash $PROJECT_ROOT е Unix-път (/g/wrk/…) → powershell -File иска Windows-път
+                # (G:\wrk\…) → конвертираме с cygpath (налично в Git Bash; на Linux този клон не се стига).
+                PS1FILE="$PROJECT_ROOT/make-backup.ps1"
+                if command -v cygpath >/dev/null 2>&1; then PS1FILE="$(cygpath -w "$PS1FILE")"; fi
+                echo -e "${YELLOW}► powershell -ExecutionPolicy Bypass -File make-backup.ps1${NC}"; echo ""
+                if command -v powershell >/dev/null 2>&1; then powershell -ExecutionPolicy Bypass -File "$PS1FILE";
+                elif command -v powershell.exe >/dev/null 2>&1; then powershell.exe -ExecutionPolicy Bypass -File "$PS1FILE";
+                else echo "  ✗ powershell не е намерен — пусни ръчно: powershell -ExecutionPolicy Bypass -File make-backup.ps1"; fi
+            else
+                # Linux/Git Bash: tar.gz без билд артефактите.
+                NAME="kcy-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
+                echo -e "${YELLOW}► tar -czf \$HOME/${NAME} (без билд артефакти)${NC}"; echo ""
+                tar -czf "$HOME/${NAME}" \
+                    --exclude='node_modules' \
+                    --exclude='build' \
+                    --exclude='.gradle' \
+                    --exclude='.cxx' \
+                    --exclude='captures' \
+                    --exclude='dist' \
+                    --exclude='dist-exe' \
+                    --exclude='dist-electron' \
+                    --exclude='dist-ssr' \
+                    --exclude='.vite' \
+                    --exclude='apk' \
+                    --exclude='*/main/assets/public' \
+                    --exclude='artifacts' \
+                    --exclude='cache' \
+                    --exclude='.cache' \
+                    --exclude='*.log' \
+                    --exclude='*.apk' \
+                    --exclude='*.aab' \
+                    --exclude='*.keystore' \
+                    -C "$PROJECT_ROOT/.." "$(basename "$PROJECT_ROOT")"
+                echo "  ✓ $HOME/${NAME}"
+                echo "  (без билд артефакти: android build, dist, dist-exe, apk — регенерират се от кода)"
+            fi
             press_enter
             ;;
         21)
