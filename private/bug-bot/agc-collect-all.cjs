@@ -1,7 +1,7 @@
 const PW = require('playwright');
 const fs=require('fs'), path=require('path');
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const F=path.resolve('G:/wrk/2026-06-02-toks/app-shared/moderation-huawei.json');
+const F=path.resolve(__dirname, '../../app-shared/moderation-huawei.json');   // относителен → оцелява при преименуване
 const pkgToId=p=>{const m=/com\.pupikes\.([a-z0-9]+)\.hw/i.exec(p||'');return m?m[1]:'';};
 async function readReview(page){ for (const f of page.frames()){ let t=''; try{t=await f.evaluate(()=>document.body?document.body.innerText:'');}catch(e){} if(/App review results/i.test(t)){ const i=t.indexOf('App review results'); return t.slice(i,i+1500);} } return ''; }
 (async () => {

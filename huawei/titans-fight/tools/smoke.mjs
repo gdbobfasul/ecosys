@@ -1,6 +1,10 @@
 // Version: 1.0001
 import { createRequire } from 'module';
-const require = createRequire('G:/wrk/2026-06-02-toks/private/robot/package.json');
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+// Относителен път до robot пакета (оцелява при преименуване на работната папка).
+const __dir = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(resolve(__dir, '../../../private/robot/package.json'));
 const { chromium } = require('playwright');
 
 const URL = 'http://localhost:5173/';

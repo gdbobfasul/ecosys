@@ -14,6 +14,11 @@ param(
     [string]$OutDir = 'G:\wrk'   # по подразбиране архивите отиват в G:\wrk
 )
 $ErrorActionPreference = 'Stop'
+# ── Изход в UTF-8, за да се четат българските съобщения чисто (иначе конзолата е cp866/OEM и през
+#    Git Bash кирилицата излиза като каша). Не чупи нищо, ако терминалът не позволява смяна. ──
+try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
+try { $OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
+try { chcp 65001 > $null 2>&1 } catch {}
 $root = $PSScriptRoot
 Set-Location $root
 
@@ -65,6 +70,9 @@ Write-Host "[2/2] Архивирам проекта (без node_modules / би�
 $excludes = @(
     '-x*\node_modules\*',  '-xnode_modules\*',
     '-x*\node_modules2\*', '-xnode_modules2\*',
+    # ── браузър-профили на публикуващите ботове (сесия/кеш — заключени, докато браузърът е отворен,
+    #    и не са код; логинът се възстановява с ново влизане) ──
+    '-x*\.huawei-profile\*', '-x*\.rustore-profile\*', '-x*\.huawei-profile2\*',
     # ── АНИМАЦИИ: source-ът (raw) е в -vids; тук изключваме ВСИЧКИ animations папки навсякъде
     #    (public\assets\animations + обработените + копията в игрите) → регенерират се от raw ──
     '-x*\assets\animations\*', '-xpublic\assets\*',

@@ -266,9 +266,9 @@ show_menu() {
 
     echo -e "${BOLD}${CYAN}━━━ EXPORT / BACKUP ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
-    item "20" "Archive проекта (авто ОС)" \
-        "Сам разпознава ОС: Windows → 2 RAR в G:\\wrk (make-backup.ps1); Linux → tar.gz в \$HOME." \
-        "Без билд артефакти. Работи от Git Bash/PowerShell/cmd/Linux. Полезно преди рискова операция."
+    item "20" "Бекъп + (по избор) преместване на папката" \
+        "Пита: 1) бекъп? (авто ОС: Windows→RAR / Linux→tar, без билд артефакти)  2) да преместя ли" \
+        "работната папка на нова дата (пази паметта на Claude). И двете по избор — казваш само каквото искаш."
     item "21" "SQLite DB → SQL dump" \
         "Експортира portal.db и eco3.db като .sql файлове в \$HOME/kcy-db-backup/." \
         "SQL dump-овете могат да се възстановят с 'sqlite3 db.sqlite < dump.sql'."
@@ -1446,8 +1446,13 @@ run_choice() {
             bos="linux"
             case "$(uname -s 2>/dev/null)" in *MINGW*|*MSYS*|*CYGWIN*) bos="windows" ;; esac
             [ -n "${KCY_BACKUP_OS:-}" ] && bos="$KCY_BACKUP_OS"
-            echo "  ОС разпозната: $bos → пускам съответния бекъп автоматично."
-            if [ "$bos" = "windows" ]; then
+            # 1) ПИТА за бекъпа (по подразбиране ДА). Ако „не" → пропуска бекъпа и минава направо към
+            #    въпроса за преместване на папката.
+            echo ""
+            read -p "  Да направя ли БЕКЪП на кода (ОС: $bos)? [Y/n]: " dobk
+            if printf '%s' "$dobk" | grep -qiE '^[nн]'; then
+                echo "  ↷ Пропускам бекъпа."
+            elif [ "$bos" = "windows" ]; then
                 # Windows: 2 RAR архива чрез make-backup.ps1 (вика се и от Git Bash — powershell.exe).
                 # От Git Bash $PROJECT_ROOT е Unix-път (/g/wrk/…) → powershell -File иска Windows-път
                 # (G:\wrk\…) → конвертираме с cygpath (налично в Git Bash; на Linux този клон не се стига).
@@ -1463,6 +1468,9 @@ run_choice() {
                 echo -e "${YELLOW}► tar -czf \$HOME/${NAME} (без билд артефакти)${NC}"; echo ""
                 tar -czf "$HOME/${NAME}" \
                     --exclude='node_modules' \
+                    --exclude='.huawei-profile' \
+                    --exclude='.rustore-profile' \
+                    --exclude='.huawei-profile2' \
                     --exclude='build' \
                     --exclude='.gradle' \
                     --exclude='.cxx' \
@@ -1484,6 +1492,23 @@ run_choice() {
                     -C "$PROJECT_ROOT/.." "$(basename "$PROJECT_ROOT")"
                 echo "  ✓ $HOME/${NAME}"
                 echo "  (без билд артефакти: android build, dist, dist-exe, apk — регенерират се от кода)"
+            fi
+            # ── ПО ИЗБОР: преименуване на работната папка на днешна дата СЛЕД бекъпа (пази паметта на
+            #    Claude + връща junction-ите). Стартира се ДЕТАЧНАТО с изчакване — довършва се СЛЕД като
+            #    затвориш това меню + Claude Code + бот-браузъра. По подразбиране НЕ. Само Windows. ──
+            if [ "$bos" = "windows" ] && [ -f "$PROJECT_ROOT/rename-workdir.ps1" ]; then
+                echo ""
+                read -p "  Да преименувам ли работната папка на днешна дата (пази паметта)? [y/N]: " doren
+                if printf '%s' "$doren" | grep -qiE '^[yд]'; then
+                    RENPS="$PROJECT_ROOT/rename-workdir.ps1"
+                    if command -v cygpath >/dev/null 2>&1; then RENPS="$(cygpath -w "$RENPS")"; fi
+                    echo ""
+                    echo "  → Пускам преименуването в ОТДЕЛЕН прозорец, който ИЗЧАКВА да затвориш всичко."
+                    echo "    СЕГА ЗАТВОРИ: това меню, Claude Code, бот-браузъра, node/vite — и то ще"
+                    echo "    довърши само (папка + памет + junction-и). После отвори Claude в новата папка."
+                    powershell -NoProfile -Command "Start-Process powershell -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','$RENPS','-WaitForUnlock' -WindowStyle Normal" 2>/dev/null \
+                        || echo "  ✗ не успях да стартирам преименуването — пусни ръчно: powershell -ExecutionPolicy Bypass -File rename-workdir.ps1"
+                fi
             fi
             press_enter
             ;;
