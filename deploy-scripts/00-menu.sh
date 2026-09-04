@@ -1500,14 +1500,28 @@ run_choice() {
                 echo ""
                 read -p "  Да преименувам ли работната папка на днешна дата (пази паметта)? [y/N]: " doren
                 if printf '%s' "$doren" | grep -qiE '^[yд]'; then
-                    RENPS="$PROJECT_ROOT/rename-workdir.ps1"
-                    if command -v cygpath >/dev/null 2>&1; then RENPS="$(cygpath -w "$RENPS")"; fi
+                    NEWNAME="$(date +%Y-%m-%d)-toks"
+                    PARENT_UNIX="$(dirname "$PROJECT_ROOT")"
+                    # Скриптът се копира ИЗВЪН папката (иначе PowerShell държи файла и сам я заключва).
+                    cp "$PROJECT_ROOT/rename-workdir.ps1" "$PARENT_UNIX/rename-workdir.ps1" 2>/dev/null
+                    RENPS_WIN="$(cygpath -w "$PARENT_UNIX/rename-workdir.ps1" 2>/dev/null || echo "$PARENT_UNIX/rename-workdir.ps1")"
+                    SRC_WIN="$(cygpath -w "$PROJECT_ROOT" 2>/dev/null || echo "$PROJECT_ROOT")"
+                    VBS_UNIX="$PARENT_UNIX/pupikes-rename.vbs"
+                    VBS_WIN="$(cygpath -w "$VBS_UNIX" 2>/dev/null || echo "$VBS_UNIX")"
+                    # Детачнат ИЗОЛИРАН процес (VBS -> скрит powershell): убива държателите на папката (claude/
+                    # conhost/bash по работна директория) ВКЛ. самия Claude, после преименува. Изолиран е ->
+                    # оцелява убиването на Claude. Затова НЕ натискаш нищо друго — след ~10-20 сек Claude се
+                    # затваря сам и папката е преименувана; после отваряш Claude в новата папка.
+                    printf '%s\r\n' \
+                      'Set sh = CreateObject("WScript.Shell")' \
+                      "cmd = \"powershell -NoProfile -ExecutionPolicy Bypass -File \"\"$RENPS_WIN\"\" -SourceDir \"\"$SRC_WIN\"\" -WaitForUnlock -NewName $NEWNAME -SelfDeleteTask PupikesRenameWorkdir\"" \
+                      'sh.Run cmd, 0, False' > "$VBS_UNIX"
                     echo ""
-                    echo "  → Пускам преименуването в ОТДЕЛЕН прозорец, който ИЗЧАКВА да затвориш всичко."
-                    echo "    СЕГА ЗАТВОРИ: това меню, Claude Code, бот-браузъра, node/vite — и то ще"
-                    echo "    довърши само (папка + памет + junction-и). После отвори Claude в новата папка."
-                    powershell -NoProfile -Command "Start-Process powershell -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','$RENPS','-WaitForUnlock' -WindowStyle Normal" 2>/dev/null \
-                        || echo "  ✗ не успях да стартирам преименуването — пусни ръчно: powershell -ExecutionPolicy Bypass -File rename-workdir.ps1"
+                    echo "  Стартирам преименуването (детачнат процес; сам затваря Claude и преименува)."
+                    echo "  СЛЕД ~10-20 сек Claude ще се ЗАТВОРИ САМ и папката ще стане:  $NEWNAME"
+                    echo "  После отвори Claude в новата папка (паметта е запазена)."
+                    powershell -NoProfile -Command "schtasks /delete /tn PupikesRenameWorkdir /f *> \$null; \$t=(Get-Date).AddMinutes(3).ToString('HH:mm'); schtasks /create /tn PupikesRenameWorkdir /sc once /st \$t /tr ('wscript ' + '$VBS_WIN') /f | Out-Null; schtasks /run /tn PupikesRenameWorkdir | Out-Null" 2>/dev/null \
+                      || echo "  (не успях да насроча — виж лога G:\\wrk\\pupikes-rename.log)"
                 fi
             fi
             press_enter

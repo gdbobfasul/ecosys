@@ -1,21 +1,12 @@
-Reviewer note — Pupikes Authenticator (resubmission)
+# Reviewer note — Authenticator & Passwords (Huawei)
 
-We fixed both issues from the previous review:
+## For reviewer
+Addressed the latest review (rule 4.3 — "Vault app, similar to existing apps"):
 
-1) Privacy policy URL (rule 7.1)
-   The privacy policy is now live and returns valid content (HTTP 200):
-   https://pupikes.app/privacy/authenticator/hw-privacy.html
-   The earlier 404 was a server deployment issue and has been resolved.
-
-2) App icon (rule 9.3 — resemblance to "Samsung Security Policy Update")
-   The app icon has been redesigned to an original, distinctive design:
-   a white padlock symbol on a purple gradient with the "pupikes" wordmark.
-   It no longer uses a shield motif and has no visual resemblance to the
-   Samsung Security Policy Update app. The icon is our own original artwork.
-
-About the app: Pupikes Authenticator is an offline two-factor
-authentication (2FA / TOTP) and password manager. All secrets are stored
-locally on the device (encrypted); there is no account and no server sync.
-Features: add TOTP accounts (manual key or import), one-tap code copy,
-local encrypted password vault, import/export, biometric/PIN lock,
-15-language interface. No ads, no tracking.
+This app is NOT a plain one-purpose authenticator. It is a combined, fully on-device security suite — renamed to "Authenticator & Passwords" to reflect its broader scope:
+- 2FA one-time codes (TOTP/HOTP), with an add-by-QR flow and manual entry;
+- a full password manager (store, search, reveal, copy);
+- a crypto seed/key vault;
+- a built-in line-by-line analyzer bot and a global search across all stored items;
+- import from other authenticator apps/browsers.
+Everything is encrypted and stays on the device — no account, no cloud, no ads — with a 15-language interface. The combination of authenticator + password manager + crypto vault + analyzer/search in one on-device, zero-account app is the distinctive value versus single-purpose vault apps. We continue to deepen the interaction design and feature set.

@@ -51,3 +51,29 @@ Collects and reveals how your app is distributed and used, enhancing your decisi
 
 ## 2026-08-22 — нова икона (Стил A) + пресъбмит подготвен
 - **1.20** — нова икона Стил A в конзолата (проверено) + ново APK + поправен превод (safety banner). Чернова записана. Остава ръчно: Proof of copyright + Submit (batch: APK-guard спря авто-Submit).
+
+## 2026-09-04 — ревю от модерацията (дословно)
+
+```
+App review results：
+The app icon you submitted (under Traditional Chinese (Hong Kong), Traditional Chinese (Taiwan), English (US)) is different from that displayed on users' mobile phones after the app is installed, which affects user experience.
+Modification suggestion: Ensure that the app icon you submitted is the same as that displayed on users' mobile phones after the app is installed, and ensure this issue does not exist in other languages.
+For details, please refer to rule 1.20 of the AppGallery Review Guidelines at the following website: https://developer.huawei.com/consumer/en/doc/app/50104-01
+[Test Environment]: Wi-Fi connection, Huawei P40 with EMUI 12.0.0, nove4e - P30 Lite with EMUI 12.0.0, multilingual environment.
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps on mainstream Huawei mobile devices, and offers professional and detailed test reports to help boost app experience.
+Cloud Testing
+Analyze data Hide tasks
+Distrib
+```

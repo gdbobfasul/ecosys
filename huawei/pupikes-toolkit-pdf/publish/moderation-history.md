@@ -39,3 +39,20 @@ Collects and reveals how your app is distributed and used, enhancing your decisi
 
 ## 2026-08-22 — нова икона (Стил A) + пресъбмит подготвен
 - **1.20** — нова икона Стил A (ИНДИГО документ, не Adobe-червено) в конзолата (проверено) + ново APK + privacy 200. Чернова записана. Остава ръчно: Proof of copyright + Submit.
+
+## 2026-09-04 — ревю от модерацията (дословно)
+
+```
+App review results：
+1.The app icon you submitted (under Traditional Chinese (Hong Kong), Traditional Chinese (Taiwan), English (US)) is different from that displayed on users' mobile phones after the app is installed, which affects user experience.
+Modification suggestion: Ensure that the app icon you submitted is the same as that displayed on users' mobile phones after the app is installed, and ensure this issue does not exist in other languages.
+For details, please refer to rule 1.20 of the AppGallery Review Guidelines at the following website: https://developer.huawei.com/consumer/en/doc/app/50104-01
+2.The app you submitted is a PDF tool app, which is similar to existing apps currently available on AppGallery. A large number of apps offering the same type of content or functionality may cause user confusion and negatively impact user experience.
+Modification suggestion: We look forward to seeing further improvements in areas such as interaction design and feature depth, and to receiving an app with distinctive content and functionality that delivers a better user experience.
+For details, please refer to rule 4.3 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+[Test Environment]: Wi-Fi connection, Huawei P40 with EMUI 12.0.0, nove4e - P30 Lite with EMUI 12.0.0, multilingual environment.
+Consult
+Release
+K
+```

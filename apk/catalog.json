@@ -270,7 +270,7 @@
         },
         {
           "id": "authenticator",
-          "name": "Pupikes Toolkit Authenticator",
+          "name": "Authenticator & Passwords",
           "show": true,
           "published": {
             "huawei": false,
@@ -515,6 +515,25 @@
           },
           "download": true,
           "price": "$4.44"
+        },
+        {
+          "id": "auto-sound-diagnostics",
+          "name": "Auto Sound Diagnostics",
+          "show": true,
+          "published": {
+            "huawei": false,
+            "rustore": false
+          },
+          "storeUrl": {
+            "huawei": "",
+            "rustore": ""
+          },
+          "apk": {
+            "rustore": "Auto-Sound-Diagnostics-rustore-release.apk",
+            "huawei": "Auto-Sound-Diagnostics-huawei-release.apk"
+          },
+          "download": true,
+          "price": "$3.33"
         },
         {
           "id": "camera-watch",

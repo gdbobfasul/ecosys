@@ -1,1 +1,2 @@
 android.permission.POST_NOTIFICATIONS
+android.permission.CAMERA

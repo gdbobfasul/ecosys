@@ -73,6 +73,28 @@ try {
   REVIEWER_NOTE = (_m ? _m[1] : '').replace(/[`>#*]/g, '').replace(/\s+/g, ' ').trim().slice(0, 500);
 } catch (_) {}
 
+// ── ЗАПИС НА ПОСЛЕДНАТА КАЧЕНА ВЕРСИЯ най-ОТГОРЕ в moderation-history.md (по искане) ──
+// След успешен Submit ботът отбелязва коя версия е подадена — най-отгоре във файла с резюметата,
+// за да се вижда веднага коя е последната качена версия (без да ровим в конзолата). Идемпотентно:
+// заменя стария маркер, ако има. Файлът пак НЕ се трие — само маркерът горе се обновява.
+function recordSubmittedVersionTop() {
+  try {
+    const ver = (fs.readFileSync(path.resolve('huawei', app, 'app.version'), 'utf8') || '').trim() || '?';
+    const hp = path.resolve('huawei', app, 'publish', 'moderation-history.md');
+    const date = new Date().toISOString().slice(0, 10);
+    const marker = '> **➤ ПОСЛЕДНА КАЧЕНА ВЕРСИЯ: v' + ver + ' — подадена ' + date + ' (в модерация).**';
+    let txt = fs.existsSync(hp) ? fs.readFileSync(hp, 'utf8') : ('# История на модерацията — ' + app + ' (Huawei)\n');
+    // махни стар маркер (ред, започващ с „> **➤ ПОСЛЕДНА КАЧЕНА ВЕРСИЯ")
+    txt = txt.replace(/^> \*\*➤ ПОСЛЕДНА КАЧЕНА ВЕРСИЯ:[^\n]*\n(?:>[^\n]*\n)?/m, '');
+    // вкарай маркера веднага след H1 заглавието (първия ред)
+    const lines = txt.split('\n');
+    let insAt = 1; // след заглавието
+    lines.splice(insAt, 0, '', marker);
+    fs.writeFileSync(hp, lines.join('\n'), 'utf8');
+    console.log('🗂  отбелязах най-отгоре: последна качена версия v' + ver + ' (moderation-history.md).');
+  } catch (e) { console.log('  (маркерът за версия не се записа: ' + (e.message || e) + ')'); }
+}
+
 // ── данни за приложението (от publish/, единствен източник) ──
 function readJson(f) { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch (_) { return {}; } }
 const brand = readJson(path.resolve('huawei', app, 'capacitor.config.json')).appName || app;
@@ -826,7 +848,7 @@ function spawnBrowser() {
       // Поллинг: изчакай „Select" да се АКТИВИРА (обработката отнема време) и го натисни — така
       // НАЙ-НОВИЯТ пакет става избраният/активен. До ~80с.
       let selected = false, expSeen = false;
-      for (let k = 0; k < 30 && !selected; k++) {   // до ~120с (обработката на Huawei понякога е бавна)
+      for (let k = 0; k < 75 && !selected; k++) {   // до ~300с (обработката/качването на Huawei понякога е много бавна)
         await sleep(4000);
         // ★ Изчакай реда с ОЧАКВАНИЯ versionCode (новото APK) — НЕ какъвто и да е .apk ред. Ако качването
         //   пропадне и остане само старият пакет, редът с новия versionCode няма да се появи → НЕ закачаме
@@ -1491,7 +1513,7 @@ function spawnBrowser() {
             const testing = errs2.some((e) => /open testing|start time|user list|version code later|released version/i.test(e));
             if (testing) log('⚠ Submit-ът закача ОСТАТЪЧЕН „Open testing" трак на този ап (start time / user list / version code). Това е състояние в конзолата, не бота: в раздела за тестова версия махни/довърши тестовия трак (или го изтрий), после Submit само за Release. Другото (описание+APK 1.00xx+privacy+reviewer) е попълнено.');
             else log('⚠ след Submit: ' + errs2.slice(0, 4).join(' | ') + ' — ако иска „Proof of copyright" → качи ръчно и Submit пак.');
-          } else log('✅ SUBMIT натиснат (авто). Провери статуса в конзолата (трябва „Under review").');
+          } else { log('✅ SUBMIT натиснат (авто). Провери статуса в конзолата (трябва „Under review").'); recordSubmittedVersionTop(); }
         } else {
           log('↷ Submit бутон не се намери (вероятно чака Proof of copyright ръчно) — виж екрана.');
         }

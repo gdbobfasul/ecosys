@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!--pupikes-icon-->
+  <!--pupikes-custom-icon: ръчен дизайн (фото албум) — НЕ регенерирай-->
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#7c3aed"/>
@@ -12,6 +12,18 @@
   <rect width="1024" height="1024" fill="url(#hi)"/>
   <rect x="236" y="196" width="552" height="470" rx="120" fill="#fff"/>
   <circle cx="742" cy="250" r="46" fill="#c084fc"/>
-  <g transform="translate(512 431) scale(0.84) translate(-512 -440)"><rect x="350" y="318" width="324" height="244" rx="26" fill="#7c3aed"/><circle cx="430" cy="392" r="30" fill="#f6c453"/><path d="M366 548 l92 -114 l70 72 l58 -50 l64 92 z" fill="rgba(124,58,237,.62)"/></g>
+  <!-- Фото албум: няколко снимки (шахматно, леко разхвърляни) -->
+  <g transform="translate(300 290) rotate(-6 95 67)">
+    <rect width="190" height="135" rx="18" fill="#7c3aed"/><circle cx="46" cy="40" r="19" fill="#f6c453"/><path d="M14 121 l50 -58 l40 40 l32 -26 l40 44 z" fill="#c084fc"/>
+  </g>
+  <g transform="translate(514 300) rotate(7 95 67)">
+    <rect width="190" height="135" rx="18" fill="#7c3aed"/><circle cx="140" cy="42" r="18" fill="#f6c453"/><path d="M16 121 l44 -50 l38 34 l40 -34 l36 50 z" fill="#c084fc"/>
+  </g>
+  <g transform="translate(292 448) rotate(5 95 67)">
+    <rect width="190" height="135" rx="18" fill="#7c3aed"/><circle cx="52" cy="44" r="18" fill="#f6c453"/><path d="M14 121 l52 -46 l36 30 l34 -30 l40 46 z" fill="#c084fc"/>
+  </g>
+  <g transform="translate(520 452) rotate(-5 95 67)">
+    <rect width="190" height="135" rx="18" fill="#7c3aed"/><circle cx="136" cy="40" r="19" fill="#f6c453"/><path d="M14 121 l46 -56 l42 42 l30 -24 l44 44 z" fill="#c084fc"/>
+  </g>
   <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

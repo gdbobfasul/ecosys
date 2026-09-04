@@ -16,13 +16,13 @@
   "dependencies": {
     "@capacitor-community/speech-recognition": "^6.0.0",
     "@capacitor-community/text-to-speech": "^5.0.0",
-    "@capacitor/core": "^6.2.1",
+    "@capacitor/core": "^6.2.2",
     "@capacitor/local-notifications": "^6.0.1",
     "@capacitor/preferences": "^6.0.2"
   },
   "devDependencies": {
-    "@capacitor/android": "^6.2.1",
-    "@capacitor/cli": "^6.2.1",
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
     "vite": "^5.4.10"
   }
 }

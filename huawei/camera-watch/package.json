@@ -19,9 +19,9 @@
     "@tensorflow/tfjs": "^4.22.0"
   },
   "devDependencies": {
-    "@capacitor/android": "^6.2.1",
-    "@capacitor/cli": "^6.2.1",
-    "@capacitor/core": "^6.2.1",
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
     "vite": "^5.4.8"
   }
 }

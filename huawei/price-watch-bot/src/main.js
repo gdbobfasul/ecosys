@@ -26,6 +26,7 @@ import { renderOnboarding } from './screens/onboarding.js';
 import { renderConfig } from './screens/config.js';
 import { renderPermissions } from './screens/permissions.js';
 import { renderDashboard } from './screens/dashboard.js';
+import { renderMarkets } from './screens/markets.js';
 import { renderLanguage } from './screens/language.js';
 import { applyDir, t, hasLangChosen } from './core/i18n.js';
 
@@ -38,7 +39,8 @@ function go(screen) {
     case 'onboarding': return renderOnboarding(root, state, go);
     case 'config': return renderConfig(root, state, go);
     case 'permissions': return renderPermissions(root, state, go);
-    case 'dashboard': return renderDashboard(root, state, go);
+    case 'dashboard': return renderMarkets(root, state, go, 'watch');
+    case 'markets': return renderMarkets(root, state, go, 'fut');
     default: return renderOnboarding(root, state, go);
   }
 }

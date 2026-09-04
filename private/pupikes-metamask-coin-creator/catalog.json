@@ -1,0 +1,75 @@
+{
+  "_comment": "Каталог на токените (менюто). Всеки е ПРЕСЕТ на PupikesFeatureToken — работи нормално като всеки ERC-20, но има своя специфичност. Флагман черта = 🛡 Vault Guard (защита от кражба). params: bps=стотни от процента (100=1%); maxTxBps/maxWalletBps спрямо supply (0=без лимит); defaultThreshold=праг за ВСИЧКИ холдъри (0=свободна търговия). ownerGuard = отделната защита на трезора на бота (винаги се задава).",
+  "tokens": [
+    {
+      "id": "guard", "name": "Pupikes Guard Coin", "symbol": "PGC", "decimals": 18, "supply": 1000000,
+      "special": "🛡 Всеки холдър е защитен от кражба: голям превод се ЗАДЪРЖА и може да се ОТМЕНИ (рядка near-unique черта).",
+      "why": "Купувачите държат спокойно — откраднат ключ не може да източи мигновено.",
+      "params": { "defaultThresholdTokens": 5000, "defaultDelaySec": 3600, "burnFeeBps": 0, "fundFeeBps": 0, "maxTxBps": 0, "maxWalletBps": 0 },
+      "ownerGuard": { "thresholdTokens": 10000, "delaySec": 3600 }
+    },
+    {
+      "id": "ember", "name": "Pupikes Ember", "symbol": "EMBR", "decimals": 18, "supply": 1000000,
+      "special": "🔥 1% се изгаря при всеки превод — предлагането само намалява (дефлация/скъдност).",
+      "why": "Намаляващо предлагане → натиск нагоре по цена; желан за държане.",
+      "params": { "defaultThresholdTokens": 0, "defaultDelaySec": 3600, "burnFeeBps": 100, "fundFeeBps": 0, "maxTxBps": 0, "maxWalletBps": 0 },
+      "ownerGuard": { "thresholdTokens": 20000, "delaySec": 1800 }
+    },
+    {
+      "id": "harvest", "name": "Pupikes Harvest", "symbol": "HRVS", "decimals": 18, "supply": 1000000,
+      "special": "🏦 2% от всеки превод отиват в прозрачен фонд (награди / обратно изкупуване).",
+      "why": "Фондът захранва награди и изкупуване — стимул за екосистемата.",
+      "params": { "defaultThresholdTokens": 0, "defaultDelaySec": 3600, "burnFeeBps": 0, "fundFeeBps": 200, "maxTxBps": 0, "maxWalletBps": 0 },
+      "ownerGuard": { "thresholdTokens": 20000, "delaySec": 1800 }
+    },
+    {
+      "id": "fair", "name": "Pupikes Fair", "symbol": "FAIR", "decimals": 18, "supply": 1000000,
+      "special": "🐋 Анти-кит: max 1% на превод и max 2% на портфейл — без китове и дъмпове.",
+      "why": "Честно разпределение → доверие от дребните купувачи.",
+      "params": { "defaultThresholdTokens": 0, "defaultDelaySec": 3600, "burnFeeBps": 0, "fundFeeBps": 0, "maxTxBps": 100, "maxWalletBps": 200 },
+      "ownerGuard": { "thresholdTokens": 20000, "delaySec": 1800 }
+    },
+    {
+      "id": "shield", "name": "Pupikes Shield", "symbol": "SHLD", "decimals": 18, "supply": 1000000,
+      "special": "🛡+🏦 Защита от кражба за всички + 1% застрахователен фонд.",
+      "why": "Сигурност + буфер при инциденти — за предпазливите.",
+      "params": { "defaultThresholdTokens": 3000, "defaultDelaySec": 3600, "burnFeeBps": 0, "fundFeeBps": 100, "maxTxBps": 0, "maxWalletBps": 0 },
+      "ownerGuard": { "thresholdTokens": 10000, "delaySec": 3600 }
+    },
+    {
+      "id": "nova", "name": "Pupikes Nova", "symbol": "NOVA", "decimals": 18, "supply": 1000000,
+      "special": "⚖ Балансиран blue-chip: лек 0.5% burn + 0.5% фонд + мек анти-кит (max 3% портфейл).",
+      "why": "Умерени, предвидими правила — стабилен дългосрочен избор.",
+      "params": { "defaultThresholdTokens": 0, "defaultDelaySec": 3600, "burnFeeBps": 50, "fundFeeBps": 50, "maxTxBps": 0, "maxWalletBps": 300 },
+      "ownerGuard": { "thresholdTokens": 20000, "delaySec": 1800 }
+    },
+    {
+      "id": "green", "name": "Pupikes Green", "symbol": "GREN", "decimals": 18, "supply": 1000000,
+      "special": "💚 1% от всеки превод към прозрачен благотворителен фонд.",
+      "why": "Кауза при всяка транзакция — привлича общност.",
+      "params": { "defaultThresholdTokens": 0, "defaultDelaySec": 3600, "burnFeeBps": 0, "fundFeeBps": 100, "maxTxBps": 0, "maxWalletBps": 0 },
+      "ownerGuard": { "thresholdTokens": 20000, "delaySec": 1800 }
+    },
+    {
+      "id": "pulse", "name": "Pupikes Pulse", "symbol": "PULS", "decimals": 18, "supply": 1000000,
+      "special": "🔥+🛡 2% изгаряне + защита от кражба за всички (скъдност И сигурност).",
+      "why": "Дефлация плюс анти-кражба — рядка комбинация.",
+      "params": { "defaultThresholdTokens": 5000, "defaultDelaySec": 3600, "burnFeeBps": 200, "fundFeeBps": 0, "maxTxBps": 0, "maxWalletBps": 0 },
+      "ownerGuard": { "thresholdTokens": 15000, "delaySec": 3600 }
+    },
+    {
+      "id": "loyal", "name": "Pupikes Loyal", "symbol": "LOYL", "decimals": 18, "supply": 1000000,
+      "special": "🎁 1% фонд за лоялни/референции + мек лимит (max 5% портфейл).",
+      "why": "Награждава верните държатели — стимул да останат.",
+      "params": { "defaultThresholdTokens": 0, "defaultDelaySec": 3600, "burnFeeBps": 0, "fundFeeBps": 100, "maxTxBps": 0, "maxWalletBps": 500 },
+      "ownerGuard": { "thresholdTokens": 20000, "delaySec": 1800 }
+    },
+    {
+      "id": "aegis", "name": "Pupikes Aegis", "symbol": "AEGS", "decimals": 18, "supply": 1000000,
+      "special": "🏛 Максимална сигурност: дълъг таймлок (6ч) за трезори и едри държатели.",
+      "why": "За институции/трезори — кражбата има голям прозорец за отмяна.",
+      "params": { "defaultThresholdTokens": 2000, "defaultDelaySec": 21600, "burnFeeBps": 0, "fundFeeBps": 0, "maxTxBps": 0, "maxWalletBps": 0 },
+      "ownerGuard": { "thresholdTokens": 5000, "delaySec": 21600 }
+    }
+  ]
+}

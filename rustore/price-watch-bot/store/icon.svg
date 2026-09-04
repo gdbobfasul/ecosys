@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!--pupikes-icon-->
+  <!--pupikes-custom-icon: ръчен дизайн (летящи валутни знаци) — НЕ регенерирай-->
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#047857"/>
@@ -12,6 +12,17 @@
   <rect width="1024" height="1024" fill="url(#hi)"/>
   <rect x="236" y="196" width="552" height="470" rx="120" fill="#fff"/>
   <circle cx="742" cy="250" r="46" fill="#34d399"/>
-  <g transform="translate(512 431) scale(0.84) translate(-512 -440)"><path d="M336 400 l150 -150 h176 a30 30 0 0 1 30 30 v176 l-150 150 a30 30 0 0 1 -42 0 l-164 -164 a30 30 0 0 1 0 -42z" fill="#047857"/><circle cx="596" cy="336" r="30" fill="url(#g)"/></g>
+  <!-- „Летящи" валутни знаци: ₿ $ € ¥ + Solana -->
+  <g font-family="Segoe UI, Arial, Helvetica, sans-serif" font-weight="800" text-anchor="middle">
+    <text x="412" y="392" font-size="164" fill="#047857" transform="rotate(-14 412 360)">₿</text>
+    <text x="636" y="336" font-size="104" fill="#059669" transform="rotate(12 636 300)">$</text>
+    <text x="648" y="548" font-size="120" fill="#047857" transform="rotate(-9 648 512)">€</text>
+    <text x="360" y="576" font-size="80" fill="#059669" transform="rotate(8 360 552)">¥</text>
+  </g>
+  <g fill="#10b981" transform="rotate(-10 512 560)">
+    <path d="M470 536 h84 l-22 22 h-84 z"/>
+    <path d="M448 566 h84 l22 22 h-84 z"/>
+    <path d="M470 596 h84 l-22 22 h-84 z"/>
+  </g>
   <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

@@ -23,3 +23,26 @@ For details, please refer to rule 7.1 of the AppGallery Review Guidelines at the
 
 ## 2026-08-22 — нова икона (Стил A) + пресъбмит подготвен
 - **1.10/1.20** — нова икона Стил A в конзолата (проверено) + ново APK + рейтинг 18+ (крипто). Чернова записана. Остава ръчно: Proof of copyright + Submit.
+
+## 2026-09-04 — ревю от модерацията (дословно)
+
+```
+App review results：
+1.Your app has a single feature, which affects user experience.
+Modification suggestion: Enrich your app content/Submit an app with unique content and features to provide a better user experience.
+For details, please refer to rule 4.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+2.The app icon you submitted (under Traditional Chinese (Hong Kong), Traditional Chinese (Taiwan), English (US)) is different from that displayed on users' mobile phones after the app is installed, which affects user experience.
+Modification suggestion: Ensure that the app icon you submitted is the same as that displayed on users' mobile phones after the app is installed, and ensure this issue does not exist in other languages.
+For details, please refer to rule 1.20 of the AppGallery Review Guidelines at the following website: https://developer.huawei.com/consumer/en/doc/app/50104-01
+[Test Environment]: Wi-Fi connection, Huawei P40 with EMUI 12.0.0, nove4e - P30 Lite with EMUI
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app H
+```

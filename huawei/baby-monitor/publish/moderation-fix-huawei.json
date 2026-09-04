@@ -1,7 +1,7 @@
 {
+  "_note": "Секции за препубликуване (--fix, точка 90). 1.20 → appinfo презаписва иконата за ВСИЧКИ 17 езика.",
   "sections": [
     "appinfo"
   ],
-  "contentRating": "",
-  "_note": "22.08: нова икона (1.20 fix) + превод banner. Re-upload App info + APK + Submit."
+  "contentRating": ""
 }

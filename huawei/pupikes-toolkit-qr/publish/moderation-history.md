@@ -50,3 +50,19 @@ Collects and reveals how your app is distributed and use
 
 ## 2026-08-22 — нова икона (Стил A) + пресъбмит подготвен
 - **1.20** — нова икона Стил A (QR в марков цвят на бяла плочка) в конзолата (проверено) + ново APK + описание 8 инструмента (4.1). Чернова записана. Остава ръчно: Proof of copyright + Submit.
+
+## 2026-09-04 — ревю от модерацията (дословно)
+
+```
+App review results：
+1.The app icon (under Traditional Chinese (Hong Kong), Traditional Chinese (Taiwan) and English (US)) you submitted is different from that displayed on users' mobile phones after the app is installed, which affects user experience.
+Modification suggestion: Ensure that the app icon you submitted is the same as that displayed on users' mobile phones after the app is installed, and ensure this issue does not exist in other languages.
+For details, please refer to rule 1.20 of the AppGallery Review Guidelines at the following website: https://developer.huawei.com/consumer/en/doc/app/50104-01
+2.Your app's "Scan with Camera" function reports an error, affecting user experience.
+Test details: Launch the APP-> QR Code-> Read-> Scan with camera-> "camera unavailable: Permission denied" is displayed
+Modification suggestion: Optimize your app to ensure it can be used in its release regions.
+For details, please refer to rule 3.1 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-03
+3.The app you submitted is a "QR toolkit ( Create, save and read QR codes)" , which is similar to existing apps currently available on AppGallery. A large number of apps offering the same type of content or functionality may cause user confusion and negatively impact user experience.
+Modification suggestion: We look forward to s
+```

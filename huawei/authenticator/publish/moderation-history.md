@@ -25,3 +25,29 @@ App review results：
 
 ## 2026-08-22 — нова икона (Стил A) + пресъбмит подготвен
 - **9.3** (икона прилича на Samsung) + **1.20** — нова отличителна икона Стил A (катинар в марков цвят на бяла плочка); качена в конзолата (проверено пиксел-идентично) + ново APK. Чернова записана. Остава ръчно: Proof of copyright + Submit (open-testing валидации).
+
+## 2026-09-04 — ревю от модерацията (дословно)
+
+```
+App review results：
+The app you submitted is a "Vault APP", which is similar to existing apps currently available on AppGallery. A large number of apps offering the same type of content or functionality may cause user confusion and negatively impact user experience.
+Modification suggestion: We look forward to seeing further improvements in areas such as interaction design and feature depth, and to receiving an app with distinctive content and functionality that delivers a better user experience.
+For details, please refer to rule 4.3 of the AppGallery Review Guidelines at the following website:
+https://developer.huawei.com/consumer/en/doc/app/50104-04
+[Test Environment]: Wi-Fi connection, Mate 30 Pro with EMUI 12.0.0, multilingual environment.
+Consult
+Release
+Key metricsExpand
+Develop your app Hide tasks
+Auth Service
+Auth Service
+Helps you build a secure and reliable user authentication system for your app by simply integrating Auth Service capabilities into your app. There's no need to worry about cloud facilities and implementation. 
+Auth Service
+Test and release your app Hide tasks
+Cloud Testing---Cloud Debugging---
+Release
+Cloud Testing
+Tests the compatibility, stability, performance, power consumption, and security of your apps on mainstream Huawei mobile devices, and offers professional and detailed test reports to help boost app experience.
+Cloud Testing
+Analyze data Hid
+```

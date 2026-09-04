@@ -1,0 +1,12 @@
+{
+  "_comment": "Локализирано App name по език. По искане: по-описателно име, което показва, че апът е повече от обикновен authenticator (2FA + мениджър на пароли + крипто трезор). Huawei лимит 30 знака → ботът реже над 30.",
+  "_manual": true,
+  "_default": "Authenticator & Passwords",
+  "bg": "Authenticator & Пароли",
+  "ru": "Authenticator и пароли",
+  "uk": "Authenticator і паролі",
+  "ar": "Authenticator وكلمات المرور",
+  "hi": "Authenticator और पासवर्ड",
+  "ja": "Authenticator とパスワード",
+  "zh-Hant": "Authenticator 與密碼"
+}

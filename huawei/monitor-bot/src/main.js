@@ -30,6 +30,7 @@ import { renderPermissions } from './screens/permissions.js';
 import { renderMonitorConfig } from './screens/monitor-config.js';
 import { renderDashboard } from './screens/dashboard.js';
 import { renderDirectory } from './screens/directory.js';
+import { renderSites, startSiteWatch } from './screens/sites.js';
 import { renderLanguage } from './screens/language.js';
 import { readBackup, applyBackup } from './core/backup.js';
 import { saveState } from './core/storage.js';
@@ -46,12 +47,14 @@ const SCREENS = {
   permissions: renderPermissions,
   'monitor-config': renderMonitorConfig,
   directory: renderDirectory,
-  dashboard: renderDashboard
+  dashboard: renderDashboard,
+  sites: renderSites
 };
 
 // Долна навигация — само след онбординг. Етикетите се превеждат при всяко рисуване.
 const NAV = [
   { id: 'dashboard', ic: '📡', label: 'nav_dashboard' },
+  { id: 'sites', ic: '🌐', label: 'nav_sites' },
   { id: 'directory', ic: '📚', label: 'nav_directory' },
   { id: 'monitor-config', ic: '＋', label: 'nav_monitor' },
   { id: 'permissions', ic: '🔔', label: 'nav_permissions' },
@@ -141,6 +144,8 @@ async function boot() {
     // Веднага направи един тик при старт (наваксай пропуснатото докато апът е бил затворен).
     tick(state, { onUpdate: refresh }).catch(() => {});
   }
+  // Ежедневни проверки за новите табове (Сайтове: текст/картинка/статус) — независим планировчик.
+  try { startSiteWatch(); } catch (e) {}
 }
 
 // Никаква грешка при буут да не оставя черен екран — показваме видимо съобщение.

@@ -24,6 +24,7 @@ const STR = {
 
   // ——— Долна навигация ———
   nav_dashboard: { bg:'Табло', ru:'Панель', uk:'Панель', en:'Dashboard', de:'Übersicht', fr:'Tableau', es:'Panel', 'es-MX':'Panel', it:'Pannello', pt:'Painel', ar:'اللوحة', hi:'डैशबोर्ड', ja:'ダッシュボード', ky:'Башкы такта', 'zh-Hant':'儀表板' },
+  nav_sites: { bg:'Сайтове', ru:'Сайты', uk:'Сайти', en:'Sites', de:'Seiten', fr:'Sites', es:'Sitios', 'es-MX':'Sitios', it:'Siti', pt:'Sites', ar:'المواقع', hi:'साइटें', ja:'サイト', ky:'Сайттар', 'zh-Hant':'網站' },
   nav_monitor: { bg:'Монитор', ru:'Монитор', uk:'Монітор', en:'Monitor', de:'Monitor', fr:'Moniteur', es:'Monitor', 'es-MX':'Monitor', it:'Monitor', pt:'Monitor', ar:'مراقب', hi:'मॉनिटर', ja:'モニター', ky:'Монитор', 'zh-Hant':'監控' },
   nav_permissions: { bg:'Разрешения', ru:'Разрешения', uk:'Дозволи', en:'Permissions', de:'Berechtigungen', fr:'Autorisations', es:'Permisos', 'es-MX':'Permisos', it:'Permessi', pt:'Permissões', ar:'الأذونات', hi:'अनुमतियाँ', ja:'権限', ky:'Уруксаттар', 'zh-Hant':'權限' },
   nav_about: { bg:'За робота', ru:'О боте', uk:'Про бота', en:'About', de:'Über', fr:'À propos', es:'Acerca de', 'es-MX':'Acerca de', it:'Info', pt:'Sobre', ar:'حول', hi:'परिचय', ja:'概要', ky:'Бот жөнүндө', 'zh-Hant':'關於' },
