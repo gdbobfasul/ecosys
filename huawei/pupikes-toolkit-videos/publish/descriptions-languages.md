@@ -1,299 +1,284 @@
-# Pupikes Toolkit Videos — описание по език (Brief + Full + New features)
+# pupikes-toolkit-videos — описание по език (Brief + Full + New features)
 
-_Генерирано от store-listing/. За AppGallery: Manage languages → добави език → попълни Brief (≤25), Full, New features._
-
-> ⚠️ ky (кыргызки) НЕ съществува в AppGallery — пропуснат. Махни отметките от Greek/Turkish, ако са чекнати.
+_За AppGallery: Manage languages → добави език → попълни Brief (до 25 знака), Full, New features._
+> ⚠️ ky НЕ съществува в AppGallery — пропусни. Махни Greek/Turkish.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Видео конвертор
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройството.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-Полезни офлайн инструменти — всичко работи на устройството.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Видео конвертор — MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройството
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Видео конвертор — MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройството
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Видео конвертер
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройстве.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-Полезные офлайн-инструменты — всё работает на устройстве.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Видео конвертер — MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройстве
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Видео конвертер — MP4 ↔ WebM / AVI / MOV / MKV / GIF, на устройстве
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Відео конвертер
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, на пристрої.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-Корисні офлайн-інструменти — усе працює на пристрої.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Відео конвертер — MP4 ↔ WebM / AVI / MOV / MKV / GIF, на пристрої
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Відео конвертер — MP4 ↔ WebM / AVI / MOV / MKV / GIF, на пристрої
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-Video converter
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, on-device.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-Handy offline tools — everything runs on your device.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Video converter — MP4 ↔ WebM / AVI / MOV / MKV / GIF, on-device
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Video converter — MP4 ↔ WebM / AVI / MOV / MKV / GIF, on-device
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Video-Konverter
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, auf dem Gerät.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-Praktische Offline-Tools — alles läuft auf dem Gerät.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Video-Konverter — MP4 ↔ WebM / AVI / MOV / MKV / GIF, auf dem Gerät
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Video-Konverter — MP4 ↔ WebM / AVI / MOV / MKV / GIF, auf dem Gerät
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Convertisseur vidéo
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, sur l’appareil.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-Outils hors-ligne pratiques — tout fonctionne sur l’appareil.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Convertisseur vidéo — MP4 ↔ WebM / AVI / MOV / MKV / GIF, sur l’appareil
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Convertisseur vidéo — MP4 ↔ WebM / AVI / MOV / MKV / GIF, sur l’appareil
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Conversor de vídeo
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, en el dispositivo.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Conversor de vídeo — MP4 ↔ WebM / AVI / MOV / MKV / GIF, en el dispositivo
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Conversor de vídeo — MP4 ↔ WebM / AVI / MOV / MKV / GIF, en el dispositivo
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Conversor de video
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, en el dispositivo.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Conversor de video — MP4 ↔ WebM / AVI / MOV / MKV / GIF, en el dispositivo
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Conversor de video — MP4 ↔ WebM / AVI / MOV / MKV / GIF, en el dispositivo
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Convertitore video
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, sul dispositivo.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-Comodi strumenti offline — tutto gira sul dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Convertitore video — MP4 ↔ WebM / AVI / MOV / MKV / GIF, sul dispositivo
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Convertitore video — MP4 ↔ WebM / AVI / MOV / MKV / GIF, sul dispositivo
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Conversor de vídeo
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, no aparelho.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-Ferramentas offline úteis — tudo roda no dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Conversor de vídeo — MP4 ↔ WebM / AVI / MOV / MKV / GIF, no aparelho
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Conversor de vídeo — MP4 ↔ WebM / AVI / MOV / MKV / GIF, no aparelho
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-محوّل الفيديو
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF، على الجهاز.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-أدوات مفيدة دون اتصال — كل شيء يعمل على جهازك.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-محوّل الفيديو — MP4 ↔ WebM / AVI / MOV / MKV / GIF، على الجهاز
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-محوّل الفيديو — MP4 ↔ WebM / AVI / MOV / MKV / GIF، على الجهاز
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-वीडियो कन्वर्टर
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF, डिवाइस पर.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-उपयोगी ऑफ़लाइन टूल — सब कुछ डिवाइस पर चलता है।
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-वीडियो कन्वर्टर — MP4 ↔ WebM / AVI / MOV / MKV / GIF, डिवाइस पर
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-वीडियो कन्वर्टर — MP4 ↔ WebM / AVI / MOV / MKV / GIF, डिवाइस पर
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-動画コンバーター
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF、端末内で.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-便利なオフラインツール — すべて端末上で動作。
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-動画コンバーター — MP4 ↔ WebM / AVI / MOV / MKV / GIF、端末内で
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-動画コンバーター — MP4 ↔ WebM / AVI / MOV / MKV / GIF、端末内で
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-影片轉換器
+Video between MP4
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Videos — MP4 ↔ WebM / AVI / MOV / MKV / GIF，於裝置上.
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded.
 
-實用的離線工具 — 一切都在裝置上執行。
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-影片轉換器 — MP4 ↔ WebM / AVI / MOV / MKV / GIF，於裝置上
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-影片轉換器 — MP4 ↔ WebM / AVI / MOV / MKV / GIF，於裝置上
+Pupikes Toolkit Videos converts video between MP4, WebM, AVI, MOV, MKV and GIF entirely on your device using a built-in converter engine — nothing is uploaded. On-device, no ads, 15-language interface.
 ```

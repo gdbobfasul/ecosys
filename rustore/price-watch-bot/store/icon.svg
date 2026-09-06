@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!--pupikes-custom-icon: ръчен дизайн (летящи валутни знаци) — НЕ регенерирай-->
+  <!--pupikes-custom-icon: ръчен дизайн (летящи валутни знаци, ЕДРИ) — НЕ регенерирай-->
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#047857"/>
@@ -11,18 +11,18 @@
   <rect width="1024" height="1024" fill="url(#g)"/>
   <rect width="1024" height="1024" fill="url(#hi)"/>
   <rect x="236" y="196" width="552" height="470" rx="120" fill="#fff"/>
-  <circle cx="742" cy="250" r="46" fill="#34d399"/>
-  <!-- „Летящи" валутни знаци: ₿ $ € ¥ + Solana -->
+  <circle cx="744" cy="248" r="38" fill="#34d399"/>
+  <!-- „Летящи" валутни знаци (ЕДРИ): ₿ $ ¥ € + Solana -->
   <g font-family="Segoe UI, Arial, Helvetica, sans-serif" font-weight="800" text-anchor="middle">
-    <text x="412" y="392" font-size="164" fill="#047857" transform="rotate(-14 412 360)">₿</text>
-    <text x="636" y="336" font-size="104" fill="#059669" transform="rotate(12 636 300)">$</text>
-    <text x="648" y="548" font-size="120" fill="#047857" transform="rotate(-9 648 512)">€</text>
-    <text x="360" y="576" font-size="80" fill="#059669" transform="rotate(8 360 552)">¥</text>
+    <text x="384" y="436" font-size="246" fill="#047857" transform="rotate(-12 384 392)">&#8383;</text>
+    <text x="678" y="404" font-size="186" fill="#059669" transform="rotate(13 678 360)">$</text>
+    <text x="378" y="644" font-size="182" fill="#059669" transform="rotate(9 378 604)">&#165;</text>
+    <text x="686" y="636" font-size="214" fill="#047857" transform="rotate(-9 686 592)">&#8364;</text>
   </g>
-  <g fill="#10b981" transform="rotate(-10 512 560)">
-    <path d="M470 536 h84 l-22 22 h-84 z"/>
-    <path d="M448 566 h84 l22 22 h-84 z"/>
-    <path d="M470 596 h84 l-22 22 h-84 z"/>
+  <g fill="#10b981" transform="rotate(-10 512 502)">
+    <path d="M460 478 h112 l-30 30 h-112 z"/>
+    <path d="M430 512 h112 l30 30 h-112 z"/>
+    <path d="M460 546 h112 l-30 30 h-112 z"/>
   </g>
   <text x="512" y="892" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="118" font-weight="700" letter-spacing="7" fill="rgba(255,255,255,0.96)" text-anchor="middle">pupikes</text>
 </svg>

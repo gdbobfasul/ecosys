@@ -209,7 +209,7 @@ show_menu() {
 
     item " 3" "SSH връзка към сървър (директно)" \
         "Отваря интерактивна SSH сесия в терминала. След избор питам коя машина:" \
-        "1) прод — root@take.offbitch.com:2222   2) VM — deploy@192.168.0.108:2222 (ключ id_ed25519)."
+        "1) прод — root@take.offbitch.com:2222   2) VM — deploy@100.119.216.84:2222 (ключ id_ed25519)."
 
     # (Новите приложения House-Look-Book / WhereNoBiz са на 41–44 по-долу.)
 
@@ -534,12 +534,12 @@ run_choice() {
             echo -e "${BOLD}${CYAN}  SSH връзка — към коя машина?${NC}"
             echo ""
             echo -e "    1) ${GREEN}прод${NC} — root@take.offbitch.com:2222"
-            echo -e "    2) ${GREEN}VM${NC}   — deploy@192.168.0.108:2222  (ключ id_ed25519)"
+            echo -e "    2) ${GREEN}VM${NC}   — deploy@100.119.216.84:2222  (ключ id_ed25519)"
             echo ""
             read -p "  Избери [1-2]: " SSHPICK
             case "$SSHPICK" in
                 1) PICK_SRV="take.offbitch.com"; PICK_USER="root"; PICK_PORT="2222"; run_cmd ssh -v -p 2222 root@take.offbitch.com ;;
-                2) PICK_SRV="192.168.0.108"; PICK_USER="deploy"; PICK_PORT="2222"; run_cmd ssh -i ~/.ssh/id_ed25519 -p 2222 deploy@192.168.0.108 ;;
+                2) PICK_SRV="100.119.216.84"; PICK_USER="deploy"; PICK_PORT="2222"; run_cmd ssh -i ~/.ssh/id_ed25519 -p 2222 deploy@100.119.216.84 ;;
                 *) echo "  Отказано"; press_enter ;;
             esac
             ;;
@@ -1677,7 +1677,7 @@ run_choice() {
         # ── FAILOVER ──
         36)
             echo ""
-            target=$(ask_choice "На коя машина?" "VPS (${MAIN_DOMAIN})" "VM (192.168.0.108)")
+            target=$(ask_choice "На коя машина?" "VPS (${MAIN_DOMAIN})" "VM (100.119.216.84)")
             case "$target" in
                 "VPS (${MAIN_DOMAIN})")
                     echo ""
@@ -1685,10 +1685,10 @@ run_choice() {
                     echo -e "  ${CYAN}ssh deploy@${MAIN_DOMAIN} -p 2222${NC}"
                     echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/11-setup-tailscale.sh${NC}"
                     ;;
-                "VM (192.168.0.108)")
+                "VM (100.119.216.84)")
                     echo ""
                     echo "  Изпълни на VM-а:"
-                    echo -e "  ${CYAN}ssh deploy@192.168.0.108${NC}"
+                    echo -e "  ${CYAN}ssh deploy@100.119.216.84${NC}"
                     echo -e "  ${CYAN}sudo /var/www/deploy/deploy-scripts/server/11-setup-tailscale.sh${NC}"
                     ;;
                 *) echo "Отказано" ;;
@@ -1702,7 +1702,7 @@ run_choice() {
             echo ""
             LSH="$SCRIPT_DIR/server/12-setup-failover.sh"           # локалният (актуален) скрипт
             RPATH="/var/www/deploy/deploy-scripts/server/12-setup-failover.sh"   # whitelist-нат път на сървъра
-            VM_LAN="192.168.0.108"; VM_TS="100.119.216.84"
+            VM_LAN="100.119.216.84"; VM_TS="100.119.216.84"
             if [ ! -f "$LSH" ]; then echo -e "  ${RED}Липсва $LSH${NC}"; press_enter
             else
               read -p "  Да настроя failover СЕГА (VM-prep + VPS)? [y/N]: " conf
@@ -1856,7 +1856,7 @@ run_choice() {
             if [ -f .deploy-targets ]; then
                 grep -E "^TARGET_.*_SERVER" .deploy-targets | sed 's/^/    /'
             else
-                echo "    (defaults — prod=${MAIN_DOMAIN}:2222, vm=192.168.0.108:2222)"
+                echo "    (defaults — prod=${MAIN_DOMAIN}:2222, vm=100.119.216.84:2222)"
             fi
             echo ""
             echo -e "  ${BOLD}Local databases:${NC}"

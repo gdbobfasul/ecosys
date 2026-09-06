@@ -30,6 +30,7 @@ export async function mountVoiceTask(container, { onSaved } = {}) {
     <div class="card">
       <h2>${esc(t('vt_title'))}</h2>
       <p class="muted">${esc(hasVoice ? t('vt_sub') : t('vt_sub_typeonly'))}</p>
+      <div id="vt-status" style="display:none;text-align:center;font-weight:700;font-size:15px;padding:8px 10px;border-radius:10px;margin:6px 0"></div>
 
       <div class="field">
         <label>1) ${esc(t('vt_when_label'))}</label>
@@ -41,6 +42,7 @@ export async function mountVoiceTask(container, { onSaved } = {}) {
       </div>
 
       <div class="card" id="vt-when-detail" style="margin:8px 0">
+        <div class="muted" style="font-size:13px;margin-bottom:8px">${esc(t('vt_detail_hint'))}</div>
         <div class="row"><div>${esc(t('vt_recurring'))}</div><span id="vt-rec"></span></div>
         <div class="field" id="vt-days-wrap"><label>${esc(t('vt_days'))}</label><div class="chips" id="vt-days"></div></div>
         <div class="field" id="vt-date-wrap"><label>${esc(t('vt_date'))}</label><input type="date" id="vt-date"></div>
@@ -74,6 +76,15 @@ export async function mountVoiceTask(container, { onSaved } = {}) {
   const daysBlock = box.querySelector('#vt-days-wrap');
   const dateBlock = box.querySelector('#vt-date-wrap');
   const msg = box.querySelector('#vt-msg');
+  // Ясен статус на гласа: „🎤 Говори сега" (докато РЕАЛНО записва) / „⏳ Изчакай…" (подготовка/
+  // сваляне на модел/разпознаване) — за да знаеш кога да говориш (Whisper зарежда модел ПРЕДИ да записва).
+  const micStatus = box.querySelector('#vt-status');
+  function setMicState(s) {
+    if (!s || s === 'idle' || s === 'error' || s === 'done') { micStatus.style.display = 'none'; return; }
+    micStatus.style.display = 'block';
+    if (s === 'recording') { micStatus.textContent = t('mic_speak'); micStatus.style.background = 'rgba(22,199,132,.16)'; micStatus.style.color = '#16c784'; }
+    else { micStatus.textContent = t('mic_wait'); micStatus.style.background = 'rgba(240,160,32,.16)'; micStatus.style.color = '#f0a020'; }
+  }
 
   // Превключвател „повтарящо се".
   let recToggle;
@@ -116,18 +127,30 @@ export async function mountVoiceTask(container, { onSaved } = {}) {
     applyParsed(p);
   });
 
-  async function dictate(target, after) {
-    if (!hasVoice) return;
+  let listening = false;
+  async function dictate(target, micBtn, after) {
+    if (!hasVoice || listening) return;
+    listening = true;
     msg.textContent = t('vt_listening');
-    target.classList.add('listening');
-    const text = await listen({ locale, onPartial: (tx) => { target.value = tx; } });
-    target.classList.remove('listening');
+    target.classList.add('listening'); if (micBtn) micBtn.classList.add('on');
+    setMicState('preparing');
+    // manualStop: РЪЧЕН стоп — говориш колкото искаш, тап пак по 🎤 спира (не чакаш таван).
+    const text = await listen({ locale, manualStop: true, onState: setMicState, onPartial: (tx) => { target.value = tx; } });
+    target.classList.remove('listening'); if (micBtn) micBtn.classList.remove('on');
+    setMicState('done');
     msg.textContent = '';
+    listening = false;
+    // ★ след запис: полето да е редактируемо/тапваемо навсякъде (за корекция на разпознат текст)
+    try { target.disabled = false; target.readOnly = false; target.style.pointerEvents = 'auto'; } catch (_) {}
     if (text) { target.value = text; if (after) after(text); }
   }
+  // Тап по 🎤: старт; тап пак (докато „🎤 Говори сега") → стоп и разпознай.
+  function micToggle(target, micBtn, after) { if (listening) { stopListening(); return; } dictate(target, micBtn, after); }
 
-  box.querySelector('#vt-mic-when').addEventListener('click', () => dictate(whenInput, () => applyParsed(parseWhen(whenInput.value, { lang }))));
-  box.querySelector('#vt-mic-task').addEventListener('click', () => dictate(taskInput, () => { if (!titleInput.value) titleInput.value = taskInput.value.split(/[.,;\n]/)[0].slice(0, 40); }));
+  const micWhenBtn = box.querySelector('#vt-mic-when');
+  const micTaskBtn = box.querySelector('#vt-mic-task');
+  micWhenBtn.addEventListener('click', () => micToggle(whenInput, micWhenBtn, () => applyParsed(parseWhen(whenInput.value, { lang }))));
+  micTaskBtn.addEventListener('click', () => micToggle(taskInput, micTaskBtn, () => { if (!titleInput.value) titleInput.value = taskInput.value.split(/[.,;\n]/)[0].slice(0, 40); }));
 
   box.querySelector('#vt-readback').addEventListener('click', async () => {
     const say = taskInput.value.trim(); if (!say) { msg.textContent = t('vt_need_task'); return; }

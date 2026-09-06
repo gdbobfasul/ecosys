@@ -1,379 +1,255 @@
-# Pupikes Ring Clash — описание по език (Brief + Full + New features)
+# duel (Pupikes Ring Clash) — описание по език
 
-_За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
-
-> ⚠️ **ky (кыргызки) НЕ съществува в AppGallery** — пропусни го (14 от 15 се поддържат). Махни отметките от **Greek** и **Turkish**, ако са чекнати (нямаме преводи за тях).
+> ⚠️ ky НЕ е в AppGallery — пропусни.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-Pupikes Ring Clash — 1 срещу 1
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Походова битка. Героите ти излизат <b>произволно</b> на всяко ниво.
-
-Специален: всеки герой има <b>свои 6 клавиша</b>; познай скритата <b>комбинация от 4</b> (произволен ред). 30–40% щета.
-
-Откриваш комбинациите чрез опити. Не се сменят цяла игра.
-
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание на Ring Duel: 1 - vs -1 походова битка на 10 нива със скрити комбинации от специални движения и местна класация на 15 езика.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Дуэль 1 на 1
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-Дуэль на ринге — 1 на 1
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-Пошаговый бой. Твои герои выходят <b>случайно</b> на каждом уровне.
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Спецудар: у каждого героя <b>свои 6 клавиш</b>; угадай скрытую <b>комбинацию из 4</b> (любой порядок). 30–40% урона.
-
-Комбинации находишь подбором. Не меняются всю игру.
-
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Первый выпуск Ring Duel: 1-vs-1 пошаговый бой на 10 уровней со скрытыми комбо-комбинациями специальных движений и локальной таблицей лидеров на 15 языках.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-Дуель на рингу — 1 на 1
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Покроковий бій. Твої герої виходять <b>випадково</b> на кожному рівні.
-
-Спецудар: у кожного героя <b>свої 6 клавіш</b>; вгадай приховану <b>комбінацію з 4</b> (будь-який порядок). 30–40% шкоди.
-
-Комбінації знаходиш підбором. Не змінюються всю гру.
-
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Перший випуск Ring Duel: покроковий бій 1 на 1 протягом 10 рівнів з прихованими комбінаціями спеціальних рухів та місцевою таблицею лідерів на 15 мовах.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-Ring Duel — 1 vs 1
-
-Turn-based battle. Your heroes appear <b>at random</b> each level.
-
-Special: each hero has <b>its own 6 keys</b>; guess the hidden <b>combo of 4</b> (any order). 30–40% damage.
-
-You discover combos by trying. They don’t change all game.
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
-
-⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-Ring-Duell — 1 gegen 1
-
-Rundenkampf. Deine Helden erscheinen auf jedem Level <b>zufällig</b>.
-
-Spezial: jeder Held hat <b>eigene 6 Tasten</b>; errate die verborgene <b>4er-Kombo</b> (beliebige Reihenfolge). 30–40% Schaden.
-
-Kombos findest du durch Probieren. Sie ändern sich das ganze Spiel nicht.
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
-
-⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
-Erste Veröffentlichung von Ring Duel: 1-gegen-1 rundenbasierter Kampf über 10 Level mit versteckten Spezialzug-Kombos und einer lokalen Bestenliste in 15 Sprachen.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-Duel sur le ring — 1 contre 1
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Combat au tour par tour. Tes héros apparaissent <b>au hasard</b> à chaque niveau.
-
-Spécial : chaque héros a <b>ses 6 touches</b> ; devine la <b>combo cachée de 4</b> (ordre libre). 30–40% de dégâts.
-
-Tu découvres les combos en essayant. Ils ne changent pas de toute la partie.
-
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
-
-⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version de Ring Duel : combat au tour par tour 1 contre 1 sur 10 niveaux avec des combos de mouvements spéciaux cachés et un classement local en 15 langues.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-Duelo en el ring — 1 contra 1
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Combate por turnos. Tus héroes aparecen <b>al azar</b> en cada nivel.
-
-Especial: cada héroe tiene <b>sus 6 teclas</b>; adivina el <b>combo oculto de 4</b> (cualquier orden). 30–40% de daño.
-
-Descubres los combos probando. No cambian en toda la partida.
-
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primer lanzamiento de Ring Duel: combate por turnos de 1 contra 1 en 10 niveles con combos ocultos de movimientos especiales y una tabla de clasificación local en 15 idiomas.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-Duelo en el ring — 1 vs 1
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Combate por turnos. Tus héroes salen <b>al azar</b> en cada nivel.
-
-Especial: cada héroe tiene <b>sus 6 teclas</b>; adivina el <b>combo oculto de 4</b> (en cualquier orden). 30–40% de daño.
-
-Descubres los combos probando. No cambian en toda la partida.
-
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Ring Duel: 1-vs-1 turn-based combat over 10 levels with hidden special-move combos and a local leaderboard in 15 languages.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-Duello sul ring — 1 contro 1
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Battaglia a turni. I tuoi eroi compaiono <b>a caso</b> a ogni livello.
-
-Speciale: ogni eroe ha <b>le sue 6 tasti</b>; indovina la <b>combo nascosta di 4</b> (ordine libero). 30–40% di danno.
-
-Scopri le combo provando. Non cambiano per tutta la partita.
-
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima versione di Ring Duel: combattimento a turni 1 contro 1 su 10 livelli con combo di mosse speciali nascoste e una classifica locale in 15 lingue.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-Duelo na arena — 1 contra 1
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Batalha por turnos. Seus heróis surgem <b>aleatoriamente</b> em cada nível.
-
-Especial: cada herói tem <b>suas 6 teclas</b>; adivinhe o <b>combo oculto de 4</b> (qualquer ordem). 30–40% de dano.
-
-Você descobre os combos tentando. Não mudam o jogo todo.
-
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeiro lançamento do Ring Duel: combate baseado em turnos de 1 contra 1 em 10 níveis com combos ocultos de movimentos especiais e uma tabela de classificação local em 15 idiomas.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-مبارزة الحلبة — ١ ضد ١
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-قتال بالأدوار. يظهر أبطالك <b>عشوائيًا</b> في كل مستوى.
-
-الضربة الخاصة: لكل بطل <b>٦ مفاتيح خاصة به</b>؛ خمّن <b>تركيبة الـ٤ المخفية</b> (بأي ترتيب). ٣٠–٤٠٪ ضرر.
-
-تكتشف التركيبات بالتجربة. لا تتغيّر طوال اللعبة.
-
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
-
-⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول من Ring Duel: 1 - vs -1 قتال قائم على الدوران على 10 مستويات مع مجموعات حركة خاصة مخفية ولوحة متصدرين محلية بـ 15 لغة.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-रिंग द्वंद्व — 1 बनाम 1
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-बारी-आधारित युद्ध। हर स्तर पर तुम्हारे योद्धा <b>यादृच्छिक</b> आते हैं।
-
-विशेष: हर योद्धा की <b>अपनी 6 कुंजियाँ</b>; छिपा हुआ <b>4 का कॉम्बो</b> भांपो (किसी भी क्रम में)। 30–40% क्षति।
-
-कॉम्बो आज़माकर खोजो। पूरी गेम में नहीं बदलते।
-
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
-
-⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-रिंग ड्यूल की पहली रिलीज़: छिपी हुई स्पेशल - मूव कॉम्बो और 15 भाषाओं में एक स्थानीय लीडरबोर्ड के साथ 10 से अधिक स्तरों पर 1 - बनाम -1 टर्न - आधारित मुकाबला।
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-リングの決闘 — 1対1
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-ターン制バトル。各レベルで英雄は<b>ランダム</b>に登場。
-
-必殺技: 各英雄に<b>専用の6キー</b>。隠された<b>4つのコンボ</b>を当てよう（順不同）。ダメージ 30〜40%。
-
-コンボは試して見つける。試合中は変わらない。
-
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
-
-⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-リングデュエルの最初のリリース：隠されたスペシャルムーブコンボと15言語のローカルリーダーボードを備えた10レベルにわたる1対1のターン制戦闘。
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-A 1-vs-1 turn-based
+Pupikes Ring Clash
 ```
 **Full introduction:**
 ```
-A 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels. Land basic hits and discover each hero hidden 4-key special combo to unleash powerful attacks.
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo.
 
-擂台決鬥 — 1 對 1
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-回合制戰鬥。每關英雄<b>隨機</b>登場。
-
-特殊技：每位英雄有<b>專屬 6 個按鍵</b>；猜出隱藏的<b>4 鍵連招</b>（順序不限）。傷害 30–40%。
-
-透過嘗試發現連招。整局不會改變。
-
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
-
-⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-首次發布戒指決鬥： 1對1回合基礎戰鬥，超過10級，具有隱藏的特別動作組合和15種語言的當地排行榜。
+Pupikes Ring Clash is a 1-vs-1 turn-based fighting game where your randomly assigned hero battles across 10 levels, each with a hidden 4-key special combo. On-device, no ads, 15 languages.
 ```

@@ -1,397 +1,284 @@
-# Pupikes QR toolkit — описание по език (Brief + Full + New features)
+# pupikes-toolkit-qr — описание по език (Brief + Full + New features)
 
-_За AppGallery: **Manage languages** → добави език → попълни Brief/Full/New features._
-
-> ⚠️ **ky (кыргызки) НЕ съществува в AppGallery** — пропусни го.
+_За AppGallery: Manage languages → добави език → попълни Brief (до 25 знака), Full, New features._
+> ⚠️ ky НЕ съществува в AppGallery — пропусни. Махни Greek/Turkish.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes QR инструменти
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes QR инструменти — Създавай, пази и разчитай QR кодове — офлайн, на устройството.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-Включени инструменти:
-• QR код — Генерирай и разчети QR кодове
-• Моите QR кодове — Наименувани кодове: плащания, Wi-Fi, контакти — запазени и подредени
-• Партиден QR — Много кодове наведнъж — по един на ред, сваляне поединично или всички
-• Стилизиран QR — Цвят на кода/фона + лого в центъра
-• Wi-Fi QR — Сподели Wi-Fi — сканиране и телефонът се свързва сам
-• Контакт QR — Визитка (vCard): име, фирма, телефон, имейл — сканиране записва контакта
-• Събитие QR — Календарно събитие (заглавие, място, начало/край) — сканиране добавя в календара
-• Локация QR — Координати (geo:) или линк към карта; „Моята локация" по GPS
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Без изскачащи реклами и без проследяване — данните остават на устройството ти.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Много нови инструменти в едно приложение.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes QR-инструменты
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes QR-инструменты — Создавай, храни и сканируй QR-коды — офлайн, на устройстве.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-Включённые инструменты:
-• QR-код — Создавай и сканируй QR-коды
-• Мои QR-коды — Именованные коды: платежи, Wi-Fi, контакты — сохранённые и упорядоченные
-• Пакетный QR — Много кодов сразу — по одному на строку, скачивание по одному или все
-• Стилизованный QR — Цвет кода/фона + логотип в центре
-• Wi-Fi QR — Поделись Wi-Fi — сканирование и телефон подключается сам
-• Контакт QR — Визитка (vCard): имя, компания, телефон, эл. почта — скан сохраняет контакт
-• Событие QR — Событие календаря (название, место, начало/конец) — скан добавляет в календарь
-• Локация QR — Координаты (geo:) или ссылка на карту; «Моё местоположение» по GPS
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Без всплывающей рекламы и слежки — данные остаются на вашем устройстве.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Много новых инструментов в одном приложении.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes QR-інструменти
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes QR-інструменти — Створюй, зберігай і скануй QR-коди — офлайн, на пристрої.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-Включені інструменти:
-• QR-код — Створюй і скануй QR-коди
-• Мої QR-коди — Іменовані коди: платежі, Wi-Fi, контакти — збережені й упорядковані
-• Пакетний QR — Багато кодів одразу — по одному на рядок, завантаження поодинці або всі
-• Стилізований QR — Колір коду/фону + лого в центрі
-• Wi-Fi QR — Поділись Wi-Fi — сканування і телефон під’єднується сам
-• Контакт QR — Візитка (vCard): ім’я, компанія, телефон, ел. пошта — скан зберігає контакт
-• Подія QR — Подія календаря (назва, місце, початок/кінець) — скан додає в календар
-• Локація QR — Координати (geo:) або посилання на карту; «Моє місцезнаходження» за GPS
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Без спливаючої реклами й стеження — дані залишаються на вашому пристрої.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Багато нових інструментів в одному застосунку.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
-## English (en) — AppGallery: **English**
+## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes QR toolkit
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes QR toolkit — Create, save and read QR codes — offline, on your device.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-Tools included:
-• QR code — Generate and read QR codes
-• My QR codes — Named codes: payments, Wi-Fi, contacts — saved and organized
-• Batch QR — Many codes at once — one per line, download individually or all
-• Styled QR — Code/background color + center logo
-• Wi-Fi QR — Share Wi-Fi — scan and the phone connects itself
-• Contact QR — Business card (vCard): name, company, phone, email — scan saves the contact
-• Event QR — Calendar event (title, place, start/end) — scan adds to calendar
-• Location QR — Coordinates (geo:) or map link; “My location” via GPS
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-No pop-up ads, no tracking — your data stays on your device.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Many new tools in one app.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes QR-Werkzeuge
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes QR-Werkzeuge — QR-Codes erstellen, speichern und lesen — offline, auf dem Gerät.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-Enthaltene Werkzeuge:
-• QR-Code — QR-Codes erstellen und lesen
-• Meine QR-Codes — Benannte Codes: Zahlungen, WLAN, Kontakte — gespeichert und geordnet
-• Stapel-QR — Viele Codes auf einmal — einer pro Zeile, einzeln oder alle laden
-• Stil-QR — Code-/Hintergrundfarbe + Logo in der Mitte
-• WLAN-QR — WLAN teilen — scannen und das Handy verbindet sich selbst
-• Kontakt-QR — Visitenkarte (vCard): Name, Firma, Telefon, E-Mail — Scan speichert Kontakt
-• Termin-QR — Kalendertermin (Titel, Ort, Beginn/Ende) — Scan fügt zum Kalender hinzu
-• Standort-QR — Koordinaten (geo:) oder Karten-Link; „Mein Standort" per GPS
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Keine Pop-up-Werbung, kein Tracking — deine Daten bleiben auf deinem Gerät.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Viele neue Werkzeuge in einer App.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
-## Français (fr) — AppGallery: **French**
+## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes Boîte à outils QR
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes Boîte à outils QR — Créez, enregistrez et lisez des QR — hors ligne, sur l’appareil.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-Outils inclus :
-• Code QR — Générer et lire des codes QR
-• Mes codes QR — Codes nommés : paiements, Wi-Fi, contacts — enregistrés et organisés
-• QR par lot — Plusieurs codes d’un coup — un par ligne, téléchargement individuel ou tout
-• QR stylisé — Couleur code/fond + logo central
-• QR Wi-Fi — Partage le Wi-Fi — scanner et le téléphone se connecte seul
-• QR contact — Carte de visite (vCard) : nom, société, téléphone, e-mail — le scan enregistre le contact
-• QR événement — Événement (titre, lieu, début/fin) — le scan ajoute au calendrier
-• QR localisation — Coordonnées (geo:) ou lien carte ; « Ma position » via GPS
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Pas de pubs pop-up, pas de suivi — vos données restent sur votre appareil.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-De nombreux nouveaux outils dans une seule app.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
-## Español (es) — AppGallery: **Spanish**
+## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes Kit de QR
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes Kit de QR — Crea, guarda y lee códigos QR — sin conexión, en tu dispositivo.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-Herramientas incluidas:
-• Código QR — Genera y lee códigos QR
-• Mis códigos QR — Códigos con nombre: pagos, Wi-Fi, contactos — guardados y ordenados
-• QR por lotes — Muchos códigos a la vez — uno por línea, descarga individual o todos
-• QR con estilo — Color de código/fondo + logo central
-• QR Wi-Fi — Comparte Wi-Fi — escanea y el teléfono se conecta solo
-• QR de contacto — Tarjeta (vCard): nombre, empresa, teléfono, correo — escanear guarda el contacto
-• QR de evento — Evento (título, lugar, inicio/fin) — escanear añade al calendario
-• QR de ubicación — Coordenadas (geo:) o enlace de mapa; «Mi ubicación» por GPS
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Sin anuncios emergentes ni rastreo — tus datos se quedan en tu dispositivo.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Muchas herramientas nuevas en una sola app.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes Kit de QR
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes Kit de QR — Crea, guarda y lee códigos QR — sin conexión, en tu dispositivo.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-Herramientas incluidas:
-• Código QR — Genera y lee códigos QR
-• Mis códigos QR — Códigos con nombre: pagos, Wi-Fi, contactos — guardados y ordenados
-• QR por lotes — Muchos códigos a la vez — uno por línea, descarga individual o todos
-• QR con estilo — Color de código/fondo + logo central
-• QR Wi-Fi — Comparte Wi-Fi — escanea y el teléfono se conecta solo
-• QR de contacto — Tarjeta (vCard): nombre, empresa, teléfono, correo — escanear guarda el contacto
-• QR de evento — Evento (título, lugar, inicio/fin) — escanear añade al calendario
-• QR de ubicación — Coordenadas (geo:) o enlace de mapa; «Mi ubicación» por GPS
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Sin anuncios emergentes ni rastreo — tus datos se quedan en tu dispositivo.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Muchas herramientas nuevas en una sola app.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes Kit QR
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes Kit QR — Crea, salva e leggi QR — offline, sul dispositivo.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-Strumenti inclusi:
-• Codice QR — Genera e leggi codici QR
-• I miei codici QR — Codici con nome: pagamenti, Wi-Fi, contatti — salvati e ordinati
-• QR in blocco — Molti codici insieme — uno per riga, scarica singoli o tutti
-• QR stilizzato — Colore codice/sfondo + logo centrale
-• QR Wi-Fi — Condividi il Wi-Fi — scansiona e il telefono si connette da solo
-• QR contatto — Biglietto (vCard): nome, azienda, telefono, e-mail — la scansione salva il contatto
-• QR evento — Evento (titolo, luogo, inizio/fine) — la scansione aggiunge al calendario
-• QR posizione — Coordinate (geo:) o link mappa; «La mia posizione» via GPS
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Niente pop-up pubblicitari né tracciamento — i tuoi dati restano sul dispositivo.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Molti nuovi strumenti in un’unica app.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
-## Português (pt) — AppGallery: **Portuguese**
+## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes Kit de QR
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes Kit de QR — Crie, salve e leia QR — offline, no seu dispositivo.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-Ferramentas incluídas:
-• Código QR — Gere e leia códigos QR
-• Meus códigos QR — Códigos nomeados: pagamentos, Wi-Fi, contatos — salvos e organizados
-• QR em lote — Vários códigos de uma vez — um por linha, baixar individual ou todos
-• QR estilizado — Cor do código/fundo + logo central
-• QR Wi-Fi — Compartilhe Wi-Fi — escaneie e o telefone conecta sozinho
-• QR de contato — Cartão (vCard): nome, empresa, telefone, e-mail — escanear salva o contato
-• QR de evento — Evento (título, local, início/fim) — escanear adiciona ao calendário
-• QR de local — Coordenadas (geo:) ou link do mapa; “Minha localização” via GPS
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Sem anúncios pop-up nem rastreamento — seus dados ficam no seu dispositivo.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Muitas ferramentas novas em um só app.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes أدوات QR
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes أدوات QR — أنشئ واحفظ واقرأ رموز QR — دون إنترنت، على جهازك.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-الأدوات المضمّنة:
-• رمز QR — أنشئ واقرأ رموز QR
-• رموز QR الخاصة بي — رموز مسمّاة: مدفوعات، واي فاي، جهات اتصال — محفوظة ومنظمة
-• QR بالدفعة — عدة رموز دفعة واحدة — واحد لكل سطر، تنزيل فردي أو الكل
-• QR منسّق — لون الرمز/الخلفية + شعار في الوسط
-• QR واي فاي — شارك الواي فاي — امسح ويتصل الهاتف تلقائيًا
-• QR جهة اتصال — بطاقة (vCard): الاسم، الشركة، الهاتف، البريد — المسح يحفظ جهة الاتصال
-• QR حدث — حدث تقويم (عنوان، مكان، بداية/نهاية) — المسح يضيفه للتقويم
-• QR الموقع — إحداثيات (geo:) أو رابط خريطة؛ «موقعي» عبر GPS
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-بدون إعلانات منبثقة ولا تتبّع — بياناتك تبقى على جهازك.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-أدوات جديدة كثيرة في تطبيق واحد.
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes QR टूलकिट
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes QR टूलकिट — QR कोड बनाएं, सहेजें और पढ़ें — ऑफ़लाइन, आपके डिवाइस पर।
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-शामिल टूल:
-• QR कोड — QR कोड बनाएं और पढ़ें
-• मेरे QR कोड — नामित कोड: भुगतान, वाई-फाई, संपर्क — सहेजे और व्यवस्थित
-• बैच QR — एक साथ कई कोड — प्रति पंक्ति एक, अलग या सभी डाउनलोड
-• स्टाइल QR — कोड/पृष्ठभूमि रंग + केंद्र लोगो
-• वाई-फाई QR — वाई-फाई साझा करें — स्कैन करें और फ़ोन स्वयं कनेक्ट
-• संपर्क QR — विज़िटिंग कार्ड (vCard): नाम, कंपनी, फ़ोन, ईमेल — स्कैन संपर्क सहेजता है
-• इवेंट QR — कैलेंडर इवेंट (शीर्षक, स्थान, आरंभ/अंत) — स्कैन कैलेंडर में जोड़ता है
-• स्थान QR — निर्देशांक (geo:) या मानचित्र लिंक; GPS से “मेरा स्थान”
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-कोई पॉप-अप विज्ञापन नहीं, कोई ट्रैकिंग नहीं — आपका डेटा आपके डिवाइस पर रहता है।
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-एक ऐप में कई नए टूल।
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes QRツール
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes QRツール — QRコードの作成・保存・読み取り — オフラインで端末上。
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-収録ツール:
-• QRコード — QRコードの生成と読み取り
-• マイQRコード — 名前付きコード：支払い・Wi-Fi・連絡先を保存して整理
-• 一括QR — 一度に多数のコード — 1行1件、個別または全部ダウンロード
-• 装飾QR — コード/背景色＋中央ロゴ
-• Wi-Fi QR — Wi-Fiを共有 — スキャンで自動接続
-• 連絡先QR — 名刺 (vCard)：名前・会社・電話・メール — スキャンで連絡先保存
-• イベントQR — カレンダー予定（題名・場所・開始/終了）— スキャンで追加
-• 位置QR — 座標 (geo:) または地図リンク；GPSで「現在地」
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-ポップアップ広告なし・追跡なし — データは端末内に留まります。
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-ご質問・サポートは: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-1つのアプリに多数の新ツール。
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```
 
-## 繁體中文 (zh-Hant) — AppGallery: **Chinese (Traditional)**
+## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-Pupikes QR 工具箱
+QR codes from text or links
 ```
 **Full introduction:**
 ```
-Pupikes QR 工具箱 — 建立、儲存與讀取 QR 碼 — 離線、在裝置上。
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device.
 
-包含的工具：
-• QR 碼 — 產生與讀取 QR 碼
-• 我的 QR 碼 — 具名代碼：付款、Wi-Fi、聯絡人 — 已儲存並分類
-• 批次 QR — 一次多個代碼 — 每行一個，可個別或全部下載
-• 樣式 QR — 代碼/背景顏色＋中央標誌
-• Wi-Fi QR — 分享 Wi-Fi — 掃描後手機自動連線
-• 聯絡人 QR — 名片 (vCard)：姓名、公司、電話、電子郵件 — 掃描即存聯絡人
-• 活動 QR — 行事曆活動（標題、地點、起訖）— 掃描加入行事曆
-• 位置 QR — 座標 (geo:) 或地圖連結；GPS「我的位置」
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-無彈出式廣告、無追蹤 — 您的資料留在裝置上。
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-如有問題或需要支援，請來信： miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-一個應用內多款新工具。
+Pupikes Toolkit QR generates QR codes from text or links and reads existing QR codes with the camera or from an image — fully on-device. On-device, no ads, 15-language interface.
 ```

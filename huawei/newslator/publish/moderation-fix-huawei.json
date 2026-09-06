@@ -1,7 +1,5 @@
 {
-  "sections": [
-    "appinfo"
-  ],
-  "contentRating": "",
-  "_note": "22.08: нова икона + обогатено описание (4.1) + privacy 200. Re-upload App info + APK + Submit."
+  "_note": "Преподаване (--fix, точка 90): appinfo=икона(17 езика)+APK; description=детайлно описание. Скрийншотите се качват от номерираните в publish/.",
+  "sections": ["appinfo", "description"],
+  "contentRating": ""
 }

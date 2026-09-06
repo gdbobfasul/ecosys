@@ -14,7 +14,7 @@ import { MONETIZATION } from '../monetize.js';
 // смениш ли model → "free", рекламите се включват сами. Кодът е цял (нищо не е махнато). Балончето
 // „✨ Pupikes" + showcase-ът (ecosystem.js) са ОТДЕЛНИ, ненатрапчиви и затваряеми — те остават ВИНАГИ.
 const PROMO_ADS_ENABLED = !!(MONETIZATION && MONETIZATION.model === 'free');
-const CATALOG_URL_REMOTE = 'https://selflearning.bot.nu/promo/pupikes-promo.json';
+const CATALOG_URL_REMOTE = 'https://pupikes.app/pupikes-promo.json';
 const CATALOG_URL_LOCAL = './pupikes-promo.json';
 let CACHE = null, SELF = '', midTimer = null;
 

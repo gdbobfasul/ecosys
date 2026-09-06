@@ -7,16 +7,24 @@
 // Каталогът е ЛОКАЛЕН файл `pupikes-promo.json`, вкаран в билда от `promo-catalog.json` (редактира се
 // ЛЕСНО ПРЕДИ БИЛД: кои апове са одобрени/публикувани `enabled:true`, финални имена, store линкове).
 // Само записи с `enabled:true` и различни от текущия апп се показват.
-const CATALOG_URL = './pupikes-promo.json';
+// ОНЛАЙН-FIRST (06.09): каталогът се тегли ПЪРВО от сървъра → нови апове/цени БЕЗ нов билд. Локалният
+// вграден файл е само РЕЗЕРВА без интернет. (Преди беше само локален + бъг: `url` недефиниран.)
+const CATALOG_URL_REMOTE = 'https://pupikes.app/pupikes-promo.json';
+const CATALOG_URL_LOCAL = './pupikes-promo.json';
 let CACHE = null;
 
-async function loadCatalog() {
-  if (CACHE) return CACHE;
+async function fetchOne(url) {
   try {
     const CH = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) || window.CapacitorHttp;
-    if (CH && CH.get && /^https?:/i.test(url)) { const r = await CH.get({ url: CATALOG_URL }); CACHE = typeof r.data === 'string' ? JSON.parse(r.data) : r.data; return CACHE; }
-  } catch (e) { /* fetch */ }
-  try { const r = await fetch(CATALOG_URL, { cache: 'no-store' }); CACHE = await r.json(); return CACHE; } catch (e) { return null; }
+    if (CH && CH.get && /^https?:/i.test(url)) { const r = await CH.get({ url }); return typeof r.data === 'string' ? JSON.parse(r.data) : r.data; }
+  } catch (e) { /* пада към fetch */ }
+  try { const r = await fetch(url, { cache: 'no-store' }); return await r.json(); } catch (e) { return null; }
+}
+async function loadCatalog() {
+  if (CACHE) return CACHE;
+  let cat = await fetchOne(CATALOG_URL_REMOTE);
+  if (!cat || !Array.isArray(cat.apps)) cat = await fetchOne(CATALOG_URL_LOCAL);
+  CACHE = cat; return CACHE;
 }
 const LANGS = ['bg', 'ru', 'uk', 'en', 'de', 'fr', 'es', 'es-MX', 'it', 'pt', 'ar', 'hi', 'ja', 'ky', 'zh-Hant'];
 // Надеждно откриване на езика: ключа „<апп>.lang" от localStorage (истинският избор — приоритет);

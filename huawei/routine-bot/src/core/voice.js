@@ -8,6 +8,13 @@
 //
 // НИЩО не се праща на сървър — разпознаването е на устройството/браузъра.
 
+import { startWhisper, stopWhisper, whisperAvailable } from './whisper-stt.js';
+
+// НАТИВНА платформа (Huawei без Google) → нативният/уеб SpeechRecognition НЕ работи → on-device Whisper.
+function isNative() {
+  try { return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); } catch (_) { return false; }
+}
+
 // App-код (15-те езика) → локал за разпознаване на реч.
 const LOCALE = {
   bg: 'bg-BG', ru: 'ru-RU', uk: 'uk-UA', en: 'en-US', de: 'de-DE', fr: 'fr-FR',
@@ -35,7 +42,7 @@ function webSR() {
 }
 
 export function voiceAvailable() {
-  return !!(capSR() || webSR());
+  return !!(capSR() || webSR() || (isNative() && whisperAvailable()));
 }
 
 let activeWeb = null;   // текущата Web-инстанция (за стоп)
@@ -43,7 +50,15 @@ let activeCap = null;   // маркер, че върви нативно разп
 
 // Слуша веднъж и връща финалния текст. onPartial(текст) — за живо показване.
 // Резолвва '' при отказ/тишина; отхвърля само при твърда грешка.
-export async function listen({ locale = 'en-US', onPartial } = {}) {
+export async function listen({ locale = 'en-US', onPartial, onState, manualStop = true } = {}) {
+  // На НАТИВНА платформа (Huawei) → директно on-device Whisper (нативният SR там не работи).
+  if (isNative() && whisperAvailable()) {
+    _whisperOn = true;
+    const lang = String(locale || 'en-US').split('-')[0];
+    try { const txt = await startWhisper({ lang, onInterim: onPartial, onState, manualStop }); return String(txt || '').trim(); }
+    catch (_) { return ''; }
+    finally { _whisperOn = false; }
+  }
   const cap = capSR();
   if (cap && typeof cap.start === 'function') {
     try { return await listenCapacitor(cap, locale, onPartial); }
@@ -54,7 +69,9 @@ export async function listen({ locale = 'en-US', onPartial } = {}) {
   return '';
 }
 
+let _whisperOn = false;
 export function stopListening() {
+  try { if (_whisperOn) stopWhisper(); } catch (_) {}
   try { if (activeWeb) activeWeb.stop(); } catch (_) {}
   const cap = capSR();
   try { if (activeCap && cap && cap.stop) cap.stop(); } catch (_) {}

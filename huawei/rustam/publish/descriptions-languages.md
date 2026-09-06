@@ -1,295 +1,255 @@
-# Рустам — описание по език (Brief + Full + New features)
+# rustam (Rustam picks cucumbers) — описание по език
 
-_За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
-
-> ⚠️ **ky (кыргызки) НЕ съществува в AppGallery** — пропусни го (14 от 15 се поддържат). Махни отметките от **Greek** и **Turkish**, ако са чекнати (нямаме преводи за тях).
+> ⚠️ ky НЕ е в AppGallery — пропусни.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-Бери краставиците преди къртиците!
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание: 10 нива на аркадно забавление за бране на краставици със състезателни бенки и таймер за свиване на дупки, който може да се играе напълно офлайн.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Собери огурцы
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-Собери огурцы раньше кротов!
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Первый релиз: 10 уровней аркадного веселья со сбором огурцов с гоночными кротами и таймером сжимающейся дыры, играбельно полностью в автономном режиме.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-Збери огірки раніше кротів!
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Перший випуск: 10 рівнів аркадного задоволення від збору огірків з гоночними кротами та таймером скорочення отвору, що відтворюється повністю в автономному режимі.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-Pick the cucumbers before the moles!
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
-
-⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-Pflücke die Gurken vor den Maulwürfen!
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
-
-⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
-Erste Veröffentlichung: 10 Stufen Gurkenpflück-Arcade-Spaß mit rasenden Maulwürfen und einem Schrumpfloch-Timer, der vollständig offline spielbar ist.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-Cueille les concombres avant les taupes !
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
-
-⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version : 10 niveaux de plaisir d'arcade de cueillette de concombres avec des taupes de course et une minuterie à trou rétrécissant, jouable entièrement hors ligne.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-¡Recoge los pepinos antes que los topos!
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primer lanzamiento: 10 niveles de diversión arcade de recolección de pepinos con topos de carreras y un temporizador de agujero encogedor, jugable completamente fuera de línea.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-¡Junta los pepinos antes que los topos!
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: 10 levels of cucumber-picking arcade fun with racing moles and a shrinking-hole timer, playable fully offline.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-Raccogli i cetrioli prima delle talpe!
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima versione: 10 livelli di divertimento arcade per la raccolta dei cetrioli con talpe da corsa e un timer a foro restringente, giocabile completamente offline.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-Colha os pepinos antes das toupeiras!
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeiro lançamento: 10 níveis de diversão arcade de colheita de pepino com toupeiras de corrida e um temporizador de buraco encolhido, jogável totalmente offline.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-اقطف الخيار قبل الخُلد!
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
-
-⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول: 10 مستويات من متعة قطف الخيار مع شامات السباق ومؤقت تقلص الفتحة، يمكن تشغيله بالكامل في وضع عدم الاتصال.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-छछूंदरों से पहले खीरे तोड़ो!
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
-
-⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-पहली रिलीज़: रेसिंग मॉल और सिकुड़ते - छेद वाले टाइमर के साथ ककड़ी - पिकिंग आर्केड मस्ती के 10 स्तर, पूरी तरह से ऑफ़लाइन खेलने योग्य।
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-モグラより先にキュウリを採ろう！
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
-
-⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-初リリース：レーシングモールとシュリンクホールタイマーで10レベルのキュウリ摘みアーケードを楽しみ、完全にオフラインでプレイできます。
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-A casual arcade game
+Rustam picks cucumbers
 ```
 **Full introduction:**
 ```
-A casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge with a growing timer-hole mechanic.
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. A light, offline single-player challenge.
 
-搶在鼴鼠之前採黃瓜！
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
-
-⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-首次發布： 10個級別的黃瓜採摘街機樂趣，搭配賽車痣和縮孔計時器，可完全離線遊玩。
+Rustam is a casual arcade game where you help a gardener pick all the cucumbers before the moles get them across 10 levels. On-device, no ads, 15 languages.
 ```

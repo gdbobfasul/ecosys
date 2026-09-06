@@ -47,9 +47,9 @@ let styled = false;
 function injectMarketStyles() {
   if (styled) return; styled = true;
   const css = `
-  .mkt-tabs{display:flex;overflow-x:auto;gap:6px;padding:8px;position:sticky;top:0;background:var(--bg,#0e1116);z-index:5;-webkit-overflow-scrolling:touch}
-  .mkt-tab{flex:0 0 auto;padding:8px 12px;border-radius:999px;border:1px solid rgba(128,128,128,.35);background:transparent;color:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
-  .mkt-tab.active{background:#2b6cff;border-color:#2b6cff;color:#fff;font-weight:600}
+  .mkt-tabs{display:flex;overflow-x:auto;gap:8px;padding:10px;position:sticky;top:0;background:rgba(127,127,127,.08);border-bottom:1px solid rgba(128,128,128,.25);z-index:5;-webkit-overflow-scrolling:touch}
+  .mkt-tab{flex:0 0 auto;padding:10px 15px !important;border-radius:12px !important;border:1.5px solid rgba(128,128,128,.45) !important;background:rgba(127,127,127,.12) !important;color:inherit !important;font-size:14px !important;font-weight:600 !important;cursor:pointer;white-space:nowrap;box-shadow:none !important}
+  .mkt-tab.active{background:#2b6cff !important;border-color:#2b6cff !important;color:#fff !important;box-shadow:0 2px 10px rgba(43,108,255,.45) !important}
   .mkt-body{padding:10px}
   .mkt-table{width:100%;border-collapse:collapse;font-size:13px}
   .mkt-table th,.mkt-table td{padding:8px 6px;border-bottom:1px solid rgba(128,128,128,.2);text-align:right;white-space:nowrap}

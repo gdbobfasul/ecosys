@@ -1,299 +1,284 @@
-# Pupikes Medicines — описание по език (Brief + Full + New features)
+# pupikes-medicines — описание по език (Brief + Full + New features)
 
-_Генерирано от store-listing/. За AppGallery: Manage languages → добави език → попълни Brief (≤25), Full, New features._
-
-> ⚠️ ky (кыргызки) НЕ съществува в AppGallery — пропуснат. Махни отметките от Greek/Turkish, ако са чекнати.
+_За AppGallery: Manage languages → добави език → попълни Brief (до 25 знака), Full, New features._
+> ⚠️ ky НЕ съществува в AppGallery — пропусни. Махни Greek/Turkish.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Разчитане на етикета на у
+Сканирайте опаковка на лекарство с
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — сканирай опаковка, за да видиш описанието.
+Pupikes Medicines ви позволява да сканирате опаковка с лекарство с камерата, да прочете най-големия текст на етикета на устройството и да покаже информационно описание на лекарството и неговите съставки, с подчертани рискови съставки (опиати, контролирани или опасни от предозиране вещества). Той е само информативен и никога не диагностицира, предписва или замества лекар или фармацевт.
 
-Само информативно — откроява рискови съставки; не е медицински съвет.
+Разпознаването на текст работи на устройството. Изображението от камерата се обработва локално и не се качва от нас. Избраният от вас език и настройки остават локални; няма сметка.
 
-Разчитане на етикета на устройството (OCR) и данни за лекарството, на 15 езика
+Всичко работи на вашето устройство без акаунт и без реклами; интерфейсът поддържа 15 езика.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Разчитане на етикета на устройството (OCR) и данни за лекарството, на 15 езика
+Pupikes Medicines ви позволява да сканирате опаковка с лекарство с камерата, да прочете най-големия текст на етикета на устройството и да покаже информационно описание на лекарството и неговите съставки, с подчертани рискови съставки (опиати, контролирани или опасни от предозиране вещества). На устройството, без реклами, 15-езичен интерфейс.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Распознавание этикетки на
+Отсканируйте упаковку с лекарством с помощью
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — отсканируйте упаковку, чтобы увидеть описание.
+Pupikes Medicines позволяет сканировать упаковку лекарства с помощью камеры, считывает самый крупный текст этикетки на устройстве и отображает информационное описание лекарства и его ингредиентов с выделенными опасными ингредиентами (опиатами, контролируемыми веществами или веществами, опасными передозировкой). Он носит исключительно информационный характер и никогда не ставит диагноз, не назначает и не заменяет врача или фармацевта.
 
-Только информация — выделяет рискованные компоненты; не медицинский совет.
+Распознавание текста работает на устройстве. Изображение с камеры обрабатывается локально и не загружается нами. Выбранный вами язык и настройки остаются локальными; аккаунта нет.
 
-Распознавание этикетки на устройстве (OCR) и сведения о лекарстве, на 15 языках
+Все работает на вашем устройстве без учетной записи и рекламы; интерфейс поддерживает 15 языков.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Распознавание этикетки на устройстве (OCR) и сведения о лекарстве, на 15 языках
+Pupikes Medicines позволяет сканировать упаковку лекарства с помощью камеры, считывает самый крупный текст этикетки на устройстве и отображает информационное описание лекарства и его ингредиентов с выделенными опасными ингредиентами (опиатами, контролируемыми веществами или веществами, опасными передозировкой). На устройстве, без рекламы, интерфейс на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Розпізнавання етикетки на
+Відскануйте упаковку ліків за допомогою
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — відскануйте упаковку, щоб побачити опис.
+Pupikes Medicines дозволяє сканувати упаковку ліків за допомогою камери, зчитує найбільший текст етикетки на пристрої та показує інформаційний опис ліків та його інгредієнтів із виділенням ризикованих інгредієнтів (опіатів, контрольованих або небезпечних передозуванням речовин). Він лише інформаційний і ніколи не ставить діагноз, не призначає та не замінює лікаря чи фармацевта.
 
-Лише інформація — виділяє ризиковані компоненти; не медична порада.
+Розпізнавання тексту працює на пристрої. Зображення камери обробляється локально і не завантажується нами. Вибрана вами мова та налаштування залишаються локальними; немає облікового запису.
 
-Розпізнавання етикетки на пристрої (OCR) і відомості про ліки, 15 мовами
+Усе працює на вашому пристрої без облікового запису та реклами; інтерфейс підтримує 15 мов.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Розпізнавання етикетки на пристрої (OCR) і відомості про ліки, 15 мовами
+Pupikes Medicines дозволяє сканувати упаковку ліків за допомогою камери, зчитує найбільший текст етикетки на пристрої та показує інформаційний опис ліків та його інгредієнтів із виділенням ризикованих інгредієнтів (опіатів, контрольованих або небезпечних передозуванням речовин). На пристрої, без реклами, 15-мовний інтерфейс.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-On-device label scanning
+Scan a medicine package with
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — scan a medicine box to read its details.
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. It is informational only and never diagnoses, prescribes or replaces a doctor or pharmacist.
 
-Informational only — highlights risky ingredients; not medical advice.
+Text recognition runs on the device. The camera image is processed locally and is not uploaded by us. Your chosen language and settings stay local; there is no account.
 
-On-device label scanning (OCR) and drug info, in 15 languages
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-On-device label scanning (OCR) and drug info, in 15 languages
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. On-device, no ads, 15-language interface.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Etikett-Scan auf dem Gerä
+Scannen Sie eine Medikamentenpackung mit
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — Packung scannen und Beschreibung lesen.
+Mit Pupikes Medicines können Sie eine Medikamentenverpackung mit der Kamera scannen, den größten Etikettentext auf dem Gerät lesen und eine informative Beschreibung des Medikaments und seiner Inhaltsstoffe anzeigen, wobei riskante Inhaltsstoffe (Opiate, kontrollierte oder überdosisgefährliche Substanzen) hervorgehoben sind. Es dient nur der Information und stellt niemals eine Diagnose, verschreibt oder ersetzt einen Arzt oder Apotheker.
 
-Nur zur Information — hebt riskante Inhaltsstoffe hervor; keine medizinische Beratung.
+Die Texterkennung läuft auf dem Gerät. Das Kamerabild wird lokal verarbeitet und nicht von uns hochgeladen. Ihre gewählte Sprache und Einstellungen bleiben lokal; es gibt kein Konto.
 
-Etikett-Scan auf dem Gerät (OCR) und Arzneimittelinfos, in 15 Sprachen
+Alles läuft auf Ihrem Gerät ohne Konto und ohne Werbung; Die Schnittstelle unterstützt 15 Sprachen.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Etikett-Scan auf dem Gerät (OCR) und Arzneimittelinfos, in 15 Sprachen
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. On-device, no ads, 15-language interface.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Lecture de l’étiquette su
+Scan a medicine package with
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — scannez une boîte pour lire sa description.
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. It is informational only and never diagnoses, prescribes or replaces a doctor or pharmacist.
 
-Informations uniquement — signale les composants à risque ; pas un avis médical.
+Text recognition runs on the device. The camera image is processed locally and is not uploaded by us. Your chosen language and settings stay local; there is no account.
 
-Lecture de l’étiquette sur l’appareil (OCR) et infos sur le médicament, en 15 langues
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Lecture de l’étiquette sur l’appareil (OCR) et infos sur le médicament, en 15 langues
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. On-device, no ads, 15-language interface.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Lectura de la etiqueta en
+Scan a medicine package with
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — escanea una caja para leer su descripción.
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. It is informational only and never diagnoses, prescribes or replaces a doctor or pharmacist.
 
-Solo informativo — resalta ingredientes de riesgo; no es consejo médico.
+Text recognition runs on the device. The camera image is processed locally and is not uploaded by us. Your chosen language and settings stay local; there is no account.
 
-Lectura de la etiqueta en el dispositivo (OCR) e info del medicamento, en 15 idiomas
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Lectura de la etiqueta en el dispositivo (OCR) e info del medicamento, en 15 idiomas
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. On-device, no ads, 15-language interface.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Lectura de la etiqueta en
+Scan a medicine package with
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — escanea una caja para leer su descripción.
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. It is informational only and never diagnoses, prescribes or replaces a doctor or pharmacist.
 
-Solo informativo — resalta ingredientes de riesgo; no es consejo médico.
+Text recognition runs on the device. The camera image is processed locally and is not uploaded by us. Your chosen language and settings stay local; there is no account.
 
-Lectura de la etiqueta en el dispositivo (OCR) e info del medicamento, en 15 idiomas
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Lectura de la etiqueta en el dispositivo (OCR) e info del medicamento, en 15 idiomas
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. On-device, no ads, 15-language interface.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Lettura dell’etichetta su
+Scan a medicine package with
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — scansiona una confezione per leggerne la descrizione.
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. It is informational only and never diagnoses, prescribes or replaces a doctor or pharmacist.
 
-Solo informativo — evidenzia gli ingredienti a rischio; non è un consiglio medico.
+Text recognition runs on the device. The camera image is processed locally and is not uploaded by us. Your chosen language and settings stay local; there is no account.
 
-Lettura dell’etichetta sul dispositivo (OCR) e informazioni sul farmaco, in 15 lingue
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Lettura dell’etichetta sul dispositivo (OCR) e informazioni sul farmaco, in 15 lingue
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. On-device, no ads, 15-language interface.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Leitura do rótulo no disp
+Scan a medicine package with
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — digitalize uma caixa para ler a descrição.
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. It is informational only and never diagnoses, prescribes or replaces a doctor or pharmacist.
 
-Apenas informativo — destaca ingredientes de risco; não é aconselhamento médico.
+Text recognition runs on the device. The camera image is processed locally and is not uploaded by us. Your chosen language and settings stay local; there is no account.
 
-Leitura do rótulo no dispositivo (OCR) e informações do medicamento, em 15 idiomas
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Leitura do rótulo no dispositivo (OCR) e informações do medicamento, em 15 idiomas
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. On-device, no ads, 15-language interface.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-قراءة الملصق على الجهاز (
+Scan a medicine package with
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — امسح عبوة الدواء لقراءة وصفها.
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. It is informational only and never diagnoses, prescribes or replaces a doctor or pharmacist.
 
-لأغراض المعلومات فقط — يبرز المكوّنات الخطرة؛ وليس نصيحة طبية.
+Text recognition runs on the device. The camera image is processed locally and is not uploaded by us. Your chosen language and settings stay local; there is no account.
 
-قراءة الملصق على الجهاز (OCR) ومعلومات الدواء، بـ 15 لغة
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-قراءة الملصق على الجهاز (OCR) ومعلومات الدواء، بـ 15 لغة
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. On-device, no ads, 15-language interface.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-डिवाइस पर लेबल स्कैन (OCR
+Scan a medicine package with
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — दवा का डिब्बा स्कैन करके विवरण पढ़ें।
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. It is informational only and never diagnoses, prescribes or replaces a doctor or pharmacist.
 
-केवल जानकारी के लिए — जोखिम वाले घटकों को दिखाता है; चिकित्सा सलाह नहीं।
+Text recognition runs on the device. The camera image is processed locally and is not uploaded by us. Your chosen language and settings stay local; there is no account.
 
-डिवाइस पर लेबल स्कैन (OCR) और दवा की जानकारी, 15 भाषाओं में
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-डिवाइस पर लेबल स्कैन (OCR) और दवा की जानकारी, 15 भाषाओं में
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. On-device, no ads, 15-language interface.
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-端末内でのラベル読み取り(OCR)と医薬品情報、1
+Scan a medicine package with
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — 薬の箱をスキャンして説明を表示。
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. It is informational only and never diagnoses, prescribes or replaces a doctor or pharmacist.
 
-情報提供のみ — リスクのある成分を強調表示。医療アドバイスではありません。
+Text recognition runs on the device. The camera image is processed locally and is not uploaded by us. Your chosen language and settings stay local; there is no account.
 
-端末内でのラベル読み取り(OCR)と医薬品情報、15言語対応
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-端末内でのラベル読み取り(OCR)と医薬品情報、15言語対応
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. On-device, no ads, 15-language interface.
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-在裝置上讀取標籤（OCR）並提供藥品資訊，支援 1
+Scan a medicine package with
 ```
 **Full introduction:**
 ```
-Pupikes Medicines — 掃描藥盒即可閱讀說明。
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. It is informational only and never diagnoses, prescribes or replaces a doctor or pharmacist.
 
-僅供參考 — 標示高風險成分；並非醫療建議。
+Text recognition runs on the device. The camera image is processed locally and is not uploaded by us. Your chosen language and settings stay local; there is no account.
 
-在裝置上讀取標籤（OCR）並提供藥品資訊，支援 15 種語言
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-在裝置上讀取標籤（OCR）並提供藥品資訊，支援 15 種語言
+Pupikes Medicines lets you scan a medicine package with the camera, reads the largest label text on-device, and shows an informational description of the medicine and its ingredients, with risky ingredients (opiates, controlled or overdose-dangerous substances) highlighted. On-device, no ads, 15-language interface.
 ```

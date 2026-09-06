@@ -1,8 +1,5 @@
 {
-  "_note": "Секции за препубликуване (--fix, точка 90). 1.20 → appinfo (икона всички езици); 4.1 → description.",
-  "sections": [
-    "appinfo",
-    "description"
-  ],
+  "_note": "Преподаване (--fix, точка 90): appinfo=икона(17 езика)+APK; description=детайлно описание. Скрийншотите се качват от номерираните в publish/.",
+  "sections": ["appinfo", "description"],
   "contentRating": ""
 }

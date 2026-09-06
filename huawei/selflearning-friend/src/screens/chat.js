@@ -138,6 +138,15 @@ export function renderChat(root, { navigate, rerender }) {
   const micBtn = el('button', {
     class: 'secondary mic-btn', title: t('chat_mic_title'), 'aria-label': t('chat_mic_title')
   }, '🎤');
+  // Ясен статус на гласа: „🎤 Говори сега" (докато РЕАЛНО записва) / „⏳ Изчакай…" (подготовка,
+  // сваляне на модел, разпознаване). Скрит, докато не слушаме — за да знаеш кога да говориш.
+  const micStatus = el('div', { class: 'mic-status', style: 'display:none;text-align:center;font-weight:700;font-size:15px;padding:8px 10px;border-radius:10px;margin-bottom:8px' });
+  function setMicState(s) {
+    if (!s || s === 'idle' || s === 'error' || s === 'done') { micStatus.style.display = 'none'; return; }
+    micStatus.style.display = 'block';
+    if (s === 'recording') { micStatus.textContent = t('mic_speak'); micStatus.style.background = 'rgba(22,199,132,.16)'; micStatus.style.color = '#16c784'; }
+    else { micStatus.textContent = t('mic_wait'); micStatus.style.background = 'rgba(240,160,32,.16)'; micStatus.style.color = '#f0a020'; }
+  }
   let listening = false;
   let pendingSend = false; // вдигнат от „Изпрати" по време на слушане → прати щом микрофонът спре
   // Клавиатурният микрофон (Gboard) е само ПО ИЗБОР от Настройки (keyboardMic === true).
@@ -196,11 +205,13 @@ export function renderChat(root, { navigate, rerender }) {
     input.placeholder = t('chat_listening_ph');
     let transcript = '';
     try {
+      setMicState('preparing');
       transcript = await startListening({
         lang: (st.settings.voice && st.settings.voice.lang) || 'bg-BG',
         // РЪЧЕН СТОП (изрично искане): говориш КОЛКОТО ИСКАШ — тишината не прекъсва;
         // записът спира САМО с повторно натискане на 🎤 или с „Изпрати".
         manualStop: true,
+        onState: setMicState,   // „Говори сега" (записва) / „Изчакай…" (модел/разпознаване)
         onInterim: (tx) => { if (tx) { input.value = join(prefix, tx); autoGrow(); } } // ДОЛЕПЯ + расте (полето е disabled → без клавиатура)
       });
     } catch (e) {
@@ -216,7 +227,11 @@ export function renderChat(root, { navigate, rerender }) {
       listening = false;
       micBtn.classList.remove('on');
       input.placeholder = prevPh;
-      try { input.disabled = false; input.removeAttribute('inputmode'); } catch (_) {}
+      setMicState('done');   // скрий статуса
+      // ★ ПЪЛНА РЕДАКТИРУЕМОСТ след запис: полето да приема тап/курсор навсякъде, за да коригираш
+      //   грешно разпознат текст (напр. „криптовалути" → нещо друго). Без това disabled→enabled
+      //   на някои WebView-та оставяше полето „неотзивчиво" на тап.
+      try { input.disabled = false; input.readOnly = false; input.removeAttribute('inputmode'); input.style.pointerEvents = 'auto'; } catch (_) {}
     }
     const heard = String(transcript || '').trim();
     if (heard) {
@@ -488,6 +503,7 @@ export function renderChat(root, { navigate, rerender }) {
   if (convBar) root.appendChild(convBar);
   root.appendChild(convStatus);
   root.appendChild(list);
+  root.appendChild(micStatus);
   root.appendChild(el('div', { class: 'composer' }, composerKids));
   setConvStatus(conversationActive() ? 'listening' : 'off');
   refreshConvBtn();

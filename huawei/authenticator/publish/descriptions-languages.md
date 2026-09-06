@@ -1,325 +1,284 @@
-# Pupikes Toolkit Authenticator — описание по език (Brief + Full + New features)
+# authenticator — описание по език (Brief + Full + New features)
 
-_За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
-
-> ⚠️ **ky (кыргызки) НЕ съществува в AppGallery** — пропусни го (14 от 15 се поддържат). Махни отметките от **Greek** и **Turkish**, ако са чекнати (нямаме преводи за тях).
+_За AppGallery: Manage languages → добави език → попълни Brief (до 25 знака), Full, New features._
+> ⚠️ ky НЕ съществува в AppGallery — пропусни. Махни Greek/Turkish.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Частно приложение
+Частен двуфакторен
 ```
 **Full introduction:**
 ```
-Частно приложение за двуфакторно удостоверяване (2FA), което генерира еднократни TOTP/HOTP/Steam кодове и пази всички тайни в криптиран, биометрично заключен трезор на Вашето устройство. Добавете акаунти чрез сканиране на QR код, поставяне на otpauth :// връзка, ръчно въвеждане на ключове или импортиране от Aegis и Google Authenticator и експортирайте всичко като QR изображения в .zip.
+Pupikes Toolkit Authenticator е частно приложение за двуфакторно удостоверяване (2FA), което генерира TOTP/HOTP/Steam еднократни кодове и пази всички тайни в криптиран, биометрично заключен трезор на вашето устройство.
 
-Сейфът се шифрова с тази парола. Без нея няма достъп до кодовете.
+Всички 2FA тайни, вашият инструмент за проверка на главната парола, импортираните пароли на браузъра и всички бележки за портфейла, които добавяте, се съхраняват само в криптиран трезор на вашето устройство. Нищо не се качва на никой сървър от нас. Тези данни се премахват, когато деинсталирате приложението.
 
-Сваля всяка авторизация като отделна QR картинка в един .zip.
+Всичко работи на вашето устройство без акаунт и без реклами; интерфейсът поддържа 15 езика.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание: криптиран локален 2FA трезор с TOTP/HOTP/Steam кодове, QR/ръчно/Aegis/Google Authenticator импортиране, биометрично отключване и дублирано откриване.
+Pupikes Toolkit Authenticator е частно приложение за двуфакторно удостоверяване (2FA), което генерира TOTP/HOTP/Steam еднократни кодове и пази всички тайни в криптиран, биометрично заключен трезор на вашето устройство. На устройството, без реклами, 15-езичен интерфейс.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Приложение для частной
+Частный двухфакторный
 ```
 **Full introduction:**
 ```
-Приложение для частной двухфакторной аутентификации (2FA), которое генерирует одноразовые коды TOTP/HOTP/Steam и хранит все секреты в зашифрованном биометрически заблокированном хранилище на вашем устройстве. Добавьте учетные записи, отсканировав QR-код, вставив ссылку otpauth://, введя ключи вручную или импортировав их из Aegis и Google Authenticator, и экспортируйте все в виде QR-изображений в формате .zip.
+Pupikes Toolkit Authenticator — это частное приложение для двухфакторной аутентификации (2FA), которое генерирует одноразовые коды TOTP/HOTP/Steam и хранит все секреты в зашифрованном хранилище с биометрической блокировкой на вашем устройстве.
 
-Хранилище шифруется этим паролем. Без него доступа к кодам нет.
+Все секреты 2FA, средство проверки вашего главного пароля, импортированные пароли браузера и любые добавляемые вами заметки кошелька хранятся только в зашифрованном хранилище на вашем устройстве. Мы ничего не загружаем ни на один сервер. Эти данные удаляются при удалении приложения.
 
-Скачивает каждую запись отдельной QR-картинкой в одном .zip.
+Все работает на вашем устройстве без учетной записи и рекламы; интерфейс поддерживает 15 языков.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Первый выпуск: зашифрованное локальное хранилище 2FA с кодами TOTP/HOTP/Steam, импортом QR/Manual/Aegis/Google Authenticator, биометрической разблокировкой и обнаружением дубликатов.
+Pupikes Toolkit Authenticator — это частное приложение для двухфакторной аутентификации (2FA), которое генерирует одноразовые коды TOTP/HOTP/Steam и хранит все секреты в зашифрованном хранилище с биометрической блокировкой на вашем устройстве. На устройстве, без рекламы, интерфейс на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Приватна програма
+Приватний двофакторний
 ```
 **Full introduction:**
 ```
-Приватна програма двофакторної автентифікації (2FA), яка генерує одноразові коди TOTP/HOTP/Steam і зберігає всі секрети в зашифрованому сховищі з біометричним блокуванням на вашому пристрої. Додайте облікові записи, скануючи QR-код, вставляючи посилання otpauth://, вводячи ключі вручну або імпортуючи з Aegis і Google Authenticator, і експортуйте все як QR-зображення в форматі .zip.
+Pupikes Toolkit Authenticator — це приватна програма двофакторної автентифікації (2FA), яка генерує одноразові коди TOTP/HOTP/Steam і зберігає всі секрети в зашифрованому біометрично заблокованому сховищі на вашому пристрої.
 
-Сховище шифрується цим паролем. Без нього доступу до кодів немає.
+Усі секрети 2FA, засіб перевірки головного пароля, імпортовані паролі браузера та будь-які нотатки гаманця, які ви додаєте, зберігаються лише в зашифрованому сховищі на вашому пристрої. Ми нічого не завантажуємо на сервери. Ці дані видаляються, коли ви видаляєте програму.
 
-Завантажує кожен запис окремою QR-картинкою в одному .zip.
+Усе працює на вашому пристрої без облікового запису та реклами; інтерфейс підтримує 15 мов.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Перший випуск: зашифроване локальне сховище 2FA з кодами TOTP/HOTP/Steam, імпортом QR/Manual/AEGIS/Google Authenticator, біометричним розблокуванням та виявленням дублікатів.
+Pupikes Toolkit Authenticator — це приватна програма двофакторної автентифікації (2FA), яка генерує одноразові коди TOTP/HOTP/Steam і зберігає всі секрети в зашифрованому біометрично заблокованому сховищі на вашому пристрої. На пристрої, без реклами, 15-мовний інтерфейс.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-A private two-factor
+Private two-factor
 ```
 **Full introduction:**
 ```
-A private two-factor authentication (2FA) app that generates TOTP/HOTP/Steam one-time codes and keeps all secrets in an encrypted, biometric-locked vault on your device. Add accounts by scanning a QR code, pasting an otpauth:// link, entering keys manually, or importing from Aegis and Google Authenticator, and export everything as QR images in a .zip.
+Pupikes Toolkit Authenticator is a private two-factor authentication (2FA) app that generates TOTP/HOTP/Steam one-time codes and keeps all secrets in an encrypted, biometric-locked vault on your device.
 
-The vault is encrypted with this password. Without it there is no access to your codes.
+All 2FA secrets, your master password verifier, imported browser passwords and any wallet notes you add are stored only in an encrypted vault on your device. Nothing is uploaded to any server by us. This data is removed when you uninstall the app.
 
-Downloads each account as a separate QR image in one .zip.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
-
-⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
-First release: encrypted local 2FA vault with TOTP/HOTP/Steam codes, QR/manual/Aegis/Google Authenticator import, biometric unlock, and duplicate detection.
+Pupikes Toolkit Authenticator is a private two-factor authentication (2FA) app that generates TOTP/HOTP/Steam one-time codes and keeps all secrets in an encrypted, biometric-locked vault on your device. On-device, no ads, 15-language interface.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Eine private
+Privater Zweifaktor
 ```
 **Full introduction:**
 ```
-Eine private Zwei-Faktor-Authentifizierungs-App (2FA), die einmalige TOTP/HOTP/Steam-Codes generiert und alle Geheimnisse in einem verschlüsselten, biometrisch gesperrten Tresor auf Ihrem Gerät aufbewahrt. Fügen Sie Konten hinzu, indem Sie einen QR-Code scannen, einen otpauth:// -Link einfügen, Schlüssel manuell eingeben oder aus Aegis und Google Authenticator importieren, und exportieren Sie alles als QR-Bilder in einem .zip.
+Pupikes Toolkit Authenticator ist eine private Zwei-Faktor-Authentifizierungs-App (2FA), die einmalige TOTP/HOTP/Steam-Codes generiert und alle Geheimnisse in einem verschlüsselten, biometrisch verschlossenen Tresor auf Ihrem Gerät speichert.
 
-Der Tresor wird mit diesem Passwort verschlüsselt. Ohne es gibt es keinen Zugriff auf die Codes.
+Alle 2FA-Geheimnisse, Ihr Master-Passwort-Verifizierer, importierte Browser-Passwörter und alle von Ihnen hinzugefügten Wallet-Notizen werden nur in einem verschlüsselten Tresor auf Ihrem Gerät gespeichert. Es wird von uns nichts auf einen Server hochgeladen. Diese Daten werden entfernt, wenn Sie die App deinstallieren.
 
-Lädt jedes Konto als separates QR-Bild in einer .zip herunter.
+Alles läuft auf Ihrem Gerät ohne Konto und ohne Werbung; Die Schnittstelle unterstützt 15 Sprachen.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
-
-⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
-Erste Version: verschlüsselter lokaler 2FA-Tresor mit TOTP/HOTP/Steam-Codes, QR/Manual/Aegis/Google Authenticator-Import, biometrischer Entsperrung und Duplikaterkennung.
+Pupikes Toolkit Authenticator ist eine private Zwei-Faktor-Authentifizierungs-App (2FA), die einmalige TOTP/HOTP/Steam-Codes generiert und alle Geheimnisse in einem verschlüsselten, biometrisch verschlossenen Tresor auf Ihrem Gerät speichert. Auf dem Gerät, keine Werbung, 15-sprachige Benutzeroberfläche.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Une application privée
+Privé à deux facteurs
 ```
 **Full introduction:**
 ```
-Une application privée d'authentification à deux facteurs (2FA) qui génère des codes à usage unique TOTP/HOTP/Steam et conserve tous les secrets dans un coffre-fort crypté et biométrique verrouillé sur votre appareil. Ajoutez des comptes en scannant un code QR, en collant un lien otpauth ://, en saisissant les clés manuellement ou en les important à partir d'Aegis et de Google Authenticator, et exportez le tout sous forme d'images QR dans un fichier .zip.
+Pupikes Toolkit Authenticator est une application privée d'authentification à deux facteurs (2FA) qui génère des codes à usage unique TOTP/HOTP/Steam et conserve tous les secrets dans un coffre-fort crypté et verrouillé biométrique sur votre appareil.
 
-Le coffre est chiffré avec ce mot de passe. Sans lui, aucun accès aux codes.
+Tous les secrets 2FA, votre vérificateur de mot de passe principal, les mots de passe de navigateur importés et toutes les notes de portefeuille que vous ajoutez sont stockés uniquement dans un coffre-fort crypté sur votre appareil. Rien n'est téléchargé sur un serveur par nous. Ces données sont supprimées lorsque vous désinstallez l'application.
 
-Télécharge chaque compte en image QR séparée dans un .zip.
+Tout fonctionne sur votre appareil sans compte ni publicité ; l'interface prend en charge 15 langues.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
-
-⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version : coffre-fort 2FA local crypté avec codes TOTP/HOTP/Steam, importation QR/Manual/Aegis/Google Authenticator, déverrouillage biométrique et détection des doublons.
+Pupikes Toolkit Authenticator est une application privée d'authentification à deux facteurs (2FA) qui génère des codes à usage unique TOTP/HOTP/Steam et conserve tous les secrets dans un coffre-fort crypté et verrouillé biométrique sur votre appareil. Sur l'appareil, sans publicité, interface en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Una aplicación privada
+Privado de dos factores
 ```
 **Full introduction:**
 ```
-Una aplicación privada de autenticación de dos factores (2FA) que genera códigos TOTP/HOTP/Steam de un solo uso y guarda todos los secretos en una bóveda cifrada y con bloqueo biométrico en su dispositivo. Agregue cuentas escaneando un código QR, pegando un enlace otpauth://, ingresando claves manualmente o importando desde Aegis y Google Authenticator, y exporte todo como imágenes QR en un .zip.
+Pupikes Toolkit Authenticator es una aplicación privada de autenticación de dos factores (2FA) que genera códigos TOTP/HOTP/Steam de un solo uso y mantiene todos los secretos en una bóveda cifrada y bloqueada biométricamente en su dispositivo.
 
-La bóveda se cifra con esta contraseña. Sin ella no hay acceso a tus códigos.
+Todos los secretos de 2FA, su verificador de contraseña maestra, las contraseñas importadas del navegador y cualquier nota de billetera que agregue se almacenan únicamente en una bóveda cifrada en su dispositivo. Nosotros no subimos nada a ningún servidor. Estos datos se eliminan cuando desinstalas la aplicación.
 
-Descarga cada cuenta como imagen QR separada en un .zip.
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primera versión: bóveda 2FA local cifrada con códigos TOTP/HOTP/Steam, importación QR/manual/Aegis/Google Authenticator, desbloqueo biométrico y detección de duplicados.
+Pupikes Toolkit Authenticator es una aplicación privada de autenticación de dos factores (2FA) que genera códigos TOTP/HOTP/Steam de un solo uso y mantiene todos los secretos en una bóveda cifrada y bloqueada biométricamente en su dispositivo. En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Una aplicación privada
+Privado de dos factores
 ```
 **Full introduction:**
 ```
-Una aplicación privada de autenticación de dos factores (2FA) que genera códigos TOTP/HOTP/Steam de un solo uso y guarda todos los secretos en una bóveda cifrada y con bloqueo biométrico en su dispositivo. Agregue cuentas escaneando un código QR, pegando un enlace otpauth://, ingresando claves manualmente o importando desde Aegis y Google Authenticator, y exporte todo como imágenes QR en un .zip.
+Pupikes Toolkit Authenticator es una aplicación privada de autenticación de dos factores (2FA) que genera códigos TOTP/HOTP/Steam de un solo uso y mantiene todos los secretos en una bóveda cifrada y bloqueada biométricamente en su dispositivo.
 
-La bóveda se cifra con esta contraseña. Sin ella no hay acceso a tus códigos.
+Todos los secretos de 2FA, su verificador de contraseña maestra, las contraseñas importadas del navegador y cualquier nota de billetera que agregue se almacenan únicamente en una bóveda cifrada en su dispositivo. Nosotros no subimos nada a ningún servidor. Estos datos se eliminan cuando desinstalas la aplicación.
 
-Descarga cada cuenta como imagen QR separada en un .zip.
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primera versión: bóveda 2FA local cifrada con códigos TOTP/HOTP/Steam, importación QR/manual/Aegis/Google Authenticator, desbloqueo biométrico y detección de duplicados.
+Pupikes Toolkit Authenticator es una aplicación privada de autenticación de dos factores (2FA) que genera códigos TOTP/HOTP/Steam de un solo uso y mantiene todos los secretos en una bóveda cifrada y bloqueada biométricamente en su dispositivo. En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Un'app privata
+Privato a due fattori
 ```
 **Full introduction:**
 ```
-Un'app privata di autenticazione a due fattori (2FA) che genera codici una tantum TOTP/HOTP/Steam e conserva tutti i segreti in un vault crittografato e bloccato biometricamente sul tuo dispositivo. Aggiungi account scansionando un codice QR, incollando un link otpauth://, inserendo le chiavi manualmente o importando da Aegis e Google Authenticator ed esporta tutto come immagini QR in un .zip.
+Pupikes Toolkit Authenticator è un'app privata di autenticazione a due fattori (2FA) che genera codici monouso TOTP/HOTP/Steam e conserva tutti i segreti in un deposito crittografato e con blocco biometrico sul tuo dispositivo.
 
-La cassaforte è cifrata con questa password. Senza, niente accesso ai codici.
+Tutti i segreti 2FA, il tuo verificatore della password principale, le password del browser importate e tutte le note del portafoglio che aggiungi vengono archiviate solo in un deposito crittografato sul tuo dispositivo. Niente viene caricato su alcun server da noi. Questi dati vengono rimossi quando disinstalli l'app.
 
-Scarica ogni account come immagine QR separata in uno .zip.
+Tutto funziona sul tuo dispositivo senza account e senza pubblicità; l'interfaccia supporta 15 lingue.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima versione: vault 2FA locale crittografato con codici TOTP/HOTP/Steam, importazione QR/manuale/Aegis/Google Authenticator, sblocco biometrico e rilevamento duplicati.
+Pupikes Toolkit Authenticator è un'app privata di autenticazione a due fattori (2FA) che genera codici monouso TOTP/HOTP/Steam e conserva tutti i segreti in un deposito crittografato e con blocco biometrico sul tuo dispositivo. Sul dispositivo, nessuna pubblicità, interfaccia in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Uma aplicação privada
+Privado de dois fatores
 ```
 **Full introduction:**
 ```
-Uma aplicação privada de autenticação de dois fatores (2FA) que gera códigos únicos TOTP/HOTP/Steam e mantém todos os segredos num cofre criptografado e com bloqueio biométrico no seu dispositivo. Adicione contas digitalizando um código QR, colando um link otpauth://, inserindo chaves manualmente ou importando do Aegis e do Google Authenticator e exporte tudo como imagens QR em um .zip.
+Pupikes Toolkit Authenticator é um aplicativo privado de autenticação de dois fatores (2FA) que gera códigos únicos TOTP/HOTP/Steam e mantém todos os segredos em um cofre criptografado e com bloqueio biométrico em seu dispositivo.
 
-O cofre é cifrado com esta senha. Sem ela não há acesso aos códigos.
+Todos os segredos 2FA, seu verificador de senha mestre, senhas de navegador importadas e quaisquer notas de carteira que você adicionar são armazenados apenas em um cofre criptografado em seu dispositivo. Nada é carregado por nós em nenhum servidor. Esses dados são removidos quando você desinstala o aplicativo.
 
-Baixa cada conta como imagem QR separada em um .zip.
+Tudo funciona no seu dispositivo sem conta e sem anúncios; a interface suporta 15 idiomas.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeira versão: cofre 2FA local criptografado com códigos TOTP/HOTP/Steam, importação de QR/manual/Aegis/Google Authenticator, desbloqueio biométrico e detecção de duplicatas.
+Pupikes Toolkit Authenticator é um aplicativo privado de autenticação de dois fatores (2FA) que gera códigos únicos TOTP/HOTP/Steam e mantém todos os segredos em um cofre criptografado e com bloqueio biométrico em seu dispositivo. No dispositivo, sem anúncios, interface em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-تطبيق خاص للمصادقة
+عامل خاص ثنائي
 ```
 **Full introduction:**
 ```
-تطبيق خاص للمصادقة الثنائية (2FA) ينشئ رموز TOTP/HOTP/Steam لمرة واحدة ويحتفظ بجميع الأسرار في قبو مشفر ومغلق بالقياسات الحيوية على جهازك. أضف الحسابات عن طريق مسح رمز الاستجابة السريعة، أو لصق رابط otpauth ://، أو إدخال المفاتيح يدويًا، أو الاستيراد من Aegis و Google Authenticator، وتصدير كل شيء كصور QR في .zip.
+Pupikes Toolkit Authenticator هو تطبيق خاص للمصادقة الثنائية (2FA) يقوم بإنشاء رموز TOTP/HOTP/Steam لمرة واحدة ويحتفظ بجميع الأسرار في قبو مشفر ومقفل بالقياسات الحيوية على جهازك.
 
-يُشفَّر الخزنة بهذه الكلمة. بدونها لا وصول إلى الرموز.
+يتم تخزين جميع أسرار المصادقة الثنائية وأداة التحقق من كلمة المرور الرئيسية وكلمات مرور المتصفح المستوردة وأي ملاحظات على المحفظة تضيفها فقط في قبو مشفر على جهازك. لا يتم تحميل أي شيء على أي خادم بواسطتنا. تتم إزالة هذه البيانات عند إلغاء تثبيت التطبيق.
 
-ينزّل كل حساب كصورة QR منفصلة في ملف .zip.
+كل شيء يعمل على جهازك بدون حساب أو إعلانات؛ الواجهة تدعم 15 لغة.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
-
-⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول: قبو 2FA محلي مشفر مع رموز TOTP/HOTP/Steam، واستيراد QR/MANUAL/Aegis/Google Authenticator، وإلغاء القفل البيومتري، والكشف المكرر.
+Pupikes Toolkit Authenticator هو تطبيق خاص للمصادقة الثنائية (2FA) يقوم بإنشاء رموز TOTP/HOTP/Steam لمرة واحدة ويحتفظ بجميع الأسرار في قبو مشفر ومقفل بالقياسات الحيوية على جهازك. على الجهاز، بدون إعلانات، واجهة بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-एक निजी टू - फ़ैक्टर
+निजी दो कारक
 ```
 **Full introduction:**
 ```
-एक निजी टू - फ़ैक्टर ऑथेंटिकेशन (2FA) ऐप जो TOTP/HOTP/Steam वन - टाइम कोड जनरेट करता है और आपके डिवाइस पर एन्क्रिप्टेड, बायोमेट्रिक - लॉक वॉल्ट में सभी सीक्रेट्स रखता है। QR कोड स्कैन करके, otpauth :// लिंक पेस्ट करके, मैन्युअल रूप से कीज़ डालकर या Aegis और Google ऑथेंटिकेटर से इंपोर्ट करके अकाउंट जोड़ें और सब कुछ .zip में QR इमेज के रूप में एक्सपोर्ट करें।
+पुपाइक्स टूलकिट ऑथेंटिकेटर एक निजी दो-कारक प्रमाणीकरण (2एफए) ऐप है जो टीओटीपी/एचओटीपी/स्टीम वन-टाइम कोड उत्पन्न करता है और आपके डिवाइस पर एक एन्क्रिप्टेड, बायोमेट्रिक-लॉक वॉल्ट में सभी रहस्य रखता है।
 
-वॉल्ट इस पासवर्ड से एन्क्रिप्ट होता है। इसके बिना कोड तक पहुँच नहीं।
+सभी 2FA रहस्य, आपका मास्टर पासवर्ड सत्यापनकर्ता, आयातित ब्राउज़र पासवर्ड और आपके द्वारा जोड़े गए कोई भी वॉलेट नोट केवल आपके डिवाइस पर एक एन्क्रिप्टेड वॉल्ट में संग्रहीत होते हैं। हमारे द्वारा किसी भी सर्वर पर कुछ भी अपलोड नहीं किया जाता है। जब आप ऐप अनइंस्टॉल करते हैं तो यह डेटा हटा दिया जाता है।
 
-हर खाते को अलग QR छवि के रूप में एक .zip में डाउनलोड करता है।
+सब कुछ आपके डिवाइस पर बिना किसी खाते और बिना किसी विज्ञापन के चलता है; इंटरफ़ेस 15 भाषाओं का समर्थन करता है।
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
-
-⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-पहला रिलीज़: TOTP/HOTP/स्टीम कोड के साथ एन्क्रिप्टेड लोकल 2FA वॉल्ट, QR/मैनुअल/Aegis/Google ऑथेंटिकेटर इंपोर्ट, बायोमेट्रिक अनलॉक और डुप्लिकेट डिटेक्शन।
+पुपाइक्स टूलकिट ऑथेंटिकेटर एक निजी दो-कारक प्रमाणीकरण (2एफए) ऐप है जो टीओटीपी/एचओटीपी/स्टीम वन-टाइम कोड उत्पन्न करता है और आपके डिवाइस पर एक एन्क्रिप्टेड, बायोमेट्रिक-लॉक वॉल्ट में सभी रहस्य रखता है। ऑन-डिवाइस, कोई विज्ञापन नहीं, 15-भाषा इंटरफ़ेस।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-TOTP/HOTP/Steamワンタイムコードを生
+プライベート 2 要素
 ```
 **Full introduction:**
 ```
-TOTP/HOTP/Steamワンタイムコードを生成し、デバイス上の暗号化された生体認証ロックされた保管庫にすべての秘密を保持するプライベート二要素認証（ 2 FA ）アプリ。QRコードをスキャンしたり、otpauth ://リンクを貼り付けたり、キーを手動で入力したり、AegisやGoogle Authenticatorからインポートしたりしてアカウントを追加し、すべてをQR画像として.zipにエクスポートします。
+Pupikes Toolkit Authenticator は、TOTP/HOTP/Steam ワンタイム コードを生成し、デバイス上の暗号化された生体認証ロックされた保管庫にすべての秘密を保管するプライベート 2 要素認証 (2FA) アプリです。
 
-保管庫はこのパスワードで暗号化されます。これがないとコードにアクセスできません。
+すべての 2FA シークレット、マスター パスワード検証ツール、インポートされたブラウザ パスワード、および追加したウォレットのメモは、デバイス上の暗号化された保管庫にのみ保存されます。当社によってサーバーに何もアップロードされることはありません。このデータは、アプリをアンインストールすると削除されます。
 
-各アカウントを個別のQR画像として1つの.zipでダウンロード。
+アカウントや広告なしですべてがデバイス上で実行されます。インターフェイスは 15 の言語をサポートしています。
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
-
-⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-最初のリリース： TOTP/HOTP/Steamコード、QR/マニュアル/Aegis/Google Authenticatorインポート、生体認証ロック解除、重複検出を備えた暗号化されたローカル2 FA保管庫。
+Pupikes Toolkit Authenticator は、TOTP/HOTP/Steam ワンタイム コードを生成し、デバイス上の暗号化された生体認証ロックされた保管庫にすべての秘密を保管するプライベート 2 要素認証 (2FA) アプリです。オンデバイス、広告なし、15 言語のインターフェース。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-私人雙因素驗證(2FA)應用程式
+私人二因素
 ```
 **Full introduction:**
 ```
-私人雙因素驗證(2FA)應用程式，可產生TOTP/HOTP/Steam一次性代碼，並將所有祕密保存在裝置上的加密生物特徵鎖定保管庫中。透過掃描QR碼、貼上otpauth://連結、手動輸入金鑰或從Aegis和Google Authenticator匯入來新增帳戶，並以.zip格式匯出所有QR圖片。
+Pupikes Toolkit Authenticator 是一款私人雙重認證 (2FA) 應用程序，可產生 TOTP/HOTP/Steam 一次性代碼，並將所有機密保存在裝置上的加密生物識別鎖定保管庫中。
 
-保險庫以此密碼加密。沒有它就無法存取代碼。
+所有 2FA 機密、您的主密碼驗證程式、匯入的瀏覽器密碼以及您新增的任何錢包筆記僅儲存在您裝置上的加密保管庫中。我們沒有將任何內容上傳到任何伺服器。當您卸載應用程式時，此資料將被刪除。
 
-將每個帳戶以獨立 QR 圖片下載到一個 .zip。
+一切都在您的裝置上運行，無需帳戶，也沒有廣告；介面支援15種語言。
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
-
-⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-首次發布：使用TOTP/HOTP/Steam代碼加密的本地2FA保管庫、QR/手動/Aegis/Google Authenticator導入、生物識別解鎖和重複檢測。
+Pupikes Toolkit Authenticator 是一款私人雙重認證 (2FA) 應用程序，可產生 TOTP/HOTP/Steam 一次性代碼，並將所有機密保存在裝置上的加密生物識別鎖定保管庫中。裝置端、無廣告、15 種語言介面。
 ```

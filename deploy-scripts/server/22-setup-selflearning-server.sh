@@ -261,7 +261,15 @@ fi
 if [ -z "$DO_AI" ]; then
   echo -e "  ${YELLOW}Да инсталирам ли ЛОКАЛЕН езиков модел (Ollama + модел ~1-2GB) на ТОЗИ сървър?${NC}"
   echo -e "  ${GRAY}Само за сериозни машини (напр. VM). НЕ за production (натоварва RAM/CPU).${NC}"
-  read -r -p "  Инсталирам ли локален AI? [y/N]: " DO_AI
+  # ВАЖНО: при деплой няма терминал (stdin не е tty) → read би върнал EOF и при `set -e`
+  # скриптът се къса тук с ненулев изход („22-… върна грешка"). Затова питаме САМО когато
+  # има интерактивен терминал; иначе пропускаме тихо локалния AI (за инсталиране: флаг --ai / AI_INSTALL=1).
+  if [ -t 0 ]; then
+    read -r -p "  Инсталирам ли локален AI? [y/N]: " DO_AI || DO_AI=n
+  else
+    DO_AI=n
+    echo -e "  ${GRAY}(без терминал при деплой — пропускам локалния AI; за инсталиране подай флаг --ai или AI_INSTALL=1)${NC}"
+  fi
 fi
 if printf '%s' "$DO_AI" | grep -qiE '^y'; then
   DISK_FREE_GB=$(df -BG --output=avail "$DATA_DIR" 2>/dev/null | tail -1 | tr -dc '0-9'); DISK_FREE_GB=${DISK_FREE_GB:-0}

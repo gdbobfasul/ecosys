@@ -1,299 +1,284 @@
-# Pupikes Toolkit Pictures — описание по език (Brief + Full + New features)
+# pupikes-toolkit-pictures — описание по език (Brief + Full + New features)
 
-_Генерирано от store-listing/. За AppGallery: Manage languages → добави език → попълни Brief (≤25), Full, New features._
-
-> ⚠️ ky (кыргызки) НЕ съществува в AppGallery — пропуснат. Махни отметките от Greek/Turkish, ако са чекнати.
+_За AppGallery: Manage languages → добави език → попълни Brief (до 25 знака), Full, New features._
+> ⚠️ ky НЕ съществува в AppGallery — пропусни. Махни Greek/Turkish.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Компресор на снимки
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — Намали JPEG / PNG / WebP.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-Полезни офлайн инструменти — всичко работи на устройството.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Компресор на снимки — Намали JPEG / PNG / WebP
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Компресор на снимки — Намали JPEG / PNG / WebP
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Сжатие изображений
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — Уменьши JPEG / PNG / WebP.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-Полезные офлайн-инструменты — всё работает на устройстве.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Сжатие изображений — Уменьши JPEG / PNG / WebP
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Сжатие изображений — Уменьши JPEG / PNG / WebP
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Стиснення зображень
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — Зменши JPEG / PNG / WebP.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-Корисні офлайн-інструменти — усе працює на пристрої.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Стиснення зображень — Зменши JPEG / PNG / WebP
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Стиснення зображень — Зменши JPEG / PNG / WebP
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-Image compressor
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — Shrink JPEG / PNG / WebP.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-Handy offline tools — everything runs on your device.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Image compressor — Shrink JPEG / PNG / WebP
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Image compressor — Shrink JPEG / PNG / WebP
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Bildkompressor
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — JPEG / PNG / WebP verkleinern.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-Praktische Offline-Tools — alles läuft auf dem Gerät.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Bildkompressor — JPEG / PNG / WebP verkleinern
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Bildkompressor — JPEG / PNG / WebP verkleinern
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Compresseur d’images
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — Réduire JPEG / PNG / WebP.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-Outils hors-ligne pratiques — tout fonctionne sur l’appareil.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Compresseur d’images — Réduire JPEG / PNG / WebP
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Compresseur d’images — Réduire JPEG / PNG / WebP
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Compresor de imágenes
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — Reduce JPEG / PNG / WebP.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Compresor de imágenes — Reduce JPEG / PNG / WebP
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Compresor de imágenes — Reduce JPEG / PNG / WebP
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Compresor de imágenes
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — Reduce JPEG / PNG / WebP.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Compresor de imágenes — Reduce JPEG / PNG / WebP
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Compresor de imágenes — Reduce JPEG / PNG / WebP
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Compressore immagini
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — Riduci JPEG / PNG / WebP.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-Comodi strumenti offline — tutto gira sul dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Compressore immagini — Riduci JPEG / PNG / WebP
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Compressore immagini — Riduci JPEG / PNG / WebP
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Compressor de imagens
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — Reduza JPEG / PNG / WebP.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-Ferramentas offline úteis — tudo roda no dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Compressor de imagens — Reduza JPEG / PNG / WebP
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Compressor de imagens — Reduza JPEG / PNG / WebP
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-ضاغط الصور
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — صغّر JPEG / PNG / WebP.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-أدوات مفيدة دون اتصال — كل شيء يعمل على جهازك.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-ضاغط الصور — صغّر JPEG / PNG / WebP
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-ضاغط الصور — صغّر JPEG / PNG / WebP
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-इमेज कंप्रेसर
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — JPEG / PNG / WebP छोटा करें.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-उपयोगी ऑफ़लाइन टूल — सब कुछ डिवाइस पर चलता है।
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-इमेज कंप्रेसर — JPEG / PNG / WebP छोटा करें
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-इमेज कंप्रेसर — JPEG / PNG / WebP छोटा करें
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-画像圧縮
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — JPEG / PNG / WebP を縮小.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-便利なオフラインツール — すべて端末上で動作。
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-画像圧縮 — JPEG / PNG / WebP を縮小
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-画像圧縮 — JPEG / PNG / WebP を縮小
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-圖片壓縮
+JPEG
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Pictures — 縮小 JPEG / PNG / WebP.
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded.
 
-實用的離線工具 — 一切都在裝置上執行。
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-圖片壓縮 — 縮小 JPEG / PNG / WebP
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-圖片壓縮 — 縮小 JPEG / PNG / WebP
+Pupikes Toolkit Pictures shrinks JPEG, PNG and WebP images to a smaller size right on your device — nothing is uploaded. On-device, no ads, 15-language interface.
 ```

@@ -129,7 +129,7 @@
     if(cat && cat.brand){ document.getElementById('tagline').textContent = L(cat.brand.tagline)||t('tagline'); document.getElementById('short').textContent = t('eco')+' · '+cat.brand.short; document.getElementById('ftag').textContent = t('ftag'); }
     else { document.getElementById('tagline').textContent = t('tagline'); document.getElementById('ftag').textContent = t('ftag'); }
     if(!cat){ host.innerHTML='<div class="empty">'+t('loading')+'</div>'; return; }
-    var shownTotal=0, pubTotal=0; host.innerHTML='';
+    var shownTotal=0, pubTotal=0, __n=0; host.innerHTML='';
     (cat.groups||[]).forEach(function(g){
       var apps=(g.apps||[]).filter(function(a){ return preview || a.show; });
       apps.forEach(function(a){ if(a.published && (a.published.huawei||a.published.rustore)) pubTotal++; });
@@ -154,14 +154,15 @@
         var legal=lid?('<div class="legal">'+
           '<a class="lg" data-lg href="/privacy/'+lid+'/'+_pf+'">'+t('priv')+'</a>'+
           '<a class="lg" data-lg href="/privacy/'+lid+'/'+_tf+'">'+t('terms')+'</a></div>'):'';
-        var icon=lid?'<img class="ic" src="/icons/'+lid+'.png" alt="" loading="lazy" onerror="this.style.display=\'none\';var c=this.closest(\'.card\');if(window.markStat)window.markStat(c,\'.sdoc\',\'icon\');">':'';
+        var _iv=(cat&&(cat.updated||cat.version))?encodeURIComponent(cat.updated||cat.version):'1';
+        var icon=lid?'<img class="ic" src="/icons/'+lid+'.png?v='+_iv+'" alt="" loading="lazy" onerror="this.style.display=\'none\';var c=this.closest(\'.card\');if(window.markStat)window.markStat(c,\'.sdoc\',\'icon\');">':'';
         // Две ❗-полета: 📄 = документи/икона на сървъра; ⚙ = сървизът(ите) на приложението.
         // Няма ❗ = наред. По един ⚙ за всеки бекенд сървиз на този ап (от SVCMAP).
         var svcs=SVCMAP[lid]||[];
         var stat='<span class="stat sdoc" title="'+t('st_docs')+'">📄</span>'+
           svcs.map(function(s){ return '<span class="stat ssvc" data-svc="'+s.url+'" data-deployed="'+(s.deployed?'1':'0')+'" title="'+t('st_svc')+': '+String(s.name||'').replace(/"/g,'')+'">⚙</span>'; }).join('');
         var card=document.createElement('div'); card.className='card';
-        card.innerHTML='<div class="hd">'+icon+'<h3>'+a.name+'</h3>'+stat+'</div>'+(a.price?'<div class="price">'+a.price+'</div>':'')+'<div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>'+legal;
+        card.innerHTML='<div class="hd">'+icon+'<h3><span class="num">'+(++__n)+'.</span> '+a.name+'</h3>'+stat+'</div>'+(a.price?'<div class="price">'+a.price+'</div>':'')+'<div class="badges">'+badges+'</div><div class="actions">'+acts+'</div>'+legal;
         grid.appendChild(card);
       });
       sec.appendChild(grid); host.appendChild(sec);

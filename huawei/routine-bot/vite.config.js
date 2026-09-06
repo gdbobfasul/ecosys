@@ -8,9 +8,10 @@ export default defineConfig({
   base: './',
   build: {
     outDir: 'dist',
-    target: 'es2017',
+    target: 'es2020',   // Transformers.js ползва BigInt литерали — es2017 гърми
     assetsInlineLimit: 0
   },
+  optimizeDeps: { exclude: ['@xenova/transformers'] },
   server: {
     host: true,
     port: 5173

@@ -1,6 +1,6 @@
 {
   "_comment": "Каталог на екосистемата Pupikes. pupikes.app чете groups (мобилни, по семейства); pupikes.com чете web (уеб хъб). show=false → скрито. published/download → виж gen-pupikes-catalog. Регенерира се от scratchpad/gen-pupikes-catalog.mjs.",
-  "updated": "2026-07-26",
+  "updated": "2026-09-06",
   "brand": {
     "name": "Pupikes",
     "short": "PuP",
@@ -38,7 +38,7 @@
             "huawei": "Pupikes-Toolkit-huawei-release.apk"
           },
           "download": true,
-          "price": "$1.3"
+          "price": "$13"
         },
         {
           "id": "pupikes-toolkit-pdf",
@@ -133,7 +133,7 @@
             "huawei": "Pupikes-Toolkit-Finance-huawei-release.apk"
           },
           "download": true,
-          "price": "$1.3"
+          "price": "$13"
         },
         {
           "id": "pupikes-toolkit-pictures",
@@ -228,7 +228,7 @@
             "huawei": "Pupikes-Toolkit-Passwords-huawei-release.apk"
           },
           "download": true,
-          "price": "$1.3"
+          "price": "$0.5"
         },
         {
           "id": "pupikes-toolkit-scraper",
@@ -266,7 +266,7 @@
             "huawei": "Pupikes-Toolkit-Price-Watch-huawei-release.apk"
           },
           "download": true,
-          "price": "$1.3"
+          "price": "$13"
         },
         {
           "id": "authenticator",
@@ -282,10 +282,10 @@
           },
           "apk": {
             "rustore": "Pupikes-Toolkit-Authenticator-rustore-release.apk",
-            "huawei": "Pupikes-Toolkit-Authenticator-huawei-release.apk"
+            "huawei": "Authenticator-Passwords-huawei-release.apk"
           },
           "download": true,
-          "price": "$4.44"
+          "price": "$50"
         }
       ]
     },
@@ -303,7 +303,7 @@
         {
           "id": "dodge-master",
           "name": "EvadeArena",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -322,7 +322,7 @@
         {
           "id": "titans-fight",
           "name": "Godfist Arena",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -336,7 +336,7 @@
             "huawei": "Godfist-Arena-huawei-release.apk"
           },
           "download": false,
-          "price": "$1.3"
+          "price": "$0.5"
         },
         {
           "id": "fps-hunter",
@@ -355,7 +355,7 @@
             "huawei": "Huntline-3D-huawei-release.apk"
           },
           "download": true,
-          "price": "$1.3"
+          "price": "$3"
         },
         {
           "id": "plane-shooter",
@@ -398,7 +398,7 @@
         {
           "id": "duel",
           "name": "Pupikes Ring Clash",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -412,12 +412,12 @@
             "huawei": "Pupikes-Ring-Clash-huawei-release.apk"
           },
           "download": false,
-          "price": "$1.3"
+          "price": "$3"
         },
         {
           "id": "hmm",
           "name": "Pupikes Field Battle",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -431,7 +431,7 @@
             "huawei": "Pupikes-Field-Battle-huawei-release.apk"
           },
           "download": false,
-          "price": "$1.3"
+          "price": "$3"
         }
       ]
     },
@@ -463,7 +463,7 @@
             "huawei": "NewsLator-huawei-release.apk"
           },
           "download": true,
-          "price": "$1.3"
+          "price": "$2.3"
         },
         {
           "id": "monitor-bot",
@@ -482,7 +482,7 @@
             "huawei": "Pupikes-Site-Monitor-huawei-release.apk"
           },
           "download": true,
-          "price": "$1.3"
+          "price": "$2.3"
         }
       ]
     },
@@ -514,7 +514,7 @@
             "huawei": "Pupikes-Baby-Radar-huawei-release.apk"
           },
           "download": true,
-          "price": "$4.44"
+          "price": "$20"
         },
         {
           "id": "auto-sound-diagnostics",
@@ -533,12 +533,12 @@
             "huawei": "Auto-Sound-Diagnostics-huawei-release.apk"
           },
           "download": true,
-          "price": "$3.33"
+          "price": "$30"
         },
         {
           "id": "camera-watch",
           "name": "MotionHawk",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -552,12 +552,12 @@
             "huawei": "MotionHawk-huawei-release.apk"
           },
           "download": false,
-          "price": "$4.44"
+          "price": "$20"
         },
         {
           "id": "routine-bot",
           "name": "Pupikes Routine Planner",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -571,12 +571,12 @@
             "huawei": "Pupikes-Routine-Planner-huawei-release.apk"
           },
           "download": false,
-          "price": "$1.3"
+          "price": "$3"
         },
         {
           "id": "market-pulse",
           "name": "Pupikes Market Pulse",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -590,12 +590,12 @@
             "huawei": "Pupikes-Market-Pulse-huawei-release.apk"
           },
           "download": false,
-          "price": "$1.3"
+          "price": "$30"
         },
         {
           "id": "selflearning-friend",
           "name": "Pupikes LB",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -609,12 +609,12 @@
             "huawei": "Pupikes-LB-huawei-release.apk"
           },
           "download": false,
-          "price": "$1.3"
+          "price": "$500"
         },
         {
           "id": "business-faq-bot",
           "name": "Pupikes FAQ Desk",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -628,12 +628,12 @@
             "huawei": "Pupikes-FAQ-Desk-huawei-release.apk"
           },
           "download": false,
-          "price": "$1.3"
+          "price": "$30"
         },
         {
           "id": "autoreply-bot",
           "name": "Pupikes Auto Answer",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -647,7 +647,7 @@
             "huawei": "Pupikes-Auto-Answer-huawei-release.apk"
           },
           "download": false,
-          "price": "$1.3"
+          "price": "$30"
         }
       ]
     },
@@ -665,7 +665,7 @@
         {
           "id": "chat",
           "name": "Pupikes Chat",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -679,12 +679,12 @@
             "huawei": "Pupikes-Chat-huawei-release.apk"
           },
           "download": false,
-          "price": "$1.3"
+          "price": "$10"
         },
         {
           "id": "houselookbook",
           "name": "HouseLookBook",
-          "show": false,
+          "show": true,
           "published": {
             "huawei": false,
             "rustore": false
@@ -730,7 +730,7 @@
             "huawei": "Pupikes-Doctor-huawei-release.apk"
           },
           "download": true,
-          "price": "$1.3"
+          "price": "$30"
         },
         {
           "id": "pupikes-medicines",
@@ -749,7 +749,7 @@
             "huawei": "Pupikes-Medicines-huawei-release.apk"
           },
           "download": true,
-          "price": "$1.3"
+          "price": "$30"
         }
       ]
     }

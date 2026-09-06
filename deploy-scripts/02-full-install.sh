@@ -173,7 +173,7 @@ if [ "$USE_OLD" = 1 ]; then
     echo -e "  ${CYAN}Ползвам старите настройки.${NC}"
 else
     # Всяка ап-операция е ЕДИН директен избор „за кои приложения" (или 0 = пропусни) — без отделно да/не.
-    _pk="$(ask_scope "Кои приложения да билдна (подписани)?")"
+    _pk="$(ask_scope "БИЛДВАНЕ (подписани):")"
     if [ "$_pk" = "__NONE__" ]; then BUILD_APPS=0; BUILD_APPS_LIST=""; BUILD_VARIANT="both"; BUILD_STORES="rustore huawei"
     else
         BUILD_APPS=1; [ "$_pk" = "__ALL__" ] && BUILD_APPS_LIST="" || BUILD_APPS_LIST="$_pk"
@@ -183,11 +183,11 @@ else
         case "$_sv" in 2) BUILD_STORES="rustore";; 3) BUILD_STORES="rustore huawei";; *) BUILD_STORES="huawei";; esac
     fi
     ask_yn "Да пребилдна ли npm пакетите (node_modules) на сървъра?" "$LAST_NPM"; NPM_BUILD=$ANS
-    _pk="$(ask_scope "Кои приложения да качат асети (видеа/картинки · общите винаги се качват)?")"
+    _pk="$(ask_scope "АКТУАЛИЗИРАНЕ на асети (видеа/картинки · общите винаги се качват)?")"
     if [ "$_pk" = "__NONE__" ]; then WITH_ASSETS=0; ASSET_APPS_LIST=""
     else WITH_ASSETS=1; [ "$_pk" = "__ALL__" ] && ASSET_APPS_LIST="" || ASSET_APPS_LIST="$_pk"; fi
     ask_yn "Drop Databases — трия ВСИЧКИ бази (chat/portals/eco3/HLB/WNB) и създавам от 0?" "$LAST_DROP"; DROP_DB=$ANS
-    _pk="$(ask_scope "Кои приложения да обновя на сървъра (само по-новите, НЕ трие старите)?")"
+    _pk="$(ask_scope "АКТУАЛИЗИРАМ (не трие старите):")"
     if [ "$_pk" = "__NONE__" ]; then UPDATE_APPS=0; UPDATE_APPS_LIST=""
     else UPDATE_APPS=1; [ "$_pk" = "__ALL__" ] && UPDATE_APPS_LIST="" || UPDATE_APPS_LIST="$_pk"; fi
 fi

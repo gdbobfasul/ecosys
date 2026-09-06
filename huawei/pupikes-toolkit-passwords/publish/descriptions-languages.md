@@ -1,299 +1,284 @@
-# Pupikes Toolkit Passwords — описание по език (Brief + Full + New features)
+# pupikes-toolkit-passwords — описание по език (Brief + Full + New features)
 
-_Генерирано от store-listing/. За AppGallery: Manage languages → добави език → попълни Brief (≤25), Full, New features._
-
-> ⚠️ ky (кыргызки) НЕ съществува в AppGallery — пропуснат. Махни отметките от Greek/Turkish, ако са чекнати.
+_За AppGallery: Manage languages → добави език → попълни Brief (до 25 знака), Full, New features._
+> ⚠️ ky НЕ съществува в AppGallery — пропусни. Махни Greek/Turkish.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Генератор на пароли
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — Силни пароли с 4 метода.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-Полезни офлайн инструменти — всичко работи на устройството.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Генератор на пароли — Силни пароли с 4 метода
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Генератор на пароли — Силни пароли с 4 метода
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Генератор паролей
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — Надёжные пароли, 4 метода.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-Полезные офлайн-инструменты — всё работает на устройстве.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Генератор паролей — Надёжные пароли, 4 метода
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Генератор паролей — Надёжные пароли, 4 метода
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Генератор паролів
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — Надійні паролі, 4 методи.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-Корисні офлайн-інструменти — усе працює на пристрої.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Генератор паролів — Надійні паролі, 4 методи
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Генератор паролів — Надійні паролі, 4 методи
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-Password generator
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — Strong passwords, 4 methods.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-Handy offline tools — everything runs on your device.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Password generator — Strong passwords, 4 methods
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Password generator — Strong passwords, 4 methods
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Passwortgenerator
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — Starke Passwörter, 4 Methoden.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-Praktische Offline-Tools — alles läuft auf dem Gerät.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Passwortgenerator — Starke Passwörter, 4 Methoden
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Passwortgenerator — Starke Passwörter, 4 Methoden
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Générateur de mots de pas
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — Mots de passe forts, 4 méthodes.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-Outils hors-ligne pratiques — tout fonctionne sur l’appareil.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Générateur de mots de passe — Mots de passe forts, 4 méthodes
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Générateur de mots de passe — Mots de passe forts, 4 méthodes
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Generador de contraseñas
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — Contraseñas fuertes, 4 métodos.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Generador de contraseñas — Contraseñas fuertes, 4 métodos
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Generador de contraseñas — Contraseñas fuertes, 4 métodos
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Generador de contraseñas
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — Contraseñas fuertes, 4 métodos.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-Útiles herramientas sin conexión — todo funciona en el dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Generador de contraseñas — Contraseñas fuertes, 4 métodos
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Generador de contraseñas — Contraseñas fuertes, 4 métodos
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Generatore di password
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — Password forti, 4 metodi.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-Comodi strumenti offline — tutto gira sul dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Generatore di password — Password forti, 4 metodi
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Generatore di password — Password forti, 4 metodi
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Gerador de senhas
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — Senhas fortes, 4 métodos.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-Ferramentas offline úteis — tudo roda no dispositivo.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-Gerador de senhas — Senhas fortes, 4 métodos
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Gerador de senhas — Senhas fortes, 4 métodos
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-مولّد كلمات المرور
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — كلمات مرور قوية، ٤ طرق.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-أدوات مفيدة دون اتصال — كل شيء يعمل على جهازك.
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-مولّد كلمات المرور — كلمات مرور قوية، ٤ طرق
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-مولّد كلمات المرور — كلمات مرور قوية، ٤ طرق
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-पासवर्ड जेनरेटर
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — मज़बूत पासवर्ड, 4 तरीके.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-उपयोगी ऑफ़लाइन टूल — सब कुछ डिवाइस पर चलता है।
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-पासवर्ड जेनरेटर — मज़बूत पासवर्ड, 4 तरीके
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-पासवर्ड जेनरेटर — मज़बूत पासवर्ड, 4 तरीके
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-パスワード生成
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — 強力なパスワード・4方式.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-便利なオフラインツール — すべて端末上で動作。
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-パスワード生成 — 強力なパスワード・4方式
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-パスワード生成 — 強力なパスワード・4方式
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-密碼產生器
+Strong passwords with several
 ```
 **Full introduction:**
 ```
-Pupikes Toolkit Passwords — 強密碼，4 種方式.
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent.
 
-實用的離線工具 — 一切都在裝置上執行。
+The tools run fully on-device. Your files and settings stay local. There is no account and nothing is uploaded.
 
-密碼產生器 — 強密碼，4 種方式
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-密碼產生器 — 強密碼，4 種方式
+Pupikes Toolkit Passwords generates strong passwords with several methods (random, pronounceable, PIN, passphrase) — fully on-device, nothing is stored or sent. On-device, no ads, 15-language interface.
 ```

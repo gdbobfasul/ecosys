@@ -28,7 +28,10 @@ const DEFAULT_LANG = 'bg-BG';
 // Езици БЕЗ Vosk модел → за тях ползваме on-device Whisper (надежден на Huawei/офлайн). Останалите
 // езици пазят своя метод (Vosk/native). Всеки език → своя най-добър двигател.
 const WHISPER_LANGS = ['bg', 'uk', 'ky'];
-function needsWhisper(lang) { return WHISPER_LANGS.includes(String(lang || '').toLowerCase().split('-')[0]); }
+// На НАТИВНА платформа (Huawei — без Google услуги) нативното @capacitor-community/speech-recognition
+// не работи за en/ru/de… → ползвай on-device Whisper за ВСИЧКИ езици (моделът е многоезичен, едно
+// сваляне покрива всичко). В браузър (dev) пазим Web Speech fallback по език.
+function needsWhisper(lang) { return isNative() || WHISPER_LANGS.includes(String(lang || '').toLowerCase().split('-')[0]); }
 
 // --- Достъп до Capacitor нативни плъгини (само в WebView; в браузър липсват) ---
 function capPlugin(name) {
@@ -269,7 +272,10 @@ async function startVosk(vosk, code, onInterim, manualStop) {
 // диктовката — спира САМО повторното натискане на 🎤 / „Изпрати" (stopListening) или
 // таванът от 10 минути. Без manualStop (режим „Разговор") пазим автоматичния край при
 // пауза — там ботът трябва да разбере кога си свършил, за да ти отговори.
-export async function startListening({ lang = DEFAULT_LANG, onInterim = null, manualStop = false } = {}) {
+export async function startListening({ lang = DEFAULT_LANG, onInterim = null, manualStop = false, onState = null } = {}) {
+  // На НАТИВНА платформа (Huawei без Google) нативният/уеб разпознавач не работи надеждно →
+  // директно on-device Whisper за ВСИЧКИ езици (най-надежден там).
+  if (isNative() && whisperAvailable()) return startWhisperListen({ lang, onInterim, manualStop, onState });
   const sr = capPlugin('SpeechRecognition');
   const vosk = voskPlugin();
   // ПРЕДПОЧИТАН: офлайн Vosk (НЕПРЕКЪСНАТ стрийминг, надежден, спира чисто) за езиците, които той
@@ -305,9 +311,9 @@ export async function startListening({ lang = DEFAULT_LANG, onInterim = null, ma
 // On-device Whisper обвивка (глас→текст в апа). Записва до stopListening() (ръчен режим) ИЛИ таван/тишина
 // (разговор), после транскрибира на избрания език и връща текста. Грешките се препращат ясно (denied →
 // няма разрешение; whisper-load → моделът не се свали (няма интернет при първо ползване); иначе 'no-stt').
-async function startWhisperListen({ lang, onInterim, manualStop }) {
+async function startWhisperListen({ lang, onInterim, manualStop, onState }) {
   try {
-    const text = await startWhisper({ lang, onInterim, manualStop });
+    const text = await startWhisper({ lang, onInterim, manualStop, onState });
     return String(text || '').trim();
   } catch (e) {
     const m = String((e && e.message) || '');

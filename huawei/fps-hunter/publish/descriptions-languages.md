@@ -1,323 +1,255 @@
-# Huntline 3D — описание по език (Brief + Full + New features)
+# fps-hunter (Huntline 3D) — описание по език
 
-_За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
-
-> ⚠️ **ky (кыргызки) НЕ съществува в AppGallery** — пропусни го (14 от 15 се поддържат). Махни отметките от **Greek** и **Turkish**, ако са чекнати (нямаме преводи за тях).
+> ⚠️ ky НЕ е в AppGallery — пропусни.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 нива · 3D ловен шутър от първо лице
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Управление: телефон — ляв джойстик за движение, влачи вдясно за оглеждане, бутон ОГЪН. Десктоп — WASD + мишка (клик за заключване на курсора) + клик за стрелба.
-
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание на Huntline 3D: 3D ловен шутър от първо лице със 100 нива, множество оръжия, сензорни контроли и локална топ 10 класация на 15 езика.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-3D-шутер от 1-го лица
+Huntline 3D
 ```
 **Full introduction:**
 ```
-100 уровней · 3D-шутер от первого лица
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-Управление: телефон — левый джойстик для движения, тяни справа для обзора, кнопка ОГОНЬ. Десктоп — WASD + мышь (клик для захвата курсора) + клик для выстрела.
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Первый выпуск Huntline 3D: охотничий 3D шутер от первого лица со 100 уровнями, несколькими видами оружия, сенсорным управлением и локальным топ-10 списком лидеров на 15 языках.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 рівнів · 3D-шутер від першої особи
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Керування: телефон — лівий джойстик для руху, тягни праворуч для огляду, кнопка ВОГОНЬ. Десктоп — WASD + миша (клік для захоплення курсора) + клік для пострілу.
-
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Перший реліз Huntline 3D: мисливський 3D-шутер від першої особи зі 100 рівнями, декількома видами зброї, сенсорним керуванням та місцевим рейтингом топ-10 на 15 мовах.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 levels · 3D first-person hunting shooter
-
-Controls: phone — left joystick to move, drag on the right to look, FIRE button. Desktop — WASD + mouse (click to lock cursor) + click to shoot.
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
-
-⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 Level · 3D-Ego-Jagdshooter
-
-Steuerung: Handy — linker Joystick zum Bewegen, rechts ziehen zum Umsehen, FEUER-Taste. Desktop — WASD + Maus (Klick zum Sperren des Cursors) + Klick zum Schießen.
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
-
-⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
-Erste Veröffentlichung von Huntline 3D: ein 3D-First-Person-Jagd-Shooter mit 100 Levels, mehreren Waffen, Touch-Bedienelementen und einer lokalen Top-10-Bestenliste in 15 Sprachen.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 niveaux · FPS de chasse 3D
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Commandes : téléphone — joystick gauche pour bouger, glisser à droite pour regarder, bouton FEU. PC — WASD + souris (clic pour verrouiller le curseur) + clic pour tirer.
-
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
-
-⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version de Huntline 3D : un jeu de tir à la première personne en 3D avec 100 niveaux, plusieurs armes, des commandes tactiles et un classement local du top 10 en 15 langues.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 niveles · shooter de caza en 3D
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Controles: móvil — joystick izquierdo para moverte, arrastra a la derecha para mirar, botón FUEGO. PC — WASD + ratón (clic para bloquear el cursor) + clic para disparar.
-
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primer lanzamiento de Huntline 3D: un juego de disparos de caza en primera persona en 3D con 100 niveles, múltiples armas, controles táctiles y una clasificación local de los 10 mejores en 15 idiomas.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 niveles · shooter de caza en 3D
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Controles: celular — joystick izquierdo para moverte, arrastra a la derecha para mirar, botón FUEGO. PC — WASD + mouse (clic para fijar el cursor) + clic para disparar.
-
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release of Huntline 3D: a 3D first-person hunting shooter with 100 levels, multiple weapons, touch controls, and a local top-10 leaderboard in 15 languages.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 livelli · sparatutto di caccia 3D in prima persona
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Comandi: telefono — joystick sinistro per muoverti, trascina a destra per guardare, pulsante FUOCO. PC — WASD + mouse (clic per bloccare il cursore) + clic per sparare.
-
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima versione di Huntline 3D: uno sparatutto in prima persona in 3D con 100 livelli, più armi, controlli touch e una classifica top-10 locale in 15 lingue.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 níveis · FPS de caça em 3D
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-Controles: celular — joystick esquerdo para mover, arraste à direita para olhar, botão FOGO. PC — WASD + mouse (clique para travar o cursor) + clique para atirar.
-
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeiro lançamento do Huntline 3D: um jogo de tiro em primeira pessoa 3D com 100 níveis, várias armas, controles de toque e uma tabela de classificação local dos 10 melhores em 15 idiomas.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 مستوى · لعبة صيد ثلاثية الأبعاد من منظور الشخص الأول
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-التحكم: الهاتف — العصا اليسرى للحركة، اسحب يمينًا للنظر، زر إطلاق النار. الكمبيوتر — WASD + الفأرة (انقر لقفل المؤشر) + انقر لإطلاق النار.
-
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
-
-⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول من Huntline 3D: مطلق نار ثلاثي الأبعاد للصيد من منظور الشخص الأول مع 100 مستوى، وأسلحة متعددة، وعناصر تحكم باللمس، ولوحة متصدرين محلية من أفضل 10 لغات بـ 15 لغة.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 स्तर · 3D फर्स्ट-पर्सन शिकार शूटर
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-नियंत्रण: फ़ोन — चलने के लिए बायाँ जॉयस्टिक, देखने के लिए दाईं ओर खींचें, फायर बटन। डेस्कटॉप — WASD + माउस (कर्सर लॉक करने के लिए क्लिक) + गोली के लिए क्लिक।
-
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
-
-⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Huntline 3D की पहली रिलीज़: 100 लेवल, कई हथियार, टच कंट्रोल और 15 भाषाओं में एक स्थानीय टॉप -10 लीडरबोर्ड के साथ एक 3D फ़र्स्ट - पर्सन हंटिंग शूटर।
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100レベル · 3D一人称ハンティングシューター
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-操作: スマホ — 左ジョイスティックで移動、右をドラッグで視点、発射ボタン。PC — WASD + マウス（クリックでカーソルロック）+ クリックで射撃。
-
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
-
-⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Huntline 3 Dの最初のリリース： 100レベル、複数の武器、タッチコントロール、15言語のローカルトップ10リーダーボードを備えた3 Dファーストパーソン・ハンティングシューティングゲーム。
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-A 3D first-person
+Huntline 3D
 ```
 **Full introduction:**
 ```
-A 3D first-person hunting shooter with 100 levels, a range of weapons, and animal and other targets. Use the on-screen joystick and fire button to move, aim, and shoot your way up a local leaderboard.
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard.
 
-100 關 · 3D 第一人稱狩獵射擊
+Everything runs on your device: your nickname, scores and progress are stored locally and never reach us. No account, no ads, 15-language interface.
 
-操作：手機 — 左搖桿移動，右側拖曳環視，開火按鈕。電腦 — WASD + 滑鼠（點擊鎖定游標）+ 點擊射擊。
-
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
-
-⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Huntline 3D首次發布：擁有100個關卡、多種武器、觸摸控件和15種語言的當地前十名排行榜的3D第一人稱狩獵射擊遊戲。
+Huntline 3D is a 3D first-person hunting shooter with 100 levels, a range of weapons and targets, and a local leaderboard. On-device, no ads, 15 languages.
 ```

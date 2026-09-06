@@ -1,325 +1,284 @@
-# Pupikes Baby Radar — описание по език (Brief + Full + New features)
+# baby-monitor — описание по език (Brief + Full + New features)
 
-_За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
-
-> ⚠️ **ky (кыргызки) НЕ съществува в AppGallery** — пропусни го (14 от 15 се поддържат). Махни отметките от **Greek** и **Turkish**, ако са чекнати (нямаме преводи за тях).
+_За AppGallery: Manage languages → добави език → попълни Brief (до 25 знака), Full, New features._
+> ⚠️ ky НЕ съществува в AppGallery — пропусни. Махни Greek/Turkish.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Асистент за осведоменост
+Информираност, базирана на камера
 ```
 **Full introduction:**
 ```
-Асистент за осведоменост, базиран на камера, който наблюдава вашето спящо или играещо дете през камерата на телефона и ви предупреждава при движение: той сигнализира за разбъркване/събуждане, втори човек, който се появява в стаята, или детето, което напуска кадъра. Откриването се извършва на устройството с местно известие, звук и фото дневник за всяко събитие.
+Pupikes Baby Radar е базиран на камера асистент за информираност, който наблюдава вашето дете през камерата на телефона и ви предупреждава при движение. Откриването се изпълнява на устройството. Това не е сертифицирано устройство за безопасност.
 
-Нает робот, който пази спящото или играещото дете през камерата на телефона и те предупреждава.
+Видеото от камерата се анализира на устройството и никога не се качва. Снимките на събитията, регистрационните файлове и настройките остават в локалното хранилище на вашето устройство и се премахват, когато деинсталирате приложението.
 
-Безплатно и on-device. Без акаунти, без контакти, без проследяване. Единствената мрежа е по избор (друга камера / relay) и безплатните тегла на модела.
+Всичко работи на вашето устройство без акаунт и без реклами; интерфейсът поддържа 15 езика.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание: наблюдение на движението на устройството с предупреждения за деца (разбъркване, непознат в стаята, лява рамка), местни известия и дневник на събитията със снимки.
+Pupikes Baby Radar е базиран на камера асистент за информираност, който наблюдава вашето дете през камерата на телефона и ви предупреждава при движение. На устройството, без реклами, 15-езичен интерфейс.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Помощник по повышению
+Осведомленность на основе камеры
 ```
 **Full introduction:**
 ```
-Помощник по повышению осведомленности на основе камеры, который наблюдает за вашим спящим или играющим ребенком через камеру телефона и предупреждает вас о движении: он сигнализирует о перемещении/пробуждении, появлении второго человека в комнате или выходе ребенка из кадра. Обнаружение запускается на устройстве с локальным уведомлением, звуком и журналом фотографий для каждого события.
+Pupikes Baby Radar — это помощник на основе камеры, который наблюдает за вашим ребенком через камеру телефона и предупреждает вас о движении. Обнаружение выполняется на устройстве. Это не сертифицированное защитное устройство.
 
-Нанятый робот, который присматривает за спящим или играющим ребёнком через камеру телефона и предупреждает вас.
+Видео с камеры анализируется на устройстве и никогда не загружается. Снимки событий, журналы и настройки остаются в локальном хранилище на вашем устройстве и удаляются при удалении приложения.
 
-Бесплатно и на устройстве. Без аккаунтов, без контактов, без слежки. Единственная сеть — по желанию (другая камера / relay) и бесплатные веса модели.
+Все работает на вашем устройстве без учетной записи и рекламы; интерфейс поддерживает 15 языков.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Первый выпуск: просмотр движения на устройстве с оповещениями о детях (перемешивание, незнакомец в комнате, левый кадр), локальные уведомления и журнал событий со снимками.
+Pupikes Baby Radar — это помощник на основе камеры, который наблюдает за вашим ребенком через камеру телефона и предупреждает вас о движении. На устройстве, без рекламы, интерфейс на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Помічник з усвідомлення
+Обізнаність за допомогою камери
 ```
 **Full introduction:**
 ```
-Помічник з усвідомлення на основі камери, який спостерігає за вашою сплячою або граючою дитиною через камеру телефону та попереджає вас про рух: він позначає перемішування/пробудження, другу людину, яка з 'являється в кімнаті, або дитину, яка виходить з кадру. Виявлення виконується на пристрої з локальним сповіщенням, звуком та журналом фотографій для кожної події.
+Pupikes Baby Radar — це помічник із камери, який спостерігає за вашою дитиною через камеру телефону та сповіщає вас про рух. Виявлення виконується на пристрої. Це не сертифікований пристрій безпеки.
 
-Найнятий робот, який наглядає за сплячою або граючою дитиною через камеру телефона й попереджає вас.
+Відео камери аналізується на пристрої та ніколи не завантажується. Знімки подій, журнали та налаштування залишаються в локальній пам’яті на вашому пристрої та видаляються, коли ви видаляєте програму.
 
-Безкоштовно й на пристрої. Без акаунтів, без контактів, без стеження. Єдина мережа — за бажанням (інша камера / relay) і безкоштовні ваги моделі.
+Усе працює на вашому пристрої без облікового запису та реклами; інтерфейс підтримує 15 мов.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Перший реліз: перегляд руху на пристрої з оповіщеннями про дитину (перемішування, незнайомець у кімнаті, лівий кадр), локальні сповіщення та журнал подій зі знімками.
+Pupikes Baby Radar — це помічник із камери, який спостерігає за вашою дитиною через камеру телефону та сповіщає вас про рух. На пристрої, без реклами, 15-мовний інтерфейс.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-A camera-based awareness
+Camera-based awareness
 ```
 **Full introduction:**
 ```
-A camera-based awareness assistant that watches your sleeping or playing child through the phone camera and alerts you on motion: it flags stirring/waking, a second person appearing in the room, or the child leaving the frame. Detection runs on-device with a local notification, sound, and a photo log for each event.
+Pupikes Baby Radar is a camera-based awareness assistant that watches your child through the phone camera and alerts you on motion. Detection runs on-device. It is not a certified safety device.
 
-A robot for rent that watches your sleeping or playing child through the phone camera and alerts you.
+The camera video is analysed on the device and is never uploaded. Event snapshots, logs and settings stay in local storage on your device and are removed when you uninstall the app.
 
-Free and on-device. No accounts, no contacts, no tracking. The only network is optional (another camera / relay) and the free model weights.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
-
-⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
-First release: on-device motion watching with child-aware alerts (stirring, stranger in room, left frame), local notifications, and an event log with snapshots.
+Pupikes Baby Radar is a camera-based awareness assistant that watches your child through the phone camera and alerts you on motion. On-device, no ads, 15-language interface.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Ein kamerabasierter
+Kamerabasiertes Bewusstsein
 ```
 **Full introduction:**
 ```
-Ein kamerabasierter Achtsamkeitsassistent, der Ihr schlafendes oder spielendes Kind durch die Telefonkamera beobachtet und Sie bei Bewegung warnt: Er markiert das Rühren/Aufwachen, eine zweite Person, die im Raum erscheint, oder das Kind, das den Rahmen verlässt. Die Erkennung erfolgt auf dem Gerät mit einer lokalen Benachrichtigung, Ton und einem Fotoprotokoll für jedes Ereignis.
+Pupikes Baby Radar ist ein kamerabasierter Aufmerksamkeitsassistent, der Ihr Kind über die Telefonkamera beobachtet und Sie auf Bewegungen aufmerksam macht. Die Erkennung erfolgt auf dem Gerät. Es handelt sich nicht um ein zertifiziertes Sicherheitsgerät.
 
-Ein gemieteter Roboter, der dein schlafendes oder spielendes Kind über die Telefonkamera beobachtet und dich warnt.
+Das Kameravideo wird auf dem Gerät analysiert und nie hochgeladen. Ereignis-Snapshots, Protokolle und Einstellungen bleiben im lokalen Speicher auf Ihrem Gerät und werden entfernt, wenn Sie die App deinstallieren.
 
-Kostenlos und auf dem Gerät. Keine Konten, keine Kontakte, kein Tracking. Das einzige Netz ist optional (andere Kamera / Relay) und die kostenlosen Modellgewichte.
+Alles läuft auf Ihrem Gerät ohne Konto und ohne Werbung; Die Schnittstelle unterstützt 15 Sprachen.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
-
-⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
-Erste Version: Bewegungsüberwachung auf dem Gerät mit kindgerechten Warnungen (Rühren, Fremder im Raum, linker Rahmen), lokalen Benachrichtigungen und einem Ereignisprotokoll mit Schnappschüssen.
+Pupikes Baby Radar ist ein kamerabasierter Aufmerksamkeitsassistent, der Ihr Kind über die Telefonkamera beobachtet und Sie auf Bewegungen aufmerksam macht. Auf dem Gerät, keine Werbung, 15-sprachige Benutzeroberfläche.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Un assistant
+Conscience basée sur la caméra
 ```
 **Full introduction:**
 ```
-Un assistant de sensibilisation basé sur une caméra qui surveille votre enfant endormi ou en train de jouer à travers la caméra du téléphone et vous alerte en mouvement : il signale l'agitation/le réveil, une deuxième personne apparaissant dans la pièce ou l'enfant quittant le cadre. La détection s'exécute sur l'appareil avec une notification locale, un son et un journal de photos pour chaque événement.
+Pupikes Baby Radar est un assistant de sensibilisation basé sur une caméra qui surveille votre enfant via la caméra du téléphone et vous alerte en cas de mouvement. La détection s'exécute sur l'appareil. Ce n'est pas un dispositif de sécurité certifié.
 
-Un robot en location qui surveille votre enfant endormi ou en train de jouer via la caméra du téléphone et vous alerte.
+La vidéo de la caméra est analysée sur l'appareil et n'est jamais téléchargée. Les instantanés d'événements, les journaux et les paramètres restent dans le stockage local sur votre appareil et sont supprimés lorsque vous désinstallez l'application.
 
-Gratuit et sur l’appareil. Sans comptes, sans contacts, sans suivi. Le seul réseau est optionnel (autre caméra / relais) et les poids gratuits du modèle.
+Tout fonctionne sur votre appareil sans compte ni publicité ; l'interface prend en charge 15 langues.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
-
-⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version : surveillance des mouvements sur l'appareil avec des alertes adaptées aux enfants (agitation, étranger dans la pièce, cadre gauche), des notifications locales et un journal des événements avec des instantanés.
+Pupikes Baby Radar est un assistant de sensibilisation basé sur une caméra qui surveille votre enfant via la caméra du téléphone et vous alerte en cas de mouvement. Sur l'appareil, sans publicité, interface en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Un asistente
+Conciencia basada en cámara
 ```
 **Full introduction:**
 ```
-Un asistente de conciencia basado en cámara que observa a su hijo durmiendo o jugando a través de la cámara del teléfono y le alerta sobre el movimiento: marca agitación/despertar, aparece una segunda persona en la habitación o el niño abandona el marco. La detección se ejecuta en el dispositivo con una notificación local, sonido y un registro de fotos para cada evento.
+Pupikes Baby Radar es un asistente de concienciación basado en cámara que observa a su hijo a través de la cámara del teléfono y le alerta sobre el movimiento. La detección se ejecuta en el dispositivo. No es un dispositivo de seguridad certificado.
 
-Un robot de alquiler que vigila a tu hijo dormido o jugando a través de la cámara del teléfono y te avisa.
+El vídeo de la cámara se analiza en el dispositivo y nunca se carga. Las instantáneas, registros y configuraciones de eventos permanecen en el almacenamiento local de su dispositivo y se eliminan cuando desinstala la aplicación.
 
-Gratis y en el dispositivo. Sin cuentas, sin contactos, sin rastreo. La única red es opcional (otra cámara / relay) y los pesos gratuitos del modelo.
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primera versión: vigilancia de movimiento en el dispositivo con alertas para niños (agitación, extraño en la habitación, marco izquierdo), notificaciones locales y un registro de eventos con instantáneas.
+Pupikes Baby Radar es un asistente de concienciación basado en cámara que observa a su hijo a través de la cámara del teléfono y le alerta sobre el movimiento. En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Un asistente
+Conciencia basada en cámara
 ```
 **Full introduction:**
 ```
-Un asistente de conciencia basado en cámara que observa a su hijo durmiendo o jugando a través de la cámara del teléfono y le alerta sobre el movimiento: marca agitación/despertar, aparece una segunda persona en la habitación o el niño abandona el marco. La detección se ejecuta en el dispositivo con una notificación local, sonido y un registro de fotos para cada evento.
+Pupikes Baby Radar es un asistente de concienciación basado en cámara que observa a su hijo a través de la cámara del teléfono y le alerta sobre el movimiento. La detección se ejecuta en el dispositivo. No es un dispositivo de seguridad certificado.
 
-Un robot de alquiler que vigila a tu hijo dormido o jugando a través de la cámara del teléfono y te avisa.
+El vídeo de la cámara se analiza en el dispositivo y nunca se carga. Las instantáneas, registros y configuraciones de eventos permanecen en el almacenamiento local de su dispositivo y se eliminan cuando desinstala la aplicación.
 
-Gratis y en el dispositivo. Sin cuentas, sin contactos, sin rastreo. La única red es opcional (otra cámara / relay) y los pesos gratuitos del modelo.
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primera versión: vigilancia de movimiento en el dispositivo con alertas para niños (agitación, extraño en la habitación, marco izquierdo), notificaciones locales y un registro de eventos con instantáneas.
+Pupikes Baby Radar es un asistente de concienciación basado en cámara que observa a su hijo a través de la cámara del teléfono y le alerta sobre el movimiento. En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Un assistente
+Consapevolezza basata sulla fotocamera
 ```
 **Full introduction:**
 ```
-Un assistente di sensibilizzazione basato su fotocamera che osserva il tuo bambino che dorme o gioca attraverso la fotocamera del telefono e ti avvisa in movimento: segnala l'agitazione/la veglia, una seconda persona che appare nella stanza o il bambino che lascia l'inquadratura. Il rilevamento viene eseguito sul dispositivo con una notifica locale, un suono e un registro fotografico per ogni evento.
+Pupikes Baby Radar è un assistente di consapevolezza basato su fotocamera che osserva il tuo bambino attraverso la fotocamera del telefono e ti avvisa in caso di movimento. Il rilevamento viene eseguito sul dispositivo. Non è un dispositivo di sicurezza certificato.
 
-Un robot a noleggio che sorveglia il tuo bambino che dorme o gioca tramite la fotocamera del telefono e ti avvisa.
+Il video della telecamera viene analizzato sul dispositivo e non viene mai caricato. Le istantanee, i registri e le impostazioni degli eventi rimangono nell'archivio locale del tuo dispositivo e vengono rimossi quando disinstalli l'app.
 
-Gratis e sul dispositivo. Nessun account, nessun contatto, nessun tracciamento. L’unica rete è opzionale (altra fotocamera / relay) e i pesi gratuiti del modello.
+Tutto funziona sul tuo dispositivo senza account e senza pubblicità; l'interfaccia supporta 15 lingue.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima versione: motion watching sul dispositivo con avvisi attenti ai bambini (agitazione, estraneo nella stanza, fotogramma sinistro), notifiche locali e un registro degli eventi con istantanee.
+Pupikes Baby Radar è un assistente di consapevolezza basato su fotocamera che osserva il tuo bambino attraverso la fotocamera del telefono e ti avvisa in caso di movimento. Sul dispositivo, nessuna pubblicità, interfaccia in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Um assistente
+Conscientização baseada em câmera
 ```
 **Full introduction:**
 ```
-Um assistente de conscientização baseado em câmera que observa o seu filho dormindo ou brincando através da câmera do telefone e o alerta sobre o movimento: ele sinaliza agitação/vigília, uma segunda pessoa aparece na sala ou a criança sai do quadro. A deteção é executada no dispositivo com uma notificação local, som e um registo fotográfico para cada evento.
+Pupikes Baby Radar é um assistente de conscientização baseado em câmera que observa seu filho através da câmera do telefone e alerta sobre movimento. A detecção é executada no dispositivo. Não é um dispositivo de segurança certificado.
 
-Um robô de aluguel que vigia seu filho dormindo ou brincando pela câmera do telefone e te avisa.
+O vídeo da câmera é analisado no dispositivo e nunca é carregado. Instantâneos de eventos, registros e configurações permanecem no armazenamento local do seu dispositivo e são removidos quando você desinstala o aplicativo.
 
-Grátis e no dispositivo. Sem contas, sem contatos, sem rastreamento. A única rede é opcional (outra câmera / relay) e os pesos gratuitos do modelo.
+Tudo funciona no seu dispositivo sem conta e sem anúncios; a interface suporta 15 idiomas.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeira versão: observação de movimento no dispositivo com alertas sensíveis à criança (agitação, estranho na sala, quadro esquerdo), notificações locais e um registro de eventos com instantâneos.
+Pupikes Baby Radar é um assistente de conscientização baseado em câmera que observa seu filho através da câmera do telefone e alerta sobre movimento. No dispositivo, sem anúncios, interface em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-مساعد توعية قائم
+الوعي القائم على الكاميرا
 ```
 **Full introduction:**
 ```
-مساعد توعية قائم على الكاميرا يراقب طفلك أثناء نومه أو لعبه من خلال كاميرا الهاتف وينبهك أثناء الحركة: إنه يشير إلى التحريك/الاستيقاظ، أو ظهور شخص ثانٍ في الغرفة، أو مغادرة الطفل للإطار. يعمل الكشف على الجهاز مع إشعار محلي وصوت وسجل صور لكل حدث.
+Pupikes Baby Radar هو مساعد توعية يعتمد على الكاميرا، حيث يراقب طفلك من خلال كاميرا الهاتف وينبهك عند الحركة. يعمل الكشف على الجهاز. إنه ليس جهاز أمان معتمد.
 
-روبوت للإيجار يراقب طفلك النائم أو اللاعب عبر كاميرا الهاتف وينبّهك.
+يتم تحليل فيديو الكاميرا على الجهاز ولا يتم تحميله مطلقًا. تظل لقطات الأحداث والسجلات والإعدادات في وحدة التخزين المحلية على جهازك وتتم إزالتها عند إلغاء تثبيت التطبيق.
 
-مجاني وعلى الجهاز. بلا حسابات، بلا جهات اتصال، بلا تتبّع. الشبكة الوحيدة اختيارية (كاميرا أخرى / relay) وأوزان النموذج المجانية.
+كل شيء يعمل على جهازك بدون حساب أو إعلانات؛ الواجهة تدعم 15 لغة.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
-
-⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول: مراقبة الحركة على الجهاز مع تنبيهات إدراك الطفل (التحريك، شخص غريب في الغرفة، الإطار الأيسر)، والإشعارات المحلية، وسجل الأحداث مع لقطات.
+Pupikes Baby Radar هو مساعد توعية يعتمد على الكاميرا، حيث يراقب طفلك من خلال كاميرا الهاتف وينبهك عند الحركة. على الجهاز، بدون إعلانات، واجهة بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-एक कैमरा - आधारित
+कैमरा आधारित जागरूकता
 ```
 **Full introduction:**
 ```
-एक कैमरा - आधारित जागरूकता सहायक जो फोन कैमरे के माध्यम से आपके सोने या खेलने वाले बच्चे को देखता है और आपको गति पर अलर्ट करता है: यह सरगर्मी/जागने, कमरे में दिखाई देने वाले दूसरे व्यक्ति या फ्रेम छोड़ने वाले बच्चे को ध्वजांकित करता है। हर इवेंट के लिए स्थानीय नोटिफ़िकेशन, साउंड और फ़ोटो लॉग के साथ डिवाइस पर डिटेक्शन चलता है।
+पुपाइक्स बेबी राडार एक कैमरा-आधारित जागरूकता सहायक है जो फोन कैमरे के माध्यम से आपके बच्चे पर नज़र रखता है और आपको गति होने पर सचेत करता है। डिटेक्शन डिवाइस पर चलता है। यह कोई प्रमाणित सुरक्षा उपकरण नहीं है.
 
-किराये का रोबोट जो फ़ोन कैमरे से आपके सोते या खेलते बच्चे पर नज़र रखता है और आपको सचेत करता है।
+कैमरा वीडियो का विश्लेषण डिवाइस पर किया जाता है और इसे कभी अपलोड नहीं किया जाता है। इवेंट स्नैपशॉट, लॉग और सेटिंग्स आप��े डिवाइस पर स्थानीय स्टोरेज में रहते हैं और जब आप ऐप को अनइंस्टॉल करते हैं तो हटा दिए जाते हैं।
 
-मुफ़्त और डिवाइस पर। कोई खाता नहीं, कोई संपर्क नहीं, कोई ट्रैकिंग नहीं। एकमात्र नेटवर्क वैकल्पिक है (दूसरा कैमरा / relay) और मुफ़्त मॉडल वेट।
+सब कुछ आपके डिवाइस पर बिना किसी खाते और बिना किसी विज्ञापन के चलता है; इंटरफ़ेस 15 भाषाओं का समर्थन करता है।
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
-
-⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-पहला रिलीज़: ऑन - डिवाइस मोशन वॉचिंग, चाइल्ड - अवेयर अलर्ट (सरगर्मी, कमरे में अजनबी, बाएँ फ़्रेम), स्थानीय नोटिफ़िकेशन और स्नैपशॉट के साथ इवेंट लॉग।
+पुपाइक्स बेबी राडार एक कैमरा-आधारित जागरूकता सहायक है जो फोन कैमरे के माध्यम से आपके बच्चे पर नज़र रखता है और आपको गति होने पर सचेत करता है। ऑन-डिवाइस, कोई विज्ञापन नहीं, 15-भाषा इंटरफ़ेस।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-カメラベースの認識アシスタントは
+カメラベースの認識
 ```
 **Full introduction:**
 ```
-カメラベースの認識アシスタントは、携帯電話のカメラを通して寝ている子供や遊んでいる子供を監視し、動きを警告します。これは、攪拌/目覚め、部屋に2人目の人が現れる、または子供がフレームを離れるなどのフラグを立てます。検出は、各イベントのローカル通知、サウンド、および写真ログを使用してデバイス上で実行されます。
+Pupikes Baby Radar は、携帯電話のカメラを通してお子様を監視し、動きがあると警告を発する、カメラベースの認識アシスタントです。検出はデバイス上で実行されます。認定された安全装置ではありません。
 
-スマホのカメラで眠っている、または遊んでいるお子さまを見守り、あなたに知らせるレンタルロボットです。
+カメラのビデオはデバイス上で分析され、アップロードされることはありません。イベントのスナップショット、ログ、設定はデバイスのローカル ストレージに残り、アプリをアンインストールすると削除されます。
 
-無料・端末内処理。アカウント・連絡先・追跡なし。唯一のネットワークは任意（別カメラ / relay）と無料のモデル重みのみ。
+アカウントや広告なしですべてがデバイス���で実行されます。インターフェイスは 15 の言語をサポートしています。
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
-
-⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-最初のリリース：子供を意識したアラート（攪拌、部屋の中の見知らぬ人、左フレーム）、ローカル通知、スナップショット付きイベントログを備えたデバイス上のモーションウォッチング。
+Pupikes Baby Radar は、携帯電話のカメラを通してお子様を監視し、動きがあると警告を発する、カメラベースの認識アシスタントです。オンデバイス、広告なし、15 言語のインターフェース。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-基於相機的感知助手，透過手機相機觀看您睡覺或玩耍的
+基於攝影機的感知
 ```
 **Full introduction:**
 ```
-基於相機的感知助手，透過手機相機觀看您睡覺或玩耍的孩子，並在移動時提醒您：它會標記攪拌/醒來、第二個人出現在房間內或孩子離開框架。偵測會在裝置上執行，並提供每個活動的本機通知、聲音和相片記錄。
+Pupikes 婴儿雷达是一款基于摄像头的感知助手，可通过手机摄像头监视您的孩子，并在发生运动时提醒您。檢測在設備上運作。它不是經過認證的安全裝置。
 
-一個出租機器人，透過手機相機看顧您熟睡或玩耍的孩子並提醒您。
+摄像头视频在设备上进行分析，并且永远不会上传。事件快照、日志和设置保留在您设备上的本地存储中，并在您卸载应用程序时删除。
 
-免費且在裝置上執行。無帳戶、無聯絡人、無追蹤。唯一的網路為選用（另一相機 / relay）與免費的模型權重。
+一切都在您的裝置上運行，無需帳戶，也沒有廣告；介面支援15種語言。
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
-
-⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-首次發布：裝置上的動作觀看，具有兒童感知警報（攪拌、房間中的陌生人、左邊框）、本地通知和帶有快照的事件日誌。
+Pupikes 婴儿雷达是一款基于摄像头的感知助手，可通过手机摄像头监视您的孩子，并在发生运动时提醒您。裝置端、無廣告、15 種語言介面。
 ```

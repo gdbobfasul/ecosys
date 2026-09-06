@@ -1,325 +1,284 @@
-# MotionHawk — описание по език (Brief + Full + New features)
+# camera-watch — описание по език (Brief + Full + New features)
 
-_За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
-
-> ⚠️ **ky (кыргызки) НЕ съществува в AppGallery** — пропусни го (14 от 15 се поддържат). Махни отметките от **Greek** и **Turkish**, ако са чекнати (нямаме преводи за тях).
+_За AppGallery: Manage languages → добави език → попълни Brief (до 25 знака), Full, New features._
+> ⚠️ ky НЕ съществува в AppGallery — пропусни. Махни Greek/Turkish.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Асистент за охрана
+Асистент за охрана на камерата
 ```
 **Full introduction:**
 ```
-Асистент за охрана на камерата, който гледа как камерата се захранва и ви предупреждава при движение, като ви казва какво се движи: човек/нарушител, куче, котка или друго животно. Движението се открива на устройството с локален сигнал и фото дневник за всяко събитие. То може да използва камерата на телефона или потока от камерата на външния браузър.
+Camera Watch е асистент за охрана на камерата, който наблюдава предаването на камерата и ви предупреждава за движение, като ви казва какво се е преместило (човек, куче, котка или друго). Движението се открива на устройството.
 
-Нает робот, който следи камера и те предупреждава при движение — и казва какво е помръднало: човек/нарушител, куче, котка или друго животно.
+Видеото се анализира на устройството и никога не го напуска. Моментните снимки и регистрационните файлове на събития остават в локалното хранилище и се премахват, когато деинсталирате приложението.
 
-<b>Честно и без скрити такси:</b> всичко работи на устройството и е безплатно. Без акаунт, без контакти, без проследяване, без покупки в приложението. Единствена мрежа: еднократно безплатно сваляне на AI модела и по избор твоят URL за „друга камера“.
+Всичко работи на вашето устройство без акаунт и без реклами; интерфейсът поддържа 15 езика.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание: откриване на движение на устройството с разпознаване на обекти (човек/животно), местни сигнали, дневник на събитията със снимки и поддръжка на камерата на телефона или url адреса на външната камера.
+Camera Watch е асистент за охрана на камерата, който наблюдава предаването на камерата и ви предупреждава за движение, като ви казва какво се е преместило (човек, куче, котка или друго). На устройството, без реклами, 15-езичен интерфейс.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Помощник охранника
+Помощник оператора-охранника, который
 ```
 **Full introduction:**
 ```
-Помощник охранника камеры, который наблюдает за подачей камеры и предупреждает вас о движении, сообщая вам, что движется: человек/злоумышленник, собака, кошка или другое животное. Движение обнаруживается на устройстве с локальным оповещением и журналом фотографий для каждого события; он может использовать камеру телефона или внешний поток камеры браузера.
+Camera Watch — это помощник охранника камеры, который наблюдает за трансляцией с камеры и предупреждает вас о движении, сообщая, что двигалось (человек, собака, кошка или другое). На устройстве обнаружено движение.
 
-Нанятый робот, который следит за камерой и предупреждает о движении — и сообщает, что шевельнулось: человек/нарушитель, собака, кошка или другое животное.
+Видео анализируется на устройстве и никогда не покидает его. Снимки событий и журналы остаются в локальном хранилище и удаляются при удалении приложения.
 
-<b>Честно и без скрытых сборов:</b> всё работает на устройстве и бесплатно. Без аккаунта, без контактов, без отслеживания, без покупок в приложении. Единственная сеть: разовая бесплатная загрузка ИИ-модели и по желанию твой URL для «другой камеры».
+Все работает на вашем устройстве без учетной записи и рекламы; интерфейс поддерживает 15 языков.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Первый выпуск: обнаружение движения на устройстве с распознаванием объектов (человек/животное), локальные оповещения, журнал событий фото и поддержка камеры телефона или внешнего URL-адреса камеры.
+Camera Watch — это помощник охранника камеры, который наблюдает за трансляцией с камеры и предупреждает вас о движении, сообщая, что двигалось (человек, собака, кошка или другое). На устройстве, без рекламы, интерфейс на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Помічник охоронця камери
+Помічник камери-охоронця
 ```
 **Full introduction:**
 ```
-Помічник охоронця камери, який спостерігає за подачею камери та попереджає вас про рух, розповідаючи вам, що рухалося: людина/зловмисник, собака, кішка або інша тварина. Рух виявляється на пристрої за допомогою локального сповіщення та журналу фотографій для кожної події; він може використовувати камеру телефону або зовнішній потік камери браузера.
+Camera Watch — це помічник-охоронець камери, який спостерігає за трансляцією камери та попереджає вас про рух, повідомляючи, що рухалося (людина, собака, кішка чи інше). Рух виявляється на пристрої.
 
-Найнятий робот, який стежить за камерою й попереджає про рух — і повідомляє, що ворухнулося: людина/порушник, собака, кіт чи інша тварина.
+Відео аналізується на пристрої та ніколи не залишає його. Знімки подій і журнали залишаються в локальному сховищі та видаляються, коли ви видаляєте програму.
 
-<b>Чесно й без прихованих платежів:</b> усе працює на пристрої та безкоштовно. Без акаунта, без контактів, без відстеження, без покупок у застосунку. Єдина мережа: разове безкоштовне завантаження ШІ-моделі та за бажанням твій URL для «іншої камери».
+Усе працює на вашому пристрої без облікового запису та реклами; інтерфейс підтримує 15 мов.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Перша версія: виявлення руху на пристрої з розпізнаванням об 'єктів (людина/тварина), локальні сповіщення, журнал подій з фотографіями та підтримка камери телефону або зовнішньої URL-адреси камери.
+Camera Watch — це помічник-охоронець камери, який спостерігає за трансляцією камери та попереджає вас про рух, повідомляючи, що рухалося (людина, собака, кішка чи інше). На пристрої, без реклами, 15-мовний інтерфейс.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-A camera-guard assistant
+Camera-guard assistant that
 ```
 **Full introduction:**
 ```
-A camera-guard assistant that watches a camera feed and warns you on movement, telling you what moved: a person/intruder, dog, cat, or other animal. Motion is detected on-device with a local alert and a photo log for each event; it can use the phone camera or an external browser camera stream.
+Camera Watch is a camera-guard assistant that watches a camera feed and warns you on movement, telling you what moved (a person, dog, cat or other). Motion is detected on-device.
 
-A hired robot that watches a camera and warns you on movement — and tells you what moved: a person/intruder, dog, cat or other animal.
+The video is analysed on the device and never leaves it. Event snapshots and logs stay in local storage and are removed when you uninstall the app.
 
-<b>Honest and no hidden fees:</b> everything runs on the device and is free. No account, no contacts, no tracking, no in-app purchases. The only network use: a one-time free download of the AI model and, optionally, your URL for "another camera".
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
-
-⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
-First release: on-device motion detection with object recognition (person/animal), local alerts, a photo event log, and support for the phone camera or an external camera URL.
+Camera Watch is a camera-guard assistant that watches a camera feed and warns you on movement, telling you what moved (a person, dog, cat or other). On-device, no ads, 15-language interface.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Ein
+Kamerawächter-Assistent
 ```
 **Full introduction:**
 ```
-Ein Kameraguard-Assistent, der einen Kamerafutter beobachtet und Sie bei Bewegungen warnt und Ihnen sagt, was sich bewegt hat: eine Person/ein Eindringling, ein Hund, eine Katze oder ein anderes Tier. Bewegung wird auf dem Gerät mit einer lokalen Warnung und einem Fotoprotokoll für jedes Ereignis erkannt; es kann die Telefonkamera oder einen externen Browser-Kamerastream verwenden.
+Camera Watch ist ein Kamerawächter-Assistent, der den Kamera-Feed überwacht, Sie bei Bewegungen warnt und Ihnen mitteilt, was sich bewegt hat (eine Person, ein Hund, eine Katze oder etwas anderes). Bewegung wird auf dem Gerät erkannt.
 
-Ein angeheuerter Roboter, der eine Kamera überwacht und dich bei Bewegung warnt — und sagt, was sich bewegt hat: Person/Eindringling, Hund, Katze oder anderes Tier.
+Das Video wird auf dem Gerät analysiert und verlässt es nie. Ereignis-Snapshots und Protokolle bleiben im lokalen Speicher und werden entfernt, wenn Sie die App deinstallieren.
 
-<b>Ehrlich und ohne versteckte Gebühren:</b> Alles läuft auf dem Gerät und ist kostenlos. Kein Konto, keine Kontakte, kein Tracking, keine In-App-Käufe. Einzige Netznutzung: einmaliger kostenloser Download des KI-Modells und optional deine URL für „andere Kamera“.
+Alles läuft auf Ihrem Gerät ohne Konto und ohne Werbung; Die Schnittstelle unterstützt 15 Sprachen.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
-
-⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
-Erste Version: Bewegungserkennung auf dem Gerät mit Objekterkennung (Person/Tier), lokalen Warnungen, einem Fotoereignisprotokoll und Unterstützung für die Telefonkamera oder eine externe Kamera-URL.
+Camera Watch ist ein Kamerawächter-Assistent, der den Kamera-Feed überwacht, Sie bei Bewegungen warnt und Ihnen mitteilt, was sich bewegt hat (eine Person, ein Hund, eine Katze oder etwas anderes). Auf dem Gerät, keine Werbung, 15-sprachige Benutzeroberfläche.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Un assistant caméraman
+Assistant de garde de caméra qui
 ```
 **Full introduction:**
 ```
-Un assistant caméraman qui regarde l'alimentation d'une caméra et vous avertit en cas de mouvement, vous disant ce qui a bougé : une personne/un intrus, un chien, un chat ou un autre animal. Le mouvement est détecté sur l'appareil avec une alerte locale et un journal de photos pour chaque événement ; il peut utiliser la caméra du téléphone ou un flux de caméra de navigateur externe.
+Camera Watch est un assistant de surveillance de caméra qui surveille le flux d'une caméra et vous avertit en cas de mouvement, vous indiquant ce qui a bougé (une personne, un chien, un chat ou autre). Un mouvement est détecté sur l'appareil.
 
-Un robot engagé qui surveille une caméra et vous alerte en cas de mouvement — et dit ce qui a bougé : personne/intrus, chien, chat ou autre animal.
+La vidéo est analysée sur l'appareil et ne le quitte jamais. Les instantanés et les journaux d'événements restent dans le stockage local et sont supprimés lorsque vous désinstallez l'application.
 
-<b>Honnête et sans frais cachés :</b> tout fonctionne sur l’appareil et c’est gratuit. Pas de compte, pas de contacts, pas de suivi, pas d’achats intégrés. Seule utilisation du réseau : un téléchargement gratuit unique du modèle IA et, en option, ton URL pour « autre caméra ».
+Tout fonctionne sur votre appareil sans compte ni publicité ; l'interface prend en charge 15 langues.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
-
-⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version : détection de mouvement sur l'appareil avec reconnaissance d'objet (personne/animal), alertes locales, journal des événements photo et prise en charge de l'appareil photo du téléphone ou d'une URL d'appareil photo externe.
+Camera Watch est un assistant de surveillance de caméra qui surveille le flux d'une caméra et vous avertit en cas de mouvement, vous indiquant ce qui a bougé (une personne, un chien, un chat ou autre). Sur l'appareil, sans publicité, interface en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Un asistente de guardia
+Asistente de guardia de cámara que
 ```
 **Full introduction:**
 ```
-Un asistente de guardia de cámara que observa la alimentación de una cámara y le advierte sobre el movimiento, diciéndole lo que se movió: una persona/intruso, perro, gato u otro animal. El movimiento se detecta en el dispositivo con una alerta local y un registro de fotos para cada evento; puede usar la cámara del teléfono o una transmisión externa de la cámara del navegador.
+Camera Watch es un asistente de guardia de cámara que observa la transmisión de la cámara y le advierte sobre el movimiento, indicándole qué se movió (una persona, perro, gato u otro). Se detecta movimiento en el dispositivo.
 
-Un robot contratado que vigila una cámara y te avisa al detectar movimiento — y te dice qué se movió: persona/intruso, perro, gato u otro animal.
+El vídeo se analiza en el dispositivo y nunca sale de él. Las instantáneas y los registros de eventos permanecen en el almacenamiento local y se eliminan cuando desinstalas la aplicación.
 
-<b>Honesto y sin cargos ocultos:</b> todo funciona en el dispositivo y es gratis. Sin cuenta, sin contactos, sin rastreo, sin compras en la app. Único uso de red: una descarga gratuita única del modelo de IA y, opcionalmente, tu URL para «otra cámara».
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primera versión: detección de movimiento en el dispositivo con reconocimiento de objetos (persona/animal), alertas locales, un registro de eventos fotográficos y soporte para la cámara del teléfono o una URL de cámara externa.
+Camera Watch es un asistente de guardia de cámara que observa la transmisión de la cámara y le advierte sobre el movimiento, indicándole qué se movió (una persona, perro, gato u otro). En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Un asistente de guardia
+Asistente de guardia de cámara que
 ```
 **Full introduction:**
 ```
-Un asistente de guardia de cámara que observa la alimentación de una cámara y le advierte sobre el movimiento, diciéndole lo que se movió: una persona/intruso, perro, gato u otro animal. El movimiento se detecta en el dispositivo con una alerta local y un registro de fotos para cada evento; puede usar la cámara del teléfono o una transmisión externa de la cámara del navegador.
+Camera Watch es un asistente de guardia de cámara que observa la transmisión de la cámara y le advierte sobre el movimiento, indicándole qué se movió (una persona, perro, gato u otro). Se detecta movimiento en el dispositivo.
 
-Un robot contratado que vigila una cámara y te avisa al detectar movimiento — y te dice qué se movió: persona/intruso, perro, gato u otro animal.
+El vídeo se analiza en el dispositivo y nunca sale de él. Las instantáneas y los registros de eventos permanecen en el almacenamiento local y se eliminan cuando desinstalas la aplicación.
 
-<b>Honesto y sin cargos ocultos:</b> todo funciona en el dispositivo y es gratis. Sin cuenta, sin contactos, sin rastreo, sin compras en la app. Único uso de red: una descarga gratuita única del modelo de IA y, opcionalmente, tu URL para «otra cámara».
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primera versión: detección de movimiento en el dispositivo con reconocimiento de objetos (persona/animal), alertas locales, un registro de eventos fotográficos y soporte para la cámara del teléfono o una URL de cámara externa.
+Camera Watch es un asistente de guardia de cámara que observa la transmisión de la cámara y le advierte sobre el movimiento, indicándole qué se movió (una persona, perro, gato u otro). En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Un assistente della
+Assistente camera-guardia quello
 ```
 **Full introduction:**
 ```
-Un assistente della telecamera che guarda una telecamera e ti avvisa quando ti muovi, dicendoti cosa si è mosso: una persona/intruso, un cane, un gatto o un altro animale. Il movimento viene rilevato sul dispositivo con un avviso locale e un registro fotografico per ogni evento; può utilizzare la fotocamera del telefono o un flusso di fotocamera del browser esterno.
+Camera Watch è un assistente di sorveglianza della telecamera che osserva il feed della telecamera e ti avvisa in caso di movimento, dicendoti cosa si è mosso (una persona, un cane, un gatto o altro). Il movimento viene rilevato sul dispositivo.
 
-Un robot ingaggiato che sorveglia una telecamera e ti avvisa al movimento — e dice cosa si è mosso: persona/intruso, cane, gatto o altro animale.
+Il video viene analizzato sul dispositivo e non lo lascia mai. Le istantanee e i registri degli eventi rimangono nell'archivio locale e vengono rimossi quando disinstalli l'app.
 
-<b>Onesto e senza costi nascosti:</b> tutto funziona sul dispositivo ed è gratuito. Nessun account, nessun contatto, nessun tracciamento, nessun acquisto in-app. Unico uso di rete: un download gratuito una tantum del modello IA e, facoltativamente, il tuo URL per «altra telecamera».
+Tutto funziona sul tuo dispositivo senza account e senza pubblicità; l'interfaccia supporta 15 lingue.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima versione: rilevamento del movimento sul dispositivo con riconoscimento dell'oggetto (persona/animale), avvisi locali, un registro degli eventi fotografici e supporto per la fotocamera del telefono o un URL esterno della fotocamera.
+Camera Watch è un assistente di sorveglianza della telecamera che osserva il feed della telecamera e ti avvisa in caso di movimento, dicendoti cosa si è mosso (una persona, un cane, un gatto o altro). Sul dispositivo, nessuna pubblicità, interfaccia in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Um assistente
+Assistente de proteção de câmera que
 ```
 **Full introduction:**
 ```
-Um assistente de guarda-câmera que observa um feed de câmera e avisa sobre o movimento, dizendo o que se moveu: uma pessoa/intruso, cão, gato ou outro animal. O movimento é detectado no dispositivo com um alerta local e um registro de fotos para cada evento; ele pode usar a câmera do telefone ou um fluxo de câmera do navegador externo.
+Camera Watch é um assistente de proteção de câmera que observa a imagem da câmera e avisa sobre o movimento, informando o que se moveu (uma pessoa, cachorro, gato ou outro). O movimento é detectado no dispositivo.
 
-Um robô contratado que vigia uma câmera e avisa você ao detectar movimento — e diz o que se moveu: pessoa/intruso, cão, gato ou outro animal.
+O vídeo é analisado no aparelho e nunca mais sai dele. Os instantâneos e registros de eventos permanecem no armazenamento local e são removidos quando você desinstala o aplicativo.
 
-<b>Honesto e sem taxas ocultas:</b> tudo funciona no dispositivo e é grátis. Sem conta, sem contatos, sem rastreamento, sem compras no app. Único uso de rede: um download gratuito único do modelo de IA e, opcionalmente, sua URL para «outra câmera».
+Tudo funciona no seu dispositivo sem conta e sem anúncios; a interface suporta 15 idiomas.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeira versão: detecção de movimento no dispositivo com reconhecimento de objetos (pessoa/animal), alertas locais, um registro de eventos de fotos e suporte para a câmera do telefone ou um URL externo da câmera.
+Camera Watch é um assistente de proteção de câmera que observa a imagem da câmera e avisa sobre o movimento, informando o que se moveu (uma pessoa, cachorro, gato ou outro). No dispositivo, sem anúncios, interface em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-مساعد MotionHawk الذي
+مساعد حارس الكاميرا ذلك
 ```
 **Full introduction:**
 ```
-مساعد MotionHawk الذي يشاهد تغذية الكاميرا ويحذرك من الحركة، ويخبرك بما يتحرك: شخص/دخيل أو كلب أو قطة أو حيوان آخر. يتم اكتشاف الحركة على الجهاز مع تنبيه محلي وسجل صور لكل حدث ؛ ويمكنه استخدام كاميرا الهاتف أو دفق كاميرا متصفح خارجي.
+Camera Watch عبارة عن مساعد حارس الكاميرا الذي يراقب بث الكاميرا ويحذرك أثناء الحركة، ويخبرك بما يتحرك (شخص أو كلب أو قطة أو غير ذلك). تم الكشف عن الحركة على الجهاز.
 
-روبوت مُستأجَر يراقب الكاميرا وينبّهك عند الحركة — ويخبرك بما تحرّك: شخص/متسلل، كلب، قطة أو حيوان آخر.
+يتم تحليل الفيديو على الجهاز ولا يغادره أبداً. تظل لقطات وسجلات الأحداث في وحدة التخزين المحلية وتتم إزالتها عند إلغاء تثبيت التطبيق.
 
-<b>صادق وبلا رسوم خفية:</b> كل شيء يعمل على الجهاز ومجاني. بلا حساب، بلا جهات اتصال، بلا تتبّع، بلا مشتريات داخل التطبيق. الاستخدام الوحيد للشبكة: تنزيل مجاني لمرة واحدة لنموذج الذكاء الاصطناعي، واختيارياً رابطك لـ«كاميرا أخرى».
+كل شيء يعمل على جهازك بدون حساب أو إعلانات؛ الواجهة تدعم 15 لغة.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
-
-⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول: اكتشاف الحركة على الجهاز مع التعرف على الأشياء (شخص/حيوان)، والتنبيهات المحلية، وسجل أحداث الصور، ودعم كاميرا الهاتف أو عنوان URL للكاميرا الخارجية.
+Camera Watch عبارة عن مساعد حارس الكاميرا الذي يراقب بث الكاميرا ويحذرك أثناء الحركة، ويخبرك بما يتحرك (شخص أو كلب أو قطة أو غير ذلك). على الجهاز، بدون إعلانات، واجهة بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-एक कैमरा - गार्ड सहायक
+कैमरा-गार्ड सहायक वह
 ```
 **Full introduction:**
 ```
-एक कैमरा - गार्ड सहायक जो कैमरा फीड देखता है और आपको आवाजाही के बारे में चेतावनी देता है, आपको बताता है कि क्या हुआ: एक व्यक्ति/घुसपैठिया, कुत्ता, बिल्ली या अन्य जानवर। प्रत्येक ईवेंट के लिए एक स्थानीय अलर्ट और एक फोटो लॉग के साथ डिवाइस पर गति का पता लगाया जाता है; यह फोन कैमरा या बाहरी ब्राउज़र कैमरा स्ट्रीम का उपयोग कर सकता है।
+कैमरा वॉच एक कैमरा-गार्ड सहायक है जो कैमरे के फ़ीड को देखता है और आपको हरकत करने पर चेतावनी देता है, आपको बताता है कि क्या चल रहा है (एक व्यक्ति, कुत्ता, बिल्ली या अन्य)। डिवाइस पर गति का पता लगाया जाता है।
 
-एक किराये पर लिया रोबोट जो कैमरे पर नज़र रखता है और हलचल पर चेतावनी देता है — और बताता है कि क्या हिला: व्यक्ति/घुसपैठिया, कुत्ता, बिल्ली या अन्य जानवर।
+वीडियो का विश्लेषण डिवाइस पर किया जाता है और इसे कभी नहीं छोड़ा जाता है। इवेंट स्नैपशॉट और लॉग स्थानीय स्टोरेज में रहते हैं और जब आप ऐप को अनइंस्टॉल करते हैं तो हटा दिए जात��� हैं।
 
-<b>ईमानदार और कोई छिपा शुल्क नहीं:</b> सब कुछ डिवाइस पर चलता है और मुफ़्त है। कोई खाता नहीं, कोई संपर्क नहीं, कोई ट्रैकिंग नहीं, कोई इन-ऐप खरीद नहीं। नेटवर्क का एकमात्र उपयोग: AI मॉडल का एक बार मुफ़्त डाउनलोड और वैकल्पिक रूप से «दूसरे कैमरे» के लिए आपका URL।
+सब कुछ आपके डिवाइस पर बिना किसी खाते और बिना किसी विज्ञापन के चलता है; इंटरफ़ेस 15 भाषाओं का समर्थन करता है।
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
-
-⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-पहला रिलीज़: ऑब्जेक्ट की पहचान (व्यक्ति/जानवर), स्थानीय अलर्ट, फ़ोटो इवेंट लॉग और फ़ोन कैमरा या बाहरी कैमरा यूआरएल के लिए सपोर्ट के साथ ऑन - डिवाइस मोशन डिटेक्शन।
+कैमरा वॉच एक कैमरा-गार्ड सहायक है जो कैमरे के फ़ीड को देखता है और आपको हरकत करने पर चेतावनी देता है, आपको बताता है कि क्या चल रहा है (एक व्यक्ति, कुत्ता, बिल्ली या अन्य)। ऑन-डिवाइस, कोई विज्ञापन नहीं, 15-भाषा इंटरफ़ेस।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-カメラガードアシスタントは
+カメラガードアシスタント
 ```
 **Full introduction:**
 ```
-カメラガードアシスタントは、カメラのフィードを監視し、動きについて警告し、人/侵入者、犬、猫、またはその他の動物の動きを伝えます。モーションは、ローカルアラートと各イベントの写真ログを備えたデバイス上で検出されます。携帯電話のカメラまたは外部ブラウザのカメラストリームを使用できます。
+Camera Watch は、カメラの映像を監視し、動きを警告して、何が動いたか (人、犬、猫など) を知らせるカメラガード アシスタントです。デバイス上で動きが検出されます。
 
-カメラを見張り、動きがあると警告する雇われロボット。何が動いたかも伝えます：人/侵入者、犬、猫、その他の動物。
+ビデオはデバイス上で分析され、デバイスから離れることはありません。イベントのスナップショットとログはローカル ストレージに残り、アプリをアンインストールすると削除されます。
 
-<b>正直で隠れた料金なし：</b> すべて端末上で動作し無料です。アカウント・連絡先・追跡・アプリ内課金は一切なし。ネットワーク利用は唯一、AIモデルの一度きりの無料ダウンロードと、任意で「別のカメラ」用のあなたのURLのみ。
+アカウントや広告なしですべてがデバイス上で実行されます。インターフェイスは 15 の言語をサポ��トしています。
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
-
-⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-最初のリリース：オブジェクト認識（人/動物）、ローカルアラート、写真イベントログ、および電話カメラまたは外部カメラURLのサポートを備えたデバイス上の動き検出。
+Camera Watch は、カメラの映像を監視し、動きを警告して、何が動いたか (人、犬、猫など) を知らせるカメラガード アシスタントです。オンデバイス、広告なし、15 言語のインターフェース。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-攝影機保安助理會觀看攝影機拍攝
+攝影守護助理
 ```
 **Full introduction:**
 ```
-攝影機保安助理會觀看攝影機拍攝，並在移動時向你發出警告，告訴你移動的原因：人/入侵者、狗、貓或其他動物。系統會在裝置上偵測到動態，並為每個事件提供本機警示和相片記錄；它可以使用手機攝影機或外部瀏覽器攝影機串流。
+Camera Watch 是一款攝影機守護助手，可監視攝影機的影像並在發生移動時向您發出警告，告訴您移動的物件（人、狗、貓或其他）。在設備上偵測到運動。
 
-一個受雇的機器人，監看攝影機並在偵測到動作時警告你——還會告訴你是什麼移動了：人／入侵者、狗、貓或其他動物。
+視訊在設備上進行分析，並且永遠不會離開設備。事件快照和日誌保留在本機儲存中，並在您卸載應用程式時刪除。
 
-<b>誠實且無隱藏費用：</b>一切都在裝置上運行且免費。無帳號、無聯絡人、無追蹤、無應用程式內購。唯一的網路使用：一次性免費下載 AI 模型，以及可選的你的「其他相機」網址。
+一切都在您的裝置上運行，無需帳戶，也沒有廣告；介面支援15種語言。
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
-
-⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-首次發行：裝置上的動作偵測，包括物體辨識（人/動物）、本機警示、相片事件記錄，以及支援手機攝影機或外部攝影機網址。
+Camera Watch 是一款攝影機守護助手，可監視攝影機的影像並在發生移動時向您發出警告，告訴您移動的物件（人、狗、貓或其他）。裝置端、無廣告、15 種語言介面。
 ```

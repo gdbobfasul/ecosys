@@ -28,9 +28,9 @@
     "tesseract.js": "^5.1.1"
   },
   "devDependencies": {
-    "@capacitor/android": "^8.5.0",
-    "@capacitor/cli": "^8.5.0",
-    "@capacitor/core": "^8.5.0",
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/cli": "^8.5.1",
+    "@capacitor/core": "^8.5.1",
     "vite": "^5.4.8"
   }
 }

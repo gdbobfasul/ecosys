@@ -4,13 +4,13 @@
   "apps": [
     {
       "id": "authenticator",
-      "name": "Pupikes Toolkit Authenticator",
+      "name": "Authenticator & Passwords",
       "hw": true,
       "ru": true
     },
     {
       "id": "auto-sound-diagnostics",
-      "name": "auto-sound-diagnostics",
+      "name": "Auto Sound Diagnostics",
       "hw": true,
       "ru": true
     },

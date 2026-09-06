@@ -1,269 +1,284 @@
-# HouseLookBook — описание по език (Brief + Full + New features)
+# houselookbook — описание по език (Brief + Full + New features)
 
-_За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
-
-> ⚠️ **ky (кыргызки) НЕ съществува в AppGallery** — пропусни го (14 от 15 се поддържат). Махни отметките от **Greek** и **Turkish**, ако са чекнати (нямаме преводи за тях).
+_За AppGallery: Manage languages → добави език → попълни Brief (до 25 знака), Full, New features._
+> ⚠️ ky НЕ съществува в AppGallery — пропусни. Махни Greek/Turkish.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+Проектирайте и аранжирайте вашата мечта
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook ви позволява да проектирате и подреждате мечтания си дом етаж по етаж, да качвате снимки, да разглеждате галерия от домове на други хора и да се изкачвате в класация на общността.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
+На устройството приложението съхранява по същество само избрания от вас език на интерфейса. Вашият акаунт, дизайни и качени снимки са живи на сървъра, така че услугата да може да ги покаже и класира.
 
-⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
+Всичко работи на вашето устройств�� без акаунт и без реклами; интерфейсът поддържа 15 езика.
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание: дизайнер на домове етаж по етаж, качване на снимки, обществена галерия и класация на най - харесваните места на 15 езика.
+HouseLookBook ви позволява да проектирате и подреждате мечтания си дом етаж по етаж, да качвате снимки, да разглеждате галерия от домове на други хора и да се изкачвате в класация на общността. На устройството, без реклами, 15-езичен интерфейс.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Дизайн дома по этажам
+Спроектируйте и воплотите свою мечту
 ```
 **Full introduction:**
 ```
-Проектируйте дом мечты этаж за этажом: выберите площадь, стиль крыши, число этажей, цвета стен и акцентов, добавляйте комнаты и фото. Просматривайте галерею чужих домов и поднимайтесь в рейтинге самых понравившихся проектов.
+HouseLookBook позволяет вам спроектировать и обустроить дом своей мечты этаж за этажом, загружать фотографии, просматривать галерею домов других людей и подниматься в рейтинге сообщества.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
+На устройстве приложение сохраняет только выбранный вами язык интерфейса. Ваша учетная запись, дизайны и загруженные фотографии хранятся на сервере, поэтому сервис может их отображать и ранжировать.
 
-⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
+Все работает на вашем устройстве без учетной записи и рекламы; интерфейс поддерживает 15 языков.
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Первый выпуск: поэтажный дизайн дома, загрузка фотографий, публичная галерея и рейтинг самых популярных на 15 языках.
+HouseLookBook позволяет вам спроектировать и обустроить дом своей мечты этаж за этажом, загружать фотографии, просматривать галерею домов других людей и подниматься в рейтинге сообщества. На устройстве, без рекламы, интерфейс на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+Спроектуйте та оформіть свою мрію
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook дозволяє вам проектувати та облаштовувати будинок вашої мрії поверх за поверхом, завантажувати фотографії, переглядати галерею будинків інших людей і підніматися в рейтингу спільноти.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
+На пристрої програма зберігає лише вибрану вами мову інтерфейсу. Ваш обліковий запис, дизайни та завантажені фотографії знаходяться на сервері, щоб служба могла їх показувати та ранжувати.
 
-⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
+Усе працює на вашому пристрої без облікового запису та реклами; інтерфейс підтримує 15 мов.
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Перший реліз: поповерховий дизайн помешкання, завантаження фотографій, загальнодоступна галерея та рейтинг найпопулярніших на 15 мовах.
+HouseLookBook дозволяє вам проектувати та облаштовувати будинок вашої мрії поверх за поверхом, завантажувати фотографії, переглядати галерею будинків інших людей і підніматися в рейтингу спільноти. На пристрої, без реклами, 15-мовний інтерфейс.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+Design and arrange your dream
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook lets you design and arrange your dream home floor by floor, upload photos, browse a gallery of other people’s homes and climb a community ranking.
+
+On the device the app stores essentially only your chosen interface language. Your account, designs and uploaded photos live on the server so the service can show and rank them.
+
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
-
-⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+HouseLookBook lets you design and arrange your dream home floor by floor, upload photos, browse a gallery of other people’s homes and climb a community ranking. On-device, no ads, 15-language interface.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+Entwerfen und arrangieren Sie Ihren Traum
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+Mit HouseLookBook können Sie Ihr Traumhaus Etage für Etage entwerfen und arrangieren, Fotos hochladen, eine Galerie mit Häusern anderer Leute durchsuchen und in der Community-Rangliste aufsteigen.
+
+Auf dem Gerät speichert die App im Wesentlichen nur die von Ihnen gewählte Oberflächensprache. Ihr Konto, Ihre Designs und hochgeladenen Fotos befinden sich auf dem Server, sodass der Dienst sie anzeigen und bewerten kann.
+
+Alles läuft auf Ihrem Gerät ohne Konto und ohne Werbung; Die Schnittstelle unterstützt 15 Sprachen.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
-
-⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
-Erste Veröffentlichung: Floor-by-Floor-Home-Designer, Foto-Uploads, eine öffentliche Galerie und ein beliebtes Ranking in 15 Sprachen.
+Mit HouseLookBook können Sie Ihr Traumhaus Etage für Etage entwerfen und arrangieren, Fotos hochladen, eine Galerie mit Häusern anderer Leute durchsuchen und in der Community-Rangliste aufsteigen. Auf dem Gerät, keine Werbung, 15-sprachige Benutzeroberfläche.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+Concevez et aménagez votre rêve
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook vous permet de concevoir et d'organiser la maison de vos rêves, étage par étage, de télécharger des photos, de parcourir une galerie de maisons d'autres personnes et de grimper dans le classement de la communauté.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
+Sur l'appareil, l'application stocke essentiellement uniquement la langue d'interface que vous avez choisie. Votre compte, vos créations et vos photos téléchargées sont en direct sur le serveur afin que le service puisse les afficher et les classer.
 
-⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
+Tout fonctionne sur votre appareil sans compte ni publicité ; l'interface prend en charge 15 langues.
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version : concepteur de maison étage par étage, téléchargements de photos, galerie publique et classement le plus apprécié, en 15 langues.
+HouseLookBook vous permet de concevoir et d'organiser la maison de vos rêves, étage par étage, de télécharger des photos, de parcourir une galerie de maisons d'autres personnes et de grimper dans le classement de la communauté. Sur l'appareil, sans publicité, interface en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+Diseña y organiza tu sueño
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook le permite diseñar y organizar la casa de sus sueños piso por piso, cargar fotos, explorar una galería de casas de otras personas y ascender en el ranking de la comunidad.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+En el dispositivo, la aplicación almacena esencialmente sólo el idioma de interfaz elegido. Su cuenta, sus diseños y sus fotos cargadas se encuentran en el servidor para que el servicio pueda mostrarlos y clasificarlos.
 
-⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primer lanzamiento: diseñador de casas piso por piso, cargas de fotos, una galería pública y un ranking de los más populares, en 15 idiomas.
+HouseLookBook le permite diseñar y organizar la casa de sus sueños piso por piso, cargar fotos, explorar una galería de casas de otras personas y ascender en el ranking de la comunidad. En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+Diseña y organiza tu sueño
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook le permite diseñar y organizar la casa de sus sueños piso por piso, cargar fotos, explorar una galería de casas de otras personas y ascender en el ranking de la comunidad.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+En el dispositivo, la aplicación almacena esencialmente sólo el idioma de interfaz elegido. Su cuenta, sus diseños y sus fotos cargadas se encuentran en el servidor para que el servicio pueda mostrarlos y clasificarlos.
+
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-First release: floor-by-floor home designer, photo uploads, a public gallery and a most-liked ranking, in 15 languages.
+HouseLookBook le permite diseñar y organizar la casa de sus sueños piso por piso, cargar fotos, explorar una galería de casas de otras personas y ascender en el ranking de la comunidad. En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+Progetta e realizza il tuo sogno
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook ti consente di progettare e organizzare la casa dei tuoi sogni piano per piano, caricare foto, sfogliare una galleria di case di altre persone e scalare la classifica della comunità.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
+Sul dispositivo l'app memorizza essenzialmente solo la lingua dell'interfaccia scelta. Il tuo account, i disegni e le foto caricate vivono sul server in modo che il servizio possa mostrarli e classificarli.
 
-⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
+Tutto funziona sul tuo dispositivo senza account e senza pubblicità; l'interfaccia supporta 15 lingue.
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima uscita: designer di case piano per piano, caricamenti di foto, una galleria pubblica e una classifica dei preferiti, in 15 lingue.
+HouseLookBook ti consente di progettare e organizzare la casa dei tuoi sogni piano per piano, caricare foto, sfogliare una galleria di case di altre persone e scalare la classifica della comunità. Sul dispositivo, nessuna pubblicità, interfaccia in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+Projete e organize seu sonho
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook permite que você projete e organize a casa dos seus sonhos, andar por andar, faça upload de fotos, navegue em uma galeria de casas de outras pessoas e suba na classificação da comunidade.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
+No dispositivo, o aplicativo armazena essencialmente apenas o idioma de interface escolhido. Sua conta, designs e fotos enviadas ficam no servidor para que o serviço possa exibi-los e classificá-los.
 
-⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
+Tudo funciona no seu dispositivo sem conta e sem anúncios; a interface suporta 15 idiomas.
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeiro lançamento: designer de casas andar a andar, uploads de fotos, uma galeria pública e um ranking dos mais apreciados, em 15 idiomas.
+HouseLookBook permite que você projete e organize a casa dos seus sonhos, andar por andar, faça upload de fotos, navegue em uma galeria de casas de outras pessoas e suba na classificação da comunidade. No dispositivo, sem anúncios, interface em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+تصميم وترتيب حلمك
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+يتيح لك HouseLookBook تصميم وترتيب منزل أحلامك طابقًا تلو الآخر، وتحميل الصور، وتصفح معرض لمنازل الآخرين، والارتقاء في تصنيف المجتمع.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
+يقوم التطبيق على الجهاز بتخزين لغة الواجهة التي اخترتها فقط. يتم بث حسابك وتصميماتك وصورك التي تم تحميلها على الخادم حتى تتمكن الخدمة من عرضها وتصنيفها.
 
-⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
+كل شيء يعمل على جهازك بدون حساب أو إعلانات؛ الواجهة تدعم 15 لغة.
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول: مصمم منزل من طابق إلى طابق، وتحميلات صور، ومعرض عام، وترتيب أكثر شعبية، بـ 15 لغة.
+يتيح لك HouseLookBook تصميم وترتيب منزل أحلامك طابقًا تلو الآخر، وتحميل الصور، وتصفح معرض لمنازل الآخرين، والارتقاء في تصنيف المجتمع. على الجهاز، بدون إعلانات، واجهة بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+अपने सपने को डिज़ाइन करें और व्यवस्थित करें
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+हाउसलुकबुक आपको अपने सपनों के घर को फर्श दर फर्श डिजाइन और व्यवस्थित करने, तस्वीरें अपलोड करने, अन्य लोगों के घरों की गैलरी ब्राउज़ करने और सामुदायिक रैंकिंग पर चढ़ने की सुविधा देता है।
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
+डिवाइस पर ऐप अनिवार्य रूप से केवल आपकी चुनी हुई इंटरफ़ेस भाषा को संग्रहीत करता है। आपका खाता, डिज़ाइन और अपलोड की गई तस्वीरें सर्वर पर लाइव होती हैं ताकि सेवा उन्हें दिखा और रैंक कर सके।
 
-⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
+सब कुछ आपके डिवाइस पर बिना किसी खाते और बिना किसी विज्ञापन के चलता है; इंटरफ़ेस 15 भाषाओं का समर्थन करता है।
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-पहली रिलीज़: फ़्लोर - दर - फ़्लोर होम डिज़ाइनर, फ़ोटो अपलोड, एक पब्लिक गैलरी और 15 भाषाओं में सबसे ज़्यादा पसंद की जाने वाली रैंकिंग।
+हाउसलुकबुक आपको अपने सपनों के घर को फर्श दर फर्श डिजाइन और व्यवस्थित करने, तस्वीरें अपलोड करने, अन्य लोगों के घरों की गैलरी ब्राउज़ करने और सामुदायिक रैंकिंग पर चढ़ने की सुविधा देता है। ऑन-डिवाइस, कोई विज्ञापन नहीं, 15-भाषा इंटरफ़ेस।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+夢をデザインしてアレンジする
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook を使用すると、夢の家をフロアごとに設計および配置したり、写真をアップロードしたり、他の人の家のギャラリーを閲覧したり、コミュニティのランキングを上昇したりすることができます。
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
+デバイス上では、アプリは基本的に選択したインターフェイス言語のみを保存します。あなたのアカウント、デザイン、アップロードされた写真はサーバー上に存在するため、サービスはそれらを表示してランク付けできます。
 
-⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
+アカウントや広告なしですべてがデバイス上で実行されます。インターフェイスは 15 ��言語をサポートしています。
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-最初のリリース：フロアバイフロアのホームデザイナー、写真のアップロード、公開ギャラリー、15の言語で最も人気のあるランキング。
+HouseLookBook を使用すると、夢の家をフロアごとに設計および配置したり、写真をアップロードしたり、他の人の家のギャラリーを閲覧したり、コミュニティのランキングを上昇したりすることができます。オンデバイス、広告なし、15 言語のインターフェース。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-Design and arrange your
+設計並安排你的夢想
 ```
 **Full introduction:**
 ```
-Design and arrange your dream home floor by floor: choose the footprint, roof style, number of floors, wall and accent colors, add rooms and upload photos, then browse a gallery of other people’s homes and climb a community ranking of the most-liked designs.
+HouseLookBook 可讓您逐層設計和佈置您的夢想家園、上傳照片、瀏覽其他人的房屋圖庫並攀登社區排名。
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
+在設備上，應用程式基本上只儲存您選擇的介面語言。您的帳戶、設計和上傳的照片都保存在伺服器上，以便服務可以顯示它們並對其進行排名。
 
-⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
+一切都在您的裝置上運行，無需帳戶，也沒有廣告；介面支援15種語言。
+
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-首次推出： 15種語言的逐層房源設計師、相片上傳、公開圖片庫和最受歡迎的排名。
+HouseLookBook 可讓您逐層設計和佈置您的夢想家園、上傳照片、瀏覽其他人的房屋圖庫並攀登社區排名。裝置端、無廣告、15 種語言介面。
 ```

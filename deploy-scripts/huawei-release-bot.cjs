@@ -542,27 +542,52 @@ function spawnBrowser() {
     // ВАЖНО: „вече на верния ап" САМО ако URL е страница на АПА (#/myApp/<id>/…) И текстът има пакета.
     // Инак списъкът My Apps (който съдържа ВСИЧКИ пакети) дава фалшив положителен → пропуска навигацията.
     let onApp = false;
-    try { const _u = p.url() || ''; const cur = await findBest(); onApp = /#\/myApp\/\d+\/[^/]/.test(_u) && new RegExp(appId.replace(/\./g, '\\.'), 'i').test(cur.text || ''); } catch (_) {}
+    // „Вече на верния ап" = URL е страница на КОНКРЕТЕН ап (#/myApp/<id>/…, НЕ голият списък #/myApp) И
+    // на страницата има ИЛИ пакета, ИЛИ ясни маркери на ап-страница. Само пакетът е твърде строг: на
+    // App info се вижда името, не пакетът → onApp падаше и ботът тръгваше да търси в списъка (и не намираше
+    // апове от стр. 2+). URL с /<id>/ никога не е списъкът, затова маркерите са безопасни (не дават фалшив
+    // положителен от My Apps). Заредено чрез nav-to-app по числов ID → URL-ът е верният ап.
+    try {
+      const _u = p.url() || ''; const cur = await findBest();
+      const urlIsApp = /#\/myApp\/\d+\/[^/]/.test(_u);
+      const pkgSeen = new RegExp(appId.replace(/\./g, '\\.'), 'i').test(cur.text || '');
+      const appMarkers = /App information|Manage packages|Manage languages|Version information|Compatible devices|Brief introduction|For reviewer|Set as test version|Country\/Region for release|Software version|Version code/i.test(cur.text || '');
+      onApp = urlIsApp && (pkgSeen || appMarkers);
+    } catch (_) {}
     if (onApp) { log('вече съм на верния ап (' + appId + ')'); }
     else {
       log('навигирам до ' + app + ' (' + appId + ')…');
-      await p.goto(APP_LIST_URL, { waitUntil: 'load' }).catch(() => {});
-      await sleep(2600);
+      // Надежден рецепт (както четецът на статуси): goto + RELOAD + дълго чакане — таблицата се пълни
+      // лениво и БЕЗ reload често остава празна (флаки списък) → редът не се намира. С reload се зарежда.
+      await p.goto(APP_LIST_URL, { waitUntil: 'domcontentloaded', timeout: 40000 }).catch(() => {});
+      await sleep(3000);
+      await p.reload({ waitUntil: 'domcontentloaded', timeout: 40000 }).catch(() => {});
+      await sleep(8000);
       // RETRY: списъкът зарежда БАВНО (особено след свеж логин), а табът може да е HarmonyOS (Total 0).
       // Пробвай таб Android + търсене на реда до 8 пъти (~28с), докато пакетът се появи.
       let ok = false;
-      for (let tryN = 0; tryN < 8 && !ok; tryN++) {
-        await p.evaluate(() => { const el = [...document.querySelectorAll('.el-tabs__item')].find((e) => /^\s*Android\s*$/.test((e.innerText || '').trim())); if (el) el.click(); }).catch(() => {});
-        await sleep(2200);
-        ok = await p.evaluate((pkg) => {
-          const r = [...document.querySelectorAll('tr, .el-table__row')].find((x) => (x.innerText || '').includes(pkg));
-          if (!r) return false;
-          const e = [...r.querySelectorAll('a, button, span')].find((x) => /^\s*Edit\s*$/.test(x.innerText || ''));
-          if (!e) return false; e.scrollIntoView({ block: 'center' }); e.click(); return true;
-        }, appId).catch(() => false);
-        if (!ok) await sleep(1400);
+      // Списъкът е ПАГИНИРАН (10/страница). Апове от стр. 2+ (напр. масово създадени) не се намираха, защото
+      // търсехме само видимата страница. Обхождаме страниците с „next" (.el-pagination .btn-next), докато
+      // намерим реда с пакета, после кликаме „Edit" (→ верния редактор на версията, като при ръчно).
+      const clickAndroid = async () => { await p.evaluate(() => { const el = [...document.querySelectorAll('.el-tabs__item')].find((e) => /^\s*Android\s*$/.test((e.innerText || '').trim())); if (el) el.click(); }).catch(() => {}); };
+      await clickAndroid(); await sleep(2200);
+      for (let pageN = 0; pageN < 8 && !ok; pageN++) {
+        for (let tryN = 0; tryN < 3 && !ok; tryN++) {
+          ok = await p.evaluate((pkg) => {
+            const r = [...document.querySelectorAll('tr, .el-table__row')].find((x) => (x.innerText || '').includes(pkg));
+            if (!r) return false;
+            const e = [...r.querySelectorAll('a, button, span')].find((x) => /^\s*Edit\s*$/.test(x.innerText || ''));
+            if (!e) return false; e.scrollIntoView({ block: 'center' }); e.click(); return true;
+          }, appId).catch(() => false);
+          if (!ok) await sleep(1500);
+        }
+        if (!ok) {
+          const moved = await p.evaluate(() => { const nx = document.querySelector('.el-pagination .btn-next'); if (nx && !nx.disabled && nx.getAttribute('aria-disabled') !== 'true') { nx.click(); return true; } return false; }).catch(() => false);
+          if (!moved) break;
+          await sleep(2800);
+        }
       }
-      if (!ok) { log('↷ не намерих реда на ' + appId + ' в списъка (таб Android) след опити — отвори апа ръчно.'); return false; }
+      if (!ok) { log('↷ не намерих реда на ' + appId + ' в списъка (таб Android) след опити/страници — отвори апа ръчно.'); return false; }
       for (let k = 0; k < 15 && !/#\/myApp\/\d+\//.test(p.url() || ''); k++) await sleep(600);
       await sleep(2500);
     }
@@ -1511,7 +1536,20 @@ function spawnBrowser() {
           const errs2 = await getErrors(frame);
           if (errs2.length) {
             const testing = errs2.some((e) => /open testing|start time|user list|version code later|released version/i.test(e));
-            if (testing) log('⚠ Submit-ът закача ОСТАТЪЧЕН „Open testing" трак на този ап (start time / user list / version code). Това е състояние в конзолата, не бота: в раздела за тестова версия махни/довърши тестовия трак (или го изтрий), после Submit само за Release. Другото (описание+APK 1.00xx+privacy+reviewer) е попълнено.');
+            if (testing) {
+              log('⚠ Submit-ът закача ОСТАТЪЧЕН „Open testing" трак на този ап (start time / user list / version code). Това е състояние в конзолата, не бота: в раздела за тестова версия махни/довърши тестовия трак (или го изтрий), после Submit само за Release. Другото (описание+APK 1.00xx+privacy+reviewer) е попълнено.');
+              if (process.env.OT_DEBUG) { try {
+                const dbg = await frame.evaluate(() => {
+                  const tabs = [...document.querySelectorAll('.el-tabs__item,[role="tab"],.el-step__title')].map((e) => (e.innerText || '').trim()).filter(Boolean);
+                  const btns = [...document.querySelectorAll('button,a,.el-button,.el-link,span')].map((e) => (e.innerText || '').trim()).filter((t) => t && /delete|remove|cancel|clear|discard|изтрий|отмени|test version|open testing|Manage/i.test(t));
+                  let sec = '';
+                  for (const g of document.querySelectorAll('.el-form-item, tr, .field, .form-item, .el-card, section')) { if (/test(ing)?\s*version|open testing/i.test(g.innerText || '')) { sec += (g.outerHTML || '').slice(0, 1000) + '\n----\n'; } }
+                  return { url: location.href, tabs: [...new Set(tabs)], btns: [...new Set(btns)], sec: sec.slice(0, 3500) };
+                });
+                require('fs').writeFileSync(process.env.OT_DEBUG, JSON.stringify(dbg, null, 1));
+                log('  [debug] OT структура → ' + process.env.OT_DEBUG);
+              } catch (_) {} }
+            }
             else log('⚠ след Submit: ' + errs2.slice(0, 4).join(' | ') + ' — ако иска „Proof of copyright" → качи ръчно и Submit пак.');
           } else { log('✅ SUBMIT натиснат (авто). Провери статуса в конзолата (трябва „Under review").'); recordSubmittedVersionTop(); }
         } else {

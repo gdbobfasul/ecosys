@@ -1,325 +1,284 @@
-# Pupikes FAQ Desk — описание по език (Brief + Full + New features)
+# business-faq-bot — описание по език (Brief + Full + New features)
 
-_За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
-
-> ⚠️ **ky (кыргызки) НЕ съществува в AppGallery** — пропусни го (14 от 15 се поддържат). Махни отметките от **Greek** и **Turkish**, ако са чекнати (нямаме преводи за тях).
+_За AppGallery: Manage languages → добави език → попълни Brief (до 25 знака), Full, New features._
+> ⚠️ ky НЕ съществува в AppGallery — пропусни. Махни Greek/Turkish.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Бот, базиран на правила
+Вашите клиенти често
 ```
 **Full introduction:**
 ```
-Бот, базиран на правила, който автоматично отговаря на често задаваните въпроси на клиентите ви, като използва база от знания за често задавани въпроси за ключови думи, поздрави, съобщения в работно време и извън работно време, бутони за бърз отговор и резервен вариант, който ескалира до човек. Работи изцяло на устройството без платен изкуствен интелект, а вграденият демо чат Ви позволява да го тествате веднага.
+Pupikes FAQ Desk автоматично отговаря на често задавани въпроси на вашите клиенти от база от знания за ключови въпроси с често задавани въпроси, с поздрави, съобщения за работно време, бързи отговори и резервно връщане към човек. Работи изцяло на устройството без платен AI.
 
-Робот, който отговаря автоматично на честите въпроси на клиентите ти — по правила (ключови думи), изцяло на устройството. Без платен изкуствен интелект, без акаунти, без проследяване.
+Базата от знания и настройките на ЧЗВ се съхраняват само на вашето устройство. Отговарянето работи напълно офлайн.
 
-Поверителност: без контакти, без акаунти, без локация, без проследяване. Базата знания се пази само на това устройство.
+Всичко работи на вашето устройство без акаунт и без реклами; интерфейсът поддържа 15 езика.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание: база данни с често задавани въпроси за ключови думи на устройството с работно време, менюта за бърз отговор, резервен вариант за ескалация на хора и демо чат за незабавно тестване.
+Pupikes FAQ Desk автоматично отговаря на често задавани въпроси на вашите клиенти от база от знания за ключови въпроси с често задавани въпроси, с поздрави, съобщения за работно време, бързи отговори и резервно връщане към човек. На устройството, без реклами, 15-езичен интерфейс.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Бот на основе правил
+Ваши клиенты часто
 ```
 **Full introduction:**
 ```
-Бот на основе правил, который автоматически отвечает на часто задаваемые вопросы ваших клиентов, используя базу знаний FAQ по ключевым словам, приветствия, сообщения в рабочее время и в нерабочее время, кнопки быстрого ответа и запасной вариант, который переходит к человеку. Он работает полностью на устройстве без платного ИИ, а встроенный демо-чат позволяет сразу протестировать его.
+Служба часто задаваемых вопросов Pupikes автоматически отвечает на часто задаваемые вопросы ваших клиентов из базы знаний часто задаваемых вопросов по ключевым словам, с приветствиями, сообщениями в рабочее время, быстрыми ответами и обращением к человеку. Он работает полностью на устройстве без платного искусственного интеллекта.
 
-Бот, который автоматически отвечает на частые вопросы клиентов — по правилам (ключевым словам), полностью на устройстве. Без платного ИИ, без аккаунтов, без слежки.
+База знаний FAQ и настройки хранятся только на вашем устройстве. Ответ работает полностью в автономном режиме.
 
-Конфиденциальность: без контактов, без аккаунтов, без локации, без слежки. База знаний хранится только на этом устройстве.
+Все работает на вашем устройстве без учетной записи и рекламы; интерфейс поддерживает 15 языков.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Первый выпуск: база знаний FAQ по ключевым словам на устройстве с рабочими часами, меню быстрого ответа, резервным вариантом эскалации человека и демонстрационным чатом для мгновенного тестирования.
+Служба часто задаваемых вопросов Pupikes автоматически отвечает на часто задаваемые вопросы ваших клиентов из базы знаний часто задаваемых вопросов по ключевым словам, с приветствиями, сообщениями в рабочее время, быстрыми ответами и обращением к человеку. На устройстве, без рекламы, интерфейс на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Бот на основі правил
+Ваші клієнти часто
 ```
 **Full introduction:**
 ```
-Бот на основі правил, який автоматично відповідає на поширені запитання ваших клієнтів, використовуючи базу знань поширених запитань за ключовими словами, привітання, робочі години та повідомлення в неробочий час, кнопки швидкої відповіді та запасний варіант, який передається людині. Він працює повністю на пристрої без платного ШІ, а вбудований демонстраційний чат дозволяє негайно протестувати його.
+Pupikes FAQ Desk автоматично відповідає на поширені запитання ваших клієнтів із бази знань із ключовими словами FAQ, за допомогою привітань, повідомлень про робочі години, швидких відповідей і зворотного зв’язку з людиною. Він працює повністю на пристрої без платного ШІ.
 
-Бот, що автоматично відповідає на часті запитання клієнтів — за правилами (ключовими словами), повністю на пристрої. Без платного ШІ, без акаунтів, без стеження.
+База знань FAQ та налаштування зберігаються лише на вашому пристрої. Відповідь працює повністю в автономному режимі.
 
-Конфіденційність: без контактів, без акаунтів, без локації, без стеження. База знань зберігається лише на цьому пристрої.
+Усе працює на вашому пристрої без облікового запису та реклами; інтерфейс підтримує 15 мов.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Перший реліз: база знань про поширені запитання щодо ключових слів на пристрої з робочими годинами, меню швидких відповідей, резервним кодом людської ескалації та демонстраційним чатом для миттєвого тестування.
+Pupikes FAQ Desk автоматично відповідає на поширені запитання ваших клієнтів із бази знань із ключовими словами FAQ, за допомогою привітань, повідомлень про робочі години, швидких відповідей і зворотного зв’язку з людиною. На пристрої, без реклами, 15-мовний інтерфейс.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-A rule-based bot that
+Your customers’ frequently
 ```
 **Full introduction:**
 ```
-A rule-based bot that automatically answers your customers' frequently asked questions using a keyword FAQ knowledge base, greetings, office-hours and out-of-hours messages, quick-reply buttons, and a fallback that escalates to a human. It runs entirely on-device with no paid AI, and a built-in demo chat lets you test it immediately.
+Pupikes FAQ Desk automatically answers your customers’ frequently asked questions from a keyword FAQ knowledge base, with greetings, office-hours messages, quick replies and a fallback to a human. It runs entirely on-device with no paid AI.
 
-A bot that automatically answers your customers’ common questions — by rules (keywords), entirely on-device. No paid AI, no accounts, no tracking.
+The FAQ knowledge base and settings are stored only on your device. Answering works fully offline.
 
-Privacy: no contacts, no accounts, no location, no tracking. The knowledge base stays only on this device.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
-
-⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
-First release: on-device keyword FAQ knowledge base with office hours, quick-reply menus, human-escalation fallback, and a demo chat for instant testing.
+Pupikes FAQ Desk automatically answers your customers’ frequently asked questions from a keyword FAQ knowledge base, with greetings, office-hours messages, quick replies and a fallback to a human. On-device, no ads, 15-language interface.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Ein regelbasierter Bot
+Ihre Kunden häufig
 ```
 **Full introduction:**
 ```
-Ein regelbasierter Bot, der die häufig gestellten Fragen Ihrer Kunden mithilfe einer Keyword-FAQ-Wissensdatenbank, Begrüßungen, Nachrichten zu Bürozeiten und außerhalb der Geschäftszeiten, Schnellantwortschaltflächen und einem Fallback, das auf einen Menschen eskaliert, automatisch beantwortet. Es läuft vollständig auf dem Gerät ohne bezahlte KI, und ein integrierter Demo-Chat ermöglicht es Ihnen, es sofort zu testen.
+Pupikes FAQ Desk beantwortet automatisch die häufig gestellten Fragen Ihrer Kunden aus einer FAQ-Wissensdatenbank mit Schlüsselwörtern, mit Begrüßungen, Nachrichten zu Bürozeiten, schnellen Antworten und einem Ersatz für einen Menschen. Es läuft vollständig auf dem Gerät und ohne kostenpflichtige KI.
 
-Ein Bot, der die häufigen Fragen deiner Kunden automatisch beantwortet — nach Regeln (Schlüsselwörter), komplett auf dem Gerät. Keine bezahlte KI, keine Konten, kein Tracking.
+Die FAQ-Wissensdatenbank und die Einstellungen werden nur auf Ihrem Gerät gespeichert. Die Beantwortung funktioniert vollständig offline.
 
-Datenschutz: keine Kontakte, keine Konten, kein Standort, kein Tracking. Die Wissensbasis bleibt nur auf diesem Gerät.
+Alles läuft auf Ihrem Gerät ohne Konto und ohne Werbung; Die Schnittstelle unterstützt 15 Sprachen.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
-
-⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
-Erste Version: On-Device-Keyword-FAQ-Wissensdatenbank mit Bürozeiten, schnell reagierenden Menüs, menschlichem Eskalationsfallback und einem Demo-Chat für sofortige Tests.
+Pupikes FAQ Desk beantwortet automatisch die häufig gestellten Fragen Ihrer Kunden aus einer FAQ-Wissensdatenbank mit Schlüsselwörtern, mit Begrüßungen, Nachrichten zu Bürozeiten, schnellen Antworten und einem Ersatz für einen Menschen. Auf dem Gerät, keine Werbung, 15-sprachige Benutzeroberfläche.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Un bot basé sur
+Les fréquents de vos clients
 ```
 **Full introduction:**
 ```
-Un bot basé sur des règles qui répond automatiquement aux questions fréquemment posées par vos clients à l'aide d'une base de connaissances FAQ par mot-clé, de messages de bienvenue, d'heures de bureau et d'heures creuses, de boutons de réponse rapide et d'une solution de repli qui devient humaine. Il fonctionne entièrement sur l'appareil sans IA payante, et un chat de démonstration intégré vous permet de le tester immédiatement.
+Pupikes FAQ Desk répond automatiquement aux questions fréquemment posées par vos clients à partir d'une base de connaissances FAQ par mots clés, avec des salutations, des messages pendant les heures de bureau, des réponses rapides et un recours à un humain. Il fonctionne entièrement sur l'appareil, sans IA payante.
 
-Un bot qui répond automatiquement aux questions fréquentes de tes clients — par règles (mots-clés), entièrement sur l’appareil. Sans IA payante, sans comptes, sans suivi.
+La base de connaissances FAQ et les paramètres sont stockés uniquement sur votre appareil. La réponse fonctionne entièrement hors ligne.
 
-Confidentialité : pas de contacts, pas de comptes, pas de localisation, pas de suivi. La base de connaissances reste uniquement sur cet appareil.
+Tout fonctionne sur votre appareil sans compte ni publicité ; l'interface prend en charge 15 langues.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
-
-⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version : base de connaissances FAQ sur les mots-clés sur l'appareil avec heures de bureau, menus de réponse rapide, repli de l'escalade humaine et un chat de démonstration pour des tests instantanés.
+Pupikes FAQ Desk répond automatiquement aux questions fréquemment posées par vos clients à partir d'une base de connaissances FAQ par mots clés, avec des salutations, des messages pendant les heures de bureau, des réponses rapides et un recours à un humain. Sur l'appareil, sans publicité, interface en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Un bot basado en reglas
+La frecuencia de tus clientes
 ```
 **Full introduction:**
 ```
-Un bot basado en reglas que responde automáticamente a las preguntas más frecuentes de sus clientes utilizando una base de conocimientos de preguntas frecuentes de palabras clave, saludos, mensajes de horas de oficina y fuera de horario, botones de respuesta rápida y un respaldo que se escala a un humano. Se ejecuta completamente en el dispositivo sin IA de pago, y un chat de demostración incorporado te permite probarlo de inmediato.
+Pupikes FAQ Desk responde automáticamente a las preguntas frecuentes de sus clientes desde una base de conocimientos de preguntas frecuentes sobre palabras clave, con saludos, mensajes en horario de oficina, respuestas rápidas y un recurso humano. Se ejecuta completamente en el dispositivo sin IA paga.
 
-Un bot que responde automáticamente las preguntas frecuentes de tus clientes — por reglas (palabras clave), totalmente en el dispositivo. Sin IA de pago, sin cuentas, sin rastreo.
+La base de conocimientos y la configuración de las preguntas frecuentes se almacenan únicamente en su dispositivo. Responder funciona completamente sin conexión.
 
-Privacidad: sin contactos, sin cuentas, sin ubicación, sin rastreo. La base de conocimiento permanece solo en este dispositivo.
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primera versión: base de conocimientos de preguntas frecuentes sobre palabras clave en el dispositivo con horarios de oficina, menús de respuesta rápida, alternativa de escalada humana y un chat de demostración para pruebas instantáneas.
+Pupikes FAQ Desk responde automáticamente a las preguntas frecuentes de sus clientes desde una base de conocimientos de preguntas frecuentes sobre palabras clave, con saludos, mensajes en horario de oficina, respuestas rápidas y un recurso humano. En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Un bot basado en reglas
+La frecuencia de tus clientes
 ```
 **Full introduction:**
 ```
-Un bot basado en reglas que responde automáticamente a las preguntas más frecuentes de sus clientes utilizando una base de conocimientos de preguntas frecuentes de palabras clave, saludos, mensajes de horas de oficina y fuera de horario, botones de respuesta rápida y un respaldo que se escala a un humano. Se ejecuta completamente en el dispositivo sin IA de pago, y un chat de demostración incorporado te permite probarlo de inmediato.
+Pupikes FAQ Desk responde automáticamente a las preguntas frecuentes de sus clientes desde una base de conocimientos de preguntas frecuentes sobre palabras clave, con saludos, mensajes en horario de oficina, respuestas rápidas y un recurso humano. Se ejecuta completamente en el dispositivo sin IA paga.
 
-Un bot que responde automáticamente las preguntas frecuentes de tus clientes — por reglas (palabras clave), totalmente en el dispositivo. Sin IA de pago, sin cuentas, sin rastreo.
+La base de conocimientos y la configuración de las preguntas frecuentes se almacenan únicamente en su dispositivo. Responder funciona completamente sin conexión.
 
-Privacidad: sin contactos, sin cuentas, sin ubicación, sin rastreo. La base de conocimiento permanece solo en este dispositivo.
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primera versión: base de conocimientos de preguntas frecuentes sobre palabras clave en el dispositivo con horarios de oficina, menús de respuesta rápida, alternativa de escalada humana y un chat de demostración para pruebas instantáneas.
+Pupikes FAQ Desk responde automáticamente a las preguntas frecuentes de sus clientes desde una base de conocimientos de preguntas frecuentes sobre palabras clave, con saludos, mensajes en horario de oficina, respuestas rápidas y un recurso humano. En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Un bot basato su regole
+I tuoi clienti lo fanno spesso
 ```
 **Full introduction:**
 ```
-Un bot basato su regole che risponde automaticamente alle domande frequenti dei tuoi clienti utilizzando una knowledge base di FAQ per parole chiave, saluti, messaggi in orario d'ufficio e fuori orario, pulsanti di risposta rapida e un fallback che si intensifica a un essere umano. Funziona interamente su dispositivo senza AI a pagamento e una chat demo integrata ti consente di testarlo immediatamente.
+Pupikes FAQ Desk risponde automaticamente alle domande più frequenti dei tuoi clienti da una knowledge base di domande frequenti sulle parole chiave, con saluti, messaggi in orario d'ufficio, risposte rapide e un fallback a un essere umano. Funziona interamente sul dispositivo senza intelligenza artificiale a pagamento.
 
-Un bot che risponde automaticamente alle domande frequenti dei tuoi clienti — per regole (parole chiave), interamente sul dispositivo. Senza IA a pagamento, senza account, senza tracciamento.
+La knowledge base e le impostazioni delle domande frequenti sono archiviate solo sul tuo dispositivo. La risposta funziona completamente offline.
 
-Privacy: niente contatti, niente account, niente posizione, niente tracciamento. La base di conoscenza resta solo su questo dispositivo.
+Tutto funziona sul tuo dispositivo senza account e senza pubblicità; l'interfaccia supporta 15 lingue.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima versione: base di conoscenza delle FAQ sulle parole chiave sul dispositivo con orari di ufficio, menu di risposta rapida, fallback di escalation umana e una chat dimostrativa per test istantanei.
+Pupikes FAQ Desk risponde automaticamente alle domande più frequenti dei tuoi clienti da una knowledge base di domande frequenti sulle parole chiave, con saluti, messaggi in orario d'ufficio, risposte rapide e un fallback a un essere umano. Sul dispositivo, nessuna pubblicità, interfaccia in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Um bot baseado em regras
+Frequentemente dos seus clientes
 ```
 **Full introduction:**
 ```
-Um bot baseado em regras que responde automaticamente às perguntas frequentes dos seus clientes usando uma base de conhecimento de perguntas frequentes de palavras-chave, saudações, mensagens de expediente e fora do horário comercial, botões de resposta rápida e um recurso que se encaminha para um ser humano. Ele é executado inteiramente no dispositivo sem IA paga, e um chat de demonstração integrado permite testá-lo imediatamente.
+O Pupikes FAQ Desk responde automaticamente às perguntas mais frequentes de seus clientes a partir de uma base de conhecimento de perguntas frequentes sobre palavras-chave, com saudações, mensagens em horário comercial, respostas rápidas e um retorno para um humano. Funciona inteiramente no dispositivo, sem IA paga.
 
-Um bot que responde automaticamente às perguntas frequentes dos seus clientes — por regras (palavras-chave), totalmente no dispositivo. Sem IA paga, sem contas, sem rastreamento.
+A base de conhecimento e as configurações de perguntas frequentes são armazenadas apenas no seu dispositivo. O atendimento funciona totalmente offline.
 
-Privacidade: sem contatos, sem contas, sem localização, sem rastreamento. A base de conhecimento fica apenas neste dispositivo.
+Tudo funciona no seu dispositivo sem conta e sem anúncios; a interface suporta 15 idiomas.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeira versão: base de conhecimento de perguntas frequentes sobre palavras-chave no dispositivo com horário de expediente, menus de resposta rápida, fallback de escalonamento humano e um chat de demonstração para testes instantâneos.
+O Pupikes FAQ Desk responde automaticamente às perguntas mais frequentes de seus clientes a partir de uma base de conhecimento de perguntas frequentes sobre palavras-chave, com saudações, mensagens em horário comercial, respostas rápidas e um retorno para um humano. No dispositivo, sem anúncios, interface em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-روبوت قائم على القواعد
+عملاؤك بشكل متكرر
 ```
 **Full introduction:**
 ```
-روبوت قائم على القواعد يجيب تلقائيًا على الأسئلة الشائعة لعملائك باستخدام قاعدة معارف الأسئلة الشائعة للكلمات الرئيسية، والتحيات، وساعات العمل، والرسائل خارج ساعات العمل، وأزرار الرد السريع، والرد الاحتياطي الذي يتصاعد إلى الإنسان. إنه يعمل بالكامل على الجهاز بدون ذكاء اصطناعي مدفوع الأجر، وتتيح لك الدردشة التجريبية المدمجة اختباره على الفور.
+يجيب مكتب الأسئلة الشائعة في Pupikes تلقائيًا على الأسئلة الشائعة لعملائك من خلال قاعدة معارف الأسئلة الشائعة الخاصة بالكلمات الرئيسية، مع التحيات ورسائل ساعات العمل والردود السريعة والرجوع إلى الإنسان. يتم تشغيله بالكامل على الجهاز بدون الحاجة إلى الذكاء الاصطناعي المدفوع.
 
-روبوت يجيب تلقائيًا عن الأسئلة الشائعة لعملائك — وفق قواعد (كلمات مفتاحية)، بالكامل على الجهاز. بلا ذكاء اصطناعي مدفوع، بلا حسابات، بلا تتبّع.
+يتم تخزين قاعدة معارف الأسئلة الشائعة وإعداداتها على جهازك فقط. الرد يعمل بشكل كامل دون اتصال بالإنترنت.
 
-الخصوصية: بلا جهات اتصال، بلا حسابات، بلا موقع، بلا تتبّع. تبقى قاعدة المعرفة على هذا الجهاز فقط.
+كل شيء يعمل على جهازك بدون حساب أو إعلانات؛ الواجهة تدعم 15 لغة.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
-
-⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول: قاعدة معارف الأسئلة الشائعة حول الكلمات الرئيسية على الجهاز مع ساعات العمل وقوائم الرد السريع وتراجع التصعيد البشري والدردشة التجريبية للاختبار الفوري.
+يجيب مكتب الأسئلة الشائعة في Pupikes تلقائيًا على الأسئلة الشائعة لعملائك من خلال قاعدة معارف الأسئلة الشائعة الخاصة بالكلمات الرئيسية، مع التحيات ورسائل ساعات العمل والردود السريعة والرجوع إلى الإنسان. على الجهاز، بدون إعلانات، واجهة بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-एक नियम - आधारित बॉट
+आपके ग्राहक अक्सर
 ```
 **Full introduction:**
 ```
-एक नियम - आधारित बॉट जो कीवर्ड FAQ नॉलेज बेस, ग्रीटिंग्स, ऑफ़िस - ऑवर और आउट - ऑफ़ - ऑवर मैसेज, क्विक - रिप्लाई बटन और एक फ़ॉलबैक का उपयोग करके आपके ग्राहकों के अक्सर पूछे जाने वाले प्रश्नों का स्वचालित रूप से उत्तर देता है जो एक मानव के लिए बढ़ता है। यह पूरी तरह से पेड AI के बिना ऑन - डिवाइस चलता है, और एक बिल्ट - इन डेमो चैट आपको इसे तुरंत टेस्ट करने देता है।
+पुपाइक्स एफएक्यू डेस्क स्वचालित रूप से आपके ग्राहकों के अक्सर पूछे जाने वाले प्रश्नों का उत्तर कीवर्ड एफएक्यू नॉलेज बेस से देता है, जिसमें शुभकामनाएं, कार्यालय-समय संदेश, त्वरित उत्तर और एक मानव की वापसी होती है। यह बिना किसी सशुल्क एआई के पूरी तरह से ऑन-डिवाइस पर चलता है।
 
-एक बॉट जो आपके ग्राहकों के सामान्य प्रश्नों का स्वतः उत्तर देता है — नियमों (कीवर्ड) से, पूरी तरह डिवाइस पर। न भुगतान वाला AI, न खाते, न ट्रैकिंग।
+FAQ ज्ञानकोष और सेटिंग्स केवल आपके डिवाइस पर संग्रहीत की जाती हैं। उत��तर देना पूर्णतः ऑफ़लाइन कार्य करता है।
 
-गोपनीयता: न संपर्क, न खाते, न लोकेशन, न ट्रैकिंग। ज्ञान-आधार केवल इसी डिवाइस पर रहता है।
+सब कुछ आपके डिवाइस पर बिना किसी खाते और बिना किसी विज्ञापन के चलता है; इंटरफ़ेस 15 भाषाओं का समर्थन करता है।
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
-
-⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-पहला रिलीज़: ऑन - डिवाइस कीवर्ड अक्सर पूछे जाने वाले सवाल का नॉलेज बेस, ऑफ़िस के समय के साथ - साथ क्विक - रिप्लाई मेनू, ह्यूमन - एस्केलेशन फ़ॉलबैक और इंस्टेंट टेस्टिंग के लिए डेमो चैट।
+पुपाइक्स एफएक्यू डेस्क स्वचालित रूप से आपके ग्राहकों के अक्सर पूछे जाने वाले प्रश्नों का उत्तर कीवर्ड एफएक्यू नॉलेज बेस से देता है, जिसमें शुभकामनाएं, कार्यालय-समय संदेश, त्वरित उत्तर और एक मानव की वापसी होती है। ऑन-डिवाइस, कोई विज्ञापन नहीं, 15-भाषा इंटरफ़ेस।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-キーワードFAQのナレッジベース、挨拶
+あなたの顧客は頻繁に
 ```
 **Full introduction:**
 ```
-キーワードFAQのナレッジベース、挨拶、営業時間外のメッセージ、クイック返信ボタン、人間にエスカレートするフォールバックを使用して、顧客のよくある質問に自動的に回答するルールベースのボット。有料のAIなしで完全にデバイス上で動作し、組み込みのデモチャットを使用すると、すぐにテストできます。
+Pupikes FAQ Desk は、キーワード FAQ ナレッジ ベースから顧客のよくある質問に、挨拶、営業時間メッセージ、簡単な返信、人間へのフォールバックを使用して自動的に回答します。有料の AI はなく、完全にデバイス上で実行されます。
 
-顧客のよくある質問に自動で答えるボット。ルール（キーワード）で、すべて端末内で動作。有料AIなし、アカウントなし、追跡なし。
+FAQ ナレッジベースと設定はデバイスにのみ保存されます。応答は完全にオフラインで機能します。
 
-プライバシー：連絡先なし、アカウントなし、位置情報なし、追跡なし。ナレッジベースはこの端末内のみに保存。
+アカウントや広告なしですべてがデバイス上で実行されます。インターフェイスは 15 の言語をサポートしています。
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
-
-⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-最初のリリース：オンデバイスキーワードFAQナレッジベース、営業時間、クイックリプライメニュー、ヒューマンエスカレーションフォールバック、インスタントテスト用のデモチャット。
+Pupikes FAQ Desk は、キーワード FAQ ナレッジ ベースから顧客のよくある質問に、挨拶、営業時間メッセージ、簡単な返信、人間へのフォールバックを使用して自動的に回答します。オンデバイス、広告なし、15 言語のインターフェース。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-基於規則的機器人，可使用關鍵字常見問題知識庫
+您的客戶經常
 ```
 **Full introduction:**
 ```
-基於規則的機器人，可使用關鍵字常見問題知識庫、問候語、辦公時間和非辦公時間訊息、快速回覆按鈕，以及向上呈報給人員的回饋，自動回答顧客的常見問題。它完全在設備上運行，沒有付費AI ，內置的演示聊天可以讓您立即進行測試。
+Pupikes FAQ Desk 透過關鍵字常見問題解答知識庫自動回答客戶的常見問題，包括問候語、辦公時間訊息、快速回覆和手動回覆。它完全在設備上運行，沒有付費人工智慧。
 
-自動回覆顧客常見問題的機器人——以規則（關鍵字）運作，完全在裝置上。無付費 AI、無帳戶、無追蹤。
+常見問題知識庫和設定僅儲存在您的裝置上。完全離線接聽。
 
-隱私：無聯絡人、無帳戶、無定位、無追蹤。知識庫僅保留在本裝置。
+一切都在您的裝置上運行，無需帳戶，也沒有廣告；介面支援15種語言。
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
-
-⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-首次發布：設備上的關鍵字常見問題知識庫，包括辦公時間、快速回覆菜單、人工升級後備方案和即時測試的示範聊天室。
+Pupikes FAQ Desk 透過關鍵字常見問題解答知識庫自動回答客戶的常見問題，包括問候語、辦公時間訊息、快速回覆和手動回覆。裝置端、無廣告、15 種語言介面。
 ```

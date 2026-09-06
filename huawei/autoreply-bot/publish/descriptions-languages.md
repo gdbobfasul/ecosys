@@ -1,325 +1,284 @@
-# Pupikes Auto Answer — описание по език (Brief + Full + New features)
+# autoreply-bot — описание по език (Brief + Full + New features)
 
-_За AppGallery: **Manage languages** → добави език (по колоната „AppGallery език") → попълни **Brief introduction** (до 25 знака), **Full introduction** и **New features** от секцията за съответния език._
-
-> ⚠️ **ky (кыргызки) НЕ съществува в AppGallery** — пропусни го (14 от 15 се поддържат). Махни отметките от **Greek** и **Turkish**, ако са чекнати (нямаме преводи за тях).
+_За AppGallery: Manage languages → добави език → попълни Brief (до 25 знака), Full, New features._
+> ⚠️ ky НЕ съществува в AppGallery — пропусни. Махни Greek/Turkish.
 
 ## Български (bg) — AppGallery: **Bulgarian**
 **Brief introduction (до 25 знака):**
 ```
-Автоматичен асистент
+Съобщения за вас сами
 ```
 **Full introduction:**
 ```
-Автоматичен асистент за отговор на съобщения, който отговаря вместо Вас по Ваши собствени правила: задействания на ключови думи с готови отговори, работно време, отсъстващи съобщения и списъци с разрешения/блокиране. Той регистрира всеки автоматичен отговор и Ви уведомява, и включва вградена демо поща, за да можете да тествате всичко незабавно.
+Pupikes Auto Answer отговаря на съобщения вместо вас по ваши собствени правила: задейства ключови думи с готови отговори, работно време, съобщения за отсъствие и списъци за разрешаване/блокиране, с вградена демонстрационна входяща кутия за тестване на всичко.
 
-Робот, който отговаря вместо теб — по твои правила.
+Вашите правила и регистрационни файлове за отговори се съхраняват само на вашето устройство. Ядрото работи напълно офлайн; не се четат контакти.
 
-Активираш робота, задаваш правила (ключови думи → готови отговори, работно време, бели/черни списъци) и го пускаш. Когато пристигне съобщение, роботът отговаря автоматично и те известява.
+Всичко работи на вашето устройство без акаунт и без реклами; интерфейсът поддържа 15 езика.
 
-Поддръжка: miroljubkalaydjiev177@gmail.com
-За въпроси и поддръжка пишете на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Това е първоначална версия — тепърва ще чистим грешките и ще подобряваме функциите. Помогни ни: изпрати Обратна връзка (мнение, препоръки) през самото приложение.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Първо издание: базирани на правила автоматични отговори с ключови думи, работно време, списъци с разрешения/блокиране, демо входяща поща и местни известия за всеки изпратен отговор.
+Pupikes Auto Answer отговаря на съобщения вместо вас по ваши собствени правила: задейства ключови думи с готови отговори, работно време, съобщения за отсъствие и списъци за разрешаване/блокиране, с вградена демонстрационна входяща кутия за тестване на всичко. На устройството, без реклами, 15-езичен интерфейс.
 ```
 
 ## Русский (ru) — AppGallery: **Russian**
 **Brief introduction (до 25 знака):**
 ```
-Автоматический помощник
+Сообщения для вас самостоятельно
 ```
 **Full introduction:**
 ```
-Автоматический помощник по ответам на сообщения, который отвечает за вас по вашим собственным правилам: триггеры ключевых слов с готовыми ответами, часы работы, сообщения на выезде и списки разрешений/блокировок. Он регистрирует каждый автоматический ответ и уведомляет вас, а также включает встроенный демонстрационный почтовый ящик, чтобы вы могли мгновенно протестировать все.
+Автоответчик Pupikes отвечает на сообщения за вас по вашим собственным правилам: триггеры по ключевым словам с готовыми ответами, часы работы, сообщения об отсутствии и списки разрешенных/блокированных сообщений, а также встроенный демонстрационный почтовый ящик для проверки всего.
 
-Робот, который отвечает за вас — по вашим правилам.
+Ваши правила и журналы ответов хранятся только на вашем устройстве. Ядро работает полностью в автономном режиме; никакие контакты не читаются.
 
-Активируйте робота, задайте правила (ключевые слова → готовые ответы, рабочее время, белые/чёрные списки) и запустите. Когда придёт сообщение, робот ответит автоматически и уведомит вас.
+Все ра��отает на вашем устройстве без учетной записи и рекламы; интерфейс поддерживает 15 языков.
 
-Поддержка: miroljubkalaydjiev177@gmail.com
-По вопросам и поддержке пишите на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Это первоначальная версия — мы будем исправлять ошибки и улучшать функции. Помогите нам: отправьте Обратную связь (мнение, предложения) прямо в приложении.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Первый выпуск: автоматические ответы на основе правил с ключевыми словами, рабочими часами, списками разрешений/блокировок, демонстрационным почтовым ящиком и локальными уведомлениями для каждого отправленного ответа.
+Автоответчик Pupikes отвечает на сообщения за вас по вашим собственным правилам: триггеры по ключевым словам с готовыми ответами, часы работы, сообщения об отсутствии и списки разрешенных/блокированных сообщений, а также встроенный демонстрационный почтовый ящик для проверки всего. На устройстве, без рекламы, интерфейс на 15 языках.
 ```
 
 ## Українська (uk) — AppGallery: **Ukrainian**
 **Brief introduction (до 25 знака):**
 ```
-Автоматичний помічник
+Повідомлення для вас самостійно
 ```
 **Full introduction:**
 ```
-Автоматичний помічник з відповідей на повідомлення, який відповідає за вас за власними правилами: тригери ключових слів з готовими відповідями, робочі години, повідомлення про від 'їзди та списки дозволів/блокувань. Він реєструє кожну автоматичну відповідь та сповіщає вас, а також містить вбудовану демонстраційну папку «Вхідні», щоб ви могли миттєво перевірити все.
+Pupikes Auto Answer відповідає на повідомлення за вашими власними правилами: тригери ключових слів із готовими відповідями, години роботи, повідомлення про відсутність та списки дозволених/заблокованих, із вбудованою демонстраційною скринькою вхідних повідомлень, щоб перевірити все.
 
-Робот, який відповідає замість вас — за вашими правилами.
+Ваші правила та журнали відповідей зберігаються лише на вашому пристрої. Ядро працює повністю в автономному режимі; контакти не читаються.
 
-Активуйте робота, задайте правила (ключові слова → готові відповіді, робочий час, білі/чорні списки) і запустіть. Коли надійде повідомлення, робот відповість автоматично й сповістить вас.
+Усе працює на вашому пристрої без облікового запису та реклами; інтерфейс підтримує 15 мов.
 
-Підтримка: miroljubkalaydjiev177@gmail.com
-З питань і підтримки пишіть на: miroljubkalaydjiev177@gmail.com
-
-⚠️ Це початкова версія — ми виправлятимемо помилки та покращуватимемо функції. Допоможіть нам: надішліть Відгук (думки, пропозиції) у самому застосунку.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Перший реліз: автоматичні відповіді на основі правил з ключовими словами, робочими годинами, списками дозволів/блоків, демонстраційною папкою «Вхідні» та локальними сповіщеннями для кожної надісланої відповіді.
+Pupikes Auto Answer відповідає на повідомлення за вашими власними правилами: тригери ключових слів із готовими відповідями, години роботи, повідомлення про відсутність та списки дозволених/заблокованих, із вбудованою демонстраційною скринькою вхідних повідомлень, щоб перевірити все. На пристрої, без реклами, 15-мовний інтерфейс.
 ```
 
 ## English (en) — AppGallery: **English (UK) — default**
 **Brief introduction (до 25 знака):**
 ```
-An automatic
+Messages for you by your own
 ```
 **Full introduction:**
 ```
-An automatic message-reply assistant that answers for you by your own rules: keyword triggers with ready replies, office hours, away messages, and allow/block lists. It logs every auto-reply and notifies you, and includes a built-in demo inbox so you can test everything instantly.
+Pupikes Auto Answer answers messages for you by your own rules: keyword triggers with ready replies, office hours, away messages and allow/block lists, with a built-in demo inbox to test everything.
 
-A robot that replies for you — by your rules.
+Your rules and reply logs are stored only on your device. The core works fully offline; no contacts are read.
 
-Activate the robot, set rules (keywords → ready replies, office hours, allow/block lists) and turn it on. When a message arrives, the robot replies automatically and notifies you.
+Everything runs on your device with no account and no ads; the interface supports 15 languages.
 
 Support: miroljubkalaydjiev177@gmail.com
-For questions and support, write to: miroljubkalaydjiev177@gmail.com
-
-⚠️ This is an initial version — we will keep fixing bugs and improving features. Please help us: send your Feedback (opinions, suggestions) from within the app.
 ```
 **New features (до 1000 знака):**
 ```
-First release: rule-based auto-replies with keywords, office hours, allow/block lists, a demo inbox, and local notifications for every answer sent.
+Pupikes Auto Answer answers messages for you by your own rules: keyword triggers with ready replies, office hours, away messages and allow/block lists, with a built-in demo inbox to test everything. On-device, no ads, 15-language interface.
 ```
 
 ## Deutsch (de) — AppGallery: **German**
 **Brief introduction (до 25 знака):**
 ```
-Ein automatischer
+Eigene Nachrichten für Sie
 ```
 **Full introduction:**
 ```
-Ein automatischer Assistent zum Beantworten von Nachrichten, der Ihnen nach Ihren eigenen Regeln antwortet: Schlüsselwörter werden mit fertigen Antworten, Bürozeiten, Abwesenheitsnachrichten und Genehmigungs-/Sperrlisten ausgelöst. Es protokolliert jede automatische Antwort und benachrichtigt Sie und enthält einen integrierten Demo-Posteingang, damit Sie alles sofort testen können.
+Pupikes Auto Answer beantwortet Nachrichten für Sie nach Ihren eigenen Regeln: Keyword-Trigger mit fertigen Antworten, Bürozeiten, Abwesenheitsnachrichten und Zulassungs-/Blockierungslisten, mit integriertem Demo-Posteingang, um alles zu testen.
 
-Ein Roboter, der für dich antwortet — nach deinen Regeln.
+Ihre Regeln und Antwortprotokolle werden nur auf Ihrem Gerät gespeichert. Der Kern arbeitet vollständig offline; Es werden keine Kontakte gelesen.
 
-Aktiviere den Roboter, lege Regeln fest (Schlüsselwörter → fertige Antworten, Geschäftszeiten, Erlaubt-/Sperrlisten) und schalte ihn ein. Trifft eine Nachricht ein, antwortet der Roboter automatisch und benachrichtigt dich.
+Alles läuft auf Ihrem Gerät ohne Konto und ohne Werbung; Die Schnittstelle unterstützt 15 Sprachen.
 
 Support: miroljubkalaydjiev177@gmail.com
-Bei Fragen und für Support schreiben Sie an: miroljubkalaydjiev177@gmail.com
-
-⚠️ Dies ist eine erste Version — wir werden Fehler beheben und Funktionen verbessern. Bitte hilf uns: sende dein Feedback (Meinungen, Vorschläge) direkt in der App.
 ```
 **New features (до 1000 знака):**
 ```
-Erste Version: regelbasierte automatische Antworten mit Schlüsselwörtern, Bürozeiten, Genehmigungs-/Sperrlisten, einem Demo-Posteingang und lokalen Benachrichtigungen für jede gesendete Antwort.
+Pupikes Auto Answer beantwortet Nachrichten für Sie nach Ihren eigenen Regeln: Keyword-Trigger mit fertigen Antworten, Bürozeiten, Abwesenheitsnachrichten und Zulassungs-/Blockierungslisten, mit integriertem Demo-Posteingang, um alles zu testen. Auf dem Gerät, keine Werbung, 15-sprachige Benutzeroberfläche.
 ```
 
 ## Français (fr) — AppGallery: **French (France)**
 **Brief introduction (до 25 знака):**
 ```
-Un assistant de réponse
+Messages pour vous par vos propres moyens
 ```
 **Full introduction:**
 ```
-Un assistant de réponse automatique aux messages qui répond pour vous selon vos propres règles : les déclencheurs de mots-clés avec des réponses prêtes, les heures de bureau, les messages d'absence et les listes d'autorisation/blocage. Il enregistre chaque réponse automatique et vous en informe, et comprend une boîte de réception de démonstration intégrée afin que vous puissiez tout tester instantanément.
+Pupikes Auto Answer répond aux messages pour vous selon vos propres règles : déclencheurs de mots clés avec réponses prêtes, heures de bureau, messages d'absence et listes d'autorisation/blocage, avec une boîte de réception de démonstration intégrée pour tout tester.
 
-Un robot qui répond à votre place — selon vos règles.
+Vos règles et journaux de réponses sont stockés uniquement sur votre appareil. Le noyau fonctionne entièrement hors ligne ; aucun contact n'est lu.
 
-Activez le robot, définissez des règles (mots-clés → réponses prêtes, horaires, listes blanches/noires) et lancez-le. À la réception d’un message, le robot répond automatiquement et vous prévient.
+Tout fonctionne sur votre appareil sans compte ni publicité ; l'interface prend en charge 15 langues.
 
-Assistance: miroljubkalaydjiev177@gmail.com
-Pour toute question ou assistance, écrivez à : miroljubkalaydjiev177@gmail.com
-
-⚠️ Ceci est une version initiale — nous corrigerons les bugs et améliorerons les fonctions. Aidez-nous : envoyez vos commentaires (avis, suggestions) depuis l'application.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Première version : les réponses automatiques basées sur des règles avec des mots-clés, des heures de bureau, des listes d'autorisation/blocage, une boîte de réception de démonstration et des notifications locales pour chaque réponse envoyée.
+Pupikes Auto Answer répond aux messages pour vous selon vos propres règles : déclencheurs de mots clés avec réponses prêtes, heures de bureau, messages d'absence et listes d'autorisation/blocage, avec une boîte de réception de démonstration intégrée pour tout tester. Sur l'appareil, sans publicité, interface en 15 langues.
 ```
 
 ## Español (es) — AppGallery: **Spanish (Spain)**
 **Brief introduction (до 25 знака):**
 ```
-Un asistente automático
+Mensajes para ti por tu cuenta
 ```
 **Full introduction:**
 ```
-Un asistente automático de respuesta de mensajes que responde por ti según tus propias reglas: disparadores de palabras clave con respuestas listas, horas de oficina, mensajes ausentes y listas de permitir/bloquear. Registra todas las respuestas automáticas y te notifica, e incluye una bandeja de entrada de demostración incorporada para que puedas probar todo al instante.
+Pupikes Auto Answer responde mensajes por usted según sus propias reglas: activadores de palabras clave con respuestas listas, horario de oficina, mensajes de ausencia y listas de permitidos/bloqueados, con una bandeja de entrada de demostración incorporada para probar todo.
 
-Un robot que responde por ti — según tus reglas.
+Sus reglas y registros de respuestas se almacenan solo en su dispositivo. El núcleo funciona completamente fuera de línea; no se leen contactos.
 
-Activa el robot, define reglas (palabras clave → respuestas listas, horario, listas blancas/negras) y enciéndelo. Cuando llega un mensaje, el robot responde automáticamente y te avisa.
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para preguntas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta es una versión inicial — seguiremos corrigiendo errores y mejorando funciones. Ayúdanos: envía tus Comentarios (opiniones, sugerencias) desde la app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primera versión: respuestas automáticas basadas en reglas con palabras clave, horas de oficina, listas de permitir/bloquear, una bandeja de entrada de demostración y notificaciones locales para cada respuesta enviada.
+Pupikes Auto Answer responde mensajes por usted según sus propias reglas: activadores de palabras clave con respuestas listas, horario de oficina, mensajes de ausencia y listas de permitidos/bloqueados, con una bandeja de entrada de demostración incorporada para probar todo. En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Español (MX) (es-MX) — AppGallery: **Spanish (Latin America)**
 **Brief introduction (до 25 знака):**
 ```
-Un asistente automático
+Mensajes para ti por tu cuenta
 ```
 **Full introduction:**
 ```
-Un asistente automático de respuesta de mensajes que responde por ti según tus propias reglas: disparadores de palabras clave con respuestas listas, horas de oficina, mensajes ausentes y listas de permitir/bloquear. Registra todas las respuestas automáticas y te notifica, e incluye una bandeja de entrada de demostración incorporada para que puedas probar todo al instante.
+Pupikes Auto Answer responde mensajes por usted según sus propias reglas: activadores de palabras clave con respuestas listas, horario de oficina, mensajes de ausencia y listas de permitidos/bloqueados, con una bandeja de entrada de demostración incorporada para probar todo.
 
-Un robot que responde por ti — con tus reglas.
+Sus reglas y registros de respuestas se almacenan solo en su dispositivo. El núcleo funciona completamente fuera de línea; no se leen contactos.
 
-Activa el robot, define reglas (palabras clave → respuestas listas, horario, listas blancas/negras) y enciéndelo. Cuando llega un mensaje, el robot responde solo y te avisa.
+Todo se ejecuta en su dispositivo sin cuenta ni anuncios; la interfaz admite 15 idiomas.
 
-Soporte: miroljubkalaydjiev177@gmail.com
-Para dudas y soporte, escribe a: miroljubkalaydjiev177@gmail.com
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primera versión: respuestas automáticas basadas en reglas con palabras clave, horas de oficina, listas de permitir/bloquear, una bandeja de entrada de demostración y notificaciones locales para cada respuesta enviada.
+Pupikes Auto Answer responde mensajes por usted según sus propias reglas: activadores de palabras clave con respuestas listas, horario de oficina, mensajes de ausencia y listas de permitidos/bloqueados, con una bandeja de entrada de demostración incorporada para probar todo. En el dispositivo, sin anuncios, interfaz en 15 idiomas.
 ```
 
 ## Italiano (it) — AppGallery: **Italian**
 **Brief introduction (до 25 знака):**
 ```
-Un assistente automatico
+Messaggi per te da solo
 ```
 **Full introduction:**
 ```
-Un assistente automatico di risposta ai messaggi che risponde per te secondo le tue regole: le parole chiave si attivano con risposte pronte, orari d'ufficio, messaggi di assenza ed elenchi consentiti/bloccati. Registra ogni risposta automatica e ti avvisa e include una casella di posta demo integrata in modo da poter testare tutto all'istante.
+Pupikes Auto Answer risponde ai messaggi secondo le tue regole: attivazioni di parole chiave con risposte pronte, orari di ufficio, messaggi di assenza ed elenchi di consenti/blocca, con una casella di posta demo integrata per testare tutto.
 
-Un robot che risponde al posto tuo — secondo le tue regole.
+Le tue regole e i registri delle risposte vengono archiviati solo sul tuo dispositivo. Il nucleo funziona completamente offline; nessun contatto viene letto.
 
-Attiva il robot, imposta regole (parole chiave → risposte pronte, orari, liste bianche/nere) e accendilo. All’arrivo di un messaggio, il robot risponde da solo e ti avvisa.
+Tutto funziona sul tuo dispositivo senza account e senza pubblicità; l'interfaccia supporta 15 lingue.
 
-Assistenza: miroljubkalaydjiev177@gmail.com
-Per domande e assistenza, scrivi a: miroljubkalaydjiev177@gmail.com
-
-⚠️ Questa è una versione iniziale — continueremo a correggere bug e migliorare le funzioni. Aiutaci: invia il tuo Feedback (opinioni, suggerimenti) dall'app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Prima versione: risposte automatiche basate su regole con parole chiave, orari di ufficio, elenchi di permessi/blocchi, una casella di posta demo e notifiche locali per ogni risposta inviata.
+Pupikes Auto Answer risponde ai messaggi secondo le tue regole: attivazioni di parole chiave con risposte pronte, orari di ufficio, messaggi di assenza ed elenchi di consenti/blocca, con una casella di posta demo integrata per testare tutto. Sul dispositivo, nessuna pubblicità, interfaccia in 15 lingue.
 ```
 
 ## Português (pt) — AppGallery: **Portuguese (Portugal)**
 **Brief introduction (до 25 знака):**
 ```
-Um assistente automático
+Mensagens para você por conta própria
 ```
 **Full introduction:**
 ```
-Um assistente automático de resposta a mensagens que responde às suas próprias regras: acionadores de palavras-chave com respostas prontas, horário de expediente, mensagens de ausência e listas de permissão/bloqueio. Ele registra todas as respostas automáticas e notifica você, além de incluir uma caixa de entrada de demonstração integrada para que você possa testar tudo instantaneamente.
+O Pupikes Auto Answer responde mensagens para você de acordo com suas próprias regras: gatilhos de palavras-chave com respostas prontas, horário comercial, mensagens ausentes e listas de permissão/bloqueio, com uma caixa de entrada de demonstração integrada para testar tudo.
 
-Um robô que responde por você — pelas suas regras.
+Suas regras e registros de resposta são armazenados apenas no seu dispositivo. O núcleo funciona totalmente offline; nenhum contato é lido.
 
-Ative o robô, defina regras (palavras-chave → respostas prontas, horário, listas de permissão/bloqueio) e ligue-o. Quando chega uma mensagem, o robô responde sozinho e avisa você.
+Tudo funciona no seu dispositivo sem conta e sem anúncios; a interface suporta 15 idiomas.
 
-Suporte: miroljubkalaydjiev177@gmail.com
-Para dúvidas e suporte, escreva para: miroljubkalaydjiev177@gmail.com
-
-⚠️ Esta é uma versão inicial — vamos corrigir erros e melhorar as funções. Ajude-nos: envie o seu Feedback (opiniões, sugestões) a partir da app.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-Primeira versão: respostas automáticas baseadas em regras com palavras-chave, horário comercial, listas de permissões/bloqueios, uma caixa de entrada de demonstração e notificações locais para cada resposta enviada.
+O Pupikes Auto Answer responde mensagens para você de acordo com suas próprias regras: gatilhos de palavras-chave com respostas prontas, horário comercial, mensagens ausentes e listas de permissão/bloqueio, com uma caixa de entrada de demonstração integrada para testar tudo. No dispositivo, sem anúncios, interface em 15 idiomas.
 ```
 
 ## العربية (ar) — AppGallery: **Arabic**
 **Brief introduction (до 25 знака):**
 ```
-مساعد تلقائي للرد
+رسائل لك بنفسك
 ```
 **Full introduction:**
 ```
-مساعد تلقائي للرد على الرسائل يجيب لك وفقًا لقواعدك الخاصة: يتم تشغيل الكلمات الرئيسية مع الردود الجاهزة وساعات العمل والرسائل البعيدة وقوائم السماح/الحظر. يسجل كل رد تلقائي ويعلمك، ويتضمن صندوق وارد تجريبي مدمج حتى تتمكن من اختبار كل شيء على الفور.
+يجيب Pupikes Auto Answer على الرسائل نيابةً عنك وفقًا لقواعدك الخاصة: يتم تشغيل الكلمات الرئيسية من خلال الردود الجاهزة وساعات العمل والرسائل البعيدة وقوائم السماح/الحظر، مع صندوق بريد تجريبي مدمج لاختبار كل شيء.
 
-روبوت يرد نيابةً عنك — وفق قواعدك.
+يتم تخزين القواعد وسجلات الرد الخاصة بك على جهازك فقط. يعمل المركز بشكل كامل بدون اتصال بالإنترنت؛ تتم قراءة أية اتصالات.
 
-فعّل الروبوت، اضبط القواعد (كلمات مفتاحية → ردود جاهزة، ساعات العمل، قوائم سماح/حظر) ثم شغّله. عند وصول رسالة يرد الروبوت تلقائيًا ويُعلمك.
+كل شيء يعمل على جهازك بدون حساب أو إعلانات؛ الواجهة تدعم 15 لغة.
 
-الدعم: miroljubkalaydjiev177@gmail.com
-للأسئلة والدعم، راسلونا على: miroljubkalaydjiev177@gmail.com
-
-⚠️ هذه نسخة أولية — سنواصل إصلاح الأخطاء وتحسين الميزات. ساعدنا: أرسل ملاحظاتك (آراء، اقتراحات) من داخل التطبيق.
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-الإصدار الأول: الردود التلقائية المستندة إلى القواعد مع الكلمات الرئيسية وساعات العمل وقوائم السماح/الحظر والصندوق الوارد التجريبي والإشعارات المحلية لكل إجابة يتم إرسالها.
+يجيب Pupikes Auto Answer على الرسائل نيابةً عنك وفقًا لقواعدك الخاصة: يتم تشغيل الكلمات الرئيسية من خلال الردود الجاهزة وساعات العمل والرسائل البعيدة وقوائم السماح/الحظر، مع صندوق بريد تجريبي مدمج لاختبار كل شيء. على الجهاز، بدون إعلانات، واجهة بـ 15 لغة.
 ```
 
 ## हिन्दी (hi) — AppGallery: **Hindi**
 **Brief introduction (до 25 знака):**
 ```
-एक ऑटोमैटिक मैसेज
+आपके लिए संदेश आपके अपने द्वारा
 ```
 **Full introduction:**
 ```
-एक ऑटोमैटिक मैसेज - रिप्लाई असिस्टेंट जो आपके खुद के नियमों के अनुसार आपके लिए जवाब देता है: कीवर्ड तैयार जवाबों, ऑफ़िस के घंटों, दूर संदेशों और अनुमति/ब्लॉक सूचियों के साथ ट्रिगर करता है। यह हर ऑटो - रिप्लाई को लॉग करता है और आपको सूचित करता है, और इसमें एक अंतर्निहित डेमो इनबॉक्स शामिल होता है ताकि आप तुरंत हर चीज़ का परीक्षण कर सकें।
+पुपाइक्स ऑटो आंसर आपके लिए आपके नियमों के अनुसार संदेशों का उत्तर देता है: तैयार उत्तरों, कार्यालय समय, दूर के संदेशों और अनुमति/ब्लॉक सूचियों के साथ कीवर्ड ट्रिगर, हर चीज का परीक्षण करने के लिए एक अंतर्निहित डेमो इनबॉक्स के साथ।
 
-एक रोबोट जो आपके नियमों के अनुसार आपके बदले जवाब देता है।
+आपके नियम और उत्तर लॉग केवल आपके डिवाइस पर संग्रहीत हैं। कोर पूरी तरह ऑफ़लाइन काम करता है; कोई संपर्क नहीं पढ़ा जाता.
 
-रोबोट सक्रिय करें, नियम सेट करें (कीवर्ड → तैयार जवाब, कार्य-समय, अनुमति/ब्लॉक सूचियाँ) और चालू करें। संदेश आते ही रोबोट अपने-आप जवाब देगा और आपको सूचित करेगा।
+सब कुछ आपके डिवाइस पर बिना किसी खाते और बिना किसी विज्ञापन के चलता है; इंटरफ़ेस 15 भाषाओं का समर्थन करता है।
 
-सहायता: miroljubkalaydjiev177@gmail.com
-प्रश्नों और सहायता के लिए लिखें: miroljubkalaydjiev177@gmail.com
-
-⚠️ यह एक प्रारंभिक संस्करण है — हम बग्स ठीक करते रहेंगे और सुविधाएँ बेहतर करेंगे। कृपया हमारी मदद करें: ऐप से अपना फ़ीडबैक (राय, सुझाव) भेजें।
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-पहला रिलीज़: भेजे गए हर जवाब के लिए कीवर्ड, ऑफ़िस के समय, लिस्ट की अनुमति दें/ब्लॉक करें, एक डेमो इनबॉक्स और स्थानीय नोटिफ़िकेशन के साथ नियम - आधारित ऑटो - रिप्लाई।
+पुपाइक्स ऑटो आंसर आपके लिए आपके नियमों के अनुसार संदेशों का उत्तर देता है: तैयार उत्तरों, कार्यालय समय, दूर के संदेशों और अनुमति/ब्लॉक सूचियों के साथ कीवर्ड ट्रिगर, हर चीज का परीक्षण करने के लिए एक अंतर्निहित डेमो इनबॉक्स के साथ। ऑन-डिवाइस, कोई विज्ञापन नहीं, 15-भाषा इंटरफ़ेस।
 ```
 
 ## 日本語 (ja) — AppGallery: **Japanese**
 **Brief introduction (до 25 знака):**
 ```
-独自のルールで応答する自動メッセージ返信アシスタン
+あなた自身からあなたへのメッセージ
 ```
 **Full introduction:**
 ```
-独自のルールで応答する自動メッセージ返信アシスタント：準備ができている返信、営業時間、不在メッセージ、許可/ブロックリストを含むキーワードトリガー。すべての自動返信をログに記録し、通知します。また、デモ受信トレイが組み込まれているため、すべてを即座にテストできます。
+Pupikes Auto Answer は、独自のルールに従ってメッセージに応答します。つまり、即時返信、営業時間、不在メッセージ、許可/ブロック リストを備えたキーワード トリガーと、すべてをテストするための組み込みのデモ受信箱を備えています。
 
-あなたのルールで、代わりに返信するロボット。
+ルールと返信ログはデバイスにのみ保存されます。コアは完全にオフラインで動作します。連絡先は読み取られません。
 
-ロボットを有効化し、ルール（キーワード→定型返信、営業時間、許可/拒否リスト）を設定してオンにします。メッセージが届くと自動で返信し、通知します。
+アカウントや広告なしですべてがデバイス上で実行されます。インターフェイスは 15 の言語をサポートしています。
 
-サポート: miroljubkalaydjiev177@gmail.com
-ご質問・サポートは次のメールへ: miroljubkalaydjiev177@gmail.com
-
-⚠️ これは初期バージョンです。今後も不具合を修正し機能を改善します。アプリ内からフィードバック（ご意見・ご提案）をお寄せください。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-最初のリリース：キーワード、営業時間、許可/ブロックリスト、デモ受信トレイ、および送信されたすべての回答に対するローカル通知を含むルールベースの自動返信。
+Pupikes Auto Answer は、独自のルールに従ってメッセージに応答します。つまり、即時返信、営業時間、不在メッセージ、許可/ブロック リストを備えたキーワード トリガーと、すべてをテストするための組み込みのデモ受信箱を備えています。オンデバイス、広告なし、15 言語のインターフェース。
 ```
 
 ## 繁體中文 (zh-Hant) — AppGallery: **Traditional Chinese (Taiwan, China)**
 **Brief introduction (до 25 знака):**
 ```
-自動訊息回覆助手，根據你自己的規則為你回覆：帶有即
+您自己給您留言
 ```
 **Full introduction:**
 ```
-自動訊息回覆助手，根據你自己的規則為你回覆：帶有即時回覆的關鍵字觸發器、辦公時間、出發訊息和允許/封鎖清單。它會記錄每次自動回覆並通知你，並包含內建的示範收件匣，讓你可以立即測試所有內容。
+Pupikes 自動應答按照您自己的規則為您應答訊息：帶有準備回复的關鍵字觸發器、辦公時間、離開訊息和允許/阻止列表，並帶有內置演示收件匣來測試所有內容。
 
-依你的規則替你回覆的機器人。
+您的規則和回覆日誌僅儲存在您的裝置上。核心完全離線工作；沒有讀取任何聯絡人。
 
-啟用機器人，設定規則（關鍵字 → 現成回覆、工作時間、白/黑名單）後開啟。訊息一到，機器人會自動回覆並通知你。
+一切都在您的裝置上運行，無需帳戶，也沒有廣告；介面支援15種語言。
 
-支援: miroljubkalaydjiev177@gmail.com
-如有問題或需要支援，請來信：miroljubkalaydjiev177@gmail.com
-
-⚠️ 這是初始版本 — 我們會持續修正錯誤並改進功能。請協助我們：在應用程式內傳送您的意見回饋（想法、建議）。
+Support: miroljubkalaydjiev177@gmail.com
 ```
 **New features (до 1000 знака):**
 ```
-第一個版本：以規則為基礎的自動回覆，包括關鍵字、辦公時間、允許/阻止清單、示範收件匣，以及每個已發送回覆的本地通知。
+Pupikes 自動應答按照您自己的規則為您應答訊息：帶有準備回复的關鍵字觸發器、辦公時間、離開訊息和允許/阻止列表，並帶有內置演示收件匣來測試所有內容。裝置端、無廣告、15 種語言介面。
 ```
