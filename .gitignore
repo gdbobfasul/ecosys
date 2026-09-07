@@ -170,3 +170,7 @@ deploy-scripts/.promo-tmp/
 deploy-scripts/.store-names-cache.json
 deploy-scripts/.newfeatures-cache.json
 deploy-scripts/.rustore-profile/
+
+# Крипто портфейл + seed фрази — НИКОГА в git (07.09)
+private/configs/new-metatokens.conf
+private/pupikes-metamask-coin-creator/wallet-backup*/

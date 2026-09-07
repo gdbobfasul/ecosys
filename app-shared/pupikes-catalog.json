@@ -316,7 +316,7 @@
             "rustore": "EvadeArena-rustore-release.apk",
             "huawei": "EvadeArena-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$1.3"
         },
         {
@@ -335,7 +335,7 @@
             "rustore": "Godfist-Arena-rustore-release.apk",
             "huawei": "Godfist-Arena-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$0.5"
         },
         {
@@ -411,7 +411,7 @@
             "rustore": "Pupikes-Ring-Clash-rustore-release.apk",
             "huawei": "Pupikes-Ring-Clash-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$3"
         },
         {
@@ -430,7 +430,7 @@
             "rustore": "Pupikes-Field-Battle-rustore-release.apk",
             "huawei": "Pupikes-Field-Battle-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$3"
         }
       ]
@@ -551,7 +551,7 @@
             "rustore": "MotionHawk-rustore-release.apk",
             "huawei": "MotionHawk-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$20"
         },
         {
@@ -570,7 +570,7 @@
             "rustore": "Pupikes-Routine-Planner-rustore-release.apk",
             "huawei": "Pupikes-Routine-Planner-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$3"
         },
         {
@@ -589,7 +589,7 @@
             "rustore": "Pupikes-Market-Pulse-rustore-release.apk",
             "huawei": "Pupikes-Market-Pulse-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$30"
         },
         {
@@ -608,7 +608,7 @@
             "rustore": "Pupikes-LB-rustore-release.apk",
             "huawei": "Pupikes-LB-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$500"
         },
         {
@@ -627,7 +627,7 @@
             "rustore": "Pupikes-FAQ-Desk-rustore-release.apk",
             "huawei": "Pupikes-FAQ-Desk-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$30"
         },
         {
@@ -646,7 +646,7 @@
             "rustore": "Pupikes-Auto-Answer-rustore-release.apk",
             "huawei": "Pupikes-Auto-Answer-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$30"
         }
       ]
@@ -678,7 +678,7 @@
             "rustore": "Pupikes-Chat-rustore-release.apk",
             "huawei": "Pupikes-Chat-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$10"
         },
         {
@@ -697,7 +697,7 @@
             "rustore": "HouseLookBook-rustore-release.apk",
             "huawei": "HouseLookBook-huawei-release.apk"
           },
-          "download": false,
+          "download": true,
           "price": "$1.3"
         }
       ]

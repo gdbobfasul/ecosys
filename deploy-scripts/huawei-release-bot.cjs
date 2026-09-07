@@ -268,6 +268,10 @@ async function forceTestingNo(frame) {
     //     authenticator) → форсирай Yes→No с истинска мишка да committнеш „No". После Save (по-надолу) го
     //     записва и грешките падат.
     const otErr = await frame.evaluate(() => /open testing version must be later|select a user list|enter a start time and an end time|users to be invited cannot exceed|version code later than the released/i.test(document.body ? document.body.innerText : '')).catch(() => false);
+    // ★ HW_SKIP_OT (07.09): не прави Yes→No танца ако радиото ВЕЧЕ показва „No". Хипотеза: otErr често е
+    //   ОСТАТЪЧЕН тост от ПРЕДИШНИЯ ап в SPA-та (не се чисти при навигация) → танцът реално ВКЛЮЧВА open-testing
+    //   на чист ап и ражда стената. При чисто ново приложение оставяме секцията непокътната (както 24-те успели).
+    if (process.env.HW_SKIP_OT && isNo0) { log('✓ Use testing version = No — HW_SKIP_OT: не пипам (пазя чистия ап от фалшив otErr).'); return true; }
     if (isNo0 && !otErr) { log('✓ Use testing version = No (без open-testing грешки) — не пипам.'); return true; }
     if (isNo0 && otErr) log('  ⚠ open-testing валидация активна въпреки вид „No" → форсирам Yes→No да committна модела.');
     if (await yes.count().catch(() => 0)) { await mouseClick(yes); await new Promise((r) => setTimeout(r, 600)); }
@@ -276,6 +280,113 @@ async function forceTestingNo(frame) {
     log(isNo ? '✓ Use testing version → No (истинска мишка, committнат).' : '↷ „Use testing version" — задай „No" ръчно');
     return isNo;
   } catch (_) { return false; }
+}
+// „Убий" остатъчния open-testing трак: „Use testing version = No" понякога НЕ се пропагира до Vue
+// валидацията → скритите задължителни полета (Test period/Test users/Feedback email/Invitation expires)
+// пак гърмят и блокират Submit (Huawei бъг). Комитваме „No" с ПЪЛНИ Vue събития (click + input + change
+// на самия radio input), Yes→No цикъл да рестартира валидацията, повтаряно докато OT-грешките паднат.
+const OT_ERR_RX = /open testing version must be later|select a user list|enter a start time and an end time|users to be invited cannot exceed|version code later than the released|invitation expires|feedback email|enter an integer ranging from 1 to 90|enter an email address/i;
+async function killOpenTesting(frame, tries) {
+  // HW_SKIP_OT: не прави Yes→No танца — той е това, което активира трака на чист ап (виж forceTestingNo).
+  if (process.env.HW_SKIP_OT) return await frame.evaluate((rxs) => !new RegExp(rxs, 'i').test(document.body ? document.body.innerText : ''), OT_ERR_RX.source).catch(() => true);
+  for (let i = 0; i < (tries || 6); i++) {
+    const hasErr = await frame.evaluate((rxs) => new RegExp(rxs, 'i').test(document.body ? document.body.innerText : ''), OT_ERR_RX.source).catch(() => false);
+    if (!hasErr) return true;
+    await frame.evaluate(() => {
+      const grp = [...document.querySelectorAll('.el-form-item, tr')].find((g) => /Use testing version/i.test(g.innerText || ''));
+      if (!grp) return;
+      const labels = [...grp.querySelectorAll('label.el-radio, .el-radio')];
+      const byTxt = (re) => labels.find((l) => re.test(((l.querySelector('.el-radio__label') || {}).innerText || '').trim()));
+      const yes = byTxt(/^Yes$/i), no = byTxt(/^No$/i);
+      const fire = (lab) => { if (!lab) return; const inp = lab.querySelector('input'); try { lab.click(); } catch (_) {} if (inp) { try { inp.click(); } catch (_) {} inp.dispatchEvent(new Event('input', { bubbles: true })); inp.dispatchEvent(new Event('change', { bubbles: true })); } };
+      fire(yes); fire(no);   // Yes→No: рестартира conditional-валидацията, финално състояние „No"
+    }).catch(() => {});
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+  return await frame.evaluate((rxs) => !new RegExp(rxs, 'i').test(document.body ? document.body.innerText : ''), OT_ERR_RX.source).catch(() => false);
+}
+// Попълва ПЪЛЕН open-testing конфиг (Yes + дати + тестер-списък + имейл + срок), когато „No" не минава
+// (Huawei валидира скритите задължителни полета). Тестер = подадения имейл. После апът тръгва за open test.
+async function fillOpenTesting(frame, email, logf) {
+  const L = logf || (() => {});
+  // 1) Use testing version = Yes (за да се покажат полетата)
+  await frame.evaluate(() => {
+    const grp = [...document.querySelectorAll('.el-form-item, tr')].find((g) => /Use testing version/i.test(g.innerText || ''));
+    if (!grp) return;
+    const yes = [...grp.querySelectorAll('label.el-radio, .el-radio')].find((l) => /^Yes$/i.test(((l.querySelector('.el-radio__label') || {}).innerText || '').trim()));
+    if (yes) { const i = yes.querySelector('input'); try { yes.click(); } catch (_) {} if (i) { try { i.click(); } catch (_) {} i.dispatchEvent(new Event('change', { bubbles: true })); } }
+  }).catch(() => {});
+  await new Promise((r) => setTimeout(r, 1800));
+  // helper: сложи стойност в текстов el-input по label на form-item-а (native setter + input/change/blur)
+  const setField = (labelSrc, val) => frame.evaluate((a) => {
+    const re = new RegExp(a[0], 'i');
+    const fi = [...document.querySelectorAll('.el-form-item')].find((g) => re.test(((g.querySelector('.el-form-item__label') || {}).innerText || '')) && g.offsetParent !== null);
+    if (!fi) return false;
+    const inp = fi.querySelector('input.el-input__inner, input[type=text], textarea');
+    if (!inp) return false;
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+    setter.call(inp, a[1]); inp.dispatchEvent(new Event('input', { bubbles: true })); inp.dispatchEvent(new Event('change', { bubbles: true })); inp.dispatchEvent(new Event('blur', { bubbles: true }));
+    return true;
+  }, [labelSrc, val]).catch(() => false);
+  // 2) дати за Test period (start=утре, end=+90д) — двата date-input-а в form-item-а „Test period"
+  const pad = (n) => String(n).padStart(2, '0');
+  const fmt = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  const now = new Date(); const start = new Date(now.getTime() + 24 * 3600e3); const end = new Date(now.getTime() + 60 * 24 * 3600e3);
+  // Element-UI date-editor НЕ приема инжекция на .value — трябва истинско писане (click → fill → Enter).
+  try {
+    let dloc = frame.locator('.el-form-item:has-text("Test period") input.el-input__inner');
+    if ((await dloc.count().catch(() => 0)) < 2) dloc = frame.locator('.el-date-editor input.el-input__inner');
+    const cnt = await dloc.count().catch(() => 0);
+    if (cnt >= 2) {
+      await dloc.nth(0).click({ timeout: 4000 }).catch(() => {}); await new Promise((r) => setTimeout(r, 400));
+      await dloc.nth(0).fill(fmt(start)).catch(() => {}); await dloc.nth(0).press('Enter').catch(() => {}); await new Promise((r) => setTimeout(r, 500));
+      await dloc.nth(1).click({ timeout: 4000 }).catch(() => {}); await new Promise((r) => setTimeout(r, 400));
+      await dloc.nth(1).fill(fmt(end)).catch(() => {}); await dloc.nth(1).press('Enter').catch(() => {}); await new Promise((r) => setTimeout(r, 500));
+      // затвори евентуален отворен календар
+      await frame.evaluate(() => document.body.click()).catch(() => {});
+    } else { L('  ↷ не намерих 2 date-input-а за Test period'); }
+  } catch (_) {}
+  await new Promise((r) => setTimeout(r, 700));
+  // 3) Feedback email + Invitation expires
+  await setField('Feedback email', email);
+  await setField('Invitation expires', '30');
+  L('  ✓ дати/имейл/срок попълнени');
+  // 4) списък тестери: „New list" → List name + ръчно добавяне на имейла + Add → OK
+  await frame.evaluate(() => { const nl = [...document.querySelectorAll('button')].find((b) => /^\s*New list\s*$/i.test(b.innerText || '')); if (nl) nl.click(); }).catch(() => {});
+  await new Promise((r) => setTimeout(r, 2200));
+  const listMade = await frame.evaluate((mail) => {
+    const dlg = [...document.querySelectorAll('.el-dialog, .el-drawer')].find((d) => d.offsetParent !== null && /New user list|List name/i.test(d.innerText || ''));
+    if (!dlg) return 'no-dialog';
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+    // List name
+    const nameFi = [...dlg.querySelectorAll('.el-form-item')].find((g) => /List name/i.test(((g.querySelector('label') || {}).innerText || '')));
+    const nameInp = nameFi && nameFi.querySelector('input');
+    if (nameInp) { setter.call(nameInp, 'Pupikes Testers'); nameInp.dispatchEvent(new Event('input', { bubbles: true })); nameInp.dispatchEvent(new Event('change', { bubbles: true })); }
+    // Users: избери ръчния радио (обикновено първия), после търси имейл-инпут + бутон Add
+    const usersFi = [...dlg.querySelectorAll('.el-form-item')].find((g) => /Users/i.test(((g.querySelector('label') || {}).innerText || '')));
+    if (usersFi) { const radios = [...usersFi.querySelectorAll('label.el-radio')]; if (radios[0]) { const i = radios[0].querySelector('input'); radios[0].click(); if (i) { i.click(); i.dispatchEvent(new Event('change', { bubbles: true })); } } }
+    return 'dialog-open';
+  }, email).catch(() => 'err');
+  L('  списък-диалог: ' + listMade);
+  await new Promise((r) => setTimeout(r, 1500));
+  // след ръчния радио може да се появи имейл-инпут → въведи имейла + Add
+  await frame.evaluate((mail) => {
+    const dlg = [...document.querySelectorAll('.el-dialog, .el-drawer')].find((d) => d.offsetParent !== null && /New user list|List name|Users/i.test(d.innerText || ''));
+    if (!dlg) return;
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+    const cand = [...dlg.querySelectorAll('input.el-input__inner, input[type=text], textarea')].filter((i) => i.offsetParent !== null && i.value === '' && !/Pupikes Testers/.test(i.value));
+    const emailInp = cand[cand.length - 1];
+    if (emailInp) { setter.call(emailInp, mail); emailInp.dispatchEvent(new Event('input', { bubbles: true })); emailInp.dispatchEvent(new Event('change', { bubbles: true })); }
+    const add = [...dlg.querySelectorAll('button')].find((b) => /^\s*Add\s*$/i.test(b.innerText || ''));
+    if (add) add.click();
+  }, email).catch(() => {});
+  await new Promise((r) => setTimeout(r, 1500));
+  // OK на диалога
+  await frame.evaluate(() => { const dlg = [...document.querySelectorAll('.el-dialog, .el-drawer')].find((d) => d.offsetParent !== null && /New user list|List name/i.test(d.innerText || '')); if (!dlg) return; const ok = [...dlg.querySelectorAll('button')].find((b) => /^\s*OK\s*$/i.test(b.innerText || '')); if (ok) ok.click(); }).catch(() => {});
+  await new Promise((r) => setTimeout(r, 2500));
+  L('  ✓ open-testing конфиг попълнен (тестер ' + email + ')');
+  // остатъчни грешки?
+  return await frame.evaluate((rxs) => !new RegExp(rxs, 'i').test(document.body ? document.body.innerText : ''), OT_ERR_RX.source).catch(() => false);
 }
 // Native in-page клик по бутон/връзка по РЕГЕКС на текста. Playwright .click() понякога НЕ задейства
 // Vue router/handler-ите на Huawei-конзолата (напр. „View and edit", „Set"), докато native .click() върши
@@ -388,6 +499,14 @@ function spawnBrowser() {
   }
   try { browser = await PW.chromium.connectOverCDP('http://127.0.0.1:9222'); }
   catch (e) { console.log('✗ Не успях да вдигна/закача браузъра: ' + e.message); process.exit(2); }
+
+  // ★ УСТОЙЧИВОСТ на диалози: AppGallery хвърля JS диалог („Leave page? Changes may not be saved") при
+  //   навигация с незаписани промени. БЕЗ handler Playwright race-ва → „Page.handleJavaScriptDialog: No dialog
+  //   is showing" → необработен reject → ботът ПАДА (крашваше chat/др.). (1) авто-приемаме диалозите;
+  //   (2) глобален guard да НЕ крашва процеса на такъв reject.
+  process.on('unhandledRejection', (e) => { try { const m = (e && e.message) || String(e); if (!/No dialog is showing|handleJavaScriptDialog|Target closed|Target page.*closed/i.test(m)) console.log('  ⚠ (guard) unhandledRejection: ' + m); } catch (_) {} });
+  const _armDialogs = (p) => { try { p.on('dialog', async (d) => { try { await d.accept(); } catch (_) { try { await d.dismiss(); } catch (__) {} } }); } catch (_) {} };
+  for (const ctx of browser.contexts()) { for (const p of ctx.pages()) _armDialogs(p); try { ctx.on('page', _armDialogs); } catch (_) {} }
 
   console.log('\n🤖 HuaweiReleaseBot — ' + brand + '  (пакет ' + appId + ')');
   console.log('   Правило: попълвам видимо, НЕ натискам бутони. Ти преглеждаш и продължаваш.');
@@ -542,18 +661,11 @@ function spawnBrowser() {
     // ВАЖНО: „вече на верния ап" САМО ако URL е страница на АПА (#/myApp/<id>/…) И текстът има пакета.
     // Инак списъкът My Apps (който съдържа ВСИЧКИ пакети) дава фалшив положителен → пропуска навигацията.
     let onApp = false;
-    // „Вече на верния ап" = URL е страница на КОНКРЕТЕН ап (#/myApp/<id>/…, НЕ голият списък #/myApp) И
-    // на страницата има ИЛИ пакета, ИЛИ ясни маркери на ап-страница. Само пакетът е твърде строг: на
-    // App info се вижда името, не пакетът → onApp падаше и ботът тръгваше да търси в списъка (и не намираше
-    // апове от стр. 2+). URL с /<id>/ никога не е списъкът, затова маркерите са безопасни (не дават фалшив
-    // положителен от My Apps). Заредено чрез nav-to-app по числов ID → URL-ът е верният ап.
-    try {
-      const _u = p.url() || ''; const cur = await findBest();
-      const urlIsApp = /#\/myApp\/\d+\/[^/]/.test(_u);
-      const pkgSeen = new RegExp(appId.replace(/\./g, '\\.'), 'i').test(cur.text || '');
-      const appMarkers = /App information|Manage packages|Manage languages|Version information|Compatible devices|Brief introduction|For reviewer|Set as test version|Country\/Region for release|Software version|Version code/i.test(cur.text || '');
-      onApp = urlIsApp && (pkgSeen || appMarkers);
-    } catch (_) {}
+    // „Вече на верния ап" = URL е страница на КОНКРЕТЕН ап (#/myApp/<id>/…) И пакетът се вижда в текста.
+    // (Пробвах по-меко „или маркери на ап-страница" — но то триггваше на app-info и ботът прескачаше
+    // list-search+Edit, който води до РЕДАКТОРА на версията → зацикляше на app-info. Строгото е по-безопасно:
+    // при съмнение ботът минава през списъка+Edit — надеждно СЕГА, щом list-search пагинира + reload-ва.)
+    try { const _u = p.url() || ''; const cur = await findBest(); onApp = /#\/myApp\/\d+\/[^/]/.test(_u) && new RegExp(appId.replace(/\./g, '\\.'), 'i').test(cur.text || ''); } catch (_) {}
     if (onApp) { log('вече съм на верния ап (' + appId + ')'); }
     else {
       log('навигирам до ' + app + ' (' + appId + ')…');
@@ -1205,8 +1317,51 @@ function spawnBrowser() {
             await sleep(1200);
           }
           const catVal = await frame.evaluate(() => { const i = [...document.querySelectorAll('.el-cascader input')].find((x) => x.value); return i ? i.value : ''; }).catch(() => '');
-          log(catVal ? '✓ Category ← ' + catVal : '↷ Category непълна — избери ръчно: ' + catParts.join(' > '));
+          log(catVal ? '✓ Category ← ' + catVal : '↷ Category (каскадер) празен — за игри е РАДИО, задавам по-долу.');
         } catch (_) { log('↷ Category — избери ръчно: ' + catParts.join(' > ')); }
+      }
+      // ★ ИГРОВА КАТЕГОРИЯ (07.09 фикс): App info за игри показва РАДИО „Casual game"/„Hardcore game",
+      //   НЕ каскадер (Games>…). Ако не се избере → App info е НЕПЪЛНА („complete categorization") и Submit
+      //   гърми с каскада грешки (вкл. фалшив open-testing/publication approval). Избираме радиото.
+      //   Стойност: app-profile.json.gameCategoryHuawei (иначе „Casual game" — валидно за простите игри).
+      if (isGame) {
+        let gCat = process.env.HW_GAME_CATEGORY || '';
+        if (!gCat) { try { gCat = (JSON.parse(fs.readFileSync(path.join(pub, 'app-profile.json'), 'utf8')).gameCategoryHuawei) || ''; } catch (_) {} }
+        if (!gCat) gCat = 'Casual game';
+        const gok = await frame.evaluate((choice) => {
+          const norm = (s) => (s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+          const fi = [...document.querySelectorAll('.el-form-item')].find((g) => /Casual game|Hardcore game/i.test(g.innerText || '') && g.offsetParent !== null);
+          if (!fi) return 'no-field';
+          const lab = [...fi.querySelectorAll('label.el-radio')].find((l) => norm((l.querySelector('.el-radio__label') || l).innerText) === norm(choice));
+          if (!lab) return 'no-option';
+          if (lab.classList.contains('is-checked')) return 'already';
+          lab.scrollIntoView({ block: 'center' });
+          const inp = lab.querySelector('input');
+          try { lab.click(); } catch (_) {}
+          if (inp) { try { inp.click(); } catch (_) {} inp.checked = true; inp.dispatchEvent(new Event('input', { bubbles: true })); inp.dispatchEvent(new Event('change', { bubbles: true })); }
+          return lab.classList.contains('is-checked') ? 'checked' : 'clicked';
+        }, gCat).catch((e) => 'err:' + e.message);
+        log((gok === 'checked' || gok === 'already') ? '✓ Игрова категория (тип) ← ' + gCat : (gok === 'no-field' ? '↷ Игрова категория — полето „Casual/Hardcore game" не е на този екран' : '↷ Игрова категория (' + gCat + ') → ' + gok));
+        // ★ ЖАНР-КАСКАДЕР (задължителен, „Select a game category"): надписите на Huawei (Games/Puzzle & casual/…)
+        //   НЕ съвпадат с PUBLISHING-HUAWEI.md → ако е празен, избирам ПЪРВАТА опция на всяко ниво (валиден път).
+        if (gok !== 'no-field') {
+          // ★ РОБУСТНО: каскадерът се рендира със ЗАКЪСНЕНИЕ след радиото → чакай+повтаряй докато го намериш и попълниш.
+          const readCasc = () => frame.evaluate(() => { const fi = [...document.querySelectorAll('.el-form-item')].find((g) => /game category|Casual game/i.test(g.innerText || '') && g.offsetParent !== null); const c = fi && fi.querySelector('.el-cascader'); if (!c) return '(no-casc)'; const inp = c.querySelector('input'); return inp ? (inp.value || '') : ''; }).catch(() => '(no-casc)');
+          let cascVal = '';
+          for (let att = 0; att < 6; att++) {
+            const cur = await readCasc();
+            if (cur && cur !== '(no-casc)') { cascVal = cur; break; }         // вече попълнен
+            if (cur === '(no-casc)') { await sleep(1500); continue; }          // още не се е рендирал → чакай
+            // празен каскадер → отвори с IN-PAGE клик (каскадерът е в IFRAME → mouse-координати пропускат!)
+            await frame.evaluate(() => { const fi = [...document.querySelectorAll('.el-form-item')].find((g) => /game category|Casual game/i.test(g.innerText || '')); const c = fi && fi.querySelector('.el-cascader'); if (!c) return; const i = c.querySelector('.el-input__inner, input') || c; i.scrollIntoView({ block: 'center' }); i.click(); }).catch(() => {});
+            await sleep(1600);
+            for (let lvl = 0; lvl < 4; lvl++) { const clk = await frame.evaluate(() => { const cols = [...document.querySelectorAll('.el-cascader-menu')].filter((m) => m.offsetParent !== null); if (!cols.length) return false; const last = cols[cols.length - 1]; const first = [...last.querySelectorAll('.el-cascader-menu__item, .el-cascader-node')].find((i) => i.offsetParent !== null); if (first) { first.click(); return true; } return false; }).catch(() => false); if (!clk) break; await sleep(1100); }
+            await sleep(600);
+            cascVal = await readCasc();
+            if (cascVal && cascVal !== '(no-casc)') break;
+          }
+          log((cascVal && cascVal !== '(no-casc)') ? '✓ Жанр (game category) ← ' + cascVal : '↷ Жанр каскадер — не се попълни (виж ръчно)');
+        }
       }
       // ── Качване: [0]=икона .png, [1]=скрийншоти, [2]=промо-видео .mp4 (само за магазина) ──
       const fileInputs = frame.locator('input[type="file"]');
@@ -1506,45 +1661,110 @@ function spawnBrowser() {
         if (!_apkOk) { log('⛔ НЕ подавам: новото APK (versionCode ' + (_apkExpectedVc || '?') + ') не е потвърдено закачено. Оправи APK-то (виж горе) и пусни пак.'); autoNext = false; continue; }
         await sleep(1500);
         await closeUploadModal();
+        // ★ ГАРАНТИРАЙ „Selected countries/regions" + изключи Chinese Mainland ПРЕДИ Submit (08.09):
+        //   при „All countries/regions" Chinese Mainland е включен → игрите искат Copyright + Filing + Publication
+        //   number (软著/ICP备案/版号). Това е ПОСЛЕДНОТО действие преди Submit → не се нулира.
+        if (process.env.HW_KEEP_ALL_COUNTRIES !== '1') {
+          const _selOn = await frame.evaluate(() => { const r = [...document.querySelectorAll('.el-radio')].find((x) => /Selected countries\/regions/i.test(x.innerText || '')); return r ? r.classList.contains('is-checked') : false; }).catch(() => false);
+          if (!_selOn) { await mouseClick(frame.locator('.el-radio').filter({ hasText: /Selected countries\/regions/i }).first()).catch(() => {}); await sleep(1300); log('  ✓ превключих на „Selected countries/regions" (за да изключа Китай).'); }
+          await selectCountriesExcept(frame).catch(() => {});
+          const _svc = frame.locator('button:has-text("Save")').filter({ hasNotText: /Cancel|Submit/ }).first();
+          if (await _svc.count().catch(() => 0)) { await mouseClick(_svc).catch(() => {}); await sleep(2500); }
+          await closeUploadModal();
+        }
         // ★ Стики Submit валидира ЦЯЛАТА страница → тестовата настройка ТРЯБВА да е „No",
         //   иначе иска тестери/дати/version code. Форсирам No по няколко възможни надписа + DOM резерва.
-        await forceTestingNo(frame).catch(() => {});   // истинска мишка → committва „No" в Vue
-        for (const lbl of ['Set as test version', 'Release for open testing', 'Open testing', 'Whether to release for open testing']) {
-          await pickRadio(frame, lbl, 'No').catch(() => {});
-        }
-        await frame.evaluate(() => {
-          for (const g of document.querySelectorAll('.el-form-item, tr, .field, .form-item')) {
-            const t = g.innerText || '';
-            if (/test(ing)?\s*version|open testing/i.test(t)) {
-              const no = [...g.querySelectorAll('.el-radio, label')].find((r) => /^\s*No\s*$/i.test(r.innerText || ''));
-              if (no && !no.classList.contains('is-checked')) no.click();
-            }
+        if (!process.env.HW_JUST_SUBMIT) await forceTestingNo(frame).catch(() => {});   // истинска мишка → committва „No"
+        // ★ HW_JUST_SUBMIT (08.09): точно като РЪЧЕН клик на потребителя — само copyright + Submit/Release,
+        //   БЕЗ forceTestingNo/pickRadio/_clearOT/Save/killOpenTesting (те разстройват състоянието и правят
+        //   Submit неактивен; OT тостовете са шум, реалният Submit минава). Ползвай след готови категория+рейтинг.
+        if (!process.env.HW_SKIP_OT && !process.env.HW_JUST_SUBMIT) {
+          for (const lbl of ['Set as test version', 'Release for open testing', 'Open testing', 'Whether to release for open testing']) {
+            await pickRadio(frame, lbl, 'No').catch(() => {});
           }
-        }).catch(() => {});
+          await frame.evaluate(() => {
+            for (const g of document.querySelectorAll('.el-form-item, tr, .field, .form-item')) {
+              const t = g.innerText || '';
+              if (/test(ing)?\s*version|open testing/i.test(t)) {
+                const no = [...g.querySelectorAll('.el-radio, label')].find((r) => /^\s*No\s*$/i.test(r.innerText || ''));
+                if (no && !no.classList.contains('is-checked')) no.click();
+              }
+            }
+          }).catch(() => {});
+        }
         await sleep(1200);
         // Proof of copyright: ако има чекбокс „I have obtained… / authorized" — отметни го (за резубмит често е налично).
         await frame.evaluate(() => { [...document.querySelectorAll('.el-checkbox')].filter((c) => /copyright|authorized|obtained|intellectual|авторск|интелектуал/i.test(c.innerText || '')).forEach((c) => { if (!c.classList.contains('is-checked')) c.click(); }); }).catch(() => {});
         await sleep(800);
-        const sub = frame.locator('button:has-text("Submit")').filter({ hasNotText: /Cancel/ }).first();
-        if (await sub.count().catch(() => 0)) {
+        // Преди Submit: изчисти open-testing блокера. Ако е зададен тестер-имейл (OT_TESTER_EMAIL) →
+        // попълни ПЪЛЕН open-testing конфиг (Yes + тестер + дати + срок); иначе комитвай „No".
+        const _OT_EMAIL = process.env.OT_TESTER_EMAIL || '';
+        const _clearOT = async () => (_OT_EMAIL ? await fillOpenTesting(frame, _OT_EMAIL, log) : await killOpenTesting(frame, 6));
+        if (!process.env.HW_JUST_SUBMIT) {
+          if (await _clearOT()) log('  ✓ open-testing изчистен/попълнен' + (_OT_EMAIL ? ' (тестер ' + _OT_EMAIL + ')' : ' (No committнат)') + '.');
+          else log('  ⚠ open-testing не се изчисти напълно — пробвам Save+Submit все пак.');
+          await sleep(500);
+          const _saveBtn = frame.locator('button:has-text("Save")').filter({ hasNotText: /Cancel/ }).first();
+          if (await _saveBtn.count().catch(() => 0)) { await mouseClick(_saveBtn).catch(() => {}); log('  ✓ Save (пре-рендер на формата).'); await sleep(3000); }
+          if (!_OT_EMAIL) await killOpenTesting(frame, 4);
+        } else { log('  ⚡ HW_JUST_SUBMIT: направо Submit/Release (без OT/Save междинни стъпки).'); }
+        await sleep(700);
+        const _doSubmitOnce = async () => {
+          // ★ финалният бутон за НОВИ апове е „Release" (или „Submit for review"), НЕ само „Submit" (07.09).
+          let sub = frame.locator('button:has-text("Submit for review"), button:has-text("Release")').filter({ hasNotText: /Cancel/ }).first();
+          if (!(await sub.count().catch(() => 0))) sub = frame.locator('button:has-text("Submit")').filter({ hasNotText: /Cancel|next/i }).first();
+          if (!(await sub.count().catch(() => 0))) return false;
           await mouseClick(sub);
           await sleep(2600);
-          for (let k = 0; k < 3; k++) {   // потвърждение (Confirm/Submit/OK в диалог)
-            const cf = frame.locator('.el-dialog:visible button:has-text("Confirm"), .el-dialog:visible button:has-text("Submit"), .el-message-box:visible .el-button--primary, .el-message-box:visible button:has-text("OK")').first();
+          for (let k = 0; k < 4; k++) {   // потвърждение (Confirm/Submit/OK/„Confirm release information")
+            // ★ предпазка: НЕ пипай „New app"/„Add to project" диалог (би създал ДУБЛИКАТ) — само Cancel-вай го.
+            const isNewApp = await frame.evaluate(() => { const d = [...document.querySelectorAll('.el-dialog, .el-message-box')].find((x) => x.offsetParent !== null); return d ? /New app|Add to project|Package type/i.test(d.innerText || '') : false; }).catch(() => false);
+            if (isNewApp) { const cx = frame.locator('.el-dialog:visible button:has-text("Cancel")').first(); if (await cx.count().catch(() => 0)) await cx.click({ force: true, timeout: 3000 }).catch(() => {}); log('  ↷ появи се „New app" диалог — Cancel (не създавам дубликат)'); break; }
+            const cf = frame.locator('.el-dialog:visible button:has-text("Confirm"), .el-dialog:visible button:has-text("Submit"), .el-dialog:visible button:has-text("OK"), .el-message-box:visible .el-button--primary, .el-message-box:visible button:has-text("OK")').filter({ hasNotText: /Cancel/ }).first();
             if (await cf.count().catch(() => 0)) { await cf.click({ force: true, timeout: 3000 }).catch(() => {}); await sleep(2200); } else break;
           }
-          const errs2 = await getErrors(frame);
+          return true;
+        };
+        const _hadSubmit = await _doSubmitOnce();
+        if (_hadSubmit) {
+          let errs2 = await getErrors(frame);
+          // Ако след Submit пак има open-testing грешки → изчисти пак + Submit отново (до 2 пъти).
+          for (let rt = 0; rt < 2 && !process.env.HW_JUST_SUBMIT && errs2.some((e) => OT_ERR_RX.test(e)); rt++) {
+            log('  ↻ open-testing грешки след Submit → изчиствам пак + Submit отново (' + (rt + 1) + ')');
+            await _clearOT(); await sleep(700);
+            await _doSubmitOnce();
+            errs2 = await getErrors(frame);
+          }
           if (errs2.length) {
             const testing = errs2.some((e) => /open testing|start time|user list|version code later|released version/i.test(e));
             if (testing) {
               log('⚠ Submit-ът закача ОСТАТЪЧЕН „Open testing" трак на този ап (start time / user list / version code). Това е състояние в конзолата, не бота: в раздела за тестова версия махни/довърши тестовия трак (или го изтрий), после Submit само за Release. Другото (описание+APK 1.00xx+privacy+reviewer) е попълнено.');
               if (process.env.OT_DEBUG) { try {
+                if (process.env.OT_YES) {
+                  // щракни „Yes" за да покажеш полетата на open testing, после дъмпни ги
+                  await frame.evaluate(() => { const grp = [...document.querySelectorAll('.el-form-item, tr')].find((g) => /Use testing version/i.test(g.innerText || '')); if (grp) { const yes = [...grp.querySelectorAll('label.el-radio, .el-radio')].find((l) => /^Yes$/i.test(((l.querySelector('.el-radio__label') || {}).innerText || '').trim())); if (yes) { const inp = yes.querySelector('input'); yes.click(); if (inp) { inp.click(); inp.dispatchEvent(new Event('change', { bubbles: true })); } } } }).catch(() => {});
+                  await sleep(2500);
+                  // щракни „New list" и дъмпни диалога
+                  await frame.evaluate(() => { const nl = [...document.querySelectorAll('button')].find((b) => /^\s*New list\s*$/i.test(b.innerText || '')); if (nl) nl.click(); }).catch(() => {});
+                  await sleep(2500);
+                  const nlDialog = await frame.evaluate(() => { const dlg = [...document.querySelectorAll('.el-dialog, .el-drawer')].find((d) => d.offsetParent !== null && /list|test|user|email/i.test(d.innerText || '')); if (!dlg) return null; const title = ((dlg.querySelector('.el-dialog__title, .el-drawer__title') || {}).innerText || '').trim(); const fields = [...dlg.querySelectorAll('.el-form-item')].map((fi) => ({ lab: ((fi.querySelector('.el-form-item__label,label') || {}).innerText || '').trim(), inputs: [...fi.querySelectorAll('input,textarea,button,.el-select')].map((e) => ({ tag: e.tagName, type: e.getAttribute('type') || '', ph: e.getAttribute('placeholder') || '', txt: (e.innerText || '').trim().slice(0, 20) })) })); const btns = [...dlg.querySelectorAll('button')].map((b) => (b.innerText || '').trim()).filter(Boolean); return { title, fields, btns }; }).catch(() => null);
+                  require('fs').writeFileSync(process.env.OT_DEBUG + '.newlist.json', JSON.stringify(nlDialog, null, 1));
+                  log('  [debug] New-list диалог → ' + process.env.OT_DEBUG + '.newlist.json');
+                }
                 const dbg = await frame.evaluate(() => {
-                  const tabs = [...document.querySelectorAll('.el-tabs__item,[role="tab"],.el-step__title')].map((e) => (e.innerText || '').trim()).filter(Boolean);
-                  const btns = [...document.querySelectorAll('button,a,.el-button,.el-link,span')].map((e) => (e.innerText || '').trim()).filter((t) => t && /delete|remove|cancel|clear|discard|изтрий|отмени|test version|open testing|Manage/i.test(t));
-                  let sec = '';
-                  for (const g of document.querySelectorAll('.el-form-item, tr, .field, .form-item, .el-card, section')) { if (/test(ing)?\s*version|open testing/i.test(g.innerText || '')) { sec += (g.outerHTML || '').slice(0, 1000) + '\n----\n'; } }
-                  return { url: location.href, tabs: [...new Set(tabs)], btns: [...new Set(btns)], sec: sec.slice(0, 3500) };
+                  // ВСИЧКИ бутони + връзки (търсим delete/manage/версия на open-testing)
+                  const allBtns = [...new Set([...document.querySelectorAll('button, .el-button, a, .el-link, span[role="button"]')].map((e) => (e.innerText || '').trim()).filter(Boolean))].slice(0, 60);
+                  const verLinks = [...document.querySelectorAll('a')].map((a) => (a.innerText || '').trim()).filter((t) => /\d+\.\d{3,4}|Draft|Open testing|test|Release|version/i.test(t)).slice(0, 20);
+                  const ot = document.querySelector('#open-test-auto, .open-test-auto');
+                  let fields = [];
+                  if (ot) { for (const fi of ot.querySelectorAll('.el-form-item')) {
+                    const lab = ((fi.querySelector('.el-form-item__label') || {}).innerText || '').trim();
+                    if (!lab) continue;
+                    const hidden = fi.style.display === 'none' || fi.offsetParent === null;
+                    const inputs = [...fi.querySelectorAll('input,textarea,.el-select,.el-date-editor,button')].map((e) => ({ tag: e.tagName, type: e.getAttribute('type') || '', ph: e.getAttribute('placeholder') || '', cls: (e.className || '').slice(0, 60), txt: (e.innerText || '').trim().slice(0, 24), val: e.value || '' }));
+                    fields.push({ lab, hidden, req: fi.className.includes('is-required'), err: ((fi.querySelector('.el-form-item__error') || {}).innerText || '').trim(), inputs });
+                  } }
+                  return { url: location.href, otFound: !!ot, otFields: fields, allBtns, verLinks };
                 });
                 require('fs').writeFileSync(process.env.OT_DEBUG, JSON.stringify(dbg, null, 1));
                 log('  [debug] OT структура → ' + process.env.OT_DEBUG);
@@ -1687,6 +1907,13 @@ function spawnBrowser() {
       await p.evaluate((id) => { window.location.href = 'https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp/' + id + '/97458334310914199'; }, DELETE_ID).catch(() => {});
       await sleep(6500); console.log('→ App information на id=' + DELETE_ID);
     } else { await navigateToApp(); await sleep(2500); }
+    // ★ Ако апът е в „Reviewing" → „Delete app" е НЕДОСТЪПЕН. Отмени ревюто първо, после се върни на App info.
+    if (DELETE_ID) {
+      await cancelReviewIfReviewing(p, DELETE_ID).catch(() => {});
+      await sleep(2000);
+      await p.evaluate((id) => { window.location.href = 'https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp/' + id + '/97458334310914199'; }, DELETE_ID).catch(() => {});
+      await sleep(6000);
+    }
     const findAppInfo = async () => {
       for (const f of p.frames()) { if (/appInfo/i.test(f.url())) { const has = await f.evaluate(() => /Delete app/i.test(document.body ? document.body.innerText : '')).catch(() => false); if (has) return f; } }
       for (const f of p.frames()) { const has = await f.evaluate(() => /Delete app/i.test(document.body ? document.body.innerText : '')).catch(() => false); if (has) return f; }
@@ -1752,7 +1979,7 @@ function spawnBrowser() {
   // ── EDIT-помощници (вградени по искане): авто-Cancel review + НАДЕЖДНА магазинна икона ──
   // (1) Ако версията е „Reviewing" → не може да се качи нова версия, докато ревюто тече. Отмени го първо
   //     (Distribute route 9322385623857555199 → версия „Reviewing" → бутон „Cancel review" → потвърждение).
-  async function cancelReviewIfReviewing(p, cid) {
+  async function cancelReviewIfReviewing(p, cid, detectOnly) {
     try {
       await p.goto(AGC_URL.replace('#/myApp', '#/myApp/' + cid + '/9322385623857555199'), { waitUntil: 'domcontentloaded' }).catch(() => {});
       await sleep(6000);
@@ -1763,6 +1990,7 @@ function spawnBrowser() {
       if (!frame) return false;   // няма активно ревю → нищо за отмяна
       const cr = frame.locator(':is(button,a,span,.el-button,.el-link):text-is("Cancel review")').first();
       if (!(await cr.count().catch(() => 0))) return false;
+      if (detectOnly) return 'reviewing';   // само детекция (SKIP_IF_REVIEWING) → НЕ отменяй ревюто
       await cr.click({ force: true, timeout: 3000 }).catch(() => {});
       await sleep(2000);
       for (let k = 0; k < 2; k++) { const dlg = frame.locator('.el-dialog:visible, .el-message-box:visible').first(); if (!(await dlg.count().catch(() => 0))) break; const btn = dlg.locator('button:has-text("OK"), button:has-text("Confirm"), .el-button--primary').filter({ hasNotText: /Cancel review|No/ }).first(); if (await btn.count().catch(() => 0)) { await btn.click({ force: true, timeout: 3000 }).catch(() => {}); await sleep(2500); } else break; }
@@ -1941,6 +2169,13 @@ function spawnBrowser() {
     const _p = getHuaweiPage();
     const _cid = ((_p.url() || '').match(/#\/myApp\/(\d+)/) || [])[1];
     if (_cid) {
+      // SKIP_IF_REVIEWING: при масов резубмит — ако апът ВЕЧЕ е Reviewing (успешно подаден), НЕ го пипай
+      // (иначе бихме отменили ревюто + пре-подали). Позволява безопасно --fix на ВСИЧКИ (Reviewing се пропускат).
+      if (process.env.SKIP_IF_REVIEWING) {
+        const _rv = await cancelReviewIfReviewing(_p, _cid, true).catch(() => false);
+        if (_rv === 'reviewing') { log('✓ „' + brand + '" вече е Reviewing → пропускам (SKIP_IF_REVIEWING).'); process.exit(0); }
+        await navigateToApp();   // detect-only навигира до Distribute → върни се на апа
+      }
       await cancelReviewIfReviewing(_p, _cid);
       if (iconPath && fixWants('appinfo')) await uploadStoreIconReliable(_p, _cid, iconPath);
       await navigateToApp();   // върни се на апа за пълненето на версията

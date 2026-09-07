@@ -1,5 +1,1 @@
-{
-  "_note": "Преподаване (--fix, точка 90): appinfo=икона(17 езика)+APK; description=детайлно описание. Скрийншотите се качват от номерираните в publish/.",
-  "sections": ["appinfo", "description"],
-  "contentRating": ""
-}
+{ "sections": [], "contentRating": "" }
