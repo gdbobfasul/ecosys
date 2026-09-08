@@ -9,6 +9,14 @@
       "ownerGuard": { "thresholdTokens": 10000, "delaySec": 3600 }
     },
     {
+      "id": "sentinel", "name": "Pupikes Sentinel", "symbol": "SNTL", "decimals": 18, "supply": 1000000,
+      "contract": "PupikesSentinelToken",
+      "special": "🛡⏳ Vault Guard + НАСЛЕДЯВАНЕ (dead-man's switch): ако собственикът изчезне (загубен ключ/неактивност N дни), обявен НАСЛЕДНИК получава баланса след гратис — жив ключ (heartbeat/превод) винаги отменя.",
+      "why": "Средствата не се губят при инцидент; сигурност + приемственост без централен посредник — рядка near-unique черта.",
+      "params": { "defaultThresholdTokens": 5000, "defaultDelaySec": 3600, "burnFeeBps": 0, "fundFeeBps": 0, "maxTxBps": 0, "maxWalletBps": 0 },
+      "ownerGuard": { "thresholdTokens": 10000, "delaySec": 3600 }
+    },
+    {
       "id": "ember", "name": "Pupikes Ember", "symbol": "EMBR", "decimals": 18, "supply": 1000000,
       "special": "🔥 1% се изгаря при всеки превод — предлагането само намалява (дефлация/скъдност).",
       "why": "Намаляващо предлагане → натиск нагоре по цена; желан за държане.",

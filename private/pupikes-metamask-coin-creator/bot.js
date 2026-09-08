@@ -20,7 +20,9 @@ const CFG = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json"), "utf
 if (process.env.BOT_NETWORK) CFG.activeNetwork = process.env.BOT_NETWORK;   // override за тест
 if (process.env.BOT_WALLETMODE) CFG.walletMode = process.env.BOT_WALLETMODE;
 const CAT = JSON.parse(fs.readFileSync(path.join(__dirname, "catalog.json"), "utf8")).tokens;
-const ARTIFACT = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../token/artifacts/token/contracts/PupikesFeatureToken.sol/PupikesFeatureToken.json"), "utf8"));
+// Всеки токен може да е различен контракт (поле "contract" в каталога/деплоя). Дефолт = PupikesFeatureToken.
+function artifactFor(name) { const n = name || "PupikesFeatureToken"; return JSON.parse(fs.readFileSync(path.resolve(__dirname, "../token/artifacts/token/contracts/" + n + ".sol/" + n + ".json"), "utf8")); }
+const ARTIFACT = artifactFor("PupikesFeatureToken");   // дефолтен ABI (общите ERC-20 + Vault Guard функции)
 const NET = CFG.networks[CFG.activeNetwork];
 if (!NET) { console.error("Непозната мрежа в config.activeNetwork: " + CFG.activeNetwork); process.exit(1); }
 
@@ -75,16 +77,23 @@ async function create(id) {
     p.burnFeeBps, p.fundFeeBps, fundWallet,
     p.maxTxBps, p.maxWalletBps
   ];
-  const F = new ethers.ContractFactory(ARTIFACT.abi, ARTIFACT.bytecode, w);
-  const c = await F.deploy(params);
+  const ART = artifactFor(T.contract);   // ★ различен контракт според каталога (напр. PupikesSentinelToken)
+  // PupikesFeatureToken/Sentinel приемат struct Params (един аргумент); guard-контрактът — позиционни.
+  const F = new ethers.ContractFactory(ART.abi, ART.bytecode, w);
+  const usesStruct = ART.abi.some((x) => x.type === "constructor" && (x.inputs || []).some((i) => (i.internalType || "").includes("Params")));
+  const c = usesStruct
+    ? await F.deploy({ name: T.name, symbol: T.symbol, decimals: dec, initialSupply: units(T.supply, dec),
+        defaultThreshold: units(p.defaultThresholdTokens, dec), defaultDelay: p.defaultDelaySec,
+        burnFeeBps: p.burnFeeBps, fundFeeBps: p.fundFeeBps, fundWallet, maxTxBps: p.maxTxBps, maxWalletBps: p.maxWalletBps })
+    : await F.deploy(params);
   await c.waitForDeployment();
   const addr = await c.getAddress();
   // Защита на ТРЕЗОРА на бота: собственикът получава своя guard с пазач = guardian акаунта → monitor може да отменя кражби.
   const gAddr = guardianWallet().address;
   await ensureGuardianGas(w, gAddr);   // ботът сам зарежда пазача с малко газ (за да може да отменя кражби)
-  const t2 = new ethers.Contract(addr, ARTIFACT.abi, deployer());
+  const t2 = new ethers.Contract(addr, ART.abi, deployer());
   await (await t2.setGuard(units(T.ownerGuard.thresholdTokens, dec), T.ownerGuard.delaySec, gAddr)).wait();
-  saveDeploy(id, { id, address: addr, name: T.name, symbol: T.symbol, decimals: dec, supply: T.supply, deployer: w.address, guardian: gAddr, network: CFG.activeNetwork, chainId: Number(net.chainId), special: T.special, deployedAt: new Date().toISOString() });
+  saveDeploy(id, { id, address: addr, name: T.name, symbol: T.symbol, decimals: dec, supply: T.supply, deployer: w.address, guardian: gAddr, network: CFG.activeNetwork, chainId: Number(net.chainId), special: T.special, contract: T.contract || "PupikesFeatureToken", deployedAt: new Date().toISOString() });
   log("✅ ПУСНАТ: " + T.name + " (" + T.symbol + ") @ " + addr);
   log("   Специфичност: " + T.special);
   log("   🛡 Трезорът е защитен (пазач " + gAddr + ", праг " + T.ownerGuard.thresholdTokens + ")");
@@ -261,7 +270,7 @@ function list() {
   console.log("");
 }
 
-function tokenAt(id, signer) { const d = loadDeploy(id); if (!d) { console.error("Токенът " + id + " не е пуснат в " + CFG.activeNetwork + ". Пусни: node bot.js create " + id); process.exit(1); } return { d, c: new ethers.Contract(d.address, ARTIFACT.abi, signer || provider()) }; }
+function tokenAt(id, signer) { const d = loadDeploy(id); if (!d) { console.error("Токенът " + id + " не е пуснат в " + CFG.activeNetwork + ". Пусни: node bot.js create " + id); process.exit(1); } return { d, c: new ethers.Contract(d.address, artifactFor(d.contract).abi, signer || provider()) }; }
 
 // ── STATUS ──
 async function status(id) {

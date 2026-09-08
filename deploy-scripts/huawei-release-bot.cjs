@@ -666,6 +666,10 @@ function spawnBrowser() {
     // list-search+Edit, който води до РЕДАКТОРА на версията → зацикляше на app-info. Строгото е по-безопасно:
     // при съмнение ботът минава през списъка+Edit — надеждно СЕГА, щом list-search пагинира + reload-ва.)
     try { const _u = p.url() || ''; const cur = await findBest(); onApp = /#\/myApp\/\d+\/[^/]/.test(_u) && new RegExp(appId.replace(/\./g, '\\.'), 'i').test(cur.text || ''); } catch (_) {}
+    // ★ HW_APP_ID (08.09): при подаден числов ID + пре-навигация до #/myApp/<id>/<proj>, приемаме „на верния ап"
+    //   по URL-а (за апове, които списъчното търсене не намира — различен project suffix напр. 9322…). Ботът
+    //   после сам кликва „App information"/„Draft" от менюто → стига формата.
+    try { const envId = process.env.HW_APP_ID; if (envId && new RegExp('#/myApp/' + envId + '(/|$)').test(p.url() || '')) onApp = true; } catch (_) {}
     if (onApp) { log('вече съм на верния ап (' + appId + ')'); }
     else {
       log('навигирам до ' + app + ' (' + appId + ')…');
@@ -1367,16 +1371,56 @@ function spawnBrowser() {
       const fileInputs = frame.locator('input[type="file"]');
       if (iconPath) { await fileInputs.nth(0).setInputFiles(iconPath).then(() => log('✓ Икона качена')).catch(() => log('↷ икона — качи ръчно')); await sleep(3500); }   // качването е async — изчакай да се регистрира
       if (shotPaths.length) {
-        // ★ ИДЕМПОТЕНТНО: преброй ВЕЧЕ качените (стабилен контейнер `.appinfo-multiple-upload-box`, превюта
-        // `img.upload-img`). Huawei иска 3-8. Ако вече има ≥3 → НЕ качвай пак (иначе се ТРУПАТ 8+8=16 →
-        // „Upload 3 to 8 screenshots" и блокира Manage languages/Save). Качваме само ако са под 3.
-        const haveShots = await frame.locator('.appinfo-multiple-upload-box img.upload-img').count().catch(() => 0);
-        if (haveShots >= 3) {
-          log('↷ вече има ' + haveShots + ' скрийншота — НЕ качвам повторно (идемпотентно).');
-          if (haveShots > 8) log('⚠ има >8 скрийншота (' + haveShots + ') — махни излишните ръчно до 8.');
+        // ★ ИДЕМПОТЕНТНО + САМОПОЧИСТВАЩО: истинският брой се чете от ТЕКСТА „Uploaded screenshots: X/8"
+        // (превютата `img.upload-img` рендерират само 1 → лъжлив брой). Huawei иска 3-8.
+        //  • 3-8 → валидно, не пипаме.
+        //  • 1-2 → НЕВАЛИДЕН ОСТАТЪК (напр. от предишен полу-ъплоуд): 1+8=9 гърми „Upload 3 to 8". Затова
+        //    ПЪРВО трием всички остатъчни (клик по `img.appinfo-uploader-delete`), после качваме чисти 8 (0+8=8).
+        //  • 0 → директно качваме 8.
+        const readShots = async () => await frame.evaluate(() => { const m = (document.body.innerText || '').match(/Uploaded screenshots:\s*(\d+)\s*\/\s*8/); return m ? Number(m[1]) : 0; }).catch(() => 0);
+        const haveShots = await readShots();
+        if (haveShots >= 3 && haveShots <= 8) {
+          log('↷ вече има ' + haveShots + ' валидни скрийншота — НЕ качвам повторно (идемпотентно).');
         } else {
-          await fileInputs.nth(1).setInputFiles(shotPaths).then(() => log('✓ Скрийншоти подадени (' + shotPaths.length + ')')).catch(() => log('↷ скрийншоти — качи ръчно'));
-          await sleep(5000);   // изчакай обработката
+          if (haveShots >= 1) {
+            let _del = 0;
+            for (let k = 0; k < 12; k++) { const n = await frame.evaluate(() => { const x = document.querySelector('.appinfo-multiple-upload-box img.appinfo-uploader-delete'); if (x) { x.click(); return true; } return false; }).catch(() => false); if (!n) break; _del++; await sleep(500); }
+            // затвори евентуален попъп след триене
+            await frame.evaluate(() => { [...document.querySelectorAll('.el-message-box, .el-dialog')].filter((x) => x.offsetParent !== null).forEach((d) => { const z = [...d.querySelectorAll('button')].find((y) => /^(OK|Confirm)$/i.test((y.innerText || '').trim())); if (z) z.click(); }); }).catch(() => {});
+            await sleep(1200);
+            log('  ⌫ изтрих ' + _del + ' НЕВАЛИДНИ остатъчни скрийншота (били ' + haveShots + '/8) → качвам чисти 8');
+          }
+          // ★ РАБОТЕЩИЯТ МЕТОД (08.09): setInputFiles(8) наведнъж → само 1 стига до OBS (другите 7 засядат „в процес",
+          //   Save остава disabled, релоуд връща 1). Реалният бутон „Upload" + filechooser ДОБАВЯ (не заменя) и всеки
+          //   файл стига до OBS → качваме ПО ЕДИН през бутона, 8 пъти. Доказано: 8/8 персистират след релоуд.
+          {
+            const _pg = frame.page();
+            const _uploadOne = async (file) => {
+              const n = await frame.evaluate(() => [...document.querySelectorAll('button,span,a,div')].filter((e) => e.offsetParent !== null && /^\s*Upload\s*$/.test((e.innerText || '').trim())).length).catch(() => 0);
+              for (let idx = 0; idx < n; idx++) {
+                try {
+                  const [fc] = await Promise.all([
+                    _pg.waitForEvent('filechooser', { timeout: 5000 }),
+                    frame.evaluate((i) => { const els = [...document.querySelectorAll('button,span,a,div')].filter((e) => e.offsetParent !== null && /^\s*Upload\s*$/.test((e.innerText || '').trim())); const el = els[i]; if (el) { el.scrollIntoView({ block: 'center' }); el.click(); } }, idx)
+                  ]);
+                  await fc.setFiles([file]);
+                  return true;
+                } catch (_) {}
+              }
+              return false;
+            };
+            let _okN = 0;
+            for (const sp of shotPaths.slice(0, 8)) {
+              const ok = await _uploadOne(sp);
+              if (ok) _okN++;
+              await sleep(2500);
+              // затвори евентуален попъп между файловете
+              await frame.evaluate(() => { [...document.querySelectorAll('.el-message-box, .el-dialog')].filter((x) => x.offsetParent !== null).forEach((d) => { const z = [...d.querySelectorAll('button')].find((y) => /^(OK|Confirm)$/i.test((y.innerText || '').trim())); if (z) z.click(); }); }).catch(() => {});
+            }
+            const _now = await readShots();
+            log('✓ Скрийншоти подадени по един през „Upload": ' + _okN + '/' + shotPaths.length + ' → брояч ' + _now + '/8');
+          }
+          await sleep(3000);   // изчакай обработката
           // След обработка Huawei показва преглед (OK веднъж) ИЛИ грешка „Upload 3 to 8". И двете са
           // `.el-message-box` ИЛИ `.el-dialog` — затвори веднъж и спри (без спам).
           let handled = false;
@@ -1725,7 +1769,9 @@ function spawnBrowser() {
           }
           return true;
         };
-        const _hadSubmit = await _doSubmitOnce();
+        // ★ изчакай бутона да се АКТИВИРА (след country-Save се рендира със закъснение) + повтори до 5 пъти.
+        let _hadSubmit = false;
+        for (let _st = 0; _st < 5 && !_hadSubmit; _st++) { _hadSubmit = await _doSubmitOnce(); if (!_hadSubmit) { await sleep(2500); } }
         if (_hadSubmit) {
           let errs2 = await getErrors(frame);
           // Ако след Submit пак има open-testing грешки → изчисти пак + Submit отново (до 2 пъти).
@@ -2177,7 +2223,7 @@ function spawnBrowser() {
         await navigateToApp();   // detect-only навигира до Distribute → върни се на апа
       }
       await cancelReviewIfReviewing(_p, _cid);
-      if (iconPath && fixWants('appinfo')) await uploadStoreIconReliable(_p, _cid, iconPath);
+      if (iconPath && fixWants('appinfo') && !process.env.HW_SKIP_ICONS) await uploadStoreIconReliable(_p, _cid, iconPath);
       await navigateToApp();   // върни се на апа за пълненето на версията
     }
   }
