@@ -865,8 +865,9 @@ run_choice() {
             echo "    3) статус <id>   4) цена <id>   5) статистика <id> (× спрямо старта)   6) съвет <id>"
             echo "    8) запиши токен, пуснат от админ страницата /crypto/<символ>/admin/ (adopt <id> <адрес>, без транзакции)"
             echo "    9) блокирани адреси <id>   10) чакащи задържани преводи <id>   11) whitelist <id>   12) всички правила <id>"
-            echo "   13) проверка на изходния код в BscScan (verify <id>)"
-            read -p "  Избери [1-13]: " TS
+            echo "   13) проверка на изходния код в BscScan (verify <id>)   14) ОДИТ <id>   15) одит на ВСИЧКИ"
+            echo "   16) периодичен одит всеки ден (Scheduled Task PupikesTokensDailyAudit) / махни"
+            read -p "  Избери [1-16]: " TS
             case "$TS" in
                 1) tok_run menu ;;
                 2) tok_run list ;;
@@ -877,6 +878,26 @@ run_choice() {
                 11) read -p "  id на токена: " TID; [ -n "$TID" ] && tok_run whitelist "$TID" ;;
                 12) read -p "  id на токена: " TID; [ -n "$TID" ] && tok_run rules "$TID" ;;
                 13) read -p "  id на токена: " TID; [ -n "$TID" ] && tok_run verify "$TID" ;;
+                14) read -p "  id на токена: " TID; [ -n "$TID" ] && tok_run audit "$TID" ;;
+                15) tok_run audit all ;;
+                16)
+                    if ! command -v schtasks.exe >/dev/null 2>&1; then
+                        echo "  Няма schtasks.exe (не е Windows) — cron: 0 9 * * * cd <проекта> && node private/pupikes-metamask-coin-creator/bot.js audit all >> private/pupikes-metamask-coin-creator/wallet/audit.log 2>&1"
+                    else
+                        read -p "  1) регистрирай (всеки ден 09:00)   2) махни — избери [1-2]: " ASK
+                        if [ "$ASK" = "1" ]; then
+                            ADIR="$PROJECT_ROOT/private/pupikes-metamask-coin-creator/wallet"; mkdir -p "$ADIR"
+                            ACMD="$ADIR/audit-daily.cmd"
+                            NODEW="$(cygpath -w "$(command -v node)")"; case "$NODEW" in *.exe|*.EXE) ;; *) NODEW="$NODEW.exe" ;; esac
+                            printf '@echo off\r\ncd /d "%s"\r\n"%s" private\\pupikes-metamask-coin-creator\\bot.js audit all >> private\\pupikes-metamask-coin-creator\\wallet\\audit.log 2>&1\r\n' \
+                                "$(cygpath -w "$PROJECT_ROOT")" "$NODEW" > "$ACMD"
+                            if schtasks.exe //create //tn PupikesTokensDailyAudit //sc daily //st 09:00 //tr "$(cygpath -w "$ACMD")" //f >/dev/null; then
+                                echo -e "  ${GREEN}✓ Scheduled Task PupikesTokensDailyAudit — всеки ден 09:00 → audit all (дневник: wallet/audit.log)${NC}"
+                            else echo -e "  ${RED}✗ schtasks не успя${NC}"; fi
+                        elif [ "$ASK" = "2" ]; then
+                            if schtasks.exe //delete //tn PupikesTokensDailyAudit //f >/dev/null 2>&1; then echo "  Scheduled Task PupikesTokensDailyAudit е махнат."; else echo "  Няма такава задача."; fi
+                        else echo "  Отказано"; fi
+                    fi ;;
                 3|4|5|6)
                     read -p "  id на токена (напр. guard): " TID
                     case "$TS" in
@@ -926,8 +947,8 @@ run_choice() {
                         read -p "  стойност(и) (с интервал): " TA
                         [ -n "$TW" ] && TCMD="set $TID $TW $TA"
                     fi ;;
-                17) read -p "  id на токена: " TID; read -p "  за колко дни: " TD; [ -n "$TID" ] && [ -n "$TD" ] && TCMD="locklp $TID $TD" ;;
-                18) read -p "  id на токена: " TID; [ -n "$TID" ] && TCMD="unlocklp $TID" ;;
+                17) read -p "  id на токена: " TID; read -p "  за колко дни: " TD; read -p "  процент от LP [Enter = 100]: " TPC; [ -n "$TID" ] && [ -n "$TD" ] && TCMD="locklp $TID $TD ${TPC:-100}" ;;
+                18) read -p "  id на токена: " TID; read -p "  индекс на сейфа [Enter = всички узрели]: " TIX; [ -n "$TID" ] && TCMD="unlocklp $TID $TIX" ;;
                 19) read -p "  id на токена: " TID; read -p "  transfer / accept / status: " TW; read -p "  адрес (при transfer): " TA; [ -n "$TID" ] && [ -n "$TW" ] && TCMD="owner $TW $TID $TA" ;;
                 20) read -p "  id на токена: " TID; read -p "  bnb или адрес на заседнал токен: " TW; read -p "  получател (0x…): " TA; [ -n "$TID" ] && [ -n "$TW" ] && [ -n "$TA" ] && TCMD="rescue $TID $TW $TA" ;;
                 21) read -p "  наблюдение на dev портфейла [on/off]: " TW; read -p "  авто-замразяване при съмнение [on/off/Enter=без промяна]: " TA

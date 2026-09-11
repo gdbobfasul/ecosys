@@ -1,4 +1,4 @@
-<!-- Version: 1.0004 · генерирано от PupikesMetamaskCoinCreator · 0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A · 2026-09-11T18:08:07.150Z -->
+<!-- Version: 1.0004 · генерирано от PupikesMetamaskCoinCreator · 0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8 · 2026-09-11T18:48:44.940Z -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,16 +68,16 @@
     <div class="container">
         <div class="tstatus warn" id="tStatus">⏳ Reading the chain…</div>
         <div class="stats">
-            <div class="stat-card"><h3 id="vPrice">8.0066e-7 BNB</h3><div class="sub" id="vPriceUsd"></div><p><span data-i18n="cPrice">Price</span></p></div>
-            <div class="stat-card"><h3 id="vPool">35 HRVS</h3><div class="sub" id="vPoolBnb"></div><p><span data-i18n="cPool">Tokens in the pool</span></p></div>
+            <div class="stat-card"><h3 id="vPrice">3.3333e-7 BNB</h3><div class="sub" id="vPriceUsd"></div><p><span data-i18n="cPrice">Price</span></p></div>
+            <div class="stat-card"><h3 id="vPool">300,000 HRVS</h3><div class="sub" id="vPoolBnb"></div><p><span data-i18n="cPool">Tokens in the pool</span></p></div>
             <div class="stat-card"><h3 id="vSupply">1,000,000</h3><div class="sub" id="vBurnedTop"></div><p><span data-i18n="cSupply">Total supply</span> (HRVS)</p></div>
-            <div class="stat-card"><h3 id="vMcap">0.80066 BNB</h3><div class="sub" id="vMcapUsd"></div><p><span data-i18n="cMcap">Market cap</span></p></div>
+            <div class="stat-card"><h3 id="vMcap">0.33333 BNB</h3><div class="sub" id="vMcapUsd"></div><p><span data-i18n="cMcap">Market cap</span></p></div>
         </div>
         <div class="live-bar" id="liveStatus"></div>
         <section id="rules"><h2><span data-i18n="sRules">Token rules</span></h2>
             <div class="box">
-                <ul><li><span data-i18n="roFees" data-v="{&quot;b&quot;:0,&quot;f&quot;:2}">Transfer fees: 0% burn and 2% to the fund — immutable forever.</span></li><li><span data-i18n="roImmutable">There is no minting of new tokens; fees and limits are fixed at launch.</span></li><li><span data-i18n="roNoPowers">The owner canNOT block addresses, hold transfers or pause trading — this contract has no such functions.</span></li><li><span data-i18n="roGuard">The treasury is protected by Vault Guard: a large transfer from it is held and can be cancelled.</span></li></ul>
-                
+                <ul><li><span data-i18n="ruClosed">For the first minutes after launch, trading is closed for everyone except the creator's wallet.</span></li><li><span data-i18n="ruApproval" data-v="{&quot;thr&quot;:&quot;5,000&quot;,&quot;sym&quot;:&quot;HRVS&quot;}" data-live-thr="1">Transfers and trading above 5,000 HRVS require approval from the owner and may be held until the owner approves them.</span></li><li><span data-i18n="ruSplit">A large buy reaches the buyer after approval; a large sale must be split into smaller parts.</span></li><li><span data-i18n="ruUnusual">At launch and on unusual activity some transfers may be held for the owner's approval; the owner can block addresses (thieves, bots) and pause or resume trading.</span></li></ul>
+                <p class="small-note"><span data-i18n="ruState">Current state</span>: <b id="rTradeState">—</b></p>
                 <p class="small-note"><span data-i18n="ruContact">Contact us: Telegram</span> <a href="https://t.me/pupikes" target="_blank" rel="noopener">@pupikes</a> <span data-i18n="ruContact2">or the contact form below.</span></p>
                 <div class="note" style="margin-top:12px"><span data-i18n="ruRisk">⚠ Risk: crypto tokens can lose all of their value. This is not investment advice — buy only what you can afford to lose. The owner powers listed here require trust in the owner.</span></div>
             </div>
@@ -104,30 +104,32 @@
                 <tr><td class="k"><span data-i18n="rGuard">Guard (Vault Guard)</span></td><td class="v" id="tGuard">—</td></tr>
                 <tr><td class="k"><span data-i18n="rPending">Held transfers</span></td><td class="v" id="tPending">—</td></tr>
                 <tr><td class="k"><span data-i18n="rOwner">Contract owner</span></td><td class="v" id="tOwner">—</td></tr>
+                <tr><td class="k"><span data-i18n="rTrading">Trading</span></td><td class="v" id="tTrading">—</td></tr>
+                <tr><td class="k"><span data-i18n="rLarge">Large transfers</span></td><td class="v" id="tLarge">above 5,000 HRVS → the owner's approval is required</td></tr>
             </table></div>
             <p class="small-note"><span data-i18n="liveNote" data-v="{&quot;cur&quot;:&quot;BNB&quot;}">The numbers are read directly from the chain (the contract and the PancakeSwap pair) and refresh every 30 seconds. Price in USD = price in BNB × the BNB/USDT rate from PancakeSwap.</span></p>
             <p style="margin-top:16px">
-                <a class="cta" href="https://pancakeswap.finance/swap?outputCurrency=0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A&chain=bsc" target="_blank" rel="noopener">🥞 <span data-i18n="btnSwap">Buy / sell on PancakeSwap</span></a>
-                <a class="cta sec" href="https://bscscan.com/token/0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A" target="_blank" rel="noopener"><span data-i18n="btnScanTok">BscScan: token &amp; holders</span></a>
-                <a class="cta sec" href="https://bscscan.com/address/0xAfdD617E14Db997943E616395D52bd3e4209b23B" target="_blank" rel="noopener"><span data-i18n="btnScanPair">The pair on BscScan</span></a>
-                <a class="cta sec" href="https://dexscreener.com/bsc/0xAfdD617E14Db997943E616395D52bd3e4209b23B" target="_blank" rel="noopener"><span data-i18n="btnChart">Chart (DexScreener)</span></a>
+                <a class="cta" href="https://pancakeswap.finance/swap?outputCurrency=0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8&chain=bsc" target="_blank" rel="noopener">🥞 <span data-i18n="btnSwap">Buy / sell on PancakeSwap</span></a>
+                <a class="cta sec" href="https://bscscan.com/token/0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8" target="_blank" rel="noopener"><span data-i18n="btnScanTok">BscScan: token &amp; holders</span></a>
+                <a class="cta sec" href="https://bscscan.com/address/0xA75d1A0748E91F8E39682241F4f03f1F4cb2c455" target="_blank" rel="noopener"><span data-i18n="btnScanPair">The pair on BscScan</span></a>
+                <a class="cta sec" href="https://dexscreener.com/bsc/0xA75d1A0748E91F8E39682241F4f03f1F4cb2c455" target="_blank" rel="noopener"><span data-i18n="btnChart">Chart (DexScreener)</span></a>
             </p>
         </section>
         <section id="purpose"><h2><span data-i18n="sPurpose">Purpose of the token</span></h2>
-            <div class="box"><p style="margin:0;color:#37483d;line-height:1.6"><span data-tx="{&quot;bg&quot;:&quot;Фондът захранва награди и изкупуване — стимул за екосистемата.&quot;,&quot;en&quot;:&quot;The fund powers rewards and buybacks — an incentive for the ecosystem.&quot;,&quot;ru&quot;:null}">The fund powers rewards and buybacks — an incentive for the ecosystem.</span></p></div>
+            <div class="box"><p style="margin:0;color:#37483d;line-height:1.6"><span data-tx="{&quot;bg&quot;:&quot;Новото издание на Pupikes Harvest с V2 защитите: затворена търговия в началото, задържане на подозрителни преводи, блокиране на роботи.&quot;,&quot;en&quot;:&quot;The new edition of Pupikes Harvest with the V2 protections: trading closed at launch, suspicious transfers held, bots blockable.&quot;,&quot;ru&quot;:null}">The new edition of Pupikes Harvest with the V2 protections: trading closed at launch, suspicious transfers held, bots blockable.</span></p></div>
         </section>
         <section id="metamask"><h2><span data-i18n="sMM">Add to MetaMask</span></h2>
             <div class="box mmrow">
                 <div>
                     <p style="margin:0 0 10px;color:#37483d"><span data-i18n="mmText" data-v="{&quot;sym&quot;:&quot;HRVS&quot;}">One button adds <strong>HRVS</strong> to your MetaMask (the network switches automatically — EIP-747 standard). Or scan the QR code with the contract address.</span></p>
-                    <div class="addr" id="addrText">0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A</div>
+                    <div class="addr" id="addrText">0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8</div>
                     <p style="margin:14px 0 0">
                         <button class="cta mm" id="addToMM" type="button">🦊 <span data-i18n="btnAddMM" data-v="{&quot;sym&quot;:&quot;HRVS&quot;}">Add HRVS to MetaMask</span></button>
                         <button class="cta sec" id="copyAddr" type="button"><span data-i18n="btnCopy">Copy the address</span></button>
                     </p>
                     <div id="mmStatus"></div>
                 </div>
-                <div style="text-align:center"><div id="qr" title="0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A"></div><div style="color:var(--muted);font-size:.9em;margin-top:6px"><span data-i18n="qrCap">QR: contract address</span></div></div>
+                <div style="text-align:center"><div id="qr" title="0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8"></div><div style="color:var(--muted);font-size:.9em;margin-top:6px"><span data-i18n="qrCap">QR: contract address</span></div></div>
             </div>
         </section>
         <section id="features"><h2><span data-i18n="sFeatures">Features</span></h2>
@@ -141,8 +143,12 @@
                     <ul><li><span data-i18n="fFund1" data-v="{&quot;p&quot;:2}">2% of every transfer goes to a transparent fund</span></li><li><span data-i18n="fFund2">Powers rewards / buybacks</span></li></ul>
                 </div>
                 <div class="box">
+                    <h3><span data-i18n="fV2T">🐢 Launch and bot protection</span></h3>
+                    <ul><li><span data-i18n="fV21" data-v="{&quot;thr&quot;:&quot;5,000&quot;,&quot;sym&quot;:&quot;HRVS&quot;}">Transfers above 5,000 HRVS require the owner's approval</span></li><li><span data-i18n="fV22">The owner can block addresses and pause trading</span></li><li><span data-i18n="fV23">Trading is closed for the first minutes after launch</span></li></ul>
+                </div>
+                <div class="box">
                     <h3><span data-i18n="fBotT">⚙ Managed by the bot</span></h3>
-                    <ul><li><span data-i18n="fBot1">The bot watches held transfers in real time</span></li><li><span data-i18n="fBot2">It auto-cancels suspicious outgoing transfers from the treasury</span></li><li><span data-i18n="fBot3">It records statistics and suggests legitimate moves</span></li><li><span data-i18n="fBotOld4">The protection is against thieves — <strong>not</strong> against the owner</span></li></ul>
+                    <ul><li><span data-i18n="fBot1">The bot watches held transfers in real time</span></li><li><span data-i18n="fBot2">It auto-cancels suspicious outgoing transfers from the treasury</span></li><li><span data-i18n="fBot3">It records statistics and suggests legitimate moves</span></li></ul>
                 </div>
             </div>
         </section>
@@ -152,21 +158,21 @@
                 <tr><td class="k"><span data-i18n="dSymbol">Symbol</span></td><td class="v">HRVS</td></tr>
                 <tr><td class="k"><span data-i18n="dDecimals">Decimals</span></td><td class="v">18</td></tr>
                 <tr><td class="k"><span data-i18n="rInitial">Initial supply</span></td><td class="v">1,000,000 HRVS</td></tr>
-                <tr><td class="k"><span data-i18n="dAddress">Contract address</span></td><td class="v"><a href="https://bscscan.com/address/0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A" target="_blank" rel="noopener">0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A</a></td></tr>
+                <tr><td class="k"><span data-i18n="dAddress">Contract address</span></td><td class="v"><a href="https://bscscan.com/address/0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8" target="_blank" rel="noopener">0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8</a></td></tr>
                 <tr><td class="k"><span data-i18n="heroNet">Network</span></td><td class="v">BNB Smart Chain — Mainnet (chainId 56)</td></tr>
-                <tr><td class="k"><span data-i18n="dContract">Contract</span></td><td class="v">PupikesFeatureToken <span data-i18n="dContractNote">(fees/limits immutable, no mint)</span></td></tr>
+                <tr><td class="k"><span data-i18n="dContract">Contract</span></td><td class="v">PupikesFeatureTokenV2 <span data-i18n="dContractNote">(fees/limits immutable, no mint)</span></td></tr>
                 <tr><td class="k"><span data-i18n="rFees">Transfer fees</span></td><td class="v"><span data-i18n="dFeesVal" data-v="{&quot;b&quot;:0,&quot;f&quot;:2,&quot;t&quot;:2}">burn 0% · fund 2% (total 2%)</span></td></tr>
                 <tr><td class="k"><span data-i18n="rLimits">Limits</span></td><td class="v"><span data-i18n="dLimTxNone">no limit per transfer</span> · <span data-i18n="dLimWNone">no limit per wallet</span></td></tr>
                 <tr><td class="k">Vault Guard</td><td class="v"><span data-i18n="dGuardVal" data-v="{&quot;h&quot;:&quot;0&quot;,&quot;t&quot;:&quot;20,000&quot;,&quot;sym&quot;:&quot;HRVS&quot;,&quot;m&quot;:60}">holder threshold 0 / treasury 20,000 HRVS, wait 60 min</span></td></tr>
                 <tr><td class="k"><span data-i18n="dTreasury">Treasury / deployer</span></td><td class="v"><a href="https://bscscan.com/address/0x484784D62793f0B8755957d36510c30191dC8768" target="_blank" rel="noopener">0x484784D62793f0B8755957d36510c30191dC8768</a></td></tr>
                 <tr><td class="k"><span data-i18n="dGuardian">Guardian</span></td><td class="v">0x23797B25414faa5240Dc4bC122580a09d9424223</td></tr>
-                <tr><td class="k"><span data-i18n="dPair">Pair (PancakeSwap)</span></td><td class="v"><a href="https://bscscan.com/address/0xAfdD617E14Db997943E616395D52bd3e4209b23B" target="_blank" rel="noopener">0xAfdD617E14Db997943E616395D52bd3e4209b23B</a></td></tr>
+                <tr><td class="k"><span data-i18n="dPair">Pair (PancakeSwap)</span></td><td class="v"><a href="https://bscscan.com/address/0xA75d1A0748E91F8E39682241F4f03f1F4cb2c455" target="_blank" rel="noopener">0xA75d1A0748E91F8E39682241F4f03f1F4cb2c455</a></td></tr>
                 <tr><td class="k"><span data-i18n="dCreated">Created</span></td><td class="v">2026-09-11</td></tr>
-                <tr><td class="k">Explorer</td><td class="v"><a href="https://bscscan.com/address/0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A" target="_blank" rel="noopener">bscscan.com ↗</a></td></tr>
+                <tr><td class="k">Explorer</td><td class="v"><a href="https://bscscan.com/address/0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8" target="_blank" rel="noopener">bscscan.com ↗</a></td></tr>
             </table></div>
             <p style="margin-top:16px">
-                <a class="cta" href="https://bscscan.com/address/0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A" target="_blank" rel="noopener"><span data-i18n="btnViewScan">View on BscScan</span></a>
-                <a class="cta" href="https://pancakeswap.finance/swap?outputCurrency=0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A&chain=bsc" target="_blank" rel="noopener">PancakeSwap</a>
+                <a class="cta" href="https://bscscan.com/address/0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8" target="_blank" rel="noopener"><span data-i18n="btnViewScan">View on BscScan</span></a>
+                <a class="cta" href="https://pancakeswap.finance/swap?outputCurrency=0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8&chain=bsc" target="_blank" rel="noopener">PancakeSwap</a>
                 <a class="cta sec" href="/crypto/"><span data-i18n="btnAll">All tokens</span></a>
             </p>
         </section>
@@ -174,7 +180,7 @@
             <ol class="steps">
                 <li><span data-i18n="how1">Switch the network to</span> <strong>BNB Smart Chain — Mainnet (chainId 56)</strong>.</li>
                 <li><span data-i18n="how2">Choose <strong>Import tokens → Custom token</strong>.</span></li>
-                <li><span data-i18n="how3">Paste the address:</span> <code>0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A</code></li>
+                <li><span data-i18n="how3">Paste the address:</span> <code>0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8</code></li>
                 <li><span data-i18n="how4" data-v="{&quot;sym&quot;:&quot;HRVS&quot;,&quot;dec&quot;:18}">The symbol <strong>HRVS</strong> and 18 decimals fill in automatically — confirm.</span></li>
             </ol>
             
@@ -219,7 +225,7 @@
         </section>
     </div>
     <footer>Pupikes Harvest (HRVS) · <span data-i18n="pubBy">published by</span> PupikesMetamaskCoinCreator · <a href="/crypto/">/crypto</a> · <a href="https://pupikes.com/crypto/pupikes-harvest/">pupikes.com/crypto/pupikes-harvest/</a> · <a href="/crypto/pupikes-harvest/admin/" rel="nofollow"><span data-i18n="adminLink">admin</span></a></footer>
-    <script>window.PUPIKES_TOKEN = {"id":"harvest","name":"Pupikes Harvest","symbol":"HRVS","decimals":18,"address":"0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A","chainId":56,"network":"bscMainnet","netName":"BNB Smart Chain","currency":"BNB","explorer":"https://bscscan.com","rpcs":["https://bsc-dataseed.bnbchain.org","https://bsc-dataseed1.binance.org","https://bsc-dataseed2.defibit.io","https://bsc-rpc.publicnode.com","https://1rpc.io/bnb"],"pair":"0xAfdD617E14Db997943E616395D52bd3e4209b23B","wbnb":"0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c","dex":{"router":"0x10ED43C718714eb63d5aA57B78B54704E256024E","factory":"0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73","name":"PancakeSwap"},"usdPair":"0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE","usdt":"0x55d398326f99059fF775485246999027B3197955","treasury":"0x484784D62793f0B8755957d36510c30191dC8768","guardian":"0x23797B25414faa5240Dc4bC122580a09d9424223","initialSupply":1000000,"burnFeeBps":0,"fundFeeBps":200,"maxTxBps":0,"maxWalletBps":0,"ownerGuard":{"thresholdTokens":20000,"delaySec":1800},"contract":"PupikesFeatureToken","knownBots":["0x8737a10d9c19AF8Bb2EAE0B5E9CFE7B7276e0638","0x0013EE18743C3502785477425b2B90495846f206","0xA69D2E46dbD076719b9d3e0D326A25EF491E89cF","0x0000000000301922E19C0F055A3dBa542340a274","0x5ceB6fAaA99D3cF2317ad3F5E271d7333259938d","0xa015FEeae7facb5135D8cce56e7000A922719b14","0x4EA29ECe1b040C2DaD5d74D95477cec55Ab2C913","0xc8CE732a183bB373f965666922e4b644B0975442","0xf7797fe636052b4ccBe8F59F8644D1f3B51C9d73","0x6eaa7B6f618C6BB73Dc53d3C56Bb4C014c96d875"],"deployBlock":null,"hasTrading":false,"tradingDelaySec":600,"hasLarge":false,"largeThreshold":null,"slug":"pupikes-harvest","pagePath":"/crypto/pupikes-harvest/","pageUrl":"https://pupikes.com/crypto/pupikes-harvest/","adminUrl":"https://pupikes.com/crypto/pupikes-harvest/admin/","aliasPath":"/crypto/hrvs/","swapUrl":"https://pancakeswap.finance/swap?outputCurrency=0x427548083536a8C2EA5C17B45255a3A9fa7A5A5A&chain=bsc","deployedIds":["harvest"],"last":{"t":"2026-09-11T16:29:06.260Z","priceBnb":8.006580168641e-7,"priceUsd":0.0005836806439948959,"bnbUsd":729.0011861505749,"bnbRes":0.000028007111836393,"tokenRes":34.98011791112409,"totalSupply":1000000,"dead":0,"burned":0,"treasury":945040.9207323754,"fundWallet":"0x484784D62793f0B8755957d36510c30191dC8768","fund":null,"owner":"0x484784D62793f0B8755957d36510c30191dC8768","guard":{"threshold":20000,"delay":1800,"guardian":"0x23797B25414faa5240Dc4bC122580a09d9424223"},"burnFeeBps":0,"fundFeeBps":200,"maxTx":0,"maxWallet":0,"defaultThreshold":0,"defaultDelay":3600,"pendingCount":0,"tradingOpenAt":null}};</script>
+    <script>window.PUPIKES_TOKEN = {"id":"harvest2","name":"Pupikes Harvest","symbol":"HRVS","decimals":18,"address":"0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8","chainId":56,"network":"bscMainnet","netName":"BNB Smart Chain","currency":"BNB","explorer":"https://bscscan.com","rpcs":["https://bsc-dataseed.bnbchain.org","https://bsc-dataseed1.binance.org","https://bsc-dataseed2.defibit.io","https://bsc-rpc.publicnode.com","https://1rpc.io/bnb"],"pair":"0xA75d1A0748E91F8E39682241F4f03f1F4cb2c455","wbnb":"0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c","dex":{"router":"0x10ED43C718714eb63d5aA57B78B54704E256024E","factory":"0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73","name":"PancakeSwap"},"usdPair":"0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE","usdt":"0x55d398326f99059fF775485246999027B3197955","treasury":"0x484784D62793f0B8755957d36510c30191dC8768","guardian":"0x23797B25414faa5240Dc4bC122580a09d9424223","initialSupply":1000000,"burnFeeBps":0,"fundFeeBps":200,"maxTxBps":0,"maxWalletBps":0,"ownerGuard":{"thresholdTokens":20000,"delaySec":1800},"contract":"PupikesFeatureTokenV2","knownBots":["0x8737a10d9c19AF8Bb2EAE0B5E9CFE7B7276e0638","0x0013EE18743C3502785477425b2B90495846f206","0xA69D2E46dbD076719b9d3e0D326A25EF491E89cF","0x0000000000301922E19C0F055A3dBa542340a274","0x5ceB6fAaA99D3cF2317ad3F5E271d7333259938d","0xa015FEeae7facb5135D8cce56e7000A922719b14","0x4EA29ECe1b040C2DaD5d74D95477cec55Ab2C913","0xc8CE732a183bB373f965666922e4b644B0975442","0xf7797fe636052b4ccBe8F59F8644D1f3B51C9d73","0x6eaa7B6f618C6BB73Dc53d3C56Bb4C014c96d875"],"deployBlock":121310386,"hasTrading":true,"tradingDelaySec":600,"hasLarge":true,"largeThreshold":5000,"slug":"pupikes-harvest","pagePath":"/crypto/pupikes-harvest/","pageUrl":"https://pupikes.com/crypto/pupikes-harvest/","adminUrl":"https://pupikes.com/crypto/pupikes-harvest/admin/","aliasPath":"/crypto/hrvs/","swapUrl":"https://pancakeswap.finance/swap?outputCurrency=0xa4e4993ED63f7fE0B19D3350fB11cf43b198F2A8&chain=bsc","deployedIds":["harvest","harvest2"],"last":{"t":"2026-09-11T18:33:24.792Z","priceBnb":3.3333333333333335e-7,"priceUsd":0.00024133444318610146,"bnbUsd":724.0033295583044,"bnbRes":0.1,"tokenRes":300000,"totalSupply":1000000,"dead":0,"burned":0,"treasury":700000,"fundWallet":"0x484784D62793f0B8755957d36510c30191dC8768","fund":null,"owner":"0x484784D62793f0B8755957d36510c30191dC8768","guard":{"threshold":20000,"delay":1800,"guardian":"0x23797B25414faa5240Dc4bC122580a09d9424223"},"burnFeeBps":0,"fundFeeBps":200,"maxTx":0,"maxWallet":0,"defaultThreshold":0,"defaultDelay":3600,"pendingCount":0,"tradingOpenAt":1789152197}};</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
     <script src="i18n.js?v=b50896ea8f"></script>

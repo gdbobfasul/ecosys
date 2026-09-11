@@ -1019,13 +1019,29 @@ async function price(id) {
   return p;
 }
 
-// ── BUY (демо търсене): swap BNB → токени ──
+// ── BUY: swap BNB → токени (за първа реална сделка/индексиране в DexScreener/DexTools). Минимум 97% + симулация. ──
 async function buy(id, bnbAmt) {
   const d = loadDeploy(id); const w = deployer(); const dx = dex();
+  if (!bnbAmt || Number(bnbAmt) <= 0) { log("Употреба: node bot.js buy " + id + " <bnb>"); return; }
+  const p = await readPrice(id);
+  if (!p) { log("Няма пазар. Първо: node bot.js liquidity " + id + " <bnb> <tokens>"); return; }
+  const c = new ethers.Contract(d.address, abiOf(d), w);
   const router = new ethers.Contract(dx.router, ROUTER_ABI, w);
-  log("[демо] Купувам " + d.symbol + " за " + bnbAmt + " " + NET.currency + " (симулирам търсене)…");
-  await (await router.swapExactETHForTokensSupportingFeeOnTransferTokens(0, [dx.wbnb, d.address], w.address, (await deadline()), { value: ethers.parseEther(String(bnbAmt)) })).wait();
-  await price(id);
+  const bAmt = ethers.parseEther(String(bnbAmt));
+  const bal = await provider().getBalance(w.address);
+  if (bal < bAmt + ethers.parseEther("0.003")) { log("⛔ Няма достатъчно " + NET.currency + " (баланс " + ethers.formatEther(bal) + ", резерв за газ)."); return; }
+  const path = [dx.wbnb, d.address];
+  const quote = (await router.getAmountsOut(bAmt, path))[1];
+  const minOut = quote * 97n / 100n;
+  const before = await c.balanceOf(w.address);
+  log("КУПУВАНЕ: " + bnbAmt + " " + NET.currency + " → " + d.symbol + " · очаквано ~" + fmt(quote, d.decimals) + " · минимум " + fmt(minOut, d.decimals));
+  await router.swapExactETHForTokensSupportingFeeOnTransferTokens.staticCall(minOut, path, w.address, deadline(), { value: bAmt });
+  log("Симулация ОК — изпращам");
+  const tx = await router.swapExactETHForTokensSupportingFeeOnTransferTokens(minOut, path, w.address, deadline(), { value: bAmt }); await tx.wait();
+  const got = (await c.balanceOf(w.address)) - before;
+  log("✅ Купено ~ " + fmt(got, d.decimals) + " " + d.symbol + " · " + explorerTx(tx.hash));
+  await price(id).catch(() => {});
+  await stats(id).catch(() => {});
 }
 
 // ── SELL: продажба на токени → BNB (в портфейла на бота) ──
@@ -1700,37 +1716,284 @@ async function rescueCmd(id, what, to) {
 
 // ── заключване на LP (LpTimelock) ──
 function lpArtifact() { return artifactFor("LpTimelock"); }
-async function lockLpCmd(id, days) {
+// Всички ключалки на токена (новото поле lpLocks + старото единично lpLock, за обратна съвместимост).
+function lpLocksOf(d) {
+  const arr = Array.isArray(d && d.lpLocks) ? d.lpLocks.slice() : [];
+  if (d && d.lpLock && d.lpLock.address && !arr.some((x) => x.address && x.address.toLowerCase() === d.lpLock.address.toLowerCase())) arr.push(d.lpLock);
+  return arr.filter((x) => x && x.address);
+}
+// locklp <id> <дни> [процент = 100] — заключва този % от LP на трезора в НОВ сейф (може няколко за един токен).
+async function lockLpCmd(id, days, pctArg) {
   const d = loadDeploy(id); if (!d) { console.error("Токенът " + id + " не е пуснат."); process.exit(1); }
   const dys = Number(days || 0);
-  if (!Number.isFinite(dys) || dys < 1 || dys > 3650) { console.error("Употреба: node bot.js locklp " + id + " <дни 1..3650>"); process.exit(1); }
+  if (!Number.isFinite(dys) || dys < 1 || dys > 3650) { console.error("Употреба: node bot.js locklp " + id + " <дни 1..3650> [процент = 100]"); process.exit(1); }
+  const pct = pctArg === undefined || pctArg === "" ? 100 : Number(pctArg);
+  if (!Number.isFinite(pct) || pct < 1 || pct > 100) { console.error("Процентът е 1..100 (по подразбиране 100): node bot.js locklp " + id + " " + dys + " <процент>"); process.exit(1); }
   const w = deployer(); const pairAddr = await getPairAddr(id);
   if (!pairAddr || pairAddr === ethers.ZeroAddress) { log("Няма двойка за " + d.symbol + " — първо ликвидност."); return; }
   const LP_ABI = ["function balanceOf(address) view returns (uint256)", "function transfer(address,uint256) returns (bool)"];
   const lp = new ethers.Contract(pairAddr, LP_ABI, w);
   const bal = await lp.balanceOf(w.address);
-  if (bal === 0n) { log("Трезорът няма LP токени за " + d.symbol + "."); return; }
+  if (bal === 0n) { log("Трезорът няма свободни LP токени за " + d.symbol + " (може вече да са заключени)."); return; }
+  const amt = pct >= 100 ? bal : bal * BigInt(Math.round(pct * 100)) / 10000n;
+  if (amt === 0n) { log("Изчисленото количество е 0 — увеличи процента."); return; }
   const until = Math.floor(Date.now() / 1000) + dys * 86400;
   const A = lpArtifact();
-  log("🔒 Заключвам " + ethers.formatEther(bal) + " LP на " + d.symbol + " за " + dys + " дни (до " + dhm(until) + ")…");
+  log("🔒 Заключвам " + ethers.formatEther(amt) + " LP (" + pct + "% от свободните) на " + d.symbol + " за " + dys + " дни (до " + dhm(until) + ")…");
   const F = new ethers.ContractFactory(A.abi, A.bytecode, w);
   const lock = await F.deploy(pairAddr, w.address, until); await lock.waitForDeployment();
   const la = await lock.getAddress();
   log("   Сейф: " + explorerAddr(la));
-  const tx = await lp.transfer(la, bal); await tx.wait();
+  const tx = await lp.transfer(la, amt); await tx.wait();
   log("   ✅ LP са в сейфа · " + explorerTx(tx.hash));
-  saveDeploy(id, { ...d, lpLock: { address: la, unlockTime: until, amount: ethers.formatEther(bal), lockedAt: new Date().toISOString() } });
-  log("   Отключване след срока: node bot.js unlocklp " + id);
+  const locks = lpLocksOf(d);
+  locks.push({ address: la, unlockTime: until, amount: ethers.formatEther(amt), pct, lockedAt: new Date().toISOString() });
+  const nd = { ...d, lpLocks: locks }; delete nd.lpLock;   // мигрира старото единично поле в масива
+  saveDeploy(id, nd);
+  log("   Отключване след срока: node bot.js unlocklp " + id + (locks.length > 1 ? " [индекс]" : ""));
 }
-async function unlockLpCmd(id) {
-  const d = loadDeploy(id); if (!d || !d.lpLock) { log("За " + id + " няма записан LP сейф."); return; }
+// unlocklp <id> [индекс] — освобождава всички узрели ключалки (или само посочената).
+async function unlockLpCmd(id, idxArg) {
+  const d = loadDeploy(id); if (!d) { console.error("Токенът " + id + " не е пуснат."); process.exit(1); }
+  const locks = lpLocksOf(d);
+  if (!locks.length) { log("За " + id + " няма записан LP сейф."); return; }
   const w = deployer(); const A = lpArtifact();
-  const c = new ethers.Contract(d.lpLock.address, A.abi, w);
-  const left = Number(await c.timeLeft());
-  if (left > 0) { log("⏳ Сейфът е заключен още " + fmtLeft(left) + " (до " + dhm(d.lpLock.unlockTime) + ")."); return; }
-  log("Отключвам LP сейфа " + d.lpLock.address + "…");
-  await sendTx(c, "release", [], "release");
-  saveDeploy(id, { ...d, lpLock: { ...d.lpLock, releasedAt: new Date().toISOString() } });
+  const pick = idxArg === undefined || idxArg === "" ? null : Number(idxArg);
+  if (pick !== null && (!Number.isInteger(pick) || pick < 0 || pick >= locks.length)) { console.error("Индексът е 0.." + (locks.length - 1) + " (виж: node bot.js audit " + id + ")"); process.exit(1); }
+  let released = 0;
+  for (let i = 0; i < locks.length; i++) {
+    if (pick !== null && i !== pick) continue;
+    const lk = locks[i]; if (lk.releasedAt) { log("  [" + i + "] " + lk.address + " вече е освободен."); continue; }
+    const c = new ethers.Contract(lk.address, A.abi, w);
+    let left = 0; try { left = Number(await c.timeLeft()); } catch (_) {}
+    if (left > 0) { log("  [" + i + "] ⏳ заключен още " + fmtLeft(left) + " (до " + dhm(lk.unlockTime) + ")."); continue; }
+    log("  [" + i + "] Отключвам сейфа " + lk.address + "…");
+    try { await sendTx(c, "release", [], "release"); locks[i] = { ...lk, releasedAt: new Date().toISOString() }; released++; }
+    catch (e) { log("     ✗ " + String(e.shortMessage || e.message || "").slice(0, 80)); }
+  }
+  const nd = { ...d, lpLocks: locks }; delete nd.lpLock;
+  saveDeploy(id, nd);
+  log(released ? "✅ Освободени " + released + " сейф(а)." : "Няма узрели сейфове за освобождаване сега.");
+}
+
+// ══════════════ ОДИТ (проверка на здравето/сигурността на токена — САМО ЧЕТЕНЕ) ══════════════
+//   node bot.js audit <id> | audit all   → доклад с ⚠/⛔/✅ + сравнение с предишния одит; при ⛔/⚠ и зададен
+//   TELEGRAM_OWNER_CHAT_ID праща ЛИЧНО кратко резюме (изключва се с protect.auditAlerts:false). Никакви транзакции.
+function auditFile(id) { return path.join(__dirname, "deployments", CFG.activeNetwork + "-" + id + ".audit.json"); }
+function loadAuditHist(id) { try { return JSON.parse(fs.readFileSync(auditFile(id), "utf8")); } catch (_) { return []; } }
+function pushAuditHist(id, rec) {
+  try { const h = loadAuditHist(id); h.push(rec); fs.writeFileSync(auditFile(id), JSON.stringify(h.slice(-500), null, 2)); } catch (_) {}
+}
+// Едрите държатели по Transfer събития (на части; при отказ на възела — пропуска с бележка, не чупи одита).
+async function topHolders(d, c, pv, exclude) {
+  const latest = await pv.getBlockNumber();
+  const from = Number.isInteger(d.deployBlock) ? d.deployBlock : Math.max(0, latest - 400000);
+  const step = Math.max(2000, Number((CFG.protect && CFG.protect.logChunk) || 5000));
+  const addrs = new Set();
+  let scanned = 0, failed = false;
+  for (let b = from; b <= latest; b += step) {
+    try {
+      const ev = await c.queryFilter(c.filters.Transfer(), b, Math.min(latest, b + step - 1));
+      for (const e of ev) { if (e.args && e.args.to) addrs.add(e.args.to.toLowerCase()); if (e.args && e.args.from) addrs.add(e.args.from.toLowerCase()); }
+      scanned++;
+      if (addrs.size > 4000) break;   // достатъчно за оценка; не товари възела безкрайно
+    } catch (_) { failed = true; break; }
+  }
+  if (failed && !addrs.size) return { ok: false };
+  const ex = new Set((exclude || []).filter(Boolean).map((a) => a.toLowerCase()));
+  const list = [...addrs].filter((a) => a && a !== ethers.ZeroAddress.toLowerCase() && a !== DEAD_ADDR.toLowerCase() && !ex.has(a));
+  const bals = [];
+  for (let i = 0; i < list.length; i += 40) {
+    try { const part = list.slice(i, i + 40); const r = await Promise.all(part.map((a) => c.balanceOf(a).catch(() => 0n))); part.forEach((a, k) => { if (r[k] > 0n) bals.push([a, r[k]]); }); }
+    catch (_) { failed = true; break; }
+  }
+  bals.sort((x, y) => (y[1] > x[1] ? 1 : y[1] < x[1] ? -1 : 0));
+  return { ok: true, partial: failed, holders: bals.slice(0, 8) };
+}
+async function auditOne(id) {
+  const d = loadDeploy(id);
+  if (!d) return { id, missing: true };
+  const pv = provider(); const dec = d.decimals; const cur = NET.currency;
+  const c = new ethers.Contract(d.address, abiOf(d), pv);
+  const v2 = hasV2(d);
+  const N = (x) => Number(x).toLocaleString("bg-BG", { maximumFractionDigits: 2 });
+  const issues = [];   // { lvl: "⛔"|"⚠"|"✅"|"ℹ", text }
+  const add = (lvl, text) => issues.push({ lvl, text });
+  const alertPct = Number((CFG.protect && CFG.protect.auditBnbDropPct) || 15);
+  const whalePct = Number((CFG.protect && CFG.protect.auditWhalePct) || 5);
+
+  // ── пул + цена ──
+  const price = await readPrice(id).catch(() => null);
+  const prev = loadAuditHist(id).slice(-1)[0] || null;
+  let bnbRes = null, tokRes = null, lpPct = null, treasuryPct = null;
+  if (price) {
+    bnbRes = Number(price.bnbRes); tokRes = Number(price.tokenRes);
+    add(bnbRes > 0 ? "✅" : "⛔", "Пул: " + N(tokRes) + " " + d.symbol + " + " + bnbRes.toFixed(5) + " " + cur + (price.priceBnb ? " · цена " + Number(price.priceBnb).toPrecision(5) + " " + cur : ""));
+    if (prev && prev.bnbRes > 0 && bnbRes < prev.bnbRes * (1 - alertPct / 100))
+      add("⚠", "BNB в пула е паднал с " + N((1 - bnbRes / prev.bnbRes) * 100) + "% спрямо предишния одит (" + prev.bnbRes.toFixed(5) + " → " + bnbRes.toFixed(5) + " " + cur + ") — възможно теглене/дъмп");
+  } else {
+    add("⛔", "Няма пазар/пул — токенът НЕ може да се търгува (мъртъв, докато няма ликвидност)");
+  }
+
+  // ── LP: под наш контрол = трезор + ВСИЧКИТЕ наши LpTimelock ключалки (преместване в наш сейф НЕ е спад) ──
+  const pairAddr = price ? price.pair : await getPairAddr(id).catch(() => null);
+  let controlPct = null, lockedPct = null;
+  if (pairAddr && pairAddr !== ethers.ZeroAddress) {
+    const locks = lpLocksOf(d);
+    try {
+      const lp = new ethers.Contract(pairAddr, ["function balanceOf(address) view returns (uint256)", "function totalSupply() view returns (uint256)"], pv);
+      const [held, lpTs] = await Promise.all([lp.balanceOf(d.deployer), lp.totalSupply()]);
+      if (lpTs === 0n) add("⛔", "LP предлагането е 0 — пулът е празен/източен (мъртъв)");
+      else {
+        // събери LP във всичките наши сейфове
+        let lockedSum = 0n, maxLeft = 0, liveLocks = 0;
+        for (const lk of locks) {
+          try {
+            const tl = new ethers.Contract(lk.address, artifactFor("LpTimelock").abi, pv);
+            const [lheld, left] = await Promise.all([tl.locked(), tl.timeLeft()]);
+            if (lheld > 0n) { lockedSum += lheld; if (Number(left) > 0) { liveLocks++; maxLeft = Math.max(maxLeft, Number(left)); } }
+          } catch (_) {}
+        }
+        const treasuryLpPct = Number(held * 10000n / lpTs) / 100;
+        lockedPct = Number(lockedSum * 10000n / lpTs) / 100;
+        controlPct = Number((held + lockedSum) * 10000n / lpTs) / 100;
+        lpPct = controlPct;   // за аудит-историята: подконтролният дял (трезор + сейфове)
+        add(controlPct >= 99 ? "✅" : controlPct > 0 ? "⚠" : "⛔",
+          "LP под наш контрол: " + N(controlPct) + "% (трезор " + N(treasuryLpPct) + "% + заключено " + N(lockedPct) + "%)" +
+          (controlPct < 99 && controlPct > 0 ? " — под 100%: част от LP е извън нашата система (възможно теглене)" : controlPct === 0 ? " — НЕ държим LP" : ""));
+        // спад САМО ако реално LP е НАПУСНАЛО системата (трезор + сейфове) спрямо миналия одит
+        const prevControl = prev ? (prev.controlPct != null ? prev.controlPct : prev.lpPct) : null;
+        if (prevControl != null && controlPct < prevControl - 1)
+          add("⚠", "LP под наш контрол е ПАДНАЛ: " + N(prevControl) + "% → " + N(controlPct) + "% спрямо предишния одит — реално LP е напуснало системата");
+        // заключен ли е LP
+        if (locks.length && lockedPct > 0)
+          add("✅", "LP заключен: " + N(lockedPct) + "% в " + locks.length + " ключалк" + (locks.length === 1 ? "а" : "и") + (maxLeft > 0 ? " · още " + fmtLeft(maxLeft) : " · срокът изтече — освобождаване: node bot.js unlocklp " + id));
+        else if (treasuryLpPct > 0)
+          add("⚠", "LP не е заключен (LpTimelock) — купувачите го броят за риск. Заключване: node bot.js locklp " + id + " <дни> [%]");
+      }
+    } catch (_) { add("ℹ", "LP делът не се прочете (възелът отказа)"); }
+  }
+
+  // ── собственост и роли ──
+  const owner = await c.owner().catch(() => null);
+  if (owner) {
+    const isTre = owner.toLowerCase() === d.deployer.toLowerCase();
+    add(isTre ? "✅" : (owner === ethers.ZeroAddress ? "ℹ" : "⚠"), "Собственик: " + owner + (isTre ? " (= трезорът)" : owner === ethers.ZeroAddress ? " (отказана собственост)" : " — НЕ е трезорът!"));
+  }
+  if (v2) {
+    const [pend, op, sec, two, ctrl] = await Promise.all([c.pendingOwner().catch(() => ethers.ZeroAddress), c.operator().catch(() => ethers.ZeroAddress), c.secondApprover().catch(() => ethers.ZeroAddress), c.requireTwoApprovals().catch(() => false), c.secondControls().catch(() => false)]);
+    if (pend && pend !== ethers.ZeroAddress) add("⚠", "Тече прехвърляне на собственост → чакащ собственик " + pend + " (приема се с acceptOwnership; отмени с owner transfer към трезора, ако не е твое)");
+    add("ℹ", "Роли: оператор " + (op === ethers.ZeroAddress ? "няма" : op) + " · втори одобряващ " + (sec === ethers.ZeroAddress ? "няма" : sec) + " · два подписа " + (two ? "ДА" : "не") + " · вторият командва " + (ctrl ? "ДА" : "не"));
+  }
+
+  // ── търговия ──
+  const tr = await tradingState(d, pv).catch(() => null);
+  if (tr) add(tr.paused ? "⚠" : (tr.open ? "✅" : "ℹ"), "Търговия: " + tr.text);
+
+  // ── чакащи / замразени ──
+  if (v2) {
+    const [pc, fz] = await Promise.all([c.pendingCount().catch(() => 0n), c.frozenCount().catch(() => 0n)]);
+    const total = Number(pc);
+    if (fz > 0n) add("⚠", "❄ " + fz + " ЗАМРАЗЕНИ превода чакат твоето решение — виж: node bot.js pending " + id);
+    let active = 0; const now = Math.floor(Date.now() / 1000);
+    const fromN = Math.max(1, total - 199);
+    for (let i = fromN; i <= total && active < 12; i += 20) {
+      const ids = []; for (let k = i; k < Math.min(i + 20, total + 1); k++) ids.push(k);
+      let ps; try { ps = await Promise.all(ids.map((x) => c.pending(x))); } catch (_) { break; }
+      for (let j = 0; j < ids.length; j++) {
+        const p = ps[j]; if (!p.active) continue; active++;
+        if (active <= 8) add("⚠", "  задържан #" + ids[j] + ": " + fmt(p.amount, dec) + " " + d.symbol + " → " + p.to + " · " + (p.frozen ? "❄ замразен" : (Number(p.executeAfter) > now ? "след " + fmtLeft(Number(p.executeAfter) - now) : "изпълним сега")) + " · " + reasonText(p.reason));
+      }
+    }
+    if (active > 8) add("ℹ", "  … и още " + (active - 8) + " задържани превода (node bot.js pending " + id + ")");
+    if (total === 0) add("✅", "Няма задържани преводи");
+  }
+
+  // ── известните роботи (V2): още ли са блокирани ──
+  const bots = knownBots();
+  if (v2 && bots.length) {
+    try {
+      const st = await Promise.all(bots.map((a) => c.isBlocked(a).catch(() => null)));
+      const unblocked = bots.filter((a, i) => st[i] === false);
+      const held = [];
+      for (let i = 0; i < bots.length; i += 10) { const part = bots.slice(i, i + 10); const r = await Promise.all(part.map((a) => c.balanceOf(a).catch(() => 0n))); part.forEach((a, k) => { if (r[k] > 0n) held.push([a, r[k]]); }); }
+      if (unblocked.length) add("⛔", unblocked.length + " известни робота са ОТБЛОКИРАНИ: " + unblocked.slice(0, 3).map((a) => a.slice(0, 10) + "…").join(", ") + " — блокирай пак: node bot.js block " + id + " <адрес>");
+      else add("✅", bots.length + " известни робота — всички са блокирани");
+      held.forEach(([a, b]) => add("⛔", "Робот държи " + fmt(b, dec) + " " + d.symbol + ": " + a));
+    } catch (_) { add("ℹ", "Статусът на известните роботи не се прочете"); }
+  }
+
+  // ── едри държатели ──
+  try {
+    const fundW = await c.fundWallet().catch(() => ethers.ZeroAddress);
+    const th = await topHolders(d, c, pv, [d.deployer, d.guardian, fundW, pairAddr, d.address, NET.dex && NET.dex.router]);
+    if (!th.ok) add("ℹ", "Едрите държатели не се прочетоха (възелът отказа getLogs) — пропуснато");
+    else {
+      const ts = await c.totalSupply();
+      const botset = new Set(bots.map((a) => a.toLowerCase()));
+      let flagged = 0;
+      for (const [a, b] of th.holders) {
+        const pctH = ts > 0n ? Number(b * 10000n / ts) / 100 : 0;
+        if (botset.has(a.toLowerCase())) { add("⛔", "Робот от списъка държи " + N(pctH) + "% (" + fmt(b, dec) + " " + d.symbol + "): " + a); flagged++; }
+        else if (pctH >= whalePct) { add("⚠", "Едър държател " + N(pctH) + "% (" + fmt(b, dec) + " " + d.symbol + "): " + a); flagged++; }
+      }
+      if (!flagged) add("✅", "Няма подозрителни едри държатели извън трезор/пул/фонд (топ " + th.holders.length + " проверени" + (th.partial ? ", частично" : "") + ")");
+    }
+  } catch (_) { add("ℹ", "Едрите държатели не се прочетоха — пропуснато"); }
+
+  // ── такси/лимити/прагове спрямо config ──
+  if (v2) {
+    try {
+      const M = CFG.market || {}, P = CFG.protect || {};
+      const [lt, ld, ft, rw, tol, sn] = await Promise.all([c.largeThreshold(), c.largeDelay(), c.freezeThreshold(), c.rateWindow(), c.buyCheckToleranceBps(), c.sniperBlocks()]);
+      const wantLt = ethers.parseUnits(String(M.largeTransferThreshold != null ? M.largeTransferThreshold : 5000), dec);
+      const wantFt = ethers.parseUnits(String(M.freezeTransferThreshold != null ? M.freezeTransferThreshold : 10000), dec);
+      const diffs = [];
+      if (lt !== wantLt) diffs.push("праг задържане " + fmt(lt, dec) + " (config " + (M.largeTransferThreshold != null ? M.largeTransferThreshold : 5000) + ")");
+      if (ft !== wantFt) diffs.push("втори праг " + fmt(ft, dec));
+      if (Number(rw) !== Number(P.rateWindowSec != null ? P.rateWindowSec : 3600)) diffs.push("прозорец честота " + Number(rw) + "s (config " + (P.rateWindowSec != null ? P.rateWindowSec : 3600) + "s)");
+      if (Number(tol) !== Number(P.buyCheckToleranceBps != null ? P.buyCheckToleranceBps : 300)) diffs.push("толеранс " + Number(tol) + "bps");
+      if (Number(sn) !== Number(P.sniperBlocks != null ? P.sniperBlocks : 2)) diffs.push("снайпер " + Number(sn) + " блока");
+      if (diffs.length) add("⚠", "Правила различни от config: " + diffs.join(" · ") + "  (не е задължително проблем — само проверка)");
+      else add("✅", "Правилата в договора отговарят на config");
+    } catch (_) {}
+  }
+
+  pushAuditHist(id, { t: new Date().toISOString(), bnbRes, tokRes, lpPct, controlPct, lockedPct, priceBnb: price ? price.priceBnb : null });
+  const bad = issues.filter((x) => x.lvl === "⛔").length, warn = issues.filter((x) => x.lvl === "⚠").length;
+  return { id, symbol: d.symbol, name: d.name, address: d.address, issues, bad, warn,
+    explorer: NET.explorer ? NET.explorer + "/token/" + d.address : null, page: pageUrl(id) };
+}
+async function auditCmd(id) {
+  const ids = (id === "all" || !id)
+    ? CAT.filter((t) => loadDeploy(t.id)).map((t) => t.id)
+    : [id];
+  if (!ids.length) { log("Няма пуснати токени за одит в " + CFG.activeNetwork + " (пусни с: node bot.js create <id>)."); return; }
+  let totalBad = 0, totalWarn = 0; const summaries = [];
+  for (const tid of ids) {
+    const r = await auditOne(tid);
+    console.log("");
+    if (r.missing) { log("[" + tid + "] не е пуснат в " + CFG.activeNetwork + " — пропускам."); continue; }
+    log("═══ ОДИТ на " + r.name + " (" + r.symbol + ") · " + r.address + " ═══");
+    r.issues.forEach((x) => console.log("  " + x.lvl + "  " + x.text));
+    const verdict = r.bad ? "⛔ " + r.bad + " сериозни + " + r.warn + " предупреждения" : r.warn ? "⚠ " + r.warn + " предупреждения" : "✅ всичко наред";
+    log("Резюме: " + verdict + (r.explorer ? "  ·  " + r.explorer : "") + "  ·  " + r.page);
+    totalBad += r.bad; totalWarn += r.warn;
+    if (r.bad || r.warn) summaries.push({ r, verdict });
+  }
+  if (ids.length > 1) { console.log(""); log("══ ОБЩО: " + ids.length + " токена · ⛔ " + totalBad + " · ⚠ " + totalWarn + (totalBad || totalWarn ? "" : " · всичко наред")); }
+  // лично известие при проблеми (изключва се с protect.auditAlerts:false)
+  if ((totalBad || totalWarn) && !(CFG.protect && CFG.protect.auditAlerts === false)) {
+    const lines = [];
+    for (const s of summaries) {
+      lines.push("<b>" + s.r.symbol + "</b>: " + s.verdict);
+      s.r.issues.filter((x) => x.lvl === "⛔" || x.lvl === "⚠").slice(0, 4).forEach((x) => lines.push(x.lvl + " " + x.text.replace(/<[^>]+>/g, "")));
+    }
+    lines.push("", "Пълен доклад: <code>node bot.js audit " + (ids.length > 1 ? "all" : ids[0]) + "</code>");
+    const btns = []; if (summaries[0] && summaries[0].r.explorer) btns.push({ text: "BscScan", url: summaries[0].r.explorer });
+    await ownerAlert("🔎 Одит на токените: " + (totalBad ? "⛔ " + totalBad + " сериозни" : "⚠ " + totalWarn), lines, btns);
+  }
+  return totalBad + totalWarn;
 }
 
 // ── наблюдение на dev портфейла (watch dev) и авто-охрана ──
@@ -2042,8 +2305,9 @@ const [cmd, a1, a2, a3] = ARGS;
     else if (cmd === "owner") await ownerCmd(a2, a1, a3);
     else if (cmd === "rescue") await rescueCmd(a1, a2, a3);
     else if (cmd === "verify") { const r = require("child_process").spawnSync(process.execPath, [path.join(__dirname, "verify.js"), a1, "--net=" + CFG.activeNetwork], { stdio: "inherit" }); process.exit(r.status || 0); }
-    else if (cmd === "locklp") await lockLpCmd(a1, a2);
-    else if (cmd === "unlocklp") await unlockLpCmd(a1);
+    else if (cmd === "locklp") await lockLpCmd(a1, a2, a3);
+    else if (cmd === "unlocklp") await unlockLpCmd(a1, a2);
+    else if (cmd === "audit") { await auditCmd(a1); process.exit(0); }
     else if (cmd === "watch") { if (a1 === "dev") { setConfigFlag("watchDev", a2 === "on"); } else console.error("Употреба: node bot.js watch dev on|off"); }
     else if (cmd === "guardauto") { setConfigFlag("guardAuto", a1 === "on"); }
     else if (cmd === "advise") await advise(a1);
@@ -2071,10 +2335,11 @@ const [cmd, a1, a2, a3] = ARGS;
       console.log("  recover status|cancel|propose|execute|reclaim|burn|freeze <id> [адрес]  — възстановяване при откраднат ключ");
       console.log("  owner transfer|accept|status <id> [адрес] · rescue <id> bnb|<токен> <адрес>");
       console.log("  verify <id>                       — проверка (Verify) на изходния код в BscScan (V2 включително)");
-      console.log("  locklp <id> <дни> | unlocklp <id> — заключване на LP токените в сейф (LpTimelock)");
+      console.log("  locklp <id> <дни> [%] | unlocklp <id> [индекс] — заключване на част/цялото LP в сейф(ове) (LpTimelock)");
+      console.log("  audit <id> | audit all            — проверка на здравето/сигурността (само четене; ⛔/⚠/✅; за Scheduled Task)");
       console.log("  watch dev on|off | guardauto on|off     — наблюдение на dev портфейла и авто-замразяване при съмнение");
       console.log("  --vault <адрес|№>                 — избран трезор от регистъра (node vault.js list); по подразбиране wallet/");
-      console.log("  buy <id> <bnb>                    — [демо] купи (симулира търсене)");
+      console.log("  buy <id> <bnb>                    — купи с BNB (минимум 97% + симулация)");
       console.log("  sell <id> <tokens>                — продай токени → BNB (в бота)");
       console.log("  burn <id> <tokens>                — изгори от трезора (дефлация)");
       console.log("  withdraw <bnb> <addr>             — тегли BNB към твой акаунт");

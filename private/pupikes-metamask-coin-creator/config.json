@@ -49,6 +49,10 @@
     "watchDev": false,
     "guardAuto": false,
     "watchIntervalSec": 300,
+    "_auditNote": "Одит (node bot.js audit <id>|all): auditBnbDropPct = праг за предупреждение при спад на BNB в пула; auditWhalePct = дял, над който държател се маркира; auditAlerts = лични Telegram известия при ⛔/⚠.",
+    "auditBnbDropPct": 15,
+    "auditWhalePct": 5,
+    "auditAlerts": true,
     "knownBots": [
       "0x8737a10d9c19AF8Bb2EAE0B5E9CFE7B7276e0638",
       "0x0013EE18743C3502785477425b2B90495846f206",
